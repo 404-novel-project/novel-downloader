@@ -17,5 +17,6 @@
     "alwaysStrict": true,
 
     "moduleResolution": "node"
-  }
+  },
+  "exclude": ["node_modules", "dist", "Releases"]
 }
