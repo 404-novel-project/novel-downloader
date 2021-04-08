@@ -18,5 +18,11 @@
 
     "moduleResolution": "node"
   },
-  "exclude": ["node_modules", "dist", "Releases"]
+  "exclude": [
+    "node_modules",
+    "bower_components",
+    "jspm_packages",
+    "Releases",
+    "dist"
+  ]
 }

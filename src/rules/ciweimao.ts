@@ -7,7 +7,7 @@ import {
   chapterParseObject,
 } from "../rules";
 
-export namespace ciweimao {
+namespace ciweimao {
   export interface ciweimaoWindow extends unsafeWindow {
     HB: any;
   }
@@ -21,9 +21,7 @@ export class ciweimao implements ruleClass {
     this.concurrencyLimit = 1;
   }
 
-  public async bookParse(
-    chapterParse: ruleClassNamespace.chapterParse
-  ): Promise<bookParseObject> {
+  public async bookParse(chapterParse: ruleClassNamespace.chapterParse) {
     const bookid = (<ciweimao.ciweimaoWindow>unsafeWindow).HB.book.book_id;
     const bookUrl = `https://www.ciweimao.com/book/${bookid}`;
     const bookname = (<HTMLElement>(
@@ -34,7 +32,7 @@ export class ciweimao implements ruleClass {
     )).innerText.trim();
 
     let introduction: string | null;
-    const dom = await getHtmlDOM(bookUrl);
+    const dom = await getHtmlDOM(bookUrl, undefined);
     const introDom = dom.querySelector(".book-intro-cnt .book-desc");
     if (introDom === null) {
       introduction = null;
@@ -124,7 +122,8 @@ export class ciweimao implements ruleClass {
         sectionName,
         sectionNumber,
         sectionChapterNumber,
-        chapterParse
+        chapterParse,
+        "UTF-8"
       );
       chapters.push(chapter);
     }
@@ -143,10 +142,11 @@ export class ciweimao implements ruleClass {
     chapterUrl: string,
     chapterName: string | null,
     isVIP: boolean,
-    isPaid: boolean
+    isPaid: boolean,
+    charset: string
   ) {
     async function publicChapter(): Promise<chapterParseObject> {
-      const doc = await getHtmlDOM(chapterUrl);
+      const doc = await getHtmlDOM(chapterUrl, undefined);
       const chapter_id = chapterUrl.split("/").slice(-1)[0];
 
       const _chapter_author_says = doc.querySelectorAll(

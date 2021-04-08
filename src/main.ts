@@ -60,6 +60,7 @@ export class Chapter {
   public sectionChapterNumber: number | null;
 
   public chapterParse: ruleClassNamespace.chapterParse;
+  public charset: string;
 
   public status: Status;
   public retryTime: number;
@@ -80,7 +81,8 @@ export class Chapter {
     sectionName: string | null,
     sectionNumber: number | null,
     sectionChapterNumber: number | null,
-    chapterParse: ruleClassNamespace.chapterParse
+    chapterParse: ruleClassNamespace.chapterParse,
+    charset: string
   ) {
     this.bookUrl = bookUrl;
     this.bookname = bookname;
@@ -95,6 +97,7 @@ export class Chapter {
     this.sectionChapterNumber = sectionChapterNumber;
 
     this.chapterParse = chapterParse;
+    this.charset = charset;
 
     this.status = Status.pending;
     this.retryTime = 0;
@@ -105,7 +108,8 @@ export class Chapter {
       this.chapterUrl,
       this.chapterName,
       this.isVIP,
-      this.isPaid
+      this.isPaid,
+      this.charset
     );
 
     const {
@@ -132,7 +136,8 @@ export class Chapter {
       this.chapterUrl,
       this.chapterName,
       this.isVIP,
-      this.isPaid
+      this.isPaid,
+      this.charset
     ).catch((err: Error) => {
       this.retryTime++;
       console.error(

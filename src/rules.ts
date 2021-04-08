@@ -1,5 +1,6 @@
 import { BookAdditionalMetadate, ImageClass, Chapter } from "./main";
 import { ciweimao } from "./rules/ciweimao";
+import { uukanshu } from "./rules/uukanshu";
 
 export interface bookParseObject {
   bookUrl: string;
@@ -19,6 +20,7 @@ export interface chapterParseObject {
 }
 export interface ruleClass {
   imageMode: "naive" | "TM";
+  charset?: string;
   concurrencyLimit?: number;
   bookParse(
     chapterParse: ruleClassNamespace.chapterParse
@@ -27,7 +29,8 @@ export interface ruleClass {
     chapterUrl: string,
     chapterName: string | null,
     isVIP: boolean,
-    isPaid: boolean
+    isPaid: boolean,
+    charset: string
   ): Promise<chapterParseObject>;
 }
 
@@ -40,7 +43,8 @@ export namespace ruleClassNamespace {
       chapterUrl: string,
       chapterName: string | null,
       isVIP: boolean,
-      isPaid: boolean
+      isPaid: boolean,
+      charset: string
     ): Promise<chapterParseObject>;
   }
 }
@@ -63,6 +67,9 @@ export function getRule(): ruleClass {
   switch (host) {
     case "www.ciweimao.com":
       ruleClass = ciweimao;
+      break;
+    case "www.uukanshu.com":
+      ruleClass = uukanshu;
       break;
     default:
       throw new Error("Not Found Rule!");

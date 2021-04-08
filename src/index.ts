@@ -1,6 +1,7 @@
 import { getRule, ruleClass, icon0, icon1 } from "./rules";
 import { Book, Chapter, ImageClass } from "./main";
 import { concurrencyRun } from "./lib";
+import { LibManifestPlugin } from "webpack";
 
 function printEnvironments() {
   console.log(
@@ -114,7 +115,11 @@ function save(book: Book) {
   let savedTextArray = [];
   let savedZip = new JSZip();
 
-  let infoText = `题名：${book.bookname}\n作者：${book.author}\n简介：${book.introduction}\n来源：${book.bookUrl}\n\n`;
+  let infoText = `题名：${book.bookname}\n作者：${book.author}\n简介：${
+    book.introduction
+  }\n来源：${
+    book.bookUrl
+  }\n下载时间：${new Date().toISOString()}\n本文件由小说下载器生成，软件地址：https://github.com/yingziwu/novel-downloader\n\n`;
   savedTextArray.push(infoText);
   if (book.additionalMetadate.cover) {
     const cover = book.additionalMetadate.cover;
@@ -190,13 +195,22 @@ function save(book: Book) {
 }
 
 async function run() {
-  console.log(`[main]下载开始`);
+  console.log(`[run]下载开始`);
   const rule = getRule();
   const book = await initBook(rule);
   await initChapters(rule, book);
   save(book);
-  console.log(`[main]下载完毕`);
+  console.log(`[run]下载完毕`);
   return book;
+}
+
+function catchError(error: Error) {
+  downloading = false;
+  document.getElementById("novel-downloader")?.remove();
+  console.error(
+    "运行过程出错，请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/yingziwu/novel-downloader"
+  );
+  console.error(error);
 }
 
 function addButton() {
@@ -214,30 +228,41 @@ function addButton() {
     } else {
       downloading = true;
       img.src = icon1;
-      run().then((book) => {
-        downloading = false;
-        img.src = icon0;
-
-        console.log(book);
-        (<any>unsafeWindow).Book = book;
-      });
+      try {
+        run()
+          .then((book) => {
+            downloading = false;
+            img.src = icon0;
+          })
+          .catch(catchError);
+      } catch (error) {
+        catchError(error);
+      }
     }
   };
   button.appendChild(img);
   document.body.appendChild(button);
 }
 
+namespace main {
+  export interface mainWindows extends unsafeWindow {
+    rule: ruleClass;
+    book: Book;
+    save(book: Book): void;
+  }
+}
+
 async function debug() {
   const rule = getRule();
   const book = await initBook(rule);
-  (<any>unsafeWindow).rule = rule;
-  (<any>unsafeWindow).book = book;
-  (<any>unsafeWindow).save = save;
+  (<main.mainWindows>unsafeWindow).rule = rule;
+  (<main.mainWindows>unsafeWindow).book = book;
+  (<main.mainWindows>unsafeWindow).save = save;
   return;
 }
 
 let downloading = false;
-let enaleDebug = false;
+const enaleDebug = false;
 window.addEventListener("DOMContentLoaded", () => {
   printEnvironments();
   addButton();

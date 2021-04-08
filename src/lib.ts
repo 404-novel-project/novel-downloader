@@ -240,7 +240,7 @@ class CleanerClass {
 export function cleanDOM(DOM: Element, imgMode: "naive" | "TM") {
   const cleaner = new CleanerClass(imgMode);
   const { doms, texts, images } = cleaner.clean(DOM);
-  
+
   const outputDOM = document.createElement("div");
   for (const dom of doms) {
     outputDOM.appendChild(dom);
@@ -250,13 +250,13 @@ export function cleanDOM(DOM: Element, imgMode: "naive" | "TM") {
   for (const t of texts) {
     outputText += t;
   }
-  outputText = outputText.trim()
+  outputText = outputText.trim();
   return { dom: outputDOM, text: outputText, images: images };
 }
 
 export async function getHtmlText(
   url: string,
-  charset = undefined,
+  charset: string | undefined,
   retryTime = 0
 ) {
   if (charset === undefined) {
@@ -272,7 +272,7 @@ export async function getHtmlText(
   }
 }
 
-export async function getHtmlDOM(url: string, charset = undefined) {
+export async function getHtmlDOM(url: string, charset: string | undefined) {
   const htmlText = await getHtmlText(url, charset);
   return new DOMParser().parseFromString(htmlText, "text/html");
 }
