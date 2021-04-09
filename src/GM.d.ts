@@ -69,7 +69,7 @@ interface GM_xmlhttpRequest_details {
   revalidate?: boolean;
   timeout?: number;
   context?: object;
-  responseType?: string;
+  responseType?: "arraybuffer" | "blob" | "json";
   overrideMimeType?: string;
   anonymous?: boolean;
   fetch?: boolean;

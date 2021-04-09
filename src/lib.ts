@@ -334,7 +334,7 @@ interface gfetch_request_options {
   revalidate?: boolean;
   timeout?: number;
   context?: object;
-  responseType?: string;
+  responseType?: "arraybuffer" | "blob" | "json";
   overrideMimeType?: string;
   anonymous?: boolean;
   username?: string;

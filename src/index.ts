@@ -7,6 +7,7 @@ namespace main {
     rule: ruleClass;
     book: Book;
     save(book: Book): void;
+    saveAs(obj: any): void;
   }
 
   export interface mainTabObject extends GM_tab_object {
@@ -322,6 +323,7 @@ async function debug() {
   (<main.mainWindows>unsafeWindow).rule = rule;
   (<main.mainWindows>unsafeWindow).book = book;
   (<main.mainWindows>unsafeWindow).save = save;
+  (<main.mainWindows>unsafeWindow).saveAs = saveAs;
   return;
 }
 
