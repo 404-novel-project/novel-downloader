@@ -3,7 +3,6 @@ import { getHtmlDOM, cleanDOM, rm, gfetch, co, cosCompare } from "../lib";
 import {
   ruleClass,
   ruleClassNamespace,
-  bookParseObject,
   chapterParseObject,
 } from "../rules";
 
@@ -15,10 +14,12 @@ namespace ciweimao {
 export class ciweimao implements ruleClass {
   public imageMode: "naive" | "TM";
   public concurrencyLimit: number;
+  public maxRunLimit: number;
 
   public constructor() {
     this.imageMode = "TM";
     this.concurrencyLimit = 1;
+    this.maxRunLimit = 1;
   }
 
   public async bookParse(chapterParse: ruleClassNamespace.chapterParse) {

@@ -125,7 +125,7 @@ export class Chapter {
     this.contentHTML = contentHTML;
     this.contentImages = contentImages;
 
-    console.debug(`[Chapter]${this.chapterName}解析完成。`);
+    console.debug(`[Chapter]${this.chapterName} 解析完成。`);
     return obj;
   }
 

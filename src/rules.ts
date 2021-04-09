@@ -22,6 +22,7 @@ export interface ruleClass {
   imageMode: "naive" | "TM";
   charset?: string;
   concurrencyLimit?: number;
+  maxRunLimit?: number;
   bookParse(
     chapterParse: ruleClassNamespace.chapterParse
   ): Promise<bookParseObject>;

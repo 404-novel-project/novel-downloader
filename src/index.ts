@@ -1,7 +1,18 @@
 import { getRule, ruleClass, icon0, icon1 } from "./rules";
 import { Book, Chapter, ImageClass } from "./main";
 import { concurrencyRun } from "./lib";
-import { LibManifestPlugin } from "webpack";
+
+namespace main {
+  export interface mainWindows extends unsafeWindow {
+    rule: ruleClass;
+    book: Book;
+    save(book: Book): void;
+  }
+
+  export interface mainTabObject extends GM_tab_object {
+    novel_downloader?: string;
+  }
+}
 
 function printEnvironments() {
   console.log(
@@ -194,18 +205,79 @@ function save(book: Book) {
     .catch((err: Error) => console.error("saveZip: " + err));
 }
 
+function setTabMark(): Promise<main.mainTabObject> {
+  return new Promise((resolve, reject) => {
+    GM_getTab((curTabObject) => {
+      (<main.mainTabObject>curTabObject).novel_downloader =
+        document.location.href;
+      GM_saveTab(curTabObject);
+      resolve(<main.mainTabObject>curTabObject);
+    });
+  });
+}
+
+function getNowRunNumber(): Promise<number> {
+  return new Promise((resolve, reject) => {
+    GM_getTabs((curTabObjects) => {
+      let nowRunNumber = 0;
+      for (let i in curTabObjects) {
+        const novel_downloader_url = (<main.mainTabObject>curTabObjects[i])
+          .novel_downloader;
+        if (
+          novel_downloader_url !== undefined &&
+          new URL(novel_downloader_url).hostname === document.location.hostname
+        ) {
+          nowRunNumber++;
+        }
+      }
+      resolve(nowRunNumber);
+    });
+  });
+}
+
+function removeTabMark(): Promise<main.mainTabObject> {
+  return new Promise((resolve, reject) => {
+    GM_getTab((curTabObject) => {
+      if ((<main.mainTabObject>curTabObject).novel_downloader) {
+        delete (<main.mainTabObject>curTabObject).novel_downloader;
+      }
+      GM_saveTab(curTabObject);
+      resolve(<main.mainTabObject>curTabObject);
+    });
+  });
+}
+
 async function run() {
   console.log(`[run]下载开始`);
   const rule = getRule();
+
+  let maxRunLimit = null;
+  await setTabMark();
+  let nowRunNumber = await getNowRunNumber();
+  if (rule.maxRunLimit !== undefined) {
+    maxRunLimit = rule.maxRunLimit;
+    if (nowRunNumber > maxRunLimit) {
+      const alertText = `当前网站目前已有${
+        nowRunNumber - 1
+      }个下载任务正在运行，当前站点最多允许${maxRunLimit}下载任务同时进行。\n请待其它下载任务完成后，再行尝试。`;
+      alert(alertText);
+      console.log(`[run]${alertText}`);
+      return;
+    }
+  }
+
   const book = await initBook(rule);
   await initChapters(rule, book);
   save(book);
+
+  await removeTabMark();
   console.log(`[run]下载完毕`);
   return book;
 }
 
 function catchError(error: Error) {
   downloading = false;
+  removeTabMark();
   document.getElementById("novel-downloader")?.remove();
   console.error(
     "运行过程出错，请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/yingziwu/novel-downloader"
@@ -242,14 +314,6 @@ function addButton() {
   };
   button.appendChild(img);
   document.body.appendChild(button);
-}
-
-namespace main {
-  export interface mainWindows extends unsafeWindow {
-    rule: ruleClass;
-    book: Book;
-    save(book: Book): void;
-  }
 }
 
 async function debug() {

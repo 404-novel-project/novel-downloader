@@ -147,16 +147,18 @@ type GM_download = {
 };
 declare const GM_download: GM_download;
 
-type GM_getTab = (callback: (obj: object) => any) => void;
+type GM_tab_object = object;
+interface GM_tabs {
+  [hash: number]: GM_tab_object;
+}
+
+type GM_getTab = (callback: (obj: GM_tab_object) => any) => void;
 declare const GM_getTab: GM_getTab;
 
-interface GM_tabs {
-  [hash: number]: object;
-}
 type GM_getTabs = (callback: (obj: GM_tabs) => any) => void;
 declare const GM_getTabs: GM_getTabs;
 
-type GM_saveTab = (tab: object) => void;
+type GM_saveTab = (tab: GM_tab_object) => void;
 declare const GM_saveTab: GM_saveTab;
 
 type GM_notification_details = {
@@ -170,16 +172,8 @@ type GM_notification_details = {
   onclick?: () => any;
 };
 type GM_notification = {
-  (
-    details: GM_notification_details,
-    ondone?: (done: boolean) => any
-  ): void;
-  (
-    text: string,
-    title?: string,
-    image?: string,
-    onclick?: () => any
-  ): void;
+  (details: GM_notification_details, ondone?: (done: boolean) => any): void;
+  (text: string, title?: string, image?: string, onclick?: () => any): void;
 };
 declare const GM_notification: GM_notification;
 
