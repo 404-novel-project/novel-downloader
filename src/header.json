@@ -28,8 +28,8 @@
     "*://www.17k.com/list/*.html",
     "*://www.shuhai.com/book/*.htm",
     "*://mm.shuhai.com/book/*.htm",
-    "*://bianshenbaihe.szalsaf.com/txt/*/index.html",
-    "*://www.biquge.tw/*/",
+    "*://www.266ks.com/*/",
+    "*://www.266ks.com/*/index*.html",
     "*://www.uukanshu.com/b/*/",
     "*://www.xiaoshuodaquan.com/*/"
   ],

@@ -2,7 +2,7 @@ import { BookAdditionalMetadate, ImageClass, Chapter } from "./main";
 import { ciweimao } from "./rules/ciweimao";
 import { uukanshu } from "./rules/uukanshu";
 import { yrun } from "./rules/yruan";
-import { biquwo, shuquge, dingdiann } from "./rules/biquge";
+import { biquwo, shuquge, dingdiann, c226ks } from "./rules/biquge";
 import { xkzw } from "./rules/xkzw";
 
 export interface bookParseObject {
@@ -89,6 +89,9 @@ export function getRule(): ruleClass {
       break;
     case "www.xkzw.org":
       ruleClass = xkzw;
+      break;
+    case "www.266ks.com":
+      ruleClass = c226ks;
       break;
     default:
       throw new Error("Not Found Rule!");
