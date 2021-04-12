@@ -2,7 +2,7 @@ import { BookAdditionalMetadate, ImageClass, Chapter } from "./main";
 import { ciweimao } from "./rules/ciweimao";
 import { uukanshu } from "./rules/uukanshu";
 import { yrun } from "./rules/yruan";
-import { biquwo } from "./rules/biquge";
+import { biquwo, shuquge } from "./rules/biquge";
 
 export interface bookParseObject {
   bookUrl: string;
@@ -79,6 +79,9 @@ export function getRule(): ruleClass {
       break;
     case "www.biquwoo.com":
       ruleClass = biquwo;
+      break;
+    case "www.shuquge.com":
+      ruleClass = shuquge;
       break;
     default:
       throw new Error("Not Found Rule!");

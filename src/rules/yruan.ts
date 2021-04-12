@@ -17,7 +17,7 @@ export class yrun implements ruleClass {
     const author = (<HTMLElement>(
       document.querySelector("#info > p:nth-child(2)")
     )).innerText
-      .replace(/作\s+者[：:]/, "")
+      .replace(/作(\s+)?者[：:]/, "")
       .trim();
 
     let introduction: string | null;
