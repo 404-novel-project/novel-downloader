@@ -1,43 +1,30 @@
 import { BookAdditionalMetadate, ImageClass, Chapter } from "../main";
 import { ruleClass, ruleClassNamespace } from "../rules";
-import { getHtmlDOM, cleanDOM, rm } from "../lib";
+import { getHtmlDOM, cleanDOM } from "../lib";
 
-namespace uukanshu {
-  export interface uukanshuWindow extends unsafeWindow {
-    reverse(button: HTMLButtonElement): void;
-  }
-}
-
-export class uukanshu implements ruleClass {
+export class biquwo implements ruleClass {
   public imageMode: "naive" | "TM";
-  public charset: string;
+
   public constructor() {
     this.imageMode = "TM";
-    this.charset = "GBK";
   }
 
   public async bookParse(chapterParse: ruleClassNamespace.chapterParse) {
     const bookUrl = document.location.href;
     const bookname = (<HTMLElement>(
-      document.querySelector("dd.jieshao_content > h1 > a")
-    )).innerText
-      .replace("最新章节", "")
-      .trim();
-    const author = (<HTMLElement>(
-      document.querySelector("dd.jieshao_content > h2 > a")
+      document.querySelector("#info > h1:nth-child(1)")
     )).innerText.trim();
+    const author = (<HTMLElement>(
+      document.querySelector("#info > p:nth-child(2)")
+    )).innerText
+      .replace(/作\s+者[：:]/, "")
+      .trim();
 
     let introduction: string | null;
-    const introDom = <HTMLElement>(
-      document.querySelector("dd.jieshao_content > h3")
-    );
+    const introDom = <HTMLElement>document.querySelector("#intro");
     if (introDom === null) {
       introduction = null;
     } else {
-      introDom.innerHTML = introDom.innerHTML
-        .replace(/^.+简介：\s+www.uukanshu.com\s+/, "")
-        .replace(/\s+https:\/\/www.uukanshu.com/, "")
-        .replace(/－+/, "");
       let {
         dom: introCleanDom,
         text: introCleantext,
@@ -47,9 +34,8 @@ export class uukanshu implements ruleClass {
     }
 
     const additionalMetadate: BookAdditionalMetadate = {};
-    const coverUrl = (<HTMLImageElement>(
-      document.querySelector("a.bookImg > img")
-    )).src;
+    const coverUrl = (<HTMLImageElement>document.querySelector("#fmimg > img"))
+      .src;
     additionalMetadate.cover = new ImageClass(
       coverUrl,
       `cover.${coverUrl.split(".").slice(-1)[0]}`,
@@ -58,31 +44,37 @@ export class uukanshu implements ruleClass {
     additionalMetadate.cover.init();
 
     const chapters: Chapter[] = [];
-    const button = <HTMLButtonElement>(
-      document.querySelector('span[onclick="javascript:reverse(this);"]')
-    );
-    const reverse = (<uukanshu.uukanshuWindow>unsafeWindow).reverse;
-    if (button.innerText === "顺序排列") {
-      reverse(button);
-    }
-    const chapterList = <HTMLElement[] | undefined>(
-      document.getElementById("chapterList")?.childNodes
-    );
-    if (chapterList && chapterList.length !== 0) {
+    const dl = document.querySelector("#list>dl");
+    if (dl?.childElementCount) {
+      const dlc = Array.from(dl.children);
+      if (
+        dlc[0].nodeName === "DT" &&
+        (<HTMLTableDataCellElement>dlc[0]).innerText.includes("最新章节")
+      ) {
+        for (let i = 0; i < dl?.childElementCount; i++) {
+          if (i !== 0 && dlc[i].nodeName === "DT") {
+            delete dlc[0];
+            break;
+          }
+          delete dlc[i];
+        }
+      }
+
+      const chapterList = dlc.filter((obj) => obj !== undefined);
       let chapterNumber = 0;
       let sectionNumber = 0;
       let sectionName = null;
       let sectionChapterNumber = 0;
       for (let i = 0; i < chapterList.length; i++) {
-        const li = chapterList[i];
-        if (li.className === "volume") {
+        const node = <HTMLElement>chapterList[i];
+        if (node.nodeName === "DT") {
           sectionNumber++;
           sectionChapterNumber = 0;
-          sectionName = li.innerText;
-        } else {
+          sectionName = node.innerText.replace(`《${bookname}》`, "").trim();
+        } else if (node.nodeName === "DD") {
           chapterNumber++;
           sectionChapterNumber++;
-          const a = <HTMLLinkElement>li.firstElementChild;
+          const a = <HTMLLinkElement>node.firstElementChild;
           const chapterName = a.innerText;
           const chapterUrl = a.href;
           const isVIP = false;
@@ -99,7 +91,7 @@ export class uukanshu implements ruleClass {
             sectionNumber,
             sectionChapterNumber,
             chapterParse,
-            "GBK"
+            "UTF-8"
           );
           chapters.push(chapter);
         }
@@ -125,24 +117,12 @@ export class uukanshu implements ruleClass {
   ) {
     const dom = await getHtmlDOM(chapterUrl, charset);
 
-    chapterName = (<HTMLElement>dom.querySelector("#timu")).innerText.trim();
+    chapterName = (<HTMLElement>(
+      dom.querySelector(".bookname > h1:nth-child(1)")
+    )).innerText.trim();
 
-    const content = <HTMLElement>dom.querySelector("#contentbox");
+    const content = <HTMLElement>dom.querySelector("#content");
     if (content) {
-      rm(".ad_content", true, content);
-      const contentReplace = [
-        /[ＵｕUu]+看书\s*[wｗ]+.[ＵｕUu]+[kｋ][aａ][nｎ][ｓs][hｈ][ＵｕUu].[nｎ][eｅ][tｔ]/g,
-        /[ＵｕUu]+看书\s*[wｗ]+.[ＵｕUu]+[kｋ][aａ][nｎ][ｓs][hｈ][ＵｕUu].[cＣｃ][oＯｏ][mＭｍ]/g,
-        /[UＵ]*看书[（\\(].*?[）\\)]文字首发。/,
-        "请记住本书首发域名：。",
-        "笔趣阁手机版阅读网址：",
-        "小说网手机版阅读网址：",
-        "https://",
-        "http://",
-      ];
-      for (let r of contentReplace) {
-        content.innerHTML = content.innerHTML.replace(r, "");
-      }
       let { dom, text, images } = cleanDOM(content, "TM");
       return {
         chapterName: chapterName,

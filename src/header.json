@@ -14,7 +14,7 @@
     "*://www.jingcaiyuedu.com/novel/*/list.html",
     "*://www.shuquge.com/txt/*/index.html",
     "*://www.dingdiann.com/ddk*/",
-    "*://www.biquwo.org/bqw*/",
+    "*://www.biquwoo.com/bqw*/",
     "*://www.xkzw.org/xkzw*/",
     "*://www.fpzw.com/xiaoshuo/*/*/",
     "*://www.hetushu.com/book/*/index.html",
@@ -37,7 +37,8 @@
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",
-    "*://www.meegoq.com/book/*.html"
+    "*://www.meegoq.com/book/*.html",
+    "*://www.yruan.com/article/*/*.html"
   ],
   "grant": [
     "unsafeWindow",
@@ -59,7 +60,8 @@
     "book.zongheng.com",
     "cdn.static.17k.com",
     "www.shuhai.com",
-    "img.uukanshu.com"
+    "img.uukanshu.com",
+    "backupxs-bqw.oss-accelerate.aliyuncs.com"
   ],
   "require": [
     "https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js",
