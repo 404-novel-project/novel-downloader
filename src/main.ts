@@ -104,13 +104,7 @@ export class Chapter {
   }
 
   public async init() {
-    const obj = await this.chapterParse(
-      this.chapterUrl,
-      this.chapterName,
-      this.isVIP,
-      this.isPaid,
-      this.charset
-    );
+    const obj = await this.parse();
 
     const {
       chapterName,
@@ -148,7 +142,14 @@ export class Chapter {
         return this.parse();
       } else {
         this.status = Status.failed;
-        throw err;
+        console.error(err);
+        return {
+          chapterName: this.chapterName,
+          contentRaw: null,
+          contentText: null,
+          contentHTML: null,
+          contentImages: null,
+        };
       }
     });
   }
@@ -162,7 +163,7 @@ export class ImageClass {
   public status: Status;
   public retryTime: number;
 
-  public imageBlob!: Blob;
+  public imageBlob!: Blob | null;
 
   public constructor(imageUrl: string, name: string, mode: "naive" | "TM") {
     this.imageUrl = imageUrl;
@@ -183,7 +184,7 @@ export class ImageClass {
     return this.imageBlob;
   }
 
-  private downloadImage(): Promise<Blob> {
+  private downloadImage(): Promise<Blob | null> {
     this.status = Status.downloading;
     return fetch(this.imageUrl)
       .then((response: Response) => {
@@ -206,12 +207,13 @@ export class ImageClass {
           return this.downloadImage();
         } else {
           this.status = Status.failed;
-          throw err;
+          console.error(err);
+          return null;
         }
       });
   }
 
-  private tmDownloadImage(): Promise<Blob> {
+  private tmDownloadImage(): Promise<Blob | null> {
     this.status = Status.downloading;
     return gfetch(this.imageUrl, { responseType: "blob" })
       .then((response) => {
@@ -231,7 +233,8 @@ export class ImageClass {
           return this.tmDownloadImage();
         } else {
           this.status = Status.failed;
-          throw err;
+          console.error(err);
+          return null;
         }
       });
   }

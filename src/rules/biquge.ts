@@ -294,3 +294,147 @@ export class shuquge implements ruleClass {
     }
   }
 }
+export class dingdiann implements ruleClass {
+  public imageMode: "naive" | "TM";
+  public concurrencyLimit: number;
+
+  public constructor() {
+    this.imageMode = "TM";
+    this.concurrencyLimit = 5;
+  }
+
+  public async bookParse(chapterParse: ruleClassNamespace.chapterParse) {
+    const bookUrl = document.location.href;
+    const bookname = (<HTMLElement>(
+      document.querySelector("#info > h1:nth-child(1)")
+    )).innerText.trim();
+    const author = (<HTMLElement>(
+      document.querySelector("#info > p:nth-child(2)")
+    )).innerText
+      .replace(/作(\s+)?者[：:]/, "")
+      .trim();
+
+    let introduction: string | null;
+    const introDom = <HTMLElement>document.querySelector("#intro");
+    if (introDom === null) {
+      introduction = null;
+    } else {
+      let {
+        dom: introCleanDom,
+        text: introCleantext,
+        images: introCleanimages,
+      } = cleanDOM(introDom, "TM");
+      introduction = introCleantext;
+    }
+
+    const additionalMetadate: BookAdditionalMetadate = {};
+    const coverUrl = (<HTMLImageElement>document.querySelector("#fmimg > img"))
+      .src;
+    additionalMetadate.cover = new ImageClass(
+      coverUrl,
+      `cover.${coverUrl.split(".").slice(-1)[0]}`,
+      "TM"
+    );
+    additionalMetadate.cover.init();
+
+    const chapters: Chapter[] = [];
+    const dl = document.querySelector("#list>dl");
+    if (dl?.childElementCount) {
+      const dlc = Array.from(dl.children);
+      if (
+        dlc[0].nodeName === "DT" &&
+        (<HTMLTableDataCellElement>dlc[0]).innerText.includes("最新章节")
+      ) {
+        for (let i = 0; i < dl?.childElementCount; i++) {
+          if (i !== 0 && dlc[i].nodeName === "DT") {
+            delete dlc[0];
+            break;
+          }
+          delete dlc[i];
+        }
+      }
+
+      const chapterList = dlc.filter((obj) => obj !== undefined);
+      let chapterNumber = 0;
+      let sectionNumber = 0;
+      let sectionName = null;
+      let sectionChapterNumber = 0;
+      for (let i = 0; i < chapterList.length; i++) {
+        const node = <HTMLElement>chapterList[i];
+        if (node.nodeName === "DT") {
+          sectionNumber++;
+          sectionChapterNumber = 0;
+          sectionName = node.innerText.replace(`《${bookname}》`, "").trim();
+        } else if (node.nodeName === "DD") {
+          chapterNumber++;
+          sectionChapterNumber++;
+          const a = <HTMLLinkElement>node.firstElementChild;
+          const chapterName = a.innerText;
+          const chapterUrl = a.href;
+          const isVIP = false;
+          const isPaid = false;
+          const chapter = new Chapter(
+            bookUrl,
+            bookname,
+            chapterUrl,
+            chapterNumber,
+            chapterName,
+            isVIP,
+            isPaid,
+            sectionName,
+            sectionNumber,
+            sectionChapterNumber,
+            chapterParse,
+            "UTF-8"
+          );
+          chapters.push(chapter);
+        }
+      }
+    }
+
+    return {
+      bookUrl: bookUrl,
+      bookname: bookname,
+      author: author,
+      introduction: introduction,
+      additionalMetadate: additionalMetadate,
+      chapters: chapters,
+    };
+  }
+
+  public async chapterParse(
+    chapterUrl: string,
+    chapterName: string | null,
+    isVIP: boolean,
+    isPaid: boolean,
+    charset: string
+  ) {
+    const dom = await getHtmlDOM(chapterUrl, charset);
+    
+    chapterName = (<HTMLElement>(
+      dom.querySelector(".bookname > h1:nth-child(1)")
+    )).innerText.trim();
+
+    const content = <HTMLElement>dom.querySelector("#content");
+    const ad = '<div align="center"><a href="javascript:postError();" style="text-align:center;color:red;">章节错误,点此举报(免注册)</a>,举报后维护人员会在两分钟内校正章节内容,请耐心等待,并刷新页面。</div>';
+    content.innerHTML = content.innerHTML.replace(ad, "").replace(/http:\/\/www.shuquge.com\/txt\/\d+\/\d+\.html/, "");
+    if (content) {
+      let { dom, text, images } = cleanDOM(content, "TM");
+      return {
+        chapterName: chapterName,
+        contentRaw: content,
+        contentText: text,
+        contentHTML: dom,
+        contentImages: images,
+      };
+    } else {
+      return {
+        chapterName: chapterName,
+        contentRaw: null,
+        contentText: null,
+        contentHTML: null,
+        contentImages: null,
+      };
+    }
+  }
+}

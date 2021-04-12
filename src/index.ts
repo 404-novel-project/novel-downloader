@@ -89,7 +89,12 @@ function save(book: Book) {
   }
 
   function addImageToZip(image: ImageClass, zip: JSZip) {
-    zip.file(image.name, image.imageBlob);
+    if (image.imageBlob) {
+      zip.file(image.name, image.imageBlob);
+    } else {
+      console.error("[save]图片下载失败！");
+      console.error(image);
+    }
   }
 
   function genSectionText(sectionName: string) {
@@ -135,10 +140,15 @@ function save(book: Book) {
   savedTextArray.push(infoText);
   if (book.additionalMetadate.cover) {
     const cover = book.additionalMetadate.cover;
-    savedZip.file(
-      `cover.${cover.imageBlob.type.split("/").slice(-1)[0]}`,
-      cover.imageBlob
-    );
+    if (cover.imageBlob) {
+      savedZip.file(
+        `cover.${cover.imageBlob.type.split("/").slice(-1)[0]}`,
+        cover.imageBlob
+      );
+    } else {
+      console.error("[save]图片下载失败！");
+      console.error(cover);
+    }
   }
   savedZip.file(
     "info.txt",
