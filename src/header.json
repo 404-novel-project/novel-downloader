@@ -11,12 +11,10 @@
   "noframes": "true",
   "match": [
     "*://www.yruan.com/article/*.html",
-    "*://www.jingcaiyuedu.com/novel/*/list.html",
     "*://www.shuquge.com/txt/*/index.html",
     "*://www.dingdiann.net/ddk*/",
     "*://www.biquwoo.com/bqw*/",
     "*://www.xkzw.org/xkzw*/",
-    "*://www.fpzw.com/xiaoshuo/*/*/",
     "*://www.hetushu.com/book/*/index.html",
     "*://www.shouda8.com/*/",
     "*://book.qidian.com/info/*",

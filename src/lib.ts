@@ -409,3 +409,8 @@ export function concurrencyRun(
   }
   return Promise.all(asyncList);
 }
+
+export function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
