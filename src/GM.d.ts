@@ -1,3 +1,5 @@
+// Tampermonkey API : https://www.tampermonkey.net/documentation.php
+
 interface unsafeWindow extends Document {}
 declare const unsafeWindow: unsafeWindow;
 
@@ -9,10 +11,22 @@ type GM_addElement = {
 };
 declare const GM_addElement: GM_addElement;
 
-declare const GM_setValue: (name: string, value: string) => void;
-declare const GM_getValue: (name: string, defaultValue?: string) => string;
-declare const GM_deleteValue: (name: string) => void;
-declare const GM_listValues: () => string[];
+interface GM_setValue {
+  (name: string, value: string): void;
+}
+interface GM_getValue {
+  (name: string, defaultValue?: string): string;
+}
+interface GM_deleteValue {
+  (name: string): void;
+}
+interface GM_listValues {
+  (): string[];
+}
+declare const GM_setValue: GM_setValue;
+declare const GM_getValue: GM_getValue;
+declare const GM_deleteValue: GM_deleteValue;
+declare const GM_listValues: GM_deleteValue;
 
 type GM_addValueChangeListener_callback = (
   name: string,
@@ -25,20 +39,33 @@ type GM_addValueChangeListener = (
   callback: GM_addValueChangeListener_callback
 ) => number;
 declare const GM_addValueChangeListener: GM_addValueChangeListener;
-declare const GM_removeValueChangeListener: (listener_id: number) => void;
+interface GM_removeValueChangeListener {
+  (listener_id: number): void;
+}
+declare const GM_removeValueChangeListener: GM_removeValueChangeListener;
 
-declare const GM_log: (message: any) => void;
+interface GM_log {
+  (message: any): void;
+}
+declare const GM_log: GM_log;
 
-declare const GM_getResourceText: (name: string) => string | null;
-declare const GM_getResourceURL: (name: string) => string | null;
+interface GM_getResourceText {
+  (name: string): string | null;
+}
+interface GM_getResourceURL {
+  (name: string): string | null;
+}
+declare const GM_getResourceText: GM_getResourceText;
+declare const GM_getResourceURL: GM_getResourceURL;
 
-type GM_registerMenuCommand = (
-  name: string,
-  fn: Function,
-  accessKey?: string
-) => number;
+interface GM_registerMenuCommand {
+  (name: string, fn: Function, accessKey?: string): number;
+}
+interface GM_unregisterMenuCommand {
+  (menuCmdId: number): void;
+}
 declare const GM_registerMenuCommand: GM_registerMenuCommand;
-declare const GM_unregisterMenuCommand: (menuCmdId: number) => void;
+declare const GM_unregisterMenuCommand: GM_unregisterMenuCommand;
 
 interface GM_openInTab_options {
   active?: boolean;
@@ -240,3 +267,20 @@ interface GM_script_options {
   run_at: string;
 }
 declare const GM_info: GM_info;
+
+// Greasemonkey API : https://wiki.greasespot.net/Greasemonkey_Manual:API
+interface GM {
+  info: GM_info;
+  deleteValue: GM_deleteValue;
+  getValue: GM_getValue;
+  listValues: GM_listValues;
+  setValue: GM_setValue;
+  getResourceUrl: GM_getResourceURL;
+  notification: GM_notification;
+  openInTab: GM_openInTab;
+  registerMenuCommand: GM_registerMenuCommand;
+  setClipboard: GM_setClipboard;
+  xmlHttpRequest: GM_xmlhttpRequest;
+  unsafeWindow: unsafeWindow;
+}
+declare const GM: GM;

@@ -360,29 +360,44 @@ export function gfetch(
   }: gfetch_request_options = {}
 ): Promise<GM_xmlhttpResponse> {
   return new Promise((resolve, reject) => {
-    GM_xmlhttpRequest({
-      url: url,
-      method: method,
-      headers: headers,
-      data: data,
-      cookie: cookie,
-      binary: binary,
-      nocache: nocache,
-      revalidate: revalidate,
-      timeout: timeout,
-      context: context,
-      responseType: responseType,
-      overrideMimeType: overrideMimeType,
-      anonymous: anonymous,
-      username: username,
-      password: password,
-      onload: (obj: GM_xmlhttpResponse) => {
-        resolve(obj);
-      },
-      onerror: (err: object) => {
-        reject(err);
-      },
-    });
+    let _GM_xmlhttpRequest;
+    try {
+      _GM_xmlhttpRequest = GM_xmlhttpRequest;
+    } catch (error) {
+      try {
+        _GM_xmlhttpRequest = GM.xmlHttpRequest;
+      } catch (error) {
+        console.error("未发现 _GM_xmlhttpRequest API");
+      }
+    }
+
+    if (_GM_xmlhttpRequest) {
+      _GM_xmlhttpRequest({
+        url: url,
+        method: method,
+        headers: headers,
+        data: data,
+        cookie: cookie,
+        binary: binary,
+        nocache: nocache,
+        revalidate: revalidate,
+        timeout: timeout,
+        context: context,
+        responseType: responseType,
+        overrideMimeType: overrideMimeType,
+        anonymous: anonymous,
+        username: username,
+        password: password,
+        onload: (obj: GM_xmlhttpResponse) => {
+          resolve(obj);
+        },
+        onerror: (err: object) => {
+          reject(err);
+        },
+      });
+    } else {
+      throw new Error("未发现 _GM_xmlhttpRequest API");
+    }
   });
 }
 
@@ -393,7 +408,7 @@ export function concurrencyRun(
   asyncHandle: Function
 ) {
   function recursion(arr: object[]) {
-    return asyncHandle(arr.shift()).then(function () {
+    return asyncHandle(arr.shift()).then(() => {
       if (arr.length !== 0) {
         return recursion(arr);
       } else {
@@ -413,4 +428,3 @@ export function concurrencyRun(
 export function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
-

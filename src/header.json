@@ -44,7 +44,9 @@
     "GM_xmlhttpRequest",
     "GM_getTab",
     "GM_saveTab",
-    "GM_getTabs"
+    "GM_getTabs",
+    "GM.info",
+    "GM.xmlHttpRequest"
   ],
   "connect": [
     "img.shouda8.com",

@@ -1,4 +1,4 @@
-import { BookAdditionalMetadate, ImageClass, Chapter } from "../main";
+import { BookAdditionalMetadate, ImageClass, Chapter, Status } from "../main";
 import { getHtmlDOM, cleanDOM, rm, gfetch, co, cosCompare } from "../lib";
 import { ruleClass, ruleClassNamespace, chapterParseObject } from "../rules";
 
@@ -122,6 +122,13 @@ export class ciweimao implements ruleClass {
         chapterParse,
         "UTF-8"
       );
+      const isLogin =
+        document.querySelector(".login-info.ly-fr")?.childElementCount === 1
+          ? true
+          : false;
+      if (isVIP && !(isLogin && isPaid)) {
+        chapter.status = Status.aborted;
+      }
       chapters.push(chapter);
     }
 
@@ -387,7 +394,10 @@ export class ciweimao implements ruleClass {
           vipCHapterName,
           "TM"
         );
-        vipCHapterImage.imageBlob = <Blob>vipCHapterImageBlob;
+        if (vipCHapterImageBlob) {
+          vipCHapterImage.imageBlob = <Blob>vipCHapterImageBlob;
+          vipCHapterImage.status = Status.finished;
+        }
         const contentImages = [vipCHapterImage];
 
         let ddom, dtext, dimages;

@@ -1,11 +1,12 @@
 import { ruleClassNamespace, chapterParseObject, retryLimit } from "./rules";
 import { gfetch } from "./lib";
 
-enum Status {
+export enum Status {
   pending,
   downloading,
   failed,
   finished,
+  aborted,
 }
 
 export interface BookAdditionalMetadate {
@@ -132,26 +133,31 @@ export class Chapter {
       this.isVIP,
       this.isPaid,
       this.charset
-    ).catch((err: Error) => {
-      this.retryTime++;
-      console.error(
-        `[Chapter]${this.chapterName}解析出错，第${this.retryTime}次重试，章节地址：${this.chapterUrl}`
-      );
+    )
+      .then((obj) => {
+        this.status = Status.finished;
+        return obj;
+      })
+      .catch((err: Error) => {
+        this.retryTime++;
+        console.error(
+          `[Chapter]${this.chapterName}解析出错，第${this.retryTime}次重试，章节地址：${this.chapterUrl}`
+        );
 
-      if (this.status !== Status.failed && this.retryTime < retryLimit) {
-        return this.parse();
-      } else {
-        this.status = Status.failed;
-        console.error(err);
-        return {
-          chapterName: this.chapterName,
-          contentRaw: null,
-          contentText: null,
-          contentHTML: null,
-          contentImages: null,
-        };
-      }
-    });
+        if (this.status !== Status.failed && this.retryTime < retryLimit) {
+          return this.parse();
+        } else {
+          this.status = Status.failed;
+          console.error(err);
+          return {
+            chapterName: this.chapterName,
+            contentRaw: null,
+            contentText: null,
+            contentHTML: null,
+            contentImages: null,
+          };
+        }
+      });
   }
 }
 
@@ -218,6 +224,7 @@ export class ImageClass {
     return gfetch(this.imageUrl, { responseType: "blob" })
       .then((response) => {
         if (response.status >= 200 && response.status <= 299) {
+          this.status = Status.finished;
           return <Blob>response.response;
         } else {
           throw new Error(`Bad response!\nRequest url: ${this.imageUrl}`);
