@@ -1,16 +1,14 @@
 // ==UserScript==
 // @name        小说下载器
-// @version     3.2.1.1617950995110
+// @version     3.4.0.1619361922519
 // @author      bgme
 // @description 一个可扩展的通用型小说下载器。
 // @supportURL  https://github.com/yingziwu/novel-downloader
 // @match       *://www.yruan.com/article/*.html
-// @match       *://www.jingcaiyuedu.com/novel/*/list.html
 // @match       *://www.shuquge.com/txt/*/index.html
-// @match       *://www.dingdiann.com/ddk*/
-// @match       *://www.biquwo.org/bqw*/
+// @match       *://www.dingdiann.net/ddk*/
+// @match       *://www.biquwoo.com/bqw*/
 // @match       *://www.xkzw.org/xkzw*/
-// @match       *://www.fpzw.com/xiaoshuo/*/*/
 // @match       *://www.hetushu.com/book/*/index.html
 // @match       *://www.shouda8.com/*/
 // @match       *://book.qidian.com/info/*
@@ -24,8 +22,8 @@
 // @match       *://www.17k.com/list/*.html
 // @match       *://www.shuhai.com/book/*.htm
 // @match       *://mm.shuhai.com/book/*.htm
-// @match       *://bianshenbaihe.szalsaf.com/txt/*/index.html
-// @match       *://www.biquge.tw/*/
+// @match       *://www.266ks.com/*/
+// @match       *://www.266ks.com/*/index*.html
 // @match       *://www.uukanshu.com/b/*/
 // @match       *://www.xiaoshuodaquan.com/*/
 // @namespace   https://blog.bgme.me
@@ -35,12 +33,15 @@
 // @noframes    true
 // @exclude     *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
 // @exclude     *://www.meegoq.com/book/*.html
+// @exclude     *://www.yruan.com/article/*/*.html
 // @grant       unsafeWindow
 // @grant       GM_info
 // @grant       GM_xmlhttpRequest
 // @grant       GM_getTab
 // @grant       GM_saveTab
 // @grant       GM_getTabs
+// @grant       GM.info
+// @grant       GM.xmlHttpRequest
 // @connect     img.shouda8.com
 // @connect     read.qidian.com
 // @connect     kuangxiangit.com
@@ -53,6 +54,8 @@
 // @connect     cdn.static.17k.com
 // @connect     www.shuhai.com
 // @connect     img.uukanshu.com
+// @connect     oss-accelerate.aliyuncs.com
+// @connect     cdn.bcebos.com
 // @require     https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js#sha512-Qlv6VSKh1gDKGoJbnyA5RMXYcvnpIqhO++MhIM2fStMcGT9i2T//tSwYFlcyoRRDcDZ+TYHpH8azBBCyhpSeqw==
 // @require     https://cdn.jsdelivr.net/npm/jszip@3.6.0/dist/jszip.min.js#sha512-uVSVjE7zYsGz4ag0HEzfugJ78oHCI1KhdkivjQro8ABL/PRiEO4ROwvrolYAcZnky0Fl/baWKYilQfWvESliRA==
 // @require     https://cdn.jsdelivr.net/npm/crypto-js@4.0.0/crypto-js.min.js#sha512-s+p/j7+gSFJa1SUEwmPBAlitcUccgbaTTM3yRSmDHUp0UCcRdBMgI2toIT97ZKGKItfV3N66PEZbHcT/iS5thg==
