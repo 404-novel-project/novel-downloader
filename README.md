@@ -28,7 +28,8 @@ ZIP压缩包，请在解压后，直接双击打开HTML文件进行阅读。
 
 |站点|公共章节|VIP章节|备注|
 |---|-------|------|----|
-|[刺猬猫](https://www.ciweimao.com/)|✅|✅*|*VIP章节仅支持图片版。|
+|[刺猬猫](https://www.ciweimao.com/)|✅|✅\*|\*VIP章节仅支持图片版。|
+|[SF轻小说](https://book.sfacg.com/)|✅\*|✅\*\*|\*不支持对话小说，例：[224282](https://book.sfacg.com/Novel/224282/)。 \*\*VIP章节仅支持图片版。|
 |[UU看书网](https://www.uukanshu.com/)|✅|❎||
 |[亿软网](http://www.yruan.com/)|✅|❎||
 |[笔趣窝](http://www.biquwoo.com/)|✅|❎||

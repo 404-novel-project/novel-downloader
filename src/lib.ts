@@ -117,6 +117,8 @@ class CleanerClass {
         this.doms.push(this.create_pbr());
       }
       this.meet_p(element, nodeName);
+    } else if (nodeName === "IMG") {
+      this.meet_img(<HTMLImageElement>element);
     } else if (nodeName === "HR") {
       this.meet_hr();
     }
@@ -131,6 +133,8 @@ class CleanerClass {
       this.currentHtml.innerText = this.currentText;
     } else if (this.typeParagraph.includes(nodeName)) {
       this.meet_p(element, nodeName);
+    } else if (nodeName === "IMG") {
+      this.meet_img(<HTMLImageElement>element);
     }
   }
 
@@ -282,7 +286,7 @@ export interface co {
   chapterUrl: string;
   chapterName: string | null;
   isVIP: boolean;
-  isPaid: boolean;
+  isPaid: boolean | null;
   sectionName: string | null;
   sectionNumber: number | null;
   sectionChapterNumber: number | null;

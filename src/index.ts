@@ -78,7 +78,7 @@ async function initChapters(rule: ruleClass, book: Book) {
   if (concurrencyLimit === 1) {
     for (let chapter of chapters) {
       const obj = await chapter.init();
-      if (obj.contentHTML !== null) {
+      if (obj.contentHTML !== undefined) {
         finishedChapterNumber++;
         updateProgress(finishedChapterNumber, totalChapterNumber, null);
       }
@@ -86,7 +86,7 @@ async function initChapters(rule: ruleClass, book: Book) {
   } else {
     await concurrencyRun(chapters, concurrencyLimit, (curChapter: Chapter) => {
       return curChapter.init().then((obj) => {
-        if (obj.contentHTML !== null) {
+        if (obj.contentHTML !== undefined) {
           finishedChapterNumber++;
           updateProgress(finishedChapterNumber, totalChapterNumber, null);
         }
@@ -305,6 +305,9 @@ p {
     .then((blob: Blob) => {
       saveAs(blob, `${saveFileNameBase}.zip`);
     })
+    .then(() => {
+      document.querySelector("#nd-progress")?.remove();
+    })
     .catch((err: Error) => console.error("saveZip: " + err));
 }
 
@@ -464,6 +467,7 @@ async function run() {
 function catchError(error: Error) {
   downloading = false;
   removeTabMark();
+  document.querySelector("#nd-progress")?.remove();
   document.getElementById("novel-downloader")?.remove();
   console.error(
     "运行过程出错，请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/yingziwu/novel-downloader"

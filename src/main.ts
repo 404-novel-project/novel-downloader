@@ -54,7 +54,7 @@ export class Chapter {
   public chapterNumber: number;
   public chapterName: string | null;
   public isVIP: boolean;
-  public isPaid: boolean;
+  public isPaid: boolean | null;
 
   public sectionName: string | null;
   public sectionNumber: number | null;
@@ -78,7 +78,7 @@ export class Chapter {
     chapterNumber: number,
     chapterName: string | null,
     isVIP: boolean,
-    isPaid: boolean,
+    isPaid: boolean | null,
     sectionName: string | null,
     sectionNumber: number | null,
     sectionChapterNumber: number | null,

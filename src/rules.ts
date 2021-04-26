@@ -4,6 +4,7 @@ import { uukanshu } from "./rules/uukanshu";
 import { yrun } from "./rules/yruan";
 import { biquwo, shuquge, dingdiann, c226ks } from "./rules/biquge";
 import { xkzw } from "./rules/xkzw";
+import { sfacg } from "./rules/sfacg";
 
 export interface bookParseObject {
   bookUrl: string;
@@ -33,7 +34,7 @@ export interface ruleClass {
     chapterUrl: string,
     chapterName: string | null,
     isVIP: boolean,
-    isPaid: boolean,
+    isPaid: boolean | null,
     charset: string
   ): Promise<chapterParseObject>;
 }
@@ -47,7 +48,7 @@ export namespace ruleClassNamespace {
       chapterUrl: string,
       chapterName: string | null,
       isVIP: boolean,
-      isPaid: boolean,
+      isPaid: boolean | null,
       charset: string
     ): Promise<chapterParseObject>;
   }
@@ -92,6 +93,9 @@ export function getRule(): ruleClass {
       break;
     case "www.266ks.com":
       ruleClass = c226ks;
+      break;
+    case "book.sfacg.com":
+      ruleClass = sfacg;
       break;
     default:
       throw new Error("Not Found Rule!");
