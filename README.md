@@ -37,6 +37,7 @@ ZIP压缩包，请在解压后，直接双击打开HTML文件进行阅读。
 |[顶点小说](https://www.dingdiann.net/)|✅|❎||
 |[星空中文](http://www.xkzw.org/)|✅|❎||
 |[266看书](https://www.266ks.com/)|✅|❎||
+|[和图书](https://www.hetushu.com/index.php)|✅|❎||
 
 ## License
 
