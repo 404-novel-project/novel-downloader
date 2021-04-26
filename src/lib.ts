@@ -258,16 +258,24 @@ export function cleanDOM(DOM: Element, imgMode: "naive" | "TM") {
   return { dom: outputDOM, text: outputText, images: images };
 }
 
-export async function getHtmlText(
-  url: string,
-  charset: string | undefined,
-  retryTime = 0
-) {
+export async function getHtmlText(url: string, charset: string | undefined) {
   if (charset === undefined) {
-    return fetch(url).then((response) => response.text());
+    return fetch(url).then((response) => {
+      if (response.ok) {
+        return response.text();
+      } else {
+        throw new Error(`Bad response! ${url}`);
+      }
+    });
   } else {
     return fetch(url)
-      .then((response) => response.arrayBuffer())
+      .then((response) => {
+        if (response.ok) {
+          return response.arrayBuffer();
+        } else {
+          throw new Error(`Bad response! ${url}`);
+        }
+      })
       .then((buffer) => {
         const decoder = new TextDecoder(charset);
         const text = decoder.decode(buffer);
@@ -280,6 +288,38 @@ export async function getHtmlDOM(url: string, charset: string | undefined) {
   const htmlText = await getHtmlText(url, charset);
   return new DOMParser().parseFromString(htmlText, "text/html");
 }
+
+export async function ggetHtmlText(url: string, charset: string | undefined) {
+  if (charset === undefined) {
+    return gfetch(url).then((response) => {
+      if (response.status >= 200 && response.status <= 299) {
+        return response.responseText;
+      } else {
+        throw new Error(`Bad response! ${url}`);
+      }
+    });
+  } else {
+    return gfetch(url, { responseType: "arraybuffer" })
+      .then((response) => {
+        if (response.status >= 200 && response.status <= 299) {
+          return <ArrayBuffer>response.response;
+        } else {
+          throw new Error(`Bad response! ${url}`);
+        }
+      })
+      .then((buffer: ArrayBuffer) => {
+        const decoder = new TextDecoder(charset);
+        const text = decoder.decode(buffer);
+        return text;
+      });
+  }
+}
+
+export async function ggetHtmlDOM(url: string, charset: string | undefined) {
+  const htmlText = await ggetHtmlText(url, charset);
+  return new DOMParser().parseFromString(htmlText, "text/html");
+}
+
 export interface co {
   bookUrl: string;
   bookname: string;
