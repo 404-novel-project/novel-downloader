@@ -39,6 +39,7 @@ ZIP压缩包，请在解压后，直接双击打开HTML文件进行阅读。
 |[266看书](https://www.266ks.com/)|✅|❎||
 |[和图书](https://www.hetushu.com/index.php)|✅|❎||
 |[手打吧](https://www.shouda88.com/)|✅|❎||
+|[阁笔趣](http://www.gebiqu.com/)|✅|❎||
 
 ## License
 
