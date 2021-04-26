@@ -6,6 +6,7 @@ import { biquwo, shuquge, dingdiann, c226ks } from "./rules/biquge";
 import { xkzw } from "./rules/xkzw";
 import { sfacg } from "./rules/sfacg";
 import { hetushu } from "./rules/hetushu";
+import { shouda8 } from "./rules/shouda8";
 
 export interface bookParseObject {
   bookUrl: string;
@@ -100,6 +101,10 @@ export function getRule(): ruleClass {
       break;
     case "www.hetushu.com":
       ruleClass = hetushu;
+      break;
+    case "www.shouda8.com":
+    case "www.shouda88.com":
+      ruleClass = shouda8;
       break;
     default:
       throw new Error("Not Found Rule!");
