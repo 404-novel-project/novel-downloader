@@ -1,5 +1,5 @@
 import { ruleClassNamespace, chapterParseObject, retryLimit } from "./rules";
-import { gfetch } from "./lib";
+import { gfetch, sleep } from "./lib";
 
 export enum Status {
   pending,
@@ -138,13 +138,14 @@ export class Chapter {
         this.status = Status.finished;
         return obj;
       })
-      .catch((err: Error) => {
+      .catch(async (err: Error) => {
         this.retryTime++;
         console.error(
           `[Chapter]${this.chapterName}解析出错，第${this.retryTime}次重试，章节地址：${this.chapterUrl}`
         );
 
         if (this.status !== Status.failed && this.retryTime < retryLimit) {
+          await sleep(this.retryTime * 1500)
           return this.parse();
         } else {
           this.status = Status.failed;
@@ -203,13 +204,14 @@ export class ImageClass {
           );
         }
       })
-      .catch((err: Error) => {
+      .catch(async (err: Error) => {
         this.retryTime++;
         console.error(
           `[Image]下载 ${this.imageUrl} 出错，第${this.retryTime}次重试，下载模式：${this.mode}`
         );
 
         if (this.status !== Status.failed && this.retryTime < retryLimit) {
+          await sleep(this.retryTime * 1500)
           return this.downloadImage();
         } else {
           this.status = Status.failed;
@@ -230,13 +232,14 @@ export class ImageClass {
           throw new Error(`Bad response!\nRequest url: ${this.imageUrl}`);
         }
       })
-      .catch((err: Error) => {
+      .catch(async (err: Error) => {
         this.retryTime++;
         console.error(
           `[Image]下载 ${this.imageUrl} 出错，第${this.retryTime}次重试，下载模式：${this.mode}`
         );
 
         if (this.status !== Status.failed && this.retryTime < retryLimit) {
+          await sleep(this.retryTime * 1500)
           return this.tmDownloadImage();
         } else {
           this.status = Status.failed;
