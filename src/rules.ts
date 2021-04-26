@@ -9,6 +9,7 @@ import { hetushu } from "./rules/hetushu";
 import { shouda8 } from "./rules/shouda8";
 import { meegoq } from "./rules/meegoq";
 import { xiaoshuodaquan } from "./rules/xiaoshuodaquan";
+import { qidian } from "./rules/qidian";
 
 export interface bookParseObject {
   bookUrl: string;
@@ -114,6 +115,9 @@ export function getRule(): ruleClass {
       break;
     case "www.xiaoshuodaquan.com":
       ruleClass = xiaoshuodaquan;
+      break;
+    case "book.qidian.com":
+      ruleClass = qidian;
       break;
     default:
       throw new Error("Not Found Rule!");

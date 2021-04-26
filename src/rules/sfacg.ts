@@ -10,12 +10,10 @@ import {
 export class sfacg implements ruleClass {
   public imageMode: "naive" | "TM";
   public concurrencyLimit: number;
-  public maxRunLimit: number;
 
   public constructor() {
     this.imageMode = "TM";
     this.concurrencyLimit = 1;
-    this.maxRunLimit = 1;
   }
 
   public async bookParse(chapterParse: ruleClassNamespace.chapterParse) {
@@ -157,7 +155,7 @@ export class sfacg implements ruleClass {
     const chapter_id = chapterUrl.split("/").slice(-2, -1)[0];
 
     async function publicChapter(): Promise<chapterParseObject> {
-      const dom = await getHtmlDOM(chapterUrl, undefined);
+      const dom = await getHtmlDOM(chapterUrl, charset);
       const chapterName = (<HTMLElement>(
         dom.querySelector("h1.article-title")
       )).innerText.trim();
@@ -247,7 +245,7 @@ export class sfacg implements ruleClass {
           ? true
           : false;
       if (isLogin) {
-        const dom = await getHtmlDOM(chapterUrl, undefined);
+        const dom = await getHtmlDOM(chapterUrl, charset);
         const chapterName = (<HTMLElement>(
           dom.querySelector("h1.article-title")
         )).innerText.trim();
@@ -281,7 +279,7 @@ export class sfacg implements ruleClass {
               contentImages: contentImages,
             };
           } else {
-            return publicChapter()
+            return publicChapter();
           }
         }
       }
