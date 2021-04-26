@@ -27,13 +27,7 @@
     "*://www.gebiqu.com/biquge_*/",
     "*://www.meegoq.com/book*.html",
     "*://www.viviyzw.com/book*.html",
-    "*://www.xiaoshuodaquan.com/*/",
-    "*://www.jjwxc.net/onebook.php?novelid=*",
-    "*://book.zongheng.com/showchapter/*.html",
-    "*://huayu.zongheng.com/showchapter/*.html",
-    "*://www.17k.com/list/*.html",
-    "*://www.shuhai.com/book/*.htm",
-    "*://mm.shuhai.com/book/*.htm"
+    "*://www.xiaoshuodaquan.com/*/"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",
