@@ -20,6 +20,7 @@ import { qidian } from "./rules/qidian";
 import { jjwxc } from "./rules/jjwxc";
 import { zongheng } from "./rules/zongheng";
 import { c17k } from "./rules/17k";
+import { shuhai } from "./rules/shuhai";
 
 export interface bookParseObject {
   bookUrl: string;
@@ -141,6 +142,10 @@ export function getRule(): ruleClass {
       break;
     case "www.17k.com":
       ruleClass = c17k;
+      break;
+    case "www.shuhai.com":
+      case "mm.shuhai.com":
+      ruleClass = shuhai;
       break;
     default:
       throw new Error("Not Found Rule!");

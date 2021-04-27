@@ -18,6 +18,8 @@
     "*://book.zongheng.com/showchapter/*.html",
     "*://huayu.zongheng.com/showchapter/*.html",
     "*://www.17k.com/list/*.html",
+    "*://www.shuhai.com/book/*.htm",
+    "*://mm.shuhai.com/book/*.htm",
     "*://www.uukanshu.com/b/*/",
     "*://www.yruan.com/article/*.html",
     "*://www.biquwoo.com/bqw*/",
@@ -66,7 +68,8 @@
     "img.uukanshu.com",
     "oss-accelerate.aliyuncs.com",
     "cdn.bcebos.com",
-    "rs.sfacg.com"
+    "rs.sfacg.com",
+    "shuhai.com"
   ],
   "require": [
     "https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js",

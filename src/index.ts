@@ -66,6 +66,10 @@ async function initChapters(rule: ruleClass, book: Book) {
   const chapters = book.chapters.filter(
     (chapter) => chapter.status === Status.pending
   );
+  if (chapters.length === 0) {
+    console.error(`[initChapters]初始化章节出错，未找到需初始化章节`)
+    return [];
+  }
   if (concurrencyLimit === 1) {
     for (let chapter of chapters) {
       const obj = await chapter.init();
