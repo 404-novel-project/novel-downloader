@@ -1,4 +1,4 @@
-import { BookAdditionalMetadate, ImageClass, Chapter } from "./main";
+import { BookAdditionalMetadate, attachmentClass, Chapter } from "./main";
 import { ciweimao } from "./rules/ciweimao";
 import { uukanshu } from "./rules/uukanshu";
 import { yrun } from "./rules/yruan";
@@ -10,6 +10,7 @@ import { shouda8 } from "./rules/shouda8";
 import { meegoq } from "./rules/meegoq";
 import { xiaoshuodaquan } from "./rules/xiaoshuodaquan";
 import { qidian } from "./rules/qidian";
+import { jjwxc } from "./rules/jjwxc";
 
 export interface bookParseObject {
   bookUrl: string;
@@ -25,7 +26,7 @@ export interface chapterParseObject {
   contentRaw: HTMLElement | null;
   contentText: string | null;
   contentHTML: HTMLElement | null;
-  contentImages: ImageClass[] | null;
+  contentImages: attachmentClass[] | null;
 }
 export interface ruleClass {
   imageMode: "naive" | "TM";
@@ -118,6 +119,9 @@ export function getRule(): ruleClass {
       break;
     case "book.qidian.com":
       ruleClass = qidian;
+      break;
+    case "www.jjwxc.net":
+      ruleClass = jjwxc;
       break;
     default:
       throw new Error("Not Found Rule!");

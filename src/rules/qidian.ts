@@ -1,4 +1,4 @@
-import { BookAdditionalMetadate, ImageClass, Chapter, Status } from "../main";
+import { BookAdditionalMetadate, attachmentClass, Chapter, Status } from "../main";
 import { ggetHtmlDOM, cleanDOM, co, cosCompare, sleep, gfetch } from "../lib";
 import { ruleClass, ruleClassNamespace, chapterParseObject } from "../rules";
 
@@ -38,7 +38,7 @@ export class qidian implements ruleClass {
     const additionalMetadate: BookAdditionalMetadate = {};
     let coverUrl = (<HTMLImageElement>document.querySelector("#bookImg > img"))
       .src;
-    additionalMetadate.cover = new ImageClass(
+    additionalMetadate.cover = new attachmentClass(
       coverUrl,
       `cover.${coverUrl.split(".").slice(-1)[0]}`,
       "TM"

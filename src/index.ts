@@ -1,5 +1,5 @@
 import { getRule, ruleClass, icon0, icon1 } from "./rules";
-import { Book, Chapter, ImageClass, Status } from "./main";
+import { Book, Chapter, attachmentClass, Status } from "./main";
 import { concurrencyRun, _GM_info } from "./lib";
 
 namespace main {
@@ -105,15 +105,15 @@ function save(book: Book) {
     return 0;
   }
 
-  function addImageToZip(image: ImageClass, zip: JSZip) {
+  function addImageToZip(image: attachmentClass, zip: JSZip) {
     if (image.status === Status.finished && image.imageBlob) {
       console.debug(
-        `[save]添加图片，文件名：${image.name}，对象`,
+        `[save]添加附件，文件名：${image.name}，对象`,
         image.imageBlob
       );
       zip.file(image.name, image.imageBlob);
     } else {
-      console.error("[save]图片下载失败！");
+      console.error("[save]附件下载失败！");
       console.error(image);
     }
   }

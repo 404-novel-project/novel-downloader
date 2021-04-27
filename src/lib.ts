@@ -1,4 +1,4 @@
-import { ImageClass } from "./main";
+import { attachmentClass } from "./main";
 
 namespace Cleaner {
   export interface statusType {
@@ -40,7 +40,7 @@ class CleanerClass {
 
   private imgMode: "naive" | "TM";
 
-  public images: ImageClass[];
+  public images: attachmentClass[];
   public doms: HTMLElement[];
   public texts: string[];
 
@@ -207,7 +207,7 @@ class CleanerClass {
     this.br_count = 0;
     const imageUrl = element.src;
     const imageName = genImageName(imageUrl);
-    const image = new ImageClass(imageUrl, imageName, this.imgMode);
+    const image = new attachmentClass(imageUrl, imageName, this.imgMode);
     image.init();
     this.images.push(image);
 

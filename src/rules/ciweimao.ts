@@ -1,4 +1,4 @@
-import { BookAdditionalMetadate, ImageClass, Chapter, Status } from "../main";
+import { BookAdditionalMetadate, attachmentClass, Chapter, Status } from "../main";
 import { getHtmlDOM, cleanDOM, rm, gfetch, co, cosCompare } from "../lib";
 import { ruleClass, ruleClassNamespace, chapterParseObject } from "../rules";
 
@@ -44,7 +44,7 @@ export class ciweimao implements ruleClass {
 
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = (<HTMLImageElement>dom.querySelector(".cover > img")).src;
-    additionalMetadate.cover = new ImageClass(
+    additionalMetadate.cover = new attachmentClass(
       coverUrl,
       `cover.${coverUrl.split(".").slice(-1)[0]}`,
       "TM"
@@ -389,7 +389,7 @@ export class ciweimao implements ruleClass {
         }).then((response) => response.response);
 
         const vipCHapterName = `vipCHapter${chapter_id}.png`;
-        const vipCHapterImage = new ImageClass(
+        const vipCHapterImage = new attachmentClass(
           vipCHapterImageUrl,
           vipCHapterName,
           "TM"

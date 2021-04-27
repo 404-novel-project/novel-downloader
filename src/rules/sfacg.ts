@@ -1,4 +1,4 @@
-import { BookAdditionalMetadate, ImageClass, Chapter, Status } from "../main";
+import { BookAdditionalMetadate, attachmentClass, Chapter, Status } from "../main";
 import { getHtmlDOM, cleanDOM, co, cosCompare } from "../lib";
 import {
   ruleClass,
@@ -43,7 +43,7 @@ export class sfacg implements ruleClass {
     let coverUrl = (<HTMLImageElement>(
       dom.querySelector("#hasTicket div.pic img")
     )).src;
-    additionalMetadate.cover = new ImageClass(
+    additionalMetadate.cover = new attachmentClass(
       coverUrl,
       `cover.${coverUrl.split(".").slice(-1)[0]}`,
       "TM"
@@ -226,7 +226,7 @@ export class sfacg implements ruleClass {
         const vipChapterImageBlob = await fetchVipChapterImage(
           vipChapterImageUrl
         );
-        const vipChapterImage = new ImageClass(
+        const vipChapterImage = new attachmentClass(
           vipChapterImageUrl,
           vipChapterName,
           "naive"

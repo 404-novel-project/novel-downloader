@@ -1,4 +1,4 @@
-import { BookAdditionalMetadate, ImageClass, Chapter } from "../main";
+import { BookAdditionalMetadate, attachmentClass, Chapter } from "../main";
 import { ruleClass, ruleClassNamespace } from "../rules";
 import { getHtmlDOM, cleanDOM, rm } from "../lib";
 
@@ -36,7 +36,7 @@ export class biquwo implements ruleClass {
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = (<HTMLImageElement>document.querySelector("#fmimg > img"))
       .src;
-    additionalMetadate.cover = new ImageClass(
+    additionalMetadate.cover = new attachmentClass(
       coverUrl,
       `cover.${coverUrl.split(".").slice(-1)[0]}`,
       "TM"
@@ -182,7 +182,7 @@ export class shuquge implements ruleClass {
     const coverUrl = (<HTMLImageElement>(
       document.querySelector(".info > .cover > img")
     )).src;
-    additionalMetadate.cover = new ImageClass(
+    additionalMetadate.cover = new attachmentClass(
       coverUrl,
       `cover.${coverUrl.split(".").slice(-1)[0]}`,
       "TM"
@@ -330,7 +330,7 @@ export class dingdiann implements ruleClass {
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = (<HTMLImageElement>document.querySelector("#fmimg > img"))
       .src;
-    additionalMetadate.cover = new ImageClass(
+    additionalMetadate.cover = new attachmentClass(
       coverUrl,
       `cover.${coverUrl.split(".").slice(-1)[0]}`,
       "TM"
@@ -483,7 +483,7 @@ export class gebiqu implements ruleClass {
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = (<HTMLImageElement>document.querySelector("#fmimg > img"))
       .src;
-    additionalMetadate.cover = new ImageClass(
+    additionalMetadate.cover = new attachmentClass(
       coverUrl,
       `cover.${coverUrl.split(".").slice(-1)[0]}`,
       "TM"
@@ -628,7 +628,7 @@ export class c226ks implements ruleClass {
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = (<HTMLImageElement>document.querySelector(".imgbox > img"))
       .src;
-    additionalMetadate.cover = new ImageClass(
+    additionalMetadate.cover = new attachmentClass(
       coverUrl,
       `cover.${coverUrl.split(".").slice(-1)[0]}`,
       "TM"

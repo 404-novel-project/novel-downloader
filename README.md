@@ -28,12 +28,13 @@ ZIP压缩包，请在解压后，直接双击打开HTML文件进行阅读。
 ![HTML文档-VIP章节](assets/html2.png)
 ## 目前支持小说网站
 
-|站点|公共章节|VIP章节|备注|
+|站点|公共章节|付费章节|备注|
 |---|-------|------|----|
 |[刺猬猫](https://www.ciweimao.com/)|✅|✅\*|\*VIP章节仅支持图片版。|
 |[SF轻小说](https://book.sfacg.com/)|✅\*|✅\*\*|\*不支持对话小说，例：[224282](https://book.sfacg.com/Novel/224282/)。 \*\*VIP章节仅支持图片版。|
 |[起点中文网](https://book.qidian.com/)|✅|✅||
 |[起点女生网](https://www.qdmm.com/)|✅|✅||
+|[晋江文学城](http://www.jjwxc.net/)|✅|✅\*|\*VIP章节TXT文档存在空格，请使用HTML版查看。|
 |[UU看书网](https://www.uukanshu.com/)|✅|❎||
 |[亿软网](http://www.yruan.com/)|✅|❎||
 |[笔趣窝](http://www.biquwoo.com/)|✅|❎||

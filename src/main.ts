@@ -10,7 +10,7 @@ export enum Status {
 }
 
 export interface BookAdditionalMetadate {
-  cover?: ImageClass | null;
+  cover?: attachmentClass | null;
   tags?: string[];
   lastModified?: number;
   serires?: string;
@@ -69,7 +69,7 @@ export class Chapter {
   public contentRaw!: HTMLElement | null;
   public contentText!: string | null;
   public contentHTML!: HTMLElement | null;
-  public contentImages!: ImageClass[] | null;
+  public contentImages!: attachmentClass[] | null;
 
   public constructor(
     bookUrl: string,
@@ -162,7 +162,7 @@ export class Chapter {
   }
 }
 
-export class ImageClass {
+export class attachmentClass {
   public imageUrl: string;
   public name: string;
   public mode: "naive" | "TM";

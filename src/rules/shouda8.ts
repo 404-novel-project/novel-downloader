@@ -1,4 +1,4 @@
-import { BookAdditionalMetadate, ImageClass, Chapter } from "../main";
+import { BookAdditionalMetadate, attachmentClass, Chapter } from "../main";
 import { ruleClass, ruleClassNamespace } from "../rules";
 import { getHtmlDOM, cleanDOM, rm } from "../lib";
 
@@ -40,7 +40,7 @@ export class shouda8 implements ruleClass {
     const coverUrl = (<HTMLImageElement>(
       document.querySelector(".pic > img:nth-child(1)")
     )).src;
-    additionalMetadate.cover = new ImageClass(
+    additionalMetadate.cover = new attachmentClass(
       coverUrl,
       `cover.${coverUrl.split(".").slice(-1)[0]}`,
       "TM"
