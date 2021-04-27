@@ -4,16 +4,10 @@ import {
   Chapter,
   Status,
 } from "../main";
-import {
-  getHtmlDOM,
-  ggetHtmlDOM,
-  cleanDOM,
-  co,
-  cosCompare,
-} from "../lib";
+import { getHtmlDOM, cleanDOM, co, cosCompare, rm } from "../lib";
 import { ruleClass, ruleClassNamespace, chapterParseObject } from "../rules";
 
-export class zongheng implements ruleClass {
+export class c17k implements ruleClass {
   public imageMode: "naive" | "TM";
   public concurrencyLimit: number;
 
@@ -23,18 +17,18 @@ export class zongheng implements ruleClass {
   }
 
   public async bookParse(chapterParse: ruleClassNamespace.chapterParse) {
-    const bookUrl = document.location.href.replace("/showchapter/", "/book/");
+    const bookUrl = document.location.href.replace("/list/", "/book/");
     const bookname = (<HTMLElement>(
-      document.querySelector("div.book-meta > h1")
+      document.querySelector("h1.Title")
     )).innerText.trim();
 
     const author = (<HTMLElement>(
-      document.querySelector("div.book-meta > p > span:nth-child(1) > a")
+      document.querySelector("div.Author > a")
     )).innerText.trim();
 
     const doc = await getHtmlDOM(bookUrl, undefined);
     let introduction: string | null;
-    const introDom = doc.querySelector("div.book-info > div.book-dec");
+    const introDom = doc.querySelector("#bookInfo p.intro > a");
     if (introDom === null) {
       introduction = null;
     } else {
@@ -47,7 +41,7 @@ export class zongheng implements ruleClass {
     }
 
     const additionalMetadate: BookAdditionalMetadate = {};
-    let coverUrl = (<HTMLImageElement>doc.querySelector("div.book-img > img"))
+    let coverUrl = (<HTMLImageElement>doc.querySelector("#bookCover img.book"))
       .src;
     additionalMetadate.cover = new attachmentClass(
       coverUrl,
@@ -55,35 +49,29 @@ export class zongheng implements ruleClass {
       "TM"
     );
     additionalMetadate.cover.init();
-    additionalMetadate.tags = Array.from(
-      doc.querySelectorAll(".book-info>.book-label a")
-    ).map((a) => (<HTMLAnchorElement>a).innerText.trim());
 
     const chapters: Chapter[] = [];
 
-    const sections = document.querySelectorAll(".volume-list");
+    const sections = document.querySelectorAll("dl.Volume");
 
     const cos: co[] = [];
     for (let i = 0; i < sections.length; i++) {
       const s = sections[i];
       const sectionNumber = i + 1;
 
-      const sectionLabel = s.querySelector("div.volume");
-      Array.from((<HTMLElement>sectionLabel).children).forEach((ele) =>
-        ele.remove()
-      );
+      const sectionName = (<HTMLElement>(
+        s.querySelector("dt > span.tit")
+      )).innerText.trim();
 
-      const sectionName = (<HTMLElement>sectionLabel).innerText.trim();
-
-      const cs = s.querySelectorAll("ul.chapter-list > li");
+      const cs = s.querySelectorAll("dd > a");
       for (let j = 0; j < cs.length; j++) {
-        const c = cs[j];
-        const a = c.querySelector("a");
-        const chapterName = (<HTMLAnchorElement>a).innerText.trim();
+        const a = cs[j];
+        const span = a.firstElementChild;
+        const chapterName = (<HTMLSpanElement>span).innerText.trim();
         const chapterUrl = (<HTMLAnchorElement>a).href;
 
         const isVIP = () => {
-          if (c.className.includes("vip")) {
+          if (span?.className.includes("vip")) {
             return true;
           } else {
             return false;
@@ -165,12 +153,19 @@ export class zongheng implements ruleClass {
     charset: string
   ) {
     async function publicChapter(): Promise<chapterParseObject> {
-      const dom = await ggetHtmlDOM(chapterUrl, charset);
+      const doc = await getHtmlDOM(chapterUrl, charset);
       const chapterName = (<HTMLElement>(
-        dom.querySelector("div.title_txtbox")
+        doc.querySelector("#readArea > div.readAreaBox.content > h1")
       )).innerText.trim();
-      const content = <HTMLElement>dom.querySelector("div.content");
+      const content = <HTMLElement>(
+        doc.querySelector("#readArea > div.readAreaBox.content > div.p")
+      );
       if (content) {
+        rm("p.copy", false, content);
+        rm("#banner_content", false, content);
+        rm("div.qrcode", false, content);
+        rm("div.chapter_text_ad", false, content);
+
         let { dom, text, images } = cleanDOM(content, "TM");
         return {
           chapterName: chapterName,
