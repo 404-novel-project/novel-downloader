@@ -1,6 +1,6 @@
 import { getRule, ruleClass, icon0, icon1 } from "./rules";
 import { Book, Chapter, ImageClass, Status } from "./main";
-import { concurrencyRun } from "./lib";
+import { concurrencyRun, _GM_info } from "./lib";
 
 namespace main {
   export interface mainWindows extends unsafeWindow {
@@ -16,17 +16,6 @@ namespace main {
 }
 
 function printEnvironments() {
-  let _GM_info;
-  try {
-    _GM_info = GM_info;
-  } catch (error) {
-    try {
-      _GM_info = GM.info;
-    } catch (error) {
-      console.error("未发现 _GM_info API");
-    }
-  }
-
   if (_GM_info) {
     console.log(
       `开始载入小说下载器……
@@ -43,6 +32,7 @@ function printEnvironments() {
 }
 
 async function initBook(rule: ruleClass) {
+  console.log(`[initBook]开始初始化图书`);
   const bookParse = rule.bookParse;
   const chapterParse = rule.chapterParse;
   return bookParse(chapterParse).then((obj) => {
@@ -67,6 +57,7 @@ async function initBook(rule: ruleClass) {
 }
 
 async function initChapters(rule: ruleClass, book: Book) {
+  console.log(`[initChapters]开始初始化章节`);
   let concurrencyLimit = 10;
   if (rule.concurrencyLimit !== undefined) {
     concurrencyLimit = rule.concurrencyLimit;
@@ -94,6 +85,7 @@ async function initChapters(rule: ruleClass, book: Book) {
       });
     });
   }
+  console.log(`[initChapters]章节初始化完毕`);
   return chapters;
 }
 
@@ -104,7 +96,7 @@ function save(book: Book) {
     if (a.chapterNumber > b.chapterNumber) {
       return 1;
     }
-    if ((a.chapterNumber = b.chapterNumber)) {
+    if (a.chapterNumber === b.chapterNumber) {
       return 0;
     }
     if (a.chapterNumber < b.chapterNumber) {
@@ -115,6 +107,10 @@ function save(book: Book) {
 
   function addImageToZip(image: ImageClass, zip: JSZip) {
     if (image.status === Status.finished && image.imageBlob) {
+      console.debug(
+        `[save]添加图片，文件名：${image.name}，对象`,
+        image.imageBlob
+      );
       zip.file(image.name, image.imageBlob);
     } else {
       console.error("[save]图片下载失败！");
@@ -151,6 +147,8 @@ function save(book: Book) {
     });
   }
 
+  console.log("[save]开始保存");
+  console.debug("book Object:", book);
   const chapters = book.chapters;
   chapters.sort(chapterSort);
 
@@ -166,6 +164,12 @@ function save(book: Book) {
   if (book.additionalMetadate.cover) {
     const cover = book.additionalMetadate.cover;
     if (cover.imageBlob) {
+      console.debug(
+        `[save]添加封面图片，文件名：${`cover.${
+          cover.imageBlob.type.split("/").slice(-1)[0]
+        }`}，对象`,
+        cover.imageBlob
+      );
       savedZip.file(
         `cover.${cover.imageBlob.type.split("/").slice(-1)[0]}`,
         cover.imageBlob
@@ -238,23 +242,28 @@ p {
   for (const c of chapters) {
     if (c.status === Status.finished) {
       const sectionName = c.sectionName;
+      const chapterNumber = c.chapterNumber;
       const chapterName = c.chapterName
         ? c.chapterName
-        : c.chapterNumber.toString();
+        : chapterNumber.toString();
       const contentText = c.contentText;
       const contentHTML = c.contentHTML;
       const contentImages = c.contentImages;
 
       const fileNameBase = `${"0".repeat(
-        chapters.length.toString().length - c.chapterNumber.toString().length
-      )}${c.chapterNumber.toString()}.html`;
+        chapters.length.toString().length - chapterNumber.toString().length
+      )}${chapterNumber.toString()}.html`;
 
       if (sectionName && contentText && sectionName !== preSectionName) {
         savedTextArray.push(genSectionText(sectionName));
-        savedZip.file(
-          `Section${fileNameBase}`,
-          genSectionHtmlFile(sectionName)
-        );
+        const sectionHTMLBlob = genSectionHtmlFile(sectionName);
+        if (sectionHTMLBlob) {
+          console.debug(
+            `[save]添加卷HTML，文件名：${"Section" + fileNameBase}，对象`,
+            sectionHTMLBlob
+          );
+          savedZip.file(`Section${fileNameBase}`, sectionHTMLBlob);
+        }
       }
       preSectionName = sectionName;
 
@@ -263,10 +272,14 @@ p {
       }
 
       if (contentHTML) {
-        savedZip.file(
-          `Chapter${fileNameBase}`,
-          genHtmlFile(chapterName, contentHTML)
-        );
+        const chapterHTMLBlob = genHtmlFile(chapterName, contentHTML);
+        if (chapterHTMLBlob) {
+          console.debug(
+            `[save]添加章节HTML，文件名：${"Chapter" + fileNameBase}，对象`,
+            chapterHTMLBlob
+          );
+          savedZip.file(`Chapter${fileNameBase}`, chapterHTMLBlob);
+        }
       }
 
       if (contentImages !== null) {
@@ -277,15 +290,18 @@ p {
     }
   }
 
-  console.debug("[save]开始保存");
+  console.log("[save]开始生成下载文件");
   const saveFileNameBase = `[${book.author}]${book.bookname}`;
 
+  console.debug("[save]开始保存TXT文件");
   const savedText = savedTextArray.join("\n");
   saveAs(
     new Blob([savedText], { type: "text/plain;charset=utf-8" }),
     `${saveFileNameBase}.txt`
   );
+  console.debug("[save]保存TXT文件完毕");
 
+  console.debug("[save]开始生成ZIP文件");
   savedZip
     .generateAsync(
       {
@@ -303,9 +319,12 @@ p {
         )
     )
     .then((blob: Blob) => {
+      console.debug("[save]ZIP文件生成完毕，开始保存ZIP文件");
       saveAs(blob, `${saveFileNameBase}.zip`);
     })
     .then(() => {
+      console.debug("[save]保存ZIP文件完毕");
+      finishedChapterNumber = 0;
       document.querySelector("#nd-progress")?.remove();
     })
     .catch((err: Error) => console.error("saveZip: " + err));
@@ -428,22 +447,24 @@ function updateProgress(
 async function run() {
   console.log(`[run]下载开始`);
   const rule = getRule();
+  console.log(`[run]获取规则成功`);
 
   let maxRunLimit = null;
   let nowRunNumber;
-  try {
+  if (_GM_info.scriptHandler === "Tampermonkey") {
+    console.log(`[run]添加运行标志`);
     await setTabMark();
     nowRunNumber = await getNowRunNumber();
-  } catch (error) {}
-  if (rule.maxRunLimit !== undefined && nowRunNumber !== undefined) {
-    maxRunLimit = rule.maxRunLimit;
-    if (nowRunNumber > maxRunLimit) {
-      const alertText = `当前网站目前已有${
-        nowRunNumber - 1
-      }个下载任务正在运行，当前站点最多允许${maxRunLimit}下载任务同时进行。\n请待其它下载任务完成后，再行尝试。`;
-      alert(alertText);
-      console.log(`[run]${alertText}`);
-      return;
+    if (rule.maxRunLimit !== undefined && nowRunNumber !== undefined) {
+      maxRunLimit = rule.maxRunLimit;
+      if (nowRunNumber > maxRunLimit) {
+        const alertText = `当前网站目前已有${
+          nowRunNumber - 1
+        }个下载任务正在运行，当前站点最多允许${maxRunLimit}下载任务同时进行。\n请待其它下载任务完成后，再行尝试。`;
+        alert(alertText);
+        console.log(`[run]${alertText}`);
+        return;
+      }
     }
   }
 
@@ -456,9 +477,10 @@ async function run() {
   await initChapters(rule, book);
   save(book);
 
-  try {
+  if (_GM_info.scriptHandler === "Tampermonkey") {
+    console.log(`[run]移除运行标志`);
     await removeTabMark();
-  } catch (error) {}
+  }
 
   console.log(`[run]下载完毕`);
   return book;
@@ -466,7 +488,10 @@ async function run() {
 
 function catchError(error: Error) {
   downloading = false;
-  removeTabMark();
+  if (_GM_info.scriptHandler === "Tampermonkey") {
+    removeTabMark();
+  }
+  finishedChapterNumber = 0;
   document.querySelector("#nd-progress")?.remove();
   document.getElementById("novel-downloader")?.remove();
   console.error(

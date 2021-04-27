@@ -96,9 +96,10 @@ export class sfacg implements ruleClass {
       }
     }
 
+    let chapterNumber = 0;
     cos.sort(cosCompare);
     for (let i = 0; i < cos.length; i++) {
-      const chapterNumber = i + 1;
+      chapterNumber++;
       let {
         bookUrl,
         bookname,

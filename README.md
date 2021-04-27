@@ -3,6 +3,8 @@
 一个**可扩展的**通用型小说下载器。
 ## 使用方法
 
+**特别提醒：本脚本与[Greasemonkey](https://addons.mozilla.org/firefox/addon/greasemonkey/)脚本管理器不兼容，使用时敬请特别注意。**
+
 ![demo](assets/demo.png)
 
 如果本脚本支持该小说网站，当打开小说目录页时，网页右上角会出现下载图标，点击该图标即可开始下载。

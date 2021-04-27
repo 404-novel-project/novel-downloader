@@ -6,6 +6,28 @@ namespace Cleaner {
   }
 }
 
+export let _GM_info: GM_info | GM["info"];
+try {
+  _GM_info = GM_info;
+} catch (error) {
+  try {
+    _GM_info = GM.info;
+  } catch (error) {
+    console.error("未发现 _GM_info API");
+  }
+}
+
+let _GM_xmlhttpRequest: GM_xmlhttpRequest | GM["xmlHttpRequest"];
+try {
+  _GM_xmlhttpRequest = GM_xmlhttpRequest;
+} catch (error) {
+  try {
+    _GM_xmlhttpRequest = GM.xmlHttpRequest;
+  } catch (error) {
+    console.error("未发现 _GM_xmlhttpRequest API");
+  }
+}
+
 class CleanerClass {
   private status: string;
   private statusType: Cleaner.statusType;
@@ -264,7 +286,8 @@ export async function getHtmlText(url: string, charset: string | undefined) {
       if (response.ok) {
         return response.text();
       } else {
-        throw new Error(`Bad response! ${url}`);
+        console.error(new Error(`Bad response! ${url}`));
+        return response.text();
       }
     });
   } else {
@@ -273,7 +296,8 @@ export async function getHtmlText(url: string, charset: string | undefined) {
         if (response.ok) {
           return response.arrayBuffer();
         } else {
-          throw new Error(`Bad response! ${url}`);
+          console.error(new Error(`Bad response! ${url}`));
+          return response.arrayBuffer();
         }
       })
       .then((buffer) => {
@@ -295,7 +319,8 @@ export async function ggetHtmlText(url: string, charset: string | undefined) {
       if (response.status >= 200 && response.status <= 299) {
         return response.responseText;
       } else {
-        throw new Error(`Bad response! ${url}`);
+        console.error(new Error(`Bad response! ${url}`));
+        return response.responseText;
       }
     });
   } else {
@@ -304,7 +329,8 @@ export async function ggetHtmlText(url: string, charset: string | undefined) {
         if (response.status >= 200 && response.status <= 299) {
           return <ArrayBuffer>response.response;
         } else {
-          throw new Error(`Bad response! ${url}`);
+          console.error(new Error(`Bad response! ${url}`));
+          return <ArrayBuffer>response.response;
         }
       })
       .then((buffer: ArrayBuffer) => {
@@ -336,12 +362,12 @@ export function cosCompare(a: co, b: co): -1 | 0 | 1 {
     if (a.sectionNumber > b.sectionNumber) {
       return 1;
     }
-    if (a.sectionNumber == b.sectionNumber) {
+    if (a.sectionNumber === b.sectionNumber) {
       if (a.sectionChapterNumber !== null && b.sectionChapterNumber !== null) {
         if (a.sectionChapterNumber > b.sectionChapterNumber) {
           return 1;
         }
-        if (a.sectionChapterNumber == b.sectionChapterNumber) {
+        if (a.sectionChapterNumber === b.sectionChapterNumber) {
           return 0;
         }
         if (a.sectionChapterNumber < b.sectionChapterNumber) {
@@ -404,17 +430,6 @@ export function gfetch(
   }: gfetch_request_options = {}
 ): Promise<GM_xmlhttpResponse> {
   return new Promise((resolve, reject) => {
-    let _GM_xmlhttpRequest;
-    try {
-      _GM_xmlhttpRequest = GM_xmlhttpRequest;
-    } catch (error) {
-      try {
-        _GM_xmlhttpRequest = GM.xmlHttpRequest;
-      } catch (error) {
-        console.error("未发现 _GM_xmlhttpRequest API");
-      }
-    }
-
     if (_GM_xmlhttpRequest) {
       _GM_xmlhttpRequest({
         url: url,

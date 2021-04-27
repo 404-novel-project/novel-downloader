@@ -145,7 +145,7 @@ export class Chapter {
         );
 
         if (this.status !== Status.failed && this.retryTime < retryLimit) {
-          await sleep(this.retryTime * 1500)
+          await sleep(this.retryTime * 1500);
           return this.parse();
         } else {
           this.status = Status.failed;
@@ -199,6 +199,9 @@ export class ImageClass {
           this.status = Status.finished;
           return response.blob();
         } else {
+          if (response.status === 404) {
+            this.status = Status.failed;
+          }
           throw new Error(
             `Image request response is not ok!\nImage url: ${this.imageUrl} .`
           );
@@ -211,7 +214,7 @@ export class ImageClass {
         );
 
         if (this.status !== Status.failed && this.retryTime < retryLimit) {
-          await sleep(this.retryTime * 1500)
+          await sleep(this.retryTime * 1500);
           return this.downloadImage();
         } else {
           this.status = Status.failed;
@@ -229,6 +232,9 @@ export class ImageClass {
           this.status = Status.finished;
           return <Blob>response.response;
         } else {
+          if (response.status === 404) {
+            this.status = Status.failed;
+          }
           throw new Error(`Bad response!\nRequest url: ${this.imageUrl}`);
         }
       })
@@ -239,7 +245,7 @@ export class ImageClass {
         );
 
         if (this.status !== Status.failed && this.retryTime < retryLimit) {
-          await sleep(this.retryTime * 1500)
+          await sleep(this.retryTime * 1500);
           return this.tmDownloadImage();
         } else {
           this.status = Status.failed;
