@@ -107,8 +107,8 @@ export class jjwxc implements ruleClass {
 
         if (!isLocked()) {
           if (isVIP()) {
-            const chapterName = (<HTMLLinkElement>a).innerText.trim();
-            const chapterUrl = (<HTMLLinkElement>a).getAttribute("rel");
+            const chapterName = (<HTMLAnchorElement>a).innerText.trim();
+            const chapterUrl = (<HTMLAnchorElement>a).getAttribute("rel");
             if (chapterUrl) {
               const co: co = {
                 bookUrl: bookUrl,
@@ -124,8 +124,8 @@ export class jjwxc implements ruleClass {
               cos.push(co);
             }
           } else {
-            const chapterName = (<HTMLLinkElement>a).innerText.trim();
-            const chapterUrl = (<HTMLLinkElement>a).href;
+            const chapterName = (<HTMLAnchorElement>a).innerText.trim();
+            const chapterUrl = (<HTMLAnchorElement>a).href;
             const co: co = {
               bookUrl: bookUrl,
               bookname: bookname,

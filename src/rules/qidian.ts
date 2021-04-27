@@ -46,7 +46,7 @@ export class qidian implements ruleClass {
     additionalMetadate.cover.init();
     additionalMetadate.tags = Array.from(
       document.querySelectorAll(".tag-wrap>.tags")
-    ).map((a) => (<HTMLLinkElement>a).innerText.trim());
+    ).map((a) => (<HTMLAnchorElement>a).innerText.trim());
 
     const chapters: Chapter[] = [];
 
@@ -78,8 +78,8 @@ export class qidian implements ruleClass {
       for (let j = 0; j < cs.length; j++) {
         const c = cs[j];
         const a = c.firstElementChild;
-        const chapterName = (<HTMLLinkElement>a).innerText.trim();
-        const chapterUrl = (<HTMLLinkElement>a).href;
+        const chapterName = (<HTMLAnchorElement>a).innerText.trim();
+        const chapterUrl = (<HTMLAnchorElement>a).href;
 
         const isVIP = () => {
           const host = new URL(chapterUrl).host;

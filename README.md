@@ -35,6 +35,8 @@ ZIP压缩包，请在解压后，直接双击打开HTML文件进行阅读。
 |[起点中文网](https://book.qidian.com/)|✅|✅||
 |[起点女生网](https://www.qdmm.com/)|✅|✅||
 |[晋江文学城](http://www.jjwxc.net/)|✅|✅\*|\*VIP章节TXT文档存在空格，请使用HTML版查看。|
+|[纵横中文网](http://www.zongheng.com/)|✅|❌||
+|[花语女生网](http://huayu.zongheng.com/)|✅|❌||
 |[UU看书网](https://www.uukanshu.com/)|✅|❎||
 |[亿软网](http://www.yruan.com/)|✅|❎||
 |[笔趣窝](http://www.biquwoo.com/)|✅|❎||

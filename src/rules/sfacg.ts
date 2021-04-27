@@ -51,7 +51,7 @@ export class sfacg implements ruleClass {
     additionalMetadate.cover.init();
     additionalMetadate.tags = Array.from(
       dom.querySelectorAll("ul.tag-list > li.tag > a")
-    ).map((a) => (<HTMLLinkElement>a).innerText.trim());
+    ).map((a) => (<HTMLAnchorElement>a).innerText.trim());
 
     const chapters: Chapter[] = [];
     const sections = document.querySelectorAll(".story-catalog");
