@@ -47,6 +47,7 @@ ZIP压缩包，请在解压后，直接双击打开HTML文件进行阅读。
 |[阁笔趣](http://www.gebiqu.com/)|✅|❎||
 |[米趣小说](http://www.viviyzw.com/)|✅|❎||
 |[书书网](https://www.xiaoshuodaquan.com/)|✅|❎||
+|[八一中文网](https://www.81book.com/)|✅|❎||
 
 ## License
 

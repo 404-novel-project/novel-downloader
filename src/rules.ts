@@ -2,7 +2,14 @@ import { BookAdditionalMetadate, attachmentClass, Chapter } from "./main";
 import { ciweimao } from "./rules/ciweimao";
 import { uukanshu } from "./rules/uukanshu";
 import { yrun } from "./rules/yruan";
-import { biquwo, shuquge, dingdiann, c226ks, gebiqu } from "./rules/biquge";
+import {
+  biquwo,
+  shuquge,
+  dingdiann,
+  c226ks,
+  gebiqu,
+  zwdu,
+} from "./rules/biquge";
 import { xkzw } from "./rules/xkzw";
 import { sfacg } from "./rules/sfacg";
 import { hetushu } from "./rules/hetushu";
@@ -122,6 +129,9 @@ export function getRule(): ruleClass {
       break;
     case "www.jjwxc.net":
       ruleClass = jjwxc;
+      break;
+    case "www.81book.com":
+      ruleClass = zwdu;
       break;
     default:
       throw new Error("Not Found Rule!");

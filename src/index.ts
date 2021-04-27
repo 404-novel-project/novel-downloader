@@ -136,9 +136,13 @@ function save(book: Book) {
     });
   }
 
-  function genHtmlFile(chapterName: string, DOM: HTMLElement) {
+  function genHtmlFile(
+    chapterName: string,
+    DOM: HTMLElement,
+    chapterUrl: string
+  ) {
     let htmlFile = new DOMParser().parseFromString(
-      `<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="https://github.com/yingziwu/novel-downloader"><link href="style.css" type="text/css" rel="stylesheet"/><title>${chapterName}</title></head><body><div class="main"><h2>${chapterName}</h2></div></body></html>`,
+      `<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="https://github.com/yingziwu/novel-downloader"><meta name="source" content="${chapterUrl}"><link href="style.css" type="text/css" rel="stylesheet"/><title>${chapterName}</title></head><body><div class="main"><h2>${chapterName}</h2></div></body></html>`,
       "text/html"
     );
     htmlFile.querySelector(".main")?.appendChild(DOM);
@@ -243,6 +247,7 @@ p {
     if (c.status === Status.finished) {
       const sectionName = c.sectionName;
       const chapterNumber = c.chapterNumber;
+      const chapterUrl = c.chapterUrl;
       const chapterName = c.chapterName
         ? c.chapterName
         : chapterNumber.toString();
@@ -272,7 +277,11 @@ p {
       }
 
       if (contentHTML) {
-        const chapterHTMLBlob = genHtmlFile(chapterName, contentHTML);
+        const chapterHTMLBlob = genHtmlFile(
+          chapterName,
+          contentHTML,
+          chapterUrl
+        );
         if (chapterHTMLBlob) {
           console.debug(
             `[save]添加章节HTML，文件名：${"Chapter" + fileNameBase}，对象`,

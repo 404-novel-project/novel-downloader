@@ -29,7 +29,8 @@
     "*://www.gebiqu.com/biquge_*/",
     "*://www.meegoq.com/book*.html",
     "*://www.viviyzw.com/book*.html",
-    "*://www.xiaoshuodaquan.com/*/"
+    "*://www.xiaoshuodaquan.com/*/",
+    "*://www.81book.com/book/*/"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",
