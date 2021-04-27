@@ -67,7 +67,7 @@ async function initChapters(rule: ruleClass, book: Book) {
     (chapter) => chapter.status === Status.pending
   );
   if (chapters.length === 0) {
-    console.error(`[initChapters]初始化章节出错，未找到需初始化章节`)
+    console.error(`[initChapters]初始化章节出错，未找到需初始化章节`);
     return [];
   }
   if (concurrencyLimit === 1) {
@@ -557,6 +557,15 @@ async function debug() {
 let downloading = false;
 const enaleDebug = false;
 window.addEventListener("DOMContentLoaded", () => {
+  if (_GM_info.scriptHandler === "Greasemonkey") {
+    console.error(
+      "小说下载器脚本与Greasemonkey脚本管理器不兼容，请改用其它脚本管理器，如：Tampermonkey、Violentmonkey。"
+    );
+    alert(
+      "小说下载器脚本与Greasemonkey脚本管理器不兼容，请改用其它脚本管理器，如：Tampermonkey、Violentmonkey。"
+    );
+    return;
+  }
   printEnvironments();
   addButton();
 

@@ -75,5 +75,7 @@
     "https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js",
     "https://cdn.jsdelivr.net/npm/jszip@3.6.0/dist/jszip.min.js",
     "https://cdn.jsdelivr.net/npm/crypto-js@4.0.0/crypto-js.min.js"
-  ]
+  ],
+  "updateURL": "https://github.com/yingziwu/novel-downloader/raw/master/Releases/bundle.meta.js",
+  "downloadURL": "https://github.com/yingziwu/novel-downloader/raw/master/Releases/bundle.user.js"
 }
