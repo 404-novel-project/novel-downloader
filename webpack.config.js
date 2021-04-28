@@ -46,6 +46,7 @@ module.exports = {
       headers: path.resolve(__dirname, "src", "header.json"),
       ssri: true,
       pretty: true,
+      downloadBaseUrl: "https://github.com/yingziwu/novel-downloader/raw/master/Releases/",
       proxyScript: {
         filename: "[basename].proxy.user.js",
         baseUrl: "http://localhost:11944/",

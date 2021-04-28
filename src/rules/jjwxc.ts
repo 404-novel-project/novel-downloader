@@ -20,6 +20,7 @@ import {
   chapterParseObject,
   retryLimit,
 } from "../rules";
+import { replaceJjwxcCharacter } from "./lib/jjwxcFontDecode";
 
 export class jjwxc implements ruleClass {
   public imageMode: "naive" | "TM";
@@ -209,12 +210,30 @@ export class jjwxc implements ruleClass {
 
       const content = <HTMLElement>dom.querySelector("div.noveltext");
       if (content) {
+        rm("hr", true, content);
+        const rawAuthorSayDom = content.querySelector(".readsmall");
+        let authorSayDom, authorSayText;
+        if (rawAuthorSayDom) {
+          let { dom: adom, text: atext, images: aimages } = cleanDOM(
+            rawAuthorSayDom,
+            "TM"
+          );
+          [authorSayDom, authorSayText] = [adom, atext];
+        }
         rm("div", true, content);
         content.innerHTML = content.innerHTML.replace(
-          "@无限好文，尽在晋江文学城",
+          new RegExp("@无限好文，尽在晋江文学城", "g"),
           ""
         );
         let { dom, text, images } = cleanDOM(content, "TM");
+        if (rawAuthorSayDom && authorSayDom && authorSayText) {
+          const hr = document.createElement("hr");
+          authorSayDom.className = "authorSay";
+          dom.appendChild(hr);
+          dom.appendChild(authorSayDom);
+
+          text = text + "\n\n" + "-".repeat(20) + "\n\n" + authorSayText;
+        }
         return {
           chapterName: chapterName,
           contentRaw: content,
@@ -322,6 +341,9 @@ export class jjwxc implements ruleClass {
 @font-face {
   font-family: ${fontName};
   src: url('${fontFileName}') format('woff2');
+}
+.hide {
+  display: none;
 }`;
 
             return [fontName, fontClassObj, fontStyleDom];
@@ -349,25 +371,62 @@ export class jjwxc implements ruleClass {
 
         const content = <HTMLElement>dom.querySelector("div.noveltext");
         if (content) {
+          rm("hr", true, content);
+          const rawAuthorSayDom = content.querySelector(".readsmall");
+          let authorSayDom, authorSayText;
+          if (rawAuthorSayDom) {
+            let { dom: adom, text: atext, images: aimages } = cleanDOM(
+              rawAuthorSayDom,
+              "TM"
+            );
+            [authorSayDom, authorSayText] = [adom, atext];
+          }  
           rm("div", true, content);
           content.innerHTML = content.innerHTML.replace(
-            "@无限好文，尽在晋江文学城",
+            new RegExp("@无限好文，尽在晋江文学城", "g"),
             ""
           );
-          let { dom: cdom, text, images } = cleanDOM(content, "TM");
-
-          let [fontName, fontClassObj, fontStyleDom] = await getFont();
-          if (fontName && fontClassObj && fontStyleDom) {
-            images.push(fontClassObj);
-            cdom.appendChild(fontStyleDom);
-            cdom.className = fontName;
+          let { dom: rawDom, text: rawText, images } = cleanDOM(content, "TM");
+          if (rawAuthorSayDom && authorSayDom && authorSayText) {
+            const hr = document.createElement("hr");
+            authorSayDom.className = "authorSay";
+            rawDom.appendChild(hr);
+            rawDom.appendChild(authorSayDom);
+  
+            rawText = rawText + "\n\n" + "-".repeat(20) + "\n\n" + authorSayText;
           }
 
+          let finalDom = rawDom;
+          let finalText = rawText;
+          const [fontName, fontClassObj, fontStyleDom] = await getFont();
+          if (fontName && fontClassObj && fontStyleDom) {
+            // Replace Text
+            finalText = replaceJjwxcCharacter(fontName, rawText);
+
+            //DOM
+            images.push(fontClassObj);
+            finalDom = document.createElement("div");
+
+            // Replace DOM innerHTML
+            const replacedDom = document.createElement("div");
+            replacedDom.innerHTML = replaceJjwxcCharacter(
+              fontName,
+              rawDom.innerHTML
+            );
+
+            //Backup raw DOM
+            finalDom.appendChild(fontStyleDom);
+            rawDom.className = `${fontName} hide`;
+            finalDom.appendChild(rawDom);
+
+            finalDom.appendChild(replacedDom);
+          }
+  
           return {
             chapterName: chapterName,
             contentRaw: content,
-            contentText: text,
-            contentHTML: cdom,
+            contentText: finalText,
+            contentHTML: finalDom,
             contentImages: images,
           };
         }

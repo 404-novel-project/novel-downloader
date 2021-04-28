@@ -459,7 +459,7 @@ function updateProgress(
 
 async function run() {
   console.log(`[run]下载开始`);
-  const rule = getRule();
+  const rule = await getRule();
   console.log(`[run]获取规则成功`);
 
   let maxRunLimit = null;
@@ -545,7 +545,7 @@ function addButton() {
 }
 
 async function debug() {
-  const rule = getRule();
+  const rule = await getRule();
   const book = await initBook(rule);
   (<main.mainWindows>unsafeWindow).rule = rule;
   (<main.mainWindows>unsafeWindow).book = book;
