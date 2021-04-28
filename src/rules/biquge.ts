@@ -167,7 +167,7 @@ export class shuquge implements ruleClass {
       introduction = null;
     } else {
       introDom.innerHTML = introDom.innerHTML.replace(
-        /推荐地址：http:\/\/www.shuquge.com\/txt\/\d+\/index\.html/,
+        /推荐地址：http:\/\/www.shuquge.com\/txt\/\d+\/index\.html/g,
         ""
       );
       let {
@@ -468,7 +468,7 @@ export class gebiqu implements ruleClass {
       introduction = null;
     } else {
       introDom.innerHTML = introDom.innerHTML.replace(
-        /如果您喜欢.+，别忘记分享给朋友/,
+        /如果您喜欢.+，别忘记分享给朋友/g,
         ""
       );
       rm('a[href^="http://down.gebiqu.com"]', false, introDom);
@@ -569,7 +569,7 @@ export class gebiqu implements ruleClass {
     )).innerText.trim();
 
     const content = <HTMLElement>dom.querySelector("#content");
-    content.innerHTML = content.innerHTML.replace("www.gebiqu.com", "");
+    content.innerHTML = content.innerHTML.replace(/"www.gebiqu.com"/g, "");
     if (content) {
       let { dom, text, images } = cleanDOM(content, "TM");
       return {
