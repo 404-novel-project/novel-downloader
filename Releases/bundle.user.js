@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         小说下载器
-// @version      3.5.2.1619627138390
+// @version      3.5.2.1619667518046
 // @author       bgme
 // @description  一个可扩展的通用型小说下载器。
 // @supportURL   https://github.com/yingziwu/novel-downloader
@@ -1918,8 +1918,10 @@ class hetushu {
         chapterName = (dom.querySelector("#content .h2")).innerText.trim();
         const content = dom.querySelector("#content");
         if (content) {
-            lib_1.rm("h2", true, content);
-            lib_1.rm("tt", true, content);
+            const tagRemoved = "h2, acronym, bdo, big, cite, code, dfn, kbd, q, s, samp, strike, tt, u, var";
+            tagRemoved.split(", ").forEach((s) => {
+                lib_1.rm(s, true, content);
+            });
             let { dom, text, images } = lib_1.cleanDOM(content, "TM");
             return {
                 chapterName: chapterName,

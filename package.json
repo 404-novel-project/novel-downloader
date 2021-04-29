@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "webpack build",
-    "serve": "webpack serve --node-env development",
+    "dev": "webpack serve --node-env development",
     "release": "webpack build && cp dist/bundle.meta.js dist/bundle.user.js Releases && git add --all && git commit -m \"Release version $(jq .version package.json)\" && git push"
   },
   "author": "BGME",

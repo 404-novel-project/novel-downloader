@@ -109,8 +109,11 @@ export class hetushu implements ruleClass {
 
     const content = <HTMLElement>dom.querySelector("#content");
     if (content) {
-      rm("h2", true, content);
-      rm("tt", true, content);
+      const tagRemoved =
+        "h2, acronym, bdo, big, cite, code, dfn, kbd, q, s, samp, strike, tt, u, var";
+      tagRemoved.split(", ").forEach((s) => {
+        rm(s, true, content);
+      });
       let { dom, text, images } = cleanDOM(content, "TM");
       return {
         chapterName: chapterName,
