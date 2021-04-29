@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         小说下载器
-// @version      3.5.2.1619667518046
+// @version      3.5.2.1619675707983
 // @author       bgme
 // @description  一个可扩展的通用型小说下载器。
 // @supportURL   https://github.com/yingziwu/novel-downloader
@@ -1858,6 +1858,8 @@ const lib_1 = __webpack_require__(563);
 class hetushu {
     constructor() {
         this.imageMode = "TM";
+        this.concurrencyLimit = 1;
+        this.maxRunLimit = 1;
     }
     async bookParse(chapterParse) {
         var _a;
@@ -1914,8 +1916,73 @@ class hetushu {
         };
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset) {
+        async function sorfPage() {
+            let path, bid, sid, position;
+            if (/\/(book[0-9]?)\/([0-9]+)\/([0-9]+)\.html(\?position=([0-9]+))?$/.test(chapterUrl)) {
+                path = RegExp.$1;
+                bid = RegExp.$2;
+                sid = RegExp.$3;
+                position = RegExp.$5;
+            }
+            else {
+                return false;
+            }
+            const url = [
+                document.location.origin,
+                path,
+                bid,
+                "r" + sid + ".json",
+            ].join("/");
+            console.debug(`[Chapter]请求 ${url} Referer ${chapterUrl}`);
+            const token = await fetch(url, {
+                headers: {
+                    accept: "*/*",
+                    "cache-control": "no-cache",
+                    "content-type": "application/x-www-form-urlencoded",
+                    pragma: "no-cache",
+                    "x-requested-with": "XMLHttpRequest",
+                },
+                referrer: chapterUrl,
+                method: "GET",
+                mode: "cors",
+                credentials: "include",
+            }).then((response) => response.headers.get("token"));
+            if (token) {
+                const token_dict = atob(token)
+                    .split(/[A-Z]+%/)
+                    .map((v) => Number(v));
+                const this_body = dom.querySelector("#content");
+                let b = 0, star = 0;
+                for (let i = 0; i < this_body.childNodes.length; i++) {
+                    if (this_body.childNodes[i].nodeName == "H2") {
+                        star = i + 1;
+                    }
+                    if (this_body.childNodes[i].nodeName == "DIV" &&
+                        this_body.childNodes[i].className != "chapter") {
+                        break;
+                    }
+                }
+                const this_childNode = [];
+                for (let i = 0; i < token_dict.length; i++) {
+                    if (token_dict[i] < 5) {
+                        this_childNode[token_dict[i]] = this_body.childNodes[i + star];
+                        b++;
+                    }
+                    else {
+                        this_childNode[token_dict[i] - b] = this_body.childNodes[i + star];
+                    }
+                }
+                for (let i = 0; i < this_childNode.length; i++) {
+                    if (!this_childNode[i]) {
+                        continue;
+                    }
+                    this_body.appendChild(this_childNode[i]);
+                }
+            }
+        }
         const dom = await lib_1.getHtmlDOM(chapterUrl, charset);
         chapterName = (dom.querySelector("#content .h2")).innerText.trim();
+        await sorfPage();
         const content = dom.querySelector("#content");
         if (content) {
             const tagRemoved = "h2, acronym, bdo, big, cite, code, dfn, kbd, q, s, samp, strike, tt, u, var";
