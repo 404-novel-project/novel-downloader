@@ -4,13 +4,9 @@ import { getHtmlDOM, cleanDOM, rm } from "../lib";
 
 export class hetushu implements ruleClass {
   public imageMode: "naive" | "TM";
-  public concurrencyLimit: number;
-  public maxRunLimit: number;
 
   public constructor() {
     this.imageMode = "TM";
-    this.concurrencyLimit = 1;
-    this.maxRunLimit = 1;
   }
 
   public async bookParse(chapterParse: ruleClassNamespace.chapterParse) {

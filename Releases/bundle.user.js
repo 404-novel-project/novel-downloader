@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         小说下载器
-// @version      3.5.2.1619675707983
+// @version      3.5.2.1619676342813
 // @author       bgme
 // @description  一个可扩展的通用型小说下载器。
 // @supportURL   https://github.com/yingziwu/novel-downloader
@@ -1858,8 +1858,6 @@ const lib_1 = __webpack_require__(563);
 class hetushu {
     constructor() {
         this.imageMode = "TM";
-        this.concurrencyLimit = 1;
-        this.maxRunLimit = 1;
     }
     async bookParse(chapterParse) {
         var _a;
