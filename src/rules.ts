@@ -97,7 +97,7 @@ export async function getRule(): Promise<ruleClass> {
       break;
     }
     case "www.266ks.com": {
-      const { c226ks } = await import("./rules/biquge");
+      const { c226ks } = await import("./rules/226ks");
       ruleClass = c226ks;
       break;
     }
