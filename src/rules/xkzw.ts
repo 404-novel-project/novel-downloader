@@ -62,20 +62,19 @@ export class xkzw implements ruleClass {
       columnlist: columnObject[];
       chaptercount: number;
     }
-    const siteChapterList: siteChapterList = await fetch(
-      "http://www.xkzw.org/action.php",
-      {
-        headers: {
-          accept: "application/json, text/javascript, */*",
-          "content-type": "application/x-www-form-urlencoded",
-          "x-requested-with": "XMLHttpRequest",
-        },
-        body: `action=clist&bookid=${bookid}`,
-        method: "POST",
-        mode: "cors",
-        credentials: "include",
-      }
-    ).then((response) => response.json());
+    const apiUrl = [document.location.origin, "action.php"].join("/");
+    console.debug(`[chapter]正在请求${apiUrl}`);
+    const siteChapterList: siteChapterList = await fetch(apiUrl, {
+      headers: {
+        accept: "application/json, text/javascript, */*",
+        "content-type": "application/x-www-form-urlencoded",
+        "x-requested-with": "XMLHttpRequest",
+      },
+      body: `action=clist&bookid=${bookid}`,
+      method: "POST",
+      mode: "cors",
+      credentials: "include",
+    }).then((response) => response.json());
 
     const dl = document.querySelector(
       "#wrapper > div.box_con:nth-child(7) > div:nth-child(1) > dl:nth-child(1)"

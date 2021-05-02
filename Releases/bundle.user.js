@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         小说下载器
-// @version      3.5.2.1619676342813
+// @version      3.5.2.1619957842819
 // @author       bgme
 // @description  一个可扩展的通用型小说下载器。
 // @supportURL   https://github.com/yingziwu/novel-downloader
@@ -19,6 +19,7 @@
 // @match        *://www.shuquge.com/txt/*/index.html
 // @match        *://www.dingdiann.net/ddk*/
 // @match        *://www.xkzw.org/xkzw*/
+// @match        *://www.lewenn.com/lw*/
 // @match        *://www.266ks.com/*/
 // @match        *://www.266ks.com/*/index*.html
 // @match        *://www.hetushu.com/book/*/index.html
@@ -709,13 +710,14 @@ async function getRule() {
             ruleClass = dingdiann;
             break;
         }
+        case "www.lewenn.com":
         case "www.xkzw.org": {
             const { xkzw } = await Promise.resolve().then(() => __webpack_require__(441));
             ruleClass = xkzw;
             break;
         }
         case "www.266ks.com": {
-            const { c226ks } = await Promise.resolve().then(() => __webpack_require__(931));
+            const { c226ks } = await Promise.resolve().then(() => __webpack_require__(502));
             ruleClass = c226ks;
             break;
         }
@@ -938,418 +940,14 @@ exports.c17k = c17k;
 
 /***/ }),
 
-/***/ 931:
+/***/ 502:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.zwdu = exports.c226ks = exports.gebiqu = exports.dingdiann = exports.shuquge = exports.biquwo = void 0;
+exports.c226ks = void 0;
 const main_1 = __webpack_require__(519);
 const lib_1 = __webpack_require__(563);
-class biquwo {
-    constructor() {
-        this.imageMode = "TM";
-    }
-    async bookParse(chapterParse) {
-        const bookUrl = document.location.href;
-        const bookname = (document.querySelector("#info > h1:nth-child(1)")).innerText.trim();
-        const author = (document.querySelector("#info > p:nth-child(2)")).innerText
-            .replace(/作(\s+)?者[：:]/, "")
-            .trim();
-        let introduction;
-        const introDom = document.querySelector("#intro");
-        if (introDom === null) {
-            introduction = null;
-        }
-        else {
-            let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "TM");
-            introduction = introCleantext;
-        }
-        const additionalMetadate = {};
-        const coverUrl = document.querySelector("#fmimg > img")
-            .src;
-        additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
-        additionalMetadate.cover.init();
-        const chapters = [];
-        const dl = document.querySelector("#list>dl");
-        if (dl === null || dl === void 0 ? void 0 : dl.childElementCount) {
-            const dlc = Array.from(dl.children);
-            if (dlc[0].nodeName === "DT" &&
-                dlc[0].innerText.includes("最新章节")) {
-                for (let i = 0; i < (dl === null || dl === void 0 ? void 0 : dl.childElementCount); i++) {
-                    if (i !== 0 && dlc[i].nodeName === "DT") {
-                        delete dlc[0];
-                        break;
-                    }
-                    delete dlc[i];
-                }
-            }
-            const chapterList = dlc.filter((obj) => obj !== undefined);
-            let chapterNumber = 0;
-            let sectionNumber = 0;
-            let sectionName = null;
-            let sectionChapterNumber = 0;
-            for (let i = 0; i < chapterList.length; i++) {
-                const node = chapterList[i];
-                if (node.nodeName === "DT") {
-                    sectionNumber++;
-                    sectionChapterNumber = 0;
-                    sectionName = node.innerText.replace(`《${bookname}》`, "").trim();
-                }
-                else if (node.nodeName === "DD") {
-                    chapterNumber++;
-                    sectionChapterNumber++;
-                    const a = node.firstElementChild;
-                    const chapterName = a.innerText;
-                    const chapterUrl = a.href;
-                    const isVIP = false;
-                    const isPaid = false;
-                    const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, chapterParse, "UTF-8");
-                    chapters.push(chapter);
-                }
-            }
-        }
-        return {
-            bookUrl: bookUrl,
-            bookname: bookname,
-            author: author,
-            introduction: introduction,
-            additionalMetadate: additionalMetadate,
-            chapters: chapters,
-        };
-    }
-    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset) {
-        const dom = await lib_1.getHtmlDOM(chapterUrl, charset);
-        chapterName = (dom.querySelector(".bookname > h1:nth-child(1)")).innerText.trim();
-        const content = dom.querySelector("#content");
-        if (content) {
-            let { dom, text, images } = lib_1.cleanDOM(content, "TM");
-            return {
-                chapterName: chapterName,
-                contentRaw: content,
-                contentText: text,
-                contentHTML: dom,
-                contentImages: images,
-            };
-        }
-        else {
-            return {
-                chapterName: chapterName,
-                contentRaw: null,
-                contentText: null,
-                contentHTML: null,
-                contentImages: null,
-            };
-        }
-    }
-}
-exports.biquwo = biquwo;
-class shuquge {
-    constructor() {
-        this.imageMode = "TM";
-    }
-    async bookParse(chapterParse) {
-        const bookUrl = document.location.href;
-        const bookname = (document.querySelector(".info > h2")).innerText.trim();
-        const author = (document.querySelector(".small > span:nth-child(1)")).innerText
-            .replace(/作(\s+)?者[：:]/, "")
-            .trim();
-        let introduction;
-        const introDom = document.querySelector(".intro");
-        if (introDom === null) {
-            introduction = null;
-        }
-        else {
-            introDom.innerHTML = introDom.innerHTML.replace(/推荐地址：http:\/\/www.shuquge.com\/txt\/\d+\/index\.html/g, "");
-            let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "TM");
-            introduction = introCleantext;
-        }
-        const additionalMetadate = {};
-        const coverUrl = (document.querySelector(".info > .cover > img")).src;
-        additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
-        additionalMetadate.cover.init();
-        const chapters = [];
-        const dl = document.querySelector(".listmain>dl");
-        if (dl === null || dl === void 0 ? void 0 : dl.childElementCount) {
-            const dlc = Array.from(dl.children);
-            if (dlc[0].nodeName === "DT" &&
-                dlc[0].innerText.includes("最新章节")) {
-                for (let i = 0; i < (dl === null || dl === void 0 ? void 0 : dl.childElementCount); i++) {
-                    if (i !== 0 && dlc[i].nodeName === "DT") {
-                        delete dlc[0];
-                        break;
-                    }
-                    delete dlc[i];
-                }
-            }
-            const chapterList = dlc.filter((obj) => obj !== undefined);
-            let chapterNumber = 0;
-            let sectionNumber = 0;
-            let sectionName = null;
-            let sectionChapterNumber = 0;
-            for (let i = 0; i < chapterList.length; i++) {
-                const node = chapterList[i];
-                if (node.nodeName === "DT") {
-                    sectionNumber++;
-                    sectionChapterNumber = 0;
-                    sectionName = node.innerText.replace(`《${bookname}》`, "").trim();
-                }
-                else if (node.nodeName === "DD") {
-                    chapterNumber++;
-                    sectionChapterNumber++;
-                    const a = node.firstElementChild;
-                    const chapterName = a.innerText;
-                    const chapterUrl = a.href;
-                    const isVIP = false;
-                    const isPaid = false;
-                    const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, chapterParse, "UTF-8");
-                    chapters.push(chapter);
-                }
-            }
-        }
-        return {
-            bookUrl: bookUrl,
-            bookname: bookname,
-            author: author,
-            introduction: introduction,
-            additionalMetadate: additionalMetadate,
-            chapters: chapters,
-        };
-    }
-    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset) {
-        const dom = await lib_1.getHtmlDOM(chapterUrl, charset);
-        chapterName = (dom.querySelector(".content > h1:nth-child(1)")).innerText.trim();
-        const content = dom.querySelector("#content");
-        if (content) {
-            content.innerHTML = content.innerHTML
-                .replace("请记住本书首发域名：www.shuquge.com。书趣阁_笔趣阁手机版阅读网址：m.shuquge.com", "")
-                .replace(/http:\/\/www.shuquge.com\/txt\/\d+\/\d+\.html/, "");
-            let { dom, text, images } = lib_1.cleanDOM(content, "TM");
-            return {
-                chapterName: chapterName,
-                contentRaw: content,
-                contentText: text,
-                contentHTML: dom,
-                contentImages: images,
-            };
-        }
-        else {
-            return {
-                chapterName: chapterName,
-                contentRaw: null,
-                contentText: null,
-                contentHTML: null,
-                contentImages: null,
-            };
-        }
-    }
-}
-exports.shuquge = shuquge;
-class dingdiann {
-    constructor() {
-        this.imageMode = "TM";
-        this.concurrencyLimit = 5;
-    }
-    async bookParse(chapterParse) {
-        const bookUrl = document.location.href;
-        const bookname = (document.querySelector("#info > h1:nth-child(1)")).innerText.trim();
-        const author = (document.querySelector("#info > p:nth-child(2)")).innerText
-            .replace(/作(\s+)?者[：:]/, "")
-            .trim();
-        let introduction;
-        const introDom = document.querySelector("#intro");
-        if (introDom === null) {
-            introduction = null;
-        }
-        else {
-            let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "TM");
-            introduction = introCleantext;
-        }
-        const additionalMetadate = {};
-        const coverUrl = document.querySelector("#fmimg > img")
-            .src;
-        additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
-        additionalMetadate.cover.init();
-        const chapters = [];
-        const dl = document.querySelector("#list>dl");
-        if (dl === null || dl === void 0 ? void 0 : dl.childElementCount) {
-            const dlc = Array.from(dl.children);
-            if (dlc[0].nodeName === "DT" &&
-                dlc[0].innerText.includes("最新章节")) {
-                for (let i = 0; i < (dl === null || dl === void 0 ? void 0 : dl.childElementCount); i++) {
-                    if (i !== 0 && dlc[i].nodeName === "DT") {
-                        delete dlc[0];
-                        break;
-                    }
-                    delete dlc[i];
-                }
-            }
-            const chapterList = dlc.filter((obj) => obj !== undefined);
-            let chapterNumber = 0;
-            let sectionNumber = 0;
-            let sectionName = null;
-            let sectionChapterNumber = 0;
-            for (let i = 0; i < chapterList.length; i++) {
-                const node = chapterList[i];
-                if (node.nodeName === "DT") {
-                    sectionNumber++;
-                    sectionChapterNumber = 0;
-                    sectionName = node.innerText.replace(`《${bookname}》`, "").trim();
-                }
-                else if (node.nodeName === "DD") {
-                    chapterNumber++;
-                    sectionChapterNumber++;
-                    const a = node.firstElementChild;
-                    const chapterName = a.innerText;
-                    const chapterUrl = a.href;
-                    const isVIP = false;
-                    const isPaid = false;
-                    const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, chapterParse, "UTF-8");
-                    chapters.push(chapter);
-                }
-            }
-        }
-        return {
-            bookUrl: bookUrl,
-            bookname: bookname,
-            author: author,
-            introduction: introduction,
-            additionalMetadate: additionalMetadate,
-            chapters: chapters,
-        };
-    }
-    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset) {
-        const dom = await lib_1.getHtmlDOM(chapterUrl, charset);
-        chapterName = (dom.querySelector(".bookname > h1:nth-child(1)")).innerText.trim();
-        const content = dom.querySelector("#content");
-        const ad = '<div align="center"><a href="javascript:postError();" style="text-align:center;color:red;">章节错误,点此举报(免注册)</a>,举报后维护人员会在两分钟内校正章节内容,请耐心等待,并刷新页面。</div>';
-        content.innerHTML = content.innerHTML
-            .replace(ad, "")
-            .replace(/http:\/\/www.shuquge.com\/txt\/\d+\/\d+\.html/, "");
-        if (content) {
-            let { dom, text, images } = lib_1.cleanDOM(content, "TM");
-            return {
-                chapterName: chapterName,
-                contentRaw: content,
-                contentText: text,
-                contentHTML: dom,
-                contentImages: images,
-            };
-        }
-        else {
-            return {
-                chapterName: chapterName,
-                contentRaw: null,
-                contentText: null,
-                contentHTML: null,
-                contentImages: null,
-            };
-        }
-    }
-}
-exports.dingdiann = dingdiann;
-class gebiqu {
-    constructor() {
-        this.imageMode = "TM";
-        this.concurrencyLimit = 5;
-    }
-    async bookParse(chapterParse) {
-        const bookUrl = document.location.href;
-        const bookname = (document.querySelector("#info > h1:nth-child(1)")).innerText.trim();
-        const author = (document.querySelector("#info > p:nth-child(2)")).innerText
-            .replace(/作(\s+)?者[：:]/, "")
-            .trim();
-        let introduction;
-        const introDom = document.querySelector("#intro");
-        if (introDom === null) {
-            introduction = null;
-        }
-        else {
-            introDom.innerHTML = introDom.innerHTML.replace(/如果您喜欢.+，别忘记分享给朋友/g, "");
-            lib_1.rm('a[href^="http://down.gebiqu.com"]', false, introDom);
-            let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "TM");
-            introduction = introCleantext;
-        }
-        const additionalMetadate = {};
-        const coverUrl = document.querySelector("#fmimg > img")
-            .src;
-        additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
-        additionalMetadate.cover.init();
-        const chapters = [];
-        const dl = document.querySelector("#list>dl");
-        if (dl === null || dl === void 0 ? void 0 : dl.childElementCount) {
-            const dlc = Array.from(dl.children);
-            if (dlc[0].nodeName === "DT" &&
-                dlc[0].innerText.includes("最新的八个章节")) {
-                for (let i = 0; i < (dl === null || dl === void 0 ? void 0 : dl.childElementCount); i++) {
-                    if (i !== 0 && dlc[i].nodeName === "DT") {
-                        delete dlc[0];
-                        break;
-                    }
-                    delete dlc[i];
-                }
-            }
-            const chapterList = dlc.filter((obj) => obj !== undefined);
-            let chapterNumber = 0;
-            let sectionNumber = 0;
-            let sectionName = null;
-            let sectionChapterNumber = 0;
-            for (let i = 0; i < chapterList.length; i++) {
-                const node = chapterList[i];
-                if (node.nodeName === "DT") {
-                    sectionNumber++;
-                    sectionChapterNumber = 0;
-                    sectionName = node.innerText.replace(`《${bookname}》`, "").trim();
-                }
-                else if (node.nodeName === "DD") {
-                    chapterNumber++;
-                    sectionChapterNumber++;
-                    const a = node.firstElementChild;
-                    const chapterName = a.innerText;
-                    const chapterUrl = a.href;
-                    const isVIP = false;
-                    const isPaid = false;
-                    const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, chapterParse, "UTF-8");
-                    chapters.push(chapter);
-                }
-            }
-        }
-        return {
-            bookUrl: bookUrl,
-            bookname: bookname,
-            author: author,
-            introduction: introduction,
-            additionalMetadate: additionalMetadate,
-            chapters: chapters,
-        };
-    }
-    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset) {
-        const dom = await lib_1.getHtmlDOM(chapterUrl, charset);
-        chapterName = (dom.querySelector(".bookname > h1:nth-child(1)")).innerText.trim();
-        const content = dom.querySelector("#content");
-        content.innerHTML = content.innerHTML.replace(/"www.gebiqu.com"/g, "");
-        if (content) {
-            let { dom, text, images } = lib_1.cleanDOM(content, "TM");
-            return {
-                chapterName: chapterName,
-                contentRaw: content,
-                contentText: text,
-                contentHTML: dom,
-                contentImages: images,
-            };
-        }
-        else {
-            return {
-                chapterName: chapterName,
-                contentRaw: null,
-                contentText: null,
-                contentHTML: null,
-                contentImages: null,
-            };
-        }
-    }
-}
-exports.gebiqu = gebiqu;
 class c226ks {
     constructor() {
         this.imageMode = "TM";
@@ -1378,6 +976,7 @@ class c226ks {
         const indexUrls = Array.from(document.querySelectorAll('[name="pageselect"] > option')).map((opt) => document.location.origin + opt.getAttribute("value"));
         let lis = [];
         for (const indexUrl of indexUrls) {
+            console.debug(`[chapter]请求${indexUrl}`);
             const dom = await lib_1.getHtmlDOM(indexUrl, "UTF-8");
             const ul = dom.querySelector("div.row.row-section > div > div:nth-child(4) > ul");
             if (ul === null || ul === void 0 ? void 0 : ul.childElementCount) {
@@ -1434,102 +1033,284 @@ class c226ks {
     }
 }
 exports.c226ks = c226ks;
+
+
+/***/ }),
+
+/***/ 931:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.zwdu = exports.gebiqu = exports.dingdiann = exports.shuquge = exports.biquwo = void 0;
+const main_1 = __webpack_require__(519);
+const lib_1 = __webpack_require__(563);
+async function bookParseTemp({ bookUrl, bookname, author, introDom, introDomPatch, coverUrl, chapterListSelector, charset, chapterParse, }) {
+    let introduction;
+    if (introDom === null) {
+        introduction = null;
+    }
+    else {
+        introDom = introDomPatch(introDom);
+        let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "TM");
+        introduction = introCleantext;
+    }
+    const additionalMetadate = {};
+    additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
+    additionalMetadate.cover.init();
+    const chapters = [];
+    const dl = document.querySelector(chapterListSelector);
+    if (dl === null || dl === void 0 ? void 0 : dl.childElementCount) {
+        const dlc = Array.from(dl.children);
+        if (dlc[0].nodeName === "DT" &&
+            (dlc[0].innerText.includes("最新章节") ||
+                dlc[0].innerText.includes("最新的八个章节"))) {
+            for (let i = 0; i < (dl === null || dl === void 0 ? void 0 : dl.childElementCount); i++) {
+                if (i !== 0 && dlc[i].nodeName === "DT") {
+                    delete dlc[0];
+                    break;
+                }
+                delete dlc[i];
+            }
+        }
+        const chapterList = dlc.filter((obj) => obj !== undefined);
+        let chapterNumber = 0;
+        let sectionNumber = 0;
+        let sectionName = null;
+        let sectionChapterNumber = 0;
+        for (let i = 0; i < chapterList.length; i++) {
+            const node = chapterList[i];
+            if (node.nodeName === "DT") {
+                sectionNumber++;
+                sectionChapterNumber = 0;
+                sectionName = node.innerText.replace(`《${bookname}》`, "").trim();
+            }
+            else if (node.nodeName === "DD") {
+                chapterNumber++;
+                sectionChapterNumber++;
+                const a = node.firstElementChild;
+                const chapterName = a.innerText;
+                const chapterUrl = a.href;
+                const isVIP = false;
+                const isPaid = false;
+                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, chapterParse, charset);
+                chapters.push(chapter);
+            }
+        }
+    }
+    return {
+        bookUrl: bookUrl,
+        bookname: bookname,
+        author: author,
+        introduction: introduction,
+        additionalMetadate: additionalMetadate,
+        chapters: chapters,
+    };
+}
+async function chapterParseTemp({ dom, chapterUrl, chapterName, contenSelector, contentPatch, charset, }) {
+    let content = dom.querySelector(contenSelector);
+    if (content) {
+        content = contentPatch(content);
+        let { dom, text, images } = lib_1.cleanDOM(content, "TM");
+        return {
+            chapterName: chapterName,
+            contentRaw: content,
+            contentText: text,
+            contentHTML: dom,
+            contentImages: images,
+        };
+    }
+    else {
+        return {
+            chapterName: chapterName,
+            contentRaw: null,
+            contentText: null,
+            contentHTML: null,
+            contentImages: null,
+        };
+    }
+}
+class biquwo {
+    constructor() {
+        this.imageMode = "TM";
+    }
+    async bookParse(chapterParse) {
+        return bookParseTemp({
+            bookUrl: document.location.href,
+            bookname: (document.querySelector("#info > h1:nth-child(1)")).innerText.trim(),
+            author: (document.querySelector("#info > p:nth-child(2)")).innerText
+                .replace(/作(\s+)?者[：:]/, "")
+                .trim(),
+            introDom: document.querySelector("#intro"),
+            introDomPatch: (introDom) => introDom,
+            coverUrl: document.querySelector("#fmimg > img").src,
+            chapterListSelector: "#list>dl",
+            charset: "UTF-8",
+            chapterParse: chapterParse,
+        });
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset) {
+        const dom = await lib_1.getHtmlDOM(chapterUrl, charset);
+        return chapterParseTemp({
+            dom,
+            chapterUrl,
+            chapterName: (dom.querySelector(".bookname > h1:nth-child(1)")).innerText.trim(),
+            contenSelector: "#content",
+            contentPatch: (content) => content,
+            charset,
+        });
+    }
+}
+exports.biquwo = biquwo;
+class shuquge {
+    constructor() {
+        this.imageMode = "TM";
+    }
+    async bookParse(chapterParse) {
+        return bookParseTemp({
+            bookUrl: document.location.href,
+            bookname: (document.querySelector(".info > h2")).innerText.trim(),
+            author: (document.querySelector(".small > span:nth-child(1)")).innerText
+                .replace(/作(\s+)?者[：:]/, "")
+                .trim(),
+            introDom: document.querySelector(".intro"),
+            introDomPatch: (introDom) => {
+                introDom.innerHTML = introDom.innerHTML.replace(/推荐地址：http:\/\/www.shuquge.com\/txt\/\d+\/index\.html/g, "");
+                return introDom;
+            },
+            coverUrl: (document.querySelector(".info > .cover > img")).src,
+            chapterListSelector: ".listmain>dl",
+            charset: "UTF-8",
+            chapterParse: chapterParse,
+        });
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset) {
+        const dom = await lib_1.getHtmlDOM(chapterUrl, charset);
+        return chapterParseTemp({
+            dom,
+            chapterUrl,
+            chapterName: (dom.querySelector(".content > h1:nth-child(1)")).innerText.trim(),
+            contenSelector: "#content",
+            contentPatch: (content) => {
+                content.innerHTML = content.innerHTML
+                    .replace("请记住本书首发域名：www.shuquge.com。书趣阁_笔趣阁手机版阅读网址：m.shuquge.com", "")
+                    .replace(/http:\/\/www.shuquge.com\/txt\/\d+\/\d+\.html/, "");
+                return content;
+            },
+            charset,
+        });
+    }
+}
+exports.shuquge = shuquge;
+class dingdiann {
+    constructor() {
+        this.imageMode = "TM";
+        this.concurrencyLimit = 5;
+    }
+    async bookParse(chapterParse) {
+        return bookParseTemp({
+            bookUrl: document.location.href,
+            bookname: (document.querySelector("#info > h1:nth-child(1)")).innerText.trim(),
+            author: (document.querySelector("#info > p:nth-child(2)")).innerText
+                .replace(/作(\s+)?者[：:]/, "")
+                .trim(),
+            introDom: document.querySelector("#intro"),
+            introDomPatch: (introDom) => introDom,
+            coverUrl: document.querySelector("#fmimg > img").src,
+            chapterListSelector: "#list>dl",
+            charset: "UTF-8",
+            chapterParse: chapterParse,
+        });
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset) {
+        const dom = await lib_1.getHtmlDOM(chapterUrl, charset);
+        return chapterParseTemp({
+            dom,
+            chapterUrl,
+            chapterName: (dom.querySelector(".bookname > h1:nth-child(1)")).innerText.trim(),
+            contenSelector: "#content",
+            contentPatch: (content) => {
+                const ad = '<div align="center"><a href="javascript:postError();" style="text-align:center;color:red;">章节错误,点此举报(免注册)</a>,举报后维护人员会在两分钟内校正章节内容,请耐心等待,并刷新页面。</div>';
+                content.innerHTML = content.innerHTML
+                    .replace(ad, "")
+                    .replace(/http:\/\/www.shuquge.com\/txt\/\d+\/\d+\.html/, "");
+                return content;
+            },
+            charset,
+        });
+    }
+}
+exports.dingdiann = dingdiann;
+class gebiqu {
+    constructor() {
+        this.imageMode = "TM";
+        this.concurrencyLimit = 5;
+    }
+    async bookParse(chapterParse) {
+        return bookParseTemp({
+            bookUrl: document.location.href,
+            bookname: (document.querySelector("#info > h1:nth-child(1)")).innerText.trim(),
+            author: (document.querySelector("#info > p:nth-child(2)")).innerText
+                .replace(/作(\s+)?者[：:]/, "")
+                .trim(),
+            introDom: document.querySelector("#intro"),
+            introDomPatch: (introDom) => {
+                introDom.innerHTML = introDom.innerHTML.replace(/如果您喜欢.+，别忘记分享给朋友/g, "");
+                lib_1.rm('a[href^="http://down.gebiqu.com"]', false, introDom);
+                return introDom;
+            },
+            coverUrl: document.querySelector("#fmimg > img").src,
+            chapterListSelector: "#list>dl",
+            charset: "UTF-8",
+            chapterParse: chapterParse,
+        });
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset) {
+        const dom = await lib_1.getHtmlDOM(chapterUrl, charset);
+        return chapterParseTemp({
+            dom,
+            chapterUrl,
+            chapterName: (dom.querySelector(".bookname > h1:nth-child(1)")).innerText.trim(),
+            contenSelector: "#content",
+            contentPatch: (content) => {
+                content.innerHTML = content.innerHTML.replace(/"www.gebiqu.com"/g, "");
+                return content;
+            },
+            charset,
+        });
+    }
+}
+exports.gebiqu = gebiqu;
 class zwdu {
     constructor() {
         this.imageMode = "TM";
         this.charset = "GBK";
     }
     async bookParse(chapterParse) {
-        const bookUrl = document.location.href;
-        const bookname = (document.querySelector("#info > h1:nth-child(1)")).innerText.trim();
-        const author = (document.querySelector("#info > p:nth-child(2)")).innerText
-            .replace(/作(\s+)?者[：:]/, "")
-            .trim();
-        let introduction;
-        const introDom = document.querySelector("#intro");
-        if (introDom === null) {
-            introduction = null;
-        }
-        else {
-            let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "TM");
-            introduction = introCleantext;
-        }
-        const additionalMetadate = {};
-        const coverUrl = document.querySelector("#fmimg > img")
-            .src;
-        additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
-        additionalMetadate.cover.init();
-        const chapters = [];
-        const dl = document.querySelector("#list>dl");
-        if (dl === null || dl === void 0 ? void 0 : dl.childElementCount) {
-            const dlc = Array.from(dl.children);
-            if (dlc[0].nodeName === "DT" &&
-                dlc[0].innerText.includes("最新章节")) {
-                for (let i = 0; i < (dl === null || dl === void 0 ? void 0 : dl.childElementCount); i++) {
-                    if (i !== 0 && dlc[i].nodeName === "DT") {
-                        delete dlc[0];
-                        break;
-                    }
-                    delete dlc[i];
-                }
-            }
-            const chapterList = dlc.filter((obj) => obj !== undefined);
-            let chapterNumber = 0;
-            let sectionNumber = 0;
-            let sectionName = null;
-            let sectionChapterNumber = 0;
-            for (let i = 0; i < chapterList.length; i++) {
-                const node = chapterList[i];
-                if (node.nodeName === "DT") {
-                    sectionNumber++;
-                    sectionChapterNumber = 0;
-                    sectionName = node.innerText.replace(`《${bookname}》`, "").trim();
-                }
-                else if (node.nodeName === "DD") {
-                    chapterNumber++;
-                    sectionChapterNumber++;
-                    const a = node.firstElementChild;
-                    const chapterName = a.innerText;
-                    const chapterUrl = a.href;
-                    const isVIP = false;
-                    const isPaid = false;
-                    const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, chapterParse, "GBK");
-                    chapters.push(chapter);
-                }
-            }
-        }
-        return {
-            bookUrl: bookUrl,
-            bookname: bookname,
-            author: author,
-            introduction: introduction,
-            additionalMetadate: additionalMetadate,
-            chapters: chapters,
-        };
+        return bookParseTemp({
+            bookUrl: document.location.href,
+            bookname: (document.querySelector("#info > h1:nth-child(1)")).innerText.trim(),
+            author: (document.querySelector("#info > p:nth-child(2)")).innerText
+                .replace(/作(\s+)?者[：:]/, "")
+                .trim(),
+            introDom: document.querySelector("#intro"),
+            introDomPatch: (introDom) => introDom,
+            coverUrl: document.querySelector("#fmimg > img").src,
+            chapterListSelector: "#list>dl",
+            charset: "GBK",
+            chapterParse: chapterParse,
+        });
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset) {
         const dom = await lib_1.getHtmlDOM(chapterUrl, charset);
-        chapterName = (dom.querySelector(".bookname > h1:nth-child(1)")).innerText.trim();
-        const content = dom.querySelector("#content");
-        if (content) {
-            let { dom, text, images } = lib_1.cleanDOM(content, "TM");
-            return {
-                chapterName: chapterName,
-                contentRaw: content,
-                contentText: text,
-                contentHTML: dom,
-                contentImages: images,
-            };
-        }
-        else {
-            return {
-                chapterName: chapterName,
-                contentRaw: null,
-                contentText: null,
-                contentHTML: null,
-                contentImages: null,
-            };
-        }
+        return chapterParseTemp({
+            dom,
+            chapterUrl,
+            chapterName: (dom.querySelector(".bookname > h1:nth-child(1)")).innerText.trim(),
+            contenSelector: "#content",
+            contentPatch: (content) => content,
+            charset,
+        });
     }
 }
 exports.zwdu = zwdu;
@@ -2301,7 +2082,8 @@ class jjwxc {
                         authorSayDom.className = "authorSay";
                         rawDom.appendChild(hr);
                         rawDom.appendChild(authorSayDom);
-                        rawText = rawText + "\n\n" + "-".repeat(20) + "\n\n" + authorSayText;
+                        rawText =
+                            rawText + "\n\n" + "-".repeat(20) + "\n\n" + authorSayText;
                     }
                     let finalDom = rawDom;
                     let finalText = rawText;
@@ -25312,7 +25094,9 @@ class xkzw {
         additionalMetadate.cover.init();
         const chapters = [];
         const bookid = unsafeWindow.bookId;
-        const siteChapterList = await fetch("http://www.xkzw.org/action.php", {
+        const apiUrl = [document.location.origin, "action.php"].join("/");
+        console.debug(`[chapter]正在请求${apiUrl}`);
+        const siteChapterList = await fetch(apiUrl, {
             headers: {
                 accept: "application/json, text/javascript, */*",
                 "content-type": "application/x-www-form-urlencoded",

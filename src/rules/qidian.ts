@@ -1,4 +1,9 @@
-import { BookAdditionalMetadate, attachmentClass, Chapter, Status } from "../main";
+import {
+  BookAdditionalMetadate,
+  attachmentClass,
+  Chapter,
+  Status,
+} from "../main";
 import { ggetHtmlDOM, cleanDOM, co, cosCompare, sleep, gfetch } from "../lib";
 import { ruleClass, ruleClassNamespace, chapterParseObject } from "../rules";
 

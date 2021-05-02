@@ -91,6 +91,7 @@ export async function getRule(): Promise<ruleClass> {
       ruleClass = dingdiann;
       break;
     }
+    case "www.lewenn.com":
     case "www.xkzw.org": {
       const { xkzw } = await import("./rules/xkzw");
       ruleClass = xkzw;

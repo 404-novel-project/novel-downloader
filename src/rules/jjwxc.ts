@@ -380,7 +380,7 @@ export class jjwxc implements ruleClass {
               "TM"
             );
             [authorSayDom, authorSayText] = [adom, atext];
-          }  
+          }
           rm("div", true, content);
           content.innerHTML = content.innerHTML.replace(
             new RegExp("@无限好文，尽在晋江文学城", "g"),
@@ -392,8 +392,9 @@ export class jjwxc implements ruleClass {
             authorSayDom.className = "authorSay";
             rawDom.appendChild(hr);
             rawDom.appendChild(authorSayDom);
-  
-            rawText = rawText + "\n\n" + "-".repeat(20) + "\n\n" + authorSayText;
+
+            rawText =
+              rawText + "\n\n" + "-".repeat(20) + "\n\n" + authorSayText;
           }
 
           let finalDom = rawDom;
@@ -421,7 +422,7 @@ export class jjwxc implements ruleClass {
 
             finalDom.appendChild(replacedDom);
           }
-  
+
           return {
             chapterName: chapterName,
             contentRaw: content,

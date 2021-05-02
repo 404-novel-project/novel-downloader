@@ -4,13 +4,7 @@ import {
   Chapter,
   Status,
 } from "../main";
-import {
-  getHtmlDOM,
-  ggetHtmlDOM,
-  cleanDOM,
-  co,
-  cosCompare,
-} from "../lib";
+import { getHtmlDOM, ggetHtmlDOM, cleanDOM, co, cosCompare } from "../lib";
 import { ruleClass, ruleClassNamespace, chapterParseObject } from "../rules";
 
 export class zongheng implements ruleClass {

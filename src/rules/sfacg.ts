@@ -1,4 +1,9 @@
-import { BookAdditionalMetadate, attachmentClass, Chapter, Status } from "../main";
+import {
+  BookAdditionalMetadate,
+  attachmentClass,
+  Chapter,
+  Status,
+} from "../main";
 import { getHtmlDOM, cleanDOM, co, cosCompare } from "../lib";
 import {
   ruleClass,

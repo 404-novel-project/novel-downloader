@@ -62,9 +62,7 @@ export class shuhai implements ruleClass {
 
     const chapters: Chapter[] = [];
 
-    if (
-      document.querySelectorAll("#catalog > .chapter-item").length === 0
-    ) {
+    if (document.querySelectorAll("#catalog > .chapter-item").length === 0) {
       await sleep(3000);
     }
 
