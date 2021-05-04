@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         小说下载器
-// @version      3.5.2.1619957842819
+// @version      3.5.3.1620115035798
 // @author       bgme
 // @description  一个可扩展的通用型小说下载器。
 // @supportURL   https://github.com/yingziwu/novel-downloader
@@ -8,6 +8,7 @@
 // @match        *://book.sfacg.com/Novel/*/MainIndex/
 // @match        *://book.qidian.com/info/*
 // @match        *://www.jjwxc.net/onebook.php?novelid=*
+// @match        *://www.gongzicp.com/v4/novel-*.html
 // @match        *://book.zongheng.com/showchapter/*.html
 // @match        *://huayu.zongheng.com/showchapter/*.html
 // @match        *://www.17k.com/list/*.html
@@ -48,6 +49,7 @@
 // @grant        GM_getTabs
 // @grant        GM.info
 // @grant        GM.xmlHttpRequest
+// @connect      self
 // @connect      img.shouda8.com
 // @connect      qidian.com
 // @connect      yuewen.com
@@ -60,10 +62,12 @@
 // @connect      17k.com
 // @connect      www.shuhai.com
 // @connect      img.uukanshu.com
-// @connect      oss-accelerate.aliyuncs.com
+// @connect      aliyuncs.com
 // @connect      cdn.bcebos.com
 // @connect      rs.sfacg.com
 // @connect      shuhai.com
+// @connect      ch-intel.com
+// @connect      *
 // @require      https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js#sha512-Qlv6VSKh1gDKGoJbnyA5RMXYcvnpIqhO++MhIM2fStMcGT9i2T//tSwYFlcyoRRDcDZ+TYHpH8azBBCyhpSeqw==
 // @require      https://cdn.jsdelivr.net/npm/jszip@3.6.0/dist/jszip.min.js#sha512-uVSVjE7zYsGz4ag0HEzfugJ78oHCI1KhdkivjQro8ABL/PRiEO4ROwvrolYAcZnky0Fl/baWKYilQfWvESliRA==
 // @require      https://cdn.jsdelivr.net/npm/crypto-js@4.0.0/crypto-js.min.js#sha512-s+p/j7+gSFJa1SUEwmPBAlitcUccgbaTTM3yRSmDHUp0UCcRdBMgI2toIT97ZKGKItfV3N66PEZbHcT/iS5thg==
@@ -634,7 +638,12 @@ class attachmentClass {
     }
     tmDownloadImage() {
         this.status = Status.downloading;
-        return lib_1.gfetch(this.imageUrl, { responseType: "blob" })
+        return lib_1.gfetch(this.imageUrl, {
+            headers: {
+                referrer: this.referer ? this.referer : document.location.origin,
+            },
+            responseType: "blob",
+        })
             .then((response) => {
             if (response.status >= 200 && response.status <= 299) {
                 this.status = Status.finished;
@@ -783,6 +792,11 @@ async function getRule() {
         case "mm.shuhai.com": {
             const { shuhai } = await Promise.resolve().then(() => __webpack_require__(113));
             ruleClass = shuhai;
+            break;
+        }
+        case "www.gongzicp.com": {
+            const { gongzicp } = await Promise.resolve().then(() => __webpack_require__(374));
+            ruleClass = gongzicp;
             break;
         }
         default: {
@@ -1624,6 +1638,288 @@ class ciweimao {
     }
 }
 exports.ciweimao = ciweimao;
+
+
+/***/ }),
+
+/***/ 374:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.gongzicp = void 0;
+const main_1 = __webpack_require__(519);
+const lib_1 = __webpack_require__(563);
+class gongzicp {
+    constructor() {
+        this.imageMode = "TM";
+        this.concurrencyLimit = 1;
+    }
+    async bookParse(chapterParse) {
+        const bookUrl = document.location.href;
+        const bookId = (document.querySelector("span.id")).innerText.replace("CP", "");
+        if (!bookId) {
+            throw new Error("获取bookID出错");
+        }
+        const novelGetInfoBaseUrl = "https://www.gongzicp.com/webapi/novel/novelGetInfo";
+        const novelGetInfoUrl = new URL(novelGetInfoBaseUrl);
+        novelGetInfoUrl.searchParams.set("id", bookId);
+        console.debug(`请求地址: ${novelGetInfoUrl.toString()}`);
+        const novelInfo = await fetch(novelGetInfoUrl.toString(), {
+            credentials: "include",
+            headers: {
+                Accept: "application/json, text/plain, */*",
+                Client: "pc",
+                Lang: "cn",
+                "Content-Type": "application/json;charset=utf-8",
+            },
+            referrer: bookUrl,
+            method: "GET",
+            mode: "cors",
+        }).then((response) => response.json());
+        if (novelInfo.code !== 200) {
+            throw new Error(`数据接口请求失败，URL:${novelGetInfoUrl.toString()}`);
+        }
+        const data = novelInfo.data;
+        const bookname = data.novelInfo.novel_name;
+        const author = data.novelInfo.author_nickname;
+        let introduction;
+        const introDom = document.createElement("div");
+        introDom.innerHTML = data.novelInfo.novel_info;
+        let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "TM");
+        introduction = introCleantext;
+        const additionalMetadate = {};
+        const coverUrl = data.novelInfo.novel_cover;
+        additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
+        additionalMetadate.cover.init();
+        additionalMetadate.tags = data.novelInfo.tag_list;
+        async function isLogin() {
+            const getUserInfoUrl = "https://www.gongzicp.com/user/getUserInfo";
+            console.debug(`正在请求: ${getUserInfoUrl}`);
+            const userInfo = await fetch(getUserInfoUrl, {
+                headers: {
+                    accept: "application/json, text/javascript, */*; q=0.01",
+                    "x-requested-with": "XMLHttpRequest",
+                },
+                method: "GET",
+                mode: "cors",
+                credentials: "include",
+            }).then((response) => response.json());
+            if (userInfo.code === 200) {
+                return true;
+            }
+            return false;
+        }
+        const logined = await isLogin();
+        const chapters = [];
+        const _chapterList = data.chapterList;
+        let sectionNumber = 0;
+        let sectionName = null;
+        let sectionChapterNumber = 0;
+        for (const chapterObj of _chapterList) {
+            if (chapterObj.type === "volume") {
+                sectionNumber = chapterObj.vid;
+                sectionName = chapterObj.name;
+                sectionChapterNumber = 0;
+            }
+            else if (chapterObj.type === "item") {
+                const chapterUrl = [
+                    document.location.origin,
+                    "v4",
+                    `read-${chapterObj.id}.html`,
+                ].join("/");
+                const chapterNumber = Number(chapterObj.order);
+                const chapterName = chapterObj.name;
+                const isVIP = chapterObj.pay;
+                const isPaid = chapterObj.is_sub;
+                sectionChapterNumber++;
+                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, chapterParse, "UTF-8");
+                if (isVIP && !(logined && chapter.isPaid)) {
+                    chapter.status = main_1.Status.aborted;
+                }
+                chapters.push(chapter);
+            }
+        }
+        return {
+            bookUrl: bookUrl,
+            bookname: bookname,
+            author: author,
+            introduction: introduction,
+            additionalMetadate: additionalMetadate,
+            chapters: chapters,
+        };
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset) {
+        function cpDecrypt(content_orig) {
+            const setIv = (key) => {
+                key = key + parseInt("165455", 14).toString(32);
+                const iv = CryptoJS.enc.Utf8.parse("$h$b3!" + key);
+                return iv;
+            };
+            const setKey = (value) => {
+                value = value + parseInt("4d5a6c8", 14).toString(36);
+                const key = CryptoJS.enc.Utf8.parse(value + "A");
+                return key;
+            };
+            const setcfg = (iv) => {
+                return {
+                    mode: CryptoJS.mode.CBC,
+                    padding: CryptoJS.pad.Pkcs7,
+                    iv: iv,
+                };
+            };
+            const encrypt = (value, key, cfg) => {
+                if ("string" != typeof value) {
+                    value = JSON.stringify(value);
+                }
+                const xml = CryptoJS.enc.Utf8.parse(value);
+                return CryptoJS.AES.encrypt(xml, key, cfg).toString();
+            };
+            const decrypt = (secrets, key, cfg) => {
+                const value = CryptoJS.AES.decrypt(secrets, key, cfg);
+                return CryptoJS.enc.Utf8.stringify(value).toString();
+            };
+            let _CP_NUXT;
+            let LCngpxaF_substr;
+            if (_CP_NUXT) {
+                LCngpxaF_substr = _CP_NUXT.state.CpST.LCngpxaF.substr(2, 10);
+            }
+            else {
+                LCngpxaF_substr = (unsafeWindow).__NUXT__.state.CpST.LCngpxaF.substr(1, 10);
+            }
+            const iv = setIv("iGzsYn");
+            const key = setKey(LCngpxaF_substr);
+            const cfg = setcfg(iv);
+            const content = decrypt(content_orig, key, cfg);
+            return content;
+        }
+        async function getChapter() {
+            const _cid = chapterUrl
+                .split("/")
+                .slice(-1)[0]
+                .match(/read-(\d+).html/);
+            if ((_cid === null || _cid === void 0 ? void 0 : _cid.length) === 2) {
+                const cid = _cid[1];
+                const chapterGetInfoBaseUrl = "https://www.gongzicp.com/webapi/novel/chapterGetInfo";
+                const chapterGetInfoUrl = new URL(chapterGetInfoBaseUrl);
+                chapterGetInfoUrl.searchParams.set("cid", cid);
+                chapterGetInfoUrl.searchParams.set("nid", "0");
+                console.debug(`请求地址: ${chapterGetInfoUrl.toString()}, Referrer: ${chapterUrl}`);
+                const result = await fetch(chapterGetInfoUrl.toString(), {
+                    credentials: "include",
+                    headers: {
+                        Accept: "application/json, text/plain, */*",
+                        Client: "pc",
+                        Lang: "cn",
+                        "Content-Type": "application/json;charset=utf-8",
+                    },
+                    referrer: chapterUrl,
+                    method: "GET",
+                    mode: "cors",
+                }).then((resp) => resp.json());
+                if (result.code === 200) {
+                    const chapterInfo = result.data.chapterInfo;
+                    if (chapterInfo.chapterPrice !== 0 &&
+                        chapterInfo.content.length === 0) {
+                        return {
+                            chapterName: chapterName,
+                            contentRaw: null,
+                            contentText: null,
+                            contentHTML: null,
+                            contentImages: null,
+                        };
+                    }
+                    else if (chapterInfo.chapterPrice === 0 ||
+                        (chapterInfo.chapterPrice !== 0 && chapterInfo.content.length !== 0)) {
+                        const content = cpDecrypt(chapterInfo.content);
+                        const contentRaw = document.createElement("pre");
+                        contentRaw.innerHTML = content;
+                        let contentText = content
+                            .split("\n")
+                            .map((p) => p.trim())
+                            .join("\n\n");
+                        let contentHTML;
+                        const _contentHTML = document.createElement("div");
+                        _contentHTML.innerHTML = content
+                            .split("\n")
+                            .map((p) => p.trim())
+                            .map((p) => {
+                            if (p.length === 0) {
+                                return "<p><br/></p>";
+                            }
+                            else {
+                                return `<p>${p}</p>`;
+                            }
+                        })
+                            .join("\n");
+                        if (chapterInfo.postscript.length === 0) {
+                            contentHTML = _contentHTML;
+                        }
+                        else {
+                            contentHTML = document.createElement("div");
+                            contentHTML.className = "main";
+                            const hr = document.createElement("hr");
+                            const authorSayDom = document.createElement("div");
+                            authorSayDom.innerHTML = chapterInfo.postscript
+                                .split("\n")
+                                .map((p) => {
+                                if (p.length === 0) {
+                                    return "<p><br/></p>";
+                                }
+                                else {
+                                    return `<p>${p}</p>`;
+                                }
+                            })
+                                .join("\n");
+                            contentHTML.appendChild(_contentHTML);
+                            contentHTML.appendChild(hr);
+                            contentHTML.appendChild(authorSayDom);
+                            contentRaw.innerHTML = [
+                                contentRaw.innerHTML,
+                                "-".repeat(20),
+                                chapterInfo.postscript,
+                            ].join("\n\n");
+                            contentText = [
+                                contentText,
+                                "-".repeat(20),
+                                chapterInfo.postscript,
+                            ].join("\n\n");
+                        }
+                        return {
+                            chapterName: chapterName,
+                            contentRaw: contentRaw,
+                            contentText: contentText,
+                            contentHTML: contentHTML,
+                            contentImages: null,
+                        };
+                    }
+                }
+            }
+            return {
+                chapterName: chapterName,
+                contentRaw: null,
+                contentText: null,
+                contentHTML: null,
+                contentImages: null,
+            };
+        }
+        async function publicChapter() {
+            await lib_1.sleep(3000 + Math.round(Math.random() * 3000));
+            return getChapter();
+        }
+        async function vipChapter() {
+            await lib_1.sleep(3000 + Math.round(Math.random() * 3000));
+            return getChapter();
+        }
+        if (isVIP) {
+            return vipChapter();
+        }
+        else {
+            return publicChapter();
+        }
+    }
+}
+exports.gongzicp = gongzicp;
 
 
 /***/ }),
