@@ -10,7 +10,6 @@ import {
   cleanDOM,
   co,
   cosCompare,
-  sleep,
   rm,
   gfetch,
 } from "../lib";

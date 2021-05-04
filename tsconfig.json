@@ -4,8 +4,8 @@
     "module": "commonjs",
     "lib": ["ES2017", "dom"],
     "allowJs": false,
-    "declaration": true,
-    "sourceMap": true,
+    "declaration": false,
+    "sourceMap": false,
     "outDir": "./dist/",
     "removeComments": true,
 

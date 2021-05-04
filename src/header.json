@@ -15,6 +15,7 @@
     "*://book.sfacg.com/Novel/*/MainIndex/",
     "*://book.qidian.com/info/*",
     "*://www.jjwxc.net/onebook.php?novelid=*",
+    "*://www.gongzicp.com/v4/novel-*.html",
     "*://book.zongheng.com/showchapter/*.html",
     "*://huayu.zongheng.com/showchapter/*.html",
     "*://www.17k.com/list/*.html",
@@ -55,6 +56,7 @@
     "GM.xmlHttpRequest"
   ],
   "connect": [
+    "self",
     "img.shouda8.com",
     "qidian.com",
     "yuewen.com",
@@ -67,10 +69,12 @@
     "17k.com",
     "www.shuhai.com",
     "img.uukanshu.com",
-    "oss-accelerate.aliyuncs.com",
+    "aliyuncs.com",
     "cdn.bcebos.com",
     "rs.sfacg.com",
-    "shuhai.com"
+    "shuhai.com",
+    "ch-intel.com",
+    "*"
   ],
   "require": [
     "https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js",

@@ -166,6 +166,11 @@ export async function getRule(): Promise<ruleClass> {
       ruleClass = shuhai;
       break;
     }
+    case "www.gongzicp.com": {
+      const { gongzicp } = await import("./rules/gongzicp");
+      ruleClass = gongzicp;
+      break;
+    }
     default: {
       throw new Error("Not Found Rule!");
     }

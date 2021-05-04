@@ -166,6 +166,7 @@ export class attachmentClass {
   public imageUrl: string;
   public name: string;
   public mode: "naive" | "TM";
+  public referer?: string;
 
   public status: Status;
   public retryTime: number;
@@ -226,7 +227,12 @@ export class attachmentClass {
 
   private tmDownloadImage(): Promise<Blob | null> {
     this.status = Status.downloading;
-    return gfetch(this.imageUrl, { responseType: "blob" })
+    return gfetch(this.imageUrl, {
+      headers: {
+        referrer: this.referer ? this.referer : document.location.origin,
+      },
+      responseType: "blob",
+    })
       .then((response) => {
         if (response.status >= 200 && response.status <= 299) {
           this.status = Status.finished;
