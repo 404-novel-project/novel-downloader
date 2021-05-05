@@ -4,7 +4,7 @@ import {
   Chapter,
   Status,
 } from "../main";
-import { getHtmlDOM, ggetHtmlDOM, cleanDOM, co, cosCompare } from "../lib";
+import { getHtmlDOM, ggetHtmlDOM, cleanDOM } from "../lib";
 import { ruleClass, ruleClassNamespace, chapterParseObject } from "../rules";
 
 export class zongheng implements ruleClass {
@@ -54,10 +54,8 @@ export class zongheng implements ruleClass {
     ).map((a) => (<HTMLAnchorElement>a).innerText.trim());
 
     const chapters: Chapter[] = [];
-
     const sections = document.querySelectorAll(".volume-list");
-
-    const cos: co[] = [];
+    let chapterNumber = 0;
     for (let i = 0; i < sections.length; i++) {
       const s = sections[i];
       const sectionNumber = i + 1;
@@ -68,11 +66,14 @@ export class zongheng implements ruleClass {
       );
 
       const sectionName = (<HTMLElement>sectionLabel).innerText.trim();
+      let sectionChapterNumber = 0;
 
       const cs = s.querySelectorAll("ul.chapter-list > li");
       for (let j = 0; j < cs.length; j++) {
         const c = cs[j];
         const a = c.querySelector("a");
+        chapterNumber++;
+        sectionChapterNumber++;
         const chapterName = (<HTMLAnchorElement>a).innerText.trim();
         const chapterUrl = (<HTMLAnchorElement>a).href;
 
@@ -88,57 +89,29 @@ export class zongheng implements ruleClass {
           return false;
         };
 
-        const co: co = {
-          bookUrl: bookUrl,
-          bookname: bookname,
-          chapterUrl: chapterUrl,
-          chapterName: chapterName,
-          isVIP: isVIP(),
-          isPaid: isPaid(),
-          sectionName: sectionName,
-          sectionNumber: sectionNumber,
-          sectionChapterNumber: j,
+        const chapter = new Chapter(
+          bookUrl,
+          bookname,
+          chapterUrl,
+          chapterNumber,
+          chapterName,
+          isVIP(),
+          isPaid(),
+          sectionName,
+          sectionNumber,
+          sectionChapterNumber,
+          chapterParse,
+          "UTF-8"
+        );
+        const isLogin = () => {
+          //Todo
+          return false;
         };
-        cos.push(co);
+        if (isVIP() && !(isLogin() && chapter.isPaid)) {
+          chapter.status = Status.aborted;
+        }
+        chapters.push(chapter);
       }
-    }
-
-    cos.sort(cosCompare);
-    for (let i = 0; i < cos.length; i++) {
-      const chapterNumber = i + 1;
-      let {
-        bookUrl,
-        bookname,
-        chapterUrl,
-        chapterName,
-        isVIP,
-        isPaid,
-        sectionName,
-        sectionNumber,
-        sectionChapterNumber,
-      } = cos[i];
-      const chapter = new Chapter(
-        bookUrl,
-        bookname,
-        chapterUrl,
-        chapterNumber,
-        chapterName,
-        isVIP,
-        isPaid,
-        sectionName,
-        sectionNumber,
-        sectionChapterNumber,
-        chapterParse,
-        "UTF-8"
-      );
-      const isLogin = () => {
-        //Todo
-        return false;
-      };
-      if (isVIP && !(isLogin() && chapter.isPaid)) {
-        chapter.status = Status.aborted;
-      }
-      chapters.push(chapter);
     }
 
     return {

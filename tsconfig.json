@@ -4,7 +4,7 @@
     "module": "commonjs",
     "lib": ["ES2017", "dom"],
     "allowJs": false,
-    "declaration": false,
+    "declaration": true,
     "sourceMap": false,
     "outDir": "./dist/",
     "removeComments": true,

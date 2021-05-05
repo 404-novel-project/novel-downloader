@@ -464,7 +464,7 @@ async function run() {
 
   let maxRunLimit = null;
   let nowRunNumber;
-  if (_GM_info.scriptHandler === "Tampermonkey") {
+  if (typeof GM_getTab !== "undefined") {
     console.log(`[run]添加运行标志`);
     await setTabMark();
     nowRunNumber = await getNowRunNumber();
@@ -490,7 +490,7 @@ async function run() {
   await initChapters(rule, book);
   save(book);
 
-  if (_GM_info.scriptHandler === "Tampermonkey") {
+  if (typeof GM_getTab !== "undefined") {
     console.log(`[run]移除运行标志`);
     await removeTabMark();
   }
@@ -501,7 +501,7 @@ async function run() {
 
 function catchError(error: Error) {
   downloading = false;
-  if (_GM_info.scriptHandler === "Tampermonkey") {
+  if (typeof GM_getTab !== "undefined") {
     removeTabMark();
   }
   finishedChapterNumber = 0;

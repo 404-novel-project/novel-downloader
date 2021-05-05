@@ -4,15 +4,7 @@ import {
   Chapter,
   Status,
 } from "../main";
-import {
-  getHtmlDOM,
-  ggetHtmlDOM,
-  cleanDOM,
-  co,
-  cosCompare,
-  rm,
-  gfetch,
-} from "../lib";
+import { getHtmlDOM, ggetHtmlDOM, cleanDOM, rm, gfetch } from "../lib";
 import {
   ruleClass,
   ruleClassNamespace,
@@ -70,13 +62,11 @@ export class jjwxc implements ruleClass {
 
     const chapters: Chapter[] = [];
 
-    const cos: co[] = [];
     const trList = document.querySelectorAll("#oneboolt > tbody > tr");
     let chapterNumber = 0;
     let sectionNumber = 0;
     let sectionName = null;
     let sectionChapterNumber = 0;
-
     for (let i = 0; i < trList.length; i++) {
       const tr = trList[i];
       if (tr.getAttribute("bgcolor")) {
@@ -110,78 +100,63 @@ export class jjwxc implements ruleClass {
             const chapterName = (<HTMLAnchorElement>a).innerText.trim();
             const chapterUrl = (<HTMLAnchorElement>a).getAttribute("rel");
             if (chapterUrl) {
-              const co: co = {
-                bookUrl: bookUrl,
-                bookname: bookname,
-                chapterUrl: chapterUrl,
-                chapterName: chapterName,
-                isVIP: isVIP(),
-                isPaid: null,
-                sectionName: sectionName,
-                sectionNumber: sectionNumber,
-                sectionChapterNumber: sectionChapterNumber,
+              const chapter = new Chapter(
+                bookUrl,
+                bookname,
+                chapterUrl,
+                chapterNumber,
+                chapterName,
+                isVIP(),
+                null,
+                sectionName,
+                sectionNumber,
+                sectionChapterNumber,
+                chapterParse,
+                "GB18030"
+              );
+              const isLogin = () => {
+                if (document.getElementById("jj_login")) {
+                  return false;
+                } else {
+                  return true;
+                }
               };
-              cos.push(co);
+              if (isVIP() && !isLogin()) {
+                chapter.status = Status.aborted;
+              }
+              chapters.push(chapter);
             }
           } else {
             const chapterName = (<HTMLAnchorElement>a).innerText.trim();
             const chapterUrl = (<HTMLAnchorElement>a).href;
-            const co: co = {
-              bookUrl: bookUrl,
-              bookname: bookname,
-              chapterUrl: chapterUrl,
-              chapterName: chapterName,
-              isVIP: isVIP(),
-              isPaid: null,
-              sectionName: sectionName,
-              sectionNumber: sectionNumber,
-              sectionChapterNumber: sectionChapterNumber,
+            const chapter = new Chapter(
+              bookUrl,
+              bookname,
+              chapterUrl,
+              chapterNumber,
+              chapterName,
+              isVIP(),
+              null,
+              sectionName,
+              sectionNumber,
+              sectionChapterNumber,
+              chapterParse,
+              "GB18030"
+            );
+            const isLogin = () => {
+              if (document.getElementById("jj_login")) {
+                return false;
+              } else {
+                return true;
+              }
             };
-            cos.push(co);
+            if (isVIP() && !isLogin()) {
+              chapter.status = Status.aborted;
+            }
+            chapters.push(chapter);
           }
         }
       }
-    }
-
-    cos.sort(cosCompare);
-    for (let i = 0; i < cos.length; i++) {
-      const chapterNumber = i + 1;
-      let {
-        bookUrl,
-        bookname,
-        chapterUrl,
-        chapterName,
-        isVIP,
-        isPaid,
-        sectionName,
-        sectionNumber,
-        sectionChapterNumber,
-      } = cos[i];
-      const chapter = new Chapter(
-        bookUrl,
-        bookname,
-        chapterUrl,
-        chapterNumber,
-        chapterName,
-        isVIP,
-        isPaid,
-        sectionName,
-        sectionNumber,
-        sectionChapterNumber,
-        chapterParse,
-        "GB18030"
-      );
-      const isLogin = () => {
-        if (document.getElementById("jj_login")) {
-          return false;
-        } else {
-          return true;
-        }
-      };
-      if (isVIP && !isLogin()) {
-        chapter.status = Status.aborted;
-      }
-      chapters.push(chapter);
     }
 
     return {

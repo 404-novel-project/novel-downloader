@@ -4,7 +4,7 @@ import {
   Chapter,
   Status,
 } from "../main";
-import { ggetHtmlDOM, cleanDOM, co, cosCompare, sleep, rm } from "../lib";
+import { ggetHtmlDOM, cleanDOM, sleep, rm } from "../lib";
 import { ruleClass, ruleClassNamespace, chapterParseObject } from "../rules";
 
 export class shuhai implements ruleClass {
@@ -66,13 +66,11 @@ export class shuhai implements ruleClass {
       await sleep(3000);
     }
 
-    const cos: co[] = [];
     const dsList = document.querySelectorAll("#catalog > .chapter-item");
     let chapterNumber = 0;
     let sectionNumber = 0;
     let sectionName = null;
     let sectionChapterNumber = 0;
-
     for (let i = 0; i < dsList.length; i++) {
       const node = dsList[i];
       if (node.nodeName === "SPAN") {
@@ -97,57 +95,29 @@ export class shuhai implements ruleClass {
         };
         const chapterName = (<HTMLAnchorElement>a).innerText.trim();
         const chapterUrl = (<HTMLAnchorElement>a).href;
-        const co: co = {
-          bookUrl: bookUrl,
-          bookname: bookname,
-          chapterUrl: chapterUrl,
-          chapterName: chapterName,
-          isVIP: isVIP(),
-          isPaid: isPaid(),
-          sectionName: sectionName,
-          sectionNumber: sectionNumber,
-          sectionChapterNumber: sectionChapterNumber,
+        const chapter = new Chapter(
+          bookUrl,
+          bookname,
+          chapterUrl,
+          chapterNumber,
+          chapterName,
+          isVIP(),
+          isPaid(),
+          sectionName,
+          sectionNumber,
+          sectionChapterNumber,
+          chapterParse,
+          "GBK"
+        );
+        const isLogin = () => {
+          //Todo
+          return false;
         };
-        cos.push(co);
+        if (isVIP() && !(isLogin() && chapter.isPaid)) {
+          chapter.status = Status.aborted;
+        }
+        chapters.push(chapter);
       }
-    }
-
-    cos.sort(cosCompare);
-    for (let i = 0; i < cos.length; i++) {
-      const chapterNumber = i + 1;
-      let {
-        bookUrl,
-        bookname,
-        chapterUrl,
-        chapterName,
-        isVIP,
-        isPaid,
-        sectionName,
-        sectionNumber,
-        sectionChapterNumber,
-      } = cos[i];
-      const chapter = new Chapter(
-        bookUrl,
-        bookname,
-        chapterUrl,
-        chapterNumber,
-        chapterName,
-        isVIP,
-        isPaid,
-        sectionName,
-        sectionNumber,
-        sectionChapterNumber,
-        chapterParse,
-        "GBK"
-      );
-      const isLogin = () => {
-        //Todo
-        return false;
-      };
-      if (isVIP && !(isLogin() && chapter.isPaid)) {
-        chapter.status = Status.aborted;
-      }
-      chapters.push(chapter);
     }
 
     return {

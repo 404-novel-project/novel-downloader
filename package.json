@@ -7,7 +7,7 @@
     "build": "webpack build",
     "dev": "webpack serve --node-env development",
     "release": "webpack build && cp dist/bundle.meta.js dist/bundle.user.js Releases && git add --all && git commit -m \"Release version $(jq .version package.json)\" && git push",
-    "pretty":"prettier src -w"
+    "pretty": "prettier src -w"
   },
   "author": "BGME",
   "license": "GPL-3.0",
@@ -24,6 +24,6 @@
     "webpack": "^5.30.0",
     "webpack-cli": "^4.6.0",
     "webpack-dev-server": "^3.11.2",
-    "webpack-userscript": "^2.5.7"
+    "webpack-userscript": "https://github.com/yingziwu/webpack-userscript"
   }
 }

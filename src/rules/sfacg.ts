@@ -4,7 +4,7 @@ import {
   Chapter,
   Status,
 } from "../main";
-import { getHtmlDOM, cleanDOM, co, cosCompare } from "../lib";
+import { getHtmlDOM, cleanDOM } from "../lib";
 import {
   ruleClass,
   ruleClassNamespace,
@@ -60,8 +60,7 @@ export class sfacg implements ruleClass {
 
     const chapters: Chapter[] = [];
     const sections = document.querySelectorAll(".story-catalog");
-
-    const cos: co[] = [];
+    let chapterNumber = 0;
     for (let i = 0; i < sections.length; i++) {
       const s = sections[i];
       const sectionNumber = i + 1;
@@ -70,11 +69,14 @@ export class sfacg implements ruleClass {
       )).innerText
         .replace(`【${bookname}】`, "")
         .trim();
+      let sectionChapterNumber = 0;
 
       const cs = s.querySelectorAll(".catalog-list > ul > li > a");
       for (let j = 0; j < cs.length; j++) {
         const c = cs[j];
         const _chapterName = (<HTMLLinkElement>c).getAttribute("title")?.trim();
+        chapterNumber++;
+        sectionChapterNumber++;
         const chapterName = _chapterName ? _chapterName : "";
         const chapterUrl = (<HTMLLinkElement>c).href;
 
@@ -86,59 +88,30 @@ export class sfacg implements ruleClass {
         ) {
           isVIP = true;
         }
-        const co: co = {
-          bookUrl: bookUrl,
-          bookname: bookname,
-          chapterUrl: chapterUrl,
-          chapterName: chapterName,
-          isVIP: isVIP,
-          isPaid: isPaid,
-          sectionName: sectionName,
-          sectionNumber: sectionNumber,
-          sectionChapterNumber: j,
-        };
-        cos.push(co);
+        const chapter = new Chapter(
+          bookUrl,
+          bookname,
+          chapterUrl,
+          chapterNumber,
+          chapterName,
+          isVIP,
+          isPaid,
+          sectionName,
+          sectionNumber,
+          sectionChapterNumber,
+          chapterParse,
+          "UTF-8"
+        );
+        const isLogin =
+          document.querySelector(".user-bar > .top-link > .normal-link")
+            ?.childElementCount === 3
+            ? true
+            : false;
+        if (isVIP && !isLogin) {
+          chapter.status = Status.aborted;
+        }
+        chapters.push(chapter);
       }
-    }
-
-    let chapterNumber = 0;
-    cos.sort(cosCompare);
-    for (let i = 0; i < cos.length; i++) {
-      chapterNumber++;
-      let {
-        bookUrl,
-        bookname,
-        chapterUrl,
-        chapterName,
-        isVIP,
-        isPaid,
-        sectionName,
-        sectionNumber,
-        sectionChapterNumber,
-      } = cos[i];
-      const chapter = new Chapter(
-        bookUrl,
-        bookname,
-        chapterUrl,
-        chapterNumber,
-        chapterName,
-        isVIP,
-        isPaid,
-        sectionName,
-        sectionNumber,
-        sectionChapterNumber,
-        chapterParse,
-        "UTF-8"
-      );
-      const isLogin =
-        document.querySelector(".user-bar > .top-link > .normal-link")
-          ?.childElementCount === 3
-          ? true
-          : false;
-      if (isVIP && !isLogin) {
-        chapter.status = Status.aborted;
-      }
-      chapters.push(chapter);
     }
 
     return {

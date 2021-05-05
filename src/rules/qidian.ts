@@ -4,7 +4,7 @@ import {
   Chapter,
   Status,
 } from "../main";
-import { ggetHtmlDOM, cleanDOM, co, cosCompare, sleep, gfetch } from "../lib";
+import { ggetHtmlDOM, cleanDOM, sleep, gfetch } from "../lib";
 import { ruleClass, ruleClassNamespace, chapterParseObject } from "../rules";
 
 export class qidian implements ruleClass {
@@ -70,19 +70,21 @@ export class qidian implements ruleClass {
     const sections = document.querySelectorAll(
       "#j-catalogWrap > .volume-wrap > .volume"
     );
-
-    const cos: co[] = [];
+    let chapterNumber = 0;
     for (let i = 0; i < sections.length; i++) {
       const s = sections[i];
       const sectionNumber = i + 1;
       const sectionName = (<HTMLElement>s.querySelector("h3")).innerText
         .trim()
         .split("·")[0];
+      let sectionChapterNumber = 0;
 
       const cs = s.querySelectorAll("ul.cf > li");
       for (let j = 0; j < cs.length; j++) {
         const c = cs[j];
         const a = c.firstElementChild;
+        chapterNumber++;
+        sectionChapterNumber++;
         const chapterName = (<HTMLAnchorElement>a).innerText.trim();
         const chapterUrl = (<HTMLAnchorElement>a).href;
 
@@ -104,63 +106,35 @@ export class qidian implements ruleClass {
           return false;
         };
 
-        const co: co = {
-          bookUrl: bookUrl,
-          bookname: bookname,
-          chapterUrl: chapterUrl,
-          chapterName: chapterName,
-          isVIP: isVIP(),
-          isPaid: isPaid(),
-          sectionName: sectionName,
-          sectionNumber: sectionNumber,
-          sectionChapterNumber: j,
-        };
-        cos.push(co);
-      }
-    }
-
-    cos.sort(cosCompare);
-    for (let i = 0; i < cos.length; i++) {
-      const chapterNumber = i + 1;
-      let {
-        bookUrl,
-        bookname,
-        chapterUrl,
-        chapterName,
-        isVIP,
-        isPaid,
-        sectionName,
-        sectionNumber,
-        sectionChapterNumber,
-      } = cos[i];
-      const chapter = new Chapter(
-        bookUrl,
-        bookname,
-        chapterUrl,
-        chapterNumber,
-        chapterName,
-        isVIP,
-        isPaid,
-        sectionName,
-        sectionNumber,
-        sectionChapterNumber,
-        chapterParse,
-        "UTF-8"
-      );
-      const isLogin = () => {
-        const sign_in_dom = document.querySelector(".sign-in");
-        const sign_out_dom = document.querySelector(".sign-out");
-        if (sign_in_dom && sign_out_dom) {
-          if (Array.from(sign_out_dom.classList).includes("hidden")) {
-            return true;
+        const chapter = new Chapter(
+          bookUrl,
+          bookname,
+          chapterUrl,
+          chapterNumber,
+          chapterName,
+          isVIP(),
+          isPaid(),
+          sectionName,
+          sectionNumber,
+          sectionChapterNumber,
+          chapterParse,
+          "UTF-8"
+        );
+        const isLogin = () => {
+          const sign_in_dom = document.querySelector(".sign-in");
+          const sign_out_dom = document.querySelector(".sign-out");
+          if (sign_in_dom && sign_out_dom) {
+            if (Array.from(sign_out_dom.classList).includes("hidden")) {
+              return true;
+            }
           }
+          return false;
+        };
+        if (isVIP() && !(isLogin() && chapter.isPaid)) {
+          chapter.status = Status.aborted;
         }
-        return false;
-      };
-      if (isVIP && !(isLogin() && chapter.isPaid)) {
-        chapter.status = Status.aborted;
+        chapters.push(chapter);
       }
-      chapters.push(chapter);
     }
 
     return {

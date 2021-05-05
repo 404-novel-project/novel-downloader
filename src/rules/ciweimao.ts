@@ -4,7 +4,7 @@ import {
   Chapter,
   Status,
 } from "../main";
-import { getHtmlDOM, cleanDOM, rm, gfetch, co, cosCompare } from "../lib";
+import { getHtmlDOM, cleanDOM, rm, gfetch } from "../lib";
 import { ruleClass, ruleClassNamespace, chapterParseObject } from "../rules";
 
 namespace ciweimao {
@@ -63,16 +63,18 @@ export class ciweimao implements ruleClass {
     const sections = document.querySelectorAll(
       ".book-chapter > .book-chapter-box"
     );
-
-    const cos: co[] = [];
+    let chapterNumber = 0;
     for (let i = 0; i < sections.length; i++) {
       const s = sections[i];
       const sectionNumber = i + 1;
       const sectionName = (<HTMLElement>s.querySelector(".sub-tit")).innerText;
+      let sectionChapterNumber = 0;
 
       const cs = s.querySelectorAll(".book-chapter-list > li > a");
       for (let j = 0; j < cs.length; j++) {
         const c = cs[j];
+        chapterNumber++;
+        sectionChapterNumber++;
         const chapterName = (<HTMLLinkElement>c).innerText.trim();
         const chapterUrl = (<HTMLLinkElement>c).href;
 
@@ -84,57 +86,30 @@ export class ciweimao implements ruleClass {
             isPaid = true;
           }
         }
-        const co: co = {
-          bookUrl: bookUrl,
-          bookname: bookname,
-          chapterUrl: chapterUrl,
-          chapterName: chapterName,
-          isVIP: isVIP,
-          isPaid: isPaid,
-          sectionName: sectionName,
-          sectionNumber: sectionNumber,
-          sectionChapterNumber: j,
-        };
-        cos.push(co);
-      }
-    }
 
-    cos.sort(cosCompare);
-    for (let i = 0; i < cos.length; i++) {
-      const chapterNumber = i + 1;
-      let {
-        bookUrl,
-        bookname,
-        chapterUrl,
-        chapterName,
-        isVIP,
-        isPaid,
-        sectionName,
-        sectionNumber,
-        sectionChapterNumber,
-      } = cos[i];
-      const chapter = new Chapter(
-        bookUrl,
-        bookname,
-        chapterUrl,
-        chapterNumber,
-        chapterName,
-        isVIP,
-        isPaid,
-        sectionName,
-        sectionNumber,
-        sectionChapterNumber,
-        chapterParse,
-        "UTF-8"
-      );
-      const isLogin =
-        document.querySelector(".login-info.ly-fr")?.childElementCount === 1
-          ? true
-          : false;
-      if (isVIP && !(isLogin && isPaid)) {
-        chapter.status = Status.aborted;
+        const chapter = new Chapter(
+          bookUrl,
+          bookname,
+          chapterUrl,
+          chapterNumber,
+          chapterName,
+          isVIP,
+          isPaid,
+          sectionName,
+          sectionNumber,
+          sectionChapterNumber,
+          chapterParse,
+          "UTF-8"
+        );
+        const isLogin =
+          document.querySelector(".login-info.ly-fr")?.childElementCount === 1
+            ? true
+            : false;
+        if (isVIP && !(isLogin && isPaid)) {
+          chapter.status = Status.aborted;
+        }
+        chapters.push(chapter);
       }
-      chapters.push(chapter);
     }
 
     return {

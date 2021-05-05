@@ -7,25 +7,33 @@ namespace Cleaner {
 }
 
 export let _GM_info: GM_info | GM["info"];
-try {
-  _GM_info = GM_info;
-} catch (error) {
-  try {
-    _GM_info = GM.info;
-  } catch (error) {
-    console.error("未发现 _GM_info API");
+if (typeof GM_info === "undefined") {
+  if (typeof GM === "undefined") {
+    throw new Error("未发现 GM API");
+  } else {
+    if (typeof GM.info === "undefined") {
+      throw new Error("未发现 GM API");
+    } else {
+      _GM_info = GM.info;
+    }
   }
+} else {
+  _GM_info = GM_info;
 }
 
 let _GM_xmlhttpRequest: GM_xmlhttpRequest | GM["xmlHttpRequest"];
-try {
-  _GM_xmlhttpRequest = GM_xmlhttpRequest;
-} catch (error) {
-  try {
-    _GM_xmlhttpRequest = GM.xmlHttpRequest;
-  } catch (error) {
-    console.error("未发现 _GM_xmlhttpRequest API");
+if (typeof GM_xmlhttpRequest === "undefined") {
+  if (typeof GM === "undefined") {
+    throw new Error("未发现 GM API");
+  } else {
+    if (typeof GM.xmlHttpRequest === "undefined") {
+      throw new Error("未发现 GM API");
+    } else {
+      _GM_xmlhttpRequest = GM.xmlHttpRequest;
+    }
   }
+} else {
+  _GM_xmlhttpRequest = GM_xmlhttpRequest;
 }
 
 class CleanerClass {
@@ -344,42 +352,6 @@ export async function ggetHtmlText(url: string, charset: string | undefined) {
 export async function ggetHtmlDOM(url: string, charset: string | undefined) {
   const htmlText = await ggetHtmlText(url, charset);
   return new DOMParser().parseFromString(htmlText, "text/html");
-}
-
-export interface co {
-  bookUrl: string;
-  bookname: string;
-  chapterUrl: string;
-  chapterName: string | null;
-  isVIP: boolean;
-  isPaid: boolean | null;
-  sectionName: string | null;
-  sectionNumber: number | null;
-  sectionChapterNumber: number | null;
-}
-export function cosCompare(a: co, b: co): -1 | 0 | 1 {
-  if (a.sectionNumber !== null && b.sectionNumber != null) {
-    if (a.sectionNumber > b.sectionNumber) {
-      return 1;
-    }
-    if (a.sectionNumber === b.sectionNumber) {
-      if (a.sectionChapterNumber !== null && b.sectionChapterNumber !== null) {
-        if (a.sectionChapterNumber > b.sectionChapterNumber) {
-          return 1;
-        }
-        if (a.sectionChapterNumber === b.sectionChapterNumber) {
-          return 0;
-        }
-        if (a.sectionChapterNumber < b.sectionChapterNumber) {
-          return -1;
-        }
-      }
-    }
-    if (a.sectionNumber < b.sectionNumber) {
-      return -1;
-    }
-  }
-  return 0;
 }
 
 export function rm(selector: string, all = false, dom: HTMLElement) {
