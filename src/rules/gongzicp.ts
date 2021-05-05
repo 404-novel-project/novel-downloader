@@ -178,10 +178,11 @@ export class gongzicp implements ruleClass {
       msg: string; //"操作成功"
       data: {
         novelInfo: cpNovelInfo;
-        chapterList:
-          | cpChapterVolumeItem[]
-          | cpChapterChapterItem[]
-          | cpChapterMoreItem[];
+        chapterList: (
+          | cpChapterVolumeItem
+          | cpChapterChapterItem
+          | cpChapterMoreItem
+        )[];
         rewardList: [];
         updateDateList: {
           [index: number]: cpUpdateDateObj;

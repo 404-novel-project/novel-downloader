@@ -191,6 +191,11 @@ export class hetushu implements ruleClass {
       tagRemoved.split(", ").forEach((s) => {
         rm(s, true, content);
       });
+      Array.from(content.querySelectorAll("div")).map((oldNode) => {
+        const newNode = document.createElement("p");
+        newNode.innerHTML = oldNode.innerHTML;
+        oldNode.parentNode?.replaceChild(newNode, oldNode);
+      });
       let { dom, text, images } = cleanDOM(content, "TM");
       return {
         chapterName: chapterName,
