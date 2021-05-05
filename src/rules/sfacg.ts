@@ -57,6 +57,21 @@ export class sfacg implements ruleClass {
     additionalMetadate.tags = Array.from(
       dom.querySelectorAll("ul.tag-list > li.tag > a")
     ).map((a) => (<HTMLAnchorElement>a).innerText.trim());
+    if (dom.querySelector(".d-banner")) {
+      const _beitouUrl = (<HTMLDivElement>(
+        dom.querySelector(".d-banner")
+      ))?.style.backgroundImage.split('"');
+      if (_beitouUrl?.length === 3) {
+        const beitouUrl = _beitouUrl[1];
+        const beitou = new attachmentClass(
+          beitouUrl,
+          `beitou.${beitouUrl.split(".").slice(-1)[0]}`,
+          "TM"
+        );
+        beitou.init();
+        additionalMetadate.attachments = [beitou];
+      }
+    }
 
     const chapters: Chapter[] = [];
     const sections = document.querySelectorAll(".story-catalog");

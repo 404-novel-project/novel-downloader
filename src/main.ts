@@ -10,7 +10,8 @@ export enum Status {
 }
 
 export interface BookAdditionalMetadate {
-  cover?: attachmentClass | null;
+  cover?: attachmentClass;
+  attachments?: attachmentClass[];
   tags?: string[];
   lastModified?: number;
   serires?: string;

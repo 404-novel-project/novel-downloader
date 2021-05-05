@@ -170,21 +170,11 @@ function save(book: Book) {
   }\n下载时间：${new Date().toISOString()}\n本文件由小说下载器生成，软件地址：https://github.com/yingziwu/novel-downloader\n\n`;
   savedTextArray.push(infoText);
   if (book.additionalMetadate.cover) {
-    const cover = book.additionalMetadate.cover;
-    if (cover.imageBlob) {
-      console.debug(
-        `[save]添加封面图片，文件名：${`cover.${
-          cover.imageBlob.type.split("/").slice(-1)[0]
-        }`}，对象`,
-        cover.imageBlob
-      );
-      savedZip.file(
-        `cover.${cover.imageBlob.type.split("/").slice(-1)[0]}`,
-        cover.imageBlob
-      );
-    } else {
-      console.error("[save]图片下载失败！");
-      console.error(cover);
+    addImageToZip(book.additionalMetadate.cover, savedZip);
+  }
+  if (book.additionalMetadate.attachments) {
+    for (const bookAttachment of book.additionalMetadate.attachments) {
+      addImageToZip(bookAttachment, savedZip);
     }
   }
   savedZip.file(
