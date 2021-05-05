@@ -4,7 +4,7 @@ import {
   Chapter,
   Status,
 } from "../main";
-import { getHtmlDOM, cleanDOM } from "../lib";
+import { getHtmlDOM, cleanDOM, console_debug } from "../lib";
 import {
   ruleClass,
   ruleClassNamespace,
@@ -183,7 +183,7 @@ export class sfacg implements ruleClass {
         function fetchVipChapterImage(
           vipChapterImageUrl: string
         ): Promise<Blob | null> {
-          console.debug(
+          console_debug(
             `[Chapter]请求 ${vipChapterImageUrl} Referer ${chapterUrl} 重试次数 ${retryTime}`
           );
 

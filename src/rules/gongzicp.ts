@@ -4,7 +4,7 @@ import {
   Chapter,
   Status,
 } from "../main";
-import { cleanDOM, sleep } from "../lib";
+import { cleanDOM, sleep, console_debug } from "../lib";
 import { ruleClass, ruleClassNamespace, chapterParseObject } from "../rules";
 
 export class gongzicp implements ruleClass {
@@ -192,7 +192,7 @@ export class gongzicp implements ruleClass {
         topComment: cpCommentObj[];
       };
     }
-    console.debug(`请求地址: ${novelGetInfoUrl.toString()}`);
+    console_debug(`请求地址: ${novelGetInfoUrl.toString()}`);
     const novelInfo: novelInfo = await fetch(novelGetInfoUrl.toString(), {
       credentials: "include",
       headers: {
@@ -298,7 +298,7 @@ export class gongzicp implements ruleClass {
         count?: number;
       }
       const getUserInfoUrl = "https://www.gongzicp.com/user/getUserInfo";
-      console.debug(`正在请求: ${getUserInfoUrl}`);
+      console_debug(`正在请求: ${getUserInfoUrl}`);
       const userInfo: userInfo = await fetch(getUserInfoUrl, {
         headers: {
           accept: "application/json, text/javascript, */*; q=0.01",
@@ -542,7 +542,7 @@ export class gongzicp implements ruleClass {
         chapterGetInfoUrl.searchParams.set("cid", cid);
         chapterGetInfoUrl.searchParams.set("nid", "0");
 
-        console.debug(
+        console_debug(
           `请求地址: ${chapterGetInfoUrl.toString()}, Referrer: ${chapterUrl}`
         );
         const result: chapterInfo = await fetch(chapterGetInfoUrl.toString(), {

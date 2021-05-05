@@ -1,5 +1,5 @@
 import { ruleClassNamespace, chapterParseObject, retryLimit } from "./rules";
-import { gfetch, sleep } from "./lib";
+import { gfetch, sleep, console_debug } from "./lib";
 
 export enum Status {
   pending,
@@ -43,7 +43,7 @@ export class Book {
     this.introduction = introduction;
     this.additionalMetadate = additionalMetadate;
     this.chapters = chapters;
-    console.debug("[Book]初始化完成");
+    console_debug("[Book]初始化完成");
   }
 }
 
@@ -121,7 +121,7 @@ export class Chapter {
     this.contentHTML = contentHTML;
     this.contentImages = contentImages;
 
-    console.debug(`[Chapter]${this.chapterName} 解析完成。`);
+    console_debug(`[Chapter]${this.chapterName} 解析完成。`);
     return obj;
   }
 
@@ -135,7 +135,20 @@ export class Chapter {
       this.isPaid,
       this.charset
     )
-      .then((obj) => {
+      .then(async (obj) => {
+        const contentImages = obj.contentImages;
+        if (contentImages) {
+          let downloadingImages = contentImages.filter(
+            (imgObj) => imgObj.status === Status.downloading
+          );
+          while (downloadingImages.length) {
+            // 等待所有图片下载完成
+            await sleep(500);
+            downloadingImages = contentImages.filter(
+              (imgObj) => imgObj.status === Status.downloading
+            );
+          }
+        }
         this.status = Status.finished;
         return obj;
       })
@@ -189,7 +202,7 @@ export class attachmentClass {
     } else {
       this.imageBlob = await this.tmDownloadImage();
     }
-    console.debug(`[Image] ${this.imageUrl} 下载完成。`);
+    console_debug(`[Image] ${this.imageUrl} 下载完成。`);
     return this.imageBlob;
   }
 

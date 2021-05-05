@@ -4,7 +4,14 @@ import {
   Chapter,
   Status,
 } from "../main";
-import { getHtmlDOM, ggetHtmlDOM, cleanDOM, rm, gfetch } from "../lib";
+import {
+  getHtmlDOM,
+  ggetHtmlDOM,
+  cleanDOM,
+  rm,
+  gfetch,
+  console_debug,
+} from "../lib";
 import {
   ruleClass,
   ruleClassNamespace,
@@ -269,7 +276,7 @@ export class jjwxc implements ruleClass {
 
         let retryTime = 0;
         function fetchFont(fontUrl: string): Promise<Blob | null> {
-          console.debug(
+          console_debug(
             `[Chapter]请求 ${fontUrl} Referer ${chapterUrl} 重试次数 ${retryTime}`
           );
           return gfetch(fontUrl, {

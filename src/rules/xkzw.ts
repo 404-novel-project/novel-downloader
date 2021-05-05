@@ -1,6 +1,6 @@
 import { BookAdditionalMetadate, attachmentClass, Chapter } from "../main";
 import { ruleClass, ruleClassNamespace } from "../rules";
-import { getHtmlDOM, cleanDOM } from "../lib";
+import { getHtmlDOM, cleanDOM, console_debug } from "../lib";
 
 export class xkzw implements ruleClass {
   public imageMode: "naive" | "TM";
@@ -63,7 +63,7 @@ export class xkzw implements ruleClass {
       chaptercount: number;
     }
     const apiUrl = [document.location.origin, "action.php"].join("/");
-    console.debug(`[chapter]正在请求${apiUrl}`);
+    console_debug(`[chapter]正在请求${apiUrl}`);
     const siteChapterList: siteChapterList = await fetch(apiUrl, {
       headers: {
         accept: "application/json, text/javascript, */*",

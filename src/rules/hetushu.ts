@@ -1,6 +1,6 @@
 import { BookAdditionalMetadate, attachmentClass, Chapter } from "../main";
 import { ruleClass, ruleClassNamespace } from "../rules";
-import { getHtmlDOM, cleanDOM, rm } from "../lib";
+import { getHtmlDOM, cleanDOM, rm, console_debug } from "../lib";
 
 export class hetushu implements ruleClass {
   public imageMode: "naive" | "TM";
@@ -123,7 +123,7 @@ export class hetushu implements ruleClass {
         bid,
         "r" + sid + ".json",
       ].join("/");
-      console.debug(`[Chapter]请求 ${url} Referer ${chapterUrl}`);
+      console_debug(`[Chapter]请求 ${url} Referer ${chapterUrl}`);
       const token = await fetch(url, {
         headers: {
           accept: "*/*",

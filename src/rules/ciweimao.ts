@@ -4,7 +4,7 @@ import {
   Chapter,
   Status,
 } from "../main";
-import { getHtmlDOM, cleanDOM, rm, gfetch } from "../lib";
+import { getHtmlDOM, cleanDOM, rm, gfetch, console_debug } from "../lib";
 import { ruleClass, ruleClassNamespace, chapterParseObject } from "../rules";
 
 namespace ciweimao {
@@ -204,7 +204,7 @@ export class ciweimao implements ruleClass {
           code: number;
           chapter_access_key: string;
         }
-        console.debug(`[Chapter]请求 ${access_key_url} Referer ${refererUrl}`);
+        console_debug(`[Chapter]请求 ${access_key_url} Referer ${refererUrl}`);
         const access_key_obj = await gfetch(access_key_url, {
           method: "POST",
           headers: {
@@ -226,7 +226,7 @@ export class ciweimao implements ruleClass {
           encryt_keys: string[];
           rad: number;
         }
-        console.debug(
+        console_debug(
           `[Chapter]请求 ${chapter_content_url} Referer ${refererUrl}`
         );
         const chapter_content_obj = await gfetch(chapter_content_url, {
@@ -298,7 +298,7 @@ export class ciweimao implements ruleClass {
           }
           const image_session_code_url =
             HB.config.rootPath + "chapter/ajax_get_image_session_code";
-          console.debug(
+          console_debug(
             `[Chapter]请求 ${image_session_code_url} Referer ${refererUrl}`
           );
           const image_session_code_object = await gfetch(
@@ -355,7 +355,7 @@ export class ciweimao implements ruleClass {
           chapter_id,
           chapterUrl
         );
-        console.debug(
+        console_debug(
           `[Chapter]请求 ${vipCHapterImageUrl} Referer ${chapterUrl}`
         );
         const vipCHapterImageBlob = await gfetch(vipCHapterImageUrl, {

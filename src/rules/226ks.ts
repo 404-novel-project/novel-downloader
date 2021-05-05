@@ -1,6 +1,6 @@
 import { BookAdditionalMetadate, attachmentClass, Chapter } from "../main";
 import { ruleClass, ruleClassNamespace } from "../rules";
-import { getHtmlDOM, cleanDOM } from "../lib";
+import { getHtmlDOM, cleanDOM, console_debug } from "../lib";
 
 export class c226ks implements ruleClass {
   public imageMode: "naive" | "TM";
@@ -53,7 +53,7 @@ export class c226ks implements ruleClass {
     let lis: HTMLElement[] = [];
 
     for (const indexUrl of indexUrls) {
-      console.debug(`[chapter]请求${indexUrl}`);
+      console_debug(`[chapter]请求${indexUrl}`);
       const dom = await getHtmlDOM(indexUrl, "UTF-8");
       const ul = dom.querySelector(
         "div.row.row-section > div > div:nth-child(4) > ul"

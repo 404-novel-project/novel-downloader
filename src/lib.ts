@@ -1,4 +1,5 @@
 import { Builder, walk } from "./cleanDOM";
+import { enaleDebug } from "./rules";
 
 export let _GM_info: GM_info | GM["info"];
 if (typeof GM_info === "undefined") {
@@ -38,7 +39,11 @@ export function cleanDOM(DOM: Element, imgMode: "naive" | "TM") {
     imgMode: imgMode,
   };
   walk(DOM as HTMLElement, builder);
-  return { dom: builder.dom, text: builder.text, images: builder.images };
+  return {
+    dom: builder.dom,
+    text: builder.text.trim(),
+    images: builder.images,
+  };
 }
 
 export async function getHtmlText(url: string, charset: string | undefined) {
@@ -211,4 +216,10 @@ export function concurrencyRun(
 
 export function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+export function console_debug(...messages: any[]) {
+  if (enaleDebug) {
+    console.debug(...arguments);
+  }
 }
