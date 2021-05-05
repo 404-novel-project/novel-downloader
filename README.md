@@ -3,7 +3,7 @@
 一个**可扩展的**通用型小说下载器。
 ## 使用方法
 
-**特别提醒：本脚本与[Greasemonkey](https://addons.mozilla.org/firefox/addon/greasemonkey/)脚本管理器不兼容，使用时敬请特别注意。**
+**特别提醒：本脚本与[Greasemonkey](https://addons.mozilla.org/firefox/addon/greasemonkey/)脚本管理器不兼容。本脚本执行下载任务时将播放无声音频，以保证脚本后台运行时不被休眠。**
 
 ![demo](assets/demo.png)
 
