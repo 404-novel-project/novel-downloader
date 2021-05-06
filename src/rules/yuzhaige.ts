@@ -1,6 +1,7 @@
 import { BookAdditionalMetadate, Chapter } from "../main";
 import { ruleClass, ruleClassNamespace } from "../rules";
 import { getHtmlDOM, cleanDOM, rm, console_debug } from "../lib";
+import { replaceYuzhaigeImage } from "./lib/yuzhaigeImageDecode";
 
 export class yuzhaige implements ruleClass {
   public imageMode: "naive" | "TM";
@@ -205,13 +206,29 @@ export class yuzhaige implements ruleClass {
     } while (flag);
 
     if (content) {
-      let { dom, text, images } = cleanDOM(content, "naive");
+      let { dom: oldDom, text: _text, images: finalImages } = cleanDOM(
+        content,
+        "naive"
+      );
+      const _newDom = document.createElement("div");
+      _newDom.innerHTML = replaceYuzhaigeImage(content.innerHTML);
+      let { dom: newDom, text: finalText, images } = cleanDOM(_newDom, "naive");
+
+      const fontStyleDom = document.createElement("style");
+      fontStyleDom.innerHTML = `.hide { display: none; }`;
+      oldDom.className = "hide";
+
+      const finalDom = document.createElement("div");
+      finalDom.appendChild(fontStyleDom);
+      finalDom.appendChild(oldDom);
+      finalDom.appendChild(newDom);
+
       return {
         chapterName: chapterName,
         contentRaw: content,
-        contentText: text,
-        contentHTML: dom,
-        contentImages: images,
+        contentText: finalText,
+        contentHTML: finalDom,
+        contentImages: finalImages,
       };
     } else {
       return {
