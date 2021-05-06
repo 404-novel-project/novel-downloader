@@ -74,10 +74,9 @@
     "sinaimg.cn",
     "jjwxc.net",
     "image.gebiqu.com",
-    "qidian.qpic.cn",
+    "qpic.cn",
     "zongheng.com",
     "17k.com",
-    "www.shuhai.com",
     "img.uukanshu.com",
     "aliyuncs.com",
     "cdn.bcebos.com",
@@ -86,6 +85,7 @@
     "ch-intel.com",
     "huluxia.com",
     "linovel.net",
+    "ax1x.com",
     "*"
   ],
   "require": [

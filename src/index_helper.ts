@@ -149,17 +149,101 @@ img {
 
   public saveZip() {
     const ToC = new DOMParser().parseFromString(
-      `<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="https://github.com/yingziwu/novel-downloader"><link href="style.css" type="text/css" rel="stylesheet"/><title>Table of Contents</title></head><body><div class="main"><h1>Table of Contents</h1></div></body></html>`,
+      `<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="https://github.com/yingziwu/novel-downloader"><link href="style.css" type="text/css" rel="stylesheet"/><title>${this.book.bookname}</title></head><body><div class="main"><h1>${this.book.bookname}</h1></div></body></html>`,
       "text/html"
     );
     const TocMain = ToC.querySelector("div.main");
 
-    console_debug("[save]保存源数据文本，保存样式");
+    console_debug("[save]生成ToC模板");
+    const infoDom = document.createElement("div");
+    infoDom.className = "info";
+    if (this.book.additionalMetadate.cover) {
+      const coverDom = document.createElement("img");
+      coverDom.className = "cover";
+      coverDom.src = this.book.additionalMetadate.cover.name;
+      infoDom.appendChild(coverDom);
+    }
+    if (this.book.introduction) {
+      const divElem = document.createElement("div");
+      const h3Elem = document.createElement("h3");
+      h3Elem.innerText = "简介";
+
+      const introDom = document.createElement("div");
+      introDom.className = "introduction";
+      introDom.innerText = this.book.introduction;
+
+      divElem.appendChild(h3Elem);
+      divElem.appendChild(introDom);
+      infoDom.appendChild(divElem);
+    }
+    TocMain?.appendChild(infoDom);
+
+    const bookUrlDom = document.createElement("div");
+    bookUrlDom.className = "bookurl";
+    const bookUrlAnchor = document.createElement("a");
+    bookUrlAnchor.href = this.book.bookUrl;
+    bookUrlAnchor.innerText = "打开原始网站";
+    bookUrlDom.appendChild(bookUrlAnchor);
+    TocMain?.appendChild(bookUrlDom);
+
+    const hr = document.createElement("hr");
+    TocMain?.appendChild(hr);
+
+    const tocStyleText = `img {
+      max-width: 100%;
+      max-height: 15em;
+    }
+    .introduction {
+      font-size: smaller;
+      max-height: 18em;
+      overflow-y: scroll;
+    }
+    .bookurl {
+      text-align: center;
+      font-size: smaller;
+      padding-top: 1em;
+      padding-bottom: 0.5em;
+      margin-top: 0.4em;
+    }
+    .bookurl > a {
+      color: gray;
+    }
+    .info {
+      display: grid;
+      grid-template-columns: 30% 70%;
+    }
+    .info h3 {
+      padding-left: 0.5em;
+      margin-top: -1.2em;
+      margin-bottom: 0.5em;
+    }
+    .section {
+      margin-top: 1.5em;
+      display: grid;
+      grid-template-columns: 30% 30% 30%;
+    }
+    .section > h2:first-child {
+      grid-column-end: span 3;
+    }
+    .section > .chapter {
+      padding-bottom: 0.3em;
+      text-align: center;
+    }
+    .main > h1 {
+      margin-top: 1.5em;
+      margin-bottom: 1.5em;  
+    }`;
+    const tocStyle = document.createElement("style");
+    tocStyle.innerHTML = tocStyleText;
+    ToC.head.appendChild(tocStyle);
+
+    console_debug("[save]保存元数据文本");
     const metaDateText = this.genMetaDateTxt();
     this.savedZip.file(
       "info.txt",
       new Blob([metaDateText], { type: "text/plain;charset=utf-8" })
     );
+    console_debug("[save]保存样式");
     this.savedZip.file(
       "style.css",
       new Blob([this.mainStyleText], { type: "text/css;charset=utf-8" })
@@ -197,15 +281,17 @@ img {
           console_debug("[save]ToC");
           const sectionDiv = document.createElement("div");
           sectionDiv.id = sectionHtmlId;
+          sectionDiv.className = "section";
 
           const heading = document.createElement("h2");
           heading.className = "section-label";
           heading.innerHTML = chapter.sectionName;
 
-          const hr = document.createElement("hr");
-
           sectionDiv.appendChild(heading);
-          TocMain?.appendChild(hr);
+          if (sections.length !== 1) {
+            const hr = document.createElement("hr");
+            TocMain?.appendChild(hr);
+          }
           TocMain?.appendChild(sectionDiv);
 
           console_debug("[save]Zip");
@@ -225,6 +311,16 @@ img {
         chapterDiv.appendChild(chapterAnchor);
         sectionDiv?.appendChild(chapterDiv);
       } else {
+        let sectionDiv;
+        if (TocMain?.querySelector("#section00")) {
+          sectionDiv = TocMain?.querySelector("#section00");
+        } else {
+          sectionDiv = document.createElement("div");
+          sectionDiv.id = "section00";
+          sectionDiv.className = "section";
+          TocMain?.appendChild(sectionDiv);
+        }
+
         const chapterDiv = document.createElement("div");
         chapterDiv.className = "chapter";
         const chapterAnchor = document.createElement("a");
@@ -232,7 +328,7 @@ img {
         chapterAnchor.innerHTML = chapterName;
 
         chapterDiv.appendChild(chapterAnchor);
-        TocMain?.appendChild(chapterDiv);
+        sectionDiv?.appendChild(chapterDiv);
       }
 
       console_debug("[save]保存HTML文件");
@@ -301,6 +397,7 @@ img {
         "、"
       )}`;
     }
+    metaDateText += `\n原始网址：${this.book.bookUrl}`;
     metaDateText += `\n下载时间：${new Date().toISOString()}\n本文件由小说下载器生成，软件地址：https://github.com/yingziwu/novel-downloader`;
     return metaDateText;
   }

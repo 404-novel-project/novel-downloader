@@ -12,6 +12,15 @@ const blockElements = [
   "nav",
   "section",
   "figure",
+  'b',
+  'strong',
+  'i',
+  'em',
+  'dfn',
+  'var',
+  'cite',
+  'span',
+  'font',
   "a", // 忽略超链接
 ];
 const ignoreElements = [
