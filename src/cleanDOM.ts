@@ -1,4 +1,23 @@
-import { attachmentClass } from "./main";
+import { attachmentClass, Status } from "./main";
+import { imageClassCache } from "./index";
+
+function getImageClassCache(imageUrl: string, imageName: string) {
+  const f1 = imageClassCache.filter(
+    (imgClass) => imgClass.imageUrl === imageUrl
+  );
+  const f2 = f1.filter((imgClass) => imgClass.name === imageName);
+  // const f3 = f2.filter((imgClass) => imgClass.status === Status.finished);
+  if (f2.length) {
+    return f2[0];
+  } else {
+    return null;
+  }
+}
+
+function putImageClassCache(imgClass: attachmentClass) {
+  imageClassCache.push(imgClass);
+  return true;
+}
 
 const blockElements = [
   "article",
@@ -223,15 +242,20 @@ function _formatImage(
   const imageUrl = elem.src;
   const imageName = genImageName(imageUrl);
 
-  const filterdImages = builder.images.filter(
-    (imgClass) => imgClass.imageUrl === elem.src
-  );
   let imgClass;
-  if (filterdImages.length) {
-    imgClass = filterdImages[0];
+  const imgClassCache = getImageClassCache(imageUrl, imageName);
+  if (imgClassCache) {
+    imgClass = imgClassCache;
   } else {
     imgClass = new attachmentClass(imageUrl, imageName, imgMode);
     imgClass.init();
+    putImageClassCache(imgClass);
+  }
+
+  const filterdImages = builder.images.filter(
+    (imgClass) => imgClass.imageUrl === elem.src
+  );
+  if (filterdImages.length === 0) {
     builder.images.push(imgClass);
   }
 
