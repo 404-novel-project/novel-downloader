@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        3.5.4.1620209063349
+// @version        3.5.5.1620262137140
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -31,6 +31,7 @@
 // @match          *://www.viviyzw.com/book*.html
 // @match          *://www.xiaoshuodaquan.com/*/
 // @match          *://www.81book.com/book/*/
+// @match          *://m.yuzhaige.cc/*/*/
 // @name:en        novel-downloader
 // @description:en An scalable universal novel downloader.
 // @namespace      https://blog.bgme.me
@@ -43,6 +44,11 @@
 // @exclude        *://www.meegoq.com/book/*.html
 // @exclude        *://www.viviyzw.com/book/*.html
 // @exclude        *://www.yruan.com/article/*/*.html
+// @exclude        *://m.yuzhaige.cc/tag/*/
+// @exclude        *://m.yuzhaige.cc/sort/*/
+// @exclude        *://m.yuzhaige.cc/top/*/
+// @exclude        *://m.yuzhaige.cc/full/*/
+// @exclude        *://m.yuzhaige.cc/book/*/
 // @grant          unsafeWindow
 // @grant          GM_info
 // @grant          GM_xmlhttpRequest
@@ -131,6 +137,26 @@ function* findBase(dom, blockElements, ignoreElements) {
         }
     }
 }
+function getNextSibling(elem) {
+    var _a;
+    elem = elem.nextSibling;
+    if (elem &&
+        elem.nodeName.toLowerCase() === "#text" &&
+        ((_a = elem.textContent) === null || _a === void 0 ? void 0 : _a.trim()) === "") {
+        return elem.nextSibling;
+    }
+    return elem;
+}
+function getPreviousSibling(elem) {
+    var _a;
+    elem = elem.previousSibling;
+    if (elem &&
+        elem.nodeName.toLowerCase() === "#text" &&
+        ((_a = elem.textContent) === null || _a === void 0 ? void 0 : _a.trim()) === "") {
+        return elem.previousSibling;
+    }
+    return elem;
+}
 function formatAnchor(elem, builder) {
     if (!elem.href || !elem.href.startsWith("http")) {
         return;
@@ -154,7 +180,7 @@ function formatAnchor(elem, builder) {
             let imgTexts = "";
             const imgNodes = nodes.filter((node) => node.nodeName.toLowerCase() === "img");
             for (const imgNode of imgNodes) {
-                let tfi = formatImage(imgNode, builder.imgMode);
+                let tfi = _formatImage(imgNode, builder);
                 if (tfi) {
                     let [imgElem, imgText, imgClass] = tfi;
                     aElem.appendChild(imgElem);
@@ -182,8 +208,68 @@ function formatAnchor(elem, builder) {
     }
     builder.dom.appendChild(aElem);
     builder.text = builder.text + aText;
+    return;
 }
-function formatImage(elem, imgMode) {
+function formatImage(elem, builder) {
+    var _a, _b, _c;
+    function temp0() {
+        const pI = document.createElement("p");
+        pI.appendChild(imgElem);
+        builder.dom.appendChild(pI);
+        builder.text = builder.text + imgText + "\n\n";
+    }
+    if (!elem.src) {
+        return;
+    }
+    let tfi = _formatImage(elem, builder);
+    if (!tfi) {
+        return;
+    }
+    let [imgElem, imgText, imgClass] = tfi;
+    if (((_a = elem.parentElement) === null || _a === void 0 ? void 0 : _a.childElementCount) === 0) {
+        temp0();
+        return;
+    }
+    else {
+        function temp1() {
+            if ((lastElement === null || lastElement === void 0 ? void 0 : lastElement.nodeName.toLowerCase()) === "p") {
+                lastElement.appendChild(imgElem);
+                builder.text = builder.text + ` ${imgText} `;
+                return;
+            }
+            else {
+                const tpElem = document.createElement("p");
+                tpElem.appendChild(imgElem);
+                builder.dom.appendChild(tpElem);
+                builder.text = builder.text + ` ${imgText} `;
+                return;
+            }
+        }
+        const lastElement = builder.dom.lastElementChild;
+        const nextSibling = getNextSibling(elem);
+        const previousSibling = getPreviousSibling(elem);
+        if (((_b = elem.parentElement) === null || _b === void 0 ? void 0 : _b.nodeName.toLowerCase()) === "p" &&
+            (lastElement === null || lastElement === void 0 ? void 0 : lastElement.nodeName.toLowerCase()) === "p") {
+            if ((previousSibling === null || previousSibling === void 0 ? void 0 : previousSibling.nodeName.toLowerCase()) === "#text" ||
+                (nextSibling === null || nextSibling === void 0 ? void 0 : nextSibling.nodeName.toLowerCase()) === "#text") {
+                temp1();
+                return;
+            }
+            if ((previousSibling === null || previousSibling === void 0 ? void 0 : previousSibling.nodeName.toLowerCase()) === "img" &&
+                ((_c = lastElement.lastElementChild) === null || _c === void 0 ? void 0 : _c.nodeName.toLowerCase()) === "img" &&
+                lastElement.lastElementChild.alt ===
+                    previousSibling.src) {
+                temp1();
+                return;
+            }
+        }
+        else {
+            temp0();
+            return;
+        }
+    }
+}
+function _formatImage(elem, builder) {
     function genImageName(url) {
         let t = btoa(new URL(url).pathname.split("/").slice(-2).join("/")) +
             `.${url.split(".").slice(-1)[0]}`;
@@ -197,12 +283,21 @@ function formatImage(elem, imgMode) {
     if (!elem.src) {
         return;
     }
+    const imgMode = builder.imgMode;
     const imageUrl = elem.src;
     const imageName = genImageName(imageUrl);
-    const imgClass = new main_1.attachmentClass(imageUrl, imageName, imgMode);
-    imgClass.init();
+    const filterdImages = builder.images.filter((imgClass) => imgClass.imageUrl === elem.src);
+    let imgClass;
+    if (filterdImages.length) {
+        imgClass = filterdImages[0];
+    }
+    else {
+        imgClass = new main_1.attachmentClass(imageUrl, imageName, imgMode);
+        imgClass.init();
+        builder.images.push(imgClass);
+    }
     const imgElem = document.createElement("img");
-    imgElem.src = imageName;
+    imgElem.setAttribute("data-src-address", imageName);
     imgElem.alt = imageUrl;
     const imgText = `![${imageUrl}](${imageName})`;
     return [imgElem, imgText, imgClass];
@@ -214,12 +309,34 @@ function formatParagraph(elem, builder) {
         const pText = elem.innerText.trim() + "\n\n";
         builder.dom.appendChild(pElem);
         builder.text = builder.text + pText;
+        return;
     }
     else {
         walk(elem, builder);
+        return;
     }
 }
 function formatText(elems, builder) {
+    var _a, _b;
+    function temp0() {
+        const tPElem = document.createElement("p");
+        tPElem.innerText = textContent;
+        builder.dom.appendChild(tPElem);
+    }
+    function temp1() {
+        const lastElement = builder.dom.lastElementChild;
+        if ((lastElement === null || lastElement === void 0 ? void 0 : lastElement.nodeName.toLowerCase()) === "p") {
+            const textElem = document.createTextNode(textContent);
+            lastElement.appendChild(textElem);
+            const tPText = textContent + "\n".repeat(brCount);
+            builder.text = builder.text + tPText;
+        }
+        else {
+            temp0();
+            const tPText = textContent + "\n";
+            builder.text = builder.text + tPText;
+        }
+    }
     const brCount = elems.filter((elem) => elem.nodeName.toLowerCase() === "br")
         .length;
     const elem = elems[0];
@@ -227,16 +344,44 @@ function formatText(elems, builder) {
     if (!textContent) {
         return;
     }
-    if (brCount > 3) {
-        const tPElem = document.createElement("p");
-        tPElem.innerText = textContent;
-        const tPBr = document.createElement("p");
-        const br = document.createElement("br");
-        tPBr.appendChild(br);
-        builder.dom.appendChild(tPElem);
-        builder.dom.appendChild(tPBr);
-        const tPText = textContent + "\n".repeat(brCount);
-        builder.text = builder.text + tPText;
+    const lastElement = builder.dom.lastElementChild;
+    const previousSibling = getPreviousSibling(elem);
+    if (((_a = elem.parentElement) === null || _a === void 0 ? void 0 : _a.nodeName.toLowerCase()) === "p" &&
+        (lastElement === null || lastElement === void 0 ? void 0 : lastElement.nodeName.toLowerCase()) === "p" &&
+        (previousSibling === null || previousSibling === void 0 ? void 0 : previousSibling.nodeName.toLowerCase()) === "img" &&
+        ((_b = lastElement.lastElementChild) === null || _b === void 0 ? void 0 : _b.nodeName.toLowerCase()) === "img" &&
+        lastElement.lastElementChild.alt ===
+            previousSibling.src) {
+        temp1();
+        return;
+    }
+    if (brCount === 0) {
+        const nextSibling = getNextSibling(elem);
+        const previousSibling = getPreviousSibling(elem);
+        if (nextSibling === null) {
+            if ((previousSibling === null || previousSibling === void 0 ? void 0 : previousSibling.nodeName.toLowerCase()) === "br") {
+                temp0();
+                const tPText = textContent + "\n\n";
+                builder.text = builder.text + tPText;
+                return;
+            }
+            else {
+                temp1();
+                return;
+            }
+        }
+        else {
+            if (previousSibling === null) {
+                temp0();
+                const tPText = textContent;
+                builder.text = builder.text + tPText;
+                return;
+            }
+            else {
+                temp1();
+                return;
+            }
+        }
     }
     else if (brCount === 1) {
         const lastElement = builder.dom.lastElementChild;
@@ -247,22 +392,41 @@ function formatText(elems, builder) {
             lastElement.appendChild(textElem);
             const tPText = textContent + "\n";
             builder.text = builder.text + tPText;
+            return;
         }
         else {
-            const tPElem = document.createElement("p");
-            tPElem.innerText = textContent;
-            builder.dom.appendChild(tPElem);
+            temp0();
             const tPText = textContent + "\n";
             builder.text = builder.text + tPText;
+            return;
         }
     }
-    else {
-        const tPElem = document.createElement("p");
-        tPElem.innerText = textContent;
-        builder.dom.appendChild(tPElem);
+    else if (brCount === 2 || brCount === 3) {
+        temp0();
         const tPText = textContent + "\n".repeat(brCount);
         builder.text = builder.text + tPText;
+        return;
     }
+    else if (brCount > 3) {
+        temp0();
+        let PBrNumber = Math.round((brCount - 2) / 3);
+        for (let i = PBrNumber; PBrNumber > 0; i--) {
+            const tPBr = document.createElement("p");
+            const br = document.createElement("br");
+            tPBr.appendChild(br);
+            builder.dom.appendChild(tPBr);
+        }
+        const tPText = textContent + "\n".repeat(brCount);
+        builder.text = builder.text + tPText;
+        return;
+    }
+}
+function formatHr(elem, builder) {
+    const hrElem = document.createElement("hr");
+    const hrText = "-".repeat(20);
+    builder.dom.appendChild(hrElem);
+    builder.text = builder.text + "\n\n" + hrText + "\n\n";
+    return;
 }
 function walk(dom, builder) {
     const childNodes = [...findBase(dom, blockElements, ignoreElements)].filter((b) => b);
@@ -301,22 +465,11 @@ function walk(dom, builder) {
                 break;
             }
             case "img": {
-                let tfi = formatImage(node, builder.imgMode);
-                if (tfi) {
-                    let [imgElem, imgText, imgClass] = tfi;
-                    const pI = document.createElement("p");
-                    pI.appendChild(imgElem);
-                    builder.dom.appendChild(pI);
-                    builder.text = builder.text + imgText + "\n\n";
-                    builder.images.push(imgClass);
-                }
+                formatImage(node, builder);
                 break;
             }
             case "hr": {
-                const hrElem = document.createElement("hr");
-                const hrText = "-".repeat(20);
-                builder.dom.appendChild(hrElem);
-                builder.text = builder.text + "\n\n" + hrText + "\n\n";
+                formatHr(node, builder);
                 break;
             }
         }
@@ -333,8 +486,9 @@ exports.walk = walk;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.sleep = exports.concurrencyRun = exports.gfetch = exports.rm = exports.ggetHtmlDOM = exports.ggetHtmlText = exports.getHtmlDOM = exports.getHtmlText = exports.cleanDOM = exports._GM_info = void 0;
+exports.console_debug = exports.sleep = exports.concurrencyRun = exports.gfetch = exports.rm = exports.ggetHtmlDOM = exports.ggetHtmlText = exports.getHtmlDOM = exports.getHtmlText = exports.cleanDOM = exports._GM_info = void 0;
 const cleanDOM_1 = __webpack_require__(962);
+const rules_1 = __webpack_require__(489);
 if (typeof GM_info === "undefined") {
     if (typeof GM === "undefined") {
         throw new Error("未发现 GM API");
@@ -376,7 +530,11 @@ function cleanDOM(DOM, imgMode) {
         imgMode: imgMode,
     };
     cleanDOM_1.walk(DOM, builder);
-    return { dom: builder.dom, text: builder.text, images: builder.images };
+    return {
+        dom: builder.dom,
+        text: builder.text.trim(),
+        images: builder.images,
+    };
 }
 exports.cleanDOM = cleanDOM;
 async function getHtmlText(url, charset) {
@@ -520,6 +678,12 @@ function sleep(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
 }
 exports.sleep = sleep;
+function console_debug(...messages) {
+    if (rules_1.enaleDebug) {
+        console.debug(...arguments);
+    }
+}
+exports.console_debug = console_debug;
 
 
 /***/ }),
@@ -548,7 +712,7 @@ class Book {
         this.introduction = introduction;
         this.additionalMetadate = additionalMetadate;
         this.chapters = chapters;
-        console.debug("[Book]初始化完成");
+        lib_1.console_debug("[Book]初始化完成");
     }
 }
 exports.Book = Book;
@@ -577,13 +741,21 @@ class Chapter {
         this.contentText = contentText;
         this.contentHTML = contentHTML;
         this.contentImages = contentImages;
-        console.debug(`[Chapter]${this.chapterName} 解析完成。`);
+        lib_1.console_debug(`[Chapter]${this.chapterName} 解析完成。`);
         return obj;
     }
     async parse() {
         this.status = Status.downloading;
         return this.chapterParse(this.chapterUrl, this.chapterName, this.isVIP, this.isPaid, this.charset)
-            .then((obj) => {
+            .then(async (obj) => {
+            const contentImages = obj.contentImages;
+            if (contentImages) {
+                let downloadingImages = contentImages.filter((imgObj) => imgObj.status === Status.downloading);
+                while (downloadingImages.length) {
+                    await lib_1.sleep(500);
+                    downloadingImages = contentImages.filter((imgObj) => imgObj.status === Status.downloading);
+                }
+            }
             this.status = Status.finished;
             return obj;
         })
@@ -624,7 +796,7 @@ class attachmentClass {
         else {
             this.imageBlob = await this.tmDownloadImage();
         }
-        console.debug(`[Image] ${this.imageUrl} 下载完成。`);
+        lib_1.console_debug(`[Image] ${this.imageUrl} 下载完成。`);
         return this.imageBlob;
     }
     downloadImage() {
@@ -701,8 +873,9 @@ exports.attachmentClass = attachmentClass;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getRule = exports.icon1 = exports.icon0 = exports.retryLimit = void 0;
+exports.getRule = exports.icon1 = exports.icon0 = exports.enaleDebug = exports.retryLimit = void 0;
 exports.retryLimit = 5;
+exports.enaleDebug = false;
 exports.icon0 = "data:image/png;base64,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";
 exports.icon1 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAAAA3NCSVQICAjb4U/gAAAACXBIWXMAAANSAAADUgEQACRKAAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAAAUdQTFRF////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAiYSOVQAAAGx0Uk5TAAECAwQFCAkKCwwNDhETFRkaHB0fICMkKCwwNTg5PD1AQUZKTk9QV1tcX2BjZGhtb3B2eHl6fX6AgYKHi4+QlJicnaChpamur7C3uru+v8LEyMzP0NXZ3N3f4OTn6uvt7/Hy8/T2+Pn6/P3+VI4wmgAAAyxJREFUeNrtmVdT4zAUhTFs6BB6Cb13WLpooffeQjW9hMT//3mVJbsT4li6ahbD6D4y5p5vzrGuFDkry5QpznLSygAYAANgAAyAATAABsAAGAADYAAMgAEwAD8XADlChTQTIM0eIM0pIM3vAdL8JiLNawFpXo1I8zxAmicS0jwTkeapjDTvC8r0gQQK9UEESvUBBIr1qQTK9SkESvR/wQkQ5V95KhS+Q1AC14N34ZCYenD0LGNjoH7ij2ejQV71QPd2lNQapI8rut0d4LMe0Bz4CHMUSetZCGgPMESRYj1cAGARMIqv1kMlgK8pNQq39TARBB8VhCgyW59S414y6frjxDYeUYTCNnnKHw4WeUxl1/wtGjwk97LToyBan6irmRrPfSHj/K+ZuSJ3TImCav3zaqvlvTN57T9W6+ozJAqa9fH9/gLS3kja/wr69+PUKMhGXUxVie0mVVMXZAUSwONys4ztvHn5kQcgttubJ+tEkde7G2MEiExUyD3VVExE4AAPS40qTlaNSw8QgI+dnlxVx8ncnp0PCsD5WJnaI23Z2Lk3wP1igx83jA2L998V4G8E5WrVy0kRfIeXMLkMm1TIN8GWYXIQTVbKVa+cjLCO4r2+fFnq+X17MZ7N6GmlxRJXt1pWnjh3Q1yX09Vi8tXTl/zb8eeB5GCgkFe9cOAgTutPBcD1stbGEYXVtvYCaA4BwHU9W8smXzt7DesMBMB1NFQMVS8eOgK3hQM4zut6ezZdPbt9/ZWhKQsArpu5OrJ83dwNW0dGAFzHwyVe6iXDx8zt2AEc522jI8etntOx8cbRjAcA1+18/Vf5+vlbvk6cALhORkr/qZeOnHC34QdwnPfNTvzjLtC5+S7QRAQg8eNuYcEW6yAIIF4GQD8A9W5IZX3eFQW6tqI61KNbXf9vy4K/T/2Wd90X+hqFnfHG1K8oUq1nuqpVZD3zjal865nvjBVY74pC/qpg/nYkNQqb6+uZrChYrFcQhcBnOwlR2KIfLoUGlIj1EgaUsPVCUcixnjcKmdZzRCHdeqYo1FgPjUKl9YAolFtPjMIf672i8NP6DFH4br2pH1d/AAm28mJJn9pPAAAAAElFTkSuQmCC";
 async function getRule() {
@@ -817,6 +990,11 @@ async function getRule() {
         case "www.gongzicp.com": {
             const { gongzicp } = await Promise.resolve().then(() => __webpack_require__(374));
             ruleClass = gongzicp;
+            break;
+        }
+        case "m.yuzhaige.cc": {
+            const { yuzhaige } = await Promise.resolve().then(() => __webpack_require__(191));
+            ruleClass = yuzhaige;
             break;
         }
         default: {
@@ -996,7 +1174,7 @@ class c226ks {
         const indexUrls = Array.from(document.querySelectorAll('[name="pageselect"] > option')).map((opt) => document.location.origin + opt.getAttribute("value"));
         let lis = [];
         for (const indexUrl of indexUrls) {
-            console.debug(`[chapter]请求${indexUrl}`);
+            lib_1.console_debug(`[chapter]请求${indexUrl}`);
             const dom = await lib_1.getHtmlDOM(indexUrl, "UTF-8");
             const ul = dom.querySelector("div.row.row-section > div > div:nth-child(4) > ul");
             if (ul === null || ul === void 0 ? void 0 : ul.childElementCount) {
@@ -1464,7 +1642,7 @@ class ciweimao {
                 const rootPath = "https://www.ciweimao.com/";
                 const access_key_url = rootPath + "chapter/ajax_get_session_code";
                 const chapter_content_url = rootPath + "chapter/get_book_chapter_detail_info";
-                console.debug(`[Chapter]请求 ${access_key_url} Referer ${refererUrl}`);
+                lib_1.console_debug(`[Chapter]请求 ${access_key_url} Referer ${refererUrl}`);
                 const access_key_obj = await lib_1.gfetch(access_key_url, {
                     method: "POST",
                     headers: {
@@ -1479,7 +1657,7 @@ class ciweimao {
                 }).then((response) => response.response);
                 const chapter_access_key = access_key_obj
                     .chapter_access_key;
-                console.debug(`[Chapter]请求 ${chapter_content_url} Referer ${refererUrl}`);
+                lib_1.console_debug(`[Chapter]请求 ${chapter_content_url} Referer ${refererUrl}`);
                 const chapter_content_obj = await lib_1.gfetch(chapter_content_url, {
                     method: "POST",
                     headers: {
@@ -1530,7 +1708,7 @@ class ciweimao {
                     const parentWidth = 871;
                     const setFontSize = "14";
                     const image_session_code_url = HB.config.rootPath + "chapter/ajax_get_image_session_code";
-                    console.debug(`[Chapter]请求 ${image_session_code_url} Referer ${refererUrl}`);
+                    lib_1.console_debug(`[Chapter]请求 ${image_session_code_url} Referer ${refererUrl}`);
                     const image_session_code_object = await lib_1.gfetch(image_session_code_url, {
                         method: "POST",
                         headers: {
@@ -1570,7 +1748,7 @@ class ciweimao {
                 }
                 const div_chapter_author_say = await getChapterAuthorSay();
                 const vipCHapterImageUrl = await vipChapterDecrypt(chapter_id, chapterUrl);
-                console.debug(`[Chapter]请求 ${vipCHapterImageUrl} Referer ${chapterUrl}`);
+                lib_1.console_debug(`[Chapter]请求 ${vipCHapterImageUrl} Referer ${chapterUrl}`);
                 const vipCHapterImageBlob = await lib_1.gfetch(vipCHapterImageUrl, {
                     method: "GET",
                     headers: {
@@ -1656,7 +1834,7 @@ class gongzicp {
         const novelGetInfoBaseUrl = "https://www.gongzicp.com/webapi/novel/novelGetInfo";
         const novelGetInfoUrl = new URL(novelGetInfoBaseUrl);
         novelGetInfoUrl.searchParams.set("id", bookId);
-        console.debug(`请求地址: ${novelGetInfoUrl.toString()}`);
+        lib_1.console_debug(`请求地址: ${novelGetInfoUrl.toString()}`);
         const novelInfo = await fetch(novelGetInfoUrl.toString(), {
             credentials: "include",
             headers: {
@@ -1687,7 +1865,7 @@ class gongzicp {
         additionalMetadate.tags = data.novelInfo.tag_list;
         async function isLogin() {
             const getUserInfoUrl = "https://www.gongzicp.com/user/getUserInfo";
-            console.debug(`正在请求: ${getUserInfoUrl}`);
+            lib_1.console_debug(`正在请求: ${getUserInfoUrl}`);
             const userInfo = await fetch(getUserInfoUrl, {
                 headers: {
                     accept: "application/json, text/javascript, */*; q=0.01",
@@ -1796,7 +1974,7 @@ class gongzicp {
                 const chapterGetInfoUrl = new URL(chapterGetInfoBaseUrl);
                 chapterGetInfoUrl.searchParams.set("cid", cid);
                 chapterGetInfoUrl.searchParams.set("nid", "0");
-                console.debug(`请求地址: ${chapterGetInfoUrl.toString()}, Referrer: ${chapterUrl}`);
+                lib_1.console_debug(`请求地址: ${chapterGetInfoUrl.toString()}, Referrer: ${chapterUrl}`);
                 const result = await fetch(chapterGetInfoUrl.toString(), {
                     credentials: "include",
                     headers: {
@@ -2000,7 +2178,7 @@ class hetushu {
                 bid,
                 "r" + sid + ".json",
             ].join("/");
-            console.debug(`[Chapter]请求 ${url} Referer ${chapterUrl}`);
+            lib_1.console_debug(`[Chapter]请求 ${url} Referer ${chapterUrl}`);
             const token = await fetch(url, {
                 headers: {
                     accept: "*/*",
@@ -2283,7 +2461,7 @@ class jjwxc {
                 }
                 let retryTime = 0;
                 function fetchFont(fontUrl) {
-                    console.debug(`[Chapter]请求 ${fontUrl} Referer ${chapterUrl} 重试次数 ${retryTime}`);
+                    lib_1.console_debug(`[Chapter]请求 ${fontUrl} Referer ${chapterUrl} 重试次数 ${retryTime}`);
                     return lib_1.gfetch(fontUrl, {
                         headers: {
                             accept: "*/*",
@@ -24575,7 +24753,7 @@ class qidian {
                     authorId: authorId,
                 });
                 const url = baseUrl + "?" + search.toString();
-                console.debug(`[Chapter]请求 ${url} Referer ${chapterUrl}`);
+                lib_1.console_debug(`[Chapter]请求 ${url} Referer ${chapterUrl}`);
                 return lib_1.gfetch(url, {
                     headers: {
                         accept: "application/json, text/javascript, */*; q=0.01",
@@ -24645,7 +24823,7 @@ class sfacg {
         this.concurrencyLimit = 1;
     }
     async bookParse(chapterParse) {
-        var _a, _b, _c;
+        var _a, _b, _c, _d;
         const bookUrl = document.location.href.replace("/MainIndex/", "");
         const bookname = (document.querySelector("h1.story-title")).innerText.trim();
         let introduction;
@@ -24664,6 +24842,15 @@ class sfacg {
         additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
         additionalMetadate.cover.init();
         additionalMetadate.tags = Array.from(dom.querySelectorAll("ul.tag-list > li.tag > a")).map((a) => a.innerText.trim());
+        if (dom.querySelector(".d-banner")) {
+            const _beitouUrl = (_a = (dom.querySelector(".d-banner"))) === null || _a === void 0 ? void 0 : _a.style.backgroundImage.split('"');
+            if ((_beitouUrl === null || _beitouUrl === void 0 ? void 0 : _beitouUrl.length) === 3) {
+                const beitouUrl = _beitouUrl[1];
+                const beitou = new main_1.attachmentClass(beitouUrl, `beitou.${beitouUrl.split(".").slice(-1)[0]}`, "TM");
+                beitou.init();
+                additionalMetadate.attachments = [beitou];
+            }
+        }
         const chapters = [];
         const sections = document.querySelectorAll(".story-catalog");
         let chapterNumber = 0;
@@ -24677,7 +24864,7 @@ class sfacg {
             const cs = s.querySelectorAll(".catalog-list > ul > li > a");
             for (let j = 0; j < cs.length; j++) {
                 const c = cs[j];
-                const _chapterName = (_a = c.getAttribute("title")) === null || _a === void 0 ? void 0 : _a.trim();
+                const _chapterName = (_b = c.getAttribute("title")) === null || _b === void 0 ? void 0 : _b.trim();
                 chapterNumber++;
                 sectionChapterNumber++;
                 const chapterName = _chapterName ? _chapterName : "";
@@ -24685,11 +24872,11 @@ class sfacg {
                 let isVIP = false;
                 let isPaid = null;
                 if (c.childElementCount &&
-                    ((_b = c.firstElementChild) === null || _b === void 0 ? void 0 : _b.getAttribute("class")) === "icn_vip") {
+                    ((_c = c.firstElementChild) === null || _c === void 0 ? void 0 : _c.getAttribute("class")) === "icn_vip") {
                     isVIP = true;
                 }
                 const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, chapterParse, "UTF-8");
-                const isLogin = ((_c = document.querySelector(".user-bar > .top-link > .normal-link")) === null || _c === void 0 ? void 0 : _c.childElementCount) === 3
+                const isLogin = ((_d = document.querySelector(".user-bar > .top-link > .normal-link")) === null || _d === void 0 ? void 0 : _d.childElementCount) === 3
                     ? true
                     : false;
                 if (isVIP && !isLogin) {
@@ -24738,7 +24925,7 @@ class sfacg {
             async function getvipChapterImage(vipChapterImageUrl, vipChapterName) {
                 let retryTime = 0;
                 function fetchVipChapterImage(vipChapterImageUrl) {
-                    console.debug(`[Chapter]请求 ${vipChapterImageUrl} Referer ${chapterUrl} 重试次数 ${retryTime}`);
+                    lib_1.console_debug(`[Chapter]请求 ${vipChapterImageUrl} Referer ${chapterUrl} 重试次数 ${retryTime}`);
                     return fetch(vipChapterImageUrl, {
                         headers: {
                             accept: "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8",
@@ -25325,7 +25512,7 @@ class xkzw {
         const chapters = [];
         const bookid = unsafeWindow.bookId;
         const apiUrl = [document.location.origin, "action.php"].join("/");
-        console.debug(`[chapter]正在请求${apiUrl}`);
+        lib_1.console_debug(`[chapter]正在请求${apiUrl}`);
         const siteChapterList = await fetch(apiUrl, {
             headers: {
                 accept: "application/json, text/javascript, */*",
@@ -25645,6 +25832,181 @@ exports.yrun = yrun;
 
 /***/ }),
 
+/***/ 191:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.yuzhaige = void 0;
+const main_1 = __webpack_require__(519);
+const lib_1 = __webpack_require__(563);
+class yuzhaige {
+    constructor() {
+        this.imageMode = "naive";
+    }
+    async bookParse(chapterParse) {
+        const bookUrl = (document.querySelector("div.currency_head > h1 > a")).href;
+        const bookId = bookUrl.split("/").slice(-2, -1)[0];
+        lib_1.console_debug(`[chapter]请求 ${bookUrl}`);
+        const dom = await lib_1.getHtmlDOM(bookUrl, "UTF-8");
+        const bookname = (dom.querySelector("div.cataloginfo > h3")).innerText.trim();
+        const author = (dom.querySelector(".infotype > p:nth-child(1) > a:nth-child(1)")).innerText.trim();
+        let introduction;
+        const introDom = dom.querySelector(".intro");
+        if (introDom === null) {
+            introduction = null;
+        }
+        else {
+            lib_1.rm("span:nth-child(1)", false, introDom);
+            let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "naive");
+            introduction = introCleantext;
+        }
+        const additionalMetadate = {};
+        const chapters = [];
+        const getMaxPageNumber = () => {
+            var _a;
+            const pageDom = document.querySelector("div.page:nth-child(6)");
+            if (pageDom) {
+                const childNodes = Array.from(pageDom.childNodes);
+                const _maxPageNumber = (_a = childNodes
+                    .slice(-1)[0]
+                    .textContent) === null || _a === void 0 ? void 0 : _a.match(/第\d+\/(\d+)页/);
+                if (_maxPageNumber) {
+                    return _maxPageNumber[1];
+                }
+            }
+        };
+        const getIndexUrls = () => {
+            const indexUrls = [];
+            const maxPageNumber = Number(getMaxPageNumber());
+            for (let i = 1; i <= maxPageNumber; i++) {
+                const indexUrl = [
+                    document.location.origin,
+                    document.location.pathname.split("/")[1],
+                    `${bookId}_${i}`,
+                ].join("/") + "/";
+                indexUrls.push(indexUrl);
+            }
+            return indexUrls;
+        };
+        const indexUrls = getIndexUrls();
+        let lis = [];
+        for (const indexUrl of indexUrls) {
+            lib_1.console_debug(`[chapter]请求 ${indexUrl}`);
+            const dom = await lib_1.getHtmlDOM(indexUrl, "UTF-8");
+            const ul = dom.querySelector("ul.chapters");
+            if (ul === null || ul === void 0 ? void 0 : ul.childElementCount) {
+                lis = lis.concat(Array.from(ul.children));
+            }
+        }
+        const chapterList = lis.filter((obj) => obj !== undefined);
+        let chapterNumber = 0;
+        for (let i = 0; i < chapterList.length; i++) {
+            const node = chapterList[i];
+            chapterNumber++;
+            const a = node.firstElementChild;
+            const chapterName = a.innerText;
+            const chapterUrl = a.href;
+            const isVIP = false;
+            const isPaid = false;
+            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, null, null, null, chapterParse, "UTF-8");
+            chapters.push(chapter);
+        }
+        return {
+            bookUrl: bookUrl,
+            bookname: bookname,
+            author: author,
+            introduction: introduction,
+            additionalMetadate: additionalMetadate,
+            chapters: chapters,
+        };
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset) {
+        function contentAppend() {
+            function UpWz(m, i) {
+                let k = Math.ceil((i + 1) % code);
+                k = Math.ceil(m - k);
+                return k;
+            }
+            const _e = dom.getElementsByTagName("meta")[7].getAttribute("content");
+            const contentRaw = dom.querySelector("#articlecontent");
+            let codeurl;
+            let code;
+            const _codeurl = dom
+                .getElementsByTagName("script")[1]
+                .innerText.trim()
+                .match(/"(http.+)"/);
+            if (_codeurl) {
+                codeurl = _codeurl[1];
+                code = Number(new URL(codeurl).searchParams.get("code"));
+            }
+            if (_e) {
+                const e = atob(_e)
+                    .split(/[A-Z]+%/)
+                    .map((v) => Number(v));
+                let childNode = [];
+                if (Array.from(dom.querySelectorAll("script")).filter((s) => s.src.includes("/17mb/js/article.js")).length) {
+                    for (let i = 0; i < e.length; i++) {
+                        let k = UpWz(e[i], i);
+                        childNode[k] = contentRaw.childNodes[i];
+                    }
+                    for (const node of childNode) {
+                        if (node.nodeType != 1) {
+                            continue;
+                        }
+                        if (!(node.innerText.includes("本章尚未完结,请") ||
+                            node.innerText.includes("本章已阅读完毕"))) {
+                            content.appendChild(node);
+                        }
+                    }
+                    return;
+                }
+            }
+            for (const node of Array.from(contentRaw.childNodes)) {
+                if (!(node.innerText.includes("本章尚未完结,请") ||
+                    node.innerText.includes("本章已阅读完毕"))) {
+                    content.appendChild(node);
+                }
+            }
+            return;
+        }
+        let dom = await lib_1.getHtmlDOM(chapterUrl, charset);
+        const content = document.createElement("div");
+        let flag = false;
+        do {
+            contentAppend();
+            const nextLink = (dom.querySelector(".novelbutton .p1.p3 > a:nth-child(1)")).href;
+            flag = new URL(nextLink).pathname.includes("_");
+            if (flag) {
+                dom = await lib_1.getHtmlDOM(nextLink, charset);
+            }
+        } while (flag);
+        if (content) {
+            let { dom, text, images } = lib_1.cleanDOM(content, "naive");
+            return {
+                chapterName: chapterName,
+                contentRaw: content,
+                contentText: text,
+                contentHTML: dom,
+                contentImages: images,
+            };
+        }
+        else {
+            return {
+                chapterName: chapterName,
+                contentRaw: null,
+                contentText: null,
+                contentHTML: null,
+                contentImages: null,
+            };
+        }
+    }
+}
+exports.yuzhaige = yuzhaige;
+
+
+/***/ }),
+
 /***/ 862:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
@@ -25820,7 +26182,7 @@ function printEnvironments() {
 当前脚本版本：${lib_1._GM_info.script.version}
 当前脚本最后更新时间：${lib_1._GM_info.script.lastModified}
 是否处于隐私模式：${lib_1._GM_info.isIncognito}
-是否启用调试：${enaleDebug}`);
+是否启用调试：${rules_1.enaleDebug}`);
     }
 }
 async function initBook(rule) {
@@ -25855,6 +26217,9 @@ async function initChapters(rule, book) {
     }
     else {
         await lib_1.concurrencyRun(chapters, concurrencyLimit, (curChapter) => {
+            if (curChapter === undefined) {
+                return Promise.resolve();
+            }
             return curChapter.init().then((obj) => {
                 if (obj.contentHTML !== undefined) {
                     finishedChapterNumber++;
@@ -25882,7 +26247,7 @@ function save(book) {
     }
     function addImageToZip(image, zip) {
         if (image.status === main_1.Status.finished && image.imageBlob) {
-            console.debug(`[save]添加附件，文件名：${image.name}，对象`, image.imageBlob);
+            lib_1.console_debug(`[save]添加附件，文件名：${image.name}，对象`, image.imageBlob);
             zip.file(image.name, image.imageBlob);
         }
         else {
@@ -25898,7 +26263,9 @@ function save(book) {
     }
     function genSectionHtmlFile(sectionName) {
         let htmlFile = new DOMParser().parseFromString(`<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="https://github.com/yingziwu/novel-downloader"><link href="style.css" type="text/css" rel="stylesheet"/><title>${sectionName}</title></head><body><div class="main"><h1>${sectionName}</h1></div></body></html>`, "text/html");
-        return new Blob([htmlFile.documentElement.outerHTML], {
+        return new Blob([
+            htmlFile.documentElement.outerHTML.replace(new RegExp("data-src-address", "g"), "src"),
+        ], {
             type: "text/html; charset=UTF-8",
         });
     }
@@ -25906,12 +26273,14 @@ function save(book) {
         var _a;
         let htmlFile = new DOMParser().parseFromString(`<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="https://github.com/yingziwu/novel-downloader"><meta name="source" content="${chapterUrl}"><link href="style.css" type="text/css" rel="stylesheet"/><title>${chapterName}</title></head><body><div class="main"><h2>${chapterName}</h2></div></body></html>`, "text/html");
         (_a = htmlFile.querySelector(".main")) === null || _a === void 0 ? void 0 : _a.appendChild(DOM);
-        return new Blob([htmlFile.documentElement.outerHTML], {
+        return new Blob([
+            htmlFile.documentElement.outerHTML.replace(new RegExp("data-src-address", "g"), "src"),
+        ], {
             type: "text/html; charset=UTF-8",
         });
     }
     console.log("[save]开始保存");
-    console.debug("book Object:", book);
+    lib_1.console_debug("book Object:", book);
     const chapters = book.chapters;
     chapters.sort(chapterSort);
     let savedTextArray = [];
@@ -25919,14 +26288,11 @@ function save(book) {
     let infoText = `题名：${book.bookname}\n作者：${book.author}\n简介：${book.introduction}\n来源：${book.bookUrl}\n下载时间：${new Date().toISOString()}\n本文件由小说下载器生成，软件地址：https://github.com/yingziwu/novel-downloader\n\n`;
     savedTextArray.push(infoText);
     if (book.additionalMetadate.cover) {
-        const cover = book.additionalMetadate.cover;
-        if (cover.imageBlob) {
-            console.debug(`[save]添加封面图片，文件名：${`cover.${cover.imageBlob.type.split("/").slice(-1)[0]}`}，对象`, cover.imageBlob);
-            savedZip.file(`cover.${cover.imageBlob.type.split("/").slice(-1)[0]}`, cover.imageBlob);
-        }
-        else {
-            console.error("[save]图片下载失败！");
-            console.error(cover);
+        addImageToZip(book.additionalMetadate.cover, savedZip);
+    }
+    if (book.additionalMetadate.attachments) {
+        for (const bookAttachment of book.additionalMetadate.attachments) {
+            addImageToZip(bookAttachment, savedZip);
         }
     }
     savedZip.file("info.txt", new Blob([infoText], { type: "text/plain;charset=utf-8" }));
@@ -25978,6 +26344,9 @@ p {
   line-height: 1.3em;
   margin-top: 0.4em;
   margin-bottom: 0.4em;
+}
+img {
+  vertical-align: text-bottom;
 }`;
     savedZip.file("style.css", new Blob([styleCSS], { type: "text/css;charset=utf-8" }));
     let preSectionName = "";
@@ -25997,7 +26366,7 @@ p {
                 savedTextArray.push(genSectionText(sectionName));
                 const sectionHTMLBlob = genSectionHtmlFile(sectionName);
                 if (sectionHTMLBlob) {
-                    console.debug(`[save]添加卷HTML，文件名：${"Section" + fileNameBase}，对象`, sectionHTMLBlob);
+                    lib_1.console_debug(`[save]添加卷HTML，文件名：${"Section" + fileNameBase}，对象`, sectionHTMLBlob);
                     savedZip.file(`Section${fileNameBase}`, sectionHTMLBlob);
                 }
             }
@@ -26008,7 +26377,7 @@ p {
             if (contentHTML) {
                 const chapterHTMLBlob = genHtmlFile(chapterName, contentHTML, chapterUrl);
                 if (chapterHTMLBlob) {
-                    console.debug(`[save]添加章节HTML，文件名：${"Chapter" + fileNameBase}，对象`, chapterHTMLBlob);
+                    lib_1.console_debug(`[save]添加章节HTML，文件名：${"Chapter" + fileNameBase}，对象`, chapterHTMLBlob);
                     savedZip.file(`Chapter${fileNameBase}`, chapterHTMLBlob);
                 }
             }
@@ -26021,11 +26390,11 @@ p {
     }
     console.log("[save]开始生成下载文件");
     const saveFileNameBase = `[${book.author}]${book.bookname}`;
-    console.debug("[save]开始保存TXT文件");
+    lib_1.console_debug("[save]开始保存TXT文件");
     const savedText = savedTextArray.join("\n");
     saveAs(new Blob([savedText], { type: "text/plain;charset=utf-8" }), `${saveFileNameBase}.txt`);
-    console.debug("[save]保存TXT文件完毕");
-    console.debug("[save]开始生成ZIP文件");
+    lib_1.console_debug("[save]保存TXT文件完毕");
+    lib_1.console_debug("[save]开始生成ZIP文件");
     savedZip
         .generateAsync({
         type: "blob",
@@ -26035,12 +26404,12 @@ p {
         },
     }, (metadata) => updateProgress(finishedChapterNumber, totalChapterNumber, metadata.percent))
         .then((blob) => {
-        console.debug("[save]ZIP文件生成完毕，开始保存ZIP文件");
+        lib_1.console_debug("[save]ZIP文件生成完毕，开始保存ZIP文件");
         saveAs(blob, `${saveFileNameBase}.zip`);
     })
         .then(() => {
         var _a;
-        console.debug("[save]保存ZIP文件完毕");
+        lib_1.console_debug("[save]保存ZIP文件完毕");
         finishedChapterNumber = 0;
         (_a = document.querySelector("#nd-progress")) === null || _a === void 0 ? void 0 : _a.remove();
         audio.pause();
@@ -26088,7 +26457,7 @@ let totalChapterNumber;
 let finishedChapterNumber = 0;
 function updateProgress(finishedChapterNumber, totalChapterNumber, zipPercent) {
     if (!document.querySelector("#nd-progress")) {
-        console.debug("[progress]初始化进度条");
+        lib_1.console_debug("[progress]初始化进度条");
         let progress = document.createElement("div");
         progress.id = "nd-progress";
         progress.innerHTML = `
@@ -26231,7 +26600,6 @@ async function debug() {
     return;
 }
 let downloading = false;
-const enaleDebug = false;
 const audio = new Audio("data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU3LjcxLjEwMAAAAAAAAAAAAAAA/+M4wAAAAAAAAAAAAEluZm8AAAAPAAAAEAAABVgANTU1NTU1Q0NDQ0NDUFBQUFBQXl5eXl5ea2tra2tra3l5eXl5eYaGhoaGhpSUlJSUlKGhoaGhoaGvr6+vr6+8vLy8vLzKysrKysrX19fX19fX5eXl5eXl8vLy8vLy////////AAAAAExhdmM1Ny44OQAAAAAAAAAAAAAAACQCgAAAAAAAAAVY82AhbwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/+MYxAALACwAAP/AADwQKVE9YWDGPkQWpT66yk4+zIiYPoTUaT3tnU487uNhOvEmQDaCm1Yz1c6DPjbs6zdZVBk0pdGpMzxF/+MYxA8L0DU0AP+0ANkwmYaAMkOKDDjmYoMtwNMyDxMzDHE/MEsLow9AtDnBlQgDhTx+Eye0GgMHoCyDC8gUswJcMVMABBGj/+MYxBoK4DVpQP8iAtVmDk7LPgi8wvDzI4/MWAwK1T7rxOQwtsItMMQBazAowc4wZMC5MF4AeQAGDpruNuMEzyfjLBJhACU+/+MYxCkJ4DVcAP8MAO9J9THVg6oxRMGNMIqCCTAEwzwwBkINOPAs/iwjgBnMepYyId0PhWo+80PXMVsBFzD/AiwwfcKGMEJB/+MYxDwKKDVkAP8eAF8wMwIxMlpU/OaDPLpNKkEw4dRoBh6qP2FC8jCJQFcweQIPMHOBtTBoAVcwOoCNMYDI0u0Dd8ANTIsy/+MYxE4KUDVsAP8eAFBVpgVVPjdGeTEWQr0wdcDtMCeBgDBkgRgwFYB7Pv/zqx0yQQMCCgKNgonHKj6RRVkxM0GwML0AhDAN/+MYxF8KCDVwAP8MAIHZMDDA3DArAQo3K+TF5WOBDQw0lgcKQUJxhT5sxRcwQQI+EIPWMA7AVBoTABgTgzfBN+ajn3c0lZMe/+MYxHEJyDV0AP7MAA4eEwsqP/PDmzC/gNcwXUGaMBVBIwMEsmB6gaxhVuGkpoqMZMQjooTBwM0+S8FTMC0BcjBTgPwwOQDm/+MYxIQKKDV4AP8WADAzAKQwI4CGPhWOEwCFAiBAYQnQMT+uwXUeGzjBWQVkwTcENMBzA2zAGgFEJfSPkPSZzPXgqFy2h0xB/+MYxJYJCDV8AP7WAE0+7kK7MQrATDAvQRIwOADKMBuA9TAYQNM3AiOSPjGxowgHMKFGcBNMQU1FMy45OS41VVU/31eYM4sK/+MYxKwJaDV8AP7SAI4y1Yq0MmOIADGwBZwwlgIJMztCM0qU5TQPG/MSkn8yEROzCdAxECVMQU1FMy45OS41VTe7Ohk+Pqcx/+MYxMEJMDWAAP6MADVLDFUx+4J6Mq7NsjN2zXo8V5fjVJCXNOhwM0vTCDAxFpMYYQU+RlVMQU1FMy45OS41VVVVVVVVVVVV/+MYxNcJADWAAP7EAFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV/+MYxOsJwDWEAP7SAFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV/+MYxPMLoDV8AP+eAFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV/+MYxPQL0DVcAP+0AFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV");
 audio.loop = true;
 window.addEventListener("DOMContentLoaded", () => {
@@ -26242,7 +26610,7 @@ window.addEventListener("DOMContentLoaded", () => {
     }
     printEnvironments();
     addButton();
-    if (enaleDebug) {
+    if (rules_1.enaleDebug) {
         debug();
     }
 });
