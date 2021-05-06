@@ -12,6 +12,7 @@ const blockElements = [
   "nav",
   "section",
   "figure",
+  "a", // 忽略超链接
 ];
 const ignoreElements = [
   "script",
@@ -69,63 +70,6 @@ function getPreviousSibling(elem: HTMLElement | Text) {
   }
 
   return elem;
-}
-
-function formatAnchor(elem: HTMLAnchorElement, builder: Builder): void {
-  if (!elem.href || !elem.href.startsWith("http")) {
-    return;
-  }
-  const aElem = document.createElement("a");
-  let aText: string;
-  aElem.href = elem.href;
-
-  if (elem.childElementCount === 0) {
-    if (elem.innerText) {
-      aElem.innerText = elem.innerText;
-      aText = `[${elem.innerText}](${elem.href})`;
-    } else {
-      aText = `[](${elem.href})`;
-    }
-  } else {
-    const nodes = [...findBase(elem, blockElements, ignoreElements)].filter(
-      (b) => b
-    );
-    const nodesNames = nodes.map((node) => node.nodeName.toLowerCase());
-    if (nodesNames.includes("img")) {
-      let imgTexts = "";
-      const imgNodes = nodes.filter(
-        (node) => node.nodeName.toLowerCase() === "img"
-      );
-      for (const imgNode of imgNodes) {
-        let tfi = _formatImage(imgNode as HTMLImageElement, builder);
-        if (tfi) {
-          let [imgElem, imgText, imgClass] = tfi;
-
-          aElem.appendChild(imgElem);
-          imgTexts = imgTexts + imgText + " ";
-          builder.images.push(imgClass);
-        }
-      }
-
-      if (elem.innerText) {
-        aElem.innerText = elem.innerText;
-        aText = `[${elem.innerText} ${imgTexts}](${elem.href})`;
-      } else {
-        aText = `[${imgTexts}](${elem.href})`;
-      }
-    } else {
-      if (elem.innerText) {
-        aElem.innerText = elem.innerText;
-        aText = `[${elem.innerText}](${elem.href})`;
-      } else {
-        aText = `[](${elem.href})`;
-      }
-    }
-  }
-
-  builder.dom.appendChild(aElem);
-  builder.text = builder.text + aText;
-  return;
 }
 
 function formatImage(elem: HTMLImageElement, builder: Builder): void {
@@ -436,10 +380,6 @@ export function walk(dom: HTMLElement, builder: Builder) {
         } while (jnodeName === "br");
 
         formatText(elems, builder);
-        break;
-      }
-      case "a": {
-        formatAnchor(node as HTMLAnchorElement, builder);
         break;
       }
       case "img": {

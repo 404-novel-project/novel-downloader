@@ -20,6 +20,7 @@
     "*://www.gongzicp.com/v4/novel-*.html",
     "*://book.zongheng.com/showchapter/*.html",
     "*://huayu.zongheng.com/showchapter/*.html",
+    "*://www.linovel.net/book/*.html",
     "*://www.17k.com/list/*.html",
     "*://www.shuhai.com/book/*.htm",
     "*://mm.shuhai.com/book/*.htm",
@@ -51,7 +52,8 @@
     "*://m.yuzhaige.cc/sort/*/",
     "*://m.yuzhaige.cc/top/*/",
     "*://m.yuzhaige.cc/full/*/",
-    "*://m.yuzhaige.cc/book/*/"
+    "*://m.yuzhaige.cc/book/*/",
+    "*://www.linovel.net/book/*/*.html"
   ],
   "grant": [
     "unsafeWindow",
@@ -83,6 +85,7 @@
     "shuhai.com",
     "ch-intel.com",
     "huluxia.com",
+    "linovel.net",
     "*"
   ],
   "require": [

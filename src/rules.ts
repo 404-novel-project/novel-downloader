@@ -177,6 +177,11 @@ export async function getRule(): Promise<ruleClass> {
       ruleClass = yuzhaige;
       break;
     }
+    case "www.linovel.net": {
+      const { linovel } = await import("./rules/linovel");
+      ruleClass = linovel;
+      break;
+    }
     default: {
       throw new Error("Not Found Rule!");
     }

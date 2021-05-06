@@ -38,6 +38,7 @@ ZIP压缩包，请在解压后，直接双击打开HTML文件进行阅读。
 |[起点女生网](https://www.qdmm.com/)|✅|✅||
 |[晋江文学城](http://www.jjwxc.net/)|✅|✅\*|\*VIP章节已使用[防盗字体对照表](https://github.com/7325156/jjwxcNovelCrawler/tree/master/%E5%8F%8D%E7%88%AC%E8%99%AB%E5%AF%B9%E7%85%A7%E8%A1%A8)去除空格，如在使用中发现VIP章节仍存在空格，请附上所下载的文件进行反馈。|
 |[长佩文学](https://www.gongzicp.com/)|✅|✅|反爬较严，限制下载速度，每分钟约可下载12章，请耐心等待。|
+|[轻之文库轻小说](https://www.linovel.net/)|✅|❌|VIP章节仅支持APP查看|
 |[纵横中文网](http://www.zongheng.com/)|✅|❌||
 |[花语女生网](http://huayu.zongheng.com/)|✅|❌||
 |[17K小说网](https://www.17k.com/)|✅|❌||
