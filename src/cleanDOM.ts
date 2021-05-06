@@ -357,6 +357,7 @@ export function walk(dom: HTMLElement, builder: Builder) {
     }
     const nodeName = node.nodeName.toLowerCase();
     switch (nodeName) {
+      case "div":
       case "p": {
         formatParagraph(node as HTMLParagraphElement, builder);
         break;
