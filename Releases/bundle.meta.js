@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        3.5.5.1620262137140
+// @version        3.6.0.1620303546381
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -11,6 +11,7 @@
 // @match          *://www.gongzicp.com/v4/novel-*.html
 // @match          *://book.zongheng.com/showchapter/*.html
 // @match          *://huayu.zongheng.com/showchapter/*.html
+// @match          *://www.linovel.net/book/*.html
 // @match          *://www.17k.com/list/*.html
 // @match          *://www.shuhai.com/book/*.htm
 // @match          *://mm.shuhai.com/book/*.htm
@@ -49,6 +50,7 @@
 // @exclude        *://m.yuzhaige.cc/top/*/
 // @exclude        *://m.yuzhaige.cc/full/*/
 // @exclude        *://m.yuzhaige.cc/book/*/
+// @exclude        *://www.linovel.net/book/*/*.html
 // @grant          unsafeWindow
 // @grant          GM_info
 // @grant          GM_xmlhttpRequest
@@ -75,6 +77,8 @@
 // @connect        rs.sfacg.com
 // @connect        shuhai.com
 // @connect        ch-intel.com
+// @connect        huluxia.com
+// @connect        linovel.net
 // @connect        *
 // @require        https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js#sha512-Qlv6VSKh1gDKGoJbnyA5RMXYcvnpIqhO++MhIM2fStMcGT9i2T//tSwYFlcyoRRDcDZ+TYHpH8azBBCyhpSeqw==
 // @require        https://cdn.jsdelivr.net/npm/jszip@3.6.0/dist/jszip.min.js#sha512-uVSVjE7zYsGz4ag0HEzfugJ78oHCI1KhdkivjQro8ABL/PRiEO4ROwvrolYAcZnky0Fl/baWKYilQfWvESliRA==

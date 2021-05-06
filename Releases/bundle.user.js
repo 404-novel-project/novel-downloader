@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        3.5.5.1620262137140
+// @version        3.6.0.1620303546381
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -11,6 +11,7 @@
 // @match          *://www.gongzicp.com/v4/novel-*.html
 // @match          *://book.zongheng.com/showchapter/*.html
 // @match          *://huayu.zongheng.com/showchapter/*.html
+// @match          *://www.linovel.net/book/*.html
 // @match          *://www.17k.com/list/*.html
 // @match          *://www.shuhai.com/book/*.htm
 // @match          *://mm.shuhai.com/book/*.htm
@@ -49,6 +50,7 @@
 // @exclude        *://m.yuzhaige.cc/top/*/
 // @exclude        *://m.yuzhaige.cc/full/*/
 // @exclude        *://m.yuzhaige.cc/book/*/
+// @exclude        *://www.linovel.net/book/*/*.html
 // @grant          unsafeWindow
 // @grant          GM_info
 // @grant          GM_xmlhttpRequest
@@ -75,6 +77,8 @@
 // @connect        rs.sfacg.com
 // @connect        shuhai.com
 // @connect        ch-intel.com
+// @connect        huluxia.com
+// @connect        linovel.net
 // @connect        *
 // @require        https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js#sha512-Qlv6VSKh1gDKGoJbnyA5RMXYcvnpIqhO++MhIM2fStMcGT9i2T//tSwYFlcyoRRDcDZ+TYHpH8azBBCyhpSeqw==
 // @require        https://cdn.jsdelivr.net/npm/jszip@3.6.0/dist/jszip.min.js#sha512-uVSVjE7zYsGz4ag0HEzfugJ78oHCI1KhdkivjQro8ABL/PRiEO4ROwvrolYAcZnky0Fl/baWKYilQfWvESliRA==
@@ -94,6 +98,7 @@
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.walk = void 0;
 const main_1 = __webpack_require__(519);
+const lib_1 = __webpack_require__(563);
 const blockElements = [
     "article",
     "aside",
@@ -105,6 +110,7 @@ const blockElements = [
     "nav",
     "section",
     "figure",
+    "a",
 ];
 const ignoreElements = [
     "script",
@@ -156,59 +162,6 @@ function getPreviousSibling(elem) {
         return elem.previousSibling;
     }
     return elem;
-}
-function formatAnchor(elem, builder) {
-    if (!elem.href || !elem.href.startsWith("http")) {
-        return;
-    }
-    const aElem = document.createElement("a");
-    let aText;
-    aElem.href = elem.href;
-    if (elem.childElementCount === 0) {
-        if (elem.innerText) {
-            aElem.innerText = elem.innerText;
-            aText = `[${elem.innerText}](${elem.href})`;
-        }
-        else {
-            aText = `[](${elem.href})`;
-        }
-    }
-    else {
-        const nodes = [...findBase(elem, blockElements, ignoreElements)].filter((b) => b);
-        const nodesNames = nodes.map((node) => node.nodeName.toLowerCase());
-        if (nodesNames.includes("img")) {
-            let imgTexts = "";
-            const imgNodes = nodes.filter((node) => node.nodeName.toLowerCase() === "img");
-            for (const imgNode of imgNodes) {
-                let tfi = _formatImage(imgNode, builder);
-                if (tfi) {
-                    let [imgElem, imgText, imgClass] = tfi;
-                    aElem.appendChild(imgElem);
-                    imgTexts = imgTexts + imgText + " ";
-                    builder.images.push(imgClass);
-                }
-            }
-            if (elem.innerText) {
-                aElem.innerText = elem.innerText;
-                aText = `[${elem.innerText} ${imgTexts}](${elem.href})`;
-            }
-            else {
-                aText = `[${imgTexts}](${elem.href})`;
-            }
-        }
-        else {
-            if (elem.innerText) {
-                aElem.innerText = elem.innerText;
-                aText = `[${elem.innerText}](${elem.href})`;
-            }
-            else {
-                aText = `[](${elem.href})`;
-            }
-        }
-    }
-    builder.dom.appendChild(aElem);
-    builder.text = builder.text + aText;
-    return;
 }
 function formatImage(elem, builder) {
     var _a, _b, _c;
@@ -286,14 +239,18 @@ function _formatImage(elem, builder) {
     const imgMode = builder.imgMode;
     const imageUrl = elem.src;
     const imageName = genImageName(imageUrl);
-    const filterdImages = builder.images.filter((imgClass) => imgClass.imageUrl === elem.src);
     let imgClass;
-    if (filterdImages.length) {
-        imgClass = filterdImages[0];
+    const imgClassCache = lib_1.getAttachmentClassCache(imageUrl, imageName);
+    if (imgClassCache) {
+        imgClass = imgClassCache;
     }
     else {
         imgClass = new main_1.attachmentClass(imageUrl, imageName, imgMode);
         imgClass.init();
+        lib_1.putAttachmentClassCache(imgClass);
+    }
+    const filterdImages = builder.images.filter((imgClass) => imgClass.imageUrl === elem.src);
+    if (filterdImages.length === 0) {
         builder.images.push(imgClass);
     }
     const imgElem = document.createElement("img");
@@ -409,8 +366,7 @@ function formatText(elems, builder) {
     }
     else if (brCount > 3) {
         temp0();
-        let PBrNumber = Math.round((brCount - 2) / 3);
-        for (let i = PBrNumber; PBrNumber > 0; i--) {
+        for (let i = Math.round((brCount - 2) / 3); i > 0; i--) {
             const tPBr = document.createElement("p");
             const br = document.createElement("br");
             tPBr.appendChild(br);
@@ -437,6 +393,7 @@ function walk(dom, builder) {
         }
         const nodeName = node.nodeName.toLowerCase();
         switch (nodeName) {
+            case "div":
             case "p": {
                 formatParagraph(node, builder);
                 break;
@@ -460,10 +417,6 @@ function walk(dom, builder) {
                 formatText(elems, builder);
                 break;
             }
-            case "a": {
-                formatAnchor(node, builder);
-                break;
-            }
             case "img": {
                 formatImage(node, builder);
                 break;
@@ -481,14 +434,564 @@ exports.walk = walk;
 
 /***/ }),
 
+/***/ 607:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.audio = exports.attachmentClassCache = exports.catchError = exports.updateProgress = void 0;
+const rules_1 = __webpack_require__(489);
+const main_1 = __webpack_require__(519);
+const lib_1 = __webpack_require__(563);
+const index_helper_1 = __webpack_require__(880);
+function printEnvironments() {
+    if (lib_1._GM_info) {
+        console.log(`开始载入小说下载器……
+当前浏览器UA：${navigator.userAgent}
+当前脚本管理器：${lib_1._GM_info.scriptHandler}
+当前脚本管理器版本：${lib_1._GM_info.version}
+当前脚本名称：${lib_1._GM_info.script.name}
+当前脚本版本：${lib_1._GM_info.script.version}
+当前脚本最后更新时间：${lib_1._GM_info.script.lastModified}
+是否处于隐私模式：${lib_1._GM_info.isIncognito}
+是否启用调试：${rules_1.enaleDebug}`);
+    }
+}
+async function initBook(rule) {
+    console.log(`[initBook]开始初始化图书`);
+    const bookParse = rule.bookParse;
+    const chapterParse = rule.chapterParse;
+    return bookParse(chapterParse).then((obj) => {
+        const { bookUrl, bookname, author, introduction, additionalMetadate, chapters, } = obj;
+        const book = new main_1.Book(bookUrl, bookname, author, introduction, additionalMetadate, chapters);
+        return book;
+    });
+}
+async function initChapters(rule, book) {
+    console.log(`[initChapters]开始初始化章节`);
+    let concurrencyLimit = 10;
+    if (rule.concurrencyLimit !== undefined) {
+        concurrencyLimit = rule.concurrencyLimit;
+    }
+    const chapters = book.chapters.filter((chapter) => chapter.status === main_1.Status.pending);
+    if (chapters.length === 0) {
+        console.error(`[initChapters]初始化章节出错，未找到需初始化章节`);
+        return [];
+    }
+    if (concurrencyLimit === 1) {
+        for (let chapter of chapters) {
+            const obj = await chapter.init();
+            if (obj.contentHTML !== undefined) {
+                finishedChapterNumber++;
+                updateProgress(finishedChapterNumber, totalChapterNumber, null);
+            }
+        }
+    }
+    else {
+        await lib_1.concurrencyRun(chapters, concurrencyLimit, (curChapter) => {
+            if (curChapter === undefined) {
+                return Promise.resolve();
+            }
+            return curChapter.init().then((obj) => {
+                if (obj.contentHTML !== undefined) {
+                    finishedChapterNumber++;
+                    updateProgress(finishedChapterNumber, totalChapterNumber, null);
+                }
+                return obj;
+            });
+        });
+    }
+    console.log(`[initChapters]章节初始化完毕`);
+    return chapters;
+}
+let totalChapterNumber;
+let finishedChapterNumber = 0;
+function updateProgress(finishedChapterNumber, totalChapterNumber, zipPercent) {
+    if (!document.querySelector("#nd-progress")) {
+        lib_1.console_debug("[progress]初始化进度条");
+        let progress = document.createElement("div");
+        progress.id = "nd-progress";
+        progress.innerHTML = `
+        <div id='chapter-progress' title="章节"></div>
+        <div id='zip-progress' title="ZIP"></div>
+        `;
+        let progressStyle = document.createElement("style");
+        progressStyle.innerHTML = index_helper_1.progressStyleText;
+        document.head.appendChild(progressStyle);
+        document.body.appendChild(progress);
+    }
+    let pagePercent = `${(finishedChapterNumber / totalChapterNumber) * 100}%`;
+    document.querySelector("#chapter-progress").style.cssText = `--position:${pagePercent};`;
+    if (zipPercent) {
+        document.querySelector("#zip-progress").style.cssText = `--position:${zipPercent}%;`;
+    }
+    else {
+        document.querySelector("#zip-progress").style.cssText =
+            "display:none;";
+    }
+}
+exports.updateProgress = updateProgress;
+async function run() {
+    console.log(`[run]下载开始`);
+    exports.audio.play();
+    const rule = await rules_1.getRule();
+    console.log(`[run]获取规则成功`);
+    lib_1.console_debug("[run]运行前检测");
+    let maxRunLimit = null;
+    let nowRunNumber;
+    if (typeof GM_getTab !== "undefined") {
+        console.log(`[run]添加运行标志`);
+        await index_helper_1.setTabMark();
+        nowRunNumber = await index_helper_1.getNowRunNumber();
+        if (rule.maxRunLimit !== undefined && nowRunNumber !== undefined) {
+            maxRunLimit = rule.maxRunLimit;
+            if (nowRunNumber > maxRunLimit) {
+                const alertText = `当前网站目前已有${nowRunNumber - 1}个下载任务正在运行，当前站点最多允许${maxRunLimit}下载任务同时进行。\n请待其它下载任务完成后，再行尝试。`;
+                alert(alertText);
+                console.log(`[run]${alertText}`);
+                return;
+            }
+        }
+    }
+    lib_1.console_debug("[run]主体开始");
+    const book = await initBook(rule);
+    totalChapterNumber = book.chapters.filter((chapter) => chapter.status === main_1.Status.pending).length;
+    await initChapters(rule, book);
+    index_helper_1.save(book);
+    lib_1.console_debug("[run]收尾");
+    if (typeof GM_getTab !== "undefined") {
+        console.log(`[run]移除运行标志`);
+        await index_helper_1.removeTabMark();
+    }
+    console.log(`[run]下载完毕`);
+    return book;
+}
+function catchError(error) {
+    var _a, _b;
+    downloading = false;
+    exports.attachmentClassCache = [];
+    if (typeof GM_getTab !== "undefined") {
+        index_helper_1.removeTabMark();
+    }
+    finishedChapterNumber = 0;
+    (_a = document.querySelector("#nd-progress")) === null || _a === void 0 ? void 0 : _a.remove();
+    (_b = document.getElementById("novel-downloader")) === null || _b === void 0 ? void 0 : _b.remove();
+    console.error("运行过程出错，请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/yingziwu/novel-downloader");
+    console.error(error);
+    exports.audio.pause();
+}
+exports.catchError = catchError;
+function addButton() {
+    let button = document.createElement("button");
+    button.id = "novel-downloader";
+    button.style.cssText = `position: fixed; top: 15%; right: 5%; z-index: 2147483647; border-style: none; text-align:center; vertical-align:baseline; background-color: rgba(128, 128, 128, 0.2); padding: 5px; border-radius: 12px;`;
+    let img = document.createElement("img");
+    img.src = rules_1.icon0;
+    img.style.cssText = "height: 2em;";
+    button.onclick = function () {
+        if (downloading) {
+            alert("正在下载中，请耐心等待……");
+        }
+        else {
+            downloading = true;
+            img.src = rules_1.icon1;
+            try {
+                run()
+                    .then((book) => {
+                    downloading = false;
+                    finishedChapterNumber = 0;
+                    exports.attachmentClassCache = [];
+                    img.src = rules_1.icon0;
+                })
+                    .catch(catchError);
+            }
+            catch (error) {
+                catchError(error);
+            }
+        }
+    };
+    button.appendChild(img);
+    document.body.appendChild(button);
+}
+async function debug() {
+    const rule = await rules_1.getRule();
+    const book = await initBook(rule);
+    unsafeWindow.rule = rule;
+    unsafeWindow.book = book;
+    unsafeWindow.save = index_helper_1.save;
+    unsafeWindow.saveAs = saveAs;
+    return;
+}
+let downloading = false;
+exports.attachmentClassCache = [];
+exports.audio = new Audio("data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU3LjcxLjEwMAAAAAAAAAAAAAAA/+M4wAAAAAAAAAAAAEluZm8AAAAPAAAAEAAABVgANTU1NTU1Q0NDQ0NDUFBQUFBQXl5eXl5ea2tra2tra3l5eXl5eYaGhoaGhpSUlJSUlKGhoaGhoaGvr6+vr6+8vLy8vLzKysrKysrX19fX19fX5eXl5eXl8vLy8vLy////////AAAAAExhdmM1Ny44OQAAAAAAAAAAAAAAACQCgAAAAAAAAAVY82AhbwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/+MYxAALACwAAP/AADwQKVE9YWDGPkQWpT66yk4+zIiYPoTUaT3tnU487uNhOvEmQDaCm1Yz1c6DPjbs6zdZVBk0pdGpMzxF/+MYxA8L0DU0AP+0ANkwmYaAMkOKDDjmYoMtwNMyDxMzDHE/MEsLow9AtDnBlQgDhTx+Eye0GgMHoCyDC8gUswJcMVMABBGj/+MYxBoK4DVpQP8iAtVmDk7LPgi8wvDzI4/MWAwK1T7rxOQwtsItMMQBazAowc4wZMC5MF4AeQAGDpruNuMEzyfjLBJhACU+/+MYxCkJ4DVcAP8MAO9J9THVg6oxRMGNMIqCCTAEwzwwBkINOPAs/iwjgBnMepYyId0PhWo+80PXMVsBFzD/AiwwfcKGMEJB/+MYxDwKKDVkAP8eAF8wMwIxMlpU/OaDPLpNKkEw4dRoBh6qP2FC8jCJQFcweQIPMHOBtTBoAVcwOoCNMYDI0u0Dd8ANTIsy/+MYxE4KUDVsAP8eAFBVpgVVPjdGeTEWQr0wdcDtMCeBgDBkgRgwFYB7Pv/zqx0yQQMCCgKNgonHKj6RRVkxM0GwML0AhDAN/+MYxF8KCDVwAP8MAIHZMDDA3DArAQo3K+TF5WOBDQw0lgcKQUJxhT5sxRcwQQI+EIPWMA7AVBoTABgTgzfBN+ajn3c0lZMe/+MYxHEJyDV0AP7MAA4eEwsqP/PDmzC/gNcwXUGaMBVBIwMEsmB6gaxhVuGkpoqMZMQjooTBwM0+S8FTMC0BcjBTgPwwOQDm/+MYxIQKKDV4AP8WADAzAKQwI4CGPhWOEwCFAiBAYQnQMT+uwXUeGzjBWQVkwTcENMBzA2zAGgFEJfSPkPSZzPXgqFy2h0xB/+MYxJYJCDV8AP7WAE0+7kK7MQrATDAvQRIwOADKMBuA9TAYQNM3AiOSPjGxowgHMKFGcBNMQU1FMy45OS41VVU/31eYM4sK/+MYxKwJaDV8AP7SAI4y1Yq0MmOIADGwBZwwlgIJMztCM0qU5TQPG/MSkn8yEROzCdAxECVMQU1FMy45OS41VTe7Ohk+Pqcx/+MYxMEJMDWAAP6MADVLDFUx+4J6Mq7NsjN2zXo8V5fjVJCXNOhwM0vTCDAxFpMYYQU+RlVMQU1FMy45OS41VVVVVVVVVVVV/+MYxNcJADWAAP7EAFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV/+MYxOsJwDWEAP7SAFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV/+MYxPMLoDV8AP+eAFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV/+MYxPQL0DVcAP+0AFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV");
+exports.audio.loop = true;
+window.addEventListener("DOMContentLoaded", () => {
+    if (lib_1._GM_info.scriptHandler === "Greasemonkey") {
+        console.error("小说下载器脚本与Greasemonkey脚本管理器不兼容，请改用其它脚本管理器，如：Tampermonkey、Violentmonkey。");
+        alert("小说下载器脚本与Greasemonkey脚本管理器不兼容，请改用其它脚本管理器，如：Tampermonkey、Violentmonkey。");
+        return;
+    }
+    printEnvironments();
+    addButton();
+    if (rules_1.enaleDebug) {
+        debug();
+    }
+});
+
+
+/***/ }),
+
+/***/ 880:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.removeTabMark = exports.getNowRunNumber = exports.setTabMark = exports.save = exports.progressStyleText = void 0;
+const main_1 = __webpack_require__(519);
+const lib_1 = __webpack_require__(563);
+const index_1 = __webpack_require__(607);
+exports.progressStyleText = `#nd-progress {
+  position: fixed;
+  bottom: 8%;
+  right: 3%;
+  z-index: 99;
+  border-style: none;
+  text-align: center;
+  vertical-align: baseline;
+  background-color: rgba(210, 210, 210, 0.2);
+  padding: 6px;
+  border-radius: 12px;
+}
+#chapter-progress{
+  --color:green;
+  --position:0%;
+  width:200px;
+  height:10px;
+  border-radius:30px;
+  background-color:#ccc;
+  background-image:radial-gradient(closest-side circle at var(--position),var(--color),var(--color) 100%,transparent),linear-gradient(var(--color),var(--color));
+  background-image:-webkit-radial-gradient(var(--position),circle closest-side,var(--color),var(--color) 100%,transparent),-webkit-linear-gradient(var(--color),var(--color));
+  background-size:100% ,var(--position);
+  background-repeat: no-repeat;
+}
+#zip-progress{
+  --color:yellow;
+  --position:0%;
+  width:200px;
+  height:10px;
+  border-radius:30px;
+  background-color:#ccc;
+  background-image:radial-gradient(closest-side circle at var(--position),var(--color),var(--color) 100%,transparent),linear-gradient(var(--color),var(--color));
+  background-image:-webkit-radial-gradient(var(--position),circle closest-side,var(--color),var(--color) 100%,transparent),-webkit-linear-gradient(var(--color),var(--color));
+  background-size:100% ,var(--position);
+  background-repeat: no-repeat;
+  margin-top: 5px;
+}`;
+class saveBook {
+    constructor(book) {
+        this.book = book;
+        this.chapters = book.chapters;
+        this.chapters.sort(this.chapterSort);
+        this.savedZip = new JSZip();
+        this.savedTextArray = [];
+        this.saveFileNameBase = `[${this.book.author}]${this.book.bookname}`;
+        this.mainStyleText = `body {
+  background-color: #f0f0f2;
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI",
+    "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+div.main {
+  width: 900px;
+  margin: 5em auto;
+  padding: 2em;
+  background-color: #fdfdff;
+  border-radius: 0.5em;
+  box-shadow: 2px 3px 7px 2px rgba(0, 0, 0, 0.02);
+}
+@media (max-width: 700px) {
+  div.main {
+    margin: 0 auto;
+    width: auto;
+  }
+}
+h1 {
+  line-height: 130%;
+  text-align: center;
+  font-weight: bold;
+  font-size: xxx-large;
+  margin-top: 3.2em;
+  margin-bottom: 3.3em;
+}
+h2 {
+  line-height: 130%;
+  text-align: center;
+  font-weight: bold;
+  font-size: x-large;
+  margin-top: 1.2em;
+  margin-bottom: 2.3em;
+}
+div {
+  margin: 0px;
+  padding: 0px;
+  text-align: justify;
+}
+p {
+  text-indent: 2em;
+  display: block;
+  line-height: 1.3em;
+  margin-top: 0.4em;
+  margin-bottom: 0.4em;
+}
+img {
+  vertical-align: text-bottom;
+}`;
+    }
+    saveTxt() {
+        const metaDateText = this.genMetaDateTxt();
+        this.savedTextArray.push(metaDateText);
+        let sections = [];
+        for (const chapter of this.chapters) {
+            const chapterName = chapter.chapterName
+                ? chapter.chapterName
+                : chapter.chapterNumber.toString();
+            if (chapter.sectionName && !sections.includes(chapter.sectionName)) {
+                sections.push(chapter.sectionName);
+                const sectionText = this.genSectionText(chapter.sectionName);
+                this.savedTextArray.push(sectionText);
+            }
+            if (chapter.contentText) {
+                const chapterText = this.genChapterText(chapterName, chapter.contentText);
+                this.savedTextArray.push(chapterText);
+            }
+        }
+        console.log("[save]保存TXT文件");
+        const savedText = this.savedTextArray.join("\n");
+        saveAs(new Blob([savedText], { type: "text/plain;charset=utf-8" }), `${this.saveFileNameBase}.txt`);
+    }
+    saveZip() {
+        const ToC = new DOMParser().parseFromString(`<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="https://github.com/yingziwu/novel-downloader"><link href="style.css" type="text/css" rel="stylesheet"/><title>Table of Contents</title></head><body><div class="main"><h1>Table of Contents</h1></div></body></html>`, "text/html");
+        const TocMain = ToC.querySelector("div.main");
+        lib_1.console_debug("[save]保存源数据文本，保存样式");
+        const metaDateText = this.genMetaDateTxt();
+        this.savedZip.file("info.txt", new Blob([metaDateText], { type: "text/plain;charset=utf-8" }));
+        this.savedZip.file("style.css", new Blob([this.mainStyleText], { type: "text/css;charset=utf-8" }));
+        if (this.book.additionalMetadate.cover) {
+            lib_1.console_debug("[save]保存封面");
+            this.addImageToZip(this.book.additionalMetadate.cover, this.savedZip);
+        }
+        if (this.book.additionalMetadate.attachments) {
+            lib_1.console_debug("[save]保存书籍附件");
+            for (const bookAttachment of this.book.additionalMetadate.attachments) {
+                this.addImageToZip(bookAttachment, this.savedZip);
+            }
+        }
+        let sections = [];
+        for (const chapter of this.chapters) {
+            const chapterName = chapter.chapterName
+                ? chapter.chapterName
+                : chapter.chapterNumber.toString();
+            const htmlfileNameBase = `${"0".repeat(this.chapters.length.toString().length -
+                chapter.chapterNumber.toString().length)}${chapter.chapterNumber.toString()}.html`;
+            const chapterHtmlFileName = `Chapter${htmlfileNameBase}`;
+            lib_1.console_debug("[save]生成ToC项目，保存Section HTML文件");
+            if (chapter.sectionName) {
+                const sectionHtmlId = `section${chapter.sectionNumber}`;
+                if (!sections.includes(chapter.sectionName)) {
+                    sections.push(chapter.sectionName);
+                    lib_1.console_debug("[save]ToC");
+                    const sectionDiv = document.createElement("div");
+                    sectionDiv.id = sectionHtmlId;
+                    const heading = document.createElement("h2");
+                    heading.className = "section-label";
+                    heading.innerHTML = chapter.sectionName;
+                    const hr = document.createElement("hr");
+                    sectionDiv.appendChild(heading);
+                    TocMain === null || TocMain === void 0 ? void 0 : TocMain.appendChild(hr);
+                    TocMain === null || TocMain === void 0 ? void 0 : TocMain.appendChild(sectionDiv);
+                    lib_1.console_debug("[save]Zip");
+                    const sectionHTMLBlob = this.genSectionHtmlFile(chapter.sectionName);
+                    this.savedZip.file(`Section${htmlfileNameBase}`, sectionHTMLBlob);
+                }
+                lib_1.console_debug("[save]ToC");
+                const sectionDiv = TocMain === null || TocMain === void 0 ? void 0 : TocMain.querySelector("#" + sectionHtmlId);
+                const chapterDiv = document.createElement("div");
+                chapterDiv.className = "chapter";
+                const chapterAnchor = document.createElement("a");
+                chapterAnchor.href = chapterHtmlFileName;
+                chapterAnchor.innerHTML = chapterName;
+                chapterDiv.appendChild(chapterAnchor);
+                sectionDiv === null || sectionDiv === void 0 ? void 0 : sectionDiv.appendChild(chapterDiv);
+            }
+            else {
+                const chapterDiv = document.createElement("div");
+                chapterDiv.className = "chapter";
+                const chapterAnchor = document.createElement("a");
+                chapterAnchor.href = chapterHtmlFileName;
+                chapterAnchor.innerHTML = chapterName;
+                TocMain === null || TocMain === void 0 ? void 0 : TocMain.appendChild(chapterDiv);
+            }
+            lib_1.console_debug("[save]保存HTML文件");
+            if (chapter.contentHTML) {
+                const chapterHTMLBlob = this.genChapterHtmlFile(chapterName, chapter.contentHTML, chapter.chapterUrl);
+                this.savedZip.file(chapterHtmlFileName, chapterHTMLBlob);
+            }
+            lib_1.console_debug("[save]保存附件");
+            if (chapter.contentImages) {
+                for (const attachment of chapter.contentImages) {
+                    this.addImageToZip(attachment, this.savedZip);
+                }
+            }
+        }
+        lib_1.console_debug("[save]保存ToC文件");
+        this.savedZip.file("ToC.html", new Blob([ToC.documentElement.outerHTML], {
+            type: "text/html; charset=UTF-8",
+        }));
+        console.log("[save]开始保存ZIP文件");
+        this.savedZip
+            .generateAsync({
+            type: "blob",
+            compression: "DEFLATE",
+            compressionOptions: {
+                level: 6,
+            },
+        }, (metadata) => index_1.updateProgress(1, 1, metadata.percent))
+            .then((blob) => {
+            lib_1.console_debug("[save]ZIP文件生成完毕，开始保存ZIP文件");
+            saveAs(blob, `${this.saveFileNameBase}.zip`);
+        })
+            .then(() => {
+            var _a;
+            lib_1.console_debug("[save]保存ZIP文件完毕");
+            (_a = document.querySelector("#nd-progress")) === null || _a === void 0 ? void 0 : _a.remove();
+            index_1.audio.pause();
+        })
+            .catch((err) => {
+            console.error("saveZip: " + err);
+            index_1.catchError(err);
+        });
+    }
+    genMetaDateTxt() {
+        let metaDateText = `题名：${this.book.bookname}\n作者：${this.book.author}`;
+        if (this.book.introduction) {
+            metaDateText += `\n简介：${this.book.introduction}`;
+        }
+        if (this.book.additionalMetadate.cover) {
+            metaDateText += `\n封面图片地址：${this.book.additionalMetadate.cover.imageUrl}`;
+        }
+        if (this.book.additionalMetadate.tags) {
+            metaDateText += `\nTag列表：${this.book.additionalMetadate.tags.join("、")}`;
+        }
+        metaDateText += `\n下载时间：${new Date().toISOString()}\n本文件由小说下载器生成，软件地址：https://github.com/yingziwu/novel-downloader`;
+        return metaDateText;
+    }
+    addImageToZip(image, zip) {
+        if (image.status === main_1.Status.finished && image.imageBlob) {
+            lib_1.console_debug(`[save]添加附件，文件名：${image.name}，对象`, image.imageBlob);
+            zip.file(image.name, image.imageBlob);
+        }
+        else {
+            console.error("[save]附件下载失败！");
+            console.error(image);
+        }
+    }
+    genSectionText(sectionName) {
+        return `${"=".repeat(20)}\n\n\n\n# ${sectionName}\n\n\n\n${"=".repeat(20)}`;
+    }
+    genChapterText(chapterName, contentText) {
+        return `## ${chapterName}\n\n${contentText}\n\n`;
+    }
+    genSectionHtmlFile(sectionName) {
+        let htmlFile = new DOMParser().parseFromString(`<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="https://github.com/yingziwu/novel-downloader"><link href="style.css" type="text/css" rel="stylesheet"/><title>${sectionName}</title></head><body><div class="main"><h1>${sectionName}</h1></div></body></html>`, "text/html");
+        return new Blob([
+            htmlFile.documentElement.outerHTML.replace(new RegExp("data-src-address", "g"), "src"),
+        ], {
+            type: "text/html; charset=UTF-8",
+        });
+    }
+    genChapterHtmlFile(chapterName, DOM, chapterUrl) {
+        var _a;
+        let htmlFile = new DOMParser().parseFromString(`<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="https://github.com/yingziwu/novel-downloader"><meta name="source" content="${chapterUrl}"><link href="style.css" type="text/css" rel="stylesheet"/><title>${chapterName}</title></head><body><div class="main"><h2>${chapterName}</h2></div></body></html>`, "text/html");
+        (_a = htmlFile.querySelector(".main")) === null || _a === void 0 ? void 0 : _a.appendChild(DOM);
+        return new Blob([
+            htmlFile.documentElement.outerHTML.replace(new RegExp("data-src-address", "g"), "src"),
+        ], {
+            type: "text/html; charset=UTF-8",
+        });
+    }
+    chapterSort(a, b) {
+        if (a.chapterNumber > b.chapterNumber) {
+            return 1;
+        }
+        if (a.chapterNumber === b.chapterNumber) {
+            return 0;
+        }
+        if (a.chapterNumber < b.chapterNumber) {
+            return -1;
+        }
+        return 0;
+    }
+}
+function save(book) {
+    const saveBookObj = new saveBook(book);
+    saveBookObj.saveTxt();
+    saveBookObj.saveZip();
+}
+exports.save = save;
+function setTabMark() {
+    return new Promise((resolve, reject) => {
+        GM_getTab((curTabObject) => {
+            curTabObject.novel_downloader =
+                document.location.href;
+            GM_saveTab(curTabObject);
+            resolve(curTabObject);
+        });
+    });
+}
+exports.setTabMark = setTabMark;
+function getNowRunNumber() {
+    return new Promise((resolve, reject) => {
+        GM_getTabs((curTabObjects) => {
+            let nowRunNumber = 0;
+            for (let i in curTabObjects) {
+                const novel_downloader_url = (curTabObjects[i]).novel_downloader;
+                if (novel_downloader_url !== undefined &&
+                    new URL(novel_downloader_url).hostname === document.location.hostname) {
+                    nowRunNumber++;
+                }
+            }
+            resolve(nowRunNumber);
+        });
+    });
+}
+exports.getNowRunNumber = getNowRunNumber;
+function removeTabMark() {
+    return new Promise((resolve, reject) => {
+        GM_getTab((curTabObject) => {
+            if (curTabObject.novel_downloader) {
+                delete curTabObject.novel_downloader;
+            }
+            GM_saveTab(curTabObject);
+            resolve(curTabObject);
+        });
+    });
+}
+exports.removeTabMark = removeTabMark;
+
+
+/***/ }),
+
 /***/ 563:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.console_debug = exports.sleep = exports.concurrencyRun = exports.gfetch = exports.rm = exports.ggetHtmlDOM = exports.ggetHtmlText = exports.getHtmlDOM = exports.getHtmlText = exports.cleanDOM = exports._GM_info = void 0;
+exports.putAttachmentClassCache = exports.getAttachmentClassCache = exports.console_debug = exports.sleep = exports.concurrencyRun = exports.gfetch = exports.rm = exports.ggetHtmlDOM = exports.ggetHtmlText = exports.getHtmlDOM = exports.getHtmlText = exports.cleanDOM = exports._GM_info = void 0;
 const cleanDOM_1 = __webpack_require__(962);
 const rules_1 = __webpack_require__(489);
+const index_1 = __webpack_require__(607);
 if (typeof GM_info === "undefined") {
     if (typeof GM === "undefined") {
         throw new Error("未发现 GM API");
@@ -684,6 +1187,22 @@ function console_debug(...messages) {
     }
 }
 exports.console_debug = console_debug;
+function getAttachmentClassCache(url, name) {
+    const f1 = index_1.attachmentClassCache.filter((attachmentClass) => attachmentClass.imageUrl === url);
+    const f2 = f1.filter((attachmentClass) => attachmentClass.name === name);
+    if (f2.length) {
+        return f2[0];
+    }
+    else {
+        return null;
+    }
+}
+exports.getAttachmentClassCache = getAttachmentClassCache;
+function putAttachmentClassCache(attachmentClass) {
+    index_1.attachmentClassCache.push(attachmentClass);
+    return true;
+}
+exports.putAttachmentClassCache = putAttachmentClassCache;
 
 
 /***/ }),
@@ -995,6 +1514,11 @@ async function getRule() {
         case "m.yuzhaige.cc": {
             const { yuzhaige } = await Promise.resolve().then(() => __webpack_require__(191));
             ruleClass = yuzhaige;
+            break;
+        }
+        case "www.linovel.net": {
+            const { linovel } = await Promise.resolve().then(() => __webpack_require__(561));
+            ruleClass = linovel;
             break;
         }
         default: {
@@ -2486,14 +3010,21 @@ class jjwxc {
                 }
                 const [fontName, fontUrl] = getFontInfo();
                 if (fontName && fontUrl) {
-                    const fontBlob = await fetchFont(fontUrl);
                     const fontFileName = `${fontName}.woff2`;
-                    if (fontBlob) {
-                        const fontClassObj = new main_1.attachmentClass(fontUrl, fontFileName, "TM");
+                    let fontClassObj;
+                    const fontClassObjCache = lib_1.getAttachmentClassCache(fontUrl, fontFileName);
+                    if (fontClassObjCache) {
+                        fontClassObj = fontClassObjCache;
+                    }
+                    else {
+                        const fontBlob = await fetchFont(fontUrl);
+                        fontClassObj = new main_1.attachmentClass(fontUrl, fontFileName, "TM");
                         fontClassObj.imageBlob = fontBlob;
                         fontClassObj.status = main_1.Status.finished;
-                        const fontStyleDom = document.createElement("style");
-                        fontStyleDom.innerHTML = `.${fontName} {
+                        lib_1.putAttachmentClassCache(fontClassObj);
+                    }
+                    const fontStyleDom = document.createElement("style");
+                    fontStyleDom.innerHTML = `.${fontName} {
   font-family: ${fontName}, 'Microsoft YaHei', PingFangSC-Regular, HelveticaNeue-Light, 'Helvetica Neue Light', sans-serif !important;
 }
 @font-face {
@@ -2503,8 +3034,7 @@ class jjwxc {
 .hide {
   display: none;
 }`;
-                        return [fontName, fontClassObj, fontStyleDom];
-                    }
+                    return [fontName, fontClassObj, fontStyleDom];
                 }
                 return [null, null, null];
             }
@@ -24486,6 +25016,905 @@ const jjwxcFontTables = {
 
 /***/ }),
 
+/***/ 394:
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.replaceYuzhaigeImage = void 0;
+function replaceYuzhaigeImage(inputText) {
+    let outputText = inputText;
+    for (const imageFilename in imageTable) {
+        const normalCharacter = imageTable[imageFilename];
+        const reStr = `<img src="https?:\\/\\/m.yuzhaige.cc\\/wzbodyimg\\/${imageFilename}">`;
+        const re = new RegExp(reStr, "g");
+        outputText = outputText.replace(re, normalCharacter);
+    }
+    return outputText;
+}
+exports.replaceYuzhaigeImage = replaceYuzhaigeImage;
+const imageTable = {
+    "wc5pDq.png": "\u52c3",
+    "wEwIpN.png": "\u8404",
+    "WFOBXF.png": "\u4f26",
+    "WFuqEG.png": "\u6eda",
+    "WNTyYB.png": "\u83ca",
+    "WrI5St.png": "\u6234",
+    "WSYLdq.png": "\u5ba0",
+    "wvHBh4.png": "\u5976",
+    "wWVoto.png": "\u5df4",
+    "wz2cGb.png": "\u4e73",
+    "wZicAt.png": "\u9053",
+    "WzS8He.png": "\u6234",
+    "X6QTS9.png": "\u80ef",
+    "XBTII5.png": "\u817f",
+    "XBv6rP.png": "\u8df3",
+    "xFVZW9.png": "\u6b96",
+    "XhuslD.png": "\u9e21",
+    "xIFlai.png": "\u98df",
+    "XK7taQ.png": "\u723d",
+    "xljRqd.png": "\u9876",
+    "xo18Yq.png": "\u5c3f",
+    "xOIyuf.png": "\u585e",
+    "xQ2ZWb.png": "\u80a1",
+    "XqsaJY.png": "\u8f6f",
+    "xrbxqL.png": "\u88f8",
+    "xw7cLW.png": "\u868c",
+    "xwkwQW.png": "\u7cbe",
+    "XXlZMA.png": "\u6b96",
+    "y3FgRm.png": "\u67f1",
+    "y4Afmt.png": "\u817f",
+    "Y4aXzR.png": "\u7c97",
+    "Y7G6Lu.png": "\u547b",
+    "YGnnuo.png": "\u871c",
+    "ygqjgt.png": "\u634f",
+    "yGwSy7.png": "\u9a9a",
+    "yjX9oi.png": "\u63c9",
+    "YNmgYJ.png": "\u809b",
+    "yuo7sA.png": "\u6469",
+    "yWAu0U.png": "\u50ac",
+    "yWhRNI.png": "\u5a07",
+    "YZ4EAh.png": "\u5589",
+    "yzS8NJ.png": "\u80ef",
+    "z0DZro.png": "\u542e",
+    "Z7byDx.png": "\u6da6",
+    "ZatUU6.png": "\u5974",
+    "zCtJCx.png": "\u6da6",
+    "ZDJHkT.png": "\u6ccc",
+    "ZKDja5.png": "\u9f9f",
+    "ZqyamF.png": "\u5c44",
+    "ZzsV7x.png": "\u777e",
+    "0bErVo.png": "\u6df1",
+    "0ShNwM.png": "\u5439",
+    "0uCAgc.png": "\u5f3a",
+    "1AMfxw.png": "\u5e72",
+    "1EmzV7.png": "\u6027",
+    "1RbeKi.png": "\u5934",
+    "1RIz6c.png": "\u611f",
+    "1ZkZsI.png": "\u6b32",
+    "2AXYPX.png": "\u6cc4",
+    "2gwsiE.png": "\u6e7f",
+    "2LQHtR.png": "\u6839",
+    "2wePG6.png": "\u4f53",
+    "2Xijao.png": "\u634f",
+    "3ha4Fq.png": "\u6b22",
+    "3RfcEA.png": "\u9ad8",
+    "3uNZxG.png": "\u80f8",
+    "4bu7Gr.png": "\u8482",
+    "4T4DPM.png": "\u64e6",
+    "4XjmUQ.png": "\u8fdb",
+    "5hjo9r.png": "\u4e0b",
+    "5ueElb.png": "\u5bab",
+    "5yFlDm.png": "\u5bab",
+    "6UsGer.png": "\u74e3",
+    "6w928M.png": "\u633a",
+    "6YavUk.png": "\u6696",
+    "7dKm1T.png": "\u8fdb",
+    "7tzEqy.png": "\u70b9",
+    "8Q4cTQ.png": "\u90e8",
+    "9Ns27O.png": "\u9633",
+    "9pAfcz.png": "\u5934",
+    "9Xkn86.png": "\u5507",
+    "62TB7X.png": "\u7d27",
+    "668QKT.png": "\u4e0b",
+    "aedVOS.png": "\u9732",
+    "AI15xh.png": "\u5a07",
+    "AikKsW.png": "\u80a0",
+    "AJcH1b.png": "\u51fa",
+    "ALnkng.png": "\u5598",
+    "anzcle.png": "\u9053",
+    "apsw0Z.png": "\u5b50",
+    "azRZNn.png": "\u6c34",
+    "B38zEI.png": "\u6c34",
+    "BAVYZd.png": "\u9634",
+    "BBioQd.png": "\u6696",
+    "BBZnCY.png": "\u5507",
+    "bE6LV6.png": "\u7f8e",
+    "bF30CY.png": "\u5438",
+    "bihdjA.png": "\u5507",
+    "BPQcCZ.png": "\u5177",
+    "BpYip0.png": "\u7ba1",
+    "BrY1ZI.png": "\u817f",
+    "BvbcsW.png": "\u7d27",
+    "bXRYQt.png": "\u5904",
+    "Caqk3D.png": "\u773c",
+    "CBylOX.png": "\u9053",
+    "ClFBCD.png": "\u5904",
+    "CLS5cG.png": "\u575a",
+    "cPjFxZ.png": "\u79cd",
+    "CUJkGk.png": "\u60c5",
+    "CZL2OC.png": "\u76ae",
+    "D3I7u1.png": "\u8482",
+    "d5KjC5.png": "\u4f53",
+    "d7fjCZ.png": "\u9732",
+    "df6AnM.png": "\u51fa",
+    "dhAaVT.png": "\u575a",
+    "dkuDIk.png": "\u820c",
+    "DSiSlL.png": "\u7231",
+    "dTnQ9K.png": "\u9b54",
+    "dXMpnD.png": "\u6655",
+    "DXtzqf.png": "\u8eab",
+    "DXXixh.png": "\u5957",
+    "DZYaDR.png": "\u9633",
+    "e5QAQ1.png": "\u5f3a",
+    "ECcmqT.png": "\u6625",
+    "eeYwrN.png": "\u6c34",
+    "eGWHWT.png": "\u6170",
+    "eOOKlp.png": "\u89e6",
+    "EvHzor.png": "\u6b32",
+    "ewwRMT.png": "\u903c",
+    "EZW46f.png": "\u6df1",
+    "FBosfH.png": "\u6027",
+    "fC5MmR.png": "\u6237",
+    "ffTW4v.png": "\u62bd",
+    "ffZqua.png": "\u6027",
+    "FgN2Tl.png": "\u4e71",
+    "fHvZK9.png": "\u7f1d",
+    "fj7veK.png": "\u957f",
+    "fkPlzo.png": "\u98df",
+    "fKWetR.png": "\u7ba1",
+    "FUmeqN.png": "\u25a1",
+    "Fus88J.png": "\u725b",
+    "G4uOno.png": "\u55b7",
+    "g7bVzL.png": "\u9ad8",
+    "GBmlnw.png": "\u8df3",
+    "gCWM61.png": "\u7cbe",
+    "GdAidg.png": "\u7b4b",
+    "GLZIqA.png": "\u5b50",
+    "gqDVGg.png": "\u5de8",
+    "gu5ykL.png": "\u8f6e",
+    "GULUze.png": "\u9ad8",
+    "h2FI8R.png": "\u80f8",
+    "h4WPDX.png": "\u6655",
+    "hCztH8.png": "\u9732",
+    "hfI2uM.png": "\u575a",
+    "hGHijB.png": "\u5668",
+    "hIhWai.png": "\u9ad8",
+    "HIUVkJ.png": "\u5c04",
+    "HkcQea.png": "\u4ea4",
+    "hm5O6l.png": "\u5957",
+    "hpFE8s.png": "\u6d41",
+    "HPxfmS.png": "\u542b",
+    "hVxPKi.png": "\u89e6",
+    "Ia3sI1.png": "\u4e71",
+    "IA8APJ.png": "\u5df4",
+    "IlUZRn.png": "\u575a",
+    "iN7Lri.png": "\u98df",
+    "iQMM3x.png": "\u611f",
+    "ISfDuf.png": "\u4f53",
+    "isWxov.png": "\u9a6c",
+    "ITILdU.png": "\u6267",
+    "IU731r.png": "\u9876",
+    "IUanTB.png": "\u878d",
+    "IUUwWq.png": "\u5165",
+    "Ixqere.png": "\u6d41",
+    "J9AEU9.png": "\u5165",
+    "JBfhPp.png": "\u64cd",
+    "jDxrrX.png": "\u5b50",
+    "jE4V2B.png": "\u6df1",
+    "jF1KPd.png": "\u25a1",
+    "jFACnh.png": "\u6bdb",
+    "jiyfGR.png": "\u6839",
+    "JLkmp8.png": "\u80a1",
+    "jWwTqU.png": "\u60c5",
+    "K00hgA.png": "\u5165",
+    "KaFnqe.png": "\u6eda",
+    "Kaqaq0.png": "\u9634",
+    "kDOkxJ.png": "\u957f",
+    "kSkOOe.png": "\u6309",
+    "KtjQU3.png": "\u634f",
+    "kWmDQN.png": "\u5904",
+    "kZQ8K6.png": "\u4e0b",
+    "l0kRFF.png": "\u7269",
+    "L9dqnM.png": "\u6b32",
+    "Ldo3hW.png": "\u8089",
+    "ljppnW.png": "\u611f",
+    "lNGSuh.png": "\u80a0",
+    "lRfqbE.png": "\u7cbe",
+    "lUzsIi.png": "\u8f6e",
+    "LZraJy.png": "\u6625",
+    "mBpVnV.png": "\u4e71",
+    "MEM8Wx.png": "\u5e72",
+    "MO2VKV.png": "\u6db2",
+    "ModDMS.png": "\u62bd",
+    "mOZJWk.png": "\u9a6c",
+    "mpgh5T.png": "\u51fa",
+    "nj29a6.png": "\u6267",
+    "NOEnvb.png": "\u8df3",
+    "nrSIO8.png": "\u6df1",
+    "o2xN3U.png": "\u82b1",
+    "O3b3KR.png": "\u6696",
+    "o5uSeU.png": "\u5bab",
+    "OaBMS5.png": "\u62d4",
+    "OB7KzU.png": "\u773c",
+    "oCH7SV.png": "\u9b54",
+    "oeeXig.png": "\u9a6c",
+    "OgBVeb.png": "\u8f6f",
+    "oHc3dE.png": "\u7269",
+    "OLHWRr.png": "\u70b9",
+    "onuRXa.png": "\u8482",
+    "oqLfcR.png": "\u6ed1",
+    "oUntUm.png": "\u6d53",
+    "OXOdsf.png": "\u9053",
+    "p3ARaM.png": "\u6d41",
+    "p068ps.png": "\u5bab",
+    "PLwxDG.png": "\u79cd",
+    "PmCTBy.png": "\u8272",
+    "pMlQBk.png": "\u6c41",
+    "pQypTa.png": "\u8fdb",
+    "PtUVdN.png": "\u62bd",
+    "PW1WSi.png": "\u6e7f",
+    "Pw3ezj.png": "\u914d",
+    "pXy3UL.png": "\u4ea4",
+    "Q7jy4x.png": "\u5185",
+    "q07XV1.png": "\u5668",
+    "Q9OBtA.png": "\u6f6e",
+    "QbYFBI.png": "\u9634",
+    "qEI00x.png": "\u4e0b",
+    "qewOBk.png": "\u6ed1",
+    "QfXoIi.png": "\u8089",
+    "qJIAe3.png": "\u6309",
+    "QkWjrV.png": "\u8eab",
+    "QnFF9j.png": "\u6839",
+    "qNFYq4.png": "\u5e72",
+    "QU7Lcv.png": "\u25a1",
+    "qwsVcX.png": "\u62bd",
+    "qxb6Lz.png": "\u70b9",
+    "QzP4Nz.png": "\u773c",
+    "R8uNPt.png": "\u5185",
+    "R9tjeh.png": "\u51fa",
+    "rFr75w.png": "\u80f8",
+    "rGA9Cq.png": "\u4ea4",
+    "RjCFQu.png": "\u7d27",
+    "RLNC0G.png": "\u70b9",
+    "rocNQb.png": "\u505a",
+    "Rpp7lC.png": "\u8482",
+    "rUJMTx.png": "\u8272",
+    "RZZBiZ.png": "\u773c",
+    "S2Dvd4.png": "\u6cc4",
+    "s8DZGN.png": "\u60c5",
+    "s560YT.png": "\u5177",
+    "SeKcc0.png": "\u8272",
+    "sFFl4b.png": "\u5ba0",
+    "SiAa7G.png": "\u5934",
+    "slAZvO.png": "\u8272",
+    "sTPB8l.png": "\u89e6",
+    "sV6OrY.png": "\u957f",
+    "syPCmu.png": "\u8f6e",
+    "Sz5U6E.png": "\u5668",
+    "SZn6xB.png": "\u7269",
+    "T6sDn9.png": "\u60c5",
+    "t9WGXQ.png": "\u903c",
+    "TCRQtC.png": "\u6ed1",
+    "TGkFFQ.png": "\u903c",
+    "tNjFEZ.png": "\u82b1",
+    "tOUYgC.png": "\u9b54",
+    "TSjC0C.png": "\u5ead",
+    "TSp4f1.png": "\u62d4",
+    "TWIhpT.png": "\u7231",
+    "TxaWbU.png": "\u878d",
+    "ua2bew.png": "\u9876",
+    "UbTLa5.png": "\u633a",
+    "uDN4sP.png": "\u5165",
+    "ueMquS.png": "\u8eab",
+    "UEVcqG.png": "\u8eab",
+    "UIFeaH.png": "\u914d",
+    "unR6fo.png": "\u9633",
+    "Upc9Pu.png": "\u4ea4",
+    "UukBzP.png": "\u6d1e",
+    "UvCU0f.png": "\u5ba0",
+    "VAOIqQ.png": "\u7f8e",
+    "vMf2zS.png": "\u914d",
+    "VnXHdX.png": "\u505a",
+    "vpHmyj.png": "\u5185",
+    "Vql6Ev.png": "\u59d0",
+    "vrkjXi.png": "\u79cd",
+    "vtnLR7.png": "\u6c34",
+    "wkUtOc.png": "\u25a1",
+    "WOHLvx.png": "\u5976",
+    "WppxBg.png": "\u7f8e",
+    "WRtMHz.png": "\u56ca",
+    "WTAi5O.png": "\u63c9",
+    "wtwCbu.png": "\u725b",
+    "WXf8jT.png": "\u5177",
+    "xpWTjp.png": "\u7269",
+    "XqFPrk.png": "\u505a",
+    "XrHw7R.png": "\u4f53",
+    "XskrJT.png": "\u9633",
+    "xubhKq.png": "\u6bdb",
+    "xxqGbU.png": "\u80f8",
+    "y2rhls.png": "\u505a",
+    "y8TJ26.png": "\u79cd",
+    "YbmlHp.png": "\u82b1",
+    "YpcoIg.png": "\u7f8e",
+    "yruS8G.png": "\u8650",
+    "YTWiNM.png": "\u82b1",
+    "YvzoUL.png": "\u5589",
+    "YY1gAh.png": "\u878d",
+    "yYS2XJ.png": "\u8fdb",
+    "ZaWg8Q.png": "\u6d53",
+    "zbUsFu.png": "\u70ed",
+    "zGqroA.png": "\u5b50",
+    "zhogXd.png": "\u9732",
+    "zM4vGZ.png": "\u6eda",
+    "ZMyXfX.png": "\u786c",
+    "Znemv4.png": "\u9a6c",
+    "ZnORLb.png": "\u5934",
+    "zovunx.png": "\u7a74",
+    "ZpcLFr.png": "\u7231",
+    "4KLtoP.png": "\u868c",
+    "k2hzhi.png": "\u854a",
+    "OpOeoc.png": "\u96cf",
+    "D6GjNJ.png": "\u90a6",
+    "nSh1y5.png": "\u90a6",
+    "ZD1bga.png": "\u819c",
+    "0JNnRt.png": "\u88c6",
+    "0laGrG.png": "\u52c3",
+    "0sEWeF.png": "\u723d",
+    "0X07Oj.png": "\u957f",
+    "0ZBaBv.png": "\u7a74",
+    "1WoJda.png": "\u633a",
+    "1yUGqq.png": "\u5957",
+    "2ABT9u.png": "\u7ba1",
+    "2BcI5e.png": "\u6838",
+    "2dfEmL.png": "\u808f",
+    "2LdPZ9.png": "\u5df4",
+    "2VLZTT.png": "\u5438",
+    "2WgKu9.png": "\u6625",
+    "03PhNV.png": "\u6469",
+    "3preuJ.png": "\u6f6e",
+    "3tNh88.png": "\u63d2",
+    "4m7wbi.png": "\u6655",
+    "4mO3Bj.png": "\u5993",
+    "4P4bWw.png": "\u70eb",
+    "4qJrgq.png": "\u50ac",
+    "4xMdlq.png": "\u6345",
+    "5aHMLF.png": "\u6d53",
+    "5caAaX.png": "\u542b",
+    "5IL1sE.png": "\u817a",
+    "5qxLLo.png": "\u8404",
+    "5rXkkk.png": "\u5f04",
+    "5uAxU4.png": "\u63c9",
+    "5XAgwu.png": "\u5978",
+    "6A9MvV.png": "\u52c3",
+    "6jL6AP.png": "\u8361",
+    "6ontyx.png": "\u8461",
+    "6VRwjR.png": "\u7c97",
+    "6zcWUT.png": "\u6cc4",
+    "7aWXdF.png": "\u6f6e",
+    "7Bz8yG.png": "\u68cd",
+    "7fhmqV.png": "\u88e4",
+    "7jKFaP.png": "\u5978",
+    "7lNejO.png": "\u704c",
+    "7pFdxn.png": "\u64b8",
+    "7Q7Jrg.png": "\u5c4c",
+    "8BNYPM.png": "\u6696",
+    "8J5geS.png": "\u541f",
+    "8Kf7GD.png": "\u830e",
+    "8mHmVv.png": "\u830e",
+    "8N16Hq.png": "\u8650",
+    "8UniDu.png": "\u6237",
+    "8w5K9T.png": "\u88f8",
+    "8wm13p.png": "\u6655",
+    "8ZNrSv.png": "\u786c",
+    "9BRV3o.png": "\u5c4c",
+    "9Nqw8t.png": "\u762b",
+    "9RBhTJ.png": "\u9a9a",
+    "9RvnBS.png": "\u8089",
+    "9TaMmD.png": "\u6ccc",
+    "9UaEDH.png": "\u6d1e",
+    "9zWVtd.png": "\u59d0",
+    "47FrvB.png": "\u4e73",
+    "76gAv7.png": "\u723d",
+    "77lL1M.png": "\u541f",
+    "798jja.png": "\u76ae",
+    "a0mCeq.png": "\u8f6f",
+    "ACrPlr.png": "\u98df",
+    "aFoXhJ.png": "\u75d2",
+    "Afr6zx.png": "\u6b96",
+    "aHuUcm.png": "\u83ca",
+    "AiDkbY.png": "\u809b",
+    "aOxG78.png": "\u8461",
+    "AQZ08I.png": "\u809b",
+    "ARAUs9.png": "\u5c41",
+    "arEzdS.png": "\u5976",
+    "axdkbW.png": "\u58c1",
+    "aYGWo2.png": "\u83ca",
+    "b1C6Pu.png": "\u75d2",
+    "bCQ2nL.png": "\u654f",
+    "BgJzfk.png": "\u6b22",
+    "BhgFcH.png": "\u56ca",
+    "bOoL0J.png": "\u6deb",
+    "BqO1fa.png": "\u820c",
+    "bqXZDH.png": "\u80a5",
+    "BsU6ka.png": "\u854a",
+    "Bu9FZQ.png": "\u6deb",
+    "bufT6t.png": "\u819c",
+    "bWdbXA.png": "\u6eda",
+    "C4UN5R.png": "\u6deb",
+    "CgqkFG.png": "\u8361",
+    "CH67yh.png": "\u5a07",
+    "CM7jpY.png": "\u5b55",
+    "cNghja.png": "\u8361",
+    "CnOBoo.png": "\u63d2",
+    "CNQW3o.png": "\u70eb",
+    "cow4Kc.png": "\u5f3a",
+    "CXC9uz.png": "\u8089",
+    "Cy7Ynb.png": "\u762b",
+    "czWHZw.png": "\u96cf",
+    "D0Lwo9.png": "\u871c",
+    "dB0uJO.png": "\u820c",
+    "dHuyiO.png": "\u5c4c",
+    "DQWBph.png": "\u4e38",
+    "DsEJTV.png": "\u547b",
+    "dUrJvn.png": "\u819c",
+    "Ea3lho.png": "\u81c0",
+    "EboGWZ.png": "\u80a0",
+    "eifoua.png": "\u5b55",
+    "EiUhlF.png": "\u5957",
+    "ENwWoX.png": "\u4e71",
+    "EQEgJx.png": "\u6469",
+    "EQiUab.png": "\u88e4",
+    "er8NJ7.png": "\u542e",
+    "F0WoiN.png": "\u5177",
+    "f1YTv0.png": "\u6f6e",
+    "f2N1vL.png": "\u5978",
+    "F3nlmb.png": "\u88e4",
+    "F6lW1R.png": "\u80bf",
+    "f60BEY.png": "\u5c3f",
+    "f461mD.png": "\u6839",
+    "fd6C8F.png": "\u9e21",
+    "Fdz1Vc.png": "\u58c1",
+    "FetNxM.png": "\u5c4c",
+    "FfxOzl.png": "\u88f8",
+    "Fge27m.png": "\u8404",
+    "fGpEWq.png": "\u547b",
+    "Fl20Ip.png": "\u9f9f",
+    "fNXZyj.png": "\u6234",
+    "fRmx68.png": "\u90e8",
+    "fSdsL1.png": "\u88c6",
+    "FT9nI5.png": "\u83ca",
+    "FVVqzv.png": "\u86cb",
+    "FwjZJi.png": "\u5438",
+    "fX4WIp.png": "\u4f26",
+    "FXgFwc.png": "\u63d2",
+    "FXmf8I.png": "\u647a",
+    "fxPcW3.png": "\u6d1e",
+    "g2jVxn.png": "\u808f",
+    "gb3LOX.png": "\u80ef",
+    "gDVng6.png": "\u5ba0",
+    "gImiVY.png": "\u5f04",
+    "gJDFQC.png": "\u8214",
+    "gJDG8l.png": "\u5b55",
+    "GJodYn.png": "\u62d4",
+    "GmLjKa.png": "\u5c09",
+    "gNlJMc.png": "\u68cd",
+    "GppocX.png": "\u914d",
+    "gsRjtr.png": "\u67f1",
+    "GTOAc4.png": "\u633a",
+    "GzjpTS.png": "\u7cbe",
+    "h8zRxr.png": "\u80a1",
+    "H17DtI.png": "\u5c41",
+    "ha14XV.png": "\u89e6",
+    "hatLmR.png": "\u81c0",
+    "hbrRIS.png": "\u857e",
+    "hC4NbQ.png": "\u777e",
+    "hG0SRP.png": "\u64e6",
+    "HhNUaw.png": "\u854a",
+    "hKjWPG.png": "\u64b8",
+    "Hn8Afh.png": "\u74e3",
+    "hngWaZ.png": "\u5438",
+    "htV3uv.png": "\u58c1",
+    "hVaVng.png": "\u6309",
+    "HVHPCy.png": "\u74e3",
+    "hVwy7k.png": "\u8214",
+    "i4tyrQ.png": "\u830e",
+    "i5s28n.png": "\u4f26",
+    "IAloq6.png": "\u542e",
+    "ICHARH.png": "\u6237",
+    "icI6Ey.png": "\u81c0",
+    "iCRh88.png": "\u68d2",
+    "Iej2pu.png": "\u5993",
+    "IkqJmu.png": "\u8650",
+    "imVjMj.png": "\u4e73",
+    "iNIMEL.png": "\u86cb",
+    "IOjnEP.png": "\u6b22",
+    "ip6KUM.png": "\u79bd",
+    "IPC2R8.png": "\u9e21",
+    "ipVGiA.png": "\u6345",
+    "IpYNG3.png": "\u5974",
+    "ITUjFq.png": "\u76ae",
+    "ixiion.png": "\u90e8",
+    "IZcCzq.png": "\u871c",
+    "IzJ4WG.png": "\u830e",
+    "J1CBtB.png": "\u8df3",
+    "j9C44i.png": "\u70eb",
+    "JCQtUs.png": "\u4e73",
+    "JEcz0E.png": "\u871c",
+    "JfPEEe.png": "\u4f26",
+    "jHi6Vu.png": "\u9f9f",
+    "jjfR6D.png": "\u8461",
+    "jktdia.png": "\u64e6",
+    "JlkuRa.png": "\u8404",
+    "jnAvXp.png": "\u5ead",
+    "jnCCk9.png": "\u6cc4",
+    "jvj3DG.png": "\u786c",
+    "Jy4pAI.png": "\u74e3",
+    "jZyPEL.png": "\u5b55",
+    "K2AtMQ.png": "\u9a9a",
+    "K2jjT6.png": "\u857e",
+    "k6X0xy.png": "\u80bf",
+    "k9h8DR.png": "\u903c",
+    "k9zXwG.png": "\u723d",
+    "KalRLt.png": "\u6da6",
+    "kawcM7.png": "\u68cd",
+    "kdsEv6.png": "\u5f04",
+    "KdwL4R.png": "\u86cb",
+    "kPG0vR.png": "\u704c",
+    "KSqmoM.png": "\u6db2",
+    "kTCaM9.png": "\u86cb",
+    "kVLLjB.png": "\u8361",
+    "kygbuo.png": "\u725b",
+    "kZDlEj.png": "\u7ba1",
+    "l0BNLC.png": "\u6ccc",
+    "l1Dmft.png": "\u725b",
+    "L1yl45.png": "\u5c04",
+    "L3a5ft.png": "\u56ca",
+    "L3LaNQ.png": "\u5439",
+    "L9F6F8.png": "\u50ac",
+    "LB1WMg.png": "\u64cd",
+    "LBPqYj.png": "\u6d1e",
+    "LDjbfQ.png": "\u5c3f",
+    "ldo7FB.png": "\u7d27",
+    "lErO3o.png": "\u67f1",
+    "LFBZKA.png": "\u59d0",
+    "lfGqdb.png": "\u68d2",
+    "lGKjej.png": "\u5993",
+    "LjemA3.png": "\u809b",
+    "Ljh7qo.png": "\u63d2",
+    "LJSiT5.png": "\u5c44",
+    "Lk5uQy.png": "\u6838",
+    "lngKEo.png": "\u55b7",
+    "lOfDdC.png": "\u4e38",
+    "Lsq92O.png": "\u541f",
+    "LsyPdc.png": "\u541f",
+    "lVbZkd.png": "\u634f",
+    "lVMTQu.png": "\u654f",
+    "LVmymH.png": "\u80a0",
+    "lyYo4Y.png": "\u547b",
+    "lZtabT.png": "\u9634",
+    "M3VjF9.png": "\u64b8",
+    "m4yvu3.png": "\u7a74",
+    "M8bV3k.png": "\u56ca",
+    "MBhDEi.png": "\u75d2",
+    "MC5lZn.png": "\u585e",
+    "Mc8JM6.png": "\u62d4",
+    "mD7hPS.png": "\u5c41",
+    "mExNDV.png": "\u704c",
+    "MKapwC.png": "\u80a5",
+    "mKxUHv.png": "\u64e6",
+    "Mo31Ax.png": "\u6bdb",
+    "mRFQJQ.png": "\u5589",
+    "MsUFfR.png": "\u6b96",
+    "mTzxxd.png": "\u7f1d",
+    "n2ufBJ.png": "\u5978",
+    "n3oOgA.png": "\u6345",
+    "n9j6EC.png": "\u5ead",
+    "n49ZFH.png": "\u88c6",
+    "nCrl80.png": "\u762b",
+    "NDlwhm.png": "\u817a",
+    "nE1Y7y.png": "\u762b",
+    "neIgqc.png": "\u5439",
+    "NeKVfz.png": "\u6170",
+    "NHH9A1.png": "\u777e",
+    "NKN1rk.png": "\u542e",
+    "NKUSkP.png": "\u58c1",
+    "NlfTkc.png": "\u5c44",
+    "NlZDDQ.png": "\u817f",
+    "nmoPI2.png": "\u4e38",
+    "NnfPEJ.png": "\u9f9f",
+    "NP33MO.png": "\u6c41",
+    "NQ7oga.png": "\u611f",
+    "nsDzuq.png": "\u90a6",
+    "NsIwni.png": "\u5de8",
+    "oaLZIg.png": "\u777e",
+    "oC3HDZ.png": "\u7c97",
+    "OFx7ZU.png": "\u88f8",
+    "OHU6tX.png": "\u6db2",
+    "olFcqI.png": "\u5e72",
+    "OMdbeV.png": "\u819c",
+    "On4f9C.png": "\u7b4b",
+    "oncaJq.png": "\u76ae",
+    "Oo8iWN.png": "\u6309",
+    "OUWXqz.png": "\u6625",
+    "OuXWg2.png": "\u4e38",
+    "ozF5Kr.png": "\u8650",
+    "p0bqZi.png": "\u5c44",
+    "p1H9RN.png": "\u5c04",
+    "p5QCRV.png": "\u6ed1",
+    "p5zEbo.png": "\u857e",
+    "P43O6G.png": "\u6234",
+    "PalsBW.png": "\u5974",
+    "PcAvOY.png": "\u5ae9",
+    "pHfPTa.png": "\u5de8",
+    "pi2z0b.png": "\u7b4b",
+    "plFlPb.png": "\u68cd",
+    "pNPlu5.png": "\u704c",
+    "PnZNBC.png": "\u6deb",
+    "pQ1W2F.png": "\u88e4",
+    "PX3jJ6.png": "\u6ccc",
+    "q14YbK.png": "\u9876",
+    "Qc9LRh.png": "\u5598",
+    "qe2YZi.png": "\u63c9",
+    "qEy1kT.png": "\u90e8",
+    "Qfs9DA.png": "\u50ac",
+    "Qg8Qwg.png": "\u857e",
+    "qJ1X2h.png": "\u59d0",
+    "qm0ZBO.png": "\u6170",
+    "QmcP4w.png": "\u654f",
+    "Qn3xBM.png": "\u5ae9",
+    "qNGvlk.png": "\u5c3f",
+    "qPhrVf.png": "\u5904",
+    "qPX1Ef.png": "\u542b",
+    "qr8InI.png": "\u80a5",
+    "QtLIGq.png": "\u6db2",
+    "QtSnzR.png": "\u5598",
+    "Qv3JbY.png": "\u7f1d",
+    "QYF65i.png": "\u7b4b",
+    "Qz4Txd.png": "\u81c0",
+    "qzdvCv.png": "\u5df4",
+    "r7NsvF.png": "\u5f04",
+    "r8oBsP.png": "\u9e21",
+    "r9Gw4X.png": "\u6838",
+    "R65BZO.png": "\u8214",
+    "Rf7Jf6.png": "\u6469",
+    "Rho2GL.png": "\u75d2",
+    "rlVLx7.png": "\u7231",
+    "Rm3wex.png": "\u55b7",
+    "RmrhKk.png": "\u8214",
+    "RMWsBY.png": "\u654f",
+    "rn9y6F.png": "\u585e",
+    "RnfJ8h.png": "\u67f1",
+    "RP5Oud.png": "\u5598",
+    "Rp5tmA.png": "\u64cd",
+    "rpSSYK.png": "\u80ef",
+    "rQKjMD.png": "\u6bdb",
+    "RrXcE9.png": "\u5668",
+    "RyL5jk.png": "\u6c41",
+    "s67RPe.png": "\u70eb",
+    "s95kq4.png": "\u6e7f",
+    "sdXZMk.png": "\u52c3",
+    "SGxBy7.png": "\u5c41",
+    "smhB8j.png": "\u5c04",
+    "Srgobp.png": "\u6237",
+    "srlW2t.png": "\u6d41",
+    "ST21xu.png": "\u6d53",
+    "STzFJz.png": "\u7c97",
+    "sugwEw.png": "\u5976",
+    "SzADhL.png": "\u80bf",
+    "T5yzvl.png": "\u6c41",
+    "t6K8rK.png": "\u6027",
+    "tAIV6q.png": "\u64cd",
+    "TCFRca.png": "\u68d2",
+    "te79V0.png": "\u68d2",
+    "tjbhCV.png": "\u5ae9",
+    "tNFwEz.png": "\u5589",
+    "tPTX1h.png": "\u80a5",
+    "tsQMiL.png": "\u5439",
+    "TUZb1W.png": "\u6b32",
+    "TWFykG.png": "\u5993",
+    "twLxYU.png": "\u8f6f",
+    "tXNaZ2.png": "\u878d",
+    "U3bhkh.png": "\u9a9a",
+    "u6K6ci.png": "\u6b22",
+    "u9Tibu.png": "\u5185",
+    "Ua2WwL.png": "\u5a07",
+    "Uai2en.png": "\u5f3a",
+    "UeWULF.png": "\u5ead",
+    "UfXSsz.png": "\u540e",
+    "ui0T5v.png": "\u79bd",
+    "UqClGF.png": "\u80a1",
+    "Urv1FM.png": "\u80bf",
+    "uwXRHd.png": "\u55b7",
+    "v4iqzP.png": "\u7f1d",
+    "vAdmoL.png": "\u786c",
+    "VhA8GI.png": "\u5ae9",
+    "VHsdy1.png": "\u6838",
+    "vjOssT.png": "\u585e",
+    "vkYfGf.png": "\u9b54",
+    "vMmUqq.png": "\u5974",
+    "VnvOwV.png": "\u6da6",
+    "VoAjiw.png": "\u6e7f",
+    "vrtXeW.png": "\u88c6",
+    "VUbefT.png": "\u8f6e",
+    "vulCqw.png": "\u6267",
+    "VYaPfX.png": "\u7a74",
+    "VyJ2cS.png": "\u90a6",
+    "W06Vg1.png": "\u5de8",
+    "W7cCwn.png": "\u6345",
+    "W9Y9vD.png": "\u820c",
+    "wa54S5.png": "\u542b",
+    "FNq1zS.png": "\u868C",
+    "DDpMPK.png": "\u868C",
+    "vDbU8w.png": "\u817A",
+    "SSoXSL.png": "\u8461",
+    "YB6iOy.png": "\u817A",
+    "kMqpt6.png": "\u96CF",
+    "5RwMUT.png": "\u854A",
+    "b94JXX.png": "\u8114",
+    "oxFS6J.png": "\u8114",
+};
+
+
+/***/ }),
+
+/***/ 561:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.linovel = void 0;
+const main_1 = __webpack_require__(519);
+const lib_1 = __webpack_require__(563);
+class linovel {
+    constructor() {
+        this.imageMode = "TM";
+        this.concurrencyLimit = 5;
+    }
+    async bookParse(chapterParse) {
+        const bookUrl = document.location.href;
+        const bookname = (document.querySelector(".book-title")).innerText.trim();
+        const author = (document.querySelector(".author-frame > .novelist > div:nth-child(3) > a")).innerText.trim();
+        let introduction;
+        const introDom = document.querySelector(".about-text");
+        if (introDom === null) {
+            introduction = null;
+        }
+        else {
+            let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "TM");
+            introduction = introCleantext;
+        }
+        const additionalMetadate = {};
+        const attachmentsUrlList = [];
+        const coverUrl = (document.querySelector(".book-cover > a")).href;
+        attachmentsUrlList.push(coverUrl);
+        additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split("!")[0].split(".").slice(-1)[0]}`, "TM");
+        additionalMetadate.cover.init();
+        additionalMetadate.attachments = [];
+        const volumeCoverUrlList = Array.from(document.querySelectorAll(".section-list > .section > .volume-info > .volume-cover a")).map((a) => a.href);
+        let vi = 0;
+        for (const volumeCoverUrl of volumeCoverUrlList) {
+            if (!attachmentsUrlList.includes(volumeCoverUrl)) {
+                attachmentsUrlList.push(volumeCoverUrl);
+                vi++;
+                const getVolumeCoverFileName = () => {
+                    const vurl = new URL(volumeCoverUrl);
+                    const pathname = vurl.pathname.split("!")[0];
+                    const ext = pathname.split(".").slice(-1)[0];
+                    return `volumeCover${vi}.${ext}`;
+                };
+                const volumeCoverObj = new main_1.attachmentClass(volumeCoverUrl, getVolumeCoverFileName(), "TM");
+                volumeCoverObj.init();
+                additionalMetadate.attachments.push(volumeCoverObj);
+            }
+        }
+        additionalMetadate.tags = Array.from(document.querySelectorAll("div.meta-info > div.book-cats.clearfix > a")).map((a) => a.innerText.trim());
+        const chapters = [];
+        const sections = document.querySelectorAll(".section-list > .section");
+        let chapterNumber = 0;
+        for (let i = 0; i < sections.length; i++) {
+            const s = sections[i];
+            const sectionNumber = i + 1;
+            const sectionName = (s.querySelector(".volume-info > h2.volume-title > a")).innerText.trim();
+            let sectionChapterNumber = 0;
+            const cs = s.querySelectorAll(".chapter-list > .text-content-actual div.chapter");
+            for (let j = 0; j < cs.length; j++) {
+                const div = cs[j];
+                const a = div.firstElementChild;
+                chapterNumber++;
+                sectionChapterNumber++;
+                const chapterName = a.innerText.trim();
+                const chapterUrl = a.href;
+                const isVIP = () => {
+                    if (div.className.includes("lock")) {
+                        if (div.className.includes("unlock")) {
+                            return false;
+                        }
+                        else {
+                            return true;
+                        }
+                    }
+                    return false;
+                };
+                const isPaid = () => {
+                    return false;
+                };
+                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), isPaid(), sectionName, sectionNumber, sectionChapterNumber, chapterParse, "UTF-8");
+                const isLogin = () => {
+                    return false;
+                };
+                if (isVIP() && !(isLogin() && chapter.isPaid)) {
+                    chapter.status = main_1.Status.aborted;
+                }
+                chapters.push(chapter);
+            }
+        }
+        return {
+            bookUrl: bookUrl,
+            bookname: bookname,
+            author: author,
+            introduction: introduction,
+            additionalMetadate: additionalMetadate,
+            chapters: chapters,
+        };
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset) {
+        async function publicChapter() {
+            const doc = await lib_1.getHtmlDOM(chapterUrl, charset);
+            const chapterName = (doc.querySelector(".article-title")).innerText.trim();
+            const content = doc.querySelector(".article-text");
+            if (content) {
+                let { dom, text, images } = lib_1.cleanDOM(content, "TM");
+                return {
+                    chapterName: chapterName,
+                    contentRaw: content,
+                    contentText: text,
+                    contentHTML: dom,
+                    contentImages: images,
+                };
+            }
+            else {
+                return {
+                    chapterName: chapterName,
+                    contentRaw: null,
+                    contentText: null,
+                    contentHTML: null,
+                    contentImages: null,
+                };
+            }
+        }
+        async function vipChapter() {
+            return {
+                chapterName: chapterName,
+                contentRaw: null,
+                contentText: null,
+                contentHTML: null,
+                contentImages: null,
+            };
+        }
+        if (isVIP) {
+            return vipChapter();
+        }
+        else {
+            return publicChapter();
+        }
+    }
+}
+exports.linovel = linovel;
+
+
+/***/ }),
+
 /***/ 158:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
@@ -25840,6 +27269,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.yuzhaige = void 0;
 const main_1 = __webpack_require__(519);
 const lib_1 = __webpack_require__(563);
+const yuzhaigeImageDecode_1 = __webpack_require__(394);
 class yuzhaige {
     constructor() {
         this.imageMode = "naive";
@@ -25982,13 +27412,23 @@ class yuzhaige {
             }
         } while (flag);
         if (content) {
-            let { dom, text, images } = lib_1.cleanDOM(content, "naive");
+            let { dom: oldDom, text: _text, images: finalImages } = lib_1.cleanDOM(content, "naive");
+            const _newDom = document.createElement("div");
+            _newDom.innerHTML = yuzhaigeImageDecode_1.replaceYuzhaigeImage(content.innerHTML);
+            let { dom: newDom, text: finalText, images } = lib_1.cleanDOM(_newDom, "naive");
+            const fontStyleDom = document.createElement("style");
+            fontStyleDom.innerHTML = `.hide { display: none; }`;
+            oldDom.className = "hide";
+            const finalDom = document.createElement("div");
+            finalDom.appendChild(fontStyleDom);
+            finalDom.appendChild(oldDom);
+            finalDom.appendChild(newDom);
             return {
                 chapterName: chapterName,
                 contentRaw: content,
-                contentText: text,
-                contentHTML: dom,
-                contentImages: images,
+                contentText: finalText,
+                contentHTML: finalDom,
+                contentImages: finalImages,
             };
         }
         else {
@@ -26162,460 +27602,11 @@ exports.zongheng = zongheng;
 /******/ 	}
 /******/ 	
 /************************************************************************/
-var __webpack_exports__ = {};
-// This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
-(() => {
-var exports = __webpack_exports__;
-var __webpack_unused_export__;
-
-__webpack_unused_export__ = ({ value: true });
-const rules_1 = __webpack_require__(489);
-const main_1 = __webpack_require__(519);
-const lib_1 = __webpack_require__(563);
-function printEnvironments() {
-    if (lib_1._GM_info) {
-        console.log(`开始载入小说下载器……
-当前浏览器UA：${navigator.userAgent}
-当前脚本管理器：${lib_1._GM_info.scriptHandler}
-当前脚本管理器版本：${lib_1._GM_info.version}
-当前脚本名称：${lib_1._GM_info.script.name}
-当前脚本版本：${lib_1._GM_info.script.version}
-当前脚本最后更新时间：${lib_1._GM_info.script.lastModified}
-是否处于隐私模式：${lib_1._GM_info.isIncognito}
-是否启用调试：${rules_1.enaleDebug}`);
-    }
-}
-async function initBook(rule) {
-    console.log(`[initBook]开始初始化图书`);
-    const bookParse = rule.bookParse;
-    const chapterParse = rule.chapterParse;
-    return bookParse(chapterParse).then((obj) => {
-        const { bookUrl, bookname, author, introduction, additionalMetadate, chapters, } = obj;
-        const book = new main_1.Book(bookUrl, bookname, author, introduction, additionalMetadate, chapters);
-        return book;
-    });
-}
-async function initChapters(rule, book) {
-    console.log(`[initChapters]开始初始化章节`);
-    let concurrencyLimit = 10;
-    if (rule.concurrencyLimit !== undefined) {
-        concurrencyLimit = rule.concurrencyLimit;
-    }
-    const chapters = book.chapters.filter((chapter) => chapter.status === main_1.Status.pending);
-    if (chapters.length === 0) {
-        console.error(`[initChapters]初始化章节出错，未找到需初始化章节`);
-        return [];
-    }
-    if (concurrencyLimit === 1) {
-        for (let chapter of chapters) {
-            const obj = await chapter.init();
-            if (obj.contentHTML !== undefined) {
-                finishedChapterNumber++;
-                updateProgress(finishedChapterNumber, totalChapterNumber, null);
-            }
-        }
-    }
-    else {
-        await lib_1.concurrencyRun(chapters, concurrencyLimit, (curChapter) => {
-            if (curChapter === undefined) {
-                return Promise.resolve();
-            }
-            return curChapter.init().then((obj) => {
-                if (obj.contentHTML !== undefined) {
-                    finishedChapterNumber++;
-                    updateProgress(finishedChapterNumber, totalChapterNumber, null);
-                }
-                return obj;
-            });
-        });
-    }
-    console.log(`[initChapters]章节初始化完毕`);
-    return chapters;
-}
-function save(book) {
-    function chapterSort(a, b) {
-        if (a.chapterNumber > b.chapterNumber) {
-            return 1;
-        }
-        if (a.chapterNumber === b.chapterNumber) {
-            return 0;
-        }
-        if (a.chapterNumber < b.chapterNumber) {
-            return -1;
-        }
-        return 0;
-    }
-    function addImageToZip(image, zip) {
-        if (image.status === main_1.Status.finished && image.imageBlob) {
-            lib_1.console_debug(`[save]添加附件，文件名：${image.name}，对象`, image.imageBlob);
-            zip.file(image.name, image.imageBlob);
-        }
-        else {
-            console.error("[save]附件下载失败！");
-            console.error(image);
-        }
-    }
-    function genSectionText(sectionName) {
-        return `${"=".repeat(20)}\n\n\n\n# ${sectionName}\n\n\n\n${"=".repeat(20)}`;
-    }
-    function genChapterText(chapterName, contentText) {
-        return `## ${chapterName}\n\n${contentText}\n\n`;
-    }
-    function genSectionHtmlFile(sectionName) {
-        let htmlFile = new DOMParser().parseFromString(`<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="https://github.com/yingziwu/novel-downloader"><link href="style.css" type="text/css" rel="stylesheet"/><title>${sectionName}</title></head><body><div class="main"><h1>${sectionName}</h1></div></body></html>`, "text/html");
-        return new Blob([
-            htmlFile.documentElement.outerHTML.replace(new RegExp("data-src-address", "g"), "src"),
-        ], {
-            type: "text/html; charset=UTF-8",
-        });
-    }
-    function genHtmlFile(chapterName, DOM, chapterUrl) {
-        var _a;
-        let htmlFile = new DOMParser().parseFromString(`<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="https://github.com/yingziwu/novel-downloader"><meta name="source" content="${chapterUrl}"><link href="style.css" type="text/css" rel="stylesheet"/><title>${chapterName}</title></head><body><div class="main"><h2>${chapterName}</h2></div></body></html>`, "text/html");
-        (_a = htmlFile.querySelector(".main")) === null || _a === void 0 ? void 0 : _a.appendChild(DOM);
-        return new Blob([
-            htmlFile.documentElement.outerHTML.replace(new RegExp("data-src-address", "g"), "src"),
-        ], {
-            type: "text/html; charset=UTF-8",
-        });
-    }
-    console.log("[save]开始保存");
-    lib_1.console_debug("book Object:", book);
-    const chapters = book.chapters;
-    chapters.sort(chapterSort);
-    let savedTextArray = [];
-    let savedZip = new JSZip();
-    let infoText = `题名：${book.bookname}\n作者：${book.author}\n简介：${book.introduction}\n来源：${book.bookUrl}\n下载时间：${new Date().toISOString()}\n本文件由小说下载器生成，软件地址：https://github.com/yingziwu/novel-downloader\n\n`;
-    savedTextArray.push(infoText);
-    if (book.additionalMetadate.cover) {
-        addImageToZip(book.additionalMetadate.cover, savedZip);
-    }
-    if (book.additionalMetadate.attachments) {
-        for (const bookAttachment of book.additionalMetadate.attachments) {
-            addImageToZip(bookAttachment, savedZip);
-        }
-    }
-    savedZip.file("info.txt", new Blob([infoText], { type: "text/plain;charset=utf-8" }));
-    const styleCSS = `body {
-  background-color: #f0f0f2;
-  margin: 0;
-  padding: 0;
-  font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI",
-    "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-}
-div.main {
-  width: 900px;
-  margin: 5em auto;
-  padding: 2em;
-  background-color: #fdfdff;
-  border-radius: 0.5em;
-  box-shadow: 2px 3px 7px 2px rgba(0, 0, 0, 0.02);
-}
-@media (max-width: 700px) {
-  div.main {
-    margin: 0 auto;
-    width: auto;
-  }
-}
-h1 {
-  line-height: 130%;
-  text-align: center;
-  font-weight: bold;
-  font-size: xxx-large;
-  margin-top: 3.2em;
-  margin-bottom: 3.3em;
-}
-h2 {
-  line-height: 130%;
-  text-align: center;
-  font-weight: bold;
-  font-size: x-large;
-  margin-top: 1.2em;
-  margin-bottom: 2.3em;
-}
-div {
-  margin: 0px;
-  padding: 0px;
-  text-align: justify;
-}
-p {
-  text-indent: 2em;
-  display: block;
-  line-height: 1.3em;
-  margin-top: 0.4em;
-  margin-bottom: 0.4em;
-}
-img {
-  vertical-align: text-bottom;
-}`;
-    savedZip.file("style.css", new Blob([styleCSS], { type: "text/css;charset=utf-8" }));
-    let preSectionName = "";
-    for (const c of chapters) {
-        if (c.status === main_1.Status.finished) {
-            const sectionName = c.sectionName;
-            const chapterNumber = c.chapterNumber;
-            const chapterUrl = c.chapterUrl;
-            const chapterName = c.chapterName
-                ? c.chapterName
-                : chapterNumber.toString();
-            const contentText = c.contentText;
-            const contentHTML = c.contentHTML;
-            const contentImages = c.contentImages;
-            const fileNameBase = `${"0".repeat(chapters.length.toString().length - chapterNumber.toString().length)}${chapterNumber.toString()}.html`;
-            if (sectionName && contentText && sectionName !== preSectionName) {
-                savedTextArray.push(genSectionText(sectionName));
-                const sectionHTMLBlob = genSectionHtmlFile(sectionName);
-                if (sectionHTMLBlob) {
-                    lib_1.console_debug(`[save]添加卷HTML，文件名：${"Section" + fileNameBase}，对象`, sectionHTMLBlob);
-                    savedZip.file(`Section${fileNameBase}`, sectionHTMLBlob);
-                }
-            }
-            preSectionName = sectionName;
-            if (contentText) {
-                savedTextArray.push(genChapterText(chapterName, contentText));
-            }
-            if (contentHTML) {
-                const chapterHTMLBlob = genHtmlFile(chapterName, contentHTML, chapterUrl);
-                if (chapterHTMLBlob) {
-                    lib_1.console_debug(`[save]添加章节HTML，文件名：${"Chapter" + fileNameBase}，对象`, chapterHTMLBlob);
-                    savedZip.file(`Chapter${fileNameBase}`, chapterHTMLBlob);
-                }
-            }
-            if (contentImages !== null) {
-                for (const image of contentImages) {
-                    addImageToZip(image, savedZip);
-                }
-            }
-        }
-    }
-    console.log("[save]开始生成下载文件");
-    const saveFileNameBase = `[${book.author}]${book.bookname}`;
-    lib_1.console_debug("[save]开始保存TXT文件");
-    const savedText = savedTextArray.join("\n");
-    saveAs(new Blob([savedText], { type: "text/plain;charset=utf-8" }), `${saveFileNameBase}.txt`);
-    lib_1.console_debug("[save]保存TXT文件完毕");
-    lib_1.console_debug("[save]开始生成ZIP文件");
-    savedZip
-        .generateAsync({
-        type: "blob",
-        compression: "DEFLATE",
-        compressionOptions: {
-            level: 6,
-        },
-    }, (metadata) => updateProgress(finishedChapterNumber, totalChapterNumber, metadata.percent))
-        .then((blob) => {
-        lib_1.console_debug("[save]ZIP文件生成完毕，开始保存ZIP文件");
-        saveAs(blob, `${saveFileNameBase}.zip`);
-    })
-        .then(() => {
-        var _a;
-        lib_1.console_debug("[save]保存ZIP文件完毕");
-        finishedChapterNumber = 0;
-        (_a = document.querySelector("#nd-progress")) === null || _a === void 0 ? void 0 : _a.remove();
-        audio.pause();
-    })
-        .catch((err) => console.error("saveZip: " + err));
-}
-function setTabMark() {
-    return new Promise((resolve, reject) => {
-        GM_getTab((curTabObject) => {
-            curTabObject.novel_downloader =
-                document.location.href;
-            GM_saveTab(curTabObject);
-            resolve(curTabObject);
-        });
-    });
-}
-function getNowRunNumber() {
-    return new Promise((resolve, reject) => {
-        GM_getTabs((curTabObjects) => {
-            let nowRunNumber = 0;
-            for (let i in curTabObjects) {
-                const novel_downloader_url = curTabObjects[i]
-                    .novel_downloader;
-                if (novel_downloader_url !== undefined &&
-                    new URL(novel_downloader_url).hostname === document.location.hostname) {
-                    nowRunNumber++;
-                }
-            }
-            resolve(nowRunNumber);
-        });
-    });
-}
-function removeTabMark() {
-    return new Promise((resolve, reject) => {
-        GM_getTab((curTabObject) => {
-            if (curTabObject.novel_downloader) {
-                delete curTabObject.novel_downloader;
-            }
-            GM_saveTab(curTabObject);
-            resolve(curTabObject);
-        });
-    });
-}
-let totalChapterNumber;
-let finishedChapterNumber = 0;
-function updateProgress(finishedChapterNumber, totalChapterNumber, zipPercent) {
-    if (!document.querySelector("#nd-progress")) {
-        lib_1.console_debug("[progress]初始化进度条");
-        let progress = document.createElement("div");
-        progress.id = "nd-progress";
-        progress.innerHTML = `
-        <div id='chapter-progress' title="章节"></div>
-        <div id='zip-progress' title="ZIP"></div>
-        `;
-        let progressStyle = document.createElement("style");
-        progressStyle.innerHTML = `#nd-progress {
-    position: fixed;
-    bottom: 8%;
-    right: 3%;
-    z-index: 99;
-    border-style: none;
-    text-align: center;
-    vertical-align: baseline;
-    background-color: rgba(210, 210, 210, 0.2);
-    padding: 6px;
-    border-radius: 12px;
-}
-#chapter-progress{
-    --color:green;
-    --position:0%;
-    width:200px;
-    height:10px;
-    border-radius:30px;
-    background-color:#ccc;
-    background-image:radial-gradient(closest-side circle at var(--position),var(--color),var(--color) 100%,transparent),linear-gradient(var(--color),var(--color));
-    background-image:-webkit-radial-gradient(var(--position),circle closest-side,var(--color),var(--color) 100%,transparent),-webkit-linear-gradient(var(--color),var(--color));
-    background-size:100% ,var(--position);
-    background-repeat: no-repeat;
-}
-#zip-progress{
-    --color:yellow;
-    --position:0%;
-    width:200px;
-    height:10px;
-    border-radius:30px;
-    background-color:#ccc;
-    background-image:radial-gradient(closest-side circle at var(--position),var(--color),var(--color) 100%,transparent),linear-gradient(var(--color),var(--color));
-    background-image:-webkit-radial-gradient(var(--position),circle closest-side,var(--color),var(--color) 100%,transparent),-webkit-linear-gradient(var(--color),var(--color));
-    background-size:100% ,var(--position);
-    background-repeat: no-repeat;
-    margin-top: 5px;
-}`;
-        document.head.appendChild(progressStyle);
-        document.body.appendChild(progress);
-    }
-    let pagePercent = `${(finishedChapterNumber / totalChapterNumber) * 100}%`;
-    document.querySelector("#chapter-progress").style.cssText = `--position:${pagePercent};`;
-    if (zipPercent) {
-        document.querySelector("#zip-progress").style.cssText = `--position:${zipPercent}%;`;
-    }
-    else {
-        document.querySelector("#zip-progress").style.cssText =
-            "display:none;";
-    }
-}
-async function run() {
-    console.log(`[run]下载开始`);
-    audio.play();
-    const rule = await rules_1.getRule();
-    console.log(`[run]获取规则成功`);
-    let maxRunLimit = null;
-    let nowRunNumber;
-    if (typeof GM_getTab !== "undefined") {
-        console.log(`[run]添加运行标志`);
-        await setTabMark();
-        nowRunNumber = await getNowRunNumber();
-        if (rule.maxRunLimit !== undefined && nowRunNumber !== undefined) {
-            maxRunLimit = rule.maxRunLimit;
-            if (nowRunNumber > maxRunLimit) {
-                const alertText = `当前网站目前已有${nowRunNumber - 1}个下载任务正在运行，当前站点最多允许${maxRunLimit}下载任务同时进行。\n请待其它下载任务完成后，再行尝试。`;
-                alert(alertText);
-                console.log(`[run]${alertText}`);
-                return;
-            }
-        }
-    }
-    const book = await initBook(rule);
-    totalChapterNumber = book.chapters.filter((chapter) => chapter.status === main_1.Status.pending).length;
-    await initChapters(rule, book);
-    save(book);
-    if (typeof GM_getTab !== "undefined") {
-        console.log(`[run]移除运行标志`);
-        await removeTabMark();
-    }
-    console.log(`[run]下载完毕`);
-    return book;
-}
-function catchError(error) {
-    var _a, _b;
-    downloading = false;
-    if (typeof GM_getTab !== "undefined") {
-        removeTabMark();
-    }
-    finishedChapterNumber = 0;
-    (_a = document.querySelector("#nd-progress")) === null || _a === void 0 ? void 0 : _a.remove();
-    (_b = document.getElementById("novel-downloader")) === null || _b === void 0 ? void 0 : _b.remove();
-    console.error("运行过程出错，请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/yingziwu/novel-downloader");
-    console.error(error);
-    audio.pause();
-}
-function addButton() {
-    let button = document.createElement("button");
-    button.id = "novel-downloader";
-    button.style.cssText = `position: fixed; top: 15%; right: 5%; z-index: 99; border-style: none; text-align:center; vertical-align:baseline; background-color: rgba(128, 128, 128, 0.2); padding: 5px; border-radius: 12px;`;
-    let img = document.createElement("img");
-    img.src = rules_1.icon0;
-    img.style.cssText = "height: 2em;";
-    button.onclick = function () {
-        if (downloading) {
-            alert("正在下载中，请耐心等待……");
-        }
-        else {
-            downloading = true;
-            img.src = rules_1.icon1;
-            try {
-                run()
-                    .then((book) => {
-                    downloading = false;
-                    img.src = rules_1.icon0;
-                })
-                    .catch(catchError);
-            }
-            catch (error) {
-                catchError(error);
-            }
-        }
-    };
-    button.appendChild(img);
-    document.body.appendChild(button);
-}
-async function debug() {
-    const rule = await rules_1.getRule();
-    const book = await initBook(rule);
-    unsafeWindow.rule = rule;
-    unsafeWindow.book = book;
-    unsafeWindow.save = save;
-    unsafeWindow.saveAs = saveAs;
-    return;
-}
-let downloading = false;
-const audio = new Audio("data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU3LjcxLjEwMAAAAAAAAAAAAAAA/+M4wAAAAAAAAAAAAEluZm8AAAAPAAAAEAAABVgANTU1NTU1Q0NDQ0NDUFBQUFBQXl5eXl5ea2tra2tra3l5eXl5eYaGhoaGhpSUlJSUlKGhoaGhoaGvr6+vr6+8vLy8vLzKysrKysrX19fX19fX5eXl5eXl8vLy8vLy////////AAAAAExhdmM1Ny44OQAAAAAAAAAAAAAAACQCgAAAAAAAAAVY82AhbwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/+MYxAALACwAAP/AADwQKVE9YWDGPkQWpT66yk4+zIiYPoTUaT3tnU487uNhOvEmQDaCm1Yz1c6DPjbs6zdZVBk0pdGpMzxF/+MYxA8L0DU0AP+0ANkwmYaAMkOKDDjmYoMtwNMyDxMzDHE/MEsLow9AtDnBlQgDhTx+Eye0GgMHoCyDC8gUswJcMVMABBGj/+MYxBoK4DVpQP8iAtVmDk7LPgi8wvDzI4/MWAwK1T7rxOQwtsItMMQBazAowc4wZMC5MF4AeQAGDpruNuMEzyfjLBJhACU+/+MYxCkJ4DVcAP8MAO9J9THVg6oxRMGNMIqCCTAEwzwwBkINOPAs/iwjgBnMepYyId0PhWo+80PXMVsBFzD/AiwwfcKGMEJB/+MYxDwKKDVkAP8eAF8wMwIxMlpU/OaDPLpNKkEw4dRoBh6qP2FC8jCJQFcweQIPMHOBtTBoAVcwOoCNMYDI0u0Dd8ANTIsy/+MYxE4KUDVsAP8eAFBVpgVVPjdGeTEWQr0wdcDtMCeBgDBkgRgwFYB7Pv/zqx0yQQMCCgKNgonHKj6RRVkxM0GwML0AhDAN/+MYxF8KCDVwAP8MAIHZMDDA3DArAQo3K+TF5WOBDQw0lgcKQUJxhT5sxRcwQQI+EIPWMA7AVBoTABgTgzfBN+ajn3c0lZMe/+MYxHEJyDV0AP7MAA4eEwsqP/PDmzC/gNcwXUGaMBVBIwMEsmB6gaxhVuGkpoqMZMQjooTBwM0+S8FTMC0BcjBTgPwwOQDm/+MYxIQKKDV4AP8WADAzAKQwI4CGPhWOEwCFAiBAYQnQMT+uwXUeGzjBWQVkwTcENMBzA2zAGgFEJfSPkPSZzPXgqFy2h0xB/+MYxJYJCDV8AP7WAE0+7kK7MQrATDAvQRIwOADKMBuA9TAYQNM3AiOSPjGxowgHMKFGcBNMQU1FMy45OS41VVU/31eYM4sK/+MYxKwJaDV8AP7SAI4y1Yq0MmOIADGwBZwwlgIJMztCM0qU5TQPG/MSkn8yEROzCdAxECVMQU1FMy45OS41VTe7Ohk+Pqcx/+MYxMEJMDWAAP6MADVLDFUx+4J6Mq7NsjN2zXo8V5fjVJCXNOhwM0vTCDAxFpMYYQU+RlVMQU1FMy45OS41VVVVVVVVVVVV/+MYxNcJADWAAP7EAFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV/+MYxOsJwDWEAP7SAFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV/+MYxPMLoDV8AP+eAFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV/+MYxPQL0DVcAP+0AFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV");
-audio.loop = true;
-window.addEventListener("DOMContentLoaded", () => {
-    if (lib_1._GM_info.scriptHandler === "Greasemonkey") {
-        console.error("小说下载器脚本与Greasemonkey脚本管理器不兼容，请改用其它脚本管理器，如：Tampermonkey、Violentmonkey。");
-        alert("小说下载器脚本与Greasemonkey脚本管理器不兼容，请改用其它脚本管理器，如：Tampermonkey、Violentmonkey。");
-        return;
-    }
-    printEnvironments();
-    addButton();
-    if (rules_1.enaleDebug) {
-        debug();
-    }
-});
-
-})();
-
+/******/ 	
+/******/ 	// startup
+/******/ 	// Load entry module and return exports
+/******/ 	// This entry module is referenced by other modules so it can't be inlined
+/******/ 	var __webpack_exports__ = __webpack_require__(607);
+/******/ 	
 /******/ })()
 ;
