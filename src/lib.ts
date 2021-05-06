@@ -1,5 +1,7 @@
 import { Builder, walk } from "./cleanDOM";
 import { enaleDebug } from "./rules";
+import { attachmentClassCache } from "./index";
+import { attachmentClass } from "./main";
 
 export let _GM_info: GM_info | GM["info"];
 if (typeof GM_info === "undefined") {
@@ -222,4 +224,21 @@ export function console_debug(...messages: any[]) {
   if (enaleDebug) {
     console.debug(...arguments);
   }
+}
+
+export function getAttachmentClassCache(url: string, name: string) {
+  const f1 = attachmentClassCache.filter(
+    (attachmentClass) => attachmentClass.imageUrl === url
+  );
+  const f2 = f1.filter((attachmentClass) => attachmentClass.name === name);
+  if (f2.length) {
+    return f2[0];
+  } else {
+    return null;
+  }
+}
+
+export function putAttachmentClassCache(attachmentClass: attachmentClass) {
+  attachmentClassCache.push(attachmentClass);
+  return true;
 }

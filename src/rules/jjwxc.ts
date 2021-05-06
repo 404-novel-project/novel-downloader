@@ -11,6 +11,8 @@ import {
   rm,
   gfetch,
   console_debug,
+  getAttachmentClassCache,
+  putAttachmentClassCache,
 } from "../lib";
 import {
   ruleClass,
@@ -304,19 +306,24 @@ export class jjwxc implements ruleClass {
 
         const [fontName, fontUrl] = getFontInfo();
         if (fontName && fontUrl) {
-          const fontBlob = await fetchFont(fontUrl);
           const fontFileName = `${fontName}.woff2`;
-          if (fontBlob) {
-            const fontClassObj = new attachmentClass(
-              fontUrl,
-              fontFileName,
-              "TM"
-            );
+          let fontClassObj: attachmentClass;
+          const fontClassObjCache = getAttachmentClassCache(
+            fontUrl,
+            fontFileName
+          );
+          if (fontClassObjCache) {
+            fontClassObj = fontClassObjCache;
+          } else {
+            const fontBlob = await fetchFont(fontUrl);
+            fontClassObj = new attachmentClass(fontUrl, fontFileName, "TM");
             fontClassObj.imageBlob = fontBlob;
             fontClassObj.status = Status.finished;
+            putAttachmentClassCache(fontClassObj);
+          }
 
-            const fontStyleDom = document.createElement("style");
-            fontStyleDom.innerHTML = `.${fontName} {
+          const fontStyleDom = document.createElement("style");
+          fontStyleDom.innerHTML = `.${fontName} {
   font-family: ${fontName}, 'Microsoft YaHei', PingFangSC-Regular, HelveticaNeue-Light, 'Helvetica Neue Light', sans-serif !important;
 }
 @font-face {
@@ -327,8 +334,7 @@ export class jjwxc implements ruleClass {
   display: none;
 }`;
 
-            return [fontName, fontClassObj, fontStyleDom];
-          }
+          return [fontName, fontClassObj, fontStyleDom];
         }
         return [null, null, null];
       }

@@ -1,23 +1,5 @@
-import { attachmentClass, Status } from "./main";
-import { imageClassCache } from "./index";
-
-function getImageClassCache(imageUrl: string, imageName: string) {
-  const f1 = imageClassCache.filter(
-    (imgClass) => imgClass.imageUrl === imageUrl
-  );
-  const f2 = f1.filter((imgClass) => imgClass.name === imageName);
-  // const f3 = f2.filter((imgClass) => imgClass.status === Status.finished);
-  if (f2.length) {
-    return f2[0];
-  } else {
-    return null;
-  }
-}
-
-function putImageClassCache(imgClass: attachmentClass) {
-  imageClassCache.push(imgClass);
-  return true;
-}
+import { attachmentClass } from "./main";
+import { getAttachmentClassCache, putAttachmentClassCache } from "./lib";
 
 const blockElements = [
   "article",
@@ -243,13 +225,13 @@ function _formatImage(
   const imageName = genImageName(imageUrl);
 
   let imgClass;
-  const imgClassCache = getImageClassCache(imageUrl, imageName);
+  const imgClassCache = getAttachmentClassCache(imageUrl, imageName);
   if (imgClassCache) {
     imgClass = imgClassCache;
   } else {
     imgClass = new attachmentClass(imageUrl, imageName, imgMode);
     imgClass.init();
-    putImageClassCache(imgClass);
+    putAttachmentClassCache(imgClass);
   }
 
   const filterdImages = builder.images.filter(
@@ -392,8 +374,7 @@ function formatText(elems: (Text | HTMLBRElement)[], builder: Builder) {
   } else if (brCount > 3) {
     temp0();
 
-    let PBrNumber = Math.round((brCount - 2) / 3);
-    for (let i = PBrNumber; PBrNumber > 0; i--) {
+    for (let i = Math.round((brCount - 2) / 3); i > 0; i--) {
       const tPBr = document.createElement("p");
       const br = document.createElement("br");
       tPBr.appendChild(br);
