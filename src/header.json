@@ -39,13 +39,19 @@
     "*://www.meegoq.com/book*.html",
     "*://www.viviyzw.com/book*.html",
     "*://www.xiaoshuodaquan.com/*/",
-    "*://www.81book.com/book/*/"
+    "*://www.81book.com/book/*/",
+    "*://m.yuzhaige.cc/*/*/"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",
     "*://www.meegoq.com/book/*.html",
     "*://www.viviyzw.com/book/*.html",
-    "*://www.yruan.com/article/*/*.html"
+    "*://www.yruan.com/article/*/*.html",
+    "*://m.yuzhaige.cc/tag/*/",
+    "*://m.yuzhaige.cc/sort/*/",
+    "*://m.yuzhaige.cc/top/*/",
+    "*://m.yuzhaige.cc/full/*/",
+    "*://m.yuzhaige.cc/book/*/"
   ],
   "grant": [
     "unsafeWindow",

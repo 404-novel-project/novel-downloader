@@ -236,7 +236,7 @@ function _formatImage(
   }
 
   const imgElem = document.createElement("img");
-  imgElem.src = imageName;
+  imgElem.setAttribute("data-src-address", imageName);
   imgElem.alt = imageUrl;
 
   const imgText = `![${imageUrl}](${imageName})`;

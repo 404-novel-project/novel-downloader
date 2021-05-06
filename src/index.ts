@@ -80,6 +80,9 @@ async function initChapters(rule: ruleClass, book: Book) {
     }
   } else {
     await concurrencyRun(chapters, concurrencyLimit, (curChapter: Chapter) => {
+      if (curChapter === undefined) {
+        return Promise.resolve();
+      }
       return curChapter.init().then((obj) => {
         if (obj.contentHTML !== undefined) {
           finishedChapterNumber++;
@@ -135,9 +138,17 @@ function save(book: Book) {
       `<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="https://github.com/yingziwu/novel-downloader"><link href="style.css" type="text/css" rel="stylesheet"/><title>${sectionName}</title></head><body><div class="main"><h1>${sectionName}</h1></div></body></html>`,
       "text/html"
     );
-    return new Blob([htmlFile.documentElement.outerHTML], {
-      type: "text/html; charset=UTF-8",
-    });
+    return new Blob(
+      [
+        htmlFile.documentElement.outerHTML.replace(
+          new RegExp("data-src-address", "g"),
+          "src"
+        ),
+      ],
+      {
+        type: "text/html; charset=UTF-8",
+      }
+    );
   }
 
   function genHtmlFile(
@@ -150,9 +161,17 @@ function save(book: Book) {
       "text/html"
     );
     htmlFile.querySelector(".main")?.appendChild(DOM);
-    return new Blob([htmlFile.documentElement.outerHTML], {
-      type: "text/html; charset=UTF-8",
-    });
+    return new Blob(
+      [
+        htmlFile.documentElement.outerHTML.replace(
+          new RegExp("data-src-address", "g"),
+          "src"
+        ),
+      ],
+      {
+        type: "text/html; charset=UTF-8",
+      }
+    );
   }
 
   console.log("[save]开始保存");
