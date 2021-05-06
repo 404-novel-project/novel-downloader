@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        3.6.0.1620303546381
+// @version        3.6.0.1620304153974
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -831,6 +831,7 @@ img {
                 const chapterAnchor = document.createElement("a");
                 chapterAnchor.href = chapterHtmlFileName;
                 chapterAnchor.innerHTML = chapterName;
+                chapterDiv.appendChild(chapterAnchor);
                 TocMain === null || TocMain === void 0 ? void 0 : TocMain.appendChild(chapterDiv);
             }
             lib_1.console_debug("[save]保存HTML文件");

@@ -231,6 +231,7 @@ img {
         chapterAnchor.href = chapterHtmlFileName;
         chapterAnchor.innerHTML = chapterName;
 
+        chapterDiv.appendChild(chapterAnchor);
         TocMain?.appendChild(chapterDiv);
       }
 
