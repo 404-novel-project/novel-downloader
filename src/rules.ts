@@ -182,6 +182,11 @@ export async function getRule(): Promise<ruleClass> {
       ruleClass = linovel;
       break;
     }
+    case "www.xinwanben.com": {
+      const { xinwanben } = await import("./rules/xinwanben");
+      ruleClass = xinwanben;
+      break;
+    }
     default: {
       throw new Error("Not Found Rule!");
     }

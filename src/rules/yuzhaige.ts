@@ -189,6 +189,7 @@ export class yuzhaige implements ruleClass {
       return;
     }
 
+    let nowUrl = chapterUrl;
     let dom = await getHtmlDOM(chapterUrl, charset);
     const content = document.createElement("div");
 
@@ -199,8 +200,18 @@ export class yuzhaige implements ruleClass {
         dom.querySelector(".novelbutton .p1.p3 > a:nth-child(1)")
       )).href;
 
-      flag = new URL(nextLink).pathname.includes("_");
+      if (new URL(nextLink).pathname.includes("_")) {
+        if (nextLink !== nowUrl) {
+          flag = true;
+        } else {
+          console.error("网站页面出错，URL： " + nowUrl);
+          flag = false;
+        }
+      } else {
+        flag = false;
+      }
       if (flag) {
+        nowUrl = nextLink;
         dom = await getHtmlDOM(nextLink, charset);
       }
     } while (flag);

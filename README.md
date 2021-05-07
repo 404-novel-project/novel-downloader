@@ -48,6 +48,7 @@ ZIP压缩包，请在解压后，直接双击打开HTML文件（`ToC.html` 为�
 |[书书网](https://www.xiaoshuodaquan.com/)|✅|❎||
 |[八一中文网](https://www.81book.com/)|✅|❎||
 |[御书阁](http://m.yuzhaige.cc/)|✅|❎|部分文字被图片替换，请使用HTML版查看。|
+|[完本神站](https://www.xinwanben.com/)|✅|❎||
 
 ## 高阶使用技巧
 

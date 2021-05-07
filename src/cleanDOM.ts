@@ -4,7 +4,6 @@ import { getAttachmentClassCache, putAttachmentClassCache } from "./lib";
 const blockElements = [
   "article",
   "aside",
-  "div",
   "footer",
   "form",
   "header",
@@ -12,6 +11,7 @@ const blockElements = [
   "nav",
   "section",
   "figure",
+  "div",
   "b",
   "strong",
   "i",
@@ -44,7 +44,10 @@ function* findBase(
     if (blockElements.includes(nodeName)) {
       yield* findBase(node, blockElements, ignoreElements);
     } else if (nodeName === "#text") {
-      if (node.parentElement?.childNodes.length === 1) {
+      if (
+        node.parentElement?.childNodes.length === 1 &&
+        blockElements.slice(9).includes(nodeName)
+      ) {
         yield node.parentElement as HTMLElement;
       } else if (node.textContent?.trim()) {
         yield node as Text;
@@ -388,6 +391,7 @@ export function walk(dom: HTMLElement, builder: Builder) {
     }
     const nodeName = node.nodeName.toLowerCase();
     switch (nodeName) {
+      case "a":
       case "b":
       case "strong":
       case "i":

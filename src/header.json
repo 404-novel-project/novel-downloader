@@ -41,7 +41,8 @@
     "*://www.viviyzw.com/book*.html",
     "*://www.xiaoshuodaquan.com/*/",
     "*://www.81book.com/book/*/",
-    "*://m.yuzhaige.cc/*/*/"
+    "*://m.yuzhaige.cc/*/*/",
+    "*://www.xinwanben.com/*/"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",
