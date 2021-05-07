@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        3.6.0.1620315631798
+// @version        3.6.1.1620383139588
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -15,6 +15,8 @@
 // @match          *://www.17k.com/list/*.html
 // @match          *://www.shuhai.com/book/*.htm
 // @match          *://mm.shuhai.com/book/*.htm
+// @match          *://www.tadu.com/book/catalogue/*
+// @match          *://www.qimao.com/shuku/*/
 // @match          *://www.uukanshu.com/b/*/
 // @match          *://www.yruan.com/article/*.html
 // @match          *://www.biquwoo.com/bqw*/
@@ -33,6 +35,8 @@
 // @match          *://www.xiaoshuodaquan.com/*/
 // @match          *://www.81book.com/book/*/
 // @match          *://m.yuzhaige.cc/*/*/
+// @match          *://www.xinwanben.com/*/
+// @match          *://www.idejian.com/book/*/
 // @name:en        novel-downloader
 // @description:en An scalable universal novel downloader.
 // @namespace      https://blog.bgme.me
@@ -51,6 +55,7 @@
 // @exclude        *://m.yuzhaige.cc/full/*/
 // @exclude        *://m.yuzhaige.cc/book/*/
 // @exclude        *://www.linovel.net/book/*/*.html
+// @exclude        *://www.qimao.com/shuku/*-*/
 // @grant          unsafeWindow
 // @grant          GM_info
 // @grant          GM_xmlhttpRequest
@@ -79,6 +84,9 @@
 // @connect        huluxia.com
 // @connect        linovel.net
 // @connect        ax1x.com
+// @connect        tadu.com
+// @connect        zhangyue01.com
+// @connect        cdn.wtzw.com
 // @connect        *
 // @require        https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js#sha512-Qlv6VSKh1gDKGoJbnyA5RMXYcvnpIqhO++MhIM2fStMcGT9i2T//tSwYFlcyoRRDcDZ+TYHpH8azBBCyhpSeqw==
 // @require        https://cdn.jsdelivr.net/npm/jszip@3.6.0/dist/jszip.min.js#sha512-uVSVjE7zYsGz4ag0HEzfugJ78oHCI1KhdkivjQro8ABL/PRiEO4ROwvrolYAcZnky0Fl/baWKYilQfWvESliRA==

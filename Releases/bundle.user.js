@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        3.6.0.1620315631798
+// @version        3.6.1.1620383139588
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -15,6 +15,8 @@
 // @match          *://www.17k.com/list/*.html
 // @match          *://www.shuhai.com/book/*.htm
 // @match          *://mm.shuhai.com/book/*.htm
+// @match          *://www.tadu.com/book/catalogue/*
+// @match          *://www.qimao.com/shuku/*/
 // @match          *://www.uukanshu.com/b/*/
 // @match          *://www.yruan.com/article/*.html
 // @match          *://www.biquwoo.com/bqw*/
@@ -33,6 +35,8 @@
 // @match          *://www.xiaoshuodaquan.com/*/
 // @match          *://www.81book.com/book/*/
 // @match          *://m.yuzhaige.cc/*/*/
+// @match          *://www.xinwanben.com/*/
+// @match          *://www.idejian.com/book/*/
 // @name:en        novel-downloader
 // @description:en An scalable universal novel downloader.
 // @namespace      https://blog.bgme.me
@@ -51,6 +55,7 @@
 // @exclude        *://m.yuzhaige.cc/full/*/
 // @exclude        *://m.yuzhaige.cc/book/*/
 // @exclude        *://www.linovel.net/book/*/*.html
+// @exclude        *://www.qimao.com/shuku/*-*/
 // @grant          unsafeWindow
 // @grant          GM_info
 // @grant          GM_xmlhttpRequest
@@ -79,6 +84,9 @@
 // @connect        huluxia.com
 // @connect        linovel.net
 // @connect        ax1x.com
+// @connect        tadu.com
+// @connect        zhangyue01.com
+// @connect        cdn.wtzw.com
 // @connect        *
 // @require        https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js#sha512-Qlv6VSKh1gDKGoJbnyA5RMXYcvnpIqhO++MhIM2fStMcGT9i2T//tSwYFlcyoRRDcDZ+TYHpH8azBBCyhpSeqw==
 // @require        https://cdn.jsdelivr.net/npm/jszip@3.6.0/dist/jszip.min.js#sha512-uVSVjE7zYsGz4ag0HEzfugJ78oHCI1KhdkivjQro8ABL/PRiEO4ROwvrolYAcZnky0Fl/baWKYilQfWvESliRA==
@@ -102,7 +110,6 @@ const lib_1 = __webpack_require__(563);
 const blockElements = [
     "article",
     "aside",
-    "div",
     "footer",
     "form",
     "header",
@@ -110,15 +117,16 @@ const blockElements = [
     "nav",
     "section",
     "figure",
-    'b',
-    'strong',
-    'i',
-    'em',
-    'dfn',
-    'var',
-    'cite',
-    'span',
-    'font',
+    "div",
+    "b",
+    "strong",
+    "i",
+    "em",
+    "dfn",
+    "var",
+    "cite",
+    "span",
+    "font",
     "a",
 ];
 const ignoreElements = [
@@ -140,7 +148,8 @@ function* findBase(dom, blockElements, ignoreElements) {
             yield* findBase(node, blockElements, ignoreElements);
         }
         else if (nodeName === "#text") {
-            if (((_a = node.parentElement) === null || _a === void 0 ? void 0 : _a.childNodes.length) === 1) {
+            if (((_a = node.parentElement) === null || _a === void 0 ? void 0 : _a.childNodes.length) === 1 &&
+                blockElements.slice(9).includes(nodeName)) {
                 yield node.parentElement;
             }
             else if ((_b = node.textContent) === null || _b === void 0 ? void 0 : _b.trim()) {
@@ -268,6 +277,27 @@ function _formatImage(elem, builder) {
     const imgText = `![${imageUrl}](${imageName})`;
     return [imgElem, imgText, imgClass];
 }
+function formatMisc(elem, builder) {
+    if (elem.childElementCount === 0) {
+        const lastElement = builder.dom.lastElementChild;
+        const textContent = elem.innerText.trim();
+        if ((lastElement === null || lastElement === void 0 ? void 0 : lastElement.nodeName.toLowerCase()) === "p") {
+            const textElem = document.createTextNode(textContent);
+            lastElement.appendChild(textElem);
+            builder.text = builder.text + textContent;
+        }
+        else {
+            const pElem = document.createElement("p");
+            pElem.innerText = textContent;
+            builder.dom.appendChild(pElem);
+            builder.text = builder.text + "\n\n" + textContent;
+        }
+    }
+    else {
+        walk(elem, builder);
+        return;
+    }
+}
 function formatParagraph(elem, builder) {
     if (elem.childElementCount === 0) {
         const pElem = document.createElement("p");
@@ -299,7 +329,7 @@ function formatText(elems, builder) {
         }
         else {
             temp0();
-            const tPText = textContent + "\n";
+            const tPText = textContent + "\n".repeat(brCount);
             builder.text = builder.text + tPText;
         }
     }
@@ -402,6 +432,19 @@ function walk(dom, builder) {
         }
         const nodeName = node.nodeName.toLowerCase();
         switch (nodeName) {
+            case "a":
+            case "b":
+            case "strong":
+            case "i":
+            case "em":
+            case "dfn":
+            case "var":
+            case "cite":
+            case "span":
+            case "font": {
+                formatMisc(node, builder);
+                break;
+            }
             case "div":
             case "p": {
                 formatParagraph(node, builder);
@@ -482,7 +525,26 @@ async function initChapters(rule, book) {
     if (rule.concurrencyLimit !== undefined) {
         concurrencyLimit = rule.concurrencyLimit;
     }
-    const chapters = book.chapters.filter((chapter) => chapter.status === main_1.Status.pending);
+    if (typeof unsafeWindow.chapterFilter !== "undefined") {
+        let tlog = "[initChapters]发现自定义筛选函数，自定义筛选函数内容如下：\n";
+        tlog += unsafeWindow.chapterFilter.toString();
+        console.log(tlog);
+    }
+    lib_1.console_debug("[initChapters]筛选需下载章节");
+    const chapters = book.chapters.filter((chapter) => {
+        const b0 = chapter.status === main_1.Status.pending;
+        let b1 = true;
+        if (typeof unsafeWindow.chapterFilter !== "undefined") {
+            try {
+                const u = unsafeWindow.chapterFilter(chapter);
+                if (typeof u === "boolean") {
+                    b1 = u;
+                }
+            }
+            catch (error) { }
+        }
+        return b0 && b1;
+    });
     if (chapters.length === 0) {
         console.error(`[initChapters]初始化章节出错，未找到需初始化章节`);
         return [];
@@ -593,7 +655,7 @@ exports.catchError = catchError;
 function addButton() {
     let button = document.createElement("button");
     button.id = "novel-downloader";
-    button.style.cssText = `position: fixed; top: 15%; right: 5%; z-index: 2147483647; border-style: none; text-align:center; vertical-align:baseline; background-color: rgba(128, 128, 128, 0.2); padding: 5px; border-radius: 12px;`;
+    button.style.cssText = index_helper_1.buttonStyleText;
     let img = document.createElement("img");
     img.src = rules_1.icon0;
     img.style.cssText = "height: 2em;";
@@ -656,15 +718,25 @@ window.addEventListener("DOMContentLoaded", () => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.removeTabMark = exports.getNowRunNumber = exports.setTabMark = exports.save = exports.progressStyleText = void 0;
+exports.removeTabMark = exports.getNowRunNumber = exports.setTabMark = exports.save = exports.progressStyleText = exports.buttonStyleText = void 0;
 const main_1 = __webpack_require__(519);
 const lib_1 = __webpack_require__(563);
 const index_1 = __webpack_require__(607);
+exports.buttonStyleText = `position: fixed;
+top: 15%;
+right: 5%;
+z-index: 2147483647;
+border-style: none;
+text-align:center;
+vertical-align:baseline;
+background-color: rgba(128, 128, 128, 0.2);
+padding: 5px;
+border-radius: 12px;`;
 exports.progressStyleText = `#nd-progress {
   position: fixed;
   bottom: 8%;
   right: 3%;
-  z-index: 99;
+  z-index: 2147483647;
   border-style: none;
   text-align: center;
   vertical-align: baseline;
@@ -756,6 +828,51 @@ p {
 }
 img {
   vertical-align: text-bottom;
+  max-width: 90%;
+}`;
+        this.tocStyleText = `img {
+  max-width: 100%;
+  max-height: 15em;
+}
+.introduction {
+  font-size: smaller;
+  max-height: 18em;
+  overflow-y: scroll;
+}
+.bookurl {
+  text-align: center;
+  font-size: smaller;
+  padding-top: 1em;
+  padding-bottom: 0.5em;
+  margin-top: 0.4em;
+}
+.bookurl > a {
+  color: gray;
+}
+.info {
+  display: grid;
+  grid-template-columns: 30% 70%;
+}
+.info h3 {
+  padding-left: 0.5em;
+  margin-top: -1.2em;
+  margin-bottom: 0.5em;
+}
+.section {
+  margin-top: 1.5em;
+  display: grid;
+  grid-template-columns: 30% 30% 30%;
+}
+.section > h2:first-child {
+  grid-column-end: span 3;
+}
+.section > .chapter {
+  padding-bottom: 0.3em;
+  text-align: center;
+}
+.main > h1 {
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
 }`;
     }
     saveTxt() {
@@ -813,52 +930,8 @@ img {
         TocMain === null || TocMain === void 0 ? void 0 : TocMain.appendChild(bookUrlDom);
         const hr = document.createElement("hr");
         TocMain === null || TocMain === void 0 ? void 0 : TocMain.appendChild(hr);
-        const tocStyleText = `img {
-      max-width: 100%;
-      max-height: 15em;
-    }
-    .introduction {
-      font-size: smaller;
-      max-height: 18em;
-      overflow-y: scroll;
-    }
-    .bookurl {
-      text-align: center;
-      font-size: smaller;
-      padding-top: 1em;
-      padding-bottom: 0.5em;
-      margin-top: 0.4em;
-    }
-    .bookurl > a {
-      color: gray;
-    }
-    .info {
-      display: grid;
-      grid-template-columns: 30% 70%;
-    }
-    .info h3 {
-      padding-left: 0.5em;
-      margin-top: -1.2em;
-      margin-bottom: 0.5em;
-    }
-    .section {
-      margin-top: 1.5em;
-      display: grid;
-      grid-template-columns: 30% 30% 30%;
-    }
-    .section > h2:first-child {
-      grid-column-end: span 3;
-    }
-    .section > .chapter {
-      padding-bottom: 0.3em;
-      text-align: center;
-    }
-    .main > h1 {
-      margin-top: 1.5em;
-      margin-bottom: 1.5em;  
-    }`;
         const tocStyle = document.createElement("style");
-        tocStyle.innerHTML = tocStyleText;
+        tocStyle.innerHTML = this.tocStyleText;
         ToC.head.appendChild(tocStyle);
         lib_1.console_debug("[save]保存元数据文本");
         const metaDateText = this.genMetaDateTxt();
@@ -1090,7 +1163,7 @@ exports.removeTabMark = removeTabMark;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.putAttachmentClassCache = exports.getAttachmentClassCache = exports.console_debug = exports.sleep = exports.concurrencyRun = exports.gfetch = exports.rm = exports.ggetHtmlDOM = exports.ggetHtmlText = exports.getHtmlDOM = exports.getHtmlText = exports.cleanDOM = exports._GM_info = void 0;
+exports.putAttachmentClassCache = exports.getAttachmentClassCache = exports.console_debug = exports.sleep = exports.concurrencyRun = exports.gfetch = exports.rm = exports.ggetHtmlDOM = exports.ggetText = exports.getHtmlDOM = exports.getText = exports.cleanDOM = exports._GM_info = void 0;
 const cleanDOM_1 = __webpack_require__(962);
 const rules_1 = __webpack_require__(489);
 const index_1 = __webpack_require__(607);
@@ -1142,7 +1215,7 @@ function cleanDOM(DOM, imgMode) {
     };
 }
 exports.cleanDOM = cleanDOM;
-async function getHtmlText(url, charset) {
+async function getText(url, charset) {
     if (charset === undefined) {
         return fetch(url).then((response) => {
             if (response.ok) {
@@ -1172,13 +1245,13 @@ async function getHtmlText(url, charset) {
         });
     }
 }
-exports.getHtmlText = getHtmlText;
+exports.getText = getText;
 async function getHtmlDOM(url, charset) {
-    const htmlText = await getHtmlText(url, charset);
+    const htmlText = await getText(url, charset);
     return new DOMParser().parseFromString(htmlText, "text/html");
 }
 exports.getHtmlDOM = getHtmlDOM;
-async function ggetHtmlText(url, charset) {
+async function ggetText(url, charset) {
     if (charset === undefined) {
         return gfetch(url).then((response) => {
             if (response.status >= 200 && response.status <= 299) {
@@ -1208,9 +1281,9 @@ async function ggetHtmlText(url, charset) {
         });
     }
 }
-exports.ggetHtmlText = ggetHtmlText;
+exports.ggetText = ggetText;
 async function ggetHtmlDOM(url, charset) {
-    const htmlText = await ggetHtmlText(url, charset);
+    const htmlText = await ggetText(url, charset);
     return new DOMParser().parseFromString(htmlText, "text/html");
 }
 exports.ggetHtmlDOM = ggetHtmlDOM;
@@ -1362,7 +1435,7 @@ class Chapter {
         this.contentText = contentText;
         this.contentHTML = contentHTML;
         this.contentImages = contentImages;
-        lib_1.console_debug(`[Chapter]${this.chapterName} 解析完成。`);
+        console.log(`[Chapter]${this.chapterName} 解析完成。`);
         return obj;
     }
     async parse() {
@@ -1417,7 +1490,7 @@ class attachmentClass {
         else {
             this.imageBlob = await this.tmDownloadImage();
         }
-        lib_1.console_debug(`[Image] ${this.imageUrl} 下载完成。`);
+        console.log(`[attachment] ${this.imageUrl} 下载完成。`);
         return this.imageBlob;
     }
     downloadImage() {
@@ -1621,6 +1694,26 @@ async function getRule() {
         case "www.linovel.net": {
             const { linovel } = await Promise.resolve().then(() => __webpack_require__(561));
             ruleClass = linovel;
+            break;
+        }
+        case "www.xinwanben.com": {
+            const { xinwanben } = await Promise.resolve().then(() => __webpack_require__(874));
+            ruleClass = xinwanben;
+            break;
+        }
+        case "www.tadu.com": {
+            const { tadu } = await Promise.resolve().then(() => __webpack_require__(995));
+            ruleClass = tadu;
+            break;
+        }
+        case "www.idejian.com": {
+            const { idejian } = await Promise.resolve().then(() => __webpack_require__(210));
+            ruleClass = idejian;
+            break;
+        }
+        case "www.qimao.com": {
+            const { qimao } = await Promise.resolve().then(() => __webpack_require__(959));
+            ruleClass = qimao;
             break;
         }
         default: {
@@ -2887,6 +2980,101 @@ class hetushu {
     }
 }
 exports.hetushu = hetushu;
+
+
+/***/ }),
+
+/***/ 210:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.idejian = void 0;
+const main_1 = __webpack_require__(519);
+const lib_1 = __webpack_require__(563);
+class idejian {
+    constructor() {
+        this.imageMode = "TM";
+    }
+    async bookParse(chapterParse) {
+        let bookUrl = document.location.href;
+        const bookname = (document.querySelector(".detail_bkname > a")).innerText.trim();
+        const _author = document.querySelector(".detail_bkauthor")
+            .childNodes[0];
+        let author = "佚名";
+        if (_author && _author.textContent) {
+            author = _author.textContent.trim();
+        }
+        let introduction;
+        const introDom = document.querySelector(".brief_con");
+        if (introDom === null) {
+            introduction = null;
+        }
+        else {
+            let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "TM");
+            introduction = introCleantext;
+        }
+        const additionalMetadate = {};
+        const coverUrl = (document.querySelector(".book_img > img")).src;
+        if (coverUrl) {
+            additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
+            additionalMetadate.cover.init();
+        }
+        additionalMetadate.tags = Array.from(document.querySelectorAll("div.detail_bkgrade > span")).map((span) => span.innerText.trim());
+        const chapters = [];
+        const cos = document.querySelectorAll(".catelog_list > li > a");
+        let chapterNumber = 0;
+        for (const aElem of Array.from(cos)) {
+            chapterNumber++;
+            const chapterName = aElem.innerText;
+            const chapterUrl = aElem.href;
+            const isVIP = false;
+            const isPaid = false;
+            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, null, null, null, chapterParse, "UTF-8");
+            chapters.push(chapter);
+        }
+        return {
+            bookUrl: bookUrl,
+            bookname: bookname,
+            author: author,
+            introduction: introduction,
+            additionalMetadate: additionalMetadate,
+            chapters: chapters,
+        };
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset) {
+        lib_1.console_debug(`[Chapter]请求 ${chapterUrl}`);
+        let doc = await lib_1.getHtmlDOM(chapterUrl, charset);
+        chapterName = doc.querySelector(".title").innerText.trim();
+        let content;
+        if (doc.querySelectorAll("div.h5_mainbody").length === 1) {
+            content = doc.querySelector("div.h5_mainbody");
+        }
+        else {
+            content = doc.querySelector("div.h5_mainbody:nth-child(2)");
+        }
+        if (content) {
+            let { dom, text, images } = lib_1.cleanDOM(content, "TM");
+            return {
+                chapterName: chapterName,
+                contentRaw: content,
+                contentText: text,
+                contentHTML: dom,
+                contentImages: images,
+            };
+        }
+        else {
+            return {
+                chapterName: chapterName,
+                contentRaw: null,
+                contentText: null,
+                contentHTML: null,
+                contentImages: null,
+            };
+        }
+    }
+}
+exports.idejian = idejian;
 
 
 /***/ }),
@@ -26339,6 +26527,122 @@ exports.qidian = qidian;
 
 /***/ }),
 
+/***/ 959:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.qimao = void 0;
+const main_1 = __webpack_require__(519);
+const lib_1 = __webpack_require__(563);
+class qimao {
+    constructor() {
+        this.imageMode = "TM";
+    }
+    async bookParse(chapterParse) {
+        let bookUrl = document.location.href;
+        const bookname = (document.querySelector("h2.tit")).innerText.trim();
+        const author = (document.querySelector(".p-name > a")).innerHTML.trim();
+        let introduction;
+        const introDom = (document.querySelector(".book-introduction .article"));
+        if (introDom === null) {
+            introduction = null;
+        }
+        else {
+            let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "TM");
+            introduction = introCleantext;
+        }
+        const additionalMetadate = {};
+        const coverUrl = (document.querySelector(".poster-pic > img")).src;
+        if (coverUrl) {
+            additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
+            additionalMetadate.cover.init();
+        }
+        additionalMetadate.tags = Array.from(document.querySelectorAll(".qm-tags > a")).map((a) => a.innerText.trim());
+        const chapters = [];
+        const cos = document.querySelectorAll('.chapter-directory > dd > div[sort-type="ascending"] a');
+        let chapterNumber = 0;
+        for (const aElem of Array.from(cos)) {
+            chapterNumber++;
+            const chapterName = aElem.innerText;
+            const chapterUrl = aElem.href;
+            const isVIP = () => {
+                if (aElem.childElementCount) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            };
+            const isPaid = () => {
+                return false;
+            };
+            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), isPaid(), null, null, null, chapterParse, "UTF-8");
+            const isLogin = () => {
+                return false;
+            };
+            if (isVIP() && !(isLogin() && chapter.isPaid)) {
+                chapter.status = main_1.Status.aborted;
+            }
+            chapters.push(chapter);
+        }
+        return {
+            bookUrl: bookUrl,
+            bookname: bookname,
+            author: author,
+            introduction: introduction,
+            additionalMetadate: additionalMetadate,
+            chapters: chapters,
+        };
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset) {
+        async function publicChapter() {
+            lib_1.console_debug(`[Chapter]请求 ${chapterUrl}`);
+            let doc = await lib_1.getHtmlDOM(chapterUrl, charset);
+            chapterName = doc.querySelector(".title").innerText.trim();
+            const content = doc.querySelector(".article");
+            if (content) {
+                let { dom, text, images } = lib_1.cleanDOM(content, "TM");
+                return {
+                    chapterName: chapterName,
+                    contentRaw: content,
+                    contentText: text,
+                    contentHTML: dom,
+                    contentImages: images,
+                };
+            }
+            else {
+                return {
+                    chapterName: chapterName,
+                    contentRaw: null,
+                    contentText: null,
+                    contentHTML: null,
+                    contentImages: null,
+                };
+            }
+        }
+        async function vipChapter() {
+            return {
+                chapterName: chapterName,
+                contentRaw: null,
+                contentText: null,
+                contentHTML: null,
+                contentImages: null,
+            };
+        }
+        if (isVIP) {
+            return vipChapter();
+        }
+        else {
+            return publicChapter();
+        }
+    }
+}
+exports.qimao = qimao;
+
+
+/***/ }),
+
 /***/ 116:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
@@ -26774,6 +27078,157 @@ exports.shuhai = shuhai;
 
 /***/ }),
 
+/***/ 995:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.tadu = void 0;
+const main_1 = __webpack_require__(519);
+const lib_1 = __webpack_require__(563);
+class tadu {
+    constructor() {
+        this.imageMode = "TM";
+        this.concurrencyLimit = 5;
+    }
+    async bookParse(chapterParse) {
+        let bookUrl = document.location.href.replace("catalogue/", "");
+        const bookname = (document.querySelector("div.boxCenter > h1")).innerText.trim();
+        const author = (document.querySelector(".itct > span:nth-child(1)")).innerText
+            .replace("作者：", "")
+            .trim();
+        let introduction;
+        const doc = await lib_1.getHtmlDOM(bookUrl, undefined);
+        const introDom = (doc.querySelector("div.boxCenter.bookIntro > div > p:nth-child(4)"));
+        if (introDom === null) {
+            introduction = null;
+        }
+        else {
+            let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "TM");
+            introduction = introCleantext;
+        }
+        const additionalMetadate = {};
+        const coverUrl = (doc.querySelector("a.bookImg > img")).getAttribute("data-src");
+        if (coverUrl) {
+            additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
+            additionalMetadate.cover.init();
+        }
+        const chapters = [];
+        const cos = document.querySelectorAll("div.chapter > a");
+        let chapterNumber = 0;
+        for (const aElem of Array.from(cos)) {
+            chapterNumber++;
+            const chapterName = aElem.innerText;
+            const chapterUrl = aElem.href;
+            const isVIP = () => {
+                if (aElem.childElementCount) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            };
+            const isPaid = () => {
+                return false;
+            };
+            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), isPaid(), null, null, null, chapterParse, "UTF-8");
+            const isLogin = () => {
+                return false;
+            };
+            if (isVIP() && !(isLogin() && chapter.isPaid)) {
+                chapter.status = main_1.Status.aborted;
+            }
+            chapters.push(chapter);
+        }
+        return {
+            bookUrl: bookUrl,
+            bookname: bookname,
+            author: author,
+            introduction: introduction,
+            additionalMetadate: additionalMetadate,
+            chapters: chapters,
+        };
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset) {
+        async function publicChapter() {
+            var _a;
+            lib_1.console_debug(`[Chapter]请求 ${chapterUrl}`);
+            const doc = await lib_1.getHtmlDOM(chapterUrl, charset);
+            const content = document.createElement("div");
+            const _bookPartResourceUrl = (_a = doc
+                .getElementById("bookPartResourceUrl")) === null || _a === void 0 ? void 0 : _a.getAttribute("value");
+            if (_bookPartResourceUrl) {
+                const bookPartResourceUrl = new URL(_bookPartResourceUrl);
+                bookPartResourceUrl.searchParams.set("callback", "callback");
+                let contentObj;
+                function callback(obj) {
+                    contentObj = obj;
+                    return obj;
+                }
+                lib_1.console_debug(`[Chapter]请求 ${bookPartResourceUrl.toString()}`);
+                const jsonpText = await lib_1.gfetch(bookPartResourceUrl.toString(), {
+                    headers: {
+                        accept: "*/*",
+                        Referer: document.location.origin,
+                    },
+                    responseType: "arraybuffer",
+                })
+                    .then((response) => {
+                    if (response.status >= 200 && response.status <= 299) {
+                        return response.response;
+                    }
+                    else {
+                        throw new Error(`Bad response! ${bookPartResourceUrl.toString()}`);
+                    }
+                })
+                    .then((buffer) => {
+                    const decoder = new TextDecoder(charset);
+                    const text = decoder.decode(buffer);
+                    return text;
+                });
+                eval(jsonpText);
+                if (typeof contentObj === "object") {
+                    content.innerHTML = contentObj.content;
+                    let { dom, text, images } = lib_1.cleanDOM(content, "TM");
+                    return {
+                        chapterName: chapterName,
+                        contentRaw: content,
+                        contentText: text,
+                        contentHTML: dom,
+                        contentImages: images,
+                    };
+                }
+            }
+            return {
+                chapterName: chapterName,
+                contentRaw: null,
+                contentText: null,
+                contentHTML: null,
+                contentImages: null,
+            };
+        }
+        async function vipChapter() {
+            return {
+                chapterName: chapterName,
+                contentRaw: null,
+                contentText: null,
+                contentHTML: null,
+                contentImages: null,
+            };
+        }
+        if (isVIP) {
+            return vipChapter();
+        }
+        else {
+            return publicChapter();
+        }
+    }
+}
+exports.tadu = tadu;
+
+
+/***/ }),
+
 /***/ 623:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
@@ -27004,6 +27459,105 @@ class xiaoshuodaquan {
     }
 }
 exports.xiaoshuodaquan = xiaoshuodaquan;
+
+
+/***/ }),
+
+/***/ 874:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.xinwanben = void 0;
+const main_1 = __webpack_require__(519);
+const lib_1 = __webpack_require__(563);
+class xinwanben {
+    constructor() {
+        this.imageMode = "TM";
+        this.charset = "GBK";
+    }
+    async bookParse(chapterParse) {
+        let bookUrl = document.location.href;
+        const bookname = (document.querySelector(".detailTitle > h1")).innerText.trim();
+        const author = (document.querySelector(".writer > a")).innerText.trim();
+        let introduction;
+        const introDom = (document.querySelector(".detailTopMid > table > tbody > tr:nth-child(3) > td:nth-child(2)"));
+        if (introDom === null) {
+            introduction = null;
+        }
+        else {
+            let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "TM");
+            introduction = introCleantext;
+        }
+        const additionalMetadate = {};
+        const coverUrl = (document.querySelector(".detailTopLeft > img")).src;
+        if (coverUrl) {
+            additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
+            additionalMetadate.cover.init();
+        }
+        const chapters = [];
+        const cos = document.querySelectorAll(".chapter > ul > li > a");
+        let chapterNumber = 0;
+        for (const co of Array.from(cos)) {
+            chapterNumber++;
+            const chapterName = co.innerText;
+            const chapterUrl = co.href;
+            const isVIP = false;
+            const isPaid = false;
+            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, null, null, null, chapterParse, "GBK");
+            chapters.push(chapter);
+        }
+        return {
+            bookUrl: bookUrl,
+            bookname: bookname,
+            author: author,
+            introduction: introduction,
+            additionalMetadate: additionalMetadate,
+            chapters: chapters,
+        };
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset) {
+        var _a;
+        lib_1.console_debug(`[Chapter]请求 ${chapterUrl}`);
+        let nowUrl = chapterUrl;
+        let doc = await lib_1.getHtmlDOM(chapterUrl, charset);
+        const content = document.createElement("div");
+        let flag = false;
+        do {
+            const _content = doc.querySelector(".readerCon");
+            for (const _c of Array.from(_content.childNodes)) {
+                content.appendChild(_c);
+            }
+            const nextLink = ((_a = doc.querySelector(".next")) === null || _a === void 0 ? void 0 : _a.parentElement).href;
+            if (new URL(nextLink).pathname.includes("_")) {
+                if (nextLink !== nowUrl) {
+                    flag = true;
+                }
+                else {
+                    console.error("网站页面出错，URL： " + nowUrl);
+                    flag = false;
+                }
+            }
+            else {
+                flag = false;
+            }
+            if (flag) {
+                lib_1.console_debug(`[Chapter]请求 ${nextLink}`);
+                nowUrl = nextLink;
+                doc = await lib_1.getHtmlDOM(nextLink, charset);
+            }
+        } while (flag);
+        let { dom, text, images } = lib_1.cleanDOM(content, "TM");
+        return {
+            chapterName: chapterName,
+            contentRaw: content,
+            contentText: text,
+            contentHTML: dom,
+            contentImages: images,
+        };
+    }
+}
+exports.xinwanben = xinwanben;
 
 
 /***/ }),
@@ -27502,14 +28056,27 @@ class yuzhaige {
             }
             return;
         }
+        let nowUrl = chapterUrl;
         let dom = await lib_1.getHtmlDOM(chapterUrl, charset);
         const content = document.createElement("div");
         let flag = false;
         do {
             contentAppend();
             const nextLink = (dom.querySelector(".novelbutton .p1.p3 > a:nth-child(1)")).href;
-            flag = new URL(nextLink).pathname.includes("_");
+            if (new URL(nextLink).pathname.includes("_")) {
+                if (nextLink !== nowUrl) {
+                    flag = true;
+                }
+                else {
+                    console.error("网站页面出错，URL： " + nowUrl);
+                    flag = false;
+                }
+            }
+            else {
+                flag = false;
+            }
             if (flag) {
+                nowUrl = nextLink;
                 dom = await lib_1.getHtmlDOM(nextLink, charset);
             }
         } while (flag);
