@@ -12,15 +12,15 @@ const blockElements = [
   "nav",
   "section",
   "figure",
-  'b',
-  'strong',
-  'i',
-  'em',
-  'dfn',
-  'var',
-  'cite',
-  'span',
-  'font',
+  "b",
+  "strong",
+  "i",
+  "em",
+  "dfn",
+  "var",
+  "cite",
+  "span",
+  "font",
   "a", // 忽略超链接
 ];
 const ignoreElements = [
@@ -202,6 +202,28 @@ function _formatImage(
   return [imgElem, imgText, imgClass];
 }
 
+function formatMisc(elem: HTMLElement, builder: Builder) {
+  if (elem.childElementCount === 0) {
+    const lastElement = builder.dom.lastElementChild;
+    const textContent = elem.innerText.trim();
+    if (lastElement?.nodeName.toLowerCase() === "p") {
+      const textElem = document.createTextNode(textContent);
+      lastElement.appendChild(textElem);
+
+      builder.text = builder.text + textContent;
+    } else {
+      const pElem = document.createElement("p");
+      pElem.innerText = textContent;
+
+      builder.dom.appendChild(pElem);
+      builder.text = builder.text + "\n\n" + textContent;
+    }
+  } else {
+    walk(elem, builder);
+    return;
+  }
+}
+
 function formatParagraph(elem: HTMLParagraphElement, builder: Builder) {
   if (elem.childElementCount === 0) {
     const pElem = document.createElement("p");
@@ -235,7 +257,7 @@ function formatText(elems: (Text | HTMLBRElement)[], builder: Builder) {
     } else {
       temp0();
 
-      const tPText = textContent + "\n";
+      const tPText = textContent + "\n".repeat(brCount);
       builder.text = builder.text + tPText;
     }
   }
@@ -366,6 +388,19 @@ export function walk(dom: HTMLElement, builder: Builder) {
     }
     const nodeName = node.nodeName.toLowerCase();
     switch (nodeName) {
+      case "b":
+      case "strong":
+      case "i":
+      case "em":
+      case "dfn":
+      case "var":
+      case "cite":
+      case "span":
+      case "font": {
+        // 移除格式标签
+        formatMisc(node as HTMLElement, builder);
+        break;
+      }
       case "div":
       case "p": {
         formatParagraph(node as HTMLParagraphElement, builder);

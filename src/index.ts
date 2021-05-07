@@ -7,6 +7,7 @@ import {
   save,
   removeTabMark,
   progressStyleText,
+  buttonStyleText,
 } from "./index_helper";
 
 export namespace indexNameSpace {
@@ -15,6 +16,7 @@ export namespace indexNameSpace {
     book: Book;
     save(book: Book): void;
     saveAs(obj: any): void;
+    chapterFilter(chapter: Chapter): boolean;
   }
 
   export interface mainTabObject extends GM_tab_object {
@@ -70,9 +72,27 @@ async function initChapters(rule: ruleClass, book: Book) {
     concurrencyLimit = rule.concurrencyLimit;
   }
 
-  const chapters = book.chapters.filter(
-    (chapter) => chapter.status === Status.pending
-  );
+  if (typeof (<any>unsafeWindow).chapterFilter !== "undefined") {
+    let tlog = "[initChapters]发现自定义筛选函数，自定义筛选函数内容如下：\n";
+    tlog += (<indexNameSpace.mainWindows>unsafeWindow).chapterFilter.toString();
+    console.log(tlog);
+  }
+  console_debug("[initChapters]筛选需下载章节");
+  const chapters = book.chapters.filter((chapter) => {
+    const b0 = chapter.status === Status.pending;
+    let b1 = true;
+    if (typeof (<any>unsafeWindow).chapterFilter !== "undefined") {
+      try {
+        const u = (<indexNameSpace.mainWindows>unsafeWindow).chapterFilter(
+          chapter
+        );
+        if (typeof u === "boolean") {
+          b1 = u;
+        }
+      } catch (error) {}
+    }
+    return b0 && b1;
+  });
   if (chapters.length === 0) {
     console.error(`[initChapters]初始化章节出错，未找到需初始化章节`);
     return [];
@@ -203,7 +223,7 @@ export function catchError(error: Error) {
 function addButton() {
   let button = document.createElement("button");
   button.id = "novel-downloader";
-  button.style.cssText = `position: fixed; top: 15%; right: 5%; z-index: 2147483647; border-style: none; text-align:center; vertical-align:baseline; background-color: rgba(128, 128, 128, 0.2); padding: 5px; border-radius: 12px;`;
+  button.style.cssText = buttonStyleText;
 
   let img = document.createElement("img");
   img.src = icon0;

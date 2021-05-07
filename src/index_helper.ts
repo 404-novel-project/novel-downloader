@@ -2,11 +2,22 @@ import { Book, Chapter, attachmentClass, Status } from "./main";
 import { console_debug } from "./lib";
 import { updateProgress, audio, indexNameSpace, catchError } from "./index";
 
+export const buttonStyleText = `position: fixed;
+top: 15%;
+right: 5%;
+z-index: 2147483647;
+border-style: none;
+text-align:center;
+vertical-align:baseline;
+background-color: rgba(128, 128, 128, 0.2);
+padding: 5px;
+border-radius: 12px;`;
+
 export const progressStyleText = `#nd-progress {
   position: fixed;
   bottom: 8%;
   right: 3%;
-  z-index: 99;
+  z-index: 2147483647;
   border-style: none;
   text-align: center;
   vertical-align: baseline;
@@ -47,6 +58,7 @@ class saveBook {
   private chapters: Chapter[];
 
   public mainStyleText: string;
+  public tocStyleText: string;
 
   private savedZip: any;
   private savedTextArray: string[];
@@ -112,6 +124,51 @@ p {
 }
 img {
   vertical-align: text-bottom;
+  max-width: 90%;
+}`;
+    this.tocStyleText = `img {
+  max-width: 100%;
+  max-height: 15em;
+}
+.introduction {
+  font-size: smaller;
+  max-height: 18em;
+  overflow-y: scroll;
+}
+.bookurl {
+  text-align: center;
+  font-size: smaller;
+  padding-top: 1em;
+  padding-bottom: 0.5em;
+  margin-top: 0.4em;
+}
+.bookurl > a {
+  color: gray;
+}
+.info {
+  display: grid;
+  grid-template-columns: 30% 70%;
+}
+.info h3 {
+  padding-left: 0.5em;
+  margin-top: -1.2em;
+  margin-bottom: 0.5em;
+}
+.section {
+  margin-top: 1.5em;
+  display: grid;
+  grid-template-columns: 30% 30% 30%;
+}
+.section > h2:first-child {
+  grid-column-end: span 3;
+}
+.section > .chapter {
+  padding-bottom: 0.3em;
+  text-align: center;
+}
+.main > h1 {
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
 }`;
   }
 
@@ -189,52 +246,8 @@ img {
     const hr = document.createElement("hr");
     TocMain?.appendChild(hr);
 
-    const tocStyleText = `img {
-      max-width: 100%;
-      max-height: 15em;
-    }
-    .introduction {
-      font-size: smaller;
-      max-height: 18em;
-      overflow-y: scroll;
-    }
-    .bookurl {
-      text-align: center;
-      font-size: smaller;
-      padding-top: 1em;
-      padding-bottom: 0.5em;
-      margin-top: 0.4em;
-    }
-    .bookurl > a {
-      color: gray;
-    }
-    .info {
-      display: grid;
-      grid-template-columns: 30% 70%;
-    }
-    .info h3 {
-      padding-left: 0.5em;
-      margin-top: -1.2em;
-      margin-bottom: 0.5em;
-    }
-    .section {
-      margin-top: 1.5em;
-      display: grid;
-      grid-template-columns: 30% 30% 30%;
-    }
-    .section > h2:first-child {
-      grid-column-end: span 3;
-    }
-    .section > .chapter {
-      padding-bottom: 0.3em;
-      text-align: center;
-    }
-    .main > h1 {
-      margin-top: 1.5em;
-      margin-bottom: 1.5em;  
-    }`;
     const tocStyle = document.createElement("style");
-    tocStyle.innerHTML = tocStyleText;
+    tocStyle.innerHTML = this.tocStyleText;
     ToC.head.appendChild(tocStyle);
 
     console_debug("[save]保存元数据文本");

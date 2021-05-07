@@ -121,7 +121,7 @@ export class Chapter {
     this.contentHTML = contentHTML;
     this.contentImages = contentImages;
 
-    console_debug(`[Chapter]${this.chapterName} 解析完成。`);
+    console.log(`[Chapter]${this.chapterName} 解析完成。`);
     return obj;
   }
 
@@ -202,7 +202,7 @@ export class attachmentClass {
     } else {
       this.imageBlob = await this.tmDownloadImage();
     }
-    console_debug(`[Image] ${this.imageUrl} 下载完成。`);
+    console.log(`[attachment] ${this.imageUrl} 下载完成。`);
     return this.imageBlob;
   }
 
