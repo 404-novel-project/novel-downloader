@@ -197,6 +197,11 @@ export async function getRule(): Promise<ruleClass> {
       ruleClass = idejian;
       break;
     }
+    case "www.qimao.com": {
+      const { qimao } = await import("./rules/qimao");
+      ruleClass = qimao;
+      break;
+    }
     default: {
       throw new Error("Not Found Rule!");
     }

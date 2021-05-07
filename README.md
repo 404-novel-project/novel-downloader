@@ -34,6 +34,7 @@ ZIP压缩包，请在解压后，直接双击打开HTML文件（`ToC.html` 为�
 |[17K小说网](https://www.17k.com/)|✅|❌||
 |[书海小说网](http://www.shuhai.com/)|✅|❌||
 |[塔读文学](https://www.tadu.com/)|✅|❌||
+|[七猫中文网](https://www.qimao.com/)|✅|❌||
 |[UU看书网](https://www.uukanshu.com/)|✅|❎||
 |[亿软网](http://www.yruan.com/)|✅|❎||
 |[笔趣窝](http://www.biquwoo.com/)|✅|❎||
