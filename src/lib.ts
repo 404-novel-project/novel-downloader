@@ -48,7 +48,7 @@ export function cleanDOM(DOM: Element, imgMode: "naive" | "TM") {
   };
 }
 
-export async function getHtmlText(url: string, charset: string | undefined) {
+export async function getText(url: string, charset: string | undefined) {
   if (charset === undefined) {
     return fetch(url).then((response) => {
       if (response.ok) {
@@ -77,11 +77,11 @@ export async function getHtmlText(url: string, charset: string | undefined) {
 }
 
 export async function getHtmlDOM(url: string, charset: string | undefined) {
-  const htmlText = await getHtmlText(url, charset);
+  const htmlText = await getText(url, charset);
   return new DOMParser().parseFromString(htmlText, "text/html");
 }
 
-export async function ggetHtmlText(url: string, charset: string | undefined) {
+export async function ggetText(url: string, charset: string | undefined) {
   if (charset === undefined) {
     return gfetch(url).then((response) => {
       if (response.status >= 200 && response.status <= 299) {
@@ -110,7 +110,7 @@ export async function ggetHtmlText(url: string, charset: string | undefined) {
 }
 
 export async function ggetHtmlDOM(url: string, charset: string | undefined) {
-  const htmlText = await ggetHtmlText(url, charset);
+  const htmlText = await ggetText(url, charset);
   return new DOMParser().parseFromString(htmlText, "text/html");
 }
 

@@ -187,6 +187,11 @@ export async function getRule(): Promise<ruleClass> {
       ruleClass = xinwanben;
       break;
     }
+    case "www.tadu.com": {
+      const { tadu } = await import("./rules/tadu");
+      ruleClass = tadu;
+      break;
+    }
     default: {
       throw new Error("Not Found Rule!");
     }

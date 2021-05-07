@@ -24,6 +24,7 @@
     "*://www.17k.com/list/*.html",
     "*://www.shuhai.com/book/*.htm",
     "*://mm.shuhai.com/book/*.htm",
+    "*://www.tadu.com/book/catalogue/*",
     "*://www.uukanshu.com/b/*/",
     "*://www.yruan.com/article/*.html",
     "*://www.biquwoo.com/bqw*/",
@@ -87,6 +88,7 @@
     "huluxia.com",
     "linovel.net",
     "ax1x.com",
+    "tadu.com",
     "*"
   ],
   "require": [
