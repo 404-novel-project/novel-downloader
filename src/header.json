@@ -43,7 +43,8 @@
     "*://www.xiaoshuodaquan.com/*/",
     "*://www.81book.com/book/*/",
     "*://m.yuzhaige.cc/*/*/",
-    "*://www.xinwanben.com/*/"
+    "*://www.xinwanben.com/*/",
+    "*://www.idejian.com/book/*/"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",
@@ -89,6 +90,7 @@
     "linovel.net",
     "ax1x.com",
     "tadu.com",
+    "zhangyue01.com",
     "*"
   ],
   "require": [
