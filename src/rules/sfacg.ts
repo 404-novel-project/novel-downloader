@@ -4,7 +4,7 @@ import {
   Chapter,
   Status,
 } from "../main";
-import { getHtmlDOM, cleanDOM, console_debug } from "../lib";
+import { getHtmlDOM, cleanDOM, console_debug, rm } from "../lib";
 import {
   ruleClass,
   ruleClassNamespace,
@@ -56,7 +56,10 @@ export class sfacg implements ruleClass {
     additionalMetadate.cover.init();
     additionalMetadate.tags = Array.from(
       dom.querySelectorAll("ul.tag-list > li.tag > a")
-    ).map((a) => (<HTMLAnchorElement>a).innerText.trim());
+    ).map((a) => {
+      rm("span.icn", false, <HTMLAnchorElement>a);
+      return (<HTMLAnchorElement>a).innerText.trim().replace(/\(\d+\)$/, "");
+    });
     if (dom.querySelector(".d-banner")) {
       const _beitouUrl = (<HTMLDivElement>(
         dom.querySelector(".d-banner")

@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        3.6.1.1620383139588
+// @version        3.6.1.1620478136434
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -37,6 +37,7 @@
 // @match          *://m.yuzhaige.cc/*/*/
 // @match          *://www.xinwanben.com/*/
 // @match          *://www.idejian.com/book/*/
+// @match          *://www.wenku8.net/novel/*/*/index.htm
 // @name:en        novel-downloader
 // @description:en An scalable universal novel downloader.
 // @namespace      https://blog.bgme.me
@@ -87,6 +88,7 @@
 // @connect        tadu.com
 // @connect        zhangyue01.com
 // @connect        cdn.wtzw.com
+// @connect        wenku8.com
 // @connect        *
 // @require        https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js#sha512-Qlv6VSKh1gDKGoJbnyA5RMXYcvnpIqhO++MhIM2fStMcGT9i2T//tSwYFlcyoRRDcDZ+TYHpH8azBBCyhpSeqw==
 // @require        https://cdn.jsdelivr.net/npm/jszip@3.6.0/dist/jszip.min.js#sha512-uVSVjE7zYsGz4ag0HEzfugJ78oHCI1KhdkivjQro8ABL/PRiEO4ROwvrolYAcZnky0Fl/baWKYilQfWvESliRA==
@@ -267,7 +269,7 @@ function _formatImage(elem, builder) {
         imgClass.init();
         lib_1.putAttachmentClassCache(imgClass);
     }
-    const filterdImages = builder.images.filter((imgClass) => imgClass.imageUrl === elem.src);
+    const filterdImages = builder.images.filter((imgClass) => imgClass.url === elem.src);
     if (filterdImages.length === 0) {
         builder.images.push(imgClass);
     }
@@ -1053,7 +1055,7 @@ img {
             metaDateText += `\n简介：${this.book.introduction}`;
         }
         if (this.book.additionalMetadate.cover) {
-            metaDateText += `\n封面图片地址：${this.book.additionalMetadate.cover.imageUrl}`;
+            metaDateText += `\n封面图片地址：${this.book.additionalMetadate.cover.url}`;
         }
         if (this.book.additionalMetadate.tags) {
             metaDateText += `\nTag列表：${this.book.additionalMetadate.tags.join("、")}`;
@@ -1222,8 +1224,7 @@ async function getText(url, charset) {
                 return response.text();
             }
             else {
-                console.error(new Error(`Bad response! ${url}`));
-                return response.text();
+                throw new Error(`Bad response! ${url}`);
             }
         });
     }
@@ -1234,8 +1235,7 @@ async function getText(url, charset) {
                 return response.arrayBuffer();
             }
             else {
-                console.error(new Error(`Bad response! ${url}`));
-                return response.arrayBuffer();
+                throw new Error(`Bad response! ${url}`);
             }
         })
             .then((buffer) => {
@@ -1258,8 +1258,7 @@ async function ggetText(url, charset) {
                 return response.responseText;
             }
             else {
-                console.error(new Error(`Bad response! ${url}`));
-                return response.responseText;
+                throw new Error(`Bad response! ${url}`);
             }
         });
     }
@@ -1270,8 +1269,7 @@ async function ggetText(url, charset) {
                 return response.response;
             }
             else {
-                console.error(new Error(`Bad response! ${url}`));
-                return response.response;
+                throw new Error(`Bad response! ${url}`);
             }
         })
             .then((buffer) => {
@@ -1363,7 +1361,7 @@ function console_debug(...messages) {
 }
 exports.console_debug = console_debug;
 function getAttachmentClassCache(url, name) {
-    const f1 = index_1.attachmentClassCache.filter((attachmentClass) => attachmentClass.imageUrl === url);
+    const f1 = index_1.attachmentClassCache.filter((attachmentClass) => attachmentClass.url === url);
     const f2 = f1.filter((attachmentClass) => attachmentClass.name === name);
     if (f2.length) {
         return f2[0];
@@ -1477,7 +1475,7 @@ class Chapter {
 exports.Chapter = Chapter;
 class attachmentClass {
     constructor(imageUrl, name, mode) {
-        this.imageUrl = imageUrl;
+        this.url = imageUrl;
         this.name = name;
         this.mode = mode;
         this.status = Status.pending;
@@ -1490,12 +1488,12 @@ class attachmentClass {
         else {
             this.imageBlob = await this.tmDownloadImage();
         }
-        console.log(`[attachment] ${this.imageUrl} 下载完成。`);
+        console.log(`[attachment] ${this.url} 下载完成。`);
         return this.imageBlob;
     }
     downloadImage() {
         this.status = Status.downloading;
-        return fetch(this.imageUrl)
+        return fetch(this.url)
             .then((response) => {
             if (response.ok) {
                 this.status = Status.finished;
@@ -1505,12 +1503,12 @@ class attachmentClass {
                 if (response.status === 404) {
                     this.status = Status.failed;
                 }
-                throw new Error(`Image request response is not ok!\nImage url: ${this.imageUrl} .`);
+                throw new Error(`Image request response is not ok!\nImage url: ${this.url} .`);
             }
         })
             .catch(async (err) => {
             this.retryTime++;
-            console.error(`[Image]下载 ${this.imageUrl} 出错，第${this.retryTime}次重试，下载模式：${this.mode}`);
+            console.error(`[Image]下载 ${this.url} 出错，第${this.retryTime}次重试，下载模式：${this.mode}`);
             if (this.status !== Status.failed && this.retryTime < rules_1.retryLimit) {
                 await lib_1.sleep(this.retryTime * 1500);
                 return this.downloadImage();
@@ -1524,7 +1522,7 @@ class attachmentClass {
     }
     tmDownloadImage() {
         this.status = Status.downloading;
-        return lib_1.gfetch(this.imageUrl, {
+        return lib_1.gfetch(this.url, {
             headers: {
                 referrer: this.referer ? this.referer : document.location.origin,
             },
@@ -1539,12 +1537,12 @@ class attachmentClass {
                 if (response.status === 404) {
                     this.status = Status.failed;
                 }
-                throw new Error(`Bad response!\nRequest url: ${this.imageUrl}`);
+                throw new Error(`Bad response!\nRequest url: ${this.url}`);
             }
         })
             .catch(async (err) => {
             this.retryTime++;
-            console.error(`[Image]下载 ${this.imageUrl} 出错，第${this.retryTime}次重试，下载模式：${this.mode}`);
+            console.error(`[Image]下载 ${this.url} 出错，第${this.retryTime}次重试，下载模式：${this.mode}`);
             if (this.status !== Status.failed && this.retryTime < rules_1.retryLimit) {
                 await lib_1.sleep(this.retryTime * 1500);
                 return this.tmDownloadImage();
@@ -1714,6 +1712,11 @@ async function getRule() {
         case "www.qimao.com": {
             const { qimao } = await Promise.resolve().then(() => __webpack_require__(959));
             ruleClass = qimao;
+            break;
+        }
+        case "www.wenku8.net": {
+            const { wenku8 } = await Promise.resolve().then(() => __webpack_require__(8));
+            ruleClass = wenku8;
             break;
         }
         default: {
@@ -26676,7 +26679,10 @@ class sfacg {
         let coverUrl = (dom.querySelector("#hasTicket div.pic img")).src;
         additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
         additionalMetadate.cover.init();
-        additionalMetadate.tags = Array.from(dom.querySelectorAll("ul.tag-list > li.tag > a")).map((a) => a.innerText.trim());
+        additionalMetadate.tags = Array.from(dom.querySelectorAll("ul.tag-list > li.tag > a")).map((a) => {
+            lib_1.rm("span.icn", false, a);
+            return a.innerText.trim().replace(/\(\d+\)$/, "");
+        });
         if (dom.querySelector(".d-banner")) {
             const _beitouUrl = (_a = (dom.querySelector(".d-banner"))) === null || _a === void 0 ? void 0 : _a.style.backgroundImage.split('"');
             if ((_beitouUrl === null || _beitouUrl === void 0 ? void 0 : _beitouUrl.length) === 3) {
@@ -27160,33 +27166,25 @@ class tadu {
             if (_bookPartResourceUrl) {
                 const bookPartResourceUrl = new URL(_bookPartResourceUrl);
                 bookPartResourceUrl.searchParams.set("callback", "callback");
-                let contentObj;
-                function callback(obj) {
-                    contentObj = obj;
-                    return obj;
-                }
                 lib_1.console_debug(`[Chapter]请求 ${bookPartResourceUrl.toString()}`);
                 const jsonpText = await lib_1.gfetch(bookPartResourceUrl.toString(), {
                     headers: {
                         accept: "*/*",
                         Referer: document.location.origin,
                     },
-                    responseType: "arraybuffer",
                 })
                     .then((response) => {
                     if (response.status >= 200 && response.status <= 299) {
-                        return response.response;
+                        return response.responseText;
                     }
                     else {
                         throw new Error(`Bad response! ${bookPartResourceUrl.toString()}`);
                     }
-                })
-                    .then((buffer) => {
-                    const decoder = new TextDecoder(charset);
-                    const text = decoder.decode(buffer);
-                    return text;
                 });
-                eval(jsonpText);
+                const callback = (obj) => {
+                    return obj;
+                };
+                const contentObj = eval(jsonpText);
                 if (typeof contentObj === "object") {
                     content.innerHTML = contentObj.content;
                     let { dom, text, images } = lib_1.cleanDOM(content, "TM");
@@ -27347,6 +27345,103 @@ class uukanshu {
     }
 }
 exports.uukanshu = uukanshu;
+
+
+/***/ }),
+
+/***/ 8:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.wenku8 = void 0;
+const main_1 = __webpack_require__(519);
+const lib_1 = __webpack_require__(563);
+class wenku8 {
+    constructor() {
+        this.imageMode = "TM";
+        this.charset = "GBK";
+    }
+    async bookParse(chapterParse) {
+        const bookId = document.location.pathname.split("/").slice(-2, -1)[0];
+        const bookUrl = [document.location.origin, "book", `${bookId}.htm`].join("/");
+        const bookname = (document.querySelector("#title")).innerText.trim();
+        const doc = await lib_1.getHtmlDOM(bookUrl, "GBK");
+        let introduction;
+        const author = (doc.querySelector("#content > div:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(2) > td:nth-child(2)")).innerText
+            .replace("小说作者：", "")
+            .trim();
+        const introDom = doc.querySelector("#content > div:nth-child(1) > table:nth-child(4) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(2) > span:nth-child(11)");
+        if (introDom === null) {
+            introduction = null;
+        }
+        else {
+            let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "TM");
+            introduction = introCleantext;
+        }
+        const additionalMetadate = {};
+        let coverUrl = (doc.querySelector("#content > div:nth-child(1) > table:nth-child(4) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(1) > img:nth-child(1)")).src;
+        additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
+        additionalMetadate.cover.init();
+        const chapters = [];
+        const tdList = Array.from(document.querySelectorAll(".css > tbody td")).filter((td) => td.innerText.trim());
+        let chapterNumber = 0;
+        let sectionNumber = 0;
+        let sectionName = null;
+        let sectionChapterNumber = 0;
+        for (let i = 0; i < tdList.length; i++) {
+            const td = tdList[i];
+            if (td.className === "vcss") {
+                sectionNumber++;
+                sectionChapterNumber = 0;
+                sectionName = td.innerText.trim();
+            }
+            else if (td.className === "ccss") {
+                chapterNumber++;
+                sectionChapterNumber++;
+                const a = td.firstElementChild;
+                const chapterName = a.innerText.trim();
+                const chapterUrl = a.href;
+                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, false, false, sectionName, sectionNumber, sectionChapterNumber, chapterParse, "GBK");
+                chapters.push(chapter);
+            }
+        }
+        return {
+            bookUrl: bookUrl,
+            bookname: bookname,
+            author: author,
+            introduction: introduction,
+            additionalMetadate: additionalMetadate,
+            chapters: chapters,
+        };
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset) {
+        const doc = await lib_1.getHtmlDOM(chapterUrl, charset);
+        chapterName = doc.querySelector("#title").innerText.trim();
+        const content = doc.querySelector("#content");
+        if (content) {
+            lib_1.rm("#contentdp", true, content);
+            let { dom, text, images } = lib_1.cleanDOM(content, "TM");
+            return {
+                chapterName: chapterName,
+                contentRaw: content,
+                contentText: text,
+                contentHTML: dom,
+                contentImages: images,
+            };
+        }
+        else {
+            return {
+                chapterName: chapterName,
+                contentRaw: null,
+                contentText: null,
+                contentHTML: null,
+                contentImages: null,
+            };
+        }
+    }
+}
+exports.wenku8 = wenku8;
 
 
 /***/ }),
