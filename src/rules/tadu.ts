@@ -129,39 +129,30 @@ export class tadu implements ruleClass {
         const bookPartResourceUrl = new URL(_bookPartResourceUrl);
         bookPartResourceUrl.searchParams.set("callback", "callback");
 
-        interface contentObj {
-          content: string;
-        }
-        let contentObj: contentObj;
-        function callback(obj: object) {
-          contentObj = obj as contentObj;
-          return obj;
-        }
         console_debug(`[Chapter]请求 ${bookPartResourceUrl.toString()}`);
         const jsonpText = await gfetch(bookPartResourceUrl.toString(), {
           headers: {
             accept: "*/*",
             Referer: document.location.origin,
           },
-          responseType: "arraybuffer",
         })
           .then((response) => {
             if (response.status >= 200 && response.status <= 299) {
-              return <ArrayBuffer>response.response;
+              return response.responseText;
             } else {
               throw new Error(
                 `Bad response! ${bookPartResourceUrl.toString()}`
               );
             }
           })
-          .then((buffer: ArrayBuffer) => {
-            const decoder = new TextDecoder(charset);
-            const text = decoder.decode(buffer);
-            return text;
-          });
 
-        eval(jsonpText);
-        //@ts-ignore Variable 'contentObj' is used before being assigned.ts(2454)
+        interface contentObj {
+          content: string;
+        }
+        const callback = (obj: object) => {
+          return obj;
+        };
+        const contentObj: contentObj = eval(jsonpText);
         if (typeof contentObj === "object") {
           content.innerHTML = contentObj.content;
           let { dom, text, images } = cleanDOM(content, "TM");

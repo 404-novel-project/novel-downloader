@@ -177,7 +177,7 @@ export class Chapter {
 }
 
 export class attachmentClass {
-  public imageUrl: string;
+  public url: string;
   public name: string;
   public mode: "naive" | "TM";
   public referer?: string;
@@ -188,7 +188,7 @@ export class attachmentClass {
   public imageBlob!: Blob | null;
 
   public constructor(imageUrl: string, name: string, mode: "naive" | "TM") {
-    this.imageUrl = imageUrl;
+    this.url = imageUrl;
     this.name = name;
     this.mode = mode;
 
@@ -202,13 +202,13 @@ export class attachmentClass {
     } else {
       this.imageBlob = await this.tmDownloadImage();
     }
-    console.log(`[attachment] ${this.imageUrl} 下载完成。`);
+    console.log(`[attachment] ${this.url} 下载完成。`);
     return this.imageBlob;
   }
 
   private downloadImage(): Promise<Blob | null> {
     this.status = Status.downloading;
-    return fetch(this.imageUrl)
+    return fetch(this.url)
       .then((response: Response) => {
         if (response.ok) {
           this.status = Status.finished;
@@ -218,14 +218,14 @@ export class attachmentClass {
             this.status = Status.failed;
           }
           throw new Error(
-            `Image request response is not ok!\nImage url: ${this.imageUrl} .`
+            `Image request response is not ok!\nImage url: ${this.url} .`
           );
         }
       })
       .catch(async (err: Error) => {
         this.retryTime++;
         console.error(
-          `[Image]下载 ${this.imageUrl} 出错，第${this.retryTime}次重试，下载模式：${this.mode}`
+          `[Image]下载 ${this.url} 出错，第${this.retryTime}次重试，下载模式：${this.mode}`
         );
 
         if (this.status !== Status.failed && this.retryTime < retryLimit) {
@@ -241,7 +241,7 @@ export class attachmentClass {
 
   private tmDownloadImage(): Promise<Blob | null> {
     this.status = Status.downloading;
-    return gfetch(this.imageUrl, {
+    return gfetch(this.url, {
       headers: {
         referrer: this.referer ? this.referer : document.location.origin,
       },
@@ -255,13 +255,13 @@ export class attachmentClass {
           if (response.status === 404) {
             this.status = Status.failed;
           }
-          throw new Error(`Bad response!\nRequest url: ${this.imageUrl}`);
+          throw new Error(`Bad response!\nRequest url: ${this.url}`);
         }
       })
       .catch(async (err: Error) => {
         this.retryTime++;
         console.error(
-          `[Image]下载 ${this.imageUrl} 出错，第${this.retryTime}次重试，下载模式：${this.mode}`
+          `[Image]下载 ${this.url} 出错，第${this.retryTime}次重试，下载模式：${this.mode}`
         );
 
         if (this.status !== Status.failed && this.retryTime < retryLimit) {

@@ -403,7 +403,7 @@ img {
       metaDateText += `\n简介：${this.book.introduction}`;
     }
     if (this.book.additionalMetadate.cover) {
-      metaDateText += `\n封面图片地址：${this.book.additionalMetadate.cover.imageUrl}`;
+      metaDateText += `\n封面图片地址：${this.book.additionalMetadate.cover.url}`;
     }
     if (this.book.additionalMetadate.tags) {
       metaDateText += `\nTag列表：${this.book.additionalMetadate.tags.join(

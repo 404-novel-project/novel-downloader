@@ -191,7 +191,7 @@ function _formatImage(
   }
 
   const filterdImages = builder.images.filter(
-    (imgClass) => imgClass.imageUrl === elem.src
+    (imgClass) => imgClass.url === elem.src
   );
   if (filterdImages.length === 0) {
     builder.images.push(imgClass);

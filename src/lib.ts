@@ -54,8 +54,7 @@ export async function getText(url: string, charset: string | undefined) {
       if (response.ok) {
         return response.text();
       } else {
-        console.error(new Error(`Bad response! ${url}`));
-        return response.text();
+        throw new Error(`Bad response! ${url}`);
       }
     });
   } else {
@@ -64,8 +63,7 @@ export async function getText(url: string, charset: string | undefined) {
         if (response.ok) {
           return response.arrayBuffer();
         } else {
-          console.error(new Error(`Bad response! ${url}`));
-          return response.arrayBuffer();
+          throw new Error(`Bad response! ${url}`);
         }
       })
       .then((buffer) => {
@@ -87,8 +85,7 @@ export async function ggetText(url: string, charset: string | undefined) {
       if (response.status >= 200 && response.status <= 299) {
         return response.responseText;
       } else {
-        console.error(new Error(`Bad response! ${url}`));
-        return response.responseText;
+        throw new Error(`Bad response! ${url}`);
       }
     });
   } else {
@@ -97,8 +94,7 @@ export async function ggetText(url: string, charset: string | undefined) {
         if (response.status >= 200 && response.status <= 299) {
           return <ArrayBuffer>response.response;
         } else {
-          console.error(new Error(`Bad response! ${url}`));
-          return <ArrayBuffer>response.response;
+          throw new Error(`Bad response! ${url}`);
         }
       })
       .then((buffer: ArrayBuffer) => {
@@ -228,7 +224,7 @@ export function console_debug(...messages: any[]) {
 
 export function getAttachmentClassCache(url: string, name: string) {
   const f1 = attachmentClassCache.filter(
-    (attachmentClass) => attachmentClass.imageUrl === url
+    (attachmentClass) => attachmentClass.url === url
   );
   const f2 = f1.filter((attachmentClass) => attachmentClass.name === name);
   if (f2.length) {
