@@ -113,7 +113,7 @@ export class wenku8 implements ruleClass {
     charset: string
   ) {
     const doc = await getHtmlDOM(chapterUrl, charset);
-    chapterName = (<HTMLElement>doc.querySelector("#title")).innerText.trim();
+    // chapterName = (<HTMLElement>doc.querySelector("#title")).innerText.trim();
 
     const content = <HTMLElement>doc.querySelector("#content");
     if (content) {

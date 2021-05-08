@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        3.6.1.1620478136434
+// @version        3.6.1.1620480778804
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -27417,7 +27417,6 @@ class wenku8 {
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset) {
         const doc = await lib_1.getHtmlDOM(chapterUrl, charset);
-        chapterName = doc.querySelector("#title").innerText.trim();
         const content = doc.querySelector("#content");
         if (content) {
             lib_1.rm("#contentdp", true, content);
