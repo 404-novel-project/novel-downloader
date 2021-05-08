@@ -45,7 +45,8 @@
     "*://www.81book.com/book/*/",
     "*://m.yuzhaige.cc/*/*/",
     "*://www.xinwanben.com/*/",
-    "*://www.idejian.com/book/*/"
+    "*://www.idejian.com/book/*/",
+    "*://www.wenku8.net/novel/*/*/index.htm"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",
@@ -94,6 +95,7 @@
     "tadu.com",
     "zhangyue01.com",
     "cdn.wtzw.com",
+    "wenku8.com",
     "*"
   ],
   "require": [

@@ -202,6 +202,11 @@ export async function getRule(): Promise<ruleClass> {
       ruleClass = qimao;
       break;
     }
+    case "www.wenku8.net": {
+      const { wenku8 } = await import("./rules/wenku8");
+      ruleClass = wenku8;
+      break;
+    }
     default: {
       throw new Error("Not Found Rule!");
     }
