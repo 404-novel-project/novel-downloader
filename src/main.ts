@@ -180,7 +180,11 @@ export class attachmentClass {
   public url: string;
   public name: string;
   public mode: "naive" | "TM";
-  public referer?: string;
+  public headers?: { [index: string]: string };
+  private defaultHeader: {
+    Referer: string;
+    Accept: string;
+  };
 
   public status: Status;
   public retryTime: number;
@@ -194,6 +198,11 @@ export class attachmentClass {
 
     this.status = Status.pending;
     this.retryTime = 0;
+
+    this.defaultHeader = {
+      Referer: document.location.origin,
+      Accept: "image/webp,*/*",
+    };
   }
 
   public async init() {
@@ -207,8 +216,15 @@ export class attachmentClass {
   }
 
   private downloadImage(): Promise<Blob | null> {
+    const headers = Object.assign(this.defaultHeader, this.headers);
+    const referer = headers.Referer;
+    //@ts-expect-error The operand of a 'delete' operator must be optional.ts(2790)
+    delete headers["Referer"];
     this.status = Status.downloading;
-    return fetch(this.url)
+    return fetch(this.url, {
+      headers: { ...headers },
+      referrer: referer,
+    })
       .then((response: Response) => {
         if (response.ok) {
           this.status = Status.finished;
@@ -225,7 +241,7 @@ export class attachmentClass {
       .catch(async (err: Error) => {
         this.retryTime++;
         console.error(
-          `[Image]下载 ${this.url} 出错，第${this.retryTime}次重试，下载模式：${this.mode}`
+          `[attachment]下载 ${this.url} 出错，第${this.retryTime}次重试，下载模式：${this.mode}`
         );
 
         if (this.status !== Status.failed && this.retryTime < retryLimit) {
@@ -240,11 +256,10 @@ export class attachmentClass {
   }
 
   private tmDownloadImage(): Promise<Blob | null> {
+    const headers = Object.assign(this.defaultHeader, this.headers);
     this.status = Status.downloading;
     return gfetch(this.url, {
-      headers: {
-        referrer: this.referer ? this.referer : document.location.origin,
-      },
+      headers: { ...headers },
       responseType: "blob",
     })
       .then((response) => {
@@ -261,7 +276,7 @@ export class attachmentClass {
       .catch(async (err: Error) => {
         this.retryTime++;
         console.error(
-          `[Image]下载 ${this.url} 出错，第${this.retryTime}次重试，下载模式：${this.mode}`
+          `[attachment]下载 ${this.url} 出错，第${this.retryTime}次重试，下载模式：${this.mode}`
         );
 
         if (this.status !== Status.failed && this.retryTime < retryLimit) {

@@ -207,6 +207,12 @@ export async function getRule(): Promise<ruleClass> {
       ruleClass = wenku8;
       break;
     }
+    case "www.dmzj.com":
+    case "www.dmzj1.com": {
+      const { dmzj } = await import("./rules/dmzj");
+      ruleClass = dmzj;
+      break;
+    }
     default: {
       throw new Error("Not Found Rule!");
     }

@@ -103,7 +103,7 @@ function formatImage(elem: HTMLImageElement, builder: Builder): void {
   }
   let [imgElem, imgText, imgClass] = tfi;
 
-  if (elem.parentElement?.childElementCount === 0) {
+  if (elem.parentElement?.childElementCount === 1) {
     temp0();
     return;
   } else {

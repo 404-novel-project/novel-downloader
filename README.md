@@ -53,6 +53,7 @@ ZIP压缩包，请在解压后，直接双击打开HTML文件（`ToC.html` 为�
 |[完本神站](https://www.xinwanben.com/)|✅|❎||
 |[得间小说](https://www.idejian.com/)|✅|❎||
 |[轻小说文库](https://www.wenku8.net/)|✅|❎||
+|[动漫之家](https://www.dmzj.com/)|✅|❎|需下载大量图片，速度较慢，请耐心等待。<br>需占用大量内存，请保证最终生成文件4倍以上内存，即最终下载生成500MB ZIP文件，运行时请保证至少2GB内存空间。可使用筛选函数，分次下载。|
 
 ## 高阶使用技巧
 
@@ -133,10 +134,13 @@ interface BookAdditionalMetadate {
     languages?: string;
 }
 class attachmentClass {
-    imageUrl: string;
+    url: string;
     name: string;
     mode: "naive" | "TM";
-    referer?: string;
+    headers?: {
+        [index: string]: string;
+    };
+    private defaultHeader;
     status: Status;
     retryTime: number;
     imageBlob: Blob | null;
@@ -144,7 +148,7 @@ class attachmentClass {
     init(): Promise<Blob | null>;
     private downloadImage;
     private tmDownloadImage;
-}
+} 
 interface bookParseObject {
     bookUrl: string;
     bookname: string;

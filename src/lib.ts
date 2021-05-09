@@ -238,3 +238,19 @@ export function putAttachmentClassCache(attachmentClass: attachmentClass) {
   attachmentClassCache.push(attachmentClass);
   return true;
 }
+
+// https://stackoverflow.com/questions/11869582/make-sandbox-around-function-in-javascript
+export function sandboxed(code: string) {
+  const frame = document.createElement("iframe");
+  document.body.appendChild(frame);
+
+  if (frame.contentWindow) {
+    //@ts-expect-error Property 'Function' does not exist on type 'Window'.ts(2339)
+    const F = frame.contentWindow.Function;
+    const args = Object.keys(frame.contentWindow).join();
+
+    document.body.removeChild(frame);
+
+    return F(args, code)();
+  }
+}
