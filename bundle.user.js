@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        3.6.2.1620536042919
+// @version        3.6.2.1620543305242
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -1497,7 +1497,6 @@ class attachmentClass {
         this.retryTime = 0;
         this.defaultHeader = {
             Referer: document.location.origin,
-            Accept: "image/webp,*/*",
         };
     }
     async init() {
@@ -27308,8 +27307,7 @@ class tadu {
                         accept: "*/*",
                         Referer: document.location.origin,
                     },
-                })
-                    .then((response) => {
+                }).then((response) => {
                     if (response.status >= 200 && response.status <= 299) {
                         return response.responseText;
                     }
