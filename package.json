@@ -1,12 +1,11 @@
 {
   "name": "novel-downloader",
-  "version": "3.6.1",
+  "version": "3.6.2",
   "description": "novel downloader",
   "main": "index.js",
   "scripts": {
     "build": "webpack build",
     "dev": "webpack serve --node-env development",
-    "release": "webpack build && cp dist/bundle.meta.js dist/bundle.user.js Releases && git add --all && git commit -m \"Release version $(jq .version package.json)\" && git push",
     "pretty": "prettier src -w"
   },
   "author": "BGME",
