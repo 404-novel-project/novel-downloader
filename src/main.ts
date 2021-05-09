@@ -181,10 +181,7 @@ export class attachmentClass {
   public name: string;
   public mode: "naive" | "TM";
   public headers?: { [index: string]: string };
-  private defaultHeader: {
-    Referer: string;
-    Accept: string;
-  };
+  private defaultHeader: object;
 
   public status: Status;
   public retryTime: number;
@@ -201,7 +198,6 @@ export class attachmentClass {
 
     this.defaultHeader = {
       Referer: document.location.origin,
-      Accept: "image/webp,*/*",
     };
   }
 
@@ -218,7 +214,6 @@ export class attachmentClass {
   private downloadImage(): Promise<Blob | null> {
     const headers = Object.assign(this.defaultHeader, this.headers);
     const referer = headers.Referer;
-    //@ts-expect-error The operand of a 'delete' operator must be optional.ts(2790)
     delete headers["Referer"];
     this.status = Status.downloading;
     return fetch(this.url, {

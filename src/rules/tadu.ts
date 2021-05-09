@@ -135,16 +135,13 @@ export class tadu implements ruleClass {
             accept: "*/*",
             Referer: document.location.origin,
           },
-        })
-          .then((response) => {
-            if (response.status >= 200 && response.status <= 299) {
-              return response.responseText;
-            } else {
-              throw new Error(
-                `Bad response! ${bookPartResourceUrl.toString()}`
-              );
-            }
-          })
+        }).then((response) => {
+          if (response.status >= 200 && response.status <= 299) {
+            return response.responseText;
+          } else {
+            throw new Error(`Bad response! ${bookPartResourceUrl.toString()}`);
+          }
+        });
 
         interface contentObj {
           content: string;
