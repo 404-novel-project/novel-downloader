@@ -53,7 +53,10 @@ export declare class attachmentClass {
     url: string;
     name: string;
     mode: "naive" | "TM";
-    referer?: string;
+    headers?: {
+        [index: string]: string;
+    };
+    private defaultHeader;
     status: Status;
     retryTime: number;
     imageBlob: Blob | null;

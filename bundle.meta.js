@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        3.6.1.1620535354125
+// @version        3.6.1.1620535848488
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -38,6 +38,8 @@
 // @match          *://www.xinwanben.com/*/
 // @match          *://www.idejian.com/book/*/
 // @match          *://www.wenku8.net/novel/*/*/index.htm
+// @match          *://www.dmzj.com/info/*.html
+// @match          *://www.dmzj1.com/info/*.html
 // @name:en        novel-downloader
 // @description:en An scalable universal novel downloader.
 // @namespace      https://blog.bgme.me
@@ -89,10 +91,12 @@
 // @connect        zhangyue01.com
 // @connect        cdn.wtzw.com
 // @connect        wenku8.com
+// @connect        dmzj.com
+// @connect        dmzj1.com
 // @connect        *
 // @require        https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js#sha512-Qlv6VSKh1gDKGoJbnyA5RMXYcvnpIqhO++MhIM2fStMcGT9i2T//tSwYFlcyoRRDcDZ+TYHpH8azBBCyhpSeqw==
 // @require        https://cdn.jsdelivr.net/npm/jszip@3.6.0/dist/jszip.min.js#sha512-uVSVjE7zYsGz4ag0HEzfugJ78oHCI1KhdkivjQro8ABL/PRiEO4ROwvrolYAcZnky0Fl/baWKYilQfWvESliRA==
 // @require        https://cdn.jsdelivr.net/npm/crypto-js@4.0.0/crypto-js.min.js#sha512-s+p/j7+gSFJa1SUEwmPBAlitcUccgbaTTM3yRSmDHUp0UCcRdBMgI2toIT97ZKGKItfV3N66PEZbHcT/iS5thg==
-// @downloadURL    https://github.com/yingziwu/novel-downloader/raw/master/Releases/bundle.user.js
-// @updateURL      https://github.com/yingziwu/novel-downloader/raw/master/Releases/bundle.meta.js
+// @downloadURL    https://github.com/yingziwu/novel-downloader/raw/gh-pages/bundle.user.js
+// @updateURL      https://github.com/yingziwu/novel-downloader/raw/gh-pages/bundle.meta.js
 // ==/UserScript==

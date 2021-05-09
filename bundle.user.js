@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        3.6.1.1620535354125
+// @version        3.6.1.1620535848488
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -38,6 +38,8 @@
 // @match          *://www.xinwanben.com/*/
 // @match          *://www.idejian.com/book/*/
 // @match          *://www.wenku8.net/novel/*/*/index.htm
+// @match          *://www.dmzj.com/info/*.html
+// @match          *://www.dmzj1.com/info/*.html
 // @name:en        novel-downloader
 // @description:en An scalable universal novel downloader.
 // @namespace      https://blog.bgme.me
@@ -89,12 +91,14 @@
 // @connect        zhangyue01.com
 // @connect        cdn.wtzw.com
 // @connect        wenku8.com
+// @connect        dmzj.com
+// @connect        dmzj1.com
 // @connect        *
 // @require        https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js#sha512-Qlv6VSKh1gDKGoJbnyA5RMXYcvnpIqhO++MhIM2fStMcGT9i2T//tSwYFlcyoRRDcDZ+TYHpH8azBBCyhpSeqw==
 // @require        https://cdn.jsdelivr.net/npm/jszip@3.6.0/dist/jszip.min.js#sha512-uVSVjE7zYsGz4ag0HEzfugJ78oHCI1KhdkivjQro8ABL/PRiEO4ROwvrolYAcZnky0Fl/baWKYilQfWvESliRA==
 // @require        https://cdn.jsdelivr.net/npm/crypto-js@4.0.0/crypto-js.min.js#sha512-s+p/j7+gSFJa1SUEwmPBAlitcUccgbaTTM3yRSmDHUp0UCcRdBMgI2toIT97ZKGKItfV3N66PEZbHcT/iS5thg==
-// @downloadURL    https://github.com/yingziwu/novel-downloader/raw/master/Releases/bundle.user.js
-// @updateURL      https://github.com/yingziwu/novel-downloader/raw/master/Releases/bundle.meta.js
+// @downloadURL    https://github.com/yingziwu/novel-downloader/raw/gh-pages/bundle.user.js
+// @updateURL      https://github.com/yingziwu/novel-downloader/raw/gh-pages/bundle.meta.js
 // ==/UserScript==
 
 /******/ (() => { // webpackBootstrap
@@ -199,7 +203,7 @@ function formatImage(elem, builder) {
         return;
     }
     let [imgElem, imgText, imgClass] = tfi;
-    if (((_a = elem.parentElement) === null || _a === void 0 ? void 0 : _a.childElementCount) === 0) {
+    if (((_a = elem.parentElement) === null || _a === void 0 ? void 0 : _a.childElementCount) === 1) {
         temp0();
         return;
     }
@@ -1165,7 +1169,7 @@ exports.removeTabMark = removeTabMark;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.putAttachmentClassCache = exports.getAttachmentClassCache = exports.console_debug = exports.sleep = exports.concurrencyRun = exports.gfetch = exports.rm = exports.ggetHtmlDOM = exports.ggetText = exports.getHtmlDOM = exports.getText = exports.cleanDOM = exports._GM_info = void 0;
+exports.sandboxed = exports.putAttachmentClassCache = exports.getAttachmentClassCache = exports.console_debug = exports.sleep = exports.concurrencyRun = exports.gfetch = exports.rm = exports.ggetHtmlDOM = exports.ggetText = exports.getHtmlDOM = exports.getText = exports.cleanDOM = exports._GM_info = void 0;
 const cleanDOM_1 = __webpack_require__(962);
 const rules_1 = __webpack_require__(489);
 const index_1 = __webpack_require__(607);
@@ -1376,6 +1380,17 @@ function putAttachmentClassCache(attachmentClass) {
     return true;
 }
 exports.putAttachmentClassCache = putAttachmentClassCache;
+function sandboxed(code) {
+    const frame = document.createElement("iframe");
+    document.body.appendChild(frame);
+    if (frame.contentWindow) {
+        const F = frame.contentWindow.Function;
+        const args = Object.keys(frame.contentWindow).join();
+        document.body.removeChild(frame);
+        return F(args, code)();
+    }
+}
+exports.sandboxed = sandboxed;
 
 
 /***/ }),
@@ -1480,6 +1495,10 @@ class attachmentClass {
         this.mode = mode;
         this.status = Status.pending;
         this.retryTime = 0;
+        this.defaultHeader = {
+            Referer: document.location.origin,
+            Accept: "image/webp,*/*",
+        };
     }
     async init() {
         if (this.mode === "naive") {
@@ -1492,8 +1511,14 @@ class attachmentClass {
         return this.imageBlob;
     }
     downloadImage() {
+        const headers = Object.assign(this.defaultHeader, this.headers);
+        const referer = headers.Referer;
+        delete headers["Referer"];
         this.status = Status.downloading;
-        return fetch(this.url)
+        return fetch(this.url, {
+            headers: Object.assign({}, headers),
+            referrer: referer,
+        })
             .then((response) => {
             if (response.ok) {
                 this.status = Status.finished;
@@ -1508,7 +1533,7 @@ class attachmentClass {
         })
             .catch(async (err) => {
             this.retryTime++;
-            console.error(`[Image]下载 ${this.url} 出错，第${this.retryTime}次重试，下载模式：${this.mode}`);
+            console.error(`[attachment]下载 ${this.url} 出错，第${this.retryTime}次重试，下载模式：${this.mode}`);
             if (this.status !== Status.failed && this.retryTime < rules_1.retryLimit) {
                 await lib_1.sleep(this.retryTime * 1500);
                 return this.downloadImage();
@@ -1521,11 +1546,10 @@ class attachmentClass {
         });
     }
     tmDownloadImage() {
+        const headers = Object.assign(this.defaultHeader, this.headers);
         this.status = Status.downloading;
         return lib_1.gfetch(this.url, {
-            headers: {
-                referrer: this.referer ? this.referer : document.location.origin,
-            },
+            headers: Object.assign({}, headers),
             responseType: "blob",
         })
             .then((response) => {
@@ -1542,7 +1566,7 @@ class attachmentClass {
         })
             .catch(async (err) => {
             this.retryTime++;
-            console.error(`[Image]下载 ${this.url} 出错，第${this.retryTime}次重试，下载模式：${this.mode}`);
+            console.error(`[attachment]下载 ${this.url} 出错，第${this.retryTime}次重试，下载模式：${this.mode}`);
             if (this.status !== Status.failed && this.retryTime < rules_1.retryLimit) {
                 await lib_1.sleep(this.retryTime * 1500);
                 return this.tmDownloadImage();
@@ -1717,6 +1741,12 @@ async function getRule() {
         case "www.wenku8.net": {
             const { wenku8 } = await Promise.resolve().then(() => __webpack_require__(8));
             ruleClass = wenku8;
+            break;
+        }
+        case "www.dmzj.com":
+        case "www.dmzj1.com": {
+            const { dmzj } = await Promise.resolve().then(() => __webpack_require__(291));
+            ruleClass = dmzj;
             break;
         }
         default: {
@@ -2530,6 +2560,112 @@ class ciweimao {
     }
 }
 exports.ciweimao = ciweimao;
+
+
+/***/ }),
+
+/***/ 291:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.dmzj = void 0;
+const main_1 = __webpack_require__(519);
+const lib_1 = __webpack_require__(563);
+class dmzj {
+    constructor() {
+        this.imageMode = "TM";
+    }
+    async bookParse(chapterParse) {
+        const bookUrl = document.location.href;
+        const bookname = (document.querySelector(".comic_deCon > h1 > a")).innerText.trim();
+        const author = (document.querySelector(".comic_deCon_liO > li:nth-child(1)")).innerText
+            .replace("作者：", "")
+            .trim();
+        let introduction;
+        const introDom = document.querySelector(".comic_deCon_d");
+        if (introDom === null) {
+            introduction = null;
+        }
+        else {
+            let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "TM");
+            introduction = introCleantext;
+        }
+        const additionalMetadate = {};
+        const coverUrl = (document.querySelector(".comic_i_img > a > img")).src;
+        if (coverUrl) {
+            additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
+            additionalMetadate.cover.init();
+        }
+        const chapters = [];
+        let cos = document.querySelectorAll("div.zj_list_con:nth-child(4) > ul.list_con_li > li");
+        let chapterNumber = 0;
+        for (const co of Array.from(cos)) {
+            chapterNumber++;
+            const a = co.firstElementChild;
+            const span = a.lastElementChild;
+            const chapterName = span.innerText;
+            const chapterUrl = a.href;
+            const isVIP = false;
+            const isPaid = false;
+            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, null, null, null, chapterParse, "UTF-8");
+            chapters.push(chapter);
+        }
+        return {
+            bookUrl: bookUrl,
+            bookname: bookname,
+            author: author,
+            introduction: introduction,
+            additionalMetadate: additionalMetadate,
+            chapters: chapters,
+        };
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset) {
+        function getpicUrlList(doc) {
+            const img_prefix = "https://images.dmzj1.com/";
+            let pages = lib_1.sandboxed(doc.querySelector("head > script").innerText +
+                ";return pages;");
+            pages = pages.replace(/\n/g, "");
+            pages = pages.replace(/\r/g, "|");
+            const info = lib_1.sandboxed("return (" + pages + ")");
+            if (info) {
+                const picUrlList = info["page_url"]
+                    .split("|")
+                    .map((pic) => img_prefix + pic);
+                return picUrlList;
+            }
+        }
+        lib_1.console_debug(`[Chapter]请求 ${chapterUrl}`);
+        const doc = await lib_1.getHtmlDOM(chapterUrl, charset);
+        const picUrlList = getpicUrlList(doc);
+        if (picUrlList) {
+            const content = document.createElement("div");
+            for (const picUrl of picUrlList) {
+                const pElem = document.createElement("p");
+                const imgElem = document.createElement("img");
+                imgElem.src = picUrl;
+                pElem.appendChild(imgElem);
+                content.appendChild(pElem);
+            }
+            let { dom, text, images } = lib_1.cleanDOM(content, "TM");
+            return {
+                chapterName: chapterName,
+                contentRaw: content,
+                contentText: text,
+                contentHTML: dom,
+                contentImages: images,
+            };
+        }
+        return {
+            chapterName: chapterName,
+            contentRaw: null,
+            contentText: null,
+            contentHTML: null,
+            contentImages: null,
+        };
+    }
+}
+exports.dmzj = dmzj;
 
 
 /***/ }),
