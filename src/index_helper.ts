@@ -169,6 +169,11 @@ img {
 .main > h1 {
   margin-top: 1.5em;
   margin-bottom: 1.5em;
+}
+a.disabled {
+  pointer-events: none;
+  cursor: default;
+  color: gray;
 }`;
   }
 
@@ -321,6 +326,10 @@ img {
         chapterAnchor.href = chapterHtmlFileName;
         chapterAnchor.innerHTML = chapterName;
 
+        if (!chapter.contentHTML) {
+          chapterAnchor.classList.add("disabled");
+        }
+
         chapterDiv.appendChild(chapterAnchor);
         sectionDiv?.appendChild(chapterDiv);
       } else {
@@ -339,6 +348,10 @@ img {
         const chapterAnchor = document.createElement("a");
         chapterAnchor.href = chapterHtmlFileName;
         chapterAnchor.innerHTML = chapterName;
+
+        if (!chapter.contentHTML) {
+          chapterAnchor.classList.add("disabled");
+        }
 
         chapterDiv.appendChild(chapterAnchor);
         sectionDiv?.appendChild(chapterDiv);
