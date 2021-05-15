@@ -229,6 +229,11 @@ export async function getRule(): Promise<ruleClass> {
       ruleClass = westnovel;
       break;
     }
+    case "www.mht.tw": {
+      const { mht } = await import("./rules/mht");
+      ruleClass = mht;
+      break;
+    }
     default: {
       throw new Error("Not Found Rule!");
     }

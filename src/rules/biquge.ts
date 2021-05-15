@@ -7,7 +7,7 @@ import {
 import { ruleClass, bookParseObject, chapterParseObject } from "../rules";
 import { getHtmlDOM, cleanDOM, rm } from "../lib";
 
-async function bookParseTemp({
+export async function bookParseTemp({
   bookUrl,
   bookname,
   author,
