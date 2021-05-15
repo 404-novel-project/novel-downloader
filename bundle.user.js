@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        3.6.3.1621062148395
+// @version        3.6.3.1621063620045
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -413,7 +413,12 @@ function formatText(elems, builder) {
                     return false;
                 })()) {
                 temp0();
-                builder.text = builder.text + "\n\n" + textContent + "\n\n";
+                if (builder.text.endsWith("\n")) {
+                    builder.text = builder.text + textContent + "\n\n";
+                }
+                else {
+                    builder.text = builder.text + "\n\n" + textContent + "\n\n";
+                }
                 return;
             }
             else {
@@ -1138,17 +1143,17 @@ a.disabled {
     }
     genMetaDateTxt() {
         let metaDateText = `题名：${this.book.bookname}\n作者：${this.book.author}`;
-        if (this.book.introduction) {
-            metaDateText += `\n简介：${this.book.introduction}`;
-        }
-        if (this.book.additionalMetadate.cover) {
-            metaDateText += `\n封面图片地址：${this.book.additionalMetadate.cover.url}`;
-        }
         if (this.book.additionalMetadate.tags) {
             metaDateText += `\nTag列表：${this.book.additionalMetadate.tags.join("、")}`;
         }
         metaDateText += `\n原始网址：${this.book.bookUrl}`;
-        metaDateText += `\n下载时间：${new Date().toISOString()}\n本文件由小说下载器生成，软件地址：https://github.com/yingziwu/novel-downloader`;
+        if (this.book.additionalMetadate.cover) {
+            metaDateText += `\n封面图片地址：${this.book.additionalMetadate.cover.url}`;
+        }
+        if (this.book.introduction) {
+            metaDateText += `\n简介：${this.book.introduction}`;
+        }
+        metaDateText += `\n下载时间：${new Date().toISOString()}\n本文件由小说下载器生成，软件地址：https://github.com/yingziwu/novel-downloader\n\n`;
         return metaDateText;
     }
     addImageToZip(image, zip) {
