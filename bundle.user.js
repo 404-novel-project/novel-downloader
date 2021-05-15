@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        3.6.3.1621091419238
+// @version        3.6.3.1621093222183
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -1168,7 +1168,8 @@ a.disabled {
         }
     }
     genSectionText(sectionName) {
-        return `${"=".repeat(20)}\n\n\n\n# ${sectionName}\n\n\n\n${"=".repeat(20)}`;
+        return (`${"=".repeat(20)}\n\n\n\n# ${sectionName}\n\n\n\n${"=".repeat(20)}` +
+            "\n\n");
     }
     genChapterText(chapterName, contentText) {
         return `## ${chapterName}\n\n${contentText}\n\n`;
@@ -1514,7 +1515,7 @@ class Book {
 }
 exports.Book = Book;
 class Chapter {
-    constructor(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, chapterParse, charset) {
+    constructor(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, chapterParse, charset, options) {
         this.bookUrl = bookUrl;
         this.bookname = bookname;
         this.chapterUrl = chapterUrl;
@@ -1527,23 +1528,25 @@ class Chapter {
         this.sectionChapterNumber = sectionChapterNumber;
         this.chapterParse = chapterParse;
         this.charset = charset;
+        this.options = options;
         this.status = Status.pending;
         this.retryTime = 0;
     }
     async init() {
         const obj = await this.parse();
-        const { chapterName, contentRaw, contentText, contentHTML, contentImages, } = obj;
+        const { chapterName, contentRaw, contentText, contentHTML, contentImages, additionalMetadate, } = obj;
         this.chapterName = chapterName;
         this.contentRaw = contentRaw;
         this.contentText = contentText;
         this.contentHTML = contentHTML;
         this.contentImages = contentImages;
+        this.additionalMetadate = additionalMetadate;
         console.log(`[Chapter]${this.chapterName} 解析完成。`);
         return obj;
     }
     async parse() {
         this.status = Status.downloading;
-        return this.chapterParse(this.chapterUrl, this.chapterName, this.isVIP, this.isPaid, this.charset)
+        return this.chapterParse(this.chapterUrl, this.chapterName, this.isVIP, this.isPaid, this.charset, this.options)
             .then(async (obj) => {
             const contentImages = obj.contentImages;
             if (contentImages) {
@@ -1572,6 +1575,7 @@ class Chapter {
                     contentText: null,
                     contentHTML: null,
                     contentImages: null,
+                    additionalMetadate: null,
                 };
             }
         });
@@ -1937,7 +1941,7 @@ class c17k {
                 const isPaid = () => {
                     return false;
                 };
-                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), isPaid(), sectionName, sectionNumber, sectionChapterNumber, chapterParse, "UTF-8");
+                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), isPaid(), sectionName, sectionNumber, sectionChapterNumber, chapterParse, "UTF-8", {});
                 const isLogin = () => {
                     return false;
                 };
@@ -1957,7 +1961,7 @@ class c17k {
             chapters: chapters,
         };
     }
-    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset) {
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         async function publicChapter() {
             const doc = await lib_1.getHtmlDOM(chapterUrl, charset);
             const chapterName = (doc.querySelector("#readArea > div.readAreaBox.content > h1")).innerText.trim();
@@ -1974,6 +1978,7 @@ class c17k {
                     contentText: text,
                     contentHTML: dom,
                     contentImages: images,
+                    additionalMetadate: null,
                 };
             }
             else {
@@ -1983,6 +1988,7 @@ class c17k {
                     contentText: null,
                     contentHTML: null,
                     contentImages: null,
+                    additionalMetadate: null,
                 };
             }
         }
@@ -1993,6 +1999,7 @@ class c17k {
                 contentText: null,
                 contentHTML: null,
                 contentImages: null,
+                additionalMetadate: null,
             };
         }
         if (isVIP) {
@@ -2064,7 +2071,7 @@ class c226ks {
             const chapterUrl = a.href;
             const isVIP = false;
             const isPaid = false;
-            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, null, null, null, chapterParse, "UTF-8");
+            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, null, null, null, chapterParse, "UTF-8", {});
             chapters.push(chapter);
         }
         return {
@@ -2077,7 +2084,7 @@ class c226ks {
             chapters: chapters,
         };
     }
-    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset) {
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         const dom = await lib_1.getHtmlDOM(chapterUrl, charset);
         chapterName = dom.querySelector("h1.title").innerText.trim();
         const content = dom.querySelector("#content");
@@ -2091,6 +2098,7 @@ class c226ks {
                 contentText: text,
                 contentHTML: dom,
                 contentImages: images,
+                additionalMetadate: null,
             };
         }
         else {
@@ -2100,6 +2108,7 @@ class c226ks {
                 contentText: null,
                 contentHTML: null,
                 contentImages: null,
+                additionalMetadate: null,
             };
         }
     }
@@ -2168,7 +2177,7 @@ async function bookParseTemp({ bookUrl, bookname, author, introDom, introDomPatc
                 const chapterUrl = a.href;
                 const isVIP = false;
                 const isPaid = false;
-                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, chapterParse, charset);
+                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, chapterParse, charset, {});
                 chapters.push(chapter);
             }
         }
@@ -2194,6 +2203,7 @@ async function chapterParseTemp({ dom, chapterUrl, chapterName, contenSelector, 
             contentText: text,
             contentHTML: dom,
             contentImages: images,
+            additionalMetadate: null,
         };
     }
     else {
@@ -2203,6 +2213,7 @@ async function chapterParseTemp({ dom, chapterUrl, chapterName, contenSelector, 
             contentText: null,
             contentHTML: null,
             contentImages: null,
+            additionalMetadate: null,
         };
     }
 }
@@ -2225,7 +2236,7 @@ class biquwo {
             chapterParse: chapterParse,
         });
     }
-    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset) {
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         const dom = await lib_1.getHtmlDOM(chapterUrl, charset);
         return chapterParseTemp({
             dom,
@@ -2260,7 +2271,7 @@ class shuquge {
             chapterParse: chapterParse,
         });
     }
-    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset) {
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         const dom = await lib_1.getHtmlDOM(chapterUrl, charset);
         return chapterParseTemp({
             dom,
@@ -2298,7 +2309,7 @@ class dingdiann {
             chapterParse: chapterParse,
         });
     }
-    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset) {
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         const dom = await lib_1.getHtmlDOM(chapterUrl, charset);
         return chapterParseTemp({
             dom,
@@ -2341,7 +2352,7 @@ class gebiqu {
             chapterParse: chapterParse,
         });
     }
-    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset) {
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         const dom = await lib_1.getHtmlDOM(chapterUrl, charset);
         return chapterParseTemp({
             dom,
@@ -2377,7 +2388,7 @@ class zwdu {
             chapterParse: chapterParse,
         });
     }
-    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset) {
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         const dom = await lib_1.getHtmlDOM(chapterUrl, charset);
         return chapterParseTemp({
             dom,
@@ -2455,7 +2466,7 @@ class ciweimao {
                         isPaid = true;
                     }
                 }
-                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, chapterParse, "UTF-8");
+                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, chapterParse, "UTF-8", {});
                 const isLogin = ((_b = document.querySelector(".login-info.ly-fr")) === null || _b === void 0 ? void 0 : _b.childElementCount) === 1
                     ? true
                     : false;
@@ -2475,7 +2486,7 @@ class ciweimao {
             chapters: chapters,
         };
     }
-    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset) {
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         function decrypt(item) {
             let message = item.content;
             let keys = item.keys;
@@ -2577,6 +2588,7 @@ class ciweimao {
                 contentText: text,
                 contentHTML: dom,
                 contentImages: images,
+                additionalMetadate: null,
             };
         }
         async function vipChapter() {
@@ -2669,6 +2681,7 @@ class ciweimao {
                     contentText: contentText,
                     contentHTML: contentHTML,
                     contentImages: contentImages,
+                    additionalMetadate: null,
                 };
             }
             else {
@@ -2678,6 +2691,7 @@ class ciweimao {
                     contentText: null,
                     contentHTML: null,
                     contentImages: null,
+                    additionalMetadate: null,
                 };
             }
         }
@@ -2741,7 +2755,7 @@ class dmzj {
             const chapterUrl = a.href;
             const isVIP = false;
             const isPaid = false;
-            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, null, null, null, chapterParse, "UTF-8");
+            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, null, null, null, chapterParse, "UTF-8", {});
             chapters.push(chapter);
         }
         return {
@@ -2754,7 +2768,7 @@ class dmzj {
             chapters: chapters,
         };
     }
-    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset) {
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         function getpicUrlList(doc) {
             const img_prefix = "https://images.dmzj1.com/";
             let pages = lib_1.sandboxed(doc.querySelector("head > script").innerText +
@@ -2788,6 +2802,7 @@ class dmzj {
                 contentText: text,
                 contentHTML: dom,
                 contentImages: images,
+                additionalMetadate: null,
             };
         }
         return {
@@ -2796,6 +2811,7 @@ class dmzj {
             contentText: null,
             contentHTML: null,
             contentImages: null,
+            additionalMetadate: null,
         };
     }
 }
@@ -2897,7 +2913,7 @@ class gongzicp {
                 const isVIP = chapterObj.pay;
                 const isPaid = chapterObj.is_sub;
                 sectionChapterNumber++;
-                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, chapterParse, "UTF-8");
+                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, chapterParse, "UTF-8", {});
                 if (isVIP && !(logined && chapter.isPaid)) {
                     chapter.status = main_1.Status.aborted;
                 }
@@ -2914,7 +2930,7 @@ class gongzicp {
             chapters: chapters,
         };
     }
-    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset) {
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         function cpDecrypt(content_orig) {
             const setIv = (key) => {
                 key = key + parseInt("165455", 14).toString(32);
@@ -2992,6 +3008,7 @@ class gongzicp {
                             contentText: null,
                             contentHTML: null,
                             contentImages: null,
+                            additionalMetadate: null,
                         };
                     }
                     else if (chapterInfo.chapterPrice === 0 ||
@@ -3056,6 +3073,7 @@ class gongzicp {
                             contentText: contentText,
                             contentHTML: contentHTML,
                             contentImages: null,
+                            additionalMetadate: null,
                         };
                     }
                 }
@@ -3066,6 +3084,7 @@ class gongzicp {
                 contentText: null,
                 contentHTML: null,
                 contentImages: null,
+                additionalMetadate: null,
             };
         }
         async function publicChapter() {
@@ -3144,7 +3163,7 @@ class hetushu {
                     const chapterUrl = a.href;
                     const isVIP = false;
                     const isPaid = false;
-                    const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, chapterParse, "UTF-8");
+                    const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, chapterParse, "UTF-8", {});
                     chapters.push(chapter);
                 }
             }
@@ -3159,7 +3178,7 @@ class hetushu {
             chapters: chapters,
         };
     }
-    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset) {
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         async function sorfPage() {
             let path, bid, sid, position;
             if (/\/(book[0-9]?)\/([0-9]+)\/([0-9]+)\.html(\?position=([0-9]+))?$/.test(chapterUrl)) {
@@ -3246,6 +3265,7 @@ class hetushu {
                 contentText: text,
                 contentHTML: dom,
                 contentImages: images,
+                additionalMetadate: null,
             };
         }
         else {
@@ -3255,6 +3275,7 @@ class hetushu {
                 contentText: null,
                 contentHTML: null,
                 contentImages: null,
+                additionalMetadate: null,
             };
         }
     }
@@ -3313,7 +3334,7 @@ class idejian {
             const chapterUrl = aElem.href;
             const isVIP = false;
             const isPaid = false;
-            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, null, null, null, chapterParse, "UTF-8");
+            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, null, null, null, chapterParse, "UTF-8", {});
             chapters.push(chapter);
         }
         return {
@@ -3326,7 +3347,7 @@ class idejian {
             chapters: chapters,
         };
     }
-    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset) {
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         lib_1.console_debug(`[Chapter]请求 ${chapterUrl}`);
         let doc = await lib_1.getHtmlDOM(chapterUrl, charset);
         chapterName = doc.querySelector(".title").innerText.trim();
@@ -3345,6 +3366,7 @@ class idejian {
                 contentText: text,
                 contentHTML: dom,
                 contentImages: images,
+                additionalMetadate: null,
             };
         }
         else {
@@ -3354,6 +3376,7 @@ class idejian {
                 contentText: null,
                 contentHTML: null,
                 contentImages: null,
+                additionalMetadate: null,
             };
         }
     }
@@ -3445,7 +3468,7 @@ class jjwxc {
                         const chapterName = a.innerText.trim();
                         const chapterUrl = a.getAttribute("rel");
                         if (chapterUrl) {
-                            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), null, sectionName, sectionNumber, sectionChapterNumber, chapterParse, "GB18030");
+                            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), null, sectionName, sectionNumber, sectionChapterNumber, chapterParse, "GB18030", {});
                             const isLogin = () => {
                                 if (document.getElementById("jj_login")) {
                                     return false;
@@ -3463,7 +3486,7 @@ class jjwxc {
                     else {
                         const chapterName = a.innerText.trim();
                         const chapterUrl = a.href;
-                        const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), null, sectionName, sectionNumber, sectionChapterNumber, chapterParse, "GB18030");
+                        const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), null, sectionName, sectionNumber, sectionChapterNumber, chapterParse, "GB18030", {});
                         const isLogin = () => {
                             if (document.getElementById("jj_login")) {
                                 return false;
@@ -3490,7 +3513,7 @@ class jjwxc {
             chapters: chapters,
         };
     }
-    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset) {
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         async function publicChapter() {
             const dom = await lib_1.getHtmlDOM(chapterUrl, charset);
             const chapterName = (dom.querySelector("div.noveltext h2")).innerText.trim();
@@ -3519,6 +3542,7 @@ class jjwxc {
                     contentText: text,
                     contentHTML: dom,
                     contentImages: images,
+                    additionalMetadate: null,
                 };
             }
             return {
@@ -3527,6 +3551,7 @@ class jjwxc {
                 contentText: null,
                 contentHTML: null,
                 contentImages: null,
+                additionalMetadate: null,
             };
         }
         async function vipChapter() {
@@ -3670,6 +3695,7 @@ class jjwxc {
                         contentText: finalText,
                         contentHTML: finalDom,
                         contentImages: images,
+                        additionalMetadate: null,
                     };
                 }
             }
@@ -3679,6 +3705,7 @@ class jjwxc {
                 contentText: null,
                 contentHTML: null,
                 contentImages: null,
+                additionalMetadate: null,
             };
         }
         if (isVIP) {
@@ -26432,7 +26459,7 @@ class linovel {
                 const isPaid = () => {
                     return false;
                 };
-                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), isPaid(), sectionName, sectionNumber, sectionChapterNumber, chapterParse, "UTF-8");
+                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), isPaid(), sectionName, sectionNumber, sectionChapterNumber, chapterParse, "UTF-8", {});
                 const isLogin = () => {
                     return false;
                 };
@@ -26452,7 +26479,7 @@ class linovel {
             chapters: chapters,
         };
     }
-    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset) {
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         async function publicChapter() {
             const doc = await lib_1.getHtmlDOM(chapterUrl, charset);
             const chapterName = (doc.querySelector(".article-title")).innerText.trim();
@@ -26465,6 +26492,7 @@ class linovel {
                     contentText: text,
                     contentHTML: dom,
                     contentImages: images,
+                    additionalMetadate: null,
                 };
             }
             else {
@@ -26474,6 +26502,7 @@ class linovel {
                     contentText: null,
                     contentHTML: null,
                     contentImages: null,
+                    additionalMetadate: null,
                 };
             }
         }
@@ -26484,6 +26513,7 @@ class linovel {
                 contentText: null,
                 contentHTML: null,
                 contentImages: null,
+                additionalMetadate: null,
             };
         }
         if (isVIP) {
@@ -26511,6 +26541,7 @@ class meegoq {
     constructor() {
         this.imageMode = "TM";
         this.concurrencyLimit = 3;
+        this.charset = "GBK";
     }
     async bookParse(chapterParse) {
         const bookUrl = document.location.href.replace("/book", "/info");
@@ -26570,7 +26601,7 @@ class meegoq {
                     const chapterUrl = a.href;
                     const isVIP = false;
                     const isPaid = false;
-                    const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, chapterParse, "GBK");
+                    const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, chapterParse, "GBK", {});
                     chapters.push(chapter);
                 }
             }
@@ -26585,7 +26616,7 @@ class meegoq {
             chapters: chapters,
         };
     }
-    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset) {
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         const dom = await lib_1.getHtmlDOM(chapterUrl, charset);
         chapterName = (dom.querySelector("article > header > h1")).innerText.trim();
         const content = dom.querySelector("#content");
@@ -26597,6 +26628,7 @@ class meegoq {
                 contentText: text,
                 contentHTML: dom,
                 contentImages: images,
+                additionalMetadate: null,
             };
         }
         else {
@@ -26606,6 +26638,7 @@ class meegoq {
                 contentText: null,
                 contentHTML: null,
                 contentImages: null,
+                additionalMetadate: null,
             };
         }
     }
@@ -26698,7 +26731,7 @@ class qidian {
                     }
                     return false;
                 };
-                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), isPaid(), sectionName, sectionNumber, sectionChapterNumber, chapterParse, "UTF-8");
+                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), isPaid(), sectionName, sectionNumber, sectionChapterNumber, chapterParse, "UTF-8", {});
                 const isLogin = () => {
                     const sign_in_dom = document.querySelector(".sign-in");
                     const sign_out_dom = document.querySelector(".sign-out");
@@ -26725,7 +26758,7 @@ class qidian {
             chapters: chapters,
         };
     }
-    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset) {
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         async function publicChapter() {
             const dom = await lib_1.ggetHtmlDOM(chapterUrl, charset);
             const chapterName = (dom.querySelector(".j_chapterName > .content-wrap")).innerText.trim();
@@ -26745,6 +26778,7 @@ class qidian {
                     contentText: text,
                     contentHTML: dom,
                     contentImages: images,
+                    additionalMetadate: null,
                 };
             }
             else {
@@ -26754,6 +26788,7 @@ class qidian {
                     contentText: null,
                     contentHTML: null,
                     contentImages: null,
+                    additionalMetadate: null,
                 };
             }
         }
@@ -26805,6 +26840,7 @@ class qidian {
                         contentText: text,
                         contentHTML: dom,
                         contentImages: images,
+                        additionalMetadate: null,
                     };
                 }
             }
@@ -26814,6 +26850,7 @@ class qidian {
                 contentText: null,
                 contentHTML: null,
                 contentImages: null,
+                additionalMetadate: null,
             };
         }
         if (isVIP) {
@@ -26882,7 +26919,7 @@ class qimao {
             const isPaid = () => {
                 return false;
             };
-            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), isPaid(), null, null, null, chapterParse, "UTF-8");
+            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), isPaid(), null, null, null, chapterParse, "UTF-8", {});
             const isLogin = () => {
                 return false;
             };
@@ -26901,7 +26938,7 @@ class qimao {
             chapters: chapters,
         };
     }
-    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset) {
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         async function publicChapter() {
             lib_1.console_debug(`[Chapter]请求 ${chapterUrl}`);
             let doc = await lib_1.getHtmlDOM(chapterUrl, charset);
@@ -26915,6 +26952,7 @@ class qimao {
                     contentText: text,
                     contentHTML: dom,
                     contentImages: images,
+                    additionalMetadate: null,
                 };
             }
             else {
@@ -26924,6 +26962,7 @@ class qimao {
                     contentText: null,
                     contentHTML: null,
                     contentImages: null,
+                    additionalMetadate: null,
                 };
             }
         }
@@ -26934,6 +26973,7 @@ class qimao {
                 contentText: null,
                 contentHTML: null,
                 contentImages: null,
+                additionalMetadate: null,
             };
         }
         if (isVIP) {
@@ -27022,7 +27062,7 @@ class sfacg {
                     ((_c = c.firstElementChild) === null || _c === void 0 ? void 0 : _c.getAttribute("class")) === "icn_vip") {
                     isVIP = true;
                 }
-                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, chapterParse, "UTF-8");
+                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, chapterParse, "UTF-8", {});
                 const isLogin = ((_d = document.querySelector(".user-bar > .top-link > .normal-link")) === null || _d === void 0 ? void 0 : _d.childElementCount) === 3
                     ? true
                     : false;
@@ -27042,7 +27082,7 @@ class sfacg {
             chapters: chapters,
         };
     }
-    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset) {
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         const chapter_id = chapterUrl.split("/").slice(-2, -1)[0];
         async function publicChapter() {
             const dom = await lib_1.getHtmlDOM(chapterUrl, charset);
@@ -27056,6 +27096,7 @@ class sfacg {
                     contentText: text,
                     contentHTML: dom,
                     contentImages: images,
+                    additionalMetadate: null,
                 };
             }
             else {
@@ -27065,6 +27106,7 @@ class sfacg {
                     contentText: null,
                     contentHTML: null,
                     contentImages: null,
+                    additionalMetadate: null,
                 };
             }
         }
@@ -27138,6 +27180,7 @@ class sfacg {
                             contentText: contentText,
                             contentHTML: contentHTML,
                             contentImages: contentImages,
+                            additionalMetadate: null,
                         };
                     }
                     else {
@@ -27151,6 +27194,7 @@ class sfacg {
                 contentText: null,
                 contentHTML: null,
                 contentImages: null,
+                additionalMetadate: null,
             };
         }
         if (isVIP) {
@@ -27211,7 +27255,7 @@ class shouda8 {
             const chapterUrl = a.href;
             const isVIP = false;
             const isPaid = false;
-            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, i + 1, chapterName, isVIP, isPaid, null, null, null, chapterParse, "UTF-8");
+            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, i + 1, chapterName, isVIP, isPaid, null, null, null, chapterParse, "UTF-8", {});
             chapters.push(chapter);
         }
         return {
@@ -27224,7 +27268,7 @@ class shouda8 {
             chapters: chapters,
         };
     }
-    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset) {
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         const dom = await lib_1.getHtmlDOM(chapterUrl, charset);
         chapterName = (dom.querySelector(".kfyd > h2:nth-child(1)")).innerText.trim();
         const content = dom.querySelector("#content");
@@ -27237,6 +27281,7 @@ class shouda8 {
                 contentText: text,
                 contentHTML: dom,
                 contentImages: images,
+                additionalMetadate: null,
             };
         }
         else {
@@ -27246,6 +27291,7 @@ class shouda8 {
                 contentText: null,
                 contentHTML: null,
                 contentImages: null,
+                additionalMetadate: null,
             };
         }
     }
@@ -27329,7 +27375,7 @@ class shuhai {
                 };
                 const chapterName = a.innerText.trim();
                 const chapterUrl = a.href;
-                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), isPaid(), sectionName, sectionNumber, sectionChapterNumber, chapterParse, "GBK");
+                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), isPaid(), sectionName, sectionNumber, sectionChapterNumber, chapterParse, "GBK", {});
                 const isLogin = () => {
                     return false;
                 };
@@ -27349,7 +27395,7 @@ class shuhai {
             chapters: chapters,
         };
     }
-    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset) {
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         async function publicChapter() {
             const dom = await lib_1.ggetHtmlDOM(chapterUrl, charset);
             const chapterName = (dom.querySelector("div.chapter-name")).innerText
@@ -27365,6 +27411,7 @@ class shuhai {
                     contentText: text,
                     contentHTML: dom,
                     contentImages: images,
+                    additionalMetadate: null,
                 };
             }
             else {
@@ -27374,6 +27421,7 @@ class shuhai {
                     contentText: null,
                     contentHTML: null,
                     contentImages: null,
+                    additionalMetadate: null,
                 };
             }
         }
@@ -27384,6 +27432,7 @@ class shuhai {
                 contentText: null,
                 contentHTML: null,
                 contentImages: null,
+                additionalMetadate: null,
             };
         }
         if (isVIP) {
@@ -27474,7 +27523,7 @@ class sosadfun {
             chapterNumber++;
             const chapterName = a.innerText.trim();
             const chapterUrl = a.href;
-            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, false, false, null, null, null, chapterParse, "UTF-8");
+            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, false, false, null, null, null, chapterParse, "UTF-8", {});
             chapters.push(chapter);
         }
         return {
@@ -27487,7 +27536,7 @@ class sosadfun {
             chapters: chapters,
         };
     }
-    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset) {
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         const doc = await lib_1.getHtmlDOM(chapterUrl, charset);
         chapterName = (doc.querySelector("strong.h3")).innerText.trim();
         const content = (doc.querySelector(".main-text.no-selection > span[id^=full]"));
@@ -27499,6 +27548,7 @@ class sosadfun {
                 contentText: text,
                 contentHTML: dom,
                 contentImages: images,
+                additionalMetadate: null,
             };
         }
         else {
@@ -27508,6 +27558,7 @@ class sosadfun {
                 contentText: null,
                 contentHTML: null,
                 contentImages: null,
+                additionalMetadate: null,
             };
         }
     }
@@ -27573,7 +27624,7 @@ class tadu {
             const isPaid = () => {
                 return false;
             };
-            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), isPaid(), null, null, null, chapterParse, "UTF-8");
+            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), isPaid(), null, null, null, chapterParse, "UTF-8", {});
             const isLogin = () => {
                 return false;
             };
@@ -27592,7 +27643,7 @@ class tadu {
             chapters: chapters,
         };
     }
-    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset) {
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         async function publicChapter() {
             var _a;
             lib_1.console_debug(`[Chapter]请求 ${chapterUrl}`);
@@ -27630,6 +27681,7 @@ class tadu {
                         contentText: text,
                         contentHTML: dom,
                         contentImages: images,
+                        additionalMetadate: null,
                     };
                 }
             }
@@ -27639,6 +27691,7 @@ class tadu {
                 contentText: null,
                 contentHTML: null,
                 contentImages: null,
+                additionalMetadate: null,
             };
         }
         async function vipChapter() {
@@ -27648,6 +27701,7 @@ class tadu {
                 contentText: null,
                 contentHTML: null,
                 contentImages: null,
+                additionalMetadate: null,
             };
         }
         if (isVIP) {
@@ -27730,7 +27784,7 @@ class uukanshu {
                     const chapterUrl = a.href;
                     const isVIP = false;
                     const isPaid = false;
-                    const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, chapterParse, "GBK");
+                    const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, chapterParse, "GBK", {});
                     chapters.push(chapter);
                 }
             }
@@ -27745,7 +27799,7 @@ class uukanshu {
             chapters: chapters,
         };
     }
-    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset) {
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         const dom = await lib_1.getHtmlDOM(chapterUrl, charset);
         chapterName = dom.querySelector("#timu").innerText.trim();
         const content = dom.querySelector("#contentbox");
@@ -27771,6 +27825,7 @@ class uukanshu {
                 contentText: text,
                 contentHTML: dom,
                 contentImages: images,
+                additionalMetadate: null,
             };
         }
         else {
@@ -27780,6 +27835,7 @@ class uukanshu {
                 contentText: null,
                 contentHTML: null,
                 contentImages: null,
+                additionalMetadate: null,
             };
         }
     }
@@ -27845,7 +27901,7 @@ class wenku8 {
                 const a = td.firstElementChild;
                 const chapterName = a.innerText.trim();
                 const chapterUrl = a.href;
-                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, false, false, sectionName, sectionNumber, sectionChapterNumber, chapterParse, "GBK");
+                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, false, false, sectionName, sectionNumber, sectionChapterNumber, chapterParse, "GBK", {});
                 chapters.push(chapter);
             }
         }
@@ -27859,7 +27915,7 @@ class wenku8 {
             chapters: chapters,
         };
     }
-    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset) {
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         const doc = await lib_1.getHtmlDOM(chapterUrl, charset);
         const content = doc.querySelector("#content");
         if (content) {
@@ -27871,6 +27927,7 @@ class wenku8 {
                 contentText: text,
                 contentHTML: dom,
                 contentImages: images,
+                additionalMetadate: null,
             };
         }
         else {
@@ -27880,6 +27937,7 @@ class wenku8 {
                 contentText: null,
                 contentHTML: null,
                 contentImages: null,
+                additionalMetadate: null,
             };
         }
     }
@@ -27930,7 +27988,7 @@ class westnovel {
             chapterNumber++;
             const chapterName = a.innerText.trim();
             const chapterUrl = a.href;
-            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, false, false, null, null, null, chapterParse, "UTF-8");
+            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, false, false, null, null, null, chapterParse, "UTF-8", {});
             chapters.push(chapter);
         }
         return {
@@ -27943,7 +28001,7 @@ class westnovel {
             chapters: chapters,
         };
     }
-    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset) {
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         const doc = await lib_1.getHtmlDOM(chapterUrl, charset);
         chapterName = (doc.querySelector("#BookCon > h1:nth-child(1)")).innerText.trim();
         const content = doc.querySelector("#BookText");
@@ -27958,6 +28016,7 @@ class westnovel {
                 contentText: text,
                 contentHTML: dom,
                 contentImages: images,
+                additionalMetadate: null,
             };
         }
         else {
@@ -27967,6 +28026,7 @@ class westnovel {
                 contentText: null,
                 contentHTML: null,
                 contentImages: null,
+                additionalMetadate: null,
             };
         }
     }
@@ -28044,7 +28104,7 @@ class xiaoshuodaquan {
                 const chapterUrl = a.href;
                 const isVIP = false;
                 const isPaid = false;
-                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, chapterParse, "GBK");
+                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, chapterParse, "GBK", {});
                 chapters.push(chapter);
             }
         }
@@ -28058,7 +28118,7 @@ class xiaoshuodaquan {
             chapters: chapters,
         };
     }
-    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset) {
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         const dom = await lib_1.getHtmlDOM(chapterUrl, charset);
         chapterName = (dom.querySelector(".page-body > h1:nth-child(4)")).innerText.trim();
         const _content = dom.querySelector("#content");
@@ -28074,6 +28134,7 @@ class xiaoshuodaquan {
                 contentText: text,
                 contentHTML: dom,
                 contentImages: images,
+                additionalMetadate: null,
             };
         }
         else {
@@ -28083,6 +28144,7 @@ class xiaoshuodaquan {
                 contentText: null,
                 contentHTML: null,
                 contentImages: null,
+                additionalMetadate: null,
             };
         }
     }
@@ -28136,7 +28198,7 @@ class xinwanben {
             const chapterUrl = co.href;
             const isVIP = false;
             const isPaid = false;
-            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, null, null, null, chapterParse, "GBK");
+            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, null, null, null, chapterParse, "GBK", {});
             chapters.push(chapter);
         }
         return {
@@ -28149,7 +28211,7 @@ class xinwanben {
             chapters: chapters,
         };
     }
-    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset) {
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         var _a;
         lib_1.console_debug(`[Chapter]请求 ${chapterUrl}`);
         let nowUrl = chapterUrl;
@@ -28187,6 +28249,7 @@ class xinwanben {
             contentText: text,
             contentHTML: dom,
             contentImages: images,
+            additionalMetadate: null,
         };
     }
 }
@@ -28320,7 +28383,7 @@ class xkzw {
                 const chapterUrl = bookUrl + (sitechapter.chapterid + bookid * 11) + ".html";
                 const isVIP = false;
                 const isPaid = false;
-                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, chapterParse, "UTF-8");
+                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, chapterParse, "UTF-8", {});
                 chapters.push(chapter);
             }
         }
@@ -28334,7 +28397,7 @@ class xkzw {
             chapters: chapters,
         };
     }
-    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset) {
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         function runEval(CryptoJS) {
             function gettt1(str, keyStr, ivStr) {
                 let key = CryptoJS.enc.Utf8.parse(keyStr);
@@ -28452,6 +28515,7 @@ class xkzw {
                 contentText: text,
                 contentHTML: dom,
                 contentImages: images,
+                additionalMetadate: null,
             };
         }
         else {
@@ -28461,6 +28525,7 @@ class xkzw {
                 contentText: null,
                 contentHTML: null,
                 contentImages: null,
+                additionalMetadate: null,
             };
         }
     }
@@ -28514,7 +28579,7 @@ class yrun {
                 const chapterUrl = a.href;
                 const isVIP = false;
                 const isPaid = false;
-                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, i, chapterName, isVIP, isPaid, null, null, null, chapterParse, "UTF-8");
+                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, i, chapterName, isVIP, isPaid, null, null, null, chapterParse, "UTF-8", {});
                 chapters.push(chapter);
             }
         }
@@ -28528,7 +28593,7 @@ class yrun {
             chapters: chapters,
         };
     }
-    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset) {
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         const dom = await lib_1.getHtmlDOM(chapterUrl, charset);
         chapterName = (dom.querySelector(".bookname > h1:nth-child(1)")).innerText.trim();
         const content = dom.querySelector("#content");
@@ -28540,6 +28605,7 @@ class yrun {
                 contentText: text,
                 contentHTML: dom,
                 contentImages: images,
+                additionalMetadate: null,
             };
         }
         else {
@@ -28549,6 +28615,7 @@ class yrun {
                 contentText: null,
                 contentHTML: null,
                 contentImages: null,
+                additionalMetadate: null,
             };
         }
     }
@@ -28639,7 +28706,7 @@ class yuzhaige {
             const chapterUrl = a.href;
             const isVIP = false;
             const isPaid = false;
-            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, null, null, null, chapterParse, "UTF-8");
+            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, null, null, null, chapterParse, "UTF-8", {});
             chapters.push(chapter);
         }
         return {
@@ -28652,7 +28719,7 @@ class yuzhaige {
             chapters: chapters,
         };
     }
-    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset) {
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         function contentAppend() {
             function UpWz(m, i) {
                 let k = Math.ceil((i + 1) % code);
@@ -28743,6 +28810,7 @@ class yuzhaige {
                 contentText: finalText,
                 contentHTML: finalDom,
                 contentImages: finalImages,
+                additionalMetadate: null,
             };
         }
         else {
@@ -28752,6 +28820,7 @@ class yuzhaige {
                 contentText: null,
                 contentHTML: null,
                 contentImages: null,
+                additionalMetadate: null,
             };
         }
     }
@@ -28826,7 +28895,7 @@ class zongheng {
                 const isPaid = () => {
                     return false;
                 };
-                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), isPaid(), sectionName, sectionNumber, sectionChapterNumber, chapterParse, "UTF-8");
+                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), isPaid(), sectionName, sectionNumber, sectionChapterNumber, chapterParse, "UTF-8", {});
                 const isLogin = () => {
                     return false;
                 };
@@ -28846,7 +28915,7 @@ class zongheng {
             chapters: chapters,
         };
     }
-    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset) {
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         async function publicChapter() {
             const dom = await lib_1.ggetHtmlDOM(chapterUrl, charset);
             const chapterName = (dom.querySelector("div.title_txtbox")).innerText.trim();
@@ -28859,6 +28928,7 @@ class zongheng {
                     contentText: text,
                     contentHTML: dom,
                     contentImages: images,
+                    additionalMetadate: null,
                 };
             }
             else {
@@ -28868,6 +28938,7 @@ class zongheng {
                     contentText: null,
                     contentHTML: null,
                     contentImages: null,
+                    additionalMetadate: null,
                 };
             }
         }
@@ -28878,6 +28949,7 @@ class zongheng {
                 contentText: null,
                 contentHTML: null,
                 contentImages: null,
+                additionalMetadate: null,
             };
         }
         if (isVIP) {

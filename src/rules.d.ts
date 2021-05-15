@@ -1,4 +1,4 @@
-import { BookAdditionalMetadate, attachmentClass, Chapter } from "./main";
+import { BookAdditionalMetadate, attachmentClass, Chapter, ChapterAdditionalMetadate } from "./main";
 export interface bookParseObject {
     bookUrl: string;
     bookname: string;
@@ -14,6 +14,7 @@ export interface chapterParseObject {
     contentText: string | null;
     contentHTML: HTMLElement | null;
     contentImages: attachmentClass[] | null;
+    additionalMetadate: ChapterAdditionalMetadate | null;
 }
 export interface ruleClass {
     imageMode: "naive" | "TM";
@@ -21,7 +22,7 @@ export interface ruleClass {
     concurrencyLimit?: number;
     maxRunLimit?: number;
     bookParse(chapterParse: ruleClass["chapterParse"]): Promise<bookParseObject>;
-    chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean | null, charset: string): Promise<chapterParseObject>;
+    chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean | null, charset: string, options: object): Promise<chapterParseObject>;
 }
 export declare const retryLimit = 5;
 export declare const enaleDebug = false;

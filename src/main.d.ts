@@ -27,6 +27,9 @@ export declare class Book {
     chapters: Chapter[];
     constructor(bookUrl: string, bookname: string, author: string, introduction: string | null, introductionHTML: HTMLElement | null, additionalMetadate: BookAdditionalMetadate, chapters: Chapter[]);
 }
+export interface ChapterAdditionalMetadate {
+    lastModified?: number;
+}
 export declare class Chapter {
     bookUrl: string;
     bookname: string;
@@ -40,13 +43,15 @@ export declare class Chapter {
     sectionChapterNumber: number | null;
     chapterParse: ruleClass["chapterParse"];
     charset: string;
+    options: object;
     status: Status;
     retryTime: number;
     contentRaw: HTMLElement | null;
     contentText: string | null;
     contentHTML: HTMLElement | null;
     contentImages: attachmentClass[] | null;
-    constructor(bookUrl: string, bookname: string, chapterUrl: string, chapterNumber: number, chapterName: string | null, isVIP: boolean, isPaid: boolean | null, sectionName: string | null, sectionNumber: number | null, sectionChapterNumber: number | null, chapterParse: ruleClass["chapterParse"], charset: string);
+    additionalMetadate: ChapterAdditionalMetadate | null;
+    constructor(bookUrl: string, bookname: string, chapterUrl: string, chapterNumber: number, chapterName: string | null, isVIP: boolean, isPaid: boolean | null, sectionName: string | null, sectionNumber: number | null, sectionChapterNumber: number | null, chapterParse: ruleClass["chapterParse"], charset: string, options: object);
     init(): Promise<chapterParseObject>;
     private parse;
 }

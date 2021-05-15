@@ -3,6 +3,7 @@ import { ruleClass } from "../rules";
 export declare class meegoq implements ruleClass {
     imageMode: "naive" | "TM";
     concurrencyLimit: number;
+    charset: string;
     constructor();
     bookParse(chapterParse: ruleClass["chapterParse"]): Promise<{
         bookUrl: string;
@@ -13,17 +14,19 @@ export declare class meegoq implements ruleClass {
         additionalMetadate: BookAdditionalMetadate;
         chapters: Chapter[];
     }>;
-    chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean, charset: string): Promise<{
+    chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean, charset: string, options: object): Promise<{
         chapterName: string;
         contentRaw: HTMLElement;
         contentText: string;
         contentHTML: HTMLElement;
         contentImages: attachmentClass[];
+        additionalMetadate: null;
     } | {
         chapterName: string;
         contentRaw: null;
         contentText: null;
         contentHTML: null;
         contentImages: null;
+        additionalMetadate: null;
     }>;
 }

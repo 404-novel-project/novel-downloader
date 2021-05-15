@@ -13,5 +13,5 @@ export declare class qidian implements ruleClass {
         additionalMetadate: BookAdditionalMetadate;
         chapters: Chapter[];
     }>;
-    chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean, charset: string): Promise<chapterParseObject>;
+    chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean, charset: string, options: object): Promise<chapterParseObject>;
 }

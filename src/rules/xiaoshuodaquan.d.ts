@@ -14,17 +14,19 @@ export declare class xiaoshuodaquan implements ruleClass {
         additionalMetadate: BookAdditionalMetadate;
         chapters: Chapter[];
     }>;
-    chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean, charset: string): Promise<{
+    chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean, charset: string, options: object): Promise<{
         chapterName: string;
         contentRaw: HTMLDivElement;
         contentText: string;
         contentHTML: HTMLElement;
         contentImages: attachmentClass[];
+        additionalMetadate: null;
     } | {
         chapterName: string;
         contentRaw: null;
         contentText: null;
         contentHTML: null;
         contentImages: null;
+        additionalMetadate: null;
     }>;
 }
