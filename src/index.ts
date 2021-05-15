@@ -93,6 +93,7 @@ async function initChapters(rule: ruleClass, book: Book) {
     }
     return b0 && b1;
   });
+  totalChapterNumber = chapters.length;
   if (chapters.length === 0) {
     console.error(`[initChapters]初始化章节出错，未找到需初始化章节`);
     return [];
@@ -187,10 +188,6 @@ async function run() {
 
   console_debug("[run]主体开始");
   const book = await initBook(rule);
-
-  totalChapterNumber = book.chapters.filter(
-    (chapter) => chapter.status === Status.pending
-  ).length;
   await initChapters(rule, book);
   save(book);
 

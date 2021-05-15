@@ -213,6 +213,26 @@ export async function getRule(): Promise<ruleClass> {
       ruleClass = dmzj;
       break;
     }
+    case "sosad.fun":
+    case "www.sosad.fun":
+    case "wenzhan.org":
+    case "www.wenzhan.org":
+    case "sosadfun.com":
+    case "www.sosadfun.com":
+    case "xn--pxtr7m5ny.com":
+    case "www.xn--pxtr7m5ny.com":
+    case "xn--pxtr7m.com":
+    case "www.xn--pxtr7m.com":
+    case "xn--pxtr7m5ny.net":
+    case "www.xn--pxtr7m5ny.net":
+    case "xn--pxtr7m.net":
+    case "www.xn--pxtr7m.net":
+    case "sosadfun.link":
+    case "www.sosadfun.link": {
+      const { sosadfun } = await import("./rules/sosadfun");
+      ruleClass = sosadfun;
+      break;
+    }
     default: {
       throw new Error("Not Found Rule!");
     }
