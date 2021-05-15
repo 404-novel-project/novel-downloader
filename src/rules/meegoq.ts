@@ -5,10 +5,12 @@ import { getHtmlDOM, cleanDOM, rm } from "../lib";
 export class meegoq implements ruleClass {
   public imageMode: "naive" | "TM";
   public concurrencyLimit: number;
+  public charset: string;
 
   public constructor() {
     this.imageMode = "TM";
     this.concurrencyLimit = 3;
+    this.charset = "GBK";
   }
 
   public async bookParse(chapterParse: ruleClass["chapterParse"]) {
@@ -102,7 +104,8 @@ export class meegoq implements ruleClass {
             sectionNumber,
             sectionChapterNumber,
             chapterParse,
-            "GBK"
+            "GBK",
+            {}
           );
           chapters.push(chapter);
         }
@@ -124,7 +127,8 @@ export class meegoq implements ruleClass {
     chapterName: string | null,
     isVIP: boolean,
     isPaid: boolean,
-    charset: string
+    charset: string,
+    options: object
   ) {
     const dom = await getHtmlDOM(chapterUrl, charset);
 
@@ -141,6 +145,7 @@ export class meegoq implements ruleClass {
         contentText: text,
         contentHTML: dom,
         contentImages: images,
+        additionalMetadate: null,
       };
     } else {
       return {
@@ -149,6 +154,7 @@ export class meegoq implements ruleClass {
         contentText: null,
         contentHTML: null,
         contentImages: null,
+        additionalMetadate: null,
       };
     }
   }

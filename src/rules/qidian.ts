@@ -121,7 +121,8 @@ export class qidian implements ruleClass {
           sectionNumber,
           sectionChapterNumber,
           chapterParse,
-          "UTF-8"
+          "UTF-8",
+          {}
         );
         const isLogin = () => {
           const sign_in_dom = document.querySelector(".sign-in");
@@ -156,7 +157,8 @@ export class qidian implements ruleClass {
     chapterName: string | null,
     isVIP: boolean,
     isPaid: boolean,
-    charset: string
+    charset: string,
+    options: object
   ) {
     async function publicChapter(): Promise<chapterParseObject> {
       const dom = await ggetHtmlDOM(chapterUrl, charset);
@@ -184,6 +186,7 @@ export class qidian implements ruleClass {
           contentText: text,
           contentHTML: dom,
           contentImages: images,
+          additionalMetadate: null,
         };
       } else {
         return {
@@ -192,6 +195,7 @@ export class qidian implements ruleClass {
           contentText: null,
           contentHTML: null,
           contentImages: null,
+          additionalMetadate: null,
         };
       }
     }
@@ -301,6 +305,7 @@ export class qidian implements ruleClass {
             contentText: text,
             contentHTML: dom,
             contentImages: images,
+            additionalMetadate: null,
           };
         }
       }
@@ -311,6 +316,7 @@ export class qidian implements ruleClass {
         contentText: null,
         contentHTML: null,
         contentImages: null,
+        additionalMetadate: null,
       };
     }
 

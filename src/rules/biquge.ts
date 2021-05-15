@@ -101,7 +101,8 @@ async function bookParseTemp({
           sectionNumber,
           sectionChapterNumber,
           chapterParse,
-          charset
+          charset,
+          {}
         );
         chapters.push(chapter);
       }
@@ -144,6 +145,7 @@ async function chapterParseTemp({
       contentText: text,
       contentHTML: dom,
       contentImages: images,
+      additionalMetadate: null,
     };
   } else {
     return {
@@ -152,6 +154,7 @@ async function chapterParseTemp({
       contentText: null,
       contentHTML: null,
       contentImages: null,
+      additionalMetadate: null,
     };
   }
 }
@@ -188,7 +191,8 @@ export class biquwo implements ruleClass {
     chapterName: string | null,
     isVIP: boolean,
     isPaid: boolean,
-    charset: string
+    charset: string,
+    options: object
   ) {
     const dom = await getHtmlDOM(chapterUrl, charset);
     return chapterParseTemp({
@@ -244,7 +248,8 @@ export class shuquge implements ruleClass {
     chapterName: string | null,
     isVIP: boolean,
     isPaid: boolean,
-    charset: string
+    charset: string,
+    options: object
   ) {
     const dom = await getHtmlDOM(chapterUrl, charset);
     return chapterParseTemp({
@@ -301,7 +306,8 @@ export class dingdiann implements ruleClass {
     chapterName: string | null,
     isVIP: boolean,
     isPaid: boolean,
-    charset: string
+    charset: string,
+    options: object
   ) {
     const dom = await getHtmlDOM(chapterUrl, charset);
     return chapterParseTemp({
@@ -365,7 +371,8 @@ export class gebiqu implements ruleClass {
     chapterName: string | null,
     isVIP: boolean,
     isPaid: boolean,
-    charset: string
+    charset: string,
+    options: object
   ) {
     const dom = await getHtmlDOM(chapterUrl, charset);
     return chapterParseTemp({
@@ -418,7 +425,8 @@ export class zwdu implements ruleClass {
     chapterName: string | null,
     isVIP: boolean,
     isPaid: boolean,
-    charset: string
+    charset: string,
+    options: object
   ) {
     const dom = await getHtmlDOM(chapterUrl, charset);
     return chapterParseTemp({

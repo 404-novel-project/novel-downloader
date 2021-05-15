@@ -75,7 +75,8 @@ export class idejian implements ruleClass {
         null,
         null,
         chapterParse,
-        "UTF-8"
+        "UTF-8",
+        {}
       );
       chapters.push(chapter);
     }
@@ -96,7 +97,8 @@ export class idejian implements ruleClass {
     chapterName: string | null,
     isVIP: boolean,
     isPaid: boolean,
-    charset: string
+    charset: string,
+    options: object
   ) {
     console_debug(`[Chapter]请求 ${chapterUrl}`);
     let doc = await getHtmlDOM(chapterUrl, charset);
@@ -116,6 +118,7 @@ export class idejian implements ruleClass {
         contentText: text,
         contentHTML: dom,
         contentImages: images,
+        additionalMetadate: null,
       };
     } else {
       return {
@@ -124,6 +127,7 @@ export class idejian implements ruleClass {
         contentText: null,
         contentHTML: null,
         contentImages: null,
+        additionalMetadate: null,
       };
     }
   }

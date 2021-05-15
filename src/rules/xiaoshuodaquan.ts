@@ -104,7 +104,8 @@ export class xiaoshuodaquan implements ruleClass {
           sectionNumber,
           sectionChapterNumber,
           chapterParse,
-          "GBK"
+          "GBK",
+          {}
         );
         chapters.push(chapter);
       }
@@ -126,7 +127,8 @@ export class xiaoshuodaquan implements ruleClass {
     chapterName: string | null,
     isVIP: boolean,
     isPaid: boolean,
-    charset: string
+    charset: string,
+    options: object
   ) {
     const dom = await getHtmlDOM(chapterUrl, charset);
 
@@ -148,6 +150,7 @@ export class xiaoshuodaquan implements ruleClass {
         contentText: text,
         contentHTML: dom,
         contentImages: images,
+        additionalMetadate: null,
       };
     } else {
       return {
@@ -156,6 +159,7 @@ export class xiaoshuodaquan implements ruleClass {
         contentText: null,
         contentHTML: null,
         contentImages: null,
+        additionalMetadate: null,
       };
     }
   }

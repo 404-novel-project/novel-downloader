@@ -1,4 +1,9 @@
-import { BookAdditionalMetadate, attachmentClass, Chapter } from "./main";
+import {
+  BookAdditionalMetadate,
+  attachmentClass,
+  Chapter,
+  ChapterAdditionalMetadate,
+} from "./main";
 
 export interface bookParseObject {
   bookUrl: string;
@@ -16,6 +21,7 @@ export interface chapterParseObject {
   contentText: string | null;
   contentHTML: HTMLElement | null;
   contentImages: attachmentClass[] | null;
+  additionalMetadate: ChapterAdditionalMetadate | null;
 }
 export interface ruleClass {
   imageMode: "naive" | "TM";
@@ -28,7 +34,8 @@ export interface ruleClass {
     chapterName: string | null,
     isVIP: boolean,
     isPaid: boolean | null,
-    charset: string
+    charset: string,
+    options: object
   ): Promise<chapterParseObject>;
 }
 

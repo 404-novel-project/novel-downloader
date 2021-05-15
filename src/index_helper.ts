@@ -461,7 +461,10 @@ a.disabled {
   }
 
   private genSectionText(sectionName: string) {
-    return `${"=".repeat(20)}\n\n\n\n# ${sectionName}\n\n\n\n${"=".repeat(20)}`;
+    return (
+      `${"=".repeat(20)}\n\n\n\n# ${sectionName}\n\n\n\n${"=".repeat(20)}` +
+      "\n\n"
+    );
   }
 
   private genChapterText(chapterName: string, contentText: string) {

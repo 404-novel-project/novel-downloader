@@ -105,7 +105,8 @@ export class yuzhaige implements ruleClass {
         null,
         null,
         chapterParse,
-        "UTF-8"
+        "UTF-8",
+        {}
       );
       chapters.push(chapter);
     }
@@ -126,7 +127,8 @@ export class yuzhaige implements ruleClass {
     chapterName: string | null,
     isVIP: boolean,
     isPaid: boolean,
-    charset: string
+    charset: string,
+    options: object
   ) {
     function contentAppend() {
       function UpWz(m: number, i: number) {
@@ -244,6 +246,7 @@ export class yuzhaige implements ruleClass {
         contentText: finalText,
         contentHTML: finalDom,
         contentImages: finalImages,
+        additionalMetadate: null,
       };
     } else {
       return {
@@ -252,6 +255,7 @@ export class yuzhaige implements ruleClass {
         contentText: null,
         contentHTML: null,
         contentImages: null,
+        additionalMetadate: null,
       };
     }
   }

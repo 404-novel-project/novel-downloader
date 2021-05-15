@@ -50,6 +50,9 @@ export class Book {
   }
 }
 
+export interface ChapterAdditionalMetadate {
+  lastModified?: number;
+}
 export class Chapter {
   public bookUrl: string;
   public bookname: string;
@@ -66,6 +69,7 @@ export class Chapter {
 
   public chapterParse: ruleClass["chapterParse"];
   public charset: string;
+  public options: object;
 
   public status: Status;
   public retryTime: number;
@@ -74,6 +78,7 @@ export class Chapter {
   public contentText!: string | null;
   public contentHTML!: HTMLElement | null;
   public contentImages!: attachmentClass[] | null;
+  public additionalMetadate!: ChapterAdditionalMetadate | null;
 
   public constructor(
     bookUrl: string,
@@ -87,7 +92,8 @@ export class Chapter {
     sectionNumber: number | null,
     sectionChapterNumber: number | null,
     chapterParse: ruleClass["chapterParse"],
-    charset: string
+    charset: string,
+    options: object
   ) {
     this.bookUrl = bookUrl;
     this.bookname = bookname;
@@ -103,6 +109,7 @@ export class Chapter {
 
     this.chapterParse = chapterParse;
     this.charset = charset;
+    this.options = options;
 
     this.status = Status.pending;
     this.retryTime = 0;
@@ -117,12 +124,14 @@ export class Chapter {
       contentText,
       contentHTML,
       contentImages,
+      additionalMetadate,
     } = obj;
     this.chapterName = chapterName;
     this.contentRaw = contentRaw;
     this.contentText = contentText;
     this.contentHTML = contentHTML;
     this.contentImages = contentImages;
+    this.additionalMetadate = additionalMetadate;
 
     console.log(`[Chapter]${this.chapterName} 解析完成。`);
     return obj;
@@ -136,7 +145,8 @@ export class Chapter {
       this.chapterName,
       this.isVIP,
       this.isPaid,
-      this.charset
+      this.charset,
+      this.options
     )
       .then(async (obj) => {
         const contentImages = obj.contentImages;
@@ -173,6 +183,7 @@ export class Chapter {
             contentText: null,
             contentHTML: null,
             contentImages: null,
+            additionalMetadate: null,
           };
         }
       });

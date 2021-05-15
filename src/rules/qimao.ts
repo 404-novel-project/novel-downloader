@@ -91,7 +91,8 @@ export class qimao implements ruleClass {
         null,
         null,
         chapterParse,
-        "UTF-8"
+        "UTF-8",
+        {}
       );
       const isLogin = () => {
         //Todo
@@ -119,7 +120,8 @@ export class qimao implements ruleClass {
     chapterName: string | null,
     isVIP: boolean,
     isPaid: boolean,
-    charset: string
+    charset: string,
+    options: object
   ) {
     async function publicChapter(): Promise<chapterParseObject> {
       console_debug(`[Chapter]请求 ${chapterUrl}`);
@@ -135,6 +137,7 @@ export class qimao implements ruleClass {
           contentText: text,
           contentHTML: dom,
           contentImages: images,
+          additionalMetadate: null,
         };
       } else {
         return {
@@ -143,6 +146,7 @@ export class qimao implements ruleClass {
           contentText: null,
           contentHTML: null,
           contentImages: null,
+          additionalMetadate: null,
         };
       }
     }
@@ -155,6 +159,7 @@ export class qimao implements ruleClass {
         contentText: null,
         contentHTML: null,
         contentImages: null,
+        additionalMetadate: null,
       };
     }
 

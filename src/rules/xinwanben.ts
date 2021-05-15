@@ -75,7 +75,8 @@ export class xinwanben implements ruleClass {
         null,
         null,
         chapterParse,
-        "GBK"
+        "GBK",
+        {}
       );
       chapters.push(chapter);
     }
@@ -96,7 +97,8 @@ export class xinwanben implements ruleClass {
     chapterName: string | null,
     isVIP: boolean,
     isPaid: boolean,
-    charset: string
+    charset: string,
+    options: object
   ) {
     console_debug(`[Chapter]请求 ${chapterUrl}`);
     let nowUrl = chapterUrl;
@@ -138,6 +140,7 @@ export class xinwanben implements ruleClass {
       contentText: text,
       contentHTML: dom,
       contentImages: images,
+      additionalMetadate: null,
     };
   }
 }

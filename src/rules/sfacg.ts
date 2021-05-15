@@ -116,7 +116,8 @@ export class sfacg implements ruleClass {
           sectionNumber,
           sectionChapterNumber,
           chapterParse,
-          "UTF-8"
+          "UTF-8",
+          {}
         );
         const isLogin =
           document.querySelector(".user-bar > .top-link > .normal-link")
@@ -146,7 +147,8 @@ export class sfacg implements ruleClass {
     chapterName: string | null,
     isVIP: boolean,
     isPaid: boolean,
-    charset: string
+    charset: string,
+    options: object
   ) {
     const chapter_id = chapterUrl.split("/").slice(-2, -1)[0];
 
@@ -164,6 +166,7 @@ export class sfacg implements ruleClass {
           contentText: text,
           contentHTML: dom,
           contentImages: images,
+          additionalMetadate: null,
         };
       } else {
         return {
@@ -172,6 +175,7 @@ export class sfacg implements ruleClass {
           contentText: null,
           contentHTML: null,
           contentImages: null,
+          additionalMetadate: null,
         };
       }
     }
@@ -273,6 +277,7 @@ export class sfacg implements ruleClass {
               contentText: contentText,
               contentHTML: contentHTML,
               contentImages: contentImages,
+              additionalMetadate: null,
             };
           } else {
             return publicChapter();
@@ -285,6 +290,7 @@ export class sfacg implements ruleClass {
         contentText: null,
         contentHTML: null,
         contentImages: null,
+        additionalMetadate: null,
       };
     }
 

@@ -65,7 +65,8 @@ export class westnovel implements ruleClass {
         null,
         null,
         chapterParse,
-        "UTF-8"
+        "UTF-8",
+        {}
       );
       chapters.push(chapter);
     }
@@ -86,7 +87,8 @@ export class westnovel implements ruleClass {
     chapterName: string | null,
     isVIP: boolean,
     isPaid: boolean,
-    charset: string
+    charset: string,
+    options: object
   ) {
     const doc = await getHtmlDOM(chapterUrl, charset);
     chapterName = (<HTMLElement>(
@@ -105,6 +107,7 @@ export class westnovel implements ruleClass {
         contentText: text,
         contentHTML: dom,
         contentImages: images,
+        additionalMetadate: null,
       };
     } else {
       return {
@@ -113,6 +116,7 @@ export class westnovel implements ruleClass {
         contentText: null,
         contentHTML: null,
         contentImages: null,
+        additionalMetadate: null,
       };
     }
   }

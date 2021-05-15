@@ -102,7 +102,8 @@ export class ciweimao implements ruleClass {
           sectionNumber,
           sectionChapterNumber,
           chapterParse,
-          "UTF-8"
+          "UTF-8",
+          {}
         );
         const isLogin =
           document.querySelector(".login-info.ly-fr")?.childElementCount === 1
@@ -131,7 +132,8 @@ export class ciweimao implements ruleClass {
     chapterName: string | null,
     isVIP: boolean,
     isPaid: boolean,
-    charset: string
+    charset: string,
+    options: object
   ) {
     interface decrypt_item {
       content: string;
@@ -276,6 +278,7 @@ export class ciweimao implements ruleClass {
         contentText: text,
         contentHTML: dom,
         contentImages: images,
+        additionalMetadate: null,
       };
     }
 
@@ -410,6 +413,7 @@ export class ciweimao implements ruleClass {
           contentText: contentText,
           contentHTML: contentHTML,
           contentImages: contentImages,
+          additionalMetadate: null,
         };
       } else {
         return {
@@ -418,6 +422,7 @@ export class ciweimao implements ruleClass {
           contentText: null,
           contentHTML: null,
           contentImages: null,
+          additionalMetadate: null,
         };
       }
     }

@@ -75,7 +75,8 @@ export class dmzj implements ruleClass {
         null,
         null,
         chapterParse,
-        "UTF-8"
+        "UTF-8",
+        {}
       );
       chapters.push(chapter);
     }
@@ -96,7 +97,8 @@ export class dmzj implements ruleClass {
     chapterName: string | null,
     isVIP: boolean,
     isPaid: boolean,
-    charset: string
+    charset: string,
+    options: object
   ) {
     function getpicUrlList(doc: Document) {
       const img_prefix = "https://images.dmzj1.com/";
@@ -136,6 +138,7 @@ export class dmzj implements ruleClass {
         contentText: text,
         contentHTML: dom,
         contentImages: images,
+        additionalMetadate: null,
       };
     }
 
@@ -145,6 +148,7 @@ export class dmzj implements ruleClass {
       contentText: null,
       contentHTML: null,
       contentImages: null,
+      additionalMetadate: null,
     };
   }
 }

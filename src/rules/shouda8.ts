@@ -70,7 +70,8 @@ export class shouda8 implements ruleClass {
         null,
         null,
         chapterParse,
-        "UTF-8"
+        "UTF-8",
+        {}
       );
       chapters.push(chapter);
     }
@@ -91,7 +92,8 @@ export class shouda8 implements ruleClass {
     chapterName: string | null,
     isVIP: boolean,
     isPaid: boolean,
-    charset: string
+    charset: string,
+    options: object
   ) {
     const dom = await getHtmlDOM(chapterUrl, charset);
 
@@ -109,6 +111,7 @@ export class shouda8 implements ruleClass {
         contentText: text,
         contentHTML: dom,
         contentImages: images,
+        additionalMetadate: null,
       };
     } else {
       return {
@@ -117,6 +120,7 @@ export class shouda8 implements ruleClass {
         contentText: null,
         contentHTML: null,
         contentImages: null,
+        additionalMetadate: null,
       };
     }
   }

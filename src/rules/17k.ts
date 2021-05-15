@@ -97,7 +97,8 @@ export class c17k implements ruleClass {
           sectionNumber,
           sectionChapterNumber,
           chapterParse,
-          "UTF-8"
+          "UTF-8",
+          {}
         );
 
         const isLogin = () => {
@@ -127,7 +128,8 @@ export class c17k implements ruleClass {
     chapterName: string | null,
     isVIP: boolean,
     isPaid: boolean,
-    charset: string
+    charset: string,
+    options: object
   ) {
     async function publicChapter(): Promise<chapterParseObject> {
       const doc = await getHtmlDOM(chapterUrl, charset);
@@ -150,6 +152,7 @@ export class c17k implements ruleClass {
           contentText: text,
           contentHTML: dom,
           contentImages: images,
+          additionalMetadate: null,
         };
       } else {
         return {
@@ -158,6 +161,7 @@ export class c17k implements ruleClass {
           contentText: null,
           contentHTML: null,
           contentImages: null,
+          additionalMetadate: null,
         };
       }
     }
@@ -170,6 +174,7 @@ export class c17k implements ruleClass {
         contentText: null,
         contentHTML: null,
         contentImages: null,
+        additionalMetadate: null,
       };
     }
 

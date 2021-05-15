@@ -92,7 +92,8 @@ export class wenku8 implements ruleClass {
           sectionNumber,
           sectionChapterNumber,
           chapterParse,
-          "GBK"
+          "GBK",
+          {}
         );
         chapters.push(chapter);
       }
@@ -114,7 +115,8 @@ export class wenku8 implements ruleClass {
     chapterName: string | null,
     isVIP: boolean,
     isPaid: boolean,
-    charset: string
+    charset: string,
+    options: object
   ) {
     const doc = await getHtmlDOM(chapterUrl, charset);
     // chapterName = (<HTMLElement>doc.querySelector("#title")).innerText.trim();
@@ -129,6 +131,7 @@ export class wenku8 implements ruleClass {
         contentText: text,
         contentHTML: dom,
         contentImages: images,
+        additionalMetadate: null,
       };
     } else {
       return {
@@ -137,6 +140,7 @@ export class wenku8 implements ruleClass {
         contentText: null,
         contentHTML: null,
         contentImages: null,
+        additionalMetadate: null,
       };
     }
   }

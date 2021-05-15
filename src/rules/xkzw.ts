@@ -169,7 +169,8 @@ export class xkzw implements ruleClass {
           sectionNumber,
           sectionChapterNumber,
           chapterParse,
-          "UTF-8"
+          "UTF-8",
+          {}
         );
         chapters.push(chapter);
       }
@@ -191,7 +192,8 @@ export class xkzw implements ruleClass {
     chapterName: string | null,
     isVIP: boolean,
     isPaid: boolean,
-    charset: string
+    charset: string,
+    options: object
   ) {
     function runEval(CryptoJS: any) {
       function gettt1(str: any, keyStr: any, ivStr: any) {
@@ -323,6 +325,7 @@ export class xkzw implements ruleClass {
         contentText: text,
         contentHTML: dom,
         contentImages: images,
+        additionalMetadate: null,
       };
     } else {
       return {
@@ -331,6 +334,7 @@ export class xkzw implements ruleClass {
         contentText: null,
         contentHTML: null,
         contentImages: null,
+        additionalMetadate: null,
       };
     }
   }

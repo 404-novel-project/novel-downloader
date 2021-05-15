@@ -71,6 +71,9 @@ declare enum Status {
     finished = 3,
     aborted = 4
 }
+interface ChapterAdditionalMetadate {
+    lastModified?: number;
+}
 declare class Chapter {
     bookUrl: string;
     bookname: string;
@@ -84,13 +87,15 @@ declare class Chapter {
     sectionChapterNumber: number | null;
     chapterParse: ruleClass["chapterParse"];
     charset: string;
+    options: object;
     status: Status;
     retryTime: number;
     contentRaw: HTMLElement | null;
     contentText: string | null;
     contentHTML: HTMLElement | null;
     contentImages: attachmentClass[] | null;
-    constructor(bookUrl: string, bookname: string, chapterUrl: string, chapterNumber: number, chapterName: string | null, isVIP: boolean, isPaid: boolean | null, sectionName: string | null, sectionNumber: number | null, sectionChapterNumber: number | null, chapterParse: ruleClass["chapterParse"], charset: string);
+    additionalMetadate: ChapterAdditionalMetadate | null;
+    constructor(bookUrl: string, bookname: string, chapterUrl: string, chapterNumber: number, chapterName: string | null, isVIP: boolean, isPaid: boolean | null, sectionName: string | null, sectionNumber: number | null, sectionChapterNumber: number | null, chapterParse: ruleClass["chapterParse"], charset: string, options: object);
     init(): Promise<chapterParseObject>;
     private parse;
 }
@@ -173,6 +178,7 @@ interface chapterParseObject {
     contentText: string | null;
     contentHTML: HTMLElement | null;
     contentImages: attachmentClass[] | null;
+    additionalMetadate: ChapterAdditionalMetadate | null;
 }
 interface ruleClass {
     imageMode: "naive" | "TM";
@@ -180,7 +186,7 @@ interface ruleClass {
     concurrencyLimit?: number;
     maxRunLimit?: number;
     bookParse(chapterParse: ruleClass["chapterParse"]): Promise<bookParseObject>;
-    chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean | null, charset: string): Promise<chapterParseObject>;
+    chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean | null, charset: string, options: object): Promise<chapterParseObject>;
 }
 ```
 

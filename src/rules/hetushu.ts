@@ -81,7 +81,8 @@ export class hetushu implements ruleClass {
             sectionNumber,
             sectionChapterNumber,
             chapterParse,
-            "UTF-8"
+            "UTF-8",
+            {}
           );
           chapters.push(chapter);
         }
@@ -103,7 +104,8 @@ export class hetushu implements ruleClass {
     chapterName: string | null,
     isVIP: boolean,
     isPaid: boolean,
-    charset: string
+    charset: string,
+    options: object
   ) {
     async function sorfPage() {
       //章节排序，来自：https://www.hetushu.com/command/section.js
@@ -207,6 +209,7 @@ export class hetushu implements ruleClass {
         contentText: text,
         contentHTML: dom,
         contentImages: images,
+        additionalMetadate: null,
       };
     } else {
       return {
@@ -215,6 +218,7 @@ export class hetushu implements ruleClass {
         contentText: null,
         contentHTML: null,
         contentImages: null,
+        additionalMetadate: null,
       };
     }
   }

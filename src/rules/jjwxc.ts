@@ -122,7 +122,8 @@ export class jjwxc implements ruleClass {
                 sectionNumber,
                 sectionChapterNumber,
                 chapterParse,
-                "GB18030"
+                "GB18030",
+                {}
               );
               const isLogin = () => {
                 if (document.getElementById("jj_login")) {
@@ -151,7 +152,8 @@ export class jjwxc implements ruleClass {
               sectionNumber,
               sectionChapterNumber,
               chapterParse,
-              "GB18030"
+              "GB18030",
+              {}
             );
             const isLogin = () => {
               if (document.getElementById("jj_login")) {
@@ -185,7 +187,8 @@ export class jjwxc implements ruleClass {
     chapterName: string | null,
     isVIP: boolean,
     isPaid: boolean,
-    charset: string
+    charset: string,
+    options: object
   ) {
     async function publicChapter(): Promise<chapterParseObject> {
       const dom = await getHtmlDOM(chapterUrl, charset);
@@ -225,6 +228,7 @@ export class jjwxc implements ruleClass {
           contentText: text,
           contentHTML: dom,
           contentImages: images,
+          additionalMetadate: null,
         };
       }
       return {
@@ -233,6 +237,7 @@ export class jjwxc implements ruleClass {
         contentText: null,
         contentHTML: null,
         contentImages: null,
+        additionalMetadate: null,
       };
     }
 
@@ -418,6 +423,7 @@ export class jjwxc implements ruleClass {
             contentText: finalText,
             contentHTML: finalDom,
             contentImages: images,
+            additionalMetadate: null,
           };
         }
       }
@@ -427,6 +433,7 @@ export class jjwxc implements ruleClass {
         contentText: null,
         contentHTML: null,
         contentImages: null,
+        additionalMetadate: null,
       };
     }
 

@@ -90,7 +90,8 @@ export class tadu implements ruleClass {
         null,
         null,
         chapterParse,
-        "UTF-8"
+        "UTF-8",
+        {}
       );
       const isLogin = () => {
         //Todo
@@ -118,7 +119,8 @@ export class tadu implements ruleClass {
     chapterName: string | null,
     isVIP: boolean,
     isPaid: boolean,
-    charset: string
+    charset: string,
+    options: object
   ) {
     async function publicChapter(): Promise<chapterParseObject> {
       console_debug(`[Chapter]请求 ${chapterUrl}`);
@@ -163,6 +165,7 @@ export class tadu implements ruleClass {
             contentText: text,
             contentHTML: dom,
             contentImages: images,
+            additionalMetadate: null,
           };
         }
       }
@@ -172,6 +175,7 @@ export class tadu implements ruleClass {
         contentText: null,
         contentHTML: null,
         contentImages: null,
+        additionalMetadate: null,
       };
     }
 
@@ -183,6 +187,7 @@ export class tadu implements ruleClass {
         contentText: null,
         contentHTML: null,
         contentImages: null,
+        additionalMetadate: null,
       };
     }
 

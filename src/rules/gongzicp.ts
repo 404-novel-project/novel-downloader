@@ -350,7 +350,8 @@ export class gongzicp implements ruleClass {
           sectionNumber,
           sectionChapterNumber,
           chapterParse,
-          "UTF-8"
+          "UTF-8",
+          {}
         );
         if (isVIP && !(logined && chapter.isPaid)) {
           chapter.status = Status.aborted;
@@ -374,7 +375,8 @@ export class gongzicp implements ruleClass {
     chapterName: string | null,
     isVIP: boolean,
     isPaid: boolean,
-    charset: string
+    charset: string,
+    options: object
   ) {
     function cpDecrypt(content_orig: string) {
       const setIv = (key: string) => {
@@ -575,6 +577,7 @@ export class gongzicp implements ruleClass {
               contentText: null,
               contentHTML: null,
               contentImages: null,
+              additionalMetadate: null,
             };
           } else if (
             chapterInfo.chapterPrice === 0 ||
@@ -643,6 +646,7 @@ export class gongzicp implements ruleClass {
               contentText: contentText,
               contentHTML: contentHTML,
               contentImages: null,
+              additionalMetadate: null,
             };
           }
         }
@@ -654,6 +658,7 @@ export class gongzicp implements ruleClass {
         contentText: null,
         contentHTML: null,
         contentImages: null,
+        additionalMetadate: null,
       };
     }
     async function publicChapter(): Promise<chapterParseObject> {

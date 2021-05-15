@@ -110,7 +110,8 @@ export class shuhai implements ruleClass {
           sectionNumber,
           sectionChapterNumber,
           chapterParse,
-          "GBK"
+          "GBK",
+          {}
         );
         const isLogin = () => {
           //Todo
@@ -139,7 +140,8 @@ export class shuhai implements ruleClass {
     chapterName: string | null,
     isVIP: boolean,
     isPaid: boolean,
-    charset: string
+    charset: string,
+    options: object
   ) {
     async function publicChapter(): Promise<chapterParseObject> {
       const dom = await ggetHtmlDOM(chapterUrl, charset);
@@ -161,6 +163,7 @@ export class shuhai implements ruleClass {
           contentText: text,
           contentHTML: dom,
           contentImages: images,
+          additionalMetadate: null,
         };
       } else {
         return {
@@ -169,6 +172,7 @@ export class shuhai implements ruleClass {
           contentText: null,
           contentHTML: null,
           contentImages: null,
+          additionalMetadate: null,
         };
       }
     }
@@ -181,6 +185,7 @@ export class shuhai implements ruleClass {
         contentText: null,
         contentHTML: null,
         contentImages: null,
+        additionalMetadate: null,
       };
     }
 
