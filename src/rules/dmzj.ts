@@ -1,5 +1,5 @@
 import { BookAdditionalMetadate, attachmentClass, Chapter } from "../main";
-import { ruleClass, ruleClassNamespace, chapterParseObject } from "../rules";
+import { ruleClass } from "../rules";
 import { getHtmlDOM, cleanDOM, console_debug, sandboxed } from "../lib";
 
 export class dmzj implements ruleClass {
@@ -9,7 +9,7 @@ export class dmzj implements ruleClass {
     this.imageMode = "TM";
   }
 
-  public async bookParse(chapterParse: ruleClassNamespace.chapterParse) {
+  public async bookParse(chapterParse: ruleClass["chapterParse"]) {
     const bookUrl = document.location.href;
 
     const bookname = (<HTMLElement>(

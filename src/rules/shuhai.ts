@@ -5,7 +5,7 @@ import {
   Status,
 } from "../main";
 import { ggetHtmlDOM, cleanDOM, sleep, rm } from "../lib";
-import { ruleClass, ruleClassNamespace, chapterParseObject } from "../rules";
+import { ruleClass, chapterParseObject } from "../rules";
 
 export class shuhai implements ruleClass {
   public imageMode: "naive" | "TM";
@@ -18,7 +18,7 @@ export class shuhai implements ruleClass {
     this.charset = "GBK";
   }
 
-  public async bookParse(chapterParse: ruleClassNamespace.chapterParse) {
+  public async bookParse(chapterParse: ruleClass["chapterParse"]) {
     const bookUrl = document.location.href;
     const bookname = (<HTMLElement>(
       document.querySelector("div.book-info-bookname > span:nth-child(1)")

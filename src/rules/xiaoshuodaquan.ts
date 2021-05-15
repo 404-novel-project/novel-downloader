@@ -1,5 +1,5 @@
 import { BookAdditionalMetadate, attachmentClass, Chapter } from "../main";
-import { ruleClass, ruleClassNamespace } from "../rules";
+import { ruleClass } from "../rules";
 import { getHtmlDOM, cleanDOM, rm } from "../lib";
 
 export class xiaoshuodaquan implements ruleClass {
@@ -13,7 +13,7 @@ export class xiaoshuodaquan implements ruleClass {
     this.concurrencyLimit = 5;
   }
 
-  public async bookParse(chapterParse: ruleClassNamespace.chapterParse) {
+  public async bookParse(chapterParse: ruleClass["chapterParse"]) {
     const ccount = document.querySelector(".crumbswrap")?.childElementCount;
     let bookUrl = document.location.href;
     if (ccount) {

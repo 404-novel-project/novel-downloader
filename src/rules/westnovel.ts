@@ -2,7 +2,7 @@ import { BookAdditionalMetadate, attachmentClass, Chapter } from "../main";
 import { getHtmlDOM, cleanDOM, rm } from "../lib";
 import { ruleClass } from "../rules";
 
-export class sosadfun implements ruleClass {
+export class westnovel implements ruleClass {
   public imageMode: "naive" | "TM";
 
   public constructor() {
@@ -10,64 +10,20 @@ export class sosadfun implements ruleClass {
   }
 
   public async bookParse(chapterParse: ruleClass["chapterParse"]) {
-    const bookUrl = document.location.origin + document.location.pathname;
-
+    const bookUrl = document.location.href;
     const bookname = (<HTMLElement>(
-      document.querySelector(".font-1")
+      document.querySelector(".btitle > h1 > a")
     )).innerText.trim();
-    const authorDom = <HTMLElement>(
-      document.querySelector(
-        "div.h5:nth-child(1) > div:nth-child(1) > a:nth-child(1)"
-      )
-    );
-    let author;
-    if (authorDom) {
-      author = authorDom.innerText.trim();
-    } else {
-      author = "匿名咸鱼";
-    }
 
-    const needLogin = () => {
-      const mainDom = document.querySelector(
-        ".col-xs-12 > .main-text.no-selection"
-      ) as HTMLDivElement;
-      if (mainDom.innerText.trim() === "主楼隐藏，请登录后查看") {
-        return true;
-      } else {
-        return false;
-      }
-    };
-
-    const additionalMetadate: BookAdditionalMetadate = {};
-    additionalMetadate.tags = Array.from(
-      document.querySelectorAll("div.h5:nth-child(1) > div:nth-child(3) > a")
-    ).map((a) => (<HTMLAnchorElement>a).innerText.trim());
+    const author = (<HTMLElement>(
+      document.querySelector(".btitle > em:nth-child(2)")
+    )).innerText
+      .replace("作者：", "")
+      .trim();
 
     let introduction: string | null;
     let introductionHTML: HTMLElement | null;
-    let introDom;
-    if (needLogin()) {
-      alert("本小说需要登录后浏览！");
-      throw new Error("本小说需要登录后浏览！");
-    } else {
-      introDom = document.createElement("div");
-      const shortIntroDom = document.querySelector("div.h5:nth-child(3)");
-      const longIntroDom = document.querySelector(
-        ".col-xs-12 > .main-text.no-selection"
-      );
-      if (shortIntroDom) {
-        const pElem = document.createElement("p");
-        pElem.innerText = (<HTMLDivElement>shortIntroDom).innerText;
-        introDom.appendChild(pElem);
-      }
-      if (longIntroDom) {
-        for (const elem of Array.from(
-          (<HTMLDivElement>longIntroDom.cloneNode(true)).children
-        )) {
-          introDom.appendChild(elem);
-        }
-      }
-    }
+    const introDom = document.querySelector(".intro-p > p:nth-child(1)");
     if (introDom === null) {
       introduction = null;
       introductionHTML = null;
@@ -79,15 +35,19 @@ export class sosadfun implements ruleClass {
       } = cleanDOM(introDom, "TM");
       introduction = introCleantext;
       introductionHTML = introCleanDom;
-      if (introCleanimages) {
-        additionalMetadate.attachments = [...introCleanimages];
-      }
     }
 
-    const chapters: Chapter[] = [];
-    const aList = document.querySelectorAll(
-      ".table > tbody:nth-child(2) > tr > th:nth-child(1) > a"
+    const additionalMetadate: BookAdditionalMetadate = {};
+    let coverUrl = (<HTMLImageElement>document.querySelector(".img-img")).src;
+    additionalMetadate.cover = new attachmentClass(
+      coverUrl,
+      `cover.${coverUrl.split(".").slice(-1)[0]}`,
+      "TM"
     );
+    additionalMetadate.cover.init();
+
+    const chapters: Chapter[] = [];
+    const aList = document.querySelectorAll(".chapterlist > dd > a");
     let chapterNumber = 0;
     for (const a of Array.from(aList)) {
       chapterNumber++;
@@ -130,13 +90,14 @@ export class sosadfun implements ruleClass {
   ) {
     const doc = await getHtmlDOM(chapterUrl, charset);
     chapterName = (<HTMLElement>(
-      doc.querySelector("strong.h3")
+      doc.querySelector("#BookCon > h1:nth-child(1)")
     )).innerText.trim();
 
-    const content = <HTMLElement>(
-      doc.querySelector(".main-text.no-selection > span[id^=full]")
-    );
+    const content = <HTMLElement>doc.querySelector("#BookText");
     if (content) {
+      rm("div.ads", true, content);
+      rm("div.link", true, content);
+      rm("h4", true, content);
       let { dom, text, images } = cleanDOM(content, "TM");
       return {
         chapterName: chapterName,

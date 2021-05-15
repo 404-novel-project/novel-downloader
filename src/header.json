@@ -64,7 +64,8 @@
     "*://www.idejian.com/book/*/",
     "*://www.wenku8.net/novel/*/*/index.htm",
     "*://www.dmzj.com/info/*.html",
-    "*://www.dmzj1.com/info/*.html"
+    "*://www.dmzj1.com/info/*.html",
+    "*://www.westnovel.com/*/*/"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",

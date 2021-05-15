@@ -1,6 +1,6 @@
 import { BookAdditionalMetadate, attachmentClass, Chapter } from "../main";
 import { getHtmlDOM, cleanDOM, rm } from "../lib";
-import { ruleClass, ruleClassNamespace } from "../rules";
+import { ruleClass } from "../rules";
 
 export class wenku8 implements ruleClass {
   public imageMode: "naive" | "TM";
@@ -11,7 +11,7 @@ export class wenku8 implements ruleClass {
     this.charset = "GBK";
   }
 
-  public async bookParse(chapterParse: ruleClassNamespace.chapterParse) {
+  public async bookParse(chapterParse: ruleClass["chapterParse"]) {
     const bookId = document.location.pathname.split("/").slice(-2, -1)[0];
     const bookUrl = [document.location.origin, "book", `${bookId}.htm`].join(
       "/"

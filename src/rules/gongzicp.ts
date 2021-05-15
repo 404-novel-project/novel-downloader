@@ -5,7 +5,7 @@ import {
   Status,
 } from "../main";
 import { cleanDOM, sleep, console_debug } from "../lib";
-import { ruleClass, ruleClassNamespace, chapterParseObject } from "../rules";
+import { ruleClass, chapterParseObject } from "../rules";
 
 export class gongzicp implements ruleClass {
   public imageMode: "naive" | "TM";
@@ -15,7 +15,7 @@ export class gongzicp implements ruleClass {
     this.imageMode = "TM";
     this.concurrencyLimit = 1;
   }
-  public async bookParse(chapterParse: ruleClassNamespace.chapterParse) {
+  public async bookParse(chapterParse: ruleClass["chapterParse"]) {
     const bookUrl = document.location.href;
 
     const bookId = (<HTMLSpanElement>(

@@ -5,7 +5,7 @@ import {
   Status,
 } from "../main";
 import { getHtmlDOM, ggetHtmlDOM, cleanDOM } from "../lib";
-import { ruleClass, ruleClassNamespace, chapterParseObject } from "../rules";
+import { ruleClass, chapterParseObject } from "../rules";
 
 export class zongheng implements ruleClass {
   public imageMode: "naive" | "TM";
@@ -16,7 +16,7 @@ export class zongheng implements ruleClass {
     this.concurrencyLimit = 5;
   }
 
-  public async bookParse(chapterParse: ruleClassNamespace.chapterParse) {
+  public async bookParse(chapterParse: ruleClass["chapterParse"]) {
     const bookUrl = document.location.href.replace("/showchapter/", "/book/");
     const bookname = (<HTMLElement>(
       document.querySelector("div.book-meta > h1")

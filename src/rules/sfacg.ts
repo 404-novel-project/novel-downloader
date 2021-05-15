@@ -5,12 +5,7 @@ import {
   Status,
 } from "../main";
 import { getHtmlDOM, cleanDOM, console_debug, rm } from "../lib";
-import {
-  ruleClass,
-  ruleClassNamespace,
-  chapterParseObject,
-  retryLimit,
-} from "../rules";
+import { ruleClass, chapterParseObject, retryLimit } from "../rules";
 
 export class sfacg implements ruleClass {
   public imageMode: "naive" | "TM";
@@ -21,7 +16,7 @@ export class sfacg implements ruleClass {
     this.concurrencyLimit = 1;
   }
 
-  public async bookParse(chapterParse: ruleClassNamespace.chapterParse) {
+  public async bookParse(chapterParse: ruleClass["chapterParse"]) {
     const bookUrl = document.location.href.replace("/MainIndex/", "");
     const bookname = (<HTMLElement>(
       document.querySelector("h1.story-title")

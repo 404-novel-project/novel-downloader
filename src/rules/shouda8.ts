@@ -1,5 +1,5 @@
 import { BookAdditionalMetadate, attachmentClass, Chapter } from "../main";
-import { ruleClass, ruleClassNamespace } from "../rules";
+import { ruleClass } from "../rules";
 import { getHtmlDOM, cleanDOM, rm } from "../lib";
 
 export class shouda8 implements ruleClass {
@@ -9,7 +9,7 @@ export class shouda8 implements ruleClass {
     this.imageMode = "TM";
   }
 
-  public async bookParse(chapterParse: ruleClassNamespace.chapterParse) {
+  public async bookParse(chapterParse: ruleClass["chapterParse"]) {
     const bookUrl = document.location.href;
     const bookname = (<HTMLElement>(
       document.querySelector(".bread-crumbs > li:nth-child(4)")

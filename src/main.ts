@@ -1,4 +1,4 @@
-import { ruleClassNamespace, chapterParseObject, retryLimit } from "./rules";
+import { ruleClass, chapterParseObject, retryLimit } from "./rules";
 import { gfetch, sleep, console_debug } from "./lib";
 
 export enum Status {
@@ -64,7 +64,7 @@ export class Chapter {
   public sectionNumber: number | null;
   public sectionChapterNumber: number | null;
 
-  public chapterParse: ruleClassNamespace.chapterParse;
+  public chapterParse: ruleClass["chapterParse"];
   public charset: string;
 
   public status: Status;
@@ -86,7 +86,7 @@ export class Chapter {
     sectionName: string | null,
     sectionNumber: number | null,
     sectionChapterNumber: number | null,
-    chapterParse: ruleClassNamespace.chapterParse,
+    chapterParse: ruleClass["chapterParse"],
     charset: string
   ) {
     this.bookUrl = bookUrl;

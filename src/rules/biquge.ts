@@ -4,12 +4,7 @@ import {
   Chapter,
   Book,
 } from "../main";
-import {
-  ruleClass,
-  ruleClassNamespace,
-  bookParseObject,
-  chapterParseObject,
-} from "../rules";
+import { ruleClass, bookParseObject, chapterParseObject } from "../rules";
 import { getHtmlDOM, cleanDOM, rm } from "../lib";
 
 async function bookParseTemp({
@@ -31,7 +26,7 @@ async function bookParseTemp({
   coverUrl: string;
   chapterListSelector: string;
   charset: string;
-  chapterParse: ruleClassNamespace.chapterParse;
+  chapterParse: ruleClass["chapterParse"];
 }): Promise<bookParseObject> {
   let introduction: string | null;
   let introductionHTML: HTMLElement | null;
@@ -168,7 +163,7 @@ export class biquwo implements ruleClass {
     this.imageMode = "TM";
   }
 
-  public async bookParse(chapterParse: ruleClassNamespace.chapterParse) {
+  public async bookParse(chapterParse: ruleClass["chapterParse"]) {
     return bookParseTemp({
       bookUrl: document.location.href,
       bookname: (<HTMLElement>(
@@ -216,7 +211,7 @@ export class shuquge implements ruleClass {
     this.imageMode = "TM";
   }
 
-  public async bookParse(chapterParse: ruleClassNamespace.chapterParse) {
+  public async bookParse(chapterParse: ruleClass["chapterParse"]) {
     return bookParseTemp({
       bookUrl: document.location.href,
       bookname: (<HTMLElement>(
@@ -281,7 +276,7 @@ export class dingdiann implements ruleClass {
     this.concurrencyLimit = 5;
   }
 
-  public async bookParse(chapterParse: ruleClassNamespace.chapterParse) {
+  public async bookParse(chapterParse: ruleClass["chapterParse"]) {
     return bookParseTemp({
       bookUrl: document.location.href,
       bookname: (<HTMLElement>(
@@ -338,7 +333,7 @@ export class gebiqu implements ruleClass {
     this.concurrencyLimit = 5;
   }
 
-  public async bookParse(chapterParse: ruleClassNamespace.chapterParse) {
+  public async bookParse(chapterParse: ruleClass["chapterParse"]) {
     return bookParseTemp({
       bookUrl: document.location.href,
       bookname: (<HTMLElement>(
@@ -398,7 +393,7 @@ export class zwdu implements ruleClass {
     this.charset = "GBK";
   }
 
-  public async bookParse(chapterParse: ruleClassNamespace.chapterParse) {
+  public async bookParse(chapterParse: ruleClass["chapterParse"]) {
     return bookParseTemp({
       bookUrl: document.location.href,
       bookname: (<HTMLElement>(

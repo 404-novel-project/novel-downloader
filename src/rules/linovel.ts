@@ -5,7 +5,7 @@ import {
   Status,
 } from "../main";
 import { getHtmlDOM, cleanDOM, rm } from "../lib";
-import { ruleClass, ruleClassNamespace, chapterParseObject } from "../rules";
+import { ruleClass, chapterParseObject } from "../rules";
 
 export class linovel implements ruleClass {
   public imageMode: "naive" | "TM";
@@ -16,7 +16,7 @@ export class linovel implements ruleClass {
     this.concurrencyLimit = 5;
   }
 
-  public async bookParse(chapterParse: ruleClassNamespace.chapterParse) {
+  public async bookParse(chapterParse: ruleClass["chapterParse"]) {
     const bookUrl = document.location.href;
     const bookname = (<HTMLElement>(
       document.querySelector(".book-title")

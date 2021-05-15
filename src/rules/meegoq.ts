@@ -1,5 +1,5 @@
 import { BookAdditionalMetadate, attachmentClass, Chapter } from "../main";
-import { ruleClass, ruleClassNamespace } from "../rules";
+import { ruleClass } from "../rules";
 import { getHtmlDOM, cleanDOM, rm } from "../lib";
 
 export class meegoq implements ruleClass {
@@ -11,7 +11,7 @@ export class meegoq implements ruleClass {
     this.concurrencyLimit = 3;
   }
 
-  public async bookParse(chapterParse: ruleClassNamespace.chapterParse) {
+  public async bookParse(chapterParse: ruleClass["chapterParse"]) {
     const bookUrl = document.location.href.replace("/book", "/info");
     const bookname = (<HTMLElement>(
       document.querySelector("article.info > header > h1")

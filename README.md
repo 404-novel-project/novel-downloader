@@ -55,6 +55,7 @@ ZIP压缩包，请在解压后，直接双击打开HTML文件（`ToC.html` 为�
 |[完本神站](https://www.xinwanben.com/)|✅|❎||
 |[得间小说](https://www.idejian.com/)|✅|❎||
 |[轻小说文库](https://www.wenku8.net/)|✅|❎||
+|[西方奇幻小说网](https://www.westnovel.com/)|✅|❎||
 
 ## 高阶使用技巧
 
@@ -70,8 +71,7 @@ declare enum Status {
     finished = 3,
     aborted = 4
 }
-
-class Chapter {
+declare class Chapter {
     bookUrl: string;
     bookname: string;
     chapterUrl: string;
@@ -82,7 +82,7 @@ class Chapter {
     sectionName: string | null;
     sectionNumber: number | null;
     sectionChapterNumber: number | null;
-    chapterParse: ruleClassNamespace.chapterParse;
+    chapterParse: ruleClass["chapterParse"];
     charset: string;
     status: Status;
     retryTime: number;
@@ -90,7 +90,7 @@ class Chapter {
     contentText: string | null;
     contentHTML: HTMLElement | null;
     contentImages: attachmentClass[] | null;
-    constructor(bookUrl: string, bookname: string, chapterUrl: string, chapterNumber: number, chapterName: string | null, isVIP: boolean, isPaid: boolean | null, sectionName: string | null, sectionNumber: number | null, sectionChapterNumber: number | null, chapterParse: ruleClassNamespace.chapterParse, charset: string);
+    constructor(bookUrl: string, bookname: string, chapterUrl: string, chapterNumber: number, chapterName: string | null, isVIP: boolean, isPaid: boolean | null, sectionName: string | null, sectionNumber: number | null, sectionChapterNumber: number | null, chapterParse: ruleClass["chapterParse"], charset: string);
     init(): Promise<chapterParseObject>;
     private parse;
 }
@@ -142,7 +142,7 @@ interface BookAdditionalMetadate {
     publisher?: string;
     languages?: string;
 }
-class attachmentClass {
+declare class attachmentClass {
     url: string;
     name: string;
     mode: "naive" | "TM";
@@ -174,20 +174,12 @@ interface chapterParseObject {
     contentHTML: HTMLElement | null;
     contentImages: attachmentClass[] | null;
 }
-declare namespace ruleClassNamespace {
-     interface bookParse {
-        (): Promise<bookParseObject>;
-    }
-    interface chapterParse {
-        (chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean | null, charset: string): Promise<chapterParseObject>;
-    }
-}
 interface ruleClass {
     imageMode: "naive" | "TM";
     charset?: string;
     concurrencyLimit?: number;
     maxRunLimit?: number;
-    bookParse(chapterParse: ruleClassNamespace.chapterParse): Promise<bookParseObject>;
+    bookParse(chapterParse: ruleClass["chapterParse"]): Promise<bookParseObject>;
     chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean | null, charset: string): Promise<chapterParseObject>;
 }
 ```

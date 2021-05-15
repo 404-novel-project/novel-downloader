@@ -1,5 +1,5 @@
 import { BookAdditionalMetadate, attachmentClass, Chapter } from "../main";
-import { ruleClass, ruleClassNamespace } from "../rules";
+import { ruleClass } from "../rules";
 import { getHtmlDOM, cleanDOM, console_debug } from "../lib";
 
 export class idejian implements ruleClass {
@@ -9,7 +9,7 @@ export class idejian implements ruleClass {
     this.imageMode = "TM";
   }
 
-  public async bookParse(chapterParse: ruleClassNamespace.chapterParse) {
+  public async bookParse(chapterParse: ruleClass["chapterParse"]) {
     let bookUrl = document.location.href;
 
     const bookname = (<HTMLElement>(

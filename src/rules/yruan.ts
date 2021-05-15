@@ -1,5 +1,5 @@
 import { BookAdditionalMetadate, attachmentClass, Chapter } from "../main";
-import { ruleClass, ruleClassNamespace } from "../rules";
+import { ruleClass } from "../rules";
 import { getHtmlDOM, cleanDOM } from "../lib";
 
 export class yrun implements ruleClass {
@@ -9,7 +9,7 @@ export class yrun implements ruleClass {
     this.imageMode = "naive";
   }
 
-  public async bookParse(chapterParse: ruleClassNamespace.chapterParse) {
+  public async bookParse(chapterParse: ruleClass["chapterParse"]) {
     const bookUrl = document.location.href;
     const bookname = (<HTMLElement>(
       document.querySelector("#info > h1:nth-child(1)")

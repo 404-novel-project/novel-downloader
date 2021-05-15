@@ -1,5 +1,5 @@
 import { BookAdditionalMetadate, Chapter } from "../main";
-import { ruleClass, ruleClassNamespace } from "../rules";
+import { ruleClass } from "../rules";
 import { getHtmlDOM, cleanDOM, rm, console_debug } from "../lib";
 import { replaceYuzhaigeImage } from "./lib/yuzhaigeImageDecode";
 
@@ -10,7 +10,7 @@ export class yuzhaige implements ruleClass {
     this.imageMode = "naive";
   }
 
-  public async bookParse(chapterParse: ruleClassNamespace.chapterParse) {
+  public async bookParse(chapterParse: ruleClass["chapterParse"]) {
     const bookUrl = (<HTMLAnchorElement>(
       document.querySelector("div.currency_head > h1 > a")
     )).href;

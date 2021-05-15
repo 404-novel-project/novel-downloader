@@ -4,7 +4,7 @@ import {
   Chapter,
   Status,
 } from "../main";
-import { ruleClass, ruleClassNamespace, chapterParseObject } from "../rules";
+import { ruleClass, chapterParseObject } from "../rules";
 import { getHtmlDOM, cleanDOM, console_debug, gfetch } from "../lib";
 
 export class tadu implements ruleClass {
@@ -16,7 +16,7 @@ export class tadu implements ruleClass {
     this.concurrencyLimit = 5;
   }
 
-  public async bookParse(chapterParse: ruleClassNamespace.chapterParse) {
+  public async bookParse(chapterParse: ruleClass["chapterParse"]) {
     let bookUrl = document.location.href.replace("catalogue/", "");
 
     const bookname = (<HTMLElement>(

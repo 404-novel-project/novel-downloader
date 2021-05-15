@@ -14,12 +14,7 @@ import {
   getAttachmentClassCache,
   putAttachmentClassCache,
 } from "../lib";
-import {
-  ruleClass,
-  ruleClassNamespace,
-  chapterParseObject,
-  retryLimit,
-} from "../rules";
+import { ruleClass, chapterParseObject, retryLimit } from "../rules";
 import { replaceJjwxcCharacter } from "./lib/jjwxcFontDecode";
 
 export class jjwxc implements ruleClass {
@@ -33,7 +28,7 @@ export class jjwxc implements ruleClass {
     this.charset = "GB18030";
   }
 
-  public async bookParse(chapterParse: ruleClassNamespace.chapterParse) {
+  public async bookParse(chapterParse: ruleClass["chapterParse"]) {
     const bookUrl = document.location.href;
     const bookname = (<HTMLElement>(
       document.querySelector('h1[itemprop="name"] > span')

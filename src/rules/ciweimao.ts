@@ -5,7 +5,7 @@ import {
   Status,
 } from "../main";
 import { getHtmlDOM, cleanDOM, rm, gfetch, console_debug } from "../lib";
-import { ruleClass, ruleClassNamespace, chapterParseObject } from "../rules";
+import { ruleClass, chapterParseObject } from "../rules";
 
 namespace ciweimao {
   export interface ciweimaoWindow extends unsafeWindow {
@@ -23,7 +23,7 @@ export class ciweimao implements ruleClass {
     this.maxRunLimit = 1;
   }
 
-  public async bookParse(chapterParse: ruleClassNamespace.chapterParse) {
+  public async bookParse(chapterParse: ruleClass["chapterParse"]) {
     const bookid = (<ciweimao.ciweimaoWindow>unsafeWindow).HB.book.book_id;
     const bookUrl = `https://www.ciweimao.com/book/${bookid}`;
     const bookname = (<HTMLElement>(

@@ -4,7 +4,7 @@ import {
   Chapter,
   Status,
 } from "../main";
-import { ruleClass, ruleClassNamespace, chapterParseObject } from "../rules";
+import { ruleClass, chapterParseObject } from "../rules";
 import { getHtmlDOM, cleanDOM, console_debug } from "../lib";
 
 export class qimao implements ruleClass {
@@ -14,7 +14,7 @@ export class qimao implements ruleClass {
     this.imageMode = "TM";
   }
 
-  public async bookParse(chapterParse: ruleClassNamespace.chapterParse) {
+  public async bookParse(chapterParse: ruleClass["chapterParse"]) {
     let bookUrl = document.location.href;
 
     const bookname = (<HTMLElement>(

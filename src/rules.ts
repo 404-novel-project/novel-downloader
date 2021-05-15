@@ -22,9 +22,7 @@ export interface ruleClass {
   charset?: string;
   concurrencyLimit?: number;
   maxRunLimit?: number;
-  bookParse(
-    chapterParse: ruleClassNamespace.chapterParse
-  ): Promise<bookParseObject>;
+  bookParse(chapterParse: ruleClass["chapterParse"]): Promise<bookParseObject>;
   chapterParse(
     chapterUrl: string,
     chapterName: string | null,
@@ -32,21 +30,6 @@ export interface ruleClass {
     isPaid: boolean | null,
     charset: string
   ): Promise<chapterParseObject>;
-}
-
-export namespace ruleClassNamespace {
-  export interface bookParse {
-    (): Promise<bookParseObject>;
-  }
-  export interface chapterParse {
-    (
-      chapterUrl: string,
-      chapterName: string | null,
-      isVIP: boolean,
-      isPaid: boolean | null,
-      charset: string
-    ): Promise<chapterParseObject>;
-  }
 }
 
 /* #################################################### */
@@ -232,6 +215,11 @@ export async function getRule(): Promise<ruleClass> {
     case "www.sosadfun.link": {
       const { sosadfun } = await import("./rules/sosadfun");
       ruleClass = sosadfun;
+      break;
+    }
+    case "www.westnovel.com": {
+      const { westnovel } = await import("./rules/westnovel");
+      ruleClass = westnovel;
       break;
     }
     default: {

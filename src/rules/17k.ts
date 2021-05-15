@@ -5,7 +5,7 @@ import {
   Status,
 } from "../main";
 import { getHtmlDOM, cleanDOM, rm } from "../lib";
-import { ruleClass, ruleClassNamespace, chapterParseObject } from "../rules";
+import { ruleClass, chapterParseObject } from "../rules";
 
 export class c17k implements ruleClass {
   public imageMode: "naive" | "TM";
@@ -16,7 +16,7 @@ export class c17k implements ruleClass {
     this.concurrencyLimit = 5;
   }
 
-  public async bookParse(chapterParse: ruleClassNamespace.chapterParse) {
+  public async bookParse(chapterParse: ruleClass["chapterParse"]) {
     const bookUrl = document.location.href.replace("/list/", "/book/");
     const bookname = (<HTMLElement>(
       document.querySelector("h1.Title")
