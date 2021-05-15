@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        3.6.3.1621093222183
+// @version        3.6.3.1621096445055
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -57,6 +57,7 @@
 // @match          *://www.dmzj.com/info/*.html
 // @match          *://www.dmzj1.com/info/*.html
 // @match          *://www.westnovel.com/*/*/
+// @match          *://www.mht.tw/*/
 // @name:en        novel-downloader
 // @description:en An scalable universal novel downloader.
 // @namespace      https://blog.bgme.me
@@ -1867,6 +1868,11 @@ async function getRule() {
             ruleClass = westnovel;
             break;
         }
+        case "www.mht.tw": {
+            const { mht } = await Promise.resolve().then(() => __webpack_require__(155));
+            ruleClass = mht;
+            break;
+        }
         default: {
             throw new Error("Not Found Rule!");
         }
@@ -2123,7 +2129,7 @@ exports.c226ks = c226ks;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.zwdu = exports.gebiqu = exports.dingdiann = exports.shuquge = exports.biquwo = void 0;
+exports.zwdu = exports.gebiqu = exports.dingdiann = exports.shuquge = exports.biquwo = exports.bookParseTemp = void 0;
 const main_1 = __webpack_require__(519);
 const lib_1 = __webpack_require__(563);
 async function bookParseTemp({ bookUrl, bookname, author, introDom, introDomPatch, coverUrl, chapterListSelector, charset, chapterParse, }) {
@@ -2192,6 +2198,7 @@ async function bookParseTemp({ bookUrl, bookname, author, introDom, introDomPatc
         chapters: chapters,
     };
 }
+exports.bookParseTemp = bookParseTemp;
 async function chapterParseTemp({ dom, chapterUrl, chapterName, contenSelector, contentPatch, charset, }) {
     let content = dom.querySelector(contenSelector);
     if (content) {
@@ -26644,6 +26651,80 @@ class meegoq {
     }
 }
 exports.meegoq = meegoq;
+
+
+/***/ }),
+
+/***/ 155:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.mht = void 0;
+const lib_1 = __webpack_require__(563);
+const biquge_1 = __webpack_require__(931);
+class mht {
+    constructor() {
+        this.imageMode = "TM";
+    }
+    async bookParse(chapterParse) {
+        return biquge_1.bookParseTemp({
+            bookUrl: document.location.href,
+            bookname: (document.querySelector("#info > h1:nth-child(1)")).innerText.trim(),
+            author: (document.querySelector("#info > p:nth-child(2)")).innerText
+                .replace(/作(\s+)?者[：:]/, "")
+                .trim(),
+            introDom: document.querySelector("#intro"),
+            introDomPatch: (introDom) => introDom,
+            coverUrl: document.querySelector("#fmimg > img").src,
+            chapterListSelector: "#list>dl",
+            charset: "UTF-8",
+            chapterParse: chapterParse,
+        });
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+        lib_1.console_debug(`[Chapter]请求 ${chapterUrl}`);
+        let nowUrl = chapterUrl;
+        let doc = await lib_1.getHtmlDOM(chapterUrl, charset);
+        const content = document.createElement("div");
+        let flag = false;
+        do {
+            const _content = doc.querySelector("#content");
+            lib_1.rm("p[data-id]", true, _content);
+            for (const _c of Array.from(_content.childNodes)) {
+                content.appendChild(_c);
+            }
+            const nextLink = (doc.querySelector(".bottem2 > a:nth-child(4)")).href;
+            if (new URL(nextLink).pathname.includes("_")) {
+                if (nextLink !== nowUrl) {
+                    flag = true;
+                }
+                else {
+                    console.error("网站页面出错，URL： " + nowUrl);
+                    flag = false;
+                }
+            }
+            else {
+                flag = false;
+            }
+            if (flag) {
+                lib_1.console_debug(`[Chapter]请求 ${nextLink}`);
+                nowUrl = nextLink;
+                doc = await lib_1.getHtmlDOM(nextLink, charset);
+            }
+        } while (flag);
+        let { dom, text, images } = lib_1.cleanDOM(content, "TM");
+        return {
+            chapterName: chapterName,
+            contentRaw: content,
+            contentText: text,
+            contentHTML: dom,
+            contentImages: images,
+            additionalMetadate: null,
+        };
+    }
+}
+exports.mht = mht;
 
 
 /***/ }),

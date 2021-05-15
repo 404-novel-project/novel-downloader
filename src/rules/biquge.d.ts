@@ -1,4 +1,15 @@
 import { ruleClass, bookParseObject, chapterParseObject } from "../rules";
+export declare function bookParseTemp({ bookUrl, bookname, author, introDom, introDomPatch, coverUrl, chapterListSelector, charset, chapterParse, }: {
+    bookUrl: string;
+    bookname: string;
+    author: string;
+    introDom: HTMLElement;
+    introDomPatch: (introDom: HTMLElement) => HTMLElement;
+    coverUrl: string;
+    chapterListSelector: string;
+    charset: string;
+    chapterParse: ruleClass["chapterParse"];
+}): Promise<bookParseObject>;
 export declare class biquwo implements ruleClass {
     imageMode: "naive" | "TM";
     constructor();
