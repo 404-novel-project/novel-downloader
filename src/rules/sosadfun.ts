@@ -50,10 +50,23 @@ export class sosadfun implements ruleClass {
       alert("本小说需要登录后浏览！");
       throw new Error("本小说需要登录后浏览！");
     } else {
-      introDom = document.querySelector("div.h5:nth-child(3)");
-      // introDom = document.querySelector(
-      //   ".col-xs-12 > .main-text.no-selection"
-      // ) as HTMLDivElement;
+      introDom = document.createElement("div");
+      const shortIntroDom = document.querySelector("div.h5:nth-child(3)");
+      const longIntroDom = document.querySelector(
+        ".col-xs-12 > .main-text.no-selection"
+      );
+      if (shortIntroDom) {
+        const pElem = document.createElement("p");
+        pElem.innerText = (<HTMLDivElement>shortIntroDom).innerText;
+        introDom.appendChild(pElem);
+      }
+      if (longIntroDom) {
+        for (const elem of Array.from(
+          (<HTMLDivElement>longIntroDom.cloneNode(true)).children
+        )) {
+          introDom.appendChild(elem);
+        }
+      }
     }
     if (introDom === null) {
       introduction = null;

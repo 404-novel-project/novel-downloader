@@ -35,7 +35,7 @@ ZIP压缩包，请在解压后，直接双击打开HTML文件（`ToC.html` 为�
 |[书海小说网](http://www.shuhai.com/)|✅|❌||
 |[塔读文学](https://www.tadu.com/)|✅|❌||
 |[七猫中文网](https://www.qimao.com/)|✅|❌||
-|[废文网](https://sosad.fun/)|✅|❎||
+|[废文网](https://sosad.fun/)|✅|❎|部分小说或章节需登录后查看。|
 |[动漫之家](https://www.dmzj.com/)|✅|❎|需下载大量图片，速度较慢，请耐心等待。<br>需占用大量内存，请保证最终生成文件4倍以上内存，即最终下载生成500MB ZIP文件，运行时请保证至少2GB内存空间。可使用筛选函数，分次下载。|
 |[UU看书网](https://www.uukanshu.com/)|✅|❎||
 |[亿软网](http://www.yruan.com/)|✅|❎||

@@ -12,7 +12,7 @@ const blockElements = [
   "section",
   "figure",
   "div",
-  "b",
+  "b", // 忽略格式
   "strong",
   "i",
   "em",
@@ -21,6 +21,14 @@ const blockElements = [
   "cite",
   "span",
   "font",
+  "u",
+  "del",
+  "sup",
+  "sub",
+  "strike",
+  "small",
+  "samp",
+  "s",
   "a", // 忽略超链接
 ];
 const ignoreElements = [
@@ -82,6 +90,21 @@ function getPreviousSibling(elem: HTMLElement | Text) {
   }
 
   return elem;
+}
+
+function getParentElement(
+  elem: HTMLElement | Text
+): null | HTMLDivElement | HTMLParagraphElement {
+  const _elem = elem.parentElement;
+  if (!_elem) {
+    return null;
+  }
+  let nodename = _elem.nodeName.toLowerCase();
+  if (["div", "p"].includes(nodename)) {
+    return _elem as HTMLDivElement | HTMLParagraphElement;
+  } else {
+    return getParentElement(_elem);
+  }
 }
 
 function formatImage(elem: HTMLImageElement, builder: Builder): void {
@@ -303,6 +326,21 @@ function formatText(elems: (Text | HTMLBRElement)[], builder: Builder) {
         const tPText = textContent + "\n\n";
         builder.text = builder.text + tPText;
         return;
+      } else if (
+        previousSibling === null &&
+        (() => {
+          const parentElement = getParentElement(elem);
+          if (parentElement?.childNodes.length === 1) {
+            return true;
+          }
+          return false;
+        })()
+      ) {
+        // 仅文本
+        // <p><span style="font-size:20px"><b>以上四个人是主角，配对不分攻受。</b></span></p>
+        temp0();
+        builder.text = builder.text + "\n\n" + textContent + "\n\n";
+        return;
       } else {
         // 文本位于最后，但前一节点并非<br>节点
         temp1();
@@ -316,7 +354,11 @@ function formatText(elems: (Text | HTMLBRElement)[], builder: Builder) {
         temp0();
 
         const tPText = textContent;
-        builder.text = builder.text + tPText;
+        if (builder.text.endsWith("\n")) {
+          builder.text = builder.text + tPText;
+        } else {
+          builder.text = builder.text + "\n\n" + tPText;
+        }
         return;
       } else {
         // 文本不位于最前
@@ -392,6 +434,14 @@ export function walk(dom: HTMLElement, builder: Builder) {
     const nodeName = node.nodeName.toLowerCase();
     switch (nodeName) {
       case "a":
+      case "u":
+      case "del":
+      case "sup":
+      case "sub":
+      case "strike":
+      case "small":
+      case "samp":
+      case "s":
       case "b":
       case "strong":
       case "i":
