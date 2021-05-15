@@ -44,12 +44,12 @@ module.exports = {
   plugins: [
     new WebpackUserscript({
       headers: path.resolve(__dirname, "src", "header.json"),
-      ssri: true,
+      ssri: false,
       pretty: true,
       downloadBaseUrl: "https://github.com/yingziwu/novel-downloader/raw/gh-pages/",
       proxyScript: {
         filename: "[basename].proxy.user.js",
-        baseUrl: "http://localhost:11944/",
+        baseUrl: "https://webpack.lo.bgme.me/",
         enable: dev,
       },
     }),
