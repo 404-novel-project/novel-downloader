@@ -15,11 +15,17 @@ export class sosadfun implements ruleClass {
     const bookname = (<HTMLElement>(
       document.querySelector(".font-1")
     )).innerText.trim();
-    const author = (<HTMLElement>(
+    const authorDom = <HTMLElement>(
       document.querySelector(
         "div.h5:nth-child(1) > div:nth-child(1) > a:nth-child(1)"
       )
-    )).innerText.trim();
+    );
+    let author;
+    if (authorDom) {
+      author = authorDom.innerText.trim();
+    } else {
+      author = "匿名咸鱼";
+    }
 
     const needLogin = () => {
       const mainDom = document.querySelector(
@@ -32,19 +38,26 @@ export class sosadfun implements ruleClass {
       }
     };
 
+    const additionalMetadate: BookAdditionalMetadate = {};
+    additionalMetadate.tags = Array.from(
+      document.querySelectorAll("div.h5:nth-child(1) > div:nth-child(3) > a")
+    ).map((a) => (<HTMLAnchorElement>a).innerText.trim());
+
     let introduction: string | null;
+    let introductionHTML: HTMLElement | null;
     let introDom;
     if (needLogin()) {
-      introDom = document.querySelector("div.h5:nth-child(3)");
       alert("本小说需要登录后浏览！");
       throw new Error("本小说需要登录后浏览！");
     } else {
-      introDom = document.querySelector(
-        ".col-xs-12 > .main-text.no-selection"
-      ) as HTMLDivElement;
+      introDom = document.querySelector("div.h5:nth-child(3)");
+      // introDom = document.querySelector(
+      //   ".col-xs-12 > .main-text.no-selection"
+      // ) as HTMLDivElement;
     }
     if (introDom === null) {
       introduction = null;
+      introductionHTML = null;
     } else {
       let {
         dom: introCleanDom,
@@ -52,12 +65,11 @@ export class sosadfun implements ruleClass {
         images: introCleanimages,
       } = cleanDOM(introDom, "TM");
       introduction = introCleantext;
+      introductionHTML = introCleanDom;
+      if (introCleanimages) {
+        additionalMetadate.attachments = [...introCleanimages];
+      }
     }
-
-    const additionalMetadate: BookAdditionalMetadate = {};
-    additionalMetadate.tags = Array.from(
-      document.querySelectorAll("div.h5:nth-child(1) > div:nth-child(3) > a")
-    ).map((a) => (<HTMLAnchorElement>a).innerText.trim());
 
     const chapters: Chapter[] = [];
     const aList = document.querySelectorAll(
@@ -90,6 +102,7 @@ export class sosadfun implements ruleClass {
       bookname: bookname,
       author: author,
       introduction: introduction,
+      introductionHTML: introductionHTML,
       additionalMetadate: additionalMetadate,
       chapters: chapters,
     };

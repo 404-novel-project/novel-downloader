@@ -22,6 +22,7 @@ export class wenku8 implements ruleClass {
 
     const doc = await getHtmlDOM(bookUrl, "GBK");
     let introduction: string | null;
+    let introductionHTML: HTMLElement | null;
     const author = (<HTMLElement>(
       doc.querySelector(
         "#content > div:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(2) > td:nth-child(2)"
@@ -34,6 +35,7 @@ export class wenku8 implements ruleClass {
     );
     if (introDom === null) {
       introduction = null;
+      introductionHTML = null;
     } else {
       let {
         dom: introCleanDom,
@@ -41,6 +43,7 @@ export class wenku8 implements ruleClass {
         images: introCleanimages,
       } = cleanDOM(introDom, "TM");
       introduction = introCleantext;
+      introductionHTML = introCleanDom;
     }
 
     const additionalMetadate: BookAdditionalMetadate = {};
@@ -100,6 +103,7 @@ export class wenku8 implements ruleClass {
       bookname: bookname,
       author: author,
       introduction: introduction,
+      introductionHTML: introductionHTML,
       additionalMetadate: additionalMetadate,
       chapters: chapters,
     };

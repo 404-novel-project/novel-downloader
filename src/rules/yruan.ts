@@ -21,9 +21,11 @@ export class yrun implements ruleClass {
       .trim();
 
     let introduction: string | null;
+    let introductionHTML: HTMLElement | null;
     const introDom = <HTMLElement>document.querySelector("#intro > p");
     if (introDom === null) {
       introduction = null;
+      introductionHTML = null;
     } else {
       let {
         dom: introCleanDom,
@@ -31,6 +33,7 @@ export class yrun implements ruleClass {
         images: introCleanimages,
       } = cleanDOM(introDom, "naive");
       introduction = introCleantext;
+      introductionHTML = introCleanDom;
     }
 
     const additionalMetadate: BookAdditionalMetadate = {};
@@ -75,6 +78,7 @@ export class yrun implements ruleClass {
       bookname: bookname,
       author: author,
       introduction: introduction,
+      introductionHTML: introductionHTML,
       additionalMetadate: additionalMetadate,
       chapters: chapters,
     };

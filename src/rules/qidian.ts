@@ -23,6 +23,7 @@ export class qidian implements ruleClass {
     )).innerText.trim();
 
     let introduction: string | null;
+    let introductionHTML: HTMLElement | null;
     const author = (<HTMLElement>(
       document.querySelector(".book-info .writer")
     )).innerText
@@ -31,6 +32,7 @@ export class qidian implements ruleClass {
     const introDom = document.querySelector(".book-info-detail .book-intro");
     if (introDom === null) {
       introduction = null;
+      introductionHTML = null;
     } else {
       let {
         dom: introCleanDom,
@@ -38,6 +40,7 @@ export class qidian implements ruleClass {
         images: introCleanimages,
       } = cleanDOM(introDom, "TM");
       introduction = introCleantext;
+      introductionHTML = introCleanDom;
     }
 
     const additionalMetadate: BookAdditionalMetadate = {};
@@ -142,6 +145,7 @@ export class qidian implements ruleClass {
       bookname: bookname,
       author: author,
       introduction: introduction,
+      introductionHTML: introductionHTML,
       additionalMetadate: additionalMetadate,
       chapters: chapters,
     };

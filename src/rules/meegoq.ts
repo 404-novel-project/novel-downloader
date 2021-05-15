@@ -23,9 +23,11 @@ export class meegoq implements ruleClass {
     )).innerText.trim();
 
     let introduction: string | null;
+    let introductionHTML: HTMLElement | null;
     const introDom = <HTMLElement>dom.querySelector("article.info > p.desc");
     if (introDom === null) {
       introduction = null;
+      introductionHTML = null;
     } else {
       rm("b", false, introDom);
       let {
@@ -34,6 +36,7 @@ export class meegoq implements ruleClass {
         images: introCleanimages,
       } = cleanDOM(introDom, "TM");
       introduction = introCleantext;
+      introductionHTML = introCleanDom;
     }
 
     const additionalMetadate: BookAdditionalMetadate = {};
@@ -110,6 +113,7 @@ export class meegoq implements ruleClass {
       bookname: bookname,
       author: author,
       introduction: introduction,
+      introductionHTML: introductionHTML,
       additionalMetadate: additionalMetadate,
       chapters: chapters,
     };

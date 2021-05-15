@@ -26,9 +26,11 @@ export class yuzhaige implements ruleClass {
     )).innerText.trim();
 
     let introduction: string | null;
+    let introductionHTML: HTMLElement | null;
     const introDom = <HTMLElement>dom.querySelector(".intro");
     if (introDom === null) {
       introduction = null;
+      introductionHTML = null;
     } else {
       rm("span:nth-child(1)", false, introDom);
       let {
@@ -37,6 +39,7 @@ export class yuzhaige implements ruleClass {
         images: introCleanimages,
       } = cleanDOM(introDom, "naive");
       introduction = introCleantext;
+      introductionHTML = introCleanDom;
     }
 
     const additionalMetadate: BookAdditionalMetadate = {};
@@ -112,6 +115,7 @@ export class yuzhaige implements ruleClass {
       bookname: bookname,
       author: author,
       introduction: introduction,
+      introductionHTML: introductionHTML,
       additionalMetadate: additionalMetadate,
       chapters: chapters,
     };

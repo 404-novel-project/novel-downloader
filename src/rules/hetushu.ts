@@ -19,9 +19,11 @@ export class hetushu implements ruleClass {
     )).innerText.trim();
 
     let introduction: string | null;
+    let introductionHTML: HTMLElement | null;
     const introDom = <HTMLElement>document.querySelector(".intro");
     if (introDom === null) {
       introduction = null;
+      introductionHTML = null;
     } else {
       let {
         dom: introCleanDom,
@@ -29,6 +31,7 @@ export class hetushu implements ruleClass {
         images: introCleanimages,
       } = cleanDOM(introDom, "TM");
       introduction = introCleantext;
+      introductionHTML = introCleanDom;
     }
 
     const additionalMetadate: BookAdditionalMetadate = {};
@@ -89,6 +92,7 @@ export class hetushu implements ruleClass {
       bookname: bookname,
       author: author,
       introduction: introduction,
+      introductionHTML: introductionHTML,
       additionalMetadate: additionalMetadate,
       chapters: chapters,
     };

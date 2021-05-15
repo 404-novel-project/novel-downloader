@@ -33,9 +33,11 @@ export class xiaoshuodaquan implements ruleClass {
     )).innerText.trim();
 
     let introduction: string | null;
+    let introductionHTML: HTMLElement | null;
     const introDom = <HTMLElement>document.querySelector(".bookintro");
     if (introDom === null) {
       introduction = null;
+      introductionHTML = null;
     } else {
       introDom.innerHTML = introDom.innerHTML.replace("内容简介:", "");
       let {
@@ -44,6 +46,7 @@ export class xiaoshuodaquan implements ruleClass {
         images: introCleanimages,
       } = cleanDOM(introDom, "TM");
       introduction = introCleantext;
+      introductionHTML = introCleanDom;
     }
 
     const additionalMetadate: BookAdditionalMetadate = {};
@@ -112,6 +115,7 @@ export class xiaoshuodaquan implements ruleClass {
       bookname: bookname,
       author: author,
       introduction: introduction,
+      introductionHTML: introductionHTML,
       additionalMetadate: additionalMetadate,
       chapters: chapters,
     };

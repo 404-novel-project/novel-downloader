@@ -50,6 +50,7 @@ async function initBook(rule: ruleClass) {
       bookname,
       author,
       introduction,
+      introductionHTML,
       additionalMetadate,
       chapters,
     } = obj;
@@ -58,6 +59,7 @@ async function initBook(rule: ruleClass) {
       bookname,
       author,
       introduction,
+      introductionHTML,
       additionalMetadate,
       chapters
     );

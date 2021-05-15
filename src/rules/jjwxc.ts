@@ -39,7 +39,10 @@ export class jjwxc implements ruleClass {
       document.querySelector('h1[itemprop="name"] > span')
     )).innerText.trim();
 
+    const additionalMetadate: BookAdditionalMetadate = {};
+
     let introduction: string | null;
+    let introductionHTML: HTMLElement | null;
     const author = (<HTMLElement>(
       document.querySelector("td.sptd h2 a span")
     )).innerText
@@ -48,17 +51,20 @@ export class jjwxc implements ruleClass {
     const introDom = document.querySelector("#novelintro");
     if (introDom === null) {
       introduction = null;
+      introductionHTML = null;
     } else {
-      rm("img", true, <HTMLElement>introDom);
       let {
         dom: introCleanDom,
         text: introCleantext,
         images: introCleanimages,
       } = cleanDOM(introDom, "TM");
       introduction = introCleantext;
+      introductionHTML = introCleanDom;
+      if (introCleanimages) {
+        additionalMetadate.attachments = [...introCleanimages];
+      }
     }
 
-    const additionalMetadate: BookAdditionalMetadate = {};
     let coverUrl = (<HTMLImageElement>(
       document.querySelector(".noveldefaultimage")
     )).src;
@@ -173,6 +179,7 @@ export class jjwxc implements ruleClass {
       bookname: bookname,
       author: author,
       introduction: introduction,
+      introductionHTML: introductionHTML,
       additionalMetadate: additionalMetadate,
       chapters: chapters,
     };

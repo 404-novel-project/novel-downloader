@@ -28,6 +28,7 @@ export class sfacg implements ruleClass {
     )).innerText.trim();
 
     let introduction: string | null;
+    let introductionHTML: HTMLElement | null;
     const dom = await getHtmlDOM(bookUrl, undefined);
     const author = (<HTMLElement>(
       dom.querySelector(".author-name")
@@ -35,6 +36,7 @@ export class sfacg implements ruleClass {
     const introDom = dom.querySelector(".introduce");
     if (introDom === null) {
       introduction = null;
+      introductionHTML = null;
     } else {
       let {
         dom: introCleanDom,
@@ -42,6 +44,7 @@ export class sfacg implements ruleClass {
         images: introCleanimages,
       } = cleanDOM(introDom, "TM");
       introduction = introCleantext;
+      introductionHTML = introCleanDom;
     }
 
     const additionalMetadate: BookAdditionalMetadate = {};
@@ -137,6 +140,7 @@ export class sfacg implements ruleClass {
       bookname: bookname,
       author: author,
       introduction: introduction,
+      introductionHTML: introductionHTML,
       additionalMetadate: additionalMetadate,
       chapters: chapters,
     };

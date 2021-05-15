@@ -28,9 +28,11 @@ export class c17k implements ruleClass {
 
     const doc = await getHtmlDOM(bookUrl, undefined);
     let introduction: string | null;
+    let introductionHTML: HTMLElement | null;
     const introDom = doc.querySelector("#bookInfo p.intro > a");
     if (introDom === null) {
       introduction = null;
+      introductionHTML = null;
     } else {
       let {
         dom: introCleanDom,
@@ -38,6 +40,7 @@ export class c17k implements ruleClass {
         images: introCleanimages,
       } = cleanDOM(introDom, "TM");
       introduction = introCleantext;
+      introductionHTML = introCleanDom;
     }
 
     const additionalMetadate: BookAdditionalMetadate = {};
@@ -113,6 +116,7 @@ export class c17k implements ruleClass {
       bookname: bookname,
       author: author,
       introduction: introduction,
+      introductionHTML: introductionHTML,
       additionalMetadate: additionalMetadate,
       chapters: chapters,
     };

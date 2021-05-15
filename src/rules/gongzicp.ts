@@ -213,6 +213,7 @@ export class gongzicp implements ruleClass {
     const author = data.novelInfo.author_nickname;
 
     let introduction;
+    let introductionHTML;
     const introDom = document.createElement("div");
     introDom.innerHTML = data.novelInfo.novel_info;
     let {
@@ -221,6 +222,7 @@ export class gongzicp implements ruleClass {
       images: introCleanimages,
     } = cleanDOM(introDom, "TM");
     introduction = introCleantext;
+    introductionHTML = introCleanDom;
 
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = data.novelInfo.novel_cover;
@@ -361,6 +363,7 @@ export class gongzicp implements ruleClass {
       bookname: bookname,
       author: author,
       introduction: introduction,
+      introductionHTML: introductionHTML,
       additionalMetadate: additionalMetadate,
       chapters: chapters,
     };

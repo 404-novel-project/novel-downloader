@@ -28,11 +28,13 @@ export class uukanshu implements ruleClass {
     )).innerText.trim();
 
     let introduction: string | null;
+    let introductionHTML: HTMLElement | null;
     const introDom = <HTMLElement>(
       document.querySelector("dd.jieshao_content > h3")
     );
     if (introDom === null) {
       introduction = null;
+      introductionHTML = null;
     } else {
       introDom.innerHTML = introDom.innerHTML
         .replace(/^.+简介：\s+www.uukanshu.com\s+/, "")
@@ -44,6 +46,7 @@ export class uukanshu implements ruleClass {
         images: introCleanimages,
       } = cleanDOM(introDom, "TM");
       introduction = introCleantext;
+      introductionHTML = introCleanDom;
     }
 
     const additionalMetadate: BookAdditionalMetadate = {};
@@ -111,6 +114,7 @@ export class uukanshu implements ruleClass {
       bookname: bookname,
       author: author,
       introduction: introduction,
+      introductionHTML: introductionHTML,
       additionalMetadate: additionalMetadate,
       chapters: chapters,
     };

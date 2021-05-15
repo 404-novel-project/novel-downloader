@@ -29,12 +29,14 @@ export class tadu implements ruleClass {
       .trim();
 
     let introduction: string | null;
+    let introductionHTML: HTMLElement | null;
     const doc = await getHtmlDOM(bookUrl, undefined);
     const introDom = <HTMLElement>(
       doc.querySelector("div.boxCenter.bookIntro > div > p:nth-child(4)")
     );
     if (introDom === null) {
       introduction = null;
+      introductionHTML = null;
     } else {
       let {
         dom: introCleanDom,
@@ -42,6 +44,7 @@ export class tadu implements ruleClass {
         images: introCleanimages,
       } = cleanDOM(introDom, "TM");
       introduction = introCleantext;
+      introductionHTML = introCleanDom;
     }
 
     const additionalMetadate: BookAdditionalMetadate = {};
@@ -104,6 +107,7 @@ export class tadu implements ruleClass {
       bookname: bookname,
       author: author,
       introduction: introduction,
+      introductionHTML: introductionHTML,
       additionalMetadate: additionalMetadate,
       chapters: chapters,
     };

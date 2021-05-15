@@ -26,6 +26,7 @@ export class Book {
   public bookname: string;
   public author: string;
   public introduction: string | null;
+  public introductionHTML: HTMLElement | null;
   public additionalMetadate: BookAdditionalMetadate;
   public chapters: Chapter[];
 
@@ -34,6 +35,7 @@ export class Book {
     bookname: string,
     author: string,
     introduction: string | null,
+    introductionHTML: HTMLElement | null,
     additionalMetadate: BookAdditionalMetadate,
     chapters: Chapter[]
   ) {
@@ -41,6 +43,7 @@ export class Book {
     this.bookname = bookname;
     this.author = author;
     this.introduction = introduction;
+    this.introductionHTML = introductionHTML;
     this.additionalMetadate = additionalMetadate;
     this.chapters = chapters;
     console_debug("[Book]初始化完成");

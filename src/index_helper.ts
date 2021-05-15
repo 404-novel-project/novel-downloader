@@ -174,6 +174,14 @@ a.disabled {
   pointer-events: none;
   cursor: default;
   color: gray;
+}
+.author::before {
+	content: "作者：";
+}
+.author {
+	text-align: center;
+	margin-top: -3em;
+	margin-bottom: 3em;
 }`;
   }
 
@@ -211,7 +219,7 @@ a.disabled {
 
   public saveZip() {
     const ToC = new DOMParser().parseFromString(
-      `<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="https://github.com/yingziwu/novel-downloader"><link href="style.css" type="text/css" rel="stylesheet"/><title>${this.book.bookname}</title></head><body><div class="main"><h1>${this.book.bookname}</h1></div></body></html>`,
+      `<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="https://github.com/yingziwu/novel-downloader"><link href="style.css" type="text/css" rel="stylesheet"/><title>${this.book.bookname}</title></head><body><div class="main"><h1>${this.book.bookname}</h1><h3 class="author">${this.book.author}</h3></div></body></html>`,
       "text/html"
     );
     const TocMain = ToC.querySelector("div.main");
@@ -222,17 +230,20 @@ a.disabled {
     if (this.book.additionalMetadate.cover) {
       const coverDom = document.createElement("img");
       coverDom.className = "cover";
-      coverDom.src = this.book.additionalMetadate.cover.name;
+      coverDom.setAttribute(
+        "data-src-address",
+        this.book.additionalMetadate.cover.name
+      );
       infoDom.appendChild(coverDom);
     }
-    if (this.book.introduction) {
+    if (this.book.introductionHTML) {
       const divElem = document.createElement("div");
       const h3Elem = document.createElement("h3");
       h3Elem.innerText = "简介";
 
       const introDom = document.createElement("div");
       introDom.className = "introduction";
-      introDom.innerText = this.book.introduction;
+      introDom.innerHTML = this.book.introductionHTML.innerHTML;
 
       divElem.appendChild(h3Elem);
       divElem.appendChild(introDom);
@@ -378,9 +389,17 @@ a.disabled {
     console_debug("[save]保存ToC文件");
     this.savedZip.file(
       "ToC.html",
-      new Blob([ToC.documentElement.outerHTML], {
-        type: "text/html; charset=UTF-8",
-      })
+      new Blob(
+        [
+          ToC.documentElement.outerHTML.replace(
+            new RegExp("data-src-address", "g"),
+            "src"
+          ),
+        ],
+        {
+          type: "text/html; charset=UTF-8",
+        }
+      )
     );
 
     console.log("[save]开始保存ZIP文件");

@@ -34,8 +34,10 @@ async function bookParseTemp({
   chapterParse: ruleClassNamespace.chapterParse;
 }): Promise<bookParseObject> {
   let introduction: string | null;
+  let introductionHTML: HTMLElement | null;
   if (introDom === null) {
     introduction = null;
+    introductionHTML = null;
   } else {
     introDom = introDomPatch(introDom);
     let {
@@ -44,6 +46,7 @@ async function bookParseTemp({
       images: introCleanimages,
     } = cleanDOM(introDom, "TM");
     introduction = introCleantext;
+    introductionHTML = introCleanDom;
   }
 
   const additionalMetadate: BookAdditionalMetadate = {};
@@ -115,6 +118,7 @@ async function bookParseTemp({
     bookname: bookname,
     author: author,
     introduction: introduction,
+    introductionHTML: introductionHTML,
     additionalMetadate: additionalMetadate,
     chapters: chapters,
   };
