@@ -63,6 +63,14 @@ ZIP压缩包，请在解压后，直接双击打开HTML文件（`ToC.html` 为�
 如欲只下载部分章节，请在点击运行按钮前，按下 F12 打开开发者工具，在 `Window` 下创建自定义筛选函数 `chapterFilter` 。
 
 ```typescript
+declare enum Status {
+    pending = 0,
+    downloading = 1,
+    failed = 2,
+    finished = 3,
+    aborted = 4
+}
+
 class Chapter {
     bookUrl: string;
     bookname: string;
@@ -155,6 +163,7 @@ interface bookParseObject {
     bookname: string;
     author: string;
     introduction: string | null;
+    introductionHTML: HTMLElement | null;
     additionalMetadate: BookAdditionalMetadate;
     chapters: Chapter[];
 }
