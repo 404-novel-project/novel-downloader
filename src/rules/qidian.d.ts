@@ -9,6 +9,7 @@ export declare class qidian implements ruleClass {
         bookname: string;
         author: string;
         introduction: string | null;
+        introductionHTML: HTMLElement | null;
         additionalMetadate: BookAdditionalMetadate;
         chapters: Chapter[];
     }>;

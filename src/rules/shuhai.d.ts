@@ -10,6 +10,7 @@ export declare class shuhai implements ruleClass {
         bookname: string;
         author: string;
         introduction: string | null;
+        introductionHTML: HTMLElement | null;
         additionalMetadate: BookAdditionalMetadate;
         chapters: Chapter[];
     }>;

@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        3.6.2.1620666082649
+// @version        3.6.3.1621062148395
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -17,6 +17,22 @@
 // @match          *://mm.shuhai.com/book/*.htm
 // @match          *://www.tadu.com/book/catalogue/*
 // @match          *://www.qimao.com/shuku/*/
+// @match          *://sosad.fun/threads/*/profile*
+// @match          *://wenzhan.org/threads/*/profile*
+// @match          *://sosadfun.com/threads/*/profile*
+// @match          *://xn--pxtr7m5ny.com/threads/*/profile*
+// @match          *://xn--pxtr7m.com/threads/*/profile*
+// @match          *://xn--pxtr7m5ny.net/threads/*/profile*
+// @match          *://xn--pxtr7m.net/threads/*/profile*
+// @match          *://sosadfun.link/threads/*/profile*
+// @match          *://www.sosad.fun/threads/*/profile*
+// @match          *://www.wenzhan.org/threads/*/profile*
+// @match          *://www.sosadfun.com/threads/*/profile*
+// @match          *://www.xn--pxtr7m5ny.com/threads/*/profile*
+// @match          *://www.xn--pxtr7m.com/threads/*/profile*
+// @match          *://www.xn--pxtr7m5ny.net/threads/*/profile*
+// @match          *://www.xn--pxtr7m.net/threads/*/profile*
+// @match          *://www.sosadfun.link/threads/*/profile*
 // @match          *://www.uukanshu.com/b/*/
 // @match          *://www.yruan.com/article/*.html
 // @match          *://www.biquwoo.com/bqw*/

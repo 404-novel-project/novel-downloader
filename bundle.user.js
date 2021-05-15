@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        3.6.2.1620666082649
+// @version        3.6.3.1621062148395
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -17,6 +17,22 @@
 // @match          *://mm.shuhai.com/book/*.htm
 // @match          *://www.tadu.com/book/catalogue/*
 // @match          *://www.qimao.com/shuku/*/
+// @match          *://sosad.fun/threads/*/profile*
+// @match          *://wenzhan.org/threads/*/profile*
+// @match          *://sosadfun.com/threads/*/profile*
+// @match          *://xn--pxtr7m5ny.com/threads/*/profile*
+// @match          *://xn--pxtr7m.com/threads/*/profile*
+// @match          *://xn--pxtr7m5ny.net/threads/*/profile*
+// @match          *://xn--pxtr7m.net/threads/*/profile*
+// @match          *://sosadfun.link/threads/*/profile*
+// @match          *://www.sosad.fun/threads/*/profile*
+// @match          *://www.wenzhan.org/threads/*/profile*
+// @match          *://www.sosadfun.com/threads/*/profile*
+// @match          *://www.xn--pxtr7m5ny.com/threads/*/profile*
+// @match          *://www.xn--pxtr7m.com/threads/*/profile*
+// @match          *://www.xn--pxtr7m5ny.net/threads/*/profile*
+// @match          *://www.xn--pxtr7m.net/threads/*/profile*
+// @match          *://www.sosadfun.link/threads/*/profile*
 // @match          *://www.uukanshu.com/b/*/
 // @match          *://www.yruan.com/article/*.html
 // @match          *://www.biquwoo.com/bqw*/
@@ -133,6 +149,14 @@ const blockElements = [
     "cite",
     "span",
     "font",
+    "u",
+    "del",
+    "sup",
+    "sub",
+    "strike",
+    "small",
+    "samp",
+    "s",
     "a",
 ];
 const ignoreElements = [
@@ -186,6 +210,19 @@ function getPreviousSibling(elem) {
         return elem.previousSibling;
     }
     return elem;
+}
+function getParentElement(elem) {
+    const _elem = elem.parentElement;
+    if (!_elem) {
+        return null;
+    }
+    let nodename = _elem.nodeName.toLowerCase();
+    if (["div", "p"].includes(nodename)) {
+        return _elem;
+    }
+    else {
+        return getParentElement(_elem);
+    }
 }
 function formatImage(elem, builder) {
     var _a, _b, _c;
@@ -367,6 +404,18 @@ function formatText(elems, builder) {
                 builder.text = builder.text + tPText;
                 return;
             }
+            else if (previousSibling === null &&
+                (() => {
+                    const parentElement = getParentElement(elem);
+                    if ((parentElement === null || parentElement === void 0 ? void 0 : parentElement.childNodes.length) === 1) {
+                        return true;
+                    }
+                    return false;
+                })()) {
+                temp0();
+                builder.text = builder.text + "\n\n" + textContent + "\n\n";
+                return;
+            }
             else {
                 temp1();
                 return;
@@ -376,7 +425,12 @@ function formatText(elems, builder) {
             if (previousSibling === null) {
                 temp0();
                 const tPText = textContent;
-                builder.text = builder.text + tPText;
+                if (builder.text.endsWith("\n")) {
+                    builder.text = builder.text + tPText;
+                }
+                else {
+                    builder.text = builder.text + "\n\n" + tPText;
+                }
                 return;
             }
             else {
@@ -439,6 +493,14 @@ function walk(dom, builder) {
         const nodeName = node.nodeName.toLowerCase();
         switch (nodeName) {
             case "a":
+            case "u":
+            case "del":
+            case "sup":
+            case "sub":
+            case "strike":
+            case "small":
+            case "samp":
+            case "s":
             case "b":
             case "strong":
             case "i":
@@ -520,8 +582,8 @@ async function initBook(rule) {
     const bookParse = rule.bookParse;
     const chapterParse = rule.chapterParse;
     return bookParse(chapterParse).then((obj) => {
-        const { bookUrl, bookname, author, introduction, additionalMetadate, chapters, } = obj;
-        const book = new main_1.Book(bookUrl, bookname, author, introduction, additionalMetadate, chapters);
+        const { bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters, } = obj;
+        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
         return book;
     });
 }
@@ -551,6 +613,7 @@ async function initChapters(rule, book) {
         }
         return b0 && b1;
     });
+    totalChapterNumber = chapters.length;
     if (chapters.length === 0) {
         console.error(`[initChapters]初始化章节出错，未找到需初始化章节`);
         return [];
@@ -632,7 +695,6 @@ async function run() {
     }
     lib_1.console_debug("[run]主体开始");
     const book = await initBook(rule);
-    totalChapterNumber = book.chapters.filter((chapter) => chapter.status === main_1.Status.pending).length;
     await initChapters(rule, book);
     index_helper_1.save(book);
     lib_1.console_debug("[run]收尾");
@@ -884,6 +946,14 @@ a.disabled {
   pointer-events: none;
   cursor: default;
   color: gray;
+}
+.author::before {
+	content: "作者：";
+}
+.author {
+	text-align: center;
+	margin-top: -3em;
+	margin-bottom: 3em;
 }`;
     }
     saveTxt() {
@@ -909,7 +979,7 @@ a.disabled {
         saveAs(new Blob([savedText], { type: "text/plain;charset=utf-8" }), `${this.saveFileNameBase}.txt`);
     }
     saveZip() {
-        const ToC = new DOMParser().parseFromString(`<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="https://github.com/yingziwu/novel-downloader"><link href="style.css" type="text/css" rel="stylesheet"/><title>${this.book.bookname}</title></head><body><div class="main"><h1>${this.book.bookname}</h1></div></body></html>`, "text/html");
+        const ToC = new DOMParser().parseFromString(`<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="https://github.com/yingziwu/novel-downloader"><link href="style.css" type="text/css" rel="stylesheet"/><title>${this.book.bookname}</title></head><body><div class="main"><h1>${this.book.bookname}</h1><h3 class="author">${this.book.author}</h3></div></body></html>`, "text/html");
         const TocMain = ToC.querySelector("div.main");
         lib_1.console_debug("[save]生成ToC模板");
         const infoDom = document.createElement("div");
@@ -917,16 +987,16 @@ a.disabled {
         if (this.book.additionalMetadate.cover) {
             const coverDom = document.createElement("img");
             coverDom.className = "cover";
-            coverDom.src = this.book.additionalMetadate.cover.name;
+            coverDom.setAttribute("data-src-address", this.book.additionalMetadate.cover.name);
             infoDom.appendChild(coverDom);
         }
-        if (this.book.introduction) {
+        if (this.book.introductionHTML) {
             const divElem = document.createElement("div");
             const h3Elem = document.createElement("h3");
             h3Elem.innerText = "简介";
             const introDom = document.createElement("div");
             introDom.className = "introduction";
-            introDom.innerText = this.book.introduction;
+            introDom.innerHTML = this.book.introductionHTML.innerHTML;
             divElem.appendChild(h3Elem);
             divElem.appendChild(introDom);
             infoDom.appendChild(divElem);
@@ -1037,7 +1107,9 @@ a.disabled {
             }
         }
         lib_1.console_debug("[save]保存ToC文件");
-        this.savedZip.file("ToC.html", new Blob([ToC.documentElement.outerHTML], {
+        this.savedZip.file("ToC.html", new Blob([
+            ToC.documentElement.outerHTML.replace(new RegExp("data-src-address", "g"), "src"),
+        ], {
             type: "text/html; charset=UTF-8",
         }));
         console.log("[save]开始保存ZIP文件");
@@ -1423,11 +1495,12 @@ var Status;
     Status[Status["aborted"] = 4] = "aborted";
 })(Status = exports.Status || (exports.Status = {}));
 class Book {
-    constructor(bookUrl, bookname, author, introduction, additionalMetadate, chapters) {
+    constructor(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters) {
         this.bookUrl = bookUrl;
         this.bookname = bookname;
         this.author = author;
         this.introduction = introduction;
+        this.introductionHTML = introductionHTML;
         this.additionalMetadate = additionalMetadate;
         this.chapters = chapters;
         lib_1.console_debug("[Book]初始化完成");
@@ -1759,6 +1832,26 @@ async function getRule() {
             ruleClass = dmzj;
             break;
         }
+        case "sosad.fun":
+        case "www.sosad.fun":
+        case "wenzhan.org":
+        case "www.wenzhan.org":
+        case "sosadfun.com":
+        case "www.sosadfun.com":
+        case "xn--pxtr7m5ny.com":
+        case "www.xn--pxtr7m5ny.com":
+        case "xn--pxtr7m.com":
+        case "www.xn--pxtr7m.com":
+        case "xn--pxtr7m5ny.net":
+        case "www.xn--pxtr7m5ny.net":
+        case "xn--pxtr7m.net":
+        case "www.xn--pxtr7m.net":
+        case "sosadfun.link":
+        case "www.sosadfun.link": {
+            const { sosadfun } = await Promise.resolve().then(() => __webpack_require__(930));
+            ruleClass = sosadfun;
+            break;
+        }
         default: {
             throw new Error("Not Found Rule!");
         }
@@ -1790,13 +1883,16 @@ class c17k {
         const author = (document.querySelector("div.Author > a")).innerText.trim();
         const doc = await lib_1.getHtmlDOM(bookUrl, undefined);
         let introduction;
+        let introductionHTML;
         const introDom = doc.querySelector("#bookInfo p.intro > a");
         if (introDom === null) {
             introduction = null;
+            introductionHTML = null;
         }
         else {
             let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "TM");
             introduction = introCleantext;
+            introductionHTML = introCleanDom;
         }
         const additionalMetadate = {};
         let coverUrl = doc.querySelector("#bookCover img.book")
@@ -1845,6 +1941,7 @@ class c17k {
             bookname: bookname,
             author: author,
             introduction: introduction,
+            introductionHTML: introductionHTML,
             additionalMetadate: additionalMetadate,
             chapters: chapters,
         };
@@ -1919,13 +2016,16 @@ class c226ks {
             .replace(/作(\s+)?者[：:]/, "")
             .trim();
         let introduction;
+        let introductionHTML;
         const introDom = document.querySelector(".desc");
         if (introDom === null) {
             introduction = null;
+            introductionHTML = null;
         }
         else {
             let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "TM");
             introduction = introCleantext;
+            introductionHTML = introCleanDom;
         }
         const additionalMetadate = {};
         const coverUrl = document.querySelector(".imgbox > img")
@@ -1961,6 +2061,7 @@ class c226ks {
             bookname: bookname,
             author: author,
             introduction: introduction,
+            introductionHTML: introductionHTML,
             additionalMetadate: additionalMetadate,
             chapters: chapters,
         };
@@ -2007,13 +2108,16 @@ const main_1 = __webpack_require__(519);
 const lib_1 = __webpack_require__(563);
 async function bookParseTemp({ bookUrl, bookname, author, introDom, introDomPatch, coverUrl, chapterListSelector, charset, chapterParse, }) {
     let introduction;
+    let introductionHTML;
     if (introDom === null) {
         introduction = null;
+        introductionHTML = null;
     }
     else {
         introDom = introDomPatch(introDom);
         let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "TM");
         introduction = introCleantext;
+        introductionHTML = introCleanDom;
     }
     const additionalMetadate = {};
     additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
@@ -2063,6 +2167,7 @@ async function bookParseTemp({ bookUrl, bookname, author, introDom, introDomPatc
         bookname: bookname,
         author: author,
         introduction: introduction,
+        introductionHTML: introductionHTML,
         additionalMetadate: additionalMetadate,
         chapters: chapters,
     };
@@ -2299,14 +2404,17 @@ class ciweimao {
         const bookname = (document.querySelector(".book-catalog .hd h3")).innerText.trim();
         const author = (document.querySelector(".book-catalog .hd > p > a")).innerText.trim();
         let introduction;
+        let introductionHTML;
         const dom = await lib_1.getHtmlDOM(bookUrl, undefined);
         const introDom = dom.querySelector(".book-intro-cnt .book-desc");
         if (introDom === null) {
             introduction = null;
+            introductionHTML = null;
         }
         else {
             let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "TM");
             introduction = introCleantext;
+            introductionHTML = introCleanDom;
         }
         const additionalMetadate = {};
         const coverUrl = dom.querySelector(".cover > img").src;
@@ -2351,6 +2459,7 @@ class ciweimao {
             bookname: bookname,
             author: author,
             introduction: introduction,
+            introductionHTML: introductionHTML,
             additionalMetadate: additionalMetadate,
             chapters: chapters,
         };
@@ -2593,13 +2702,16 @@ class dmzj {
             .replace("作者：", "")
             .trim();
         let introduction;
+        let introductionHTML;
         const introDom = document.querySelector(".comic_deCon_d");
         if (introDom === null) {
             introduction = null;
+            introductionHTML = null;
         }
         else {
             let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "TM");
             introduction = introCleantext;
+            introductionHTML = introCleanDom;
         }
         const additionalMetadate = {};
         const coverUrl = (document.querySelector(".comic_i_img > a > img")).src;
@@ -2626,6 +2738,7 @@ class dmzj {
             bookname: bookname,
             author: author,
             introduction: introduction,
+            introductionHTML: introductionHTML,
             additionalMetadate: additionalMetadate,
             chapters: chapters,
         };
@@ -2722,10 +2835,12 @@ class gongzicp {
         const bookname = data.novelInfo.novel_name;
         const author = data.novelInfo.author_nickname;
         let introduction;
+        let introductionHTML;
         const introDom = document.createElement("div");
         introDom.innerHTML = data.novelInfo.novel_info;
         let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "TM");
         introduction = introCleantext;
+        introductionHTML = introCleanDom;
         const additionalMetadate = {};
         const coverUrl = data.novelInfo.novel_cover;
         additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
@@ -2783,6 +2898,7 @@ class gongzicp {
             bookname: bookname,
             author: author,
             introduction: introduction,
+            introductionHTML: introductionHTML,
             additionalMetadate: additionalMetadate,
             chapters: chapters,
         };
@@ -2980,13 +3096,16 @@ class hetushu {
         const bookname = (document.querySelector(".book_info > h2")).innerText.trim();
         const author = (document.querySelector(".book_info > div:nth-child(3) > a:nth-child(1)")).innerText.trim();
         let introduction;
+        let introductionHTML;
         const introDom = document.querySelector(".intro");
         if (introDom === null) {
             introduction = null;
+            introductionHTML = null;
         }
         else {
             let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "TM");
             introduction = introCleantext;
+            introductionHTML = introCleanDom;
         }
         const additionalMetadate = {};
         const coverUrl = (document.querySelector(".book_info > img")).src;
@@ -3024,6 +3143,7 @@ class hetushu {
             bookname: bookname,
             author: author,
             introduction: introduction,
+            introductionHTML: introductionHTML,
             additionalMetadate: additionalMetadate,
             chapters: chapters,
         };
@@ -3155,13 +3275,16 @@ class idejian {
             author = _author.textContent.trim();
         }
         let introduction;
+        let introductionHTML;
         const introDom = document.querySelector(".brief_con");
         if (introDom === null) {
             introduction = null;
+            introductionHTML = null;
         }
         else {
             let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "TM");
             introduction = introCleantext;
+            introductionHTML = introCleanDom;
         }
         const additionalMetadate = {};
         const coverUrl = (document.querySelector(".book_img > img")).src;
@@ -3187,6 +3310,7 @@ class idejian {
             bookname: bookname,
             author: author,
             introduction: introduction,
+            introductionHTML: introductionHTML,
             additionalMetadate: additionalMetadate,
             chapters: chapters,
         };
@@ -3248,20 +3372,25 @@ class jjwxc {
         var _a;
         const bookUrl = document.location.href;
         const bookname = (document.querySelector('h1[itemprop="name"] > span')).innerText.trim();
+        const additionalMetadate = {};
         let introduction;
+        let introductionHTML;
         const author = (document.querySelector("td.sptd h2 a span")).innerText
             .replace(/作\s+者:/, "")
             .trim();
         const introDom = document.querySelector("#novelintro");
         if (introDom === null) {
             introduction = null;
+            introductionHTML = null;
         }
         else {
-            lib_1.rm("img", true, introDom);
             let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "TM");
             introduction = introCleantext;
+            introductionHTML = introCleanDom;
+            if (introCleanimages) {
+                additionalMetadate.attachments = [...introCleanimages];
+            }
         }
-        const additionalMetadate = {};
         let coverUrl = (document.querySelector(".noveldefaultimage")).src;
         additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
         additionalMetadate.cover.init();
@@ -3345,6 +3474,7 @@ class jjwxc {
             bookname: bookname,
             author: author,
             introduction: introduction,
+            introductionHTML: introductionHTML,
             additionalMetadate: additionalMetadate,
             chapters: chapters,
         };
@@ -26225,13 +26355,16 @@ class linovel {
         const bookname = (document.querySelector(".book-title")).innerText.trim();
         const author = (document.querySelector(".author-frame > .novelist > div:nth-child(3) > a")).innerText.trim();
         let introduction;
+        let introductionHTML;
         const introDom = document.querySelector(".about-text");
         if (introDom === null) {
             introduction = null;
+            introductionHTML = null;
         }
         else {
             let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "TM");
             introduction = introCleantext;
+            introductionHTML = introCleanDom;
         }
         const additionalMetadate = {};
         const attachmentsUrlList = [];
@@ -26303,6 +26436,7 @@ class linovel {
             bookname: bookname,
             author: author,
             introduction: introduction,
+            introductionHTML: introductionHTML,
             additionalMetadate: additionalMetadate,
             chapters: chapters,
         };
@@ -26373,14 +26507,17 @@ class meegoq {
         const dom = await lib_1.getHtmlDOM(bookUrl, "GBK");
         const author = (dom.querySelector("article.info > p.detail.pt20 > i:nth-child(1) > a")).innerText.trim();
         let introduction;
+        let introductionHTML;
         const introDom = dom.querySelector("article.info > p.desc");
         if (introDom === null) {
             introduction = null;
+            introductionHTML = null;
         }
         else {
             lib_1.rm("b", false, introDom);
             let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "TM");
             introduction = introCleantext;
+            introductionHTML = introCleanDom;
         }
         const additionalMetadate = {};
         const coverUrl = (dom.querySelector("article.info > div.cover > img")).src;
@@ -26432,6 +26569,7 @@ class meegoq {
             bookname: bookname,
             author: author,
             introduction: introduction,
+            introductionHTML: introductionHTML,
             additionalMetadate: additionalMetadate,
             chapters: chapters,
         };
@@ -26483,16 +26621,19 @@ class qidian {
         const bookUrl = document.location.href;
         const bookname = (document.querySelector(".book-info > h1 > em")).innerText.trim();
         let introduction;
+        let introductionHTML;
         const author = (document.querySelector(".book-info .writer")).innerText
             .replace(/作\s+者:/, "")
             .trim();
         const introDom = document.querySelector(".book-info-detail .book-intro");
         if (introDom === null) {
             introduction = null;
+            introductionHTML = null;
         }
         else {
             let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "TM");
             introduction = introCleantext;
+            introductionHTML = introCleanDom;
         }
         const additionalMetadate = {};
         let coverUrl = document.querySelector("#bookImg > img")
@@ -26568,6 +26709,7 @@ class qidian {
             bookname: bookname,
             author: author,
             introduction: introduction,
+            introductionHTML: introductionHTML,
             additionalMetadate: additionalMetadate,
             chapters: chapters,
         };
@@ -26693,13 +26835,16 @@ class qimao {
         const bookname = (document.querySelector("h2.tit")).innerText.trim();
         const author = (document.querySelector(".p-name > a")).innerHTML.trim();
         let introduction;
+        let introductionHTML;
         const introDom = (document.querySelector(".book-introduction .article"));
         if (introDom === null) {
             introduction = null;
+            introductionHTML = null;
         }
         else {
             let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "TM");
             introduction = introCleantext;
+            introductionHTML = introCleanDom;
         }
         const additionalMetadate = {};
         const coverUrl = (document.querySelector(".poster-pic > img")).src;
@@ -26740,6 +26885,7 @@ class qimao {
             bookname: bookname,
             author: author,
             introduction: introduction,
+            introductionHTML: introductionHTML,
             additionalMetadate: additionalMetadate,
             chapters: chapters,
         };
@@ -26811,15 +26957,18 @@ class sfacg {
         const bookUrl = document.location.href.replace("/MainIndex/", "");
         const bookname = (document.querySelector("h1.story-title")).innerText.trim();
         let introduction;
+        let introductionHTML;
         const dom = await lib_1.getHtmlDOM(bookUrl, undefined);
         const author = (dom.querySelector(".author-name")).innerText.trim();
         const introDom = dom.querySelector(".introduce");
         if (introDom === null) {
             introduction = null;
+            introductionHTML = null;
         }
         else {
             let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "TM");
             introduction = introCleantext;
+            introductionHTML = introCleanDom;
         }
         const additionalMetadate = {};
         let coverUrl = (dom.querySelector("#hasTicket div.pic img")).src;
@@ -26877,6 +27026,7 @@ class sfacg {
             bookname: bookname,
             author: author,
             introduction: introduction,
+            introductionHTML: introductionHTML,
             additionalMetadate: additionalMetadate,
             chapters: chapters,
         };
@@ -27024,9 +27174,11 @@ class shouda8 {
             .replace("作者：", "")
             .trim();
         let introduction;
+        let introductionHTML;
         const introDom = document.querySelector(".intro");
         if (introDom === null) {
             introduction = null;
+            introductionHTML = null;
         }
         else {
             lib_1.rm(".book_keywords", false, introDom);
@@ -27034,6 +27186,7 @@ class shouda8 {
             lib_1.rm("#cambrian0", false, introDom);
             let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "TM");
             introduction = introCleantext;
+            introductionHTML = introCleanDom;
         }
         const additionalMetadate = {};
         const coverUrl = (document.querySelector(".pic > img:nth-child(1)")).src;
@@ -27055,6 +27208,7 @@ class shouda8 {
             bookname: bookname,
             author: author,
             introduction: introduction,
+            introductionHTML: introductionHTML,
             additionalMetadate: additionalMetadate,
             chapters: chapters,
         };
@@ -27109,6 +27263,7 @@ class shuhai {
         const bookUrl = document.location.href;
         const bookname = (document.querySelector("div.book-info-bookname > span:nth-child(1)")).innerText.trim();
         let introduction;
+        let introductionHTML;
         const author = (document.querySelector("div.book-info-bookname > span:nth-child(2)")).innerText
             .replace("作者: ", "")
             .trim();
@@ -27116,10 +27271,12 @@ class shuhai {
             document.querySelector("div.book-info-bookintro-all");
         if (introDom === null) {
             introduction = null;
+            introductionHTML = null;
         }
         else {
             let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "TM");
             introduction = introCleantext;
+            introductionHTML = introCleanDom;
         }
         const additionalMetadate = {};
         let coverUrl = (document.querySelector(".book-cover-wrapper > img")).getAttribute("data-original");
@@ -27176,6 +27333,7 @@ class shuhai {
             bookname: bookname,
             author: author,
             introduction: introduction,
+            introductionHTML: introductionHTML,
             additionalMetadate: additionalMetadate,
             chapters: chapters,
         };
@@ -27230,6 +27388,124 @@ exports.shuhai = shuhai;
 
 /***/ }),
 
+/***/ 930:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.sosadfun = void 0;
+const main_1 = __webpack_require__(519);
+const lib_1 = __webpack_require__(563);
+class sosadfun {
+    constructor() {
+        this.imageMode = "TM";
+    }
+    async bookParse(chapterParse) {
+        const bookUrl = document.location.origin + document.location.pathname;
+        const bookname = (document.querySelector(".font-1")).innerText.trim();
+        const authorDom = (document.querySelector("div.h5:nth-child(1) > div:nth-child(1) > a:nth-child(1)"));
+        let author;
+        if (authorDom) {
+            author = authorDom.innerText.trim();
+        }
+        else {
+            author = "匿名咸鱼";
+        }
+        const needLogin = () => {
+            const mainDom = document.querySelector(".col-xs-12 > .main-text.no-selection");
+            if (mainDom.innerText.trim() === "主楼隐藏，请登录后查看") {
+                return true;
+            }
+            else {
+                return false;
+            }
+        };
+        const additionalMetadate = {};
+        additionalMetadate.tags = Array.from(document.querySelectorAll("div.h5:nth-child(1) > div:nth-child(3) > a")).map((a) => a.innerText.trim());
+        let introduction;
+        let introductionHTML;
+        let introDom;
+        if (needLogin()) {
+            alert("本小说需要登录后浏览！");
+            throw new Error("本小说需要登录后浏览！");
+        }
+        else {
+            introDom = document.createElement("div");
+            const shortIntroDom = document.querySelector("div.h5:nth-child(3)");
+            const longIntroDom = document.querySelector(".col-xs-12 > .main-text.no-selection");
+            if (shortIntroDom) {
+                const pElem = document.createElement("p");
+                pElem.innerText = shortIntroDom.innerText;
+                introDom.appendChild(pElem);
+            }
+            if (longIntroDom) {
+                for (const elem of Array.from(longIntroDom.cloneNode(true).children)) {
+                    introDom.appendChild(elem);
+                }
+            }
+        }
+        if (introDom === null) {
+            introduction = null;
+            introductionHTML = null;
+        }
+        else {
+            let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "TM");
+            introduction = introCleantext;
+            introductionHTML = introCleanDom;
+            if (introCleanimages) {
+                additionalMetadate.attachments = [...introCleanimages];
+            }
+        }
+        const chapters = [];
+        const aList = document.querySelectorAll(".table > tbody:nth-child(2) > tr > th:nth-child(1) > a");
+        let chapterNumber = 0;
+        for (const a of Array.from(aList)) {
+            chapterNumber++;
+            const chapterName = a.innerText.trim();
+            const chapterUrl = a.href;
+            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, false, false, null, null, null, chapterParse, "UTF-8");
+            chapters.push(chapter);
+        }
+        return {
+            bookUrl: bookUrl,
+            bookname: bookname,
+            author: author,
+            introduction: introduction,
+            introductionHTML: introductionHTML,
+            additionalMetadate: additionalMetadate,
+            chapters: chapters,
+        };
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset) {
+        const doc = await lib_1.getHtmlDOM(chapterUrl, charset);
+        chapterName = (doc.querySelector("strong.h3")).innerText.trim();
+        const content = (doc.querySelector(".main-text.no-selection > span[id^=full]"));
+        if (content) {
+            let { dom, text, images } = lib_1.cleanDOM(content, "TM");
+            return {
+                chapterName: chapterName,
+                contentRaw: content,
+                contentText: text,
+                contentHTML: dom,
+                contentImages: images,
+            };
+        }
+        else {
+            return {
+                chapterName: chapterName,
+                contentRaw: null,
+                contentText: null,
+                contentHTML: null,
+                contentImages: null,
+            };
+        }
+    }
+}
+exports.sosadfun = sosadfun;
+
+
+/***/ }),
+
 /***/ 995:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
@@ -27250,14 +27526,17 @@ class tadu {
             .replace("作者：", "")
             .trim();
         let introduction;
+        let introductionHTML;
         const doc = await lib_1.getHtmlDOM(bookUrl, undefined);
         const introDom = (doc.querySelector("div.boxCenter.bookIntro > div > p:nth-child(4)"));
         if (introDom === null) {
             introduction = null;
+            introductionHTML = null;
         }
         else {
             let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "TM");
             introduction = introCleantext;
+            introductionHTML = introCleanDom;
         }
         const additionalMetadate = {};
         const coverUrl = (doc.querySelector("a.bookImg > img")).getAttribute("data-src");
@@ -27297,6 +27576,7 @@ class tadu {
             bookname: bookname,
             author: author,
             introduction: introduction,
+            introductionHTML: introductionHTML,
             additionalMetadate: additionalMetadate,
             chapters: chapters,
         };
@@ -27393,9 +27673,11 @@ class uukanshu {
             .trim();
         const author = (document.querySelector("dd.jieshao_content > h2 > a")).innerText.trim();
         let introduction;
+        let introductionHTML;
         const introDom = (document.querySelector("dd.jieshao_content > h3"));
         if (introDom === null) {
             introduction = null;
+            introductionHTML = null;
         }
         else {
             introDom.innerHTML = introDom.innerHTML
@@ -27404,6 +27686,7 @@ class uukanshu {
                 .replace(/－+/, "");
             let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "TM");
             introduction = introCleantext;
+            introductionHTML = introCleanDom;
         }
         const additionalMetadate = {};
         const coverUrl = (document.querySelector("a.bookImg > img")).src;
@@ -27446,6 +27729,7 @@ class uukanshu {
             bookname: bookname,
             author: author,
             introduction: introduction,
+            introductionHTML: introductionHTML,
             additionalMetadate: additionalMetadate,
             chapters: chapters,
         };
@@ -27513,16 +27797,19 @@ class wenku8 {
         const bookname = (document.querySelector("#title")).innerText.trim();
         const doc = await lib_1.getHtmlDOM(bookUrl, "GBK");
         let introduction;
+        let introductionHTML;
         const author = (doc.querySelector("#content > div:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(2) > td:nth-child(2)")).innerText
             .replace("小说作者：", "")
             .trim();
         const introDom = doc.querySelector("#content > div:nth-child(1) > table:nth-child(4) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(2) > span:nth-child(11)");
         if (introDom === null) {
             introduction = null;
+            introductionHTML = null;
         }
         else {
             let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "TM");
             introduction = introCleantext;
+            introductionHTML = introCleanDom;
         }
         const additionalMetadate = {};
         let coverUrl = (doc.querySelector("#content > div:nth-child(1) > table:nth-child(4) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(1) > img:nth-child(1)")).src;
@@ -27556,6 +27843,7 @@ class wenku8 {
             bookname: bookname,
             author: author,
             introduction: introduction,
+            introductionHTML: introductionHTML,
             additionalMetadate: additionalMetadate,
             chapters: chapters,
         };
@@ -27617,14 +27905,17 @@ class xiaoshuodaquan {
             .trim();
         const author = (document.querySelector(".smallcons > span:nth-child(1) > a:nth-child(1)")).innerText.trim();
         let introduction;
+        let introductionHTML;
         const introDom = document.querySelector(".bookintro");
         if (introDom === null) {
             introduction = null;
+            introductionHTML = null;
         }
         else {
             introDom.innerHTML = introDom.innerHTML.replace("内容简介:", "");
             let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "TM");
             introduction = introCleantext;
+            introductionHTML = introCleanDom;
         }
         const additionalMetadate = {};
         let coverUrl;
@@ -27664,6 +27955,7 @@ class xiaoshuodaquan {
             bookname: bookname,
             author: author,
             introduction: introduction,
+            introductionHTML: introductionHTML,
             additionalMetadate: additionalMetadate,
             chapters: chapters,
         };
@@ -27720,13 +28012,16 @@ class xinwanben {
         const bookname = (document.querySelector(".detailTitle > h1")).innerText.trim();
         const author = (document.querySelector(".writer > a")).innerText.trim();
         let introduction;
+        let introductionHTML;
         const introDom = (document.querySelector(".detailTopMid > table > tbody > tr:nth-child(3) > td:nth-child(2)"));
         if (introDom === null) {
             introduction = null;
+            introductionHTML = null;
         }
         else {
             let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "TM");
             introduction = introCleantext;
+            introductionHTML = introCleanDom;
         }
         const additionalMetadate = {};
         const coverUrl = (document.querySelector(".detailTopLeft > img")).src;
@@ -27751,6 +28046,7 @@ class xinwanben {
             bookname: bookname,
             author: author,
             introduction: introduction,
+            introductionHTML: introductionHTML,
             additionalMetadate: additionalMetadate,
             chapters: chapters,
         };
@@ -27820,13 +28116,16 @@ class xkzw {
             .replace(/作(\s+)?者[：:]/, "")
             .trim();
         let introduction;
+        let introductionHTML;
         const introDom = document.querySelector("#intro");
         if (introDom === null) {
             introduction = null;
+            introductionHTML = null;
         }
         else {
             let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "TM");
             introduction = introCleantext;
+            introductionHTML = introCleanDom;
         }
         const additionalMetadate = {};
         const coverUrl = document.querySelector("#fmimg > img")
@@ -27932,6 +28231,7 @@ class xkzw {
             bookname: bookname,
             author: author,
             introduction: introduction,
+            introductionHTML: introductionHTML,
             additionalMetadate: additionalMetadate,
             chapters: chapters,
         };
@@ -28091,13 +28391,16 @@ class yrun {
             .replace(/作(\s+)?者[：:]/, "")
             .trim();
         let introduction;
+        let introductionHTML;
         const introDom = document.querySelector("#intro > p");
         if (introDom === null) {
             introduction = null;
+            introductionHTML = null;
         }
         else {
             let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "naive");
             introduction = introCleantext;
+            introductionHTML = introCleanDom;
         }
         const additionalMetadate = {};
         const coverUrl = document.querySelector("#fmimg > img")
@@ -28122,6 +28425,7 @@ class yrun {
             bookname: bookname,
             author: author,
             introduction: introduction,
+            introductionHTML: introductionHTML,
             additionalMetadate: additionalMetadate,
             chapters: chapters,
         };
@@ -28177,14 +28481,17 @@ class yuzhaige {
         const bookname = (dom.querySelector("div.cataloginfo > h3")).innerText.trim();
         const author = (dom.querySelector(".infotype > p:nth-child(1) > a:nth-child(1)")).innerText.trim();
         let introduction;
+        let introductionHTML;
         const introDom = dom.querySelector(".intro");
         if (introDom === null) {
             introduction = null;
+            introductionHTML = null;
         }
         else {
             lib_1.rm("span:nth-child(1)", false, introDom);
             let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "naive");
             introduction = introCleantext;
+            introductionHTML = introCleanDom;
         }
         const additionalMetadate = {};
         const chapters = [];
@@ -28242,6 +28549,7 @@ class yuzhaige {
             bookname: bookname,
             author: author,
             introduction: introduction,
+            introductionHTML: introductionHTML,
             additionalMetadate: additionalMetadate,
             chapters: chapters,
         };
@@ -28374,13 +28682,16 @@ class zongheng {
         const author = (document.querySelector("div.book-meta > p > span:nth-child(1) > a")).innerText.trim();
         const doc = await lib_1.getHtmlDOM(bookUrl, undefined);
         let introduction;
+        let introductionHTML;
         const introDom = doc.querySelector("div.book-info > div.book-dec");
         if (introDom === null) {
             introduction = null;
+            introductionHTML = null;
         }
         else {
             let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "TM");
             introduction = introCleantext;
+            introductionHTML = introCleanDom;
         }
         const additionalMetadate = {};
         let coverUrl = doc.querySelector("div.book-img > img")
@@ -28432,6 +28743,7 @@ class zongheng {
             bookname: bookname,
             author: author,
             introduction: introduction,
+            introductionHTML: introductionHTML,
             additionalMetadate: additionalMetadate,
             chapters: chapters,
         };

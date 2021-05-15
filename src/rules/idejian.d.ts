@@ -8,6 +8,7 @@ export declare class idejian implements ruleClass {
         bookname: string;
         author: string;
         introduction: string | null;
+        introductionHTML: HTMLElement | null;
         additionalMetadate: BookAdditionalMetadate;
         chapters: Chapter[];
     }>;

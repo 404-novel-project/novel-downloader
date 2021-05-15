@@ -4,6 +4,7 @@ export interface bookParseObject {
     bookname: string;
     author: string;
     introduction: string | null;
+    introductionHTML: HTMLElement | null;
     additionalMetadate: BookAdditionalMetadate;
     chapters: Chapter[];
 }

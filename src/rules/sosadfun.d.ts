@@ -1,8 +1,7 @@
 import { BookAdditionalMetadate, attachmentClass, Chapter } from "../main";
 import { ruleClass, ruleClassNamespace } from "../rules";
-export declare class meegoq implements ruleClass {
+export declare class sosadfun implements ruleClass {
     imageMode: "naive" | "TM";
-    concurrencyLimit: number;
     constructor();
     bookParse(chapterParse: ruleClassNamespace.chapterParse): Promise<{
         bookUrl: string;

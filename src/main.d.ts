@@ -22,9 +22,10 @@ export declare class Book {
     bookname: string;
     author: string;
     introduction: string | null;
+    introductionHTML: HTMLElement | null;
     additionalMetadate: BookAdditionalMetadate;
     chapters: Chapter[];
-    constructor(bookUrl: string, bookname: string, author: string, introduction: string | null, additionalMetadate: BookAdditionalMetadate, chapters: Chapter[]);
+    constructor(bookUrl: string, bookname: string, author: string, introduction: string | null, introductionHTML: HTMLElement | null, additionalMetadate: BookAdditionalMetadate, chapters: Chapter[]);
 }
 export declare class Chapter {
     bookUrl: string;

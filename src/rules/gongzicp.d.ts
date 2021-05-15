@@ -9,6 +9,7 @@ export declare class gongzicp implements ruleClass {
         bookname: string;
         author: string;
         introduction: string;
+        introductionHTML: HTMLElement;
         additionalMetadate: BookAdditionalMetadate;
         chapters: Chapter[];
     }>;
