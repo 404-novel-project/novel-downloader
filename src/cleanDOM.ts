@@ -339,7 +339,11 @@ function formatText(elems: (Text | HTMLBRElement)[], builder: Builder) {
         // 仅文本
         // <p><span style="font-size:20px"><b>以上四个人是主角，配对不分攻受。</b></span></p>
         temp0();
-        builder.text = builder.text + "\n\n" + textContent + "\n\n";
+        if (builder.text.endsWith("\n")) {
+          builder.text = builder.text + textContent + "\n\n";
+        } else {
+          builder.text = builder.text + "\n\n" + textContent + "\n\n";
+        }
         return;
       } else {
         // 文本位于最后，但前一节点并非<br>节点
