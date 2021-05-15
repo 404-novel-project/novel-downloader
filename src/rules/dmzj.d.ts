@@ -1,9 +1,9 @@
 import { BookAdditionalMetadate, attachmentClass, Chapter } from "../main";
-import { ruleClass, ruleClassNamespace } from "../rules";
+import { ruleClass } from "../rules";
 export declare class dmzj implements ruleClass {
     imageMode: "naive" | "TM";
     constructor();
-    bookParse(chapterParse: ruleClassNamespace.chapterParse): Promise<{
+    bookParse(chapterParse: ruleClass["chapterParse"]): Promise<{
         bookUrl: string;
         bookname: string;
         author: string;

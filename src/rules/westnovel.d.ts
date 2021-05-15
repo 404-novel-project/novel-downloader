@@ -1,6 +1,6 @@
 import { BookAdditionalMetadate, attachmentClass, Chapter } from "../main";
 import { ruleClass } from "../rules";
-export declare class idejian implements ruleClass {
+export declare class westnovel implements ruleClass {
     imageMode: "naive" | "TM";
     constructor();
     bookParse(chapterParse: ruleClass["chapterParse"]): Promise<{

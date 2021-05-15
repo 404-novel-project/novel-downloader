@@ -1,11 +1,11 @@
 import { BookAdditionalMetadate, attachmentClass, Chapter } from "../main";
-import { ruleClass, ruleClassNamespace } from "../rules";
+import { ruleClass } from "../rules";
 export declare class xiaoshuodaquan implements ruleClass {
     imageMode: "naive" | "TM";
     charset: string;
     concurrencyLimit: number;
     constructor();
-    bookParse(chapterParse: ruleClassNamespace.chapterParse): Promise<{
+    bookParse(chapterParse: ruleClass["chapterParse"]): Promise<{
         bookUrl: string;
         bookname: string;
         author: string;

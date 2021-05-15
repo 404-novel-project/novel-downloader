@@ -1,4 +1,4 @@
-import { ruleClassNamespace, chapterParseObject } from "./rules";
+import { ruleClass, chapterParseObject } from "./rules";
 export declare enum Status {
     pending = 0,
     downloading = 1,
@@ -38,7 +38,7 @@ export declare class Chapter {
     sectionName: string | null;
     sectionNumber: number | null;
     sectionChapterNumber: number | null;
-    chapterParse: ruleClassNamespace.chapterParse;
+    chapterParse: ruleClass["chapterParse"];
     charset: string;
     status: Status;
     retryTime: number;
@@ -46,7 +46,7 @@ export declare class Chapter {
     contentText: string | null;
     contentHTML: HTMLElement | null;
     contentImages: attachmentClass[] | null;
-    constructor(bookUrl: string, bookname: string, chapterUrl: string, chapterNumber: number, chapterName: string | null, isVIP: boolean, isPaid: boolean | null, sectionName: string | null, sectionNumber: number | null, sectionChapterNumber: number | null, chapterParse: ruleClassNamespace.chapterParse, charset: string);
+    constructor(bookUrl: string, bookname: string, chapterUrl: string, chapterNumber: number, chapterName: string | null, isVIP: boolean, isPaid: boolean | null, sectionName: string | null, sectionNumber: number | null, sectionChapterNumber: number | null, chapterParse: ruleClass["chapterParse"], charset: string);
     init(): Promise<chapterParseObject>;
     private parse;
 }

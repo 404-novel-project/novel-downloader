@@ -1,11 +1,11 @@
 import { BookAdditionalMetadate, Chapter } from "../main";
-import { ruleClass, ruleClassNamespace, chapterParseObject } from "../rules";
+import { ruleClass, chapterParseObject } from "../rules";
 export declare class jjwxc implements ruleClass {
     imageMode: "naive" | "TM";
     concurrencyLimit: number;
     charset: string;
     constructor();
-    bookParse(chapterParse: ruleClassNamespace.chapterParse): Promise<{
+    bookParse(chapterParse: ruleClass["chapterParse"]): Promise<{
         bookUrl: string;
         bookname: string;
         author: string;

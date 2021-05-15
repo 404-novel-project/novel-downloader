@@ -1,10 +1,10 @@
 import { BookAdditionalMetadate, Chapter } from "../main";
-import { ruleClass, ruleClassNamespace, chapterParseObject } from "../rules";
+import { ruleClass, chapterParseObject } from "../rules";
 export declare class sfacg implements ruleClass {
     imageMode: "naive" | "TM";
     concurrencyLimit: number;
     constructor();
-    bookParse(chapterParse: ruleClassNamespace.chapterParse): Promise<{
+    bookParse(chapterParse: ruleClass["chapterParse"]): Promise<{
         bookUrl: string;
         bookname: string;
         author: string;

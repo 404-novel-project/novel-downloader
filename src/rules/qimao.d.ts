@@ -1,9 +1,9 @@
 import { BookAdditionalMetadate, Chapter } from "../main";
-import { ruleClass, ruleClassNamespace, chapterParseObject } from "../rules";
+import { ruleClass, chapterParseObject } from "../rules";
 export declare class qimao implements ruleClass {
     imageMode: "naive" | "TM";
     constructor();
-    bookParse(chapterParse: ruleClassNamespace.chapterParse): Promise<{
+    bookParse(chapterParse: ruleClass["chapterParse"]): Promise<{
         bookUrl: string;
         bookname: string;
         author: string;
