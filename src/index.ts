@@ -74,7 +74,7 @@ async function initChapters(rule: ruleClass, book: Book) {
     concurrencyLimit = rule.concurrencyLimit;
   }
 
-  if (typeof (<any>unsafeWindow).chapterFilter !== "undefined") {
+  if (typeof (<any>unsafeWindow).chapterFilter === "function") {
     let tlog = "[initChapters]发现自定义筛选函数，自定义筛选函数内容如下：\n";
     tlog += (<indexNameSpace.mainWindows>unsafeWindow).chapterFilter.toString();
     console.log(tlog);
@@ -83,7 +83,7 @@ async function initChapters(rule: ruleClass, book: Book) {
   const chapters = book.chapters.filter((chapter) => {
     const b0 = chapter.status === Status.pending;
     let b1 = true;
-    if (typeof (<any>unsafeWindow).chapterFilter !== "undefined") {
+    if (typeof (<any>unsafeWindow).chapterFilter === "function") {
       try {
         const u = (<indexNameSpace.mainWindows>unsafeWindow).chapterFilter(
           chapter
@@ -91,15 +91,17 @@ async function initChapters(rule: ruleClass, book: Book) {
         if (typeof u === "boolean") {
           b1 = u;
         }
-      } catch (error) {}
+      } catch (error) {
+        console.error("运行自定义筛选函数时出错。", error);
+      }
     }
     return b0 && b1;
   });
-  totalChapterNumber = chapters.length;
   if (chapters.length === 0) {
     console.error(`[initChapters]初始化章节出错，未找到需初始化章节`);
     return [];
   }
+  totalChapterNumber = chapters.length;
   if (concurrencyLimit === 1) {
     for (let chapter of chapters) {
       const obj = await chapter.init();
