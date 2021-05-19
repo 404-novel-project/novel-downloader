@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        3.6.3.1621096445055
+// @version        3.6.3.1621406218862
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -58,6 +58,7 @@
 // @match          *://www.dmzj1.com/info/*.html
 // @match          *://www.westnovel.com/*/*/
 // @match          *://www.mht.tw/*/
+// @match          *://www.dierbanzhu1.com/*_*/
 // @name:en        novel-downloader
 // @description:en An scalable universal novel downloader.
 // @namespace      https://blog.bgme.me
@@ -600,7 +601,7 @@ async function initChapters(rule, book) {
     if (rule.concurrencyLimit !== undefined) {
         concurrencyLimit = rule.concurrencyLimit;
     }
-    if (typeof unsafeWindow.chapterFilter !== "undefined") {
+    if (typeof unsafeWindow.chapterFilter === "function") {
         let tlog = "[initChapters]发现自定义筛选函数，自定义筛选函数内容如下：\n";
         tlog += unsafeWindow.chapterFilter.toString();
         console.log(tlog);
@@ -609,22 +610,24 @@ async function initChapters(rule, book) {
     const chapters = book.chapters.filter((chapter) => {
         const b0 = chapter.status === main_1.Status.pending;
         let b1 = true;
-        if (typeof unsafeWindow.chapterFilter !== "undefined") {
+        if (typeof unsafeWindow.chapterFilter === "function") {
             try {
                 const u = unsafeWindow.chapterFilter(chapter);
                 if (typeof u === "boolean") {
                     b1 = u;
                 }
             }
-            catch (error) { }
+            catch (error) {
+                console.error("运行自定义筛选函数时出错。", error);
+            }
         }
         return b0 && b1;
     });
-    totalChapterNumber = chapters.length;
     if (chapters.length === 0) {
         console.error(`[initChapters]初始化章节出错，未找到需初始化章节`);
         return [];
     }
+    totalChapterNumber = chapters.length;
     if (concurrencyLimit === 1) {
         for (let chapter of chapters) {
             const obj = await chapter.init();
@@ -1873,6 +1876,11 @@ async function getRule() {
             ruleClass = mht;
             break;
         }
+        case "www.dierbanzhu1.com": {
+            const { dierbanzhu } = await Promise.resolve().then(() => __webpack_require__(481));
+            ruleClass = dierbanzhu;
+            break;
+        }
         default: {
             throw new Error("Not Found Rule!");
         }
@@ -2711,6 +2719,113 @@ class ciweimao {
     }
 }
 exports.ciweimao = ciweimao;
+
+
+/***/ }),
+
+/***/ 481:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.dierbanzhu = void 0;
+const main_1 = __webpack_require__(519);
+const lib_1 = __webpack_require__(563);
+class dierbanzhu {
+    constructor() {
+        this.imageMode = "TM";
+        this.charset = "GBK";
+    }
+    async bookParse(chapterParse) {
+        const bookUrl = document.location.href;
+        const bookname = (document.querySelector("#info > h1:nth-child(1)")).innerText.trim();
+        const author = (document.querySelector("#info > p:nth-child(2)")).innerText
+            .replace(/作(\s+)?者[：:]/, "")
+            .trim();
+        let introduction;
+        let introductionHTML;
+        const introDom = document.querySelector("#intro");
+        if (introDom === null) {
+            introduction = null;
+            introductionHTML = null;
+        }
+        else {
+            let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "TM");
+            introduction = introCleantext;
+            introductionHTML = introCleanDom;
+        }
+        const additionalMetadate = {};
+        const coverUrl = document.querySelector("#fmimg > img")
+            .src;
+        additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
+        additionalMetadate.cover.init();
+        const chapters = [];
+        const dl = document.querySelector("#list>dl");
+        if (dl === null || dl === void 0 ? void 0 : dl.childElementCount) {
+            const dlc = Array.from(dl.children);
+            const chapterList = dlc.filter((obj) => obj !== undefined);
+            let chapterNumber = 0;
+            let sectionNumber = 0;
+            let sectionName = null;
+            let sectionChapterNumber = 0;
+            for (let i = 0; i < chapterList.length; i++) {
+                const node = chapterList[i];
+                if (node.nodeName === "DT" && !node.innerText.includes("最新章节")) {
+                    sectionNumber++;
+                    sectionChapterNumber = 0;
+                    sectionName = node.innerText.replace(`《${bookname}》`, "").trim();
+                }
+                else if (node.nodeName === "DD") {
+                    chapterNumber++;
+                    sectionChapterNumber++;
+                    const a = node.firstElementChild;
+                    const chapterName = a.innerText;
+                    const chapterUrl = a.href;
+                    const isVIP = false;
+                    const isPaid = false;
+                    const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, chapterParse, "GBK", {});
+                    chapters.push(chapter);
+                }
+            }
+        }
+        return {
+            bookUrl: bookUrl,
+            bookname: bookname,
+            author: author,
+            introduction: introduction,
+            introductionHTML: introductionHTML,
+            additionalMetadate: additionalMetadate,
+            chapters: chapters,
+        };
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+        const dom = await lib_1.getHtmlDOM(chapterUrl, charset);
+        chapterName = (dom.querySelector(".bookname > h1:nth-child(1)")).innerText.trim();
+        const content = dom.querySelector("#content");
+        if (content) {
+            let { dom, text, images } = lib_1.cleanDOM(content, "TM");
+            return {
+                chapterName: chapterName,
+                contentRaw: content,
+                contentText: text,
+                contentHTML: dom,
+                contentImages: images,
+                additionalMetadate: null,
+            };
+        }
+        else {
+            return {
+                chapterName: chapterName,
+                contentRaw: null,
+                contentText: null,
+                contentHTML: null,
+                contentImages: null,
+                additionalMetadate: null,
+            };
+        }
+    }
+}
+exports.dierbanzhu = dierbanzhu;
 
 
 /***/ }),
