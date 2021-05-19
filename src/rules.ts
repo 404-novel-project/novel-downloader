@@ -234,6 +234,11 @@ export async function getRule(): Promise<ruleClass> {
       ruleClass = mht;
       break;
     }
+    case "www.dierbanzhu1.com": {
+      const { dierbanzhu } = await import("./rules/dierbanzhu");
+      ruleClass = dierbanzhu;
+      break;
+    }
     default: {
       throw new Error("Not Found Rule!");
     }
