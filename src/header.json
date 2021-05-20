@@ -67,6 +67,7 @@
     "*://www.dmzj1.com/info/*.html",
     "*://www.westnovel.com/*/*/",
     "*://www.mht.tw/*/",
+    "*://www.01bzw.org/*_*/",
     "*://www.dierbanzhu1.com/*_*/"
   ],
   "exclude": [

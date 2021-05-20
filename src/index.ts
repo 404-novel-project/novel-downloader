@@ -1,4 +1,11 @@
-import { getRule, ruleClass, icon0, icon1, enaleDebug } from "./rules";
+import {
+  getRule,
+  ruleClass,
+  icon0,
+  icon1,
+  enaleDebug,
+  enableCustomChapterFilter,
+} from "./rules";
 import { Book, Chapter, attachmentClass, Status } from "./main";
 import { concurrencyRun, _GM_info, console_debug } from "./lib";
 import {
@@ -74,7 +81,10 @@ async function initChapters(rule: ruleClass, book: Book) {
     concurrencyLimit = rule.concurrencyLimit;
   }
 
-  if (typeof (<any>unsafeWindow).chapterFilter === "function") {
+  if (
+    enableCustomChapterFilter &&
+    typeof (<any>unsafeWindow).chapterFilter === "function"
+  ) {
     let tlog = "[initChapters]发现自定义筛选函数，自定义筛选函数内容如下：\n";
     tlog += (<indexNameSpace.mainWindows>unsafeWindow).chapterFilter.toString();
     console.log(tlog);
@@ -83,7 +93,10 @@ async function initChapters(rule: ruleClass, book: Book) {
   const chapters = book.chapters.filter((chapter) => {
     const b0 = chapter.status === Status.pending;
     let b1 = true;
-    if (typeof (<any>unsafeWindow).chapterFilter === "function") {
+    if (
+      enableCustomChapterFilter &&
+      typeof (<any>unsafeWindow).chapterFilter === "function"
+    ) {
       try {
         const u = (<indexNameSpace.mainWindows>unsafeWindow).chapterFilter(
           chapter
