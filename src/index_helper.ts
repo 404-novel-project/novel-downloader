@@ -1,6 +1,7 @@
 import { Book, Chapter, attachmentClass, Status } from "./main";
 import { console_debug } from "./lib";
 import { updateProgress, audio, indexNameSpace, catchError } from "./index";
+import { enableCustomSaveOptions } from "./rules";
 
 export const buttonStyleText = `position: fixed;
 top: 15%;
@@ -125,6 +126,12 @@ p {
 img {
   vertical-align: text-bottom;
   max-width: 90%;
+}
+.title {
+  margin-bottom: 0.7em;
+}
+.author {
+  text-align: center;
 }`;
     this.tocStyleText = `img {
   max-width: 100%;
@@ -191,9 +198,7 @@ a.disabled {
 
     let sections: string[] = [];
     for (const chapter of this.chapters) {
-      const chapterName = chapter.chapterName
-        ? chapter.chapterName
-        : chapter.chapterNumber.toString();
+      const chapterName = this.getchapterName(chapter);
       if (chapter.sectionName && !sections.includes(chapter.sectionName)) {
         sections.push(chapter.sectionName);
         const sectionText = this.genSectionText(chapter.sectionName);
@@ -218,6 +223,62 @@ a.disabled {
   }
 
   public saveZip() {
+    console_debug("[save]保存元数据文本");
+    const metaDateText = this.genMetaDateTxt();
+    this.savedZip.file(
+      "info.txt",
+      new Blob([metaDateText], { type: "text/plain;charset=utf-8" })
+    );
+    console_debug("[save]保存样式");
+    this.savedZip.file(
+      "style.css",
+      new Blob([this.mainStyleText], { type: "text/css;charset=utf-8" })
+    );
+
+    if (this.book.additionalMetadate.cover) {
+      console_debug("[save]保存封面");
+      this.addImageToZip(this.book.additionalMetadate.cover, this.savedZip);
+    }
+    if (this.book.additionalMetadate.attachments) {
+      console_debug("[save]保存书籍附件");
+      for (const bookAttachment of this.book.additionalMetadate.attachments) {
+        this.addImageToZip(bookAttachment, this.savedZip);
+      }
+    }
+
+    console_debug("[save]开始保存章节文件");
+    this.saveChapters();
+    console_debug("[save]开始生成并保存ToC.html");
+    this.saveToC();
+
+    console.log("[save]开始保存ZIP文件");
+    this.savedZip
+      .generateAsync(
+        {
+          type: "blob",
+          compression: "DEFLATE",
+          compressionOptions: {
+            level: 6,
+          },
+        },
+        (metadata: any) => updateProgress(1, 1, metadata.percent)
+      )
+      .then((blob: Blob) => {
+        console_debug("[save]ZIP文件生成完毕，开始保存ZIP文件");
+        saveAs(blob, `${this.saveFileNameBase}.zip`);
+      })
+      .then(() => {
+        console_debug("[save]保存ZIP文件完毕");
+        document.querySelector("#nd-progress")?.remove();
+        audio.pause();
+      })
+      .catch((err: Error) => {
+        console.error("saveZip: " + err);
+        catchError(err);
+      });
+  }
+
+  private saveToC() {
     const ToC = new DOMParser().parseFromString(
       `<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="https://github.com/yingziwu/novel-downloader"><link href="style.css" type="text/css" rel="stylesheet"/><title>${this.book.bookname}</title></head><body><div class="main"><h1>${this.book.bookname}</h1><h3 class="author">${this.book.author}</h3></div></body></html>`,
       "text/html"
@@ -266,48 +327,22 @@ a.disabled {
     tocStyle.innerHTML = this.tocStyleText;
     ToC.head.appendChild(tocStyle);
 
-    console_debug("[save]保存元数据文本");
-    const metaDateText = this.genMetaDateTxt();
-    this.savedZip.file(
-      "info.txt",
-      new Blob([metaDateText], { type: "text/plain;charset=utf-8" })
-    );
-    console_debug("[save]保存样式");
-    this.savedZip.file(
-      "style.css",
-      new Blob([this.mainStyleText], { type: "text/css;charset=utf-8" })
-    );
-
-    if (this.book.additionalMetadate.cover) {
-      console_debug("[save]保存封面");
-      this.addImageToZip(this.book.additionalMetadate.cover, this.savedZip);
-    }
-    if (this.book.additionalMetadate.attachments) {
-      console_debug("[save]保存书籍附件");
-      for (const bookAttachment of this.book.additionalMetadate.attachments) {
-        this.addImageToZip(bookAttachment, this.savedZip);
-      }
-    }
-
     let sections: string[] = [];
     for (const chapter of this.chapters) {
-      const chapterName = chapter.chapterName
-        ? chapter.chapterName
-        : chapter.chapterNumber.toString();
+      const chapterName = this.getchapterName(chapter);
       const htmlfileNameBase = `${"0".repeat(
         this.chapters.length.toString().length -
           chapter.chapterNumber.toString().length
       )}${chapter.chapterNumber.toString()}.html`;
       const chapterHtmlFileName = `Chapter${htmlfileNameBase}`;
 
-      console_debug("[save]生成ToC项目，保存Section HTML文件");
       if (chapter.sectionName) {
         const sectionHtmlId = `section${chapter.sectionNumber}`;
 
         if (!sections.includes(chapter.sectionName)) {
           sections.push(chapter.sectionName);
 
-          console_debug("[save]ToC");
+          console_debug(`[save]生成卷DOM：${chapter.sectionName}`);
           const sectionDiv = document.createElement("div");
           sectionDiv.id = sectionHtmlId;
           sectionDiv.className = "section";
@@ -322,13 +357,9 @@ a.disabled {
             TocMain?.appendChild(hr);
           }
           TocMain?.appendChild(sectionDiv);
-
-          console_debug("[save]Zip");
-          const sectionHTMLBlob = this.genSectionHtmlFile(chapter.sectionName);
-          this.savedZip.file(`Section${htmlfileNameBase}`, sectionHTMLBlob);
         }
 
-        console_debug("[save]ToC");
+        console_debug(`[save]生成章DOM：${chapterName}`);
         const sectionDiv = TocMain?.querySelector("#" + sectionHtmlId);
 
         const chapterDiv = document.createElement("div");
@@ -368,7 +399,45 @@ a.disabled {
         sectionDiv?.appendChild(chapterDiv);
       }
 
-      console_debug("[save]保存HTML文件");
+      console_debug("[save]保存ToC文件");
+      this.savedZip.file(
+        "ToC.html",
+        new Blob(
+          [
+            ToC.documentElement.outerHTML.replace(
+              new RegExp("data-src-address", "g"),
+              "src"
+            ),
+          ],
+          {
+            type: "text/html; charset=UTF-8",
+          }
+        )
+      );
+    }
+  }
+
+  private saveChapters() {
+    let sections: string[] = [];
+    for (const chapter of this.chapters) {
+      const chapterName = this.getchapterName(chapter);
+      const htmlfileNameBase = `${"0".repeat(
+        this.chapters.length.toString().length -
+          chapter.chapterNumber.toString().length
+      )}${chapter.chapterNumber.toString()}.html`;
+      const chapterHtmlFileName = `Chapter${htmlfileNameBase}`;
+
+      if (chapter.sectionName) {
+        if (!sections.includes(chapter.sectionName)) {
+          sections.push(chapter.sectionName);
+
+          console_debug(`[save]保存卷HTML文件：${chapter.sectionName}`);
+          const sectionHTMLBlob = this.genSectionHtmlFile(chapter.sectionName);
+          this.savedZip.file(`Section${htmlfileNameBase}`, sectionHTMLBlob);
+        }
+      }
+
+      console_debug(`[save]保存章HTML文件：${chapterName}`);
       if (chapter.contentHTML) {
         const chapterHTMLBlob = this.genChapterHtmlFile(
           chapterName,
@@ -378,55 +447,21 @@ a.disabled {
         this.savedZip.file(chapterHtmlFileName, chapterHTMLBlob);
       }
 
-      console_debug("[save]保存附件");
+      console_debug(`[save]开始保存章节附件：${chapterName}`);
       if (chapter.contentImages) {
         for (const attachment of chapter.contentImages) {
           this.addImageToZip(attachment, this.savedZip);
         }
       }
     }
+  }
 
-    console_debug("[save]保存ToC文件");
-    this.savedZip.file(
-      "ToC.html",
-      new Blob(
-        [
-          ToC.documentElement.outerHTML.replace(
-            new RegExp("data-src-address", "g"),
-            "src"
-          ),
-        ],
-        {
-          type: "text/html; charset=UTF-8",
-        }
-      )
-    );
-
-    console.log("[save]开始保存ZIP文件");
-    this.savedZip
-      .generateAsync(
-        {
-          type: "blob",
-          compression: "DEFLATE",
-          compressionOptions: {
-            level: 6,
-          },
-        },
-        (metadata: any) => updateProgress(1, 1, metadata.percent)
-      )
-      .then((blob: Blob) => {
-        console_debug("[save]ZIP文件生成完毕，开始保存ZIP文件");
-        saveAs(blob, `${this.saveFileNameBase}.zip`);
-      })
-      .then(() => {
-        console_debug("[save]保存ZIP文件完毕");
-        document.querySelector("#nd-progress")?.remove();
-        audio.pause();
-      })
-      .catch((err: Error) => {
-        console.error("saveZip: " + err);
-        catchError(err);
-      });
+  public getchapterName(chapter: Chapter) {
+    if (chapter.chapterName) {
+      return chapter.chapterName;
+    } else {
+      return chapter.chapterNumber.toString();
+    }
   }
 
   private genMetaDateTxt() {
@@ -526,8 +561,64 @@ a.disabled {
   }
 }
 
-export function save(book: Book) {
+export interface saveOptions {
+  mainStyleText?: string;
+  tocStyleText?: string;
+  getchapterName?: (chapter: Chapter) => string;
+}
+const keyNamesS: Array<keyof saveOptions> = ["mainStyleText", "tocStyleText"];
+const keyNamesF: Array<keyof saveOptions> = ["getchapterName"];
+export function saveOptionsValidate(data: any) {
+  function keyNametest(keyname: string) {
+    const keyList = new Array().concat(keyNamesS).concat(keyNamesF);
+    if (keyList.includes(keyname)) {
+      return true;
+    }
+    return false;
+  }
+  function keyNamesStest(keyname: string) {
+    //@ts-expect-error
+    if (keyNamesS.includes(keyname)) {
+      if (typeof data[keyname] === "string") {
+        return true;
+      }
+    }
+    return false;
+  }
+  function keyNamesFtest(keyname: string) {
+    //@ts-expect-error
+    if (keyNamesF.includes(keyname)) {
+      if (typeof data[keyname] === "function") {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  if (typeof data !== "object") {
+    return false;
+  }
+  for (const keyname in data) {
+    if (!keyNametest(keyname)) {
+      return false;
+    }
+    if (!(keyNamesStest(keyname) || keyNamesFtest(keyname))) {
+      return false;
+    }
+  }
+  return true;
+}
+
+export function save(book: Book, options: saveOptions) {
   const saveBookObj = new saveBook(book);
+
+  if (enableCustomSaveOptions && saveOptionsValidate(options)) {
+    for (const option in options) {
+      //@ts-expect-error
+      saveBookObj[option] = options[option as keyof saveOptions];
+    }
+  }
+
   saveBookObj.saveTxt();
   saveBookObj.saveZip();
 }

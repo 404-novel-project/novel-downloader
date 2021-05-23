@@ -5,6 +5,7 @@ import {
   icon1,
   enaleDebug,
   enableCustomChapterFilter,
+  enableCustomSaveOptions,
 } from "./rules";
 import { Book, Chapter, attachmentClass, Status } from "./main";
 import { concurrencyRun, _GM_info, console_debug } from "./lib";
@@ -15,15 +16,18 @@ import {
   removeTabMark,
   progressStyleText,
   buttonStyleText,
+  saveOptions,
+  saveOptionsValidate,
 } from "./index_helper";
 
 export namespace indexNameSpace {
   export interface mainWindows extends unsafeWindow {
     rule: ruleClass;
     book: Book;
-    save(book: Book): void;
+    save(book: Book, saveOptions: saveOptions): void;
     saveAs(obj: any): void;
     chapterFilter(chapter: Chapter): boolean;
+    saveOptions: saveOptions;
   }
 
   export interface mainTabObject extends GM_tab_object {
@@ -206,7 +210,19 @@ async function run() {
   console_debug("[run]主体开始");
   const book = await initBook(rule);
   await initChapters(rule, book);
-  save(book);
+
+  console_debug("[run]保存数据");
+  if (
+    enableCustomSaveOptions &&
+    typeof (<any>unsafeWindow).saveOptions === "object" &&
+    saveOptionsValidate((<any>unsafeWindow).saveOptions)
+  ) {
+    const saveOptions = (<indexNameSpace.mainWindows>unsafeWindow).saveOptions;
+    console.log("[run]发现自定义保存参数，内容如下\n", saveOptions);
+    save(book, saveOptions);
+  } else {
+    save(book, {});
+  }
 
   console_debug("[run]收尾");
   if (typeof GM_getTab !== "undefined") {

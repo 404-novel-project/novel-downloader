@@ -134,6 +134,52 @@ function chapterFilter(chapter) {
 }
 ```
 
+### 自定义保存参数
+
+自定义保存参数允许您修改保存文件的样式，章节标题等内容。
+
+使用方法大致同自定义筛选函数，即在 `Window` 下创建如下对象 `saveOptions` 。
+
+```typescript
+interface saveOptions {
+    mainStyleText?: string;
+    tocStyleText?: string;
+    getchapterName?: (chapter: Chapter) => string;
+}
+```
+
+**自定义保存参数示例：**
+
+将章节名称格式修改为 `第xx章 xxxx` ：
+
+```javascript
+const saveOptions = {
+    getchapterName: (chapter) => {
+        if (chapter.chapterName) {
+            return `第${chapter.chapterNumber.toString()}章 ${chapter.chapterName}`;
+        } else {
+            return `第${chapter.chapterNumber.toString()}章`;
+        }
+    }
+}
+window.saveOptions = saveOptions
+```
+
+更改ZIP文档中章节HTML文件样式：
+
+```javascript
+const saveOptions = {
+    "mainStyleText": `p {
+  text-indent: 4em;
+  display: block;
+  line-height: 1.3em;
+  margin-top: 0.4em;
+  margin-bottom: 0.4em;
+}`
+}
+window.saveOptions = saveOptions
+```
+
 ## 开发
 
 根据 `ruleClass` 接口实现相应网站解析规则 Class，并在 `rules.ts` 中添加相应选择规则。
