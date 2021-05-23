@@ -662,3 +662,27 @@ export function removeTabMark(): Promise<indexNameSpace.mainTabObject> {
     });
   });
 }
+
+export function r18SiteWarning() {
+  const k = "novel-download-r18-setting";
+  let v = localStorage.getItem(k);
+  if (v === null) {
+    const c = confirm(
+      "本网站可能含有R18内容，是否在该网站运行小说下载器脚本？"
+    );
+    if (c) {
+      localStorage.setItem(k, JSON.stringify(true));
+      return true;
+    } else {
+      localStorage.setItem(k, JSON.stringify(false));
+      return false;
+    }
+  } else {
+    v = JSON.parse(v);
+    if (v) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+}

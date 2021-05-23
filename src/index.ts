@@ -6,6 +6,8 @@ import {
   enaleDebug,
   enableCustomChapterFilter,
   enableCustomSaveOptions,
+  r18SiteList,
+  enableR18SiteWarning,
 } from "./rules";
 import { Book, Chapter, attachmentClass, Status } from "./main";
 import { concurrencyRun, _GM_info, console_debug } from "./lib";
@@ -18,6 +20,7 @@ import {
   buttonStyleText,
   saveOptions,
   saveOptionsValidate,
+  r18SiteWarning,
 } from "./index_helper";
 
 export namespace indexNameSpace {
@@ -311,6 +314,13 @@ window.addEventListener("DOMContentLoaded", () => {
     );
     return;
   }
+  if (enableR18SiteWarning && r18SiteList.includes(document.location.host)) {
+    const c = r18SiteWarning();
+    if (!c) {
+      return;
+    }
+  }
+
   printEnvironments();
   addButton();
 
