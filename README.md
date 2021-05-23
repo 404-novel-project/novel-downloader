@@ -180,65 +180,101 @@ const saveOptions = {
 window.saveOptions = saveOptions
 ```
 
-## 开发
+**使用用户脚本自动注入自定义保存参数：**
 
-根据 `ruleClass` 接口实现相应网站解析规则 Class，并在 `rules.ts` 中添加相应选择规则。
+如您总是想使用某一自定义保存参数，你可以使用如下用户脚本（根据实际需要修改相应数值），自动向页面注入自定义保存参数。
 
-```typescript
-interface BookAdditionalMetadate {
-    cover?: attachmentClass;
-    attachments?: attachmentClass[];
-    tags?: string[];
-    lastModified?: number;
-    serires?: string;
-    seriresNumber?: number;
-    ids?: string[] | string;
-    publisher?: string;
-    languages?: string;
-}
-declare class attachmentClass {
-    url: string;
-    name: string;
-    mode: "naive" | "TM";
-    headers?: {
-        [index: string]: string;
-    };
-    private defaultHeader;
-    status: Status;
-    retryTime: number;
-    imageBlob: Blob | null;
-    constructor(imageUrl: string, name: string, mode: "naive" | "TM");
-    init(): Promise<Blob | null>;
-    private downloadImage;
-    private tmDownloadImage;
-} 
-interface bookParseObject {
-    bookUrl: string;
-    bookname: string;
-    author: string;
-    introduction: string | null;
-    introductionHTML: HTMLElement | null;
-    additionalMetadate: BookAdditionalMetadate;
-    chapters: Chapter[];
-}
-interface chapterParseObject {
-    chapterName: string | null;
-    contentRaw: HTMLElement | null;
-    contentText: string | null;
-    contentHTML: HTMLElement | null;
-    contentImages: attachmentClass[] | null;
-    additionalMetadate: ChapterAdditionalMetadate | null;
-}
-interface ruleClass {
-    imageMode: "naive" | "TM";
-    charset?: string;
-    concurrencyLimit?: number;
-    maxRunLimit?: number;
-    bookParse(chapterParse: ruleClass["chapterParse"]): Promise<bookParseObject>;
-    chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean | null, charset: string, options: object): Promise<chapterParseObject>;
-}
+```javascript
+// ==UserScript==
+// @name         auto inject saveOptions
+// @namespace    http://tampermonkey.net/
+// @version      0.1
+// @description  auto inject saveOptions
+// @author       You
+// @match        *://*/*
+// @grant        unsafeWindow
+// ==/UserScript==
+
+(function() {
+    'use strict';
+
+    const saveOptions = {
+        getchapterName: (chapter) => {
+            if (chapter.chapterName) {
+                return `第${chapter.chapterNumber.toString()}章 ${chapter.chapterName}`;
+            } else {
+                return `第${chapter.chapterNumber.toString()}章`;
+            }
+        }
+    }
+    unsafeWindow.saveOptions = saveOptions
+})();
 ```
 
+自定义筛选函数同理也可使用用户脚本自动注入。
+
+## 开发
+
+1. `git clone https://github.com/yingziwu/novel-downloader.git` 将项目克隆至本地（访问github可能需要使用代理）。
+1. `npm install` 安装依赖。
+1. 根据 `ruleClass` 接口实现相应网站解析规则 Class，并在 `rules.ts` 中添加相应选择规则。
+
+    ```typescript
+    interface BookAdditionalMetadate {
+        cover?: attachmentClass;
+        attachments?: attachmentClass[];
+        tags?: string[];
+        lastModified?: number;
+        serires?: string;
+        seriresNumber?: number;
+        ids?: string[] | string;
+        publisher?: string;
+        languages?: string;
+    }
+    declare class attachmentClass {
+        url: string;
+        name: string;
+        mode: "naive" | "TM";
+        headers?: {
+            [index: string]: string;
+        };
+        private defaultHeader;
+        status: Status;
+        retryTime: number;
+        imageBlob: Blob | null;
+        constructor(imageUrl: string, name: string, mode: "naive" | "TM");
+        init(): Promise<Blob | null>;
+        private downloadImage;
+        private tmDownloadImage;
+    } 
+    interface bookParseObject {
+        bookUrl: string;
+        bookname: string;
+        author: string;
+        introduction: string | null;
+        introductionHTML: HTMLElement | null;
+        additionalMetadate: BookAdditionalMetadate;
+        chapters: Chapter[];
+    }
+    interface chapterParseObject {
+        chapterName: string | null;
+        contentRaw: HTMLElement | null;
+        contentText: string | null;
+        contentHTML: HTMLElement | null;
+        contentImages: attachmentClass[] | null;
+        additionalMetadate: ChapterAdditionalMetadate | null;
+    }
+    interface ruleClass {
+        imageMode: "naive" | "TM";
+        charset?: string;
+        concurrencyLimit?: number;
+        maxRunLimit?: number;
+        bookParse(chapterParse: ruleClass["chapterParse"]): Promise<bookParseObject>;
+        chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean | null, charset: string, options: object): Promise<chapterParseObject>;
+    }
+    ```
+
+1. `npm run build` 编译生成最终脚本文件 `dist/bundle.user.js`。
 ## License
 
 AGPL-3.0
