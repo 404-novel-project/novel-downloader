@@ -1,5 +1,5 @@
 import { Book, Chapter, attachmentClass, Status } from "./main";
-import { console_debug } from "./lib";
+import { console_debug, storageAvailable } from "./lib";
 import { updateProgress, audio, indexNameSpace, catchError } from "./index";
 import { enableCustomSaveOptions } from "./rules";
 
@@ -664,6 +664,10 @@ export function removeTabMark(): Promise<indexNameSpace.mainTabObject> {
 }
 
 export function r18SiteWarning() {
+  if (!storageAvailable("localStorage")) {
+    console.error("Window.localStorage API 失效！");
+    return true;
+  }
   const k = "novel-download-r18-setting";
   let v = localStorage.getItem(k);
   if (v === null) {
