@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        3.6.3.1621483860950
+// @version        3.6.4.1621774799316
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -709,7 +709,17 @@ async function run() {
     lib_1.console_debug("[run]主体开始");
     const book = await initBook(rule);
     await initChapters(rule, book);
-    index_helper_1.save(book);
+    lib_1.console_debug("[run]保存数据");
+    if (rules_1.enableCustomSaveOptions &&
+        typeof unsafeWindow.saveOptions === "object" &&
+        index_helper_1.saveOptionsValidate(unsafeWindow.saveOptions)) {
+        const saveOptions = unsafeWindow.saveOptions;
+        console.log("[run]发现自定义保存参数，内容如下\n", saveOptions);
+        index_helper_1.save(book, saveOptions);
+    }
+    else {
+        index_helper_1.save(book, {});
+    }
     lib_1.console_debug("[run]收尾");
     if (typeof GM_getTab !== "undefined") {
         console.log(`[run]移除运行标志`);
@@ -784,6 +794,12 @@ window.addEventListener("DOMContentLoaded", () => {
         alert("小说下载器脚本与Greasemonkey脚本管理器不兼容，请改用其它脚本管理器，如：Tampermonkey、Violentmonkey。");
         return;
     }
+    if (rules_1.enableR18SiteWarning && rules_1.r18SiteList.includes(document.location.host)) {
+        const c = index_helper_1.r18SiteWarning();
+        if (!c) {
+            return;
+        }
+    }
     printEnvironments();
     addButton();
     if (rules_1.enaleDebug) {
@@ -799,10 +815,11 @@ window.addEventListener("DOMContentLoaded", () => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.removeTabMark = exports.getNowRunNumber = exports.setTabMark = exports.save = exports.progressStyleText = exports.buttonStyleText = void 0;
+exports.r18SiteWarning = exports.removeTabMark = exports.getNowRunNumber = exports.setTabMark = exports.save = exports.saveOptionsValidate = exports.progressStyleText = exports.buttonStyleText = void 0;
 const main_1 = __webpack_require__(519);
 const lib_1 = __webpack_require__(563);
 const index_1 = __webpack_require__(607);
+const rules_1 = __webpack_require__(489);
 exports.buttonStyleText = `position: fixed;
 top: 15%;
 right: 5%;
@@ -910,6 +927,12 @@ p {
 img {
   vertical-align: text-bottom;
   max-width: 90%;
+}
+.title {
+  margin-bottom: 0.7em;
+}
+.author {
+  text-align: center;
 }`;
         this.tocStyleText = `img {
   max-width: 100%;
@@ -974,9 +997,7 @@ a.disabled {
         this.savedTextArray.push(metaDateText);
         let sections = [];
         for (const chapter of this.chapters) {
-            const chapterName = chapter.chapterName
-                ? chapter.chapterName
-                : chapter.chapterNumber.toString();
+            const chapterName = this.getchapterName(chapter);
             if (chapter.sectionName && !sections.includes(chapter.sectionName)) {
                 sections.push(chapter.sectionName);
                 const sectionText = this.genSectionText(chapter.sectionName);
@@ -992,6 +1013,50 @@ a.disabled {
         saveAs(new Blob([savedText], { type: "text/plain;charset=utf-8" }), `${this.saveFileNameBase}.txt`);
     }
     saveZip() {
+        lib_1.console_debug("[save]保存元数据文本");
+        const metaDateText = this.genMetaDateTxt();
+        this.savedZip.file("info.txt", new Blob([metaDateText], { type: "text/plain;charset=utf-8" }));
+        lib_1.console_debug("[save]保存样式");
+        this.savedZip.file("style.css", new Blob([this.mainStyleText], { type: "text/css;charset=utf-8" }));
+        if (this.book.additionalMetadate.cover) {
+            lib_1.console_debug("[save]保存封面");
+            this.addImageToZip(this.book.additionalMetadate.cover, this.savedZip);
+        }
+        if (this.book.additionalMetadate.attachments) {
+            lib_1.console_debug("[save]保存书籍附件");
+            for (const bookAttachment of this.book.additionalMetadate.attachments) {
+                this.addImageToZip(bookAttachment, this.savedZip);
+            }
+        }
+        lib_1.console_debug("[save]开始保存章节文件");
+        this.saveChapters();
+        lib_1.console_debug("[save]开始生成并保存ToC.html");
+        this.saveToC();
+        console.log("[save]开始保存ZIP文件");
+        this.savedZip
+            .generateAsync({
+            type: "blob",
+            compression: "DEFLATE",
+            compressionOptions: {
+                level: 6,
+            },
+        }, (metadata) => index_1.updateProgress(1, 1, metadata.percent))
+            .then((blob) => {
+            lib_1.console_debug("[save]ZIP文件生成完毕，开始保存ZIP文件");
+            saveAs(blob, `${this.saveFileNameBase}.zip`);
+        })
+            .then(() => {
+            var _a;
+            lib_1.console_debug("[save]保存ZIP文件完毕");
+            (_a = document.querySelector("#nd-progress")) === null || _a === void 0 ? void 0 : _a.remove();
+            index_1.audio.pause();
+        })
+            .catch((err) => {
+            console.error("saveZip: " + err);
+            index_1.catchError(err);
+        });
+    }
+    saveToC() {
         const ToC = new DOMParser().parseFromString(`<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="https://github.com/yingziwu/novel-downloader"><link href="style.css" type="text/css" rel="stylesheet"/><title>${this.book.bookname}</title></head><body><div class="main"><h1>${this.book.bookname}</h1><h3 class="author">${this.book.author}</h3></div></body></html>`, "text/html");
         const TocMain = ToC.querySelector("div.main");
         lib_1.console_debug("[save]生成ToC模板");
@@ -1027,35 +1092,17 @@ a.disabled {
         const tocStyle = document.createElement("style");
         tocStyle.innerHTML = this.tocStyleText;
         ToC.head.appendChild(tocStyle);
-        lib_1.console_debug("[save]保存元数据文本");
-        const metaDateText = this.genMetaDateTxt();
-        this.savedZip.file("info.txt", new Blob([metaDateText], { type: "text/plain;charset=utf-8" }));
-        lib_1.console_debug("[save]保存样式");
-        this.savedZip.file("style.css", new Blob([this.mainStyleText], { type: "text/css;charset=utf-8" }));
-        if (this.book.additionalMetadate.cover) {
-            lib_1.console_debug("[save]保存封面");
-            this.addImageToZip(this.book.additionalMetadate.cover, this.savedZip);
-        }
-        if (this.book.additionalMetadate.attachments) {
-            lib_1.console_debug("[save]保存书籍附件");
-            for (const bookAttachment of this.book.additionalMetadate.attachments) {
-                this.addImageToZip(bookAttachment, this.savedZip);
-            }
-        }
         let sections = [];
         for (const chapter of this.chapters) {
-            const chapterName = chapter.chapterName
-                ? chapter.chapterName
-                : chapter.chapterNumber.toString();
+            const chapterName = this.getchapterName(chapter);
             const htmlfileNameBase = `${"0".repeat(this.chapters.length.toString().length -
                 chapter.chapterNumber.toString().length)}${chapter.chapterNumber.toString()}.html`;
             const chapterHtmlFileName = `Chapter${htmlfileNameBase}`;
-            lib_1.console_debug("[save]生成ToC项目，保存Section HTML文件");
             if (chapter.sectionName) {
                 const sectionHtmlId = `section${chapter.sectionNumber}`;
                 if (!sections.includes(chapter.sectionName)) {
                     sections.push(chapter.sectionName);
-                    lib_1.console_debug("[save]ToC");
+                    lib_1.console_debug(`[save]生成卷DOM：${chapter.sectionName}`);
                     const sectionDiv = document.createElement("div");
                     sectionDiv.id = sectionHtmlId;
                     sectionDiv.className = "section";
@@ -1068,11 +1115,8 @@ a.disabled {
                         TocMain === null || TocMain === void 0 ? void 0 : TocMain.appendChild(hr);
                     }
                     TocMain === null || TocMain === void 0 ? void 0 : TocMain.appendChild(sectionDiv);
-                    lib_1.console_debug("[save]Zip");
-                    const sectionHTMLBlob = this.genSectionHtmlFile(chapter.sectionName);
-                    this.savedZip.file(`Section${htmlfileNameBase}`, sectionHTMLBlob);
                 }
-                lib_1.console_debug("[save]ToC");
+                lib_1.console_debug(`[save]生成章DOM：${chapterName}`);
                 const sectionDiv = TocMain === null || TocMain === void 0 ? void 0 : TocMain.querySelector("#" + sectionHtmlId);
                 const chapterDiv = document.createElement("div");
                 chapterDiv.className = "chapter";
@@ -1107,47 +1151,49 @@ a.disabled {
                 chapterDiv.appendChild(chapterAnchor);
                 sectionDiv === null || sectionDiv === void 0 ? void 0 : sectionDiv.appendChild(chapterDiv);
             }
-            lib_1.console_debug("[save]保存HTML文件");
+            lib_1.console_debug("[save]保存ToC文件");
+            this.savedZip.file("ToC.html", new Blob([
+                ToC.documentElement.outerHTML.replace(new RegExp("data-src-address", "g"), "src"),
+            ], {
+                type: "text/html; charset=UTF-8",
+            }));
+        }
+    }
+    saveChapters() {
+        let sections = [];
+        for (const chapter of this.chapters) {
+            const chapterName = this.getchapterName(chapter);
+            const htmlfileNameBase = `${"0".repeat(this.chapters.length.toString().length -
+                chapter.chapterNumber.toString().length)}${chapter.chapterNumber.toString()}.html`;
+            const chapterHtmlFileName = `Chapter${htmlfileNameBase}`;
+            if (chapter.sectionName) {
+                if (!sections.includes(chapter.sectionName)) {
+                    sections.push(chapter.sectionName);
+                    lib_1.console_debug(`[save]保存卷HTML文件：${chapter.sectionName}`);
+                    const sectionHTMLBlob = this.genSectionHtmlFile(chapter.sectionName);
+                    this.savedZip.file(`Section${htmlfileNameBase}`, sectionHTMLBlob);
+                }
+            }
+            lib_1.console_debug(`[save]保存章HTML文件：${chapterName}`);
             if (chapter.contentHTML) {
                 const chapterHTMLBlob = this.genChapterHtmlFile(chapterName, chapter.contentHTML, chapter.chapterUrl);
                 this.savedZip.file(chapterHtmlFileName, chapterHTMLBlob);
             }
-            lib_1.console_debug("[save]保存附件");
+            lib_1.console_debug(`[save]开始保存章节附件：${chapterName}`);
             if (chapter.contentImages) {
                 for (const attachment of chapter.contentImages) {
                     this.addImageToZip(attachment, this.savedZip);
                 }
             }
         }
-        lib_1.console_debug("[save]保存ToC文件");
-        this.savedZip.file("ToC.html", new Blob([
-            ToC.documentElement.outerHTML.replace(new RegExp("data-src-address", "g"), "src"),
-        ], {
-            type: "text/html; charset=UTF-8",
-        }));
-        console.log("[save]开始保存ZIP文件");
-        this.savedZip
-            .generateAsync({
-            type: "blob",
-            compression: "DEFLATE",
-            compressionOptions: {
-                level: 6,
-            },
-        }, (metadata) => index_1.updateProgress(1, 1, metadata.percent))
-            .then((blob) => {
-            lib_1.console_debug("[save]ZIP文件生成完毕，开始保存ZIP文件");
-            saveAs(blob, `${this.saveFileNameBase}.zip`);
-        })
-            .then(() => {
-            var _a;
-            lib_1.console_debug("[save]保存ZIP文件完毕");
-            (_a = document.querySelector("#nd-progress")) === null || _a === void 0 ? void 0 : _a.remove();
-            index_1.audio.pause();
-        })
-            .catch((err) => {
-            console.error("saveZip: " + err);
-            index_1.catchError(err);
-        });
+    }
+    getchapterName(chapter) {
+        if (chapter.chapterName) {
+            return chapter.chapterName;
+        }
+        else {
+            return chapter.chapterNumber.toString();
+        }
     }
     genMetaDateTxt() {
         let metaDateText = `题名：${this.book.bookname}\n作者：${this.book.author}`;
@@ -1212,8 +1258,53 @@ a.disabled {
         return 0;
     }
 }
-function save(book) {
+const keyNamesS = ["mainStyleText", "tocStyleText"];
+const keyNamesF = ["getchapterName"];
+function saveOptionsValidate(data) {
+    function keyNametest(keyname) {
+        const keyList = new Array().concat(keyNamesS).concat(keyNamesF);
+        if (keyList.includes(keyname)) {
+            return true;
+        }
+        return false;
+    }
+    function keyNamesStest(keyname) {
+        if (keyNamesS.includes(keyname)) {
+            if (typeof data[keyname] === "string") {
+                return true;
+            }
+        }
+        return false;
+    }
+    function keyNamesFtest(keyname) {
+        if (keyNamesF.includes(keyname)) {
+            if (typeof data[keyname] === "function") {
+                return true;
+            }
+        }
+        return false;
+    }
+    if (typeof data !== "object") {
+        return false;
+    }
+    for (const keyname in data) {
+        if (!keyNametest(keyname)) {
+            return false;
+        }
+        if (!(keyNamesStest(keyname) || keyNamesFtest(keyname))) {
+            return false;
+        }
+    }
+    return true;
+}
+exports.saveOptionsValidate = saveOptionsValidate;
+function save(book, options) {
     const saveBookObj = new saveBook(book);
+    if (rules_1.enableCustomSaveOptions && saveOptionsValidate(options)) {
+        for (const option in options) {
+            saveBookObj[option] = options[option];
+        }
+    }
     saveBookObj.saveTxt();
     saveBookObj.saveZip();
 }
@@ -1257,6 +1348,31 @@ function removeTabMark() {
     });
 }
 exports.removeTabMark = removeTabMark;
+function r18SiteWarning() {
+    const k = "novel-download-r18-setting";
+    let v = localStorage.getItem(k);
+    if (v === null) {
+        const c = confirm("本网站可能含有R18内容，是否在该网站运行小说下载器脚本？");
+        if (c) {
+            localStorage.setItem(k, JSON.stringify(true));
+            return true;
+        }
+        else {
+            localStorage.setItem(k, JSON.stringify(false));
+            return false;
+        }
+    }
+    else {
+        v = JSON.parse(v);
+        if (v) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+}
+exports.r18SiteWarning = r18SiteWarning;
 
 
 /***/ }),
@@ -1689,12 +1805,19 @@ exports.attachmentClass = attachmentClass;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getRule = exports.icon1 = exports.icon0 = exports.enableCustomChapterFilter = exports.enaleDebug = exports.retryLimit = void 0;
+exports.getRule = exports.r18SiteList = exports.icon1 = exports.icon0 = exports.enableR18SiteWarning = exports.enableCustomSaveOptions = exports.enableCustomChapterFilter = exports.enaleDebug = exports.retryLimit = void 0;
 exports.retryLimit = 5;
 exports.enaleDebug = false;
 exports.enableCustomChapterFilter = true;
+exports.enableCustomSaveOptions = true;
+exports.enableR18SiteWarning = false;
 exports.icon0 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAFYElEQVR4nO2dIUxkORyHP4XD4E6RYNZgUGvWonAnVqxDbbJiNWLNOsQ65Oo1CMQIFAnJJiQIcgY7YhIEbgTJiEkm4USPuyNh3pv2tf33tb9f8kl4fe3H0Pm37xXi50/gHJgBC+C5YB6Bv4AL4CuwH7872skBcI/9oA5lBpwAO1F7p/IcUf5fuy8L4AzYjthPVWYfeMJ+wFLxABxG660K8xv7QcrBWawOqykfsB+YnEzQv4RXOcV+UHJzD+zF6LwaMsF+QCyYo3kBALfYD4YVK+DL8C4cd+6wHwhrfgJbQztyrJEAjhvgj4F9OcrUKMA33Me778/NaLCUXKMA27ivt48BP7vArYU0k1oFAPeRHjrJPQ3u0ZGlZgHATe5+Bv6ecxooGtUuwEuOCVvsugd2vXp0ZGlFAHDL3bOA3zfHzSmqTEsCgNsjcBXwO5e4T5Hq0poA4OYFoWsg1RWNWhTgJZ8ImxdcUdFuo5YFADcvmAZcY0olRaPWBQD313wZcJ0n3Fa6UUcC/JfvAdda4TagjjYS4HWOcF/7fK/5i5FODmvcDzC0eveOsO3xt4xwRVECvJ1t3MMmvtd+AN5HuH62SIDunOC/tLxgREUjCdCf0HnBKFYUJcBm2SNsXnCZqD3RIgE2zzZuidi3PVPcxLLISAD/fMYtDvm0qdht6BIgLIf4zwuWOHmKigQIzy5hhbSiKocSYFi2cFVA3zZ+ytjGztQogMVS7Vf85gVPFLLVrEYBrGbcvlvRJzbNfJ0aBbDc1++7Fd28bFyjAOdRe8g/PlvOfhm18d/UKMCKMjZqHNM/L1hiXCmsUYBn3ILMZ+zX6N/jVgi72mr6KFqtArzwiJtsneE+li3oezLJdNGodgHGgOm3AQlgz03vKCWMBLDnrneUEkYC2CMBGkcCNI4EaBwJ0DgSYEMecE/mbkLIA59NCnCzplElEbqfLvTJXwlQGEN2z+zjv4GzKQFK/xewZPiCTumS6xOgg4cI9xiyZ08CFIIESBwJYI8E6EACJI4EsEcCdCABEkcC2CMBOpAAiSMB7JEAHUiAxJEA9kiADiRA4kgAeyRABxIgcSSAPRKgAwmQOBLAHgnQgQRIHAlgjwToQAIkjgSwRwJ0IAESRwLYYyrA7zWNKgUJkDgSwB4J0IEESBwJYE8zAqxwr0T7webv2Ivxbv2PHtc7xb1qNucDpc0I8DHTPcXIB/yPi5MAHcT4KM+dXH3ThADzXDcUMSHHxEmADr5kuqcYOSJfvzQjwIKCz8/7X3bof8O3BAjkDvtXuPcl5HBICeDB9yx3FpZj8vdHcwKsKOCsnDeyhzvNSwJkYEp5hypfY9MXTQrwjDtJo5ScYNcPzQrwTBmHOx1g+y7BpgV4xJ21Z5Ut8hV8JMAaLpPf5fqcdbRLAmTE4lj1wwHtlQCRyV0l3MHvnF8JkIGcVcLc1T4JsCE5qoQW1T4JsCGpq4RW1b5iBbhe0yhLUlYJS7xfCfAGKaqE3wq4LwngQcxTta2rfRIggDlxqoQlVPskQCAxqoQlVPskwACG7CUspdonAQYQWiUsqdonAQYSUiUsqdonASLgUyUsrdonASKwwj2y1ZcSq30SIBKbVAlLK29LgMh0VQlLrfZJgMi89aRxydU+CRCZOe5g6JfsMo6TwiVARJbABe7r3pgmfRJASAAhAQQSQCABmsdUgKs1jRL5uO0dpYSRAPZMekcpYS7WNErk47R3lBLmx5pGiXyYvi1lDFumaua6f4jS5w77jmiRBa/XM8zyjnHX0sfIkrjPPQzOAeNdTRsbUzbb2ZQ9W7i9dBNghltyjUHrny4r3JtHJ//0b9RH4P8GSxsCzEN/51YAAAAASUVORK5CYII=";
 exports.icon1 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAESElEQVR4nO2cLUxcQRSFv4QgEBiSKgQCh6pCouvQlbVVdaRuTFUNoqaqEkktCoVD4HBITBMMosmaVsxu+kL3l3lv7p13z5ccyc68OSf3sLtvHwghhBBCjJM/hRKNowAERwEIjgIQHAUgOApAcBSA4CgAwVEAgqMABEcBCI4CEBwFIDgKQHAUgOAoAMFRAIKjAARHAQiOAhAcBSA4CkBwFIDgKADBUQCCowAERwEIjgIQHAUgOApAcBSA4CgAzkmUm9SqUvHpjYSEvRky35iEvSky35iEvTky35iEvUky35iEvVky35iEvWky35iEvXky35iEvYky35iEvZky35iEvaky35iEvbky35iEvcky35iEvdky35iEveky35iEzA9PQuaHJyHzm2e78O8T7Zhfeq2j4i1wDvyi/GAT/s1P5Gs9J197SN4An4A7hjlgz+a/fM078lm8KXxt92wDp8BPYEL9g/ZoflcT8tmcMrKK6I54TwfueS/NV8SyEe/54D3uoZmK2GTEt2KA5dov5bYiXjvivRthsea6Mq+Ivka8V0NqrlWqahUx1IjfRGeF15DWWCMVrnG2xhpDaLCKqDHiV+ka+ADs9nA9ack6qYfX3yXv9XrJOkOruCIsRvxLPZANOXztRSwhzVkvDbDO4fR1H+asV0trV4SHEf8M/ABOVm22B1Jn3VRhvRPytT1jc7YLK8LTiN/Z/FyLSNT/Vm8HZxVhtYnZiD8oOc3GOcC+Iqou9gx8p86Ib40T8tnUrogqi1wB76k/4ltkh3xWVzQegHvgM7Df6/HEYp98hvc0EoAn8hg7HuAwonNMPtsnnAVggkZ8TboV0cfb9aIRf4ZGvCX7ZA9KKmLjEf8NjXiPHJO92bQiFICRUCUAqgBfVK+AedI/gXVx80/goorQ28BhcPs2cFlF6IOgMpr7IGiRVBHrM5qPguep5vf9rWF1v0DVxbrS18EBvw5epGv6u+fPOx7uGXQXgJnGXBHWt4Q1EYCuhrwptBYebgptNgBd3dBORcxG/A325zaaAMz0G7gA3gFbaxpSgy3yni7Ie7Q+p9EGoKtH4AtwtNqfwTia7uER+/MIF4CuboCPwN5Su/phb7pWKyM+RABmGqoiWh7xoQLQ1SPwlbKKOJq+RssjPmwAurpl/YqYjfhbB/tWAHrWBLjk/9/HzX4XeYnd7yIVgMqa/T7O+neR1jLfgKQASIYy34CkAEiGcvGACKmu5j5DKPJboQha9BZ4Lh4eEiX1o+LnCKoi2tMgTxJVRfjWRiO+FFWEH5k/TVwVUV/mD4ueh4cHTY5ZVUd8KaqI/mQ+4ktRRWwulyO+FFXEcjU14ktRRfxT8yO+lIgVMcoRX8rYP2gKNeJLGVNFhB/xpbRYERrxA+C9IjTiK+KpIjTijbGoCI14hwxdERrxDdFnRWjEN85rKkIjfoSsqgiN+EB0K0IjXgghhBDh+Avri3imoU6g/AAAAABJRU5ErkJggg==";
+exports.r18SiteList = [
+    "www.01bzw.org",
+    "www.dierbanzhu1.com",
+    "m.yuzhaige.cc",
+];
 async function getRule() {
     const host = document.location.host;
     let ruleClass;

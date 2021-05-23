@@ -1,12 +1,14 @@
 import { ruleClass } from "./rules";
 import { Book, Chapter, attachmentClass } from "./main";
+import { saveOptions } from "./index_helper";
 export declare namespace indexNameSpace {
     interface mainWindows extends unsafeWindow {
         rule: ruleClass;
         book: Book;
-        save(book: Book): void;
+        save(book: Book, saveOptions: saveOptions): void;
         saveAs(obj: any): void;
         chapterFilter(chapter: Chapter): boolean;
+        saveOptions: saveOptions;
     }
     interface mainTabObject extends GM_tab_object {
         novel_downloader?: string;
