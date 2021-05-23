@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        3.6.4.1621774799316
+// @version        3.6.4.1621775748482
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -1349,6 +1349,10 @@ function removeTabMark() {
 }
 exports.removeTabMark = removeTabMark;
 function r18SiteWarning() {
+    if (!lib_1.storageAvailable("localStorage")) {
+        console.error("Window.localStorage API 失效！");
+        return true;
+    }
     const k = "novel-download-r18-setting";
     let v = localStorage.getItem(k);
     if (v === null) {
@@ -1382,7 +1386,7 @@ exports.r18SiteWarning = r18SiteWarning;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.sandboxed = exports.putAttachmentClassCache = exports.getAttachmentClassCache = exports.console_debug = exports.sleep = exports.concurrencyRun = exports.gfetch = exports.rm = exports.ggetHtmlDOM = exports.ggetText = exports.getHtmlDOM = exports.getText = exports.cleanDOM = exports._GM_info = void 0;
+exports.storageAvailable = exports.sandboxed = exports.putAttachmentClassCache = exports.getAttachmentClassCache = exports.console_debug = exports.sleep = exports.concurrencyRun = exports.gfetch = exports.rm = exports.ggetHtmlDOM = exports.ggetText = exports.getHtmlDOM = exports.getText = exports.cleanDOM = exports._GM_info = void 0;
 const cleanDOM_1 = __webpack_require__(962);
 const rules_1 = __webpack_require__(489);
 const index_1 = __webpack_require__(607);
@@ -1604,6 +1608,26 @@ function sandboxed(code) {
     }
 }
 exports.sandboxed = sandboxed;
+function storageAvailable(type) {
+    let storage;
+    try {
+        storage = window[type];
+        let x = "__storage_test__";
+        storage.setItem(x, x);
+        storage.removeItem(x);
+        return true;
+    }
+    catch (e) {
+        return (e instanceof DOMException &&
+            (e.code === 22 ||
+                e.code === 1014 ||
+                e.name === "QuotaExceededError" ||
+                e.name === "NS_ERROR_DOM_QUOTA_REACHED") &&
+            storage &&
+            storage.length !== 0);
+    }
+}
+exports.storageAvailable = storageAvailable;
 
 
 /***/ }),

@@ -33,4 +33,5 @@ export declare function console_debug(...messages: any[]): void;
 export declare function getAttachmentClassCache(url: string, name: string): attachmentClass | null;
 export declare function putAttachmentClassCache(attachmentClass: attachmentClass): boolean;
 export declare function sandboxed(code: string): any;
+export declare function storageAvailable(type: string): any;
 export {};
