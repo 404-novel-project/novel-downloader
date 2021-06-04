@@ -70,11 +70,16 @@ export class jjwxc implements ruleClass {
     );
     additionalMetadate.cover.init();
 
-    const tags = (<HTMLSpanElement>(
+    let tags = (<HTMLSpanElement>(
       document.querySelector(
         "table > tbody > tr > td.readtd > div.righttd > ul.rightul > li:nth-child(1) > span:nth-child(2)"
       )
     )).innerText.split("-");
+    tags = tags.concat(
+      Array.from(
+        document.querySelectorAll("div.smallreadbody:nth-child(3) > span > a")
+      ).map((a) => (<HTMLAnchorElement>a).innerText)
+    );
     const perspective = (<HTMLLIElement>(
       document.querySelector(
         "table > tbody > tr > td.readtd > div.righttd > ul.rightul > li:nth-child(2)"

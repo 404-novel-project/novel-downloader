@@ -68,7 +68,8 @@
     "*://www.westnovel.com/*/*/",
     "*://www.mht.tw/*/",
     "*://www.01bzw.org/*_*/",
-    "*://www.dierbanzhu1.com/*_*/"
+    "*://www.dierbanzhu1.com/*_*/",
+    "*://www.xbiquge.so/book/*/"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",

@@ -82,6 +82,9 @@ export async function bookParseTemp({
         sectionChapterNumber = 0;
         sectionName = node.innerText.replace(`《${bookname}》`, "").trim();
       } else if (node.nodeName === "DD") {
+        if (node.childElementCount === 0) {
+          continue;
+        }
         chapterNumber++;
         sectionChapterNumber++;
         const a = <HTMLLinkElement>node.firstElementChild;
@@ -102,7 +105,7 @@ export async function bookParseTemp({
           sectionChapterNumber,
           chapterParse,
           charset,
-          {}
+          { bookname: bookname }
         );
         chapters.push(chapter);
       }
@@ -120,6 +123,9 @@ export async function bookParseTemp({
   };
 }
 
+interface chapterParseOption {
+  bookname: string;
+}
 async function chapterParseTemp({
   dom,
   chapterUrl,
@@ -437,6 +443,65 @@ export class zwdu implements ruleClass {
       )).innerText.trim(),
       contenSelector: "#content",
       contentPatch: (content) => content,
+      charset,
+    });
+  }
+}
+
+export class xbiquge implements ruleClass {
+  public imageMode: "naive" | "TM";
+  public charset: string;
+
+  public constructor() {
+    this.imageMode = "TM";
+    this.charset = "GBK";
+  }
+
+  public async bookParse(chapterParse: ruleClass["chapterParse"]) {
+    return bookParseTemp({
+      bookUrl: document.location.href,
+      bookname: (<HTMLElement>(
+        document.querySelector("#info > h1:nth-child(1)")
+      )).innerText.trim(),
+      author: (<HTMLElement>(
+        document.querySelector("#info > p:nth-child(2)")
+      )).innerText
+        .replace(/作(\s+)?者[：:]/, "")
+        .trim(),
+      introDom: <HTMLElement>document.querySelector("#intro"),
+      introDomPatch: (introDom) => introDom,
+      coverUrl: (<HTMLImageElement>document.querySelector("#fmimg > img")).src,
+      chapterListSelector: "#list>dl",
+      charset: "GBK",
+      chapterParse: chapterParse,
+    });
+  }
+
+  public async chapterParse(
+    chapterUrl: string,
+    chapterName: string | null,
+    isVIP: boolean,
+    isPaid: boolean,
+    charset: string,
+    options: object
+  ) {
+    const dom = await getHtmlDOM(chapterUrl, charset);
+    return chapterParseTemp({
+      dom,
+      chapterUrl,
+      chapterName: (<HTMLElement>(
+        dom.querySelector(".bookname > h1:nth-child(1)")
+      )).innerText.trim(),
+      contenSelector: "#content",
+      contentPatch: (content) => {
+        content.innerHTML = content.innerHTML.replace(
+          `笔趣阁 www.xbiquge.so，最快更新${
+            (<chapterParseOption>options).bookname
+          } ！`,
+          ""
+        );
+        return content;
+      },
       charset,
     });
   }
