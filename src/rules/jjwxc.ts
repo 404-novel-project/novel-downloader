@@ -70,6 +70,25 @@ export class jjwxc implements ruleClass {
     );
     additionalMetadate.cover.init();
 
+    const tags = (<HTMLSpanElement>(
+      document.querySelector(
+        "table > tbody > tr > td.readtd > div.righttd > ul.rightul > li:nth-child(1) > span:nth-child(2)"
+      )
+    )).innerText.split("-");
+    const perspective = (<HTMLLIElement>(
+      document.querySelector(
+        "table > tbody > tr > td.readtd > div.righttd > ul.rightul > li:nth-child(2)"
+      )
+    )).innerText.replace("\n", "");
+    const workStyle = (<HTMLLIElement>(
+      document.querySelector(
+        "table > tbody > tr > td.readtd > div.righttd > ul.rightul > li:nth-child(3)"
+      )
+    )).innerText.replace("\n", "");
+    tags.push(perspective);
+    tags.push(workStyle);
+    additionalMetadate.tags = tags;
+
     const chapters: Chapter[] = [];
 
     const trList = document.querySelectorAll("#oneboolt > tbody > tr");
