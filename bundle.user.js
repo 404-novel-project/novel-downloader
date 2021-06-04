@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        3.6.4.1621776947849
+// @version        3.6.4.1622779320015
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -3702,6 +3702,12 @@ class jjwxc {
         let coverUrl = (document.querySelector(".noveldefaultimage")).src;
         additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
         additionalMetadate.cover.init();
+        const tags = (document.querySelector("table > tbody > tr > td.readtd > div.righttd > ul.rightul > li:nth-child(1) > span:nth-child(2)")).innerText.split("-");
+        const perspective = (document.querySelector("table > tbody > tr > td.readtd > div.righttd > ul.rightul > li:nth-child(2)")).innerText.replace("\n", "");
+        const workStyle = (document.querySelector("table > tbody > tr > td.readtd > div.righttd > ul.rightul > li:nth-child(3)")).innerText.replace("\n", "");
+        tags.push(perspective);
+        tags.push(workStyle);
+        additionalMetadate.tags = tags;
         const chapters = [];
         const trList = document.querySelectorAll("#oneboolt > tbody > tr");
         let chapterNumber = 0;
