@@ -69,7 +69,8 @@
     "*://www.mht.tw/*/",
     "*://www.01bzw.org/*_*/",
     "*://www.dierbanzhu1.com/*_*/",
-    "*://www.xbiquge.so/book/*/"
+    "*://www.xbiquge.so/book/*/",
+    "*://www.hongyeshuzhai.com/shuzhai/*/"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",
@@ -121,6 +122,7 @@
     "wenku8.com",
     "dmzj.com",
     "dmzj1.com",
+    "img.hongyeshuzhal.com",
     "*"
   ],
   "require": [

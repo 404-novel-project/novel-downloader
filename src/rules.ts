@@ -254,6 +254,11 @@ export async function getRule(): Promise<ruleClass> {
       ruleClass = xbiquge;
       break;
     }
+    case "www.hongyeshuzhai.com": {
+      const { hongyeshuzhai } = await import("./rules/biquge");
+      ruleClass = hongyeshuzhai;
+      break;
+    }
     default: {
       throw new Error("Not Found Rule!");
     }

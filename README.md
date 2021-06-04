@@ -60,6 +60,7 @@ ZIP压缩包，请在解压后，直接双击打开HTML文件（`ToC.html` 为�
 |[第一版主网](http://www.01bzw.org/)|✅|❎||
 |[第二版主网](http://www.dierbanzhu1.com/)|✅|❎||
 |[笔趣阁](https://www.xbiquge.so/)|✅|❎||
+|[红叶书斋](https://www.hongyeshuzhai.com/)|✅|❎||
 
 ## 高阶使用技巧
 

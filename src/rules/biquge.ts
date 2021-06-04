@@ -506,3 +506,55 @@ export class xbiquge implements ruleClass {
     });
   }
 }
+
+export class hongyeshuzhai implements ruleClass {
+  public imageMode: "naive" | "TM";
+  public charset: string;
+
+  public constructor() {
+    this.imageMode = "TM";
+    this.charset = "GBK";
+  }
+
+  public async bookParse(chapterParse: ruleClass["chapterParse"]) {
+    return bookParseTemp({
+      bookUrl: document.location.href,
+      bookname: (<HTMLElement>(
+        document.querySelector("#info > h1:nth-child(1)")
+      )).innerText.trim(),
+      author: (<HTMLElement>(
+        document.querySelector("#info > p:nth-child(2)")
+      )).innerText
+        .replace(/作(\s+)?者[：:]/, "")
+        .trim(),
+      introDom: <HTMLElement>document.querySelector("#intro"),
+      introDomPatch: (introDom) => introDom,
+      coverUrl: (<HTMLImageElement>document.querySelector("#fmimg > img")).src,
+      chapterListSelector: "#list>dl",
+      charset: "GBK",
+      chapterParse: chapterParse,
+    });
+  }
+
+  public async chapterParse(
+    chapterUrl: string,
+    chapterName: string | null,
+    isVIP: boolean,
+    isPaid: boolean,
+    charset: string,
+    options: object
+  ) {
+    const dom = await getHtmlDOM(chapterUrl, charset);
+    return chapterParseTemp({
+      dom,
+      chapterUrl,
+      chapterName: (<HTMLElement>(
+        dom.querySelector(".bookname > h1:nth-child(1)")
+      )).innerText.trim(),
+      contenSelector: "#content",
+      contentPatch: (content) => content,
+      charset,
+    });
+  }
+}
+
