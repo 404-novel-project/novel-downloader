@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        3.6.4.1622779320015
+// @version        3.6.4.1622833911254
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -60,6 +60,8 @@
 // @match          *://www.mht.tw/*/
 // @match          *://www.01bzw.org/*_*/
 // @match          *://www.dierbanzhu1.com/*_*/
+// @match          *://www.xbiquge.so/book/*/
+// @match          *://www.hongyeshuzhai.com/shuzhai/*/
 // @name:en        novel-downloader
 // @description:en An scalable universal novel downloader.
 // @namespace      https://blog.bgme.me
@@ -113,6 +115,7 @@
 // @connect        wenku8.com
 // @connect        dmzj.com
 // @connect        dmzj1.com
+// @connect        img.hongyeshuzhal.com
 // @connect        *
 // @require        https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js#sha512-Qlv6VSKh1gDKGoJbnyA5RMXYcvnpIqhO++MhIM2fStMcGT9i2T//tSwYFlcyoRRDcDZ+TYHpH8azBBCyhpSeqw==
 // @require        https://cdn.jsdelivr.net/npm/jszip@3.6.0/dist/jszip.min.js#sha512-uVSVjE7zYsGz4ag0HEzfugJ78oHCI1KhdkivjQro8ABL/PRiEO4ROwvrolYAcZnky0Fl/baWKYilQfWvESliRA==
@@ -2033,6 +2036,16 @@ async function getRule() {
             ruleClass = dierbanzhu;
             break;
         }
+        case "www.xbiquge.so": {
+            const { xbiquge } = await Promise.resolve().then(() => __webpack_require__(931));
+            ruleClass = xbiquge;
+            break;
+        }
+        case "www.hongyeshuzhai.com": {
+            const { hongyeshuzhai } = await Promise.resolve().then(() => __webpack_require__(931));
+            ruleClass = hongyeshuzhai;
+            break;
+        }
         default: {
             throw new Error("Not Found Rule!");
         }
@@ -2289,7 +2302,7 @@ exports.c226ks = c226ks;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.zwdu = exports.gebiqu = exports.dingdiann = exports.shuquge = exports.biquwo = exports.bookParseTemp = void 0;
+exports.hongyeshuzhai = exports.xbiquge = exports.zwdu = exports.gebiqu = exports.dingdiann = exports.shuquge = exports.biquwo = exports.bookParseTemp = void 0;
 const main_1 = __webpack_require__(519);
 const lib_1 = __webpack_require__(563);
 async function bookParseTemp({ bookUrl, bookname, author, introDom, introDomPatch, coverUrl, chapterListSelector, charset, chapterParse, }) {
@@ -2336,6 +2349,9 @@ async function bookParseTemp({ bookUrl, bookname, author, introDom, introDomPatc
                 sectionName = node.innerText.replace(`《${bookname}》`, "").trim();
             }
             else if (node.nodeName === "DD") {
+                if (node.childElementCount === 0) {
+                    continue;
+                }
                 chapterNumber++;
                 sectionChapterNumber++;
                 const a = node.firstElementChild;
@@ -2343,7 +2359,7 @@ async function bookParseTemp({ bookUrl, bookname, author, introDom, introDomPatc
                 const chapterUrl = a.href;
                 const isVIP = false;
                 const isPaid = false;
-                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, chapterParse, charset, {});
+                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, chapterParse, charset, { bookname: bookname });
                 chapters.push(chapter);
             }
         }
@@ -2568,6 +2584,75 @@ class zwdu {
     }
 }
 exports.zwdu = zwdu;
+class xbiquge {
+    constructor() {
+        this.imageMode = "TM";
+        this.charset = "GBK";
+    }
+    async bookParse(chapterParse) {
+        return bookParseTemp({
+            bookUrl: document.location.href,
+            bookname: (document.querySelector("#info > h1:nth-child(1)")).innerText.trim(),
+            author: (document.querySelector("#info > p:nth-child(2)")).innerText
+                .replace(/作(\s+)?者[：:]/, "")
+                .trim(),
+            introDom: document.querySelector("#intro"),
+            introDomPatch: (introDom) => introDom,
+            coverUrl: document.querySelector("#fmimg > img").src,
+            chapterListSelector: "#list>dl",
+            charset: "GBK",
+            chapterParse: chapterParse,
+        });
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+        const dom = await lib_1.getHtmlDOM(chapterUrl, charset);
+        return chapterParseTemp({
+            dom,
+            chapterUrl,
+            chapterName: (dom.querySelector(".bookname > h1:nth-child(1)")).innerText.trim(),
+            contenSelector: "#content",
+            contentPatch: (content) => {
+                content.innerHTML = content.innerHTML.replace(`笔趣阁 www.xbiquge.so，最快更新${options.bookname} ！`, "");
+                return content;
+            },
+            charset,
+        });
+    }
+}
+exports.xbiquge = xbiquge;
+class hongyeshuzhai {
+    constructor() {
+        this.imageMode = "TM";
+        this.charset = "GBK";
+    }
+    async bookParse(chapterParse) {
+        return bookParseTemp({
+            bookUrl: document.location.href,
+            bookname: (document.querySelector("#info > h1:nth-child(1)")).innerText.trim(),
+            author: (document.querySelector("#info > p:nth-child(2)")).innerText
+                .replace(/作(\s+)?者[：:]/, "")
+                .trim(),
+            introDom: document.querySelector("#intro"),
+            introDomPatch: (introDom) => introDom,
+            coverUrl: document.querySelector("#fmimg > img").src,
+            chapterListSelector: "#list>dl",
+            charset: "GBK",
+            chapterParse: chapterParse,
+        });
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+        const dom = await lib_1.getHtmlDOM(chapterUrl, charset);
+        return chapterParseTemp({
+            dom,
+            chapterUrl,
+            chapterName: (dom.querySelector(".bookname > h1:nth-child(1)")).innerText.trim(),
+            contenSelector: "#content",
+            contentPatch: (content) => content,
+            charset,
+        });
+    }
+}
+exports.hongyeshuzhai = hongyeshuzhai;
 
 
 /***/ }),
@@ -3702,7 +3787,8 @@ class jjwxc {
         let coverUrl = (document.querySelector(".noveldefaultimage")).src;
         additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
         additionalMetadate.cover.init();
-        const tags = (document.querySelector("table > tbody > tr > td.readtd > div.righttd > ul.rightul > li:nth-child(1) > span:nth-child(2)")).innerText.split("-");
+        let tags = (document.querySelector("table > tbody > tr > td.readtd > div.righttd > ul.rightul > li:nth-child(1) > span:nth-child(2)")).innerText.split("-");
+        tags = tags.concat(Array.from(document.querySelectorAll("div.smallreadbody:nth-child(3) > span > a")).map((a) => a.innerText));
         const perspective = (document.querySelector("table > tbody > tr > td.readtd > div.righttd > ul.rightul > li:nth-child(2)")).innerText.replace("\n", "");
         const workStyle = (document.querySelector("table > tbody > tr > td.readtd > div.righttd > ul.rightul > li:nth-child(3)")).innerText.replace("\n", "");
         tags.push(perspective);

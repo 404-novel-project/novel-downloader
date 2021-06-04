@@ -43,3 +43,17 @@ export declare class zwdu implements ruleClass {
     bookParse(chapterParse: ruleClass["chapterParse"]): Promise<bookParseObject>;
     chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean, charset: string, options: object): Promise<chapterParseObject>;
 }
+export declare class xbiquge implements ruleClass {
+    imageMode: "naive" | "TM";
+    charset: string;
+    constructor();
+    bookParse(chapterParse: ruleClass["chapterParse"]): Promise<bookParseObject>;
+    chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean, charset: string, options: object): Promise<chapterParseObject>;
+}
+export declare class hongyeshuzhai implements ruleClass {
+    imageMode: "naive" | "TM";
+    charset: string;
+    constructor();
+    bookParse(chapterParse: ruleClass["chapterParse"]): Promise<bookParseObject>;
+    chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean, charset: string, options: object): Promise<chapterParseObject>;
+}
