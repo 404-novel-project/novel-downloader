@@ -4,7 +4,7 @@ import {
   Chapter,
   Status,
 } from "../main";
-import { getHtmlDOM, cleanDOM, rm } from "../lib";
+import { getHtmlDOM, cleanDOM } from "../lib";
 import { ruleClass, chapterParseObject } from "../rules";
 
 export class linovel implements ruleClass {

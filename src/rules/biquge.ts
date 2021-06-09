@@ -557,4 +557,3 @@ export class hongyeshuzhai implements ruleClass {
     });
   }
 }
-

@@ -260,6 +260,11 @@ export async function getRule(): Promise<ruleClass> {
       ruleClass = hongyeshuzhai;
       break;
     }
+    case "www.linovelib.com": {
+      const { linovelib } = await import("./rules/linovelib");
+      ruleClass = linovelib;
+      break;
+    }
     default: {
       throw new Error("Not Found Rule!");
     }
