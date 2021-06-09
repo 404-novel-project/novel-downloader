@@ -13,18 +13,11 @@ export declare class linovelib implements ruleClass {
         chapters: Chapter[];
     }>;
     chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean, charset: string, options: object): Promise<{
-        chapterName: string;
-        contentRaw: HTMLElement;
+        chapterName: string | null;
+        contentRaw: HTMLDivElement;
         contentText: string;
         contentHTML: HTMLElement;
         contentImages: attachmentClass[];
-        additionalMetadate: null;
-    } | {
-        chapterName: string;
-        contentRaw: null;
-        contentText: null;
-        contentHTML: null;
-        contentImages: null;
         additionalMetadate: null;
     }>;
 }
