@@ -44,6 +44,7 @@ ZIP压缩包，请在解压后，直接双击打开HTML文件（`ToC.html` 为�
 |[顶点小说](https://www.dingdiann.net/)|✅|❎||
 |[星空中文](http://www.xkzw.org/)|✅|❎||
 |[乐文小说网](https://www.lewenn.com/)|✅|❎||
+|[可乐小说网](https://www.klxs.la/)|✅|❎||
 |[266看书](https://www.266ks.com/)|✅|❎||
 |[和图书](https://www.hetushu.com/index.php)|✅|❎||
 |[手打吧](https://www.shouda88.com/)|✅|❎||

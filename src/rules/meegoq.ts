@@ -15,9 +15,6 @@ export class meegoq implements ruleClass {
 
   public async bookParse(chapterParse: ruleClass["chapterParse"]) {
     const bookUrl = document.location.href.replace("/book", "/info");
-    const bookname = (<HTMLElement>(
-      document.querySelector("article.info > header > h1")
-    )).innerText.trim();
 
     const dom = await getHtmlDOM(bookUrl, "GBK");
     const author = (<HTMLElement>(
@@ -26,6 +23,9 @@ export class meegoq implements ruleClass {
 
     let introduction: string | null;
     let introductionHTML: HTMLElement | null;
+    const bookname = (<HTMLElement>(
+      dom.querySelector("article.info > header > h1")
+    )).innerText.trim();
     const introDom = <HTMLElement>dom.querySelector("article.info > p.desc");
     if (introDom === null) {
       introduction = null;
