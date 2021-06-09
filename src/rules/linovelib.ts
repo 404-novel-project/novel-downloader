@@ -4,7 +4,7 @@ import {
   Chapter,
   Status,
 } from "../main";
-import { getHtmlDOM, cleanDOM, rm } from "../lib";
+import { getHtmlDOM, cleanDOM, rm, console_debug } from "../lib";
 import { ruleClass } from "../rules";
 
 export class linovelib implements ruleClass {
@@ -44,9 +44,8 @@ export class linovelib implements ruleClass {
     }
 
     const additionalMetadate: BookAdditionalMetadate = {};
-    const coverUrl = (<HTMLImageElement>(
-      doc.querySelector(".book-img > img")
-    )).src;
+    const coverUrl = (<HTMLImageElement>doc.querySelector(".book-img > img"))
+      .src;
     additionalMetadate.cover = new attachmentClass(
       coverUrl,
       `cover.${coverUrl.split("!")[0].split(".").slice(-1)[0]}`,
@@ -124,32 +123,51 @@ export class linovelib implements ruleClass {
     charset: string,
     options: object
   ) {
-    const doc = await getHtmlDOM(chapterUrl, charset);
-    chapterName = (<HTMLElement>(
-      doc.querySelector("#mlfy_main_text > h1:nth-child(1)")
-    )).innerText.trim();
-    const content = <HTMLElement>doc.querySelector("#TextContent");
-    rm(".tp", true, content);
-    rm(".bd", true, content);
-    if (content) {
-      let { dom, text, images } = cleanDOM(content, "TM");
-      return {
-        chapterName: chapterName,
-        contentRaw: content,
-        contentText: text,
-        contentHTML: dom,
-        contentImages: images,
-        additionalMetadate: null,
-      };
-    } else {
-      return {
-        chapterName: chapterName,
-        contentRaw: null,
-        contentText: null,
-        contentHTML: null,
-        contentImages: null,
-        additionalMetadate: null,
-      };
-    }
+    console_debug(`[Chapter]请求 ${chapterUrl}`);
+    let nowUrl = chapterUrl;
+    let doc = await getHtmlDOM(chapterUrl, charset);
+    // chapterName = (<HTMLElement>(
+    //   doc.querySelector("#mlfy_main_text > h1:nth-child(1)")
+    // )).innerText.trim();
+    const content = document.createElement("div");
+
+    let flag = false;
+    do {
+      const _content = <HTMLElement>doc.querySelector("#TextContent");
+      rm(".tp", true, _content);
+      rm(".bd", true, _content);
+
+      for (const _c of Array.from(_content.childNodes)) {
+        content.appendChild(_c);
+      }
+
+      const nextLink = (<HTMLAnchorElement>(
+        doc.querySelector(".mlfy_page > a:nth-child(5)")
+      )).href;
+
+      if (new URL(nextLink).pathname.includes("_")) {
+        if (nextLink !== nowUrl) {
+          flag = true;
+          console_debug(`[Chapter]请求 ${nextLink}`);
+          nowUrl = nextLink;
+          doc = await getHtmlDOM(nextLink, charset);
+        } else {
+          console.error("网站页面出错，URL： " + nowUrl);
+          flag = false;
+        }
+      } else {
+        flag = false;
+      }
+    } while (flag);
+
+    let { dom, text, images } = cleanDOM(content, "TM");
+    return {
+      chapterName: chapterName,
+      contentRaw: content,
+      contentText: text,
+      contentHTML: dom,
+      contentImages: images,
+      additionalMetadate: null,
+    };
   }
 }
