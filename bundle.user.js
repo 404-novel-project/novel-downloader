@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        3.6.4.1622833911254
+// @version        3.6.4.1623206030638
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -40,6 +40,7 @@
 // @match          *://www.dingdiann.net/ddk*/
 // @match          *://www.xkzw.org/xkzw*/
 // @match          *://www.lewenn.com/lw*/
+// @match          *://www.klxs.la/info-*/
 // @match          *://www.266ks.com/*/
 // @match          *://www.266ks.com/*/index*.html
 // @match          *://www.hetushu.com/book/*/index.html
@@ -1880,6 +1881,7 @@ async function getRule() {
             break;
         }
         case "www.lewenn.com":
+        case "www.klxs.la":
         case "www.xkzw.org": {
             const { xkzw } = await Promise.resolve().then(() => __webpack_require__(441));
             ruleClass = xkzw;
@@ -26911,11 +26913,11 @@ class meegoq {
     }
     async bookParse(chapterParse) {
         const bookUrl = document.location.href.replace("/book", "/info");
-        const bookname = (document.querySelector("article.info > header > h1")).innerText.trim();
         const dom = await lib_1.getHtmlDOM(bookUrl, "GBK");
         const author = (dom.querySelector("article.info > p.detail.pt20 > i:nth-child(1) > a")).innerText.trim();
         let introduction;
         let introductionHTML;
+        const bookname = (dom.querySelector("article.info > header > h1")).innerText.trim();
         const introDom = dom.querySelector("article.info > p.desc");
         if (introDom === null) {
             introduction = null;
