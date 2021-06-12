@@ -72,7 +72,8 @@
     "*://www.dierbanzhu1.com/*_*/",
     "*://www.xbiquge.so/book/*/",
     "*://www.hongyeshuzhai.com/shuzhai/*/",
-    "*://www.linovelib.com/novel/*/catalog"
+    "*://www.linovelib.com/novel/*/catalog",
+    "*://www.luoqiuzw.com/book/*/"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",

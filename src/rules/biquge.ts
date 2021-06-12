@@ -557,3 +557,62 @@ export class hongyeshuzhai implements ruleClass {
     });
   }
 }
+
+export class luoqiuzw implements ruleClass {
+  public imageMode: "naive" | "TM";
+
+  public constructor() {
+    this.imageMode = "TM";
+  }
+
+  public async bookParse(chapterParse: ruleClass["chapterParse"]) {
+    return bookParseTemp({
+      bookUrl: document.location.href,
+      bookname: (<HTMLElement>(
+        document.querySelector("#info > h1:nth-child(1)")
+      )).innerText.trim(),
+      author: (<HTMLElement>(
+        document.querySelector("#info > p:nth-child(2)")
+      )).innerText
+        .replace(/作(\s+)?者[：:]/, "")
+        .trim(),
+      introDom: <HTMLElement>document.querySelector("#intro"),
+      introDomPatch: (introDom) => introDom,
+      coverUrl: (<HTMLImageElement>document.querySelector("#fmimg > img")).src,
+      chapterListSelector: "#list>dl",
+      charset: "UTF-8",
+      chapterParse: chapterParse,
+    });
+  }
+
+  public async chapterParse(
+    chapterUrl: string,
+    chapterName: string | null,
+    isVIP: boolean,
+    isPaid: boolean,
+    charset: string,
+    options: object
+  ) {
+    const dom = await getHtmlDOM(chapterUrl, charset);
+    return chapterParseTemp({
+      dom,
+      chapterUrl,
+      chapterName: (<HTMLElement>(
+        dom.querySelector(".bookname > h1:nth-child(1)")
+      )).innerText.trim(),
+      contenSelector: "#content",
+      contentPatch: (content) => {
+        const ad = content.firstElementChild as HTMLParagraphElement;
+        if (ad.innerText.includes("天才一秒记住本站地址：")) {
+          ad.remove();
+        }
+        const ads = ["记住网址m.luoqｉｕｘｚｗ．ｃｏｍ"];
+        ads.forEach(
+          (adt) => (content.innerHTML = content.innerHTML.replace(adt, ""))
+        );
+        return content;
+      },
+      charset,
+    });
+  }
+}

@@ -265,6 +265,11 @@ export async function getRule(): Promise<ruleClass> {
       ruleClass = linovelib;
       break;
     }
+    case "www.luoqiuzw.com": {
+      const { luoqiuzw } = await import("./rules/biquge");
+      ruleClass = luoqiuzw;
+      break;
+    }
     default: {
       throw new Error("Not Found Rule!");
     }
