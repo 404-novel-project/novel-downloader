@@ -57,3 +57,9 @@ export declare class hongyeshuzhai implements ruleClass {
     bookParse(chapterParse: ruleClass["chapterParse"]): Promise<bookParseObject>;
     chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean, charset: string, options: object): Promise<chapterParseObject>;
 }
+export declare class luoqiuzw implements ruleClass {
+    imageMode: "naive" | "TM";
+    constructor();
+    bookParse(chapterParse: ruleClass["chapterParse"]): Promise<bookParseObject>;
+    chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean, charset: string, options: object): Promise<chapterParseObject>;
+}

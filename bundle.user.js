@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        3.6.4.1623256877250
+// @version        3.6.4.1623513644688
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -64,6 +64,7 @@
 // @match          *://www.xbiquge.so/book/*/
 // @match          *://www.hongyeshuzhai.com/shuzhai/*/
 // @match          *://www.linovelib.com/novel/*/catalog
+// @match          *://www.luoqiuzw.com/book/*/
 // @name:en        novel-downloader
 // @description:en An scalable universal novel downloader.
 // @namespace      https://blog.bgme.me
@@ -386,8 +387,7 @@ function formatText(elems, builder) {
             builder.text = builder.text + tPText;
         }
     }
-    const brCount = elems.filter((elem) => elem.nodeName.toLowerCase() === "br")
-        .length;
+    const brCount = elems.filter((elem) => elem.nodeName.toLowerCase() === "br").length;
     const elem = elems[0];
     const textContent = elem.textContent ? elem.textContent.trim() : "";
     if (!textContent) {
@@ -2055,6 +2055,11 @@ async function getRule() {
             ruleClass = linovelib;
             break;
         }
+        case "www.luoqiuzw.com": {
+            const { luoqiuzw } = await Promise.resolve().then(() => __webpack_require__(931));
+            ruleClass = luoqiuzw;
+            break;
+        }
         default: {
             throw new Error("Not Found Rule!");
         }
@@ -2311,7 +2316,7 @@ exports.c226ks = c226ks;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.hongyeshuzhai = exports.xbiquge = exports.zwdu = exports.gebiqu = exports.dingdiann = exports.shuquge = exports.biquwo = exports.bookParseTemp = void 0;
+exports.luoqiuzw = exports.hongyeshuzhai = exports.xbiquge = exports.zwdu = exports.gebiqu = exports.dingdiann = exports.shuquge = exports.biquwo = exports.bookParseTemp = void 0;
 const main_1 = __webpack_require__(519);
 const lib_1 = __webpack_require__(563);
 async function bookParseTemp({ bookUrl, bookname, author, introDom, introDomPatch, coverUrl, chapterListSelector, charset, chapterParse, }) {
@@ -2662,6 +2667,46 @@ class hongyeshuzhai {
     }
 }
 exports.hongyeshuzhai = hongyeshuzhai;
+class luoqiuzw {
+    constructor() {
+        this.imageMode = "TM";
+    }
+    async bookParse(chapterParse) {
+        return bookParseTemp({
+            bookUrl: document.location.href,
+            bookname: (document.querySelector("#info > h1:nth-child(1)")).innerText.trim(),
+            author: (document.querySelector("#info > p:nth-child(2)")).innerText
+                .replace(/作(\s+)?者[：:]/, "")
+                .trim(),
+            introDom: document.querySelector("#intro"),
+            introDomPatch: (introDom) => introDom,
+            coverUrl: document.querySelector("#fmimg > img").src,
+            chapterListSelector: "#list>dl",
+            charset: "UTF-8",
+            chapterParse: chapterParse,
+        });
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+        const dom = await lib_1.getHtmlDOM(chapterUrl, charset);
+        return chapterParseTemp({
+            dom,
+            chapterUrl,
+            chapterName: (dom.querySelector(".bookname > h1:nth-child(1)")).innerText.trim(),
+            contenSelector: "#content",
+            contentPatch: (content) => {
+                const ad = content.firstElementChild;
+                if (ad.innerText.includes("天才一秒记住本站地址：")) {
+                    ad.remove();
+                }
+                const ads = ["记住网址m.luoqｉｕｘｚｗ．ｃｏｍ"];
+                ads.forEach((adt) => (content.innerHTML = content.innerHTML.replace(adt, "")));
+                return content;
+            },
+            charset,
+        });
+    }
+}
+exports.luoqiuzw = luoqiuzw;
 
 
 /***/ }),
@@ -3898,7 +3943,7 @@ class jjwxc {
                 const rawAuthorSayDom = content.querySelector(".readsmall");
                 let authorSayDom, authorSayText;
                 if (rawAuthorSayDom) {
-                    let { dom: adom, text: atext, images: aimages } = lib_1.cleanDOM(rawAuthorSayDom, "TM");
+                    let { dom: adom, text: atext, images: aimages, } = lib_1.cleanDOM(rawAuthorSayDom, "TM");
                     [authorSayDom, authorSayText] = [adom, atext];
                 }
                 lib_1.rm("div", true, content);
@@ -4036,7 +4081,7 @@ class jjwxc {
                     const rawAuthorSayDom = content.querySelector(".readsmall");
                     let authorSayDom, authorSayText;
                     if (rawAuthorSayDom) {
-                        let { dom: adom, text: atext, images: aimages } = lib_1.cleanDOM(rawAuthorSayDom, "TM");
+                        let { dom: adom, text: atext, images: aimages, } = lib_1.cleanDOM(rawAuthorSayDom, "TM");
                         [authorSayDom, authorSayText] = [adom, atext];
                     }
                     lib_1.rm("div", true, content);
@@ -29365,7 +29410,7 @@ class yuzhaige {
             }
         } while (flag);
         if (content) {
-            let { dom: oldDom, text: _text, images: finalImages } = lib_1.cleanDOM(content, "naive");
+            let { dom: oldDom, text: _text, images: finalImages, } = lib_1.cleanDOM(content, "naive");
             const _newDom = document.createElement("div");
             _newDom.innerHTML = yuzhaigeImageDecode_1.replaceYuzhaigeImage(content.innerHTML);
             let { dom: newDom, text: finalText, images } = lib_1.cleanDOM(_newDom, "naive");
