@@ -3957,9 +3957,10 @@ webpack-sources@^2.1.1:
     source-list-map "^2.0.1"
     source-map "^0.6.1"
 
-"webpack-userscript@https://github.com/yingziwu/webpack-userscript":
-  version "2.5.7"
-  resolved "https://github.com/yingziwu/webpack-userscript#d92023f22e9a4ce2a363fc83ce62addb7fe3e74c"
+webpack-userscript@^2.5.8:
+  version "2.5.8"
+  resolved "https://registry.yarnpkg.com/webpack-userscript/-/webpack-userscript-2.5.8.tgz#294e1050e664855f904a995587d1bc297a95c1a7"
+  integrity sha512-C0zb8meYQY5pW7WeGu7ftOL6LwSa1ILTHU4ftM+bz2Mjgi8r8MrCyY4cld3YQAVXhQX9MY+ZYPF86Rn0K2iPNA==
   dependencies:
     "@tkausl/userscript-meta" "^1.0.2"
     dev-null "^0.1.1"
