@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        3.6.4.1623513644688
+// @version        3.6.4.1623688873339
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -387,7 +387,8 @@ function formatText(elems, builder) {
             builder.text = builder.text + tPText;
         }
     }
-    const brCount = elems.filter((elem) => elem.nodeName.toLowerCase() === "br").length;
+    const brCount = elems.filter((elem) => elem.nodeName.toLowerCase() === "br")
+        .length;
     const elem = elems[0];
     const textContent = elem.textContent ? elem.textContent.trim() : "";
     if (!textContent) {
@@ -3943,7 +3944,7 @@ class jjwxc {
                 const rawAuthorSayDom = content.querySelector(".readsmall");
                 let authorSayDom, authorSayText;
                 if (rawAuthorSayDom) {
-                    let { dom: adom, text: atext, images: aimages, } = lib_1.cleanDOM(rawAuthorSayDom, "TM");
+                    let { dom: adom, text: atext, images: aimages } = lib_1.cleanDOM(rawAuthorSayDom, "TM");
                     [authorSayDom, authorSayText] = [adom, atext];
                 }
                 lib_1.rm("div", true, content);
@@ -4081,7 +4082,7 @@ class jjwxc {
                     const rawAuthorSayDom = content.querySelector(".readsmall");
                     let authorSayDom, authorSayText;
                     if (rawAuthorSayDom) {
-                        let { dom: adom, text: atext, images: aimages, } = lib_1.cleanDOM(rawAuthorSayDom, "TM");
+                        let { dom: adom, text: atext, images: aimages } = lib_1.cleanDOM(rawAuthorSayDom, "TM");
                         [authorSayDom, authorSayText] = [adom, atext];
                     }
                     lib_1.rm("div", true, content);
@@ -29410,7 +29411,7 @@ class yuzhaige {
             }
         } while (flag);
         if (content) {
-            let { dom: oldDom, text: _text, images: finalImages, } = lib_1.cleanDOM(content, "naive");
+            let { dom: oldDom, text: _text, images: finalImages } = lib_1.cleanDOM(content, "naive");
             const _newDom = document.createElement("div");
             _newDom.innerHTML = yuzhaigeImageDecode_1.replaceYuzhaigeImage(content.innerHTML);
             let { dom: newDom, text: finalText, images } = lib_1.cleanDOM(_newDom, "naive");
