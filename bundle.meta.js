@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        3.6.4.1623690552477
+// @version        3.6.5.1623991319276
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -59,12 +59,12 @@
 // @match          *://www.dmzj1.com/info/*.html
 // @match          *://www.westnovel.com/*/*/
 // @match          *://www.mht.tw/*/
-// @match          *://www.01bzw.org/*_*/
 // @match          *://www.dierbanzhu1.com/*_*/
 // @match          *://www.xbiquge.so/book/*/
 // @match          *://www.hongyeshuzhai.com/shuzhai/*/
 // @match          *://www.linovelib.com/novel/*/catalog
 // @match          *://www.luoqiuzw.com/book/*/
+// @match          *://www.yibige.la/*/
 // @name:en        novel-downloader
 // @description:en An scalable universal novel downloader.
 // @namespace      https://blog.bgme.me

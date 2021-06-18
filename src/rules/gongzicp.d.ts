@@ -8,8 +8,8 @@ export declare class gongzicp implements ruleClass {
         bookUrl: string;
         bookname: string;
         author: string;
-        introduction: string;
-        introductionHTML: HTMLElement;
+        introduction: string | null;
+        introductionHTML: HTMLElement | null;
         additionalMetadate: BookAdditionalMetadate;
         chapters: Chapter[];
     }>;

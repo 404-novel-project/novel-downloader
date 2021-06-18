@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        3.6.4.1623690552477
+// @version        3.6.5.1623991319276
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -59,12 +59,12 @@
 // @match          *://www.dmzj1.com/info/*.html
 // @match          *://www.westnovel.com/*/*/
 // @match          *://www.mht.tw/*/
-// @match          *://www.01bzw.org/*_*/
 // @match          *://www.dierbanzhu1.com/*_*/
 // @match          *://www.xbiquge.so/book/*/
 // @match          *://www.hongyeshuzhai.com/shuzhai/*/
 // @match          *://www.linovelib.com/novel/*/catalog
 // @match          *://www.luoqiuzw.com/book/*/
+// @match          *://www.yibige.la/*/
 // @name:en        novel-downloader
 // @description:en An scalable universal novel downloader.
 // @namespace      https://blog.bgme.me
@@ -1844,11 +1844,7 @@ exports.enableCustomSaveOptions = true;
 exports.enableR18SiteWarning = false;
 exports.icon0 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAFYElEQVR4nO2dIUxkORyHP4XD4E6RYNZgUGvWonAnVqxDbbJiNWLNOsQ65Oo1CMQIFAnJJiQIcgY7YhIEbgTJiEkm4USPuyNh3pv2tf33tb9f8kl4fe3H0Pm37xXi50/gHJgBC+C5YB6Bv4AL4CuwH7872skBcI/9oA5lBpwAO1F7p/IcUf5fuy8L4AzYjthPVWYfeMJ+wFLxABxG660K8xv7QcrBWawOqykfsB+YnEzQv4RXOcV+UHJzD+zF6LwaMsF+QCyYo3kBALfYD4YVK+DL8C4cd+6wHwhrfgJbQztyrJEAjhvgj4F9OcrUKMA33Me778/NaLCUXKMA27ivt48BP7vArYU0k1oFAPeRHjrJPQ3u0ZGlZgHATe5+Bv6ecxooGtUuwEuOCVvsugd2vXp0ZGlFAHDL3bOA3zfHzSmqTEsCgNsjcBXwO5e4T5Hq0poA4OYFoWsg1RWNWhTgJZ8ImxdcUdFuo5YFADcvmAZcY0olRaPWBQD313wZcJ0n3Fa6UUcC/JfvAdda4TagjjYS4HWOcF/7fK/5i5FODmvcDzC0eveOsO3xt4xwRVECvJ1t3MMmvtd+AN5HuH62SIDunOC/tLxgREUjCdCf0HnBKFYUJcBm2SNsXnCZqD3RIgE2zzZuidi3PVPcxLLISAD/fMYtDvm0qdht6BIgLIf4zwuWOHmKigQIzy5hhbSiKocSYFi2cFVA3zZ+ytjGztQogMVS7Vf85gVPFLLVrEYBrGbcvlvRJzbNfJ0aBbDc1++7Fd28bFyjAOdRe8g/PlvOfhm18d/UKMCKMjZqHNM/L1hiXCmsUYBn3ILMZ+zX6N/jVgi72mr6KFqtArzwiJtsneE+li3oezLJdNGodgHGgOm3AQlgz03vKCWMBLDnrneUEkYC2CMBGkcCNI4EaBwJ0DgSYEMecE/mbkLIA59NCnCzplElEbqfLvTJXwlQGEN2z+zjv4GzKQFK/xewZPiCTumS6xOgg4cI9xiyZ08CFIIESBwJYI8E6EACJI4EsEcCdCABEkcC2CMBOpAAiSMB7JEAHUiAxJEA9kiADiRA4kgAeyRABxIgcSSAPRKgAwmQOBLAHgnQgQRIHAlgjwToQAIkjgSwRwJ0IAESRwLYYyrA7zWNKgUJkDgSwB4J0IEESBwJYE8zAqxwr0T7webv2Ivxbv2PHtc7xb1qNucDpc0I8DHTPcXIB/yPi5MAHcT4KM+dXH3ThADzXDcUMSHHxEmADr5kuqcYOSJfvzQjwIKCz8/7X3bof8O3BAjkDvtXuPcl5HBICeDB9yx3FpZj8vdHcwKsKOCsnDeyhzvNSwJkYEp5hypfY9MXTQrwjDtJo5ScYNcPzQrwTBmHOx1g+y7BpgV4xJ21Z5Ut8hV8JMAaLpPf5fqcdbRLAmTE4lj1wwHtlQCRyV0l3MHvnF8JkIGcVcLc1T4JsCE5qoQW1T4JsCGpq4RW1b5iBbhe0yhLUlYJS7xfCfAGKaqE3wq4LwngQcxTta2rfRIggDlxqoQlVPskQCAxqoQlVPskwACG7CUspdonAQYQWiUsqdonAQYSUiUsqdonASLgUyUsrdonASKwwj2y1ZcSq30SIBKbVAlLK29LgMh0VQlLrfZJgMi89aRxydU+CRCZOe5g6JfsMo6TwiVARJbABe7r3pgmfRJASAAhAQQSQCABmsdUgKs1jRL5uO0dpYSRAPZMekcpYS7WNErk47R3lBLmx5pGiXyYvi1lDFumaua6f4jS5w77jmiRBa/XM8zyjnHX0sfIkrjPPQzOAeNdTRsbUzbb2ZQ9W7i9dBNghltyjUHrny4r3JtHJ//0b9RH4P8GSxsCzEN/51YAAAAASUVORK5CYII=";
 exports.icon1 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAESElEQVR4nO2cLUxcQRSFv4QgEBiSKgQCh6pCouvQlbVVdaRuTFUNoqaqEkktCoVD4HBITBMMosmaVsxu+kL3l3lv7p13z5ccyc68OSf3sLtvHwghhBBCjJM/hRKNowAERwEIjgIQHAUgOApAcBSA4CgAwVEAgqMABEcBCI4CEBwFIDgKQHAUgOAoAMFRAIKjAARHAQiOAhAcBSA4CkBwFIDgKADBUQCCowAERwEIjgIQHAUgOApAcBSA4CgAzkmUm9SqUvHpjYSEvRky35iEvSky35iEvTky35iEvUky35iEvVky35iEvWky35iEvXky35iEvYky35iEvZky35iEvaky35iEvbky35iEvcky35iEvdky35iEveky35iEzA9PQuaHJyHzm2e78O8T7Zhfeq2j4i1wDvyi/GAT/s1P5Gs9J197SN4An4A7hjlgz+a/fM078lm8KXxt92wDp8BPYEL9g/ZoflcT8tmcMrKK6I54TwfueS/NV8SyEe/54D3uoZmK2GTEt2KA5dov5bYiXjvivRthsea6Mq+Ivka8V0NqrlWqahUx1IjfRGeF15DWWCMVrnG2xhpDaLCKqDHiV+ka+ADs9nA9ack6qYfX3yXv9XrJOkOruCIsRvxLPZANOXztRSwhzVkvDbDO4fR1H+asV0trV4SHEf8M/ABOVm22B1Jn3VRhvRPytT1jc7YLK8LTiN/Z/FyLSNT/Vm8HZxVhtYnZiD8oOc3GOcC+Iqou9gx8p86Ib40T8tnUrogqi1wB76k/4ltkh3xWVzQegHvgM7Df6/HEYp98hvc0EoAn8hg7HuAwonNMPtsnnAVggkZ8TboV0cfb9aIRf4ZGvCX7ZA9KKmLjEf8NjXiPHJO92bQiFICRUCUAqgBfVK+AedI/gXVx80/goorQ28BhcPs2cFlF6IOgMpr7IGiRVBHrM5qPguep5vf9rWF1v0DVxbrS18EBvw5epGv6u+fPOx7uGXQXgJnGXBHWt4Q1EYCuhrwptBYebgptNgBd3dBORcxG/A325zaaAMz0G7gA3gFbaxpSgy3yni7Ie7Q+p9EGoKtH4AtwtNqfwTia7uER+/MIF4CuboCPwN5Su/phb7pWKyM+RABmGqoiWh7xoQLQ1SPwlbKKOJq+RssjPmwAurpl/YqYjfhbB/tWAHrWBLjk/9/HzX4XeYnd7yIVgMqa/T7O+neR1jLfgKQASIYy34CkAEiGcvGACKmu5j5DKPJboQha9BZ4Lh4eEiX1o+LnCKoi2tMgTxJVRfjWRiO+FFWEH5k/TVwVUV/mD4ueh4cHTY5ZVUd8KaqI/mQ+4ktRRWwulyO+FFXEcjU14ktRRfxT8yO+lIgVMcoRX8rYP2gKNeJLGVNFhB/xpbRYERrxA+C9IjTiK+KpIjTijbGoCI14hwxdERrxDdFnRWjEN85rKkIjfoSsqgiN+EB0K0IjXgghhBDh+Avri3imoU6g/AAAAABJRU5ErkJggg==";
-exports.r18SiteList = [
-    "www.01bzw.org",
-    "www.dierbanzhu1.com",
-    "m.yuzhaige.cc",
-];
+exports.r18SiteList = ["www.dierbanzhu1.com", "m.yuzhaige.cc"];
 async function getRule() {
     const host = document.location.host;
     let ruleClass;
@@ -2035,7 +2031,6 @@ async function getRule() {
             ruleClass = mht;
             break;
         }
-        case "www.01bzw.org":
         case "www.dierbanzhu1.com": {
             const { dierbanzhu } = await Promise.resolve().then(() => __webpack_require__(481));
             ruleClass = dierbanzhu;
@@ -2061,6 +2056,11 @@ async function getRule() {
             ruleClass = luoqiuzw;
             break;
         }
+        case "www.yibige.la": {
+            const { yibige } = await Promise.resolve().then(() => __webpack_require__(889));
+            ruleClass = yibige;
+            break;
+        }
         default: {
             throw new Error("Not Found Rule!");
         }
@@ -2081,6 +2081,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.c17k = void 0;
 const main_1 = __webpack_require__(519);
 const lib_1 = __webpack_require__(563);
+const common_1 = __webpack_require__(352);
 class c17k {
     constructor() {
         this.imageMode = "TM";
@@ -2091,18 +2092,8 @@ class c17k {
         const bookname = (document.querySelector("h1.Title")).innerText.trim();
         const author = (document.querySelector("div.Author > a")).innerText.trim();
         const doc = await lib_1.getHtmlDOM(bookUrl, undefined);
-        let introduction;
-        let introductionHTML;
         const introDom = doc.querySelector("#bookInfo p.intro > a");
-        if (introDom === null) {
-            introduction = null;
-            introductionHTML = null;
-        }
-        else {
-            let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "TM");
-            introduction = introCleantext;
-            introductionHTML = introCleanDom;
-        }
+        const [introduction, introductionHTML, introCleanimages] = common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         let coverUrl = doc.querySelector("#bookCover img.book")
             .src;
@@ -2217,6 +2208,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.c226ks = void 0;
 const main_1 = __webpack_require__(519);
 const lib_1 = __webpack_require__(563);
+const common_1 = __webpack_require__(352);
 class c226ks {
     constructor() {
         this.imageMode = "TM";
@@ -2227,18 +2219,8 @@ class c226ks {
         const author = (document.querySelector(".info > .top > .fix > p:nth-child(1)")).innerText
             .replace(/作(\s+)?者[：:]/, "")
             .trim();
-        let introduction;
-        let introductionHTML;
         const introDom = document.querySelector(".desc");
-        if (introDom === null) {
-            introduction = null;
-            introductionHTML = null;
-        }
-        else {
-            let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "TM");
-            introduction = introCleantext;
-            introductionHTML = introCleanDom;
-        }
+        const [introduction, introductionHTML, introCleanimages] = common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         const coverUrl = document.querySelector(".imgbox > img")
             .src;
@@ -2320,19 +2302,9 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.luoqiuzw = exports.hongyeshuzhai = exports.xbiquge = exports.zwdu = exports.gebiqu = exports.dingdiann = exports.shuquge = exports.biquwo = exports.bookParseTemp = void 0;
 const main_1 = __webpack_require__(519);
 const lib_1 = __webpack_require__(563);
+const common_1 = __webpack_require__(352);
 async function bookParseTemp({ bookUrl, bookname, author, introDom, introDomPatch, coverUrl, chapterListSelector, charset, chapterParse, }) {
-    let introduction;
-    let introductionHTML;
-    if (introDom === null) {
-        introduction = null;
-        introductionHTML = null;
-    }
-    else {
-        introDom = introDomPatch(introDom);
-        let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "TM");
-        introduction = introCleantext;
-        introductionHTML = introCleanDom;
-    }
+    const [introduction, introductionHTML, introCleanimages] = common_1.introDomHandle(introDom);
     const additionalMetadate = {};
     additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
     additionalMetadate.cover.init();
@@ -2720,6 +2692,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.ciweimao = void 0;
 const main_1 = __webpack_require__(519);
 const lib_1 = __webpack_require__(563);
+const common_1 = __webpack_require__(352);
 class ciweimao {
     constructor() {
         this.imageMode = "TM";
@@ -2732,19 +2705,9 @@ class ciweimao {
         const bookUrl = `https://www.ciweimao.com/book/${bookid}`;
         const bookname = (document.querySelector(".book-catalog .hd h3")).innerText.trim();
         const author = (document.querySelector(".book-catalog .hd > p > a")).innerText.trim();
-        let introduction;
-        let introductionHTML;
         const dom = await lib_1.getHtmlDOM(bookUrl, undefined);
         const introDom = dom.querySelector(".book-intro-cnt .book-desc");
-        if (introDom === null) {
-            introduction = null;
-            introductionHTML = null;
-        }
-        else {
-            let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "TM");
-            introduction = introCleantext;
-            introductionHTML = introCleanDom;
-        }
+        const [introduction, introductionHTML, introCleanimages] = common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         const coverUrl = dom.querySelector(".cover > img").src;
         additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
@@ -3023,6 +2986,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.dierbanzhu = void 0;
 const main_1 = __webpack_require__(519);
 const lib_1 = __webpack_require__(563);
+const common_1 = __webpack_require__(352);
 class dierbanzhu {
     constructor() {
         this.imageMode = "TM";
@@ -3034,18 +2998,8 @@ class dierbanzhu {
         const author = (document.querySelector("#info > p:nth-child(2)")).innerText
             .replace(/作(\s+)?者[：:]/, "")
             .trim();
-        let introduction;
-        let introductionHTML;
         const introDom = document.querySelector("#intro");
-        if (introDom === null) {
-            introduction = null;
-            introductionHTML = null;
-        }
-        else {
-            let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "TM");
-            introduction = introCleantext;
-            introductionHTML = introCleanDom;
-        }
+        const [introduction, introductionHTML, introCleanimages] = common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         const coverUrl = document.querySelector("#fmimg > img")
             .src;
@@ -3130,6 +3084,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.dmzj = void 0;
 const main_1 = __webpack_require__(519);
 const lib_1 = __webpack_require__(563);
+const common_1 = __webpack_require__(352);
 class dmzj {
     constructor() {
         this.imageMode = "TM";
@@ -3140,18 +3095,8 @@ class dmzj {
         const author = (document.querySelector(".comic_deCon_liO > li:nth-child(1)")).innerText
             .replace("作者：", "")
             .trim();
-        let introduction;
-        let introductionHTML;
         const introDom = document.querySelector(".comic_deCon_d");
-        if (introDom === null) {
-            introduction = null;
-            introductionHTML = null;
-        }
-        else {
-            let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "TM");
-            introduction = introCleantext;
-            introductionHTML = introCleanDom;
-        }
+        const [introduction, introductionHTML, introCleanimages] = common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         const coverUrl = (document.querySelector(".comic_i_img > a > img")).src;
         if (coverUrl) {
@@ -3242,6 +3187,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.gongzicp = void 0;
 const main_1 = __webpack_require__(519);
 const lib_1 = __webpack_require__(563);
+const common_1 = __webpack_require__(352);
 class gongzicp {
     constructor() {
         this.imageMode = "TM";
@@ -3275,13 +3221,9 @@ class gongzicp {
         const data = novelInfo.data;
         const bookname = data.novelInfo.novel_name;
         const author = data.novelInfo.author_nickname;
-        let introduction;
-        let introductionHTML;
         const introDom = document.createElement("div");
         introDom.innerHTML = data.novelInfo.novel_info;
-        let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "TM");
-        introduction = introCleantext;
-        introductionHTML = introCleanDom;
+        const [introduction, introductionHTML, introCleanimages] = common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         const coverUrl = data.novelInfo.novel_cover;
         additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
@@ -3327,7 +3269,11 @@ class gongzicp {
                 const isVIP = chapterObj.pay;
                 const isPaid = chapterObj.is_sub;
                 sectionChapterNumber++;
-                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, chapterParse, "UTF-8", {});
+                const chapterOption = {
+                    novel_id: data.novelInfo.novel_id,
+                    chapter_id: chapterObj.id,
+                };
+                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, chapterParse, "UTF-8", chapterOption);
                 if (isVIP && !(logined && chapter.isPaid)) {
                     chapter.status = main_1.Status.aborted;
                 }
@@ -3389,56 +3335,83 @@ class gongzicp {
             return content;
         }
         async function getChapter() {
-            const _cid = chapterUrl
-                .split("/")
-                .slice(-1)[0]
-                .match(/read-(\d+).html/);
-            if ((_cid === null || _cid === void 0 ? void 0 : _cid.length) === 2) {
-                const cid = _cid[1];
-                const chapterGetInfoBaseUrl = "https://www.gongzicp.com/webapi/novel/chapterGetInfo";
-                const chapterGetInfoUrl = new URL(chapterGetInfoBaseUrl);
-                chapterGetInfoUrl.searchParams.set("cid", cid);
-                chapterGetInfoUrl.searchParams.set("nid", "0");
-                lib_1.console_debug(`请求地址: ${chapterGetInfoUrl.toString()}, Referrer: ${chapterUrl}`);
-                const result = await fetch(chapterGetInfoUrl.toString(), {
-                    credentials: "include",
-                    headers: {
-                        Accept: "application/json, text/plain, */*",
-                        Client: "pc",
-                        Lang: "cn",
-                        "Content-Type": "application/json;charset=utf-8",
-                    },
-                    referrer: chapterUrl,
-                    method: "GET",
-                    mode: "cors",
-                }).then((resp) => resp.json());
-                if (result.code === 200) {
-                    const chapterInfo = result.data.chapterInfo;
-                    if (chapterInfo.chapterPrice !== 0 &&
-                        chapterInfo.content.length === 0) {
-                        return {
-                            chapterName: chapterName,
-                            contentRaw: null,
-                            contentText: null,
-                            contentHTML: null,
-                            contentImages: null,
-                            additionalMetadate: null,
-                        };
+            const nid = options.novel_id;
+            const cid = options.chapter_id;
+            const chapterGetInfoBaseUrl = "https://www.gongzicp.com/webapi/novel/chapterGetInfo";
+            const chapterGetInfoUrl = new URL(chapterGetInfoBaseUrl);
+            chapterGetInfoUrl.searchParams.set("cid", cid.toString());
+            chapterGetInfoUrl.searchParams.set("nid", nid.toString());
+            lib_1.console_debug(`请求地址: ${chapterGetInfoUrl.toString()}, Referrer: ${chapterUrl}`);
+            const result = await fetch(chapterGetInfoUrl.toString(), {
+                credentials: "include",
+                headers: {
+                    Accept: "application/json, text/plain, */*",
+                    Client: "pc",
+                    Lang: "cn",
+                    "Content-Type": "application/json;charset=utf-8",
+                },
+                referrer: chapterUrl,
+                method: "GET",
+                mode: "cors",
+            }).then((resp) => resp.json());
+            await fetch(`https://www.gongzicp.com/webapi/comment/getList?module=chapter&cid=${cid.toString()}&gift=0&page=1`, {
+                credentials: "include",
+                headers: {
+                    Accept: "application/json, text/plain, */*",
+                    Client: "pc",
+                    Lang: "cn",
+                    "Content-Type": "application/json;charset=utf-8",
+                },
+                referrer: chapterUrl,
+                method: "GET",
+                mode: "cors",
+            });
+            if (result.code === 200) {
+                const chapterInfo = result.data.chapterInfo;
+                if (chapterInfo.chapterPrice !== 0 &&
+                    chapterInfo.content.length === 0) {
+                    return {
+                        chapterName: chapterName,
+                        contentRaw: null,
+                        contentText: null,
+                        contentHTML: null,
+                        contentImages: null,
+                        additionalMetadate: null,
+                    };
+                }
+                else if (chapterInfo.chapterPrice === 0 ||
+                    (chapterInfo.chapterPrice !== 0 && chapterInfo.content.length !== 0)) {
+                    const content = cpDecrypt(chapterInfo.content);
+                    const contentRaw = document.createElement("pre");
+                    contentRaw.innerHTML = content;
+                    let contentText = content
+                        .split("\n")
+                        .map((p) => p.trim())
+                        .join("\n\n");
+                    let contentHTML;
+                    const _contentHTML = document.createElement("div");
+                    _contentHTML.innerHTML = content
+                        .split("\n")
+                        .map((p) => p.trim())
+                        .map((p) => {
+                        if (p.length === 0) {
+                            return "<p><br/></p>";
+                        }
+                        else {
+                            return `<p>${p}</p>`;
+                        }
+                    })
+                        .join("\n");
+                    if (chapterInfo.postscript.length === 0) {
+                        contentHTML = _contentHTML;
                     }
-                    else if (chapterInfo.chapterPrice === 0 ||
-                        (chapterInfo.chapterPrice !== 0 && chapterInfo.content.length !== 0)) {
-                        const content = cpDecrypt(chapterInfo.content);
-                        const contentRaw = document.createElement("pre");
-                        contentRaw.innerHTML = content;
-                        let contentText = content
+                    else {
+                        contentHTML = document.createElement("div");
+                        contentHTML.className = "main";
+                        const hr = document.createElement("hr");
+                        const authorSayDom = document.createElement("div");
+                        authorSayDom.innerHTML = chapterInfo.postscript
                             .split("\n")
-                            .map((p) => p.trim())
-                            .join("\n\n");
-                        let contentHTML;
-                        const _contentHTML = document.createElement("div");
-                        _contentHTML.innerHTML = content
-                            .split("\n")
-                            .map((p) => p.trim())
                             .map((p) => {
                             if (p.length === 0) {
                                 return "<p><br/></p>";
@@ -3448,48 +3421,28 @@ class gongzicp {
                             }
                         })
                             .join("\n");
-                        if (chapterInfo.postscript.length === 0) {
-                            contentHTML = _contentHTML;
-                        }
-                        else {
-                            contentHTML = document.createElement("div");
-                            contentHTML.className = "main";
-                            const hr = document.createElement("hr");
-                            const authorSayDom = document.createElement("div");
-                            authorSayDom.innerHTML = chapterInfo.postscript
-                                .split("\n")
-                                .map((p) => {
-                                if (p.length === 0) {
-                                    return "<p><br/></p>";
-                                }
-                                else {
-                                    return `<p>${p}</p>`;
-                                }
-                            })
-                                .join("\n");
-                            contentHTML.appendChild(_contentHTML);
-                            contentHTML.appendChild(hr);
-                            contentHTML.appendChild(authorSayDom);
-                            contentRaw.innerHTML = [
-                                contentRaw.innerHTML,
-                                "-".repeat(20),
-                                chapterInfo.postscript,
-                            ].join("\n\n");
-                            contentText = [
-                                contentText,
-                                "-".repeat(20),
-                                chapterInfo.postscript,
-                            ].join("\n\n");
-                        }
-                        return {
-                            chapterName: chapterName,
-                            contentRaw: contentRaw,
-                            contentText: contentText,
-                            contentHTML: contentHTML,
-                            contentImages: null,
-                            additionalMetadate: null,
-                        };
+                        contentHTML.appendChild(_contentHTML);
+                        contentHTML.appendChild(hr);
+                        contentHTML.appendChild(authorSayDom);
+                        contentRaw.innerHTML = [
+                            contentRaw.innerHTML,
+                            "-".repeat(20),
+                            chapterInfo.postscript,
+                        ].join("\n\n");
+                        contentText = [
+                            contentText,
+                            "-".repeat(20),
+                            chapterInfo.postscript,
+                        ].join("\n\n");
                     }
+                    return {
+                        chapterName: chapterName,
+                        contentRaw: contentRaw,
+                        contentText: contentText,
+                        contentHTML: contentHTML,
+                        contentImages: null,
+                        additionalMetadate: null,
+                    };
                 }
             }
             return {
@@ -3501,12 +3454,15 @@ class gongzicp {
                 additionalMetadate: null,
             };
         }
+        async function antiAntiCrawler() {
+            await lib_1.sleep(7000 + Math.round(Math.random() * 4000));
+        }
         async function publicChapter() {
-            await lib_1.sleep(3000 + Math.round(Math.random() * 3000));
+            await antiAntiCrawler();
             return getChapter();
         }
         async function vipChapter() {
-            await lib_1.sleep(3000 + Math.round(Math.random() * 3000));
+            await antiAntiCrawler();
             return getChapter();
         }
         if (isVIP) {
@@ -3530,6 +3486,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.hetushu = void 0;
 const main_1 = __webpack_require__(519);
 const lib_1 = __webpack_require__(563);
+const common_1 = __webpack_require__(352);
 class hetushu {
     constructor() {
         this.imageMode = "TM";
@@ -3539,18 +3496,8 @@ class hetushu {
         const bookUrl = document.location.href;
         const bookname = (document.querySelector(".book_info > h2")).innerText.trim();
         const author = (document.querySelector(".book_info > div:nth-child(3) > a:nth-child(1)")).innerText.trim();
-        let introduction;
-        let introductionHTML;
         const introDom = document.querySelector(".intro");
-        if (introDom === null) {
-            introduction = null;
-            introductionHTML = null;
-        }
-        else {
-            let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "TM");
-            introduction = introCleantext;
-            introductionHTML = introCleanDom;
-        }
+        const [introduction, introductionHTML, introCleanimages] = common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         const coverUrl = (document.querySelector(".book_info > img")).src;
         additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
@@ -3707,6 +3654,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.idejian = void 0;
 const main_1 = __webpack_require__(519);
 const lib_1 = __webpack_require__(563);
+const common_1 = __webpack_require__(352);
 class idejian {
     constructor() {
         this.imageMode = "TM";
@@ -3720,18 +3668,8 @@ class idejian {
         if (_author && _author.textContent) {
             author = _author.textContent.trim();
         }
-        let introduction;
-        let introductionHTML;
         const introDom = document.querySelector(".brief_con");
-        if (introDom === null) {
-            introduction = null;
-            introductionHTML = null;
-        }
-        else {
-            let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "TM");
-            introduction = introCleantext;
-            introductionHTML = introCleanDom;
-        }
+        const [introduction, introductionHTML, introCleanimages] = common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         const coverUrl = (document.querySelector(".book_img > img")).src;
         if (coverUrl) {
@@ -3810,6 +3748,7 @@ const main_1 = __webpack_require__(519);
 const lib_1 = __webpack_require__(563);
 const rules_1 = __webpack_require__(489);
 const jjwxcFontDecode_1 = __webpack_require__(798);
+const common_1 = __webpack_require__(352);
 class jjwxc {
     constructor() {
         this.imageMode = "TM";
@@ -3821,23 +3760,13 @@ class jjwxc {
         const bookUrl = document.location.href;
         const bookname = (document.querySelector('h1[itemprop="name"] > span')).innerText.trim();
         const additionalMetadate = {};
-        let introduction;
-        let introductionHTML;
         const author = (document.querySelector("td.sptd h2 a span")).innerText
             .replace(/作\s+者:/, "")
             .trim();
         const introDom = document.querySelector("#novelintro");
-        if (introDom === null) {
-            introduction = null;
-            introductionHTML = null;
-        }
-        else {
-            let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "TM");
-            introduction = introCleantext;
-            introductionHTML = introCleanDom;
-            if (introCleanimages) {
-                additionalMetadate.attachments = [...introCleanimages];
-            }
+        const [introduction, introductionHTML, introCleanimages] = common_1.introDomHandle(introDom);
+        if (introCleanimages) {
+            additionalMetadate.attachments = [...introCleanimages];
         }
         let coverUrl = (document.querySelector(".noveldefaultimage")).src;
         additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
@@ -4138,6 +4067,27 @@ class jjwxc {
     }
 }
 exports.jjwxc = jjwxc;
+
+
+/***/ }),
+
+/***/ 352:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.introDomHandle = void 0;
+const lib_1 = __webpack_require__(563);
+function introDomHandle(introDom) {
+    if (introDom === null) {
+        return [null, null, null];
+    }
+    else {
+        let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "TM");
+        return [introCleantext, introCleanDom, introCleanimages];
+    }
+}
+exports.introDomHandle = introDomHandle;
 
 
 /***/ }),
@@ -26804,6 +26754,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.linovel = void 0;
 const main_1 = __webpack_require__(519);
 const lib_1 = __webpack_require__(563);
+const common_1 = __webpack_require__(352);
 class linovel {
     constructor() {
         this.imageMode = "TM";
@@ -26813,18 +26764,8 @@ class linovel {
         const bookUrl = document.location.href;
         const bookname = (document.querySelector(".book-title")).innerText.trim();
         const author = (document.querySelector(".author-frame > .novelist > div:nth-child(3) > a")).innerText.trim();
-        let introduction;
-        let introductionHTML;
         const introDom = document.querySelector(".about-text");
-        if (introDom === null) {
-            introduction = null;
-            introductionHTML = null;
-        }
-        else {
-            let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "TM");
-            introduction = introCleantext;
-            introductionHTML = introCleanDom;
-        }
+        const [introduction, introductionHTML, introCleanimages] = common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         const attachmentsUrlList = [];
         const coverUrl = (document.querySelector(".book-cover > a")).href;
@@ -26958,6 +26899,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.linovelib = void 0;
 const main_1 = __webpack_require__(519);
 const lib_1 = __webpack_require__(563);
+const common_1 = __webpack_require__(352);
 class linovelib {
     constructor() {
         this.imageMode = "TM";
@@ -26966,19 +26908,9 @@ class linovelib {
         const bookUrl = document.location.href.replace(/\/catalog$/, ".html");
         const bookname = (document.querySelector(".book-meta > h1")).innerText.trim();
         const author = (document.querySelector(".book-meta > p:nth-child(2) > span:nth-child(1) > a:nth-child(2)")).innerText.trim();
-        let introduction;
-        let introductionHTML;
         const doc = await lib_1.getHtmlDOM(bookUrl, undefined);
         const introDom = doc.querySelector(".book-dec > p:nth-child(1)");
-        if (introDom === null) {
-            introduction = null;
-            introductionHTML = null;
-        }
-        else {
-            let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "TM");
-            introduction = introCleantext;
-            introductionHTML = introCleanDom;
-        }
+        const [introduction, introductionHTML, introCleanimages] = common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         const coverUrl = doc.querySelector(".book-img > img")
             .src;
@@ -27274,6 +27206,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.qidian = void 0;
 const main_1 = __webpack_require__(519);
 const lib_1 = __webpack_require__(563);
+const common_1 = __webpack_require__(352);
 class qidian {
     constructor() {
         this.imageMode = "TM";
@@ -27282,21 +27215,11 @@ class qidian {
     async bookParse(chapterParse) {
         const bookUrl = document.location.href;
         const bookname = (document.querySelector(".book-info > h1 > em")).innerText.trim();
-        let introduction;
-        let introductionHTML;
         const author = (document.querySelector(".book-info .writer")).innerText
             .replace(/作\s+者:/, "")
             .trim();
         const introDom = document.querySelector(".book-info-detail .book-intro");
-        if (introDom === null) {
-            introduction = null;
-            introductionHTML = null;
-        }
-        else {
-            let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "TM");
-            introduction = introCleantext;
-            introductionHTML = introCleanDom;
-        }
+        const [introduction, introductionHTML, introCleanimages] = common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         let coverUrl = document.querySelector("#bookImg > img")
             .src;
@@ -27492,6 +27415,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.qimao = void 0;
 const main_1 = __webpack_require__(519);
 const lib_1 = __webpack_require__(563);
+const common_1 = __webpack_require__(352);
 class qimao {
     constructor() {
         this.imageMode = "TM";
@@ -27500,18 +27424,8 @@ class qimao {
         let bookUrl = document.location.href;
         const bookname = (document.querySelector("h2.tit")).innerText.trim();
         const author = (document.querySelector(".p-name > a")).innerHTML.trim();
-        let introduction;
-        let introductionHTML;
         const introDom = (document.querySelector(".book-introduction .article"));
-        if (introDom === null) {
-            introduction = null;
-            introductionHTML = null;
-        }
-        else {
-            let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "TM");
-            introduction = introCleantext;
-            introductionHTML = introCleanDom;
-        }
+        const [introduction, introductionHTML, introCleanimages] = common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         const coverUrl = (document.querySelector(".poster-pic > img")).src;
         if (coverUrl) {
@@ -27616,6 +27530,7 @@ exports.sfacg = void 0;
 const main_1 = __webpack_require__(519);
 const lib_1 = __webpack_require__(563);
 const rules_1 = __webpack_require__(489);
+const common_1 = __webpack_require__(352);
 class sfacg {
     constructor() {
         this.imageMode = "TM";
@@ -27625,20 +27540,10 @@ class sfacg {
         var _a, _b, _c, _d;
         const bookUrl = document.location.href.replace("/MainIndex/", "");
         const bookname = (document.querySelector("h1.story-title")).innerText.trim();
-        let introduction;
-        let introductionHTML;
         const dom = await lib_1.getHtmlDOM(bookUrl, undefined);
         const author = (dom.querySelector(".author-name")).innerText.trim();
         const introDom = dom.querySelector(".introduce");
-        if (introDom === null) {
-            introduction = null;
-            introductionHTML = null;
-        }
-        else {
-            let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "TM");
-            introduction = introCleantext;
-            introductionHTML = introCleanDom;
-        }
+        const [introduction, introductionHTML, introCleanimages] = common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         let coverUrl = (dom.querySelector("#hasTicket div.pic img")).src;
         additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
@@ -27927,6 +27832,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.shuhai = void 0;
 const main_1 = __webpack_require__(519);
 const lib_1 = __webpack_require__(563);
+const common_1 = __webpack_require__(352);
 class shuhai {
     constructor() {
         this.imageMode = "TM";
@@ -27937,22 +27843,12 @@ class shuhai {
         var _a;
         const bookUrl = document.location.href;
         const bookname = (document.querySelector("div.book-info-bookname > span:nth-child(1)")).innerText.trim();
-        let introduction;
-        let introductionHTML;
         const author = (document.querySelector("div.book-info-bookname > span:nth-child(2)")).innerText
             .replace("作者: ", "")
             .trim();
         const introDom = document.querySelector("div.book-info-bookintro") ||
             document.querySelector("div.book-info-bookintro-all");
-        if (introDom === null) {
-            introduction = null;
-            introductionHTML = null;
-        }
-        else {
-            let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "TM");
-            introduction = introCleantext;
-            introductionHTML = introCleanDom;
-        }
+        const [introduction, introductionHTML, introCleanimages] = common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         let coverUrl = (document.querySelector(".book-cover-wrapper > img")).getAttribute("data-original");
         if (coverUrl) {
@@ -28194,6 +28090,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.tadu = void 0;
 const main_1 = __webpack_require__(519);
 const lib_1 = __webpack_require__(563);
+const common_1 = __webpack_require__(352);
 class tadu {
     constructor() {
         this.imageMode = "TM";
@@ -28205,19 +28102,9 @@ class tadu {
         const author = (document.querySelector(".itct > span:nth-child(1)")).innerText
             .replace("作者：", "")
             .trim();
-        let introduction;
-        let introductionHTML;
         const doc = await lib_1.getHtmlDOM(bookUrl, undefined);
         const introDom = (doc.querySelector("div.boxCenter.bookIntro > div > p:nth-child(4)"));
-        if (introDom === null) {
-            introduction = null;
-            introductionHTML = null;
-        }
-        else {
-            let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "TM");
-            introduction = introCleantext;
-            introductionHTML = introCleanDom;
-        }
+        const [introduction, introductionHTML, introCleanimages] = common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         const coverUrl = (doc.querySelector("a.bookImg > img")).getAttribute("data-src");
         if (coverUrl) {
@@ -28471,6 +28358,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.wenku8 = void 0;
 const main_1 = __webpack_require__(519);
 const lib_1 = __webpack_require__(563);
+const common_1 = __webpack_require__(352);
 class wenku8 {
     constructor() {
         this.imageMode = "TM";
@@ -28481,21 +28369,11 @@ class wenku8 {
         const bookUrl = [document.location.origin, "book", `${bookId}.htm`].join("/");
         const bookname = (document.querySelector("#title")).innerText.trim();
         const doc = await lib_1.getHtmlDOM(bookUrl, "GBK");
-        let introduction;
-        let introductionHTML;
         const author = (doc.querySelector("#content > div:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(2) > td:nth-child(2)")).innerText
             .replace("小说作者：", "")
             .trim();
         const introDom = doc.querySelector("#content > div:nth-child(1) > table:nth-child(4) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(2) > span:nth-child(11)");
-        if (introDom === null) {
-            introduction = null;
-            introductionHTML = null;
-        }
-        else {
-            let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "TM");
-            introduction = introCleantext;
-            introductionHTML = introCleanDom;
-        }
+        const [introduction, introductionHTML, introCleanimages] = common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         let coverUrl = (doc.querySelector("#content > div:nth-child(1) > table:nth-child(4) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(1) > img:nth-child(1)")).src;
         additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
@@ -28573,6 +28451,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.westnovel = void 0;
 const main_1 = __webpack_require__(519);
 const lib_1 = __webpack_require__(563);
+const common_1 = __webpack_require__(352);
 class westnovel {
     constructor() {
         this.imageMode = "TM";
@@ -28583,18 +28462,8 @@ class westnovel {
         const author = (document.querySelector(".btitle > em:nth-child(2)")).innerText
             .replace("作者：", "")
             .trim();
-        let introduction;
-        let introductionHTML;
         const introDom = document.querySelector(".intro-p > p:nth-child(1)");
-        if (introDom === null) {
-            introduction = null;
-            introductionHTML = null;
-        }
-        else {
-            let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "TM");
-            introduction = introCleantext;
-            introductionHTML = introCleanDom;
-        }
+        const [introduction, introductionHTML, introCleanimages] = common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         let coverUrl = document.querySelector(".img-img").src;
         additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
@@ -28780,6 +28649,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.xinwanben = void 0;
 const main_1 = __webpack_require__(519);
 const lib_1 = __webpack_require__(563);
+const common_1 = __webpack_require__(352);
 class xinwanben {
     constructor() {
         this.imageMode = "TM";
@@ -28789,18 +28659,8 @@ class xinwanben {
         let bookUrl = document.location.href;
         const bookname = (document.querySelector(".detailTitle > h1")).innerText.trim();
         const author = (document.querySelector(".writer > a")).innerText.trim();
-        let introduction;
-        let introductionHTML;
         const introDom = (document.querySelector(".detailTopMid > table > tbody > tr:nth-child(3) > td:nth-child(2)"));
-        if (introDom === null) {
-            introduction = null;
-            introductionHTML = null;
-        }
-        else {
-            let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "TM");
-            introduction = introCleantext;
-            introductionHTML = introCleanDom;
-        }
+        const [introduction, introductionHTML, introCleanimages] = common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         const coverUrl = (document.querySelector(".detailTopLeft > img")).src;
         if (coverUrl) {
@@ -28884,6 +28744,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.xkzw = void 0;
 const main_1 = __webpack_require__(519);
 const lib_1 = __webpack_require__(563);
+const common_1 = __webpack_require__(352);
 class xkzw {
     constructor() {
         this.imageMode = "TM";
@@ -28894,18 +28755,8 @@ class xkzw {
         const author = (document.querySelector("#info > p:nth-child(2)")).innerText
             .replace(/作(\s+)?者[：:]/, "")
             .trim();
-        let introduction;
-        let introductionHTML;
         const introDom = document.querySelector("#intro");
-        if (introDom === null) {
-            introduction = null;
-            introductionHTML = null;
-        }
-        else {
-            let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "TM");
-            introduction = introCleantext;
-            introductionHTML = introCleanDom;
-        }
+        const [introduction, introductionHTML, introCleanimages] = common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         const coverUrl = document.querySelector("#fmimg > img")
             .src;
@@ -29149,6 +29000,140 @@ class xkzw {
     }
 }
 exports.xkzw = xkzw;
+
+
+/***/ }),
+
+/***/ 889:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.yibige = void 0;
+const main_1 = __webpack_require__(519);
+const lib_1 = __webpack_require__(563);
+const common_1 = __webpack_require__(352);
+class yibige {
+    constructor() {
+        this.imageMode = "TM";
+    }
+    async bookParse(chapterParse) {
+        var _a;
+        const bookUrl = (document.querySelector("#list_hb > li:nth-child(2) > a:nth-child(1)")).href;
+        const doc = await lib_1.getHtmlDOM(bookUrl, undefined);
+        const bookname = (doc.querySelector(".title > h1:nth-child(1)")).innerText.trim();
+        const author = (doc.querySelector("div.xsxq_2:nth-child(2) > a:nth-child(1)")).innerText.trim();
+        const introDom = document.createElement("p");
+        const _introDom = doc.querySelector(".nr");
+        for (const node of Array.from(_introDom.childNodes)) {
+            if (node.nodeName.toLowerCase() === "#text" &&
+                ((_a = node.textContent) === null || _a === void 0 ? void 0 : _a.trim()) === "相关：") {
+                break;
+            }
+            introDom.appendChild(node.cloneNode());
+        }
+        const [introduction, introductionHTML, introCleanimages] = common_1.introDomHandle(introDom);
+        const additionalMetadate = {};
+        const coverUrl = (doc.querySelector(".limg > img:nth-child(1)")).src;
+        additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
+        additionalMetadate.cover.init();
+        const chapters = [];
+        const dl = document.querySelector(".books_li");
+        if (dl === null || dl === void 0 ? void 0 : dl.childElementCount) {
+            const dlc = Array.from(dl.children);
+            if (dlc[0].nodeName === "DT" &&
+                dlc[0].innerText.includes("最新12章节")) {
+                for (let i = 0; i < (dl === null || dl === void 0 ? void 0 : dl.childElementCount); i++) {
+                    if (i !== 0 && dlc[i].nodeName === "DT") {
+                        delete dlc[0];
+                        break;
+                    }
+                    delete dlc[i];
+                }
+            }
+            const chapterList = dlc.filter((obj) => obj !== undefined && obj.getAttribute("style") === null);
+            let chapterNumber = 0;
+            let sectionNumber = 0;
+            let sectionName = null;
+            let sectionChapterNumber = 0;
+            for (let i = 0; i < chapterList.length; i++) {
+                const node = chapterList[i];
+                if (node.nodeName === "DT") {
+                    sectionNumber++;
+                    sectionChapterNumber = 0;
+                    sectionName = node.innerText.replace(`《${bookname}》`, "").trim();
+                }
+                else if (node.nodeName === "DD") {
+                    if (node.childElementCount === 0) {
+                        continue;
+                    }
+                    chapterNumber++;
+                    sectionChapterNumber++;
+                    const a = node.firstElementChild;
+                    const chapterName = a.innerText;
+                    const chapterUrl = a.href;
+                    const isVIP = false;
+                    const isPaid = false;
+                    const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, chapterParse, "UTF-8", { bookname: bookname });
+                    chapters.push(chapter);
+                }
+            }
+        }
+        return {
+            bookUrl: bookUrl,
+            bookname: bookname,
+            author: author,
+            introduction: introduction,
+            introductionHTML: introductionHTML,
+            additionalMetadate: additionalMetadate,
+            chapters: chapters,
+        };
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+        lib_1.console_debug(`[Chapter]请求 ${chapterUrl}`);
+        let nowUrl = chapterUrl;
+        let doc = await lib_1.getHtmlDOM(chapterUrl, charset);
+        const content = document.createElement("div");
+        let flag = false;
+        do {
+            const _content = doc.querySelector("#fontsize");
+            lib_1.rm("div", true, _content);
+            lib_1.rm("script", true, _content);
+            _content.innerHTML = _content.innerHTML.replace(new RegExp("测试广告1", "g"), "");
+            for (const _c of Array.from(_content.childNodes)) {
+                content.appendChild(_c);
+            }
+            const nextLink = (doc.querySelector(".nr_fy > a:nth-child(4)")).href;
+            if (new URL(nextLink).pathname.includes("_")) {
+                if (nextLink !== nowUrl) {
+                    flag = true;
+                }
+                else {
+                    console.error("网站页面出错，URL： " + nowUrl);
+                    flag = false;
+                }
+            }
+            else {
+                flag = false;
+            }
+            if (flag) {
+                lib_1.console_debug(`[Chapter]请求 ${nextLink}`);
+                nowUrl = nextLink;
+                doc = await lib_1.getHtmlDOM(nextLink, charset);
+            }
+        } while (flag);
+        let { dom, text, images } = lib_1.cleanDOM(content, "TM");
+        return {
+            chapterName: chapterName,
+            contentRaw: content,
+            contentText: text,
+            contentHTML: dom,
+            contentImages: images,
+            additionalMetadate: null,
+        };
+    }
+}
+exports.yibige = yibige;
 
 
 /***/ }),
@@ -29456,6 +29441,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.zongheng = void 0;
 const main_1 = __webpack_require__(519);
 const lib_1 = __webpack_require__(563);
+const common_1 = __webpack_require__(352);
 class zongheng {
     constructor() {
         this.imageMode = "TM";
@@ -29466,18 +29452,8 @@ class zongheng {
         const bookname = (document.querySelector("div.book-meta > h1")).innerText.trim();
         const author = (document.querySelector("div.book-meta > p > span:nth-child(1) > a")).innerText.trim();
         const doc = await lib_1.getHtmlDOM(bookUrl, undefined);
-        let introduction;
-        let introductionHTML;
         const introDom = doc.querySelector("div.book-info > div.book-dec");
-        if (introDom === null) {
-            introduction = null;
-            introductionHTML = null;
-        }
-        else {
-            let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "TM");
-            introduction = introCleantext;
-            introductionHTML = introCleanDom;
-        }
+        const [introduction, introductionHTML, introCleanimages] = common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         let coverUrl = doc.querySelector("div.book-img > img")
             .src;
