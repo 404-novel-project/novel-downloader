@@ -338,6 +338,10 @@ export class gongzicp implements ruleClass {
         const isVIP = chapterObj.pay;
         const isPaid = chapterObj.is_sub;
         sectionChapterNumber++;
+        const chapterOption = {
+          novel_id: data.novelInfo.novel_id,
+          chapter_id: chapterObj.id,
+        };
         const chapter = new Chapter(
           bookUrl,
           bookname,
@@ -351,7 +355,7 @@ export class gongzicp implements ruleClass {
           sectionChapterNumber,
           chapterParse,
           "UTF-8",
-          {}
+          chapterOption
         );
         if (isVIP && !(logined && chapter.isPaid)) {
           chapter.status = Status.aborted;
@@ -378,6 +382,10 @@ export class gongzicp implements ruleClass {
     charset: string,
     options: object
   ) {
+    interface chapterOption {
+      novel_id: number;
+      chapter_id: number;
+    }
     function cpDecrypt(content_orig: string) {
       const setIv = (key: string) => {
         key = key + parseInt("165455", 14).toString(32);
@@ -535,22 +543,34 @@ export class gongzicp implements ruleClass {
     }
 
     async function getChapter(): Promise<chapterParseObject> {
-      const _cid = chapterUrl
-        .split("/")
-        .slice(-1)[0]
-        .match(/read-(\d+).html/);
-      if (_cid?.length === 2) {
-        const cid = _cid[1];
-        const chapterGetInfoBaseUrl =
-          "https://www.gongzicp.com/webapi/novel/chapterGetInfo";
-        const chapterGetInfoUrl = new URL(chapterGetInfoBaseUrl);
-        chapterGetInfoUrl.searchParams.set("cid", cid);
-        chapterGetInfoUrl.searchParams.set("nid", "0");
+      const nid = (<chapterOption>options).novel_id;
+      const cid = (<chapterOption>options).chapter_id;
+      const chapterGetInfoBaseUrl =
+        "https://www.gongzicp.com/webapi/novel/chapterGetInfo";
+      const chapterGetInfoUrl = new URL(chapterGetInfoBaseUrl);
+      chapterGetInfoUrl.searchParams.set("cid", cid.toString());
+      chapterGetInfoUrl.searchParams.set("nid", nid.toString());
 
-        console_debug(
-          `请求地址: ${chapterGetInfoUrl.toString()}, Referrer: ${chapterUrl}`
-        );
-        const result: chapterInfo = await fetch(chapterGetInfoUrl.toString(), {
+      console_debug(
+        `请求地址: ${chapterGetInfoUrl.toString()}, Referrer: ${chapterUrl}`
+      );
+      const result: chapterInfo = await fetch(chapterGetInfoUrl.toString(), {
+        credentials: "include",
+        headers: {
+          Accept: "application/json, text/plain, */*",
+          Client: "pc",
+          Lang: "cn",
+          "Content-Type": "application/json;charset=utf-8",
+        },
+        referrer: chapterUrl,
+        method: "GET",
+        mode: "cors",
+      }).then((resp) => resp.json());
+
+      // 获取章节评论，可能与反爬相关，冗余请求
+      await fetch(
+        `https://www.gongzicp.com/webapi/comment/getList?module=chapter&cid=${cid.toString()}&gift=0&page=1`,
+        {
           credentials: "include",
           headers: {
             Accept: "application/json, text/plain, */*",
@@ -561,42 +581,62 @@ export class gongzicp implements ruleClass {
           referrer: chapterUrl,
           method: "GET",
           mode: "cors",
-        }).then((resp) => resp.json());
-        if (result.code === 200) {
-          const chapterInfo = result.data.chapterInfo;
-          // 从目录获取章节名
-          // const chapterName = chapterInfo.name;
-          if (
-            chapterInfo.chapterPrice !== 0 &&
-            chapterInfo.content.length === 0
-          ) {
-            // VIP章节未购买
-            return {
-              chapterName: chapterName,
-              contentRaw: null,
-              contentText: null,
-              contentHTML: null,
-              contentImages: null,
-              additionalMetadate: null,
-            };
-          } else if (
-            chapterInfo.chapterPrice === 0 ||
-            (chapterInfo.chapterPrice !== 0 && chapterInfo.content.length !== 0)
-          ) {
-            const content = cpDecrypt(chapterInfo.content);
-            const contentRaw = document.createElement("pre");
-            contentRaw.innerHTML = content;
+        }
+      );
+      if (result.code === 200) {
+        const chapterInfo = result.data.chapterInfo;
+        // 从目录获取章节名
+        // const chapterName = chapterInfo.name;
+        if (
+          chapterInfo.chapterPrice !== 0 &&
+          chapterInfo.content.length === 0
+        ) {
+          // VIP章节未购买
+          return {
+            chapterName: chapterName,
+            contentRaw: null,
+            contentText: null,
+            contentHTML: null,
+            contentImages: null,
+            additionalMetadate: null,
+          };
+        } else if (
+          chapterInfo.chapterPrice === 0 ||
+          (chapterInfo.chapterPrice !== 0 && chapterInfo.content.length !== 0)
+        ) {
+          const content = cpDecrypt(chapterInfo.content);
+          const contentRaw = document.createElement("pre");
+          contentRaw.innerHTML = content;
 
-            let contentText = content
-              .split("\n")
-              .map((p) => p.trim())
-              .join("\n\n");
+          let contentText = content
+            .split("\n")
+            .map((p) => p.trim())
+            .join("\n\n");
 
-            let contentHTML;
-            const _contentHTML = document.createElement("div");
-            _contentHTML.innerHTML = content
+          let contentHTML;
+          const _contentHTML = document.createElement("div");
+          _contentHTML.innerHTML = content
+            .split("\n")
+            .map((p) => p.trim())
+            .map((p) => {
+              if (p.length === 0) {
+                return "<p><br/></p>";
+              } else {
+                return `<p>${p}</p>`;
+              }
+            })
+            .join("\n");
+
+          if (chapterInfo.postscript.length === 0) {
+            contentHTML = _contentHTML;
+          } else {
+            contentHTML = document.createElement("div");
+            contentHTML.className = "main";
+
+            const hr = document.createElement("hr");
+            const authorSayDom = document.createElement("div");
+            authorSayDom.innerHTML = chapterInfo.postscript
               .split("\n")
-              .map((p) => p.trim())
               .map((p) => {
                 if (p.length === 0) {
                   return "<p><br/></p>";
@@ -606,49 +646,29 @@ export class gongzicp implements ruleClass {
               })
               .join("\n");
 
-            if (chapterInfo.postscript.length === 0) {
-              contentHTML = _contentHTML;
-            } else {
-              contentHTML = document.createElement("div");
-              contentHTML.className = "main";
+            contentHTML.appendChild(_contentHTML);
+            contentHTML.appendChild(hr);
+            contentHTML.appendChild(authorSayDom);
 
-              const hr = document.createElement("hr");
-              const authorSayDom = document.createElement("div");
-              authorSayDom.innerHTML = chapterInfo.postscript
-                .split("\n")
-                .map((p) => {
-                  if (p.length === 0) {
-                    return "<p><br/></p>";
-                  } else {
-                    return `<p>${p}</p>`;
-                  }
-                })
-                .join("\n");
-
-              contentHTML.appendChild(_contentHTML);
-              contentHTML.appendChild(hr);
-              contentHTML.appendChild(authorSayDom);
-
-              contentRaw.innerHTML = [
-                contentRaw.innerHTML,
-                "-".repeat(20),
-                chapterInfo.postscript,
-              ].join("\n\n");
-              contentText = [
-                contentText,
-                "-".repeat(20),
-                chapterInfo.postscript,
-              ].join("\n\n");
-            }
-            return {
-              chapterName: chapterName,
-              contentRaw: contentRaw,
-              contentText: contentText,
-              contentHTML: contentHTML,
-              contentImages: null,
-              additionalMetadate: null,
-            };
+            contentRaw.innerHTML = [
+              contentRaw.innerHTML,
+              "-".repeat(20),
+              chapterInfo.postscript,
+            ].join("\n\n");
+            contentText = [
+              contentText,
+              "-".repeat(20),
+              chapterInfo.postscript,
+            ].join("\n\n");
           }
+          return {
+            chapterName: chapterName,
+            contentRaw: contentRaw,
+            contentText: contentText,
+            contentHTML: contentHTML,
+            contentImages: null,
+            additionalMetadate: null,
+          };
         }
       }
 
@@ -661,14 +681,16 @@ export class gongzicp implements ruleClass {
         additionalMetadate: null,
       };
     }
+    async function antiAntiCrawler() {
+      // 随机休眠7-11秒，反反爬
+      await sleep(7000 + Math.round(Math.random() * 4000));
+    }
     async function publicChapter(): Promise<chapterParseObject> {
-      // 随机休眠3-6秒，反反爬
-      await sleep(3000 + Math.round(Math.random() * 3000));
+      await antiAntiCrawler();
       return getChapter();
     }
     async function vipChapter(): Promise<chapterParseObject> {
-      // 随机休眠3-6秒，反反爬
-      await sleep(3000 + Math.round(Math.random() * 3000));
+      await antiAntiCrawler();
       return getChapter();
     }
 
