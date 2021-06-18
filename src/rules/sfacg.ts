@@ -6,6 +6,7 @@ import {
 } from "../main";
 import { getHtmlDOM, cleanDOM, console_debug, rm } from "../lib";
 import { ruleClass, chapterParseObject, retryLimit } from "../rules";
+import { introDomHandle } from "./lib/common";
 
 export class sfacg implements ruleClass {
   public imageMode: "naive" | "TM";
@@ -22,25 +23,14 @@ export class sfacg implements ruleClass {
       document.querySelector("h1.story-title")
     )).innerText.trim();
 
-    let introduction: string | null;
-    let introductionHTML: HTMLElement | null;
     const dom = await getHtmlDOM(bookUrl, undefined);
     const author = (<HTMLElement>(
       dom.querySelector(".author-name")
     )).innerText.trim();
     const introDom = dom.querySelector(".introduce");
-    if (introDom === null) {
-      introduction = null;
-      introductionHTML = null;
-    } else {
-      let {
-        dom: introCleanDom,
-        text: introCleantext,
-        images: introCleanimages,
-      } = cleanDOM(introDom, "TM");
-      introduction = introCleantext;
-      introductionHTML = introCleanDom;
-    }
+    const [introduction, introductionHTML, introCleanimages] = introDomHandle(
+      introDom
+    );
 
     const additionalMetadate: BookAdditionalMetadate = {};
     let coverUrl = (<HTMLImageElement>(

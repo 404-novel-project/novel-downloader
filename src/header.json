@@ -68,12 +68,12 @@
     "*://www.dmzj1.com/info/*.html",
     "*://www.westnovel.com/*/*/",
     "*://www.mht.tw/*/",
-    "*://www.01bzw.org/*_*/",
     "*://www.dierbanzhu1.com/*_*/",
     "*://www.xbiquge.so/book/*/",
     "*://www.hongyeshuzhai.com/shuzhai/*/",
     "*://www.linovelib.com/novel/*/catalog",
-    "*://www.luoqiuzw.com/book/*/"
+    "*://www.luoqiuzw.com/book/*/",
+    "*://www.yibige.la/*/"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",

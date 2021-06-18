@@ -1,11 +1,7 @@
-import {
-  BookAdditionalMetadate,
-  attachmentClass,
-  Chapter,
-  Book,
-} from "../main";
+import { BookAdditionalMetadate, attachmentClass, Chapter } from "../main";
 import { ruleClass, bookParseObject, chapterParseObject } from "../rules";
 import { getHtmlDOM, cleanDOM, rm } from "../lib";
+import { introDomHandle } from "./lib/common";
 
 export async function bookParseTemp({
   bookUrl,
@@ -28,21 +24,9 @@ export async function bookParseTemp({
   charset: string;
   chapterParse: ruleClass["chapterParse"];
 }): Promise<bookParseObject> {
-  let introduction: string | null;
-  let introductionHTML: HTMLElement | null;
-  if (introDom === null) {
-    introduction = null;
-    introductionHTML = null;
-  } else {
-    introDom = introDomPatch(introDom);
-    let {
-      dom: introCleanDom,
-      text: introCleantext,
-      images: introCleanimages,
-    } = cleanDOM(introDom, "TM");
-    introduction = introCleantext;
-    introductionHTML = introCleanDom;
-  }
+  const [introduction, introductionHTML, introCleanimages] = introDomHandle(
+    introDom
+  );
 
   const additionalMetadate: BookAdditionalMetadate = {};
   additionalMetadate.cover = new attachmentClass(

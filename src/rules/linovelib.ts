@@ -6,7 +6,7 @@ import {
 } from "../main";
 import { getHtmlDOM, cleanDOM, rm, console_debug } from "../lib";
 import { ruleClass } from "../rules";
-
+import { introDomHandle } from "./lib/common";
 export class linovelib implements ruleClass {
   public imageMode: "naive" | "TM";
 
@@ -26,22 +26,11 @@ export class linovelib implements ruleClass {
       )
     )).innerText.trim();
 
-    let introduction: string | null;
-    let introductionHTML: HTMLElement | null;
     const doc = await getHtmlDOM(bookUrl, undefined);
     const introDom = doc.querySelector(".book-dec > p:nth-child(1)");
-    if (introDom === null) {
-      introduction = null;
-      introductionHTML = null;
-    } else {
-      let {
-        dom: introCleanDom,
-        text: introCleantext,
-        images: introCleanimages,
-      } = cleanDOM(introDom, "TM");
-      introduction = introCleantext;
-      introductionHTML = introCleanDom;
-    }
+    const [introduction, introductionHTML, introCleanimages] = introDomHandle(
+      introDom
+    );
 
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = (<HTMLImageElement>doc.querySelector(".book-img > img"))

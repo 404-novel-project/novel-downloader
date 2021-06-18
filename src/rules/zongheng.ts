@@ -6,6 +6,7 @@ import {
 } from "../main";
 import { getHtmlDOM, ggetHtmlDOM, cleanDOM } from "../lib";
 import { ruleClass, chapterParseObject } from "../rules";
+import { introDomHandle } from "./lib/common";
 
 export class zongheng implements ruleClass {
   public imageMode: "naive" | "TM";
@@ -27,21 +28,10 @@ export class zongheng implements ruleClass {
     )).innerText.trim();
 
     const doc = await getHtmlDOM(bookUrl, undefined);
-    let introduction: string | null;
-    let introductionHTML: HTMLElement | null;
     const introDom = doc.querySelector("div.book-info > div.book-dec");
-    if (introDom === null) {
-      introduction = null;
-      introductionHTML = null;
-    } else {
-      let {
-        dom: introCleanDom,
-        text: introCleantext,
-        images: introCleanimages,
-      } = cleanDOM(introDom, "TM");
-      introduction = introCleantext;
-      introductionHTML = introCleanDom;
-    }
+    const [introduction, introductionHTML, introCleanimages] = introDomHandle(
+      introDom
+    );
 
     const additionalMetadate: BookAdditionalMetadate = {};
     let coverUrl = (<HTMLImageElement>doc.querySelector("div.book-img > img"))

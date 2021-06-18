@@ -1,6 +1,7 @@
 import { BookAdditionalMetadate, attachmentClass, Chapter } from "../main";
 import { ruleClass } from "../rules";
 import { getHtmlDOM, cleanDOM, console_debug } from "../lib";
+import { introDomHandle } from "./lib/common";
 
 export class c226ks implements ruleClass {
   public imageMode: "naive" | "TM";
@@ -23,21 +24,10 @@ export class c226ks implements ruleClass {
       .replace(/作(\s+)?者[：:]/, "")
       .trim();
 
-    let introduction: string | null;
-    let introductionHTML: HTMLElement | null;
     const introDom = <HTMLElement>document.querySelector(".desc");
-    if (introDom === null) {
-      introduction = null;
-      introductionHTML = null;
-    } else {
-      let {
-        dom: introCleanDom,
-        text: introCleantext,
-        images: introCleanimages,
-      } = cleanDOM(introDom, "TM");
-      introduction = introCleantext;
-      introductionHTML = introCleanDom;
-    }
+    const [introduction, introductionHTML, introCleanimages] = introDomHandle(
+      introDom
+    );
 
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = (<HTMLImageElement>document.querySelector(".imgbox > img"))

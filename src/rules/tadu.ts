@@ -6,7 +6,7 @@ import {
 } from "../main";
 import { ruleClass, chapterParseObject } from "../rules";
 import { getHtmlDOM, cleanDOM, console_debug, gfetch } from "../lib";
-
+import { introDomHandle } from "./lib/common";
 export class tadu implements ruleClass {
   public imageMode: "naive" | "TM";
   public concurrencyLimit: number;
@@ -28,24 +28,13 @@ export class tadu implements ruleClass {
       .replace("作者：", "")
       .trim();
 
-    let introduction: string | null;
-    let introductionHTML: HTMLElement | null;
     const doc = await getHtmlDOM(bookUrl, undefined);
     const introDom = <HTMLElement>(
       doc.querySelector("div.boxCenter.bookIntro > div > p:nth-child(4)")
     );
-    if (introDom === null) {
-      introduction = null;
-      introductionHTML = null;
-    } else {
-      let {
-        dom: introCleanDom,
-        text: introCleantext,
-        images: introCleanimages,
-      } = cleanDOM(introDom, "TM");
-      introduction = introCleantext;
-      introductionHTML = introCleanDom;
-    }
+    const [introduction, introductionHTML, introCleanimages] = introDomHandle(
+      introDom
+    );
 
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = (<HTMLImageElement>(

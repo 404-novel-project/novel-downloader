@@ -1,6 +1,7 @@
 import { BookAdditionalMetadate, attachmentClass, Chapter } from "../main";
 import { getHtmlDOM, cleanDOM, rm } from "../lib";
 import { ruleClass } from "../rules";
+import { introDomHandle } from "./lib/common";
 
 export class westnovel implements ruleClass {
   public imageMode: "naive" | "TM";
@@ -21,21 +22,10 @@ export class westnovel implements ruleClass {
       .replace("作者：", "")
       .trim();
 
-    let introduction: string | null;
-    let introductionHTML: HTMLElement | null;
     const introDom = document.querySelector(".intro-p > p:nth-child(1)");
-    if (introDom === null) {
-      introduction = null;
-      introductionHTML = null;
-    } else {
-      let {
-        dom: introCleanDom,
-        text: introCleantext,
-        images: introCleanimages,
-      } = cleanDOM(introDom, "TM");
-      introduction = introCleantext;
-      introductionHTML = introCleanDom;
-    }
+    const [introduction, introductionHTML, introCleanimages] = introDomHandle(
+      introDom
+    );
 
     const additionalMetadate: BookAdditionalMetadate = {};
     let coverUrl = (<HTMLImageElement>document.querySelector(".img-img")).src;

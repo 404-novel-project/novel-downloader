@@ -1,7 +1,7 @@
 import { BookAdditionalMetadate, attachmentClass, Chapter } from "../main";
 import { getHtmlDOM, cleanDOM, rm } from "../lib";
 import { ruleClass } from "../rules";
-
+import { introDomHandle } from "./lib/common";
 export class wenku8 implements ruleClass {
   public imageMode: "naive" | "TM";
   public charset: string;
@@ -21,8 +21,6 @@ export class wenku8 implements ruleClass {
     )).innerText.trim();
 
     const doc = await getHtmlDOM(bookUrl, "GBK");
-    let introduction: string | null;
-    let introductionHTML: HTMLElement | null;
     const author = (<HTMLElement>(
       doc.querySelector(
         "#content > div:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(2) > td:nth-child(2)"
@@ -33,18 +31,9 @@ export class wenku8 implements ruleClass {
     const introDom = doc.querySelector(
       "#content > div:nth-child(1) > table:nth-child(4) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(2) > span:nth-child(11)"
     );
-    if (introDom === null) {
-      introduction = null;
-      introductionHTML = null;
-    } else {
-      let {
-        dom: introCleanDom,
-        text: introCleantext,
-        images: introCleanimages,
-      } = cleanDOM(introDom, "TM");
-      introduction = introCleantext;
-      introductionHTML = introCleanDom;
-    }
+    const [introduction, introductionHTML, introCleanimages] = introDomHandle(
+      introDom
+    );
 
     const additionalMetadate: BookAdditionalMetadate = {};
     let coverUrl = (<HTMLImageElement>(

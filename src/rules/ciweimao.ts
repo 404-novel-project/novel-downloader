@@ -6,6 +6,7 @@ import {
 } from "../main";
 import { getHtmlDOM, cleanDOM, rm, gfetch, console_debug } from "../lib";
 import { ruleClass, chapterParseObject } from "../rules";
+import { introDomHandle } from "./lib/common";
 
 namespace ciweimao {
   export interface ciweimaoWindow extends unsafeWindow {
@@ -33,22 +34,11 @@ export class ciweimao implements ruleClass {
       document.querySelector(".book-catalog .hd > p > a")
     )).innerText.trim();
 
-    let introduction: string | null;
-    let introductionHTML: HTMLElement | null;
     const dom = await getHtmlDOM(bookUrl, undefined);
     const introDom = dom.querySelector(".book-intro-cnt .book-desc");
-    if (introDom === null) {
-      introduction = null;
-      introductionHTML = null;
-    } else {
-      let {
-        dom: introCleanDom,
-        text: introCleantext,
-        images: introCleanimages,
-      } = cleanDOM(introDom, "TM");
-      introduction = introCleantext;
-      introductionHTML = introCleanDom;
-    }
+    const [introduction, introductionHTML, introCleanimages] = introDomHandle(
+      introDom
+    );
 
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = (<HTMLImageElement>dom.querySelector(".cover > img")).src;

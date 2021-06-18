@@ -6,7 +6,7 @@ import {
 } from "../main";
 import { ggetHtmlDOM, cleanDOM, sleep, rm } from "../lib";
 import { ruleClass, chapterParseObject } from "../rules";
-
+import { introDomHandle } from "./lib/common";
 export class shuhai implements ruleClass {
   public imageMode: "naive" | "TM";
   public concurrencyLimit: number;
@@ -24,8 +24,6 @@ export class shuhai implements ruleClass {
       document.querySelector("div.book-info-bookname > span:nth-child(1)")
     )).innerText.trim();
 
-    let introduction: string | null;
-    let introductionHTML: HTMLElement | null;
     const author = (<HTMLElement>(
       document.querySelector("div.book-info-bookname > span:nth-child(2)")
     )).innerText
@@ -34,18 +32,9 @@ export class shuhai implements ruleClass {
     const introDom =
       document.querySelector("div.book-info-bookintro") ||
       document.querySelector("div.book-info-bookintro-all");
-    if (introDom === null) {
-      introduction = null;
-      introductionHTML = null;
-    } else {
-      let {
-        dom: introCleanDom,
-        text: introCleantext,
-        images: introCleanimages,
-      } = cleanDOM(introDom, "TM");
-      introduction = introCleantext;
-      introductionHTML = introCleanDom;
-    }
+    const [introduction, introductionHTML, introCleanimages] = introDomHandle(
+      introDom
+    );
 
     const additionalMetadate: BookAdditionalMetadate = {};
     let coverUrl = (<HTMLImageElement>(

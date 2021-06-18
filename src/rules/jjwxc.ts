@@ -16,6 +16,7 @@ import {
 } from "../lib";
 import { ruleClass, chapterParseObject, retryLimit } from "../rules";
 import { replaceJjwxcCharacter } from "./lib/jjwxcFontDecode";
+import { introDomHandle } from "./lib/common";
 
 export class jjwxc implements ruleClass {
   public imageMode: "naive" | "TM";
@@ -36,28 +37,17 @@ export class jjwxc implements ruleClass {
 
     const additionalMetadate: BookAdditionalMetadate = {};
 
-    let introduction: string | null;
-    let introductionHTML: HTMLElement | null;
     const author = (<HTMLElement>(
       document.querySelector("td.sptd h2 a span")
     )).innerText
       .replace(/作\s+者:/, "")
       .trim();
     const introDom = document.querySelector("#novelintro");
-    if (introDom === null) {
-      introduction = null;
-      introductionHTML = null;
-    } else {
-      let {
-        dom: introCleanDom,
-        text: introCleantext,
-        images: introCleanimages,
-      } = cleanDOM(introDom, "TM");
-      introduction = introCleantext;
-      introductionHTML = introCleanDom;
-      if (introCleanimages) {
-        additionalMetadate.attachments = [...introCleanimages];
-      }
+    const [introduction, introductionHTML, introCleanimages] = introDomHandle(
+      introDom
+    );
+    if (introCleanimages) {
+      additionalMetadate.attachments = [...introCleanimages];
     }
 
     let coverUrl = (<HTMLImageElement>(

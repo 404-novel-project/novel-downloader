@@ -6,6 +6,7 @@ import {
 } from "../main";
 import { getHtmlDOM, cleanDOM } from "../lib";
 import { ruleClass, chapterParseObject } from "../rules";
+import { introDomHandle } from "./lib/common";
 
 export class linovel implements ruleClass {
   public imageMode: "naive" | "TM";
@@ -26,21 +27,10 @@ export class linovel implements ruleClass {
       document.querySelector(".author-frame > .novelist > div:nth-child(3) > a")
     )).innerText.trim();
 
-    let introduction: string | null;
-    let introductionHTML: HTMLElement | null;
     const introDom = document.querySelector(".about-text");
-    if (introDom === null) {
-      introduction = null;
-      introductionHTML = null;
-    } else {
-      let {
-        dom: introCleanDom,
-        text: introCleantext,
-        images: introCleanimages,
-      } = cleanDOM(introDom, "TM");
-      introduction = introCleantext;
-      introductionHTML = introCleanDom;
-    }
+    const [introduction, introductionHTML, introCleanimages] = introDomHandle(
+      introDom
+    );
 
     const additionalMetadate: BookAdditionalMetadate = {};
     const attachmentsUrlList = []; //书籍元数据附件去重

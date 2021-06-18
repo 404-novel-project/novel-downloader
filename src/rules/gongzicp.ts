@@ -6,6 +6,7 @@ import {
 } from "../main";
 import { cleanDOM, sleep, console_debug } from "../lib";
 import { ruleClass, chapterParseObject } from "../rules";
+import { introDomHandle } from "./lib/common";
 
 export class gongzicp implements ruleClass {
   public imageMode: "naive" | "TM";
@@ -212,17 +213,11 @@ export class gongzicp implements ruleClass {
     const bookname = data.novelInfo.novel_name;
     const author = data.novelInfo.author_nickname;
 
-    let introduction;
-    let introductionHTML;
     const introDom = document.createElement("div");
     introDom.innerHTML = data.novelInfo.novel_info;
-    let {
-      dom: introCleanDom,
-      text: introCleantext,
-      images: introCleanimages,
-    } = cleanDOM(introDom, "TM");
-    introduction = introCleantext;
-    introductionHTML = introCleanDom;
+    const [introduction, introductionHTML, introCleanimages] = introDomHandle(
+      introDom
+    );
 
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = data.novelInfo.novel_cover;

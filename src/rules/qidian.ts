@@ -6,6 +6,7 @@ import {
 } from "../main";
 import { ggetHtmlDOM, cleanDOM, sleep, gfetch, console_debug } from "../lib";
 import { ruleClass, chapterParseObject } from "../rules";
+import { introDomHandle } from "./lib/common";
 
 export class qidian implements ruleClass {
   public imageMode: "naive" | "TM";
@@ -22,26 +23,15 @@ export class qidian implements ruleClass {
       document.querySelector(".book-info > h1 > em")
     )).innerText.trim();
 
-    let introduction: string | null;
-    let introductionHTML: HTMLElement | null;
     const author = (<HTMLElement>(
       document.querySelector(".book-info .writer")
     )).innerText
       .replace(/作\s+者:/, "")
       .trim();
     const introDom = document.querySelector(".book-info-detail .book-intro");
-    if (introDom === null) {
-      introduction = null;
-      introductionHTML = null;
-    } else {
-      let {
-        dom: introCleanDom,
-        text: introCleantext,
-        images: introCleanimages,
-      } = cleanDOM(introDom, "TM");
-      introduction = introCleantext;
-      introductionHTML = introCleanDom;
-    }
+    const [introduction, introductionHTML, introCleanimages] = introDomHandle(
+      introDom
+    );
 
     const additionalMetadate: BookAdditionalMetadate = {};
     let coverUrl = (<HTMLImageElement>document.querySelector("#bookImg > img"))
