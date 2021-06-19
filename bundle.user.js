@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        3.6.7.1624113340012
+// @version        3.6.7.1624126249687
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -3612,6 +3612,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.gongzicp = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const lib_1 = __webpack_require__("./src/lib.ts");
+const rules_1 = __webpack_require__("./src/rules.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 const log_1 = __webpack_require__("./src/log.ts");
 class gongzicp {
@@ -3760,6 +3761,29 @@ class gongzicp {
             const content = decrypt(content_orig, key, cfg);
             return content;
         }
+        function randomWalker() {
+            log_1.log.info("[chapter]随机翻页中……");
+            if (document.location.pathname.includes("novel")) {
+                (document.querySelector(".chapter-list > .chapter > a")).click();
+            }
+            if (document.location.pathname.includes("read")) {
+                const rightMenu = document.querySelector(".right-menu");
+                if (rightMenu?.childElementCount === 6) {
+                    (document.querySelector(".right-menu > div:nth-child(3) > a:nth-child(1)")).click();
+                }
+                else if (rightMenu?.childElementCount === 7) {
+                    if (document.querySelector("div.content.unpaid")) {
+                        (document.querySelector(".right-menu > div:nth-child(3) > a:nth-child(1)")).click();
+                    }
+                    else if (Math.random() < 0.3) {
+                        (document.querySelector(".right-menu > div:nth-child(3) > a:nth-child(1)")).click();
+                    }
+                    else {
+                        (document.querySelector(".right-menu > div:nth-child(4) > a:nth-child(1)")).click();
+                    }
+                }
+            }
+        }
         async function getChapter() {
             const nid = options.novel_id;
             const cid = options.chapter_id;
@@ -3767,31 +3791,43 @@ class gongzicp {
             const chapterGetInfoUrl = new URL(chapterGetInfoBaseUrl);
             chapterGetInfoUrl.searchParams.set("cid", cid.toString());
             chapterGetInfoUrl.searchParams.set("nid", nid.toString());
-            log_1.log.debug(`请求地址: ${chapterGetInfoUrl.toString()}, Referrer: ${chapterUrl}`);
-            const result = await fetch(chapterGetInfoUrl.toString(), {
-                credentials: "include",
-                headers: {
-                    Accept: "application/json, text/plain, */*",
-                    Client: "pc",
-                    Lang: "cn",
-                    "Content-Type": "application/json;charset=utf-8",
-                },
-                referrer: chapterUrl,
-                method: "GET",
-                mode: "cors",
-            }).then((resp) => resp.json());
-            await fetch(`https://www.gongzicp.com/webapi/comment/getList?module=chapter&cid=${cid.toString()}&gift=0&page=1`, {
-                credentials: "include",
-                headers: {
-                    Accept: "application/json, text/plain, */*",
-                    Client: "pc",
-                    Lang: "cn",
-                    "Content-Type": "application/json;charset=utf-8",
-                },
-                referrer: chapterUrl,
-                method: "GET",
-                mode: "cors",
-            });
+            let retryTime = 0;
+            async function getChapterInfo(url) {
+                log_1.log.debug(`请求地址: ${url}, Referrer: ${chapterUrl}，retryTime：${retryTime}`);
+                const result = await fetch(url, {
+                    credentials: "include",
+                    headers: {
+                        Accept: "application/json, text/plain, */*",
+                        Client: "pc",
+                        Lang: "cn",
+                        "Content-Type": "application/json;charset=utf-8",
+                    },
+                    referrer: chapterUrl,
+                    method: "GET",
+                    mode: "cors",
+                }).then((resp) => resp.json());
+                if (result.data.chapterInfo.content.length !== 0 &&
+                    result.data.chapterInfo.content.length < 30) {
+                    retryTime++;
+                    if (rules_1.retryLimit > rules_1.retryLimit) {
+                        log_1.log.error(`请求 ${url} 失败`);
+                        throw new Error(`请求 ${url} 失败`);
+                    }
+                    log_1.log.warn("[chapter]疑似被阻断，进行随机翻页……");
+                    randomWalker();
+                    await lib_1.sleep(3000);
+                    randomWalker();
+                    await lib_1.sleep(7000);
+                    randomWalker();
+                    await lib_1.sleep(3000);
+                    return getChapterInfo(url);
+                }
+                else {
+                    retryTime = 0;
+                    return result;
+                }
+            }
+            const result = await getChapterInfo(chapterGetInfoUrl.toString());
             if (result.code === 200) {
                 const chapterInfo = result.data.chapterInfo;
                 if (chapterInfo.chapterPrice !== 0 &&
@@ -3881,7 +3917,10 @@ class gongzicp {
             };
         }
         async function antiAntiCrawler() {
-            await lib_1.sleep(7000 + Math.round(Math.random() * 4000));
+            if (Math.random() < 0.2) {
+                randomWalker();
+            }
+            await lib_1.sleep(3000 + Math.round(Math.random() * 4000));
         }
         async function publicChapter() {
             await antiAntiCrawler();
