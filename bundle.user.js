@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        3.6.6.1624100301925
+// @version        3.6.7.1624113340012
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -137,12 +137,293 @@
 // ==/UserScript==
 
 /******/ (() => { // webpackBootstrap
-/******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
+
+/***/ "./node_modules/loglevel/lib/loglevel.js":
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*
+* loglevel - https://github.com/pimterry/loglevel
+*
+* Copyright (c) 2013 Tim Perry
+* Licensed under the MIT license.
+*/
+(function (root, definition) {
+    "use strict";
+    if (true) {
+        !(__WEBPACK_AMD_DEFINE_FACTORY__ = (definition),
+		__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+		(__WEBPACK_AMD_DEFINE_FACTORY__.call(exports, __webpack_require__, exports, module)) :
+		__WEBPACK_AMD_DEFINE_FACTORY__),
+		__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else {}
+}(this, function () {
+    "use strict";
+
+    // Slightly dubious tricks to cut down minimized file size
+    var noop = function() {};
+    var undefinedType = "undefined";
+    var isIE = (typeof window !== undefinedType) && (typeof window.navigator !== undefinedType) && (
+        /Trident\/|MSIE /.test(window.navigator.userAgent)
+    );
+
+    var logMethods = [
+        "trace",
+        "debug",
+        "info",
+        "warn",
+        "error"
+    ];
+
+    // Cross-browser bind equivalent that works at least back to IE6
+    function bindMethod(obj, methodName) {
+        var method = obj[methodName];
+        if (typeof method.bind === 'function') {
+            return method.bind(obj);
+        } else {
+            try {
+                return Function.prototype.bind.call(method, obj);
+            } catch (e) {
+                // Missing bind shim or IE8 + Modernizr, fallback to wrapping
+                return function() {
+                    return Function.prototype.apply.apply(method, [obj, arguments]);
+                };
+            }
+        }
+    }
+
+    // Trace() doesn't print the message in IE, so for that case we need to wrap it
+    function traceForIE() {
+        if (console.log) {
+            if (console.log.apply) {
+                console.log.apply(console, arguments);
+            } else {
+                // In old IE, native console methods themselves don't have apply().
+                Function.prototype.apply.apply(console.log, [console, arguments]);
+            }
+        }
+        if (console.trace) console.trace();
+    }
+
+    // Build the best logging method possible for this env
+    // Wherever possible we want to bind, not wrap, to preserve stack traces
+    function realMethod(methodName) {
+        if (methodName === 'debug') {
+            methodName = 'log';
+        }
+
+        if (typeof console === undefinedType) {
+            return false; // No method possible, for now - fixed later by enableLoggingWhenConsoleArrives
+        } else if (methodName === 'trace' && isIE) {
+            return traceForIE;
+        } else if (console[methodName] !== undefined) {
+            return bindMethod(console, methodName);
+        } else if (console.log !== undefined) {
+            return bindMethod(console, 'log');
+        } else {
+            return noop;
+        }
+    }
+
+    // These private functions always need `this` to be set properly
+
+    function replaceLoggingMethods(level, loggerName) {
+        /*jshint validthis:true */
+        for (var i = 0; i < logMethods.length; i++) {
+            var methodName = logMethods[i];
+            this[methodName] = (i < level) ?
+                noop :
+                this.methodFactory(methodName, level, loggerName);
+        }
+
+        // Define log.log as an alias for log.debug
+        this.log = this.debug;
+    }
+
+    // In old IE versions, the console isn't present until you first open it.
+    // We build realMethod() replacements here that regenerate logging methods
+    function enableLoggingWhenConsoleArrives(methodName, level, loggerName) {
+        return function () {
+            if (typeof console !== undefinedType) {
+                replaceLoggingMethods.call(this, level, loggerName);
+                this[methodName].apply(this, arguments);
+            }
+        };
+    }
+
+    // By default, we use closely bound real methods wherever possible, and
+    // otherwise we wait for a console to appear, and then try again.
+    function defaultMethodFactory(methodName, level, loggerName) {
+        /*jshint validthis:true */
+        return realMethod(methodName) ||
+               enableLoggingWhenConsoleArrives.apply(this, arguments);
+    }
+
+    function Logger(name, defaultLevel, factory) {
+      var self = this;
+      var currentLevel;
+
+      var storageKey = "loglevel";
+      if (typeof name === "string") {
+        storageKey += ":" + name;
+      } else if (typeof name === "symbol") {
+        storageKey = undefined;
+      }
+
+      function persistLevelIfPossible(levelNum) {
+          var levelName = (logMethods[levelNum] || 'silent').toUpperCase();
+
+          if (typeof window === undefinedType || !storageKey) return;
+
+          // Use localStorage if available
+          try {
+              window.localStorage[storageKey] = levelName;
+              return;
+          } catch (ignore) {}
+
+          // Use session cookie as fallback
+          try {
+              window.document.cookie =
+                encodeURIComponent(storageKey) + "=" + levelName + ";";
+          } catch (ignore) {}
+      }
+
+      function getPersistedLevel() {
+          var storedLevel;
+
+          if (typeof window === undefinedType || !storageKey) return;
+
+          try {
+              storedLevel = window.localStorage[storageKey];
+          } catch (ignore) {}
+
+          // Fallback to cookies if local storage gives us nothing
+          if (typeof storedLevel === undefinedType) {
+              try {
+                  var cookie = window.document.cookie;
+                  var location = cookie.indexOf(
+                      encodeURIComponent(storageKey) + "=");
+                  if (location !== -1) {
+                      storedLevel = /^([^;]+)/.exec(cookie.slice(location))[1];
+                  }
+              } catch (ignore) {}
+          }
+
+          // If the stored level is not valid, treat it as if nothing was stored.
+          if (self.levels[storedLevel] === undefined) {
+              storedLevel = undefined;
+          }
+
+          return storedLevel;
+      }
+
+      /*
+       *
+       * Public logger API - see https://github.com/pimterry/loglevel for details
+       *
+       */
+
+      self.name = name;
+
+      self.levels = { "TRACE": 0, "DEBUG": 1, "INFO": 2, "WARN": 3,
+          "ERROR": 4, "SILENT": 5};
+
+      self.methodFactory = factory || defaultMethodFactory;
+
+      self.getLevel = function () {
+          return currentLevel;
+      };
+
+      self.setLevel = function (level, persist) {
+          if (typeof level === "string" && self.levels[level.toUpperCase()] !== undefined) {
+              level = self.levels[level.toUpperCase()];
+          }
+          if (typeof level === "number" && level >= 0 && level <= self.levels.SILENT) {
+              currentLevel = level;
+              if (persist !== false) {  // defaults to true
+                  persistLevelIfPossible(level);
+              }
+              replaceLoggingMethods.call(self, level, name);
+              if (typeof console === undefinedType && level < self.levels.SILENT) {
+                  return "No console available for logging";
+              }
+          } else {
+              throw "log.setLevel() called with invalid level: " + level;
+          }
+      };
+
+      self.setDefaultLevel = function (level) {
+          if (!getPersistedLevel()) {
+              self.setLevel(level, false);
+          }
+      };
+
+      self.enableAll = function(persist) {
+          self.setLevel(self.levels.TRACE, persist);
+      };
+
+      self.disableAll = function(persist) {
+          self.setLevel(self.levels.SILENT, persist);
+      };
+
+      // Initialize with the right level
+      var initialLevel = getPersistedLevel();
+      if (initialLevel == null) {
+          initialLevel = defaultLevel == null ? "WARN" : defaultLevel;
+      }
+      self.setLevel(initialLevel, false);
+    }
+
+    /*
+     *
+     * Top-level API
+     *
+     */
+
+    var defaultLogger = new Logger();
+
+    var _loggersByName = {};
+    defaultLogger.getLogger = function getLogger(name) {
+        if ((typeof name !== "symbol" && typeof name !== "string") || name === "") {
+          throw new TypeError("You must supply a name when creating a logger.");
+        }
+
+        var logger = _loggersByName[name];
+        if (!logger) {
+          logger = _loggersByName[name] = new Logger(
+            name, defaultLogger.getLevel(), defaultLogger.methodFactory);
+        }
+        return logger;
+    };
+
+    // Grab the current global log variable in case of overwrite
+    var _log = (typeof window !== undefinedType) ? window.log : undefined;
+    defaultLogger.noConflict = function() {
+        if (typeof window !== undefinedType &&
+               window.log === defaultLogger) {
+            window.log = _log;
+        }
+
+        return defaultLogger;
+    };
+
+    defaultLogger.getLoggers = function getLoggers() {
+        return _loggersByName;
+    };
+
+    // ES6 default export, for compatibility
+    defaultLogger['default'] = defaultLogger;
+
+    return defaultLogger;
+}));
+
+
+/***/ }),
 
 /***/ "./src/cleanDOM.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.walk = void 0;
@@ -576,6 +857,7 @@ exports.walk = walk;
 /***/ "./src/index.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.audio = exports.attachmentClassCache = exports.catchError = exports.updateProgress = void 0;
@@ -583,9 +865,10 @@ const rules_1 = __webpack_require__("./src/rules.ts");
 const main_1 = __webpack_require__("./src/main.ts");
 const lib_1 = __webpack_require__("./src/lib.ts");
 const index_helper_1 = __webpack_require__("./src/index_helper.ts");
+const log_1 = __webpack_require__("./src/log.ts");
 function printEnvironments() {
     if (lib_1._GM_info) {
-        console.log(`开始载入小说下载器……
+        log_1.log.info(`开始载入小说下载器……
 当前浏览器UA：${navigator.userAgent}
 当前脚本管理器：${lib_1._GM_info.scriptHandler}
 当前脚本管理器版本：${lib_1._GM_info.version}
@@ -593,11 +876,13 @@ function printEnvironments() {
 当前脚本版本：${lib_1._GM_info.script.version}
 当前脚本最后更新时间：${lib_1._GM_info.script.lastModified}
 是否处于隐私模式：${lib_1._GM_info.isIncognito}
-是否启用调试：${rules_1.enaleDebug}`);
+是否启用调试：${rules_1.enaleDebug}
+当前地址：${document.location.href}
+当前时间：${new Date().toISOString()}`);
     }
 }
 async function initBook(rule) {
-    console.log(`[initBook]开始初始化图书`);
+    log_1.log.info(`[initBook]开始初始化图书`);
     const bookParse = rule.bookParse;
     const chapterParse = rule.chapterParse;
     return bookParse(chapterParse).then((obj) => {
@@ -610,7 +895,7 @@ async function initBook(rule) {
     });
 }
 async function initChapters(rule, book) {
-    console.log(`[initChapters]开始初始化章节`);
+    log_1.log.info(`[initChapters]开始初始化章节`);
     let concurrencyLimit = 10;
     if (rule.concurrencyLimit !== undefined) {
         concurrencyLimit = rule.concurrencyLimit;
@@ -619,9 +904,9 @@ async function initChapters(rule, book) {
         typeof unsafeWindow.chapterFilter === "function") {
         let tlog = "[initChapters]发现自定义筛选函数，自定义筛选函数内容如下：\n";
         tlog += unsafeWindow.chapterFilter.toString();
-        console.log(tlog);
+        log_1.log.info(tlog);
     }
-    lib_1.console_debug("[initChapters]筛选需下载章节");
+    log_1.log.debug("[initChapters]筛选需下载章节");
     const chapters = book.chapters.filter((chapter) => {
         const b0 = chapter.status === main_1.Status.pending;
         let b1 = true;
@@ -634,13 +919,13 @@ async function initChapters(rule, book) {
                 }
             }
             catch (error) {
-                console.error("运行自定义筛选函数时出错。", error);
+                log_1.log.error("运行自定义筛选函数时出错。", error);
             }
         }
         return b0 && b1;
     });
     if (chapters.length === 0) {
-        console.error(`[initChapters]初始化章节出错，未找到需初始化章节`);
+        log_1.log.error(`[initChapters]初始化章节出错，未找到需初始化章节`);
         return [];
     }
     totalChapterNumber = chapters.length;
@@ -667,14 +952,14 @@ async function initChapters(rule, book) {
             });
         });
     }
-    console.log(`[initChapters]章节初始化完毕`);
+    log_1.log.info(`[initChapters]章节初始化完毕`);
     return chapters;
 }
 let totalChapterNumber;
 let finishedChapterNumber = 0;
 function updateProgress(finishedChapterNumber, totalChapterNumber, zipPercent) {
     if (!document.querySelector("#nd-progress")) {
-        lib_1.console_debug("[progress]初始化进度条");
+        log_1.log.debug("[progress]初始化进度条");
         let progress = document.createElement("div");
         progress.id = "nd-progress";
         progress.innerHTML = `
@@ -698,15 +983,15 @@ function updateProgress(finishedChapterNumber, totalChapterNumber, zipPercent) {
 }
 exports.updateProgress = updateProgress;
 async function run() {
-    console.log(`[run]下载开始`);
+    log_1.log.info(`[run]下载开始`);
     exports.audio.play();
     const rule = await rules_1.getRule();
-    console.log(`[run]获取规则成功`);
-    lib_1.console_debug("[run]运行前检测");
+    log_1.log.info(`[run]获取规则成功`);
+    log_1.log.debug("[run]运行前检测");
     let maxRunLimit = null;
     let nowRunNumber;
     if (typeof GM_getTab !== "undefined") {
-        console.log(`[run]添加运行标志`);
+        log_1.log.info(`[run]添加运行标志`);
         await index_helper_1.setTabMark();
         nowRunNumber = await index_helper_1.getNowRunNumber();
         if (rule.maxRunLimit !== undefined && nowRunNumber !== undefined) {
@@ -714,31 +999,31 @@ async function run() {
             if (nowRunNumber > maxRunLimit) {
                 const alertText = `当前网站目前已有${nowRunNumber - 1}个下载任务正在运行，当前站点最多允许${maxRunLimit}下载任务同时进行。\n请待其它下载任务完成后，再行尝试。`;
                 alert(alertText);
-                console.log(`[run]${alertText}`);
+                log_1.log.info(`[run]${alertText}`);
                 return;
             }
         }
     }
-    lib_1.console_debug("[run]主体开始");
+    log_1.log.debug("[run]主体开始");
     const book = await initBook(rule);
     await initChapters(rule, book);
-    lib_1.console_debug("[run]保存数据");
+    log_1.log.debug("[run]保存数据");
     if (rules_1.enableCustomSaveOptions &&
         typeof unsafeWindow.saveOptions === "object" &&
         index_helper_1.saveOptionsValidate(unsafeWindow.saveOptions)) {
         const saveOptions = unsafeWindow.saveOptions;
-        console.log("[run]发现自定义保存参数，内容如下\n", saveOptions);
+        log_1.log.info("[run]发现自定义保存参数，内容如下\n", saveOptions);
         index_helper_1.save(book, saveOptions);
     }
     else {
         index_helper_1.save(book, {});
     }
-    lib_1.console_debug("[run]收尾");
+    log_1.log.debug("[run]收尾");
     if (typeof GM_getTab !== "undefined") {
-        console.log(`[run]移除运行标志`);
+        log_1.log.info(`[run]移除运行标志`);
         await index_helper_1.removeTabMark();
     }
-    console.log(`[run]下载完毕`);
+    log_1.log.info(`[run]下载完毕`);
     return book;
 }
 function catchError(error) {
@@ -750,9 +1035,11 @@ function catchError(error) {
     finishedChapterNumber = 0;
     document.querySelector("#nd-progress")?.remove();
     document.getElementById("novel-downloader")?.remove();
-    console.error("运行过程出错，请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/yingziwu/novel-downloader");
-    console.error(error);
+    log_1.log.error("运行过程出错，请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/yingziwu/novel-downloader");
+    log_1.log.error(error);
     exports.audio.pause();
+    alert("运行过程出错，请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/yingziwu/novel-downloader");
+    log_1.saveLogTextToFile();
 }
 exports.catchError = catchError;
 function addButton() {
@@ -802,7 +1089,7 @@ exports.audio = new Audio("data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF
 exports.audio.loop = true;
 window.addEventListener("DOMContentLoaded", () => {
     if (lib_1._GM_info.scriptHandler === "Greasemonkey") {
-        console.error("小说下载器脚本与Greasemonkey脚本管理器不兼容，请改用其它脚本管理器，如：Tampermonkey、Violentmonkey。");
+        log_1.log.error("小说下载器脚本与Greasemonkey脚本管理器不兼容，请改用其它脚本管理器，如：Tampermonkey、Violentmonkey。");
         alert("小说下载器脚本与Greasemonkey脚本管理器不兼容，请改用其它脚本管理器，如：Tampermonkey、Violentmonkey。");
         return;
     }
@@ -825,6 +1112,7 @@ window.addEventListener("DOMContentLoaded", () => {
 /***/ "./src/index_helper.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.r18SiteWarning = exports.removeTabMark = exports.getNowRunNumber = exports.setTabMark = exports.save = exports.saveOptionsValidate = exports.progressStyleText = exports.buttonStyleText = void 0;
@@ -832,6 +1120,7 @@ const main_1 = __webpack_require__("./src/main.ts");
 const lib_1 = __webpack_require__("./src/lib.ts");
 const index_1 = __webpack_require__("./src/index.ts");
 const rules_1 = __webpack_require__("./src/rules.ts");
+const log_1 = __webpack_require__("./src/log.ts");
 exports.buttonStyleText = `position: fixed;
 top: 15%;
 right: 5%;
@@ -1020,31 +1309,31 @@ a.disabled {
                 this.savedTextArray.push(chapterText);
             }
         }
-        console.log("[save]保存TXT文件");
+        log_1.log.info("[save]保存TXT文件");
         const savedText = this.savedTextArray.join("\n");
         saveAs(new Blob([savedText], { type: "text/plain;charset=utf-8" }), `${this.saveFileNameBase}.txt`);
     }
     saveZip() {
-        lib_1.console_debug("[save]保存元数据文本");
+        log_1.log.debug("[save]保存元数据文本");
         const metaDateText = this.genMetaDateTxt();
         this.savedZip.file("info.txt", new Blob([metaDateText], { type: "text/plain;charset=utf-8" }));
-        lib_1.console_debug("[save]保存样式");
+        log_1.log.debug("[save]保存样式");
         this.savedZip.file("style.css", new Blob([this.mainStyleText], { type: "text/css;charset=utf-8" }));
         if (this.book.additionalMetadate.cover) {
-            lib_1.console_debug("[save]保存封面");
+            log_1.log.debug("[save]保存封面");
             this.addImageToZip(this.book.additionalMetadate.cover, this.savedZip);
         }
         if (this.book.additionalMetadate.attachments) {
-            lib_1.console_debug("[save]保存书籍附件");
+            log_1.log.debug("[save]保存书籍附件");
             for (const bookAttachment of this.book.additionalMetadate.attachments) {
                 this.addImageToZip(bookAttachment, this.savedZip);
             }
         }
-        lib_1.console_debug("[save]开始保存章节文件");
+        log_1.log.debug("[save]开始保存章节文件");
         this.saveChapters();
-        lib_1.console_debug("[save]开始生成并保存ToC.html");
+        log_1.log.debug("[save]开始生成并保存ToC.html");
         this.saveToC();
-        console.log("[save]开始保存ZIP文件");
+        log_1.log.info("[save]开始保存ZIP文件");
         this.savedZip
             .generateAsync({
             type: "blob",
@@ -1054,23 +1343,23 @@ a.disabled {
             },
         }, (metadata) => index_1.updateProgress(1, 1, metadata.percent))
             .then((blob) => {
-            lib_1.console_debug("[save]ZIP文件生成完毕，开始保存ZIP文件");
+            log_1.log.debug("[save]ZIP文件生成完毕，开始保存ZIP文件");
             saveAs(blob, `${this.saveFileNameBase}.zip`);
         })
             .then(() => {
-            lib_1.console_debug("[save]保存ZIP文件完毕");
+            log_1.log.debug("[save]保存ZIP文件完毕");
             document.querySelector("#nd-progress")?.remove();
             index_1.audio.pause();
         })
             .catch((err) => {
-            console.error("saveZip: " + err);
+            log_1.log.error("saveZip: " + err);
             index_1.catchError(err);
         });
     }
     saveToC() {
         const ToC = new DOMParser().parseFromString(`<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="https://github.com/yingziwu/novel-downloader"><link href="style.css" type="text/css" rel="stylesheet"/><title>${this.book.bookname}</title></head><body><div class="main"><h1>${this.book.bookname}</h1><h3 class="author">${this.book.author}</h3></div></body></html>`, "text/html");
         const TocMain = ToC.querySelector("div.main");
-        lib_1.console_debug("[save]生成ToC模板");
+        log_1.log.debug("[save]生成ToC模板");
         const infoDom = document.createElement("div");
         infoDom.className = "info";
         if (this.book.additionalMetadate.cover) {
@@ -1113,7 +1402,7 @@ a.disabled {
                 const sectionHtmlId = `section${chapter.sectionNumber}`;
                 if (!sections.includes(chapter.sectionName)) {
                     sections.push(chapter.sectionName);
-                    lib_1.console_debug(`[save]生成卷DOM：${chapter.sectionName}`);
+                    log_1.log.debug(`[save]生成卷DOM：${chapter.sectionName}`);
                     const sectionDiv = document.createElement("div");
                     sectionDiv.id = sectionHtmlId;
                     sectionDiv.className = "section";
@@ -1127,7 +1416,7 @@ a.disabled {
                     }
                     TocMain?.appendChild(sectionDiv);
                 }
-                lib_1.console_debug(`[save]生成章DOM：${chapterName}`);
+                log_1.log.debug(`[save]生成章DOM：${chapterName}`);
                 const sectionDiv = TocMain?.querySelector("#" + sectionHtmlId);
                 const chapterDiv = document.createElement("div");
                 chapterDiv.className = "chapter";
@@ -1162,7 +1451,7 @@ a.disabled {
                 chapterDiv.appendChild(chapterAnchor);
                 sectionDiv?.appendChild(chapterDiv);
             }
-            lib_1.console_debug("[save]保存ToC文件");
+            log_1.log.debug("[save]保存ToC文件");
             this.savedZip.file("ToC.html", new Blob([ToC.documentElement.outerHTML.replaceAll("data-src-address", "src")], {
                 type: "text/html; charset=UTF-8",
             }));
@@ -1178,17 +1467,17 @@ a.disabled {
             if (chapter.sectionName) {
                 if (!sections.includes(chapter.sectionName)) {
                     sections.push(chapter.sectionName);
-                    lib_1.console_debug(`[save]保存卷HTML文件：${chapter.sectionName}`);
+                    log_1.log.debug(`[save]保存卷HTML文件：${chapter.sectionName}`);
                     const sectionHTMLBlob = this.genSectionHtmlFile(chapter.sectionName);
                     this.savedZip.file(`Section${htmlfileNameBase}`, sectionHTMLBlob);
                 }
             }
-            lib_1.console_debug(`[save]保存章HTML文件：${chapterName}`);
+            log_1.log.debug(`[save]保存章HTML文件：${chapterName}`);
             if (chapter.contentHTML) {
                 const chapterHTMLBlob = this.genChapterHtmlFile(chapterName, chapter.contentHTML, chapter.chapterUrl);
                 this.savedZip.file(chapterHtmlFileName, chapterHTMLBlob);
             }
-            lib_1.console_debug(`[save]开始保存章节附件：${chapterName}`);
+            log_1.log.debug(`[save]开始保存章节附件：${chapterName}`);
             if (chapter.contentImages) {
                 for (const attachment of chapter.contentImages) {
                     this.addImageToZip(attachment, this.savedZip);
@@ -1221,12 +1510,12 @@ a.disabled {
     }
     addImageToZip(image, zip) {
         if (image.status === main_1.Status.finished && image.imageBlob) {
-            lib_1.console_debug(`[save]添加附件，文件名：${image.name}，对象`, image.imageBlob);
+            log_1.log.debug(`[save]添加附件，文件名：${image.name}，对象`, image.imageBlob);
             zip.file(image.name, image.imageBlob);
         }
         else {
-            console.error("[save]附件下载失败！");
-            console.error(image);
+            log_1.log.error("[save]附件下载失败！");
+            log_1.log.error(image);
         }
     }
     genSectionText(sectionName) {
@@ -1366,7 +1655,7 @@ function removeTabMark() {
 exports.removeTabMark = removeTabMark;
 function r18SiteWarning() {
     if (!lib_1.storageAvailable("localStorage")) {
-        console.error("Window.localStorage API 失效！");
+        log_1.log.error("Window.localStorage API 失效！");
         return true;
     }
     const k = "novel-download-r18-setting";
@@ -1400,11 +1689,11 @@ exports.r18SiteWarning = r18SiteWarning;
 /***/ "./src/lib.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.storageAvailable = exports.sandboxed = exports.putAttachmentClassCache = exports.getAttachmentClassCache = exports.console_debug = exports.sleep = exports.concurrencyRun = exports.gfetch = exports.rm = exports.ggetHtmlDOM = exports.ggetText = exports.getHtmlDOM = exports.getText = exports.cleanDOM = exports._GM_info = void 0;
+exports.storageAvailable = exports.sandboxed = exports.putAttachmentClassCache = exports.getAttachmentClassCache = exports.sleep = exports.concurrencyRun = exports.gfetch = exports.rm = exports.ggetHtmlDOM = exports.ggetText = exports.getHtmlDOM = exports.getText = exports.cleanDOM = exports._GM_info = void 0;
 const cleanDOM_1 = __webpack_require__("./src/cleanDOM.ts");
-const rules_1 = __webpack_require__("./src/rules.ts");
 const index_1 = __webpack_require__("./src/index.ts");
 if (typeof GM_info === "undefined") {
     if (typeof GM === "undefined") {
@@ -1591,12 +1880,6 @@ function sleep(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
 }
 exports.sleep = sleep;
-function console_debug(...messages) {
-    if (rules_1.enaleDebug) {
-        console.debug(...arguments);
-    }
-}
-exports.console_debug = console_debug;
 function getAttachmentClassCache(url, name) {
     const found = index_1.attachmentClassCache.find((attachmentClass) => attachmentClass.url === url && attachmentClass.name === name);
     return found;
@@ -1642,14 +1925,50 @@ exports.storageAvailable = storageAvailable;
 
 /***/ }),
 
+/***/ "./src/log.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.log = exports.saveLogTextToFile = void 0;
+const rules_1 = __webpack_require__("./src/rules.ts");
+const loglevel_1 = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+exports.log = loglevel_1.default;
+if (rules_1.enaleDebug) {
+    loglevel_1.default.setDefaultLevel("debug");
+}
+else {
+    loglevel_1.default.setDefaultLevel("info");
+}
+let logText = "";
+const originalFactory = loglevel_1.default.methodFactory;
+loglevel_1.default.methodFactory = function (methodName, logLevel, loggerName) {
+    const rawMethod = originalFactory(methodName, logLevel, loggerName);
+    return function (message) {
+        logText += message + "\n";
+        rawMethod(message);
+    };
+};
+loglevel_1.default.setLevel(loglevel_1.default.getLevel());
+function saveLogTextToFile() {
+    saveAs(new Blob([logText], { type: "text/txt; charset=UTF-8" }), `novel-downloader-${Date.now().toString()}.log`);
+}
+exports.saveLogTextToFile = saveLogTextToFile;
+
+
+/***/ }),
+
 /***/ "./src/main.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.attachmentClass = exports.Chapter = exports.Book = exports.Status = void 0;
 const rules_1 = __webpack_require__("./src/rules.ts");
 const lib_1 = __webpack_require__("./src/lib.ts");
+const log_1 = __webpack_require__("./src/log.ts");
 var Status;
 (function (Status) {
     Status[Status["pending"] = 0] = "pending";
@@ -1667,7 +1986,7 @@ class Book {
         this.introductionHTML = introductionHTML;
         this.additionalMetadate = additionalMetadate;
         this.chapters = chapters;
-        lib_1.console_debug("[Book]初始化完成");
+        log_1.log.debug("[Book]初始化完成");
     }
 }
 exports.Book = Book;
@@ -1698,7 +2017,7 @@ class Chapter {
         this.contentHTML = contentHTML;
         this.contentImages = contentImages;
         this.additionalMetadate = additionalMetadate;
-        console.log(`[Chapter]${this.chapterName} 解析完成。`);
+        log_1.log.info(`[Chapter]${this.chapterName} 解析完成。`);
         return obj;
     }
     async parse() {
@@ -1718,14 +2037,14 @@ class Chapter {
         })
             .catch(async (err) => {
             this.retryTime++;
-            console.error(`[Chapter]${this.chapterName}解析出错，第${this.retryTime}次重试，章节地址：${this.chapterUrl}`);
+            log_1.log.error(`[Chapter]${this.chapterName}解析出错，第${this.retryTime}次重试，章节地址：${this.chapterUrl}`);
             if (this.status !== Status.failed && this.retryTime < rules_1.retryLimit) {
                 await lib_1.sleep(this.retryTime * 1500);
                 return this.parse();
             }
             else {
                 this.status = Status.failed;
-                console.error(err);
+                log_1.log.error(err);
                 return {
                     chapterName: this.chapterName,
                     contentRaw: null,
@@ -1757,7 +2076,7 @@ class attachmentClass {
         else {
             this.imageBlob = await this.tmDownloadImage();
         }
-        console.log(`[attachment] ${this.url} 下载完成。`);
+        log_1.log.info(`[attachment] ${this.url} 下载完成。`);
         return this.imageBlob;
     }
     downloadImage() {
@@ -1783,14 +2102,14 @@ class attachmentClass {
         })
             .catch(async (err) => {
             this.retryTime++;
-            console.error(`[attachment]下载 ${this.url} 出错，第${this.retryTime}次重试，下载模式：${this.mode}`);
+            log_1.log.error(`[attachment]下载 ${this.url} 出错，第${this.retryTime}次重试，下载模式：${this.mode}`);
             if (this.status !== Status.failed && this.retryTime < rules_1.retryLimit) {
                 await lib_1.sleep(this.retryTime * 1500);
                 return this.downloadImage();
             }
             else {
                 this.status = Status.failed;
-                console.error(err);
+                log_1.log.error(err);
                 return null;
             }
         });
@@ -1816,14 +2135,14 @@ class attachmentClass {
         })
             .catch(async (err) => {
             this.retryTime++;
-            console.error(`[attachment]下载 ${this.url} 出错，第${this.retryTime}次重试，下载模式：${this.mode}`);
+            log_1.log.error(`[attachment]下载 ${this.url} 出错，第${this.retryTime}次重试，下载模式：${this.mode}`);
             if (this.status !== Status.failed && this.retryTime < rules_1.retryLimit) {
                 await lib_1.sleep(this.retryTime * 1500);
                 return this.tmDownloadImage();
             }
             else {
                 this.status = Status.failed;
-                console.error(err);
+                log_1.log.error(err);
                 return null;
             }
         });
@@ -1837,6 +2156,7 @@ exports.attachmentClass = attachmentClass;
 /***/ "./src/rules.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getRule = exports.r18SiteList = exports.icon1 = exports.icon0 = exports.enableR18SiteWarning = exports.enableCustomSaveOptions = exports.enableCustomChapterFilter = exports.enaleDebug = exports.retryLimit = void 0;
@@ -2084,6 +2404,7 @@ exports.getRule = getRule;
 /***/ "./src/rules/17k.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.c17k = void 0;
@@ -2211,12 +2532,14 @@ exports.c17k = c17k;
 /***/ "./src/rules/226ks.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.c226ks = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const lib_1 = __webpack_require__("./src/lib.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
+const log_1 = __webpack_require__("./src/log.ts");
 class c226ks {
     constructor() {
         this.imageMode = "TM";
@@ -2238,7 +2561,7 @@ class c226ks {
         const indexUrls = Array.from(document.querySelectorAll('[name="pageselect"] > option')).map((opt) => document.location.origin + opt.getAttribute("value"));
         let lis = [];
         for (const indexUrl of indexUrls) {
-            lib_1.console_debug(`[chapter]请求${indexUrl}`);
+            log_1.log.debug(`[chapter]请求${indexUrl}`);
             const dom = await lib_1.getHtmlDOM(indexUrl, "UTF-8");
             const ul = dom.querySelector("div.row.row-section > div > div:nth-child(4) > ul");
             if (ul?.childElementCount) {
@@ -2305,6 +2628,7 @@ exports.c226ks = c226ks;
 /***/ "./src/rules/biquge.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.luoqiuzw = exports.hongyeshuzhai = exports.xbiquge = exports.zwdu = exports.gebiqu = exports.dingdiann = exports.shuquge = exports.biquwo = exports.bookParseTemp = void 0;
@@ -2695,12 +3019,14 @@ exports.luoqiuzw = luoqiuzw;
 /***/ "./src/rules/ciweimao.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.ciweimao = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const lib_1 = __webpack_require__("./src/lib.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
+const log_1 = __webpack_require__("./src/log.ts");
 class ciweimao {
     constructor() {
         this.imageMode = "TM";
@@ -2812,7 +3138,7 @@ class ciweimao {
                 const rootPath = "https://www.ciweimao.com/";
                 const access_key_url = rootPath + "chapter/ajax_get_session_code";
                 const chapter_content_url = rootPath + "chapter/get_book_chapter_detail_info";
-                lib_1.console_debug(`[Chapter]请求 ${access_key_url} Referer ${refererUrl}`);
+                log_1.log.debug(`[Chapter]请求 ${access_key_url} Referer ${refererUrl}`);
                 const access_key_obj = await lib_1.gfetch(access_key_url, {
                     method: "POST",
                     headers: {
@@ -2827,7 +3153,7 @@ class ciweimao {
                 }).then((response) => response.response);
                 const chapter_access_key = access_key_obj
                     .chapter_access_key;
-                lib_1.console_debug(`[Chapter]请求 ${chapter_content_url} Referer ${refererUrl}`);
+                log_1.log.debug(`[Chapter]请求 ${chapter_content_url} Referer ${refererUrl}`);
                 const chapter_content_obj = await lib_1.gfetch(chapter_content_url, {
                     method: "POST",
                     headers: {
@@ -2841,7 +3167,7 @@ class ciweimao {
                     responseType: "json",
                 }).then((response) => response.response);
                 if (chapter_content_obj.code !== 100000) {
-                    console.error(chapter_content_obj);
+                    log_1.log.error(chapter_content_obj);
                     throw new Error(`下载 ${refererUrl} 失败`);
                 }
                 return decrypt({
@@ -2878,7 +3204,7 @@ class ciweimao {
                     const parentWidth = 871;
                     const setFontSize = "14";
                     const image_session_code_url = HB.config.rootPath + "chapter/ajax_get_image_session_code";
-                    lib_1.console_debug(`[Chapter]请求 ${image_session_code_url} Referer ${refererUrl}`);
+                    log_1.log.debug(`[Chapter]请求 ${image_session_code_url} Referer ${refererUrl}`);
                     const image_session_code_object = await lib_1.gfetch(image_session_code_url, {
                         method: "POST",
                         headers: {
@@ -2891,7 +3217,7 @@ class ciweimao {
                     }).then((response) => response.response);
                     if (image_session_code_object.code !==
                         100000) {
-                        console.error(image_session_code_object);
+                        log_1.log.error(image_session_code_object);
                         throw new Error(`下载 ${refererUrl} 失败`);
                     }
                     const imageCode = decrypt({
@@ -2918,7 +3244,7 @@ class ciweimao {
                 }
                 const div_chapter_author_say = await getChapterAuthorSay();
                 const vipCHapterImageUrl = await vipChapterDecrypt(chapter_id, chapterUrl);
-                lib_1.console_debug(`[Chapter]请求 ${vipCHapterImageUrl} Referer ${chapterUrl}`);
+                log_1.log.debug(`[Chapter]请求 ${vipCHapterImageUrl} Referer ${chapterUrl}`);
                 const vipCHapterImageBlob = await lib_1.gfetch(vipCHapterImageUrl, {
                     method: "GET",
                     headers: {
@@ -2987,6 +3313,7 @@ exports.ciweimao = ciweimao;
 /***/ "./src/rules/dierbanzhu.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.dierbanzhu = void 0;
@@ -3085,12 +3412,14 @@ exports.dierbanzhu = dierbanzhu;
 /***/ "./src/rules/dmzj.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.dmzj = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const lib_1 = __webpack_require__("./src/lib.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
+const log_1 = __webpack_require__("./src/log.ts");
 class dmzj {
     constructor() {
         this.imageMode = "TM";
@@ -3148,7 +3477,7 @@ class dmzj {
                 return picUrlList;
             }
         }
-        lib_1.console_debug(`[Chapter]请求 ${chapterUrl}`);
+        log_1.log.debug(`[Chapter]请求 ${chapterUrl}`);
         const doc = await lib_1.getHtmlDOM(chapterUrl, charset);
         const picUrlList = getpicUrlList(doc);
         if (picUrlList) {
@@ -3188,6 +3517,7 @@ exports.dmzj = dmzj;
 /***/ "./src/rules/fushuwang.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.fushuwang = void 0;
@@ -3276,12 +3606,14 @@ exports.fushuwang = fushuwang;
 /***/ "./src/rules/gongzicp.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.gongzicp = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const lib_1 = __webpack_require__("./src/lib.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
+const log_1 = __webpack_require__("./src/log.ts");
 class gongzicp {
     constructor() {
         this.imageMode = "TM";
@@ -3296,7 +3628,7 @@ class gongzicp {
         const novelGetInfoBaseUrl = "https://www.gongzicp.com/webapi/novel/novelGetInfo";
         const novelGetInfoUrl = new URL(novelGetInfoBaseUrl);
         novelGetInfoUrl.searchParams.set("id", bookId);
-        lib_1.console_debug(`请求地址: ${novelGetInfoUrl.toString()}`);
+        log_1.log.debug(`请求地址: ${novelGetInfoUrl.toString()}`);
         const novelInfo = await fetch(novelGetInfoUrl.toString(), {
             credentials: "include",
             headers: {
@@ -3325,7 +3657,7 @@ class gongzicp {
         additionalMetadate.tags = data.novelInfo.tag_list;
         async function isLogin() {
             const getUserInfoUrl = "https://www.gongzicp.com/user/getUserInfo";
-            lib_1.console_debug(`正在请求: ${getUserInfoUrl}`);
+            log_1.log.debug(`正在请求: ${getUserInfoUrl}`);
             const userInfo = await fetch(getUserInfoUrl, {
                 headers: {
                     accept: "application/json, text/javascript, */*; q=0.01",
@@ -3435,7 +3767,7 @@ class gongzicp {
             const chapterGetInfoUrl = new URL(chapterGetInfoBaseUrl);
             chapterGetInfoUrl.searchParams.set("cid", cid.toString());
             chapterGetInfoUrl.searchParams.set("nid", nid.toString());
-            lib_1.console_debug(`请求地址: ${chapterGetInfoUrl.toString()}, Referrer: ${chapterUrl}`);
+            log_1.log.debug(`请求地址: ${chapterGetInfoUrl.toString()}, Referrer: ${chapterUrl}`);
             const result = await fetch(chapterGetInfoUrl.toString(), {
                 credentials: "include",
                 headers: {
@@ -3575,12 +3907,14 @@ exports.gongzicp = gongzicp;
 /***/ "./src/rules/hetushu.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.hetushu = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const lib_1 = __webpack_require__("./src/lib.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
+const log_1 = __webpack_require__("./src/log.ts");
 class hetushu {
     constructor() {
         this.imageMode = "TM";
@@ -3650,7 +3984,7 @@ class hetushu {
                 bid,
                 "r" + sid + ".json",
             ].join("/");
-            lib_1.console_debug(`[Chapter]请求 ${url} Referer ${chapterUrl}`);
+            log_1.log.debug(`[Chapter]请求 ${url} Referer ${chapterUrl}`);
             const token = await fetch(url, {
                 headers: {
                     accept: "*/*",
@@ -3741,12 +4075,14 @@ exports.hetushu = hetushu;
 /***/ "./src/rules/idejian.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.idejian = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const lib_1 = __webpack_require__("./src/lib.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
+const log_1 = __webpack_require__("./src/log.ts");
 class idejian {
     constructor() {
         this.imageMode = "TM";
@@ -3792,7 +4128,7 @@ class idejian {
         };
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        lib_1.console_debug(`[Chapter]请求 ${chapterUrl}`);
+        log_1.log.debug(`[Chapter]请求 ${chapterUrl}`);
         let doc = await lib_1.getHtmlDOM(chapterUrl, charset);
         chapterName = doc.querySelector(".title").innerText.trim();
         let content;
@@ -3833,6 +4169,7 @@ exports.idejian = idejian;
 /***/ "./src/rules/jjwxc.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.jjwxc = void 0;
@@ -3841,6 +4178,7 @@ const lib_1 = __webpack_require__("./src/lib.ts");
 const rules_1 = __webpack_require__("./src/rules.ts");
 const jjwxcFontDecode_1 = __webpack_require__("./src/rules/lib/jjwxcFontDecode.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
+const log_1 = __webpack_require__("./src/log.ts");
 class jjwxc {
     constructor() {
         this.imageMode = "TM";
@@ -4030,7 +4368,7 @@ class jjwxc {
                 }
                 let retryTime = 0;
                 function fetchFont(fontUrl) {
-                    lib_1.console_debug(`[Chapter]请求 ${fontUrl} Referer ${chapterUrl} 重试次数 ${retryTime}`);
+                    log_1.log.debug(`[Chapter]请求 ${fontUrl} Referer ${chapterUrl} 重试次数 ${retryTime}`);
                     return lib_1.gfetch(fontUrl, {
                         headers: {
                             accept: "*/*",
@@ -4042,7 +4380,7 @@ class jjwxc {
                             return response.response;
                         }
                         else {
-                            console.error(`[Chapter]请求 ${fontUrl} 失败 Referer ${chapterUrl}`);
+                            log_1.log.error(`[Chapter]请求 ${fontUrl} 失败 Referer ${chapterUrl}`);
                             if (retryTime < rules_1.retryLimit) {
                                 retryTime++;
                                 return fetchFont(fontUrl);
@@ -4164,6 +4502,7 @@ exports.jjwxc = jjwxc;
 /***/ "./src/rules/lib/common.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.introDomHandle = void 0;
@@ -4185,6 +4524,7 @@ exports.introDomHandle = introDomHandle;
 /***/ "./src/rules/lib/jjwxcFontDecode.ts":
 /***/ ((__unused_webpack_module, exports) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.replaceJjwxcCharacter = void 0;
@@ -26086,6 +26426,7 @@ const jjwxcFontTables = {
 /***/ "./src/rules/lib/yuzhaigeImageDecode.ts":
 /***/ ((__unused_webpack_module, exports) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.replaceYuzhaigeImage = void 0;
@@ -26838,6 +27179,7 @@ const imageTable = {
 /***/ "./src/rules/linovel.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.linovel = void 0;
@@ -26983,12 +27325,14 @@ exports.linovel = linovel;
 /***/ "./src/rules/linovelib.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.linovelib = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const lib_1 = __webpack_require__("./src/lib.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
+const log_1 = __webpack_require__("./src/log.ts");
 class linovelib {
     constructor() {
         this.imageMode = "TM";
@@ -27049,7 +27393,7 @@ class linovelib {
         };
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        lib_1.console_debug(`[Chapter]请求 ${chapterUrl}`);
+        log_1.log.debug(`[Chapter]请求 ${chapterUrl}`);
         let nowUrl = chapterUrl;
         let doc = await lib_1.getHtmlDOM(chapterUrl, charset);
         const content = document.createElement("div");
@@ -27065,12 +27409,12 @@ class linovelib {
             if (new URL(nextLink).pathname.includes("_")) {
                 if (nextLink !== nowUrl) {
                     flag = true;
-                    lib_1.console_debug(`[Chapter]请求 ${nextLink}`);
+                    log_1.log.debug(`[Chapter]请求 ${nextLink}`);
                     nowUrl = nextLink;
                     doc = await lib_1.getHtmlDOM(nextLink, charset);
                 }
                 else {
-                    console.error("网站页面出错，URL： " + nowUrl);
+                    log_1.log.error("网站页面出错，URL： " + nowUrl);
                     flag = false;
                 }
             }
@@ -27097,6 +27441,7 @@ exports.linovelib = linovelib;
 /***/ "./src/rules/meegoq.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.meegoq = void 0;
@@ -27216,11 +27561,13 @@ exports.meegoq = meegoq;
 /***/ "./src/rules/mht.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.mht = void 0;
 const lib_1 = __webpack_require__("./src/lib.ts");
 const biquge_1 = __webpack_require__("./src/rules/biquge.ts");
+const log_1 = __webpack_require__("./src/log.ts");
 class mht {
     constructor() {
         this.imageMode = "TM";
@@ -27241,7 +27588,7 @@ class mht {
         });
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        lib_1.console_debug(`[Chapter]请求 ${chapterUrl}`);
+        log_1.log.debug(`[Chapter]请求 ${chapterUrl}`);
         let nowUrl = chapterUrl;
         let doc = await lib_1.getHtmlDOM(chapterUrl, charset);
         const content = document.createElement("div");
@@ -27258,7 +27605,7 @@ class mht {
                     flag = true;
                 }
                 else {
-                    console.error("网站页面出错，URL： " + nowUrl);
+                    log_1.log.error("网站页面出错，URL： " + nowUrl);
                     flag = false;
                 }
             }
@@ -27266,7 +27613,7 @@ class mht {
                 flag = false;
             }
             if (flag) {
-                lib_1.console_debug(`[Chapter]请求 ${nextLink}`);
+                log_1.log.debug(`[Chapter]请求 ${nextLink}`);
                 nowUrl = nextLink;
                 doc = await lib_1.getHtmlDOM(nextLink, charset);
             }
@@ -27290,12 +27637,14 @@ exports.mht = mht;
 /***/ "./src/rules/qidian.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.qidian = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const lib_1 = __webpack_require__("./src/lib.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
+const log_1 = __webpack_require__("./src/log.ts");
 class qidian {
     constructor() {
         this.imageMode = "TM";
@@ -27439,7 +27788,7 @@ class qidian {
                     authorId: authorId,
                 });
                 const url = baseUrl + "?" + search.toString();
-                lib_1.console_debug(`[Chapter]请求 ${url} Referer ${chapterUrl}`);
+                log_1.log.debug(`[Chapter]请求 ${url} Referer ${chapterUrl}`);
                 return lib_1.gfetch(url, {
                     headers: {
                         accept: "application/json, text/javascript, */*; q=0.01",
@@ -27499,12 +27848,14 @@ exports.qidian = qidian;
 /***/ "./src/rules/qimao.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.qimao = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const lib_1 = __webpack_require__("./src/lib.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
+const log_1 = __webpack_require__("./src/log.ts");
 class qimao {
     constructor() {
         this.imageMode = "TM";
@@ -27561,7 +27912,7 @@ class qimao {
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         async function publicChapter() {
-            lib_1.console_debug(`[Chapter]请求 ${chapterUrl}`);
+            log_1.log.debug(`[Chapter]请求 ${chapterUrl}`);
             let doc = await lib_1.getHtmlDOM(chapterUrl, charset);
             chapterName = doc.querySelector(".title").innerText.trim();
             const content = doc.querySelector(".article");
@@ -27613,6 +27964,7 @@ exports.qimao = qimao;
 /***/ "./src/rules/sfacg.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.sfacg = void 0;
@@ -27620,6 +27972,7 @@ const main_1 = __webpack_require__("./src/main.ts");
 const lib_1 = __webpack_require__("./src/lib.ts");
 const rules_1 = __webpack_require__("./src/rules.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
+const log_1 = __webpack_require__("./src/log.ts");
 class sfacg {
     constructor() {
         this.imageMode = "TM";
@@ -27726,7 +28079,7 @@ class sfacg {
             async function getvipChapterImage(vipChapterImageUrl, vipChapterName) {
                 let retryTime = 0;
                 function fetchVipChapterImage(vipChapterImageUrl) {
-                    lib_1.console_debug(`[Chapter]请求 ${vipChapterImageUrl} Referer ${chapterUrl} 重试次数 ${retryTime}`);
+                    log_1.log.debug(`[Chapter]请求 ${vipChapterImageUrl} Referer ${chapterUrl} 重试次数 ${retryTime}`);
                     return fetch(vipChapterImageUrl, {
                         headers: {
                             accept: "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8",
@@ -27740,7 +28093,7 @@ class sfacg {
                         .then((response) => response.blob())
                         .then((blob) => {
                         if (blob.size === 53658 || blob.size === 42356) {
-                            console.error(`[Chapter]请求 ${vipChapterImageUrl} 失败 Referer ${chapterUrl}`);
+                            log_1.log.error(`[Chapter]请求 ${vipChapterImageUrl} 失败 Referer ${chapterUrl}`);
                             if (retryTime < rules_1.retryLimit) {
                                 retryTime++;
                                 return fetchVipChapterImage(vipChapterImageUrl);
@@ -27825,6 +28178,7 @@ exports.sfacg = sfacg;
 /***/ "./src/rules/shouda8.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.shouda8 = void 0;
@@ -27916,6 +28270,7 @@ exports.shouda8 = shouda8;
 /***/ "./src/rules/shuhai.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.shuhai = void 0;
@@ -28053,6 +28408,7 @@ exports.shuhai = shuhai;
 /***/ "./src/rules/sosadfun.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.sosadfun = void 0;
@@ -28173,12 +28529,14 @@ exports.sosadfun = sosadfun;
 /***/ "./src/rules/tadu.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.tadu = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const lib_1 = __webpack_require__("./src/lib.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
+const log_1 = __webpack_require__("./src/log.ts");
 class tadu {
     constructor() {
         this.imageMode = "TM";
@@ -28238,7 +28596,7 @@ class tadu {
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         async function publicChapter() {
-            lib_1.console_debug(`[Chapter]请求 ${chapterUrl}`);
+            log_1.log.debug(`[Chapter]请求 ${chapterUrl}`);
             const doc = await lib_1.getHtmlDOM(chapterUrl, charset);
             const content = document.createElement("div");
             const _bookPartResourceUrl = doc
@@ -28247,7 +28605,7 @@ class tadu {
             if (_bookPartResourceUrl) {
                 const bookPartResourceUrl = new URL(_bookPartResourceUrl);
                 bookPartResourceUrl.searchParams.set("callback", "callback");
-                lib_1.console_debug(`[Chapter]请求 ${bookPartResourceUrl.toString()}`);
+                log_1.log.debug(`[Chapter]请求 ${bookPartResourceUrl.toString()}`);
                 const jsonpText = await lib_1.gfetch(bookPartResourceUrl.toString(), {
                     headers: {
                         accept: "*/*",
@@ -28313,6 +28671,7 @@ exports.tadu = tadu;
 /***/ "./src/rules/uukanshu.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.uukanshu = void 0;
@@ -28440,6 +28799,7 @@ exports.uukanshu = uukanshu;
 /***/ "./src/rules/wenku8.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.wenku8 = void 0;
@@ -28533,6 +28893,7 @@ exports.wenku8 = wenku8;
 /***/ "./src/rules/westnovel.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.westnovel = void 0;
@@ -28613,6 +28974,7 @@ exports.westnovel = westnovel;
 /***/ "./src/rules/xiaoshuodaquan.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.xiaoshuodaquan = void 0;
@@ -28732,12 +29094,14 @@ exports.xiaoshuodaquan = xiaoshuodaquan;
 /***/ "./src/rules/xinwanben.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.xinwanben = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const lib_1 = __webpack_require__("./src/lib.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
+const log_1 = __webpack_require__("./src/log.ts");
 class xinwanben {
     constructor() {
         this.imageMode = "TM";
@@ -28778,7 +29142,7 @@ class xinwanben {
         };
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        lib_1.console_debug(`[Chapter]请求 ${chapterUrl}`);
+        log_1.log.debug(`[Chapter]请求 ${chapterUrl}`);
         let nowUrl = chapterUrl;
         let doc = await lib_1.getHtmlDOM(chapterUrl, charset);
         const content = document.createElement("div");
@@ -28794,7 +29158,7 @@ class xinwanben {
                     flag = true;
                 }
                 else {
-                    console.error("网站页面出错，URL： " + nowUrl);
+                    log_1.log.error("网站页面出错，URL： " + nowUrl);
                     flag = false;
                 }
             }
@@ -28802,7 +29166,7 @@ class xinwanben {
                 flag = false;
             }
             if (flag) {
-                lib_1.console_debug(`[Chapter]请求 ${nextLink}`);
+                log_1.log.debug(`[Chapter]请求 ${nextLink}`);
                 nowUrl = nextLink;
                 doc = await lib_1.getHtmlDOM(nextLink, charset);
             }
@@ -28826,12 +29190,14 @@ exports.xinwanben = xinwanben;
 /***/ "./src/rules/xkzw.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.xkzw = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const lib_1 = __webpack_require__("./src/lib.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
+const log_1 = __webpack_require__("./src/log.ts");
 class xkzw {
     constructor() {
         this.imageMode = "TM";
@@ -28852,7 +29218,7 @@ class xkzw {
         const chapters = [];
         const bookid = unsafeWindow.bookId;
         const apiUrl = [document.location.origin, "action.php"].join("/");
-        lib_1.console_debug(`[chapter]正在请求${apiUrl}`);
+        log_1.log.debug(`[chapter]正在请求${apiUrl}`);
         const siteChapterList = await fetch(apiUrl, {
             headers: {
                 accept: "application/json, text/javascript, */*",
@@ -29094,12 +29460,14 @@ exports.xkzw = xkzw;
 /***/ "./src/rules/yibige.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.yibige = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const lib_1 = __webpack_require__("./src/lib.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
+const log_1 = __webpack_require__("./src/log.ts");
 class yibige {
     constructor() {
         this.imageMode = "TM";
@@ -29176,7 +29544,7 @@ class yibige {
         };
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        lib_1.console_debug(`[Chapter]请求 ${chapterUrl}`);
+        log_1.log.debug(`[Chapter]请求 ${chapterUrl}`);
         let nowUrl = chapterUrl;
         let doc = await lib_1.getHtmlDOM(chapterUrl, charset);
         const content = document.createElement("div");
@@ -29195,7 +29563,7 @@ class yibige {
                     flag = true;
                 }
                 else {
-                    console.error("网站页面出错，URL： " + nowUrl);
+                    log_1.log.error("网站页面出错，URL： " + nowUrl);
                     flag = false;
                 }
             }
@@ -29203,7 +29571,7 @@ class yibige {
                 flag = false;
             }
             if (flag) {
-                lib_1.console_debug(`[Chapter]请求 ${nextLink}`);
+                log_1.log.debug(`[Chapter]请求 ${nextLink}`);
                 nowUrl = nextLink;
                 doc = await lib_1.getHtmlDOM(nextLink, charset);
             }
@@ -29227,6 +29595,7 @@ exports.yibige = yibige;
 /***/ "./src/rules/yruan.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.yrun = void 0;
@@ -29308,12 +29677,14 @@ exports.yrun = yrun;
 /***/ "./src/rules/yuzhaige.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.yuzhaige = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const lib_1 = __webpack_require__("./src/lib.ts");
 const yuzhaigeImageDecode_1 = __webpack_require__("./src/rules/lib/yuzhaigeImageDecode.ts");
+const log_1 = __webpack_require__("./src/log.ts");
 class yuzhaige {
     constructor() {
         this.imageMode = "TM";
@@ -29321,7 +29692,7 @@ class yuzhaige {
     async bookParse(chapterParse) {
         const bookUrl = (document.querySelector("div.currency_head > h1 > a")).href;
         const bookId = bookUrl.split("/").slice(-2, -1)[0];
-        lib_1.console_debug(`[chapter]请求 ${bookUrl}`);
+        log_1.log.debug(`[chapter]请求 ${bookUrl}`);
         const dom = await lib_1.getHtmlDOM(bookUrl, "UTF-8");
         const bookname = (dom.querySelector("div.cataloginfo > h3")).innerText.trim();
         const author = (dom.querySelector(".infotype > p:nth-child(1) > a:nth-child(1)")).innerText.trim();
@@ -29368,7 +29739,7 @@ class yuzhaige {
         const indexUrls = getIndexUrls();
         let lis = [];
         for (const indexUrl of indexUrls) {
-            lib_1.console_debug(`[chapter]请求 ${indexUrl}`);
+            log_1.log.debug(`[chapter]请求 ${indexUrl}`);
             const dom = await lib_1.getHtmlDOM(indexUrl, "UTF-8");
             const ul = dom.querySelector("ul.chapters");
             if (ul?.childElementCount) {
@@ -29459,7 +29830,7 @@ class yuzhaige {
                     flag = true;
                 }
                 else {
-                    console.error("网站页面出错，URL： " + nowUrl);
+                    log_1.log.error("网站页面出错，URL： " + nowUrl);
                     flag = false;
                 }
             }
@@ -29512,6 +29883,7 @@ exports.yuzhaige = yuzhaige;
 /***/ "./src/rules/zongheng.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.zongheng = void 0;
@@ -29655,7 +30027,7 @@ exports.zongheng = zongheng;
 /******/ 		};
 /******/ 	
 /******/ 		// Execute the module function
-/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
+/******/ 		__webpack_modules__[moduleId].call(module.exports, module, module.exports, __webpack_require__);
 /******/ 	
 /******/ 		// Return the exports of the module
 /******/ 		return module.exports;
