@@ -41,8 +41,6 @@ export interface ruleClass {
   ): Promise<chapterParseObject>;
 }
 
-/* #################################################### */
-
 export const retryLimit = 5;
 export const enaleDebug = false;
 export const enableCustomChapterFilter = true;
@@ -270,6 +268,11 @@ export async function getRule(): Promise<ruleClass> {
     case "www.yibige.la": {
       const { yibige } = await import("./rules/yibige");
       ruleClass = yibige;
+      break;
+    }
+    case "www.fushuwang.org": {
+      const { fushuwang } = await import("./rules/fushuwang");
+      ruleClass = fushuwang;
       break;
     }
     default: {

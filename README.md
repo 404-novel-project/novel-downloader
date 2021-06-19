@@ -64,6 +64,7 @@ ZIP压缩包，请在解压后，直接双击打开HTML文件（`ToC.html` 为�
 |[哩哔轻小说](https://www.linovelib.com/)|✅|❎||
 |[落秋中文](https://www.luoqiuzw.com/)|✅|❎||
 |[一笔阁](https://www.yibige.la/)|✅|❎||
+|[腐书网](https://www.fushuwang.org/)|✅|❎||
 
 ## 高阶使用技巧
 

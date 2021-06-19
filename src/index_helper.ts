@@ -598,6 +598,9 @@ export function saveOptionsValidate(data: any) {
   if (typeof data !== "object") {
     return false;
   }
+  if (Object.keys(data).length === 0) {
+    return false;
+  }
   for (const keyname in data) {
     if (!keyNametest(keyname)) {
       return false;
@@ -624,7 +627,7 @@ export function save(book: Book, options: saveOptions) {
   if (book.saveOptions !== undefined) {
     for (const option in book.saveOptions) {
       //@ts-expect-error
-      saveBookObj[option] = options[option as keyof saveOptions];
+      saveBookObj[option] = book.saveOptions[option as keyof book.saveOptions];
     }
   }
 
