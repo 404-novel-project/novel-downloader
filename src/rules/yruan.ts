@@ -1,12 +1,12 @@
 import { BookAdditionalMetadate, attachmentClass, Chapter } from "../main";
 import { ruleClass } from "../rules";
 import { getHtmlDOM, cleanDOM } from "../lib";
-
+import { introDomHandle } from "./lib/common";
 export class yrun implements ruleClass {
   public imageMode: "naive" | "TM";
 
   public constructor() {
-    this.imageMode = "naive";
+    this.imageMode = "TM";
   }
 
   public async bookParse(chapterParse: ruleClass["chapterParse"]) {
@@ -20,21 +20,10 @@ export class yrun implements ruleClass {
       .replace(/作(\s+)?者[：:]/, "")
       .trim();
 
-    let introduction: string | null;
-    let introductionHTML: HTMLElement | null;
     const introDom = <HTMLElement>document.querySelector("#intro > p");
-    if (introDom === null) {
-      introduction = null;
-      introductionHTML = null;
-    } else {
-      let {
-        dom: introCleanDom,
-        text: introCleantext,
-        images: introCleanimages,
-      } = cleanDOM(introDom, "naive");
-      introduction = introCleantext;
-      introductionHTML = introCleanDom;
-    }
+    const [introduction, introductionHTML, introCleanimages] = introDomHandle(
+      introDom
+    );
 
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = (<HTMLImageElement>document.querySelector("#fmimg > img"))
@@ -42,7 +31,7 @@ export class yrun implements ruleClass {
     additionalMetadate.cover = new attachmentClass(
       coverUrl,
       `cover.${coverUrl.split(".").slice(-1)[0]}`,
-      "naive"
+      "TM"
     );
     additionalMetadate.cover.init();
 

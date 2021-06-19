@@ -223,15 +223,11 @@ export function console_debug(...messages: any[]) {
 }
 
 export function getAttachmentClassCache(url: string, name: string) {
-  const f1 = attachmentClassCache.filter(
-    (attachmentClass) => attachmentClass.url === url
+  const found = attachmentClassCache.find(
+    (attachmentClass) =>
+      attachmentClass.url === url && attachmentClass.name === name
   );
-  const f2 = f1.filter((attachmentClass) => attachmentClass.name === name);
-  if (f2.length) {
-    return f2[0];
-  } else {
-    return null;
-  }
+  return found;
 }
 
 export function putAttachmentClassCache(attachmentClass: attachmentClass) {

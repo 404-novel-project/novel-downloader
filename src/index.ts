@@ -77,6 +77,9 @@ async function initBook(rule: ruleClass) {
       additionalMetadate,
       chapters
     );
+    if (rule.saveOptions !== undefined) {
+      book.saveOptions = rule.saveOptions;
+    }
     return book;
   });
 }

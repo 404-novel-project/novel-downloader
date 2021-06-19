@@ -6,9 +6,8 @@ export function replaceYuzhaigeImage(inputText: string) {
   let outputText = inputText;
   for (const imageFilename in imageTable) {
     const normalCharacter = imageTable[imageFilename];
-    const reStr = `<img src="https?:\\/\\/m.yuzhaige.cc\\/wzbodyimg\\/${imageFilename}">`;
-    const re = new RegExp(reStr, "g");
-    outputText = outputText.replace(re, normalCharacter);
+    const imageHTML = `<img src="http://m.yuzhaige.cc/wzbodyimg/${imageFilename}">`;
+    outputText = outputText.replaceAll(imageHTML, normalCharacter);
   }
   return outputText;
 }
@@ -743,4 +742,5 @@ const imageTable: imageTable = {
   "5RwMUT.png": "\u854A",
   "b94JXX.png": "\u8114",
   "oxFS6J.png": "\u8114",
+  "H53jMR.png": "\u96CF",
 };

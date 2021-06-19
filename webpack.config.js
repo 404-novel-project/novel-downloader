@@ -8,6 +8,7 @@ module.exports = {
   mode: dev ? "development" : "production",
   optimization: {
     minimize: false,
+    moduleIds: "named"
   },
   entry: path.resolve(__dirname, "src", "index.ts"),
   output: {

@@ -139,10 +139,7 @@ export class yibige implements ruleClass {
       const _content = <HTMLElement>doc.querySelector("#fontsize");
       rm("div", true, _content);
       rm("script", true, _content);
-      _content.innerHTML = _content.innerHTML.replace(
-        new RegExp("测试广告1", "g"),
-        ""
-      );
+      _content.innerHTML = _content.innerHTML.replaceAll("测试广告1", "");
       for (const _c of Array.from(_content.childNodes)) {
         content.appendChild(_c);
       }

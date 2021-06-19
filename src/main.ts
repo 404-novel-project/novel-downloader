@@ -1,5 +1,6 @@
 import { ruleClass, chapterParseObject, retryLimit } from "./rules";
 import { gfetch, sleep, console_debug } from "./lib";
+import { saveOptions } from "./index_helper";
 
 export enum Status {
   pending,
@@ -29,6 +30,7 @@ export class Book {
   public introductionHTML: HTMLElement | null;
   public additionalMetadate: BookAdditionalMetadate;
   public chapters: Chapter[];
+  public saveOptions!: saveOptions;
 
   public constructor(
     bookUrl: string,

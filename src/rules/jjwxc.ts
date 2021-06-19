@@ -223,8 +223,8 @@ export class jjwxc implements ruleClass {
           [authorSayDom, authorSayText] = [adom, atext];
         }
         rm("div", true, content);
-        content.innerHTML = content.innerHTML.replace(
-          new RegExp("@无限好文，尽在晋江文学城", "g"),
+        content.innerHTML = content.innerHTML.replaceAll(
+          "@无限好文，尽在晋江文学城",
           ""
         );
         let { dom, text, images } = cleanDOM(content, "TM");
@@ -391,7 +391,7 @@ export class jjwxc implements ruleClass {
           }
           rm("div", true, content);
           content.innerHTML = content.innerHTML.replace(
-            new RegExp("@无限好文，尽在晋江文学城", "g"),
+            "@无限好文，尽在晋江文学城",
             ""
           );
           let { dom: rawDom, text: rawText, images } = cleanDOM(content, "TM");

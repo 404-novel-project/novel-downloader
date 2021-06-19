@@ -11,10 +11,9 @@ export function replaceJjwxcCharacter(fontName: string, inputText: string) {
   if (jjwxcFontTable) {
     for (const jjwxcCharacter in jjwxcFontTable) {
       const normalCharacter = jjwxcFontTable[jjwxcCharacter];
-      const re = new RegExp(jjwxcCharacter, "g");
-      outputText = outputText.replace(re, normalCharacter);
+      outputText = outputText.replaceAll(jjwxcCharacter, normalCharacter);
     }
-    outputText = outputText.replace(new RegExp("\u200c", "g"), "");
+    outputText = outputText.replaceAll("\u200c", "");
   }
   return outputText;
 }

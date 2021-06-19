@@ -403,12 +403,7 @@ a.disabled {
       this.savedZip.file(
         "ToC.html",
         new Blob(
-          [
-            ToC.documentElement.outerHTML.replace(
-              new RegExp("data-src-address", "g"),
-              "src"
-            ),
-          ],
+          [ToC.documentElement.outerHTML.replaceAll("data-src-address", "src")],
           {
             type: "text/html; charset=UTF-8",
           }
@@ -495,26 +490,26 @@ a.disabled {
     }
   }
 
-  private genSectionText(sectionName: string) {
+  public genSectionText(sectionName: string) {
     return (
       `${"=".repeat(20)}\n\n\n\n# ${sectionName}\n\n\n\n${"=".repeat(20)}` +
       "\n\n"
     );
   }
 
-  private genChapterText(chapterName: string, contentText: string) {
+  public genChapterText(chapterName: string, contentText: string) {
     return `## ${chapterName}\n\n${contentText}\n\n`;
   }
 
-  private genSectionHtmlFile(sectionName: string) {
+  public genSectionHtmlFile(sectionName: string) {
     let htmlFile = new DOMParser().parseFromString(
       `<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="https://github.com/yingziwu/novel-downloader"><link href="style.css" type="text/css" rel="stylesheet"/><title>${sectionName}</title></head><body><div class="main"><h1>${sectionName}</h1></div></body></html>`,
       "text/html"
     );
     return new Blob(
       [
-        htmlFile.documentElement.outerHTML.replace(
-          new RegExp("data-src-address", "g"),
+        htmlFile.documentElement.outerHTML.replaceAll(
+          "data-src-address",
           "src"
         ),
       ],
@@ -524,7 +519,7 @@ a.disabled {
     );
   }
 
-  private genChapterHtmlFile(
+  public genChapterHtmlFile(
     chapterName: string,
     DOM: HTMLElement,
     chapterUrl: string
@@ -536,8 +531,8 @@ a.disabled {
     htmlFile.querySelector(".main")?.appendChild(DOM);
     return new Blob(
       [
-        htmlFile.documentElement.outerHTML.replace(
-          new RegExp("data-src-address", "g"),
+        htmlFile.documentElement.outerHTML.replaceAll(
+          "data-src-address",
           "src"
         ),
       ],
@@ -562,13 +557,18 @@ a.disabled {
 }
 
 export interface saveOptions {
-  mainStyleText?: string;
-  tocStyleText?: string;
-  getchapterName?: (chapter: Chapter) => string;
+  mainStyleText?: saveBook["mainStyleText"];
+  tocStyleText?: saveBook["tocStyleText"];
+  getchapterName?: saveBook["getchapterName"];
+  genSectionText?: saveBook["genSectionText"];
+  genChapterText?: saveBook["genChapterText"];
+  genSectionHtmlFile?: saveBook["genSectionHtmlFile"];
+  genChapterHtmlFile?: saveBook["genChapterHtmlFile"];
 }
-const keyNamesS: Array<keyof saveOptions> = ["mainStyleText", "tocStyleText"];
-const keyNamesF: Array<keyof saveOptions> = ["getchapterName"];
 export function saveOptionsValidate(data: any) {
+  const keyNamesS: Array<keyof saveOptions> = ["mainStyleText", "tocStyleText"];
+  const keyNamesF: Array<keyof saveOptions> = ["getchapterName"];
+
   function keyNametest(keyname: string) {
     const keyList = new Array().concat(keyNamesS).concat(keyNamesF);
     if (keyList.includes(keyname)) {
@@ -612,8 +612,17 @@ export function saveOptionsValidate(data: any) {
 export function save(book: Book, options: saveOptions) {
   const saveBookObj = new saveBook(book);
 
+  // 自定义保存参数
   if (enableCustomSaveOptions && saveOptionsValidate(options)) {
     for (const option in options) {
+      //@ts-expect-error
+      saveBookObj[option] = options[option as keyof saveOptions];
+    }
+  }
+
+  // 规则定义保存参数
+  if (book.saveOptions !== undefined) {
+    for (const option in book.saveOptions) {
       //@ts-expect-error
       saveBookObj[option] = options[option as keyof saveOptions];
     }
@@ -663,7 +672,7 @@ export function removeTabMark(): Promise<indexNameSpace.mainTabObject> {
   });
 }
 
-export function r18SiteWarning() {
+export function r18SiteWarning(): boolean {
   if (!storageAvailable("localStorage")) {
     console.error("Window.localStorage API 失效！");
     return true;
@@ -682,11 +691,11 @@ export function r18SiteWarning() {
       return false;
     }
   } else {
-    v = JSON.parse(v);
-    if (v) {
-      return true;
+    if (typeof JSON.parse(v) === "boolean") {
+      return JSON.parse(v);
     } else {
-      return false;
+      localStorage.removeItem(k);
+      return r18SiteWarning();
     }
   }
 }

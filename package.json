@@ -1,6 +1,6 @@
 {
   "name": "novel-downloader",
-  "version": "3.6.5",
+  "version": "3.6.6",
   "description": "novel downloader",
   "main": "index.js",
   "scripts": {
@@ -8,6 +8,10 @@
     "dev": "webpack serve --node-env development",
     "pretty": "prettier src -w"
   },
+  "pre-commit": [
+    "pretty",
+    "build"
+  ],
   "author": "BGME",
   "license": "GPL-3.0",
   "devDependencies": {
@@ -17,6 +21,7 @@
     "eslint": "^7.23.0",
     "eslint-config-prettier": "^8.1.0",
     "path": "^0.12.7",
+    "pre-commit": "^1.2.2",
     "prettier": "^2.2.1",
     "ts-loader": "^8.1.0",
     "typescript": "^4.2.3",

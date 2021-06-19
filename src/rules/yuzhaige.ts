@@ -7,7 +7,7 @@ export class yuzhaige implements ruleClass {
   public imageMode: "naive" | "TM";
 
   public constructor() {
-    this.imageMode = "naive";
+    this.imageMode = "TM";
   }
 
   public async bookParse(chapterParse: ruleClass["chapterParse"]) {
@@ -37,7 +37,7 @@ export class yuzhaige implements ruleClass {
         dom: introCleanDom,
         text: introCleantext,
         images: introCleanimages,
-      } = cleanDOM(introDom, "naive");
+      } = cleanDOM(introDom, "TM");
       introduction = introCleantext;
       introductionHTML = introCleanDom;
     }
@@ -225,11 +225,11 @@ export class yuzhaige implements ruleClass {
     if (content) {
       let { dom: oldDom, text: _text, images: finalImages } = cleanDOM(
         content,
-        "naive"
+        "TM"
       );
       const _newDom = document.createElement("div");
       _newDom.innerHTML = replaceYuzhaigeImage(content.innerHTML);
-      let { dom: newDom, text: finalText, images } = cleanDOM(_newDom, "naive");
+      let { dom: newDom, text: finalText, images } = cleanDOM(_newDom, "TM");
 
       const fontStyleDom = document.createElement("style");
       fontStyleDom.innerHTML = `.hide { display: none; }`;

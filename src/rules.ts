@@ -1,3 +1,4 @@
+import { saveOptions } from "./index_helper";
 import {
   BookAdditionalMetadate,
   attachmentClass,
@@ -28,6 +29,7 @@ export interface ruleClass {
   charset?: string;
   concurrencyLimit?: number;
   maxRunLimit?: number;
+  saveOptions?: saveOptions;
   bookParse(chapterParse: ruleClass["chapterParse"]): Promise<bookParseObject>;
   chapterParse(
     chapterUrl: string,
