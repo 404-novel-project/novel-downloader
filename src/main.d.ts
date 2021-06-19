@@ -1,4 +1,5 @@
 import { ruleClass, chapterParseObject } from "./rules";
+import { saveOptions } from "./index_helper";
 export declare enum Status {
     pending = 0,
     downloading = 1,
@@ -25,6 +26,7 @@ export declare class Book {
     introductionHTML: HTMLElement | null;
     additionalMetadate: BookAdditionalMetadate;
     chapters: Chapter[];
+    saveOptions: saveOptions;
     constructor(bookUrl: string, bookname: string, author: string, introduction: string | null, introductionHTML: HTMLElement | null, additionalMetadate: BookAdditionalMetadate, chapters: Chapter[]);
 }
 export interface ChapterAdditionalMetadate {

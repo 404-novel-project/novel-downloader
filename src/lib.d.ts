@@ -30,7 +30,7 @@ export declare function gfetch(url: string, { method, headers, data, cookie, bin
 export declare function concurrencyRun(list: object[], limit: number, asyncHandle: Function): Promise<Function[]>;
 export declare function sleep(ms: number): Promise<unknown>;
 export declare function console_debug(...messages: any[]): void;
-export declare function getAttachmentClassCache(url: string, name: string): attachmentClass | null;
+export declare function getAttachmentClassCache(url: string, name: string): attachmentClass | undefined;
 export declare function putAttachmentClassCache(attachmentClass: attachmentClass): boolean;
 export declare function sandboxed(code: string): any;
 export declare function storageAvailable(type: string): any;

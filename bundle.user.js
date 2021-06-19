@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        3.6.5.1623991319276
+// @version        3.6.6.1624100301925
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -65,6 +65,8 @@
 // @match          *://www.linovelib.com/novel/*/catalog
 // @match          *://www.luoqiuzw.com/book/*/
 // @match          *://www.yibige.la/*/
+// @match          *://www.fushuwang.org/*/*/*/*.html
+// @match          *://www.fushuwang.org/*/*/*/*.html?*
 // @name:en        novel-downloader
 // @description:en An scalable universal novel downloader.
 // @namespace      https://blog.bgme.me
@@ -72,7 +74,13 @@
 // @license        AGPL-3.0
 // @run-at         document-end
 // @noframes       true
+// @compatible     Firefox 77+
+// @compatible     Chrome 85+
+// @compatible     Edge 85+
+// @compatible     Opera 71+
+// @compatible     Safari 13.1+
 // @incompatible   Greasemonkey
+// @incompatible   Internet Explorer
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
 // @exclude        *://www.meegoq.com/book/*.html
 // @exclude        *://www.viviyzw.com/book/*.html
@@ -132,14 +140,14 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 962:
+/***/ "./src/cleanDOM.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.walk = void 0;
-const main_1 = __webpack_require__(519);
-const lib_1 = __webpack_require__(563);
+const main_1 = __webpack_require__("./src/main.ts");
+const lib_1 = __webpack_require__("./src/lib.ts");
 const blockElements = [
     "article",
     "aside",
@@ -181,7 +189,6 @@ const ignoreElements = [
     "select",
 ];
 function* findBase(dom, blockElements, ignoreElements) {
-    var _a, _b;
     const childNodes = Array.from(dom.childNodes);
     for (const node of childNodes) {
         const nodeName = node.nodeName.toLowerCase();
@@ -189,11 +196,11 @@ function* findBase(dom, blockElements, ignoreElements) {
             yield* findBase(node, blockElements, ignoreElements);
         }
         else if (nodeName === "#text") {
-            if (((_a = node.parentElement) === null || _a === void 0 ? void 0 : _a.childNodes.length) === 1 &&
+            if (node.parentElement?.childNodes.length === 1 &&
                 blockElements.slice(9).includes(nodeName)) {
                 yield node.parentElement;
             }
-            else if ((_b = node.textContent) === null || _b === void 0 ? void 0 : _b.trim()) {
+            else if (node.textContent?.trim()) {
                 yield node;
             }
         }
@@ -203,21 +210,19 @@ function* findBase(dom, blockElements, ignoreElements) {
     }
 }
 function getNextSibling(elem) {
-    var _a;
     elem = elem.nextSibling;
     if (elem &&
         elem.nodeName.toLowerCase() === "#text" &&
-        ((_a = elem.textContent) === null || _a === void 0 ? void 0 : _a.trim()) === "") {
+        elem.textContent?.trim() === "") {
         return elem.nextSibling;
     }
     return elem;
 }
 function getPreviousSibling(elem) {
-    var _a;
     elem = elem.previousSibling;
     if (elem &&
         elem.nodeName.toLowerCase() === "#text" &&
-        ((_a = elem.textContent) === null || _a === void 0 ? void 0 : _a.trim()) === "") {
+        elem.textContent?.trim() === "") {
         return elem.previousSibling;
     }
     return elem;
@@ -236,7 +241,6 @@ function getParentElement(elem) {
     }
 }
 function formatImage(elem, builder) {
-    var _a, _b, _c;
     function temp0() {
         const pI = document.createElement("p");
         pI.appendChild(imgElem);
@@ -251,13 +255,13 @@ function formatImage(elem, builder) {
         return;
     }
     let [imgElem, imgText, imgClass] = tfi;
-    if (((_a = elem.parentElement) === null || _a === void 0 ? void 0 : _a.childElementCount) === 1) {
+    if (elem.parentElement?.childElementCount === 1) {
         temp0();
         return;
     }
     else {
         function temp1() {
-            if ((lastElement === null || lastElement === void 0 ? void 0 : lastElement.nodeName.toLowerCase()) === "p") {
+            if (lastElement?.nodeName.toLowerCase() === "p") {
                 lastElement.appendChild(imgElem);
                 builder.text = builder.text + ` ${imgText} `;
                 return;
@@ -273,15 +277,15 @@ function formatImage(elem, builder) {
         const lastElement = builder.dom.lastElementChild;
         const nextSibling = getNextSibling(elem);
         const previousSibling = getPreviousSibling(elem);
-        if (((_b = elem.parentElement) === null || _b === void 0 ? void 0 : _b.nodeName.toLowerCase()) === "p" &&
-            (lastElement === null || lastElement === void 0 ? void 0 : lastElement.nodeName.toLowerCase()) === "p") {
-            if ((previousSibling === null || previousSibling === void 0 ? void 0 : previousSibling.nodeName.toLowerCase()) === "#text" ||
-                (nextSibling === null || nextSibling === void 0 ? void 0 : nextSibling.nodeName.toLowerCase()) === "#text") {
+        if (elem.parentElement?.nodeName.toLowerCase() === "p" &&
+            lastElement?.nodeName.toLowerCase() === "p") {
+            if (previousSibling?.nodeName.toLowerCase() === "#text" ||
+                nextSibling?.nodeName.toLowerCase() === "#text") {
                 temp1();
                 return;
             }
-            if ((previousSibling === null || previousSibling === void 0 ? void 0 : previousSibling.nodeName.toLowerCase()) === "img" &&
-                ((_c = lastElement.lastElementChild) === null || _c === void 0 ? void 0 : _c.nodeName.toLowerCase()) === "img" &&
+            if (previousSibling?.nodeName.toLowerCase() === "img" &&
+                lastElement.lastElementChild?.nodeName.toLowerCase() === "img" &&
                 lastElement.lastElementChild.alt ===
                     previousSibling.src) {
                 temp1();
@@ -335,7 +339,7 @@ function formatMisc(elem, builder) {
     if (elem.childElementCount === 0) {
         const lastElement = builder.dom.lastElementChild;
         const textContent = elem.innerText.trim();
-        if ((lastElement === null || lastElement === void 0 ? void 0 : lastElement.nodeName.toLowerCase()) === "p") {
+        if (lastElement?.nodeName.toLowerCase() === "p") {
             const textElem = document.createTextNode(textContent);
             lastElement.appendChild(textElem);
             builder.text = builder.text + textContent;
@@ -367,7 +371,6 @@ function formatParagraph(elem, builder) {
     }
 }
 function formatText(elems, builder) {
-    var _a, _b;
     function temp0() {
         const tPElem = document.createElement("p");
         tPElem.innerText = textContent;
@@ -375,7 +378,7 @@ function formatText(elems, builder) {
     }
     function temp1() {
         const lastElement = builder.dom.lastElementChild;
-        if ((lastElement === null || lastElement === void 0 ? void 0 : lastElement.nodeName.toLowerCase()) === "p") {
+        if (lastElement?.nodeName.toLowerCase() === "p") {
             const textElem = document.createTextNode(textContent);
             lastElement.appendChild(textElem);
             const tPText = textContent + "\n".repeat(brCount);
@@ -396,10 +399,10 @@ function formatText(elems, builder) {
     }
     const lastElement = builder.dom.lastElementChild;
     const previousSibling = getPreviousSibling(elem);
-    if (((_a = elem.parentElement) === null || _a === void 0 ? void 0 : _a.nodeName.toLowerCase()) === "p" &&
-        (lastElement === null || lastElement === void 0 ? void 0 : lastElement.nodeName.toLowerCase()) === "p" &&
-        (previousSibling === null || previousSibling === void 0 ? void 0 : previousSibling.nodeName.toLowerCase()) === "img" &&
-        ((_b = lastElement.lastElementChild) === null || _b === void 0 ? void 0 : _b.nodeName.toLowerCase()) === "img" &&
+    if (elem.parentElement?.nodeName.toLowerCase() === "p" &&
+        lastElement?.nodeName.toLowerCase() === "p" &&
+        previousSibling?.nodeName.toLowerCase() === "img" &&
+        lastElement.lastElementChild?.nodeName.toLowerCase() === "img" &&
         lastElement.lastElementChild.alt ===
             previousSibling.src) {
         temp1();
@@ -409,7 +412,7 @@ function formatText(elems, builder) {
         const nextSibling = getNextSibling(elem);
         const previousSibling = getPreviousSibling(elem);
         if (nextSibling === null) {
-            if ((previousSibling === null || previousSibling === void 0 ? void 0 : previousSibling.nodeName.toLowerCase()) === "br") {
+            if (previousSibling?.nodeName.toLowerCase() === "br") {
                 temp0();
                 const tPText = textContent + "\n\n";
                 builder.text = builder.text + tPText;
@@ -418,7 +421,7 @@ function formatText(elems, builder) {
             else if (previousSibling === null &&
                 (() => {
                     const parentElement = getParentElement(elem);
-                    if ((parentElement === null || parentElement === void 0 ? void 0 : parentElement.childNodes.length) === 1) {
+                    if (parentElement?.childNodes.length === 1) {
                         return true;
                     }
                     return false;
@@ -457,7 +460,7 @@ function formatText(elems, builder) {
     }
     else if (brCount === 1) {
         const lastElement = builder.dom.lastElementChild;
-        if ((lastElement === null || lastElement === void 0 ? void 0 : lastElement.nodeName.toLowerCase()) === "p") {
+        if (lastElement?.nodeName.toLowerCase() === "p") {
             const br = document.createElement("br");
             const textElem = document.createTextNode(textContent);
             lastElement.appendChild(br);
@@ -570,16 +573,16 @@ exports.walk = walk;
 
 /***/ }),
 
-/***/ 607:
+/***/ "./src/index.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.audio = exports.attachmentClassCache = exports.catchError = exports.updateProgress = void 0;
-const rules_1 = __webpack_require__(489);
-const main_1 = __webpack_require__(519);
-const lib_1 = __webpack_require__(563);
-const index_helper_1 = __webpack_require__(880);
+const rules_1 = __webpack_require__("./src/rules.ts");
+const main_1 = __webpack_require__("./src/main.ts");
+const lib_1 = __webpack_require__("./src/lib.ts");
+const index_helper_1 = __webpack_require__("./src/index_helper.ts");
 function printEnvironments() {
     if (lib_1._GM_info) {
         console.log(`开始载入小说下载器……
@@ -600,6 +603,9 @@ async function initBook(rule) {
     return bookParse(chapterParse).then((obj) => {
         const { bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters, } = obj;
         const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        if (rule.saveOptions !== undefined) {
+            book.saveOptions = rule.saveOptions;
+        }
         return book;
     });
 }
@@ -736,15 +742,14 @@ async function run() {
     return book;
 }
 function catchError(error) {
-    var _a, _b;
     downloading = false;
     exports.attachmentClassCache = [];
     if (typeof GM_getTab !== "undefined") {
         index_helper_1.removeTabMark();
     }
     finishedChapterNumber = 0;
-    (_a = document.querySelector("#nd-progress")) === null || _a === void 0 ? void 0 : _a.remove();
-    (_b = document.getElementById("novel-downloader")) === null || _b === void 0 ? void 0 : _b.remove();
+    document.querySelector("#nd-progress")?.remove();
+    document.getElementById("novel-downloader")?.remove();
     console.error("运行过程出错，请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/yingziwu/novel-downloader");
     console.error(error);
     exports.audio.pause();
@@ -817,16 +822,16 @@ window.addEventListener("DOMContentLoaded", () => {
 
 /***/ }),
 
-/***/ 880:
+/***/ "./src/index_helper.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.r18SiteWarning = exports.removeTabMark = exports.getNowRunNumber = exports.setTabMark = exports.save = exports.saveOptionsValidate = exports.progressStyleText = exports.buttonStyleText = void 0;
-const main_1 = __webpack_require__(519);
-const lib_1 = __webpack_require__(563);
-const index_1 = __webpack_require__(607);
-const rules_1 = __webpack_require__(489);
+const main_1 = __webpack_require__("./src/main.ts");
+const lib_1 = __webpack_require__("./src/lib.ts");
+const index_1 = __webpack_require__("./src/index.ts");
+const rules_1 = __webpack_require__("./src/rules.ts");
 exports.buttonStyleText = `position: fixed;
 top: 15%;
 right: 5%;
@@ -1053,9 +1058,8 @@ a.disabled {
             saveAs(blob, `${this.saveFileNameBase}.zip`);
         })
             .then(() => {
-            var _a;
             lib_1.console_debug("[save]保存ZIP文件完毕");
-            (_a = document.querySelector("#nd-progress")) === null || _a === void 0 ? void 0 : _a.remove();
+            document.querySelector("#nd-progress")?.remove();
             index_1.audio.pause();
         })
             .catch((err) => {
@@ -1086,16 +1090,16 @@ a.disabled {
             divElem.appendChild(introDom);
             infoDom.appendChild(divElem);
         }
-        TocMain === null || TocMain === void 0 ? void 0 : TocMain.appendChild(infoDom);
+        TocMain?.appendChild(infoDom);
         const bookUrlDom = document.createElement("div");
         bookUrlDom.className = "bookurl";
         const bookUrlAnchor = document.createElement("a");
         bookUrlAnchor.href = this.book.bookUrl;
         bookUrlAnchor.innerText = "打开原始网站";
         bookUrlDom.appendChild(bookUrlAnchor);
-        TocMain === null || TocMain === void 0 ? void 0 : TocMain.appendChild(bookUrlDom);
+        TocMain?.appendChild(bookUrlDom);
         const hr = document.createElement("hr");
-        TocMain === null || TocMain === void 0 ? void 0 : TocMain.appendChild(hr);
+        TocMain?.appendChild(hr);
         const tocStyle = document.createElement("style");
         tocStyle.innerHTML = this.tocStyleText;
         ToC.head.appendChild(tocStyle);
@@ -1119,12 +1123,12 @@ a.disabled {
                     sectionDiv.appendChild(heading);
                     if (sections.length !== 1) {
                         const hr = document.createElement("hr");
-                        TocMain === null || TocMain === void 0 ? void 0 : TocMain.appendChild(hr);
+                        TocMain?.appendChild(hr);
                     }
-                    TocMain === null || TocMain === void 0 ? void 0 : TocMain.appendChild(sectionDiv);
+                    TocMain?.appendChild(sectionDiv);
                 }
                 lib_1.console_debug(`[save]生成章DOM：${chapterName}`);
-                const sectionDiv = TocMain === null || TocMain === void 0 ? void 0 : TocMain.querySelector("#" + sectionHtmlId);
+                const sectionDiv = TocMain?.querySelector("#" + sectionHtmlId);
                 const chapterDiv = document.createElement("div");
                 chapterDiv.className = "chapter";
                 const chapterAnchor = document.createElement("a");
@@ -1134,18 +1138,18 @@ a.disabled {
                     chapterAnchor.classList.add("disabled");
                 }
                 chapterDiv.appendChild(chapterAnchor);
-                sectionDiv === null || sectionDiv === void 0 ? void 0 : sectionDiv.appendChild(chapterDiv);
+                sectionDiv?.appendChild(chapterDiv);
             }
             else {
                 let sectionDiv;
-                if (TocMain === null || TocMain === void 0 ? void 0 : TocMain.querySelector("#section00")) {
-                    sectionDiv = TocMain === null || TocMain === void 0 ? void 0 : TocMain.querySelector("#section00");
+                if (TocMain?.querySelector("#section00")) {
+                    sectionDiv = TocMain?.querySelector("#section00");
                 }
                 else {
                     sectionDiv = document.createElement("div");
                     sectionDiv.id = "section00";
                     sectionDiv.className = "section";
-                    TocMain === null || TocMain === void 0 ? void 0 : TocMain.appendChild(sectionDiv);
+                    TocMain?.appendChild(sectionDiv);
                 }
                 const chapterDiv = document.createElement("div");
                 chapterDiv.className = "chapter";
@@ -1156,12 +1160,10 @@ a.disabled {
                     chapterAnchor.classList.add("disabled");
                 }
                 chapterDiv.appendChild(chapterAnchor);
-                sectionDiv === null || sectionDiv === void 0 ? void 0 : sectionDiv.appendChild(chapterDiv);
+                sectionDiv?.appendChild(chapterDiv);
             }
             lib_1.console_debug("[save]保存ToC文件");
-            this.savedZip.file("ToC.html", new Blob([
-                ToC.documentElement.outerHTML.replace(new RegExp("data-src-address", "g"), "src"),
-            ], {
+            this.savedZip.file("ToC.html", new Blob([ToC.documentElement.outerHTML.replaceAll("data-src-address", "src")], {
                 type: "text/html; charset=UTF-8",
             }));
         }
@@ -1237,17 +1239,16 @@ a.disabled {
     genSectionHtmlFile(sectionName) {
         let htmlFile = new DOMParser().parseFromString(`<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="https://github.com/yingziwu/novel-downloader"><link href="style.css" type="text/css" rel="stylesheet"/><title>${sectionName}</title></head><body><div class="main"><h1>${sectionName}</h1></div></body></html>`, "text/html");
         return new Blob([
-            htmlFile.documentElement.outerHTML.replace(new RegExp("data-src-address", "g"), "src"),
+            htmlFile.documentElement.outerHTML.replaceAll("data-src-address", "src"),
         ], {
             type: "text/html; charset=UTF-8",
         });
     }
     genChapterHtmlFile(chapterName, DOM, chapterUrl) {
-        var _a;
         let htmlFile = new DOMParser().parseFromString(`<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="https://github.com/yingziwu/novel-downloader"><meta name="source" content="${chapterUrl}"><link href="style.css" type="text/css" rel="stylesheet"/><title>${chapterName}</title></head><body><div class="main"><h2>${chapterName}</h2></div></body></html>`, "text/html");
-        (_a = htmlFile.querySelector(".main")) === null || _a === void 0 ? void 0 : _a.appendChild(DOM);
+        htmlFile.querySelector(".main")?.appendChild(DOM);
         return new Blob([
-            htmlFile.documentElement.outerHTML.replace(new RegExp("data-src-address", "g"), "src"),
+            htmlFile.documentElement.outerHTML.replaceAll("data-src-address", "src"),
         ], {
             type: "text/html; charset=UTF-8",
         });
@@ -1265,9 +1266,9 @@ a.disabled {
         return 0;
     }
 }
-const keyNamesS = ["mainStyleText", "tocStyleText"];
-const keyNamesF = ["getchapterName"];
 function saveOptionsValidate(data) {
+    const keyNamesS = ["mainStyleText", "tocStyleText"];
+    const keyNamesF = ["getchapterName"];
     function keyNametest(keyname) {
         const keyList = new Array().concat(keyNamesS).concat(keyNamesF);
         if (keyList.includes(keyname)) {
@@ -1294,6 +1295,9 @@ function saveOptionsValidate(data) {
     if (typeof data !== "object") {
         return false;
     }
+    if (Object.keys(data).length === 0) {
+        return false;
+    }
     for (const keyname in data) {
         if (!keyNametest(keyname)) {
             return false;
@@ -1310,6 +1314,11 @@ function save(book, options) {
     if (rules_1.enableCustomSaveOptions && saveOptionsValidate(options)) {
         for (const option in options) {
             saveBookObj[option] = options[option];
+        }
+    }
+    if (book.saveOptions !== undefined) {
+        for (const option in book.saveOptions) {
+            saveBookObj[option] = book.saveOptions[option];
         }
     }
     saveBookObj.saveTxt();
@@ -1374,12 +1383,12 @@ function r18SiteWarning() {
         }
     }
     else {
-        v = JSON.parse(v);
-        if (v) {
-            return true;
+        if (typeof JSON.parse(v) === "boolean") {
+            return JSON.parse(v);
         }
         else {
-            return false;
+            localStorage.removeItem(k);
+            return r18SiteWarning();
         }
     }
 }
@@ -1388,15 +1397,15 @@ exports.r18SiteWarning = r18SiteWarning;
 
 /***/ }),
 
-/***/ 563:
+/***/ "./src/lib.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.storageAvailable = exports.sandboxed = exports.putAttachmentClassCache = exports.getAttachmentClassCache = exports.console_debug = exports.sleep = exports.concurrencyRun = exports.gfetch = exports.rm = exports.ggetHtmlDOM = exports.ggetText = exports.getHtmlDOM = exports.getText = exports.cleanDOM = exports._GM_info = void 0;
-const cleanDOM_1 = __webpack_require__(962);
-const rules_1 = __webpack_require__(489);
-const index_1 = __webpack_require__(607);
+const cleanDOM_1 = __webpack_require__("./src/cleanDOM.ts");
+const rules_1 = __webpack_require__("./src/rules.ts");
+const index_1 = __webpack_require__("./src/index.ts");
 if (typeof GM_info === "undefined") {
     if (typeof GM === "undefined") {
         throw new Error("未发现 GM API");
@@ -1589,14 +1598,8 @@ function console_debug(...messages) {
 }
 exports.console_debug = console_debug;
 function getAttachmentClassCache(url, name) {
-    const f1 = index_1.attachmentClassCache.filter((attachmentClass) => attachmentClass.url === url);
-    const f2 = f1.filter((attachmentClass) => attachmentClass.name === name);
-    if (f2.length) {
-        return f2[0];
-    }
-    else {
-        return null;
-    }
+    const found = index_1.attachmentClassCache.find((attachmentClass) => attachmentClass.url === url && attachmentClass.name === name);
+    return found;
 }
 exports.getAttachmentClassCache = getAttachmentClassCache;
 function putAttachmentClassCache(attachmentClass) {
@@ -1639,14 +1642,14 @@ exports.storageAvailable = storageAvailable;
 
 /***/ }),
 
-/***/ 519:
+/***/ "./src/main.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.attachmentClass = exports.Chapter = exports.Book = exports.Status = void 0;
-const rules_1 = __webpack_require__(489);
-const lib_1 = __webpack_require__(563);
+const rules_1 = __webpack_require__("./src/rules.ts");
+const lib_1 = __webpack_require__("./src/lib.ts");
 var Status;
 (function (Status) {
     Status[Status["pending"] = 0] = "pending";
@@ -1763,7 +1766,7 @@ class attachmentClass {
         delete headers["Referer"];
         this.status = Status.downloading;
         return fetch(this.url, {
-            headers: Object.assign({}, headers),
+            headers: { ...headers },
             referrer: referer,
         })
             .then((response) => {
@@ -1796,7 +1799,7 @@ class attachmentClass {
         const headers = Object.assign(this.defaultHeader, this.headers);
         this.status = Status.downloading;
         return lib_1.gfetch(this.url, {
-            headers: Object.assign({}, headers),
+            headers: { ...headers },
             responseType: "blob",
         })
             .then((response) => {
@@ -1831,7 +1834,7 @@ exports.attachmentClass = attachmentClass;
 
 /***/ }),
 
-/***/ 489:
+/***/ "./src/rules.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
@@ -1850,154 +1853,154 @@ async function getRule() {
     let ruleClass;
     switch (host) {
         case "www.ciweimao.com": {
-            const { ciweimao } = await Promise.resolve().then(() => __webpack_require__(444));
+            const { ciweimao } = await Promise.resolve().then(() => __webpack_require__("./src/rules/ciweimao.ts"));
             ruleClass = ciweimao;
             break;
         }
         case "www.uukanshu.com": {
-            const { uukanshu } = await Promise.resolve().then(() => __webpack_require__(623));
+            const { uukanshu } = await Promise.resolve().then(() => __webpack_require__("./src/rules/uukanshu.ts"));
             ruleClass = uukanshu;
             break;
         }
         case "www.yruan.com": {
-            const { yrun } = await Promise.resolve().then(() => __webpack_require__(514));
+            const { yrun } = await Promise.resolve().then(() => __webpack_require__("./src/rules/yruan.ts"));
             ruleClass = yrun;
             break;
         }
         case "www.biquwoo.com": {
-            const { biquwo } = await Promise.resolve().then(() => __webpack_require__(931));
+            const { biquwo } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge.ts"));
             ruleClass = biquwo;
             break;
         }
         case "www.shuquge.com": {
-            const { shuquge } = await Promise.resolve().then(() => __webpack_require__(931));
+            const { shuquge } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge.ts"));
             ruleClass = shuquge;
             break;
         }
         case "www.dingdiann.net": {
-            const { dingdiann } = await Promise.resolve().then(() => __webpack_require__(931));
+            const { dingdiann } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge.ts"));
             ruleClass = dingdiann;
             break;
         }
         case "www.lewenn.com":
         case "www.klxs.la":
         case "www.xkzw.org": {
-            const { xkzw } = await Promise.resolve().then(() => __webpack_require__(441));
+            const { xkzw } = await Promise.resolve().then(() => __webpack_require__("./src/rules/xkzw.ts"));
             ruleClass = xkzw;
             break;
         }
         case "www.266ks.com": {
-            const { c226ks } = await Promise.resolve().then(() => __webpack_require__(502));
+            const { c226ks } = await Promise.resolve().then(() => __webpack_require__("./src/rules/226ks.ts"));
             ruleClass = c226ks;
             break;
         }
         case "book.sfacg.com": {
-            const { sfacg } = await Promise.resolve().then(() => __webpack_require__(116));
+            const { sfacg } = await Promise.resolve().then(() => __webpack_require__("./src/rules/sfacg.ts"));
             ruleClass = sfacg;
             break;
         }
         case "www.hetushu.com": {
-            const { hetushu } = await Promise.resolve().then(() => __webpack_require__(161));
+            const { hetushu } = await Promise.resolve().then(() => __webpack_require__("./src/rules/hetushu.ts"));
             ruleClass = hetushu;
             break;
         }
         case "www.shouda8.com":
         case "www.shouda88.com": {
-            const { shouda8 } = await Promise.resolve().then(() => __webpack_require__(382));
+            const { shouda8 } = await Promise.resolve().then(() => __webpack_require__("./src/rules/shouda8.ts"));
             ruleClass = shouda8;
             break;
         }
         case "www.gebiqu.com": {
-            const { gebiqu } = await Promise.resolve().then(() => __webpack_require__(931));
+            const { gebiqu } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge.ts"));
             ruleClass = gebiqu;
             break;
         }
         case "www.meegoq.com":
         case "www.viviyzw.com": {
-            const { meegoq } = await Promise.resolve().then(() => __webpack_require__(158));
+            const { meegoq } = await Promise.resolve().then(() => __webpack_require__("./src/rules/meegoq.ts"));
             ruleClass = meegoq;
             break;
         }
         case "www.xiaoshuodaquan.com": {
-            const { xiaoshuodaquan } = await Promise.resolve().then(() => __webpack_require__(678));
+            const { xiaoshuodaquan } = await Promise.resolve().then(() => __webpack_require__("./src/rules/xiaoshuodaquan.ts"));
             ruleClass = xiaoshuodaquan;
             break;
         }
         case "book.qidian.com": {
-            const { qidian } = await Promise.resolve().then(() => __webpack_require__(839));
+            const { qidian } = await Promise.resolve().then(() => __webpack_require__("./src/rules/qidian.ts"));
             ruleClass = qidian;
             break;
         }
         case "www.jjwxc.net": {
-            const { jjwxc } = await Promise.resolve().then(() => __webpack_require__(217));
+            const { jjwxc } = await Promise.resolve().then(() => __webpack_require__("./src/rules/jjwxc.ts"));
             ruleClass = jjwxc;
             break;
         }
         case "www.81book.com": {
-            const { zwdu } = await Promise.resolve().then(() => __webpack_require__(931));
+            const { zwdu } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge.ts"));
             ruleClass = zwdu;
             break;
         }
         case "book.zongheng.com":
         case "huayu.zongheng.com": {
-            const { zongheng } = await Promise.resolve().then(() => __webpack_require__(862));
+            const { zongheng } = await Promise.resolve().then(() => __webpack_require__("./src/rules/zongheng.ts"));
             ruleClass = zongheng;
             break;
         }
         case "www.17k.com": {
-            const { c17k } = await Promise.resolve().then(() => __webpack_require__(528));
+            const { c17k } = await Promise.resolve().then(() => __webpack_require__("./src/rules/17k.ts"));
             ruleClass = c17k;
             break;
         }
         case "www.shuhai.com":
         case "mm.shuhai.com": {
-            const { shuhai } = await Promise.resolve().then(() => __webpack_require__(113));
+            const { shuhai } = await Promise.resolve().then(() => __webpack_require__("./src/rules/shuhai.ts"));
             ruleClass = shuhai;
             break;
         }
         case "www.gongzicp.com": {
-            const { gongzicp } = await Promise.resolve().then(() => __webpack_require__(374));
+            const { gongzicp } = await Promise.resolve().then(() => __webpack_require__("./src/rules/gongzicp.ts"));
             ruleClass = gongzicp;
             break;
         }
         case "m.yuzhaige.cc": {
-            const { yuzhaige } = await Promise.resolve().then(() => __webpack_require__(191));
+            const { yuzhaige } = await Promise.resolve().then(() => __webpack_require__("./src/rules/yuzhaige.ts"));
             ruleClass = yuzhaige;
             break;
         }
         case "www.linovel.net": {
-            const { linovel } = await Promise.resolve().then(() => __webpack_require__(561));
+            const { linovel } = await Promise.resolve().then(() => __webpack_require__("./src/rules/linovel.ts"));
             ruleClass = linovel;
             break;
         }
         case "www.xinwanben.com": {
-            const { xinwanben } = await Promise.resolve().then(() => __webpack_require__(874));
+            const { xinwanben } = await Promise.resolve().then(() => __webpack_require__("./src/rules/xinwanben.ts"));
             ruleClass = xinwanben;
             break;
         }
         case "www.tadu.com": {
-            const { tadu } = await Promise.resolve().then(() => __webpack_require__(995));
+            const { tadu } = await Promise.resolve().then(() => __webpack_require__("./src/rules/tadu.ts"));
             ruleClass = tadu;
             break;
         }
         case "www.idejian.com": {
-            const { idejian } = await Promise.resolve().then(() => __webpack_require__(210));
+            const { idejian } = await Promise.resolve().then(() => __webpack_require__("./src/rules/idejian.ts"));
             ruleClass = idejian;
             break;
         }
         case "www.qimao.com": {
-            const { qimao } = await Promise.resolve().then(() => __webpack_require__(959));
+            const { qimao } = await Promise.resolve().then(() => __webpack_require__("./src/rules/qimao.ts"));
             ruleClass = qimao;
             break;
         }
         case "www.wenku8.net": {
-            const { wenku8 } = await Promise.resolve().then(() => __webpack_require__(8));
+            const { wenku8 } = await Promise.resolve().then(() => __webpack_require__("./src/rules/wenku8.ts"));
             ruleClass = wenku8;
             break;
         }
         case "www.dmzj.com":
         case "www.dmzj1.com": {
-            const { dmzj } = await Promise.resolve().then(() => __webpack_require__(291));
+            const { dmzj } = await Promise.resolve().then(() => __webpack_require__("./src/rules/dmzj.ts"));
             ruleClass = dmzj;
             break;
         }
@@ -2017,48 +2020,53 @@ async function getRule() {
         case "www.xn--pxtr7m.net":
         case "sosadfun.link":
         case "www.sosadfun.link": {
-            const { sosadfun } = await Promise.resolve().then(() => __webpack_require__(930));
+            const { sosadfun } = await Promise.resolve().then(() => __webpack_require__("./src/rules/sosadfun.ts"));
             ruleClass = sosadfun;
             break;
         }
         case "www.westnovel.com": {
-            const { westnovel } = await Promise.resolve().then(() => __webpack_require__(997));
+            const { westnovel } = await Promise.resolve().then(() => __webpack_require__("./src/rules/westnovel.ts"));
             ruleClass = westnovel;
             break;
         }
         case "www.mht.tw": {
-            const { mht } = await Promise.resolve().then(() => __webpack_require__(155));
+            const { mht } = await Promise.resolve().then(() => __webpack_require__("./src/rules/mht.ts"));
             ruleClass = mht;
             break;
         }
         case "www.dierbanzhu1.com": {
-            const { dierbanzhu } = await Promise.resolve().then(() => __webpack_require__(481));
+            const { dierbanzhu } = await Promise.resolve().then(() => __webpack_require__("./src/rules/dierbanzhu.ts"));
             ruleClass = dierbanzhu;
             break;
         }
         case "www.xbiquge.so": {
-            const { xbiquge } = await Promise.resolve().then(() => __webpack_require__(931));
+            const { xbiquge } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge.ts"));
             ruleClass = xbiquge;
             break;
         }
         case "www.hongyeshuzhai.com": {
-            const { hongyeshuzhai } = await Promise.resolve().then(() => __webpack_require__(931));
+            const { hongyeshuzhai } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge.ts"));
             ruleClass = hongyeshuzhai;
             break;
         }
         case "www.linovelib.com": {
-            const { linovelib } = await Promise.resolve().then(() => __webpack_require__(123));
+            const { linovelib } = await Promise.resolve().then(() => __webpack_require__("./src/rules/linovelib.ts"));
             ruleClass = linovelib;
             break;
         }
         case "www.luoqiuzw.com": {
-            const { luoqiuzw } = await Promise.resolve().then(() => __webpack_require__(931));
+            const { luoqiuzw } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge.ts"));
             ruleClass = luoqiuzw;
             break;
         }
         case "www.yibige.la": {
-            const { yibige } = await Promise.resolve().then(() => __webpack_require__(889));
+            const { yibige } = await Promise.resolve().then(() => __webpack_require__("./src/rules/yibige.ts"));
             ruleClass = yibige;
+            break;
+        }
+        case "www.fushuwang.org": {
+            const { fushuwang } = await Promise.resolve().then(() => __webpack_require__("./src/rules/fushuwang.ts"));
+            ruleClass = fushuwang;
             break;
         }
         default: {
@@ -2073,15 +2081,15 @@ exports.getRule = getRule;
 
 /***/ }),
 
-/***/ 528:
+/***/ "./src/rules/17k.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.c17k = void 0;
-const main_1 = __webpack_require__(519);
-const lib_1 = __webpack_require__(563);
-const common_1 = __webpack_require__(352);
+const main_1 = __webpack_require__("./src/main.ts");
+const lib_1 = __webpack_require__("./src/lib.ts");
+const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 class c17k {
     constructor() {
         this.imageMode = "TM";
@@ -2116,7 +2124,7 @@ class c17k {
                 const chapterName = span.innerText.trim();
                 const chapterUrl = a.href;
                 const isVIP = () => {
-                    if (span === null || span === void 0 ? void 0 : span.className.includes("vip")) {
+                    if (span?.className.includes("vip")) {
                         return true;
                     }
                     else {
@@ -2200,15 +2208,15 @@ exports.c17k = c17k;
 
 /***/ }),
 
-/***/ 502:
+/***/ "./src/rules/226ks.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.c226ks = void 0;
-const main_1 = __webpack_require__(519);
-const lib_1 = __webpack_require__(563);
-const common_1 = __webpack_require__(352);
+const main_1 = __webpack_require__("./src/main.ts");
+const lib_1 = __webpack_require__("./src/lib.ts");
+const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 class c226ks {
     constructor() {
         this.imageMode = "TM";
@@ -2233,7 +2241,7 @@ class c226ks {
             lib_1.console_debug(`[chapter]请求${indexUrl}`);
             const dom = await lib_1.getHtmlDOM(indexUrl, "UTF-8");
             const ul = dom.querySelector("div.row.row-section > div > div:nth-child(4) > ul");
-            if (ul === null || ul === void 0 ? void 0 : ul.childElementCount) {
+            if (ul?.childElementCount) {
                 lis = lis.concat(Array.from(ul.children));
             }
         }
@@ -2294,15 +2302,15 @@ exports.c226ks = c226ks;
 
 /***/ }),
 
-/***/ 931:
+/***/ "./src/rules/biquge.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.luoqiuzw = exports.hongyeshuzhai = exports.xbiquge = exports.zwdu = exports.gebiqu = exports.dingdiann = exports.shuquge = exports.biquwo = exports.bookParseTemp = void 0;
-const main_1 = __webpack_require__(519);
-const lib_1 = __webpack_require__(563);
-const common_1 = __webpack_require__(352);
+const main_1 = __webpack_require__("./src/main.ts");
+const lib_1 = __webpack_require__("./src/lib.ts");
+const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 async function bookParseTemp({ bookUrl, bookname, author, introDom, introDomPatch, coverUrl, chapterListSelector, charset, chapterParse, }) {
     const [introduction, introductionHTML, introCleanimages] = common_1.introDomHandle(introDom);
     const additionalMetadate = {};
@@ -2310,12 +2318,12 @@ async function bookParseTemp({ bookUrl, bookname, author, introDom, introDomPatc
     additionalMetadate.cover.init();
     const chapters = [];
     const dl = document.querySelector(chapterListSelector);
-    if (dl === null || dl === void 0 ? void 0 : dl.childElementCount) {
+    if (dl?.childElementCount) {
         const dlc = Array.from(dl.children);
         if (dlc[0].nodeName === "DT" &&
             (dlc[0].innerText.includes("最新章节") ||
                 dlc[0].innerText.includes("最新的八个章节"))) {
-            for (let i = 0; i < (dl === null || dl === void 0 ? void 0 : dl.childElementCount); i++) {
+            for (let i = 0; i < dl?.childElementCount; i++) {
                 if (i !== 0 && dlc[i].nodeName === "DT") {
                     delete dlc[0];
                     break;
@@ -2684,15 +2692,15 @@ exports.luoqiuzw = luoqiuzw;
 
 /***/ }),
 
-/***/ 444:
+/***/ "./src/rules/ciweimao.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.ciweimao = void 0;
-const main_1 = __webpack_require__(519);
-const lib_1 = __webpack_require__(563);
-const common_1 = __webpack_require__(352);
+const main_1 = __webpack_require__("./src/main.ts");
+const lib_1 = __webpack_require__("./src/lib.ts");
+const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 class ciweimao {
     constructor() {
         this.imageMode = "TM";
@@ -2700,7 +2708,6 @@ class ciweimao {
         this.maxRunLimit = 1;
     }
     async bookParse(chapterParse) {
-        var _a, _b;
         const bookid = unsafeWindow.HB.book.book_id;
         const bookUrl = `https://www.ciweimao.com/book/${bookid}`;
         const bookname = (document.querySelector(".book-catalog .hd h3")).innerText.trim();
@@ -2732,12 +2739,12 @@ class ciweimao {
                 let isPaid = false;
                 if (c.childElementCount) {
                     isVIP = true;
-                    if (((_a = c.firstElementChild) === null || _a === void 0 ? void 0 : _a.className) === "icon-unlock") {
+                    if (c.firstElementChild?.className === "icon-unlock") {
                         isPaid = true;
                     }
                 }
                 const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, chapterParse, "UTF-8", {});
-                const isLogin = ((_b = document.querySelector(".login-info.ly-fr")) === null || _b === void 0 ? void 0 : _b.childElementCount) === 1
+                const isLogin = document.querySelector(".login-info.ly-fr")?.childElementCount === 1
                     ? true
                     : false;
                 if (isVIP && !(isLogin && isPaid)) {
@@ -2862,8 +2869,7 @@ class ciweimao {
             };
         }
         async function vipChapter() {
-            var _a;
-            const isLogin = ((_a = document.querySelector(".login-info.ly-fr")) === null || _a === void 0 ? void 0 : _a.childElementCount) === 1
+            const isLogin = document.querySelector(".login-info.ly-fr")?.childElementCount === 1
                 ? true
                 : false;
             if (isLogin && isPaid) {
@@ -2978,15 +2984,15 @@ exports.ciweimao = ciweimao;
 
 /***/ }),
 
-/***/ 481:
+/***/ "./src/rules/dierbanzhu.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.dierbanzhu = void 0;
-const main_1 = __webpack_require__(519);
-const lib_1 = __webpack_require__(563);
-const common_1 = __webpack_require__(352);
+const main_1 = __webpack_require__("./src/main.ts");
+const lib_1 = __webpack_require__("./src/lib.ts");
+const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 class dierbanzhu {
     constructor() {
         this.imageMode = "TM";
@@ -3007,7 +3013,7 @@ class dierbanzhu {
         additionalMetadate.cover.init();
         const chapters = [];
         const dl = document.querySelector("#list>dl");
-        if (dl === null || dl === void 0 ? void 0 : dl.childElementCount) {
+        if (dl?.childElementCount) {
             const dlc = Array.from(dl.children);
             const chapterList = dlc.filter((obj) => obj !== undefined);
             let chapterNumber = 0;
@@ -3076,15 +3082,15 @@ exports.dierbanzhu = dierbanzhu;
 
 /***/ }),
 
-/***/ 291:
+/***/ "./src/rules/dmzj.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.dmzj = void 0;
-const main_1 = __webpack_require__(519);
-const lib_1 = __webpack_require__(563);
-const common_1 = __webpack_require__(352);
+const main_1 = __webpack_require__("./src/main.ts");
+const lib_1 = __webpack_require__("./src/lib.ts");
+const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 class dmzj {
     constructor() {
         this.imageMode = "TM";
@@ -3179,15 +3185,103 @@ exports.dmzj = dmzj;
 
 /***/ }),
 
-/***/ 374:
+/***/ "./src/rules/fushuwang.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.fushuwang = void 0;
+const main_1 = __webpack_require__("./src/main.ts");
+const lib_1 = __webpack_require__("./src/lib.ts");
+class fushuwang {
+    constructor() {
+        this.imageMode = "TM";
+        this.charset = "GBK";
+        this.maxRunLimit = 5;
+        this.saveOptions = {
+            genChapterText: (chapterName, contentText) => {
+                return `${contentText}\n`;
+            },
+            genChapterHtmlFile: (chapterName, DOM, chapterUrl) => {
+                let htmlFile = new DOMParser().parseFromString(`<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="https://github.com/yingziwu/novel-downloader"><meta name="source" content="${chapterUrl}"><link href="style.css" type="text/css" rel="stylesheet"/><title>${chapterName}</title></head><body><div class="main"></div></body></html>`, "text/html");
+                htmlFile.querySelector(".main")?.appendChild(DOM);
+                return new Blob([
+                    htmlFile.documentElement.outerHTML.replaceAll("data-src-address", "src"),
+                ], {
+                    type: "text/html; charset=UTF-8",
+                });
+            },
+        };
+    }
+    async bookParse(chapterParse) {
+        const bookUrl = (document.location.origin + document.location.pathname).replace(/(_\d+)\.html$/, ".html");
+        const [bookname, author] = (document.querySelector(".title_info > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(1) > h1:nth-child(1)")).innerText.split("——");
+        const [introduction, introductionHTML] = [null, null];
+        const additionalMetadate = {};
+        const options = document.querySelectorAll("p.pageLink > select > option");
+        const urls = Array.from(options).map((option) => document.location.origin + option.getAttribute("value"));
+        const chapters = [];
+        for (let i = 0; i < urls.length; i++) {
+            const chapterUrl = urls[i];
+            const chapterName = `page${i}`;
+            const isVIP = false;
+            const isPaid = false;
+            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, i + 1, chapterName, isVIP, isPaid, null, null, null, chapterParse, "GBK", {});
+            chapters.push(chapter);
+        }
+        return {
+            bookUrl: bookUrl,
+            bookname: bookname,
+            author: author,
+            introduction: introduction,
+            introductionHTML: introductionHTML,
+            additionalMetadate: additionalMetadate,
+            chapters: chapters,
+        };
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+        const doc = await lib_1.getHtmlDOM(chapterUrl, charset);
+        const content = doc.querySelector("#text");
+        if (content) {
+            lib_1.rm("span", true, content);
+            lib_1.rm("p.pageLink", true, content);
+            lib_1.rm("script", true, content);
+            let { dom, text, images } = lib_1.cleanDOM(content, "TM");
+            return {
+                chapterName: chapterName,
+                contentRaw: content,
+                contentText: text,
+                contentHTML: dom,
+                contentImages: images,
+                additionalMetadate: null,
+            };
+        }
+        else {
+            return {
+                chapterName: chapterName,
+                contentRaw: null,
+                contentText: null,
+                contentHTML: null,
+                contentImages: null,
+                additionalMetadate: null,
+            };
+        }
+    }
+}
+exports.fushuwang = fushuwang;
+
+
+/***/ }),
+
+/***/ "./src/rules/gongzicp.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.gongzicp = void 0;
-const main_1 = __webpack_require__(519);
-const lib_1 = __webpack_require__(563);
-const common_1 = __webpack_require__(352);
+const main_1 = __webpack_require__("./src/main.ts");
+const lib_1 = __webpack_require__("./src/lib.ts");
+const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 class gongzicp {
     constructor() {
         this.imageMode = "TM";
@@ -3478,21 +3572,20 @@ exports.gongzicp = gongzicp;
 
 /***/ }),
 
-/***/ 161:
+/***/ "./src/rules/hetushu.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.hetushu = void 0;
-const main_1 = __webpack_require__(519);
-const lib_1 = __webpack_require__(563);
-const common_1 = __webpack_require__(352);
+const main_1 = __webpack_require__("./src/main.ts");
+const lib_1 = __webpack_require__("./src/lib.ts");
+const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 class hetushu {
     constructor() {
         this.imageMode = "TM";
     }
     async bookParse(chapterParse) {
-        var _a;
         const bookUrl = document.location.href;
         const bookname = (document.querySelector(".book_info > h2")).innerText.trim();
         const author = (document.querySelector(".book_info > div:nth-child(3) > a:nth-child(1)")).innerText.trim();
@@ -3503,7 +3596,7 @@ class hetushu {
         additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
         additionalMetadate.cover.init();
         const chapters = [];
-        const chapterList = ((_a = document.querySelector("#dir")) === null || _a === void 0 ? void 0 : _a.childNodes);
+        const chapterList = (document.querySelector("#dir")?.childNodes);
         if (chapterList && chapterList.length !== 0) {
             let chapterNumber = 0;
             let sectionNumber = 0;
@@ -3614,10 +3707,9 @@ class hetushu {
                 lib_1.rm(s, true, content);
             });
             Array.from(content.querySelectorAll("div")).map((oldNode) => {
-                var _a;
                 const newNode = document.createElement("p");
                 newNode.innerHTML = oldNode.innerHTML;
-                (_a = oldNode.parentNode) === null || _a === void 0 ? void 0 : _a.replaceChild(newNode, oldNode);
+                oldNode.parentNode?.replaceChild(newNode, oldNode);
             });
             let { dom, text, images } = lib_1.cleanDOM(content, "TM");
             return {
@@ -3646,15 +3738,15 @@ exports.hetushu = hetushu;
 
 /***/ }),
 
-/***/ 210:
+/***/ "./src/rules/idejian.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.idejian = void 0;
-const main_1 = __webpack_require__(519);
-const lib_1 = __webpack_require__(563);
-const common_1 = __webpack_require__(352);
+const main_1 = __webpack_require__("./src/main.ts");
+const lib_1 = __webpack_require__("./src/lib.ts");
+const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 class idejian {
     constructor() {
         this.imageMode = "TM";
@@ -3738,17 +3830,17 @@ exports.idejian = idejian;
 
 /***/ }),
 
-/***/ 217:
+/***/ "./src/rules/jjwxc.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.jjwxc = void 0;
-const main_1 = __webpack_require__(519);
-const lib_1 = __webpack_require__(563);
-const rules_1 = __webpack_require__(489);
-const jjwxcFontDecode_1 = __webpack_require__(798);
-const common_1 = __webpack_require__(352);
+const main_1 = __webpack_require__("./src/main.ts");
+const lib_1 = __webpack_require__("./src/lib.ts");
+const rules_1 = __webpack_require__("./src/rules.ts");
+const jjwxcFontDecode_1 = __webpack_require__("./src/rules/lib/jjwxcFontDecode.ts");
+const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 class jjwxc {
     constructor() {
         this.imageMode = "TM";
@@ -3756,7 +3848,6 @@ class jjwxc {
         this.charset = "GB18030";
     }
     async bookParse(chapterParse) {
-        var _a;
         const bookUrl = document.location.href;
         const bookname = (document.querySelector('h1[itemprop="name"] > span')).innerText.trim();
         const additionalMetadate = {};
@@ -3789,16 +3880,15 @@ class jjwxc {
             if (tr.getAttribute("bgcolor")) {
                 sectionNumber++;
                 sectionChapterNumber = 0;
-                sectionName = (_a = (tr.querySelector("b.volumnfont"))) === null || _a === void 0 ? void 0 : _a.innerText.trim();
+                sectionName = (tr.querySelector("b.volumnfont"))?.innerText.trim();
             }
             else if (tr.getAttribute("itemprop")) {
                 chapterNumber++;
                 sectionChapterNumber++;
                 const td = tr.querySelector("td:nth-child(2)");
-                const a = td === null || td === void 0 ? void 0 : td.querySelector("a:nth-child(1)");
+                const a = td?.querySelector("a:nth-child(1)");
                 const isLocked = () => {
-                    var _a;
-                    if (((_a = td) === null || _a === void 0 ? void 0 : _a.innerText.trim()) === "[锁]") {
+                    if (td?.innerText.trim() === "[锁]") {
                         return true;
                     }
                     else {
@@ -3806,7 +3896,7 @@ class jjwxc {
                     }
                 };
                 const isVIP = () => {
-                    if (a === null || a === void 0 ? void 0 : a.getAttribute("onclick")) {
+                    if (a?.getAttribute("onclick")) {
                         return true;
                     }
                     else {
@@ -3877,7 +3967,7 @@ class jjwxc {
                     [authorSayDom, authorSayText] = [adom, atext];
                 }
                 lib_1.rm("div", true, content);
-                content.innerHTML = content.innerHTML.replace(new RegExp("@无限好文，尽在晋江文学城", "g"), "");
+                content.innerHTML = content.innerHTML.replaceAll("@无限好文，尽在晋江文学城", "");
                 let { dom, text, images } = lib_1.cleanDOM(content, "TM");
                 if (rawAuthorSayDom && authorSayDom && authorSayText) {
                     const hr = document.createElement("hr");
@@ -3907,7 +3997,6 @@ class jjwxc {
         async function vipChapter() {
             async function getFont() {
                 function getFontInfo() {
-                    var _a;
                     const s = dom.querySelectorAll("body > style")[1];
                     let fontName, fontUrl;
                     if (s.sheet) {
@@ -3928,7 +4017,8 @@ class jjwxc {
                             }
                         }
                     }
-                    const _fontName = (_a = document.querySelector("div.noveltext")) === null || _a === void 0 ? void 0 : _a.classList[1];
+                    const _fontName = document.querySelector("div.noveltext")
+                        ?.classList[1];
                     if (_fontName) {
                         fontName = _fontName;
                         fontUrl =
@@ -4015,7 +4105,7 @@ class jjwxc {
                         [authorSayDom, authorSayText] = [adom, atext];
                     }
                     lib_1.rm("div", true, content);
-                    content.innerHTML = content.innerHTML.replace(new RegExp("@无限好文，尽在晋江文学城", "g"), "");
+                    content.innerHTML = content.innerHTML.replace("@无限好文，尽在晋江文学城", "");
                     let { dom: rawDom, text: rawText, images } = lib_1.cleanDOM(content, "TM");
                     if (rawAuthorSayDom && authorSayDom && authorSayText) {
                         const hr = document.createElement("hr");
@@ -4071,13 +4161,13 @@ exports.jjwxc = jjwxc;
 
 /***/ }),
 
-/***/ 352:
+/***/ "./src/rules/lib/common.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.introDomHandle = void 0;
-const lib_1 = __webpack_require__(563);
+const lib_1 = __webpack_require__("./src/lib.ts");
 function introDomHandle(introDom) {
     if (introDom === null) {
         return [null, null, null];
@@ -4092,7 +4182,7 @@ exports.introDomHandle = introDomHandle;
 
 /***/ }),
 
-/***/ 798:
+/***/ "./src/rules/lib/jjwxcFontDecode.ts":
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -4104,10 +4194,9 @@ function replaceJjwxcCharacter(fontName, inputText) {
     if (jjwxcFontTable) {
         for (const jjwxcCharacter in jjwxcFontTable) {
             const normalCharacter = jjwxcFontTable[jjwxcCharacter];
-            const re = new RegExp(jjwxcCharacter, "g");
-            outputText = outputText.replace(re, normalCharacter);
+            outputText = outputText.replaceAll(jjwxcCharacter, normalCharacter);
         }
-        outputText = outputText.replace(new RegExp("\u200c", "g"), "");
+        outputText = outputText.replaceAll("\u200c", "");
     }
     return outputText;
 }
@@ -25994,7 +26083,7 @@ const jjwxcFontTables = {
 
 /***/ }),
 
-/***/ 394:
+/***/ "./src/rules/lib/yuzhaigeImageDecode.ts":
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -26004,9 +26093,8 @@ function replaceYuzhaigeImage(inputText) {
     let outputText = inputText;
     for (const imageFilename in imageTable) {
         const normalCharacter = imageTable[imageFilename];
-        const reStr = `<img src="https?:\\/\\/m.yuzhaige.cc\\/wzbodyimg\\/${imageFilename}">`;
-        const re = new RegExp(reStr, "g");
-        outputText = outputText.replace(re, normalCharacter);
+        const imageHTML = `<img src="http://m.yuzhaige.cc/wzbodyimg/${imageFilename}">`;
+        outputText = outputText.replaceAll(imageHTML, normalCharacter);
     }
     return outputText;
 }
@@ -26741,20 +26829,21 @@ const imageTable = {
     "5RwMUT.png": "\u854A",
     "b94JXX.png": "\u8114",
     "oxFS6J.png": "\u8114",
+    "H53jMR.png": "\u96CF",
 };
 
 
 /***/ }),
 
-/***/ 561:
+/***/ "./src/rules/linovel.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.linovel = void 0;
-const main_1 = __webpack_require__(519);
-const lib_1 = __webpack_require__(563);
-const common_1 = __webpack_require__(352);
+const main_1 = __webpack_require__("./src/main.ts");
+const lib_1 = __webpack_require__("./src/lib.ts");
+const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 class linovel {
     constructor() {
         this.imageMode = "TM";
@@ -26891,15 +26980,15 @@ exports.linovel = linovel;
 
 /***/ }),
 
-/***/ 123:
+/***/ "./src/rules/linovelib.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.linovelib = void 0;
-const main_1 = __webpack_require__(519);
-const lib_1 = __webpack_require__(563);
-const common_1 = __webpack_require__(352);
+const main_1 = __webpack_require__("./src/main.ts");
+const lib_1 = __webpack_require__("./src/lib.ts");
+const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 class linovelib {
     constructor() {
         this.imageMode = "TM";
@@ -27005,14 +27094,14 @@ exports.linovelib = linovelib;
 
 /***/ }),
 
-/***/ 158:
+/***/ "./src/rules/meegoq.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.meegoq = void 0;
-const main_1 = __webpack_require__(519);
-const lib_1 = __webpack_require__(563);
+const main_1 = __webpack_require__("./src/main.ts");
+const lib_1 = __webpack_require__("./src/lib.ts");
 class meegoq {
     constructor() {
         this.imageMode = "TM";
@@ -27043,11 +27132,11 @@ class meegoq {
         additionalMetadate.cover.init();
         const chapters = [];
         const ul = document.querySelector("ul.mulu");
-        if (ul === null || ul === void 0 ? void 0 : ul.childElementCount) {
+        if (ul?.childElementCount) {
             const ulc = Array.from(ul.children);
             if (Array.from(ulc[0].classList).includes("volumn") &&
                 ulc[0].innerText.match(/最新.章/)) {
-                for (let i = 0; i < (ul === null || ul === void 0 ? void 0 : ul.childElementCount); i++) {
+                for (let i = 0; i < ul?.childElementCount; i++) {
                     if (i !== 0 &&
                         Array.from(ulc[i].classList).includes("volumn") &&
                         ulc[i].innerText.trim() !== "全部章节") {
@@ -27124,14 +27213,14 @@ exports.meegoq = meegoq;
 
 /***/ }),
 
-/***/ 155:
+/***/ "./src/rules/mht.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.mht = void 0;
-const lib_1 = __webpack_require__(563);
-const biquge_1 = __webpack_require__(931);
+const lib_1 = __webpack_require__("./src/lib.ts");
+const biquge_1 = __webpack_require__("./src/rules/biquge.ts");
 class mht {
     constructor() {
         this.imageMode = "TM";
@@ -27198,15 +27287,15 @@ exports.mht = mht;
 
 /***/ }),
 
-/***/ 839:
+/***/ "./src/rules/qidian.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.qidian = void 0;
-const main_1 = __webpack_require__(519);
-const lib_1 = __webpack_require__(563);
-const common_1 = __webpack_require__(352);
+const main_1 = __webpack_require__("./src/main.ts");
+const lib_1 = __webpack_require__("./src/lib.ts");
+const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 class qidian {
     constructor() {
         this.imageMode = "TM";
@@ -27334,12 +27423,12 @@ class qidian {
             }
         }
         async function vipChapter() {
-            var _a;
             const _csrfToken = unsafeWindow.jQuery.ajaxSettings.data
                 ._csrfToken;
             const bookId = document.location.pathname.split("/").slice(-1)[0];
-            const authorId = (_a = document
-                .querySelector("#authorId")) === null || _a === void 0 ? void 0 : _a.getAttribute("data-authorid");
+            const authorId = document
+                .querySelector("#authorId")
+                ?.getAttribute("data-authorid");
             const chapterId = chapterUrl.split("/").slice(-1)[0];
             async function getChapterInfo() {
                 const baseUrl = "https://vipreader.qidian.com/ajax/chapter/chapterInfo";
@@ -27407,15 +27496,15 @@ exports.qidian = qidian;
 
 /***/ }),
 
-/***/ 959:
+/***/ "./src/rules/qimao.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.qimao = void 0;
-const main_1 = __webpack_require__(519);
-const lib_1 = __webpack_require__(563);
-const common_1 = __webpack_require__(352);
+const main_1 = __webpack_require__("./src/main.ts");
+const lib_1 = __webpack_require__("./src/lib.ts");
+const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 class qimao {
     constructor() {
         this.imageMode = "TM";
@@ -27521,23 +27610,22 @@ exports.qimao = qimao;
 
 /***/ }),
 
-/***/ 116:
+/***/ "./src/rules/sfacg.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.sfacg = void 0;
-const main_1 = __webpack_require__(519);
-const lib_1 = __webpack_require__(563);
-const rules_1 = __webpack_require__(489);
-const common_1 = __webpack_require__(352);
+const main_1 = __webpack_require__("./src/main.ts");
+const lib_1 = __webpack_require__("./src/lib.ts");
+const rules_1 = __webpack_require__("./src/rules.ts");
+const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 class sfacg {
     constructor() {
         this.imageMode = "TM";
         this.concurrencyLimit = 1;
     }
     async bookParse(chapterParse) {
-        var _a, _b, _c, _d;
         const bookUrl = document.location.href.replace("/MainIndex/", "");
         const bookname = (document.querySelector("h1.story-title")).innerText.trim();
         const dom = await lib_1.getHtmlDOM(bookUrl, undefined);
@@ -27553,8 +27641,8 @@ class sfacg {
             return a.innerText.trim().replace(/\(\d+\)$/, "");
         });
         if (dom.querySelector(".d-banner")) {
-            const _beitouUrl = (_a = (dom.querySelector(".d-banner"))) === null || _a === void 0 ? void 0 : _a.style.backgroundImage.split('"');
-            if ((_beitouUrl === null || _beitouUrl === void 0 ? void 0 : _beitouUrl.length) === 3) {
+            const _beitouUrl = (dom.querySelector(".d-banner"))?.style.backgroundImage.split('"');
+            if (_beitouUrl?.length === 3) {
                 const beitouUrl = _beitouUrl[1];
                 const beitou = new main_1.attachmentClass(beitouUrl, `beitou.${beitouUrl.split(".").slice(-1)[0]}`, "TM");
                 beitou.init();
@@ -27574,7 +27662,7 @@ class sfacg {
             const cs = s.querySelectorAll(".catalog-list > ul > li > a");
             for (let j = 0; j < cs.length; j++) {
                 const c = cs[j];
-                const _chapterName = (_b = c.getAttribute("title")) === null || _b === void 0 ? void 0 : _b.trim();
+                const _chapterName = c.getAttribute("title")?.trim();
                 chapterNumber++;
                 sectionChapterNumber++;
                 const chapterName = _chapterName ? _chapterName : "";
@@ -27582,11 +27670,12 @@ class sfacg {
                 let isVIP = false;
                 let isPaid = null;
                 if (c.childElementCount &&
-                    ((_c = c.firstElementChild) === null || _c === void 0 ? void 0 : _c.getAttribute("class")) === "icn_vip") {
+                    c.firstElementChild?.getAttribute("class") === "icn_vip") {
                     isVIP = true;
                 }
                 const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, chapterParse, "UTF-8", {});
-                const isLogin = ((_d = document.querySelector(".user-bar > .top-link > .normal-link")) === null || _d === void 0 ? void 0 : _d.childElementCount) === 3
+                const isLogin = document.querySelector(".user-bar > .top-link > .normal-link")
+                    ?.childElementCount === 3
                     ? true
                     : false;
                 if (isVIP && !isLogin) {
@@ -27634,7 +27723,6 @@ class sfacg {
             }
         }
         async function vipChapter() {
-            var _a;
             async function getvipChapterImage(vipChapterImageUrl, vipChapterName) {
                 let retryTime = 0;
                 function fetchVipChapterImage(vipChapterImageUrl) {
@@ -27677,7 +27765,8 @@ class sfacg {
                 }
                 return vipChapterImage;
             }
-            const isLogin = ((_a = document.querySelector(".user-bar > .top-link > .normal-link")) === null || _a === void 0 ? void 0 : _a.childElementCount) === 3
+            const isLogin = document.querySelector(".user-bar > .top-link > .normal-link")
+                ?.childElementCount === 3
                 ? true
                 : false;
             if (isLogin) {
@@ -27733,14 +27822,14 @@ exports.sfacg = sfacg;
 
 /***/ }),
 
-/***/ 382:
+/***/ "./src/rules/shouda8.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.shouda8 = void 0;
-const main_1 = __webpack_require__(519);
-const lib_1 = __webpack_require__(563);
+const main_1 = __webpack_require__("./src/main.ts");
+const lib_1 = __webpack_require__("./src/lib.ts");
 class shouda8 {
     constructor() {
         this.imageMode = "TM";
@@ -27824,15 +27913,15 @@ exports.shouda8 = shouda8;
 
 /***/ }),
 
-/***/ 113:
+/***/ "./src/rules/shuhai.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.shuhai = void 0;
-const main_1 = __webpack_require__(519);
-const lib_1 = __webpack_require__(563);
-const common_1 = __webpack_require__(352);
+const main_1 = __webpack_require__("./src/main.ts");
+const lib_1 = __webpack_require__("./src/lib.ts");
+const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 class shuhai {
     constructor() {
         this.imageMode = "TM";
@@ -27840,7 +27929,6 @@ class shuhai {
         this.charset = "GBK";
     }
     async bookParse(chapterParse) {
-        var _a;
         const bookUrl = document.location.href;
         const bookname = (document.querySelector("div.book-info-bookname > span:nth-child(1)")).innerText.trim();
         const author = (document.querySelector("div.book-info-bookname > span:nth-child(2)")).innerText
@@ -27870,7 +27958,7 @@ class shuhai {
             if (node.nodeName === "SPAN") {
                 sectionNumber++;
                 sectionChapterNumber = 0;
-                sectionName = (_a = node) === null || _a === void 0 ? void 0 : _a.innerText.trim();
+                sectionName = node?.innerText.trim();
             }
             else if (node.nodeName === "DIV") {
                 chapterNumber++;
@@ -27962,14 +28050,14 @@ exports.shuhai = shuhai;
 
 /***/ }),
 
-/***/ 930:
+/***/ "./src/rules/sosadfun.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.sosadfun = void 0;
-const main_1 = __webpack_require__(519);
-const lib_1 = __webpack_require__(563);
+const main_1 = __webpack_require__("./src/main.ts");
+const lib_1 = __webpack_require__("./src/lib.ts");
 class sosadfun {
     constructor() {
         this.imageMode = "TM";
@@ -28082,15 +28170,15 @@ exports.sosadfun = sosadfun;
 
 /***/ }),
 
-/***/ 995:
+/***/ "./src/rules/tadu.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.tadu = void 0;
-const main_1 = __webpack_require__(519);
-const lib_1 = __webpack_require__(563);
-const common_1 = __webpack_require__(352);
+const main_1 = __webpack_require__("./src/main.ts");
+const lib_1 = __webpack_require__("./src/lib.ts");
+const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 class tadu {
     constructor() {
         this.imageMode = "TM";
@@ -28150,12 +28238,12 @@ class tadu {
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         async function publicChapter() {
-            var _a;
             lib_1.console_debug(`[Chapter]请求 ${chapterUrl}`);
             const doc = await lib_1.getHtmlDOM(chapterUrl, charset);
             const content = document.createElement("div");
-            const _bookPartResourceUrl = (_a = doc
-                .getElementById("bookPartResourceUrl")) === null || _a === void 0 ? void 0 : _a.getAttribute("value");
+            const _bookPartResourceUrl = doc
+                .getElementById("bookPartResourceUrl")
+                ?.getAttribute("value");
             if (_bookPartResourceUrl) {
                 const bookPartResourceUrl = new URL(_bookPartResourceUrl);
                 bookPartResourceUrl.searchParams.set("callback", "callback");
@@ -28222,21 +28310,20 @@ exports.tadu = tadu;
 
 /***/ }),
 
-/***/ 623:
+/***/ "./src/rules/uukanshu.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.uukanshu = void 0;
-const main_1 = __webpack_require__(519);
-const lib_1 = __webpack_require__(563);
+const main_1 = __webpack_require__("./src/main.ts");
+const lib_1 = __webpack_require__("./src/lib.ts");
 class uukanshu {
     constructor() {
         this.imageMode = "TM";
         this.charset = "GBK";
     }
     async bookParse(chapterParse) {
-        var _a;
         const bookUrl = document.location.href;
         const bookname = (document.querySelector("dd.jieshao_content > h1 > a")).innerText
             .replace("最新章节", "")
@@ -28268,7 +28355,7 @@ class uukanshu {
         if (button.innerText === "顺序排列") {
             reverse(button);
         }
-        const chapterList = ((_a = document.getElementById("chapterList")) === null || _a === void 0 ? void 0 : _a.childNodes);
+        const chapterList = (document.getElementById("chapterList")?.childNodes);
         if (chapterList && chapterList.length !== 0) {
             let chapterNumber = 0;
             let sectionNumber = 0;
@@ -28350,15 +28437,15 @@ exports.uukanshu = uukanshu;
 
 /***/ }),
 
-/***/ 8:
+/***/ "./src/rules/wenku8.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.wenku8 = void 0;
-const main_1 = __webpack_require__(519);
-const lib_1 = __webpack_require__(563);
-const common_1 = __webpack_require__(352);
+const main_1 = __webpack_require__("./src/main.ts");
+const lib_1 = __webpack_require__("./src/lib.ts");
+const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 class wenku8 {
     constructor() {
         this.imageMode = "TM";
@@ -28443,15 +28530,15 @@ exports.wenku8 = wenku8;
 
 /***/ }),
 
-/***/ 997:
+/***/ "./src/rules/westnovel.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.westnovel = void 0;
-const main_1 = __webpack_require__(519);
-const lib_1 = __webpack_require__(563);
-const common_1 = __webpack_require__(352);
+const main_1 = __webpack_require__("./src/main.ts");
+const lib_1 = __webpack_require__("./src/lib.ts");
+const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 class westnovel {
     constructor() {
         this.imageMode = "TM";
@@ -28523,14 +28610,14 @@ exports.westnovel = westnovel;
 
 /***/ }),
 
-/***/ 678:
+/***/ "./src/rules/xiaoshuodaquan.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.xiaoshuodaquan = void 0;
-const main_1 = __webpack_require__(519);
-const lib_1 = __webpack_require__(563);
+const main_1 = __webpack_require__("./src/main.ts");
+const lib_1 = __webpack_require__("./src/lib.ts");
 class xiaoshuodaquan {
     constructor() {
         this.imageMode = "TM";
@@ -28538,8 +28625,7 @@ class xiaoshuodaquan {
         this.concurrencyLimit = 5;
     }
     async bookParse(chapterParse) {
-        var _a, _b;
-        const ccount = (_a = document.querySelector(".crumbswrap")) === null || _a === void 0 ? void 0 : _a.childElementCount;
+        const ccount = document.querySelector(".crumbswrap")?.childElementCount;
         let bookUrl = document.location.href;
         if (ccount) {
             bookUrl = (document.querySelector(`.crumbswrap > a:nth-child(${ccount - 2})`)).href;
@@ -28580,7 +28666,9 @@ class xiaoshuodaquan {
             const sectionNameObj = sectionNames[i];
             const sectionObj = sections[i];
             const sectionNumber = i + 1;
-            const sectionName = (_b = (sectionNameObj.firstElementChild)) === null || _b === void 0 ? void 0 : _b.innerText.replace(bookname, "").trim();
+            const sectionName = (sectionNameObj.firstElementChild)?.innerText
+                .replace(bookname, "")
+                .trim();
             let sectionChapterNumber = 0;
             const cos = sectionObj.querySelectorAll("ul>li>a");
             for (let j = 0; j < cos.length; j++) {
@@ -28641,15 +28729,15 @@ exports.xiaoshuodaquan = xiaoshuodaquan;
 
 /***/ }),
 
-/***/ 874:
+/***/ "./src/rules/xinwanben.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.xinwanben = void 0;
-const main_1 = __webpack_require__(519);
-const lib_1 = __webpack_require__(563);
-const common_1 = __webpack_require__(352);
+const main_1 = __webpack_require__("./src/main.ts");
+const lib_1 = __webpack_require__("./src/lib.ts");
+const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 class xinwanben {
     constructor() {
         this.imageMode = "TM";
@@ -28690,7 +28778,6 @@ class xinwanben {
         };
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        var _a;
         lib_1.console_debug(`[Chapter]请求 ${chapterUrl}`);
         let nowUrl = chapterUrl;
         let doc = await lib_1.getHtmlDOM(chapterUrl, charset);
@@ -28701,7 +28788,7 @@ class xinwanben {
             for (const _c of Array.from(_content.childNodes)) {
                 content.appendChild(_c);
             }
-            const nextLink = ((_a = doc.querySelector(".next")) === null || _a === void 0 ? void 0 : _a.parentElement).href;
+            const nextLink = (doc.querySelector(".next")?.parentElement).href;
             if (new URL(nextLink).pathname.includes("_")) {
                 if (nextLink !== nowUrl) {
                     flag = true;
@@ -28736,15 +28823,15 @@ exports.xinwanben = xinwanben;
 
 /***/ }),
 
-/***/ 441:
+/***/ "./src/rules/xkzw.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.xkzw = void 0;
-const main_1 = __webpack_require__(519);
-const lib_1 = __webpack_require__(563);
-const common_1 = __webpack_require__(352);
+const main_1 = __webpack_require__("./src/main.ts");
+const lib_1 = __webpack_require__("./src/lib.ts");
+const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 class xkzw {
     constructor() {
         this.imageMode = "TM";
@@ -28781,7 +28868,7 @@ class xkzw {
         let tmpColumnName = "";
         let tmpColumnList = [];
         let tmpChapterList = [];
-        if (dl === null || dl === void 0 ? void 0 : dl.childElementCount) {
+        if (dl?.childElementCount) {
             const dlc = Array.from(dl.children);
             for (let i = 0; i < dl.childElementCount; i++) {
                 const node = dlc[i];
@@ -29004,21 +29091,20 @@ exports.xkzw = xkzw;
 
 /***/ }),
 
-/***/ 889:
+/***/ "./src/rules/yibige.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.yibige = void 0;
-const main_1 = __webpack_require__(519);
-const lib_1 = __webpack_require__(563);
-const common_1 = __webpack_require__(352);
+const main_1 = __webpack_require__("./src/main.ts");
+const lib_1 = __webpack_require__("./src/lib.ts");
+const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 class yibige {
     constructor() {
         this.imageMode = "TM";
     }
     async bookParse(chapterParse) {
-        var _a;
         const bookUrl = (document.querySelector("#list_hb > li:nth-child(2) > a:nth-child(1)")).href;
         const doc = await lib_1.getHtmlDOM(bookUrl, undefined);
         const bookname = (doc.querySelector(".title > h1:nth-child(1)")).innerText.trim();
@@ -29027,7 +29113,7 @@ class yibige {
         const _introDom = doc.querySelector(".nr");
         for (const node of Array.from(_introDom.childNodes)) {
             if (node.nodeName.toLowerCase() === "#text" &&
-                ((_a = node.textContent) === null || _a === void 0 ? void 0 : _a.trim()) === "相关：") {
+                node.textContent?.trim() === "相关：") {
                 break;
             }
             introDom.appendChild(node.cloneNode());
@@ -29039,11 +29125,11 @@ class yibige {
         additionalMetadate.cover.init();
         const chapters = [];
         const dl = document.querySelector(".books_li");
-        if (dl === null || dl === void 0 ? void 0 : dl.childElementCount) {
+        if (dl?.childElementCount) {
             const dlc = Array.from(dl.children);
             if (dlc[0].nodeName === "DT" &&
                 dlc[0].innerText.includes("最新12章节")) {
-                for (let i = 0; i < (dl === null || dl === void 0 ? void 0 : dl.childElementCount); i++) {
+                for (let i = 0; i < dl?.childElementCount; i++) {
                     if (i !== 0 && dlc[i].nodeName === "DT") {
                         delete dlc[0];
                         break;
@@ -29099,7 +29185,7 @@ class yibige {
             const _content = doc.querySelector("#fontsize");
             lib_1.rm("div", true, _content);
             lib_1.rm("script", true, _content);
-            _content.innerHTML = _content.innerHTML.replace(new RegExp("测试广告1", "g"), "");
+            _content.innerHTML = _content.innerHTML.replaceAll("测试广告1", "");
             for (const _c of Array.from(_content.childNodes)) {
                 content.appendChild(_c);
             }
@@ -29138,17 +29224,18 @@ exports.yibige = yibige;
 
 /***/ }),
 
-/***/ 514:
+/***/ "./src/rules/yruan.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.yrun = void 0;
-const main_1 = __webpack_require__(519);
-const lib_1 = __webpack_require__(563);
+const main_1 = __webpack_require__("./src/main.ts");
+const lib_1 = __webpack_require__("./src/lib.ts");
+const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 class yrun {
     constructor() {
-        this.imageMode = "naive";
+        this.imageMode = "TM";
     }
     async bookParse(chapterParse) {
         const bookUrl = document.location.href;
@@ -29156,22 +29243,12 @@ class yrun {
         const author = (document.querySelector("#info > p:nth-child(2)")).innerText
             .replace(/作(\s+)?者[：:]/, "")
             .trim();
-        let introduction;
-        let introductionHTML;
         const introDom = document.querySelector("#intro > p");
-        if (introDom === null) {
-            introduction = null;
-            introductionHTML = null;
-        }
-        else {
-            let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "naive");
-            introduction = introCleantext;
-            introductionHTML = introCleanDom;
-        }
+        const [introduction, introductionHTML, introCleanimages] = common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         const coverUrl = document.querySelector("#fmimg > img")
             .src;
-        additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "naive");
+        additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
         additionalMetadate.cover.init();
         const chapters = [];
         const chapterList = document.querySelectorAll("#list>dl>dd>a");
@@ -29228,18 +29305,18 @@ exports.yrun = yrun;
 
 /***/ }),
 
-/***/ 191:
+/***/ "./src/rules/yuzhaige.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.yuzhaige = void 0;
-const main_1 = __webpack_require__(519);
-const lib_1 = __webpack_require__(563);
-const yuzhaigeImageDecode_1 = __webpack_require__(394);
+const main_1 = __webpack_require__("./src/main.ts");
+const lib_1 = __webpack_require__("./src/lib.ts");
+const yuzhaigeImageDecode_1 = __webpack_require__("./src/rules/lib/yuzhaigeImageDecode.ts");
 class yuzhaige {
     constructor() {
-        this.imageMode = "naive";
+        this.imageMode = "TM";
     }
     async bookParse(chapterParse) {
         const bookUrl = (document.querySelector("div.currency_head > h1 > a")).href;
@@ -29257,20 +29334,19 @@ class yuzhaige {
         }
         else {
             lib_1.rm("span:nth-child(1)", false, introDom);
-            let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "naive");
+            let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "TM");
             introduction = introCleantext;
             introductionHTML = introCleanDom;
         }
         const additionalMetadate = {};
         const chapters = [];
         const getMaxPageNumber = () => {
-            var _a;
             const pageDom = document.querySelector("div.page:nth-child(6)");
             if (pageDom) {
                 const childNodes = Array.from(pageDom.childNodes);
-                const _maxPageNumber = (_a = childNodes
+                const _maxPageNumber = childNodes
                     .slice(-1)[0]
-                    .textContent) === null || _a === void 0 ? void 0 : _a.match(/第\d+\/(\d+)页/);
+                    .textContent?.match(/第\d+\/(\d+)页/);
                 if (_maxPageNumber) {
                     return _maxPageNumber[1];
                 }
@@ -29295,7 +29371,7 @@ class yuzhaige {
             lib_1.console_debug(`[chapter]请求 ${indexUrl}`);
             const dom = await lib_1.getHtmlDOM(indexUrl, "UTF-8");
             const ul = dom.querySelector("ul.chapters");
-            if (ul === null || ul === void 0 ? void 0 : ul.childElementCount) {
+            if (ul?.childElementCount) {
                 lis = lis.concat(Array.from(ul.children));
             }
         }
@@ -29396,10 +29472,10 @@ class yuzhaige {
             }
         } while (flag);
         if (content) {
-            let { dom: oldDom, text: _text, images: finalImages } = lib_1.cleanDOM(content, "naive");
+            let { dom: oldDom, text: _text, images: finalImages } = lib_1.cleanDOM(content, "TM");
             const _newDom = document.createElement("div");
             _newDom.innerHTML = yuzhaigeImageDecode_1.replaceYuzhaigeImage(content.innerHTML);
-            let { dom: newDom, text: finalText, images } = lib_1.cleanDOM(_newDom, "naive");
+            let { dom: newDom, text: finalText, images } = lib_1.cleanDOM(_newDom, "TM");
             const fontStyleDom = document.createElement("style");
             fontStyleDom.innerHTML = `.hide { display: none; }`;
             oldDom.className = "hide";
@@ -29433,15 +29509,15 @@ exports.yuzhaige = yuzhaige;
 
 /***/ }),
 
-/***/ 862:
+/***/ "./src/rules/zongheng.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.zongheng = void 0;
-const main_1 = __webpack_require__(519);
-const lib_1 = __webpack_require__(563);
-const common_1 = __webpack_require__(352);
+const main_1 = __webpack_require__("./src/main.ts");
+const lib_1 = __webpack_require__("./src/lib.ts");
+const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 class zongheng {
     constructor() {
         this.imageMode = "TM";
@@ -29590,7 +29666,7 @@ exports.zongheng = zongheng;
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module is referenced by other modules so it can't be inlined
-/******/ 	var __webpack_exports__ = __webpack_require__(607);
+/******/ 	var __webpack_exports__ = __webpack_require__("./src/index.ts");
 /******/ 	
 /******/ })()
 ;
