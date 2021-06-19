@@ -4,10 +4,10 @@ import {
   Chapter,
   Status,
 } from "../main";
-import { getHtmlDOM, cleanDOM, console_debug, rm } from "../lib";
+import { getHtmlDOM, cleanDOM, rm } from "../lib";
 import { ruleClass, chapterParseObject, retryLimit } from "../rules";
 import { introDomHandle } from "./lib/common";
-
+import { log } from "../log";
 export class sfacg implements ruleClass {
   public imageMode: "naive" | "TM";
   public concurrencyLimit: number;
@@ -179,7 +179,7 @@ export class sfacg implements ruleClass {
         function fetchVipChapterImage(
           vipChapterImageUrl: string
         ): Promise<Blob | null> {
-          console_debug(
+          log.debug(
             `[Chapter]请求 ${vipChapterImageUrl} Referer ${chapterUrl} 重试次数 ${retryTime}`
           );
 
@@ -197,7 +197,7 @@ export class sfacg implements ruleClass {
             .then((response) => response.blob())
             .then((blob) => {
               if (blob.size === 53658 || blob.size === 42356) {
-                console.error(
+                log.error(
                   `[Chapter]请求 ${vipChapterImageUrl} 失败 Referer ${chapterUrl}`
                 );
                 if (retryTime < retryLimit) {

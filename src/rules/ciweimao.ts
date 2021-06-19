@@ -4,9 +4,10 @@ import {
   Chapter,
   Status,
 } from "../main";
-import { getHtmlDOM, cleanDOM, rm, gfetch, console_debug } from "../lib";
+import { getHtmlDOM, cleanDOM, rm, gfetch } from "../lib";
 import { ruleClass, chapterParseObject } from "../rules";
 import { introDomHandle } from "./lib/common";
+import { log } from "../log";
 
 namespace ciweimao {
   export interface ciweimaoWindow extends unsafeWindow {
@@ -200,7 +201,7 @@ export class ciweimao implements ruleClass {
           code: number;
           chapter_access_key: string;
         }
-        console_debug(`[Chapter]请求 ${access_key_url} Referer ${refererUrl}`);
+        log.debug(`[Chapter]请求 ${access_key_url} Referer ${refererUrl}`);
         const access_key_obj = await gfetch(access_key_url, {
           method: "POST",
           headers: {
@@ -222,9 +223,7 @@ export class ciweimao implements ruleClass {
           encryt_keys: string[];
           rad: number;
         }
-        console_debug(
-          `[Chapter]请求 ${chapter_content_url} Referer ${refererUrl}`
-        );
+        log.debug(`[Chapter]请求 ${chapter_content_url} Referer ${refererUrl}`);
         const chapter_content_obj = await gfetch(chapter_content_url, {
           method: "POST",
           headers: {
@@ -239,7 +238,7 @@ export class ciweimao implements ruleClass {
         }).then((response) => response.response);
 
         if ((<chapter_content_obj>chapter_content_obj).code !== 100000) {
-          console.error(chapter_content_obj);
+          log.error(chapter_content_obj);
           throw new Error(`下载 ${refererUrl} 失败`);
         }
 
@@ -295,7 +294,7 @@ export class ciweimao implements ruleClass {
           }
           const image_session_code_url =
             HB.config.rootPath + "chapter/ajax_get_image_session_code";
-          console_debug(
+          log.debug(
             `[Chapter]请求 ${image_session_code_url} Referer ${refererUrl}`
           );
           const image_session_code_object = await gfetch(
@@ -316,7 +315,7 @@ export class ciweimao implements ruleClass {
             (<image_session_code_object>image_session_code_object).code !==
             100000
           ) {
-            console.error(image_session_code_object);
+            log.error(image_session_code_object);
             throw new Error(`下载 ${refererUrl} 失败`);
           }
 
@@ -352,9 +351,7 @@ export class ciweimao implements ruleClass {
           chapter_id,
           chapterUrl
         );
-        console_debug(
-          `[Chapter]请求 ${vipCHapterImageUrl} Referer ${chapterUrl}`
-        );
+        log.debug(`[Chapter]请求 ${vipCHapterImageUrl} Referer ${chapterUrl}`);
         const vipCHapterImageBlob = await gfetch(vipCHapterImageUrl, {
           method: "GET",
           headers: {

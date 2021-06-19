@@ -1,7 +1,8 @@
 import { BookAdditionalMetadate, Chapter } from "../main";
 import { ruleClass } from "../rules";
-import { getHtmlDOM, cleanDOM, rm, console_debug } from "../lib";
+import { getHtmlDOM, cleanDOM, rm } from "../lib";
 import { replaceYuzhaigeImage } from "./lib/yuzhaigeImageDecode";
+import { log } from "../log";
 
 export class yuzhaige implements ruleClass {
   public imageMode: "naive" | "TM";
@@ -16,7 +17,7 @@ export class yuzhaige implements ruleClass {
     )).href;
     const bookId = bookUrl.split("/").slice(-2, -1)[0];
 
-    console_debug(`[chapter]请求 ${bookUrl}`);
+    log.debug(`[chapter]请求 ${bookUrl}`);
     const dom = await getHtmlDOM(bookUrl, "UTF-8");
     const bookname = (<HTMLElement>(
       dom.querySelector("div.cataloginfo > h3")
@@ -75,7 +76,7 @@ export class yuzhaige implements ruleClass {
     let lis: HTMLElement[] = [];
 
     for (const indexUrl of indexUrls) {
-      console_debug(`[chapter]请求 ${indexUrl}`);
+      log.debug(`[chapter]请求 ${indexUrl}`);
       const dom = await getHtmlDOM(indexUrl, "UTF-8");
       const ul = dom.querySelector("ul.chapters");
       if (ul?.childElementCount) {
@@ -210,7 +211,7 @@ export class yuzhaige implements ruleClass {
         if (nextLink !== nowUrl) {
           flag = true;
         } else {
-          console.error("网站页面出错，URL： " + nowUrl);
+          log.error("网站页面出错，URL： " + nowUrl);
           flag = false;
         }
       } else {

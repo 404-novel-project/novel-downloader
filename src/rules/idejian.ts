@@ -1,7 +1,8 @@
 import { BookAdditionalMetadate, attachmentClass, Chapter } from "../main";
 import { ruleClass } from "../rules";
-import { getHtmlDOM, cleanDOM, console_debug } from "../lib";
+import { getHtmlDOM, cleanDOM } from "../lib";
 import { introDomHandle } from "./lib/common";
+import { log } from "../log";
 
 export class idejian implements ruleClass {
   public imageMode: "naive" | "TM";
@@ -90,7 +91,7 @@ export class idejian implements ruleClass {
     charset: string,
     options: object
   ) {
-    console_debug(`[Chapter]请求 ${chapterUrl}`);
+    log.debug(`[Chapter]请求 ${chapterUrl}`);
     let doc = await getHtmlDOM(chapterUrl, charset);
     chapterName = (<HTMLElement>doc.querySelector(".title")).innerText.trim();
 

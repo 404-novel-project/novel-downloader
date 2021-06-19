@@ -1,7 +1,8 @@
 import { BookAdditionalMetadate, attachmentClass, Chapter } from "../main";
 import { ruleClass } from "../rules";
-import { getHtmlDOM, cleanDOM, console_debug, sandboxed } from "../lib";
+import { getHtmlDOM, cleanDOM, sandboxed } from "../lib";
 import { introDomHandle } from "./lib/common";
+import { log } from "../log";
 
 export class dmzj implements ruleClass {
   public imageMode: "naive" | "TM";
@@ -108,7 +109,7 @@ export class dmzj implements ruleClass {
       }
     }
 
-    console_debug(`[Chapter]请求 ${chapterUrl}`);
+    log.debug(`[Chapter]请求 ${chapterUrl}`);
     const doc = await getHtmlDOM(chapterUrl, charset);
     const picUrlList = getpicUrlList(doc);
     if (picUrlList) {

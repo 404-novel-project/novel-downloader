@@ -5,8 +5,9 @@ import {
   Status,
 } from "../main";
 import { ruleClass, chapterParseObject } from "../rules";
-import { getHtmlDOM, cleanDOM, console_debug } from "../lib";
+import { getHtmlDOM, cleanDOM } from "../lib";
 import { introDomHandle } from "./lib/common";
+import { log } from "../log";
 
 export class qimao implements ruleClass {
   public imageMode: "naive" | "TM";
@@ -114,7 +115,7 @@ export class qimao implements ruleClass {
     options: object
   ) {
     async function publicChapter(): Promise<chapterParseObject> {
-      console_debug(`[Chapter]请求 ${chapterUrl}`);
+      log.debug(`[Chapter]请求 ${chapterUrl}`);
       let doc = await getHtmlDOM(chapterUrl, charset);
       chapterName = (<HTMLElement>doc.querySelector(".title")).innerText.trim();
 

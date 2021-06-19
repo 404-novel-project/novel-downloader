@@ -4,9 +4,10 @@ import {
   Chapter,
   Status,
 } from "../main";
-import { cleanDOM, sleep, console_debug } from "../lib";
+import { sleep } from "../lib";
 import { ruleClass, chapterParseObject } from "../rules";
 import { introDomHandle } from "./lib/common";
+import { log } from "../log";
 
 export class gongzicp implements ruleClass {
   public imageMode: "naive" | "TM";
@@ -193,7 +194,7 @@ export class gongzicp implements ruleClass {
         topComment: cpCommentObj[];
       };
     }
-    console_debug(`请求地址: ${novelGetInfoUrl.toString()}`);
+    log.debug(`请求地址: ${novelGetInfoUrl.toString()}`);
     const novelInfo: novelInfo = await fetch(novelGetInfoUrl.toString(), {
       credentials: "include",
       headers: {
@@ -295,7 +296,7 @@ export class gongzicp implements ruleClass {
         count?: number;
       }
       const getUserInfoUrl = "https://www.gongzicp.com/user/getUserInfo";
-      console_debug(`正在请求: ${getUserInfoUrl}`);
+      log.debug(`正在请求: ${getUserInfoUrl}`);
       const userInfo: userInfo = await fetch(getUserInfoUrl, {
         headers: {
           accept: "application/json, text/javascript, */*; q=0.01",
@@ -546,7 +547,7 @@ export class gongzicp implements ruleClass {
       chapterGetInfoUrl.searchParams.set("cid", cid.toString());
       chapterGetInfoUrl.searchParams.set("nid", nid.toString());
 
-      console_debug(
+      log.debug(
         `请求地址: ${chapterGetInfoUrl.toString()}, Referrer: ${chapterUrl}`
       );
       const result: chapterInfo = await fetch(chapterGetInfoUrl.toString(), {

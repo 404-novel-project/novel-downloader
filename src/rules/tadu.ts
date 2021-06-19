@@ -5,8 +5,10 @@ import {
   Status,
 } from "../main";
 import { ruleClass, chapterParseObject } from "../rules";
-import { getHtmlDOM, cleanDOM, console_debug, gfetch } from "../lib";
+import { getHtmlDOM, cleanDOM, gfetch } from "../lib";
 import { introDomHandle } from "./lib/common";
+import { log } from "../log";
+
 export class tadu implements ruleClass {
   public imageMode: "naive" | "TM";
   public concurrencyLimit: number;
@@ -112,7 +114,7 @@ export class tadu implements ruleClass {
     options: object
   ) {
     async function publicChapter(): Promise<chapterParseObject> {
-      console_debug(`[Chapter]请求 ${chapterUrl}`);
+      log.debug(`[Chapter]请求 ${chapterUrl}`);
       const doc = await getHtmlDOM(chapterUrl, charset);
 
       const content = document.createElement("div");
@@ -124,7 +126,7 @@ export class tadu implements ruleClass {
         const bookPartResourceUrl = new URL(_bookPartResourceUrl);
         bookPartResourceUrl.searchParams.set("callback", "callback");
 
-        console_debug(`[Chapter]请求 ${bookPartResourceUrl.toString()}`);
+        log.debug(`[Chapter]请求 ${bookPartResourceUrl.toString()}`);
         const jsonpText = await gfetch(bookPartResourceUrl.toString(), {
           headers: {
             accept: "*/*",

@@ -1,6 +1,6 @@
 {
   "name": "novel-downloader",
-  "version": "3.6.6",
+  "version": "3.6.7",
   "description": "novel downloader",
   "main": "index.js",
   "scripts": {
@@ -29,5 +29,8 @@
     "webpack-cli": "^4.6.0",
     "webpack-dev-server": "^3.11.2",
     "webpack-userscript": "^2.5.8"
+  },
+  "dependencies": {
+    "loglevel": "^1.7.1"
   }
 }

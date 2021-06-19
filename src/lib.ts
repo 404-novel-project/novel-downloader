@@ -1,5 +1,4 @@
 import { Builder, walk } from "./cleanDOM";
-import { enaleDebug } from "./rules";
 import { attachmentClassCache } from "./index";
 import { attachmentClass } from "./main";
 
@@ -214,12 +213,6 @@ export function concurrencyRun(
 
 export function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-export function console_debug(...messages: any[]) {
-  if (enaleDebug) {
-    console.debug(...arguments);
-  }
 }
 
 export function getAttachmentClassCache(url: string, name: string) {

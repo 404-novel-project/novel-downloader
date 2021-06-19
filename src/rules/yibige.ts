@@ -1,7 +1,8 @@
 import { BookAdditionalMetadate, attachmentClass, Chapter } from "../main";
 import { ruleClass } from "../rules";
-import { getHtmlDOM, cleanDOM, rm, console_debug } from "../lib";
+import { getHtmlDOM, cleanDOM, rm } from "../lib";
 import { introDomHandle } from "./lib/common";
+import { log } from "../log";
 
 export class yibige implements ruleClass {
   public imageMode: "naive" | "TM";
@@ -129,7 +130,7 @@ export class yibige implements ruleClass {
     charset: string,
     options: object
   ) {
-    console_debug(`[Chapter]请求 ${chapterUrl}`);
+    log.debug(`[Chapter]请求 ${chapterUrl}`);
     let nowUrl = chapterUrl;
     let doc = await getHtmlDOM(chapterUrl, charset);
     const content = document.createElement("div");
@@ -152,14 +153,14 @@ export class yibige implements ruleClass {
         if (nextLink !== nowUrl) {
           flag = true;
         } else {
-          console.error("网站页面出错，URL： " + nowUrl);
+          log.error("网站页面出错，URL： " + nowUrl);
           flag = false;
         }
       } else {
         flag = false;
       }
       if (flag) {
-        console_debug(`[Chapter]请求 ${nextLink}`);
+        log.debug(`[Chapter]请求 ${nextLink}`);
         nowUrl = nextLink;
         doc = await getHtmlDOM(nextLink, charset);
       }

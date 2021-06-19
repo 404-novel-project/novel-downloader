@@ -4,9 +4,10 @@ import {
   Chapter,
   Status,
 } from "../main";
-import { ggetHtmlDOM, cleanDOM, sleep, gfetch, console_debug } from "../lib";
+import { ggetHtmlDOM, cleanDOM, sleep, gfetch } from "../lib";
 import { ruleClass, chapterParseObject } from "../rules";
 import { introDomHandle } from "./lib/common";
+import { log } from "../log";
 
 export class qidian implements ruleClass {
   public imageMode: "naive" | "TM";
@@ -260,7 +261,7 @@ export class qidian implements ruleClass {
 
         const url = baseUrl + "?" + search.toString();
 
-        console_debug(`[Chapter]请求 ${url} Referer ${chapterUrl}`);
+        log.debug(`[Chapter]请求 ${url} Referer ${chapterUrl}`);
         return gfetch(url, {
           headers: {
             accept: "application/json, text/javascript, */*; q=0.01",

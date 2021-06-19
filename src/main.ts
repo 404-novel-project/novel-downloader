@@ -1,6 +1,7 @@
 import { ruleClass, chapterParseObject, retryLimit } from "./rules";
-import { gfetch, sleep, console_debug } from "./lib";
+import { gfetch, sleep } from "./lib";
 import { saveOptions } from "./index_helper";
+import { log } from "./log";
 
 export enum Status {
   pending,
@@ -48,7 +49,7 @@ export class Book {
     this.introductionHTML = introductionHTML;
     this.additionalMetadate = additionalMetadate;
     this.chapters = chapters;
-    console_debug("[Book]初始化完成");
+    log.debug("[Book]初始化完成");
   }
 }
 
@@ -135,7 +136,7 @@ export class Chapter {
     this.contentImages = contentImages;
     this.additionalMetadate = additionalMetadate;
 
-    console.log(`[Chapter]${this.chapterName} 解析完成。`);
+    log.info(`[Chapter]${this.chapterName} 解析完成。`);
     return obj;
   }
 
@@ -169,7 +170,7 @@ export class Chapter {
       })
       .catch(async (err: Error) => {
         this.retryTime++;
-        console.error(
+        log.error(
           `[Chapter]${this.chapterName}解析出错，第${this.retryTime}次重试，章节地址：${this.chapterUrl}`
         );
 
@@ -178,7 +179,7 @@ export class Chapter {
           return this.parse();
         } else {
           this.status = Status.failed;
-          console.error(err);
+          log.error(err);
           return {
             chapterName: this.chapterName,
             contentRaw: null,
@@ -223,7 +224,7 @@ export class attachmentClass {
     } else {
       this.imageBlob = await this.tmDownloadImage();
     }
-    console.log(`[attachment] ${this.url} 下载完成。`);
+    log.info(`[attachment] ${this.url} 下载完成。`);
     return this.imageBlob;
   }
 
@@ -251,7 +252,7 @@ export class attachmentClass {
       })
       .catch(async (err: Error) => {
         this.retryTime++;
-        console.error(
+        log.error(
           `[attachment]下载 ${this.url} 出错，第${this.retryTime}次重试，下载模式：${this.mode}`
         );
 
@@ -260,7 +261,7 @@ export class attachmentClass {
           return this.downloadImage();
         } else {
           this.status = Status.failed;
-          console.error(err);
+          log.error(err);
           return null;
         }
       });
@@ -286,7 +287,7 @@ export class attachmentClass {
       })
       .catch(async (err: Error) => {
         this.retryTime++;
-        console.error(
+        log.error(
           `[attachment]下载 ${this.url} 出错，第${this.retryTime}次重试，下载模式：${this.mode}`
         );
 
@@ -295,7 +296,7 @@ export class attachmentClass {
           return this.tmDownloadImage();
         } else {
           this.status = Status.failed;
-          console.error(err);
+          log.error(err);
           return null;
         }
       });

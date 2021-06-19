@@ -10,7 +10,7 @@ import {
   enableR18SiteWarning,
 } from "./rules";
 import { Book, Chapter, attachmentClass, Status } from "./main";
-import { concurrencyRun, _GM_info, console_debug } from "./lib";
+import { concurrencyRun, _GM_info } from "./lib";
 import {
   setTabMark,
   getNowRunNumber,
@@ -22,6 +22,7 @@ import {
   saveOptionsValidate,
   r18SiteWarning,
 } from "./index_helper";
+import { log, saveLogTextToFile } from "./log";
 
 export namespace indexNameSpace {
   export interface mainWindows extends unsafeWindow {
@@ -40,7 +41,7 @@ export namespace indexNameSpace {
 
 function printEnvironments() {
   if (_GM_info) {
-    console.log(
+    log.info(
       `开始载入小说下载器……
 当前浏览器UA：${navigator.userAgent}
 当前脚本管理器：${_GM_info.scriptHandler}
@@ -49,13 +50,15 @@ function printEnvironments() {
 当前脚本版本：${_GM_info.script.version}
 当前脚本最后更新时间：${_GM_info.script.lastModified}
 是否处于隐私模式：${_GM_info.isIncognito}
-是否启用调试：${enaleDebug}`
+是否启用调试：${enaleDebug}
+当前地址：${document.location.href}
+当前时间：${new Date().toISOString()}`
     );
   }
 }
 
 async function initBook(rule: ruleClass) {
-  console.log(`[initBook]开始初始化图书`);
+  log.info(`[initBook]开始初始化图书`);
   const bookParse = rule.bookParse;
   const chapterParse = rule.chapterParse;
   return bookParse(chapterParse).then((obj) => {
@@ -85,7 +88,7 @@ async function initBook(rule: ruleClass) {
 }
 
 async function initChapters(rule: ruleClass, book: Book) {
-  console.log(`[initChapters]开始初始化章节`);
+  log.info(`[initChapters]开始初始化章节`);
   let concurrencyLimit = 10;
   if (rule.concurrencyLimit !== undefined) {
     concurrencyLimit = rule.concurrencyLimit;
@@ -97,9 +100,9 @@ async function initChapters(rule: ruleClass, book: Book) {
   ) {
     let tlog = "[initChapters]发现自定义筛选函数，自定义筛选函数内容如下：\n";
     tlog += (<indexNameSpace.mainWindows>unsafeWindow).chapterFilter.toString();
-    console.log(tlog);
+    log.info(tlog);
   }
-  console_debug("[initChapters]筛选需下载章节");
+  log.debug("[initChapters]筛选需下载章节");
   const chapters = book.chapters.filter((chapter) => {
     const b0 = chapter.status === Status.pending;
     let b1 = true;
@@ -115,13 +118,13 @@ async function initChapters(rule: ruleClass, book: Book) {
           b1 = u;
         }
       } catch (error) {
-        console.error("运行自定义筛选函数时出错。", error);
+        log.error("运行自定义筛选函数时出错。", error);
       }
     }
     return b0 && b1;
   });
   if (chapters.length === 0) {
-    console.error(`[initChapters]初始化章节出错，未找到需初始化章节`);
+    log.error(`[initChapters]初始化章节出错，未找到需初始化章节`);
     return [];
   }
   totalChapterNumber = chapters.length;
@@ -147,7 +150,7 @@ async function initChapters(rule: ruleClass, book: Book) {
       });
     });
   }
-  console.log(`[initChapters]章节初始化完毕`);
+  log.info(`[initChapters]章节初始化完毕`);
   return chapters;
 }
 
@@ -159,7 +162,7 @@ export function updateProgress(
   zipPercent: number | null
 ) {
   if (!document.querySelector("#nd-progress")) {
-    console_debug("[progress]初始化进度条");
+    log.debug("[progress]初始化进度条");
     let progress = document.createElement("div");
     progress.id = "nd-progress";
     progress.innerHTML = `
@@ -188,16 +191,16 @@ export function updateProgress(
 }
 
 async function run() {
-  console.log(`[run]下载开始`);
+  log.info(`[run]下载开始`);
   audio.play();
   const rule = await getRule();
-  console.log(`[run]获取规则成功`);
+  log.info(`[run]获取规则成功`);
 
-  console_debug("[run]运行前检测");
+  log.debug("[run]运行前检测");
   let maxRunLimit = null;
   let nowRunNumber;
   if (typeof GM_getTab !== "undefined") {
-    console.log(`[run]添加运行标志`);
+    log.info(`[run]添加运行标志`);
     await setTabMark();
     nowRunNumber = await getNowRunNumber();
     if (rule.maxRunLimit !== undefined && nowRunNumber !== undefined) {
@@ -207,36 +210,36 @@ async function run() {
           nowRunNumber - 1
         }个下载任务正在运行，当前站点最多允许${maxRunLimit}下载任务同时进行。\n请待其它下载任务完成后，再行尝试。`;
         alert(alertText);
-        console.log(`[run]${alertText}`);
+        log.info(`[run]${alertText}`);
         return;
       }
     }
   }
 
-  console_debug("[run]主体开始");
+  log.debug("[run]主体开始");
   const book = await initBook(rule);
   await initChapters(rule, book);
 
-  console_debug("[run]保存数据");
+  log.debug("[run]保存数据");
   if (
     enableCustomSaveOptions &&
     typeof (<any>unsafeWindow).saveOptions === "object" &&
     saveOptionsValidate((<any>unsafeWindow).saveOptions)
   ) {
     const saveOptions = (<indexNameSpace.mainWindows>unsafeWindow).saveOptions;
-    console.log("[run]发现自定义保存参数，内容如下\n", saveOptions);
+    log.info("[run]发现自定义保存参数，内容如下\n", saveOptions);
     save(book, saveOptions);
   } else {
     save(book, {});
   }
 
-  console_debug("[run]收尾");
+  log.debug("[run]收尾");
   if (typeof GM_getTab !== "undefined") {
-    console.log(`[run]移除运行标志`);
+    log.info(`[run]移除运行标志`);
     await removeTabMark();
   }
 
-  console.log(`[run]下载完毕`);
+  log.info(`[run]下载完毕`);
   return book;
 }
 
@@ -249,11 +252,16 @@ export function catchError(error: Error) {
   finishedChapterNumber = 0;
   document.querySelector("#nd-progress")?.remove();
   document.getElementById("novel-downloader")?.remove();
-  console.error(
+  log.error(
     "运行过程出错，请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/yingziwu/novel-downloader"
   );
-  console.error(error);
+  log.error(error);
   audio.pause();
+
+  alert(
+    "运行过程出错，请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/yingziwu/novel-downloader"
+  );
+  saveLogTextToFile();
 }
 
 function addButton() {
@@ -309,7 +317,7 @@ audio.loop = true;
 
 window.addEventListener("DOMContentLoaded", () => {
   if (_GM_info.scriptHandler === "Greasemonkey") {
-    console.error(
+    log.error(
       "小说下载器脚本与Greasemonkey脚本管理器不兼容，请改用其它脚本管理器，如：Tampermonkey、Violentmonkey。"
     );
     alert(

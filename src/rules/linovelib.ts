@@ -4,9 +4,11 @@ import {
   Chapter,
   Status,
 } from "../main";
-import { getHtmlDOM, cleanDOM, rm, console_debug } from "../lib";
+import { getHtmlDOM, cleanDOM, rm } from "../lib";
 import { ruleClass } from "../rules";
 import { introDomHandle } from "./lib/common";
+import { log } from "../log";
+
 export class linovelib implements ruleClass {
   public imageMode: "naive" | "TM";
 
@@ -112,7 +114,7 @@ export class linovelib implements ruleClass {
     charset: string,
     options: object
   ) {
-    console_debug(`[Chapter]请求 ${chapterUrl}`);
+    log.debug(`[Chapter]请求 ${chapterUrl}`);
     let nowUrl = chapterUrl;
     let doc = await getHtmlDOM(chapterUrl, charset);
     // chapterName = (<HTMLElement>(
@@ -137,11 +139,11 @@ export class linovelib implements ruleClass {
       if (new URL(nextLink).pathname.includes("_")) {
         if (nextLink !== nowUrl) {
           flag = true;
-          console_debug(`[Chapter]请求 ${nextLink}`);
+          log.debug(`[Chapter]请求 ${nextLink}`);
           nowUrl = nextLink;
           doc = await getHtmlDOM(nextLink, charset);
         } else {
-          console.error("网站页面出错，URL： " + nowUrl);
+          log.error("网站页面出错，URL： " + nowUrl);
           flag = false;
         }
       } else {

@@ -10,13 +10,13 @@ import {
   cleanDOM,
   rm,
   gfetch,
-  console_debug,
   getAttachmentClassCache,
   putAttachmentClassCache,
 } from "../lib";
 import { ruleClass, chapterParseObject, retryLimit } from "../rules";
 import { replaceJjwxcCharacter } from "./lib/jjwxcFontDecode";
 import { introDomHandle } from "./lib/common";
+import { log } from "../log";
 
 export class jjwxc implements ruleClass {
   public imageMode: "naive" | "TM";
@@ -299,7 +299,7 @@ export class jjwxc implements ruleClass {
 
         let retryTime = 0;
         function fetchFont(fontUrl: string): Promise<Blob | null> {
-          console_debug(
+          log.debug(
             `[Chapter]请求 ${fontUrl} Referer ${chapterUrl} 重试次数 ${retryTime}`
           );
           return gfetch(fontUrl, {
@@ -312,9 +312,7 @@ export class jjwxc implements ruleClass {
             if (response.status >= 200 && response.status <= 299) {
               return <Blob>response.response;
             } else {
-              console.error(
-                `[Chapter]请求 ${fontUrl} 失败 Referer ${chapterUrl}`
-              );
+              log.error(`[Chapter]请求 ${fontUrl} 失败 Referer ${chapterUrl}`);
               if (retryTime < retryLimit) {
                 retryTime++;
                 return fetchFont(fontUrl);

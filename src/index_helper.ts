@@ -1,7 +1,8 @@
 import { Book, Chapter, attachmentClass, Status } from "./main";
-import { console_debug, storageAvailable } from "./lib";
+import { storageAvailable } from "./lib";
 import { updateProgress, audio, indexNameSpace, catchError } from "./index";
 import { enableCustomSaveOptions } from "./rules";
+import { log } from "./log";
 
 export const buttonStyleText = `position: fixed;
 top: 15%;
@@ -214,7 +215,7 @@ a.disabled {
       }
     }
 
-    console.log("[save]保存TXT文件");
+    log.info("[save]保存TXT文件");
     const savedText = this.savedTextArray.join("\n");
     saveAs(
       new Blob([savedText], { type: "text/plain;charset=utf-8" }),
@@ -223,35 +224,35 @@ a.disabled {
   }
 
   public saveZip() {
-    console_debug("[save]保存元数据文本");
+    log.debug("[save]保存元数据文本");
     const metaDateText = this.genMetaDateTxt();
     this.savedZip.file(
       "info.txt",
       new Blob([metaDateText], { type: "text/plain;charset=utf-8" })
     );
-    console_debug("[save]保存样式");
+    log.debug("[save]保存样式");
     this.savedZip.file(
       "style.css",
       new Blob([this.mainStyleText], { type: "text/css;charset=utf-8" })
     );
 
     if (this.book.additionalMetadate.cover) {
-      console_debug("[save]保存封面");
+      log.debug("[save]保存封面");
       this.addImageToZip(this.book.additionalMetadate.cover, this.savedZip);
     }
     if (this.book.additionalMetadate.attachments) {
-      console_debug("[save]保存书籍附件");
+      log.debug("[save]保存书籍附件");
       for (const bookAttachment of this.book.additionalMetadate.attachments) {
         this.addImageToZip(bookAttachment, this.savedZip);
       }
     }
 
-    console_debug("[save]开始保存章节文件");
+    log.debug("[save]开始保存章节文件");
     this.saveChapters();
-    console_debug("[save]开始生成并保存ToC.html");
+    log.debug("[save]开始生成并保存ToC.html");
     this.saveToC();
 
-    console.log("[save]开始保存ZIP文件");
+    log.info("[save]开始保存ZIP文件");
     this.savedZip
       .generateAsync(
         {
@@ -264,16 +265,16 @@ a.disabled {
         (metadata: any) => updateProgress(1, 1, metadata.percent)
       )
       .then((blob: Blob) => {
-        console_debug("[save]ZIP文件生成完毕，开始保存ZIP文件");
+        log.debug("[save]ZIP文件生成完毕，开始保存ZIP文件");
         saveAs(blob, `${this.saveFileNameBase}.zip`);
       })
       .then(() => {
-        console_debug("[save]保存ZIP文件完毕");
+        log.debug("[save]保存ZIP文件完毕");
         document.querySelector("#nd-progress")?.remove();
         audio.pause();
       })
       .catch((err: Error) => {
-        console.error("saveZip: " + err);
+        log.error("saveZip: " + err);
         catchError(err);
       });
   }
@@ -285,7 +286,7 @@ a.disabled {
     );
     const TocMain = ToC.querySelector("div.main");
 
-    console_debug("[save]生成ToC模板");
+    log.debug("[save]生成ToC模板");
     const infoDom = document.createElement("div");
     infoDom.className = "info";
     if (this.book.additionalMetadate.cover) {
@@ -342,7 +343,7 @@ a.disabled {
         if (!sections.includes(chapter.sectionName)) {
           sections.push(chapter.sectionName);
 
-          console_debug(`[save]生成卷DOM：${chapter.sectionName}`);
+          log.debug(`[save]生成卷DOM：${chapter.sectionName}`);
           const sectionDiv = document.createElement("div");
           sectionDiv.id = sectionHtmlId;
           sectionDiv.className = "section";
@@ -359,7 +360,7 @@ a.disabled {
           TocMain?.appendChild(sectionDiv);
         }
 
-        console_debug(`[save]生成章DOM：${chapterName}`);
+        log.debug(`[save]生成章DOM：${chapterName}`);
         const sectionDiv = TocMain?.querySelector("#" + sectionHtmlId);
 
         const chapterDiv = document.createElement("div");
@@ -399,7 +400,7 @@ a.disabled {
         sectionDiv?.appendChild(chapterDiv);
       }
 
-      console_debug("[save]保存ToC文件");
+      log.debug("[save]保存ToC文件");
       this.savedZip.file(
         "ToC.html",
         new Blob(
@@ -426,13 +427,13 @@ a.disabled {
         if (!sections.includes(chapter.sectionName)) {
           sections.push(chapter.sectionName);
 
-          console_debug(`[save]保存卷HTML文件：${chapter.sectionName}`);
+          log.debug(`[save]保存卷HTML文件：${chapter.sectionName}`);
           const sectionHTMLBlob = this.genSectionHtmlFile(chapter.sectionName);
           this.savedZip.file(`Section${htmlfileNameBase}`, sectionHTMLBlob);
         }
       }
 
-      console_debug(`[save]保存章HTML文件：${chapterName}`);
+      log.debug(`[save]保存章HTML文件：${chapterName}`);
       if (chapter.contentHTML) {
         const chapterHTMLBlob = this.genChapterHtmlFile(
           chapterName,
@@ -442,7 +443,7 @@ a.disabled {
         this.savedZip.file(chapterHtmlFileName, chapterHTMLBlob);
       }
 
-      console_debug(`[save]开始保存章节附件：${chapterName}`);
+      log.debug(`[save]开始保存章节附件：${chapterName}`);
       if (chapter.contentImages) {
         for (const attachment of chapter.contentImages) {
           this.addImageToZip(attachment, this.savedZip);
@@ -479,14 +480,11 @@ a.disabled {
 
   private addImageToZip(image: attachmentClass, zip: JSZip) {
     if (image.status === Status.finished && image.imageBlob) {
-      console_debug(
-        `[save]添加附件，文件名：${image.name}，对象`,
-        image.imageBlob
-      );
+      log.debug(`[save]添加附件，文件名：${image.name}，对象`, image.imageBlob);
       zip.file(image.name, image.imageBlob);
     } else {
-      console.error("[save]附件下载失败！");
-      console.error(image);
+      log.error("[save]附件下载失败！");
+      log.error(image);
     }
   }
 
@@ -677,7 +675,7 @@ export function removeTabMark(): Promise<indexNameSpace.mainTabObject> {
 
 export function r18SiteWarning(): boolean {
   if (!storageAvailable("localStorage")) {
-    console.error("Window.localStorage API 失效！");
+    log.error("Window.localStorage API 失效！");
     return true;
   }
   const k = "novel-download-r18-setting";
