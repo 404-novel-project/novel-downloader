@@ -5,7 +5,7 @@ import {
   Status,
 } from "../main";
 import { sleep } from "../lib";
-import { ruleClass, chapterParseObject } from "../rules";
+import { ruleClass, chapterParseObject, retryLimit } from "../rules";
 import { introDomHandle } from "./lib/common";
 import { log } from "../log";
 
@@ -537,6 +537,51 @@ export class gongzicp implements ruleClass {
         check: number; //1
       };
     }
+    function randomWalker() {
+      log.info("[chapter]随机翻页中……");
+      //目录页
+      if (document.location.pathname.includes("novel")) {
+        (<HTMLAnchorElement>(
+          document.querySelector(".chapter-list > .chapter > a")
+        )).click();
+      }
+      //阅读页
+      if (document.location.pathname.includes("read")) {
+        const rightMenu = document.querySelector(
+          ".right-menu"
+        ) as HTMLDivElement;
+        if (rightMenu?.childElementCount === 6) {
+          (<HTMLAnchorElement>(
+            document.querySelector(
+              ".right-menu > div:nth-child(3) > a:nth-child(1)"
+            )
+          )).click();
+        } else if (rightMenu?.childElementCount === 7) {
+          // 未购VIP章节，向前翻页
+          if (document.querySelector("div.content.unpaid")) {
+            (<HTMLAnchorElement>(
+              document.querySelector(
+                ".right-menu > div:nth-child(3) > a:nth-child(1)"
+              )
+            )).click();
+          }
+          // 30%概率向前翻页
+          else if (Math.random() < 0.3) {
+            (<HTMLAnchorElement>(
+              document.querySelector(
+                ".right-menu > div:nth-child(3) > a:nth-child(1)"
+              )
+            )).click();
+          } else {
+            (<HTMLAnchorElement>(
+              document.querySelector(
+                ".right-menu > div:nth-child(4) > a:nth-child(1)"
+              )
+            )).click();
+          }
+        }
+      }
+    }
 
     async function getChapter(): Promise<chapterParseObject> {
       const nid = (<chapterOption>options).novel_id;
@@ -547,26 +592,12 @@ export class gongzicp implements ruleClass {
       chapterGetInfoUrl.searchParams.set("cid", cid.toString());
       chapterGetInfoUrl.searchParams.set("nid", nid.toString());
 
-      log.debug(
-        `请求地址: ${chapterGetInfoUrl.toString()}, Referrer: ${chapterUrl}`
-      );
-      const result: chapterInfo = await fetch(chapterGetInfoUrl.toString(), {
-        credentials: "include",
-        headers: {
-          Accept: "application/json, text/plain, */*",
-          Client: "pc",
-          Lang: "cn",
-          "Content-Type": "application/json;charset=utf-8",
-        },
-        referrer: chapterUrl,
-        method: "GET",
-        mode: "cors",
-      }).then((resp) => resp.json());
-
-      // 获取章节评论，可能与反爬相关，冗余请求
-      await fetch(
-        `https://www.gongzicp.com/webapi/comment/getList?module=chapter&cid=${cid.toString()}&gift=0&page=1`,
-        {
+      let retryTime = 0;
+      async function getChapterInfo(url: string): Promise<chapterInfo> {
+        log.debug(
+          `请求地址: ${url}, Referrer: ${chapterUrl}，retryTime：${retryTime}`
+        );
+        const result: chapterInfo = await fetch(url, {
           credentials: "include",
           headers: {
             Accept: "application/json, text/plain, */*",
@@ -577,8 +608,32 @@ export class gongzicp implements ruleClass {
           referrer: chapterUrl,
           method: "GET",
           mode: "cors",
+        }).then((resp) => resp.json());
+        if (
+          result.data.chapterInfo.content.length !== 0 &&
+          result.data.chapterInfo.content.length < 30
+        ) {
+          retryTime++;
+          if (retryLimit > retryLimit) {
+            log.error(`请求 ${url} 失败`);
+            throw new Error(`请求 ${url} 失败`);
+          }
+
+          log.warn("[chapter]疑似被阻断，进行随机翻页……");
+          randomWalker();
+          await sleep(3000);
+          randomWalker();
+          await sleep(7000);
+          randomWalker();
+          await sleep(3000);
+          return getChapterInfo(url);
+        } else {
+          retryTime = 0;
+          return result;
         }
-      );
+      }
+
+      const result = await getChapterInfo(chapterGetInfoUrl.toString());
       if (result.code === 200) {
         const chapterInfo = result.data.chapterInfo;
         // 从目录获取章节名
@@ -678,8 +733,13 @@ export class gongzicp implements ruleClass {
       };
     }
     async function antiAntiCrawler() {
-      // 随机休眠7-11秒，反反爬
-      await sleep(7000 + Math.round(Math.random() * 4000));
+      // 随机游走，对抗阿里云验证码
+      // https://help.aliyun.com/document_detail/122071.html
+      if (Math.random() < 0.2) {
+        randomWalker();
+      }
+      // 随机休眠3-7秒，反反爬
+      await sleep(3000 + Math.round(Math.random() * 4000));
     }
     async function publicChapter(): Promise<chapterParseObject> {
       await antiAntiCrawler();
