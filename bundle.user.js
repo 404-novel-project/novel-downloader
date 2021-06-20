@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        3.6.7.1624126249687
+// @version        3.6.7.1624164089406
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -67,6 +67,7 @@
 // @match          *://www.yibige.la/*/
 // @match          *://www.fushuwang.org/*/*/*/*.html
 // @match          *://www.fushuwang.org/*/*/*/*.html?*
+// @match          *://www.soxscc.net/*/
 // @name:en        novel-downloader
 // @description:en An scalable universal novel downloader.
 // @namespace      https://blog.bgme.me
@@ -128,6 +129,7 @@
 // @connect        dmzj1.com
 // @connect        img.hongyeshuzhal.com
 // @connect        linovelib.com
+// @connect        soxscc.net
 // @connect        *
 // @require        https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js#sha512-Qlv6VSKh1gDKGoJbnyA5RMXYcvnpIqhO++MhIM2fStMcGT9i2T//tSwYFlcyoRRDcDZ+TYHpH8azBBCyhpSeqw==
 // @require        https://cdn.jsdelivr.net/npm/jszip@3.6.0/dist/jszip.min.js#sha512-uVSVjE7zYsGz4ag0HEzfugJ78oHCI1KhdkivjQro8ABL/PRiEO4ROwvrolYAcZnky0Fl/baWKYilQfWvESliRA==
@@ -2389,6 +2391,11 @@ async function getRule() {
             ruleClass = fushuwang;
             break;
         }
+        case "www.soxscc.net": {
+            const { soxscc } = await Promise.resolve().then(() => __webpack_require__("./src/rules/soxscc.ts"));
+            ruleClass = soxscc;
+            break;
+        }
         default: {
             throw new Error("Not Found Rule!");
         }
@@ -4546,11 +4553,14 @@ exports.jjwxc = jjwxc;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.introDomHandle = void 0;
 const lib_1 = __webpack_require__("./src/lib.ts");
-function introDomHandle(introDom) {
+function introDomHandle(introDom, domPatch = undefined) {
     if (introDom === null) {
         return [null, null, null];
     }
     else {
+        if (domPatch) {
+            introDom = domPatch(introDom.cloneNode(true));
+        }
         let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "TM");
         return [introCleantext, introCleanDom, introCleanimages];
     }
@@ -27486,6 +27496,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.meegoq = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const lib_1 = __webpack_require__("./src/lib.ts");
+const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 class meegoq {
     constructor() {
         this.imageMode = "TM";
@@ -27496,20 +27507,12 @@ class meegoq {
         const bookUrl = document.location.href.replace("/book", "/info");
         const dom = await lib_1.getHtmlDOM(bookUrl, "GBK");
         const author = (dom.querySelector("article.info > p.detail.pt20 > i:nth-child(1) > a")).innerText.trim();
-        let introduction;
-        let introductionHTML;
         const bookname = (dom.querySelector("article.info > header > h1")).innerText.trim();
         const introDom = dom.querySelector("article.info > p.desc");
-        if (introDom === null) {
-            introduction = null;
-            introductionHTML = null;
-        }
-        else {
+        const [introduction, introductionHTML, introCleanimages] = common_1.introDomHandle(introDom, (introDom) => {
             lib_1.rm("b", false, introDom);
-            let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "TM");
-            introduction = introCleantext;
-            introductionHTML = introCleanDom;
-        }
+            return introDom;
+        });
         const additionalMetadate = {};
         const coverUrl = (dom.querySelector("article.info > div.cover > img")).src;
         additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
@@ -28223,6 +28226,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.shouda8 = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const lib_1 = __webpack_require__("./src/lib.ts");
+const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 class shouda8 {
     constructor() {
         this.imageMode = "TM";
@@ -28233,21 +28237,13 @@ class shouda8 {
         const author = (document.querySelector("div.bookname > h1 > em")).innerText
             .replace("作者：", "")
             .trim();
-        let introduction;
-        let introductionHTML;
         const introDom = document.querySelector(".intro");
-        if (introDom === null) {
-            introduction = null;
-            introductionHTML = null;
-        }
-        else {
+        const [introduction, introductionHTML, introCleanimages] = common_1.introDomHandle(introDom, (introDom) => {
             lib_1.rm(".book_keywords", false, introDom);
             lib_1.rm("script", true, introDom);
             lib_1.rm("#cambrian0", false, introDom);
-            let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "TM");
-            introduction = introCleantext;
-            introductionHTML = introCleanDom;
-        }
+            return introDom;
+        });
         const additionalMetadate = {};
         const coverUrl = (document.querySelector(".pic > img:nth-child(1)")).src;
         additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
@@ -28565,6 +28561,115 @@ exports.sosadfun = sosadfun;
 
 /***/ }),
 
+/***/ "./src/rules/soxscc.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.soxscc = void 0;
+const main_1 = __webpack_require__("./src/main.ts");
+const lib_1 = __webpack_require__("./src/lib.ts");
+const common_1 = __webpack_require__("./src/rules/lib/common.ts");
+class soxscc {
+    constructor() {
+        this.imageMode = "TM";
+    }
+    async bookParse(chapterParse) {
+        const bookUrl = document.location.href;
+        const bookname = (document.querySelector(".xiaoshuo > h1")).innerText.trim();
+        const author = (document.querySelector(".xiaoshuo > h6:nth-child(3) > a")).innerText.trim();
+        const introDom = document.querySelector("#intro");
+        const [introduction, introductionHTML, introCleanimages] = common_1.introDomHandle(introDom, (introDom) => {
+            lib_1.rm("span.tags", false, introDom);
+            lib_1.rm("q", true, introDom);
+            return introDom;
+        });
+        const additionalMetadate = {};
+        const coverUrl = (document.querySelector(".book_cover > img")).src;
+        additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
+        additionalMetadate.cover.init();
+        const chapters = [];
+        const novel_list = document.querySelector("div.novel_list[id]");
+        const sections = Array.from(novel_list.children);
+        let chapterNumber = 0;
+        for (let i = 0; i < sections.length; i++) {
+            const section = sections[i];
+            const sectionName = section.querySelector("dt > b")
+                ?.innerText;
+            const cos = Array.from(section.querySelectorAll("dd > a"));
+            let sectionChapterNumber = 0;
+            for (const a of cos) {
+                chapterNumber++;
+                sectionChapterNumber++;
+                const chapterUrl = a.href;
+                const chapterName = a.innerText;
+                const isVIP = false;
+                const isPaid = false;
+                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, i + 1, sectionChapterNumber, chapterParse, "UTF-8", { bookname: bookname });
+                chapters.push(chapter);
+            }
+        }
+        return {
+            bookUrl: bookUrl,
+            bookname: bookname,
+            author: author,
+            introduction: introduction,
+            introductionHTML: introductionHTML,
+            additionalMetadate: additionalMetadate,
+            chapters: chapters,
+        };
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+        const doc = await lib_1.getHtmlDOM(chapterUrl, charset);
+        const bookname = options.bookname;
+        chapterName = (doc.querySelector(".read_title > h1")).innerText.trim();
+        const content = doc.querySelector("div.content[id]");
+        if (content) {
+            const ad = `您可以在百度里搜索“${bookname} 搜小说(www.soxscc.net)”查找最新章节！`;
+            content.innerHTML = content.innerHTML.replaceAll(ad, "");
+            Array.from(content.querySelectorAll("p")).forEach((p) => {
+                const adwords = [
+                    "最新章节地址：",
+                    "全文阅读地址：",
+                    "txt下载地址：",
+                    "手机阅读：",
+                    '为了方便下次阅读，你可以点击下方的"收藏"记录本次',
+                    "请向你的朋友（QQ、博客、微信等方式）推荐本书",
+                ];
+                for (const adword of adwords) {
+                    if (p.innerText.includes(adword)) {
+                        p.remove();
+                    }
+                }
+            });
+            let { dom, text, images } = lib_1.cleanDOM(content, "TM");
+            return {
+                chapterName: chapterName,
+                contentRaw: content,
+                contentText: text,
+                contentHTML: dom,
+                contentImages: images,
+                additionalMetadate: null,
+            };
+        }
+        else {
+            return {
+                chapterName: chapterName,
+                contentRaw: null,
+                contentText: null,
+                contentHTML: null,
+                contentImages: null,
+                additionalMetadate: null,
+            };
+        }
+    }
+}
+exports.soxscc = soxscc;
+
+
+/***/ }),
+
 /***/ "./src/rules/tadu.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
@@ -28716,6 +28821,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.uukanshu = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const lib_1 = __webpack_require__("./src/lib.ts");
+const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 class uukanshu {
     constructor() {
         this.imageMode = "TM";
@@ -28727,22 +28833,14 @@ class uukanshu {
             .replace("最新章节", "")
             .trim();
         const author = (document.querySelector("dd.jieshao_content > h2 > a")).innerText.trim();
-        let introduction;
-        let introductionHTML;
         const introDom = (document.querySelector("dd.jieshao_content > h3"));
-        if (introDom === null) {
-            introduction = null;
-            introductionHTML = null;
-        }
-        else {
+        const [introduction, introductionHTML, introCleanimages] = common_1.introDomHandle(introDom, (introDom) => {
             introDom.innerHTML = introDom.innerHTML
                 .replace(/^.+简介：\s+www.uukanshu.com\s+/, "")
                 .replace(/\s+https:\/\/www.uukanshu.com/, "")
                 .replace(/－+/, "");
-            let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "TM");
-            introduction = introCleantext;
-            introductionHTML = introCleanDom;
-        }
+            return introDom;
+        });
         const additionalMetadate = {};
         const coverUrl = (document.querySelector("a.bookImg > img")).src;
         additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
@@ -29019,6 +29117,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.xiaoshuodaquan = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const lib_1 = __webpack_require__("./src/lib.ts");
+const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 class xiaoshuodaquan {
     constructor() {
         this.imageMode = "TM";
@@ -29036,19 +29135,11 @@ class xiaoshuodaquan {
             .replace("》", "")
             .trim();
         const author = (document.querySelector(".smallcons > span:nth-child(1) > a:nth-child(1)")).innerText.trim();
-        let introduction;
-        let introductionHTML;
         const introDom = document.querySelector(".bookintro");
-        if (introDom === null) {
-            introduction = null;
-            introductionHTML = null;
-        }
-        else {
+        const [introduction, introductionHTML, introCleanimages] = common_1.introDomHandle(introDom, (introDom) => {
             introDom.innerHTML = introDom.innerHTML.replace("内容简介:", "");
-            let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "TM");
-            introduction = introCleantext;
-            introductionHTML = introCleanDom;
-        }
+            return introDom;
+        });
         const additionalMetadate = {};
         let coverUrl;
         if (ccount) {
@@ -29523,7 +29614,7 @@ class yibige {
                 node.textContent?.trim() === "相关：") {
                 break;
             }
-            introDom.appendChild(node.cloneNode());
+            introDom.appendChild(node.cloneNode(true));
         }
         const [introduction, introductionHTML, introCleanimages] = common_1.introDomHandle(introDom);
         const additionalMetadate = {};
@@ -29722,6 +29813,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.yuzhaige = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const lib_1 = __webpack_require__("./src/lib.ts");
+const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 const yuzhaigeImageDecode_1 = __webpack_require__("./src/rules/lib/yuzhaigeImageDecode.ts");
 const log_1 = __webpack_require__("./src/log.ts");
 class yuzhaige {
@@ -29735,19 +29827,11 @@ class yuzhaige {
         const dom = await lib_1.getHtmlDOM(bookUrl, "UTF-8");
         const bookname = (dom.querySelector("div.cataloginfo > h3")).innerText.trim();
         const author = (dom.querySelector(".infotype > p:nth-child(1) > a:nth-child(1)")).innerText.trim();
-        let introduction;
-        let introductionHTML;
         const introDom = dom.querySelector(".intro");
-        if (introDom === null) {
-            introduction = null;
-            introductionHTML = null;
-        }
-        else {
+        const [introduction, introductionHTML, introCleanimages] = common_1.introDomHandle(introDom, (introDom) => {
             lib_1.rm("span:nth-child(1)", false, introDom);
-            let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "TM");
-            introduction = introCleantext;
-            introductionHTML = introCleanDom;
-        }
+            return introDom;
+        });
         const additionalMetadate = {};
         const chapters = [];
         const getMaxPageNumber = () => {
