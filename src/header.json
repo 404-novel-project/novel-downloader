@@ -83,7 +83,9 @@
     "*://www.yibige.la/*/",
     "*://www.fushuwang.org/*/*/*/*.html",
     "*://www.fushuwang.org/*/*/*/*.html?*",
-    "*://www.soxscc.net/*/"
+    "*://www.soxscc.net/*/",
+    "*://www.soxscc.org/*/",
+    "*://www.soxs.cc/*/"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",
@@ -138,6 +140,8 @@
     "img.hongyeshuzhal.com",
     "linovelib.com",
     "soxscc.net",
+    "soxscc.org",
+    "soxs.cc",
     "*"
   ],
   "require": [
