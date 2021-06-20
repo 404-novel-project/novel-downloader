@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        3.6.7.1624164898210
+// @version        3.6.7.1624166705008
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -68,6 +68,8 @@
 // @match          *://www.fushuwang.org/*/*/*/*.html
 // @match          *://www.fushuwang.org/*/*/*/*.html?*
 // @match          *://www.soxscc.net/*/
+// @match          *://www.soxscc.org/*/
+// @match          *://www.soxs.cc/*/
 // @name:en        novel-downloader
 // @description:en An scalable universal novel downloader.
 // @namespace      https://blog.bgme.me
@@ -130,6 +132,8 @@
 // @connect        img.hongyeshuzhal.com
 // @connect        linovelib.com
 // @connect        soxscc.net
+// @connect        soxscc.org
+// @connect        soxs.cc
 // @connect        *
 // @require        https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js#sha512-Qlv6VSKh1gDKGoJbnyA5RMXYcvnpIqhO++MhIM2fStMcGT9i2T//tSwYFlcyoRRDcDZ+TYHpH8azBBCyhpSeqw==
 // @require        https://cdn.jsdelivr.net/npm/jszip@3.6.0/dist/jszip.min.js#sha512-uVSVjE7zYsGz4ag0HEzfugJ78oHCI1KhdkivjQro8ABL/PRiEO4ROwvrolYAcZnky0Fl/baWKYilQfWvESliRA==
@@ -2391,7 +2395,9 @@ async function getRule() {
             ruleClass = fushuwang;
             break;
         }
-        case "www.soxscc.net": {
+        case "www.soxscc.net":
+        case "www.soxscc.org":
+        case "www.soxs.cc": {
             const { soxscc } = await Promise.resolve().then(() => __webpack_require__("./src/rules/soxscc.ts"));
             ruleClass = soxscc;
             break;
@@ -28626,7 +28632,7 @@ class soxscc {
         chapterName = (doc.querySelector(".read_title > h1")).innerText.trim();
         const content = doc.querySelector("div.content[id]");
         if (content) {
-            const ad = `您可以在百度里搜索“${bookname} 搜小说(www.soxscc.net)”查找最新章节！`;
+            const ad = `您可以在百度里搜索“${bookname} 搜小说(${document.location.hostname})”查找最新章节！`;
             content.innerHTML = content.innerHTML.replaceAll(ad, "");
             Array.from(content.querySelectorAll("p")).forEach((p) => {
                 const adwords = [
