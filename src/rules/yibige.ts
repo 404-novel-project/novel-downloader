@@ -33,7 +33,7 @@ export class yibige implements ruleClass {
       ) {
         break;
       }
-      introDom.appendChild(node.cloneNode());
+      introDom.appendChild(node.cloneNode(true));
     }
     const [introduction, introductionHTML, introCleanimages] = introDomHandle(
       introDom

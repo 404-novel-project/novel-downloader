@@ -1,6 +1,7 @@
 import { BookAdditionalMetadate, attachmentClass, Chapter } from "../main";
 import { ruleClass } from "../rules";
 import { getHtmlDOM, cleanDOM, rm } from "../lib";
+import { introDomHandle } from "./lib/common";
 
 export class xiaoshuodaquan implements ruleClass {
   public imageMode: "naive" | "TM";
@@ -32,22 +33,14 @@ export class xiaoshuodaquan implements ruleClass {
       document.querySelector(".smallcons > span:nth-child(1) > a:nth-child(1)")
     )).innerText.trim();
 
-    let introduction: string | null;
-    let introductionHTML: HTMLElement | null;
     const introDom = <HTMLElement>document.querySelector(".bookintro");
-    if (introDom === null) {
-      introduction = null;
-      introductionHTML = null;
-    } else {
-      introDom.innerHTML = introDom.innerHTML.replace("内容简介:", "");
-      let {
-        dom: introCleanDom,
-        text: introCleantext,
-        images: introCleanimages,
-      } = cleanDOM(introDom, "TM");
-      introduction = introCleantext;
-      introductionHTML = introCleanDom;
-    }
+    const [introduction, introductionHTML, introCleanimages] = introDomHandle(
+      introDom,
+      (introDom) => {
+        introDom.innerHTML = introDom.innerHTML.replace("内容简介:", "");
+        return introDom;
+      }
+    );
 
     const additionalMetadate: BookAdditionalMetadate = {};
     let coverUrl;

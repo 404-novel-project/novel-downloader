@@ -1,6 +1,7 @@
 import { BookAdditionalMetadate, attachmentClass, Chapter } from "../main";
 import { ruleClass } from "../rules";
 import { getHtmlDOM, cleanDOM, rm } from "../lib";
+import { introDomHandle } from "./lib/common";
 
 export class meegoq implements ruleClass {
   public imageMode: "naive" | "TM";
@@ -21,25 +22,17 @@ export class meegoq implements ruleClass {
       dom.querySelector("article.info > p.detail.pt20 > i:nth-child(1) > a")
     )).innerText.trim();
 
-    let introduction: string | null;
-    let introductionHTML: HTMLElement | null;
     const bookname = (<HTMLElement>(
       dom.querySelector("article.info > header > h1")
     )).innerText.trim();
     const introDom = <HTMLElement>dom.querySelector("article.info > p.desc");
-    if (introDom === null) {
-      introduction = null;
-      introductionHTML = null;
-    } else {
-      rm("b", false, introDom);
-      let {
-        dom: introCleanDom,
-        text: introCleantext,
-        images: introCleanimages,
-      } = cleanDOM(introDom, "TM");
-      introduction = introCleantext;
-      introductionHTML = introCleanDom;
-    }
+    const [introduction, introductionHTML, introCleanimages] = introDomHandle(
+      introDom,
+      (introDom) => {
+        rm("b", false, introDom);
+        return introDom;
+      }
+    );
 
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = (<HTMLImageElement>(

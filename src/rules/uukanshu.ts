@@ -1,6 +1,7 @@
 import { BookAdditionalMetadate, attachmentClass, Chapter } from "../main";
 import { ruleClass } from "../rules";
 import { getHtmlDOM, cleanDOM, rm } from "../lib";
+import { introDomHandle } from "./lib/common";
 
 namespace uukanshu {
   export interface uukanshuWindow extends unsafeWindow {
@@ -27,27 +28,19 @@ export class uukanshu implements ruleClass {
       document.querySelector("dd.jieshao_content > h2 > a")
     )).innerText.trim();
 
-    let introduction: string | null;
-    let introductionHTML: HTMLElement | null;
     const introDom = <HTMLElement>(
       document.querySelector("dd.jieshao_content > h3")
     );
-    if (introDom === null) {
-      introduction = null;
-      introductionHTML = null;
-    } else {
-      introDom.innerHTML = introDom.innerHTML
-        .replace(/^.+简介：\s+www.uukanshu.com\s+/, "")
-        .replace(/\s+https:\/\/www.uukanshu.com/, "")
-        .replace(/－+/, "");
-      let {
-        dom: introCleanDom,
-        text: introCleantext,
-        images: introCleanimages,
-      } = cleanDOM(introDom, "TM");
-      introduction = introCleantext;
-      introductionHTML = introCleanDom;
-    }
+    const [introduction, introductionHTML, introCleanimages] = introDomHandle(
+      introDom,
+      (introDom) => {
+        introDom.innerHTML = introDom.innerHTML
+          .replace(/^.+简介：\s+www.uukanshu.com\s+/, "")
+          .replace(/\s+https:\/\/www.uukanshu.com/, "")
+          .replace(/－+/, "");
+        return introDom;
+      }
+    );
 
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = (<HTMLImageElement>(

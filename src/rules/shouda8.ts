@@ -1,6 +1,7 @@
 import { BookAdditionalMetadate, attachmentClass, Chapter } from "../main";
 import { ruleClass } from "../rules";
 import { getHtmlDOM, cleanDOM, rm } from "../lib";
+import { introDomHandle } from "./lib/common";
 
 export class shouda8 implements ruleClass {
   public imageMode: "naive" | "TM";
@@ -20,24 +21,16 @@ export class shouda8 implements ruleClass {
       .replace("作者：", "")
       .trim();
 
-    let introduction: string | null;
-    let introductionHTML: HTMLElement | null;
     const introDom = <HTMLElement>document.querySelector(".intro");
-    if (introDom === null) {
-      introduction = null;
-      introductionHTML = null;
-    } else {
-      rm(".book_keywords", false, introDom);
-      rm("script", true, introDom);
-      rm("#cambrian0", false, introDom);
-      let {
-        dom: introCleanDom,
-        text: introCleantext,
-        images: introCleanimages,
-      } = cleanDOM(introDom, "TM");
-      introduction = introCleantext;
-      introductionHTML = introCleanDom;
-    }
+    const [introduction, introductionHTML, introCleanimages] = introDomHandle(
+      introDom,
+      (introDom) => {
+        rm(".book_keywords", false, introDom);
+        rm("script", true, introDom);
+        rm("#cambrian0", false, introDom);
+        return introDom;
+      }
+    );
 
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = (<HTMLImageElement>(
