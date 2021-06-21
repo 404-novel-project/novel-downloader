@@ -240,6 +240,9 @@ async function run() {
   }
 
   log.info(`[run]下载完毕`);
+  if (enaleDebug) {
+    saveLogTextToFile();
+  }
   return book;
 }
 

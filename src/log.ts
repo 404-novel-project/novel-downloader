@@ -20,7 +20,7 @@ log.setLevel(log.getLevel());
 
 function saveLogTextToFile() {
   saveAs(
-    new Blob([logText], { type: "text/txt; charset=UTF-8" }),
+    new Blob([logText], { type: "text/plain; charset=UTF-8" }),
     `novel-downloader-${Date.now().toString()}.log`
   );
 }
