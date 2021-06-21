@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        3.6.7.1624291150797
+// @version        3.6.7.1624293881157
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -931,6 +931,7 @@ async function initChapters(rule, book) {
             }
             catch (error) {
                 log_1.log.error("运行自定义筛选函数时出错。", error);
+                log_1.log.trace(error);
             }
         }
         return b0 && b1;
@@ -1051,6 +1052,7 @@ function catchError(error) {
     document.getElementById("novel-downloader")?.remove();
     log_1.log.error("运行过程出错，请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/yingziwu/novel-downloader");
     log_1.log.error(error);
+    log_1.log.trace(error);
     exports.audio.pause();
     alert("运行过程出错，请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/yingziwu/novel-downloader");
     log_1.saveLogTextToFile();
@@ -1367,6 +1369,7 @@ a.disabled {
         })
             .catch((err) => {
             log_1.log.error("saveZip: " + err);
+            log_1.log.trace(err);
             index_1.catchError(err);
         });
     }
@@ -2059,6 +2062,7 @@ class Chapter {
             else {
                 this.status = Status.failed;
                 log_1.log.error(err);
+                log_1.log.trace(err);
                 return {
                     chapterName: this.chapterName,
                     contentRaw: null,
@@ -2124,6 +2128,7 @@ class attachmentClass {
             else {
                 this.status = Status.failed;
                 log_1.log.error(err);
+                log_1.log.trace(err);
                 return null;
             }
         });
@@ -2157,6 +2162,7 @@ class attachmentClass {
             else {
                 this.status = Status.failed;
                 log_1.log.error(err);
+                log_1.log.trace(err);
                 return null;
             }
         });
