@@ -51,7 +51,7 @@ def main(folder_path):
 # In[18]:
 
 
-fontTables = main("../tmp/jjwxcNovelCrawler/反爬虫对照表/")
+fontTables = main("../../tmp/jjwxcNovelCrawler/反爬虫对照表/")
 with open("fontTables.json","w") as f:
     json.dump(fontTables,f)
 

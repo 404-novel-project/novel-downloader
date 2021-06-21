@@ -214,25 +214,6 @@ export const common = mkBiqugeClass(
   (content) => content
 );
 
-export const shuquge = mkBiqugeClass(
-  (introDom) => {
-    introDom.innerHTML = introDom.innerHTML.replace(
-      /推荐地址：http:\/\/www.shuquge.com\/txt\/\d+\/index\.html/g,
-      ""
-    );
-    return introDom;
-  },
-  (content) => {
-    content.innerHTML = content.innerHTML
-      .replace(
-        "请记住本书首发域名：www.shuquge.com。书趣阁_笔趣阁手机版阅读网址：m.shuquge.com",
-        ""
-      )
-      .replace(/http:\/\/www.shuquge.com\/txt\/\d+\/\d+\.html/, "");
-    return content;
-  }
-);
-
 export const dingdiann = mkBiqugeClass(
   (introDom) => introDom,
   (content) => {
@@ -274,6 +255,71 @@ export const luoqiuzw = mkBiqugeClass(
     return content;
   }
 );
+
+export class shuquge implements ruleClass {
+  public imageMode: "naive" | "TM";
+
+  public constructor() {
+    this.imageMode = "TM";
+  }
+
+  public async bookParse(chapterParse: ruleClass["chapterParse"]) {
+    return bookParseTemp({
+      bookUrl: document.location.href,
+      bookname: (<HTMLElement>(
+        document.querySelector(".info > h2")
+      )).innerText.trim(),
+      author: (<HTMLElement>(
+        document.querySelector(".small > span:nth-child(1)")
+      )).innerText
+        .replace(/作(\s+)?者[：:]/, "")
+        .trim(),
+      introDom: <HTMLElement>document.querySelector(".intro"),
+      introDomPatch: (introDom) => {
+        introDom.innerHTML = introDom.innerHTML.replace(
+          /推荐地址：http:\/\/www.shuquge.com\/txt\/\d+\/index\.html/g,
+          ""
+        );
+        return introDom;
+      },
+      coverUrl: (<HTMLImageElement>(
+        document.querySelector(".info > .cover > img")
+      )).src,
+      chapterListSelector: ".listmain>dl",
+      charset: "UTF-8",
+      chapterParse: chapterParse,
+    });
+  }
+
+  public async chapterParse(
+    chapterUrl: string,
+    chapterName: string | null,
+    isVIP: boolean,
+    isPaid: boolean,
+    charset: string,
+    options: object
+  ) {
+    const dom = await getHtmlDOM(chapterUrl, charset);
+    return chapterParseTemp({
+      dom,
+      chapterUrl,
+      chapterName: (<HTMLElement>(
+        dom.querySelector(".content > h1:nth-child(1)")
+      )).innerText.trim(),
+      contenSelector: "#content",
+      contentPatch: (content) => {
+        content.innerHTML = content.innerHTML
+          .replace(
+            "请记住本书首发域名：www.shuquge.com。书趣阁_笔趣阁手机版阅读网址：m.shuquge.com",
+            ""
+          )
+          .replace(/http:\/\/www.shuquge.com\/txt\/\d+\/\d+\.html/, "");
+        return content;
+      },
+      charset,
+    });
+  }
+}
 
 export class xbiquge implements ruleClass {
   public imageMode: "naive" | "TM";

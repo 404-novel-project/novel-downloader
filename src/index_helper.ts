@@ -649,7 +649,7 @@ export function getNowRunNumber(): Promise<number> {
       for (let i in curTabObjects) {
         const novel_downloader_url = (<indexNameSpace.mainTabObject>(
           curTabObjects[i]
-        )).novel_downloader;
+        ))?.novel_downloader;
         if (
           novel_downloader_url !== undefined &&
           new URL(novel_downloader_url).hostname === document.location.hostname

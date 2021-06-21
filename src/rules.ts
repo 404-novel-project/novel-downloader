@@ -73,7 +73,8 @@ export async function getRule(): Promise<ruleClass> {
       ruleClass = yrun;
       break;
     }
-    case "www.shuquge.com": {
+    case "www.shuquge.com":
+    case "www.sizhicn.com": {
       const { shuquge } = await import("./rules/biquge");
       ruleClass = shuquge;
       break;
@@ -122,7 +123,8 @@ export async function getRule(): Promise<ruleClass> {
       ruleClass = meegoq;
       break;
     }
-    case "www.xiaoshuodaquan.com": {
+    case "www.xiaoshuodaquan.com":
+    case "www.1pwx.com": {
       const { xiaoshuodaquan } = await import("./rules/xiaoshuodaquan");
       ruleClass = xiaoshuodaquan;
       break;
