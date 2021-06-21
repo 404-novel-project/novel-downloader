@@ -52,6 +52,7 @@
     "*://www.uukanshu.com/b/*/",
     "*://www.yruan.com/article/*.html",
     "*://www.biquwoo.com/bqw*/",
+    "*://www.biquwo.org/bqw*/",
     "*://www.shuquge.com/txt/*/index.html",
     "*://www.dingdiann.net/ddk*/",
     "*://www.xkzw.org/xkzw*/",
@@ -85,7 +86,9 @@
     "*://www.fushuwang.org/*/*/*/*.html?*",
     "*://www.soxscc.net/*/",
     "*://www.soxscc.org/*/",
-    "*://www.soxs.cc/*/"
+    "*://www.soxs.cc/*/",
+    "*://www.shubaowa.org/*_*/",
+    "*://www.fuguoduxs.com/*_*/"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",
@@ -137,7 +140,7 @@
     "wenku8.com",
     "dmzj.com",
     "dmzj1.com",
-    "img.hongyeshuzhal.com",
+    "hongyeshuzhal.com",
     "linovelib.com",
     "soxscc.net",
     "soxscc.org",

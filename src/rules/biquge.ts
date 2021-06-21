@@ -29,12 +29,14 @@ export async function bookParseTemp({
   );
 
   const additionalMetadate: BookAdditionalMetadate = {};
-  additionalMetadate.cover = new attachmentClass(
-    coverUrl,
-    `cover.${coverUrl.split(".").slice(-1)[0]}`,
-    "TM"
-  );
-  additionalMetadate.cover.init();
+  if (coverUrl) {
+    additionalMetadate.cover = new attachmentClass(
+      coverUrl,
+      `cover.${coverUrl.split(".").slice(-1)[0]}`,
+      "TM"
+    );
+    additionalMetadate.cover.init();
+  }
 
   const chapters: Chapter[] = [];
   const dl = document.querySelector(chapterListSelector);
@@ -149,288 +151,129 @@ async function chapterParseTemp({
   }
 }
 
-export class biquwo implements ruleClass {
-  public imageMode: "naive" | "TM";
+function mkBiqugeClass(
+  introDomPatch: (introDom: HTMLElement) => HTMLElement,
+  contentPatch: (content: HTMLElement) => HTMLElement
+) {
+  return class implements ruleClass {
+    public imageMode: "naive" | "TM";
+    public charset: string;
 
-  public constructor() {
-    this.imageMode = "TM";
-  }
+    public constructor() {
+      this.imageMode = "TM";
+      this.charset = document.charset;
+    }
 
-  public async bookParse(chapterParse: ruleClass["chapterParse"]) {
-    return bookParseTemp({
-      bookUrl: document.location.href,
-      bookname: (<HTMLElement>(
-        document.querySelector("#info > h1:nth-child(1)")
-      )).innerText.trim(),
-      author: (<HTMLElement>(
-        document.querySelector("#info > p:nth-child(2)")
-      )).innerText
-        .replace(/作(\s+)?者[：:]/, "")
-        .trim(),
-      introDom: <HTMLElement>document.querySelector("#intro"),
-      introDomPatch: (introDom) => introDom,
-      coverUrl: (<HTMLImageElement>document.querySelector("#fmimg > img")).src,
-      chapterListSelector: "#list>dl",
-      charset: "UTF-8",
-      chapterParse: chapterParse,
-    });
-  }
+    public async bookParse(chapterParse: ruleClass["chapterParse"]) {
+      return bookParseTemp({
+        bookUrl: document.location.href,
+        bookname: (<HTMLElement>(
+          document.querySelector("#info > h1:nth-child(1)")
+        )).innerText.trim(),
+        author: (<HTMLElement>(
+          document.querySelector("#info > p:nth-child(2)")
+        )).innerText
+          .replace(/作(\s+)?者[：:]/, "")
+          .trim(),
+        introDom: <HTMLElement>document.querySelector("#intro"),
+        introDomPatch: introDomPatch,
+        coverUrl: (<HTMLImageElement>document.querySelector("#fmimg > img"))
+          .src,
+        chapterListSelector: "#list>dl",
+        charset: document.charset,
+        chapterParse: chapterParse,
+      });
+    }
 
-  public async chapterParse(
-    chapterUrl: string,
-    chapterName: string | null,
-    isVIP: boolean,
-    isPaid: boolean,
-    charset: string,
-    options: object
-  ) {
-    const dom = await getHtmlDOM(chapterUrl, charset);
-    return chapterParseTemp({
-      dom,
-      chapterUrl,
-      chapterName: (<HTMLElement>(
-        dom.querySelector(".bookname > h1:nth-child(1)")
-      )).innerText.trim(),
-      contenSelector: "#content",
-      contentPatch: (content) => content,
-      charset,
-    });
-  }
+    public async chapterParse(
+      chapterUrl: string,
+      chapterName: string | null,
+      isVIP: boolean,
+      isPaid: boolean,
+      charset: string,
+      options: object
+    ) {
+      const dom = await getHtmlDOM(chapterUrl, charset);
+      return chapterParseTemp({
+        dom,
+        chapterUrl,
+        chapterName: (<HTMLElement>(
+          dom.querySelector(".bookname > h1:nth-child(1)")
+        )).innerText.trim(),
+        contenSelector: "#content",
+        contentPatch: contentPatch,
+        charset,
+      });
+    }
+  };
 }
 
-export class shuquge implements ruleClass {
-  public imageMode: "naive" | "TM";
+// 笔趣阁通用模板，无contentpatch可直接使用
+export const common = mkBiqugeClass(
+  (introDom) => introDom,
+  (content) => content
+);
 
-  public constructor() {
-    this.imageMode = "TM";
+export const shuquge = mkBiqugeClass(
+  (introDom) => {
+    introDom.innerHTML = introDom.innerHTML.replace(
+      /推荐地址：http:\/\/www.shuquge.com\/txt\/\d+\/index\.html/g,
+      ""
+    );
+    return introDom;
+  },
+  (content) => {
+    content.innerHTML = content.innerHTML
+      .replace(
+        "请记住本书首发域名：www.shuquge.com。书趣阁_笔趣阁手机版阅读网址：m.shuquge.com",
+        ""
+      )
+      .replace(/http:\/\/www.shuquge.com\/txt\/\d+\/\d+\.html/, "");
+    return content;
   }
+);
 
-  public async bookParse(chapterParse: ruleClass["chapterParse"]) {
-    return bookParseTemp({
-      bookUrl: document.location.href,
-      bookname: (<HTMLElement>(
-        document.querySelector(".info > h2")
-      )).innerText.trim(),
-      author: (<HTMLElement>(
-        document.querySelector(".small > span:nth-child(1)")
-      )).innerText
-        .replace(/作(\s+)?者[：:]/, "")
-        .trim(),
-      introDom: <HTMLElement>document.querySelector(".intro"),
-      introDomPatch: (introDom) => {
-        introDom.innerHTML = introDom.innerHTML.replace(
-          /推荐地址：http:\/\/www.shuquge.com\/txt\/\d+\/index\.html/g,
-          ""
-        );
-        return introDom;
-      },
-      coverUrl: (<HTMLImageElement>(
-        document.querySelector(".info > .cover > img")
-      )).src,
-      chapterListSelector: ".listmain>dl",
-      charset: "UTF-8",
-      chapterParse: chapterParse,
-    });
+export const dingdiann = mkBiqugeClass(
+  (introDom) => introDom,
+  (content) => {
+    const ad =
+      '<div align="center"><a href="javascript:postError();" style="text-align:center;color:red;">章节错误,点此举报(免注册)</a>,举报后维护人员会在两分钟内校正章节内容,请耐心等待,并刷新页面。</div>';
+    content.innerHTML = content.innerHTML
+      .replace(ad, "")
+      .replace(/http:\/\/www.shuquge.com\/txt\/\d+\/\d+\.html/, "");
+    return content;
   }
+);
 
-  public async chapterParse(
-    chapterUrl: string,
-    chapterName: string | null,
-    isVIP: boolean,
-    isPaid: boolean,
-    charset: string,
-    options: object
-  ) {
-    const dom = await getHtmlDOM(chapterUrl, charset);
-    return chapterParseTemp({
-      dom,
-      chapterUrl,
-      chapterName: (<HTMLElement>(
-        dom.querySelector(".content > h1:nth-child(1)")
-      )).innerText.trim(),
-      contenSelector: "#content",
-      contentPatch: (content) => {
-        content.innerHTML = content.innerHTML
-          .replace(
-            "请记住本书首发域名：www.shuquge.com。书趣阁_笔趣阁手机版阅读网址：m.shuquge.com",
-            ""
-          )
-          .replace(/http:\/\/www.shuquge.com\/txt\/\d+\/\d+\.html/, "");
-        return content;
-      },
-      charset,
-    });
+export const gebiqu = mkBiqugeClass(
+  (introDom) => {
+    introDom.innerHTML = introDom.innerHTML.replace(
+      /如果您喜欢.+，别忘记分享给朋友/g,
+      ""
+    );
+    rm('a[href^="http://down.gebiqu.com"]', false, introDom);
+    return introDom;
+  },
+  (content) => {
+    content.innerHTML = content.innerHTML.replace(/"www.gebiqu.com"/g, "");
+    return content;
   }
-}
-export class dingdiann implements ruleClass {
-  public imageMode: "naive" | "TM";
-  public concurrencyLimit: number;
+);
 
-  public constructor() {
-    this.imageMode = "TM";
-    this.concurrencyLimit = 5;
+export const luoqiuzw = mkBiqugeClass(
+  (introDom) => introDom,
+  (content) => {
+    const ad = content.firstElementChild as HTMLParagraphElement;
+    if (ad.innerText.includes("天才一秒记住本站地址：")) {
+      ad.remove();
+    }
+    const ads = ["记住网址m.luoqｉｕｘｚｗ．ｃｏｍ"];
+    ads.forEach(
+      (adt) => (content.innerHTML = content.innerHTML.replace(adt, ""))
+    );
+    return content;
   }
-
-  public async bookParse(chapterParse: ruleClass["chapterParse"]) {
-    return bookParseTemp({
-      bookUrl: document.location.href,
-      bookname: (<HTMLElement>(
-        document.querySelector("#info > h1:nth-child(1)")
-      )).innerText.trim(),
-      author: (<HTMLElement>(
-        document.querySelector("#info > p:nth-child(2)")
-      )).innerText
-        .replace(/作(\s+)?者[：:]/, "")
-        .trim(),
-      introDom: <HTMLElement>document.querySelector("#intro"),
-      introDomPatch: (introDom) => introDom,
-      coverUrl: (<HTMLImageElement>document.querySelector("#fmimg > img")).src,
-      chapterListSelector: "#list>dl",
-      charset: "UTF-8",
-      chapterParse: chapterParse,
-    });
-  }
-
-  public async chapterParse(
-    chapterUrl: string,
-    chapterName: string | null,
-    isVIP: boolean,
-    isPaid: boolean,
-    charset: string,
-    options: object
-  ) {
-    const dom = await getHtmlDOM(chapterUrl, charset);
-    return chapterParseTemp({
-      dom,
-      chapterUrl,
-      chapterName: (<HTMLElement>(
-        dom.querySelector(".bookname > h1:nth-child(1)")
-      )).innerText.trim(),
-      contenSelector: "#content",
-      contentPatch: (content) => {
-        const ad =
-          '<div align="center"><a href="javascript:postError();" style="text-align:center;color:red;">章节错误,点此举报(免注册)</a>,举报后维护人员会在两分钟内校正章节内容,请耐心等待,并刷新页面。</div>';
-        content.innerHTML = content.innerHTML
-          .replace(ad, "")
-          .replace(/http:\/\/www.shuquge.com\/txt\/\d+\/\d+\.html/, "");
-        return content;
-      },
-      charset,
-    });
-  }
-}
-
-export class gebiqu implements ruleClass {
-  public imageMode: "naive" | "TM";
-  public concurrencyLimit: number;
-
-  public constructor() {
-    this.imageMode = "TM";
-    this.concurrencyLimit = 5;
-  }
-
-  public async bookParse(chapterParse: ruleClass["chapterParse"]) {
-    return bookParseTemp({
-      bookUrl: document.location.href,
-      bookname: (<HTMLElement>(
-        document.querySelector("#info > h1:nth-child(1)")
-      )).innerText.trim(),
-      author: (<HTMLElement>(
-        document.querySelector("#info > p:nth-child(2)")
-      )).innerText
-        .replace(/作(\s+)?者[：:]/, "")
-        .trim(),
-      introDom: <HTMLElement>document.querySelector("#intro"),
-      introDomPatch: (introDom) => {
-        introDom.innerHTML = introDom.innerHTML.replace(
-          /如果您喜欢.+，别忘记分享给朋友/g,
-          ""
-        );
-        rm('a[href^="http://down.gebiqu.com"]', false, introDom);
-        return introDom;
-      },
-      coverUrl: (<HTMLImageElement>document.querySelector("#fmimg > img")).src,
-      chapterListSelector: "#list>dl",
-      charset: "UTF-8",
-      chapterParse: chapterParse,
-    });
-  }
-
-  public async chapterParse(
-    chapterUrl: string,
-    chapterName: string | null,
-    isVIP: boolean,
-    isPaid: boolean,
-    charset: string,
-    options: object
-  ) {
-    const dom = await getHtmlDOM(chapterUrl, charset);
-    return chapterParseTemp({
-      dom,
-      chapterUrl,
-      chapterName: (<HTMLElement>(
-        dom.querySelector(".bookname > h1:nth-child(1)")
-      )).innerText.trim(),
-      contenSelector: "#content",
-      contentPatch: (content) => {
-        content.innerHTML = content.innerHTML.replace(/"www.gebiqu.com"/g, "");
-        return content;
-      },
-      charset,
-    });
-  }
-}
-
-export class zwdu implements ruleClass {
-  public imageMode: "naive" | "TM";
-  public charset: string;
-
-  public constructor() {
-    this.imageMode = "TM";
-    this.charset = "GBK";
-  }
-
-  public async bookParse(chapterParse: ruleClass["chapterParse"]) {
-    return bookParseTemp({
-      bookUrl: document.location.href,
-      bookname: (<HTMLElement>(
-        document.querySelector("#info > h1:nth-child(1)")
-      )).innerText.trim(),
-      author: (<HTMLElement>(
-        document.querySelector("#info > p:nth-child(2)")
-      )).innerText
-        .replace(/作(\s+)?者[：:]/, "")
-        .trim(),
-      introDom: <HTMLElement>document.querySelector("#intro"),
-      introDomPatch: (introDom) => introDom,
-      coverUrl: (<HTMLImageElement>document.querySelector("#fmimg > img")).src,
-      chapterListSelector: "#list>dl",
-      charset: "GBK",
-      chapterParse: chapterParse,
-    });
-  }
-
-  public async chapterParse(
-    chapterUrl: string,
-    chapterName: string | null,
-    isVIP: boolean,
-    isPaid: boolean,
-    charset: string,
-    options: object
-  ) {
-    const dom = await getHtmlDOM(chapterUrl, charset);
-    return chapterParseTemp({
-      dom,
-      chapterUrl,
-      chapterName: (<HTMLElement>(
-        dom.querySelector(".bookname > h1:nth-child(1)")
-      )).innerText.trim(),
-      contenSelector: "#content",
-      contentPatch: (content) => content,
-      charset,
-    });
-  }
-}
+);
 
 export class xbiquge implements ruleClass {
   public imageMode: "naive" | "TM";
@@ -454,7 +297,7 @@ export class xbiquge implements ruleClass {
         .trim(),
       introDom: <HTMLElement>document.querySelector("#intro"),
       introDomPatch: (introDom) => introDom,
-      coverUrl: (<HTMLImageElement>document.querySelector("#fmimg > img")).src,
+      coverUrl: (<HTMLImageElement>document.querySelector("#fmimg > img"))?.src,
       chapterListSelector: "#list>dl",
       charset: "GBK",
       chapterParse: chapterParse,
@@ -483,116 +326,6 @@ export class xbiquge implements ruleClass {
             (<chapterParseOption>options).bookname
           } ！`,
           ""
-        );
-        return content;
-      },
-      charset,
-    });
-  }
-}
-
-export class hongyeshuzhai implements ruleClass {
-  public imageMode: "naive" | "TM";
-  public charset: string;
-
-  public constructor() {
-    this.imageMode = "TM";
-    this.charset = "GBK";
-  }
-
-  public async bookParse(chapterParse: ruleClass["chapterParse"]) {
-    return bookParseTemp({
-      bookUrl: document.location.href,
-      bookname: (<HTMLElement>(
-        document.querySelector("#info > h1:nth-child(1)")
-      )).innerText.trim(),
-      author: (<HTMLElement>(
-        document.querySelector("#info > p:nth-child(2)")
-      )).innerText
-        .replace(/作(\s+)?者[：:]/, "")
-        .trim(),
-      introDom: <HTMLElement>document.querySelector("#intro"),
-      introDomPatch: (introDom) => introDom,
-      coverUrl: (<HTMLImageElement>document.querySelector("#fmimg > img")).src,
-      chapterListSelector: "#list>dl",
-      charset: "GBK",
-      chapterParse: chapterParse,
-    });
-  }
-
-  public async chapterParse(
-    chapterUrl: string,
-    chapterName: string | null,
-    isVIP: boolean,
-    isPaid: boolean,
-    charset: string,
-    options: object
-  ) {
-    const dom = await getHtmlDOM(chapterUrl, charset);
-    return chapterParseTemp({
-      dom,
-      chapterUrl,
-      chapterName: (<HTMLElement>(
-        dom.querySelector(".bookname > h1:nth-child(1)")
-      )).innerText.trim(),
-      contenSelector: "#content",
-      contentPatch: (content) => content,
-      charset,
-    });
-  }
-}
-
-export class luoqiuzw implements ruleClass {
-  public imageMode: "naive" | "TM";
-
-  public constructor() {
-    this.imageMode = "TM";
-  }
-
-  public async bookParse(chapterParse: ruleClass["chapterParse"]) {
-    return bookParseTemp({
-      bookUrl: document.location.href,
-      bookname: (<HTMLElement>(
-        document.querySelector("#info > h1:nth-child(1)")
-      )).innerText.trim(),
-      author: (<HTMLElement>(
-        document.querySelector("#info > p:nth-child(2)")
-      )).innerText
-        .replace(/作(\s+)?者[：:]/, "")
-        .trim(),
-      introDom: <HTMLElement>document.querySelector("#intro"),
-      introDomPatch: (introDom) => introDom,
-      coverUrl: (<HTMLImageElement>document.querySelector("#fmimg > img")).src,
-      chapterListSelector: "#list>dl",
-      charset: "UTF-8",
-      chapterParse: chapterParse,
-    });
-  }
-
-  public async chapterParse(
-    chapterUrl: string,
-    chapterName: string | null,
-    isVIP: boolean,
-    isPaid: boolean,
-    charset: string,
-    options: object
-  ) {
-    const dom = await getHtmlDOM(chapterUrl, charset);
-    return chapterParseTemp({
-      dom,
-      chapterUrl,
-      chapterName: (<HTMLElement>(
-        dom.querySelector(".bookname > h1:nth-child(1)")
-      )).innerText.trim(),
-      contenSelector: "#content",
-      contentPatch: (content) => {
-        const ad = content.firstElementChild as HTMLParagraphElement;
-        if (ad.innerText.includes("天才一秒记住本站地址：")) {
-          ad.remove();
-        }
-        const ads = ["记住网址m.luoqｉｕｘｚｗ．ｃｏｍ"];
-        ads.forEach(
-          (adt) => (content.innerHTML = content.innerHTML.replace(adt, ""))
         );
         return content;
       },

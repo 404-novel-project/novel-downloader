@@ -42,7 +42,7 @@ export interface ruleClass {
 }
 
 export const retryLimit = 5;
-export const enaleDebug = false;
+export const enaleDebug = (<any>unsafeWindow).enaleDebug ?? false;
 export const enableCustomChapterFilter = true;
 export const enableCustomSaveOptions = true;
 export const enableR18SiteWarning = false;
@@ -71,11 +71,6 @@ export async function getRule(): Promise<ruleClass> {
     case "www.yruan.com": {
       const { yrun } = await import("./rules/yruan");
       ruleClass = yrun;
-      break;
-    }
-    case "www.biquwoo.com": {
-      const { biquwo } = await import("./rules/biquge");
-      ruleClass = biquwo;
       break;
     }
     case "www.shuquge.com": {
@@ -142,9 +137,12 @@ export async function getRule(): Promise<ruleClass> {
       ruleClass = jjwxc;
       break;
     }
-    case "www.81book.com": {
-      const { zwdu } = await import("./rules/biquge");
-      ruleClass = zwdu;
+    case "www.biquwoo.com":
+    case "www.biquwo.org":
+    case "www.81book.com":
+    case "www.hongyeshuzhai.com": {
+      const { common } = await import("./rules/biquge");
+      ruleClass = common;
       break;
     }
     case "book.zongheng.com":
@@ -250,11 +248,6 @@ export async function getRule(): Promise<ruleClass> {
       ruleClass = xbiquge;
       break;
     }
-    case "www.hongyeshuzhai.com": {
-      const { hongyeshuzhai } = await import("./rules/biquge");
-      ruleClass = hongyeshuzhai;
-      break;
-    }
     case "www.linovelib.com": {
       const { linovelib } = await import("./rules/linovelib");
       ruleClass = linovelib;
@@ -280,6 +273,12 @@ export async function getRule(): Promise<ruleClass> {
     case "www.soxs.cc": {
       const { soxscc } = await import("./rules/soxscc");
       ruleClass = soxscc;
+      break;
+    }
+    case "www.fuguoduxs.com":
+    case "www.shubaowa.org": {
+      const { shubaowa } = await import("./rules/shubaowa");
+      ruleClass = shubaowa;
       break;
     }
     default: {

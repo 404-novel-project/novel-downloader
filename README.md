@@ -72,6 +72,8 @@ ZIP压缩包，请在解压后，直接双击打开HTML文件（`ToC.html` 为�
 |[一笔阁](https://www.yibige.la/)|✅|❎||
 |[腐书网](https://www.fushuwang.org/)|✅|❎||
 |[搜小说](https://www.soxscc.net/)|✅|❎||
+|[腐国度](https://www.fuguoduxs.com/)|✅|❎||
+|[书包网](http://www.shubaowa.org/)|✅|❎||
 
 </details>
 
@@ -79,7 +81,7 @@ ZIP压缩包，请在解压后，直接双击打开HTML文件（`ToC.html` 为�
 
 ### 启用调试功能
 
-如果你需要启用脚本调试功能，请打开脚本管理器的脚本编辑界面，搜索 `enaleDebug = false` 字符串，并将 `false` 更改为 `true` 即可启用调试功能。
+如果你需要启用脚本调试功能，请打开脚本管理器的脚本编辑界面，搜索 `enaleDebug =` 字符串，并将 `false` 更改为 `true` 即可启用调试功能。
 ### 自定义筛选函数
 
 如欲只下载部分章节，请在点击运行按钮前，按下 F12 打开开发者工具，在 `Window` 下创建自定义筛选函数 `chapterFilter` 。
