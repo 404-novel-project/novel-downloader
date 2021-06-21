@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        3.6.7.1624166705008
+// @version        3.6.7.1624291150797
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -36,13 +36,15 @@
 // @match          *://www.uukanshu.com/b/*/
 // @match          *://www.yruan.com/article/*.html
 // @match          *://www.biquwoo.com/bqw*/
+// @match          *://www.biquwo.org/bqw*/
 // @match          *://www.shuquge.com/txt/*/index.html
+// @match          *://www.sizhicn.com/txt/*/index.html
 // @match          *://www.dingdiann.net/ddk*/
 // @match          *://www.xkzw.org/xkzw*/
 // @match          *://www.lewenn.com/lw*/
 // @match          *://www.klxs.la/info-*/
-// @match          *://www.266ks.com/*/
-// @match          *://www.266ks.com/*/index*.html
+// @match          *://www.266ks.com/*_*/
+// @match          *://www.266ks.com/*_*/index*.html
 // @match          *://www.hetushu.com/book/*/index.html
 // @match          *://www.shouda8.com/*/
 // @match          *://www.shouda88.com/*/
@@ -50,6 +52,7 @@
 // @match          *://www.meegoq.com/book*.html
 // @match          *://www.viviyzw.com/book*.html
 // @match          *://www.xiaoshuodaquan.com/*/
+// @match          *://www.1pwx.com/*/
 // @match          *://www.81book.com/book/*/
 // @match          *://m.yuzhaige.cc/*/*/
 // @match          *://www.xinwanben.com/*/
@@ -70,6 +73,8 @@
 // @match          *://www.soxscc.net/*/
 // @match          *://www.soxscc.org/*/
 // @match          *://www.soxs.cc/*/
+// @match          *://www.shubaowa.org/*_*/
+// @match          *://www.fuguoduxs.com/*_*/
 // @name:en        novel-downloader
 // @description:en An scalable universal novel downloader.
 // @namespace      https://blog.bgme.me
@@ -129,7 +134,7 @@
 // @connect        wenku8.com
 // @connect        dmzj.com
 // @connect        dmzj1.com
-// @connect        img.hongyeshuzhal.com
+// @connect        hongyeshuzhal.com
 // @connect        linovelib.com
 // @connect        soxscc.net
 // @connect        soxscc.org

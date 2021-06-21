@@ -10,35 +10,40 @@ export declare function bookParseTemp({ bookUrl, bookname, author, introDom, int
     charset: string;
     chapterParse: ruleClass["chapterParse"];
 }): Promise<bookParseObject>;
-export declare class biquwo implements ruleClass {
-    imageMode: "naive" | "TM";
-    constructor();
-    bookParse(chapterParse: ruleClass["chapterParse"]): Promise<bookParseObject>;
-    chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean, charset: string, options: object): Promise<chapterParseObject>;
-}
+export declare const common: {
+    new (): {
+        imageMode: "naive" | "TM";
+        charset: string;
+        bookParse(chapterParse: ruleClass["chapterParse"]): Promise<bookParseObject>;
+        chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean, charset: string, options: object): Promise<chapterParseObject>;
+    };
+};
+export declare const dingdiann: {
+    new (): {
+        imageMode: "naive" | "TM";
+        charset: string;
+        bookParse(chapterParse: ruleClass["chapterParse"]): Promise<bookParseObject>;
+        chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean, charset: string, options: object): Promise<chapterParseObject>;
+    };
+};
+export declare const gebiqu: {
+    new (): {
+        imageMode: "naive" | "TM";
+        charset: string;
+        bookParse(chapterParse: ruleClass["chapterParse"]): Promise<bookParseObject>;
+        chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean, charset: string, options: object): Promise<chapterParseObject>;
+    };
+};
+export declare const luoqiuzw: {
+    new (): {
+        imageMode: "naive" | "TM";
+        charset: string;
+        bookParse(chapterParse: ruleClass["chapterParse"]): Promise<bookParseObject>;
+        chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean, charset: string, options: object): Promise<chapterParseObject>;
+    };
+};
 export declare class shuquge implements ruleClass {
     imageMode: "naive" | "TM";
-    constructor();
-    bookParse(chapterParse: ruleClass["chapterParse"]): Promise<bookParseObject>;
-    chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean, charset: string, options: object): Promise<chapterParseObject>;
-}
-export declare class dingdiann implements ruleClass {
-    imageMode: "naive" | "TM";
-    concurrencyLimit: number;
-    constructor();
-    bookParse(chapterParse: ruleClass["chapterParse"]): Promise<bookParseObject>;
-    chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean, charset: string, options: object): Promise<chapterParseObject>;
-}
-export declare class gebiqu implements ruleClass {
-    imageMode: "naive" | "TM";
-    concurrencyLimit: number;
-    constructor();
-    bookParse(chapterParse: ruleClass["chapterParse"]): Promise<bookParseObject>;
-    chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean, charset: string, options: object): Promise<chapterParseObject>;
-}
-export declare class zwdu implements ruleClass {
-    imageMode: "naive" | "TM";
-    charset: string;
     constructor();
     bookParse(chapterParse: ruleClass["chapterParse"]): Promise<bookParseObject>;
     chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean, charset: string, options: object): Promise<chapterParseObject>;
@@ -46,19 +51,6 @@ export declare class zwdu implements ruleClass {
 export declare class xbiquge implements ruleClass {
     imageMode: "naive" | "TM";
     charset: string;
-    constructor();
-    bookParse(chapterParse: ruleClass["chapterParse"]): Promise<bookParseObject>;
-    chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean, charset: string, options: object): Promise<chapterParseObject>;
-}
-export declare class hongyeshuzhai implements ruleClass {
-    imageMode: "naive" | "TM";
-    charset: string;
-    constructor();
-    bookParse(chapterParse: ruleClass["chapterParse"]): Promise<bookParseObject>;
-    chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean, charset: string, options: object): Promise<chapterParseObject>;
-}
-export declare class luoqiuzw implements ruleClass {
-    imageMode: "naive" | "TM";
     constructor();
     bookParse(chapterParse: ruleClass["chapterParse"]): Promise<bookParseObject>;
     chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean, charset: string, options: object): Promise<chapterParseObject>;

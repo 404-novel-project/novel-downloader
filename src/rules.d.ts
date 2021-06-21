@@ -27,7 +27,7 @@ export interface ruleClass {
     chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean | null, charset: string, options: object): Promise<chapterParseObject>;
 }
 export declare const retryLimit = 5;
-export declare const enaleDebug = false;
+export declare const enaleDebug: any;
 export declare const enableCustomChapterFilter = true;
 export declare const enableCustomSaveOptions = true;
 export declare const enableR18SiteWarning = false;
