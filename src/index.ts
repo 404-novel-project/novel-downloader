@@ -119,6 +119,7 @@ async function initChapters(rule: ruleClass, book: Book) {
         }
       } catch (error) {
         log.error("运行自定义筛选函数时出错。", error);
+        log.trace(error);
       }
     }
     return b0 && b1;
@@ -259,6 +260,7 @@ export function catchError(error: Error) {
     "运行过程出错，请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/yingziwu/novel-downloader"
   );
   log.error(error);
+  log.trace(error);
   audio.pause();
 
   alert(

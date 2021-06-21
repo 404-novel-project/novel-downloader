@@ -275,6 +275,7 @@ a.disabled {
       })
       .catch((err: Error) => {
         log.error("saveZip: " + err);
+        log.trace(err);
         catchError(err);
       });
   }

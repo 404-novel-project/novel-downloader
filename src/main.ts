@@ -180,6 +180,7 @@ export class Chapter {
         } else {
           this.status = Status.failed;
           log.error(err);
+          log.trace(err);
           return {
             chapterName: this.chapterName,
             contentRaw: null,
@@ -262,6 +263,7 @@ export class attachmentClass {
         } else {
           this.status = Status.failed;
           log.error(err);
+          log.trace(err);
           return null;
         }
       });
@@ -297,6 +299,7 @@ export class attachmentClass {
         } else {
           this.status = Status.failed;
           log.error(err);
+          log.trace(err);
           return null;
         }
       });

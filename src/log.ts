@@ -2,7 +2,7 @@ import { enaleDebug } from "./rules";
 import log from "loglevel";
 
 if (enaleDebug) {
-  log.setDefaultLevel("debug");
+  log.setDefaultLevel("trace");
 } else {
   log.setDefaultLevel("info");
 }
