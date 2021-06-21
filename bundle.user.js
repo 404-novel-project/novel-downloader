@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        3.6.7.1624293881157
+// @version        3.6.7.1624294156043
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -1953,7 +1953,7 @@ const rules_1 = __webpack_require__("./src/rules.ts");
 const loglevel_1 = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 exports.log = loglevel_1.default;
 if (rules_1.enaleDebug) {
-    loglevel_1.default.setDefaultLevel("debug");
+    loglevel_1.default.setDefaultLevel("trace");
 }
 else {
     loglevel_1.default.setDefaultLevel("info");
