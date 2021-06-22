@@ -7,15 +7,6 @@ import {
   Book,
 } from "./main";
 
-export interface bookParseObject {
-  bookUrl: string;
-  bookname: string;
-  author: string;
-  introduction: string | null;
-  introductionHTML: HTMLElement | null;
-  additionalMetadate: BookAdditionalMetadate;
-  chapters: Chapter[];
-}
 export interface chapterParseObject {
   chapterName: string | null;
 
@@ -44,6 +35,7 @@ export interface ruleClass {
 
 export const retryLimit = 5;
 export const enaleDebug = (<any>unsafeWindow).enaleDebug ?? false;
+export const enableCustomFinishCallback = true;
 export const enableCustomChapterFilter = true;
 export const enableCustomSaveOptions = true;
 export const enableR18SiteWarning = false;

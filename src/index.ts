@@ -31,6 +31,7 @@ export namespace indexNameSpace {
     save(book: Book, saveOptions: saveOptions): void;
     saveAs(obj: any): void;
     chapterFilter(chapter: Chapter): boolean;
+    customFinishCallback(): void;
     saveOptions: saveOptions;
   }
 
@@ -211,9 +212,6 @@ async function run() {
   }
 
   log.info(`[run]下载完毕`);
-  if (enaleDebug) {
-    saveLogTextToFile();
-  }
   return book;
 }
 

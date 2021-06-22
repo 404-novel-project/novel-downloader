@@ -233,6 +233,26 @@ window.saveOptions = saveOptions
 
 自定义筛选函数同理也可使用用户脚本自动注入。
 
+
+### 自定义完成回调函数
+
+```typescript
+interface customFinishCallback {
+    (): void;
+}
+```
+
+自定义完成回调函数将在下载完成并生成ZIP文件后自动执行。
+
+使用自定义完成回调函数可在下载完成后自动完成某些工作，例如：关闭当前窗口。
+
+```javascript
+function customFinishCallback(book: Book) {
+    window.close();
+}
+window.customFinishCallback = customFinishCallback;
+```
+
 ## 开发
 
 1. `git clone https://github.com/yingziwu/novel-downloader.git` 将项目克隆至本地（访问github可能需要使用代理）。

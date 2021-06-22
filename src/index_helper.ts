@@ -1,8 +1,12 @@
 import { Book, Chapter, attachmentClass, Status } from "./main";
-import { storageAvailable } from "./lib";
+import { sleep, storageAvailable } from "./lib";
 import { updateProgress, audio, indexNameSpace, catchError } from "./index";
-import { enableCustomSaveOptions } from "./rules";
-import { log } from "./log";
+import {
+  enableCustomFinishCallback,
+  enableCustomSaveOptions,
+  enaleDebug,
+} from "./rules";
+import { log, saveLogTextToFile } from "./log";
 
 export const buttonStyleText = `position: fixed;
 top: 15%;
@@ -272,6 +276,10 @@ a.disabled {
         log.debug("[save]保存ZIP文件完毕");
         document.querySelector("#nd-progress")?.remove();
         audio.pause();
+      })
+      .then(async () => {
+        await sleep(5000);
+        finish();
       })
       .catch((err: Error) => {
         log.error("saveZip: " + err);
@@ -633,6 +641,25 @@ export function save(book: Book, options: saveOptions) {
   saveBookObj.saveTxt();
   saveBookObj.saveZip();
 }
+
+function finish() {
+  if (enaleDebug) {
+    saveLogTextToFile();
+  }
+  if (
+    enableCustomFinishCallback &&
+    typeof (<indexNameSpace.mainWindows>unsafeWindow).customFinishCallback ===
+      "function"
+  ) {
+    const customFinishCallback = (<indexNameSpace.mainWindows>unsafeWindow)
+      .customFinishCallback;
+    log.info(
+      `发现自定义结束回调函数，内容如下：\n${customFinishCallback.toString()}`
+    );
+    customFinishCallback();
+  }
+}
+
 export function setTabMark(): Promise<indexNameSpace.mainTabObject> {
   return new Promise((resolve, reject) => {
     GM_getTab((curTabObject) => {

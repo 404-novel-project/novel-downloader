@@ -4,7 +4,7 @@ import {
   Chapter,
   Book,
 } from "../main";
-import { ruleClass, bookParseObject, chapterParseObject } from "../rules";
+import { ruleClass, chapterParseObject } from "../rules";
 import { getHtmlDOM, cleanDOM, rm } from "../lib";
 import { introDomHandle } from "./lib/common";
 

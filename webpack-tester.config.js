@@ -64,6 +64,7 @@ module.exports = {
           grant: [
             "unsafeWindow",
             "GM_openInTab",
+            "window.close",
             "GM_getTab",
             "GM_saveTab",
             "GM_getTabs",

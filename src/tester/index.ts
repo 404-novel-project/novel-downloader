@@ -1,4 +1,4 @@
-import { Chapter } from "../main";
+import { Book, Chapter } from "../main";
 
 interface tabData {
   [key: string]: string;
@@ -78,6 +78,10 @@ function deleteTabData(key: string): Promise<tabData> {
 
 function randomChoose(array: string[]) {
   return array[Math.floor(Math.random() * array.length)];
+}
+
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 if (
@@ -216,34 +220,47 @@ if (
       "https://www.fuguoduxs.com/4_4790/",
     ],
   ];
-  function runTest() {
+
+  async function runTest() {
     setTabData("runTest", "true");
-    exampleUrls.forEach((u) => {
+
+    const openWindow = (u: string[] | string) => {
       if (typeof u === "string") {
         GM_openInTab(u);
+        // window.open(u);
       } else if (Array.isArray(u)) {
         const url = randomChoose(u);
         GM_openInTab(url);
+        // window.open(url);
       }
-    });
+    };
+    for (const u of exampleUrls) {
+      await sleep(500);
+      openWindow(u);
+    }
   }
   (<any>unsafeWindow).runTest = runTest;
 } else {
-  //   (<any>unsafeWindow).enaleDebug = true;
   window.addEventListener("DOMContentLoaded", () => {
     setTimeout(async () => {
       const runFlag = await getTabData("greasyfork.org");
       if (runFlag) {
         console.log("[novel-downloader-tester]开始运行测试……");
+
         function chapterFilter(chapter: Chapter) {
           return chapter.chapterNumber <= 20;
         }
         (<any>unsafeWindow).chapterFilter = chapterFilter;
+
+        function customFinishCallback(book: Book) {
+          window.close();
+        }
+        (<any>unsafeWindow).customFinishCallback = customFinishCallback;
+
         document.getElementById("novel-downloader")?.click();
       }
     }, 1000 + Math.random() * 3000);
   });
 }
 
-(<any>unsafeWindow).getTabData = getTabData;
 console.log("[novel-downloader-tester]测试脚本载入成功……");
