@@ -3,6 +3,7 @@ import {
   attachmentClass,
   Chapter,
   Status,
+  Book,
 } from "../main";
 import { ggetHtmlDOM, cleanDOM, sleep, rm } from "../lib";
 import { ruleClass, chapterParseObject } from "../rules";
@@ -18,7 +19,7 @@ export class shuhai implements ruleClass {
     this.charset = "GBK";
   }
 
-  public async bookParse(chapterParse: ruleClass["chapterParse"]) {
+  public async bookParse() {
     const bookUrl = document.location.href;
     const bookname = (<HTMLElement>(
       document.querySelector("div.book-info-bookname > span:nth-child(1)")
@@ -98,8 +99,8 @@ export class shuhai implements ruleClass {
           sectionName,
           sectionNumber,
           sectionChapterNumber,
-          chapterParse,
-          "GBK",
+          this.chapterParse,
+          this.charset,
           {}
         );
         const isLogin = () => {
@@ -113,15 +114,16 @@ export class shuhai implements ruleClass {
       }
     }
 
-    return {
-      bookUrl: bookUrl,
-      bookname: bookname,
-      author: author,
-      introduction: introduction,
-      introductionHTML: introductionHTML,
-      additionalMetadate: additionalMetadate,
-      chapters: chapters,
-    };
+    const book = new Book(
+      bookUrl,
+      bookname,
+      author,
+      introduction,
+      introductionHTML,
+      additionalMetadate,
+      chapters
+    );
+    return book;
   }
 
   public async chapterParse(

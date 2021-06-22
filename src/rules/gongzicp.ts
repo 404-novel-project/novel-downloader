@@ -3,6 +3,7 @@ import {
   attachmentClass,
   Chapter,
   Status,
+  Book,
 } from "../main";
 import { sleep } from "../lib";
 import { ruleClass, chapterParseObject, retryLimit } from "../rules";
@@ -17,7 +18,7 @@ export class gongzicp implements ruleClass {
     this.imageMode = "TM";
     this.concurrencyLimit = 1;
   }
-  public async bookParse(chapterParse: ruleClass["chapterParse"]) {
+  public async bookParse() {
     const bookUrl = document.location.href;
 
     const bookId = (<HTMLSpanElement>(
@@ -349,7 +350,7 @@ export class gongzicp implements ruleClass {
           sectionName,
           sectionNumber,
           sectionChapterNumber,
-          chapterParse,
+          this.chapterParse,
           "UTF-8",
           chapterOption
         );
@@ -359,15 +360,16 @@ export class gongzicp implements ruleClass {
         chapters.push(chapter);
       }
     }
-    return {
-      bookUrl: bookUrl,
-      bookname: bookname,
-      author: author,
-      introduction: introduction,
-      introductionHTML: introductionHTML,
-      additionalMetadate: additionalMetadate,
-      chapters: chapters,
-    };
+    const book = new Book(
+      bookUrl,
+      bookname,
+      author,
+      introduction,
+      introductionHTML,
+      additionalMetadate,
+      chapters
+    );
+    return book;
   }
 
   public async chapterParse(

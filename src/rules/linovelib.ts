@@ -3,6 +3,7 @@ import {
   attachmentClass,
   Chapter,
   Status,
+  Book,
 } from "../main";
 import { getHtmlDOM, cleanDOM, rm } from "../lib";
 import { ruleClass } from "../rules";
@@ -16,7 +17,7 @@ export class linovelib implements ruleClass {
     this.imageMode = "TM";
   }
 
-  public async bookParse(chapterParse: ruleClass["chapterParse"]) {
+  public async bookParse() {
     const bookUrl = document.location.href.replace(/\/catalog$/, ".html");
     const bookname = (<HTMLElement>(
       document.querySelector(".book-meta > h1")
@@ -84,7 +85,7 @@ export class linovelib implements ruleClass {
           sectionName,
           sectionNumber,
           sectionChapterNumber,
-          chapterParse,
+          this.chapterParse,
           "UTF-8",
           {}
         );
@@ -95,15 +96,16 @@ export class linovelib implements ruleClass {
       }
     }
 
-    return {
-      bookUrl: bookUrl,
-      bookname: bookname,
-      author: author,
-      introduction: introduction,
-      introductionHTML: introductionHTML,
-      additionalMetadate: additionalMetadate,
-      chapters: chapters,
-    };
+    const book = new Book(
+      bookUrl,
+      bookname,
+      author,
+      introduction,
+      introductionHTML,
+      additionalMetadate,
+      chapters
+    );
+    return book;
   }
 
   public async chapterParse(

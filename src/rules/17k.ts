@@ -3,6 +3,7 @@ import {
   attachmentClass,
   Chapter,
   Status,
+  Book,
 } from "../main";
 import { getHtmlDOM, cleanDOM, rm } from "../lib";
 import { ruleClass, chapterParseObject } from "../rules";
@@ -11,13 +12,15 @@ import { introDomHandle } from "./lib/common";
 export class c17k implements ruleClass {
   public imageMode: "naive" | "TM";
   public concurrencyLimit: number;
+  public charset: string;
 
   public constructor() {
     this.imageMode = "TM";
+    this.charset = "UTF-8";
     this.concurrencyLimit = 5;
   }
 
-  public async bookParse(chapterParse: ruleClass["chapterParse"]) {
+  public async bookParse() {
     const bookUrl = document.location.href.replace("/list/", "/book/");
     const bookname = (<HTMLElement>(
       document.querySelector("h1.Title")
@@ -86,8 +89,8 @@ export class c17k implements ruleClass {
           sectionName,
           sectionNumber,
           sectionChapterNumber,
-          chapterParse,
-          "UTF-8",
+          this.chapterParse,
+          this.charset,
           {}
         );
 
@@ -102,15 +105,16 @@ export class c17k implements ruleClass {
       }
     }
 
-    return {
-      bookUrl: bookUrl,
-      bookname: bookname,
-      author: author,
-      introduction: introduction,
-      introductionHTML: introductionHTML,
-      additionalMetadate: additionalMetadate,
-      chapters: chapters,
-    };
+    const book = new Book(
+      bookUrl,
+      bookname,
+      author,
+      introduction,
+      introductionHTML,
+      additionalMetadate,
+      chapters
+    );
+    return book;
   }
 
   public async chapterParse(

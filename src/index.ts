@@ -57,36 +57,6 @@ function printEnvironments() {
   }
 }
 
-async function initBook(rule: ruleClass) {
-  log.info(`[initBook]开始初始化图书`);
-  const bookParse = rule.bookParse;
-  const chapterParse = rule.chapterParse;
-  return bookParse(chapterParse).then((obj) => {
-    const {
-      bookUrl,
-      bookname,
-      author,
-      introduction,
-      introductionHTML,
-      additionalMetadate,
-      chapters,
-    } = obj;
-    const book = new Book(
-      bookUrl,
-      bookname,
-      author,
-      introduction,
-      introductionHTML,
-      additionalMetadate,
-      chapters
-    );
-    if (rule.saveOptions !== undefined) {
-      book.saveOptions = rule.saveOptions;
-    }
-    return book;
-  });
-}
-
 async function initChapters(rule: ruleClass, book: Book) {
   log.info(`[initChapters]开始初始化章节`);
   let concurrencyLimit = 10;
@@ -218,7 +188,7 @@ async function run() {
   }
 
   log.debug("[run]主体开始");
-  const book = await initBook(rule);
+  const book = await rule.bookParse();
   await initChapters(rule, book);
 
   log.debug("[run]保存数据");
@@ -304,7 +274,7 @@ function addButton() {
 
 async function debug() {
   const rule = await getRule();
-  const book = await initBook(rule);
+  const book = await rule.bookParse();
   (<indexNameSpace.mainWindows>unsafeWindow).rule = rule;
   (<indexNameSpace.mainWindows>unsafeWindow).book = book;
   (<indexNameSpace.mainWindows>unsafeWindow).save = save;

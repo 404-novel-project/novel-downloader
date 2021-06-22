@@ -1,4 +1,9 @@
-import { BookAdditionalMetadate, attachmentClass, Chapter } from "../main";
+import {
+  BookAdditionalMetadate,
+  attachmentClass,
+  Chapter,
+  Book,
+} from "../main";
 import { ruleClass, bookParseObject, chapterParseObject } from "../rules";
 import { getHtmlDOM, cleanDOM, rm } from "../lib";
 import { introDomHandle } from "./lib/common";
@@ -23,7 +28,7 @@ export async function bookParseTemp({
   chapterListSelector: string;
   charset: string;
   chapterParse: ruleClass["chapterParse"];
-}): Promise<bookParseObject> {
+}): Promise<Book> {
   const [introduction, introductionHTML, introCleanimages] = introDomHandle(
     introDom
   );
@@ -98,15 +103,16 @@ export async function bookParseTemp({
     }
   }
 
-  return {
-    bookUrl: bookUrl,
-    bookname: bookname,
-    author: author,
-    introduction: introduction,
-    introductionHTML: introductionHTML,
-    additionalMetadate: additionalMetadate,
-    chapters: chapters,
-  };
+  const book = new Book(
+    bookUrl,
+    bookname,
+    author,
+    introduction,
+    introductionHTML,
+    additionalMetadate,
+    chapters
+  );
+  return book;
 }
 
 interface chapterParseOption {
@@ -164,7 +170,8 @@ function mkBiqugeClass(
       this.charset = document.charset;
     }
 
-    public async bookParse(chapterParse: ruleClass["chapterParse"]) {
+    public async bookParse() {
+      const self = this;
       return bookParseTemp({
         bookUrl: document.location.href,
         bookname: (<HTMLElement>(
@@ -181,7 +188,7 @@ function mkBiqugeClass(
           .src,
         chapterListSelector: "#list>dl",
         charset: document.charset,
-        chapterParse: chapterParse,
+        chapterParse: self.chapterParse,
       });
     }
 
@@ -263,7 +270,8 @@ export class shuquge implements ruleClass {
     this.imageMode = "TM";
   }
 
-  public async bookParse(chapterParse: ruleClass["chapterParse"]) {
+  public async bookParse() {
+    const self = this;
     return bookParseTemp({
       bookUrl: document.location.href,
       bookname: (<HTMLElement>(
@@ -287,7 +295,7 @@ export class shuquge implements ruleClass {
       )).src,
       chapterListSelector: ".listmain>dl",
       charset: "UTF-8",
-      chapterParse: chapterParse,
+      chapterParse: self.chapterParse,
     });
   }
 
@@ -330,7 +338,8 @@ export class xbiquge implements ruleClass {
     this.charset = "GBK";
   }
 
-  public async bookParse(chapterParse: ruleClass["chapterParse"]) {
+  public async bookParse() {
+    const self = this;
     return bookParseTemp({
       bookUrl: document.location.href,
       bookname: (<HTMLElement>(
@@ -346,7 +355,7 @@ export class xbiquge implements ruleClass {
       coverUrl: (<HTMLImageElement>document.querySelector("#fmimg > img"))?.src,
       chapterListSelector: "#list>dl",
       charset: "GBK",
-      chapterParse: chapterParse,
+      chapterParse: self.chapterParse,
     });
   }
 

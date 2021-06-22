@@ -1,4 +1,9 @@
-import { BookAdditionalMetadate, attachmentClass, Chapter } from "../main";
+import {
+  BookAdditionalMetadate,
+  attachmentClass,
+  Chapter,
+  Book,
+} from "../main";
 import { ruleClass } from "../rules";
 import { getHtmlDOM, cleanDOM, rm } from "../lib";
 import { introDomHandle } from "./lib/common";
@@ -11,7 +16,7 @@ export class yibige implements ruleClass {
     this.imageMode = "TM";
   }
 
-  public async bookParse(chapterParse: ruleClass["chapterParse"]) {
+  public async bookParse() {
     const bookUrl = (<HTMLAnchorElement>(
       document.querySelector("#list_hb > li:nth-child(2) > a:nth-child(1)")
     )).href;
@@ -102,7 +107,7 @@ export class yibige implements ruleClass {
             sectionName,
             sectionNumber,
             sectionChapterNumber,
-            chapterParse,
+            this.chapterParse,
             "UTF-8",
             { bookname: bookname }
           );
@@ -111,15 +116,16 @@ export class yibige implements ruleClass {
       }
     }
 
-    return {
-      bookUrl: bookUrl,
-      bookname: bookname,
-      author: author,
-      introduction: introduction,
-      introductionHTML: introductionHTML,
-      additionalMetadate: additionalMetadate,
-      chapters: chapters,
-    };
+    const book = new Book(
+      bookUrl,
+      bookname,
+      author,
+      introduction,
+      introductionHTML,
+      additionalMetadate,
+      chapters
+    );
+    return book;
   }
 
   public async chapterParse(

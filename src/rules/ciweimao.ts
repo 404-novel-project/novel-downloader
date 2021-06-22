@@ -3,6 +3,7 @@ import {
   attachmentClass,
   Chapter,
   Status,
+  Book,
 } from "../main";
 import { getHtmlDOM, cleanDOM, rm, gfetch } from "../lib";
 import { ruleClass, chapterParseObject } from "../rules";
@@ -16,16 +17,18 @@ namespace ciweimao {
 }
 export class ciweimao implements ruleClass {
   public imageMode: "naive" | "TM";
+  public charset: string;
   public concurrencyLimit: number;
   public maxRunLimit: number;
 
   public constructor() {
     this.imageMode = "TM";
+    this.charset = "UTF-8";
     this.concurrencyLimit = 1;
     this.maxRunLimit = 1;
   }
 
-  public async bookParse(chapterParse: ruleClass["chapterParse"]) {
+  public async bookParse() {
     const bookid = (<ciweimao.ciweimaoWindow>unsafeWindow).HB.book.book_id;
     const bookUrl = `https://www.ciweimao.com/book/${bookid}`;
     const bookname = (<HTMLElement>(
@@ -92,8 +95,8 @@ export class ciweimao implements ruleClass {
           sectionName,
           sectionNumber,
           sectionChapterNumber,
-          chapterParse,
-          "UTF-8",
+          this.chapterParse,
+          this.charset,
           {}
         );
         const isLogin =
@@ -107,15 +110,16 @@ export class ciweimao implements ruleClass {
       }
     }
 
-    return {
-      bookUrl: bookUrl,
-      bookname: bookname,
-      author: author,
-      introduction: introduction,
-      introductionHTML: introductionHTML,
-      additionalMetadate: additionalMetadate,
-      chapters: chapters,
-    };
+    const book = new Book(
+      bookUrl,
+      bookname,
+      author,
+      introduction,
+      introductionHTML,
+      additionalMetadate,
+      chapters
+    );
+    return book;
   }
 
   public async chapterParse(

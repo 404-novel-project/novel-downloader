@@ -4,6 +4,7 @@ import {
   attachmentClass,
   Chapter,
   ChapterAdditionalMetadate,
+  Book,
 } from "./main";
 
 export interface bookParseObject {
@@ -30,7 +31,7 @@ export interface ruleClass {
   concurrencyLimit?: number;
   maxRunLimit?: number;
   saveOptions?: saveOptions;
-  bookParse(chapterParse: ruleClass["chapterParse"]): Promise<bookParseObject>;
+  bookParse(): Promise<Book>;
   chapterParse(
     chapterUrl: string,
     chapterName: string | null,

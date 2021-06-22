@@ -1,4 +1,4 @@
-import { BookAdditionalMetadate, attachmentClass, Chapter } from "../main";
+import { BookAdditionalMetadate, Chapter, Book } from "../main";
 import { ruleClass } from "../rules";
 import { getHtmlDOM, cleanDOM, rm } from "../lib";
 import { saveOptions } from "../index_helper";
@@ -42,7 +42,7 @@ export class fushuwang implements ruleClass {
     };
   }
 
-  public async bookParse(chapterParse: ruleClass["chapterParse"]) {
+  public async bookParse() {
     const bookUrl = (
       document.location.origin + document.location.pathname
     ).replace(/(_\d+)\.html$/, ".html");
@@ -75,22 +75,24 @@ export class fushuwang implements ruleClass {
         null,
         null,
         null,
-        chapterParse,
-        "GBK",
+        this.chapterParse,
+        this.charset,
         {}
       );
       chapters.push(chapter);
     }
 
-    return {
-      bookUrl: bookUrl,
-      bookname: bookname,
-      author: author,
-      introduction: introduction,
-      introductionHTML: introductionHTML,
-      additionalMetadate: additionalMetadate,
-      chapters: chapters,
-    };
+    const book = new Book(
+      bookUrl,
+      bookname,
+      author,
+      introduction,
+      introductionHTML,
+      additionalMetadate,
+      chapters
+    );
+    book.saveOptions = this.saveOptions;
+    return book;
   }
 
   public async chapterParse(

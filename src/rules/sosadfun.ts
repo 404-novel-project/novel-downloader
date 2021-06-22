@@ -1,5 +1,5 @@
-import { BookAdditionalMetadate, attachmentClass, Chapter } from "../main";
-import { getHtmlDOM, cleanDOM, rm } from "../lib";
+import { BookAdditionalMetadate, Chapter, Book } from "../main";
+import { getHtmlDOM, cleanDOM } from "../lib";
 import { ruleClass } from "../rules";
 
 export class sosadfun implements ruleClass {
@@ -9,7 +9,7 @@ export class sosadfun implements ruleClass {
     this.imageMode = "TM";
   }
 
-  public async bookParse(chapterParse: ruleClass["chapterParse"]) {
+  public async bookParse() {
     const bookUrl = document.location.origin + document.location.pathname;
 
     const bookname = (<HTMLElement>(
@@ -104,22 +104,23 @@ export class sosadfun implements ruleClass {
         null,
         null,
         null,
-        chapterParse,
+        this.chapterParse,
         "UTF-8",
         {}
       );
       chapters.push(chapter);
     }
 
-    return {
-      bookUrl: bookUrl,
-      bookname: bookname,
-      author: author,
-      introduction: introduction,
-      introductionHTML: introductionHTML,
-      additionalMetadate: additionalMetadate,
-      chapters: chapters,
-    };
+    const book = new Book(
+      bookUrl,
+      bookname,
+      author,
+      introduction,
+      introductionHTML,
+      additionalMetadate,
+      chapters
+    );
+    return book;
   }
 
   public async chapterParse(

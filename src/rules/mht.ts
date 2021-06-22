@@ -10,7 +10,8 @@ export class mht implements ruleClass {
     this.imageMode = "TM";
   }
 
-  public async bookParse(chapterParse: ruleClass["chapterParse"]) {
+  public async bookParse() {
+    const self = this;
     return bookParseTemp({
       bookUrl: document.location.href,
       bookname: (<HTMLElement>(
@@ -26,7 +27,7 @@ export class mht implements ruleClass {
       coverUrl: (<HTMLImageElement>document.querySelector("#fmimg > img")).src,
       chapterListSelector: "#list>dl",
       charset: "UTF-8",
-      chapterParse: chapterParse,
+      chapterParse: self.chapterParse,
     });
   }
 

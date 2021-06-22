@@ -1,4 +1,9 @@
-import { BookAdditionalMetadate, attachmentClass, Chapter } from "../main";
+import {
+  BookAdditionalMetadate,
+  attachmentClass,
+  Chapter,
+  Book,
+} from "../main";
 import { ruleClass } from "../rules";
 import { getHtmlDOM, cleanDOM, rm } from "../lib";
 import { introDomHandle } from "./lib/common";
@@ -11,7 +16,7 @@ export class hetushu implements ruleClass {
     this.imageMode = "TM";
   }
 
-  public async bookParse(chapterParse: ruleClass["chapterParse"]) {
+  public async bookParse() {
     const bookUrl = document.location.href;
     const bookname = (<HTMLElement>(
       document.querySelector(".book_info > h2")
@@ -71,7 +76,7 @@ export class hetushu implements ruleClass {
             sectionName,
             sectionNumber,
             sectionChapterNumber,
-            chapterParse,
+            this.chapterParse,
             "UTF-8",
             {}
           );
@@ -79,15 +84,16 @@ export class hetushu implements ruleClass {
         }
       }
     }
-    return {
-      bookUrl: bookUrl,
-      bookname: bookname,
-      author: author,
-      introduction: introduction,
-      introductionHTML: introductionHTML,
-      additionalMetadate: additionalMetadate,
-      chapters: chapters,
-    };
+    const book = new Book(
+      bookUrl,
+      bookname,
+      author,
+      introduction,
+      introductionHTML,
+      additionalMetadate,
+      chapters
+    );
+    return book;
   }
 
   public async chapterParse(

@@ -3,6 +3,7 @@ import {
   attachmentClass,
   Chapter,
   Status,
+  Book,
 } from "../main";
 import {
   getHtmlDOM,
@@ -29,7 +30,7 @@ export class jjwxc implements ruleClass {
     this.charset = "GB18030";
   }
 
-  public async bookParse(chapterParse: ruleClass["chapterParse"]) {
+  public async bookParse() {
     const bookUrl = document.location.href;
     const bookname = (<HTMLElement>(
       document.querySelector('h1[itemprop="name"] > span')
@@ -135,8 +136,8 @@ export class jjwxc implements ruleClass {
                 sectionName,
                 sectionNumber,
                 sectionChapterNumber,
-                chapterParse,
-                "GB18030",
+                this.chapterParse,
+                this.charset,
                 {}
               );
               const isLogin = () => {
@@ -165,8 +166,8 @@ export class jjwxc implements ruleClass {
               sectionName,
               sectionNumber,
               sectionChapterNumber,
-              chapterParse,
-              "GB18030",
+              this.chapterParse,
+              this.charset,
               {}
             );
             const isLogin = () => {
@@ -185,15 +186,16 @@ export class jjwxc implements ruleClass {
       }
     }
 
-    return {
-      bookUrl: bookUrl,
-      bookname: bookname,
-      author: author,
-      introduction: introduction,
-      introductionHTML: introductionHTML,
-      additionalMetadate: additionalMetadate,
-      chapters: chapters,
-    };
+    const book = new Book(
+      bookUrl,
+      bookname,
+      author,
+      introduction,
+      introductionHTML,
+      additionalMetadate,
+      chapters
+    );
+    return book;
   }
 
   public async chapterParse(

@@ -3,6 +3,7 @@ import {
   attachmentClass,
   Chapter,
   Status,
+  Book,
 } from "../main";
 import { ruleClass, chapterParseObject } from "../rules";
 import { getHtmlDOM, cleanDOM, gfetch } from "../lib";
@@ -18,7 +19,7 @@ export class tadu implements ruleClass {
     this.concurrencyLimit = 5;
   }
 
-  public async bookParse(chapterParse: ruleClass["chapterParse"]) {
+  public async bookParse() {
     let bookUrl = document.location.href.replace("catalogue/", "");
 
     const bookname = (<HTMLElement>(
@@ -80,7 +81,7 @@ export class tadu implements ruleClass {
         null,
         null,
         null,
-        chapterParse,
+        this.chapterParse,
         "UTF-8",
         {}
       );
@@ -94,15 +95,16 @@ export class tadu implements ruleClass {
       chapters.push(chapter);
     }
 
-    return {
-      bookUrl: bookUrl,
-      bookname: bookname,
-      author: author,
-      introduction: introduction,
-      introductionHTML: introductionHTML,
-      additionalMetadate: additionalMetadate,
-      chapters: chapters,
-    };
+    const book = new Book(
+      bookUrl,
+      bookname,
+      author,
+      introduction,
+      introductionHTML,
+      additionalMetadate,
+      chapters
+    );
+    return book;
   }
 
   public async chapterParse(

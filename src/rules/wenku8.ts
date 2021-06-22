@@ -1,4 +1,9 @@
-import { BookAdditionalMetadate, attachmentClass, Chapter } from "../main";
+import {
+  BookAdditionalMetadate,
+  attachmentClass,
+  Chapter,
+  Book,
+} from "../main";
 import { getHtmlDOM, cleanDOM, rm } from "../lib";
 import { ruleClass } from "../rules";
 import { introDomHandle } from "./lib/common";
@@ -11,7 +16,7 @@ export class wenku8 implements ruleClass {
     this.charset = "GBK";
   }
 
-  public async bookParse(chapterParse: ruleClass["chapterParse"]) {
+  public async bookParse() {
     const bookId = document.location.pathname.split("/").slice(-2, -1)[0];
     const bookUrl = [document.location.origin, "book", `${bookId}.htm`].join(
       "/"
@@ -80,23 +85,24 @@ export class wenku8 implements ruleClass {
           sectionName,
           sectionNumber,
           sectionChapterNumber,
-          chapterParse,
-          "GBK",
+          this.chapterParse,
+          this.charset,
           {}
         );
         chapters.push(chapter);
       }
     }
 
-    return {
-      bookUrl: bookUrl,
-      bookname: bookname,
-      author: author,
-      introduction: introduction,
-      introductionHTML: introductionHTML,
-      additionalMetadate: additionalMetadate,
-      chapters: chapters,
-    };
+    const book = new Book(
+      bookUrl,
+      bookname,
+      author,
+      introduction,
+      introductionHTML,
+      additionalMetadate,
+      chapters
+    );
+    return book;
   }
 
   public async chapterParse(

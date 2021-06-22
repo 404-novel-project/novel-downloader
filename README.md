@@ -289,7 +289,8 @@ window.saveOptions = saveOptions
         charset?: string;
         concurrencyLimit?: number;
         maxRunLimit?: number;
-        bookParse(chapterParse: ruleClass["chapterParse"]): Promise<bookParseObject>;
+        saveOptions?: saveOptions;
+        bookParse(): Promise<Book>;
         chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean | null, charset: string, options: object): Promise<chapterParseObject>;
     }
     ```

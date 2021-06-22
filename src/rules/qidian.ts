@@ -3,6 +3,7 @@ import {
   attachmentClass,
   Chapter,
   Status,
+  Book,
 } from "../main";
 import { ggetHtmlDOM, cleanDOM, sleep, gfetch } from "../lib";
 import { ruleClass, chapterParseObject } from "../rules";
@@ -18,7 +19,7 @@ export class qidian implements ruleClass {
     this.concurrencyLimit = 5;
   }
 
-  public async bookParse(chapterParse: ruleClass["chapterParse"]) {
+  public async bookParse() {
     const bookUrl = document.location.href;
     const bookname = (<HTMLElement>(
       document.querySelector(".book-info > h1 > em")
@@ -111,7 +112,7 @@ export class qidian implements ruleClass {
           sectionName,
           sectionNumber,
           sectionChapterNumber,
-          chapterParse,
+          this.chapterParse,
           "UTF-8",
           {}
         );
@@ -132,15 +133,16 @@ export class qidian implements ruleClass {
       }
     }
 
-    return {
-      bookUrl: bookUrl,
-      bookname: bookname,
-      author: author,
-      introduction: introduction,
-      introductionHTML: introductionHTML,
-      additionalMetadate: additionalMetadate,
-      chapters: chapters,
-    };
+    const book = new Book(
+      bookUrl,
+      bookname,
+      author,
+      introduction,
+      introductionHTML,
+      additionalMetadate,
+      chapters
+    );
+    return book;
   }
 
   public async chapterParse(
