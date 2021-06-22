@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        3.6.7.1624294156043
+// @version        3.6.7.1624393875341
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -892,19 +892,6 @@ function printEnvironments() {
 当前时间：${new Date().toISOString()}`);
     }
 }
-async function initBook(rule) {
-    log_1.log.info(`[initBook]开始初始化图书`);
-    const bookParse = rule.bookParse;
-    const chapterParse = rule.chapterParse;
-    return bookParse(chapterParse).then((obj) => {
-        const { bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters, } = obj;
-        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
-        if (rule.saveOptions !== undefined) {
-            book.saveOptions = rule.saveOptions;
-        }
-        return book;
-    });
-}
 async function initChapters(rule, book) {
     log_1.log.info(`[initChapters]开始初始化章节`);
     let concurrencyLimit = 10;
@@ -1017,7 +1004,7 @@ async function run() {
         }
     }
     log_1.log.debug("[run]主体开始");
-    const book = await initBook(rule);
+    const book = await rule.bookParse();
     await initChapters(rule, book);
     log_1.log.debug("[run]保存数据");
     if (rules_1.enableCustomSaveOptions &&
@@ -1036,9 +1023,6 @@ async function run() {
         await index_helper_1.removeTabMark();
     }
     log_1.log.info(`[run]下载完毕`);
-    if (rules_1.enaleDebug) {
-        log_1.saveLogTextToFile();
-    }
     return book;
 }
 function catchError(error) {
@@ -1092,7 +1076,7 @@ function addButton() {
 }
 async function debug() {
     const rule = await rules_1.getRule();
-    const book = await initBook(rule);
+    const book = await rule.bookParse();
     unsafeWindow.rule = rule;
     unsafeWindow.book = book;
     unsafeWindow.save = index_helper_1.save;
@@ -1367,6 +1351,10 @@ a.disabled {
             document.querySelector("#nd-progress")?.remove();
             index_1.audio.pause();
         })
+            .then(async () => {
+            await lib_1.sleep(5000);
+            finish();
+        })
             .catch((err) => {
             log_1.log.error("saveZip: " + err);
             log_1.log.trace(err);
@@ -1631,6 +1619,19 @@ function save(book, options) {
     saveBookObj.saveZip();
 }
 exports.save = save;
+function finish() {
+    if (rules_1.enaleDebug) {
+        log_1.saveLogTextToFile();
+    }
+    if (rules_1.enableCustomFinishCallback &&
+        typeof unsafeWindow.customFinishCallback ===
+            "function") {
+        const customFinishCallback = unsafeWindow
+            .customFinishCallback;
+        log_1.log.info(`发现自定义结束回调函数，内容如下：\n${customFinishCallback.toString()}`);
+        customFinishCallback();
+    }
+}
 function setTabMark() {
     return new Promise((resolve, reject) => {
         GM_getTab((curTabObject) => {
@@ -2179,9 +2180,10 @@ exports.attachmentClass = attachmentClass;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getRule = exports.r18SiteList = exports.icon1 = exports.icon0 = exports.enableR18SiteWarning = exports.enableCustomSaveOptions = exports.enableCustomChapterFilter = exports.enaleDebug = exports.retryLimit = void 0;
+exports.getRule = exports.r18SiteList = exports.icon1 = exports.icon0 = exports.enableR18SiteWarning = exports.enableCustomSaveOptions = exports.enableCustomChapterFilter = exports.enableCustomFinishCallback = exports.enaleDebug = exports.retryLimit = void 0;
 exports.retryLimit = 5;
 exports.enaleDebug = unsafeWindow.enaleDebug ?? false;
+exports.enableCustomFinishCallback = true;
 exports.enableCustomChapterFilter = true;
 exports.enableCustomSaveOptions = true;
 exports.enableR18SiteWarning = false;
@@ -2442,9 +2444,10 @@ const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 class c17k {
     constructor() {
         this.imageMode = "TM";
+        this.charset = "UTF-8";
         this.concurrencyLimit = 5;
     }
-    async bookParse(chapterParse) {
+    async bookParse() {
         const bookUrl = document.location.href.replace("/list/", "/book/");
         const bookname = (document.querySelector("h1.Title")).innerText.trim();
         const author = (document.querySelector("div.Author > a")).innerText.trim();
@@ -2483,7 +2486,7 @@ class c17k {
                 const isPaid = () => {
                     return false;
                 };
-                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), isPaid(), sectionName, sectionNumber, sectionChapterNumber, chapterParse, "UTF-8", {});
+                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), isPaid(), sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, {});
                 const isLogin = () => {
                     return false;
                 };
@@ -2493,15 +2496,8 @@ class c17k {
                 chapters.push(chapter);
             }
         }
-        return {
-            bookUrl: bookUrl,
-            bookname: bookname,
-            author: author,
-            introduction: introduction,
-            introductionHTML: introductionHTML,
-            additionalMetadate: additionalMetadate,
-            chapters: chapters,
-        };
+        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         async function publicChapter() {
@@ -2572,7 +2568,7 @@ class c226ks {
     constructor() {
         this.imageMode = "TM";
     }
-    async bookParse(chapterParse) {
+    async bookParse() {
         const bookUrl = document.location.href.replace(/index_\d+\.html/, "index_1.html");
         const bookname = (document.querySelector(".info > .top > h1")).innerText.trim();
         const author = (document.querySelector(".info > .top > .fix > p:nth-child(1)")).innerText
@@ -2606,18 +2602,11 @@ class c226ks {
             const chapterUrl = a.href;
             const isVIP = false;
             const isPaid = false;
-            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, null, null, null, chapterParse, "UTF-8", {});
+            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, null, null, null, this.chapterParse, "UTF-8", {});
             chapters.push(chapter);
         }
-        return {
-            bookUrl: bookUrl,
-            bookname: bookname,
-            author: author,
-            introduction: introduction,
-            introductionHTML: introductionHTML,
-            additionalMetadate: additionalMetadate,
-            chapters: chapters,
-        };
+        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         const dom = await lib_1.getHtmlDOM(chapterUrl, charset);
@@ -2713,15 +2702,8 @@ async function bookParseTemp({ bookUrl, bookname, author, introDom, introDomPatc
             }
         }
     }
-    return {
-        bookUrl: bookUrl,
-        bookname: bookname,
-        author: author,
-        introduction: introduction,
-        introductionHTML: introductionHTML,
-        additionalMetadate: additionalMetadate,
-        chapters: chapters,
-    };
+    const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+    return book;
 }
 exports.bookParseTemp = bookParseTemp;
 async function chapterParseTemp({ dom, chapterUrl, chapterName, contenSelector, contentPatch, charset, }) {
@@ -2755,7 +2737,8 @@ function mkBiqugeClass(introDomPatch, contentPatch) {
             this.imageMode = "TM";
             this.charset = document.charset;
         }
-        async bookParse(chapterParse) {
+        async bookParse() {
+            const self = this;
             return bookParseTemp({
                 bookUrl: document.location.href,
                 bookname: (document.querySelector("#info > h1:nth-child(1)")).innerText.trim(),
@@ -2768,7 +2751,7 @@ function mkBiqugeClass(introDomPatch, contentPatch) {
                     .src,
                 chapterListSelector: "#list>dl",
                 charset: document.charset,
-                chapterParse: chapterParse,
+                chapterParse: self.chapterParse,
             });
         }
         async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
@@ -2813,7 +2796,8 @@ class shuquge {
     constructor() {
         this.imageMode = "TM";
     }
-    async bookParse(chapterParse) {
+    async bookParse() {
+        const self = this;
         return bookParseTemp({
             bookUrl: document.location.href,
             bookname: (document.querySelector(".info > h2")).innerText.trim(),
@@ -2828,7 +2812,7 @@ class shuquge {
             coverUrl: (document.querySelector(".info > .cover > img")).src,
             chapterListSelector: ".listmain>dl",
             charset: "UTF-8",
-            chapterParse: chapterParse,
+            chapterParse: self.chapterParse,
         });
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
@@ -2854,7 +2838,8 @@ class xbiquge {
         this.imageMode = "TM";
         this.charset = "GBK";
     }
-    async bookParse(chapterParse) {
+    async bookParse() {
+        const self = this;
         return bookParseTemp({
             bookUrl: document.location.href,
             bookname: (document.querySelector("#info > h1:nth-child(1)")).innerText.trim(),
@@ -2866,7 +2851,7 @@ class xbiquge {
             coverUrl: document.querySelector("#fmimg > img")?.src,
             chapterListSelector: "#list>dl",
             charset: "GBK",
-            chapterParse: chapterParse,
+            chapterParse: self.chapterParse,
         });
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
@@ -2903,10 +2888,11 @@ const log_1 = __webpack_require__("./src/log.ts");
 class ciweimao {
     constructor() {
         this.imageMode = "TM";
+        this.charset = "UTF-8";
         this.concurrencyLimit = 1;
         this.maxRunLimit = 1;
     }
-    async bookParse(chapterParse) {
+    async bookParse() {
         const bookid = unsafeWindow.HB.book.book_id;
         const bookUrl = `https://www.ciweimao.com/book/${bookid}`;
         const bookname = (document.querySelector(".book-catalog .hd h3")).innerText.trim();
@@ -2942,7 +2928,7 @@ class ciweimao {
                         isPaid = true;
                     }
                 }
-                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, chapterParse, "UTF-8", {});
+                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, {});
                 const isLogin = document.querySelector(".login-info.ly-fr")?.childElementCount === 1
                     ? true
                     : false;
@@ -2952,15 +2938,8 @@ class ciweimao {
                 chapters.push(chapter);
             }
         }
-        return {
-            bookUrl: bookUrl,
-            bookname: bookname,
-            author: author,
-            introduction: introduction,
-            introductionHTML: introductionHTML,
-            additionalMetadate: additionalMetadate,
-            chapters: chapters,
-        };
+        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         function decrypt(item) {
@@ -3198,7 +3177,7 @@ class dierbanzhu {
         this.imageMode = "TM";
         this.charset = "GBK";
     }
-    async bookParse(chapterParse) {
+    async bookParse() {
         const bookUrl = document.location.href;
         const bookname = (document.querySelector("#info > h1:nth-child(1)")).innerText.trim();
         const author = (document.querySelector("#info > p:nth-child(2)")).innerText
@@ -3235,20 +3214,13 @@ class dierbanzhu {
                     const chapterUrl = a.href;
                     const isVIP = false;
                     const isPaid = false;
-                    const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, chapterParse, "GBK", {});
+                    const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, {});
                     chapters.push(chapter);
                 }
             }
         }
-        return {
-            bookUrl: bookUrl,
-            bookname: bookname,
-            author: author,
-            introduction: introduction,
-            introductionHTML: introductionHTML,
-            additionalMetadate: additionalMetadate,
-            chapters: chapters,
-        };
+        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         const dom = await lib_1.getHtmlDOM(chapterUrl, charset);
@@ -3297,7 +3269,7 @@ class dmzj {
     constructor() {
         this.imageMode = "TM";
     }
-    async bookParse(chapterParse) {
+    async bookParse() {
         const bookUrl = document.location.href;
         const bookname = (document.querySelector(".comic_deCon > h1 > a")).innerText.trim();
         const author = (document.querySelector(".comic_deCon_liO > li:nth-child(1)")).innerText
@@ -3322,18 +3294,11 @@ class dmzj {
             const chapterUrl = a.href;
             const isVIP = false;
             const isPaid = false;
-            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, null, null, null, chapterParse, "UTF-8", {});
+            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, null, null, null, this.chapterParse, "UTF-8", {});
             chapters.push(chapter);
         }
-        return {
-            bookUrl: bookUrl,
-            bookname: bookname,
-            author: author,
-            introduction: introduction,
-            introductionHTML: introductionHTML,
-            additionalMetadate: additionalMetadate,
-            chapters: chapters,
-        };
+        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         function getpicUrlList(doc) {
@@ -3416,7 +3381,7 @@ class fushuwang {
             },
         };
     }
-    async bookParse(chapterParse) {
+    async bookParse() {
         const bookUrl = (document.location.origin + document.location.pathname).replace(/(_\d+)\.html$/, ".html");
         const [bookname, author] = (document.querySelector(".title_info > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(1) > h1:nth-child(1)")).innerText.split("——");
         const [introduction, introductionHTML] = [null, null];
@@ -3429,18 +3394,12 @@ class fushuwang {
             const chapterName = `page${i}`;
             const isVIP = false;
             const isPaid = false;
-            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, i + 1, chapterName, isVIP, isPaid, null, null, null, chapterParse, "GBK", {});
+            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, i + 1, chapterName, isVIP, isPaid, null, null, null, this.chapterParse, this.charset, {});
             chapters.push(chapter);
         }
-        return {
-            bookUrl: bookUrl,
-            bookname: bookname,
-            author: author,
-            introduction: introduction,
-            introductionHTML: introductionHTML,
-            additionalMetadate: additionalMetadate,
-            chapters: chapters,
-        };
+        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        book.saveOptions = this.saveOptions;
+        return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         const doc = await lib_1.getHtmlDOM(chapterUrl, charset);
@@ -3493,7 +3452,7 @@ class gongzicp {
         this.imageMode = "TM";
         this.concurrencyLimit = 1;
     }
-    async bookParse(chapterParse) {
+    async bookParse() {
         const bookUrl = document.location.href;
         const bookId = (document.querySelector("span.id")).innerText.replace("CP", "");
         if (!bookId) {
@@ -3573,22 +3532,15 @@ class gongzicp {
                     novel_id: data.novelInfo.novel_id,
                     chapter_id: chapterObj.id,
                 };
-                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, chapterParse, "UTF-8", chapterOption);
+                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, "UTF-8", chapterOption);
                 if (isVIP && !(logined && chapter.isPaid)) {
                     chapter.status = main_1.Status.aborted;
                 }
                 chapters.push(chapter);
             }
         }
-        return {
-            bookUrl: bookUrl,
-            bookname: bookname,
-            author: author,
-            introduction: introduction,
-            introductionHTML: introductionHTML,
-            additionalMetadate: additionalMetadate,
-            chapters: chapters,
-        };
+        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         function cpDecrypt(content_orig) {
@@ -3831,7 +3783,7 @@ class hetushu {
     constructor() {
         this.imageMode = "TM";
     }
-    async bookParse(chapterParse) {
+    async bookParse() {
         const bookUrl = document.location.href;
         const bookname = (document.querySelector(".book_info > h2")).innerText.trim();
         const author = (document.querySelector(".book_info > div:nth-child(3) > a:nth-child(1)")).innerText.trim();
@@ -3863,20 +3815,13 @@ class hetushu {
                     const chapterUrl = a.href;
                     const isVIP = false;
                     const isPaid = false;
-                    const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, chapterParse, "UTF-8", {});
+                    const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, "UTF-8", {});
                     chapters.push(chapter);
                 }
             }
         }
-        return {
-            bookUrl: bookUrl,
-            bookname: bookname,
-            author: author,
-            introduction: introduction,
-            introductionHTML: introductionHTML,
-            additionalMetadate: additionalMetadate,
-            chapters: chapters,
-        };
+        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         async function sorfPage() {
@@ -3999,7 +3944,7 @@ class idejian {
     constructor() {
         this.imageMode = "TM";
     }
-    async bookParse(chapterParse) {
+    async bookParse() {
         let bookUrl = document.location.href;
         const bookname = (document.querySelector(".detail_bkname > a")).innerText.trim();
         const _author = document.querySelector(".detail_bkauthor")
@@ -4026,18 +3971,11 @@ class idejian {
             const chapterUrl = aElem.href;
             const isVIP = false;
             const isPaid = false;
-            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, null, null, null, chapterParse, "UTF-8", {});
+            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, null, null, null, this.chapterParse, "UTF-8", {});
             chapters.push(chapter);
         }
-        return {
-            bookUrl: bookUrl,
-            bookname: bookname,
-            author: author,
-            introduction: introduction,
-            introductionHTML: introductionHTML,
-            additionalMetadate: additionalMetadate,
-            chapters: chapters,
-        };
+        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         log_1.log.debug(`[Chapter]请求 ${chapterUrl}`);
@@ -4097,7 +4035,7 @@ class jjwxc {
         this.concurrencyLimit = 5;
         this.charset = "GB18030";
     }
-    async bookParse(chapterParse) {
+    async bookParse() {
         const bookUrl = document.location.href;
         const bookname = (document.querySelector('h1[itemprop="name"] > span')).innerText.trim();
         const additionalMetadate = {};
@@ -4158,7 +4096,7 @@ class jjwxc {
                         const chapterName = a.innerText.trim();
                         const chapterUrl = a.getAttribute("rel");
                         if (chapterUrl) {
-                            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), null, sectionName, sectionNumber, sectionChapterNumber, chapterParse, "GB18030", {});
+                            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), null, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, {});
                             const isLogin = () => {
                                 if (document.getElementById("jj_login")) {
                                     return false;
@@ -4176,7 +4114,7 @@ class jjwxc {
                     else {
                         const chapterName = a.innerText.trim();
                         const chapterUrl = a.href;
-                        const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), null, sectionName, sectionNumber, sectionChapterNumber, chapterParse, "GB18030", {});
+                        const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), null, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, {});
                         const isLogin = () => {
                             if (document.getElementById("jj_login")) {
                                 return false;
@@ -4193,15 +4131,8 @@ class jjwxc {
                 }
             }
         }
-        return {
-            bookUrl: bookUrl,
-            bookname: bookname,
-            author: author,
-            introduction: introduction,
-            introductionHTML: introductionHTML,
-            additionalMetadate: additionalMetadate,
-            chapters: chapters,
-        };
+        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         async function publicChapter() {
@@ -27106,7 +27037,7 @@ class linovel {
         this.imageMode = "TM";
         this.concurrencyLimit = 5;
     }
-    async bookParse(chapterParse) {
+    async bookParse() {
         const bookUrl = document.location.href;
         const bookname = (document.querySelector(".book-title")).innerText.trim();
         const author = (document.querySelector(".author-frame > .novelist > div:nth-child(3) > a")).innerText.trim();
@@ -27167,7 +27098,7 @@ class linovel {
                 const isPaid = () => {
                     return false;
                 };
-                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), isPaid(), sectionName, sectionNumber, sectionChapterNumber, chapterParse, "UTF-8", {});
+                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), isPaid(), sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, "UTF-8", {});
                 const isLogin = () => {
                     return false;
                 };
@@ -27177,15 +27108,8 @@ class linovel {
                 chapters.push(chapter);
             }
         }
-        return {
-            bookUrl: bookUrl,
-            bookname: bookname,
-            author: author,
-            introduction: introduction,
-            introductionHTML: introductionHTML,
-            additionalMetadate: additionalMetadate,
-            chapters: chapters,
-        };
+        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         async function publicChapter() {
@@ -27252,7 +27176,7 @@ class linovelib {
     constructor() {
         this.imageMode = "TM";
     }
-    async bookParse(chapterParse) {
+    async bookParse() {
         const bookUrl = document.location.href.replace(/\/catalog$/, ".html");
         const bookname = (document.querySelector(".book-meta > h1")).innerText.trim();
         const author = (document.querySelector(".book-meta > p:nth-child(2) > span:nth-child(1) > a:nth-child(2)")).innerText.trim();
@@ -27290,22 +27214,15 @@ class linovelib {
                 const isVIP = false;
                 const chapterName = a.innerText.trim();
                 const chapterUrl = a.href;
-                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, null, sectionName, sectionNumber, sectionChapterNumber, chapterParse, "UTF-8", {});
+                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, null, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, "UTF-8", {});
                 if (chapterUrl.startsWith("javascript")) {
                     chapter.status = main_1.Status.aborted;
                 }
                 chapters.push(chapter);
             }
         }
-        return {
-            bookUrl: bookUrl,
-            bookname: bookname,
-            author: author,
-            introduction: introduction,
-            introductionHTML: introductionHTML,
-            additionalMetadate: additionalMetadate,
-            chapters: chapters,
-        };
+        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         log_1.log.debug(`[Chapter]请求 ${chapterUrl}`);
@@ -27369,7 +27286,7 @@ class meegoq {
         this.concurrencyLimit = 3;
         this.charset = "GBK";
     }
-    async bookParse(chapterParse) {
+    async bookParse() {
         const bookUrl = document.location.href.replace("/book", "/info");
         const dom = await lib_1.getHtmlDOM(bookUrl, "GBK");
         const author = (dom.querySelector("article.info > p.detail.pt20 > i:nth-child(1) > a")).innerText.trim();
@@ -27419,20 +27336,13 @@ class meegoq {
                     const chapterUrl = a.href;
                     const isVIP = false;
                     const isPaid = false;
-                    const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, chapterParse, "GBK", {});
+                    const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, {});
                     chapters.push(chapter);
                 }
             }
         }
-        return {
-            bookUrl: bookUrl,
-            bookname: bookname,
-            author: author,
-            introduction: introduction,
-            introductionHTML: introductionHTML,
-            additionalMetadate: additionalMetadate,
-            chapters: chapters,
-        };
+        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         const dom = await lib_1.getHtmlDOM(chapterUrl, charset);
@@ -27480,7 +27390,8 @@ class mht {
     constructor() {
         this.imageMode = "TM";
     }
-    async bookParse(chapterParse) {
+    async bookParse() {
+        const self = this;
         return biquge_1.bookParseTemp({
             bookUrl: document.location.href,
             bookname: (document.querySelector("#info > h1:nth-child(1)")).innerText.trim(),
@@ -27492,7 +27403,7 @@ class mht {
             coverUrl: document.querySelector("#fmimg > img").src,
             chapterListSelector: "#list>dl",
             charset: "UTF-8",
-            chapterParse: chapterParse,
+            chapterParse: self.chapterParse,
         });
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
@@ -27558,7 +27469,7 @@ class qidian {
         this.imageMode = "TM";
         this.concurrencyLimit = 5;
     }
-    async bookParse(chapterParse) {
+    async bookParse() {
         const bookUrl = document.location.href;
         const bookname = (document.querySelector(".book-info > h1 > em")).innerText.trim();
         const author = (document.querySelector(".book-info .writer")).innerText
@@ -27618,7 +27529,7 @@ class qidian {
                     }
                     return false;
                 };
-                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), isPaid(), sectionName, sectionNumber, sectionChapterNumber, chapterParse, "UTF-8", {});
+                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), isPaid(), sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, "UTF-8", {});
                 const isLogin = () => {
                     const sign_in_dom = document.querySelector(".sign-in");
                     const sign_out_dom = document.querySelector(".sign-out");
@@ -27635,15 +27546,8 @@ class qidian {
                 chapters.push(chapter);
             }
         }
-        return {
-            bookUrl: bookUrl,
-            bookname: bookname,
-            author: author,
-            introduction: introduction,
-            introductionHTML: introductionHTML,
-            additionalMetadate: additionalMetadate,
-            chapters: chapters,
-        };
+        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         async function publicChapter() {
@@ -27768,7 +27672,7 @@ class qimao {
     constructor() {
         this.imageMode = "TM";
     }
-    async bookParse(chapterParse) {
+    async bookParse() {
         let bookUrl = document.location.href;
         const bookname = (document.querySelector("h2.tit")).innerText.trim();
         const author = (document.querySelector(".p-name > a")).innerHTML.trim();
@@ -27799,7 +27703,7 @@ class qimao {
             const isPaid = () => {
                 return false;
             };
-            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), isPaid(), null, null, null, chapterParse, "UTF-8", {});
+            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), isPaid(), null, null, null, this.chapterParse, "UTF-8", {});
             const isLogin = () => {
                 return false;
             };
@@ -27808,15 +27712,8 @@ class qimao {
             }
             chapters.push(chapter);
         }
-        return {
-            bookUrl: bookUrl,
-            bookname: bookname,
-            author: author,
-            introduction: introduction,
-            introductionHTML: introductionHTML,
-            additionalMetadate: additionalMetadate,
-            chapters: chapters,
-        };
+        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         async function publicChapter() {
@@ -27886,7 +27783,7 @@ class sfacg {
         this.imageMode = "TM";
         this.concurrencyLimit = 1;
     }
-    async bookParse(chapterParse) {
+    async bookParse() {
         const bookUrl = document.location.href.replace("/MainIndex/", "");
         const bookname = (document.querySelector("h1.story-title")).innerText.trim();
         const dom = await lib_1.getHtmlDOM(bookUrl, undefined);
@@ -27934,7 +27831,7 @@ class sfacg {
                     c.firstElementChild?.getAttribute("class") === "icn_vip") {
                     isVIP = true;
                 }
-                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, chapterParse, "UTF-8", {});
+                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, "UTF-8", {});
                 const isLogin = document.querySelector(".user-bar > .top-link > .normal-link")
                     ?.childElementCount === 3
                     ? true
@@ -27945,15 +27842,8 @@ class sfacg {
                 chapters.push(chapter);
             }
         }
-        return {
-            bookUrl: bookUrl,
-            bookname: bookname,
-            author: author,
-            introduction: introduction,
-            introductionHTML: introductionHTML,
-            additionalMetadate: additionalMetadate,
-            chapters: chapters,
-        };
+        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         const chapter_id = chapterUrl.split("/").slice(-2, -1)[0];
@@ -28097,7 +27987,7 @@ class shouda8 {
     constructor() {
         this.imageMode = "TM";
     }
-    async bookParse(chapterParse) {
+    async bookParse() {
         const bookUrl = document.location.href;
         const bookname = (document.querySelector(".bread-crumbs > li:nth-child(4)")).innerText.trim();
         const author = (document.querySelector("div.bookname > h1 > em")).innerText
@@ -28122,18 +28012,11 @@ class shouda8 {
             const chapterUrl = a.href;
             const isVIP = false;
             const isPaid = false;
-            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, i + 1, chapterName, isVIP, isPaid, null, null, null, chapterParse, "UTF-8", {});
+            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, i + 1, chapterName, isVIP, isPaid, null, null, null, this.chapterParse, "UTF-8", {});
             chapters.push(chapter);
         }
-        return {
-            bookUrl: bookUrl,
-            bookname: bookname,
-            author: author,
-            introduction: introduction,
-            introductionHTML: introductionHTML,
-            additionalMetadate: additionalMetadate,
-            chapters: chapters,
-        };
+        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         const dom = await lib_1.getHtmlDOM(chapterUrl, charset);
@@ -28183,7 +28066,7 @@ class shubaowa {
         this.imageMode = "TM";
         this.charset = "GBK";
     }
-    async bookParse(chapterParse) {
+    async bookParse() {
         const bookUrl = document.location.href;
         const bookname = (document.querySelector("#info > h1:nth-child(1)")).innerText.trim();
         const author = (document.querySelector("#info > p:nth-child(2)")).innerText
@@ -28205,18 +28088,11 @@ class shubaowa {
             chapterNumber++;
             const chapterName = aElem.innerText;
             const chapterUrl = aElem.href;
-            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, false, false, null, null, null, chapterParse, "GBK", {});
+            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, false, false, null, null, null, this.chapterParse, this.charset, {});
             chapters.push(chapter);
         }
-        return {
-            bookUrl: bookUrl,
-            bookname: bookname,
-            author: author,
-            introduction: introduction,
-            introductionHTML: introductionHTML,
-            additionalMetadate: additionalMetadate,
-            chapters: chapters,
-        };
+        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         const dom = await lib_1.getHtmlDOM(chapterUrl, charset);
@@ -28266,7 +28142,7 @@ class shuhai {
         this.concurrencyLimit = 5;
         this.charset = "GBK";
     }
-    async bookParse(chapterParse) {
+    async bookParse() {
         const bookUrl = document.location.href;
         const bookname = (document.querySelector("div.book-info-bookname > span:nth-child(1)")).innerText.trim();
         const author = (document.querySelector("div.book-info-bookname > span:nth-child(2)")).innerText
@@ -28315,7 +28191,7 @@ class shuhai {
                 };
                 const chapterName = a.innerText.trim();
                 const chapterUrl = a.href;
-                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), isPaid(), sectionName, sectionNumber, sectionChapterNumber, chapterParse, "GBK", {});
+                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), isPaid(), sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, {});
                 const isLogin = () => {
                     return false;
                 };
@@ -28325,15 +28201,8 @@ class shuhai {
                 chapters.push(chapter);
             }
         }
-        return {
-            bookUrl: bookUrl,
-            bookname: bookname,
-            author: author,
-            introduction: introduction,
-            introductionHTML: introductionHTML,
-            additionalMetadate: additionalMetadate,
-            chapters: chapters,
-        };
+        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         async function publicChapter() {
@@ -28401,7 +28270,7 @@ class sosadfun {
     constructor() {
         this.imageMode = "TM";
     }
-    async bookParse(chapterParse) {
+    async bookParse() {
         const bookUrl = document.location.origin + document.location.pathname;
         const bookname = (document.querySelector(".font-1")).innerText.trim();
         const authorDom = (document.querySelector("div.h5:nth-child(1) > div:nth-child(1) > a:nth-child(1)"));
@@ -28464,18 +28333,11 @@ class sosadfun {
             chapterNumber++;
             const chapterName = a.innerText.trim();
             const chapterUrl = a.href;
-            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, false, false, null, null, null, chapterParse, "UTF-8", {});
+            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, false, false, null, null, null, this.chapterParse, "UTF-8", {});
             chapters.push(chapter);
         }
-        return {
-            bookUrl: bookUrl,
-            bookname: bookname,
-            author: author,
-            introduction: introduction,
-            introductionHTML: introductionHTML,
-            additionalMetadate: additionalMetadate,
-            chapters: chapters,
-        };
+        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         const doc = await lib_1.getHtmlDOM(chapterUrl, charset);
@@ -28523,7 +28385,7 @@ class soxscc {
     constructor() {
         this.imageMode = "TM";
     }
-    async bookParse(chapterParse) {
+    async bookParse() {
         const bookUrl = document.location.href;
         const bookname = (document.querySelector(".xiaoshuo > h1")).innerText.trim();
         const author = (document.querySelector(".xiaoshuo > h6:nth-child(3) > a")).innerText.trim();
@@ -28554,19 +28416,12 @@ class soxscc {
                 const chapterName = a.innerText;
                 const isVIP = false;
                 const isPaid = false;
-                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, i + 1, sectionChapterNumber, chapterParse, "UTF-8", { bookname: bookname });
+                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, i + 1, sectionChapterNumber, this.chapterParse, "UTF-8", { bookname: bookname });
                 chapters.push(chapter);
             }
         }
-        return {
-            bookUrl: bookUrl,
-            bookname: bookname,
-            author: author,
-            introduction: introduction,
-            introductionHTML: introductionHTML,
-            additionalMetadate: additionalMetadate,
-            chapters: chapters,
-        };
+        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         const doc = await lib_1.getHtmlDOM(chapterUrl, charset);
@@ -28634,7 +28489,7 @@ class tadu {
         this.imageMode = "TM";
         this.concurrencyLimit = 5;
     }
-    async bookParse(chapterParse) {
+    async bookParse() {
         let bookUrl = document.location.href.replace("catalogue/", "");
         const bookname = (document.querySelector("div.boxCenter > h1")).innerText.trim();
         const author = (document.querySelector(".itct > span:nth-child(1)")).innerText
@@ -28667,7 +28522,7 @@ class tadu {
             const isPaid = () => {
                 return false;
             };
-            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), isPaid(), null, null, null, chapterParse, "UTF-8", {});
+            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), isPaid(), null, null, null, this.chapterParse, "UTF-8", {});
             const isLogin = () => {
                 return false;
             };
@@ -28676,15 +28531,8 @@ class tadu {
             }
             chapters.push(chapter);
         }
-        return {
-            bookUrl: bookUrl,
-            bookname: bookname,
-            author: author,
-            introduction: introduction,
-            introductionHTML: introductionHTML,
-            additionalMetadate: additionalMetadate,
-            chapters: chapters,
-        };
+        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         async function publicChapter() {
@@ -28775,7 +28623,7 @@ class uukanshu {
         this.imageMode = "TM";
         this.charset = "GBK";
     }
-    async bookParse(chapterParse) {
+    async bookParse() {
         const bookUrl = document.location.href;
         const bookname = (document.querySelector("dd.jieshao_content > h1 > a")).innerText
             .replace("最新章节", "")
@@ -28820,20 +28668,13 @@ class uukanshu {
                     const chapterUrl = a.href;
                     const isVIP = false;
                     const isPaid = false;
-                    const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, chapterParse, "GBK", {});
+                    const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, {});
                     chapters.push(chapter);
                 }
             }
         }
-        return {
-            bookUrl: bookUrl,
-            bookname: bookname,
-            author: author,
-            introduction: introduction,
-            introductionHTML: introductionHTML,
-            additionalMetadate: additionalMetadate,
-            chapters: chapters,
-        };
+        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         const dom = await lib_1.getHtmlDOM(chapterUrl, charset);
@@ -28896,7 +28737,7 @@ class wenku8 {
         this.imageMode = "TM";
         this.charset = "GBK";
     }
-    async bookParse(chapterParse) {
+    async bookParse() {
         const bookId = document.location.pathname.split("/").slice(-2, -1)[0];
         const bookUrl = [document.location.origin, "book", `${bookId}.htm`].join("/");
         const bookname = (document.querySelector("#title")).innerText.trim();
@@ -28929,19 +28770,12 @@ class wenku8 {
                 const a = td.firstElementChild;
                 const chapterName = a.innerText.trim();
                 const chapterUrl = a.href;
-                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, false, false, sectionName, sectionNumber, sectionChapterNumber, chapterParse, "GBK", {});
+                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, false, false, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, {});
                 chapters.push(chapter);
             }
         }
-        return {
-            bookUrl: bookUrl,
-            bookname: bookname,
-            author: author,
-            introduction: introduction,
-            introductionHTML: introductionHTML,
-            additionalMetadate: additionalMetadate,
-            chapters: chapters,
-        };
+        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         const doc = await lib_1.getHtmlDOM(chapterUrl, charset);
@@ -28989,7 +28823,7 @@ class westnovel {
     constructor() {
         this.imageMode = "TM";
     }
-    async bookParse(chapterParse) {
+    async bookParse() {
         const bookUrl = document.location.href;
         const bookname = (document.querySelector(".btitle > h1 > a")).innerText.trim();
         const author = (document.querySelector(".btitle > em:nth-child(2)")).innerText
@@ -29008,18 +28842,11 @@ class westnovel {
             chapterNumber++;
             const chapterName = a.innerText.trim();
             const chapterUrl = a.href;
-            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, false, false, null, null, null, chapterParse, "UTF-8", {});
+            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, false, false, null, null, null, this.chapterParse, "UTF-8", {});
             chapters.push(chapter);
         }
-        return {
-            bookUrl: bookUrl,
-            bookname: bookname,
-            author: author,
-            introduction: introduction,
-            introductionHTML: introductionHTML,
-            additionalMetadate: additionalMetadate,
-            chapters: chapters,
-        };
+        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         const doc = await lib_1.getHtmlDOM(chapterUrl, charset);
@@ -29072,7 +28899,7 @@ class xiaoshuodaquan {
         this.charset = "GBK";
         this.concurrencyLimit = 5;
     }
-    async bookParse(chapterParse) {
+    async bookParse() {
         const ccount = document.querySelector(".crumbswrap")?.childElementCount;
         let bookUrl = document.location.href;
         if (ccount) {
@@ -29119,19 +28946,12 @@ class xiaoshuodaquan {
                 const chapterUrl = a.href;
                 const isVIP = false;
                 const isPaid = false;
-                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, chapterParse, "GBK", {});
+                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, {});
                 chapters.push(chapter);
             }
         }
-        return {
-            bookUrl: bookUrl,
-            bookname: bookname,
-            author: author,
-            introduction: introduction,
-            introductionHTML: introductionHTML,
-            additionalMetadate: additionalMetadate,
-            chapters: chapters,
-        };
+        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         const dom = await lib_1.getHtmlDOM(chapterUrl, charset);
@@ -29185,7 +29005,7 @@ class xinwanben {
         this.imageMode = "TM";
         this.charset = "GBK";
     }
-    async bookParse(chapterParse) {
+    async bookParse() {
         let bookUrl = document.location.href;
         const bookname = (document.querySelector(".detailTitle > h1")).innerText.trim();
         const author = (document.querySelector(".writer > a")).innerText.trim();
@@ -29206,18 +29026,11 @@ class xinwanben {
             const chapterUrl = co.href;
             const isVIP = false;
             const isPaid = false;
-            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, null, null, null, chapterParse, "GBK", {});
+            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, null, null, null, this.chapterParse, this.charset, {});
             chapters.push(chapter);
         }
-        return {
-            bookUrl: bookUrl,
-            bookname: bookname,
-            author: author,
-            introduction: introduction,
-            introductionHTML: introductionHTML,
-            additionalMetadate: additionalMetadate,
-            chapters: chapters,
-        };
+        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         log_1.log.debug(`[Chapter]请求 ${chapterUrl}`);
@@ -29280,7 +29093,7 @@ class xkzw {
     constructor() {
         this.imageMode = "TM";
     }
-    async bookParse(chapterParse) {
+    async bookParse() {
         const bookUrl = document.location.href;
         const bookname = (document.querySelector("#info > h1:nth-child(1)")).innerText.trim();
         const author = (document.querySelector("#info > p:nth-child(2)")).innerText
@@ -29383,19 +29196,12 @@ class xkzw {
                 const chapterUrl = bookUrl + (sitechapter.chapterid + bookid * 11) + ".html";
                 const isVIP = false;
                 const isPaid = false;
-                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, chapterParse, "UTF-8", {});
+                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, "UTF-8", {});
                 chapters.push(chapter);
             }
         }
-        return {
-            bookUrl: bookUrl,
-            bookname: bookname,
-            author: author,
-            introduction: introduction,
-            introductionHTML: introductionHTML,
-            additionalMetadate: additionalMetadate,
-            chapters: chapters,
-        };
+        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         function runEval(CryptoJS) {
@@ -29550,7 +29356,7 @@ class yibige {
     constructor() {
         this.imageMode = "TM";
     }
-    async bookParse(chapterParse) {
+    async bookParse() {
         const bookUrl = (document.querySelector("#list_hb > li:nth-child(2) > a:nth-child(1)")).href;
         const doc = await lib_1.getHtmlDOM(bookUrl, undefined);
         const bookname = (doc.querySelector(".title > h1:nth-child(1)")).innerText.trim();
@@ -29606,20 +29412,13 @@ class yibige {
                     const chapterUrl = a.href;
                     const isVIP = false;
                     const isPaid = false;
-                    const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, chapterParse, "UTF-8", { bookname: bookname });
+                    const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, "UTF-8", { bookname: bookname });
                     chapters.push(chapter);
                 }
             }
         }
-        return {
-            bookUrl: bookUrl,
-            bookname: bookname,
-            author: author,
-            introduction: introduction,
-            introductionHTML: introductionHTML,
-            additionalMetadate: additionalMetadate,
-            chapters: chapters,
-        };
+        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         log_1.log.debug(`[Chapter]请求 ${chapterUrl}`);
@@ -29684,7 +29483,7 @@ class yrun {
     constructor() {
         this.imageMode = "TM";
     }
-    async bookParse(chapterParse) {
+    async bookParse() {
         const bookUrl = document.location.href;
         const bookname = (document.querySelector("#info > h1:nth-child(1)")).innerText.trim();
         const author = (document.querySelector("#info > p:nth-child(2)")).innerText
@@ -29706,19 +29505,12 @@ class yrun {
                 const chapterUrl = a.href;
                 const isVIP = false;
                 const isPaid = false;
-                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, i, chapterName, isVIP, isPaid, null, null, null, chapterParse, "UTF-8", {});
+                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, i, chapterName, isVIP, isPaid, null, null, null, this.chapterParse, "UTF-8", {});
                 chapters.push(chapter);
             }
         }
-        return {
-            bookUrl: bookUrl,
-            bookname: bookname,
-            author: author,
-            introduction: introduction,
-            introductionHTML: introductionHTML,
-            additionalMetadate: additionalMetadate,
-            chapters: chapters,
-        };
+        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         const dom = await lib_1.getHtmlDOM(chapterUrl, charset);
@@ -29768,7 +29560,7 @@ class yuzhaige {
     constructor() {
         this.imageMode = "TM";
     }
-    async bookParse(chapterParse) {
+    async bookParse() {
         const bookUrl = (document.querySelector("div.currency_head > h1 > a")).href;
         const bookId = bookUrl.split("/").slice(-2, -1)[0];
         log_1.log.debug(`[chapter]请求 ${bookUrl}`);
@@ -29827,18 +29619,11 @@ class yuzhaige {
             const chapterUrl = a.href;
             const isVIP = false;
             const isPaid = false;
-            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, null, null, null, chapterParse, "UTF-8", {});
+            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, null, null, null, this.chapterParse, "UTF-8", {});
             chapters.push(chapter);
         }
-        return {
-            bookUrl: bookUrl,
-            bookname: bookname,
-            author: author,
-            introduction: introduction,
-            introductionHTML: introductionHTML,
-            additionalMetadate: additionalMetadate,
-            chapters: chapters,
-        };
+        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         function contentAppend() {
@@ -29966,7 +29751,7 @@ class zongheng {
         this.imageMode = "TM";
         this.concurrencyLimit = 5;
     }
-    async bookParse(chapterParse) {
+    async bookParse() {
         const bookUrl = document.location.href.replace("/showchapter/", "/book/");
         const bookname = (document.querySelector("div.book-meta > h1")).innerText.trim();
         const author = (document.querySelector("div.book-meta > p > span:nth-child(1) > a")).innerText.trim();
@@ -30008,7 +29793,7 @@ class zongheng {
                 const isPaid = () => {
                     return false;
                 };
-                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), isPaid(), sectionName, sectionNumber, sectionChapterNumber, chapterParse, "UTF-8", {});
+                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), isPaid(), sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, "UTF-8", {});
                 const isLogin = () => {
                     return false;
                 };
@@ -30018,15 +29803,8 @@ class zongheng {
                 chapters.push(chapter);
             }
         }
-        return {
-            bookUrl: bookUrl,
-            bookname: bookname,
-            author: author,
-            introduction: introduction,
-            introductionHTML: introductionHTML,
-            additionalMetadate: additionalMetadate,
-            chapters: chapters,
-        };
+        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         async function publicChapter() {

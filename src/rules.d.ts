@@ -1,14 +1,5 @@
 import { saveOptions } from "./index_helper";
-import { BookAdditionalMetadate, attachmentClass, Chapter, ChapterAdditionalMetadate } from "./main";
-export interface bookParseObject {
-    bookUrl: string;
-    bookname: string;
-    author: string;
-    introduction: string | null;
-    introductionHTML: HTMLElement | null;
-    additionalMetadate: BookAdditionalMetadate;
-    chapters: Chapter[];
-}
+import { attachmentClass, ChapterAdditionalMetadate, Book } from "./main";
 export interface chapterParseObject {
     chapterName: string | null;
     contentRaw: HTMLElement | null;
@@ -23,11 +14,12 @@ export interface ruleClass {
     concurrencyLimit?: number;
     maxRunLimit?: number;
     saveOptions?: saveOptions;
-    bookParse(chapterParse: ruleClass["chapterParse"]): Promise<bookParseObject>;
+    bookParse(): Promise<Book>;
     chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean | null, charset: string, options: object): Promise<chapterParseObject>;
 }
 export declare const retryLimit = 5;
 export declare const enaleDebug: any;
+export declare const enableCustomFinishCallback = true;
 export declare const enableCustomChapterFilter = true;
 export declare const enableCustomSaveOptions = true;
 export declare const enableR18SiteWarning = false;

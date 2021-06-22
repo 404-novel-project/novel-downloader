@@ -8,6 +8,7 @@ export declare namespace indexNameSpace {
         save(book: Book, saveOptions: saveOptions): void;
         saveAs(obj: any): void;
         chapterFilter(chapter: Chapter): boolean;
+        customFinishCallback(): void;
         saveOptions: saveOptions;
     }
     interface mainTabObject extends GM_tab_object {

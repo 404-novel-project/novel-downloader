@@ -1,19 +1,11 @@
-import { BookAdditionalMetadate, attachmentClass, Chapter } from "../main";
+import { attachmentClass, Book } from "../main";
 import { ruleClass } from "../rules";
 export declare class meegoq implements ruleClass {
     imageMode: "naive" | "TM";
     concurrencyLimit: number;
     charset: string;
     constructor();
-    bookParse(chapterParse: ruleClass["chapterParse"]): Promise<{
-        bookUrl: string;
-        bookname: string;
-        author: string;
-        introduction: string | null;
-        introductionHTML: HTMLElement | null;
-        additionalMetadate: BookAdditionalMetadate;
-        chapters: Chapter[];
-    }>;
+    bookParse(): Promise<Book>;
     chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean, charset: string, options: object): Promise<{
         chapterName: string;
         contentRaw: HTMLElement;

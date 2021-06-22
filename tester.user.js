@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        小说下载器测试脚本
-// @version     3.6.7.1624294162889
+// @version     3.6.7.1624393882100
 // @author      bgme
 // @description 小说下载器测试脚本
 // @match       *://www.ciweimao.com/chapter-list/*
@@ -94,6 +94,7 @@
 // @exclude     *://www.qimao.com/shuku/*-*/
 // @grant       unsafeWindow
 // @grant       GM_openInTab
+// @grant       window.close
 // @grant       GM_getTab
 // @grant       GM_saveTab
 // @grant       GM_getTabs
@@ -176,6 +177,9 @@ function deleteTabData(key) {
 }
 function randomChoose(array) {
     return array[Math.floor(Math.random() * array.length)];
+}
+function sleep(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
 }
 if (document.location.origin === "https://greasyfork.org" &&
     document.location.pathname.includes("/scripts/406070-%E5%B0%8F%E8%AF%B4%E4%B8%8B%E8%BD%BD%E5%99%A8")) {
@@ -309,9 +313,9 @@ if (document.location.origin === "https://greasyfork.org" &&
             "https://www.fuguoduxs.com/4_4790/",
         ],
     ];
-    function runTest() {
+    async function runTest() {
         setTabData("runTest", "true");
-        exampleUrls.forEach((u) => {
+        const openWindow = (u) => {
             if (typeof u === "string") {
                 GM_openInTab(u);
             }
@@ -319,7 +323,11 @@ if (document.location.origin === "https://greasyfork.org" &&
                 const url = randomChoose(u);
                 GM_openInTab(url);
             }
-        });
+        };
+        for (const u of exampleUrls) {
+            await sleep(500);
+            openWindow(u);
+        }
     }
     unsafeWindow.runTest = runTest;
 }
@@ -333,12 +341,15 @@ else {
                     return chapter.chapterNumber <= 20;
                 }
                 unsafeWindow.chapterFilter = chapterFilter;
+                function customFinishCallback(book) {
+                    window.close();
+                }
+                unsafeWindow.customFinishCallback = customFinishCallback;
                 document.getElementById("novel-downloader")?.click();
             }
         }, 1000 + Math.random() * 3000);
     });
 }
-unsafeWindow.getTabData = getTabData;
 console.log("[novel-downloader-tester]测试脚本载入成功……");
 
 })();

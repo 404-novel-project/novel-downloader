@@ -1,23 +1,15 @@
-import { BookAdditionalMetadate, attachmentClass, Chapter } from "../main";
+import { Book } from "../main";
 import { ruleClass } from "../rules";
 export declare class sosadfun implements ruleClass {
     imageMode: "naive" | "TM";
     constructor();
-    bookParse(chapterParse: ruleClass["chapterParse"]): Promise<{
-        bookUrl: string;
-        bookname: string;
-        author: string;
-        introduction: string | null;
-        introductionHTML: HTMLElement | null;
-        additionalMetadate: BookAdditionalMetadate;
-        chapters: Chapter[];
-    }>;
+    bookParse(): Promise<Book>;
     chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean, charset: string, options: object): Promise<{
         chapterName: string;
         contentRaw: HTMLElement;
         contentText: string;
         contentHTML: HTMLElement;
-        contentImages: attachmentClass[];
+        contentImages: import("../main").attachmentClass[];
         additionalMetadate: null;
     } | {
         chapterName: string;
