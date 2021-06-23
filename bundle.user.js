@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        3.6.8.1624419553152
+// @version        3.6.8.1624424989069
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -141,6 +141,7 @@
 // @connect        soxscc.net
 // @connect        soxscc.org
 // @connect        soxs.cc
+// @connect        idejian.com
 // @connect        *
 // @require        https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js#sha512-Qlv6VSKh1gDKGoJbnyA5RMXYcvnpIqhO++MhIM2fStMcGT9i2T//tSwYFlcyoRRDcDZ+TYHpH8azBBCyhpSeqw==
 // @require        https://cdn.jsdelivr.net/npm/jszip@3.6.0/dist/jszip.min.js#sha512-uVSVjE7zYsGz4ag0HEzfugJ78oHCI1KhdkivjQro8ABL/PRiEO4ROwvrolYAcZnky0Fl/baWKYilQfWvESliRA==
@@ -1763,9 +1764,9 @@ function cleanDOM(DOM, imgMode) {
     };
 }
 exports.cleanDOM = cleanDOM;
-async function getText(url, charset) {
+async function getText(url, charset, init = undefined) {
     if (charset === undefined) {
-        return fetch(url).then((response) => {
+        return fetch(url, init).then((response) => {
             if (response.ok) {
                 return response.text();
             }
@@ -1775,7 +1776,7 @@ async function getText(url, charset) {
         });
     }
     else {
-        return fetch(url)
+        return fetch(url, init)
             .then((response) => {
             if (response.ok) {
                 return response.arrayBuffer();
@@ -1792,14 +1793,14 @@ async function getText(url, charset) {
     }
 }
 exports.getText = getText;
-async function getHtmlDOM(url, charset) {
-    const htmlText = await getText(url, charset);
+async function getHtmlDOM(url, charset, init = undefined) {
+    const htmlText = await getText(url, charset, init);
     return new DOMParser().parseFromString(htmlText, "text/html");
 }
 exports.getHtmlDOM = getHtmlDOM;
-async function ggetText(url, charset) {
+async function ggetText(url, charset, init = undefined) {
     if (charset === undefined) {
-        return gfetch(url).then((response) => {
+        return gfetch(url, init).then((response) => {
             if (response.status >= 200 && response.status <= 299) {
                 return response.responseText;
             }
@@ -1809,7 +1810,10 @@ async function ggetText(url, charset) {
         });
     }
     else {
-        return gfetch(url, { responseType: "arraybuffer" })
+        if (init) {
+            init["responseType"] = "arraybuffer";
+        }
+        return gfetch(url, init)
             .then((response) => {
             if (response.status >= 200 && response.status <= 299) {
                 return response.response;
@@ -1826,8 +1830,8 @@ async function ggetText(url, charset) {
     }
 }
 exports.ggetText = ggetText;
-async function ggetHtmlDOM(url, charset) {
-    const htmlText = await ggetText(url, charset);
+async function ggetHtmlDOM(url, charset, init = undefined) {
+    const htmlText = await ggetText(url, charset, init);
     return new DOMParser().parseFromString(htmlText, "text/html");
 }
 exports.ggetHtmlDOM = ggetHtmlDOM;
@@ -1956,10 +1960,10 @@ const rules_1 = __webpack_require__("./src/rules.ts");
 const loglevel_1 = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 exports.log = loglevel_1.default;
 if (rules_1.enaleDebug) {
-    loglevel_1.default.setDefaultLevel("trace");
+    loglevel_1.default.setLevel("trace");
 }
 else {
-    loglevel_1.default.setDefaultLevel("info");
+    loglevel_1.default.setLevel("info");
 }
 let logText = "";
 const originalFactory = loglevel_1.default.methodFactory;
@@ -3945,9 +3949,12 @@ const log_1 = __webpack_require__("./src/log.ts");
 class idejian {
     constructor() {
         this.imageMode = "TM";
+        this.maxRunLimit = 5;
     }
     async bookParse() {
-        let bookUrl = document.location.href;
+        const bookUrl = document.location.href;
+        const _bookID = bookUrl.match(/\/(\d+)\/$/);
+        const bookID = _bookID && _bookID[1];
         const bookname = (document.querySelector(".detail_bkname > a")).innerText.trim();
         const _author = document.querySelector(".detail_bkauthor")
             .childNodes[0];
@@ -3973,24 +3980,42 @@ class idejian {
             const chapterUrl = aElem.href;
             const isVIP = false;
             const isPaid = false;
-            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, null, null, null, this.chapterParse, "UTF-8", {});
+            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, null, null, null, this.chapterParse, "UTF-8", { bookID: bookID });
             chapters.push(chapter);
         }
+        document.cookie = "";
         const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        log_1.log.debug(`[Chapter]请求 ${chapterUrl}`);
-        let doc = await lib_1.getHtmlDOM(chapterUrl, charset);
-        chapterName = doc.querySelector(".title").innerText.trim();
+        const _chapterUrl = new URL(chapterUrl);
+        _chapterUrl.hostname = "m.idejian.com";
+        chapterUrl = _chapterUrl.toString();
+        const referBaseUrl = "https://m.idejian.com/catalog";
+        const _refer = new URL(referBaseUrl);
+        _refer.searchParams.set("bookId", options.bookID);
+        const referUrl = _refer.toString();
+        const fakeUA = "Mozilla/5.0 (iPhone; CPU iPhone OS 13_3_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.5 Mobile/15E148 Snapchat/10.77.5.59 (like Safari/604.1)";
+        if (document.cookie === "") {
+            await lib_1.ggetText(referUrl, charset, { headers: { "User-Agent": fakeUA } });
+            await lib_1.ggetText(chapterUrl, charset, {
+                headers: { "User-Agent": fakeUA, Referer: referUrl },
+            });
+        }
+        log_1.log.debug(`[Chapter]请求 ${chapterUrl}，Refer：${referUrl}`);
+        let doc = await lib_1.ggetHtmlDOM(chapterUrl, charset, {
+            headers: { "User-Agent": fakeUA, Referer: referUrl },
+        });
+        chapterName = (doc.querySelector(".text-title-1")).innerText.trim();
         let content;
         if (doc.querySelectorAll("div.h5_mainbody").length === 1) {
             content = doc.querySelector("div.h5_mainbody");
         }
         else {
-            content = doc.querySelector("div.h5_mainbody:nth-child(2)");
+            content = doc.querySelectorAll("div.h5_mainbody")[1];
         }
         if (content) {
+            lib_1.rm("h1", false, content);
             let { dom, text, images } = lib_1.cleanDOM(content, "TM");
             return {
                 chapterName: chapterName,

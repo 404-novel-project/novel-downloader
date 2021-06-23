@@ -5,10 +5,10 @@ export declare function cleanDOM(DOM: Element, imgMode: "naive" | "TM"): {
     text: string;
     images: attachmentClass[];
 };
-export declare function getText(url: string, charset: string | undefined): Promise<string>;
-export declare function getHtmlDOM(url: string, charset: string | undefined): Promise<Document>;
-export declare function ggetText(url: string, charset: string | undefined): Promise<string>;
-export declare function ggetHtmlDOM(url: string, charset: string | undefined): Promise<Document>;
+export declare function getText(url: string, charset: string | undefined, init?: RequestInit | undefined): Promise<string>;
+export declare function getHtmlDOM(url: string, charset: string | undefined, init?: RequestInit | undefined): Promise<Document>;
+export declare function ggetText(url: string, charset: string | undefined, init?: gfetch_request_options | undefined): Promise<string>;
+export declare function ggetHtmlDOM(url: string, charset: string | undefined, init?: gfetch_request_options | undefined): Promise<Document>;
 export declare function rm(selector: string, all: boolean | undefined, dom: HTMLElement): void;
 interface gfetch_request_options {
     method?: string;
