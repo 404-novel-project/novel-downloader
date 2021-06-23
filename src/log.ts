@@ -2,9 +2,9 @@ import { enaleDebug } from "./rules";
 import log from "loglevel";
 
 if (enaleDebug) {
-  log.setDefaultLevel("trace");
+  log.setLevel("trace");
 } else {
-  log.setDefaultLevel("info");
+  log.setLevel("info");
 }
 
 let logText = "";

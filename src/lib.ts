@@ -47,9 +47,39 @@ export function cleanDOM(DOM: Element, imgMode: "naive" | "TM") {
   };
 }
 
-export async function getText(url: string, charset: string | undefined) {
+// Forbidden header name
+// https://developer.mozilla.org/en-US/docs/Glossary/Forbidden_header_name
+// Accept-Charset
+// Accept-Encoding
+// Access-Control-Request-Headers
+// Access-Control-Request-Method
+// Connection
+// Content-Length
+// Cookie
+// Cookie2
+// Date
+// DNT
+// Expect
+// Feature-Policy
+// Host
+// Keep-Alive
+// Origin
+// Proxy-
+// Sec-
+// Referer
+// TE
+// Trailer
+// Transfer-Encoding
+// Upgrade
+// Via
+
+export async function getText(
+  url: string,
+  charset: string | undefined,
+  init: RequestInit | undefined = undefined
+) {
   if (charset === undefined) {
-    return fetch(url).then((response) => {
+    return fetch(url, init).then((response) => {
       if (response.ok) {
         return response.text();
       } else {
@@ -57,7 +87,7 @@ export async function getText(url: string, charset: string | undefined) {
       }
     });
   } else {
-    return fetch(url)
+    return fetch(url, init)
       .then((response) => {
         if (response.ok) {
           return response.arrayBuffer();
@@ -73,14 +103,22 @@ export async function getText(url: string, charset: string | undefined) {
   }
 }
 
-export async function getHtmlDOM(url: string, charset: string | undefined) {
-  const htmlText = await getText(url, charset);
+export async function getHtmlDOM(
+  url: string,
+  charset: string | undefined,
+  init: RequestInit | undefined = undefined
+) {
+  const htmlText = await getText(url, charset, init);
   return new DOMParser().parseFromString(htmlText, "text/html");
 }
 
-export async function ggetText(url: string, charset: string | undefined) {
+export async function ggetText(
+  url: string,
+  charset: string | undefined,
+  init: gfetch_request_options | undefined = undefined
+) {
   if (charset === undefined) {
-    return gfetch(url).then((response) => {
+    return gfetch(url, init).then((response) => {
       if (response.status >= 200 && response.status <= 299) {
         return response.responseText;
       } else {
@@ -88,7 +126,10 @@ export async function ggetText(url: string, charset: string | undefined) {
       }
     });
   } else {
-    return gfetch(url, { responseType: "arraybuffer" })
+    if (init) {
+      init["responseType"] = "arraybuffer";
+    }
+    return gfetch(url, init)
       .then((response) => {
         if (response.status >= 200 && response.status <= 299) {
           return <ArrayBuffer>response.response;
@@ -104,8 +145,12 @@ export async function ggetText(url: string, charset: string | undefined) {
   }
 }
 
-export async function ggetHtmlDOM(url: string, charset: string | undefined) {
-  const htmlText = await ggetText(url, charset);
+export async function ggetHtmlDOM(
+  url: string,
+  charset: string | undefined,
+  init: gfetch_request_options | undefined = undefined
+) {
+  const htmlText = await ggetText(url, charset, init);
   return new DOMParser().parseFromString(htmlText, "text/html");
 }
 
