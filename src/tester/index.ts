@@ -227,11 +227,9 @@ if (
     const openWindow = (u: string[] | string) => {
       if (typeof u === "string") {
         GM_openInTab(u);
-        // window.open(u);
       } else if (Array.isArray(u)) {
         const url = randomChoose(u);
         GM_openInTab(url);
-        // window.open(url);
       }
     };
     for (const u of exampleUrls) {

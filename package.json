@@ -1,6 +1,6 @@
 {
   "name": "novel-downloader",
-  "version": "3.6.7",
+  "version": "3.6.8",
   "description": "novel downloader",
   "main": "index.js",
   "scripts": {
