@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        3.6.8.1624425231685
+// @version        3.7.0.1624434102813
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -106,8 +106,14 @@
 // @grant          GM_getTab
 // @grant          GM_saveTab
 // @grant          GM_getTabs
+// @grant          GM_setValue
+// @grant          GM_getValue
+// @grant          GM_deleteValue
 // @grant          GM.info
 // @grant          GM.xmlHttpRequest
+// @grant          GM.setValue
+// @grant          GM.getValue
+// @grant          GM.deleteValue
 // @connect        self
 // @connect        shouda8.com
 // @connect        shouda88.com
@@ -880,6 +886,7 @@ const main_1 = __webpack_require__("./src/main.ts");
 const lib_1 = __webpack_require__("./src/lib.ts");
 const index_helper_1 = __webpack_require__("./src/index_helper.ts");
 const log_1 = __webpack_require__("./src/log.ts");
+const stat_1 = __webpack_require__("./src/stat.ts");
 function printEnvironments() {
     if (lib_1._GM_info) {
         log_1.log.info(`开始载入小说下载器……
@@ -1036,11 +1043,17 @@ function catchError(error) {
     }
     finishedChapterNumber = 0;
     document.querySelector("#nd-progress")?.remove();
+    exports.audio.pause();
+    if (error instanceof main_1.ExpectError) {
+        log_1.log.error(error);
+        log_1.log.trace(error);
+        return;
+    }
     document.getElementById("novel-downloader")?.remove();
     log_1.log.error("运行过程出错，请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/yingziwu/novel-downloader");
     log_1.log.error(error);
     log_1.log.trace(error);
-    exports.audio.pause();
+    stat_1.failedPlus();
     alert("运行过程出错，请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/yingziwu/novel-downloader");
     log_1.saveLogTextToFile();
 }
@@ -1124,6 +1137,7 @@ const lib_1 = __webpack_require__("./src/lib.ts");
 const index_1 = __webpack_require__("./src/index.ts");
 const rules_1 = __webpack_require__("./src/rules.ts");
 const log_1 = __webpack_require__("./src/log.ts");
+const stat_1 = __webpack_require__("./src/stat.ts");
 exports.buttonStyleText = `position: fixed;
 top: 15%;
 right: 5%;
@@ -1623,6 +1637,8 @@ function save(book, options) {
 }
 exports.save = save;
 function finish() {
+    stat_1.successPlus();
+    stat_1.printStat();
     if (rules_1.enaleDebug) {
         log_1.saveLogTextToFile();
     }
@@ -1713,7 +1729,7 @@ exports.r18SiteWarning = r18SiteWarning;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.storageAvailable = exports.sandboxed = exports.putAttachmentClassCache = exports.getAttachmentClassCache = exports.sleep = exports.concurrencyRun = exports.gfetch = exports.rm = exports.ggetHtmlDOM = exports.ggetText = exports.getHtmlDOM = exports.getText = exports.cleanDOM = exports._GM_info = void 0;
+exports.storageAvailable = exports.sandboxed = exports.putAttachmentClassCache = exports.getAttachmentClassCache = exports.sleep = exports.concurrencyRun = exports.gfetch = exports.rm = exports.ggetHtmlDOM = exports.ggetText = exports.getHtmlDOM = exports.getText = exports.cleanDOM = exports._GM_deleteValue = exports._GM_getValue = exports._GM_setValue = exports._GM_info = void 0;
 const cleanDOM_1 = __webpack_require__("./src/cleanDOM.ts");
 const index_1 = __webpack_require__("./src/index.ts");
 if (typeof GM_info === "undefined") {
@@ -1731,6 +1747,54 @@ if (typeof GM_info === "undefined") {
 }
 else {
     exports._GM_info = GM_info;
+}
+if (typeof GM_setValue === "undefined") {
+    if (typeof GM === "undefined") {
+        throw new Error("未发现 GM API");
+    }
+    else {
+        if (typeof GM.setValue === "undefined") {
+            throw new Error("未发现 GM API");
+        }
+        else {
+            exports._GM_setValue = GM.setValue;
+        }
+    }
+}
+else {
+    exports._GM_setValue = GM_setValue;
+}
+if (typeof GM_getValue === "undefined") {
+    if (typeof GM === "undefined") {
+        throw new Error("未发现 GM API");
+    }
+    else {
+        if (typeof GM.getValue === "undefined") {
+            throw new Error("未发现 GM API");
+        }
+        else {
+            exports._GM_getValue = GM.getValue;
+        }
+    }
+}
+else {
+    exports._GM_getValue = GM_getValue;
+}
+if (typeof GM_deleteValue === "undefined") {
+    if (typeof GM === "undefined") {
+        throw new Error("未发现 GM API");
+    }
+    else {
+        if (typeof GM.deleteValue === "undefined") {
+            throw new Error("未发现 GM API");
+        }
+        else {
+            exports._GM_deleteValue = GM.deleteValue;
+        }
+    }
+}
+else {
+    exports._GM_deleteValue = GM_deleteValue;
 }
 let _GM_xmlhttpRequest;
 if (typeof GM_xmlhttpRequest === "undefined") {
@@ -1992,7 +2056,7 @@ exports.saveLogTextToFile = saveLogTextToFile;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.attachmentClass = exports.Chapter = exports.Book = exports.Status = void 0;
+exports.ExpectError = exports.attachmentClass = exports.Chapter = exports.Book = exports.Status = void 0;
 const rules_1 = __webpack_require__("./src/rules.ts");
 const lib_1 = __webpack_require__("./src/lib.ts");
 const log_1 = __webpack_require__("./src/log.ts");
@@ -2179,6 +2243,9 @@ class attachmentClass {
     }
 }
 exports.attachmentClass = attachmentClass;
+class ExpectError extends Error {
+}
+exports.ExpectError = ExpectError;
 
 
 /***/ }),
@@ -28327,7 +28394,7 @@ class sosadfun {
         let introDom;
         if (needLogin()) {
             alert("本小说需要登录后浏览！");
-            throw new Error("本小说需要登录后浏览！");
+            throw new main_1.ExpectError("本小说需要登录后浏览！");
         }
         else {
             introDom = document.createElement("div");
@@ -29882,6 +29949,62 @@ class zongheng {
     }
 }
 exports.zongheng = zongheng;
+
+
+/***/ }),
+
+/***/ "./src/stat.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.resetStat = exports.printStat = exports.failedPlus = exports.successPlus = void 0;
+const log_1 = __webpack_require__("./src/log.ts");
+const lib_1 = __webpack_require__("./src/lib.ts");
+const statKeyName = "novel-downloader-22932304826849026";
+const domain = document.location.hostname;
+const _data = lib_1._GM_getValue(statKeyName);
+let statData;
+if (_data) {
+    statData = JSON.parse(_data);
+}
+else {
+    statData = { success: {}, failed: {} };
+}
+function saveData() {
+    const dataJSON = JSON.stringify(statData);
+    lib_1._GM_setValue(statKeyName, dataJSON);
+    return statData;
+}
+function dataPlus(key) {
+    const tmpData = statData[key];
+    if (tmpData[domain]) {
+        tmpData[domain] = tmpData[domain] + 1;
+    }
+    else {
+        tmpData[domain] = 1;
+    }
+    return saveData();
+}
+function successPlus() {
+    return dataPlus("success");
+}
+exports.successPlus = successPlus;
+function failedPlus() {
+    return dataPlus("failed");
+}
+exports.failedPlus = failedPlus;
+function printStat() {
+    log_1.log.info("[stat]小说下载器脚本运行情况统计：");
+    log_1.log.info(statData);
+}
+exports.printStat = printStat;
+function resetStat() {
+    statData = { success: {}, failed: {} };
+    return saveData();
+}
+exports.resetStat = resetStat;
 
 
 /***/ })

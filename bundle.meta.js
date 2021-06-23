@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        3.6.8.1624425231685
+// @version        3.7.0.1624434102813
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -106,8 +106,14 @@
 // @grant          GM_getTab
 // @grant          GM_saveTab
 // @grant          GM_getTabs
+// @grant          GM_setValue
+// @grant          GM_getValue
+// @grant          GM_deleteValue
 // @grant          GM.info
 // @grant          GM.xmlHttpRequest
+// @grant          GM.setValue
+// @grant          GM.getValue
+// @grant          GM.deleteValue
 // @connect        self
 // @connect        shouda8.com
 // @connect        shouda88.com

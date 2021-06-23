@@ -73,3 +73,5 @@ export declare class attachmentClass {
     private downloadImage;
     private tmDownloadImage;
 }
+export declare class ExpectError extends Error {
+}
