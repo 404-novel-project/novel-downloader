@@ -17,6 +17,51 @@ if (typeof GM_info === "undefined") {
   _GM_info = GM_info;
 }
 
+export let _GM_setValue: GM_setValue | GM["setValue"];
+if (typeof GM_setValue === "undefined") {
+  if (typeof GM === "undefined") {
+    throw new Error("未发现 GM API");
+  } else {
+    if (typeof GM.setValue === "undefined") {
+      throw new Error("未发现 GM API");
+    } else {
+      _GM_setValue = GM.setValue;
+    }
+  }
+} else {
+  _GM_setValue = GM_setValue;
+}
+
+export let _GM_getValue: GM_getValue | GM["getValue"];
+if (typeof GM_getValue === "undefined") {
+  if (typeof GM === "undefined") {
+    throw new Error("未发现 GM API");
+  } else {
+    if (typeof GM.getValue === "undefined") {
+      throw new Error("未发现 GM API");
+    } else {
+      _GM_getValue = GM.getValue;
+    }
+  }
+} else {
+  _GM_getValue = GM_getValue;
+}
+
+export let _GM_deleteValue: GM_deleteValue | GM["deleteValue"];
+if (typeof GM_deleteValue === "undefined") {
+  if (typeof GM === "undefined") {
+    throw new Error("未发现 GM API");
+  } else {
+    if (typeof GM.deleteValue === "undefined") {
+      throw new Error("未发现 GM API");
+    } else {
+      _GM_deleteValue = GM.deleteValue;
+    }
+  }
+} else {
+  _GM_deleteValue = GM_deleteValue;
+}
+
 let _GM_xmlhttpRequest: GM_xmlhttpRequest | GM["xmlHttpRequest"];
 if (typeof GM_xmlhttpRequest === "undefined") {
   if (typeof GM === "undefined") {

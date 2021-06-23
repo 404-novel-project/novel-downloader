@@ -112,8 +112,14 @@
     "GM_getTab",
     "GM_saveTab",
     "GM_getTabs",
+    "GM_setValue",
+    "GM_getValue",
+    "GM_deleteValue",
     "GM.info",
-    "GM.xmlHttpRequest"
+    "GM.xmlHttpRequest",
+    "GM.setValue",
+    "GM.getValue",
+    "GM.deleteValue"
   ],
   "connect": [
     "self",

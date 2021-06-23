@@ -7,6 +7,7 @@ import {
   enaleDebug,
 } from "./rules";
 import { log, saveLogTextToFile } from "./log";
+import { printStat, successPlus } from "./stat";
 
 export const buttonStyleText = `position: fixed;
 top: 15%;
@@ -643,6 +644,9 @@ export function save(book: Book, options: saveOptions) {
 }
 
 function finish() {
+  successPlus();
+  printStat();
+
   if (enaleDebug) {
     saveLogTextToFile();
   }
