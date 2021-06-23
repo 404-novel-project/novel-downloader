@@ -9,7 +9,7 @@ import {
   r18SiteList,
   enableR18SiteWarning,
 } from "./rules";
-import { Book, Chapter, attachmentClass, Status } from "./main";
+import { Book, Chapter, attachmentClass, Status, ExpectError } from "./main";
 import { concurrencyRun, _GM_info } from "./lib";
 import {
   setTabMark,
@@ -223,13 +223,20 @@ export function catchError(error: Error) {
   }
   finishedChapterNumber = 0;
   document.querySelector("#nd-progress")?.remove();
+  audio.pause();
+
+  if (error instanceof ExpectError) {
+    log.error(error);
+    log.trace(error);
+    return;
+  }
+
   document.getElementById("novel-downloader")?.remove();
   log.error(
     "运行过程出错，请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/yingziwu/novel-downloader"
   );
   log.error(error);
   log.trace(error);
-  audio.pause();
 
   alert(
     "运行过程出错，请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/yingziwu/novel-downloader"

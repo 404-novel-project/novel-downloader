@@ -1,4 +1,4 @@
-import { BookAdditionalMetadate, Chapter, Book } from "../main";
+import { BookAdditionalMetadate, Chapter, Book, ExpectError } from "../main";
 import { getHtmlDOM, cleanDOM } from "../lib";
 import { ruleClass } from "../rules";
 
@@ -48,7 +48,7 @@ export class sosadfun implements ruleClass {
     let introDom;
     if (needLogin()) {
       alert("本小说需要登录后浏览！");
-      throw new Error("本小说需要登录后浏览！");
+      throw new ExpectError("本小说需要登录后浏览！");
     } else {
       introDom = document.createElement("div");
       const shortIntroDom = document.querySelector("div.h5:nth-child(3)");

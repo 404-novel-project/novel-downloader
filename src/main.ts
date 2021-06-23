@@ -305,3 +305,5 @@ export class attachmentClass {
       });
   }
 }
+
+export class ExpectError extends Error {}
