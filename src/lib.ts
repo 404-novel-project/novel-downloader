@@ -128,6 +128,8 @@ export async function ggetText(
   } else {
     if (init) {
       init["responseType"] = "arraybuffer";
+    } else {
+      init = { responseType: "arraybuffer" };
     }
     return gfetch(url, init)
       .then((response) => {
