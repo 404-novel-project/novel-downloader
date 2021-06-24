@@ -18,7 +18,7 @@
     "Opera 71+",
     "Safari 13.1+"
   ],
-  "incompatible": ["Greasemonkey", "Internet Explorer"],
+  "incompatible": ["Internet Explorer"],
   "match": [
     "*://www.ciweimao.com/chapter-list/*",
     "*://book.sfacg.com/Novel/*/MainIndex/",
@@ -160,7 +160,6 @@
   ],
   "require": [
     "https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js#sha512-Qlv6VSKh1gDKGoJbnyA5RMXYcvnpIqhO++MhIM2fStMcGT9i2T//tSwYFlcyoRRDcDZ+TYHpH8azBBCyhpSeqw==",
-    "https://cdn.jsdelivr.net/npm/jszip@3.6.0/dist/jszip.min.js#sha512-uVSVjE7zYsGz4ag0HEzfugJ78oHCI1KhdkivjQro8ABL/PRiEO4ROwvrolYAcZnky0Fl/baWKYilQfWvESliRA==",
     "https://cdn.jsdelivr.net/npm/crypto-js@4.0.0/crypto-js.js#sha512-t4HzsbLJw+4jV+nmiiIsz/puioH2aKIjuI1ho1NIqJAJ2GNVLPTy51IklYefYdrkRE583KEzTcgmO5Wb6jVgYw=="
   ]
 }

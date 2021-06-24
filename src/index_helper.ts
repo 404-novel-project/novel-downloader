@@ -1,5 +1,6 @@
 import { Book, Chapter, attachmentClass, Status } from "./main";
 import {
+  fflateZip,
   sleep,
   storageAvailable,
   _GM_deleteValue,
@@ -63,8 +64,6 @@ export const progressStyleText = `#nd-progress {
   margin-top: 5px;
 }`;
 
-type JSZip = any;
-declare let JSZip: JSZip;
 class saveBook {
   protected book: Book;
   private chapters: Chapter[];
@@ -72,7 +71,7 @@ class saveBook {
   public mainStyleText: string;
   public tocStyleText: string;
 
-  private savedZip: any;
+  private savedZip: fflateZip;
   private savedTextArray: string[];
   private saveFileNameBase: string;
 
@@ -81,7 +80,7 @@ class saveBook {
     this.chapters = book.chapters;
     this.chapters.sort(this.chapterSort);
 
-    this.savedZip = new JSZip();
+    this.savedZip = new fflateZip();
     this.savedTextArray = [];
     this.saveFileNameBase = `[${this.book.author}]${this.book.bookname}`;
 
@@ -264,16 +263,10 @@ a.disabled {
 
     log.info("[save]开始保存ZIP文件");
     this.savedZip
-      .generateAsync(
-        {
-          type: "blob",
-          compression: "DEFLATE",
-          compressionOptions: {
-            level: 6,
-          },
-        },
-        (metadata: any) => updateProgress(1, 1, metadata.percent)
-      )
+      .generateAsync({
+        level: 6,
+        mem: 8,
+      })
       .then((blob: Blob) => {
         log.debug("[save]ZIP文件生成完毕，开始保存ZIP文件");
         saveAs(blob, `${this.saveFileNameBase}.zip`);
@@ -415,16 +408,16 @@ a.disabled {
       }
 
       log.debug("[save]保存ToC文件");
-      this.savedZip.file(
-        "ToC.html",
-        new Blob(
-          [ToC.documentElement.outerHTML.replaceAll("data-src-address", "src")],
-          {
-            type: "text/html; charset=UTF-8",
-          }
-        )
-      );
     }
+    this.savedZip.file(
+      "ToC.html",
+      new Blob(
+        [ToC.documentElement.outerHTML.replaceAll("data-src-address", "src")],
+        {
+          type: "text/html; charset=UTF-8",
+        }
+      )
+    );
   }
 
   private saveChapters() {
@@ -492,7 +485,7 @@ a.disabled {
     return metaDateText;
   }
 
-  private addImageToZip(image: attachmentClass, zip: JSZip) {
+  private addImageToZip(image: attachmentClass, zip: fflateZip) {
     if (image.status === Status.finished && image.imageBlob) {
       log.debug(`[save]添加附件，文件名：${image.name}，对象`, image.imageBlob);
       zip.file(image.name, image.imageBlob);

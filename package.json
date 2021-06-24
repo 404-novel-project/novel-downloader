@@ -1,6 +1,6 @@
 {
   "name": "novel-downloader",
-  "version": "3.7.1",
+  "version": "3.7.2",
   "description": "novel downloader",
   "main": "index.js",
   "scripts": {
@@ -34,6 +34,7 @@
     "webpack-userscript": "^2.5.8"
   },
   "dependencies": {
+    "fflate": "^0.7.1",
     "loglevel": "^1.7.1"
   }
 }

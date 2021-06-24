@@ -308,15 +308,6 @@ export const audio = new Audio(
 audio.loop = true;
 
 window.addEventListener("DOMContentLoaded", () => {
-  if (_GM_info.scriptHandler === "Greasemonkey") {
-    log.error(
-      "小说下载器脚本与Greasemonkey脚本管理器不兼容，请改用其它脚本管理器，如：Tampermonkey、Violentmonkey。"
-    );
-    alert(
-      "小说下载器脚本与Greasemonkey脚本管理器不兼容，请改用其它脚本管理器，如：Tampermonkey、Violentmonkey。"
-    );
-    return;
-  }
   if (enableR18SiteWarning && r18SiteList.includes(document.location.host)) {
     const c = r18SiteWarning();
     if (!c) {
