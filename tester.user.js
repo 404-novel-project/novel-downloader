@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        小说下载器测试脚本
-// @version     3.7.2.1624536834686
+// @version     3.7.2.1624537500329
 // @author      bgme
 // @description 小说下载器测试脚本
 // @match       *://www.ciweimao.com/chapter-list/*
@@ -58,7 +58,6 @@
 // @match       *://www.idejian.com/book/*/
 // @match       *://www.wenku8.net/novel/*/*/index.htm
 // @match       *://www.dmzj.com/info/*.html
-// @match       *://www.dmzj1.com/info/*.html
 // @match       *://www.westnovel.com/*/*/
 // @match       *://www.mht.tw/*/
 // @match       *://www.dierbanzhu1.com/*_*/
@@ -285,7 +284,6 @@ if (document.location.origin === "https://greasyfork.org" &&
         "https://www.idejian.com/book/11539708/",
         "https://www.wenku8.net/novel/1/1758/index.htm",
         "https://www.dmzj.com/info/naniannatunaxieshier.html",
-        "https://www.dmzj1.com/info/laijiejiejiaoni.html",
         "https://www.westnovel.com/dd/lms/",
         "https://www.mht.tw/21661/",
         "http://www.dierbanzhu1.com/3_3348/",

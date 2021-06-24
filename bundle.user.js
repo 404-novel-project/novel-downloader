@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        3.7.2.1624536828180
+// @version        3.7.2.1624537494961
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -59,7 +59,6 @@
 // @match          *://www.idejian.com/book/*/
 // @match          *://www.wenku8.net/novel/*/*/index.htm
 // @match          *://www.dmzj.com/info/*.html
-// @match          *://www.dmzj1.com/info/*.html
 // @match          *://www.westnovel.com/*/*/
 // @match          *://www.mht.tw/*/
 // @match          *://www.dierbanzhu1.com/*_*/
@@ -5037,8 +5036,7 @@ async function getRule() {
             ruleClass = wenku8;
             break;
         }
-        case "www.dmzj.com":
-        case "www.dmzj1.com": {
+        case "www.dmzj.com": {
             const { dmzj } = await Promise.resolve().then(() => __webpack_require__("./src/rules/dmzj.ts"));
             ruleClass = dmzj;
             break;
@@ -5999,7 +5997,7 @@ class dmzj {
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         function getpicUrlList(doc) {
-            const img_prefix = "https://images.dmzj1.com/";
+            const img_prefix = "https://images.dmzj.com/";
             let pages = lib_1.sandboxed(doc.querySelector("head > script").innerText +
                 ";return pages;");
             pages = pages.replace(/\n/g, "");
