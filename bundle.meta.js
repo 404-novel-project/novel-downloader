@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        3.7.2.1624537494961
+// @version        3.7.2.1624555899164
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -138,7 +138,6 @@
 // @connect        cdn.wtzw.com
 // @connect        wenku8.com
 // @connect        dmzj.com
-// @connect        dmzj1.com
 // @connect        hongyeshuzhal.com
 // @connect        hongyeshuzhai.com
 // @connect        linovelib.com

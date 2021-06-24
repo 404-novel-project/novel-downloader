@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        3.7.2.1624537494961
+// @version        3.7.2.1624555899164
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -138,7 +138,6 @@
 // @connect        cdn.wtzw.com
 // @connect        wenku8.com
 // @connect        dmzj.com
-// @connect        dmzj1.com
 // @connect        hongyeshuzhal.com
 // @connect        hongyeshuzhai.com
 // @connect        linovelib.com
@@ -4311,7 +4310,7 @@ exports.fflateZip = exports.storageAvailable = exports.sandboxed = exports.putAt
 const cleanDOM_1 = __webpack_require__("./src/cleanDOM.ts");
 const index_1 = __webpack_require__("./src/index.ts");
 const log_1 = __webpack_require__("./src/log.ts");
-const fflate = __webpack_require__("./node_modules/fflate/lib/index.cjs");
+const fflate_1 = __webpack_require__("./node_modules/fflate/lib/index.cjs");
 if (typeof GM_info === "undefined") {
     if (typeof GM === "undefined") {
         throw new Error("未发现 GM_info");
@@ -4612,7 +4611,12 @@ class fflateZip {
         this.count++;
         this.filenameList.push(filename);
         this.blob2Uint8Array(file).then((uint) => {
-            this.data[filename] = uint;
+            if (file.type.includes("image/")) {
+                this.data[filename] = [uint, { level: 0 }];
+            }
+            else {
+                this.data[filename] = uint;
+            }
         });
     }
     generateAsync(opts = {}) {
@@ -4620,7 +4624,7 @@ class fflateZip {
             while (Object.keys(this.data).length !== this.count) {
                 await sleep(100);
             }
-            fflate.zip(this.data, opts, (err, data) => {
+            fflate_1.zip(this.data, opts, (err, data) => {
                 if (err) {
                     reject(err);
                 }

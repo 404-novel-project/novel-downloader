@@ -1,5 +1,5 @@
 import { attachmentClass } from "./main";
-import * as fflate from "fflate";
+import { AsyncZipOptions } from "fflate";
 export declare let _GM_info: GM_info | GM["info"];
 export declare let _GM_setValue: GM_setValue | GM["setValue"] | null;
 export declare let _GM_getValue: GM_getValue | GM["getValue"] | null;
@@ -44,6 +44,6 @@ export declare class fflateZip {
     constructor();
     private blob2Uint8Array;
     file(filename: string, file: Blob): void;
-    generateAsync(opts?: fflate.AsyncZipOptions): Promise<Blob>;
+    generateAsync(opts?: AsyncZipOptions): Promise<Blob>;
 }
 export {};
