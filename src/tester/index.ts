@@ -192,7 +192,6 @@ if (
     "https://www.idejian.com/book/11539708/",
     "https://www.wenku8.net/novel/1/1758/index.htm",
     "https://www.dmzj.com/info/naniannatunaxieshier.html",
-    "https://www.dmzj1.com/info/laijiejiejiaoni.html",
     "https://www.westnovel.com/dd/lms/",
     "https://www.mht.tw/21661/",
     "http://www.dierbanzhu1.com/3_3348/",

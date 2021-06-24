@@ -98,7 +98,7 @@ export class dmzj implements ruleClass {
     options: object
   ) {
     function getpicUrlList(doc: Document) {
-      const img_prefix = "https://images.dmzj1.com/";
+      const img_prefix = "https://images.dmzj.com/";
 
       let pages = sandboxed(
         (<HTMLScriptElement>doc.querySelector("head > script")).innerText +
