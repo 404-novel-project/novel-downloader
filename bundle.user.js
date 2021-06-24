@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        3.7.0.1624434102813
+// @version        3.7.1.1624504257368
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -886,7 +886,6 @@ const main_1 = __webpack_require__("./src/main.ts");
 const lib_1 = __webpack_require__("./src/lib.ts");
 const index_helper_1 = __webpack_require__("./src/index_helper.ts");
 const log_1 = __webpack_require__("./src/log.ts");
-const stat_1 = __webpack_require__("./src/stat.ts");
 function printEnvironments() {
     if (lib_1._GM_info) {
         log_1.log.info(`开始载入小说下载器……
@@ -1053,7 +1052,11 @@ function catchError(error) {
     log_1.log.error("运行过程出错，请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/yingziwu/novel-downloader");
     log_1.log.error(error);
     log_1.log.trace(error);
-    stat_1.failedPlus();
+    if (lib_1._GM_setValue && lib_1._GM_getValue && lib_1._GM_deleteValue) {
+        Promise.resolve().then(() => __webpack_require__("./src/stat.ts")).then((stat) => {
+            stat.failedPlus();
+        });
+    }
     alert("运行过程出错，请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/yingziwu/novel-downloader");
     log_1.saveLogTextToFile();
 }
@@ -1137,7 +1140,6 @@ const lib_1 = __webpack_require__("./src/lib.ts");
 const index_1 = __webpack_require__("./src/index.ts");
 const rules_1 = __webpack_require__("./src/rules.ts");
 const log_1 = __webpack_require__("./src/log.ts");
-const stat_1 = __webpack_require__("./src/stat.ts");
 exports.buttonStyleText = `position: fixed;
 top: 15%;
 right: 5%;
@@ -1368,8 +1370,7 @@ a.disabled {
             document.querySelector("#nd-progress")?.remove();
             index_1.audio.pause();
         })
-            .then(async () => {
-            await lib_1.sleep(5000);
+            .then(() => {
             finish();
         })
             .catch((err) => {
@@ -1636,9 +1637,13 @@ function save(book, options) {
     saveBookObj.saveZip();
 }
 exports.save = save;
-function finish() {
-    stat_1.successPlus();
-    stat_1.printStat();
+async function finish() {
+    if (lib_1._GM_setValue && lib_1._GM_getValue && lib_1._GM_deleteValue) {
+        const { printStat, successPlus } = await Promise.resolve().then(() => __webpack_require__("./src/stat.ts"));
+        successPlus();
+        printStat();
+    }
+    await lib_1.sleep(3000);
     if (rules_1.enaleDebug) {
         log_1.saveLogTextToFile();
     }
@@ -1732,13 +1737,14 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.storageAvailable = exports.sandboxed = exports.putAttachmentClassCache = exports.getAttachmentClassCache = exports.sleep = exports.concurrencyRun = exports.gfetch = exports.rm = exports.ggetHtmlDOM = exports.ggetText = exports.getHtmlDOM = exports.getText = exports.cleanDOM = exports._GM_deleteValue = exports._GM_getValue = exports._GM_setValue = exports._GM_info = void 0;
 const cleanDOM_1 = __webpack_require__("./src/cleanDOM.ts");
 const index_1 = __webpack_require__("./src/index.ts");
+const log_1 = __webpack_require__("./src/log.ts");
 if (typeof GM_info === "undefined") {
     if (typeof GM === "undefined") {
-        throw new Error("未发现 GM API");
+        throw new Error("未发现 GM_info");
     }
     else {
         if (typeof GM.info === "undefined") {
-            throw new Error("未发现 GM API");
+            throw new Error("未发现 GM_info");
         }
         else {
             exports._GM_info = GM.info;
@@ -1748,13 +1754,31 @@ if (typeof GM_info === "undefined") {
 else {
     exports._GM_info = GM_info;
 }
+let _GM_xmlhttpRequest;
+if (typeof GM_xmlhttpRequest === "undefined") {
+    if (typeof GM === "undefined") {
+        throw new Error("未发现 GM_xmlhttpRequest");
+    }
+    else {
+        if (typeof GM.xmlHttpRequest === "undefined") {
+            throw new Error("未发现 GM_xmlhttpRequest");
+        }
+        else {
+            _GM_xmlhttpRequest = GM.xmlHttpRequest;
+        }
+    }
+}
+else {
+    _GM_xmlhttpRequest = GM_xmlhttpRequest;
+}
+exports._GM_setValue = null;
 if (typeof GM_setValue === "undefined") {
     if (typeof GM === "undefined") {
-        throw new Error("未发现 GM API");
+        log_1.log.warn("未发现 GM_setValue");
     }
     else {
         if (typeof GM.setValue === "undefined") {
-            throw new Error("未发现 GM API");
+            log_1.log.warn("未发现 GM_setValue");
         }
         else {
             exports._GM_setValue = GM.setValue;
@@ -1764,13 +1788,14 @@ if (typeof GM_setValue === "undefined") {
 else {
     exports._GM_setValue = GM_setValue;
 }
+exports._GM_getValue = null;
 if (typeof GM_getValue === "undefined") {
     if (typeof GM === "undefined") {
-        throw new Error("未发现 GM API");
+        log_1.log.warn("未发现 GM_getValue");
     }
     else {
         if (typeof GM.getValue === "undefined") {
-            throw new Error("未发现 GM API");
+            log_1.log.warn("未发现 GM_getValue");
         }
         else {
             exports._GM_getValue = GM.getValue;
@@ -1780,13 +1805,14 @@ if (typeof GM_getValue === "undefined") {
 else {
     exports._GM_getValue = GM_getValue;
 }
+exports._GM_deleteValue = null;
 if (typeof GM_deleteValue === "undefined") {
     if (typeof GM === "undefined") {
-        throw new Error("未发现 GM API");
+        log_1.log.warn("未发现 GM_deleteValue");
     }
     else {
         if (typeof GM.deleteValue === "undefined") {
-            throw new Error("未发现 GM API");
+            log_1.log.warn("未发现 GM_deleteValue");
         }
         else {
             exports._GM_deleteValue = GM.deleteValue;
@@ -1795,23 +1821,6 @@ if (typeof GM_deleteValue === "undefined") {
 }
 else {
     exports._GM_deleteValue = GM_deleteValue;
-}
-let _GM_xmlhttpRequest;
-if (typeof GM_xmlhttpRequest === "undefined") {
-    if (typeof GM === "undefined") {
-        throw new Error("未发现 GM API");
-    }
-    else {
-        if (typeof GM.xmlHttpRequest === "undefined") {
-            throw new Error("未发现 GM API");
-        }
-        else {
-            _GM_xmlhttpRequest = GM.xmlHttpRequest;
-        }
-    }
-}
-else {
-    _GM_xmlhttpRequest = GM_xmlhttpRequest;
 }
 function cleanDOM(DOM, imgMode) {
     const builder = {
@@ -29962,6 +29971,12 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.resetStat = exports.printStat = exports.failedPlus = exports.successPlus = void 0;
 const log_1 = __webpack_require__("./src/log.ts");
 const lib_1 = __webpack_require__("./src/lib.ts");
+if (lib_1._GM_setValue === null ||
+    lib_1._GM_getValue === null ||
+    lib_1._GM_deleteValue === null) {
+    log_1.log.warn("未发现 GM value 相关 API，统计功能停用。");
+    throw new Error("未发现 GM value 相关 API");
+}
 const statKeyName = "novel-downloader-22932304826849026";
 const domain = document.location.hostname;
 const _data = lib_1._GM_getValue(statKeyName);
@@ -29972,12 +29987,17 @@ if (_data) {
 else {
     statData = { success: {}, failed: {} };
 }
-function saveData() {
+const saveData = () => {
     const dataJSON = JSON.stringify(statData);
+    if (lib_1._GM_setValue === null ||
+        lib_1._GM_getValue === null ||
+        lib_1._GM_deleteValue === null) {
+        throw new Error("未发现 GM value 相关 API");
+    }
     lib_1._GM_setValue(statKeyName, dataJSON);
     return statData;
-}
-function dataPlus(key) {
+};
+const dataPlus = (key) => {
     const tmpData = statData[key];
     if (tmpData[domain]) {
         tmpData[domain] = tmpData[domain] + 1;
@@ -29986,24 +30006,24 @@ function dataPlus(key) {
         tmpData[domain] = 1;
     }
     return saveData();
-}
-function successPlus() {
+};
+const successPlus = () => {
     return dataPlus("success");
-}
+};
 exports.successPlus = successPlus;
-function failedPlus() {
+const failedPlus = () => {
     return dataPlus("failed");
-}
+};
 exports.failedPlus = failedPlus;
-function printStat() {
+const printStat = () => {
     log_1.log.info("[stat]小说下载器脚本运行情况统计：");
     log_1.log.info(statData);
-}
+};
 exports.printStat = printStat;
-function resetStat() {
+const resetStat = () => {
     statData = { success: {}, failed: {} };
     return saveData();
-}
+};
 exports.resetStat = resetStat;
 
 

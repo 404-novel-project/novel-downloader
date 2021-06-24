@@ -7,8 +7,8 @@ interface statData {
     };
 }
 declare let statData: statData;
-export declare function successPlus(): statData;
-export declare function failedPlus(): statData;
-export declare function printStat(): void;
-export declare function resetStat(): statData;
+export declare const successPlus: () => statData;
+export declare const failedPlus: () => statData;
+export declare const printStat: () => void;
+export declare const resetStat: () => statData;
 export {};
