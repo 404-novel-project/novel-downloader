@@ -1,4 +1,5 @@
 import { attachmentClass } from "./main";
+import * as fflate from "fflate";
 export declare let _GM_info: GM_info | GM["info"];
 export declare let _GM_setValue: GM_setValue | GM["setValue"] | null;
 export declare let _GM_getValue: GM_getValue | GM["getValue"] | null;
@@ -36,4 +37,13 @@ export declare function getAttachmentClassCache(url: string, name: string): atta
 export declare function putAttachmentClassCache(attachmentClass: attachmentClass): boolean;
 export declare function sandboxed(code: string): any;
 export declare function storageAvailable(type: string): any;
+export declare class fflateZip {
+    private data;
+    private count;
+    private filenameList;
+    constructor();
+    private blob2Uint8Array;
+    file(filename: string, file: Blob): void;
+    generateAsync(opts?: fflate.AsyncZipOptions): Promise<Blob>;
+}
 export {};
