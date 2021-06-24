@@ -8,7 +8,8 @@ module.exports = {
   mode: dev ? "development" : "production",
   optimization: {
     minimize: false,
-    moduleIds: "named"
+    moduleIds: "named",
+    usedExports: true,
   },
   entry: path.resolve(__dirname, "src", "index.ts"),
   output: {
@@ -47,7 +48,8 @@ module.exports = {
       headers: path.resolve(__dirname, "src", "header.json"),
       ssri: false,
       pretty: true,
-      downloadBaseUrl: "https://github.com/yingziwu/novel-downloader/raw/gh-pages/",
+      downloadBaseUrl:
+        "https://github.com/yingziwu/novel-downloader/raw/gh-pages/",
       proxyScript: {
         filename: "[basename].proxy.user.js",
         baseUrl: "https://webpack.lo.bgme.me/",

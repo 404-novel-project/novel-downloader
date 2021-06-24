@@ -15,6 +15,9 @@
     "build",
     "build-tester"
   ],
+  "sideEffects": [
+    "./src/index.ts"
+  ],
   "author": "BGME",
   "license": "GPL-3.0",
   "devDependencies": {

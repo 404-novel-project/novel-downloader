@@ -2,7 +2,7 @@ import { Builder, walk } from "./cleanDOM";
 import { attachmentClassCache } from "./index";
 import { attachmentClass } from "./main";
 import { log } from "./log";
-import * as fflate from "fflate";
+import { AsyncZippable, AsyncZipOptions, zip, FlateError } from "fflate";
 
 export let _GM_info: GM_info | GM["info"];
 if (typeof GM_info === "undefined") {
@@ -368,7 +368,7 @@ export function storageAvailable(type: string) {
 }
 
 export class fflateZip {
-  private data: fflate.AsyncZippable;
+  private data: AsyncZippable;
   private count: number;
   private filenameList: string[];
 
@@ -390,27 +390,27 @@ export class fflateZip {
     this.count++;
     this.filenameList.push(filename);
     this.blob2Uint8Array(file).then((uint) => {
-      this.data[filename] = uint;
+      if (file.type.includes("image/")) {
+        this.data[filename] = [uint, { level: 0 }];
+      } else {
+        this.data[filename] = uint;
+      }
     });
   }
 
-  public generateAsync(opts: fflate.AsyncZipOptions = {}): Promise<Blob> {
+  public generateAsync(opts: AsyncZipOptions = {}): Promise<Blob> {
     return new Promise(async (resolve, reject) => {
       while (Object.keys(this.data).length !== this.count) {
         await sleep(100);
       }
 
-      fflate.zip(
-        this.data,
-        opts,
-        (err: fflate.FlateError, data: Uint8Array) => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(new Blob([data.buffer], { type: "application/zip" }));
-          }
+      zip(this.data, opts, (err: FlateError, data: Uint8Array) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(new Blob([data.buffer], { type: "application/zip" }));
         }
-      );
+      });
     });
   }
 }
