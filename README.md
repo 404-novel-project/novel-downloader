@@ -77,6 +77,14 @@ ZIP压缩包，请在解压后，直接双击打开HTML文件（`ToC.html` 为�
 
 </details>
 
+## 特殊权限说明
+
+- `unsafeWindow`：用于获取自定义筛选函数、自定义保存参数等设置。
+- `GM_info`/`GM.info`： 获取并输出脚本运行环境。
+- `GM_xmlhttpRequest`/`GM.xmlHttpRequest`：用于跨域HTTP请求。
+- `GM_getTab`、`GM_saveTab`、`GM_getTabs` (可禁用)： 用于全局并发限制，例如：刺猬猫只允许同时运行一下载线程。
+- `GM_setValue`/`GM.setValue`、`GM_getValue`/`GM.getValue`、`GM_deleteValue`/`GM.deleteValue` (可禁用)： 用于统计模块，本地统计运行次数。
+
 ## 高阶使用技巧
 
 ### 启用调试功能

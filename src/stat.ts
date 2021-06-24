@@ -1,6 +1,15 @@
 import { log } from "./log";
 import { _GM_deleteValue, _GM_getValue, _GM_setValue } from "./lib";
 
+if (
+  _GM_setValue === null ||
+  _GM_getValue === null ||
+  _GM_deleteValue === null
+) {
+  log.warn("未发现 GM value 相关 API，统计功能停用。");
+  throw new Error("未发现 GM value 相关 API");
+}
+
 const statKeyName = "novel-downloader-22932304826849026";
 const domain = document.location.hostname;
 const _data = _GM_getValue(statKeyName);
@@ -19,13 +28,20 @@ if (_data) {
   statData = { success: {}, failed: {} };
 }
 
-function saveData() {
+const saveData = () => {
   const dataJSON = JSON.stringify(statData);
+  if (
+    _GM_setValue === null ||
+    _GM_getValue === null ||
+    _GM_deleteValue === null
+  ) {
+    throw new Error("未发现 GM value 相关 API");
+  }
   _GM_setValue(statKeyName, dataJSON);
   return statData;
-}
+};
 
-function dataPlus(key: keyof statData) {
+const dataPlus = (key: keyof statData) => {
   const tmpData = statData[key];
   if (tmpData[domain]) {
     tmpData[domain] = tmpData[domain] + 1;
@@ -33,22 +49,22 @@ function dataPlus(key: keyof statData) {
     tmpData[domain] = 1;
   }
   return saveData();
-}
+};
 
-export function successPlus() {
+export const successPlus = () => {
   return dataPlus("success");
-}
+};
 
-export function failedPlus() {
+export const failedPlus = () => {
   return dataPlus("failed");
-}
+};
 
-export function printStat() {
+export const printStat = () => {
   log.info("[stat]小说下载器脚本运行情况统计：");
   log.info(statData);
-}
+};
 
-export function resetStat() {
+export const resetStat = () => {
   statData = { success: {}, failed: {} };
   return saveData();
-}
+};

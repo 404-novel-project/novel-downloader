@@ -1,5 +1,11 @@
 import { Book, Chapter, attachmentClass, Status } from "./main";
-import { sleep, storageAvailable } from "./lib";
+import {
+  sleep,
+  storageAvailable,
+  _GM_deleteValue,
+  _GM_getValue,
+  _GM_setValue,
+} from "./lib";
 import { updateProgress, audio, indexNameSpace, catchError } from "./index";
 import {
   enableCustomFinishCallback,
@@ -7,7 +13,6 @@ import {
   enaleDebug,
 } from "./rules";
 import { log, saveLogTextToFile } from "./log";
-import { printStat, successPlus } from "./stat";
 
 export const buttonStyleText = `position: fixed;
 top: 15%;
@@ -278,8 +283,7 @@ a.disabled {
         document.querySelector("#nd-progress")?.remove();
         audio.pause();
       })
-      .then(async () => {
-        await sleep(5000);
+      .then(() => {
         finish();
       })
       .catch((err: Error) => {
@@ -643,10 +647,14 @@ export function save(book: Book, options: saveOptions) {
   saveBookObj.saveZip();
 }
 
-function finish() {
-  successPlus();
-  printStat();
+async function finish() {
+  if (_GM_setValue && _GM_getValue && _GM_deleteValue) {
+    const { printStat, successPlus } = await import("./stat");
+    successPlus();
+    printStat();
+  }
 
+  await sleep(3000);
   if (enaleDebug) {
     saveLogTextToFile();
   }

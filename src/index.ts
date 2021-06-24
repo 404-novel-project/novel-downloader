@@ -10,7 +10,13 @@ import {
   enableR18SiteWarning,
 } from "./rules";
 import { Book, Chapter, attachmentClass, Status, ExpectError } from "./main";
-import { concurrencyRun, _GM_info } from "./lib";
+import {
+  concurrencyRun,
+  _GM_deleteValue,
+  _GM_getValue,
+  _GM_info,
+  _GM_setValue,
+} from "./lib";
 import {
   setTabMark,
   getNowRunNumber,
@@ -23,7 +29,6 @@ import {
   r18SiteWarning,
 } from "./index_helper";
 import { log, saveLogTextToFile } from "./log";
-import { failedPlus } from "./stat";
 
 export namespace indexNameSpace {
   export interface mainWindows extends unsafeWindow {
@@ -238,7 +243,12 @@ export function catchError(error: Error) {
   );
   log.error(error);
   log.trace(error);
-  failedPlus();
+
+  if (_GM_setValue && _GM_getValue && _GM_deleteValue) {
+    import("./stat").then((stat) => {
+      stat.failedPlus();
+    });
+  }
 
   alert(
     "运行过程出错，请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/yingziwu/novel-downloader"
