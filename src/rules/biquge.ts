@@ -331,6 +331,77 @@ export class shuquge implements ruleClass {
   }
 }
 
+export class xyqxs implements ruleClass {
+  public imageMode: "naive" | "TM";
+  public charset: string;
+
+  public constructor() {
+    this.imageMode = "TM";
+    this.charset = "GBK";
+  }
+
+  public async bookParse() {
+    const self = this;
+    return bookParseTemp({
+      bookUrl: document.location.href,
+      bookname: (<HTMLElement>document.querySelector(".info > h2")).innerText
+        .trim()
+        .replace(/最新章节$/, ""),
+      author: (<HTMLElement>(
+        document.querySelector(".small > span:nth-child(1)")
+      )).innerText
+        .replace(/作(\s+)?者[：:]/, "")
+        .trim(),
+      introDom: <HTMLElement>document.querySelector(".intro"),
+      introDomPatch: (introDom) => {
+        introDom.innerHTML = introDom.innerHTML.replace(
+          /推荐地址：https:\/\/www.xyqxs.cc\/html\/\d+\/\d+\/index\.html/g,
+          ""
+        );
+        return introDom;
+      },
+      coverUrl: (<HTMLImageElement>(
+        document.querySelector(".info > .cover > img")
+      )).src,
+      chapterListSelector: ".listmain>dl",
+      charset: self.charset,
+      chapterParse: self.chapterParse,
+    });
+  }
+
+  public async chapterParse(
+    chapterUrl: string,
+    chapterName: string | null,
+    isVIP: boolean,
+    isPaid: boolean,
+    charset: string,
+    options: object
+  ) {
+    const dom = await getHtmlDOM(chapterUrl, charset);
+    return chapterParseTemp({
+      dom,
+      chapterUrl,
+      chapterName: (<HTMLElement>(
+        dom.querySelector(".content > h1:nth-child(1)")
+      )).innerText.trim(),
+      contenSelector: "#content",
+      contentPatch: (content) => {
+        rm("div[style]", true, content);
+        rm("script", true, content);
+        rm('div[align="center"]', false, content);
+        content.innerHTML = content.innerHTML
+          .replace(
+            "请记住本书首发域名：www.xyqxs.cc。笔趣阁手机版阅读网址：m.xyqxs.cc",
+            ""
+          )
+          .replace(/\(https:\/\/www.xyqxs.cc\/html\/\d+\/\d+\/\d+\.html\)/, "");
+        return content;
+      },
+      charset,
+    });
+  }
+}
+
 export class xbiquge implements ruleClass {
   public imageMode: "naive" | "TM";
   public charset: string;

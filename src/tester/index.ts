@@ -218,6 +218,11 @@ if (
       "https://www.fuguoduxs.com/9_9668/",
       "https://www.fuguoduxs.com/4_4790/",
     ],
+    [
+      "https://www.xyqxs.cc/html/112/112859/index.html",
+      "https://www.xyqxs.cc/html/0/186/index.html",
+      "https://www.xyqxs.cc/html/47/47987/index.html",
+    ],
   ];
 
   async function runTest() {

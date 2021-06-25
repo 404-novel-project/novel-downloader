@@ -491,7 +491,7 @@ export class fflateZip {
           this.tcount++;
         } else {
           const nonStreamingFile = new AsyncZipDeflate(filename, {
-            level: 1,
+            level: 6,
           });
           this.addToSavedZip(this.savedZip, nonStreamingFile, chunk);
           this.tcount++;

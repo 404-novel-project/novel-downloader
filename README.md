@@ -74,6 +74,7 @@ ZIP压缩包，请在解压后，直接双击打开HTML文件（`ToC.html` 为�
 |[搜小说](https://www.soxscc.net/)|✅|❎||
 |[腐国度](https://www.fuguoduxs.com/)|✅|❎||
 |[书包网](http://www.shubaowa.org/)|✅|❎||
+|[言情小说笔趣阁](https://www.xyqxs.cc/)|✅|❎||
 
 </details>
 
