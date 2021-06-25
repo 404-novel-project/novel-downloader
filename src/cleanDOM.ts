@@ -1,9 +1,5 @@
 import { attachmentClass } from "./main";
-import {
-  getAttachmentClassCache,
-  getImageAttachment,
-  putAttachmentClassCache,
-} from "./lib";
+import { getImageAttachment } from "./lib";
 
 const blockElements = [
   "article",

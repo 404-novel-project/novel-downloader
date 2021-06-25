@@ -166,7 +166,8 @@ export async function getRule(): Promise<ruleClass> {
       ruleClass = linovel;
       break;
     }
-    case "www.xinwanben.com": {
+    case "www.xinwanben.com":
+    case "www.wanben.org": {
       const { xinwanben } = await import("./rules/xinwanben");
       ruleClass = xinwanben;
       break;

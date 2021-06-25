@@ -9,7 +9,7 @@ import {
   r18SiteList,
   enableR18SiteWarning,
 } from "./rules";
-import { Book, Chapter, attachmentClass, Status, ExpectError } from "./main";
+import { Book, Chapter, Status, ExpectError } from "./main";
 import {
   clearAttachmentClassCache,
   concurrencyRun,
@@ -190,6 +190,14 @@ export function updateProgress(
 async function run() {
   log.info(`[run]下载开始`);
   audio.play();
+  const confirmExit = (e: BeforeUnloadEvent) => {
+    e.preventDefault();
+    const confirmationText =
+      "您正尝试离开本页面，当前页面有下载任务正在运行，是否确认离开？";
+    return (e.returnValue = confirmationText);
+  };
+  window.onbeforeunload = confirmExit;
+
   const rule = await getRule();
   log.info(`[run]获取规则成功`);
 
@@ -212,7 +220,6 @@ async function run() {
     await removeTabMark();
   }
 
-  log.info(`[run]下载完毕`);
   return book;
 
   async function preTest() {
@@ -264,6 +271,7 @@ export function catchError(error: Error) {
   finishedChapterNumber = 0;
   document.querySelector("#nd-progress")?.remove();
   audio.pause();
+  window.onbeforeunload = null;
 
   if (error instanceof ExpectError) {
     log.error(error);

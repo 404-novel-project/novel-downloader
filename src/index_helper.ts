@@ -671,11 +671,12 @@ async function finish() {
     successPlus();
     printStat();
   }
-
-  await sleep(3000);
   if (enaleDebug) {
     saveLogTextToFile();
   }
+  window.onbeforeunload = null;
+
+  await sleep(3000);
   if (
     enableCustomFinishCallback &&
     typeof (<indexNameSpace.mainWindows>unsafeWindow).customFinishCallback ===
@@ -687,6 +688,7 @@ async function finish() {
       `发现自定义结束回调函数，内容如下：\n${customFinishCallback.toString()}`
     );
     customFinishCallback();
+    log.info(`[run]下载完毕`);
   }
 }
 
