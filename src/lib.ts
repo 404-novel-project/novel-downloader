@@ -426,7 +426,8 @@ export class fflateZip {
 
   public file(filename: string, file: Blob) {
     if (this.filenameList.includes(filename)) {
-      throw new Error(`filename ${filename} has existed on zip.`);
+      log.error(`filename ${filename} has existed on zip.`);
+      return;
     }
     this.count++;
     this.filenameList.push(filename);

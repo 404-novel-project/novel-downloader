@@ -465,6 +465,9 @@ a.disabled {
     if (chapter.contentImages) {
       for (const attachment of chapter.contentImages) {
         this.addImageToZip(attachment, this.savedZip);
+        if (!enaleDebug) {
+          attachment.imageBlob = null;
+        }
       }
       if (!enaleDebug) {
         chapter.contentImages = null;
@@ -503,8 +506,8 @@ a.disabled {
       log.debug(`[save]添加附件，文件名：${image.name}，对象`, image.imageBlob);
       zip.file(image.name, image.imageBlob);
     } else {
-      log.error("[save]附件下载失败！");
-      log.error(image);
+      log.warn("[save]添加附件下载失败，该附件未完成或内容为空。");
+      log.warn(image);
     }
   }
 
