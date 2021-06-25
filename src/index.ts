@@ -20,13 +20,14 @@ import {
 import {
   setTabMark,
   getNowRunNumber,
-  save,
   removeTabMark,
   progressStyleText,
   buttonStyleText,
   saveOptions,
   saveOptionsValidate,
   r18SiteWarning,
+  getSaveBookObj,
+  saveBook,
 } from "./index_helper";
 import { log, saveLogTextToFile } from "./log";
 
@@ -64,55 +65,28 @@ function printEnvironments() {
   }
 }
 
-async function initChapters(rule: ruleClass, book: Book) {
+async function initChapters(
+  rule: ruleClass,
+  book: Book,
+  saveBookObj: saveBook
+) {
   log.info(`[initChapters]开始初始化章节`);
   let concurrencyLimit = 10;
   if (rule.concurrencyLimit !== undefined) {
     concurrencyLimit = rule.concurrencyLimit;
   }
 
-  if (
-    enableCustomChapterFilter &&
-    typeof (<any>unsafeWindow).chapterFilter === "function"
-  ) {
-    let tlog = "[initChapters]发现自定义筛选函数，自定义筛选函数内容如下：\n";
-    tlog += (<indexNameSpace.mainWindows>unsafeWindow).chapterFilter.toString();
-    log.info(tlog);
-  }
-  log.debug("[initChapters]筛选需下载章节");
-  const chapters = book.chapters.filter((chapter) => {
-    const b0 = chapter.status === Status.pending;
-    let b1 = true;
-    if (
-      enableCustomChapterFilter &&
-      typeof (<any>unsafeWindow).chapterFilter === "function"
-    ) {
-      try {
-        const u = (<indexNameSpace.mainWindows>unsafeWindow).chapterFilter(
-          chapter
-        );
-        if (typeof u === "boolean") {
-          b1 = u;
-        }
-      } catch (error) {
-        log.error("运行自定义筛选函数时出错。", error);
-        log.trace(error);
-      }
-    }
-    return b0 && b1;
-  });
+  const chapters = getChapters();
   if (chapters.length === 0) {
     log.error(`[initChapters]初始化章节出错，未找到需初始化章节`);
     return [];
   }
   totalChapterNumber = chapters.length;
+
   if (concurrencyLimit === 1) {
     for (let chapter of chapters) {
       const obj = await chapter.init();
-      if (obj.contentHTML !== undefined) {
-        finishedChapterNumber++;
-        updateProgress(finishedChapterNumber, totalChapterNumber, null);
-      }
+      afterGetChpater(obj);
     }
   } else {
     await concurrencyRun(chapters, concurrencyLimit, (curChapter: Chapter) => {
@@ -120,16 +94,59 @@ async function initChapters(rule: ruleClass, book: Book) {
         return Promise.resolve();
       }
       return curChapter.init().then((obj) => {
-        if (obj.contentHTML !== undefined) {
-          finishedChapterNumber++;
-          updateProgress(finishedChapterNumber, totalChapterNumber, null);
-        }
-        return obj;
+        afterGetChpater(obj);
       });
     });
   }
+
   log.info(`[initChapters]章节初始化完毕`);
   return chapters;
+
+  function afterGetChpater(chapter: Chapter) {
+    if (chapter.contentHTML !== undefined) {
+      saveBookObj.addChapter(chapter);
+      finishedChapterNumber++;
+      updateProgress(finishedChapterNumber, totalChapterNumber, null);
+    }
+    return chapter;
+  }
+
+  function getChapters() {
+    if (
+      enableCustomChapterFilter &&
+      typeof (<any>unsafeWindow).chapterFilter === "function"
+    ) {
+      let tlog = "[initChapters]发现自定义筛选函数，自定义筛选函数内容如下：\n";
+      tlog += (<indexNameSpace.mainWindows>(
+        unsafeWindow
+      )).chapterFilter.toString();
+      log.info(tlog);
+    }
+
+    log.debug("[initChapters]筛选需下载章节");
+    const chapters = book.chapters.filter((chapter) => {
+      const b0 = chapter.status === Status.pending;
+      let b1 = true;
+      if (
+        enableCustomChapterFilter &&
+        typeof (<any>unsafeWindow).chapterFilter === "function"
+      ) {
+        try {
+          const u = (<indexNameSpace.mainWindows>unsafeWindow).chapterFilter(
+            chapter
+          );
+          if (typeof u === "boolean") {
+            b1 = u;
+          }
+        } catch (error) {
+          log.error("运行自定义筛选函数时出错。", error);
+          log.trace(error);
+        }
+      }
+      return b0 && b1;
+    });
+    return chapters;
+  }
 }
 
 let totalChapterNumber: number;
@@ -174,42 +191,18 @@ async function run() {
   const rule = await getRule();
   log.info(`[run]获取规则成功`);
 
-  log.debug("[run]运行前检测");
-  let maxRunLimit = null;
-  let nowRunNumber;
-  if (typeof GM_getTab !== "undefined") {
-    log.info(`[run]添加运行标志`);
-    await setTabMark();
-    nowRunNumber = await getNowRunNumber();
-    if (rule.maxRunLimit !== undefined && nowRunNumber !== undefined) {
-      maxRunLimit = rule.maxRunLimit;
-      if (nowRunNumber > maxRunLimit) {
-        const alertText = `当前网站目前已有${
-          nowRunNumber - 1
-        }个下载任务正在运行，当前站点最多允许${maxRunLimit}下载任务同时进行。\n请待其它下载任务完成后，再行尝试。`;
-        alert(alertText);
-        log.info(`[run]${alertText}`);
-        return;
-      }
-    }
+  if (await preTest()) {
+    return;
   }
 
   log.debug("[run]主体开始");
   const book = await rule.bookParse();
-  await initChapters(rule, book);
+  const saveBookObj = getSave(book);
+  await initChapters(rule, book, saveBookObj);
 
-  log.debug("[run]保存数据");
-  if (
-    enableCustomSaveOptions &&
-    typeof (<any>unsafeWindow).saveOptions === "object" &&
-    saveOptionsValidate((<any>unsafeWindow).saveOptions)
-  ) {
-    const saveOptions = (<indexNameSpace.mainWindows>unsafeWindow).saveOptions;
-    log.info("[run]发现自定义保存参数，内容如下\n", saveOptions);
-    save(book, saveOptions);
-  } else {
-    save(book, {});
-  }
+  log.debug("[run]开始保存文件");
+  saveBookObj.saveTxt();
+  saveBookObj.saveZip(false);
 
   log.debug("[run]收尾");
   if (typeof GM_getTab !== "undefined") {
@@ -219,6 +212,45 @@ async function run() {
 
   log.info(`[run]下载完毕`);
   return book;
+
+  async function preTest() {
+    log.debug("[run]运行前检测");
+    let maxRunLimit = null;
+    let nowRunNumber;
+    if (typeof GM_getTab !== "undefined") {
+      log.info(`[run]添加运行标志`);
+      await setTabMark();
+      nowRunNumber = await getNowRunNumber();
+      if (rule.maxRunLimit !== undefined && nowRunNumber !== undefined) {
+        maxRunLimit = rule.maxRunLimit;
+        if (nowRunNumber > maxRunLimit) {
+          const alertText = `当前网站目前已有${
+            nowRunNumber - 1
+          }个下载任务正在运行，当前站点最多允许${maxRunLimit}下载任务同时进行。\n请待其它下载任务完成后，再行尝试。`;
+          alert(alertText);
+          log.info(`[run]${alertText}`);
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  function getSave(book: Book) {
+    log.debug("[run]保存数据");
+    if (
+      enableCustomSaveOptions &&
+      typeof (<any>unsafeWindow).saveOptions === "object" &&
+      saveOptionsValidate((<any>unsafeWindow).saveOptions)
+    ) {
+      const saveOptions = (<indexNameSpace.mainWindows>unsafeWindow)
+        .saveOptions;
+      log.info("[run]发现自定义保存参数，内容如下\n", saveOptions);
+      return getSaveBookObj(book, saveOptions);
+    } else {
+      return getSaveBookObj(book, {});
+    }
+  }
 }
 
 export function catchError(error: Error) {
@@ -294,7 +326,6 @@ async function debug() {
   const book = await rule.bookParse();
   (<indexNameSpace.mainWindows>unsafeWindow).rule = rule;
   (<indexNameSpace.mainWindows>unsafeWindow).book = book;
-  (<indexNameSpace.mainWindows>unsafeWindow).save = save;
   (<indexNameSpace.mainWindows>unsafeWindow).saveAs = saveAs;
   return;
 }

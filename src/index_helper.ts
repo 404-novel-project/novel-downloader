@@ -64,7 +64,7 @@ export const progressStyleText = `#nd-progress {
   margin-top: 5px;
 }`;
 
-class saveBook {
+export class saveBook {
   protected book: Book;
   private chapters: Chapter[];
 
@@ -75,12 +75,15 @@ class saveBook {
   private savedTextArray: string[];
   private saveFileNameBase: string;
 
+  private _sections: string[];
+
   public constructor(book: Book) {
     this.book = book;
     this.chapters = book.chapters;
     this.chapters.sort(this.chapterSort);
 
     this.savedZip = new fflateZip();
+    this._sections = [];
 
     this.savedTextArray = [];
     this.saveFileNameBase = `[${this.book.author}]${this.book.bookname}`;
@@ -223,7 +226,9 @@ a.disabled {
         );
         this.savedTextArray.push(chapterText);
       }
-      chapter.contentText = null;
+      if (!enaleDebug) {
+        chapter.contentText = null;
+      }
     }
 
     log.info("[save]保存TXT文件");
@@ -234,7 +239,7 @@ a.disabled {
     );
   }
 
-  public saveZip() {
+  public saveZip(runSaveChapters = false) {
     log.debug("[save]保存元数据文本");
     const metaDateText = this.genMetaDateTxt();
     this.savedZip.file(
@@ -258,8 +263,11 @@ a.disabled {
       }
     }
 
-    log.debug("[save]开始保存章节文件");
-    this.saveChapters();
+    if (runSaveChapters) {
+      log.debug("[save]开始保存章节文件");
+      this.saveChapters();
+    }
+
     log.debug("[save]开始生成并保存ToC.html");
     this.saveToC();
 
@@ -416,42 +424,49 @@ a.disabled {
   }
 
   private saveChapters() {
-    let sections: string[] = [];
     for (const chapter of this.chapters) {
-      const chapterName = this.getchapterName(chapter);
-      const htmlfileNameBase = `${"0".repeat(
-        this.chapters.length.toString().length -
-          chapter.chapterNumber.toString().length
-      )}${chapter.chapterNumber.toString()}.html`;
-      const chapterHtmlFileName = `Chapter${htmlfileNameBase}`;
+      this.addChapter(chapter);
+    }
+  }
 
-      if (chapter.sectionName) {
-        if (!sections.includes(chapter.sectionName)) {
-          sections.push(chapter.sectionName);
+  public addChapter(chapter: Chapter) {
+    const chapterName = this.getchapterName(chapter);
+    const htmlfileNameBase = `${"0".repeat(
+      this.chapters.length.toString().length -
+        chapter.chapterNumber.toString().length
+    )}${chapter.chapterNumber.toString()}.html`;
+    const chapterHtmlFileName = `Chapter${htmlfileNameBase}`;
 
-          log.debug(`[save]保存卷HTML文件：${chapter.sectionName}`);
-          const sectionHTMLBlob = this.genSectionHtmlFile(chapter.sectionName);
-          this.savedZip.file(`Section${htmlfileNameBase}`, sectionHTMLBlob);
-        }
+    if (chapter.sectionName) {
+      if (!this._sections.includes(chapter.sectionName)) {
+        this._sections.push(chapter.sectionName);
+
+        log.debug(`[save]保存卷HTML文件：${chapter.sectionName}`);
+        const sectionHTMLBlob = this.genSectionHtmlFile(chapter.sectionName);
+        this.savedZip.file(`Section${htmlfileNameBase}`, sectionHTMLBlob);
       }
+    }
 
-      log.debug(`[save]保存章HTML文件：${chapterName}`);
-      if (chapter.contentHTML) {
-        const chapterHTMLBlob = this.genChapterHtmlFile(
-          chapterName,
-          chapter.contentHTML,
-          chapter.chapterUrl
-        );
+    log.debug(`[save]保存章HTML文件：${chapterName}`);
+    if (chapter.contentHTML) {
+      const chapterHTMLBlob = this.genChapterHtmlFile(
+        chapterName,
+        chapter.contentHTML,
+        chapter.chapterUrl
+      );
+      if (!enaleDebug) {
         chapter.contentRaw = null;
         chapter.contentHTML = null;
-        this.savedZip.file(chapterHtmlFileName, chapterHTMLBlob);
       }
+      this.savedZip.file(chapterHtmlFileName, chapterHTMLBlob);
+    }
 
-      log.debug(`[save]开始保存章节附件：${chapterName}`);
-      if (chapter.contentImages) {
-        for (const attachment of chapter.contentImages) {
-          this.addImageToZip(attachment, this.savedZip);
-        }
+    log.debug(`[save]开始保存章节附件：${chapterName}`);
+    if (chapter.contentImages) {
+      for (const attachment of chapter.contentImages) {
+        this.addImageToZip(attachment, this.savedZip);
+      }
+      if (!enaleDebug) {
         chapter.contentImages = null;
       }
     }
@@ -615,7 +630,7 @@ export function saveOptionsValidate(data: any) {
   return true;
 }
 
-export function save(book: Book, options: saveOptions) {
+export function getSaveBookObj(book: Book, options: saveOptions) {
   const saveBookObj = new saveBook(book);
 
   // 自定义保存参数
@@ -634,8 +649,7 @@ export function save(book: Book, options: saveOptions) {
     }
   }
 
-  saveBookObj.saveTxt();
-  saveBookObj.saveZip();
+  return saveBookObj;
 }
 
 async function finish() {
