@@ -73,7 +73,7 @@ export class mht implements ruleClass {
       }
     } while (flag);
 
-    let { dom, text, images } = cleanDOM(content, "TM");
+    let { dom, text, images } = await cleanDOM(content, "TM");
     return {
       chapterName: chapterName,
       contentRaw: content,

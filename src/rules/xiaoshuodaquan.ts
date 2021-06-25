@@ -39,13 +39,14 @@ export class xiaoshuodaquan implements ruleClass {
     )).innerText.trim();
 
     const introDom = <HTMLElement>document.querySelector(".bookintro");
-    const [introduction, introductionHTML, introCleanimages] = introDomHandle(
-      introDom,
-      (introDom) => {
-        introDom.innerHTML = introDom.innerHTML.replace("内容简介:", "");
-        return introDom;
-      }
-    );
+    const [
+      introduction,
+      introductionHTML,
+      introCleanimages,
+    ] = await introDomHandle(introDom, (introDom) => {
+      introDom.innerHTML = introDom.innerHTML.replace("内容简介:", "");
+      return introDom;
+    });
 
     const additionalMetadate: BookAdditionalMetadate = {};
     let coverUrl;
@@ -142,7 +143,7 @@ export class xiaoshuodaquan implements ruleClass {
 
       const content = document.createElement("div");
       content.innerHTML = _content.innerHTML.replace(/\n/g, "<br/>");
-      let { dom, text, images } = cleanDOM(content, "TM");
+      let { dom, text, images } = await cleanDOM(content, "TM");
       return {
         chapterName: chapterName,
         contentRaw: content,

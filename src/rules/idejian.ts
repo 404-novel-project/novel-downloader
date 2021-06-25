@@ -34,9 +34,11 @@ export class idejian implements ruleClass {
     }
 
     const introDom = <HTMLElement>document.querySelector(".brief_con");
-    const [introduction, introductionHTML, introCleanimages] = introDomHandle(
-      introDom
-    );
+    const [
+      introduction,
+      introductionHTML,
+      introCleanimages,
+    ] = await introDomHandle(introDom);
 
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = (<HTMLImageElement>(
@@ -144,7 +146,7 @@ export class idejian implements ruleClass {
     }
     if (content) {
       rm("h1", false, content);
-      let { dom, text, images } = cleanDOM(content, "TM");
+      let { dom, text, images } = await cleanDOM(content, "TM");
       return {
         chapterName: chapterName,
         contentRaw: content,

@@ -36,16 +36,17 @@ export class uukanshu implements ruleClass {
     const introDom = <HTMLElement>(
       document.querySelector("dd.jieshao_content > h3")
     );
-    const [introduction, introductionHTML, introCleanimages] = introDomHandle(
-      introDom,
-      (introDom) => {
-        introDom.innerHTML = introDom.innerHTML
-          .replace(/^.+简介：\s+www.uukanshu.com\s+/, "")
-          .replace(/\s+https:\/\/www.uukanshu.com/, "")
-          .replace(/－+/, "");
-        return introDom;
-      }
-    );
+    const [
+      introduction,
+      introductionHTML,
+      introCleanimages,
+    ] = await introDomHandle(introDom, (introDom) => {
+      introDom.innerHTML = introDom.innerHTML
+        .replace(/^.+简介：\s+www.uukanshu.com\s+/, "")
+        .replace(/\s+https:\/\/www.uukanshu.com/, "")
+        .replace(/－+/, "");
+      return introDom;
+    });
 
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = (<HTMLImageElement>(
@@ -148,7 +149,7 @@ export class uukanshu implements ruleClass {
       for (let r of contentReplace) {
         content.innerHTML = content.innerHTML.replace(r, "");
       }
-      let { dom, text, images } = cleanDOM(content, "TM");
+      let { dom, text, images } = await cleanDOM(content, "TM");
       return {
         chapterName: chapterName,
         contentRaw: content,

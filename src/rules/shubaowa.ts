@@ -29,9 +29,11 @@ export class shubaowa implements ruleClass {
       .trim();
 
     const introDom = <HTMLElement>document.querySelector("#intro");
-    const [introduction, introductionHTML, introCleanimages] = introDomHandle(
-      introDom
-    );
+    const [
+      introduction,
+      introductionHTML,
+      introCleanimages,
+    ] = await introDomHandle(introDom);
 
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = (<HTMLImageElement>document.querySelector("#fmimg > img"))
@@ -98,7 +100,7 @@ export class shubaowa implements ruleClass {
 
     const content = <HTMLElement>dom.querySelector("#content");
     if (content) {
-      let { dom, text, images } = cleanDOM(content, "TM");
+      let { dom, text, images } = await cleanDOM(content, "TM");
       return {
         chapterName: chapterName,
         contentRaw: content,

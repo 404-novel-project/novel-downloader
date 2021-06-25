@@ -40,9 +40,11 @@ export class ciweimao implements ruleClass {
 
     const dom = await getHtmlDOM(bookUrl, undefined);
     const introDom = dom.querySelector(".book-intro-cnt .book-desc");
-    const [introduction, introductionHTML, introCleanimages] = introDomHandle(
-      introDom
-    );
+    const [
+      introduction,
+      introductionHTML,
+      introCleanimages,
+    ] = await introDomHandle(introDom);
 
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = (<HTMLImageElement>dom.querySelector(".cover > img")).src;
@@ -264,7 +266,7 @@ export class ciweimao implements ruleClass {
         content.appendChild(div_chapter_author_say);
       }
 
-      let { dom, text, images } = cleanDOM(content, "TM");
+      let { dom, text, images } = await cleanDOM(content, "TM");
       return {
         chapterName: chapterName,
         contentRaw: content,
@@ -380,7 +382,10 @@ export class ciweimao implements ruleClass {
 
         let ddom, dtext, dimages;
         if (div_chapter_author_say) {
-          let { dom, text, images } = cleanDOM(div_chapter_author_say, "TM");
+          let { dom, text, images } = await cleanDOM(
+            div_chapter_author_say,
+            "TM"
+          );
           [ddom, dtext, dimages] = [dom, text, images];
         }
 

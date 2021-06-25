@@ -31,13 +31,14 @@ export class meegoq implements ruleClass {
       dom.querySelector("article.info > header > h1")
     )).innerText.trim();
     const introDom = <HTMLElement>dom.querySelector("article.info > p.desc");
-    const [introduction, introductionHTML, introCleanimages] = introDomHandle(
-      introDom,
-      (introDom) => {
-        rm("b", false, introDom);
-        return introDom;
-      }
-    );
+    const [
+      introduction,
+      introductionHTML,
+      introCleanimages,
+    ] = await introDomHandle(introDom, (introDom) => {
+      rm("b", false, introDom);
+      return introDom;
+    });
 
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = (<HTMLImageElement>(
@@ -137,7 +138,7 @@ export class meegoq implements ruleClass {
 
     const content = <HTMLElement>dom.querySelector("#content");
     if (content) {
-      let { dom, text, images } = cleanDOM(content, "TM");
+      let { dom, text, images } = await cleanDOM(content, "TM");
       return {
         chapterName: chapterName,
         contentRaw: content,

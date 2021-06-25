@@ -1,5 +1,4 @@
 import { Builder, walk } from "./cleanDOM";
-import { attachmentClassCache, catchError } from "./index";
 import { attachmentClass } from "./main";
 import { log } from "./log";
 import { Zip, ZipPassThrough, ZipDeflate, AsyncZipDeflate } from "fflate";
@@ -79,14 +78,14 @@ if (typeof GM_deleteValue === "undefined") {
   _GM_deleteValue = GM_deleteValue;
 }
 
-export function cleanDOM(DOM: Element, imgMode: "naive" | "TM") {
+export async function cleanDOM(DOM: Element, imgMode: "naive" | "TM") {
   const builder: Builder = {
     dom: document.createElement("div"),
     text: "",
     images: [],
     imgMode: imgMode,
   };
-  walk(DOM as HTMLElement, builder);
+  await walk(DOM as HTMLElement, builder);
   return {
     dom: builder.dom,
     text: builder.text.trim(),
@@ -309,10 +308,10 @@ export function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-export function getAttachmentClassCache(url: string, name: string) {
+let attachmentClassCache: attachmentClass[] = [];
+export function getAttachmentClassCache(url: string) {
   const found = attachmentClassCache.find(
-    (attachmentClass) =>
-      attachmentClass.url === url && attachmentClass.name === name
+    (attachmentClass) => attachmentClass.url === url
   );
   return found;
 }
@@ -320,6 +319,36 @@ export function getAttachmentClassCache(url: string, name: string) {
 export function putAttachmentClassCache(attachmentClass: attachmentClass) {
   attachmentClassCache.push(attachmentClass);
   return true;
+}
+
+export function clearAttachmentClassCache() {
+  attachmentClassCache = [];
+}
+
+export async function getImageAttachment(
+  url: string,
+  imgMode: "naive" | "TM" = "TM"
+) {
+  const tmpImageName = Math.random().toString().replace("0.", "");
+
+  let imgClass;
+  const imgClassCache = getAttachmentClassCache(url);
+  if (imgClassCache) {
+    imgClass = imgClassCache;
+  } else {
+    imgClass = new attachmentClass(url, tmpImageName, imgMode);
+    const blob = await imgClass.init();
+    if (blob) {
+      const hash = await calculateMd5(blob);
+      const ext = blob.type.split("/")[1];
+      const imageName = [hash, ext].join(".");
+      imgClass.name = imageName;
+      putAttachmentClassCache(imgClass);
+    } else {
+      throw new Error("[getImageAttachment] MD5sum failed!");
+    }
+  }
+  return imgClass;
 }
 
 // https://stackoverflow.com/questions/11869582/make-sandbox-around-function-in-javascript
@@ -367,6 +396,26 @@ export function storageAvailable(type: string) {
   }
 }
 
+// https://stackoverflow.com/questions/34492637/how-to-calculate-md5-checksum-of-blob-using-cryptojs
+function calculateMd5(blob: Blob) {
+  return new Promise((resolve, rejects) => {
+    const reader = new FileReader();
+    reader.readAsArrayBuffer(blob);
+    reader.onloadend = function () {
+      if (reader.result) {
+        //@ts-ignore
+        const wordArray = CryptoJS.lib.WordArray.create(reader.result);
+        const hash = CryptoJS.MD5(wordArray).toString();
+        // or CryptoJS.SHA256(wordArray).toString(); for SHA-2
+        resolve(hash);
+      } else {
+        rejects(Error("计算MD5值出错"));
+        return;
+      }
+    };
+  });
+}
+
 export class fflateZip {
   private zcount: number;
   private count: number;
@@ -374,7 +423,7 @@ export class fflateZip {
   private filenameList: string[];
   private savedZip: Zip;
   private zipOut: ArrayBuffer[];
-  private onUpdateFlag?: NodeJS.Timeout;
+  private onUpdateId?: number;
   public memlimit: boolean;
   public onFinal?: (zipBlob: Blob) => any;
   public onFinalError?: (error: Error) => any;
@@ -406,8 +455,8 @@ export class fflateZip {
         self.zipOut = [];
 
         if (typeof self.onFinal === "function") {
-          if (typeof self.onUpdateFlag !== "undefined") {
-            clearInterval(self.onUpdateFlag);
+          if (typeof self.onUpdateId !== "undefined") {
+            clearInterval(self.onUpdateId);
           }
 
           try {
@@ -467,7 +516,7 @@ export class fflateZip {
     }
 
     const self = this;
-    this.onUpdateFlag = setInterval(() => {
+    this.onUpdateId = window.setInterval(() => {
       const percent = (self.zcount / 3 / self.count) * 100;
       if (typeof onUpdate === "function") {
         onUpdate(percent);

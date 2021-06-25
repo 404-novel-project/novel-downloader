@@ -31,9 +31,11 @@ export class c226ks implements ruleClass {
       .trim();
 
     const introDom = <HTMLElement>document.querySelector(".desc");
-    const [introduction, introductionHTML, introCleanimages] = introDomHandle(
-      introDom
-    );
+    const [
+      introduction,
+      introductionHTML,
+      introCleanimages,
+    ] = await introDomHandle(introDom);
 
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = (<HTMLImageElement>document.querySelector(".imgbox > img"))
@@ -119,7 +121,7 @@ export class c226ks implements ruleClass {
       '<div class="posterror"><a href="javascript:postError();" class="red">章节错误,点此举报(免注册)</a>,举报后维护人员会在两分钟内校正章节内容,请耐心等待,并刷新页面。</div>';
     content.innerHTML = content.innerHTML.replace(ad, "");
     if (content) {
-      let { dom, text, images } = cleanDOM(content, "TM");
+      let { dom, text, images } = await cleanDOM(content, "TM");
       return {
         chapterName: chapterName,
         contentRaw: content,

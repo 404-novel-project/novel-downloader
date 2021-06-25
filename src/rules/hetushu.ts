@@ -26,9 +26,11 @@ export class hetushu implements ruleClass {
     )).innerText.trim();
 
     const introDom = <HTMLElement>document.querySelector(".intro");
-    const [introduction, introductionHTML, introCleanimages] = introDomHandle(
-      introDom
-    );
+    const [
+      introduction,
+      introductionHTML,
+      introCleanimages,
+    ] = await introDomHandle(introDom);
 
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = (<HTMLImageElement>(
@@ -199,7 +201,7 @@ export class hetushu implements ruleClass {
         newNode.innerHTML = oldNode.innerHTML;
         oldNode.parentNode?.replaceChild(newNode, oldNode);
       });
-      let { dom, text, images } = cleanDOM(content, "TM");
+      let { dom, text, images } = await cleanDOM(content, "TM");
       return {
         chapterName: chapterName,
         contentRaw: content,

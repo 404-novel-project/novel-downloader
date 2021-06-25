@@ -31,9 +31,11 @@ export class linovelib implements ruleClass {
 
     const doc = await getHtmlDOM(bookUrl, undefined);
     const introDom = doc.querySelector(".book-dec > p:nth-child(1)");
-    const [introduction, introductionHTML, introCleanimages] = introDomHandle(
-      introDom
-    );
+    const [
+      introduction,
+      introductionHTML,
+      introCleanimages,
+    ] = await introDomHandle(introDom);
 
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = (<HTMLImageElement>doc.querySelector(".book-img > img"))
@@ -153,7 +155,7 @@ export class linovelib implements ruleClass {
       }
     } while (flag);
 
-    let { dom, text, images } = cleanDOM(content, "TM");
+    let { dom, text, images } = await cleanDOM(content, "TM");
     return {
       chapterName: chapterName,
       contentRaw: content,

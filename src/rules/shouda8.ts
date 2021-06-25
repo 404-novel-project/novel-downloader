@@ -27,15 +27,16 @@ export class shouda8 implements ruleClass {
       .trim();
 
     const introDom = <HTMLElement>document.querySelector(".intro");
-    const [introduction, introductionHTML, introCleanimages] = introDomHandle(
-      introDom,
-      (introDom) => {
-        rm(".book_keywords", false, introDom);
-        rm("script", true, introDom);
-        rm("#cambrian0", false, introDom);
-        return introDom;
-      }
-    );
+    const [
+      introduction,
+      introductionHTML,
+      introCleanimages,
+    ] = await introDomHandle(introDom, (introDom) => {
+      rm(".book_keywords", false, introDom);
+      rm("script", true, introDom);
+      rm("#cambrian0", false, introDom);
+      return introDom;
+    });
 
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = (<HTMLImageElement>(
@@ -103,7 +104,7 @@ export class shouda8 implements ruleClass {
     const content = <HTMLElement>dom.querySelector("#content");
     if (content) {
       rm("p:last-child", false, content);
-      let { dom, text, images } = cleanDOM(content, "TM");
+      let { dom, text, images } = await cleanDOM(content, "TM");
       return {
         chapterName: chapterName,
         contentRaw: content,

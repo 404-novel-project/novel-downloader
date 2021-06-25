@@ -33,9 +33,11 @@ export class xinwanben implements ruleClass {
         ".detailTopMid > table > tbody > tr:nth-child(3) > td:nth-child(2)"
       )
     );
-    const [introduction, introductionHTML, introCleanimages] = introDomHandle(
-      introDom
-    );
+    const [
+      introduction,
+      introductionHTML,
+      introCleanimages,
+    ] = await introDomHandle(introDom);
 
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = (<HTMLImageElement>(
@@ -130,7 +132,7 @@ export class xinwanben implements ruleClass {
       }
     } while (flag);
 
-    let { dom, text, images } = cleanDOM(content, "TM");
+    let { dom, text, images } = await cleanDOM(content, "TM");
     return {
       chapterName: chapterName,
       contentRaw: content,

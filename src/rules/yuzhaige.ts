@@ -28,13 +28,14 @@ export class yuzhaige implements ruleClass {
     )).innerText.trim();
 
     const introDom = <HTMLElement>dom.querySelector(".intro");
-    const [introduction, introductionHTML, introCleanimages] = introDomHandle(
-      introDom,
-      (introDom) => {
-        rm("span:nth-child(1)", false, introDom);
-        return introDom;
-      }
-    );
+    const [
+      introduction,
+      introductionHTML,
+      introCleanimages,
+    ] = await introDomHandle(introDom, (introDom) => {
+      rm("span:nth-child(1)", false, introDom);
+      return introDom;
+    });
 
     const additionalMetadate: BookAdditionalMetadate = {};
 
@@ -218,13 +219,16 @@ export class yuzhaige implements ruleClass {
     } while (flag);
 
     if (content) {
-      let { dom: oldDom, text: _text, images: finalImages } = cleanDOM(
+      let { dom: oldDom, text: _text, images: finalImages } = await cleanDOM(
         content,
         "TM"
       );
       const _newDom = document.createElement("div");
       _newDom.innerHTML = replaceYuzhaigeImage(content.innerHTML);
-      let { dom: newDom, text: finalText, images } = cleanDOM(_newDom, "TM");
+      let { dom: newDom, text: finalText, images } = await cleanDOM(
+        _newDom,
+        "TM"
+      );
 
       const fontStyleDom = document.createElement("style");
       fontStyleDom.innerHTML = `.hide { display: none; }`;

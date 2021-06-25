@@ -32,9 +32,11 @@ export class c17k implements ruleClass {
 
     const doc = await getHtmlDOM(bookUrl, undefined);
     const introDom = doc.querySelector("#bookInfo p.intro > a");
-    const [introduction, introductionHTML, introCleanimages] = introDomHandle(
-      introDom
-    );
+    const [
+      introduction,
+      introductionHTML,
+      introCleanimages,
+    ] = await introDomHandle(introDom);
 
     const additionalMetadate: BookAdditionalMetadate = {};
     let coverUrl = (<HTMLImageElement>doc.querySelector("#bookCover img.book"))
@@ -139,7 +141,7 @@ export class c17k implements ruleClass {
         rm("div.qrcode", false, content);
         rm("div.chapter_text_ad", false, content);
 
-        let { dom, text, images } = cleanDOM(content, "TM");
+        let { dom, text, images } = await cleanDOM(content, "TM");
         return {
           chapterName: chapterName,
           contentRaw: content,

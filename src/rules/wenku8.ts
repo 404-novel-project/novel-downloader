@@ -36,9 +36,11 @@ export class wenku8 implements ruleClass {
     const introDom = doc.querySelector(
       "#content > div:nth-child(1) > table:nth-child(4) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(2) > span:nth-child(11)"
     );
-    const [introduction, introductionHTML, introCleanimages] = introDomHandle(
-      introDom
-    );
+    const [
+      introduction,
+      introductionHTML,
+      introCleanimages,
+    ] = await introDomHandle(introDom);
 
     const additionalMetadate: BookAdditionalMetadate = {};
     let coverUrl = (<HTMLImageElement>(
@@ -119,7 +121,7 @@ export class wenku8 implements ruleClass {
     const content = <HTMLElement>doc.querySelector("#content");
     if (content) {
       rm("#contentdp", true, content);
-      let { dom, text, images } = cleanDOM(content, "TM");
+      let { dom, text, images } = await cleanDOM(content, "TM");
       return {
         chapterName: chapterName,
         contentRaw: content,

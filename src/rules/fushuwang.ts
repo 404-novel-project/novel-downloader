@@ -109,7 +109,7 @@ export class fushuwang implements ruleClass {
       rm("span", true, content);
       rm("p.pageLink", true, content);
       rm("script", true, content);
-      let { dom, text, images } = cleanDOM(content, "TM");
+      let { dom, text, images } = await cleanDOM(content, "TM");
       return {
         chapterName: chapterName,
         contentRaw: content,

@@ -35,9 +35,11 @@ export class tadu implements ruleClass {
     const introDom = <HTMLElement>(
       doc.querySelector("div.boxCenter.bookIntro > div > p:nth-child(4)")
     );
-    const [introduction, introductionHTML, introCleanimages] = introDomHandle(
-      introDom
-    );
+    const [
+      introduction,
+      introductionHTML,
+      introCleanimages,
+    ] = await introDomHandle(introDom);
 
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = (<HTMLImageElement>(
@@ -151,7 +153,7 @@ export class tadu implements ruleClass {
         const contentObj: contentObj = eval(jsonpText);
         if (typeof contentObj === "object") {
           content.innerHTML = contentObj.content;
-          let { dom, text, images } = cleanDOM(content, "TM");
+          let { dom, text, images } = await cleanDOM(content, "TM");
           return {
             chapterName: chapterName,
             contentRaw: content,

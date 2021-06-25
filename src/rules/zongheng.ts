@@ -30,9 +30,11 @@ export class zongheng implements ruleClass {
 
     const doc = await getHtmlDOM(bookUrl, undefined);
     const introDom = doc.querySelector("div.book-info > div.book-dec");
-    const [introduction, introductionHTML, introCleanimages] = introDomHandle(
-      introDom
-    );
+    const [
+      introduction,
+      introductionHTML,
+      introCleanimages,
+    ] = await introDomHandle(introDom);
 
     const additionalMetadate: BookAdditionalMetadate = {};
     let coverUrl = (<HTMLImageElement>doc.querySelector("div.book-img > img"))
@@ -136,7 +138,7 @@ export class zongheng implements ruleClass {
       )).innerText.trim();
       const content = <HTMLElement>dom.querySelector("div.content");
       if (content) {
-        let { dom, text, images } = cleanDOM(content, "TM");
+        let { dom, text, images } = await cleanDOM(content, "TM");
         return {
           chapterName: chapterName,
           contentRaw: content,

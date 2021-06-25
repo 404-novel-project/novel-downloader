@@ -29,9 +29,11 @@ export class dmzj implements ruleClass {
       .trim();
 
     const introDom = <HTMLElement>document.querySelector(".comic_deCon_d");
-    const [introduction, introductionHTML, introCleanimages] = introDomHandle(
-      introDom
-    );
+    const [
+      introduction,
+      introductionHTML,
+      introCleanimages,
+    ] = await introDomHandle(introDom);
 
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = (<HTMLImageElement>(
@@ -128,7 +130,7 @@ export class dmzj implements ruleClass {
         pElem.appendChild(imgElem);
         content.appendChild(pElem);
       }
-      let { dom, text, images } = cleanDOM(content, "TM");
+      let { dom, text, images } = await cleanDOM(content, "TM");
       return {
         chapterName: chapterName,
         contentRaw: content,

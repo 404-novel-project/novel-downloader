@@ -1,5 +1,9 @@
 import { attachmentClass } from "./main";
-import { getAttachmentClassCache, putAttachmentClassCache } from "./lib";
+import {
+  getAttachmentClassCache,
+  getImageAttachment,
+  putAttachmentClassCache,
+} from "./lib";
 
 const blockElements = [
   "article",
@@ -107,7 +111,10 @@ function getParentElement(
   }
 }
 
-function formatImage(elem: HTMLImageElement, builder: Builder): void {
+async function formatImage(
+  elem: HTMLImageElement,
+  builder: Builder
+): Promise<void> {
   function temp0() {
     const pI = document.createElement("p");
     pI.appendChild(imgElem);
@@ -120,7 +127,7 @@ function formatImage(elem: HTMLImageElement, builder: Builder): void {
     return;
   }
 
-  let tfi = _formatImage(elem, builder);
+  let tfi = await _formatImage(elem, builder);
   if (!tfi) {
     return;
   }
@@ -179,44 +186,23 @@ function formatImage(elem: HTMLImageElement, builder: Builder): void {
   }
 }
 
-function _formatImage(
+async function _formatImage(
   elem: HTMLImageElement,
   builder: Builder
-): [HTMLImageElement, string, attachmentClass] | void {
-  function genImageName(url: string) {
-    let t =
-      btoa(new URL(url).pathname.split("/").slice(-2).join("/")) +
-      `.${url.split(".").slice(-1)[0]}`;
-    if (t.length >= 125) {
-      t =
-        btoa(new URL(url).pathname.split("/").slice(-1)[0]) +
-        `.${url.split(".").slice(-1)[0]}`;
-    }
-    return t;
-  }
-
+): Promise<[HTMLImageElement, string, attachmentClass] | void> {
   if (!elem.src) {
     return;
   }
 
   const imgMode = builder.imgMode;
   const imageUrl = elem.src;
-  const imageName = genImageName(imageUrl);
+  const imgClass = await getImageAttachment(imageUrl, imgMode);
+  const imageName = imgClass.name;
 
-  let imgClass;
-  const imgClassCache = getAttachmentClassCache(imageUrl, imageName);
-  if (imgClassCache) {
-    imgClass = imgClassCache;
-  } else {
-    imgClass = new attachmentClass(imageUrl, imageName, imgMode);
-    imgClass.init();
-    putAttachmentClassCache(imgClass);
-  }
-
-  const filterdImages = builder.images.filter(
+  const filterdImages = builder.images.find(
     (imgClass) => imgClass.url === elem.src
   );
-  if (filterdImages.length === 0) {
+  if (!filterdImages) {
     builder.images.push(imgClass);
   }
 
@@ -228,7 +214,7 @@ function _formatImage(
   return [imgElem, imgText, imgClass];
 }
 
-function formatMisc(elem: HTMLElement, builder: Builder) {
+async function formatMisc(elem: HTMLElement, builder: Builder) {
   if (elem.childElementCount === 0) {
     const lastElement = builder.dom.lastElementChild;
     const textContent = elem.innerText.trim();
@@ -245,12 +231,12 @@ function formatMisc(elem: HTMLElement, builder: Builder) {
       builder.text = builder.text + "\n\n" + textContent;
     }
   } else {
-    walk(elem, builder);
+    await walk(elem, builder);
     return;
   }
 }
 
-function formatParagraph(elem: HTMLParagraphElement, builder: Builder) {
+async function formatParagraph(elem: HTMLParagraphElement, builder: Builder) {
   if (elem.childElementCount === 0) {
     const pElem = document.createElement("p");
     pElem.innerText = elem.innerText.trim();
@@ -261,7 +247,7 @@ function formatParagraph(elem: HTMLParagraphElement, builder: Builder) {
     builder.text = builder.text + pText;
     return;
   } else {
-    walk(elem, builder);
+    await walk(elem, builder);
     return;
   }
 }
@@ -426,7 +412,7 @@ export interface Builder {
   images: attachmentClass[];
   imgMode: "naive" | "TM";
 }
-export function walk(dom: HTMLElement, builder: Builder) {
+export async function walk(dom: HTMLElement, builder: Builder) {
   const childNodes = [...findBase(dom, blockElements, ignoreElements)].filter(
     (b) => b
   );
@@ -456,12 +442,12 @@ export function walk(dom: HTMLElement, builder: Builder) {
       case "span":
       case "font": {
         // 移除格式标签
-        formatMisc(node as HTMLElement, builder);
+        await formatMisc(node as HTMLElement, builder);
         break;
       }
       case "div":
       case "p": {
-        formatParagraph(node as HTMLParagraphElement, builder);
+        await formatParagraph(node as HTMLParagraphElement, builder);
         break;
       }
       case "#text": {
@@ -486,7 +472,7 @@ export function walk(dom: HTMLElement, builder: Builder) {
         break;
       }
       case "img": {
-        formatImage(node as HTMLImageElement, builder);
+        await formatImage(node as HTMLImageElement, builder);
         break;
       }
       case "hr": {

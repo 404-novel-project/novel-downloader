@@ -30,9 +30,11 @@ export class qimao implements ruleClass {
     const introDom = <HTMLElement>(
       document.querySelector(".book-introduction .article")
     );
-    const [introduction, introductionHTML, introCleanimages] = introDomHandle(
-      introDom
-    );
+    const [
+      introduction,
+      introductionHTML,
+      introCleanimages,
+    ] = await introDomHandle(introDom);
 
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = (<HTMLImageElement>(
@@ -123,7 +125,7 @@ export class qimao implements ruleClass {
 
       const content = <HTMLElement>doc.querySelector(".article");
       if (content) {
-        let { dom, text, images } = cleanDOM(content, "TM");
+        let { dom, text, images } = await cleanDOM(content, "TM");
         return {
           chapterName: chapterName,
           contentRaw: content,

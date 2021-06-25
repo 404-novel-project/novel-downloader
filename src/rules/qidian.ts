@@ -31,9 +31,11 @@ export class qidian implements ruleClass {
       .replace(/作\s+者:/, "")
       .trim();
     const introDom = document.querySelector(".book-info-detail .book-intro");
-    const [introduction, introductionHTML, introCleanimages] = introDomHandle(
-      introDom
-    );
+    const [
+      introduction,
+      introductionHTML,
+      introCleanimages,
+    ] = await introDomHandle(introDom);
 
     const additionalMetadate: BookAdditionalMetadate = {};
     let coverUrl = (<HTMLImageElement>document.querySelector("#bookImg > img"))
@@ -172,7 +174,7 @@ export class qidian implements ruleClass {
           content.appendChild(<HTMLElement>author_say);
         }
 
-        let { dom, text, images } = cleanDOM(content, "TM");
+        let { dom, text, images } = await cleanDOM(content, "TM");
         return {
           chapterName: chapterName,
           contentRaw: content,
@@ -291,7 +293,7 @@ export class qidian implements ruleClass {
             content.appendChild(authorSayDom);
           }
 
-          const { dom, text, images } = cleanDOM(content, "TM");
+          const { dom, text, images } = await cleanDOM(content, "TM");
           return {
             chapterName: chapterName,
             contentRaw: content,

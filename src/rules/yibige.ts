@@ -40,9 +40,11 @@ export class yibige implements ruleClass {
       }
       introDom.appendChild(node.cloneNode(true));
     }
-    const [introduction, introductionHTML, introCleanimages] = introDomHandle(
-      introDom
-    );
+    const [
+      introduction,
+      introductionHTML,
+      introCleanimages,
+    ] = await introDomHandle(introDom);
 
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = (<HTMLImageElement>(
@@ -172,7 +174,7 @@ export class yibige implements ruleClass {
       }
     } while (flag);
 
-    let { dom, text, images } = cleanDOM(content, "TM");
+    let { dom, text, images } = await cleanDOM(content, "TM");
     return {
       chapterName: chapterName,
       contentRaw: content,

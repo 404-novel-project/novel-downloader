@@ -1,10 +1,10 @@
 import { cleanDOM } from "../../lib";
 import { attachmentClass } from "../../main";
 
-export function introDomHandle(
+export async function introDomHandle(
   introDom: (Element | HTMLElement) | null,
   domPatch: ((introDom: HTMLElement) => HTMLElement) | undefined = undefined
-): [string | null, HTMLElement | null, attachmentClass[] | null] {
+): Promise<[string | null, HTMLElement | null, attachmentClass[] | null]> {
   if (introDom === null) {
     return [null, null, null];
   } else {
@@ -15,7 +15,7 @@ export function introDomHandle(
       dom: introCleanDom,
       text: introCleantext,
       images: introCleanimages,
-    } = cleanDOM(introDom, "TM");
+    } = await cleanDOM(introDom, "TM");
     return [introCleantext, introCleanDom, introCleanimages];
   }
 }

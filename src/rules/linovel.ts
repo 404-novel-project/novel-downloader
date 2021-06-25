@@ -5,7 +5,7 @@ import {
   Status,
   Book,
 } from "../main";
-import { getHtmlDOM, cleanDOM } from "../lib";
+import { getHtmlDOM, cleanDOM, getImageAttachment } from "../lib";
 import { ruleClass, chapterParseObject } from "../rules";
 import { introDomHandle } from "./lib/common";
 
@@ -29,9 +29,11 @@ export class linovel implements ruleClass {
     )).innerText.trim();
 
     const introDom = document.querySelector(".about-text");
-    const [introduction, introductionHTML, introCleanimages] = introDomHandle(
-      introDom
-    );
+    const [
+      introduction,
+      introductionHTML,
+      introCleanimages,
+    ] = await introDomHandle(introDom);
 
     const additionalMetadate: BookAdditionalMetadate = {};
     const attachmentsUrlList = []; //书籍元数据附件去重
@@ -52,25 +54,15 @@ export class linovel implements ruleClass {
         ".section-list > .section > .volume-info > .volume-cover a"
       )
     ).map((a) => (<HTMLAnchorElement>a).href);
-    let vi = 0;
+
     for (const volumeCoverUrl of volumeCoverUrlList) {
       if (!attachmentsUrlList.includes(volumeCoverUrl)) {
         attachmentsUrlList.push(volumeCoverUrl);
-        vi++;
-
-        const getVolumeCoverFileName = () => {
-          const vurl = new URL(volumeCoverUrl);
-          const pathname = vurl.pathname.split("!")[0];
-          const ext = pathname.split(".").slice(-1)[0];
-          return `volumeCover${vi}.${ext}`;
-        };
-        const volumeCoverObj = new attachmentClass(
-          volumeCoverUrl,
-          getVolumeCoverFileName(),
-          "TM"
-        );
-        volumeCoverObj.init();
-        additionalMetadate.attachments.push(volumeCoverObj);
+        (async () => {
+          const volumeCoverObj = await getImageAttachment(volumeCoverUrl);
+          volumeCoverObj.name = `volumeCover-` + volumeCoverObj.name;
+          additionalMetadate.attachments?.push(volumeCoverObj);
+        })();
       }
     }
 
@@ -169,7 +161,7 @@ export class linovel implements ruleClass {
       )).innerText.trim();
       const content = <HTMLElement>doc.querySelector(".article-text");
       if (content) {
-        let { dom, text, images } = cleanDOM(content, "TM");
+        let { dom, text, images } = await cleanDOM(content, "TM");
         return {
           chapterName: chapterName,
           contentRaw: content,

@@ -28,9 +28,11 @@ export class westnovel implements ruleClass {
       .trim();
 
     const introDom = document.querySelector(".intro-p > p:nth-child(1)");
-    const [introduction, introductionHTML, introCleanimages] = introDomHandle(
-      introDom
-    );
+    const [
+      introduction,
+      introductionHTML,
+      introCleanimages,
+    ] = await introDomHandle(introDom);
 
     const additionalMetadate: BookAdditionalMetadate = {};
     let coverUrl = (<HTMLImageElement>document.querySelector(".img-img")).src;
@@ -96,7 +98,7 @@ export class westnovel implements ruleClass {
       rm("div.ads", true, content);
       rm("div.link", true, content);
       rm("h4", true, content);
-      let { dom, text, images } = cleanDOM(content, "TM");
+      let { dom, text, images } = await cleanDOM(content, "TM");
       return {
         chapterName: chapterName,
         contentRaw: content,

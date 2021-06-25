@@ -44,9 +44,11 @@ export class jjwxc implements ruleClass {
       .replace(/作\s+者:/, "")
       .trim();
     const introDom = document.querySelector("#novelintro");
-    const [introduction, introductionHTML, introCleanimages] = introDomHandle(
-      introDom
-    );
+    const [
+      introduction,
+      introductionHTML,
+      introCleanimages,
+    ] = await introDomHandle(introDom);
     if (introCleanimages) {
       additionalMetadate.attachments = [...introCleanimages];
     }
@@ -218,7 +220,7 @@ export class jjwxc implements ruleClass {
         const rawAuthorSayDom = content.querySelector(".readsmall");
         let authorSayDom, authorSayText;
         if (rawAuthorSayDom) {
-          let { dom: adom, text: atext, images: aimages } = cleanDOM(
+          let { dom: adom, text: atext, images: aimages } = await cleanDOM(
             rawAuthorSayDom,
             "TM"
           );
@@ -229,7 +231,7 @@ export class jjwxc implements ruleClass {
           "@无限好文，尽在晋江文学城",
           ""
         );
-        let { dom, text, images } = cleanDOM(content, "TM");
+        let { dom, text, images } = await cleanDOM(content, "TM");
         if (rawAuthorSayDom && authorSayDom && authorSayText) {
           const hr = document.createElement("hr");
           authorSayDom.className = "authorSay";
@@ -329,10 +331,7 @@ export class jjwxc implements ruleClass {
         if (fontName && fontUrl) {
           const fontFileName = `${fontName}.woff2`;
           let fontClassObj: attachmentClass;
-          const fontClassObjCache = getAttachmentClassCache(
-            fontUrl,
-            fontFileName
-          );
+          const fontClassObjCache = getAttachmentClassCache(fontUrl);
           if (fontClassObjCache) {
             fontClassObj = fontClassObjCache;
           } else {
@@ -383,7 +382,7 @@ export class jjwxc implements ruleClass {
           const rawAuthorSayDom = content.querySelector(".readsmall");
           let authorSayDom, authorSayText;
           if (rawAuthorSayDom) {
-            let { dom: adom, text: atext, images: aimages } = cleanDOM(
+            let { dom: adom, text: atext, images: aimages } = await cleanDOM(
               rawAuthorSayDom,
               "TM"
             );
@@ -394,7 +393,10 @@ export class jjwxc implements ruleClass {
             "@无限好文，尽在晋江文学城",
             ""
           );
-          let { dom: rawDom, text: rawText, images } = cleanDOM(content, "TM");
+          let { dom: rawDom, text: rawText, images } = await cleanDOM(
+            content,
+            "TM"
+          );
           if (rawAuthorSayDom && authorSayDom && authorSayText) {
             const hr = document.createElement("hr");
             authorSayDom.className = "authorSay";

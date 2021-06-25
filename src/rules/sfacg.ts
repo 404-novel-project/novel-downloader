@@ -29,9 +29,11 @@ export class sfacg implements ruleClass {
       dom.querySelector(".author-name")
     )).innerText.trim();
     const introDom = dom.querySelector(".introduce");
-    const [introduction, introductionHTML, introCleanimages] = introDomHandle(
-      introDom
-    );
+    const [
+      introduction,
+      introductionHTML,
+      introCleanimages,
+    ] = await introDomHandle(introDom);
 
     const additionalMetadate: BookAdditionalMetadate = {};
     let coverUrl = (<HTMLImageElement>(
@@ -151,7 +153,7 @@ export class sfacg implements ruleClass {
       )).innerText.trim();
       const content = <HTMLElement>dom.querySelector(".article-content");
       if (content) {
-        let { dom, text, images } = cleanDOM(content, "TM");
+        let { dom, text, images } = await cleanDOM(content, "TM");
         return {
           chapterName: chapterName,
           contentRaw: content,

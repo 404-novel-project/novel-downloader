@@ -76,7 +76,7 @@ export class sosadfun implements ruleClass {
         dom: introCleanDom,
         text: introCleantext,
         images: introCleanimages,
-      } = cleanDOM(introDom, "TM");
+      } = await cleanDOM(introDom, "TM");
       introduction = introCleantext;
       introductionHTML = introCleanDom;
       if (introCleanimages) {
@@ -140,7 +140,7 @@ export class sosadfun implements ruleClass {
       doc.querySelector(".main-text.no-selection > span[id^=full]")
     );
     if (content) {
-      let { dom, text, images } = cleanDOM(content, "TM");
+      let { dom, text, images } = await cleanDOM(content, "TM");
       return {
         chapterName: chapterName,
         contentRaw: content,

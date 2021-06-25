@@ -24,14 +24,15 @@ export class soxscc implements ruleClass {
       document.querySelector(".xiaoshuo > h6:nth-child(3) > a")
     )).innerText.trim();
     const introDom = document.querySelector("#intro");
-    const [introduction, introductionHTML, introCleanimages] = introDomHandle(
-      introDom,
-      (introDom) => {
-        rm("span.tags", false, introDom);
-        rm("q", true, introDom);
-        return introDom;
-      }
-    );
+    const [
+      introduction,
+      introductionHTML,
+      introCleanimages,
+    ] = await introDomHandle(introDom, (introDom) => {
+      rm("span.tags", false, introDom);
+      rm("q", true, introDom);
+      return introDom;
+    });
 
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = (<HTMLImageElement>(
@@ -132,7 +133,7 @@ export class soxscc implements ruleClass {
           }
         }
       });
-      let { dom, text, images } = cleanDOM(content, "TM");
+      let { dom, text, images } = await cleanDOM(content, "TM");
       return {
         chapterName: chapterName,
         contentRaw: content,

@@ -29,9 +29,11 @@ export async function bookParseTemp({
   charset: string;
   chapterParse: ruleClass["chapterParse"];
 }): Promise<Book> {
-  const [introduction, introductionHTML, introCleanimages] = introDomHandle(
-    introDom
-  );
+  const [
+    introduction,
+    introductionHTML,
+    introCleanimages,
+  ] = await introDomHandle(introDom);
 
   const additionalMetadate: BookAdditionalMetadate = {};
   if (coverUrl) {
@@ -136,7 +138,7 @@ async function chapterParseTemp({
   let content = <HTMLElement>dom.querySelector(contenSelector);
   if (content) {
     content = contentPatch(content);
-    let { dom, text, images } = cleanDOM(content, "TM");
+    let { dom, text, images } = await cleanDOM(content, "TM");
     return {
       chapterName: chapterName,
       contentRaw: content,

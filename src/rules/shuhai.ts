@@ -33,9 +33,11 @@ export class shuhai implements ruleClass {
     const introDom =
       document.querySelector("div.book-info-bookintro") ||
       document.querySelector("div.book-info-bookintro-all");
-    const [introduction, introductionHTML, introCleanimages] = introDomHandle(
-      introDom
-    );
+    const [
+      introduction,
+      introductionHTML,
+      introCleanimages,
+    ] = await introDomHandle(introDom);
 
     const additionalMetadate: BookAdditionalMetadate = {};
     let coverUrl = (<HTMLImageElement>(
@@ -147,7 +149,7 @@ export class shuhai implements ruleClass {
 
       if (content) {
         rm("div.chaper-info", false, content);
-        let { dom, text, images } = cleanDOM(content, "TM");
+        let { dom, text, images } = await cleanDOM(content, "TM");
         return {
           chapterName: chapterName,
           contentRaw: content,
