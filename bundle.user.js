@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        3.7.3.1624617700553
+// @version        3.7.4.1624631719389
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -55,6 +55,7 @@
 // @match          *://www.1pwx.com/*/
 // @match          *://www.81book.com/book/*/
 // @match          *://m.yuzhaige.cc/*/*/
+// @match          *://www.wanben.org/*/
 // @match          *://www.xinwanben.com/*/
 // @match          *://www.idejian.com/book/*/
 // @match          *://www.wenku8.net/novel/*/*/index.htm
@@ -3027,7 +3028,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.walk = void 0;
-const main_1 = __webpack_require__("./src/main.ts");
 const lib_1 = __webpack_require__("./src/lib.ts");
 const blockElements = [
     "article",
@@ -3121,7 +3121,7 @@ function getParentElement(elem) {
         return getParentElement(_elem);
     }
 }
-function formatImage(elem, builder) {
+async function formatImage(elem, builder) {
     function temp0() {
         const pI = document.createElement("p");
         pI.appendChild(imgElem);
@@ -3131,7 +3131,7 @@ function formatImage(elem, builder) {
     if (!elem.src) {
         return;
     }
-    let tfi = _formatImage(elem, builder);
+    let tfi = await _formatImage(elem, builder);
     if (!tfi) {
         return;
     }
@@ -3179,35 +3179,16 @@ function formatImage(elem, builder) {
         }
     }
 }
-function _formatImage(elem, builder) {
-    function genImageName(url) {
-        let t = btoa(new URL(url).pathname.split("/").slice(-2).join("/")) +
-            `.${url.split(".").slice(-1)[0]}`;
-        if (t.length >= 125) {
-            t =
-                btoa(new URL(url).pathname.split("/").slice(-1)[0]) +
-                    `.${url.split(".").slice(-1)[0]}`;
-        }
-        return t;
-    }
+async function _formatImage(elem, builder) {
     if (!elem.src) {
         return;
     }
     const imgMode = builder.imgMode;
     const imageUrl = elem.src;
-    const imageName = genImageName(imageUrl);
-    let imgClass;
-    const imgClassCache = lib_1.getAttachmentClassCache(imageUrl, imageName);
-    if (imgClassCache) {
-        imgClass = imgClassCache;
-    }
-    else {
-        imgClass = new main_1.attachmentClass(imageUrl, imageName, imgMode);
-        imgClass.init();
-        lib_1.putAttachmentClassCache(imgClass);
-    }
-    const filterdImages = builder.images.filter((imgClass) => imgClass.url === elem.src);
-    if (filterdImages.length === 0) {
+    const imgClass = await lib_1.getImageAttachment(imageUrl, imgMode);
+    const imageName = imgClass.name;
+    const filterdImages = builder.images.find((imgClass) => imgClass.url === elem.src);
+    if (!filterdImages) {
         builder.images.push(imgClass);
     }
     const imgElem = document.createElement("img");
@@ -3216,7 +3197,7 @@ function _formatImage(elem, builder) {
     const imgText = `![${imageUrl}](${imageName})`;
     return [imgElem, imgText, imgClass];
 }
-function formatMisc(elem, builder) {
+async function formatMisc(elem, builder) {
     if (elem.childElementCount === 0) {
         const lastElement = builder.dom.lastElementChild;
         const textContent = elem.innerText.trim();
@@ -3233,11 +3214,11 @@ function formatMisc(elem, builder) {
         }
     }
     else {
-        walk(elem, builder);
+        await walk(elem, builder);
         return;
     }
 }
-function formatParagraph(elem, builder) {
+async function formatParagraph(elem, builder) {
     if (elem.childElementCount === 0) {
         const pElem = document.createElement("p");
         pElem.innerText = elem.innerText.trim();
@@ -3247,7 +3228,7 @@ function formatParagraph(elem, builder) {
         return;
     }
     else {
-        walk(elem, builder);
+        await walk(elem, builder);
         return;
     }
 }
@@ -3383,7 +3364,7 @@ function formatHr(elem, builder) {
     builder.text = builder.text + "\n\n" + hrText + "\n\n";
     return;
 }
-function walk(dom, builder) {
+async function walk(dom, builder) {
     const childNodes = [...findBase(dom, blockElements, ignoreElements)].filter((b) => b);
     for (let i = 0; i < childNodes.length; i++) {
         const node = childNodes[i];
@@ -3410,12 +3391,12 @@ function walk(dom, builder) {
             case "cite":
             case "span":
             case "font": {
-                formatMisc(node, builder);
+                await formatMisc(node, builder);
                 break;
             }
             case "div":
             case "p": {
-                formatParagraph(node, builder);
+                await formatParagraph(node, builder);
                 break;
             }
             case "#text": {
@@ -3438,7 +3419,7 @@ function walk(dom, builder) {
                 break;
             }
             case "img": {
-                formatImage(node, builder);
+                await formatImage(node, builder);
                 break;
             }
             case "hr": {
@@ -3460,7 +3441,7 @@ exports.walk = walk;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.audio = exports.attachmentClassCache = exports.catchError = exports.updateProgress = void 0;
+exports.catchError = exports.updateProgress = void 0;
 const rules_1 = __webpack_require__("./src/rules.ts");
 const main_1 = __webpack_require__("./src/main.ts");
 const lib_1 = __webpack_require__("./src/lib.ts");
@@ -3577,7 +3558,13 @@ function updateProgress(finishedChapterNumber, totalChapterNumber, zipPercent) {
 exports.updateProgress = updateProgress;
 async function run() {
     log_1.log.info(`[run]下载开始`);
-    exports.audio.play();
+    index_helper_1.audio.play();
+    const confirmExit = (e) => {
+        e.preventDefault();
+        const confirmationText = "您正尝试离开本页面，当前页面有下载任务正在运行，是否确认离开？";
+        return (e.returnValue = confirmationText);
+    };
+    window.onbeforeunload = confirmExit;
     const rule = await rules_1.getRule();
     log_1.log.info(`[run]获取规则成功`);
     if (await preTest()) {
@@ -3595,7 +3582,6 @@ async function run() {
         log_1.log.info(`[run]移除运行标志`);
         await index_helper_1.removeTabMark();
     }
-    log_1.log.info(`[run]下载完毕`);
     return book;
     async function preTest() {
         log_1.log.debug("[run]运行前检测");
@@ -3634,13 +3620,14 @@ async function run() {
 }
 function catchError(error) {
     downloading = false;
-    exports.attachmentClassCache = [];
+    lib_1.clearAttachmentClassCache();
     if (typeof GM_getTab !== "undefined") {
         index_helper_1.removeTabMark();
     }
     finishedChapterNumber = 0;
     document.querySelector("#nd-progress")?.remove();
-    exports.audio.pause();
+    index_helper_1.audio.pause();
+    window.onbeforeunload = null;
     if (error instanceof main_1.ExpectError) {
         log_1.log.error(error);
         log_1.log.trace(error);
@@ -3678,7 +3665,7 @@ function addButton() {
                     .then((book) => {
                     downloading = false;
                     finishedChapterNumber = 0;
-                    exports.attachmentClassCache = [];
+                    lib_1.clearAttachmentClassCache();
                     img.src = rules_1.icon0;
                 })
                     .catch(catchError);
@@ -3700,9 +3687,6 @@ async function debug() {
     return;
 }
 let downloading = false;
-exports.attachmentClassCache = [];
-exports.audio = new Audio("data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU3LjcxLjEwMAAAAAAAAAAAAAAA/+M4wAAAAAAAAAAAAEluZm8AAAAPAAAAEAAABVgANTU1NTU1Q0NDQ0NDUFBQUFBQXl5eXl5ea2tra2tra3l5eXl5eYaGhoaGhpSUlJSUlKGhoaGhoaGvr6+vr6+8vLy8vLzKysrKysrX19fX19fX5eXl5eXl8vLy8vLy////////AAAAAExhdmM1Ny44OQAAAAAAAAAAAAAAACQCgAAAAAAAAAVY82AhbwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/+MYxAALACwAAP/AADwQKVE9YWDGPkQWpT66yk4+zIiYPoTUaT3tnU487uNhOvEmQDaCm1Yz1c6DPjbs6zdZVBk0pdGpMzxF/+MYxA8L0DU0AP+0ANkwmYaAMkOKDDjmYoMtwNMyDxMzDHE/MEsLow9AtDnBlQgDhTx+Eye0GgMHoCyDC8gUswJcMVMABBGj/+MYxBoK4DVpQP8iAtVmDk7LPgi8wvDzI4/MWAwK1T7rxOQwtsItMMQBazAowc4wZMC5MF4AeQAGDpruNuMEzyfjLBJhACU+/+MYxCkJ4DVcAP8MAO9J9THVg6oxRMGNMIqCCTAEwzwwBkINOPAs/iwjgBnMepYyId0PhWo+80PXMVsBFzD/AiwwfcKGMEJB/+MYxDwKKDVkAP8eAF8wMwIxMlpU/OaDPLpNKkEw4dRoBh6qP2FC8jCJQFcweQIPMHOBtTBoAVcwOoCNMYDI0u0Dd8ANTIsy/+MYxE4KUDVsAP8eAFBVpgVVPjdGeTEWQr0wdcDtMCeBgDBkgRgwFYB7Pv/zqx0yQQMCCgKNgonHKj6RRVkxM0GwML0AhDAN/+MYxF8KCDVwAP8MAIHZMDDA3DArAQo3K+TF5WOBDQw0lgcKQUJxhT5sxRcwQQI+EIPWMA7AVBoTABgTgzfBN+ajn3c0lZMe/+MYxHEJyDV0AP7MAA4eEwsqP/PDmzC/gNcwXUGaMBVBIwMEsmB6gaxhVuGkpoqMZMQjooTBwM0+S8FTMC0BcjBTgPwwOQDm/+MYxIQKKDV4AP8WADAzAKQwI4CGPhWOEwCFAiBAYQnQMT+uwXUeGzjBWQVkwTcENMBzA2zAGgFEJfSPkPSZzPXgqFy2h0xB/+MYxJYJCDV8AP7WAE0+7kK7MQrATDAvQRIwOADKMBuA9TAYQNM3AiOSPjGxowgHMKFGcBNMQU1FMy45OS41VVU/31eYM4sK/+MYxKwJaDV8AP7SAI4y1Yq0MmOIADGwBZwwlgIJMztCM0qU5TQPG/MSkn8yEROzCdAxECVMQU1FMy45OS41VTe7Ohk+Pqcx/+MYxMEJMDWAAP6MADVLDFUx+4J6Mq7NsjN2zXo8V5fjVJCXNOhwM0vTCDAxFpMYYQU+RlVMQU1FMy45OS41VVVVVVVVVVVV/+MYxNcJADWAAP7EAFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV/+MYxOsJwDWEAP7SAFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV/+MYxPMLoDV8AP+eAFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV/+MYxPQL0DVcAP+0AFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV");
-exports.audio.loop = true;
 window.addEventListener("DOMContentLoaded", () => {
     if (rules_1.enableR18SiteWarning && rules_1.r18SiteList.includes(document.location.host)) {
         const c = index_helper_1.r18SiteWarning();
@@ -3726,12 +3710,14 @@ window.addEventListener("DOMContentLoaded", () => {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.r18SiteWarning = exports.removeTabMark = exports.getNowRunNumber = exports.setTabMark = exports.getSaveBookObj = exports.saveOptionsValidate = exports.saveBook = exports.progressStyleText = exports.buttonStyleText = void 0;
+exports.r18SiteWarning = exports.removeTabMark = exports.getNowRunNumber = exports.setTabMark = exports.getSaveBookObj = exports.saveOptionsValidate = exports.saveBook = exports.progressStyleText = exports.buttonStyleText = exports.audio = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const lib_1 = __webpack_require__("./src/lib.ts");
 const index_1 = __webpack_require__("./src/index.ts");
 const rules_1 = __webpack_require__("./src/rules.ts");
 const log_1 = __webpack_require__("./src/log.ts");
+exports.audio = new Audio("data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU3LjcxLjEwMAAAAAAAAAAAAAAA/+M4wAAAAAAAAAAAAEluZm8AAAAPAAAAEAAABVgANTU1NTU1Q0NDQ0NDUFBQUFBQXl5eXl5ea2tra2tra3l5eXl5eYaGhoaGhpSUlJSUlKGhoaGhoaGvr6+vr6+8vLy8vLzKysrKysrX19fX19fX5eXl5eXl8vLy8vLy////////AAAAAExhdmM1Ny44OQAAAAAAAAAAAAAAACQCgAAAAAAAAAVY82AhbwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/+MYxAALACwAAP/AADwQKVE9YWDGPkQWpT66yk4+zIiYPoTUaT3tnU487uNhOvEmQDaCm1Yz1c6DPjbs6zdZVBk0pdGpMzxF/+MYxA8L0DU0AP+0ANkwmYaAMkOKDDjmYoMtwNMyDxMzDHE/MEsLow9AtDnBlQgDhTx+Eye0GgMHoCyDC8gUswJcMVMABBGj/+MYxBoK4DVpQP8iAtVmDk7LPgi8wvDzI4/MWAwK1T7rxOQwtsItMMQBazAowc4wZMC5MF4AeQAGDpruNuMEzyfjLBJhACU+/+MYxCkJ4DVcAP8MAO9J9THVg6oxRMGNMIqCCTAEwzwwBkINOPAs/iwjgBnMepYyId0PhWo+80PXMVsBFzD/AiwwfcKGMEJB/+MYxDwKKDVkAP8eAF8wMwIxMlpU/OaDPLpNKkEw4dRoBh6qP2FC8jCJQFcweQIPMHOBtTBoAVcwOoCNMYDI0u0Dd8ANTIsy/+MYxE4KUDVsAP8eAFBVpgVVPjdGeTEWQr0wdcDtMCeBgDBkgRgwFYB7Pv/zqx0yQQMCCgKNgonHKj6RRVkxM0GwML0AhDAN/+MYxF8KCDVwAP8MAIHZMDDA3DArAQo3K+TF5WOBDQw0lgcKQUJxhT5sxRcwQQI+EIPWMA7AVBoTABgTgzfBN+ajn3c0lZMe/+MYxHEJyDV0AP7MAA4eEwsqP/PDmzC/gNcwXUGaMBVBIwMEsmB6gaxhVuGkpoqMZMQjooTBwM0+S8FTMC0BcjBTgPwwOQDm/+MYxIQKKDV4AP8WADAzAKQwI4CGPhWOEwCFAiBAYQnQMT+uwXUeGzjBWQVkwTcENMBzA2zAGgFEJfSPkPSZzPXgqFy2h0xB/+MYxJYJCDV8AP7WAE0+7kK7MQrATDAvQRIwOADKMBuA9TAYQNM3AiOSPjGxowgHMKFGcBNMQU1FMy45OS41VVU/31eYM4sK/+MYxKwJaDV8AP7SAI4y1Yq0MmOIADGwBZwwlgIJMztCM0qU5TQPG/MSkn8yEROzCdAxECVMQU1FMy45OS41VTe7Ohk+Pqcx/+MYxMEJMDWAAP6MADVLDFUx+4J6Mq7NsjN2zXo8V5fjVJCXNOhwM0vTCDAxFpMYYQU+RlVMQU1FMy45OS41VVVVVVVVVVVV/+MYxNcJADWAAP7EAFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV/+MYxOsJwDWEAP7SAFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV/+MYxPMLoDV8AP+eAFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV/+MYxPQL0DVcAP+0AFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV");
+exports.audio.loop = true;
 exports.buttonStyleText = `position: fixed;
 top: 15%;
 right: 5%;
@@ -3786,6 +3772,7 @@ class saveBook {
         this.chapters.sort(this.chapterSort);
         this.savedZip = new lib_1.fflateZip();
         this._sections = [];
+        this._savedChapters = [];
         this.savedTextArray = [];
         this.saveFileNameBase = `[${this.book.author}]${this.book.bookname}`;
         this.mainStyleText = `body {
@@ -3955,7 +3942,7 @@ a.disabled {
         const finalHandle = (blob) => {
             saveAs(blob, `${self.saveFileNameBase}.zip`);
             document.querySelector("#nd-progress")?.remove();
-            index_1.audio.pause();
+            exports.audio.pause();
             finish();
         };
         const finalErrorHandle = (err) => {
@@ -4034,7 +4021,7 @@ a.disabled {
                 const chapterAnchor = document.createElement("a");
                 chapterAnchor.href = chapterHtmlFileName;
                 chapterAnchor.innerHTML = chapterName;
-                if (!chapter.contentHTML) {
+                if (!this._savedChapters.includes(chapter)) {
                     chapterAnchor.classList.add("disabled");
                 }
                 chapterDiv.appendChild(chapterAnchor);
@@ -4099,11 +4086,15 @@ a.disabled {
         if (chapter.contentImages) {
             for (const attachment of chapter.contentImages) {
                 this.addImageToZip(attachment, this.savedZip);
+                if (!rules_1.enaleDebug) {
+                    attachment.imageBlob = null;
+                }
             }
             if (!rules_1.enaleDebug) {
                 chapter.contentImages = null;
             }
         }
+        this._savedChapters.push(chapter);
     }
     getchapterName(chapter) {
         if (chapter.chapterName) {
@@ -4134,8 +4125,8 @@ a.disabled {
             zip.file(image.name, image.imageBlob);
         }
         else {
-            log_1.log.error("[save]附件下载失败！");
-            log_1.log.error(image);
+            log_1.log.warn("[save]添加附件下载失败，该附件未完成或内容为空。");
+            log_1.log.warn(image);
         }
     }
     genSectionText(sectionName) {
@@ -4240,10 +4231,11 @@ async function finish() {
         successPlus();
         printStat();
     }
-    await lib_1.sleep(3000);
     if (rules_1.enaleDebug) {
         log_1.saveLogTextToFile();
     }
+    window.onbeforeunload = null;
+    await lib_1.sleep(3000);
     if (rules_1.enableCustomFinishCallback &&
         typeof unsafeWindow.customFinishCallback ===
             "function") {
@@ -4251,6 +4243,7 @@ async function finish() {
             .customFinishCallback;
         log_1.log.info(`发现自定义结束回调函数，内容如下：\n${customFinishCallback.toString()}`);
         customFinishCallback();
+        log_1.log.info(`[run]下载完毕`);
     }
 }
 function setTabMark() {
@@ -4331,9 +4324,9 @@ exports.r18SiteWarning = r18SiteWarning;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.fflateZip = exports.storageAvailable = exports.sandboxed = exports.putAttachmentClassCache = exports.getAttachmentClassCache = exports.sleep = exports.concurrencyRun = exports.gfetch = exports.rm = exports.ggetHtmlDOM = exports.ggetText = exports.getHtmlDOM = exports.getText = exports.cleanDOM = exports._GM_deleteValue = exports._GM_getValue = exports._GM_setValue = exports._GM_info = void 0;
+exports.fflateZip = exports.storageAvailable = exports.sandboxed = exports.getImageAttachment = exports.clearAttachmentClassCache = exports.putAttachmentClassCache = exports.getAttachmentClassCache = exports.sleep = exports.concurrencyRun = exports.gfetch = exports.rm = exports.ggetHtmlDOM = exports.ggetText = exports.getHtmlDOM = exports.getText = exports.cleanDOM = exports._GM_deleteValue = exports._GM_getValue = exports._GM_setValue = exports._GM_info = void 0;
 const cleanDOM_1 = __webpack_require__("./src/cleanDOM.ts");
-const index_1 = __webpack_require__("./src/index.ts");
+const main_1 = __webpack_require__("./src/main.ts");
 const log_1 = __webpack_require__("./src/log.ts");
 const fflate_1 = __webpack_require__("./node_modules/fflate/lib/index.cjs");
 if (typeof GM_info === "undefined") {
@@ -4420,14 +4413,14 @@ if (typeof GM_deleteValue === "undefined") {
 else {
     exports._GM_deleteValue = GM_deleteValue;
 }
-function cleanDOM(DOM, imgMode) {
+async function cleanDOM(DOM, imgMode) {
     const builder = {
         dom: document.createElement("div"),
         text: "",
         images: [],
         imgMode: imgMode,
     };
-    cleanDOM_1.walk(DOM, builder);
+    await cleanDOM_1.walk(DOM, builder);
     return {
         dom: builder.dom,
         text: builder.text.trim(),
@@ -4578,16 +4571,45 @@ function sleep(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
 }
 exports.sleep = sleep;
-function getAttachmentClassCache(url, name) {
-    const found = index_1.attachmentClassCache.find((attachmentClass) => attachmentClass.url === url && attachmentClass.name === name);
+let attachmentClassCache = [];
+function getAttachmentClassCache(url) {
+    const found = attachmentClassCache.find((attachmentClass) => attachmentClass.url === url);
     return found;
 }
 exports.getAttachmentClassCache = getAttachmentClassCache;
 function putAttachmentClassCache(attachmentClass) {
-    index_1.attachmentClassCache.push(attachmentClass);
+    attachmentClassCache.push(attachmentClass);
     return true;
 }
 exports.putAttachmentClassCache = putAttachmentClassCache;
+function clearAttachmentClassCache() {
+    attachmentClassCache = [];
+}
+exports.clearAttachmentClassCache = clearAttachmentClassCache;
+async function getImageAttachment(url, imgMode = "TM") {
+    const tmpImageName = Math.random().toString().replace("0.", "");
+    let imgClass;
+    const imgClassCache = getAttachmentClassCache(url);
+    if (imgClassCache) {
+        imgClass = imgClassCache;
+    }
+    else {
+        imgClass = new main_1.attachmentClass(url, tmpImageName, imgMode);
+        const blob = await imgClass.init();
+        if (blob) {
+            const hash = await calculateMd5(blob);
+            const ext = blob.type.split("/")[1];
+            const imageName = [hash, ext].join(".");
+            imgClass.name = imageName;
+            putAttachmentClassCache(imgClass);
+        }
+        else {
+            throw new Error("[getImageAttachment] MD5sum failed!");
+        }
+    }
+    return imgClass;
+}
+exports.getImageAttachment = getImageAttachment;
 function sandboxed(code) {
     const frame = document.createElement("iframe");
     document.body.appendChild(frame);
@@ -4619,6 +4641,23 @@ function storageAvailable(type) {
     }
 }
 exports.storageAvailable = storageAvailable;
+function calculateMd5(blob) {
+    return new Promise((resolve, rejects) => {
+        const reader = new FileReader();
+        reader.readAsArrayBuffer(blob);
+        reader.onloadend = function () {
+            if (reader.result) {
+                const wordArray = CryptoJS.lib.WordArray.create(reader.result);
+                const hash = CryptoJS.MD5(wordArray).toString();
+                resolve(hash);
+            }
+            else {
+                rejects(Error("计算MD5值出错"));
+                return;
+            }
+        };
+    });
+}
 class fflateZip {
     constructor(memlimit = false) {
         this.count = 0;
@@ -4643,8 +4682,8 @@ class fflateZip {
                 log_1.log.info("[fflateZip] ZIP生成完毕，文件大小：" + zipBlob.size);
                 self.zipOut = [];
                 if (typeof self.onFinal === "function") {
-                    if (typeof self.onUpdateFlag !== "undefined") {
-                        clearInterval(self.onUpdateFlag);
+                    if (typeof self.onUpdateId !== "undefined") {
+                        clearInterval(self.onUpdateId);
                     }
                     try {
                         self.onFinal(zipBlob);
@@ -4663,7 +4702,8 @@ class fflateZip {
     }
     file(filename, file) {
         if (this.filenameList.includes(filename)) {
-            throw new Error(`filename ${filename} has existed on zip.`);
+            log_1.log.error(`filename ${filename} has existed on zip.`);
+            return;
         }
         this.count++;
         this.filenameList.push(filename);
@@ -4694,7 +4734,7 @@ class fflateZip {
             await sleep(500);
         }
         const self = this;
-        this.onUpdateFlag = setInterval(() => {
+        this.onUpdateId = window.setInterval(() => {
             const percent = (self.zcount / 3 / self.count) * 100;
             if (typeof onUpdate === "function") {
                 onUpdate(percent);
@@ -5082,7 +5122,8 @@ async function getRule() {
             ruleClass = linovel;
             break;
         }
-        case "www.xinwanben.com": {
+        case "www.xinwanben.com":
+        case "www.wanben.org": {
             const { xinwanben } = await Promise.resolve().then(() => __webpack_require__("./src/rules/xinwanben.ts"));
             ruleClass = xinwanben;
             break;
@@ -5219,7 +5260,7 @@ class c17k {
         const author = (document.querySelector("div.Author > a")).innerText.trim();
         const doc = await lib_1.getHtmlDOM(bookUrl, undefined);
         const introDom = doc.querySelector("#bookInfo p.intro > a");
-        const [introduction, introductionHTML, introCleanimages] = common_1.introDomHandle(introDom);
+        const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         let coverUrl = doc.querySelector("#bookCover img.book")
             .src;
@@ -5275,7 +5316,7 @@ class c17k {
                 lib_1.rm("#banner_content", false, content);
                 lib_1.rm("div.qrcode", false, content);
                 lib_1.rm("div.chapter_text_ad", false, content);
-                let { dom, text, images } = lib_1.cleanDOM(content, "TM");
+                let { dom, text, images } = await lib_1.cleanDOM(content, "TM");
                 return {
                     chapterName: chapterName,
                     contentRaw: content,
@@ -5341,7 +5382,7 @@ class c226ks {
             .replace(/作(\s+)?者[：:]/, "")
             .trim();
         const introDom = document.querySelector(".desc");
-        const [introduction, introductionHTML, introCleanimages] = common_1.introDomHandle(introDom);
+        const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         const coverUrl = document.querySelector(".imgbox > img")
             .src;
@@ -5381,7 +5422,7 @@ class c226ks {
         const ad = '<div class="posterror"><a href="javascript:postError();" class="red">章节错误,点此举报(免注册)</a>,举报后维护人员会在两分钟内校正章节内容,请耐心等待,并刷新页面。</div>';
         content.innerHTML = content.innerHTML.replace(ad, "");
         if (content) {
-            let { dom, text, images } = lib_1.cleanDOM(content, "TM");
+            let { dom, text, images } = await lib_1.cleanDOM(content, "TM");
             return {
                 chapterName: chapterName,
                 contentRaw: content,
@@ -5419,7 +5460,7 @@ const main_1 = __webpack_require__("./src/main.ts");
 const lib_1 = __webpack_require__("./src/lib.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 async function bookParseTemp({ bookUrl, bookname, author, introDom, introDomPatch, coverUrl, chapterListSelector, charset, chapterParse, }) {
-    const [introduction, introductionHTML, introCleanimages] = common_1.introDomHandle(introDom);
+    const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom);
     const additionalMetadate = {};
     if (coverUrl) {
         additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
@@ -5476,7 +5517,7 @@ async function chapterParseTemp({ dom, chapterUrl, chapterName, contenSelector, 
     let content = dom.querySelector(contenSelector);
     if (content) {
         content = contentPatch(content);
-        let { dom, text, images } = lib_1.cleanDOM(content, "TM");
+        let { dom, text, images } = await lib_1.cleanDOM(content, "TM");
         return {
             chapterName: chapterName,
             contentRaw: content,
@@ -5665,7 +5706,7 @@ class ciweimao {
         const author = (document.querySelector(".book-catalog .hd > p > a")).innerText.trim();
         const dom = await lib_1.getHtmlDOM(bookUrl, undefined);
         const introDom = dom.querySelector(".book-intro-cnt .book-desc");
-        const [introduction, introductionHTML, introCleanimages] = common_1.introDomHandle(introDom);
+        const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         const coverUrl = dom.querySelector(".cover > img").src;
         additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
@@ -5802,7 +5843,7 @@ class ciweimao {
             if (div_chapter_author_say) {
                 content.appendChild(div_chapter_author_say);
             }
-            let { dom, text, images } = lib_1.cleanDOM(content, "TM");
+            let { dom, text, images } = await lib_1.cleanDOM(content, "TM");
             return {
                 chapterName: chapterName,
                 contentRaw: content,
@@ -5880,7 +5921,7 @@ class ciweimao {
                 const contentImages = [vipCHapterImage];
                 let ddom, dtext, dimages;
                 if (div_chapter_author_say) {
-                    let { dom, text, images } = lib_1.cleanDOM(div_chapter_author_say, "TM");
+                    let { dom, text, images } = await lib_1.cleanDOM(div_chapter_author_say, "TM");
                     [ddom, dtext, dimages] = [dom, text, images];
                 }
                 const img = document.createElement("img");
@@ -5950,7 +5991,7 @@ class dierbanzhu {
             .replace(/作(\s+)?者[：:]/, "")
             .trim();
         const introDom = document.querySelector("#intro");
-        const [introduction, introductionHTML, introCleanimages] = common_1.introDomHandle(introDom);
+        const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         const coverUrl = document.querySelector("#fmimg > img")
             .src;
@@ -5993,7 +6034,7 @@ class dierbanzhu {
         chapterName = (dom.querySelector(".bookname > h1:nth-child(1)")).innerText.trim();
         const content = dom.querySelector("#content");
         if (content) {
-            let { dom, text, images } = lib_1.cleanDOM(content, "TM");
+            let { dom, text, images } = await lib_1.cleanDOM(content, "TM");
             return {
                 chapterName: chapterName,
                 contentRaw: content,
@@ -6042,7 +6083,7 @@ class dmzj {
             .replace("作者：", "")
             .trim();
         const introDom = document.querySelector(".comic_deCon_d");
-        const [introduction, introductionHTML, introCleanimages] = common_1.introDomHandle(introDom);
+        const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         const coverUrl = (document.querySelector(".comic_i_img > a > img")).src;
         if (coverUrl) {
@@ -6093,7 +6134,7 @@ class dmzj {
                 pElem.appendChild(imgElem);
                 content.appendChild(pElem);
             }
-            let { dom, text, images } = lib_1.cleanDOM(content, "TM");
+            let { dom, text, images } = await lib_1.cleanDOM(content, "TM");
             return {
                 chapterName: chapterName,
                 contentRaw: content,
@@ -6174,7 +6215,7 @@ class fushuwang {
             lib_1.rm("span", true, content);
             lib_1.rm("p.pageLink", true, content);
             lib_1.rm("script", true, content);
-            let { dom, text, images } = lib_1.cleanDOM(content, "TM");
+            let { dom, text, images } = await lib_1.cleanDOM(content, "TM");
             return {
                 chapterName: chapterName,
                 contentRaw: content,
@@ -6248,7 +6289,7 @@ class gongzicp {
         const author = data.novelInfo.author_nickname;
         const introDom = document.createElement("div");
         introDom.innerHTML = data.novelInfo.novel_info;
-        const [introduction, introductionHTML, introCleanimages] = common_1.introDomHandle(introDom);
+        const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         const coverUrl = data.novelInfo.novel_cover;
         additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
@@ -6554,7 +6595,7 @@ class hetushu {
         const bookname = (document.querySelector(".book_info > h2")).innerText.trim();
         const author = (document.querySelector(".book_info > div:nth-child(3) > a:nth-child(1)")).innerText.trim();
         const introDom = document.querySelector(".intro");
-        const [introduction, introductionHTML, introCleanimages] = common_1.introDomHandle(introDom);
+        const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         const coverUrl = (document.querySelector(".book_info > img")).src;
         additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
@@ -6668,7 +6709,7 @@ class hetushu {
                 newNode.innerHTML = oldNode.innerHTML;
                 oldNode.parentNode?.replaceChild(newNode, oldNode);
             });
-            let { dom, text, images } = lib_1.cleanDOM(content, "TM");
+            let { dom, text, images } = await lib_1.cleanDOM(content, "TM");
             return {
                 chapterName: chapterName,
                 contentRaw: content,
@@ -6723,7 +6764,7 @@ class idejian {
             author = _author.textContent.trim();
         }
         const introDom = document.querySelector(".brief_con");
-        const [introduction, introductionHTML, introCleanimages] = common_1.introDomHandle(introDom);
+        const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         const coverUrl = (document.querySelector(".book_img > img")).src;
         if (coverUrl) {
@@ -6776,7 +6817,7 @@ class idejian {
         }
         if (content) {
             lib_1.rm("h1", false, content);
-            let { dom, text, images } = lib_1.cleanDOM(content, "TM");
+            let { dom, text, images } = await lib_1.cleanDOM(content, "TM");
             return {
                 chapterName: chapterName,
                 contentRaw: content,
@@ -6830,7 +6871,7 @@ class jjwxc {
             .replace(/作\s+者:/, "")
             .trim();
         const introDom = document.querySelector("#novelintro");
-        const [introduction, introductionHTML, introCleanimages] = common_1.introDomHandle(introDom);
+        const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom);
         if (introCleanimages) {
             additionalMetadate.attachments = [...introCleanimages];
         }
@@ -6931,12 +6972,12 @@ class jjwxc {
                 const rawAuthorSayDom = content.querySelector(".readsmall");
                 let authorSayDom, authorSayText;
                 if (rawAuthorSayDom) {
-                    let { dom: adom, text: atext, images: aimages } = lib_1.cleanDOM(rawAuthorSayDom, "TM");
+                    let { dom: adom, text: atext, images: aimages } = await lib_1.cleanDOM(rawAuthorSayDom, "TM");
                     [authorSayDom, authorSayText] = [adom, atext];
                 }
                 lib_1.rm("div", true, content);
                 content.innerHTML = content.innerHTML.replaceAll("@无限好文，尽在晋江文学城", "");
-                let { dom, text, images } = lib_1.cleanDOM(content, "TM");
+                let { dom, text, images } = await lib_1.cleanDOM(content, "TM");
                 if (rawAuthorSayDom && authorSayDom && authorSayText) {
                     const hr = document.createElement("hr");
                     authorSayDom.className = "authorSay";
@@ -7025,7 +7066,7 @@ class jjwxc {
                 if (fontName && fontUrl) {
                     const fontFileName = `${fontName}.woff2`;
                     let fontClassObj;
-                    const fontClassObjCache = lib_1.getAttachmentClassCache(fontUrl, fontFileName);
+                    const fontClassObjCache = lib_1.getAttachmentClassCache(fontUrl);
                     if (fontClassObjCache) {
                         fontClassObj = fontClassObjCache;
                     }
@@ -7069,12 +7110,12 @@ class jjwxc {
                     const rawAuthorSayDom = content.querySelector(".readsmall");
                     let authorSayDom, authorSayText;
                     if (rawAuthorSayDom) {
-                        let { dom: adom, text: atext, images: aimages } = lib_1.cleanDOM(rawAuthorSayDom, "TM");
+                        let { dom: adom, text: atext, images: aimages } = await lib_1.cleanDOM(rawAuthorSayDom, "TM");
                         [authorSayDom, authorSayText] = [adom, atext];
                     }
                     lib_1.rm("div", true, content);
                     content.innerHTML = content.innerHTML.replace("@无限好文，尽在晋江文学城", "");
-                    let { dom: rawDom, text: rawText, images } = lib_1.cleanDOM(content, "TM");
+                    let { dom: rawDom, text: rawText, images } = await lib_1.cleanDOM(content, "TM");
                     if (rawAuthorSayDom && authorSayDom && authorSayText) {
                         const hr = document.createElement("hr");
                         authorSayDom.className = "authorSay";
@@ -7137,7 +7178,7 @@ exports.jjwxc = jjwxc;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.introDomHandle = void 0;
 const lib_1 = __webpack_require__("./src/lib.ts");
-function introDomHandle(introDom, domPatch = undefined) {
+async function introDomHandle(introDom, domPatch = undefined) {
     if (introDom === null) {
         return [null, null, null];
     }
@@ -7145,7 +7186,7 @@ function introDomHandle(introDom, domPatch = undefined) {
         if (domPatch) {
             introDom = domPatch(introDom.cloneNode(true));
         }
-        let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "TM");
+        let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = await lib_1.cleanDOM(introDom, "TM");
         return [introCleantext, introCleanDom, introCleanimages];
     }
 }
@@ -29829,7 +29870,7 @@ class linovel {
         const bookname = (document.querySelector(".book-title")).innerText.trim();
         const author = (document.querySelector(".author-frame > .novelist > div:nth-child(3) > a")).innerText.trim();
         const introDom = document.querySelector(".about-text");
-        const [introduction, introductionHTML, introCleanimages] = common_1.introDomHandle(introDom);
+        const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         const attachmentsUrlList = [];
         const coverUrl = (document.querySelector(".book-cover > a")).href;
@@ -29838,20 +29879,14 @@ class linovel {
         additionalMetadate.cover.init();
         additionalMetadate.attachments = [];
         const volumeCoverUrlList = Array.from(document.querySelectorAll(".section-list > .section > .volume-info > .volume-cover a")).map((a) => a.href);
-        let vi = 0;
         for (const volumeCoverUrl of volumeCoverUrlList) {
             if (!attachmentsUrlList.includes(volumeCoverUrl)) {
                 attachmentsUrlList.push(volumeCoverUrl);
-                vi++;
-                const getVolumeCoverFileName = () => {
-                    const vurl = new URL(volumeCoverUrl);
-                    const pathname = vurl.pathname.split("!")[0];
-                    const ext = pathname.split(".").slice(-1)[0];
-                    return `volumeCover${vi}.${ext}`;
-                };
-                const volumeCoverObj = new main_1.attachmentClass(volumeCoverUrl, getVolumeCoverFileName(), "TM");
-                volumeCoverObj.init();
-                additionalMetadate.attachments.push(volumeCoverObj);
+                (async () => {
+                    const volumeCoverObj = await lib_1.getImageAttachment(volumeCoverUrl);
+                    volumeCoverObj.name = `volumeCover-` + volumeCoverObj.name;
+                    additionalMetadate.attachments?.push(volumeCoverObj);
+                })();
             }
         }
         additionalMetadate.tags = Array.from(document.querySelectorAll("div.meta-info > div.book-cats.clearfix > a")).map((a) => a.innerText.trim());
@@ -29904,7 +29939,7 @@ class linovel {
             const chapterName = (doc.querySelector(".article-title")).innerText.trim();
             const content = doc.querySelector(".article-text");
             if (content) {
-                let { dom, text, images } = lib_1.cleanDOM(content, "TM");
+                let { dom, text, images } = await lib_1.cleanDOM(content, "TM");
                 return {
                     chapterName: chapterName,
                     contentRaw: content,
@@ -29969,7 +30004,7 @@ class linovelib {
         const author = (document.querySelector(".book-meta > p:nth-child(2) > span:nth-child(1) > a:nth-child(2)")).innerText.trim();
         const doc = await lib_1.getHtmlDOM(bookUrl, undefined);
         const introDom = doc.querySelector(".book-dec > p:nth-child(1)");
-        const [introduction, introductionHTML, introCleanimages] = common_1.introDomHandle(introDom);
+        const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         const coverUrl = doc.querySelector(".book-img > img")
             .src;
@@ -30041,7 +30076,7 @@ class linovelib {
                 flag = false;
             }
         } while (flag);
-        let { dom, text, images } = lib_1.cleanDOM(content, "TM");
+        let { dom, text, images } = await lib_1.cleanDOM(content, "TM");
         return {
             chapterName: chapterName,
             contentRaw: content,
@@ -30079,7 +30114,7 @@ class meegoq {
         const author = (dom.querySelector("article.info > p.detail.pt20 > i:nth-child(1) > a")).innerText.trim();
         const bookname = (dom.querySelector("article.info > header > h1")).innerText.trim();
         const introDom = dom.querySelector("article.info > p.desc");
-        const [introduction, introductionHTML, introCleanimages] = common_1.introDomHandle(introDom, (introDom) => {
+        const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom, (introDom) => {
             lib_1.rm("b", false, introDom);
             return introDom;
         });
@@ -30136,7 +30171,7 @@ class meegoq {
         chapterName = (dom.querySelector("article > header > h1")).innerText.trim();
         const content = dom.querySelector("#content");
         if (content) {
-            let { dom, text, images } = lib_1.cleanDOM(content, "TM");
+            let { dom, text, images } = await lib_1.cleanDOM(content, "TM");
             return {
                 chapterName: chapterName,
                 contentRaw: content,
@@ -30224,7 +30259,7 @@ class mht {
                 doc = await lib_1.getHtmlDOM(nextLink, charset);
             }
         } while (flag);
-        let { dom, text, images } = lib_1.cleanDOM(content, "TM");
+        let { dom, text, images } = await lib_1.cleanDOM(content, "TM");
         return {
             chapterName: chapterName,
             contentRaw: content,
@@ -30263,7 +30298,7 @@ class qidian {
             .replace(/作\s+者:/, "")
             .trim();
         const introDom = document.querySelector(".book-info-detail .book-intro");
-        const [introduction, introductionHTML, introCleanimages] = common_1.introDomHandle(introDom);
+        const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         let coverUrl = document.querySelector("#bookImg > img")
             .src;
@@ -30349,7 +30384,7 @@ class qidian {
                     content.appendChild(hr);
                     content.appendChild(author_say);
                 }
-                let { dom, text, images } = lib_1.cleanDOM(content, "TM");
+                let { dom, text, images } = await lib_1.cleanDOM(content, "TM");
                 return {
                     chapterName: chapterName,
                     contentRaw: content,
@@ -30411,7 +30446,7 @@ class qidian {
                         authorSayDom.innerHTML = authorSay;
                         content.appendChild(authorSayDom);
                     }
-                    const { dom, text, images } = lib_1.cleanDOM(content, "TM");
+                    const { dom, text, images } = await lib_1.cleanDOM(content, "TM");
                     return {
                         chapterName: chapterName,
                         contentRaw: content,
@@ -30464,7 +30499,7 @@ class qimao {
         const bookname = (document.querySelector("h2.tit")).innerText.trim();
         const author = (document.querySelector(".p-name > a")).innerHTML.trim();
         const introDom = (document.querySelector(".book-introduction .article"));
-        const [introduction, introductionHTML, introCleanimages] = common_1.introDomHandle(introDom);
+        const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         const coverUrl = (document.querySelector(".poster-pic > img")).src;
         if (coverUrl) {
@@ -30509,7 +30544,7 @@ class qimao {
             chapterName = doc.querySelector(".title").innerText.trim();
             const content = doc.querySelector(".article");
             if (content) {
-                let { dom, text, images } = lib_1.cleanDOM(content, "TM");
+                let { dom, text, images } = await lib_1.cleanDOM(content, "TM");
                 return {
                     chapterName: chapterName,
                     contentRaw: content,
@@ -30576,7 +30611,7 @@ class sfacg {
         const dom = await lib_1.getHtmlDOM(bookUrl, undefined);
         const author = (dom.querySelector(".author-name")).innerText.trim();
         const introDom = dom.querySelector(".introduce");
-        const [introduction, introductionHTML, introCleanimages] = common_1.introDomHandle(introDom);
+        const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         let coverUrl = (dom.querySelector("#hasTicket div.pic img")).src;
         additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
@@ -30639,7 +30674,7 @@ class sfacg {
             const chapterName = (dom.querySelector("h1.article-title")).innerText.trim();
             const content = dom.querySelector(".article-content");
             if (content) {
-                let { dom, text, images } = lib_1.cleanDOM(content, "TM");
+                let { dom, text, images } = await lib_1.cleanDOM(content, "TM");
                 return {
                     chapterName: chapterName,
                     contentRaw: content,
@@ -30781,7 +30816,7 @@ class shouda8 {
             .replace("作者：", "")
             .trim();
         const introDom = document.querySelector(".intro");
-        const [introduction, introductionHTML, introCleanimages] = common_1.introDomHandle(introDom, (introDom) => {
+        const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom, (introDom) => {
             lib_1.rm(".book_keywords", false, introDom);
             lib_1.rm("script", true, introDom);
             lib_1.rm("#cambrian0", false, introDom);
@@ -30811,7 +30846,7 @@ class shouda8 {
         const content = dom.querySelector("#content");
         if (content) {
             lib_1.rm("p:last-child", false, content);
-            let { dom, text, images } = lib_1.cleanDOM(content, "TM");
+            let { dom, text, images } = await lib_1.cleanDOM(content, "TM");
             return {
                 chapterName: chapterName,
                 contentRaw: content,
@@ -30860,7 +30895,7 @@ class shubaowa {
             .replace(/作(\s+)?者[：:]/, "")
             .trim();
         const introDom = document.querySelector("#intro");
-        const [introduction, introductionHTML, introCleanimages] = common_1.introDomHandle(introDom);
+        const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         const coverUrl = document.querySelector("#fmimg > img")
             ?.src;
@@ -30886,7 +30921,7 @@ class shubaowa {
         chapterName = (dom.querySelector(".bookname > h1:nth-child(1)")).innerText.trim();
         const content = dom.querySelector("#content");
         if (content) {
-            let { dom, text, images } = lib_1.cleanDOM(content, "TM");
+            let { dom, text, images } = await lib_1.cleanDOM(content, "TM");
             return {
                 chapterName: chapterName,
                 contentRaw: content,
@@ -30937,7 +30972,7 @@ class shuhai {
             .trim();
         const introDom = document.querySelector("div.book-info-bookintro") ||
             document.querySelector("div.book-info-bookintro-all");
-        const [introduction, introductionHTML, introCleanimages] = common_1.introDomHandle(introDom);
+        const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         let coverUrl = (document.querySelector(".book-cover-wrapper > img")).getAttribute("data-original");
         if (coverUrl) {
@@ -31000,7 +31035,7 @@ class shuhai {
             const content = (dom.querySelector("#reader-content > div:nth-child(1)"));
             if (content) {
                 lib_1.rm("div.chaper-info", false, content);
-                let { dom, text, images } = lib_1.cleanDOM(content, "TM");
+                let { dom, text, images } = await lib_1.cleanDOM(content, "TM");
                 return {
                     chapterName: chapterName,
                     contentRaw: content,
@@ -31106,7 +31141,7 @@ class sosadfun {
             introductionHTML = null;
         }
         else {
-            let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = lib_1.cleanDOM(introDom, "TM");
+            let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = await lib_1.cleanDOM(introDom, "TM");
             introduction = introCleantext;
             introductionHTML = introCleanDom;
             if (introCleanimages) {
@@ -31131,7 +31166,7 @@ class sosadfun {
         chapterName = (doc.querySelector("strong.h3")).innerText.trim();
         const content = (doc.querySelector(".main-text.no-selection > span[id^=full]"));
         if (content) {
-            let { dom, text, images } = lib_1.cleanDOM(content, "TM");
+            let { dom, text, images } = await lib_1.cleanDOM(content, "TM");
             return {
                 chapterName: chapterName,
                 contentRaw: content,
@@ -31177,7 +31212,7 @@ class soxscc {
         const bookname = (document.querySelector(".xiaoshuo > h1")).innerText.trim();
         const author = (document.querySelector(".xiaoshuo > h6:nth-child(3) > a")).innerText.trim();
         const introDom = document.querySelector("#intro");
-        const [introduction, introductionHTML, introCleanimages] = common_1.introDomHandle(introDom, (introDom) => {
+        const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom, (introDom) => {
             lib_1.rm("span.tags", false, introDom);
             lib_1.rm("q", true, introDom);
             return introDom;
@@ -31233,7 +31268,7 @@ class soxscc {
                     }
                 }
             });
-            let { dom, text, images } = lib_1.cleanDOM(content, "TM");
+            let { dom, text, images } = await lib_1.cleanDOM(content, "TM");
             return {
                 chapterName: chapterName,
                 contentRaw: content,
@@ -31284,7 +31319,7 @@ class tadu {
             .trim();
         const doc = await lib_1.getHtmlDOM(bookUrl, undefined);
         const introDom = (doc.querySelector("div.boxCenter.bookIntro > div > p:nth-child(4)"));
-        const [introduction, introductionHTML, introCleanimages] = common_1.introDomHandle(introDom);
+        const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         const coverUrl = (doc.querySelector("a.bookImg > img")).getAttribute("data-src");
         if (coverUrl) {
@@ -31352,7 +31387,7 @@ class tadu {
                 const contentObj = eval(jsonpText);
                 if (typeof contentObj === "object") {
                     content.innerHTML = contentObj.content;
-                    let { dom, text, images } = lib_1.cleanDOM(content, "TM");
+                    let { dom, text, images } = await lib_1.cleanDOM(content, "TM");
                     return {
                         chapterName: chapterName,
                         contentRaw: content,
@@ -31417,7 +31452,7 @@ class uukanshu {
             .trim();
         const author = (document.querySelector("dd.jieshao_content > h2 > a")).innerText.trim();
         const introDom = (document.querySelector("dd.jieshao_content > h3"));
-        const [introduction, introductionHTML, introCleanimages] = common_1.introDomHandle(introDom, (introDom) => {
+        const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom, (introDom) => {
             introDom.innerHTML = introDom.innerHTML
                 .replace(/^.+简介：\s+www.uukanshu.com\s+/, "")
                 .replace(/\s+https:\/\/www.uukanshu.com/, "")
@@ -31482,7 +31517,7 @@ class uukanshu {
             for (let r of contentReplace) {
                 content.innerHTML = content.innerHTML.replace(r, "");
             }
-            let { dom, text, images } = lib_1.cleanDOM(content, "TM");
+            let { dom, text, images } = await lib_1.cleanDOM(content, "TM");
             return {
                 chapterName: chapterName,
                 contentRaw: content,
@@ -31533,7 +31568,7 @@ class wenku8 {
             .replace("小说作者：", "")
             .trim();
         const introDom = doc.querySelector("#content > div:nth-child(1) > table:nth-child(4) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(2) > span:nth-child(11)");
-        const [introduction, introductionHTML, introCleanimages] = common_1.introDomHandle(introDom);
+        const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         let coverUrl = (doc.querySelector("#content > div:nth-child(1) > table:nth-child(4) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(1) > img:nth-child(1)")).src;
         additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
@@ -31569,7 +31604,7 @@ class wenku8 {
         const content = doc.querySelector("#content");
         if (content) {
             lib_1.rm("#contentdp", true, content);
-            let { dom, text, images } = lib_1.cleanDOM(content, "TM");
+            let { dom, text, images } = await lib_1.cleanDOM(content, "TM");
             return {
                 chapterName: chapterName,
                 contentRaw: content,
@@ -31617,7 +31652,7 @@ class westnovel {
             .replace("作者：", "")
             .trim();
         const introDom = document.querySelector(".intro-p > p:nth-child(1)");
-        const [introduction, introductionHTML, introCleanimages] = common_1.introDomHandle(introDom);
+        const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         let coverUrl = document.querySelector(".img-img").src;
         additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
@@ -31643,7 +31678,7 @@ class westnovel {
             lib_1.rm("div.ads", true, content);
             lib_1.rm("div.link", true, content);
             lib_1.rm("h4", true, content);
-            let { dom, text, images } = lib_1.cleanDOM(content, "TM");
+            let { dom, text, images } = await lib_1.cleanDOM(content, "TM");
             return {
                 chapterName: chapterName,
                 contentRaw: content,
@@ -31698,7 +31733,7 @@ class xiaoshuodaquan {
             .trim();
         const author = (document.querySelector(".smallcons > span:nth-child(1) > a:nth-child(1)")).innerText.trim();
         const introDom = document.querySelector(".bookintro");
-        const [introduction, introductionHTML, introCleanimages] = common_1.introDomHandle(introDom, (introDom) => {
+        const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom, (introDom) => {
             introDom.innerHTML = introDom.innerHTML.replace("内容简介:", "");
             return introDom;
         });
@@ -31749,7 +31784,7 @@ class xiaoshuodaquan {
             lib_1.rm("script", true, _content);
             const content = document.createElement("div");
             content.innerHTML = _content.innerHTML.replace(/\n/g, "<br/>");
-            let { dom, text, images } = lib_1.cleanDOM(content, "TM");
+            let { dom, text, images } = await lib_1.cleanDOM(content, "TM");
             return {
                 chapterName: chapterName,
                 contentRaw: content,
@@ -31797,7 +31832,7 @@ class xinwanben {
         const bookname = (document.querySelector(".detailTitle > h1")).innerText.trim();
         const author = (document.querySelector(".writer > a")).innerText.trim();
         const introDom = (document.querySelector(".detailTopMid > table > tbody > tr:nth-child(3) > td:nth-child(2)"));
-        const [introduction, introductionHTML, introCleanimages] = common_1.introDomHandle(introDom);
+        const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         const coverUrl = (document.querySelector(".detailTopLeft > img")).src;
         if (coverUrl) {
@@ -31849,7 +31884,7 @@ class xinwanben {
                 doc = await lib_1.getHtmlDOM(nextLink, charset);
             }
         } while (flag);
-        let { dom, text, images } = lib_1.cleanDOM(content, "TM");
+        let { dom, text, images } = await lib_1.cleanDOM(content, "TM");
         return {
             chapterName: chapterName,
             contentRaw: content,
@@ -31887,7 +31922,7 @@ class xkzw {
             .replace(/作(\s+)?者[：:]/, "")
             .trim();
         const introDom = document.querySelector("#intro");
-        const [introduction, introductionHTML, introCleanimages] = common_1.introDomHandle(introDom);
+        const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         const coverUrl = document.querySelector("#fmimg > img")
             .src;
@@ -32101,7 +32136,7 @@ class xkzw {
         chapterName = (dom.querySelector(".bookname > h1:nth-child(1)")).innerText.trim();
         const content = dom.querySelector("#content");
         if (content) {
-            let { dom, text, images } = lib_1.cleanDOM(content, "TM");
+            let { dom, text, images } = await lib_1.cleanDOM(content, "TM");
             return {
                 chapterName: chapterName,
                 contentRaw: content,
@@ -32157,7 +32192,7 @@ class yibige {
             }
             introDom.appendChild(node.cloneNode(true));
         }
-        const [introduction, introductionHTML, introCleanimages] = common_1.introDomHandle(introDom);
+        const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         const coverUrl = (doc.querySelector(".limg > img:nth-child(1)")).src;
         additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
@@ -32240,7 +32275,7 @@ class yibige {
                 doc = await lib_1.getHtmlDOM(nextLink, charset);
             }
         } while (flag);
-        let { dom, text, images } = lib_1.cleanDOM(content, "TM");
+        let { dom, text, images } = await lib_1.cleanDOM(content, "TM");
         return {
             chapterName: chapterName,
             contentRaw: content,
@@ -32277,7 +32312,7 @@ class yrun {
             .replace(/作(\s+)?者[：:]/, "")
             .trim();
         const introDom = document.querySelector("#intro > p");
-        const [introduction, introductionHTML, introCleanimages] = common_1.introDomHandle(introDom);
+        const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         const coverUrl = document.querySelector("#fmimg > img")
             .src;
@@ -32304,7 +32339,7 @@ class yrun {
         chapterName = (dom.querySelector(".bookname > h1:nth-child(1)")).innerText.trim();
         const content = dom.querySelector("#content");
         if (content) {
-            let { dom, text, images } = lib_1.cleanDOM(content, "TM");
+            let { dom, text, images } = await lib_1.cleanDOM(content, "TM");
             return {
                 chapterName: chapterName,
                 contentRaw: content,
@@ -32355,7 +32390,7 @@ class yuzhaige {
         const bookname = (dom.querySelector("div.cataloginfo > h3")).innerText.trim();
         const author = (dom.querySelector(".infotype > p:nth-child(1) > a:nth-child(1)")).innerText.trim();
         const introDom = dom.querySelector(".intro");
-        const [introduction, introductionHTML, introCleanimages] = common_1.introDomHandle(introDom, (introDom) => {
+        const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom, (introDom) => {
             lib_1.rm("span:nth-child(1)", false, introDom);
             return introDom;
         });
@@ -32486,10 +32521,10 @@ class yuzhaige {
             }
         } while (flag);
         if (content) {
-            let { dom: oldDom, text: _text, images: finalImages } = lib_1.cleanDOM(content, "TM");
+            let { dom: oldDom, text: _text, images: finalImages } = await lib_1.cleanDOM(content, "TM");
             const _newDom = document.createElement("div");
             _newDom.innerHTML = yuzhaigeImageDecode_1.replaceYuzhaigeImage(content.innerHTML);
-            let { dom: newDom, text: finalText, images } = lib_1.cleanDOM(_newDom, "TM");
+            let { dom: newDom, text: finalText, images } = await lib_1.cleanDOM(_newDom, "TM");
             const fontStyleDom = document.createElement("style");
             fontStyleDom.innerHTML = `.hide { display: none; }`;
             oldDom.className = "hide";
@@ -32544,7 +32579,7 @@ class zongheng {
         const author = (document.querySelector("div.book-meta > p > span:nth-child(1) > a")).innerText.trim();
         const doc = await lib_1.getHtmlDOM(bookUrl, undefined);
         const introDom = doc.querySelector("div.book-info > div.book-dec");
-        const [introduction, introductionHTML, introCleanimages] = common_1.introDomHandle(introDom);
+        const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         let coverUrl = doc.querySelector("div.book-img > img")
             .src;
@@ -32599,7 +32634,7 @@ class zongheng {
             const chapterName = (dom.querySelector("div.title_txtbox")).innerText.trim();
             const content = dom.querySelector("div.content");
             if (content) {
-                let { dom, text, images } = lib_1.cleanDOM(content, "TM");
+                let { dom, text, images } = await lib_1.cleanDOM(content, "TM");
                 return {
                     chapterName: chapterName,
                     contentRaw: content,

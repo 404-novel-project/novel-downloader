@@ -1,5 +1,5 @@
 import { ruleClass } from "./rules";
-import { Book, Chapter, attachmentClass } from "./main";
+import { Book, Chapter } from "./main";
 import { saveOptions } from "./index_helper";
 export declare namespace indexNameSpace {
     interface mainWindows extends unsafeWindow {
@@ -17,5 +17,3 @@ export declare namespace indexNameSpace {
 }
 export declare function updateProgress(finishedChapterNumber: number, totalChapterNumber: number, zipPercent: number | null): void;
 export declare function catchError(error: Error): void;
-export declare let attachmentClassCache: attachmentClass[];
-export declare const audio: HTMLAudioElement;

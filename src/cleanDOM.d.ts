@@ -5,4 +5,4 @@ export interface Builder {
     images: attachmentClass[];
     imgMode: "naive" | "TM";
 }
-export declare function walk(dom: HTMLElement, builder: Builder): Builder;
+export declare function walk(dom: HTMLElement, builder: Builder): Promise<Builder>;
