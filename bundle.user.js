@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        3.7.2.1624555899164
+// @version        3.7.2.1624611275411
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -3902,6 +3902,7 @@ a.disabled {
                 const chapterText = this.genChapterText(chapterName, chapter.contentText);
                 this.savedTextArray.push(chapterText);
             }
+            chapter.contentText = null;
         }
         log_1.log.info("[save]保存TXT文件");
         const savedText = this.savedTextArray.join("\n");
@@ -3928,28 +3929,21 @@ a.disabled {
         log_1.log.debug("[save]开始生成并保存ToC.html");
         this.saveToC();
         log_1.log.info("[save]开始保存ZIP文件");
-        this.savedZip
-            .generateAsync({
-            level: 6,
-            mem: 8,
-        })
-            .then((blob) => {
-            log_1.log.debug("[save]ZIP文件生成完毕，开始保存ZIP文件");
-            saveAs(blob, `${this.saveFileNameBase}.zip`);
-        })
-            .then(() => {
-            log_1.log.debug("[save]保存ZIP文件完毕");
+        const self = this;
+        const finalHandle = (blob) => {
+            saveAs(blob, `${self.saveFileNameBase}.zip`);
             document.querySelector("#nd-progress")?.remove();
             index_1.audio.pause();
-        })
-            .then(() => {
             finish();
-        })
-            .catch((err) => {
+        };
+        const finalErrorHandle = (err) => {
             log_1.log.error("saveZip: " + err);
             log_1.log.trace(err);
             index_1.catchError(err);
-        });
+        };
+        this.savedZip.onFinal = finalHandle;
+        this.savedZip.onFinalError = finalErrorHandle;
+        this.savedZip.generateAsync((percent) => index_1.updateProgress(1, 1, percent));
     }
     saveToC() {
         const ToC = new DOMParser().parseFromString(`<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="https://github.com/yingziwu/novel-downloader"><link href="style.css" type="text/css" rel="stylesheet"/><title>${this.book.bookname}</title></head><body><div class="main"><h1>${this.book.bookname}</h1><h3 class="author">${this.book.author}</h3></div></body></html>`, "text/html");
@@ -4046,8 +4040,8 @@ a.disabled {
                 chapterDiv.appendChild(chapterAnchor);
                 sectionDiv?.appendChild(chapterDiv);
             }
-            log_1.log.debug("[save]保存ToC文件");
         }
+        log_1.log.debug("[save]保存ToC文件");
         this.savedZip.file("ToC.html", new Blob([ToC.documentElement.outerHTML.replaceAll("data-src-address", "src")], {
             type: "text/html; charset=UTF-8",
         }));
@@ -4070,6 +4064,8 @@ a.disabled {
             log_1.log.debug(`[save]保存章HTML文件：${chapterName}`);
             if (chapter.contentHTML) {
                 const chapterHTMLBlob = this.genChapterHtmlFile(chapterName, chapter.contentHTML, chapter.chapterUrl);
+                chapter.contentRaw = null;
+                chapter.contentHTML = null;
                 this.savedZip.file(chapterHtmlFileName, chapterHTMLBlob);
             }
             log_1.log.debug(`[save]开始保存章节附件：${chapterName}`);
@@ -4077,6 +4073,7 @@ a.disabled {
                 for (const attachment of chapter.contentImages) {
                     this.addImageToZip(attachment, this.savedZip);
                 }
+                chapter.contentImages = null;
             }
         }
     }
@@ -4596,13 +4593,44 @@ function storageAvailable(type) {
 exports.storageAvailable = storageAvailable;
 class fflateZip {
     constructor() {
-        this.data = {};
         this.count = 0;
+        this.zcount = 0;
+        this.tasklist = [];
         this.filenameList = [];
-    }
-    async blob2Uint8Array(blob) {
-        const buffer = await blob.arrayBuffer();
-        return new Uint8Array(buffer);
+        this.zipOut = [];
+        const self = this;
+        this.savedZip = new fflate_1.Zip((err, dat, final) => {
+            if (err) {
+                log_1.log.error(err);
+                log_1.log.trace(err);
+                throw err;
+            }
+            self.zipOut.push(dat);
+            self.zcount++;
+            if (final) {
+                const zipBlob = new Blob(self.zipOut, { type: "application/zip" });
+                log_1.log.debug("[fflateZip][debug][zcount]" + self.zcount);
+                log_1.log.debug("[fflateZip][debug][count]" + self.count);
+                log_1.log.info("[fflateZip] ZIP生成完毕，文件大小：" + zipBlob.size);
+                self.zipOut = [];
+                if (typeof self.onFinal === "function") {
+                    if (typeof self.onUpdateFlag !== "undefined") {
+                        clearInterval(self.onUpdateFlag);
+                    }
+                    try {
+                        self.onFinal(zipBlob);
+                    }
+                    catch (error) {
+                        if (typeof self.onFinalError === "function") {
+                            self.onFinalError(error);
+                        }
+                    }
+                }
+                else {
+                    throw "[fflateZip] 完成函数出错";
+                }
+            }
+        });
     }
     file(filename, file) {
         if (this.filenameList.includes(filename)) {
@@ -4610,29 +4638,50 @@ class fflateZip {
         }
         this.count++;
         this.filenameList.push(filename);
-        this.blob2Uint8Array(file).then((uint) => {
+        const self = this;
+        file
+            .arrayBuffer()
+            .then((buffer) => new Uint8Array(buffer))
+            .then((chunk) => {
             if (file.type.includes("image/")) {
-                this.data[filename] = [uint, { level: 0 }];
+                const nonStreamingFile = new fflate_1.ZipPassThrough(filename);
+                this.tasklist.push({
+                    nonStreamingFile: nonStreamingFile,
+                    chunk: chunk,
+                });
             }
             else {
-                this.data[filename] = uint;
+                const nonStreamingFile = new fflate_1.AsyncZipDeflate(filename, {
+                    level: 1,
+                });
+                this.tasklist.push({
+                    nonStreamingFile: nonStreamingFile,
+                    chunk: chunk,
+                });
             }
         });
     }
-    generateAsync(opts = {}) {
-        return new Promise(async (resolve, reject) => {
-            while (Object.keys(this.data).length !== this.count) {
-                await sleep(100);
+    addToSavedZip(savedZip, task) {
+        const { nonStreamingFile, chunk } = task;
+        savedZip.add(nonStreamingFile);
+        nonStreamingFile.push(chunk, true);
+    }
+    async generateAsync(onUpdate = undefined) {
+        while (this.tasklist.length !== this.count) {
+            await sleep(500);
+        }
+        const self = this;
+        this.onUpdateFlag = setInterval(() => {
+            const percent = (self.zcount / 3 / self.count) * 100;
+            if (typeof onUpdate === "function") {
+                onUpdate(percent);
             }
-            fflate_1.zip(this.data, opts, (err, data) => {
-                if (err) {
-                    reject(err);
-                }
-                else {
-                    resolve(new Blob([data.buffer], { type: "application/zip" }));
-                }
-            });
-        });
+        }, 200);
+        for (const task of this.tasklist) {
+            this.addToSavedZip(this.savedZip, task);
+        }
+        this.savedZip.end();
+        this.tasklist = [];
     }
 }
 exports.fflateZip = fflateZip;
@@ -32632,6 +32681,13 @@ exports.failedPlus = failedPlus;
 const printStat = () => {
     log_1.log.info("[stat]小说下载器脚本运行情况统计：");
     log_1.log.info(statData);
+    for (const k in statData) {
+        log_1.log.info(`[stat]${k}:`);
+        const subData = statData[k];
+        for (const j in subData) {
+            log_1.log.info(`  [stat]${j}: ${subData[j]}`);
+        }
+    }
 };
 exports.printStat = printStat;
 const resetStat = () => {
