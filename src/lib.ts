@@ -367,25 +367,23 @@ export function storageAvailable(type: string) {
   }
 }
 
-interface taskObj {
-  nonStreamingFile: ZipDeflate | AsyncZipDeflate | ZipPassThrough;
-  chunk: Uint8Array;
-}
 export class fflateZip {
   private zcount: number;
   private count: number;
-  private tasklist: taskObj[];
+  private tcount: number;
   private filenameList: string[];
   private savedZip: Zip;
   private zipOut: ArrayBuffer[];
   private onUpdateFlag?: NodeJS.Timeout;
+  public memlimit: boolean;
   public onFinal?: (zipBlob: Blob) => any;
   public onFinalError?: (error: Error) => any;
 
-  public constructor() {
+  public constructor(memlimit: boolean = false) {
     this.count = 0;
     this.zcount = 0;
-    this.tasklist = [];
+    this.tcount = 0;
+    this.memlimit = memlimit;
     this.filenameList = [];
     this.zipOut = [];
 
@@ -433,32 +431,29 @@ export class fflateZip {
     this.count++;
     this.filenameList.push(filename);
 
-    const self = this;
-
     file
       .arrayBuffer()
       .then((buffer) => new Uint8Array(buffer))
       .then((chunk) => {
         if (file.type.includes("image/")) {
           const nonStreamingFile = new ZipPassThrough(filename);
-          this.tasklist.push({
-            nonStreamingFile: nonStreamingFile,
-            chunk: chunk,
-          });
+          this.addToSavedZip(this.savedZip, nonStreamingFile, chunk);
+          this.tcount++;
         } else {
           const nonStreamingFile = new AsyncZipDeflate(filename, {
             level: 1,
           });
-          this.tasklist.push({
-            nonStreamingFile: nonStreamingFile,
-            chunk: chunk,
-          });
+          this.addToSavedZip(this.savedZip, nonStreamingFile, chunk);
+          this.tcount++;
         }
       });
   }
 
-  private addToSavedZip(savedZip: Zip, task: taskObj) {
-    const { nonStreamingFile, chunk } = task;
+  private addToSavedZip(
+    savedZip: Zip,
+    nonStreamingFile: ZipDeflate | AsyncZipDeflate | ZipPassThrough,
+    chunk: Uint8Array
+  ) {
     savedZip.add(nonStreamingFile);
     nonStreamingFile.push(chunk, true);
   }
@@ -466,7 +461,7 @@ export class fflateZip {
   public async generateAsync(
     onUpdate: ((percent: number) => any) | undefined = undefined
   ): Promise<void> {
-    while (this.tasklist.length !== this.count) {
+    while (this.tcount !== this.count) {
       await sleep(500);
     }
 
@@ -476,13 +471,8 @@ export class fflateZip {
       if (typeof onUpdate === "function") {
         onUpdate(percent);
       }
-    }, 200);
-
-    for (const task of this.tasklist) {
-      this.addToSavedZip(this.savedZip, task);
-    }
+    }, 100);
 
     this.savedZip.end();
-    this.tasklist = [];
   }
 }
