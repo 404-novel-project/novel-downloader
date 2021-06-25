@@ -49,6 +49,13 @@ export declare class shuquge implements ruleClass {
     bookParse(): Promise<Book>;
     chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean, charset: string, options: object): Promise<chapterParseObject>;
 }
+export declare class xyqxs implements ruleClass {
+    imageMode: "naive" | "TM";
+    charset: string;
+    constructor();
+    bookParse(): Promise<Book>;
+    chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean, charset: string, options: object): Promise<chapterParseObject>;
+}
 export declare class xbiquge implements ruleClass {
     imageMode: "naive" | "TM";
     charset: string;

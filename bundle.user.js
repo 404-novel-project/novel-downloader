@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        3.7.4.1624631719389
+// @version        3.7.4.1624642521064
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -75,6 +75,7 @@
 // @match          *://www.soxs.cc/*/
 // @match          *://www.shubaowa.org/*_*/
 // @match          *://www.fuguoduxs.com/*_*/
+// @match          *://www.xyqxs.cc/html/*/*/index.html
 // @name:en        novel-downloader
 // @description:en An scalable universal novel downloader.
 // @namespace      https://blog.bgme.me
@@ -4718,7 +4719,7 @@ class fflateZip {
             }
             else {
                 const nonStreamingFile = new fflate_1.AsyncZipDeflate(filename, {
-                    level: 1,
+                    level: 6,
                 });
                 this.addToSavedZip(this.savedZip, nonStreamingFile, chunk);
                 this.tcount++;
@@ -5226,6 +5227,11 @@ async function getRule() {
             ruleClass = shubaowa;
             break;
         }
+        case "www.xyqxs.cc": {
+            const { xyqxs } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge.ts"));
+            ruleClass = xyqxs;
+            break;
+        }
         default: {
             throw new Error("Not Found Rule!");
         }
@@ -5455,7 +5461,7 @@ exports.c226ks = c226ks;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.xbiquge = exports.shuquge = exports.luoqiuzw = exports.gebiqu = exports.dingdiann = exports.common = exports.bookParseTemp = void 0;
+exports.xbiquge = exports.xyqxs = exports.shuquge = exports.luoqiuzw = exports.gebiqu = exports.dingdiann = exports.common = exports.bookParseTemp = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const lib_1 = __webpack_require__("./src/lib.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
@@ -5640,6 +5646,53 @@ class shuquge {
     }
 }
 exports.shuquge = shuquge;
+class xyqxs {
+    constructor() {
+        this.imageMode = "TM";
+        this.charset = "GBK";
+    }
+    async bookParse() {
+        const self = this;
+        return bookParseTemp({
+            bookUrl: document.location.href,
+            bookname: document.querySelector(".info > h2").innerText
+                .trim()
+                .replace(/最新章节$/, ""),
+            author: (document.querySelector(".small > span:nth-child(1)")).innerText
+                .replace(/作(\s+)?者[：:]/, "")
+                .trim(),
+            introDom: document.querySelector(".intro"),
+            introDomPatch: (introDom) => {
+                introDom.innerHTML = introDom.innerHTML.replace(/推荐地址：https:\/\/www.xyqxs.cc\/html\/\d+\/\d+\/index\.html/g, "");
+                return introDom;
+            },
+            coverUrl: (document.querySelector(".info > .cover > img")).src,
+            chapterListSelector: ".listmain>dl",
+            charset: self.charset,
+            chapterParse: self.chapterParse,
+        });
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+        const dom = await lib_1.getHtmlDOM(chapterUrl, charset);
+        return chapterParseTemp({
+            dom,
+            chapterUrl,
+            chapterName: (dom.querySelector(".content > h1:nth-child(1)")).innerText.trim(),
+            contenSelector: "#content",
+            contentPatch: (content) => {
+                lib_1.rm("div[style]", true, content);
+                lib_1.rm("script", true, content);
+                lib_1.rm('div[align="center"]', false, content);
+                content.innerHTML = content.innerHTML
+                    .replace("请记住本书首发域名：www.xyqxs.cc。笔趣阁手机版阅读网址：m.xyqxs.cc", "")
+                    .replace(/\(https:\/\/www.xyqxs.cc\/html\/\d+\/\d+\/\d+\.html\)/, "");
+                return content;
+            },
+            charset,
+        });
+    }
+}
+exports.xyqxs = xyqxs;
 class xbiquge {
     constructor() {
         this.imageMode = "TM";
