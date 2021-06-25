@@ -1,11 +1,5 @@
 import { saveOptions } from "./index_helper";
-import {
-  BookAdditionalMetadate,
-  attachmentClass,
-  Chapter,
-  ChapterAdditionalMetadate,
-  Book,
-} from "./main";
+import { attachmentClass, ChapterAdditionalMetadate, Book } from "./main";
 
 export interface chapterParseObject {
   chapterName: string | null;

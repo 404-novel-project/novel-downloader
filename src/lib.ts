@@ -1,8 +1,8 @@
 import { Builder, walk } from "./cleanDOM";
-import { attachmentClassCache } from "./index";
+import { attachmentClassCache, catchError } from "./index";
 import { attachmentClass } from "./main";
 import { log } from "./log";
-import { AsyncZippable, AsyncZipOptions, zip, FlateError } from "fflate";
+import { Zip, ZipPassThrough, ZipDeflate, AsyncZipDeflate } from "fflate";
 
 export let _GM_info: GM_info | GM["info"];
 if (typeof GM_info === "undefined") {
@@ -367,20 +367,63 @@ export function storageAvailable(type: string) {
   }
 }
 
+interface taskObj {
+  nonStreamingFile: ZipDeflate | AsyncZipDeflate | ZipPassThrough;
+  chunk: Uint8Array;
+}
 export class fflateZip {
-  private data: AsyncZippable;
+  private zcount: number;
   private count: number;
+  private tasklist: taskObj[];
   private filenameList: string[];
+  private savedZip: Zip;
+  private zipOut: ArrayBuffer[];
+  private onUpdateFlag?: NodeJS.Timeout;
+  public onFinal?: (zipBlob: Blob) => any;
+  public onFinalError?: (error: Error) => any;
 
   public constructor() {
-    this.data = {};
     this.count = 0;
+    this.zcount = 0;
+    this.tasklist = [];
     this.filenameList = [];
-  }
+    this.zipOut = [];
 
-  private async blob2Uint8Array(blob: Blob): Promise<Uint8Array> {
-    const buffer = await blob.arrayBuffer();
-    return new Uint8Array(buffer);
+    const self = this;
+    this.savedZip = new Zip((err, dat, final) => {
+      if (err) {
+        log.error(err);
+        log.trace(err);
+        throw err;
+      }
+
+      self.zipOut.push(dat);
+      self.zcount++;
+
+      if (final) {
+        const zipBlob = new Blob(self.zipOut, { type: "application/zip" });
+        log.debug("[fflateZip][debug][zcount]" + self.zcount);
+        log.debug("[fflateZip][debug][count]" + self.count);
+        log.info("[fflateZip] ZIP生成完毕，文件大小：" + zipBlob.size);
+        self.zipOut = [];
+
+        if (typeof self.onFinal === "function") {
+          if (typeof self.onUpdateFlag !== "undefined") {
+            clearInterval(self.onUpdateFlag);
+          }
+
+          try {
+            self.onFinal(zipBlob);
+          } catch (error) {
+            if (typeof self.onFinalError === "function") {
+              self.onFinalError(error);
+            }
+          }
+        } else {
+          throw "[fflateZip] 完成函数出错";
+        }
+      }
+    });
   }
 
   public file(filename: string, file: Blob) {
@@ -389,28 +432,57 @@ export class fflateZip {
     }
     this.count++;
     this.filenameList.push(filename);
-    this.blob2Uint8Array(file).then((uint) => {
-      if (file.type.includes("image/")) {
-        this.data[filename] = [uint, { level: 0 }];
-      } else {
-        this.data[filename] = uint;
-      }
-    });
-  }
 
-  public generateAsync(opts: AsyncZipOptions = {}): Promise<Blob> {
-    return new Promise(async (resolve, reject) => {
-      while (Object.keys(this.data).length !== this.count) {
-        await sleep(100);
-      }
+    const self = this;
 
-      zip(this.data, opts, (err: FlateError, data: Uint8Array) => {
-        if (err) {
-          reject(err);
+    file
+      .arrayBuffer()
+      .then((buffer) => new Uint8Array(buffer))
+      .then((chunk) => {
+        if (file.type.includes("image/")) {
+          const nonStreamingFile = new ZipPassThrough(filename);
+          this.tasklist.push({
+            nonStreamingFile: nonStreamingFile,
+            chunk: chunk,
+          });
         } else {
-          resolve(new Blob([data.buffer], { type: "application/zip" }));
+          const nonStreamingFile = new AsyncZipDeflate(filename, {
+            level: 1,
+          });
+          this.tasklist.push({
+            nonStreamingFile: nonStreamingFile,
+            chunk: chunk,
+          });
         }
       });
-    });
+  }
+
+  private addToSavedZip(savedZip: Zip, task: taskObj) {
+    const { nonStreamingFile, chunk } = task;
+    savedZip.add(nonStreamingFile);
+    nonStreamingFile.push(chunk, true);
+  }
+
+  public async generateAsync(
+    onUpdate: ((percent: number) => any) | undefined = undefined
+  ): Promise<void> {
+    while (this.tasklist.length !== this.count) {
+      await sleep(500);
+    }
+
+    const self = this;
+    this.onUpdateFlag = setInterval(() => {
+      const percent = (self.zcount / 3 / self.count) * 100;
+      if (typeof onUpdate === "function") {
+        onUpdate(percent);
+      }
+    }, 200);
+
+    for (const task of this.tasklist) {
+      this.addToSavedZip(this.savedZip, task);
+    }
+
+    this.savedZip.end();
+    this.tasklist = [];
   }
 }

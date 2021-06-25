@@ -222,6 +222,7 @@ a.disabled {
         );
         this.savedTextArray.push(chapterText);
       }
+      chapter.contentText = null;
     }
 
     log.info("[save]保存TXT文件");
@@ -262,28 +263,22 @@ a.disabled {
     this.saveToC();
 
     log.info("[save]开始保存ZIP文件");
-    this.savedZip
-      .generateAsync({
-        level: 6,
-        mem: 8,
-      })
-      .then((blob: Blob) => {
-        log.debug("[save]ZIP文件生成完毕，开始保存ZIP文件");
-        saveAs(blob, `${this.saveFileNameBase}.zip`);
-      })
-      .then(() => {
-        log.debug("[save]保存ZIP文件完毕");
-        document.querySelector("#nd-progress")?.remove();
-        audio.pause();
-      })
-      .then(() => {
-        finish();
-      })
-      .catch((err: Error) => {
-        log.error("saveZip: " + err);
-        log.trace(err);
-        catchError(err);
-      });
+    const self = this;
+    const finalHandle = (blob: Blob) => {
+      saveAs(blob, `${self.saveFileNameBase}.zip`);
+      document.querySelector("#nd-progress")?.remove();
+      audio.pause();
+      finish();
+    };
+    const finalErrorHandle = (err: Error) => {
+      log.error("saveZip: " + err);
+      log.trace(err);
+      catchError(err);
+    };
+
+    this.savedZip.onFinal = finalHandle;
+    this.savedZip.onFinalError = finalErrorHandle;
+    this.savedZip.generateAsync((percent) => updateProgress(1, 1, percent));
   }
 
   private saveToC() {
@@ -406,9 +401,8 @@ a.disabled {
         chapterDiv.appendChild(chapterAnchor);
         sectionDiv?.appendChild(chapterDiv);
       }
-
-      log.debug("[save]保存ToC文件");
     }
+    log.debug("[save]保存ToC文件");
     this.savedZip.file(
       "ToC.html",
       new Blob(
@@ -447,6 +441,8 @@ a.disabled {
           chapter.contentHTML,
           chapter.chapterUrl
         );
+        chapter.contentRaw = null;
+        chapter.contentHTML = null;
         this.savedZip.file(chapterHtmlFileName, chapterHTMLBlob);
       }
 
@@ -455,6 +451,7 @@ a.disabled {
         for (const attachment of chapter.contentImages) {
           this.addImageToZip(attachment, this.savedZip);
         }
+        chapter.contentImages = null;
       }
     }
   }

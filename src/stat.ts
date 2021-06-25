@@ -62,6 +62,13 @@ export const failedPlus = () => {
 export const printStat = () => {
   log.info("[stat]小说下载器脚本运行情况统计：");
   log.info(statData);
+  for (const k in statData) {
+    log.info(`[stat]${k}:`);
+    const subData = statData[k as keyof statData];
+    for (const j in subData) {
+      log.info(`  [stat]${j}: ${subData[j]}`);
+    }
+  }
 };
 
 export const resetStat = () => {

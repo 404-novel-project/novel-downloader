@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "ES2020",
     "module": "commonjs",
-    "lib": ["ES2020", "dom", "ESNext.String"],
+    "lib": ["ES2020", "DOM", "ESNext.String"],
     "allowJs": false,
     "declaration": true,
     "sourceMap": false,
