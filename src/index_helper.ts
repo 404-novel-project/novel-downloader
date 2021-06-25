@@ -81,6 +81,7 @@ class saveBook {
     this.chapters.sort(this.chapterSort);
 
     this.savedZip = new fflateZip();
+
     this.savedTextArray = [];
     this.saveFileNameBase = `[${this.book.author}]${this.book.bookname}`;
 

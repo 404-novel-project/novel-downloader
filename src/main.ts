@@ -119,8 +119,6 @@ export class Chapter {
   }
 
   public async init() {
-    const obj = await this.parse();
-
     const {
       chapterName,
       contentRaw,
@@ -128,7 +126,7 @@ export class Chapter {
       contentHTML,
       contentImages,
       additionalMetadate,
-    } = obj;
+    } = await this.parse();
     this.chapterName = chapterName;
     this.contentRaw = contentRaw;
     this.contentText = contentText;
@@ -137,7 +135,7 @@ export class Chapter {
     this.additionalMetadate = additionalMetadate;
 
     log.info(`[Chapter]${this.chapterName} 解析完成。`);
-    return obj;
+    return this;
   }
 
   private async parse(): Promise<chapterParseObject> {

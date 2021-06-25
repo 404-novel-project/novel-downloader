@@ -435,7 +435,7 @@ export class fflateZip {
       .arrayBuffer()
       .then((buffer) => new Uint8Array(buffer))
       .then((chunk) => {
-        if (file.type.includes("image/")) {
+        if (this.memlimit || file.type.includes("image/")) {
           const nonStreamingFile = new ZipPassThrough(filename);
           this.addToSavedZip(this.savedZip, nonStreamingFile, chunk);
           this.tcount++;
