@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        小说下载器测试脚本
-// @version     3.7.2.1624611281779
+// @version     3.7.3.1624617706893
 // @author      bgme
 // @description 小说下载器测试脚本
 // @match       *://www.ciweimao.com/chapter-list/*

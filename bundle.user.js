@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        3.7.2.1624611275411
+// @version        3.7.3.1624617700553
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -3481,37 +3481,13 @@ function printEnvironments() {
 当前时间：${new Date().toISOString()}`);
     }
 }
-async function initChapters(rule, book) {
+async function initChapters(rule, book, saveBookObj) {
     log_1.log.info(`[initChapters]开始初始化章节`);
     let concurrencyLimit = 10;
     if (rule.concurrencyLimit !== undefined) {
         concurrencyLimit = rule.concurrencyLimit;
     }
-    if (rules_1.enableCustomChapterFilter &&
-        typeof unsafeWindow.chapterFilter === "function") {
-        let tlog = "[initChapters]发现自定义筛选函数，自定义筛选函数内容如下：\n";
-        tlog += unsafeWindow.chapterFilter.toString();
-        log_1.log.info(tlog);
-    }
-    log_1.log.debug("[initChapters]筛选需下载章节");
-    const chapters = book.chapters.filter((chapter) => {
-        const b0 = chapter.status === main_1.Status.pending;
-        let b1 = true;
-        if (rules_1.enableCustomChapterFilter &&
-            typeof unsafeWindow.chapterFilter === "function") {
-            try {
-                const u = unsafeWindow.chapterFilter(chapter);
-                if (typeof u === "boolean") {
-                    b1 = u;
-                }
-            }
-            catch (error) {
-                log_1.log.error("运行自定义筛选函数时出错。", error);
-                log_1.log.trace(error);
-            }
-        }
-        return b0 && b1;
-    });
+    const chapters = getChapters();
     if (chapters.length === 0) {
         log_1.log.error(`[initChapters]初始化章节出错，未找到需初始化章节`);
         return [];
@@ -3520,10 +3496,7 @@ async function initChapters(rule, book) {
     if (concurrencyLimit === 1) {
         for (let chapter of chapters) {
             const obj = await chapter.init();
-            if (obj.contentHTML !== undefined) {
-                finishedChapterNumber++;
-                updateProgress(finishedChapterNumber, totalChapterNumber, null);
-            }
+            afterGetChpater(obj);
         }
     }
     else {
@@ -3532,16 +3505,48 @@ async function initChapters(rule, book) {
                 return Promise.resolve();
             }
             return curChapter.init().then((obj) => {
-                if (obj.contentHTML !== undefined) {
-                    finishedChapterNumber++;
-                    updateProgress(finishedChapterNumber, totalChapterNumber, null);
-                }
-                return obj;
+                afterGetChpater(obj);
             });
         });
     }
     log_1.log.info(`[initChapters]章节初始化完毕`);
     return chapters;
+    function afterGetChpater(chapter) {
+        if (chapter.contentHTML !== undefined) {
+            saveBookObj.addChapter(chapter);
+            finishedChapterNumber++;
+            updateProgress(finishedChapterNumber, totalChapterNumber, null);
+        }
+        return chapter;
+    }
+    function getChapters() {
+        if (rules_1.enableCustomChapterFilter &&
+            typeof unsafeWindow.chapterFilter === "function") {
+            let tlog = "[initChapters]发现自定义筛选函数，自定义筛选函数内容如下：\n";
+            tlog += (unsafeWindow).chapterFilter.toString();
+            log_1.log.info(tlog);
+        }
+        log_1.log.debug("[initChapters]筛选需下载章节");
+        const chapters = book.chapters.filter((chapter) => {
+            const b0 = chapter.status === main_1.Status.pending;
+            let b1 = true;
+            if (rules_1.enableCustomChapterFilter &&
+                typeof unsafeWindow.chapterFilter === "function") {
+                try {
+                    const u = unsafeWindow.chapterFilter(chapter);
+                    if (typeof u === "boolean") {
+                        b1 = u;
+                    }
+                }
+                catch (error) {
+                    log_1.log.error("运行自定义筛选函数时出错。", error);
+                    log_1.log.trace(error);
+                }
+            }
+            return b0 && b1;
+        });
+        return chapters;
+    }
 }
 let totalChapterNumber;
 let finishedChapterNumber = 0;
@@ -3575,37 +3580,16 @@ async function run() {
     exports.audio.play();
     const rule = await rules_1.getRule();
     log_1.log.info(`[run]获取规则成功`);
-    log_1.log.debug("[run]运行前检测");
-    let maxRunLimit = null;
-    let nowRunNumber;
-    if (typeof GM_getTab !== "undefined") {
-        log_1.log.info(`[run]添加运行标志`);
-        await index_helper_1.setTabMark();
-        nowRunNumber = await index_helper_1.getNowRunNumber();
-        if (rule.maxRunLimit !== undefined && nowRunNumber !== undefined) {
-            maxRunLimit = rule.maxRunLimit;
-            if (nowRunNumber > maxRunLimit) {
-                const alertText = `当前网站目前已有${nowRunNumber - 1}个下载任务正在运行，当前站点最多允许${maxRunLimit}下载任务同时进行。\n请待其它下载任务完成后，再行尝试。`;
-                alert(alertText);
-                log_1.log.info(`[run]${alertText}`);
-                return;
-            }
-        }
+    if (await preTest()) {
+        return;
     }
     log_1.log.debug("[run]主体开始");
     const book = await rule.bookParse();
-    await initChapters(rule, book);
-    log_1.log.debug("[run]保存数据");
-    if (rules_1.enableCustomSaveOptions &&
-        typeof unsafeWindow.saveOptions === "object" &&
-        index_helper_1.saveOptionsValidate(unsafeWindow.saveOptions)) {
-        const saveOptions = unsafeWindow.saveOptions;
-        log_1.log.info("[run]发现自定义保存参数，内容如下\n", saveOptions);
-        index_helper_1.save(book, saveOptions);
-    }
-    else {
-        index_helper_1.save(book, {});
-    }
+    const saveBookObj = getSave(book);
+    await initChapters(rule, book, saveBookObj);
+    log_1.log.debug("[run]开始保存文件");
+    saveBookObj.saveTxt();
+    saveBookObj.saveZip(false);
     log_1.log.debug("[run]收尾");
     if (typeof GM_getTab !== "undefined") {
         log_1.log.info(`[run]移除运行标志`);
@@ -3613,6 +3597,40 @@ async function run() {
     }
     log_1.log.info(`[run]下载完毕`);
     return book;
+    async function preTest() {
+        log_1.log.debug("[run]运行前检测");
+        let maxRunLimit = null;
+        let nowRunNumber;
+        if (typeof GM_getTab !== "undefined") {
+            log_1.log.info(`[run]添加运行标志`);
+            await index_helper_1.setTabMark();
+            nowRunNumber = await index_helper_1.getNowRunNumber();
+            if (rule.maxRunLimit !== undefined && nowRunNumber !== undefined) {
+                maxRunLimit = rule.maxRunLimit;
+                if (nowRunNumber > maxRunLimit) {
+                    const alertText = `当前网站目前已有${nowRunNumber - 1}个下载任务正在运行，当前站点最多允许${maxRunLimit}下载任务同时进行。\n请待其它下载任务完成后，再行尝试。`;
+                    alert(alertText);
+                    log_1.log.info(`[run]${alertText}`);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    function getSave(book) {
+        log_1.log.debug("[run]保存数据");
+        if (rules_1.enableCustomSaveOptions &&
+            typeof unsafeWindow.saveOptions === "object" &&
+            index_helper_1.saveOptionsValidate(unsafeWindow.saveOptions)) {
+            const saveOptions = unsafeWindow
+                .saveOptions;
+            log_1.log.info("[run]发现自定义保存参数，内容如下\n", saveOptions);
+            return index_helper_1.getSaveBookObj(book, saveOptions);
+        }
+        else {
+            return index_helper_1.getSaveBookObj(book, {});
+        }
+    }
 }
 function catchError(error) {
     downloading = false;
@@ -3678,7 +3696,6 @@ async function debug() {
     const book = await rule.bookParse();
     unsafeWindow.rule = rule;
     unsafeWindow.book = book;
-    unsafeWindow.save = index_helper_1.save;
     unsafeWindow.saveAs = saveAs;
     return;
 }
@@ -3709,7 +3726,7 @@ window.addEventListener("DOMContentLoaded", () => {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.r18SiteWarning = exports.removeTabMark = exports.getNowRunNumber = exports.setTabMark = exports.save = exports.saveOptionsValidate = exports.progressStyleText = exports.buttonStyleText = void 0;
+exports.r18SiteWarning = exports.removeTabMark = exports.getNowRunNumber = exports.setTabMark = exports.getSaveBookObj = exports.saveOptionsValidate = exports.saveBook = exports.progressStyleText = exports.buttonStyleText = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const lib_1 = __webpack_require__("./src/lib.ts");
 const index_1 = __webpack_require__("./src/index.ts");
@@ -3768,6 +3785,7 @@ class saveBook {
         this.chapters = book.chapters;
         this.chapters.sort(this.chapterSort);
         this.savedZip = new lib_1.fflateZip();
+        this._sections = [];
         this.savedTextArray = [];
         this.saveFileNameBase = `[${this.book.author}]${this.book.bookname}`;
         this.mainStyleText = `body {
@@ -3902,13 +3920,15 @@ a.disabled {
                 const chapterText = this.genChapterText(chapterName, chapter.contentText);
                 this.savedTextArray.push(chapterText);
             }
-            chapter.contentText = null;
+            if (!rules_1.enaleDebug) {
+                chapter.contentText = null;
+            }
         }
         log_1.log.info("[save]保存TXT文件");
         const savedText = this.savedTextArray.join("\n");
         saveAs(new Blob([savedText], { type: "text/plain;charset=utf-8" }), `${this.saveFileNameBase}.txt`);
     }
-    saveZip() {
+    saveZip(runSaveChapters = false) {
         log_1.log.debug("[save]保存元数据文本");
         const metaDateText = this.genMetaDateTxt();
         this.savedZip.file("info.txt", new Blob([metaDateText], { type: "text/plain;charset=utf-8" }));
@@ -3924,8 +3944,10 @@ a.disabled {
                 this.addImageToZip(bookAttachment, this.savedZip);
             }
         }
-        log_1.log.debug("[save]开始保存章节文件");
-        this.saveChapters();
+        if (runSaveChapters) {
+            log_1.log.debug("[save]开始保存章节文件");
+            this.saveChapters();
+        }
         log_1.log.debug("[save]开始生成并保存ToC.html");
         this.saveToC();
         log_1.log.info("[save]开始保存ZIP文件");
@@ -4047,32 +4069,38 @@ a.disabled {
         }));
     }
     saveChapters() {
-        let sections = [];
         for (const chapter of this.chapters) {
-            const chapterName = this.getchapterName(chapter);
-            const htmlfileNameBase = `${"0".repeat(this.chapters.length.toString().length -
-                chapter.chapterNumber.toString().length)}${chapter.chapterNumber.toString()}.html`;
-            const chapterHtmlFileName = `Chapter${htmlfileNameBase}`;
-            if (chapter.sectionName) {
-                if (!sections.includes(chapter.sectionName)) {
-                    sections.push(chapter.sectionName);
-                    log_1.log.debug(`[save]保存卷HTML文件：${chapter.sectionName}`);
-                    const sectionHTMLBlob = this.genSectionHtmlFile(chapter.sectionName);
-                    this.savedZip.file(`Section${htmlfileNameBase}`, sectionHTMLBlob);
-                }
+            this.addChapter(chapter);
+        }
+    }
+    addChapter(chapter) {
+        const chapterName = this.getchapterName(chapter);
+        const htmlfileNameBase = `${"0".repeat(this.chapters.length.toString().length -
+            chapter.chapterNumber.toString().length)}${chapter.chapterNumber.toString()}.html`;
+        const chapterHtmlFileName = `Chapter${htmlfileNameBase}`;
+        if (chapter.sectionName) {
+            if (!this._sections.includes(chapter.sectionName)) {
+                this._sections.push(chapter.sectionName);
+                log_1.log.debug(`[save]保存卷HTML文件：${chapter.sectionName}`);
+                const sectionHTMLBlob = this.genSectionHtmlFile(chapter.sectionName);
+                this.savedZip.file(`Section${htmlfileNameBase}`, sectionHTMLBlob);
             }
-            log_1.log.debug(`[save]保存章HTML文件：${chapterName}`);
-            if (chapter.contentHTML) {
-                const chapterHTMLBlob = this.genChapterHtmlFile(chapterName, chapter.contentHTML, chapter.chapterUrl);
+        }
+        log_1.log.debug(`[save]保存章HTML文件：${chapterName}`);
+        if (chapter.contentHTML) {
+            const chapterHTMLBlob = this.genChapterHtmlFile(chapterName, chapter.contentHTML, chapter.chapterUrl);
+            if (!rules_1.enaleDebug) {
                 chapter.contentRaw = null;
                 chapter.contentHTML = null;
-                this.savedZip.file(chapterHtmlFileName, chapterHTMLBlob);
             }
-            log_1.log.debug(`[save]开始保存章节附件：${chapterName}`);
-            if (chapter.contentImages) {
-                for (const attachment of chapter.contentImages) {
-                    this.addImageToZip(attachment, this.savedZip);
-                }
+            this.savedZip.file(chapterHtmlFileName, chapterHTMLBlob);
+        }
+        log_1.log.debug(`[save]开始保存章节附件：${chapterName}`);
+        if (chapter.contentImages) {
+            for (const attachment of chapter.contentImages) {
+                this.addImageToZip(attachment, this.savedZip);
+            }
+            if (!rules_1.enaleDebug) {
                 chapter.contentImages = null;
             }
         }
@@ -4147,6 +4175,7 @@ a.disabled {
         return 0;
     }
 }
+exports.saveBook = saveBook;
 function saveOptionsValidate(data) {
     const keyNamesS = ["mainStyleText", "tocStyleText"];
     const keyNamesF = ["getchapterName"];
@@ -4190,7 +4219,7 @@ function saveOptionsValidate(data) {
     return true;
 }
 exports.saveOptionsValidate = saveOptionsValidate;
-function save(book, options) {
+function getSaveBookObj(book, options) {
     const saveBookObj = new saveBook(book);
     if (rules_1.enableCustomSaveOptions && saveOptionsValidate(options)) {
         for (const option in options) {
@@ -4202,10 +4231,9 @@ function save(book, options) {
             saveBookObj[option] = book.saveOptions[option];
         }
     }
-    saveBookObj.saveTxt();
-    saveBookObj.saveZip();
+    return saveBookObj;
 }
-exports.save = save;
+exports.getSaveBookObj = getSaveBookObj;
 async function finish() {
     if (lib_1._GM_setValue && lib_1._GM_getValue && lib_1._GM_deleteValue) {
         const { printStat, successPlus } = await Promise.resolve().then(() => __webpack_require__("./src/stat.ts"));
@@ -4592,10 +4620,11 @@ function storageAvailable(type) {
 }
 exports.storageAvailable = storageAvailable;
 class fflateZip {
-    constructor() {
+    constructor(memlimit = false) {
         this.count = 0;
         this.zcount = 0;
-        this.tasklist = [];
+        this.tcount = 0;
+        this.memlimit = memlimit;
         this.filenameList = [];
         this.zipOut = [];
         const self = this;
@@ -4638,36 +4667,30 @@ class fflateZip {
         }
         this.count++;
         this.filenameList.push(filename);
-        const self = this;
         file
             .arrayBuffer()
             .then((buffer) => new Uint8Array(buffer))
             .then((chunk) => {
-            if (file.type.includes("image/")) {
+            if (this.memlimit || file.type.includes("image/")) {
                 const nonStreamingFile = new fflate_1.ZipPassThrough(filename);
-                this.tasklist.push({
-                    nonStreamingFile: nonStreamingFile,
-                    chunk: chunk,
-                });
+                this.addToSavedZip(this.savedZip, nonStreamingFile, chunk);
+                this.tcount++;
             }
             else {
                 const nonStreamingFile = new fflate_1.AsyncZipDeflate(filename, {
                     level: 1,
                 });
-                this.tasklist.push({
-                    nonStreamingFile: nonStreamingFile,
-                    chunk: chunk,
-                });
+                this.addToSavedZip(this.savedZip, nonStreamingFile, chunk);
+                this.tcount++;
             }
         });
     }
-    addToSavedZip(savedZip, task) {
-        const { nonStreamingFile, chunk } = task;
+    addToSavedZip(savedZip, nonStreamingFile, chunk) {
         savedZip.add(nonStreamingFile);
         nonStreamingFile.push(chunk, true);
     }
     async generateAsync(onUpdate = undefined) {
-        while (this.tasklist.length !== this.count) {
+        while (this.tcount !== this.count) {
             await sleep(500);
         }
         const self = this;
@@ -4676,12 +4699,8 @@ class fflateZip {
             if (typeof onUpdate === "function") {
                 onUpdate(percent);
             }
-        }, 200);
-        for (const task of this.tasklist) {
-            this.addToSavedZip(this.savedZip, task);
-        }
+        }, 100);
         this.savedZip.end();
-        this.tasklist = [];
     }
 }
 exports.fflateZip = fflateZip;
@@ -4773,8 +4792,7 @@ class Chapter {
         this.retryTime = 0;
     }
     async init() {
-        const obj = await this.parse();
-        const { chapterName, contentRaw, contentText, contentHTML, contentImages, additionalMetadate, } = obj;
+        const { chapterName, contentRaw, contentText, contentHTML, contentImages, additionalMetadate, } = await this.parse();
         this.chapterName = chapterName;
         this.contentRaw = contentRaw;
         this.contentText = contentText;
@@ -4782,7 +4800,7 @@ class Chapter {
         this.contentImages = contentImages;
         this.additionalMetadate = additionalMetadate;
         log_1.log.info(`[Chapter]${this.chapterName} 解析完成。`);
-        return obj;
+        return this;
     }
     async parse() {
         this.status = Status.downloading;

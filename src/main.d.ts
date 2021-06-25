@@ -1,4 +1,4 @@
-import { ruleClass, chapterParseObject } from "./rules";
+import { ruleClass } from "./rules";
 import { saveOptions } from "./index_helper";
 export declare enum Status {
     pending = 0,
@@ -54,7 +54,7 @@ export declare class Chapter {
     contentImages: attachmentClass[] | null;
     additionalMetadate: ChapterAdditionalMetadate | null;
     constructor(bookUrl: string, bookname: string, chapterUrl: string, chapterNumber: number, chapterName: string | null, isVIP: boolean, isPaid: boolean | null, sectionName: string | null, sectionNumber: number | null, sectionChapterNumber: number | null, chapterParse: ruleClass["chapterParse"], charset: string, options: object);
-    init(): Promise<chapterParseObject>;
+    init(): Promise<this>;
     private parse;
 }
 export declare class attachmentClass {
