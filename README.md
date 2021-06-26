@@ -76,6 +76,7 @@ ZIP压缩包，请在解压后，直接双击打开HTML文件（`ToC.html` 为�
 |[书包网](http://www.shubaowa.org/)|✅|❎||
 |[言情小说笔趣阁](https://www.xyqxs.cc/)|✅|❎||
 |[恋上你看书](https://www.630shu.net/)|✅|❎||
+|[青果阅读](https://www.qingoo.cn/)|✅|❎||
 
 </details>
 

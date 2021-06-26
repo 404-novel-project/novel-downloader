@@ -280,6 +280,11 @@ export async function getRule(): Promise<ruleClass> {
       ruleClass = c630shu;
       break;
     }
+    case "www.qingoo.cn": {
+      const { qingoo } = await import("./rules/qingoo");
+      ruleClass = qingoo;
+      break;
+    }
     default: {
       throw new Error("Not Found Rule!");
     }

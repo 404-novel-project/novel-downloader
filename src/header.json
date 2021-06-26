@@ -92,7 +92,8 @@
     "*://www.shubaowa.org/*_*/",
     "*://www.fuguoduxs.com/*_*/",
     "*://www.xyqxs.cc/html/*/*/index.html",
-    "*://www.630shu.net/shu/*.html"
+    "*://www.630shu.net/shu/*.html",
+    "*://www.qingoo.cn/details?bookId=*"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",
