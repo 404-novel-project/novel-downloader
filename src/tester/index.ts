@@ -223,6 +223,10 @@ if (
       "https://www.xyqxs.cc/html/0/186/index.html",
       "https://www.xyqxs.cc/html/47/47987/index.html",
     ],
+    [
+      "https://www.630shu.net/shu/145476.html",
+      "https://www.630shu.net/shu/105670.html",
+    ],
   ];
 
   async function runTest() {

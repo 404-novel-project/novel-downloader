@@ -275,6 +275,11 @@ export async function getRule(): Promise<ruleClass> {
       ruleClass = xyqxs;
       break;
     }
+    case "www.630shu.net": {
+      const { c630shu } = await import("./rules/simple/630shu");
+      ruleClass = c630shu;
+      break;
+    }
     default: {
       throw new Error("Not Found Rule!");
     }

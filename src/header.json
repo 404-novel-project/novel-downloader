@@ -91,7 +91,8 @@
     "*://www.soxs.cc/*/",
     "*://www.shubaowa.org/*_*/",
     "*://www.fuguoduxs.com/*_*/",
-    "*://www.xyqxs.cc/html/*/*/index.html"
+    "*://www.xyqxs.cc/html/*/*/index.html",
+    "*://www.630shu.net/shu/*.html"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",

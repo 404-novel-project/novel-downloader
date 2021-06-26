@@ -33,7 +33,7 @@ export async function bookParseTemp({
     introduction,
     introductionHTML,
     introCleanimages,
-  ] = await introDomHandle(introDom);
+  ] = await introDomHandle(introDom, introDomPatch);
 
   const additionalMetadate: BookAdditionalMetadate = {};
   if (coverUrl) {
