@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        3.7.4.1624642521064
+// @version        3.7.4.1624721913903
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -76,6 +76,7 @@
 // @match          *://www.shubaowa.org/*_*/
 // @match          *://www.fuguoduxs.com/*_*/
 // @match          *://www.xyqxs.cc/html/*/*/index.html
+// @match          *://www.630shu.net/shu/*.html
 // @name:en        novel-downloader
 // @description:en An scalable universal novel downloader.
 // @namespace      https://blog.bgme.me
@@ -5232,6 +5233,11 @@ async function getRule() {
             ruleClass = xyqxs;
             break;
         }
+        case "www.630shu.net": {
+            const { c630shu } = await Promise.resolve().then(() => __webpack_require__("./src/rules/simple/630shu.ts"));
+            ruleClass = c630shu;
+            break;
+        }
         default: {
             throw new Error("Not Found Rule!");
         }
@@ -5466,7 +5472,7 @@ const main_1 = __webpack_require__("./src/main.ts");
 const lib_1 = __webpack_require__("./src/lib.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 async function bookParseTemp({ bookUrl, bookname, author, introDom, introDomPatch, coverUrl, chapterListSelector, charset, chapterParse, }) {
-    const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom);
+    const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom, introDomPatch);
     const additionalMetadate = {};
     if (coverUrl) {
         additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
@@ -5554,7 +5560,9 @@ function mkBiqugeClass(introDomPatch, contentPatch) {
             const self = this;
             return bookParseTemp({
                 bookUrl: document.location.href,
-                bookname: (document.querySelector("#info > h1:nth-child(1)")).innerText.trim(),
+                bookname: (document.querySelector("#info > h1:nth-child(1)")).innerText
+                    .trim()
+                    .replace(/最新章节$/, ""),
                 author: (document.querySelector("#info > p:nth-child(2)")).innerText
                     .replace(/作(\s+)?者[：:]/, "")
                     .trim(),
@@ -5605,94 +5613,64 @@ exports.luoqiuzw = mkBiqugeClass((introDom) => introDom, (content) => {
     ads.forEach((adt) => (content.innerHTML = content.innerHTML.replace(adt, "")));
     return content;
 });
-class shuquge {
-    constructor() {
-        this.imageMode = "TM";
-    }
-    async bookParse() {
-        const self = this;
-        return bookParseTemp({
-            bookUrl: document.location.href,
-            bookname: (document.querySelector(".info > h2")).innerText.trim(),
-            author: (document.querySelector(".small > span:nth-child(1)")).innerText
-                .replace(/作(\s+)?者[：:]/, "")
-                .trim(),
-            introDom: document.querySelector(".intro"),
-            introDomPatch: (introDom) => {
-                introDom.innerHTML = introDom.innerHTML.replace(/推荐地址：http:\/\/www.shuquge.com\/txt\/\d+\/index\.html/g, "");
-                return introDom;
-            },
-            coverUrl: (document.querySelector(".info > .cover > img")).src,
-            chapterListSelector: ".listmain>dl",
-            charset: "UTF-8",
-            chapterParse: self.chapterParse,
-        });
-    }
-    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        const dom = await lib_1.getHtmlDOM(chapterUrl, charset);
-        return chapterParseTemp({
-            dom,
-            chapterUrl,
-            chapterName: (dom.querySelector(".content > h1:nth-child(1)")).innerText.trim(),
-            contenSelector: "#content",
-            contentPatch: (content) => {
-                content.innerHTML = content.innerHTML
-                    .replace("请记住本书首发域名：www.shuquge.com。书趣阁_笔趣阁手机版阅读网址：m.shuquge.com", "")
-                    .replace(/http:\/\/www.shuquge.com\/txt\/\d+\/\d+\.html/, "");
-                return content;
-            },
-            charset,
-        });
-    }
+function mkBiqugeClass2(introDomPatch, contentPatch) {
+    return class {
+        constructor() {
+            this.imageMode = "TM";
+            this.charset = document.charset;
+        }
+        async bookParse() {
+            const self = this;
+            return bookParseTemp({
+                bookUrl: document.location.href,
+                bookname: document.querySelector(".info > h2").innerText
+                    .trim()
+                    .replace(/最新章节$/, ""),
+                author: (document.querySelector(".small > span:nth-child(1)")).innerText
+                    .replace(/作(\s+)?者[：:]/, "")
+                    .trim(),
+                introDom: document.querySelector(".intro"),
+                introDomPatch: introDomPatch,
+                coverUrl: (document.querySelector(".info > .cover > img")).src,
+                chapterListSelector: ".listmain>dl",
+                charset: document.charset,
+                chapterParse: self.chapterParse,
+            });
+        }
+        async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+            const dom = await lib_1.getHtmlDOM(chapterUrl, charset);
+            return chapterParseTemp({
+                dom,
+                chapterUrl,
+                chapterName: (dom.querySelector(".content > h1:nth-child(1)")).innerText.trim(),
+                contenSelector: "#content",
+                contentPatch: contentPatch,
+                charset,
+            });
+        }
+    };
 }
-exports.shuquge = shuquge;
-class xyqxs {
-    constructor() {
-        this.imageMode = "TM";
-        this.charset = "GBK";
-    }
-    async bookParse() {
-        const self = this;
-        return bookParseTemp({
-            bookUrl: document.location.href,
-            bookname: document.querySelector(".info > h2").innerText
-                .trim()
-                .replace(/最新章节$/, ""),
-            author: (document.querySelector(".small > span:nth-child(1)")).innerText
-                .replace(/作(\s+)?者[：:]/, "")
-                .trim(),
-            introDom: document.querySelector(".intro"),
-            introDomPatch: (introDom) => {
-                introDom.innerHTML = introDom.innerHTML.replace(/推荐地址：https:\/\/www.xyqxs.cc\/html\/\d+\/\d+\/index\.html/g, "");
-                return introDom;
-            },
-            coverUrl: (document.querySelector(".info > .cover > img")).src,
-            chapterListSelector: ".listmain>dl",
-            charset: self.charset,
-            chapterParse: self.chapterParse,
-        });
-    }
-    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        const dom = await lib_1.getHtmlDOM(chapterUrl, charset);
-        return chapterParseTemp({
-            dom,
-            chapterUrl,
-            chapterName: (dom.querySelector(".content > h1:nth-child(1)")).innerText.trim(),
-            contenSelector: "#content",
-            contentPatch: (content) => {
-                lib_1.rm("div[style]", true, content);
-                lib_1.rm("script", true, content);
-                lib_1.rm('div[align="center"]', false, content);
-                content.innerHTML = content.innerHTML
-                    .replace("请记住本书首发域名：www.xyqxs.cc。笔趣阁手机版阅读网址：m.xyqxs.cc", "")
-                    .replace(/\(https:\/\/www.xyqxs.cc\/html\/\d+\/\d+\/\d+\.html\)/, "");
-                return content;
-            },
-            charset,
-        });
-    }
-}
-exports.xyqxs = xyqxs;
+exports.shuquge = mkBiqugeClass2((introDom) => {
+    introDom.innerHTML = introDom.innerHTML.replace(/推荐地址：http:\/\/www.shuquge.com\/txt\/\d+\/index\.html/g, "");
+    return introDom;
+}, (content) => {
+    content.innerHTML = content.innerHTML
+        .replace("请记住本书首发域名：www.shuquge.com。书趣阁_笔趣阁手机版阅读网址：m.shuquge.com", "")
+        .replace(/http:\/\/www.shuquge.com\/txt\/\d+\/\d+\.html/, "");
+    return content;
+});
+exports.xyqxs = mkBiqugeClass2((introDom) => {
+    introDom.innerHTML = introDom.innerHTML.replace(/推荐地址：https:\/\/www.xyqxs.cc\/html\/\d+\/\d+\/index\.html/g, "");
+    return introDom;
+}, (content) => {
+    lib_1.rm("div[style]", true, content);
+    lib_1.rm("script", true, content);
+    lib_1.rm('div[align="center"]', false, content);
+    content.innerHTML = content.innerHTML
+        .replace("请记住本书首发域名：www.xyqxs.cc。笔趣阁手机版阅读网址：m.xyqxs.cc", "")
+        .replace(/\(https:\/\/www.xyqxs.cc\/html\/\d+\/\d+\/\d+\.html\)/, "");
+    return content;
+});
 class xbiquge {
     constructor() {
         this.imageMode = "TM";
@@ -7229,8 +7207,9 @@ exports.jjwxc = jjwxc;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.introDomHandle = void 0;
+exports.mkRuleClass1 = exports.introDomHandle = void 0;
 const lib_1 = __webpack_require__("./src/lib.ts");
+const main_1 = __webpack_require__("./src/main.ts");
 async function introDomHandle(introDom, domPatch = undefined) {
     if (introDom === null) {
         return [null, null, null];
@@ -7244,6 +7223,64 @@ async function introDomHandle(introDom, domPatch = undefined) {
     }
 }
 exports.introDomHandle = introDomHandle;
+function mkRuleClass1(optionis) {
+    const { bookUrl, bookname, author, introDom, introDomPatch, coverUrl, cos, getContent, contentPatch, } = optionis;
+    return class {
+        constructor() {
+            this.imageMode = "TM";
+            this.charset = document.charset;
+        }
+        async bookParse() {
+            const [introduction, introductionHTML, introCleanimages,] = await introDomHandle(introDom, introDomPatch);
+            const additionalMetadate = {};
+            if (coverUrl) {
+                const coverClass = await lib_1.getImageAttachment(coverUrl);
+                coverClass.name = "cover-" + coverClass.name;
+                additionalMetadate.cover = coverClass;
+            }
+            const chapters = [];
+            let chapterNumber = 0;
+            for (const aElem of Array.from(cos)) {
+                chapterNumber++;
+                const chapterName = aElem.innerText;
+                const chapterUrl = aElem.href;
+                const isVIP = false;
+                const isPaid = false;
+                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, null, null, null, this.chapterParse, this.charset, { bookname: bookname });
+                chapters.push(chapter);
+            }
+            const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+            return book;
+        }
+        async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+            const doc = await lib_1.getHtmlDOM(chapterUrl, charset);
+            let content = getContent(doc);
+            if (content) {
+                content = contentPatch(content);
+                let { dom, text, images } = await lib_1.cleanDOM(content, "TM");
+                return {
+                    chapterName: chapterName,
+                    contentRaw: content,
+                    contentText: text,
+                    contentHTML: dom,
+                    contentImages: images,
+                    additionalMetadate: null,
+                };
+            }
+            else {
+                return {
+                    chapterName: chapterName,
+                    contentRaw: null,
+                    contentText: null,
+                    contentHTML: null,
+                    contentImages: null,
+                    additionalMetadate: null,
+                };
+            }
+        }
+    };
+}
+exports.mkRuleClass1 = mkRuleClass1;
 
 
 /***/ }),
@@ -31128,6 +31165,32 @@ class shuhai {
     }
 }
 exports.shuhai = shuhai;
+
+
+/***/ }),
+
+/***/ "./src/rules/simple/630shu.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.c630shu = void 0;
+const common_1 = __webpack_require__("./src/rules/lib/common.ts");
+exports.c630shu = common_1.mkRuleClass1({
+    bookUrl: document.location.href,
+    bookname: (document.querySelector("#info > h1")).innerText.trim(),
+    author: (document.querySelector("div.options > span.item:nth-child(1) > a")).innerText.trim(),
+    introDom: document.querySelector("#intro"),
+    introDomPatch: (introDom) => introDom,
+    coverUrl: document.querySelector(".img_in > img").src,
+    cos: document.querySelectorAll(".zjlist > dd > a"),
+    getContent: (doc) => doc.querySelector("#content"),
+    contentPatch: (content) => {
+        content.innerHTML = content.innerHTML.replace(/恋上你看书网 WWW.630SHU.NET ，最快更新.+最新章节！/, "");
+        return content;
+    },
+});
 
 
 /***/ }),
