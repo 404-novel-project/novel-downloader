@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        小说下载器测试脚本
-// @version     3.7.4.1624721920969
+// @version     3.7.4.1624727559312
 // @author      bgme
 // @description 小说下载器测试脚本
 // @match       *://www.ciweimao.com/chapter-list/*
@@ -76,6 +76,7 @@
 // @match       *://www.fuguoduxs.com/*_*/
 // @match       *://www.xyqxs.cc/html/*/*/index.html
 // @match       *://www.630shu.net/shu/*.html
+// @match       *://www.qingoo.cn/details?bookId=*
 // @match       https://greasyfork.org/*/scripts/406070-%E5%B0%8F%E8%AF%B4%E4%B8%8B%E8%BD%BD%E5%99%A8
 // @name:en     novel-downloader-tester
 // @namespace   https://blog.bgme.me

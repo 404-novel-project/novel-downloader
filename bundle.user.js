@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        3.7.4.1624721913903
+// @version        3.7.4.1624727552724
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -77,6 +77,7 @@
 // @match          *://www.fuguoduxs.com/*_*/
 // @match          *://www.xyqxs.cc/html/*/*/index.html
 // @match          *://www.630shu.net/shu/*.html
+// @match          *://www.qingoo.cn/details?bookId=*
 // @name:en        novel-downloader
 // @description:en An scalable universal novel downloader.
 // @namespace      https://blog.bgme.me
@@ -5236,6 +5237,11 @@ async function getRule() {
         case "www.630shu.net": {
             const { c630shu } = await Promise.resolve().then(() => __webpack_require__("./src/rules/simple/630shu.ts"));
             ruleClass = c630shu;
+            break;
+        }
+        case "www.qingoo.cn": {
+            const { qingoo } = await Promise.resolve().then(() => __webpack_require__("./src/rules/qingoo.ts"));
+            ruleClass = qingoo;
             break;
         }
         default: {
@@ -30674,6 +30680,92 @@ class qimao {
     }
 }
 exports.qimao = qimao;
+
+
+/***/ }),
+
+/***/ "./src/rules/qingoo.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.qingoo = void 0;
+const main_1 = __webpack_require__("./src/main.ts");
+const lib_1 = __webpack_require__("./src/lib.ts");
+const common_1 = __webpack_require__("./src/rules/lib/common.ts");
+class qingoo {
+    constructor() {
+        this.imageMode = "TM";
+        this.charset = "UTF-8";
+    }
+    async bookParse() {
+        let bookUrl = document.location.href;
+        const bookname = (document.querySelector(".title > dl > dd > h1")).innerText.trim();
+        const author = document.querySelector("#author").innerText
+            .replace("作者：", "")
+            .trim();
+        const introDom = document.querySelector("#allDesc");
+        const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom);
+        const additionalMetadate = {};
+        const coverUrl = (document.querySelector(".title > dl > dt > img:nth-child(1)")).src;
+        if (coverUrl) {
+            const coverClass = await lib_1.getImageAttachment(coverUrl);
+            coverClass.name = "cover-" + coverClass.name;
+            additionalMetadate.cover = coverClass;
+        }
+        const chapters = [];
+        const data = unsafeWindow.data;
+        const _linkTemp = (document.querySelector("#chapterItem")?.firstElementChild)?.href;
+        const linkTemp = new URL(_linkTemp);
+        for (const d of data) {
+            const status = d.status;
+            const chapterNumber = d.sn;
+            const chapterName = d.name;
+            linkTemp.searchParams.set("index", (chapterNumber - 1).toString());
+            const chapterUrl = linkTemp.toString();
+            const isVIP = false;
+            const isPaid = false;
+            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, null, null, null, this.chapterParse, this.charset, {});
+            if (!status) {
+                chapter.status = main_1.Status.aborted;
+            }
+            chapters.push(chapter);
+        }
+        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        return book;
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+        const doc = await lib_1.getHtmlDOM(chapterUrl, charset);
+        chapterName = (doc.querySelector("#content > h1")).innerText.trim();
+        const content = doc.querySelector("#content");
+        if (content) {
+            lib_1.rm("div.header", false, content);
+            lib_1.rm("h1", false, content);
+            lib_1.rm("h6", false, content);
+            let { dom, text, images } = await lib_1.cleanDOM(content, "TM");
+            return {
+                chapterName: chapterName,
+                contentRaw: content,
+                contentText: text,
+                contentHTML: dom,
+                contentImages: images,
+                additionalMetadate: null,
+            };
+        }
+        else {
+            return {
+                chapterName: chapterName,
+                contentRaw: null,
+                contentText: null,
+                contentHTML: null,
+                contentImages: null,
+                additionalMetadate: null,
+            };
+        }
+    }
+}
+exports.qingoo = qingoo;
 
 
 /***/ }),
