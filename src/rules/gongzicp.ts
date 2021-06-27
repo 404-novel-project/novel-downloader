@@ -1,11 +1,5 @@
-import {
-  BookAdditionalMetadate,
-  attachmentClass,
-  Chapter,
-  Status,
-  Book,
-} from "../main";
-import { sleep } from "../lib";
+import { BookAdditionalMetadate, Chapter, Status, Book } from "../main";
+import { getImageAttachment, sleep } from "../lib";
 import { ruleClass, chapterParseObject, retryLimit } from "../rules";
 import { introDomHandle } from "./lib/common";
 import { log } from "../log";
@@ -225,12 +219,14 @@ export class gongzicp implements ruleClass {
 
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = data.novelInfo.novel_cover;
-    additionalMetadate.cover = new attachmentClass(
-      coverUrl,
-      `cover.${coverUrl.split(".").slice(-1)[0]}`,
-      "TM"
-    );
-    additionalMetadate.cover.init();
+    if (coverUrl) {
+      getImageAttachment(coverUrl, this.imageMode, "cover-").then(
+        (coverClass) => {
+          additionalMetadate.cover = coverClass;
+        }
+      );
+    }
+
     additionalMetadate.tags = data.novelInfo.tag_list;
 
     async function isLogin() {

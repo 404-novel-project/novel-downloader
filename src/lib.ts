@@ -327,7 +327,8 @@ export function clearAttachmentClassCache() {
 
 export async function getImageAttachment(
   url: string,
-  imgMode: "naive" | "TM" = "TM"
+  imgMode: "naive" | "TM" = "TM",
+  prefix: string = ""
 ) {
   const tmpImageName = Math.random().toString().replace("0.", "");
 
@@ -341,7 +342,7 @@ export async function getImageAttachment(
     if (blob) {
       const hash = await calculateMd5(blob);
       const ext = blob.type.split("/")[1];
-      const imageName = [hash, ext].join(".");
+      const imageName = [prefix, hash, ".", ext].join("");
       imgClass.name = imageName;
       putAttachmentClassCache(imgClass);
     } else {

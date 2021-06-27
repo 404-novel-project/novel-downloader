@@ -1,11 +1,5 @@
-import {
-  BookAdditionalMetadate,
-  attachmentClass,
-  Chapter,
-  Status,
-  Book,
-} from "../main";
-import { getHtmlDOM, cleanDOM, rm } from "../lib";
+import { BookAdditionalMetadate, Chapter, Status, Book } from "../main";
+import { getHtmlDOM, cleanDOM, rm, getImageAttachment } from "../lib";
 import { ruleClass } from "../rules";
 import { introDomHandle } from "./lib/common";
 import { log } from "../log";
@@ -40,12 +34,13 @@ export class linovelib implements ruleClass {
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = (<HTMLImageElement>doc.querySelector(".book-img > img"))
       .src;
-    additionalMetadate.cover = new attachmentClass(
-      coverUrl,
-      `cover.${coverUrl.split("!")[0].split(".").slice(-1)[0]}`,
-      "TM"
-    );
-    additionalMetadate.cover.init();
+    if (coverUrl) {
+      getImageAttachment(coverUrl, this.imageMode, "cover-").then(
+        (coverClass) => {
+          additionalMetadate.cover = coverClass;
+        }
+      );
+    }
 
     additionalMetadate.tags = Array.from(
       doc.querySelectorAll(".book-label a")

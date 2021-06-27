@@ -67,9 +67,11 @@ export function mkRuleClass1(optionis: mkRuleClassOptions1) {
 
       const additionalMetadate: BookAdditionalMetadate = {};
       if (coverUrl) {
-        const coverClass = await getImageAttachment(coverUrl);
-        coverClass.name = "cover-" + coverClass.name;
-        additionalMetadate.cover = coverClass;
+        getImageAttachment(coverUrl, this.imageMode, "cover-").then(
+          (coverClass) => {
+            additionalMetadate.cover = coverClass;
+          }
+        );
       }
 
       const chapters: Chapter[] = [];

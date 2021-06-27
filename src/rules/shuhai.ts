@@ -1,11 +1,5 @@
-import {
-  BookAdditionalMetadate,
-  attachmentClass,
-  Chapter,
-  Status,
-  Book,
-} from "../main";
-import { ggetHtmlDOM, cleanDOM, sleep, rm } from "../lib";
+import { BookAdditionalMetadate, Chapter, Status, Book } from "../main";
+import { ggetHtmlDOM, cleanDOM, sleep, rm, getImageAttachment } from "../lib";
 import { ruleClass, chapterParseObject } from "../rules";
 import { introDomHandle } from "./lib/common";
 export class shuhai implements ruleClass {
@@ -44,12 +38,11 @@ export class shuhai implements ruleClass {
       document.querySelector(".book-cover-wrapper > img")
     )).getAttribute("data-original");
     if (coverUrl) {
-      additionalMetadate.cover = new attachmentClass(
-        coverUrl,
-        `cover.${coverUrl.split(".").slice(-1)[0]}`,
-        "TM"
+      getImageAttachment(coverUrl, this.imageMode, "cover-").then(
+        (coverClass) => {
+          additionalMetadate.cover = coverClass;
+        }
       );
-      additionalMetadate.cover.init();
     }
     additionalMetadate.tags = Array.from(
       document.querySelectorAll(".book-info-bookstate > .tag")

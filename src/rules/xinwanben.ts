@@ -1,11 +1,6 @@
-import {
-  BookAdditionalMetadate,
-  attachmentClass,
-  Chapter,
-  Book,
-} from "../main";
+import { BookAdditionalMetadate, Chapter, Book } from "../main";
 import { ruleClass } from "../rules";
-import { getHtmlDOM, cleanDOM } from "../lib";
+import { getHtmlDOM, cleanDOM, getImageAttachment } from "../lib";
 import { introDomHandle } from "./lib/common";
 import { log } from "../log";
 
@@ -44,12 +39,11 @@ export class xinwanben implements ruleClass {
       document.querySelector(".detailTopLeft > img")
     )).src;
     if (coverUrl) {
-      additionalMetadate.cover = new attachmentClass(
-        coverUrl,
-        `cover.${coverUrl.split(".").slice(-1)[0]}`,
-        "TM"
+      getImageAttachment(coverUrl, this.imageMode, "cover-").then(
+        (coverClass) => {
+          additionalMetadate.cover = coverClass;
+        }
       );
-      additionalMetadate.cover.init();
     }
 
     const chapters: Chapter[] = [];

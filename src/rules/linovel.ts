@@ -1,10 +1,4 @@
-import {
-  BookAdditionalMetadate,
-  attachmentClass,
-  Chapter,
-  Status,
-  Book,
-} from "../main";
+import { BookAdditionalMetadate, Chapter, Status, Book } from "../main";
 import { getHtmlDOM, cleanDOM, getImageAttachment } from "../lib";
 import { ruleClass, chapterParseObject } from "../rules";
 import { introDomHandle } from "./lib/common";
@@ -40,13 +34,14 @@ export class linovel implements ruleClass {
     const coverUrl = (<HTMLAnchorElement>(
       document.querySelector(".book-cover > a")
     )).href;
-    attachmentsUrlList.push(coverUrl);
-    additionalMetadate.cover = new attachmentClass(
-      coverUrl,
-      `cover.${coverUrl.split("!")[0].split(".").slice(-1)[0]}`,
-      "TM"
-    );
-    additionalMetadate.cover.init();
+    if (coverUrl) {
+      attachmentsUrlList.push(coverUrl);
+      getImageAttachment(coverUrl, this.imageMode, "cover-").then(
+        (coverClass) => {
+          additionalMetadate.cover = coverClass;
+        }
+      );
+    }
 
     additionalMetadate.attachments = [];
     const volumeCoverUrlList = Array.from(
@@ -58,11 +53,11 @@ export class linovel implements ruleClass {
     for (const volumeCoverUrl of volumeCoverUrlList) {
       if (!attachmentsUrlList.includes(volumeCoverUrl)) {
         attachmentsUrlList.push(volumeCoverUrl);
-        (async () => {
-          const volumeCoverObj = await getImageAttachment(volumeCoverUrl);
-          volumeCoverObj.name = `volumeCover-` + volumeCoverObj.name;
-          additionalMetadate.attachments?.push(volumeCoverObj);
-        })();
+        getImageAttachment(volumeCoverUrl, this.imageMode, "volumeCover-").then(
+          (volumeCoverObj) => {
+            additionalMetadate.attachments?.push(volumeCoverObj);
+          }
+        );
       }
     }
 

@@ -1,11 +1,6 @@
-import {
-  BookAdditionalMetadate,
-  attachmentClass,
-  Chapter,
-  Book,
-} from "../main";
+import { BookAdditionalMetadate, Chapter, Book } from "../main";
 import { ruleClass, chapterParseObject } from "../rules";
-import { getHtmlDOM, cleanDOM, rm } from "../lib";
+import { getHtmlDOM, cleanDOM, rm, getImageAttachment } from "../lib";
 import { introDomHandle } from "./lib/common";
 
 export async function bookParseTemp({
@@ -37,12 +32,9 @@ export async function bookParseTemp({
 
   const additionalMetadate: BookAdditionalMetadate = {};
   if (coverUrl) {
-    additionalMetadate.cover = new attachmentClass(
-      coverUrl,
-      `cover.${coverUrl.split(".").slice(-1)[0]}`,
-      "TM"
-    );
-    additionalMetadate.cover.init();
+    getImageAttachment(coverUrl, "TM", "cover-").then((coverClass) => {
+      additionalMetadate.cover = coverClass;
+    });
   }
 
   const chapters: Chapter[] = [];

@@ -1,11 +1,6 @@
-import {
-  BookAdditionalMetadate,
-  attachmentClass,
-  Chapter,
-  Book,
-} from "../main";
+import { BookAdditionalMetadate, Chapter, Book } from "../main";
 import { ruleClass } from "../rules";
-import { getHtmlDOM, cleanDOM, rm } from "../lib";
+import { getHtmlDOM, cleanDOM, rm, getImageAttachment } from "../lib";
 import { introDomHandle } from "./lib/common";
 
 namespace uukanshu {
@@ -52,12 +47,13 @@ export class uukanshu implements ruleClass {
     const coverUrl = (<HTMLImageElement>(
       document.querySelector("a.bookImg > img")
     )).src;
-    additionalMetadate.cover = new attachmentClass(
-      coverUrl,
-      `cover.${coverUrl.split(".").slice(-1)[0]}`,
-      "TM"
-    );
-    additionalMetadate.cover.init();
+    if (coverUrl) {
+      getImageAttachment(coverUrl, this.imageMode, "cover-").then(
+        (coverClass) => {
+          additionalMetadate.cover = coverClass;
+        }
+      );
+    }
 
     const chapters: Chapter[] = [];
     const button = <HTMLButtonElement>(

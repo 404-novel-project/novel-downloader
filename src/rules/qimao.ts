@@ -1,12 +1,6 @@
-import {
-  BookAdditionalMetadate,
-  attachmentClass,
-  Chapter,
-  Status,
-  Book,
-} from "../main";
+import { BookAdditionalMetadate, Chapter, Status, Book } from "../main";
 import { ruleClass, chapterParseObject } from "../rules";
-import { getHtmlDOM, cleanDOM } from "../lib";
+import { getHtmlDOM, cleanDOM, getImageAttachment } from "../lib";
 import { introDomHandle } from "./lib/common";
 import { log } from "../log";
 
@@ -41,12 +35,11 @@ export class qimao implements ruleClass {
       document.querySelector(".poster-pic > img")
     )).src;
     if (coverUrl) {
-      additionalMetadate.cover = new attachmentClass(
-        coverUrl,
-        `cover.${coverUrl.split(".").slice(-1)[0]}`,
-        "TM"
+      getImageAttachment(coverUrl, this.imageMode, "cover-").then(
+        (coverClass) => {
+          additionalMetadate.cover = coverClass;
+        }
       );
-      additionalMetadate.cover.init();
     }
     additionalMetadate.tags = Array.from(
       document.querySelectorAll(".qm-tags > a")

@@ -1,11 +1,5 @@
-import {
-  BookAdditionalMetadate,
-  attachmentClass,
-  Chapter,
-  Status,
-  Book,
-} from "../main";
-import { getHtmlDOM, ggetHtmlDOM, cleanDOM } from "../lib";
+import { BookAdditionalMetadate, Chapter, Status, Book } from "../main";
+import { getHtmlDOM, ggetHtmlDOM, cleanDOM, getImageAttachment } from "../lib";
 import { ruleClass, chapterParseObject } from "../rules";
 import { introDomHandle } from "./lib/common";
 
@@ -39,12 +33,13 @@ export class zongheng implements ruleClass {
     const additionalMetadate: BookAdditionalMetadate = {};
     let coverUrl = (<HTMLImageElement>doc.querySelector("div.book-img > img"))
       .src;
-    additionalMetadate.cover = new attachmentClass(
-      coverUrl,
-      `cover.${coverUrl.split(".").slice(-1)[0]}`,
-      "TM"
-    );
-    additionalMetadate.cover.init();
+    if (coverUrl) {
+      getImageAttachment(coverUrl, this.imageMode, "cover-").then(
+        (coverClass) => {
+          additionalMetadate.cover = coverClass;
+        }
+      );
+    }
     additionalMetadate.tags = Array.from(
       doc.querySelectorAll(".book-info>.book-label a")
     ).map((a) => (<HTMLAnchorElement>a).innerText.trim());

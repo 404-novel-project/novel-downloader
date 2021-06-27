@@ -1,11 +1,12 @@
-import {
-  BookAdditionalMetadate,
-  attachmentClass,
-  Chapter,
-  Book,
-} from "../main";
+import { BookAdditionalMetadate, Chapter, Book } from "../main";
 import { ruleClass } from "../rules";
-import { ggetHtmlDOM, cleanDOM, rm, ggetText } from "../lib";
+import {
+  ggetHtmlDOM,
+  cleanDOM,
+  rm,
+  ggetText,
+  getImageAttachment,
+} from "../lib";
 import { introDomHandle } from "./lib/common";
 import { log } from "../log";
 
@@ -45,13 +46,13 @@ export class idejian implements ruleClass {
       document.querySelector(".book_img > img")
     )).src;
     if (coverUrl) {
-      additionalMetadate.cover = new attachmentClass(
-        coverUrl,
-        `cover.${coverUrl.split(".").slice(-1)[0]}`,
-        "TM"
+      getImageAttachment(coverUrl, this.imageMode, "cover-").then(
+        (coverClass) => {
+          additionalMetadate.cover = coverClass;
+        }
       );
-      additionalMetadate.cover.init();
     }
+
     additionalMetadate.tags = Array.from(
       document.querySelectorAll("div.detail_bkgrade > span")
     ).map((span) => (<HTMLSpanElement>span).innerText.trim());

@@ -1,10 +1,5 @@
-import {
-  BookAdditionalMetadate,
-  attachmentClass,
-  Chapter,
-  Book,
-} from "../main";
-import { getHtmlDOM, cleanDOM, rm } from "../lib";
+import { BookAdditionalMetadate, Chapter, Book } from "../main";
+import { getHtmlDOM, cleanDOM, rm, getImageAttachment } from "../lib";
 import { ruleClass } from "../rules";
 import { introDomHandle } from "./lib/common";
 
@@ -36,12 +31,13 @@ export class westnovel implements ruleClass {
 
     const additionalMetadate: BookAdditionalMetadate = {};
     let coverUrl = (<HTMLImageElement>document.querySelector(".img-img")).src;
-    additionalMetadate.cover = new attachmentClass(
-      coverUrl,
-      `cover.${coverUrl.split(".").slice(-1)[0]}`,
-      "TM"
-    );
-    additionalMetadate.cover.init();
+    if (coverUrl) {
+      getImageAttachment(coverUrl, this.imageMode, "cover-").then(
+        (coverClass) => {
+          additionalMetadate.cover = coverClass;
+        }
+      );
+    }
 
     const chapters: Chapter[] = [];
     const aList = document.querySelectorAll(".chapterlist > dd > a");

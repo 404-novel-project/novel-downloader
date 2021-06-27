@@ -34,9 +34,11 @@ export class qingoo implements ruleClass {
       document.querySelector(".title > dl > dt > img:nth-child(1)")
     )).src;
     if (coverUrl) {
-      const coverClass = await getImageAttachment(coverUrl);
-      coverClass.name = "cover-" + coverClass.name;
-      additionalMetadate.cover = coverClass;
+      getImageAttachment(coverUrl, this.imageMode, "cover-").then(
+        (coverClass) => {
+          additionalMetadate.cover = coverClass;
+        }
+      );
     }
 
     const chapters: Chapter[] = [];

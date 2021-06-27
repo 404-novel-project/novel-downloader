@@ -1,10 +1,5 @@
-import {
-  BookAdditionalMetadate,
-  attachmentClass,
-  Chapter,
-  Book,
-} from "../main";
-import { getHtmlDOM, cleanDOM, rm } from "../lib";
+import { BookAdditionalMetadate, Chapter, Book } from "../main";
+import { getHtmlDOM, cleanDOM, rm, getImageAttachment } from "../lib";
 import { ruleClass } from "../rules";
 import { introDomHandle } from "./lib/common";
 export class wenku8 implements ruleClass {
@@ -48,12 +43,13 @@ export class wenku8 implements ruleClass {
         "#content > div:nth-child(1) > table:nth-child(4) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(1) > img:nth-child(1)"
       )
     )).src;
-    additionalMetadate.cover = new attachmentClass(
-      coverUrl,
-      `cover.${coverUrl.split(".").slice(-1)[0]}`,
-      "TM"
-    );
-    additionalMetadate.cover.init();
+    if (coverUrl) {
+      getImageAttachment(coverUrl, this.imageMode, "cover-").then(
+        (coverClass) => {
+          additionalMetadate.cover = coverClass;
+        }
+      );
+    }
 
     const chapters: Chapter[] = [];
 

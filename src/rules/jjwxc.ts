@@ -13,6 +13,7 @@ import {
   gfetch,
   getAttachmentClassCache,
   putAttachmentClassCache,
+  getImageAttachment,
 } from "../lib";
 import { ruleClass, chapterParseObject, retryLimit } from "../rules";
 import { replaceJjwxcCharacter } from "./lib/jjwxcFontDecode";
@@ -56,12 +57,13 @@ export class jjwxc implements ruleClass {
     let coverUrl = (<HTMLImageElement>(
       document.querySelector(".noveldefaultimage")
     )).src;
-    additionalMetadate.cover = new attachmentClass(
-      coverUrl,
-      `cover.${coverUrl.split(".").slice(-1)[0]}`,
-      "TM"
-    );
-    additionalMetadate.cover.init();
+    if (coverUrl) {
+      getImageAttachment(coverUrl, this.imageMode, "cover-").then(
+        (coverClass) => {
+          additionalMetadate.cover = coverClass;
+        }
+      );
+    }
 
     let tags = (<HTMLSpanElement>(
       document.querySelector(

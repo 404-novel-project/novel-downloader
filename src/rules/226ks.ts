@@ -1,11 +1,6 @@
-import {
-  BookAdditionalMetadate,
-  attachmentClass,
-  Chapter,
-  Book,
-} from "../main";
+import { BookAdditionalMetadate, Chapter, Book } from "../main";
 import { ruleClass } from "../rules";
-import { getHtmlDOM, cleanDOM } from "../lib";
+import { getHtmlDOM, cleanDOM, getImageAttachment } from "../lib";
 import { introDomHandle } from "./lib/common";
 import { log } from "../log";
 
@@ -40,12 +35,13 @@ export class c226ks implements ruleClass {
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = (<HTMLImageElement>document.querySelector(".imgbox > img"))
       .src;
-    additionalMetadate.cover = new attachmentClass(
-      coverUrl,
-      `cover.${coverUrl.split(".").slice(-1)[0]}`,
-      "TM"
-    );
-    additionalMetadate.cover.init();
+    if (coverUrl) {
+      getImageAttachment(coverUrl, this.imageMode, "cover-").then(
+        (coverClass) => {
+          additionalMetadate.cover = coverClass;
+        }
+      );
+    }
 
     const chapters: Chapter[] = [];
     const indexUrls = Array.from(

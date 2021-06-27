@@ -1,11 +1,6 @@
-import {
-  BookAdditionalMetadate,
-  attachmentClass,
-  Chapter,
-  Book,
-} from "../main";
+import { BookAdditionalMetadate, Chapter, Book } from "../main";
 import { ruleClass } from "../rules";
-import { getHtmlDOM, cleanDOM, rm } from "../lib";
+import { getHtmlDOM, cleanDOM, rm, getImageAttachment } from "../lib";
 import { introDomHandle } from "./lib/common";
 
 export class meegoq implements ruleClass {
@@ -44,12 +39,13 @@ export class meegoq implements ruleClass {
     const coverUrl = (<HTMLImageElement>(
       dom.querySelector("article.info > div.cover > img")
     )).src;
-    additionalMetadate.cover = new attachmentClass(
-      coverUrl,
-      `cover.${coverUrl.split(".").slice(-1)[0]}`,
-      "TM"
-    );
-    additionalMetadate.cover.init();
+    if (coverUrl) {
+      getImageAttachment(coverUrl, this.imageMode, "cover-").then(
+        (coverClass) => {
+          additionalMetadate.cover = coverClass;
+        }
+      );
+    }
 
     const chapters: Chapter[] = [];
     const ul = document.querySelector("ul.mulu");

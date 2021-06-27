@@ -1,12 +1,6 @@
-import {
-  BookAdditionalMetadate,
-  attachmentClass,
-  Chapter,
-  Status,
-  Book,
-} from "../main";
+import { BookAdditionalMetadate, Chapter, Status, Book } from "../main";
 import { ruleClass, chapterParseObject } from "../rules";
-import { getHtmlDOM, cleanDOM, gfetch } from "../lib";
+import { getHtmlDOM, cleanDOM, gfetch, getImageAttachment } from "../lib";
 import { introDomHandle } from "./lib/common";
 import { log } from "../log";
 
@@ -46,12 +40,11 @@ export class tadu implements ruleClass {
       doc.querySelector("a.bookImg > img")
     )).getAttribute("data-src");
     if (coverUrl) {
-      additionalMetadate.cover = new attachmentClass(
-        coverUrl,
-        `cover.${coverUrl.split(".").slice(-1)[0]}`,
-        "TM"
+      getImageAttachment(coverUrl, this.imageMode, "cover-").then(
+        (coverClass) => {
+          additionalMetadate.cover = coverClass;
+        }
       );
-      additionalMetadate.cover.init();
     }
 
     const chapters: Chapter[] = [];

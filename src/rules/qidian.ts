@@ -1,11 +1,11 @@
+import { BookAdditionalMetadate, Chapter, Status, Book } from "../main";
 import {
-  BookAdditionalMetadate,
-  attachmentClass,
-  Chapter,
-  Status,
-  Book,
-} from "../main";
-import { ggetHtmlDOM, cleanDOM, sleep, gfetch } from "../lib";
+  ggetHtmlDOM,
+  cleanDOM,
+  sleep,
+  gfetch,
+  getImageAttachment,
+} from "../lib";
 import { ruleClass, chapterParseObject } from "../rules";
 import { introDomHandle } from "./lib/common";
 import { log } from "../log";
@@ -40,12 +40,13 @@ export class qidian implements ruleClass {
     const additionalMetadate: BookAdditionalMetadate = {};
     let coverUrl = (<HTMLImageElement>document.querySelector("#bookImg > img"))
       .src;
-    additionalMetadate.cover = new attachmentClass(
-      coverUrl,
-      `cover.${coverUrl.split(".").slice(-1)[0]}`,
-      "TM"
-    );
-    additionalMetadate.cover.init();
+    if (coverUrl) {
+      getImageAttachment(coverUrl, this.imageMode, "cover-").then(
+        (coverClass) => {
+          additionalMetadate.cover = coverClass;
+        }
+      );
+    }
     additionalMetadate.tags = Array.from(
       document.querySelectorAll(".tag-wrap>.tags")
     ).map((a) => (<HTMLAnchorElement>a).innerText.trim());
