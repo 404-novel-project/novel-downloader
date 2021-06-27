@@ -1,4 +1,4 @@
-import { attachmentClass, Book } from "../main";
+import { Book } from "../main";
 import { ruleClass } from "../rules";
 export declare class dmzj implements ruleClass {
     imageMode: "naive" | "TM";
@@ -9,7 +9,7 @@ export declare class dmzj implements ruleClass {
         contentRaw: HTMLDivElement;
         contentText: string;
         contentHTML: HTMLElement;
-        contentImages: attachmentClass[];
+        contentImages: import("../main").attachmentClass[];
         additionalMetadate: null;
     } | {
         chapterName: string | null;

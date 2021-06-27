@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        3.7.4.1624727552724
+// @version        3.7.4.1624796619330
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -4589,7 +4589,7 @@ function clearAttachmentClassCache() {
     attachmentClassCache = [];
 }
 exports.clearAttachmentClassCache = clearAttachmentClassCache;
-async function getImageAttachment(url, imgMode = "TM") {
+async function getImageAttachment(url, imgMode = "TM", prefix = "") {
     const tmpImageName = Math.random().toString().replace("0.", "");
     let imgClass;
     const imgClassCache = getAttachmentClassCache(url);
@@ -4602,7 +4602,7 @@ async function getImageAttachment(url, imgMode = "TM") {
         if (blob) {
             const hash = await calculateMd5(blob);
             const ext = blob.type.split("/")[1];
-            const imageName = [hash, ext].join(".");
+            const imageName = [prefix, hash, ".", ext].join("");
             imgClass.name = imageName;
             putAttachmentClassCache(imgClass);
         }
@@ -5282,8 +5282,11 @@ class c17k {
         const additionalMetadate = {};
         let coverUrl = doc.querySelector("#bookCover img.book")
             .src;
-        additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
-        additionalMetadate.cover.init();
+        if (coverUrl) {
+            lib_1.getImageAttachment(coverUrl, this.imageMode, "cover-").then((coverClass) => {
+                additionalMetadate.cover = coverClass;
+            });
+        }
         const chapters = [];
         const sections = document.querySelectorAll("dl.Volume");
         let chapterNumber = 0;
@@ -5404,8 +5407,11 @@ class c226ks {
         const additionalMetadate = {};
         const coverUrl = document.querySelector(".imgbox > img")
             .src;
-        additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
-        additionalMetadate.cover.init();
+        if (coverUrl) {
+            lib_1.getImageAttachment(coverUrl, this.imageMode, "cover-").then((coverClass) => {
+                additionalMetadate.cover = coverClass;
+            });
+        }
         const chapters = [];
         const indexUrls = Array.from(document.querySelectorAll('[name="pageselect"] > option')).map((opt) => document.location.origin + opt.getAttribute("value"));
         let lis = [];
@@ -5481,8 +5487,9 @@ async function bookParseTemp({ bookUrl, bookname, author, introDom, introDomPatc
     const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom, introDomPatch);
     const additionalMetadate = {};
     if (coverUrl) {
-        additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
-        additionalMetadate.cover.init();
+        lib_1.getImageAttachment(coverUrl, "TM", "cover-").then((coverClass) => {
+            additionalMetadate.cover = coverClass;
+        });
     }
     const chapters = [];
     const dl = document.querySelector(chapterListSelector);
@@ -5746,8 +5753,11 @@ class ciweimao {
         const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         const coverUrl = dom.querySelector(".cover > img").src;
-        additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
-        additionalMetadate.cover.init();
+        if (coverUrl) {
+            lib_1.getImageAttachment(coverUrl, this.imageMode, "cover-").then((coverClass) => {
+                additionalMetadate.cover = coverClass;
+            });
+        }
         additionalMetadate.tags = Array.from(dom.querySelectorAll(".label-box > .label")).map((span) => span.innerText.trim());
         const chapters = [];
         const sections = document.querySelectorAll(".book-chapter > .book-chapter-box");
@@ -6032,8 +6042,11 @@ class dierbanzhu {
         const additionalMetadate = {};
         const coverUrl = document.querySelector("#fmimg > img")
             .src;
-        additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
-        additionalMetadate.cover.init();
+        if (coverUrl) {
+            lib_1.getImageAttachment(coverUrl, this.imageMode, "cover-").then((coverClass) => {
+                additionalMetadate.cover = coverClass;
+            });
+        }
         const chapters = [];
         const dl = document.querySelector("#list>dl");
         if (dl?.childElementCount) {
@@ -6124,8 +6137,9 @@ class dmzj {
         const additionalMetadate = {};
         const coverUrl = (document.querySelector(".comic_i_img > a > img")).src;
         if (coverUrl) {
-            additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
-            additionalMetadate.cover.init();
+            lib_1.getImageAttachment(coverUrl, this.imageMode, "cover-").then((coverClass) => {
+                additionalMetadate.cover = coverClass;
+            });
         }
         const chapters = [];
         let cos = document.querySelectorAll("div.zj_list_con:nth-child(4) > ul.list_con_li > li");
@@ -6329,8 +6343,11 @@ class gongzicp {
         const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         const coverUrl = data.novelInfo.novel_cover;
-        additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
-        additionalMetadate.cover.init();
+        if (coverUrl) {
+            lib_1.getImageAttachment(coverUrl, this.imageMode, "cover-").then((coverClass) => {
+                additionalMetadate.cover = coverClass;
+            });
+        }
         additionalMetadate.tags = data.novelInfo.tag_list;
         async function isLogin() {
             const getUserInfoUrl = "https://www.gongzicp.com/user/getUserInfo";
@@ -6635,8 +6652,11 @@ class hetushu {
         const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         const coverUrl = (document.querySelector(".book_info > img")).src;
-        additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
-        additionalMetadate.cover.init();
+        if (coverUrl) {
+            lib_1.getImageAttachment(coverUrl, this.imageMode, "cover-").then((coverClass) => {
+                additionalMetadate.cover = coverClass;
+            });
+        }
         const chapters = [];
         const chapterList = (document.querySelector("#dir")?.childNodes);
         if (chapterList && chapterList.length !== 0) {
@@ -6805,8 +6825,9 @@ class idejian {
         const additionalMetadate = {};
         const coverUrl = (document.querySelector(".book_img > img")).src;
         if (coverUrl) {
-            additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
-            additionalMetadate.cover.init();
+            lib_1.getImageAttachment(coverUrl, this.imageMode, "cover-").then((coverClass) => {
+                additionalMetadate.cover = coverClass;
+            });
         }
         additionalMetadate.tags = Array.from(document.querySelectorAll("div.detail_bkgrade > span")).map((span) => span.innerText.trim());
         const chapters = [];
@@ -6913,8 +6934,11 @@ class jjwxc {
             additionalMetadate.attachments = [...introCleanimages];
         }
         let coverUrl = (document.querySelector(".noveldefaultimage")).src;
-        additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
-        additionalMetadate.cover.init();
+        if (coverUrl) {
+            lib_1.getImageAttachment(coverUrl, this.imageMode, "cover-").then((coverClass) => {
+                additionalMetadate.cover = coverClass;
+            });
+        }
         let tags = (document.querySelector("table > tbody > tr > td.readtd > div.righttd > ul.rightul > li:nth-child(1) > span:nth-child(2)")).innerText.split("-");
         tags = tags.concat(Array.from(document.querySelectorAll("div.smallreadbody:nth-child(3) > span > a")).map((a) => a.innerText));
         const perspective = (document.querySelector("table > tbody > tr > td.readtd > div.righttd > ul.rightul > li:nth-child(2)")).innerText.replace("\n", "");
@@ -7240,9 +7264,9 @@ function mkRuleClass1(optionis) {
             const [introduction, introductionHTML, introCleanimages,] = await introDomHandle(introDom, introDomPatch);
             const additionalMetadate = {};
             if (coverUrl) {
-                const coverClass = await lib_1.getImageAttachment(coverUrl);
-                coverClass.name = "cover-" + coverClass.name;
-                additionalMetadate.cover = coverClass;
+                lib_1.getImageAttachment(coverUrl, this.imageMode, "cover-").then((coverClass) => {
+                    additionalMetadate.cover = coverClass;
+                });
             }
             const chapters = [];
             let chapterNumber = 0;
@@ -29970,19 +29994,20 @@ class linovel {
         const additionalMetadate = {};
         const attachmentsUrlList = [];
         const coverUrl = (document.querySelector(".book-cover > a")).href;
-        attachmentsUrlList.push(coverUrl);
-        additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split("!")[0].split(".").slice(-1)[0]}`, "TM");
-        additionalMetadate.cover.init();
+        if (coverUrl) {
+            attachmentsUrlList.push(coverUrl);
+            lib_1.getImageAttachment(coverUrl, this.imageMode, "cover-").then((coverClass) => {
+                additionalMetadate.cover = coverClass;
+            });
+        }
         additionalMetadate.attachments = [];
         const volumeCoverUrlList = Array.from(document.querySelectorAll(".section-list > .section > .volume-info > .volume-cover a")).map((a) => a.href);
         for (const volumeCoverUrl of volumeCoverUrlList) {
             if (!attachmentsUrlList.includes(volumeCoverUrl)) {
                 attachmentsUrlList.push(volumeCoverUrl);
-                (async () => {
-                    const volumeCoverObj = await lib_1.getImageAttachment(volumeCoverUrl);
-                    volumeCoverObj.name = `volumeCover-` + volumeCoverObj.name;
+                lib_1.getImageAttachment(volumeCoverUrl, this.imageMode, "volumeCover-").then((volumeCoverObj) => {
                     additionalMetadate.attachments?.push(volumeCoverObj);
-                })();
+                });
             }
         }
         additionalMetadate.tags = Array.from(document.querySelectorAll("div.meta-info > div.book-cats.clearfix > a")).map((a) => a.innerText.trim());
@@ -30104,8 +30129,11 @@ class linovelib {
         const additionalMetadate = {};
         const coverUrl = doc.querySelector(".book-img > img")
             .src;
-        additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split("!")[0].split(".").slice(-1)[0]}`, "TM");
-        additionalMetadate.cover.init();
+        if (coverUrl) {
+            lib_1.getImageAttachment(coverUrl, this.imageMode, "cover-").then((coverClass) => {
+                additionalMetadate.cover = coverClass;
+            });
+        }
         additionalMetadate.tags = Array.from(doc.querySelectorAll(".book-label a")).map((a) => a.innerText.trim());
         const chapters = [];
         const chapterList = document.querySelector(".chapter-list");
@@ -30216,8 +30244,11 @@ class meegoq {
         });
         const additionalMetadate = {};
         const coverUrl = (dom.querySelector("article.info > div.cover > img")).src;
-        additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
-        additionalMetadate.cover.init();
+        if (coverUrl) {
+            lib_1.getImageAttachment(coverUrl, this.imageMode, "cover-").then((coverClass) => {
+                additionalMetadate.cover = coverClass;
+            });
+        }
         const chapters = [];
         const ul = document.querySelector("ul.mulu");
         if (ul?.childElementCount) {
@@ -30398,8 +30429,11 @@ class qidian {
         const additionalMetadate = {};
         let coverUrl = document.querySelector("#bookImg > img")
             .src;
-        additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
-        additionalMetadate.cover.init();
+        if (coverUrl) {
+            lib_1.getImageAttachment(coverUrl, this.imageMode, "cover-").then((coverClass) => {
+                additionalMetadate.cover = coverClass;
+            });
+        }
         additionalMetadate.tags = Array.from(document.querySelectorAll(".tag-wrap>.tags")).map((a) => a.innerText.trim());
         const chapters = [];
         const liLength = document.querySelectorAll("#j-catalogWrap li").length;
@@ -30599,8 +30633,9 @@ class qimao {
         const additionalMetadate = {};
         const coverUrl = (document.querySelector(".poster-pic > img")).src;
         if (coverUrl) {
-            additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
-            additionalMetadate.cover.init();
+            lib_1.getImageAttachment(coverUrl, this.imageMode, "cover-").then((coverClass) => {
+                additionalMetadate.cover = coverClass;
+            });
         }
         additionalMetadate.tags = Array.from(document.querySelectorAll(".qm-tags > a")).map((a) => a.innerText.trim());
         const chapters = [];
@@ -30710,9 +30745,9 @@ class qingoo {
         const additionalMetadate = {};
         const coverUrl = (document.querySelector(".title > dl > dt > img:nth-child(1)")).src;
         if (coverUrl) {
-            const coverClass = await lib_1.getImageAttachment(coverUrl);
-            coverClass.name = "cover-" + coverClass.name;
-            additionalMetadate.cover = coverClass;
+            lib_1.getImageAttachment(coverUrl, this.imageMode, "cover-").then((coverClass) => {
+                additionalMetadate.cover = coverClass;
+            });
         }
         const chapters = [];
         const data = unsafeWindow.data;
@@ -30796,8 +30831,11 @@ class sfacg {
         const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         let coverUrl = (dom.querySelector("#hasTicket div.pic img")).src;
-        additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
-        additionalMetadate.cover.init();
+        if (coverUrl) {
+            lib_1.getImageAttachment(coverUrl, this.imageMode, "cover-").then((coverClass) => {
+                additionalMetadate.cover = coverClass;
+            });
+        }
         additionalMetadate.tags = Array.from(dom.querySelectorAll("ul.tag-list > li.tag > a")).map((a) => {
             lib_1.rm("span.icn", false, a);
             return a.innerText.trim().replace(/\(\d+\)$/, "");
@@ -31006,8 +31044,11 @@ class shouda8 {
         });
         const additionalMetadate = {};
         const coverUrl = (document.querySelector(".pic > img:nth-child(1)")).src;
-        additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
-        additionalMetadate.cover.init();
+        if (coverUrl) {
+            lib_1.getImageAttachment(coverUrl, this.imageMode, "cover-").then((coverClass) => {
+                additionalMetadate.cover = coverClass;
+            });
+        }
         const chapters = [];
         const chapterList = document.querySelectorAll(".link_14 > dl dd a");
         for (let i = 0; i < chapterList.length; i++) {
@@ -31082,8 +31123,9 @@ class shubaowa {
         const coverUrl = document.querySelector("#fmimg > img")
             ?.src;
         if (coverUrl) {
-            additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
-            additionalMetadate.cover.init();
+            lib_1.getImageAttachment(coverUrl, this.imageMode, "cover-").then((coverClass) => {
+                additionalMetadate.cover = coverClass;
+            });
         }
         const chapters = [];
         const cos = document.querySelectorAll("#list > dl > dd > a");
@@ -31158,8 +31200,9 @@ class shuhai {
         const additionalMetadate = {};
         let coverUrl = (document.querySelector(".book-cover-wrapper > img")).getAttribute("data-original");
         if (coverUrl) {
-            additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
-            additionalMetadate.cover.init();
+            lib_1.getImageAttachment(coverUrl, this.imageMode, "cover-").then((coverClass) => {
+                additionalMetadate.cover = coverClass;
+            });
         }
         additionalMetadate.tags = Array.from(document.querySelectorAll(".book-info-bookstate > .tag")).map((span) => span.innerText.trim());
         const chapters = [];
@@ -31427,8 +31470,11 @@ class soxscc {
         });
         const additionalMetadate = {};
         const coverUrl = (document.querySelector(".book_cover > img")).src;
-        additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
-        additionalMetadate.cover.init();
+        if (coverUrl) {
+            lib_1.getImageAttachment(coverUrl, this.imageMode, "cover-").then((coverClass) => {
+                additionalMetadate.cover = coverClass;
+            });
+        }
         const chapters = [];
         const novel_list = document.querySelector("div.novel_list[id]");
         const sections = Array.from(novel_list.children);
@@ -31531,8 +31577,9 @@ class tadu {
         const additionalMetadate = {};
         const coverUrl = (doc.querySelector("a.bookImg > img")).getAttribute("data-src");
         if (coverUrl) {
-            additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
-            additionalMetadate.cover.init();
+            lib_1.getImageAttachment(coverUrl, this.imageMode, "cover-").then((coverClass) => {
+                additionalMetadate.cover = coverClass;
+            });
         }
         const chapters = [];
         const cos = document.querySelectorAll("div.chapter > a");
@@ -31669,8 +31716,11 @@ class uukanshu {
         });
         const additionalMetadate = {};
         const coverUrl = (document.querySelector("a.bookImg > img")).src;
-        additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
-        additionalMetadate.cover.init();
+        if (coverUrl) {
+            lib_1.getImageAttachment(coverUrl, this.imageMode, "cover-").then((coverClass) => {
+                additionalMetadate.cover = coverClass;
+            });
+        }
         const chapters = [];
         const button = (document.querySelector('span[onclick="javascript:reverse(this);"]'));
         const reverse = unsafeWindow.reverse;
@@ -31779,8 +31829,11 @@ class wenku8 {
         const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         let coverUrl = (doc.querySelector("#content > div:nth-child(1) > table:nth-child(4) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(1) > img:nth-child(1)")).src;
-        additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
-        additionalMetadate.cover.init();
+        if (coverUrl) {
+            lib_1.getImageAttachment(coverUrl, this.imageMode, "cover-").then((coverClass) => {
+                additionalMetadate.cover = coverClass;
+            });
+        }
         const chapters = [];
         const tdList = Array.from(document.querySelectorAll(".css > tbody td")).filter((td) => td.innerText.trim());
         let chapterNumber = 0;
@@ -31863,8 +31916,11 @@ class westnovel {
         const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         let coverUrl = document.querySelector(".img-img").src;
-        additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
-        additionalMetadate.cover.init();
+        if (coverUrl) {
+            lib_1.getImageAttachment(coverUrl, this.imageMode, "cover-").then((coverClass) => {
+                additionalMetadate.cover = coverClass;
+            });
+        }
         const chapters = [];
         const aList = document.querySelectorAll(".chapterlist > dd > a");
         let chapterNumber = 0;
@@ -31952,8 +32008,9 @@ class xiaoshuodaquan {
             coverUrl = dom.querySelector(".con_limg > img").src;
         }
         if (coverUrl) {
-            additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
-            additionalMetadate.cover.init();
+            lib_1.getImageAttachment(coverUrl, this.imageMode, "cover-").then((coverClass) => {
+                additionalMetadate.cover = coverClass;
+            });
         }
         const chapters = [];
         const sectionNames = document.querySelectorAll(".dirwraps > div.dirtitone");
@@ -32044,8 +32101,9 @@ class xinwanben {
         const additionalMetadate = {};
         const coverUrl = (document.querySelector(".detailTopLeft > img")).src;
         if (coverUrl) {
-            additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
-            additionalMetadate.cover.init();
+            lib_1.getImageAttachment(coverUrl, this.imageMode, "cover-").then((coverClass) => {
+                additionalMetadate.cover = coverClass;
+            });
         }
         const chapters = [];
         const cos = document.querySelectorAll(".chapter > ul > li > a");
@@ -32134,8 +32192,11 @@ class xkzw {
         const additionalMetadate = {};
         const coverUrl = document.querySelector("#fmimg > img")
             .src;
-        additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
-        additionalMetadate.cover.init();
+        if (coverUrl) {
+            lib_1.getImageAttachment(coverUrl, this.imageMode, "cover-").then((coverClass) => {
+                additionalMetadate.cover = coverClass;
+            });
+        }
         const chapters = [];
         const bookid = unsafeWindow.bookId;
         const apiUrl = [document.location.origin, "action.php"].join("/");
@@ -32403,8 +32464,11 @@ class yibige {
         const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         const coverUrl = (doc.querySelector(".limg > img:nth-child(1)")).src;
-        additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
-        additionalMetadate.cover.init();
+        if (coverUrl) {
+            lib_1.getImageAttachment(coverUrl, this.imageMode, "cover-").then((coverClass) => {
+                additionalMetadate.cover = coverClass;
+            });
+        }
         const chapters = [];
         const dl = document.querySelector(".books_li");
         if (dl?.childElementCount) {
@@ -32524,8 +32588,11 @@ class yrun {
         const additionalMetadate = {};
         const coverUrl = document.querySelector("#fmimg > img")
             .src;
-        additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
-        additionalMetadate.cover.init();
+        if (coverUrl) {
+            lib_1.getImageAttachment(coverUrl, this.imageMode, "cover-").then((coverClass) => {
+                additionalMetadate.cover = coverClass;
+            });
+        }
         const chapters = [];
         const chapterList = document.querySelectorAll("#list>dl>dd>a");
         if (chapterList && chapterList.length !== 0) {
@@ -32791,8 +32858,11 @@ class zongheng {
         const additionalMetadate = {};
         let coverUrl = doc.querySelector("div.book-img > img")
             .src;
-        additionalMetadate.cover = new main_1.attachmentClass(coverUrl, `cover.${coverUrl.split(".").slice(-1)[0]}`, "TM");
-        additionalMetadate.cover.init();
+        if (coverUrl) {
+            lib_1.getImageAttachment(coverUrl, this.imageMode, "cover-").then((coverClass) => {
+                additionalMetadate.cover = coverClass;
+            });
+        }
         additionalMetadate.tags = Array.from(doc.querySelectorAll(".book-info>.book-label a")).map((a) => a.innerText.trim());
         const chapters = [];
         const sections = document.querySelectorAll(".volume-list");

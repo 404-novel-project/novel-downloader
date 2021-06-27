@@ -35,7 +35,7 @@ export declare function sleep(ms: number): Promise<unknown>;
 export declare function getAttachmentClassCache(url: string): attachmentClass | undefined;
 export declare function putAttachmentClassCache(attachmentClass: attachmentClass): boolean;
 export declare function clearAttachmentClassCache(): void;
-export declare function getImageAttachment(url: string, imgMode?: "naive" | "TM"): Promise<attachmentClass>;
+export declare function getImageAttachment(url: string, imgMode?: "naive" | "TM", prefix?: string): Promise<attachmentClass>;
 export declare function sandboxed(code: string): any;
 export declare function storageAvailable(type: string): any;
 export declare class fflateZip {

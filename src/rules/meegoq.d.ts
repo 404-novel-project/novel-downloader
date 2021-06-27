@@ -1,4 +1,4 @@
-import { attachmentClass, Book } from "../main";
+import { Book } from "../main";
 import { ruleClass } from "../rules";
 export declare class meegoq implements ruleClass {
     imageMode: "naive" | "TM";
@@ -11,7 +11,7 @@ export declare class meegoq implements ruleClass {
         contentRaw: HTMLElement;
         contentText: string;
         contentHTML: HTMLElement;
-        contentImages: attachmentClass[];
+        contentImages: import("../main").attachmentClass[];
         additionalMetadate: null;
     } | {
         chapterName: string;
