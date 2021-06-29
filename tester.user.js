@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        小说下载器测试脚本
-// @version     3.7.4.1624989998224
+// @version     3.7.4.1624992036076
 // @author      bgme
 // @description 小说下载器测试脚本
 // @match       *://www.ciweimao.com/chapter-list/*
@@ -81,6 +81,7 @@
 // @match       *://www.trxs123.com/tongren/*.html
 // @match       *://www.tongrenquan.org/tongren/*.html
 // @match       *://www.jpxs123.com/*/*.html
+// @match       *://www.imiaobige.com/read/*/
 // @match       https://greasyfork.org/*/scripts/406070-%E5%B0%8F%E8%AF%B4%E4%B8%8B%E8%BD%BD%E5%99%A8
 // @name:en     novel-downloader-tester
 // @namespace   https://blog.bgme.me
@@ -331,6 +332,16 @@ if (document.location.origin === "https://greasyfork.org" &&
             "https://www.630shu.net/shu/145476.html",
             "https://www.630shu.net/shu/105670.html",
         ],
+        "http://www.trxs.cc/tongren/1768.html",
+        "http://www.trxs123.com/tongren/2952.html",
+        [
+            "http://www.jpxs123.com/tongren/5578.html",
+            "http://www.jpxs123.com/book/3940.html",
+            "http://www.jpxs123.com/dsxs/2724.html",
+            "http://www.jpxs123.com/xuanhuan/zhetian.html",
+        ],
+        "http://www.tongrenquan.org/tongren/5730.html",
+        "https://www.imiaobige.com/read/173201/",
     ];
     async function runTest() {
         setTabData("runTest", "true");

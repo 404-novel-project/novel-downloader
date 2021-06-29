@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        3.7.4.1624989991403
+// @version        3.7.4.1624992029382
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -82,6 +82,7 @@
 // @match          *://www.trxs123.com/tongren/*.html
 // @match          *://www.tongrenquan.org/tongren/*.html
 // @match          *://www.jpxs123.com/*/*.html
+// @match          *://www.imiaobige.com/read/*/
 // @name:en        novel-downloader
 // @description:en An scalable universal novel downloader.
 // @namespace      https://blog.bgme.me
@@ -157,6 +158,7 @@
 // @connect        soxscc.org
 // @connect        soxs.cc
 // @connect        idejian.com
+// @connect        img.imiaobige.com
 // @connect        *
 // @require        https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js#sha512-Qlv6VSKh1gDKGoJbnyA5RMXYcvnpIqhO++MhIM2fStMcGT9i2T//tSwYFlcyoRRDcDZ+TYHpH8azBBCyhpSeqw==
 // @require        https://cdn.jsdelivr.net/npm/crypto-js@4.0.0/crypto-js.js#sha512-t4HzsbLJw+4jV+nmiiIsz/puioH2aKIjuI1ho1NIqJAJ2GNVLPTy51IklYefYdrkRE583KEzTcgmO5Wb6jVgYw==
@@ -5264,6 +5266,11 @@ async function getRule() {
             ruleClass = tongrenquan();
             break;
         }
+        case "www.imiaobige.com": {
+            const { imiaobige } = await Promise.resolve().then(() => __webpack_require__("./src/rules/imiaobige.ts"));
+            ruleClass = imiaobige;
+            break;
+        }
         default: {
             throw new Error("Not Found Rule!");
         }
@@ -6924,6 +6931,99 @@ class idejian {
     }
 }
 exports.idejian = idejian;
+
+
+/***/ }),
+
+/***/ "./src/rules/imiaobige.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.imiaobige = void 0;
+const main_1 = __webpack_require__("./src/main.ts");
+const lib_1 = __webpack_require__("./src/lib.ts");
+const common_1 = __webpack_require__("./src/rules/lib/common.ts");
+class imiaobige {
+    constructor() {
+        this.imageMode = "TM";
+        this.charset = "UTF-8";
+    }
+    async bookParse() {
+        const bookUrl = document.location.href
+            .replace("/read/", "/novel/")
+            .replace(/\/$/, ".html");
+        const doc = await lib_1.getHtmlDOM(bookUrl, this.charset);
+        const bookname = (doc.querySelector(".booktitle > h1")).innerText.trim();
+        const author = (doc.querySelector("#author > a")).innerText.trim();
+        const introDom = doc.querySelector("#bookintro");
+        const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom);
+        const additionalMetadate = {};
+        const coverUrl = doc.querySelector("#bookimg > img")
+            .src;
+        if (coverUrl) {
+            lib_1.getImageAttachment(coverUrl, this.imageMode, "cover-").then((coverClass) => {
+                additionalMetadate.cover = coverClass;
+            });
+        }
+        const chapters = [];
+        const sections = document.querySelectorAll("#readerlists > ul");
+        let chapterNumber = 0;
+        for (let i = 0; i < sections.length; i++) {
+            const s = sections[i];
+            const sectionNumber = i + 1;
+            const sectionName = s.querySelector("h3").innerText
+                .replace(bookname, "")
+                .trim();
+            if (sectionName.includes("最新章节")) {
+                continue;
+            }
+            let sectionChapterNumber = 0;
+            const cs = s.querySelectorAll("li > a");
+            for (let j = 0; j < cs.length; j++) {
+                const a = cs[j];
+                chapterNumber++;
+                sectionChapterNumber++;
+                const chapterName = a.innerText.trim();
+                const chapterUrl = a.href;
+                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, false, false, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, { bookname: bookname });
+                chapters.push(chapter);
+            }
+        }
+        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        return book;
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+        const bookname = options.bookname;
+        const dom = await lib_1.getHtmlDOM(chapterUrl, charset);
+        chapterName = (dom.querySelector(".title > h1:nth-child(1)")).innerText.trim();
+        const content = dom.querySelector("#content");
+        if (content) {
+            content.innerHTML = content.innerHTML.replace(`<p>您可以在百度里搜索“${bookname} 妙笔阁(imiaobige.com)”查找最新章节！</p>`, "");
+            let { dom, text, images } = await lib_1.cleanDOM(content, "TM");
+            return {
+                chapterName: chapterName,
+                contentRaw: content,
+                contentText: text,
+                contentHTML: dom,
+                contentImages: images,
+                additionalMetadate: null,
+            };
+        }
+        else {
+            return {
+                chapterName: chapterName,
+                contentRaw: null,
+                contentText: null,
+                contentHTML: null,
+                contentImages: null,
+                additionalMetadate: null,
+            };
+        }
+    }
+}
+exports.imiaobige = imiaobige;
 
 
 /***/ }),
