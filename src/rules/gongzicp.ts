@@ -22,7 +22,7 @@ export class gongzicp implements ruleClass {
       throw new Error("获取bookID出错");
     }
     const novelGetInfoBaseUrl =
-      "https://www.gongzicp.com/webapi/novel/novelGetInfo";
+      "https://webapi.gongzicp.com/novel/novelGetInfo";
     const novelGetInfoUrl = new URL(novelGetInfoBaseUrl);
     novelGetInfoUrl.searchParams.set("id", bookId);
 
@@ -294,7 +294,7 @@ export class gongzicp implements ruleClass {
         data: cpUserInfo;
         count?: number;
       }
-      const getUserInfoUrl = "https://www.gongzicp.com/user/getUserInfo";
+      const getUserInfoUrl = "https://webapi.gongzicp.com/user/getUserInfo";
       log.debug(`正在请求: ${getUserInfoUrl}`);
       const userInfo: userInfo = await fetch(getUserInfoUrl, {
         headers: {
@@ -587,7 +587,7 @@ export class gongzicp implements ruleClass {
       const nid = (<chapterOption>options).novel_id;
       const cid = (<chapterOption>options).chapter_id;
       const chapterGetInfoBaseUrl =
-        "https://www.gongzicp.com/webapi/novel/chapterGetInfo";
+        "https://webapi.gongzicp.com/novel/chapterGetInfo";
       const chapterGetInfoUrl = new URL(chapterGetInfoBaseUrl);
       chapterGetInfoUrl.searchParams.set("cid", cid.toString());
       chapterGetInfoUrl.searchParams.set("nid", nid.toString());
