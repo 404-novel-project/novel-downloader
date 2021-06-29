@@ -1,13 +1,13 @@
 // ==UserScript==
 // @name        小说下载器测试脚本
-// @version     3.7.4.1624796625955
+// @version     3.7.4.1624989998224
 // @author      bgme
 // @description 小说下载器测试脚本
 // @match       *://www.ciweimao.com/chapter-list/*
 // @match       *://book.sfacg.com/Novel/*/MainIndex/
 // @match       *://book.qidian.com/info/*
 // @match       *://www.jjwxc.net/onebook.php?novelid=*
-// @match       *://www.gongzicp.com/v4/novel-*.html
+// @match       *://www.gongzicp.com/novel-*.html
 // @match       *://book.zongheng.com/showchapter/*.html
 // @match       *://huayu.zongheng.com/showchapter/*.html
 // @match       *://www.linovel.net/book/*.html
@@ -77,6 +77,10 @@
 // @match       *://www.xyqxs.cc/html/*/*/index.html
 // @match       *://www.630shu.net/shu/*.html
 // @match       *://www.qingoo.cn/details?bookId=*
+// @match       *://www.trxs.cc/tongren/*.html
+// @match       *://www.trxs123.com/tongren/*.html
+// @match       *://www.tongrenquan.org/tongren/*.html
+// @match       *://www.jpxs123.com/*/*.html
 // @match       https://greasyfork.org/*/scripts/406070-%E5%B0%8F%E8%AF%B4%E4%B8%8B%E8%BD%BD%E5%99%A8
 // @name:en     novel-downloader-tester
 // @namespace   https://blog.bgme.me
@@ -95,6 +99,10 @@
 // @exclude     *://m.yuzhaige.cc/book/*/
 // @exclude     *://www.linovel.net/book/*/*.html
 // @exclude     *://www.qimao.com/shuku/*-*/
+// @exclude     *://www.trxs.cc/tongren/*/*.html
+// @exclude     *://www.trxs123.com/tongren/*/*.html
+// @exclude     *://www.tongrenquan.org/tongren/*/*.html
+// @exclude     *://www.jpxs123.com/*/*/*.html
 // @grant       unsafeWindow
 // @grant       GM_openInTab
 // @grant       window.close

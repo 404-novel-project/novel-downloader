@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        3.7.4.1624796619330
+// @version        3.7.4.1624989991403
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -8,7 +8,7 @@
 // @match          *://book.sfacg.com/Novel/*/MainIndex/
 // @match          *://book.qidian.com/info/*
 // @match          *://www.jjwxc.net/onebook.php?novelid=*
-// @match          *://www.gongzicp.com/v4/novel-*.html
+// @match          *://www.gongzicp.com/novel-*.html
 // @match          *://book.zongheng.com/showchapter/*.html
 // @match          *://huayu.zongheng.com/showchapter/*.html
 // @match          *://www.linovel.net/book/*.html
@@ -78,6 +78,10 @@
 // @match          *://www.xyqxs.cc/html/*/*/index.html
 // @match          *://www.630shu.net/shu/*.html
 // @match          *://www.qingoo.cn/details?bookId=*
+// @match          *://www.trxs.cc/tongren/*.html
+// @match          *://www.trxs123.com/tongren/*.html
+// @match          *://www.tongrenquan.org/tongren/*.html
+// @match          *://www.jpxs123.com/*/*.html
 // @name:en        novel-downloader
 // @description:en An scalable universal novel downloader.
 // @namespace      https://blog.bgme.me
@@ -102,6 +106,10 @@
 // @exclude        *://m.yuzhaige.cc/book/*/
 // @exclude        *://www.linovel.net/book/*/*.html
 // @exclude        *://www.qimao.com/shuku/*-*/
+// @exclude        *://www.trxs.cc/tongren/*/*.html
+// @exclude        *://www.trxs123.com/tongren/*/*.html
+// @exclude        *://www.tongrenquan.org/tongren/*/*.html
+// @exclude        *://www.jpxs123.com/*/*/*.html
 // @grant          unsafeWindow
 // @grant          GM_info
 // @grant          GM_xmlhttpRequest
@@ -5022,12 +5030,12 @@ async function getRule() {
         case "www.shuquge.com":
         case "www.sizhicn.com": {
             const { shuquge } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge.ts"));
-            ruleClass = shuquge;
+            ruleClass = shuquge();
             break;
         }
         case "www.dingdiann.net": {
             const { dingdiann } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge.ts"));
-            ruleClass = dingdiann;
+            ruleClass = dingdiann();
             break;
         }
         case "www.lewenn.com":
@@ -5060,7 +5068,7 @@ async function getRule() {
         }
         case "www.gebiqu.com": {
             const { gebiqu } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge.ts"));
-            ruleClass = gebiqu;
+            ruleClass = gebiqu();
             break;
         }
         case "www.meegoq.com":
@@ -5090,7 +5098,7 @@ async function getRule() {
         case "www.81book.com":
         case "www.hongyeshuzhai.com": {
             const { common } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge.ts"));
-            ruleClass = common;
+            ruleClass = common();
             break;
         }
         case "book.zongheng.com":
@@ -5203,7 +5211,7 @@ async function getRule() {
         }
         case "www.luoqiuzw.com": {
             const { luoqiuzw } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge.ts"));
-            ruleClass = luoqiuzw;
+            ruleClass = luoqiuzw();
             break;
         }
         case "www.yibige.la": {
@@ -5231,7 +5239,7 @@ async function getRule() {
         }
         case "www.xyqxs.cc": {
             const { xyqxs } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge.ts"));
-            ruleClass = xyqxs;
+            ruleClass = xyqxs();
             break;
         }
         case "www.630shu.net": {
@@ -5242,6 +5250,18 @@ async function getRule() {
         case "www.qingoo.cn": {
             const { qingoo } = await Promise.resolve().then(() => __webpack_require__("./src/rules/qingoo.ts"));
             ruleClass = qingoo;
+            break;
+        }
+        case "www.trxs.cc":
+        case "www.trxs123.com":
+        case "www.jpxs123.com": {
+            const { trxs } = await Promise.resolve().then(() => __webpack_require__("./src/rules/simple/trxs.ts"));
+            ruleClass = trxs();
+            break;
+        }
+        case "www.tongrenquan.org": {
+            const { tongrenquan } = await Promise.resolve().then(() => __webpack_require__("./src/rules/simple/trxs.ts"));
+            ruleClass = tongrenquan();
             break;
         }
         default: {
@@ -5601,15 +5621,17 @@ function mkBiqugeClass(introDomPatch, contentPatch) {
         }
     };
 }
-exports.common = mkBiqugeClass((introDom) => introDom, (content) => content);
-exports.dingdiann = mkBiqugeClass((introDom) => introDom, (content) => {
+const common = () => mkBiqugeClass((introDom) => introDom, (content) => content);
+exports.common = common;
+const dingdiann = () => mkBiqugeClass((introDom) => introDom, (content) => {
     const ad = '<div align="center"><a href="javascript:postError();" style="text-align:center;color:red;">章节错误,点此举报(免注册)</a>,举报后维护人员会在两分钟内校正章节内容,请耐心等待,并刷新页面。</div>';
     content.innerHTML = content.innerHTML
         .replace(ad, "")
         .replace(/http:\/\/www.shuquge.com\/txt\/\d+\/\d+\.html/, "");
     return content;
 });
-exports.gebiqu = mkBiqugeClass((introDom) => {
+exports.dingdiann = dingdiann;
+const gebiqu = () => mkBiqugeClass((introDom) => {
     introDom.innerHTML = introDom.innerHTML.replace(/如果您喜欢.+，别忘记分享给朋友/g, "");
     lib_1.rm('a[href^="http://down.gebiqu.com"]', false, introDom);
     return introDom;
@@ -5617,7 +5639,8 @@ exports.gebiqu = mkBiqugeClass((introDom) => {
     content.innerHTML = content.innerHTML.replace(/"www.gebiqu.com"/g, "");
     return content;
 });
-exports.luoqiuzw = mkBiqugeClass((introDom) => introDom, (content) => {
+exports.gebiqu = gebiqu;
+const luoqiuzw = () => mkBiqugeClass((introDom) => introDom, (content) => {
     const ad = content.firstElementChild;
     if (ad.innerText.includes("天才一秒记住本站地址：")) {
         ad.remove();
@@ -5626,6 +5649,7 @@ exports.luoqiuzw = mkBiqugeClass((introDom) => introDom, (content) => {
     ads.forEach((adt) => (content.innerHTML = content.innerHTML.replace(adt, "")));
     return content;
 });
+exports.luoqiuzw = luoqiuzw;
 function mkBiqugeClass2(introDomPatch, contentPatch) {
     return class {
         constructor() {
@@ -5663,7 +5687,7 @@ function mkBiqugeClass2(introDomPatch, contentPatch) {
         }
     };
 }
-exports.shuquge = mkBiqugeClass2((introDom) => {
+const shuquge = () => mkBiqugeClass2((introDom) => {
     introDom.innerHTML = introDom.innerHTML.replace(/推荐地址：http:\/\/www.shuquge.com\/txt\/\d+\/index\.html/g, "");
     return introDom;
 }, (content) => {
@@ -5672,7 +5696,8 @@ exports.shuquge = mkBiqugeClass2((introDom) => {
         .replace(/http:\/\/www.shuquge.com\/txt\/\d+\/\d+\.html/, "");
     return content;
 });
-exports.xyqxs = mkBiqugeClass2((introDom) => {
+exports.shuquge = shuquge;
+const xyqxs = () => mkBiqugeClass2((introDom) => {
     introDom.innerHTML = introDom.innerHTML.replace(/推荐地址：https:\/\/www.xyqxs.cc\/html\/\d+\/\d+\/index\.html/g, "");
     return introDom;
 }, (content) => {
@@ -5684,6 +5709,7 @@ exports.xyqxs = mkBiqugeClass2((introDom) => {
         .replace(/\(https:\/\/www.xyqxs.cc\/html\/\d+\/\d+\/\d+\.html\)/, "");
     return content;
 });
+exports.xyqxs = xyqxs;
 class xbiquge {
     constructor() {
         this.imageMode = "TM";
@@ -6316,7 +6342,7 @@ class gongzicp {
         if (!bookId) {
             throw new Error("获取bookID出错");
         }
-        const novelGetInfoBaseUrl = "https://www.gongzicp.com/webapi/novel/novelGetInfo";
+        const novelGetInfoBaseUrl = "https://webapi.gongzicp.com/novel/novelGetInfo";
         const novelGetInfoUrl = new URL(novelGetInfoBaseUrl);
         novelGetInfoUrl.searchParams.set("id", bookId);
         log_1.log.debug(`请求地址: ${novelGetInfoUrl.toString()}`);
@@ -6350,7 +6376,7 @@ class gongzicp {
         }
         additionalMetadate.tags = data.novelInfo.tag_list;
         async function isLogin() {
-            const getUserInfoUrl = "https://www.gongzicp.com/user/getUserInfo";
+            const getUserInfoUrl = "https://webapi.gongzicp.com/user/getUserInfo";
             log_1.log.debug(`正在请求: ${getUserInfoUrl}`);
             const userInfo = await fetch(getUserInfoUrl, {
                 headers: {
@@ -6473,7 +6499,7 @@ class gongzicp {
         async function getChapter() {
             const nid = options.novel_id;
             const cid = options.chapter_id;
-            const chapterGetInfoBaseUrl = "https://www.gongzicp.com/webapi/novel/chapterGetInfo";
+            const chapterGetInfoBaseUrl = "https://webapi.gongzicp.com/novel/chapterGetInfo";
             const chapterGetInfoUrl = new URL(chapterGetInfoBaseUrl);
             chapterGetInfoUrl.searchParams.set("cid", cid.toString());
             chapterGetInfoUrl.searchParams.set("nid", nid.toString());
@@ -31326,6 +31352,48 @@ exports.c630shu = common_1.mkRuleClass1({
         return content;
     },
 });
+
+
+/***/ }),
+
+/***/ "./src/rules/simple/trxs.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.tongrenquan = exports.trxs = void 0;
+const common_1 = __webpack_require__("./src/rules/lib/common.ts");
+const trxs = () => common_1.mkRuleClass1({
+    bookUrl: document.location.href,
+    bookname: document.querySelector(".infos > h1").innerText
+        .split("(")[0]
+        .trim(),
+    author: (document.querySelector(".date > span > a")).innerText.trim(),
+    introDom: document.querySelector(".infos > p"),
+    introDomPatch: (introDom) => introDom,
+    coverUrl: document.querySelector(".pic > img").src,
+    cos: document.querySelectorAll("div.book_list > ul.clearfix > li > a"),
+    getContent: (doc) => doc.querySelector(".read_chapterDetail"),
+    contentPatch: (content) => content,
+});
+exports.trxs = trxs;
+const tongrenquan = () => common_1.mkRuleClass1({
+    bookUrl: document.location.href,
+    bookname: document.querySelector(".infos > h1").innerText
+        .split("(")[0]
+        .trim(),
+    author: (document.querySelector(".date > span")).innerText
+        .replace("作者：", "")
+        .trim(),
+    introDom: document.querySelector(".infos > p"),
+    introDomPatch: (introDom) => introDom,
+    coverUrl: document.querySelector(".pic > img").src,
+    cos: document.querySelectorAll("div.book_list > ul.clearfix > li > a"),
+    getContent: (doc) => doc.querySelector(".read_chapterDetail"),
+    contentPatch: (content) => content,
+});
+exports.tongrenquan = tongrenquan;
 
 
 /***/ }),

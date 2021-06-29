@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        3.7.4.1624796619330
+// @version        3.7.4.1624989991403
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -8,7 +8,7 @@
 // @match          *://book.sfacg.com/Novel/*/MainIndex/
 // @match          *://book.qidian.com/info/*
 // @match          *://www.jjwxc.net/onebook.php?novelid=*
-// @match          *://www.gongzicp.com/v4/novel-*.html
+// @match          *://www.gongzicp.com/novel-*.html
 // @match          *://book.zongheng.com/showchapter/*.html
 // @match          *://huayu.zongheng.com/showchapter/*.html
 // @match          *://www.linovel.net/book/*.html
@@ -78,6 +78,10 @@
 // @match          *://www.xyqxs.cc/html/*/*/index.html
 // @match          *://www.630shu.net/shu/*.html
 // @match          *://www.qingoo.cn/details?bookId=*
+// @match          *://www.trxs.cc/tongren/*.html
+// @match          *://www.trxs123.com/tongren/*.html
+// @match          *://www.tongrenquan.org/tongren/*.html
+// @match          *://www.jpxs123.com/*/*.html
 // @name:en        novel-downloader
 // @description:en An scalable universal novel downloader.
 // @namespace      https://blog.bgme.me
@@ -102,6 +106,10 @@
 // @exclude        *://m.yuzhaige.cc/book/*/
 // @exclude        *://www.linovel.net/book/*/*.html
 // @exclude        *://www.qimao.com/shuku/*-*/
+// @exclude        *://www.trxs.cc/tongren/*/*.html
+// @exclude        *://www.trxs123.com/tongren/*/*.html
+// @exclude        *://www.tongrenquan.org/tongren/*/*.html
+// @exclude        *://www.jpxs123.com/*/*/*.html
 // @grant          unsafeWindow
 // @grant          GM_info
 // @grant          GM_xmlhttpRequest

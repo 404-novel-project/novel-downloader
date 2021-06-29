@@ -11,7 +11,7 @@ export declare function bookParseTemp({ bookUrl, bookname, author, introDom, int
     charset: string;
     chapterParse: ruleClass["chapterParse"];
 }): Promise<Book>;
-export declare const common: {
+export declare const common: () => {
     new (): {
         imageMode: "naive" | "TM";
         charset: string;
@@ -19,7 +19,7 @@ export declare const common: {
         chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean, charset: string, options: object): Promise<chapterParseObject>;
     };
 };
-export declare const dingdiann: {
+export declare const dingdiann: () => {
     new (): {
         imageMode: "naive" | "TM";
         charset: string;
@@ -27,7 +27,7 @@ export declare const dingdiann: {
         chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean, charset: string, options: object): Promise<chapterParseObject>;
     };
 };
-export declare const gebiqu: {
+export declare const gebiqu: () => {
     new (): {
         imageMode: "naive" | "TM";
         charset: string;
@@ -35,7 +35,7 @@ export declare const gebiqu: {
         chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean, charset: string, options: object): Promise<chapterParseObject>;
     };
 };
-export declare const luoqiuzw: {
+export declare const luoqiuzw: () => {
     new (): {
         imageMode: "naive" | "TM";
         charset: string;
@@ -43,7 +43,7 @@ export declare const luoqiuzw: {
         chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean, charset: string, options: object): Promise<chapterParseObject>;
     };
 };
-export declare const shuquge: {
+export declare const shuquge: () => {
     new (): {
         imageMode: "naive" | "TM";
         charset: string;
@@ -51,7 +51,7 @@ export declare const shuquge: {
         chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean, charset: string, options: object): Promise<chapterParseObject>;
     };
 };
-export declare const xyqxs: {
+export declare const xyqxs: () => {
     new (): {
         imageMode: "naive" | "TM";
         charset: string;
