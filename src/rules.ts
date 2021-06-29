@@ -297,6 +297,11 @@ export async function getRule(): Promise<ruleClass> {
       ruleClass = tongrenquan();
       break;
     }
+    case "www.imiaobige.com": {
+      const { imiaobige } = await import("./rules/imiaobige");
+      ruleClass = imiaobige;
+      break;
+    }
     default: {
       throw new Error("Not Found Rule!");
     }

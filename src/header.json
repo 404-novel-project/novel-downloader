@@ -97,7 +97,8 @@
     "*://www.trxs.cc/tongren/*.html",
     "*://www.trxs123.com/tongren/*.html",
     "*://www.tongrenquan.org/tongren/*.html",
-    "*://www.jpxs123.com/*/*.html"
+    "*://www.jpxs123.com/*/*.html",
+    "*://www.imiaobige.com/read/*/"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",
@@ -166,6 +167,7 @@
     "soxscc.org",
     "soxs.cc",
     "idejian.com",
+    "img.imiaobige.com",
     "*"
   ],
   "require": [
