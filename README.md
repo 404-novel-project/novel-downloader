@@ -77,6 +77,9 @@ ZIP压缩包，请在解压后，直接双击打开HTML文件（`ToC.html` 为�
 |[言情小说笔趣阁](https://www.xyqxs.cc/)|✅|❎||
 |[恋上你看书](https://www.630shu.net/)|✅|❎||
 |[青果阅读](https://www.qingoo.cn/)|✅|❎||
+|[同人小说网](https://www.trxs123.com/)|✅|❎||
+|[同人圈](http://www.tongrenquan.org/)|✅|❎||
+|[精品小说网](http://www.jpxs123.com/)|✅|❎||
 
 </details>
 

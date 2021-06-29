@@ -63,12 +63,12 @@ export async function getRule(): Promise<ruleClass> {
     case "www.shuquge.com":
     case "www.sizhicn.com": {
       const { shuquge } = await import("./rules/biquge");
-      ruleClass = shuquge;
+      ruleClass = shuquge();
       break;
     }
     case "www.dingdiann.net": {
       const { dingdiann } = await import("./rules/biquge");
-      ruleClass = dingdiann;
+      ruleClass = dingdiann();
       break;
     }
     case "www.lewenn.com":
@@ -101,7 +101,7 @@ export async function getRule(): Promise<ruleClass> {
     }
     case "www.gebiqu.com": {
       const { gebiqu } = await import("./rules/biquge");
-      ruleClass = gebiqu;
+      ruleClass = gebiqu();
       break;
     }
     case "www.meegoq.com":
@@ -131,7 +131,7 @@ export async function getRule(): Promise<ruleClass> {
     case "www.81book.com":
     case "www.hongyeshuzhai.com": {
       const { common } = await import("./rules/biquge");
-      ruleClass = common;
+      ruleClass = common();
       break;
     }
     case "book.zongheng.com":
@@ -244,7 +244,7 @@ export async function getRule(): Promise<ruleClass> {
     }
     case "www.luoqiuzw.com": {
       const { luoqiuzw } = await import("./rules/biquge");
-      ruleClass = luoqiuzw;
+      ruleClass = luoqiuzw();
       break;
     }
     case "www.yibige.la": {
@@ -272,7 +272,7 @@ export async function getRule(): Promise<ruleClass> {
     }
     case "www.xyqxs.cc": {
       const { xyqxs } = await import("./rules/biquge");
-      ruleClass = xyqxs;
+      ruleClass = xyqxs();
       break;
     }
     case "www.630shu.net": {
@@ -283,6 +283,18 @@ export async function getRule(): Promise<ruleClass> {
     case "www.qingoo.cn": {
       const { qingoo } = await import("./rules/qingoo");
       ruleClass = qingoo;
+      break;
+    }
+    case "www.trxs.cc":
+    case "www.trxs123.com":
+    case "www.jpxs123.com": {
+      const { trxs } = await import("./rules/simple/trxs");
+      ruleClass = trxs();
+      break;
+    }
+    case "www.tongrenquan.org": {
+      const { tongrenquan } = await import("./rules/simple/trxs");
+      ruleClass = tongrenquan();
       break;
     }
     default: {

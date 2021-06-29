@@ -93,7 +93,11 @@
     "*://www.fuguoduxs.com/*_*/",
     "*://www.xyqxs.cc/html/*/*/index.html",
     "*://www.630shu.net/shu/*.html",
-    "*://www.qingoo.cn/details?bookId=*"
+    "*://www.qingoo.cn/details?bookId=*",
+    "*://www.trxs.cc/tongren/*.html",
+    "*://www.trxs123.com/tongren/*.html",
+    "*://www.tongrenquan.org/tongren/*.html",
+    "*://www.jpxs123.com/*/*.html"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",
@@ -106,7 +110,11 @@
     "*://m.yuzhaige.cc/full/*/",
     "*://m.yuzhaige.cc/book/*/",
     "*://www.linovel.net/book/*/*.html",
-    "*://www.qimao.com/shuku/*-*/"
+    "*://www.qimao.com/shuku/*-*/",
+    "*://www.trxs.cc/tongren/*/*.html",
+    "*://www.trxs123.com/tongren/*/*.html",
+    "*://www.tongrenquan.org/tongren/*/*.html",
+    "*://www.jpxs123.com/*/*/*.html"
   ],
   "grant": [
     "unsafeWindow",

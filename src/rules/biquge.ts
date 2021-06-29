@@ -212,52 +212,56 @@ function mkBiqugeClass(
 }
 
 // 笔趣阁通用模板，无contentpatch可直接使用
-export const common = mkBiqugeClass(
-  (introDom) => introDom,
-  (content) => content
-);
+export const common = () =>
+  mkBiqugeClass(
+    (introDom) => introDom,
+    (content) => content
+  );
 
-export const dingdiann = mkBiqugeClass(
-  (introDom) => introDom,
-  (content) => {
-    const ad =
-      '<div align="center"><a href="javascript:postError();" style="text-align:center;color:red;">章节错误,点此举报(免注册)</a>,举报后维护人员会在两分钟内校正章节内容,请耐心等待,并刷新页面。</div>';
-    content.innerHTML = content.innerHTML
-      .replace(ad, "")
-      .replace(/http:\/\/www.shuquge.com\/txt\/\d+\/\d+\.html/, "");
-    return content;
-  }
-);
-
-export const gebiqu = mkBiqugeClass(
-  (introDom) => {
-    introDom.innerHTML = introDom.innerHTML.replace(
-      /如果您喜欢.+，别忘记分享给朋友/g,
-      ""
-    );
-    rm('a[href^="http://down.gebiqu.com"]', false, introDom);
-    return introDom;
-  },
-  (content) => {
-    content.innerHTML = content.innerHTML.replace(/"www.gebiqu.com"/g, "");
-    return content;
-  }
-);
-
-export const luoqiuzw = mkBiqugeClass(
-  (introDom) => introDom,
-  (content) => {
-    const ad = content.firstElementChild as HTMLParagraphElement;
-    if (ad.innerText.includes("天才一秒记住本站地址：")) {
-      ad.remove();
+export const dingdiann = () =>
+  mkBiqugeClass(
+    (introDom) => introDom,
+    (content) => {
+      const ad =
+        '<div align="center"><a href="javascript:postError();" style="text-align:center;color:red;">章节错误,点此举报(免注册)</a>,举报后维护人员会在两分钟内校正章节内容,请耐心等待,并刷新页面。</div>';
+      content.innerHTML = content.innerHTML
+        .replace(ad, "")
+        .replace(/http:\/\/www.shuquge.com\/txt\/\d+\/\d+\.html/, "");
+      return content;
     }
-    const ads = ["记住网址m.luoqｉｕｘｚｗ．ｃｏｍ"];
-    ads.forEach(
-      (adt) => (content.innerHTML = content.innerHTML.replace(adt, ""))
-    );
-    return content;
-  }
-);
+  );
+
+export const gebiqu = () =>
+  mkBiqugeClass(
+    (introDom) => {
+      introDom.innerHTML = introDom.innerHTML.replace(
+        /如果您喜欢.+，别忘记分享给朋友/g,
+        ""
+      );
+      rm('a[href^="http://down.gebiqu.com"]', false, introDom);
+      return introDom;
+    },
+    (content) => {
+      content.innerHTML = content.innerHTML.replace(/"www.gebiqu.com"/g, "");
+      return content;
+    }
+  );
+
+export const luoqiuzw = () =>
+  mkBiqugeClass(
+    (introDom) => introDom,
+    (content) => {
+      const ad = content.firstElementChild as HTMLParagraphElement;
+      if (ad.innerText.includes("天才一秒记住本站地址：")) {
+        ad.remove();
+      }
+      const ads = ["记住网址m.luoqｉｕｘｚｗ．ｃｏｍ"];
+      ads.forEach(
+        (adt) => (content.innerHTML = content.innerHTML.replace(adt, ""))
+      );
+      return content;
+    }
+  );
 
 function mkBiqugeClass2(
   introDomPatch: (introDom: HTMLElement) => HTMLElement,
@@ -318,46 +322,48 @@ function mkBiqugeClass2(
   };
 }
 
-export const shuquge = mkBiqugeClass2(
-  (introDom) => {
-    introDom.innerHTML = introDom.innerHTML.replace(
-      /推荐地址：http:\/\/www.shuquge.com\/txt\/\d+\/index\.html/g,
-      ""
-    );
-    return introDom;
-  },
-  (content) => {
-    content.innerHTML = content.innerHTML
-      .replace(
-        "请记住本书首发域名：www.shuquge.com。书趣阁_笔趣阁手机版阅读网址：m.shuquge.com",
+export const shuquge = () =>
+  mkBiqugeClass2(
+    (introDom) => {
+      introDom.innerHTML = introDom.innerHTML.replace(
+        /推荐地址：http:\/\/www.shuquge.com\/txt\/\d+\/index\.html/g,
         ""
-      )
-      .replace(/http:\/\/www.shuquge.com\/txt\/\d+\/\d+\.html/, "");
-    return content;
-  }
-);
+      );
+      return introDom;
+    },
+    (content) => {
+      content.innerHTML = content.innerHTML
+        .replace(
+          "请记住本书首发域名：www.shuquge.com。书趣阁_笔趣阁手机版阅读网址：m.shuquge.com",
+          ""
+        )
+        .replace(/http:\/\/www.shuquge.com\/txt\/\d+\/\d+\.html/, "");
+      return content;
+    }
+  );
 
-export const xyqxs = mkBiqugeClass2(
-  (introDom) => {
-    introDom.innerHTML = introDom.innerHTML.replace(
-      /推荐地址：https:\/\/www.xyqxs.cc\/html\/\d+\/\d+\/index\.html/g,
-      ""
-    );
-    return introDom;
-  },
-  (content) => {
-    rm("div[style]", true, content);
-    rm("script", true, content);
-    rm('div[align="center"]', false, content);
-    content.innerHTML = content.innerHTML
-      .replace(
-        "请记住本书首发域名：www.xyqxs.cc。笔趣阁手机版阅读网址：m.xyqxs.cc",
+export const xyqxs = () =>
+  mkBiqugeClass2(
+    (introDom) => {
+      introDom.innerHTML = introDom.innerHTML.replace(
+        /推荐地址：https:\/\/www.xyqxs.cc\/html\/\d+\/\d+\/index\.html/g,
         ""
-      )
-      .replace(/\(https:\/\/www.xyqxs.cc\/html\/\d+\/\d+\/\d+\.html\)/, "");
-    return content;
-  }
-);
+      );
+      return introDom;
+    },
+    (content) => {
+      rm("div[style]", true, content);
+      rm("script", true, content);
+      rm('div[align="center"]', false, content);
+      content.innerHTML = content.innerHTML
+        .replace(
+          "请记住本书首发域名：www.xyqxs.cc。笔趣阁手机版阅读网址：m.xyqxs.cc",
+          ""
+        )
+        .replace(/\(https:\/\/www.xyqxs.cc\/html\/\d+\/\d+\/\d+\.html\)/, "");
+      return content;
+    }
+  );
 export class xbiquge implements ruleClass {
   public imageMode: "naive" | "TM";
   public charset: string;
