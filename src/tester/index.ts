@@ -227,6 +227,16 @@ if (
       "https://www.630shu.net/shu/145476.html",
       "https://www.630shu.net/shu/105670.html",
     ],
+    "http://www.trxs.cc/tongren/1768.html",
+    "http://www.trxs123.com/tongren/2952.html",
+    [
+      "http://www.jpxs123.com/tongren/5578.html",
+      "http://www.jpxs123.com/book/3940.html",
+      "http://www.jpxs123.com/dsxs/2724.html",
+      "http://www.jpxs123.com/xuanhuan/zhetian.html",
+    ],
+    "http://www.tongrenquan.org/tongren/5730.html",
+    "https://www.imiaobige.com/read/173201/",
   ];
 
   async function runTest() {
