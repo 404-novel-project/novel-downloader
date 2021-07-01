@@ -73,52 +73,60 @@ export class xkzw implements ruleClass {
       credentials: "include",
     }).then((response) => response.json());
 
-    const dl = document.querySelector(
+    const dl1 = document.querySelector(
       "#wrapper > div.box_con:nth-child(7) > div:nth-child(1) > dl:nth-child(1)"
     );
-    let tmpColumnName = "";
-    let tmpColumnList: columnObject[] = [];
-    let tmpChapterList: chapterObject[] = [];
-    if (dl?.childElementCount) {
-      const dlc = Array.from(dl.children);
-      for (let i = 0; i < dl.childElementCount; i++) {
-        const node = dlc[i];
-        if (i !== 0) {
-          if (node.nodeName === "DD") {
-            const a = <HTMLLinkElement>node.firstElementChild;
-            const chapterName = a.innerText;
-            const chapterUrl = a.href;
-            const chapterid = chapterUrl
-              .split("/")
-              .slice(-1)[0]
-              .replace(".html", "");
-            tmpChapterList.push({
-              chapterid: Number(chapterid) - bookid * 11,
-              chaptername: chapterName,
-              isempty: 0,
-              originalurl: "",
-              currenturl: "",
-            });
-          } else if (node.nodeName === "DT") {
-            const tmpColumnObj: columnObject = {
-              columnname: tmpColumnName,
-              columnid: 0,
-              chapterlist: tmpChapterList,
-            };
-            tmpColumnList.push(tmpColumnObj);
+    const dl2 = document.querySelector(
+      "#wrapper > div.box_con:nth-child(11) > div:nth-child(1) > dl:nth-child(1)"
+    );
+
+    const mkList = (dl: Element | null): [columnObject[], chapterObject[]] => {
+      let tmpColumnName = "";
+      let tmpColumnList: columnObject[] = [];
+      let tmpChapterList: chapterObject[] = [];
+      if (dl?.childElementCount) {
+        const dlc = Array.from(dl.children);
+        for (let i = 0; i < dl.childElementCount; i++) {
+          const node = dlc[i];
+          if (i !== 0) {
+            if (node.nodeName === "DD") {
+              const a = <HTMLLinkElement>node.firstElementChild;
+              const chapterName = a.innerText;
+              const chapterUrl = a.href;
+              const chapterid = chapterUrl
+                .split("/")
+                .slice(-1)[0]
+                .replace(".html", "");
+              tmpChapterList.push({
+                chapterid: Number(chapterid) - bookid * 11,
+                chaptername: chapterName,
+                isempty: 0,
+                originalurl: "",
+                currenturl: "",
+              });
+            } else if (node.nodeName === "DT") {
+              const tmpColumnObj: columnObject = {
+                columnname: tmpColumnName,
+                columnid: 0,
+                chapterlist: tmpChapterList,
+              };
+              tmpColumnList.push(tmpColumnObj);
+              tmpColumnName = (<HTMLElement>node).innerText
+                .replace(`《${bookname}》`, "")
+                .trim();
+              tmpChapterList = [];
+            }
+          } else {
             tmpColumnName = (<HTMLElement>node).innerText
               .replace(`《${bookname}》`, "")
               .trim();
-            tmpChapterList = [];
           }
-        } else {
-          tmpColumnName = (<HTMLElement>node).innerText
-            .replace(`《${bookname}》`, "")
-            .trim();
         }
       }
-    }
+      return [tmpColumnList, tmpChapterList];
+    };
 
+    const [tmpColumnList, tmpChapterList] = mkList(dl1);
     const tcl = tmpChapterList.length;
     for (let i = 0; i < tcl; i++) {
       const tmpChapterObject = tmpChapterList.pop();
@@ -132,6 +140,25 @@ export class xkzw implements ruleClass {
         const tmpColumnObject = tmpColumnList.pop();
         if (tmpColumnObject) {
           siteChapterList.columnlist.unshift(tmpColumnObject);
+        }
+      }
+    }
+
+    const [tmpColumnList1, tmpChapterList1] = mkList(dl2);
+    const tcl1 = tmpChapterList1.length;
+    const cll = siteChapterList.columnlist.length;
+    for (let i = 0; i < tcl1; i++) {
+      const tmpChapterObject = tmpChapterList1.shift();
+      if (tmpChapterObject) {
+        siteChapterList.columnlist[cll - 1].chapterlist.push(tmpChapterObject);
+      }
+    }
+    if (tmpColumnList1.length !== 0) {
+      const tmpColumnListLenght = tmpColumnList1.length;
+      for (let i = 0; i < tmpColumnListLenght; i++) {
+        const tmpColumnObject = tmpColumnList1.shift();
+        if (tmpColumnObject) {
+          siteChapterList.columnlist.push(tmpColumnObject);
         }
       }
     }
