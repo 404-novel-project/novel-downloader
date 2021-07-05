@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        3.7.4.1625148853631
+// @version        3.7.4.1625492114024
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -4442,6 +4442,11 @@ async function cleanDOM(DOM, imgMode) {
 }
 exports.cleanDOM = cleanDOM;
 async function getText(url, charset, init = undefined) {
+    const _url = new URL(url);
+    if (document.location.protocol === "https:" && _url.protocol === "http:") {
+        _url.protocol = "https:";
+        url = _url.toString();
+    }
     if (charset === undefined) {
         return fetch(url, init).then((response) => {
             if (response.ok) {
@@ -30579,6 +30584,8 @@ class qidian {
             const sectionNumber = i + 1;
             const sectionName = s.querySelector("h3").innerText
                 .trim()
+                .split("\n")
+                .slice(-1)[0]
                 .split("·")[0];
             let sectionChapterNumber = 0;
             const cs = s.querySelectorAll("ul.cf > li");
