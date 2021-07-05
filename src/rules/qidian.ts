@@ -74,6 +74,8 @@ export class qidian implements ruleClass {
       const sectionNumber = i + 1;
       const sectionName = (<HTMLElement>s.querySelector("h3")).innerText
         .trim()
+        .split("\n")
+        .slice(-1)[0]
         .split("·")[0];
       let sectionChapterNumber = 0;
 

@@ -124,6 +124,13 @@ export async function getText(
   charset: string | undefined,
   init: RequestInit | undefined = undefined
 ) {
+  // upgrade http to https
+  const _url = new URL(url);
+  if (document.location.protocol === "https:" && _url.protocol === "http:") {
+    _url.protocol = "https:";
+    url = _url.toString();
+  }
+
   if (charset === undefined) {
     return fetch(url, init).then((response) => {
       if (response.ok) {
