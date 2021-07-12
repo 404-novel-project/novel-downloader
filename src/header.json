@@ -89,6 +89,7 @@
     "*://www.soxscc.net/*/",
     "*://www.soxscc.org/*/",
     "*://www.soxs.cc/*/",
+    "*://www.soshuw.com/*/",
     "*://www.shubaowa.org/*_*/",
     "*://www.fuguoduxs.com/*_*/",
     "*://www.xyqxs.cc/html/*/*/index.html",
@@ -98,7 +99,9 @@
     "*://www.trxs123.com/tongren/*.html",
     "*://www.tongrenquan.org/tongren/*.html",
     "*://www.jpxs123.com/*/*.html",
-    "*://www.imiaobige.com/read/*/"
+    "*://www.imiaobige.com/read/*/",
+    "*://www.256wxc.com/read/*/index.html",
+    "*://www.256wxc.com/read/*/"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",
@@ -166,8 +169,10 @@
     "soxscc.net",
     "soxscc.org",
     "soxs.cc",
+    "soshuw.com",
     "idejian.com",
     "img.imiaobige.com",
+    "postimg.cc",
     "*"
   ],
   "require": [

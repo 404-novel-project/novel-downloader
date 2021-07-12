@@ -259,7 +259,8 @@ export async function getRule(): Promise<ruleClass> {
     }
     case "www.soxscc.net":
     case "www.soxscc.org":
-    case "www.soxs.cc": {
+    case "www.soxs.cc":
+    case "www.soshuw.com": {
       const { soxscc } = await import("./rules/soxscc");
       ruleClass = soxscc;
       break;
@@ -300,6 +301,11 @@ export async function getRule(): Promise<ruleClass> {
     case "www.imiaobige.com": {
       const { imiaobige } = await import("./rules/imiaobige");
       ruleClass = imiaobige;
+      break;
+    }
+    case "www.256wxc.com": {
+      const { c256wxc } = await import("./rules/simple/256wxc");
+      ruleClass = c256wxc;
       break;
     }
     default: {

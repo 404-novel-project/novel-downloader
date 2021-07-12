@@ -81,6 +81,7 @@ ZIP压缩包，请在解压后，直接双击打开HTML文件（`ToC.html` 为�
 |[同人圈](http://www.tongrenquan.org/)|✅|❎||
 |[精品小说网](http://www.jpxs123.com/)|✅|❎||
 |[妙笔阁](https://www.imiaobige.com/)|✅|❎||
+|[256文学](https://www.256wxc.com/)|✅|❎||
 
 </details>
 
@@ -302,15 +303,6 @@ window.customFinishCallback = customFinishCallback;
         private downloadImage;
         private tmDownloadImage;
     } 
-    interface bookParseObject {
-        bookUrl: string;
-        bookname: string;
-        author: string;
-        introduction: string | null;
-        introductionHTML: HTMLElement | null;
-        additionalMetadate: BookAdditionalMetadate;
-        chapters: Chapter[];
-    }
     interface chapterParseObject {
         chapterName: string | null;
         contentRaw: HTMLElement | null;
@@ -331,6 +323,17 @@ window.customFinishCallback = customFinishCallback;
     ```
 
 1. `npm run build` 编译生成最终脚本文件 `dist/bundle.user.js`。
+
+## Todo
+
+|网站|实现难度|
+|---|----|
+|[悠久小说网](https://www.ujxs.net/)|2|
+|[百合小说网](https://m.baihexs.com/)|3|
+|[微信读书](https://weread.qq.com/)|9|
+|[网易云阅读](https://yuedu.163.com/)|5|
+|[豆瓣阅读](https://read.douban.com/)|5|
+
 ## License
 
 AGPL-3.0
