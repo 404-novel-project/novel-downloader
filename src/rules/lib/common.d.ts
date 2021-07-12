@@ -6,7 +6,7 @@ interface mkRuleClassOptions1 {
     author: string;
     introDom: HTMLElement;
     introDomPatch: (introDom: HTMLElement) => HTMLElement;
-    coverUrl: string;
+    coverUrl: string | null;
     cos: NodeListOf<Element>;
     getContent: (doc: Document) => HTMLElement;
     contentPatch: (content: HTMLElement) => HTMLElement;

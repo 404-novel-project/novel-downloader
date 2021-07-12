@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        3.7.4.1625492114024
+// @version        3.7.4.1626107364080
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -73,6 +73,7 @@
 // @match          *://www.soxscc.net/*/
 // @match          *://www.soxscc.org/*/
 // @match          *://www.soxs.cc/*/
+// @match          *://www.soshuw.com/*/
 // @match          *://www.shubaowa.org/*_*/
 // @match          *://www.fuguoduxs.com/*_*/
 // @match          *://www.xyqxs.cc/html/*/*/index.html
@@ -83,6 +84,8 @@
 // @match          *://www.tongrenquan.org/tongren/*.html
 // @match          *://www.jpxs123.com/*/*.html
 // @match          *://www.imiaobige.com/read/*/
+// @match          *://www.256wxc.com/read/*/index.html
+// @match          *://www.256wxc.com/read/*/
 // @name:en        novel-downloader
 // @description:en An scalable universal novel downloader.
 // @namespace      https://blog.bgme.me
@@ -157,8 +160,10 @@
 // @connect        soxscc.net
 // @connect        soxscc.org
 // @connect        soxs.cc
+// @connect        soshuw.com
 // @connect        idejian.com
 // @connect        img.imiaobige.com
+// @connect        postimg.cc
 // @connect        *
 // @require        https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js#sha512-Qlv6VSKh1gDKGoJbnyA5RMXYcvnpIqhO++MhIM2fStMcGT9i2T//tSwYFlcyoRRDcDZ+TYHpH8azBBCyhpSeqw==
 // @require        https://cdn.jsdelivr.net/npm/crypto-js@4.0.0/crypto-js.js#sha512-t4HzsbLJw+4jV+nmiiIsz/puioH2aKIjuI1ho1NIqJAJ2GNVLPTy51IklYefYdrkRE583KEzTcgmO5Wb6jVgYw==
@@ -5233,7 +5238,8 @@ async function getRule() {
         }
         case "www.soxscc.net":
         case "www.soxscc.org":
-        case "www.soxs.cc": {
+        case "www.soxs.cc":
+        case "www.soshuw.com": {
             const { soxscc } = await Promise.resolve().then(() => __webpack_require__("./src/rules/soxscc.ts"));
             ruleClass = soxscc;
             break;
@@ -5274,6 +5280,11 @@ async function getRule() {
         case "www.imiaobige.com": {
             const { imiaobige } = await Promise.resolve().then(() => __webpack_require__("./src/rules/imiaobige.ts"));
             ruleClass = imiaobige;
+            break;
+        }
+        case "www.256wxc.com": {
+            const { c256wxc } = await Promise.resolve().then(() => __webpack_require__("./src/rules/simple/256wxc.ts"));
+            ruleClass = c256wxc;
             break;
         }
         default: {
@@ -31433,6 +31444,29 @@ class shuhai {
     }
 }
 exports.shuhai = shuhai;
+
+
+/***/ }),
+
+/***/ "./src/rules/simple/256wxc.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.c256wxc = void 0;
+const common_1 = __webpack_require__("./src/rules/lib/common.ts");
+exports.c256wxc = common_1.mkRuleClass1({
+    bookUrl: document.location.href,
+    bookname: (document.querySelector(".art_tit")).innerText.trim(),
+    author: (document.querySelector("span.bookinfo:nth-child(1) > a")).innerText.trim(),
+    introDom: document.querySelector(".infotype > p"),
+    introDomPatch: (introDom) => introDom,
+    coverUrl: null,
+    cos: document.querySelectorAll(".catalog > li > a"),
+    getContent: (doc) => doc.querySelector(".book_con"),
+    contentPatch: (content) => content,
+});
 
 
 /***/ }),
