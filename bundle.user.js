@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        3.7.4.1626107364080
+// @version        3.7.4.1626180990539
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -7317,7 +7317,7 @@ class jjwxc {
                         [authorSayDom, authorSayText] = [adom, atext];
                     }
                     lib_1.rm("div", true, content);
-                    content.innerHTML = content.innerHTML.replace("@无限好文，尽在晋江文学城", "");
+                    content.innerHTML = content.innerHTML.replaceAll("@无限好文，尽在晋江文学城", "");
                     let { dom: rawDom, text: rawText, images } = await lib_1.cleanDOM(content, "TM");
                     if (rawAuthorSayDom && authorSayDom && authorSayText) {
                         const hr = document.createElement("hr");
