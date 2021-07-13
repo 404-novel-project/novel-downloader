@@ -391,7 +391,7 @@ export class jjwxc implements ruleClass {
             [authorSayDom, authorSayText] = [adom, atext];
           }
           rm("div", true, content);
-          content.innerHTML = content.innerHTML.replace(
+          content.innerHTML = content.innerHTML.replaceAll(
             "@无限好文，尽在晋江文学城",
             ""
           );
