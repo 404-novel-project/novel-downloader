@@ -71,6 +71,7 @@ export async function getRule(): Promise<ruleClass> {
       ruleClass = dingdiann();
       break;
     }
+    case "www.biquge66.com":
     case "www.lewenn.com":
     case "www.klxs.la":
     case "www.xkzw.org": {

@@ -82,6 +82,7 @@ ZIP压缩包，请在解压后，直接双击打开HTML文件（`ToC.html` 为�
 |[精品小说网](http://www.jpxs123.com/)|✅|❎||
 |[妙笔阁](https://www.imiaobige.com/)|✅|❎||
 |[256文学](https://www.256wxc.com/)|✅|❎||
+|[笔趣阁小说网](http://www.biquge66.com/)|✅|❎||
 
 </details>
 
@@ -333,6 +334,10 @@ window.customFinishCallback = customFinishCallback;
 |[微信读书](https://weread.qq.com/)|9|
 |[网易云阅读](https://yuedu.163.com/)|5|
 |[豆瓣阅读](https://read.douban.com/)|5|
+|[息壤中文网](https://www.xrzww.com/)|4|
+|[海棠文化线上文学城](https://longmabookcn.com/)|?|
+|[PO18 臉紅心跳](https://www.po18.tw/)|?|
+|[全书斋](https://www.quanshuzhai.com/)|2|
 
 ## License
 

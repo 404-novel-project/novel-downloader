@@ -164,6 +164,9 @@ img {
   max-height: 18em;
   overflow-y: scroll;
 }
+.introduction p {
+	text-indent: 0;
+}
 .bookurl {
   text-align: center;
   font-size: smaller;

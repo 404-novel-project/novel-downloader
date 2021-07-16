@@ -101,7 +101,8 @@
     "*://www.jpxs123.com/*/*.html",
     "*://www.imiaobige.com/read/*/",
     "*://www.256wxc.com/read/*/index.html",
-    "*://www.256wxc.com/read/*/"
+    "*://www.256wxc.com/read/*/",
+    "*://www.biquge66.com/biquge*/"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",
