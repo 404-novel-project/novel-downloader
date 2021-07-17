@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        3.7.4.1626451938692
+// @version        3.7.5.1626547431577
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -87,6 +87,8 @@
 // @match          *://www.256wxc.com/read/*/index.html
 // @match          *://www.256wxc.com/read/*/
 // @match          *://www.biquge66.com/biquge*/
+// @match          *://*.lofter.com/
+// @match          *://*.lofter.com/?page=*
 // @name:en        novel-downloader
 // @description:en An scalable universal novel downloader.
 // @namespace      https://blog.bgme.me
@@ -165,6 +167,9 @@
 // @connect        idejian.com
 // @connect        img.imiaobige.com
 // @connect        postimg.cc
+// @connect        lofter.com
+// @connect        lf127.net
+// @connect        126.net
 // @connect        *
 // @require        https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js#sha512-Qlv6VSKh1gDKGoJbnyA5RMXYcvnpIqhO++MhIM2fStMcGT9i2T//tSwYFlcyoRRDcDZ+TYHpH8azBBCyhpSeqw==
 // @require        https://cdn.jsdelivr.net/npm/crypto-js@4.0.0/crypto-js.js#sha512-t4HzsbLJw+4jV+nmiiIsz/puioH2aKIjuI1ho1NIqJAJ2GNVLPTy51IklYefYdrkRE583KEzTcgmO5Wb6jVgYw==
@@ -3047,6 +3052,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.walk = void 0;
+const main_1 = __webpack_require__("./src/main.ts");
 const lib_1 = __webpack_require__("./src/lib.ts");
 const blockElements = [
     "article",
@@ -3076,7 +3082,6 @@ const blockElements = [
     "small",
     "samp",
     "s",
-    "a",
 ];
 const ignoreElements = [
     "script",
@@ -3204,17 +3209,31 @@ async function _formatImage(elem, builder) {
     }
     const imgMode = builder.imgMode;
     const imageUrl = elem.src;
-    const imgClass = await lib_1.getImageAttachment(imageUrl, imgMode);
-    const imageName = imgClass.name;
-    const filterdImages = builder.images.find((imgClass) => imgClass.url === elem.src);
-    if (!filterdImages) {
-        builder.images.push(imgClass);
+    try {
+        const imgClass = await lib_1.getImageAttachment(imageUrl, imgMode);
+        const imageName = imgClass.name;
+        const filterdImages = builder.images.find((imgClass) => imgClass.url === elem.src);
+        if (!filterdImages) {
+            builder.images.push(imgClass);
+        }
+        const imgElem = document.createElement("img");
+        imgElem.setAttribute("data-src-address", imageName);
+        imgElem.alt = imageUrl;
+        const imgText = `![${imageUrl}](${imageName})`;
+        return [imgElem, imgText, imgClass];
     }
-    const imgElem = document.createElement("img");
-    imgElem.setAttribute("data-src-address", imageName);
-    imgElem.alt = imageUrl;
-    const imgText = `![${imageUrl}](${imageName})`;
-    return [imgElem, imgText, imgClass];
+    catch (error) {
+        if (error instanceof main_1.ExpectError) {
+            const imgElem = document.createElement("img");
+            imgElem.setAttribute("data-src-address", imageUrl);
+            imgElem.alt = imageUrl;
+            const imgText = `![${imageUrl}](${imageUrl})`;
+            return [imgElem, imgText, null];
+        }
+        else {
+            throw error;
+        }
+    }
 }
 async function formatMisc(elem, builder) {
     if (elem.childElementCount === 0) {
@@ -3383,6 +3402,30 @@ function formatHr(elem, builder) {
     builder.text = builder.text + "\n\n" + hrText + "\n\n";
     return;
 }
+async function formatA(elem, builder) {
+    if (elem.childElementCount === 0) {
+        if (elem.href) {
+            const aElem = document.createElement("a");
+            aElem.href = elem.href;
+            aElem.innerText = elem.innerText;
+            aElem.rel = "noopener noreferrer";
+            const aText = `[${elem.innerText}](${elem.href})`;
+            builder.dom.appendChild(aElem);
+            builder.text = builder + "\n\n" + aText;
+            return;
+        }
+        else {
+            return;
+        }
+    }
+    else {
+        return await formatMisc(elem, builder);
+    }
+}
+function formatVideo(elem, builder) {
+    builder.dom.appendChild(elem.cloneNode(true));
+    builder.text = builder.text + "\n\n" + elem.outerHTML;
+}
 async function walk(dom, builder) {
     const childNodes = [...findBase(dom, blockElements, ignoreElements)].filter((b) => b);
     for (let i = 0; i < childNodes.length; i++) {
@@ -3392,7 +3435,6 @@ async function walk(dom, builder) {
         }
         const nodeName = node.nodeName.toLowerCase();
         switch (nodeName) {
-            case "a":
             case "u":
             case "del":
             case "sup":
@@ -3443,6 +3485,14 @@ async function walk(dom, builder) {
             }
             case "hr": {
                 formatHr(node, builder);
+                break;
+            }
+            case "a": {
+                await formatA(node, builder);
+                break;
+            }
+            case "video": {
+                formatVideo(node, builder);
                 break;
             }
         }
@@ -3977,7 +4027,7 @@ a.disabled {
         this.savedZip.generateAsync((percent) => index_1.updateProgress(1, 1, percent));
     }
     saveToC() {
-        const ToC = new DOMParser().parseFromString(`<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="https://github.com/yingziwu/novel-downloader"><link href="style.css" type="text/css" rel="stylesheet"/><title>${this.book.bookname}</title></head><body><div class="main"><h1>${this.book.bookname}</h1><h3 class="author">${this.book.author}</h3></div></body></html>`, "text/html");
+        const ToC = new DOMParser().parseFromString(`<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="referrer" content="same-origin"><meta name="generator" content="https://github.com/yingziwu/novel-downloader"><link href="style.css" type="text/css" rel="stylesheet"/><title>${this.book.bookname}</title></head><body><div class="main"><h1>${this.book.bookname}</h1><h3 class="author">${this.book.author}</h3></div></body></html>`, "text/html");
         const TocMain = ToC.querySelector("div.main");
         log_1.log.debug("[save]生成ToC模板");
         const infoDom = document.createElement("div");
@@ -4043,7 +4093,7 @@ a.disabled {
                 const chapterAnchor = document.createElement("a");
                 chapterAnchor.href = chapterHtmlFileName;
                 chapterAnchor.innerHTML = chapterName;
-                if (!this._savedChapters.includes(chapter)) {
+                if (!(chapter.contentHTML || chapter.contentHTML === null)) {
                     chapterAnchor.classList.add("disabled");
                 }
                 chapterDiv.appendChild(chapterAnchor);
@@ -4065,7 +4115,7 @@ a.disabled {
                 const chapterAnchor = document.createElement("a");
                 chapterAnchor.href = chapterHtmlFileName;
                 chapterAnchor.innerHTML = chapterName;
-                if (!chapter.contentHTML) {
+                if (!(chapter.contentHTML || chapter.contentHTML === null)) {
                     chapterAnchor.classList.add("disabled");
                 }
                 chapterDiv.appendChild(chapterAnchor);
@@ -4159,7 +4209,7 @@ a.disabled {
         return `## ${chapterName}\n\n${contentText}\n\n`;
     }
     genSectionHtmlFile(sectionName) {
-        let htmlFile = new DOMParser().parseFromString(`<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="https://github.com/yingziwu/novel-downloader"><link href="style.css" type="text/css" rel="stylesheet"/><title>${sectionName}</title></head><body><div class="main"><h1>${sectionName}</h1></div></body></html>`, "text/html");
+        let htmlFile = new DOMParser().parseFromString(`<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="referrer" content="same-origin"><meta name="generator" content="https://github.com/yingziwu/novel-downloader"><link href="style.css" type="text/css" rel="stylesheet"/><title>${sectionName}</title></head><body><div class="main"><h1>${sectionName}</h1></div></body></html>`, "text/html");
         return new Blob([
             htmlFile.documentElement.outerHTML.replaceAll("data-src-address", "src"),
         ], {
@@ -4167,7 +4217,7 @@ a.disabled {
         });
     }
     genChapterHtmlFile(chapterName, DOM, chapterUrl) {
-        let htmlFile = new DOMParser().parseFromString(`<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="https://github.com/yingziwu/novel-downloader"><meta name="source" content="${chapterUrl}"><link href="style.css" type="text/css" rel="stylesheet"/><title>${chapterName}</title></head><body><div class="main"><h2>${chapterName}</h2></div></body></html>`, "text/html");
+        let htmlFile = new DOMParser().parseFromString(`<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="referrer" content="same-origin"><meta name="generator" content="https://github.com/yingziwu/novel-downloader"><meta name="source" content="${chapterUrl}"><link href="style.css" type="text/css" rel="stylesheet"/><title>${chapterName}</title></head><body><div class="main"><h2>${chapterName}</h2></div></body></html>`, "text/html");
         htmlFile.querySelector(".main")?.appendChild(DOM);
         return new Blob([
             htmlFile.documentElement.outerHTML.replaceAll("data-src-address", "src"),
@@ -4625,13 +4675,18 @@ async function getImageAttachment(url, imgMode = "TM", prefix = "") {
         const blob = await imgClass.init();
         if (blob) {
             const hash = await calculateMd5(blob);
-            const ext = blob.type.split("/")[1];
+            const contentType = blob.type.split("/")[1];
+            const contentTypeBlackList = ["octet-stream"];
+            let ext = contentType;
+            if (contentTypeBlackList.includes(contentType)) {
+                ext = new URL(url).pathname.split(".").slice(-1)[0];
+            }
             const imageName = [prefix, hash, ".", ext].join("");
             imgClass.name = imageName;
             putAttachmentClassCache(imgClass);
         }
         else {
-            throw new Error("[getImageAttachment] MD5sum failed!");
+            throw new main_1.ExpectError("[getImageAttachment] Init Image failed!");
         }
     }
     return imgClass;
@@ -4796,7 +4851,15 @@ const originalFactory = loglevel_1.default.methodFactory;
 loglevel_1.default.methodFactory = function (methodName, logLevel, loggerName) {
     const rawMethod = originalFactory(methodName, logLevel, loggerName);
     return function (message) {
-        logText += message + "\n";
+        try {
+            if (typeof message === "object") {
+                logText += JSON.stringify(message, undefined, 2) + "\n";
+            }
+            else {
+                logText += message + "\n";
+            }
+        }
+        catch (error) { }
         rawMethod(message);
     };
 };
@@ -4926,7 +4989,9 @@ class attachmentClass {
         else {
             this.imageBlob = await this.tmDownloadImage();
         }
-        log_1.log.info(`[attachment] ${this.url} 下载完成。`);
+        if (this.imageBlob) {
+            log_1.log.info(`[attachment] ${this.url} 下载完成。`);
+        }
         return this.imageBlob;
     }
     downloadImage() {
@@ -5292,12 +5357,22 @@ async function getRule() {
             ruleClass = c256wxc;
             break;
         }
+        case regExpMatch(/lofter\.com$/): {
+            const { lofter } = await Promise.resolve().then(() => __webpack_require__("./src/rules/lofter.ts"));
+            ruleClass = lofter;
+            break;
+        }
         default: {
             throw new Error("Not Found Rule!");
         }
     }
     const rule = new ruleClass();
     return rule;
+    function regExpMatch(regexp) {
+        if (regexp.test(host)) {
+            return host;
+        }
+    }
 }
 exports.getRule = getRule;
 
@@ -30359,6 +30434,156 @@ class linovelib {
     }
 }
 exports.linovelib = linovelib;
+
+
+/***/ }),
+
+/***/ "./src/rules/lofter.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.lofter = void 0;
+const main_1 = __webpack_require__("./src/main.ts");
+const lib_1 = __webpack_require__("./src/lib.ts");
+const log_1 = __webpack_require__("./src/log.ts");
+class lofter {
+    constructor() {
+        this.imageMode = "TM";
+        this.concurrencyLimit = 5;
+    }
+    async bookParse() {
+        const bookUrl = document.location.origin;
+        const author = JSON.parse('"' + unsafeWindow._ntes_ntit.replaceAll("%", "\\") + '"');
+        const bookname = author + "的Lofter";
+        const introduction = document
+            .querySelector('meta[name="Description"]')
+            ?.getAttribute("content")
+            ?.replace(new RegExp(`^${author} - `), "") ?? null;
+        let introductionHTML = null;
+        if (introduction) {
+            introductionHTML = document.createElement("p");
+            introductionHTML.innerText = introduction;
+        }
+        const additionalMetadate = {};
+        const _avatar = document
+            .querySelector('link[rel="shortcut icon"]')
+            ?.getAttribute("href");
+        if (_avatar) {
+            const avatar = new URL(_avatar);
+            avatar.search = "";
+            const avatarUrl = avatar.toString();
+            lib_1.getImageAttachment(avatarUrl, this.imageMode, "avatar-").then((avatarClass) => {
+                additionalMetadate.cover = avatarClass;
+            });
+        }
+        const chapters = [];
+        const pageUrlSet = new Set();
+        const indexPageUrls = [];
+        const getPageUrl = async (url) => {
+            log_1.log.info(`[chapter]正在抓取目录页：${url}`);
+            const doc = await lib_1.getHtmlDOM(url, undefined);
+            const selector = `a[href^="${[document.location.origin, "post"].join("/")}"]`;
+            const urlSet = new Set(Array.from(doc.querySelectorAll(selector)).map((a) => a.href));
+            urlSet.forEach((item) => pageUrlSet.add(item));
+            const selectorl = `a[href^="https://www.lofter.com/lpost"]`;
+            const urlSetl = new Set(Array.from(doc.querySelectorAll(selectorl)).map((a) => a.href));
+            urlSetl.forEach((item) => pageUrlSet.add(item));
+            const getIndexPageNumber = (url) => {
+                const _pageNumber = new URL(url).searchParams.get("page") ?? "1";
+                const indexPageNumber = Number(_pageNumber);
+                return indexPageNumber;
+            };
+            const nowIndexPageNumber = getIndexPageNumber(url);
+            const indexPages = doc.querySelectorAll('a[href^="?page"]');
+            for (const indexPage of Array.from(indexPages)) {
+                const indexPageUrl = indexPage.href;
+                const _indexPageUrlFormat = new URL(indexPageUrl);
+                _indexPageUrlFormat.searchParams.delete("t");
+                const indexPageUrlFormat = _indexPageUrlFormat.toString();
+                const indexPageNumber = getIndexPageNumber(indexPageUrl);
+                if (indexPageNumber !== nowIndexPageNumber) {
+                    if (!indexPageUrls.includes(indexPageUrlFormat)) {
+                        indexPageUrls.push(indexPageUrlFormat);
+                        await getPageUrl(indexPageUrl);
+                    }
+                }
+            }
+        };
+        await getPageUrl(document.location.href);
+        let i = 0;
+        for (const pageUrl of Array.from(pageUrlSet)) {
+            const chapter = new main_1.Chapter(bookUrl, bookname, pageUrl, i, null, false, false, null, null, null, this.chapterParse, "UTF-8", { author: author });
+            chapters.push(chapter);
+            i++;
+        }
+        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        return book;
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+        async function post() {
+            log_1.log.debug(`[chapter]请求页面：${chapterUrl}`);
+            const doc = await lib_1.getHtmlDOM(chapterUrl, charset);
+            chapterName =
+                doc
+                    .querySelector("title")
+                    ?.innerText.replace(new RegExp(`-${options.author}$`), "")
+                    .replace("\n", "")
+                    .trim() ?? null;
+            const selectors = [".ct .ctc", ".main .content"];
+            let content;
+            for (const selector of selectors) {
+                const _content = doc.querySelector(selector);
+                if (_content !== null) {
+                    content = _content;
+                    break;
+                }
+            }
+            if (content) {
+                let { dom, text, images } = await lib_1.cleanDOM(content, "TM");
+                return {
+                    chapterName: chapterName,
+                    contentRaw: content,
+                    contentText: text,
+                    contentHTML: dom,
+                    contentImages: images,
+                    additionalMetadate: null,
+                };
+            }
+            else {
+                throw new Error(`[chapter]未发现内容，url：${chapterUrl}`);
+            }
+        }
+        async function lpost() {
+            log_1.log.debug(`[chapter]请求页面：${chapterUrl}`);
+            const doc = await lib_1.ggetHtmlDOM(chapterUrl, charset);
+            chapterName = (doc.querySelector("#title"))?.innerText.trim();
+            const content = doc.querySelector("#m-cnt .long-text");
+            if (content) {
+                let { dom, text, images } = await lib_1.cleanDOM(content, "TM");
+                return {
+                    chapterName: chapterName,
+                    contentRaw: content,
+                    contentText: text,
+                    contentHTML: dom,
+                    contentImages: images,
+                    additionalMetadate: null,
+                };
+            }
+            else {
+                throw new Error(`[chapter]未发现内容，url：${chapterUrl}`);
+            }
+        }
+        if (new URL(chapterUrl).pathname.startsWith("/lpost/")) {
+            return lpost();
+        }
+        else {
+            return post();
+        }
+    }
+}
+exports.lofter = lofter;
 
 
 /***/ }),

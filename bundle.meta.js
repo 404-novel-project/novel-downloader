@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        3.7.4.1626451938692
+// @version        3.7.5.1626547431577
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -87,6 +87,8 @@
 // @match          *://www.256wxc.com/read/*/index.html
 // @match          *://www.256wxc.com/read/*/
 // @match          *://www.biquge66.com/biquge*/
+// @match          *://*.lofter.com/
+// @match          *://*.lofter.com/?page=*
 // @name:en        novel-downloader
 // @description:en An scalable universal novel downloader.
 // @namespace      https://blog.bgme.me
@@ -165,6 +167,9 @@
 // @connect        idejian.com
 // @connect        img.imiaobige.com
 // @connect        postimg.cc
+// @connect        lofter.com
+// @connect        lf127.net
+// @connect        126.net
 // @connect        *
 // @require        https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js#sha512-Qlv6VSKh1gDKGoJbnyA5RMXYcvnpIqhO++MhIM2fStMcGT9i2T//tSwYFlcyoRRDcDZ+TYHpH8azBBCyhpSeqw==
 // @require        https://cdn.jsdelivr.net/npm/crypto-js@4.0.0/crypto-js.js#sha512-t4HzsbLJw+4jV+nmiiIsz/puioH2aKIjuI1ho1NIqJAJ2GNVLPTy51IklYefYdrkRE583KEzTcgmO5Wb6jVgYw==
