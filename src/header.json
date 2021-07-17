@@ -102,7 +102,9 @@
     "*://www.imiaobige.com/read/*/",
     "*://www.256wxc.com/read/*/index.html",
     "*://www.256wxc.com/read/*/",
-    "*://www.biquge66.com/biquge*/"
+    "*://www.biquge66.com/biquge*/",
+    "*://*.lofter.com/",
+    "*://*.lofter.com/?page=*"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",
@@ -174,6 +176,9 @@
     "idejian.com",
     "img.imiaobige.com",
     "postimg.cc",
+    "lofter.com",
+    "lf127.net",
+    "126.net",
     "*"
   ],
   "require": [

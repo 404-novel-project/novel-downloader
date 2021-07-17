@@ -1,4 +1,4 @@
-import { attachmentClass } from "./main";
+import { attachmentClass, ExpectError } from "./main";
 import { getImageAttachment } from "./lib";
 
 const blockElements = [
@@ -29,7 +29,6 @@ const blockElements = [
   "small",
   "samp",
   "s",
-  "a", // 忽略超链接
 ];
 const ignoreElements = [
   "script",
@@ -185,29 +184,42 @@ async function formatImage(
 async function _formatImage(
   elem: HTMLImageElement,
   builder: Builder
-): Promise<[HTMLImageElement, string, attachmentClass] | void> {
+): Promise<[HTMLImageElement, string, attachmentClass | null] | void> {
   if (!elem.src) {
     return;
   }
 
   const imgMode = builder.imgMode;
   const imageUrl = elem.src;
-  const imgClass = await getImageAttachment(imageUrl, imgMode);
-  const imageName = imgClass.name;
+  try {
+    const imgClass = await getImageAttachment(imageUrl, imgMode);
+    const imageName = imgClass.name;
 
-  const filterdImages = builder.images.find(
-    (imgClass) => imgClass.url === elem.src
-  );
-  if (!filterdImages) {
-    builder.images.push(imgClass);
+    const filterdImages = builder.images.find(
+      (imgClass) => imgClass.url === elem.src
+    );
+    if (!filterdImages) {
+      builder.images.push(imgClass);
+    }
+
+    const imgElem = document.createElement("img");
+    imgElem.setAttribute("data-src-address", imageName);
+    imgElem.alt = imageUrl;
+
+    const imgText = `![${imageUrl}](${imageName})`;
+    return [imgElem, imgText, imgClass];
+  } catch (error) {
+    if (error instanceof ExpectError) {
+      const imgElem = document.createElement("img");
+      imgElem.setAttribute("data-src-address", imageUrl);
+      imgElem.alt = imageUrl;
+
+      const imgText = `![${imageUrl}](${imageUrl})`;
+      return [imgElem, imgText, null];
+    } else {
+      throw error;
+    }
   }
-
-  const imgElem = document.createElement("img");
-  imgElem.setAttribute("data-src-address", imageName);
-  imgElem.alt = imageUrl;
-
-  const imgText = `![${imageUrl}](${imageName})`;
-  return [imgElem, imgText, imgClass];
 }
 
 async function formatMisc(elem: HTMLElement, builder: Builder) {
@@ -402,6 +414,32 @@ function formatHr(elem: HTMLHRElement, builder: Builder) {
   return;
 }
 
+async function formatA(elem: HTMLAnchorElement, builder: Builder) {
+  if (elem.childElementCount === 0) {
+    if (elem.href) {
+      const aElem = document.createElement("a");
+      aElem.href = elem.href;
+      aElem.innerText = elem.innerText;
+      aElem.rel = "noopener noreferrer";
+
+      const aText = `[${elem.innerText}](${elem.href})`;
+
+      builder.dom.appendChild(aElem);
+      builder.text = builder + "\n\n" + aText;
+      return;
+    } else {
+      return;
+    }
+  } else {
+    return await formatMisc(elem, builder);
+  }
+}
+
+function formatVideo(elem: HTMLVideoElement, builder: Builder) {
+  builder.dom.appendChild(elem.cloneNode(true));
+  builder.text = builder.text + "\n\n" + elem.outerHTML;
+}
+
 export interface Builder {
   dom: HTMLElement;
   text: string;
@@ -419,7 +457,6 @@ export async function walk(dom: HTMLElement, builder: Builder) {
     }
     const nodeName = node.nodeName.toLowerCase();
     switch (nodeName) {
-      case "a":
       case "u":
       case "del":
       case "sup":
@@ -473,6 +510,14 @@ export async function walk(dom: HTMLElement, builder: Builder) {
       }
       case "hr": {
         formatHr(node as HTMLHRElement, builder);
+        break;
+      }
+      case "a": {
+        await formatA(node as HTMLAnchorElement, builder);
+        break;
+      }
+      case "video": {
+        formatVideo(node as HTMLVideoElement, builder);
         break;
       }
     }

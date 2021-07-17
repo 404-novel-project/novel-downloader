@@ -1,5 +1,5 @@
 import { Builder, walk } from "./cleanDOM";
-import { attachmentClass } from "./main";
+import { attachmentClass, ExpectError } from "./main";
 import { log } from "./log";
 import { Zip, ZipPassThrough, ZipDeflate, AsyncZipDeflate } from "fflate";
 
@@ -348,12 +348,17 @@ export async function getImageAttachment(
     const blob = await imgClass.init();
     if (blob) {
       const hash = await calculateMd5(blob);
-      const ext = blob.type.split("/")[1];
+      const contentType = blob.type.split("/")[1];
+      const contentTypeBlackList = ["octet-stream"];
+      let ext = contentType;
+      if (contentTypeBlackList.includes(contentType)) {
+        ext = new URL(url).pathname.split(".").slice(-1)[0];
+      }
       const imageName = [prefix, hash, ".", ext].join("");
       imgClass.name = imageName;
       putAttachmentClassCache(imgClass);
     } else {
-      throw new Error("[getImageAttachment] MD5sum failed!");
+      throw new ExpectError("[getImageAttachment] Init Image failed!");
     }
   }
   return imgClass;

@@ -223,7 +223,9 @@ export class attachmentClass {
     } else {
       this.imageBlob = await this.tmDownloadImage();
     }
-    log.info(`[attachment] ${this.url} 下载完成。`);
+    if (this.imageBlob) {
+      log.info(`[attachment] ${this.url} 下载完成。`);
+    }
     return this.imageBlob;
   }
 

@@ -12,7 +12,13 @@ const originalFactory = log.methodFactory;
 log.methodFactory = function (methodName, logLevel, loggerName) {
   const rawMethod = originalFactory(methodName, logLevel, loggerName);
   return function (message) {
-    logText += message + "\n";
+    try {
+      if (typeof message === "object") {
+        logText += JSON.stringify(message, undefined, 2) + "\n";
+      } else {
+        logText += message + "\n";
+      }
+    } catch (error) {}
     rawMethod(message);
   };
 };

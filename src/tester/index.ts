@@ -237,6 +237,13 @@ if (
     ],
     "http://www.tongrenquan.org/tongren/5730.html",
     "https://www.imiaobige.com/read/173201/",
+    [
+      "https://caogousheng.lofter.com/",
+      "https://caogousheng.lofter.com/?page=2&t=1599134400003",
+      "https://shuju.lofter.com/",
+      "https://wangnuannuan.lofter.com/",
+      "https://geekhome.lofter.com/"
+    ],
   ];
 
   async function runTest() {

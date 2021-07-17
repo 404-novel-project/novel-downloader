@@ -309,10 +309,21 @@ export async function getRule(): Promise<ruleClass> {
       ruleClass = c256wxc;
       break;
     }
+    case regExpMatch(/lofter\.com$/): {
+      const { lofter } = await import("./rules/lofter");
+      ruleClass = lofter;
+      break;
+    }
     default: {
       throw new Error("Not Found Rule!");
     }
   }
   const rule = new ruleClass();
   return rule;
+
+  function regExpMatch(regexp: RegExp) {
+    if (regexp.test(host)) {
+      return host;
+    }
+  }
 }
