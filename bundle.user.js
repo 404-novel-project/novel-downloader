@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        3.7.5.1626578887008
+// @version        3.7.5.1626582319160
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -4093,7 +4093,7 @@ a.disabled {
                 const chapterAnchor = document.createElement("a");
                 chapterAnchor.href = chapterHtmlFileName;
                 chapterAnchor.innerHTML = chapterName;
-                if (!(chapter.contentHTML || chapter.contentHTML === null)) {
+                if (!(chapter.contentHTML || chapter.status === main_1.Status.saved)) {
                     chapterAnchor.classList.add("disabled");
                 }
                 chapterDiv.appendChild(chapterAnchor);
@@ -4115,7 +4115,7 @@ a.disabled {
                 const chapterAnchor = document.createElement("a");
                 chapterAnchor.href = chapterHtmlFileName;
                 chapterAnchor.innerHTML = chapterName;
-                if (!(chapter.contentHTML || chapter.contentHTML === null)) {
+                if (!(chapter.contentHTML || chapter.status === main_1.Status.saved)) {
                     chapterAnchor.classList.add("disabled");
                 }
                 chapterDiv.appendChild(chapterAnchor);
@@ -4151,6 +4151,7 @@ a.disabled {
             if (!rules_1.enaleDebug) {
                 chapter.contentRaw = null;
                 chapter.contentHTML = null;
+                chapter.status = main_1.Status.saved;
             }
             this.savedZip.file(chapterHtmlFileName, chapterHTMLBlob);
         }
@@ -4160,6 +4161,7 @@ a.disabled {
                 this.addImageToZip(attachment, this.savedZip);
                 if (!rules_1.enaleDebug) {
                     attachment.imageBlob = null;
+                    attachment.status = main_1.Status.saved;
                 }
             }
             if (!rules_1.enaleDebug) {
@@ -4889,6 +4891,7 @@ var Status;
     Status[Status["failed"] = 2] = "failed";
     Status[Status["finished"] = 3] = "finished";
     Status[Status["aborted"] = 4] = "aborted";
+    Status[Status["saved"] = 5] = "saved";
 })(Status = exports.Status || (exports.Status = {}));
 class Book {
     constructor(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters) {
@@ -31854,9 +31857,31 @@ class sosadfun {
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         const doc = await lib_1.getHtmlDOM(chapterUrl, charset);
         chapterName = (doc.querySelector("strong.h3")).innerText.trim();
-        const content = (doc.querySelector(".main-text.no-selection > span[id^=full]"));
-        if (content) {
+        const content = document.createElement("div");
+        const _content = (doc.querySelector(".main-text.no-selection > span[id^=full]"));
+        const _authorSay = doc.querySelector(".main-text.no-selection > .grayout");
+        if (_content) {
+            for (const elem of Array.from(_content.cloneNode(true).children)) {
+                content.appendChild(elem);
+            }
+        }
+        if (_content) {
             let { dom, text, images } = await lib_1.cleanDOM(content, "TM");
+            if (_authorSay) {
+                let { dom: authorSayDom, text: authorySayText, images: authorSayImages, } = await lib_1.cleanDOM(_authorSay, "TM");
+                const hrElem = document.createElement("hr");
+                const authorSayDiv = document.createElement("div");
+                authorSayDiv.className = "authorSay";
+                for (const elem of Array.from(authorSayDom.cloneNode(true).children)) {
+                    authorSayDiv.appendChild(elem);
+                }
+                content.appendChild(hrElem);
+                content.appendChild(authorSayDiv);
+                dom.appendChild(hrElem);
+                dom.appendChild(authorSayDiv);
+                text = text + "\n\n" + "-".repeat(20) + "\n\n" + authorySayText;
+                authorSayImages.forEach((aImage) => images.push(aImage));
+            }
             return {
                 chapterName: chapterName,
                 contentRaw: content,

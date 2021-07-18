@@ -6,7 +6,7 @@ export declare class sosadfun implements ruleClass {
     bookParse(): Promise<Book>;
     chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean, charset: string, options: object): Promise<{
         chapterName: string;
-        contentRaw: HTMLElement;
+        contentRaw: HTMLDivElement;
         contentText: string;
         contentHTML: HTMLElement;
         contentImages: import("../main").attachmentClass[];

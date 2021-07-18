@@ -5,7 +5,8 @@ export declare enum Status {
     downloading = 1,
     failed = 2,
     finished = 3,
-    aborted = 4
+    aborted = 4,
+    saved = 5
 }
 export interface BookAdditionalMetadate {
     cover?: attachmentClass;
