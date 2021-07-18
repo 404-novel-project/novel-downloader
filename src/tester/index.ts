@@ -242,7 +242,7 @@ if (
       "https://caogousheng.lofter.com/?page=2&t=1599134400003",
       "https://shuju.lofter.com/",
       "https://wangnuannuan.lofter.com/",
-      "https://geekhome.lofter.com/"
+      "https://geekhome.lofter.com/",
     ],
   ];
 

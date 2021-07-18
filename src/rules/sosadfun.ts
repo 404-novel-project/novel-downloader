@@ -51,7 +51,7 @@ export class sosadfun implements ruleClass {
       throw new ExpectError("本小说需要登录后浏览！");
     } else {
       introDom = document.createElement("div");
-      const shortIntroDom = document.querySelector("div.h5:nth-child(3)");
+      const shortIntroDom = document.querySelector("div.article-title div.h5");
       const longIntroDom = document.querySelector(
         ".col-xs-12 > .main-text.no-selection"
       );
