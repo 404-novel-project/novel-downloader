@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        3.7.5.1626582319160
+// @version        3.7.5.1626607200128
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -6520,13 +6520,14 @@ class gongzicp {
                 const chapterName = chapterObj.name;
                 const isVIP = chapterObj.pay;
                 const isPaid = chapterObj.is_sub;
+                const isLock = chapterObj.lock;
                 sectionChapterNumber++;
                 const chapterOption = {
                     novel_id: data.novelInfo.novel_id,
                     chapter_id: chapterObj.id,
                 };
                 const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, "UTF-8", chapterOption);
-                if (isVIP && !(logined && chapter.isPaid)) {
+                if ((isVIP && !(logined && chapter.isPaid)) || isLock) {
                     chapter.status = main_1.Status.aborted;
                 }
                 chapters.push(chapter);
