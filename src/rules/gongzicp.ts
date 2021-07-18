@@ -332,6 +332,7 @@ export class gongzicp implements ruleClass {
         const chapterName = chapterObj.name;
         const isVIP = chapterObj.pay;
         const isPaid = chapterObj.is_sub;
+        const isLock = chapterObj.lock;
         sectionChapterNumber++;
         const chapterOption = {
           novel_id: data.novelInfo.novel_id,
@@ -352,7 +353,7 @@ export class gongzicp implements ruleClass {
           "UTF-8",
           chapterOption
         );
-        if (isVIP && !(logined && chapter.isPaid)) {
+        if ((isVIP && !(logined && chapter.isPaid)) || isLock) {
           chapter.status = Status.aborted;
         }
         chapters.push(chapter);
