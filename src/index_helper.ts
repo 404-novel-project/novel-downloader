@@ -391,7 +391,7 @@ a.disabled {
         chapterAnchor.href = chapterHtmlFileName;
         chapterAnchor.innerHTML = chapterName;
 
-        if (!(chapter.contentHTML || chapter.contentHTML === null)) {
+        if (!(chapter.contentHTML || chapter.status === Status.saved)) {
           chapterAnchor.classList.add("disabled");
         }
 
@@ -414,7 +414,7 @@ a.disabled {
         chapterAnchor.href = chapterHtmlFileName;
         chapterAnchor.innerHTML = chapterName;
 
-        if (!(chapter.contentHTML || chapter.contentHTML === null)) {
+        if (!(chapter.contentHTML || chapter.status === Status.saved)) {
           chapterAnchor.classList.add("disabled");
         }
 
@@ -468,6 +468,7 @@ a.disabled {
       if (!enaleDebug) {
         chapter.contentRaw = null;
         chapter.contentHTML = null;
+        chapter.status = Status.saved;
       }
       this.savedZip.file(chapterHtmlFileName, chapterHTMLBlob);
     }
@@ -478,6 +479,7 @@ a.disabled {
         this.addImageToZip(attachment, this.savedZip);
         if (!enaleDebug) {
           attachment.imageBlob = null;
+          attachment.status = Status.saved;
         }
       }
       if (!enaleDebug) {

@@ -9,6 +9,7 @@ export enum Status {
   failed,
   finished,
   aborted,
+  saved,
 }
 
 export interface BookAdditionalMetadate {

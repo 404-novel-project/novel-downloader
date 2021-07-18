@@ -136,11 +136,49 @@ export class sosadfun implements ruleClass {
       doc.querySelector("strong.h3")
     )).innerText.trim();
 
-    const content = <HTMLElement>(
+    const content = document.createElement("div");
+
+    const _content = <HTMLElement>(
       doc.querySelector(".main-text.no-selection > span[id^=full]")
     );
-    if (content) {
+    const _authorSay = doc.querySelector(".main-text.no-selection > .grayout");
+    if (_content) {
+      for (const elem of Array.from(
+        (<HTMLElement>_content.cloneNode(true)).children
+      )) {
+        content.appendChild(elem);
+      }
+    }
+
+    if (_content) {
       let { dom, text, images } = await cleanDOM(content, "TM");
+
+      if (_authorSay) {
+        let {
+          dom: authorSayDom,
+          text: authorySayText,
+          images: authorSayImages,
+        } = await cleanDOM(_authorSay, "TM");
+
+        const hrElem = document.createElement("hr");
+        const authorSayDiv = document.createElement("div");
+        authorSayDiv.className = "authorSay";
+        for (const elem of Array.from(
+          (<HTMLElement>authorSayDom.cloneNode(true)).children
+        )) {
+          authorSayDiv.appendChild(elem);
+        }
+
+        content.appendChild(hrElem);
+        content.appendChild(authorSayDiv);
+        dom.appendChild(hrElem);
+        dom.appendChild(authorSayDiv);
+
+        text = text + "\n\n" + "-".repeat(20) + "\n\n" + authorySayText;
+
+        authorSayImages.forEach((aImage) => images.push(aImage));
+      }
+
       return {
         chapterName: chapterName,
         contentRaw: content,
