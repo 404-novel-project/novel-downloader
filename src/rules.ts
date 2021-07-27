@@ -294,7 +294,8 @@ export async function getRule(): Promise<ruleClass> {
       ruleClass = trxs();
       break;
     }
-    case "www.tongrenquan.org": {
+    case "www.tongrenquan.org":
+    case "www.tongrenquan.me": {
       const { tongrenquan } = await import("./rules/simple/trxs");
       ruleClass = tongrenquan();
       break;
