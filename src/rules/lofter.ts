@@ -151,7 +151,7 @@ export class lofter implements ruleClass {
           .replace("\n", "")
           .trim() ?? null;
 
-      const selectors = [".ct .ctc", ".main .content"];
+      const selectors = [".ct .ctc", ".main .content", ".m-post .text"];
       let content;
       for (const selector of selectors) {
         const _content = doc.querySelector(selector) as HTMLElement;

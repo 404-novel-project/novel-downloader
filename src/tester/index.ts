@@ -246,7 +246,9 @@ if (
       "https://shuju.lofter.com/",
       "https://wangnuannuan.lofter.com/",
       "https://geekhome.lofter.com/",
+      "https://absb6.lofter.com/"
     ],
+    "http://www.bq8xs.com/3399/",
   ];
 
   async function runTest() {
