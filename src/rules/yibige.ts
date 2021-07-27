@@ -1,7 +1,7 @@
 import { BookAdditionalMetadate, Chapter, Book } from "../main";
 import { ruleClass } from "../rules";
-import { getHtmlDOM, cleanDOM, rm, getImageAttachment } from "../lib";
-import { introDomHandle } from "./lib/common";
+import { getHtmlDOM, rm, getImageAttachment } from "../lib";
+import { introDomHandle, nextPageParse } from "./lib/common";
 import { log } from "../log";
 
 export class yibige implements ruleClass {
@@ -134,50 +134,22 @@ export class yibige implements ruleClass {
     charset: string,
     options: object
   ) {
-    log.debug(`[Chapter]请求 ${chapterUrl}`);
-    let nowUrl = chapterUrl;
-    let doc = await getHtmlDOM(chapterUrl, charset);
-    const content = document.createElement("div");
-
-    let flag = false;
-    do {
-      const _content = <HTMLElement>doc.querySelector("#fontsize");
-      rm("div", true, _content);
-      rm("script", true, _content);
-      _content.innerHTML = _content.innerHTML.replaceAll("测试广告1", "");
-      for (const _c of Array.from(_content.childNodes)) {
-        content.appendChild(_c);
-      }
-
-      const nextLink = (<HTMLAnchorElement>(
-        doc.querySelector(".nr_fy > a:nth-child(4)")
-      )).href;
-
-      if (new URL(nextLink).pathname.includes("_")) {
-        if (nextLink !== nowUrl) {
-          flag = true;
-        } else {
-          log.error("网站页面出错，URL： " + nowUrl);
-          flag = false;
-        }
-      } else {
-        flag = false;
-      }
-      if (flag) {
-        log.debug(`[Chapter]请求 ${nextLink}`);
-        nowUrl = nextLink;
-        doc = await getHtmlDOM(nextLink, charset);
-      }
-    } while (flag);
-
-    let { dom, text, images } = await cleanDOM(content, "TM");
-    return {
-      chapterName: chapterName,
-      contentRaw: content,
-      contentText: text,
-      contentHTML: dom,
-      contentImages: images,
-      additionalMetadate: null,
-    };
+    return nextPageParse(
+      chapterName,
+      chapterUrl,
+      charset,
+      "#fontsize",
+      (_content) => {
+        rm("div", true, _content);
+        rm("script", true, _content);
+        _content.innerHTML = _content.innerHTML
+          .replaceAll("测试广告1", "")
+          .replaceAll("测试广告2", "");
+        return _content;
+      },
+      (doc) =>
+        (<HTMLAnchorElement>doc.querySelector(".nr_fy > a:nth-child(4)")).href,
+      (_content, nextLink) => new URL(nextLink).pathname.includes("_")
+    );
   }
 }

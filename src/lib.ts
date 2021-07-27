@@ -315,6 +315,29 @@ export function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+export function htmlTrim(dom: HTMLElement) {
+  const childNodesR = Array.from(dom.childNodes).reverse();
+  for (const node of childNodesR) {
+    const ntype = node.nodeName.toLowerCase();
+
+    const ntypes = ["#text", "br"];
+    if (!ntypes.includes(ntype)) {
+      return;
+    }
+
+    if (ntype === "#text") {
+      if ((<Text>node).textContent?.trim() === "") {
+        node.remove();
+      } else {
+        return;
+      }
+    }
+    if (ntype === "br") {
+      (<HTMLBRElement>node).remove();
+    }
+  }
+}
+
 let attachmentClassCache: attachmentClass[] = [];
 export function getAttachmentClassCache(url: string) {
   const found = attachmentClassCache.find(

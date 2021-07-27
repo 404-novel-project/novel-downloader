@@ -6,6 +6,7 @@ import {
   Chapter,
 } from "../../main";
 import { ruleClass } from "../../rules";
+import { log } from "../../log";
 
 export async function introDomHandle(
   introDom: (Element | HTMLElement) | null,
@@ -26,6 +27,58 @@ export async function introDomHandle(
   }
 }
 
+export async function nextPageParse(
+  chapterName: string | null,
+  chapterUrl: string,
+  charset: string,
+  selector: string,
+  contentPatch: (_content: HTMLElement) => HTMLElement,
+  getNextPage: (doc: Document) => string,
+  continueCondition: (_content: HTMLElement, nextLink: string) => boolean
+) {
+  log.debug(`[Chapter]请求 ${chapterUrl}`);
+  let nowUrl = chapterUrl;
+  let doc = await getHtmlDOM(chapterUrl, charset);
+  const content = document.createElement("div");
+
+  let flag = false;
+  do {
+    let _content = <HTMLElement>doc.querySelector(selector);
+
+    const nextLink = getNextPage(doc);
+    if (continueCondition(_content, nextLink)) {
+      if (nextLink !== nowUrl) {
+        flag = true;
+      } else {
+        log.error("网站页面出错，URL： " + nowUrl);
+        flag = false;
+      }
+    } else {
+      flag = false;
+    }
+
+    _content = contentPatch(_content);
+    for (const _c of Array.from(_content.childNodes)) {
+      content.appendChild(_c.cloneNode(true));
+    }
+
+    if (flag) {
+      log.debug(`[Chapter]请求 ${nextLink}`);
+      nowUrl = nextLink;
+      doc = await getHtmlDOM(nextLink, charset);
+    }
+  } while (flag);
+
+  let { dom, text, images } = await cleanDOM(content, "TM");
+  return {
+    chapterName: chapterName,
+    contentRaw: content,
+    contentText: text,
+    contentHTML: dom,
+    contentImages: images,
+    additionalMetadate: null,
+  };
+}
 interface mkRuleClassOptions1 {
   bookUrl: string;
   bookname: string;

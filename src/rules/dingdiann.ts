@@ -1,9 +1,9 @@
 import { ruleClass } from "../rules";
-import { rm } from "../lib";
+import { htmlTrim, rm } from "../lib";
 import { bookParseTemp } from "./biquge";
 import { nextPageParse } from "./lib/common";
 
-export class mht implements ruleClass {
+export class dingdiann implements ruleClass {
   public imageMode: "naive" | "TM";
 
   public constructor() {
@@ -45,13 +45,28 @@ export class mht implements ruleClass {
       charset,
       "#content",
       (_content) => {
-        rm("p[data-id]", true, _content);
+        rm("div[align]", false, _content);
+        rm("script", true, _content);
+
+        const removelist = [
+          "一秒记住，精彩小说无弹窗免费阅读！",
+          "&lt;/a　:&gt;",
+          "--&gt;&gt;",
+          "本章未完，点击下一页继续阅读",
+        ];
+        removelist.forEach(
+          (removeStr) =>
+            (_content.innerHTML = _content.innerHTML.replaceAll(removeStr, ""))
+        );
+
+        htmlTrim(_content);
         return _content;
       },
       (doc) =>
         (<HTMLAnchorElement>doc.querySelector(".bottem2 > a:nth-child(4)"))
           .href,
-      (_content, nextLink) => new URL(nextLink).pathname.includes("_")
+      (_content, nextLink) =>
+        _content.innerText.includes("本章未完，点击下一页继续阅读")
     );
   }
 }

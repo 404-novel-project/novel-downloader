@@ -1,8 +1,7 @@
 import { BookAdditionalMetadate, Chapter, Status, Book } from "../main";
-import { getHtmlDOM, cleanDOM, rm, getImageAttachment } from "../lib";
+import { getHtmlDOM, rm, getImageAttachment } from "../lib";
 import { ruleClass } from "../rules";
-import { introDomHandle } from "./lib/common";
-import { log } from "../log";
+import { introDomHandle, nextPageParse } from "./lib/common";
 
 export class linovelib implements ruleClass {
   public imageMode: "naive" | "TM";
@@ -113,51 +112,20 @@ export class linovelib implements ruleClass {
     charset: string,
     options: object
   ) {
-    log.debug(`[Chapter]请求 ${chapterUrl}`);
-    let nowUrl = chapterUrl;
-    let doc = await getHtmlDOM(chapterUrl, charset);
-    // chapterName = (<HTMLElement>(
-    //   doc.querySelector("#mlfy_main_text > h1:nth-child(1)")
-    // )).innerText.trim();
-    const content = document.createElement("div");
-
-    let flag = false;
-    do {
-      const _content = <HTMLElement>doc.querySelector("#TextContent");
-      rm(".tp", true, _content);
-      rm(".bd", true, _content);
-
-      for (const _c of Array.from(_content.childNodes)) {
-        content.appendChild(_c);
-      }
-
-      const nextLink = (<HTMLAnchorElement>(
-        doc.querySelector(".mlfy_page > a:nth-child(5)")
-      )).href;
-
-      if (new URL(nextLink).pathname.includes("_")) {
-        if (nextLink !== nowUrl) {
-          flag = true;
-          log.debug(`[Chapter]请求 ${nextLink}`);
-          nowUrl = nextLink;
-          doc = await getHtmlDOM(nextLink, charset);
-        } else {
-          log.error("网站页面出错，URL： " + nowUrl);
-          flag = false;
-        }
-      } else {
-        flag = false;
-      }
-    } while (flag);
-
-    let { dom, text, images } = await cleanDOM(content, "TM");
-    return {
-      chapterName: chapterName,
-      contentRaw: content,
-      contentText: text,
-      contentHTML: dom,
-      contentImages: images,
-      additionalMetadate: null,
-    };
+    return nextPageParse(
+      chapterName,
+      chapterUrl,
+      charset,
+      "#TextContent",
+      (_content) => {
+        rm(".tp", true, _content);
+        rm(".bd", true, _content);
+        return _content;
+      },
+      (doc) =>
+        (<HTMLAnchorElement>doc.querySelector(".mlfy_page > a:nth-child(5)"))
+          .href,
+      (_content, nextLink) => new URL(nextLink).pathname.includes("_")
+    );
   }
 }

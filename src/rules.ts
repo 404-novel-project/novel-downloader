@@ -67,8 +67,8 @@ export async function getRule(): Promise<ruleClass> {
       break;
     }
     case "www.dingdiann.net": {
-      const { dingdiann } = await import("./rules/biquge");
-      ruleClass = dingdiann();
+      const { dingdiann } = await import("./rules/dingdiann");
+      ruleClass = dingdiann;
       break;
     }
     case "www.biquge66.com":

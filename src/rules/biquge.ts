@@ -218,19 +218,6 @@ export const common = () =>
     (content) => content
   );
 
-export const dingdiann = () =>
-  mkBiqugeClass(
-    (introDom) => introDom,
-    (content) => {
-      const ad =
-        '<div align="center"><a href="javascript:postError();" style="text-align:center;color:red;">章节错误,点此举报(免注册)</a>,举报后维护人员会在两分钟内校正章节内容,请耐心等待,并刷新页面。</div>';
-      content.innerHTML = content.innerHTML
-        .replace(ad, "")
-        .replace(/http:\/\/www.shuquge.com\/txt\/\d+\/\d+\.html/, "");
-      return content;
-    }
-  );
-
 export const gebiqu = () =>
   mkBiqugeClass(
     (introDom) => {
