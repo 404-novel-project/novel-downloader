@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        小说下载器测试脚本
-// @version     3.7.5.1626607206969
+// @version     3.7.5.1627389773981
 // @author      bgme
 // @description 小说下载器测试脚本
 // @match       *://www.ciweimao.com/chapter-list/*
@@ -81,6 +81,7 @@
 // @match       *://www.trxs.cc/tongren/*.html
 // @match       *://www.trxs123.com/tongren/*.html
 // @match       *://www.tongrenquan.org/tongren/*.html
+// @match       *://www.tongrenquan.me/tongren/*.html
 // @match       *://www.jpxs123.com/*/*.html
 // @match       *://www.imiaobige.com/read/*/
 // @match       *://www.256wxc.com/read/*/index.html
@@ -351,13 +352,18 @@ if (document.location.origin === "https://greasyfork.org" &&
         ],
         "http://www.tongrenquan.org/tongren/5730.html",
         "https://www.imiaobige.com/read/173201/",
+        "https://www.256wxc.com/read/68624/index.html",
+        "http://www.biquge66.com/biquge263372/",
         [
             "https://caogousheng.lofter.com/",
             "https://caogousheng.lofter.com/?page=2&t=1599134400003",
             "https://shuju.lofter.com/",
             "https://wangnuannuan.lofter.com/",
             "https://geekhome.lofter.com/",
+            "https://absb6.lofter.com/",
         ],
+        "http://www.bq8xs.com/3399/",
+        "https://www.tongrenquan.me/tongren/5373.html",
     ];
     async function runTest() {
         setTabData("runTest", "true");

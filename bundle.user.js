@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        3.7.5.1626607200128
+// @version        3.7.5.1627389766393
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -82,6 +82,7 @@
 // @match          *://www.trxs.cc/tongren/*.html
 // @match          *://www.trxs123.com/tongren/*.html
 // @match          *://www.tongrenquan.org/tongren/*.html
+// @match          *://www.tongrenquan.me/tongren/*.html
 // @match          *://www.jpxs123.com/*/*.html
 // @match          *://www.imiaobige.com/read/*/
 // @match          *://www.256wxc.com/read/*/index.html
@@ -5345,7 +5346,8 @@ async function getRule() {
             ruleClass = trxs();
             break;
         }
-        case "www.tongrenquan.org": {
+        case "www.tongrenquan.org":
+        case "www.tongrenquan.me": {
             const { tongrenquan } = await Promise.resolve().then(() => __webpack_require__("./src/rules/simple/trxs.ts"));
             ruleClass = tongrenquan();
             break;
@@ -30535,7 +30537,7 @@ class lofter {
                     ?.innerText.replace(new RegExp(`-${options.author}$`), "")
                     .replace("\n", "")
                     .trim() ?? null;
-            const selectors = [".ct .ctc", ".main .content"];
+            const selectors = [".ct .ctc", ".main .content", ".m-post .text"];
             let content;
             for (const selector of selectors) {
                 const _content = doc.querySelector(selector);
