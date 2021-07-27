@@ -105,7 +105,8 @@
     "*://www.256wxc.com/read/*/",
     "*://www.biquge66.com/biquge*/",
     "*://*.lofter.com/",
-    "*://*.lofter.com/?page=*"
+    "*://*.lofter.com/?page=*",
+    "*://www.lwxs9.org/*/*/"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",

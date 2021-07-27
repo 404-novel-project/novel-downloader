@@ -252,6 +252,7 @@ if (
     ],
     "http://www.bq8xs.com/3399/",
     "https://www.tongrenquan.me/tongren/5373.html",
+    "https://www.lwxs9.org/5/5203/",
   ];
 
   async function runTest() {

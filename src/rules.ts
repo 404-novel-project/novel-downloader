@@ -315,6 +315,11 @@ export async function getRule(): Promise<ruleClass> {
       ruleClass = lofter;
       break;
     }
+    case "www.lwxs9.org": {
+      const { lwxs9 } = await import("./rules/biquge");
+      ruleClass = lwxs9();
+      break;
+    }
     default: {
       throw new Error("Not Found Rule!");
     }

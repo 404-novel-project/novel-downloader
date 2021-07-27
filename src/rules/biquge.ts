@@ -250,6 +250,15 @@ export const luoqiuzw = () =>
     }
   );
 
+export const lwxs9 = () =>
+  mkBiqugeClass(
+    (introDom) => introDom,
+    (content) => {
+      rm("div[align]", false, content);
+      return content;
+    }
+  );
+
 function mkBiqugeClass2(
   introDomPatch: (introDom: HTMLElement) => HTMLElement,
   contentPatch: (content: HTMLElement) => HTMLElement

@@ -84,6 +84,7 @@ ZIP压缩包，请在解压后，直接双击打开HTML文件（`ToC.html` 为�
 |[妙笔阁](https://www.imiaobige.com/)|✅|❎||
 |[256文学](https://www.256wxc.com/)|✅|❎||
 |[笔趣阁小说网](http://www.biquge66.com/)|✅|❎||
+|[乐文小说网](http://www.lwxs9.org/)|✅|❎||
 
 </details>
 
