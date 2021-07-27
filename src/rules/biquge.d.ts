@@ -19,14 +19,6 @@ export declare const common: () => {
         chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean, charset: string, options: object): Promise<chapterParseObject>;
     };
 };
-export declare const dingdiann: () => {
-    new (): {
-        imageMode: "naive" | "TM";
-        charset: string;
-        bookParse(): Promise<Book>;
-        chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean, charset: string, options: object): Promise<chapterParseObject>;
-    };
-};
 export declare const gebiqu: () => {
     new (): {
         imageMode: "naive" | "TM";
@@ -36,6 +28,14 @@ export declare const gebiqu: () => {
     };
 };
 export declare const luoqiuzw: () => {
+    new (): {
+        imageMode: "naive" | "TM";
+        charset: string;
+        bookParse(): Promise<Book>;
+        chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean, charset: string, options: object): Promise<chapterParseObject>;
+    };
+};
+export declare const lwxs9: () => {
     new (): {
         imageMode: "naive" | "TM";
         charset: string;

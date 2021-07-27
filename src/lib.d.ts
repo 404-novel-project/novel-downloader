@@ -32,6 +32,7 @@ interface gfetch_request_options {
 export declare function gfetch(url: string, { method, headers, data, cookie, binary, nocache, revalidate, timeout, context, responseType, overrideMimeType, anonymous, username, password, }?: gfetch_request_options): Promise<GM_xmlhttpResponse>;
 export declare function concurrencyRun(list: object[], limit: number, asyncHandle: Function): Promise<Function[]>;
 export declare function sleep(ms: number): Promise<unknown>;
+export declare function htmlTrim(dom: HTMLElement): void;
 export declare function getAttachmentClassCache(url: string): attachmentClass | undefined;
 export declare function putAttachmentClassCache(attachmentClass: attachmentClass): boolean;
 export declare function clearAttachmentClassCache(): void;

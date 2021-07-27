@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        3.7.5.1627389766393
+// @version        3.7.5.1627398011460
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -90,6 +90,7 @@
 // @match          *://www.biquge66.com/biquge*/
 // @match          *://*.lofter.com/
 // @match          *://*.lofter.com/?page=*
+// @match          *://www.lwxs9.org/*/*/
 // @name:en        novel-downloader
 // @description:en An scalable universal novel downloader.
 // @namespace      https://blog.bgme.me
@@ -4399,7 +4400,7 @@ exports.r18SiteWarning = r18SiteWarning;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.fflateZip = exports.storageAvailable = exports.sandboxed = exports.getImageAttachment = exports.clearAttachmentClassCache = exports.putAttachmentClassCache = exports.getAttachmentClassCache = exports.sleep = exports.concurrencyRun = exports.gfetch = exports.rm = exports.ggetHtmlDOM = exports.ggetText = exports.getHtmlDOM = exports.getText = exports.cleanDOM = exports._GM_deleteValue = exports._GM_getValue = exports._GM_setValue = exports._GM_info = void 0;
+exports.fflateZip = exports.storageAvailable = exports.sandboxed = exports.getImageAttachment = exports.clearAttachmentClassCache = exports.putAttachmentClassCache = exports.getAttachmentClassCache = exports.htmlTrim = exports.sleep = exports.concurrencyRun = exports.gfetch = exports.rm = exports.ggetHtmlDOM = exports.ggetText = exports.getHtmlDOM = exports.getText = exports.cleanDOM = exports._GM_deleteValue = exports._GM_getValue = exports._GM_setValue = exports._GM_info = void 0;
 const cleanDOM_1 = __webpack_require__("./src/cleanDOM.ts");
 const main_1 = __webpack_require__("./src/main.ts");
 const log_1 = __webpack_require__("./src/log.ts");
@@ -4651,6 +4652,28 @@ function sleep(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
 }
 exports.sleep = sleep;
+function htmlTrim(dom) {
+    const childNodesR = Array.from(dom.childNodes).reverse();
+    for (const node of childNodesR) {
+        const ntype = node.nodeName.toLowerCase();
+        const ntypes = ["#text", "br"];
+        if (!ntypes.includes(ntype)) {
+            return;
+        }
+        if (ntype === "#text") {
+            if (node.textContent?.trim() === "") {
+                node.remove();
+            }
+            else {
+                return;
+            }
+        }
+        if (ntype === "br") {
+            node.remove();
+        }
+    }
+}
+exports.htmlTrim = htmlTrim;
 let attachmentClassCache = [];
 function getAttachmentClassCache(url) {
     const found = attachmentClassCache.find((attachmentClass) => attachmentClass.url === url);
@@ -5119,8 +5142,8 @@ async function getRule() {
             break;
         }
         case "www.dingdiann.net": {
-            const { dingdiann } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge.ts"));
-            ruleClass = dingdiann();
+            const { dingdiann } = await Promise.resolve().then(() => __webpack_require__("./src/rules/dingdiann.ts"));
+            ruleClass = dingdiann;
             break;
         }
         case "www.biquge66.com":
@@ -5367,6 +5390,11 @@ async function getRule() {
             ruleClass = lofter;
             break;
         }
+        case "www.lwxs9.org": {
+            const { lwxs9 } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge.ts"));
+            ruleClass = lwxs9();
+            break;
+        }
         default: {
             throw new Error("Not Found Rule!");
         }
@@ -5607,7 +5635,7 @@ exports.c226ks = c226ks;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.xbiquge = exports.xyqxs = exports.shuquge = exports.luoqiuzw = exports.gebiqu = exports.dingdiann = exports.common = exports.bookParseTemp = void 0;
+exports.xbiquge = exports.xyqxs = exports.shuquge = exports.lwxs9 = exports.luoqiuzw = exports.gebiqu = exports.common = exports.bookParseTemp = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const lib_1 = __webpack_require__("./src/lib.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
@@ -5731,14 +5759,6 @@ function mkBiqugeClass(introDomPatch, contentPatch) {
 }
 const common = () => mkBiqugeClass((introDom) => introDom, (content) => content);
 exports.common = common;
-const dingdiann = () => mkBiqugeClass((introDom) => introDom, (content) => {
-    const ad = '<div align="center"><a href="javascript:postError();" style="text-align:center;color:red;">章节错误,点此举报(免注册)</a>,举报后维护人员会在两分钟内校正章节内容,请耐心等待,并刷新页面。</div>';
-    content.innerHTML = content.innerHTML
-        .replace(ad, "")
-        .replace(/http:\/\/www.shuquge.com\/txt\/\d+\/\d+\.html/, "");
-    return content;
-});
-exports.dingdiann = dingdiann;
 const gebiqu = () => mkBiqugeClass((introDom) => {
     introDom.innerHTML = introDom.innerHTML.replace(/如果您喜欢.+，别忘记分享给朋友/g, "");
     lib_1.rm('a[href^="http://down.gebiqu.com"]', false, introDom);
@@ -5758,6 +5778,11 @@ const luoqiuzw = () => mkBiqugeClass((introDom) => introDom, (content) => {
     return content;
 });
 exports.luoqiuzw = luoqiuzw;
+const lwxs9 = () => mkBiqugeClass((introDom) => introDom, (content) => {
+    lib_1.rm("div[align]", false, content);
+    return content;
+});
+exports.lwxs9 = lwxs9;
 function mkBiqugeClass2(introDomPatch, contentPatch) {
     return class {
         constructor() {
@@ -6241,6 +6266,58 @@ class dierbanzhu {
     }
 }
 exports.dierbanzhu = dierbanzhu;
+
+
+/***/ }),
+
+/***/ "./src/rules/dingdiann.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.dingdiann = void 0;
+const lib_1 = __webpack_require__("./src/lib.ts");
+const biquge_1 = __webpack_require__("./src/rules/biquge.ts");
+const common_1 = __webpack_require__("./src/rules/lib/common.ts");
+class dingdiann {
+    constructor() {
+        this.imageMode = "TM";
+    }
+    async bookParse() {
+        const self = this;
+        return biquge_1.bookParseTemp({
+            bookUrl: document.location.href,
+            bookname: (document.querySelector("#info > h1:nth-child(1)")).innerText.trim(),
+            author: (document.querySelector("#info > p:nth-child(2)")).innerText
+                .replace(/作(\s+)?者[：:]/, "")
+                .trim(),
+            introDom: document.querySelector("#intro"),
+            introDomPatch: (introDom) => introDom,
+            coverUrl: document.querySelector("#fmimg > img").src,
+            chapterListSelector: "#list>dl",
+            charset: "UTF-8",
+            chapterParse: self.chapterParse,
+        });
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+        return common_1.nextPageParse(chapterName, chapterUrl, charset, "#content", (_content) => {
+            lib_1.rm("div[align]", false, _content);
+            lib_1.rm("script", true, _content);
+            const removelist = [
+                "一秒记住，精彩小说无弹窗免费阅读！",
+                "&lt;/a　:&gt;",
+                "--&gt;&gt;",
+                "本章未完，点击下一页继续阅读",
+            ];
+            removelist.forEach((removeStr) => (_content.innerHTML = _content.innerHTML.replaceAll(removeStr, "")));
+            lib_1.htmlTrim(_content);
+            return _content;
+        }, (doc) => doc.querySelector(".bottem2 > a:nth-child(4)")
+            .href, (_content, nextLink) => _content.innerText.includes("本章未完，点击下一页继续阅读"));
+    }
+}
+exports.dingdiann = dingdiann;
 
 
 /***/ }),
@@ -7465,9 +7542,10 @@ exports.jjwxc = jjwxc;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.mkRuleClass1 = exports.introDomHandle = void 0;
+exports.mkRuleClass1 = exports.nextPageParse = exports.introDomHandle = void 0;
 const lib_1 = __webpack_require__("./src/lib.ts");
 const main_1 = __webpack_require__("./src/main.ts");
+const log_1 = __webpack_require__("./src/log.ts");
 async function introDomHandle(introDom, domPatch = undefined) {
     if (introDom === null) {
         return [null, null, null];
@@ -7481,6 +7559,48 @@ async function introDomHandle(introDom, domPatch = undefined) {
     }
 }
 exports.introDomHandle = introDomHandle;
+async function nextPageParse(chapterName, chapterUrl, charset, selector, contentPatch, getNextPage, continueCondition) {
+    log_1.log.debug(`[Chapter]请求 ${chapterUrl}`);
+    let nowUrl = chapterUrl;
+    let doc = await lib_1.getHtmlDOM(chapterUrl, charset);
+    const content = document.createElement("div");
+    let flag = false;
+    do {
+        let _content = doc.querySelector(selector);
+        const nextLink = getNextPage(doc);
+        if (continueCondition(_content, nextLink)) {
+            if (nextLink !== nowUrl) {
+                flag = true;
+            }
+            else {
+                log_1.log.error("网站页面出错，URL： " + nowUrl);
+                flag = false;
+            }
+        }
+        else {
+            flag = false;
+        }
+        _content = contentPatch(_content);
+        for (const _c of Array.from(_content.childNodes)) {
+            content.appendChild(_c.cloneNode(true));
+        }
+        if (flag) {
+            log_1.log.debug(`[Chapter]请求 ${nextLink}`);
+            nowUrl = nextLink;
+            doc = await lib_1.getHtmlDOM(nextLink, charset);
+        }
+    } while (flag);
+    let { dom, text, images } = await lib_1.cleanDOM(content, "TM");
+    return {
+        chapterName: chapterName,
+        contentRaw: content,
+        contentText: text,
+        contentHTML: dom,
+        contentImages: images,
+        additionalMetadate: null,
+    };
+}
+exports.nextPageParse = nextPageParse;
 function mkRuleClass1(optionis) {
     const { bookUrl, bookname, author, introDom, introDomPatch, coverUrl, cos, getContent, contentPatch, } = optionis;
     return class {
@@ -30342,7 +30462,6 @@ exports.linovelib = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const lib_1 = __webpack_require__("./src/lib.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
-const log_1 = __webpack_require__("./src/log.ts");
 class linovelib {
     constructor() {
         this.imageMode = "TM";
@@ -30399,44 +30518,12 @@ class linovelib {
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        log_1.log.debug(`[Chapter]请求 ${chapterUrl}`);
-        let nowUrl = chapterUrl;
-        let doc = await lib_1.getHtmlDOM(chapterUrl, charset);
-        const content = document.createElement("div");
-        let flag = false;
-        do {
-            const _content = doc.querySelector("#TextContent");
+        return common_1.nextPageParse(chapterName, chapterUrl, charset, "#TextContent", (_content) => {
             lib_1.rm(".tp", true, _content);
             lib_1.rm(".bd", true, _content);
-            for (const _c of Array.from(_content.childNodes)) {
-                content.appendChild(_c);
-            }
-            const nextLink = (doc.querySelector(".mlfy_page > a:nth-child(5)")).href;
-            if (new URL(nextLink).pathname.includes("_")) {
-                if (nextLink !== nowUrl) {
-                    flag = true;
-                    log_1.log.debug(`[Chapter]请求 ${nextLink}`);
-                    nowUrl = nextLink;
-                    doc = await lib_1.getHtmlDOM(nextLink, charset);
-                }
-                else {
-                    log_1.log.error("网站页面出错，URL： " + nowUrl);
-                    flag = false;
-                }
-            }
-            else {
-                flag = false;
-            }
-        } while (flag);
-        let { dom, text, images } = await lib_1.cleanDOM(content, "TM");
-        return {
-            chapterName: chapterName,
-            contentRaw: content,
-            contentText: text,
-            contentHTML: dom,
-            contentImages: images,
-            additionalMetadate: null,
-        };
+            return _content;
+        }, (doc) => doc.querySelector(".mlfy_page > a:nth-child(5)")
+            .href, (_content, nextLink) => new URL(nextLink).pathname.includes("_"));
     }
 }
 exports.linovelib = linovelib;
@@ -30712,7 +30799,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.mht = void 0;
 const lib_1 = __webpack_require__("./src/lib.ts");
 const biquge_1 = __webpack_require__("./src/rules/biquge.ts");
-const log_1 = __webpack_require__("./src/log.ts");
+const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 class mht {
     constructor() {
         this.imageMode = "TM";
@@ -30734,45 +30821,11 @@ class mht {
         });
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        log_1.log.debug(`[Chapter]请求 ${chapterUrl}`);
-        let nowUrl = chapterUrl;
-        let doc = await lib_1.getHtmlDOM(chapterUrl, charset);
-        const content = document.createElement("div");
-        let flag = false;
-        do {
-            const _content = doc.querySelector("#content");
+        return common_1.nextPageParse(chapterName, chapterUrl, charset, "#content", (_content) => {
             lib_1.rm("p[data-id]", true, _content);
-            for (const _c of Array.from(_content.childNodes)) {
-                content.appendChild(_c);
-            }
-            const nextLink = (doc.querySelector(".bottem2 > a:nth-child(4)")).href;
-            if (new URL(nextLink).pathname.includes("_")) {
-                if (nextLink !== nowUrl) {
-                    flag = true;
-                }
-                else {
-                    log_1.log.error("网站页面出错，URL： " + nowUrl);
-                    flag = false;
-                }
-            }
-            else {
-                flag = false;
-            }
-            if (flag) {
-                log_1.log.debug(`[Chapter]请求 ${nextLink}`);
-                nowUrl = nextLink;
-                doc = await lib_1.getHtmlDOM(nextLink, charset);
-            }
-        } while (flag);
-        let { dom, text, images } = await lib_1.cleanDOM(content, "TM");
-        return {
-            chapterName: chapterName,
-            contentRaw: content,
-            contentText: text,
-            contentHTML: dom,
-            contentImages: images,
-            additionalMetadate: null,
-        };
+            return _content;
+        }, (doc) => doc.querySelector(".bottem2 > a:nth-child(4)")
+            .href, (_content, nextLink) => new URL(nextLink).pathname.includes("_"));
     }
 }
 exports.mht = mht;
@@ -32553,7 +32606,6 @@ exports.xinwanben = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const lib_1 = __webpack_require__("./src/lib.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
-const log_1 = __webpack_require__("./src/log.ts");
 class xinwanben {
     constructor() {
         this.imageMode = "TM";
@@ -32588,44 +32640,14 @@ class xinwanben {
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        log_1.log.debug(`[Chapter]请求 ${chapterUrl}`);
-        let nowUrl = chapterUrl;
-        let doc = await lib_1.getHtmlDOM(chapterUrl, charset);
-        const content = document.createElement("div");
-        let flag = false;
-        do {
-            const _content = doc.querySelector(".readerCon");
-            for (const _c of Array.from(_content.childNodes)) {
-                content.appendChild(_c);
-            }
-            const nextLink = (doc.querySelector(".next")?.parentElement).href;
-            if (new URL(nextLink).pathname.includes("_")) {
-                if (nextLink !== nowUrl) {
-                    flag = true;
-                }
-                else {
-                    log_1.log.error("网站页面出错，URL： " + nowUrl);
-                    flag = false;
-                }
-            }
-            else {
-                flag = false;
-            }
-            if (flag) {
-                log_1.log.debug(`[Chapter]请求 ${nextLink}`);
-                nowUrl = nextLink;
-                doc = await lib_1.getHtmlDOM(nextLink, charset);
-            }
-        } while (flag);
-        let { dom, text, images } = await lib_1.cleanDOM(content, "TM");
-        return {
-            chapterName: chapterName,
-            contentRaw: content,
-            contentText: text,
-            contentHTML: dom,
-            contentImages: images,
-            additionalMetadate: null,
-        };
+        return common_1.nextPageParse(chapterName, chapterUrl, charset, ".readerCon", (_content) => {
+            const replaces = [
+                "一秒记住【完本神站】手机用户输入地址：m.wanbentxt.com",
+                "支持（完本神站）把本站分享那些需要的小伙伴！找不到书请留言！",
+            ];
+            replaces.forEach((replace) => (_content.innerHTML = _content.innerHTML.replaceAll(replace, "")));
+            return _content;
+        }, (doc) => doc.querySelector(".next")?.parentElement.href, (_content, nextLink) => new URL(nextLink).pathname.includes("_"));
     }
 }
 exports.xinwanben = xinwanben;
@@ -32932,7 +32954,6 @@ exports.yibige = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const lib_1 = __webpack_require__("./src/lib.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
-const log_1 = __webpack_require__("./src/log.ts");
 class yibige {
     constructor() {
         this.imageMode = "TM";
@@ -33005,47 +33026,14 @@ class yibige {
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        log_1.log.debug(`[Chapter]请求 ${chapterUrl}`);
-        let nowUrl = chapterUrl;
-        let doc = await lib_1.getHtmlDOM(chapterUrl, charset);
-        const content = document.createElement("div");
-        let flag = false;
-        do {
-            const _content = doc.querySelector("#fontsize");
+        return common_1.nextPageParse(chapterName, chapterUrl, charset, "#fontsize", (_content) => {
             lib_1.rm("div", true, _content);
             lib_1.rm("script", true, _content);
-            _content.innerHTML = _content.innerHTML.replaceAll("测试广告1", "");
-            for (const _c of Array.from(_content.childNodes)) {
-                content.appendChild(_c);
-            }
-            const nextLink = (doc.querySelector(".nr_fy > a:nth-child(4)")).href;
-            if (new URL(nextLink).pathname.includes("_")) {
-                if (nextLink !== nowUrl) {
-                    flag = true;
-                }
-                else {
-                    log_1.log.error("网站页面出错，URL： " + nowUrl);
-                    flag = false;
-                }
-            }
-            else {
-                flag = false;
-            }
-            if (flag) {
-                log_1.log.debug(`[Chapter]请求 ${nextLink}`);
-                nowUrl = nextLink;
-                doc = await lib_1.getHtmlDOM(nextLink, charset);
-            }
-        } while (flag);
-        let { dom, text, images } = await lib_1.cleanDOM(content, "TM");
-        return {
-            chapterName: chapterName,
-            contentRaw: content,
-            contentText: text,
-            contentHTML: dom,
-            contentImages: images,
-            additionalMetadate: null,
-        };
+            _content.innerHTML = _content.innerHTML
+                .replaceAll("测试广告1", "")
+                .replaceAll("测试广告2", "");
+            return _content;
+        }, (doc) => doc.querySelector(".nr_fy > a:nth-child(4)").href, (_content, nextLink) => new URL(nextLink).pathname.includes("_"));
     }
 }
 exports.yibige = yibige;
