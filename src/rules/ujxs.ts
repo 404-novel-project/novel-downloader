@@ -41,31 +41,45 @@ export class ujxs implements ruleClass {
       );
     }
 
-    const cos = document.querySelectorAll("#readerlist > ul > li > a");
+    const liList = document.querySelectorAll("#readerlist > ul > li");
     const chapters: Chapter[] = [];
     let chapterNumber = 0;
-    for (const aElem of Array.from(cos)) {
-      chapterNumber++;
-      const chapterName = (<HTMLAnchorElement>aElem).innerText;
-      const chapterUrl = (<HTMLAnchorElement>aElem).href;
-      const isVIP = false;
-      const isPaid = false;
-      const chapter = new Chapter(
-        bookUrl,
-        bookname,
-        chapterUrl,
-        chapterNumber,
-        chapterName,
-        isVIP,
-        isPaid,
-        null,
-        null,
-        null,
-        this.chapterParse,
-        this.charset,
-        { bookname: bookname }
-      );
-      chapters.push(chapter);
+    let sectionNumber = 0;
+    let sectionName = null;
+    let sectionChapterNumber = 0;
+    for (let i = 0; i < liList.length; i++) {
+      const li = liList[i];
+      if (li.getAttribute("class")) {
+        sectionNumber++;
+        sectionChapterNumber = 0;
+        sectionName =
+          li.querySelector("h3")?.innerText.replace(bookname, "").trim() ??
+          null;
+      } else {
+        const aElem = li.firstElementChild;
+        chapterNumber++;
+        sectionChapterNumber++;
+        const chapterName = (<HTMLAnchorElement>aElem).innerText;
+        const chapterUrl = (<HTMLAnchorElement>aElem).href;
+        const isVIP = false;
+        const isPaid = false;
+        const chapter = new Chapter(
+          bookUrl,
+          bookname,
+          chapterUrl,
+          chapterNumber,
+          chapterName,
+          isVIP,
+          isPaid,
+          sectionName,
+          sectionNumber,
+          sectionChapterNumber,
+          this.chapterParse,
+          this.charset,
+          { bookname: bookname }
+        );
+        chapters.push(chapter);
+      }
     }
 
     const book = new Book(
@@ -94,7 +108,7 @@ export class ujxs implements ruleClass {
       rm("script", true, content);
       const ads = [
         "【悠久小説網ωωω.ＵＪХＳ.ｎｅｔ】，免费小说无弹窗免费阅读！",
-        "【悠久小説網ωωω.ＵＪХＳ.ｎｅｔ】，免费小说无弹窗免费阅读！",
+        "佰度搜索 【悠久小說網 ＷＷＷ.ＵＪХＳ．ＮＥＴ】 全集TXT电子书免费下载！",
       ];
       ads.forEach(
         (ad) => (content.innerHTML = content.innerHTML.replaceAll(ad, ""))
