@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        小说下载器测试脚本
-// @version     3.7.6.1627670616948
+// @version     3.7.6.1627673966709
 // @author      bgme
 // @description 小说下载器测试脚本
 // @match       *://www.ciweimao.com/chapter-list/*
@@ -385,6 +385,11 @@ if (document.location.origin === "https://greasyfork.org" &&
             "https://www.shubl.com/book/book_detail/100308566",
             "https://www.shubl.com/book/book_detail/100254251",
             "https://www.shubl.com/book/book_detail/100374396",
+        ],
+        "https://www.ujxs.net/read/10494/",
+        [
+            "http://m.haitangtxt.net/book/101821/",
+            "http://m.haitangtxt.net/book/101832/",
         ],
     ];
     async function runTest() {

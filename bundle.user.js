@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        3.7.6.1627670611800
+// @version        3.7.6.1627673960840
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -4729,7 +4729,7 @@ async function getImageAttachment(url, imgMode = "TM", prefix = "", noMD5 = fals
                 const _ext = new URL(url).pathname
                     .split(".")
                     .slice(-1)[0]
-                    .match(/(^(\d|\w)+)/);
+                    .match(/(^[\d|\w]+)/);
                 if (_ext) {
                     ext = _ext[0];
                 }
@@ -6358,7 +6358,7 @@ class dingdiann {
         });
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        return common_1.nextPageParse(chapterName, chapterUrl, charset, "#content", (_content) => {
+        return common_1.nextPageParse(chapterName, chapterUrl, charset, "#content", (_content, doc) => {
             lib_1.rm("div[align]", false, _content);
             lib_1.rm("script", true, _content);
             const removelist = [
@@ -7829,7 +7829,7 @@ async function nextPageParse(chapterName, chapterUrl, charset, selector, content
         else {
             flag = false;
         }
-        _content = contentPatch(_content);
+        _content = contentPatch(_content, doc);
         for (const _c of Array.from(_content.childNodes)) {
             content.appendChild(_c.cloneNode(true));
         }
@@ -30789,7 +30789,15 @@ class linovelib {
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        return common_1.nextPageParse(chapterName, chapterUrl, charset, "#TextContent", (_content) => {
+        return common_1.nextPageParse(chapterName, chapterUrl, charset, "#TextContent", (_content, doc) => {
+            const s = Array.from(doc.querySelectorAll("script")).find((s) => s.innerHTML.includes('document.getElementById("chapter_last")'));
+            if (s) {
+                const _dom_nr = s.innerText.trim().match(/let dom_nr = '(.+)';/);
+                if (_dom_nr) {
+                    const dom_nr = _dom_nr[1];
+                    (doc.getElementById("chapter_last")).innerHTML = dom_nr;
+                }
+            }
             lib_1.rm(".tp", true, _content);
             lib_1.rm(".bd", true, _content);
             return _content;
@@ -31092,7 +31100,7 @@ class mht {
         });
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        return common_1.nextPageParse(chapterName, chapterUrl, charset, "#content", (_content) => {
+        return common_1.nextPageParse(chapterName, chapterUrl, charset, "#content", (_content, doc) => {
             lib_1.rm("p[data-id]", true, _content);
             return _content;
         }, (doc) => doc.querySelector(".bottem2 > a:nth-child(4)")
@@ -33263,7 +33271,7 @@ class xinwanben {
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        return common_1.nextPageParse(chapterName, chapterUrl, charset, ".readerCon", (_content) => {
+        return common_1.nextPageParse(chapterName, chapterUrl, charset, ".readerCon", (_content, doc) => {
             const replaces = [
                 "一秒记住【完本神站】手机用户输入地址：m.wanbentxt.com",
                 "支持（完本神站）把本站分享那些需要的小伙伴！找不到书请留言！",
@@ -33649,7 +33657,7 @@ class yibige {
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        return common_1.nextPageParse(chapterName, chapterUrl, charset, "#fontsize", (_content) => {
+        return common_1.nextPageParse(chapterName, chapterUrl, charset, "#fontsize", (_content, doc) => {
             lib_1.rm("div", true, _content);
             lib_1.rm("script", true, _content);
             _content.innerHTML = _content.innerHTML
