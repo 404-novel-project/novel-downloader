@@ -87,6 +87,7 @@ ZIP压缩包，请在解压后，直接双击打开HTML文件（`ToC.html` 为�
 |[笔趣阁小说网](http://www.biquge66.com/)|✅|❎||
 |[乐文小说网](http://www.lwxs9.org/)|✅|❎||
 |[悠久小说网](https://www.ujxs.net/)|✅|❎||
+|[海棠小说网](http://m.haitangtxt.net/)|✅|❎|部分文字被图片替换，请使用HTML版查看。<br>如需替换清理图片，请自行生成图片文字对照表。|
 
 </details>
 
@@ -331,16 +332,17 @@ window.customFinishCallback = customFinishCallback;
 
 ## Todo
 
-|网站|实现难度|
-|---|----|
-|[百合小说网](https://m.baihexs.com/)|3|
-|[微信读书](https://weread.qq.com/)|9|
-|[网易云阅读](https://yuedu.163.com/)|5|
-|[豆瓣阅读](https://read.douban.com/)|5|
-|[息壤中文网](https://www.xrzww.com/)|4|
-|[海棠文化线上文学城](https://longmabookcn.com/)|?|
-|[PO18 臉紅心跳](https://www.po18.tw/)|?|
-|[全书斋](https://www.quanshuzhai.com/)|2|
+|网站|实现难度|备注|
+|---|--------|----|
+|[百合小说网](https://m.baihexs.com/)|3||
+|[微信读书](https://weread.qq.com/)|9||
+|[网易云阅读](https://yuedu.163.com/)|5||
+|[豆瓣阅读](https://read.douban.com/)|5||
+|[息壤中文网](https://www.xrzww.com/)|4||
+|[海棠文化线上文学城](https://longmabookcn.com/)|?|[域名二](https://www.urhtbooks.com/)|
+|[PO18 臉紅心跳](https://www.po18.tw/)|?||
+|[全书斋](https://www.quanshuzhai.com/)|2||
+|[米国度](https://www.myrics.com/)|3||
 
 ## License
 

@@ -1,4 +1,4 @@
-import { Builder, walk } from "./cleanDOM";
+import { Builder, BuilderOption, walk } from "./cleanDOM";
 import { attachmentClass, ExpectError } from "./main";
 import { log } from "./log";
 import { Zip, ZipPassThrough, ZipDeflate, AsyncZipDeflate } from "fflate";
@@ -78,12 +78,17 @@ if (typeof GM_deleteValue === "undefined") {
   _GM_deleteValue = GM_deleteValue;
 }
 
-export async function cleanDOM(DOM: Element, imgMode: "naive" | "TM") {
+export async function cleanDOM(
+  DOM: Element,
+  imgMode: "naive" | "TM",
+  option: BuilderOption | null = null
+) {
   const builder: Builder = {
     dom: document.createElement("div"),
     text: "",
     images: [],
     imgMode: imgMode,
+    option: option,
   };
   await walk(DOM as HTMLElement, builder);
   return {
@@ -358,7 +363,8 @@ export function clearAttachmentClassCache() {
 export async function getImageAttachment(
   url: string,
   imgMode: "naive" | "TM" = "TM",
-  prefix: string = ""
+  prefix: string = "",
+  noMD5: boolean = false
 ) {
   const tmpImageName = Math.random().toString().replace("0.", "");
 
@@ -375,9 +381,33 @@ export async function getImageAttachment(
       const contentTypeBlackList = ["octet-stream"];
       let ext = contentType;
       if (contentTypeBlackList.includes(contentType)) {
-        ext = new URL(url).pathname.split(".").slice(-1)[0];
+        const _ext = new URL(url).pathname
+          .split(".")
+          .slice(-1)[0]
+          .match(/(^(\d|\w)+)/);
+        if (_ext) {
+          ext = _ext[0];
+        } else {
+          ext = new URL(url).pathname.split(".").slice(-1)[0];
+        }
       }
-      const imageName = [prefix, hash, ".", ext].join("");
+
+      let imageName: string;
+      if (noMD5) {
+        let _imageName = new URL(url).pathname.split("/").slice(-1)[0];
+        if (
+          attachmentClassCache.find(
+            (attachmentClass) =>
+              attachmentClass.name === _imageName && attachmentClass.url !== url
+          )
+        ) {
+          _imageName = new URL(url).pathname.split("/").slice(-2).join("_");
+        }
+        imageName = [prefix, _imageName].join("");
+      } else {
+        imageName = [prefix, hash, ".", ext].join("");
+      }
+
       imgClass.name = imageName;
       putAttachmentClassCache(imgClass);
     } else {

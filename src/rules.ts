@@ -157,7 +157,8 @@ export async function getRule(): Promise<ruleClass> {
       ruleClass = gongzicp;
       break;
     }
-    case "m.yuzhaige.cc": {
+    case "m.yuzhaige.cc":
+    case "m.yushuge123.com": {
       const { yuzhaige } = await import("./rules/yuzhaige");
       ruleClass = yuzhaige;
       break;
@@ -261,7 +262,8 @@ export async function getRule(): Promise<ruleClass> {
     case "www.soxscc.net":
     case "www.soxscc.org":
     case "www.soxs.cc":
-    case "www.soshuw.com": {
+    case "www.soshuw.com":
+    case "www.soshuwu.org": {
       const { soxscc } = await import("./rules/soxscc");
       ruleClass = soxscc;
       break;
@@ -328,6 +330,11 @@ export async function getRule(): Promise<ruleClass> {
     case "www.ujxs.net": {
       const { ujxs } = await import("./rules/ujxs");
       ruleClass = ujxs;
+      break;
+    }
+    case "m.haitangtxt.net": {
+      const { haitangtxt } = await import("./rules/haitangtxt");
+      ruleClass = haitangtxt;
       break;
     }
     default: {
