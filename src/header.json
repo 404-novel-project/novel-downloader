@@ -106,7 +106,8 @@
     "*://www.biquge66.com/biquge*/",
     "*://*.lofter.com/",
     "*://*.lofter.com/?page=*",
-    "*://www.lwxs9.org/*/*/"
+    "*://www.lwxs9.org/*/*/",
+    "*://www.shubl.com/book/book_detail/*"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",
@@ -181,6 +182,7 @@
     "lofter.com",
     "lf127.net",
     "126.net",
+    "shubl.com",
     "*"
   ],
   "require": [

@@ -253,6 +253,11 @@ if (
     "http://www.bq8xs.com/3399/",
     "https://www.tongrenquan.me/tongren/5373.html",
     "https://www.lwxs9.org/5/5203/",
+    [
+      "https://www.shubl.com/book/book_detail/100308566",
+      "https://www.shubl.com/book/book_detail/100254251",
+      "https://www.shubl.com/book/book_detail/100374396",
+    ],
   ];
 
   async function runTest() {

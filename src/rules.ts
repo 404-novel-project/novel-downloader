@@ -320,6 +320,11 @@ export async function getRule(): Promise<ruleClass> {
       ruleClass = lwxs9();
       break;
     }
+    case "www.shubl.com": {
+      const { shubl } = await import("./rules/shubl");
+      ruleClass = shubl;
+      break;
+    }
     default: {
       throw new Error("Not Found Rule!");
     }
