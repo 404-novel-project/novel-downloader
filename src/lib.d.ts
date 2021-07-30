@@ -1,9 +1,10 @@
+import { BuilderOption } from "./cleanDOM";
 import { attachmentClass } from "./main";
 export declare let _GM_info: GM_info | GM["info"];
 export declare let _GM_setValue: GM_setValue | GM["setValue"] | null;
 export declare let _GM_getValue: GM_getValue | GM["getValue"] | null;
 export declare let _GM_deleteValue: GM_deleteValue | GM["deleteValue"] | null;
-export declare function cleanDOM(DOM: Element, imgMode: "naive" | "TM"): Promise<{
+export declare function cleanDOM(DOM: Element, imgMode: "naive" | "TM", option?: BuilderOption | null): Promise<{
     dom: HTMLElement;
     text: string;
     images: attachmentClass[];
@@ -36,7 +37,7 @@ export declare function htmlTrim(dom: HTMLElement): void;
 export declare function getAttachmentClassCache(url: string): attachmentClass | undefined;
 export declare function putAttachmentClassCache(attachmentClass: attachmentClass): boolean;
 export declare function clearAttachmentClassCache(): void;
-export declare function getImageAttachment(url: string, imgMode?: "naive" | "TM", prefix?: string): Promise<attachmentClass>;
+export declare function getImageAttachment(url: string, imgMode?: "naive" | "TM", prefix?: string, noMD5?: boolean): Promise<attachmentClass>;
 export declare function sandboxed(code: string): any;
 export declare function storageAvailable(type: string): any;
 export declare class fflateZip {

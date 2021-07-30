@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        3.7.5.1627663417416
+// @version        3.7.6.1627670611800
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -55,6 +55,7 @@
 // @match          *://www.1pwx.com/*/
 // @match          *://www.81book.com/book/*/
 // @match          *://m.yuzhaige.cc/*/*/
+// @match          *://m.yushuge123.com/*/*/
 // @match          *://www.wanben.org/*/
 // @match          *://www.xinwanben.com/*/
 // @match          *://www.idejian.com/book/*/
@@ -74,6 +75,7 @@
 // @match          *://www.soxscc.org/*/
 // @match          *://www.soxs.cc/*/
 // @match          *://www.soshuw.com/*/
+// @match          *://www.soshuwu.org/*/
 // @match          *://www.shubaowa.org/*_*/
 // @match          *://www.fuguoduxs.com/*_*/
 // @match          *://www.xyqxs.cc/html/*/*/index.html
@@ -92,6 +94,8 @@
 // @match          *://*.lofter.com/?page=*
 // @match          *://www.lwxs9.org/*/*/
 // @match          *://www.shubl.com/book/book_detail/*
+// @match          *://www.ujxs.net/read/*/
+// @match          *://m.haitangtxt.net/*/*/
 // @name:en        novel-downloader
 // @description:en An scalable universal novel downloader.
 // @namespace      https://blog.bgme.me
@@ -114,12 +118,22 @@
 // @exclude        *://m.yuzhaige.cc/top/*/
 // @exclude        *://m.yuzhaige.cc/full/*/
 // @exclude        *://m.yuzhaige.cc/book/*/
+// @exclude        *://m.yushuge123.com/tag/*/
+// @exclude        *://m.yushuge123.com/sort/*/
+// @exclude        *://m.yushuge123.com/top/*/
+// @exclude        *://m.yushuge123.com/full/*/
+// @exclude        *://m.yushuge123.com/book/*/
 // @exclude        *://www.linovel.net/book/*/*.html
 // @exclude        *://www.qimao.com/shuku/*-*/
 // @exclude        *://www.trxs.cc/tongren/*/*.html
 // @exclude        *://www.trxs123.com/tongren/*/*.html
 // @exclude        *://www.tongrenquan.org/tongren/*/*.html
 // @exclude        *://www.jpxs123.com/*/*/*.html
+// @exclude        *://m.haitangtxt.net/tag/*/
+// @exclude        *://m.haitangtxt.net/sort/*/
+// @exclude        *://m.haitangtxt.net/top/*/
+// @exclude        *://m.haitangtxt.net/full/*/
+// @exclude        *://m.haitangtxt.net/book/*/
 // @grant          unsafeWindow
 // @grant          GM_info
 // @grant          GM_xmlhttpRequest
@@ -3214,7 +3228,11 @@ async function _formatImage(elem, builder) {
     const imgMode = builder.imgMode;
     const imageUrl = elem.src;
     try {
-        const imgClass = await lib_1.getImageAttachment(imageUrl, imgMode);
+        let noMD5 = false;
+        if (builder.option?.keepImageName) {
+            noMD5 = true;
+        }
+        const imgClass = await lib_1.getImageAttachment(imageUrl, imgMode, "", noMD5);
         const imageName = imgClass.name;
         const filterdImages = builder.images.find((imgClass) => imgClass.url === elem.src);
         if (!filterdImages) {
@@ -4491,12 +4509,13 @@ if (typeof GM_deleteValue === "undefined") {
 else {
     exports._GM_deleteValue = GM_deleteValue;
 }
-async function cleanDOM(DOM, imgMode) {
+async function cleanDOM(DOM, imgMode, option = null) {
     const builder = {
         dom: document.createElement("div"),
         text: "",
         images: [],
         imgMode: imgMode,
+        option: option,
     };
     await cleanDOM_1.walk(DOM, builder);
     return {
@@ -4691,7 +4710,7 @@ function clearAttachmentClassCache() {
     attachmentClassCache = [];
 }
 exports.clearAttachmentClassCache = clearAttachmentClassCache;
-async function getImageAttachment(url, imgMode = "TM", prefix = "") {
+async function getImageAttachment(url, imgMode = "TM", prefix = "", noMD5 = false) {
     const tmpImageName = Math.random().toString().replace("0.", "");
     let imgClass;
     const imgClassCache = getAttachmentClassCache(url);
@@ -4707,9 +4726,28 @@ async function getImageAttachment(url, imgMode = "TM", prefix = "") {
             const contentTypeBlackList = ["octet-stream"];
             let ext = contentType;
             if (contentTypeBlackList.includes(contentType)) {
-                ext = new URL(url).pathname.split(".").slice(-1)[0];
+                const _ext = new URL(url).pathname
+                    .split(".")
+                    .slice(-1)[0]
+                    .match(/(^(\d|\w)+)/);
+                if (_ext) {
+                    ext = _ext[0];
+                }
+                else {
+                    ext = new URL(url).pathname.split(".").slice(-1)[0];
+                }
             }
-            const imageName = [prefix, hash, ".", ext].join("");
+            let imageName;
+            if (noMD5) {
+                let _imageName = new URL(url).pathname.split("/").slice(-1)[0];
+                if (attachmentClassCache.find((attachmentClass) => attachmentClass.name === _imageName && attachmentClass.url !== url)) {
+                    _imageName = new URL(url).pathname.split("/").slice(-2).join("_");
+                }
+                imageName = [prefix, _imageName].join("");
+            }
+            else {
+                imageName = [prefix, hash, ".", ext].join("");
+            }
             imgClass.name = imageName;
             putAttachmentClassCache(imgClass);
         }
@@ -5234,7 +5272,8 @@ async function getRule() {
             ruleClass = gongzicp;
             break;
         }
-        case "m.yuzhaige.cc": {
+        case "m.yuzhaige.cc":
+        case "m.yushuge123.com": {
             const { yuzhaige } = await Promise.resolve().then(() => __webpack_require__("./src/rules/yuzhaige.ts"));
             ruleClass = yuzhaige;
             break;
@@ -5338,7 +5377,8 @@ async function getRule() {
         case "www.soxscc.net":
         case "www.soxscc.org":
         case "www.soxs.cc":
-        case "www.soshuw.com": {
+        case "www.soshuw.com":
+        case "www.soshuwu.org": {
             const { soxscc } = await Promise.resolve().then(() => __webpack_require__("./src/rules/soxscc.ts"));
             ruleClass = soxscc;
             break;
@@ -5400,6 +5440,16 @@ async function getRule() {
         case "www.shubl.com": {
             const { shubl } = await Promise.resolve().then(() => __webpack_require__("./src/rules/shubl.ts"));
             ruleClass = shubl;
+            break;
+        }
+        case "www.ujxs.net": {
+            const { ujxs } = await Promise.resolve().then(() => __webpack_require__("./src/rules/ujxs.ts"));
+            ruleClass = ujxs;
+            break;
+        }
+        case "m.haitangtxt.net": {
+            const { haitangtxt } = await Promise.resolve().then(() => __webpack_require__("./src/rules/haitangtxt.ts"));
+            ruleClass = haitangtxt;
             break;
         }
         default: {
@@ -6848,6 +6898,198 @@ exports.gongzicp = gongzicp;
 
 /***/ }),
 
+/***/ "./src/rules/haitangtxt.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.haitangtxt = void 0;
+const main_1 = __webpack_require__("./src/main.ts");
+const lib_1 = __webpack_require__("./src/lib.ts");
+const common_1 = __webpack_require__("./src/rules/lib/common.ts");
+const haitangtxtImageDecode_1 = __webpack_require__("./src/rules/lib/haitangtxtImageDecode.ts");
+const log_1 = __webpack_require__("./src/log.ts");
+class haitangtxt {
+    constructor() {
+        this.imageMode = "TM";
+    }
+    async bookParse() {
+        const bookUrl = (document.querySelector("div.currency_head > h1 > a")).href;
+        const bookId = bookUrl.split("/").slice(-2, -1)[0];
+        log_1.log.debug(`[chapter]请求 ${bookUrl}`);
+        const dom = await lib_1.getHtmlDOM(bookUrl, "UTF-8");
+        const bookname = (dom.querySelector("div.cataloginfo > h3")).innerText.trim();
+        const author = (dom.querySelector(".infotype > p:nth-child(1) > a:nth-child(1)")).innerText.trim();
+        const introDom = dom.querySelector(".intro");
+        const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom, (introDom) => {
+            lib_1.rm("span:nth-child(1)", false, introDom);
+            return introDom;
+        });
+        const additionalMetadate = {};
+        const chapters = [];
+        const getMaxPageNumber = () => {
+            const pageDom = document.querySelector("div.page:nth-child(6)");
+            if (pageDom) {
+                const childNodes = Array.from(pageDom.childNodes);
+                const _maxPageNumber = childNodes
+                    .slice(-1)[0]
+                    .textContent?.match(/第\d+\/(\d+)页/);
+                if (_maxPageNumber) {
+                    return _maxPageNumber[1];
+                }
+            }
+        };
+        const getIndexUrls = () => {
+            const indexUrls = [];
+            const maxPageNumber = Number(getMaxPageNumber());
+            for (let i = 1; i <= maxPageNumber; i++) {
+                const indexUrl = [
+                    document.location.origin,
+                    document.location.pathname.split("/")[1],
+                    `${bookId}_${i}`,
+                ].join("/") + "/";
+                indexUrls.push(indexUrl);
+            }
+            return indexUrls;
+        };
+        const indexUrls = getIndexUrls();
+        let lis = [];
+        for (const indexUrl of indexUrls) {
+            log_1.log.debug(`[chapter]请求 ${indexUrl}`);
+            const dom = await lib_1.getHtmlDOM(indexUrl, "UTF-8");
+            const ul = dom.querySelector("ul.chapters");
+            if (ul?.childElementCount) {
+                lis = lis.concat(Array.from(ul.children));
+            }
+        }
+        const chapterList = lis.filter((obj) => obj !== undefined);
+        let chapterNumber = 0;
+        for (let i = 0; i < chapterList.length; i++) {
+            const node = chapterList[i];
+            chapterNumber++;
+            const a = node.firstElementChild;
+            const chapterName = a.innerText;
+            const chapterUrl = a.href;
+            const isVIP = false;
+            const isPaid = false;
+            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, null, null, null, this.chapterParse, "UTF-8", {});
+            chapters.push(chapter);
+        }
+        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        return book;
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+        function contentAppend() {
+            function UpWz(m, i) {
+                let k = Math.ceil((i + 1) % code);
+                k = Math.ceil(m - k);
+                return k;
+            }
+            const _e = dom.getElementsByTagName("meta")[7].getAttribute("content");
+            const contentRaw = dom.querySelector("#articlecontent");
+            let codeurl;
+            let code;
+            const _codeurl = dom
+                .getElementsByTagName("script")[1]
+                .innerText.trim()
+                .match(/"(http.+)"/);
+            if (_codeurl) {
+                codeurl = _codeurl[1];
+                code = Number(new URL(codeurl).searchParams.get("code"));
+            }
+            if (_e) {
+                const e = atob(_e)
+                    .split(/[A-Z]+%/)
+                    .map((v) => Number(v));
+                let childNode = [];
+                if (Array.from(dom.querySelectorAll("script")).filter((s) => s.src.includes("/17mb/js/article.js")).length) {
+                    for (let i = 0; i < e.length; i++) {
+                        let k = UpWz(e[i], i);
+                        childNode[k] = contentRaw.childNodes[i];
+                    }
+                    for (const node of childNode) {
+                        if (node.nodeType != 1) {
+                            continue;
+                        }
+                        if (!(node.innerText.includes("本章尚未完结,请") ||
+                            node.innerText.includes("本章已阅读完毕"))) {
+                            content.appendChild(node);
+                        }
+                    }
+                    return;
+                }
+            }
+            for (const node of Array.from(contentRaw.childNodes)) {
+                if (!(node.innerText.includes("本章尚未完结,请") ||
+                    node.innerText.includes("本章已阅读完毕"))) {
+                    content.appendChild(node);
+                }
+            }
+            return;
+        }
+        let nowUrl = chapterUrl;
+        let dom = await lib_1.getHtmlDOM(chapterUrl, charset);
+        const content = document.createElement("div");
+        let flag = false;
+        do {
+            contentAppend();
+            const nextLink = (dom.querySelector(".novelbutton .p1.p3 > a:nth-child(1)")).href;
+            if (new URL(nextLink).pathname.includes("_")) {
+                if (nextLink !== nowUrl) {
+                    flag = true;
+                }
+                else {
+                    log_1.log.error("网站页面出错，URL： " + nowUrl);
+                    flag = false;
+                }
+            }
+            else {
+                flag = false;
+            }
+            if (flag) {
+                nowUrl = nextLink;
+                dom = await lib_1.getHtmlDOM(nextLink, charset);
+            }
+        } while (flag);
+        if (content) {
+            let { dom: oldDom, text: _text, images: finalImages, } = await lib_1.cleanDOM(content, "TM", { keepImageName: true });
+            const _newDom = document.createElement("div");
+            _newDom.innerHTML = haitangtxtImageDecode_1.replaceHaitangtxtImage(content.innerHTML);
+            let { dom: newDom, text: finalText, images } = await lib_1.cleanDOM(_newDom, "TM", { keepImageName: true });
+            const fontStyleDom = document.createElement("style");
+            fontStyleDom.innerHTML = `.hide { display: none; }`;
+            oldDom.className = "hide";
+            const finalDom = document.createElement("div");
+            finalDom.appendChild(fontStyleDom);
+            finalDom.appendChild(oldDom);
+            finalDom.appendChild(newDom);
+            return {
+                chapterName: chapterName,
+                contentRaw: content,
+                contentText: finalText,
+                contentHTML: finalDom,
+                contentImages: finalImages,
+                additionalMetadate: null,
+            };
+        }
+        else {
+            return {
+                chapterName: chapterName,
+                contentRaw: null,
+                contentText: null,
+                contentHTML: null,
+                contentImages: null,
+                additionalMetadate: null,
+            };
+        }
+    }
+}
+exports.haitangtxt = haitangtxt;
+
+
+/***/ }),
+
 /***/ "./src/rules/hetushu.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
@@ -7666,6 +7908,28 @@ function mkRuleClass1(optionis) {
     };
 }
 exports.mkRuleClass1 = mkRuleClass1;
+
+
+/***/ }),
+
+/***/ "./src/rules/lib/haitangtxtImageDecode.ts":
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.replaceHaitangtxtImage = void 0;
+function replaceHaitangtxtImage(inputText) {
+    let outputText = inputText;
+    for (const imageFilename in imageTable) {
+        const normalCharacter = imageTable[imageFilename];
+        const imageHTML = `<img src="${document.location.origin}/wzbodyimg/${imageFilename}">`;
+        outputText = outputText.replaceAll(imageHTML, normalCharacter);
+    }
+    return outputText;
+}
+exports.replaceHaitangtxtImage = replaceHaitangtxtImage;
+const imageTable = {};
 
 
 /***/ }),
@@ -29583,7 +29847,7 @@ function replaceYuzhaigeImage(inputText) {
     let outputText = inputText;
     for (const imageFilename in imageTable) {
         const normalCharacter = imageTable[imageFilename];
-        const imageHTML = `<img src="http://m.yuzhaige.cc/wzbodyimg/${imageFilename}">`;
+        const imageHTML = `<img src="${document.location.origin}/wzbodyimg/${imageFilename}">`;
         outputText = outputText.replaceAll(imageHTML, normalCharacter);
     }
     return outputText;
@@ -32482,6 +32746,88 @@ exports.tadu = tadu;
 
 /***/ }),
 
+/***/ "./src/rules/ujxs.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ujxs = void 0;
+const main_1 = __webpack_require__("./src/main.ts");
+const lib_1 = __webpack_require__("./src/lib.ts");
+const common_1 = __webpack_require__("./src/rules/lib/common.ts");
+class ujxs {
+    constructor() {
+        this.imageMode = "TM";
+        this.charset = "GBK";
+    }
+    async bookParse() {
+        const bookUrl = document.location.origin +
+            document.location.pathname.replace(/^\/read/, "/book");
+        const bookname = (document.querySelector("#smallcons > h1")).innerText.trim();
+        const author = (document.querySelector("#smallcons > span:nth-child(3) > a")).innerText.trim();
+        const doc = await lib_1.getHtmlDOM(bookUrl, this.charset);
+        const introDom = doc.querySelector("#bookintro");
+        const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom);
+        const additionalMetadate = {};
+        const coverUrl = doc.querySelector(".img > img")?.src;
+        if (coverUrl) {
+            lib_1.getImageAttachment(coverUrl, this.imageMode, "cover-").then((coverClass) => {
+                additionalMetadate.cover = coverClass;
+            });
+        }
+        const cos = document.querySelectorAll("#readerlist > ul > li > a");
+        const chapters = [];
+        let chapterNumber = 0;
+        for (const aElem of Array.from(cos)) {
+            chapterNumber++;
+            const chapterName = aElem.innerText;
+            const chapterUrl = aElem.href;
+            const isVIP = false;
+            const isPaid = false;
+            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, null, null, null, this.chapterParse, this.charset, { bookname: bookname });
+            chapters.push(chapter);
+        }
+        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        return book;
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+        const doc = await lib_1.getHtmlDOM(chapterUrl, charset);
+        const content = doc.querySelector(".read-content");
+        if (content) {
+            lib_1.rm("script", true, content);
+            const ads = [
+                "【悠久小説網ωωω.ＵＪХＳ.ｎｅｔ】，免费小说无弹窗免费阅读！",
+                "【悠久小説網ωωω.ＵＪХＳ.ｎｅｔ】，免费小说无弹窗免费阅读！",
+            ];
+            ads.forEach((ad) => (content.innerHTML = content.innerHTML.replaceAll(ad, "")));
+            let { dom, text, images } = await lib_1.cleanDOM(content, "TM");
+            return {
+                chapterName: chapterName,
+                contentRaw: content,
+                contentText: text,
+                contentHTML: dom,
+                contentImages: images,
+                additionalMetadate: null,
+            };
+        }
+        else {
+            return {
+                chapterName: chapterName,
+                contentRaw: null,
+                contentText: null,
+                contentHTML: null,
+                contentImages: null,
+                additionalMetadate: null,
+            };
+        }
+    }
+}
+exports.ujxs = ujxs;
+
+
+/***/ }),
+
 /***/ "./src/rules/uukanshu.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
@@ -33551,10 +33897,10 @@ class yuzhaige {
             }
         } while (flag);
         if (content) {
-            let { dom: oldDom, text: _text, images: finalImages } = await lib_1.cleanDOM(content, "TM");
+            let { dom: oldDom, text: _text, images: finalImages, } = await lib_1.cleanDOM(content, "TM", { keepImageName: true });
             const _newDom = document.createElement("div");
             _newDom.innerHTML = yuzhaigeImageDecode_1.replaceYuzhaigeImage(content.innerHTML);
-            let { dom: newDom, text: finalText, images } = await lib_1.cleanDOM(_newDom, "TM");
+            let { dom: newDom, text: finalText, images } = await lib_1.cleanDOM(_newDom, "TM", { keepImageName: true });
             const fontStyleDom = document.createElement("style");
             fontStyleDom.innerHTML = `.hide { display: none; }`;
             oldDom.className = "hide";
