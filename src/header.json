@@ -107,7 +107,8 @@
     "*://*.lofter.com/",
     "*://*.lofter.com/?page=*",
     "*://www.lwxs9.org/*/*/",
-    "*://www.shubl.com/book/book_detail/*"
+    "*://www.shubl.com/book/book_detail/*",
+    "*://www.ujxs.net/read/*/"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",

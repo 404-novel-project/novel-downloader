@@ -325,6 +325,11 @@ export async function getRule(): Promise<ruleClass> {
       ruleClass = shubl;
       break;
     }
+    case "www.ujxs.net": {
+      const { ujxs } = await import("./rules/ujxs");
+      ruleClass = ujxs;
+      break;
+    }
     default: {
       throw new Error("Not Found Rule!");
     }
