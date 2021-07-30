@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        3.7.5.1627398011460
+// @version        3.7.5.1627663417416
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -91,6 +91,7 @@
 // @match          *://*.lofter.com/
 // @match          *://*.lofter.com/?page=*
 // @match          *://www.lwxs9.org/*/*/
+// @match          *://www.shubl.com/book/book_detail/*
 // @name:en        novel-downloader
 // @description:en An scalable universal novel downloader.
 // @namespace      https://blog.bgme.me
@@ -172,6 +173,7 @@
 // @connect        lofter.com
 // @connect        lf127.net
 // @connect        126.net
+// @connect        shubl.com
 // @connect        *
 // @require        https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js#sha512-Qlv6VSKh1gDKGoJbnyA5RMXYcvnpIqhO++MhIM2fStMcGT9i2T//tSwYFlcyoRRDcDZ+TYHpH8azBBCyhpSeqw==
 // @require        https://cdn.jsdelivr.net/npm/crypto-js@4.0.0/crypto-js.js#sha512-t4HzsbLJw+4jV+nmiiIsz/puioH2aKIjuI1ho1NIqJAJ2GNVLPTy51IklYefYdrkRE583KEzTcgmO5Wb6jVgYw==
@@ -5393,6 +5395,11 @@ async function getRule() {
         case "www.lwxs9.org": {
             const { lwxs9 } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge.ts"));
             ruleClass = lwxs9();
+            break;
+        }
+        case "www.shubl.com": {
+            const { shubl } = await Promise.resolve().then(() => __webpack_require__("./src/rules/shubl.ts"));
+            ruleClass = shubl;
             break;
         }
         default: {
@@ -31601,6 +31608,276 @@ class shubaowa {
     }
 }
 exports.shubaowa = shubaowa;
+
+
+/***/ }),
+
+/***/ "./src/rules/shubl.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.shubl = void 0;
+const main_1 = __webpack_require__("./src/main.ts");
+const lib_1 = __webpack_require__("./src/lib.ts");
+const common_1 = __webpack_require__("./src/rules/lib/common.ts");
+const log_1 = __webpack_require__("./src/log.ts");
+class shubl {
+    constructor() {
+        this.imageMode = "TM";
+        this.charset = "UTF-8";
+        this.concurrencyLimit = 1;
+        this.maxRunLimit = 1;
+    }
+    async bookParse() {
+        const bookUrl = document.location.href;
+        const bookname = (document.querySelector(".book-title > span")).innerText.trim();
+        const author = (document.querySelector("div.username")).innerText.trim();
+        const introDom = document.querySelector(".book-brief");
+        const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom, (introDom) => {
+            introDom.innerHTML = introDom.innerHTML.replace("简介：", "");
+            return introDom;
+        });
+        const additionalMetadate = {};
+        const coverUrl = document.querySelector(".book-img")
+            .src;
+        if (coverUrl) {
+            lib_1.getImageAttachment(coverUrl, this.imageMode, "cover-").then((coverClass) => {
+                additionalMetadate.cover = coverClass;
+            });
+        }
+        additionalMetadate.tags = Array.from(document.querySelectorAll("div.row > span.tag")).map((span) => span.innerText.trim());
+        const chapters = [];
+        const chapterTitleList = Array.from(document.querySelectorAll("#chapter_list > div.chapter > div.chapter-title")).map((div) => div.innerText.trim());
+        const articlesList = document.querySelectorAll("#chapter_list > div.chapter > div.articles");
+        const sectionLength = chapterTitleList.length;
+        let chapterNumber = 0;
+        for (let i = 0; i < sectionLength; i++) {
+            const s = articlesList[i];
+            const sectionNumber = i + 1;
+            const sectionName = chapterTitleList[i];
+            let sectionChapterNumber = 0;
+            const cs = s.querySelectorAll("span.chapter_item");
+            for (let j = 0; j < cs.length; j++) {
+                const c = cs[j];
+                chapterNumber++;
+                sectionChapterNumber++;
+                const a = c.querySelector("a");
+                if (a) {
+                    const chapterName = a.innerText.trim();
+                    const chapterUrl = a.href;
+                    const isVIP = () => {
+                        if (c.childElementCount === 2) {
+                            return true;
+                        }
+                        return false;
+                    };
+                    const isPaid = () => {
+                        if (isVIP() && c.querySelector("i")?.className === "unlock") {
+                            return true;
+                        }
+                        return false;
+                    };
+                    const isLogin = () => {
+                        if (document.querySelector("#header > div.container > div.right.pull-right")?.childElementCount === 3) {
+                            return true;
+                        }
+                        return false;
+                    };
+                    const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), isPaid(), sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, {});
+                    if (isVIP() && !(isLogin() && isPaid())) {
+                        chapter.status = main_1.Status.aborted;
+                    }
+                    chapters.push(chapter);
+                }
+            }
+        }
+        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        return book;
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+        function decrypt(item) {
+            let message = item.content;
+            let keys = item.keys;
+            let len = item.keys.length;
+            let accessKey = item.accessKey;
+            let accessKeyList = accessKey.split("");
+            let charsNotLatinNum = accessKeyList.length;
+            let output = new Array();
+            output.push(keys[accessKeyList[charsNotLatinNum - 1].charCodeAt(0) % len]);
+            output.push(keys[accessKeyList[0].charCodeAt(0) % len]);
+            for (let i = 0; i < output.length; i++) {
+                message = atob(message);
+                let data = output[i];
+                let iv = btoa(message.substr(0, 16));
+                let keys255 = btoa(message.substr(16));
+                let pass = CryptoJS.format.OpenSSL.parse(keys255);
+                message = CryptoJS.AES.decrypt(pass, CryptoJS.enc.Base64.parse(data), {
+                    iv: CryptoJS.enc.Base64.parse(iv),
+                    format: CryptoJS.format.OpenSSL,
+                });
+                if (i < output.length - 1) {
+                    message = message.toString(CryptoJS.enc.Base64);
+                    message = atob(message);
+                }
+            }
+            return message.toString(CryptoJS.enc.Utf8);
+        }
+        const chapter_id = chapterUrl.split("/").slice(-1)[0];
+        const rootPath = "https://www.shubl.com/";
+        async function publicChapter() {
+            async function chapterDecrypt(chapter_id, refererUrl) {
+                const access_key_url = rootPath + "chapter/ajax_get_session_code";
+                const chapter_content_url = rootPath + "chapter/get_book_chapter_detail_info";
+                log_1.log.debug(`[Chapter]请求 ${access_key_url} Referer ${refererUrl}`);
+                const access_key_obj = await lib_1.gfetch(access_key_url, {
+                    method: "POST",
+                    headers: {
+                        Accept: "application/json, text/javascript, */*; q=0.01",
+                        "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+                        Referer: refererUrl,
+                        Origin: document.location.origin,
+                        "X-Requested-With": "XMLHttpRequest",
+                    },
+                    data: `chapter_id=${chapter_id}`,
+                    responseType: "json",
+                }).then((response) => response.response);
+                const chapter_access_key = access_key_obj
+                    .chapter_access_key;
+                log_1.log.debug(`[Chapter]请求 ${chapter_content_url} Referer ${refererUrl}`);
+                const chapter_content_obj = await lib_1.gfetch(chapter_content_url, {
+                    method: "POST",
+                    headers: {
+                        Accept: "application/json, text/javascript, */*; q=0.01",
+                        "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+                        Referer: refererUrl,
+                        Origin: document.location.origin,
+                        "X-Requested-With": "XMLHttpRequest",
+                    },
+                    data: `chapter_id=${chapter_id}&chapter_access_key=${chapter_access_key}`,
+                    responseType: "json",
+                }).then((response) => response.response);
+                if (chapter_content_obj.code !== 100000) {
+                    log_1.log.error(chapter_content_obj);
+                    throw new Error(`下载 ${refererUrl} 失败`);
+                }
+                return decrypt({
+                    content: chapter_content_obj.chapter_content,
+                    keys: chapter_content_obj.encryt_keys,
+                    accessKey: chapter_access_key,
+                });
+            }
+            let content = document.createElement("div");
+            let decryptDate = await chapterDecrypt(chapter_id, chapterUrl);
+            content.innerHTML = decryptDate;
+            lib_1.rm(".chapter span", true, content);
+            let { dom, text, images } = await lib_1.cleanDOM(content, "TM");
+            return {
+                chapterName: chapterName,
+                contentRaw: content,
+                contentText: text,
+                contentHTML: dom,
+                contentImages: images,
+                additionalMetadate: null,
+            };
+        }
+        async function vipChapter() {
+            if (isPaid) {
+                async function vipChapterDecrypt(chapter_id, refererUrl) {
+                    const parentWidth = 939.2;
+                    const setFontSize = "18";
+                    const image_session_code_url = rootPath + "chapter/ajax_get_image_session_code";
+                    log_1.log.debug(`[Chapter]请求 ${image_session_code_url} Referer ${refererUrl}`);
+                    const image_session_code_object = await lib_1.gfetch(image_session_code_url, {
+                        method: "POST",
+                        headers: {
+                            Accept: "application/json, text/javascript, */*; q=0.01",
+                            Referer: refererUrl,
+                            Origin: document.location.origin,
+                            "X-Requested-With": "XMLHttpRequest",
+                        },
+                        responseType: "json",
+                    }).then((response) => response.response);
+                    if (image_session_code_object.code !==
+                        100000) {
+                        log_1.log.error(image_session_code_object);
+                        throw new Error(`下载 ${refererUrl} 失败`);
+                    }
+                    const imageCode = decrypt({
+                        content: image_session_code_object
+                            .image_code,
+                        keys: image_session_code_object
+                            .encryt_keys,
+                        accessKey: image_session_code_object
+                            .access_key,
+                    });
+                    const vipCHapterImageUrl = rootPath +
+                        "chapter/book_chapter_image?chapter_id=" +
+                        chapter_id +
+                        "&area_width=" +
+                        parentWidth +
+                        "&font=undefined" +
+                        "&font_size=" +
+                        setFontSize +
+                        "&image_code=" +
+                        imageCode +
+                        "&bg_color_name=white" +
+                        "&text_color_name=white";
+                    return vipCHapterImageUrl;
+                }
+                const vipCHapterImageUrl = await vipChapterDecrypt(chapter_id, chapterUrl);
+                log_1.log.debug(`[Chapter]请求 ${vipCHapterImageUrl} Referer ${chapterUrl}`);
+                const vipCHapterImageBlob = await lib_1.gfetch(vipCHapterImageUrl, {
+                    method: "GET",
+                    headers: {
+                        Referer: chapterUrl,
+                        Accept: "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8",
+                    },
+                    responseType: "blob",
+                }).then((response) => response.response);
+                const vipCHapterName = `vipCHapter${chapter_id}.png`;
+                const vipCHapterImage = new main_1.attachmentClass(vipCHapterImageUrl, vipCHapterName, "TM");
+                if (vipCHapterImageBlob) {
+                    vipCHapterImage.imageBlob = vipCHapterImageBlob;
+                    vipCHapterImage.status = main_1.Status.finished;
+                }
+                const contentImages = [vipCHapterImage];
+                const img = document.createElement("img");
+                img.src = vipCHapterName;
+                img.alt = vipCHapterImageUrl;
+                const contentHTML = document.createElement("div");
+                contentHTML.appendChild(img);
+                let contentText = `VIP章节，请打开HTML文件查看。\n![${vipCHapterImageUrl}](${vipCHapterName})`;
+                return {
+                    chapterName: chapterName,
+                    contentRaw: contentHTML,
+                    contentText: contentText,
+                    contentHTML: contentHTML,
+                    contentImages: contentImages,
+                    additionalMetadate: null,
+                };
+            }
+            else {
+                return {
+                    chapterName: chapterName,
+                    contentRaw: null,
+                    contentText: null,
+                    contentHTML: null,
+                    contentImages: null,
+                    additionalMetadate: null,
+                };
+            }
+        }
+        if (isVIP) {
+            return vipChapter();
+        }
+        else {
+            return publicChapter();
+        }
+    }
+}
+exports.shubl = shubl;
 
 
 /***/ }),
