@@ -97,7 +97,7 @@ export class xinwanben implements ruleClass {
       chapterUrl,
       charset,
       ".readerCon",
-      (_content) => {
+      (_content, doc) => {
         const replaces = [
           "一秒记住【完本神站】手机用户输入地址：m.wanbentxt.com",
           "支持（完本神站）把本站分享那些需要的小伙伴！找不到书请留言！",

@@ -258,6 +258,11 @@ if (
       "https://www.shubl.com/book/book_detail/100254251",
       "https://www.shubl.com/book/book_detail/100374396",
     ],
+    "https://www.ujxs.net/read/10494/",
+    [
+      "http://m.haitangtxt.net/book/101821/",
+      "http://m.haitangtxt.net/book/101832/",
+    ],
   ];
 
   async function runTest() {

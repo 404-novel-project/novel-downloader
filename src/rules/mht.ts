@@ -44,7 +44,7 @@ export class mht implements ruleClass {
       chapterUrl,
       charset,
       "#content",
-      (_content) => {
+      (_content, doc) => {
         rm("p[data-id]", true, _content);
         return _content;
       },

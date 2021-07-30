@@ -384,7 +384,7 @@ export async function getImageAttachment(
         const _ext = new URL(url).pathname
           .split(".")
           .slice(-1)[0]
-          .match(/(^(\d|\w)+)/);
+          .match(/(^[\d|\w]+)/);
         if (_ext) {
           ext = _ext[0];
         } else {

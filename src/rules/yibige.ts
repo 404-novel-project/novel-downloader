@@ -139,7 +139,7 @@ export class yibige implements ruleClass {
       chapterUrl,
       charset,
       "#fontsize",
-      (_content) => {
+      (_content, doc) => {
         rm("div", true, _content);
         rm("script", true, _content);
         _content.innerHTML = _content.innerHTML
