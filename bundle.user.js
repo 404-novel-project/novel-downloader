@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        3.7.6.1627673960840
+// @version        3.7.6.1627676006221
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -32784,17 +32784,32 @@ class ujxs {
                 additionalMetadate.cover = coverClass;
             });
         }
-        const cos = document.querySelectorAll("#readerlist > ul > li > a");
+        const liList = document.querySelectorAll("#readerlist > ul > li");
         const chapters = [];
         let chapterNumber = 0;
-        for (const aElem of Array.from(cos)) {
-            chapterNumber++;
-            const chapterName = aElem.innerText;
-            const chapterUrl = aElem.href;
-            const isVIP = false;
-            const isPaid = false;
-            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, null, null, null, this.chapterParse, this.charset, { bookname: bookname });
-            chapters.push(chapter);
+        let sectionNumber = 0;
+        let sectionName = null;
+        let sectionChapterNumber = 0;
+        for (let i = 0; i < liList.length; i++) {
+            const li = liList[i];
+            if (li.getAttribute("class")) {
+                sectionNumber++;
+                sectionChapterNumber = 0;
+                sectionName =
+                    li.querySelector("h3")?.innerText.replace(bookname, "").trim() ??
+                        null;
+            }
+            else {
+                const aElem = li.firstElementChild;
+                chapterNumber++;
+                sectionChapterNumber++;
+                const chapterName = aElem.innerText;
+                const chapterUrl = aElem.href;
+                const isVIP = false;
+                const isPaid = false;
+                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, { bookname: bookname });
+                chapters.push(chapter);
+            }
         }
         const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
         return book;
@@ -32806,7 +32821,7 @@ class ujxs {
             lib_1.rm("script", true, content);
             const ads = [
                 "【悠久小説網ωωω.ＵＪХＳ.ｎｅｔ】，免费小说无弹窗免费阅读！",
-                "【悠久小説網ωωω.ＵＪХＳ.ｎｅｔ】，免费小说无弹窗免费阅读！",
+                "佰度搜索 【悠久小說網 ＷＷＷ.ＵＪХＳ．ＮＥＴ】 全集TXT电子书免费下载！",
             ];
             ads.forEach((ad) => (content.innerHTML = content.innerHTML.replaceAll(ad, "")));
             let { dom, text, images } = await lib_1.cleanDOM(content, "TM");
