@@ -28,6 +28,7 @@ ZIP压缩包，请在解压后，直接双击打开HTML文件（`ToC.html` 为�
 |[起点女生网](https://www.qdmm.com/)|✅|✅||
 |[晋江文学城](http://www.jjwxc.net/)|✅|✅\*|\*VIP章节已使用[防盗字体对照表](https://github.com/7325156/jjwxcNovelCrawler/tree/master/%E5%8F%8D%E7%88%AC%E8%99%AB%E5%AF%B9%E7%85%A7%E8%A1%A8)去除空格，如在使用中发现VIP章节仍存在空格，请附上所下载的文件进行反馈。|
 |[长佩文学](https://www.gongzicp.com/)|✅|✅|反爬较严，限制下载速度，每分钟约可下载6章，请耐心等待。<br>长佩文学为单页应用，如打开书籍详情页右上角未出现下载图标，请按下F5重新加载当前页面。|
+|[书耽](https://www.shubl.com/)|✅|✅|VIP章节仅支持图片版。|
 |[轻之文库轻小说](https://www.linovel.net/)|✅|❌|VIP章节仅支持APP查看|
 |[纵横中文网](http://www.zongheng.com/)|✅|❌||
 |[花语女生网](http://huayu.zongheng.com/)|✅|❌||
@@ -85,6 +86,8 @@ ZIP压缩包，请在解压后，直接双击打开HTML文件（`ToC.html` 为�
 |[256文学](https://www.256wxc.com/)|✅|❎||
 |[笔趣阁小说网](http://www.biquge66.com/)|✅|❎||
 |[乐文小说网](http://www.lwxs9.org/)|✅|❎||
+|[悠久小说网](https://www.ujxs.net/)|✅|❎||
+|[海棠小说网](http://m.haitangtxt.net/)|✅|❎|部分文字被图片替换，请使用HTML版查看。<br>如需替换清理图片，请自行生成图片文字对照表。|
 
 </details>
 
@@ -329,17 +332,17 @@ window.customFinishCallback = customFinishCallback;
 
 ## Todo
 
-|网站|实现难度|
-|---|----|
-|[悠久小说网](https://www.ujxs.net/)|2|
-|[百合小说网](https://m.baihexs.com/)|3|
-|[微信读书](https://weread.qq.com/)|9|
-|[网易云阅读](https://yuedu.163.com/)|5|
-|[豆瓣阅读](https://read.douban.com/)|5|
-|[息壤中文网](https://www.xrzww.com/)|4|
-|[海棠文化线上文学城](https://longmabookcn.com/)|?|
-|[PO18 臉紅心跳](https://www.po18.tw/)|?|
-|[全书斋](https://www.quanshuzhai.com/)|2|
+|网站|实现难度|备注|
+|---|--------|----|
+|[百合小说网](https://m.baihexs.com/)|3||
+|[微信读书](https://weread.qq.com/)|9||
+|[网易云阅读](https://yuedu.163.com/)|5||
+|[豆瓣阅读](https://read.douban.com/)|5||
+|[息壤中文网](https://www.xrzww.com/)|4||
+|[海棠文化线上文学城](https://longmabookcn.com/)|?|[域名二](https://www.urhtbooks.com/)|
+|[PO18 臉紅心跳](https://www.po18.tw/)|?||
+|[全书斋](https://www.quanshuzhai.com/)|2||
+|[米国度](https://www.myrics.com/)|3||
 
 ## License
 

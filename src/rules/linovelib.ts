@@ -117,7 +117,20 @@ export class linovelib implements ruleClass {
       chapterUrl,
       charset,
       "#TextContent",
-      (_content) => {
+      (_content, doc) => {
+        const s = Array.from(doc.querySelectorAll("script")).find((s) =>
+          s.innerHTML.includes('document.getElementById("chapter_last")')
+        );
+        if (s) {
+          const _dom_nr = s.innerText.trim().match(/let dom_nr = '(.+)';/);
+          if (_dom_nr) {
+            const dom_nr = _dom_nr[1];
+            (<HTMLSpanElement>(
+              doc.getElementById("chapter_last")
+            )).innerHTML = dom_nr;
+          }
+        }
+
         rm(".tp", true, _content);
         rm(".bd", true, _content);
         return _content;

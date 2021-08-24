@@ -32,7 +32,7 @@ export async function nextPageParse(
   chapterUrl: string,
   charset: string,
   selector: string,
-  contentPatch: (_content: HTMLElement) => HTMLElement,
+  contentPatch: (_content: HTMLElement, doc: Document) => HTMLElement,
   getNextPage: (doc: Document) => string,
   continueCondition: (_content: HTMLElement, nextLink: string) => boolean
 ) {
@@ -57,7 +57,7 @@ export async function nextPageParse(
       flag = false;
     }
 
-    _content = contentPatch(_content);
+    _content = contentPatch(_content, doc);
     for (const _c of Array.from(_content.childNodes)) {
       content.appendChild(_c.cloneNode(true));
     }

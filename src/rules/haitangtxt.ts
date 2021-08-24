@@ -2,10 +2,10 @@ import { BookAdditionalMetadate, Chapter, Book } from "../main";
 import { ruleClass } from "../rules";
 import { getHtmlDOM, cleanDOM, rm } from "../lib";
 import { introDomHandle } from "./lib/common";
-import { replaceYuzhaigeImage } from "./lib/yuzhaigeImageDecode";
+import { replaceHaitangtxtImage } from "./lib/haitangtxtImageDecode";
 import { log } from "../log";
 
-export class yuzhaige implements ruleClass {
+export class haitangtxt implements ruleClass {
   public imageMode: "naive" | "TM";
 
   public constructor() {
@@ -225,7 +225,7 @@ export class yuzhaige implements ruleClass {
         images: finalImages,
       } = await cleanDOM(content, "TM", { keepImageName: true });
       const _newDom = document.createElement("div");
-      _newDom.innerHTML = replaceYuzhaigeImage(content.innerHTML);
+      _newDom.innerHTML = replaceHaitangtxtImage(content.innerHTML);
       let { dom: newDom, text: finalText, images } = await cleanDOM(
         _newDom,
         "TM",

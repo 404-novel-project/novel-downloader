@@ -192,7 +192,11 @@ async function _formatImage(
   const imgMode = builder.imgMode;
   const imageUrl = elem.src;
   try {
-    const imgClass = await getImageAttachment(imageUrl, imgMode);
+    let noMD5 = false;
+    if (builder.option?.keepImageName) {
+      noMD5 = true;
+    }
+    const imgClass = await getImageAttachment(imageUrl, imgMode, "", noMD5);
     const imageName = imgClass.name;
 
     const filterdImages = builder.images.find(
@@ -440,11 +444,15 @@ function formatVideo(elem: HTMLVideoElement, builder: Builder) {
   builder.text = builder.text + "\n\n" + elem.outerHTML;
 }
 
+export interface BuilderOption {
+  keepImageName?: boolean;
+}
 export interface Builder {
   dom: HTMLElement;
   text: string;
   images: attachmentClass[];
   imgMode: "naive" | "TM";
+  option: BuilderOption | null;
 }
 export async function walk(dom: HTMLElement, builder: Builder) {
   const childNodes = [...findBase(dom, blockElements, ignoreElements)].filter(

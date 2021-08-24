@@ -44,7 +44,7 @@ export class dingdiann implements ruleClass {
       chapterUrl,
       charset,
       "#content",
-      (_content) => {
+      (_content, doc) => {
         rm("div[align]", false, _content);
         rm("script", true, _content);
 

@@ -97,14 +97,20 @@ export class xinwanben implements ruleClass {
       chapterUrl,
       charset,
       ".readerCon",
-      (_content) => {
-        const replaces = [
+      (_content, doc) => {
+        const ads = [
           "一秒记住【完本神站】手机用户输入地址：m.wanbentxt.com",
           "支持（完本神站）把本站分享那些需要的小伙伴！找不到书请留言！",
+          "下载【看书助手APP】官网：www.kanshuzhushou.com 无广告、全部免费！",
+          "一秒记住♂.{完^本,神^立占,首^发}♂手机用户输入地址：м.шanbentxt.coM",
+          "提示：浏览器搜索（书名）+.{完,本,神,立占}可以快速找到你在本站看的书！",
+          "谨记我们的网址，祝大家阅读愉快！别忘了多多宣传宣传。",
+          "【提示】：如果觉得此文不错，请推荐给更多小伙伴吧！分享也是一种享受。",
+          "支持（完本神站）把本站分享那些需要的小伙伴！找不到书请留言！",
+          "读未修改内容请到：完 本 神 站/文/学",
         ];
-        replaces.forEach(
-          (replace) =>
-            (_content.innerHTML = _content.innerHTML.replaceAll(replace, ""))
+        ads.forEach(
+          (ad) => (_content.innerHTML = _content.innerHTML.replaceAll(ad, ""))
         );
         return _content;
       },

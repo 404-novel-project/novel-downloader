@@ -71,6 +71,7 @@
     "*://www.1pwx.com/*/",
     "*://www.81book.com/book/*/",
     "*://m.yuzhaige.cc/*/*/",
+    "*://m.yushuge123.com/*/*/",
     "*://www.wanben.org/*/",
     "*://www.xinwanben.com/*/",
     "*://www.idejian.com/book/*/",
@@ -90,6 +91,7 @@
     "*://www.soxscc.org/*/",
     "*://www.soxs.cc/*/",
     "*://www.soshuw.com/*/",
+    "*://www.soshuwu.org/*/",
     "*://www.shubaowa.org/*_*/",
     "*://www.fuguoduxs.com/*_*/",
     "*://www.xyqxs.cc/html/*/*/index.html",
@@ -106,7 +108,10 @@
     "*://www.biquge66.com/biquge*/",
     "*://*.lofter.com/",
     "*://*.lofter.com/?page=*",
-    "*://www.lwxs9.org/*/*/"
+    "*://www.lwxs9.org/*/*/",
+    "*://www.shubl.com/book/book_detail/*",
+    "*://www.ujxs.net/read/*/",
+    "*://m.haitangtxt.net/*/*/"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",
@@ -118,12 +123,22 @@
     "*://m.yuzhaige.cc/top/*/",
     "*://m.yuzhaige.cc/full/*/",
     "*://m.yuzhaige.cc/book/*/",
+    "*://m.yushuge123.com/tag/*/",
+    "*://m.yushuge123.com/sort/*/",
+    "*://m.yushuge123.com/top/*/",
+    "*://m.yushuge123.com/full/*/",
+    "*://m.yushuge123.com/book/*/",
     "*://www.linovel.net/book/*/*.html",
     "*://www.qimao.com/shuku/*-*/",
     "*://www.trxs.cc/tongren/*/*.html",
     "*://www.trxs123.com/tongren/*/*.html",
     "*://www.tongrenquan.org/tongren/*/*.html",
-    "*://www.jpxs123.com/*/*/*.html"
+    "*://www.jpxs123.com/*/*/*.html",
+    "*://m.haitangtxt.net/tag/*/",
+    "*://m.haitangtxt.net/sort/*/",
+    "*://m.haitangtxt.net/top/*/",
+    "*://m.haitangtxt.net/full/*/",
+    "*://m.haitangtxt.net/book/*/"
   ],
   "grant": [
     "unsafeWindow",
@@ -181,6 +196,7 @@
     "lofter.com",
     "lf127.net",
     "126.net",
+    "shubl.com",
     "*"
   ],
   "require": [
