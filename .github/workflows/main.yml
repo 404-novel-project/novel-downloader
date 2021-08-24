@@ -12,8 +12,7 @@ jobs:
           yarn install &&
           yarn run pretty && 
           yarn run build &&
-          yarn run build-tester &&
-          tsc --outFile dist/tools/jjwxcFontDecode.js tools/jjwxcFont/jjwxcFontDecode.ts
+          yarn run build-tester 
 
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@4.1.1
