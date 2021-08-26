@@ -26,7 +26,7 @@ ZIP压缩包，请在解压后，直接双击打开HTML文件（`ToC.html` 为�
 |[SF轻小说](https://book.sfacg.com/)|✅\*|✅\*\*|\*不支持对话小说，例：[224282](https://book.sfacg.com/Novel/224282/)。 \*\*VIP章节仅支持图片版。|
 |[起点中文网](https://book.qidian.com/)|✅|✅||
 |[起点女生网](https://www.qdmm.com/)|✅|✅||
-|[晋江文学城](http://www.jjwxc.net/)|✅|✅\*|\*VIP章节已使用[防盗字体对照表](https://github.com/7325156/jjwxcNovelCrawler/tree/master/%E5%8F%8D%E7%88%AC%E8%99%AB%E5%AF%B9%E7%85%A7%E8%A1%A8)去除空格，如在使用中发现VIP章节仍存在空格，请附上所下载的文件进行反馈。|
+|[晋江文学城](http://www.jjwxc.net/)|✅|✅\*|\*VIP章节已使用[防盗字体对照表](https://github.com/yingziwu/jjwxcFontTables)去除空格，如在使用中发现VIP章节仍存在空格，请附上所下载的文件进行反馈。|
 |[长佩文学](https://www.gongzicp.com/)|✅|✅|反爬较严，限制下载速度，每分钟约可下载6章，请耐心等待。<br>长佩文学为单页应用，如打开书籍详情页右上角未出现下载图标，请按下F5重新加载当前页面。|
 |[书耽](https://www.shubl.com/)|✅|✅|VIP章节仅支持图片版。|
 |[轻之文库轻小说](https://www.linovel.net/)|✅|❌|VIP章节仅支持APP查看|
