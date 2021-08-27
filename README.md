@@ -22,11 +22,11 @@ ZIP压缩包，请在解压后，直接双击打开HTML文件（`ToC.html` 为�
 
 |站点|公共章节|付费章节|备注|
 |---|-------|------|----|
-|[刺猬猫](https://www.ciweimao.com/)|✅|✅\*|\*VIP章节仅支持图片版。|
+|[刺猬猫](https://www.ciweimao.com/)|✅|✅|VIP章节仅支持图片版。|
 |[SF轻小说](https://book.sfacg.com/)|✅\*|✅\*\*|\*不支持对话小说，例：[224282](https://book.sfacg.com/Novel/224282/)。 \*\*VIP章节仅支持图片版。|
 |[起点中文网](https://book.qidian.com/)|✅|✅||
 |[起点女生网](https://www.qdmm.com/)|✅|✅||
-|[晋江文学城](http://www.jjwxc.net/)|✅|✅\*|\*VIP章节已使用[防盗字体对照表](https://github.com/yingziwu/jjwxcFontTables)去除空格，如在使用中发现VIP章节仍存在空格，请附上所下载的文件进行反馈。|
+|[晋江文学城](http://www.jjwxc.net/)|✅|✅|VIP章节使用[晋江防盗字体对照表](https://github.com/yingziwu/jjwxcFontTables)去除空格。<br>当程序自带的防盗字体对照表未查找到相关字体时，脚本将尝试向云端请求数据，远程字体功能可通过 `enableJjwxcRemoteFont` 配置项手动关闭。|
 |[长佩文学](https://www.gongzicp.com/)|✅|✅|反爬较严，限制下载速度，每分钟约可下载6章，请耐心等待。<br>长佩文学为单页应用，如打开书籍详情页右上角未出现下载图标，请按下F5重新加载当前页面。|
 |[书耽](https://www.shubl.com/)|✅|✅|VIP章节仅支持图片版。|
 |[轻之文库轻小说](https://www.linovel.net/)|✅|❌|VIP章节仅支持APP查看|

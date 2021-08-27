@@ -414,7 +414,7 @@ export class jjwxc implements ruleClass {
           const [fontName, fontClassObj, fontStyleDom] = await getFont();
           if (fontName && fontClassObj && fontStyleDom) {
             // Replace Text
-            finalText = replaceJjwxcCharacter(fontName, rawText);
+            finalText = await replaceJjwxcCharacter(fontName, rawText);
 
             //DOM
             images.push(fontClassObj);
@@ -422,7 +422,7 @@ export class jjwxc implements ruleClass {
 
             // Replace DOM innerHTML
             const replacedDom = document.createElement("div");
-            replacedDom.innerHTML = replaceJjwxcCharacter(
+            replacedDom.innerHTML = await replaceJjwxcCharacter(
               fontName,
               rawDom.innerHTML
             );
