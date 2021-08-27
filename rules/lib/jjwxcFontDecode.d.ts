@@ -1,1 +1,1 @@
-export declare function replaceJjwxcCharacter(fontName: string, inputText: string): string;
+export declare function replaceJjwxcCharacter(fontName: string, inputText: string): Promise<string>;
