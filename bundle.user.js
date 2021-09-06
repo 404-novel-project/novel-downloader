@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        3.8.0.1630666987763
+// @version        3.8.0.1630948163994
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -64,6 +64,7 @@
 // @match          *://www.westnovel.com/*/*/
 // @match          *://www.mht.tw/*/
 // @match          *://www.dierbanzhu1.com/*_*/
+// @match          *://www.banzhuer.org/*_*/
 // @match          *://www.xbiquge.so/book/*/
 // @match          *://www.hongyeshuzhai.com/shuzhai/*/
 // @match          *://www.linovelib.com/novel/*/catalog
@@ -5350,7 +5351,8 @@ async function getRule() {
             ruleClass = mht;
             break;
         }
-        case "www.dierbanzhu1.com": {
+        case "www.dierbanzhu1.com":
+        case "www.banzhuer.org": {
             const { dierbanzhu } = await Promise.resolve().then(() => __webpack_require__("./src/rules/dierbanzhu.ts"));
             ruleClass = dierbanzhu;
             break;
