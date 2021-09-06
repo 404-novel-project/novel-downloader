@@ -230,7 +230,8 @@ export async function getRule(): Promise<ruleClass> {
       ruleClass = mht;
       break;
     }
-    case "www.dierbanzhu1.com": {
+    case "www.dierbanzhu1.com":
+    case "www.banzhuer.org": {
       const { dierbanzhu } = await import("./rules/dierbanzhu");
       ruleClass = dierbanzhu;
       break;
