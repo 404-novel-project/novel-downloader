@@ -1,15 +1,15 @@
 import { BookAdditionalMetadate, Chapter, Book } from "../main";
-import { ruleClass } from "../rules";
-import { getHtmlDOM, cleanDOM, rm } from "../lib";
-import { saveOptions } from "../index_helper";
+import { BaseRuleClass } from "../rules";
+import { rm } from "../lib/misc";
+import { cleanDOM } from "../lib/cleanDOM";
+import { getHtmlDOM } from "../lib/http";
+import { saveOptions } from "../save";
 
-export class fushuwang implements ruleClass {
-  public imageMode: "naive" | "TM";
-  public charset: string;
-  public maxRunLimit: number;
+export class fushuwang extends BaseRuleClass {
   public saveOptions: saveOptions;
 
   public constructor() {
+    super();
     this.imageMode = "TM";
     this.charset = "GBK";
     this.maxRunLimit = 5;

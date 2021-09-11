@@ -1,13 +1,13 @@
 import { BookAdditionalMetadate, Chapter, Status, Book } from "../main";
-import { ggetHtmlDOM, cleanDOM, sleep, rm, getImageAttachment } from "../lib";
-import { ruleClass, chapterParseObject } from "../rules";
+import { sleep, rm } from "../lib/misc";
+import { cleanDOM } from "../lib/cleanDOM";
+import { getImageAttachment } from "../lib/attachments";
+import { ggetHtmlDOM } from "../lib/http";
+import { BaseRuleClass, chapterParseObject } from "../rules";
 import { introDomHandle } from "./lib/common";
-export class shuhai implements ruleClass {
-  public imageMode: "naive" | "TM";
-  public concurrencyLimit: number;
-  public charset: string;
-
+export class shuhai extends BaseRuleClass {
   public constructor() {
+    super();
     this.imageMode = "TM";
     this.concurrencyLimit = 5;
     this.charset = "GBK";

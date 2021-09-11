@@ -1,5 +1,5 @@
-import { attachmentClass, ExpectError } from "./main";
-import { getImageAttachment } from "./lib";
+import { attachmentClass, ExpectError } from "../main";
+import { getImageAttachment } from "./attachments";
 
 const blockElements = [
   "article",
@@ -444,17 +444,17 @@ function formatVideo(elem: HTMLVideoElement, builder: Builder) {
   builder.text = builder.text + "\n\n" + elem.outerHTML;
 }
 
-export interface BuilderOption {
+interface BuilderOption {
   keepImageName?: boolean;
 }
-export interface Builder {
+interface Builder {
   dom: HTMLElement;
   text: string;
   images: attachmentClass[];
   imgMode: "naive" | "TM";
   option: BuilderOption | null;
 }
-export async function walk(dom: HTMLElement, builder: Builder) {
+async function walk(dom: HTMLElement, builder: Builder) {
   const childNodes = [...findBase(dom, blockElements, ignoreElements)].filter(
     (b) => b
   );
@@ -531,4 +531,47 @@ export async function walk(dom: HTMLElement, builder: Builder) {
     }
   }
   return builder;
+}
+
+export async function cleanDOM(
+  DOM: Element,
+  imgMode: "naive" | "TM",
+  option: BuilderOption | null = null
+) {
+  const builder: Builder = {
+    dom: document.createElement("div"),
+    text: "",
+    images: [],
+    imgMode: imgMode,
+    option: option,
+  };
+  await walk(DOM as HTMLElement, builder);
+  return {
+    dom: builder.dom,
+    text: builder.text.trim(),
+    images: builder.images,
+  };
+}
+
+export function htmlTrim(dom: HTMLElement) {
+  const childNodesR = Array.from(dom.childNodes).reverse();
+  for (const node of childNodesR) {
+    const ntype = node.nodeName.toLowerCase();
+
+    const ntypes = ["#text", "br"];
+    if (!ntypes.includes(ntype)) {
+      return;
+    }
+
+    if (ntype === "#text") {
+      if ((<Text>node).textContent?.trim() === "") {
+        node.remove();
+      } else {
+        return;
+      }
+    }
+    if (ntype === "br") {
+      (<HTMLBRElement>node).remove();
+    }
+  }
 }

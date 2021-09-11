@@ -1,13 +1,15 @@
 import { BookAdditionalMetadate, Chapter, Book } from "../main";
-import { ruleClass } from "../rules";
-import { getHtmlDOM, cleanDOM, sandboxed, getImageAttachment } from "../lib";
+import { BaseRuleClass } from "../rules";
+import { sandboxed } from "../lib/misc";
+import { cleanDOM } from "../lib/cleanDOM";
+import { getImageAttachment } from "../lib/attachments";
+import { getHtmlDOM } from "../lib/http";
 import { introDomHandle } from "./lib/common";
 import { log } from "../log";
 
-export class dmzj implements ruleClass {
-  public imageMode: "naive" | "TM";
-
+export class dmzj extends BaseRuleClass {
   public constructor() {
+    super();
     this.imageMode = "TM";
   }
 

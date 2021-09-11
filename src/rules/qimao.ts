@@ -1,13 +1,14 @@
 import { BookAdditionalMetadate, Chapter, Status, Book } from "../main";
-import { ruleClass, chapterParseObject } from "../rules";
-import { getHtmlDOM, cleanDOM, getImageAttachment } from "../lib";
+import { BaseRuleClass, chapterParseObject } from "../rules";
+import { cleanDOM } from "../lib/cleanDOM";
+import { getImageAttachment } from "../lib/attachments";
+import { getHtmlDOM } from "../lib/http";
 import { introDomHandle } from "./lib/common";
 import { log } from "../log";
 
-export class qimao implements ruleClass {
-  public imageMode: "naive" | "TM";
-
+export class qimao extends BaseRuleClass {
   public constructor() {
+    super();
     this.imageMode = "TM";
   }
 

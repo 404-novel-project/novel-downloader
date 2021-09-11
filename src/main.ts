@@ -1,6 +1,8 @@
-import { ruleClass, chapterParseObject, retryLimit } from "./rules";
-import { gfetch, sleep } from "./lib";
-import { saveOptions } from "./index_helper";
+import { BaseRuleClass, chapterParseObject } from "./rules";
+import { retryLimit } from "./setting";
+import { sleep } from "./lib/misc";
+import { gfetch } from "./lib/http";
+import { saveOptions } from "./save";
 import { log } from "./log";
 
 export enum Status {
@@ -71,7 +73,7 @@ export class Chapter {
   public sectionNumber: number | null;
   public sectionChapterNumber: number | null;
 
-  public chapterParse: ruleClass["chapterParse"];
+  public chapterParse: BaseRuleClass["chapterParse"];
   public charset: string;
   public options: object;
 
@@ -95,7 +97,7 @@ export class Chapter {
     sectionName: string | null,
     sectionNumber: number | null,
     sectionChapterNumber: number | null,
-    chapterParse: ruleClass["chapterParse"],
+    chapterParse: BaseRuleClass["chapterParse"],
     charset: string,
     options: object
   ) {

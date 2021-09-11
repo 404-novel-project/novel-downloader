@@ -1,12 +1,14 @@
 import { BookAdditionalMetadate, Chapter, Book } from "../main";
-import { ruleClass } from "../rules";
-import { getHtmlDOM, cleanDOM, rm, getImageAttachment } from "../lib";
+import { BaseRuleClass } from "../rules";
+import { rm } from "../lib/misc";
+import { cleanDOM } from "../lib/cleanDOM";
+import { getImageAttachment } from "../lib/attachments";
+import { getHtmlDOM } from "../lib/http";
 import { introDomHandle } from "./lib/common";
 
-export class soxscc implements ruleClass {
-  public imageMode: "naive" | "TM";
-
+export class soxscc extends BaseRuleClass {
   public constructor() {
+    super();
     this.imageMode = "TM";
   }
 

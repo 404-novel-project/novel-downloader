@@ -1,13 +1,14 @@
 import { BookAdditionalMetadate, Chapter, Book } from "../main";
-import { ruleClass } from "../rules";
-import { getHtmlDOM, rm, getImageAttachment } from "../lib";
+import { BaseRuleClass } from "../rules";
+import { rm } from "../lib/misc";
+import { getImageAttachment } from "../lib/attachments";
+import { getHtmlDOM } from "../lib/http";
 import { introDomHandle, nextPageParse } from "./lib/common";
 import { log } from "../log";
 
-export class yibige implements ruleClass {
-  public imageMode: "naive" | "TM";
-
+export class yibige extends BaseRuleClass {
   public constructor() {
+    super();
     this.imageMode = "TM";
   }
 

@@ -1,12 +1,12 @@
-import { ruleClass } from "../rules";
-import { htmlTrim, rm } from "../lib";
+import { BaseRuleClass } from "../rules";
+import { rm } from "../lib/misc";
+import { htmlTrim } from "../lib/cleanDOM";
 import { bookParseTemp } from "./biquge";
 import { nextPageParse } from "./lib/common";
 
-export class dingdiann implements ruleClass {
-  public imageMode: "naive" | "TM";
-
+export class dingdiann extends BaseRuleClass {
   public constructor() {
+    super();
     this.imageMode = "TM";
   }
 

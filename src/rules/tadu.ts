@@ -1,14 +1,15 @@
 import { BookAdditionalMetadate, Chapter, Status, Book } from "../main";
-import { ruleClass, chapterParseObject } from "../rules";
-import { getHtmlDOM, cleanDOM, gfetch, getImageAttachment } from "../lib";
+import { BaseRuleClass, chapterParseObject } from "../rules";
+import { gfetch } from "../lib/http";
+import { cleanDOM } from "../lib/cleanDOM";
+import { getImageAttachment } from "../lib/attachments";
+import { getHtmlDOM } from "../lib/http";
 import { introDomHandle } from "./lib/common";
 import { log } from "../log";
 
-export class tadu implements ruleClass {
-  public imageMode: "naive" | "TM";
-  public concurrencyLimit: number;
-
+export class tadu extends BaseRuleClass {
   public constructor() {
+    super();
     this.imageMode = "TM";
     this.concurrencyLimit = 5;
   }

@@ -1,12 +1,13 @@
 import { BookAdditionalMetadate, Chapter, Status, Book } from "../main";
-import { getHtmlDOM, rm, getImageAttachment } from "../lib";
-import { ruleClass } from "../rules";
+import { rm } from "../lib/misc";
+import { getImageAttachment } from "../lib/attachments";
+import { getHtmlDOM } from "../lib/http";
+import { BaseRuleClass } from "../rules";
 import { introDomHandle, nextPageParse } from "./lib/common";
 
-export class linovelib implements ruleClass {
-  public imageMode: "naive" | "TM";
-
+export class linovelib extends BaseRuleClass {
   public constructor() {
+    super();
     this.imageMode = "TM";
   }
 

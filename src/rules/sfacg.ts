@@ -5,15 +5,17 @@ import {
   Status,
   Book,
 } from "../main";
-import { getHtmlDOM, cleanDOM, rm, getImageAttachment } from "../lib";
-import { ruleClass, chapterParseObject, retryLimit } from "../rules";
+import { rm } from "../lib/misc";
+import { cleanDOM } from "../lib/cleanDOM";
+import { getImageAttachment } from "../lib/attachments";
+import { getHtmlDOM } from "../lib/http";
+import { BaseRuleClass, chapterParseObject } from "../rules";
+import { retryLimit } from "../setting";
 import { introDomHandle } from "./lib/common";
 import { log } from "../log";
-export class sfacg implements ruleClass {
-  public imageMode: "naive" | "TM";
-  public concurrencyLimit: number;
-
+export class sfacg extends BaseRuleClass {
   public constructor() {
+    super();
     this.imageMode = "TM";
     this.concurrencyLimit = 1;
   }

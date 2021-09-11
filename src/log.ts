@@ -1,4 +1,4 @@
-import { enaleDebug } from "./rules";
+import { enaleDebug } from "./setting";
 import log from "loglevel";
 
 if (enaleDebug) {

@@ -1,6 +1,9 @@
 import { BookAdditionalMetadate, Chapter, Book } from "../main";
-import { ruleClass, chapterParseObject } from "../rules";
-import { getHtmlDOM, cleanDOM, rm, getImageAttachment } from "../lib";
+import { BaseRuleClass, chapterParseObject } from "../rules";
+import { PublicConstructor, rm } from "../lib/misc";
+import { cleanDOM } from "../lib/cleanDOM";
+import { getImageAttachment } from "../lib/attachments";
+import { getHtmlDOM } from "../lib/http";
 import { introDomHandle } from "./lib/common";
 
 export async function bookParseTemp({
@@ -22,7 +25,7 @@ export async function bookParseTemp({
   coverUrl: string;
   chapterListSelector: string;
   charset: string;
-  chapterParse: ruleClass["chapterParse"];
+  chapterParse: BaseRuleClass["chapterParse"];
 }): Promise<Book> {
   const [
     introduction,
@@ -154,12 +157,10 @@ async function chapterParseTemp({
 function mkBiqugeClass(
   introDomPatch: (introDom: HTMLElement) => HTMLElement,
   contentPatch: (content: HTMLElement) => HTMLElement
-) {
-  return class implements ruleClass {
-    public imageMode: "naive" | "TM";
-    public charset: string;
-
+): PublicConstructor<BaseRuleClass> {
+  return class extends BaseRuleClass {
     public constructor() {
+      super();
       this.imageMode = "TM";
       this.charset = document.charset;
     }
@@ -262,12 +263,10 @@ export const lwxs9 = () =>
 function mkBiqugeClass2(
   introDomPatch: (introDom: HTMLElement) => HTMLElement,
   contentPatch: (content: HTMLElement) => HTMLElement
-) {
-  return class implements ruleClass {
-    public imageMode: "naive" | "TM";
-    public charset: string;
-
+): PublicConstructor<BaseRuleClass> {
+  return class extends BaseRuleClass {
     public constructor() {
+      super();
       this.imageMode = "TM";
       this.charset = document.charset;
     }
@@ -360,11 +359,9 @@ export const xyqxs = () =>
       return content;
     }
   );
-export class xbiquge implements ruleClass {
-  public imageMode: "naive" | "TM";
-  public charset: string;
-
+export class xbiquge extends BaseRuleClass {
   public constructor() {
+    super();
     this.imageMode = "TM";
     this.charset = "GBK";
   }

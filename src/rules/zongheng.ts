@@ -1,13 +1,13 @@
 import { BookAdditionalMetadate, Chapter, Status, Book } from "../main";
-import { getHtmlDOM, ggetHtmlDOM, cleanDOM, getImageAttachment } from "../lib";
-import { ruleClass, chapterParseObject } from "../rules";
+import { cleanDOM } from "../lib/cleanDOM";
+import { getImageAttachment } from "../lib/attachments";
+import { getHtmlDOM, ggetHtmlDOM } from "../lib/http";
+import { BaseRuleClass, chapterParseObject } from "../rules";
 import { introDomHandle } from "./lib/common";
 
-export class zongheng implements ruleClass {
-  public imageMode: "naive" | "TM";
-  public concurrencyLimit: number;
-
+export class zongheng extends BaseRuleClass {
   public constructor() {
+    super();
     this.imageMode = "TM";
     this.concurrencyLimit = 5;
   }

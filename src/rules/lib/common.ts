@@ -1,12 +1,15 @@
-import { cleanDOM, getHtmlDOM, getImageAttachment } from "../../lib";
+import { cleanDOM } from "../../lib/cleanDOM";
+import { getImageAttachment } from "../../lib/attachments";
+import { getHtmlDOM } from "../../lib/http";
 import {
   attachmentClass,
   Book,
   BookAdditionalMetadate,
   Chapter,
 } from "../../main";
-import { ruleClass } from "../../rules";
+import { BaseRuleClass } from "../../rules";
 import { log } from "../../log";
+import { PublicConstructor } from "../../lib/misc";
 
 export async function introDomHandle(
   introDom: (Element | HTMLElement) | null,
@@ -90,7 +93,9 @@ interface mkRuleClassOptions1 {
   getContent: (doc: Document) => HTMLElement;
   contentPatch: (content: HTMLElement) => HTMLElement;
 }
-export function mkRuleClass1(optionis: mkRuleClassOptions1) {
+export function mkRuleClass1(
+  optionis: mkRuleClassOptions1
+): PublicConstructor<BaseRuleClass> {
   const {
     bookUrl,
     bookname,
@@ -102,11 +107,9 @@ export function mkRuleClass1(optionis: mkRuleClassOptions1) {
     getContent,
     contentPatch,
   } = optionis;
-  return class implements ruleClass {
-    public imageMode: "naive" | "TM";
-    public charset: string;
-
+  return class extends BaseRuleClass {
     public constructor() {
+      super();
       this.imageMode = "TM";
       this.charset = document.charset;
     }

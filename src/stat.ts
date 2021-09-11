@@ -1,14 +1,5 @@
 import { log } from "./log";
-import { _GM_deleteValue, _GM_getValue, _GM_setValue } from "./lib";
-
-if (
-  _GM_setValue === null ||
-  _GM_getValue === null ||
-  _GM_deleteValue === null
-) {
-  log.warn("未发现 GM value 相关 API，统计功能停用。");
-  throw new Error("未发现 GM value 相关 API");
-}
+import { _GM_deleteValue, _GM_getValue, _GM_setValue } from "./lib/GM";
 
 const statKeyName = "novel-downloader-22932304826849026";
 const domain = document.location.hostname;

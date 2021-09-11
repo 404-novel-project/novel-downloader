@@ -1,14 +1,15 @@
 import { BookAdditionalMetadate, Chapter, Book } from "../main";
-import { ruleClass } from "../rules";
-import { getHtmlDOM, cleanDOM, rm } from "../lib";
+import { BaseRuleClass } from "../rules";
+import { rm } from "../lib/misc";
+import { cleanDOM } from "../lib/cleanDOM";
+import { getHtmlDOM } from "../lib/http";
 import { introDomHandle } from "./lib/common";
 import { replaceYuzhaigeImage } from "./lib/yuzhaigeImageDecode";
 import { log } from "../log";
 
-export class yuzhaige implements ruleClass {
-  public imageMode: "naive" | "TM";
-
+export class yuzhaige extends BaseRuleClass {
   public constructor() {
+    super();
     this.imageMode = "TM";
   }
 

@@ -1,74 +1,8 @@
 import { Book, Chapter, attachmentClass, Status } from "./main";
-import {
-  fflateZip,
-  sleep,
-  storageAvailable,
-  _GM_deleteValue,
-  _GM_getValue,
-  _GM_setValue,
-} from "./lib";
-import { updateProgress, indexNameSpace, catchError } from "./index";
-import {
-  enableCustomFinishCallback,
-  enableCustomSaveOptions,
-  enaleDebug,
-} from "./rules";
-import { log, saveLogTextToFile } from "./log";
-
-// 无声音频，保持后台运行
-export const audio = new Audio(
-  "data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU3LjcxLjEwMAAAAAAAAAAAAAAA/+M4wAAAAAAAAAAAAEluZm8AAAAPAAAAEAAABVgANTU1NTU1Q0NDQ0NDUFBQUFBQXl5eXl5ea2tra2tra3l5eXl5eYaGhoaGhpSUlJSUlKGhoaGhoaGvr6+vr6+8vLy8vLzKysrKysrX19fX19fX5eXl5eXl8vLy8vLy////////AAAAAExhdmM1Ny44OQAAAAAAAAAAAAAAACQCgAAAAAAAAAVY82AhbwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/+MYxAALACwAAP/AADwQKVE9YWDGPkQWpT66yk4+zIiYPoTUaT3tnU487uNhOvEmQDaCm1Yz1c6DPjbs6zdZVBk0pdGpMzxF/+MYxA8L0DU0AP+0ANkwmYaAMkOKDDjmYoMtwNMyDxMzDHE/MEsLow9AtDnBlQgDhTx+Eye0GgMHoCyDC8gUswJcMVMABBGj/+MYxBoK4DVpQP8iAtVmDk7LPgi8wvDzI4/MWAwK1T7rxOQwtsItMMQBazAowc4wZMC5MF4AeQAGDpruNuMEzyfjLBJhACU+/+MYxCkJ4DVcAP8MAO9J9THVg6oxRMGNMIqCCTAEwzwwBkINOPAs/iwjgBnMepYyId0PhWo+80PXMVsBFzD/AiwwfcKGMEJB/+MYxDwKKDVkAP8eAF8wMwIxMlpU/OaDPLpNKkEw4dRoBh6qP2FC8jCJQFcweQIPMHOBtTBoAVcwOoCNMYDI0u0Dd8ANTIsy/+MYxE4KUDVsAP8eAFBVpgVVPjdGeTEWQr0wdcDtMCeBgDBkgRgwFYB7Pv/zqx0yQQMCCgKNgonHKj6RRVkxM0GwML0AhDAN/+MYxF8KCDVwAP8MAIHZMDDA3DArAQo3K+TF5WOBDQw0lgcKQUJxhT5sxRcwQQI+EIPWMA7AVBoTABgTgzfBN+ajn3c0lZMe/+MYxHEJyDV0AP7MAA4eEwsqP/PDmzC/gNcwXUGaMBVBIwMEsmB6gaxhVuGkpoqMZMQjooTBwM0+S8FTMC0BcjBTgPwwOQDm/+MYxIQKKDV4AP8WADAzAKQwI4CGPhWOEwCFAiBAYQnQMT+uwXUeGzjBWQVkwTcENMBzA2zAGgFEJfSPkPSZzPXgqFy2h0xB/+MYxJYJCDV8AP7WAE0+7kK7MQrATDAvQRIwOADKMBuA9TAYQNM3AiOSPjGxowgHMKFGcBNMQU1FMy45OS41VVU/31eYM4sK/+MYxKwJaDV8AP7SAI4y1Yq0MmOIADGwBZwwlgIJMztCM0qU5TQPG/MSkn8yEROzCdAxECVMQU1FMy45OS41VTe7Ohk+Pqcx/+MYxMEJMDWAAP6MADVLDFUx+4J6Mq7NsjN2zXo8V5fjVJCXNOhwM0vTCDAxFpMYYQU+RlVMQU1FMy45OS41VVVVVVVVVVVV/+MYxNcJADWAAP7EAFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV/+MYxOsJwDWEAP7SAFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV/+MYxPMLoDV8AP+eAFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV/+MYxPQL0DVcAP+0AFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV"
-);
-audio.loop = true;
-
-export const buttonStyleText = `position: fixed;
-top: 15%;
-right: 5%;
-z-index: 2147483647;
-border-style: none;
-text-align:center;
-vertical-align:baseline;
-background-color: rgba(128, 128, 128, 0.2);
-padding: 5px;
-border-radius: 12px;`;
-
-export const progressStyleText = `#nd-progress {
-  position: fixed;
-  bottom: 8%;
-  right: 3%;
-  z-index: 2147483647;
-  border-style: none;
-  text-align: center;
-  vertical-align: baseline;
-  background-color: rgba(210, 210, 210, 0.2);
-  padding: 6px;
-  border-radius: 12px;
-}
-#chapter-progress{
-  --color:green;
-  --position:0%;
-  width:200px;
-  height:10px;
-  border-radius:30px;
-  background-color:#ccc;
-  background-image:radial-gradient(closest-side circle at var(--position),var(--color),var(--color) 100%,transparent),linear-gradient(var(--color),var(--color));
-  background-image:-webkit-radial-gradient(var(--position),circle closest-side,var(--color),var(--color) 100%,transparent),-webkit-linear-gradient(var(--color),var(--color));
-  background-size:100% ,var(--position);
-  background-repeat: no-repeat;
-}
-#zip-progress{
-  --color:yellow;
-  --position:0%;
-  width:200px;
-  height:10px;
-  border-radius:30px;
-  background-color:#ccc;
-  background-image:radial-gradient(closest-side circle at var(--position),var(--color),var(--color) 100%,transparent),linear-gradient(var(--color),var(--color));
-  background-image:-webkit-radial-gradient(var(--position),circle closest-side,var(--color),var(--color) 100%,transparent),-webkit-linear-gradient(var(--color),var(--color));
-  background-size:100% ,var(--position);
-  background-repeat: no-repeat;
-  margin-top: 5px;
-}`;
+import { fflateZip } from "./lib/zip";
+import { enableCustomSaveOptions, enaleDebug } from "./setting";
+import { log } from "./log";
+import { newWindow } from "./global";
 
 export class saveBook {
   protected book: Book;
@@ -250,7 +184,7 @@ a.disabled {
     );
   }
 
-  public saveZip(runSaveChapters = false) {
+  public saveZip(runSaveChapters = false): Promise<void> {
     log.debug("[save]保存元数据文本");
     const metaDateText = this.genMetaDateTxt();
     this.savedZip.file(
@@ -284,21 +218,27 @@ a.disabled {
 
     log.info("[save]开始保存ZIP文件");
     const self = this;
-    const finalHandle = (blob: Blob) => {
-      saveAs(blob, `${self.saveFileNameBase}.zip`);
-      document.querySelector("#nd-progress")?.remove();
-      audio.pause();
-      finish();
-    };
-    const finalErrorHandle = (err: Error) => {
-      log.error("saveZip: " + err);
-      log.trace(err);
-      catchError(err);
-    };
 
-    this.savedZip.onFinal = finalHandle;
-    this.savedZip.onFinalError = finalErrorHandle;
-    this.savedZip.generateAsync((percent) => updateProgress(1, 1, percent));
+    return new Promise((resolve, reject) => {
+      const finalHandle = (blob: Blob) => {
+        saveAs(blob, `${self.saveFileNameBase}.zip`);
+        resolve();
+      };
+      const finalErrorHandle = (err: Error) => {
+        log.error("saveZip: " + err);
+        log.trace(err);
+        reject(err);
+      };
+
+      this.savedZip.onFinal = finalHandle;
+      this.savedZip.onFinalError = finalErrorHandle;
+      this.savedZip.generateAsync((percent) => {
+        const progress = (window as newWindow & typeof globalThis).progress;
+        if (progress) {
+          progress.zipPercent = percent;
+        }
+      });
+    });
   }
 
   private saveToC() {
@@ -424,7 +364,7 @@ a.disabled {
     }
     log.debug("[save]保存ToC文件");
     this.savedZip.file(
-      "ToC.html",
+      "index.html",
       new Blob(
         [ToC.documentElement.outerHTML.replaceAll("data-src-address", "src")],
         {
@@ -668,100 +608,4 @@ export function getSaveBookObj(book: Book, options: saveOptions) {
   }
 
   return saveBookObj;
-}
-
-async function finish() {
-  if (_GM_setValue && _GM_getValue && _GM_deleteValue) {
-    const { printStat, successPlus } = await import("./stat");
-    successPlus();
-    printStat();
-  }
-  if (enaleDebug) {
-    saveLogTextToFile();
-  }
-  window.onbeforeunload = null;
-
-  await sleep(3000);
-  if (
-    enableCustomFinishCallback &&
-    typeof (<indexNameSpace.mainWindows>unsafeWindow).customFinishCallback ===
-      "function"
-  ) {
-    const customFinishCallback = (<indexNameSpace.mainWindows>unsafeWindow)
-      .customFinishCallback;
-    log.info(
-      `发现自定义结束回调函数，内容如下：\n${customFinishCallback.toString()}`
-    );
-    customFinishCallback();
-    log.info(`[run]下载完毕`);
-  }
-}
-
-export function setTabMark(): Promise<indexNameSpace.mainTabObject> {
-  return new Promise((resolve, reject) => {
-    GM_getTab((curTabObject) => {
-      (<indexNameSpace.mainTabObject>curTabObject).novel_downloader =
-        document.location.href;
-      GM_saveTab(curTabObject);
-      resolve(<indexNameSpace.mainTabObject>curTabObject);
-    });
-  });
-}
-export function getNowRunNumber(): Promise<number> {
-  return new Promise((resolve, reject) => {
-    GM_getTabs((curTabObjects) => {
-      let nowRunNumber = 0;
-      for (let i in curTabObjects) {
-        const novel_downloader_url = (<indexNameSpace.mainTabObject>(
-          curTabObjects[i]
-        ))?.novel_downloader;
-        if (
-          novel_downloader_url !== undefined &&
-          new URL(novel_downloader_url).hostname === document.location.hostname
-        ) {
-          nowRunNumber++;
-        }
-      }
-      resolve(nowRunNumber);
-    });
-  });
-}
-export function removeTabMark(): Promise<indexNameSpace.mainTabObject> {
-  return new Promise((resolve, reject) => {
-    GM_getTab((curTabObject) => {
-      if ((<indexNameSpace.mainTabObject>curTabObject).novel_downloader) {
-        delete (<indexNameSpace.mainTabObject>curTabObject).novel_downloader;
-      }
-      GM_saveTab(curTabObject);
-      resolve(<indexNameSpace.mainTabObject>curTabObject);
-    });
-  });
-}
-
-export function r18SiteWarning(): boolean {
-  if (!storageAvailable("localStorage")) {
-    log.error("Window.localStorage API 失效！");
-    return true;
-  }
-  const k = "novel-download-r18-setting";
-  let v = localStorage.getItem(k);
-  if (v === null) {
-    const c = confirm(
-      "本网站可能含有R18内容，是否在该网站运行小说下载器脚本？"
-    );
-    if (c) {
-      localStorage.setItem(k, JSON.stringify(true));
-      return true;
-    } else {
-      localStorage.setItem(k, JSON.stringify(false));
-      return false;
-    }
-  } else {
-    if (typeof JSON.parse(v) === "boolean") {
-      return JSON.parse(v);
-    } else {
-      localStorage.removeItem(k);
-      return r18SiteWarning();
-    }
-  }
 }

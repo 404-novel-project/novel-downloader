@@ -1,12 +1,11 @@
-import { ruleClass } from "../rules";
-import { rm } from "../lib";
+import { BaseRuleClass } from "../rules";
+import { rm } from "../lib/misc";
 import { bookParseTemp } from "./biquge";
 import { nextPageParse } from "./lib/common";
 
-export class mht implements ruleClass {
-  public imageMode: "naive" | "TM";
-
+export class mht extends BaseRuleClass {
   public constructor() {
+    super();
     this.imageMode = "TM";
   }
 

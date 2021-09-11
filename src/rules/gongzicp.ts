@@ -1,14 +1,14 @@
 import { BookAdditionalMetadate, Chapter, Status, Book } from "../main";
-import { getImageAttachment, sleep } from "../lib";
-import { ruleClass, chapterParseObject, retryLimit } from "../rules";
+import { sleep } from "../lib/misc";
+import { getImageAttachment } from "../lib/attachments";
+import { BaseRuleClass, chapterParseObject } from "../rules";
+import { retryLimit } from "../setting";
 import { introDomHandle } from "./lib/common";
 import { log } from "../log";
 
-export class gongzicp implements ruleClass {
-  public imageMode: "naive" | "TM";
-  public concurrencyLimit: number;
-
+export class gongzicp extends BaseRuleClass {
   public constructor() {
+    super();
     this.imageMode = "TM";
     this.concurrencyLimit = 1;
   }

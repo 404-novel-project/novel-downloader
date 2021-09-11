@@ -1,10 +1,10 @@
 {
   "name": "novel-downloader",
-  "version": "3.8.0",
+  "version": "4.0.0",
   "description": "novel downloader",
   "main": "index.js",
   "scripts": {
-    "build": "wget https://github.com/yingziwu/jjwxcFontTables/raw/gh-pages/bundle.ts -O src/rules/lib/jjwxcFontTables.ts && webpack build",
+    "build": "webpack build",
     "dev": "webpack serve --node-env development",
     "pretty": "prettier src -w",
     "build-tester": "webpack -c webpack-tester.config.js",

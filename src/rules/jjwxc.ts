@@ -5,27 +5,24 @@ import {
   Status,
   Book,
 } from "../main";
+import { rm } from "../lib/misc";
+import { cleanDOM } from "../lib/cleanDOM";
+import { gfetch } from "../lib/http";
 import {
-  getHtmlDOM,
-  ggetHtmlDOM,
-  cleanDOM,
-  rm,
-  gfetch,
   getAttachmentClassCache,
   putAttachmentClassCache,
   getImageAttachment,
-} from "../lib";
-import { ruleClass, chapterParseObject, retryLimit } from "../rules";
+} from "../lib/attachments";
+import { getHtmlDOM, ggetHtmlDOM } from "../lib/http";
+import { BaseRuleClass, chapterParseObject } from "../rules";
+import { retryLimit } from "../setting";
 import { replaceJjwxcCharacter } from "./lib/jjwxcFontDecode";
 import { introDomHandle } from "./lib/common";
 import { log } from "../log";
 
-export class jjwxc implements ruleClass {
-  public imageMode: "naive" | "TM";
-  public concurrencyLimit: number;
-  public charset: string;
-
+export class jjwxc extends BaseRuleClass {
   public constructor() {
+    super();
     this.imageMode = "TM";
     this.concurrencyLimit = 5;
     this.charset = "GB18030";

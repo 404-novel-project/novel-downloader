@@ -15,7 +15,7 @@
 
 TXT文档请使用记事本或其它阅读软件进行阅读。
 
-ZIP压缩包，请在解压后，直接双击打开HTML文件（`ToC.html` 为目录文件）进行阅读。
+ZIP压缩包，请在解压后，直接双击打开HTML文件（`index.html` 为目录文件）进行阅读。
 ## 目前支持小说网站
 
 **特别提醒：如欲下载支持列表中网站的付费章节，请登录相应网站帐户，并确定已购买相应付费章节。未登录网站帐户，或未购买的付费章节，下载时将直接忽略，无法进行下载。**
@@ -96,8 +96,7 @@ ZIP压缩包，请在解压后，直接双击打开HTML文件（`ToC.html` 为�
 - `unsafeWindow`：用于获取自定义筛选函数、自定义保存参数等设置。
 - `GM_info`/`GM.info`： 获取并输出脚本运行环境。
 - `GM_xmlhttpRequest`/`GM.xmlHttpRequest`：用于跨域HTTP请求。
-- `GM_getTab`、`GM_saveTab`、`GM_getTabs` (可禁用)： 用于全局并发限制，例如：刺猬猫只允许同时运行一下载线程。
-- `GM_setValue`/`GM.setValue`、`GM_getValue`/`GM.getValue`、`GM_deleteValue`/`GM.deleteValue` (可禁用)： 用于统计模块，本地统计运行次数。
+- `GM_setValue`/`GM.setValue`、`GM_getValue`/`GM.getValue`、`GM_deleteValue`/`GM.deleteValue`： 用于统计模块，本地统计运行次数。
 
 ## 高阶使用技巧
 
@@ -279,7 +278,7 @@ window.customFinishCallback = customFinishCallback;
 
 1. `git clone https://github.com/yingziwu/novel-downloader.git` 将项目克隆至本地（访问github可能需要使用代理）。
 1. `npm install` 安装依赖。
-1. 根据 `ruleClass` 接口实现相应网站解析规则 Class，并在 `rules.ts` 中添加相应选择规则。
+1. 继承 `BaseRuleClass` 实现，完成 `bookParse`、`chapterParse`，然后在 `routers.ts` 中添加相应选择规则。
 
     ```typescript
     interface BookAdditionalMetadate {
@@ -317,14 +316,18 @@ window.customFinishCallback = customFinishCallback;
         contentImages: attachmentClass[] | null;
         additionalMetadate: ChapterAdditionalMetadate | null;
     }
-    interface ruleClass {
+    bstract class BaseRuleClass {
         imageMode: "naive" | "TM";
-        charset?: string;
-        concurrencyLimit?: number;
+        charset: string;
+        concurrencyLimit: number;
         maxRunLimit?: number;
         saveOptions?: saveOptions;
-        bookParse(): Promise<Book>;
-        chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean | null, charset: string, options: object): Promise<chapterParseObject>;
+        private audio?;
+        book?: Book;
+        constructor();
+        abstract bookParse(): Promise<Book>;
+        abstract chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean | null, charset: string, options: object): Promise<chapterParseObject>;
+        run(): Promise<Book | undefined>;
     }
     ```
 

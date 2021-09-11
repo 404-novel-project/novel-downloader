@@ -1,20 +1,15 @@
 import { BookAdditionalMetadate, Chapter, Book } from "../main";
-import { ruleClass } from "../rules";
-import {
-  ggetHtmlDOM,
-  cleanDOM,
-  rm,
-  ggetText,
-  getImageAttachment,
-} from "../lib";
+import { BaseRuleClass } from "../rules";
+import { rm } from "../lib/misc";
+import { cleanDOM } from "../lib/cleanDOM";
+import { getImageAttachment } from "../lib/attachments";
+import { ggetHtmlDOM, ggetText } from "../lib/http";
 import { introDomHandle } from "./lib/common";
 import { log } from "../log";
 
-export class idejian implements ruleClass {
-  public imageMode: "naive" | "TM";
-  public maxRunLimit: number;
-
+export class idejian extends BaseRuleClass {
   public constructor() {
+    super();
     this.imageMode = "TM";
     this.maxRunLimit = 5;
   }

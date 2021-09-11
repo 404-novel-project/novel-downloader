@@ -1,6 +1,27 @@
-import { saveOptions } from "./index_helper";
-import { attachmentClass, ChapterAdditionalMetadate, Book } from "./main";
-
+import {
+  getSaveBookObj,
+  saveBook,
+  saveOptions,
+  saveOptionsValidate,
+} from "./save";
+import {
+  attachmentClass,
+  ChapterAdditionalMetadate,
+  Book,
+  Status,
+  Chapter,
+  ExpectError,
+} from "./main";
+import { log, saveLogTextToFile } from "./log";
+import {
+  enableCustomChapterFilter,
+  enableCustomFinishCallback,
+  enableCustomSaveOptions,
+} from "./setting";
+import { concurrencyRun, storageAvailable } from "./lib/misc";
+import { newUnsafeWindow, newWindow } from "./global";
+import { clearAttachmentClassCache } from "./lib/attachments";
+import { successPlus, failedPlus, printStat } from "./stat";
 export interface chapterParseObject {
   chapterName: string | null;
 
@@ -10,14 +31,26 @@ export interface chapterParseObject {
   contentImages: attachmentClass[] | null;
   additionalMetadate: ChapterAdditionalMetadate | null;
 }
-export interface ruleClass {
-  imageMode: "naive" | "TM";
-  charset?: string;
-  concurrencyLimit?: number;
-  maxRunLimit?: number;
-  saveOptions?: saveOptions;
-  bookParse(): Promise<Book>;
-  chapterParse(
+
+export abstract class BaseRuleClass {
+  public imageMode: "naive" | "TM";
+  public charset: string;
+  public concurrencyLimit: number;
+  public maxRunLimit?: number;
+  public saveOptions?: saveOptions;
+
+  private audio?: HTMLAudioElement;
+  public book?: Book;
+
+  public constructor() {
+    this.imageMode = "TM";
+    this.charset = document.charset;
+    this.concurrencyLimit = 10;
+  }
+
+  public abstract bookParse(): Promise<Book>;
+
+  public abstract chapterParse(
     chapterUrl: string,
     chapterName: string | null,
     isVIP: boolean,
@@ -25,330 +58,259 @@ export interface ruleClass {
     charset: string,
     options: object
   ): Promise<chapterParseObject>;
-}
 
-export const retryLimit = 5;
-export const enaleDebug = (<any>unsafeWindow).enaleDebug ?? false;
-export const enableCustomFinishCallback = true;
-export const enableCustomChapterFilter = true;
-export const enableCustomSaveOptions = true;
-export const enableR18SiteWarning = false;
-export const enableJjwxcRemoteFont = true;
+  public async run() {
+    log.info(`[run]下载开始`);
+    const self = this;
+    const workStatusKeyName = "novel-downloader-EaraVl9TtSM2405L";
+    interface workStatusObj {
+      [index: string]: boolean;
+    }
 
-export const icon0 =
-  "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAFYElEQVR4nO2dIUxkORyHP4XD4E6RYNZgUGvWonAnVqxDbbJiNWLNOsQ65Oo1CMQIFAnJJiQIcgY7YhIEbgTJiEkm4USPuyNh3pv2tf33tb9f8kl4fe3H0Pm37xXi50/gHJgBC+C5YB6Bv4AL4CuwH7872skBcI/9oA5lBpwAO1F7p/IcUf5fuy8L4AzYjthPVWYfeMJ+wFLxABxG660K8xv7QcrBWawOqykfsB+YnEzQv4RXOcV+UHJzD+zF6LwaMsF+QCyYo3kBALfYD4YVK+DL8C4cd+6wHwhrfgJbQztyrJEAjhvgj4F9OcrUKMA33Me778/NaLCUXKMA27ivt48BP7vArYU0k1oFAPeRHjrJPQ3u0ZGlZgHATe5+Bv6ecxooGtUuwEuOCVvsugd2vXp0ZGlFAHDL3bOA3zfHzSmqTEsCgNsjcBXwO5e4T5Hq0poA4OYFoWsg1RWNWhTgJZ8ImxdcUdFuo5YFADcvmAZcY0olRaPWBQD313wZcJ0n3Fa6UUcC/JfvAdda4TagjjYS4HWOcF/7fK/5i5FODmvcDzC0eveOsO3xt4xwRVECvJ1t3MMmvtd+AN5HuH62SIDunOC/tLxgREUjCdCf0HnBKFYUJcBm2SNsXnCZqD3RIgE2zzZuidi3PVPcxLLISAD/fMYtDvm0qdht6BIgLIf4zwuWOHmKigQIzy5hhbSiKocSYFi2cFVA3zZ+ytjGztQogMVS7Vf85gVPFLLVrEYBrGbcvlvRJzbNfJ0aBbDc1++7Fd28bFyjAOdRe8g/PlvOfhm18d/UKMCKMjZqHNM/L1hiXCmsUYBn3ILMZ+zX6N/jVgi72mr6KFqtArzwiJtsneE+li3oezLJdNGodgHGgOm3AQlgz03vKCWMBLDnrneUEkYC2CMBGkcCNI4EaBwJ0DgSYEMecE/mbkLIA59NCnCzplElEbqfLvTJXwlQGEN2z+zjv4GzKQFK/xewZPiCTumS6xOgg4cI9xiyZ08CFIIESBwJYI8E6EACJI4EsEcCdCABEkcC2CMBOpAAiSMB7JEAHUiAxJEA9kiADiRA4kgAeyRABxIgcSSAPRKgAwmQOBLAHgnQgQRIHAlgjwToQAIkjgSwRwJ0IAESRwLYYyrA7zWNKgUJkDgSwB4J0IEESBwJYE8zAqxwr0T7webv2Ivxbv2PHtc7xb1qNucDpc0I8DHTPcXIB/yPi5MAHcT4KM+dXH3ThADzXDcUMSHHxEmADr5kuqcYOSJfvzQjwIKCz8/7X3bof8O3BAjkDvtXuPcl5HBICeDB9yx3FpZj8vdHcwKsKOCsnDeyhzvNSwJkYEp5hypfY9MXTQrwjDtJo5ScYNcPzQrwTBmHOx1g+y7BpgV4xJ21Z5Ut8hV8JMAaLpPf5fqcdbRLAmTE4lj1wwHtlQCRyV0l3MHvnF8JkIGcVcLc1T4JsCE5qoQW1T4JsCGpq4RW1b5iBbhe0yhLUlYJS7xfCfAGKaqE3wq4LwngQcxTta2rfRIggDlxqoQlVPskQCAxqoQlVPskwACG7CUspdonAQYQWiUsqdonAQYSUiUsqdonASLgUyUsrdonASKwwj2y1ZcSq30SIBKbVAlLK29LgMh0VQlLrfZJgMi89aRxydU+CRCZOe5g6JfsMo6TwiVARJbABe7r3pgmfRJASAAhAQQSQCABmsdUgKs1jRL5uO0dpYSRAPZMekcpYS7WNErk47R3lBLmx5pGiXyYvi1lDFumaua6f4jS5w77jmiRBa/XM8zyjnHX0sfIkrjPPQzOAeNdTRsbUzbb2ZQ9W7i9dBNghltyjUHrny4r3JtHJ//0b9RH4P8GSxsCzEN/51YAAAAASUVORK5CYII=";
-export const icon1 =
-  "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAESElEQVR4nO2cLUxcQRSFv4QgEBiSKgQCh6pCouvQlbVVdaRuTFUNoqaqEkktCoVD4HBITBMMosmaVsxu+kL3l3lv7p13z5ccyc68OSf3sLtvHwghhBBCjJM/hRKNowAERwEIjgIQHAUgOApAcBSA4CgAwVEAgqMABEcBCI4CEBwFIDgKQHAUgOAoAMFRAIKjAARHAQiOAhAcBSA4CkBwFIDgKADBUQCCowAERwEIjgIQHAUgOApAcBSA4CgAzkmUm9SqUvHpjYSEvRky35iEvSky35iEvTky35iEvUky35iEvVky35iEvWky35iEvXky35iEvYky35iEvZky35iEvaky35iEvbky35iEvcky35iEvdky35iEveky35iEzA9PQuaHJyHzm2e78O8T7Zhfeq2j4i1wDvyi/GAT/s1P5Gs9J197SN4An4A7hjlgz+a/fM078lm8KXxt92wDp8BPYEL9g/ZoflcT8tmcMrKK6I54TwfueS/NV8SyEe/54D3uoZmK2GTEt2KA5dov5bYiXjvivRthsea6Mq+Ivka8V0NqrlWqahUx1IjfRGeF15DWWCMVrnG2xhpDaLCKqDHiV+ka+ADs9nA9ack6qYfX3yXv9XrJOkOruCIsRvxLPZANOXztRSwhzVkvDbDO4fR1H+asV0trV4SHEf8M/ABOVm22B1Jn3VRhvRPytT1jc7YLK8LTiN/Z/FyLSNT/Vm8HZxVhtYnZiD8oOc3GOcC+Iqou9gx8p86Ib40T8tnUrogqi1wB76k/4ltkh3xWVzQegHvgM7Df6/HEYp98hvc0EoAn8hg7HuAwonNMPtsnnAVggkZ8TboV0cfb9aIRf4ZGvCX7ZA9KKmLjEf8NjXiPHJO92bQiFICRUCUAqgBfVK+AedI/gXVx80/goorQ28BhcPs2cFlF6IOgMpr7IGiRVBHrM5qPguep5vf9rWF1v0DVxbrS18EBvw5epGv6u+fPOx7uGXQXgJnGXBHWt4Q1EYCuhrwptBYebgptNgBd3dBORcxG/A325zaaAMz0G7gA3gFbaxpSgy3yni7Ie7Q+p9EGoKtH4AtwtNqfwTia7uER+/MIF4CuboCPwN5Su/phb7pWKyM+RABmGqoiWh7xoQLQ1SPwlbKKOJq+RssjPmwAurpl/YqYjfhbB/tWAHrWBLjk/9/HzX4XeYnd7yIVgMqa/T7O+neR1jLfgKQASIYy34CkAEiGcvGACKmu5j5DKPJboQha9BZ4Lh4eEiX1o+LnCKoi2tMgTxJVRfjWRiO+FFWEH5k/TVwVUV/mD4ueh4cHTY5ZVUd8KaqI/mQ+4ktRRWwulyO+FFXEcjU14ktRRfxT8yO+lIgVMcoRX8rYP2gKNeJLGVNFhB/xpbRYERrxA+C9IjTiK+KpIjTijbGoCI14hwxdERrxDdFnRWjEN85rKkIjfoSsqgiN+EB0K0IjXgghhBDh+Avri3imoU6g/AAAAABJRU5ErkJggg==";
+    function preTest() {
+      const storage = (window as newWindow & typeof globalThis).customStorage;
+      let workStatus: workStatusObj | undefined = storage.get(
+        workStatusKeyName
+      );
+      if (workStatus) {
+        const nowNumber = Object.keys(workStatus).length;
+        if (self.maxRunLimit && nowNumber > self.maxRunLimit) {
+          return false;
+        }
+      } else {
+        workStatus = {};
+        workStatus[document.location.href] = true;
+        storage.set(workStatusKeyName, workStatus, 20);
+      }
+      return true;
+    }
+    function preWarning() {
+      return true;
+    }
+    function preHook() {
+      if (!preTest()) {
+        const alertText = `当前网站目前最多允许${self.maxRunLimit}个下载任务同时进行。\n请待其它下载任务完成后，再行尝试。`;
+        alert(alertText);
+        log.info(`[run]${alertText}`);
+        return false;
+      }
+      if (!preWarning()) {
+        return false;
+      }
 
-export const r18SiteList = ["www.dierbanzhu1.com", "m.yuzhaige.cc"];
+      self.audio = new Audio(
+        "data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU3LjcxLjEwMAAAAAAAAAAAAAAA/+M4wAAAAAAAAAAAAEluZm8AAAAPAAAAEAAABVgANTU1NTU1Q0NDQ0NDUFBQUFBQXl5eXl5ea2tra2tra3l5eXl5eYaGhoaGhpSUlJSUlKGhoaGhoaGvr6+vr6+8vLy8vLzKysrKysrX19fX19fX5eXl5eXl8vLy8vLy////////AAAAAExhdmM1Ny44OQAAAAAAAAAAAAAAACQCgAAAAAAAAAVY82AhbwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/+MYxAALACwAAP/AADwQKVE9YWDGPkQWpT66yk4+zIiYPoTUaT3tnU487uNhOvEmQDaCm1Yz1c6DPjbs6zdZVBk0pdGpMzxF/+MYxA8L0DU0AP+0ANkwmYaAMkOKDDjmYoMtwNMyDxMzDHE/MEsLow9AtDnBlQgDhTx+Eye0GgMHoCyDC8gUswJcMVMABBGj/+MYxBoK4DVpQP8iAtVmDk7LPgi8wvDzI4/MWAwK1T7rxOQwtsItMMQBazAowc4wZMC5MF4AeQAGDpruNuMEzyfjLBJhACU+/+MYxCkJ4DVcAP8MAO9J9THVg6oxRMGNMIqCCTAEwzwwBkINOPAs/iwjgBnMepYyId0PhWo+80PXMVsBFzD/AiwwfcKGMEJB/+MYxDwKKDVkAP8eAF8wMwIxMlpU/OaDPLpNKkEw4dRoBh6qP2FC8jCJQFcweQIPMHOBtTBoAVcwOoCNMYDI0u0Dd8ANTIsy/+MYxE4KUDVsAP8eAFBVpgVVPjdGeTEWQr0wdcDtMCeBgDBkgRgwFYB7Pv/zqx0yQQMCCgKNgonHKj6RRVkxM0GwML0AhDAN/+MYxF8KCDVwAP8MAIHZMDDA3DArAQo3K+TF5WOBDQw0lgcKQUJxhT5sxRcwQQI+EIPWMA7AVBoTABgTgzfBN+ajn3c0lZMe/+MYxHEJyDV0AP7MAA4eEwsqP/PDmzC/gNcwXUGaMBVBIwMEsmB6gaxhVuGkpoqMZMQjooTBwM0+S8FTMC0BcjBTgPwwOQDm/+MYxIQKKDV4AP8WADAzAKQwI4CGPhWOEwCFAiBAYQnQMT+uwXUeGzjBWQVkwTcENMBzA2zAGgFEJfSPkPSZzPXgqFy2h0xB/+MYxJYJCDV8AP7WAE0+7kK7MQrATDAvQRIwOADKMBuA9TAYQNM3AiOSPjGxowgHMKFGcBNMQU1FMy45OS41VVU/31eYM4sK/+MYxKwJaDV8AP7SAI4y1Yq0MmOIADGwBZwwlgIJMztCM0qU5TQPG/MSkn8yEROzCdAxECVMQU1FMy45OS41VTe7Ohk+Pqcx/+MYxMEJMDWAAP6MADVLDFUx+4J6Mq7NsjN2zXo8V5fjVJCXNOhwM0vTCDAxFpMYYQU+RlVMQU1FMy45OS41VVVVVVVVVVVV/+MYxNcJADWAAP7EAFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV/+MYxOsJwDWEAP7SAFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV/+MYxPMLoDV8AP+eAFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV/+MYxPQL0DVcAP+0AFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV"
+      );
+      self.audio.loop = true;
+      self.audio.play();
 
-export async function getRule(): Promise<ruleClass> {
-  const host: string = document.location.host;
-  let ruleClass;
-  switch (host) {
-    case "www.ciweimao.com": {
-      const { ciweimao } = await import("./rules/ciweimao");
-      ruleClass = ciweimao;
-      break;
-    }
-    case "www.uukanshu.com": {
-      const { uukanshu } = await import("./rules/uukanshu");
-      ruleClass = uukanshu;
-      break;
-    }
-    case "www.yruan.com": {
-      const { yrun } = await import("./rules/yruan");
-      ruleClass = yrun;
-      break;
-    }
-    case "www.shuquge.com":
-    case "www.sizhicn.com": {
-      const { shuquge } = await import("./rules/biquge");
-      ruleClass = shuquge();
-      break;
-    }
-    case "www.dingdiann.net": {
-      const { dingdiann } = await import("./rules/dingdiann");
-      ruleClass = dingdiann;
-      break;
-    }
-    case "www.biquge66.com":
-    case "www.lewenn.com":
-    case "www.klxs.la":
-    case "www.xkzw.org": {
-      const { xkzw } = await import("./rules/xkzw");
-      ruleClass = xkzw;
-      break;
-    }
-    case "www.266ks.com": {
-      const { c226ks } = await import("./rules/226ks");
-      ruleClass = c226ks;
-      break;
-    }
-    case "book.sfacg.com": {
-      const { sfacg } = await import("./rules/sfacg");
-      ruleClass = sfacg;
-      break;
-    }
-    case "www.hetushu.com": {
-      const { hetushu } = await import("./rules/hetushu");
-      ruleClass = hetushu;
-      break;
-    }
-    case "www.shouda8.com":
-    case "www.shouda88.com": {
-      const { shouda8 } = await import("./rules/shouda8");
-      ruleClass = shouda8;
-      break;
-    }
-    case "www.gebiqu.com": {
-      const { gebiqu } = await import("./rules/biquge");
-      ruleClass = gebiqu();
-      break;
-    }
-    case "www.meegoq.com":
-    case "www.viviyzw.com": {
-      const { meegoq } = await import("./rules/meegoq");
-      ruleClass = meegoq;
-      break;
-    }
-    case "www.xiaoshuodaquan.com":
-    case "www.1pwx.com": {
-      const { xiaoshuodaquan } = await import("./rules/xiaoshuodaquan");
-      ruleClass = xiaoshuodaquan;
-      break;
-    }
-    case "book.qidian.com": {
-      const { qidian } = await import("./rules/qidian");
-      ruleClass = qidian;
-      break;
-    }
-    case "www.jjwxc.net": {
-      const { jjwxc } = await import("./rules/jjwxc");
-      ruleClass = jjwxc;
-      break;
-    }
-    case "www.biquwoo.com":
-    case "www.biquwo.org":
-    case "www.81book.com":
-    case "www.hongyeshuzhai.com": {
-      const { common } = await import("./rules/biquge");
-      ruleClass = common();
-      break;
-    }
-    case "book.zongheng.com":
-    case "huayu.zongheng.com": {
-      const { zongheng } = await import("./rules/zongheng");
-      ruleClass = zongheng;
-      break;
-    }
-    case "www.17k.com": {
-      const { c17k } = await import("./rules/17k");
-      ruleClass = c17k;
-      break;
-    }
-    case "www.shuhai.com":
-    case "mm.shuhai.com": {
-      const { shuhai } = await import("./rules/shuhai");
-      ruleClass = shuhai;
-      break;
-    }
-    case "www.gongzicp.com": {
-      const { gongzicp } = await import("./rules/gongzicp");
-      ruleClass = gongzicp;
-      break;
-    }
-    case "m.yuzhaige.cc":
-    case "m.yushuge123.com": {
-      const { yuzhaige } = await import("./rules/yuzhaige");
-      ruleClass = yuzhaige;
-      break;
-    }
-    case "www.linovel.net": {
-      const { linovel } = await import("./rules/linovel");
-      ruleClass = linovel;
-      break;
-    }
-    case "www.xinwanben.com":
-    case "www.wanben.org": {
-      const { xinwanben } = await import("./rules/xinwanben");
-      ruleClass = xinwanben;
-      break;
-    }
-    case "www.tadu.com": {
-      const { tadu } = await import("./rules/tadu");
-      ruleClass = tadu;
-      break;
-    }
-    case "www.idejian.com": {
-      const { idejian } = await import("./rules/idejian");
-      ruleClass = idejian;
-      break;
-    }
-    case "www.qimao.com": {
-      const { qimao } = await import("./rules/qimao");
-      ruleClass = qimao;
-      break;
-    }
-    case "www.wenku8.net": {
-      const { wenku8 } = await import("./rules/wenku8");
-      ruleClass = wenku8;
-      break;
-    }
-    case "www.dmzj.com": {
-      const { dmzj } = await import("./rules/dmzj");
-      ruleClass = dmzj;
-      break;
-    }
-    case "sosad.fun":
-    case "www.sosad.fun":
-    case "wenzhan.org":
-    case "www.wenzhan.org":
-    case "sosadfun.com":
-    case "www.sosadfun.com":
-    case "xn--pxtr7m5ny.com":
-    case "www.xn--pxtr7m5ny.com":
-    case "xn--pxtr7m.com":
-    case "www.xn--pxtr7m.com":
-    case "xn--pxtr7m5ny.net":
-    case "www.xn--pxtr7m5ny.net":
-    case "xn--pxtr7m.net":
-    case "www.xn--pxtr7m.net":
-    case "sosadfun.link":
-    case "www.sosadfun.link": {
-      const { sosadfun } = await import("./rules/sosadfun");
-      ruleClass = sosadfun;
-      break;
-    }
-    case "www.westnovel.com": {
-      const { westnovel } = await import("./rules/westnovel");
-      ruleClass = westnovel;
-      break;
-    }
-    case "www.mht.tw": {
-      const { mht } = await import("./rules/mht");
-      ruleClass = mht;
-      break;
-    }
-    case "www.dierbanzhu1.com":
-    case "www.banzhuer.org": {
-      const { dierbanzhu } = await import("./rules/dierbanzhu");
-      ruleClass = dierbanzhu;
-      break;
-    }
-    case "www.xbiquge.so": {
-      const { xbiquge } = await import("./rules/biquge");
-      ruleClass = xbiquge;
-      break;
-    }
-    case "www.linovelib.com": {
-      const { linovelib } = await import("./rules/linovelib");
-      ruleClass = linovelib;
-      break;
-    }
-    case "www.luoqiuzw.com": {
-      const { luoqiuzw } = await import("./rules/biquge");
-      ruleClass = luoqiuzw();
-      break;
-    }
-    case "www.yibige.la": {
-      const { yibige } = await import("./rules/yibige");
-      ruleClass = yibige;
-      break;
-    }
-    case "www.fushuwang.org": {
-      const { fushuwang } = await import("./rules/fushuwang");
-      ruleClass = fushuwang;
-      break;
-    }
-    case "www.soxscc.net":
-    case "www.soxscc.org":
-    case "www.soxs.cc":
-    case "www.soshuw.com":
-    case "www.soshuwu.org": {
-      const { soxscc } = await import("./rules/soxscc");
-      ruleClass = soxscc;
-      break;
-    }
-    case "www.fuguoduxs.com":
-    case "www.shubaowa.org": {
-      const { shubaowa } = await import("./rules/shubaowa");
-      ruleClass = shubaowa;
-      break;
-    }
-    case "www.xyqxs.cc": {
-      const { xyqxs } = await import("./rules/biquge");
-      ruleClass = xyqxs();
-      break;
-    }
-    case "www.630shu.net": {
-      const { c630shu } = await import("./rules/simple/630shu");
-      ruleClass = c630shu;
-      break;
-    }
-    case "www.qingoo.cn": {
-      const { qingoo } = await import("./rules/qingoo");
-      ruleClass = qingoo;
-      break;
-    }
-    case "www.trxs.cc":
-    case "www.trxs123.com":
-    case "www.jpxs123.com": {
-      const { trxs } = await import("./rules/simple/trxs");
-      ruleClass = trxs();
-      break;
-    }
-    case "www.tongrenquan.org":
-    case "www.tongrenquan.me": {
-      const { tongrenquan } = await import("./rules/simple/trxs");
-      ruleClass = tongrenquan();
-      break;
-    }
-    case "www.imiaobige.com": {
-      const { imiaobige } = await import("./rules/imiaobige");
-      ruleClass = imiaobige;
-      break;
-    }
-    case "www.256wxc.com": {
-      const { c256wxc } = await import("./rules/simple/256wxc");
-      ruleClass = c256wxc;
-      break;
-    }
-    case regExpMatch(/lofter\.com$/): {
-      const { lofter } = await import("./rules/lofter");
-      ruleClass = lofter;
-      break;
-    }
-    case "www.lwxs9.org": {
-      const { lwxs9 } = await import("./rules/biquge");
-      ruleClass = lwxs9();
-      break;
-    }
-    case "www.shubl.com": {
-      const { shubl } = await import("./rules/shubl");
-      ruleClass = shubl;
-      break;
-    }
-    case "www.ujxs.net": {
-      const { ujxs } = await import("./rules/ujxs");
-      ruleClass = ujxs;
-      break;
-    }
-    case "m.haitangtxt.net": {
-      const { haitangtxt } = await import("./rules/haitangtxt");
-      ruleClass = haitangtxt;
-      break;
-    }
-    default: {
-      throw new Error("Not Found Rule!");
-    }
-  }
-  const rule = new ruleClass();
-  return rule;
+      const confirmExit = (e: BeforeUnloadEvent) => {
+        e.preventDefault();
+        const confirmationText =
+          "您正尝试离开本页面，当前页面有下载任务正在运行，是否确认离开？";
+        return (e.returnValue = confirmationText);
+      };
+      window.onbeforeunload = confirmExit;
 
-  function regExpMatch(regexp: RegExp) {
-    if (regexp.test(host)) {
-      return host;
+      (window as newWindow & typeof globalThis).downloading = true;
+
+      return true;
+    }
+    function postCallback() {
+      if (
+        enableCustomFinishCallback &&
+        typeof (<newUnsafeWindow>unsafeWindow).customFinishCallback ===
+          "function"
+      ) {
+        const customFinishCallback = (<newUnsafeWindow>unsafeWindow)
+          .customFinishCallback;
+        log.info(
+          `发现自定义结束回调函数，内容如下：\n${customFinishCallback.toString()}`
+        );
+        customFinishCallback();
+      }
+    }
+    function postHook() {
+      const storage = (window as newWindow & typeof globalThis).customStorage;
+      const workStatus: workStatusObj | null = storage.get(workStatusKeyName);
+      if (workStatus) {
+        delete workStatus[document.location.href];
+      }
+
+      clearAttachmentClassCache();
+
+      self.audio?.pause();
+      self.audio?.remove();
+
+      window.onbeforeunload = null;
+      (window as newWindow & typeof globalThis).downloading = false;
+
+      const progress = (window as newWindow & typeof globalThis).progress;
+      if (progress) {
+        progress.reset();
+      }
+
+      return true;
+    }
+    function catchError(error: Error) {
+      log.error(error);
+      log.trace(error);
+
+      postHook();
+
+      if (!(error instanceof ExpectError)) {
+        document.getElementById("novel-downloader")?.remove();
+        log.error(
+          "运行过程出错，请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/yingziwu/novel-downloader"
+        );
+
+        failedPlus();
+        alert(
+          "运行过程出错，请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/yingziwu/novel-downloader"
+        );
+        saveLogTextToFile();
+      }
+    }
+    function getSave(book: Book) {
+      log.debug("[run]保存数据");
+      if (
+        enableCustomSaveOptions &&
+        typeof (<newUnsafeWindow>unsafeWindow).saveOptions === "object" &&
+        saveOptionsValidate((<newUnsafeWindow>unsafeWindow).saveOptions)
+      ) {
+        const saveOptions = (<newUnsafeWindow>unsafeWindow).saveOptions;
+        log.info("[run]发现自定义保存参数，内容如下\n", saveOptions);
+        return getSaveBookObj(book, saveOptions);
+      } else {
+        return getSaveBookObj(book, {});
+      }
+    }
+    function getChapters(book: Book) {
+      function isEnable() {
+        if (
+          enableCustomChapterFilter &&
+          typeof (<newUnsafeWindow>unsafeWindow).chapterFilter === "function"
+        ) {
+          let text =
+            "[initChapters]发现自定义筛选函数，自定义筛选函数内容如下：\n";
+          text += (<newUnsafeWindow>unsafeWindow).chapterFilter.toString();
+          log.info(text);
+          return true;
+        } else {
+          return false;
+        }
+      }
+
+      function _filter(chapter: Chapter) {
+        let b = true;
+        try {
+          const u = (<newUnsafeWindow>unsafeWindow).chapterFilter(chapter);
+          if (typeof u === "boolean") {
+            b = u;
+          }
+        } catch (error) {
+          log.error("运行自定义筛选函数时出错。", error);
+          log.trace(error);
+        }
+        return b;
+      }
+
+      let chapters = book.chapters.filter(
+        (chapter) => chapter.status === Status.pending
+      );
+      const enabled = isEnable();
+      if (enabled) {
+        log.debug("[initChapters]筛选需下载章节");
+        chapters = chapters.filter((chapter) => _filter(chapter));
+      }
+      return chapters;
+    }
+    async function initChapters(book: Book, saveBookObj: saveBook) {
+      log.info(`[initChapters]开始初始化章节`);
+      const chapters = getChapters(book);
+      if (chapters.length === 0) {
+        log.error(`[initChapters]初始化章节出错，未找到需初始化章节`);
+        return [];
+      }
+      const progress = (window as newWindow & typeof globalThis).progress;
+      if (progress) {
+        progress.totalChapterNumber = chapters.length;
+      }
+
+      if (self.concurrencyLimit === 1) {
+        for (let chapter of chapters) {
+          try {
+            const obj = await chapter.init();
+            afterGetChpater(obj);
+          } catch (error) {
+            log.error(error);
+            log.trace(error);
+          }
+        }
+      } else {
+        await concurrencyRun(
+          chapters,
+          self.concurrencyLimit,
+          (curChapter: Chapter) => {
+            if (curChapter === undefined) {
+              return Promise.resolve();
+            }
+            return curChapter
+              .init()
+              .then((obj) => {
+                afterGetChpater(obj);
+              })
+              .catch((error) => {
+                log.error(error);
+                log.trace(error);
+              });
+          }
+        );
+      }
+      log.info(`[initChapters]章节初始化完毕`);
+      return chapters;
+
+      function afterGetChpater(chapter: Chapter) {
+        const storage = (window as newWindow & typeof globalThis).customStorage;
+        let workStatus: workStatusObj = storage.get(workStatusKeyName);
+        if (workStatus) {
+          workStatus[document.location.href] = true;
+        } else {
+          workStatus = {};
+          workStatus[document.location.href] = true;
+        }
+        storage.set(workStatusKeyName, workStatus, 20);
+
+        if (chapter.contentHTML !== undefined) {
+          saveBookObj.addChapter(chapter);
+          const progress = (window as newWindow & typeof globalThis).progress;
+          if (progress) {
+            progress.finishedChapterNumber++;
+          }
+        }
+        return chapter;
+      }
+    }
+
+    try {
+      const _ = preHook();
+      if (!_) return;
+
+      self.book = await self.bookParse();
+      const saveBookObj = getSave(self.book);
+      await initChapters(self.book, saveBookObj);
+
+      log.debug("[run]开始保存文件");
+      saveBookObj.saveTxt();
+      await saveBookObj.saveZip(false);
+
+      postHook();
+      postCallback();
+      successPlus();
+      printStat();
+      return self.book;
+    } catch (error) {
+      catchError(error);
     }
   }
 }

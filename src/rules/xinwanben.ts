@@ -1,13 +1,11 @@
 import { BookAdditionalMetadate, Chapter, Book } from "../main";
-import { ruleClass } from "../rules";
-import { getImageAttachment } from "../lib";
+import { BaseRuleClass } from "../rules";
+import { getImageAttachment } from "../lib/attachments";
 import { introDomHandle, nextPageParse } from "./lib/common";
 
-export class xinwanben implements ruleClass {
-  public imageMode: "naive" | "TM";
-  public charset: string;
-
+export class xinwanben extends BaseRuleClass {
   public constructor() {
+    super();
     this.imageMode = "TM";
     this.charset = "GBK";
   }

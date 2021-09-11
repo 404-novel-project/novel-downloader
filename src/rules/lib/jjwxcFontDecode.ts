@@ -1,6 +1,6 @@
-import { jjwxcFontTables, jjwxcFontTable } from "./jjwxcFontTables";
-import { enableJjwxcRemoteFont } from "../../rules";
+import { enableJjwxcRemoteFont } from "../../setting";
 import { log } from "../../log";
+import { newWindow } from "../../global";
 
 export async function replaceJjwxcCharacter(
   fontName: string,
@@ -19,6 +19,7 @@ export async function replaceJjwxcCharacter(
 }
 
 async function getJjwxcFontTable(fontName: string) {
+  const jjwxcFontTables = await getJjwxcFontTables();
   const jjwxcFontTableLocal = jjwxcFontTables[fontName];
   if (jjwxcFontTableLocal) {
     return jjwxcFontTableLocal;
@@ -46,5 +47,39 @@ async function fetchRemoteFont(fontName: string) {
     log.error(error);
     log.info(`[jjwxc-font]远程字体对照表 ${fontName} 下载失败`);
     return undefined;
+  }
+}
+
+interface jjwxcFontTable {
+  [index: string]: string;
+}
+interface jjwxcFontTables {
+  [index: string]: jjwxcFontTable;
+}
+async function getJjwxcFontTables(): Promise<jjwxcFontTables> {
+  const JjwxcFontTablesKeyName = "novel-downloader-jjwxcFontTables";
+  const JjwxcFontTablesUrl =
+    "https://cdn.jsdelivr.net/gh/yingziwu/jjwxcFontTables@gh-pages/bundle.json";
+
+  const storage = (window as newWindow & typeof globalThis).customStorage;
+  let _jjwxcFontTables: undefined | jjwxcFontTables = storage.get(
+    JjwxcFontTablesKeyName
+  );
+  if (_jjwxcFontTables) {
+    return _jjwxcFontTables;
+  } else {
+    try {
+      log.info("[jjwxc-font]开始下载字体对照表打包文件。");
+      const resp = await fetch(JjwxcFontTablesUrl);
+      _jjwxcFontTables = await resp.json();
+      if (_jjwxcFontTables) {
+        storage.set(JjwxcFontTablesKeyName, _jjwxcFontTables, 86400);
+        return _jjwxcFontTables;
+      } else {
+        return {};
+      }
+    } catch (error) {
+      return {};
+    }
   }
 }

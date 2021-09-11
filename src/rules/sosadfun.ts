@@ -1,11 +1,11 @@
 import { BookAdditionalMetadate, Chapter, Book, ExpectError } from "../main";
-import { getHtmlDOM, cleanDOM } from "../lib";
-import { ruleClass } from "../rules";
+import { cleanDOM } from "../lib/cleanDOM";
+import { getHtmlDOM } from "../lib/http";
+import { BaseRuleClass } from "../rules";
 
-export class sosadfun implements ruleClass {
-  public imageMode: "naive" | "TM";
-
+export class sosadfun extends BaseRuleClass {
   public constructor() {
+    super();
     this.imageMode = "TM";
   }
 

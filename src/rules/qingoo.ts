@@ -1,13 +1,14 @@
 import { BookAdditionalMetadate, Chapter, Book, Status } from "../main";
-import { ruleClass } from "../rules";
-import { getHtmlDOM, cleanDOM, getImageAttachment, rm } from "../lib";
+import { BaseRuleClass } from "../rules";
+import { rm } from "../lib/misc";
+import { cleanDOM } from "../lib/cleanDOM";
+import { getImageAttachment } from "../lib/attachments";
+import { getHtmlDOM } from "../lib/http";
 import { introDomHandle } from "./lib/common";
 
-export class qingoo implements ruleClass {
-  public imageMode: "naive" | "TM";
-  public charset: string;
-
+export class qingoo extends BaseRuleClass {
   public constructor() {
+    super();
     this.imageMode = "TM";
     this.charset = "UTF-8";
   }

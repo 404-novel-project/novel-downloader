@@ -1,12 +1,14 @@
 import { BookAdditionalMetadate, Chapter, Book } from "../main";
-import { getHtmlDOM, cleanDOM, rm, getImageAttachment } from "../lib";
-import { ruleClass } from "../rules";
+import { rm } from "../lib/misc";
+import { cleanDOM } from "../lib/cleanDOM";
+import { getImageAttachment } from "../lib/attachments";
+import { getHtmlDOM } from "../lib/http";
+import { BaseRuleClass } from "../rules";
 import { introDomHandle } from "./lib/common";
 
-export class westnovel implements ruleClass {
-  public imageMode: "naive" | "TM";
-
+export class westnovel extends BaseRuleClass {
   public constructor() {
+    super();
     this.imageMode = "TM";
   }
 

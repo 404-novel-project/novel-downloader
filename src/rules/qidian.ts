@@ -1,20 +1,16 @@
 import { BookAdditionalMetadate, Chapter, Status, Book } from "../main";
-import {
-  ggetHtmlDOM,
-  cleanDOM,
-  sleep,
-  gfetch,
-  getImageAttachment,
-} from "../lib";
-import { ruleClass, chapterParseObject } from "../rules";
+import { sleep } from "../lib/misc";
+import { cleanDOM } from "../lib/cleanDOM";
+import { gfetch } from "../lib/http";
+import { getImageAttachment } from "../lib/attachments";
+import { ggetHtmlDOM } from "../lib/http";
+import { BaseRuleClass, chapterParseObject } from "../rules";
 import { introDomHandle } from "./lib/common";
 import { log } from "../log";
 
-export class qidian implements ruleClass {
-  public imageMode: "naive" | "TM";
-  public concurrencyLimit: number;
-
+export class qidian extends BaseRuleClass {
   public constructor() {
+    super();
     this.imageMode = "TM";
     this.concurrencyLimit = 5;
   }
