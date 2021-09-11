@@ -88,10 +88,14 @@ export async function getRule(): Promise<BaseRuleClass> {
     }
     case "www.biquwoo.com":
     case "www.biquwo.org":
-    case "www.81book.com":
     case "www.hongyeshuzhai.com": {
       const { common } = await import("./rules/biquge");
       ruleClass = common();
+      break;
+    }
+    case "www.81book.com": {
+      const { c81book } = await import("./rules/biquge");
+      ruleClass = c81book();
       break;
     }
     case "book.zongheng.com":

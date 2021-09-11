@@ -1,6 +1,6 @@
 import { BookAdditionalMetadate, Chapter, Book } from "../main";
 import { BaseRuleClass, chapterParseObject } from "../rules";
-import { PublicConstructor, rm } from "../lib/misc";
+import { PublicConstructor, rm, sleep } from "../lib/misc";
 import { cleanDOM } from "../lib/cleanDOM";
 import { getImageAttachment } from "../lib/attachments";
 import { getHtmlDOM } from "../lib/http";
@@ -219,6 +219,15 @@ export const common = () =>
     (content) => content
   );
 
+export const c81book = () => {
+  const c = mkBiqugeClass(
+    (introDom) => introDom,
+    (content) => content
+  );
+  ((c as unknown) as BaseRuleClass).concurrencyLimit = 1;
+  return c;
+};
+
 export const gebiqu = () =>
   mkBiqugeClass(
     (introDom) => {
@@ -317,11 +326,11 @@ function mkBiqugeClass2(
   };
 }
 
-export const shuquge = () =>
-  mkBiqugeClass2(
+export const shuquge = () => {
+  const c = mkBiqugeClass2(
     (introDom) => {
       introDom.innerHTML = introDom.innerHTML.replace(
-        /推荐地址：http:\/\/www.shuquge.com\/txt\/\d+\/index\.html/g,
+        /推荐地址：https?:\/\/www.shuquge.com\/txt\/\d+\/index\.html/g,
         ""
       );
       return introDom;
@@ -332,10 +341,13 @@ export const shuquge = () =>
           "请记住本书首发域名：www.shuquge.com。书趣阁_笔趣阁手机版阅读网址：m.shuquge.com",
           ""
         )
-        .replace(/http:\/\/www.shuquge.com\/txt\/\d+\/\d+\.html/, "");
+        .replace(/https?:\/\/www.shuquge.com\/txt\/\d+\/\d+\.html/, "");
       return content;
     }
   );
+  ((c as unknown) as BaseRuleClass).concurrencyLimit = 1;
+  return c;
+};
 
 export const xyqxs = () =>
   mkBiqugeClass2(
