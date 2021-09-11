@@ -1,10 +1,7 @@
 import { Book } from "../main";
-import { ruleClass } from "../rules";
-import { saveOptions } from "../index_helper";
-export declare class fushuwang implements ruleClass {
-    imageMode: "naive" | "TM";
-    charset: string;
-    maxRunLimit: number;
+import { BaseRuleClass } from "../rules";
+import { saveOptions } from "../save";
+export declare class fushuwang extends BaseRuleClass {
     saveOptions: saveOptions;
     constructor();
     bookParse(): Promise<Book>;

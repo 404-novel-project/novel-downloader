@@ -1,6 +1,5 @@
-import { ruleClass } from "../rules";
-export declare class mht implements ruleClass {
-    imageMode: "naive" | "TM";
+import { BaseRuleClass } from "../rules";
+export declare class mht extends BaseRuleClass {
     constructor();
     bookParse(): Promise<import("../main").Book>;
     chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean, charset: string, options: object): Promise<{

@@ -1,8 +1,6 @@
 import { Book } from "../main";
-import { ruleClass } from "../rules";
-export declare class dierbanzhu implements ruleClass {
-    imageMode: "naive" | "TM";
-    charset: string;
+import { BaseRuleClass } from "../rules";
+export declare class dierbanzhu extends BaseRuleClass {
     constructor();
     bookParse(): Promise<Book>;
     chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean, charset: string, options: object): Promise<{

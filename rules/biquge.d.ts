@@ -1,5 +1,6 @@
 import { Book } from "../main";
-import { ruleClass, chapterParseObject } from "../rules";
+import { BaseRuleClass, chapterParseObject } from "../rules";
+import { PublicConstructor } from "../lib/misc";
 export declare function bookParseTemp({ bookUrl, bookname, author, introDom, introDomPatch, coverUrl, chapterListSelector, charset, chapterParse, }: {
     bookUrl: string;
     bookname: string;
@@ -9,59 +10,16 @@ export declare function bookParseTemp({ bookUrl, bookname, author, introDom, int
     coverUrl: string;
     chapterListSelector: string;
     charset: string;
-    chapterParse: ruleClass["chapterParse"];
+    chapterParse: BaseRuleClass["chapterParse"];
 }): Promise<Book>;
-export declare const common: () => {
-    new (): {
-        imageMode: "naive" | "TM";
-        charset: string;
-        bookParse(): Promise<Book>;
-        chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean, charset: string, options: object): Promise<chapterParseObject>;
-    };
-};
-export declare const gebiqu: () => {
-    new (): {
-        imageMode: "naive" | "TM";
-        charset: string;
-        bookParse(): Promise<Book>;
-        chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean, charset: string, options: object): Promise<chapterParseObject>;
-    };
-};
-export declare const luoqiuzw: () => {
-    new (): {
-        imageMode: "naive" | "TM";
-        charset: string;
-        bookParse(): Promise<Book>;
-        chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean, charset: string, options: object): Promise<chapterParseObject>;
-    };
-};
-export declare const lwxs9: () => {
-    new (): {
-        imageMode: "naive" | "TM";
-        charset: string;
-        bookParse(): Promise<Book>;
-        chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean, charset: string, options: object): Promise<chapterParseObject>;
-    };
-};
-export declare const shuquge: () => {
-    new (): {
-        imageMode: "naive" | "TM";
-        charset: string;
-        bookParse(): Promise<Book>;
-        chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean, charset: string, options: object): Promise<chapterParseObject>;
-    };
-};
-export declare const xyqxs: () => {
-    new (): {
-        imageMode: "naive" | "TM";
-        charset: string;
-        bookParse(): Promise<Book>;
-        chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean, charset: string, options: object): Promise<chapterParseObject>;
-    };
-};
-export declare class xbiquge implements ruleClass {
-    imageMode: "naive" | "TM";
-    charset: string;
+export declare const common: () => PublicConstructor<BaseRuleClass>;
+export declare const c81book: () => PublicConstructor<BaseRuleClass>;
+export declare const gebiqu: () => PublicConstructor<BaseRuleClass>;
+export declare const luoqiuzw: () => PublicConstructor<BaseRuleClass>;
+export declare const lwxs9: () => PublicConstructor<BaseRuleClass>;
+export declare const shuquge: () => PublicConstructor<BaseRuleClass>;
+export declare const xyqxs: () => PublicConstructor<BaseRuleClass>;
+export declare class xbiquge extends BaseRuleClass {
     constructor();
     bookParse(): Promise<Book>;
     chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean, charset: string, options: object): Promise<chapterParseObject>;

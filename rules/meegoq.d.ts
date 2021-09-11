@@ -1,9 +1,6 @@
 import { Book } from "../main";
-import { ruleClass } from "../rules";
-export declare class meegoq implements ruleClass {
-    imageMode: "naive" | "TM";
-    concurrencyLimit: number;
-    charset: string;
+import { BaseRuleClass } from "../rules";
+export declare class meegoq extends BaseRuleClass {
     constructor();
     bookParse(): Promise<Book>;
     chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean, charset: string, options: object): Promise<{

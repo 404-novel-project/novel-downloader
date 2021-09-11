@@ -1,8 +1,6 @@
 import { Book } from "../main";
-import { ruleClass } from "../rules";
-export declare class idejian implements ruleClass {
-    imageMode: "naive" | "TM";
-    maxRunLimit: number;
+import { BaseRuleClass } from "../rules";
+export declare class idejian extends BaseRuleClass {
     constructor();
     bookParse(): Promise<Book>;
     chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean, charset: string, options: object): Promise<{
