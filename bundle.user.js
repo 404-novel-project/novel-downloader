@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.0.0.1631387661808
+// @version        4.0.0.1631419796995
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -15,7 +15,7 @@
 // @match          *://www.17k.com/list/*.html
 // @match          *://www.shuhai.com/book/*.htm
 // @match          *://mm.shuhai.com/book/*.htm
-// @match          *://www.tadu.com/book/catalogue/*
+// @match          *://www.tadu.com/book/*
 // @match          *://www.qimao.com/shuku/*/
 // @match          *://sosad.fun/threads/*/profile*
 // @match          *://wenzhan.org/threads/*/profile*
@@ -102,7 +102,7 @@
 // @namespace      https://blog.bgme.me
 // @icon           https://cdn.jsdelivr.net/gh/yingziwu/novel-downloader/assets/icon.png
 // @license        AGPL-3.0
-// @run-at         document-end
+// @run-at         document-idle
 // @noframes       true
 // @compatible     Firefox 77+
 // @compatible     Chrome 85+
@@ -135,12 +135,10 @@
 // @exclude        *://m.haitangtxt.net/top/*/
 // @exclude        *://m.haitangtxt.net/full/*/
 // @exclude        *://m.haitangtxt.net/book/*/
+// @exclude        *://www.tadu.com/book/*/*/
 // @grant          unsafeWindow
 // @grant          GM_info
 // @grant          GM_xmlhttpRequest
-// @grant          GM_getTab
-// @grant          GM_saveTab
-// @grant          GM_getTabs
 // @grant          GM_setValue
 // @grant          GM_getValue
 // @grant          GM_deleteValue
@@ -4258,7 +4256,12 @@ loglevel_1.default.methodFactory = function (methodName, logLevel, loggerName) {
     return function (message) {
         try {
             if (typeof message === "object") {
-                logText += JSON.stringify(message, undefined, 2) + "\n";
+                if (message instanceof Error) {
+                    logText += message.stack;
+                }
+                else {
+                    logText += JSON.stringify(message, undefined, 2) + "\n";
+                }
             }
             else {
                 logText += message + "\n";
@@ -5408,7 +5411,7 @@ const common = () => mkBiqugeClass((introDom) => introDom, (content) => content)
 exports.common = common;
 const c81book = () => {
     const c = mkBiqugeClass((introDom) => introDom, (content) => content);
-    c.concurrencyLimit = 1;
+    c.concurrencyLimit = 10;
     return c;
 };
 exports.c81book = c81book;
@@ -10544,23 +10547,20 @@ class tadu extends rules_1.BaseRuleClass {
         this.concurrencyLimit = 5;
     }
     async bookParse() {
-        let bookUrl = document.location.href.replace("catalogue/", "");
-        const bookname = (document.querySelector("div.boxCenter > h1")).innerText.trim();
-        const author = (document.querySelector(".itct > span:nth-child(1)")).innerText
-            .replace("作者：", "")
-            .trim();
-        const doc = await http_2.getHtmlDOM(bookUrl, undefined);
-        const introDom = (doc.querySelector("div.boxCenter.bookIntro > div > p:nth-child(4)"));
+        let bookUrl = document.location.href;
+        const bookname = (document.querySelector("div.bookNm > a.bkNm")).innerText.trim();
+        const author = (document.querySelector("div.authorInfo > a.author > span")).innerText.trim();
+        const introDom = (document.querySelector("div.boxCenter.boxT.clearfix > div.lf.lfO > p.intro"));
         const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom);
         const additionalMetadate = {};
-        const coverUrl = (doc.querySelector("a.bookImg > img")).getAttribute("data-src");
+        const coverUrl = (document.querySelector("a.bookImg > img")).getAttribute("data-src");
         if (coverUrl) {
             attachments_1.getImageAttachment(coverUrl, this.imageMode, "cover-").then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             });
         }
         const chapters = [];
-        const cos = document.querySelectorAll("div.chapter > a");
+        const cos = document.querySelectorAll("div.lf.lfT > li > div > a");
         let chapterNumber = 0;
         for (const aElem of Array.from(cos)) {
             chapterNumber++;
@@ -12661,16 +12661,6 @@ const setting_1 = __webpack_require__("./src/setting.ts");
 const GM_1 = __webpack_require__("./src/lib/GM.ts");
 const log_1 = __webpack_require__("./src/log.ts");
 const global_1 = __webpack_require__("./src/global.ts");
-const buttonStyleText = `position: fixed;
-top: 15%;
-right: 5%;
-z-index: 2147483647;
-border-style: none;
-text-align:center;
-vertical-align:baseline;
-background-color: rgba(128, 128, 128, 0.2);
-padding: 5px;
-border-radius: 12px;`;
 function printEnvironments() {
     if (GM_1._GM_info) {
         log_1.log.info(`开始载入小说下载器……
@@ -12691,14 +12681,24 @@ async function run() {
     await ruleClass.run();
 }
 function addButton() {
-    let button = document.createElement("button");
+    const buttonStyleText = `position: fixed;
+top: 15%;
+right: 5%;
+z-index: 2147483647;
+border-style: none;
+text-align:center;
+vertical-align:baseline;
+background-color: rgba(128, 128, 128, 0.2);
+padding: 5px;
+border-radius: 12px;`;
+    const button = document.createElement("button");
     button.id = "novel-downloader";
     button.style.cssText = buttonStyleText;
-    let img = document.createElement("img");
+    const img = document.createElement("img");
     img.src = setting_1.icon0;
     img.style.cssText = "height: 2em;";
     button.onclick = function () {
-        if (downloading) {
+        if (window.downloading) {
             alert("正在下载中，请耐心等待……");
         }
         else {
@@ -12719,15 +12719,22 @@ async function debug() {
     unsafeWindow.saveAs = saveAs;
     return;
 }
-let downloading = false;
-window.addEventListener("DOMContentLoaded", () => {
+function main() {
     printEnvironments();
     global_1.init();
     addButton();
     if (setting_1.enaleDebug) {
         debug();
     }
-});
+}
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", (event) => {
+        main();
+    });
+}
+else {
+    main();
+}
 
 })();
 

@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.0.0.1631387661808
+// @version        4.0.0.1631419796995
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -15,7 +15,7 @@
 // @match          *://www.17k.com/list/*.html
 // @match          *://www.shuhai.com/book/*.htm
 // @match          *://mm.shuhai.com/book/*.htm
-// @match          *://www.tadu.com/book/catalogue/*
+// @match          *://www.tadu.com/book/*
 // @match          *://www.qimao.com/shuku/*/
 // @match          *://sosad.fun/threads/*/profile*
 // @match          *://wenzhan.org/threads/*/profile*
@@ -102,7 +102,7 @@
 // @namespace      https://blog.bgme.me
 // @icon           https://cdn.jsdelivr.net/gh/yingziwu/novel-downloader/assets/icon.png
 // @license        AGPL-3.0
-// @run-at         document-end
+// @run-at         document-idle
 // @noframes       true
 // @compatible     Firefox 77+
 // @compatible     Chrome 85+
@@ -135,12 +135,10 @@
 // @exclude        *://m.haitangtxt.net/top/*/
 // @exclude        *://m.haitangtxt.net/full/*/
 // @exclude        *://m.haitangtxt.net/book/*/
+// @exclude        *://www.tadu.com/book/*/*/
 // @grant          unsafeWindow
 // @grant          GM_info
 // @grant          GM_xmlhttpRequest
-// @grant          GM_getTab
-// @grant          GM_saveTab
-// @grant          GM_getTabs
 // @grant          GM_setValue
 // @grant          GM_getValue
 // @grant          GM_deleteValue

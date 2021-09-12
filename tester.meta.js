@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        小说下载器测试脚本
-// @version     4.0.0.1631387668211
+// @version     4.0.0.1631419802889
 // @author      bgme
 // @description 小说下载器测试脚本
 // @match       *://www.ciweimao.com/chapter-list/*
@@ -14,7 +14,7 @@
 // @match       *://www.17k.com/list/*.html
 // @match       *://www.shuhai.com/book/*.htm
 // @match       *://mm.shuhai.com/book/*.htm
-// @match       *://www.tadu.com/book/catalogue/*
+// @match       *://www.tadu.com/book/*
 // @match       *://www.qimao.com/shuku/*/
 // @match       *://sosad.fun/threads/*/profile*
 // @match       *://wenzhan.org/threads/*/profile*
@@ -128,6 +128,7 @@
 // @exclude     *://m.haitangtxt.net/top/*/
 // @exclude     *://m.haitangtxt.net/full/*/
 // @exclude     *://m.haitangtxt.net/book/*/
+// @exclude     *://www.tadu.com/book/*/*/
 // @grant       unsafeWindow
 // @grant       GM_openInTab
 // @grant       window.close
