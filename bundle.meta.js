@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.0.0.1631425344179
+// @version        4.0.0.1631475619936
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -135,7 +135,7 @@
 // @exclude        *://m.haitangtxt.net/top/*/
 // @exclude        *://m.haitangtxt.net/full/*/
 // @exclude        *://m.haitangtxt.net/book/*/
-// @exclude        *://www.tadu.com/book/*/*/
+// @exclude        *://www.tadu.com/book/*/*
 // @grant          unsafeWindow
 // @grant          GM_info
 // @grant          GM_xmlhttpRequest
@@ -192,6 +192,7 @@
 // @connect        toutiaoimg.com
 // @connect        imgdb.cn
 // @connect        meego.cn
+// @connect        poco.cn
 // @connect        *
 // @require        https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js#sha512-Qlv6VSKh1gDKGoJbnyA5RMXYcvnpIqhO++MhIM2fStMcGT9i2T//tSwYFlcyoRRDcDZ+TYHpH8azBBCyhpSeqw==
 // @require        https://cdn.jsdelivr.net/npm/crypto-js@4.0.0/crypto-js.js#sha512-t4HzsbLJw+4jV+nmiiIsz/puioH2aKIjuI1ho1NIqJAJ2GNVLPTy51IklYefYdrkRE583KEzTcgmO5Wb6jVgYw==

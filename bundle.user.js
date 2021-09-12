@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.0.0.1631425344179
+// @version        4.0.0.1631475619936
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -135,7 +135,7 @@
 // @exclude        *://m.haitangtxt.net/top/*/
 // @exclude        *://m.haitangtxt.net/full/*/
 // @exclude        *://m.haitangtxt.net/book/*/
-// @exclude        *://www.tadu.com/book/*/*/
+// @exclude        *://www.tadu.com/book/*/*
 // @grant          unsafeWindow
 // @grant          GM_info
 // @grant          GM_xmlhttpRequest
@@ -192,6 +192,7 @@
 // @connect        toutiaoimg.com
 // @connect        imgdb.cn
 // @connect        meego.cn
+// @connect        poco.cn
 // @connect        *
 // @require        https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js#sha512-Qlv6VSKh1gDKGoJbnyA5RMXYcvnpIqhO++MhIM2fStMcGT9i2T//tSwYFlcyoRRDcDZ+TYHpH8azBBCyhpSeqw==
 // @require        https://cdn.jsdelivr.net/npm/crypto-js@4.0.0/crypto-js.js#sha512-t4HzsbLJw+4jV+nmiiIsz/puioH2aKIjuI1ho1NIqJAJ2GNVLPTy51IklYefYdrkRE583KEzTcgmO5Wb6jVgYw==
@@ -3067,6 +3068,54 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*
 
 /***/ }),
 
+/***/ "./src/detect.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.environments = void 0;
+const GM_1 = __webpack_require__("./src/lib/GM.ts");
+const misc_1 = __webpack_require__("./src/lib/misc.ts");
+const setting_1 = __webpack_require__("./src/setting.ts");
+function check(name) {
+    const target = window[name];
+    const targetLength = target.toString().length;
+    const targetPrototype = target["prototype"];
+    try {
+        [targetPrototype == 0, targetPrototype.toString().indexOf("native") != -1];
+    }
+    catch {
+        return [true, targetLength].join(",");
+    }
+    return [false, targetLength].join(",");
+}
+exports.environments = {
+    当前时间: new Date().toISOString(),
+    当前页URL: document.location.href,
+    当前页Referrer: document.referrer,
+    浏览器UA: navigator.userAgent,
+    浏览器语言: navigator.languages,
+    设备运行平台: navigator.platform,
+    设备内存: navigator.deviceMemory ?? "",
+    CPU核心数: navigator.hardwareConcurrency,
+    eval: check("eval"),
+    fetch: check("fetch"),
+    XMLHttpRequest: check("XMLHttpRequest"),
+    window: Object.keys(window).length,
+    localStorage: misc_1.storageAvailable("localStorage"),
+    sessionStorage: misc_1.storageAvailable("sessionStorage"),
+    Cookie: navigator.cookieEnabled,
+    doNotTrack: navigator.doNotTrack ?? 0,
+    scriptHandler: GM_1._GM_info.scriptHandler,
+    version: GM_1._GM_info.version,
+    script: JSON.stringify(GM_1._GM_info.script),
+    enaleDebug: setting_1.enaleDebug,
+};
+
+
+/***/ }),
+
 /***/ "./src/global.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
@@ -4239,7 +4288,7 @@ exports.fflateZip = fflateZip;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.log = exports.saveLogTextToFile = void 0;
+exports.log = exports.saveLogTextToFile = exports.logText = void 0;
 const setting_1 = __webpack_require__("./src/setting.ts");
 const loglevel_1 = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 exports.log = loglevel_1.default;
@@ -4249,7 +4298,7 @@ if (setting_1.enaleDebug) {
 else {
     loglevel_1.default.setLevel("info");
 }
-let logText = "";
+exports.logText = "";
 const originalFactory = loglevel_1.default.methodFactory;
 loglevel_1.default.methodFactory = function (methodName, logLevel, loggerName) {
     const rawMethod = originalFactory(methodName, logLevel, loggerName);
@@ -4257,14 +4306,14 @@ loglevel_1.default.methodFactory = function (methodName, logLevel, loggerName) {
         try {
             if (typeof message === "object") {
                 if (message instanceof Error) {
-                    logText += message.stack;
+                    exports.logText += message.stack;
                 }
                 else {
-                    logText += JSON.stringify(message, undefined, 2) + "\n";
+                    exports.logText += JSON.stringify(message, undefined, 2) + "\n";
                 }
             }
             else {
-                logText += message + "\n";
+                exports.logText += message + "\n";
             }
         }
         catch (error) { }
@@ -4273,7 +4322,7 @@ loglevel_1.default.methodFactory = function (methodName, logLevel, loggerName) {
 };
 loglevel_1.default.setLevel(loglevel_1.default.getLevel());
 function saveLogTextToFile() {
-    saveAs(new Blob([logText], { type: "text/plain; charset=UTF-8" }), `novel-downloader-${Date.now().toString()}.log`);
+    saveAs(new Blob([exports.logText], { type: "text/plain; charset=UTF-8" }), `novel-downloader-${Date.now().toString()}.log`);
 }
 exports.saveLogTextToFile = saveLogTextToFile;
 
@@ -8998,6 +9047,11 @@ class qidian extends rules_1.BaseRuleClass {
         this.concurrencyLimit = 5;
     }
     async bookParse() {
+        const bookId = document.getElementById("bookImg")?.getAttribute("data-bid");
+        const authorId = document
+            .getElementById("authorId")
+            ?.getAttribute("data-authorid");
+        const _csrfToken = unsafeWindow.jQuery.ajaxSettings.data._csrfToken;
         const bookUrl = document.location.href;
         const bookname = (document.querySelector(".book-info > h1 > em")).innerText.trim();
         const author = (document.querySelector(".book-info .writer")).innerText
@@ -9062,7 +9116,13 @@ class qidian extends rules_1.BaseRuleClass {
                     }
                     return false;
                 };
-                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), isPaid(), sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, "UTF-8", {});
+                const chapterId = chapterUrl.split("/").slice(-1)[0];
+                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), isPaid(), sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, "UTF-8", {
+                    _csrfToken: _csrfToken,
+                    bookId: bookId,
+                    authorId: authorId,
+                    chapterId: chapterId,
+                });
                 const isLogin = () => {
                     const sign_in_dom = document.querySelector(".sign-in");
                     const sign_out_dom = document.querySelector(".sign-out");
@@ -9083,6 +9143,10 @@ class qidian extends rules_1.BaseRuleClass {
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+        const bookId = options.bookId;
+        const authorId = options.authorId;
+        const chapterId = options.chapterId;
+        const _csrfToken = options._csrfToken;
         async function publicChapter() {
             const dom = await http_2.ggetHtmlDOM(chapterUrl, charset);
             const chapterName = (dom.querySelector(".j_chapterName > .content-wrap")).innerText.trim();
@@ -9117,13 +9181,6 @@ class qidian extends rules_1.BaseRuleClass {
             }
         }
         async function vipChapter() {
-            const _csrfToken = unsafeWindow.jQuery.ajaxSettings.data
-                ._csrfToken;
-            const bookId = document.location.pathname.split("/").slice(-1)[0];
-            const authorId = document
-                .querySelector("#authorId")
-                ?.getAttribute("data-authorid");
-            const chapterId = chapterUrl.split("/").slice(-1)[0];
             async function getChapterInfo() {
                 const baseUrl = "https://vipreader.qidian.com/ajax/chapter/chapterInfo";
                 const search = new URLSearchParams({
@@ -9143,7 +9200,7 @@ class qidian extends rules_1.BaseRuleClass {
                     responseType: "json",
                 }).then((response) => response.response);
             }
-            if (isPaid) {
+            async function getByAPI() {
                 const chapterInfo = await getChapterInfo();
                 if (chapterInfo.code === 0) {
                     const authorSay = chapterInfo.data.chapterInfo.authorSay;
@@ -9166,6 +9223,32 @@ class qidian extends rules_1.BaseRuleClass {
                         contentImages: images,
                         additionalMetadate: null,
                     };
+                }
+                else {
+                    log_1.log.error(`[chapter]VIP章节API请求失败！\n${JSON.stringify(chapterInfo)}`);
+                    return {
+                        chapterName: chapterName,
+                        contentRaw: null,
+                        contentText: null,
+                        contentHTML: null,
+                        contentImages: null,
+                        additionalMetadate: null,
+                    };
+                }
+            }
+            if (isPaid) {
+                const _obj = await publicChapter();
+                const _contentRaw = _obj.contentRaw;
+                if (_contentRaw) {
+                    if (_contentRaw.querySelector(".vip-limit-wrap")) {
+                        return getByAPI();
+                    }
+                    else {
+                        return _obj;
+                    }
+                }
+                else {
+                    return getByAPI();
                 }
             }
             return {
@@ -12208,8 +12291,11 @@ a.disabled {
             }
         }
         log_1.log.info("[save]保存TXT文件");
-        const savedText = this.savedTextArray.join("\n");
+        const savedText = this.savedTextArray.join("\n").replaceAll("\n", "\r\n");
         saveAs(new Blob([savedText], { type: "text/plain;charset=utf-8" }), `${this.saveFileNameBase}.txt`);
+    }
+    saveLog() {
+        this.savedZip.file("debug.log", new Blob([log_1.logText], { type: "text/plain; charset=UTF-8" }));
     }
     saveZip(runSaveChapters = false) {
         log_1.log.debug("[save]保存元数据文本");
@@ -12235,6 +12321,7 @@ a.disabled {
         this.saveToC();
         log_1.log.info("[save]开始保存ZIP文件");
         const self = this;
+        self.saveLog();
         return new Promise((resolve, reject) => {
             const finalHandle = (blob) => {
                 saveAs(blob, `${self.saveFileNameBase}.zip`);
@@ -12662,23 +12749,12 @@ var __webpack_unused_export__;
 __webpack_unused_export__ = ({ value: true });
 const routers_1 = __webpack_require__("./src/routers.ts");
 const setting_1 = __webpack_require__("./src/setting.ts");
-const GM_1 = __webpack_require__("./src/lib/GM.ts");
 const log_1 = __webpack_require__("./src/log.ts");
 const global_1 = __webpack_require__("./src/global.ts");
+const detect_1 = __webpack_require__("./src/detect.ts");
 function printEnvironments() {
-    if (GM_1._GM_info) {
-        log_1.log.info(`开始载入小说下载器……
-当前浏览器UA：${navigator.userAgent}
-当前脚本管理器：${GM_1._GM_info.scriptHandler}
-当前脚本管理器版本：${GM_1._GM_info.version}
-当前脚本名称：${GM_1._GM_info.script.name}
-当前脚本版本：${GM_1._GM_info.script.version}
-当前脚本最后更新时间：${GM_1._GM_info.script.lastModified}
-是否处于隐私模式：${GM_1._GM_info.isIncognito}
-是否启用调试：${setting_1.enaleDebug}
-当前地址：${document.location.href}
-当前时间：${new Date().toISOString()}`);
-    }
+    log_1.log.info("开始载入小说下载器……");
+    Object.entries(detect_1.environments).forEach((kv) => log_1.log.info(kv.join("：")));
 }
 async function run() {
     const ruleClass = await routers_1.getRule();
@@ -12728,7 +12804,7 @@ function main() {
     global_1.init();
     addButton();
     if (setting_1.enaleDebug) {
-        debug();
+        setTimeout(debug, 3000);
     }
 }
 if (document.readyState === "loading") {

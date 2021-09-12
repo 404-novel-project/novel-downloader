@@ -11,6 +11,7 @@ export declare class saveBook {
     private _savedChapters;
     constructor(book: Book);
     saveTxt(): void;
+    saveLog(): void;
     saveZip(runSaveChapters?: boolean): Promise<void>;
     private saveToC;
     private saveChapters;
