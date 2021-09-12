@@ -8,23 +8,11 @@ import {
 } from "./lib/GM";
 import { log } from "./log";
 import { init, newUnsafeWindow, newWindow } from "./global";
+import { environments } from "./detect";
 
 function printEnvironments() {
-  if (_GM_info) {
-    log.info(
-      `开始载入小说下载器……
-当前浏览器UA：${navigator.userAgent}
-当前脚本管理器：${_GM_info.scriptHandler}
-当前脚本管理器版本：${_GM_info.version}
-当前脚本名称：${_GM_info.script.name}
-当前脚本版本：${_GM_info.script.version}
-当前脚本最后更新时间：${_GM_info.script.lastModified}
-是否处于隐私模式：${_GM_info.isIncognito}
-是否启用调试：${enaleDebug}
-当前地址：${document.location.href}
-当前时间：${new Date().toISOString()}`
-    );
-  }
+  log.info("开始载入小说下载器……");
+  Object.entries(environments).forEach((kv) => log.info(kv.join("：")));
 }
 
 async function run() {

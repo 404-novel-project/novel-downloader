@@ -178,7 +178,7 @@ a.disabled {
 
     log.info("[save]保存TXT文件");
     // 设置换行符为 CRLF，兼容旧版本Windows。
-    const savedText = this.savedTextArray.join("\r\n");
+    const savedText = this.savedTextArray.join("\n").replaceAll("\n", "\r\n");
     saveAs(
       new Blob([savedText], { type: "text/plain;charset=utf-8" }),
       `${this.saveFileNameBase}.txt`
@@ -226,17 +226,16 @@ a.disabled {
 
     log.info("[save]开始保存ZIP文件");
     const self = this;
+    self.saveLog();
 
     return new Promise((resolve, reject) => {
       const finalHandle = (blob: Blob) => {
         saveAs(blob, `${self.saveFileNameBase}.zip`);
-        self.saveLog();
         resolve();
       };
       const finalErrorHandle = (err: Error) => {
         log.error("saveZip: " + err);
         log.trace(err);
-        self.saveLog();
         reject(err);
       };
 
