@@ -46,9 +46,9 @@ ZIP压缩包，请在解压后，直接双击打开HTML文件（`index.html` 为
 |[塔读文学](https://www.tadu.com/)|✅|❌||
 |[七猫中文网](https://www.qimao.com/)|✅|❌||
 |[UU看书网](https://www.uukanshu.com/)|✅|❎||
-|[亿软网](http://www.yruan.com/)|✅|❎||
+|[亿软网](http://www.yruan.com/)|✅|❎|网站性能差，降低抓取频率，请耐心等待。|
 |[笔趣窝](http://www.biquwoo.com/)|✅|❎||
-|[书趣阁](http://www.shuquge.com/)|✅|❎||
+|[书趣阁](http://www.shuquge.com/)|✅|❎|网站性能差，降低抓取频率，请耐心等待。|
 |[顶点小说](https://www.dingdiann.net/)|✅|❎||
 |[星空中文](http://www.xkzw.org/)|✅|❎||
 |[乐文小说网](https://www.lewenn.com/)|✅|❎||
@@ -59,7 +59,7 @@ ZIP压缩包，请在解压后，直接双击打开HTML文件（`index.html` 为
 |[阁笔趣](http://www.gebiqu.com/)|✅|❎||
 |[米趣小说](http://www.viviyzw.com/)|✅|❎||
 |[书书网](https://www.xiaoshuodaquan.com/)|✅|❎||
-|[八一中文网](https://www.81book.com/)|✅|❎||
+|[八一中文网](https://www.81book.com/)|✅|❎|抓取速度慢，请耐心等待。|
 |[御书阁](http://m.yuzhaige.cc/)|✅|❎|部分文字被图片替换，请使用HTML版查看。|
 |[完本神站](https://www.xinwanben.com/)|✅|❎||
 |[得间小说](https://www.idejian.com/)|✅|❎||

@@ -8,6 +8,7 @@ export class yrun extends BaseRuleClass {
   public constructor() {
     super();
     this.imageMode = "TM";
+    this.concurrencyLimit = 1;
   }
 
   public async bookParse() {
