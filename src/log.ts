@@ -14,7 +14,11 @@ log.methodFactory = function (methodName, logLevel, loggerName) {
   return function (message) {
     try {
       if (typeof message === "object") {
-        logText += JSON.stringify(message, undefined, 2) + "\n";
+        if (message instanceof Error) {
+          logText += message.stack;
+        } else {
+          logText += JSON.stringify(message, undefined, 2) + "\n";
+        }
       } else {
         logText += message + "\n";
       }

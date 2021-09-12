@@ -7,18 +7,7 @@ import {
   _GM_setValue,
 } from "./lib/GM";
 import { log } from "./log";
-import { init, newUnsafeWindow } from "./global";
-
-const buttonStyleText = `position: fixed;
-top: 15%;
-right: 5%;
-z-index: 2147483647;
-border-style: none;
-text-align:center;
-vertical-align:baseline;
-background-color: rgba(128, 128, 128, 0.2);
-padding: 5px;
-border-radius: 12px;`;
+import { init, newUnsafeWindow, newWindow } from "./global";
 
 function printEnvironments() {
   if (_GM_info) {
@@ -44,16 +33,27 @@ async function run() {
 }
 
 function addButton() {
-  let button = document.createElement("button");
+  const buttonStyleText = `position: fixed;
+top: 15%;
+right: 5%;
+z-index: 2147483647;
+border-style: none;
+text-align:center;
+vertical-align:baseline;
+background-color: rgba(128, 128, 128, 0.2);
+padding: 5px;
+border-radius: 12px;`;
+
+  const button = document.createElement("button");
   button.id = "novel-downloader";
   button.style.cssText = buttonStyleText;
 
-  let img = document.createElement("img");
+  const img = document.createElement("img");
   img.src = icon0;
   img.style.cssText = "height: 2em;";
 
   button.onclick = function () {
-    if (downloading) {
+    if ((window as newWindow & typeof globalThis).downloading) {
       alert("正在下载中，请耐心等待……");
     } else {
       img.src = icon1;
@@ -75,9 +75,7 @@ async function debug() {
   return;
 }
 
-let downloading = false;
-
-window.addEventListener("DOMContentLoaded", () => {
+function main() {
   printEnvironments();
   init();
   addButton();
@@ -85,4 +83,12 @@ window.addEventListener("DOMContentLoaded", () => {
   if (enaleDebug) {
     debug();
   }
-});
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", (event) => {
+    main();
+  });
+} else {
+  main();
+}

@@ -9,7 +9,7 @@
   "supportURL": "https://github.com/yingziwu/novel-downloader",
   "icon": "https://cdn.jsdelivr.net/gh/yingziwu/novel-downloader/assets/icon.png",
   "license": "AGPL-3.0",
-  "run-at": "document-end",
+  "run-at": "document-idle",
   "noframes": "true",
   "compatible": [
     "Firefox 77+",
@@ -31,7 +31,7 @@
     "*://www.17k.com/list/*.html",
     "*://www.shuhai.com/book/*.htm",
     "*://mm.shuhai.com/book/*.htm",
-    "*://www.tadu.com/book/catalogue/*",
+    "*://www.tadu.com/book/*",
     "*://www.qimao.com/shuku/*/",
     "*://sosad.fun/threads/*/profile*",
     "*://wenzhan.org/threads/*/profile*",
@@ -139,15 +139,13 @@
     "*://m.haitangtxt.net/sort/*/",
     "*://m.haitangtxt.net/top/*/",
     "*://m.haitangtxt.net/full/*/",
-    "*://m.haitangtxt.net/book/*/"
+    "*://m.haitangtxt.net/book/*/",
+    "*://www.tadu.com/book/*/*/"
   ],
   "grant": [
     "unsafeWindow",
     "GM_info",
     "GM_xmlhttpRequest",
-    "GM_getTab",
-    "GM_saveTab",
-    "GM_getTabs",
     "GM_setValue",
     "GM_getValue",
     "GM_deleteValue",

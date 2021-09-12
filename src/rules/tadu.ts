@@ -15,20 +15,19 @@ export class tadu extends BaseRuleClass {
   }
 
   public async bookParse() {
-    let bookUrl = document.location.href.replace("catalogue/", "");
+    let bookUrl = document.location.href;
 
     const bookname = (<HTMLElement>(
-      document.querySelector("div.boxCenter > h1")
+      document.querySelector("div.bookNm > a.bkNm")
     )).innerText.trim();
     const author = (<HTMLElement>(
-      document.querySelector(".itct > span:nth-child(1)")
-    )).innerText
-      .replace("作者：", "")
-      .trim();
+      document.querySelector("div.authorInfo > a.author > span")
+    )).innerText.trim();
 
-    const doc = await getHtmlDOM(bookUrl, undefined);
     const introDom = <HTMLElement>(
-      doc.querySelector("div.boxCenter.bookIntro > div > p:nth-child(4)")
+      document.querySelector(
+        "div.boxCenter.boxT.clearfix > div.lf.lfO > p.intro"
+      )
     );
     const [
       introduction,
@@ -38,7 +37,7 @@ export class tadu extends BaseRuleClass {
 
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = (<HTMLImageElement>(
-      doc.querySelector("a.bookImg > img")
+      document.querySelector("a.bookImg > img")
     )).getAttribute("data-src");
     if (coverUrl) {
       getImageAttachment(coverUrl, this.imageMode, "cover-").then(
@@ -49,7 +48,7 @@ export class tadu extends BaseRuleClass {
     }
 
     const chapters: Chapter[] = [];
-    const cos = document.querySelectorAll("div.chapter > a");
+    const cos = document.querySelectorAll("div.lf.lfT > li > div > a");
     let chapterNumber = 0;
     for (const aElem of Array.from(cos)) {
       chapterNumber++;
