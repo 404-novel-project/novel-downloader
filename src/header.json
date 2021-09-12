@@ -140,7 +140,7 @@
     "*://m.haitangtxt.net/top/*/",
     "*://m.haitangtxt.net/full/*/",
     "*://m.haitangtxt.net/book/*/",
-    "*://www.tadu.com/book/*/*/"
+    "*://www.tadu.com/book/*/*"
   ],
   "grant": [
     "unsafeWindow",
