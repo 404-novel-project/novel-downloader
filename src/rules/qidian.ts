@@ -16,6 +16,12 @@ export class qidian extends BaseRuleClass {
   }
 
   public async bookParse() {
+    const bookId = document.getElementById("bookImg")?.getAttribute("data-bid");
+    const authorId = document
+      .getElementById("authorId")
+      ?.getAttribute("data-authorid");
+    const _csrfToken = (<any>unsafeWindow).jQuery.ajaxSettings.data._csrfToken;
+
     const bookUrl = document.location.href;
     const bookname = (<HTMLElement>(
       document.querySelector(".book-info > h1 > em")
@@ -101,7 +107,7 @@ export class qidian extends BaseRuleClass {
           }
           return false;
         };
-
+        const chapterId = chapterUrl.split("/").slice(-1)[0];
         const chapter = new Chapter(
           bookUrl,
           bookname,
@@ -115,7 +121,12 @@ export class qidian extends BaseRuleClass {
           sectionChapterNumber,
           this.chapterParse,
           "UTF-8",
-          {}
+          {
+            _csrfToken: _csrfToken,
+            bookId: bookId,
+            authorId: authorId,
+            chapterId: chapterId,
+          }
         );
         const isLogin = () => {
           const sign_in_dom = document.querySelector(".sign-in");
@@ -154,6 +165,17 @@ export class qidian extends BaseRuleClass {
     charset: string,
     options: object
   ) {
+    interface options {
+      _csrfToken: string;
+      bookId: string;
+      authorId: string;
+      chapterId: string;
+    }
+    const bookId = (<options>options).bookId;
+    const authorId = (<options>options).authorId;
+    const chapterId = (<options>options).chapterId;
+    const _csrfToken = (<options>options)._csrfToken;
+
     async function publicChapter(): Promise<chapterParseObject> {
       const dom = await ggetHtmlDOM(chapterUrl, charset);
       const chapterName = (<HTMLElement>(
@@ -195,13 +217,6 @@ export class qidian extends BaseRuleClass {
     }
 
     async function vipChapter(): Promise<chapterParseObject> {
-      const _csrfToken = (<any>unsafeWindow).jQuery.ajaxSettings.data
-        ._csrfToken;
-      const bookId = document.location.pathname.split("/").slice(-1)[0];
-      const authorId = document
-        .querySelector("#authorId")
-        ?.getAttribute("data-authorid");
-      const chapterId = chapterUrl.split("/").slice(-1)[0];
       interface chapterInfo {
         code: number;
         data: {
@@ -259,7 +274,7 @@ export class qidian extends BaseRuleClass {
           _csrfToken: _csrfToken,
           bookId: bookId,
           chapterId: chapterId,
-          authorId: <string>authorId,
+          authorId: authorId,
         });
 
         const url = baseUrl + "?" + search.toString();
@@ -275,7 +290,7 @@ export class qidian extends BaseRuleClass {
         }).then((response) => <chapterInfo>response.response);
       }
 
-      if (isPaid) {
+      async function getByAPI() {
         const chapterInfo = await getChapterInfo();
         if (chapterInfo.code === 0) {
           const authorSay = chapterInfo.data.chapterInfo.authorSay;
@@ -301,6 +316,33 @@ export class qidian extends BaseRuleClass {
             contentImages: images,
             additionalMetadate: null,
           };
+        } else {
+          log.error(
+            `[chapter]VIP章节API请求失败！\n${JSON.stringify(chapterInfo)}`
+          );
+
+          return {
+            chapterName: chapterName,
+            contentRaw: null,
+            contentText: null,
+            contentHTML: null,
+            contentImages: null,
+            additionalMetadate: null,
+          };
+        }
+      }
+
+      if (isPaid) {
+        const _obj = await publicChapter();
+        const _contentRaw = _obj.contentRaw;
+        if (_contentRaw) {
+          if (_contentRaw.querySelector(".vip-limit-wrap")) {
+            return getByAPI();
+          } else {
+            return _obj;
+          }
+        } else {
+          return getByAPI();
         }
       }
 

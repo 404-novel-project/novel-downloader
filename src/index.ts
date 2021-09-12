@@ -81,7 +81,7 @@ function main() {
   addButton();
 
   if (enaleDebug) {
-    debug();
+    setTimeout(debug, 3000);
   }
 }
 
