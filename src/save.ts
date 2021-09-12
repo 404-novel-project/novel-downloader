@@ -1,7 +1,7 @@
 import { Book, Chapter, attachmentClass, Status } from "./main";
 import { fflateZip } from "./lib/zip";
 import { enableCustomSaveOptions, enaleDebug } from "./setting";
-import { log } from "./log";
+import { log, logText } from "./log";
 import { newWindow } from "./global";
 
 export class saveBook {
@@ -177,10 +177,18 @@ a.disabled {
     }
 
     log.info("[save]保存TXT文件");
-    const savedText = this.savedTextArray.join("\n");
+    // 设置换行符为 CRLF，兼容旧版本Windows。
+    const savedText = this.savedTextArray.join("\r\n");
     saveAs(
       new Blob([savedText], { type: "text/plain;charset=utf-8" }),
       `${this.saveFileNameBase}.txt`
+    );
+  }
+
+  public saveLog() {
+    this.savedZip.file(
+      "debug.log",
+      new Blob([logText], { type: "text/plain; charset=UTF-8" })
     );
   }
 
@@ -222,11 +230,13 @@ a.disabled {
     return new Promise((resolve, reject) => {
       const finalHandle = (blob: Blob) => {
         saveAs(blob, `${self.saveFileNameBase}.zip`);
+        self.saveLog();
         resolve();
       };
       const finalErrorHandle = (err: Error) => {
         log.error("saveZip: " + err);
         log.trace(err);
+        self.saveLog();
         reject(err);
       };
 

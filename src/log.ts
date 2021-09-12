@@ -7,7 +7,7 @@ if (enaleDebug) {
   log.setLevel("info");
 }
 
-let logText = "";
+export let logText = "";
 const originalFactory = log.methodFactory;
 log.methodFactory = function (methodName, logLevel, loggerName) {
   const rawMethod = originalFactory(methodName, logLevel, loggerName);

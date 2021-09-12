@@ -278,7 +278,7 @@ window.customFinishCallback = customFinishCallback;
 
 1. `git clone https://github.com/yingziwu/novel-downloader.git` 将项目克隆至本地（访问github可能需要使用代理）。
 1. `npm install` 安装依赖。
-1. 继承 `BaseRuleClass` 实现，完成 `bookParse`、`chapterParse`，然后在 `routers.ts` 中添加相应选择规则。
+1. 继承 `BaseRuleClass` 实现，完成 `bookParse`、`chapterParse` 方法，然后在 `routers.ts` 中添加相应选择规则。
 
     ```typescript
     interface BookAdditionalMetadate {
@@ -316,18 +316,27 @@ window.customFinishCallback = customFinishCallback;
         contentImages: attachmentClass[] | null;
         additionalMetadate: ChapterAdditionalMetadate | null;
     }
-    bstract class BaseRuleClass {
+    abstract class BaseRuleClass {
         imageMode: "naive" | "TM";
         charset: string;
         concurrencyLimit: number;
         maxRunLimit?: number;
         saveOptions?: saveOptions;
-        private audio?;
         book?: Book;
+        private audio?;
         constructor();
         abstract bookParse(): Promise<Book>;
         abstract chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean | null, charset: string, options: object): Promise<chapterParseObject>;
         run(): Promise<Book | undefined>;
+        protected preTest(): boolean;
+        protected preWarning(): boolean;
+        protected preHook(): boolean;
+        protected postCallback(): void;
+        protected postHook(): boolean;
+        protected catchError(error: Error): void;
+        protected getSave(book: Book): saveBook;
+        protected getChapters(book: Book): Chapter[];
+        protected initChapters(book: Book, saveBookObj: saveBook): Promise<Chapter[]>;
     }
     ```
 
