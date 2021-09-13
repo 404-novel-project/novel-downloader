@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.0.0.1631503352044
+// @version        4.0.0.1631503712214
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -9077,7 +9077,7 @@ class qidian extends rules_1.BaseRuleClass {
                 additionalMetadate.cover = coverClass;
             });
         }
-        additionalMetadate.tags = Array.from(document.querySelectorAll(".tag-wrap>.tags")).map((a) => a.innerText.trim());
+        additionalMetadate.tags = Array.from(document.querySelectorAll(".book-info > .tag > a, .tag-wrap > .tags")).map((a) => a.innerText.trim());
         const limitFree = Boolean(document.querySelector(".book-information .flag"));
         log_1.log.info(`[Book]限免书籍 ${limitFree}`);
         const chapters = [];
