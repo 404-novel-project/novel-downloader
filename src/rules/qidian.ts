@@ -16,7 +16,14 @@ export class qidian extends BaseRuleClass {
   }
 
   public async bookParse() {
-    const bookId = document.getElementById("bookImg")?.getAttribute("data-bid");
+    let bookId: HTMLElement | string | null = document.getElementById(
+      "bookImg"
+    );
+    if (bookId) {
+      bookId = bookId.getAttribute("data-bid");
+    } else {
+      throw new Error("未发现 bookId");
+    }
     const authorId = document
       .getElementById("authorId")
       ?.getAttribute("data-authorid");
@@ -52,6 +59,22 @@ export class qidian extends BaseRuleClass {
     additionalMetadate.tags = Array.from(
       document.querySelectorAll(".tag-wrap>.tags")
     ).map((a) => (<HTMLAnchorElement>a).innerText.trim());
+
+    // 限免探测
+    /*
+    const limitFreeUrl = "https://www.qidian.com/free/";
+    const limitFreeDom = await ggetHtmlDOM(limitFreeUrl, this.charset);
+    const limitFreeBookIds = Array.from(
+      limitFreeDom.querySelectorAll(
+        "#limit-list div.book-img-box > a[data-bid]"
+      )
+    ).map((a) => a.getAttribute("data-bid"));
+    const limitFree = limitFreeBookIds.includes(bookId);
+    */
+    const limitFree = Boolean(
+      document.querySelector(".book-information .flag")
+    );
+    log.info(`[Book]限免书籍 ${limitFree}`);
 
     const chapters: Chapter[] = [];
 
@@ -126,6 +149,7 @@ export class qidian extends BaseRuleClass {
             bookId: bookId,
             authorId: authorId,
             chapterId: chapterId,
+            limitFree: limitFree,
           }
         );
         const isLogin = () => {
@@ -138,8 +162,14 @@ export class qidian extends BaseRuleClass {
           }
           return false;
         };
-        if (isVIP() && !(isLogin() && chapter.isPaid)) {
+        if (isVIP()) {
           chapter.status = Status.aborted;
+          if (limitFree) {
+            chapter.status = Status.pending;
+          }
+          if (isLogin() && chapter.isPaid) {
+            chapter.status = Status.pending;
+          }
         }
         chapters.push(chapter);
       }
@@ -170,10 +200,12 @@ export class qidian extends BaseRuleClass {
       bookId: string;
       authorId: string;
       chapterId: string;
+      limitFree: boolean;
     }
     const bookId = (<options>options).bookId;
     const authorId = (<options>options).authorId;
     const chapterId = (<options>options).chapterId;
+    const limitFree = (<options>options).limitFree;
     const _csrfToken = (<options>options)._csrfToken;
 
     async function publicChapter(): Promise<chapterParseObject> {
@@ -332,7 +364,7 @@ export class qidian extends BaseRuleClass {
         }
       }
 
-      if (isPaid) {
+      if (limitFree || isPaid) {
         const _obj = await publicChapter();
         const _contentRaw = _obj.contentRaw;
         if (_contentRaw) {

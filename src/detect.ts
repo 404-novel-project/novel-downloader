@@ -7,12 +7,18 @@ function check(name: string) {
   const target = window[name];
   const targetLength = target.toString().length;
   const targetPrototype = target["prototype"];
+  const nativeFunctionRe = /function \w+\(\) {\n?(\s+)?\[native code\]\n?(\s+)?}/;
   try {
-    [targetPrototype == 0, targetPrototype.toString().indexOf("native") != -1];
+    if (
+      targetPrototype === undefined ||
+      Boolean(target.toString().match(nativeFunctionRe))
+    ) {
+      return [true, targetLength].join(", ");
+    }
   } catch {
-    return [true, targetLength].join(",");
+    return [true, targetLength].join(", ");
   }
-  return [false, targetLength].join(",");
+  return [false, targetLength].join(", ");
 }
 
 export const environments = {

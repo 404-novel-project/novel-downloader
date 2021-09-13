@@ -11,8 +11,10 @@ import { init, newUnsafeWindow, newWindow } from "./global";
 import { environments } from "./detect";
 
 function printEnvironments() {
-  log.info("开始载入小说下载器……");
-  Object.entries(environments).forEach((kv) => log.info(kv.join("：")));
+  log.info("[Init]开始载入小说下载器……");
+  Object.entries(environments).forEach((kv) =>
+    log.info("[Init]" + kv.join("："))
+  );
 }
 
 async function run() {
