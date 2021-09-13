@@ -57,7 +57,7 @@ export class qidian extends BaseRuleClass {
       );
     }
     additionalMetadate.tags = Array.from(
-      document.querySelectorAll(".tag-wrap>.tags")
+      document.querySelectorAll(".book-info > .tag > a, .tag-wrap > .tags")
     ).map((a) => (<HTMLAnchorElement>a).innerText.trim());
 
     // 限免探测
