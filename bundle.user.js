@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.0.0.1631475619936
+// @version        4.0.0.1631503352044
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -3082,13 +3082,17 @@ function check(name) {
     const target = window[name];
     const targetLength = target.toString().length;
     const targetPrototype = target["prototype"];
+    const nativeFunctionRe = /function \w+\(\) {\n?(\s+)?\[native code\]\n?(\s+)?}/;
     try {
-        [targetPrototype == 0, targetPrototype.toString().indexOf("native") != -1];
+        if (targetPrototype === undefined ||
+            Boolean(target.toString().match(nativeFunctionRe))) {
+            return [true, targetLength].join(", ");
+        }
     }
     catch {
-        return [true, targetLength].join(",");
+        return [true, targetLength].join(", ");
     }
-    return [false, targetLength].join(",");
+    return [false, targetLength].join(", ");
 }
 exports.environments = {
     当前时间: new Date().toISOString(),
@@ -9047,7 +9051,13 @@ class qidian extends rules_1.BaseRuleClass {
         this.concurrencyLimit = 5;
     }
     async bookParse() {
-        const bookId = document.getElementById("bookImg")?.getAttribute("data-bid");
+        let bookId = document.getElementById("bookImg");
+        if (bookId) {
+            bookId = bookId.getAttribute("data-bid");
+        }
+        else {
+            throw new Error("未发现 bookId");
+        }
         const authorId = document
             .getElementById("authorId")
             ?.getAttribute("data-authorid");
@@ -9068,6 +9078,8 @@ class qidian extends rules_1.BaseRuleClass {
             });
         }
         additionalMetadate.tags = Array.from(document.querySelectorAll(".tag-wrap>.tags")).map((a) => a.innerText.trim());
+        const limitFree = Boolean(document.querySelector(".book-information .flag"));
+        log_1.log.info(`[Book]限免书籍 ${limitFree}`);
         const chapters = [];
         const liLength = document.querySelectorAll("#j-catalogWrap li").length;
         const getChapterTotalNumber = () => {
@@ -9122,6 +9134,7 @@ class qidian extends rules_1.BaseRuleClass {
                     bookId: bookId,
                     authorId: authorId,
                     chapterId: chapterId,
+                    limitFree: limitFree,
                 });
                 const isLogin = () => {
                     const sign_in_dom = document.querySelector(".sign-in");
@@ -9133,8 +9146,14 @@ class qidian extends rules_1.BaseRuleClass {
                     }
                     return false;
                 };
-                if (isVIP() && !(isLogin() && chapter.isPaid)) {
+                if (isVIP()) {
                     chapter.status = main_1.Status.aborted;
+                    if (limitFree) {
+                        chapter.status = main_1.Status.pending;
+                    }
+                    if (isLogin() && chapter.isPaid) {
+                        chapter.status = main_1.Status.pending;
+                    }
                 }
                 chapters.push(chapter);
             }
@@ -9146,6 +9165,7 @@ class qidian extends rules_1.BaseRuleClass {
         const bookId = options.bookId;
         const authorId = options.authorId;
         const chapterId = options.chapterId;
+        const limitFree = options.limitFree;
         const _csrfToken = options._csrfToken;
         async function publicChapter() {
             const dom = await http_2.ggetHtmlDOM(chapterUrl, charset);
@@ -9236,7 +9256,7 @@ class qidian extends rules_1.BaseRuleClass {
                     };
                 }
             }
-            if (isPaid) {
+            if (limitFree || isPaid) {
                 const _obj = await publicChapter();
                 const _contentRaw = _obj.contentRaw;
                 if (_contentRaw) {
@@ -12753,8 +12773,8 @@ const log_1 = __webpack_require__("./src/log.ts");
 const global_1 = __webpack_require__("./src/global.ts");
 const detect_1 = __webpack_require__("./src/detect.ts");
 function printEnvironments() {
-    log_1.log.info("开始载入小说下载器……");
-    Object.entries(detect_1.environments).forEach((kv) => log_1.log.info(kv.join("：")));
+    log_1.log.info("[Init]开始载入小说下载器……");
+    Object.entries(detect_1.environments).forEach((kv) => log_1.log.info("[Init]" + kv.join("：")));
 }
 async function run() {
     const ruleClass = await routers_1.getRule();
