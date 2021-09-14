@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.0.0.1631503712214
+// @version        4.0.0.1631600820775
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -135,7 +135,17 @@
 // @exclude        *://m.haitangtxt.net/top/*/
 // @exclude        *://m.haitangtxt.net/full/*/
 // @exclude        *://m.haitangtxt.net/book/*/
-// @exclude        *://www.tadu.com/book/*/*
+// @exclude        *://www.tadu.com/book/*/*/*
+// @exclude        *://www.tadu.com/book/*/0*
+// @exclude        *://www.tadu.com/book/*/1*
+// @exclude        *://www.tadu.com/book/*/2*
+// @exclude        *://www.tadu.com/book/*/3*
+// @exclude        *://www.tadu.com/book/*/4*
+// @exclude        *://www.tadu.com/book/*/5*
+// @exclude        *://www.tadu.com/book/*/6*
+// @exclude        *://www.tadu.com/book/*/7*
+// @exclude        *://www.tadu.com/book/*/8*
+// @exclude        *://www.tadu.com/book/*/9*
 // @grant          unsafeWindow
 // @grant          GM_info
 // @grant          GM_xmlhttpRequest
@@ -3190,7 +3200,12 @@ class Progress {
         this._totalChapterNumber = newTotalChapterNumber;
         const elem = document.getElementById("nd-progress");
         if (elem) {
-            elem.style.cssText = "display: block;";
+            if (newTotalChapterNumber === 0) {
+                elem.style.cssText = "";
+            }
+            else {
+                elem.style.cssText = "display: block;";
+            }
         }
     }
     get totalChapterNumber() {
@@ -3202,7 +3217,14 @@ class Progress {
             const percent = (this._finishedChapterNumber / this._totalChapterNumber) * 100;
             const elem = document.getElementById("chapter-progress");
             if (elem) {
-                elem.style.cssText = `--position:${percent}%; display: block;`;
+                if (newFinishedChapterNumber === 0) {
+                    elem.style.cssText = "";
+                    elem.title = "";
+                }
+                else {
+                    elem.style.cssText = `--position:${percent}%; display: block;`;
+                    elem.title = `${this._finishedChapterNumber}/${this._totalChapterNumber}`;
+                }
             }
         }
     }
@@ -3213,7 +3235,12 @@ class Progress {
         this._zipPercent = newZipPercent;
         const elem = document.getElementById("zip-progress");
         if (elem) {
-            elem.style.cssText = `--position:${this._zipPercent}%; display: block;`;
+            if (newZipPercent === 0) {
+                elem.style.cssText = "";
+            }
+            else {
+                elem.style.cssText = `--position:${this._zipPercent}%; display: block;`;
+            }
         }
     }
     get zipPercent() {
@@ -3222,11 +3249,11 @@ class Progress {
     reset() {
         const elem = document.getElementById("nd-progress");
         if (elem) {
-            elem.style.cssText = "display: none;";
+            elem.style.cssText = "";
         }
-        this._totalChapterNumber = 0;
-        this._finishedChapterNumber = 0;
-        this._zipPercent = 0;
+        this.totalChapterNumber = 0;
+        this.finishedChapterNumber = 0;
+        this.zipPercent = 0;
     }
 }
 function init() {
