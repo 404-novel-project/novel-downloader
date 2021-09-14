@@ -73,7 +73,11 @@ class Progress {
     this._totalChapterNumber = newTotalChapterNumber;
     const elem = document.getElementById("nd-progress");
     if (elem) {
-      elem.style.cssText = "display: block;";
+      if (newTotalChapterNumber === 0) {
+        elem.style.cssText = "";
+      } else {
+        elem.style.cssText = "display: block;";
+      }
     }
   }
 
@@ -88,7 +92,13 @@ class Progress {
         (this._finishedChapterNumber / this._totalChapterNumber) * 100;
       const elem = document.getElementById("chapter-progress");
       if (elem) {
-        elem.style.cssText = `--position:${percent}%; display: block;`;
+        if (newFinishedChapterNumber === 0) {
+          elem.style.cssText = "";
+          elem.title = "";
+        } else {
+          elem.style.cssText = `--position:${percent}%; display: block;`;
+          elem.title = `${this._finishedChapterNumber}/${this._totalChapterNumber}`;
+        }
       }
     }
   }
@@ -101,7 +111,11 @@ class Progress {
     this._zipPercent = newZipPercent;
     const elem = document.getElementById("zip-progress");
     if (elem) {
-      elem.style.cssText = `--position:${this._zipPercent}%; display: block;`;
+      if (newZipPercent === 0) {
+        elem.style.cssText = "";
+      } else {
+        elem.style.cssText = `--position:${this._zipPercent}%; display: block;`;
+      }
     }
   }
 
@@ -112,11 +126,11 @@ class Progress {
   reset() {
     const elem = document.getElementById("nd-progress");
     if (elem) {
-      elem.style.cssText = "display: none;";
+      elem.style.cssText = "";
     }
-    this._totalChapterNumber = 0;
-    this._finishedChapterNumber = 0;
-    this._zipPercent = 0;
+    this.totalChapterNumber = 0;
+    this.finishedChapterNumber = 0;
+    this.zipPercent = 0;
   }
 }
 
