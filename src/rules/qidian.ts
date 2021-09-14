@@ -213,6 +213,20 @@ export class qidian extends BaseRuleClass {
       const chapterName = (<HTMLElement>(
         dom.querySelector(".j_chapterName > .content-wrap")
       )).innerText.trim();
+
+      const nullObj = {
+        chapterName: chapterName,
+        contentRaw: null,
+        contentText: null,
+        contentHTML: null,
+        contentImages: null,
+        additionalMetadate: null,
+      };
+      // VIP章节
+      if (dom.querySelector(".vip-limit-wrap")) {
+        return nullObj;
+      }
+
       const content = <HTMLElement>dom.querySelector(".read-content");
       const author_say_wrap = <HTMLElement>(
         dom.querySelector(".author-say-wrap")
@@ -237,14 +251,7 @@ export class qidian extends BaseRuleClass {
           additionalMetadate: null,
         };
       } else {
-        return {
-          chapterName: chapterName,
-          contentRaw: null,
-          contentText: null,
-          contentHTML: null,
-          contentImages: null,
-          additionalMetadate: null,
-        };
+        return nullObj;
       }
     }
 
@@ -366,15 +373,10 @@ export class qidian extends BaseRuleClass {
 
       if (limitFree || isPaid) {
         const _obj = await publicChapter();
-        const _contentRaw = _obj.contentRaw;
-        if (_contentRaw) {
-          if (_contentRaw.querySelector(".vip-limit-wrap")) {
-            return getByAPI();
-          } else {
-            return _obj;
-          }
-        } else {
+        if (!_obj.contentHTML) {
           return getByAPI();
+        } else {
+          return _obj;
         }
       }
 
