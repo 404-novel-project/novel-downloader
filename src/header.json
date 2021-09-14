@@ -140,7 +140,17 @@
     "*://m.haitangtxt.net/top/*/",
     "*://m.haitangtxt.net/full/*/",
     "*://m.haitangtxt.net/book/*/",
-    "*://www.tadu.com/book/*/*"
+    "*://www.tadu.com/book/*/*/*",
+    "*://www.tadu.com/book/*/0*",
+    "*://www.tadu.com/book/*/1*",
+    "*://www.tadu.com/book/*/2*",
+    "*://www.tadu.com/book/*/3*",
+    "*://www.tadu.com/book/*/4*",
+    "*://www.tadu.com/book/*/5*",
+    "*://www.tadu.com/book/*/6*",
+    "*://www.tadu.com/book/*/7*",
+    "*://www.tadu.com/book/*/8*",
+    "*://www.tadu.com/book/*/9*"
   ],
   "grant": [
     "unsafeWindow",
