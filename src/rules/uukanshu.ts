@@ -138,11 +138,12 @@ export class uukanshu extends BaseRuleClass {
         /[ＵｕUu]+看书\s*[wｗ]+.[ＵｕUu]+[kｋ][aａ][nｎ][ｓs][hｈ][ＵｕUu].[nｎ][eｅ][tｔ]/g,
         /[ＵｕUu]+看书\s*[wｗ]+.[ＵｕUu]+[kｋ][aａ][nｎ][ｓs][hｈ][ＵｕUu].[cＣｃ][oＯｏ][mＭｍ]/g,
         /[UＵ]*看书[（\\(].*?[）\\)]文字首发。/,
-        /"请记住本书首发域名：。"/g,
-        /"笔趣阁手机版阅读网址："/g,
-        /"小说网手机版阅读网址："/g,
-        /"https:\/\/"/g,
-        /"http:\/\/"/g,
+        /请记住本书首发域名：。?/g,
+        /笔趣阁手机版阅读网址：/g,
+        /小说网手机版阅读网址：/g,
+        /https:\/\//g,
+        /http:\/\//g,
+        /UU看书\s+欢迎广大书友光临阅读，最新、最快、最火的连载作品尽在UU看书！UU看书。;?/g,
       ];
       for (let r of contentReplace) {
         content.innerHTML = content.innerHTML.replace(r, "");
