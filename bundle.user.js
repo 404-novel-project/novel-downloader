@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.0.0.1631600820775
+// @version        4.0.0.1631749442710
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -9197,6 +9197,17 @@ class qidian extends rules_1.BaseRuleClass {
         async function publicChapter() {
             const dom = await http_2.ggetHtmlDOM(chapterUrl, charset);
             const chapterName = (dom.querySelector(".j_chapterName > .content-wrap")).innerText.trim();
+            const nullObj = {
+                chapterName: chapterName,
+                contentRaw: null,
+                contentText: null,
+                contentHTML: null,
+                contentImages: null,
+                additionalMetadate: null,
+            };
+            if (dom.querySelector(".vip-limit-wrap")) {
+                return nullObj;
+            }
             const content = dom.querySelector(".read-content");
             const author_say_wrap = (dom.querySelector(".author-say-wrap"));
             if (content) {
@@ -9217,14 +9228,7 @@ class qidian extends rules_1.BaseRuleClass {
                 };
             }
             else {
-                return {
-                    chapterName: chapterName,
-                    contentRaw: null,
-                    contentText: null,
-                    contentHTML: null,
-                    contentImages: null,
-                    additionalMetadate: null,
-                };
+                return nullObj;
             }
         }
         async function vipChapter() {
@@ -9285,17 +9289,11 @@ class qidian extends rules_1.BaseRuleClass {
             }
             if (limitFree || isPaid) {
                 const _obj = await publicChapter();
-                const _contentRaw = _obj.contentRaw;
-                if (_contentRaw) {
-                    if (_contentRaw.querySelector(".vip-limit-wrap")) {
-                        return getByAPI();
-                    }
-                    else {
-                        return _obj;
-                    }
+                if (!_obj.contentHTML) {
+                    return getByAPI();
                 }
                 else {
-                    return getByAPI();
+                    return _obj;
                 }
             }
             return {
@@ -10984,11 +10982,12 @@ class uukanshu extends rules_1.BaseRuleClass {
                 /[ＵｕUu]+看书\s*[wｗ]+.[ＵｕUu]+[kｋ][aａ][nｎ][ｓs][hｈ][ＵｕUu].[nｎ][eｅ][tｔ]/g,
                 /[ＵｕUu]+看书\s*[wｗ]+.[ＵｕUu]+[kｋ][aａ][nｎ][ｓs][hｈ][ＵｕUu].[cＣｃ][oＯｏ][mＭｍ]/g,
                 /[UＵ]*看书[（\\(].*?[）\\)]文字首发。/,
-                /"请记住本书首发域名：。"/g,
-                /"笔趣阁手机版阅读网址："/g,
-                /"小说网手机版阅读网址："/g,
-                /"https:\/\/"/g,
-                /"http:\/\/"/g,
+                /请记住本书首发域名：。?/g,
+                /笔趣阁手机版阅读网址：/g,
+                /小说网手机版阅读网址：/g,
+                /https:\/\//g,
+                /http:\/\//g,
+                /UU看书\s+欢迎广大书友光临阅读，最新、最快、最火的连载作品尽在UU看书！UU看书。;?/g,
             ];
             for (let r of contentReplace) {
                 content.innerHTML = content.innerHTML.replace(r, "");
