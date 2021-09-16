@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.0.0.1631749442710
+// @version        4.0.0.1631804650435
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader

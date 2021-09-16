@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.0.0.1631749442710
+// @version        4.0.0.1631804650435
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -12521,10 +12521,6 @@ a.disabled {
         if (chapter.contentImages) {
             for (const attachment of chapter.contentImages) {
                 this.addImageToZip(attachment, this.savedZip);
-                if (!setting_1.enaleDebug) {
-                    attachment.imageBlob = null;
-                    attachment.status = main_1.Status.saved;
-                }
             }
             if (!setting_1.enaleDebug) {
                 chapter.contentImages = null;
@@ -12555,14 +12551,21 @@ a.disabled {
         metaDateText += `\n下载时间：${new Date().toISOString()}\n本文件由小说下载器生成，软件地址：https://github.com/yingziwu/novel-downloader\n\n`;
         return metaDateText;
     }
-    addImageToZip(image, zip) {
-        if (image.status === main_1.Status.finished && image.imageBlob) {
-            log_1.log.debug(`[save]添加附件，文件名：${image.name}，对象`, image.imageBlob);
-            zip.file(image.name, image.imageBlob);
+    addImageToZip(attachment, zip) {
+        if (attachment.status === main_1.Status.finished && attachment.imageBlob) {
+            log_1.log.debug(`[save]添加附件，文件名：${attachment.name}，对象`, attachment.imageBlob);
+            zip.file(attachment.name, attachment.imageBlob);
+            if (!setting_1.enaleDebug) {
+                attachment.imageBlob = null;
+                attachment.status = main_1.Status.saved;
+            }
+        }
+        else if (attachment.status === main_1.Status.saved) {
+            log_1.log.debug(`[save]附件${attachment.name}已添加`);
         }
         else {
-            log_1.log.warn("[save]添加附件下载失败，该附件未完成或内容为空。");
-            log_1.log.warn(image);
+            log_1.log.warn(`[save]添加附件${attachment.name}失败，该附件未完成或内容为空。`);
+            log_1.log.warn(attachment);
         }
     }
     genSectionText(sectionName) {
