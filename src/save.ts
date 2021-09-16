@@ -426,10 +426,6 @@ a.disabled {
     if (chapter.contentImages) {
       for (const attachment of chapter.contentImages) {
         this.addImageToZip(attachment, this.savedZip);
-        if (!enaleDebug) {
-          attachment.imageBlob = null;
-          attachment.status = Status.saved;
-        }
       }
       if (!enaleDebug) {
         chapter.contentImages = null;
@@ -465,13 +461,24 @@ a.disabled {
     return metaDateText;
   }
 
-  private addImageToZip(image: attachmentClass, zip: fflateZip) {
-    if (image.status === Status.finished && image.imageBlob) {
-      log.debug(`[save]添加附件，文件名：${image.name}，对象`, image.imageBlob);
-      zip.file(image.name, image.imageBlob);
+  private addImageToZip(attachment: attachmentClass, zip: fflateZip) {
+    if (attachment.status === Status.finished && attachment.imageBlob) {
+      log.debug(
+        `[save]添加附件，文件名：${attachment.name}，对象`,
+        attachment.imageBlob
+      );
+      zip.file(attachment.name, attachment.imageBlob);
+      if (!enaleDebug) {
+        attachment.imageBlob = null;
+        attachment.status = Status.saved;
+      }
+    } else if (attachment.status === Status.saved) {
+      log.debug(`[save]附件${attachment.name}已添加`);
     } else {
-      log.warn("[save]添加附件下载失败，该附件未完成或内容为空。");
-      log.warn(image);
+      log.warn(
+        `[save]添加附件${attachment.name}失败，该附件未完成或内容为空。`
+      );
+      log.warn(attachment);
     }
   }
 
