@@ -137,7 +137,11 @@ export class Chapter {
     this.contentImages = contentImages;
     this.additionalMetadate = additionalMetadate;
 
-    log.info(`[Chapter]${this.chapterName} 解析完成。`);
+    if (this.status === Status.failed) {
+      log.error(`[Chapter]${this.chapterName} 解析出错。`);
+    } else {
+      log.info(`[Chapter]${this.chapterName} 解析完成。`);
+    }
     return this;
   }
 

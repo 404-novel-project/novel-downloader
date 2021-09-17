@@ -47,8 +47,9 @@ export class qidian extends BaseRuleClass {
     ] = await introDomHandle(introDom);
 
     const additionalMetadate: BookAdditionalMetadate = {};
-    let coverUrl = (<HTMLImageElement>document.querySelector("#bookImg > img"))
-      .src;
+    const coverUrl = (<HTMLImageElement>(
+      document.querySelector("#bookImg > img")
+    )).src;
     if (coverUrl) {
       getImageAttachment(coverUrl, this.imageMode, "cover-").then(
         (coverClass) => {

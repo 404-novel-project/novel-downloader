@@ -32,7 +32,9 @@ text-align:center;
 vertical-align:baseline;
 background-color: rgba(128, 128, 128, 0.2);
 padding: 5px;
-border-radius: 12px;`;
+border-radius: 12px;
+min-width: auto;
+min-height: auto;`;
 
   const button = document.createElement("button");
   button.id = "novel-downloader";

@@ -301,6 +301,28 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = haitangtxt;
       break;
     }
+    case "ebook.longmabook.com":
+    case "www.longmabookcn.com":
+    case "ebook.lmbooks.com":
+    case "www.lmebooks.com":
+    case "www.haitbook.com":
+    case "www.htwhbook.com":
+    case "www.myhtebook.com":
+    case "www.lovehtbooks.com":
+    case "www.myhtebooks.com":
+    case "www.myhtlmebook.com":
+    case "jp.myhtebook.com":
+    case "jp.myhtlmebook.com":
+    case "ebook.urhtbooks.com":
+    case "www.urhtbooks.com":
+    case "www.newhtbook.com":
+    case "www.lvhtebook.com":
+    case "jp.lvhtebook.com":
+    case "www.htlvbooks.com": {
+      const { longmabook } = await import("./rules/longmabook");
+      ruleClass = longmabook;
+      break;
+    }
     default: {
       throw new Error("Not Found Rule!");
     }

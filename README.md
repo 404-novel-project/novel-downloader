@@ -29,6 +29,7 @@ ZIP压缩包，请在解压后，直接双击打开HTML文件（`index.html` 为
 |[晋江文学城](http://www.jjwxc.net/)|✅|✅|VIP章节使用[晋江防盗字体对照表](https://github.com/yingziwu/jjwxcFontTables)去除空格。<br>当程序自带的防盗字体对照表未查找到相关字体时，脚本将尝试向云端请求数据，远程字体功能可通过 `enableJjwxcRemoteFont` 配置项手动关闭。|
 |[长佩文学](https://www.gongzicp.com/)|✅|✅|反爬较严，限制下载速度，每分钟约可下载6章，请耐心等待。<br>长佩文学为单页应用，如打开书籍详情页右上角未出现下载图标，请按下F5重新加载当前页面。|
 |[书耽](https://www.shubl.com/)|✅|✅|VIP章节仅支持图片版。|
+|[海棠文化线上文学城](https://ebook.longmabook.com/)|✅|✅||
 |[轻之文库轻小说](https://www.linovel.net/)|✅|❌|VIP章节仅支持APP查看|
 |[纵横中文网](http://www.zongheng.com/)|✅|❌||
 |[花语女生网](http://huayu.zongheng.com/)|✅|❌||
@@ -351,7 +352,6 @@ window.customFinishCallback = customFinishCallback;
 |[网易云阅读](https://yuedu.163.com/)|5||
 |[豆瓣阅读](https://read.douban.com/)|5||
 |[息壤中文网](https://www.xrzww.com/)|4||
-|[海棠文化线上文学城](https://longmabookcn.com/)|?|[域名二](https://www.urhtbooks.com/)|
 |[PO18 臉紅心跳](https://www.po18.tw/)|?||
 |[全书斋](https://www.quanshuzhai.com/)|2||
 |[米国度](https://www.myrics.com/)|3||
