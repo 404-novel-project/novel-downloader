@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.0.0.1631804650435
+// @version        4.0.1.1631903410856
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -97,6 +97,24 @@
 // @match          *://www.shubl.com/book/book_detail/*
 // @match          *://www.ujxs.net/read/*/
 // @match          *://m.haitangtxt.net/*/*/
+// @match          *://ebook.longmabook.com/?act=showinfo&bookwritercode=*&bookid=*&pavilionid=a
+// @match          *://www.longmabookcn.com/?act=showinfo&bookwritercode=*&bookid=*&pavilionid=a
+// @match          *://ebook.lmbooks.com/?act=showinfo&bookwritercode=*&bookid=*&pavilionid=a
+// @match          *://www.lmebooks.com/?act=showinfo&bookwritercode=*&bookid=*&pavilionid=a
+// @match          *://www.haitbook.com/?act=showinfo&bookwritercode=*&bookid=*&pavilionid=a
+// @match          *://www.htwhbook.com/?act=showinfo&bookwritercode=*&bookid=*&pavilionid=a
+// @match          *://www.myhtebook.com/?act=showinfo&bookwritercode=*&bookid=*&pavilionid=a
+// @match          *://www.lovehtbooks.com/?act=showinfo&bookwritercode=*&bookid=*&pavilionid=a
+// @match          *://www.myhtebooks.com/?act=showinfo&bookwritercode=*&bookid=*&pavilionid=a
+// @match          *://www.myhtlmebook.com/?act=showinfo&bookwritercode=*&bookid=*&pavilionid=a
+// @match          *://jp.myhtebook.com/?act=showinfo&bookwritercode=*&bookid=*&pavilionid=a
+// @match          *://jp.myhtlmebook.com/?act=showinfo&bookwritercode=*&bookid=*&pavilionid=a
+// @match          *://ebook.urhtbooks.com/?act=showinfo&bookwritercode=*&bookid=*&pavilionid=a
+// @match          *://www.urhtbooks.com/?act=showinfo&bookwritercode=*&bookid=*&pavilionid=a
+// @match          *://www.newhtbook.com/?act=showinfo&bookwritercode=*&bookid=*&pavilionid=a
+// @match          *://www.lvhtebook.com/?act=showinfo&bookwritercode=*&bookid=*&pavilionid=a
+// @match          *://jp.lvhtebook.com/?act=showinfo&bookwritercode=*&bookid=*&pavilionid=a
+// @match          *://www.htlvbooks.com/?act=showinfo&bookwritercode=*&bookid=*&pavilionid=a
 // @name:en        novel-downloader
 // @description:en An scalable universal novel downloader.
 // @namespace      https://blog.bgme.me
@@ -4419,7 +4437,12 @@ class Chapter {
         this.contentHTML = contentHTML;
         this.contentImages = contentImages;
         this.additionalMetadate = additionalMetadate;
-        log_1.log.info(`[Chapter]${this.chapterName} 解析完成。`);
+        if (this.status === Status.failed) {
+            log_1.log.error(`[Chapter]${this.chapterName} 解析出错。`);
+        }
+        else {
+            log_1.log.info(`[Chapter]${this.chapterName} 解析完成。`);
+        }
         return this;
     }
     async parse() {
@@ -4869,6 +4892,28 @@ async function getRule() {
         case "m.haitangtxt.net": {
             const { haitangtxt } = await Promise.resolve().then(() => __webpack_require__("./src/rules/haitangtxt.ts"));
             ruleClass = haitangtxt;
+            break;
+        }
+        case "ebook.longmabook.com":
+        case "www.longmabookcn.com":
+        case "ebook.lmbooks.com":
+        case "www.lmebooks.com":
+        case "www.haitbook.com":
+        case "www.htwhbook.com":
+        case "www.myhtebook.com":
+        case "www.lovehtbooks.com":
+        case "www.myhtebooks.com":
+        case "www.myhtlmebook.com":
+        case "jp.myhtebook.com":
+        case "jp.myhtlmebook.com":
+        case "ebook.urhtbooks.com":
+        case "www.urhtbooks.com":
+        case "www.newhtbook.com":
+        case "www.lvhtebook.com":
+        case "jp.lvhtebook.com":
+        case "www.htlvbooks.com": {
+            const { longmabook } = await Promise.resolve().then(() => __webpack_require__("./src/rules/longmabook.ts"));
+            ruleClass = longmabook;
             break;
         }
         default: {
@@ -8896,6 +8941,213 @@ exports.lofter = lofter;
 
 /***/ }),
 
+/***/ "./src/rules/longmabook.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.longmabook = void 0;
+const main_1 = __webpack_require__("./src/main.ts");
+const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
+const http_1 = __webpack_require__("./src/lib/http.ts");
+const rules_1 = __webpack_require__("./src/rules.ts");
+const common_1 = __webpack_require__("./src/rules/lib/common.ts");
+const log_1 = __webpack_require__("./src/log.ts");
+const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
+const misc_1 = __webpack_require__("./src/lib/misc.ts");
+class longmabook extends rules_1.BaseRuleClass {
+    constructor() {
+        super();
+        this.imageMode = "TM";
+        this.concurrencyLimit = 5;
+    }
+    async bookParse() {
+        const isLogin = Boolean(document.querySelector('a[href="/?act=signinlst"]'));
+        if (!isLogin) {
+            alert("海棠文化线上文学城需登录后方可浏览！请登录帐号。");
+            throw new main_1.ExpectError("海棠文化线上文学城需登录后方可浏览！");
+        }
+        const bookUrl = document.location.href;
+        const bookname = document.querySelector("#mypages > div:nth-child(8) > div:nth-child(1) > h4").innerText;
+        const author = document.querySelector("#writerinfos > a").innerText;
+        const _urlSearch = new URLSearchParams(document.location.search);
+        const bookId = _urlSearch.get("bookid");
+        const bookwritercode = _urlSearch.get("bookwritercode");
+        const introDom = document
+            .querySelector("#mypages > div:nth-child(8) > div:nth-child(1)")
+            ?.cloneNode(true);
+        let [introduction, introductionHTML, introCleanimages] = [null, null, null];
+        if (introDom) {
+            misc_1.rm("div", true, introDom);
+            misc_1.rm("textarea", true, introDom);
+            misc_1.rm("font", true, introDom);
+            misc_1.rm("b", true, introDom);
+            misc_1.rm("span", true, introDom);
+            misc_1.rm("h4", true, introDom);
+            misc_1.rm("img", true, introDom);
+            introDom.innerHTML = introDom.innerHTML
+                .replace(/【作品编号：\d+】|【作品編號：\d+】/, "")
+                .replace("\n)\n", "");
+            [introduction, introductionHTML, introCleanimages] = await common_1.introDomHandle(introDom);
+        }
+        const additionalMetadate = {};
+        const coverUrl = (document.querySelector("#mypages > div:nth-child(8) > div:nth-child(1) > img"))?.src.replace("_s.", "_b.");
+        if (coverUrl) {
+            attachments_1.getImageAttachment(coverUrl, this.imageMode, "cover-").then((coverClass) => {
+                additionalMetadate.cover = coverClass;
+            });
+        }
+        additionalMetadate.tags =
+            document.querySelector('#mypages > div:nth-child(8) > div:nth-child(1) > font[color="#800080"]')?.innerText
+                .split("/")
+                .map((item) => item.trim()) ?? [];
+        const chapters = [];
+        const liList = document.querySelectorAll(`#showbooklist${bookId} > div > ul > li`);
+        let chapterNumber = 0;
+        let sectionNumber = 0;
+        let sectionName = null;
+        let sectionChapterNumber = 0;
+        for (let i = 0; i < liList.length; i++) {
+            const li = liList[i];
+            const uk_icon = li.querySelector("span")?.getAttribute("uk-icon");
+            if (uk_icon === "folder") {
+                sectionNumber++;
+                sectionChapterNumber = 0;
+                sectionName = (li.querySelector("b > font"))?.innerText.trim();
+            }
+            else if (uk_icon === "file-text") {
+                chapterNumber++;
+                sectionChapterNumber++;
+                const a = li.querySelector("a");
+                const chapterName = a?.innerText.trim();
+                const chapterUrl = a?.href;
+                const isVIP = Boolean(li.innerText.match(/\$[\d\.]+/));
+                if (chapterUrl && chapterName) {
+                    const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, null, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, { bookId: bookId, bookwritercode: bookwritercode });
+                    chapters.push(chapter);
+                }
+            }
+        }
+        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        return book;
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+        const self = this;
+        const doc = await http_1.getHtmlDOM(chapterUrl, charset);
+        const nullObj = {
+            chapterName: chapterName,
+            contentRaw: null,
+            contentText: null,
+            contentHTML: null,
+            contentImages: null,
+            additionalMetadate: null,
+        };
+        if (doc.querySelector("#paperbuybtm")) {
+            log_1.log.info(`[chapter]付费章节 ${chapterName} 未购买。`);
+            return nullObj;
+        }
+        const content = document.createElement("div");
+        let contentText = "";
+        let contentImages = [];
+        const [imagesDom, imagesText, imagesImages] = await getImages();
+        const [mainDom, mainText, mainImages] = await getMainContent();
+        const [authorDom, authorText, authorImages] = await getAuthorSay();
+        if (imagesDom) {
+            content.appendChild(imagesDom);
+            contentText += imagesText + "\n\n";
+            if (imagesImages) {
+                contentImages = contentImages.concat(imagesImages);
+            }
+        }
+        if (mainDom) {
+            content.appendChild(mainDom);
+            contentText += mainText;
+            if (mainImages) {
+                contentImages = contentImages.concat(mainImages);
+            }
+        }
+        if (authorDom) {
+            const hr = document.createElement("hr");
+            authorDom.className = "authorSay";
+            content.appendChild(hr);
+            content.appendChild(authorDom);
+            contentText += "\n\n" + "-".repeat(20) + "\n\n" + authorText;
+            if (authorImages) {
+                contentImages = contentImages.concat(authorImages);
+            }
+        }
+        return {
+            chapterName: chapterName,
+            contentRaw: content,
+            contentText: contentText,
+            contentHTML: content,
+            contentImages: contentImages,
+            additionalMetadate: null,
+        };
+        async function getImages() {
+            const imageDom = document.createElement("div");
+            Array.from(doc.querySelectorAll("#mypages > div:nth-child(10) > div:nth-child(2) > div:nth-child(6) > ul > li:nth-child(14) > img")).forEach((img) => imageDom.appendChild(img.cloneNode(true)));
+            const { dom, text, images } = await cleanDOM_1.cleanDOM(imageDom, self.imageMode);
+            return [dom, text, images];
+        }
+        async function getMainContent() {
+            const getPaperidAndVercodechk = () => {
+                const s = Array.from(doc.querySelectorAll("script")).filter((s) => s.innerText.includes("vercodechk"))[0];
+                const m = s.innerText.match(/{\spaperid:\s'(\d+)',\svercodechk:\s'(\w+)'}/);
+                if (m?.length === 3) {
+                    const [paperid, vercodechk] = m.slice(1);
+                    return [paperid, vercodechk];
+                }
+                return [null, null];
+            };
+            const [paperid, vercodechk] = getPaperidAndVercodechk();
+            if (paperid && vercodechk) {
+                const showpapercolorUrl = document.location.origin + "/showpapercolor.php";
+                log_1.log.debug(`[chapter]正在请求${showpapercolorUrl}`);
+                const resp = await fetch(showpapercolorUrl, {
+                    credentials: "include",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+                        "X-Requested-With": "XMLHttpRequest",
+                        "Cache-Control": "max-age=0",
+                    },
+                    referrer: chapterUrl,
+                    body: new URLSearchParams({
+                        paperid: paperid,
+                        vercodechk: vercodechk,
+                    }).toString(),
+                    method: "POST",
+                    mode: "cors",
+                });
+                const contentMain = document.createElement("div");
+                contentMain.innerHTML = await resp.text();
+                misc_1.rm('img[src="/images/fullcolor.png"]', true, contentMain);
+                const { dom, text, images } = await cleanDOM_1.cleanDOM(contentMain, self.imageMode);
+                return [dom, text, images];
+            }
+            else {
+                return [null, null, null];
+            }
+        }
+        async function getAuthorSay() {
+            const authorSayDom = doc.querySelector("#colorpanelwritersay");
+            if (authorSayDom) {
+                const { dom, text, images } = await cleanDOM_1.cleanDOM(authorSayDom, self.imageMode);
+                return [dom, text, images];
+            }
+            else {
+                return [null, null, null];
+            }
+        }
+        function getEgg() { }
+    }
+}
+exports.longmabook = longmabook;
+
+
+/***/ }),
+
 /***/ "./src/rules/meegoq.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
@@ -9097,8 +9349,7 @@ class qidian extends rules_1.BaseRuleClass {
         const introDom = document.querySelector(".book-info-detail .book-intro");
         const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom);
         const additionalMetadate = {};
-        let coverUrl = document.querySelector("#bookImg > img")
-            .src;
+        const coverUrl = (document.querySelector("#bookImg > img")).src;
         if (coverUrl) {
             attachments_1.getImageAttachment(coverUrl, this.imageMode, "cover-").then((coverClass) => {
                 additionalMetadate.cover = coverClass;
@@ -12819,7 +13070,9 @@ text-align:center;
 vertical-align:baseline;
 background-color: rgba(128, 128, 128, 0.2);
 padding: 5px;
-border-radius: 12px;`;
+border-radius: 12px;
+min-width: auto;
+min-height: auto;`;
     const button = document.createElement("button");
     button.id = "novel-downloader";
     button.style.cssText = buttonStyleText;

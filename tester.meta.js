@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        小说下载器测试脚本
-// @version     4.0.0.1631804655638
+// @version     4.0.1.1631903416034
 // @author      bgme
 // @description 小说下载器测试脚本
 // @match       *://www.ciweimao.com/chapter-list/*
@@ -96,6 +96,24 @@
 // @match       *://www.shubl.com/book/book_detail/*
 // @match       *://www.ujxs.net/read/*/
 // @match       *://m.haitangtxt.net/*/*/
+// @match       *://ebook.longmabook.com/?act=showinfo&bookwritercode=*&bookid=*&pavilionid=a
+// @match       *://www.longmabookcn.com/?act=showinfo&bookwritercode=*&bookid=*&pavilionid=a
+// @match       *://ebook.lmbooks.com/?act=showinfo&bookwritercode=*&bookid=*&pavilionid=a
+// @match       *://www.lmebooks.com/?act=showinfo&bookwritercode=*&bookid=*&pavilionid=a
+// @match       *://www.haitbook.com/?act=showinfo&bookwritercode=*&bookid=*&pavilionid=a
+// @match       *://www.htwhbook.com/?act=showinfo&bookwritercode=*&bookid=*&pavilionid=a
+// @match       *://www.myhtebook.com/?act=showinfo&bookwritercode=*&bookid=*&pavilionid=a
+// @match       *://www.lovehtbooks.com/?act=showinfo&bookwritercode=*&bookid=*&pavilionid=a
+// @match       *://www.myhtebooks.com/?act=showinfo&bookwritercode=*&bookid=*&pavilionid=a
+// @match       *://www.myhtlmebook.com/?act=showinfo&bookwritercode=*&bookid=*&pavilionid=a
+// @match       *://jp.myhtebook.com/?act=showinfo&bookwritercode=*&bookid=*&pavilionid=a
+// @match       *://jp.myhtlmebook.com/?act=showinfo&bookwritercode=*&bookid=*&pavilionid=a
+// @match       *://ebook.urhtbooks.com/?act=showinfo&bookwritercode=*&bookid=*&pavilionid=a
+// @match       *://www.urhtbooks.com/?act=showinfo&bookwritercode=*&bookid=*&pavilionid=a
+// @match       *://www.newhtbook.com/?act=showinfo&bookwritercode=*&bookid=*&pavilionid=a
+// @match       *://www.lvhtebook.com/?act=showinfo&bookwritercode=*&bookid=*&pavilionid=a
+// @match       *://jp.lvhtebook.com/?act=showinfo&bookwritercode=*&bookid=*&pavilionid=a
+// @match       *://www.htlvbooks.com/?act=showinfo&bookwritercode=*&bookid=*&pavilionid=a
 // @match       https://greasyfork.org/*/scripts/406070-%E5%B0%8F%E8%AF%B4%E4%B8%8B%E8%BD%BD%E5%99%A8
 // @name:en     novel-downloader-tester
 // @namespace   https://blog.bgme.me
