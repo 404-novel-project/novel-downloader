@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.0.1.1631903410856
+// @version        4.0.1.1633697160535
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -54,6 +54,7 @@
 // @match          *://www.xiaoshuodaquan.com/*/
 // @match          *://www.1pwx.com/*/
 // @match          *://www.81book.com/book/*/
+// @match          *://www.81zw.com/book/*/
 // @match          *://m.yuzhaige.cc/*/*/
 // @match          *://m.yushuge123.com/*/*/
 // @match          *://www.wanben.org/*/
@@ -77,6 +78,8 @@
 // @match          *://www.soxs.cc/*/
 // @match          *://www.soshuw.com/*/
 // @match          *://www.soshuwu.org/*/
+// @match          *://www.soxscc.cc/*/
+// @match          *://www.soshuwu.com/*/
 // @match          *://www.shubaowa.org/*_*/
 // @match          *://www.fuguoduxs.com/*_*/
 // @match          *://www.xyqxs.cc/html/*/*/index.html
@@ -208,6 +211,8 @@
 // @connect        soxscc.org
 // @connect        soxs.cc
 // @connect        soshuw.com
+// @connect        soxscc.cc
+// @connect        soshuwu.com
 // @connect        idejian.com
 // @connect        img.imiaobige.com
 // @connect        postimg.cc
@@ -4686,7 +4691,8 @@ async function getRule() {
             ruleClass = common();
             break;
         }
-        case "www.81book.com": {
+        case "www.81book.com":
+        case "www.81zw.com": {
             const { c81book } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge.ts"));
             ruleClass = c81book();
             break;
@@ -4820,7 +4826,9 @@ async function getRule() {
         case "www.soxscc.org":
         case "www.soxs.cc":
         case "www.soshuw.com":
-        case "www.soshuwu.org": {
+        case "www.soshuwu.org":
+        case "www.soxscc.cc":
+        case "www.soshuwu.com": {
             const { soxscc } = await Promise.resolve().then(() => __webpack_require__("./src/rules/soxscc.ts"));
             ruleClass = soxscc;
             break;
