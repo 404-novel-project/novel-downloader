@@ -326,6 +326,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = longmabook;
       break;
     }
+    case "dijiubook.net": {
+      const { dijiubook } = await import("./rules/biquge");
+      ruleClass = dijiubook();
+      break;
+    }
     default: {
       throw new Error("Not Found Rule!");
     }

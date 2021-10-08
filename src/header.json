@@ -133,7 +133,8 @@
     "*://www.newhtbook.com/?act=showinfo&bookwritercode=*&bookid=*&pavilionid=a",
     "*://www.lvhtebook.com/?act=showinfo&bookwritercode=*&bookid=*&pavilionid=a",
     "*://jp.lvhtebook.com/?act=showinfo&bookwritercode=*&bookid=*&pavilionid=a",
-    "*://www.htlvbooks.com/?act=showinfo&bookwritercode=*&bookid=*&pavilionid=a"
+    "*://www.htlvbooks.com/?act=showinfo&bookwritercode=*&bookid=*&pavilionid=a",
+    "*://dijiubook.net/*_*/"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",
@@ -235,6 +236,7 @@
     "imgdb.cn",
     "meego.cn",
     "poco.cn",
+    "dijiuzww.com",
     "*"
   ],
   "require": [

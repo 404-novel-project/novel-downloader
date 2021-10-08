@@ -68,7 +68,11 @@ export async function bookParseTemp({
       if (node.nodeName === "DT") {
         sectionNumber++;
         sectionChapterNumber = 0;
-        sectionName = node.innerText.replace(`《${bookname}》`, "").trim();
+        if (node.innerText.includes("《")) {
+          sectionName = node.innerText.replace(`《${bookname}》`, "").trim();
+        } else {
+          sectionName = node.innerText.replace(`${bookname}`, "").trim();
+        }
       } else if (node.nodeName === "DD") {
         if (node.childElementCount === 0) {
           continue;
@@ -163,6 +167,7 @@ function mkBiqugeClass(
       super();
       this.imageMode = "TM";
       this.charset = document.charset;
+      this.overrideConstructor(this);
     }
 
     public async bookParse() {
@@ -209,6 +214,8 @@ function mkBiqugeClass(
         charset,
       });
     }
+
+    public overrideConstructor(self: this) {}
   };
 }
 
@@ -269,6 +276,42 @@ export const lwxs9 = () =>
     }
   );
 
+export const dijiubook = () => {
+  const c = mkBiqugeClass(
+    (introDom) => {
+      introDom.innerHTML = introDom.innerHTML.replace("本书网址：", "");
+      rm('a[href^="https://dijiubook.net/"]', false, introDom);
+
+      rm(
+        "dl > dt:nth-of-type(2)",
+        false,
+        document.querySelector("#list") as HTMLElement
+      );
+      document
+        .querySelectorAll('#list a[href^="https://m.dijiubook.net"]')
+        .forEach((elem) => elem.parentElement?.remove());
+      document
+        .querySelectorAll('#list a[href$=".apk"]')
+        .forEach((elem) => elem.parentElement?.remove());
+
+      return introDom;
+    },
+    (content) => {
+      rm("a", true, content);
+      return content;
+    }
+  );
+  c.prototype.overrideConstructor = (classThis: any) => {
+    classThis.concurrencyLimit = 1;
+    classThis.maxRunLimit = 1;
+    classThis.postChapterParseHook = async (obj: Chapter) => {
+      await sleep(3000 * Math.random());
+      return obj;
+    };
+  };
+  return c;
+};
+
 function mkBiqugeClass2(
   introDomPatch: (introDom: HTMLElement) => HTMLElement,
   contentPatch: (content: HTMLElement) => HTMLElement
@@ -323,6 +366,8 @@ function mkBiqugeClass2(
         charset,
       });
     }
+
+    public overrideConstructor(self: this) {}
   };
 }
 

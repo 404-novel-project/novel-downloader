@@ -87,7 +87,7 @@ export abstract class BaseRuleClass {
       printStat();
       return self.book;
     } catch (error) {
-      self.catchError(error);
+      self.catchError(error as Error);
     }
   }
 
@@ -261,6 +261,9 @@ export abstract class BaseRuleClass {
   protected async initChapters(book: Book, saveBookObj: saveBook) {
     const self = this;
     log.info(`[initChapters]开始初始化章节`);
+    Object.entries(self).forEach((kv) =>
+      log.info(`[initChapters] ${kv[0]}: ${kv[1]}`)
+    );
     const chapters = self.getChapters(book);
     if (chapters.length === 0) {
       log.error(`[initChapters]初始化章节出错，未找到需初始化章节`);
@@ -274,7 +277,8 @@ export abstract class BaseRuleClass {
     if (self.concurrencyLimit === 1) {
       for (let chapter of chapters) {
         try {
-          const obj = await chapter.init();
+          let obj = await chapter.init();
+          obj = await self.postChapterParseHook(obj);
           afterGetChpater(obj);
         } catch (error) {
           log.error(error);
@@ -285,19 +289,19 @@ export abstract class BaseRuleClass {
       await concurrencyRun(
         chapters,
         self.concurrencyLimit,
-        (curChapter: Chapter) => {
+        async (curChapter: Chapter) => {
           if (curChapter === undefined) {
             return Promise.resolve();
           }
-          return curChapter
-            .init()
-            .then((obj) => {
-              afterGetChpater(obj);
-            })
-            .catch((error) => {
-              log.error(error);
-              log.trace(error);
-            });
+          try {
+            let obj = await curChapter.init();
+            obj = await self.postChapterParseHook(obj);
+            afterGetChpater(obj);
+            return obj;
+          } catch (error) {
+            log.error(error);
+            log.trace(error);
+          }
         }
       );
     }
@@ -324,5 +328,9 @@ export abstract class BaseRuleClass {
       }
       return chapter;
     }
+  }
+
+  public async postChapterParseHook(obj: Chapter): Promise<Chapter> {
+    return obj;
   }
 }

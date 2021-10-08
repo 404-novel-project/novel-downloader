@@ -20,18 +20,17 @@ export function concurrencyRun(
   limit: number,
   asyncHandle: Function
 ) {
-  function recursion(arr: object[]) {
-    return asyncHandle(arr.shift()).then(() => {
-      if (arr.length !== 0) {
-        return recursion(arr);
-      } else {
-        return "finish!";
-      }
-    });
+  async function recursion(arr: object[]): Promise<any> {
+    const obj = await asyncHandle(arr.shift());
+    if (arr.length !== 0) {
+      return recursion(arr);
+    } else {
+      return "finish!";
+    }
   }
 
-  let listCopy = [...list];
-  let asyncList: Function[] = [];
+  const listCopy = [...list];
+  let asyncList = [];
   while (limit--) {
     asyncList.push(recursion(listCopy));
   }
