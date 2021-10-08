@@ -29,4 +29,5 @@ export declare abstract class BaseRuleClass {
     protected getSave(book: Book): saveBook;
     protected getChapters(book: Book): Chapter[];
     protected initChapters(book: Book, saveBookObj: saveBook): Promise<Chapter[]>;
+    postChapterParseHook(obj: Chapter): Promise<Chapter>;
 }

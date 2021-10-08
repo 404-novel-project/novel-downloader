@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.0.1.1633697160535
+// @version        4.0.2.1633713810956
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -118,6 +118,7 @@
 // @match          *://www.lvhtebook.com/?act=showinfo&bookwritercode=*&bookid=*&pavilionid=a
 // @match          *://jp.lvhtebook.com/?act=showinfo&bookwritercode=*&bookid=*&pavilionid=a
 // @match          *://www.htlvbooks.com/?act=showinfo&bookwritercode=*&bookid=*&pavilionid=a
+// @match          *://dijiubook.net/*_*/
 // @name:en        novel-downloader
 // @description:en An scalable universal novel downloader.
 // @namespace      https://blog.bgme.me
@@ -226,6 +227,7 @@
 // @connect        imgdb.cn
 // @connect        meego.cn
 // @connect        poco.cn
+// @connect        dijiuzww.com
 // @connect        *
 // @require        https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js#sha512-Qlv6VSKh1gDKGoJbnyA5RMXYcvnpIqhO++MhIM2fStMcGT9i2T//tSwYFlcyoRRDcDZ+TYHpH8azBBCyhpSeqw==
 // @require        https://cdn.jsdelivr.net/npm/crypto-js@4.0.0/crypto-js.js#sha512-t4HzsbLJw+4jV+nmiiIsz/puioH2aKIjuI1ho1NIqJAJ2GNVLPTy51IklYefYdrkRE583KEzTcgmO5Wb6jVgYw==

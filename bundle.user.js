@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.0.1.1633697160535
+// @version        4.0.2.1633713810956
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -118,6 +118,7 @@
 // @match          *://www.lvhtebook.com/?act=showinfo&bookwritercode=*&bookid=*&pavilionid=a
 // @match          *://jp.lvhtebook.com/?act=showinfo&bookwritercode=*&bookid=*&pavilionid=a
 // @match          *://www.htlvbooks.com/?act=showinfo&bookwritercode=*&bookid=*&pavilionid=a
+// @match          *://dijiubook.net/*_*/
 // @name:en        novel-downloader
 // @description:en An scalable universal novel downloader.
 // @namespace      https://blog.bgme.me
@@ -226,6 +227,7 @@
 // @connect        imgdb.cn
 // @connect        meego.cn
 // @connect        poco.cn
+// @connect        dijiuzww.com
 // @connect        *
 // @require        https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js#sha512-Qlv6VSKh1gDKGoJbnyA5RMXYcvnpIqhO++MhIM2fStMcGT9i2T//tSwYFlcyoRRDcDZ+TYHpH8azBBCyhpSeqw==
 // @require        https://cdn.jsdelivr.net/npm/crypto-js@4.0.0/crypto-js.js#sha512-t4HzsbLJw+4jV+nmiiIsz/puioH2aKIjuI1ho1NIqJAJ2GNVLPTy51IklYefYdrkRE583KEzTcgmO5Wb6jVgYw==
@@ -4102,17 +4104,16 @@ function rm(selector, all = false, dom) {
 }
 exports.rm = rm;
 function concurrencyRun(list, limit, asyncHandle) {
-    function recursion(arr) {
-        return asyncHandle(arr.shift()).then(() => {
-            if (arr.length !== 0) {
-                return recursion(arr);
-            }
-            else {
-                return "finish!";
-            }
-        });
+    async function recursion(arr) {
+        const obj = await asyncHandle(arr.shift());
+        if (arr.length !== 0) {
+            return recursion(arr);
+        }
+        else {
+            return "finish!";
+        }
     }
-    let listCopy = [...list];
+    const listCopy = [...list];
     let asyncList = [];
     while (limit--) {
         asyncList.push(recursion(listCopy));
@@ -4924,6 +4925,11 @@ async function getRule() {
             ruleClass = longmabook;
             break;
         }
+        case "dijiubook.net": {
+            const { dijiubook } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge.ts"));
+            ruleClass = dijiubook();
+            break;
+        }
         default: {
             throw new Error("Not Found Rule!");
         }
@@ -5118,6 +5124,7 @@ class BaseRuleClass {
     async initChapters(book, saveBookObj) {
         const self = this;
         log_1.log.info(`[initChapters]开始初始化章节`);
+        Object.entries(self).forEach((kv) => log_1.log.info(`[initChapters] ${kv[0]}: ${kv[1]}`));
         const chapters = self.getChapters(book);
         if (chapters.length === 0) {
             log_1.log.error(`[initChapters]初始化章节出错，未找到需初始化章节`);
@@ -5130,7 +5137,8 @@ class BaseRuleClass {
         if (self.concurrencyLimit === 1) {
             for (let chapter of chapters) {
                 try {
-                    const obj = await chapter.init();
+                    let obj = await chapter.init();
+                    obj = await self.postChapterParseHook(obj);
                     afterGetChpater(obj);
                 }
                 catch (error) {
@@ -5140,19 +5148,20 @@ class BaseRuleClass {
             }
         }
         else {
-            await misc_1.concurrencyRun(chapters, self.concurrencyLimit, (curChapter) => {
+            await misc_1.concurrencyRun(chapters, self.concurrencyLimit, async (curChapter) => {
                 if (curChapter === undefined) {
                     return Promise.resolve();
                 }
-                return curChapter
-                    .init()
-                    .then((obj) => {
+                try {
+                    let obj = await curChapter.init();
+                    obj = await self.postChapterParseHook(obj);
                     afterGetChpater(obj);
-                })
-                    .catch((error) => {
+                    return obj;
+                }
+                catch (error) {
                     log_1.log.error(error);
                     log_1.log.trace(error);
-                });
+                }
             });
         }
         log_1.log.info(`[initChapters]章节初始化完毕`);
@@ -5177,6 +5186,9 @@ class BaseRuleClass {
             }
             return chapter;
         }
+    }
+    async postChapterParseHook(obj) {
+        return obj;
     }
 }
 exports.BaseRuleClass = BaseRuleClass;
@@ -5416,7 +5428,7 @@ exports.c226ks = c226ks;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.xbiquge = exports.xyqxs = exports.shuquge = exports.lwxs9 = exports.luoqiuzw = exports.gebiqu = exports.c81book = exports.common = exports.bookParseTemp = void 0;
+exports.xbiquge = exports.xyqxs = exports.shuquge = exports.dijiubook = exports.lwxs9 = exports.luoqiuzw = exports.gebiqu = exports.c81book = exports.common = exports.bookParseTemp = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const rules_1 = __webpack_require__("./src/rules.ts");
 const misc_1 = __webpack_require__("./src/lib/misc.ts");
@@ -5457,7 +5469,12 @@ async function bookParseTemp({ bookUrl, bookname, author, introDom, introDomPatc
             if (node.nodeName === "DT") {
                 sectionNumber++;
                 sectionChapterNumber = 0;
-                sectionName = node.innerText.replace(`《${bookname}》`, "").trim();
+                if (node.innerText.includes("《")) {
+                    sectionName = node.innerText.replace(`《${bookname}》`, "").trim();
+                }
+                else {
+                    sectionName = node.innerText.replace(`${bookname}`, "").trim();
+                }
             }
             else if (node.nodeName === "DD") {
                 if (node.childElementCount === 0) {
@@ -5510,6 +5527,7 @@ function mkBiqugeClass(introDomPatch, contentPatch) {
             super();
             this.imageMode = "TM";
             this.charset = document.charset;
+            this.overrideConstructor(this);
         }
         async bookParse() {
             const self = this;
@@ -5541,6 +5559,7 @@ function mkBiqugeClass(introDomPatch, contentPatch) {
                 charset,
             });
         }
+        overrideConstructor(self) { }
     };
 }
 const common = () => mkBiqugeClass((introDom) => introDom, (content) => content);
@@ -5575,6 +5594,33 @@ const lwxs9 = () => mkBiqugeClass((introDom) => introDom, (content) => {
     return content;
 });
 exports.lwxs9 = lwxs9;
+const dijiubook = () => {
+    const c = mkBiqugeClass((introDom) => {
+        introDom.innerHTML = introDom.innerHTML.replace("本书网址：", "");
+        misc_1.rm('a[href^="https://dijiubook.net/"]', false, introDom);
+        misc_1.rm("dl > dt:nth-of-type(2)", false, document.querySelector("#list"));
+        document
+            .querySelectorAll('#list a[href^="https://m.dijiubook.net"]')
+            .forEach((elem) => elem.parentElement?.remove());
+        document
+            .querySelectorAll('#list a[href$=".apk"]')
+            .forEach((elem) => elem.parentElement?.remove());
+        return introDom;
+    }, (content) => {
+        misc_1.rm("a", true, content);
+        return content;
+    });
+    c.prototype.overrideConstructor = (classThis) => {
+        classThis.concurrencyLimit = 1;
+        classThis.maxRunLimit = 1;
+        classThis.postChapterParseHook = async (obj) => {
+            await misc_1.sleep(3000 * Math.random());
+            return obj;
+        };
+    };
+    return c;
+};
+exports.dijiubook = dijiubook;
 function mkBiqugeClass2(introDomPatch, contentPatch) {
     return class extends rules_1.BaseRuleClass {
         constructor() {
@@ -5611,6 +5657,7 @@ function mkBiqugeClass2(introDomPatch, contentPatch) {
                 charset,
             });
         }
+        overrideConstructor(self) { }
     };
 }
 const shuquge = () => {

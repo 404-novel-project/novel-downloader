@@ -17,6 +17,7 @@ export declare const c81book: () => PublicConstructor<BaseRuleClass>;
 export declare const gebiqu: () => PublicConstructor<BaseRuleClass>;
 export declare const luoqiuzw: () => PublicConstructor<BaseRuleClass>;
 export declare const lwxs9: () => PublicConstructor<BaseRuleClass>;
+export declare const dijiubook: () => PublicConstructor<BaseRuleClass>;
 export declare const shuquge: () => PublicConstructor<BaseRuleClass>;
 export declare const xyqxs: () => PublicConstructor<BaseRuleClass>;
 export declare class xbiquge extends BaseRuleClass {

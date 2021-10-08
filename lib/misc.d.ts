@@ -1,6 +1,6 @@
 export declare type PublicConstructor<T> = new () => T;
 export declare function rm(selector: string, all: boolean | undefined, dom: HTMLElement): void;
-export declare function concurrencyRun(list: object[], limit: number, asyncHandle: Function): Promise<Function[]>;
+export declare function concurrencyRun(list: object[], limit: number, asyncHandle: Function): Promise<any[]>;
 export declare function sleep(ms: number): Promise<unknown>;
 export declare function sandboxed(code: string): any;
 export declare function storageAvailable(type: string): any;
