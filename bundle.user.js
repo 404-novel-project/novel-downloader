@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.0.2.1633790695777
+// @version        4.0.2.1633790728201
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -3284,7 +3284,8 @@ class Progress {
 function init() {
     window.progress = new Progress();
     window.downloading = false;
-    window.customStorage = new misc_1.localStorageExpired();
+    window.customStorage =
+        new misc_1.localStorageExpired();
 }
 exports.init = init;
 
@@ -3708,8 +3709,7 @@ function formatText(elems, builder) {
             builder.text = builder.text + tPText;
         }
     }
-    const brCount = elems.filter((elem) => elem.nodeName.toLowerCase() === "br")
-        .length;
+    const brCount = elems.filter((elem) => elem.nodeName.toLowerCase() === "br").length;
     const elem = elems[0];
     const textContent = elem.textContent ? elem.textContent.trim() : "";
     if (!textContent) {
@@ -5223,7 +5223,7 @@ class c17k extends rules_1.BaseRuleClass {
         const author = (document.querySelector("div.Author > a")).innerText.trim();
         const doc = await http_1.getHtmlDOM(bookUrl, undefined);
         const introDom = doc.querySelector("#bookInfo p.intro > a");
-        const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom);
+        const [introduction, introductionHTML, introCleanimages] = await common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         let coverUrl = doc.querySelector("#bookCover img.book")
             .src;
@@ -5352,7 +5352,7 @@ class c226ks extends rules_1.BaseRuleClass {
             .replace(/作(\s+)?者[：:]/, "")
             .trim();
         const introDom = document.querySelector(".desc");
-        const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom);
+        const [introduction, introductionHTML, introCleanimages] = await common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         const coverUrl = document.querySelector(".imgbox > img")
             .src;
@@ -5437,7 +5437,7 @@ const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
 const http_1 = __webpack_require__("./src/lib/http.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 async function bookParseTemp({ bookUrl, bookname, author, introDom, introDomPatch, coverUrl, chapterListSelector, charset, chapterParse, }) {
-    const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom, introDomPatch);
+    const [introduction, introductionHTML, introCleanimages] = await common_1.introDomHandle(introDom, introDomPatch);
     const additionalMetadate = {};
     if (coverUrl) {
         attachments_1.getImageAttachment(coverUrl, "TM", "cover-").then((coverClass) => {
@@ -5760,7 +5760,7 @@ class ciweimao extends rules_1.BaseRuleClass {
         const author = (document.querySelector(".book-catalog .hd > p > a")).innerText.trim();
         const dom = await http_2.getHtmlDOM(bookUrl, undefined);
         const introDom = dom.querySelector(".book-intro-cnt .book-desc");
-        const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom);
+        const [introduction, introductionHTML, introCleanimages] = await common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         const coverUrl = dom.querySelector(".cover > img").src;
         if (coverUrl) {
@@ -6052,7 +6052,7 @@ class dierbanzhu extends rules_1.BaseRuleClass {
             .replace(/作(\s+)?者[：:]/, "")
             .trim();
         const introDom = document.querySelector("#intro");
-        const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom);
+        const [introduction, introductionHTML, introCleanimages] = await common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         const coverUrl = document.querySelector("#fmimg > img")
             .src;
@@ -6207,7 +6207,7 @@ class dmzj extends rules_1.BaseRuleClass {
             .replace("作者：", "")
             .trim();
         const introDom = document.querySelector(".comic_deCon_d");
-        const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom);
+        const [introduction, introductionHTML, introCleanimages] = await common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         const coverUrl = (document.querySelector(".comic_i_img > a > img")).src;
         if (coverUrl) {
@@ -6421,7 +6421,7 @@ class gongzicp extends rules_1.BaseRuleClass {
         const author = data.novelInfo.author_nickname;
         const introDom = document.createElement("div");
         introDom.innerHTML = data.novelInfo.novel_info;
-        const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom);
+        const [introduction, introductionHTML, introCleanimages] = await common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         const coverUrl = data.novelInfo.novel_cover;
         if (coverUrl) {
@@ -6739,7 +6739,7 @@ class haitangtxt extends rules_1.BaseRuleClass {
         const bookname = (dom.querySelector("div.cataloginfo > h3")).innerText.trim();
         const author = (dom.querySelector(".infotype > p:nth-child(1) > a:nth-child(1)")).innerText.trim();
         const introDom = dom.querySelector(".intro");
-        const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom, (introDom) => {
+        const [introduction, introductionHTML, introCleanimages] = await common_1.introDomHandle(introDom, (introDom) => {
             misc_1.rm("span:nth-child(1)", false, introDom);
             return introDom;
         });
@@ -6873,7 +6873,7 @@ class haitangtxt extends rules_1.BaseRuleClass {
             let { dom: oldDom, text: _text, images: finalImages, } = await cleanDOM_1.cleanDOM(content, "TM", { keepImageName: true });
             const _newDom = document.createElement("div");
             _newDom.innerHTML = haitangtxtImageDecode_1.replaceHaitangtxtImage(content.innerHTML);
-            let { dom: newDom, text: finalText, images } = await cleanDOM_1.cleanDOM(_newDom, "TM", { keepImageName: true });
+            let { dom: newDom, text: finalText, images, } = await cleanDOM_1.cleanDOM(_newDom, "TM", { keepImageName: true });
             const fontStyleDom = document.createElement("style");
             fontStyleDom.innerHTML = `.hide { display: none; }`;
             oldDom.className = "hide";
@@ -6932,7 +6932,7 @@ class hetushu extends rules_1.BaseRuleClass {
         const bookname = (document.querySelector(".book_info > h2")).innerText.trim();
         const author = (document.querySelector(".book_info > div:nth-child(3) > a:nth-child(1)")).innerText.trim();
         const introDom = document.querySelector(".intro");
-        const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom);
+        const [introduction, introductionHTML, introCleanimages] = await common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         const coverUrl = (document.querySelector(".book_info > img")).src;
         if (coverUrl) {
@@ -7109,7 +7109,7 @@ class idejian extends rules_1.BaseRuleClass {
             author = _author.textContent.trim();
         }
         const introDom = document.querySelector(".brief_con");
-        const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom);
+        const [introduction, introductionHTML, introCleanimages] = await common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         const coverUrl = (document.querySelector(".book_img > img")).src;
         if (coverUrl) {
@@ -7217,7 +7217,7 @@ class imiaobige extends rules_1.BaseRuleClass {
         const bookname = (doc.querySelector(".booktitle > h1")).innerText.trim();
         const author = (doc.querySelector("#author > a")).innerText.trim();
         const introDom = doc.querySelector("#bookintro");
-        const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom);
+        const [introduction, introductionHTML, introCleanimages] = await common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         const coverUrl = doc.querySelector("#bookimg > img")
             .src;
@@ -7320,7 +7320,7 @@ class jjwxc extends rules_1.BaseRuleClass {
             .replace(/作\s+者:/, "")
             .trim();
         const introDom = document.querySelector("#novelintro");
-        const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom);
+        const [introduction, introductionHTML, introCleanimages] = await common_1.introDomHandle(introDom);
         if (introCleanimages) {
             additionalMetadate.attachments = [...introCleanimages];
         }
@@ -7424,7 +7424,7 @@ class jjwxc extends rules_1.BaseRuleClass {
                 const rawAuthorSayDom = content.querySelector(".readsmall");
                 let authorSayDom, authorSayText;
                 if (rawAuthorSayDom) {
-                    let { dom: adom, text: atext, images: aimages } = await cleanDOM_1.cleanDOM(rawAuthorSayDom, "TM");
+                    let { dom: adom, text: atext, images: aimages, } = await cleanDOM_1.cleanDOM(rawAuthorSayDom, "TM");
                     [authorSayDom, authorSayText] = [adom, atext];
                 }
                 misc_1.rm("div", true, content);
@@ -7478,8 +7478,7 @@ class jjwxc extends rules_1.BaseRuleClass {
                             }
                         }
                     }
-                    const _fontName = document.querySelector("div.noveltext")
-                        ?.classList[1];
+                    const _fontName = document.querySelector("div.noveltext")?.classList[1];
                     if (_fontName) {
                         fontName = _fontName;
                         fontUrl =
@@ -7562,12 +7561,12 @@ class jjwxc extends rules_1.BaseRuleClass {
                     const rawAuthorSayDom = content.querySelector(".readsmall");
                     let authorSayDom, authorSayText;
                     if (rawAuthorSayDom) {
-                        let { dom: adom, text: atext, images: aimages } = await cleanDOM_1.cleanDOM(rawAuthorSayDom, "TM");
+                        let { dom: adom, text: atext, images: aimages, } = await cleanDOM_1.cleanDOM(rawAuthorSayDom, "TM");
                         [authorSayDom, authorSayText] = [adom, atext];
                     }
                     misc_1.rm("div", true, content);
                     content.innerHTML = content.innerHTML.replaceAll("@无限好文，尽在晋江文学城", "");
-                    let { dom: rawDom, text: rawText, images } = await cleanDOM_1.cleanDOM(content, "TM");
+                    let { dom: rawDom, text: rawText, images, } = await cleanDOM_1.cleanDOM(content, "TM");
                     if (rawAuthorSayDom && authorSayDom && authorSayText) {
                         const hr = document.createElement("hr");
                         authorSayDom.className = "authorSay";
@@ -7699,7 +7698,7 @@ function mkRuleClass1(optionis) {
             this.charset = document.charset;
         }
         async bookParse() {
-            const [introduction, introductionHTML, introCleanimages,] = await introDomHandle(introDom, introDomPatch);
+            const [introduction, introductionHTML, introCleanimages] = await introDomHandle(introDom, introDomPatch);
             const additionalMetadate = {};
             if (coverUrl) {
                 attachments_1.getImageAttachment(coverUrl, this.imageMode, "cover-").then((coverClass) => {
@@ -8637,7 +8636,7 @@ class linovel extends rules_1.BaseRuleClass {
         const bookname = (document.querySelector(".book-title")).innerText.trim();
         const author = (document.querySelector(".author-frame > .novelist > div:nth-child(3) > a")).innerText.trim();
         const introDom = document.querySelector(".about-text");
-        const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom);
+        const [introduction, introductionHTML, introCleanimages] = await common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         const attachmentsUrlList = [];
         const coverUrl = (document.querySelector(".book-cover > a")).href;
@@ -8775,7 +8774,7 @@ class linovelib extends rules_1.BaseRuleClass {
         const author = (document.querySelector(".book-meta > p:nth-child(2) > span:nth-child(1) > a:nth-child(2)")).innerText.trim();
         const doc = await http_1.getHtmlDOM(bookUrl, undefined);
         const introDom = doc.querySelector(".book-dec > p:nth-child(1)");
-        const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom);
+        const [introduction, introductionHTML, introCleanimages] = await common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         const coverUrl = doc.querySelector(".book-img > img")
             .src;
@@ -8827,7 +8826,8 @@ class linovelib extends rules_1.BaseRuleClass {
                 const _dom_nr = s.innerText.trim().match(/let dom_nr = '(.+)';/);
                 if (_dom_nr) {
                     const dom_nr = _dom_nr[1];
-                    (doc.getElementById("chapter_last")).innerHTML = dom_nr;
+                    doc.getElementById("chapter_last").innerHTML =
+                        dom_nr;
                 }
             }
             misc_1.rm(".tp", true, _content);
@@ -9230,7 +9230,7 @@ class meegoq extends rules_1.BaseRuleClass {
         const author = (dom.querySelector("article.info > p.detail.pt20 > i:nth-child(1) > a")).innerText.trim();
         const bookname = (dom.querySelector("article.info > header > h1")).innerText.trim();
         const introDom = dom.querySelector("article.info > p.desc");
-        const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom, (introDom) => {
+        const [introduction, introductionHTML, introCleanimages] = await common_1.introDomHandle(introDom, (introDom) => {
             misc_1.rm("b", false, introDom);
             return introDom;
         });
@@ -9402,7 +9402,7 @@ class qidian extends rules_1.BaseRuleClass {
             .replace(/作\s+者:/, "")
             .trim();
         const introDom = document.querySelector(".book-info-detail .book-intro");
-        const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom);
+        const [introduction, introductionHTML, introCleanimages] = await common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         const coverUrl = (document.querySelector("#bookImg > img")).src;
         if (coverUrl) {
@@ -9648,7 +9648,7 @@ class qimao extends rules_1.BaseRuleClass {
         const bookname = (document.querySelector("h2.tit")).innerText.trim();
         const author = (document.querySelector(".p-name > a")).innerHTML.trim();
         const introDom = (document.querySelector(".book-introduction .article"));
-        const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom);
+        const [introduction, introductionHTML, introCleanimages] = await common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         const coverUrl = (document.querySelector(".poster-pic > img")).src;
         if (coverUrl) {
@@ -9765,7 +9765,7 @@ class qingoo extends rules_1.BaseRuleClass {
             .replace("作者：", "")
             .trim();
         const introDom = document.querySelector("#allDesc");
-        const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom);
+        const [introduction, introductionHTML, introCleanimages] = await common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         const coverUrl = (document.querySelector(".title > dl > dt > img:nth-child(1)")).src;
         if (coverUrl) {
@@ -9857,7 +9857,7 @@ class sfacg extends rules_1.BaseRuleClass {
         const dom = await http_1.getHtmlDOM(bookUrl, undefined);
         const author = (dom.querySelector(".author-name")).innerText.trim();
         const introDom = dom.querySelector(".introduce");
-        const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom);
+        const [introduction, introductionHTML, introCleanimages] = await common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         let coverUrl = (dom.querySelector("#hasTicket div.pic img")).src;
         if (coverUrl) {
@@ -10070,7 +10070,7 @@ class shouda8 extends rules_1.BaseRuleClass {
             .replace("作者：", "")
             .trim();
         const introDom = document.querySelector(".intro");
-        const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom, (introDom) => {
+        const [introduction, introductionHTML, introCleanimages] = await common_1.introDomHandle(introDom, (introDom) => {
             misc_1.rm(".book_keywords", false, introDom);
             misc_1.rm("script", true, introDom);
             misc_1.rm("#cambrian0", false, introDom);
@@ -10156,7 +10156,7 @@ class shubaowa extends rules_1.BaseRuleClass {
             .replace(/作(\s+)?者[：:]/, "")
             .trim();
         const introDom = document.querySelector("#intro");
-        const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom);
+        const [introduction, introductionHTML, introCleanimages] = await common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         const coverUrl = document.querySelector("#fmimg > img")
             ?.src;
@@ -10238,7 +10238,7 @@ class shubl extends rules_1.BaseRuleClass {
         const bookname = (document.querySelector(".book-title > span")).innerText.trim();
         const author = (document.querySelector("div.username")).innerText.trim();
         const introDom = document.querySelector(".book-brief");
-        const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom, (introDom) => {
+        const [introduction, introductionHTML, introCleanimages] = await common_1.introDomHandle(introDom, (introDom) => {
             introDom.innerHTML = introDom.innerHTML.replace("简介：", "");
             return introDom;
         });
@@ -10514,7 +10514,7 @@ class shuhai extends rules_1.BaseRuleClass {
             .trim();
         const introDom = document.querySelector("div.book-info-bookintro") ||
             document.querySelector("div.book-info-bookintro-all");
-        const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom);
+        const [introduction, introductionHTML, introCleanimages] = await common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         let coverUrl = (document.querySelector(".book-cover-wrapper > img")).getAttribute("data-original");
         if (coverUrl) {
@@ -10876,7 +10876,7 @@ class soxscc extends rules_1.BaseRuleClass {
         const bookname = (document.querySelector(".xiaoshuo > h1")).innerText.trim();
         const author = (document.querySelector(".xiaoshuo > h6:nth-child(3) > a")).innerText.trim();
         const introDom = document.querySelector("#intro");
-        const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom, (introDom) => {
+        const [introduction, introductionHTML, introCleanimages] = await common_1.introDomHandle(introDom, (introDom) => {
             misc_1.rm("span.tags", false, introDom);
             misc_1.rm("q", true, introDom);
             return introDom;
@@ -10988,7 +10988,7 @@ class tadu extends rules_1.BaseRuleClass {
         const bookname = (document.querySelector("div.bookNm > a.bkNm")).innerText.trim();
         const author = (document.querySelector("div.authorInfo > a.author > span")).innerText.trim();
         const introDom = (document.querySelector("div.boxCenter.boxT.clearfix > div.lf.lfO > p.intro"));
-        const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom);
+        const [introduction, introductionHTML, introCleanimages] = await common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         const coverUrl = (document.querySelector("a.bookImg > img")).getAttribute("data-src");
         if (coverUrl) {
@@ -11127,7 +11127,7 @@ class ujxs extends rules_1.BaseRuleClass {
         const author = (document.querySelector("#smallcons > span:nth-child(3) > a")).innerText.trim();
         const doc = await http_1.getHtmlDOM(bookUrl, this.charset);
         const introDom = doc.querySelector("#bookintro");
-        const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom);
+        const [introduction, introductionHTML, introCleanimages] = await common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         const coverUrl = doc.querySelector(".img > img")?.src;
         if (coverUrl) {
@@ -11229,7 +11229,7 @@ class uukanshu extends rules_1.BaseRuleClass {
             .trim();
         const author = (document.querySelector("dd.jieshao_content > h2 > a")).innerText.trim();
         const introDom = (document.querySelector("dd.jieshao_content > h3"));
-        const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom, (introDom) => {
+        const [introduction, introductionHTML, introCleanimages] = await common_1.introDomHandle(introDom, (introDom) => {
             introDom.innerHTML = introDom.innerHTML
                 .replace(/^.+简介：\s+www.uukanshu.com\s+/, "")
                 .replace(/\s+https:\/\/www.uukanshu.com/, "")
@@ -11354,7 +11354,7 @@ class wenku8 extends rules_1.BaseRuleClass {
             .replace("小说作者：", "")
             .trim();
         const introDom = doc.querySelector("#content > div:nth-child(1) > table:nth-child(4) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(2) > span:nth-child(11)");
-        const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom);
+        const [introduction, introductionHTML, introCleanimages] = await common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         let coverUrl = (doc.querySelector("#content > div:nth-child(1) > table:nth-child(4) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(1) > img:nth-child(1)")).src;
         if (coverUrl) {
@@ -11446,7 +11446,7 @@ class westnovel extends rules_1.BaseRuleClass {
             .replace("作者：", "")
             .trim();
         const introDom = document.querySelector(".intro-p > p:nth-child(1)");
-        const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom);
+        const [introduction, introductionHTML, introCleanimages] = await common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         let coverUrl = document.querySelector(".img-img").src;
         if (coverUrl) {
@@ -11535,7 +11535,7 @@ class xiaoshuodaquan extends rules_1.BaseRuleClass {
             .trim();
         const author = (document.querySelector(".smallcons > span:nth-child(1) > a:nth-child(1)")).innerText.trim();
         const introDom = document.querySelector(".bookintro");
-        const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom, (introDom) => {
+        const [introduction, introductionHTML, introCleanimages] = await common_1.introDomHandle(introDom, (introDom) => {
             introDom.innerHTML = introDom.innerHTML.replace("内容简介:", "");
             return introDom;
         });
@@ -11636,7 +11636,7 @@ class xinwanben extends rules_1.BaseRuleClass {
         const bookname = (document.querySelector(".detailTitle > h1")).innerText.trim();
         const author = (document.querySelector(".writer > a")).innerText.trim();
         const introDom = (document.querySelector(".detailTopMid > table > tbody > tr:nth-child(3) > td:nth-child(2)"));
-        const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom);
+        const [introduction, introductionHTML, introCleanimages] = await common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         const coverUrl = (document.querySelector(".detailTopLeft > img")).src;
         if (coverUrl) {
@@ -11708,7 +11708,7 @@ class xkzw extends rules_1.BaseRuleClass {
             .replace(/作(\s+)?者[：:]/, "")
             .trim();
         const introDom = document.querySelector("#intro");
-        const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom);
+        const [introduction, introductionHTML, introCleanimages] = await common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         const coverUrl = document.querySelector("#fmimg > img")
             .src;
@@ -12007,7 +12007,7 @@ class yibige extends rules_1.BaseRuleClass {
             }
             introDom.appendChild(node.cloneNode(true));
         }
-        const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom);
+        const [introduction, introductionHTML, introCleanimages] = await common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         const coverUrl = (doc.querySelector(".limg > img:nth-child(1)")).src;
         if (coverUrl) {
@@ -12102,7 +12102,7 @@ class yrun extends rules_1.BaseRuleClass {
             .replace(/作(\s+)?者[：:]/, "")
             .trim();
         const introDom = document.querySelector("#intro > p");
-        const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom);
+        const [introduction, introductionHTML, introCleanimages] = await common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         const coverUrl = document.querySelector("#fmimg > img")
             .src;
@@ -12187,7 +12187,7 @@ class yuzhaige extends rules_1.BaseRuleClass {
         const bookname = (dom.querySelector("div.cataloginfo > h3")).innerText.trim();
         const author = (dom.querySelector(".infotype > p:nth-child(1) > a:nth-child(1)")).innerText.trim();
         const introDom = dom.querySelector(".intro");
-        const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom, (introDom) => {
+        const [introduction, introductionHTML, introCleanimages] = await common_1.introDomHandle(introDom, (introDom) => {
             misc_1.rm("span:nth-child(1)", false, introDom);
             return introDom;
         });
@@ -12321,7 +12321,7 @@ class yuzhaige extends rules_1.BaseRuleClass {
             let { dom: oldDom, text: _text, images: finalImages, } = await cleanDOM_1.cleanDOM(content, "TM", { keepImageName: true });
             const _newDom = document.createElement("div");
             _newDom.innerHTML = yuzhaigeImageDecode_1.replaceYuzhaigeImage(content.innerHTML);
-            let { dom: newDom, text: finalText, images } = await cleanDOM_1.cleanDOM(_newDom, "TM", { keepImageName: true });
+            let { dom: newDom, text: finalText, images, } = await cleanDOM_1.cleanDOM(_newDom, "TM", { keepImageName: true });
             const fontStyleDom = document.createElement("style");
             fontStyleDom.innerHTML = `.hide { display: none; }`;
             oldDom.className = "hide";
@@ -12380,7 +12380,7 @@ class zongheng extends rules_1.BaseRuleClass {
         const author = (document.querySelector("div.book-meta > p > span:nth-child(1) > a")).innerText.trim();
         const doc = await http_1.getHtmlDOM(bookUrl, undefined);
         const introDom = doc.querySelector("div.book-info > div.book-dec");
-        const [introduction, introductionHTML, introCleanimages,] = await common_1.introDomHandle(introDom);
+        const [introduction, introductionHTML, introCleanimages] = await common_1.introDomHandle(introDom);
         const additionalMetadate = {};
         let coverUrl = doc.querySelector("div.book-img > img")
             .src;
