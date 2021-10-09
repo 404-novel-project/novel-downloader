@@ -1,5 +1,21 @@
 name: Build and Deploy
-on: [push]
+on:
+  push:
+    branches:
+      - master
+    paths-ignore:
+      - README.md
+      - .gitignore
+      - license.txt
+  pull_request:
+    branches:
+      - master
+    paths-ignore:
+      - README.md
+      - .gitignore
+      - license.txt
+  workflow_dispatch:
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -12,10 +28,11 @@ jobs:
           yarn install &&
           yarn run pretty && 
           yarn run build &&
-          yarn run build-tester 
+          yarn run build-tester
 
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@4.1.1
+        if: ${{ github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}
         with:
           branch: gh-pages
           folder: dist
