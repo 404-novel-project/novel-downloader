@@ -49,7 +49,7 @@ export class fflateZip {
             self.onFinal(zipBlob);
           } catch (error) {
             if (typeof self.onFinalError === "function") {
-              self.onFinalError(error);
+              self.onFinalError(error as Error);
             }
           }
         } else {
