@@ -185,6 +185,7 @@ if (
       "https://www.hetushu.com/book/4308/index.html",
       "https://www.hetushu.com/book/5/index.html",
     ],
+    "https://hetushu.com/book/5626/index.html",
     "https://www.shouda88.com/117454/",
     "http://www.gebiqu.com/biquge_2181/",
     "http://www.viviyzw.com/book76557.html",
@@ -197,6 +198,7 @@ if (
     "https://www.dmzj.com/info/naniannatunaxieshier.html",
     "https://www.westnovel.com/dd/lms/",
     "https://www.mht.tw/21661/",
+    "https://www.mht99.com/21661/",
     "http://www.dierbanzhu1.com/3_3348/",
     "https://www.xbiquge.so/book/43106/",
     "https://www.hongyeshuzhai.com/shuzhai/56609/",
@@ -238,9 +240,12 @@ if (
       "http://www.jpxs123.com/dsxs/2724.html",
       "http://www.jpxs123.com/xuanhuan/zhetian.html",
     ],
-    "http://www.tongrenquan.org/tongren/5730.html",
+    "http://trxs.cc/tongren/1768.html",
+    "http://trxs123.com/tongren/2952.html",
+    "http://jpxs123.com/tongren/5578.html",
     "https://www.imiaobige.com/read/173201/",
     "https://www.256wxc.com/read/68624/index.html",
+    "https://www.256wenku.com/read/7667/",
     "http://www.biquge66.com/biquge263372/",
     [
       "https://caogousheng.lofter.com/",
@@ -251,7 +256,10 @@ if (
       "https://absb6.lofter.com/",
     ],
     "http://www.bq8xs.com/3399/",
+    "http://www.tongrenquan.org/tongren/5730.html",
     "https://www.tongrenquan.me/tongren/5373.html",
+    "https://tongrenquan.me/tongren/5753.html",
+    "http://tongrenquan.org/tongren/5730.html",
     "https://www.lwxs9.org/5/5203/",
     [
       "https://www.shubl.com/book/book_detail/100308566",
@@ -263,6 +271,8 @@ if (
       "http://m.haitangtxt.net/book/101821/",
       "http://m.haitangtxt.net/book/101832/",
     ],
+    "https://gongzicp.com/novel-341364.html",
+    "https://www.gongzicp.com/novel-406782.html",
   ];
 
   async function runTest() {

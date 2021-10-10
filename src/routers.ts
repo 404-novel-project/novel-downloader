@@ -48,7 +48,8 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = sfacg;
       break;
     }
-    case "www.hetushu.com": {
+    case "www.hetushu.com":
+    case "hetushu.com": {
       const { hetushu } = await import("./rules/hetushu");
       ruleClass = hetushu;
       break;
@@ -189,7 +190,8 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = westnovel;
       break;
     }
-    case "www.mht.tw": {
+    case "www.mht.tw":
+    case "www.mht99.com": {
       const { mht } = await import("./rules/mht");
       ruleClass = mht;
       break;
@@ -259,13 +261,18 @@ export async function getRule(): Promise<BaseRuleClass> {
     }
     case "www.trxs.cc":
     case "www.trxs123.com":
-    case "www.jpxs123.com": {
+    case "www.jpxs123.com":
+    case "trxs.cc":
+    case "trxs123.com":
+    case "jpxs123.com": {
       const { trxs } = await import("./rules/simple/trxs");
       ruleClass = trxs();
       break;
     }
     case "www.tongrenquan.org":
-    case "www.tongrenquan.me": {
+    case "www.tongrenquan.me":
+    case "tongrenquan.me":
+    case "tongrenquan.org": {
       const { tongrenquan } = await import("./rules/simple/trxs");
       ruleClass = tongrenquan();
       break;
@@ -275,7 +282,8 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = imiaobige;
       break;
     }
-    case "www.256wxc.com": {
+    case "www.256wxc.com":
+    case "www.256wenku.com": {
       const { c256wxc } = await import("./rules/simple/256wxc");
       ruleClass = c256wxc;
       break;
