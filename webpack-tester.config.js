@@ -29,12 +29,8 @@ module.exports = {
     ],
   },
   devServer: {
-    https: false,
-    host: "localhost",
     port: 11944,
-    public: "webpack.lo.bgme.me",
-    disableHostCheck: true,
-    hot: false,
+    allowedHosts: ["all"],
     liveReload: false,
     headers: {
       "Access-Control-Allow-Origin": "*",
