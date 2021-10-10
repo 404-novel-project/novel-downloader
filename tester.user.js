@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        小说下载器测试脚本
-// @version     4.0.2.1633838908216
+// @version     4.0.2.1633840604528
 // @author      bgme
 // @description 小说下载器测试脚本
 // @match       *://www.ciweimao.com/chapter-list/*
@@ -46,6 +46,7 @@
 // @match       *://www.266ks.com/*_*/
 // @match       *://www.266ks.com/*_*/index*.html
 // @match       *://www.hetushu.com/book/*/index.html
+// @match       *://hetushu.com/book/*/index.html
 // @match       *://www.shouda8.com/*/
 // @match       *://www.shouda88.com/*/
 // @match       *://www.gebiqu.com/biquge_*/
@@ -64,6 +65,7 @@
 // @match       *://www.dmzj.com/info/*.html
 // @match       *://www.westnovel.com/*/*/
 // @match       *://www.mht.tw/*/
+// @match       *://www.mht99.com/*/
 // @match       *://www.dierbanzhu1.com/*_*/
 // @match       *://www.banzhuer.org/*_*/
 // @match       *://www.xbiquge.so/book/*/
@@ -87,12 +89,18 @@
 // @match       *://www.qingoo.cn/details?bookId=*
 // @match       *://www.trxs.cc/tongren/*.html
 // @match       *://www.trxs123.com/tongren/*.html
+// @match       *://www.jpxs123.com/*/*.html
+// @match       *://trxs.cc/tongren/*.html
+// @match       *://trxs123.com/tongren/*.html
+// @match       *://jpxs123.com/*/*.html
 // @match       *://www.tongrenquan.org/tongren/*.html
 // @match       *://www.tongrenquan.me/tongren/*.html
-// @match       *://www.jpxs123.com/*/*.html
+// @match       *://tongrenquan.me/tongren/*.html
 // @match       *://www.imiaobige.com/read/*/
 // @match       *://www.256wxc.com/read/*/index.html
 // @match       *://www.256wxc.com/read/*/
+// @match       *://www.256wenku.com/read/*/index.html
+// @match       *://www.256wenku.com/read/*/
 // @match       *://www.biquge66.com/biquge*/
 // @match       *://*.lofter.com/
 // @match       *://*.lofter.com/?page=*
@@ -145,6 +153,7 @@
 // @exclude     *://www.trxs.cc/tongren/*/*.html
 // @exclude     *://www.trxs123.com/tongren/*/*.html
 // @exclude     *://www.tongrenquan.org/tongren/*/*.html
+// @exclude     *://tongrenquan.org/tongren/*/*.html
 // @exclude     *://www.jpxs123.com/*/*/*.html
 // @exclude     *://m.haitangtxt.net/tag/*/
 // @exclude     *://m.haitangtxt.net/sort/*/
@@ -348,6 +357,7 @@ if (document.location.origin === "https://greasyfork.org" &&
             "https://www.hetushu.com/book/4308/index.html",
             "https://www.hetushu.com/book/5/index.html",
         ],
+        "https://hetushu.com/book/5626/index.html",
         "https://www.shouda88.com/117454/",
         "http://www.gebiqu.com/biquge_2181/",
         "http://www.viviyzw.com/book76557.html",
@@ -360,6 +370,7 @@ if (document.location.origin === "https://greasyfork.org" &&
         "https://www.dmzj.com/info/naniannatunaxieshier.html",
         "https://www.westnovel.com/dd/lms/",
         "https://www.mht.tw/21661/",
+        "https://www.mht99.com/21661/",
         "http://www.dierbanzhu1.com/3_3348/",
         "https://www.xbiquge.so/book/43106/",
         "https://www.hongyeshuzhai.com/shuzhai/56609/",
@@ -401,9 +412,12 @@ if (document.location.origin === "https://greasyfork.org" &&
             "http://www.jpxs123.com/dsxs/2724.html",
             "http://www.jpxs123.com/xuanhuan/zhetian.html",
         ],
-        "http://www.tongrenquan.org/tongren/5730.html",
+        "http://trxs.cc/tongren/1768.html",
+        "http://trxs123.com/tongren/2952.html",
+        "http://jpxs123.com/tongren/5578.html",
         "https://www.imiaobige.com/read/173201/",
         "https://www.256wxc.com/read/68624/index.html",
+        "https://www.256wenku.com/read/7667/",
         "http://www.biquge66.com/biquge263372/",
         [
             "https://caogousheng.lofter.com/",
@@ -414,7 +428,10 @@ if (document.location.origin === "https://greasyfork.org" &&
             "https://absb6.lofter.com/",
         ],
         "http://www.bq8xs.com/3399/",
+        "http://www.tongrenquan.org/tongren/5730.html",
         "https://www.tongrenquan.me/tongren/5373.html",
+        "https://tongrenquan.me/tongren/5753.html",
+        "http://tongrenquan.org/tongren/5730.html",
         "https://www.lwxs9.org/5/5203/",
         [
             "https://www.shubl.com/book/book_detail/100308566",
@@ -426,6 +443,8 @@ if (document.location.origin === "https://greasyfork.org" &&
             "http://m.haitangtxt.net/book/101821/",
             "http://m.haitangtxt.net/book/101832/",
         ],
+        "https://gongzicp.com/novel-341364.html",
+        "https://www.gongzicp.com/novel-406782.html",
     ];
     async function runTest() {
         setTabData("runTest", "true");

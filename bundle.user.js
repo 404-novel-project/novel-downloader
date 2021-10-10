@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.0.2.1633838901199
+// @version        4.0.2.1633840597155
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -47,6 +47,7 @@
 // @match          *://www.266ks.com/*_*/
 // @match          *://www.266ks.com/*_*/index*.html
 // @match          *://www.hetushu.com/book/*/index.html
+// @match          *://hetushu.com/book/*/index.html
 // @match          *://www.shouda8.com/*/
 // @match          *://www.shouda88.com/*/
 // @match          *://www.gebiqu.com/biquge_*/
@@ -65,6 +66,7 @@
 // @match          *://www.dmzj.com/info/*.html
 // @match          *://www.westnovel.com/*/*/
 // @match          *://www.mht.tw/*/
+// @match          *://www.mht99.com/*/
 // @match          *://www.dierbanzhu1.com/*_*/
 // @match          *://www.banzhuer.org/*_*/
 // @match          *://www.xbiquge.so/book/*/
@@ -88,12 +90,18 @@
 // @match          *://www.qingoo.cn/details?bookId=*
 // @match          *://www.trxs.cc/tongren/*.html
 // @match          *://www.trxs123.com/tongren/*.html
+// @match          *://www.jpxs123.com/*/*.html
+// @match          *://trxs.cc/tongren/*.html
+// @match          *://trxs123.com/tongren/*.html
+// @match          *://jpxs123.com/*/*.html
 // @match          *://www.tongrenquan.org/tongren/*.html
 // @match          *://www.tongrenquan.me/tongren/*.html
-// @match          *://www.jpxs123.com/*/*.html
+// @match          *://tongrenquan.me/tongren/*.html
 // @match          *://www.imiaobige.com/read/*/
 // @match          *://www.256wxc.com/read/*/index.html
 // @match          *://www.256wxc.com/read/*/
+// @match          *://www.256wenku.com/read/*/index.html
+// @match          *://www.256wenku.com/read/*/
 // @match          *://www.biquge66.com/biquge*/
 // @match          *://*.lofter.com/
 // @match          *://*.lofter.com/?page=*
@@ -152,6 +160,7 @@
 // @exclude        *://www.trxs.cc/tongren/*/*.html
 // @exclude        *://www.trxs123.com/tongren/*/*.html
 // @exclude        *://www.tongrenquan.org/tongren/*/*.html
+// @exclude        *://tongrenquan.org/tongren/*/*.html
 // @exclude        *://www.jpxs123.com/*/*/*.html
 // @exclude        *://m.haitangtxt.net/tag/*/
 // @exclude        *://m.haitangtxt.net/sort/*/
@@ -2064,7 +2073,8 @@ async function getRule() {
             ruleClass = sfacg;
             break;
         }
-        case "www.hetushu.com": {
+        case "www.hetushu.com":
+        case "hetushu.com": {
             const { hetushu } = await Promise.resolve().then(() => __webpack_require__("./src/rules/hetushu.ts"));
             ruleClass = hetushu;
             break;
@@ -2205,7 +2215,8 @@ async function getRule() {
             ruleClass = westnovel;
             break;
         }
-        case "www.mht.tw": {
+        case "www.mht.tw":
+        case "www.mht99.com": {
             const { mht } = await Promise.resolve().then(() => __webpack_require__("./src/rules/mht.ts"));
             ruleClass = mht;
             break;
@@ -2275,13 +2286,18 @@ async function getRule() {
         }
         case "www.trxs.cc":
         case "www.trxs123.com":
-        case "www.jpxs123.com": {
+        case "www.jpxs123.com":
+        case "trxs.cc":
+        case "trxs123.com":
+        case "jpxs123.com": {
             const { trxs } = await Promise.resolve().then(() => __webpack_require__("./src/rules/simple/trxs.ts"));
             ruleClass = trxs();
             break;
         }
         case "www.tongrenquan.org":
-        case "www.tongrenquan.me": {
+        case "www.tongrenquan.me":
+        case "tongrenquan.me":
+        case "tongrenquan.org": {
             const { tongrenquan } = await Promise.resolve().then(() => __webpack_require__("./src/rules/simple/trxs.ts"));
             ruleClass = tongrenquan();
             break;
@@ -2291,7 +2307,8 @@ async function getRule() {
             ruleClass = imiaobige;
             break;
         }
-        case "www.256wxc.com": {
+        case "www.256wxc.com":
+        case "www.256wenku.com": {
             const { c256wxc } = await Promise.resolve().then(() => __webpack_require__("./src/rules/simple/256wxc.ts"));
             ruleClass = c256wxc;
             break;
