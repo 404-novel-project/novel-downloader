@@ -213,6 +213,7 @@ if (
     "https://www.soxscc.net/QiLingFuYunXiaoJiaoQi/",
     "https://www.soxscc.org/ZhongShengXiaoYuanGuoMinNvShenZhuaiFanTian/",
     "https://www.soxs.cc/TunShiXingKong/",
+    "https://www.kubiji.net/298802/",
     [
       "http://www.shubaowa.org/7_7914/",
       "http://www.shubaowa.org/0_2/",

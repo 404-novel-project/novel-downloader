@@ -111,7 +111,7 @@ export class soxscc extends BaseRuleClass {
 
     const content = <HTMLElement>doc.querySelector("div.content[id]");
     if (content) {
-      const ad = `您可以在百度里搜索“${bookname} 搜小说(${document.location.hostname})”查找最新章节！`;
+      const ad = `您可以在百度里搜索“${bookname} .+(${document.location.hostname})”查找最新章节！`;
       content.innerHTML = content.innerHTML.replaceAll(ad, "");
       Array.from(content.querySelectorAll("p")).forEach((p) => {
         const adwords = [
