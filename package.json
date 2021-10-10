@@ -20,7 +20,7 @@
     "./src/global.ts"
   ],
   "author": "BGME",
-  "license": "GPL-3.0",
+  "license": "AGPL-3.0",
   "devDependencies": {
     "@types/crypto-js": "^4.0.1",
     "@types/file-saver": "^2.0.1",

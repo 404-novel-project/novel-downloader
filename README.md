@@ -370,6 +370,7 @@ window.customFinishCallback = customFinishCallback;
 |[米国度](https://www.myrics.com/)|3||
 |[神凑轻小说](https://www.shencou.com/)|?||
 |[精彩小说网](https://jingcaiyuedu6.com/)|3||
+|[笔趣阁](https://www.changshengrui.com//)|4||
 
 
 ## License

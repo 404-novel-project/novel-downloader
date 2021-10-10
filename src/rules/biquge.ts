@@ -5,7 +5,6 @@ import { cleanDOM } from "../lib/cleanDOM";
 import { getImageAttachment } from "../lib/attachments";
 import { getHtmlDOM } from "../lib/http";
 import { introDomHandle } from "./lib/common";
-import exp = require("constants");
 
 export async function bookParseTemp({
   bookUrl,
