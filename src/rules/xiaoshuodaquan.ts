@@ -34,14 +34,11 @@ export class xiaoshuodaquan extends BaseRuleClass {
     )).innerText.trim();
 
     const introDom = <HTMLElement>document.querySelector(".bookintro");
-    const [
-      introduction,
-      introductionHTML,
-      introCleanimages,
-    ] = await introDomHandle(introDom, (introDom) => {
-      introDom.innerHTML = introDom.innerHTML.replace("内容简介:", "");
-      return introDom;
-    });
+    const [introduction, introductionHTML, introCleanimages] =
+      await introDomHandle(introDom, (introDom) => {
+        introDom.innerHTML = introDom.innerHTML.replace("内容简介:", "");
+        return introDom;
+      });
 
     const additionalMetadate: BookAdditionalMetadate = {};
     let coverUrl;

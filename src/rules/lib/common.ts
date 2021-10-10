@@ -115,11 +115,8 @@ export function mkRuleClass1(
     }
 
     public async bookParse() {
-      const [
-        introduction,
-        introductionHTML,
-        introCleanimages,
-      ] = await introDomHandle(introDom, introDomPatch);
+      const [introduction, introductionHTML, introCleanimages] =
+        await introDomHandle(introDom, introDomPatch);
 
       const additionalMetadate: BookAdditionalMetadate = {};
       if (coverUrl) {

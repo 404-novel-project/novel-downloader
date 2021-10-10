@@ -27,11 +27,8 @@ export class shuhai extends BaseRuleClass {
     const introDom =
       document.querySelector("div.book-info-bookintro") ||
       document.querySelector("div.book-info-bookintro-all");
-    const [
-      introduction,
-      introductionHTML,
-      introCleanimages,
-    ] = await introDomHandle(introDom);
+    const [introduction, introductionHTML, introCleanimages] =
+      await introDomHandle(introDom);
 
     const additionalMetadate: BookAdditionalMetadate = {};
     let coverUrl = (<HTMLImageElement>(

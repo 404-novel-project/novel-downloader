@@ -31,11 +31,8 @@ export class sfacg extends BaseRuleClass {
       dom.querySelector(".author-name")
     )).innerText.trim();
     const introDom = dom.querySelector(".introduce");
-    const [
-      introduction,
-      introductionHTML,
-      introCleanimages,
-    ] = await introDomHandle(introDom);
+    const [introduction, introductionHTML, introCleanimages] =
+      await introDomHandle(introDom);
 
     const additionalMetadate: BookAdditionalMetadate = {};
     let coverUrl = (<HTMLImageElement>(

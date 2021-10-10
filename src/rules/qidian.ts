@@ -16,9 +16,8 @@ export class qidian extends BaseRuleClass {
   }
 
   public async bookParse() {
-    let bookId: HTMLElement | string | null = document.getElementById(
-      "bookImg"
-    );
+    let bookId: HTMLElement | string | null =
+      document.getElementById("bookImg");
     if (bookId) {
       bookId = bookId.getAttribute("data-bid");
     } else {
@@ -40,11 +39,8 @@ export class qidian extends BaseRuleClass {
       .replace(/作\s+者:/, "")
       .trim();
     const introDom = document.querySelector(".book-info-detail .book-intro");
-    const [
-      introduction,
-      introductionHTML,
-      introCleanimages,
-    ] = await introDomHandle(introDom);
+    const [introduction, introductionHTML, introCleanimages] =
+      await introDomHandle(introDom);
 
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = (<HTMLImageElement>(

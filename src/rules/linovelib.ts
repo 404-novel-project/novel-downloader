@@ -25,11 +25,8 @@ export class linovelib extends BaseRuleClass {
 
     const doc = await getHtmlDOM(bookUrl, undefined);
     const introDom = doc.querySelector(".book-dec > p:nth-child(1)");
-    const [
-      introduction,
-      introductionHTML,
-      introCleanimages,
-    ] = await introDomHandle(introDom);
+    const [introduction, introductionHTML, introCleanimages] =
+      await introDomHandle(introDom);
 
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = (<HTMLImageElement>doc.querySelector(".book-img > img"))
@@ -126,9 +123,8 @@ export class linovelib extends BaseRuleClass {
           const _dom_nr = s.innerText.trim().match(/let dom_nr = '(.+)';/);
           if (_dom_nr) {
             const dom_nr = _dom_nr[1];
-            (<HTMLSpanElement>(
-              doc.getElementById("chapter_last")
-            )).innerHTML = dom_nr;
+            (<HTMLSpanElement>doc.getElementById("chapter_last")).innerHTML =
+              dom_nr;
           }
         }
 

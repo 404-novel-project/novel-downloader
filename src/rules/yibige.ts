@@ -36,11 +36,8 @@ export class yibige extends BaseRuleClass {
       }
       introDom.appendChild(node.cloneNode(true));
     }
-    const [
-      introduction,
-      introductionHTML,
-      introCleanimages,
-    ] = await introDomHandle(introDom);
+    const [introduction, introductionHTML, introCleanimages] =
+      await introDomHandle(introDom);
 
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = (<HTMLImageElement>(

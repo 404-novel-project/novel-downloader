@@ -25,11 +25,8 @@ export class qimao extends BaseRuleClass {
     const introDom = <HTMLElement>(
       document.querySelector(".book-introduction .article")
     );
-    const [
-      introduction,
-      introductionHTML,
-      introCleanimages,
-    ] = await introDomHandle(introDom);
+    const [introduction, introductionHTML, introCleanimages] =
+      await introDomHandle(introDom);
 
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = (<HTMLImageElement>(

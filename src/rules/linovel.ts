@@ -23,11 +23,8 @@ export class linovel extends BaseRuleClass {
     )).innerText.trim();
 
     const introDom = document.querySelector(".about-text");
-    const [
-      introduction,
-      introductionHTML,
-      introCleanimages,
-    ] = await introDomHandle(introDom);
+    const [introduction, introductionHTML, introCleanimages] =
+      await introDomHandle(introDom);
 
     const additionalMetadate: BookAdditionalMetadate = {};
     const attachmentsUrlList = []; //书籍元数据附件去重

@@ -24,11 +24,8 @@ export class zongheng extends BaseRuleClass {
 
     const doc = await getHtmlDOM(bookUrl, undefined);
     const introDom = doc.querySelector("div.book-info > div.book-dec");
-    const [
-      introduction,
-      introductionHTML,
-      introCleanimages,
-    ] = await introDomHandle(introDom);
+    const [introduction, introductionHTML, introCleanimages] =
+      await introDomHandle(introDom);
 
     const additionalMetadate: BookAdditionalMetadate = {};
     let coverUrl = (<HTMLImageElement>doc.querySelector("div.book-img > img"))

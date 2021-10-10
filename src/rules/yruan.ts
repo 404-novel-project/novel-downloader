@@ -23,11 +23,8 @@ export class yrun extends BaseRuleClass {
       .trim();
 
     const introDom = <HTMLElement>document.querySelector("#intro > p");
-    const [
-      introduction,
-      introductionHTML,
-      introCleanimages,
-    ] = await introDomHandle(introDom);
+    const [introduction, introductionHTML, introCleanimages] =
+      await introDomHandle(introDom);
 
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = (<HTMLImageElement>document.querySelector("#fmimg > img"))

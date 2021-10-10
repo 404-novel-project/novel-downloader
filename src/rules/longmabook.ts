@@ -29,12 +29,14 @@ export class longmabook extends BaseRuleClass {
       throw new ExpectError("海棠文化线上文学城需登录后方可浏览！");
     }
     const bookUrl = document.location.href;
-    const bookname = (document.querySelector(
-      "#mypages > div:nth-child(8) > div:nth-child(1) > h4"
-    ) as HTMLHeadElement).innerText;
-    const author = (document.querySelector(
-      "#writerinfos > a"
-    ) as HTMLAnchorElement).innerText;
+    const bookname = (
+      document.querySelector(
+        "#mypages > div:nth-child(8) > div:nth-child(1) > h4"
+      ) as HTMLHeadElement
+    ).innerText;
+    const author = (
+      document.querySelector("#writerinfos > a") as HTMLAnchorElement
+    ).innerText;
 
     const _urlSearch = new URLSearchParams(document.location.search);
     const bookId = _urlSearch.get("bookid");
@@ -78,9 +80,11 @@ export class longmabook extends BaseRuleClass {
       );
     }
     additionalMetadate.tags =
-      (document.querySelector(
-        '#mypages > div:nth-child(8) > div:nth-child(1) > font[color="#800080"]'
-      ) as HTMLFontElement)?.innerText
+      (
+        document.querySelector(
+          '#mypages > div:nth-child(8) > div:nth-child(1) > font[color="#800080"]'
+        ) as HTMLFontElement
+      )?.innerText
         .split("/")
         .map((item) => item.trim()) ?? [];
 

@@ -42,11 +42,8 @@ export class jjwxc extends BaseRuleClass {
       .replace(/作\s+者:/, "")
       .trim();
     const introDom = document.querySelector("#novelintro");
-    const [
-      introduction,
-      introductionHTML,
-      introCleanimages,
-    ] = await introDomHandle(introDom);
+    const [introduction, introductionHTML, introCleanimages] =
+      await introDomHandle(introDom);
     if (introCleanimages) {
       additionalMetadate.attachments = [...introCleanimages];
     }
@@ -219,10 +216,11 @@ export class jjwxc extends BaseRuleClass {
         const rawAuthorSayDom = content.querySelector(".readsmall");
         let authorSayDom, authorSayText;
         if (rawAuthorSayDom) {
-          let { dom: adom, text: atext, images: aimages } = await cleanDOM(
-            rawAuthorSayDom,
-            "TM"
-          );
+          let {
+            dom: adom,
+            text: atext,
+            images: aimages,
+          } = await cleanDOM(rawAuthorSayDom, "TM");
           [authorSayDom, authorSayText] = [adom, atext];
         }
         rm("div", true, content);
@@ -287,8 +285,8 @@ export class jjwxc extends BaseRuleClass {
             }
           }
 
-          const _fontName = document.querySelector("div.noveltext")
-            ?.classList[1];
+          const _fontName =
+            document.querySelector("div.noveltext")?.classList[1];
           if (_fontName) {
             fontName = _fontName;
             fontUrl =
@@ -381,10 +379,11 @@ export class jjwxc extends BaseRuleClass {
           const rawAuthorSayDom = content.querySelector(".readsmall");
           let authorSayDom, authorSayText;
           if (rawAuthorSayDom) {
-            let { dom: adom, text: atext, images: aimages } = await cleanDOM(
-              rawAuthorSayDom,
-              "TM"
-            );
+            let {
+              dom: adom,
+              text: atext,
+              images: aimages,
+            } = await cleanDOM(rawAuthorSayDom, "TM");
             [authorSayDom, authorSayText] = [adom, atext];
           }
           rm("div", true, content);
@@ -392,10 +391,11 @@ export class jjwxc extends BaseRuleClass {
             "@无限好文，尽在晋江文学城",
             ""
           );
-          let { dom: rawDom, text: rawText, images } = await cleanDOM(
-            content,
-            "TM"
-          );
+          let {
+            dom: rawDom,
+            text: rawText,
+            images,
+          } = await cleanDOM(content, "TM");
           if (rawAuthorSayDom && authorSayDom && authorSayText) {
             const hr = document.createElement("hr");
             authorSayDom.className = "authorSay";

@@ -286,8 +286,9 @@ function formatText(elems: (Text | HTMLBRElement)[], builder: Builder) {
     }
   }
 
-  const brCount = elems.filter((elem) => elem.nodeName.toLowerCase() === "br")
-    .length;
+  const brCount = elems.filter(
+    (elem) => elem.nodeName.toLowerCase() === "br"
+  ).length;
   const elem = elems[0] as Text;
   const textContent = elem.textContent ? elem.textContent.trim() : "";
   if (!textContent) {

@@ -21,15 +21,12 @@ export class soxscc extends BaseRuleClass {
       document.querySelector(".xiaoshuo > h6:nth-child(3) > a")
     )).innerText.trim();
     const introDom = document.querySelector("#intro");
-    const [
-      introduction,
-      introductionHTML,
-      introCleanimages,
-    ] = await introDomHandle(introDom, (introDom) => {
-      rm("span.tags", false, introDom);
-      rm("q", true, introDom);
-      return introDom;
-    });
+    const [introduction, introductionHTML, introCleanimages] =
+      await introDomHandle(introDom, (introDom) => {
+        rm("span.tags", false, introDom);
+        rm("q", true, introDom);
+        return introDom;
+      });
 
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = (<HTMLImageElement>(

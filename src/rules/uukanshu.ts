@@ -33,17 +33,14 @@ export class uukanshu extends BaseRuleClass {
     const introDom = <HTMLElement>(
       document.querySelector("dd.jieshao_content > h3")
     );
-    const [
-      introduction,
-      introductionHTML,
-      introCleanimages,
-    ] = await introDomHandle(introDom, (introDom) => {
-      introDom.innerHTML = introDom.innerHTML
-        .replace(/^.+简介：\s+www.uukanshu.com\s+/, "")
-        .replace(/\s+https:\/\/www.uukanshu.com/, "")
-        .replace(/－+/, "");
-      return introDom;
-    });
+    const [introduction, introductionHTML, introCleanimages] =
+      await introDomHandle(introDom, (introDom) => {
+        introDom.innerHTML = introDom.innerHTML
+          .replace(/^.+简介：\s+www.uukanshu.com\s+/, "")
+          .replace(/\s+https:\/\/www.uukanshu.com/, "")
+          .replace(/－+/, "");
+        return introDom;
+      });
 
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = (<HTMLImageElement>(

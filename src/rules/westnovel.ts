@@ -25,11 +25,8 @@ export class westnovel extends BaseRuleClass {
       .trim();
 
     const introDom = document.querySelector(".intro-p > p:nth-child(1)");
-    const [
-      introduction,
-      introductionHTML,
-      introCleanimages,
-    ] = await introDomHandle(introDom);
+    const [introduction, introductionHTML, introCleanimages] =
+      await introDomHandle(introDom);
 
     const additionalMetadate: BookAdditionalMetadate = {};
     let coverUrl = (<HTMLImageElement>document.querySelector(".img-img")).src;

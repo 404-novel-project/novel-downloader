@@ -7,7 +7,8 @@ function check(name: string) {
   const target = window[name];
   const targetLength = target.toString().length;
   const targetPrototype = target["prototype"];
-  const nativeFunctionRe = /function \w+\(\) {\n?(\s+)?\[native code\]\n?(\s+)?}/;
+  const nativeFunctionRe =
+    /function \w+\(\) {\n?(\s+)?\[native code\]\n?(\s+)?}/;
   try {
     if (
       targetPrototype === undefined ||

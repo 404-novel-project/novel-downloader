@@ -31,14 +31,11 @@ export class shubl extends BaseRuleClass {
       document.querySelector("div.username")
     )).innerText.trim();
     const introDom = document.querySelector(".book-brief");
-    const [
-      introduction,
-      introductionHTML,
-      introCleanimages,
-    ] = await introDomHandle(introDom, (introDom) => {
-      introDom.innerHTML = introDom.innerHTML.replace("简介：", "");
-      return introDom;
-    });
+    const [introduction, introductionHTML, introCleanimages] =
+      await introDomHandle(introDom, (introDom) => {
+        introDom.innerHTML = introDom.innerHTML.replace("简介：", "");
+        return introDom;
+      });
 
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = (<HTMLImageElement>document.querySelector(".book-img"))

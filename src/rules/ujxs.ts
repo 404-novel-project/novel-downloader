@@ -26,11 +26,8 @@ export class ujxs extends BaseRuleClass {
 
     const doc = await getHtmlDOM(bookUrl, this.charset);
     const introDom = doc.querySelector("#bookintro");
-    const [
-      introduction,
-      introductionHTML,
-      introCleanimages,
-    ] = await introDomHandle(introDom);
+    const [introduction, introductionHTML, introCleanimages] =
+      await introDomHandle(introDom);
 
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = (<HTMLImageElement>doc.querySelector(".img > img"))?.src;

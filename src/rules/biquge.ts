@@ -27,11 +27,8 @@ export async function bookParseTemp({
   charset: string;
   chapterParse: BaseRuleClass["chapterParse"];
 }): Promise<Book> {
-  const [
-    introduction,
-    introductionHTML,
-    introCleanimages,
-  ] = await introDomHandle(introDom, introDomPatch);
+  const [introduction, introductionHTML, introCleanimages] =
+    await introDomHandle(introDom, introDomPatch);
 
   const additionalMetadate: BookAdditionalMetadate = {};
   if (coverUrl) {
@@ -231,7 +228,7 @@ export const c81book = () => {
     (introDom) => introDom,
     (content) => content
   );
-  ((c as unknown) as BaseRuleClass).concurrencyLimit = 10;
+  (c as unknown as BaseRuleClass).concurrencyLimit = 10;
   return c;
 };
 
@@ -390,7 +387,7 @@ export const shuquge = () => {
       return content;
     }
   );
-  ((c as unknown) as BaseRuleClass).concurrencyLimit = 1;
+  (c as unknown as BaseRuleClass).concurrencyLimit = 1;
   return c;
 };
 

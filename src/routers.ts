@@ -116,7 +116,8 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = shuhai;
       break;
     }
-    case "www.gongzicp.com": {
+    case "www.gongzicp.com":
+    case "gongzicp.com": {
       const { gongzicp } = await import("./rules/gongzicp");
       ruleClass = gongzicp;
       break;

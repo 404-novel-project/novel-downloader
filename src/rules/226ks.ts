@@ -27,11 +27,8 @@ export class c226ks extends BaseRuleClass {
       .trim();
 
     const introDom = <HTMLElement>document.querySelector(".desc");
-    const [
-      introduction,
-      introductionHTML,
-      introCleanimages,
-    ] = await introDomHandle(introDom);
+    const [introduction, introductionHTML, introCleanimages] =
+      await introDomHandle(introDom);
 
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = (<HTMLImageElement>document.querySelector(".imgbox > img"))

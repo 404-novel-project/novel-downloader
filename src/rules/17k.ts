@@ -26,11 +26,8 @@ export class c17k extends BaseRuleClass {
 
     const doc = await getHtmlDOM(bookUrl, undefined);
     const introDom = doc.querySelector("#bookInfo p.intro > a");
-    const [
-      introduction,
-      introductionHTML,
-      introCleanimages,
-    ] = await introDomHandle(introDom);
+    const [introduction, introductionHTML, introCleanimages] =
+      await introDomHandle(introDom);
 
     const additionalMetadate: BookAdditionalMetadate = {};
     let coverUrl = (<HTMLImageElement>doc.querySelector("#bookCover img.book"))

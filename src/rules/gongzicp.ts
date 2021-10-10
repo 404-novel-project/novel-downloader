@@ -211,11 +211,8 @@ export class gongzicp extends BaseRuleClass {
 
     const introDom = document.createElement("div");
     introDom.innerHTML = data.novelInfo.novel_info;
-    const [
-      introduction,
-      introductionHTML,
-      introCleanimages,
-    ] = await introDomHandle(introDom);
+    const [introduction, introductionHTML, introCleanimages] =
+      await introDomHandle(introDom);
 
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = data.novelInfo.novel_cover;

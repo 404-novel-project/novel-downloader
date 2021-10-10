@@ -40,11 +40,8 @@ export class ciweimao extends BaseRuleClass {
 
     const dom = await getHtmlDOM(bookUrl, undefined);
     const introDom = dom.querySelector(".book-intro-cnt .book-desc");
-    const [
-      introduction,
-      introductionHTML,
-      introCleanimages,
-    ] = await introDomHandle(introDom);
+    const [introduction, introductionHTML, introCleanimages] =
+      await introDomHandle(introDom);
 
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = (<HTMLImageElement>dom.querySelector(".cover > img")).src;

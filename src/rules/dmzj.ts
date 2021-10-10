@@ -26,11 +26,8 @@ export class dmzj extends BaseRuleClass {
       .trim();
 
     const introDom = <HTMLElement>document.querySelector(".comic_deCon_d");
-    const [
-      introduction,
-      introductionHTML,
-      introCleanimages,
-    ] = await introDomHandle(introDom);
+    const [introduction, introductionHTML, introCleanimages] =
+      await introDomHandle(introDom);
 
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = (<HTMLImageElement>(

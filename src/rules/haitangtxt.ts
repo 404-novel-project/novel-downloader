@@ -29,14 +29,11 @@ export class haitangtxt extends BaseRuleClass {
     )).innerText.trim();
 
     const introDom = <HTMLElement>dom.querySelector(".intro");
-    const [
-      introduction,
-      introductionHTML,
-      introCleanimages,
-    ] = await introDomHandle(introDom, (introDom) => {
-      rm("span:nth-child(1)", false, introDom);
-      return introDom;
-    });
+    const [introduction, introductionHTML, introCleanimages] =
+      await introDomHandle(introDom, (introDom) => {
+        rm("span:nth-child(1)", false, introDom);
+        return introDom;
+      });
 
     const additionalMetadate: BookAdditionalMetadate = {};
 
@@ -227,11 +224,11 @@ export class haitangtxt extends BaseRuleClass {
       } = await cleanDOM(content, "TM", { keepImageName: true });
       const _newDom = document.createElement("div");
       _newDom.innerHTML = replaceHaitangtxtImage(content.innerHTML);
-      let { dom: newDom, text: finalText, images } = await cleanDOM(
-        _newDom,
-        "TM",
-        { keepImageName: true }
-      );
+      let {
+        dom: newDom,
+        text: finalText,
+        images,
+      } = await cleanDOM(_newDom, "TM", { keepImageName: true });
 
       const fontStyleDom = document.createElement("style");
       fontStyleDom.innerHTML = `.hide { display: none; }`;

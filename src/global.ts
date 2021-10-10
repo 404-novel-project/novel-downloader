@@ -153,6 +153,6 @@ export interface newUnsafeWindow extends unsafeWindow {
 export function init() {
   (window as newWindow & typeof globalThis).progress = new Progress();
   (window as newWindow & typeof globalThis).downloading = false;
-  (window as newWindow &
-    typeof globalThis).customStorage = new localStorageExpired();
+  (window as newWindow & typeof globalThis).customStorage =
+    new localStorageExpired();
 }

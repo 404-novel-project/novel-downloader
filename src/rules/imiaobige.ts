@@ -25,11 +25,8 @@ export class imiaobige extends BaseRuleClass {
     )).innerText.trim();
 
     const introDom = <HTMLElement>doc.querySelector("#bookintro");
-    const [
-      introduction,
-      introductionHTML,
-      introCleanimages,
-    ] = await introDomHandle(introDom);
+    const [introduction, introductionHTML, introCleanimages] =
+      await introDomHandle(introDom);
 
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = (<HTMLImageElement>doc.querySelector("#bookimg > img"))

@@ -24,11 +24,8 @@ export class qingoo extends BaseRuleClass {
       .trim();
 
     const introDom = <HTMLElement>document.querySelector("#allDesc");
-    const [
-      introduction,
-      introductionHTML,
-      introCleanimages,
-    ] = await introDomHandle(introDom);
+    const [introduction, introductionHTML, introCleanimages] =
+      await introDomHandle(introDom);
 
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = (<HTMLImageElement>(

@@ -24,16 +24,13 @@ export class shouda8 extends BaseRuleClass {
       .trim();
 
     const introDom = <HTMLElement>document.querySelector(".intro");
-    const [
-      introduction,
-      introductionHTML,
-      introCleanimages,
-    ] = await introDomHandle(introDom, (introDom) => {
-      rm(".book_keywords", false, introDom);
-      rm("script", true, introDom);
-      rm("#cambrian0", false, introDom);
-      return introDom;
-    });
+    const [introduction, introductionHTML, introCleanimages] =
+      await introDomHandle(introDom, (introDom) => {
+        rm(".book_keywords", false, introDom);
+        rm("script", true, introDom);
+        rm("#cambrian0", false, introDom);
+        return introDom;
+      });
 
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = (<HTMLImageElement>(
