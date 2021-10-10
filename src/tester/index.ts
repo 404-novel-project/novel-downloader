@@ -273,6 +273,7 @@ if (
     ],
     "https://gongzicp.com/novel-341364.html",
     "https://www.gongzicp.com/novel-406782.html",
+    "https://ebook.longmabook.com/?act=showinfo&bookwritercode=EB20171122105148478253",
   ];
 
   async function runTest() {
