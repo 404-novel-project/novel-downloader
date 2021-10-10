@@ -72,7 +72,8 @@ export async function getRule(): Promise<BaseRuleClass> {
       break;
     }
     case "www.xiaoshuodaquan.com":
-    case "www.1pwx.com": {
+    case "www.1pwx.com":
+    case "1pwx.com": {
       const { xiaoshuodaquan } = await import("./rules/xiaoshuodaquan");
       ruleClass = xiaoshuodaquan;
       break;
