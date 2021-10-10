@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        小说下载器测试脚本
-// @version     4.0.2.1633840604528
+// @version     4.0.2.1633842114849
 // @author      bgme
 // @description 小说下载器测试脚本
 // @match       *://www.ciweimao.com/chapter-list/*
@@ -108,24 +108,24 @@
 // @match       *://www.shubl.com/book/book_detail/*
 // @match       *://www.ujxs.net/read/*/
 // @match       *://m.haitangtxt.net/*/*/
-// @match       *://ebook.longmabook.com/?act=showinfo&bookwritercode=*&bookid=*&pavilionid=a
-// @match       *://www.longmabookcn.com/?act=showinfo&bookwritercode=*&bookid=*&pavilionid=a
-// @match       *://ebook.lmbooks.com/?act=showinfo&bookwritercode=*&bookid=*&pavilionid=a
-// @match       *://www.lmebooks.com/?act=showinfo&bookwritercode=*&bookid=*&pavilionid=a
-// @match       *://www.haitbook.com/?act=showinfo&bookwritercode=*&bookid=*&pavilionid=a
-// @match       *://www.htwhbook.com/?act=showinfo&bookwritercode=*&bookid=*&pavilionid=a
-// @match       *://www.myhtebook.com/?act=showinfo&bookwritercode=*&bookid=*&pavilionid=a
-// @match       *://www.lovehtbooks.com/?act=showinfo&bookwritercode=*&bookid=*&pavilionid=a
-// @match       *://www.myhtebooks.com/?act=showinfo&bookwritercode=*&bookid=*&pavilionid=a
-// @match       *://www.myhtlmebook.com/?act=showinfo&bookwritercode=*&bookid=*&pavilionid=a
-// @match       *://jp.myhtebook.com/?act=showinfo&bookwritercode=*&bookid=*&pavilionid=a
-// @match       *://jp.myhtlmebook.com/?act=showinfo&bookwritercode=*&bookid=*&pavilionid=a
-// @match       *://ebook.urhtbooks.com/?act=showinfo&bookwritercode=*&bookid=*&pavilionid=a
-// @match       *://www.urhtbooks.com/?act=showinfo&bookwritercode=*&bookid=*&pavilionid=a
-// @match       *://www.newhtbook.com/?act=showinfo&bookwritercode=*&bookid=*&pavilionid=a
-// @match       *://www.lvhtebook.com/?act=showinfo&bookwritercode=*&bookid=*&pavilionid=a
-// @match       *://jp.lvhtebook.com/?act=showinfo&bookwritercode=*&bookid=*&pavilionid=a
-// @match       *://www.htlvbooks.com/?act=showinfo&bookwritercode=*&bookid=*&pavilionid=a
+// @match       *://ebook.longmabook.com/?act=showinfo&bookwritercode=*&bookid=*
+// @match       *://www.longmabookcn.com/?act=showinfo&bookwritercode=*&bookid=*
+// @match       *://ebook.lmbooks.com/?act=showinfo&bookwritercode=*&bookid=*
+// @match       *://www.lmebooks.com/?act=showinfo&bookwritercode=*&bookid=*
+// @match       *://www.haitbook.com/?act=showinfo&bookwritercode=*&bookid=*
+// @match       *://www.htwhbook.com/?act=showinfo&bookwritercode=*&bookid=*
+// @match       *://www.myhtebook.com/?act=showinfo&bookwritercode=*&bookid=*
+// @match       *://www.lovehtbooks.com/?act=showinfo&bookwritercode=*&bookid=*
+// @match       *://www.myhtebooks.com/?act=showinfo&bookwritercode=*&bookid=*
+// @match       *://www.myhtlmebook.com/?act=showinfo&bookwritercode=*&bookid=*
+// @match       *://jp.myhtebook.com/?act=showinfo&bookwritercode=*&bookid=*
+// @match       *://jp.myhtlmebook.com/?act=showinfo&bookwritercode=*&bookid=*
+// @match       *://ebook.urhtbooks.com/?act=showinfo&bookwritercode=*&bookid=*
+// @match       *://www.urhtbooks.com/?act=showinfo&bookwritercode=*&bookid=*
+// @match       *://www.newhtbook.com/?act=showinfo&bookwritercode=*&bookid=*
+// @match       *://www.lvhtebook.com/?act=showinfo&bookwritercode=*&bookid=*
+// @match       *://jp.lvhtebook.com/?act=showinfo&bookwritercode=*&bookid=*
+// @match       *://www.htlvbooks.com/?act=showinfo&bookwritercode=*&bookid=*
 // @match       *://dijiubook.net/*_*/
 // @match       https://greasyfork.org/*/scripts/406070-%E5%B0%8F%E8%AF%B4%E4%B8%8B%E8%BD%BD%E5%99%A8
 // @name:en     novel-downloader-tester
@@ -445,6 +445,7 @@ if (document.location.origin === "https://greasyfork.org" &&
         ],
         "https://gongzicp.com/novel-341364.html",
         "https://www.gongzicp.com/novel-406782.html",
+        "https://ebook.longmabook.com/?act=showinfo&bookwritercode=EB20171122105148478253",
     ];
     async function runTest() {
         setTabData("runTest", "true");
