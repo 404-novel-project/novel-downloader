@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.0.2.1633842108306
+// @version        4.0.2.1633881398877
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -55,6 +55,7 @@
 // @match          *://www.viviyzw.com/book*.html
 // @match          *://www.xiaoshuodaquan.com/*/
 // @match          *://www.1pwx.com/*/
+// @match          *://1pwx.com/*/
 // @match          *://www.81book.com/book/*/
 // @match          *://www.81zw.com/book/*/
 // @match          *://m.yuzhaige.cc/*/*/
@@ -83,6 +84,7 @@
 // @match          *://www.soshuwu.org/*/
 // @match          *://www.soxscc.cc/*/
 // @match          *://www.soshuwu.com/*/
+// @match          *://www.kubiji.net/*/
 // @match          *://www.shubaowa.org/*_*/
 // @match          *://www.fuguoduxs.com/*_*/
 // @match          *://www.xyqxs.cc/html/*/*/index.html
@@ -128,6 +130,7 @@
 // @match          *://jp.lvhtebook.com/?act=showinfo&bookwritercode=*&bookid=*
 // @match          *://www.htlvbooks.com/?act=showinfo&bookwritercode=*&bookid=*
 // @match          *://dijiubook.net/*_*/
+// @match          *://www.biquwx.la/*_*/
 // @name:en        novel-downloader
 // @description:en An scalable universal novel downloader.
 // @namespace      https://blog.bgme.me
@@ -224,6 +227,7 @@
 // @connect        soshuw.com
 // @connect        soxscc.cc
 // @connect        soshuwu.com
+// @connect        kubiji.net
 // @connect        idejian.com
 // @connect        img.imiaobige.com
 // @connect        postimg.cc

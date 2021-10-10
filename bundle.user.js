@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.0.2.1633842108306
+// @version        4.0.2.1633881398877
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -55,6 +55,7 @@
 // @match          *://www.viviyzw.com/book*.html
 // @match          *://www.xiaoshuodaquan.com/*/
 // @match          *://www.1pwx.com/*/
+// @match          *://1pwx.com/*/
 // @match          *://www.81book.com/book/*/
 // @match          *://www.81zw.com/book/*/
 // @match          *://m.yuzhaige.cc/*/*/
@@ -83,6 +84,7 @@
 // @match          *://www.soshuwu.org/*/
 // @match          *://www.soxscc.cc/*/
 // @match          *://www.soshuwu.com/*/
+// @match          *://www.kubiji.net/*/
 // @match          *://www.shubaowa.org/*_*/
 // @match          *://www.fuguoduxs.com/*_*/
 // @match          *://www.xyqxs.cc/html/*/*/index.html
@@ -128,6 +130,7 @@
 // @match          *://jp.lvhtebook.com/?act=showinfo&bookwritercode=*&bookid=*
 // @match          *://www.htlvbooks.com/?act=showinfo&bookwritercode=*&bookid=*
 // @match          *://dijiubook.net/*_*/
+// @match          *://www.biquwx.la/*_*/
 // @name:en        novel-downloader
 // @description:en An scalable universal novel downloader.
 // @namespace      https://blog.bgme.me
@@ -224,6 +227,7 @@
 // @connect        soshuw.com
 // @connect        soxscc.cc
 // @connect        soshuwu.com
+// @connect        kubiji.net
 // @connect        idejian.com
 // @connect        img.imiaobige.com
 // @connect        postimg.cc
@@ -2097,7 +2101,8 @@ async function getRule() {
             break;
         }
         case "www.xiaoshuodaquan.com":
-        case "www.1pwx.com": {
+        case "www.1pwx.com":
+        case "1pwx.com": {
             const { xiaoshuodaquan } = await Promise.resolve().then(() => __webpack_require__("./src/rules/xiaoshuodaquan.ts"));
             ruleClass = xiaoshuodaquan;
             break;
@@ -2258,7 +2263,8 @@ async function getRule() {
         case "www.soshuw.com":
         case "www.soshuwu.org":
         case "www.soxscc.cc":
-        case "www.soshuwu.com": {
+        case "www.soshuwu.com":
+        case "www.kubiji.net": {
             const { soxscc } = await Promise.resolve().then(() => __webpack_require__("./src/rules/soxscc.ts"));
             ruleClass = soxscc;
             break;
@@ -2363,6 +2369,11 @@ async function getRule() {
         case "dijiubook.net": {
             const { dijiubook } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge.ts"));
             ruleClass = dijiubook();
+            break;
+        }
+        case "www.biquwx.la": {
+            const { biquwx } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge.ts"));
+            ruleClass = biquwx();
             break;
         }
         default: {
@@ -2863,7 +2874,7 @@ exports.c226ks = c226ks;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.xbiquge = exports.xyqxs = exports.shuquge = exports.dijiubook = exports.lwxs9 = exports.luoqiuzw = exports.gebiqu = exports.c81book = exports.common = exports.bookParseTemp = void 0;
+exports.xbiquge = exports.xyqxs = exports.shuquge = exports.dijiubook = exports.biquwx = exports.lwxs9 = exports.luoqiuzw = exports.gebiqu = exports.c81book = exports.common = exports.bookParseTemp = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const rules_1 = __webpack_require__("./src/rules.ts");
 const misc_1 = __webpack_require__("./src/lib/misc.ts");
@@ -2956,10 +2967,13 @@ async function chapterParseTemp({ dom, chapterUrl, chapterName, contenSelector, 
         };
     }
 }
-function mkBiqugeClass(introDomPatch, contentPatch) {
+function mkBiqugeClass(introDomPatch, contentPatch, concurrencyLimit = undefined) {
     return class extends rules_1.BaseRuleClass {
         constructor() {
             super();
+            if (typeof concurrencyLimit === "number") {
+                this.concurrencyLimit = concurrencyLimit;
+            }
             this.imageMode = "TM";
             this.charset = document.charset;
             this.overrideConstructor(this);
@@ -2999,11 +3013,7 @@ function mkBiqugeClass(introDomPatch, contentPatch) {
 }
 const common = () => mkBiqugeClass((introDom) => introDom, (content) => content);
 exports.common = common;
-const c81book = () => {
-    const c = mkBiqugeClass((introDom) => introDom, (content) => content);
-    c.concurrencyLimit = 10;
-    return c;
-};
+const c81book = () => mkBiqugeClass((introDom) => introDom, (content) => content);
 exports.c81book = c81book;
 const gebiqu = () => mkBiqugeClass((introDom) => {
     introDom.innerHTML = introDom.innerHTML.replace(/如果您喜欢.+，别忘记分享给朋友/g, "");
@@ -3029,6 +3039,11 @@ const lwxs9 = () => mkBiqugeClass((introDom) => introDom, (content) => {
     return content;
 });
 exports.lwxs9 = lwxs9;
+const biquwx = () => mkBiqugeClass((introDom) => {
+    introDom.innerHTML = introDom.innerHTML.replace(/本站提示：各位书友要是觉得《.+》还不错的话请不要忘记向您QQ群和微博里的朋友推荐哦！/, "");
+    return introDom;
+}, (content) => content, 1);
+exports.biquwx = biquwx;
 const dijiubook = () => {
     const c = mkBiqugeClass((introDom) => {
         introDom.innerHTML = introDom.innerHTML.replace("本书网址：", "");
@@ -3056,12 +3071,16 @@ const dijiubook = () => {
     return c;
 };
 exports.dijiubook = dijiubook;
-function mkBiqugeClass2(introDomPatch, contentPatch) {
+function mkBiqugeClass2(introDomPatch, contentPatch, concurrencyLimit = undefined) {
     return class extends rules_1.BaseRuleClass {
         constructor() {
             super();
+            if (typeof concurrencyLimit === "number") {
+                this.concurrencyLimit = concurrencyLimit;
+            }
             this.imageMode = "TM";
             this.charset = document.charset;
+            this.overrideConstructor(this);
         }
         async bookParse() {
             const self = this;
@@ -3095,19 +3114,15 @@ function mkBiqugeClass2(introDomPatch, contentPatch) {
         overrideConstructor(self) { }
     };
 }
-const shuquge = () => {
-    const c = mkBiqugeClass2((introDom) => {
-        introDom.innerHTML = introDom.innerHTML.replace(/推荐地址：https?:\/\/www.shuquge.com\/txt\/\d+\/index\.html/g, "");
-        return introDom;
-    }, (content) => {
-        content.innerHTML = content.innerHTML
-            .replace("请记住本书首发域名：www.shuquge.com。书趣阁_笔趣阁手机版阅读网址：m.shuquge.com", "")
-            .replace(/https?:\/\/www.shuquge.com\/txt\/\d+\/\d+\.html/, "");
-        return content;
-    });
-    c.concurrencyLimit = 1;
-    return c;
-};
+const shuquge = () => mkBiqugeClass2((introDom) => {
+    introDom.innerHTML = introDom.innerHTML.replace(/推荐地址：https?:\/\/www.shuquge.com\/txt\/\d+\/index\.html/g, "");
+    return introDom;
+}, (content) => {
+    content.innerHTML = content.innerHTML
+        .replace("请记住本书首发域名：www.shuquge.com。书趣阁_笔趣阁手机版阅读网址：m.shuquge.com", "")
+        .replace(/https?:\/\/www.shuquge.com\/txt\/\d+\/\d+\.html/, "");
+    return content;
+}, 1);
 exports.shuquge = shuquge;
 const xyqxs = () => mkBiqugeClass2((introDom) => {
     introDom.innerHTML = introDom.innerHTML.replace(/推荐地址：https:\/\/www.xyqxs.cc\/html\/\d+\/\d+\/index\.html/g, "");
@@ -8353,7 +8368,7 @@ class soxscc extends rules_1.BaseRuleClass {
         chapterName = (doc.querySelector(".read_title > h1")).innerText.trim();
         const content = doc.querySelector("div.content[id]");
         if (content) {
-            const ad = `您可以在百度里搜索“${bookname} 搜小说(${document.location.hostname})”查找最新章节！`;
+            const ad = `您可以在百度里搜索“${bookname} .+(${document.location.hostname})”查找最新章节！`;
             content.innerHTML = content.innerHTML.replaceAll(ad, "");
             Array.from(content.querySelectorAll("p")).forEach((p) => {
                 const adwords = [

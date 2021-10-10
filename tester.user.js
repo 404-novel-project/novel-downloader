@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        小说下载器测试脚本
-// @version     4.0.2.1633842114849
+// @version     4.0.2.1633881404187
 // @author      bgme
 // @description 小说下载器测试脚本
 // @match       *://www.ciweimao.com/chapter-list/*
@@ -54,6 +54,7 @@
 // @match       *://www.viviyzw.com/book*.html
 // @match       *://www.xiaoshuodaquan.com/*/
 // @match       *://www.1pwx.com/*/
+// @match       *://1pwx.com/*/
 // @match       *://www.81book.com/book/*/
 // @match       *://www.81zw.com/book/*/
 // @match       *://m.yuzhaige.cc/*/*/
@@ -82,6 +83,7 @@
 // @match       *://www.soshuwu.org/*/
 // @match       *://www.soxscc.cc/*/
 // @match       *://www.soshuwu.com/*/
+// @match       *://www.kubiji.net/*/
 // @match       *://www.shubaowa.org/*_*/
 // @match       *://www.fuguoduxs.com/*_*/
 // @match       *://www.xyqxs.cc/html/*/*/index.html
@@ -127,6 +129,7 @@
 // @match       *://jp.lvhtebook.com/?act=showinfo&bookwritercode=*&bookid=*
 // @match       *://www.htlvbooks.com/?act=showinfo&bookwritercode=*&bookid=*
 // @match       *://dijiubook.net/*_*/
+// @match       *://www.biquwx.la/*_*/
 // @match       https://greasyfork.org/*/scripts/406070-%E5%B0%8F%E8%AF%B4%E4%B8%8B%E8%BD%BD%E5%99%A8
 // @name:en     novel-downloader-tester
 // @namespace   https://blog.bgme.me
@@ -385,6 +388,7 @@ if (document.location.origin === "https://greasyfork.org" &&
         "https://www.soxscc.net/QiLingFuYunXiaoJiaoQi/",
         "https://www.soxscc.org/ZhongShengXiaoYuanGuoMinNvShenZhuaiFanTian/",
         "https://www.soxs.cc/TunShiXingKong/",
+        "https://www.kubiji.net/298802/",
         [
             "http://www.shubaowa.org/7_7914/",
             "http://www.shubaowa.org/0_2/",
