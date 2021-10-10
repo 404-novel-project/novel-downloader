@@ -144,7 +144,8 @@
     "*://www.lvhtebook.com/?act=showinfo&bookwritercode=*&bookid=*",
     "*://jp.lvhtebook.com/?act=showinfo&bookwritercode=*&bookid=*",
     "*://www.htlvbooks.com/?act=showinfo&bookwritercode=*&bookid=*",
-    "*://dijiubook.net/*_*/"
+    "*://dijiubook.net/*_*/",
+    "*://www.biquwx.la/*_*/"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",

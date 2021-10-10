@@ -341,6 +341,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = dijiubook();
       break;
     }
+    case "www.biquwx.la": {
+      const { biquwx } = await import("./rules/biquge");
+      ruleClass = biquwx();
+      break;
+    }
     default: {
       throw new Error("Not Found Rule!");
     }

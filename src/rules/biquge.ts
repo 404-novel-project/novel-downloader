@@ -5,6 +5,7 @@ import { cleanDOM } from "../lib/cleanDOM";
 import { getImageAttachment } from "../lib/attachments";
 import { getHtmlDOM } from "../lib/http";
 import { introDomHandle } from "./lib/common";
+import exp = require("constants");
 
 export async function bookParseTemp({
   bookUrl,
@@ -157,11 +158,15 @@ async function chapterParseTemp({
 
 function mkBiqugeClass(
   introDomPatch: (introDom: HTMLElement) => HTMLElement,
-  contentPatch: (content: HTMLElement) => HTMLElement
+  contentPatch: (content: HTMLElement) => HTMLElement,
+  concurrencyLimit: number | undefined = undefined
 ): PublicConstructor<BaseRuleClass> {
   return class extends BaseRuleClass {
     public constructor() {
       super();
+      if (typeof concurrencyLimit === "number") {
+        this.concurrencyLimit = concurrencyLimit;
+      }
       this.imageMode = "TM";
       this.charset = document.charset;
       this.overrideConstructor(this);
@@ -223,14 +228,11 @@ export const common = () =>
     (content) => content
   );
 
-export const c81book = () => {
-  const c = mkBiqugeClass(
+export const c81book = () =>
+  mkBiqugeClass(
     (introDom) => introDom,
     (content) => content
   );
-  (c as unknown as BaseRuleClass).concurrencyLimit = 10;
-  return c;
-};
 
 export const gebiqu = () =>
   mkBiqugeClass(
@@ -273,6 +275,19 @@ export const lwxs9 = () =>
     }
   );
 
+export const biquwx = () =>
+  mkBiqugeClass(
+    (introDom) => {
+      introDom.innerHTML = introDom.innerHTML.replace(
+        /本站提示：各位书友要是觉得《.+》还不错的话请不要忘记向您QQ群和微博里的朋友推荐哦！/,
+        ""
+      );
+      return introDom;
+    },
+    (content) => content,
+    1
+  );
+
 export const dijiubook = () => {
   const c = mkBiqugeClass(
     (introDom) => {
@@ -311,13 +326,18 @@ export const dijiubook = () => {
 
 function mkBiqugeClass2(
   introDomPatch: (introDom: HTMLElement) => HTMLElement,
-  contentPatch: (content: HTMLElement) => HTMLElement
+  contentPatch: (content: HTMLElement) => HTMLElement,
+  concurrencyLimit: number | undefined = undefined
 ): PublicConstructor<BaseRuleClass> {
   return class extends BaseRuleClass {
     public constructor() {
       super();
+      if (typeof concurrencyLimit === "number") {
+        this.concurrencyLimit = concurrencyLimit;
+      }
       this.imageMode = "TM";
       this.charset = document.charset;
+      this.overrideConstructor(this);
     }
 
     public async bookParse() {
@@ -368,8 +388,8 @@ function mkBiqugeClass2(
   };
 }
 
-export const shuquge = () => {
-  const c = mkBiqugeClass2(
+export const shuquge = () =>
+  mkBiqugeClass2(
     (introDom) => {
       introDom.innerHTML = introDom.innerHTML.replace(
         /推荐地址：https?:\/\/www.shuquge.com\/txt\/\d+\/index\.html/g,
@@ -385,11 +405,9 @@ export const shuquge = () => {
         )
         .replace(/https?:\/\/www.shuquge.com\/txt\/\d+\/\d+\.html/, "");
       return content;
-    }
+    },
+    1
   );
-  (c as unknown as BaseRuleClass).concurrencyLimit = 1;
-  return c;
-};
 
 export const xyqxs = () =>
   mkBiqugeClass2(

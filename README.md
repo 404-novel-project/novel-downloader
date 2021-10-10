@@ -100,6 +100,8 @@ ZIP压缩包，请在解压后，直接双击打开HTML文件（`index.html` 为
 |[乐文小说网](http://www.lwxs9.org/)|✅|❎||
 |[悠久小说网](https://www.ujxs.net/)|✅|❎||
 |[海棠小说网](http://m.haitangtxt.net/)|✅|❎|部分文字被图片替换，请使用HTML版查看。<br>如需替换清理图片，请自行生成图片文字对照表。|
+|[小说酷笔记](https://www.kubiji.net/)|✅|❎||
+|[笔趣阁](https://www.biquwx.la/)|✅|❎||
 
 </details>
 
@@ -367,6 +369,7 @@ window.customFinishCallback = customFinishCallback;
 |[全书斋](https://www.quanshuzhai.com/)|2||
 |[米国度](https://www.myrics.com/)|3||
 |[神凑轻小说](https://www.shencou.com/)|?||
+|[精彩小说网](https://jingcaiyuedu6.com/)|3||
 
 
 ## License
