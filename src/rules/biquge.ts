@@ -176,7 +176,7 @@ function mkBiqugeClass(
       return bookParseTemp({
         bookUrl: document.location.href,
         bookname: (<HTMLElement>(
-          document.querySelector("#info > h1:nth-child(1)")
+          document.querySelector("#info h1:nth-of-type(1)")
         )).innerText
           .trim()
           .replace(/最新章节$/, ""),
@@ -286,6 +286,65 @@ export const biquwx = () =>
     (content) => content,
     1
   );
+
+export class c25zw extends BaseRuleClass {
+  public constructor() {
+    super();
+    this.imageMode = "TM";
+    this.charset = document.charset;
+  }
+
+  public async bookParse() {
+    const self = this;
+    return bookParseTemp({
+      bookUrl: document.location.href,
+      bookname: (<HTMLElement>(
+        document.querySelector("#info h1:nth-of-type(1)")
+      )).innerText
+        .trim()
+        .replace(/最新章节$/, ""),
+      author: (<HTMLElement>(
+        document.querySelector("#info > p:nth-child(2)")
+      )).innerText
+        .replace(/作(\s+)?者[：:]/, "")
+        .trim(),
+      introDom: <HTMLElement>document.querySelector("#intro"),
+      introDomPatch: (introDom) => {
+        introDom.querySelector("font")?.parentElement?.remove();
+        introDom.innerHTML = introDom.innerHTML.replace("简介:", "");
+        return introDom;
+      },
+      coverUrl: (<HTMLImageElement>document.querySelector("#fmimg > img")).src,
+      chapterListSelector: "#list>dl",
+      charset: document.charset,
+      chapterParse: self.chapterParse,
+    });
+  }
+
+  public async chapterParse(
+    chapterUrl: string,
+    chapterName: string | null,
+    isVIP: boolean,
+    isPaid: boolean,
+    charset: string,
+    options: object
+  ) {
+    const dom = await getHtmlDOM(chapterUrl, charset);
+    return chapterParseTemp({
+      dom,
+      chapterUrl,
+      chapterName: (<HTMLElement>(
+        dom.querySelector(".zhangjieming > h1")
+      )).innerText.trim(),
+      contenSelector: "#content",
+      contentPatch: (content) => {
+        rm(".bottem", false, content);
+        return content;
+      },
+      charset,
+    });
+  }
+}
 
 export const dijiubook = () => {
   const c = mkBiqugeClass(

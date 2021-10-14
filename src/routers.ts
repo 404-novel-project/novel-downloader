@@ -347,6 +347,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = biquwx();
       break;
     }
+    case "www.25zw.com": {
+      const { c25zw } = await import("./rules/biquge");
+      ruleClass = c25zw;
+      break;
+    }
     default: {
       throw new Error("Not Found Rule!");
     }

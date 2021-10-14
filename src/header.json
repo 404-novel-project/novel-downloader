@@ -146,7 +146,8 @@
     "*://jp.lvhtebook.com/?act=showinfo&bookwritercode=*&bookid=*",
     "*://www.htlvbooks.com/?act=showinfo&bookwritercode=*&bookid=*",
     "*://dijiubook.net/*_*/",
-    "*://www.biquwx.la/*_*/"
+    "*://www.biquwx.la/*_*/",
+    "*://www.25zw.com/*/"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",
@@ -185,7 +186,12 @@
     "*://www.tadu.com/book/*/6*",
     "*://www.tadu.com/book/*/7*",
     "*://www.tadu.com/book/*/8*",
-    "*://www.tadu.com/book/*/9*"
+    "*://www.tadu.com/book/*/9*",
+    "*://www.25zw.com/lastupdate/",
+    "*://www.25zw.com/postdate/",
+    "*://www.25zw.com/monthvisit/",
+    "*://www.25zw.com/goodnum/",
+    "*://www.25zw.com/goodnew/"
   ],
   "grant": [
     "unsafeWindow",
@@ -251,6 +257,7 @@
     "meego.cn",
     "poco.cn",
     "dijiuzww.com",
+    "25zw.com",
     "*"
   ],
   "require": [
