@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        小说下载器测试脚本
-// @version     4.0.2.1634222556061
+// @version     4.0.2.1634225604645
 // @author      bgme
 // @description 小说下载器测试脚本
 // @match       *://www.ciweimao.com/chapter-list/*
@@ -130,6 +130,7 @@
 // @match       *://www.htlvbooks.com/?act=showinfo&bookwritercode=*&bookid=*
 // @match       *://dijiubook.net/*_*/
 // @match       *://www.biquwx.la/*_*/
+// @match       *://www.25zw.com/*/
 // @match       https://greasyfork.org/*/scripts/406070-%E5%B0%8F%E8%AF%B4%E4%B8%8B%E8%BD%BD%E5%99%A8
 // @name:en     novel-downloader-tester
 // @namespace   https://blog.bgme.me
@@ -174,6 +175,11 @@
 // @exclude     *://www.tadu.com/book/*/7*
 // @exclude     *://www.tadu.com/book/*/8*
 // @exclude     *://www.tadu.com/book/*/9*
+// @exclude     *://www.25zw.com/lastupdate/
+// @exclude     *://www.25zw.com/postdate/
+// @exclude     *://www.25zw.com/monthvisit/
+// @exclude     *://www.25zw.com/goodnum/
+// @exclude     *://www.25zw.com/goodnew/
 // @grant       unsafeWindow
 // @grant       GM_openInTab
 // @grant       window.close

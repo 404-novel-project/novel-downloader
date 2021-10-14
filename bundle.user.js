@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.0.2.1634222550051
+// @version        4.0.2.1634225598068
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -131,6 +131,7 @@
 // @match          *://www.htlvbooks.com/?act=showinfo&bookwritercode=*&bookid=*
 // @match          *://dijiubook.net/*_*/
 // @match          *://www.biquwx.la/*_*/
+// @match          *://www.25zw.com/*/
 // @name:en        novel-downloader
 // @description:en An scalable universal novel downloader.
 // @namespace      https://blog.bgme.me
@@ -181,6 +182,11 @@
 // @exclude        *://www.tadu.com/book/*/7*
 // @exclude        *://www.tadu.com/book/*/8*
 // @exclude        *://www.tadu.com/book/*/9*
+// @exclude        *://www.25zw.com/lastupdate/
+// @exclude        *://www.25zw.com/postdate/
+// @exclude        *://www.25zw.com/monthvisit/
+// @exclude        *://www.25zw.com/goodnum/
+// @exclude        *://www.25zw.com/goodnew/
 // @grant          unsafeWindow
 // @grant          GM_info
 // @grant          GM_xmlhttpRequest
@@ -242,6 +248,7 @@
 // @connect        meego.cn
 // @connect        poco.cn
 // @connect        dijiuzww.com
+// @connect        25zw.com
 // @connect        *
 // @require        https://cdn.jsdelivr.net/npm/crypto-js@4.1.1/crypto-js.js#sha256-8L3yX9qPmvWSDIIHB3WGTH4RZusxVA0DDmuAo4LjnOE=
 // @require        https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js#sha256-xoh0y6ov0WULfXcLMoaA6nZfszdgI8w2CEJ/3k8NBIE=
@@ -2377,6 +2384,11 @@ async function getRule() {
             ruleClass = biquwx();
             break;
         }
+        case "www.25zw.com": {
+            const { c25zw } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge.ts"));
+            ruleClass = c25zw;
+            break;
+        }
         default: {
             throw new Error("Not Found Rule!");
         }
@@ -2883,7 +2895,7 @@ exports.c226ks = c226ks;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.xbiquge = exports.xyqxs = exports.shuquge = exports.dijiubook = exports.biquwx = exports.lwxs9 = exports.luoqiuzw = exports.gebiqu = exports.c81book = exports.common = exports.bookParseTemp = void 0;
+exports.xbiquge = exports.xyqxs = exports.shuquge = exports.dijiubook = exports.c25zw = exports.biquwx = exports.lwxs9 = exports.luoqiuzw = exports.gebiqu = exports.c81book = exports.common = exports.bookParseTemp = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const rules_1 = __webpack_require__("./src/rules.ts");
 const misc_1 = __webpack_require__("./src/lib/misc.ts");
@@ -2991,7 +3003,7 @@ function mkBiqugeClass(introDomPatch, contentPatch, concurrencyLimit = undefined
             const self = this;
             return bookParseTemp({
                 bookUrl: document.location.href,
-                bookname: (document.querySelector("#info > h1:nth-child(1)")).innerText
+                bookname: (document.querySelector("#info h1:nth-of-type(1)")).innerText
                     .trim()
                     .replace(/最新章节$/, ""),
                 author: (document.querySelector("#info > p:nth-child(2)")).innerText
@@ -3053,6 +3065,50 @@ const biquwx = () => mkBiqugeClass((introDom) => {
     return introDom;
 }, (content) => content, 1);
 exports.biquwx = biquwx;
+class c25zw extends rules_1.BaseRuleClass {
+    constructor() {
+        super();
+        this.imageMode = "TM";
+        this.charset = document.charset;
+    }
+    async bookParse() {
+        const self = this;
+        return bookParseTemp({
+            bookUrl: document.location.href,
+            bookname: (document.querySelector("#info h1:nth-of-type(1)")).innerText
+                .trim()
+                .replace(/最新章节$/, ""),
+            author: (document.querySelector("#info > p:nth-child(2)")).innerText
+                .replace(/作(\s+)?者[：:]/, "")
+                .trim(),
+            introDom: document.querySelector("#intro"),
+            introDomPatch: (introDom) => {
+                introDom.querySelector("font")?.parentElement?.remove();
+                introDom.innerHTML = introDom.innerHTML.replace("简介:", "");
+                return introDom;
+            },
+            coverUrl: document.querySelector("#fmimg > img").src,
+            chapterListSelector: "#list>dl",
+            charset: document.charset,
+            chapterParse: self.chapterParse,
+        });
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+        const dom = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
+        return chapterParseTemp({
+            dom,
+            chapterUrl,
+            chapterName: (dom.querySelector(".zhangjieming > h1")).innerText.trim(),
+            contenSelector: "#content",
+            contentPatch: (content) => {
+                (0, misc_1.rm)(".bottem", false, content);
+                return content;
+            },
+            charset,
+        });
+    }
+}
+exports.c25zw = c25zw;
 const dijiubook = () => {
     const c = mkBiqugeClass((introDom) => {
         introDom.innerHTML = introDom.innerHTML.replace("本书网址：", "");

@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.0.2.1634222550051
+// @version        4.0.2.1634225598068
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -131,6 +131,7 @@
 // @match          *://www.htlvbooks.com/?act=showinfo&bookwritercode=*&bookid=*
 // @match          *://dijiubook.net/*_*/
 // @match          *://www.biquwx.la/*_*/
+// @match          *://www.25zw.com/*/
 // @name:en        novel-downloader
 // @description:en An scalable universal novel downloader.
 // @namespace      https://blog.bgme.me
@@ -181,6 +182,11 @@
 // @exclude        *://www.tadu.com/book/*/7*
 // @exclude        *://www.tadu.com/book/*/8*
 // @exclude        *://www.tadu.com/book/*/9*
+// @exclude        *://www.25zw.com/lastupdate/
+// @exclude        *://www.25zw.com/postdate/
+// @exclude        *://www.25zw.com/monthvisit/
+// @exclude        *://www.25zw.com/goodnum/
+// @exclude        *://www.25zw.com/goodnew/
 // @grant          unsafeWindow
 // @grant          GM_info
 // @grant          GM_xmlhttpRequest
@@ -242,6 +248,7 @@
 // @connect        meego.cn
 // @connect        poco.cn
 // @connect        dijiuzww.com
+// @connect        25zw.com
 // @connect        *
 // @require        https://cdn.jsdelivr.net/npm/crypto-js@4.1.1/crypto-js.js#sha256-8L3yX9qPmvWSDIIHB3WGTH4RZusxVA0DDmuAo4LjnOE=
 // @require        https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js#sha256-xoh0y6ov0WULfXcLMoaA6nZfszdgI8w2CEJ/3k8NBIE=
