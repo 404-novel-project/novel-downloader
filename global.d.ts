@@ -20,6 +20,7 @@ export interface newWindow extends Window {
     progress: Progress | undefined;
     downloading: boolean;
     customStorage: localStorageExpired;
+    stopFlag: boolean;
 }
 export interface newUnsafeWindow extends unsafeWindow {
     rule: BaseRuleClass;

@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.0.2.1634218297687
+// @version        4.0.2.1634222550051
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -716,6 +716,7 @@ function init() {
     window.downloading = false;
     window.customStorage =
         new misc_1.localStorageExpired();
+    window.stopFlag = false;
 }
 exports.init = init;
 
@@ -2582,6 +2583,10 @@ class BaseRuleClass {
         }
         if (self.concurrencyLimit === 1) {
             for (let chapter of chapters) {
+                if (window.stopFlag) {
+                    log_1.log.info("[chapter]收到停止信号，停止继续下载。");
+                    break;
+                }
                 try {
                     let obj = await chapter.init();
                     obj = await self.postChapterParseHook(obj);
@@ -2596,6 +2601,10 @@ class BaseRuleClass {
         else {
             await (0, misc_1.concurrencyRun)(chapters, self.concurrencyLimit, async (curChapter) => {
                 if (curChapter === undefined) {
+                    return Promise.resolve();
+                }
+                if (window.stopFlag) {
+                    log_1.log.info("[chapter]收到停止信号，停止继续下载。");
                     return Promise.resolve();
                 }
                 try {
@@ -6540,6 +6549,13 @@ class longmabook extends rules_1.BaseRuleClass {
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         const self = this;
         const doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
+        if (doc.body.innerHTML.includes("您目前正在海棠清水區，只能觀看清水認證文章。")) {
+            if (!window.stopFlag) {
+                alert("您目前正在海棠清水區，只能觀看清水認證文章。請使用海棠其他網址進入。");
+                window.stopFlag = true;
+            }
+            throw new Error("您目前正在海棠清水區，只能觀看清水認證文章。請使用海棠其他網址進入。");
+        }
         const nullObj = {
             chapterName: chapterName,
             contentRaw: null,
