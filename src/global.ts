@@ -138,6 +138,7 @@ export interface newWindow extends Window {
   progress: Progress | undefined;
   downloading: boolean;
   customStorage: localStorageExpired;
+  stopFlag: boolean;
 }
 
 export interface newUnsafeWindow extends unsafeWindow {
@@ -155,4 +156,5 @@ export function init() {
   (window as newWindow & typeof globalThis).downloading = false;
   (window as newWindow & typeof globalThis).customStorage =
     new localStorageExpired();
+  (window as newWindow & typeof globalThis).stopFlag = false;
 }

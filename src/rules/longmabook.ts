@@ -12,6 +12,7 @@ import { introDomHandle } from "./lib/common";
 import { log } from "../log";
 import { getImageAttachment } from "../lib/attachments";
 import { rm } from "../lib/misc";
+import { newWindow } from "../global";
 
 export class longmabook extends BaseRuleClass {
   public constructor() {
@@ -156,6 +157,21 @@ export class longmabook extends BaseRuleClass {
   ) {
     const self = this;
     const doc = await getHtmlDOM(chapterUrl, charset);
+    if (
+      doc.body.innerHTML.includes(
+        "您目前正在海棠清水區，只能觀看清水認證文章。"
+      )
+    ) {
+      if (!(window as newWindow & typeof globalThis).stopFlag) {
+        alert(
+          "您目前正在海棠清水區，只能觀看清水認證文章。請使用海棠其他網址進入。"
+        );
+        (window as newWindow & typeof globalThis).stopFlag = true;
+      }
+      throw new Error(
+        "您目前正在海棠清水區，只能觀看清水認證文章。請使用海棠其他網址進入。"
+      );
+    }
     interface options {
       bookId: string;
       bookwritercode: string;

@@ -276,6 +276,10 @@ export abstract class BaseRuleClass {
 
     if (self.concurrencyLimit === 1) {
       for (let chapter of chapters) {
+        if ((window as newWindow & typeof globalThis).stopFlag) {
+          log.info("[chapter]收到停止信号，停止继续下载。");
+          break;
+        }
         try {
           let obj = await chapter.init();
           obj = await self.postChapterParseHook(obj);
@@ -291,6 +295,10 @@ export abstract class BaseRuleClass {
         self.concurrencyLimit,
         async (curChapter: Chapter) => {
           if (curChapter === undefined) {
+            return Promise.resolve();
+          }
+          if ((window as newWindow & typeof globalThis).stopFlag) {
+            log.info("[chapter]收到停止信号，停止继续下载。");
             return Promise.resolve();
           }
           try {
