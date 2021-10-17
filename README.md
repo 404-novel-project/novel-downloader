@@ -363,23 +363,6 @@ window.customFinishCallback = customFinishCallback;
 
 1. `yarn run build` 编译生成最终脚本文件 `dist/bundle.user.js`。
 
-## Todo
-
-|网站|实现难度|备注|
-|---|--------|----|
-|[百合小说网](https://m.baihexs.com/)|3||
-|[微信读书](https://weread.qq.com/)|9||
-|[网易云阅读](https://yuedu.163.com/)|5||
-|[豆瓣阅读](https://read.douban.com/)|5||
-|[息壤中文网](https://www.xrzww.com/)|4||
-|[PO18 臉紅心跳](https://www.po18.tw/)|?||
-|[全书斋](https://www.quanshuzhai.com/)|2||
-|[米国度](https://www.myrics.com/)|3||
-|[神凑轻小说](https://www.shencou.com/)|?||
-|[精彩小说网](https://jingcaiyuedu6.com/)|3||
-|[笔趣阁](https://www.changshengrui.com//)|4||
-
-
 ## License
 
 AGPL-3.0
