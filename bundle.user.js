@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.0.2.1634225598068
+// @version        4.1.1.1634487357826
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -60,7 +60,6 @@
 // @match          *://www.81zw.com/book/*/
 // @match          *://m.yuzhaige.cc/*/*/
 // @match          *://m.yushuge123.com/*/*/
-// @match          *://www.wanben.org/*/
 // @match          *://www.xinwanben.com/*/
 // @match          *://www.idejian.com/book/*/
 // @match          *://www.wenku8.net/novel/*/*/index.htm
@@ -1882,10 +1881,14 @@ class Chapter {
         this.contentImages = contentImages;
         this.additionalMetadate = additionalMetadate;
         if (this.status === Status.failed) {
-            log_1.log.error(`[Chapter]${this.chapterName} 解析出错。`);
+            log_1.log.error(`[Chapter]${this.chapterName}, URL:${this.chapterUrl}, \
+VIP:${this.isVIP}, Paid:${this.isPaid}, \
+isNull:${!Boolean(this.contentHTML)} 解析出错。`);
         }
         else {
-            log_1.log.info(`[Chapter]${this.chapterName} 解析完成。`);
+            log_1.log.info(`[Chapter]${this.chapterName}, URL:${this.chapterUrl}, \
+VIP:${this.isVIP}, Paid:${this.isPaid}, \
+isNull:${!Boolean(this.contentHTML)} 解析成功。`);
         }
         return this;
     }
@@ -2172,8 +2175,7 @@ async function getRule() {
             ruleClass = linovel;
             break;
         }
-        case "www.xinwanben.com":
-        case "www.wanben.org": {
+        case "www.xinwanben.com": {
             const { xinwanben } = await Promise.resolve().then(() => __webpack_require__("./src/rules/xinwanben.ts"));
             ruleClass = xinwanben;
             break;
@@ -9143,60 +9145,55 @@ exports.xiaoshuodaquan = xiaoshuodaquan;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.xinwanben = void 0;
-const main_1 = __webpack_require__("./src/main.ts");
 const rules_1 = __webpack_require__("./src/rules.ts");
-const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
+const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
+const biquge_1 = __webpack_require__("./src/rules/biquge.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 class xinwanben extends rules_1.BaseRuleClass {
     constructor() {
         super();
         this.imageMode = "TM";
-        this.charset = "GBK";
     }
     async bookParse() {
-        let bookUrl = document.location.href;
-        const bookname = (document.querySelector(".detailTitle > h1")).innerText.trim();
-        const author = (document.querySelector(".writer > a")).innerText.trim();
-        const introDom = (document.querySelector(".detailTopMid > table > tbody > tr:nth-child(3) > td:nth-child(2)"));
-        const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom);
-        const additionalMetadate = {};
-        const coverUrl = (document.querySelector(".detailTopLeft > img")).src;
-        if (coverUrl) {
-            (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-").then((coverClass) => {
-                additionalMetadate.cover = coverClass;
-            });
-        }
-        const chapters = [];
-        const cos = document.querySelectorAll(".chapter > ul > li > a");
-        let chapterNumber = 0;
-        for (const co of Array.from(cos)) {
-            chapterNumber++;
-            const chapterName = co.innerText;
-            const chapterUrl = co.href;
-            const isVIP = false;
-            const isPaid = false;
-            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, null, null, null, this.chapterParse, this.charset, {});
-            chapters.push(chapter);
-        }
-        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
-        return book;
+        const self = this;
+        return (0, biquge_1.bookParseTemp)({
+            bookUrl: document.location.href,
+            bookname: (document.querySelector("#info > h1:nth-child(1)")).innerText.trim(),
+            author: (document.querySelector("#info > p:nth-child(2)")).innerText
+                .replace(/作(\s+)?者[：:]/, "")
+                .trim(),
+            introDom: document.querySelector("#intro"),
+            introDomPatch: (introDom) => {
+                const _bookname = introDom.innerHTML.match(/《(.*)》/);
+                let bookname;
+                if (_bookname?.length === 2) {
+                    bookname = _bookname[1];
+                }
+                introDom.querySelectorAll("p").forEach((p) => {
+                    const adList = [
+                        "还不错的话请不要忘记向您QQ群和微博里的朋友推荐哦！",
+                        "小说免费阅读地址：",
+                    ];
+                    for (const ad of adList) {
+                        if (p.innerText.includes(ad)) {
+                            p.remove();
+                        }
+                    }
+                });
+                introDom.innerHTML = introDom.innerHTML.replace(`${bookname}小说简介：`, "");
+                return introDom;
+            },
+            coverUrl: document.querySelector("#fmimg > img").src,
+            chapterListSelector: "div.box_con:nth-child(5) > div:nth-child(2) > dl:nth-child(1)",
+            charset: "UTF-8",
+            chapterParse: self.chapterParse,
+        });
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        return (0, common_1.nextPageParse)(chapterName, chapterUrl, charset, ".readerCon", (_content, doc) => {
-            const ads = [
-                "一秒记住【完本神站】手机用户输入地址：m.wanbentxt.com",
-                "支持（完本神站）把本站分享那些需要的小伙伴！找不到书请留言！",
-                "下载【看书助手APP】官网：www.kanshuzhushou.com 无广告、全部免费！",
-                "一秒记住♂.{完^本,神^立占,首^发}♂手机用户输入地址：м.шanbentxt.coM",
-                "提示：浏览器搜索（书名）+.{完,本,神,立占}可以快速找到你在本站看的书！",
-                "谨记我们的网址，祝大家阅读愉快！别忘了多多宣传宣传。",
-                "【提示】：如果觉得此文不错，请推荐给更多小伙伴吧！分享也是一种享受。",
-                "支持（完本神站）把本站分享那些需要的小伙伴！找不到书请留言！",
-                "读未修改内容请到：完 本 神 站/文/学",
-            ];
-            ads.forEach((ad) => (_content.innerHTML = _content.innerHTML.replaceAll(ad, "")));
+        return (0, common_1.nextPageParse)(chapterName, chapterUrl, charset, "#content", (_content, doc) => {
+            (0, cleanDOM_1.htmlTrim)(_content);
             return _content;
-        }, (doc) => doc.querySelector(".next")?.parentElement.href, (_content, nextLink) => new URL(nextLink).pathname.includes("_"));
+        }, (doc) => doc.querySelector("#next_url").href, (_content, nextLink) => nextLink.includes("_"));
     }
 }
 exports.xinwanben = xinwanben;

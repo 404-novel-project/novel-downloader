@@ -1,8 +1,7 @@
-import { Book } from "../main";
 import { BaseRuleClass } from "../rules";
 export declare class xinwanben extends BaseRuleClass {
     constructor();
-    bookParse(): Promise<Book>;
+    bookParse(): Promise<import("../main").Book>;
     chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean, charset: string, options: object): Promise<{
         chapterName: string | null;
         contentRaw: HTMLDivElement;
