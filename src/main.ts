@@ -139,12 +139,12 @@ export class Chapter {
 
     if (this.status === Status.failed) {
       log.error(`[Chapter]${this.chapterName}, URL:${this.chapterUrl}, \
-      VIP:${this.isVIP}, Paid:${this.isPaid}, \
-      isNull:${!Boolean(this.contentHTML)} 解析出错。`);
+VIP:${this.isVIP}, Paid:${this.isPaid}, \
+isNull:${!Boolean(this.contentHTML)} 解析出错。`);
     } else {
       log.info(`[Chapter]${this.chapterName}, URL:${this.chapterUrl}, \
-      VIP:${this.isVIP}, Paid:${this.isPaid}, \
-      isNull:${!Boolean(this.contentHTML)} 解析出错。`);
+VIP:${this.isVIP}, Paid:${this.isPaid}, \
+isNull:${!Boolean(this.contentHTML)} 解析成功。`);
     }
     return this;
   }

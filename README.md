@@ -21,7 +21,13 @@ ZIP压缩包，请在解压后，直接双击打开HTML文件（`index.html` 为
 
 - Q：脚本运行出错了！
 
-    A：在反馈之前，请**保证您当前运行的脚本版本为最新版**，如不是最新版，请更新脚本。如最新版脚本仍出现错误，请说明具体网址，有无特殊操作以及其他附加说明，并附上调试日志，协助开发者明确出错原因。调试日志为下载生成的zip文件中的 `debug.log` 文件。文件上传可使用： https://send.bgme.bid/
+    A：在反馈之前，请**保证您当前运行的脚本版本为最新版**，如不是最新版，请更新脚本。
+    
+    如最新版脚本仍出现错误，请说明具体网址，有无特殊操作以及其他附加说明，并附上调试日志，协助开发者明确出错原因。调试日志为下载生成的zip文件中的 `debug.log` 文件。
+    
+    如需反馈问题，请至[本项目支持页面](https://github.com/yingziwu/novel-downloader/issues)提交issue， 对于greasyfork评论区的反馈跟进不及时敬请谅解。
+    
+    文件上传可使用： https://send.bgme.bid/
 
 - Q：希望支持某某网站。
 
@@ -292,7 +298,7 @@ window.customFinishCallback = customFinishCallback;
 ## 开发
 
 1. `git clone https://github.com/yingziwu/novel-downloader.git` 将项目克隆至本地（访问github可能需要使用代理）。
-1. `npm install` 安装依赖。
+1. `yarn install` 安装依赖。
 1. 继承 `BaseRuleClass` 实现，完成 `bookParse`、`chapterParse` 方法，然后在 `routers.ts` 中添加相应选择规则。
 
     ```typescript
@@ -355,7 +361,7 @@ window.customFinishCallback = customFinishCallback;
     }
     ```
 
-1. `npm run build` 编译生成最终脚本文件 `dist/bundle.user.js`。
+1. `yarn run build` 编译生成最终脚本文件 `dist/bundle.user.js`。
 
 ## Todo
 

@@ -1,82 +1,56 @@
-import { BookAdditionalMetadate, Chapter, Book } from "../main";
 import { BaseRuleClass } from "../rules";
-import { getImageAttachment } from "../lib/attachments";
-import { introDomHandle, nextPageParse } from "./lib/common";
+import { htmlTrim } from "../lib/cleanDOM";
+import { bookParseTemp } from "./biquge";
+import { nextPageParse } from "./lib/common";
 
 export class xinwanben extends BaseRuleClass {
   public constructor() {
     super();
     this.imageMode = "TM";
-    this.charset = "GBK";
   }
 
   public async bookParse() {
-    let bookUrl = document.location.href;
-
-    const bookname = (<HTMLElement>(
-      document.querySelector(".detailTitle > h1")
-    )).innerText.trim();
-    const author = (<HTMLElement>(
-      document.querySelector(".writer > a")
-    )).innerText.trim();
-
-    const introDom = <HTMLElement>(
-      document.querySelector(
-        ".detailTopMid > table > tbody > tr:nth-child(3) > td:nth-child(2)"
-      )
-    );
-    const [introduction, introductionHTML, introCleanimages] =
-      await introDomHandle(introDom);
-
-    const additionalMetadate: BookAdditionalMetadate = {};
-    const coverUrl = (<HTMLImageElement>(
-      document.querySelector(".detailTopLeft > img")
-    )).src;
-    if (coverUrl) {
-      getImageAttachment(coverUrl, this.imageMode, "cover-").then(
-        (coverClass) => {
-          additionalMetadate.cover = coverClass;
+    const self = this;
+    return bookParseTemp({
+      bookUrl: document.location.href,
+      bookname: (<HTMLElement>(
+        document.querySelector("#info > h1:nth-child(1)")
+      )).innerText.trim(),
+      author: (<HTMLElement>(
+        document.querySelector("#info > p:nth-child(2)")
+      )).innerText
+        .replace(/作(\s+)?者[：:]/, "")
+        .trim(),
+      introDom: <HTMLElement>document.querySelector("#intro"),
+      introDomPatch: (introDom) => {
+        const _bookname = introDom.innerHTML.match(/《(.*)》/);
+        let bookname;
+        if (_bookname?.length === 2) {
+          bookname = _bookname[1];
         }
-      );
-    }
-
-    const chapters: Chapter[] = [];
-    const cos = document.querySelectorAll(".chapter > ul > li > a");
-    let chapterNumber = 0;
-    for (const co of Array.from(cos)) {
-      chapterNumber++;
-      const chapterName = (<HTMLAnchorElement>co).innerText;
-      const chapterUrl = (<HTMLAnchorElement>co).href;
-      const isVIP = false;
-      const isPaid = false;
-      const chapter = new Chapter(
-        bookUrl,
-        bookname,
-        chapterUrl,
-        chapterNumber,
-        chapterName,
-        isVIP,
-        isPaid,
-        null,
-        null,
-        null,
-        this.chapterParse,
-        this.charset,
-        {}
-      );
-      chapters.push(chapter);
-    }
-
-    const book = new Book(
-      bookUrl,
-      bookname,
-      author,
-      introduction,
-      introductionHTML,
-      additionalMetadate,
-      chapters
-    );
-    return book;
+        introDom.querySelectorAll("p").forEach((p) => {
+          const adList = [
+            "还不错的话请不要忘记向您QQ群和微博里的朋友推荐哦！",
+            "小说免费阅读地址：",
+          ];
+          for (const ad of adList) {
+            if (p.innerText.includes(ad)) {
+              p.remove();
+            }
+          }
+        });
+        introDom.innerHTML = introDom.innerHTML.replace(
+          `${bookname}小说简介：`,
+          ""
+        );
+        return introDom;
+      },
+      coverUrl: (<HTMLImageElement>document.querySelector("#fmimg > img")).src,
+      chapterListSelector:
+        "div.box_con:nth-child(5) > div:nth-child(2) > dl:nth-child(1)",
+      charset: "UTF-8",
+      chapterParse: self.chapterParse,
+    });
   }
 
   public async chapterParse(
@@ -91,27 +65,13 @@ export class xinwanben extends BaseRuleClass {
       chapterName,
       chapterUrl,
       charset,
-      ".readerCon",
+      "#content",
       (_content, doc) => {
-        const ads = [
-          "一秒记住【完本神站】手机用户输入地址：m.wanbentxt.com",
-          "支持（完本神站）把本站分享那些需要的小伙伴！找不到书请留言！",
-          "下载【看书助手APP】官网：www.kanshuzhushou.com 无广告、全部免费！",
-          "一秒记住♂.{完^本,神^立占,首^发}♂手机用户输入地址：м.шanbentxt.coM",
-          "提示：浏览器搜索（书名）+.{完,本,神,立占}可以快速找到你在本站看的书！",
-          "谨记我们的网址，祝大家阅读愉快！别忘了多多宣传宣传。",
-          "【提示】：如果觉得此文不错，请推荐给更多小伙伴吧！分享也是一种享受。",
-          "支持（完本神站）把本站分享那些需要的小伙伴！找不到书请留言！",
-          "读未修改内容请到：完 本 神 站/文/学",
-        ];
-        ads.forEach(
-          (ad) => (_content.innerHTML = _content.innerHTML.replaceAll(ad, ""))
-        );
+        htmlTrim(_content);
         return _content;
       },
-      (doc) =>
-        (<HTMLAnchorElement>doc.querySelector(".next")?.parentElement).href,
-      (_content, nextLink) => new URL(nextLink).pathname.includes("_")
+      (doc) => (<HTMLAnchorElement>doc.querySelector("#next_url")).href,
+      (_content, nextLink) => nextLink.includes("_")
     );
   }
 }
