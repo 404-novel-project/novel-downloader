@@ -138,9 +138,13 @@ export class Chapter {
     this.additionalMetadate = additionalMetadate;
 
     if (this.status === Status.failed) {
-      log.error(`[Chapter]${this.chapterName} 解析出错。`);
+      log.error(`[Chapter]${this.chapterName}, URL:${this.chapterUrl}, \
+      VIP:${this.isVIP}, Paid:${this.isPaid}, \
+      isNull:${!Boolean(this.contentHTML)} 解析出错。`);
     } else {
-      log.info(`[Chapter]${this.chapterName} 解析完成。`);
+      log.info(`[Chapter]${this.chapterName}, URL:${this.chapterUrl}, \
+      VIP:${this.isVIP}, Paid:${this.isPaid}, \
+      isNull:${!Boolean(this.contentHTML)} 解析出错。`);
     }
     return this;
   }
