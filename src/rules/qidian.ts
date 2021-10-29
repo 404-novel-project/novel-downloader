@@ -104,7 +104,7 @@ export class qidian extends BaseRuleClass {
       const cs = s.querySelectorAll("ul.cf > li");
       for (let j = 0; j < cs.length; j++) {
         const c = cs[j];
-        const a = c.firstElementChild;
+        const a = c.querySelector("a");
         chapterNumber++;
         sectionChapterNumber++;
         const chapterName = (<HTMLAnchorElement>a).innerText.trim();
@@ -127,7 +127,12 @@ export class qidian extends BaseRuleClass {
           }
           return false;
         };
-        const chapterId = chapterUrl.split("/").slice(-1)[0];
+        let chapterId;
+        if (isVIP()) {
+          chapterId = chapterUrl.split("/").slice(-1)[0];
+        } else {
+          chapterId = null;
+        }
         const chapter = new Chapter(
           bookUrl,
           bookname,
