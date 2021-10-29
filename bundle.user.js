@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.1.1.1635526240552
+// @version        4.1.2.1635527660736
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -6962,7 +6962,7 @@ class qidian extends rules_1.BaseRuleClass {
             const cs = s.querySelectorAll("ul.cf > li");
             for (let j = 0; j < cs.length; j++) {
                 const c = cs[j];
-                const a = c.firstElementChild;
+                const a = c.querySelector("a");
                 chapterNumber++;
                 sectionChapterNumber++;
                 const chapterName = a.innerText.trim();
@@ -6985,7 +6985,13 @@ class qidian extends rules_1.BaseRuleClass {
                     }
                     return false;
                 };
-                const chapterId = chapterUrl.split("/").slice(-1)[0];
+                let chapterId;
+                if (isVIP()) {
+                    chapterId = chapterUrl.split("/").slice(-1)[0];
+                }
+                else {
+                    chapterId = null;
+                }
                 const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), isPaid(), sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, "UTF-8", {
                     _csrfToken: _csrfToken,
                     bookId: bookId,
