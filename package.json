@@ -1,6 +1,6 @@
 {
   "name": "novel-downloader",
-  "version": "4.1.2",
+  "version": "4.1.3",
   "description": "novel downloader",
   "main": "index.js",
   "scripts": {
@@ -39,6 +39,7 @@
   },
   "dependencies": {
     "fflate": "^0.7.1",
+    "idb-keyval": "^6.0.3",
     "loglevel": "^1.7.1"
   }
 }
