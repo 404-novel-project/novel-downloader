@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.1.2.1635527660736
+// @version        4.1.3.1635575722777
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -5298,6 +5298,7 @@ const imageTable = {};
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.replaceJjwxcCharacter = void 0;
+const idb_keyval_1 = __webpack_require__("./node_modules/idb-keyval/dist/index.js");
 const setting_1 = __webpack_require__("./src/setting.ts");
 const log_1 = __webpack_require__("./src/log.ts");
 async function replaceJjwxcCharacter(fontName, inputText) {
@@ -5348,19 +5349,26 @@ async function fetchRemoteFont(fontName) {
 }
 async function getJjwxcFontTables() {
     const JjwxcFontTablesKeyName = "novel-downloader-jjwxcFontTables";
+    const JjwxcFontTablesExpiresKeyName = "novel-downloader-jjwxcFontTables__expires__";
     const JjwxcFontTablesUrl = "https://cdn.jsdelivr.net/gh/yingziwu/jjwxcFontTables@gh-pages/bundle.json";
-    const storage = window.customStorage;
-    let _jjwxcFontTables = storage.get(JjwxcFontTablesKeyName);
-    if (_jjwxcFontTables) {
-        return _jjwxcFontTables;
-    }
-    else {
+    async function fetchAndSave() {
         try {
             log_1.log.info("[jjwxc-font]开始下载字体对照表打包文件。");
             const resp = await fetch(JjwxcFontTablesUrl);
             _jjwxcFontTables = await resp.json();
             if (_jjwxcFontTables) {
-                storage.set(JjwxcFontTablesKeyName, _jjwxcFontTables, 86400);
+                if (await (0, idb_keyval_1.get)(JjwxcFontTablesKeyName)) {
+                    await (0, idb_keyval_1.update)(JjwxcFontTablesKeyName, (val) => _jjwxcFontTables);
+                }
+                else {
+                    await (0, idb_keyval_1.set)(JjwxcFontTablesKeyName, _jjwxcFontTables);
+                }
+                if (await (0, idb_keyval_1.get)(JjwxcFontTablesExpiresKeyName)) {
+                    await (0, idb_keyval_1.update)(JjwxcFontTablesExpiresKeyName, (val) => Date.now() + 1000 * 86400);
+                }
+                else {
+                    await (0, idb_keyval_1.set)(JjwxcFontTablesExpiresKeyName, Date.now() + 1000 * 86400);
+                }
                 return _jjwxcFontTables;
             }
             else {
@@ -5370,6 +5378,19 @@ async function getJjwxcFontTables() {
         catch (error) {
             return {};
         }
+    }
+    let _jjwxcFontTables = await (0, idb_keyval_1.get)(JjwxcFontTablesKeyName);
+    if (_jjwxcFontTables) {
+        if ((await (0, idb_keyval_1.get)(JjwxcFontTablesExpiresKeyName)) &&
+            (await (0, idb_keyval_1.get)(JjwxcFontTablesExpiresKeyName)) > Date.now()) {
+            return _jjwxcFontTables;
+        }
+        else {
+            return await fetchAndSave();
+        }
+    }
+    else {
+        return await fetchAndSave();
     }
 }
 
@@ -13174,6 +13195,229 @@ exports["default"] = (function (c, id, msg, transfer, cb) {
 });
 
 
+/***/ }),
+
+/***/ "./node_modules/idb-keyval/dist/index.js":
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+// ESM COMPAT FLAG
+__webpack_require__.r(__webpack_exports__);
+
+// EXPORTS
+__webpack_require__.d(__webpack_exports__, {
+  "clear": () => (/* binding */ clear),
+  "createStore": () => (/* binding */ createStore),
+  "del": () => (/* binding */ del),
+  "delMany": () => (/* binding */ delMany),
+  "entries": () => (/* binding */ entries),
+  "get": () => (/* binding */ get),
+  "getMany": () => (/* binding */ getMany),
+  "keys": () => (/* binding */ keys),
+  "promisifyRequest": () => (/* binding */ promisifyRequest),
+  "set": () => (/* binding */ set),
+  "setMany": () => (/* binding */ setMany),
+  "update": () => (/* binding */ update),
+  "values": () => (/* binding */ values)
+});
+
+;// CONCATENATED MODULE: ./node_modules/safari-14-idb-fix/dist/index.js
+/**
+ * Work around Safari 14 IndexedDB open bug.
+ *
+ * Safari has a horrible bug where IDB requests can hang while the browser is starting up. https://bugs.webkit.org/show_bug.cgi?id=226547
+ * The only solution is to keep nudging it until it's awake.
+ */
+function idbReady() {
+    var isSafari = !navigator.userAgentData &&
+        /Safari\//.test(navigator.userAgent) &&
+        !/Chrom(e|ium)\//.test(navigator.userAgent);
+    // No point putting other browsers or older versions of Safari through this mess.
+    if (!isSafari || !indexedDB.databases)
+        return Promise.resolve();
+    var intervalId;
+    return new Promise(function (resolve) {
+        var tryIdb = function () { return indexedDB.databases().finally(resolve); };
+        intervalId = setInterval(tryIdb, 100);
+        tryIdb();
+    }).finally(function () { return clearInterval(intervalId); });
+}
+
+/* harmony default export */ const dist = (idbReady);
+
+;// CONCATENATED MODULE: ./node_modules/idb-keyval/dist/index.js
+
+
+function promisifyRequest(request) {
+    return new Promise((resolve, reject) => {
+        // @ts-ignore - file size hacks
+        request.oncomplete = request.onsuccess = () => resolve(request.result);
+        // @ts-ignore - file size hacks
+        request.onabort = request.onerror = () => reject(request.error);
+    });
+}
+function createStore(dbName, storeName) {
+    const dbp = dist().then(() => {
+        const request = indexedDB.open(dbName);
+        request.onupgradeneeded = () => request.result.createObjectStore(storeName);
+        return promisifyRequest(request);
+    });
+    return (txMode, callback) => dbp.then((db) => callback(db.transaction(storeName, txMode).objectStore(storeName)));
+}
+let defaultGetStoreFunc;
+function defaultGetStore() {
+    if (!defaultGetStoreFunc) {
+        defaultGetStoreFunc = createStore('keyval-store', 'keyval');
+    }
+    return defaultGetStoreFunc;
+}
+/**
+ * Get a value by its key.
+ *
+ * @param key
+ * @param customStore Method to get a custom store. Use with caution (see the docs).
+ */
+function get(key, customStore = defaultGetStore()) {
+    return customStore('readonly', (store) => promisifyRequest(store.get(key)));
+}
+/**
+ * Set a value with a key.
+ *
+ * @param key
+ * @param value
+ * @param customStore Method to get a custom store. Use with caution (see the docs).
+ */
+function set(key, value, customStore = defaultGetStore()) {
+    return customStore('readwrite', (store) => {
+        store.put(value, key);
+        return promisifyRequest(store.transaction);
+    });
+}
+/**
+ * Set multiple values at once. This is faster than calling set() multiple times.
+ * It's also atomic – if one of the pairs can't be added, none will be added.
+ *
+ * @param entries Array of entries, where each entry is an array of `[key, value]`.
+ * @param customStore Method to get a custom store. Use with caution (see the docs).
+ */
+function setMany(entries, customStore = defaultGetStore()) {
+    return customStore('readwrite', (store) => {
+        entries.forEach((entry) => store.put(entry[1], entry[0]));
+        return promisifyRequest(store.transaction);
+    });
+}
+/**
+ * Get multiple values by their keys
+ *
+ * @param keys
+ * @param customStore Method to get a custom store. Use with caution (see the docs).
+ */
+function getMany(keys, customStore = defaultGetStore()) {
+    return customStore('readonly', (store) => Promise.all(keys.map((key) => promisifyRequest(store.get(key)))));
+}
+/**
+ * Update a value. This lets you see the old value and update it as an atomic operation.
+ *
+ * @param key
+ * @param updater A callback that takes the old value and returns a new value.
+ * @param customStore Method to get a custom store. Use with caution (see the docs).
+ */
+function update(key, updater, customStore = defaultGetStore()) {
+    return customStore('readwrite', (store) => 
+    // Need to create the promise manually.
+    // If I try to chain promises, the transaction closes in browsers
+    // that use a promise polyfill (IE10/11).
+    new Promise((resolve, reject) => {
+        store.get(key).onsuccess = function () {
+            try {
+                store.put(updater(this.result), key);
+                resolve(promisifyRequest(store.transaction));
+            }
+            catch (err) {
+                reject(err);
+            }
+        };
+    }));
+}
+/**
+ * Delete a particular key from the store.
+ *
+ * @param key
+ * @param customStore Method to get a custom store. Use with caution (see the docs).
+ */
+function del(key, customStore = defaultGetStore()) {
+    return customStore('readwrite', (store) => {
+        store.delete(key);
+        return promisifyRequest(store.transaction);
+    });
+}
+/**
+ * Delete multiple keys at once.
+ *
+ * @param keys List of keys to delete.
+ * @param customStore Method to get a custom store. Use with caution (see the docs).
+ */
+function delMany(keys, customStore = defaultGetStore()) {
+    return customStore('readwrite', (store) => {
+        keys.forEach((key) => store.delete(key));
+        return promisifyRequest(store.transaction);
+    });
+}
+/**
+ * Clear all values in the store.
+ *
+ * @param customStore Method to get a custom store. Use with caution (see the docs).
+ */
+function clear(customStore = defaultGetStore()) {
+    return customStore('readwrite', (store) => {
+        store.clear();
+        return promisifyRequest(store.transaction);
+    });
+}
+function eachCursor(customStore, callback) {
+    return customStore('readonly', (store) => {
+        // This would be store.getAllKeys(), but it isn't supported by Edge or Safari.
+        // And openKeyCursor isn't supported by Safari.
+        store.openCursor().onsuccess = function () {
+            if (!this.result)
+                return;
+            callback(this.result);
+            this.result.continue();
+        };
+        return promisifyRequest(store.transaction);
+    });
+}
+/**
+ * Get all keys in the store.
+ *
+ * @param customStore Method to get a custom store. Use with caution (see the docs).
+ */
+function keys(customStore = defaultGetStore()) {
+    const items = [];
+    return eachCursor(customStore, (cursor) => items.push(cursor.key)).then(() => items);
+}
+/**
+ * Get all values in the store.
+ *
+ * @param customStore Method to get a custom store. Use with caution (see the docs).
+ */
+function values(customStore = defaultGetStore()) {
+    const items = [];
+    return eachCursor(customStore, (cursor) => items.push(cursor.value)).then(() => items);
+}
+/**
+ * Get all entries in the store. Each entry is an array of `[key, value]`.
+ *
+ * @param customStore Method to get a custom store. Use with caution (see the docs).
+ */
+function entries(customStore = defaultGetStore()) {
+    const items = [];
+    return eachCursor(customStore, (cursor) => items.push([cursor.key, cursor.value])).then(() => items);
+}
+
+
+
+
 /***/ })
 
 /******/ 	});
@@ -13201,6 +13445,35 @@ exports["default"] = (function (c, id, msg, transfer, cb) {
 /******/ 		// Return the exports of the module
 /******/ 		return module.exports;
 /******/ 	}
+/******/ 	
+/************************************************************************/
+/******/ 	/* webpack/runtime/define property getters */
+/******/ 	(() => {
+/******/ 		// define getter functions for harmony exports
+/******/ 		__webpack_require__.d = (exports, definition) => {
+/******/ 			for(var key in definition) {
+/******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
+/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 				}
+/******/ 			}
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	(() => {
+/******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/make namespace object */
+/******/ 	(() => {
+/******/ 		// define __esModule on exports
+/******/ 		__webpack_require__.r = (exports) => {
+/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 			}
+/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 		};
+/******/ 	})();
 /******/ 	
 /************************************************************************/
 var __webpack_exports__ = {};
