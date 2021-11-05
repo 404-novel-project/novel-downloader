@@ -5,6 +5,11 @@ const WebpackUserscript = require("webpack-userscript");
 const dev = process.env.NODE_ENV === "development";
 console.log(`development: ${dev}`);
 
+// Generate revision
+require("child_process").execSync(
+  '[ $(git rev-list --count master) != "1" ] && git rev-list --count master > REVISION'
+);
+
 module.exports = {
   mode: dev ? "development" : "production",
   optimization: {
@@ -46,10 +51,12 @@ module.exports = {
         const headerPath = path.resolve(__dirname, "src", "header.json");
         const header = JSON.parse(fs.readFileSync(headerPath));
         const revision = require("child_process")
-          .execSync("git rev-list --count master")
+          .execSync("cat REVISION")
           .toString()
           .trim();
-        header["version"] = header["version"] + `.${revision}`;
+        const version = header["version"] + `.${revision}`;
+        console.log(`revision: ${revision}`);
+        header["version"] = version;
         return header;
       },
       ssri: false,
