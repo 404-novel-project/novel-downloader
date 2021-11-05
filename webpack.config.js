@@ -8,7 +8,8 @@ console.log(`development: ${dev}`);
 // Generate revision
 try {
   require("child_process").execSync(
-    '[ $(git rev-list --count master) != "1" ] && git rev-list --count master > REVISION'
+    `[ $(git rev-list --count master) != "1" ] && git rev-list --count master > REVISION \
+    || echo $(($(curl https://api.github.com/repos/yingziwu/novel-downloader/compare/80a4a3c44bee219c97952103309f66ab0910bba5...master | jq '.total_commits') + 1)) > REVISION`
   );
 } catch (error) {
   console.error(error);
