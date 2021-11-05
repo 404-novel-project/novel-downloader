@@ -6,9 +6,13 @@ const dev = process.env.NODE_ENV === "development";
 console.log(`development: ${dev}`);
 
 // Generate revision
-require("child_process").execSync(
-  '[ $(git rev-list --count master) != "1" ] && git rev-list --count master > REVISION'
-);
+try {
+  require("child_process").execSync(
+    '[ $(git rev-list --count master) != "1" ] && git rev-list --count master > REVISION'
+  );
+} catch (error) {
+  console.error(error);
+}
 
 module.exports = {
   mode: dev ? "development" : "production",
