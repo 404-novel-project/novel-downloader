@@ -1,4 +1,5 @@
 const path = require("path");
+const fs = require("fs");
 const WebpackUserscript = require("webpack-userscript");
 
 const dev = process.env.NODE_ENV === "development";
@@ -41,7 +42,16 @@ module.exports = {
   },
   plugins: [
     new WebpackUserscript({
-      headers: path.resolve(__dirname, "src", "header.json"),
+      headers: () => {
+        const headerPath = path.resolve(__dirname, "src", "header.json");
+        const header = JSON.parse(fs.readFileSync(headerPath));
+        const revision = require("child_process")
+          .execSync("git rev-list --count master")
+          .toString()
+          .trim();
+        header["version"] = header["version"] + `.${revision}`;
+        return header;
+      },
       ssri: false,
       pretty: true,
       downloadBaseUrl:

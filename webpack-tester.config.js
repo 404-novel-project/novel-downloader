@@ -43,12 +43,16 @@ module.exports = {
       headers: () => {
         const rawHeaderPath = path.resolve(__dirname, "src", "header.json");
         const rawHeader = JSON.parse(fs.readFileSync(rawHeaderPath));
+        const revision = require("child_process")
+        .execSync("git rev-list --count master")
+        .toString()
+        .trim();
         const header = {
           name: "小说下载器测试脚本",
           "name:en": "novel-downloader-tester",
           author: "bgme",
           description: "小说下载器测试脚本",
-          version: "[version].[buildTime]",
+          version: "[version]" + `.${revision}`,
           namespace: "https://blog.bgme.me",
           icon:
             "https://cdn.jsdelivr.net/gh/yingziwu/novel-downloader/assets/icon.png",
