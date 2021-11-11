@@ -131,5 +131,4 @@ temp/
 # End of https://www.toptal.com/developers/gitignore/api/node
 
 .vscode
-src/rules/lib/jjwxcFontTables.ts
 REVISION
