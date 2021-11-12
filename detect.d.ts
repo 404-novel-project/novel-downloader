@@ -15,8 +15,8 @@ export declare const environments: {
     sessionStorage: any;
     Cookie: boolean;
     doNotTrack: string | number;
-    scriptHandler: string;
-    version: string;
-    script: string;
+    ScriptHandler: string;
+    "ScriptHandler version": string;
+    "Novel-downloader version": string;
     enaleDebug: any;
 };

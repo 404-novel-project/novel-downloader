@@ -68,7 +68,7 @@ export declare class attachmentClass {
     private defaultHeader;
     status: Status;
     retryTime: number;
-    imageBlob: Blob | null;
+    imageBlob: Blob | null | void;
     constructor(imageUrl: string, name: string, mode: "naive" | "TM");
     init(): Promise<Blob | null>;
     private downloadImage;
