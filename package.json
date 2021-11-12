@@ -1,6 +1,6 @@
 {
   "name": "novel-downloader",
-  "version": "4.1.4",
+  "version": "4.2.0",
   "description": "novel downloader",
   "main": "index.js",
   "scripts": {
@@ -38,6 +38,7 @@
     "webpack-userscript": "github:yingziwu/webpack-userscript"
   },
   "dependencies": {
+    "@mozilla/readability": "^0.4.1",
     "fflate": "^0.7.1",
     "idb-keyval": "^6.0.3",
     "loglevel": "^1.7.1"

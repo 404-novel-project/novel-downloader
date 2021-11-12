@@ -64,6 +64,16 @@ async function debug() {
   (<newUnsafeWindow>unsafeWindow).rule = rule;
   (<newUnsafeWindow>unsafeWindow).book = book;
   (<newUnsafeWindow>unsafeWindow).saveAs = saveAs;
+
+  const { parse, fetchAndParse, gfetchAndParse } = await import(
+    "./rules/lib/readability"
+  );
+  const readability = {
+    parse: parse,
+    fetchAndParse: fetchAndParse,
+    gfetchAndParse: gfetchAndParse,
+  };
+  (<newUnsafeWindow>unsafeWindow).readability = readability;
   return;
 }
 

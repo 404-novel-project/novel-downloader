@@ -2,7 +2,7 @@ import { localStorageExpired } from "./lib/misc";
 import { Book, Chapter } from "./main";
 import { BaseRuleClass } from "./rules";
 import { saveOptions } from "./save";
-
+import { parse, fetchAndParse, gfetchAndParse } from "./rules/lib/readability";
 class Progress {
   private _totalChapterNumber: number;
   private _finishedChapterNumber: number;
@@ -149,6 +149,11 @@ export interface newUnsafeWindow extends unsafeWindow {
   chapterFilter(chapter: Chapter): boolean;
   customFinishCallback(): void;
   saveOptions: saveOptions;
+  readability: {
+    parse: typeof parse;
+    fetchAndParse: typeof fetchAndParse;
+    gfetchAndParse: typeof gfetchAndParse;
+  };
 }
 
 export function init() {
