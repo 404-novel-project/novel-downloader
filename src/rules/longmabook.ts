@@ -74,11 +74,11 @@ export class longmabook extends BaseRuleClass {
       )
     ))?.src.replace("_s.", "_b.");
     if (coverUrl) {
-      getImageAttachment(coverUrl, this.imageMode, "cover-").then(
-        (coverClass) => {
+      getImageAttachment(coverUrl, this.imageMode, "cover-")
+        .then((coverClass) => {
           additionalMetadate.cover = coverClass;
-        }
-      );
+        })
+        .catch((error) => log.error(error));
     }
     additionalMetadate.tags =
       (

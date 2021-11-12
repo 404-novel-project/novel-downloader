@@ -47,11 +47,11 @@ export class qidian extends BaseRuleClass {
       document.querySelector("#bookImg > img")
     )).src;
     if (coverUrl) {
-      getImageAttachment(coverUrl, this.imageMode, "cover-").then(
-        (coverClass) => {
+      getImageAttachment(coverUrl, this.imageMode, "cover-")
+        .then((coverClass) => {
           additionalMetadate.cover = coverClass;
-        }
-      );
+        })
+        .catch((error) => log.error(error));
     }
     additionalMetadate.tags = Array.from(
       document.querySelectorAll(".book-info > .tag > a, .tag-wrap > .tags")
@@ -309,7 +309,7 @@ export class qidian extends BaseRuleClass {
         };
         msg: string;
       }
-      async function getChapterInfo(): Promise<chapterInfo> {
+      async function getChapterInfo(): Promise<chapterInfo | void> {
         const baseUrl = "https://vipreader.qidian.com/ajax/chapter/chapterInfo";
         const search = new URLSearchParams({
           _csrfToken: _csrfToken,
@@ -328,11 +328,16 @@ export class qidian extends BaseRuleClass {
             Referer: chapterUrl,
           },
           responseType: "json",
-        }).then((response) => <chapterInfo>response.response);
+        })
+          .then((response) => <chapterInfo>response.response)
+          .catch((error) => log.error(error));
       }
 
       async function getByAPI() {
         const chapterInfo = await getChapterInfo();
+        if (!chapterInfo) {
+          throw new Error("Request Api failed!");
+        }
         if (chapterInfo.code === 0) {
           const authorSay = chapterInfo.data.chapterInfo.authorSay;
           const _content = chapterInfo.data.chapterInfo.content;

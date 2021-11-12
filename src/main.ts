@@ -213,7 +213,7 @@ export class attachmentClass {
   public status: Status;
   public retryTime: number;
 
-  public imageBlob!: Blob | null;
+  public imageBlob!: Blob | null | void;
 
   public constructor(imageUrl: string, name: string, mode: "naive" | "TM") {
     this.url = imageUrl;

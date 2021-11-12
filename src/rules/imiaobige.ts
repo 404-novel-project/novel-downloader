@@ -4,6 +4,7 @@ import { cleanDOM } from "../lib/cleanDOM";
 import { getImageAttachment } from "../lib/attachments";
 import { getHtmlDOM } from "../lib/http";
 import { introDomHandle } from "./lib/common";
+import { log } from "../log";
 
 export class imiaobige extends BaseRuleClass {
   public constructor() {
@@ -32,11 +33,11 @@ export class imiaobige extends BaseRuleClass {
     const coverUrl = (<HTMLImageElement>doc.querySelector("#bookimg > img"))
       .src;
     if (coverUrl) {
-      getImageAttachment(coverUrl, this.imageMode, "cover-").then(
-        (coverClass) => {
+      getImageAttachment(coverUrl, this.imageMode, "cover-")
+        .then((coverClass) => {
           additionalMetadate.cover = coverClass;
-        }
-      );
+        })
+        .catch((error) => log.error(error));
     }
 
     const chapters: Chapter[] = [];

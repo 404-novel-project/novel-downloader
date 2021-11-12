@@ -31,11 +31,11 @@ export class hetushu extends BaseRuleClass {
       document.querySelector(".book_info > img")
     )).src;
     if (coverUrl) {
-      getImageAttachment(coverUrl, this.imageMode, "cover-").then(
-        (coverClass) => {
+      getImageAttachment(coverUrl, this.imageMode, "cover-")
+        .then((coverClass) => {
           additionalMetadate.cover = coverClass;
-        }
-      );
+        })
+        .catch((error) => log.error(error));
     }
 
     const chapters: Chapter[] = [];
@@ -136,7 +136,10 @@ export class hetushu extends BaseRuleClass {
         method: "GET",
         mode: "cors",
         credentials: "include",
-      }).then((response) => response.headers.get("token"));
+      })
+        .then((response) => response.headers.get("token"))
+        .catch((error) => log.error(error));
+
       if (token) {
         interface token_dict {
           [index: number]: number;

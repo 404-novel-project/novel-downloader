@@ -37,11 +37,11 @@ export class tadu extends BaseRuleClass {
       document.querySelector("a.bookImg > img")
     )).getAttribute("data-src");
     if (coverUrl) {
-      getImageAttachment(coverUrl, this.imageMode, "cover-").then(
-        (coverClass) => {
+      getImageAttachment(coverUrl, this.imageMode, "cover-")
+        .then((coverClass) => {
           additionalMetadate.cover = coverClass;
-        }
-      );
+        })
+        .catch((error) => log.error(error));
     }
 
     const chapters: Chapter[] = [];
@@ -126,14 +126,21 @@ export class tadu extends BaseRuleClass {
             accept: "*/*",
             Referer: document.location.origin,
           },
-        }).then((response) => {
-          if (response.status >= 200 && response.status <= 299) {
-            return response.responseText;
-          } else {
-            throw new Error(`Bad response! ${bookPartResourceUrl.toString()}`);
-          }
-        });
+        })
+          .then((response) => {
+            if (response.status >= 200 && response.status <= 299) {
+              return response.responseText;
+            } else {
+              throw new Error(
+                `Bad response! ${bookPartResourceUrl.toString()}`
+              );
+            }
+          })
+          .catch((error) => log.error(error));
 
+        if (!jsonpText) {
+          throw new Error("jsonp request failed!");
+        }
         interface contentObj {
           content: string;
         }

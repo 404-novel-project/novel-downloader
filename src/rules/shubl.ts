@@ -41,11 +41,11 @@ export class shubl extends BaseRuleClass {
     const coverUrl = (<HTMLImageElement>document.querySelector(".book-img"))
       .src;
     if (coverUrl) {
-      getImageAttachment(coverUrl, this.imageMode, "cover-").then(
-        (coverClass) => {
+      getImageAttachment(coverUrl, this.imageMode, "cover-")
+        .then((coverClass) => {
           additionalMetadate.cover = coverClass;
-        }
-      );
+        })
+        .catch((error) => log.error(error));
     }
     additionalMetadate.tags = Array.from(
       document.querySelectorAll("div.row > span.tag")
@@ -217,7 +217,10 @@ export class shubl extends BaseRuleClass {
           },
           data: `chapter_id=${chapter_id}`,
           responseType: "json",
-        }).then((response) => response.response);
+        })
+          .then((response) => response.response)
+          .catch((error) => log.error(error));
+
         const chapter_access_key = (<access_key_obj>access_key_obj)
           .chapter_access_key;
 
@@ -239,7 +242,9 @@ export class shubl extends BaseRuleClass {
           },
           data: `chapter_id=${chapter_id}&chapter_access_key=${chapter_access_key}`,
           responseType: "json",
-        }).then((response) => response.response);
+        })
+          .then((response) => response.response)
+          .catch((error) => log.error(error));
 
         if ((<chapter_content_obj>chapter_content_obj).code !== 100000) {
           log.error(chapter_content_obj);
@@ -303,7 +308,9 @@ export class shubl extends BaseRuleClass {
               },
               responseType: "json",
             }
-          ).then((response) => response.response);
+          )
+            .then((response) => response.response)
+            .catch((error) => log.error(error));
 
           if (
             (<image_session_code_object>image_session_code_object).code !==
@@ -352,7 +359,9 @@ export class shubl extends BaseRuleClass {
               "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8",
           },
           responseType: "blob",
-        }).then((response) => response.response);
+        })
+          .then((response) => response.response)
+          .catch((error) => log.error(error));
 
         const vipCHapterName = `vipCHapter${chapter_id}.png`;
         const vipCHapterImage = new attachmentClass(

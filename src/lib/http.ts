@@ -1,3 +1,4 @@
+import { log } from "../log";
 import { _GM_xmlhttpRequest } from "./GM";
 
 // Forbidden header name
@@ -105,13 +106,15 @@ export async function getText(
   }
 
   if (charset === undefined) {
-    return fetch(url, init).then((response) => {
-      if (response.ok) {
-        return response.text();
-      } else {
-        throw new Error(`Bad response! ${url}`);
-      }
-    });
+    return fetch(url, init)
+      .then((response) => {
+        if (response.ok) {
+          return response.text();
+        } else {
+          throw new Error(`Bad response! ${url}`);
+        }
+      })
+      .catch((error) => log.error(error));
   } else {
     return fetch(url, init)
       .then((response) => {
@@ -125,7 +128,8 @@ export async function getText(
         const decoder = new TextDecoder(charset);
         const text = decoder.decode(buffer);
         return text;
-      });
+      })
+      .catch((error) => log.error(error));
   }
 }
 
@@ -135,6 +139,9 @@ export async function getHtmlDOM(
   init: RequestInit | undefined = undefined
 ) {
   const htmlText = await getText(url, charset, init);
+  if (!htmlText) {
+    throw new Error("Fetch Content failed!");
+  }
   return new DOMParser().parseFromString(htmlText, "text/html");
 }
 
@@ -144,13 +151,15 @@ export async function ggetText(
   init: gfetch_request_options | undefined = undefined
 ) {
   if (charset === undefined) {
-    return gfetch(url, init).then((response) => {
-      if (response.status >= 200 && response.status <= 299) {
-        return response.responseText;
-      } else {
-        throw new Error(`Bad response! ${url}`);
-      }
-    });
+    return gfetch(url, init)
+      .then((response) => {
+        if (response.status >= 200 && response.status <= 299) {
+          return response.responseText;
+        } else {
+          throw new Error(`Bad response! ${url}`);
+        }
+      })
+      .catch((error) => log.error(error));
   } else {
     if (init) {
       init["responseType"] = "arraybuffer";
@@ -169,7 +178,8 @@ export async function ggetText(
         const decoder = new TextDecoder(charset);
         const text = decoder.decode(buffer);
         return text;
-      });
+      })
+      .catch((error) => log.error(error));
   }
 }
 
@@ -179,5 +189,8 @@ export async function ggetHtmlDOM(
   init: gfetch_request_options | undefined = undefined
 ) {
   const htmlText = await ggetText(url, charset, init);
+  if (!htmlText) {
+    throw new Error("Fetch Content failed!");
+  }
   return new DOMParser().parseFromString(htmlText, "text/html");
 }

@@ -44,11 +44,11 @@ export class yibige extends BaseRuleClass {
       doc.querySelector(".limg > img:nth-child(1)")
     )).src;
     if (coverUrl) {
-      getImageAttachment(coverUrl, this.imageMode, "cover-").then(
-        (coverClass) => {
+      getImageAttachment(coverUrl, this.imageMode, "cover-")
+        .then((coverClass) => {
           additionalMetadate.cover = coverClass;
-        }
-      );
+        })
+        .catch((error) => log.error(error));
     }
 
     const chapters: Chapter[] = [];

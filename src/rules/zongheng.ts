@@ -4,6 +4,7 @@ import { getImageAttachment } from "../lib/attachments";
 import { getHtmlDOM, ggetHtmlDOM } from "../lib/http";
 import { BaseRuleClass, chapterParseObject } from "../rules";
 import { introDomHandle } from "./lib/common";
+import { log } from "../log";
 
 export class zongheng extends BaseRuleClass {
   public constructor() {
@@ -31,11 +32,11 @@ export class zongheng extends BaseRuleClass {
     let coverUrl = (<HTMLImageElement>doc.querySelector("div.book-img > img"))
       .src;
     if (coverUrl) {
-      getImageAttachment(coverUrl, this.imageMode, "cover-").then(
-        (coverClass) => {
+      getImageAttachment(coverUrl, this.imageMode, "cover-")
+        .then((coverClass) => {
           additionalMetadate.cover = coverClass;
-        }
-      );
+        })
+        .catch((error) => log.error(error));
     }
     additionalMetadate.tags = Array.from(
       doc.querySelectorAll(".book-info>.book-label a")

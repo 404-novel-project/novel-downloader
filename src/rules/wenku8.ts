@@ -5,6 +5,7 @@ import { getImageAttachment } from "../lib/attachments";
 import { getHtmlDOM } from "../lib/http";
 import { BaseRuleClass } from "../rules";
 import { introDomHandle } from "./lib/common";
+import { log } from "../log";
 export class wenku8 extends BaseRuleClass {
   public constructor() {
     super();
@@ -42,11 +43,11 @@ export class wenku8 extends BaseRuleClass {
       )
     )).src;
     if (coverUrl) {
-      getImageAttachment(coverUrl, this.imageMode, "cover-").then(
-        (coverClass) => {
+      getImageAttachment(coverUrl, this.imageMode, "cover-")
+        .then((coverClass) => {
           additionalMetadate.cover = coverClass;
-        }
-      );
+        })
+        .catch((error) => log.error(error));
     }
 
     const chapters: Chapter[] = [];

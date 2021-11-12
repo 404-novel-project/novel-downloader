@@ -37,11 +37,11 @@ export class lofter extends BaseRuleClass {
       const avatar = new URL(_avatar);
       avatar.search = "";
       const avatarUrl = avatar.toString();
-      getImageAttachment(avatarUrl, this.imageMode, "avatar-").then(
-        (avatarClass) => {
+      getImageAttachment(avatarUrl, this.imageMode, "avatar-")
+        .then((avatarClass) => {
           additionalMetadate.cover = avatarClass;
-        }
-      );
+        })
+        .catch((error) => log.error(error));
     }
 
     const chapters: Chapter[] = [];

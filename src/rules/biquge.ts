@@ -5,6 +5,7 @@ import { cleanDOM } from "../lib/cleanDOM";
 import { getImageAttachment } from "../lib/attachments";
 import { getHtmlDOM } from "../lib/http";
 import { introDomHandle } from "./lib/common";
+import { log } from "../log";
 
 export async function bookParseTemp({
   bookUrl,
@@ -32,9 +33,11 @@ export async function bookParseTemp({
 
   const additionalMetadate: BookAdditionalMetadate = {};
   if (coverUrl) {
-    getImageAttachment(coverUrl, "TM", "cover-").then((coverClass) => {
-      additionalMetadate.cover = coverClass;
-    });
+    getImageAttachment(coverUrl, "TM", "cover-")
+      .then((coverClass) => {
+        additionalMetadate.cover = coverClass;
+      })
+      .catch((error) => log.error(error));
   }
 
   const chapters: Chapter[] = [];

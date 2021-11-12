@@ -49,9 +49,11 @@ min-height: auto;`;
       alert("正在下载中，请耐心等待……");
     } else {
       img.src = icon1;
-      run().then(() => {
-        img.src = icon0;
-      });
+      run()
+        .then(() => {
+          img.src = icon0;
+        })
+        .catch((error) => log.error(error));
     }
   };
   button.appendChild(img);

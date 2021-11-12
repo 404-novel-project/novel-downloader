@@ -31,11 +31,11 @@ export class xkzw extends BaseRuleClass {
     const coverUrl = (<HTMLImageElement>document.querySelector("#fmimg > img"))
       .src;
     if (coverUrl) {
-      getImageAttachment(coverUrl, this.imageMode, "cover-").then(
-        (coverClass) => {
+      getImageAttachment(coverUrl, this.imageMode, "cover-")
+        .then((coverClass) => {
           additionalMetadate.cover = coverClass;
-        }
-      );
+        })
+        .catch((error) => log.error(error));
     }
 
     const chapters: Chapter[] = [];
@@ -69,7 +69,9 @@ export class xkzw extends BaseRuleClass {
       method: "POST",
       mode: "cors",
       credentials: "include",
-    }).then((response) => response.json());
+    })
+      .then((response) => response.json())
+      .catch((error) => log.error(error));
 
     const dl1 = document.querySelector(
       "#wrapper > div.box_con:nth-child(7) > div:nth-child(1) > dl:nth-child(1)"

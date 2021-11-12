@@ -5,6 +5,7 @@ import { getImageAttachment } from "../lib/attachments";
 import { getHtmlDOM } from "../lib/http";
 import { BaseRuleClass, chapterParseObject } from "../rules";
 import { introDomHandle } from "./lib/common";
+import { log } from "../log";
 
 export class c17k extends BaseRuleClass {
   public constructor() {
@@ -33,11 +34,11 @@ export class c17k extends BaseRuleClass {
     let coverUrl = (<HTMLImageElement>doc.querySelector("#bookCover img.book"))
       .src;
     if (coverUrl) {
-      getImageAttachment(coverUrl, this.imageMode, "cover-").then(
-        (coverClass) => {
+      getImageAttachment(coverUrl, this.imageMode, "cover-")
+        .then((coverClass) => {
           additionalMetadate.cover = coverClass;
-        }
-      );
+        })
+        .catch((error) => log.error(error));
     }
 
     const chapters: Chapter[] = [];

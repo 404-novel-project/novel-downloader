@@ -82,7 +82,8 @@ export class fflateZip {
           this.addToSavedZip(this.savedZip, nonStreamingFile, chunk);
           this.tcount++;
         }
-      });
+      })
+      .catch((error) => log.error(error));
   }
 
   private addToSavedZip(

@@ -5,6 +5,7 @@ import { cleanDOM } from "../lib/cleanDOM";
 import { getImageAttachment } from "../lib/attachments";
 import { getHtmlDOM } from "../lib/http";
 import { introDomHandle } from "./lib/common";
+import { log } from "../log";
 
 namespace uukanshu {
   export interface uukanshuWindow extends unsafeWindow {
@@ -47,11 +48,11 @@ export class uukanshu extends BaseRuleClass {
       document.querySelector("a.bookImg > img")
     )).src;
     if (coverUrl) {
-      getImageAttachment(coverUrl, this.imageMode, "cover-").then(
-        (coverClass) => {
+      getImageAttachment(coverUrl, this.imageMode, "cover-")
+        .then((coverClass) => {
           additionalMetadate.cover = coverClass;
-        }
-      );
+        })
+        .catch((error) => log.error(error));
     }
 
     const chapters: Chapter[] = [];

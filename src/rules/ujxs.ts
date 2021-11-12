@@ -5,6 +5,7 @@ import { cleanDOM } from "../lib/cleanDOM";
 import { getImageAttachment } from "../lib/attachments";
 import { getHtmlDOM } from "../lib/http";
 import { introDomHandle } from "./lib/common";
+import { log } from "../log";
 
 export class ujxs extends BaseRuleClass {
   public constructor() {
@@ -32,11 +33,11 @@ export class ujxs extends BaseRuleClass {
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = (<HTMLImageElement>doc.querySelector(".img > img"))?.src;
     if (coverUrl) {
-      getImageAttachment(coverUrl, this.imageMode, "cover-").then(
-        (coverClass) => {
+      getImageAttachment(coverUrl, this.imageMode, "cover-")
+        .then((coverClass) => {
           additionalMetadate.cover = coverClass;
-        }
-      );
+        })
+        .catch((error) => log.error(error));
     }
 
     const liList = document.querySelectorAll("#readerlist > ul > li");

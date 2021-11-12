@@ -4,6 +4,7 @@ import { getImageAttachment } from "../lib/attachments";
 import { getHtmlDOM } from "../lib/http";
 import { BaseRuleClass } from "../rules";
 import { introDomHandle, nextPageParse } from "./lib/common";
+import { log } from "../log";
 
 export class linovelib extends BaseRuleClass {
   public constructor() {
@@ -32,11 +33,11 @@ export class linovelib extends BaseRuleClass {
     const coverUrl = (<HTMLImageElement>doc.querySelector(".book-img > img"))
       .src;
     if (coverUrl) {
-      getImageAttachment(coverUrl, this.imageMode, "cover-").then(
-        (coverClass) => {
+      getImageAttachment(coverUrl, this.imageMode, "cover-")
+        .then((coverClass) => {
           additionalMetadate.cover = coverClass;
-        }
-      );
+        })
+        .catch((error) => log.error(error));
     }
 
     additionalMetadate.tags = Array.from(

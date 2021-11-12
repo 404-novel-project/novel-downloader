@@ -5,6 +5,8 @@ import { getImageAttachment } from "../lib/attachments";
 import { ggetHtmlDOM } from "../lib/http";
 import { BaseRuleClass, chapterParseObject } from "../rules";
 import { introDomHandle } from "./lib/common";
+import { log } from "../log";
+
 export class shuhai extends BaseRuleClass {
   public constructor() {
     super();
@@ -35,11 +37,11 @@ export class shuhai extends BaseRuleClass {
       document.querySelector(".book-cover-wrapper > img")
     )).getAttribute("data-original");
     if (coverUrl) {
-      getImageAttachment(coverUrl, this.imageMode, "cover-").then(
-        (coverClass) => {
+      getImageAttachment(coverUrl, this.imageMode, "cover-")
+        .then((coverClass) => {
           additionalMetadate.cover = coverClass;
-        }
-      );
+        })
+        .catch((error) => log.error(error));
     }
     additionalMetadate.tags = Array.from(
       document.querySelectorAll(".book-info-bookstate > .tag")

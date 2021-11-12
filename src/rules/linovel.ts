@@ -4,6 +4,7 @@ import { getImageAttachment } from "../lib/attachments";
 import { getHtmlDOM } from "../lib/http";
 import { BaseRuleClass, chapterParseObject } from "../rules";
 import { introDomHandle } from "./lib/common";
+import { log } from "../log";
 
 export class linovel extends BaseRuleClass {
   public constructor() {
@@ -33,11 +34,11 @@ export class linovel extends BaseRuleClass {
     )).href;
     if (coverUrl) {
       attachmentsUrlList.push(coverUrl);
-      getImageAttachment(coverUrl, this.imageMode, "cover-").then(
-        (coverClass) => {
+      getImageAttachment(coverUrl, this.imageMode, "cover-")
+        .then((coverClass) => {
           additionalMetadate.cover = coverClass;
-        }
-      );
+        })
+        .catch((error) => log.error(error));
     }
 
     additionalMetadate.attachments = [];
@@ -50,11 +51,11 @@ export class linovel extends BaseRuleClass {
     for (const volumeCoverUrl of volumeCoverUrlList) {
       if (!attachmentsUrlList.includes(volumeCoverUrl)) {
         attachmentsUrlList.push(volumeCoverUrl);
-        getImageAttachment(volumeCoverUrl, this.imageMode, "volumeCover-").then(
-          (volumeCoverObj) => {
+        getImageAttachment(volumeCoverUrl, this.imageMode, "volumeCover-")
+          .then((volumeCoverObj) => {
             additionalMetadate.attachments?.push(volumeCoverObj);
-          }
-        );
+          })
+          .catch((error) => log.error(error));
       }
     }
 

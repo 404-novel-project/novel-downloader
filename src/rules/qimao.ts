@@ -33,11 +33,11 @@ export class qimao extends BaseRuleClass {
       document.querySelector(".poster-pic > img")
     )).src;
     if (coverUrl) {
-      getImageAttachment(coverUrl, this.imageMode, "cover-").then(
-        (coverClass) => {
+      getImageAttachment(coverUrl, this.imageMode, "cover-")
+        .then((coverClass) => {
           additionalMetadate.cover = coverClass;
-        }
-      );
+        })
+        .catch((error) => log.error(error));
     }
     additionalMetadate.tags = Array.from(
       document.querySelectorAll(".qm-tags > a")

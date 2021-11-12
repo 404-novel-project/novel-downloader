@@ -201,7 +201,10 @@ export class gongzicp extends BaseRuleClass {
       referrer: bookUrl,
       method: "GET",
       mode: "cors",
-    }).then((response) => response.json());
+    })
+      .then((response) => response.json())
+      .catch((error) => log.error(error));
+
     if (novelInfo.code !== 200) {
       throw new Error(`数据接口请求失败，URL:${novelGetInfoUrl.toString()}`);
     }
@@ -217,11 +220,11 @@ export class gongzicp extends BaseRuleClass {
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = data.novelInfo.novel_cover;
     if (coverUrl) {
-      getImageAttachment(coverUrl, this.imageMode, "cover-").then(
-        (coverClass) => {
+      getImageAttachment(coverUrl, this.imageMode, "cover-")
+        .then((coverClass) => {
           additionalMetadate.cover = coverClass;
-        }
-      );
+        })
+        .catch((error) => log.error(error));
     }
 
     additionalMetadate.tags = data.novelInfo.tag_list;
@@ -301,7 +304,10 @@ export class gongzicp extends BaseRuleClass {
         method: "GET",
         mode: "cors",
         credentials: "include",
-      }).then((response) => response.json());
+      })
+        .then((response) => response.json())
+        .catch((error) => log.error(error));
+
       if (userInfo.code === 200) {
         return true;
       }
@@ -606,7 +612,10 @@ export class gongzicp extends BaseRuleClass {
           referrer: chapterUrl,
           method: "GET",
           mode: "cors",
-        }).then((resp) => resp.json());
+        })
+          .then((resp) => resp.json())
+          .catch((error) => log.error(error));
+
         if (
           result.data.chapterInfo.content.length !== 0 &&
           result.data.chapterInfo.content.length < 30

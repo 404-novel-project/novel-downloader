@@ -52,11 +52,11 @@ export class jjwxc extends BaseRuleClass {
       document.querySelector(".noveldefaultimage")
     )).src;
     if (coverUrl) {
-      getImageAttachment(coverUrl, this.imageMode, "cover-").then(
-        (coverClass) => {
+      getImageAttachment(coverUrl, this.imageMode, "cover-")
+        .then((coverClass) => {
           additionalMetadate.cover = coverClass;
-        }
-      );
+        })
+        .catch((error) => log.error(error));
     }
 
     let tags = (<HTMLSpanElement>(
@@ -299,7 +299,7 @@ export class jjwxc extends BaseRuleClass {
         }
 
         let retryTime = 0;
-        function fetchFont(fontUrl: string): Promise<Blob | null> {
+        function fetchFont(fontUrl: string): Promise<Blob | null | void> {
           log.debug(
             `[Chapter]请求 ${fontUrl} Referer ${chapterUrl} 重试次数 ${retryTime}`
           );
@@ -309,19 +309,23 @@ export class jjwxc extends BaseRuleClass {
               Referer: chapterUrl,
             },
             responseType: "blob",
-          }).then((response) => {
-            if (response.status >= 200 && response.status <= 299) {
-              return <Blob>response.response;
-            } else {
-              log.error(`[Chapter]请求 ${fontUrl} 失败 Referer ${chapterUrl}`);
-              if (retryTime < retryLimit) {
-                retryTime++;
-                return fetchFont(fontUrl);
+          })
+            .then((response) => {
+              if (response.status >= 200 && response.status <= 299) {
+                return <Blob>response.response;
               } else {
-                return null;
+                log.error(
+                  `[Chapter]请求 ${fontUrl} 失败 Referer ${chapterUrl}`
+                );
+                if (retryTime < retryLimit) {
+                  retryTime++;
+                  return fetchFont(fontUrl);
+                } else {
+                  return null;
+                }
               }
-            }
-          });
+            })
+            .catch((error) => log.error(error));
         }
 
         const [fontName, fontUrl] = getFontInfo();

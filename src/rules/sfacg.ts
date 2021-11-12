@@ -39,11 +39,11 @@ export class sfacg extends BaseRuleClass {
       dom.querySelector("#hasTicket div.pic img")
     )).src;
     if (coverUrl) {
-      getImageAttachment(coverUrl, this.imageMode, "cover-").then(
-        (coverClass) => {
+      getImageAttachment(coverUrl, this.imageMode, "cover-")
+        .then((coverClass) => {
           additionalMetadate.cover = coverClass;
-        }
-      );
+        })
+        .catch((error) => log.error(error));
     }
     additionalMetadate.tags = Array.from(
       dom.querySelectorAll("ul.tag-list > li.tag > a")
@@ -182,7 +182,7 @@ export class sfacg extends BaseRuleClass {
         let retryTime = 0;
         function fetchVipChapterImage(
           vipChapterImageUrl: string
-        ): Promise<Blob | null> {
+        ): Promise<Blob | null | void> {
           log.debug(
             `[Chapter]请求 ${vipChapterImageUrl} Referer ${chapterUrl} 重试次数 ${retryTime}`
           );
@@ -213,7 +213,8 @@ export class sfacg extends BaseRuleClass {
               } else {
                 return blob;
               }
-            });
+            })
+            .catch((error) => log.error(error));
         }
 
         const vipChapterImageBlob = await fetchVipChapterImage(
