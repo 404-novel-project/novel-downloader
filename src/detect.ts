@@ -40,8 +40,8 @@ export const environments = {
   sessionStorage: storageAvailable("sessionStorage"),
   Cookie: navigator.cookieEnabled,
   doNotTrack: navigator.doNotTrack ?? 0,
-  scriptHandler: _GM_info.scriptHandler,
-  version: _GM_info.version,
-  script: JSON.stringify(_GM_info.script),
+  ScriptHandler: _GM_info.scriptHandler,
+  "ScriptHandler version": _GM_info.version,
+  "Novel-downloader version": _GM_info.script.version,
   enaleDebug: enaleDebug,
 };
