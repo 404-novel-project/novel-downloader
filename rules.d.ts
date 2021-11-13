@@ -1,4 +1,4 @@
-import { saveBook, saveOptions } from "./save";
+import { saveBook, saveOptions } from "./save/save";
 import { attachmentClass, ChapterAdditionalMetadate, Book, Chapter } from "./main";
 export interface chapterParseObject {
     chapterName: string | null;

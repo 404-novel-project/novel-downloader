@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.2.2.275
+// @version        4.3.0.276
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -248,9 +248,11 @@
 // @connect        poco.cn
 // @connect        dijiuzww.com
 // @connect        25zw.com
+// @connect        sina.com.cn
 // @connect        *
 // @require        https://cdn.jsdelivr.net/npm/crypto-js@4.1.1/crypto-js.js#sha256-8L3yX9qPmvWSDIIHB3WGTH4RZusxVA0DDmuAo4LjnOE=
 // @require        https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js#sha256-xoh0y6ov0WULfXcLMoaA6nZfszdgI8w2CEJ/3k8NBIE=
+// @require        https://cdn.jsdelivr.net/npm/nunjucks@3.2.3/browser/nunjucks.min.js#sha256-+CJElYLgP9RjEvMt/VTU1+qF8CuntjliUUBKp26fPck=
 // @downloadURL    https://github.com/yingziwu/novel-downloader/raw/gh-pages/bundle.user.js
 // @updateURL      https://github.com/yingziwu/novel-downloader/raw/gh-pages/bundle.meta.js
 // ==/UserScript==
@@ -4827,7 +4829,7 @@ exports.getRule = getRule;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.BaseRuleClass = void 0;
-const save_1 = __webpack_require__("./src/save.ts");
+const save_1 = __webpack_require__("./src/save/save.ts");
 const main_1 = __webpack_require__("./src/main.ts");
 const log_1 = __webpack_require__("./src/log.ts");
 const setting_1 = __webpack_require__("./src/setting.ts");
@@ -6253,15 +6255,6 @@ class fushuwang extends rules_1.BaseRuleClass {
         this.saveOptions = {
             genChapterText: (chapterName, contentText) => {
                 return `${contentText}\n`;
-            },
-            genChapterHtmlFile: (chapterName, DOM, chapterUrl) => {
-                let htmlFile = new DOMParser().parseFromString(`<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="https://github.com/yingziwu/novel-downloader"><meta name="source" content="${chapterUrl}"><link href="style.css" type="text/css" rel="stylesheet"/><title>${chapterName}</title></head><body><div class="main"></div></body></html>`, "text/html");
-                htmlFile.querySelector(".main")?.appendChild(DOM);
-                return new Blob([
-                    htmlFile.documentElement.outerHTML.replaceAll("data-src-address", "src"),
-                ], {
-                    type: "text/html; charset=UTF-8",
-                });
             },
         };
     }
@@ -12669,7 +12662,7 @@ exports.zongheng = zongheng;
 
 /***/ }),
 
-/***/ "./src/save.ts":
+/***/ "./src/save/save.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
@@ -12680,135 +12673,24 @@ const main_1 = __webpack_require__("./src/main.ts");
 const zip_1 = __webpack_require__("./src/lib/zip.ts");
 const setting_1 = __webpack_require__("./src/setting.ts");
 const log_1 = __webpack_require__("./src/log.ts");
+const style_1 = __webpack_require__("./src/save/style.ts");
+const template_1 = __webpack_require__("./src/save/template.ts");
 class saveBook {
     constructor(book) {
         this.book = book;
         this.chapters = book.chapters;
-        this.chapters.sort(this.chapterSort);
         this.savedZip = new zip_1.fflateZip();
         this._sections = [];
         this._savedChapters = [];
         this.savedTextArray = [];
         this.saveFileNameBase = `[${this.book.author}]${this.book.bookname}`;
-        this.mainStyleText = `body {
-  background-color: #f0f0f2;
-  margin: 0;
-  padding: 0;
-  font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI",
-    "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-}
-div.main {
-  width: 900px;
-  margin: 5em auto;
-  padding: 2em;
-  background-color: #fdfdff;
-  border-radius: 0.5em;
-  box-shadow: 2px 3px 7px 2px rgba(0, 0, 0, 0.02);
-}
-@media (max-width: 700px) {
-  div.main {
-    margin: 0 auto;
-    width: auto;
-  }
-}
-h1 {
-  line-height: 130%;
-  text-align: center;
-  font-weight: bold;
-  font-size: xxx-large;
-  margin-top: 3.2em;
-  margin-bottom: 3.3em;
-}
-h2 {
-  line-height: 130%;
-  text-align: center;
-  font-weight: bold;
-  font-size: x-large;
-  margin-top: 1.2em;
-  margin-bottom: 2.3em;
-}
-div {
-  margin: 0px;
-  padding: 0px;
-  text-align: justify;
-}
-p {
-  text-indent: 2em;
-  display: block;
-  line-height: 1.3em;
-  margin-top: 0.4em;
-  margin-bottom: 0.4em;
-}
-img {
-  vertical-align: text-bottom;
-  max-width: 90%;
-}
-.title {
-  margin-bottom: 0.7em;
-}
-.author {
-  text-align: center;
-}`;
-        this.tocStyleText = `img {
-  max-width: 100%;
-  max-height: 15em;
-}
-.introduction {
-  font-size: smaller;
-  max-height: 18em;
-  overflow-y: scroll;
-}
-.introduction p {
-	text-indent: 0;
-}
-.bookurl {
-  text-align: center;
-  font-size: smaller;
-  padding-top: 1em;
-  padding-bottom: 0.5em;
-  margin-top: 0.4em;
-}
-.bookurl > a {
-  color: gray;
-}
-.info h3 {
-  padding-left: 0.5em;
-  margin-top: -1.2em;
-  margin-bottom: 0.5em;
-}
-.section {
-  margin-top: 1.5em;
-  display: grid;
-  grid-template-columns: 30% 30% 30%;
-}
-.section > h2:first-child {
-  grid-column-end: span 3;
-}
-.section > .chapter {
-  padding-bottom: 0.3em;
-  text-align: center;
-}
-.main > h1 {
-  margin-top: 1.5em;
-  margin-bottom: 1.5em;
-}
-a.disabled {
-  pointer-events: none;
-  cursor: default;
-  color: gray;
-}
-.author::before {
-	content: "作者：";
-}
-.author {
-	text-align: center;
-	margin-top: -3em;
-	margin-bottom: 3em;
-}`;
+        this.mainStyleText = style_1.defaultMainStyleText;
+        this.tocStyleText = style_1.defaultTocStyleText;
     }
     saveTxt() {
         const metaDateText = this.genMetaDateTxt();
         this.savedTextArray.push(metaDateText);
+        this.chapters.sort(this.chapterSort);
         let sections = [];
         for (const chapter of this.chapters) {
             const chapterName = this.getchapterName(chapter);
@@ -12852,7 +12734,7 @@ a.disabled {
             log_1.log.debug("[save]开始保存章节文件");
             this.saveChapters();
         }
-        log_1.log.debug("[save]开始生成并保存ToC.html");
+        log_1.log.debug("[save]开始生成并保存 index.html");
         this.saveToC();
         log_1.log.info("[save]开始保存ZIP文件");
         const self = this;
@@ -12878,117 +12760,72 @@ a.disabled {
         });
     }
     saveToC() {
-        const ToC = new DOMParser().parseFromString(`<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="referrer" content="same-origin"><meta name="generator" content="https://github.com/yingziwu/novel-downloader"><link href="style.css" type="text/css" rel="stylesheet"/><title>${this.book.bookname}</title></head><body><div class="main"><h1>${this.book.bookname}</h1><h3 class="author">${this.book.author}</h3></div></body></html>`, "text/html");
-        const TocMain = ToC.querySelector("div.main");
-        log_1.log.debug("[save]生成ToC模板");
-        const infoDom = document.createElement("div");
-        infoDom.className = "info";
-        if (this.book.additionalMetadate.cover) {
-            const coverDom = document.createElement("img");
-            coverDom.className = "cover";
-            coverDom.setAttribute("data-src-address", this.book.additionalMetadate.cover.name);
-            infoDom.appendChild(coverDom);
-            this.mainStyleText = `${this.mainStyleText}
-.info {
-  display: grid;
-  grid-template-columns: 30% 70%;
-}`;
+        const self = this;
+        const sectionsObj = getSectionsObj();
+        let hasSections;
+        if (Object.keys(sectionsObj).length !== 1 ||
+            Object.keys(sectionsObj)[0] !== "default114514") {
+            hasSections = true;
         }
         else {
-            this.mainStyleText = `${this.mainStyleText}
-      .info {
-        display: grid;
-        grid-template-columns: 100%;
-      }`;
+            hasSections = false;
         }
-        if (this.book.introductionHTML) {
-            const divElem = document.createElement("div");
-            const h3Elem = document.createElement("h3");
-            h3Elem.innerText = "简介";
-            const introDom = document.createElement("div");
-            introDom.className = "introduction";
-            introDom.innerHTML = this.book.introductionHTML.innerHTML;
-            divElem.appendChild(h3Elem);
-            divElem.appendChild(introDom);
-            infoDom.appendChild(divElem);
-        }
-        TocMain?.appendChild(infoDom);
-        const bookUrlDom = document.createElement("div");
-        bookUrlDom.className = "bookurl";
-        const bookUrlAnchor = document.createElement("a");
-        bookUrlAnchor.href = this.book.bookUrl;
-        bookUrlAnchor.innerText = "打开原始网站";
-        bookUrlDom.appendChild(bookUrlAnchor);
-        TocMain?.appendChild(bookUrlDom);
-        const hr = document.createElement("hr");
-        TocMain?.appendChild(hr);
-        const tocStyle = document.createElement("style");
-        tocStyle.innerHTML = this.tocStyleText;
-        ToC.head.appendChild(tocStyle);
-        let sections = [];
-        for (const chapter of this.chapters) {
-            const chapterName = this.getchapterName(chapter);
-            const htmlfileNameBase = `${"0".repeat(this.chapters.length.toString().length -
-                chapter.chapterNumber.toString().length)}${chapter.chapterNumber.toString()}.html`;
-            const chapterHtmlFileName = `Chapter${htmlfileNameBase}`;
-            if (chapter.sectionName) {
-                const sectionHtmlId = `section${chapter.sectionNumber}`;
-                if (!sections.includes(chapter.sectionName)) {
-                    sections.push(chapter.sectionName);
-                    log_1.log.debug(`[save]生成卷DOM：${chapter.sectionName}`);
-                    const sectionDiv = document.createElement("div");
-                    sectionDiv.id = sectionHtmlId;
-                    sectionDiv.className = "section";
-                    const heading = document.createElement("h2");
-                    heading.className = "section-label";
-                    heading.innerHTML = chapter.sectionName;
-                    sectionDiv.appendChild(heading);
-                    if (sections.length !== 1) {
-                        const hr = document.createElement("hr");
-                        TocMain?.appendChild(hr);
-                    }
-                    TocMain?.appendChild(sectionDiv);
-                }
-                log_1.log.debug(`[save]生成章DOM：${chapterName}`);
-                const sectionDiv = TocMain?.querySelector("#" + sectionHtmlId);
-                const chapterDiv = document.createElement("div");
-                chapterDiv.className = "chapter";
-                const chapterAnchor = document.createElement("a");
-                chapterAnchor.href = chapterHtmlFileName;
-                chapterAnchor.innerHTML = chapterName;
-                if (!(chapter.contentHTML || chapter.status === main_1.Status.saved)) {
-                    chapterAnchor.classList.add("disabled");
-                }
-                chapterDiv.appendChild(chapterAnchor);
-                sectionDiv?.appendChild(chapterDiv);
-            }
-            else {
-                let sectionDiv;
-                if (TocMain?.querySelector("#section00")) {
-                    sectionDiv = TocMain?.querySelector("#section00");
-                }
-                else {
-                    sectionDiv = document.createElement("div");
-                    sectionDiv.id = "section00";
-                    sectionDiv.className = "section";
-                    TocMain?.appendChild(sectionDiv);
-                }
-                const chapterDiv = document.createElement("div");
-                chapterDiv.className = "chapter";
-                const chapterAnchor = document.createElement("a");
-                chapterAnchor.href = chapterHtmlFileName;
-                chapterAnchor.innerHTML = chapterName;
-                if (!(chapter.contentHTML || chapter.status === main_1.Status.saved)) {
-                    chapterAnchor.classList.add("disabled");
-                }
-                chapterDiv.appendChild(chapterAnchor);
-                sectionDiv?.appendChild(chapterDiv);
-            }
-        }
-        log_1.log.debug("[save]保存ToC文件");
-        this.savedZip.file("index.html", new Blob([ToC.documentElement.outerHTML.replaceAll("data-src-address", "src")], {
+        modifyTocStyleText();
+        const indexHtmlText = template_1.index.render({
+            creationDate: Date.now(),
+            bookname: self.book.bookname,
+            tocStyleText: self.tocStyleText,
+            author: self.book.author,
+            cover: self.book.additionalMetadate.cover,
+            introductionHTML: self.book.introductionHTML?.outerHTML,
+            bookUrl: self.book.bookname,
+            hasSections: hasSections,
+            sectionsObj: sectionsObj,
+            Status: main_1.Status,
+        });
+        this.savedZip.file("index.html", new Blob([indexHtmlText.replaceAll("data-src-address", "src")], {
             type: "text/html; charset=UTF-8",
         }));
+        function getSectionsObj() {
+            const _sectionsObj = {};
+            self.chapters.sort(self.chapterSort);
+            for (const chapter of self.chapters) {
+                if (chapter.sectionName) {
+                    if (_sectionsObj[chapter.sectionName]) {
+                        _sectionsObj[chapter.sectionName].push(chapter);
+                    }
+                    else {
+                        _sectionsObj[chapter.sectionName] = [chapter];
+                    }
+                }
+                else {
+                    if (_sectionsObj["default114514"]) {
+                        _sectionsObj["default114514"].push(chapter);
+                    }
+                    else {
+                        _sectionsObj["default114514"] = [chapter];
+                        chapter.chapterName;
+                    }
+                }
+            }
+            return _sectionsObj;
+        }
+        function modifyTocStyleText() {
+            if (self.book.additionalMetadate.cover) {
+                self.tocStyleText = `${self.tocStyleText}
+  .info {
+    display: grid;
+    grid-template-columns: 30% 70%;
+  }`;
+            }
+            else {
+                self.tocStyleText = `${self.tocStyleText}
+  .info {
+    display: grid;
+    grid-template-columns: 100%;
+  }`;
+            }
+        }
     }
     saveChapters() {
         for (const chapter of this.chapters) {
@@ -12997,26 +12834,28 @@ a.disabled {
     }
     addChapter(chapter) {
         const chapterName = this.getchapterName(chapter);
-        const htmlfileNameBase = `${"0".repeat(this.chapters.length.toString().length -
-            chapter.chapterNumber.toString().length)}${chapter.chapterNumber.toString()}.html`;
-        const chapterHtmlFileName = `Chapter${htmlfileNameBase}`;
+        const chapterNumberToSave = `${"0".repeat(this.chapters.length.toString().length -
+            chapter.chapterNumber.toString().length)}${chapter.chapterNumber.toString()}`;
+        const chapterHtmlFileName = `No${chapterNumberToSave}Chapter.html`;
+        const sectionHtmlFileName = `No${chapterNumberToSave}Section.html`;
         if (chapter.sectionName) {
             if (!this._sections.includes(chapter.sectionName)) {
                 this._sections.push(chapter.sectionName);
                 log_1.log.debug(`[save]保存卷HTML文件：${chapter.sectionName}`);
-                const sectionHTMLBlob = this.genSectionHtmlFile(chapter.sectionName);
-                this.savedZip.file(`Section${htmlfileNameBase}`, sectionHTMLBlob);
+                const sectionHTMLBlob = this.genSectionHtmlFile(chapter);
+                this.savedZip.file(sectionHtmlFileName, sectionHTMLBlob);
             }
         }
         if (chapter.contentHTML) {
             log_1.log.debug(`[save]保存章HTML文件：${chapterName}`);
-            const chapterHTMLBlob = this.genChapterHtmlFile(chapterName, chapter.contentHTML, chapter.chapterUrl);
+            const chapterHTMLBlob = this.genChapterHtmlFile(chapter);
             if (!setting_1.enaleDebug) {
                 chapter.contentRaw = null;
                 chapter.contentHTML = null;
                 chapter.status = main_1.Status.saved;
             }
             this.savedZip.file(chapterHtmlFileName, chapterHTMLBlob);
+            chapter.chapterHtmlFileName = chapterHtmlFileName;
         }
         if (chapter.contentImages && chapter.contentImages.length !== 0) {
             log_1.log.debug(`[save]保存章节附件：${chapterName}`);
@@ -13076,20 +12915,19 @@ a.disabled {
     genChapterText(chapterName, contentText) {
         return `## ${chapterName}\n\n${contentText}\n\n`;
     }
-    genSectionHtmlFile(sectionName) {
-        let htmlFile = new DOMParser().parseFromString(`<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="referrer" content="same-origin"><meta name="generator" content="https://github.com/yingziwu/novel-downloader"><link href="style.css" type="text/css" rel="stylesheet"/><title>${sectionName}</title></head><body><div class="main"><h1>${sectionName}</h1></div></body></html>`, "text/html");
-        return new Blob([
-            htmlFile.documentElement.outerHTML.replaceAll("data-src-address", "src"),
-        ], {
+    genSectionHtmlFile(chapterObj) {
+        const htmlText = template_1.section.render({ sectionName: chapterObj.sectionName });
+        return new Blob([htmlText.replaceAll("data-src-address", "src")], {
             type: "text/html; charset=UTF-8",
         });
     }
-    genChapterHtmlFile(chapterName, DOM, chapterUrl) {
-        let htmlFile = new DOMParser().parseFromString(`<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="referrer" content="same-origin"><meta name="generator" content="https://github.com/yingziwu/novel-downloader"><meta name="source" content="${chapterUrl}"><link href="style.css" type="text/css" rel="stylesheet"/><title>${chapterName}</title></head><body><div class="main"><h2>${chapterName}</h2></div></body></html>`, "text/html");
-        htmlFile.querySelector(".main")?.appendChild(DOM);
-        return new Blob([
-            htmlFile.documentElement.outerHTML.replaceAll("data-src-address", "src"),
-        ], {
+    genChapterHtmlFile(chapterObj) {
+        const htmlText = template_1.chapter.render({
+            chapterUrl: chapterObj.chapterUrl,
+            chapterName: chapterObj.chapterName,
+            outerHTML: chapterObj.contentHTML?.outerHTML,
+        });
+        return new Blob([htmlText.replaceAll("data-src-address", "src")], {
             type: "text/html; charset=UTF-8",
         });
     }
@@ -13109,7 +12947,14 @@ a.disabled {
 exports.saveBook = saveBook;
 function saveOptionsValidate(data) {
     const keyNamesS = ["mainStyleText", "tocStyleText"];
-    const keyNamesF = ["getchapterName"];
+    const keyNamesF = [
+        "getchapterName",
+        "genSectionText",
+        "genChapterText",
+        "genSectionHtmlFile",
+        "genChapterHtmlFile",
+        "chapterSort",
+    ];
     function keyNametest(keyname) {
         const keyList = new Array().concat(keyNamesS).concat(keyNamesF);
         if (keyList.includes(keyname)) {
@@ -13165,6 +13010,246 @@ function getSaveBookObj(book, options) {
     return saveBookObj;
 }
 exports.getSaveBookObj = getSaveBookObj;
+
+
+/***/ }),
+
+/***/ "./src/save/style.ts":
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.defaultTocStyleText = exports.defaultMainStyleText = void 0;
+exports.defaultMainStyleText = `body {
+  background-color: #f0f0f2;
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI",
+    "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+div.main {
+  width: 900px;
+  margin: 5em auto;
+  padding: 2em;
+  background-color: #fdfdff;
+  border-radius: 0.5em;
+  box-shadow: 2px 3px 7px 2px rgba(0, 0, 0, 0.02);
+}
+@media (max-width: 700px) {
+  div.main {
+    margin: 0 auto;
+    width: auto;
+  }
+}
+h1 {
+  line-height: 130%;
+  text-align: center;
+  font-weight: bold;
+  font-size: xxx-large;
+  margin-top: 3.2em;
+  margin-bottom: 3.3em;
+}
+h2 {
+  line-height: 130%;
+  text-align: center;
+  font-weight: bold;
+  font-size: x-large;
+  margin-top: 1.2em;
+  margin-bottom: 2.3em;
+}
+div {
+  margin: 0px;
+  padding: 0px;
+  text-align: justify;
+}
+p {
+  text-indent: 2em;
+  display: block;
+  line-height: 1.3em;
+  margin-top: 0.4em;
+  margin-bottom: 0.4em;
+}
+img {
+  vertical-align: text-bottom;
+  max-width: 90%;
+}
+.title {
+  margin-bottom: 0.7em;
+}`;
+exports.defaultTocStyleText = `img {
+  max-width: 100%;
+  max-height: 15em;
+}
+.introduction {
+  font-size: smaller;
+  max-height: 18em;
+  overflow-y: scroll;
+}
+.introduction p {
+    text-indent: 0;
+}
+.bookurl {
+  text-align: center;
+  font-size: smaller;
+  padding-top: 1em;
+  padding-bottom: 0.5em;
+  margin-top: 0.4em;
+}
+.bookurl > a {
+  color: gray;
+}
+.info h3 {
+  padding-left: 0.5em;
+  margin-top: -1.2em;
+  margin-bottom: 0.5em;
+}
+.section {
+  margin-top: 1.5em;
+  display: grid;
+  grid-template-columns: 30% 30% 30%;
+}
+.section > h2:first-child {
+  grid-column-end: span 3;
+}
+.section > .chapter {
+  padding-bottom: 0.3em;
+  text-align: center;
+}
+.main > h1 {
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+}
+a.disabled {
+  pointer-events: none;
+  cursor: default;
+  color: gray;
+}
+.author::before {
+    content: "作者：";
+}
+.author {
+    text-align: center;
+    margin-top: -3em;
+    margin-bottom: 3em;
+}`;
+
+
+/***/ }),
+
+/***/ "./src/save/template.ts":
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.index = exports.chapter = exports.section = void 0;
+const env = new nunjucks.Environment(undefined, { autoescape: false });
+exports.section = new nunjucks.Template(`<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="same-origin" />
+    <meta
+      name="generator"
+      content="https://github.com/yingziwu/novel-downloader"
+    />
+    <link href="style.css" type="text/css" rel="stylesheet" />
+    <title>{{ sectionName }}</title>
+  </head>
+  <body>
+    <div class="main"><h1>{{ sectionName }}</h1></div>
+  </body>
+</html>`, env, undefined, true);
+exports.chapter = new nunjucks.Template(`<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="same-origin" />
+    <meta
+      name="generator"
+      content="https://github.com/yingziwu/novel-downloader"
+    />
+    <meta name="source" content="{{ chapterUrl }}" />
+    <link href="style.css" type="text/css" rel="stylesheet" />
+    <title>{{ chapterName }}</title>
+  </head>
+  <body>
+    <div class="main">
+    <h2>{{ chapterName }}</h2>
+    {{ outerHTML }}
+    </div>
+  </body>
+</html>`, env, undefined, true);
+exports.index = new nunjucks.Template(`<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="same-origin" />
+    <meta
+      name="generator"
+      content="https://github.com/yingziwu/novel-downloader"
+    />
+    <meta name="date-creation" content="{{ creationDate }}" />
+    <link href="style.css" type="text/css" rel="stylesheet" />
+    <title>{{ bookname }}</title>
+    <style>
+      {{ tocStyleText }}
+    </style>
+  </head>
+  <body>
+    <div class="main">
+      <h1>{{ bookname }}</h1>
+      <h3 class="author">{{ author }}</h3>
+      <div class="info">
+        {% if cover -%}
+        <img class="cover" data-src-address="{{ cover.name }}" />
+        {%- endif %} 
+        {% if introductionHTML -%}
+        <div>
+          <h3>简介</h3>
+          <div class="introduction">{{ introductionHTML }}</div>
+        </div>
+        {%- endif %}
+      </div>
+      <div class="bookurl">
+        <a href="{{ bookUrl }}">打开原始网站</a>
+      </div>
+      <hr />
+      {% if hasSections -%} 
+      {% for sectionName, section in sectionsObj -%}
+      <div id="section{{ loop.index }}" class="section">
+        <h2 class="section-label">{{ sectionName }}</h2>
+        {% for chapter in section -%}
+        <div class="chapter">
+            {% if not (chapter.contentHTML or chapter.status === Status.saved) -%}
+            <a class="disabled" href="{{ chapter.chapterHtmlFileName }}">{{ chapter.chapterName }}</a>
+            {%- else -%}
+            <a href="{{ chapter.chapterHtmlFileName }}">{{ chapter.chapterName }}</a>
+            {%- endif %}
+        </div>
+        {%- endfor %}
+      </div>
+      {%- endfor %} 
+      {%- else -%}
+      <div id="section0" class="section">
+        {% for chapter in sectionsObj["default114514"] -%}
+        <div class="chapter">
+            {% if not (chapter.contentHTML or chapter.status === Status.saved) -%}
+            <a class="disabled" href="{{ chapter.chapterHtmlFileName }}">{{ chapter.chapterName }}</a>
+            {%- else -%}
+            <a href="{{ chapter.chapterHtmlFileName }}">{{ chapter.chapterName }}</a>
+            {%- endif %}
+        </div>
+        {%- endfor %}
+      </div>
+      {%- endif %}
+    </div>
+  </body>
+</html>`, env, undefined, true);
 
 
 /***/ }),

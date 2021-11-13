@@ -1,4 +1,4 @@
-import { Book, Chapter } from "./main";
+import { Book, Chapter } from "../main";
 export declare class saveBook {
     protected book: Book;
     private chapters;
@@ -21,9 +21,9 @@ export declare class saveBook {
     private addImageToZip;
     genSectionText(sectionName: string): string;
     genChapterText(chapterName: string, contentText: string): string;
-    genSectionHtmlFile(sectionName: string): Blob;
-    genChapterHtmlFile(chapterName: string, DOM: HTMLElement, chapterUrl: string): Blob;
-    private chapterSort;
+    genSectionHtmlFile(chapterObj: Chapter): Blob;
+    genChapterHtmlFile(chapterObj: Chapter): Blob;
+    chapterSort(a: Chapter, b: Chapter): 0 | 1 | -1;
 }
 export interface saveOptions {
     mainStyleText?: saveBook["mainStyleText"];
@@ -33,6 +33,7 @@ export interface saveOptions {
     genChapterText?: saveBook["genChapterText"];
     genSectionHtmlFile?: saveBook["genSectionHtmlFile"];
     genChapterHtmlFile?: saveBook["genChapterHtmlFile"];
+    chapterSort?: saveBook["chapterSort"];
 }
 export declare function saveOptionsValidate(data: any): boolean;
 export declare function getSaveBookObj(book: Book, options: saveOptions): saveBook;

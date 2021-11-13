@@ -1,7 +1,7 @@
 import { localStorageExpired } from "./lib/misc";
 import { Book, Chapter } from "./main";
 import { BaseRuleClass } from "./rules";
-import { saveOptions } from "./save";
+import { saveOptions } from "./save/save";
 import { parse, fetchAndParse, gfetchAndParse } from "./rules/lib/readability";
 declare class Progress {
     private _totalChapterNumber;

@@ -1,5 +1,5 @@
 import { BaseRuleClass } from "./rules";
-import { saveOptions } from "./save";
+import { saveOptions } from "./save/save";
 export declare enum Status {
     pending = 0,
     downloading = 1,
@@ -54,6 +54,7 @@ export declare class Chapter {
     contentHTML: HTMLElement | null;
     contentImages: attachmentClass[] | null;
     additionalMetadate: ChapterAdditionalMetadate | null;
+    chapterHtmlFileName: string | number;
     constructor(bookUrl: string, bookname: string, chapterUrl: string, chapterNumber: number, chapterName: string | null, isVIP: boolean, isPaid: boolean | null, sectionName: string | null, sectionNumber: number | null, sectionChapterNumber: number | null, chapterParse: BaseRuleClass["chapterParse"], charset: string, options: object);
     init(): Promise<this>;
     private parse;
