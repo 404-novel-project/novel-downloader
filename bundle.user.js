@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.3.0.276
+// @version        4.3.0.277
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -12690,6 +12690,7 @@ class saveBook {
     saveTxt() {
         const metaDateText = this.genMetaDateTxt();
         this.savedTextArray.push(metaDateText);
+        log_1.log.debug("[save]对 chapters 排序");
         this.chapters.sort(this.chapterSort);
         let sections = [];
         for (const chapter of this.chapters) {
@@ -12734,6 +12735,8 @@ class saveBook {
             log_1.log.debug("[save]开始保存章节文件");
             this.saveChapters();
         }
+        log_1.log.debug("[save]开始生成并保存卷文件");
+        this.saveSections();
         log_1.log.debug("[save]开始生成并保存 index.html");
         this.saveToC();
         log_1.log.info("[save]开始保存ZIP文件");
@@ -12760,6 +12763,8 @@ class saveBook {
         });
     }
     saveToC() {
+        log_1.log.debug("[save]对 chapters 排序");
+        this.chapters.sort(this.chapterSort);
         const self = this;
         const sectionsObj = getSectionsObj();
         let hasSections;
@@ -12778,7 +12783,7 @@ class saveBook {
             author: self.book.author,
             cover: self.book.additionalMetadate.cover,
             introductionHTML: self.book.introductionHTML?.outerHTML,
-            bookUrl: self.book.bookname,
+            bookUrl: self.book.bookUrl,
             hasSections: hasSections,
             sectionsObj: sectionsObj,
             Status: main_1.Status,
@@ -12788,7 +12793,6 @@ class saveBook {
         }));
         function getSectionsObj() {
             const _sectionsObj = {};
-            self.chapters.sort(self.chapterSort);
             for (const chapter of self.chapters) {
                 if (chapter.sectionName) {
                     if (_sectionsObj[chapter.sectionName]) {
@@ -12832,20 +12836,30 @@ class saveBook {
             this.addChapter(chapter);
         }
     }
-    addChapter(chapter) {
-        const chapterName = this.getchapterName(chapter);
-        const chapterNumberToSave = `${"0".repeat(this.chapters.length.toString().length -
-            chapter.chapterNumber.toString().length)}${chapter.chapterNumber.toString()}`;
-        const chapterHtmlFileName = `No${chapterNumberToSave}Chapter.html`;
-        const sectionHtmlFileName = `No${chapterNumberToSave}Section.html`;
-        if (chapter.sectionName) {
-            if (!this._sections.includes(chapter.sectionName)) {
-                this._sections.push(chapter.sectionName);
-                log_1.log.debug(`[save]保存卷HTML文件：${chapter.sectionName}`);
-                const sectionHTMLBlob = this.genSectionHtmlFile(chapter);
-                this.savedZip.file(sectionHtmlFileName, sectionHTMLBlob);
+    saveSections() {
+        log_1.log.debug("[save]对 chapters 排序");
+        this.chapters.sort(this.chapterSort);
+        for (const chapter of this.chapters) {
+            const chapterNumberToSave = this.getChapterNumberToSave(chapter);
+            const sectionHtmlFileName = `No${chapterNumberToSave}Section.html`;
+            if (chapter.sectionName) {
+                if (!this._sections.includes(chapter.sectionName)) {
+                    this._sections.push(chapter.sectionName);
+                    log_1.log.debug(`[save]保存卷HTML文件：${chapter.sectionName}`);
+                    const sectionHTMLBlob = this.genSectionHtmlFile(chapter);
+                    this.savedZip.file(sectionHtmlFileName, sectionHTMLBlob);
+                }
             }
         }
+    }
+    getChapterNumberToSave(chapter) {
+        return `${"0".repeat(this.chapters.length.toString().length -
+            chapter.chapterNumber.toString().length)}${chapter.chapterNumber.toString()}`;
+    }
+    addChapter(chapter) {
+        const chapterName = this.getchapterName(chapter);
+        const chapterNumberToSave = this.getChapterNumberToSave(chapter);
+        const chapterHtmlFileName = `No${chapterNumberToSave}Chapter.html`;
         if (chapter.contentHTML) {
             log_1.log.debug(`[save]保存章HTML文件：${chapterName}`);
             const chapterHTMLBlob = this.genChapterHtmlFile(chapter);

@@ -15,6 +15,8 @@ export declare class saveBook {
     saveZip(runSaveChapters?: boolean): Promise<void>;
     private saveToC;
     private saveChapters;
+    private saveSections;
+    private getChapterNumberToSave;
     addChapter(chapter: Chapter): void;
     getchapterName(chapter: Chapter): string;
     private genMetaDateTxt;
