@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.3.0.277
+// @version        4.3.0.278
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -12681,7 +12681,6 @@ class saveBook {
         this.chapters = book.chapters;
         this.savedZip = new zip_1.fflateZip();
         this._sections = [];
-        this._savedChapters = [];
         this.savedTextArray = [];
         this.saveFileNameBase = `[${this.book.author}]${this.book.bookname}`;
         this.mainStyleText = style_1.defaultMainStyleText;
@@ -12863,10 +12862,10 @@ class saveBook {
         if (chapter.contentHTML) {
             log_1.log.debug(`[save]保存章HTML文件：${chapterName}`);
             const chapterHTMLBlob = this.genChapterHtmlFile(chapter);
+            chapter.status = main_1.Status.saved;
             if (!setting_1.enaleDebug) {
                 chapter.contentRaw = null;
                 chapter.contentHTML = null;
-                chapter.status = main_1.Status.saved;
             }
             this.savedZip.file(chapterHtmlFileName, chapterHTMLBlob);
             chapter.chapterHtmlFileName = chapterHtmlFileName;
@@ -12880,7 +12879,6 @@ class saveBook {
                 chapter.contentImages = null;
             }
         }
-        this._savedChapters.push(chapter);
     }
     getchapterName(chapter) {
         if (chapter.chapterName) {
@@ -12909,9 +12907,9 @@ class saveBook {
         if (attachment.status === main_1.Status.finished && attachment.imageBlob) {
             log_1.log.debug(`[save]添加附件，文件名：${attachment.name}，对象`, attachment.imageBlob);
             zip.file(attachment.name, attachment.imageBlob);
+            attachment.status = main_1.Status.saved;
             if (!setting_1.enaleDebug) {
                 attachment.imageBlob = null;
-                attachment.status = main_1.Status.saved;
             }
         }
         else if (attachment.status === main_1.Status.saved) {

@@ -8,7 +8,6 @@ export declare class saveBook {
     private savedTextArray;
     private saveFileNameBase;
     private _sections;
-    private _savedChapters;
     constructor(book: Book);
     saveTxt(): void;
     saveLog(): void;
