@@ -74,6 +74,7 @@ export abstract class BaseRuleClass {
       if (!self.preHook()) return;
 
       self.book = await self.bookParse();
+      log.debug("[book]Book object:\n" + JSON.stringify(self.book));
       const saveBookObj = self.getSave(self.book);
       await self.initChapters(self.book, saveBookObj);
 
@@ -281,9 +282,8 @@ export abstract class BaseRuleClass {
           break;
         }
         try {
-          let obj = await chapter.init();
-          obj = await self.postChapterParseHook(obj);
-          afterGetChpater(obj);
+          let chapterObj = await chapter.init();
+          chapterObj = await self.postChapterParseHook(chapterObj, saveBookObj);
         } catch (error) {
           log.error(error);
           log.trace(error);
@@ -302,10 +302,12 @@ export abstract class BaseRuleClass {
             return Promise.resolve();
           }
           try {
-            let obj = await curChapter.init();
-            obj = await self.postChapterParseHook(obj);
-            afterGetChpater(obj);
-            return obj;
+            let chapterObj = await curChapter.init();
+            chapterObj = await self.postChapterParseHook(
+              chapterObj,
+              saveBookObj
+            );
+            return chapterObj;
           } catch (error) {
             log.error(error);
             log.trace(error);
@@ -315,30 +317,29 @@ export abstract class BaseRuleClass {
     }
     log.info(`[initChapters]章节初始化完毕`);
     return chapters;
-
-    function afterGetChpater(chapter: Chapter) {
-      const storage = (window as newWindow & typeof globalThis).customStorage;
-      let workStatus: workStatusObj = storage.get(workStatusKeyName);
-      if (workStatus) {
-        workStatus[document.location.href] = true;
-      } else {
-        workStatus = {};
-        workStatus[document.location.href] = true;
-      }
-      storage.set(workStatusKeyName, workStatus, 20);
-
-      if (chapter.contentHTML !== undefined) {
-        saveBookObj.addChapter(chapter);
-        const progress = (window as newWindow & typeof globalThis).progress;
-        if (progress) {
-          progress.finishedChapterNumber++;
-        }
-      }
-      return chapter;
-    }
   }
 
-  public async postChapterParseHook(obj: Chapter): Promise<Chapter> {
-    return obj;
+  public async postChapterParseHook(
+    chapter: Chapter,
+    saveBookObj: saveBook
+  ): Promise<Chapter> {
+    const storage = (window as newWindow & typeof globalThis).customStorage;
+    let workStatus: workStatusObj = storage.get(workStatusKeyName);
+    if (workStatus) {
+      workStatus[document.location.href] = true;
+    } else {
+      workStatus = {};
+      workStatus[document.location.href] = true;
+    }
+    storage.set(workStatusKeyName, workStatus, 20);
+
+    if (chapter.contentHTML !== undefined) {
+      saveBookObj.addChapter(chapter);
+      const progress = (window as newWindow & typeof globalThis).progress;
+      if (progress) {
+        progress.finishedChapterNumber++;
+      }
+    }
+    return chapter;
   }
 }

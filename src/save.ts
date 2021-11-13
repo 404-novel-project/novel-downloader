@@ -111,10 +111,6 @@ img {
 .bookurl > a {
   color: gray;
 }
-.info {
-  display: grid;
-  grid-template-columns: 30% 70%;
-}
 .info h3 {
   padding-left: 0.5em;
   margin-top: -1.2em;
@@ -268,6 +264,17 @@ a.disabled {
         this.book.additionalMetadate.cover.name
       );
       infoDom.appendChild(coverDom);
+      this.mainStyleText = `${this.mainStyleText}
+.info {
+  display: grid;
+  grid-template-columns: 30% 70%;
+}`;
+    } else {
+      this.mainStyleText = `${this.mainStyleText}
+      .info {
+        display: grid;
+        grid-template-columns: 100%;
+      }`;
     }
     if (this.book.introductionHTML) {
       const divElem = document.createElement("div");
@@ -407,8 +414,8 @@ a.disabled {
       }
     }
 
-    log.debug(`[save]保存章HTML文件：${chapterName}`);
     if (chapter.contentHTML) {
+      log.debug(`[save]保存章HTML文件：${chapterName}`);
       const chapterHTMLBlob = this.genChapterHtmlFile(
         chapterName,
         chapter.contentHTML,
@@ -422,8 +429,8 @@ a.disabled {
       this.savedZip.file(chapterHtmlFileName, chapterHTMLBlob);
     }
 
-    log.debug(`[save]开始保存章节附件：${chapterName}`);
-    if (chapter.contentImages) {
+    if (chapter.contentImages && chapter.contentImages.length !== 0) {
+      log.debug(`[save]保存章节附件：${chapterName}`);
       for (const attachment of chapter.contentImages) {
         this.addImageToZip(attachment, this.savedZip);
       }

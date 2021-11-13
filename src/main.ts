@@ -138,11 +138,13 @@ export class Chapter {
     this.additionalMetadate = additionalMetadate;
 
     if (this.status === Status.failed) {
-      log.error(`[Chapter]${this.chapterName}, URL:${this.chapterUrl}, \
+      log.error(`[Chapter]章节名：${this.chapterName}, \
+分卷名：${this.sectionName}, URL:${this.chapterUrl}, \
 VIP:${this.isVIP}, Paid:${this.isPaid}, \
 isNull:${!Boolean(this.contentHTML)} 解析出错。`);
     } else {
-      log.info(`[Chapter]${this.chapterName}, URL:${this.chapterUrl}, \
+      log.info(`[Chapter]章节名：${this.chapterName}, \
+分卷名：${this.sectionName}, URL:${this.chapterUrl}, \
 VIP:${this.isVIP}, Paid:${this.isPaid}, \
 isNull:${!Boolean(this.contentHTML)} 解析成功。`);
     }

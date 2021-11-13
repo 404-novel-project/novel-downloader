@@ -26,9 +26,10 @@ export class longmabook extends BaseRuleClass {
       document.querySelector('a[href="/?act=signinlst"]')
     );
     if (!isLogin) {
-      alert("海棠文化线上文学城需登录后方可浏览！请登录帐号。");
+      alert("小说下载器：海棠文化线上文学城需登录后方可下载！请登录帐号。");
       throw new ExpectError("海棠文化线上文学城需登录后方可浏览！");
     }
+    const self = this;
     const bookUrl = document.location.href;
     const bookname = (
       document.querySelector(
@@ -41,6 +42,9 @@ export class longmabook extends BaseRuleClass {
 
     const _urlSearch = new URLSearchParams(document.location.search);
     const bookId = _urlSearch.get("bookid");
+    if (!bookId) {
+      throw new Error("获取 bookid 出错");
+    }
     const bookwritercode = _urlSearch.get("bookwritercode");
 
     const introDom = document
@@ -89,10 +93,76 @@ export class longmabook extends BaseRuleClass {
         .split("/")
         .map((item) => item.trim()) ?? [];
 
+    async function getLiList() {
+      const showbooklistAPIUrl = document.location.origin + "/showbooklist.php";
+      let flag = false;
+      let page = 1;
+      let pageMax = 0;
+      const showbooklistParams = {
+        ebookid: bookId as string,
+        pages: page.toString(),
+        showbooklisttype: "1",
+      };
+      const liList: HTMLLIElement[] = [];
+      do {
+        log.info(`[book]请求章节目录中，page: ${page}`);
+        const doc = await getHtmlDOM(showbooklistAPIUrl, self.charset, {
+          headers: {
+            "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+            "x-requested-with": "XMLHttpRequest",
+          },
+          body: new URLSearchParams(showbooklistParams).toString(),
+          method: "POST",
+          mode: "cors",
+          credentials: "include",
+        });
+
+        if (
+          doc.documentElement.innerText.includes("章節數量較多，採分頁顯示")
+        ) {
+          const pageLi = Array.from(
+            doc.querySelectorAll(".uk-list.uk-list-divider > li")
+          ).filter((li) => li.innerHTML.includes("換頁：&nbsp;&nbsp;"))[0];
+          const pages = Array.from(pageLi.querySelectorAll("a"))
+            .map((a) => {
+              const _page = a
+                .getAttribute("onclick")
+                ?.match(/\('\d+','(\d+)'\)/);
+              if (_page?.length === 2) {
+                return Number(_page[1]);
+              }
+            })
+            .filter((page) => page);
+          pageMax = Math.max(...(pages as number[]));
+          page++;
+          if (page !== 1 && page <= pageMax) {
+            showbooklistParams["pages"] = page.toString();
+            flag = true;
+          } else {
+            flag = false;
+          }
+        } else {
+          flag = false;
+        }
+
+        const _liList = Array.from(
+          doc.querySelectorAll(".uk-list.uk-list-divider > li")
+        ).filter((li) => {
+          const filters = ["章節數量較多，採分頁顯示", "換頁：&nbsp;&nbsp;"];
+          for (const f of filters) {
+            if ((<HTMLLIElement>li).innerHTML.includes(f)) {
+              return false;
+            }
+          }
+          return true;
+        });
+        liList.push(...(_liList as HTMLLIElement[]));
+      } while (flag);
+      return liList;
+    }
+
     const chapters: Chapter[] = [];
-    const liList = document.querySelectorAll(
-      `#showbooklist${bookId} > div > ul > li`
-    );
+    const liList = await getLiList();
     let chapterNumber = 0;
     let sectionNumber = 0;
     let sectionName = null;
@@ -101,11 +171,14 @@ export class longmabook extends BaseRuleClass {
       const li = liList[i];
       const uk_icon = li.querySelector("span")?.getAttribute("uk-icon");
       if (uk_icon === "folder") {
-        sectionNumber++;
-        sectionChapterNumber = 0;
-        sectionName = (<HTMLElement>(
+        const _sectionName = (<HTMLElement>(
           li.querySelector("b > font")
         ))?.innerText.trim();
+        if (_sectionName !== sectionName) {
+          sectionName = _sectionName;
+          sectionNumber++;
+          sectionChapterNumber = 0;
+        }
       } else if (uk_icon === "file-text") {
         chapterNumber++;
         sectionChapterNumber++;
