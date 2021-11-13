@@ -3,7 +3,7 @@ import { BaseRuleClass } from "../rules";
 import { rm } from "../lib/misc";
 import { cleanDOM } from "../lib/cleanDOM";
 import { getHtmlDOM } from "../lib/http";
-import { saveOptions } from "../save";
+import { saveOptions } from "../save/save";
 
 export class fushuwang extends BaseRuleClass {
   public saveOptions: saveOptions;
@@ -16,28 +16,6 @@ export class fushuwang extends BaseRuleClass {
     this.saveOptions = {
       genChapterText: (chapterName: string, contentText: string) => {
         return `${contentText}\n`;
-      },
-      genChapterHtmlFile: (
-        chapterName: string,
-        DOM: HTMLElement,
-        chapterUrl: string
-      ) => {
-        let htmlFile = new DOMParser().parseFromString(
-          `<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="https://github.com/yingziwu/novel-downloader"><meta name="source" content="${chapterUrl}"><link href="style.css" type="text/css" rel="stylesheet"/><title>${chapterName}</title></head><body><div class="main"></div></body></html>`,
-          "text/html"
-        );
-        htmlFile.querySelector(".main")?.appendChild(DOM);
-        return new Blob(
-          [
-            htmlFile.documentElement.outerHTML.replaceAll(
-              "data-src-address",
-              "src"
-            ),
-          ],
-          {
-            type: "text/html; charset=UTF-8",
-          }
-        );
       },
     };
   }

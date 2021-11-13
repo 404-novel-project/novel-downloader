@@ -2,7 +2,7 @@ import { BaseRuleClass, chapterParseObject } from "./rules";
 import { retryLimit } from "./setting";
 import { sleep } from "./lib/misc";
 import { gfetch } from "./lib/http";
-import { saveOptions } from "./save";
+import { saveOptions } from "./save/save";
 import { log } from "./log";
 
 export enum Status {
@@ -85,6 +85,8 @@ export class Chapter {
   public contentHTML!: HTMLElement | null;
   public contentImages!: attachmentClass[] | null;
   public additionalMetadate!: ChapterAdditionalMetadate | null;
+
+  public chapterHtmlFileName!: string | number;
 
   public constructor(
     bookUrl: string,
