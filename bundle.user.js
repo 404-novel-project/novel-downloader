@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.2.1.273
+// @version        4.2.2.275
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -4291,12 +4291,14 @@ class Chapter {
         this.contentImages = contentImages;
         this.additionalMetadate = additionalMetadate;
         if (this.status === Status.failed) {
-            log_1.log.error(`[Chapter]${this.chapterName}, URL:${this.chapterUrl}, \
+            log_1.log.error(`[Chapter]章节名：${this.chapterName}, \
+分卷名：${this.sectionName}, URL:${this.chapterUrl}, \
 VIP:${this.isVIP}, Paid:${this.isPaid}, \
 isNull:${!Boolean(this.contentHTML)} 解析出错。`);
         }
         else {
-            log_1.log.info(`[Chapter]${this.chapterName}, URL:${this.chapterUrl}, \
+            log_1.log.info(`[Chapter]章节名：${this.chapterName}, \
+分卷名：${this.sectionName}, URL:${this.chapterUrl}, \
 VIP:${this.isVIP}, Paid:${this.isPaid}, \
 isNull:${!Boolean(this.contentHTML)} 解析成功。`);
         }
@@ -4846,6 +4848,7 @@ class BaseRuleClass {
             if (!self.preHook())
                 return;
             self.book = await self.bookParse();
+            log_1.log.debug("[book]Book object:\n" + JSON.stringify(self.book));
             const saveBookObj = self.getSave(self.book);
             await self.initChapters(self.book, saveBookObj);
             log_1.log.debug("[run]开始保存文件");
@@ -5012,9 +5015,8 @@ class BaseRuleClass {
                     break;
                 }
                 try {
-                    let obj = await chapter.init();
-                    obj = await self.postChapterParseHook(obj);
-                    afterGetChpater(obj);
+                    let chapterObj = await chapter.init();
+                    chapterObj = await self.postChapterParseHook(chapterObj, saveBookObj);
                 }
                 catch (error) {
                     log_1.log.error(error);
@@ -5032,10 +5034,9 @@ class BaseRuleClass {
                     return Promise.resolve();
                 }
                 try {
-                    let obj = await curChapter.init();
-                    obj = await self.postChapterParseHook(obj);
-                    afterGetChpater(obj);
-                    return obj;
+                    let chapterObj = await curChapter.init();
+                    chapterObj = await self.postChapterParseHook(chapterObj, saveBookObj);
+                    return chapterObj;
                 }
                 catch (error) {
                     log_1.log.error(error);
@@ -5045,29 +5046,26 @@ class BaseRuleClass {
         }
         log_1.log.info(`[initChapters]章节初始化完毕`);
         return chapters;
-        function afterGetChpater(chapter) {
-            const storage = window.customStorage;
-            let workStatus = storage.get(workStatusKeyName);
-            if (workStatus) {
-                workStatus[document.location.href] = true;
-            }
-            else {
-                workStatus = {};
-                workStatus[document.location.href] = true;
-            }
-            storage.set(workStatusKeyName, workStatus, 20);
-            if (chapter.contentHTML !== undefined) {
-                saveBookObj.addChapter(chapter);
-                const progress = window.progress;
-                if (progress) {
-                    progress.finishedChapterNumber++;
-                }
-            }
-            return chapter;
-        }
     }
-    async postChapterParseHook(obj) {
-        return obj;
+    async postChapterParseHook(chapter, saveBookObj) {
+        const storage = window.customStorage;
+        let workStatus = storage.get(workStatusKeyName);
+        if (workStatus) {
+            workStatus[document.location.href] = true;
+        }
+        else {
+            workStatus = {};
+            workStatus[document.location.href] = true;
+        }
+        storage.set(workStatusKeyName, workStatus, 20);
+        if (chapter.contentHTML !== undefined) {
+            saveBookObj.addChapter(chapter);
+            const progress = window.progress;
+            if (progress) {
+                progress.finishedChapterNumber++;
+            }
+        }
+        return chapter;
     }
 }
 exports.BaseRuleClass = BaseRuleClass;
@@ -7765,7 +7763,7 @@ async function replaceJjwxcCharacter(fontName, inputText) {
             const normalCharacter = jjwxcFontTable[jjwxcCharacter];
             outputText = outputText.replaceAll(jjwxcCharacter, normalCharacter);
         }
-        outputText = outputText.replaceAll("‌", "");
+        outputText = outputText.replaceAll("‌\u200c", "");
     }
     return outputText;
 }
@@ -9053,14 +9051,18 @@ class longmabook extends rules_1.BaseRuleClass {
     async bookParse() {
         const isLogin = Boolean(document.querySelector('a[href="/?act=signinlst"]'));
         if (!isLogin) {
-            alert("海棠文化线上文学城需登录后方可浏览！请登录帐号。");
+            alert("小说下载器：海棠文化线上文学城需登录后方可下载！请登录帐号。");
             throw new main_1.ExpectError("海棠文化线上文学城需登录后方可浏览！");
         }
+        const self = this;
         const bookUrl = document.location.href;
         const bookname = document.querySelector("#mypages > div:nth-child(8) > div:nth-child(1) > h4").innerText;
         const author = document.querySelector("#writerinfos > a").innerText;
         const _urlSearch = new URLSearchParams(document.location.search);
         const bookId = _urlSearch.get("bookid");
+        if (!bookId) {
+            throw new Error("获取 bookid 出错");
+        }
         const bookwritercode = _urlSearch.get("bookwritercode");
         const introDom = document
             .querySelector("#mypages > div:nth-child(8) > div:nth-child(1)")
@@ -9092,8 +9094,69 @@ class longmabook extends rules_1.BaseRuleClass {
             document.querySelector('#mypages > div:nth-child(8) > div:nth-child(1) > font[color="#800080"]')?.innerText
                 .split("/")
                 .map((item) => item.trim()) ?? [];
+        async function getLiList() {
+            const showbooklistAPIUrl = document.location.origin + "/showbooklist.php";
+            let flag = false;
+            let page = 1;
+            let pageMax = 0;
+            const showbooklistParams = {
+                ebookid: bookId,
+                pages: page.toString(),
+                showbooklisttype: "1",
+            };
+            const liList = [];
+            do {
+                log_1.log.info(`[book]请求章节目录中，page: ${page}`);
+                const doc = await (0, http_1.getHtmlDOM)(showbooklistAPIUrl, self.charset, {
+                    headers: {
+                        "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+                        "x-requested-with": "XMLHttpRequest",
+                    },
+                    body: new URLSearchParams(showbooklistParams).toString(),
+                    method: "POST",
+                    mode: "cors",
+                    credentials: "include",
+                });
+                if (doc.documentElement.innerText.includes("章節數量較多，採分頁顯示")) {
+                    const pageLi = Array.from(doc.querySelectorAll(".uk-list.uk-list-divider > li")).filter((li) => li.innerHTML.includes("換頁：&nbsp;&nbsp;"))[0];
+                    const pages = Array.from(pageLi.querySelectorAll("a"))
+                        .map((a) => {
+                        const _page = a
+                            .getAttribute("onclick")
+                            ?.match(/\('\d+','(\d+)'\)/);
+                        if (_page?.length === 2) {
+                            return Number(_page[1]);
+                        }
+                    })
+                        .filter((page) => page);
+                    pageMax = Math.max(...pages);
+                    page++;
+                    if (page !== 1 && page <= pageMax) {
+                        showbooklistParams["pages"] = page.toString();
+                        flag = true;
+                    }
+                    else {
+                        flag = false;
+                    }
+                }
+                else {
+                    flag = false;
+                }
+                const _liList = Array.from(doc.querySelectorAll(".uk-list.uk-list-divider > li")).filter((li) => {
+                    const filters = ["章節數量較多，採分頁顯示", "換頁：&nbsp;&nbsp;"];
+                    for (const f of filters) {
+                        if (li.innerHTML.includes(f)) {
+                            return false;
+                        }
+                    }
+                    return true;
+                });
+                liList.push(..._liList);
+            } while (flag);
+            return liList;
+        }
         const chapters = [];
-        const liList = document.querySelectorAll(`#showbooklist${bookId} > div > ul > li`);
+        const liList = await getLiList();
         let chapterNumber = 0;
         let sectionNumber = 0;
         let sectionName = null;
@@ -9102,9 +9165,12 @@ class longmabook extends rules_1.BaseRuleClass {
             const li = liList[i];
             const uk_icon = li.querySelector("span")?.getAttribute("uk-icon");
             if (uk_icon === "folder") {
-                sectionNumber++;
-                sectionChapterNumber = 0;
-                sectionName = (li.querySelector("b > font"))?.innerText.trim();
+                const _sectionName = (li.querySelector("b > font"))?.innerText.trim();
+                if (_sectionName !== sectionName) {
+                    sectionName = _sectionName;
+                    sectionNumber++;
+                    sectionChapterNumber = 0;
+                }
             }
             else if (uk_icon === "file-text") {
                 chapterNumber++;
@@ -12705,10 +12771,6 @@ img {
 .bookurl > a {
   color: gray;
 }
-.info {
-  display: grid;
-  grid-template-columns: 30% 70%;
-}
 .info h3 {
   padding-left: 0.5em;
   margin-top: -1.2em;
@@ -12826,6 +12888,18 @@ a.disabled {
             coverDom.className = "cover";
             coverDom.setAttribute("data-src-address", this.book.additionalMetadate.cover.name);
             infoDom.appendChild(coverDom);
+            this.mainStyleText = `${this.mainStyleText}
+.info {
+  display: grid;
+  grid-template-columns: 30% 70%;
+}`;
+        }
+        else {
+            this.mainStyleText = `${this.mainStyleText}
+      .info {
+        display: grid;
+        grid-template-columns: 100%;
+      }`;
         }
         if (this.book.introductionHTML) {
             const divElem = document.createElement("div");
@@ -12934,8 +13008,8 @@ a.disabled {
                 this.savedZip.file(`Section${htmlfileNameBase}`, sectionHTMLBlob);
             }
         }
-        log_1.log.debug(`[save]保存章HTML文件：${chapterName}`);
         if (chapter.contentHTML) {
+            log_1.log.debug(`[save]保存章HTML文件：${chapterName}`);
             const chapterHTMLBlob = this.genChapterHtmlFile(chapterName, chapter.contentHTML, chapter.chapterUrl);
             if (!setting_1.enaleDebug) {
                 chapter.contentRaw = null;
@@ -12944,8 +13018,8 @@ a.disabled {
             }
             this.savedZip.file(chapterHtmlFileName, chapterHTMLBlob);
         }
-        log_1.log.debug(`[save]开始保存章节附件：${chapterName}`);
-        if (chapter.contentImages) {
+        if (chapter.contentImages && chapter.contentImages.length !== 0) {
+            log_1.log.debug(`[save]保存章节附件：${chapterName}`);
             for (const attachment of chapter.contentImages) {
                 this.addImageToZip(attachment, this.savedZip);
             }
