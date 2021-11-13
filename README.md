@@ -123,10 +123,30 @@ ZIP压缩包，请在解压后，直接双击打开HTML文件（`index.html` 为
 
 ### 启用调试功能
 
-如果你需要启用脚本调试功能，请打开脚本管理器的脚本编辑界面，搜索 `enaleDebug =` 字符串，并将 `false` 更改为 `true` 即可启用调试功能。
+使用如下用户脚本开启调式模式。
+
+```javascript
+// ==UserScript==
+// @name         novel-downloader-debug
+// @namespace    http://tampermonkey.net/
+// @version      0.1
+// @author       You
+// @match        *://*/*
+// @icon         https://www.google.com/s2/favicons?domain=tadu.com
+// @grant        unsafeWindow
+// @run-at document-start
+// ==/UserScript==
+
+(function() {
+    'use strict';
+
+    unsafeWindow.enaleDebug = true
+})();
+```
+
 ### 自定义筛选函数
 
-如欲只下载部分章节，请在点击运行按钮前，按下 F12 打开开发者工具，在 `Window` 下创建自定义筛选函数 `chapterFilter` 。
+如欲只下载部分章节，请在点击运行按钮前，按下 F12 打开开发者工具，在 `window` 下创建 `chapterFilter` 函数，具体格式如下：
 
 ```typescript
 declare enum Status {
@@ -134,7 +154,8 @@ declare enum Status {
     downloading = 1,
     failed = 2,
     finished = 3,
-    aborted = 4
+    aborted = 4,
+    saved = 5
 }
 interface ChapterAdditionalMetadate {
     lastModified?: number;
@@ -150,7 +171,7 @@ declare class Chapter {
     sectionName: string | null;
     sectionNumber: number | null;
     sectionChapterNumber: number | null;
-    chapterParse: ruleClass["chapterParse"];
+    chapterParse: BaseRuleClass["chapterParse"];
     charset: string;
     options: object;
     status: Status;
@@ -160,9 +181,26 @@ declare class Chapter {
     contentHTML: HTMLElement | null;
     contentImages: attachmentClass[] | null;
     additionalMetadate: ChapterAdditionalMetadate | null;
-    constructor(bookUrl: string, bookname: string, chapterUrl: string, chapterNumber: number, chapterName: string | null, isVIP: boolean, isPaid: boolean | null, sectionName: string | null, sectionNumber: number | null, sectionChapterNumber: number | null, chapterParse: ruleClass["chapterParse"], charset: string, options: object);
-    init(): Promise<chapterParseObject>;
+    chapterHtmlFileName: string | number;
+    constructor(bookUrl: string, bookname: string, chapterUrl: string, chapterNumber: number, chapterName: string | null, isVIP: boolean, isPaid: boolean | null, sectionName: string | null, sectionNumber: number | null, sectionChapterNumber: number | null, chapterParse: BaseRuleClass["chapterParse"], charset: string, options: object);
+    init(): Promise<this>;
     private parse;
+}
+declare class attachmentClass {
+    url: string;
+    name: string;
+    mode: "naive" | "TM";
+    headers?: {
+        [index: string]: string;
+    };
+    private defaultHeader;
+    status: Status;
+    retryTime: number;
+    imageBlob: Blob | null | void;
+    constructor(imageUrl: string, name: string, mode: "naive" | "TM");
+    init(): Promise<Blob | null>;
+    private downloadImage;
+    private tmDownloadImage;
 }
 
 interface chapterFilter {
@@ -200,13 +238,46 @@ function chapterFilter(chapter) {
 
 自定义保存参数允许您修改保存文件的样式，章节标题等内容。
 
-使用方法大致同自定义筛选函数，即在 `Window` 下创建如下对象 `saveOptions` 。
+使用方法大致同自定义筛选函数，即在 `window` 下创建 `saveOptions` 对象，具体格式如下：
 
 ```typescript
+declare class saveBook {
+    protected book: Book;
+    private chapters;
+    mainStyleText: string;
+    tocStyleText: string;
+    private savedZip;
+    private savedTextArray;
+    private saveFileNameBase;
+    private _sections;
+    private _savedChapters;
+    constructor(book: Book);
+    saveTxt(): void;
+    saveLog(): void;
+    saveZip(runSaveChapters?: boolean): Promise<void>;
+    private saveToC;
+    private saveChapters;
+    private saveSections;
+    private getChapterNumberToSave;
+    addChapter(chapter: Chapter): void;
+    getchapterName(chapter: Chapter): string;
+    private genMetaDateTxt;
+    private addImageToZip;
+    genSectionText(sectionName: string): string;
+    genChapterText(chapterName: string, contentText: string): string;
+    genSectionHtmlFile(chapterObj: Chapter): Blob;
+    genChapterHtmlFile(chapterObj: Chapter): Blob;
+    chapterSort(a: Chapter, b: Chapter): 0 | 1 | -1;
+}
 interface saveOptions {
-    mainStyleText?: string;
-    tocStyleText?: string;
-    getchapterName?: (chapter: Chapter) => string;
+    mainStyleText?: saveBook["mainStyleText"];
+    tocStyleText?: saveBook["tocStyleText"];
+    getchapterName?: saveBook["getchapterName"];
+    genSectionText?: saveBook["genSectionText"];
+    genChapterText?: saveBook["genChapterText"];
+    genSectionHtmlFile?: saveBook["genSectionHtmlFile"];
+    genChapterHtmlFile?: saveBook["genChapterHtmlFile"];
+    chapterSort?: saveBook["chapterSort"];
 }
 ```
 
@@ -238,6 +309,47 @@ const saveOptions = {
   margin-top: 0.4em;
   margin-bottom: 0.4em;
 }`
+}
+window.saveOptions = saveOptions
+```
+
+txt文档每个自然段前加两个空格
+
+```javascript
+const saveOptions = {
+    genChapterText: (chapterName, contentText) => {
+        contentText = contentText
+                    .split('\n')
+                    .map(line => {
+                            if (line.trim() === "") {
+                                return line
+                            } else {
+                                return line.replace(/^/,'    ')
+                            }
+                        })
+                    .join('\n')
+        return `## ${chapterName}\n\n${contentText}\n\n`;
+    }
+}
+window.saveOptions = saveOptions
+```
+
+保存章节时倒序排列
+
+```javascript
+const saveOptions = {
+    chapterSort: (a, b) => {
+        if (a.chapterNumber > b.chapterNumber) {
+            return -1;
+        }
+        if (a.chapterNumber === b.chapterNumber) {
+            return 0;
+        }
+        if (a.chapterNumber < b.chapterNumber) {
+            return 1;
+        }
+            return 0;
+    }
 }
 window.saveOptions = saveOptions
 ```
@@ -299,68 +411,7 @@ window.customFinishCallback = customFinishCallback;
 
 1. `git clone https://github.com/yingziwu/novel-downloader.git` 将项目克隆至本地（访问github可能需要使用代理）。
 1. `yarn install` 安装依赖。
-1. 继承 `BaseRuleClass` 实现，完成 `bookParse`、`chapterParse` 方法，然后在 `routers.ts` 中添加相应选择规则。
-
-    ```typescript
-    interface BookAdditionalMetadate {
-        cover?: attachmentClass;
-        attachments?: attachmentClass[];
-        tags?: string[];
-        lastModified?: number;
-        serires?: string;
-        seriresNumber?: number;
-        ids?: string[] | string;
-        publisher?: string;
-        languages?: string;
-    }
-    declare class attachmentClass {
-        url: string;
-        name: string;
-        mode: "naive" | "TM";
-        headers?: {
-            [index: string]: string;
-        };
-        private defaultHeader;
-        status: Status;
-        retryTime: number;
-        imageBlob: Blob | null;
-        constructor(imageUrl: string, name: string, mode: "naive" | "TM");
-        init(): Promise<Blob | null>;
-        private downloadImage;
-        private tmDownloadImage;
-    } 
-    interface chapterParseObject {
-        chapterName: string | null;
-        contentRaw: HTMLElement | null;
-        contentText: string | null;
-        contentHTML: HTMLElement | null;
-        contentImages: attachmentClass[] | null;
-        additionalMetadate: ChapterAdditionalMetadate | null;
-    }
-    abstract class BaseRuleClass {
-        imageMode: "naive" | "TM";
-        charset: string;
-        concurrencyLimit: number;
-        maxRunLimit?: number;
-        saveOptions?: saveOptions;
-        book?: Book;
-        private audio?;
-        constructor();
-        abstract bookParse(): Promise<Book>;
-        abstract chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean | null, charset: string, options: object): Promise<chapterParseObject>;
-        run(): Promise<Book | undefined>;
-        protected preTest(): boolean;
-        protected preWarning(): boolean;
-        protected preHook(): boolean;
-        protected postCallback(): void;
-        protected postHook(): boolean;
-        protected catchError(error: Error): void;
-        protected getSave(book: Book): saveBook;
-        protected getChapters(book: Book): Chapter[];
-        protected initChapters(book: Book, saveBookObj: saveBook): Promise<Chapter[]>;
-    }
-    ```
-
+1. 继承 `BaseRuleClass` 类，实现 `bookParse`、`chapterParse` 抽象方法，在 `routers.ts` 中添加相应选择规则，在 `header.json` 文件 `match` 字段添加相应的匹配规则。
 1. `yarn run build` 编译生成最终脚本文件 `dist/bundle.user.js`。
 
 ## License

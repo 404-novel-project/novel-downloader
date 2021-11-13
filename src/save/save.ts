@@ -17,7 +17,6 @@ export class saveBook {
   private saveFileNameBase: string;
 
   private _sections: string[];
-  private _savedChapters: Chapter[];
 
   public constructor(book: Book) {
     this.book = book;
@@ -25,7 +24,6 @@ export class saveBook {
 
     this.savedZip = new fflateZip();
     this._sections = [];
-    this._savedChapters = [];
 
     this.savedTextArray = [];
     this.saveFileNameBase = `[${this.book.author}]${this.book.bookname}`;
@@ -257,10 +255,10 @@ export class saveBook {
     if (chapter.contentHTML) {
       log.debug(`[save]保存章HTML文件：${chapterName}`);
       const chapterHTMLBlob = this.genChapterHtmlFile(chapter);
+      chapter.status = Status.saved;
       if (!enaleDebug) {
         chapter.contentRaw = null;
         chapter.contentHTML = null;
-        chapter.status = Status.saved;
       }
       this.savedZip.file(chapterHtmlFileName, chapterHTMLBlob);
       chapter.chapterHtmlFileName = chapterHtmlFileName;
@@ -275,8 +273,6 @@ export class saveBook {
         chapter.contentImages = null;
       }
     }
-
-    this._savedChapters.push(chapter);
   }
 
   public getchapterName(chapter: Chapter) {
@@ -312,9 +308,9 @@ export class saveBook {
         attachment.imageBlob
       );
       zip.file(attachment.name, attachment.imageBlob);
+      attachment.status = Status.saved;
       if (!enaleDebug) {
         attachment.imageBlob = null;
-        attachment.status = Status.saved;
       }
     } else if (attachment.status === Status.saved) {
       log.debug(`[save]附件${attachment.name}已添加`);
