@@ -38,6 +38,7 @@ export class saveBook {
     const metaDateText = this.genMetaDateTxt();
     this.savedTextArray.push(metaDateText);
 
+    log.debug("[save]对 chapters 排序");
     this.chapters.sort(this.chapterSort);
 
     let sections: string[] = [];
@@ -106,6 +107,9 @@ export class saveBook {
       this.saveChapters();
     }
 
+    log.debug("[save]开始生成并保存卷文件");
+    this.saveSections();
+
     log.debug("[save]开始生成并保存 index.html");
     this.saveToC();
 
@@ -136,8 +140,10 @@ export class saveBook {
   }
 
   private saveToC() {
-    const self = this;
+    log.debug("[save]对 chapters 排序");
+    this.chapters.sort(this.chapterSort);
 
+    const self = this;
     const sectionsObj = getSectionsObj();
     let hasSections: boolean;
     if (
@@ -157,7 +163,7 @@ export class saveBook {
       author: self.book.author,
       cover: self.book.additionalMetadate.cover,
       introductionHTML: self.book.introductionHTML?.outerHTML,
-      bookUrl: self.book.bookname,
+      bookUrl: self.book.bookUrl,
       hasSections: hasSections,
       sectionsObj: sectionsObj,
       Status: Status,
@@ -175,7 +181,6 @@ export class saveBook {
       }
       const _sectionsObj: sectionsObj = {};
 
-      self.chapters.sort(self.chapterSort);
       for (const chapter of self.chapters) {
         if (chapter.sectionName) {
           if (_sectionsObj[chapter.sectionName]) {
@@ -217,25 +222,37 @@ export class saveBook {
     }
   }
 
-  public addChapter(chapter: Chapter) {
-    const chapterName = this.getchapterName(chapter);
-    const chapterNumberToSave = `${"0".repeat(
+  private saveSections() {
+    log.debug("[save]对 chapters 排序");
+    this.chapters.sort(this.chapterSort);
+
+    for (const chapter of this.chapters) {
+      const chapterNumberToSave = this.getChapterNumberToSave(chapter);
+      const sectionHtmlFileName = `No${chapterNumberToSave}Section.html`;
+
+      if (chapter.sectionName) {
+        if (!this._sections.includes(chapter.sectionName)) {
+          this._sections.push(chapter.sectionName);
+
+          log.debug(`[save]保存卷HTML文件：${chapter.sectionName}`);
+          const sectionHTMLBlob = this.genSectionHtmlFile(chapter);
+          this.savedZip.file(sectionHtmlFileName, sectionHTMLBlob);
+        }
+      }
+    }
+  }
+
+  private getChapterNumberToSave(chapter: Chapter) {
+    return `${"0".repeat(
       this.chapters.length.toString().length -
         chapter.chapterNumber.toString().length
     )}${chapter.chapterNumber.toString()}`;
+  }
 
+  public addChapter(chapter: Chapter) {
+    const chapterName = this.getchapterName(chapter);
+    const chapterNumberToSave = this.getChapterNumberToSave(chapter);
     const chapterHtmlFileName = `No${chapterNumberToSave}Chapter.html`;
-    const sectionHtmlFileName = `No${chapterNumberToSave}Section.html`;
-
-    if (chapter.sectionName) {
-      if (!this._sections.includes(chapter.sectionName)) {
-        this._sections.push(chapter.sectionName);
-
-        log.debug(`[save]保存卷HTML文件：${chapter.sectionName}`);
-        const sectionHTMLBlob = this.genSectionHtmlFile(chapter);
-        this.savedZip.file(sectionHtmlFileName, sectionHTMLBlob);
-      }
-    }
 
     if (chapter.contentHTML) {
       log.debug(`[save]保存章HTML文件：${chapterName}`);
