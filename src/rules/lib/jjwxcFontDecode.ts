@@ -13,7 +13,7 @@ export async function replaceJjwxcCharacter(
       const normalCharacter = jjwxcFontTable[jjwxcCharacter];
       outputText = outputText.replaceAll(jjwxcCharacter, normalCharacter);
     }
-    outputText = outputText.replaceAll("‌", "");
+    outputText = outputText.replaceAll("‌\u200c", "");
   }
   return outputText;
 }
@@ -32,7 +32,6 @@ async function getJjwxcFontTable(fontName: string) {
 
 async function fetchRemoteFont(fontName: string) {
   const url = `https://jjwxc.bgme.bid/${fontName}.json`;
-  // const url = `https://jjwxc.lo.bgme.me/${fontName}.json`;
   try {
     log.info(`[jjwxc-font]开始请求远程字体对照表 ${fontName}`);
     const resp = await fetch(url);
