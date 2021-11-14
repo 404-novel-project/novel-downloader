@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.4.0.279
+// @version        4.4.0.280
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -4881,7 +4881,7 @@ class BaseRuleClass {
         log_1.log.trace(error);
         self.postHook();
         if (!(error instanceof main_1.ExpectError)) {
-            document.getElementById("novel-downloader")?.remove();
+            document.getElementById("button-div")?.remove();
             log_1.log.error("运行过程出错，请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/yingziwu/novel-downloader");
             (0, stat_1.failedPlus)();
             alert("运行过程出错，请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/yingziwu/novel-downloader");
@@ -13328,7 +13328,7 @@ const buttonDivStyle = `.button-div {
     height: 1em;
 }`;
 (0, createEl_1.createStyle)(buttonDivStyle, "button-div-style");
-exports.el = (0, createEl_1.createEl)(`<div class="button-div">
+exports.el = (0, createEl_1.createEl)(`<div class="button-div" id="button-div">
 <button class="start">
     <img class="start" v-bind:src="imgStart" v-on:click="startButtonClick">
 </button>
