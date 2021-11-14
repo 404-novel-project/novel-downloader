@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.4.0.280
+// @version        4.4.0.281
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -3012,7 +3012,7 @@ exports.environments = {
     ScriptHandler: GM_1._GM_info.scriptHandler,
     "ScriptHandler version": GM_1._GM_info.version,
     "Novel-downloader version": GM_1._GM_info.script.version,
-    enaleDebug: setting_1.enaleDebug,
+    enableDebug: setting_1.enableDebug,
 };
 
 
@@ -4137,7 +4137,7 @@ exports.log = exports.saveLogTextToFile = exports.logText = void 0;
 const setting_1 = __webpack_require__("./src/setting.ts");
 const loglevel_1 = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 exports.log = loglevel_1.default;
-if (setting_1.enaleDebug) {
+if (setting_1.enableDebug) {
     loglevel_1.default.setLevel("trace");
 }
 else {
@@ -12637,7 +12637,7 @@ class saveBook {
                 const chapterText = this.genChapterText(chapterName, chapter.contentText);
                 this.savedTextArray.push(chapterText);
             }
-            if (!setting_1.enaleDebug) {
+            if (!setting_1.enableDebug) {
                 chapter.contentText = null;
             }
         }
@@ -12794,7 +12794,7 @@ class saveBook {
             log_1.log.debug(`[save]保存章HTML文件：${chapterName}`);
             const chapterHTMLBlob = this.genChapterHtmlFile(chapter);
             chapter.status = main_1.Status.saved;
-            if (!setting_1.enaleDebug) {
+            if (!setting_1.enableDebug) {
                 chapter.contentRaw = null;
                 chapter.contentHTML = null;
             }
@@ -12806,7 +12806,7 @@ class saveBook {
             for (const attachment of chapter.contentImages) {
                 this.addImageToZip(attachment, this.savedZip);
             }
-            if (!setting_1.enaleDebug) {
+            if (!setting_1.enableDebug) {
                 chapter.contentImages = null;
             }
         }
@@ -12839,7 +12839,7 @@ class saveBook {
             log_1.log.debug(`[save]添加附件，文件名：${attachment.name}，对象`, attachment.imageBlob);
             zip.file(attachment.name, attachment.imageBlob);
             attachment.status = main_1.Status.saved;
-            if (!setting_1.enaleDebug) {
+            if (!setting_1.enableDebug) {
                 attachment.imageBlob = null;
             }
         }
@@ -13203,9 +13203,9 @@ exports.index = new nunjucks.Template(`<!DOCTYPE html>
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.r18SiteList = exports.iconSetting = exports.iconStart1 = exports.iconStart0 = exports.enableJjwxcRemoteFont = exports.enableR18SiteWarning = exports.enableCustomSaveOptions = exports.enableCustomChapterFilter = exports.enableCustomFinishCallback = exports.enaleDebug = exports.retryLimit = void 0;
+exports.changeEnableDebug = exports.r18SiteList = exports.iconSetting = exports.iconStart1 = exports.iconStart0 = exports.enableJjwxcRemoteFont = exports.enableR18SiteWarning = exports.enableCustomSaveOptions = exports.enableCustomChapterFilter = exports.enableCustomFinishCallback = exports.enableDebug = exports.retryLimit = void 0;
 exports.retryLimit = 5;
-exports.enaleDebug = unsafeWindow.enaleDebug ?? false;
+exports.enableDebug = unsafeWindow.enableDebug ?? false;
 exports.enableCustomFinishCallback = true;
 exports.enableCustomChapterFilter = true;
 exports.enableCustomSaveOptions = true;
@@ -13219,6 +13219,11 @@ exports.r18SiteList = [
     "www.banzhuer.org",
     "m.yuzhaige.cc",
 ];
+function changeEnableDebug() {
+    exports.enableDebug = !exports.enableDebug;
+    return exports.enableDebug;
+}
+exports.changeEnableDebug = changeEnableDebug;
 
 
 /***/ }),
@@ -13302,6 +13307,7 @@ const createEl_1 = __webpack_require__("./src/lib/createEl.ts");
 const setting_1 = __webpack_require__("./src/setting.ts");
 const routers_1 = __webpack_require__("./src/routers.ts");
 const log_1 = __webpack_require__("./src/log.ts");
+const setting_2 = __webpack_require__("./src/ui/setting.ts");
 __webpack_require__("./src/ui/injectVue.ts");
 const buttonDivStyle = `.button-div {
     position: fixed;
@@ -13361,9 +13367,170 @@ exports.vm = Vue.createApp({
             })
                 .catch((error) => log_1.log.error(error));
         },
-        settingButtonClick() { },
+        settingButtonClick() {
+            setting_2.vm.openSetting();
+        },
     },
 }).mount(exports.el);
+
+
+/***/ }),
+
+/***/ "./src/ui/dialog.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+__webpack_require__("./src/ui/injectVue.ts");
+exports["default"] = Vue.defineCustomElement({
+    name: "Dialog",
+    props: {
+        dialogTitle: String,
+        status: String,
+    },
+    data() {
+        return {
+            myPrivateStatus: this.status === "true",
+        };
+    },
+    methods: {
+        dialogClose() {
+            this.myPrivateStatus = false;
+        },
+    },
+    mounted() {
+        this.myPrivateStatus = this.status === "true";
+    },
+    watch: {
+        status() {
+            this.myPrivateStatus = this.status === "true";
+        },
+    },
+    template: `<div class="overlay" v-bind:class="{ open: myPrivateStatus }" v-if="myPrivateStatus"></div>
+<div class="out" v-if="myPrivateStatus">
+<div id="dialog" class="dialog" v-bind:class="{ open: myPrivateStatus }" >
+<div class="titlebar">
+    <h1 class="dialog-title">{{ dialogTitle }}</h1>
+    <button class="dialog-close" v-on:click="dialogClose">❌</button>
+</div>
+<div class="body">
+    <slot></slot>
+</div>
+</div>
+</div>`,
+    styles: [
+        `.overlay {
+    visibility: hidden;
+		opacity: 0;
+    z-index: 100000;
+    position: fixed;
+    top: -50%;
+    left: -50%;
+    height: 200%;
+    width: 200%;
+    background-color: black;
+  }
+  .overlay.open {
+    opacity: .8;
+    visibility: visible;
+    transition: opacity .2s ease-in;
+  }
+  .overlay:not(.open) {
+    transition: visibility .2s step-end,opacity .2s ease-in;
+  }
+  
+  .out {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    z-index: 100001;
+  }
+
+  .dialog {
+    width: 720px;
+    max-height: 70%;
+    display: none;
+    opacity: 0;
+    z-index: 100100;
+    position: fixed;
+    margin: 0;
+    padding: 0;
+  }
+  .dialog.open {
+    opacity: 1;
+    display: block;
+    transition: opacity .2s ease-in;
+  }
+  
+  .dialog > * {
+    box-sizing: border-box;
+  }
+  .dialog > .titlebar {
+    background-color: white;
+    min-height: 24px;
+    position: relative;
+  }
+  .dialog-title {
+    padding: 10px;
+    text-transform: uppercase;
+    background: #ff7bac;
+    color: #ffffff;
+    margin: 0;
+    font-size: 1.5em;
+    text-align: center;
+	}
+  .dialog-close {
+    background: #ff7bac;
+		color: #ffffff;
+    
+    font-style: normal;
+    font-weight: 400;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    user-select: none;
+    
+    cursor: pointer;
+    font-size: 120%;
+    margin: 0;
+    padding: 0;
+    width: 3.6em;
+    height: 92%;
+    border: 1px solid transparent;
+    transition-duration: .2s;
+    display: block;
+    
+    position: absolute;
+    right: 0;
+    top: 0;
+    white-space: nowrap;
+  }
+  
+  .dialog > .body {
+    background-color: white;
+    border: 1px solid rgb(255 125 175 / 80%);
+    text-align: left;
+    
+    line-height: 1.5;
+    padding: 1em;
+    
+    overflow: auto;
+    min-width: 280px;
+    
+    height: calc(100% - 2.1em);
+    max-height: 900px;
+  }
+`,
+    ],
+});
 
 
 /***/ }),
@@ -13483,6 +13650,137 @@ exports.vm = Vue.createApp({
 
 /***/ }),
 
+/***/ "./src/ui/setting.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.vm = exports.el = void 0;
+const createEl_1 = __webpack_require__("./src/lib/createEl.ts");
+__webpack_require__("./src/ui/injectVue.ts");
+const log_1 = __webpack_require__("./src/log.ts");
+exports.el = (0, createEl_1.createEl)(`<div>
+<nd-dialog dialog-title="设置" v-bind:status="openStatus" v-if="openStatus === 'true'">
+<div class="nd-setting">
+    <div class="nd-setting-body">
+        <div>
+            <input type="checkbox" id="debug" v-model="setting.enableDebug" />
+            <label for="debug">启用调式模式。（输出更详细日志）</label>    
+        </div>
+        <hr>
+        <div>
+            <h3>自定义保存参数</h3>
+            <ul>
+            <li v-for="item of saveOptions">
+                <input type="radio" v-bind:id="item.key" v-bind:value="item.key" v-model="setting.chooseSaveOption">
+                <label v-bind:for="item.key">{{ item.value }}</label>
+            </li>
+        </div>
+    </div>
+    <div class="nd-setting-footer" style="text-align: center">
+        <button v-on:click="closeAndSaveSetting">Save</button>
+        <button v-on:click="closeSetting">Cancel</button>
+    </div>
+</div>
+</nd-dialog>
+</div>`);
+exports.vm = Vue.createApp({
+    data() {
+        return {
+            openStatus: "false",
+            saveOptions: [
+                { key: "null", value: "不使用自定义保存参数" },
+                { key: "chapter_name", value: "将章节名称格式修改为 第xx章 xxxx" },
+                { key: "txt_space", value: "txt文档每个自然段前加两个空格" },
+                { key: "reverse_chapters", value: "保存章节时倒序排列" },
+            ],
+            setting: Vue.reactive({}),
+        };
+    },
+    methods: {
+        openSetting() {
+            if (this.openStatus === "true") {
+                this.openStatus = "false";
+                setTimeout(() => {
+                    this.openStatus = "true";
+                }, 0);
+            }
+            else {
+                this.openStatus = "true";
+            }
+        },
+        closeSetting() {
+            if (this.openStatus === "true") {
+                this.openStatus = "false";
+            }
+        },
+        closeAndSaveSetting() {
+            this.closeSetting();
+            setConfig(this.setting)
+                .then(() => log_1.log.info("[Init]自定义设置：" + JSON.stringify(this.setting)))
+                .catch((error) => log_1.log.error(error));
+        },
+    },
+}).mount(exports.el);
+const saveOptionMap = {
+    null: undefined,
+    chapter_name: {
+        getchapterName: (chapter) => {
+            if (chapter.chapterName) {
+                return `第${chapter.chapterNumber.toString()}章 ${chapter.chapterName}`;
+            }
+            else {
+                return `第${chapter.chapterNumber.toString()}章`;
+            }
+        },
+    },
+    txt_space: {
+        genChapterText: (chapterName, contentText) => {
+            contentText = contentText
+                .split("\n")
+                .map((line) => {
+                if (line.trim() === "") {
+                    return line;
+                }
+                else {
+                    return line.replace(/^/, "    ");
+                }
+            })
+                .join("\n");
+            return `## ${chapterName}\n\n${contentText}\n\n`;
+        },
+    },
+    reverse_chapters: {
+        chapterSort: (a, b) => {
+            if (a.chapterNumber > b.chapterNumber) {
+                return -1;
+            }
+            if (a.chapterNumber === b.chapterNumber) {
+                return 0;
+            }
+            if (a.chapterNumber < b.chapterNumber) {
+                return 1;
+            }
+            return 0;
+        },
+    },
+};
+async function setConfig(setting) {
+    if (setting.enableDebug) {
+        const { changeEnableDebug, enableDebug } = await Promise.resolve().then(() => __webpack_require__("./src/setting.ts"));
+        if (enableDebug === false) {
+            changeEnableDebug();
+        }
+    }
+    if (setting.chooseSaveOption && setting.chooseSaveOption !== "null") {
+        unsafeWindow.saveOptions = saveOptionMap[setting.chooseSaveOption];
+    }
+}
+
+
+/***/ }),
+
 /***/ "./src/ui/ui.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
@@ -13490,11 +13788,18 @@ exports.vm = Vue.createApp({
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.init = void 0;
+const dialog_1 = __webpack_require__("./src/ui/dialog.ts");
 const button_1 = __webpack_require__("./src/ui/button.ts");
 const progress_1 = __webpack_require__("./src/ui/progress.ts");
+const setting_1 = __webpack_require__("./src/ui/setting.ts");
+function register() {
+    customElements.define("nd-dialog", dialog_1.default);
+}
 function init() {
+    register();
     document.body.appendChild(button_1.el);
     document.body.appendChild(progress_1.el);
+    document.body.appendChild(setting_1.el);
 }
 exports.init = init;
 
@@ -16386,7 +16691,7 @@ function main() {
     printEnvironments();
     (0, global_1.init)();
     (0, ui_1.init)();
-    if (setting_1.enaleDebug) {
+    if (setting_1.enableDebug) {
         setTimeout(debug_1.debug, 3000);
     }
 }

@@ -18,5 +18,5 @@ export declare const environments: {
     ScriptHandler: string;
     "ScriptHandler version": string;
     "Novel-downloader version": string;
-    enaleDebug: any;
+    enableDebug: boolean;
 };
