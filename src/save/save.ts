@@ -99,6 +99,12 @@ export class saveBook {
       }
     }
 
+    log.debug("[save]开始生成并保存卷文件");
+    this.saveSections();
+
+    log.debug("[save]开始生成并保存 index.html");
+    this.saveToC();
+
     if (runSaveChapters) {
       log.debug("[save]开始保存章节文件");
       this.saveChapters();
@@ -108,12 +114,6 @@ export class saveBook {
         .filter((c) => c.status !== Status.saved)
         .forEach((c) => this.addChapter(c));
     }
-
-    log.debug("[save]开始生成并保存卷文件");
-    this.saveSections();
-
-    log.debug("[save]开始生成并保存 index.html");
-    this.saveToC();
 
     log.info("[save]开始保存ZIP文件");
     const self = this;
