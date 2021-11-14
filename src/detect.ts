@@ -43,5 +43,5 @@ export const environments = {
   ScriptHandler: _GM_info.scriptHandler,
   "ScriptHandler version": _GM_info.version,
   "Novel-downloader version": _GM_info.script.version,
-  enableDebug: enableDebug,
+  enableDebug: enableDebug.value,
 };

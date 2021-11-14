@@ -17,7 +17,7 @@ function main() {
   globalInit();
   uiInit();
 
-  if (enableDebug) {
+  if (enableDebug.value) {
     setTimeout(debug, 3000);
   }
 }

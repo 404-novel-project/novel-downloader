@@ -128,10 +128,14 @@ interface setting {
   chooseSaveOption?: keyof saveOptionMap;
 }
 async function setConfig(setting: setting) {
-  if (setting.enableDebug) {
-    const { changeEnableDebug, enableDebug } = await import("../setting");
-    if (enableDebug === false) {
-      changeEnableDebug();
+  if (typeof setting.enableDebug === "boolean") {
+    const { enableDebug } = await import("../setting");
+    if (setting.enableDebug) {
+      enableDebug.value = true;
+      log.setLevel("trace");
+    } else {
+      enableDebug.value = false;
+      log.setLevel("info");
     }
   }
   if (setting.chooseSaveOption && setting.chooseSaveOption !== "null") {

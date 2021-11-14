@@ -55,7 +55,7 @@ export class saveBook {
         );
         this.savedTextArray.push(chapterText);
       }
-      if (!enableDebug) {
+      if (!enableDebug.value) {
         chapter.contentText = null;
       }
     }
@@ -253,7 +253,7 @@ export class saveBook {
       log.debug(`[save]保存章HTML文件：${chapterName}`);
       const chapterHTMLBlob = this.genChapterHtmlFile(chapter);
       chapter.status = Status.saved;
-      if (!enableDebug) {
+      if (!enableDebug.value) {
         chapter.contentRaw = null;
         chapter.contentHTML = null;
       }
@@ -266,7 +266,7 @@ export class saveBook {
       for (const attachment of chapter.contentImages) {
         this.addImageToZip(attachment, this.savedZip);
       }
-      if (!enableDebug) {
+      if (!enableDebug.value) {
         chapter.contentImages = null;
       }
     }
@@ -306,7 +306,7 @@ export class saveBook {
       );
       zip.file(attachment.name, attachment.imageBlob);
       attachment.status = Status.saved;
-      if (!enableDebug) {
+      if (!enableDebug.value) {
         attachment.imageBlob = null;
       }
     } else if (attachment.status === Status.saved) {
