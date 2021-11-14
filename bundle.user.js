@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.4.0.284
+// @version        4.4.1.285
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -7205,31 +7205,65 @@ class jjwxc extends rules_1.BaseRuleClass {
     }
     async bookParse() {
         const bookUrl = document.location.href;
-        const bookname = (document.querySelector('h1[itemprop="name"] > span')).innerText.trim();
-        const additionalMetadate = {};
-        const author = (document.querySelector("td.sptd h2 a span")).innerText
-            .replace(/作\s+者:/, "")
-            .trim();
-        const introDom = document.querySelector("#novelintro");
-        const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom);
-        if (introCleanimages) {
-            additionalMetadate.attachments = [...introCleanimages];
+        const getInformationBlocked = () => {
+            const fl = Array.from(document.querySelectorAll(".smallreadbody")).filter((div) => div.innerText.includes("文案信息审核未通过，等待作者修改后重新审核"));
+            if (fl.length !== 0) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        };
+        let bookname = "";
+        let additionalMetadate = {};
+        let author = "佚名";
+        let introduction = null;
+        let introductionHTML = null;
+        let introCleanimages = null;
+        if (!getInformationBlocked()) {
+            bookname = (document.querySelector('h1[itemprop="name"] > span')).innerText.trim();
+            author = (document.querySelector("td.sptd h2 a span")).innerText
+                .replace(/作\s+者:/, "")
+                .trim();
+            const introDom = document.querySelector("#novelintro");
+            [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom);
+            if (introCleanimages) {
+                additionalMetadate.attachments = [...introCleanimages];
+            }
+            let coverUrl = (document.querySelector(".noveldefaultimage")).src;
+            if (coverUrl) {
+                (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
+                    .then((coverClass) => {
+                    additionalMetadate.cover = coverClass;
+                })
+                    .catch((error) => log_1.log.error(error));
+            }
+            let tags = (document.querySelector("table > tbody > tr > td.readtd > div.righttd > ul.rightul > li:nth-child(1) > span:nth-child(2)")).innerText.split("-");
+            tags = tags.concat(Array.from(document.querySelectorAll("div.smallreadbody:nth-child(3) > span > a")).map((a) => a.innerText));
+            const perspective = (document.querySelector("table > tbody > tr > td.readtd > div.righttd > ul.rightul > li:nth-child(2)")).innerText.replace("\n", "");
+            const workStyle = (document.querySelector("table > tbody > tr > td.readtd > div.righttd > ul.rightul > li:nth-child(3)")).innerText.replace("\n", "");
+            tags.push(perspective);
+            tags.push(workStyle);
+            additionalMetadate.tags = tags;
         }
-        let coverUrl = (document.querySelector(".noveldefaultimage")).src;
-        if (coverUrl) {
-            (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
-                .then((coverClass) => {
-                additionalMetadate.cover = coverClass;
-            })
-                .catch((error) => log_1.log.error(error));
+        else {
+            window.scrollTo(0, document.body.scrollHeight);
+            await (0, misc_1.sleep)(3000);
+            bookname = (document.querySelector("td[id^=comment_] span.coltext > a"))?.innerText
+                .trim()
+                .replace(/《|》/g, "");
+            window.scrollTo(0, 0);
+            if (!bookname) {
+                throw new Error("抓取书名出错");
+            }
+            const authorPageUrl = (document.querySelector("#oneboolt > tbody > tr:nth-child(1) > td > div > h2 > a"))?.href;
+            if (authorPageUrl) {
+                const authorPage = await (0, http_2.getHtmlDOM)(authorPageUrl, this.charset);
+                author =
+                    authorPage.querySelector('span[itemprop="name"]')
+                        ?.innerText ?? author;
+            }
         }
-        let tags = (document.querySelector("table > tbody > tr > td.readtd > div.righttd > ul.rightul > li:nth-child(1) > span:nth-child(2)")).innerText.split("-");
-        tags = tags.concat(Array.from(document.querySelectorAll("div.smallreadbody:nth-child(3) > span > a")).map((a) => a.innerText));
-        const perspective = (document.querySelector("table > tbody > tr > td.readtd > div.righttd > ul.rightul > li:nth-child(2)")).innerText.replace("\n", "");
-        const workStyle = (document.querySelector("table > tbody > tr > td.readtd > div.righttd > ul.rightul > li:nth-child(3)")).innerText.replace("\n", "");
-        tags.push(perspective);
-        tags.push(workStyle);
-        additionalMetadate.tags = tags;
         const chapters = [];
         const trList = document.querySelectorAll("#oneboolt > tbody > tr");
         let chapterNumber = 0;
@@ -7301,6 +7335,13 @@ class jjwxc extends rules_1.BaseRuleClass {
                         }
                         chapters.push(chapter);
                     }
+                }
+                else {
+                    const chapterName = "[锁]";
+                    const chapterUrl = "";
+                    const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, false, null, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, {});
+                    chapter.status = main_1.Status.aborted;
+                    chapters.push(chapter);
                 }
             }
         }
@@ -12633,10 +12674,8 @@ class saveBook {
                 const sectionText = this.genSectionText(chapter.sectionName);
                 this.savedTextArray.push(sectionText);
             }
-            if (chapter.contentText) {
-                const chapterText = this.genChapterText(chapterName, chapter.contentText);
-                this.savedTextArray.push(chapterText);
-            }
+            const chapterText = this.genChapterText(chapterName, chapter.contentText ?? "");
+            this.savedTextArray.push(chapterText);
             if (!setting_1.enableDebug.value) {
                 chapter.contentText = null;
             }
@@ -12667,6 +12706,12 @@ class saveBook {
         if (runSaveChapters) {
             log_1.log.debug("[save]开始保存章节文件");
             this.saveChapters();
+        }
+        else {
+            log_1.log.debug("[save]保存仅标题章节文件");
+            this.chapters
+                .filter((c) => c.status !== main_1.Status.saved)
+                .forEach((c) => this.addChapter(c));
         }
         log_1.log.debug("[save]开始生成并保存卷文件");
         this.saveSections();
@@ -12790,17 +12835,15 @@ class saveBook {
         const chapterName = this.getchapterName(chapter);
         const chapterNumberToSave = this.getChapterNumberToSave(chapter);
         const chapterHtmlFileName = `No${chapterNumberToSave}Chapter.html`;
-        if (chapter.contentHTML) {
-            log_1.log.debug(`[save]保存章HTML文件：${chapterName}`);
-            const chapterHTMLBlob = this.genChapterHtmlFile(chapter);
-            chapter.status = main_1.Status.saved;
-            if (!setting_1.enableDebug.value) {
-                chapter.contentRaw = null;
-                chapter.contentHTML = null;
-            }
-            this.savedZip.file(chapterHtmlFileName, chapterHTMLBlob);
-            chapter.chapterHtmlFileName = chapterHtmlFileName;
+        log_1.log.debug(`[save]保存章HTML文件：${chapterName}`);
+        const chapterHTMLBlob = this.genChapterHtmlFile(chapter);
+        if (!setting_1.enableDebug.value) {
+            chapter.contentRaw = null;
+            chapter.contentHTML = null;
         }
+        this.savedZip.file(chapterHtmlFileName, chapterHTMLBlob);
+        chapter.chapterHtmlFileName = chapterHtmlFileName;
+        chapter.status = main_1.Status.saved;
         if (chapter.contentImages && chapter.contentImages.length !== 0) {
             log_1.log.debug(`[save]保存章节附件：${chapterName}`);
             for (const attachment of chapter.contentImages) {
@@ -12868,7 +12911,7 @@ class saveBook {
         const htmlText = template_1.chapter.render({
             chapterUrl: chapterObj.chapterUrl,
             chapterName: chapterObj.chapterName,
-            outerHTML: chapterObj.contentHTML?.outerHTML,
+            outerHTML: chapterObj.contentHTML?.outerHTML ?? "",
         });
         return new Blob([htmlText.replaceAll("data-src-address", "src")], {
             type: "text/html; charset=UTF-8",
