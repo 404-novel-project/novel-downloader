@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.4.0.282
+// @version        4.4.0.283
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -3012,7 +3012,7 @@ exports.environments = {
     ScriptHandler: GM_1._GM_info.scriptHandler,
     "ScriptHandler version": GM_1._GM_info.version,
     "Novel-downloader version": GM_1._GM_info.script.version,
-    enableDebug: setting_1.enableDebug,
+    enableDebug: setting_1.enableDebug.value,
 };
 
 
@@ -4137,7 +4137,7 @@ exports.log = exports.saveLogTextToFile = exports.logText = void 0;
 const setting_1 = __webpack_require__("./src/setting.ts");
 const loglevel_1 = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 exports.log = loglevel_1.default;
-if (setting_1.enableDebug) {
+if (setting_1.enableDebug.value) {
     loglevel_1.default.setLevel("trace");
 }
 else {
@@ -12637,7 +12637,7 @@ class saveBook {
                 const chapterText = this.genChapterText(chapterName, chapter.contentText);
                 this.savedTextArray.push(chapterText);
             }
-            if (!setting_1.enableDebug) {
+            if (!setting_1.enableDebug.value) {
                 chapter.contentText = null;
             }
         }
@@ -12794,7 +12794,7 @@ class saveBook {
             log_1.log.debug(`[save]保存章HTML文件：${chapterName}`);
             const chapterHTMLBlob = this.genChapterHtmlFile(chapter);
             chapter.status = main_1.Status.saved;
-            if (!setting_1.enableDebug) {
+            if (!setting_1.enableDebug.value) {
                 chapter.contentRaw = null;
                 chapter.contentHTML = null;
             }
@@ -12806,7 +12806,7 @@ class saveBook {
             for (const attachment of chapter.contentImages) {
                 this.addImageToZip(attachment, this.savedZip);
             }
-            if (!setting_1.enableDebug) {
+            if (!setting_1.enableDebug.value) {
                 chapter.contentImages = null;
             }
         }
@@ -12839,7 +12839,7 @@ class saveBook {
             log_1.log.debug(`[save]添加附件，文件名：${attachment.name}，对象`, attachment.imageBlob);
             zip.file(attachment.name, attachment.imageBlob);
             attachment.status = main_1.Status.saved;
-            if (!setting_1.enableDebug) {
+            if (!setting_1.enableDebug.value) {
                 attachment.imageBlob = null;
             }
         }
@@ -13203,9 +13203,11 @@ exports.index = new nunjucks.Template(`<!DOCTYPE html>
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.changeEnableDebug = exports.r18SiteList = exports.iconSetting = exports.iconStart1 = exports.iconStart0 = exports.enableJjwxcRemoteFont = exports.enableR18SiteWarning = exports.enableCustomSaveOptions = exports.enableCustomChapterFilter = exports.enableCustomFinishCallback = exports.enableDebug = exports.retryLimit = void 0;
+exports.r18SiteList = exports.iconSetting = exports.iconStart1 = exports.iconStart0 = exports.enableJjwxcRemoteFont = exports.enableR18SiteWarning = exports.enableCustomSaveOptions = exports.enableCustomChapterFilter = exports.enableCustomFinishCallback = exports.enableDebug = exports.retryLimit = void 0;
 exports.retryLimit = 5;
-exports.enableDebug = unsafeWindow.enableDebug ?? false;
+exports.enableDebug = {
+    value: unsafeWindow.enableDebug ?? false,
+};
 exports.enableCustomFinishCallback = true;
 exports.enableCustomChapterFilter = true;
 exports.enableCustomSaveOptions = true;
@@ -13219,11 +13221,6 @@ exports.r18SiteList = [
     "www.banzhuer.org",
     "m.yuzhaige.cc",
 ];
-function changeEnableDebug() {
-    exports.enableDebug = !exports.enableDebug;
-    return exports.enableDebug;
-}
-exports.changeEnableDebug = changeEnableDebug;
 
 
 /***/ }),
@@ -13772,10 +13769,15 @@ const saveOptionMap = {
     },
 };
 async function setConfig(setting) {
-    if (setting.enableDebug) {
-        const { changeEnableDebug, enableDebug } = await Promise.resolve().then(() => __webpack_require__("./src/setting.ts"));
-        if (enableDebug === false) {
-            changeEnableDebug();
+    if (typeof setting.enableDebug === "boolean") {
+        const { enableDebug } = await Promise.resolve().then(() => __webpack_require__("./src/setting.ts"));
+        if (setting.enableDebug) {
+            enableDebug.value = true;
+            log_1.log.setLevel("trace");
+        }
+        else {
+            enableDebug.value = false;
+            log_1.log.setLevel("info");
         }
     }
     if (setting.chooseSaveOption && setting.chooseSaveOption !== "null") {
@@ -16696,7 +16698,7 @@ function main() {
     printEnvironments();
     (0, global_1.init)();
     (0, ui_1.init)();
-    if (setting_1.enableDebug) {
+    if (setting_1.enableDebug.value) {
         setTimeout(debug_1.debug, 3000);
     }
 }
