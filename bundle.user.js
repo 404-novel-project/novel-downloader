@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.4.0.281
+// @version        4.4.0.282
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -13696,10 +13696,12 @@ exports.vm = Vue.createApp({
                 { key: "reverse_chapters", value: "保存章节时倒序排列" },
             ],
             setting: Vue.reactive({}),
+            settingBackup: {},
         };
     },
     methods: {
         openSetting() {
+            this.settingBackup = JSON.parse(JSON.stringify(this.setting));
             if (this.openStatus === "true") {
                 this.openStatus = "false";
                 setTimeout(() => {
@@ -13710,13 +13712,16 @@ exports.vm = Vue.createApp({
                 this.openStatus = "true";
             }
         },
-        closeSetting() {
+        closeSetting(keep) {
             if (this.openStatus === "true") {
                 this.openStatus = "false";
             }
+            if (typeof keep === "object" || keep === false) {
+                this.setting = JSON.parse(JSON.stringify(this.settingBackup));
+            }
         },
         closeAndSaveSetting() {
-            this.closeSetting();
+            this.closeSetting(true);
             setConfig(this.setting)
                 .then(() => log_1.log.info("[Init]自定义设置：" + JSON.stringify(this.setting)))
                 .catch((error) => log_1.log.error(error));
