@@ -5,7 +5,7 @@ import {
   Status,
   Book,
 } from "../main";
-import { rm } from "../lib/misc";
+import { rm, sleep } from "../lib/misc";
 import { cleanDOM } from "../lib/cleanDOM";
 import { gfetch } from "../lib/http";
 import {
@@ -30,61 +30,104 @@ export class jjwxc extends BaseRuleClass {
 
   public async bookParse() {
     const bookUrl = document.location.href;
-    const bookname = (<HTMLElement>(
-      document.querySelector('h1[itemprop="name"] > span')
-    )).innerText.trim();
+    const getInformationBlocked = () => {
+      const fl = Array.from(document.querySelectorAll(".smallreadbody")).filter(
+        (div) =>
+          (<HTMLDivElement>div).innerText.includes(
+            "文案信息审核未通过，等待作者修改后重新审核"
+          )
+      );
+      if (fl.length !== 0) {
+        return true;
+      } else {
+        return false;
+      }
+    };
 
-    const additionalMetadate: BookAdditionalMetadate = {};
+    let bookname = "";
+    let additionalMetadate: BookAdditionalMetadate = {};
+    let author = "佚名";
+    let introduction: string | null = null;
+    let introductionHTML: HTMLElement | null = null;
+    let introCleanimages: attachmentClass[] | null = null;
+    if (!getInformationBlocked()) {
+      bookname = (<HTMLElement>(
+        document.querySelector('h1[itemprop="name"] > span')
+      )).innerText.trim();
 
-    const author = (<HTMLElement>(
-      document.querySelector("td.sptd h2 a span")
-    )).innerText
-      .replace(/作\s+者:/, "")
-      .trim();
-    const introDom = document.querySelector("#novelintro");
-    const [introduction, introductionHTML, introCleanimages] =
-      await introDomHandle(introDom);
-    if (introCleanimages) {
-      additionalMetadate.attachments = [...introCleanimages];
+      author = (<HTMLElement>(
+        document.querySelector("td.sptd h2 a span")
+      )).innerText
+        .replace(/作\s+者:/, "")
+        .trim();
+      const introDom = document.querySelector("#novelintro");
+      [introduction, introductionHTML, introCleanimages] = await introDomHandle(
+        introDom
+      );
+      if (introCleanimages) {
+        additionalMetadate.attachments = [...introCleanimages];
+      }
+
+      let coverUrl = (<HTMLImageElement>(
+        document.querySelector(".noveldefaultimage")
+      )).src;
+      if (coverUrl) {
+        getImageAttachment(coverUrl, this.imageMode, "cover-")
+          .then((coverClass) => {
+            additionalMetadate.cover = coverClass;
+          })
+          .catch((error) => log.error(error));
+      }
+
+      let tags = (<HTMLSpanElement>(
+        document.querySelector(
+          "table > tbody > tr > td.readtd > div.righttd > ul.rightul > li:nth-child(1) > span:nth-child(2)"
+        )
+      )).innerText.split("-");
+      tags = tags.concat(
+        Array.from(
+          document.querySelectorAll("div.smallreadbody:nth-child(3) > span > a")
+        ).map((a) => (<HTMLAnchorElement>a).innerText)
+      );
+      const perspective = (<HTMLLIElement>(
+        document.querySelector(
+          "table > tbody > tr > td.readtd > div.righttd > ul.rightul > li:nth-child(2)"
+        )
+      )).innerText.replace("\n", "");
+      const workStyle = (<HTMLLIElement>(
+        document.querySelector(
+          "table > tbody > tr > td.readtd > div.righttd > ul.rightul > li:nth-child(3)"
+        )
+      )).innerText.replace("\n", "");
+      tags.push(perspective);
+      tags.push(workStyle);
+      additionalMetadate.tags = tags;
+    } else {
+      window.scrollTo(0, document.body.scrollHeight);
+      await sleep(3000);
+      bookname = (<HTMLAnchorElement>(
+        document.querySelector("td[id^=comment_] span.coltext > a")
+      ))?.innerText
+        .trim()
+        .replace(/《|》/g, "");
+      window.scrollTo(0, 0);
+      if (!bookname) {
+        throw new Error("抓取书名出错");
+      }
+      const authorPageUrl = (<HTMLAnchorElement>(
+        document.querySelector(
+          "#oneboolt > tbody > tr:nth-child(1) > td > div > h2 > a"
+        )
+      ))?.href;
+      if (authorPageUrl) {
+        const authorPage = await getHtmlDOM(authorPageUrl, this.charset);
+        author =
+          (<HTMLSpanElement>authorPage.querySelector('span[itemprop="name"]'))
+            ?.innerText ?? author;
+      }
     }
-
-    let coverUrl = (<HTMLImageElement>(
-      document.querySelector(".noveldefaultimage")
-    )).src;
-    if (coverUrl) {
-      getImageAttachment(coverUrl, this.imageMode, "cover-")
-        .then((coverClass) => {
-          additionalMetadate.cover = coverClass;
-        })
-        .catch((error) => log.error(error));
-    }
-
-    let tags = (<HTMLSpanElement>(
-      document.querySelector(
-        "table > tbody > tr > td.readtd > div.righttd > ul.rightul > li:nth-child(1) > span:nth-child(2)"
-      )
-    )).innerText.split("-");
-    tags = tags.concat(
-      Array.from(
-        document.querySelectorAll("div.smallreadbody:nth-child(3) > span > a")
-      ).map((a) => (<HTMLAnchorElement>a).innerText)
-    );
-    const perspective = (<HTMLLIElement>(
-      document.querySelector(
-        "table > tbody > tr > td.readtd > div.righttd > ul.rightul > li:nth-child(2)"
-      )
-    )).innerText.replace("\n", "");
-    const workStyle = (<HTMLLIElement>(
-      document.querySelector(
-        "table > tbody > tr > td.readtd > div.righttd > ul.rightul > li:nth-child(3)"
-      )
-    )).innerText.replace("\n", "");
-    tags.push(perspective);
-    tags.push(workStyle);
-    additionalMetadate.tags = tags;
 
     const chapters: Chapter[] = [];
-
     const trList = document.querySelectorAll("#oneboolt > tbody > tr");
     let chapterNumber = 0;
     let sectionNumber = 0;
@@ -180,6 +223,26 @@ export class jjwxc extends BaseRuleClass {
             }
             chapters.push(chapter);
           }
+        } else {
+          const chapterName = "[锁]";
+          const chapterUrl = "";
+          const chapter = new Chapter(
+            bookUrl,
+            bookname,
+            chapterUrl,
+            chapterNumber,
+            chapterName,
+            false,
+            null,
+            sectionName,
+            sectionNumber,
+            sectionChapterNumber,
+            this.chapterParse,
+            this.charset,
+            {}
+          );
+          chapter.status = Status.aborted;
+          chapters.push(chapter);
         }
       }
     }

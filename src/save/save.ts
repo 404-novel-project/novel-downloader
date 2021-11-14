@@ -48,13 +48,12 @@ export class saveBook {
         this.savedTextArray.push(sectionText);
       }
 
-      if (chapter.contentText) {
-        const chapterText = this.genChapterText(
-          chapterName,
-          chapter.contentText
-        );
-        this.savedTextArray.push(chapterText);
-      }
+      const chapterText = this.genChapterText(
+        chapterName,
+        chapter.contentText ?? ""
+      );
+      this.savedTextArray.push(chapterText);
+
       if (!enableDebug.value) {
         chapter.contentText = null;
       }
@@ -103,6 +102,11 @@ export class saveBook {
     if (runSaveChapters) {
       log.debug("[save]开始保存章节文件");
       this.saveChapters();
+    } else {
+      log.debug("[save]保存仅标题章节文件");
+      this.chapters
+        .filter((c) => c.status !== Status.saved)
+        .forEach((c) => this.addChapter(c));
     }
 
     log.debug("[save]开始生成并保存卷文件");
@@ -249,17 +253,15 @@ export class saveBook {
     const chapterNumberToSave = this.getChapterNumberToSave(chapter);
     const chapterHtmlFileName = `No${chapterNumberToSave}Chapter.html`;
 
-    if (chapter.contentHTML) {
-      log.debug(`[save]保存章HTML文件：${chapterName}`);
-      const chapterHTMLBlob = this.genChapterHtmlFile(chapter);
-      chapter.status = Status.saved;
-      if (!enableDebug.value) {
-        chapter.contentRaw = null;
-        chapter.contentHTML = null;
-      }
-      this.savedZip.file(chapterHtmlFileName, chapterHTMLBlob);
-      chapter.chapterHtmlFileName = chapterHtmlFileName;
+    log.debug(`[save]保存章HTML文件：${chapterName}`);
+    const chapterHTMLBlob = this.genChapterHtmlFile(chapter);
+    if (!enableDebug.value) {
+      chapter.contentRaw = null;
+      chapter.contentHTML = null;
     }
+    this.savedZip.file(chapterHtmlFileName, chapterHTMLBlob);
+    chapter.chapterHtmlFileName = chapterHtmlFileName;
+    chapter.status = Status.saved;
 
     if (chapter.contentImages && chapter.contentImages.length !== 0) {
       log.debug(`[save]保存章节附件：${chapterName}`);
@@ -341,7 +343,7 @@ export class saveBook {
     const htmlText = chapter.render({
       chapterUrl: chapterObj.chapterUrl,
       chapterName: chapterObj.chapterName,
-      outerHTML: chapterObj.contentHTML?.outerHTML,
+      outerHTML: chapterObj.contentHTML?.outerHTML ?? "",
     });
     return new Blob([htmlText.replaceAll("data-src-address", "src")], {
       type: "text/html; charset=UTF-8",
