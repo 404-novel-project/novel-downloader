@@ -34,7 +34,7 @@ const buttonDivStyle = `.button-div {
 }`;
 createStyle(buttonDivStyle, "button-div-style");
 
-export const el = createEl(`<div class="button-div">
+export const el = createEl(`<div class="button-div" id="button-div">
 <button class="start">
     <img class="start" v-bind:src="imgStart" v-on:click="startButtonClick">
 </button>

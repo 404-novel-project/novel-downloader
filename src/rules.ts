@@ -188,7 +188,7 @@ export abstract class BaseRuleClass {
     self.postHook();
 
     if (!(error instanceof ExpectError)) {
-      document.getElementById("novel-downloader")?.remove();
+      document.getElementById("button-div")?.remove();
       log.error(
         "运行过程出错，请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/yingziwu/novel-downloader"
       );
