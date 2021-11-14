@@ -45,10 +45,12 @@ export const vm = Vue.createApp({
         { key: "reverse_chapters", value: "保存章节时倒序排列" },
       ],
       setting: Vue.reactive({}),
+      settingBackup: {},
     };
   },
   methods: {
     openSetting() {
+      this.settingBackup = JSON.parse(JSON.stringify(this.setting));
       if (this.openStatus === "true") {
         this.openStatus = "false";
         setTimeout(() => {
@@ -58,13 +60,16 @@ export const vm = Vue.createApp({
         this.openStatus = "true";
       }
     },
-    closeSetting() {
+    closeSetting(keep: PointerEvent | boolean) {
       if (this.openStatus === "true") {
         this.openStatus = "false";
       }
+      if (typeof keep === "object" || keep === false) {
+        this.setting = JSON.parse(JSON.stringify(this.settingBackup));
+      }
     },
     closeAndSaveSetting() {
-      this.closeSetting();
+      this.closeSetting(true);
       setConfig(this.setting)
         .then(() =>
           log.info("[Init]自定义设置：" + JSON.stringify(this.setting))
