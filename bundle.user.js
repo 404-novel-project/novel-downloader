@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.4.0.283
+// @version        4.4.0.284
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -13386,6 +13386,7 @@ exports["default"] = Vue.defineCustomElement({
         dialogTitle: String,
         status: String,
     },
+    emits: ["dialogclose"],
     data() {
         return {
             myPrivateStatus: this.status === "true",
@@ -13394,6 +13395,7 @@ exports["default"] = Vue.defineCustomElement({
     methods: {
         dialogClose() {
             this.myPrivateStatus = false;
+            this.$emit("dialogclose");
         },
     },
     mounted() {
@@ -13658,7 +13660,7 @@ const createEl_1 = __webpack_require__("./src/lib/createEl.ts");
 __webpack_require__("./src/ui/injectVue.ts");
 const log_1 = __webpack_require__("./src/log.ts");
 exports.el = (0, createEl_1.createEl)(`<div>
-<nd-dialog dialog-title="设置" v-bind:status="openStatus" v-if="openStatus === 'true'">
+<nd-dialog dialog-title="设置" v-bind:status="openStatus" v-on:dialogclose="closeSetting" v-if="openStatus === 'true'">
 <div class="nd-setting">
     <div class="nd-setting-body">
         <div>
