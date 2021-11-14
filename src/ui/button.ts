@@ -3,6 +3,7 @@ import { iconSetting, iconStart0, iconStart1 } from "../setting";
 import { getRule } from "../routers";
 import { newWindow } from "../global";
 import { log } from "../log";
+import { vm as settingVM } from "./setting";
 
 import type * as _vue from "vue";
 declare const Vue: typeof _vue;
@@ -70,6 +71,9 @@ export const vm = Vue.createApp({
         })
         .catch((error) => log.error(error));
     },
-    settingButtonClick() {},
+    settingButtonClick() {
+      //@ts-expect-error
+      settingVM.openSetting();
+    },
   },
 }).mount(el);

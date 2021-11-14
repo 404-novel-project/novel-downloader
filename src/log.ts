@@ -1,7 +1,7 @@
-import { enaleDebug } from "./setting";
+import { enableDebug } from "./setting";
 import log from "loglevel";
 
-if (enaleDebug) {
+if (enableDebug) {
   log.setLevel("trace");
 } else {
   log.setLevel("info");

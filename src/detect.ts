@@ -1,6 +1,6 @@
 import { _GM_info } from "./lib/GM";
 import { storageAvailable } from "./lib/misc";
-import { enaleDebug } from "./setting";
+import { enableDebug } from "./setting";
 
 function check(name: string) {
   //@ts-ignore
@@ -43,5 +43,5 @@ export const environments = {
   ScriptHandler: _GM_info.scriptHandler,
   "ScriptHandler version": _GM_info.version,
   "Novel-downloader version": _GM_info.script.version,
-  enaleDebug: enaleDebug,
+  enableDebug: enableDebug,
 };

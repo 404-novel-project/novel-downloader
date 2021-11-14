@@ -1,5 +1,7 @@
+import { newUnsafeWindow } from "./global";
+
 export const retryLimit = 5;
-export const enaleDebug = (<any>unsafeWindow).enaleDebug ?? false;
+export let enableDebug = (<newUnsafeWindow>unsafeWindow).enableDebug ?? false;
 export const enableCustomFinishCallback = true;
 export const enableCustomChapterFilter = true;
 export const enableCustomSaveOptions = true;
@@ -18,3 +20,8 @@ export const r18SiteList = [
   "www.banzhuer.org",
   "m.yuzhaige.cc",
 ];
+
+export function changeEnableDebug() {
+  enableDebug = !enableDebug;
+  return enableDebug;
+}

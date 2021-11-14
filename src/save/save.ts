@@ -1,6 +1,6 @@
 import { Book, Chapter, attachmentClass, Status } from "../main";
 import { fflateZip } from "../lib/zip";
-import { enableCustomSaveOptions, enaleDebug } from "../setting";
+import { enableCustomSaveOptions, enableDebug } from "../setting";
 import { log, logText } from "../log";
 import { defaultMainStyleText, defaultTocStyleText } from "./style";
 import { section, chapter, index } from "./template";
@@ -55,7 +55,7 @@ export class saveBook {
         );
         this.savedTextArray.push(chapterText);
       }
-      if (!enaleDebug) {
+      if (!enableDebug) {
         chapter.contentText = null;
       }
     }
@@ -253,7 +253,7 @@ export class saveBook {
       log.debug(`[save]保存章HTML文件：${chapterName}`);
       const chapterHTMLBlob = this.genChapterHtmlFile(chapter);
       chapter.status = Status.saved;
-      if (!enaleDebug) {
+      if (!enableDebug) {
         chapter.contentRaw = null;
         chapter.contentHTML = null;
       }
@@ -266,7 +266,7 @@ export class saveBook {
       for (const attachment of chapter.contentImages) {
         this.addImageToZip(attachment, this.savedZip);
       }
-      if (!enaleDebug) {
+      if (!enableDebug) {
         chapter.contentImages = null;
       }
     }
@@ -306,7 +306,7 @@ export class saveBook {
       );
       zip.file(attachment.name, attachment.imageBlob);
       attachment.status = Status.saved;
-      if (!enaleDebug) {
+      if (!enableDebug) {
         attachment.imageBlob = null;
       }
     } else if (attachment.status === Status.saved) {

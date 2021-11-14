@@ -140,7 +140,7 @@ ZIP压缩包，请在解压后，直接双击打开HTML文件（`index.html` 为
 (function() {
     'use strict';
 
-    unsafeWindow.enaleDebug = true
+    unsafeWindow.enableDebug = true
 })();
 ```
 

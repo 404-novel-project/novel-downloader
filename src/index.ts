@@ -1,4 +1,4 @@
-import { enaleDebug } from "./setting";
+import { enableDebug } from "./setting";
 import { init as globalInit } from "./global";
 import { init as uiInit } from "./ui/ui";
 import { environments } from "./detect";
@@ -17,7 +17,7 @@ function main() {
   globalInit();
   uiInit();
 
-  if (enaleDebug) {
+  if (enableDebug) {
     setTimeout(debug, 3000);
   }
 }
