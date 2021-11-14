@@ -9,7 +9,7 @@ import "./injectVue";
 import { log } from "../log";
 
 export const el = createEl(`<div>
-<nd-dialog dialog-title="设置" v-bind:status="openStatus" v-if="openStatus === 'true'">
+<nd-dialog dialog-title="设置" v-bind:status="openStatus" v-on:dialogclose="closeSetting" v-if="openStatus === 'true'">
 <div class="nd-setting">
     <div class="nd-setting-body">
         <div>

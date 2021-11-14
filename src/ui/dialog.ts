@@ -8,6 +8,7 @@ export default Vue.defineCustomElement({
     dialogTitle: String,
     status: String,
   },
+  emits: ["dialogclose"],
   data() {
     return {
       myPrivateStatus: this.status === "true",
@@ -16,6 +17,7 @@ export default Vue.defineCustomElement({
   methods: {
     dialogClose() {
       this.myPrivateStatus = false;
+      this.$emit("dialogclose");
     },
   },
   mounted() {
