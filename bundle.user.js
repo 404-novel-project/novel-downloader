@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.4.1.285
+// @version        4.4.1.286
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -12703,6 +12703,10 @@ class saveBook {
                 this.addImageToZip(bookAttachment, this.savedZip);
             }
         }
+        log_1.log.debug("[save]开始生成并保存卷文件");
+        this.saveSections();
+        log_1.log.debug("[save]开始生成并保存 index.html");
+        this.saveToC();
         if (runSaveChapters) {
             log_1.log.debug("[save]开始保存章节文件");
             this.saveChapters();
@@ -12713,10 +12717,6 @@ class saveBook {
                 .filter((c) => c.status !== main_1.Status.saved)
                 .forEach((c) => this.addChapter(c));
         }
-        log_1.log.debug("[save]开始生成并保存卷文件");
-        this.saveSections();
-        log_1.log.debug("[save]开始生成并保存 index.html");
-        this.saveToC();
         log_1.log.info("[save]开始保存ZIP文件");
         const self = this;
         self.saveLog();
