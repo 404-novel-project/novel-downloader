@@ -2,9 +2,9 @@ import { Book, Chapter, attachmentClass, Status } from "../main";
 import { fflateZip } from "../lib/zip";
 import { enableCustomSaveOptions, enaleDebug } from "../setting";
 import { log, logText } from "../log";
-import { newWindow } from "../global";
 import { defaultMainStyleText, defaultTocStyleText } from "./style";
 import { section, chapter, index } from "./template";
+import { progressVM, vm as progress } from "../ui/progress";
 export class saveBook {
   protected book: Book;
   private chapters: Chapter[];
@@ -129,10 +129,7 @@ export class saveBook {
       this.savedZip.onFinal = finalHandle;
       this.savedZip.onFinalError = finalErrorHandle;
       this.savedZip.generateAsync((percent) => {
-        const progress = (window as newWindow & typeof globalThis).progress;
-        if (progress) {
-          progress.zipPercent = percent;
-        }
+        (<progressVM>progress).zipPercent = percent;
       });
     });
   }

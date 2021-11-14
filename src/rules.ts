@@ -18,10 +18,11 @@ import {
   enableCustomFinishCallback,
   enableCustomSaveOptions,
 } from "./setting";
-import { concurrencyRun, storageAvailable } from "./lib/misc";
+import { concurrencyRun } from "./lib/misc";
 import { newUnsafeWindow, newWindow } from "./global";
 import { clearAttachmentClassCache } from "./lib/attachments";
 import { successPlus, failedPlus, printStat } from "./stat";
+import { vm as progress, progressVM } from "./ui/progress";
 
 interface workStatusObj {
   [index: string]: boolean;
@@ -174,10 +175,7 @@ export abstract class BaseRuleClass {
     window.onbeforeunload = null;
     (window as newWindow & typeof globalThis).downloading = false;
 
-    const progress = (window as newWindow & typeof globalThis).progress;
-    if (progress) {
-      progress.reset();
-    }
+    (<progressVM>progress).reset();
 
     return true;
   }
@@ -270,10 +268,7 @@ export abstract class BaseRuleClass {
       log.error(`[initChapters]初始化章节出错，未找到需初始化章节`);
       return [];
     }
-    const progress = (window as newWindow & typeof globalThis).progress;
-    if (progress) {
-      progress.totalChapterNumber = chapters.length;
-    }
+    (<progressVM>progress).totalChapterNumber = chapters.length;
 
     if (self.concurrencyLimit === 1) {
       for (let chapter of chapters) {
@@ -335,10 +330,7 @@ export abstract class BaseRuleClass {
 
     if (chapter.contentHTML !== undefined) {
       saveBookObj.addChapter(chapter);
-      const progress = (window as newWindow & typeof globalThis).progress;
-      if (progress) {
-        progress.finishedChapterNumber++;
-      }
+      (<progressVM>progress).finishedChapterNumber++;
     }
     return chapter;
   }
