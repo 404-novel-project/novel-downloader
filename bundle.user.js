@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.3.0.278
+// @version        4.4.0.279
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -253,6 +253,7 @@
 // @require        https://cdn.jsdelivr.net/npm/crypto-js@4.1.1/crypto-js.js#sha256-8L3yX9qPmvWSDIIHB3WGTH4RZusxVA0DDmuAo4LjnOE=
 // @require        https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js#sha256-xoh0y6ov0WULfXcLMoaA6nZfszdgI8w2CEJ/3k8NBIE=
 // @require        https://cdn.jsdelivr.net/npm/nunjucks@3.2.3/browser/nunjucks.min.js#sha256-+CJElYLgP9RjEvMt/VTU1+qF8CuntjliUUBKp26fPck=
+// @require        https://cdn.jsdelivr.net/npm/vue@3.2.21/dist/vue.global.prod.js#sha256-/vjXAc6GTRSzj94ZRmI9JLA5vL8Z/fEzwv4ByA6DdI0=
 // @downloadURL    https://github.com/yingziwu/novel-downloader/raw/gh-pages/bundle.user.js
 // @updateURL      https://github.com/yingziwu/novel-downloader/raw/gh-pages/bundle.meta.js
 // ==/UserScript==
@@ -2937,6 +2938,34 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*
 
 /***/ }),
 
+/***/ "./src/debug.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.debug = void 0;
+const routers_1 = __webpack_require__("./src/routers.ts");
+async function debug() {
+    const rule = await (0, routers_1.getRule)();
+    const book = await rule.bookParse();
+    unsafeWindow.rule = rule;
+    unsafeWindow.book = book;
+    unsafeWindow.saveAs = saveAs;
+    const { parse, fetchAndParse, gfetchAndParse } = await Promise.resolve().then(() => __webpack_require__("./src/rules/lib/readability.ts"));
+    const readability = {
+        parse: parse,
+        fetchAndParse: fetchAndParse,
+        gfetchAndParse: gfetchAndParse,
+    };
+    unsafeWindow.readability = readability;
+    return;
+}
+exports.debug = debug;
+
+
+/***/ }),
+
 /***/ "./src/detect.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
@@ -2997,126 +3026,7 @@ exports.environments = {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.init = void 0;
 const misc_1 = __webpack_require__("./src/lib/misc.ts");
-class Progress {
-    constructor() {
-        this._totalChapterNumber = 0;
-        this._finishedChapterNumber = 0;
-        this._zipPercent = 0;
-        this.progressStyleText = `#nd-progress {
-        position: fixed;
-        bottom: 8%;
-        right: 3%;
-        z-index: 2147483647;
-        border-style: none;
-        text-align: center;
-        vertical-align: baseline;
-        background-color: rgba(210, 210, 210, 0.2);
-        padding: 6px;
-        border-radius: 12px;
-        display: none;
-      }
-      #chapter-progress{
-        --color:green;
-        --position:0%;
-        width:200px;
-        height:10px;
-        border-radius:30px;
-        background-color:#ccc;
-        background-image:radial-gradient(closest-side circle at var(--position),var(--color),var(--color) 100%,transparent),linear-gradient(var(--color),var(--color));
-        background-image:-webkit-radial-gradient(var(--position),circle closest-side,var(--color),var(--color) 100%,transparent),-webkit-linear-gradient(var(--color),var(--color));
-        background-size:100% ,var(--position);
-        background-repeat: no-repeat;
-        display: none;
-      }
-      #zip-progress{
-        --color:yellow;
-        --position:0%;
-        width:200px;
-        height:10px;
-        border-radius:30px;
-        background-color:#ccc;
-        background-image:radial-gradient(closest-side circle at var(--position),var(--color),var(--color) 100%,transparent),linear-gradient(var(--color),var(--color));
-        background-image:-webkit-radial-gradient(var(--position),circle closest-side,var(--color),var(--color) 100%,transparent),-webkit-linear-gradient(var(--color),var(--color));
-        background-size:100% ,var(--position);
-        background-repeat: no-repeat;
-        margin-top: 5px;
-        display: none;
-      }`;
-        if (!document.getElementById("nd-progress")) {
-            let progress = document.createElement("div");
-            progress.id = "nd-progress";
-            progress.innerHTML = `
-            <div id='chapter-progress' title="章节"></div>
-            <div id='zip-progress' title="ZIP"></div>
-            `;
-            let progressStyle = document.createElement("style");
-            progressStyle.innerHTML = this.progressStyleText;
-            document.head.appendChild(progressStyle);
-            document.body.appendChild(progress);
-        }
-    }
-    set totalChapterNumber(newTotalChapterNumber) {
-        this._totalChapterNumber = newTotalChapterNumber;
-        const elem = document.getElementById("nd-progress");
-        if (elem) {
-            if (newTotalChapterNumber === 0) {
-                elem.style.cssText = "";
-            }
-            else {
-                elem.style.cssText = "display: block;";
-            }
-        }
-    }
-    get totalChapterNumber() {
-        return this._totalChapterNumber;
-    }
-    set finishedChapterNumber(newFinishedChapterNumber) {
-        this._finishedChapterNumber = newFinishedChapterNumber;
-        if (this._totalChapterNumber != 0) {
-            const percent = (this._finishedChapterNumber / this._totalChapterNumber) * 100;
-            const elem = document.getElementById("chapter-progress");
-            if (elem) {
-                if (newFinishedChapterNumber === 0) {
-                    elem.style.cssText = "";
-                    elem.title = "";
-                }
-                else {
-                    elem.style.cssText = `--position:${percent}%; display: block;`;
-                    elem.title = `${this._finishedChapterNumber}/${this._totalChapterNumber}`;
-                }
-            }
-        }
-    }
-    get finishedChapterNumber() {
-        return this._finishedChapterNumber;
-    }
-    set zipPercent(newZipPercent) {
-        this._zipPercent = newZipPercent;
-        const elem = document.getElementById("zip-progress");
-        if (elem) {
-            if (newZipPercent === 0) {
-                elem.style.cssText = "";
-            }
-            else {
-                elem.style.cssText = `--position:${this._zipPercent}%; display: block;`;
-            }
-        }
-    }
-    get zipPercent() {
-        return this._zipPercent;
-    }
-    reset() {
-        const elem = document.getElementById("nd-progress");
-        if (elem) {
-            elem.style.cssText = "";
-        }
-        this.totalChapterNumber = 0;
-        this.finishedChapterNumber = 0;
-        this.zipPercent = 0;
-    }
-}
 function init() {
-    window.progress = new Progress();
     window.downloading = false;
     window.customStorage =
         new misc_1.localStorageExpired();
@@ -3790,6 +3700,37 @@ function htmlTrim(dom) {
     }
 }
 exports.htmlTrim = htmlTrim;
+
+
+/***/ }),
+
+/***/ "./src/lib/createEl.ts":
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.createStyle = exports.createEl = void 0;
+function createEl(el) {
+    const _el = document.createElement("div");
+    _el.innerHTML = el;
+    if (_el.childElementCount === 1 && _el.firstElementChild) {
+        return _el.firstElementChild;
+    }
+    else {
+        throw new Error("Create HTMLElement Failed!");
+    }
+}
+exports.createEl = createEl;
+function createStyle(style, id = undefined) {
+    const el = createEl(`<style>${style}</style>`);
+    if (id) {
+        el.id = id;
+    }
+    document.head.appendChild(el);
+    return el;
+}
+exports.createStyle = createStyle;
 
 
 /***/ }),
@@ -4836,6 +4777,7 @@ const setting_1 = __webpack_require__("./src/setting.ts");
 const misc_1 = __webpack_require__("./src/lib/misc.ts");
 const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
 const stat_1 = __webpack_require__("./src/stat.ts");
+const progress_1 = __webpack_require__("./src/ui/progress.ts");
 const workStatusKeyName = "novel-downloader-EaraVl9TtSM2405L";
 class BaseRuleClass {
     constructor() {
@@ -4930,10 +4872,7 @@ class BaseRuleClass {
         self.audio?.remove();
         window.onbeforeunload = null;
         window.downloading = false;
-        const progress = window.progress;
-        if (progress) {
-            progress.reset();
-        }
+        progress_1.vm.reset();
         return true;
     }
     catchError(error) {
@@ -5006,10 +4945,7 @@ class BaseRuleClass {
             log_1.log.error(`[initChapters]初始化章节出错，未找到需初始化章节`);
             return [];
         }
-        const progress = window.progress;
-        if (progress) {
-            progress.totalChapterNumber = chapters.length;
-        }
+        progress_1.vm.totalChapterNumber = chapters.length;
         if (self.concurrencyLimit === 1) {
             for (let chapter of chapters) {
                 if (window.stopFlag) {
@@ -5062,10 +4998,7 @@ class BaseRuleClass {
         storage.set(workStatusKeyName, workStatus, 20);
         if (chapter.contentHTML !== undefined) {
             saveBookObj.addChapter(chapter);
-            const progress = window.progress;
-            if (progress) {
-                progress.finishedChapterNumber++;
-            }
+            progress_1.vm.finishedChapterNumber++;
         }
         return chapter;
     }
@@ -12675,6 +12608,7 @@ const setting_1 = __webpack_require__("./src/setting.ts");
 const log_1 = __webpack_require__("./src/log.ts");
 const style_1 = __webpack_require__("./src/save/style.ts");
 const template_1 = __webpack_require__("./src/save/template.ts");
+const progress_1 = __webpack_require__("./src/ui/progress.ts");
 class saveBook {
     constructor(book) {
         this.book = book;
@@ -12754,10 +12688,7 @@ class saveBook {
             this.savedZip.onFinal = finalHandle;
             this.savedZip.onFinalError = finalErrorHandle;
             this.savedZip.generateAsync((percent) => {
-                const progress = window.progress;
-                if (progress) {
-                    progress.zipPercent = percent;
-                }
+                progress_1.vm.zipPercent = percent;
             });
         });
     }
@@ -13272,7 +13203,7 @@ exports.index = new nunjucks.Template(`<!DOCTYPE html>
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.r18SiteList = exports.icon1 = exports.icon0 = exports.enableJjwxcRemoteFont = exports.enableR18SiteWarning = exports.enableCustomSaveOptions = exports.enableCustomChapterFilter = exports.enableCustomFinishCallback = exports.enaleDebug = exports.retryLimit = void 0;
+exports.r18SiteList = exports.iconSetting = exports.iconStart1 = exports.iconStart0 = exports.enableJjwxcRemoteFont = exports.enableR18SiteWarning = exports.enableCustomSaveOptions = exports.enableCustomChapterFilter = exports.enableCustomFinishCallback = exports.enaleDebug = exports.retryLimit = void 0;
 exports.retryLimit = 5;
 exports.enaleDebug = unsafeWindow.enaleDebug ?? false;
 exports.enableCustomFinishCallback = true;
@@ -13280,8 +13211,9 @@ exports.enableCustomChapterFilter = true;
 exports.enableCustomSaveOptions = true;
 exports.enableR18SiteWarning = false;
 exports.enableJjwxcRemoteFont = true;
-exports.icon0 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAFYElEQVR4nO2dIUxkORyHP4XD4E6RYNZgUGvWonAnVqxDbbJiNWLNOsQ65Oo1CMQIFAnJJiQIcgY7YhIEbgTJiEkm4USPuyNh3pv2tf33tb9f8kl4fe3H0Pm37xXi50/gHJgBC+C5YB6Bv4AL4CuwH7872skBcI/9oA5lBpwAO1F7p/IcUf5fuy8L4AzYjthPVWYfeMJ+wFLxABxG660K8xv7QcrBWawOqykfsB+YnEzQv4RXOcV+UHJzD+zF6LwaMsF+QCyYo3kBALfYD4YVK+DL8C4cd+6wHwhrfgJbQztyrJEAjhvgj4F9OcrUKMA33Me778/NaLCUXKMA27ivt48BP7vArYU0k1oFAPeRHjrJPQ3u0ZGlZgHATe5+Bv6ecxooGtUuwEuOCVvsugd2vXp0ZGlFAHDL3bOA3zfHzSmqTEsCgNsjcBXwO5e4T5Hq0poA4OYFoWsg1RWNWhTgJZ8ImxdcUdFuo5YFADcvmAZcY0olRaPWBQD313wZcJ0n3Fa6UUcC/JfvAdda4TagjjYS4HWOcF/7fK/5i5FODmvcDzC0eveOsO3xt4xwRVECvJ1t3MMmvtd+AN5HuH62SIDunOC/tLxgREUjCdCf0HnBKFYUJcBm2SNsXnCZqD3RIgE2zzZuidi3PVPcxLLISAD/fMYtDvm0qdht6BIgLIf4zwuWOHmKigQIzy5hhbSiKocSYFi2cFVA3zZ+ytjGztQogMVS7Vf85gVPFLLVrEYBrGbcvlvRJzbNfJ0aBbDc1++7Fd28bFyjAOdRe8g/PlvOfhm18d/UKMCKMjZqHNM/L1hiXCmsUYBn3ILMZ+zX6N/jVgi72mr6KFqtArzwiJtsneE+li3oezLJdNGodgHGgOm3AQlgz03vKCWMBLDnrneUEkYC2CMBGkcCNI4EaBwJ0DgSYEMecE/mbkLIA59NCnCzplElEbqfLvTJXwlQGEN2z+zjv4GzKQFK/xewZPiCTumS6xOgg4cI9xiyZ08CFIIESBwJYI8E6EACJI4EsEcCdCABEkcC2CMBOpAAiSMB7JEAHUiAxJEA9kiADiRA4kgAeyRABxIgcSSAPRKgAwmQOBLAHgnQgQRIHAlgjwToQAIkjgSwRwJ0IAESRwLYYyrA7zWNKgUJkDgSwB4J0IEESBwJYE8zAqxwr0T7webv2Ivxbv2PHtc7xb1qNucDpc0I8DHTPcXIB/yPi5MAHcT4KM+dXH3ThADzXDcUMSHHxEmADr5kuqcYOSJfvzQjwIKCz8/7X3bof8O3BAjkDvtXuPcl5HBICeDB9yx3FpZj8vdHcwKsKOCsnDeyhzvNSwJkYEp5hypfY9MXTQrwjDtJo5ScYNcPzQrwTBmHOx1g+y7BpgV4xJ21Z5Ut8hV8JMAaLpPf5fqcdbRLAmTE4lj1wwHtlQCRyV0l3MHvnF8JkIGcVcLc1T4JsCE5qoQW1T4JsCGpq4RW1b5iBbhe0yhLUlYJS7xfCfAGKaqE3wq4LwngQcxTta2rfRIggDlxqoQlVPskQCAxqoQlVPskwACG7CUspdonAQYQWiUsqdonAQYSUiUsqdonASLgUyUsrdonASKwwj2y1ZcSq30SIBKbVAlLK29LgMh0VQlLrfZJgMi89aRxydU+CRCZOe5g6JfsMo6TwiVARJbABe7r3pgmfRJASAAhAQQSQCABmsdUgKs1jRL5uO0dpYSRAPZMekcpYS7WNErk47R3lBLmx5pGiXyYvi1lDFumaua6f4jS5w77jmiRBa/XM8zyjnHX0sfIkrjPPQzOAeNdTRsbUzbb2ZQ9W7i9dBNghltyjUHrny4r3JtHJ//0b9RH4P8GSxsCzEN/51YAAAAASUVORK5CYII=";
-exports.icon1 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAESElEQVR4nO2cLUxcQRSFv4QgEBiSKgQCh6pCouvQlbVVdaRuTFUNoqaqEkktCoVD4HBITBMMosmaVsxu+kL3l3lv7p13z5ccyc68OSf3sLtvHwghhBBCjJM/hRKNowAERwEIjgIQHAUgOApAcBSA4CgAwVEAgqMABEcBCI4CEBwFIDgKQHAUgOAoAMFRAIKjAARHAQiOAhAcBSA4CkBwFIDgKADBUQCCowAERwEIjgIQHAUgOApAcBSA4CgAzkmUm9SqUvHpjYSEvRky35iEvSky35iEvTky35iEvUky35iEvVky35iEvWky35iEvXky35iEvYky35iEvZky35iEvaky35iEvbky35iEvcky35iEvdky35iEveky35iEzA9PQuaHJyHzm2e78O8T7Zhfeq2j4i1wDvyi/GAT/s1P5Gs9J197SN4An4A7hjlgz+a/fM078lm8KXxt92wDp8BPYEL9g/ZoflcT8tmcMrKK6I54TwfueS/NV8SyEe/54D3uoZmK2GTEt2KA5dov5bYiXjvivRthsea6Mq+Ivka8V0NqrlWqahUx1IjfRGeF15DWWCMVrnG2xhpDaLCKqDHiV+ka+ADs9nA9ack6qYfX3yXv9XrJOkOruCIsRvxLPZANOXztRSwhzVkvDbDO4fR1H+asV0trV4SHEf8M/ABOVm22B1Jn3VRhvRPytT1jc7YLK8LTiN/Z/FyLSNT/Vm8HZxVhtYnZiD8oOc3GOcC+Iqou9gx8p86Ib40T8tnUrogqi1wB76k/4ltkh3xWVzQegHvgM7Df6/HEYp98hvc0EoAn8hg7HuAwonNMPtsnnAVggkZ8TboV0cfb9aIRf4ZGvCX7ZA9KKmLjEf8NjXiPHJO92bQiFICRUCUAqgBfVK+AedI/gXVx80/goorQ28BhcPs2cFlF6IOgMpr7IGiRVBHrM5qPguep5vf9rWF1v0DVxbrS18EBvw5epGv6u+fPOx7uGXQXgJnGXBHWt4Q1EYCuhrwptBYebgptNgBd3dBORcxG/A325zaaAMz0G7gA3gFbaxpSgy3yni7Ie7Q+p9EGoKtH4AtwtNqfwTia7uER+/MIF4CuboCPwN5Su/phb7pWKyM+RABmGqoiWh7xoQLQ1SPwlbKKOJq+RssjPmwAurpl/YqYjfhbB/tWAHrWBLjk/9/HzX4XeYnd7yIVgMqa/T7O+neR1jLfgKQASIYy34CkAEiGcvGACKmu5j5DKPJboQha9BZ4Lh4eEiX1o+LnCKoi2tMgTxJVRfjWRiO+FFWEH5k/TVwVUV/mD4ueh4cHTY5ZVUd8KaqI/mQ+4ktRRWwulyO+FFXEcjU14ktRRfxT8yO+lIgVMcoRX8rYP2gKNeJLGVNFhB/xpbRYERrxA+C9IjTiK+KpIjTijbGoCI14hwxdERrxDdFnRWjEN85rKkIjfoSsqgiN+EB0K0IjXgghhBDh+Avri3imoU6g/AAAAABJRU5ErkJggg==";
+exports.iconStart0 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAFYElEQVR4nO2dIUxkORyHP4XD4E6RYNZgUGvWonAnVqxDbbJiNWLNOsQ65Oo1CMQIFAnJJiQIcgY7YhIEbgTJiEkm4USPuyNh3pv2tf33tb9f8kl4fe3H0Pm37xXi50/gHJgBC+C5YB6Bv4AL4CuwH7872skBcI/9oA5lBpwAO1F7p/IcUf5fuy8L4AzYjthPVWYfeMJ+wFLxABxG660K8xv7QcrBWawOqykfsB+YnEzQv4RXOcV+UHJzD+zF6LwaMsF+QCyYo3kBALfYD4YVK+DL8C4cd+6wHwhrfgJbQztyrJEAjhvgj4F9OcrUKMA33Me778/NaLCUXKMA27ivt48BP7vArYU0k1oFAPeRHjrJPQ3u0ZGlZgHATe5+Bv6ecxooGtUuwEuOCVvsugd2vXp0ZGlFAHDL3bOA3zfHzSmqTEsCgNsjcBXwO5e4T5Hq0poA4OYFoWsg1RWNWhTgJZ8ImxdcUdFuo5YFADcvmAZcY0olRaPWBQD313wZcJ0n3Fa6UUcC/JfvAdda4TagjjYS4HWOcF/7fK/5i5FODmvcDzC0eveOsO3xt4xwRVECvJ1t3MMmvtd+AN5HuH62SIDunOC/tLxgREUjCdCf0HnBKFYUJcBm2SNsXnCZqD3RIgE2zzZuidi3PVPcxLLISAD/fMYtDvm0qdht6BIgLIf4zwuWOHmKigQIzy5hhbSiKocSYFi2cFVA3zZ+ytjGztQogMVS7Vf85gVPFLLVrEYBrGbcvlvRJzbNfJ0aBbDc1++7Fd28bFyjAOdRe8g/PlvOfhm18d/UKMCKMjZqHNM/L1hiXCmsUYBn3ILMZ+zX6N/jVgi72mr6KFqtArzwiJtsneE+li3oezLJdNGodgHGgOm3AQlgz03vKCWMBLDnrneUEkYC2CMBGkcCNI4EaBwJ0DgSYEMecE/mbkLIA59NCnCzplElEbqfLvTJXwlQGEN2z+zjv4GzKQFK/xewZPiCTumS6xOgg4cI9xiyZ08CFIIESBwJYI8E6EACJI4EsEcCdCABEkcC2CMBOpAAiSMB7JEAHUiAxJEA9kiADiRA4kgAeyRABxIgcSSAPRKgAwmQOBLAHgnQgQRIHAlgjwToQAIkjgSwRwJ0IAESRwLYYyrA7zWNKgUJkDgSwB4J0IEESBwJYE8zAqxwr0T7webv2Ivxbv2PHtc7xb1qNucDpc0I8DHTPcXIB/yPi5MAHcT4KM+dXH3ThADzXDcUMSHHxEmADr5kuqcYOSJfvzQjwIKCz8/7X3bof8O3BAjkDvtXuPcl5HBICeDB9yx3FpZj8vdHcwKsKOCsnDeyhzvNSwJkYEp5hypfY9MXTQrwjDtJo5ScYNcPzQrwTBmHOx1g+y7BpgV4xJ21Z5Ut8hV8JMAaLpPf5fqcdbRLAmTE4lj1wwHtlQCRyV0l3MHvnF8JkIGcVcLc1T4JsCE5qoQW1T4JsCGpq4RW1b5iBbhe0yhLUlYJS7xfCfAGKaqE3wq4LwngQcxTta2rfRIggDlxqoQlVPskQCAxqoQlVPskwACG7CUspdonAQYQWiUsqdonAQYSUiUsqdonASLgUyUsrdonASKwwj2y1ZcSq30SIBKbVAlLK29LgMh0VQlLrfZJgMi89aRxydU+CRCZOe5g6JfsMo6TwiVARJbABe7r3pgmfRJASAAhAQQSQCABmsdUgKs1jRL5uO0dpYSRAPZMekcpYS7WNErk47R3lBLmx5pGiXyYvi1lDFumaua6f4jS5w77jmiRBa/XM8zyjnHX0sfIkrjPPQzOAeNdTRsbUzbb2ZQ9W7i9dBNghltyjUHrny4r3JtHJ//0b9RH4P8GSxsCzEN/51YAAAAASUVORK5CYII=";
+exports.iconStart1 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAESElEQVR4nO2cLUxcQRSFv4QgEBiSKgQCh6pCouvQlbVVdaRuTFUNoqaqEkktCoVD4HBITBMMosmaVsxu+kL3l3lv7p13z5ccyc68OSf3sLtvHwghhBBCjJM/hRKNowAERwEIjgIQHAUgOApAcBSA4CgAwVEAgqMABEcBCI4CEBwFIDgKQHAUgOAoAMFRAIKjAARHAQiOAhAcBSA4CkBwFIDgKADBUQCCowAERwEIjgIQHAUgOApAcBSA4CgAzkmUm9SqUvHpjYSEvRky35iEvSky35iEvTky35iEvUky35iEvVky35iEvWky35iEvXky35iEvYky35iEvZky35iEvaky35iEvbky35iEvcky35iEvdky35iEveky35iEzA9PQuaHJyHzm2e78O8T7Zhfeq2j4i1wDvyi/GAT/s1P5Gs9J197SN4An4A7hjlgz+a/fM078lm8KXxt92wDp8BPYEL9g/ZoflcT8tmcMrKK6I54TwfueS/NV8SyEe/54D3uoZmK2GTEt2KA5dov5bYiXjvivRthsea6Mq+Ivka8V0NqrlWqahUx1IjfRGeF15DWWCMVrnG2xhpDaLCKqDHiV+ka+ADs9nA9ack6qYfX3yXv9XrJOkOruCIsRvxLPZANOXztRSwhzVkvDbDO4fR1H+asV0trV4SHEf8M/ABOVm22B1Jn3VRhvRPytT1jc7YLK8LTiN/Z/FyLSNT/Vm8HZxVhtYnZiD8oOc3GOcC+Iqou9gx8p86Ib40T8tnUrogqi1wB76k/4ltkh3xWVzQegHvgM7Df6/HEYp98hvc0EoAn8hg7HuAwonNMPtsnnAVggkZ8TboV0cfb9aIRf4ZGvCX7ZA9KKmLjEf8NjXiPHJO92bQiFICRUCUAqgBfVK+AedI/gXVx80/goorQ28BhcPs2cFlF6IOgMpr7IGiRVBHrM5qPguep5vf9rWF1v0DVxbrS18EBvw5epGv6u+fPOx7uGXQXgJnGXBHWt4Q1EYCuhrwptBYebgptNgBd3dBORcxG/A325zaaAMz0G7gA3gFbaxpSgy3yni7Ie7Q+p9EGoKtH4AtwtNqfwTia7uER+/MIF4CuboCPwN5Su/phb7pWKyM+RABmGqoiWh7xoQLQ1SPwlbKKOJq+RssjPmwAurpl/YqYjfhbB/tWAHrWBLjk/9/HzX4XeYnd7yIVgMqa/T7O+neR1jLfgKQASIYy34CkAEiGcvGACKmu5j5DKPJboQha9BZ4Lh4eEiX1o+LnCKoi2tMgTxJVRfjWRiO+FFWEH5k/TVwVUV/mD4ueh4cHTY5ZVUd8KaqI/mQ+4ktRRWwulyO+FFXEcjU14ktRRfxT8yO+lIgVMcoRX8rYP2gKNeJLGVNFhB/xpbRYERrxA+C9IjTiK+KpIjTijbGoCI14hwxdERrxDdFnRWjEN85rKkIjfoSsqgiN+EB0K0IjXgghhBDh+Avri3imoU6g/AAAAABJRU5ErkJggg==";
+exports.iconSetting = "data:image/png;base64,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";
 exports.r18SiteList = [
     "www.dierbanzhu1.com",
     "www.banzhuer.org",
@@ -13355,6 +13287,216 @@ const resetStat = () => {
     return saveData();
 };
 exports.resetStat = resetStat;
+
+
+/***/ }),
+
+/***/ "./src/ui/button.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.vm = exports.el = void 0;
+const createEl_1 = __webpack_require__("./src/lib/createEl.ts");
+const setting_1 = __webpack_require__("./src/setting.ts");
+const routers_1 = __webpack_require__("./src/routers.ts");
+const log_1 = __webpack_require__("./src/log.ts");
+__webpack_require__("./src/ui/injectVue.ts");
+const buttonDivStyle = `.button-div {
+    position: fixed;
+    top: 15%;
+    right: 5%;
+    z-index: 5000;
+}
+
+.button-div button {
+    border-style: none;
+    text-align: center;
+    vertical-align: baseline;
+    background-color: rgba(128, 128, 128, 0.2);
+    padding: 3px;
+    border-radius: 12px;
+    min-width: auto;
+    min-height: auto;
+}
+
+.button-div img.start {
+    height: 2em;
+}
+.button-div img.setting {
+    height: 1em;
+}`;
+(0, createEl_1.createStyle)(buttonDivStyle, "button-div-style");
+exports.el = (0, createEl_1.createEl)(`<div class="button-div">
+<button class="start">
+    <img class="start" v-bind:src="imgStart" v-on:click="startButtonClick">
+</button>
+<button class="setting">
+    <img class="setting" v-bind:src="imgSetting" v-on:click="settingButtonClick">
+</button>
+</div>`);
+async function run() {
+    const ruleClass = await (0, routers_1.getRule)();
+    await ruleClass.run();
+}
+exports.vm = Vue.createApp({
+    data() {
+        return {
+            imgStart: setting_1.iconStart0,
+            imgSetting: setting_1.iconSetting,
+        };
+    },
+    methods: {
+        startButtonClick() {
+            if (window.downloading) {
+                alert("正在下载中，请耐心等待……");
+                return;
+            }
+            const self = this;
+            self["imgStart"] = setting_1.iconStart1;
+            run()
+                .then(() => {
+                self["imgStart"] = setting_1.iconStart0;
+            })
+                .catch((error) => log_1.log.error(error));
+        },
+        settingButtonClick() { },
+    },
+}).mount(exports.el);
+
+
+/***/ }),
+
+/***/ "./src/ui/injectVue.ts":
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+unsafeWindow.Vue = Vue;
+
+
+/***/ }),
+
+/***/ "./src/ui/progress.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.vm = exports.el = void 0;
+const createEl_1 = __webpack_require__("./src/lib/createEl.ts");
+__webpack_require__("./src/ui/injectVue.ts");
+const progressStyle = `#nd-progress {
+    position: fixed;
+    bottom: 8%;
+    right: 3%;
+    z-index: 2147483647;
+    border-style: none;
+    text-align: center;
+    vertical-align: baseline;
+    background-color: rgba(210, 210, 210, 0.2);
+    padding: 6px;
+    border-radius: 12px;
+}
+#chapter-progress{
+    --color:green;
+    --position:0%;
+    width:200px;
+    height:10px;
+    border-radius:30px;
+    background-color:#ccc;
+    background-image:radial-gradient(closest-side circle at var(--position),var(--color),var(--color) 100%,transparent),linear-gradient(var(--color),var(--color));
+    background-image:-webkit-radial-gradient(var(--position),circle closest-side,var(--color),var(--color) 100%,transparent),-webkit-linear-gradient(var(--color),var(--color));
+    background-size:100% ,var(--position);
+    background-repeat: no-repeat;
+}
+#zip-progress{
+    --color:yellow;
+    --position:0%;
+    width:200px;
+    height:10px;
+    border-radius:30px;
+    background-color:#ccc;
+    background-image:radial-gradient(closest-side circle at var(--position),var(--color),var(--color) 100%,transparent),linear-gradient(var(--color),var(--color));
+    background-image:-webkit-radial-gradient(var(--position),circle closest-side,var(--color),var(--color) 100%,transparent),-webkit-linear-gradient(var(--color),var(--color));
+    background-size:100% ,var(--position);
+    background-repeat: no-repeat;
+    margin-top: 5px;
+}`;
+(0, createEl_1.createStyle)(progressStyle);
+exports.el = (0, createEl_1.createEl)(`<div><div id="nd-progress" v-if="ntProgressSeen">
+<div v-if="chapterProgressSeen" 
+    id='chapter-progress' 
+    v-bind:style="{'--position': chapterPercent+'%'}" 
+    v-bind:title="chapterProgressTitle"></div>
+<div v-if="zipProgressSeen" 
+    id='zip-progress' 
+    title="ZIP" 
+    v-bind:style="{'--position': zipPercent+'%'}"></div>
+</div></div>`);
+exports.vm = Vue.createApp({
+    data() {
+        return {
+            totalChapterNumber: 0,
+            finishedChapterNumber: 0,
+            zipPercent: 0,
+        };
+    },
+    computed: {
+        chapterPercent() {
+            if (this.totalChapterNumber !== 0 && this.finishedChapterNumber !== 0) {
+                return (this.finishedChapterNumber / this.totalChapterNumber) * 100;
+            }
+            else {
+                return 0;
+            }
+        },
+        chapterProgressSeen() {
+            return this.chapterPercent !== 0;
+        },
+        zipProgressSeen() {
+            return this.zipPercent !== 0;
+        },
+        ntProgressSeen() {
+            if (this.chapterProgressSeen || this.zipProgressSeen) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        },
+        chapterProgressTitle() {
+            return `章节：${this.finishedChapterNumber}/${this.totalChapterNumber}, ${this.chapterPercent}`;
+        },
+    },
+    methods: {
+        reset() {
+            this.totalChapterNumber = 0;
+            this.finishedChapterNumber = 0;
+            this.zipPercent = 0;
+        },
+    },
+}).mount(exports.el);
+
+
+/***/ }),
+
+/***/ "./src/ui/ui.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.init = void 0;
+const button_1 = __webpack_require__("./src/ui/button.ts");
+const progress_1 = __webpack_require__("./src/ui/progress.ts");
+function init() {
+    document.body.appendChild(button_1.el);
+    document.body.appendChild(progress_1.el);
+}
+exports.init = init;
 
 
 /***/ }),
@@ -16230,75 +16372,22 @@ var exports = __webpack_exports__;
 var __webpack_unused_export__;
 
 __webpack_unused_export__ = ({ value: true });
-const routers_1 = __webpack_require__("./src/routers.ts");
 const setting_1 = __webpack_require__("./src/setting.ts");
-const log_1 = __webpack_require__("./src/log.ts");
 const global_1 = __webpack_require__("./src/global.ts");
+const ui_1 = __webpack_require__("./src/ui/ui.ts");
 const detect_1 = __webpack_require__("./src/detect.ts");
+const debug_1 = __webpack_require__("./src/debug.ts");
+const log_1 = __webpack_require__("./src/log.ts");
 function printEnvironments() {
     log_1.log.info("[Init]开始载入小说下载器……");
     Object.entries(detect_1.environments).forEach((kv) => log_1.log.info("[Init]" + kv.join("：")));
 }
-async function run() {
-    const ruleClass = await (0, routers_1.getRule)();
-    await ruleClass.run();
-}
-function addButton() {
-    const buttonStyleText = `position: fixed;
-top: 15%;
-right: 5%;
-z-index: 2147483647;
-border-style: none;
-text-align:center;
-vertical-align:baseline;
-background-color: rgba(128, 128, 128, 0.2);
-padding: 5px;
-border-radius: 12px;
-min-width: auto;
-min-height: auto;`;
-    const button = document.createElement("button");
-    button.id = "novel-downloader";
-    button.style.cssText = buttonStyleText;
-    const img = document.createElement("img");
-    img.src = setting_1.icon0;
-    img.style.cssText = "height: 2em;";
-    button.onclick = function () {
-        if (window.downloading) {
-            alert("正在下载中，请耐心等待……");
-        }
-        else {
-            img.src = setting_1.icon1;
-            run()
-                .then(() => {
-                img.src = setting_1.icon0;
-            })
-                .catch((error) => log_1.log.error(error));
-        }
-    };
-    button.appendChild(img);
-    document.body.appendChild(button);
-}
-async function debug() {
-    const rule = await (0, routers_1.getRule)();
-    const book = await rule.bookParse();
-    unsafeWindow.rule = rule;
-    unsafeWindow.book = book;
-    unsafeWindow.saveAs = saveAs;
-    const { parse, fetchAndParse, gfetchAndParse } = await Promise.resolve().then(() => __webpack_require__("./src/rules/lib/readability.ts"));
-    const readability = {
-        parse: parse,
-        fetchAndParse: fetchAndParse,
-        gfetchAndParse: gfetchAndParse,
-    };
-    unsafeWindow.readability = readability;
-    return;
-}
 function main() {
     printEnvironments();
     (0, global_1.init)();
-    addButton();
+    (0, ui_1.init)();
     if (setting_1.enaleDebug) {
-        setTimeout(debug, 3000);
+        setTimeout(debug_1.debug, 3000);
     }
 }
 if (document.readyState === "loading") {
