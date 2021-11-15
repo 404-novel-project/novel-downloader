@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.4.2.287
+// @version        4.4.3.289
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -2705,6 +2705,54 @@ ___CSS_LOADER_EXPORT___.push([module.id, "img {\n  max-width: 100%;\n  max-heigh
 
 /***/ }),
 
+/***/ "./src/ui/ChapterList.css":
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/css-loader/dist/runtime/noSourceMaps.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
+// Imports
+
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, ".section {\n  margin-top: 1.5em;\n  display: grid;\n  grid-template-columns: 32% 32% 32%;\n}\n.section > h2:first-child {\n  grid-column-end: span 3;\n  text-align: center;\n}\n.section > .chapter {\n  text-align: center;\n  padding-top: 0.5em;\n  padding-bottom: 0.3em;\n  padding-left: 23px;\n  padding-right: 20px;\n  border: 1px solid #d9d9d9;\n  border-radius: 5px;\n  margin-left: 10px;\n  margin-top: 5px;\n}\n.section a.disabled {\n  pointer-events: none;\n  cursor: default;\n}\n.section a {\n  text-decoration: none;\n}\ndiv.chapter.good {\n  background: #41b883;\n}\ndiv.chapter.bad {\n  background: #ff9900;\n}\ndiv.chapter.bad a,\ndiv.chapter.good a {\n  color: white;\n}\ndiv.chapter-list-loading {\n  padding-top: 5em;\n  padding-bottom: 5em;\n  text-align: center;\n}\ndiv.chapter-list {\n  max-height: 320px;\n  overflow-y: scroll;\n}\n", ""]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
+
+/***/ }),
+
+/***/ "./src/ui/FilterTab.css":
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/css-loader/dist/runtime/noSourceMaps.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
+// Imports
+
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, ".filter-setting {\n  padding-top: 0.4em;\n  padding-bottom: 0.8em;\n  text-align: center;\n}\n.filter-setter {\n  margin-top: 2em;\n}\n.filter-description {\n  font-size: larger;\n  color: cornflowerblue;\n}\n", ""]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
+
+/***/ }),
+
 /***/ "./src/ui/button.css":
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
@@ -2771,6 +2819,30 @@ __webpack_require__.r(__webpack_exports__);
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
 ___CSS_LOADER_EXPORT___.push([module.id, "#nd-progress {\n  position: fixed;\n  bottom: 8%;\n  right: 3%;\n  z-index: 2147483647;\n  border-style: none;\n  text-align: center;\n  vertical-align: baseline;\n  background-color: rgba(210, 210, 210, 0.2);\n  padding: 6px;\n  border-radius: 12px;\n}\n#chapter-progress {\n  --color: green;\n  --position: 0%;\n  width: 200px;\n  height: 10px;\n  border-radius: 30px;\n  background-color: #ccc;\n  background-image: radial-gradient(\n      closest-side circle at var(--position),\n      var(--color),\n      var(--color) 100%,\n      transparent\n    ),\n    linear-gradient(var(--color), var(--color));\n  background-image: -webkit-radial-gradient(\n      var(--position),\n      circle closest-side,\n      var(--color),\n      var(--color) 100%,\n      transparent\n    ),\n    -webkit-linear-gradient(var(--color), var(--color));\n  background-size: 100%, var(--position);\n  background-repeat: no-repeat;\n}\n#zip-progress {\n  --color: yellow;\n  --position: 0%;\n  width: 200px;\n  height: 10px;\n  border-radius: 30px;\n  background-color: #ccc;\n  background-image: radial-gradient(\n      closest-side circle at var(--position),\n      var(--color),\n      var(--color) 100%,\n      transparent\n    ),\n    linear-gradient(var(--color), var(--color));\n  background-image: -webkit-radial-gradient(\n      var(--position),\n      circle closest-side,\n      var(--color),\n      var(--color) 100%,\n      transparent\n    ),\n    -webkit-linear-gradient(var(--color), var(--color));\n  background-size: 100%, var(--position);\n  background-repeat: no-repeat;\n  margin-top: 5px;\n}\n", ""]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
+
+/***/ }),
+
+/***/ "./src/ui/setting.css":
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/css-loader/dist/runtime/noSourceMaps.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
+// Imports
+
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, ".nd-setting-body * {\n  position: static;\n  opacity: 1;\n}\n.nd-setting-body {\n  background: #e0e0e0;\n  padding: 1em;\n  border-top-right-radius: 3px;\n}\n.nd-setting-footer {\n  background: #e0e0e0;\n  padding-bottom: 0.7em;\n  text-align: center;\n  border-bottom-left-radius: 3px;\n  border-bottom-right-radius: 3px;\n}\n.tab-button {\n  padding: 6px 10px;\n  border-top-left-radius: 3px;\n  border-top-right-radius: 3px;\n  border: 1px solid #ccc;\n  cursor: pointer;\n  background: #f0f0f0;\n  margin-bottom: -1px;\n  margin-right: -1px;\n}\n.tab-button:hover {\n  background: #e0e0e0;\n}\n.tab-button.active {\n  background: #e0e0e0;\n}\n.nd-setting-body hr {\n  margin-top: 1.5em;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -2922,7 +2994,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 // Module
-var code = "<!DOCTYPE html> <html> <head> <meta charset=\"UTF-8\"/> <meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"/> <meta name=\"referrer\" content=\"same-origin\"/> <meta name=\"generator\" content=\"https://github.com/yingziwu/novel-downloader\"/> <meta name=\"date-creation\" content=\"{{ creationDate }}\"/> <link href=\"style.css\" rel=\"stylesheet\"/> <title>{{ bookname }}</title> <style></style> </head> <body> <div class=\"main\"> <h1>{{ bookname }}</h1> <h3 class=\"author\">{{ author }}</h3> <div class=\"info\"> {% if cover -%} <img class=\"cover\" data-src-address=\"{{ cover.name }}\"/> {%- endif %} {% if introductionHTML -%} <div> <h3>简介</h3> <div class=\"introduction\">{{ introductionHTML }}</div> </div> {%- endif %} </div> <div class=\"bookurl\"> <a href=\"{{ bookUrl }}\">打开原始网站</a> </div> <hr/> {% if hasSections -%} {% for sectionName, section in sectionsObj -%} <div id=\"section{{ loop.index }}\" class=\"section\"> <h2 class=\"section-label\">{{ sectionName }}</h2> {% for chapter in section -%} <div class=\"chapter\"> {% if not (chapter.contentHTML or chapter.status === Status.saved) -%} <a class=\"disabled\" href=\"{{ chapter.chapterHtmlFileName }}\">{{ chapter.chapterName }}</a> {%- else -%} <a href=\"{{ chapter.chapterHtmlFileName }}\">{{ chapter.chapterName }}</a> {%- endif %} </div> {%- endfor %} </div> {%- endfor %} {%- else -%} <div id=\"section0\" class=\"section\"> {% for chapter in sectionsObj[\"default114514\"] -%} <div class=\"chapter\"> {% if not (chapter.contentHTML or chapter.status === Status.saved) -%} <a class=\"disabled\" href=\"{{ chapter.chapterHtmlFileName }}\">{{ chapter.chapterName }}</a> {%- else -%} <a href=\"{{ chapter.chapterHtmlFileName }}\">{{ chapter.chapterName }}</a> {%- endif %} </div> {%- endfor %} </div> {%- endif %} </div> </body> </html>";
+var code = "<!DOCTYPE html> <html> <head> <meta charset=\"UTF-8\"/> <meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"/> <meta name=\"referrer\" content=\"same-origin\"/> <meta name=\"generator\" content=\"https://github.com/yingziwu/novel-downloader\"/> <meta name=\"date-creation\" content=\"{{ creationDate }}\"/> <link href=\"style.css\" rel=\"stylesheet\"/> <title>{{ bookname }}</title> <style></style> </head> <body> <div class=\"main\"> <h1>{{ bookname }}</h1> <h3 class=\"author\">{{ author }}</h3> <div class=\"info\"> {% if cover -%} <img class=\"cover\" data-src-address=\"{{ cover.name }}\"/> {%- endif %} {% if introductionHTML -%} <div> <h3>简介</h3> <div class=\"introduction\">{{ introductionHTML }}</div> </div> {%- endif %} </div> <div class=\"bookurl\"> <a href=\"{{ bookUrl }}\">打开原始网站</a> </div> <hr/> {% for sectionObj in sectionsObj -%} <div id=\"section{{ sectionObj.sectionNumber }}\" class=\"section\"> {% if sectionObj.sectionName %} <h2 class=\"section-label\">{{ sectionObj.sectionName }}</h2> {% endif %} {% for chapter in sectionObj.chpaters -%} <div class=\"chapter\"> {% if not (chapter.contentHTML or chapter.status === Status.saved) -%} <a class=\"disabled\" href=\"{{ chapter.chapterHtmlFileName }}\">{{ chapter.chapterName }}</a> {%- else -%} <a href=\"{{ chapter.chapterHtmlFileName }}\">{{ chapter.chapterName }}</a> {%- endif %} </div> {%- endfor %} </div> {%- endfor %} </div> </body> </html>";
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (code);
 
@@ -2938,6 +3010,36 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 // Module
 var code = "<!DOCTYPE html> <html> <head> <meta charset=\"UTF-8\"/> <meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"/> <meta name=\"referrer\" content=\"same-origin\"/> <meta name=\"generator\" content=\"https://github.com/yingziwu/novel-downloader\"/> <link href=\"style.css\" rel=\"stylesheet\"/> <title>{{ sectionName }}</title> </head> <body> <div class=\"main\"><h1>{{ sectionName }}</h1></div> </body> </html> ";
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (code);
+
+/***/ }),
+
+/***/ "./src/ui/ChapterList.html":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+// Module
+var code = "<div> <div v-if=\"chapter-list-loading\"> <div class=\"loading\"><h2>正在载入章节列表中，请耐心等待……</h2></div> </div> <div class=\"chapter-list\" v-else> <div v-bind:key=\"sectionObj.sectionNumber\" class=\"section\" v-for=\"sectionObj in sectionsObj\"> <h2 class=\"section-label\" v-if=\"sectionObj.sectionName\"> {{ sectionObj.sectionName }} </h2> <div v-show=\"isSeen(chapter)\" v-bind:key=\"chapter.chapterNumber\" class=\"chapter\" v-for=\"chapter in sectionObj.chpaters\" v-bind:class=\"{\n              good: this.filter(chapter),\n              bad: !this.filter(chapter),\n            }\" v-bind:title=\"chapter.chapterNumber\"> <a v-bind:href=\"chapter.chapterUrl\" v-bind:class=\"{\n                disabled: this.isDisabled(chapter),\n              }\" target=\"_blank\" rel=\"noopener noreferrer\">{{ chapter.chapterName }}</a> </div> </div> </div> </div> ";
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (code);
+
+/***/ }),
+
+/***/ "./src/ui/FilterTab.html":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+// Module
+var code = "<div> <div class=\"filter-setting\"> <div v-if=\"filterType !== 'null'\"> <p>请输入过滤的条件：<input type=\"text\" v-model=\"arg\"/></p> <input type=\"checkbox\" id=\"hiddenBad\" v-model=\"hiddenBad\"/> <label for=\"hiddenBad\">只显示符合条件章节</label> </div> <div class=\"filter-setter\"> <div> <span>当前过滤方法：</span> <select v-model=\"filterType\"> <option v-for=\"filterOption in filterOptionList\" v-bind:value=\"filterOption[0]\"> {{ filterOption[1][\"abbreviation\"] }} </option> </select> </div> <div class=\"filter-description\" v-html=\"filterDescription\"></div> </div> </div> <chapter-list/> </div> ";
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (code);
 
@@ -2997,7 +3099,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 // Module
-var code = "<div> <nd-dialog dialog-title=\"设置\" v-bind:status=\"openStatus\" v-on:dialogclose=\"closeSetting\" v-if=\"openStatus === 'true'\"> <div class=\"nd-setting\"> <div class=\"nd-setting-body\"> <div> <input type=\"checkbox\" id=\"debug\" v-model=\"setting.enableDebug\"/> <label for=\"debug\">启用调式模式。（输出更详细日志）</label> </div> <hr/> <div> <h3>自定义保存参数</h3> <ul> <li v-for=\"item of saveOptions\"> <input type=\"radio\" v-bind:id=\"item.key\" v-bind:value=\"item.key\" v-model=\"setting.chooseSaveOption\"/> <label v-bind:for=\"item.key\">{{ item.value }}</label> </li> </ul> </div> </div> <div class=\"nd-setting-footer\" style=\"text-align:center\"> <button v-on:click=\"closeAndSaveSetting\">Save</button> <button v-on:click=\"closeSetting\">Cancel</button> </div> </div> </nd-dialog> </div> ";
+var code = "<div> <dialog-ui dialog-title=\"设置\" v-bind:status=\"openStatus\" v-on:dialogclose=\"closeSetting\" v-if=\"openStatus === 'true'\"> <div class=\"nd-setting\"> <div class=\"nd-setting-tab\"> <button v-bind:class=\"['tab-button', { active: currentTab === 'tab-1'}]\" v-on:click=\"currentTab = 'tab-1'\"> 基本设置 </button> <button v-bind:class=\"['tab-button', { active: currentTab === 'tab-2'}]\" v-on:click=\"currentTab = 'tab-2'\"> 自定义筛选条件 </button> </div> <div class=\"nd-setting-body\"> <div id=\"nd-setting-tab-1\" class=\"tab-page\" v-if=\"currentTab === 'tab-1'\"> <div> <input type=\"checkbox\" id=\"debug\" v-model=\"setting.enableDebug\"/> <label for=\"debug\">启用调式模式。（输出更详细日志）</label> </div> <hr/> <div> <h3>自定义保存参数</h3> <ul> <li v-for=\"item of saveOptions\"> <input type=\"radio\" v-bind:id=\"item.key\" v-bind:value=\"item.key\" v-model=\"setting.chooseSaveOption\"/> <label v-bind:for=\"item.key\">{{ item.value }}</label> </li> </ul> </div> </div> <div id=\"nd-setting-tab-2\" class=\"tab-page\" v-if=\"currentTab === 'tab-2'\"> <filter-tab v-on:filterupdate=\"saveFilter\"/> </div> </div> <div class=\"nd-setting-footer\"> <button v-on:click=\"closeAndSaveSetting\">Save</button> <button v-on:click=\"closeSetting\">Cancel</button> </div> </div> </dialog-ui> </div> ";
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (code);
 
@@ -4224,7 +4326,7 @@ exports.ggetHtmlDOM = ggetHtmlDOM;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.localStorageExpired = exports.calculateMd5 = exports.storageAvailable = exports.sandboxed = exports.sleep = exports.concurrencyRun = exports.rm = void 0;
+exports.deepcopy = exports.localStorageExpired = exports.calculateMd5 = exports.storageAvailable = exports.sandboxed = exports.sleep = exports.concurrencyRun = exports.rm = void 0;
 function rm(selector, all = false, dom) {
     if (all) {
         let rs = dom.querySelectorAll(selector);
@@ -4368,6 +4470,10 @@ class localStorageExpired {
     }
 }
 exports.localStorageExpired = localStorageExpired;
+function deepcopy(obj) {
+    return JSON.parse(JSON.stringify(obj));
+}
+exports.deepcopy = deepcopy;
 
 
 /***/ }),
@@ -12988,7 +13094,7 @@ exports.zongheng = zongheng;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getSaveBookObj = exports.saveOptionsValidate = exports.saveBook = void 0;
+exports.getSaveBookObj = exports.saveOptionsValidate = exports.getSectionsObj = exports.saveBook = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const zip_1 = __webpack_require__("./src/lib/zip.ts");
 const setting_1 = __webpack_require__("./src/setting.ts");
@@ -13088,15 +13194,7 @@ class saveBook {
         log_1.log.debug("[save]对 chapters 排序");
         this.chapters.sort(this.chapterSort);
         const self = this;
-        const sectionsObj = getSectionsObj();
-        let hasSections;
-        if (Object.keys(sectionsObj).length !== 1 ||
-            Object.keys(sectionsObj)[0] !== "default114514") {
-            hasSections = true;
-        }
-        else {
-            hasSections = false;
-        }
+        const sectionsObj = getSectionsObj(self.chapters);
         modifyTocStyleText();
         const indexHtmlText = template_1.index.render({
             creationDate: Date.now(),
@@ -13106,36 +13204,12 @@ class saveBook {
             cover: self.book.additionalMetadate.cover,
             introductionHTML: self.book.introductionHTML?.outerHTML,
             bookUrl: self.book.bookUrl,
-            hasSections: hasSections,
-            sectionsObj: sectionsObj,
+            sectionsObj: Object.values(sectionsObj),
             Status: main_1.Status,
         });
         this.savedZip.file("index.html", new Blob([indexHtmlText.replaceAll("data-src-address", "src")], {
             type: "text/html; charset=UTF-8",
         }));
-        function getSectionsObj() {
-            const _sectionsObj = {};
-            for (const chapter of self.chapters) {
-                if (chapter.sectionName) {
-                    if (_sectionsObj[chapter.sectionName]) {
-                        _sectionsObj[chapter.sectionName].push(chapter);
-                    }
-                    else {
-                        _sectionsObj[chapter.sectionName] = [chapter];
-                    }
-                }
-                else {
-                    if (_sectionsObj["default114514"]) {
-                        _sectionsObj["default114514"].push(chapter);
-                    }
-                    else {
-                        _sectionsObj["default114514"] = [chapter];
-                        chapter.chapterName;
-                    }
-                }
-            }
-            return _sectionsObj;
-        }
         function modifyTocStyleText() {
             if (self.book.additionalMetadate.cover) {
                 self.tocStyleText = `${self.tocStyleText}
@@ -13278,6 +13352,31 @@ class saveBook {
     }
 }
 exports.saveBook = saveBook;
+function getSectionsObj(chapters) {
+    const _sectionsObj = {};
+    for (const chapter of chapters) {
+        let sectionNumber = null;
+        let sectionName = null;
+        if (chapter.sectionNumber && chapter.sectionName) {
+            sectionNumber = chapter.sectionNumber;
+        }
+        else {
+            sectionNumber = -99999999;
+        }
+        if (_sectionsObj[sectionNumber]) {
+            _sectionsObj[sectionNumber]["chpaters"].push(chapter);
+        }
+        else {
+            _sectionsObj[sectionNumber] = {
+                sectionName: chapter.sectionName,
+                sectionNumber: chapter.sectionNumber,
+                chpaters: [chapter],
+            };
+        }
+    }
+    return _sectionsObj;
+}
+exports.getSectionsObj = getSectionsObj;
 function saveOptionsValidate(data) {
     const keyNamesS = ["mainStyleText", "tocStyleText"];
     const keyNamesF = [
@@ -13461,6 +13560,215 @@ exports.resetStat = resetStat;
 
 /***/ }),
 
+/***/ "./src/ui/ChapterList.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+__webpack_require__("./src/ui/injectVue.ts");
+const routers_1 = __webpack_require__("./src/routers.ts");
+const main_1 = __webpack_require__("./src/main.ts");
+const save_1 = __webpack_require__("./src/save/save.ts");
+const ChapterList_html_1 = __webpack_require__("./src/ui/ChapterList.html");
+const ChapterList_css_1 = __webpack_require__("./src/ui/ChapterList.css");
+const createEl_1 = __webpack_require__("./src/lib/createEl.ts");
+const FilterTab_1 = __webpack_require__("./src/ui/FilterTab.ts");
+async function getSections() {
+    if (window._sections) {
+        return window._sections;
+    }
+    else {
+        const rule = await (0, routers_1.getRule)();
+        const book = await rule.bookParse();
+        window._sections = (0, save_1.getSectionsObj)(book.chapters);
+        return window._sections;
+    }
+}
+(0, createEl_1.createStyle)(ChapterList_css_1.default);
+exports["default"] = Vue.defineComponent({
+    name: "ChapterList",
+    inject: ["getHiddenBad", "getFilterOption"],
+    data() {
+        return {
+            Status: main_1.Status,
+            sectionsObj: Vue.reactive({}),
+            loading: true,
+            filterObj: Vue.reactive([]),
+            hiddenBad: false,
+        };
+    },
+    methods: {
+        filter(chapter) {
+            if (chapter.status == this.Status.aborted) {
+                return false;
+            }
+            if (this.filterObj && this.filterObj.length === 2) {
+                const filterFunction = (0, FilterTab_1.getFilterFunction)(this.filterObj[0], this.filterObj[1]);
+                if (typeof filterFunction === "function") {
+                    return filterFunction(chapter);
+                }
+                else {
+                    return true;
+                }
+            }
+            else {
+                return true;
+            }
+        },
+        isDisabled(chapter) {
+            if (!chapter.chapterUrl) {
+                return true;
+            }
+            return false;
+        },
+        isSeen(chapter) {
+            if (this.hiddenBad && !this.filter(chapter)) {
+                return false;
+            }
+            else {
+                return true;
+            }
+        },
+        updateInject() {
+            this.updateHiddenBad();
+            this.updateFilterObj();
+        },
+        updateHiddenBad() {
+            this.hiddenBad = this.getHiddenBad();
+        },
+        updateFilterObj() {
+            this.filterObj = this.getFilterOption();
+        },
+    },
+    async mounted() {
+        this.sectionsObj = await getSections();
+        this.loading = false;
+        setInterval(() => {
+            this.updateInject();
+        }, 300);
+    },
+    template: ChapterList_html_1.default,
+});
+
+
+/***/ }),
+
+/***/ "./src/ui/FilterTab.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.filterSetting = exports.getFilterFunction = exports.filterOptionDict = void 0;
+__webpack_require__("./src/ui/injectVue.ts");
+const FilterTab_html_1 = __webpack_require__("./src/ui/FilterTab.html");
+const FilterTab_css_1 = __webpack_require__("./src/ui/FilterTab.css");
+const ChapterList_1 = __webpack_require__("./src/ui/ChapterList.ts");
+const createEl_1 = __webpack_require__("./src/lib/createEl.ts");
+exports.filterOptionDict = {
+    null: {
+        raw: (arg) => {
+            return function (chapter) {
+                return true;
+            };
+        },
+        functionBody: "return function(chapter) { return true }",
+        validator: (arg) => true,
+        description: "<p>不应用任何过滤器（默认）</p>",
+        abbreviation: "无",
+    },
+    baseOnString: {
+        raw: (arg) => {
+            return function (chapter) {
+                return (chapter && chapter.chapterName?.includes(arg)) || false;
+            };
+        },
+        functionBody: "return function (chapter) { return (chapter && chapter.chapterName?.includes(arg)) || false; }",
+        validator: (arg) => {
+            if (typeof arg === "string") {
+                return true;
+            }
+            else {
+                return false;
+            }
+        },
+        description: "<p>过滤出所有包含过滤条件字符的章节</p>",
+        abbreviation: "文本",
+    },
+};
+function getFilterFunction(arg, functionBody) {
+    const filterFunctionFactor = new Function("arg", functionBody);
+    const filterFunction = filterFunctionFactor(arg);
+    if (typeof filterFunction === "function") {
+        return filterFunction;
+    }
+    else {
+        return undefined;
+    }
+}
+exports.getFilterFunction = getFilterFunction;
+exports.filterSetting = {};
+exports["default"] = Vue.defineComponent({
+    provide() {
+        return {
+            getFilterOption: this.getFilterOption,
+            getHiddenBad: this.getHiddenBad,
+        };
+    },
+    components: { "chapter-list": ChapterList_1.default },
+    emits: ["filterupdate"],
+    data() {
+        return {
+            arg: "",
+            hiddenBad: false,
+            filterOptionDict: exports.filterOptionDict,
+            filterOptionList: Object.entries(exports.filterOptionDict),
+            filterType: "null",
+        };
+    },
+    computed: {
+        functionBody() {
+            return this.filterOptionDict[this.filterType]["functionBody"];
+        },
+        filterObj() {
+            return [this.arg, this.functionBody];
+        },
+        filterDescription() {
+            return this.filterOptionDict[this.filterType]["description"];
+        },
+    },
+    methods: {
+        getFilterOption() {
+            return this.filterObj;
+        },
+        getHiddenBad() {
+            return this.hiddenBad;
+        },
+    },
+    mounted() {
+        for (const setting of Object.entries(exports.filterSetting)) {
+            this[setting[0]] = setting[1];
+        }
+    },
+    beforeUnmount() {
+        exports.filterSetting.arg = this.arg.toString();
+        exports.filterSetting.hiddenBad = this.hiddenBad;
+        exports.filterSetting.filterType = this.filterType.toString();
+        this.$emit("filterupdate", this.functionBody, this.arg);
+    },
+    watch: {
+        filterType() {
+            this.arg = "";
+        },
+    },
+    template: FilterTab_html_1.default,
+});
+(0, createEl_1.createStyle)(FilterTab_css_1.default);
+
+
+/***/ }),
+
 /***/ "./src/ui/button.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
@@ -13477,7 +13785,7 @@ const button_css_1 = __webpack_require__("./src/ui/button.css");
 const setting_2 = __webpack_require__("./src/ui/setting.ts");
 __webpack_require__("./src/ui/injectVue.ts");
 (0, createEl_1.createStyle)(button_css_1.default, "button-div-style");
-exports.el = (0, createEl_1.createEl)(button_html_1.default);
+exports.el = (0, createEl_1.createEl)("<div></div>");
 async function run() {
     const ruleClass = await (0, routers_1.getRule)();
     await ruleClass.run();
@@ -13507,6 +13815,7 @@ exports.vm = Vue.createApp({
             setting_2.vm.openSetting();
         },
     },
+    template: button_html_1.default,
 }).mount(exports.el);
 
 
@@ -13577,7 +13886,7 @@ const progress_css_1 = __webpack_require__("./src/ui/progress.css");
 const progress_html_1 = __webpack_require__("./src/ui/progress.html");
 __webpack_require__("./src/ui/injectVue.ts");
 (0, createEl_1.createStyle)(progress_css_1.default);
-exports.el = (0, createEl_1.createEl)(progress_html_1.default);
+exports.el = (0, createEl_1.createEl)(`<div id="progress-bar"></div>`);
 exports.vm = Vue.createApp({
     data() {
         return {
@@ -13620,6 +13929,7 @@ exports.vm = Vue.createApp({
             this.zipPercent = 0;
         },
     },
+    template: progress_html_1.default,
 }).mount(exports.el);
 
 
@@ -13632,12 +13942,19 @@ exports.vm = Vue.createApp({
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.vm = exports.el = void 0;
-const setting_html_1 = __webpack_require__("./src/ui/setting.html");
-const createEl_1 = __webpack_require__("./src/lib/createEl.ts");
-const log_1 = __webpack_require__("./src/log.ts");
 __webpack_require__("./src/ui/injectVue.ts");
-exports.el = (0, createEl_1.createEl)(setting_html_1.default);
+const createEl_1 = __webpack_require__("./src/lib/createEl.ts");
+const misc_1 = __webpack_require__("./src/lib/misc.ts");
+const log_1 = __webpack_require__("./src/log.ts");
+const setting_html_1 = __webpack_require__("./src/ui/setting.html");
+const setting_css_1 = __webpack_require__("./src/ui/setting.css");
+const FilterTab_1 = __webpack_require__("./src/ui/FilterTab.ts");
+const main_1 = __webpack_require__("./src/main.ts");
+(0, createEl_1.createStyle)(setting_css_1.default);
+exports.el = (0, createEl_1.createEl)(`<div id="setting"></div>`);
 exports.vm = Vue.createApp({
+    name: "nd-setting",
+    components: { "filter-tab": FilterTab_1.default },
     data() {
         return {
             openStatus: "false",
@@ -13649,11 +13966,12 @@ exports.vm = Vue.createApp({
             ],
             setting: Vue.reactive({}),
             settingBackup: {},
+            currentTab: "tab-1",
         };
     },
     methods: {
         openSetting() {
-            this.settingBackup = JSON.parse(JSON.stringify(this.setting));
+            this.settingBackup = (0, misc_1.deepcopy)(this.setting);
             if (this.openStatus === "true") {
                 this.openStatus = "false";
                 setTimeout(() => {
@@ -13665,20 +13983,32 @@ exports.vm = Vue.createApp({
             }
         },
         closeSetting(keep) {
+            if (typeof keep === "object" || keep === false) {
+                if (this.settingBackup.filterSetting) {
+                    const sf = this.settingBackup.filterSetting;
+                    FilterTab_1.filterSetting["arg"] = sf.arg;
+                    FilterTab_1.filterSetting["hiddenBad"] = sf.hiddenBad;
+                    FilterTab_1.filterSetting["filterType"] = sf.filterType;
+                }
+                this.setting = (0, misc_1.deepcopy)(this.settingBackup);
+            }
             if (this.openStatus === "true") {
                 this.openStatus = "false";
-            }
-            if (typeof keep === "object" || keep === false) {
-                this.setting = JSON.parse(JSON.stringify(this.settingBackup));
             }
         },
         closeAndSaveSetting() {
             this.closeSetting(true);
-            setConfig(this.setting)
-                .then(() => log_1.log.info("[Init]自定义设置：" + JSON.stringify(this.setting)))
-                .catch((error) => log_1.log.error(error));
+            setTimeout(() => {
+                setConfig((0, misc_1.deepcopy)(this.setting))
+                    .then(() => log_1.log.info("[Init]自定义设置：" + JSON.stringify(this.setting)))
+                    .catch((error) => log_1.log.error(error));
+            }, 20);
+        },
+        saveFilter(...args) {
+            this.setting["filterSetting"] = (0, misc_1.deepcopy)(FilterTab_1.filterSetting);
         },
     },
+    template: setting_html_1.default,
 }).mount(exports.el);
 const saveOptionMap = {
     null: undefined,
@@ -13738,6 +14068,22 @@ async function setConfig(setting) {
     if (setting.chooseSaveOption && setting.chooseSaveOption !== "null") {
         unsafeWindow.saveOptions = saveOptionMap[setting.chooseSaveOption];
     }
+    if (setting.filterSetting &&
+        setting.filterSetting.filterType &&
+        setting.filterSetting.filterType !== "null" &&
+        typeof setting.filterSetting.arg === "string") {
+        const functionBody = FilterTab_1.filterOptionDict[setting.filterSetting.filterType]["functionBody"];
+        const filterFunction = (0, FilterTab_1.getFilterFunction)(setting.filterSetting.arg, functionBody);
+        if (filterFunction) {
+            const chapterFilter = (chapter) => {
+                if (chapter.status == main_1.Status.aborted) {
+                    return false;
+                }
+                return filterFunction(chapter);
+            };
+            unsafeWindow.chapterFilter = chapterFilter;
+        }
+    }
 }
 
 
@@ -13755,7 +14101,7 @@ const button_1 = __webpack_require__("./src/ui/button.ts");
 const progress_1 = __webpack_require__("./src/ui/progress.ts");
 const setting_1 = __webpack_require__("./src/ui/setting.ts");
 function register() {
-    customElements.define("nd-dialog", dialog_1.default);
+    customElements.define("dialog-ui", dialog_1.default);
 }
 function init() {
     register();

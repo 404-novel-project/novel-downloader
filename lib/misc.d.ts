@@ -13,3 +13,4 @@ export declare class localStorageExpired {
     get(key: string): any;
     remove(key: string): void;
 }
+export declare function deepcopy(obj: object): any;

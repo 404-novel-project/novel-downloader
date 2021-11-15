@@ -1,12 +1,13 @@
 import { localStorageExpired } from "./lib/misc";
 import { Book, Chapter } from "./main";
 import { BaseRuleClass } from "./rules";
-import { saveOptions } from "./save/save";
+import { saveOptions, sectionsObj } from "./save/save";
 import { parse, fetchAndParse, gfetchAndParse } from "./rules/lib/readability";
 export interface newWindow extends Window {
     downloading: boolean;
     customStorage: localStorageExpired;
     stopFlag: boolean;
+    _sections: sectionsObj;
 }
 export interface newUnsafeWindow extends unsafeWindow {
     rule: BaseRuleClass;
