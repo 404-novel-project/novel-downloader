@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.4.3.295
+// @version        4.4.3.296
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -3099,7 +3099,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 // Module
-var code = "<div> <dialog-ui dialog-title=\"设置\" v-bind:status=\"openStatus\" v-on:dialogclose=\"closeSetting\" v-if=\"openStatus === 'true'\"> <div class=\"nd-setting\"> <div class=\"nd-setting-tab\"> <button v-bind:class=\"['tab-button', { active: currentTab === 'tab-1'}]\" v-on:click=\"currentTab = 'tab-1'\"> 基本设置 </button> <button v-bind:class=\"['tab-button', { active: currentTab === 'tab-2'}]\" v-on:click=\"currentTab = 'tab-2'\"> 自定义筛选条件 </button> </div> <div class=\"nd-setting-body\"> <div id=\"nd-setting-tab-1\" class=\"tab-page\" v-if=\"currentTab === 'tab-1'\"> <div> <input type=\"checkbox\" id=\"debug\" v-model=\"setting.enableDebug\"/> <label for=\"debug\">启用调式模式。（输出更详细日志）</label> </div> <hr/> <div> <h3>自定义保存参数</h3> <ul> <li v-for=\"item of saveOptions\"> <input type=\"radio\" v-bind:id=\"item.key\" v-bind:value=\"item.key\" v-model=\"setting.chooseSaveOption\"/> <label v-bind:for=\"item.key\">{{ item.value }}</label> </li> </ul> </div> </div> <div id=\"nd-setting-tab-2\" class=\"tab-page\" v-if=\"currentTab === 'tab-2'\"> <filter-tab v-on:filterupdate=\"saveFilter\"/> </div> </div> <div class=\"nd-setting-footer\"> <button v-on:click=\"closeAndSaveSetting\">Save</button> <button v-on:click=\"closeSetting\">Cancel</button> </div> </div> </dialog-ui> </div> ";
+var code = "<div> <dialog-ui dialog-title=\"设置\" v-bind:status=\"openStatus\" v-on:dialogclose=\"closeSetting\" v-if=\"openStatus === 'true'\"> <div class=\"nd-setting\"> <div class=\"nd-setting-tab\"> <button v-bind:class=\"['tab-button', { active: currentTab === 'tab-1'}]\" v-on:click=\"currentTab = 'tab-1'\"> 基本设置 </button> <button v-bind:class=\"['tab-button', { active: currentTab === 'tab-2'}]\" v-on:click=\"currentTab = 'tab-2'\"> 自定义筛选条件 </button> </div> <div class=\"nd-setting-body\"> <div id=\"nd-setting-tab-1\" class=\"tab-page\" v-show=\"currentTab === 'tab-1'\"> <div> <input type=\"checkbox\" id=\"debug\" v-model=\"setting.enableDebug\"/> <label for=\"debug\">启用调式模式。（输出更详细日志）</label> </div> <hr/> <div> <h3>自定义保存参数</h3> <ul> <li v-for=\"item of saveOptions\"> <input type=\"radio\" v-bind:id=\"item.key\" v-bind:value=\"item.key\" v-model=\"setting.chooseSaveOption\"/> <label v-bind:for=\"item.key\">{{ item.value }}</label> </li> </ul> </div> </div> <div id=\"nd-setting-tab-2\" class=\"tab-page\" v-show=\"currentTab === 'tab-2'\"> <filter-tab v-on:filterupdate=\"saveFilter\"/> </div> </div> <div class=\"nd-setting-footer\"> <button v-on:click=\"closeAndSaveSetting\">Save</button> <button v-on:click=\"closeSetting\">Cancel</button> </div> </div> </dialog-ui> </div> ";
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (code);
 
@@ -13660,12 +13660,14 @@ exports["default"] = Vue.defineComponent({
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.filterSetting = exports.getFilterFunction = exports.filterOptionDict = void 0;
+exports.getFilterFunction = exports.filterOptionDict = void 0;
 __webpack_require__("./src/ui/injectVue.ts");
 const FilterTab_html_1 = __webpack_require__("./src/ui/FilterTab.html");
 const FilterTab_css_1 = __webpack_require__("./src/ui/FilterTab.css");
 const ChapterList_1 = __webpack_require__("./src/ui/ChapterList.ts");
 const createEl_1 = __webpack_require__("./src/lib/createEl.ts");
+const setting_1 = __webpack_require__("./src/ui/setting.ts");
+const misc_1 = __webpack_require__("./src/lib/misc.ts");
 exports.filterOptionDict = {
     null: {
         raw: (arg) => {
@@ -13708,7 +13710,6 @@ function getFilterFunction(arg, functionBody) {
     }
 }
 exports.getFilterFunction = getFilterFunction;
-exports.filterSetting = {};
 exports["default"] = Vue.defineComponent({
     provide() {
         return {
@@ -13721,7 +13722,7 @@ exports["default"] = Vue.defineComponent({
     data() {
         return {
             arg: "",
-            hiddenBad: false,
+            hiddenBad: true,
             filterOptionDict: exports.filterOptionDict,
             filterOptionList: Object.entries(exports.filterOptionDict),
             filterType: "null",
@@ -13737,6 +13738,13 @@ exports["default"] = Vue.defineComponent({
         filterDescription() {
             return this.filterOptionDict[this.filterType]["description"];
         },
+        filterSetting() {
+            return {
+                arg: this.arg.toString(),
+                hiddenBad: this.hiddenBad,
+                filterType: this.filterType.toString(),
+            };
+        },
     },
     methods: {
         getFilterOption() {
@@ -13747,19 +13755,19 @@ exports["default"] = Vue.defineComponent({
         },
     },
     mounted() {
-        for (const setting of Object.entries(exports.filterSetting)) {
+        if (!setting_1.vm.setting.filterSetting) {
+            return;
+        }
+        for (const setting of Object.entries((0, misc_1.deepcopy)(setting_1.vm.setting.filterSetting))) {
             this[setting[0]] = setting[1];
         }
     },
-    beforeUnmount() {
-        exports.filterSetting.arg = this.arg.toString();
-        exports.filterSetting.hiddenBad = this.hiddenBad;
-        exports.filterSetting.filterType = this.filterType.toString();
-        this.$emit("filterupdate", this.functionBody, this.arg);
-    },
     watch: {
-        filterType() {
-            this.arg = "";
+        filterSetting: {
+            handler(newVal, oldVal) {
+                this.$emit("filterupdate", this.filterSetting);
+            },
+            deep: true,
         },
     },
     template: FilterTab_html_1.default,
@@ -13983,13 +13991,10 @@ exports.vm = Vue.createApp({
             }
         },
         closeSetting(keep) {
-            if (typeof keep === "object" || keep === false) {
-                if (this.settingBackup.filterSetting) {
-                    const sf = this.settingBackup.filterSetting;
-                    FilterTab_1.filterSetting["arg"] = sf.arg;
-                    FilterTab_1.filterSetting["hiddenBad"] = sf.hiddenBad;
-                    FilterTab_1.filterSetting["filterType"] = sf.filterType;
-                }
+            if (keep === true) {
+                this.settingBackup = (0, misc_1.deepcopy)(this.setting);
+            }
+            else {
                 this.setting = (0, misc_1.deepcopy)(this.settingBackup);
             }
             if (this.openStatus === "true") {
@@ -14004,8 +14009,8 @@ exports.vm = Vue.createApp({
                     .catch((error) => log_1.log.error(error));
             }, 20);
         },
-        saveFilter(...args) {
-            this.setting["filterSetting"] = (0, misc_1.deepcopy)(FilterTab_1.filterSetting);
+        saveFilter(filterSetting) {
+            this.setting["filterSetting"] = (0, misc_1.deepcopy)(filterSetting);
         },
     },
     template: setting_html_1.default,

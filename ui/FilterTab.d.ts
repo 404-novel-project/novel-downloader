@@ -13,12 +13,11 @@ interface filterOptionDict {
 }
 export declare const filterOptionDict: filterOptionDict;
 export declare function getFilterFunction(arg: string, functionBody: string): ((chapter: Chapter) => boolean) | undefined;
-interface filterSetting {
+export interface filterSetting {
     arg?: string;
     hiddenBad?: boolean;
     filterType?: string;
 }
-export declare const filterSetting: filterSetting;
 declare const _default: _vue.DefineComponent<{}, {}, {
     arg: string;
     hiddenBad: boolean;
@@ -29,6 +28,11 @@ declare const _default: _vue.DefineComponent<{}, {}, {
     functionBody(): string;
     filterObj(): string[];
     filterDescription(): string;
+    filterSetting(): {
+        arg: string;
+        hiddenBad: boolean;
+        filterType: string;
+    };
 }, {
     getFilterOption(): string[];
     getHiddenBad(): boolean;
