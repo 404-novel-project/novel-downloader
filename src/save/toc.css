@@ -1,0 +1,56 @@
+img {
+  max-width: 100%;
+  max-height: 15em;
+}
+.introduction {
+  font-size: smaller;
+  max-height: 18em;
+  overflow-y: scroll;
+}
+.introduction p {
+  text-indent: 0;
+}
+.bookurl {
+  text-align: center;
+  font-size: smaller;
+  padding-top: 1em;
+  padding-bottom: 0.5em;
+  margin-top: 0.4em;
+}
+.bookurl > a {
+  color: gray;
+}
+.info h3 {
+  padding-left: 0.5em;
+  margin-top: -1.2em;
+  margin-bottom: 0.5em;
+}
+.section {
+  margin-top: 1.5em;
+  display: grid;
+  grid-template-columns: 30% 30% 30%;
+}
+.section > h2:first-child {
+  grid-column-end: span 3;
+}
+.section > .chapter {
+  padding-bottom: 0.3em;
+  text-align: center;
+}
+.main > h1 {
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+}
+a.disabled {
+  pointer-events: none;
+  cursor: default;
+  color: gray;
+}
+.author::before {
+  content: "作者：";
+}
+.author {
+  text-align: center;
+  margin-top: -3em;
+  margin-bottom: 3em;
+}

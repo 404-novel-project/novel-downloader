@@ -2,7 +2,8 @@ import { Book, Chapter, attachmentClass, Status } from "../main";
 import { fflateZip } from "../lib/zip";
 import { enableCustomSaveOptions, enableDebug } from "../setting";
 import { log, logText } from "../log";
-import { defaultMainStyleText, defaultTocStyleText } from "./style";
+import defaultMainStyleText from "./main.css";
+import defaultTocStyleText from "./toc.css";
 import { section, chapter, index } from "./template";
 import { progressVM, vm as progress } from "../ui/progress";
 export class saveBook {

@@ -1,0 +1,24 @@
+.button-div {
+  position: fixed;
+  top: 15%;
+  right: 5%;
+  z-index: 5000;
+}
+
+.button-div button {
+  border-style: none;
+  text-align: center;
+  vertical-align: baseline;
+  background-color: rgba(128, 128, 128, 0.2);
+  padding: 3px;
+  border-radius: 12px;
+  min-width: auto;
+  min-height: auto;
+}
+
+.button-div img.start {
+  height: 2em;
+}
+.button-div img.setting {
+  height: 1em;
+}

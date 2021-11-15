@@ -38,6 +38,17 @@ module.exports = {
         use: ["ts-loader"],
         exclude: /node_modules/,
       },
+      {
+        test: /\.html$|\.html.j2$/i,
+        loader: "html-loader",
+        options: {
+          sources: false,
+        },
+      },
+      {
+        test: /\.css$/i,
+        use: ["css-loader"],
+      },
     ],
   },
   devServer: {

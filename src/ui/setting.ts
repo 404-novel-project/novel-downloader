@@ -1,4 +1,6 @@
+import settingHtml from "./setting.html";
 import { createEl } from "../lib/createEl";
+import { log } from "../log";
 
 import { saveOptions } from "../save/save";
 import { newUnsafeWindow } from "../global";
@@ -6,34 +8,8 @@ import { newUnsafeWindow } from "../global";
 import type * as _vue from "vue";
 declare const Vue: typeof _vue;
 import "./injectVue";
-import { log } from "../log";
 
-export const el = createEl(`<div>
-<nd-dialog dialog-title="设置" v-bind:status="openStatus" v-on:dialogclose="closeSetting" v-if="openStatus === 'true'">
-<div class="nd-setting">
-    <div class="nd-setting-body">
-        <div>
-            <input type="checkbox" id="debug" v-model="setting.enableDebug" />
-            <label for="debug">启用调式模式。（输出更详细日志）</label>    
-        </div>
-        <hr>
-        <div>
-            <h3>自定义保存参数</h3>
-            <ul>
-            <li v-for="item of saveOptions">
-                <input type="radio" v-bind:id="item.key" v-bind:value="item.key" v-model="setting.chooseSaveOption">
-                <label v-bind:for="item.key">{{ item.value }}</label>
-            </li>
-        </div>
-    </div>
-    <div class="nd-setting-footer" style="text-align: center">
-        <button v-on:click="closeAndSaveSetting">Save</button>
-        <button v-on:click="closeSetting">Cancel</button>
-    </div>
-</div>
-</nd-dialog>
-</div>`);
-
+export const el = createEl(settingHtml);
 export const vm = Vue.createApp({
   data() {
     return {
