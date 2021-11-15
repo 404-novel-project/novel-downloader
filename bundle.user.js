@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.4.1.286
+// @version        4.4.2.287
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -2654,6 +2654,352 @@ module.exports = {
   isProbablyReaderable: isProbablyReaderable
 };
 
+
+/***/ }),
+
+/***/ "./src/save/main.css":
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/css-loader/dist/runtime/noSourceMaps.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
+// Imports
+
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, "body {\n  background-color: #f0f0f2;\n  margin: 0;\n  padding: 0;\n  font-family: -apple-system, system-ui, BlinkMacSystemFont, \"Segoe UI\",\n    \"Open Sans\", \"Helvetica Neue\", Helvetica, Arial, sans-serif;\n}\ndiv.main {\n  width: 900px;\n  margin: 5em auto;\n  padding: 2em;\n  background-color: #fdfdff;\n  border-radius: 0.5em;\n  box-shadow: 2px 3px 7px 2px rgba(0, 0, 0, 0.02);\n}\n@media (max-width: 700px) {\n  div.main {\n    margin: 0 auto;\n    width: auto;\n  }\n}\nh1 {\n  line-height: 130%;\n  text-align: center;\n  font-weight: bold;\n  font-size: xxx-large;\n  margin-top: 3.2em;\n  margin-bottom: 3.3em;\n}\nh2 {\n  line-height: 130%;\n  text-align: center;\n  font-weight: bold;\n  font-size: x-large;\n  margin-top: 1.2em;\n  margin-bottom: 2.3em;\n}\ndiv {\n  margin: 0px;\n  padding: 0px;\n  text-align: justify;\n}\np {\n  text-indent: 2em;\n  display: block;\n  line-height: 1.3em;\n  margin-top: 0.4em;\n  margin-bottom: 0.4em;\n}\nimg {\n  vertical-align: text-bottom;\n  max-width: 90%;\n}\n.title {\n  margin-bottom: 0.7em;\n}\n", ""]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
+
+/***/ }),
+
+/***/ "./src/save/toc.css":
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/css-loader/dist/runtime/noSourceMaps.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
+// Imports
+
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, "img {\n  max-width: 100%;\n  max-height: 15em;\n}\n.introduction {\n  font-size: smaller;\n  max-height: 18em;\n  overflow-y: scroll;\n}\n.introduction p {\n  text-indent: 0;\n}\n.bookurl {\n  text-align: center;\n  font-size: smaller;\n  padding-top: 1em;\n  padding-bottom: 0.5em;\n  margin-top: 0.4em;\n}\n.bookurl > a {\n  color: gray;\n}\n.info h3 {\n  padding-left: 0.5em;\n  margin-top: -1.2em;\n  margin-bottom: 0.5em;\n}\n.section {\n  margin-top: 1.5em;\n  display: grid;\n  grid-template-columns: 30% 30% 30%;\n}\n.section > h2:first-child {\n  grid-column-end: span 3;\n}\n.section > .chapter {\n  padding-bottom: 0.3em;\n  text-align: center;\n}\n.main > h1 {\n  margin-top: 1.5em;\n  margin-bottom: 1.5em;\n}\na.disabled {\n  pointer-events: none;\n  cursor: default;\n  color: gray;\n}\n.author::before {\n  content: \"作者：\";\n}\n.author {\n  text-align: center;\n  margin-top: -3em;\n  margin-bottom: 3em;\n}\n", ""]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
+
+/***/ }),
+
+/***/ "./src/ui/button.css":
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/css-loader/dist/runtime/noSourceMaps.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
+// Imports
+
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, ".button-div {\n  position: fixed;\n  top: 15%;\n  right: 5%;\n  z-index: 5000;\n}\n\n.button-div button {\n  border-style: none;\n  text-align: center;\n  vertical-align: baseline;\n  background-color: rgba(128, 128, 128, 0.2);\n  padding: 3px;\n  border-radius: 12px;\n  min-width: auto;\n  min-height: auto;\n}\n\n.button-div img.start {\n  height: 2em;\n}\n.button-div img.setting {\n  height: 1em;\n}\n", ""]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
+
+/***/ }),
+
+/***/ "./src/ui/dialog.css":
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/css-loader/dist/runtime/noSourceMaps.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
+// Imports
+
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, ".overlay {\n  visibility: hidden;\n  opacity: 0;\n  z-index: 100000;\n  position: fixed;\n  top: -50%;\n  left: -50%;\n  height: 200%;\n  width: 200%;\n  background-color: black;\n}\n.overlay.open {\n  opacity: 0.8;\n  visibility: visible;\n  transition: opacity 0.2s ease-in;\n}\n.overlay:not(.open) {\n  transition: visibility 0.2s step-end, opacity 0.2s ease-in;\n}\n\n.out {\n  position: fixed;\n  top: 0;\n  left: 0;\n  height: 100%;\n  width: 100%;\n\n  display: flex;\n  justify-content: center;\n  align-items: center;\n\n  z-index: 100001;\n}\n\n.dialog {\n  width: 720px;\n  max-height: 70%;\n  display: none;\n  opacity: 0;\n  z-index: 100100;\n  position: fixed;\n  margin: 0;\n  padding: 0;\n}\n.dialog.open {\n  opacity: 1;\n  display: block;\n  transition: opacity 0.2s ease-in;\n}\n\n.dialog > * {\n  box-sizing: border-box;\n}\n.dialog > .titlebar {\n  background-color: white;\n  min-height: 24px;\n  position: relative;\n}\n.dialog-title {\n  padding: 10px;\n  text-transform: uppercase;\n  background: #ff7bac;\n  color: #ffffff;\n  margin: 0;\n  font-size: 1.5em;\n  text-align: center;\n}\n.dialog-close {\n  background: #ff7bac;\n  color: #ffffff;\n\n  font-style: normal;\n  font-weight: 400;\n  font-variant: normal;\n  text-transform: none;\n  line-height: 1;\n  user-select: none;\n\n  cursor: pointer;\n  font-size: 120%;\n  margin: 0;\n  padding: 0;\n  width: 3.6em;\n  height: 92%;\n  border: 1px solid transparent;\n  transition-duration: 0.2s;\n  display: block;\n\n  position: absolute;\n  right: 0;\n  top: 0;\n  white-space: nowrap;\n}\n\n.dialog > .body {\n  background-color: white;\n  border: 1px solid rgb(255 125 175 / 80%);\n  text-align: left;\n\n  line-height: 1.5;\n  padding: 1em;\n\n  overflow: auto;\n  min-width: 280px;\n\n  height: calc(100% - 2.1em);\n  max-height: 900px;\n}\n", ""]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
+
+/***/ }),
+
+/***/ "./src/ui/progress.css":
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/css-loader/dist/runtime/noSourceMaps.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
+// Imports
+
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, "#nd-progress {\n  position: fixed;\n  bottom: 8%;\n  right: 3%;\n  z-index: 2147483647;\n  border-style: none;\n  text-align: center;\n  vertical-align: baseline;\n  background-color: rgba(210, 210, 210, 0.2);\n  padding: 6px;\n  border-radius: 12px;\n}\n#chapter-progress {\n  --color: green;\n  --position: 0%;\n  width: 200px;\n  height: 10px;\n  border-radius: 30px;\n  background-color: #ccc;\n  background-image: radial-gradient(\n      closest-side circle at var(--position),\n      var(--color),\n      var(--color) 100%,\n      transparent\n    ),\n    linear-gradient(var(--color), var(--color));\n  background-image: -webkit-radial-gradient(\n      var(--position),\n      circle closest-side,\n      var(--color),\n      var(--color) 100%,\n      transparent\n    ),\n    -webkit-linear-gradient(var(--color), var(--color));\n  background-size: 100%, var(--position);\n  background-repeat: no-repeat;\n}\n#zip-progress {\n  --color: yellow;\n  --position: 0%;\n  width: 200px;\n  height: 10px;\n  border-radius: 30px;\n  background-color: #ccc;\n  background-image: radial-gradient(\n      closest-side circle at var(--position),\n      var(--color),\n      var(--color) 100%,\n      transparent\n    ),\n    linear-gradient(var(--color), var(--color));\n  background-image: -webkit-radial-gradient(\n      var(--position),\n      circle closest-side,\n      var(--color),\n      var(--color) 100%,\n      transparent\n    ),\n    -webkit-linear-gradient(var(--color), var(--color));\n  background-size: 100%, var(--position);\n  background-repeat: no-repeat;\n  margin-top: 5px;\n}\n", ""]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/dist/runtime/api.js":
+/***/ ((module) => {
+
+"use strict";
+
+
+/*
+  MIT License http://www.opensource.org/licenses/mit-license.php
+  Author Tobias Koppers @sokra
+*/
+module.exports = function (cssWithMappingToString) {
+  var list = []; // return the list of modules as css string
+
+  list.toString = function toString() {
+    return this.map(function (item) {
+      var content = "";
+      var needLayer = typeof item[5] !== "undefined";
+
+      if (item[4]) {
+        content += "@supports (".concat(item[4], ") {");
+      }
+
+      if (item[2]) {
+        content += "@media ".concat(item[2], " {");
+      }
+
+      if (needLayer) {
+        content += "@layer".concat(item[5].length > 0 ? " ".concat(item[5]) : "", " {");
+      }
+
+      content += cssWithMappingToString(item);
+
+      if (needLayer) {
+        content += "}";
+      }
+
+      if (item[2]) {
+        content += "}";
+      }
+
+      if (item[4]) {
+        content += "}";
+      }
+
+      return content;
+    }).join("");
+  }; // import a list of modules into the list
+
+
+  list.i = function i(modules, media, dedupe, supports, layer) {
+    if (typeof modules === "string") {
+      modules = [[null, modules, undefined]];
+    }
+
+    var alreadyImportedModules = {};
+
+    if (dedupe) {
+      for (var k = 0; k < this.length; k++) {
+        var id = this[k][0];
+
+        if (id != null) {
+          alreadyImportedModules[id] = true;
+        }
+      }
+    }
+
+    for (var _k = 0; _k < modules.length; _k++) {
+      var item = [].concat(modules[_k]);
+
+      if (dedupe && alreadyImportedModules[item[0]]) {
+        continue;
+      }
+
+      if (typeof layer !== "undefined") {
+        if (typeof item[5] === "undefined") {
+          item[5] = layer;
+        } else {
+          item[1] = "@layer".concat(item[5].length > 0 ? " ".concat(item[5]) : "", " {").concat(item[1], "}");
+          item[5] = layer;
+        }
+      }
+
+      if (media) {
+        if (!item[2]) {
+          item[2] = media;
+        } else {
+          item[1] = "@media ".concat(item[2], " {").concat(item[1], "}");
+          item[2] = media;
+        }
+      }
+
+      if (supports) {
+        if (!item[4]) {
+          item[4] = "".concat(supports);
+        } else {
+          item[1] = "@supports (".concat(item[4], ") {").concat(item[1], "}");
+          item[4] = supports;
+        }
+      }
+
+      list.push(item);
+    }
+  };
+
+  return list;
+};
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/dist/runtime/noSourceMaps.js":
+/***/ ((module) => {
+
+"use strict";
+
+
+module.exports = function (i) {
+  return i[1];
+};
+
+/***/ }),
+
+/***/ "./src/save/chapter.html.j2":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+// Module
+var code = "<!DOCTYPE html> <html> <head> <meta charset=\"UTF-8\"/> <meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"/> <meta name=\"referrer\" content=\"same-origin\"/> <meta name=\"generator\" content=\"https://github.com/yingziwu/novel-downloader\"/> <meta name=\"source\" content=\"{{ chapterUrl }}\"/> <link href=\"style.css\" rel=\"stylesheet\"/> <title>{{ chapterName }}</title> </head> <body> <div class=\"main\"> <h2>{{ chapterName }}</h2> {{ outerHTML }} </div> </body> </html> ";
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (code);
+
+/***/ }),
+
+/***/ "./src/save/index.html.j2":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+// Module
+var code = "<!DOCTYPE html> <html> <head> <meta charset=\"UTF-8\"/> <meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"/> <meta name=\"referrer\" content=\"same-origin\"/> <meta name=\"generator\" content=\"https://github.com/yingziwu/novel-downloader\"/> <meta name=\"date-creation\" content=\"{{ creationDate }}\"/> <link href=\"style.css\" rel=\"stylesheet\"/> <title>{{ bookname }}</title> <style></style> </head> <body> <div class=\"main\"> <h1>{{ bookname }}</h1> <h3 class=\"author\">{{ author }}</h3> <div class=\"info\"> {% if cover -%} <img class=\"cover\" data-src-address=\"{{ cover.name }}\"/> {%- endif %} {% if introductionHTML -%} <div> <h3>简介</h3> <div class=\"introduction\">{{ introductionHTML }}</div> </div> {%- endif %} </div> <div class=\"bookurl\"> <a href=\"{{ bookUrl }}\">打开原始网站</a> </div> <hr/> {% if hasSections -%} {% for sectionName, section in sectionsObj -%} <div id=\"section{{ loop.index }}\" class=\"section\"> <h2 class=\"section-label\">{{ sectionName }}</h2> {% for chapter in section -%} <div class=\"chapter\"> {% if not (chapter.contentHTML or chapter.status === Status.saved) -%} <a class=\"disabled\" href=\"{{ chapter.chapterHtmlFileName }}\">{{ chapter.chapterName }}</a> {%- else -%} <a href=\"{{ chapter.chapterHtmlFileName }}\">{{ chapter.chapterName }}</a> {%- endif %} </div> {%- endfor %} </div> {%- endfor %} {%- else -%} <div id=\"section0\" class=\"section\"> {% for chapter in sectionsObj[\"default114514\"] -%} <div class=\"chapter\"> {% if not (chapter.contentHTML or chapter.status === Status.saved) -%} <a class=\"disabled\" href=\"{{ chapter.chapterHtmlFileName }}\">{{ chapter.chapterName }}</a> {%- else -%} <a href=\"{{ chapter.chapterHtmlFileName }}\">{{ chapter.chapterName }}</a> {%- endif %} </div> {%- endfor %} </div> {%- endif %} </div> </body> </html>";
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (code);
+
+/***/ }),
+
+/***/ "./src/save/section.html.j2":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+// Module
+var code = "<!DOCTYPE html> <html> <head> <meta charset=\"UTF-8\"/> <meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"/> <meta name=\"referrer\" content=\"same-origin\"/> <meta name=\"generator\" content=\"https://github.com/yingziwu/novel-downloader\"/> <link href=\"style.css\" rel=\"stylesheet\"/> <title>{{ sectionName }}</title> </head> <body> <div class=\"main\"><h1>{{ sectionName }}</h1></div> </body> </html> ";
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (code);
+
+/***/ }),
+
+/***/ "./src/ui/button.html":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+// Module
+var code = "<div class=\"button-div\" id=\"button-div\"> <button class=\"start\"> <img class=\"start\" v-bind:src=\"imgStart\" v-on:click=\"startButtonClick\"/> </button> <button class=\"setting\"> <img class=\"setting\" v-bind:src=\"imgSetting\" v-on:click=\"settingButtonClick\"/> </button> </div> ";
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (code);
+
+/***/ }),
+
+/***/ "./src/ui/dialog.html":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+// Module
+var code = "<div class=\"overlay\" v-bind:class=\"{ open: myPrivateStatus }\" v-if=\"myPrivateStatus\"></div> <div class=\"out\" v-if=\"myPrivateStatus\"> <div id=\"dialog\" class=\"dialog\" v-bind:class=\"{ open: myPrivateStatus }\"> <div class=\"titlebar\"> <h1 class=\"dialog-title\">{{ dialogTitle }}</h1> <button class=\"dialog-close\" v-on:click=\"dialogClose\">❌</button> </div> <div class=\"body\"> <slot></slot> </div> </div> </div> ";
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (code);
+
+/***/ }),
+
+/***/ "./src/ui/progress.html":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+// Module
+var code = "<div> <div id=\"nd-progress\" v-if=\"ntProgressSeen\"> <div v-if=\"chapterProgressSeen\" id=\"chapter-progress\" v-bind:style=\"{'--position': chapterPercent+'%'}\" v-bind:title=\"chapterProgressTitle\"></div> <div v-if=\"zipProgressSeen\" id=\"zip-progress\" title=\"ZIP\" v-bind:style=\"{'--position': zipPercent+'%'}\"></div> </div> </div> ";
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (code);
+
+/***/ }),
+
+/***/ "./src/ui/setting.html":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+// Module
+var code = "<div> <nd-dialog dialog-title=\"设置\" v-bind:status=\"openStatus\" v-on:dialogclose=\"closeSetting\" v-if=\"openStatus === 'true'\"> <div class=\"nd-setting\"> <div class=\"nd-setting-body\"> <div> <input type=\"checkbox\" id=\"debug\" v-model=\"setting.enableDebug\"/> <label for=\"debug\">启用调式模式。（输出更详细日志）</label> </div> <hr/> <div> <h3>自定义保存参数</h3> <ul> <li v-for=\"item of saveOptions\"> <input type=\"radio\" v-bind:id=\"item.key\" v-bind:value=\"item.key\" v-model=\"setting.chooseSaveOption\"/> <label v-bind:for=\"item.key\">{{ item.value }}</label> </li> </ul> </div> </div> <div class=\"nd-setting-footer\" style=\"text-align:center\"> <button v-on:click=\"closeAndSaveSetting\">Save</button> <button v-on:click=\"closeSetting\">Cancel</button> </div> </div> </nd-dialog> </div> ";
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (code);
 
 /***/ }),
 
@@ -12647,7 +12993,8 @@ const main_1 = __webpack_require__("./src/main.ts");
 const zip_1 = __webpack_require__("./src/lib/zip.ts");
 const setting_1 = __webpack_require__("./src/setting.ts");
 const log_1 = __webpack_require__("./src/log.ts");
-const style_1 = __webpack_require__("./src/save/style.ts");
+const main_css_1 = __webpack_require__("./src/save/main.css");
+const toc_css_1 = __webpack_require__("./src/save/toc.css");
 const template_1 = __webpack_require__("./src/save/template.ts");
 const progress_1 = __webpack_require__("./src/ui/progress.ts");
 class saveBook {
@@ -12658,8 +13005,8 @@ class saveBook {
         this._sections = [];
         this.savedTextArray = [];
         this.saveFileNameBase = `[${this.book.author}]${this.book.bookname}`;
-        this.mainStyleText = style_1.defaultMainStyleText;
-        this.tocStyleText = style_1.defaultTocStyleText;
+        this.mainStyleText = main_css_1.default;
+        this.tocStyleText = toc_css_1.default;
     }
     saveTxt() {
         const metaDateText = this.genMetaDateTxt();
@@ -13000,242 +13347,20 @@ exports.getSaveBookObj = getSaveBookObj;
 
 /***/ }),
 
-/***/ "./src/save/style.ts":
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.defaultTocStyleText = exports.defaultMainStyleText = void 0;
-exports.defaultMainStyleText = `body {
-  background-color: #f0f0f2;
-  margin: 0;
-  padding: 0;
-  font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI",
-    "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-}
-div.main {
-  width: 900px;
-  margin: 5em auto;
-  padding: 2em;
-  background-color: #fdfdff;
-  border-radius: 0.5em;
-  box-shadow: 2px 3px 7px 2px rgba(0, 0, 0, 0.02);
-}
-@media (max-width: 700px) {
-  div.main {
-    margin: 0 auto;
-    width: auto;
-  }
-}
-h1 {
-  line-height: 130%;
-  text-align: center;
-  font-weight: bold;
-  font-size: xxx-large;
-  margin-top: 3.2em;
-  margin-bottom: 3.3em;
-}
-h2 {
-  line-height: 130%;
-  text-align: center;
-  font-weight: bold;
-  font-size: x-large;
-  margin-top: 1.2em;
-  margin-bottom: 2.3em;
-}
-div {
-  margin: 0px;
-  padding: 0px;
-  text-align: justify;
-}
-p {
-  text-indent: 2em;
-  display: block;
-  line-height: 1.3em;
-  margin-top: 0.4em;
-  margin-bottom: 0.4em;
-}
-img {
-  vertical-align: text-bottom;
-  max-width: 90%;
-}
-.title {
-  margin-bottom: 0.7em;
-}`;
-exports.defaultTocStyleText = `img {
-  max-width: 100%;
-  max-height: 15em;
-}
-.introduction {
-  font-size: smaller;
-  max-height: 18em;
-  overflow-y: scroll;
-}
-.introduction p {
-    text-indent: 0;
-}
-.bookurl {
-  text-align: center;
-  font-size: smaller;
-  padding-top: 1em;
-  padding-bottom: 0.5em;
-  margin-top: 0.4em;
-}
-.bookurl > a {
-  color: gray;
-}
-.info h3 {
-  padding-left: 0.5em;
-  margin-top: -1.2em;
-  margin-bottom: 0.5em;
-}
-.section {
-  margin-top: 1.5em;
-  display: grid;
-  grid-template-columns: 30% 30% 30%;
-}
-.section > h2:first-child {
-  grid-column-end: span 3;
-}
-.section > .chapter {
-  padding-bottom: 0.3em;
-  text-align: center;
-}
-.main > h1 {
-  margin-top: 1.5em;
-  margin-bottom: 1.5em;
-}
-a.disabled {
-  pointer-events: none;
-  cursor: default;
-  color: gray;
-}
-.author::before {
-    content: "作者：";
-}
-.author {
-    text-align: center;
-    margin-top: -3em;
-    margin-bottom: 3em;
-}`;
-
-
-/***/ }),
-
 /***/ "./src/save/template.ts":
-/***/ ((__unused_webpack_module, exports) => {
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.index = exports.chapter = exports.section = void 0;
+const section_html_j2_1 = __webpack_require__("./src/save/section.html.j2");
+const chapter_html_j2_1 = __webpack_require__("./src/save/chapter.html.j2");
+const index_html_j2_1 = __webpack_require__("./src/save/index.html.j2");
 const env = new nunjucks.Environment(undefined, { autoescape: false });
-exports.section = new nunjucks.Template(`<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="referrer" content="same-origin" />
-    <meta
-      name="generator"
-      content="https://github.com/yingziwu/novel-downloader"
-    />
-    <link href="style.css" type="text/css" rel="stylesheet" />
-    <title>{{ sectionName }}</title>
-  </head>
-  <body>
-    <div class="main"><h1>{{ sectionName }}</h1></div>
-  </body>
-</html>`, env, undefined, true);
-exports.chapter = new nunjucks.Template(`<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="referrer" content="same-origin" />
-    <meta
-      name="generator"
-      content="https://github.com/yingziwu/novel-downloader"
-    />
-    <meta name="source" content="{{ chapterUrl }}" />
-    <link href="style.css" type="text/css" rel="stylesheet" />
-    <title>{{ chapterName }}</title>
-  </head>
-  <body>
-    <div class="main">
-    <h2>{{ chapterName }}</h2>
-    {{ outerHTML }}
-    </div>
-  </body>
-</html>`, env, undefined, true);
-exports.index = new nunjucks.Template(`<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="referrer" content="same-origin" />
-    <meta
-      name="generator"
-      content="https://github.com/yingziwu/novel-downloader"
-    />
-    <meta name="date-creation" content="{{ creationDate }}" />
-    <link href="style.css" type="text/css" rel="stylesheet" />
-    <title>{{ bookname }}</title>
-    <style>
-      {{ tocStyleText }}
-    </style>
-  </head>
-  <body>
-    <div class="main">
-      <h1>{{ bookname }}</h1>
-      <h3 class="author">{{ author }}</h3>
-      <div class="info">
-        {% if cover -%}
-        <img class="cover" data-src-address="{{ cover.name }}" />
-        {%- endif %} 
-        {% if introductionHTML -%}
-        <div>
-          <h3>简介</h3>
-          <div class="introduction">{{ introductionHTML }}</div>
-        </div>
-        {%- endif %}
-      </div>
-      <div class="bookurl">
-        <a href="{{ bookUrl }}">打开原始网站</a>
-      </div>
-      <hr />
-      {% if hasSections -%} 
-      {% for sectionName, section in sectionsObj -%}
-      <div id="section{{ loop.index }}" class="section">
-        <h2 class="section-label">{{ sectionName }}</h2>
-        {% for chapter in section -%}
-        <div class="chapter">
-            {% if not (chapter.contentHTML or chapter.status === Status.saved) -%}
-            <a class="disabled" href="{{ chapter.chapterHtmlFileName }}">{{ chapter.chapterName }}</a>
-            {%- else -%}
-            <a href="{{ chapter.chapterHtmlFileName }}">{{ chapter.chapterName }}</a>
-            {%- endif %}
-        </div>
-        {%- endfor %}
-      </div>
-      {%- endfor %} 
-      {%- else -%}
-      <div id="section0" class="section">
-        {% for chapter in sectionsObj["default114514"] -%}
-        <div class="chapter">
-            {% if not (chapter.contentHTML or chapter.status === Status.saved) -%}
-            <a class="disabled" href="{{ chapter.chapterHtmlFileName }}">{{ chapter.chapterName }}</a>
-            {%- else -%}
-            <a href="{{ chapter.chapterHtmlFileName }}">{{ chapter.chapterName }}</a>
-            {%- endif %}
-        </div>
-        {%- endfor %}
-      </div>
-      {%- endif %}
-    </div>
-  </body>
-</html>`, env, undefined, true);
+exports.section = new nunjucks.Template(section_html_j2_1.default, env, undefined, true);
+exports.chapter = new nunjucks.Template(chapter_html_j2_1.default, env, undefined, true);
+exports.index = new nunjucks.Template(index_html_j2_1.default, env, undefined, true);
 
 
 /***/ }),
@@ -13347,41 +13472,12 @@ const createEl_1 = __webpack_require__("./src/lib/createEl.ts");
 const setting_1 = __webpack_require__("./src/setting.ts");
 const routers_1 = __webpack_require__("./src/routers.ts");
 const log_1 = __webpack_require__("./src/log.ts");
+const button_html_1 = __webpack_require__("./src/ui/button.html");
+const button_css_1 = __webpack_require__("./src/ui/button.css");
 const setting_2 = __webpack_require__("./src/ui/setting.ts");
 __webpack_require__("./src/ui/injectVue.ts");
-const buttonDivStyle = `.button-div {
-    position: fixed;
-    top: 15%;
-    right: 5%;
-    z-index: 5000;
-}
-
-.button-div button {
-    border-style: none;
-    text-align: center;
-    vertical-align: baseline;
-    background-color: rgba(128, 128, 128, 0.2);
-    padding: 3px;
-    border-radius: 12px;
-    min-width: auto;
-    min-height: auto;
-}
-
-.button-div img.start {
-    height: 2em;
-}
-.button-div img.setting {
-    height: 1em;
-}`;
-(0, createEl_1.createStyle)(buttonDivStyle, "button-div-style");
-exports.el = (0, createEl_1.createEl)(`<div class="button-div" id="button-div">
-<button class="start">
-    <img class="start" v-bind:src="imgStart" v-on:click="startButtonClick">
-</button>
-<button class="setting">
-    <img class="setting" v-bind:src="imgSetting" v-on:click="settingButtonClick">
-</button>
-</div>`);
+(0, createEl_1.createStyle)(button_css_1.default, "button-div-style");
+exports.el = (0, createEl_1.createEl)(button_html_1.default);
 async function run() {
     const ruleClass = await (0, routers_1.getRule)();
     await ruleClass.run();
@@ -13422,6 +13518,8 @@ exports.vm = Vue.createApp({
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+const dialog_html_1 = __webpack_require__("./src/ui/dialog.html");
+const dialog_css_1 = __webpack_require__("./src/ui/dialog.css");
 __webpack_require__("./src/ui/injectVue.ts");
 exports["default"] = Vue.defineCustomElement({
     name: "Dialog",
@@ -13449,129 +13547,8 @@ exports["default"] = Vue.defineCustomElement({
             this.myPrivateStatus = this.status === "true";
         },
     },
-    template: `<div class="overlay" v-bind:class="{ open: myPrivateStatus }" v-if="myPrivateStatus"></div>
-<div class="out" v-if="myPrivateStatus">
-<div id="dialog" class="dialog" v-bind:class="{ open: myPrivateStatus }" >
-<div class="titlebar">
-    <h1 class="dialog-title">{{ dialogTitle }}</h1>
-    <button class="dialog-close" v-on:click="dialogClose">❌</button>
-</div>
-<div class="body">
-    <slot></slot>
-</div>
-</div>
-</div>`,
-    styles: [
-        `.overlay {
-    visibility: hidden;
-		opacity: 0;
-    z-index: 100000;
-    position: fixed;
-    top: -50%;
-    left: -50%;
-    height: 200%;
-    width: 200%;
-    background-color: black;
-  }
-  .overlay.open {
-    opacity: .8;
-    visibility: visible;
-    transition: opacity .2s ease-in;
-  }
-  .overlay:not(.open) {
-    transition: visibility .2s step-end,opacity .2s ease-in;
-  }
-  
-  .out {
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 100%;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    z-index: 100001;
-  }
-
-  .dialog {
-    width: 720px;
-    max-height: 70%;
-    display: none;
-    opacity: 0;
-    z-index: 100100;
-    position: fixed;
-    margin: 0;
-    padding: 0;
-  }
-  .dialog.open {
-    opacity: 1;
-    display: block;
-    transition: opacity .2s ease-in;
-  }
-  
-  .dialog > * {
-    box-sizing: border-box;
-  }
-  .dialog > .titlebar {
-    background-color: white;
-    min-height: 24px;
-    position: relative;
-  }
-  .dialog-title {
-    padding: 10px;
-    text-transform: uppercase;
-    background: #ff7bac;
-    color: #ffffff;
-    margin: 0;
-    font-size: 1.5em;
-    text-align: center;
-	}
-  .dialog-close {
-    background: #ff7bac;
-		color: #ffffff;
-    
-    font-style: normal;
-    font-weight: 400;
-    font-variant: normal;
-    text-transform: none;
-    line-height: 1;
-    user-select: none;
-    
-    cursor: pointer;
-    font-size: 120%;
-    margin: 0;
-    padding: 0;
-    width: 3.6em;
-    height: 92%;
-    border: 1px solid transparent;
-    transition-duration: .2s;
-    display: block;
-    
-    position: absolute;
-    right: 0;
-    top: 0;
-    white-space: nowrap;
-  }
-  
-  .dialog > .body {
-    background-color: white;
-    border: 1px solid rgb(255 125 175 / 80%);
-    text-align: left;
-    
-    line-height: 1.5;
-    padding: 1em;
-    
-    overflow: auto;
-    min-width: 280px;
-    
-    height: calc(100% - 2.1em);
-    max-height: 900px;
-  }
-`,
-    ],
+    template: dialog_html_1.default,
+    styles: [dialog_css_1.default],
 });
 
 
@@ -13596,55 +13573,11 @@ unsafeWindow.Vue = Vue;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.vm = exports.el = void 0;
 const createEl_1 = __webpack_require__("./src/lib/createEl.ts");
+const progress_css_1 = __webpack_require__("./src/ui/progress.css");
+const progress_html_1 = __webpack_require__("./src/ui/progress.html");
 __webpack_require__("./src/ui/injectVue.ts");
-const progressStyle = `#nd-progress {
-    position: fixed;
-    bottom: 8%;
-    right: 3%;
-    z-index: 2147483647;
-    border-style: none;
-    text-align: center;
-    vertical-align: baseline;
-    background-color: rgba(210, 210, 210, 0.2);
-    padding: 6px;
-    border-radius: 12px;
-}
-#chapter-progress{
-    --color:green;
-    --position:0%;
-    width:200px;
-    height:10px;
-    border-radius:30px;
-    background-color:#ccc;
-    background-image:radial-gradient(closest-side circle at var(--position),var(--color),var(--color) 100%,transparent),linear-gradient(var(--color),var(--color));
-    background-image:-webkit-radial-gradient(var(--position),circle closest-side,var(--color),var(--color) 100%,transparent),-webkit-linear-gradient(var(--color),var(--color));
-    background-size:100% ,var(--position);
-    background-repeat: no-repeat;
-}
-#zip-progress{
-    --color:yellow;
-    --position:0%;
-    width:200px;
-    height:10px;
-    border-radius:30px;
-    background-color:#ccc;
-    background-image:radial-gradient(closest-side circle at var(--position),var(--color),var(--color) 100%,transparent),linear-gradient(var(--color),var(--color));
-    background-image:-webkit-radial-gradient(var(--position),circle closest-side,var(--color),var(--color) 100%,transparent),-webkit-linear-gradient(var(--color),var(--color));
-    background-size:100% ,var(--position);
-    background-repeat: no-repeat;
-    margin-top: 5px;
-}`;
-(0, createEl_1.createStyle)(progressStyle);
-exports.el = (0, createEl_1.createEl)(`<div><div id="nd-progress" v-if="ntProgressSeen">
-<div v-if="chapterProgressSeen" 
-    id='chapter-progress' 
-    v-bind:style="{'--position': chapterPercent+'%'}" 
-    v-bind:title="chapterProgressTitle"></div>
-<div v-if="zipProgressSeen" 
-    id='zip-progress' 
-    title="ZIP" 
-    v-bind:style="{'--position': zipPercent+'%'}"></div>
-</div></div>`);
+(0, createEl_1.createStyle)(progress_css_1.default);
+exports.el = (0, createEl_1.createEl)(progress_html_1.default);
 exports.vm = Vue.createApp({
     data() {
         return {
@@ -13699,34 +13632,11 @@ exports.vm = Vue.createApp({
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.vm = exports.el = void 0;
+const setting_html_1 = __webpack_require__("./src/ui/setting.html");
 const createEl_1 = __webpack_require__("./src/lib/createEl.ts");
-__webpack_require__("./src/ui/injectVue.ts");
 const log_1 = __webpack_require__("./src/log.ts");
-exports.el = (0, createEl_1.createEl)(`<div>
-<nd-dialog dialog-title="设置" v-bind:status="openStatus" v-on:dialogclose="closeSetting" v-if="openStatus === 'true'">
-<div class="nd-setting">
-    <div class="nd-setting-body">
-        <div>
-            <input type="checkbox" id="debug" v-model="setting.enableDebug" />
-            <label for="debug">启用调式模式。（输出更详细日志）</label>    
-        </div>
-        <hr>
-        <div>
-            <h3>自定义保存参数</h3>
-            <ul>
-            <li v-for="item of saveOptions">
-                <input type="radio" v-bind:id="item.key" v-bind:value="item.key" v-model="setting.chooseSaveOption">
-                <label v-bind:for="item.key">{{ item.value }}</label>
-            </li>
-        </div>
-    </div>
-    <div class="nd-setting-footer" style="text-align: center">
-        <button v-on:click="closeAndSaveSetting">Save</button>
-        <button v-on:click="closeSetting">Cancel</button>
-    </div>
-</div>
-</nd-dialog>
-</div>`);
+__webpack_require__("./src/ui/injectVue.ts");
+exports.el = (0, createEl_1.createEl)(setting_html_1.default);
 exports.vm = Vue.createApp({
     data() {
         return {
@@ -16679,7 +16589,7 @@ function entries(customStore = defaultGetStore()) {
 /******/ 		}
 /******/ 		// Create a new module (and put it into the cache)
 /******/ 		var module = __webpack_module_cache__[moduleId] = {
-/******/ 			// no module.id needed
+/******/ 			id: moduleId,
 /******/ 			// no module.loaded needed
 /******/ 			exports: {}
 /******/ 		};
@@ -16692,6 +16602,18 @@ function entries(customStore = defaultGetStore()) {
 /******/ 	}
 /******/ 	
 /************************************************************************/
+/******/ 	/* webpack/runtime/compat get default export */
+/******/ 	(() => {
+/******/ 		// getDefaultExport function for compatibility with non-harmony modules
+/******/ 		__webpack_require__.n = (module) => {
+/******/ 			var getter = module && module.__esModule ?
+/******/ 				() => (module['default']) :
+/******/ 				() => (module);
+/******/ 			__webpack_require__.d(getter, { a: getter });
+/******/ 			return getter;
+/******/ 		};
+/******/ 	})();
+/******/ 	
 /******/ 	/* webpack/runtime/define property getters */
 /******/ 	(() => {
 /******/ 		// define getter functions for harmony exports
