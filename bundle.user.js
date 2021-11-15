@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.4.4.297
+// @version        4.4.4.298
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -2722,7 +2722,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ".section {\n  margin-top: 1.5em;\n  display: grid;\n  grid-template-columns: 32% 32% 32%;\n}\n.section > h2:first-child {\n  grid-column-end: span 3;\n  text-align: center;\n}\n.section > .chapter {\n  text-align: center;\n  padding-top: 0.5em;\n  padding-bottom: 0.3em;\n  padding-left: 23px;\n  padding-right: 20px;\n  border: 1px solid #d9d9d9;\n  border-radius: 5px;\n  margin-left: 10px;\n  margin-top: 5px;\n}\n.section a.disabled {\n  pointer-events: none;\n  cursor: default;\n}\n.section a {\n  text-decoration: none;\n}\ndiv.chapter.good {\n  background: #41b883;\n}\ndiv.chapter.bad {\n  background: #ff9900;\n}\ndiv.chapter.bad a,\ndiv.chapter.good a {\n  color: white;\n}\ndiv.chapter-list-loading {\n  padding-top: 5em;\n  padding-bottom: 5em;\n  text-align: center;\n}\ndiv.chapter-list {\n  max-height: 320px;\n  overflow-y: scroll;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, ".section {\n  margin-top: 1.5em;\n  display: grid;\n  grid-template-columns: 32% 32% 32%;\n}\n.section > h2:first-child {\n  grid-column-end: span 3;\n  text-align: center;\n}\n.section > div.chapter {\n  text-align: center;\n  padding-top: 0.5em;\n  padding-bottom: 0.3em;\n  padding-left: 23px;\n  padding-right: 20px;\n  border: 1px solid #d9d9d9;\n  border-radius: 5px;\n  margin-left: 10px;\n  margin-top: 5px;\n  margin-right: 0;\n  margin-bottom: 0;\n}\n.section a.disabled {\n  pointer-events: none;\n  cursor: default;\n}\n.section a {\n  text-decoration: none;\n}\ndiv.chapter.good {\n  background: #41b883;\n}\ndiv.chapter.bad {\n  background: #ff9900;\n}\ndiv.chapter.bad a,\ndiv.chapter.good a {\n  color: white;\n}\ndiv.chapter-list-loading {\n  padding-top: 5em;\n  padding-bottom: 5em;\n  text-align: center;\n}\ndiv.chapter-list {\n  max-height: 320px;\n  overflow-y: scroll;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
