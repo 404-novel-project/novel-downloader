@@ -1,0 +1,12 @@
+.filter-setting {
+  padding-top: 0.4em;
+  padding-bottom: 0.8em;
+  text-align: center;
+}
+.filter-setter {
+  margin-top: 2em;
+}
+.filter-description {
+  font-size: larger;
+  color: cornflowerblue;
+}

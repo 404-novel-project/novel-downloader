@@ -13,7 +13,7 @@ import "./injectVue";
 
 createStyle(buttonCss, "button-div-style");
 
-export const el = createEl(buttonHtml);
+export const el = createEl("<div></div>");
 
 async function run() {
   const ruleClass = await getRule();
@@ -47,4 +47,5 @@ export const vm = Vue.createApp({
       settingVM.openSetting();
     },
   },
+  template: buttonHtml,
 }).mount(el);

@@ -1,4 +1,35 @@
-nd-dialog .nd-setting-body * {
+.nd-setting-body * {
   position: static;
   opacity: 1;
+}
+.nd-setting-body {
+  background: #e0e0e0;
+  padding: 1em;
+  border-top-right-radius: 3px;
+}
+.nd-setting-footer {
+  background: #e0e0e0;
+  padding-bottom: 0.7em;
+  text-align: center;
+  border-bottom-left-radius: 3px;
+  border-bottom-right-radius: 3px;
+}
+.tab-button {
+  padding: 6px 10px;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  background: #f0f0f0;
+  margin-bottom: -1px;
+  margin-right: -1px;
+}
+.tab-button:hover {
+  background: #e0e0e0;
+}
+.tab-button.active {
+  background: #e0e0e0;
+}
+.nd-setting-body hr {
+  margin-top: 1.5em;
 }

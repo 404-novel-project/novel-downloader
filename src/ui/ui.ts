@@ -4,7 +4,7 @@ import { el as progressEl } from "./progress";
 import { el as settingEl } from "./setting";
 
 function register() {
-  customElements.define("nd-dialog", Dialog);
+  customElements.define("dialog-ui", Dialog);
 }
 
 export function init() {

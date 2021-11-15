@@ -331,37 +331,33 @@ export class saveBook {
   }
 }
 
-interface sectionsObj {
-  [sectionNumber: number]: {
-    sectionName: string | null;
-    sectionNumber: number | null;
-    chpaters: Chapter[];
-  };
+interface sectionObj {
+  sectionName: string | null;
+  sectionNumber: number | null;
+  chpaters: Chapter[];
+}
+export interface sectionsObj {
+  [sectionNumber: number]: sectionObj;
 }
 export function getSectionsObj(chapters: Chapter[]) {
   const _sectionsObj: sectionsObj = {};
   for (const chapter of chapters) {
+    let sectionNumber: number | null = null;
+    let sectionName: string | null = null;
     if (chapter.sectionNumber && chapter.sectionName) {
-      if (_sectionsObj[chapter.sectionNumber]) {
-        _sectionsObj[chapter.sectionNumber]["chpaters"].push(chapter);
-      } else {
-        _sectionsObj[chapter.sectionNumber] = {
-          sectionName: chapter.sectionName,
-          sectionNumber: chapter.sectionNumber,
-          chpaters: [chapter],
-        };
-      }
+      sectionNumber = chapter.sectionNumber;
     } else {
-      if (_sectionsObj[99999999]) {
-        _sectionsObj[99999999]["chpaters"].push(chapter);
-      } else {
-        _sectionsObj[99999999] = {
-          sectionName: null,
-          sectionNumber: null,
-          chpaters: [chapter],
-        };
-        chapter.chapterName;
-      }
+      sectionNumber = -99999999;
+    }
+
+    if (_sectionsObj[sectionNumber]) {
+      _sectionsObj[sectionNumber]["chpaters"].push(chapter);
+    } else {
+      _sectionsObj[sectionNumber] = {
+        sectionName: chapter.sectionName,
+        sectionNumber: chapter.sectionNumber,
+        chpaters: [chapter],
+      };
     }
   }
   return _sectionsObj;

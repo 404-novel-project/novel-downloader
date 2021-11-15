@@ -169,3 +169,7 @@ export class localStorageExpired {
     }
   }
 }
+
+export function deepcopy(obj: object) {
+  return JSON.parse(JSON.stringify(obj));
+}

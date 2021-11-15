@@ -1,18 +1,25 @@
-import settingHtml from "./setting.html";
-import settingCss from "./setting.css";
-import { createEl, createStyle } from "../lib/createEl";
-import { log } from "../log";
-
-import { saveOptions } from "../save/save";
-import { newUnsafeWindow } from "../global";
-
 import type * as _vue from "vue";
 declare const Vue: typeof _vue;
 import "./injectVue";
+import { createEl, createStyle } from "../lib/createEl";
+import { deepcopy } from "../lib/misc";
+import { log } from "../log";
+import { saveOptions } from "../save/save";
+import { newUnsafeWindow } from "../global";
+import settingHtml from "./setting.html";
+import settingCss from "./setting.css";
+import FilterTab, {
+  filterOptionDict,
+  filterSetting,
+  getFilterFunction,
+} from "./FilterTab";
+import { Chapter, Status } from "../main";
 
 createStyle(settingCss);
-export const el = createEl(settingHtml);
+export const el = createEl(`<div id="setting"></div>`);
 export const vm = Vue.createApp({
+  name: "nd-setting",
+  components: { "filter-tab": FilterTab },
   data() {
     return {
       openStatus: "false",
@@ -24,11 +31,12 @@ export const vm = Vue.createApp({
       ],
       setting: Vue.reactive({}),
       settingBackup: {},
+      currentTab: "tab-1",
     };
   },
   methods: {
     openSetting() {
-      this.settingBackup = JSON.parse(JSON.stringify(this.setting));
+      this.settingBackup = deepcopy(this.setting);
       if (this.openStatus === "true") {
         this.openStatus = "false";
         setTimeout(() => {
@@ -39,22 +47,34 @@ export const vm = Vue.createApp({
       }
     },
     closeSetting(keep: PointerEvent | boolean) {
+      if (typeof keep === "object" || keep === false) {
+        if (this.settingBackup.filterSetting) {
+          const sf = this.settingBackup.filterSetting;
+          filterSetting["arg"] = sf.arg;
+          filterSetting["hiddenBad"] = sf.hiddenBad;
+          filterSetting["filterType"] = sf.filterType;
+        }
+        this.setting = deepcopy(this.settingBackup);
+      }
       if (this.openStatus === "true") {
         this.openStatus = "false";
-      }
-      if (typeof keep === "object" || keep === false) {
-        this.setting = JSON.parse(JSON.stringify(this.settingBackup));
       }
     },
     closeAndSaveSetting() {
       this.closeSetting(true);
-      setConfig(this.setting)
-        .then(() =>
-          log.info("[Init]自定义设置：" + JSON.stringify(this.setting))
-        )
-        .catch((error) => log.error(error));
+      setTimeout(() => {
+        setConfig(deepcopy(this.setting))
+          .then(() =>
+            log.info("[Init]自定义设置：" + JSON.stringify(this.setting))
+          )
+          .catch((error) => log.error(error));
+      }, 20);
+    },
+    saveFilter(...args: string[]) {
+      this.setting["filterSetting"] = deepcopy(filterSetting);
     },
   },
+  template: settingHtml,
 }).mount(el);
 
 interface saveOptionMap {
@@ -104,8 +124,10 @@ const saveOptionMap: saveOptionMap = {
 interface setting {
   enableDebug?: boolean;
   chooseSaveOption?: keyof saveOptionMap;
+  filterSetting?: typeof filterSetting;
 }
 async function setConfig(setting: setting) {
+  // 启用调试日志
   if (typeof setting.enableDebug === "boolean") {
     const { enableDebug } = await import("../setting");
     if (setting.enableDebug) {
@@ -116,9 +138,35 @@ async function setConfig(setting: setting) {
       log.setLevel("info");
     }
   }
+
+  // 自定义保存参数
   if (setting.chooseSaveOption && setting.chooseSaveOption !== "null") {
     (<newUnsafeWindow>unsafeWindow).saveOptions = saveOptionMap[
       setting.chooseSaveOption
     ] as saveOptions;
+  }
+
+  // 自定义筛选函数
+  if (
+    setting.filterSetting &&
+    setting.filterSetting.filterType &&
+    setting.filterSetting.filterType !== "null" &&
+    typeof setting.filterSetting.arg === "string"
+  ) {
+    const functionBody =
+      filterOptionDict[setting.filterSetting.filterType]["functionBody"];
+    const filterFunction = getFilterFunction(
+      setting.filterSetting.arg,
+      functionBody
+    );
+    if (filterFunction) {
+      const chapterFilter = (chapter: Chapter) => {
+        if (chapter.status == Status.aborted) {
+          return false;
+        }
+        return filterFunction(chapter);
+      };
+      (unsafeWindow as newUnsafeWindow).chapterFilter = chapterFilter;
+    }
   }
 }

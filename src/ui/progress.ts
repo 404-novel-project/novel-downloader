@@ -8,7 +8,7 @@ import "./injectVue";
 
 createStyle(progressCss);
 
-export const el = createEl(progressHtml);
+export const el = createEl(`<div id="progress-bar"></div>`);
 export interface progressVM extends _vue.ComponentPublicInstance {
   totalChapterNumber: number;
   finishedChapterNumber: number;
@@ -55,4 +55,5 @@ export const vm = Vue.createApp({
       this.zipPercent = 0;
     },
   },
+  template: progressHtml,
 }).mount(el);
