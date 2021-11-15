@@ -7,7 +7,7 @@
   grid-column-end: span 3;
   text-align: center;
 }
-.section > .chapter {
+.section > div.chapter {
   text-align: center;
   padding-top: 0.5em;
   padding-bottom: 0.3em;
@@ -17,6 +17,8 @@
   border-radius: 5px;
   margin-left: 10px;
   margin-top: 5px;
+  margin-right: 0;
+  margin-bottom: 0;
 }
 .section a.disabled {
   pointer-events: none;
