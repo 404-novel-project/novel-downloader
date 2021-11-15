@@ -1,10 +1,9 @@
 import type * as _vue from "vue";
 import "./injectVue";
 import { Chapter } from "../main";
+export declare function getFunctionBody(fn: Function): string;
 interface filterOption {
-    raw: (arg: string) => (chapter: Chapter) => boolean;
-    functionBody: string;
-    validator: (arg: string) => boolean;
+    raw: (arg: string) => ((chapter: Chapter) => boolean) | undefined;
     description: string;
     abbreviation: string;
 }
@@ -17,6 +16,7 @@ export interface filterSetting {
     arg?: string;
     hiddenBad?: boolean;
     filterType?: string;
+    functionBody?: string;
 }
 declare const _default: _vue.DefineComponent<{}, {}, {
     arg: string;
@@ -28,11 +28,7 @@ declare const _default: _vue.DefineComponent<{}, {}, {
     functionBody(): string;
     filterObj(): string[];
     filterDescription(): string;
-    filterSetting(): {
-        arg: string;
-        hiddenBad: boolean;
-        filterType: string;
-    };
+    filterSetting(): filterSetting;
 }, {
     getFilterOption(): string[];
     getHiddenBad(): boolean;

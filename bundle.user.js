@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.4.3.296
+// @version        4.4.4.297
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -3039,7 +3039,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 // Module
-var code = "<div> <div class=\"filter-setting\"> <div v-if=\"filterType !== 'null'\"> <p>请输入过滤的条件：<input type=\"text\" v-model=\"arg\"/></p> <input type=\"checkbox\" id=\"hiddenBad\" v-model=\"hiddenBad\"/> <label for=\"hiddenBad\">只显示符合条件章节</label> </div> <div class=\"filter-setter\"> <div> <span>当前过滤方法：</span> <select v-model=\"filterType\"> <option v-for=\"filterOption in filterOptionList\" v-bind:value=\"filterOption[0]\"> {{ filterOption[1][\"abbreviation\"] }} </option> </select> </div> <div class=\"filter-description\" v-html=\"filterDescription\"></div> </div> </div> <chapter-list/> </div> ";
+var code = "<div> <div class=\"filter-setting\"> <div v-if=\"filterType !== 'null'\"> <p>请输入过滤的条件：<input type=\"text\" v-model=\"arg\"/></p> </div> <div class=\"filter-setter\"> <div> <span>当前过滤方法：</span> <select v-model=\"filterType\"> <option v-for=\"filterOption in filterOptionList\" v-bind:value=\"filterOption[0]\"> {{ filterOption[1][\"abbreviation\"] }} </option> </select> </div> <input type=\"checkbox\" id=\"hiddenBad\" v-model=\"hiddenBad\"/> <label for=\"hiddenBad\">只显示符合条件章节</label> <div class=\"filter-description\" v-html=\"filterDescription\"></div> </div> </div> <chapter-list/> </div> ";
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (code);
 
@@ -13660,7 +13660,7 @@ exports["default"] = Vue.defineComponent({
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getFilterFunction = exports.filterOptionDict = void 0;
+exports.getFilterFunction = exports.filterOptionDict = exports.getFunctionBody = void 0;
 __webpack_require__("./src/ui/injectVue.ts");
 const FilterTab_html_1 = __webpack_require__("./src/ui/FilterTab.html");
 const FilterTab_css_1 = __webpack_require__("./src/ui/FilterTab.css");
@@ -13668,35 +13668,101 @@ const ChapterList_1 = __webpack_require__("./src/ui/ChapterList.ts");
 const createEl_1 = __webpack_require__("./src/lib/createEl.ts");
 const setting_1 = __webpack_require__("./src/ui/setting.ts");
 const misc_1 = __webpack_require__("./src/lib/misc.ts");
+function getFunctionBody(fn) {
+    return fn
+        .toString()
+        .replace("(arg) => {", "")
+        .replace(/}$/, "")
+        .split("\n")
+        .map((l) => l.trim())
+        .join(" ")
+        .trim();
+}
+exports.getFunctionBody = getFunctionBody;
 exports.filterOptionDict = {
     null: {
         raw: (arg) => {
-            return function (chapter) {
-                return true;
-            };
+            return (chapter) => true;
         },
-        functionBody: "return function(chapter) { return true }",
-        validator: (arg) => true,
         description: "<p>不应用任何过滤器（默认）</p>",
         abbreviation: "无",
     },
+    number: {
+        raw: (arg) => {
+            function characterCheck() {
+                return /^[\s\d\-,]+$/.test(arg);
+            }
+            function match(s, n) {
+                switch (true) {
+                    case /^\d+$/.test(s): {
+                        const _m = s.match(/^(\d+)$/);
+                        if (_m?.length === 2) {
+                            const m = Number(_m[1]);
+                            if (m === n) {
+                                return true;
+                            }
+                        }
+                        return false;
+                    }
+                    case /^\d+\-\d+$/.test(s): {
+                        const _m = s.match(/^(\d+)\-(\d+)$/);
+                        if (_m?.length === 3) {
+                            const m = _m.map((_s) => Number(_s));
+                            if (n >= m[1] && n <= m[2]) {
+                                return true;
+                            }
+                        }
+                        return false;
+                    }
+                    case /^\d+\-$/.test(s): {
+                        const _m = s.match(/^(\d+)\-$/);
+                        if (_m?.length === 2) {
+                            const m = Number(_m[1]);
+                            if (n >= m) {
+                                return true;
+                            }
+                        }
+                        return false;
+                    }
+                    case /^\-\d+$/.test(s): {
+                        const _m = s.match(/^\-(\d+)$/);
+                        if (_m?.length === 2) {
+                            const m = Number(_m[1]);
+                            if (n <= m) {
+                                return true;
+                            }
+                        }
+                        return false;
+                    }
+                    default: {
+                        return false;
+                    }
+                }
+            }
+            if (!characterCheck()) {
+                return;
+            }
+            return (chapter) => {
+                const n = chapter.chapterNumber;
+                const ss = arg.split(",").map((s) => s.replace(/\s/g, "").trim());
+                const booleans = [];
+                for (const s of ss) {
+                    booleans.push(match(s, n));
+                }
+                return booleans.some((element) => element === true);
+            };
+        },
+        description: "<p>基于章节序号过滤，章节序号可通过章节标题悬停查看。</p><p>支持以下格式：13, 1-5, 2-, -89。可通过分号（,）使用多个表达式。</p>",
+        abbreviation: "章节序号",
+    },
     baseOnString: {
         raw: (arg) => {
-            return function (chapter) {
+            return (chapter) => {
                 return (chapter && chapter.chapterName?.includes(arg)) || false;
             };
         },
-        functionBody: "return function (chapter) { return (chapter && chapter.chapterName?.includes(arg)) || false; }",
-        validator: (arg) => {
-            if (typeof arg === "string") {
-                return true;
-            }
-            else {
-                return false;
-            }
-        },
         description: "<p>过滤出所有包含过滤条件字符的章节</p>",
-        abbreviation: "文本",
+        abbreviation: "章节标题",
     },
 };
 function getFilterFunction(arg, functionBody) {
@@ -13730,7 +13796,7 @@ exports["default"] = Vue.defineComponent({
     },
     computed: {
         functionBody() {
-            return this.filterOptionDict[this.filterType]["functionBody"];
+            return getFunctionBody(this.filterOptionDict[this.filterType]["raw"]);
         },
         filterObj() {
             return [this.arg, this.functionBody];
@@ -13743,6 +13809,7 @@ exports["default"] = Vue.defineComponent({
                 arg: this.arg.toString(),
                 hiddenBad: this.hiddenBad,
                 filterType: this.filterType.toString(),
+                functionBody: this.functionBody.toString(),
             };
         },
     },
@@ -14073,21 +14140,24 @@ async function setConfig(setting) {
     if (setting.chooseSaveOption && setting.chooseSaveOption !== "null") {
         unsafeWindow.saveOptions = saveOptionMap[setting.chooseSaveOption];
     }
-    if (setting.filterSetting &&
-        setting.filterSetting.filterType &&
-        setting.filterSetting.filterType !== "null" &&
-        typeof setting.filterSetting.arg === "string") {
-        const functionBody = FilterTab_1.filterOptionDict[setting.filterSetting.filterType]["functionBody"];
-        const filterFunction = (0, FilterTab_1.getFilterFunction)(setting.filterSetting.arg, functionBody);
-        if (filterFunction) {
-            const chapterFilter = (chapter) => {
-                if (chapter.status == main_1.Status.aborted) {
-                    return false;
-                }
-                return filterFunction(chapter);
-            };
-            unsafeWindow.chapterFilter = chapterFilter;
+    if (setting.filterSetting && setting.filterSetting.filterType !== "null") {
+        if (typeof setting.filterSetting.arg === "string" &&
+            setting.filterSetting.functionBody) {
+            const filterFunction = (0, FilterTab_1.getFilterFunction)(setting.filterSetting.arg, setting.filterSetting.functionBody);
+            if (filterFunction) {
+                const chapterFilter = (chapter) => {
+                    if (chapter.status == main_1.Status.aborted) {
+                        return false;
+                    }
+                    return filterFunction(chapter);
+                };
+                unsafeWindow.chapterFilter = chapterFilter;
+            }
         }
+    }
+    else if (setting.filterSetting &&
+        setting.filterSetting.filterType === "null") {
+        unsafeWindow.chapterFilter = undefined;
     }
 }
 
