@@ -6,6 +6,8 @@ import FilterTabCss from "./FilterTab.css";
 import { Chapter } from "../main";
 import ChapterList from "./ChapterList";
 import { createStyle } from "../lib/createEl";
+import { vm as svm } from "./setting";
+import { deepcopy } from "../lib/misc";
 
 interface filterOption {
   raw: (arg: string) => (chapter: Chapter) => boolean;
@@ -59,12 +61,11 @@ export function getFilterFunction(arg: string, functionBody: string) {
   }
 }
 
-interface filterSetting {
+export interface filterSetting {
   arg?: string;
   hiddenBad?: boolean;
   filterType?: string;
 }
-export const filterSetting: filterSetting = {};
 export default Vue.defineComponent({
   provide() {
     return {
@@ -79,7 +80,7 @@ export default Vue.defineComponent({
   data() {
     return {
       arg: "",
-      hiddenBad: false,
+      hiddenBad: true,
       filterOptionDict: filterOptionDict,
       filterOptionList: Object.entries(filterOptionDict),
       filterType: "null",
@@ -98,6 +99,13 @@ export default Vue.defineComponent({
       //@ts-ignore
       return this.filterOptionDict[this.filterType]["description"];
     },
+    filterSetting() {
+      return {
+        arg: this.arg.toString(),
+        hiddenBad: this.hiddenBad,
+        filterType: this.filterType.toString(),
+      };
+    },
   },
   methods: {
     getFilterOption() {
@@ -108,20 +116,22 @@ export default Vue.defineComponent({
     },
   },
   mounted() {
-    for (const setting of Object.entries(filterSetting)) {
+    //@ts-ignore
+    if (!svm.setting.filterSetting) {
+      return;
+    }
+    //@ts-ignore
+    for (const setting of Object.entries(deepcopy(svm.setting.filterSetting))) {
       //@ts-ignore
       this[setting[0]] = setting[1];
     }
   },
-  beforeUnmount() {
-    filterSetting["arg"] = this.arg.toString();
-    filterSetting["hiddenBad"] = this.hiddenBad;
-    filterSetting["filterType"] = this.filterType.toString();
-    this.$emit("filterupdate", this.functionBody, this.arg);
-  },
   watch: {
-    filterType() {
-      this.arg = "";
+    filterSetting: {
+      handler(newVal, oldVal) {
+        this.$emit("filterupdate", this.filterSetting);
+      },
+      deep: true,
     },
   },
   template: FilterTabHtml,

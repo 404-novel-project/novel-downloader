@@ -47,13 +47,9 @@ export const vm = Vue.createApp({
       }
     },
     closeSetting(keep: PointerEvent | boolean) {
-      if (typeof keep === "object" || keep === false) {
-        if (this.settingBackup.filterSetting) {
-          const sf = this.settingBackup.filterSetting;
-          filterSetting["arg"] = sf.arg;
-          filterSetting["hiddenBad"] = sf.hiddenBad;
-          filterSetting["filterType"] = sf.filterType;
-        }
+      if (keep === true) {
+        this.settingBackup = deepcopy(this.setting);
+      } else {
         this.setting = deepcopy(this.settingBackup);
       }
       if (this.openStatus === "true") {
@@ -70,7 +66,7 @@ export const vm = Vue.createApp({
           .catch((error) => log.error(error));
       }, 20);
     },
-    saveFilter(...args: string[]) {
+    saveFilter(filterSetting: filterSetting) {
       this.setting["filterSetting"] = deepcopy(filterSetting);
     },
   },
@@ -124,7 +120,7 @@ const saveOptionMap: saveOptionMap = {
 interface setting {
   enableDebug?: boolean;
   chooseSaveOption?: keyof saveOptionMap;
-  filterSetting?: typeof filterSetting;
+  filterSetting?: filterSetting;
 }
 async function setConfig(setting: setting) {
   // 启用调试日志

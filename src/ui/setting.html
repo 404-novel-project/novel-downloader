@@ -24,7 +24,7 @@
         <div
           id="nd-setting-tab-1"
           class="tab-page"
-          v-if="currentTab === 'tab-1'"
+          v-show="currentTab === 'tab-1'"
         >
           <div>
             <input type="checkbox" id="debug" v-model="setting.enableDebug" />
@@ -49,7 +49,7 @@
         <div
           id="nd-setting-tab-2"
           class="tab-page"
-          v-if="currentTab === 'tab-2'"
+          v-show="currentTab === 'tab-2'"
         >
           <filter-tab v-on:filterupdate="saveFilter" />
         </div>
