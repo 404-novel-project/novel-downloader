@@ -34,34 +34,22 @@
         <a href="{{ bookUrl }}">打开原始网站</a>
       </div>
       <hr />
-      {% if hasSections -%} 
-      {% for sectionName, section in sectionsObj -%}
-      <div id="section{{ loop.index }}" class="section">
-        <h2 class="section-label">{{ sectionName }}</h2>
-        {% for chapter in section -%}
-        <div class="chapter">
-            {% if not (chapter.contentHTML or chapter.status === Status.saved) -%}
-            <a class="disabled" href="{{ chapter.chapterHtmlFileName }}">{{ chapter.chapterName }}</a>
-            {%- else -%}
-            <a href="{{ chapter.chapterHtmlFileName }}">{{ chapter.chapterName }}</a>
-            {%- endif %}
+      {% for sectionObj in sectionsObj -%}
+        <div id="section{{ sectionObj.sectionNumber }}" class="section">
+          {% if sectionObj.sectionName %}
+            <h2 class="section-label">{{ sectionObj.sectionName }}</h2>
+          {% endif %}
+          {% for chapter in sectionObj.chpaters -%}
+          <div class="chapter">
+              {% if not (chapter.contentHTML or chapter.status === Status.saved) -%}
+              <a class="disabled" href="{{ chapter.chapterHtmlFileName }}">{{ chapter.chapterName }}</a>
+              {%- else -%}
+              <a href="{{ chapter.chapterHtmlFileName }}">{{ chapter.chapterName }}</a>
+              {%- endif %}
+          </div>
+          {%- endfor %}
         </div>
-        {%- endfor %}
-      </div>
       {%- endfor %} 
-      {%- else -%}
-      <div id="section0" class="section">
-        {% for chapter in sectionsObj["default114514"] -%}
-        <div class="chapter">
-            {% if not (chapter.contentHTML or chapter.status === Status.saved) -%}
-            <a class="disabled" href="{{ chapter.chapterHtmlFileName }}">{{ chapter.chapterName }}</a>
-            {%- else -%}
-            <a href="{{ chapter.chapterHtmlFileName }}">{{ chapter.chapterName }}</a>
-            {%- endif %}
-        </div>
-        {%- endfor %}
-      </div>
-      {%- endif %}
     </div>
   </body>
 </html>

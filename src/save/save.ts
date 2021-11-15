@@ -144,16 +144,7 @@ export class saveBook {
     this.chapters.sort(this.chapterSort);
 
     const self = this;
-    const sectionsObj = getSectionsObj();
-    let hasSections: boolean;
-    if (
-      Object.keys(sectionsObj).length !== 1 ||
-      Object.keys(sectionsObj)[0] !== "default114514"
-    ) {
-      hasSections = true;
-    } else {
-      hasSections = false;
-    }
+    const sectionsObj = getSectionsObj(self.chapters);
     modifyTocStyleText();
 
     const indexHtmlText = index.render({
@@ -164,8 +155,7 @@ export class saveBook {
       cover: self.book.additionalMetadate.cover,
       introductionHTML: self.book.introductionHTML?.outerHTML,
       bookUrl: self.book.bookUrl,
-      hasSections: hasSections,
-      sectionsObj: sectionsObj,
+      sectionsObj: Object.values(sectionsObj),
       Status: Status,
     });
     this.savedZip.file(
@@ -175,30 +165,6 @@ export class saveBook {
       })
     );
 
-    function getSectionsObj() {
-      interface sectionsObj {
-        [sectionName: string]: Chapter[];
-      }
-      const _sectionsObj: sectionsObj = {};
-
-      for (const chapter of self.chapters) {
-        if (chapter.sectionName) {
-          if (_sectionsObj[chapter.sectionName]) {
-            _sectionsObj[chapter.sectionName].push(chapter);
-          } else {
-            _sectionsObj[chapter.sectionName] = [chapter];
-          }
-        } else {
-          if (_sectionsObj["default114514"]) {
-            _sectionsObj["default114514"].push(chapter);
-          } else {
-            _sectionsObj["default114514"] = [chapter];
-            chapter.chapterName;
-          }
-        }
-      }
-      return _sectionsObj;
-    }
     function modifyTocStyleText() {
       if (self.book.additionalMetadate.cover) {
         self.tocStyleText = `${self.tocStyleText}
@@ -363,6 +329,42 @@ export class saveBook {
     }
     return 0;
   }
+}
+
+interface sectionsObj {
+  [sectionNumber: number]: {
+    sectionName: string | null;
+    sectionNumber: number | null;
+    chpaters: Chapter[];
+  };
+}
+export function getSectionsObj(chapters: Chapter[]) {
+  const _sectionsObj: sectionsObj = {};
+  for (const chapter of chapters) {
+    if (chapter.sectionNumber && chapter.sectionName) {
+      if (_sectionsObj[chapter.sectionNumber]) {
+        _sectionsObj[chapter.sectionNumber]["chpaters"].push(chapter);
+      } else {
+        _sectionsObj[chapter.sectionNumber] = {
+          sectionName: chapter.sectionName,
+          sectionNumber: chapter.sectionNumber,
+          chpaters: [chapter],
+        };
+      }
+    } else {
+      if (_sectionsObj[99999999]) {
+        _sectionsObj[99999999]["chpaters"].push(chapter);
+      } else {
+        _sectionsObj[99999999] = {
+          sectionName: null,
+          sectionNumber: null,
+          chpaters: [chapter],
+        };
+        chapter.chapterName;
+      }
+    }
+  }
+  return _sectionsObj;
 }
 
 export interface saveOptions {

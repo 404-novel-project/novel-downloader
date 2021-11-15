@@ -1,5 +1,6 @@
 import settingHtml from "./setting.html";
-import { createEl } from "../lib/createEl";
+import settingCss from "./setting.css";
+import { createEl, createStyle } from "../lib/createEl";
 import { log } from "../log";
 
 import { saveOptions } from "../save/save";
@@ -9,6 +10,7 @@ import type * as _vue from "vue";
 declare const Vue: typeof _vue;
 import "./injectVue";
 
+createStyle(settingCss);
 export const el = createEl(settingHtml);
 export const vm = Vue.createApp({
   data() {

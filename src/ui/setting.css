@@ -1,0 +1,4 @@
+nd-dialog .nd-setting-body * {
+  position: static;
+  opacity: 1;
+}
