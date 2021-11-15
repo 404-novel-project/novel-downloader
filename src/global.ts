@@ -16,7 +16,7 @@ export interface newUnsafeWindow extends unsafeWindow {
   book: Book;
   save(book: Book, saveOptions: saveOptions): void;
   saveAs(obj: any): void;
-  chapterFilter(chapter: Chapter): boolean;
+  chapterFilter?: (chapter: Chapter) => boolean;
   customFinishCallback(): void;
   enableDebug: boolean;
   saveOptions: saveOptions;

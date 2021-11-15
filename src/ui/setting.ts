@@ -8,11 +8,7 @@ import { saveOptions } from "../save/save";
 import { newUnsafeWindow } from "../global";
 import settingHtml from "./setting.html";
 import settingCss from "./setting.css";
-import FilterTab, {
-  filterOptionDict,
-  filterSetting,
-  getFilterFunction,
-} from "./FilterTab";
+import FilterTab, { filterSetting, getFilterFunction } from "./FilterTab";
 import { Chapter, Status } from "../main";
 
 createStyle(settingCss);
@@ -143,26 +139,29 @@ async function setConfig(setting: setting) {
   }
 
   // 自定义筛选函数
-  if (
-    setting.filterSetting &&
-    setting.filterSetting.filterType &&
-    setting.filterSetting.filterType !== "null" &&
-    typeof setting.filterSetting.arg === "string"
-  ) {
-    const functionBody =
-      filterOptionDict[setting.filterSetting.filterType]["functionBody"];
-    const filterFunction = getFilterFunction(
-      setting.filterSetting.arg,
-      functionBody
-    );
-    if (filterFunction) {
-      const chapterFilter = (chapter: Chapter) => {
-        if (chapter.status == Status.aborted) {
-          return false;
-        }
-        return filterFunction(chapter);
-      };
-      (unsafeWindow as newUnsafeWindow).chapterFilter = chapterFilter;
+  if (setting.filterSetting && setting.filterSetting.filterType !== "null") {
+    if (
+      typeof setting.filterSetting.arg === "string" &&
+      setting.filterSetting.functionBody
+    ) {
+      const filterFunction = getFilterFunction(
+        setting.filterSetting.arg,
+        setting.filterSetting.functionBody
+      );
+      if (filterFunction) {
+        const chapterFilter = (chapter: Chapter) => {
+          if (chapter.status == Status.aborted) {
+            return false;
+          }
+          return filterFunction(chapter);
+        };
+        (unsafeWindow as newUnsafeWindow).chapterFilter = chapterFilter;
+      }
     }
+  } else if (
+    setting.filterSetting &&
+    setting.filterSetting.filterType === "null"
+  ) {
+    (unsafeWindow as newUnsafeWindow).chapterFilter = undefined;
   }
 }
