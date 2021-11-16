@@ -134,10 +134,10 @@ export function getFilterFunction(arg: string, functionBody: string) {
 }
 
 export interface filterSetting {
-  arg?: string;
-  hiddenBad?: boolean;
-  filterType?: string;
-  functionBody?: string;
+  arg: string;
+  hiddenBad: boolean;
+  filterType: string;
+  functionBody: string;
 }
 export default Vue.defineComponent({
   provide() {

@@ -1,4 +1,5 @@
-.nd-setting-body * {
+.nd-setting-body input[type="checkbox"],
+.nd-setting-body input[type="radio"] {
   position: static;
   opacity: 1;
 }
