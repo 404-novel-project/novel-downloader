@@ -1,5 +1,6 @@
 import { enableDebug } from "./setting";
 import log from "loglevel";
+import { saveAs } from "file-saver";
 
 if (enableDebug.value) {
   log.setLevel("trace");

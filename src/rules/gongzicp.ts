@@ -5,6 +5,7 @@ import { BaseRuleClass, chapterParseObject } from "../rules";
 import { retryLimit } from "../setting";
 import { introDomHandle } from "./lib/common";
 import { log } from "../log";
+import * as CryptoJS from "crypto-js";
 
 export class gongzicp extends BaseRuleClass {
   public constructor() {

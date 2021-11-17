@@ -264,7 +264,6 @@
   ],
   "require": [
     "https://cdn.jsdelivr.net/npm/crypto-js@4.1.1/crypto-js.js#sha256-8L3yX9qPmvWSDIIHB3WGTH4RZusxVA0DDmuAo4LjnOE=",
-    "https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js#sha256-xoh0y6ov0WULfXcLMoaA6nZfszdgI8w2CEJ/3k8NBIE=",
     "https://cdn.jsdelivr.net/npm/nunjucks@3.2.3/browser/nunjucks.min.js#sha256-+CJElYLgP9RjEvMt/VTU1+qF8CuntjliUUBKp26fPck=",
     "https://cdn.jsdelivr.net/npm/vue@3.2.21/dist/vue.global.prod.js#sha256-/vjXAc6GTRSzj94ZRmI9JLA5vL8Z/fEzwv4ByA6DdI0="
   ]

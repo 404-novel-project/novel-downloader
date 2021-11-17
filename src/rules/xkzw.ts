@@ -5,6 +5,7 @@ import { getImageAttachment } from "../lib/attachments";
 import { getHtmlDOM } from "../lib/http";
 import { introDomHandle } from "./lib/common";
 import { log } from "../log";
+import * as CryptoJS from "crypto-js";
 
 export class xkzw extends BaseRuleClass {
   public constructor() {

@@ -3,6 +3,7 @@ import { Book, Chapter } from "./main";
 import { BaseRuleClass } from "./rules";
 import { saveOptions, sectionsObj } from "./save/save";
 import { parse, fetchAndParse, gfetchAndParse } from "./rules/lib/readability";
+import { saveAs } from "file-saver";
 
 export interface newWindow extends Window {
   downloading: boolean;
@@ -15,7 +16,7 @@ export interface newUnsafeWindow extends unsafeWindow {
   rule: BaseRuleClass;
   book: Book;
   save(book: Book, saveOptions: saveOptions): void;
-  saveAs(obj: any): void;
+  saveAs(obj: any): typeof saveAs;
   chapterFilter?: (chapter: Chapter) => boolean;
   customFinishCallback(): void;
   enableDebug: boolean;

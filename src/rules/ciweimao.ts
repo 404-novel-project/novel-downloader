@@ -13,6 +13,7 @@ import { getHtmlDOM } from "../lib/http";
 import { BaseRuleClass, chapterParseObject } from "../rules";
 import { introDomHandle } from "./lib/common";
 import { log } from "../log";
+import * as CryptoJS from "crypto-js";
 
 namespace ciweimao {
   export interface ciweimaoWindow extends unsafeWindow {

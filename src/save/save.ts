@@ -6,6 +6,8 @@ import defaultMainStyleText from "./main.css";
 import defaultTocStyleText from "./toc.css";
 import { section, chapter, index } from "./template";
 import { progressVM, vm as progress } from "../ui/progress";
+import { saveAs } from "file-saver";
+
 export class saveBook {
   protected book: Book;
   private chapters: Chapter[];

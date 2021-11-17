@@ -52,6 +52,7 @@ module.exports = {
     ],
   },
   externals: {
+    "crypto-js": "CryptoJS",
     nunjucks: "nunjucks",
     vue: "Vue",
   },
