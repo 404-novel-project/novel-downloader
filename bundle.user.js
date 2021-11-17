@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.4.6.303
+// @version        4.4.6.304
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -3056,7 +3056,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 // Module
-var code = "<div class=\"button-div\" id=\"button-div\"> <div v-if=\"uiObj.type !== 'error'\"> <div class=\"jump\" v-if=\"uiObj.type === 'jump'\"> <button class=\"jump\"> <img class=\"jump\" v-bind:src=\"imgJump\" v-on:click=\"jumpButtonClick\"/> </button> </div> <div class=\"download\" v-if=\"uiObj.type === 'download'\"> <button class=\"start\"> <img class=\"start\" v-bind:src=\"imgStart\" v-on:click=\"startButtonClick\"/> </button> <button class=\"setting\"> <img class=\"setting\" v-bind:src=\"imgSetting\" v-on:click=\"settingButtonClick\"/> </button> </div> </div> </div> ";
+var code = "<div class=\"button-div\" id=\"button-div\"> <div v-if=\"uiObj.type !== 'error'\"> <div class=\"jump\" v-if=\"uiObj.type === 'jump'\"> <button class=\"jump\"> <img class=\"jump\" v-bind:src=\"imgJump\" v-on:click=\"jumpButtonClick\"/> </button> </div> <div class=\"download\" v-if=\"uiObj.type === 'download'\"> <button class=\"start\"> <img class=\"start\" v-bind:src=\"imgStart\" v-on:click=\"startButtonClick\"/> </button> <button class=\"setting\" v-if=\"isSettingSeen\"> <img class=\"setting\" v-bind:src=\"imgSetting\" v-on:click=\"settingButtonClick\"/> </button> </div> </div> </div> ";
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (code);
 
@@ -13503,6 +13503,7 @@ exports.index = exports.chapter = exports.section = void 0;
 const section_html_j2_1 = __webpack_require__("./src/save/section.html.j2");
 const chapter_html_j2_1 = __webpack_require__("./src/save/chapter.html.j2");
 const index_html_j2_1 = __webpack_require__("./src/save/index.html.j2");
+const nunjucks = __webpack_require__("nunjucks");
 const env = new nunjucks.Environment(undefined, { autoescape: false });
 exports.section = new nunjucks.Template(section_html_j2_1.default, env, undefined, true);
 exports.chapter = new nunjucks.Template(chapter_html_j2_1.default, env, undefined, true);
@@ -13551,25 +13552,24 @@ const log_1 = __webpack_require__("./src/log.ts");
 const GM_1 = __webpack_require__("./src/lib/GM.ts");
 const statKeyName = "novel-downloader-22932304826849026";
 const domain = document.location.hostname;
-const _data = (0, GM_1._GM_getValue)(statKeyName);
-let statData;
-if (_data) {
-    statData = JSON.parse(_data);
-}
-else {
-    statData = { success: {}, failed: {} };
-}
-const saveData = () => {
-    const dataJSON = JSON.stringify(statData);
-    if (GM_1._GM_setValue === null ||
-        GM_1._GM_getValue === null ||
-        GM_1._GM_deleteValue === null) {
-        throw new Error("未发现 GM value 相关 API");
+async function getStatData() {
+    const _data = await (0, GM_1._GM_getValue)(statKeyName);
+    let statData;
+    if (_data) {
+        statData = JSON.parse(_data);
     }
-    (0, GM_1._GM_setValue)(statKeyName, dataJSON);
+    else {
+        statData = { success: {}, failed: {} };
+    }
+    return statData;
+}
+const saveData = async (statData) => {
+    const dataJSON = JSON.stringify(statData);
+    await (0, GM_1._GM_setValue)(statKeyName, dataJSON);
     return statData;
 };
-const dataPlus = (key) => {
+const dataPlus = async (key) => {
+    const statData = await getStatData();
     const tmpData = statData[key];
     if (tmpData[domain]) {
         tmpData[domain] = tmpData[domain] + 1;
@@ -13577,7 +13577,7 @@ const dataPlus = (key) => {
     else {
         tmpData[domain] = 1;
     }
-    return saveData();
+    return saveData(statData);
 };
 const successPlus = () => {
     return dataPlus("success");
@@ -13587,7 +13587,8 @@ const failedPlus = () => {
     return dataPlus("failed");
 };
 exports.failedPlus = failedPlus;
-const printStat = () => {
+const printStat = async () => {
+    const statData = await getStatData();
     log_1.log.info("[stat]小说下载器脚本运行情况统计：");
     log_1.log.info(statData);
     for (const k in statData) {
@@ -13600,8 +13601,8 @@ const printStat = () => {
 };
 exports.printStat = printStat;
 const resetStat = () => {
-    statData = { success: {}, failed: {} };
-    return saveData();
+    const statData = { success: {}, failed: {} };
+    return saveData(statData);
 };
 exports.resetStat = resetStat;
 
@@ -13869,6 +13870,7 @@ const log_1 = __webpack_require__("./src/log.ts");
 const button_html_1 = __webpack_require__("./src/ui/button.html");
 const button_css_1 = __webpack_require__("./src/ui/button.css");
 const setting_2 = __webpack_require__("./src/ui/setting.ts");
+const GM_1 = __webpack_require__("./src/lib/GM.ts");
 const Vue = __webpack_require__("vue");
 __webpack_require__("./src/ui/injectVue.ts");
 (0, createEl_1.createStyle)(button_css_1.default, "button-div-style");
@@ -13878,6 +13880,7 @@ exports.vm = Vue.createApp({
         return {
             imgStart: setting_1.iconStart0,
             imgSetting: setting_1.iconSetting,
+            isSettingSeen: GM_1._GM_info.scriptHandler !== "Greasemonkey",
             imgJump: setting_1.iconJump,
             uiObj: (0, ui_1.getUI)(),
         };
@@ -13964,6 +13967,7 @@ exports["default"] = Vue.defineCustomElement({
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const Vue = __webpack_require__("vue");
 unsafeWindow.Vue = Vue;
+window.Vue = Vue;
 
 
 /***/ }),
@@ -14234,6 +14238,14 @@ exports.init = init;
 
 "use strict";
 module.exports = Vue;
+
+/***/ }),
+
+/***/ "nunjucks":
+/***/ ((module) => {
+
+"use strict";
+module.exports = nunjucks;
 
 /***/ }),
 
