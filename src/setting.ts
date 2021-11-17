@@ -21,6 +21,6 @@ export const iconJump =
 
 export const r18SiteList = [
   "www.dierbanzhu1.com",
-  "www.banzhuer.org",
+  "www.bz01.org",
   "m.yuzhaige.cc",
 ];

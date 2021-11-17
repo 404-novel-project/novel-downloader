@@ -197,7 +197,8 @@ export async function getRule(): Promise<BaseRuleClass> {
       break;
     }
     case "www.dierbanzhu1.com":
-    case "www.banzhuer.org": {
+    case "www.banzhuer.org":
+    case "www.bz01.org": {
       const { dierbanzhu } = await import("../rules/dierbanzhu");
       ruleClass = dierbanzhu;
       break;
