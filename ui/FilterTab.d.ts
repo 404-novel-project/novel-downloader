@@ -1,4 +1,4 @@
-import type * as _vue from "vue";
+import * as Vue from "vue";
 import "./injectVue";
 import { Chapter } from "../main";
 export declare function getFunctionBody(fn: Function): string;
@@ -18,21 +18,13 @@ export interface filterSetting {
     filterType: string;
     functionBody: string;
 }
-declare const _default: _vue.DefineComponent<{}, {}, {
-    arg: string;
-    hiddenBad: boolean;
-    filterOptionDict: filterOptionDict;
+declare const _default: Vue.DefineComponent<{}, {
+    arg: Vue.Ref<string>;
+    hiddenBad: Vue.Ref<boolean>;
+    filterType: Vue.Ref<string>;
     filterOptionList: [string, filterOption][];
-    filterType: string;
-}, {
-    functionBody(): string;
-    filterObj(): string[];
-    filterDescription(): string;
-    filterSetting(): filterSetting;
-}, {
-    getFilterOption(): string[];
-    getHiddenBad(): boolean;
-}, _vue.ComponentOptionsMixin, _vue.ComponentOptionsMixin, "filterupdate"[], "filterupdate", _vue.VNodeProps & _vue.AllowedComponentProps & _vue.ComponentCustomProps, Readonly<{} & {} & {}> & {
+    filterDescription: Vue.ComputedRef<string>;
+}, {}, {}, {}, Vue.ComponentOptionsMixin, Vue.ComponentOptionsMixin, "filterupdate"[], "filterupdate", Vue.VNodeProps & Vue.AllowedComponentProps & Vue.ComponentCustomProps, Readonly<{} & {} & {}> & {
     onFilterupdate?: ((...args: any[]) => any) | undefined;
 }, {}>;
 export default _default;

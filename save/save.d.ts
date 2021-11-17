@@ -26,7 +26,7 @@ export declare class saveBook {
     genChapterHtmlFile(chapterObj: Chapter): Blob;
     chapterSort(a: Chapter, b: Chapter): 0 | 1 | -1;
 }
-interface sectionObj {
+export interface sectionObj {
     sectionName: string | null;
     sectionNumber: number | null;
     chpaters: Chapter[];
@@ -47,4 +47,3 @@ export interface saveOptions {
 }
 export declare function saveOptionsValidate(data: any): boolean;
 export declare function getSaveBookObj(book: Book, options: saveOptions): saveBook;
-export {};

@@ -1,6 +1,6 @@
-import type * as _vue from "vue";
+import * as Vue from "vue";
 import "./injectVue";
-declare const _default: _vue.VueElementConstructor<{
+declare const _default: Vue.VueElementConstructor<{
     dialogTitle?: unknown;
     status?: unknown;
 } & {} & {

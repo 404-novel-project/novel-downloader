@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.4.5.302
+// @version        4.4.6.303
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -2724,7 +2724,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ".section {\n  margin-top: 1.5em;\n  display: grid;\n  grid-template-columns: 32% 32% 32%;\n}\n.section > h2:first-child {\n  grid-column-end: span 3;\n  text-align: center;\n}\n.section > div.chapter {\n  text-align: center;\n  padding-top: 0.5em;\n  padding-bottom: 0.3em;\n  padding-left: 23px;\n  padding-right: 20px;\n  border: 1px solid #d9d9d9;\n  border-radius: 5px;\n  margin-left: 10px;\n  margin-top: 5px;\n  margin-right: 0;\n  margin-bottom: 0;\n}\n.section a.disabled {\n  pointer-events: none;\n  cursor: default;\n}\n.section a {\n  text-decoration: none;\n}\ndiv.chapter.good {\n  background: #41b883;\n}\ndiv.chapter.bad {\n  background: #ff9900;\n}\ndiv.chapter.bad a,\ndiv.chapter.good a {\n  color: white;\n}\ndiv.chapter-list-loading {\n  padding-top: 5em;\n  padding-bottom: 5em;\n  text-align: center;\n}\ndiv.chapter-list {\n  max-height: 320px;\n  overflow-y: scroll;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, ".section {\n  margin-top: 1.5em;\n  display: grid;\n  grid-template-columns: 32% 32% 32%;\n}\n.section > h3:first-child {\n  grid-column-end: span 3;\n  text-align: center;\n}\n.section > div.chapter {\n  text-align: center;\n  padding-top: 0.5em;\n  padding-bottom: 0.3em;\n  padding-left: 23px;\n  padding-right: 20px;\n  border: 1px solid #d9d9d9;\n  border-radius: 5px;\n  margin-left: 10px;\n  margin-top: 5px;\n  margin-right: 0;\n  margin-bottom: 0;\n}\n.section a.disabled {\n  pointer-events: none;\n  cursor: default;\n}\n.section a {\n  text-decoration: none;\n}\ndiv.chapter.good {\n  background: #41b883;\n}\ndiv.chapter.bad {\n  background: #ff9900;\n}\ndiv.chapter.bad a,\ndiv.chapter.good a {\n  color: white;\n}\ndiv.chapter-list-loading {\n  padding-top: 5em;\n  padding-bottom: 5em;\n  text-align: center;\n}\ndiv.chapter-list {\n  max-height: 320px;\n  overflow-y: scroll;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -3026,7 +3026,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 // Module
-var code = "<div> <div v-if=\"chapter-list-loading\"> <div class=\"loading\"><h2>正在载入章节列表中，请耐心等待……</h2></div> </div> <div class=\"chapter-list\" v-else> <div v-bind:key=\"sectionObj.sectionNumber\" class=\"section\" v-for=\"sectionObj in sectionsObj\"> <h2 class=\"section-label\" v-if=\"sectionObj.sectionName\"> {{ sectionObj.sectionName }} </h2> <div v-show=\"isSeen(chapter)\" v-bind:key=\"chapter.chapterNumber\" class=\"chapter\" v-for=\"chapter in sectionObj.chpaters\" v-bind:class=\"{\n              good: this.filter(chapter),\n              bad: !this.filter(chapter),\n            }\" v-bind:title=\"chapter.chapterNumber\"> <a v-bind:href=\"chapter.chapterUrl\" v-bind:class=\"{\n                disabled: this.isDisabled(chapter),\n              }\" target=\"_blank\" rel=\"noopener noreferrer\">{{ chapter.chapterName }}</a> </div> </div> </div> </div> ";
+var code = "<div> <div v-if=\"loading\"> <div class=\"loading\"><h2>正在载入章节列表中，请耐心等待……</h2></div> </div> <div class=\"chapter-list\" v-else> <div v-for=\"sectionObj in sectionsObj\" v-show=\"isSectionSeen(sectionObj)\" v-bind:key=\"sectionObj.sectionNumber\" class=\"section\"> <h3 class=\"section-label\" v-if=\"sectionObj.sectionName\"> {{ sectionObj.sectionName }} </h3> <div v-for=\"chapter in sectionObj.chpaters\" v-show=\"isChapterSeen(chapter)\" v-bind:key=\"chapter.chapterNumber\" class=\"chapter\" v-bind:class=\"{\n              good: this.filter(chapter),\n              bad: !this.filter(chapter),\n            }\" v-bind:title=\"chapter.chapterNumber\"> <a v-bind:href=\"chapter.chapterUrl\" v-bind:class=\"{\n                disabled: this.isChapterDisabled(chapter),\n              }\" target=\"_blank\" rel=\"noopener noreferrer\">{{ chapter.chapterName }}</a> </div> </div> </div> </div> ";
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (code);
 
@@ -13614,6 +13614,7 @@ exports.resetStat = resetStat;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+const Vue = __webpack_require__("vue");
 __webpack_require__("./src/ui/injectVue.ts");
 const download_1 = __webpack_require__("./src/router/download.ts");
 const main_1 = __webpack_require__("./src/main.ts");
@@ -13636,65 +13637,53 @@ async function getSections() {
 (0, createEl_1.createStyle)(ChapterList_css_1.default);
 exports["default"] = Vue.defineComponent({
     name: "ChapterList",
-    inject: ["getHiddenBad", "getFilterOption"],
-    data() {
-        return {
-            Status: main_1.Status,
-            sectionsObj: Vue.reactive({}),
-            loading: true,
-            filterObj: Vue.reactive([]),
-            hiddenBad: false,
-        };
-    },
-    methods: {
-        filter(chapter) {
-            if (chapter.status == this.Status.aborted) {
+    setup(props, context) {
+        const sectionsObj = Vue.reactive({});
+        const loading = Vue.ref(true);
+        Vue.onMounted(async () => {
+            const _sectionsObj = await getSections();
+            Object.assign(sectionsObj, _sectionsObj);
+            loading.value = false;
+        });
+        const filterSetting = Vue.inject("filterSetting");
+        const filter = (chapter) => {
+            if (chapter.status == main_1.Status.aborted) {
                 return false;
             }
-            if (this.filterObj && this.filterObj.length === 2) {
-                const filterFunction = (0, FilterTab_1.getFilterFunction)(this.filterObj[0], this.filterObj[1]);
+            if (filterSetting.value) {
+                const filterFunction = (0, FilterTab_1.getFilterFunction)(filterSetting.value.arg, filterSetting.value.functionBody);
                 if (typeof filterFunction === "function") {
                     return filterFunction(chapter);
                 }
-                else {
-                    return true;
-                }
             }
-            else {
-                return true;
-            }
-        },
-        isDisabled(chapter) {
-            if (!chapter.chapterUrl) {
+            return true;
+        };
+        const isChapterDisabled = (chapter) => {
+            if (!chapter?.chapterUrl) {
                 return true;
             }
             return false;
-        },
-        isSeen(chapter) {
-            if (this.hiddenBad && !this.filter(chapter)) {
+        };
+        const isChapterSeen = (chapter) => {
+            if (filterSetting.value.hiddenBad && filter(chapter) === false) {
                 return false;
             }
             else {
                 return true;
             }
-        },
-        updateInject() {
-            this.updateHiddenBad();
-            this.updateFilterObj();
-        },
-        updateHiddenBad() {
-            this.hiddenBad = this.getHiddenBad();
-        },
-        updateFilterObj() {
-            this.filterObj = this.getFilterOption();
-        },
-    },
-    async mounted() {
-        this.sectionsObj = await getSections();
-        this.loading = false;
-        setInterval(() => {
-            this.updateInject();
-        }, 300);
+        };
+        const isSectionSeen = (sectionObj) => {
+            const chapters = sectionObj.chpaters;
+            return chapters.some((chapter) => isChapterSeen(chapter) === true);
+        };
+        return {
+            sectionsObj,
+            loading,
+            filter,
+            isChapterDisabled,
+            isChapterSeen,
+            isSectionSeen,
+        };
     },
     template: ChapterList_html_1.default,
 });
@@ -13709,13 +13698,12 @@ exports["default"] = Vue.defineComponent({
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getFilterFunction = exports.filterOptionDict = exports.getFunctionBody = void 0;
+const Vue = __webpack_require__("vue");
 __webpack_require__("./src/ui/injectVue.ts");
 const FilterTab_html_1 = __webpack_require__("./src/ui/FilterTab.html");
 const FilterTab_css_1 = __webpack_require__("./src/ui/FilterTab.css");
 const ChapterList_1 = __webpack_require__("./src/ui/ChapterList.ts");
 const createEl_1 = __webpack_require__("./src/lib/createEl.ts");
-const setting_1 = __webpack_require__("./src/ui/setting.ts");
-const misc_1 = __webpack_require__("./src/lib/misc.ts");
 function getFunctionBody(fn) {
     return fn
         .toString()
@@ -13793,11 +13781,7 @@ exports.filterOptionDict = {
             return (chapter) => {
                 const n = chapter.chapterNumber;
                 const ss = arg.split(",").map((s) => s.replace(/\s/g, "").trim());
-                const booleans = [];
-                for (const s of ss) {
-                    booleans.push(match(s, n));
-                }
-                return booleans.some((element) => element === true);
+                return ss.map((s) => match(s, n)).some((b) => b === true);
             };
         },
         description: "<p>基于章节序号过滤，章节序号可通过章节标题悬停查看。</p><p>支持以下格式：13, 1-5, 2-, -89。可通过分号（,）使用多个表达式。</p>",
@@ -13825,65 +13809,43 @@ function getFilterFunction(arg, functionBody) {
 }
 exports.getFilterFunction = getFilterFunction;
 exports["default"] = Vue.defineComponent({
-    provide() {
-        return {
-            getFilterOption: this.getFilterOption,
-            getHiddenBad: this.getHiddenBad,
-        };
-    },
     components: { "chapter-list": ChapterList_1.default },
     emits: ["filterupdate"],
-    data() {
-        return {
-            arg: "",
-            hiddenBad: true,
-            filterOptionDict: exports.filterOptionDict,
-            filterOptionList: Object.entries(exports.filterOptionDict),
-            filterType: "null",
-        };
-    },
-    computed: {
-        functionBody() {
-            return getFunctionBody(this.filterOptionDict[this.filterType]["raw"]);
-        },
-        filterObj() {
-            return [this.arg, this.functionBody];
-        },
-        filterDescription() {
-            return this.filterOptionDict[this.filterType]["description"];
-        },
-        filterSetting() {
-            return {
-                arg: this.arg.toString(),
-                hiddenBad: this.hiddenBad,
-                filterType: this.filterType.toString(),
-                functionBody: this.functionBody.toString(),
-            };
-        },
-    },
-    methods: {
-        getFilterOption() {
-            return this.filterObj;
-        },
-        getHiddenBad() {
-            return this.hiddenBad;
-        },
-    },
-    mounted() {
-        if (!setting_1.vm.setting.filterSetting) {
-            return;
-        }
-        for (const setting of Object.entries((0, misc_1.deepcopy)(setting_1.vm.setting.filterSetting))) {
-            this[setting[0]] = setting[1];
-        }
-    },
-    watch: {
-        filterSetting: {
-            handler(newVal, oldVal) {
-                this.$emit("filterupdate", this.filterSetting);
-            },
+    setup(props, { emit }) {
+        const arg = Vue.ref("");
+        const hiddenBad = Vue.ref(true);
+        const filterType = Vue.ref("null");
+        const filterOptionList = Object.entries(exports.filterOptionDict);
+        const functionBody = Vue.computed(() => getFunctionBody(exports.filterOptionDict[filterType.value]["raw"]));
+        const filterDescription = Vue.computed(() => exports.filterOptionDict[filterType.value]["description"]);
+        const filterSetting = Vue.computed(() => ({
+            arg: arg.value,
+            hiddenBad: hiddenBad.value,
+            filterType: filterType.value,
+            functionBody: functionBody.value,
+        }));
+        Vue.provide("filterSetting", filterSetting);
+        Vue.watch(filterSetting, () => {
+            emit("filterupdate", filterSetting.value);
+        }, {
             deep: true,
-        },
+        });
+        const getFilterSetting = Vue.inject("getFilterSetting");
+        Vue.onMounted(() => {
+            const faterFilterSetting = getFilterSetting();
+            if (faterFilterSetting) {
+                arg.value = faterFilterSetting.arg;
+                hiddenBad.value = faterFilterSetting.hiddenBad;
+                filterType.value = faterFilterSetting.filterType;
+            }
+        });
+        return {
+            arg,
+            hiddenBad,
+            filterType,
+            filterOptionList,
+            filterDescription,
+        };
     },
     template: FilterTab_html_1.default,
 });
@@ -13907,6 +13869,7 @@ const log_1 = __webpack_require__("./src/log.ts");
 const button_html_1 = __webpack_require__("./src/ui/button.html");
 const button_css_1 = __webpack_require__("./src/ui/button.css");
 const setting_2 = __webpack_require__("./src/ui/setting.ts");
+const Vue = __webpack_require__("vue");
 __webpack_require__("./src/ui/injectVue.ts");
 (0, createEl_1.createStyle)(button_css_1.default, "button-div-style");
 exports.el = (0, createEl_1.createEl)("<div></div>");
@@ -13958,6 +13921,7 @@ exports.vm = Vue.createApp({
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const dialog_html_1 = __webpack_require__("./src/ui/dialog.html");
 const dialog_css_1 = __webpack_require__("./src/ui/dialog.css");
+const Vue = __webpack_require__("vue");
 __webpack_require__("./src/ui/injectVue.ts");
 exports["default"] = Vue.defineCustomElement({
     name: "Dialog",
@@ -13993,11 +13957,12 @@ exports["default"] = Vue.defineCustomElement({
 /***/ }),
 
 /***/ "./src/ui/injectVue.ts":
-/***/ ((__unused_webpack_module, exports) => {
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+const Vue = __webpack_require__("vue");
 unsafeWindow.Vue = Vue;
 
 
@@ -14013,6 +13978,7 @@ exports.vm = exports.el = void 0;
 const createEl_1 = __webpack_require__("./src/lib/createEl.ts");
 const progress_css_1 = __webpack_require__("./src/ui/progress.css");
 const progress_html_1 = __webpack_require__("./src/ui/progress.html");
+const Vue = __webpack_require__("vue");
 __webpack_require__("./src/ui/injectVue.ts");
 (0, createEl_1.createStyle)(progress_css_1.default);
 exports.el = (0, createEl_1.createEl)(`<div id="progress-bar"></div>`);
@@ -14071,6 +14037,7 @@ exports.vm = Vue.createApp({
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.vm = exports.el = void 0;
+const Vue = __webpack_require__("vue");
 __webpack_require__("./src/ui/injectVue.ts");
 const createEl_1 = __webpack_require__("./src/lib/createEl.ts");
 const misc_1 = __webpack_require__("./src/lib/misc.ts");
@@ -14079,141 +14046,160 @@ const setting_html_1 = __webpack_require__("./src/ui/setting.html");
 const setting_css_1 = __webpack_require__("./src/ui/setting.css");
 const FilterTab_1 = __webpack_require__("./src/ui/FilterTab.ts");
 const main_1 = __webpack_require__("./src/main.ts");
+const setting_1 = __webpack_require__("./src/setting.ts");
 (0, createEl_1.createStyle)(setting_css_1.default);
 exports.el = (0, createEl_1.createEl)(`<div id="setting"></div>`);
 exports.vm = Vue.createApp({
     name: "nd-setting",
     components: { "filter-tab": FilterTab_1.default },
-    data() {
-        return {
-            openStatus: "false",
-            saveOptions: [
-                { key: "null", value: "不使用自定义保存参数" },
-                { key: "chapter_name", value: "将章节名称格式修改为 第xx章 xxxx" },
-                { key: "txt_space", value: "txt文档每个自然段前加两个空格" },
-                { key: "reverse_chapters", value: "保存章节时倒序排列" },
-            ],
-            setting: Vue.reactive({}),
-            settingBackup: {},
-            currentTab: "tab-1",
+    setup(props, context) {
+        const setting = Vue.reactive({});
+        let settingBackup = {};
+        const saveOptions = [
+            { key: "null", value: "不使用自定义保存参数", options: {} },
+            {
+                key: "chapter_name",
+                value: "将章节名称格式修改为 第xx章 xxxx",
+                options: {
+                    getchapterName: (chapter) => {
+                        if (chapter.chapterName) {
+                            return `第${chapter.chapterNumber.toString()}章 ${chapter.chapterName}`;
+                        }
+                        else {
+                            return `第${chapter.chapterNumber.toString()}章`;
+                        }
+                    },
+                },
+            },
+            {
+                key: "txt_space",
+                value: "txt文档每个自然段前加两个空格",
+                options: {
+                    genChapterText: (chapterName, contentText) => {
+                        contentText = contentText
+                            .split("\n")
+                            .map((line) => {
+                            if (line.trim() === "") {
+                                return line;
+                            }
+                            else {
+                                return line.replace(/^/, "    ");
+                            }
+                        })
+                            .join("\n");
+                        return `## ${chapterName}\n\n${contentText}\n\n`;
+                    },
+                },
+            },
+            {
+                key: "reverse_chapters",
+                value: "保存章节时倒序排列",
+                options: {
+                    chapterSort: (a, b) => {
+                        if (a.chapterNumber > b.chapterNumber) {
+                            return -1;
+                        }
+                        if (a.chapterNumber === b.chapterNumber) {
+                            return 0;
+                        }
+                        if (a.chapterNumber < b.chapterNumber) {
+                            return 1;
+                        }
+                        return 0;
+                    },
+                },
+            },
+        ];
+        setting.enableDebug = setting_1.enableDebug.value;
+        setting.chooseSaveOption = "null";
+        const curSaveOption = () => {
+            const _s = saveOptions.find((s) => s.key === setting.chooseSaveOption);
+            if (_s) {
+                return _s.options;
+            }
+            else {
+                return saveOptions[0].options;
+            }
         };
-    },
-    methods: {
-        openSetting() {
-            this.settingBackup = (0, misc_1.deepcopy)(this.setting);
-            if (this.openStatus === "true") {
-                this.openStatus = "false";
-                setTimeout(() => {
-                    this.openStatus = "true";
-                }, 0);
+        const saveFilter = (filterSetting) => {
+            setting["filterSetting"] = (0, misc_1.deepcopy)(filterSetting);
+        };
+        const getFilterSetting = () => {
+            if (setting.filterSetting) {
+                return setting.filterSetting;
             }
             else {
-                this.openStatus = "true";
+                return;
             }
-        },
-        closeSetting(keep) {
+        };
+        Vue.provide("getFilterSetting", getFilterSetting);
+        const setConfig = (config) => {
+            setEnableDebug();
+            setCustomSaveOption();
+            setCustomFilter();
+            function setEnableDebug() {
+                if (typeof config.enableDebug === "boolean") {
+                    config.enableDebug ? log_1.log.setLevel("trace") : log_1.log.setLevel("info");
+                    setting_1.enableDebug.value = config.enableDebug;
+                }
+            }
+            function setCustomSaveOption() {
+                unsafeWindow.saveOptions = curSaveOption();
+            }
+            function setCustomFilter() {
+                if (config.filterSetting) {
+                    if (config.filterSetting.filterType === "null") {
+                        unsafeWindow.chapterFilter = undefined;
+                    }
+                    else {
+                        const filterFunction = (0, FilterTab_1.getFilterFunction)(config.filterSetting.arg, config.filterSetting.functionBody);
+                        if (filterFunction) {
+                            const chapterFilter = (chapter) => {
+                                if (chapter.status == main_1.Status.aborted) {
+                                    return false;
+                                }
+                                return filterFunction(chapter);
+                            };
+                            unsafeWindow.chapterFilter = chapterFilter;
+                        }
+                    }
+                }
+            }
+        };
+        const openStatus = Vue.ref("false");
+        const currentTab = Vue.ref("tab-1");
+        const openSetting = () => {
+            settingBackup = (0, misc_1.deepcopy)(setting);
+            openStatus.value = "true";
+        };
+        const closeSetting = (keep) => {
             if (keep === true) {
-                this.settingBackup = (0, misc_1.deepcopy)(this.setting);
+                settingBackup = (0, misc_1.deepcopy)(setting);
             }
             else {
-                this.setting = (0, misc_1.deepcopy)(this.settingBackup);
+                Object.assign(setting, settingBackup);
             }
-            if (this.openStatus === "true") {
-                this.openStatus = "false";
-            }
-        },
-        closeAndSaveSetting() {
-            this.closeSetting(true);
-            setTimeout(() => {
-                setConfig((0, misc_1.deepcopy)(this.setting))
-                    .then(() => log_1.log.info("[Init]自定义设置：" + JSON.stringify(this.setting)))
-                    .catch((error) => log_1.log.error(error));
-            }, 20);
-        },
-        saveFilter(filterSetting) {
-            this.setting["filterSetting"] = (0, misc_1.deepcopy)(filterSetting);
-        },
+            openStatus.value = "false";
+        };
+        const closeAndSaveSetting = async () => {
+            closeSetting(true);
+            await (0, misc_1.sleep)(30);
+            setConfig((0, misc_1.deepcopy)(setting));
+            log_1.log.info("[Init]自定义设置：" + JSON.stringify(setting));
+        };
+        return {
+            openStatus,
+            currentTab,
+            openSetting,
+            closeSetting,
+            closeAndSaveSetting,
+            saveFilter,
+            setting,
+            saveOptions,
+        };
     },
     template: setting_html_1.default,
 }).mount(exports.el);
-const saveOptionMap = {
-    null: undefined,
-    chapter_name: {
-        getchapterName: (chapter) => {
-            if (chapter.chapterName) {
-                return `第${chapter.chapterNumber.toString()}章 ${chapter.chapterName}`;
-            }
-            else {
-                return `第${chapter.chapterNumber.toString()}章`;
-            }
-        },
-    },
-    txt_space: {
-        genChapterText: (chapterName, contentText) => {
-            contentText = contentText
-                .split("\n")
-                .map((line) => {
-                if (line.trim() === "") {
-                    return line;
-                }
-                else {
-                    return line.replace(/^/, "    ");
-                }
-            })
-                .join("\n");
-            return `## ${chapterName}\n\n${contentText}\n\n`;
-        },
-    },
-    reverse_chapters: {
-        chapterSort: (a, b) => {
-            if (a.chapterNumber > b.chapterNumber) {
-                return -1;
-            }
-            if (a.chapterNumber === b.chapterNumber) {
-                return 0;
-            }
-            if (a.chapterNumber < b.chapterNumber) {
-                return 1;
-            }
-            return 0;
-        },
-    },
-};
-async function setConfig(setting) {
-    if (typeof setting.enableDebug === "boolean") {
-        const { enableDebug } = await Promise.resolve().then(() => __webpack_require__("./src/setting.ts"));
-        if (setting.enableDebug) {
-            enableDebug.value = true;
-            log_1.log.setLevel("trace");
-        }
-        else {
-            enableDebug.value = false;
-            log_1.log.setLevel("info");
-        }
-    }
-    if (setting.chooseSaveOption && setting.chooseSaveOption !== "null") {
-        unsafeWindow.saveOptions = saveOptionMap[setting.chooseSaveOption];
-    }
-    if (setting.filterSetting && setting.filterSetting.filterType !== "null") {
-        if (typeof setting.filterSetting.arg === "string" &&
-            setting.filterSetting.functionBody) {
-            const filterFunction = (0, FilterTab_1.getFilterFunction)(setting.filterSetting.arg, setting.filterSetting.functionBody);
-            if (filterFunction) {
-                const chapterFilter = (chapter) => {
-                    if (chapter.status == main_1.Status.aborted) {
-                        return false;
-                    }
-                    return filterFunction(chapter);
-                };
-                unsafeWindow.chapterFilter = chapterFilter;
-            }
-        }
-    }
-    else if (setting.filterSetting &&
-        setting.filterSetting.filterType === "null") {
-        unsafeWindow.chapterFilter = undefined;
-    }
-}
 
 
 /***/ }),
@@ -14240,6 +14226,14 @@ function init() {
 }
 exports.init = init;
 
+
+/***/ }),
+
+/***/ "vue":
+/***/ ((module) => {
+
+"use strict";
+module.exports = Vue;
 
 /***/ }),
 
