@@ -2,8 +2,7 @@ import sectionHtml from "./section.html.j2";
 import chapterHtml from "./chapter.html.j2";
 import indexHtml from "./index.html.j2";
 
-import type * as _nunjucks from "nunjucks";
-declare const nunjucks: typeof _nunjucks;
+import * as nunjucks from "nunjucks";
 
 const env = new nunjucks.Environment(undefined, { autoescape: false });
 

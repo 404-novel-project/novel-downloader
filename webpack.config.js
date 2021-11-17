@@ -52,6 +52,7 @@ module.exports = {
     ],
   },
   externals: {
+    nunjucks: "nunjucks",
     vue: "Vue",
   },
   devServer: {
@@ -79,7 +80,7 @@ module.exports = {
         } else {
           version = header["version"] + `.${revision}`;
         }
-        console.log(`revision: ${revision}`);
+        console.log(`version: ${version}`);
         header["version"] = version;
         return header;
       },

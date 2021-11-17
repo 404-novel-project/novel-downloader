@@ -7,6 +7,7 @@ import { log } from "../log";
 import buttonHtml from "./button.html";
 import buttonCss from "./button.css";
 import { vm as settingVM } from "./setting";
+import { _GM_info } from "../lib/GM";
 
 import * as Vue from "vue";
 import "./injectVue";
@@ -18,6 +19,7 @@ export const vm = Vue.createApp({
     return {
       imgStart: iconStart0,
       imgSetting: iconSetting,
+      isSettingSeen: _GM_info.scriptHandler !== "Greasemonkey",
       imgJump: iconJump,
       uiObj: getUI(),
     };

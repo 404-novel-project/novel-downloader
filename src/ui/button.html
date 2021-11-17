@@ -13,7 +13,7 @@
           v-on:click="startButtonClick"
         />
       </button>
-      <button class="setting">
+      <button class="setting" v-if="isSettingSeen">
         <img
           class="setting"
           v-bind:src="imgSetting"
