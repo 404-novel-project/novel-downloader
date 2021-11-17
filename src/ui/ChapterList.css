@@ -43,6 +43,6 @@ div.chapter-list-loading {
   text-align: center;
 }
 div.chapter-list {
-  max-height: 320px;
+  max-height: 200px;
   overflow-y: scroll;
 }

@@ -1,20 +1,20 @@
 .nd-setting-body input[type="checkbox"],
-.nd-setting-body input[type="radio"] {
+.nd-setting-body input[type="radio"],
+.nd-setting-body input[type="text"] {
   position: static;
   opacity: 1;
+  all: revert;
 }
 .nd-setting-body {
   background: #e0e0e0;
   padding: 1em;
   border-top-right-radius: 3px;
 }
-.nd-setting-footer {
-  background: #e0e0e0;
-  padding-bottom: 0.7em;
-  text-align: center;
-  border-bottom-left-radius: 3px;
-  border-bottom-right-radius: 3px;
+.nd-setting-body hr {
+  margin-top: 0.8em;
+  margin-bottom: 0.8em;
 }
+
 .tab-button {
   padding: 6px 10px;
   border-top-left-radius: 3px;
@@ -31,6 +31,36 @@
 .tab-button.active {
   background: #e0e0e0;
 }
-.nd-setting-body hr {
-  margin-top: 1.5em;
+
+.nd-setting-footer {
+  background: #e0e0e0;
+  padding-bottom: 0.7em;
+  text-align: center;
+  border-bottom-left-radius: 3px;
+  border-bottom-right-radius: 3px;
+}
+.nd-setting-footer > button {
+  all: revert;
+}
+
+/* 彩色斜纹 来自：https://www.zhangxinxu.com/wordpress/2021/05/css-html-hr/ */
+.hr-twill-colorful {
+  border: 0;
+  padding: 3px;
+  background: linear-gradient(135deg, red, orange, green, blue, purple);
+  --mask-image: repeating-linear-gradient(
+    135deg,
+    #000 0px,
+    #000 1px,
+    transparent 1px,
+    transparent 6px
+  );
+  -webkit-mask-image: var(--mask-image);
+  mask-image: var(--mask-image);
+}
+/* 两头虚 来自：https://www.zhangxinxu.com/wordpress/2021/05/css-html-hr/ */
+.hr-edge-weak {
+  border: 0;
+  padding-top: 1px;
+  background: linear-gradient(to right, transparent, #d0d0d5, transparent);
 }

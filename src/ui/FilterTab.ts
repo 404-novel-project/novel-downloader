@@ -36,7 +36,7 @@ export const filterOptionDict: filterOptionDict = {
   number: {
     raw: (arg: string) => {
       function characterCheck() {
-        return /^[\s\d\-,]+$/.test(arg);
+        return /^[\s\d\-,，]+$/.test(arg);
       }
       function match(s: string, n: number) {
         switch (true) {
@@ -97,7 +97,7 @@ export const filterOptionDict: filterOptionDict = {
       return (chapter: Chapter) => {
         const n = chapter.chapterNumber;
 
-        const ss = arg.split(",").map((s) => s.replace(/\s/g, "").trim());
+        const ss = arg.split(/,|，/).map((s) => s.replace(/\s/g, "").trim());
         return ss.map((s) => match(s, n)).some((b) => b === true);
       };
     },
