@@ -174,3 +174,7 @@ export class localStorageExpired {
 export function deepcopy(obj: object) {
   return JSON.parse(JSON.stringify(obj));
 }
+
+export function regexpEscape(str: string) {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}

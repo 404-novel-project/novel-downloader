@@ -290,6 +290,18 @@ export const biquwx = () =>
     1
   );
 
+export const tycqxs = () =>
+  mkBiqugeClass(
+    (introDom) => introDom,
+    (content) => {
+      content.innerHTML = content.innerHTML.replace(
+        /推荐都市大神老施新书:<a href="https:\/\/www\.tycqxs\.com\/[\d_]+\/" target="_blank">.+<\/a>/,
+        ""
+      );
+      return content;
+    }
+  );
+
 export class c25zw extends BaseRuleClass {
   public constructor() {
     super();

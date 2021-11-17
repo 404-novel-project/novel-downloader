@@ -109,6 +109,7 @@ ZIP压缩包，请在解压后，直接双击打开HTML文件（`index.html` 为
 |[小说酷笔记](https://www.kubiji.net/)|✅|❎||
 |[笔趣阁](https://www.biquwx.la/)|✅|❎||
 |[25中文网](http://www.25zw.com/)|✅|❎||
+|[天域小说网](https://www.tycqxs.com/)|✅|❎||
 
 </details>
 

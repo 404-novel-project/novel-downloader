@@ -149,7 +149,8 @@
     "*://www.htlvbooks.com/?act=showinfo&bookwritercode=*&bookid=*",
     "*://dijiubook.net/*_*/",
     "*://www.biquwx.la/*_*/",
-    "*://www.25zw.com/*/"
+    "*://www.25zw.com/*/",
+    "*://www.tycqxs.com/*_*/"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",
