@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.4.6.304
+// @version        4.4.7.305
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -253,7 +253,6 @@
 // @connect        sina.com.cn
 // @connect        *
 // @require        https://cdn.jsdelivr.net/npm/crypto-js@4.1.1/crypto-js.js#sha256-8L3yX9qPmvWSDIIHB3WGTH4RZusxVA0DDmuAo4LjnOE=
-// @require        https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js#sha256-xoh0y6ov0WULfXcLMoaA6nZfszdgI8w2CEJ/3k8NBIE=
 // @require        https://cdn.jsdelivr.net/npm/nunjucks@3.2.3/browser/nunjucks.min.js#sha256-+CJElYLgP9RjEvMt/VTU1+qF8CuntjliUUBKp26fPck=
 // @require        https://cdn.jsdelivr.net/npm/vue@3.2.21/dist/vue.global.prod.js#sha256-/vjXAc6GTRSzj94ZRmI9JLA5vL8Z/fEzwv4ByA6DdI0=
 // @downloadURL    https://github.com/yingziwu/novel-downloader/raw/gh-pages/bundle.user.js
@@ -2972,6 +2971,18 @@ module.exports = function (i) {
 
 /***/ }),
 
+/***/ "./node_modules/file-saver/dist/FileSaver.min.js":
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function(a,b){if(true)!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_FACTORY__ = (b),
+		__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+		(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+		__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));else {}})(this,function(){"use strict";function b(a,b){return"undefined"==typeof b?b={autoBom:!1}:"object"!=typeof b&&(console.warn("Deprecated: Expected third argument to be a object"),b={autoBom:!b}),b.autoBom&&/^\s*(?:text\/\S*|application\/xml|\S*\/\S*\+xml)\s*;.*charset\s*=\s*utf-8/i.test(a.type)?new Blob(["\uFEFF",a],{type:a.type}):a}function c(a,b,c){var d=new XMLHttpRequest;d.open("GET",a),d.responseType="blob",d.onload=function(){g(d.response,b,c)},d.onerror=function(){console.error("could not download file")},d.send()}function d(a){var b=new XMLHttpRequest;b.open("HEAD",a,!1);try{b.send()}catch(a){}return 200<=b.status&&299>=b.status}function e(a){try{a.dispatchEvent(new MouseEvent("click"))}catch(c){var b=document.createEvent("MouseEvents");b.initMouseEvent("click",!0,!0,window,0,0,0,80,20,!1,!1,!1,!1,0,null),a.dispatchEvent(b)}}var f="object"==typeof window&&window.window===window?window:"object"==typeof self&&self.self===self?self:"object"==typeof __webpack_require__.g&&__webpack_require__.g.global===__webpack_require__.g?__webpack_require__.g:void 0,a=f.navigator&&/Macintosh/.test(navigator.userAgent)&&/AppleWebKit/.test(navigator.userAgent)&&!/Safari/.test(navigator.userAgent),g=f.saveAs||("object"!=typeof window||window!==f?function(){}:"download"in HTMLAnchorElement.prototype&&!a?function(b,g,h){var i=f.URL||f.webkitURL,j=document.createElement("a");g=g||b.name||"download",j.download=g,j.rel="noopener","string"==typeof b?(j.href=b,j.origin===location.origin?e(j):d(j.href)?c(b,g,h):e(j,j.target="_blank")):(j.href=i.createObjectURL(b),setTimeout(function(){i.revokeObjectURL(j.href)},4E4),setTimeout(function(){e(j)},0))}:"msSaveOrOpenBlob"in navigator?function(f,g,h){if(g=g||f.name||"download","string"!=typeof f)navigator.msSaveOrOpenBlob(b(f,h),g);else if(d(f))c(f,g,h);else{var i=document.createElement("a");i.href=f,i.target="_blank",setTimeout(function(){e(i)})}}:function(b,d,e,g){if(g=g||open("","_blank"),g&&(g.document.title=g.document.body.innerText="downloading..."),"string"==typeof b)return c(b,d,e);var h="application/octet-stream"===b.type,i=/constructor/i.test(f.HTMLElement)||f.safari,j=/CriOS\/[\d]+/.test(navigator.userAgent);if((j||h&&i||a)&&"undefined"!=typeof FileReader){var k=new FileReader;k.onloadend=function(){var a=k.result;a=j?a:a.replace(/^data:[^;]*;/,"data:attachment/file;"),g?g.location.href=a:location=a,g=null},k.readAsDataURL(b)}else{var l=f.URL||f.webkitURL,m=l.createObjectURL(b);g?g.location=m:location.href=m,g=null,setTimeout(function(){l.revokeObjectURL(m)},4E4)}});f.saveAs=g.saveAs=g, true&&(module.exports=g)});
+
+//# sourceMappingURL=FileSaver.min.js.map
+
+/***/ }),
+
 /***/ "./src/save/chapter.html.j2":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -3396,12 +3407,13 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.debug = void 0;
 const download_1 = __webpack_require__("./src/router/download.ts");
+const file_saver_1 = __webpack_require__("./node_modules/file-saver/dist/FileSaver.min.js");
 async function debug() {
     const rule = await (0, download_1.getRule)();
     const book = await rule.bookParse();
     unsafeWindow.rule = rule;
     unsafeWindow.book = book;
-    unsafeWindow.saveAs = saveAs;
+    unsafeWindow.saveAs = file_saver_1.saveAs;
     const { parse, fetchAndParse, gfetchAndParse } = await Promise.resolve().then(() => __webpack_require__("./src/rules/lib/readability.ts"));
     const readability = {
         parse: parse,
@@ -4323,12 +4335,13 @@ exports.ggetHtmlDOM = ggetHtmlDOM;
 /***/ }),
 
 /***/ "./src/lib/misc.ts":
-/***/ ((__unused_webpack_module, exports) => {
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.deepcopy = exports.localStorageExpired = exports.calculateMd5 = exports.storageAvailable = exports.sandboxed = exports.sleep = exports.concurrencyRun = exports.rm = void 0;
+const CryptoJS = __webpack_require__("crypto-js");
 function rm(selector, all = false, dom) {
     if (all) {
         let rs = dom.querySelectorAll(selector);
@@ -4591,6 +4604,7 @@ exports.log = exports.saveLogTextToFile = exports.logText = void 0;
 const setting_1 = __webpack_require__("./src/setting.ts");
 const loglevel_1 = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 exports.log = loglevel_1.default;
+const file_saver_1 = __webpack_require__("./node_modules/file-saver/dist/FileSaver.min.js");
 if (setting_1.enableDebug.value) {
     loglevel_1.default.setLevel("trace");
 }
@@ -4621,7 +4635,7 @@ loglevel_1.default.methodFactory = function (methodName, logLevel, loggerName) {
 };
 loglevel_1.default.setLevel(loglevel_1.default.getLevel());
 function saveLogTextToFile() {
-    saveAs(new Blob([exports.logText], { type: "text/plain; charset=UTF-8" }), `novel-downloader-${Date.now().toString()}.log`);
+    (0, file_saver_1.saveAs)(new Blob([exports.logText], { type: "text/plain; charset=UTF-8" }), `novel-downloader-${Date.now().toString()}.log`);
 }
 exports.saveLogTextToFile = saveLogTextToFile;
 
@@ -6112,6 +6126,7 @@ const http_2 = __webpack_require__("./src/lib/http.ts");
 const rules_1 = __webpack_require__("./src/rules.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 const log_1 = __webpack_require__("./src/log.ts");
+const CryptoJS = __webpack_require__("crypto-js");
 class ciweimao extends rules_1.BaseRuleClass {
     constructor() {
         super();
@@ -6758,6 +6773,7 @@ const rules_1 = __webpack_require__("./src/rules.ts");
 const setting_1 = __webpack_require__("./src/setting.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 const log_1 = __webpack_require__("./src/log.ts");
+const CryptoJS = __webpack_require__("crypto-js");
 class gongzicp extends rules_1.BaseRuleClass {
     constructor() {
         super();
@@ -10829,6 +10845,7 @@ const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
 const rules_1 = __webpack_require__("./src/rules.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 const log_1 = __webpack_require__("./src/log.ts");
+const CryptoJS = __webpack_require__("crypto-js");
 class shubl extends rules_1.BaseRuleClass {
     constructor() {
         super();
@@ -12336,6 +12353,7 @@ const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
 const http_1 = __webpack_require__("./src/lib/http.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 const log_1 = __webpack_require__("./src/log.ts");
+const CryptoJS = __webpack_require__("crypto-js");
 class xkzw extends rules_1.BaseRuleClass {
     constructor() {
         super();
@@ -13150,6 +13168,7 @@ const main_css_1 = __webpack_require__("./src/save/main.css");
 const toc_css_1 = __webpack_require__("./src/save/toc.css");
 const template_1 = __webpack_require__("./src/save/template.ts");
 const progress_1 = __webpack_require__("./src/ui/progress.ts");
+const file_saver_1 = __webpack_require__("./node_modules/file-saver/dist/FileSaver.min.js");
 class saveBook {
     constructor(book) {
         this.book = book;
@@ -13182,7 +13201,7 @@ class saveBook {
         }
         log_1.log.info("[save]保存TXT文件");
         const savedText = this.savedTextArray.join("\n").replaceAll("\n", "\r\n");
-        saveAs(new Blob([savedText], { type: "text/plain;charset=utf-8" }), `${this.saveFileNameBase}.txt`);
+        (0, file_saver_1.saveAs)(new Blob([savedText], { type: "text/plain;charset=utf-8" }), `${this.saveFileNameBase}.txt`);
     }
     saveLog() {
         this.savedZip.file("debug.log", new Blob([log_1.logText], { type: "text/plain; charset=UTF-8" }));
@@ -13222,7 +13241,7 @@ class saveBook {
         self.saveLog();
         return new Promise((resolve, reject) => {
             const finalHandle = (blob) => {
-                saveAs(blob, `${self.saveFileNameBase}.zip`);
+                (0, file_saver_1.saveAs)(blob, `${self.saveFileNameBase}.zip`);
                 resolve();
             };
             const finalErrorHandle = (err) => {
@@ -14230,6 +14249,14 @@ function init() {
 }
 exports.init = init;
 
+
+/***/ }),
+
+/***/ "crypto-js":
+/***/ ((module) => {
+
+"use strict";
+module.exports = CryptoJS;
 
 /***/ }),
 
@@ -17105,6 +17132,18 @@ function entries(customStore = defaultGetStore()) {
 /******/ 				}
 /******/ 			}
 /******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/global */
+/******/ 	(() => {
+/******/ 		__webpack_require__.g = (function() {
+/******/ 			if (typeof globalThis === 'object') return globalThis;
+/******/ 			try {
+/******/ 				return this || new Function('return this')();
+/******/ 			} catch (e) {
+/******/ 				if (typeof window === 'object') return window;
+/******/ 			}
+/******/ 		})();
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/hasOwnProperty shorthand */
