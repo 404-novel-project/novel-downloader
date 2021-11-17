@@ -452,10 +452,20 @@ function mkBiqugeClass2(
 export const shuquge = () =>
   mkBiqugeClass2(
     (introDom) => {
-      introDom.innerHTML = introDom.innerHTML.replace(
-        /推荐地址：https?:\/\/www.shuquge.com\/txt\/\d+\/index\.html/g,
-        ""
-      );
+      document.querySelector(".noshow")?.classList.remove("noshow");
+      if (document.querySelector(".showall")) {
+        (<HTMLElement>document.querySelector(".showall")).innerHTML = "";
+      }
+
+      introDom.innerHTML = introDom.innerHTML
+        .replace(
+          /作者：.+所写的《.+》无弹窗免费全文阅读为转载作品,章节由网友发布。/,
+          ""
+        )
+        .replace(
+          /推荐地址：https?:\/\/www.shuquge.com\/txt\/\d+\/index\.html/g,
+          ""
+        );
       return introDom;
     },
     (content) => {
