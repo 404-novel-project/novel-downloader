@@ -51,6 +51,9 @@ module.exports = {
       },
     ],
   },
+  externals: {
+    vue: "Vue",
+  },
   devServer: {
     port: 11944,
     allowedHosts: ["all"],

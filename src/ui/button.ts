@@ -8,8 +8,7 @@ import buttonHtml from "./button.html";
 import buttonCss from "./button.css";
 import { vm as settingVM } from "./setting";
 
-import type * as _vue from "vue";
-declare const Vue: typeof _vue;
+import * as Vue from "vue";
 import "./injectVue";
 
 createStyle(buttonCss, "button-div-style");

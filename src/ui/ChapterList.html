@@ -1,21 +1,22 @@
 <div>
-  <div v-if="chapter-list-loading">
+  <div v-if="loading">
     <div class="loading"><h2>正在载入章节列表中，请耐心等待……</h2></div>
   </div>
   <div class="chapter-list" v-else>
     <div
+      v-for="sectionObj in sectionsObj"
+      v-show="isSectionSeen(sectionObj)"
       v-bind:key="sectionObj.sectionNumber"
       class="section"
-      v-for="sectionObj in sectionsObj"
     >
-      <h2 class="section-label" v-if="sectionObj.sectionName">
+      <h3 class="section-label" v-if="sectionObj.sectionName">
         {{ sectionObj.sectionName }}
-      </h2>
+      </h3>
       <div
-        v-show="isSeen(chapter)"
+        v-for="chapter in sectionObj.chpaters"
+        v-show="isChapterSeen(chapter)"
         v-bind:key="chapter.chapterNumber"
         class="chapter"
-        v-for="chapter in sectionObj.chpaters"
         v-bind:class="{
               good: this.filter(chapter),
               bad: !this.filter(chapter),
@@ -25,7 +26,7 @@
         <a
           v-bind:href="chapter.chapterUrl"
           v-bind:class="{
-                disabled: this.isDisabled(chapter),
+                disabled: this.isChapterDisabled(chapter),
               }"
           target="_blank"
           rel="noopener noreferrer"

@@ -3,7 +3,7 @@
   display: grid;
   grid-template-columns: 32% 32% 32%;
 }
-.section > h2:first-child {
+.section > h3:first-child {
   grid-column-end: span 3;
   text-align: center;
 }

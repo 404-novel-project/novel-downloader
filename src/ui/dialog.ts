@@ -1,8 +1,7 @@
 import dialogHtml from "./dialog.html";
 import dialogCss from "./dialog.css";
 
-import type * as _vue from "vue";
-declare const Vue: typeof _vue;
+import * as Vue from "vue";
 import "./injectVue";
 
 export default Vue.defineCustomElement({

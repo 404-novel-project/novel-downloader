@@ -1,14 +1,13 @@
-import type * as _vue from "vue";
-declare const Vue: typeof _vue;
+import * as Vue from "vue";
 import "./injectVue";
 import { getRule } from "../router/download";
 import { Chapter, Status } from "../main";
-import { getSectionsObj } from "../save/save";
+import { getSectionsObj, sectionObj } from "../save/save";
 import { newWindow } from "../global";
 import ChapterListHtml from "./ChapterList.html";
 import ChapterListCss from "./ChapterList.css";
 import { createStyle } from "../lib/createEl";
-import { getFilterFunction } from "./FilterTab";
+import { filterSetting, getFilterFunction } from "./FilterTab";
 
 async function getSections() {
   if ((window as newWindow & typeof globalThis)._sections) {
@@ -26,67 +25,61 @@ async function getSections() {
 createStyle(ChapterListCss);
 export default Vue.defineComponent({
   name: "ChapterList",
-  inject: ["getHiddenBad", "getFilterOption"],
-  data() {
-    return {
-      Status: Status,
-      sectionsObj: Vue.reactive({}),
-      loading: true,
-      filterObj: Vue.reactive([]),
-      hiddenBad: false,
-    };
-  },
-  methods: {
-    filter(chapter: Chapter) {
-      if (chapter.status == this.Status.aborted) {
+  setup(props, context) {
+    const sectionsObj = Vue.reactive({});
+    const loading = Vue.ref(true);
+    Vue.onMounted(async () => {
+      const _sectionsObj = await getSections();
+      Object.assign(sectionsObj, _sectionsObj);
+      loading.value = false;
+    });
+
+    const filterSetting = Vue.inject(
+      "filterSetting"
+    ) as Vue.ComputedRef<filterSetting>;
+    const filter = (chapter: Chapter) => {
+      if (chapter.status == Status.aborted) {
         return false;
       }
-      if (this.filterObj && this.filterObj.length === 2) {
+
+      if (filterSetting.value) {
         const filterFunction = getFilterFunction(
-          this.filterObj[0],
-          this.filterObj[1]
+          filterSetting.value.arg,
+          filterSetting.value.functionBody
         );
         if (typeof filterFunction === "function") {
           return filterFunction(chapter);
-        } else {
-          return true;
         }
-      } else {
-        return true;
       }
-    },
-    isDisabled(chapter: Chapter) {
-      if (!chapter.chapterUrl) {
+      return true;
+    };
+
+    const isChapterDisabled = (chapter: Chapter) => {
+      if (!chapter?.chapterUrl) {
         return true;
       }
       return false;
-    },
-    isSeen(chapter: Chapter) {
-      if (this.hiddenBad && !this.filter(chapter)) {
+    };
+    const isChapterSeen = (chapter: Chapter) => {
+      if (filterSetting.value.hiddenBad && filter(chapter) === false) {
         return false;
       } else {
         return true;
       }
-    },
-    updateInject() {
-      this.updateHiddenBad();
-      this.updateFilterObj();
-    },
-    updateHiddenBad() {
-      //@ts-ignore
-      this.hiddenBad = this.getHiddenBad();
-    },
-    updateFilterObj() {
-      //@ts-ignore
-      this.filterObj = this.getFilterOption();
-    },
-  },
-  async mounted() {
-    this.sectionsObj = await getSections();
-    this.loading = false;
-    setInterval(() => {
-      this.updateInject();
-    }, 300);
+    };
+    const isSectionSeen = (sectionObj: sectionObj) => {
+      const chapters = sectionObj.chpaters;
+      return chapters.some((chapter) => isChapterSeen(chapter) === true);
+    };
+
+    return {
+      sectionsObj,
+      loading,
+      filter,
+      isChapterDisabled,
+      isChapterSeen,
+      isSectionSeen,
+    };
   },
   template: ChapterListHtml,
 });

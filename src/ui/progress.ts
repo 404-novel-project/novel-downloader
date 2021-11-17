@@ -2,14 +2,13 @@ import { createEl, createStyle } from "../lib/createEl";
 import progressCss from "./progress.css";
 import progressHtml from "./progress.html";
 
-import type * as _vue from "vue";
-declare const Vue: typeof _vue;
+import * as Vue from "vue";
 import "./injectVue";
 
 createStyle(progressCss);
 
 export const el = createEl(`<div id="progress-bar"></div>`);
-export interface progressVM extends _vue.ComponentPublicInstance {
+export interface progressVM extends Vue.ComponentPublicInstance {
   totalChapterNumber: number;
   finishedChapterNumber: number;
   zipPercent: number;

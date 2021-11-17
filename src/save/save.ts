@@ -331,7 +331,7 @@ export class saveBook {
   }
 }
 
-interface sectionObj {
+export interface sectionObj {
   sectionName: string | null;
   sectionNumber: number | null;
   chpaters: Chapter[];

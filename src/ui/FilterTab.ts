@@ -1,13 +1,10 @@
-import type * as _vue from "vue";
-declare const Vue: typeof _vue;
+import * as Vue from "vue";
 import "./injectVue";
 import FilterTabHtml from "./FilterTab.html";
 import FilterTabCss from "./FilterTab.css";
 import { Chapter } from "../main";
 import ChapterList from "./ChapterList";
 import { createStyle } from "../lib/createEl";
-import { vm as svm } from "./setting";
-import { deepcopy } from "../lib/misc";
 
 export function getFunctionBody(fn: Function) {
   return fn
@@ -101,11 +98,7 @@ export const filterOptionDict: filterOptionDict = {
         const n = chapter.chapterNumber;
 
         const ss = arg.split(",").map((s) => s.replace(/\s/g, "").trim());
-        const booleans = [];
-        for (const s of ss) {
-          booleans.push(match(s, n));
-        }
-        return booleans.some((element) => element === true);
+        return ss.map((s) => match(s, n)).some((b) => b === true);
       };
     },
     description:
@@ -140,73 +133,55 @@ export interface filterSetting {
   functionBody: string;
 }
 export default Vue.defineComponent({
-  provide() {
-    return {
-      //@ts-ignore
-      getFilterOption: this.getFilterOption,
-      //@ts-ignore
-      getHiddenBad: this.getHiddenBad,
-    };
-  },
   components: { "chapter-list": ChapterList },
   emits: ["filterupdate"],
-  data() {
-    return {
-      arg: "",
-      hiddenBad: true,
-      filterOptionDict: filterOptionDict,
-      filterOptionList: Object.entries(filterOptionDict),
-      filterType: "null",
-    };
-  },
-  computed: {
-    functionBody() {
-      //@ts-ignore
-      return getFunctionBody(this.filterOptionDict[this.filterType]["raw"]);
-    },
-    filterObj() {
-      //@ts-ignore
-      return [this.arg, this.functionBody];
-    },
-    filterDescription() {
-      //@ts-ignore
-      return this.filterOptionDict[this.filterType]["description"];
-    },
-    filterSetting(): filterSetting {
-      return {
-        arg: this.arg.toString(),
-        hiddenBad: this.hiddenBad,
-        filterType: this.filterType.toString(),
-        functionBody: this.functionBody.toString(),
-      };
-    },
-  },
-  methods: {
-    getFilterOption() {
-      return this.filterObj;
-    },
-    getHiddenBad() {
-      return this.hiddenBad;
-    },
-  },
-  mounted() {
-    //@ts-ignore
-    if (!svm.setting.filterSetting) {
-      return;
-    }
-    //@ts-ignore
-    for (const setting of Object.entries(deepcopy(svm.setting.filterSetting))) {
-      //@ts-ignore
-      this[setting[0]] = setting[1];
-    }
-  },
-  watch: {
-    filterSetting: {
-      handler(newVal, oldVal) {
-        this.$emit("filterupdate", this.filterSetting);
+  setup(props, { emit }) {
+    const arg = Vue.ref("");
+    const hiddenBad = Vue.ref(true);
+    const filterType = Vue.ref("null");
+    const filterOptionList = Object.entries(filterOptionDict);
+    const functionBody = Vue.computed(() =>
+      getFunctionBody(filterOptionDict[filterType.value]["raw"])
+    );
+    const filterDescription = Vue.computed(
+      () => filterOptionDict[filterType.value]["description"]
+    );
+    const filterSetting = Vue.computed(() => ({
+      arg: arg.value,
+      hiddenBad: hiddenBad.value,
+      filterType: filterType.value,
+      functionBody: functionBody.value,
+    }));
+    Vue.provide("filterSetting", filterSetting);
+    Vue.watch(
+      filterSetting,
+      () => {
+        emit("filterupdate", filterSetting.value);
       },
-      deep: true,
-    },
+      {
+        deep: true,
+      }
+    );
+
+    const getFilterSetting = Vue.inject("getFilterSetting") as () =>
+      | filterSetting
+      | undefined;
+    Vue.onMounted(() => {
+      const faterFilterSetting = getFilterSetting();
+      if (faterFilterSetting) {
+        arg.value = faterFilterSetting.arg;
+        hiddenBad.value = faterFilterSetting.hiddenBad;
+        filterType.value = faterFilterSetting.filterType;
+      }
+    });
+
+    return {
+      arg,
+      hiddenBad,
+      filterType,
+      filterOptionList,
+      filterDescription,
+    };
   },
   template: FilterTabHtml,
 });
