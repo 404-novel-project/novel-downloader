@@ -16,7 +16,8 @@
   min-height: auto;
 }
 
-.button-div img.start {
+.button-div img.start,
+.button-div img.jump {
   height: 2em;
 }
 .button-div img.setting {

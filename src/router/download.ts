@@ -1,32 +1,32 @@
-import { BaseRuleClass } from "./rules";
+import { BaseRuleClass } from "../rules";
 
 export async function getRule(): Promise<BaseRuleClass> {
   const host: string = document.location.host;
   let ruleClass;
   switch (host) {
     case "www.ciweimao.com": {
-      const { ciweimao } = await import("./rules/ciweimao");
+      const { ciweimao } = await import("../rules/ciweimao");
       ruleClass = ciweimao;
       break;
     }
     case "www.uukanshu.com": {
-      const { uukanshu } = await import("./rules/uukanshu");
+      const { uukanshu } = await import("../rules/uukanshu");
       ruleClass = uukanshu;
       break;
     }
     case "www.yruan.com": {
-      const { yrun } = await import("./rules/yruan");
+      const { yrun } = await import("../rules/yruan");
       ruleClass = yrun;
       break;
     }
     case "www.shuquge.com":
     case "www.sizhicn.com": {
-      const { shuquge } = await import("./rules/biquge");
+      const { shuquge } = await import("../rules/biquge");
       ruleClass = shuquge();
       break;
     }
     case "www.dingdiann.net": {
-      const { dingdiann } = await import("./rules/dingdiann");
+      const { dingdiann } = await import("../rules/dingdiann");
       ruleClass = dingdiann;
       break;
     }
@@ -34,134 +34,134 @@ export async function getRule(): Promise<BaseRuleClass> {
     case "www.lewenn.com":
     case "www.klxs.la":
     case "www.xkzw.org": {
-      const { xkzw } = await import("./rules/xkzw");
+      const { xkzw } = await import("../rules/xkzw");
       ruleClass = xkzw;
       break;
     }
     case "www.266ks.com": {
-      const { c226ks } = await import("./rules/226ks");
+      const { c226ks } = await import("../rules/226ks");
       ruleClass = c226ks;
       break;
     }
     case "book.sfacg.com": {
-      const { sfacg } = await import("./rules/sfacg");
+      const { sfacg } = await import("../rules/sfacg");
       ruleClass = sfacg;
       break;
     }
     case "www.hetushu.com":
     case "hetushu.com": {
-      const { hetushu } = await import("./rules/hetushu");
+      const { hetushu } = await import("../rules/hetushu");
       ruleClass = hetushu;
       break;
     }
     case "www.shouda8.com":
     case "www.shouda88.com": {
-      const { shouda8 } = await import("./rules/shouda8");
+      const { shouda8 } = await import("../rules/shouda8");
       ruleClass = shouda8;
       break;
     }
     case "www.gebiqu.com": {
-      const { gebiqu } = await import("./rules/biquge");
+      const { gebiqu } = await import("../rules/biquge");
       ruleClass = gebiqu();
       break;
     }
     case "www.meegoq.com":
     case "www.viviyzw.com": {
-      const { meegoq } = await import("./rules/meegoq");
+      const { meegoq } = await import("../rules/meegoq");
       ruleClass = meegoq;
       break;
     }
     case "www.xiaoshuodaquan.com":
     case "www.1pwx.com":
     case "1pwx.com": {
-      const { xiaoshuodaquan } = await import("./rules/xiaoshuodaquan");
+      const { xiaoshuodaquan } = await import("../rules/xiaoshuodaquan");
       ruleClass = xiaoshuodaquan;
       break;
     }
     case "book.qidian.com": {
-      const { qidian } = await import("./rules/qidian");
+      const { qidian } = await import("../rules/qidian");
       ruleClass = qidian;
       break;
     }
     case "www.jjwxc.net": {
-      const { jjwxc } = await import("./rules/jjwxc");
+      const { jjwxc } = await import("../rules/jjwxc");
       ruleClass = jjwxc;
       break;
     }
     case "www.biquwoo.com":
     case "www.biquwo.org":
     case "www.hongyeshuzhai.com": {
-      const { common } = await import("./rules/biquge");
+      const { common } = await import("../rules/biquge");
       ruleClass = common();
       break;
     }
     case "www.81book.com":
     case "www.81zw.com": {
-      const { c81book } = await import("./rules/biquge");
+      const { c81book } = await import("../rules/biquge");
       ruleClass = c81book();
       break;
     }
     case "book.zongheng.com":
     case "huayu.zongheng.com": {
-      const { zongheng } = await import("./rules/zongheng");
+      const { zongheng } = await import("../rules/zongheng");
       ruleClass = zongheng;
       break;
     }
     case "www.17k.com": {
-      const { c17k } = await import("./rules/17k");
+      const { c17k } = await import("../rules/17k");
       ruleClass = c17k;
       break;
     }
     case "www.shuhai.com":
     case "mm.shuhai.com": {
-      const { shuhai } = await import("./rules/shuhai");
+      const { shuhai } = await import("../rules/shuhai");
       ruleClass = shuhai;
       break;
     }
     case "www.gongzicp.com":
     case "gongzicp.com": {
-      const { gongzicp } = await import("./rules/gongzicp");
+      const { gongzicp } = await import("../rules/gongzicp");
       ruleClass = gongzicp;
       break;
     }
     case "m.yuzhaige.cc":
     case "m.yushuge123.com": {
-      const { yuzhaige } = await import("./rules/yuzhaige");
+      const { yuzhaige } = await import("../rules/yuzhaige");
       ruleClass = yuzhaige;
       break;
     }
     case "www.linovel.net": {
-      const { linovel } = await import("./rules/linovel");
+      const { linovel } = await import("../rules/linovel");
       ruleClass = linovel;
       break;
     }
     case "www.xinwanben.com": {
-      const { xinwanben } = await import("./rules/xinwanben");
+      const { xinwanben } = await import("../rules/xinwanben");
       ruleClass = xinwanben;
       break;
     }
     case "www.tadu.com": {
-      const { tadu } = await import("./rules/tadu");
+      const { tadu } = await import("../rules/tadu");
       ruleClass = tadu;
       break;
     }
     case "www.idejian.com": {
-      const { idejian } = await import("./rules/idejian");
+      const { idejian } = await import("../rules/idejian");
       ruleClass = idejian;
       break;
     }
     case "www.qimao.com": {
-      const { qimao } = await import("./rules/qimao");
+      const { qimao } = await import("../rules/qimao");
       ruleClass = qimao;
       break;
     }
     case "www.wenku8.net": {
-      const { wenku8 } = await import("./rules/wenku8");
+      const { wenku8 } = await import("../rules/wenku8");
       ruleClass = wenku8;
       break;
     }
     case "www.dmzj.com": {
-      const { dmzj } = await import("./rules/dmzj");
+      const { dmzj } = await import("../rules/dmzj");
       ruleClass = dmzj;
       break;
     }
@@ -181,49 +181,49 @@ export async function getRule(): Promise<BaseRuleClass> {
     case "www.xn--pxtr7m.net":
     case "sosadfun.link":
     case "www.sosadfun.link": {
-      const { sosadfun } = await import("./rules/sosadfun");
+      const { sosadfun } = await import("../rules/sosadfun");
       ruleClass = sosadfun;
       break;
     }
     case "www.westnovel.com": {
-      const { westnovel } = await import("./rules/westnovel");
+      const { westnovel } = await import("../rules/westnovel");
       ruleClass = westnovel;
       break;
     }
     case "www.mht.tw":
     case "www.mht99.com": {
-      const { mht } = await import("./rules/mht");
+      const { mht } = await import("../rules/mht");
       ruleClass = mht;
       break;
     }
     case "www.dierbanzhu1.com":
     case "www.banzhuer.org": {
-      const { dierbanzhu } = await import("./rules/dierbanzhu");
+      const { dierbanzhu } = await import("../rules/dierbanzhu");
       ruleClass = dierbanzhu;
       break;
     }
     case "www.xbiquge.so": {
-      const { xbiquge } = await import("./rules/biquge");
+      const { xbiquge } = await import("../rules/biquge");
       ruleClass = xbiquge;
       break;
     }
     case "www.linovelib.com": {
-      const { linovelib } = await import("./rules/linovelib");
+      const { linovelib } = await import("../rules/linovelib");
       ruleClass = linovelib;
       break;
     }
     case "www.luoqiuzw.com": {
-      const { luoqiuzw } = await import("./rules/biquge");
+      const { luoqiuzw } = await import("../rules/biquge");
       ruleClass = luoqiuzw();
       break;
     }
     case "www.yibige.la": {
-      const { yibige } = await import("./rules/yibige");
+      const { yibige } = await import("../rules/yibige");
       ruleClass = yibige;
       break;
     }
     case "www.fushuwang.org": {
-      const { fushuwang } = await import("./rules/fushuwang");
+      const { fushuwang } = await import("../rules/fushuwang");
       ruleClass = fushuwang;
       break;
     }
@@ -235,28 +235,28 @@ export async function getRule(): Promise<BaseRuleClass> {
     case "www.soxscc.cc":
     case "www.soshuwu.com":
     case "www.kubiji.net": {
-      const { soxscc } = await import("./rules/soxscc");
+      const { soxscc } = await import("../rules/soxscc");
       ruleClass = soxscc;
       break;
     }
     case "www.fuguoduxs.com":
     case "www.shubaowa.org": {
-      const { shubaowa } = await import("./rules/shubaowa");
+      const { shubaowa } = await import("../rules/shubaowa");
       ruleClass = shubaowa;
       break;
     }
     case "www.xyqxs.cc": {
-      const { xyqxs } = await import("./rules/biquge");
+      const { xyqxs } = await import("../rules/biquge");
       ruleClass = xyqxs();
       break;
     }
     case "www.630shu.net": {
-      const { c630shu } = await import("./rules/simple/630shu");
+      const { c630shu } = await import("../rules/simple/630shu");
       ruleClass = c630shu;
       break;
     }
     case "www.qingoo.cn": {
-      const { qingoo } = await import("./rules/qingoo");
+      const { qingoo } = await import("../rules/qingoo");
       ruleClass = qingoo;
       break;
     }
@@ -266,7 +266,7 @@ export async function getRule(): Promise<BaseRuleClass> {
     case "trxs.cc":
     case "trxs123.com":
     case "jpxs123.com": {
-      const { trxs } = await import("./rules/simple/trxs");
+      const { trxs } = await import("../rules/simple/trxs");
       ruleClass = trxs();
       break;
     }
@@ -274,43 +274,43 @@ export async function getRule(): Promise<BaseRuleClass> {
     case "www.tongrenquan.me":
     case "tongrenquan.me":
     case "tongrenquan.org": {
-      const { tongrenquan } = await import("./rules/simple/trxs");
+      const { tongrenquan } = await import("../rules/simple/trxs");
       ruleClass = tongrenquan();
       break;
     }
     case "www.imiaobige.com": {
-      const { imiaobige } = await import("./rules/imiaobige");
+      const { imiaobige } = await import("../rules/imiaobige");
       ruleClass = imiaobige;
       break;
     }
     case "www.256wxc.com":
     case "www.256wenku.com": {
-      const { c256wxc } = await import("./rules/simple/256wxc");
+      const { c256wxc } = await import("../rules/simple/256wxc");
       ruleClass = c256wxc;
       break;
     }
     case regExpMatch(/lofter\.com$/): {
-      const { lofter } = await import("./rules/lofter");
+      const { lofter } = await import("../rules/lofter");
       ruleClass = lofter;
       break;
     }
     case "www.lwxs9.org": {
-      const { lwxs9 } = await import("./rules/biquge");
+      const { lwxs9 } = await import("../rules/biquge");
       ruleClass = lwxs9();
       break;
     }
     case "www.shubl.com": {
-      const { shubl } = await import("./rules/shubl");
+      const { shubl } = await import("../rules/shubl");
       ruleClass = shubl;
       break;
     }
     case "www.ujxs.net": {
-      const { ujxs } = await import("./rules/ujxs");
+      const { ujxs } = await import("../rules/ujxs");
       ruleClass = ujxs;
       break;
     }
     case "m.haitangtxt.net": {
-      const { haitangtxt } = await import("./rules/haitangtxt");
+      const { haitangtxt } = await import("../rules/haitangtxt");
       ruleClass = haitangtxt;
       break;
     }
@@ -332,22 +332,22 @@ export async function getRule(): Promise<BaseRuleClass> {
     case "www.lvhtebook.com":
     case "jp.lvhtebook.com":
     case "www.htlvbooks.com": {
-      const { longmabook } = await import("./rules/longmabook");
+      const { longmabook } = await import("../rules/longmabook");
       ruleClass = longmabook;
       break;
     }
     case "dijiubook.net": {
-      const { dijiubook } = await import("./rules/biquge");
+      const { dijiubook } = await import("../rules/biquge");
       ruleClass = dijiubook();
       break;
     }
     case "www.biquwx.la": {
-      const { biquwx } = await import("./rules/biquge");
+      const { biquwx } = await import("../rules/biquge");
       ruleClass = biquwx();
       break;
     }
     case "www.25zw.com": {
-      const { c25zw } = await import("./rules/biquge");
+      const { c25zw } = await import("../rules/biquge");
       ruleClass = c25zw;
       break;
     }

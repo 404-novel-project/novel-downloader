@@ -1,12 +1,25 @@
 <div class="button-div" id="button-div">
-  <button class="start">
-    <img class="start" v-bind:src="imgStart" v-on:click="startButtonClick" />
-  </button>
-  <button class="setting">
-    <img
-      class="setting"
-      v-bind:src="imgSetting"
-      v-on:click="settingButtonClick"
-    />
-  </button>
+  <div v-if="uiObj.type !== 'error'">
+    <div class="jump" v-if="uiObj.type === 'jump'">
+      <button class="jump">
+        <img class="jump" v-bind:src="imgJump" v-on:click="jumpButtonClick" />
+      </button>
+    </div>
+    <div class="download" v-if="uiObj.type === 'download'">
+      <button class="start">
+        <img
+          class="start"
+          v-bind:src="imgStart"
+          v-on:click="startButtonClick"
+        />
+      </button>
+      <button class="setting">
+        <img
+          class="setting"
+          v-bind:src="imgSetting"
+          v-on:click="settingButtonClick"
+        />
+      </button>
+    </div>
+  </div>
 </div>

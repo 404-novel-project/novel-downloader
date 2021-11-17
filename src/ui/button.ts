@@ -1,6 +1,7 @@
 import { createEl, createStyle } from "../lib/createEl";
-import { iconSetting, iconStart0, iconStart1 } from "../setting";
-import { getRule } from "../routers";
+import { iconSetting, iconStart0, iconStart1, iconJump } from "../setting";
+import { getRule } from "../router/download";
+import { getUI } from "../router/ui";
 import { newWindow } from "../global";
 import { log } from "../log";
 import buttonHtml from "./button.html";
@@ -12,19 +13,14 @@ declare const Vue: typeof _vue;
 import "./injectVue";
 
 createStyle(buttonCss, "button-div-style");
-
 export const el = createEl("<div></div>");
-
-async function run() {
-  const ruleClass = await getRule();
-  await ruleClass.run();
-}
-
 export const vm = Vue.createApp({
   data() {
     return {
       imgStart: iconStart0,
       imgSetting: iconSetting,
+      imgJump: iconJump,
+      uiObj: getUI(),
     };
   },
   methods: {
@@ -36,6 +32,12 @@ export const vm = Vue.createApp({
 
       const self = this;
       self["imgStart"] = iconStart1;
+
+      async function run() {
+        const ruleClass = await getRule();
+        await ruleClass.run();
+      }
+
       run()
         .then(() => {
           self["imgStart"] = iconStart0;
@@ -45,6 +47,9 @@ export const vm = Vue.createApp({
     settingButtonClick() {
       //@ts-expect-error
       settingVM.openSetting();
+    },
+    jumpButtonClick() {
+      document.location = this.uiObj.jumpUrl;
     },
   },
   template: buttonHtml,

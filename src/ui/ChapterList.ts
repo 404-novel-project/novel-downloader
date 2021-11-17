@@ -1,7 +1,7 @@
 import type * as _vue from "vue";
 declare const Vue: typeof _vue;
 import "./injectVue";
-import { getRule } from "../routers";
+import { getRule } from "../router/download";
 import { Chapter, Status } from "../main";
 import { getSectionsObj } from "../save/save";
 import { newWindow } from "../global";

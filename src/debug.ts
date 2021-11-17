@@ -1,4 +1,4 @@
-import { getRule } from "./routers";
+import { getRule } from "./router/download";
 import { newUnsafeWindow } from "./global";
 
 export async function debug() {
