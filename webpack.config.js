@@ -70,7 +70,12 @@ module.exports = {
           .execSync("cat REVISION")
           .toString()
           .trim();
-        const version = header["version"] + `.${revision}`;
+        let version;
+        if (dev) {
+          version = header["version"] + `.${revision}` + `.${Date.now()}`;
+        } else {
+          version = header["version"] + `.${revision}`;
+        }
         console.log(`revision: ${revision}`);
         header["version"] = version;
         return header;
