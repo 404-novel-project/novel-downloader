@@ -13,7 +13,7 @@ export async function replaceJjwxcCharacter(
       const normalCharacter = jjwxcFontTable[jjwxcCharacter];
       outputText = outputText.replaceAll(jjwxcCharacter, normalCharacter);
     }
-    outputText = outputText.replaceAll("‌\u200c", "");
+    outputText = outputText.replace(/\u200c/g, "");
   }
   return outputText;
 }
