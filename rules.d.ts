@@ -1,5 +1,5 @@
+import { AttachmentClass, Book, Chapter, ChapterAdditionalMetadate } from "./main";
 import { SaveBook, SaveOptions } from "./save/save";
-import { AttachmentClass, ChapterAdditionalMetadate, Book, Chapter } from "./main";
 export interface ChapterParseObject {
     chapterName: string | null;
     contentRaw: HTMLElement | null;

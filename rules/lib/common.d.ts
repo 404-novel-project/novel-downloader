@@ -1,6 +1,6 @@
+import { PublicConstructor } from "../../lib/misc";
 import { AttachmentClass } from "../../main";
 import { BaseRuleClass } from "../../rules";
-import { PublicConstructor } from "../../lib/misc";
 export declare function introDomHandle(introDom: (Element | HTMLElement) | null, domPatch?: (introDom: HTMLElement) => HTMLElement): Promise<[string | null, HTMLElement | null, AttachmentClass[] | null]>;
 export declare function nextPageParse(chapterName: string | null, chapterUrl: string, charset: string, selector: string, contentPatch: (_content: HTMLElement, doc: Document) => HTMLElement, getNextPage: (doc: Document) => string, continueCondition: (_content: HTMLElement, nextLink: string) => boolean): Promise<{
     chapterName: string | null;

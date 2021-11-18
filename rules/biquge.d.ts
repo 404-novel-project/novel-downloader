@@ -1,6 +1,6 @@
+import { PublicConstructor } from "../lib/misc";
 import { Book } from "../main";
 import { BaseRuleClass, ChapterParseObject } from "../rules";
-import { PublicConstructor } from "../lib/misc";
 export declare function bookParseTemp({ bookUrl, bookname, author, introDom, introDomPatch, coverUrl, chapterListSelector, charset, chapterParse, }: {
     bookUrl: string;
     bookname: string;
