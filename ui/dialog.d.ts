@@ -1,5 +1,4 @@
 import * as Vue from "vue";
-import "./injectVue";
 declare const _default: Vue.VueElementConstructor<{
     dialogTitle?: unknown;
     status?: unknown;

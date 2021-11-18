@@ -1,5 +1,4 @@
 import * as Vue from "vue";
-import "./injectVue";
 import { Chapter } from "../main";
 export declare function getFunctionBody(fn: FilterOption["raw"]): string;
 interface FilterOption {

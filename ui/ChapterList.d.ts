@@ -1,5 +1,4 @@
 import * as Vue from "vue";
-import "./injectVue";
 import { Chapter } from "../main";
 import { SectionObj } from "../save/save";
 declare const _default: Vue.DefineComponent<{}, {
