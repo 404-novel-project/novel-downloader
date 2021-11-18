@@ -1,5 +1,5 @@
 import { Book, Chapter } from "../main";
-export declare class saveBook {
+export declare class SaveBook {
     protected book: Book;
     private chapters;
     mainStyleText: string;
@@ -26,24 +26,24 @@ export declare class saveBook {
     genChapterHtmlFile(chapterObj: Chapter): Blob;
     chapterSort(a: Chapter, b: Chapter): 0 | 1 | -1;
 }
-export interface sectionObj {
+export interface SectionObj {
     sectionName: string | null;
     sectionNumber: number | null;
     chpaters: Chapter[];
 }
-export interface sectionsObj {
-    [sectionNumber: number]: sectionObj;
+export interface SectionsObj {
+    [sectionNumber: number]: SectionObj;
 }
-export declare function getSectionsObj(chapters: Chapter[]): sectionsObj;
-export interface saveOptions {
-    mainStyleText?: saveBook["mainStyleText"];
-    tocStyleText?: saveBook["tocStyleText"];
-    getchapterName?: saveBook["getchapterName"];
-    genSectionText?: saveBook["genSectionText"];
-    genChapterText?: saveBook["genChapterText"];
-    genSectionHtmlFile?: saveBook["genSectionHtmlFile"];
-    genChapterHtmlFile?: saveBook["genChapterHtmlFile"];
-    chapterSort?: saveBook["chapterSort"];
+export declare function getSectionsObj(chapters: Chapter[]): SectionObj[];
+export interface SaveOptions {
+    mainStyleText?: SaveBook["mainStyleText"];
+    tocStyleText?: SaveBook["tocStyleText"];
+    getchapterName?: SaveBook["getchapterName"];
+    genSectionText?: SaveBook["genSectionText"];
+    genChapterText?: SaveBook["genChapterText"];
+    genSectionHtmlFile?: SaveBook["genSectionHtmlFile"];
+    genChapterHtmlFile?: SaveBook["genChapterHtmlFile"];
+    chapterSort?: SaveBook["chapterSort"];
 }
 export declare function saveOptionsValidate(data: any): boolean;
-export declare function getSaveBookObj(book: Book, options: saveOptions): saveBook;
+export declare function getSaveBookObj(book: Book, options: SaveOptions): SaveBook;

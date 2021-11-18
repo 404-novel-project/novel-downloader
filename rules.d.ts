@@ -1,11 +1,11 @@
-import { saveBook, saveOptions } from "./save/save";
-import { attachmentClass, ChapterAdditionalMetadate, Book, Chapter } from "./main";
-export interface chapterParseObject {
+import { SaveBook, SaveOptions } from "./save/save";
+import { AttachmentClass, ChapterAdditionalMetadate, Book, Chapter } from "./main";
+export interface ChapterParseObject {
     chapterName: string | null;
     contentRaw: HTMLElement | null;
     contentText: string | null;
     contentHTML: HTMLElement | null;
-    contentImages: attachmentClass[] | null;
+    contentImages: AttachmentClass[] | null;
     additionalMetadate: ChapterAdditionalMetadate | null;
 }
 export declare abstract class BaseRuleClass {
@@ -13,12 +13,12 @@ export declare abstract class BaseRuleClass {
     charset: string;
     concurrencyLimit: number;
     maxRunLimit?: number;
-    saveOptions?: saveOptions;
+    saveOptions?: SaveOptions;
     book?: Book;
     private audio?;
     constructor();
     abstract bookParse(): Promise<Book>;
-    abstract chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean | null, charset: string, options: object): Promise<chapterParseObject>;
+    abstract chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean | null, charset: string, options: object): Promise<ChapterParseObject>;
     run(): Promise<Book | undefined>;
     protected preTest(): boolean;
     protected preWarning(): boolean;
@@ -26,8 +26,8 @@ export declare abstract class BaseRuleClass {
     protected postCallback(): void;
     protected postHook(): boolean;
     protected catchError(error: Error): void;
-    protected getSave(book: Book): saveBook;
+    protected getSave(book: Book): SaveBook;
     protected getChapters(book: Book): Chapter[];
-    protected initChapters(book: Book, saveBookObj: saveBook): Promise<Chapter[]>;
-    postChapterParseHook(chapter: Chapter, saveBookObj: saveBook): Promise<Chapter>;
+    protected initChapters(book: Book, saveBookObj: SaveBook): Promise<Chapter[]>;
+    postChapterParseHook(chapter: Chapter, saveBookObj: SaveBook): Promise<Chapter>;
 }

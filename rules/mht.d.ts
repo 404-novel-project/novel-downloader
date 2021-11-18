@@ -1,5 +1,5 @@
 import { BaseRuleClass } from "../rules";
-export declare class mht extends BaseRuleClass {
+export declare class Mht extends BaseRuleClass {
     constructor();
     bookParse(): Promise<import("../main").Book>;
     chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean, charset: string, options: object): Promise<{
@@ -7,7 +7,7 @@ export declare class mht extends BaseRuleClass {
         contentRaw: HTMLDivElement;
         contentText: string;
         contentHTML: HTMLElement;
-        contentImages: import("../main").attachmentClass[];
+        contentImages: import("../main").AttachmentClass[];
         additionalMetadate: null;
     }>;
 }

@@ -1,6 +1,6 @@
 import { Book } from "../main";
 import { BaseRuleClass } from "../rules";
-export declare class sosadfun extends BaseRuleClass {
+export declare class Sosadfun extends BaseRuleClass {
     constructor();
     bookParse(): Promise<Book>;
     chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean, charset: string, options: object): Promise<{
@@ -8,7 +8,7 @@ export declare class sosadfun extends BaseRuleClass {
         contentRaw: HTMLDivElement;
         contentText: string;
         contentHTML: HTMLElement;
-        contentImages: import("../main").attachmentClass[];
+        contentImages: import("../main").AttachmentClass[];
         additionalMetadate: null;
     } | {
         chapterName: string;

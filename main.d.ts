@@ -1,5 +1,5 @@
 import { BaseRuleClass } from "./rules";
-import { saveOptions } from "./save/save";
+import { SaveOptions } from "./save/save";
 export declare enum Status {
     pending = 0,
     downloading = 1,
@@ -9,8 +9,8 @@ export declare enum Status {
     saved = 5
 }
 export interface BookAdditionalMetadate {
-    cover?: attachmentClass;
-    attachments?: attachmentClass[];
+    cover?: AttachmentClass;
+    attachments?: AttachmentClass[];
     tags?: string[];
     lastModified?: number;
     serires?: string;
@@ -27,7 +27,7 @@ export declare class Book {
     introductionHTML: HTMLElement | null;
     additionalMetadate: BookAdditionalMetadate;
     chapters: Chapter[];
-    saveOptions: saveOptions;
+    saveOptions: SaveOptions;
     constructor(bookUrl: string, bookname: string, author: string, introduction: string | null, introductionHTML: HTMLElement | null, additionalMetadate: BookAdditionalMetadate, chapters: Chapter[]);
 }
 export interface ChapterAdditionalMetadate {
@@ -52,14 +52,14 @@ export declare class Chapter {
     contentRaw: HTMLElement | null;
     contentText: string | null;
     contentHTML: HTMLElement | null;
-    contentImages: attachmentClass[] | null;
+    contentImages: AttachmentClass[] | null;
     additionalMetadate: ChapterAdditionalMetadate | null;
     chapterHtmlFileName: string | number;
     constructor(bookUrl: string, bookname: string, chapterUrl: string, chapterNumber: number, chapterName: string | null, isVIP: boolean, isPaid: boolean | null, sectionName: string | null, sectionNumber: number | null, sectionChapterNumber: number | null, chapterParse: BaseRuleClass["chapterParse"], charset: string, options: object);
     init(): Promise<this>;
     private parse;
 }
-export declare class attachmentClass {
+export declare class AttachmentClass {
     url: string;
     name: string;
     mode: "naive" | "TM";

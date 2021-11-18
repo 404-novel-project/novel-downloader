@@ -1,4 +1,4 @@
-export declare class fflateZip {
+export declare class FflateZip {
     private zcount;
     private count;
     private tcount;
@@ -12,5 +12,5 @@ export declare class fflateZip {
     constructor(memlimit?: boolean);
     file(filename: string, file: Blob): void;
     private addToSavedZip;
-    generateAsync(onUpdate?: ((percent: number) => any) | undefined): Promise<void>;
+    generateAsync(onUpdate?: (percent: number) => any): Promise<void>;
 }

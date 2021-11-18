@@ -1,5 +1,5 @@
 import { BaseRuleClass } from "../rules";
-export declare class dingdiann extends BaseRuleClass {
+export declare class Dingdiann extends BaseRuleClass {
     constructor();
     bookParse(): Promise<import("../main").Book>;
     chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean, charset: string, options: object): Promise<{
@@ -7,7 +7,7 @@ export declare class dingdiann extends BaseRuleClass {
         contentRaw: HTMLDivElement;
         contentText: string;
         contentHTML: HTMLElement;
-        contentImages: import("../main").attachmentClass[];
+        contentImages: import("../main").AttachmentClass[];
         additionalMetadate: null;
     }>;
 }

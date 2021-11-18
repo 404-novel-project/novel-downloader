@@ -1,4 +1,4 @@
-interface statData {
+interface StatData {
     success: {
         [domain: string]: number;
     };
@@ -6,8 +6,8 @@ interface statData {
         [domain: string]: number;
     };
 }
-export declare const successPlus: () => Promise<statData>;
-export declare const failedPlus: () => Promise<statData>;
+export declare const successPlus: () => Promise<StatData>;
+export declare const failedPlus: () => Promise<StatData>;
 export declare const printStat: () => Promise<void>;
-export declare const resetStat: () => Promise<statData>;
+export declare const resetStat: () => Promise<StatData>;
 export {};

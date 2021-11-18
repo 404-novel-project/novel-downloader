@@ -1,4 +1,4 @@
-import { gfetch_request_options } from "../../lib/http";
+import { GfetchRequestOptions } from "../../lib/http";
 interface ReadabilityOptions {
     debug?: boolean;
     maxElemsToParse?: number;
@@ -9,7 +9,7 @@ interface ReadabilityOptions {
     serializer?: (node: Node) => string | Element;
     disableJSONLD?: boolean;
 }
-export declare function parse(doc: Document, options?: ReadabilityOptions | undefined): {
+export declare function parse(doc: Document, options?: ReadabilityOptions): {
     title: string;
     byline: string;
     dir: string;
@@ -19,7 +19,7 @@ export declare function parse(doc: Document, options?: ReadabilityOptions | unde
     excerpt: string;
     siteName: string;
 } | null;
-export declare function fetchAndParse(url: string, charset: string | undefined, init?: RequestInit | undefined, patch?: (doc: Document) => Document, options?: ReadabilityOptions | undefined): Promise<{
+export declare function fetchAndParse(url: string, charset?: string, init?: RequestInit, patch?: (doc: Document) => Document, options?: ReadabilityOptions): Promise<{
     title: string;
     byline: string;
     dir: string;
@@ -29,7 +29,7 @@ export declare function fetchAndParse(url: string, charset: string | undefined, 
     excerpt: string;
     siteName: string;
 } | null>;
-export declare function gfetchAndParse(url: string, charset: string | undefined, init?: gfetch_request_options | undefined, patch?: (doc: Document) => Document, options?: ReadabilityOptions | undefined): Promise<{
+export declare function gfetchAndParse(url: string, charset?: string, init?: GfetchRequestOptions, patch?: (doc: Document) => Document, options?: ReadabilityOptions): Promise<{
     title: string;
     byline: string;
     dir: string;

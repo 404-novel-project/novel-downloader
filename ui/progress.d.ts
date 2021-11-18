@@ -1,7 +1,7 @@
 import * as Vue from "vue";
 import "./injectVue";
 export declare const el: HTMLElement;
-export interface progressVM extends Vue.ComponentPublicInstance {
+export interface ProgressVM extends Vue.ComponentPublicInstance {
     totalChapterNumber: number;
     finishedChapterNumber: number;
     zipPercent: number;

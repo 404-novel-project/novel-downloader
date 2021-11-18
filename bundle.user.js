@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.4.7.305
+// @version        4.4.8.310
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -70,6 +70,7 @@
 // @match          *://www.mht.tw/*/
 // @match          *://www.mht99.com/*/
 // @match          *://www.dierbanzhu1.com/*_*/
+// @match          *://www.bz01.org/*_*/
 // @match          *://www.banzhuer.org/*_*/
 // @match          *://www.xbiquge.so/book/*/
 // @match          *://www.hongyeshuzhai.com/shuzhai/*/
@@ -133,6 +134,7 @@
 // @match          *://dijiubook.net/*_*/
 // @match          *://www.biquwx.la/*_*/
 // @match          *://www.25zw.com/*/
+// @match          *://www.tycqxs.com/*_*/
 // @name:en        novel-downloader
 // @description:en An scalable universal novel downloader.
 // @namespace      https://blog.bgme.me
@@ -2723,7 +2725,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ".section {\n  margin-top: 1.5em;\n  display: grid;\n  grid-template-columns: 32% 32% 32%;\n}\n.section > h3:first-child {\n  grid-column-end: span 3;\n  text-align: center;\n}\n.section > div.chapter {\n  text-align: center;\n  padding-top: 0.5em;\n  padding-bottom: 0.3em;\n  padding-left: 23px;\n  padding-right: 20px;\n  border: 1px solid #d9d9d9;\n  border-radius: 5px;\n  margin-left: 10px;\n  margin-top: 5px;\n  margin-right: 0;\n  margin-bottom: 0;\n}\n.section a.disabled {\n  pointer-events: none;\n  cursor: default;\n}\n.section a {\n  text-decoration: none;\n}\ndiv.chapter.good {\n  background: #41b883;\n}\ndiv.chapter.bad {\n  background: #ff9900;\n}\ndiv.chapter.bad a,\ndiv.chapter.good a {\n  color: white;\n}\ndiv.chapter-list-loading {\n  padding-top: 5em;\n  padding-bottom: 5em;\n  text-align: center;\n}\ndiv.chapter-list {\n  max-height: 320px;\n  overflow-y: scroll;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, ".section {\n  margin-top: 1.5em;\n  display: grid;\n  grid-template-columns: 32% 32% 32%;\n}\n.section > h3:first-child {\n  grid-column-end: span 3;\n  text-align: center;\n}\n.section > div.chapter {\n  text-align: center;\n  padding-top: 0.5em;\n  padding-bottom: 0.3em;\n  padding-left: 23px;\n  padding-right: 20px;\n  border: 1px solid #d9d9d9;\n  border-radius: 5px;\n  margin-left: 10px;\n  margin-top: 5px;\n  margin-right: 0;\n  margin-bottom: 0;\n}\n.section a.disabled {\n  pointer-events: none;\n  cursor: default;\n}\n.section a {\n  text-decoration: none;\n}\ndiv.chapter.good {\n  background: #41b883;\n}\ndiv.chapter.bad {\n  background: #ff9900;\n}\ndiv.chapter.bad a,\ndiv.chapter.good a {\n  color: white;\n}\ndiv.chapter-list-loading {\n  padding-top: 5em;\n  padding-bottom: 5em;\n  text-align: center;\n}\ndiv.chapter-list {\n  max-height: 200px;\n  overflow-y: scroll;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -2747,7 +2749,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ".filter-setting {\n  padding-top: 0.4em;\n  padding-bottom: 0.8em;\n  text-align: center;\n}\n.filter-setter {\n  margin-top: 2em;\n}\n.filter-description {\n  font-size: larger;\n  color: cornflowerblue;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, ".filter-setting {\n  padding-top: 0.4em;\n  padding-bottom: 0.8em;\n  text-align: center;\n}\n.filter-input + .filter-setter {\n  margin-top: 1em;\n}\n.filter-description {\n  font-size: larger;\n  color: cornflowerblue;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -2843,7 +2845,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ".nd-setting-body input[type=\"checkbox\"],\n.nd-setting-body input[type=\"radio\"] {\n  position: static;\n  opacity: 1;\n}\n.nd-setting-body {\n  background: #e0e0e0;\n  padding: 1em;\n  border-top-right-radius: 3px;\n}\n.nd-setting-footer {\n  background: #e0e0e0;\n  padding-bottom: 0.7em;\n  text-align: center;\n  border-bottom-left-radius: 3px;\n  border-bottom-right-radius: 3px;\n}\n.tab-button {\n  padding: 6px 10px;\n  border-top-left-radius: 3px;\n  border-top-right-radius: 3px;\n  border: 1px solid #ccc;\n  cursor: pointer;\n  background: #f0f0f0;\n  margin-bottom: -1px;\n  margin-right: -1px;\n}\n.tab-button:hover {\n  background: #e0e0e0;\n}\n.tab-button.active {\n  background: #e0e0e0;\n}\n.nd-setting-body hr {\n  margin-top: 1.5em;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, ".nd-setting-body input[type=\"checkbox\"],\n.nd-setting-body input[type=\"radio\"],\n.nd-setting-body input[type=\"text\"] {\n  position: static;\n  opacity: 1;\n  all: revert;\n}\n.nd-setting-body {\n  background: #e0e0e0;\n  padding: 1em;\n  border-top-right-radius: 3px;\n}\n.nd-setting-body hr {\n  margin-top: 0.8em;\n  margin-bottom: 0.8em;\n}\n\n.tab-button {\n  padding: 6px 10px;\n  border-top-left-radius: 3px;\n  border-top-right-radius: 3px;\n  border: 1px solid #ccc;\n  cursor: pointer;\n  background: #f0f0f0;\n  margin-bottom: -1px;\n  margin-right: -1px;\n}\n.tab-button:hover {\n  background: #e0e0e0;\n}\n.tab-button.active {\n  background: #e0e0e0;\n}\n\n.nd-setting-footer {\n  background: #e0e0e0;\n  padding-bottom: 0.7em;\n  text-align: center;\n  border-bottom-left-radius: 3px;\n  border-bottom-right-radius: 3px;\n}\n.nd-setting-footer > button {\n  all: revert;\n}\n\n/* 彩色斜纹 来自：https://www.zhangxinxu.com/wordpress/2021/05/css-html-hr/ */\n.hr-twill-colorful {\n  border: 0;\n  padding: 3px;\n  background: linear-gradient(135deg, red, orange, green, blue, purple);\n  --mask-image: repeating-linear-gradient(\n    135deg,\n    #000 0px,\n    #000 1px,\n    transparent 1px,\n    transparent 6px\n  );\n  -webkit-mask-image: var(--mask-image);\n  mask-image: var(--mask-image);\n}\n/* 两头虚 来自：https://www.zhangxinxu.com/wordpress/2021/05/css-html-hr/ */\n.hr-edge-weak {\n  border: 0;\n  padding-top: 1px;\n  background: linear-gradient(to right, transparent, #d0d0d5, transparent);\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -3052,7 +3054,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 // Module
-var code = "<div> <div class=\"filter-setting\"> <div v-if=\"filterType !== 'null'\"> <p>请输入过滤的条件：<input type=\"text\" v-model=\"arg\"/></p> </div> <div class=\"filter-setter\"> <div> <span>当前过滤方法：</span> <select v-model=\"filterType\"> <option v-for=\"filterOption in filterOptionList\" v-bind:value=\"filterOption[0]\"> {{ filterOption[1][\"abbreviation\"] }} </option> </select> </div> <input type=\"checkbox\" id=\"hiddenBad\" v-model=\"hiddenBad\"/> <label for=\"hiddenBad\">只显示符合条件章节</label> <div class=\"filter-description\" v-html=\"filterDescription\"></div> </div> </div> <chapter-list/> </div> ";
+var code = "<div> <div class=\"filter-setting\"> <div v-if=\"filterType !== 'null'\" class=\"filter-input\"> <p>请输入过滤的条件：<input type=\"text\" v-model=\"arg\"/></p> </div> <div class=\"filter-setter\"> <div> <span>当前过滤方法：</span> <select v-model=\"filterType\"> <option v-for=\"filterOption in filterOptionList\" v-bind:value=\"filterOption[0]\"> {{ filterOption[1][\"abbreviation\"] }} </option> </select> </div> <input type=\"checkbox\" id=\"hiddenBad\" v-model=\"hiddenBad\"/> <label for=\"hiddenBad\">只显示符合条件章节</label> <div class=\"filter-description\" v-html=\"filterDescription\"></div> </div> </div> <chapter-list/> </div> ";
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (code);
 
@@ -3112,7 +3114,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 // Module
-var code = "<div> <dialog-ui dialog-title=\"设置\" v-bind:status=\"openStatus\" v-on:dialogclose=\"closeSetting\" v-if=\"openStatus === 'true'\"> <div class=\"nd-setting\"> <div class=\"nd-setting-tab\"> <button v-bind:class=\"['tab-button', { active: currentTab === 'tab-1'}]\" v-on:click=\"currentTab = 'tab-1'\"> 基本设置 </button> <button v-bind:class=\"['tab-button', { active: currentTab === 'tab-2'}]\" v-on:click=\"currentTab = 'tab-2'\"> 自定义筛选条件 </button> </div> <div class=\"nd-setting-body\"> <div id=\"nd-setting-tab-1\" class=\"tab-page\" v-show=\"currentTab === 'tab-1'\"> <div> <input type=\"checkbox\" id=\"debug\" v-model=\"setting.enableDebug\"/> <label for=\"debug\">启用调式模式。（输出更详细日志）</label> </div> <hr/> <div> <h3>自定义保存参数</h3> <ul> <li v-for=\"item of saveOptions\"> <input type=\"radio\" v-bind:id=\"item.key\" v-bind:value=\"item.key\" v-model=\"setting.chooseSaveOption\"/> <label v-bind:for=\"item.key\">{{ item.value }}</label> </li> </ul> </div> </div> <div id=\"nd-setting-tab-2\" class=\"tab-page\" v-show=\"currentTab === 'tab-2'\"> <filter-tab v-on:filterupdate=\"saveFilter\"/> </div> </div> <div class=\"nd-setting-footer\"> <button v-on:click=\"closeAndSaveSetting\">Save</button> <button v-on:click=\"closeSetting\">Cancel</button> </div> </div> </dialog-ui> </div> ";
+var code = "<div> <dialog-ui dialog-title=\"设置\" v-bind:status=\"openStatus\" v-on:dialogclose=\"closeSetting\" v-if=\"openStatus === 'true'\"> <div class=\"nd-setting\"> <div class=\"nd-setting-tab\"> <button v-bind:class=\"['tab-button', { active: currentTab === 'tab-1'}]\" v-on:click=\"currentTab = 'tab-1'\"> 基本设置 </button> <button v-bind:class=\"['tab-button', { active: currentTab === 'tab-2'}]\" v-on:click=\"currentTab = 'tab-2'\"> 自定义筛选条件 </button> </div> <div class=\"nd-setting-body\"> <div id=\"nd-setting-tab-1\" class=\"tab-page\" v-show=\"currentTab === 'tab-1'\"> <div> <input type=\"checkbox\" id=\"debug\" v-model=\"setting.enableDebug\"/> <label for=\"debug\">启用调式模式。（输出更详细日志）</label> </div> <hr class=\"hr-twill-colorful\"/> <div> <h3>自定义保存参数</h3> <ul> <li v-for=\"item of saveOptions\"> <input type=\"radio\" v-bind:id=\"item.key\" v-bind:value=\"item.key\" v-model=\"setting.chooseSaveOption\"/> <label v-bind:for=\"item.key\">{{ item.value }}</label> </li> </ul> </div> </div> <div id=\"nd-setting-tab-2\" class=\"tab-page\" v-show=\"currentTab === 'tab-2'\"> <filter-tab v-on:filterupdate=\"saveFilter\"/> </div> </div> <div class=\"nd-setting-footer\"> <button v-on:click=\"closeAndSaveSetting\">Save</button> <button v-on:click=\"closeSetting\">Cancel</button> </div> </div> </dialog-ui> </div> ";
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (code);
 
@@ -3416,9 +3418,9 @@ async function debug() {
     unsafeWindow.saveAs = file_saver_1.saveAs;
     const { parse, fetchAndParse, gfetchAndParse } = await Promise.resolve().then(() => __webpack_require__("./src/rules/lib/readability.ts"));
     const readability = {
-        parse: parse,
-        fetchAndParse: fetchAndParse,
-        gfetchAndParse: gfetchAndParse,
+        parse,
+        fetchAndParse,
+        gfetchAndParse,
     };
     unsafeWindow.readability = readability;
     return;
@@ -3441,7 +3443,7 @@ const setting_1 = __webpack_require__("./src/setting.ts");
 function check(name) {
     const target = window[name];
     const targetLength = target.toString().length;
-    const targetPrototype = target["prototype"];
+    const targetPrototype = target.prototype;
     const nativeFunctionRe = /function \w+\(\) {\n?(\s+)?\[native code\]\n?(\s+)?}/;
     try {
         if (targetPrototype === undefined ||
@@ -3491,7 +3493,7 @@ const misc_1 = __webpack_require__("./src/lib/misc.ts");
 function init() {
     window.downloading = false;
     window.customStorage =
-        new misc_1.localStorageExpired();
+        new misc_1.LocalStorageExpired();
     window.stopFlag = false;
 }
 exports.init = init;
@@ -3623,7 +3625,7 @@ async function getImageAttachment(url, imgMode = "TM", prefix = "", noMD5 = fals
         imgClass = imgClassCache;
     }
     else {
-        imgClass = new main_1.attachmentClass(url, tmpImageName, imgMode);
+        imgClass = new main_1.AttachmentClass(url, tmpImageName, imgMode);
         const blob = await imgClass.init();
         if (blob) {
             const hash = await (0, misc_1.calculateMd5)(blob);
@@ -3676,7 +3678,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.htmlTrim = exports.cleanDOM = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
-const blockElements = [
+const BlockElements = [
     "article",
     "aside",
     "footer",
@@ -3705,7 +3707,7 @@ const blockElements = [
     "samp",
     "s",
 ];
-const ignoreElements = [
+const IgnoreElements = [
     "script",
     "meta",
     "link",
@@ -3759,7 +3761,7 @@ function getParentElement(elem) {
     if (!_elem) {
         return null;
     }
-    let nodename = _elem.nodeName.toLowerCase();
+    const nodename = _elem.nodeName.toLowerCase();
     if (["div", "p"].includes(nodename)) {
         return _elem;
     }
@@ -3777,11 +3779,11 @@ async function formatImage(elem, builder) {
     if (!elem.src) {
         return;
     }
-    let tfi = await _formatImage(elem, builder);
+    const tfi = await _formatImage(elem, builder);
     if (!tfi) {
         return;
     }
-    let [imgElem, imgText, imgClass] = tfi;
+    const [imgElem, imgText, imgClass] = tfi;
     if (elem.parentElement?.childElementCount === 1) {
         temp0();
         return;
@@ -3838,7 +3840,7 @@ async function _formatImage(elem, builder) {
         }
         const imgClass = await (0, attachments_1.getImageAttachment)(imageUrl, imgMode, "", noMD5);
         const imageName = imgClass.name;
-        const filterdImages = builder.images.find((imgClass) => imgClass.url === elem.src);
+        const filterdImages = builder.images.find((img) => img.url === elem.src);
         if (!filterdImages) {
             builder.images.push(imgClass);
         }
@@ -3903,10 +3905,10 @@ function formatText(elems, builder) {
         builder.dom.appendChild(tPElem);
     }
     function temp1() {
-        const lastElement = builder.dom.lastElementChild;
-        if (lastElement?.nodeName.toLowerCase() === "p") {
+        const lastElementTemp = builder.dom.lastElementChild;
+        if (lastElementTemp?.nodeName.toLowerCase() === "p") {
             const textElem = document.createTextNode(textContent);
-            lastElement.appendChild(textElem);
+            lastElementTemp.appendChild(textElem);
             const tPText = textContent + "\n".repeat(brCount);
             builder.text = builder.text + tPText;
         }
@@ -3916,7 +3918,7 @@ function formatText(elems, builder) {
             builder.text = builder.text + tPText;
         }
     }
-    const brCount = elems.filter((elem) => elem.nodeName.toLowerCase() === "br").length;
+    const brCount = elems.filter((ele) => ele.nodeName.toLowerCase() === "br").length;
     const elem = elems[0];
     const textContent = elem.textContent ? elem.textContent.trim() : "";
     if (!textContent) {
@@ -3935,15 +3937,15 @@ function formatText(elems, builder) {
     }
     if (brCount === 0) {
         const nextSibling = getNextSibling(elem);
-        const previousSibling = getPreviousSibling(elem);
+        const previousSiblingBr = getPreviousSibling(elem);
         if (nextSibling === null) {
-            if (previousSibling?.nodeName.toLowerCase() === "br") {
+            if (previousSiblingBr?.nodeName.toLowerCase() === "br") {
                 temp0();
                 const tPText = textContent + "\n\n";
                 builder.text = builder.text + tPText;
                 return;
             }
-            else if (previousSibling === null &&
+            else if (previousSiblingBr === null &&
                 (() => {
                     const parentElement = getParentElement(elem);
                     if (parentElement?.childNodes.length === 1) {
@@ -3966,7 +3968,7 @@ function formatText(elems, builder) {
             }
         }
         else {
-            if (previousSibling === null) {
+            if (previousSiblingBr === null) {
                 temp0();
                 const tPText = textContent;
                 if (builder.text.endsWith("\n")) {
@@ -3984,12 +3986,12 @@ function formatText(elems, builder) {
         }
     }
     else if (brCount === 1) {
-        const lastElement = builder.dom.lastElementChild;
-        if (lastElement?.nodeName.toLowerCase() === "p") {
+        const lastElementBr = builder.dom.lastElementChild;
+        if (lastElementBr?.nodeName.toLowerCase() === "p") {
             const br = document.createElement("br");
             const textElem = document.createTextNode(textContent);
-            lastElement.appendChild(br);
-            lastElement.appendChild(textElem);
+            lastElementBr.appendChild(br);
+            lastElementBr.appendChild(textElem);
             const tPText = textContent + "\n";
             builder.text = builder.text + tPText;
             return;
@@ -4052,7 +4054,7 @@ function formatVideo(elem, builder) {
     builder.text = builder.text + "\n\n" + elem.outerHTML;
 }
 async function walk(dom, builder) {
-    const childNodes = [...findBase(dom, blockElements, ignoreElements)].filter((b) => b);
+    const childNodes = [...findBase(dom, BlockElements, IgnoreElements)].filter((b) => b);
     for (let i = 0; i < childNodes.length; i++) {
         const node = childNodes[i];
         if (node === undefined) {
@@ -4086,14 +4088,14 @@ async function walk(dom, builder) {
                 break;
             }
             case "#text": {
-                let elems = [node];
+                const elems = [node];
                 let j = i + 1;
                 let jnodeName = nodeName;
                 do {
                     if (j >= childNodes.length) {
                         break;
                     }
-                    let jnode = childNodes[j];
+                    const jnode = childNodes[j];
                     jnodeName = jnode.nodeName.toLowerCase();
                     if (jnodeName === "br") {
                         elems.push(jnode);
@@ -4129,8 +4131,8 @@ async function cleanDOM(DOM, imgMode, option = null) {
         dom: document.createElement("div"),
         text: "",
         images: [],
-        imgMode: imgMode,
-        option: option,
+        imgMode,
+        option,
     };
     await walk(DOM, builder);
     return {
@@ -4184,7 +4186,7 @@ function createEl(el) {
     }
 }
 exports.createEl = createEl;
-function createStyle(style, id = undefined) {
+function createStyle(style, id) {
     const el = createEl(`<style>${style}</style>`);
     if (id) {
         el.id = id;
@@ -4210,21 +4212,21 @@ function gfetch(url, { method = "GET", headers, data, cookie, binary, nocache, r
     return new Promise((resolve, reject) => {
         if (GM_1._GM_xmlhttpRequest) {
             (0, GM_1._GM_xmlhttpRequest)({
-                url: url,
-                method: method,
-                headers: headers,
-                data: data,
-                cookie: cookie,
-                binary: binary,
-                nocache: nocache,
-                revalidate: revalidate,
-                timeout: timeout,
-                context: context,
-                responseType: responseType,
-                overrideMimeType: overrideMimeType,
-                anonymous: anonymous,
-                username: username,
-                password: password,
+                url,
+                method,
+                headers,
+                data,
+                cookie,
+                binary,
+                nocache,
+                revalidate,
+                timeout,
+                context,
+                responseType,
+                overrideMimeType,
+                anonymous,
+                username,
+                password,
                 onload: (obj) => {
                     resolve(obj);
                 },
@@ -4239,7 +4241,7 @@ function gfetch(url, { method = "GET", headers, data, cookie, binary, nocache, r
     });
 }
 exports.gfetch = gfetch;
-async function getText(url, charset, init = undefined) {
+async function getText(url, charset, init) {
     const _url = new URL(url);
     if (document.location.protocol === "https:" && _url.protocol === "http:") {
         _url.protocol = "https:";
@@ -4276,7 +4278,7 @@ async function getText(url, charset, init = undefined) {
     }
 }
 exports.getText = getText;
-async function getHtmlDOM(url, charset, init = undefined) {
+async function getHtmlDOM(url, charset, init) {
     const htmlText = await getText(url, charset, init);
     if (!htmlText) {
         throw new Error("Fetch Content failed!");
@@ -4284,7 +4286,7 @@ async function getHtmlDOM(url, charset, init = undefined) {
     return new DOMParser().parseFromString(htmlText, "text/html");
 }
 exports.getHtmlDOM = getHtmlDOM;
-async function ggetText(url, charset, init = undefined) {
+async function ggetText(url, charset, init) {
     if (charset === undefined) {
         return gfetch(url, init)
             .then((response) => {
@@ -4299,7 +4301,7 @@ async function ggetText(url, charset, init = undefined) {
     }
     else {
         if (init) {
-            init["responseType"] = "arraybuffer";
+            init.responseType = "arraybuffer";
         }
         else {
             init = { responseType: "arraybuffer" };
@@ -4322,7 +4324,7 @@ async function ggetText(url, charset, init = undefined) {
     }
 }
 exports.ggetText = ggetText;
-async function ggetHtmlDOM(url, charset, init = undefined) {
+async function ggetHtmlDOM(url, charset, init) {
     const htmlText = await ggetText(url, charset, init);
     if (!htmlText) {
         throw new Error("Fetch Content failed!");
@@ -4340,15 +4342,15 @@ exports.ggetHtmlDOM = ggetHtmlDOM;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.deepcopy = exports.localStorageExpired = exports.calculateMd5 = exports.storageAvailable = exports.sandboxed = exports.sleep = exports.concurrencyRun = exports.rm = void 0;
+exports.regexpEscape = exports.deepcopy = exports.LocalStorageExpired = exports.calculateMd5 = exports.storageAvailable = exports.sandboxed = exports.sleep = exports.concurrencyRun = exports.rm = void 0;
 const CryptoJS = __webpack_require__("crypto-js");
 function rm(selector, all = false, dom) {
     if (all) {
-        let rs = dom.querySelectorAll(selector);
+        const rs = dom.querySelectorAll(selector);
         rs.forEach((e) => e.remove());
     }
     else {
-        let r = dom.querySelector(selector);
+        const r = dom.querySelector(selector);
         if (r) {
             r.remove();
         }
@@ -4366,7 +4368,7 @@ function concurrencyRun(list, limit, asyncHandle) {
         }
     }
     const listCopy = [...list];
-    let asyncList = [];
+    const asyncList = [];
     while (limit--) {
         asyncList.push(recursion(listCopy));
     }
@@ -4392,7 +4394,7 @@ function storageAvailable(type) {
     let storage;
     try {
         storage = window[type];
-        let x = "__storage_test__";
+        const x = "__storage_test__";
         storage.setItem(x, x);
         storage.removeItem(x);
         return true;
@@ -4412,7 +4414,7 @@ function calculateMd5(blob) {
     return new Promise((resolve, rejects) => {
         const reader = new FileReader();
         reader.readAsArrayBuffer(blob);
-        reader.onloadend = function () {
+        reader.onloadend = () => {
             if (reader.result) {
                 const wordArray = CryptoJS.lib.WordArray.create(reader.result);
                 const hash = CryptoJS.MD5(wordArray).toString();
@@ -4426,7 +4428,7 @@ function calculateMd5(blob) {
     });
 }
 exports.calculateMd5 = calculateMd5;
-class localStorageExpired {
+class LocalStorageExpired {
     constructor() {
         if (storageAvailable("localStorage")) {
             this.storage = window.localStorage;
@@ -4484,11 +4486,15 @@ class localStorageExpired {
         }
     }
 }
-exports.localStorageExpired = localStorageExpired;
+exports.LocalStorageExpired = LocalStorageExpired;
 function deepcopy(obj) {
     return JSON.parse(JSON.stringify(obj));
 }
 exports.deepcopy = deepcopy;
+function regexpEscape(str) {
+    return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+exports.regexpEscape = regexpEscape;
 
 
 /***/ }),
@@ -4499,11 +4505,11 @@ exports.deepcopy = deepcopy;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.fflateZip = void 0;
+exports.FflateZip = void 0;
 const log_1 = __webpack_require__("./src/log.ts");
 const fflate_1 = __webpack_require__("./node_modules/fflate/lib/index.cjs");
 const misc_1 = __webpack_require__("./src/lib/misc.ts");
-class fflateZip {
+class FflateZip {
     constructor(memlimit = false) {
         this.count = 0;
         this.zcount = 0;
@@ -4540,7 +4546,7 @@ class fflateZip {
                     }
                 }
                 else {
-                    throw "[fflateZip] 完成函数出错";
+                    throw new Error("[fflateZip] 完成函数出错");
                 }
             }
         });
@@ -4575,7 +4581,7 @@ class fflateZip {
         savedZip.add(nonStreamingFile);
         nonStreamingFile.push(chunk, true);
     }
-    async generateAsync(onUpdate = undefined) {
+    async generateAsync(onUpdate) {
         while (this.tcount !== this.count) {
             await (0, misc_1.sleep)(500);
         }
@@ -4589,7 +4595,7 @@ class fflateZip {
         this.savedZip.end();
     }
 }
-exports.fflateZip = fflateZip;
+exports.FflateZip = FflateZip;
 
 
 /***/ }),
@@ -4613,9 +4619,9 @@ else {
 }
 exports.logText = "";
 const originalFactory = loglevel_1.default.methodFactory;
-loglevel_1.default.methodFactory = function (methodName, logLevel, loggerName) {
+loglevel_1.default.methodFactory = (methodName, logLevel, loggerName) => {
     const rawMethod = originalFactory(methodName, logLevel, loggerName);
-    return function (message) {
+    return (message) => {
         try {
             if (typeof message === "object") {
                 if (message instanceof Error) {
@@ -4629,7 +4635,9 @@ loglevel_1.default.methodFactory = function (methodName, logLevel, loggerName) {
                 exports.logText += message + "\n";
             }
         }
-        catch (error) { }
+        catch (error) {
+            loglevel_1.default.error(error);
+        }
         rawMethod(message);
     };
 };
@@ -4648,7 +4656,7 @@ exports.saveLogTextToFile = saveLogTextToFile;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.ExpectError = exports.attachmentClass = exports.Chapter = exports.Book = exports.Status = void 0;
+exports.ExpectError = exports.AttachmentClass = exports.Chapter = exports.Book = exports.Status = void 0;
 const setting_1 = __webpack_require__("./src/setting.ts");
 const misc_1 = __webpack_require__("./src/lib/misc.ts");
 const http_1 = __webpack_require__("./src/lib/http.ts");
@@ -4754,7 +4762,7 @@ isNull:${!Boolean(this.contentHTML)} 解析成功。`);
     }
 }
 exports.Chapter = Chapter;
-class attachmentClass {
+class AttachmentClass {
     constructor(imageUrl, name, mode) {
         this.url = imageUrl;
         this.name = name;
@@ -4780,7 +4788,7 @@ class attachmentClass {
     downloadImage() {
         const headers = Object.assign(this.defaultHeader, this.headers);
         const referer = headers.Referer;
-        delete headers["Referer"];
+        delete headers.Referer;
         this.status = Status.downloading;
         return fetch(this.url, {
             headers: { ...headers },
@@ -4848,7 +4856,7 @@ class attachmentClass {
         });
     }
 }
-exports.attachmentClass = attachmentClass;
+exports.AttachmentClass = AttachmentClass;
 class ExpectError extends Error {
 }
 exports.ExpectError = ExpectError;
@@ -4868,18 +4876,18 @@ async function getRule() {
     let ruleClass;
     switch (host) {
         case "www.ciweimao.com": {
-            const { ciweimao } = await Promise.resolve().then(() => __webpack_require__("./src/rules/ciweimao.ts"));
-            ruleClass = ciweimao;
+            const { Ciweimao } = await Promise.resolve().then(() => __webpack_require__("./src/rules/ciweimao.ts"));
+            ruleClass = Ciweimao;
             break;
         }
         case "www.uukanshu.com": {
-            const { uukanshu } = await Promise.resolve().then(() => __webpack_require__("./src/rules/uukanshu.ts"));
-            ruleClass = uukanshu;
+            const { Uukanshu } = await Promise.resolve().then(() => __webpack_require__("./src/rules/uukanshu.ts"));
+            ruleClass = Uukanshu;
             break;
         }
         case "www.yruan.com": {
-            const { yrun } = await Promise.resolve().then(() => __webpack_require__("./src/rules/yruan.ts"));
-            ruleClass = yrun;
+            const { Yrun } = await Promise.resolve().then(() => __webpack_require__("./src/rules/yruan.ts"));
+            ruleClass = Yrun;
             break;
         }
         case "www.shuquge.com":
@@ -4889,38 +4897,38 @@ async function getRule() {
             break;
         }
         case "www.dingdiann.net": {
-            const { dingdiann } = await Promise.resolve().then(() => __webpack_require__("./src/rules/dingdiann.ts"));
-            ruleClass = dingdiann;
+            const { Dingdiann } = await Promise.resolve().then(() => __webpack_require__("./src/rules/dingdiann.ts"));
+            ruleClass = Dingdiann;
             break;
         }
         case "www.biquge66.com":
         case "www.lewenn.com":
         case "www.klxs.la":
         case "www.xkzw.org": {
-            const { xkzw } = await Promise.resolve().then(() => __webpack_require__("./src/rules/xkzw.ts"));
-            ruleClass = xkzw;
+            const { Xkzw } = await Promise.resolve().then(() => __webpack_require__("./src/rules/xkzw.ts"));
+            ruleClass = Xkzw;
             break;
         }
         case "www.266ks.com": {
-            const { c226ks } = await Promise.resolve().then(() => __webpack_require__("./src/rules/226ks.ts"));
-            ruleClass = c226ks;
+            const { C226ks } = await Promise.resolve().then(() => __webpack_require__("./src/rules/226ks.ts"));
+            ruleClass = C226ks;
             break;
         }
         case "book.sfacg.com": {
-            const { sfacg } = await Promise.resolve().then(() => __webpack_require__("./src/rules/sfacg.ts"));
-            ruleClass = sfacg;
+            const { Sfacg } = await Promise.resolve().then(() => __webpack_require__("./src/rules/sfacg.ts"));
+            ruleClass = Sfacg;
             break;
         }
         case "www.hetushu.com":
         case "hetushu.com": {
-            const { hetushu } = await Promise.resolve().then(() => __webpack_require__("./src/rules/hetushu.ts"));
-            ruleClass = hetushu;
+            const { Hetushu } = await Promise.resolve().then(() => __webpack_require__("./src/rules/hetushu.ts"));
+            ruleClass = Hetushu;
             break;
         }
         case "www.shouda8.com":
         case "www.shouda88.com": {
-            const { shouda8 } = await Promise.resolve().then(() => __webpack_require__("./src/rules/shouda8.ts"));
-            ruleClass = shouda8;
+            const { Shouda8 } = await Promise.resolve().then(() => __webpack_require__("./src/rules/shouda8.ts"));
+            ruleClass = Shouda8;
             break;
         }
         case "www.gebiqu.com": {
@@ -4930,25 +4938,25 @@ async function getRule() {
         }
         case "www.meegoq.com":
         case "www.viviyzw.com": {
-            const { meegoq } = await Promise.resolve().then(() => __webpack_require__("./src/rules/meegoq.ts"));
-            ruleClass = meegoq;
+            const { Meegoq } = await Promise.resolve().then(() => __webpack_require__("./src/rules/meegoq.ts"));
+            ruleClass = Meegoq;
             break;
         }
         case "www.xiaoshuodaquan.com":
         case "www.1pwx.com":
         case "1pwx.com": {
-            const { xiaoshuodaquan } = await Promise.resolve().then(() => __webpack_require__("./src/rules/xiaoshuodaquan.ts"));
-            ruleClass = xiaoshuodaquan;
+            const { Xiaoshuodaquan } = await Promise.resolve().then(() => __webpack_require__("./src/rules/xiaoshuodaquan.ts"));
+            ruleClass = Xiaoshuodaquan;
             break;
         }
         case "book.qidian.com": {
-            const { qidian } = await Promise.resolve().then(() => __webpack_require__("./src/rules/qidian.ts"));
-            ruleClass = qidian;
+            const { Qidian } = await Promise.resolve().then(() => __webpack_require__("./src/rules/qidian.ts"));
+            ruleClass = Qidian;
             break;
         }
         case "www.jjwxc.net": {
-            const { jjwxc } = await Promise.resolve().then(() => __webpack_require__("./src/rules/jjwxc.ts"));
-            ruleClass = jjwxc;
+            const { Jjwxc } = await Promise.resolve().then(() => __webpack_require__("./src/rules/jjwxc.ts"));
+            ruleClass = Jjwxc;
             break;
         }
         case "www.biquwoo.com":
@@ -4966,66 +4974,66 @@ async function getRule() {
         }
         case "book.zongheng.com":
         case "huayu.zongheng.com": {
-            const { zongheng } = await Promise.resolve().then(() => __webpack_require__("./src/rules/zongheng.ts"));
-            ruleClass = zongheng;
+            const { Zongheng } = await Promise.resolve().then(() => __webpack_require__("./src/rules/zongheng.ts"));
+            ruleClass = Zongheng;
             break;
         }
         case "www.17k.com": {
-            const { c17k } = await Promise.resolve().then(() => __webpack_require__("./src/rules/17k.ts"));
-            ruleClass = c17k;
+            const { C17k } = await Promise.resolve().then(() => __webpack_require__("./src/rules/17k.ts"));
+            ruleClass = C17k;
             break;
         }
         case "www.shuhai.com":
         case "mm.shuhai.com": {
-            const { shuhai } = await Promise.resolve().then(() => __webpack_require__("./src/rules/shuhai.ts"));
-            ruleClass = shuhai;
+            const { Shuhai } = await Promise.resolve().then(() => __webpack_require__("./src/rules/shuhai.ts"));
+            ruleClass = Shuhai;
             break;
         }
         case "www.gongzicp.com":
         case "gongzicp.com": {
-            const { gongzicp } = await Promise.resolve().then(() => __webpack_require__("./src/rules/gongzicp.ts"));
-            ruleClass = gongzicp;
+            const { Gongzicp } = await Promise.resolve().then(() => __webpack_require__("./src/rules/gongzicp.ts"));
+            ruleClass = Gongzicp;
             break;
         }
         case "m.yuzhaige.cc":
         case "m.yushuge123.com": {
-            const { yuzhaige } = await Promise.resolve().then(() => __webpack_require__("./src/rules/yuzhaige.ts"));
-            ruleClass = yuzhaige;
+            const { Yuzhaige } = await Promise.resolve().then(() => __webpack_require__("./src/rules/yuzhaige.ts"));
+            ruleClass = Yuzhaige;
             break;
         }
         case "www.linovel.net": {
-            const { linovel } = await Promise.resolve().then(() => __webpack_require__("./src/rules/linovel.ts"));
-            ruleClass = linovel;
+            const { Linovel } = await Promise.resolve().then(() => __webpack_require__("./src/rules/linovel.ts"));
+            ruleClass = Linovel;
             break;
         }
         case "www.xinwanben.com": {
-            const { xinwanben } = await Promise.resolve().then(() => __webpack_require__("./src/rules/xinwanben.ts"));
-            ruleClass = xinwanben;
+            const { Xinwanben } = await Promise.resolve().then(() => __webpack_require__("./src/rules/xinwanben.ts"));
+            ruleClass = Xinwanben;
             break;
         }
         case "www.tadu.com": {
-            const { tadu } = await Promise.resolve().then(() => __webpack_require__("./src/rules/tadu.ts"));
-            ruleClass = tadu;
+            const { Tadu } = await Promise.resolve().then(() => __webpack_require__("./src/rules/tadu.ts"));
+            ruleClass = Tadu;
             break;
         }
         case "www.idejian.com": {
-            const { idejian } = await Promise.resolve().then(() => __webpack_require__("./src/rules/idejian.ts"));
-            ruleClass = idejian;
+            const { Idejian } = await Promise.resolve().then(() => __webpack_require__("./src/rules/idejian.ts"));
+            ruleClass = Idejian;
             break;
         }
         case "www.qimao.com": {
-            const { qimao } = await Promise.resolve().then(() => __webpack_require__("./src/rules/qimao.ts"));
-            ruleClass = qimao;
+            const { Qimao } = await Promise.resolve().then(() => __webpack_require__("./src/rules/qimao.ts"));
+            ruleClass = Qimao;
             break;
         }
         case "www.wenku8.net": {
-            const { wenku8 } = await Promise.resolve().then(() => __webpack_require__("./src/rules/wenku8.ts"));
-            ruleClass = wenku8;
+            const { Wenku8 } = await Promise.resolve().then(() => __webpack_require__("./src/rules/wenku8.ts"));
+            ruleClass = Wenku8;
             break;
         }
         case "www.dmzj.com": {
-            const { dmzj } = await Promise.resolve().then(() => __webpack_require__("./src/rules/dmzj.ts"));
-            ruleClass = dmzj;
+            const { Dmzj } = await Promise.resolve().then(() => __webpack_require__("./src/rules/dmzj.ts"));
+            ruleClass = Dmzj;
             break;
         }
         case "sosad.fun":
@@ -5044,35 +5052,36 @@ async function getRule() {
         case "www.xn--pxtr7m.net":
         case "sosadfun.link":
         case "www.sosadfun.link": {
-            const { sosadfun } = await Promise.resolve().then(() => __webpack_require__("./src/rules/sosadfun.ts"));
-            ruleClass = sosadfun;
+            const { Sosadfun } = await Promise.resolve().then(() => __webpack_require__("./src/rules/sosadfun.ts"));
+            ruleClass = Sosadfun;
             break;
         }
         case "www.westnovel.com": {
-            const { westnovel } = await Promise.resolve().then(() => __webpack_require__("./src/rules/westnovel.ts"));
-            ruleClass = westnovel;
+            const { Westnovel } = await Promise.resolve().then(() => __webpack_require__("./src/rules/westnovel.ts"));
+            ruleClass = Westnovel;
             break;
         }
         case "www.mht.tw":
         case "www.mht99.com": {
-            const { mht } = await Promise.resolve().then(() => __webpack_require__("./src/rules/mht.ts"));
-            ruleClass = mht;
+            const { Mht } = await Promise.resolve().then(() => __webpack_require__("./src/rules/mht.ts"));
+            ruleClass = Mht;
             break;
         }
         case "www.dierbanzhu1.com":
-        case "www.banzhuer.org": {
-            const { dierbanzhu } = await Promise.resolve().then(() => __webpack_require__("./src/rules/dierbanzhu.ts"));
-            ruleClass = dierbanzhu;
+        case "www.banzhuer.org":
+        case "www.bz01.org": {
+            const { Dierbanzhu } = await Promise.resolve().then(() => __webpack_require__("./src/rules/dierbanzhu.ts"));
+            ruleClass = Dierbanzhu;
             break;
         }
         case "www.xbiquge.so": {
-            const { xbiquge } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge.ts"));
-            ruleClass = xbiquge;
+            const { Xbiquge } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge.ts"));
+            ruleClass = Xbiquge;
             break;
         }
         case "www.linovelib.com": {
-            const { linovelib } = await Promise.resolve().then(() => __webpack_require__("./src/rules/linovelib.ts"));
-            ruleClass = linovelib;
+            const { Linovelib } = await Promise.resolve().then(() => __webpack_require__("./src/rules/linovelib.ts"));
+            ruleClass = Linovelib;
             break;
         }
         case "www.luoqiuzw.com": {
@@ -5081,13 +5090,13 @@ async function getRule() {
             break;
         }
         case "www.yibige.la": {
-            const { yibige } = await Promise.resolve().then(() => __webpack_require__("./src/rules/yibige.ts"));
-            ruleClass = yibige;
+            const { Yibige } = await Promise.resolve().then(() => __webpack_require__("./src/rules/yibige.ts"));
+            ruleClass = Yibige;
             break;
         }
         case "www.fushuwang.org": {
-            const { fushuwang } = await Promise.resolve().then(() => __webpack_require__("./src/rules/fushuwang.ts"));
-            ruleClass = fushuwang;
+            const { Fushuwang } = await Promise.resolve().then(() => __webpack_require__("./src/rules/fushuwang.ts"));
+            ruleClass = Fushuwang;
             break;
         }
         case "www.soxscc.net":
@@ -5098,14 +5107,14 @@ async function getRule() {
         case "www.soxscc.cc":
         case "www.soshuwu.com":
         case "www.kubiji.net": {
-            const { soxscc } = await Promise.resolve().then(() => __webpack_require__("./src/rules/soxscc.ts"));
-            ruleClass = soxscc;
+            const { Soxscc } = await Promise.resolve().then(() => __webpack_require__("./src/rules/soxscc.ts"));
+            ruleClass = Soxscc;
             break;
         }
         case "www.fuguoduxs.com":
         case "www.shubaowa.org": {
-            const { shubaowa } = await Promise.resolve().then(() => __webpack_require__("./src/rules/shubaowa.ts"));
-            ruleClass = shubaowa;
+            const { Shubaowa } = await Promise.resolve().then(() => __webpack_require__("./src/rules/shubaowa.ts"));
+            ruleClass = Shubaowa;
             break;
         }
         case "www.xyqxs.cc": {
@@ -5119,8 +5128,8 @@ async function getRule() {
             break;
         }
         case "www.qingoo.cn": {
-            const { qingoo } = await Promise.resolve().then(() => __webpack_require__("./src/rules/qingoo.ts"));
-            ruleClass = qingoo;
+            const { Qingoo } = await Promise.resolve().then(() => __webpack_require__("./src/rules/qingoo.ts"));
+            ruleClass = Qingoo;
             break;
         }
         case "www.trxs.cc":
@@ -5142,8 +5151,8 @@ async function getRule() {
             break;
         }
         case "www.imiaobige.com": {
-            const { imiaobige } = await Promise.resolve().then(() => __webpack_require__("./src/rules/imiaobige.ts"));
-            ruleClass = imiaobige;
+            const { Imiaobige } = await Promise.resolve().then(() => __webpack_require__("./src/rules/imiaobige.ts"));
+            ruleClass = Imiaobige;
             break;
         }
         case "www.256wxc.com":
@@ -5153,8 +5162,8 @@ async function getRule() {
             break;
         }
         case regExpMatch(/lofter\.com$/): {
-            const { lofter } = await Promise.resolve().then(() => __webpack_require__("./src/rules/lofter.ts"));
-            ruleClass = lofter;
+            const { Lofter } = await Promise.resolve().then(() => __webpack_require__("./src/rules/lofter.ts"));
+            ruleClass = Lofter;
             break;
         }
         case "www.lwxs9.org": {
@@ -5163,18 +5172,18 @@ async function getRule() {
             break;
         }
         case "www.shubl.com": {
-            const { shubl } = await Promise.resolve().then(() => __webpack_require__("./src/rules/shubl.ts"));
-            ruleClass = shubl;
+            const { Shubl } = await Promise.resolve().then(() => __webpack_require__("./src/rules/shubl.ts"));
+            ruleClass = Shubl;
             break;
         }
         case "www.ujxs.net": {
-            const { ujxs } = await Promise.resolve().then(() => __webpack_require__("./src/rules/ujxs.ts"));
-            ruleClass = ujxs;
+            const { Ujxs } = await Promise.resolve().then(() => __webpack_require__("./src/rules/ujxs.ts"));
+            ruleClass = Ujxs;
             break;
         }
         case "m.haitangtxt.net": {
-            const { haitangtxt } = await Promise.resolve().then(() => __webpack_require__("./src/rules/haitangtxt.ts"));
-            ruleClass = haitangtxt;
+            const { Haitangtxt } = await Promise.resolve().then(() => __webpack_require__("./src/rules/haitangtxt.ts"));
+            ruleClass = Haitangtxt;
             break;
         }
         case "ebook.longmabook.com":
@@ -5195,8 +5204,8 @@ async function getRule() {
         case "www.lvhtebook.com":
         case "jp.lvhtebook.com":
         case "www.htlvbooks.com": {
-            const { longmabook } = await Promise.resolve().then(() => __webpack_require__("./src/rules/longmabook.ts"));
-            ruleClass = longmabook;
+            const { Longmabook } = await Promise.resolve().then(() => __webpack_require__("./src/rules/longmabook.ts"));
+            ruleClass = Longmabook;
             break;
         }
         case "dijiubook.net": {
@@ -5210,8 +5219,13 @@ async function getRule() {
             break;
         }
         case "www.25zw.com": {
-            const { c25zw } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge.ts"));
-            ruleClass = c25zw;
+            const { C25zw } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge.ts"));
+            ruleClass = C25zw;
+            break;
+        }
+        case "www.tycqxs.com": {
+            const { tycqxs } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge.ts"));
+            ruleClass = tycqxs();
             break;
         }
         default: {
@@ -5249,7 +5263,7 @@ function getUI() {
                 const jumpUrl = `https://www.shuquge.com/txt/${id}/index.html`;
                 return {
                     type: "jump",
-                    jumpUrl: jumpUrl,
+                    jumpUrl,
                 };
             }
             else {
@@ -5360,7 +5374,8 @@ class BaseRuleClass {
     }
     postCallback() {
         if (setting_1.enableCustomFinishCallback &&
-            typeof unsafeWindow.customFinishCallback === "function") {
+            typeof unsafeWindow.customFinishCallback ===
+                "function") {
             const customFinishCallback = unsafeWindow
                 .customFinishCallback;
             log_1.log.info(`发现自定义结束回调函数，内容如下：\n${customFinishCallback.toString()}`);
@@ -5400,9 +5415,9 @@ class BaseRuleClass {
         if (setting_1.enableCustomSaveOptions &&
             typeof unsafeWindow.saveOptions === "object" &&
             (0, save_1.saveOptionsValidate)(unsafeWindow.saveOptions)) {
-            const saveOptions = unsafeWindow.saveOptions;
-            log_1.log.info("[run]发现自定义保存参数，内容如下\n", saveOptions);
-            return (0, save_1.getSaveBookObj)(book, saveOptions);
+            const saveOptionsInner = unsafeWindow.saveOptions;
+            log_1.log.info("[run]发现自定义保存参数，内容如下\n", saveOptionsInner);
+            return (0, save_1.getSaveBookObj)(book, saveOptionsInner);
         }
         else {
             return (0, save_1.getSaveBookObj)(book, {});
@@ -5454,7 +5469,7 @@ class BaseRuleClass {
         }
         progress_1.vm.totalChapterNumber = chapters.length;
         if (self.concurrencyLimit === 1) {
-            for (let chapter of chapters) {
+            for (const chapter of chapters) {
                 if (window.stopFlag) {
                     log_1.log.info("[chapter]收到停止信号，停止继续下载。");
                     break;
@@ -5521,7 +5536,7 @@ exports.BaseRuleClass = BaseRuleClass;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.c17k = void 0;
+exports.C17k = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const misc_1 = __webpack_require__("./src/lib/misc.ts");
 const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
@@ -5530,7 +5545,7 @@ const http_1 = __webpack_require__("./src/lib/http.ts");
 const rules_1 = __webpack_require__("./src/rules.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 const log_1 = __webpack_require__("./src/log.ts");
-class c17k extends rules_1.BaseRuleClass {
+class C17k extends rules_1.BaseRuleClass {
     constructor() {
         super();
         this.imageMode = "TM";
@@ -5539,14 +5554,13 @@ class c17k extends rules_1.BaseRuleClass {
     }
     async bookParse() {
         const bookUrl = document.location.href.replace("/list/", "/book/");
-        const bookname = (document.querySelector("h1.Title")).innerText.trim();
-        const author = (document.querySelector("div.Author > a")).innerText.trim();
+        const bookname = document.querySelector("h1.Title").innerText.trim();
+        const author = document.querySelector("div.Author > a").innerText.trim();
         const doc = await (0, http_1.getHtmlDOM)(bookUrl, undefined);
         const introDom = doc.querySelector("#bookInfo p.intro > a");
         const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom);
         const additionalMetadate = {};
-        let coverUrl = doc.querySelector("#bookCover img.book")
-            .src;
+        const coverUrl = doc.querySelector("#bookCover img.book").src;
         if (coverUrl) {
             (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
                 .then((coverClass) => {
@@ -5560,11 +5574,10 @@ class c17k extends rules_1.BaseRuleClass {
         for (let i = 0; i < sections.length; i++) {
             const s = sections[i];
             const sectionNumber = i + 1;
-            const sectionName = (s.querySelector("dt > span.tit")).innerText.trim();
+            const sectionName = s.querySelector("dt > span.tit").innerText.trim();
             let sectionChapterNumber = 0;
             const cs = s.querySelectorAll("dd > a");
-            for (let j = 0; j < cs.length; j++) {
-                const a = cs[j];
+            for (const a of Array.from(cs)) {
                 const span = a.firstElementChild;
                 chapterNumber++;
                 sectionChapterNumber++;
@@ -5597,16 +5610,16 @@ class c17k extends rules_1.BaseRuleClass {
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         async function publicChapter() {
             const doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
-            const chapterName = (doc.querySelector("#readArea > div.readAreaBox.content > h1")).innerText.trim();
-            const content = (doc.querySelector("#readArea > div.readAreaBox.content > div.p"));
+            chapterName = doc.querySelector("#readArea > div.readAreaBox.content > h1").innerText.trim();
+            const content = doc.querySelector("#readArea > div.readAreaBox.content > div.p");
             if (content) {
                 (0, misc_1.rm)("p.copy", false, content);
                 (0, misc_1.rm)("#banner_content", false, content);
                 (0, misc_1.rm)("div.qrcode", false, content);
                 (0, misc_1.rm)("div.chapter_text_ad", false, content);
-                let { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+                const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
                 return {
-                    chapterName: chapterName,
+                    chapterName,
                     contentRaw: content,
                     contentText: text,
                     contentHTML: dom,
@@ -5616,7 +5629,7 @@ class c17k extends rules_1.BaseRuleClass {
             }
             else {
                 return {
-                    chapterName: chapterName,
+                    chapterName,
                     contentRaw: null,
                     contentText: null,
                     contentHTML: null,
@@ -5627,7 +5640,7 @@ class c17k extends rules_1.BaseRuleClass {
         }
         async function vipChapter() {
             return {
-                chapterName: chapterName,
+                chapterName,
                 contentRaw: null,
                 contentText: null,
                 contentHTML: null,
@@ -5643,7 +5656,7 @@ class c17k extends rules_1.BaseRuleClass {
         }
     }
 }
-exports.c17k = c17k;
+exports.C17k = C17k;
 
 
 /***/ }),
@@ -5654,7 +5667,7 @@ exports.c17k = c17k;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.c226ks = void 0;
+exports.C226ks = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const rules_1 = __webpack_require__("./src/rules.ts");
 const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
@@ -5662,22 +5675,21 @@ const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
 const http_1 = __webpack_require__("./src/lib/http.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 const log_1 = __webpack_require__("./src/log.ts");
-class c226ks extends rules_1.BaseRuleClass {
+class C226ks extends rules_1.BaseRuleClass {
     constructor() {
         super();
         this.imageMode = "TM";
     }
     async bookParse() {
         const bookUrl = document.location.href.replace(/index_\d+\.html/, "index_1.html");
-        const bookname = (document.querySelector(".info > .top > h1")).innerText.trim();
-        const author = (document.querySelector(".info > .top > .fix > p:nth-child(1)")).innerText
+        const bookname = document.querySelector(".info > .top > h1").innerText.trim();
+        const author = document.querySelector(".info > .top > .fix > p:nth-child(1)").innerText
             .replace(/作(\s+)?者[：:]/, "")
             .trim();
         const introDom = document.querySelector(".desc");
         const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom);
         const additionalMetadate = {};
-        const coverUrl = document.querySelector(".imgbox > img")
-            .src;
+        const coverUrl = document.querySelector(".imgbox > img").src;
         if (coverUrl) {
             (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
                 .then((coverClass) => {
@@ -5698,8 +5710,7 @@ class c226ks extends rules_1.BaseRuleClass {
         }
         const chapterList = lis.filter((obj) => obj !== undefined);
         let chapterNumber = 0;
-        for (let i = 0; i < chapterList.length; i++) {
-            const node = chapterList[i];
+        for (const node of chapterList) {
             chapterNumber++;
             const a = node.firstElementChild;
             const chapterName = a.innerText;
@@ -5713,15 +5724,15 @@ class c226ks extends rules_1.BaseRuleClass {
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        const dom = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
-        chapterName = dom.querySelector("h1.title").innerText.trim();
-        const content = dom.querySelector("#content");
+        const doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
+        chapterName = doc.querySelector("h1.title").innerText.trim();
+        const content = doc.querySelector("#content");
         const ad = '<div class="posterror"><a href="javascript:postError();" class="red">章节错误,点此举报(免注册)</a>,举报后维护人员会在两分钟内校正章节内容,请耐心等待,并刷新页面。</div>';
         content.innerHTML = content.innerHTML.replace(ad, "");
         if (content) {
-            let { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+            const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
             return {
-                chapterName: chapterName,
+                chapterName,
                 contentRaw: content,
                 contentText: text,
                 contentHTML: dom,
@@ -5731,7 +5742,7 @@ class c226ks extends rules_1.BaseRuleClass {
         }
         else {
             return {
-                chapterName: chapterName,
+                chapterName,
                 contentRaw: null,
                 contentText: null,
                 contentHTML: null,
@@ -5741,7 +5752,7 @@ class c226ks extends rules_1.BaseRuleClass {
         }
     }
 }
-exports.c226ks = c226ks;
+exports.C226ks = C226ks;
 
 
 /***/ }),
@@ -5752,7 +5763,7 @@ exports.c226ks = c226ks;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.xbiquge = exports.xyqxs = exports.shuquge = exports.dijiubook = exports.c25zw = exports.biquwx = exports.lwxs9 = exports.luoqiuzw = exports.gebiqu = exports.c81book = exports.common = exports.bookParseTemp = void 0;
+exports.Xbiquge = exports.xyqxs = exports.shuquge = exports.dijiubook = exports.C25zw = exports.tycqxs = exports.biquwx = exports.lwxs9 = exports.luoqiuzw = exports.gebiqu = exports.c81book = exports.common = exports.bookParseTemp = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const rules_1 = __webpack_require__("./src/rules.ts");
 const misc_1 = __webpack_require__("./src/lib/misc.ts");
@@ -5791,8 +5802,7 @@ async function bookParseTemp({ bookUrl, bookname, author, introDom, introDomPatc
         let sectionNumber = 0;
         let sectionName = null;
         let sectionChapterNumber = 0;
-        for (let i = 0; i < chapterList.length; i++) {
-            const node = chapterList[i];
+        for (const node of chapterList) {
             if (node.nodeName === "DT") {
                 sectionNumber++;
                 sectionChapterNumber = 0;
@@ -5814,7 +5824,7 @@ async function bookParseTemp({ bookUrl, bookname, author, introDom, introDomPatc
                 const chapterUrl = a.href;
                 const isVIP = false;
                 const isPaid = false;
-                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, chapterParse, charset, { bookname: bookname });
+                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, chapterParse, charset, { bookname });
                 chapters.push(chapter);
             }
         }
@@ -5827,19 +5837,19 @@ async function chapterParseTemp({ dom, chapterUrl, chapterName, contenSelector, 
     let content = dom.querySelector(contenSelector);
     if (content) {
         content = contentPatch(content);
-        let { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+        const { dom: domClean, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
         return {
-            chapterName: chapterName,
+            chapterName,
             contentRaw: content,
             contentText: text,
-            contentHTML: dom,
+            contentHTML: domClean,
             contentImages: images,
             additionalMetadate: null,
         };
     }
     else {
         return {
-            chapterName: chapterName,
+            chapterName,
             contentRaw: null,
             contentText: null,
             contentHTML: null,
@@ -5848,7 +5858,7 @@ async function chapterParseTemp({ dom, chapterUrl, chapterName, contenSelector, 
         };
     }
 }
-function mkBiqugeClass(introDomPatch, contentPatch, concurrencyLimit = undefined) {
+function mkBiqugeClass(introDomPatch, contentPatch, concurrencyLimit) {
     return class extends rules_1.BaseRuleClass {
         constructor() {
             super();
@@ -5863,14 +5873,14 @@ function mkBiqugeClass(introDomPatch, contentPatch, concurrencyLimit = undefined
             const self = this;
             return bookParseTemp({
                 bookUrl: document.location.href,
-                bookname: (document.querySelector("#info h1:nth-of-type(1)")).innerText
+                bookname: document.querySelector("#info h1:nth-of-type(1)").innerText
                     .trim()
                     .replace(/最新章节$/, ""),
-                author: (document.querySelector("#info > p:nth-child(2)")).innerText
+                author: document.querySelector("#info > p:nth-child(2)").innerText
                     .replace(/作(\s+)?者[：:]/, "")
                     .trim(),
                 introDom: document.querySelector("#intro"),
-                introDomPatch: introDomPatch,
+                introDomPatch,
                 coverUrl: document.querySelector("#fmimg > img")
                     .src,
                 chapterListSelector: "#list>dl",
@@ -5883,13 +5893,14 @@ function mkBiqugeClass(introDomPatch, contentPatch, concurrencyLimit = undefined
             return chapterParseTemp({
                 dom,
                 chapterUrl,
-                chapterName: (dom.querySelector(".bookname > h1:nth-child(1)")).innerText.trim(),
+                chapterName: dom.querySelector(".bookname > h1:nth-child(1)").innerText.trim(),
                 contenSelector: "#content",
-                contentPatch: contentPatch,
+                contentPatch,
                 charset,
             });
         }
-        overrideConstructor(self) { }
+        overrideConstructor(self) {
+        }
     };
 }
 const common = () => mkBiqugeClass((introDom) => introDom, (content) => content);
@@ -5925,7 +5936,12 @@ const biquwx = () => mkBiqugeClass((introDom) => {
     return introDom;
 }, (content) => content, 1);
 exports.biquwx = biquwx;
-class c25zw extends rules_1.BaseRuleClass {
+const tycqxs = () => mkBiqugeClass((introDom) => introDom, (content) => {
+    content.innerHTML = content.innerHTML.replace(/推荐都市大神老施新书:<a href="https:\/\/www\.tycqxs\.com\/[\d_]+\/" target="_blank">.+<\/a>/, "");
+    return content;
+});
+exports.tycqxs = tycqxs;
+class C25zw extends rules_1.BaseRuleClass {
     constructor() {
         super();
         this.imageMode = "TM";
@@ -5935,10 +5951,10 @@ class c25zw extends rules_1.BaseRuleClass {
         const self = this;
         return bookParseTemp({
             bookUrl: document.location.href,
-            bookname: (document.querySelector("#info h1:nth-of-type(1)")).innerText
+            bookname: document.querySelector("#info h1:nth-of-type(1)").innerText
                 .trim()
                 .replace(/最新章节$/, ""),
-            author: (document.querySelector("#info > p:nth-child(2)")).innerText
+            author: document.querySelector("#info > p:nth-child(2)").innerText
                 .replace(/作(\s+)?者[：:]/, "")
                 .trim(),
             introDom: document.querySelector("#intro"),
@@ -5947,7 +5963,8 @@ class c25zw extends rules_1.BaseRuleClass {
                 introDom.innerHTML = introDom.innerHTML.replace("简介:", "");
                 return introDom;
             },
-            coverUrl: document.querySelector("#fmimg > img").src,
+            coverUrl: document.querySelector("#fmimg > img")
+                .src,
             chapterListSelector: "#list>dl",
             charset: document.charset,
             chapterParse: self.chapterParse,
@@ -5958,7 +5975,7 @@ class c25zw extends rules_1.BaseRuleClass {
         return chapterParseTemp({
             dom,
             chapterUrl,
-            chapterName: (dom.querySelector(".zhangjieming > h1")).innerText.trim(),
+            chapterName: dom.querySelector(".zhangjieming > h1").innerText.trim(),
             contenSelector: "#content",
             contentPatch: (content) => {
                 (0, misc_1.rm)(".bottem", false, content);
@@ -5968,7 +5985,7 @@ class c25zw extends rules_1.BaseRuleClass {
         });
     }
 }
-exports.c25zw = c25zw;
+exports.C25zw = C25zw;
 const dijiubook = () => {
     const c = mkBiqugeClass((introDom) => {
         introDom.innerHTML = introDom.innerHTML.replace("本书网址：", "");
@@ -5996,7 +6013,7 @@ const dijiubook = () => {
     return c;
 };
 exports.dijiubook = dijiubook;
-function mkBiqugeClass2(introDomPatch, contentPatch, concurrencyLimit = undefined) {
+function mkBiqugeClass2(introDomPatch, contentPatch, concurrencyLimit) {
     return class extends rules_1.BaseRuleClass {
         constructor() {
             super();
@@ -6014,12 +6031,12 @@ function mkBiqugeClass2(introDomPatch, contentPatch, concurrencyLimit = undefine
                 bookname: document.querySelector(".info > h2").innerText
                     .trim()
                     .replace(/最新章节$/, ""),
-                author: (document.querySelector(".small > span:nth-child(1)")).innerText
+                author: document.querySelector(".small > span:nth-child(1)").innerText
                     .replace(/作(\s+)?者[：:]/, "")
                     .trim(),
                 introDom: document.querySelector(".intro"),
-                introDomPatch: introDomPatch,
-                coverUrl: (document.querySelector(".info > .cover > img")).src,
+                introDomPatch,
+                coverUrl: document.querySelector(".info > .cover > img").src,
                 chapterListSelector: ".listmain>dl",
                 charset: document.charset,
                 chapterParse: self.chapterParse,
@@ -6030,13 +6047,14 @@ function mkBiqugeClass2(introDomPatch, contentPatch, concurrencyLimit = undefine
             return chapterParseTemp({
                 dom,
                 chapterUrl,
-                chapterName: (dom.querySelector(".content > h1:nth-child(1)")).innerText.trim(),
+                chapterName: dom.querySelector(".content > h1:nth-child(1)").innerText.trim(),
                 contenSelector: "#content",
-                contentPatch: contentPatch,
+                contentPatch,
                 charset,
             });
         }
-        overrideConstructor(self) { }
+        overrideConstructor(self) {
+        }
     };
 }
 const shuquge = () => mkBiqugeClass2((introDom) => {
@@ -6068,7 +6086,7 @@ const xyqxs = () => mkBiqugeClass2((introDom) => {
     return content;
 });
 exports.xyqxs = xyqxs;
-class xbiquge extends rules_1.BaseRuleClass {
+class Xbiquge extends rules_1.BaseRuleClass {
     constructor() {
         super();
         this.imageMode = "TM";
@@ -6078,13 +6096,14 @@ class xbiquge extends rules_1.BaseRuleClass {
         const self = this;
         return bookParseTemp({
             bookUrl: document.location.href,
-            bookname: (document.querySelector("#info > h1:nth-child(1)")).innerText.trim(),
-            author: (document.querySelector("#info > p:nth-child(2)")).innerText
+            bookname: document.querySelector("#info > h1:nth-child(1)").innerText.trim(),
+            author: document.querySelector("#info > p:nth-child(2)").innerText
                 .replace(/作(\s+)?者[：:]/, "")
                 .trim(),
             introDom: document.querySelector("#intro"),
             introDomPatch: (introDom) => introDom,
-            coverUrl: document.querySelector("#fmimg > img")?.src,
+            coverUrl: document.querySelector("#fmimg > img")
+                ?.src,
             chapterListSelector: "#list>dl",
             charset: "GBK",
             chapterParse: self.chapterParse,
@@ -6095,7 +6114,7 @@ class xbiquge extends rules_1.BaseRuleClass {
         return chapterParseTemp({
             dom,
             chapterUrl,
-            chapterName: (dom.querySelector(".bookname > h1:nth-child(1)")).innerText.trim(),
+            chapterName: dom.querySelector(".bookname > h1:nth-child(1)").innerText.trim(),
             contenSelector: "#content",
             contentPatch: (content) => {
                 content.innerHTML = content.innerHTML.replace(`笔趣阁 www.xbiquge.so，最快更新${options.bookname} ！`, "");
@@ -6105,7 +6124,7 @@ class xbiquge extends rules_1.BaseRuleClass {
         });
     }
 }
-exports.xbiquge = xbiquge;
+exports.Xbiquge = Xbiquge;
 
 
 /***/ }),
@@ -6116,7 +6135,7 @@ exports.xbiquge = xbiquge;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.ciweimao = void 0;
+exports.Ciweimao = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const misc_1 = __webpack_require__("./src/lib/misc.ts");
 const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
@@ -6127,7 +6146,7 @@ const rules_1 = __webpack_require__("./src/rules.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 const log_1 = __webpack_require__("./src/log.ts");
 const CryptoJS = __webpack_require__("crypto-js");
-class ciweimao extends rules_1.BaseRuleClass {
+class Ciweimao extends rules_1.BaseRuleClass {
     constructor() {
         super();
         this.imageMode = "TM";
@@ -6138,13 +6157,14 @@ class ciweimao extends rules_1.BaseRuleClass {
     async bookParse() {
         const bookid = unsafeWindow.HB.book.book_id;
         const bookUrl = `https://www.ciweimao.com/book/${bookid}`;
-        const bookname = (document.querySelector(".book-catalog .hd h3")).innerText.trim();
-        const author = (document.querySelector(".book-catalog .hd > p > a")).innerText.trim();
+        const bookname = document.querySelector(".book-catalog .hd h3").innerText.trim();
+        const author = document.querySelector(".book-catalog .hd > p > a").innerText.trim();
         const dom = await (0, http_2.getHtmlDOM)(bookUrl, undefined);
         const introDom = dom.querySelector(".book-intro-cnt .book-desc");
         const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom);
         const additionalMetadate = {};
-        const coverUrl = dom.querySelector(".cover > img").src;
+        const coverUrl = dom.querySelector(".cover > img")
+            .src;
         if (coverUrl) {
             (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
                 .then((coverClass) => {
@@ -6159,11 +6179,11 @@ class ciweimao extends rules_1.BaseRuleClass {
         for (let i = 0; i < sections.length; i++) {
             const s = sections[i];
             const sectionNumber = i + 1;
-            const sectionName = s.querySelector(".sub-tit").innerText;
+            const sectionName = s.querySelector(".sub-tit")
+                .innerText;
             let sectionChapterNumber = 0;
             const cs = s.querySelectorAll(".book-chapter-list > li > a");
-            for (let j = 0; j < cs.length; j++) {
-                const c = cs[j];
+            for (const c of Array.from(cs)) {
                 chapterNumber++;
                 sectionChapterNumber++;
                 const chapterName = c.innerText.trim();
@@ -6192,20 +6212,20 @@ class ciweimao extends rules_1.BaseRuleClass {
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         function decrypt(item) {
             let message = item.content;
-            let keys = item.keys;
-            let len = item.keys.length;
-            let accessKey = item.accessKey;
-            let accessKeyList = accessKey.split("");
-            let charsNotLatinNum = accessKeyList.length;
-            let output = new Array();
+            const keys = item.keys;
+            const len = item.keys.length;
+            const accessKey = item.accessKey;
+            const accessKeyList = accessKey.split("");
+            const charsNotLatinNum = accessKeyList.length;
+            const output = new Array();
             output.push(keys[accessKeyList[charsNotLatinNum - 1].charCodeAt(0) % len]);
             output.push(keys[accessKeyList[0].charCodeAt(0) % len]);
             for (let i = 0; i < output.length; i++) {
                 message = atob(message);
-                let data = output[i];
-                let iv = btoa(message.substr(0, 16));
-                let keys255 = btoa(message.substr(16));
-                let pass = CryptoJS.format.OpenSSL.parse(keys255);
+                const data = output[i];
+                const iv = btoa(message.substr(0, 16));
+                const keys255 = btoa(message.substr(16));
+                const pass = CryptoJS.format.OpenSSL.parse(keys255);
                 message = CryptoJS.AES.decrypt(pass, CryptoJS.enc.Base64.parse(data), {
                     iv: CryptoJS.enc.Base64.parse(iv),
                     format: CryptoJS.format.OpenSSL,
@@ -6219,27 +6239,27 @@ class ciweimao extends rules_1.BaseRuleClass {
         }
         async function getChapterAuthorSay() {
             const doc = await (0, http_2.getHtmlDOM)(chapterUrl, undefined);
-            const _chapter_author_says = doc.querySelectorAll("#J_BookCnt .chapter.author_say");
-            let div_chapter_author_say;
-            if (_chapter_author_says.length !== 0) {
-                let hr = document.createElement("hr");
-                div_chapter_author_say = document.createElement("div");
-                div_chapter_author_say.appendChild(hr);
-                for (let _chapter_author_say of Array.from(_chapter_author_says)) {
-                    (0, misc_1.rm)("i", true, _chapter_author_say);
-                    div_chapter_author_say.appendChild(_chapter_author_say);
+            const chapterAuthorSays = doc.querySelectorAll("#J_BookCnt .chapter.author_say");
+            let divChapterAuthorSay;
+            if (chapterAuthorSays.length !== 0) {
+                const hr = document.createElement("hr");
+                divChapterAuthorSay = document.createElement("div");
+                divChapterAuthorSay.appendChild(hr);
+                for (const chapterAuthorSay of Array.from(chapterAuthorSays)) {
+                    (0, misc_1.rm)("i", true, chapterAuthorSay);
+                    divChapterAuthorSay.appendChild(chapterAuthorSay);
                 }
             }
-            return div_chapter_author_say;
+            return divChapterAuthorSay;
         }
-        const chapter_id = chapterUrl.split("/").slice(-1)[0];
+        const chapterId = chapterUrl.split("/").slice(-1)[0];
         async function publicChapter() {
-            async function chapterDecrypt(chapter_id, refererUrl) {
+            async function chapterDecrypt(chapterIdt, refererUrl) {
                 const rootPath = "https://www.ciweimao.com/";
-                const access_key_url = rootPath + "chapter/ajax_get_session_code";
-                const chapter_content_url = rootPath + "chapter/get_book_chapter_detail_info";
-                log_1.log.debug(`[Chapter]请求 ${access_key_url} Referer ${refererUrl}`);
-                const access_key_obj = await (0, http_1.gfetch)(access_key_url, {
+                const accessKeyUrl = rootPath + "chapter/ajax_get_session_code";
+                const chapterContentUrl = rootPath + "chapter/get_book_chapter_detail_info";
+                log_1.log.debug(`[Chapter]请求 ${accessKeyUrl} Referer ${refererUrl}`);
+                const accessKeyObj = await (0, http_1.gfetch)(accessKeyUrl, {
                     method: "POST",
                     headers: {
                         Accept: "application/json, text/javascript, */*; q=0.01",
@@ -6248,15 +6268,15 @@ class ciweimao extends rules_1.BaseRuleClass {
                         Origin: "https://www.ciweimao.com",
                         "X-Requested-With": "XMLHttpRequest",
                     },
-                    data: `chapter_id=${chapter_id}`,
+                    data: `chapter_id=${chapterIdt}`,
                     responseType: "json",
                 })
                     .then((response) => response.response)
                     .catch((error) => log_1.log.error(error));
-                const chapter_access_key = access_key_obj
+                const chapter_access_key = accessKeyObj
                     .chapter_access_key;
-                log_1.log.debug(`[Chapter]请求 ${chapter_content_url} Referer ${refererUrl}`);
-                const chapter_content_obj = await (0, http_1.gfetch)(chapter_content_url, {
+                log_1.log.debug(`[Chapter]请求 ${chapterContentUrl} Referer ${refererUrl}`);
+                const chapterContentObj = await (0, http_1.gfetch)(chapterContentUrl, {
                     method: "POST",
                     headers: {
                         Accept: "application/json, text/javascript, */*; q=0.01",
@@ -6265,32 +6285,32 @@ class ciweimao extends rules_1.BaseRuleClass {
                         Origin: "https://www.ciweimao.com",
                         "X-Requested-With": "XMLHttpRequest",
                     },
-                    data: `chapter_id=${chapter_id}&chapter_access_key=${chapter_access_key}`,
+                    data: `chapter_id=${chapterIdt}&chapter_access_key=${chapter_access_key}`,
                     responseType: "json",
                 })
                     .then((response) => response.response)
                     .catch((error) => log_1.log.error(error));
-                if (chapter_content_obj.code !== 100000) {
-                    log_1.log.error(chapter_content_obj);
+                if (chapterContentObj.code !== 100000) {
+                    log_1.log.error(chapterContentObj);
                     throw new Error(`下载 ${refererUrl} 失败`);
                 }
                 return decrypt({
-                    content: chapter_content_obj.chapter_content,
-                    keys: chapter_content_obj.encryt_keys,
+                    content: chapterContentObj.chapter_content,
+                    keys: chapterContentObj.encryt_keys,
                     accessKey: chapter_access_key,
                 });
             }
-            const div_chapter_author_say = await getChapterAuthorSay();
-            let content = document.createElement("div");
-            let decryptDate = await chapterDecrypt(chapter_id, chapterUrl);
+            const divChapterAuthorSay = await getChapterAuthorSay();
+            const content = document.createElement("div");
+            const decryptDate = await chapterDecrypt(chapterId, chapterUrl);
             content.innerHTML = decryptDate;
             (0, misc_1.rm)(".chapter span", true, content);
-            if (div_chapter_author_say) {
-                content.appendChild(div_chapter_author_say);
+            if (divChapterAuthorSay) {
+                content.appendChild(divChapterAuthorSay);
             }
-            let { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+            const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
             return {
-                chapterName: chapterName,
+                chapterName,
                 contentRaw: content,
                 contentText: text,
                 contentHTML: dom,
@@ -6303,13 +6323,13 @@ class ciweimao extends rules_1.BaseRuleClass {
                 ? true
                 : false;
             if (isLogin && isPaid) {
-                async function vipChapterDecrypt(chapter_id, refererUrl) {
+                async function vipChapterDecrypt(chapterIdi, refererUrl) {
                     const HB = unsafeWindow.HB;
                     const parentWidth = 871;
                     const setFontSize = "14";
-                    const image_session_code_url = HB.config.rootPath + "chapter/ajax_get_image_session_code";
-                    log_1.log.debug(`[Chapter]请求 ${image_session_code_url} Referer ${refererUrl}`);
-                    const image_session_code_object = await (0, http_1.gfetch)(image_session_code_url, {
+                    const imageSessionCodeUrl = HB.config.rootPath + "chapter/ajax_get_image_session_code";
+                    log_1.log.debug(`[Chapter]请求 ${imageSessionCodeUrl} Referer ${refererUrl}`);
+                    const imageSessionCodeObject = await (0, http_1.gfetch)(imageSessionCodeUrl, {
                         method: "POST",
                         headers: {
                             Accept: "application/json, text/javascript, */*; q=0.01",
@@ -6321,22 +6341,21 @@ class ciweimao extends rules_1.BaseRuleClass {
                     })
                         .then((response) => response.response)
                         .catch((error) => log_1.log.error(error));
-                    if (image_session_code_object.code !==
-                        100000) {
-                        log_1.log.error(image_session_code_object);
+                    if (imageSessionCodeObject.code !== 100000) {
+                        log_1.log.error(imageSessionCodeObject);
                         throw new Error(`下载 ${refererUrl} 失败`);
                     }
                     const imageCode = decrypt({
-                        content: image_session_code_object
+                        content: imageSessionCodeObject
                             .image_code,
-                        keys: image_session_code_object
+                        keys: imageSessionCodeObject
                             .encryt_keys,
-                        accessKey: image_session_code_object
+                        accessKey: imageSessionCodeObject
                             .access_key,
                     });
-                    const vipCHapterImageUrl = HB.config.rootPath +
+                    const vipCHapterImageUrlI = HB.config.rootPath +
                         "chapter/book_chapter_image?chapter_id=" +
-                        chapter_id +
+                        chapterIdi +
                         "&area_width=" +
                         parentWidth +
                         "&font=undefined" +
@@ -6346,10 +6365,10 @@ class ciweimao extends rules_1.BaseRuleClass {
                         imageCode +
                         "&bg_color_name=white" +
                         "&text_color_name=white";
-                    return vipCHapterImageUrl;
+                    return vipCHapterImageUrlI;
                 }
-                const div_chapter_author_say = await getChapterAuthorSay();
-                const vipCHapterImageUrl = await vipChapterDecrypt(chapter_id, chapterUrl);
+                const divChapterAuthorSay = await getChapterAuthorSay();
+                const vipCHapterImageUrl = await vipChapterDecrypt(chapterId, chapterUrl);
                 log_1.log.debug(`[Chapter]请求 ${vipCHapterImageUrl} Referer ${chapterUrl}`);
                 const vipCHapterImageBlob = await (0, http_1.gfetch)(vipCHapterImageUrl, {
                     method: "GET",
@@ -6361,16 +6380,18 @@ class ciweimao extends rules_1.BaseRuleClass {
                 })
                     .then((response) => response.response)
                     .catch((error) => log_1.log.error(error));
-                const vipCHapterName = `vipCHapter${chapter_id}.png`;
-                const vipCHapterImage = new main_1.attachmentClass(vipCHapterImageUrl, vipCHapterName, "TM");
+                const vipCHapterName = `vipCHapter${chapterId}.png`;
+                const vipCHapterImage = new main_1.AttachmentClass(vipCHapterImageUrl, vipCHapterName, "TM");
                 if (vipCHapterImageBlob) {
                     vipCHapterImage.imageBlob = vipCHapterImageBlob;
                     vipCHapterImage.status = main_1.Status.finished;
                 }
                 const contentImages = [vipCHapterImage];
-                let ddom, dtext, dimages;
-                if (div_chapter_author_say) {
-                    let { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(div_chapter_author_say, "TM");
+                let ddom;
+                let dtext;
+                let dimages;
+                if (divChapterAuthorSay) {
+                    const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(divChapterAuthorSay, "TM");
                     [ddom, dtext, dimages] = [dom, text, images];
                 }
                 const img = document.createElement("img");
@@ -6386,17 +6407,17 @@ class ciweimao extends rules_1.BaseRuleClass {
                     contentText = contentText + "\n\n" + dtext;
                 }
                 return {
-                    chapterName: chapterName,
+                    chapterName,
                     contentRaw: contentHTML,
-                    contentText: contentText,
-                    contentHTML: contentHTML,
-                    contentImages: contentImages,
+                    contentText,
+                    contentHTML,
+                    contentImages,
                     additionalMetadate: null,
                 };
             }
             else {
                 return {
-                    chapterName: chapterName,
+                    chapterName,
                     contentRaw: null,
                     contentText: null,
                     contentHTML: null,
@@ -6413,7 +6434,7 @@ class ciweimao extends rules_1.BaseRuleClass {
         }
     }
 }
-exports.ciweimao = ciweimao;
+exports.Ciweimao = Ciweimao;
 
 
 /***/ }),
@@ -6424,7 +6445,7 @@ exports.ciweimao = ciweimao;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.dierbanzhu = void 0;
+exports.Dierbanzhu = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const rules_1 = __webpack_require__("./src/rules.ts");
 const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
@@ -6432,7 +6453,7 @@ const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
 const http_1 = __webpack_require__("./src/lib/http.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 const log_1 = __webpack_require__("./src/log.ts");
-class dierbanzhu extends rules_1.BaseRuleClass {
+class Dierbanzhu extends rules_1.BaseRuleClass {
     constructor() {
         super();
         this.imageMode = "TM";
@@ -6440,15 +6461,14 @@ class dierbanzhu extends rules_1.BaseRuleClass {
     }
     async bookParse() {
         const bookUrl = document.location.href;
-        const bookname = (document.querySelector("#info > h1:nth-child(1)")).innerText.trim();
-        const author = (document.querySelector("#info > p:nth-child(2)")).innerText
+        const bookname = document.querySelector("#info > h1:nth-child(1)").innerText.trim();
+        const author = document.querySelector("#info > p:nth-child(2)").innerText
             .replace(/作(\s+)?者[：:]/, "")
             .trim();
         const introDom = document.querySelector("#intro");
         const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom);
         const additionalMetadate = {};
-        const coverUrl = document.querySelector("#fmimg > img")
-            .src;
+        const coverUrl = document.querySelector("#fmimg > img").src;
         if (coverUrl) {
             (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
                 .then((coverClass) => {
@@ -6465,8 +6485,7 @@ class dierbanzhu extends rules_1.BaseRuleClass {
             let sectionNumber = 0;
             let sectionName = null;
             let sectionChapterNumber = 0;
-            for (let i = 0; i < chapterList.length; i++) {
-                const node = chapterList[i];
+            for (const node of chapterList) {
                 if (node.nodeName === "DT" && !node.innerText.includes("最新章节")) {
                     sectionNumber++;
                     sectionChapterNumber = 0;
@@ -6489,13 +6508,13 @@ class dierbanzhu extends rules_1.BaseRuleClass {
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        const dom = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
-        chapterName = (dom.querySelector(".bookname > h1:nth-child(1)")).innerText.trim();
-        const content = dom.querySelector("#content");
+        const doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
+        chapterName = doc.querySelector(".bookname > h1:nth-child(1)").innerText.trim();
+        const content = doc.querySelector("#content");
         if (content) {
-            let { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+            const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
             return {
-                chapterName: chapterName,
+                chapterName,
                 contentRaw: content,
                 contentText: text,
                 contentHTML: dom,
@@ -6505,7 +6524,7 @@ class dierbanzhu extends rules_1.BaseRuleClass {
         }
         else {
             return {
-                chapterName: chapterName,
+                chapterName,
                 contentRaw: null,
                 contentText: null,
                 contentHTML: null,
@@ -6515,7 +6534,7 @@ class dierbanzhu extends rules_1.BaseRuleClass {
         }
     }
 }
-exports.dierbanzhu = dierbanzhu;
+exports.Dierbanzhu = Dierbanzhu;
 
 
 /***/ }),
@@ -6526,13 +6545,13 @@ exports.dierbanzhu = dierbanzhu;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.dingdiann = void 0;
+exports.Dingdiann = void 0;
 const rules_1 = __webpack_require__("./src/rules.ts");
 const misc_1 = __webpack_require__("./src/lib/misc.ts");
 const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
 const biquge_1 = __webpack_require__("./src/rules/biquge.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
-class dingdiann extends rules_1.BaseRuleClass {
+class Dingdiann extends rules_1.BaseRuleClass {
     constructor() {
         super();
         this.imageMode = "TM";
@@ -6541,13 +6560,14 @@ class dingdiann extends rules_1.BaseRuleClass {
         const self = this;
         return (0, biquge_1.bookParseTemp)({
             bookUrl: document.location.href,
-            bookname: (document.querySelector("#info > h1:nth-child(1)")).innerText.trim(),
-            author: (document.querySelector("#info > p:nth-child(2)")).innerText
+            bookname: document.querySelector("#info > h1:nth-child(1)").innerText.trim(),
+            author: document.querySelector("#info > p:nth-child(2)").innerText
                 .replace(/作(\s+)?者[：:]/, "")
                 .trim(),
             introDom: document.querySelector("#intro"),
             introDomPatch: (introDom) => introDom,
-            coverUrl: document.querySelector("#fmimg > img").src,
+            coverUrl: document.querySelector("#fmimg > img")
+                .src,
             chapterListSelector: "#list>dl",
             charset: "UTF-8",
             chapterParse: self.chapterParse,
@@ -6570,7 +6590,7 @@ class dingdiann extends rules_1.BaseRuleClass {
             .href, (_content, nextLink) => _content.innerText.includes("本章未完，点击下一页继续阅读"));
     }
 }
-exports.dingdiann = dingdiann;
+exports.Dingdiann = Dingdiann;
 
 
 /***/ }),
@@ -6581,7 +6601,7 @@ exports.dingdiann = dingdiann;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.dmzj = void 0;
+exports.Dmzj = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const rules_1 = __webpack_require__("./src/rules.ts");
 const misc_1 = __webpack_require__("./src/lib/misc.ts");
@@ -6590,21 +6610,21 @@ const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
 const http_1 = __webpack_require__("./src/lib/http.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 const log_1 = __webpack_require__("./src/log.ts");
-class dmzj extends rules_1.BaseRuleClass {
+class Dmzj extends rules_1.BaseRuleClass {
     constructor() {
         super();
         this.imageMode = "TM";
     }
     async bookParse() {
         const bookUrl = document.location.href;
-        const bookname = (document.querySelector(".comic_deCon > h1 > a")).innerText.trim();
-        const author = (document.querySelector(".comic_deCon_liO > li:nth-child(1)")).innerText
+        const bookname = document.querySelector(".comic_deCon > h1 > a").innerText.trim();
+        const author = document.querySelector(".comic_deCon_liO > li:nth-child(1)").innerText
             .replace("作者：", "")
             .trim();
         const introDom = document.querySelector(".comic_deCon_d");
         const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom);
         const additionalMetadate = {};
-        const coverUrl = (document.querySelector(".comic_i_img > a > img")).src;
+        const coverUrl = document.querySelector(".comic_i_img > a > img").src;
         if (coverUrl) {
             (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
                 .then((coverClass) => {
@@ -6613,7 +6633,7 @@ class dmzj extends rules_1.BaseRuleClass {
                 .catch((error) => log_1.log.error(error));
         }
         const chapters = [];
-        let cos = document.querySelectorAll("div.zj_list_con:nth-child(4) > ul.list_con_li > li");
+        const cos = document.querySelectorAll("div.zj_list_con:nth-child(4) > ul.list_con_li > li");
         let chapterNumber = 0;
         for (const co of Array.from(cos)) {
             chapterNumber++;
@@ -6630,18 +6650,18 @@ class dmzj extends rules_1.BaseRuleClass {
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        function getpicUrlList(doc) {
-            const img_prefix = "https://images.dmzj.com/";
-            let pages = (0, misc_1.sandboxed)(doc.querySelector("head > script").innerText +
+        function getpicUrlList(docI) {
+            const imgPrefix = "https://images.dmzj.com/";
+            let pages = (0, misc_1.sandboxed)(docI.querySelector("head > script").innerText +
                 ";return pages;");
             pages = pages.replace(/\n/g, "");
             pages = pages.replace(/\r/g, "|");
             const info = (0, misc_1.sandboxed)("return (" + pages + ")");
             if (info) {
-                const picUrlList = info["page_url"]
+                const picUrlListI = info.page_url
                     .split("|")
-                    .map((pic) => img_prefix + pic);
-                return picUrlList;
+                    .map((pic) => imgPrefix + pic);
+                return picUrlListI;
             }
         }
         log_1.log.debug(`[Chapter]请求 ${chapterUrl}`);
@@ -6656,9 +6676,9 @@ class dmzj extends rules_1.BaseRuleClass {
                 pElem.appendChild(imgElem);
                 content.appendChild(pElem);
             }
-            let { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+            const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
             return {
-                chapterName: chapterName,
+                chapterName,
                 contentRaw: content,
                 contentText: text,
                 contentHTML: dom,
@@ -6667,7 +6687,7 @@ class dmzj extends rules_1.BaseRuleClass {
             };
         }
         return {
-            chapterName: chapterName,
+            chapterName,
             contentRaw: null,
             contentText: null,
             contentHTML: null,
@@ -6676,7 +6696,7 @@ class dmzj extends rules_1.BaseRuleClass {
         };
     }
 }
-exports.dmzj = dmzj;
+exports.Dmzj = Dmzj;
 
 
 /***/ }),
@@ -6687,13 +6707,13 @@ exports.dmzj = dmzj;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.fushuwang = void 0;
+exports.Fushuwang = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const rules_1 = __webpack_require__("./src/rules.ts");
 const misc_1 = __webpack_require__("./src/lib/misc.ts");
 const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
 const http_1 = __webpack_require__("./src/lib/http.ts");
-class fushuwang extends rules_1.BaseRuleClass {
+class Fushuwang extends rules_1.BaseRuleClass {
     constructor() {
         super();
         this.imageMode = "TM";
@@ -6707,7 +6727,7 @@ class fushuwang extends rules_1.BaseRuleClass {
     }
     async bookParse() {
         const bookUrl = (document.location.origin + document.location.pathname).replace(/(_\d+)\.html$/, ".html");
-        const [bookname, author] = (document.querySelector(".title_info > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(1) > h1:nth-child(1)")).innerText.split("——");
+        const [bookname, author] = document.querySelector(".title_info > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(1) > h1:nth-child(1)").innerText.split("——");
         const [introduction, introductionHTML] = [null, null];
         const additionalMetadate = {};
         const options = document.querySelectorAll("p.pageLink > select > option");
@@ -6732,9 +6752,9 @@ class fushuwang extends rules_1.BaseRuleClass {
             (0, misc_1.rm)("span", true, content);
             (0, misc_1.rm)("p.pageLink", true, content);
             (0, misc_1.rm)("script", true, content);
-            let { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+            const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
             return {
-                chapterName: chapterName,
+                chapterName,
                 contentRaw: content,
                 contentText: text,
                 contentHTML: dom,
@@ -6744,7 +6764,7 @@ class fushuwang extends rules_1.BaseRuleClass {
         }
         else {
             return {
-                chapterName: chapterName,
+                chapterName,
                 contentRaw: null,
                 contentText: null,
                 contentHTML: null,
@@ -6754,7 +6774,7 @@ class fushuwang extends rules_1.BaseRuleClass {
         }
     }
 }
-exports.fushuwang = fushuwang;
+exports.Fushuwang = Fushuwang;
 
 
 /***/ }),
@@ -6765,7 +6785,7 @@ exports.fushuwang = fushuwang;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.gongzicp = void 0;
+exports.Gongzicp = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const misc_1 = __webpack_require__("./src/lib/misc.ts");
 const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
@@ -6774,7 +6794,7 @@ const setting_1 = __webpack_require__("./src/setting.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 const log_1 = __webpack_require__("./src/log.ts");
 const CryptoJS = __webpack_require__("crypto-js");
-class gongzicp extends rules_1.BaseRuleClass {
+class Gongzicp extends rules_1.BaseRuleClass {
     constructor() {
         super();
         this.imageMode = "TM";
@@ -6782,7 +6802,7 @@ class gongzicp extends rules_1.BaseRuleClass {
     }
     async bookParse() {
         const bookUrl = document.location.href;
-        const bookId = (document.querySelector("span.id")).innerText.replace("CP", "");
+        const bookId = document.querySelector("span.id").innerText.replace("CP", "");
         if (!bookId) {
             throw new Error("获取bookID出错");
         }
@@ -6881,7 +6901,7 @@ class gongzicp extends rules_1.BaseRuleClass {
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        function cpDecrypt(content_orig) {
+        function cpDecrypt(contentOrig) {
             const setIv = (key) => {
                 key = key + parseInt("165455", 14).toString(32);
                 const iv = CryptoJS.enc.Utf8.parse("$h$b3!" + key);
@@ -6896,11 +6916,11 @@ class gongzicp extends rules_1.BaseRuleClass {
                 return {
                     mode: CryptoJS.mode.CBC,
                     padding: CryptoJS.pad.Pkcs7,
-                    iv: iv,
+                    iv,
                 };
             };
             const encrypt = (value, key, cfg) => {
-                if ("string" != typeof value) {
+                if ("string" !== typeof value) {
                     value = JSON.stringify(value);
                 }
                 const xml = CryptoJS.enc.Utf8.parse(value);
@@ -6911,38 +6931,38 @@ class gongzicp extends rules_1.BaseRuleClass {
                 return CryptoJS.enc.Utf8.stringify(value).toString();
             };
             let _CP_NUXT;
-            let LCngpxaF_substr;
+            let LCngpxaFSubstr;
             if (_CP_NUXT) {
-                LCngpxaF_substr = _CP_NUXT.state.CpST.LCngpxaF.substr(2, 10);
+                LCngpxaFSubstr = _CP_NUXT.state.CpST.LCngpxaF.substr(2, 10);
             }
             else {
-                LCngpxaF_substr = (unsafeWindow).__NUXT__.state.CpST.LCngpxaF.substr(1, 10);
+                LCngpxaFSubstr = unsafeWindow.__NUXT__.state.CpST.LCngpxaF.substr(1, 10);
             }
-            const iv = setIv("iGzsYn");
-            const key = setKey(LCngpxaF_substr);
-            const cfg = setcfg(iv);
-            const content = decrypt(content_orig, key, cfg);
+            const ivG = setIv("iGzsYn");
+            const keyG = setKey(LCngpxaFSubstr);
+            const cfgG = setcfg(ivG);
+            const content = decrypt(contentOrig, keyG, cfgG);
             return content;
         }
         function randomWalker() {
             log_1.log.info("[chapter]随机翻页中……");
             if (document.location.pathname.includes("novel")) {
-                (document.querySelector(".chapter-list > .chapter > a")).click();
+                document.querySelector(".chapter-list > .chapter > a").click();
             }
             if (document.location.pathname.includes("read")) {
                 const rightMenu = document.querySelector(".right-menu");
                 if (rightMenu?.childElementCount === 6) {
-                    (document.querySelector(".right-menu > div:nth-child(3) > a:nth-child(1)")).click();
+                    document.querySelector(".right-menu > div:nth-child(3) > a:nth-child(1)").click();
                 }
                 else if (rightMenu?.childElementCount === 7) {
                     if (document.querySelector("div.content.unpaid")) {
-                        (document.querySelector(".right-menu > div:nth-child(3) > a:nth-child(1)")).click();
+                        document.querySelector(".right-menu > div:nth-child(3) > a:nth-child(1)").click();
                     }
                     else if (Math.random() < 0.3) {
-                        (document.querySelector(".right-menu > div:nth-child(3) > a:nth-child(1)")).click();
+                        document.querySelector(".right-menu > div:nth-child(3) > a:nth-child(1)").click();
                     }
                     else {
-                        (document.querySelector(".right-menu > div:nth-child(4) > a:nth-child(1)")).click();
+                        document.querySelector(".right-menu > div:nth-child(4) > a:nth-child(1)").click();
                     }
                 }
             }
@@ -6957,7 +6977,7 @@ class gongzicp extends rules_1.BaseRuleClass {
             let retryTime = 0;
             async function getChapterInfo(url) {
                 log_1.log.debug(`请求地址: ${url}, Referrer: ${chapterUrl}，retryTime：${retryTime}`);
-                const result = await fetch(url, {
+                const resultI = await fetch(url, {
                     credentials: "include",
                     headers: {
                         Accept: "application/json, text/plain, */*",
@@ -6971,8 +6991,8 @@ class gongzicp extends rules_1.BaseRuleClass {
                 })
                     .then((resp) => resp.json())
                     .catch((error) => log_1.log.error(error));
-                if (result.data.chapterInfo.content.length !== 0 &&
-                    result.data.chapterInfo.content.length < 30) {
+                if (resultI.data.chapterInfo.content.length !== 0 &&
+                    resultI.data.chapterInfo.content.length < 30) {
                     retryTime++;
                     if (setting_1.retryLimit > setting_1.retryLimit) {
                         log_1.log.error(`请求 ${url} 失败`);
@@ -6989,7 +7009,7 @@ class gongzicp extends rules_1.BaseRuleClass {
                 }
                 else {
                     retryTime = 0;
-                    return result;
+                    return resultI;
                 }
             }
             const result = await getChapterInfo(chapterGetInfoUrl.toString());
@@ -6998,7 +7018,7 @@ class gongzicp extends rules_1.BaseRuleClass {
                 if (chapterInfo.chapterPrice !== 0 &&
                     chapterInfo.content.length === 0) {
                     return {
-                        chapterName: chapterName,
+                        chapterName,
                         contentRaw: null,
                         contentText: null,
                         contentHTML: null,
@@ -7063,17 +7083,17 @@ class gongzicp extends rules_1.BaseRuleClass {
                         ].join("\n\n");
                     }
                     return {
-                        chapterName: chapterName,
-                        contentRaw: contentRaw,
-                        contentText: contentText,
-                        contentHTML: contentHTML,
+                        chapterName,
+                        contentRaw,
+                        contentText,
+                        contentHTML,
                         contentImages: null,
                         additionalMetadate: null,
                     };
                 }
             }
             return {
-                chapterName: chapterName,
+                chapterName,
                 contentRaw: null,
                 contentText: null,
                 contentHTML: null,
@@ -7103,7 +7123,7 @@ class gongzicp extends rules_1.BaseRuleClass {
         }
     }
 }
-exports.gongzicp = gongzicp;
+exports.Gongzicp = Gongzicp;
 
 
 /***/ }),
@@ -7114,7 +7134,7 @@ exports.gongzicp = gongzicp;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.haitangtxt = void 0;
+exports.Haitangtxt = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const rules_1 = __webpack_require__("./src/rules.ts");
 const misc_1 = __webpack_require__("./src/lib/misc.ts");
@@ -7123,22 +7143,22 @@ const http_1 = __webpack_require__("./src/lib/http.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 const haitangtxtImageDecode_1 = __webpack_require__("./src/rules/lib/haitangtxtImageDecode.ts");
 const log_1 = __webpack_require__("./src/log.ts");
-class haitangtxt extends rules_1.BaseRuleClass {
+class Haitangtxt extends rules_1.BaseRuleClass {
     constructor() {
         super();
         this.imageMode = "TM";
     }
     async bookParse() {
-        const bookUrl = (document.querySelector("div.currency_head > h1 > a")).href;
+        const bookUrl = document.querySelector("div.currency_head > h1 > a").href;
         const bookId = bookUrl.split("/").slice(-2, -1)[0];
         log_1.log.debug(`[chapter]请求 ${bookUrl}`);
         const dom = await (0, http_1.getHtmlDOM)(bookUrl, "UTF-8");
-        const bookname = (dom.querySelector("div.cataloginfo > h3")).innerText.trim();
-        const author = (dom.querySelector(".infotype > p:nth-child(1) > a:nth-child(1)")).innerText.trim();
+        const bookname = dom.querySelector("div.cataloginfo > h3").innerText.trim();
+        const author = dom.querySelector(".infotype > p:nth-child(1) > a:nth-child(1)").innerText.trim();
         const introDom = dom.querySelector(".intro");
-        const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom, (introDom) => {
-            (0, misc_1.rm)("span:nth-child(1)", false, introDom);
-            return introDom;
+        const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom, (introDomI) => {
+            (0, misc_1.rm)("span:nth-child(1)", false, introDomI);
+            return introDomI;
         });
         const additionalMetadate = {};
         const chapters = [];
@@ -7155,7 +7175,7 @@ class haitangtxt extends rules_1.BaseRuleClass {
             }
         };
         const getIndexUrls = () => {
-            const indexUrls = [];
+            const indexUrlsI = [];
             const maxPageNumber = Number(getMaxPageNumber());
             for (let i = 1; i <= maxPageNumber; i++) {
                 const indexUrl = [
@@ -7163,24 +7183,23 @@ class haitangtxt extends rules_1.BaseRuleClass {
                     document.location.pathname.split("/")[1],
                     `${bookId}_${i}`,
                 ].join("/") + "/";
-                indexUrls.push(indexUrl);
+                indexUrlsI.push(indexUrl);
             }
-            return indexUrls;
+            return indexUrlsI;
         };
         const indexUrls = getIndexUrls();
         let lis = [];
         for (const indexUrl of indexUrls) {
             log_1.log.debug(`[chapter]请求 ${indexUrl}`);
-            const dom = await (0, http_1.getHtmlDOM)(indexUrl, "UTF-8");
-            const ul = dom.querySelector("ul.chapters");
+            const doc = await (0, http_1.getHtmlDOM)(indexUrl, "UTF-8");
+            const ul = doc.querySelector("ul.chapters");
             if (ul?.childElementCount) {
                 lis = lis.concat(Array.from(ul.children));
             }
         }
         const chapterList = lis.filter((obj) => obj !== undefined);
         let chapterNumber = 0;
-        for (let i = 0; i < chapterList.length; i++) {
-            const node = chapterList[i];
+        for (const node of chapterList) {
             chapterNumber++;
             const a = node.firstElementChild;
             const chapterName = a.innerText;
@@ -7216,14 +7235,14 @@ class haitangtxt extends rules_1.BaseRuleClass {
                 const e = atob(_e)
                     .split(/[A-Z]+%/)
                     .map((v) => Number(v));
-                let childNode = [];
+                const childNode = [];
                 if (Array.from(dom.querySelectorAll("script")).filter((s) => s.src.includes("/17mb/js/article.js")).length) {
                     for (let i = 0; i < e.length; i++) {
-                        let k = UpWz(e[i], i);
+                        const k = UpWz(e[i], i);
                         childNode[k] = contentRaw.childNodes[i];
                     }
                     for (const node of childNode) {
-                        if (node.nodeType != 1) {
+                        if (node.nodeType !== 1) {
                             continue;
                         }
                         if (!(node.innerText.includes("本章尚未完结,请") ||
@@ -7248,7 +7267,7 @@ class haitangtxt extends rules_1.BaseRuleClass {
         let flag = false;
         do {
             contentAppend();
-            const nextLink = (dom.querySelector(".novelbutton .p1.p3 > a:nth-child(1)")).href;
+            const nextLink = dom.querySelector(".novelbutton .p1.p3 > a:nth-child(1)").href;
             if (new URL(nextLink).pathname.includes("_")) {
                 if (nextLink !== nowUrl) {
                     flag = true;
@@ -7267,10 +7286,10 @@ class haitangtxt extends rules_1.BaseRuleClass {
             }
         } while (flag);
         if (content) {
-            let { dom: oldDom, text: _text, images: finalImages, } = await (0, cleanDOM_1.cleanDOM)(content, "TM", { keepImageName: true });
+            const { dom: oldDom, text: _text, images: finalImages, } = await (0, cleanDOM_1.cleanDOM)(content, "TM", { keepImageName: true });
             const _newDom = document.createElement("div");
             _newDom.innerHTML = (0, haitangtxtImageDecode_1.replaceHaitangtxtImage)(content.innerHTML);
-            let { dom: newDom, text: finalText, images, } = await (0, cleanDOM_1.cleanDOM)(_newDom, "TM", { keepImageName: true });
+            const { dom: newDom, text: finalText, images, } = await (0, cleanDOM_1.cleanDOM)(_newDom, "TM", { keepImageName: true });
             const fontStyleDom = document.createElement("style");
             fontStyleDom.innerHTML = `.hide { display: none; }`;
             oldDom.className = "hide";
@@ -7279,7 +7298,7 @@ class haitangtxt extends rules_1.BaseRuleClass {
             finalDom.appendChild(oldDom);
             finalDom.appendChild(newDom);
             return {
-                chapterName: chapterName,
+                chapterName,
                 contentRaw: content,
                 contentText: finalText,
                 contentHTML: finalDom,
@@ -7289,7 +7308,7 @@ class haitangtxt extends rules_1.BaseRuleClass {
         }
         else {
             return {
-                chapterName: chapterName,
+                chapterName,
                 contentRaw: null,
                 contentText: null,
                 contentHTML: null,
@@ -7299,7 +7318,7 @@ class haitangtxt extends rules_1.BaseRuleClass {
         }
     }
 }
-exports.haitangtxt = haitangtxt;
+exports.Haitangtxt = Haitangtxt;
 
 
 /***/ }),
@@ -7310,7 +7329,7 @@ exports.haitangtxt = haitangtxt;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.hetushu = void 0;
+exports.Hetushu = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const rules_1 = __webpack_require__("./src/rules.ts");
 const misc_1 = __webpack_require__("./src/lib/misc.ts");
@@ -7319,19 +7338,19 @@ const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
 const http_1 = __webpack_require__("./src/lib/http.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 const log_1 = __webpack_require__("./src/log.ts");
-class hetushu extends rules_1.BaseRuleClass {
+class Hetushu extends rules_1.BaseRuleClass {
     constructor() {
         super();
         this.imageMode = "TM";
     }
     async bookParse() {
         const bookUrl = document.location.href;
-        const bookname = (document.querySelector(".book_info > h2")).innerText.trim();
-        const author = (document.querySelector(".book_info > div:nth-child(3) > a:nth-child(1)")).innerText.trim();
+        const bookname = document.querySelector(".book_info > h2").innerText.trim();
+        const author = document.querySelector(".book_info > div:nth-child(3) > a:nth-child(1)").innerText.trim();
         const introDom = document.querySelector(".intro");
         const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom);
         const additionalMetadate = {};
-        const coverUrl = (document.querySelector(".book_info > img")).src;
+        const coverUrl = document.querySelector(".book_info > img").src;
         if (coverUrl) {
             (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
                 .then((coverClass) => {
@@ -7340,14 +7359,13 @@ class hetushu extends rules_1.BaseRuleClass {
                 .catch((error) => log_1.log.error(error));
         }
         const chapters = [];
-        const chapterList = (document.querySelector("#dir")?.childNodes);
+        const chapterList = document.querySelector("#dir")?.childNodes;
         if (chapterList && chapterList.length !== 0) {
             let chapterNumber = 0;
             let sectionNumber = 0;
             let sectionName = null;
             let sectionChapterNumber = 0;
-            for (let i = 0; i < chapterList.length; i++) {
-                const node = chapterList[i];
+            for (const node of chapterList) {
                 if (node.nodeName === "DT") {
                     sectionNumber++;
                     sectionChapterNumber = 0;
@@ -7371,7 +7389,10 @@ class hetushu extends rules_1.BaseRuleClass {
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         async function sorfPage() {
-            let path, bid, sid, position;
+            let path;
+            let bid;
+            let sid;
+            let position;
             if (/\/(book[0-9]?)\/([0-9]+)\/([0-9]+)\.html(\?position=([0-9]+))?$/.test(chapterUrl)) {
                 path = RegExp.$1;
                 bid = RegExp.$2;
@@ -7404,42 +7425,43 @@ class hetushu extends rules_1.BaseRuleClass {
                 .then((response) => response.headers.get("token"))
                 .catch((error) => log_1.log.error(error));
             if (token) {
-                const token_dict = atob(token)
+                const tokenDict = atob(token)
                     .split(/[A-Z]+%/)
                     .map((v) => Number(v));
-                const this_body = dom.querySelector("#content");
-                let b = 0, star = 0;
-                for (let i = 0; i < this_body.childNodes.length; i++) {
-                    if (this_body.childNodes[i].nodeName == "H2") {
+                const thisBody = doc.querySelector("#content");
+                let b = 0;
+                let star = 0;
+                for (let i = 0; i < thisBody.childNodes.length; i++) {
+                    if (thisBody.childNodes[i].nodeName === "H2") {
                         star = i + 1;
                     }
-                    if (this_body.childNodes[i].nodeName == "DIV" &&
-                        this_body.childNodes[i].className != "chapter") {
+                    if (thisBody.childNodes[i].nodeName === "DIV" &&
+                        thisBody.childNodes[i].className !== "chapter") {
                         break;
                     }
                 }
-                const this_childNode = [];
-                for (let i = 0; i < token_dict.length; i++) {
-                    if (token_dict[i] < 5) {
-                        this_childNode[token_dict[i]] = this_body.childNodes[i + star];
+                const thisChildNode = [];
+                for (let i = 0; i < tokenDict.length; i++) {
+                    if (tokenDict[i] < 5) {
+                        thisChildNode[tokenDict[i]] = thisBody.childNodes[i + star];
                         b++;
                     }
                     else {
-                        this_childNode[token_dict[i] - b] = this_body.childNodes[i + star];
+                        thisChildNode[tokenDict[i] - b] = thisBody.childNodes[i + star];
                     }
                 }
-                for (let i = 0; i < this_childNode.length; i++) {
-                    if (!this_childNode[i]) {
+                for (const childNode of thisChildNode) {
+                    if (!childNode) {
                         continue;
                     }
-                    this_body.appendChild(this_childNode[i]);
+                    thisBody.appendChild(childNode);
                 }
             }
         }
-        const dom = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
-        chapterName = (dom.querySelector("#content .h2")).innerText.trim();
+        const doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
+        chapterName = doc.querySelector("#content .h2").innerText.trim();
         await sorfPage();
-        const content = dom.querySelector("#content");
+        const content = doc.querySelector("#content");
         if (content) {
             const tagRemoved = "h2, acronym, bdo, big, cite, code, dfn, kbd, q, s, samp, strike, tt, u, var";
             tagRemoved.split(", ").forEach((s) => {
@@ -7450,9 +7472,9 @@ class hetushu extends rules_1.BaseRuleClass {
                 newNode.innerHTML = oldNode.innerHTML;
                 oldNode.parentNode?.replaceChild(newNode, oldNode);
             });
-            let { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+            const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
             return {
-                chapterName: chapterName,
+                chapterName,
                 contentRaw: content,
                 contentText: text,
                 contentHTML: dom,
@@ -7462,7 +7484,7 @@ class hetushu extends rules_1.BaseRuleClass {
         }
         else {
             return {
-                chapterName: chapterName,
+                chapterName,
                 contentRaw: null,
                 contentText: null,
                 contentHTML: null,
@@ -7472,7 +7494,7 @@ class hetushu extends rules_1.BaseRuleClass {
         }
     }
 }
-exports.hetushu = hetushu;
+exports.Hetushu = Hetushu;
 
 
 /***/ }),
@@ -7483,7 +7505,7 @@ exports.hetushu = hetushu;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.idejian = void 0;
+exports.Idejian = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const rules_1 = __webpack_require__("./src/rules.ts");
 const misc_1 = __webpack_require__("./src/lib/misc.ts");
@@ -7492,7 +7514,7 @@ const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
 const http_1 = __webpack_require__("./src/lib/http.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 const log_1 = __webpack_require__("./src/log.ts");
-class idejian extends rules_1.BaseRuleClass {
+class Idejian extends rules_1.BaseRuleClass {
     constructor() {
         super();
         this.imageMode = "TM";
@@ -7502,7 +7524,7 @@ class idejian extends rules_1.BaseRuleClass {
         const bookUrl = document.location.href;
         const _bookID = bookUrl.match(/\/(\d+)\/$/);
         const bookID = _bookID && _bookID[1];
-        const bookname = (document.querySelector(".detail_bkname > a")).innerText.trim();
+        const bookname = document.querySelector(".detail_bkname > a").innerText.trim();
         const _author = document.querySelector(".detail_bkauthor")
             .childNodes[0];
         let author = "佚名";
@@ -7512,7 +7534,7 @@ class idejian extends rules_1.BaseRuleClass {
         const introDom = document.querySelector(".brief_con");
         const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom);
         const additionalMetadate = {};
-        const coverUrl = (document.querySelector(".book_img > img")).src;
+        const coverUrl = document.querySelector(".book_img > img").src;
         if (coverUrl) {
             (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
                 .then((coverClass) => {
@@ -7530,7 +7552,7 @@ class idejian extends rules_1.BaseRuleClass {
             const chapterUrl = aElem.href;
             const isVIP = false;
             const isPaid = false;
-            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, null, null, null, this.chapterParse, "UTF-8", { bookID: bookID });
+            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, null, null, null, this.chapterParse, "UTF-8", { bookID });
             chapters.push(chapter);
         }
         document.cookie = "";
@@ -7553,10 +7575,10 @@ class idejian extends rules_1.BaseRuleClass {
             });
         }
         log_1.log.debug(`[Chapter]请求 ${chapterUrl}，Refer：${referUrl}`);
-        let doc = await (0, http_1.ggetHtmlDOM)(chapterUrl, charset, {
+        const doc = await (0, http_1.ggetHtmlDOM)(chapterUrl, charset, {
             headers: { "User-Agent": fakeUA, Referer: referUrl },
         });
-        chapterName = (doc.querySelector(".text-title-1")).innerText.trim();
+        chapterName = doc.querySelector(".text-title-1").innerText.trim();
         let content;
         if (doc.querySelectorAll("div.h5_mainbody").length === 1) {
             content = doc.querySelector("div.h5_mainbody");
@@ -7566,9 +7588,9 @@ class idejian extends rules_1.BaseRuleClass {
         }
         if (content) {
             (0, misc_1.rm)("h1", false, content);
-            let { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+            const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
             return {
-                chapterName: chapterName,
+                chapterName,
                 contentRaw: content,
                 contentText: text,
                 contentHTML: dom,
@@ -7578,7 +7600,7 @@ class idejian extends rules_1.BaseRuleClass {
         }
         else {
             return {
-                chapterName: chapterName,
+                chapterName,
                 contentRaw: null,
                 contentText: null,
                 contentHTML: null,
@@ -7588,7 +7610,7 @@ class idejian extends rules_1.BaseRuleClass {
         }
     }
 }
-exports.idejian = idejian;
+exports.Idejian = Idejian;
 
 
 /***/ }),
@@ -7599,7 +7621,7 @@ exports.idejian = idejian;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.imiaobige = void 0;
+exports.Imiaobige = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const rules_1 = __webpack_require__("./src/rules.ts");
 const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
@@ -7607,7 +7629,7 @@ const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
 const http_1 = __webpack_require__("./src/lib/http.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 const log_1 = __webpack_require__("./src/log.ts");
-class imiaobige extends rules_1.BaseRuleClass {
+class Imiaobige extends rules_1.BaseRuleClass {
     constructor() {
         super();
         this.imageMode = "TM";
@@ -7618,8 +7640,8 @@ class imiaobige extends rules_1.BaseRuleClass {
             .replace("/read/", "/novel/")
             .replace(/\/$/, ".html");
         const doc = await (0, http_1.getHtmlDOM)(bookUrl, this.charset);
-        const bookname = (doc.querySelector(".booktitle > h1")).innerText.trim();
-        const author = (doc.querySelector("#author > a")).innerText.trim();
+        const bookname = doc.querySelector(".booktitle > h1").innerText.trim();
+        const author = doc.querySelector("#author > a").innerText.trim();
         const introDom = doc.querySelector("#bookintro");
         const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom);
         const additionalMetadate = {};
@@ -7646,13 +7668,12 @@ class imiaobige extends rules_1.BaseRuleClass {
             }
             let sectionChapterNumber = 0;
             const cs = s.querySelectorAll("li > a");
-            for (let j = 0; j < cs.length; j++) {
-                const a = cs[j];
+            for (const a of Array.from(cs)) {
                 chapterNumber++;
                 sectionChapterNumber++;
                 const chapterName = a.innerText.trim();
                 const chapterUrl = a.href;
-                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, false, false, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, { bookname: bookname });
+                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, false, false, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, { bookname });
                 chapters.push(chapter);
             }
         }
@@ -7661,14 +7682,14 @@ class imiaobige extends rules_1.BaseRuleClass {
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         const bookname = options.bookname;
-        const dom = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
-        chapterName = (dom.querySelector(".title > h1:nth-child(1)")).innerText.trim();
-        const content = dom.querySelector("#content");
+        const doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
+        chapterName = doc.querySelector(".title > h1:nth-child(1)").innerText.trim();
+        const content = doc.querySelector("#content");
         if (content) {
             content.innerHTML = content.innerHTML.replace(`<p>您可以在百度里搜索“${bookname} 妙笔阁(imiaobige.com)”查找最新章节！</p>`, "");
-            let { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+            const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
             return {
-                chapterName: chapterName,
+                chapterName,
                 contentRaw: content,
                 contentText: text,
                 contentHTML: dom,
@@ -7678,7 +7699,7 @@ class imiaobige extends rules_1.BaseRuleClass {
         }
         else {
             return {
-                chapterName: chapterName,
+                chapterName,
                 contentRaw: null,
                 contentText: null,
                 contentHTML: null,
@@ -7688,7 +7709,7 @@ class imiaobige extends rules_1.BaseRuleClass {
         }
     }
 }
-exports.imiaobige = imiaobige;
+exports.Imiaobige = Imiaobige;
 
 
 /***/ }),
@@ -7699,7 +7720,7 @@ exports.imiaobige = imiaobige;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.jjwxc = void 0;
+exports.Jjwxc = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const misc_1 = __webpack_require__("./src/lib/misc.ts");
 const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
@@ -7711,7 +7732,7 @@ const setting_1 = __webpack_require__("./src/setting.ts");
 const jjwxcFontDecode_1 = __webpack_require__("./src/rules/lib/jjwxcFontDecode.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 const log_1 = __webpack_require__("./src/log.ts");
-class jjwxc extends rules_1.BaseRuleClass {
+class Jjwxc extends rules_1.BaseRuleClass {
     constructor() {
         super();
         this.imageMode = "TM";
@@ -7730,14 +7751,14 @@ class jjwxc extends rules_1.BaseRuleClass {
             }
         };
         let bookname = "";
-        let additionalMetadate = {};
+        const additionalMetadate = {};
         let author = "佚名";
         let introduction = null;
         let introductionHTML = null;
         let introCleanimages = null;
         if (!getInformationBlocked()) {
-            bookname = (document.querySelector('h1[itemprop="name"] > span')).innerText.trim();
-            author = (document.querySelector("td.sptd h2 a span")).innerText
+            bookname = document.querySelector('h1[itemprop="name"] > span').innerText.trim();
+            author = document.querySelector("td.sptd h2 a span").innerText
                 .replace(/作\s+者:/, "")
                 .trim();
             const introDom = document.querySelector("#novelintro");
@@ -7745,7 +7766,7 @@ class jjwxc extends rules_1.BaseRuleClass {
             if (introCleanimages) {
                 additionalMetadate.attachments = [...introCleanimages];
             }
-            let coverUrl = (document.querySelector(".noveldefaultimage")).src;
+            const coverUrl = document.querySelector(".noveldefaultimage").src;
             if (coverUrl) {
                 (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
                     .then((coverClass) => {
@@ -7753,10 +7774,10 @@ class jjwxc extends rules_1.BaseRuleClass {
                 })
                     .catch((error) => log_1.log.error(error));
             }
-            let tags = (document.querySelector("table > tbody > tr > td.readtd > div.righttd > ul.rightul > li:nth-child(1) > span:nth-child(2)")).innerText.split("-");
+            let tags = document.querySelector("table > tbody > tr > td.readtd > div.righttd > ul.rightul > li:nth-child(1) > span:nth-child(2)").innerText.split("-");
             tags = tags.concat(Array.from(document.querySelectorAll("div.smallreadbody:nth-child(3) > span > a")).map((a) => a.innerText));
-            const perspective = (document.querySelector("table > tbody > tr > td.readtd > div.righttd > ul.rightul > li:nth-child(2)")).innerText.replace("\n", "");
-            const workStyle = (document.querySelector("table > tbody > tr > td.readtd > div.righttd > ul.rightul > li:nth-child(3)")).innerText.replace("\n", "");
+            const perspective = document.querySelector("table > tbody > tr > td.readtd > div.righttd > ul.rightul > li:nth-child(2)").innerText.replace("\n", "");
+            const workStyle = document.querySelector("table > tbody > tr > td.readtd > div.righttd > ul.rightul > li:nth-child(3)").innerText.replace("\n", "");
             tags.push(perspective);
             tags.push(workStyle);
             additionalMetadate.tags = tags;
@@ -7764,14 +7785,14 @@ class jjwxc extends rules_1.BaseRuleClass {
         else {
             window.scrollTo(0, document.body.scrollHeight);
             await (0, misc_1.sleep)(3000);
-            bookname = (document.querySelector("td[id^=comment_] span.coltext > a"))?.innerText
+            bookname = document.querySelector("td[id^=comment_] span.coltext > a")?.innerText
                 .trim()
                 .replace(/《|》/g, "");
             window.scrollTo(0, 0);
             if (!bookname) {
                 throw new Error("抓取书名出错");
             }
-            const authorPageUrl = (document.querySelector("#oneboolt > tbody > tr:nth-child(1) > td > div > h2 > a"))?.href;
+            const authorPageUrl = document.querySelector("#oneboolt > tbody > tr:nth-child(1) > td > div > h2 > a")?.href;
             if (authorPageUrl) {
                 const authorPage = await (0, http_2.getHtmlDOM)(authorPageUrl, this.charset);
                 author =
@@ -7785,12 +7806,11 @@ class jjwxc extends rules_1.BaseRuleClass {
         let sectionNumber = 0;
         let sectionName = null;
         let sectionChapterNumber = 0;
-        for (let i = 0; i < trList.length; i++) {
-            const tr = trList[i];
+        for (const tr of Array.from(trList)) {
             if (tr.getAttribute("bgcolor")) {
                 sectionNumber++;
                 sectionChapterNumber = 0;
-                sectionName = (tr.querySelector("b.volumnfont"))?.innerText.trim();
+                sectionName = tr.querySelector("b.volumnfont")?.innerText.trim();
             }
             else if (tr.getAttribute("itemprop")) {
                 chapterNumber++;
@@ -7865,15 +7885,16 @@ class jjwxc extends rules_1.BaseRuleClass {
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         async function publicChapter() {
-            const dom = await (0, http_2.getHtmlDOM)(chapterUrl, charset);
-            const chapterName = (dom.querySelector("div.noveltext h2")).innerText.trim();
-            const content = dom.querySelector("div.noveltext");
+            const doc = await (0, http_2.getHtmlDOM)(chapterUrl, charset);
+            chapterName = doc.querySelector("div.noveltext h2").innerText.trim();
+            const content = doc.querySelector("div.noveltext");
             if (content) {
                 (0, misc_1.rm)("hr", true, content);
                 const rawAuthorSayDom = content.querySelector(".readsmall");
-                let authorSayDom, authorSayText;
+                let authorSayDom;
+                let authorSayText;
                 if (rawAuthorSayDom) {
-                    let { dom: adom, text: atext, images: aimages, } = await (0, cleanDOM_1.cleanDOM)(rawAuthorSayDom, "TM");
+                    const { dom: adom, text: atext, images: aimages, } = await (0, cleanDOM_1.cleanDOM)(rawAuthorSayDom, "TM");
                     [authorSayDom, authorSayText] = [adom, atext];
                 }
                 (0, misc_1.rm)("div", true, content);
@@ -7887,7 +7908,7 @@ class jjwxc extends rules_1.BaseRuleClass {
                     text = text + "\n\n" + "-".repeat(20) + "\n\n" + authorSayText;
                 }
                 return {
-                    chapterName: chapterName,
+                    chapterName,
                     contentRaw: content,
                     contentText: text,
                     contentHTML: dom,
@@ -7896,7 +7917,7 @@ class jjwxc extends rules_1.BaseRuleClass {
                 };
             }
             return {
-                chapterName: chapterName,
+                chapterName,
                 contentRaw: null,
                 contentText: null,
                 contentHTML: null,
@@ -7908,20 +7929,21 @@ class jjwxc extends rules_1.BaseRuleClass {
             async function getFont() {
                 function getFontInfo() {
                     const s = dom.querySelectorAll("body > style")[1];
-                    let fontName, fontUrl;
+                    let fontNameI;
+                    let fontUrlI;
                     if (s.sheet) {
                         const f = s.sheet.cssRules[s.sheet.cssRules.length - 2];
                         const m1 = f.cssText.match(/jjwxcfont_[\d\w]+/);
                         const m2 = f.cssText.match(/{(.*)}/);
                         if (m1 && m2) {
-                            fontName = m1[0];
+                            fontNameI = m1[0];
                             const ft = m2[1];
                             for (const k of ft.split(",")) {
                                 if (k.includes('format("woff2")')) {
                                     const m3 = k.match(/url\("(.*)"\)\s/);
                                     if (m3) {
-                                        fontUrl = document.location.protocol + m3[1];
-                                        return [fontName, fontUrl];
+                                        fontUrlI = document.location.protocol + m3[1];
+                                        return [fontNameI, fontUrlI];
                                     }
                                 }
                             }
@@ -7929,18 +7951,18 @@ class jjwxc extends rules_1.BaseRuleClass {
                     }
                     const _fontName = document.querySelector("div.noveltext")?.classList[1];
                     if (_fontName) {
-                        fontName = _fontName;
-                        fontUrl =
+                        fontNameI = _fontName;
+                        fontUrlI =
                             document.location.protocol +
-                                `//static.jjwxc.net/tmp/fonts/${fontName}.woff2?h=my.jjwxc.net`;
-                        return [fontName, fontUrl];
+                                `//static.jjwxc.net/tmp/fonts/${fontNameI}.woff2?h=my.jjwxc.net`;
+                        return [fontNameI, fontUrlI];
                     }
                     return [null, null];
                 }
                 let retryTime = 0;
-                function fetchFont(fontUrl) {
-                    log_1.log.debug(`[Chapter]请求 ${fontUrl} Referer ${chapterUrl} 重试次数 ${retryTime}`);
-                    return (0, http_1.gfetch)(fontUrl, {
+                function fetchFont(fontUrlI) {
+                    log_1.log.debug(`[Chapter]请求 ${fontUrlI} Referer ${chapterUrl} 重试次数 ${retryTime}`);
+                    return (0, http_1.gfetch)(fontUrlI, {
                         headers: {
                             accept: "*/*",
                             Referer: chapterUrl,
@@ -7952,10 +7974,10 @@ class jjwxc extends rules_1.BaseRuleClass {
                             return response.response;
                         }
                         else {
-                            log_1.log.error(`[Chapter]请求 ${fontUrl} 失败 Referer ${chapterUrl}`);
+                            log_1.log.error(`[Chapter]请求 ${fontUrlI} 失败 Referer ${chapterUrl}`);
                             if (retryTime < setting_1.retryLimit) {
                                 retryTime++;
-                                return fetchFont(fontUrl);
+                                return fetchFont(fontUrlI);
                             }
                             else {
                                 return null;
@@ -7974,7 +7996,7 @@ class jjwxc extends rules_1.BaseRuleClass {
                     }
                     else {
                         const fontBlob = await fetchFont(fontUrl);
-                        fontClassObj = new main_1.attachmentClass(fontUrl, fontFileName, "TM");
+                        fontClassObj = new main_1.AttachmentClass(fontUrl, fontFileName, "TM");
                         fontClassObj.imageBlob = fontBlob;
                         fontClassObj.status = main_1.Status.finished;
                         (0, attachments_1.putAttachmentClassCache)(fontClassObj);
@@ -7995,7 +8017,7 @@ class jjwxc extends rules_1.BaseRuleClass {
                 return [null, null, null];
             }
             const dom = await (0, http_2.ggetHtmlDOM)(chapterUrl, charset);
-            const isPaid = () => {
+            const isPaidF = () => {
                 if (!dom.querySelector("#buy_content") &&
                     dom.querySelector("div.noveltext")) {
                     return true;
@@ -8004,15 +8026,16 @@ class jjwxc extends rules_1.BaseRuleClass {
                     return false;
                 }
             };
-            if (isPaid()) {
-                const chapterName = (dom.querySelector("div.noveltext h2")).innerText.trim();
+            if (isPaidF()) {
+                const ChapterName = dom.querySelector("div.noveltext h2").innerText.trim();
                 const content = dom.querySelector("div.noveltext");
                 if (content) {
                     (0, misc_1.rm)("hr", true, content);
                     const rawAuthorSayDom = content.querySelector(".readsmall");
-                    let authorSayDom, authorSayText;
+                    let authorSayDom;
+                    let authorSayText;
                     if (rawAuthorSayDom) {
-                        let { dom: adom, text: atext, images: aimages, } = await (0, cleanDOM_1.cleanDOM)(rawAuthorSayDom, "TM");
+                        const { dom: adom, text: atext, images: aimages, } = await (0, cleanDOM_1.cleanDOM)(rawAuthorSayDom, "TM");
                         [authorSayDom, authorSayText] = [adom, atext];
                     }
                     (0, misc_1.rm)("div", true, content);
@@ -8041,7 +8064,7 @@ class jjwxc extends rules_1.BaseRuleClass {
                         finalDom.appendChild(replacedDom);
                     }
                     return {
-                        chapterName: chapterName,
+                        chapterName: ChapterName,
                         contentRaw: content,
                         contentText: finalText,
                         contentHTML: finalDom,
@@ -8051,7 +8074,7 @@ class jjwxc extends rules_1.BaseRuleClass {
                 }
             }
             return {
-                chapterName: chapterName,
+                chapterName,
                 contentRaw: null,
                 contentText: null,
                 contentHTML: null,
@@ -8067,7 +8090,7 @@ class jjwxc extends rules_1.BaseRuleClass {
         }
     }
 }
-exports.jjwxc = jjwxc;
+exports.Jjwxc = Jjwxc;
 
 
 /***/ }),
@@ -8085,7 +8108,7 @@ const http_1 = __webpack_require__("./src/lib/http.ts");
 const main_1 = __webpack_require__("./src/main.ts");
 const rules_1 = __webpack_require__("./src/rules.ts");
 const log_1 = __webpack_require__("./src/log.ts");
-async function introDomHandle(introDom, domPatch = undefined) {
+async function introDomHandle(introDom, domPatch) {
     if (introDom === null) {
         return [null, null, null];
     }
@@ -8093,7 +8116,7 @@ async function introDomHandle(introDom, domPatch = undefined) {
         if (domPatch) {
             introDom = domPatch(introDom.cloneNode(true));
         }
-        let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = await (0, cleanDOM_1.cleanDOM)(introDom, "TM");
+        const { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = await (0, cleanDOM_1.cleanDOM)(introDom, "TM");
         return [introCleantext, introCleanDom, introCleanimages];
     }
 }
@@ -8129,9 +8152,9 @@ async function nextPageParse(chapterName, chapterUrl, charset, selector, content
             doc = await (0, http_1.getHtmlDOM)(nextLink, charset);
         }
     } while (flag);
-    let { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+    const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
     return {
-        chapterName: chapterName,
+        chapterName,
         contentRaw: content,
         contentText: text,
         contentHTML: dom,
@@ -8166,7 +8189,7 @@ function mkRuleClass1(optionis) {
                 const chapterUrl = aElem.href;
                 const isVIP = false;
                 const isPaid = false;
-                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, null, null, null, this.chapterParse, this.charset, { bookname: bookname });
+                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, null, null, null, this.chapterParse, this.charset, { bookname });
                 chapters.push(chapter);
             }
             const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
@@ -8177,9 +8200,9 @@ function mkRuleClass1(optionis) {
             let content = getContent(doc);
             if (content) {
                 content = contentPatch(content);
-                let { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+                const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
                 return {
-                    chapterName: chapterName,
+                    chapterName,
                     contentRaw: content,
                     contentText: text,
                     contentHTML: dom,
@@ -8189,7 +8212,7 @@ function mkRuleClass1(optionis) {
             }
             else {
                 return {
-                    chapterName: chapterName,
+                    chapterName,
                     contentRaw: null,
                     contentText: null,
                     contentHTML: null,
@@ -8215,9 +8238,11 @@ exports.replaceHaitangtxtImage = void 0;
 function replaceHaitangtxtImage(inputText) {
     let outputText = inputText;
     for (const imageFilename in imageTable) {
-        const normalCharacter = imageTable[imageFilename];
-        const imageHTML = `<img src="${document.location.origin}/wzbodyimg/${imageFilename}">`;
-        outputText = outputText.replaceAll(imageHTML, normalCharacter);
+        if (Object.prototype.hasOwnProperty.call(imageTable, imageFilename)) {
+            const normalCharacter = imageTable[imageFilename];
+            const imageHTML = `<img src="${document.location.origin}/wzbodyimg/${imageFilename}">`;
+            outputText = outputText.replaceAll(imageHTML, normalCharacter);
+        }
     }
     return outputText;
 }
@@ -8242,10 +8267,12 @@ async function replaceJjwxcCharacter(fontName, inputText) {
     const jjwxcFontTable = await getJjwxcFontTable(fontName);
     if (jjwxcFontTable) {
         for (const jjwxcCharacter in jjwxcFontTable) {
-            const normalCharacter = jjwxcFontTable[jjwxcCharacter];
-            outputText = outputText.replaceAll(jjwxcCharacter, normalCharacter);
+            if (Object.prototype.hasOwnProperty.call(jjwxcFontTable, jjwxcCharacter)) {
+                const normalCharacter = jjwxcFontTable[jjwxcCharacter];
+                outputText = outputText.replaceAll(jjwxcCharacter, normalCharacter);
+            }
         }
-        outputText = outputText.replaceAll("‌\u200c", "");
+        outputText = outputText.replace(/\u200c/g, "");
     }
     return outputText;
 }
@@ -8342,19 +8369,23 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.gfetchAndParse = exports.fetchAndParse = exports.parse = void 0;
 const readability_1 = __webpack_require__("./node_modules/@mozilla/readability/index.js");
 const http_1 = __webpack_require__("./src/lib/http.ts");
-function parse(doc, options = undefined) {
+function parse(doc, options) {
     return new readability_1.Readability(doc, options).parse();
 }
 exports.parse = parse;
-async function fetchAndParse(url, charset, init = undefined, patch = (doc) => doc, options = undefined) {
+async function fetchAndParse(url, charset, init, patch = (docm) => docm, options) {
     let doc = await (0, http_1.getHtmlDOM)(url, charset, init);
-    doc = patch(doc);
+    if (typeof patch === "function") {
+        doc = patch(doc);
+    }
     return parse(doc, options);
 }
 exports.fetchAndParse = fetchAndParse;
-async function gfetchAndParse(url, charset, init = undefined, patch = (doc) => doc, options = undefined) {
+async function gfetchAndParse(url, charset, init, patch = (docm) => docm, options) {
     let doc = await (0, http_1.ggetHtmlDOM)(url, charset, init);
-    doc = patch(doc);
+    if (typeof patch === "function") {
+        doc = patch(doc);
+    }
     return parse(doc, options);
 }
 exports.gfetchAndParse = gfetchAndParse;
@@ -8372,9 +8403,11 @@ exports.replaceYuzhaigeImage = void 0;
 function replaceYuzhaigeImage(inputText) {
     let outputText = inputText;
     for (const imageFilename in imageTable) {
-        const normalCharacter = imageTable[imageFilename];
-        const imageHTML = `<img src="${document.location.origin}/wzbodyimg/${imageFilename}">`;
-        outputText = outputText.replaceAll(imageHTML, normalCharacter);
+        if (Object.prototype.hasOwnProperty.call(imageTable, imageFilename)) {
+            const normalCharacter = imageTable[imageFilename];
+            const imageHTML = `<img src="${document.location.origin}/wzbodyimg/${imageFilename}">`;
+            outputText = outputText.replaceAll(imageHTML, normalCharacter);
+        }
     }
     return outputText;
 }
@@ -9121,7 +9154,7 @@ const imageTable = {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.linovel = void 0;
+exports.Linovel = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
 const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
@@ -9129,7 +9162,7 @@ const http_1 = __webpack_require__("./src/lib/http.ts");
 const rules_1 = __webpack_require__("./src/rules.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 const log_1 = __webpack_require__("./src/log.ts");
-class linovel extends rules_1.BaseRuleClass {
+class Linovel extends rules_1.BaseRuleClass {
     constructor() {
         super();
         this.imageMode = "TM";
@@ -9137,13 +9170,13 @@ class linovel extends rules_1.BaseRuleClass {
     }
     async bookParse() {
         const bookUrl = document.location.href;
-        const bookname = (document.querySelector(".book-title")).innerText.trim();
-        const author = (document.querySelector(".author-frame > .novelist > div:nth-child(3) > a")).innerText.trim();
+        const bookname = document.querySelector(".book-title").innerText.trim();
+        const author = document.querySelector(".author-frame > .novelist > div:nth-child(3) > a").innerText.trim();
         const introDom = document.querySelector(".about-text");
         const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom);
         const additionalMetadate = {};
         const attachmentsUrlList = [];
-        const coverUrl = (document.querySelector(".book-cover > a")).href;
+        const coverUrl = document.querySelector(".book-cover > a").href;
         if (coverUrl) {
             attachmentsUrlList.push(coverUrl);
             (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
@@ -9171,11 +9204,10 @@ class linovel extends rules_1.BaseRuleClass {
         for (let i = 0; i < sections.length; i++) {
             const s = sections[i];
             const sectionNumber = i + 1;
-            const sectionName = (s.querySelector(".volume-info > h2.volume-title > a")).innerText.trim();
+            const sectionName = s.querySelector(".volume-info > h2.volume-title > a").innerText.trim();
             let sectionChapterNumber = 0;
             const cs = s.querySelectorAll(".chapter-list > .text-content-actual div.chapter");
-            for (let j = 0; j < cs.length; j++) {
-                const div = cs[j];
+            for (const div of Array.from(cs)) {
                 const a = div.firstElementChild;
                 chapterNumber++;
                 sectionChapterNumber++;
@@ -9211,12 +9243,12 @@ class linovel extends rules_1.BaseRuleClass {
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         async function publicChapter() {
             const doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
-            const chapterName = (doc.querySelector(".article-title")).innerText.trim();
+            const ChapterName = doc.querySelector(".article-title").innerText.trim();
             const content = doc.querySelector(".article-text");
             if (content) {
-                let { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+                const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
                 return {
-                    chapterName: chapterName,
+                    chapterName: ChapterName,
                     contentRaw: content,
                     contentText: text,
                     contentHTML: dom,
@@ -9226,7 +9258,7 @@ class linovel extends rules_1.BaseRuleClass {
             }
             else {
                 return {
-                    chapterName: chapterName,
+                    chapterName: ChapterName,
                     contentRaw: null,
                     contentText: null,
                     contentHTML: null,
@@ -9237,7 +9269,7 @@ class linovel extends rules_1.BaseRuleClass {
         }
         async function vipChapter() {
             return {
-                chapterName: chapterName,
+                chapterName,
                 contentRaw: null,
                 contentText: null,
                 contentHTML: null,
@@ -9253,7 +9285,7 @@ class linovel extends rules_1.BaseRuleClass {
         }
     }
 }
-exports.linovel = linovel;
+exports.Linovel = Linovel;
 
 
 /***/ }),
@@ -9264,7 +9296,7 @@ exports.linovel = linovel;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.linovelib = void 0;
+exports.Linovelib = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const misc_1 = __webpack_require__("./src/lib/misc.ts");
 const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
@@ -9272,15 +9304,15 @@ const http_1 = __webpack_require__("./src/lib/http.ts");
 const rules_1 = __webpack_require__("./src/rules.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 const log_1 = __webpack_require__("./src/log.ts");
-class linovelib extends rules_1.BaseRuleClass {
+class Linovelib extends rules_1.BaseRuleClass {
     constructor() {
         super();
         this.imageMode = "TM";
     }
     async bookParse() {
         const bookUrl = document.location.href.replace(/\/catalog$/, ".html");
-        const bookname = (document.querySelector(".book-meta > h1")).innerText.trim();
-        const author = (document.querySelector(".book-meta > p:nth-child(2) > span:nth-child(1) > a:nth-child(2)")).innerText.trim();
+        const bookname = document.querySelector(".book-meta > h1").innerText.trim();
+        const author = document.querySelector(".book-meta > p:nth-child(2) > span:nth-child(1) > a:nth-child(2)").innerText.trim();
         const doc = await (0, http_1.getHtmlDOM)(bookUrl, undefined);
         const introDom = doc.querySelector(".book-dec > p:nth-child(1)");
         const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom);
@@ -9305,8 +9337,7 @@ class linovelib extends rules_1.BaseRuleClass {
         let sectionNumber = 0;
         let sectionName = null;
         let sectionChapterNumber = 0;
-        for (let i = 0; i < liList.length; i++) {
-            const node = liList[i];
+        for (const node of Array.from(liList)) {
             const nodeNmae = node.nodeName.toLowerCase();
             if (nodeNmae === "div") {
                 sectionNumber++;
@@ -9332,13 +9363,13 @@ class linovelib extends rules_1.BaseRuleClass {
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         return (0, common_1.nextPageParse)(chapterName, chapterUrl, charset, "#TextContent", (_content, doc) => {
-            const s = Array.from(doc.querySelectorAll("script")).find((s) => s.innerHTML.includes('document.getElementById("chapter_last")'));
-            if (s) {
-                const _dom_nr = s.innerText.trim().match(/let dom_nr = '(.+)';/);
-                if (_dom_nr) {
-                    const dom_nr = _dom_nr[1];
+            const ss = Array.from(doc.querySelectorAll("script")).find((s) => s.innerHTML.includes('document.getElementById("chapter_last")'));
+            if (ss) {
+                const _domNr = ss.innerText.trim().match(/let dom_nr = '(.+)';/);
+                if (_domNr) {
+                    const domNr = _domNr[1];
                     doc.getElementById("chapter_last").innerHTML =
-                        dom_nr;
+                        domNr;
                 }
             }
             (0, misc_1.rm)(".tp", true, _content);
@@ -9348,7 +9379,7 @@ class linovelib extends rules_1.BaseRuleClass {
             .href, (_content, nextLink) => new URL(nextLink).pathname.includes("_"));
     }
 }
-exports.linovelib = linovelib;
+exports.Linovelib = Linovelib;
 
 
 /***/ }),
@@ -9359,14 +9390,14 @@ exports.linovelib = linovelib;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.lofter = void 0;
+exports.Lofter = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
 const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
 const http_1 = __webpack_require__("./src/lib/http.ts");
 const rules_1 = __webpack_require__("./src/rules.ts");
 const log_1 = __webpack_require__("./src/log.ts");
-class lofter extends rules_1.BaseRuleClass {
+class Lofter extends rules_1.BaseRuleClass {
     constructor() {
         super();
         this.imageMode = "TM";
@@ -9411,8 +9442,8 @@ class lofter extends rules_1.BaseRuleClass {
             const selectorl = `a[href^="https://www.lofter.com/lpost"]`;
             const urlSetl = new Set(Array.from(doc.querySelectorAll(selectorl)).map((a) => a.href));
             urlSetl.forEach((item) => pageUrlSet.add(item));
-            const getIndexPageNumber = (url) => {
-                const _pageNumber = new URL(url).searchParams.get("page") ?? "1";
+            const getIndexPageNumber = (urlI) => {
+                const _pageNumber = new URL(urlI).searchParams.get("page") ?? "1";
                 const indexPageNumber = Number(_pageNumber);
                 return indexPageNumber;
             };
@@ -9435,7 +9466,7 @@ class lofter extends rules_1.BaseRuleClass {
         await getPageUrl(document.location.href);
         let i = 0;
         for (const pageUrl of Array.from(pageUrlSet)) {
-            const chapter = new main_1.Chapter(bookUrl, bookname, pageUrl, i, null, false, false, null, null, null, this.chapterParse, "UTF-8", { author: author });
+            const chapter = new main_1.Chapter(bookUrl, bookname, pageUrl, i, null, false, false, null, null, null, this.chapterParse, "UTF-8", { author });
             chapters.push(chapter);
             i++;
         }
@@ -9462,9 +9493,9 @@ class lofter extends rules_1.BaseRuleClass {
                 }
             }
             if (content) {
-                let { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+                const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
                 return {
-                    chapterName: chapterName,
+                    chapterName,
                     contentRaw: content,
                     contentText: text,
                     contentHTML: dom,
@@ -9479,12 +9510,12 @@ class lofter extends rules_1.BaseRuleClass {
         async function lpost() {
             log_1.log.debug(`[chapter]请求页面：${chapterUrl}`);
             const doc = await (0, http_1.ggetHtmlDOM)(chapterUrl, charset);
-            chapterName = (doc.querySelector("#title"))?.innerText.trim();
+            chapterName = doc.querySelector("#title")?.innerText.trim();
             const content = doc.querySelector("#m-cnt .long-text");
             if (content) {
-                let { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+                const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
                 return {
-                    chapterName: chapterName,
+                    chapterName,
                     contentRaw: content,
                     contentText: text,
                     contentHTML: dom,
@@ -9504,7 +9535,7 @@ class lofter extends rules_1.BaseRuleClass {
         }
     }
 }
-exports.lofter = lofter;
+exports.Lofter = Lofter;
 
 
 /***/ }),
@@ -9515,7 +9546,7 @@ exports.lofter = lofter;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.longmabook = void 0;
+exports.Longmabook = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
 const http_1 = __webpack_require__("./src/lib/http.ts");
@@ -9524,7 +9555,7 @@ const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 const log_1 = __webpack_require__("./src/log.ts");
 const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
 const misc_1 = __webpack_require__("./src/lib/misc.ts");
-class longmabook extends rules_1.BaseRuleClass {
+class Longmabook extends rules_1.BaseRuleClass {
     constructor() {
         super();
         this.imageMode = "TM";
@@ -9561,10 +9592,10 @@ class longmabook extends rules_1.BaseRuleClass {
             introDom.innerHTML = introDom.innerHTML
                 .replace(/【作品编号：\d+】|【作品編號：\d+】/, "")
                 .replace("\n)\n", "");
-            [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom);
+            [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom, undefined);
         }
         const additionalMetadate = {};
-        const coverUrl = (document.querySelector("#mypages > div:nth-child(8) > div:nth-child(1) > img"))?.src.replace("_s.", "_b.");
+        const coverUrl = document.querySelector("#mypages > div:nth-child(8) > div:nth-child(1) > img")?.src.replace("_s.", "_b.");
         if (coverUrl) {
             (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
                 .then((coverClass) => {
@@ -9586,7 +9617,7 @@ class longmabook extends rules_1.BaseRuleClass {
                 pages: page.toString(),
                 showbooklisttype: "1",
             };
-            const liList = [];
+            const liListTemp = [];
             do {
                 log_1.log.info(`[book]请求章节目录中，page: ${page}`);
                 const doc = await (0, http_1.getHtmlDOM)(showbooklistAPIUrl, self.charset, {
@@ -9610,11 +9641,11 @@ class longmabook extends rules_1.BaseRuleClass {
                             return Number(_page[1]);
                         }
                     })
-                        .filter((page) => page);
+                        .filter((p) => p);
                     pageMax = Math.max(...pages);
                     page++;
                     if (page !== 1 && page <= pageMax) {
-                        showbooklistParams["pages"] = page.toString();
+                        showbooklistParams.pages = page.toString();
                         flag = true;
                     }
                     else {
@@ -9633,9 +9664,9 @@ class longmabook extends rules_1.BaseRuleClass {
                     }
                     return true;
                 });
-                liList.push(..._liList);
+                _liList.push(..._liList);
             } while (flag);
-            return liList;
+            return liListTemp;
         }
         const chapters = [];
         const liList = await getLiList();
@@ -9643,18 +9674,17 @@ class longmabook extends rules_1.BaseRuleClass {
         let sectionNumber = 0;
         let sectionName = null;
         let sectionChapterNumber = 0;
-        for (let i = 0; i < liList.length; i++) {
-            const li = liList[i];
-            const uk_icon = li.querySelector("span")?.getAttribute("uk-icon");
-            if (uk_icon === "folder") {
-                const _sectionName = (li.querySelector("b > font"))?.innerText.trim();
+        for (const li of liList) {
+            const ukIcon = li.querySelector("span")?.getAttribute("uk-icon");
+            if (ukIcon === "folder") {
+                const _sectionName = li.querySelector("b > font")?.innerText.trim();
                 if (_sectionName !== sectionName) {
                     sectionName = _sectionName;
                     sectionNumber++;
                     sectionChapterNumber = 0;
                 }
             }
-            else if (uk_icon === "file-text") {
+            else if (ukIcon === "file-text") {
                 chapterNumber++;
                 sectionChapterNumber++;
                 const a = li.querySelector("a");
@@ -9662,7 +9692,7 @@ class longmabook extends rules_1.BaseRuleClass {
                 const chapterUrl = a?.href;
                 const isVIP = Boolean(li.innerText.match(/\$[\d\.]+/));
                 if (chapterUrl && chapterName) {
-                    const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, null, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, { bookId: bookId, bookwritercode: bookwritercode });
+                    const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, null, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, { bookId, bookwritercode });
                     chapters.push(chapter);
                 }
             }
@@ -9681,7 +9711,7 @@ class longmabook extends rules_1.BaseRuleClass {
             throw new Error("您目前正在海棠清水區，只能觀看清水認證文章。請使用海棠其他網址進入。");
         }
         const nullObj = {
-            chapterName: chapterName,
+            chapterName,
             contentRaw: null,
             contentText: null,
             contentHTML: null,
@@ -9723,11 +9753,11 @@ class longmabook extends rules_1.BaseRuleClass {
             }
         }
         return {
-            chapterName: chapterName,
+            chapterName,
             contentRaw: content,
-            contentText: contentText,
+            contentText,
             contentHTML: content,
-            contentImages: contentImages,
+            contentImages,
             additionalMetadate: null,
         };
         async function getImages() {
@@ -9738,11 +9768,11 @@ class longmabook extends rules_1.BaseRuleClass {
         }
         async function getMainContent() {
             const getPaperidAndVercodechk = () => {
-                const s = Array.from(doc.querySelectorAll("script")).filter((s) => s.innerText.includes("vercodechk"))[0];
-                const m = s.innerText.match(/{\spaperid:\s'(\d+)',\svercodechk:\s'(\w+)'}/);
+                const ss = Array.from(doc.querySelectorAll("script")).filter((s) => s.innerText.includes("vercodechk"))[0];
+                const m = ss.innerText.match(/{\spaperid:\s'(\d+)',\svercodechk:\s'(\w+)'}/);
                 if (m?.length === 3) {
-                    const [paperid, vercodechk] = m.slice(1);
-                    return [paperid, vercodechk];
+                    const [paperidInner, vercodechkInner] = m.slice(1);
+                    return [paperidInner, vercodechkInner];
                 }
                 return [null, null];
             };
@@ -9759,8 +9789,8 @@ class longmabook extends rules_1.BaseRuleClass {
                     },
                     referrer: chapterUrl,
                     body: new URLSearchParams({
-                        paperid: paperid,
-                        vercodechk: vercodechk,
+                        paperid,
+                        vercodechk,
                     }).toString(),
                     method: "POST",
                     mode: "cors",
@@ -9785,10 +9815,11 @@ class longmabook extends rules_1.BaseRuleClass {
                 return [null, null, null];
             }
         }
-        function getEgg() { }
+        function getEgg() {
+        }
     }
 }
-exports.longmabook = longmabook;
+exports.Longmabook = Longmabook;
 
 
 /***/ }),
@@ -9799,7 +9830,7 @@ exports.longmabook = longmabook;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.meegoq = void 0;
+exports.Meegoq = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const rules_1 = __webpack_require__("./src/rules.ts");
 const misc_1 = __webpack_require__("./src/lib/misc.ts");
@@ -9808,7 +9839,7 @@ const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
 const http_1 = __webpack_require__("./src/lib/http.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 const log_1 = __webpack_require__("./src/log.ts");
-class meegoq extends rules_1.BaseRuleClass {
+class Meegoq extends rules_1.BaseRuleClass {
     constructor() {
         super();
         this.imageMode = "TM";
@@ -9818,15 +9849,15 @@ class meegoq extends rules_1.BaseRuleClass {
     async bookParse() {
         const bookUrl = document.location.href.replace("/book", "/info");
         const dom = await (0, http_1.getHtmlDOM)(bookUrl, "GBK");
-        const author = (dom.querySelector("article.info > p.detail.pt20 > i:nth-child(1) > a")).innerText.trim();
-        const bookname = (dom.querySelector("article.info > header > h1")).innerText.trim();
+        const author = dom.querySelector("article.info > p.detail.pt20 > i:nth-child(1) > a").innerText.trim();
+        const bookname = dom.querySelector("article.info > header > h1").innerText.trim();
         const introDom = dom.querySelector("article.info > p.desc");
-        const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom, (introDom) => {
-            (0, misc_1.rm)("b", false, introDom);
-            return introDom;
+        const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom, (introDomI) => {
+            (0, misc_1.rm)("b", false, introDomI);
+            return introDomI;
         });
         const additionalMetadate = {};
-        const coverUrl = (dom.querySelector("article.info > div.cover > img")).src;
+        const coverUrl = dom.querySelector("article.info > div.cover > img").src;
         if (coverUrl) {
             (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
                 .then((coverClass) => {
@@ -9855,8 +9886,7 @@ class meegoq extends rules_1.BaseRuleClass {
             let sectionNumber = 0;
             let sectionName = null;
             let sectionChapterNumber = 0;
-            for (let i = 0; i < chapterList.length; i++) {
-                const li = chapterList[i];
+            for (const li of chapterList) {
                 if (Array.from(li.classList).includes("volumn")) {
                     sectionNumber++;
                     sectionChapterNumber = 0;
@@ -9879,13 +9909,13 @@ class meegoq extends rules_1.BaseRuleClass {
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        const dom = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
-        chapterName = (dom.querySelector("article > header > h1")).innerText.trim();
-        const content = dom.querySelector("#content");
+        const doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
+        chapterName = doc.querySelector("article > header > h1").innerText.trim();
+        const content = doc.querySelector("#content");
         if (content) {
-            let { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+            const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
             return {
-                chapterName: chapterName,
+                chapterName,
                 contentRaw: content,
                 contentText: text,
                 contentHTML: dom,
@@ -9895,7 +9925,7 @@ class meegoq extends rules_1.BaseRuleClass {
         }
         else {
             return {
-                chapterName: chapterName,
+                chapterName,
                 contentRaw: null,
                 contentText: null,
                 contentHTML: null,
@@ -9905,7 +9935,7 @@ class meegoq extends rules_1.BaseRuleClass {
         }
     }
 }
-exports.meegoq = meegoq;
+exports.Meegoq = Meegoq;
 
 
 /***/ }),
@@ -9916,12 +9946,12 @@ exports.meegoq = meegoq;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.mht = void 0;
+exports.Mht = void 0;
 const rules_1 = __webpack_require__("./src/rules.ts");
 const misc_1 = __webpack_require__("./src/lib/misc.ts");
 const biquge_1 = __webpack_require__("./src/rules/biquge.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
-class mht extends rules_1.BaseRuleClass {
+class Mht extends rules_1.BaseRuleClass {
     constructor() {
         super();
         this.imageMode = "TM";
@@ -9930,13 +9960,14 @@ class mht extends rules_1.BaseRuleClass {
         const self = this;
         return (0, biquge_1.bookParseTemp)({
             bookUrl: document.location.href,
-            bookname: (document.querySelector("#info > h1:nth-child(1)")).innerText.trim(),
-            author: (document.querySelector("#info > p:nth-child(2)")).innerText
+            bookname: document.querySelector("#info > h1:nth-child(1)").innerText.trim(),
+            author: document.querySelector("#info > p:nth-child(2)").innerText
                 .replace(/作(\s+)?者[：:]/, "")
                 .trim(),
             introDom: document.querySelector("#intro"),
             introDomPatch: (introDom) => introDom,
-            coverUrl: document.querySelector("#fmimg > img").src,
+            coverUrl: document.querySelector("#fmimg > img")
+                .src,
             chapterListSelector: "#list>dl",
             charset: "UTF-8",
             chapterParse: self.chapterParse,
@@ -9950,7 +9981,7 @@ class mht extends rules_1.BaseRuleClass {
             .href, (_content, nextLink) => new URL(nextLink).pathname.includes("_"));
     }
 }
-exports.mht = mht;
+exports.Mht = Mht;
 
 
 /***/ }),
@@ -9961,7 +9992,7 @@ exports.mht = mht;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.qidian = void 0;
+exports.Qidian = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const misc_1 = __webpack_require__("./src/lib/misc.ts");
 const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
@@ -9971,7 +10002,7 @@ const http_2 = __webpack_require__("./src/lib/http.ts");
 const rules_1 = __webpack_require__("./src/rules.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 const log_1 = __webpack_require__("./src/log.ts");
-class qidian extends rules_1.BaseRuleClass {
+class Qidian extends rules_1.BaseRuleClass {
     constructor() {
         super();
         this.imageMode = "TM";
@@ -9988,16 +10019,17 @@ class qidian extends rules_1.BaseRuleClass {
         const authorId = document
             .getElementById("authorId")
             ?.getAttribute("data-authorid");
-        const _csrfToken = unsafeWindow.jQuery.ajaxSettings.data._csrfToken;
+        const _csrfToken = unsafeWindow.jQuery.ajaxSettings.data
+            ._csrfToken;
         const bookUrl = document.location.href;
-        const bookname = (document.querySelector(".book-info > h1 > em")).innerText.trim();
-        const author = (document.querySelector(".book-info .writer")).innerText
+        const bookname = document.querySelector(".book-info > h1 > em").innerText.trim();
+        const author = document.querySelector(".book-info .writer").innerText
             .replace(/作\s+者:/, "")
             .trim();
         const introDom = document.querySelector(".book-info-detail .book-intro");
         const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom);
         const additionalMetadate = {};
-        const coverUrl = (document.querySelector("#bookImg > img")).src;
+        const coverUrl = document.querySelector("#bookImg > img").src;
         if (coverUrl) {
             (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
                 .then((coverClass) => {
@@ -10011,7 +10043,7 @@ class qidian extends rules_1.BaseRuleClass {
         const chapters = [];
         const liLength = document.querySelectorAll("#j-catalogWrap li").length;
         const getChapterTotalNumber = () => {
-            const span = (document.querySelector("#J-catalogCount")).innerText.match(/\d+/);
+            const span = document.querySelector("#J-catalogCount").innerText.match(/\d+/);
             if (span) {
                 return Number(span[0]);
             }
@@ -10031,8 +10063,7 @@ class qidian extends rules_1.BaseRuleClass {
                 .split("·")[0];
             let sectionChapterNumber = 0;
             const cs = s.querySelectorAll("ul.cf > li");
-            for (let j = 0; j < cs.length; j++) {
-                const c = cs[j];
+            for (const c of Array.from(cs)) {
                 const a = c.querySelector("a");
                 chapterNumber++;
                 sectionChapterNumber++;
@@ -10064,17 +10095,17 @@ class qidian extends rules_1.BaseRuleClass {
                     chapterId = null;
                 }
                 const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), isPaid(), sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, "UTF-8", {
-                    _csrfToken: _csrfToken,
-                    bookId: bookId,
-                    authorId: authorId,
-                    chapterId: chapterId,
-                    limitFree: limitFree,
+                    _csrfToken,
+                    bookId,
+                    authorId,
+                    chapterId,
+                    limitFree,
                 });
                 const isLogin = () => {
-                    const sign_in_dom = document.querySelector(".sign-in");
-                    const sign_out_dom = document.querySelector(".sign-out");
-                    if (sign_in_dom && sign_out_dom) {
-                        if (Array.from(sign_out_dom.classList).includes("hidden")) {
+                    const signInDom = document.querySelector(".sign-in");
+                    const signOutDom = document.querySelector(".sign-out");
+                    if (signInDom && signOutDom) {
+                        if (Array.from(signOutDom.classList).includes("hidden")) {
                             return true;
                         }
                     }
@@ -10102,31 +10133,31 @@ class qidian extends rules_1.BaseRuleClass {
         const limitFree = options.limitFree;
         const _csrfToken = options._csrfToken;
         async function publicChapter() {
-            const dom = await (0, http_2.ggetHtmlDOM)(chapterUrl, charset);
-            const chapterName = (dom.querySelector(".j_chapterName > .content-wrap")).innerText.trim();
+            const doc = await (0, http_2.ggetHtmlDOM)(chapterUrl, charset);
+            chapterName = doc.querySelector(".j_chapterName > .content-wrap").innerText.trim();
             const nullObj = {
-                chapterName: chapterName,
+                chapterName,
                 contentRaw: null,
                 contentText: null,
                 contentHTML: null,
                 contentImages: null,
                 additionalMetadate: null,
             };
-            if (dom.querySelector(".vip-limit-wrap")) {
+            if (doc.querySelector(".vip-limit-wrap")) {
                 return nullObj;
             }
-            const content = dom.querySelector(".read-content");
-            const author_say_wrap = (dom.querySelector(".author-say-wrap"));
+            const content = doc.querySelector(".read-content");
+            const authorSayWrap = doc.querySelector(".author-say-wrap");
             if (content) {
-                if (author_say_wrap) {
-                    const author_say = author_say_wrap.querySelector("div.author-say > p:nth-child(3)");
+                if (authorSayWrap) {
+                    const authorSay = authorSayWrap.querySelector("div.author-say > p:nth-child(3)");
                     const hr = document.createElement("hr");
                     content.appendChild(hr);
-                    content.appendChild(author_say);
+                    content.appendChild(authorSay);
                 }
-                let { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+                const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
                 return {
-                    chapterName: chapterName,
+                    chapterName,
                     contentRaw: content,
                     contentText: text,
                     contentHTML: dom,
@@ -10142,10 +10173,10 @@ class qidian extends rules_1.BaseRuleClass {
             async function getChapterInfo() {
                 const baseUrl = "https://vipreader.qidian.com/ajax/chapter/chapterInfo";
                 const search = new URLSearchParams({
-                    _csrfToken: _csrfToken,
-                    bookId: bookId,
-                    chapterId: chapterId,
-                    authorId: authorId,
+                    _csrfToken,
+                    bookId,
+                    chapterId,
+                    authorId,
                 });
                 const url = baseUrl + "?" + search.toString();
                 log_1.log.debug(`[Chapter]请求 ${url} Referer ${chapterUrl}`);
@@ -10179,7 +10210,7 @@ class qidian extends rules_1.BaseRuleClass {
                     }
                     const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
                     return {
-                        chapterName: chapterName,
+                        chapterName,
                         contentRaw: content,
                         contentText: text,
                         contentHTML: dom,
@@ -10190,7 +10221,7 @@ class qidian extends rules_1.BaseRuleClass {
                 else {
                     log_1.log.error(`[chapter]VIP章节API请求失败！\n${JSON.stringify(chapterInfo)}`);
                     return {
-                        chapterName: chapterName,
+                        chapterName,
                         contentRaw: null,
                         contentText: null,
                         contentHTML: null,
@@ -10209,7 +10240,7 @@ class qidian extends rules_1.BaseRuleClass {
                 }
             }
             return {
-                chapterName: chapterName,
+                chapterName,
                 contentRaw: null,
                 contentText: null,
                 contentHTML: null,
@@ -10225,7 +10256,7 @@ class qidian extends rules_1.BaseRuleClass {
         }
     }
 }
-exports.qidian = qidian;
+exports.Qidian = Qidian;
 
 
 /***/ }),
@@ -10236,7 +10267,7 @@ exports.qidian = qidian;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.qimao = void 0;
+exports.Qimao = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const rules_1 = __webpack_require__("./src/rules.ts");
 const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
@@ -10244,19 +10275,19 @@ const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
 const http_1 = __webpack_require__("./src/lib/http.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 const log_1 = __webpack_require__("./src/log.ts");
-class qimao extends rules_1.BaseRuleClass {
+class Qimao extends rules_1.BaseRuleClass {
     constructor() {
         super();
         this.imageMode = "TM";
     }
     async bookParse() {
-        let bookUrl = document.location.href;
-        const bookname = (document.querySelector("h2.tit")).innerText.trim();
-        const author = (document.querySelector(".p-name > a")).innerHTML.trim();
-        const introDom = (document.querySelector(".book-introduction .article"));
+        const bookUrl = document.location.href;
+        const bookname = document.querySelector("h2.tit").innerText.trim();
+        const author = document.querySelector(".p-name > a").innerHTML.trim();
+        const introDom = document.querySelector(".book-introduction .article");
         const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom);
         const additionalMetadate = {};
-        const coverUrl = (document.querySelector(".poster-pic > img")).src;
+        const coverUrl = document.querySelector(".poster-pic > img").src;
         if (coverUrl) {
             (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
                 .then((coverClass) => {
@@ -10298,13 +10329,13 @@ class qimao extends rules_1.BaseRuleClass {
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         async function publicChapter() {
             log_1.log.debug(`[Chapter]请求 ${chapterUrl}`);
-            let doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
+            const doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
             chapterName = doc.querySelector(".title").innerText.trim();
             const content = doc.querySelector(".article");
             if (content) {
-                let { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+                const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
                 return {
-                    chapterName: chapterName,
+                    chapterName,
                     contentRaw: content,
                     contentText: text,
                     contentHTML: dom,
@@ -10314,7 +10345,7 @@ class qimao extends rules_1.BaseRuleClass {
             }
             else {
                 return {
-                    chapterName: chapterName,
+                    chapterName,
                     contentRaw: null,
                     contentText: null,
                     contentHTML: null,
@@ -10325,7 +10356,7 @@ class qimao extends rules_1.BaseRuleClass {
         }
         async function vipChapter() {
             return {
-                chapterName: chapterName,
+                chapterName,
                 contentRaw: null,
                 contentText: null,
                 contentHTML: null,
@@ -10341,7 +10372,7 @@ class qimao extends rules_1.BaseRuleClass {
         }
     }
 }
-exports.qimao = qimao;
+exports.Qimao = Qimao;
 
 
 /***/ }),
@@ -10352,7 +10383,7 @@ exports.qimao = qimao;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.qingoo = void 0;
+exports.Qingoo = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const rules_1 = __webpack_require__("./src/rules.ts");
 const misc_1 = __webpack_require__("./src/lib/misc.ts");
@@ -10361,22 +10392,22 @@ const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
 const http_1 = __webpack_require__("./src/lib/http.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 const log_1 = __webpack_require__("./src/log.ts");
-class qingoo extends rules_1.BaseRuleClass {
+class Qingoo extends rules_1.BaseRuleClass {
     constructor() {
         super();
         this.imageMode = "TM";
         this.charset = "UTF-8";
     }
     async bookParse() {
-        let bookUrl = document.location.href;
-        const bookname = (document.querySelector(".title > dl > dd > h1")).innerText.trim();
+        const bookUrl = document.location.href;
+        const bookname = document.querySelector(".title > dl > dd > h1").innerText.trim();
         const author = document.querySelector("#author").innerText
             .replace("作者：", "")
             .trim();
         const introDom = document.querySelector("#allDesc");
         const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom);
         const additionalMetadate = {};
-        const coverUrl = (document.querySelector(".title > dl > dt > img:nth-child(1)")).src;
+        const coverUrl = document.querySelector(".title > dl > dt > img:nth-child(1)").src;
         if (coverUrl) {
             (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
                 .then((coverClass) => {
@@ -10386,7 +10417,8 @@ class qingoo extends rules_1.BaseRuleClass {
         }
         const chapters = [];
         const data = unsafeWindow.data;
-        const _linkTemp = (document.querySelector("#chapterItem")?.firstElementChild)?.href;
+        const _linkTemp = document.querySelector("#chapterItem")
+            ?.firstElementChild?.href;
         const linkTemp = new URL(_linkTemp);
         for (const d of data) {
             const status = d.status;
@@ -10407,15 +10439,15 @@ class qingoo extends rules_1.BaseRuleClass {
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         const doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
-        chapterName = (doc.querySelector("#content > h1")).innerText.trim();
+        chapterName = doc.querySelector("#content > h1").innerText.trim();
         const content = doc.querySelector("#content");
         if (content) {
             (0, misc_1.rm)("div.header", false, content);
             (0, misc_1.rm)("h1", false, content);
             (0, misc_1.rm)("h6", false, content);
-            let { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+            const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
             return {
-                chapterName: chapterName,
+                chapterName,
                 contentRaw: content,
                 contentText: text,
                 contentHTML: dom,
@@ -10425,7 +10457,7 @@ class qingoo extends rules_1.BaseRuleClass {
         }
         else {
             return {
-                chapterName: chapterName,
+                chapterName,
                 contentRaw: null,
                 contentText: null,
                 contentHTML: null,
@@ -10435,7 +10467,7 @@ class qingoo extends rules_1.BaseRuleClass {
         }
     }
 }
-exports.qingoo = qingoo;
+exports.Qingoo = Qingoo;
 
 
 /***/ }),
@@ -10446,7 +10478,7 @@ exports.qingoo = qingoo;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.sfacg = void 0;
+exports.Sfacg = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const misc_1 = __webpack_require__("./src/lib/misc.ts");
 const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
@@ -10456,7 +10488,7 @@ const rules_1 = __webpack_require__("./src/rules.ts");
 const setting_1 = __webpack_require__("./src/setting.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 const log_1 = __webpack_require__("./src/log.ts");
-class sfacg extends rules_1.BaseRuleClass {
+class Sfacg extends rules_1.BaseRuleClass {
     constructor() {
         super();
         this.imageMode = "TM";
@@ -10464,13 +10496,13 @@ class sfacg extends rules_1.BaseRuleClass {
     }
     async bookParse() {
         const bookUrl = document.location.href.replace("/MainIndex/", "");
-        const bookname = (document.querySelector("h1.story-title")).innerText.trim();
+        const bookname = document.querySelector("h1.story-title").innerText.trim();
         const dom = await (0, http_1.getHtmlDOM)(bookUrl, undefined);
-        const author = (dom.querySelector(".author-name")).innerText.trim();
+        const author = dom.querySelector(".author-name").innerText.trim();
         const introDom = dom.querySelector(".introduce");
         const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom);
         const additionalMetadate = {};
-        let coverUrl = (dom.querySelector("#hasTicket div.pic img")).src;
+        const coverUrl = dom.querySelector("#hasTicket div.pic img").src;
         if (coverUrl) {
             (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
                 .then((coverClass) => {
@@ -10483,10 +10515,10 @@ class sfacg extends rules_1.BaseRuleClass {
             return a.innerText.trim().replace(/\(\d+\)$/, "");
         });
         if (dom.querySelector(".d-banner")) {
-            const _beitouUrl = (dom.querySelector(".d-banner"))?.style.backgroundImage.split('"');
+            const _beitouUrl = dom.querySelector(".d-banner")?.style.backgroundImage.split('"');
             if (_beitouUrl?.length === 3) {
                 const beitouUrl = _beitouUrl[1];
-                const beitou = new main_1.attachmentClass(beitouUrl, `beitou.${beitouUrl.split(".").slice(-1)[0]}`, "TM");
+                const beitou = new main_1.AttachmentClass(beitouUrl, `beitou.${beitouUrl.split(".").slice(-1)[0]}`, "TM");
                 beitou.init();
                 additionalMetadate.attachments = [beitou];
             }
@@ -10497,20 +10529,21 @@ class sfacg extends rules_1.BaseRuleClass {
         for (let i = 0; i < sections.length; i++) {
             const s = sections[i];
             const sectionNumber = i + 1;
-            const sectionName = (s.querySelector(".catalog-title")).innerText
+            const sectionName = s.querySelector(".catalog-title").innerText
                 .replace(`【${bookname}】`, "")
                 .trim();
             let sectionChapterNumber = 0;
             const cs = s.querySelectorAll(".catalog-list > ul > li > a");
-            for (let j = 0; j < cs.length; j++) {
-                const c = cs[j];
-                const _chapterName = c.getAttribute("title")?.trim();
+            for (const c of Array.from(cs)) {
+                const _chapterName = c
+                    .getAttribute("title")
+                    ?.trim();
                 chapterNumber++;
                 sectionChapterNumber++;
                 const chapterName = _chapterName ? _chapterName : "";
                 const chapterUrl = c.href;
                 let isVIP = false;
-                let isPaid = null;
+                const isPaid = null;
                 if (c.childElementCount &&
                     c.firstElementChild?.getAttribute("class") === "icn_vip") {
                     isVIP = true;
@@ -10530,15 +10563,15 @@ class sfacg extends rules_1.BaseRuleClass {
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        const chapter_id = chapterUrl.split("/").slice(-2, -1)[0];
+        const chapterId = chapterUrl.split("/").slice(-2, -1)[0];
         async function publicChapter() {
-            const dom = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
-            const chapterName = (dom.querySelector("h1.article-title")).innerText.trim();
-            const content = dom.querySelector(".article-content");
+            const doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
+            chapterName = doc.querySelector("h1.article-title").innerText.trim();
+            const content = doc.querySelector(".article-content");
             if (content) {
-                let { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+                const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
                 return {
-                    chapterName: chapterName,
+                    chapterName,
                     contentRaw: content,
                     contentText: text,
                     contentHTML: dom,
@@ -10548,7 +10581,7 @@ class sfacg extends rules_1.BaseRuleClass {
             }
             else {
                 return {
-                    chapterName: chapterName,
+                    chapterName,
                     contentRaw: null,
                     contentText: null,
                     contentHTML: null,
@@ -10560,9 +10593,9 @@ class sfacg extends rules_1.BaseRuleClass {
         async function vipChapter() {
             async function getvipChapterImage(vipChapterImageUrl, vipChapterName) {
                 let retryTime = 0;
-                function fetchVipChapterImage(vipChapterImageUrl) {
-                    log_1.log.debug(`[Chapter]请求 ${vipChapterImageUrl} Referer ${chapterUrl} 重试次数 ${retryTime}`);
-                    return fetch(vipChapterImageUrl, {
+                function fetchVipChapterImage(vipChapterImageUrlI) {
+                    log_1.log.debug(`[Chapter]请求 ${vipChapterImageUrlI} Referer ${chapterUrl} 重试次数 ${retryTime}`);
+                    return fetch(vipChapterImageUrlI, {
                         headers: {
                             accept: "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8",
                         },
@@ -10575,10 +10608,10 @@ class sfacg extends rules_1.BaseRuleClass {
                         .then((response) => response.blob())
                         .then((blob) => {
                         if (blob.size === 53658 || blob.size === 42356) {
-                            log_1.log.error(`[Chapter]请求 ${vipChapterImageUrl} 失败 Referer ${chapterUrl}`);
+                            log_1.log.error(`[Chapter]请求 ${vipChapterImageUrlI} 失败 Referer ${chapterUrl}`);
                             if (retryTime < setting_1.retryLimit) {
                                 retryTime++;
-                                return fetchVipChapterImage(vipChapterImageUrl);
+                                return fetchVipChapterImage(vipChapterImageUrlI);
                             }
                             else {
                                 return null;
@@ -10591,7 +10624,7 @@ class sfacg extends rules_1.BaseRuleClass {
                         .catch((error) => log_1.log.error(error));
                 }
                 const vipChapterImageBlob = await fetchVipChapterImage(vipChapterImageUrl);
-                const vipChapterImage = new main_1.attachmentClass(vipChapterImageUrl, vipChapterName, "naive");
+                const vipChapterImage = new main_1.AttachmentClass(vipChapterImageUrl, vipChapterName, "naive");
                 if (vipChapterImageBlob) {
                     vipChapterImage.imageBlob = vipChapterImageBlob;
                     vipChapterImage.status = main_1.Status.finished;
@@ -10607,13 +10640,13 @@ class sfacg extends rules_1.BaseRuleClass {
                 : false;
             if (isLogin) {
                 const dom = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
-                const chapterName = (dom.querySelector("h1.article-title")).innerText.trim();
-                const isPaid = dom.querySelector(".pay-section") === null;
+                const chapterNameI = dom.querySelector("h1.article-title").innerText.trim();
+                isPaid = dom.querySelector(".pay-section") === null;
                 if (isPaid) {
-                    const vipChapterDom = (dom.querySelector(".article-content > #vipImage"));
+                    const vipChapterDom = dom.querySelector(".article-content > #vipImage");
                     if (vipChapterDom) {
                         const vipChapterImageUrl = vipChapterDom.src;
-                        const vipChapterName = `vipCHapter${chapter_id}.gif`;
+                        const vipChapterName = `vipCHapter${chapterId}.gif`;
                         const vipChapterImage = await getvipChapterImage(vipChapterImageUrl, vipChapterName);
                         const contentImages = [vipChapterImage];
                         const img = document.createElement("img");
@@ -10623,11 +10656,11 @@ class sfacg extends rules_1.BaseRuleClass {
                         contentHTML.appendChild(img);
                         const contentText = `VIP章节，请打开HTML文件查看。\n![${vipChapterImageUrl}](${vipChapterName})`;
                         return {
-                            chapterName: chapterName,
+                            chapterName: chapterNameI,
                             contentRaw: contentHTML,
-                            contentText: contentText,
-                            contentHTML: contentHTML,
-                            contentImages: contentImages,
+                            contentText,
+                            contentHTML,
+                            contentImages,
                             additionalMetadate: null,
                         };
                     }
@@ -10637,7 +10670,7 @@ class sfacg extends rules_1.BaseRuleClass {
                 }
             }
             return {
-                chapterName: chapterName,
+                chapterName,
                 contentRaw: null,
                 contentText: null,
                 contentHTML: null,
@@ -10653,7 +10686,7 @@ class sfacg extends rules_1.BaseRuleClass {
         }
     }
 }
-exports.sfacg = sfacg;
+exports.Sfacg = Sfacg;
 
 
 /***/ }),
@@ -10664,7 +10697,7 @@ exports.sfacg = sfacg;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.shouda8 = void 0;
+exports.Shouda8 = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const rules_1 = __webpack_require__("./src/rules.ts");
 const misc_1 = __webpack_require__("./src/lib/misc.ts");
@@ -10673,26 +10706,26 @@ const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
 const http_1 = __webpack_require__("./src/lib/http.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 const log_1 = __webpack_require__("./src/log.ts");
-class shouda8 extends rules_1.BaseRuleClass {
+class Shouda8 extends rules_1.BaseRuleClass {
     constructor() {
         super();
         this.imageMode = "TM";
     }
     async bookParse() {
         const bookUrl = document.location.href;
-        const bookname = (document.querySelector(".bread-crumbs > li:nth-child(4)")).innerText.trim();
-        const author = (document.querySelector("div.bookname > h1 > em")).innerText
+        const bookname = document.querySelector(".bread-crumbs > li:nth-child(4)").innerText.trim();
+        const author = document.querySelector("div.bookname > h1 > em").innerText
             .replace("作者：", "")
             .trim();
         const introDom = document.querySelector(".intro");
-        const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom, (introDom) => {
-            (0, misc_1.rm)(".book_keywords", false, introDom);
-            (0, misc_1.rm)("script", true, introDom);
-            (0, misc_1.rm)("#cambrian0", false, introDom);
-            return introDom;
+        const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom, (introDomI) => {
+            (0, misc_1.rm)(".book_keywords", false, introDomI);
+            (0, misc_1.rm)("script", true, introDomI);
+            (0, misc_1.rm)("#cambrian0", false, introDomI);
+            return introDomI;
         });
         const additionalMetadate = {};
-        const coverUrl = (document.querySelector(".pic > img:nth-child(1)")).src;
+        const coverUrl = document.querySelector(".pic > img:nth-child(1)").src;
         if (coverUrl) {
             (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
                 .then((coverClass) => {
@@ -10715,14 +10748,14 @@ class shouda8 extends rules_1.BaseRuleClass {
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        const dom = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
-        chapterName = (dom.querySelector(".kfyd > h2:nth-child(1)")).innerText.trim();
-        const content = dom.querySelector("#content");
+        const doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
+        chapterName = doc.querySelector(".kfyd > h2:nth-child(1)").innerText.trim();
+        const content = doc.querySelector("#content");
         if (content) {
             (0, misc_1.rm)("p:last-child", false, content);
-            let { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+            const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
             return {
-                chapterName: chapterName,
+                chapterName,
                 contentRaw: content,
                 contentText: text,
                 contentHTML: dom,
@@ -10732,7 +10765,7 @@ class shouda8 extends rules_1.BaseRuleClass {
         }
         else {
             return {
-                chapterName: chapterName,
+                chapterName,
                 contentRaw: null,
                 contentText: null,
                 contentHTML: null,
@@ -10742,7 +10775,7 @@ class shouda8 extends rules_1.BaseRuleClass {
         }
     }
 }
-exports.shouda8 = shouda8;
+exports.Shouda8 = Shouda8;
 
 
 /***/ }),
@@ -10753,7 +10786,7 @@ exports.shouda8 = shouda8;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.shubaowa = void 0;
+exports.Shubaowa = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const rules_1 = __webpack_require__("./src/rules.ts");
 const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
@@ -10761,7 +10794,7 @@ const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
 const http_1 = __webpack_require__("./src/lib/http.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 const log_1 = __webpack_require__("./src/log.ts");
-class shubaowa extends rules_1.BaseRuleClass {
+class Shubaowa extends rules_1.BaseRuleClass {
     constructor() {
         super();
         this.imageMode = "TM";
@@ -10769,15 +10802,14 @@ class shubaowa extends rules_1.BaseRuleClass {
     }
     async bookParse() {
         const bookUrl = document.location.href;
-        const bookname = (document.querySelector("#info > h1:nth-child(1)")).innerText.trim();
-        const author = (document.querySelector("#info > p:nth-child(2)")).innerText
+        const bookname = document.querySelector("#info > h1:nth-child(1)").innerText.trim();
+        const author = document.querySelector("#info > p:nth-child(2)").innerText
             .replace(/作(\s+)?者[：:]/, "")
             .trim();
         const introDom = document.querySelector("#intro");
         const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom);
         const additionalMetadate = {};
-        const coverUrl = document.querySelector("#fmimg > img")
-            ?.src;
+        const coverUrl = document.querySelector("#fmimg > img")?.src;
         if (coverUrl) {
             (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
                 .then((coverClass) => {
@@ -10799,13 +10831,13 @@ class shubaowa extends rules_1.BaseRuleClass {
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        const dom = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
-        chapterName = (dom.querySelector(".bookname > h1:nth-child(1)")).innerText.trim();
-        const content = dom.querySelector("#content");
+        const doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
+        chapterName = doc.querySelector(".bookname > h1:nth-child(1)").innerText.trim();
+        const content = doc.querySelector("#content");
         if (content) {
-            let { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+            const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
             return {
-                chapterName: chapterName,
+                chapterName,
                 contentRaw: content,
                 contentText: text,
                 contentHTML: dom,
@@ -10815,7 +10847,7 @@ class shubaowa extends rules_1.BaseRuleClass {
         }
         else {
             return {
-                chapterName: chapterName,
+                chapterName,
                 contentRaw: null,
                 contentText: null,
                 contentHTML: null,
@@ -10825,7 +10857,7 @@ class shubaowa extends rules_1.BaseRuleClass {
         }
     }
 }
-exports.shubaowa = shubaowa;
+exports.Shubaowa = Shubaowa;
 
 
 /***/ }),
@@ -10836,7 +10868,7 @@ exports.shubaowa = shubaowa;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.shubl = void 0;
+exports.Shubl = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const misc_1 = __webpack_require__("./src/lib/misc.ts");
 const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
@@ -10846,7 +10878,7 @@ const rules_1 = __webpack_require__("./src/rules.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 const log_1 = __webpack_require__("./src/log.ts");
 const CryptoJS = __webpack_require__("crypto-js");
-class shubl extends rules_1.BaseRuleClass {
+class Shubl extends rules_1.BaseRuleClass {
     constructor() {
         super();
         this.imageMode = "TM";
@@ -10856,12 +10888,12 @@ class shubl extends rules_1.BaseRuleClass {
     }
     async bookParse() {
         const bookUrl = document.location.href;
-        const bookname = (document.querySelector(".book-title > span")).innerText.trim();
-        const author = (document.querySelector("div.username")).innerText.trim();
+        const bookname = document.querySelector(".book-title > span").innerText.trim();
+        const author = document.querySelector("div.username").innerText.trim();
         const introDom = document.querySelector(".book-brief");
-        const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom, (introDom) => {
-            introDom.innerHTML = introDom.innerHTML.replace("简介：", "");
-            return introDom;
+        const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom, (introDomI) => {
+            introDomI.innerHTML = introDomI.innerHTML.replace("简介：", "");
+            return introDomI;
         });
         const additionalMetadate = {};
         const coverUrl = document.querySelector(".book-img")
@@ -10885,8 +10917,7 @@ class shubl extends rules_1.BaseRuleClass {
             const sectionName = chapterTitleList[i];
             let sectionChapterNumber = 0;
             const cs = s.querySelectorAll("span.chapter_item");
-            for (let j = 0; j < cs.length; j++) {
-                const c = cs[j];
+            for (const c of Array.from(cs)) {
                 chapterNumber++;
                 sectionChapterNumber++;
                 const a = c.querySelector("a");
@@ -10925,20 +10956,20 @@ class shubl extends rules_1.BaseRuleClass {
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         function decrypt(item) {
             let message = item.content;
-            let keys = item.keys;
-            let len = item.keys.length;
-            let accessKey = item.accessKey;
-            let accessKeyList = accessKey.split("");
-            let charsNotLatinNum = accessKeyList.length;
-            let output = new Array();
+            const keys = item.keys;
+            const len = item.keys.length;
+            const accessKey = item.accessKey;
+            const accessKeyList = accessKey.split("");
+            const charsNotLatinNum = accessKeyList.length;
+            const output = new Array();
             output.push(keys[accessKeyList[charsNotLatinNum - 1].charCodeAt(0) % len]);
             output.push(keys[accessKeyList[0].charCodeAt(0) % len]);
             for (let i = 0; i < output.length; i++) {
                 message = atob(message);
-                let data = output[i];
-                let iv = btoa(message.substr(0, 16));
-                let keys255 = btoa(message.substr(16));
-                let pass = CryptoJS.format.OpenSSL.parse(keys255);
+                const data = output[i];
+                const iv = btoa(message.substr(0, 16));
+                const keys255 = btoa(message.substr(16));
+                const pass = CryptoJS.format.OpenSSL.parse(keys255);
                 message = CryptoJS.AES.decrypt(pass, CryptoJS.enc.Base64.parse(data), {
                     iv: CryptoJS.enc.Base64.parse(iv),
                     format: CryptoJS.format.OpenSSL,
@@ -10950,14 +10981,14 @@ class shubl extends rules_1.BaseRuleClass {
             }
             return message.toString(CryptoJS.enc.Utf8);
         }
-        const chapter_id = chapterUrl.split("/").slice(-1)[0];
         const rootPath = "https://www.shubl.com/";
+        const chapterId = chapterUrl.split("/").slice(-1)[0];
         async function publicChapter() {
-            async function chapterDecrypt(chapter_id, refererUrl) {
-                const access_key_url = rootPath + "chapter/ajax_get_session_code";
-                const chapter_content_url = rootPath + "chapter/get_book_chapter_detail_info";
-                log_1.log.debug(`[Chapter]请求 ${access_key_url} Referer ${refererUrl}`);
-                const access_key_obj = await (0, http_1.gfetch)(access_key_url, {
+            async function chapterDecrypt(chapterIdt, refererUrl) {
+                const accessKeyUrl = rootPath + "chapter/ajax_get_session_code";
+                const chapterContentUrl = rootPath + "chapter/get_book_chapter_detail_info";
+                log_1.log.debug(`[Chapter]请求 ${accessKeyUrl} Referer ${refererUrl}`);
+                const accessKeyObj = await (0, http_1.gfetch)(accessKeyUrl, {
                     method: "POST",
                     headers: {
                         Accept: "application/json, text/javascript, */*; q=0.01",
@@ -10966,15 +10997,15 @@ class shubl extends rules_1.BaseRuleClass {
                         Origin: document.location.origin,
                         "X-Requested-With": "XMLHttpRequest",
                     },
-                    data: `chapter_id=${chapter_id}`,
+                    data: `chapter_id=${chapterIdt}`,
                     responseType: "json",
                 })
                     .then((response) => response.response)
                     .catch((error) => log_1.log.error(error));
-                const chapter_access_key = access_key_obj
+                const chapter_access_key = accessKeyObj
                     .chapter_access_key;
-                log_1.log.debug(`[Chapter]请求 ${chapter_content_url} Referer ${refererUrl}`);
-                const chapter_content_obj = await (0, http_1.gfetch)(chapter_content_url, {
+                log_1.log.debug(`[Chapter]请求 ${chapterContentUrl} Referer ${refererUrl}`);
+                const chapterContentObj = await (0, http_1.gfetch)(chapterContentUrl, {
                     method: "POST",
                     headers: {
                         Accept: "application/json, text/javascript, */*; q=0.01",
@@ -10983,28 +11014,28 @@ class shubl extends rules_1.BaseRuleClass {
                         Origin: document.location.origin,
                         "X-Requested-With": "XMLHttpRequest",
                     },
-                    data: `chapter_id=${chapter_id}&chapter_access_key=${chapter_access_key}`,
+                    data: `chapter_id=${chapterIdt}&chapter_access_key=${chapter_access_key}`,
                     responseType: "json",
                 })
                     .then((response) => response.response)
                     .catch((error) => log_1.log.error(error));
-                if (chapter_content_obj.code !== 100000) {
-                    log_1.log.error(chapter_content_obj);
+                if (chapterContentObj.code !== 100000) {
+                    log_1.log.error(chapterContentObj);
                     throw new Error(`下载 ${refererUrl} 失败`);
                 }
                 return decrypt({
-                    content: chapter_content_obj.chapter_content,
-                    keys: chapter_content_obj.encryt_keys,
+                    content: chapterContentObj.chapter_content,
+                    keys: chapterContentObj.encryt_keys,
                     accessKey: chapter_access_key,
                 });
             }
-            let content = document.createElement("div");
-            let decryptDate = await chapterDecrypt(chapter_id, chapterUrl);
+            const content = document.createElement("div");
+            const decryptDate = await chapterDecrypt(chapterId, chapterUrl);
             content.innerHTML = decryptDate;
             (0, misc_1.rm)(".chapter span", true, content);
-            let { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+            const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
             return {
-                chapterName: chapterName,
+                chapterName,
                 contentRaw: content,
                 contentText: text,
                 contentHTML: dom,
@@ -11014,12 +11045,12 @@ class shubl extends rules_1.BaseRuleClass {
         }
         async function vipChapter() {
             if (isPaid) {
-                async function vipChapterDecrypt(chapter_id, refererUrl) {
+                async function vipChapterDecrypt(chapterIdi, refererUrl) {
                     const parentWidth = 939.2;
                     const setFontSize = "18";
-                    const image_session_code_url = rootPath + "chapter/ajax_get_image_session_code";
-                    log_1.log.debug(`[Chapter]请求 ${image_session_code_url} Referer ${refererUrl}`);
-                    const image_session_code_object = await (0, http_1.gfetch)(image_session_code_url, {
+                    const imageSessionCodeUrl = rootPath + "chapter/ajax_get_image_session_code";
+                    log_1.log.debug(`[Chapter]请求 ${imageSessionCodeUrl} Referer ${refererUrl}`);
+                    const imageSessionCodeObject = await (0, http_1.gfetch)(imageSessionCodeUrl, {
                         method: "POST",
                         headers: {
                             Accept: "application/json, text/javascript, */*; q=0.01",
@@ -11031,22 +11062,21 @@ class shubl extends rules_1.BaseRuleClass {
                     })
                         .then((response) => response.response)
                         .catch((error) => log_1.log.error(error));
-                    if (image_session_code_object.code !==
-                        100000) {
-                        log_1.log.error(image_session_code_object);
+                    if (imageSessionCodeObject.code !== 100000) {
+                        log_1.log.error(imageSessionCodeObject);
                         throw new Error(`下载 ${refererUrl} 失败`);
                     }
                     const imageCode = decrypt({
-                        content: image_session_code_object
+                        content: imageSessionCodeObject
                             .image_code,
-                        keys: image_session_code_object
+                        keys: imageSessionCodeObject
                             .encryt_keys,
-                        accessKey: image_session_code_object
+                        accessKey: imageSessionCodeObject
                             .access_key,
                     });
-                    const vipCHapterImageUrl = rootPath +
+                    const vipCHapterImageUrlI = rootPath +
                         "chapter/book_chapter_image?chapter_id=" +
-                        chapter_id +
+                        chapterIdi +
                         "&area_width=" +
                         parentWidth +
                         "&font=undefined" +
@@ -11056,9 +11086,9 @@ class shubl extends rules_1.BaseRuleClass {
                         imageCode +
                         "&bg_color_name=white" +
                         "&text_color_name=white";
-                    return vipCHapterImageUrl;
+                    return vipCHapterImageUrlI;
                 }
-                const vipCHapterImageUrl = await vipChapterDecrypt(chapter_id, chapterUrl);
+                const vipCHapterImageUrl = await vipChapterDecrypt(chapterId, chapterUrl);
                 log_1.log.debug(`[Chapter]请求 ${vipCHapterImageUrl} Referer ${chapterUrl}`);
                 const vipCHapterImageBlob = await (0, http_1.gfetch)(vipCHapterImageUrl, {
                     method: "GET",
@@ -11070,8 +11100,8 @@ class shubl extends rules_1.BaseRuleClass {
                 })
                     .then((response) => response.response)
                     .catch((error) => log_1.log.error(error));
-                const vipCHapterName = `vipCHapter${chapter_id}.png`;
-                const vipCHapterImage = new main_1.attachmentClass(vipCHapterImageUrl, vipCHapterName, "TM");
+                const vipCHapterName = `vipCHapter${chapterId}.png`;
+                const vipCHapterImage = new main_1.AttachmentClass(vipCHapterImageUrl, vipCHapterName, "TM");
                 if (vipCHapterImageBlob) {
                     vipCHapterImage.imageBlob = vipCHapterImageBlob;
                     vipCHapterImage.status = main_1.Status.finished;
@@ -11082,19 +11112,19 @@ class shubl extends rules_1.BaseRuleClass {
                 img.alt = vipCHapterImageUrl;
                 const contentHTML = document.createElement("div");
                 contentHTML.appendChild(img);
-                let contentText = `VIP章节，请打开HTML文件查看。\n![${vipCHapterImageUrl}](${vipCHapterName})`;
+                const contentText = `VIP章节，请打开HTML文件查看。\n![${vipCHapterImageUrl}](${vipCHapterName})`;
                 return {
-                    chapterName: chapterName,
+                    chapterName,
                     contentRaw: contentHTML,
-                    contentText: contentText,
-                    contentHTML: contentHTML,
-                    contentImages: contentImages,
+                    contentText,
+                    contentHTML,
+                    contentImages,
                     additionalMetadate: null,
                 };
             }
             else {
                 return {
-                    chapterName: chapterName,
+                    chapterName,
                     contentRaw: null,
                     contentText: null,
                     contentHTML: null,
@@ -11111,7 +11141,7 @@ class shubl extends rules_1.BaseRuleClass {
         }
     }
 }
-exports.shubl = shubl;
+exports.Shubl = Shubl;
 
 
 /***/ }),
@@ -11122,7 +11152,7 @@ exports.shubl = shubl;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.shuhai = void 0;
+exports.Shuhai = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const misc_1 = __webpack_require__("./src/lib/misc.ts");
 const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
@@ -11131,7 +11161,7 @@ const http_1 = __webpack_require__("./src/lib/http.ts");
 const rules_1 = __webpack_require__("./src/rules.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 const log_1 = __webpack_require__("./src/log.ts");
-class shuhai extends rules_1.BaseRuleClass {
+class Shuhai extends rules_1.BaseRuleClass {
     constructor() {
         super();
         this.imageMode = "TM";
@@ -11140,15 +11170,15 @@ class shuhai extends rules_1.BaseRuleClass {
     }
     async bookParse() {
         const bookUrl = document.location.href;
-        const bookname = (document.querySelector("div.book-info-bookname > span:nth-child(1)")).innerText.trim();
-        const author = (document.querySelector("div.book-info-bookname > span:nth-child(2)")).innerText
+        const bookname = document.querySelector("div.book-info-bookname > span:nth-child(1)").innerText.trim();
+        const author = document.querySelector("div.book-info-bookname > span:nth-child(2)").innerText
             .replace("作者: ", "")
             .trim();
         const introDom = document.querySelector("div.book-info-bookintro") ||
             document.querySelector("div.book-info-bookintro-all");
         const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom);
         const additionalMetadate = {};
-        let coverUrl = (document.querySelector(".book-cover-wrapper > img")).getAttribute("data-original");
+        const coverUrl = document.querySelector(".book-cover-wrapper > img").getAttribute("data-original");
         if (coverUrl) {
             (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
                 .then((coverClass) => {
@@ -11166,8 +11196,7 @@ class shuhai extends rules_1.BaseRuleClass {
         let sectionNumber = 0;
         let sectionName = null;
         let sectionChapterNumber = 0;
-        for (let i = 0; i < dsList.length; i++) {
-            const node = dsList[i];
+        for (const node of Array.from(dsList)) {
             if (node.nodeName === "SPAN") {
                 sectionNumber++;
                 sectionChapterNumber = 0;
@@ -11205,16 +11234,16 @@ class shuhai extends rules_1.BaseRuleClass {
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         async function publicChapter() {
-            const dom = await (0, http_1.ggetHtmlDOM)(chapterUrl, charset);
-            const chapterName = (dom.querySelector("div.chapter-name")).innerText
+            const doc = await (0, http_1.ggetHtmlDOM)(chapterUrl, charset);
+            chapterName = doc.querySelector("div.chapter-name").innerText
                 .replace("正文 ", "")
                 .trim();
-            const content = (dom.querySelector("#reader-content > div:nth-child(1)"));
+            const content = doc.querySelector("#reader-content > div:nth-child(1)");
             if (content) {
                 (0, misc_1.rm)("div.chaper-info", false, content);
-                let { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+                const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
                 return {
-                    chapterName: chapterName,
+                    chapterName,
                     contentRaw: content,
                     contentText: text,
                     contentHTML: dom,
@@ -11224,7 +11253,7 @@ class shuhai extends rules_1.BaseRuleClass {
             }
             else {
                 return {
-                    chapterName: chapterName,
+                    chapterName,
                     contentRaw: null,
                     contentText: null,
                     contentHTML: null,
@@ -11235,7 +11264,7 @@ class shuhai extends rules_1.BaseRuleClass {
         }
         async function vipChapter() {
             return {
-                chapterName: chapterName,
+                chapterName,
                 contentRaw: null,
                 contentText: null,
                 contentHTML: null,
@@ -11251,7 +11280,7 @@ class shuhai extends rules_1.BaseRuleClass {
         }
     }
 }
-exports.shuhai = shuhai;
+exports.Shuhai = Shuhai;
 
 
 /***/ }),
@@ -11266,9 +11295,9 @@ exports.c256wxc = void 0;
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 exports.c256wxc = (0, common_1.mkRuleClass1)({
     bookUrl: document.location.href,
-    bookname: (document.querySelector(".art_tit")).innerText.trim(),
-    author: ((document.querySelector("span.bookinfo:nth-child(1) > a") ??
-        document.querySelector("span.bookinfo:nth-child(1)"))).innerText
+    bookname: document.querySelector(".art_tit").innerText.trim(),
+    author: (document.querySelector("span.bookinfo:nth-child(1) > a") ??
+        document.querySelector("span.bookinfo:nth-child(1)")).innerText
         .replace(/^作者：/, "")
         .trim(),
     introDom: document.querySelector(".infotype > p"),
@@ -11292,8 +11321,8 @@ exports.c630shu = void 0;
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 exports.c630shu = (0, common_1.mkRuleClass1)({
     bookUrl: document.location.href,
-    bookname: (document.querySelector("#info > h1")).innerText.trim(),
-    author: (document.querySelector("div.options > span.item:nth-child(1) > a")).innerText.trim(),
+    bookname: document.querySelector("#info > h1").innerText.trim(),
+    author: document.querySelector("div.options > span.item:nth-child(1) > a").innerText.trim(),
     introDom: document.querySelector("#intro"),
     introDomPatch: (introDom) => introDom,
     coverUrl: document.querySelector(".img_in > img").src,
@@ -11321,7 +11350,7 @@ const trxs = () => (0, common_1.mkRuleClass1)({
     bookname: document.querySelector(".infos > h1").innerText
         .split("(")[0]
         .trim(),
-    author: (document.querySelector(".date > span > a")).innerText.trim(),
+    author: document.querySelector(".date > span > a").innerText.trim(),
     introDom: document.querySelector(".infos > p"),
     introDomPatch: (introDom) => introDom,
     coverUrl: document.querySelector(".pic > img").src,
@@ -11335,7 +11364,7 @@ const tongrenquan = () => (0, common_1.mkRuleClass1)({
     bookname: document.querySelector(".infos > h1").innerText
         .split("(")[0]
         .trim(),
-    author: (document.querySelector(".date > span")).innerText
+    author: document.querySelector(".date > span").innerText
         .replace("作者：", "")
         .trim(),
     introDom: document.querySelector(".infos > p"),
@@ -11356,20 +11385,20 @@ exports.tongrenquan = tongrenquan;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.sosadfun = void 0;
+exports.Sosadfun = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
 const http_1 = __webpack_require__("./src/lib/http.ts");
 const rules_1 = __webpack_require__("./src/rules.ts");
-class sosadfun extends rules_1.BaseRuleClass {
+class Sosadfun extends rules_1.BaseRuleClass {
     constructor() {
         super();
         this.imageMode = "TM";
     }
     async bookParse() {
         const bookUrl = document.location.origin + document.location.pathname;
-        const bookname = (document.querySelector(".font-1")).innerText.trim();
-        const authorDom = (document.querySelector("div.h5:nth-child(1) > div:nth-child(1) > a:nth-child(1)"));
+        const bookname = document.querySelector(".font-1").innerText.trim();
+        const authorDom = document.querySelector("div.h5:nth-child(1) > div:nth-child(1) > a:nth-child(1)");
         let author;
         if (authorDom) {
             author = authorDom.innerText.trim();
@@ -11415,7 +11444,7 @@ class sosadfun extends rules_1.BaseRuleClass {
             introductionHTML = null;
         }
         else {
-            let { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = await (0, cleanDOM_1.cleanDOM)(introDom, "TM");
+            const { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = await (0, cleanDOM_1.cleanDOM)(introDom, "TM");
             introduction = introCleantext;
             introductionHTML = introCleanDom;
             if (introCleanimages) {
@@ -11437,9 +11466,9 @@ class sosadfun extends rules_1.BaseRuleClass {
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         const doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
-        chapterName = (doc.querySelector("strong.h3")).innerText.trim();
+        chapterName = doc.querySelector("strong.h3").innerText.trim();
         const content = document.createElement("div");
-        const _content = (doc.querySelector(".main-text.no-selection > span[id^=full]"));
+        const _content = doc.querySelector(".main-text.no-selection > span[id^=full]");
         const _authorSay = doc.querySelector(".main-text.no-selection > .grayout");
         if (_content) {
             for (const elem of Array.from(_content.cloneNode(true).children)) {
@@ -11449,7 +11478,7 @@ class sosadfun extends rules_1.BaseRuleClass {
         if (_content) {
             let { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
             if (_authorSay) {
-                let { dom: authorSayDom, text: authorySayText, images: authorSayImages, } = await (0, cleanDOM_1.cleanDOM)(_authorSay, "TM");
+                const { dom: authorSayDom, text: authorySayText, images: authorSayImages, } = await (0, cleanDOM_1.cleanDOM)(_authorSay, "TM");
                 const hrElem = document.createElement("hr");
                 const authorSayDiv = document.createElement("div");
                 authorSayDiv.className = "authorSay";
@@ -11464,7 +11493,7 @@ class sosadfun extends rules_1.BaseRuleClass {
                 authorSayImages.forEach((aImage) => images.push(aImage));
             }
             return {
-                chapterName: chapterName,
+                chapterName,
                 contentRaw: content,
                 contentText: text,
                 contentHTML: dom,
@@ -11474,7 +11503,7 @@ class sosadfun extends rules_1.BaseRuleClass {
         }
         else {
             return {
-                chapterName: chapterName,
+                chapterName,
                 contentRaw: null,
                 contentText: null,
                 contentHTML: null,
@@ -11484,7 +11513,7 @@ class sosadfun extends rules_1.BaseRuleClass {
         }
     }
 }
-exports.sosadfun = sosadfun;
+exports.Sosadfun = Sosadfun;
 
 
 /***/ }),
@@ -11495,7 +11524,7 @@ exports.sosadfun = sosadfun;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.soxscc = void 0;
+exports.Soxscc = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const rules_1 = __webpack_require__("./src/rules.ts");
 const misc_1 = __webpack_require__("./src/lib/misc.ts");
@@ -11504,23 +11533,23 @@ const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
 const http_1 = __webpack_require__("./src/lib/http.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 const log_1 = __webpack_require__("./src/log.ts");
-class soxscc extends rules_1.BaseRuleClass {
+class Soxscc extends rules_1.BaseRuleClass {
     constructor() {
         super();
         this.imageMode = "TM";
     }
     async bookParse() {
         const bookUrl = document.location.href;
-        const bookname = (document.querySelector(".xiaoshuo > h1")).innerText.trim();
-        const author = (document.querySelector(".xiaoshuo > h6:nth-child(3) > a")).innerText.trim();
+        const bookname = document.querySelector(".xiaoshuo > h1").innerText.trim();
+        const author = document.querySelector(".xiaoshuo > h6:nth-child(3) > a").innerText.trim();
         const introDom = document.querySelector("#intro");
-        const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom, (introDom) => {
-            (0, misc_1.rm)("span.tags", false, introDom);
-            (0, misc_1.rm)("q", true, introDom);
-            return introDom;
+        const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom, (introDomI) => {
+            (0, misc_1.rm)("span.tags", false, introDomI);
+            (0, misc_1.rm)("q", true, introDomI);
+            return introDomI;
         });
         const additionalMetadate = {};
-        const coverUrl = (document.querySelector(".book_cover > img")).src;
+        const coverUrl = document.querySelector(".book_cover > img").src;
         if (coverUrl) {
             (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
                 .then((coverClass) => {
@@ -11529,8 +11558,8 @@ class soxscc extends rules_1.BaseRuleClass {
                 .catch((error) => log_1.log.error(error));
         }
         const chapters = [];
-        const novel_list = document.querySelector("div.novel_list[id]");
-        const sections = Array.from(novel_list.children);
+        const novelList = document.querySelector("div.novel_list[id]");
+        const sections = Array.from(novelList.children);
         let chapterNumber = 0;
         for (let i = 0; i < sections.length; i++) {
             const section = sections[i];
@@ -11545,7 +11574,7 @@ class soxscc extends rules_1.BaseRuleClass {
                 const chapterName = a.innerText;
                 const isVIP = false;
                 const isPaid = false;
-                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, i + 1, sectionChapterNumber, this.chapterParse, "UTF-8", { bookname: bookname });
+                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, i + 1, sectionChapterNumber, this.chapterParse, "UTF-8", { bookname });
                 chapters.push(chapter);
             }
         }
@@ -11555,7 +11584,7 @@ class soxscc extends rules_1.BaseRuleClass {
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         const doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
         const bookname = options.bookname;
-        chapterName = (doc.querySelector(".read_title > h1")).innerText.trim();
+        chapterName = doc.querySelector(".read_title > h1").innerText.trim();
         const content = doc.querySelector("div.content[id]");
         if (content) {
             const ad = `您可以在百度里搜索“${bookname} .+(${document.location.hostname})”查找最新章节！`;
@@ -11575,9 +11604,9 @@ class soxscc extends rules_1.BaseRuleClass {
                     }
                 }
             });
-            let { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+            const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
             return {
-                chapterName: chapterName,
+                chapterName,
                 contentRaw: content,
                 contentText: text,
                 contentHTML: dom,
@@ -11587,7 +11616,7 @@ class soxscc extends rules_1.BaseRuleClass {
         }
         else {
             return {
-                chapterName: chapterName,
+                chapterName,
                 contentRaw: null,
                 contentText: null,
                 contentHTML: null,
@@ -11597,7 +11626,7 @@ class soxscc extends rules_1.BaseRuleClass {
         }
     }
 }
-exports.soxscc = soxscc;
+exports.Soxscc = Soxscc;
 
 
 /***/ }),
@@ -11608,7 +11637,7 @@ exports.soxscc = soxscc;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.tadu = void 0;
+exports.Tadu = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const rules_1 = __webpack_require__("./src/rules.ts");
 const http_1 = __webpack_require__("./src/lib/http.ts");
@@ -11617,20 +11646,20 @@ const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
 const http_2 = __webpack_require__("./src/lib/http.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 const log_1 = __webpack_require__("./src/log.ts");
-class tadu extends rules_1.BaseRuleClass {
+class Tadu extends rules_1.BaseRuleClass {
     constructor() {
         super();
         this.imageMode = "TM";
         this.concurrencyLimit = 5;
     }
     async bookParse() {
-        let bookUrl = document.location.href;
-        const bookname = (document.querySelector("div.bookNm > a.bkNm")).innerText.trim();
-        const author = (document.querySelector("div.authorInfo > a.author > span")).innerText.trim();
-        const introDom = (document.querySelector("div.boxCenter.boxT.clearfix > div.lf.lfO > p.intro"));
+        const bookUrl = document.location.href;
+        const bookname = document.querySelector("div.bookNm > a.bkNm").innerText.trim();
+        const author = document.querySelector("div.authorInfo > a.author > span").innerText.trim();
+        const introDom = document.querySelector("div.boxCenter.boxT.clearfix > div.lf.lfO > p.intro");
         const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom);
         const additionalMetadate = {};
-        const coverUrl = (document.querySelector("a.bookImg > img")).getAttribute("data-src");
+        const coverUrl = document.querySelector("a.bookImg > img").getAttribute("data-src");
         if (coverUrl) {
             (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
                 .then((coverClass) => {
@@ -11704,9 +11733,9 @@ class tadu extends rules_1.BaseRuleClass {
                 const contentObj = eval(jsonpText);
                 if (typeof contentObj === "object") {
                     content.innerHTML = contentObj.content;
-                    let { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+                    const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
                     return {
-                        chapterName: chapterName,
+                        chapterName,
                         contentRaw: content,
                         contentText: text,
                         contentHTML: dom,
@@ -11716,7 +11745,7 @@ class tadu extends rules_1.BaseRuleClass {
                 }
             }
             return {
-                chapterName: chapterName,
+                chapterName,
                 contentRaw: null,
                 contentText: null,
                 contentHTML: null,
@@ -11726,7 +11755,7 @@ class tadu extends rules_1.BaseRuleClass {
         }
         async function vipChapter() {
             return {
-                chapterName: chapterName,
+                chapterName,
                 contentRaw: null,
                 contentText: null,
                 contentHTML: null,
@@ -11742,7 +11771,7 @@ class tadu extends rules_1.BaseRuleClass {
         }
     }
 }
-exports.tadu = tadu;
+exports.Tadu = Tadu;
 
 
 /***/ }),
@@ -11753,7 +11782,7 @@ exports.tadu = tadu;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.ujxs = void 0;
+exports.Ujxs = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const rules_1 = __webpack_require__("./src/rules.ts");
 const misc_1 = __webpack_require__("./src/lib/misc.ts");
@@ -11762,7 +11791,7 @@ const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
 const http_1 = __webpack_require__("./src/lib/http.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 const log_1 = __webpack_require__("./src/log.ts");
-class ujxs extends rules_1.BaseRuleClass {
+class Ujxs extends rules_1.BaseRuleClass {
     constructor() {
         super();
         this.imageMode = "TM";
@@ -11771,8 +11800,8 @@ class ujxs extends rules_1.BaseRuleClass {
     async bookParse() {
         const bookUrl = document.location.origin +
             document.location.pathname.replace(/^\/read/, "/book");
-        const bookname = (document.querySelector("#smallcons > h1")).innerText.trim();
-        const author = (document.querySelector("#smallcons > span:nth-child(3) > a")).innerText.trim();
+        const bookname = document.querySelector("#smallcons > h1").innerText.trim();
+        const author = document.querySelector("#smallcons > span:nth-child(3) > a").innerText.trim();
         const doc = await (0, http_1.getHtmlDOM)(bookUrl, this.charset);
         const introDom = doc.querySelector("#bookintro");
         const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom);
@@ -11791,8 +11820,7 @@ class ujxs extends rules_1.BaseRuleClass {
         let sectionNumber = 0;
         let sectionName = null;
         let sectionChapterNumber = 0;
-        for (let i = 0; i < liList.length; i++) {
-            const li = liList[i];
+        for (const li of Array.from(liList)) {
             if (li.getAttribute("class")) {
                 sectionNumber++;
                 sectionChapterNumber = 0;
@@ -11808,7 +11836,7 @@ class ujxs extends rules_1.BaseRuleClass {
                 const chapterUrl = aElem.href;
                 const isVIP = false;
                 const isPaid = false;
-                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, { bookname: bookname });
+                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, { bookname });
                 chapters.push(chapter);
             }
         }
@@ -11825,9 +11853,9 @@ class ujxs extends rules_1.BaseRuleClass {
                 "佰度搜索 【悠久小說網 ＷＷＷ.ＵＪХＳ．ＮＥＴ】 全集TXT电子书免费下载！",
             ];
             ads.forEach((ad) => (content.innerHTML = content.innerHTML.replaceAll(ad, "")));
-            let { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+            const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
             return {
-                chapterName: chapterName,
+                chapterName,
                 contentRaw: content,
                 contentText: text,
                 contentHTML: dom,
@@ -11837,7 +11865,7 @@ class ujxs extends rules_1.BaseRuleClass {
         }
         else {
             return {
-                chapterName: chapterName,
+                chapterName,
                 contentRaw: null,
                 contentText: null,
                 contentHTML: null,
@@ -11847,7 +11875,7 @@ class ujxs extends rules_1.BaseRuleClass {
         }
     }
 }
-exports.ujxs = ujxs;
+exports.Ujxs = Ujxs;
 
 
 /***/ }),
@@ -11858,7 +11886,7 @@ exports.ujxs = ujxs;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.uukanshu = void 0;
+exports.Uukanshu = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const rules_1 = __webpack_require__("./src/rules.ts");
 const misc_1 = __webpack_require__("./src/lib/misc.ts");
@@ -11867,7 +11895,7 @@ const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
 const http_1 = __webpack_require__("./src/lib/http.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 const log_1 = __webpack_require__("./src/log.ts");
-class uukanshu extends rules_1.BaseRuleClass {
+class Uukanshu extends rules_1.BaseRuleClass {
     constructor() {
         super();
         this.imageMode = "TM";
@@ -11875,20 +11903,20 @@ class uukanshu extends rules_1.BaseRuleClass {
     }
     async bookParse() {
         const bookUrl = document.location.href;
-        const bookname = (document.querySelector("dd.jieshao_content > h1 > a")).innerText
+        const bookname = document.querySelector("dd.jieshao_content > h1 > a").innerText
             .replace("最新章节", "")
             .trim();
-        const author = (document.querySelector("dd.jieshao_content > h2 > a")).innerText.trim();
-        const introDom = (document.querySelector("dd.jieshao_content > h3"));
-        const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom, (introDom) => {
-            introDom.innerHTML = introDom.innerHTML
+        const author = document.querySelector("dd.jieshao_content > h2 > a").innerText.trim();
+        const introDom = document.querySelector("dd.jieshao_content > h3");
+        const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom, (introDomI) => {
+            introDomI.innerHTML = introDomI.innerHTML
                 .replace(/^.+简介：\s+www.uukanshu.com\s+/, "")
                 .replace(/\s+https:\/\/www.uukanshu.com/, "")
                 .replace(/－+/, "");
-            return introDom;
+            return introDomI;
         });
         const additionalMetadate = {};
-        const coverUrl = (document.querySelector("a.bookImg > img")).src;
+        const coverUrl = document.querySelector("a.bookImg > img").src;
         if (coverUrl) {
             (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
                 .then((coverClass) => {
@@ -11897,19 +11925,18 @@ class uukanshu extends rules_1.BaseRuleClass {
                 .catch((error) => log_1.log.error(error));
         }
         const chapters = [];
-        const button = (document.querySelector('span[onclick="javascript:reverse(this);"]'));
+        const button = document.querySelector('span[onclick="javascript:reverse(this);"]');
         const reverse = unsafeWindow.reverse;
         if (button.innerText === "顺序排列") {
             reverse(button);
         }
-        const chapterList = (document.getElementById("chapterList")?.childNodes);
+        const chapterList = document.getElementById("chapterList")?.childNodes;
         if (chapterList && chapterList.length !== 0) {
             let chapterNumber = 0;
             let sectionNumber = 0;
             let sectionName = null;
             let sectionChapterNumber = 0;
-            for (let i = 0; i < chapterList.length; i++) {
-                const li = chapterList[i];
+            for (const li of Array.from(chapterList)) {
                 if (li.className === "volume") {
                     sectionNumber++;
                     sectionChapterNumber = 0;
@@ -11932,9 +11959,9 @@ class uukanshu extends rules_1.BaseRuleClass {
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        const dom = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
-        chapterName = dom.querySelector("#timu").innerText.trim();
-        const content = dom.querySelector("#contentbox");
+        const doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
+        chapterName = doc.querySelector("#timu").innerText.trim();
+        const content = doc.querySelector("#contentbox");
         if (content) {
             (0, misc_1.rm)(".ad_content", true, content);
             const contentReplace = [
@@ -11948,12 +11975,12 @@ class uukanshu extends rules_1.BaseRuleClass {
                 /http:\/\//g,
                 /UU看书\s+欢迎广大书友光临阅读，最新、最快、最火的连载作品尽在UU看书！UU看书。;?/g,
             ];
-            for (let r of contentReplace) {
+            for (const r of contentReplace) {
                 content.innerHTML = content.innerHTML.replace(r, "");
             }
-            let { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+            const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
             return {
-                chapterName: chapterName,
+                chapterName,
                 contentRaw: content,
                 contentText: text,
                 contentHTML: dom,
@@ -11963,7 +11990,7 @@ class uukanshu extends rules_1.BaseRuleClass {
         }
         else {
             return {
-                chapterName: chapterName,
+                chapterName,
                 contentRaw: null,
                 contentText: null,
                 contentHTML: null,
@@ -11973,7 +12000,7 @@ class uukanshu extends rules_1.BaseRuleClass {
         }
     }
 }
-exports.uukanshu = uukanshu;
+exports.Uukanshu = Uukanshu;
 
 
 /***/ }),
@@ -11984,7 +12011,7 @@ exports.uukanshu = uukanshu;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.wenku8 = void 0;
+exports.Wenku8 = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const misc_1 = __webpack_require__("./src/lib/misc.ts");
 const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
@@ -11993,7 +12020,7 @@ const http_1 = __webpack_require__("./src/lib/http.ts");
 const rules_1 = __webpack_require__("./src/rules.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 const log_1 = __webpack_require__("./src/log.ts");
-class wenku8 extends rules_1.BaseRuleClass {
+class Wenku8 extends rules_1.BaseRuleClass {
     constructor() {
         super();
         this.imageMode = "TM";
@@ -12002,15 +12029,15 @@ class wenku8 extends rules_1.BaseRuleClass {
     async bookParse() {
         const bookId = document.location.pathname.split("/").slice(-2, -1)[0];
         const bookUrl = [document.location.origin, "book", `${bookId}.htm`].join("/");
-        const bookname = (document.querySelector("#title")).innerText.trim();
+        const bookname = document.querySelector("#title").innerText.trim();
         const doc = await (0, http_1.getHtmlDOM)(bookUrl, "GBK");
-        const author = (doc.querySelector("#content > div:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(2) > td:nth-child(2)")).innerText
+        const author = doc.querySelector("#content > div:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(2) > td:nth-child(2)").innerText
             .replace("小说作者：", "")
             .trim();
         const introDom = doc.querySelector("#content > div:nth-child(1) > table:nth-child(4) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(2) > span:nth-child(11)");
         const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom);
         const additionalMetadate = {};
-        let coverUrl = (doc.querySelector("#content > div:nth-child(1) > table:nth-child(4) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(1) > img:nth-child(1)")).src;
+        const coverUrl = doc.querySelector("#content > div:nth-child(1) > table:nth-child(4) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(1) > img:nth-child(1)").src;
         if (coverUrl) {
             (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
                 .then((coverClass) => {
@@ -12024,8 +12051,7 @@ class wenku8 extends rules_1.BaseRuleClass {
         let sectionNumber = 0;
         let sectionName = null;
         let sectionChapterNumber = 0;
-        for (let i = 0; i < tdList.length; i++) {
-            const td = tdList[i];
+        for (const td of Array.from(tdList)) {
             if (td.className === "vcss") {
                 sectionNumber++;
                 sectionChapterNumber = 0;
@@ -12049,9 +12075,9 @@ class wenku8 extends rules_1.BaseRuleClass {
         const content = doc.querySelector("#content");
         if (content) {
             (0, misc_1.rm)("#contentdp", true, content);
-            let { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+            const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
             return {
-                chapterName: chapterName,
+                chapterName,
                 contentRaw: content,
                 contentText: text,
                 contentHTML: dom,
@@ -12061,7 +12087,7 @@ class wenku8 extends rules_1.BaseRuleClass {
         }
         else {
             return {
-                chapterName: chapterName,
+                chapterName,
                 contentRaw: null,
                 contentText: null,
                 contentHTML: null,
@@ -12071,7 +12097,7 @@ class wenku8 extends rules_1.BaseRuleClass {
         }
     }
 }
-exports.wenku8 = wenku8;
+exports.Wenku8 = Wenku8;
 
 
 /***/ }),
@@ -12082,7 +12108,7 @@ exports.wenku8 = wenku8;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.westnovel = void 0;
+exports.Westnovel = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const misc_1 = __webpack_require__("./src/lib/misc.ts");
 const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
@@ -12091,21 +12117,22 @@ const http_1 = __webpack_require__("./src/lib/http.ts");
 const rules_1 = __webpack_require__("./src/rules.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 const log_1 = __webpack_require__("./src/log.ts");
-class westnovel extends rules_1.BaseRuleClass {
+class Westnovel extends rules_1.BaseRuleClass {
     constructor() {
         super();
         this.imageMode = "TM";
     }
     async bookParse() {
         const bookUrl = document.location.href;
-        const bookname = (document.querySelector(".btitle > h1 > a")).innerText.trim();
-        const author = (document.querySelector(".btitle > em:nth-child(2)")).innerText
+        const bookname = document.querySelector(".btitle > h1 > a").innerText.trim();
+        const author = document.querySelector(".btitle > em:nth-child(2)").innerText
             .replace("作者：", "")
             .trim();
         const introDom = document.querySelector(".intro-p > p:nth-child(1)");
         const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom);
         const additionalMetadate = {};
-        let coverUrl = document.querySelector(".img-img").src;
+        const coverUrl = document.querySelector(".img-img")
+            .src;
         if (coverUrl) {
             (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
                 .then((coverClass) => {
@@ -12128,15 +12155,15 @@ class westnovel extends rules_1.BaseRuleClass {
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         const doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
-        chapterName = (doc.querySelector("#BookCon > h1:nth-child(1)")).innerText.trim();
+        chapterName = doc.querySelector("#BookCon > h1:nth-child(1)").innerText.trim();
         const content = doc.querySelector("#BookText");
         if (content) {
             (0, misc_1.rm)("div.ads", true, content);
             (0, misc_1.rm)("div.link", true, content);
             (0, misc_1.rm)("h4", true, content);
-            let { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+            const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
             return {
-                chapterName: chapterName,
+                chapterName,
                 contentRaw: content,
                 contentText: text,
                 contentHTML: dom,
@@ -12146,7 +12173,7 @@ class westnovel extends rules_1.BaseRuleClass {
         }
         else {
             return {
-                chapterName: chapterName,
+                chapterName,
                 contentRaw: null,
                 contentText: null,
                 contentHTML: null,
@@ -12156,7 +12183,7 @@ class westnovel extends rules_1.BaseRuleClass {
         }
     }
 }
-exports.westnovel = westnovel;
+exports.Westnovel = Westnovel;
 
 
 /***/ }),
@@ -12167,7 +12194,7 @@ exports.westnovel = westnovel;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.xiaoshuodaquan = void 0;
+exports.Xiaoshuodaquan = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const rules_1 = __webpack_require__("./src/rules.ts");
 const misc_1 = __webpack_require__("./src/lib/misc.ts");
@@ -12176,7 +12203,7 @@ const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
 const http_1 = __webpack_require__("./src/lib/http.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 const log_1 = __webpack_require__("./src/log.ts");
-class xiaoshuodaquan extends rules_1.BaseRuleClass {
+class Xiaoshuodaquan extends rules_1.BaseRuleClass {
     constructor() {
         super();
         this.imageMode = "TM";
@@ -12187,17 +12214,17 @@ class xiaoshuodaquan extends rules_1.BaseRuleClass {
         const ccount = document.querySelector(".crumbswrap")?.childElementCount;
         let bookUrl = document.location.href;
         if (ccount) {
-            bookUrl = (document.querySelector(`.crumbswrap > a:nth-child(${ccount - 2})`)).href;
+            bookUrl = document.querySelector(`.crumbswrap > a:nth-child(${ccount - 2})`).href;
         }
-        const bookname = (document.querySelector("div.dirwraps > h1")).innerText
+        const bookname = document.querySelector("div.dirwraps > h1").innerText
             .replace("《", "")
             .replace("》", "")
             .trim();
-        const author = (document.querySelector(".smallcons > span:nth-child(1) > a:nth-child(1)")).innerText.trim();
+        const author = document.querySelector(".smallcons > span:nth-child(1) > a:nth-child(1)").innerText.trim();
         const introDom = document.querySelector(".bookintro");
-        const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom, (introDom) => {
-            introDom.innerHTML = introDom.innerHTML.replace("内容简介:", "");
-            return introDom;
+        const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom, (introDomI) => {
+            introDomI.innerHTML = introDomI.innerHTML.replace("内容简介:", "");
+            return introDomI;
         });
         const additionalMetadate = {};
         let coverUrl;
@@ -12220,15 +12247,14 @@ class xiaoshuodaquan extends rules_1.BaseRuleClass {
             const sectionNameObj = sectionNames[i];
             const sectionObj = sections[i];
             const sectionNumber = i + 1;
-            const sectionName = (sectionNameObj.firstElementChild)?.innerText
+            const sectionName = sectionNameObj.firstElementChild?.innerText
                 .replace(bookname, "")
                 .trim();
             let sectionChapterNumber = 0;
             const cos = sectionObj.querySelectorAll("ul>li>a");
-            for (let j = 0; j < cos.length; j++) {
+            for (const a of Array.from(cos)) {
                 chapterNumber++;
                 sectionChapterNumber++;
-                const a = cos[j];
                 const chapterName = a.innerText;
                 const chapterUrl = a.href;
                 const isVIP = false;
@@ -12241,17 +12267,17 @@ class xiaoshuodaquan extends rules_1.BaseRuleClass {
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        const dom = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
-        chapterName = (dom.querySelector(".page-body > h1:nth-child(4)")).innerText.trim();
-        const _content = dom.querySelector("#content");
+        const doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
+        chapterName = doc.querySelector(".page-body > h1:nth-child(4)").innerText.trim();
+        const _content = doc.querySelector("#content");
         if (_content) {
             (0, misc_1.rm)("div", true, _content);
             (0, misc_1.rm)("script", true, _content);
             const content = document.createElement("div");
             content.innerHTML = _content.innerHTML.replace(/\n/g, "<br/>");
-            let { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+            const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
             return {
-                chapterName: chapterName,
+                chapterName,
                 contentRaw: content,
                 contentText: text,
                 contentHTML: dom,
@@ -12261,7 +12287,7 @@ class xiaoshuodaquan extends rules_1.BaseRuleClass {
         }
         else {
             return {
-                chapterName: chapterName,
+                chapterName,
                 contentRaw: null,
                 contentText: null,
                 contentHTML: null,
@@ -12271,7 +12297,7 @@ class xiaoshuodaquan extends rules_1.BaseRuleClass {
         }
     }
 }
-exports.xiaoshuodaquan = xiaoshuodaquan;
+exports.Xiaoshuodaquan = Xiaoshuodaquan;
 
 
 /***/ }),
@@ -12282,12 +12308,12 @@ exports.xiaoshuodaquan = xiaoshuodaquan;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.xinwanben = void 0;
+exports.Xinwanben = void 0;
 const rules_1 = __webpack_require__("./src/rules.ts");
 const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
 const biquge_1 = __webpack_require__("./src/rules/biquge.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
-class xinwanben extends rules_1.BaseRuleClass {
+class Xinwanben extends rules_1.BaseRuleClass {
     constructor() {
         super();
         this.imageMode = "TM";
@@ -12296,8 +12322,8 @@ class xinwanben extends rules_1.BaseRuleClass {
         const self = this;
         return (0, biquge_1.bookParseTemp)({
             bookUrl: document.location.href,
-            bookname: (document.querySelector("#info > h1:nth-child(1)")).innerText.trim(),
-            author: (document.querySelector("#info > p:nth-child(2)")).innerText
+            bookname: document.querySelector("#info > h1:nth-child(1)").innerText.trim(),
+            author: document.querySelector("#info > p:nth-child(2)").innerText
                 .replace(/作(\s+)?者[：:]/, "")
                 .trim(),
             introDom: document.querySelector("#intro"),
@@ -12321,7 +12347,8 @@ class xinwanben extends rules_1.BaseRuleClass {
                 introDom.innerHTML = introDom.innerHTML.replace(`${bookname}小说简介：`, "");
                 return introDom;
             },
-            coverUrl: document.querySelector("#fmimg > img").src,
+            coverUrl: document.querySelector("#fmimg > img")
+                .src,
             chapterListSelector: "div.box_con:nth-child(5) > div:nth-child(2) > dl:nth-child(1)",
             charset: "UTF-8",
             chapterParse: self.chapterParse,
@@ -12334,7 +12361,7 @@ class xinwanben extends rules_1.BaseRuleClass {
         }, (doc) => doc.querySelector("#next_url").href, (_content, nextLink) => nextLink.includes("_"));
     }
 }
-exports.xinwanben = xinwanben;
+exports.Xinwanben = Xinwanben;
 
 
 /***/ }),
@@ -12345,7 +12372,7 @@ exports.xinwanben = xinwanben;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.xkzw = void 0;
+exports.Xkzw = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const rules_1 = __webpack_require__("./src/rules.ts");
 const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
@@ -12353,23 +12380,22 @@ const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
 const http_1 = __webpack_require__("./src/lib/http.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 const log_1 = __webpack_require__("./src/log.ts");
-const CryptoJS = __webpack_require__("crypto-js");
-class xkzw extends rules_1.BaseRuleClass {
+const CryptoJSGlobal = __webpack_require__("crypto-js");
+class Xkzw extends rules_1.BaseRuleClass {
     constructor() {
         super();
         this.imageMode = "TM";
     }
     async bookParse() {
         const bookUrl = document.location.href;
-        const bookname = (document.querySelector("#info > h1:nth-child(1)")).innerText.trim();
-        const author = (document.querySelector("#info > p:nth-child(2)")).innerText
+        const bookname = document.querySelector("#info > h1:nth-child(1)").innerText.trim();
+        const author = document.querySelector("#info > p:nth-child(2)").innerText
             .replace(/作(\s+)?者[：:]/, "")
             .trim();
         const introDom = document.querySelector("#intro");
         const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom);
         const additionalMetadate = {};
-        const coverUrl = document.querySelector("#fmimg > img")
-            .src;
+        const coverUrl = document.querySelector("#fmimg > img").src;
         if (coverUrl) {
             (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
                 .then((coverClass) => {
@@ -12398,8 +12424,8 @@ class xkzw extends rules_1.BaseRuleClass {
         const dl2 = document.querySelector("#wrapper > div.box_con:nth-child(11) > div:nth-child(1) > dl:nth-child(1)");
         const mkList = (dl) => {
             let tmpColumnName = "";
-            let tmpColumnList = [];
-            let tmpChapterList = [];
+            const ttmpColumnList = [];
+            let ttmpChapterList = [];
             if (dl?.childElementCount) {
                 const dlc = Array.from(dl.children);
                 for (let i = 0; i < dl.childElementCount; i++) {
@@ -12413,7 +12439,7 @@ class xkzw extends rules_1.BaseRuleClass {
                                 .split("/")
                                 .slice(-1)[0]
                                 .replace(".html", "");
-                            tmpChapterList.push({
+                            ttmpChapterList.push({
                                 chapterid: Number(chapterid) - bookid * 11,
                                 chaptername: chapterName,
                                 isempty: 0,
@@ -12425,13 +12451,13 @@ class xkzw extends rules_1.BaseRuleClass {
                             const tmpColumnObj = {
                                 columnname: tmpColumnName,
                                 columnid: 0,
-                                chapterlist: tmpChapterList,
+                                chapterlist: ttmpChapterList,
                             };
-                            tmpColumnList.push(tmpColumnObj);
+                            ttmpColumnList.push(tmpColumnObj);
                             tmpColumnName = node.innerText
                                 .replace(`《${bookname}》`, "")
                                 .trim();
-                            tmpChapterList = [];
+                            ttmpChapterList = [];
                         }
                     }
                     else {
@@ -12441,7 +12467,7 @@ class xkzw extends rules_1.BaseRuleClass {
                     }
                 }
             }
-            return [tmpColumnList, tmpChapterList];
+            return [ttmpColumnList, ttmpChapterList];
         };
         const [tmpColumnList, tmpChapterList] = mkList(dl1);
         const tcl = tmpChapterList.length;
@@ -12502,63 +12528,63 @@ class xkzw extends rules_1.BaseRuleClass {
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         function runEval(CryptoJS) {
             function gettt1(str, keyStr, ivStr) {
-                let key = CryptoJS.enc.Utf8.parse(keyStr);
-                let iv = CryptoJS.enc.Utf8.parse(ivStr);
-                let encryptedHexStr = CryptoJS.enc.Hex.parse(str);
-                let srcs = CryptoJS.enc.Base64.stringify(encryptedHexStr);
-                let decrypt = CryptoJS.DES.decrypt(srcs, key, {
-                    iv: iv,
+                const key = CryptoJS.enc.Utf8.parse(keyStr);
+                const iv = CryptoJS.enc.Utf8.parse(ivStr);
+                const encryptedHexStr = CryptoJS.enc.Hex.parse(str);
+                const srcs = CryptoJS.enc.Base64.stringify(encryptedHexStr);
+                const decrypt = CryptoJS.DES.decrypt(srcs, key, {
+                    iv,
                     mode: CryptoJS.mode.CBC,
                     padding: CryptoJS.pad.Pkcs7,
                 });
-                let decryptedStr = decrypt.toString(CryptoJS.enc.Utf8);
+                const decryptedStr = decrypt.toString(CryptoJS.enc.Utf8);
                 return decryptedStr.toString();
             }
             function gettt2(str, keyStr, ivStr) {
-                let key = CryptoJS.enc.Utf8.parse(keyStr);
-                let iv = CryptoJS.enc.Utf8.parse(ivStr);
-                let encryptedHexStr = CryptoJS.enc.Hex.parse(str);
-                let srcs = CryptoJS.enc.Base64.stringify(encryptedHexStr);
-                let decrypt = CryptoJS.AES.decrypt(srcs, key, {
-                    iv: iv,
+                const key = CryptoJS.enc.Utf8.parse(keyStr);
+                const iv = CryptoJS.enc.Utf8.parse(ivStr);
+                const encryptedHexStr = CryptoJS.enc.Hex.parse(str);
+                const srcs = CryptoJS.enc.Base64.stringify(encryptedHexStr);
+                const decrypt = CryptoJS.AES.decrypt(srcs, key, {
+                    iv,
                     mode: CryptoJS.mode.CBC,
                     padding: CryptoJS.pad.Pkcs7,
                 });
-                let decryptedStr = decrypt.toString(CryptoJS.enc.Utf8);
+                const decryptedStr = decrypt.toString(CryptoJS.enc.Utf8);
                 return decryptedStr.toString();
             }
             function gettt3(str, keyStr, ivStr) {
-                let key = CryptoJS.enc.Utf8.parse(keyStr);
-                let iv = CryptoJS.enc.Utf8.parse(ivStr);
-                let encryptedHexStr = CryptoJS.enc.Hex.parse(str);
-                let srcs = CryptoJS.enc.Base64.stringify(encryptedHexStr);
-                let decrypt = CryptoJS.RC4.decrypt(srcs, key, {
-                    iv: iv,
+                const key = CryptoJS.enc.Utf8.parse(keyStr);
+                const iv = CryptoJS.enc.Utf8.parse(ivStr);
+                const encryptedHexStr = CryptoJS.enc.Hex.parse(str);
+                const srcs = CryptoJS.enc.Base64.stringify(encryptedHexStr);
+                const decrypt = CryptoJS.RC4.decrypt(srcs, key, {
+                    iv,
                     mode: CryptoJS.mode.CBC,
                     padding: CryptoJS.pad.Pkcs7,
                 });
-                let decryptedStr = decrypt.toString(CryptoJS.enc.Utf8);
+                const decryptedStr = decrypt.toString(CryptoJS.enc.Utf8);
                 return decryptedStr.toString();
             }
             function getttn(str, keyStr, ivStr) {
-                let key = CryptoJS.enc.Utf8.parse(keyStr);
-                let iv = CryptoJS.enc.Utf8.parse(ivStr);
-                let encryptedHexStr = CryptoJS.enc.Hex.parse(str);
-                let srcs = CryptoJS.enc.Base64.stringify(encryptedHexStr);
-                let decrypt = CryptoJS.TripleDES.decrypt(srcs, key, {
-                    iv: iv,
+                const key = CryptoJS.enc.Utf8.parse(keyStr);
+                const iv = CryptoJS.enc.Utf8.parse(ivStr);
+                const encryptedHexStr = CryptoJS.enc.Hex.parse(str);
+                const srcs = CryptoJS.enc.Base64.stringify(encryptedHexStr);
+                const decrypt = CryptoJS.TripleDES.decrypt(srcs, key, {
+                    iv,
                     mode: CryptoJS.mode.CBC,
                     padding: CryptoJS.pad.Pkcs7,
                 });
-                let decryptedStr = decrypt.toString(CryptoJS.enc.Utf8);
+                const decryptedStr = decrypt.toString(CryptoJS.enc.Utf8);
                 return decryptedStr.toString();
             }
             function showttt1(dom) {
-                let obj = dom.getElementById("other");
-                let objTips = dom.getElementById("contenttips");
+                const obj = dom.getElementById("other");
+                const objTips = dom.getElementById("contenttips");
                 if (obj) {
                     let content = obj.innerHTML.trim();
-                    let type = parseInt(content.substring(0, 1));
+                    const type = parseInt(content.substring(0, 1), 10);
                     let key;
                     let iv;
                     if (type === 1) {
@@ -12603,17 +12629,17 @@ class xkzw extends rules_1.BaseRuleClass {
                     }
                 }
             }
-            showttt1(dom);
+            showttt1(doc);
         }
-        const dom = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
-        runEval(CryptoJS);
-        chapterName = (dom.querySelector(".bookname > h1:nth-child(1)")).innerText.trim();
-        const content = dom.querySelector("#content");
-        if (content) {
-            let { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+        const doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
+        runEval(CryptoJSGlobal);
+        chapterName = doc.querySelector(".bookname > h1:nth-child(1)").innerText.trim();
+        const contentG = doc.querySelector("#content");
+        if (contentG) {
+            const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(contentG, "TM");
             return {
-                chapterName: chapterName,
-                contentRaw: content,
+                chapterName,
+                contentRaw: contentG,
                 contentText: text,
                 contentHTML: dom,
                 contentImages: images,
@@ -12622,7 +12648,7 @@ class xkzw extends rules_1.BaseRuleClass {
         }
         else {
             return {
-                chapterName: chapterName,
+                chapterName,
                 contentRaw: null,
                 contentText: null,
                 contentHTML: null,
@@ -12632,7 +12658,7 @@ class xkzw extends rules_1.BaseRuleClass {
         }
     }
 }
-exports.xkzw = xkzw;
+exports.Xkzw = Xkzw;
 
 
 /***/ }),
@@ -12643,7 +12669,7 @@ exports.xkzw = xkzw;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.yibige = void 0;
+exports.Yibige = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const rules_1 = __webpack_require__("./src/rules.ts");
 const misc_1 = __webpack_require__("./src/lib/misc.ts");
@@ -12651,16 +12677,16 @@ const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
 const http_1 = __webpack_require__("./src/lib/http.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 const log_1 = __webpack_require__("./src/log.ts");
-class yibige extends rules_1.BaseRuleClass {
+class Yibige extends rules_1.BaseRuleClass {
     constructor() {
         super();
         this.imageMode = "TM";
     }
     async bookParse() {
-        const bookUrl = (document.querySelector("#list_hb > li:nth-child(2) > a:nth-child(1)")).href;
+        const bookUrl = document.querySelector("#list_hb > li:nth-child(2) > a:nth-child(1)").href;
         const doc = await (0, http_1.getHtmlDOM)(bookUrl, undefined);
-        const bookname = (doc.querySelector(".title > h1:nth-child(1)")).innerText.trim();
-        const author = (doc.querySelector("div.xsxq_2:nth-child(2) > a:nth-child(1)")).innerText.trim();
+        const bookname = doc.querySelector(".title > h1:nth-child(1)").innerText.trim();
+        const author = doc.querySelector("div.xsxq_2:nth-child(2) > a:nth-child(1)").innerText.trim();
         const introDom = document.createElement("p");
         const _introDom = doc.querySelector(".nr");
         for (const node of Array.from(_introDom.childNodes)) {
@@ -12672,7 +12698,7 @@ class yibige extends rules_1.BaseRuleClass {
         }
         const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom);
         const additionalMetadate = {};
-        const coverUrl = (doc.querySelector(".limg > img:nth-child(1)")).src;
+        const coverUrl = doc.querySelector(".limg > img:nth-child(1)").src;
         if (coverUrl) {
             (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
                 .then((coverClass) => {
@@ -12699,8 +12725,7 @@ class yibige extends rules_1.BaseRuleClass {
             let sectionNumber = 0;
             let sectionName = null;
             let sectionChapterNumber = 0;
-            for (let i = 0; i < chapterList.length; i++) {
-                const node = chapterList[i];
+            for (const node of chapterList) {
                 if (node.nodeName === "DT") {
                     sectionNumber++;
                     sectionChapterNumber = 0;
@@ -12717,7 +12742,7 @@ class yibige extends rules_1.BaseRuleClass {
                     const chapterUrl = a.href;
                     const isVIP = false;
                     const isPaid = false;
-                    const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, "UTF-8", { bookname: bookname });
+                    const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, "UTF-8", { bookname });
                     chapters.push(chapter);
                 }
             }
@@ -12733,10 +12758,11 @@ class yibige extends rules_1.BaseRuleClass {
                 .replaceAll("测试广告1", "")
                 .replaceAll("测试广告2", "");
             return _content;
-        }, (doc) => doc.querySelector(".nr_fy > a:nth-child(4)").href, (_content, nextLink) => new URL(nextLink).pathname.includes("_"));
+        }, (doc) => doc.querySelector(".nr_fy > a:nth-child(4)")
+            .href, (_content, nextLink) => new URL(nextLink).pathname.includes("_"));
     }
 }
-exports.yibige = yibige;
+exports.Yibige = Yibige;
 
 
 /***/ }),
@@ -12747,7 +12773,7 @@ exports.yibige = yibige;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.yrun = void 0;
+exports.Yrun = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const rules_1 = __webpack_require__("./src/rules.ts");
 const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
@@ -12755,7 +12781,7 @@ const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
 const http_1 = __webpack_require__("./src/lib/http.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 const log_1 = __webpack_require__("./src/log.ts");
-class yrun extends rules_1.BaseRuleClass {
+class Yrun extends rules_1.BaseRuleClass {
     constructor() {
         super();
         this.imageMode = "TM";
@@ -12763,15 +12789,14 @@ class yrun extends rules_1.BaseRuleClass {
     }
     async bookParse() {
         const bookUrl = document.location.href;
-        const bookname = (document.querySelector("#info > h1:nth-child(1)")).innerText.trim();
-        const author = (document.querySelector("#info > p:nth-child(2)")).innerText
+        const bookname = document.querySelector("#info > h1:nth-child(1)").innerText.trim();
+        const author = document.querySelector("#info > p:nth-child(2)").innerText
             .replace(/作(\s+)?者[：:]/, "")
             .trim();
         const introDom = document.querySelector("#intro > p");
         const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom);
         const additionalMetadate = {};
-        const coverUrl = document.querySelector("#fmimg > img")
-            .src;
+        const coverUrl = document.querySelector("#fmimg > img").src;
         if (coverUrl) {
             (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
                 .then((coverClass) => {
@@ -12796,13 +12821,13 @@ class yrun extends rules_1.BaseRuleClass {
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        const dom = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
-        chapterName = (dom.querySelector(".bookname > h1:nth-child(1)")).innerText.trim();
-        const content = dom.querySelector("#content");
+        const doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
+        chapterName = doc.querySelector(".bookname > h1:nth-child(1)").innerText.trim();
+        const content = doc.querySelector("#content");
         if (content) {
-            let { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+            const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
             return {
-                chapterName: chapterName,
+                chapterName,
                 contentRaw: content,
                 contentText: text,
                 contentHTML: dom,
@@ -12812,7 +12837,7 @@ class yrun extends rules_1.BaseRuleClass {
         }
         else {
             return {
-                chapterName: chapterName,
+                chapterName,
                 contentRaw: null,
                 contentText: null,
                 contentHTML: null,
@@ -12822,7 +12847,7 @@ class yrun extends rules_1.BaseRuleClass {
         }
     }
 }
-exports.yrun = yrun;
+exports.Yrun = Yrun;
 
 
 /***/ }),
@@ -12833,7 +12858,7 @@ exports.yrun = yrun;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.yuzhaige = void 0;
+exports.Yuzhaige = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const rules_1 = __webpack_require__("./src/rules.ts");
 const misc_1 = __webpack_require__("./src/lib/misc.ts");
@@ -12842,22 +12867,22 @@ const http_1 = __webpack_require__("./src/lib/http.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 const yuzhaigeImageDecode_1 = __webpack_require__("./src/rules/lib/yuzhaigeImageDecode.ts");
 const log_1 = __webpack_require__("./src/log.ts");
-class yuzhaige extends rules_1.BaseRuleClass {
+class Yuzhaige extends rules_1.BaseRuleClass {
     constructor() {
         super();
         this.imageMode = "TM";
     }
     async bookParse() {
-        const bookUrl = (document.querySelector("div.currency_head > h1 > a")).href;
+        const bookUrl = document.querySelector("div.currency_head > h1 > a").href;
         const bookId = bookUrl.split("/").slice(-2, -1)[0];
         log_1.log.debug(`[chapter]请求 ${bookUrl}`);
         const dom = await (0, http_1.getHtmlDOM)(bookUrl, "UTF-8");
-        const bookname = (dom.querySelector("div.cataloginfo > h3")).innerText.trim();
-        const author = (dom.querySelector(".infotype > p:nth-child(1) > a:nth-child(1)")).innerText.trim();
+        const bookname = dom.querySelector("div.cataloginfo > h3").innerText.trim();
+        const author = dom.querySelector(".infotype > p:nth-child(1) > a:nth-child(1)").innerText.trim();
         const introDom = dom.querySelector(".intro");
-        const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom, (introDom) => {
-            (0, misc_1.rm)("span:nth-child(1)", false, introDom);
-            return introDom;
+        const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom, (introDomI) => {
+            (0, misc_1.rm)("span:nth-child(1)", false, introDomI);
+            return introDomI;
         });
         const additionalMetadate = {};
         const chapters = [];
@@ -12874,7 +12899,7 @@ class yuzhaige extends rules_1.BaseRuleClass {
             }
         };
         const getIndexUrls = () => {
-            const indexUrls = [];
+            const indexUrlsI = [];
             const maxPageNumber = Number(getMaxPageNumber());
             for (let i = 1; i <= maxPageNumber; i++) {
                 const indexUrl = [
@@ -12882,24 +12907,23 @@ class yuzhaige extends rules_1.BaseRuleClass {
                     document.location.pathname.split("/")[1],
                     `${bookId}_${i}`,
                 ].join("/") + "/";
-                indexUrls.push(indexUrl);
+                indexUrlsI.push(indexUrl);
             }
-            return indexUrls;
+            return indexUrlsI;
         };
         const indexUrls = getIndexUrls();
         let lis = [];
         for (const indexUrl of indexUrls) {
             log_1.log.debug(`[chapter]请求 ${indexUrl}`);
-            const dom = await (0, http_1.getHtmlDOM)(indexUrl, "UTF-8");
-            const ul = dom.querySelector("ul.chapters");
+            const doc = await (0, http_1.getHtmlDOM)(indexUrl, "UTF-8");
+            const ul = doc.querySelector("ul.chapters");
             if (ul?.childElementCount) {
                 lis = lis.concat(Array.from(ul.children));
             }
         }
         const chapterList = lis.filter((obj) => obj !== undefined);
         let chapterNumber = 0;
-        for (let i = 0; i < chapterList.length; i++) {
-            const node = chapterList[i];
+        for (const node of chapterList) {
             chapterNumber++;
             const a = node.firstElementChild;
             const chapterName = a.innerText;
@@ -12935,14 +12959,14 @@ class yuzhaige extends rules_1.BaseRuleClass {
                 const e = atob(_e)
                     .split(/[A-Z]+%/)
                     .map((v) => Number(v));
-                let childNode = [];
+                const childNode = [];
                 if (Array.from(dom.querySelectorAll("script")).filter((s) => s.src.includes("/17mb/js/article.js")).length) {
                     for (let i = 0; i < e.length; i++) {
-                        let k = UpWz(e[i], i);
+                        const k = UpWz(e[i], i);
                         childNode[k] = contentRaw.childNodes[i];
                     }
                     for (const node of childNode) {
-                        if (node.nodeType != 1) {
+                        if (node.nodeType !== 1) {
                             continue;
                         }
                         if (!(node.innerText.includes("本章尚未完结,请") ||
@@ -12967,7 +12991,7 @@ class yuzhaige extends rules_1.BaseRuleClass {
         let flag = false;
         do {
             contentAppend();
-            const nextLink = (dom.querySelector(".novelbutton .p1.p3 > a:nth-child(1)")).href;
+            const nextLink = dom.querySelector(".novelbutton .p1.p3 > a:nth-child(1)").href;
             if (new URL(nextLink).pathname.includes("_")) {
                 if (nextLink !== nowUrl) {
                     flag = true;
@@ -12986,10 +13010,10 @@ class yuzhaige extends rules_1.BaseRuleClass {
             }
         } while (flag);
         if (content) {
-            let { dom: oldDom, text: _text, images: finalImages, } = await (0, cleanDOM_1.cleanDOM)(content, "TM", { keepImageName: true });
+            const { dom: oldDom, text: _text, images: finalImages, } = await (0, cleanDOM_1.cleanDOM)(content, "TM", { keepImageName: true });
             const _newDom = document.createElement("div");
             _newDom.innerHTML = (0, yuzhaigeImageDecode_1.replaceYuzhaigeImage)(content.innerHTML);
-            let { dom: newDom, text: finalText, images, } = await (0, cleanDOM_1.cleanDOM)(_newDom, "TM", { keepImageName: true });
+            const { dom: newDom, text: finalText, images, } = await (0, cleanDOM_1.cleanDOM)(_newDom, "TM", { keepImageName: true });
             const fontStyleDom = document.createElement("style");
             fontStyleDom.innerHTML = `.hide { display: none; }`;
             oldDom.className = "hide";
@@ -12998,7 +13022,7 @@ class yuzhaige extends rules_1.BaseRuleClass {
             finalDom.appendChild(oldDom);
             finalDom.appendChild(newDom);
             return {
-                chapterName: chapterName,
+                chapterName,
                 contentRaw: content,
                 contentText: finalText,
                 contentHTML: finalDom,
@@ -13008,7 +13032,7 @@ class yuzhaige extends rules_1.BaseRuleClass {
         }
         else {
             return {
-                chapterName: chapterName,
+                chapterName,
                 contentRaw: null,
                 contentText: null,
                 contentHTML: null,
@@ -13018,7 +13042,7 @@ class yuzhaige extends rules_1.BaseRuleClass {
         }
     }
 }
-exports.yuzhaige = yuzhaige;
+exports.Yuzhaige = Yuzhaige;
 
 
 /***/ }),
@@ -13029,7 +13053,7 @@ exports.yuzhaige = yuzhaige;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.zongheng = void 0;
+exports.Zongheng = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
 const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
@@ -13037,7 +13061,7 @@ const http_1 = __webpack_require__("./src/lib/http.ts");
 const rules_1 = __webpack_require__("./src/rules.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
 const log_1 = __webpack_require__("./src/log.ts");
-class zongheng extends rules_1.BaseRuleClass {
+class Zongheng extends rules_1.BaseRuleClass {
     constructor() {
         super();
         this.imageMode = "TM";
@@ -13045,14 +13069,13 @@ class zongheng extends rules_1.BaseRuleClass {
     }
     async bookParse() {
         const bookUrl = document.location.href.replace("/showchapter/", "/book/");
-        const bookname = (document.querySelector("div.book-meta > h1")).innerText.trim();
-        const author = (document.querySelector("div.book-meta > p > span:nth-child(1) > a")).innerText.trim();
+        const bookname = document.querySelector("div.book-meta > h1").innerText.trim();
+        const author = document.querySelector("div.book-meta > p > span:nth-child(1) > a").innerText.trim();
         const doc = await (0, http_1.getHtmlDOM)(bookUrl, undefined);
         const introDom = doc.querySelector("div.book-info > div.book-dec");
         const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom);
         const additionalMetadate = {};
-        let coverUrl = doc.querySelector("div.book-img > img")
-            .src;
+        const coverUrl = doc.querySelector("div.book-img > img").src;
         if (coverUrl) {
             (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
                 .then((coverClass) => {
@@ -13072,8 +13095,7 @@ class zongheng extends rules_1.BaseRuleClass {
             const sectionName = sectionLabel.innerText.trim();
             let sectionChapterNumber = 0;
             const cs = s.querySelectorAll("ul.chapter-list > li");
-            for (let j = 0; j < cs.length; j++) {
-                const c = cs[j];
+            for (const c of Array.from(cs)) {
                 const a = c.querySelector("a");
                 chapterNumber++;
                 sectionChapterNumber++;
@@ -13105,13 +13127,13 @@ class zongheng extends rules_1.BaseRuleClass {
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         async function publicChapter() {
-            const dom = await (0, http_1.ggetHtmlDOM)(chapterUrl, charset);
-            const chapterName = (dom.querySelector("div.title_txtbox")).innerText.trim();
-            const content = dom.querySelector("div.content");
+            const doc = await (0, http_1.ggetHtmlDOM)(chapterUrl, charset);
+            const ChapterName = doc.querySelector("div.title_txtbox").innerText.trim();
+            const content = doc.querySelector("div.content");
             if (content) {
-                let { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+                const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
                 return {
-                    chapterName: chapterName,
+                    chapterName: ChapterName,
                     contentRaw: content,
                     contentText: text,
                     contentHTML: dom,
@@ -13121,7 +13143,7 @@ class zongheng extends rules_1.BaseRuleClass {
             }
             else {
                 return {
-                    chapterName: chapterName,
+                    chapterName: ChapterName,
                     contentRaw: null,
                     contentText: null,
                     contentHTML: null,
@@ -13132,7 +13154,7 @@ class zongheng extends rules_1.BaseRuleClass {
         }
         async function vipChapter() {
             return {
-                chapterName: chapterName,
+                chapterName,
                 contentRaw: null,
                 contentText: null,
                 contentHTML: null,
@@ -13148,7 +13170,7 @@ class zongheng extends rules_1.BaseRuleClass {
         }
     }
 }
-exports.zongheng = zongheng;
+exports.Zongheng = Zongheng;
 
 
 /***/ }),
@@ -13159,7 +13181,7 @@ exports.zongheng = zongheng;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getSaveBookObj = exports.saveOptionsValidate = exports.getSectionsObj = exports.saveBook = void 0;
+exports.getSaveBookObj = exports.saveOptionsValidate = exports.getSectionsObj = exports.SaveBook = void 0;
 const main_1 = __webpack_require__("./src/main.ts");
 const zip_1 = __webpack_require__("./src/lib/zip.ts");
 const setting_1 = __webpack_require__("./src/setting.ts");
@@ -13169,11 +13191,11 @@ const toc_css_1 = __webpack_require__("./src/save/toc.css");
 const template_1 = __webpack_require__("./src/save/template.ts");
 const progress_1 = __webpack_require__("./src/ui/progress.ts");
 const file_saver_1 = __webpack_require__("./node_modules/file-saver/dist/FileSaver.min.js");
-class saveBook {
+class SaveBook {
     constructor(book) {
         this.book = book;
         this.chapters = book.chapters;
-        this.savedZip = new zip_1.fflateZip();
+        this.savedZip = new zip_1.FflateZip();
         this._sections = [];
         this.savedTextArray = [];
         this.saveFileNameBase = `[${this.book.author}]${this.book.bookname}`;
@@ -13185,18 +13207,19 @@ class saveBook {
         this.savedTextArray.push(metaDateText);
         log_1.log.debug("[save]对 chapters 排序");
         this.chapters.sort(this.chapterSort);
-        let sections = [];
-        for (const chapter of this.chapters) {
-            const chapterName = this.getchapterName(chapter);
-            if (chapter.sectionName && !sections.includes(chapter.sectionName)) {
-                sections.push(chapter.sectionName);
-                const sectionText = this.genSectionText(chapter.sectionName);
+        const sections = [];
+        for (const chapterTemp of this.chapters) {
+            const chapterName = this.getchapterName(chapterTemp);
+            if (chapterTemp.sectionName &&
+                !sections.includes(chapterTemp.sectionName)) {
+                sections.push(chapterTemp.sectionName);
+                const sectionText = this.genSectionText(chapterTemp.sectionName);
                 this.savedTextArray.push(sectionText);
             }
-            const chapterText = this.genChapterText(chapterName, chapter.contentText ?? "");
+            const chapterText = this.genChapterText(chapterName, chapterTemp.contentText ?? "");
             this.savedTextArray.push(chapterText);
             if (!setting_1.enableDebug.value) {
-                chapter.contentText = null;
+                chapterTemp.contentText = null;
             }
         }
         log_1.log.info("[save]保存TXT文件");
@@ -13260,7 +13283,7 @@ class saveBook {
         log_1.log.debug("[save]对 chapters 排序");
         this.chapters.sort(this.chapterSort);
         const self = this;
-        const sectionsObj = getSectionsObj(self.chapters);
+        const sectionsListObj = getSectionsObj(self.chapters);
         modifyTocStyleText();
         const indexHtmlText = template_1.index.render({
             creationDate: Date.now(),
@@ -13270,7 +13293,7 @@ class saveBook {
             cover: self.book.additionalMetadate.cover,
             introductionHTML: self.book.introductionHTML?.outerHTML,
             bookUrl: self.book.bookUrl,
-            sectionsObj: Object.values(sectionsObj),
+            sectionsObj: Object.values(sectionsListObj),
             Status: main_1.Status,
         });
         this.savedZip.file("index.html", new Blob([indexHtmlText.replaceAll("data-src-address", "src")], {
@@ -13417,12 +13440,12 @@ class saveBook {
         return 0;
     }
 }
-exports.saveBook = saveBook;
+exports.SaveBook = SaveBook;
 function getSectionsObj(chapters) {
     const _sectionsObj = {};
     for (const chapter of chapters) {
         let sectionNumber = null;
-        let sectionName = null;
+        const sectionName = null;
         if (chapter.sectionNumber && chapter.sectionName) {
             sectionNumber = chapter.sectionNumber;
         }
@@ -13430,7 +13453,7 @@ function getSectionsObj(chapters) {
             sectionNumber = -99999999;
         }
         if (_sectionsObj[sectionNumber]) {
-            _sectionsObj[sectionNumber]["chpaters"].push(chapter);
+            _sectionsObj[sectionNumber].chpaters.push(chapter);
         }
         else {
             _sectionsObj[sectionNumber] = {
@@ -13440,7 +13463,24 @@ function getSectionsObj(chapters) {
             };
         }
     }
-    return _sectionsObj;
+    const _sectionsListObj = Object.entries(_sectionsObj);
+    function sectionListSort(a, b) {
+        const aKey = Number(a[0]);
+        const bKey = Number(b[0]);
+        if (aKey > bKey) {
+            return 1;
+        }
+        if (aKey === bKey) {
+            return 0;
+        }
+        if (aKey < bKey) {
+            return -1;
+        }
+        return 0;
+    }
+    _sectionsListObj.sort(sectionListSort);
+    const sectionsListObj = _sectionsListObj.map((s) => s[1]);
+    return sectionsListObj;
 }
 exports.getSectionsObj = getSectionsObj;
 function saveOptionsValidate(data) {
@@ -13483,27 +13523,25 @@ function saveOptionsValidate(data) {
         return false;
     }
     for (const keyname in data) {
-        if (!keyNametest(keyname)) {
-            return false;
-        }
-        if (!(keyNamesStest(keyname) || keyNamesFtest(keyname))) {
-            return false;
+        if (Object.prototype.hasOwnProperty.call(data, keyname)) {
+            if (!keyNametest(keyname)) {
+                return false;
+            }
+            if (!(keyNamesStest(keyname) || keyNamesFtest(keyname))) {
+                return false;
+            }
         }
     }
     return true;
 }
 exports.saveOptionsValidate = saveOptionsValidate;
 function getSaveBookObj(book, options) {
-    const saveBookObj = new saveBook(book);
+    const saveBookObj = new SaveBook(book);
     if (setting_1.enableCustomSaveOptions && saveOptionsValidate(options)) {
-        for (const option in options) {
-            saveBookObj[option] = options[option];
-        }
+        Object.assign(saveBookObj, options);
     }
     if (book.saveOptions !== undefined) {
-        for (const option in book.saveOptions) {
-            saveBookObj[option] = book.saveOptions[option];
-        }
+        Object.assign(saveBookObj, book.saveOptions);
     }
     return saveBookObj;
 }
@@ -13553,7 +13591,7 @@ exports.iconSetting = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAY
 exports.iconJump = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAG6wAABusBTDGeSgAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAeVSURBVHic7VpvTBNpHv6901L+yQU3nCfrByU9IRYrWrCVGkVzgu4ZCSFSMBDJrhcTP+iqMdlcLvFyl7sPftn9diZsiHterpYz8TxuCXsauBNy2VVoXIEIXV2hAYt/WqF/mMGZ6fzugwxXSjudlnYHWJ5kMm+n7/zmeZ55531/7ztDEBF+zKCUJqA01gxQmoDSWDNAaQJKY80ApQkojTUDlCawFNTU1Pzk3LlzzYQQkmiMFW0AABzRarVfXLx40UYISUjLijaA4zjNunXrQK/XWy5dutS5b98+dbwxVrQB4jwmIyMDtm/fXrV3796eQ4cOZcYTY0UbEAqNRgM6na7caDTeP3r0aI7c81aNAQAAaWlpsG3bNr3BYHhYW1v7npxzVpUBAABqtRoKCwu1er1+sK6uLj9W/RVtQLS1DJVKBVu3bn1fr9cPWCyWAqkYK9oAKVAUBVqtNq+kpORRQ0ODLlo9kooVoVOnTv0yOzv7F1J1Yl1XDi+e53++e/fu6uzs7AX1w8sTExPMo0eP9lmtVnt4jKQbQAhJv3z58rDBYJhveuI1pEjKLSd6nsvlYh8+fFhptVp7Qvmm4hFQAUDCqWmqkJ+frykrK+tubGz8IPR4SvqA5brQumHDBpXJZPqyqampTjy2KjvBYDAILMsCwzAQCATA5/OB1+uFqakpAACqsLDQ1tzcfAoAIO7cWQ5S3QIEQYDZ2VngOA6CwSDwPA88z8+XAQDECWKkfVZWFqXVaj9vaGiYTYkByQbP80DTNDAMAwzDAMuyABBZnJRwcY+IMDMz4x8eHuYTNoAQQk6fPn1yYmLi7x0dHb7Q/5baAliWBZqm5zc5d1WOcJGby+V6cevWrY+dTudXCRlACKHOnj17o6ioyPL8+XMGAP6WSBwRgiCAz+cDn88HDMNAMBiUJSYe4YQQCAaD4HQ6v2tra/vY7Xb3ICIdtwFms1l9/vz5DpPJVMXzPLAsqwmvg4goipj7vWAP8K6jCgQCMD09DYFAICJpKcQjnBACLMvCkydPHlit1osMw/Qj4luAODvBAwcOZJrN5i6j0Vienp4OPp8vUjX+7t27nz5+/NgoFSsZmWBWVtZPi4uLj6Snp0u2jtnZWRgaGuq02Wy/EQRhEBF5MYZsAw4fPpxjMpn+W1paqtdoNICIEUkiIksI+UtfX9+SHgs5OHjw4NHi4uIj4Y9CaDkQCEBfX9+f29vbrwCAAxGF0BiyDDh27Nh7ZWVlD0pKSrRpaWnz4qPdJUT0LkWYXFRWVnKi4Ej9gdfrFXp6ej7r7u7+EwCMYgTCMQ2oqanJ37lzZ79er39frVaDIPzfwNCyUiCEAEVR82URr1+/Zru6un53//79LxDRFe18SQNqa2sLdu3a9UCn0+VRFDUveLmkuiKP8DF+cnLS39nZ+cng4OBNRHRLxYhqwPHjx3UGg+GboqKiHACIKH65tADRAEEQYHx8/OXt27cvjI6OdiBixF46FBENsFgspaWlpb1arTYz1jR0y5YtdWfOnNkVSihSWeo/OWW/3/+v1tbWO+FcRQM4joPR0dHvb968ee7Vq1f/QUQ6suSFWGRAfX39/rKysrubN2/WSIlHRMjMzASz2Vw9PT0NDMNEHMfjGa+l9uPj45WEkN3i+B0an2VZcDgc9ra2tgt+v/9BeB3ZBtTX139gNBr/uWnTJlV4Lx9eRkSYmpoCv98fNXGJJSoezF1fFXYMaZqGp0+f3rHZbL8WBGEgdIyXg3kDTpw4Ubdnzx7bxo0bqdBnO5IJHMeBx+MBlmWXJE7u3Y8Gu93+Lcdxf+zt7bUCwEj4GC8HagCAxsbGX5WXl7fk5eWRaOJF0DQNHo8n5kiQzLsf7Ryv1+vo7e29AgCBSGO8HKgtFkvj/v37P8/NzY3Zq79582ZBk0+GqKXEmmvu/rgvHgJqeHiY93g8tJT4YDAILpcL/H7pay21SUvFEpOdZIMaGhrqvHbt2ocOh8MTOoMTEQwG4cWLF8BxXERiSt39ZIFCRJ/T6fyypaWlaWBgYEwUCrBYvBRS8cz/EMZQAACISLvd7n9fvXq1yW63f8uy7ALxUoRCJ0ZSm1g31h4RQRCERVuq0u8FL0YIIWqKovQnT568UlBQUBk+yQjfcxwHIyMjXzEM8zpicIlMMNrxaHXGxsa+7u/vb0VEVpYymVj0Zoi8+9SkqLq6+pMdO3Y0Z2RkLCAWSpDjOLh3795H3d3dHckkFQVvUzHNXpQKI6JACBlpb2///czMjNtkMl3Iyspa1AWLRqhUKg4RXyWb2A+FiJOhuaTiGSHk05mZmTcVFRW/zcnJ0SjRS6cakusBiOgihLTQND1VVVV1Zf369TkAyg5byUbMFSFEdBNC/hoIBKarq6s/y8vL+5lKpYp12oqBrPQKEX3Pnj37x40bNz6anJz8XhCEVXH3AeJ4OYqI9MuXL7uuX7/+4djYmF1OcrQSEFeCjYhv/X7/162tracdDseduXd0y2OBMFHIzeTCsjoKAHQVFRV/yM3NLU4kxnLZEv5EhrzrBNYBABPvKsxyQko+klpJWJVfiMSDNQOUJqA01gxQmoDSWDNAaQJK40dvwP8AKk+/HC2PJW8AAAAASUVORK5CYII=";
 exports.r18SiteList = [
     "www.dierbanzhu1.com",
-    "www.banzhuer.org",
+    "www.bz01.org",
     "m.yuzhaige.cc",
 ];
 
@@ -13611,10 +13649,14 @@ const printStat = async () => {
     log_1.log.info("[stat]小说下载器脚本运行情况统计：");
     log_1.log.info(statData);
     for (const k in statData) {
-        log_1.log.info(`[stat]${k}:`);
-        const subData = statData[k];
-        for (const j in subData) {
-            log_1.log.info(`  [stat]${j}: ${subData[j]}`);
+        if (Object.prototype.hasOwnProperty.call(statData, k)) {
+            log_1.log.info(`[stat]${k}:`);
+            const subData = statData[k];
+            for (const j in subData) {
+                if (Object.prototype.hasOwnProperty.call(subData, j)) {
+                    log_1.log.info(`  [stat]${j}: ${subData[j]}`);
+                }
+            }
         }
     }
 };
@@ -13658,16 +13700,18 @@ async function getSections() {
 exports["default"] = Vue.defineComponent({
     name: "ChapterList",
     setup(props, context) {
-        const sectionsObj = Vue.reactive({});
+        const sectionsObj = Vue.reactive([]);
         const loading = Vue.ref(true);
         Vue.onMounted(async () => {
-            const _sectionsObj = await getSections();
-            Object.assign(sectionsObj, _sectionsObj);
+            if (sectionsObj.length === 0) {
+                const _sectionsObj = await getSections();
+                Object.assign(sectionsObj, _sectionsObj);
+            }
             loading.value = false;
         });
         const filterSetting = Vue.inject("filterSetting");
         const filter = (chapter) => {
-            if (chapter.status == main_1.Status.aborted) {
+            if (chapter.status === main_1.Status.aborted) {
                 return false;
             }
             if (filterSetting.value) {
@@ -13746,7 +13790,7 @@ exports.filterOptionDict = {
     number: {
         raw: (arg) => {
             function characterCheck() {
-                return /^[\s\d\-,]+$/.test(arg);
+                return /^[\s\d\-,，]+$/.test(arg);
             }
             function match(s, n) {
                 switch (true) {
@@ -13800,7 +13844,7 @@ exports.filterOptionDict = {
             }
             return (chapter) => {
                 const n = chapter.chapterNumber;
-                const ss = arg.split(",").map((s) => s.replace(/\s/g, "").trim());
+                const ss = arg.split(/,|，/).map((s) => s.replace(/\s/g, "").trim());
                 return ss.map((s) => match(s, n)).some((b) => b === true);
             };
         },
@@ -13836,8 +13880,8 @@ exports["default"] = Vue.defineComponent({
         const hiddenBad = Vue.ref(true);
         const filterType = Vue.ref("null");
         const filterOptionList = Object.entries(exports.filterOptionDict);
-        const functionBody = Vue.computed(() => getFunctionBody(exports.filterOptionDict[filterType.value]["raw"]));
-        const filterDescription = Vue.computed(() => exports.filterOptionDict[filterType.value]["description"]);
+        const functionBody = Vue.computed(() => getFunctionBody(exports.filterOptionDict[filterType.value].raw));
+        const filterDescription = Vue.computed(() => exports.filterOptionDict[filterType.value].description);
         const filterSetting = Vue.computed(() => ({
             arg: arg.value,
             hiddenBad: hiddenBad.value,
@@ -13911,14 +13955,14 @@ exports.vm = Vue.createApp({
                 return;
             }
             const self = this;
-            self["imgStart"] = setting_1.iconStart1;
+            self.imgStart = setting_1.iconStart1;
             async function run() {
                 const ruleClass = await (0, download_1.getRule)();
                 await ruleClass.run();
             }
             run()
                 .then(() => {
-                self["imgStart"] = setting_1.iconStart0;
+                self.imgStart = setting_1.iconStart0;
             })
                 .catch((error) => log_1.log.error(error));
         },
@@ -14145,7 +14189,7 @@ exports.vm = Vue.createApp({
             }
         };
         const saveFilter = (filterSetting) => {
-            setting["filterSetting"] = (0, misc_1.deepcopy)(filterSetting);
+            setting.filterSetting = (0, misc_1.deepcopy)(filterSetting);
         };
         const getFilterSetting = () => {
             if (setting.filterSetting) {
@@ -14178,7 +14222,7 @@ exports.vm = Vue.createApp({
                         const filterFunction = (0, FilterTab_1.getFilterFunction)(config.filterSetting.arg, config.filterSetting.functionBody);
                         if (filterFunction) {
                             const chapterFilter = (chapter) => {
-                                if (chapter.status == main_1.Status.aborted) {
+                                if (chapter.status === main_1.Status.aborted) {
                                     return false;
                                 }
                                 return filterFunction(chapter);

@@ -1,7 +1,7 @@
 import { Book } from "../main";
-import { BaseRuleClass, chapterParseObject } from "../rules";
-export declare class jjwxc extends BaseRuleClass {
+import { BaseRuleClass, ChapterParseObject } from "../rules";
+export declare class Jjwxc extends BaseRuleClass {
     constructor();
     bookParse(): Promise<Book>;
-    chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean, charset: string, options: object): Promise<chapterParseObject>;
+    chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean, charset: string, options: object): Promise<ChapterParseObject>;
 }

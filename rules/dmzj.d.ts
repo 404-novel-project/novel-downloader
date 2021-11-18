@@ -1,6 +1,6 @@
 import { Book } from "../main";
 import { BaseRuleClass } from "../rules";
-export declare class dmzj extends BaseRuleClass {
+export declare class Dmzj extends BaseRuleClass {
     constructor();
     bookParse(): Promise<Book>;
     chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean, charset: string, options: object): Promise<{
@@ -8,7 +8,7 @@ export declare class dmzj extends BaseRuleClass {
         contentRaw: HTMLDivElement;
         contentText: string;
         contentHTML: HTMLElement;
-        contentImages: import("../main").attachmentClass[];
+        contentImages: import("../main").AttachmentClass[];
         additionalMetadate: null;
     } | {
         chapterName: string | null;
