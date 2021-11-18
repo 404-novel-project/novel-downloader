@@ -1,24 +1,24 @@
 import {
-  BookAdditionalMetadate,
-  AttachmentClass,
-  Chapter,
-  Status,
-  Book,
-} from "../main";
-import { rm, sleep } from "../lib/misc";
+  getAttachmentClassCache,
+  getImageAttachment,
+  putAttachmentClassCache,
+} from "../lib/attachments";
 import { cleanDOM } from "../lib/cleanDOM";
 import { gfetch } from "../lib/http";
-import {
-  getAttachmentClassCache,
-  putAttachmentClassCache,
-  getImageAttachment,
-} from "../lib/attachments";
 import { getHtmlDOM, ggetHtmlDOM } from "../lib/http";
+import { rm, sleep } from "../lib/misc";
+import { log } from "../log";
+import {
+  AttachmentClass,
+  Book,
+  BookAdditionalMetadate,
+  Chapter,
+  Status,
+} from "../main";
 import { BaseRuleClass, ChapterParseObject } from "../rules";
 import { retryLimit } from "../setting";
-import { replaceJjwxcCharacter } from "./lib/jjwxcFontDecode";
 import { introDomHandle } from "./lib/common";
-import { log } from "../log";
+import { replaceJjwxcCharacter } from "./lib/jjwxcFontDecode";
 
 export class Jjwxc extends BaseRuleClass {
   public constructor() {

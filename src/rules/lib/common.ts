@@ -1,6 +1,8 @@
-import { cleanDOM } from "../../lib/cleanDOM";
 import { getImageAttachment } from "../../lib/attachments";
+import { cleanDOM } from "../../lib/cleanDOM";
 import { getHtmlDOM } from "../../lib/http";
+import { PublicConstructor } from "../../lib/misc";
+import { log } from "../../log";
 import {
   AttachmentClass,
   Book,
@@ -8,8 +10,6 @@ import {
   Chapter,
 } from "../../main";
 import { BaseRuleClass } from "../../rules";
-import { log } from "../../log";
-import { PublicConstructor } from "../../lib/misc";
 
 export async function introDomHandle(
   introDom: (Element | HTMLElement) | null,

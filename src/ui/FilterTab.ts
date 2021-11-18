@@ -1,9 +1,9 @@
 import * as Vue from "vue";
-import FilterTabHtml from "./FilterTab.html";
-import FilterTabCss from "./FilterTab.css";
+import { createStyle } from "../lib/createEl";
 import { Chapter } from "../main";
 import ChapterList from "./ChapterList";
-import { createStyle } from "../lib/createEl";
+import FilterTabCss from "./FilterTab.css";
+import FilterTabHtml from "./FilterTab.html";
 
 export function getFunctionBody(fn: FilterOption["raw"]) {
   return fn

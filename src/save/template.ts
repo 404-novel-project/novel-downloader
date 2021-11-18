@@ -1,6 +1,6 @@
-import sectionHtml from "./section.html.j2";
 import chapterHtml from "./chapter.html.j2";
 import indexHtml from "./index.html.j2";
+import sectionHtml from "./section.html.j2";
 
 import * as nunjucks from "nunjucks";
 

@@ -1,8 +1,8 @@
-import { BookAdditionalMetadate, Chapter, Book } from "../main";
-import { BaseRuleClass } from "../rules";
-import { rm } from "../lib/misc";
 import { cleanDOM } from "../lib/cleanDOM";
 import { getHtmlDOM } from "../lib/http";
+import { rm } from "../lib/misc";
+import { Book, BookAdditionalMetadate, Chapter } from "../main";
+import { BaseRuleClass } from "../rules";
 import { SaveOptions } from "../save/save";
 
 export class Fushuwang extends BaseRuleClass {

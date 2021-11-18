@@ -1,6 +1,6 @@
 import { get, set, update } from "idb-keyval";
-import { enableJjwxcRemoteFont } from "../../setting";
 import { log } from "../../log";
+import { enableJjwxcRemoteFont } from "../../setting";
 
 export async function replaceJjwxcCharacter(
   fontName: string,

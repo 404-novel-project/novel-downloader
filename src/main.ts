@@ -1,9 +1,9 @@
-import { BaseRuleClass, ChapterParseObject } from "./rules";
-import { retryLimit } from "./setting";
-import { sleep } from "./lib/misc";
 import { gfetch } from "./lib/http";
-import { SaveOptions } from "./save/save";
+import { sleep } from "./lib/misc";
 import { log } from "./log";
+import { BaseRuleClass, ChapterParseObject } from "./rules";
+import { SaveOptions } from "./save/save";
+import { retryLimit } from "./setting";
 
 export enum Status {
   pending,

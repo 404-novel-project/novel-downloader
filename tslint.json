@@ -2,7 +2,9 @@
   "defaultSeverity": "error",
   "extends": ["tslint:recommended"],
   "jsRules": {},
-  "rules": {},
+  "rules": {
+    "ordered-imports": true
+  },
   "rulesDirectory": [],
   "linterOptions": {
     "exclude": ["src/lib/GM.ts", "src/GM.d.ts"]

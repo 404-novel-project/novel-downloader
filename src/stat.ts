@@ -1,5 +1,5 @@
-import { log } from "./log";
 import { _GM_deleteValue, _GM_getValue, _GM_setValue } from "./lib/GM";
+import { log } from "./log";
 
 const statKeyName = "novel-downloader-22932304826849026";
 const domain = document.location.hostname;

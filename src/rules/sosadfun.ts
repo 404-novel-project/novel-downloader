@@ -1,6 +1,6 @@
-import { BookAdditionalMetadate, Chapter, Book, ExpectError } from "../main";
 import { cleanDOM } from "../lib/cleanDOM";
 import { getHtmlDOM } from "../lib/http";
+import { Book, BookAdditionalMetadate, Chapter, ExpectError } from "../main";
 import { BaseRuleClass } from "../rules";
 
 export class Sosadfun extends BaseRuleClass {

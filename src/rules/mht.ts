@@ -1,5 +1,5 @@
-import { BaseRuleClass } from "../rules";
 import { rm } from "../lib/misc";
+import { BaseRuleClass } from "../rules";
 import { bookParseTemp } from "./biquge";
 import { nextPageParse } from "./lib/common";
 

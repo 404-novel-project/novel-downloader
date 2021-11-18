@@ -1,18 +1,18 @@
-import {
-  BookAdditionalMetadate,
-  Chapter,
-  Book,
-  ExpectError,
-  AttachmentClass,
-} from "../main";
+import { NewWindow } from "../global";
+import { getImageAttachment } from "../lib/attachments";
 import { cleanDOM } from "../lib/cleanDOM";
 import { getHtmlDOM } from "../lib/http";
+import { rm } from "../lib/misc";
+import { log } from "../log";
+import {
+  AttachmentClass,
+  Book,
+  BookAdditionalMetadate,
+  Chapter,
+  ExpectError,
+} from "../main";
 import { BaseRuleClass } from "../rules";
 import { introDomHandle } from "./lib/common";
-import { log } from "../log";
-import { getImageAttachment } from "../lib/attachments";
-import { rm } from "../lib/misc";
-import { NewWindow } from "../global";
 
 export class Longmabook extends BaseRuleClass {
   public constructor() {

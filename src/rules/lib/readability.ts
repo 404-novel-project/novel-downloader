@@ -1,5 +1,5 @@
 import { Readability } from "@mozilla/readability";
-import { getHtmlDOM, ggetHtmlDOM, GfetchRequestOptions } from "../../lib/http";
+import { getHtmlDOM, GfetchRequestOptions, ggetHtmlDOM } from "../../lib/http";
 
 interface ReadabilityOptions {
   debug?: boolean;

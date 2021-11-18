@@ -1,11 +1,11 @@
-import { BookAdditionalMetadate, Chapter, Book } from "../main";
-import { BaseRuleClass, ChapterParseObject } from "../rules";
-import { PublicConstructor, rm, sleep } from "../lib/misc";
-import { cleanDOM } from "../lib/cleanDOM";
 import { getImageAttachment } from "../lib/attachments";
+import { cleanDOM } from "../lib/cleanDOM";
 import { getHtmlDOM } from "../lib/http";
-import { introDomHandle } from "./lib/common";
+import { PublicConstructor, rm, sleep } from "../lib/misc";
 import { log } from "../log";
+import { Book, BookAdditionalMetadate, Chapter } from "../main";
+import { BaseRuleClass, ChapterParseObject } from "../rules";
+import { introDomHandle } from "./lib/common";
 
 export async function bookParseTemp({
   bookUrl,

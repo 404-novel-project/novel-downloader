@@ -1,11 +1,11 @@
-import { BookAdditionalMetadate, Chapter, Status, Book } from "../main";
-import { sleep, rm } from "../lib/misc";
-import { cleanDOM } from "../lib/cleanDOM";
 import { getImageAttachment } from "../lib/attachments";
+import { cleanDOM } from "../lib/cleanDOM";
 import { ggetHtmlDOM } from "../lib/http";
+import { rm, sleep } from "../lib/misc";
+import { log } from "../log";
+import { Book, BookAdditionalMetadate, Chapter, Status } from "../main";
 import { BaseRuleClass, ChapterParseObject } from "../rules";
 import { introDomHandle } from "./lib/common";
-import { log } from "../log";
 
 export class Shuhai extends BaseRuleClass {
   public constructor() {

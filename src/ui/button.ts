@@ -1,14 +1,14 @@
 import * as Vue from "vue";
+import { NewWindow } from "../global";
 import { createEl, createStyle } from "../lib/createEl";
-import { iconSetting, iconStart0, iconStart1, iconJump } from "../setting";
+import { _GM_info } from "../lib/GM";
+import { log } from "../log";
 import { getRule } from "../router/download";
 import { getUI } from "../router/ui";
-import { NewWindow } from "../global";
-import { log } from "../log";
-import buttonHtml from "./button.html";
+import { iconJump, iconSetting, iconStart0, iconStart1 } from "../setting";
 import buttonCss from "./button.css";
+import buttonHtml from "./button.html";
 import { vm as settingVM } from "./setting";
-import { _GM_info } from "../lib/GM";
 
 createStyle(buttonCss, "button-div-style");
 export const el = createEl("<div></div>");

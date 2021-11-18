@@ -1,9 +1,9 @@
-import { enableDebug } from "./setting";
-import { init as globalInit } from "./global";
-import { init as uiInit } from "./ui/ui";
-import { environments } from "./detect";
 import { debug } from "./debug";
+import { environments } from "./detect";
+import { init as globalInit } from "./global";
 import { log } from "./log";
+import { enableDebug } from "./setting";
+import { init as uiInit } from "./ui/ui";
 
 function printEnvironments() {
   log.info("[Init]开始载入小说下载器……");

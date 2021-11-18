@@ -1,17 +1,17 @@
 import * as Vue from "vue";
+import { NewUnsafeWindow } from "../global";
 import { createEl, createStyle } from "../lib/createEl";
 import { deepcopy, sleep } from "../lib/misc";
 import { log } from "../log";
+import { Chapter, Status } from "../main";
 import { SaveOptions as globalSaveOptions } from "../save/save";
-import { NewUnsafeWindow } from "../global";
-import settingHtml from "./setting.html";
-import settingCss from "./setting.css";
+import { enableDebug } from "../setting";
 import FilterTab, {
   FilterSetting as filterSettingGlobal,
   getFilterFunction,
 } from "./FilterTab";
-import { Chapter, Status } from "../main";
-import { enableDebug } from "../setting";
+import settingCss from "./setting.css";
+import settingHtml from "./setting.html";
 
 createStyle(settingCss);
 export const el = createEl(`<div id="setting"></div>`);

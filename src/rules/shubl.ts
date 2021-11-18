@@ -1,18 +1,18 @@
-import {
-  BookAdditionalMetadate,
-  AttachmentClass,
-  Chapter,
-  Status,
-  Book,
-} from "../main";
-import { rm } from "../lib/misc";
+import * as CryptoJS from "crypto-js";
+import { getImageAttachment } from "../lib/attachments";
 import { cleanDOM } from "../lib/cleanDOM";
 import { gfetch } from "../lib/http";
-import { getImageAttachment } from "../lib/attachments";
+import { rm } from "../lib/misc";
+import { log } from "../log";
+import {
+  AttachmentClass,
+  Book,
+  BookAdditionalMetadate,
+  Chapter,
+  Status,
+} from "../main";
 import { BaseRuleClass, ChapterParseObject } from "../rules";
 import { introDomHandle } from "./lib/common";
-import { log } from "../log";
-import * as CryptoJS from "crypto-js";
 
 export class Shubl extends BaseRuleClass {
   public constructor() {

@@ -1,10 +1,10 @@
-import { BookAdditionalMetadate, Chapter, Book } from "../main";
-import { BaseRuleClass } from "../rules";
-import { rm } from "../lib/misc";
 import { getImageAttachment } from "../lib/attachments";
 import { getHtmlDOM } from "../lib/http";
-import { introDomHandle, nextPageParse } from "./lib/common";
+import { rm } from "../lib/misc";
 import { log } from "../log";
+import { Book, BookAdditionalMetadate, Chapter } from "../main";
+import { BaseRuleClass } from "../rules";
+import { introDomHandle, nextPageParse } from "./lib/common";
 
 export class Yibige extends BaseRuleClass {
   public constructor() {

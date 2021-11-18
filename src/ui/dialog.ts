@@ -1,6 +1,6 @@
 import * as Vue from "vue";
-import dialogHtml from "./dialog.html";
 import dialogCss from "./dialog.css";
+import dialogHtml from "./dialog.html";
 
 export default Vue.defineCustomElement({
   name: "Dialog",

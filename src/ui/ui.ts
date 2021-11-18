@@ -1,5 +1,5 @@
-import Dialog from "./dialog";
 import { el as buttonEl } from "./button";
+import Dialog from "./dialog";
 import { el as progressEl } from "./progress";
 import { el as settingEl } from "./setting";
 

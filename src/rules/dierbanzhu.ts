@@ -1,10 +1,10 @@
-import { BookAdditionalMetadate, Chapter, Book } from "../main";
-import { BaseRuleClass } from "../rules";
-import { cleanDOM } from "../lib/cleanDOM";
 import { getImageAttachment } from "../lib/attachments";
+import { cleanDOM } from "../lib/cleanDOM";
 import { getHtmlDOM } from "../lib/http";
-import { introDomHandle } from "./lib/common";
 import { log } from "../log";
+import { Book, BookAdditionalMetadate, Chapter } from "../main";
+import { BaseRuleClass } from "../rules";
+import { introDomHandle } from "./lib/common";
 
 export class Dierbanzhu extends BaseRuleClass {
   public constructor() {

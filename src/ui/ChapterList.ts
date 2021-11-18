@@ -1,11 +1,11 @@
 import * as Vue from "vue";
-import { getRule } from "../router/download";
-import { Chapter, Status } from "../main";
-import { getSectionsObj, SectionObj } from "../save/save";
 import { NewWindow } from "../global";
-import ChapterListHtml from "./ChapterList.html";
-import ChapterListCss from "./ChapterList.css";
 import { createStyle } from "../lib/createEl";
+import { Chapter, Status } from "../main";
+import { getRule } from "../router/download";
+import { getSectionsObj, SectionObj } from "../save/save";
+import ChapterListCss from "./ChapterList.css";
+import ChapterListHtml from "./ChapterList.html";
 import {
   FilterSetting as filterSettingGlobal,
   getFilterFunction,

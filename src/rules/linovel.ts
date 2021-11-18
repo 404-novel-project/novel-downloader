@@ -1,10 +1,10 @@
-import { BookAdditionalMetadate, Chapter, Status, Book } from "../main";
-import { cleanDOM } from "../lib/cleanDOM";
 import { getImageAttachment } from "../lib/attachments";
+import { cleanDOM } from "../lib/cleanDOM";
 import { getHtmlDOM } from "../lib/http";
+import { log } from "../log";
+import { Book, BookAdditionalMetadate, Chapter, Status } from "../main";
 import { BaseRuleClass, ChapterParseObject } from "../rules";
 import { introDomHandle } from "./lib/common";
-import { log } from "../log";
 
 export class Linovel extends BaseRuleClass {
   public constructor() {

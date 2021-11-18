@@ -1,3 +1,15 @@
+import { NewUnsafeWindow, NewWindow } from "./global";
+import { clearAttachmentClassCache } from "./lib/attachments";
+import { concurrencyRun } from "./lib/misc";
+import { log, saveLogTextToFile } from "./log";
+import {
+  AttachmentClass,
+  Book,
+  Chapter,
+  ChapterAdditionalMetadate,
+  ExpectError,
+  Status,
+} from "./main";
 import {
   getSaveBookObj,
   SaveBook,
@@ -5,24 +17,12 @@ import {
   saveOptionsValidate,
 } from "./save/save";
 import {
-  AttachmentClass,
-  ChapterAdditionalMetadate,
-  Book,
-  Status,
-  Chapter,
-  ExpectError,
-} from "./main";
-import { log, saveLogTextToFile } from "./log";
-import {
   enableCustomChapterFilter,
   enableCustomFinishCallback,
   enableCustomSaveOptions,
 } from "./setting";
-import { concurrencyRun } from "./lib/misc";
-import { NewUnsafeWindow, NewWindow } from "./global";
-import { clearAttachmentClassCache } from "./lib/attachments";
-import { successPlus, failedPlus, printStat } from "./stat";
-import { vm as progress, ProgressVM } from "./ui/progress";
+import { failedPlus, printStat, successPlus } from "./stat";
+import { ProgressVM, vm as progress } from "./ui/progress";
 
 interface WorkStatusObj {
   [index: string]: boolean;

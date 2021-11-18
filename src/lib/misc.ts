@@ -1,5 +1,5 @@
-import { _GM_xmlhttpRequest } from "./GM";
 import * as CryptoJS from "crypto-js";
+import { _GM_xmlhttpRequest } from "./GM";
 
 export type PublicConstructor<T> = new () => T;
 

@@ -1,5 +1,5 @@
-import { BaseRuleClass } from "../rules";
 import { htmlTrim } from "../lib/cleanDOM";
+import { BaseRuleClass } from "../rules";
 import { bookParseTemp } from "./biquge";
 import { nextPageParse } from "./lib/common";
 

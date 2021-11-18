@@ -1,12 +1,12 @@
-import { Book, Chapter, AttachmentClass, Status } from "../main";
-import { FflateZip } from "../lib/zip";
-import { enableCustomSaveOptions, enableDebug } from "../setting";
-import { log, logText } from "../log";
-import defaultMainStyleText from "./main.css";
-import defaultTocStyleText from "./toc.css";
-import { section, chapter as chapterGlobal, index } from "./template";
-import { ProgressVM, vm as progress } from "../ui/progress";
 import { saveAs } from "file-saver";
+import { FflateZip } from "../lib/zip";
+import { log, logText } from "../log";
+import { AttachmentClass, Book, Chapter, Status } from "../main";
+import { enableCustomSaveOptions, enableDebug } from "../setting";
+import { ProgressVM, vm as progress } from "../ui/progress";
+import defaultMainStyleText from "./main.css";
+import { chapter as chapterGlobal, index, section } from "./template";
+import defaultTocStyleText from "./toc.css";
 
 export class SaveBook {
   protected book: Book;

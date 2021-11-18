@@ -1,18 +1,18 @@
+import { getImageAttachment } from "../lib/attachments";
+import { cleanDOM } from "../lib/cleanDOM";
+import { getHtmlDOM } from "../lib/http";
+import { rm } from "../lib/misc";
+import { log } from "../log";
 import {
-  BookAdditionalMetadate,
   AttachmentClass,
+  Book,
+  BookAdditionalMetadate,
   Chapter,
   Status,
-  Book,
 } from "../main";
-import { rm } from "../lib/misc";
-import { cleanDOM } from "../lib/cleanDOM";
-import { getImageAttachment } from "../lib/attachments";
-import { getHtmlDOM } from "../lib/http";
 import { BaseRuleClass, ChapterParseObject } from "../rules";
 import { retryLimit } from "../setting";
 import { introDomHandle } from "./lib/common";
-import { log } from "../log";
 export class Sfacg extends BaseRuleClass {
   public constructor() {
     super();

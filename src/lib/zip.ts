@@ -1,5 +1,5 @@
+import { AsyncZipDeflate, Zip, ZipDeflate, ZipPassThrough } from "fflate";
 import { log } from "../log";
-import { Zip, ZipPassThrough, ZipDeflate, AsyncZipDeflate } from "fflate";
 import { sleep } from "./misc";
 
 export class FflateZip {

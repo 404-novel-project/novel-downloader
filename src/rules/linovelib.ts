@@ -1,10 +1,10 @@
-import { BookAdditionalMetadate, Chapter, Status, Book } from "../main";
-import { rm } from "../lib/misc";
 import { getImageAttachment } from "../lib/attachments";
 import { getHtmlDOM } from "../lib/http";
+import { rm } from "../lib/misc";
+import { log } from "../log";
+import { Book, BookAdditionalMetadate, Chapter, Status } from "../main";
 import { BaseRuleClass } from "../rules";
 import { introDomHandle, nextPageParse } from "./lib/common";
-import { log } from "../log";
 
 export class Linovelib extends BaseRuleClass {
   public constructor() {

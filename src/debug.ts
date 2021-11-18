@@ -1,6 +1,6 @@
-import { getRule } from "./router/download";
-import { NewUnsafeWindow } from "./global";
 import { saveAs } from "file-saver";
+import { NewUnsafeWindow } from "./global";
+import { getRule } from "./router/download";
 
 export async function debug() {
   const rule = await getRule();

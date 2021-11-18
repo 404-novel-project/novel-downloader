@@ -1,6 +1,6 @@
-import { enableDebug } from "./setting";
-import log from "loglevel";
 import { saveAs } from "file-saver";
+import log from "loglevel";
+import { enableDebug } from "./setting";
 
 if (enableDebug.value) {
   log.setLevel("trace");
