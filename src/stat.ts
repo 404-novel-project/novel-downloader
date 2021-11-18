@@ -4,7 +4,7 @@ import { _GM_deleteValue, _GM_getValue, _GM_setValue } from "./lib/GM";
 const statKeyName = "novel-downloader-22932304826849026";
 const domain = document.location.hostname;
 
-interface statData {
+interface StatData {
   success: {
     [domain: string]: number;
   };
@@ -15,7 +15,7 @@ interface statData {
 
 async function getStatData() {
   const _data = await _GM_getValue(statKeyName);
-  let statData: statData;
+  let statData: StatData;
   if (_data) {
     statData = JSON.parse(_data);
   } else {
@@ -24,13 +24,13 @@ async function getStatData() {
   return statData;
 }
 
-const saveData = async (statData: statData) => {
+const saveData = async (statData: StatData) => {
   const dataJSON = JSON.stringify(statData);
   await _GM_setValue(statKeyName, dataJSON);
   return statData;
 };
 
-const dataPlus = async (key: keyof statData) => {
+const dataPlus = async (key: keyof StatData) => {
   const statData = await getStatData();
   const tmpData = statData[key];
   if (tmpData[domain]) {
@@ -54,10 +54,14 @@ export const printStat = async () => {
   log.info("[stat]小说下载器脚本运行情况统计：");
   log.info(statData);
   for (const k in statData) {
-    log.info(`[stat]${k}:`);
-    const subData = statData[k as keyof statData];
-    for (const j in subData) {
-      log.info(`  [stat]${j}: ${subData[j]}`);
+    if (Object.prototype.hasOwnProperty.call(statData, k)) {
+      log.info(`[stat]${k}:`);
+      const subData = statData[k as keyof StatData];
+      for (const j in subData) {
+        if (Object.prototype.hasOwnProperty.call(subData, j)) {
+          log.info(`  [stat]${j}: ${subData[j]}`);
+        }
+      }
     }
   }
 };

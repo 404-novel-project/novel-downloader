@@ -11,18 +11,10 @@ type GM_addElement = {
 };
 declare const GM_addElement: GM_addElement;
 
-interface GM_setValue {
-  (name: string, value: string): void;
-}
-interface GM_getValue {
-  (name: string, defaultValue?: string): string;
-}
-interface GM_deleteValue {
-  (name: string): void;
-}
-interface GM_listValues {
-  (): string[];
-}
+type GM_setValue = (name: string, value: string) => void;
+type GM_getValue = (name: string, defaultValue?: string) => string;
+type GM_deleteValue = (name: string) => void;
+type GM_listValues = () => string[];
 declare const GM_setValue: GM_setValue;
 declare const GM_getValue: GM_getValue;
 declare const GM_deleteValue: GM_deleteValue;
@@ -39,31 +31,23 @@ type GM_addValueChangeListener = (
   callback: GM_addValueChangeListener_callback
 ) => number;
 declare const GM_addValueChangeListener: GM_addValueChangeListener;
-interface GM_removeValueChangeListener {
-  (listener_id: number): void;
-}
+type GM_removeValueChangeListener = (listener_id: number) => void;
 declare const GM_removeValueChangeListener: GM_removeValueChangeListener;
 
-interface GM_log {
-  (message: any): void;
-}
+type GM_log = (message: any) => void;
 declare const GM_log: GM_log;
 
-interface GM_getResourceText {
-  (name: string): string | null;
-}
-interface GM_getResourceURL {
-  (name: string): string | null;
-}
+type GM_getResourceText = (name: string) => string | null;
+type GM_getResourceURL = (name: string) => string | null;
 declare const GM_getResourceText: GM_getResourceText;
 declare const GM_getResourceURL: GM_getResourceURL;
 
-interface GM_registerMenuCommand {
-  (name: string, fn: Function, accessKey?: string): number;
-}
-interface GM_unregisterMenuCommand {
-  (menuCmdId: number): void;
-}
+type GM_registerMenuCommand = (
+  name: string,
+  fn: Function,
+  accessKey?: string
+) => number;
+type GM_unregisterMenuCommand = (menuCmdId: number) => void;
 declare const GM_registerMenuCommand: GM_registerMenuCommand;
 declare const GM_unregisterMenuCommand: GM_unregisterMenuCommand;
 

@@ -1,23 +1,23 @@
 import { getRule } from "./router/download";
-import { newUnsafeWindow } from "./global";
+import { NewUnsafeWindow } from "./global";
 import { saveAs } from "file-saver";
 
 export async function debug() {
   const rule = await getRule();
   const book = await rule.bookParse();
-  (<newUnsafeWindow>unsafeWindow).rule = rule;
-  (<newUnsafeWindow>unsafeWindow).book = book;
-  //@ts-ignore
-  (<newUnsafeWindow>unsafeWindow).saveAs = saveAs;
+  (unsafeWindow as NewUnsafeWindow).rule = rule;
+  (unsafeWindow as NewUnsafeWindow).book = book;
+  // @ts-ignore
+  (unsafeWindow as NewUnsafeWindow).saveAs = saveAs;
 
   const { parse, fetchAndParse, gfetchAndParse } = await import(
     "./rules/lib/readability"
   );
   const readability = {
-    parse: parse,
-    fetchAndParse: fetchAndParse,
-    gfetchAndParse: gfetchAndParse,
+    parse,
+    fetchAndParse,
+    gfetchAndParse,
   };
-  (<newUnsafeWindow>unsafeWindow).readability = readability;
+  (unsafeWindow as NewUnsafeWindow).readability = readability;
   return;
 }

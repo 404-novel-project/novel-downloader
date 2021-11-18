@@ -2,11 +2,11 @@ import { BookAdditionalMetadate, Chapter, Status, Book } from "../main";
 import { cleanDOM } from "../lib/cleanDOM";
 import { getImageAttachment } from "../lib/attachments";
 import { getHtmlDOM } from "../lib/http";
-import { BaseRuleClass, chapterParseObject } from "../rules";
+import { BaseRuleClass, ChapterParseObject } from "../rules";
 import { introDomHandle } from "./lib/common";
 import { log } from "../log";
 
-export class linovel extends BaseRuleClass {
+export class Linovel extends BaseRuleClass {
   public constructor() {
     super();
     this.imageMode = "TM";
@@ -15,23 +15,25 @@ export class linovel extends BaseRuleClass {
 
   public async bookParse() {
     const bookUrl = document.location.href;
-    const bookname = (<HTMLElement>(
-      document.querySelector(".book-title")
-    )).innerText.trim();
+    const bookname = (
+      document.querySelector(".book-title") as HTMLElement
+    ).innerText.trim();
 
-    const author = (<HTMLElement>(
-      document.querySelector(".author-frame > .novelist > div:nth-child(3) > a")
-    )).innerText.trim();
+    const author = (
+      document.querySelector(
+        ".author-frame > .novelist > div:nth-child(3) > a"
+      ) as HTMLElement
+    ).innerText.trim();
 
     const introDom = document.querySelector(".about-text");
     const [introduction, introductionHTML, introCleanimages] =
       await introDomHandle(introDom);
 
     const additionalMetadate: BookAdditionalMetadate = {};
-    const attachmentsUrlList = []; //书籍元数据附件去重
-    const coverUrl = (<HTMLAnchorElement>(
-      document.querySelector(".book-cover > a")
-    )).href;
+    const attachmentsUrlList = []; // 书籍元数据附件去重
+    const coverUrl = (
+      document.querySelector(".book-cover > a") as HTMLAnchorElement
+    ).href;
     if (coverUrl) {
       attachmentsUrlList.push(coverUrl);
       getImageAttachment(coverUrl, this.imageMode, "cover-")
@@ -46,7 +48,7 @@ export class linovel extends BaseRuleClass {
       document.querySelectorAll(
         ".section-list > .section > .volume-info > .volume-cover a"
       )
-    ).map((a) => (<HTMLAnchorElement>a).href);
+    ).map((a) => (a as HTMLAnchorElement).href);
 
     for (const volumeCoverUrl of volumeCoverUrlList) {
       if (!attachmentsUrlList.includes(volumeCoverUrl)) {
@@ -61,7 +63,7 @@ export class linovel extends BaseRuleClass {
 
     additionalMetadate.tags = Array.from(
       document.querySelectorAll("div.meta-info > div.book-cats.clearfix > a")
-    ).map((a) => (<HTMLAnchorElement>a).innerText.trim());
+    ).map((a) => (a as HTMLAnchorElement).innerText.trim());
 
     const chapters: Chapter[] = [];
     const sections = document.querySelectorAll(".section-list > .section");
@@ -69,21 +71,22 @@ export class linovel extends BaseRuleClass {
     for (let i = 0; i < sections.length; i++) {
       const s = sections[i];
       const sectionNumber = i + 1;
-      const sectionName = (<HTMLAnchorElement>(
-        s.querySelector(".volume-info > h2.volume-title > a")
-      )).innerText.trim();
+      const sectionName = (
+        s.querySelector(
+          ".volume-info > h2.volume-title > a"
+        ) as HTMLAnchorElement
+      ).innerText.trim();
       let sectionChapterNumber = 0;
 
       const cs = s.querySelectorAll(
         ".chapter-list > .text-content-actual div.chapter"
       );
-      for (let j = 0; j < cs.length; j++) {
-        const div = cs[j];
+      for (const div of Array.from(cs)) {
         const a = div.firstElementChild;
         chapterNumber++;
         sectionChapterNumber++;
-        const chapterName = (<HTMLAnchorElement>a).innerText.trim();
-        const chapterUrl = (<HTMLAnchorElement>a).href;
+        const chapterName = (a as HTMLAnchorElement).innerText.trim();
+        const chapterUrl = (a as HTMLAnchorElement).href;
 
         const isVIP = () => {
           if (div.className.includes("lock")) {
@@ -147,16 +150,16 @@ export class linovel extends BaseRuleClass {
     charset: string,
     options: object
   ) {
-    async function publicChapter(): Promise<chapterParseObject> {
+    async function publicChapter(): Promise<ChapterParseObject> {
       const doc = await getHtmlDOM(chapterUrl, charset);
-      const chapterName = (<HTMLElement>(
-        doc.querySelector(".article-title")
-      )).innerText.trim();
-      const content = <HTMLElement>doc.querySelector(".article-text");
+      const ChapterName = (
+        doc.querySelector(".article-title") as HTMLElement
+      ).innerText.trim();
+      const content = doc.querySelector(".article-text") as HTMLElement;
       if (content) {
-        let { dom, text, images } = await cleanDOM(content, "TM");
+        const { dom, text, images } = await cleanDOM(content, "TM");
         return {
-          chapterName: chapterName,
+          chapterName: ChapterName,
           contentRaw: content,
           contentText: text,
           contentHTML: dom,
@@ -165,7 +168,7 @@ export class linovel extends BaseRuleClass {
         };
       } else {
         return {
-          chapterName: chapterName,
+          chapterName: ChapterName,
           contentRaw: null,
           contentText: null,
           contentHTML: null,
@@ -175,10 +178,10 @@ export class linovel extends BaseRuleClass {
       }
     }
 
-    async function vipChapter(): Promise<chapterParseObject> {
+    async function vipChapter(): Promise<ChapterParseObject> {
       // VIP章节仅支持APP查看
       return {
-        chapterName: chapterName,
+        chapterName,
         contentRaw: null,
         contentText: null,
         contentHTML: null,

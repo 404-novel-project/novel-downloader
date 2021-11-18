@@ -7,32 +7,34 @@ import { introDomHandle } from "./lib/common";
 import { replaceYuzhaigeImage } from "./lib/yuzhaigeImageDecode";
 import { log } from "../log";
 
-export class yuzhaige extends BaseRuleClass {
+export class Yuzhaige extends BaseRuleClass {
   public constructor() {
     super();
     this.imageMode = "TM";
   }
 
   public async bookParse() {
-    const bookUrl = (<HTMLAnchorElement>(
-      document.querySelector("div.currency_head > h1 > a")
-    )).href;
+    const bookUrl = (
+      document.querySelector("div.currency_head > h1 > a") as HTMLAnchorElement
+    ).href;
     const bookId = bookUrl.split("/").slice(-2, -1)[0];
 
     log.debug(`[chapter]请求 ${bookUrl}`);
     const dom = await getHtmlDOM(bookUrl, "UTF-8");
-    const bookname = (<HTMLElement>(
-      dom.querySelector("div.cataloginfo > h3")
-    )).innerText.trim();
-    const author = (<HTMLElement>(
-      dom.querySelector(".infotype > p:nth-child(1) > a:nth-child(1)")
-    )).innerText.trim();
+    const bookname = (
+      dom.querySelector("div.cataloginfo > h3") as HTMLElement
+    ).innerText.trim();
+    const author = (
+      dom.querySelector(
+        ".infotype > p:nth-child(1) > a:nth-child(1)"
+      ) as HTMLElement
+    ).innerText.trim();
 
-    const introDom = <HTMLElement>dom.querySelector(".intro");
+    const introDom = dom.querySelector(".intro") as HTMLElement;
     const [introduction, introductionHTML, introCleanimages] =
-      await introDomHandle(introDom, (introDom) => {
-        rm("span:nth-child(1)", false, introDom);
-        return introDom;
+      await introDomHandle(introDom, (introDomI) => {
+        rm("span:nth-child(1)", false, introDomI);
+        return introDomI;
       });
 
     const additionalMetadate: BookAdditionalMetadate = {};
@@ -51,7 +53,7 @@ export class yuzhaige extends BaseRuleClass {
       }
     };
     const getIndexUrls = () => {
-      const indexUrls = [];
+      const indexUrlsI = [];
       const maxPageNumber = Number(getMaxPageNumber());
       for (let i = 1; i <= maxPageNumber; i++) {
         const indexUrl =
@@ -60,28 +62,27 @@ export class yuzhaige extends BaseRuleClass {
             document.location.pathname.split("/")[1],
             `${bookId}_${i}`,
           ].join("/") + "/";
-        indexUrls.push(indexUrl);
+        indexUrlsI.push(indexUrl);
       }
-      return indexUrls;
+      return indexUrlsI;
     };
     const indexUrls = getIndexUrls();
     let lis: HTMLElement[] = [];
 
     for (const indexUrl of indexUrls) {
       log.debug(`[chapter]请求 ${indexUrl}`);
-      const dom = await getHtmlDOM(indexUrl, "UTF-8");
-      const ul = dom.querySelector("ul.chapters");
+      const doc = await getHtmlDOM(indexUrl, "UTF-8");
+      const ul = doc.querySelector("ul.chapters");
       if (ul?.childElementCount) {
-        lis = lis.concat(<HTMLElement[]>Array.from(ul.children));
+        lis = lis.concat(Array.from(ul.children) as HTMLElement[]);
       }
     }
 
     const chapterList = lis.filter((obj) => obj !== undefined);
     let chapterNumber = 0;
-    for (let i = 0; i < chapterList.length; i++) {
-      const node = <HTMLElement>chapterList[i];
+    for (const node of chapterList as HTMLElement[]) {
       chapterNumber++;
-      const a = <HTMLAnchorElement>node.firstElementChild;
+      const a = node.firstElementChild as HTMLAnchorElement;
       const chapterName = a.innerText;
       const chapterUrl = a.href;
       const isVIP = false;
@@ -132,7 +133,7 @@ export class yuzhaige extends BaseRuleClass {
       }
 
       const _e = dom.getElementsByTagName("meta")[7].getAttribute("content");
-      const contentRaw = <HTMLElement>dom.querySelector("#articlecontent");
+      const contentRaw = dom.querySelector("#articlecontent") as HTMLElement;
       let codeurl: string;
       let code: number;
       const _codeurl = dom
@@ -149,24 +150,26 @@ export class yuzhaige extends BaseRuleClass {
           .split(/[A-Z]+%/)
           .map((v) => Number(v));
 
-        let childNode = [];
+        const childNode = [];
         if (
           Array.from(dom.querySelectorAll("script")).filter((s) =>
             s.src.includes("/17mb/js/article.js")
           ).length
         ) {
           for (let i = 0; i < e.length; i++) {
-            let k = UpWz(e[i], i);
+            const k = UpWz(e[i], i);
             childNode[k] = contentRaw.childNodes[i];
           }
           for (const node of childNode) {
-            if (node.nodeType != 1) {
+            if (node.nodeType !== 1) {
               continue;
             }
             if (
               !(
-                (<HTMLDivElement>node).innerText.includes("本章尚未完结,请") ||
-                (<HTMLDivElement>node).innerText.includes("本章已阅读完毕")
+                (node as HTMLDivElement).innerText.includes(
+                  "本章尚未完结,请"
+                ) ||
+                (node as HTMLDivElement).innerText.includes("本章已阅读完毕")
               )
             ) {
               content.appendChild(node);
@@ -179,8 +182,8 @@ export class yuzhaige extends BaseRuleClass {
       for (const node of Array.from(contentRaw.childNodes)) {
         if (
           !(
-            (<HTMLDivElement>node).innerText.includes("本章尚未完结,请") ||
-            (<HTMLDivElement>node).innerText.includes("本章已阅读完毕")
+            (node as HTMLDivElement).innerText.includes("本章尚未完结,请") ||
+            (node as HTMLDivElement).innerText.includes("本章已阅读完毕")
           )
         ) {
           content.appendChild(node);
@@ -196,9 +199,11 @@ export class yuzhaige extends BaseRuleClass {
     let flag = false;
     do {
       contentAppend();
-      const nextLink = (<HTMLAnchorElement>(
-        dom.querySelector(".novelbutton .p1.p3 > a:nth-child(1)")
-      )).href;
+      const nextLink = (
+        dom.querySelector(
+          ".novelbutton .p1.p3 > a:nth-child(1)"
+        ) as HTMLAnchorElement
+      ).href;
 
       if (new URL(nextLink).pathname.includes("_")) {
         if (nextLink !== nowUrl) {
@@ -217,14 +222,14 @@ export class yuzhaige extends BaseRuleClass {
     } while (flag);
 
     if (content) {
-      let {
+      const {
         dom: oldDom,
         text: _text,
         images: finalImages,
       } = await cleanDOM(content, "TM", { keepImageName: true });
       const _newDom = document.createElement("div");
       _newDom.innerHTML = replaceYuzhaigeImage(content.innerHTML);
-      let {
+      const {
         dom: newDom,
         text: finalText,
         images,
@@ -240,7 +245,7 @@ export class yuzhaige extends BaseRuleClass {
       finalDom.appendChild(newDom);
 
       return {
-        chapterName: chapterName,
+        chapterName,
         contentRaw: content,
         contentText: finalText,
         contentHTML: finalDom,
@@ -249,7 +254,7 @@ export class yuzhaige extends BaseRuleClass {
       };
     } else {
       return {
-        chapterName: chapterName,
+        chapterName,
         contentRaw: null,
         contentText: null,
         contentHTML: null,

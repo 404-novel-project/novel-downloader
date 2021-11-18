@@ -6,7 +6,7 @@ import { getHtmlDOM } from "../lib/http";
 import { BaseRuleClass } from "../rules";
 import { introDomHandle } from "./lib/common";
 import { log } from "../log";
-export class wenku8 extends BaseRuleClass {
+export class Wenku8 extends BaseRuleClass {
   public constructor() {
     super();
     this.imageMode = "TM";
@@ -18,16 +18,16 @@ export class wenku8 extends BaseRuleClass {
     const bookUrl = [document.location.origin, "book", `${bookId}.htm`].join(
       "/"
     );
-    const bookname = (<HTMLElement>(
-      document.querySelector("#title")
-    )).innerText.trim();
+    const bookname = (
+      document.querySelector("#title") as HTMLElement
+    ).innerText.trim();
 
     const doc = await getHtmlDOM(bookUrl, "GBK");
-    const author = (<HTMLElement>(
+    const author = (
       doc.querySelector(
         "#content > div:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(2) > td:nth-child(2)"
-      )
-    )).innerText
+      ) as HTMLElement
+    ).innerText
       .replace("小说作者：", "")
       .trim();
     const introDom = doc.querySelector(
@@ -37,11 +37,11 @@ export class wenku8 extends BaseRuleClass {
       await introDomHandle(introDom);
 
     const additionalMetadate: BookAdditionalMetadate = {};
-    let coverUrl = (<HTMLImageElement>(
+    const coverUrl = (
       doc.querySelector(
         "#content > div:nth-child(1) > table:nth-child(4) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(1) > img:nth-child(1)"
-      )
-    )).src;
+      ) as HTMLImageElement
+    ).src;
     if (coverUrl) {
       getImageAttachment(coverUrl, this.imageMode, "cover-")
         .then((coverClass) => {
@@ -54,23 +54,22 @@ export class wenku8 extends BaseRuleClass {
 
     const tdList = Array.from(
       document.querySelectorAll(".css > tbody td")
-    ).filter((td) => (<HTMLTableDataCellElement>td).innerText.trim());
+    ).filter((td) => (td as HTMLTableDataCellElement).innerText.trim());
     let chapterNumber = 0;
     let sectionNumber = 0;
     let sectionName = null;
     let sectionChapterNumber = 0;
-    for (let i = 0; i < tdList.length; i++) {
-      const td = tdList[i];
+    for (const td of Array.from(tdList)) {
       if (td.className === "vcss") {
         sectionNumber++;
         sectionChapterNumber = 0;
-        sectionName = (<HTMLTableDataCellElement>td).innerText.trim();
+        sectionName = (td as HTMLTableDataCellElement).innerText.trim();
       } else if (td.className === "ccss") {
         chapterNumber++;
         sectionChapterNumber++;
         const a = td.firstElementChild;
-        const chapterName = (<HTMLAnchorElement>a).innerText.trim();
-        const chapterUrl = (<HTMLAnchorElement>a).href;
+        const chapterName = (a as HTMLAnchorElement).innerText.trim();
+        const chapterUrl = (a as HTMLAnchorElement).href;
         const chapter = new Chapter(
           bookUrl,
           bookname,
@@ -113,12 +112,12 @@ export class wenku8 extends BaseRuleClass {
     const doc = await getHtmlDOM(chapterUrl, charset);
     // chapterName = (<HTMLElement>doc.querySelector("#title")).innerText.trim();
 
-    const content = <HTMLElement>doc.querySelector("#content");
+    const content = doc.querySelector("#content") as HTMLElement;
     if (content) {
       rm("#contentdp", true, content);
-      let { dom, text, images } = await cleanDOM(content, "TM");
+      const { dom, text, images } = await cleanDOM(content, "TM");
       return {
-        chapterName: chapterName,
+        chapterName,
         contentRaw: content,
         contentText: text,
         contentHTML: dom,
@@ -127,7 +126,7 @@ export class wenku8 extends BaseRuleClass {
       };
     } else {
       return {
-        chapterName: chapterName,
+        chapterName,
         contentRaw: null,
         contentText: null,
         contentHTML: null,

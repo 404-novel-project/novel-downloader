@@ -7,7 +7,7 @@ import { getHtmlDOM } from "../lib/http";
 import { introDomHandle } from "./lib/common";
 import { log } from "../log";
 
-export class meegoq extends BaseRuleClass {
+export class Meegoq extends BaseRuleClass {
   public constructor() {
     super();
     this.imageMode = "TM";
@@ -19,24 +19,26 @@ export class meegoq extends BaseRuleClass {
     const bookUrl = document.location.href.replace("/book", "/info");
 
     const dom = await getHtmlDOM(bookUrl, "GBK");
-    const author = (<HTMLElement>(
-      dom.querySelector("article.info > p.detail.pt20 > i:nth-child(1) > a")
-    )).innerText.trim();
+    const author = (
+      dom.querySelector(
+        "article.info > p.detail.pt20 > i:nth-child(1) > a"
+      ) as HTMLElement
+    ).innerText.trim();
 
-    const bookname = (<HTMLElement>(
-      dom.querySelector("article.info > header > h1")
-    )).innerText.trim();
-    const introDom = <HTMLElement>dom.querySelector("article.info > p.desc");
+    const bookname = (
+      dom.querySelector("article.info > header > h1") as HTMLElement
+    ).innerText.trim();
+    const introDom = dom.querySelector("article.info > p.desc") as HTMLElement;
     const [introduction, introductionHTML, introCleanimages] =
-      await introDomHandle(introDom, (introDom) => {
-        rm("b", false, introDom);
-        return introDom;
+      await introDomHandle(introDom, (introDomI) => {
+        rm("b", false, introDomI);
+        return introDomI;
       });
 
     const additionalMetadate: BookAdditionalMetadate = {};
-    const coverUrl = (<HTMLImageElement>(
-      dom.querySelector("article.info > div.cover > img")
-    )).src;
+    const coverUrl = (
+      dom.querySelector("article.info > div.cover > img") as HTMLImageElement
+    ).src;
     if (coverUrl) {
       getImageAttachment(coverUrl, this.imageMode, "cover-")
         .then((coverClass) => {
@@ -51,13 +53,13 @@ export class meegoq extends BaseRuleClass {
       const ulc = Array.from(ul.children);
       if (
         Array.from(ulc[0].classList).includes("volumn") &&
-        (<HTMLElement>ulc[0]).innerText.match(/最新.章/)
+        (ulc[0] as HTMLElement).innerText.match(/最新.章/)
       ) {
         for (let i = 0; i < ul?.childElementCount; i++) {
           if (
             i !== 0 &&
             Array.from(ulc[i].classList).includes("volumn") &&
-            (<HTMLElement>ulc[i]).innerText.trim() !== "全部章节"
+            (ulc[i] as HTMLElement).innerText.trim() !== "全部章节"
           ) {
             delete ulc[0];
             break;
@@ -71,8 +73,7 @@ export class meegoq extends BaseRuleClass {
       let sectionNumber = 0;
       let sectionName = null;
       let sectionChapterNumber = 0;
-      for (let i = 0; i < chapterList.length; i++) {
-        const li = <HTMLElement>chapterList[i];
+      for (const li of chapterList as HTMLElement[]) {
         if (Array.from(li.classList).includes("volumn")) {
           sectionNumber++;
           sectionChapterNumber = 0;
@@ -80,7 +81,7 @@ export class meegoq extends BaseRuleClass {
         } else {
           chapterNumber++;
           sectionChapterNumber++;
-          const a = <HTMLLinkElement>li.firstElementChild;
+          const a = li.firstElementChild as HTMLLinkElement;
           const chapterName = a.innerText;
           const chapterUrl = a.href;
           const isVIP = false;
@@ -124,17 +125,17 @@ export class meegoq extends BaseRuleClass {
     charset: string,
     options: object
   ) {
-    const dom = await getHtmlDOM(chapterUrl, charset);
+    const doc = await getHtmlDOM(chapterUrl, charset);
 
-    chapterName = (<HTMLElement>(
-      dom.querySelector("article > header > h1")
-    )).innerText.trim();
+    chapterName = (
+      doc.querySelector("article > header > h1") as HTMLElement
+    ).innerText.trim();
 
-    const content = <HTMLElement>dom.querySelector("#content");
+    const content = doc.querySelector("#content") as HTMLElement;
     if (content) {
-      let { dom, text, images } = await cleanDOM(content, "TM");
+      const { dom, text, images } = await cleanDOM(content, "TM");
       return {
-        chapterName: chapterName,
+        chapterName,
         contentRaw: content,
         contentText: text,
         contentHTML: dom,
@@ -143,7 +144,7 @@ export class meegoq extends BaseRuleClass {
       };
     } else {
       return {
-        chapterName: chapterName,
+        chapterName,
         contentRaw: null,
         contentText: null,
         contentHTML: null,

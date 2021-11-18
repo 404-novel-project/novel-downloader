@@ -3,7 +3,7 @@ import { rm } from "../lib/misc";
 import { bookParseTemp } from "./biquge";
 import { nextPageParse } from "./lib/common";
 
-export class mht extends BaseRuleClass {
+export class Mht extends BaseRuleClass {
   public constructor() {
     super();
     this.imageMode = "TM";
@@ -13,17 +13,18 @@ export class mht extends BaseRuleClass {
     const self = this;
     return bookParseTemp({
       bookUrl: document.location.href,
-      bookname: (<HTMLElement>(
-        document.querySelector("#info > h1:nth-child(1)")
-      )).innerText.trim(),
-      author: (<HTMLElement>(
-        document.querySelector("#info > p:nth-child(2)")
-      )).innerText
+      bookname: (
+        document.querySelector("#info > h1:nth-child(1)") as HTMLElement
+      ).innerText.trim(),
+      author: (
+        document.querySelector("#info > p:nth-child(2)") as HTMLElement
+      ).innerText
         .replace(/作(\s+)?者[：:]/, "")
         .trim(),
-      introDom: <HTMLElement>document.querySelector("#intro"),
+      introDom: document.querySelector("#intro") as HTMLElement,
       introDomPatch: (introDom) => introDom,
-      coverUrl: (<HTMLImageElement>document.querySelector("#fmimg > img")).src,
+      coverUrl: (document.querySelector("#fmimg > img") as HTMLImageElement)
+        .src,
       chapterListSelector: "#list>dl",
       charset: "UTF-8",
       chapterParse: self.chapterParse,
@@ -48,7 +49,7 @@ export class mht extends BaseRuleClass {
         return _content;
       },
       (doc) =>
-        (<HTMLAnchorElement>doc.querySelector(".bottem2 > a:nth-child(4)"))
+        (doc.querySelector(".bottem2 > a:nth-child(4)") as HTMLAnchorElement)
           .href,
       (_content, nextLink) => new URL(nextLink).pathname.includes("_")
     );

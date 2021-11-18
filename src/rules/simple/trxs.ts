@@ -3,35 +3,41 @@ import { mkRuleClass1 } from "../lib/common";
 export const trxs = () =>
   mkRuleClass1({
     bookUrl: document.location.href,
-    bookname: (<HTMLHeadElement>document.querySelector(".infos > h1")).innerText
+    bookname: (
+      document.querySelector(".infos > h1") as HTMLHeadElement
+    ).innerText
       .split("(")[0]
       .trim(),
-    author: (<HTMLAnchorElement>(
-      document.querySelector(".date > span > a")
-    )).innerText.trim(),
-    introDom: <HTMLElement>document.querySelector(".infos > p"),
+    author: (
+      document.querySelector(".date > span > a") as HTMLAnchorElement
+    ).innerText.trim(),
+    introDom: document.querySelector(".infos > p") as HTMLElement,
     introDomPatch: (introDom) => introDom,
-    coverUrl: (<HTMLImageElement>document.querySelector(".pic > img")).src,
+    coverUrl: (document.querySelector(".pic > img") as HTMLImageElement).src,
     cos: document.querySelectorAll("div.book_list > ul.clearfix > li > a"),
-    getContent: (doc) => <HTMLElement>doc.querySelector(".read_chapterDetail"),
+    getContent: (doc) =>
+      doc.querySelector(".read_chapterDetail") as HTMLElement,
     contentPatch: (content) => content,
   });
 
 export const tongrenquan = () =>
   mkRuleClass1({
     bookUrl: document.location.href,
-    bookname: (<HTMLHeadElement>document.querySelector(".infos > h1")).innerText
+    bookname: (
+      document.querySelector(".infos > h1") as HTMLHeadElement
+    ).innerText
       .split("(")[0]
       .trim(),
-    author: (<HTMLAnchorElement>(
-      document.querySelector(".date > span")
-    )).innerText
+    author: (
+      document.querySelector(".date > span") as HTMLAnchorElement
+    ).innerText
       .replace("作者：", "")
       .trim(),
-    introDom: <HTMLElement>document.querySelector(".infos > p"),
+    introDom: document.querySelector(".infos > p") as HTMLElement,
     introDomPatch: (introDom) => introDom,
-    coverUrl: (<HTMLImageElement>document.querySelector(".pic > img")).src,
+    coverUrl: (document.querySelector(".pic > img") as HTMLImageElement).src,
     cos: document.querySelectorAll("div.book_list > ul.clearfix > li > a"),
-    getContent: (doc) => <HTMLElement>doc.querySelector(".read_chapterDetail"),
+    getContent: (doc) =>
+      doc.querySelector(".read_chapterDetail") as HTMLElement,
     contentPatch: (content) => content,
   });

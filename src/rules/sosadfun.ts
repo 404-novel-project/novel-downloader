@@ -3,7 +3,7 @@ import { cleanDOM } from "../lib/cleanDOM";
 import { getHtmlDOM } from "../lib/http";
 import { BaseRuleClass } from "../rules";
 
-export class sosadfun extends BaseRuleClass {
+export class Sosadfun extends BaseRuleClass {
   public constructor() {
     super();
     this.imageMode = "TM";
@@ -12,14 +12,12 @@ export class sosadfun extends BaseRuleClass {
   public async bookParse() {
     const bookUrl = document.location.origin + document.location.pathname;
 
-    const bookname = (<HTMLElement>(
-      document.querySelector(".font-1")
-    )).innerText.trim();
-    const authorDom = <HTMLElement>(
-      document.querySelector(
-        "div.h5:nth-child(1) > div:nth-child(1) > a:nth-child(1)"
-      )
-    );
+    const bookname = (
+      document.querySelector(".font-1") as HTMLElement
+    ).innerText.trim();
+    const authorDom = document.querySelector(
+      "div.h5:nth-child(1) > div:nth-child(1) > a:nth-child(1)"
+    ) as HTMLElement;
     let author;
     if (authorDom) {
       author = authorDom.innerText.trim();
@@ -41,7 +39,7 @@ export class sosadfun extends BaseRuleClass {
     const additionalMetadate: BookAdditionalMetadate = {};
     additionalMetadate.tags = Array.from(
       document.querySelectorAll("div.h5:nth-child(1) > div:nth-child(3) > a")
-    ).map((a) => (<HTMLAnchorElement>a).innerText.trim());
+    ).map((a) => (a as HTMLAnchorElement).innerText.trim());
 
     let introduction: string | null;
     let introductionHTML: HTMLElement | null;
@@ -57,12 +55,12 @@ export class sosadfun extends BaseRuleClass {
       );
       if (shortIntroDom) {
         const pElem = document.createElement("p");
-        pElem.innerText = (<HTMLDivElement>shortIntroDom).innerText;
+        pElem.innerText = (shortIntroDom as HTMLDivElement).innerText;
         introDom.appendChild(pElem);
       }
       if (longIntroDom) {
         for (const elem of Array.from(
-          (<HTMLDivElement>longIntroDom.cloneNode(true)).children
+          (longIntroDom.cloneNode(true) as HTMLDivElement).children
         )) {
           introDom.appendChild(elem);
         }
@@ -72,7 +70,7 @@ export class sosadfun extends BaseRuleClass {
       introduction = null;
       introductionHTML = null;
     } else {
-      let {
+      const {
         dom: introCleanDom,
         text: introCleantext,
         images: introCleanimages,
@@ -91,8 +89,8 @@ export class sosadfun extends BaseRuleClass {
     let chapterNumber = 0;
     for (const a of Array.from(aList)) {
       chapterNumber++;
-      const chapterName = (<HTMLAnchorElement>a).innerText.trim();
-      const chapterUrl = (<HTMLAnchorElement>a).href;
+      const chapterName = (a as HTMLAnchorElement).innerText.trim();
+      const chapterUrl = (a as HTMLAnchorElement).href;
       const chapter = new Chapter(
         bookUrl,
         bookname,
@@ -132,29 +130,30 @@ export class sosadfun extends BaseRuleClass {
     options: object
   ) {
     const doc = await getHtmlDOM(chapterUrl, charset);
-    chapterName = (<HTMLElement>(
-      doc.querySelector("strong.h3")
-    )).innerText.trim();
+    chapterName = (
+      doc.querySelector("strong.h3") as HTMLElement
+    ).innerText.trim();
 
     const content = document.createElement("div");
 
-    const _content = <HTMLElement>(
-      doc.querySelector(".main-text.no-selection > span[id^=full]")
-    );
+    const _content = doc.querySelector(
+      ".main-text.no-selection > span[id^=full]"
+    ) as HTMLElement;
     const _authorSay = doc.querySelector(".main-text.no-selection > .grayout");
     if (_content) {
       for (const elem of Array.from(
-        (<HTMLElement>_content.cloneNode(true)).children
+        (_content.cloneNode(true) as HTMLElement).children
       )) {
         content.appendChild(elem);
       }
     }
 
     if (_content) {
+      // tslint:disable-next-line:prefer-const
       let { dom, text, images } = await cleanDOM(content, "TM");
 
       if (_authorSay) {
-        let {
+        const {
           dom: authorSayDom,
           text: authorySayText,
           images: authorSayImages,
@@ -164,7 +163,7 @@ export class sosadfun extends BaseRuleClass {
         const authorSayDiv = document.createElement("div");
         authorSayDiv.className = "authorSay";
         for (const elem of Array.from(
-          (<HTMLElement>authorSayDom.cloneNode(true)).children
+          (authorSayDom.cloneNode(true) as HTMLElement).children
         )) {
           authorSayDiv.appendChild(elem);
         }
@@ -180,7 +179,7 @@ export class sosadfun extends BaseRuleClass {
       }
 
       return {
-        chapterName: chapterName,
+        chapterName,
         contentRaw: content,
         contentText: text,
         contentHTML: dom,
@@ -189,7 +188,7 @@ export class sosadfun extends BaseRuleClass {
       };
     } else {
       return {
-        chapterName: chapterName,
+        chapterName,
         contentRaw: null,
         contentText: null,
         contentHTML: null,

@@ -3,7 +3,7 @@ import { htmlTrim } from "../lib/cleanDOM";
 import { bookParseTemp } from "./biquge";
 import { nextPageParse } from "./lib/common";
 
-export class xinwanben extends BaseRuleClass {
+export class Xinwanben extends BaseRuleClass {
   public constructor() {
     super();
     this.imageMode = "TM";
@@ -13,15 +13,15 @@ export class xinwanben extends BaseRuleClass {
     const self = this;
     return bookParseTemp({
       bookUrl: document.location.href,
-      bookname: (<HTMLElement>(
-        document.querySelector("#info > h1:nth-child(1)")
-      )).innerText.trim(),
-      author: (<HTMLElement>(
-        document.querySelector("#info > p:nth-child(2)")
-      )).innerText
+      bookname: (
+        document.querySelector("#info > h1:nth-child(1)") as HTMLElement
+      ).innerText.trim(),
+      author: (
+        document.querySelector("#info > p:nth-child(2)") as HTMLElement
+      ).innerText
         .replace(/作(\s+)?者[：:]/, "")
         .trim(),
-      introDom: <HTMLElement>document.querySelector("#intro"),
+      introDom: document.querySelector("#intro") as HTMLElement,
       introDomPatch: (introDom) => {
         const _bookname = introDom.innerHTML.match(/《(.*)》/);
         let bookname;
@@ -45,7 +45,8 @@ export class xinwanben extends BaseRuleClass {
         );
         return introDom;
       },
-      coverUrl: (<HTMLImageElement>document.querySelector("#fmimg > img")).src,
+      coverUrl: (document.querySelector("#fmimg > img") as HTMLImageElement)
+        .src,
       chapterListSelector:
         "div.box_con:nth-child(5) > div:nth-child(2) > dl:nth-child(1)",
       charset: "UTF-8",
@@ -70,7 +71,7 @@ export class xinwanben extends BaseRuleClass {
         htmlTrim(_content);
         return _content;
       },
-      (doc) => (<HTMLAnchorElement>doc.querySelector("#next_url")).href,
+      (doc) => (doc.querySelector("#next_url") as HTMLAnchorElement).href,
       (_content, nextLink) => nextLink.includes("_")
     );
   }

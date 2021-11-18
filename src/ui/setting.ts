@@ -3,11 +3,14 @@ import "./injectVue";
 import { createEl, createStyle } from "../lib/createEl";
 import { deepcopy, sleep } from "../lib/misc";
 import { log } from "../log";
-import { saveOptions as globalSaveOptions } from "../save/save";
-import { newUnsafeWindow } from "../global";
+import { SaveOptions as globalSaveOptions } from "../save/save";
+import { NewUnsafeWindow } from "../global";
 import settingHtml from "./setting.html";
 import settingCss from "./setting.css";
-import FilterTab, { filterSetting, getFilterFunction } from "./FilterTab";
+import FilterTab, {
+  FilterSetting as filterSettingGlobal,
+  getFilterFunction,
+} from "./FilterTab";
 import { Chapter, Status } from "../main";
 import { enableDebug } from "../setting";
 
@@ -17,19 +20,19 @@ export const vm = Vue.createApp({
   name: "nd-setting",
   components: { "filter-tab": FilterTab },
   setup(props, context) {
-    interface setting {
+    interface Setting {
       enableDebug?: boolean;
       chooseSaveOption?: string;
-      filterSetting?: filterSetting;
+      filterSetting?: filterSettingGlobal;
     }
-    const setting = Vue.reactive({} as setting);
+    const setting = Vue.reactive({} as Setting);
     let settingBackup = {};
-    interface saveOption {
+    interface SaveOption {
       key: string;
       value: string;
       options: globalSaveOptions;
     }
-    const saveOptions: saveOption[] = [
+    const saveOptions: SaveOption[] = [
       { key: "null", value: "不使用自定义保存参数", options: {} },
       {
         key: "chapter_name",
@@ -94,8 +97,8 @@ export const vm = Vue.createApp({
         return saveOptions[0].options;
       }
     };
-    const saveFilter = (filterSetting: filterSetting) => {
-      setting["filterSetting"] = deepcopy(filterSetting);
+    const saveFilter = (filterSetting: filterSettingGlobal) => {
+      setting.filterSetting = deepcopy(filterSetting);
     };
     const getFilterSetting = () => {
       if (setting.filterSetting) {
@@ -106,7 +109,7 @@ export const vm = Vue.createApp({
     };
     Vue.provide("getFilterSetting", getFilterSetting);
 
-    const setConfig = (config: setting) => {
+    const setConfig = (config: Setting) => {
       setEnableDebug();
       setCustomSaveOption();
       setCustomFilter();
@@ -118,12 +121,12 @@ export const vm = Vue.createApp({
         }
       }
       function setCustomSaveOption() {
-        (<newUnsafeWindow>unsafeWindow).saveOptions = curSaveOption();
+        (unsafeWindow as NewUnsafeWindow).saveOptions = curSaveOption();
       }
       function setCustomFilter() {
         if (config.filterSetting) {
           if (config.filterSetting.filterType === "null") {
-            (unsafeWindow as newUnsafeWindow).chapterFilter = undefined;
+            (unsafeWindow as NewUnsafeWindow).chapterFilter = undefined;
           } else {
             const filterFunction = getFilterFunction(
               config.filterSetting.arg,
@@ -131,12 +134,12 @@ export const vm = Vue.createApp({
             );
             if (filterFunction) {
               const chapterFilter = (chapter: Chapter) => {
-                if (chapter.status == Status.aborted) {
+                if (chapter.status === Status.aborted) {
                   return false;
                 }
                 return filterFunction(chapter);
               };
-              (unsafeWindow as newUnsafeWindow).chapterFilter = chapterFilter;
+              (unsafeWindow as NewUnsafeWindow).chapterFilter = chapterFilter;
             }
           }
         }
@@ -146,7 +149,7 @@ export const vm = Vue.createApp({
     const openStatus = Vue.ref("false");
     const currentTab = Vue.ref("tab-1");
     const openSetting = () => {
-      settingBackup = deepcopy(setting) as setting;
+      settingBackup = deepcopy(setting) as Setting;
       openStatus.value = "true";
     };
     const closeSetting = (keep: PointerEvent | boolean) => {

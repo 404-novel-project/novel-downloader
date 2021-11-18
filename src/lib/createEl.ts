@@ -8,7 +8,7 @@ export function createEl(el: string): HTMLElement {
   }
 }
 
-export function createStyle(style: string, id: string | undefined = undefined) {
+export function createStyle(style: string, id?: string) {
   const el = createEl(`<style>${style}</style>`);
   if (id) {
     el.id = id;

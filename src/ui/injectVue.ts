@@ -1,6 +1,6 @@
 import * as Vue from "vue";
 
-//@ts-ignore
+// @ts-ignore
 unsafeWindow.Vue = Vue;
-//@ts-ignore
+// @ts-ignore
 window.Vue = Vue;

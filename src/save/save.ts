@@ -1,21 +1,21 @@
-import { Book, Chapter, attachmentClass, Status } from "../main";
-import { fflateZip } from "../lib/zip";
+import { Book, Chapter, AttachmentClass, Status } from "../main";
+import { FflateZip } from "../lib/zip";
 import { enableCustomSaveOptions, enableDebug } from "../setting";
 import { log, logText } from "../log";
 import defaultMainStyleText from "./main.css";
 import defaultTocStyleText from "./toc.css";
-import { section, chapter, index } from "./template";
-import { progressVM, vm as progress } from "../ui/progress";
+import { section, chapter as chapterGlobal, index } from "./template";
+import { ProgressVM, vm as progress } from "../ui/progress";
 import { saveAs } from "file-saver";
 
-export class saveBook {
+export class SaveBook {
   protected book: Book;
   private chapters: Chapter[];
 
   public mainStyleText: string;
   public tocStyleText: string;
 
-  private savedZip: fflateZip;
+  private savedZip: FflateZip;
   private savedTextArray: string[];
   private saveFileNameBase: string;
 
@@ -25,7 +25,7 @@ export class saveBook {
     this.book = book;
     this.chapters = book.chapters;
 
-    this.savedZip = new fflateZip();
+    this.savedZip = new FflateZip();
     this._sections = [];
 
     this.savedTextArray = [];
@@ -42,23 +42,26 @@ export class saveBook {
     log.debug("[save]对 chapters 排序");
     this.chapters.sort(this.chapterSort);
 
-    let sections: string[] = [];
-    for (const chapter of this.chapters) {
-      const chapterName = this.getchapterName(chapter);
-      if (chapter.sectionName && !sections.includes(chapter.sectionName)) {
-        sections.push(chapter.sectionName);
-        const sectionText = this.genSectionText(chapter.sectionName);
+    const sections: string[] = [];
+    for (const chapterTemp of this.chapters) {
+      const chapterName = this.getchapterName(chapterTemp);
+      if (
+        chapterTemp.sectionName &&
+        !sections.includes(chapterTemp.sectionName)
+      ) {
+        sections.push(chapterTemp.sectionName);
+        const sectionText = this.genSectionText(chapterTemp.sectionName);
         this.savedTextArray.push(sectionText);
       }
 
       const chapterText = this.genChapterText(
         chapterName,
-        chapter.contentText ?? ""
+        chapterTemp.contentText ?? ""
       );
       this.savedTextArray.push(chapterText);
 
       if (!enableDebug.value) {
-        chapter.contentText = null;
+        chapterTemp.contentText = null;
       }
     }
 
@@ -136,7 +139,7 @@ export class saveBook {
       this.savedZip.onFinal = finalHandle;
       this.savedZip.onFinalError = finalErrorHandle;
       this.savedZip.generateAsync((percent) => {
-        (<progressVM>progress).zipPercent = percent;
+        (progress as ProgressVM).zipPercent = percent;
       });
     });
   }
@@ -146,7 +149,7 @@ export class saveBook {
     this.chapters.sort(this.chapterSort);
 
     const self = this;
-    const sectionsObj = getSectionsObj(self.chapters);
+    const sectionsListObj = getSectionsObj(self.chapters);
     modifyTocStyleText();
 
     const indexHtmlText = index.render({
@@ -157,8 +160,8 @@ export class saveBook {
       cover: self.book.additionalMetadate.cover,
       introductionHTML: self.book.introductionHTML?.outerHTML,
       bookUrl: self.book.bookUrl,
-      sectionsObj: Object.values(sectionsObj),
-      Status: Status,
+      sectionsObj: Object.values(sectionsListObj),
+      Status,
     });
     this.savedZip.file(
       "index.html",
@@ -269,7 +272,7 @@ export class saveBook {
     return metaDateText;
   }
 
-  private addImageToZip(attachment: attachmentClass, zip: fflateZip) {
+  private addImageToZip(attachment: AttachmentClass, zip: FflateZip) {
     if (attachment.status === Status.finished && attachment.imageBlob) {
       log.debug(
         `[save]添加附件，文件名：${attachment.name}，对象`,
@@ -309,7 +312,7 @@ export class saveBook {
   }
 
   public genChapterHtmlFile(chapterObj: Chapter) {
-    const htmlText = chapter.render({
+    const htmlText = chapterGlobal.render({
       chapterUrl: chapterObj.chapterUrl,
       chapterName: chapterObj.chapterName,
       outerHTML: chapterObj.contentHTML?.outerHTML ?? "",
@@ -333,19 +336,19 @@ export class saveBook {
   }
 }
 
-export interface sectionObj {
+export interface SectionObj {
   sectionName: string | null;
   sectionNumber: number | null;
   chpaters: Chapter[];
 }
-export interface sectionsObj {
-  [sectionNumber: number]: sectionObj;
+export interface SectionsObj {
+  [sectionNumber: number]: SectionObj;
 }
-export function getSectionsObj(chapters: Chapter[]) {
-  const _sectionsObj: sectionsObj = {};
+export function getSectionsObj(chapters: Chapter[]): SectionObj[] {
+  const _sectionsObj: SectionsObj = {};
   for (const chapter of chapters) {
     let sectionNumber: number | null = null;
-    let sectionName: string | null = null;
+    const sectionName: string | null = null;
     if (chapter.sectionNumber && chapter.sectionName) {
       sectionNumber = chapter.sectionNumber;
     } else {
@@ -353,7 +356,7 @@ export function getSectionsObj(chapters: Chapter[]) {
     }
 
     if (_sectionsObj[sectionNumber]) {
-      _sectionsObj[sectionNumber]["chpaters"].push(chapter);
+      _sectionsObj[sectionNumber].chpaters.push(chapter);
     } else {
       _sectionsObj[sectionNumber] = {
         sectionName: chapter.sectionName,
@@ -362,22 +365,39 @@ export function getSectionsObj(chapters: Chapter[]) {
       };
     }
   }
-  return _sectionsObj;
+  const _sectionsListObj: [string, SectionObj][] = Object.entries(_sectionsObj);
+  function sectionListSort(a: [string, SectionObj], b: [string, SectionObj]) {
+    const aKey = Number(a[0]);
+    const bKey = Number(b[0]);
+    if (aKey > bKey) {
+      return 1;
+    }
+    if (aKey === bKey) {
+      return 0;
+    }
+    if (aKey < bKey) {
+      return -1;
+    }
+    return 0;
+  }
+  _sectionsListObj.sort(sectionListSort);
+  const sectionsListObj = _sectionsListObj.map((s) => s[1]);
+  return sectionsListObj;
 }
 
-export interface saveOptions {
-  mainStyleText?: saveBook["mainStyleText"];
-  tocStyleText?: saveBook["tocStyleText"];
-  getchapterName?: saveBook["getchapterName"];
-  genSectionText?: saveBook["genSectionText"];
-  genChapterText?: saveBook["genChapterText"];
-  genSectionHtmlFile?: saveBook["genSectionHtmlFile"];
-  genChapterHtmlFile?: saveBook["genChapterHtmlFile"];
-  chapterSort?: saveBook["chapterSort"];
+export interface SaveOptions {
+  mainStyleText?: SaveBook["mainStyleText"];
+  tocStyleText?: SaveBook["tocStyleText"];
+  getchapterName?: SaveBook["getchapterName"];
+  genSectionText?: SaveBook["genSectionText"];
+  genChapterText?: SaveBook["genChapterText"];
+  genSectionHtmlFile?: SaveBook["genSectionHtmlFile"];
+  genChapterHtmlFile?: SaveBook["genChapterHtmlFile"];
+  chapterSort?: SaveBook["chapterSort"];
 }
 export function saveOptionsValidate(data: any) {
-  const keyNamesS: Array<keyof saveOptions> = ["mainStyleText", "tocStyleText"];
-  const keyNamesF: Array<keyof saveOptions> = [
+  const keyNamesS: (keyof SaveOptions)[] = ["mainStyleText", "tocStyleText"];
+  const keyNamesF: (keyof SaveOptions)[] = [
     "getchapterName",
     "genSectionText",
     "genChapterText",
@@ -394,7 +414,7 @@ export function saveOptionsValidate(data: any) {
     return false;
   }
   function keyNamesStest(keyname: string) {
-    //@ts-expect-error
+    // @ts-expect-error
     if (keyNamesS.includes(keyname)) {
       if (typeof data[keyname] === "string") {
         return true;
@@ -403,7 +423,7 @@ export function saveOptionsValidate(data: any) {
     return false;
   }
   function keyNamesFtest(keyname: string) {
-    //@ts-expect-error
+    // @ts-expect-error
     if (keyNamesF.includes(keyname)) {
       if (typeof data[keyname] === "function") {
         return true;
@@ -419,33 +439,29 @@ export function saveOptionsValidate(data: any) {
     return false;
   }
   for (const keyname in data) {
-    if (!keyNametest(keyname)) {
-      return false;
-    }
-    if (!(keyNamesStest(keyname) || keyNamesFtest(keyname))) {
-      return false;
+    if (Object.prototype.hasOwnProperty.call(data, keyname)) {
+      if (!keyNametest(keyname)) {
+        return false;
+      }
+      if (!(keyNamesStest(keyname) || keyNamesFtest(keyname))) {
+        return false;
+      }
     }
   }
   return true;
 }
 
-export function getSaveBookObj(book: Book, options: saveOptions) {
-  const saveBookObj = new saveBook(book);
+export function getSaveBookObj(book: Book, options: SaveOptions) {
+  const saveBookObj = new SaveBook(book);
 
   // 自定义保存参数
   if (enableCustomSaveOptions && saveOptionsValidate(options)) {
-    for (const option in options) {
-      //@ts-expect-error
-      saveBookObj[option] = options[option as keyof saveOptions];
-    }
+    Object.assign(saveBookObj, options);
   }
 
   // 规则定义保存参数
   if (book.saveOptions !== undefined) {
-    for (const option in book.saveOptions) {
-      //@ts-expect-error
-      saveBookObj[option] = book.saveOptions[option as keyof book.saveOptions];
-    }
+    Object.assign(saveBookObj, book.saveOptions);
   }
 
   return saveBookObj;

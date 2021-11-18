@@ -10,8 +10,12 @@ export async function replaceJjwxcCharacter(
   const jjwxcFontTable = await getJjwxcFontTable(fontName);
   if (jjwxcFontTable) {
     for (const jjwxcCharacter in jjwxcFontTable) {
-      const normalCharacter = jjwxcFontTable[jjwxcCharacter];
-      outputText = outputText.replaceAll(jjwxcCharacter, normalCharacter);
+      if (
+        Object.prototype.hasOwnProperty.call(jjwxcFontTable, jjwxcCharacter)
+      ) {
+        const normalCharacter = jjwxcFontTable[jjwxcCharacter];
+        outputText = outputText.replaceAll(jjwxcCharacter, normalCharacter);
+      }
     }
     outputText = outputText.replace(/\u200c/g, "");
   }
@@ -37,7 +41,7 @@ async function fetchRemoteFont(fontName: string) {
     const resp = await fetch(url);
     if (resp.status === 200) {
       log.info(`[jjwxc-font]远程字体对照表 ${fontName} 下载成功`);
-      return (await resp.json()) as jjwxcFontTable;
+      return (await resp.json()) as JjwxcFontTable;
     } else {
       log.info(`[jjwxc-font]远程字体对照表 ${fontName} 下载失败`);
       return undefined;
@@ -49,13 +53,13 @@ async function fetchRemoteFont(fontName: string) {
   }
 }
 
-interface jjwxcFontTable {
+interface JjwxcFontTable {
   [index: string]: string;
 }
-interface jjwxcFontTables {
-  [index: string]: jjwxcFontTable;
+interface JjwxcFontTables {
+  [index: string]: JjwxcFontTable;
 }
-async function getJjwxcFontTables(): Promise<jjwxcFontTables> {
+async function getJjwxcFontTables(): Promise<JjwxcFontTables> {
   const JjwxcFontTablesKeyName = "novel-downloader-jjwxcFontTables";
   const JjwxcFontTablesExpiresKeyName =
     "novel-downloader-jjwxcFontTables__expires__";
@@ -90,7 +94,7 @@ async function getJjwxcFontTables(): Promise<jjwxcFontTables> {
     }
   }
 
-  let _jjwxcFontTables: undefined | jjwxcFontTables = await get(
+  let _jjwxcFontTables: undefined | JjwxcFontTables = await get(
     JjwxcFontTablesKeyName
   );
   if (_jjwxcFontTables) {

@@ -7,7 +7,7 @@ import { ggetHtmlDOM, ggetText } from "../lib/http";
 import { introDomHandle } from "./lib/common";
 import { log } from "../log";
 
-export class idejian extends BaseRuleClass {
+export class Idejian extends BaseRuleClass {
   public constructor() {
     super();
     this.imageMode = "TM";
@@ -19,24 +19,24 @@ export class idejian extends BaseRuleClass {
     const _bookID = bookUrl.match(/\/(\d+)\/$/);
     const bookID = _bookID && _bookID[1];
 
-    const bookname = (<HTMLElement>(
-      document.querySelector(".detail_bkname > a")
-    )).innerText.trim();
-    const _author = (<HTMLElement>document.querySelector(".detail_bkauthor"))
+    const bookname = (
+      document.querySelector(".detail_bkname > a") as HTMLElement
+    ).innerText.trim();
+    const _author = (document.querySelector(".detail_bkauthor") as HTMLElement)
       .childNodes[0];
     let author = "佚名";
     if (_author && _author.textContent) {
       author = _author.textContent.trim();
     }
 
-    const introDom = <HTMLElement>document.querySelector(".brief_con");
+    const introDom = document.querySelector(".brief_con") as HTMLElement;
     const [introduction, introductionHTML, introCleanimages] =
       await introDomHandle(introDom);
 
     const additionalMetadate: BookAdditionalMetadate = {};
-    const coverUrl = (<HTMLImageElement>(
-      document.querySelector(".book_img > img")
-    )).src;
+    const coverUrl = (
+      document.querySelector(".book_img > img") as HTMLImageElement
+    ).src;
     if (coverUrl) {
       getImageAttachment(coverUrl, this.imageMode, "cover-")
         .then((coverClass) => {
@@ -47,15 +47,15 @@ export class idejian extends BaseRuleClass {
 
     additionalMetadate.tags = Array.from(
       document.querySelectorAll("div.detail_bkgrade > span")
-    ).map((span) => (<HTMLSpanElement>span).innerText.trim());
+    ).map((span) => (span as HTMLSpanElement).innerText.trim());
 
     const chapters: Chapter[] = [];
     const cos = document.querySelectorAll(".catelog_list > li > a");
     let chapterNumber = 0;
     for (const aElem of Array.from(cos)) {
       chapterNumber++;
-      const chapterName = (<HTMLAnchorElement>aElem).innerText;
-      const chapterUrl = (<HTMLAnchorElement>aElem).href;
+      const chapterName = (aElem as HTMLAnchorElement).innerText;
+      const chapterUrl = (aElem as HTMLAnchorElement).href;
       const isVIP = false;
       const isPaid = false;
       const chapter = new Chapter(
@@ -71,7 +71,7 @@ export class idejian extends BaseRuleClass {
         null,
         this.chapterParse,
         "UTF-8",
-        { bookID: bookID }
+        { bookID }
       );
       chapters.push(chapter);
     }
@@ -99,7 +99,7 @@ export class idejian extends BaseRuleClass {
     charset: string,
     options: object
   ) {
-    interface options {
+    interface Options {
       bookID: string;
     }
 
@@ -109,7 +109,7 @@ export class idejian extends BaseRuleClass {
 
     const referBaseUrl = "https://m.idejian.com/catalog";
     const _refer = new URL(referBaseUrl);
-    _refer.searchParams.set("bookId", (<options>options).bookID);
+    _refer.searchParams.set("bookId", (options as Options).bookID);
     const referUrl = _refer.toString();
 
     const fakeUA =
@@ -124,24 +124,24 @@ export class idejian extends BaseRuleClass {
     }
 
     log.debug(`[Chapter]请求 ${chapterUrl}，Refer：${referUrl}`);
-    let doc = await ggetHtmlDOM(chapterUrl, charset, {
+    const doc = await ggetHtmlDOM(chapterUrl, charset, {
       headers: { "User-Agent": fakeUA, Referer: referUrl },
     });
-    chapterName = (<HTMLElement>(
-      doc.querySelector(".text-title-1")
-    )).innerText.trim();
+    chapterName = (
+      doc.querySelector(".text-title-1") as HTMLElement
+    ).innerText.trim();
 
     let content;
     if (doc.querySelectorAll("div.h5_mainbody").length === 1) {
-      content = <HTMLElement>doc.querySelector("div.h5_mainbody");
+      content = doc.querySelector("div.h5_mainbody") as HTMLElement;
     } else {
-      content = <HTMLElement>doc.querySelectorAll("div.h5_mainbody")[1];
+      content = doc.querySelectorAll("div.h5_mainbody")[1] as HTMLElement;
     }
     if (content) {
       rm("h1", false, content);
-      let { dom, text, images } = await cleanDOM(content, "TM");
+      const { dom, text, images } = await cleanDOM(content, "TM");
       return {
-        chapterName: chapterName,
+        chapterName,
         contentRaw: content,
         contentText: text,
         contentHTML: dom,
@@ -150,7 +150,7 @@ export class idejian extends BaseRuleClass {
       };
     } else {
       return {
-        chapterName: chapterName,
+        chapterName,
         contentRaw: null,
         contentText: null,
         contentHTML: null,

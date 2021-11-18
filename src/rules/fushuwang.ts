@@ -3,10 +3,10 @@ import { BaseRuleClass } from "../rules";
 import { rm } from "../lib/misc";
 import { cleanDOM } from "../lib/cleanDOM";
 import { getHtmlDOM } from "../lib/http";
-import { saveOptions } from "../save/save";
+import { SaveOptions } from "../save/save";
 
-export class fushuwang extends BaseRuleClass {
-  public saveOptions: saveOptions;
+export class Fushuwang extends BaseRuleClass {
+  public saveOptions: SaveOptions;
 
   public constructor() {
     super();
@@ -24,11 +24,11 @@ export class fushuwang extends BaseRuleClass {
     const bookUrl = (
       document.location.origin + document.location.pathname
     ).replace(/(_\d+)\.html$/, ".html");
-    const [bookname, author] = (<HTMLHeadElement>(
+    const [bookname, author] = (
       document.querySelector(
         ".title_info > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(1) > h1:nth-child(1)"
-      )
-    )).innerText.split("——");
+      ) as HTMLHeadElement
+    ).innerText.split("——");
     const [introduction, introductionHTML] = [null, null];
     const additionalMetadate: BookAdditionalMetadate = {};
 
@@ -82,14 +82,14 @@ export class fushuwang extends BaseRuleClass {
     options: object
   ) {
     const doc = await getHtmlDOM(chapterUrl, charset);
-    const content = <HTMLElement>doc.querySelector("#text");
+    const content = doc.querySelector("#text") as HTMLElement;
     if (content) {
       rm("span", true, content);
       rm("p.pageLink", true, content);
       rm("script", true, content);
-      let { dom, text, images } = await cleanDOM(content, "TM");
+      const { dom, text, images } = await cleanDOM(content, "TM");
       return {
-        chapterName: chapterName,
+        chapterName,
         contentRaw: content,
         contentText: text,
         contentHTML: dom,
@@ -98,7 +98,7 @@ export class fushuwang extends BaseRuleClass {
       };
     } else {
       return {
-        chapterName: chapterName,
+        chapterName,
         contentRaw: null,
         contentText: null,
         contentHTML: null,

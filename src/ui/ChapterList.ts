@@ -2,23 +2,26 @@ import * as Vue from "vue";
 import "./injectVue";
 import { getRule } from "../router/download";
 import { Chapter, Status } from "../main";
-import { getSectionsObj, sectionObj } from "../save/save";
-import { newWindow } from "../global";
+import { getSectionsObj, SectionObj } from "../save/save";
+import { NewWindow } from "../global";
 import ChapterListHtml from "./ChapterList.html";
 import ChapterListCss from "./ChapterList.css";
 import { createStyle } from "../lib/createEl";
-import { filterSetting, getFilterFunction } from "./FilterTab";
+import {
+  FilterSetting as filterSettingGlobal,
+  getFilterFunction,
+} from "./FilterTab";
 
 async function getSections() {
-  if ((window as newWindow & typeof globalThis)._sections) {
-    return (window as newWindow & typeof globalThis)._sections;
+  if ((window as NewWindow & typeof globalThis)._sections) {
+    return (window as NewWindow & typeof globalThis)._sections;
   } else {
     const rule = await getRule();
     const book = await rule.bookParse();
-    (window as newWindow & typeof globalThis)._sections = getSectionsObj(
+    (window as NewWindow & typeof globalThis)._sections = getSectionsObj(
       book.chapters
     );
-    return (window as newWindow & typeof globalThis)._sections;
+    return (window as NewWindow & typeof globalThis)._sections;
   }
 }
 
@@ -26,19 +29,21 @@ createStyle(ChapterListCss);
 export default Vue.defineComponent({
   name: "ChapterList",
   setup(props, context) {
-    const sectionsObj = Vue.reactive({});
+    const sectionsObj = Vue.reactive([]);
     const loading = Vue.ref(true);
     Vue.onMounted(async () => {
-      const _sectionsObj = await getSections();
-      Object.assign(sectionsObj, _sectionsObj);
+      if (sectionsObj.length === 0) {
+        const _sectionsObj = await getSections();
+        Object.assign(sectionsObj, _sectionsObj);
+      }
       loading.value = false;
     });
 
     const filterSetting = Vue.inject(
       "filterSetting"
-    ) as Vue.ComputedRef<filterSetting>;
+    ) as Vue.ComputedRef<filterSettingGlobal>;
     const filter = (chapter: Chapter) => {
-      if (chapter.status == Status.aborted) {
+      if (chapter.status === Status.aborted) {
         return false;
       }
 
@@ -67,7 +72,7 @@ export default Vue.defineComponent({
         return true;
       }
     };
-    const isSectionSeen = (sectionObj: sectionObj) => {
+    const isSectionSeen = (sectionObj: SectionObj) => {
       const chapters = sectionObj.chpaters;
       return chapters.some((chapter) => isChapterSeen(chapter) === true);
     };

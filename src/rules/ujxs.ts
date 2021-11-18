@@ -7,7 +7,7 @@ import { getHtmlDOM } from "../lib/http";
 import { introDomHandle } from "./lib/common";
 import { log } from "../log";
 
-export class ujxs extends BaseRuleClass {
+export class Ujxs extends BaseRuleClass {
   public constructor() {
     super();
     this.imageMode = "TM";
@@ -18,12 +18,14 @@ export class ujxs extends BaseRuleClass {
     const bookUrl =
       document.location.origin +
       document.location.pathname.replace(/^\/read/, "/book");
-    const bookname = (<HTMLHeadingElement>(
-      document.querySelector("#smallcons > h1")
-    )).innerText.trim();
-    const author = (<HTMLAnchorElement>(
-      document.querySelector("#smallcons > span:nth-child(3) > a")
-    )).innerText.trim();
+    const bookname = (
+      document.querySelector("#smallcons > h1") as HTMLHeadingElement
+    ).innerText.trim();
+    const author = (
+      document.querySelector(
+        "#smallcons > span:nth-child(3) > a"
+      ) as HTMLAnchorElement
+    ).innerText.trim();
 
     const doc = await getHtmlDOM(bookUrl, this.charset);
     const introDom = doc.querySelector("#bookintro");
@@ -31,7 +33,7 @@ export class ujxs extends BaseRuleClass {
       await introDomHandle(introDom);
 
     const additionalMetadate: BookAdditionalMetadate = {};
-    const coverUrl = (<HTMLImageElement>doc.querySelector(".img > img"))?.src;
+    const coverUrl = (doc.querySelector(".img > img") as HTMLImageElement)?.src;
     if (coverUrl) {
       getImageAttachment(coverUrl, this.imageMode, "cover-")
         .then((coverClass) => {
@@ -46,8 +48,7 @@ export class ujxs extends BaseRuleClass {
     let sectionNumber = 0;
     let sectionName = null;
     let sectionChapterNumber = 0;
-    for (let i = 0; i < liList.length; i++) {
-      const li = liList[i];
+    for (const li of Array.from(liList)) {
       if (li.getAttribute("class")) {
         sectionNumber++;
         sectionChapterNumber = 0;
@@ -58,8 +59,8 @@ export class ujxs extends BaseRuleClass {
         const aElem = li.firstElementChild;
         chapterNumber++;
         sectionChapterNumber++;
-        const chapterName = (<HTMLAnchorElement>aElem).innerText;
-        const chapterUrl = (<HTMLAnchorElement>aElem).href;
+        const chapterName = (aElem as HTMLAnchorElement).innerText;
+        const chapterUrl = (aElem as HTMLAnchorElement).href;
         const isVIP = false;
         const isPaid = false;
         const chapter = new Chapter(
@@ -75,7 +76,7 @@ export class ujxs extends BaseRuleClass {
           sectionChapterNumber,
           this.chapterParse,
           this.charset,
-          { bookname: bookname }
+          { bookname }
         );
         chapters.push(chapter);
       }
@@ -112,9 +113,9 @@ export class ujxs extends BaseRuleClass {
       ads.forEach(
         (ad) => (content.innerHTML = content.innerHTML.replaceAll(ad, ""))
       );
-      let { dom, text, images } = await cleanDOM(content, "TM");
+      const { dom, text, images } = await cleanDOM(content, "TM");
       return {
-        chapterName: chapterName,
+        chapterName,
         contentRaw: content,
         contentText: text,
         contentHTML: dom,
@@ -123,7 +124,7 @@ export class ujxs extends BaseRuleClass {
       };
     } else {
       return {
-        chapterName: chapterName,
+        chapterName,
         contentRaw: null,
         contentText: null,
         contentHTML: null,

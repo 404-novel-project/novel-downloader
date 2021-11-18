@@ -7,13 +7,11 @@ import { getHtmlDOM } from "../lib/http";
 import { introDomHandle } from "./lib/common";
 import { log } from "../log";
 
-namespace uukanshu {
-  export interface uukanshuWindow extends unsafeWindow {
-    reverse(button: HTMLButtonElement): void;
-  }
+interface UukanshuWindow extends unsafeWindow {
+  reverse(button: HTMLButtonElement): void;
 }
 
-export class uukanshu extends BaseRuleClass {
+export class Uukanshu extends BaseRuleClass {
   public constructor() {
     super();
     this.imageMode = "TM";
@@ -22,31 +20,31 @@ export class uukanshu extends BaseRuleClass {
 
   public async bookParse() {
     const bookUrl = document.location.href;
-    const bookname = (<HTMLElement>(
-      document.querySelector("dd.jieshao_content > h1 > a")
-    )).innerText
+    const bookname = (
+      document.querySelector("dd.jieshao_content > h1 > a") as HTMLElement
+    ).innerText
       .replace("最新章节", "")
       .trim();
-    const author = (<HTMLElement>(
-      document.querySelector("dd.jieshao_content > h2 > a")
-    )).innerText.trim();
+    const author = (
+      document.querySelector("dd.jieshao_content > h2 > a") as HTMLElement
+    ).innerText.trim();
 
-    const introDom = <HTMLElement>(
-      document.querySelector("dd.jieshao_content > h3")
-    );
+    const introDom = document.querySelector(
+      "dd.jieshao_content > h3"
+    ) as HTMLElement;
     const [introduction, introductionHTML, introCleanimages] =
-      await introDomHandle(introDom, (introDom) => {
-        introDom.innerHTML = introDom.innerHTML
+      await introDomHandle(introDom, (introDomI) => {
+        introDomI.innerHTML = introDomI.innerHTML
           .replace(/^.+简介：\s+www.uukanshu.com\s+/, "")
           .replace(/\s+https:\/\/www.uukanshu.com/, "")
           .replace(/－+/, "");
-        return introDom;
+        return introDomI;
       });
 
     const additionalMetadate: BookAdditionalMetadate = {};
-    const coverUrl = (<HTMLImageElement>(
-      document.querySelector("a.bookImg > img")
-    )).src;
+    const coverUrl = (
+      document.querySelector("a.bookImg > img") as HTMLImageElement
+    ).src;
     if (coverUrl) {
       getImageAttachment(coverUrl, this.imageMode, "cover-")
         .then((coverClass) => {
@@ -56,23 +54,22 @@ export class uukanshu extends BaseRuleClass {
     }
 
     const chapters: Chapter[] = [];
-    const button = <HTMLButtonElement>(
-      document.querySelector('span[onclick="javascript:reverse(this);"]')
-    );
-    const reverse = (<uukanshu.uukanshuWindow>unsafeWindow).reverse;
+    const button = document.querySelector(
+      'span[onclick="javascript:reverse(this);"]'
+    ) as HTMLButtonElement;
+    const reverse = (unsafeWindow as UukanshuWindow).reverse;
     if (button.innerText === "顺序排列") {
       reverse(button);
     }
-    const chapterList = <HTMLElement[] | undefined>(
-      document.getElementById("chapterList")?.childNodes
-    );
+    const chapterList = document.getElementById("chapterList")?.childNodes as
+      | HTMLElement[]
+      | undefined;
     if (chapterList && chapterList.length !== 0) {
       let chapterNumber = 0;
       let sectionNumber = 0;
       let sectionName = null;
       let sectionChapterNumber = 0;
-      for (let i = 0; i < chapterList.length; i++) {
-        const li = chapterList[i];
+      for (const li of Array.from(chapterList)) {
         if (li.className === "volume") {
           sectionNumber++;
           sectionChapterNumber = 0;
@@ -80,7 +77,7 @@ export class uukanshu extends BaseRuleClass {
         } else {
           chapterNumber++;
           sectionChapterNumber++;
-          const a = <HTMLLinkElement>li.firstElementChild;
+          const a = li.firstElementChild as HTMLLinkElement;
           const chapterName = a.innerText;
           const chapterUrl = a.href;
           const isVIP = false;
@@ -125,11 +122,11 @@ export class uukanshu extends BaseRuleClass {
     charset: string,
     options: object
   ) {
-    const dom = await getHtmlDOM(chapterUrl, charset);
+    const doc = await getHtmlDOM(chapterUrl, charset);
 
-    chapterName = (<HTMLElement>dom.querySelector("#timu")).innerText.trim();
+    chapterName = (doc.querySelector("#timu") as HTMLElement).innerText.trim();
 
-    const content = <HTMLElement>dom.querySelector("#contentbox");
+    const content = doc.querySelector("#contentbox") as HTMLElement;
     if (content) {
       rm(".ad_content", true, content);
       const contentReplace = [
@@ -143,12 +140,12 @@ export class uukanshu extends BaseRuleClass {
         /http:\/\//g,
         /UU看书\s+欢迎广大书友光临阅读，最新、最快、最火的连载作品尽在UU看书！UU看书。;?/g,
       ];
-      for (let r of contentReplace) {
+      for (const r of contentReplace) {
         content.innerHTML = content.innerHTML.replace(r, "");
       }
-      let { dom, text, images } = await cleanDOM(content, "TM");
+      const { dom, text, images } = await cleanDOM(content, "TM");
       return {
-        chapterName: chapterName,
+        chapterName,
         contentRaw: content,
         contentText: text,
         contentHTML: dom,
@@ -157,7 +154,7 @@ export class uukanshu extends BaseRuleClass {
       };
     } else {
       return {
-        chapterName: chapterName,
+        chapterName,
         contentRaw: null,
         contentText: null,
         contentHTML: null,

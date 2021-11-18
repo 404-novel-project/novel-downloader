@@ -3,11 +3,11 @@ import { sleep, rm } from "../lib/misc";
 import { cleanDOM } from "../lib/cleanDOM";
 import { getImageAttachment } from "../lib/attachments";
 import { ggetHtmlDOM } from "../lib/http";
-import { BaseRuleClass, chapterParseObject } from "../rules";
+import { BaseRuleClass, ChapterParseObject } from "../rules";
 import { introDomHandle } from "./lib/common";
 import { log } from "../log";
 
-export class shuhai extends BaseRuleClass {
+export class Shuhai extends BaseRuleClass {
   public constructor() {
     super();
     this.imageMode = "TM";
@@ -17,13 +17,17 @@ export class shuhai extends BaseRuleClass {
 
   public async bookParse() {
     const bookUrl = document.location.href;
-    const bookname = (<HTMLElement>(
-      document.querySelector("div.book-info-bookname > span:nth-child(1)")
-    )).innerText.trim();
+    const bookname = (
+      document.querySelector(
+        "div.book-info-bookname > span:nth-child(1)"
+      ) as HTMLElement
+    ).innerText.trim();
 
-    const author = (<HTMLElement>(
-      document.querySelector("div.book-info-bookname > span:nth-child(2)")
-    )).innerText
+    const author = (
+      document.querySelector(
+        "div.book-info-bookname > span:nth-child(2)"
+      ) as HTMLElement
+    ).innerText
       .replace("作者: ", "")
       .trim();
     const introDom =
@@ -33,9 +37,9 @@ export class shuhai extends BaseRuleClass {
       await introDomHandle(introDom);
 
     const additionalMetadate: BookAdditionalMetadate = {};
-    let coverUrl = (<HTMLImageElement>(
-      document.querySelector(".book-cover-wrapper > img")
-    )).getAttribute("data-original");
+    const coverUrl = (
+      document.querySelector(".book-cover-wrapper > img") as HTMLImageElement
+    ).getAttribute("data-original");
     if (coverUrl) {
       getImageAttachment(coverUrl, this.imageMode, "cover-")
         .then((coverClass) => {
@@ -45,7 +49,7 @@ export class shuhai extends BaseRuleClass {
     }
     additionalMetadate.tags = Array.from(
       document.querySelectorAll(".book-info-bookstate > .tag")
-    ).map((span) => (<HTMLSpanElement>span).innerText.trim());
+    ).map((span) => (span as HTMLSpanElement).innerText.trim());
 
     const chapters: Chapter[] = [];
 
@@ -58,12 +62,11 @@ export class shuhai extends BaseRuleClass {
     let sectionNumber = 0;
     let sectionName = null;
     let sectionChapterNumber = 0;
-    for (let i = 0; i < dsList.length; i++) {
-      const node = dsList[i];
+    for (const node of Array.from(dsList)) {
       if (node.nodeName === "SPAN") {
         sectionNumber++;
         sectionChapterNumber = 0;
-        sectionName = (<HTMLElement>node)?.innerText.trim();
+        sectionName = (node as HTMLElement)?.innerText.trim();
       } else if (node.nodeName === "DIV") {
         chapterNumber++;
         sectionChapterNumber++;
@@ -77,11 +80,11 @@ export class shuhai extends BaseRuleClass {
           }
         };
         const isPaid = () => {
-          //Todo
+          // Todo
           return false;
         };
-        const chapterName = (<HTMLAnchorElement>a).innerText.trim();
-        const chapterUrl = (<HTMLAnchorElement>a).href;
+        const chapterName = (a as HTMLAnchorElement).innerText.trim();
+        const chapterUrl = (a as HTMLAnchorElement).href;
         const chapter = new Chapter(
           bookUrl,
           bookname,
@@ -98,7 +101,7 @@ export class shuhai extends BaseRuleClass {
           {}
         );
         const isLogin = () => {
-          //Todo
+          // Todo
           return false;
         };
         if (isVIP() && !(isLogin() && chapter.isPaid)) {
@@ -128,22 +131,22 @@ export class shuhai extends BaseRuleClass {
     charset: string,
     options: object
   ) {
-    async function publicChapter(): Promise<chapterParseObject> {
-      const dom = await ggetHtmlDOM(chapterUrl, charset);
-      const chapterName = (<HTMLElement>(
-        dom.querySelector("div.chapter-name")
-      )).innerText
+    async function publicChapter(): Promise<ChapterParseObject> {
+      const doc = await ggetHtmlDOM(chapterUrl, charset);
+      chapterName = (
+        doc.querySelector("div.chapter-name") as HTMLElement
+      ).innerText
         .replace("正文 ", "")
         .trim();
-      const content = <HTMLElement>(
-        dom.querySelector("#reader-content > div:nth-child(1)")
-      );
+      const content = doc.querySelector(
+        "#reader-content > div:nth-child(1)"
+      ) as HTMLElement;
 
       if (content) {
         rm("div.chaper-info", false, content);
-        let { dom, text, images } = await cleanDOM(content, "TM");
+        const { dom, text, images } = await cleanDOM(content, "TM");
         return {
-          chapterName: chapterName,
+          chapterName,
           contentRaw: content,
           contentText: text,
           contentHTML: dom,
@@ -152,7 +155,7 @@ export class shuhai extends BaseRuleClass {
         };
       } else {
         return {
-          chapterName: chapterName,
+          chapterName,
           contentRaw: null,
           contentText: null,
           contentHTML: null,
@@ -162,10 +165,10 @@ export class shuhai extends BaseRuleClass {
       }
     }
 
-    async function vipChapter(): Promise<chapterParseObject> {
-      //Todo
+    async function vipChapter(): Promise<ChapterParseObject> {
+      // Todo
       return {
-        chapterName: chapterName,
+        chapterName,
         contentRaw: null,
         contentText: null,
         contentHTML: null,

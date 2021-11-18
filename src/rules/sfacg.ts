@@ -1,6 +1,6 @@
 import {
   BookAdditionalMetadate,
-  attachmentClass,
+  AttachmentClass,
   Chapter,
   Status,
   Book,
@@ -9,11 +9,11 @@ import { rm } from "../lib/misc";
 import { cleanDOM } from "../lib/cleanDOM";
 import { getImageAttachment } from "../lib/attachments";
 import { getHtmlDOM } from "../lib/http";
-import { BaseRuleClass, chapterParseObject } from "../rules";
+import { BaseRuleClass, ChapterParseObject } from "../rules";
 import { retryLimit } from "../setting";
 import { introDomHandle } from "./lib/common";
 import { log } from "../log";
-export class sfacg extends BaseRuleClass {
+export class Sfacg extends BaseRuleClass {
   public constructor() {
     super();
     this.imageMode = "TM";
@@ -22,22 +22,22 @@ export class sfacg extends BaseRuleClass {
 
   public async bookParse() {
     const bookUrl = document.location.href.replace("/MainIndex/", "");
-    const bookname = (<HTMLElement>(
-      document.querySelector("h1.story-title")
-    )).innerText.trim();
+    const bookname = (
+      document.querySelector("h1.story-title") as HTMLElement
+    ).innerText.trim();
 
     const dom = await getHtmlDOM(bookUrl, undefined);
-    const author = (<HTMLElement>(
-      dom.querySelector(".author-name")
-    )).innerText.trim();
+    const author = (
+      dom.querySelector(".author-name") as HTMLElement
+    ).innerText.trim();
     const introDom = dom.querySelector(".introduce");
     const [introduction, introductionHTML, introCleanimages] =
       await introDomHandle(introDom);
 
     const additionalMetadate: BookAdditionalMetadate = {};
-    let coverUrl = (<HTMLImageElement>(
-      dom.querySelector("#hasTicket div.pic img")
-    )).src;
+    const coverUrl = (
+      dom.querySelector("#hasTicket div.pic img") as HTMLImageElement
+    ).src;
     if (coverUrl) {
       getImageAttachment(coverUrl, this.imageMode, "cover-")
         .then((coverClass) => {
@@ -48,16 +48,16 @@ export class sfacg extends BaseRuleClass {
     additionalMetadate.tags = Array.from(
       dom.querySelectorAll("ul.tag-list > li.tag > a")
     ).map((a) => {
-      rm("span.icn", false, <HTMLAnchorElement>a);
-      return (<HTMLAnchorElement>a).innerText.trim().replace(/\(\d+\)$/, "");
+      rm("span.icn", false, a as HTMLAnchorElement);
+      return (a as HTMLAnchorElement).innerText.trim().replace(/\(\d+\)$/, "");
     });
     if (dom.querySelector(".d-banner")) {
-      const _beitouUrl = (<HTMLDivElement>(
-        dom.querySelector(".d-banner")
-      ))?.style.backgroundImage.split('"');
+      const _beitouUrl = (
+        dom.querySelector(".d-banner") as HTMLDivElement
+      )?.style.backgroundImage.split('"');
       if (_beitouUrl?.length === 3) {
         const beitouUrl = _beitouUrl[1];
-        const beitou = new attachmentClass(
+        const beitou = new AttachmentClass(
           beitouUrl,
           `beitou.${beitouUrl.split(".").slice(-1)[0]}`,
           "TM"
@@ -73,24 +73,25 @@ export class sfacg extends BaseRuleClass {
     for (let i = 0; i < sections.length; i++) {
       const s = sections[i];
       const sectionNumber = i + 1;
-      const sectionName = (<HTMLElement>(
-        s.querySelector(".catalog-title")
-      )).innerText
+      const sectionName = (
+        s.querySelector(".catalog-title") as HTMLElement
+      ).innerText
         .replace(`【${bookname}】`, "")
         .trim();
       let sectionChapterNumber = 0;
 
       const cs = s.querySelectorAll(".catalog-list > ul > li > a");
-      for (let j = 0; j < cs.length; j++) {
-        const c = cs[j];
-        const _chapterName = (<HTMLLinkElement>c).getAttribute("title")?.trim();
+      for (const c of Array.from(cs)) {
+        const _chapterName = (c as HTMLLinkElement)
+          .getAttribute("title")
+          ?.trim();
         chapterNumber++;
         sectionChapterNumber++;
         const chapterName = _chapterName ? _chapterName : "";
-        const chapterUrl = (<HTMLLinkElement>c).href;
+        const chapterUrl = (c as HTMLLinkElement).href;
 
         let isVIP = false;
-        let isPaid = null;
+        const isPaid = null;
         if (
           c.childElementCount &&
           c.firstElementChild?.getAttribute("class") === "icn_vip"
@@ -144,18 +145,18 @@ export class sfacg extends BaseRuleClass {
     charset: string,
     options: object
   ) {
-    const chapter_id = chapterUrl.split("/").slice(-2, -1)[0];
+    const chapterId = chapterUrl.split("/").slice(-2, -1)[0];
 
-    async function publicChapter(): Promise<chapterParseObject> {
-      const dom = await getHtmlDOM(chapterUrl, charset);
-      const chapterName = (<HTMLElement>(
-        dom.querySelector("h1.article-title")
-      )).innerText.trim();
-      const content = <HTMLElement>dom.querySelector(".article-content");
+    async function publicChapter(): Promise<ChapterParseObject> {
+      const doc = await getHtmlDOM(chapterUrl, charset);
+      chapterName = (
+        doc.querySelector("h1.article-title") as HTMLElement
+      ).innerText.trim();
+      const content = doc.querySelector(".article-content") as HTMLElement;
       if (content) {
-        let { dom, text, images } = await cleanDOM(content, "TM");
+        const { dom, text, images } = await cleanDOM(content, "TM");
         return {
-          chapterName: chapterName,
+          chapterName,
           contentRaw: content,
           contentText: text,
           contentHTML: dom,
@@ -164,7 +165,7 @@ export class sfacg extends BaseRuleClass {
         };
       } else {
         return {
-          chapterName: chapterName,
+          chapterName,
           contentRaw: null,
           contentText: null,
           contentHTML: null,
@@ -174,20 +175,20 @@ export class sfacg extends BaseRuleClass {
       }
     }
 
-    async function vipChapter(): Promise<chapterParseObject> {
+    async function vipChapter(): Promise<ChapterParseObject> {
       async function getvipChapterImage(
         vipChapterImageUrl: string,
         vipChapterName: string
       ) {
         let retryTime = 0;
         function fetchVipChapterImage(
-          vipChapterImageUrl: string
+          vipChapterImageUrlI: string
         ): Promise<Blob | null | void> {
           log.debug(
-            `[Chapter]请求 ${vipChapterImageUrl} Referer ${chapterUrl} 重试次数 ${retryTime}`
+            `[Chapter]请求 ${vipChapterImageUrlI} Referer ${chapterUrl} 重试次数 ${retryTime}`
           );
 
-          return fetch(vipChapterImageUrl, {
+          return fetch(vipChapterImageUrlI, {
             headers: {
               accept:
                 "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8",
@@ -202,11 +203,11 @@ export class sfacg extends BaseRuleClass {
             .then((blob) => {
               if (blob.size === 53658 || blob.size === 42356) {
                 log.error(
-                  `[Chapter]请求 ${vipChapterImageUrl} 失败 Referer ${chapterUrl}`
+                  `[Chapter]请求 ${vipChapterImageUrlI} 失败 Referer ${chapterUrl}`
                 );
                 if (retryTime < retryLimit) {
                   retryTime++;
-                  return fetchVipChapterImage(vipChapterImageUrl);
+                  return fetchVipChapterImage(vipChapterImageUrlI);
                 } else {
                   return null;
                 }
@@ -220,7 +221,7 @@ export class sfacg extends BaseRuleClass {
         const vipChapterImageBlob = await fetchVipChapterImage(
           vipChapterImageUrl
         );
-        const vipChapterImage = new attachmentClass(
+        const vipChapterImage = new AttachmentClass(
           vipChapterImageUrl,
           vipChapterName,
           "naive"
@@ -241,18 +242,18 @@ export class sfacg extends BaseRuleClass {
           : false;
       if (isLogin) {
         const dom = await getHtmlDOM(chapterUrl, charset);
-        const chapterName = (<HTMLElement>(
-          dom.querySelector("h1.article-title")
-        )).innerText.trim();
+        const chapterNameI = (
+          dom.querySelector("h1.article-title") as HTMLElement
+        ).innerText.trim();
 
-        const isPaid = dom.querySelector(".pay-section") === null;
+        isPaid = dom.querySelector(".pay-section") === null;
         if (isPaid) {
-          const vipChapterDom = <HTMLImageElement>(
-            dom.querySelector(".article-content > #vipImage")
-          );
+          const vipChapterDom = dom.querySelector(
+            ".article-content > #vipImage"
+          ) as HTMLImageElement;
           if (vipChapterDom) {
             const vipChapterImageUrl = vipChapterDom.src;
-            const vipChapterName = `vipCHapter${chapter_id}.gif`;
+            const vipChapterName = `vipCHapter${chapterId}.gif`;
             const vipChapterImage = await getvipChapterImage(
               vipChapterImageUrl,
               vipChapterName
@@ -267,11 +268,11 @@ export class sfacg extends BaseRuleClass {
             const contentText = `VIP章节，请打开HTML文件查看。\n![${vipChapterImageUrl}](${vipChapterName})`;
 
             return {
-              chapterName: chapterName,
+              chapterName: chapterNameI,
               contentRaw: contentHTML,
-              contentText: contentText,
-              contentHTML: contentHTML,
-              contentImages: contentImages,
+              contentText,
+              contentHTML,
+              contentImages,
               additionalMetadate: null,
             };
           } else {
@@ -280,7 +281,7 @@ export class sfacg extends BaseRuleClass {
         }
       }
       return {
-        chapterName: chapterName,
+        chapterName,
         contentRaw: null,
         contentText: null,
         contentHTML: null,

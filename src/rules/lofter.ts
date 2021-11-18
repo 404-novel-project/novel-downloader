@@ -2,10 +2,10 @@ import { BookAdditionalMetadate, Chapter, Book } from "../main";
 import { cleanDOM } from "../lib/cleanDOM";
 import { getImageAttachment } from "../lib/attachments";
 import { getHtmlDOM, ggetHtmlDOM } from "../lib/http";
-import { BaseRuleClass, chapterParseObject } from "../rules";
+import { BaseRuleClass, ChapterParseObject } from "../rules";
 import { log } from "../log";
 
-export class lofter extends BaseRuleClass {
+export class Lofter extends BaseRuleClass {
   public constructor() {
     super();
     this.imageMode = "TM";
@@ -15,7 +15,7 @@ export class lofter extends BaseRuleClass {
   public async bookParse() {
     const bookUrl = document.location.origin;
     const author = JSON.parse(
-      '"' + (<any>unsafeWindow)._ntes_ntit.replaceAll("%", "\\") + '"'
+      '"' + (unsafeWindow as any)._ntes_ntit.replaceAll("%", "\\") + '"'
     );
     const bookname = author + "的Lofter";
     const introduction =
@@ -58,7 +58,7 @@ export class lofter extends BaseRuleClass {
       )}"]`;
       const urlSet = new Set(
         Array.from(doc.querySelectorAll(selector)).map(
-          (a) => (<HTMLAnchorElement>a).href
+          (a) => (a as HTMLAnchorElement).href
         )
       );
       urlSet.forEach((item) => pageUrlSet.add(item));
@@ -66,21 +66,21 @@ export class lofter extends BaseRuleClass {
       const selectorl = `a[href^="https://www.lofter.com/lpost"]`;
       const urlSetl = new Set(
         Array.from(doc.querySelectorAll(selectorl)).map(
-          (a) => (<HTMLAnchorElement>a).href
+          (a) => (a as HTMLAnchorElement).href
         )
       );
       urlSetl.forEach((item) => pageUrlSet.add(item));
 
       // 获取新目录页
-      const getIndexPageNumber = (url: string) => {
-        const _pageNumber = new URL(url).searchParams.get("page") ?? "1";
+      const getIndexPageNumber = (urlI: string) => {
+        const _pageNumber = new URL(urlI).searchParams.get("page") ?? "1";
         const indexPageNumber = Number(_pageNumber);
         return indexPageNumber;
       };
       const nowIndexPageNumber = getIndexPageNumber(url);
       const indexPages = doc.querySelectorAll('a[href^="?page"]');
       for (const indexPage of Array.from(indexPages)) {
-        const indexPageUrl = (<HTMLAnchorElement>indexPage).href;
+        const indexPageUrl = (indexPage as HTMLAnchorElement).href;
         const _indexPageUrlFormat = new URL(indexPageUrl);
         _indexPageUrlFormat.searchParams.delete("t");
         const indexPageUrlFormat = _indexPageUrlFormat.toString();
@@ -112,7 +112,7 @@ export class lofter extends BaseRuleClass {
         null,
         this.chapterParse,
         "UTF-8",
-        { author: author }
+        { author }
       );
       chapters.push(chapter);
       i++;
@@ -138,16 +138,19 @@ export class lofter extends BaseRuleClass {
     charset: string,
     options: object
   ) {
-    interface options {
+    interface Options {
       author: string;
     }
-    async function post(): Promise<chapterParseObject> {
+    async function post(): Promise<ChapterParseObject> {
       log.debug(`[chapter]请求页面：${chapterUrl}`);
       const doc = await getHtmlDOM(chapterUrl, charset);
       chapterName =
         doc
           .querySelector("title")
-          ?.innerText.replace(new RegExp(`-${(<options>options).author}$`), "")
+          ?.innerText.replace(
+            new RegExp(`-${(options as Options).author}$`),
+            ""
+          )
           .replace("\n", "")
           .trim() ?? null;
 
@@ -161,9 +164,9 @@ export class lofter extends BaseRuleClass {
         }
       }
       if (content) {
-        let { dom, text, images } = await cleanDOM(content, "TM");
+        const { dom, text, images } = await cleanDOM(content, "TM");
         return {
-          chapterName: chapterName,
+          chapterName,
           contentRaw: content,
           contentText: text,
           contentHTML: dom,
@@ -174,19 +177,19 @@ export class lofter extends BaseRuleClass {
         throw new Error(`[chapter]未发现内容，url：${chapterUrl}`);
       }
     }
-    async function lpost(): Promise<chapterParseObject> {
+    async function lpost(): Promise<ChapterParseObject> {
       log.debug(`[chapter]请求页面：${chapterUrl}`);
       const doc = await ggetHtmlDOM(chapterUrl, charset);
 
-      chapterName = (<HTMLDivElement>(
-        doc.querySelector("#title")
-      ))?.innerText.trim();
+      chapterName = (
+        doc.querySelector("#title") as HTMLDivElement
+      )?.innerText.trim();
 
       const content = doc.querySelector("#m-cnt .long-text") as HTMLElement;
       if (content) {
-        let { dom, text, images } = await cleanDOM(content, "TM");
+        const { dom, text, images } = await cleanDOM(content, "TM");
         return {
-          chapterName: chapterName,
+          chapterName,
           contentRaw: content,
           contentText: text,
           contentHTML: dom,

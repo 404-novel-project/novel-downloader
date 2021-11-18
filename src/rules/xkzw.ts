@@ -5,9 +5,9 @@ import { getImageAttachment } from "../lib/attachments";
 import { getHtmlDOM } from "../lib/http";
 import { introDomHandle } from "./lib/common";
 import { log } from "../log";
-import * as CryptoJS from "crypto-js";
+import * as CryptoJSGlobal from "crypto-js";
 
-export class xkzw extends BaseRuleClass {
+export class Xkzw extends BaseRuleClass {
   public constructor() {
     super();
     this.imageMode = "TM";
@@ -15,22 +15,23 @@ export class xkzw extends BaseRuleClass {
 
   public async bookParse() {
     const bookUrl = document.location.href;
-    const bookname = (<HTMLElement>(
-      document.querySelector("#info > h1:nth-child(1)")
-    )).innerText.trim();
-    const author = (<HTMLElement>(
-      document.querySelector("#info > p:nth-child(2)")
-    )).innerText
+    const bookname = (
+      document.querySelector("#info > h1:nth-child(1)") as HTMLElement
+    ).innerText.trim();
+    const author = (
+      document.querySelector("#info > p:nth-child(2)") as HTMLElement
+    ).innerText
       .replace(/作(\s+)?者[：:]/, "")
       .trim();
 
-    const introDom = <HTMLElement>document.querySelector("#intro");
+    const introDom = document.querySelector("#intro") as HTMLElement;
     const [introduction, introductionHTML, introCleanimages] =
       await introDomHandle(introDom);
 
     const additionalMetadate: BookAdditionalMetadate = {};
-    const coverUrl = (<HTMLImageElement>document.querySelector("#fmimg > img"))
-      .src;
+    const coverUrl = (
+      document.querySelector("#fmimg > img") as HTMLImageElement
+    ).src;
     if (coverUrl) {
       getImageAttachment(coverUrl, this.imageMode, "cover-")
         .then((coverClass) => {
@@ -41,26 +42,26 @@ export class xkzw extends BaseRuleClass {
 
     const chapters: Chapter[] = [];
 
-    const bookid = (<any>unsafeWindow).bookId;
-    interface chapterObject {
+    const bookid = (unsafeWindow as any).bookId;
+    interface ChapterObject {
       chapterid: number;
       chaptername: string;
       isempty: number;
       originalurl: string;
       currenturl: string;
     }
-    interface columnObject {
+    interface ColumnObject {
       columnname: string;
       columnid: number;
-      chapterlist: chapterObject[];
+      chapterlist: ChapterObject[];
     }
-    interface siteChapterList {
-      columnlist: columnObject[];
+    interface SiteChapterList {
+      columnlist: ColumnObject[];
       chaptercount: number;
     }
     const apiUrl = [document.location.origin, "action.php"].join("/");
     log.debug(`[chapter]正在请求${apiUrl}`);
-    const siteChapterList: siteChapterList = await fetch(apiUrl, {
+    const siteChapterList: SiteChapterList = await fetch(apiUrl, {
       headers: {
         accept: "application/json, text/javascript, */*",
         "content-type": "application/x-www-form-urlencoded",
@@ -81,24 +82,24 @@ export class xkzw extends BaseRuleClass {
       "#wrapper > div.box_con:nth-child(11) > div:nth-child(1) > dl:nth-child(1)"
     );
 
-    const mkList = (dl: Element | null): [columnObject[], chapterObject[]] => {
+    const mkList = (dl: Element | null): [ColumnObject[], ChapterObject[]] => {
       let tmpColumnName = "";
-      let tmpColumnList: columnObject[] = [];
-      let tmpChapterList: chapterObject[] = [];
+      const ttmpColumnList: ColumnObject[] = [];
+      let ttmpChapterList: ChapterObject[] = [];
       if (dl?.childElementCount) {
         const dlc = Array.from(dl.children);
         for (let i = 0; i < dl.childElementCount; i++) {
           const node = dlc[i];
           if (i !== 0) {
             if (node.nodeName === "DD") {
-              const a = <HTMLLinkElement>node.firstElementChild;
+              const a = node.firstElementChild as HTMLLinkElement;
               const chapterName = a.innerText;
               const chapterUrl = a.href;
               const chapterid = chapterUrl
                 .split("/")
                 .slice(-1)[0]
                 .replace(".html", "");
-              tmpChapterList.push({
+              ttmpChapterList.push({
                 chapterid: Number(chapterid) - bookid * 11,
                 chaptername: chapterName,
                 isempty: 0,
@@ -106,25 +107,25 @@ export class xkzw extends BaseRuleClass {
                 currenturl: "",
               });
             } else if (node.nodeName === "DT") {
-              const tmpColumnObj: columnObject = {
+              const tmpColumnObj: ColumnObject = {
                 columnname: tmpColumnName,
                 columnid: 0,
-                chapterlist: tmpChapterList,
+                chapterlist: ttmpChapterList,
               };
-              tmpColumnList.push(tmpColumnObj);
-              tmpColumnName = (<HTMLElement>node).innerText
+              ttmpColumnList.push(tmpColumnObj);
+              tmpColumnName = (node as HTMLElement).innerText
                 .replace(`《${bookname}》`, "")
                 .trim();
-              tmpChapterList = [];
+              ttmpChapterList = [];
             }
           } else {
-            tmpColumnName = (<HTMLElement>node).innerText
+            tmpColumnName = (node as HTMLElement).innerText
               .replace(`《${bookname}》`, "")
               .trim();
           }
         }
       }
-      return [tmpColumnList, tmpChapterList];
+      return [ttmpColumnList, ttmpChapterList];
     };
 
     const [tmpColumnList, tmpChapterList] = mkList(dl1);
@@ -220,69 +221,69 @@ export class xkzw extends BaseRuleClass {
   ) {
     function runEval(CryptoJS: any) {
       function gettt1(str: any, keyStr: any, ivStr: any) {
-        let key = CryptoJS.enc.Utf8.parse(keyStr);
-        let iv = CryptoJS.enc.Utf8.parse(ivStr);
-        let encryptedHexStr = CryptoJS.enc.Hex.parse(str);
-        let srcs = CryptoJS.enc.Base64.stringify(encryptedHexStr);
-        let decrypt = CryptoJS.DES.decrypt(srcs, key, {
-          iv: iv,
+        const key = CryptoJS.enc.Utf8.parse(keyStr);
+        const iv = CryptoJS.enc.Utf8.parse(ivStr);
+        const encryptedHexStr = CryptoJS.enc.Hex.parse(str);
+        const srcs = CryptoJS.enc.Base64.stringify(encryptedHexStr);
+        const decrypt = CryptoJS.DES.decrypt(srcs, key, {
+          iv,
           mode: CryptoJS.mode.CBC,
           padding: CryptoJS.pad.Pkcs7,
         });
-        let decryptedStr = decrypt.toString(CryptoJS.enc.Utf8);
+        const decryptedStr = decrypt.toString(CryptoJS.enc.Utf8);
         return decryptedStr.toString();
       }
 
       function gettt2(str: any, keyStr: any, ivStr: any) {
-        let key = CryptoJS.enc.Utf8.parse(keyStr);
-        let iv = CryptoJS.enc.Utf8.parse(ivStr);
-        let encryptedHexStr = CryptoJS.enc.Hex.parse(str);
-        let srcs = CryptoJS.enc.Base64.stringify(encryptedHexStr);
-        let decrypt = CryptoJS.AES.decrypt(srcs, key, {
-          iv: iv,
+        const key = CryptoJS.enc.Utf8.parse(keyStr);
+        const iv = CryptoJS.enc.Utf8.parse(ivStr);
+        const encryptedHexStr = CryptoJS.enc.Hex.parse(str);
+        const srcs = CryptoJS.enc.Base64.stringify(encryptedHexStr);
+        const decrypt = CryptoJS.AES.decrypt(srcs, key, {
+          iv,
           mode: CryptoJS.mode.CBC,
           padding: CryptoJS.pad.Pkcs7,
         });
-        let decryptedStr = decrypt.toString(CryptoJS.enc.Utf8);
+        const decryptedStr = decrypt.toString(CryptoJS.enc.Utf8);
         return decryptedStr.toString();
       }
 
       function gettt3(str: any, keyStr: any, ivStr: any) {
-        let key = CryptoJS.enc.Utf8.parse(keyStr);
-        let iv = CryptoJS.enc.Utf8.parse(ivStr);
-        let encryptedHexStr = CryptoJS.enc.Hex.parse(str);
-        let srcs = CryptoJS.enc.Base64.stringify(encryptedHexStr);
-        let decrypt = CryptoJS.RC4.decrypt(srcs, key, {
-          iv: iv,
+        const key = CryptoJS.enc.Utf8.parse(keyStr);
+        const iv = CryptoJS.enc.Utf8.parse(ivStr);
+        const encryptedHexStr = CryptoJS.enc.Hex.parse(str);
+        const srcs = CryptoJS.enc.Base64.stringify(encryptedHexStr);
+        const decrypt = CryptoJS.RC4.decrypt(srcs, key, {
+          iv,
           mode: CryptoJS.mode.CBC,
           padding: CryptoJS.pad.Pkcs7,
         });
-        let decryptedStr = decrypt.toString(CryptoJS.enc.Utf8);
+        const decryptedStr = decrypt.toString(CryptoJS.enc.Utf8);
         return decryptedStr.toString();
       }
 
       function getttn(str: any, keyStr: any, ivStr: any) {
-        let key = CryptoJS.enc.Utf8.parse(keyStr);
-        let iv = CryptoJS.enc.Utf8.parse(ivStr);
-        let encryptedHexStr = CryptoJS.enc.Hex.parse(str);
-        let srcs = CryptoJS.enc.Base64.stringify(encryptedHexStr);
-        let decrypt = CryptoJS.TripleDES.decrypt(srcs, key, {
-          iv: iv,
+        const key = CryptoJS.enc.Utf8.parse(keyStr);
+        const iv = CryptoJS.enc.Utf8.parse(ivStr);
+        const encryptedHexStr = CryptoJS.enc.Hex.parse(str);
+        const srcs = CryptoJS.enc.Base64.stringify(encryptedHexStr);
+        const decrypt = CryptoJS.TripleDES.decrypt(srcs, key, {
+          iv,
           mode: CryptoJS.mode.CBC,
           padding: CryptoJS.pad.Pkcs7,
         });
-        let decryptedStr = decrypt.toString(CryptoJS.enc.Utf8);
+        const decryptedStr = decrypt.toString(CryptoJS.enc.Utf8);
         return decryptedStr.toString();
       }
 
       function showttt1(dom: any) {
-        let obj = dom.getElementById("other");
-        let objTips = dom.getElementById("contenttips");
+        const obj = dom.getElementById("other");
+        const objTips = dom.getElementById("contenttips");
 
         if (obj) {
           let content = obj.innerHTML.trim();
           // eslint-disable-next-line radix
-          let type = parseInt(content.substring(0, 1));
+          const type = parseInt(content.substring(0, 1), 10);
           let key;
           let iv;
 
@@ -330,21 +331,21 @@ export class xkzw extends BaseRuleClass {
         }
       }
 
-      showttt1(dom);
+      showttt1(doc);
     }
 
-    const dom = await getHtmlDOM(chapterUrl, charset);
-    runEval(CryptoJS);
-    chapterName = (<HTMLElement>(
-      dom.querySelector(".bookname > h1:nth-child(1)")
-    )).innerText.trim();
+    const doc = await getHtmlDOM(chapterUrl, charset);
+    runEval(CryptoJSGlobal);
+    chapterName = (
+      doc.querySelector(".bookname > h1:nth-child(1)") as HTMLElement
+    ).innerText.trim();
 
-    const content = <HTMLElement>dom.querySelector("#content");
-    if (content) {
-      let { dom, text, images } = await cleanDOM(content, "TM");
+    const contentG = doc.querySelector("#content") as HTMLElement;
+    if (contentG) {
+      const { dom, text, images } = await cleanDOM(contentG, "TM");
       return {
-        chapterName: chapterName,
-        contentRaw: content,
+        chapterName,
+        contentRaw: contentG,
         contentText: text,
         contentHTML: dom,
         contentImages: images,
@@ -352,7 +353,7 @@ export class xkzw extends BaseRuleClass {
       };
     } else {
       return {
-        chapterName: chapterName,
+        chapterName,
         contentRaw: null,
         contentText: null,
         contentHTML: null,

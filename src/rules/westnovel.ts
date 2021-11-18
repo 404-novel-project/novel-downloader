@@ -7,7 +7,7 @@ import { BaseRuleClass } from "../rules";
 import { introDomHandle } from "./lib/common";
 import { log } from "../log";
 
-export class westnovel extends BaseRuleClass {
+export class Westnovel extends BaseRuleClass {
   public constructor() {
     super();
     this.imageMode = "TM";
@@ -15,13 +15,13 @@ export class westnovel extends BaseRuleClass {
 
   public async bookParse() {
     const bookUrl = document.location.href;
-    const bookname = (<HTMLElement>(
-      document.querySelector(".btitle > h1 > a")
-    )).innerText.trim();
+    const bookname = (
+      document.querySelector(".btitle > h1 > a") as HTMLElement
+    ).innerText.trim();
 
-    const author = (<HTMLElement>(
-      document.querySelector(".btitle > em:nth-child(2)")
-    )).innerText
+    const author = (
+      document.querySelector(".btitle > em:nth-child(2)") as HTMLElement
+    ).innerText
       .replace("作者：", "")
       .trim();
 
@@ -30,7 +30,8 @@ export class westnovel extends BaseRuleClass {
       await introDomHandle(introDom);
 
     const additionalMetadate: BookAdditionalMetadate = {};
-    let coverUrl = (<HTMLImageElement>document.querySelector(".img-img")).src;
+    const coverUrl = (document.querySelector(".img-img") as HTMLImageElement)
+      .src;
     if (coverUrl) {
       getImageAttachment(coverUrl, this.imageMode, "cover-")
         .then((coverClass) => {
@@ -44,8 +45,8 @@ export class westnovel extends BaseRuleClass {
     let chapterNumber = 0;
     for (const a of Array.from(aList)) {
       chapterNumber++;
-      const chapterName = (<HTMLAnchorElement>a).innerText.trim();
-      const chapterUrl = (<HTMLAnchorElement>a).href;
+      const chapterName = (a as HTMLAnchorElement).innerText.trim();
+      const chapterUrl = (a as HTMLAnchorElement).href;
       const chapter = new Chapter(
         bookUrl,
         bookname,
@@ -85,18 +86,18 @@ export class westnovel extends BaseRuleClass {
     options: object
   ) {
     const doc = await getHtmlDOM(chapterUrl, charset);
-    chapterName = (<HTMLElement>(
-      doc.querySelector("#BookCon > h1:nth-child(1)")
-    )).innerText.trim();
+    chapterName = (
+      doc.querySelector("#BookCon > h1:nth-child(1)") as HTMLElement
+    ).innerText.trim();
 
-    const content = <HTMLElement>doc.querySelector("#BookText");
+    const content = doc.querySelector("#BookText") as HTMLElement;
     if (content) {
       rm("div.ads", true, content);
       rm("div.link", true, content);
       rm("h4", true, content);
-      let { dom, text, images } = await cleanDOM(content, "TM");
+      const { dom, text, images } = await cleanDOM(content, "TM");
       return {
-        chapterName: chapterName,
+        chapterName,
         contentRaw: content,
         contentText: text,
         contentHTML: dom,
@@ -105,7 +106,7 @@ export class westnovel extends BaseRuleClass {
       };
     } else {
       return {
-        chapterName: chapterName,
+        chapterName,
         contentRaw: null,
         contentText: null,
         contentHTML: null,

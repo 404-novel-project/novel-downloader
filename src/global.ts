@@ -1,26 +1,26 @@
-import { localStorageExpired } from "./lib/misc";
+import { LocalStorageExpired } from "./lib/misc";
 import { Book, Chapter } from "./main";
 import { BaseRuleClass } from "./rules";
-import { saveOptions, sectionsObj } from "./save/save";
+import { SaveOptions, SectionObj } from "./save/save";
 import { parse, fetchAndParse, gfetchAndParse } from "./rules/lib/readability";
 import { saveAs } from "file-saver";
 
-export interface newWindow extends Window {
+export interface NewWindow extends Window {
   downloading: boolean;
-  customStorage: localStorageExpired;
+  customStorage: LocalStorageExpired;
   stopFlag: boolean;
-  _sections: sectionsObj;
+  _sections: SectionObj[];
 }
 
-export interface newUnsafeWindow extends unsafeWindow {
+export interface NewUnsafeWindow extends unsafeWindow {
   rule: BaseRuleClass;
   book: Book;
-  save(book: Book, saveOptions: saveOptions): void;
+  save(book: Book, saveOptions: SaveOptions): void;
   saveAs(obj: any): typeof saveAs;
   chapterFilter?: (chapter: Chapter) => boolean;
   customFinishCallback(): void;
   enableDebug: boolean;
-  saveOptions: saveOptions;
+  saveOptions: SaveOptions;
   readability: {
     parse: typeof parse;
     fetchAndParse: typeof fetchAndParse;
@@ -29,8 +29,8 @@ export interface newUnsafeWindow extends unsafeWindow {
 }
 
 export function init() {
-  (window as newWindow & typeof globalThis).downloading = false;
-  (window as newWindow & typeof globalThis).customStorage =
-    new localStorageExpired();
-  (window as newWindow & typeof globalThis).stopFlag = false;
+  (window as NewWindow & typeof globalThis).downloading = false;
+  (window as NewWindow & typeof globalThis).customStorage =
+    new LocalStorageExpired();
+  (window as NewWindow & typeof globalThis).stopFlag = false;
 }

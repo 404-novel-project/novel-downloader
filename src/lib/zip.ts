@@ -2,7 +2,7 @@ import { log } from "../log";
 import { Zip, ZipPassThrough, ZipDeflate, AsyncZipDeflate } from "fflate";
 import { sleep } from "./misc";
 
-export class fflateZip {
+export class FflateZip {
   private zcount: number;
   private count: number;
   private tcount: number;
@@ -53,7 +53,7 @@ export class fflateZip {
             }
           }
         } else {
-          throw "[fflateZip] 完成函数出错";
+          throw new Error("[fflateZip] 完成函数出错");
         }
       }
     });
@@ -96,7 +96,7 @@ export class fflateZip {
   }
 
   public async generateAsync(
-    onUpdate: ((percent: number) => any) | undefined = undefined
+    onUpdate?: (percent: number) => any
   ): Promise<void> {
     while (this.tcount !== this.count) {
       await sleep(500);

@@ -6,7 +6,7 @@ import { getHtmlDOM } from "../lib/http";
 import { introDomHandle } from "./lib/common";
 import { log } from "../log";
 
-export class dierbanzhu extends BaseRuleClass {
+export class Dierbanzhu extends BaseRuleClass {
   public constructor() {
     super();
     this.imageMode = "TM";
@@ -15,22 +15,23 @@ export class dierbanzhu extends BaseRuleClass {
 
   public async bookParse() {
     const bookUrl = document.location.href;
-    const bookname = (<HTMLElement>(
-      document.querySelector("#info > h1:nth-child(1)")
-    )).innerText.trim();
-    const author = (<HTMLElement>(
-      document.querySelector("#info > p:nth-child(2)")
-    )).innerText
+    const bookname = (
+      document.querySelector("#info > h1:nth-child(1)") as HTMLElement
+    ).innerText.trim();
+    const author = (
+      document.querySelector("#info > p:nth-child(2)") as HTMLElement
+    ).innerText
       .replace(/作(\s+)?者[：:]/, "")
       .trim();
 
-    const introDom = <HTMLElement>document.querySelector("#intro");
+    const introDom = document.querySelector("#intro") as HTMLElement;
     const [introduction, introductionHTML, introCleanimages] =
       await introDomHandle(introDom);
 
     const additionalMetadate: BookAdditionalMetadate = {};
-    const coverUrl = (<HTMLImageElement>document.querySelector("#fmimg > img"))
-      .src;
+    const coverUrl = (
+      document.querySelector("#fmimg > img") as HTMLImageElement
+    ).src;
     if (coverUrl) {
       getImageAttachment(coverUrl, this.imageMode, "cover-")
         .then((coverClass) => {
@@ -48,8 +49,7 @@ export class dierbanzhu extends BaseRuleClass {
       let sectionNumber = 0;
       let sectionName = null;
       let sectionChapterNumber = 0;
-      for (let i = 0; i < chapterList.length; i++) {
-        const node = <HTMLElement>chapterList[i];
+      for (const node of chapterList as HTMLElement[]) {
         if (node.nodeName === "DT" && !node.innerText.includes("最新章节")) {
           sectionNumber++;
           sectionChapterNumber = 0;
@@ -57,7 +57,7 @@ export class dierbanzhu extends BaseRuleClass {
         } else if (node.nodeName === "DD") {
           chapterNumber++;
           sectionChapterNumber++;
-          const a = <HTMLLinkElement>node.firstElementChild;
+          const a = node.firstElementChild as HTMLLinkElement;
           const chapterName = a.innerText;
           const chapterUrl = a.href;
           const isVIP = false;
@@ -102,17 +102,17 @@ export class dierbanzhu extends BaseRuleClass {
     charset: string,
     options: object
   ) {
-    const dom = await getHtmlDOM(chapterUrl, charset);
+    const doc = await getHtmlDOM(chapterUrl, charset);
 
-    chapterName = (<HTMLElement>(
-      dom.querySelector(".bookname > h1:nth-child(1)")
-    )).innerText.trim();
+    chapterName = (
+      doc.querySelector(".bookname > h1:nth-child(1)") as HTMLElement
+    ).innerText.trim();
 
-    const content = <HTMLElement>dom.querySelector("#content");
+    const content = doc.querySelector("#content") as HTMLElement;
     if (content) {
-      let { dom, text, images } = await cleanDOM(content, "TM");
+      const { dom, text, images } = await cleanDOM(content, "TM");
       return {
-        chapterName: chapterName,
+        chapterName,
         contentRaw: content,
         contentText: text,
         contentHTML: dom,
@@ -121,7 +121,7 @@ export class dierbanzhu extends BaseRuleClass {
       };
     } else {
       return {
-        chapterName: chapterName,
+        chapterName,
         contentRaw: null,
         contentText: null,
         contentHTML: null,

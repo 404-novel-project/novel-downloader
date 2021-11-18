@@ -4,11 +4,11 @@ import { cleanDOM } from "../lib/cleanDOM";
 import { gfetch } from "../lib/http";
 import { getImageAttachment } from "../lib/attachments";
 import { ggetHtmlDOM } from "../lib/http";
-import { BaseRuleClass, chapterParseObject } from "../rules";
+import { BaseRuleClass, ChapterParseObject } from "../rules";
 import { introDomHandle } from "./lib/common";
 import { log } from "../log";
 
-export class qidian extends BaseRuleClass {
+export class Qidian extends BaseRuleClass {
   public constructor() {
     super();
     this.imageMode = "TM";
@@ -26,16 +26,17 @@ export class qidian extends BaseRuleClass {
     const authorId = document
       .getElementById("authorId")
       ?.getAttribute("data-authorid");
-    const _csrfToken = (<any>unsafeWindow).jQuery.ajaxSettings.data._csrfToken;
+    const _csrfToken = (unsafeWindow as any).jQuery.ajaxSettings.data
+      ._csrfToken;
 
     const bookUrl = document.location.href;
-    const bookname = (<HTMLElement>(
-      document.querySelector(".book-info > h1 > em")
-    )).innerText.trim();
+    const bookname = (
+      document.querySelector(".book-info > h1 > em") as HTMLElement
+    ).innerText.trim();
 
-    const author = (<HTMLElement>(
-      document.querySelector(".book-info .writer")
-    )).innerText
+    const author = (
+      document.querySelector(".book-info .writer") as HTMLElement
+    ).innerText
       .replace(/作\s+者:/, "")
       .trim();
     const introDom = document.querySelector(".book-info-detail .book-intro");
@@ -43,9 +44,9 @@ export class qidian extends BaseRuleClass {
       await introDomHandle(introDom);
 
     const additionalMetadate: BookAdditionalMetadate = {};
-    const coverUrl = (<HTMLImageElement>(
-      document.querySelector("#bookImg > img")
-    )).src;
+    const coverUrl = (
+      document.querySelector("#bookImg > img") as HTMLImageElement
+    ).src;
     if (coverUrl) {
       getImageAttachment(coverUrl, this.imageMode, "cover-")
         .then((coverClass) => {
@@ -55,7 +56,7 @@ export class qidian extends BaseRuleClass {
     }
     additionalMetadate.tags = Array.from(
       document.querySelectorAll(".book-info > .tag > a, .tag-wrap > .tags")
-    ).map((a) => (<HTMLAnchorElement>a).innerText.trim());
+    ).map((a) => (a as HTMLAnchorElement).innerText.trim());
 
     // 限免探测
     /*
@@ -77,9 +78,9 @@ export class qidian extends BaseRuleClass {
 
     const liLength = document.querySelectorAll("#j-catalogWrap li").length;
     const getChapterTotalNumber = () => {
-      const span = (<HTMLSpanElement>(
-        document.querySelector("#J-catalogCount")
-      )).innerText.match(/\d+/);
+      const span = (
+        document.querySelector("#J-catalogCount") as HTMLSpanElement
+      ).innerText.match(/\d+/);
       if (span) {
         return Number(span[0]);
       }
@@ -94,7 +95,7 @@ export class qidian extends BaseRuleClass {
     for (let i = 0; i < sections.length; i++) {
       const s = sections[i];
       const sectionNumber = i + 1;
-      const sectionName = (<HTMLElement>s.querySelector("h3")).innerText
+      const sectionName = (s.querySelector("h3") as HTMLElement).innerText
         .trim()
         .split("\n")
         .slice(-1)[0]
@@ -102,13 +103,12 @@ export class qidian extends BaseRuleClass {
       let sectionChapterNumber = 0;
 
       const cs = s.querySelectorAll("ul.cf > li");
-      for (let j = 0; j < cs.length; j++) {
-        const c = cs[j];
+      for (const c of Array.from(cs)) {
         const a = c.querySelector("a");
         chapterNumber++;
         sectionChapterNumber++;
-        const chapterName = (<HTMLAnchorElement>a).innerText.trim();
-        const chapterUrl = (<HTMLAnchorElement>a).href;
+        const chapterName = (a as HTMLAnchorElement).innerText.trim();
+        const chapterUrl = (a as HTMLAnchorElement).href;
 
         const isVIP = () => {
           const host = new URL(chapterUrl).host;
@@ -147,18 +147,18 @@ export class qidian extends BaseRuleClass {
           this.chapterParse,
           "UTF-8",
           {
-            _csrfToken: _csrfToken,
-            bookId: bookId,
-            authorId: authorId,
-            chapterId: chapterId,
-            limitFree: limitFree,
+            _csrfToken,
+            bookId,
+            authorId,
+            chapterId,
+            limitFree,
           }
         );
         const isLogin = () => {
-          const sign_in_dom = document.querySelector(".sign-in");
-          const sign_out_dom = document.querySelector(".sign-out");
-          if (sign_in_dom && sign_out_dom) {
-            if (Array.from(sign_out_dom.classList).includes("hidden")) {
+          const signInDom = document.querySelector(".sign-in");
+          const signOutDom = document.querySelector(".sign-out");
+          if (signInDom && signOutDom) {
+            if (Array.from(signOutDom.classList).includes("hidden")) {
               return true;
             }
           }
@@ -197,27 +197,27 @@ export class qidian extends BaseRuleClass {
     charset: string,
     options: object
   ) {
-    interface options {
+    interface Options {
       _csrfToken: string;
       bookId: string;
       authorId: string;
       chapterId: string;
       limitFree: boolean;
     }
-    const bookId = (<options>options).bookId;
-    const authorId = (<options>options).authorId;
-    const chapterId = (<options>options).chapterId;
-    const limitFree = (<options>options).limitFree;
-    const _csrfToken = (<options>options)._csrfToken;
+    const bookId = (options as Options).bookId;
+    const authorId = (options as Options).authorId;
+    const chapterId = (options as Options).chapterId;
+    const limitFree = (options as Options).limitFree;
+    const _csrfToken = (options as Options)._csrfToken;
 
-    async function publicChapter(): Promise<chapterParseObject> {
-      const dom = await ggetHtmlDOM(chapterUrl, charset);
-      const chapterName = (<HTMLElement>(
-        dom.querySelector(".j_chapterName > .content-wrap")
-      )).innerText.trim();
+    async function publicChapter(): Promise<ChapterParseObject> {
+      const doc = await ggetHtmlDOM(chapterUrl, charset);
+      chapterName = (
+        doc.querySelector(".j_chapterName > .content-wrap") as HTMLElement
+      ).innerText.trim();
 
       const nullObj = {
-        chapterName: chapterName,
+        chapterName,
         contentRaw: null,
         contentText: null,
         contentHTML: null,
@@ -225,27 +225,27 @@ export class qidian extends BaseRuleClass {
         additionalMetadate: null,
       };
       // VIP章节
-      if (dom.querySelector(".vip-limit-wrap")) {
+      if (doc.querySelector(".vip-limit-wrap")) {
         return nullObj;
       }
 
-      const content = <HTMLElement>dom.querySelector(".read-content");
-      const author_say_wrap = <HTMLElement>(
-        dom.querySelector(".author-say-wrap")
-      );
+      const content = doc.querySelector(".read-content") as HTMLElement;
+      const authorSayWrap = doc.querySelector(
+        ".author-say-wrap"
+      ) as HTMLElement;
       if (content) {
-        if (author_say_wrap) {
-          const author_say = author_say_wrap.querySelector(
+        if (authorSayWrap) {
+          const authorSay = authorSayWrap.querySelector(
             "div.author-say > p:nth-child(3)"
           );
           const hr = document.createElement("hr");
           content.appendChild(hr);
-          content.appendChild(<HTMLElement>author_say);
+          content.appendChild(authorSay as HTMLElement);
         }
 
-        let { dom, text, images } = await cleanDOM(content, "TM");
+        const { dom, text, images } = await cleanDOM(content, "TM");
         return {
-          chapterName: chapterName,
+          chapterName,
           contentRaw: content,
           contentText: text,
           contentHTML: dom,
@@ -257,8 +257,8 @@ export class qidian extends BaseRuleClass {
       }
     }
 
-    async function vipChapter(): Promise<chapterParseObject> {
-      interface chapterInfo {
+    async function vipChapter(): Promise<ChapterParseObject> {
+      interface ChapterInfo {
         code: number;
         data: {
           chapterInfo: {
@@ -309,13 +309,13 @@ export class qidian extends BaseRuleClass {
         };
         msg: string;
       }
-      async function getChapterInfo(): Promise<chapterInfo | void> {
+      async function getChapterInfo(): Promise<ChapterInfo | void> {
         const baseUrl = "https://vipreader.qidian.com/ajax/chapter/chapterInfo";
         const search = new URLSearchParams({
-          _csrfToken: _csrfToken,
-          bookId: bookId,
-          chapterId: chapterId,
-          authorId: authorId,
+          _csrfToken,
+          bookId,
+          chapterId,
+          authorId,
         });
 
         const url = baseUrl + "?" + search.toString();
@@ -329,7 +329,7 @@ export class qidian extends BaseRuleClass {
           },
           responseType: "json",
         })
-          .then((response) => <chapterInfo>response.response)
+          .then((response) => response.response as ChapterInfo)
           .catch((error) => log.error(error));
       }
 
@@ -355,7 +355,7 @@ export class qidian extends BaseRuleClass {
 
           const { dom, text, images } = await cleanDOM(content, "TM");
           return {
-            chapterName: chapterName,
+            chapterName,
             contentRaw: content,
             contentText: text,
             contentHTML: dom,
@@ -368,7 +368,7 @@ export class qidian extends BaseRuleClass {
           );
 
           return {
-            chapterName: chapterName,
+            chapterName,
             contentRaw: null,
             contentText: null,
             contentHTML: null,
@@ -388,7 +388,7 @@ export class qidian extends BaseRuleClass {
       }
 
       return {
-        chapterName: chapterName,
+        chapterName,
         contentRaw: null,
         contentText: null,
         contentHTML: null,

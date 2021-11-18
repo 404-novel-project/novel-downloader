@@ -7,7 +7,7 @@ import { getHtmlDOM } from "../lib/http";
 import { introDomHandle } from "./lib/common";
 import { log } from "../log";
 
-export class qingoo extends BaseRuleClass {
+export class Qingoo extends BaseRuleClass {
   public constructor() {
     super();
     this.imageMode = "TM";
@@ -15,23 +15,25 @@ export class qingoo extends BaseRuleClass {
   }
 
   public async bookParse() {
-    let bookUrl = document.location.href;
+    const bookUrl = document.location.href;
 
-    const bookname = (<HTMLElement>(
-      document.querySelector(".title > dl > dd > h1")
-    )).innerText.trim();
-    const author = (<HTMLElement>document.querySelector("#author")).innerText
+    const bookname = (
+      document.querySelector(".title > dl > dd > h1") as HTMLElement
+    ).innerText.trim();
+    const author = (document.querySelector("#author") as HTMLElement).innerText
       .replace("作者：", "")
       .trim();
 
-    const introDom = <HTMLElement>document.querySelector("#allDesc");
+    const introDom = document.querySelector("#allDesc") as HTMLElement;
     const [introduction, introductionHTML, introCleanimages] =
       await introDomHandle(introDom);
 
     const additionalMetadate: BookAdditionalMetadate = {};
-    const coverUrl = (<HTMLImageElement>(
-      document.querySelector(".title > dl > dt > img:nth-child(1)")
-    )).src;
+    const coverUrl = (
+      document.querySelector(
+        ".title > dl > dt > img:nth-child(1)"
+      ) as HTMLImageElement
+    ).src;
     if (coverUrl) {
       getImageAttachment(coverUrl, this.imageMode, "cover-")
         .then((coverClass) => {
@@ -41,21 +43,22 @@ export class qingoo extends BaseRuleClass {
     }
 
     const chapters: Chapter[] = [];
-    interface chapterObj {
-      create_time: number; //1569595830900,
-      id: string; //"5b8a1844f71a513c492d6f3b",
-      name: string; //"第一章 我是CV",
-      sn: number; //1,
-      status: string; //"enable",
-      updateTime: number; //1569595830900,
-      update_time: number; //1569595830900,
-      word_count: number; //1066
+    interface ChapterObj {
+      create_time: number; // 1569595830900,
+      id: string; // "5b8a1844f71a513c492d6f3b",
+      name: string; // "第一章 我是CV",
+      sn: number; // 1,
+      status: string; // "enable",
+      updateTime: number; // 1569595830900,
+      update_time: number; // 1569595830900,
+      word_count: number; // 1066
     }
-    const data: chapterObj[] = (<any>unsafeWindow).data;
+    const data: ChapterObj[] = (unsafeWindow as any).data;
     // https://www.qingoo.cn/book?name=%E9%BE%99%E7%A0%B4%E4%B9%9D%E5%A4%A9%E8%AF%80&author=%E6%9F%B3%E6%9E%AB&bookId=57a1d378e64f735585a54b9e&index=0
-    const _linkTemp = (<HTMLAnchorElement>(
-      document.querySelector("#chapterItem")?.firstElementChild
-    ))?.href;
+    const _linkTemp = (
+      document.querySelector("#chapterItem")
+        ?.firstElementChild as HTMLAnchorElement
+    )?.href;
     const linkTemp = new URL(_linkTemp);
 
     for (const d of data) {
@@ -109,17 +112,17 @@ export class qingoo extends BaseRuleClass {
     options: object
   ) {
     const doc = await getHtmlDOM(chapterUrl, charset);
-    chapterName = (<HTMLHeadElement>(
-      doc.querySelector("#content > h1")
-    )).innerText.trim();
-    const content = <HTMLElement>doc.querySelector("#content");
+    chapterName = (
+      doc.querySelector("#content > h1") as HTMLHeadElement
+    ).innerText.trim();
+    const content = doc.querySelector("#content") as HTMLElement;
     if (content) {
       rm("div.header", false, content);
       rm("h1", false, content);
       rm("h6", false, content);
-      let { dom, text, images } = await cleanDOM(content, "TM");
+      const { dom, text, images } = await cleanDOM(content, "TM");
       return {
-        chapterName: chapterName,
+        chapterName,
         contentRaw: content,
         contentText: text,
         contentHTML: dom,
@@ -128,7 +131,7 @@ export class qingoo extends BaseRuleClass {
       };
     } else {
       return {
-        chapterName: chapterName,
+        chapterName,
         contentRaw: null,
         contentText: null,
         contentHTML: null,

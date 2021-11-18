@@ -5,10 +5,10 @@ export type PublicConstructor<T> = new () => T;
 
 export function rm(selector: string, all = false, dom: HTMLElement) {
   if (all) {
-    let rs = dom.querySelectorAll(selector);
+    const rs = dom.querySelectorAll(selector);
     rs.forEach((e) => e.remove());
   } else {
-    let r = dom.querySelector(selector);
+    const r = dom.querySelector(selector);
     if (r) {
       r.remove();
     }
@@ -19,7 +19,7 @@ export function rm(selector: string, all = false, dom: HTMLElement) {
 export function concurrencyRun(
   list: object[],
   limit: number,
-  asyncHandle: Function
+  asyncHandle: (arg: any) => any
 ) {
   async function recursion(arr: object[]): Promise<any> {
     const obj = await asyncHandle(arr.shift());
@@ -31,7 +31,7 @@ export function concurrencyRun(
   }
 
   const listCopy = [...list];
-  let asyncList = [];
+  const asyncList = [];
   while (limit--) {
     asyncList.push(recursion(listCopy));
   }
@@ -48,7 +48,7 @@ export function sandboxed(code: string) {
   document.body.appendChild(frame);
 
   if (frame.contentWindow) {
-    //@ts-expect-error Property 'Function' does not exist on type 'Window'.ts(2339)
+    // @ts-expect-error Property 'Function' does not exist on type 'Window'.ts(2339)
     const F = frame.contentWindow.Function;
     const args = Object.keys(frame.contentWindow).join();
 
@@ -62,9 +62,9 @@ export function sandboxed(code: string) {
 export function storageAvailable(type: string) {
   let storage;
   try {
-    //@ts-expect-error
+    // @ts-expect-error
     storage = window[type];
-    let x = "__storage_test__";
+    const x = "__storage_test__";
     storage.setItem(x, x);
     storage.removeItem(x);
     return true;
@@ -92,9 +92,9 @@ export function calculateMd5(blob: Blob) {
   return new Promise((resolve, rejects) => {
     const reader = new FileReader();
     reader.readAsArrayBuffer(blob);
-    reader.onloadend = function () {
+    reader.onloadend = () => {
       if (reader.result) {
-        //@ts-ignore
+        // @ts-ignore
         const wordArray = CryptoJS.lib.WordArray.create(reader.result);
         const hash = CryptoJS.MD5(wordArray).toString();
         // or CryptoJS.SHA256(wordArray).toString(); for SHA-2
@@ -107,7 +107,7 @@ export function calculateMd5(blob: Blob) {
   });
 }
 
-export class localStorageExpired {
+export class LocalStorageExpired {
   private storage: Storage;
 
   constructor() {

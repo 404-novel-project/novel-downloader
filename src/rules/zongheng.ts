@@ -2,11 +2,11 @@ import { BookAdditionalMetadate, Chapter, Status, Book } from "../main";
 import { cleanDOM } from "../lib/cleanDOM";
 import { getImageAttachment } from "../lib/attachments";
 import { getHtmlDOM, ggetHtmlDOM } from "../lib/http";
-import { BaseRuleClass, chapterParseObject } from "../rules";
+import { BaseRuleClass, ChapterParseObject } from "../rules";
 import { introDomHandle } from "./lib/common";
 import { log } from "../log";
 
-export class zongheng extends BaseRuleClass {
+export class Zongheng extends BaseRuleClass {
   public constructor() {
     super();
     this.imageMode = "TM";
@@ -15,13 +15,15 @@ export class zongheng extends BaseRuleClass {
 
   public async bookParse() {
     const bookUrl = document.location.href.replace("/showchapter/", "/book/");
-    const bookname = (<HTMLElement>(
-      document.querySelector("div.book-meta > h1")
-    )).innerText.trim();
+    const bookname = (
+      document.querySelector("div.book-meta > h1") as HTMLElement
+    ).innerText.trim();
 
-    const author = (<HTMLElement>(
-      document.querySelector("div.book-meta > p > span:nth-child(1) > a")
-    )).innerText.trim();
+    const author = (
+      document.querySelector(
+        "div.book-meta > p > span:nth-child(1) > a"
+      ) as HTMLElement
+    ).innerText.trim();
 
     const doc = await getHtmlDOM(bookUrl, undefined);
     const introDom = doc.querySelector("div.book-info > div.book-dec");
@@ -29,8 +31,9 @@ export class zongheng extends BaseRuleClass {
       await introDomHandle(introDom);
 
     const additionalMetadate: BookAdditionalMetadate = {};
-    let coverUrl = (<HTMLImageElement>doc.querySelector("div.book-img > img"))
-      .src;
+    const coverUrl = (
+      doc.querySelector("div.book-img > img") as HTMLImageElement
+    ).src;
     if (coverUrl) {
       getImageAttachment(coverUrl, this.imageMode, "cover-")
         .then((coverClass) => {
@@ -40,7 +43,7 @@ export class zongheng extends BaseRuleClass {
     }
     additionalMetadate.tags = Array.from(
       doc.querySelectorAll(".book-info>.book-label a")
-    ).map((a) => (<HTMLAnchorElement>a).innerText.trim());
+    ).map((a) => (a as HTMLAnchorElement).innerText.trim());
 
     const chapters: Chapter[] = [];
     const sections = document.querySelectorAll(".volume-list");
@@ -50,21 +53,20 @@ export class zongheng extends BaseRuleClass {
       const sectionNumber = i + 1;
 
       const sectionLabel = s.querySelector("div.volume");
-      Array.from((<HTMLElement>sectionLabel).children).forEach((ele) =>
+      Array.from((sectionLabel as HTMLElement).children).forEach((ele) =>
         ele.remove()
       );
 
-      const sectionName = (<HTMLElement>sectionLabel).innerText.trim();
+      const sectionName = (sectionLabel as HTMLElement).innerText.trim();
       let sectionChapterNumber = 0;
 
       const cs = s.querySelectorAll("ul.chapter-list > li");
-      for (let j = 0; j < cs.length; j++) {
-        const c = cs[j];
+      for (const c of Array.from(cs)) {
         const a = c.querySelector("a");
         chapterNumber++;
         sectionChapterNumber++;
-        const chapterName = (<HTMLAnchorElement>a).innerText.trim();
-        const chapterUrl = (<HTMLAnchorElement>a).href;
+        const chapterName = (a as HTMLAnchorElement).innerText.trim();
+        const chapterUrl = (a as HTMLAnchorElement).href;
 
         const isVIP = () => {
           if (c.className.includes("vip")) {
@@ -74,7 +76,7 @@ export class zongheng extends BaseRuleClass {
           }
         };
         const isPaid = () => {
-          //Todo
+          // Todo
           return false;
         };
 
@@ -94,7 +96,7 @@ export class zongheng extends BaseRuleClass {
           {}
         );
         const isLogin = () => {
-          //Todo
+          // Todo
           return false;
         };
         if (isVIP() && !(isLogin() && chapter.isPaid)) {
@@ -124,16 +126,16 @@ export class zongheng extends BaseRuleClass {
     charset: string,
     options: object
   ) {
-    async function publicChapter(): Promise<chapterParseObject> {
-      const dom = await ggetHtmlDOM(chapterUrl, charset);
-      const chapterName = (<HTMLElement>(
-        dom.querySelector("div.title_txtbox")
-      )).innerText.trim();
-      const content = <HTMLElement>dom.querySelector("div.content");
+    async function publicChapter(): Promise<ChapterParseObject> {
+      const doc = await ggetHtmlDOM(chapterUrl, charset);
+      const ChapterName = (
+        doc.querySelector("div.title_txtbox") as HTMLElement
+      ).innerText.trim();
+      const content = doc.querySelector("div.content") as HTMLElement;
       if (content) {
-        let { dom, text, images } = await cleanDOM(content, "TM");
+        const { dom, text, images } = await cleanDOM(content, "TM");
         return {
-          chapterName: chapterName,
+          chapterName: ChapterName,
           contentRaw: content,
           contentText: text,
           contentHTML: dom,
@@ -142,7 +144,7 @@ export class zongheng extends BaseRuleClass {
         };
       } else {
         return {
-          chapterName: chapterName,
+          chapterName: ChapterName,
           contentRaw: null,
           contentText: null,
           contentHTML: null,
@@ -152,10 +154,10 @@ export class zongheng extends BaseRuleClass {
       }
     }
 
-    async function vipChapter(): Promise<chapterParseObject> {
-      //Todo
+    async function vipChapter(): Promise<ChapterParseObject> {
+      // Todo
       return {
-        chapterName: chapterName,
+        chapterName,
         contentRaw: null,
         contentText: null,
         contentHTML: null,

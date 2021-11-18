@@ -1,7 +1,7 @@
-import { attachmentClass, ExpectError } from "../main";
+import { AttachmentClass, ExpectError } from "../main";
 import { getImageAttachment } from "./attachments";
 
-const blockElements = [
+const BlockElements = [
   "article",
   "aside",
   "footer",
@@ -30,7 +30,7 @@ const blockElements = [
   "samp",
   "s",
 ];
-const ignoreElements = [
+const IgnoreElements = [
   "script",
   "meta",
   "link",
@@ -66,7 +66,7 @@ function* findBase(
 }
 
 function getNextSibling(elem: HTMLElement | Text) {
-  (<ChildNode | null>elem) = elem.nextSibling;
+  (elem as ChildNode | null) = elem.nextSibling;
   if (
     elem &&
     elem.nodeName.toLowerCase() === "#text" &&
@@ -79,7 +79,7 @@ function getNextSibling(elem: HTMLElement | Text) {
 }
 
 function getPreviousSibling(elem: HTMLElement | Text) {
-  (<ChildNode | null>elem) = elem.previousSibling;
+  (elem as ChildNode | null) = elem.previousSibling;
   if (
     elem &&
     elem.nodeName.toLowerCase() === "#text" &&
@@ -98,7 +98,7 @@ function getParentElement(
   if (!_elem) {
     return null;
   }
-  let nodename = _elem.nodeName.toLowerCase();
+  const nodename = _elem.nodeName.toLowerCase();
   if (["div", "p"].includes(nodename)) {
     return _elem as HTMLDivElement | HTMLParagraphElement;
   } else {
@@ -122,11 +122,11 @@ async function formatImage(
     return;
   }
 
-  let tfi = await _formatImage(elem, builder);
+  const tfi = await _formatImage(elem, builder);
   if (!tfi) {
     return;
   }
-  let [imgElem, imgText, imgClass] = tfi;
+  const [imgElem, imgText, imgClass] = tfi;
 
   if (elem.parentElement?.childElementCount === 1) {
     temp0();
@@ -167,8 +167,8 @@ async function formatImage(
       if (
         previousSibling?.nodeName.toLowerCase() === "img" &&
         lastElement.lastElementChild?.nodeName.toLowerCase() === "img" &&
-        (<HTMLImageElement>lastElement.lastElementChild).alt ===
-          (<HTMLImageElement>previousSibling).src
+        (lastElement.lastElementChild as HTMLImageElement).alt ===
+          (previousSibling as HTMLImageElement).src
       ) {
         // 段落内连续图片
         temp1();
@@ -184,7 +184,7 @@ async function formatImage(
 async function _formatImage(
   elem: HTMLImageElement,
   builder: Builder
-): Promise<[HTMLImageElement, string, attachmentClass | null] | void> {
+): Promise<[HTMLImageElement, string, AttachmentClass | null] | void> {
   if (!elem.src) {
     return;
   }
@@ -199,9 +199,7 @@ async function _formatImage(
     const imgClass = await getImageAttachment(imageUrl, imgMode, "", noMD5);
     const imageName = imgClass.name;
 
-    const filterdImages = builder.images.find(
-      (imgClass) => imgClass.url === elem.src
-    );
+    const filterdImages = builder.images.find((img) => img.url === elem.src);
     if (!filterdImages) {
       builder.images.push(imgClass);
     }
@@ -271,10 +269,10 @@ function formatText(elems: (Text | HTMLBRElement)[], builder: Builder) {
     builder.dom.appendChild(tPElem);
   }
   function temp1() {
-    const lastElement = builder.dom.lastElementChild;
-    if (lastElement?.nodeName.toLowerCase() === "p") {
+    const lastElementTemp = builder.dom.lastElementChild;
+    if (lastElementTemp?.nodeName.toLowerCase() === "p") {
       const textElem = document.createTextNode(textContent);
-      lastElement.appendChild(textElem);
+      lastElementTemp.appendChild(textElem);
 
       const tPText = textContent + "\n".repeat(brCount);
       builder.text = builder.text + tPText;
@@ -287,7 +285,7 @@ function formatText(elems: (Text | HTMLBRElement)[], builder: Builder) {
   }
 
   const brCount = elems.filter(
-    (elem) => elem.nodeName.toLowerCase() === "br"
+    (ele) => ele.nodeName.toLowerCase() === "br"
   ).length;
   const elem = elems[0] as Text;
   const textContent = elem.textContent ? elem.textContent.trim() : "";
@@ -295,7 +293,7 @@ function formatText(elems: (Text | HTMLBRElement)[], builder: Builder) {
     return;
   }
 
-  //段落内，文字位于<img>后
+  // 段落内，文字位于<img>后
   const lastElement = builder.dom.lastElementChild;
   const previousSibling = getPreviousSibling(elem);
 
@@ -304,21 +302,21 @@ function formatText(elems: (Text | HTMLBRElement)[], builder: Builder) {
     lastElement?.nodeName.toLowerCase() === "p" &&
     previousSibling?.nodeName.toLowerCase() === "img" &&
     lastElement.lastElementChild?.nodeName.toLowerCase() === "img" &&
-    (<HTMLImageElement>lastElement.lastElementChild).alt ===
-      (<HTMLImageElement>previousSibling).src
+    (lastElement.lastElementChild as HTMLImageElement).alt ===
+      (previousSibling as HTMLImageElement).src
   ) {
     temp1();
     return;
   }
 
-  //按brCount进行处理
+  // 按brCount进行处理
   if (brCount === 0) {
     const nextSibling = getNextSibling(elem);
-    const previousSibling = getPreviousSibling(elem);
+    const previousSiblingBr = getPreviousSibling(elem);
 
     if (nextSibling === null) {
       // previousSibling !== null
-      if (previousSibling?.nodeName.toLowerCase() === "br") {
+      if (previousSiblingBr?.nodeName.toLowerCase() === "br") {
         // 文本位于最后
         temp0();
 
@@ -326,7 +324,7 @@ function formatText(elems: (Text | HTMLBRElement)[], builder: Builder) {
         builder.text = builder.text + tPText;
         return;
       } else if (
-        previousSibling === null &&
+        previousSiblingBr === null &&
         (() => {
           const parentElement = getParentElement(elem);
           if (parentElement?.childNodes.length === 1) {
@@ -352,7 +350,7 @@ function formatText(elems: (Text | HTMLBRElement)[], builder: Builder) {
     } else {
       // nextSibling.nodeName.toLowerCase() !== "br"
       // 文本后跟非<br>节点
-      if (previousSibling === null) {
+      if (previousSiblingBr === null) {
         // 文本位于最前
         temp0();
 
@@ -370,13 +368,13 @@ function formatText(elems: (Text | HTMLBRElement)[], builder: Builder) {
       }
     }
   } else if (brCount === 1) {
-    const lastElement = builder.dom.lastElementChild;
-    if (lastElement?.nodeName.toLowerCase() === "p") {
+    const lastElementBr = builder.dom.lastElementChild;
+    if (lastElementBr?.nodeName.toLowerCase() === "p") {
       const br = document.createElement("br");
       const textElem = document.createTextNode(textContent);
 
-      lastElement.appendChild(br);
-      lastElement.appendChild(textElem);
+      lastElementBr.appendChild(br);
+      lastElementBr.appendChild(textElem);
 
       const tPText = textContent + "\n";
       builder.text = builder.text + tPText;
@@ -451,12 +449,12 @@ interface BuilderOption {
 interface Builder {
   dom: HTMLElement;
   text: string;
-  images: attachmentClass[];
+  images: AttachmentClass[];
   imgMode: "naive" | "TM";
   option: BuilderOption | null;
 }
 async function walk(dom: HTMLElement, builder: Builder) {
-  const childNodes = [...findBase(dom, blockElements, ignoreElements)].filter(
+  const childNodes = [...findBase(dom, BlockElements, IgnoreElements)].filter(
     (b) => b
   );
   for (let i = 0; i < childNodes.length; i++) {
@@ -493,7 +491,7 @@ async function walk(dom: HTMLElement, builder: Builder) {
         break;
       }
       case "#text": {
-        let elems: (Text | HTMLBRElement)[] = [node as Text];
+        const elems: (Text | HTMLBRElement)[] = [node as Text];
 
         let j = i + 1;
         let jnodeName = nodeName as string;
@@ -501,7 +499,7 @@ async function walk(dom: HTMLElement, builder: Builder) {
           if (j >= childNodes.length) {
             break;
           }
-          let jnode = childNodes[j];
+          const jnode = childNodes[j];
           jnodeName = jnode.nodeName.toLowerCase();
           if (jnodeName === "br") {
             elems.push(jnode as HTMLBRElement);
@@ -543,8 +541,8 @@ export async function cleanDOM(
     dom: document.createElement("div"),
     text: "",
     images: [],
-    imgMode: imgMode,
-    option: option,
+    imgMode,
+    option,
   };
   await walk(DOM as HTMLElement, builder);
   return {
@@ -565,14 +563,14 @@ export function htmlTrim(dom: HTMLElement) {
     }
 
     if (ntype === "#text") {
-      if ((<Text>node).textContent?.trim() === "") {
+      if ((node as Text).textContent?.trim() === "") {
         node.remove();
       } else {
         return;
       }
     }
     if (ntype === "br") {
-      (<HTMLBRElement>node).remove();
+      (node as HTMLBRElement).remove();
     }
   }
 }

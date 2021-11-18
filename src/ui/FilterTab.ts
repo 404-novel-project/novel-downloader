@@ -6,7 +6,7 @@ import { Chapter } from "../main";
 import ChapterList from "./ChapterList";
 import { createStyle } from "../lib/createEl";
 
-export function getFunctionBody(fn: Function) {
+export function getFunctionBody(fn: FilterOption["raw"]) {
   return fn
     .toString()
     .replace("(arg) => {", "")
@@ -16,15 +16,15 @@ export function getFunctionBody(fn: Function) {
     .join(" ")
     .trim();
 }
-interface filterOption {
+interface FilterOption {
   raw: (arg: string) => ((chapter: Chapter) => boolean) | undefined;
   description: string;
   abbreviation: string;
 }
-interface filterOptionDict {
-  [index: string]: filterOption;
+interface FilterOptionDict {
+  [index: string]: FilterOption;
 }
-export const filterOptionDict: filterOptionDict = {
+export const filterOptionDict: FilterOptionDict = {
   null: {
     raw: (arg: string) => {
       return (chapter: Chapter) => true;
@@ -105,7 +105,7 @@ export const filterOptionDict: filterOptionDict = {
       "<p>基于章节序号过滤，章节序号可通过章节标题悬停查看。</p><p>支持以下格式：13, 1-5, 2-, -89。可通过分号（,）使用多个表达式。</p>",
     abbreviation: "章节序号",
   },
-  //包含有相应名称章节
+  // 包含有相应名称章节
   baseOnString: {
     raw: (arg: string) => {
       return (chapter: Chapter) => {
@@ -126,7 +126,7 @@ export function getFilterFunction(arg: string, functionBody: string) {
   }
 }
 
-export interface filterSetting {
+export interface FilterSetting {
   arg: string;
   hiddenBad: boolean;
   filterType: string;
@@ -141,10 +141,10 @@ export default Vue.defineComponent({
     const filterType = Vue.ref("null");
     const filterOptionList = Object.entries(filterOptionDict);
     const functionBody = Vue.computed(() =>
-      getFunctionBody(filterOptionDict[filterType.value]["raw"])
+      getFunctionBody(filterOptionDict[filterType.value].raw)
     );
     const filterDescription = Vue.computed(
-      () => filterOptionDict[filterType.value]["description"]
+      () => filterOptionDict[filterType.value].description
     );
     const filterSetting = Vue.computed(() => ({
       arg: arg.value,
@@ -164,7 +164,7 @@ export default Vue.defineComponent({
     );
 
     const getFilterSetting = Vue.inject("getFilterSetting") as () =>
-      | filterSetting
+      | FilterSetting
       | undefined;
     Vue.onMounted(() => {
       const faterFilterSetting = getFilterSetting();

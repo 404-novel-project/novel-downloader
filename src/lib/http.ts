@@ -27,7 +27,7 @@ import { _GM_xmlhttpRequest } from "./GM";
 // Upgrade
 // Via
 
-export interface gfetch_request_options {
+export interface GfetchRequestOptions {
   method?: string;
   headers?: object;
   data?: string;
@@ -60,26 +60,26 @@ export function gfetch(
     anonymous,
     username,
     password,
-  }: gfetch_request_options = {}
+  }: GfetchRequestOptions = {}
 ): Promise<GM_xmlhttpResponse> {
   return new Promise((resolve, reject) => {
     if (_GM_xmlhttpRequest) {
       _GM_xmlhttpRequest({
-        url: url,
-        method: method,
-        headers: headers,
-        data: data,
-        cookie: cookie,
-        binary: binary,
-        nocache: nocache,
-        revalidate: revalidate,
-        timeout: timeout,
-        context: context,
-        responseType: responseType,
-        overrideMimeType: overrideMimeType,
-        anonymous: anonymous,
-        username: username,
-        password: password,
+        url,
+        method,
+        headers,
+        data,
+        cookie,
+        binary,
+        nocache,
+        revalidate,
+        timeout,
+        context,
+        responseType,
+        overrideMimeType,
+        anonymous,
+        username,
+        password,
         onload: (obj: GM_xmlhttpResponse) => {
           resolve(obj);
         },
@@ -95,8 +95,8 @@ export function gfetch(
 
 export async function getText(
   url: string,
-  charset: string | undefined,
-  init: RequestInit | undefined = undefined
+  charset?: string,
+  init?: RequestInit
 ) {
   // upgrade http to https
   const _url = new URL(url);
@@ -135,8 +135,8 @@ export async function getText(
 
 export async function getHtmlDOM(
   url: string,
-  charset: string | undefined,
-  init: RequestInit | undefined = undefined
+  charset?: string,
+  init?: RequestInit
 ) {
   const htmlText = await getText(url, charset, init);
   if (!htmlText) {
@@ -147,8 +147,8 @@ export async function getHtmlDOM(
 
 export async function ggetText(
   url: string,
-  charset: string | undefined,
-  init: gfetch_request_options | undefined = undefined
+  charset?: string,
+  init?: GfetchRequestOptions
 ) {
   if (charset === undefined) {
     return gfetch(url, init)
@@ -162,14 +162,14 @@ export async function ggetText(
       .catch((error) => log.error(error));
   } else {
     if (init) {
-      init["responseType"] = "arraybuffer";
+      init.responseType = "arraybuffer";
     } else {
       init = { responseType: "arraybuffer" };
     }
     return gfetch(url, init)
       .then((response) => {
         if (response.status >= 200 && response.status <= 299) {
-          return <ArrayBuffer>response.response;
+          return response.response as ArrayBuffer;
         } else {
           throw new Error(`Bad response! ${url}`);
         }
@@ -185,8 +185,8 @@ export async function ggetText(
 
 export async function ggetHtmlDOM(
   url: string,
-  charset: string | undefined,
-  init: gfetch_request_options | undefined = undefined
+  charset?: string,
+  init?: GfetchRequestOptions
 ) {
   const htmlText = await ggetText(url, charset, init);
   if (!htmlText) {

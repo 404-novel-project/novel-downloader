@@ -1,26 +1,26 @@
 import { Book, Chapter } from "../main";
 
-interface tabData {
+interface TabData {
   [key: string]: string;
 }
-interface tabDataRaw {
+interface TabDataRaw {
   domain: string;
-  value: tabData;
+  value: TabData;
 }
 
 const TabDataKeyName = "data-5186766268769811";
-function setTabData(key: string, value: string): Promise<tabData> {
+function setTabData(key: string, value: string): Promise<TabData> {
   return new Promise((resolve, reject) => {
     GM_getTab(async (curTabObject) => {
       const _tabData = await getTabData(document.location.hostname);
-      let tabData: tabData;
+      let tabData: TabData;
       if (_tabData) {
         tabData = _tabData;
       } else {
         tabData = {};
       }
       tabData[key] = value;
-      (<any>curTabObject)[TabDataKeyName] = {
+      (curTabObject as any)[TabDataKeyName] = {
         domain: document.location.hostname,
         value: tabData,
       };
@@ -30,27 +30,29 @@ function setTabData(key: string, value: string): Promise<tabData> {
   });
 }
 
-function getTabData(domain: string): Promise<tabData | null> {
+function getTabData(domain: string): Promise<TabData | null> {
   return new Promise((resolve, reject) => {
     GM_getTabs((curTabObjects) => {
-      for (let i in curTabObjects) {
-        const rawData = curTabObjects[i] as any;
-        if (
-          typeof rawData === "undefined" ||
-          Object.keys(rawData).length === 0
-        ) {
-          continue;
-        }
-        let data: tabDataRaw | undefined;
-        if (rawData[TabDataKeyName]) {
-          data = rawData[TabDataKeyName] as tabDataRaw;
-        } else {
-          continue;
-        }
-        const dataDomain = data.domain;
-        const tabData = data.value;
-        if (dataDomain === domain) {
-          resolve(tabData);
+      for (const i in curTabObjects) {
+        if (Object.prototype.hasOwnProperty.call(curTabObjects, i)) {
+          const rawData = curTabObjects[i] as any;
+          if (
+            typeof rawData === "undefined" ||
+            Object.keys(rawData).length === 0
+          ) {
+            continue;
+          }
+          let data: TabDataRaw | undefined;
+          if (rawData[TabDataKeyName]) {
+            data = rawData[TabDataKeyName] as TabDataRaw;
+          } else {
+            continue;
+          }
+          const dataDomain = data.domain;
+          const tabData = data.value;
+          if (dataDomain === domain) {
+            resolve(tabData);
+          }
         }
       }
       resolve(null);
@@ -58,11 +60,11 @@ function getTabData(domain: string): Promise<tabData | null> {
   });
 }
 
-function deleteTabData(key: string): Promise<tabData> {
+function deleteTabData(key: string): Promise<TabData> {
   return new Promise((resolve, reject) => {
     GM_getTab(async (curTabObject) => {
       const _tabData = await getTabData(document.location.hostname);
-      let tabData: tabData;
+      let tabData: TabData;
       if (_tabData) {
         tabData = _tabData;
       } else {
@@ -293,23 +295,24 @@ if (
       openWindow(u);
     }
   }
-  (<any>unsafeWindow).runTest = runTest;
+  (unsafeWindow as any).runTest = runTest;
 } else {
   window.addEventListener("DOMContentLoaded", () => {
     setTimeout(async () => {
       const runFlag = await getTabData("greasyfork.org");
       if (runFlag) {
+        // tslint:disable-next-line:no-console
         console.log("[novel-downloader-tester]开始运行测试……");
 
         function chapterFilter(chapter: Chapter) {
           return chapter.chapterNumber <= 20;
         }
-        (<any>unsafeWindow).chapterFilter = chapterFilter;
+        (unsafeWindow as any).chapterFilter = chapterFilter;
 
         function customFinishCallback(book: Book) {
           window.close();
         }
-        (<any>unsafeWindow).customFinishCallback = customFinishCallback;
+        (unsafeWindow as any).customFinishCallback = customFinishCallback;
 
         document.getElementById("novel-downloader")?.click();
       }
@@ -317,4 +320,5 @@ if (
   });
 }
 
+// tslint:disable-next-line:no-console
 console.log("[novel-downloader-tester]测试脚本载入成功……");

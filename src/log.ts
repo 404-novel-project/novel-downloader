@@ -10,9 +10,9 @@ if (enableDebug.value) {
 
 export let logText = "";
 const originalFactory = log.methodFactory;
-log.methodFactory = function (methodName, logLevel, loggerName) {
+log.methodFactory = (methodName, logLevel, loggerName) => {
   const rawMethod = originalFactory(methodName, logLevel, loggerName);
-  return function (message) {
+  return (message) => {
     try {
       if (typeof message === "object") {
         if (message instanceof Error) {
@@ -23,7 +23,9 @@ log.methodFactory = function (methodName, logLevel, loggerName) {
       } else {
         logText += message + "\n";
       }
-    } catch (error) {}
+    } catch (error) {
+      log.error(error);
+    }
     rawMethod(message);
   };
 };

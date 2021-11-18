@@ -6,7 +6,7 @@ import { getHtmlDOM } from "../lib/http";
 import { introDomHandle } from "./lib/common";
 import { log } from "../log";
 
-export class shubaowa extends BaseRuleClass {
+export class Shubaowa extends BaseRuleClass {
   public constructor() {
     super();
     this.imageMode = "TM";
@@ -15,22 +15,23 @@ export class shubaowa extends BaseRuleClass {
 
   public async bookParse() {
     const bookUrl = document.location.href;
-    const bookname = (<HTMLElement>(
-      document.querySelector("#info > h1:nth-child(1)")
-    )).innerText.trim();
-    const author = (<HTMLElement>(
-      document.querySelector("#info > p:nth-child(2)")
-    )).innerText
+    const bookname = (
+      document.querySelector("#info > h1:nth-child(1)") as HTMLElement
+    ).innerText.trim();
+    const author = (
+      document.querySelector("#info > p:nth-child(2)") as HTMLElement
+    ).innerText
       .replace(/作(\s+)?者[：:]/, "")
       .trim();
 
-    const introDom = <HTMLElement>document.querySelector("#intro");
+    const introDom = document.querySelector("#intro") as HTMLElement;
     const [introduction, introductionHTML, introCleanimages] =
       await introDomHandle(introDom);
 
     const additionalMetadate: BookAdditionalMetadate = {};
-    const coverUrl = (<HTMLImageElement>document.querySelector("#fmimg > img"))
-      ?.src;
+    const coverUrl = (
+      document.querySelector("#fmimg > img") as HTMLImageElement
+    )?.src;
     if (coverUrl) {
       getImageAttachment(coverUrl, this.imageMode, "cover-")
         .then((coverClass) => {
@@ -44,8 +45,8 @@ export class shubaowa extends BaseRuleClass {
     let chapterNumber = 0;
     for (const aElem of Array.from(cos)) {
       chapterNumber++;
-      const chapterName = (<HTMLAnchorElement>aElem).innerText;
-      const chapterUrl = (<HTMLAnchorElement>aElem).href;
+      const chapterName = (aElem as HTMLAnchorElement).innerText;
+      const chapterUrl = (aElem as HTMLAnchorElement).href;
       const chapter = new Chapter(
         bookUrl,
         bookname,
@@ -84,17 +85,17 @@ export class shubaowa extends BaseRuleClass {
     charset: string,
     options: object
   ) {
-    const dom = await getHtmlDOM(chapterUrl, charset);
+    const doc = await getHtmlDOM(chapterUrl, charset);
 
-    chapterName = (<HTMLElement>(
-      dom.querySelector(".bookname > h1:nth-child(1)")
-    )).innerText.trim();
+    chapterName = (
+      doc.querySelector(".bookname > h1:nth-child(1)") as HTMLElement
+    ).innerText.trim();
 
-    const content = <HTMLElement>dom.querySelector("#content");
+    const content = doc.querySelector("#content") as HTMLElement;
     if (content) {
-      let { dom, text, images } = await cleanDOM(content, "TM");
+      const { dom, text, images } = await cleanDOM(content, "TM");
       return {
-        chapterName: chapterName,
+        chapterName,
         contentRaw: content,
         contentText: text,
         contentHTML: dom,
@@ -103,7 +104,7 @@ export class shubaowa extends BaseRuleClass {
       };
     } else {
       return {
-        chapterName: chapterName,
+        chapterName,
         contentRaw: null,
         contentText: null,
         contentHTML: null,

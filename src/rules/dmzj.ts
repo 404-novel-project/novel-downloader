@@ -7,7 +7,7 @@ import { getHtmlDOM } from "../lib/http";
 import { introDomHandle } from "./lib/common";
 import { log } from "../log";
 
-export class dmzj extends BaseRuleClass {
+export class Dmzj extends BaseRuleClass {
   public constructor() {
     super();
     this.imageMode = "TM";
@@ -16,23 +16,25 @@ export class dmzj extends BaseRuleClass {
   public async bookParse() {
     const bookUrl = document.location.href;
 
-    const bookname = (<HTMLElement>(
-      document.querySelector(".comic_deCon > h1 > a")
-    )).innerText.trim();
-    const author = (<HTMLElement>(
-      document.querySelector(".comic_deCon_liO > li:nth-child(1)")
-    )).innerText
+    const bookname = (
+      document.querySelector(".comic_deCon > h1 > a") as HTMLElement
+    ).innerText.trim();
+    const author = (
+      document.querySelector(
+        ".comic_deCon_liO > li:nth-child(1)"
+      ) as HTMLElement
+    ).innerText
       .replace("作者：", "")
       .trim();
 
-    const introDom = <HTMLElement>document.querySelector(".comic_deCon_d");
+    const introDom = document.querySelector(".comic_deCon_d") as HTMLElement;
     const [introduction, introductionHTML, introCleanimages] =
       await introDomHandle(introDom);
 
     const additionalMetadate: BookAdditionalMetadate = {};
-    const coverUrl = (<HTMLImageElement>(
-      document.querySelector(".comic_i_img > a > img")
-    )).src;
+    const coverUrl = (
+      document.querySelector(".comic_i_img > a > img") as HTMLImageElement
+    ).src;
     if (coverUrl) {
       getImageAttachment(coverUrl, this.imageMode, "cover-")
         .then((coverClass) => {
@@ -42,14 +44,14 @@ export class dmzj extends BaseRuleClass {
     }
 
     const chapters: Chapter[] = [];
-    let cos = document.querySelectorAll(
+    const cos = document.querySelectorAll(
       "div.zj_list_con:nth-child(4) > ul.list_con_li > li"
     );
     let chapterNumber = 0;
     for (const co of Array.from(cos)) {
       chapterNumber++;
-      const a = <HTMLAnchorElement>co.firstElementChild;
-      const span = <HTMLSpanElement>a.lastElementChild;
+      const a = co.firstElementChild as HTMLAnchorElement;
+      const span = a.lastElementChild as HTMLSpanElement;
       const chapterName = span.innerText;
       const chapterUrl = a.href;
       const isVIP = false;
@@ -92,21 +94,21 @@ export class dmzj extends BaseRuleClass {
     charset: string,
     options: object
   ) {
-    function getpicUrlList(doc: Document) {
-      const img_prefix = "https://images.dmzj.com/";
+    function getpicUrlList(docI: Document) {
+      const imgPrefix = "https://images.dmzj.com/";
 
       let pages = sandboxed(
-        (<HTMLScriptElement>doc.querySelector("head > script")).innerText +
+        (docI.querySelector("head > script") as HTMLScriptElement).innerText +
           ";return pages;"
       );
       pages = pages.replace(/\n/g, "");
       pages = pages.replace(/\r/g, "|");
       const info = sandboxed("return (" + pages + ")");
       if (info) {
-        const picUrlList = info["page_url"]
+        const picUrlListI = info.page_url
           .split("|")
-          .map((pic: string) => img_prefix + pic);
-        return picUrlList;
+          .map((pic: string) => imgPrefix + pic);
+        return picUrlListI;
       }
     }
 
@@ -123,9 +125,9 @@ export class dmzj extends BaseRuleClass {
         pElem.appendChild(imgElem);
         content.appendChild(pElem);
       }
-      let { dom, text, images } = await cleanDOM(content, "TM");
+      const { dom, text, images } = await cleanDOM(content, "TM");
       return {
-        chapterName: chapterName,
+        chapterName,
         contentRaw: content,
         contentText: text,
         contentHTML: dom,
@@ -135,7 +137,7 @@ export class dmzj extends BaseRuleClass {
     }
 
     return {
-      chapterName: chapterName,
+      chapterName,
       contentRaw: null,
       contentText: null,
       contentHTML: null,

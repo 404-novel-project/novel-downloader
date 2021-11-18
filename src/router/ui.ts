@@ -13,7 +13,7 @@ export function getUI(): UIObject {
         const jumpUrl = `https://www.shuquge.com/txt/${id}/index.html`;
         return {
           type: "jump",
-          jumpUrl: jumpUrl,
+          jumpUrl,
         };
       } else {
         return {

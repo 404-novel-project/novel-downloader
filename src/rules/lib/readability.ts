@@ -1,9 +1,5 @@
 import { Readability } from "@mozilla/readability";
-import {
-  getHtmlDOM,
-  ggetHtmlDOM,
-  gfetch_request_options,
-} from "../../lib/http";
+import { getHtmlDOM, ggetHtmlDOM, GfetchRequestOptions } from "../../lib/http";
 
 interface ReadabilityOptions {
   debug?: boolean;
@@ -16,33 +12,34 @@ interface ReadabilityOptions {
   disableJSONLD?: boolean;
 }
 
-export function parse(
-  doc: Document,
-  options: ReadabilityOptions | undefined = undefined
-) {
+export function parse(doc: Document, options?: ReadabilityOptions) {
   return new Readability(doc, options).parse();
 }
 
 export async function fetchAndParse(
   url: string,
-  charset: string | undefined,
-  init: RequestInit | undefined = undefined,
-  patch: (doc: Document) => Document = (doc) => doc,
-  options: ReadabilityOptions | undefined = undefined
+  charset?: string,
+  init?: RequestInit,
+  patch: (doc: Document) => Document = (docm) => docm,
+  options?: ReadabilityOptions
 ) {
   let doc = await getHtmlDOM(url, charset, init);
-  doc = patch(doc);
+  if (typeof patch === "function") {
+    doc = patch(doc);
+  }
   return parse(doc, options);
 }
 
 export async function gfetchAndParse(
   url: string,
-  charset: string | undefined,
-  init: gfetch_request_options | undefined = undefined,
-  patch: (doc: Document) => Document = (doc) => doc,
-  options: ReadabilityOptions | undefined = undefined
+  charset?: string,
+  init?: GfetchRequestOptions,
+  patch: (doc: Document) => Document = (docm) => docm,
+  options?: ReadabilityOptions
 ) {
   let doc = await ggetHtmlDOM(url, charset, init);
-  doc = patch(doc);
+  if (typeof patch === "function") {
+    doc = patch(doc);
+  }
   return parse(doc, options);
 }

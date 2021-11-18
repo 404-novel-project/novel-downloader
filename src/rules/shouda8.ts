@@ -7,7 +7,7 @@ import { getHtmlDOM } from "../lib/http";
 import { introDomHandle } from "./lib/common";
 import { log } from "../log";
 
-export class shouda8 extends BaseRuleClass {
+export class Shouda8 extends BaseRuleClass {
   public constructor() {
     super();
     this.imageMode = "TM";
@@ -15,28 +15,28 @@ export class shouda8 extends BaseRuleClass {
 
   public async bookParse() {
     const bookUrl = document.location.href;
-    const bookname = (<HTMLElement>(
-      document.querySelector(".bread-crumbs > li:nth-child(4)")
-    )).innerText.trim();
-    const author = (<HTMLElement>(
-      document.querySelector("div.bookname > h1 > em")
-    )).innerText
+    const bookname = (
+      document.querySelector(".bread-crumbs > li:nth-child(4)") as HTMLElement
+    ).innerText.trim();
+    const author = (
+      document.querySelector("div.bookname > h1 > em") as HTMLElement
+    ).innerText
       .replace("作者：", "")
       .trim();
 
-    const introDom = <HTMLElement>document.querySelector(".intro");
+    const introDom = document.querySelector(".intro") as HTMLElement;
     const [introduction, introductionHTML, introCleanimages] =
-      await introDomHandle(introDom, (introDom) => {
-        rm(".book_keywords", false, introDom);
-        rm("script", true, introDom);
-        rm("#cambrian0", false, introDom);
-        return introDom;
+      await introDomHandle(introDom, (introDomI) => {
+        rm(".book_keywords", false, introDomI);
+        rm("script", true, introDomI);
+        rm("#cambrian0", false, introDomI);
+        return introDomI;
       });
 
     const additionalMetadate: BookAdditionalMetadate = {};
-    const coverUrl = (<HTMLImageElement>(
-      document.querySelector(".pic > img:nth-child(1)")
-    )).src;
+    const coverUrl = (
+      document.querySelector(".pic > img:nth-child(1)") as HTMLImageElement
+    ).src;
     if (coverUrl) {
       getImageAttachment(coverUrl, this.imageMode, "cover-")
         .then((coverClass) => {
@@ -48,7 +48,7 @@ export class shouda8 extends BaseRuleClass {
     const chapters: Chapter[] = [];
     const chapterList = document.querySelectorAll(".link_14 > dl dd a");
     for (let i = 0; i < chapterList.length; i++) {
-      const a = <HTMLLinkElement>chapterList[i];
+      const a = chapterList[i] as HTMLLinkElement;
       const chapterName = a.innerText;
       const chapterUrl = a.href;
       const isVIP = false;
@@ -91,18 +91,18 @@ export class shouda8 extends BaseRuleClass {
     charset: string,
     options: object
   ) {
-    const dom = await getHtmlDOM(chapterUrl, charset);
+    const doc = await getHtmlDOM(chapterUrl, charset);
 
-    chapterName = (<HTMLElement>(
-      dom.querySelector(".kfyd > h2:nth-child(1)")
-    )).innerText.trim();
+    chapterName = (
+      doc.querySelector(".kfyd > h2:nth-child(1)") as HTMLElement
+    ).innerText.trim();
 
-    const content = <HTMLElement>dom.querySelector("#content");
+    const content = doc.querySelector("#content") as HTMLElement;
     if (content) {
       rm("p:last-child", false, content);
-      let { dom, text, images } = await cleanDOM(content, "TM");
+      const { dom, text, images } = await cleanDOM(content, "TM");
       return {
-        chapterName: chapterName,
+        chapterName,
         contentRaw: content,
         contentText: text,
         contentHTML: dom,
@@ -111,7 +111,7 @@ export class shouda8 extends BaseRuleClass {
       };
     } else {
       return {
-        chapterName: chapterName,
+        chapterName,
         contentRaw: null,
         contentText: null,
         contentHTML: null,

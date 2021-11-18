@@ -1,11 +1,11 @@
 import {
   getSaveBookObj,
-  saveBook,
-  saveOptions,
+  SaveBook,
+  SaveOptions,
   saveOptionsValidate,
 } from "./save/save";
 import {
-  attachmentClass,
+  AttachmentClass,
   ChapterAdditionalMetadate,
   Book,
   Status,
@@ -19,23 +19,23 @@ import {
   enableCustomSaveOptions,
 } from "./setting";
 import { concurrencyRun } from "./lib/misc";
-import { newUnsafeWindow, newWindow } from "./global";
+import { NewUnsafeWindow, NewWindow } from "./global";
 import { clearAttachmentClassCache } from "./lib/attachments";
 import { successPlus, failedPlus, printStat } from "./stat";
-import { vm as progress, progressVM } from "./ui/progress";
+import { vm as progress, ProgressVM } from "./ui/progress";
 
-interface workStatusObj {
+interface WorkStatusObj {
   [index: string]: boolean;
 }
 const workStatusKeyName = "novel-downloader-EaraVl9TtSM2405L";
 
-export interface chapterParseObject {
+export interface ChapterParseObject {
   chapterName: string | null;
 
   contentRaw: HTMLElement | null;
   contentText: string | null;
   contentHTML: HTMLElement | null;
-  contentImages: attachmentClass[] | null;
+  contentImages: AttachmentClass[] | null;
   additionalMetadate: ChapterAdditionalMetadate | null;
 }
 
@@ -44,7 +44,7 @@ export abstract class BaseRuleClass {
   public charset: string;
   public concurrencyLimit: number;
   public maxRunLimit?: number;
-  public saveOptions?: saveOptions;
+  public saveOptions?: SaveOptions;
 
   public book?: Book;
 
@@ -65,7 +65,7 @@ export abstract class BaseRuleClass {
     isPaid: boolean | null,
     charset: string,
     options: object
-  ): Promise<chapterParseObject>;
+  ): Promise<ChapterParseObject>;
 
   public async run() {
     log.info(`[run]下载开始`);
@@ -95,8 +95,8 @@ export abstract class BaseRuleClass {
 
   protected preTest() {
     const self = this;
-    const storage = (window as newWindow & typeof globalThis).customStorage;
-    let workStatus: workStatusObj | undefined = storage.get(workStatusKeyName);
+    const storage = (window as NewWindow & typeof globalThis).customStorage;
+    let workStatus: WorkStatusObj | undefined = storage.get(workStatusKeyName);
     if (workStatus) {
       const nowNumber = Object.keys(workStatus).length;
       if (self.maxRunLimit && nowNumber >= self.maxRunLimit) {
@@ -140,7 +140,7 @@ export abstract class BaseRuleClass {
     };
     window.onbeforeunload = confirmExit;
 
-    (window as newWindow & typeof globalThis).downloading = true;
+    (window as NewWindow & typeof globalThis).downloading = true;
 
     return true;
   }
@@ -148,9 +148,10 @@ export abstract class BaseRuleClass {
   protected postCallback() {
     if (
       enableCustomFinishCallback &&
-      typeof (<newUnsafeWindow>unsafeWindow).customFinishCallback === "function"
+      typeof (unsafeWindow as NewUnsafeWindow).customFinishCallback ===
+        "function"
     ) {
-      const customFinishCallback = (<newUnsafeWindow>unsafeWindow)
+      const customFinishCallback = (unsafeWindow as NewUnsafeWindow)
         .customFinishCallback;
       log.info(
         `发现自定义结束回调函数，内容如下：\n${customFinishCallback.toString()}`
@@ -161,8 +162,8 @@ export abstract class BaseRuleClass {
 
   protected postHook() {
     const self = this;
-    const storage = (window as newWindow & typeof globalThis).customStorage;
-    const workStatus: workStatusObj | null = storage.get(workStatusKeyName);
+    const storage = (window as NewWindow & typeof globalThis).customStorage;
+    const workStatus: WorkStatusObj | null = storage.get(workStatusKeyName);
     if (workStatus) {
       delete workStatus[document.location.href];
     }
@@ -173,9 +174,9 @@ export abstract class BaseRuleClass {
     self.audio?.remove();
 
     window.onbeforeunload = null;
-    (window as newWindow & typeof globalThis).downloading = false;
+    (window as NewWindow & typeof globalThis).downloading = false;
 
-    (<progressVM>progress).reset();
+    (progress as ProgressVM).reset();
 
     return true;
   }
@@ -205,12 +206,12 @@ export abstract class BaseRuleClass {
     log.debug("[run]保存数据");
     if (
       enableCustomSaveOptions &&
-      typeof (<newUnsafeWindow>unsafeWindow).saveOptions === "object" &&
-      saveOptionsValidate((<newUnsafeWindow>unsafeWindow).saveOptions)
+      typeof (unsafeWindow as NewUnsafeWindow).saveOptions === "object" &&
+      saveOptionsValidate((unsafeWindow as NewUnsafeWindow).saveOptions)
     ) {
-      const saveOptions = (<newUnsafeWindow>unsafeWindow).saveOptions;
-      log.info("[run]发现自定义保存参数，内容如下\n", saveOptions);
-      return getSaveBookObj(book, saveOptions);
+      const saveOptionsInner = (unsafeWindow as NewUnsafeWindow).saveOptions;
+      log.info("[run]发现自定义保存参数，内容如下\n", saveOptionsInner);
+      return getSaveBookObj(book, saveOptionsInner);
     } else {
       return getSaveBookObj(book, {});
     }
@@ -220,12 +221,12 @@ export abstract class BaseRuleClass {
     function isEnable() {
       if (
         enableCustomChapterFilter &&
-        typeof (<newUnsafeWindow>unsafeWindow).chapterFilter === "function"
+        typeof (unsafeWindow as NewUnsafeWindow).chapterFilter === "function"
       ) {
         let text =
           "[initChapters]发现自定义筛选函数，自定义筛选函数内容如下：\n";
-        //@ts-expect-error
-        text += (<newUnsafeWindow>unsafeWindow).chapterFilter.toString();
+        // @ts-expect-error
+        text += (unsafeWindow as NewUnsafeWindow).chapterFilter.toString();
         log.info(text);
         return true;
       } else {
@@ -236,8 +237,8 @@ export abstract class BaseRuleClass {
     function _filter(chapter: Chapter) {
       let b = true;
       try {
-        //@ts-expect-error
-        const u = (<newUnsafeWindow>unsafeWindow).chapterFilter(chapter);
+        // @ts-expect-error
+        const u = (unsafeWindow as NewUnsafeWindow).chapterFilter(chapter);
         if (typeof u === "boolean") {
           b = u;
         }
@@ -259,7 +260,7 @@ export abstract class BaseRuleClass {
     return chapters;
   }
 
-  protected async initChapters(book: Book, saveBookObj: saveBook) {
+  protected async initChapters(book: Book, saveBookObj: SaveBook) {
     const self = this;
     log.info(`[initChapters]开始初始化章节`);
     Object.entries(self).forEach((kv) =>
@@ -270,11 +271,11 @@ export abstract class BaseRuleClass {
       log.error(`[initChapters]初始化章节出错，未找到需初始化章节`);
       return [];
     }
-    (<progressVM>progress).totalChapterNumber = chapters.length;
+    (progress as ProgressVM).totalChapterNumber = chapters.length;
 
     if (self.concurrencyLimit === 1) {
-      for (let chapter of chapters) {
-        if ((window as newWindow & typeof globalThis).stopFlag) {
+      for (const chapter of chapters) {
+        if ((window as NewWindow & typeof globalThis).stopFlag) {
           log.info("[chapter]收到停止信号，停止继续下载。");
           break;
         }
@@ -294,7 +295,7 @@ export abstract class BaseRuleClass {
           if (curChapter === undefined) {
             return Promise.resolve();
           }
-          if ((window as newWindow & typeof globalThis).stopFlag) {
+          if ((window as NewWindow & typeof globalThis).stopFlag) {
             log.info("[chapter]收到停止信号，停止继续下载。");
             return Promise.resolve();
           }
@@ -318,10 +319,10 @@ export abstract class BaseRuleClass {
 
   public async postChapterParseHook(
     chapter: Chapter,
-    saveBookObj: saveBook
+    saveBookObj: SaveBook
   ): Promise<Chapter> {
-    const storage = (window as newWindow & typeof globalThis).customStorage;
-    let workStatus: workStatusObj = storage.get(workStatusKeyName);
+    const storage = (window as NewWindow & typeof globalThis).customStorage;
+    let workStatus: WorkStatusObj = storage.get(workStatusKeyName);
     if (workStatus) {
       workStatus[document.location.href] = true;
     } else {
@@ -332,7 +333,7 @@ export abstract class BaseRuleClass {
 
     if (chapter.contentHTML !== undefined) {
       saveBookObj.addChapter(chapter);
-      (<progressVM>progress).finishedChapterNumber++;
+      (progress as ProgressVM).finishedChapterNumber++;
     }
     return chapter;
   }

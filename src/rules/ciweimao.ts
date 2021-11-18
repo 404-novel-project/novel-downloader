@@ -1,6 +1,6 @@
 import {
   BookAdditionalMetadate,
-  attachmentClass,
+  AttachmentClass,
   Chapter,
   Status,
   Book,
@@ -10,17 +10,16 @@ import { cleanDOM } from "../lib/cleanDOM";
 import { gfetch } from "../lib/http";
 import { getImageAttachment } from "../lib/attachments";
 import { getHtmlDOM } from "../lib/http";
-import { BaseRuleClass, chapterParseObject } from "../rules";
+import { BaseRuleClass, ChapterParseObject } from "../rules";
 import { introDomHandle } from "./lib/common";
 import { log } from "../log";
 import * as CryptoJS from "crypto-js";
 
-namespace ciweimao {
-  export interface ciweimaoWindow extends unsafeWindow {
-    HB: any;
-  }
+export interface CiweimaoWindow extends unsafeWindow {
+  HB: any;
 }
-export class ciweimao extends BaseRuleClass {
+
+export class Ciweimao extends BaseRuleClass {
   public constructor() {
     super();
     this.imageMode = "TM";
@@ -30,14 +29,14 @@ export class ciweimao extends BaseRuleClass {
   }
 
   public async bookParse() {
-    const bookid = (<ciweimao.ciweimaoWindow>unsafeWindow).HB.book.book_id;
+    const bookid = (unsafeWindow as CiweimaoWindow).HB.book.book_id;
     const bookUrl = `https://www.ciweimao.com/book/${bookid}`;
-    const bookname = (<HTMLElement>(
-      document.querySelector(".book-catalog .hd h3")
-    )).innerText.trim();
-    const author = (<HTMLElement>(
-      document.querySelector(".book-catalog .hd > p > a")
-    )).innerText.trim();
+    const bookname = (
+      document.querySelector(".book-catalog .hd h3") as HTMLElement
+    ).innerText.trim();
+    const author = (
+      document.querySelector(".book-catalog .hd > p > a") as HTMLElement
+    ).innerText.trim();
 
     const dom = await getHtmlDOM(bookUrl, undefined);
     const introDom = dom.querySelector(".book-intro-cnt .book-desc");
@@ -45,7 +44,8 @@ export class ciweimao extends BaseRuleClass {
       await introDomHandle(introDom);
 
     const additionalMetadate: BookAdditionalMetadate = {};
-    const coverUrl = (<HTMLImageElement>dom.querySelector(".cover > img")).src;
+    const coverUrl = (dom.querySelector(".cover > img") as HTMLImageElement)
+      .src;
     if (coverUrl) {
       getImageAttachment(coverUrl, this.imageMode, "cover-")
         .then((coverClass) => {
@@ -55,7 +55,7 @@ export class ciweimao extends BaseRuleClass {
     }
     additionalMetadate.tags = Array.from(
       dom.querySelectorAll(".label-box > .label")
-    ).map((span) => (<HTMLSpanElement>span).innerText.trim());
+    ).map((span) => (span as HTMLSpanElement).innerText.trim());
 
     const chapters: Chapter[] = [];
     const sections = document.querySelectorAll(
@@ -65,16 +65,16 @@ export class ciweimao extends BaseRuleClass {
     for (let i = 0; i < sections.length; i++) {
       const s = sections[i];
       const sectionNumber = i + 1;
-      const sectionName = (<HTMLElement>s.querySelector(".sub-tit")).innerText;
+      const sectionName = (s.querySelector(".sub-tit") as HTMLElement)
+        .innerText;
       let sectionChapterNumber = 0;
 
       const cs = s.querySelectorAll(".book-chapter-list > li > a");
-      for (let j = 0; j < cs.length; j++) {
-        const c = cs[j];
+      for (const c of Array.from(cs)) {
         chapterNumber++;
         sectionChapterNumber++;
-        const chapterName = (<HTMLLinkElement>c).innerText.trim();
-        const chapterUrl = (<HTMLLinkElement>c).href;
+        const chapterName = (c as HTMLLinkElement).innerText.trim();
+        const chapterUrl = (c as HTMLLinkElement).href;
 
         let isVIP = false;
         let isPaid = false;
@@ -131,20 +131,20 @@ export class ciweimao extends BaseRuleClass {
     charset: string,
     options: object
   ) {
-    interface decrypt_item {
+    interface DecryptItem {
       content: string;
       keys: string[];
       accessKey: string;
     }
-    function decrypt(item: decrypt_item) {
+    function decrypt(item: DecryptItem) {
       type Message = {};
       let message = item.content;
-      let keys = item.keys;
-      let len = item.keys.length;
-      let accessKey = item.accessKey;
-      let accessKeyList = accessKey.split("");
-      let charsNotLatinNum = accessKeyList.length;
-      let output = new Array();
+      const keys = item.keys;
+      const len = item.keys.length;
+      const accessKey = item.accessKey;
+      const accessKeyList = accessKey.split("");
+      const charsNotLatinNum = accessKeyList.length;
+      const output = new Array();
       output.push(
         keys[accessKeyList[charsNotLatinNum - 1].charCodeAt(0) % len]
       );
@@ -152,62 +152,58 @@ export class ciweimao extends BaseRuleClass {
 
       for (let i = 0; i < output.length; i++) {
         message = atob(message);
-        let data = output[i];
-        let iv = btoa(message.substr(0, 16));
-        let keys255 = btoa(message.substr(16));
-        let pass = CryptoJS.format.OpenSSL.parse(keys255);
+        const data = output[i];
+        const iv = btoa(message.substr(0, 16));
+        const keys255 = btoa(message.substr(16));
+        const pass = CryptoJS.format.OpenSSL.parse(keys255);
 
-        message = <any>CryptoJS.AES.decrypt(
-          pass,
-          CryptoJS.enc.Base64.parse(data),
-          {
-            iv: CryptoJS.enc.Base64.parse(iv),
-            format: CryptoJS.format.OpenSSL,
-          }
-        );
+        message = CryptoJS.AES.decrypt(pass, CryptoJS.enc.Base64.parse(data), {
+          iv: CryptoJS.enc.Base64.parse(iv),
+          format: CryptoJS.format.OpenSSL,
+        }) as any;
 
         if (i < output.length - 1) {
-          message = (<any>message).toString(CryptoJS.enc.Base64);
+          message = (message as any).toString(CryptoJS.enc.Base64);
           message = atob(message);
         }
       }
 
-      return (<any>message).toString(CryptoJS.enc.Utf8);
+      return (message as any).toString(CryptoJS.enc.Utf8);
     }
     async function getChapterAuthorSay() {
       const doc = await getHtmlDOM(chapterUrl, undefined);
-      const _chapter_author_says = doc.querySelectorAll(
+      const chapterAuthorSays = doc.querySelectorAll(
         "#J_BookCnt .chapter.author_say"
       );
-      let div_chapter_author_say: HTMLElement | undefined;
-      if (_chapter_author_says.length !== 0) {
-        let hr = document.createElement("hr");
-        div_chapter_author_say = document.createElement("div");
-        div_chapter_author_say.appendChild(hr);
+      let divChapterAuthorSay: HTMLElement | undefined;
+      if (chapterAuthorSays.length !== 0) {
+        const hr = document.createElement("hr");
+        divChapterAuthorSay = document.createElement("div");
+        divChapterAuthorSay.appendChild(hr);
 
-        for (let _chapter_author_say of Array.from(_chapter_author_says)) {
-          rm("i", true, <HTMLElement>_chapter_author_say);
-          div_chapter_author_say.appendChild(_chapter_author_say);
+        for (const chapterAuthorSay of Array.from(chapterAuthorSays)) {
+          rm("i", true, chapterAuthorSay as HTMLElement);
+          divChapterAuthorSay.appendChild(chapterAuthorSay);
         }
       }
-      return div_chapter_author_say;
+      return divChapterAuthorSay;
     }
 
-    const chapter_id = chapterUrl.split("/").slice(-1)[0];
+    const chapterId = chapterUrl.split("/").slice(-1)[0];
 
-    async function publicChapter(): Promise<chapterParseObject> {
-      async function chapterDecrypt(chapter_id: string, refererUrl: string) {
+    async function publicChapter(): Promise<ChapterParseObject> {
+      async function chapterDecrypt(chapterIdt: string, refererUrl: string) {
         const rootPath = "https://www.ciweimao.com/";
-        const access_key_url = rootPath + "chapter/ajax_get_session_code";
-        const chapter_content_url =
+        const accessKeyUrl = rootPath + "chapter/ajax_get_session_code";
+        const chapterContentUrl =
           rootPath + "chapter/get_book_chapter_detail_info";
 
-        interface access_key_obj {
+        interface AccessKeyObj {
           code: number;
           chapter_access_key: string;
         }
-        log.debug(`[Chapter]请求 ${access_key_url} Referer ${refererUrl}`);
-        const access_key_obj = await gfetch(access_key_url, {
+        log.debug(`[Chapter]请求 ${accessKeyUrl} Referer ${refererUrl}`);
+        const accessKeyObj = await gfetch(accessKeyUrl, {
           method: "POST",
           headers: {
             Accept: "application/json, text/javascript, */*; q=0.01",
@@ -216,23 +212,23 @@ export class ciweimao extends BaseRuleClass {
             Origin: "https://www.ciweimao.com",
             "X-Requested-With": "XMLHttpRequest",
           },
-          data: `chapter_id=${chapter_id}`,
+          data: `chapter_id=${chapterIdt}`,
           responseType: "json",
         })
           .then((response) => response.response)
           .catch((error) => log.error(error));
 
-        const chapter_access_key = (<access_key_obj>access_key_obj)
+        const chapter_access_key = (accessKeyObj as AccessKeyObj)
           .chapter_access_key;
 
-        interface chapter_content_obj {
+        interface ChapterContentObj {
           code: number;
           chapter_content: string;
           encryt_keys: string[];
           rad: number;
         }
-        log.debug(`[Chapter]请求 ${chapter_content_url} Referer ${refererUrl}`);
-        const chapter_content_obj = await gfetch(chapter_content_url, {
+        log.debug(`[Chapter]请求 ${chapterContentUrl} Referer ${refererUrl}`);
+        const chapterContentObj = await gfetch(chapterContentUrl, {
           method: "POST",
           headers: {
             Accept: "application/json, text/javascript, */*; q=0.01",
@@ -241,38 +237,38 @@ export class ciweimao extends BaseRuleClass {
             Origin: "https://www.ciweimao.com",
             "X-Requested-With": "XMLHttpRequest",
           },
-          data: `chapter_id=${chapter_id}&chapter_access_key=${chapter_access_key}`,
+          data: `chapter_id=${chapterIdt}&chapter_access_key=${chapter_access_key}`,
           responseType: "json",
         })
           .then((response) => response.response)
           .catch((error) => log.error(error));
 
-        if ((<chapter_content_obj>chapter_content_obj).code !== 100000) {
-          log.error(chapter_content_obj);
+        if ((chapterContentObj as ChapterContentObj).code !== 100000) {
+          log.error(chapterContentObj);
           throw new Error(`下载 ${refererUrl} 失败`);
         }
 
         return decrypt({
-          content: (<chapter_content_obj>chapter_content_obj).chapter_content,
-          keys: (<chapter_content_obj>chapter_content_obj).encryt_keys,
+          content: (chapterContentObj as ChapterContentObj).chapter_content,
+          keys: (chapterContentObj as ChapterContentObj).encryt_keys,
           accessKey: chapter_access_key,
         });
       }
 
-      const div_chapter_author_say = await getChapterAuthorSay();
-      let content = document.createElement("div");
-      let decryptDate = await chapterDecrypt(chapter_id, chapterUrl);
+      const divChapterAuthorSay = await getChapterAuthorSay();
+      const content = document.createElement("div");
+      const decryptDate = await chapterDecrypt(chapterId, chapterUrl);
 
       content.innerHTML = decryptDate;
       rm(".chapter span", true, content);
 
-      if (div_chapter_author_say) {
-        content.appendChild(div_chapter_author_say);
+      if (divChapterAuthorSay) {
+        content.appendChild(divChapterAuthorSay);
       }
 
-      let { dom, text, images } = await cleanDOM(content, "TM");
+      const { dom, text, images } = await cleanDOM(content, "TM");
       return {
-        chapterName: chapterName,
+        chapterName,
         contentRaw: content,
         contentText: text,
         contentHTML: dom,
@@ -281,69 +277,65 @@ export class ciweimao extends BaseRuleClass {
       };
     }
 
-    async function vipChapter(): Promise<chapterParseObject> {
+    async function vipChapter(): Promise<ChapterParseObject> {
       const isLogin =
         document.querySelector(".login-info.ly-fr")?.childElementCount === 1
           ? true
           : false;
       if (isLogin && isPaid) {
         async function vipChapterDecrypt(
-          chapter_id: string,
+          chapterIdi: string,
           refererUrl: string
         ) {
-          const HB = (<ciweimao.ciweimaoWindow>unsafeWindow).HB;
+          const HB = (unsafeWindow as CiweimaoWindow).HB;
 
           const parentWidth = 871;
           const setFontSize = "14";
 
-          interface image_session_code_object {
+          interface ImageSessionCodeObject {
             code: number;
             encryt_keys: string[];
             image_code: string;
             access_key: string;
           }
-          const image_session_code_url =
+          const imageSessionCodeUrl =
             HB.config.rootPath + "chapter/ajax_get_image_session_code";
           log.debug(
-            `[Chapter]请求 ${image_session_code_url} Referer ${refererUrl}`
+            `[Chapter]请求 ${imageSessionCodeUrl} Referer ${refererUrl}`
           );
-          const image_session_code_object = await gfetch(
-            image_session_code_url,
-            {
-              method: "POST",
-              headers: {
-                Accept: "application/json, text/javascript, */*; q=0.01",
-                Referer: refererUrl,
-                Origin: "https://www.ciweimao.com",
-                "X-Requested-With": "XMLHttpRequest",
-              },
-              responseType: "json",
-            }
-          )
+          const imageSessionCodeObject = await gfetch(imageSessionCodeUrl, {
+            method: "POST",
+            headers: {
+              Accept: "application/json, text/javascript, */*; q=0.01",
+              Referer: refererUrl,
+              Origin: "https://www.ciweimao.com",
+              "X-Requested-With": "XMLHttpRequest",
+            },
+            responseType: "json",
+          })
             .then((response) => response.response)
             .catch((error) => log.error(error));
 
           if (
-            (<image_session_code_object>image_session_code_object).code !==
-            100000
+            (imageSessionCodeObject as ImageSessionCodeObject).code !== 100000
           ) {
-            log.error(image_session_code_object);
+            log.error(imageSessionCodeObject);
             throw new Error(`下载 ${refererUrl} 失败`);
           }
 
           const imageCode = decrypt({
-            content: (<image_session_code_object>image_session_code_object)
+            content: (imageSessionCodeObject as ImageSessionCodeObject)
               .image_code,
-            keys: (<image_session_code_object>image_session_code_object)
+            keys: (imageSessionCodeObject as ImageSessionCodeObject)
               .encryt_keys,
-            accessKey: (<image_session_code_object>image_session_code_object)
+            accessKey: (imageSessionCodeObject as ImageSessionCodeObject)
               .access_key,
           });
 
-          const vipCHapterImageUrl =
+          const vipCHapterImageUrlI =
             HB.config.rootPath +
             "chapter/book_chapter_image?chapter_id=" +
-            chapter_id +
+            chapterIdi +
             "&area_width=" +
             parentWidth +
             "&font=undefined" +
@@ -354,13 +346,13 @@ export class ciweimao extends BaseRuleClass {
             "&bg_color_name=white" +
             "&text_color_name=white";
 
-          return vipCHapterImageUrl;
+          return vipCHapterImageUrlI;
         }
 
-        const div_chapter_author_say = await getChapterAuthorSay();
+        const divChapterAuthorSay = await getChapterAuthorSay();
 
         const vipCHapterImageUrl = await vipChapterDecrypt(
-          chapter_id,
+          chapterId,
           chapterUrl
         );
         log.debug(`[Chapter]请求 ${vipCHapterImageUrl} Referer ${chapterUrl}`);
@@ -376,22 +368,24 @@ export class ciweimao extends BaseRuleClass {
           .then((response) => response.response)
           .catch((error) => log.error(error));
 
-        const vipCHapterName = `vipCHapter${chapter_id}.png`;
-        const vipCHapterImage = new attachmentClass(
+        const vipCHapterName = `vipCHapter${chapterId}.png`;
+        const vipCHapterImage = new AttachmentClass(
           vipCHapterImageUrl,
           vipCHapterName,
           "TM"
         );
         if (vipCHapterImageBlob) {
-          vipCHapterImage.imageBlob = <Blob>vipCHapterImageBlob;
+          vipCHapterImage.imageBlob = vipCHapterImageBlob as Blob;
           vipCHapterImage.status = Status.finished;
         }
         const contentImages = [vipCHapterImage];
 
-        let ddom, dtext, dimages;
-        if (div_chapter_author_say) {
-          let { dom, text, images } = await cleanDOM(
-            div_chapter_author_say,
+        let ddom;
+        let dtext;
+        let dimages;
+        if (divChapterAuthorSay) {
+          const { dom, text, images } = await cleanDOM(
+            divChapterAuthorSay,
             "TM"
           );
           [ddom, dtext, dimages] = [dom, text, images];
@@ -412,16 +406,16 @@ export class ciweimao extends BaseRuleClass {
         }
 
         return {
-          chapterName: chapterName,
+          chapterName,
           contentRaw: contentHTML,
-          contentText: contentText,
-          contentHTML: contentHTML,
-          contentImages: contentImages,
+          contentText,
+          contentHTML,
+          contentImages,
           additionalMetadate: null,
         };
       } else {
         return {
-          chapterName: chapterName,
+          chapterName,
           contentRaw: null,
           contentText: null,
           contentHTML: null,

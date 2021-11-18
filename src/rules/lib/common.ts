@@ -2,7 +2,7 @@ import { cleanDOM } from "../../lib/cleanDOM";
 import { getImageAttachment } from "../../lib/attachments";
 import { getHtmlDOM } from "../../lib/http";
 import {
-  attachmentClass,
+  AttachmentClass,
   Book,
   BookAdditionalMetadate,
   Chapter,
@@ -13,15 +13,15 @@ import { PublicConstructor } from "../../lib/misc";
 
 export async function introDomHandle(
   introDom: (Element | HTMLElement) | null,
-  domPatch: ((introDom: HTMLElement) => HTMLElement) | undefined = undefined
-): Promise<[string | null, HTMLElement | null, attachmentClass[] | null]> {
+  domPatch?: (introDom: HTMLElement) => HTMLElement
+): Promise<[string | null, HTMLElement | null, AttachmentClass[] | null]> {
   if (introDom === null) {
     return [null, null, null];
   } else {
     if (domPatch) {
       introDom = domPatch(introDom.cloneNode(true) as HTMLElement);
     }
-    let {
+    const {
       dom: introCleanDom,
       text: introCleantext,
       images: introCleanimages,
@@ -46,7 +46,7 @@ export async function nextPageParse(
 
   let flag = false;
   do {
-    let _content = <HTMLElement>doc.querySelector(selector);
+    let _content = doc.querySelector(selector) as HTMLElement;
 
     const nextLink = getNextPage(doc);
     if (continueCondition(_content, nextLink)) {
@@ -72,9 +72,9 @@ export async function nextPageParse(
     }
   } while (flag);
 
-  let { dom, text, images } = await cleanDOM(content, "TM");
+  const { dom, text, images } = await cleanDOM(content, "TM");
   return {
-    chapterName: chapterName,
+    chapterName,
     contentRaw: content,
     contentText: text,
     contentHTML: dom,
@@ -82,7 +82,7 @@ export async function nextPageParse(
     additionalMetadate: null,
   };
 }
-interface mkRuleClassOptions1 {
+interface MkRuleClassOptions1 {
   bookUrl: string;
   bookname: string;
   author: string;
@@ -94,7 +94,7 @@ interface mkRuleClassOptions1 {
   contentPatch: (content: HTMLElement) => HTMLElement;
 }
 export function mkRuleClass1(
-  optionis: mkRuleClassOptions1
+  optionis: MkRuleClassOptions1
 ): PublicConstructor<BaseRuleClass> {
   const {
     bookUrl,
@@ -131,8 +131,8 @@ export function mkRuleClass1(
       let chapterNumber = 0;
       for (const aElem of Array.from(cos)) {
         chapterNumber++;
-        const chapterName = (<HTMLAnchorElement>aElem).innerText;
-        const chapterUrl = (<HTMLAnchorElement>aElem).href;
+        const chapterName = (aElem as HTMLAnchorElement).innerText;
+        const chapterUrl = (aElem as HTMLAnchorElement).href;
         const isVIP = false;
         const isPaid = false;
         const chapter = new Chapter(
@@ -148,7 +148,7 @@ export function mkRuleClass1(
           null,
           this.chapterParse,
           this.charset,
-          { bookname: bookname }
+          { bookname }
         );
         chapters.push(chapter);
       }
@@ -177,9 +177,9 @@ export function mkRuleClass1(
       let content = getContent(doc);
       if (content) {
         content = contentPatch(content);
-        let { dom, text, images } = await cleanDOM(content, "TM");
+        const { dom, text, images } = await cleanDOM(content, "TM");
         return {
-          chapterName: chapterName,
+          chapterName,
           contentRaw: content,
           contentText: text,
           contentHTML: dom,
@@ -188,7 +188,7 @@ export function mkRuleClass1(
         };
       } else {
         return {
-          chapterName: chapterName,
+          chapterName,
           contentRaw: null,
           contentText: null,
           contentHTML: null,

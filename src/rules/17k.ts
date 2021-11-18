@@ -3,11 +3,11 @@ import { rm } from "../lib/misc";
 import { cleanDOM } from "../lib/cleanDOM";
 import { getImageAttachment } from "../lib/attachments";
 import { getHtmlDOM } from "../lib/http";
-import { BaseRuleClass, chapterParseObject } from "../rules";
+import { BaseRuleClass, ChapterParseObject } from "../rules";
 import { introDomHandle } from "./lib/common";
 import { log } from "../log";
 
-export class c17k extends BaseRuleClass {
+export class C17k extends BaseRuleClass {
   public constructor() {
     super();
     this.imageMode = "TM";
@@ -17,13 +17,13 @@ export class c17k extends BaseRuleClass {
 
   public async bookParse() {
     const bookUrl = document.location.href.replace("/list/", "/book/");
-    const bookname = (<HTMLElement>(
-      document.querySelector("h1.Title")
-    )).innerText.trim();
+    const bookname = (
+      document.querySelector("h1.Title") as HTMLElement
+    ).innerText.trim();
 
-    const author = (<HTMLElement>(
-      document.querySelector("div.Author > a")
-    )).innerText.trim();
+    const author = (
+      document.querySelector("div.Author > a") as HTMLElement
+    ).innerText.trim();
 
     const doc = await getHtmlDOM(bookUrl, undefined);
     const introDom = doc.querySelector("#bookInfo p.intro > a");
@@ -31,8 +31,9 @@ export class c17k extends BaseRuleClass {
       await introDomHandle(introDom);
 
     const additionalMetadate: BookAdditionalMetadate = {};
-    let coverUrl = (<HTMLImageElement>doc.querySelector("#bookCover img.book"))
-      .src;
+    const coverUrl = (
+      doc.querySelector("#bookCover img.book") as HTMLImageElement
+    ).src;
     if (coverUrl) {
       getImageAttachment(coverUrl, this.imageMode, "cover-")
         .then((coverClass) => {
@@ -47,19 +48,18 @@ export class c17k extends BaseRuleClass {
     for (let i = 0; i < sections.length; i++) {
       const s = sections[i];
       const sectionNumber = i + 1;
-      const sectionName = (<HTMLElement>(
-        s.querySelector("dt > span.tit")
-      )).innerText.trim();
+      const sectionName = (
+        s.querySelector("dt > span.tit") as HTMLElement
+      ).innerText.trim();
       let sectionChapterNumber = 0;
 
       const cs = s.querySelectorAll("dd > a");
-      for (let j = 0; j < cs.length; j++) {
-        const a = cs[j];
+      for (const a of Array.from(cs)) {
         const span = a.firstElementChild;
         chapterNumber++;
         sectionChapterNumber++;
-        const chapterName = (<HTMLSpanElement>span).innerText.trim();
-        const chapterUrl = (<HTMLAnchorElement>a).href;
+        const chapterName = (span as HTMLSpanElement).innerText.trim();
+        const chapterUrl = (a as HTMLAnchorElement).href;
 
         const isVIP = () => {
           if (span?.className.includes("vip")) {
@@ -69,7 +69,7 @@ export class c17k extends BaseRuleClass {
           }
         };
         const isPaid = () => {
-          //Todo
+          // Todo
           return false;
         };
 
@@ -90,7 +90,7 @@ export class c17k extends BaseRuleClass {
         );
 
         const isLogin = () => {
-          //Todo
+          // Todo
           return false;
         };
         if (isVIP() && !(isLogin() && chapter.isPaid)) {
@@ -120,23 +120,25 @@ export class c17k extends BaseRuleClass {
     charset: string,
     options: object
   ) {
-    async function publicChapter(): Promise<chapterParseObject> {
+    async function publicChapter(): Promise<ChapterParseObject> {
       const doc = await getHtmlDOM(chapterUrl, charset);
-      const chapterName = (<HTMLElement>(
-        doc.querySelector("#readArea > div.readAreaBox.content > h1")
-      )).innerText.trim();
-      const content = <HTMLElement>(
-        doc.querySelector("#readArea > div.readAreaBox.content > div.p")
-      );
+      chapterName = (
+        doc.querySelector(
+          "#readArea > div.readAreaBox.content > h1"
+        ) as HTMLElement
+      ).innerText.trim();
+      const content = doc.querySelector(
+        "#readArea > div.readAreaBox.content > div.p"
+      ) as HTMLElement;
       if (content) {
         rm("p.copy", false, content);
         rm("#banner_content", false, content);
         rm("div.qrcode", false, content);
         rm("div.chapter_text_ad", false, content);
 
-        let { dom, text, images } = await cleanDOM(content, "TM");
+        const { dom, text, images } = await cleanDOM(content, "TM");
         return {
-          chapterName: chapterName,
+          chapterName,
           contentRaw: content,
           contentText: text,
           contentHTML: dom,
@@ -145,7 +147,7 @@ export class c17k extends BaseRuleClass {
         };
       } else {
         return {
-          chapterName: chapterName,
+          chapterName,
           contentRaw: null,
           contentText: null,
           contentHTML: null,
@@ -155,10 +157,10 @@ export class c17k extends BaseRuleClass {
       }
     }
 
-    async function vipChapter(): Promise<chapterParseObject> {
-      //Todo
+    async function vipChapter(): Promise<ChapterParseObject> {
+      // Todo
       return {
-        chapterName: chapterName,
+        chapterName,
         contentRaw: null,
         contentText: null,
         contentHTML: null,

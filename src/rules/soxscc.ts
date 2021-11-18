@@ -7,7 +7,7 @@ import { getHtmlDOM } from "../lib/http";
 import { introDomHandle } from "./lib/common";
 import { log } from "../log";
 
-export class soxscc extends BaseRuleClass {
+export class Soxscc extends BaseRuleClass {
   public constructor() {
     super();
     this.imageMode = "TM";
@@ -15,24 +15,26 @@ export class soxscc extends BaseRuleClass {
 
   public async bookParse() {
     const bookUrl = document.location.href;
-    const bookname = (<HTMLHeadElement>(
-      document.querySelector(".xiaoshuo > h1")
-    )).innerText.trim();
-    const author = (<HTMLAnchorElement>(
-      document.querySelector(".xiaoshuo > h6:nth-child(3) > a")
-    )).innerText.trim();
+    const bookname = (
+      document.querySelector(".xiaoshuo > h1") as HTMLHeadElement
+    ).innerText.trim();
+    const author = (
+      document.querySelector(
+        ".xiaoshuo > h6:nth-child(3) > a"
+      ) as HTMLAnchorElement
+    ).innerText.trim();
     const introDom = document.querySelector("#intro");
     const [introduction, introductionHTML, introCleanimages] =
-      await introDomHandle(introDom, (introDom) => {
-        rm("span.tags", false, introDom);
-        rm("q", true, introDom);
-        return introDom;
+      await introDomHandle(introDom, (introDomI) => {
+        rm("span.tags", false, introDomI);
+        rm("q", true, introDomI);
+        return introDomI;
       });
 
     const additionalMetadate: BookAdditionalMetadate = {};
-    const coverUrl = (<HTMLImageElement>(
-      document.querySelector(".book_cover > img")
-    )).src;
+    const coverUrl = (
+      document.querySelector(".book_cover > img") as HTMLImageElement
+    ).src;
     if (coverUrl) {
       getImageAttachment(coverUrl, this.imageMode, "cover-")
         .then((coverClass) => {
@@ -42,14 +44,14 @@ export class soxscc extends BaseRuleClass {
     }
 
     const chapters: Chapter[] = [];
-    const novel_list = document.querySelector(
+    const novelList = document.querySelector(
       "div.novel_list[id]"
     ) as HTMLDivElement;
-    const sections = Array.from(novel_list.children);
+    const sections = Array.from(novelList.children);
     let chapterNumber = 0;
     for (let i = 0; i < sections.length; i++) {
       const section = sections[i] as HTMLDListElement;
-      const sectionName = (<HTMLElement>section.querySelector("dt > b"))
+      const sectionName = (section.querySelector("dt > b") as HTMLElement)
         ?.innerText;
       const cos = Array.from(section.querySelectorAll("dd > a"));
 
@@ -57,8 +59,8 @@ export class soxscc extends BaseRuleClass {
       for (const a of cos) {
         chapterNumber++;
         sectionChapterNumber++;
-        const chapterUrl = (<HTMLAnchorElement>a).href;
-        const chapterName = (<HTMLAnchorElement>a).innerText;
+        const chapterUrl = (a as HTMLAnchorElement).href;
+        const chapterName = (a as HTMLAnchorElement).innerText;
         const isVIP = false;
         const isPaid = false;
         const chapter = new Chapter(
@@ -74,7 +76,7 @@ export class soxscc extends BaseRuleClass {
           sectionChapterNumber,
           this.chapterParse,
           "UTF-8",
-          { bookname: bookname }
+          { bookname }
         );
         chapters.push(chapter);
       }
@@ -100,17 +102,17 @@ export class soxscc extends BaseRuleClass {
     charset: string,
     options: object
   ) {
-    interface options {
+    interface Options {
       bookname: string;
     }
     const doc = await getHtmlDOM(chapterUrl, charset);
-    const bookname = (<options>options).bookname;
+    const bookname = (options as Options).bookname;
 
-    chapterName = (<HTMLElement>(
-      doc.querySelector(".read_title > h1")
-    )).innerText.trim();
+    chapterName = (
+      doc.querySelector(".read_title > h1") as HTMLElement
+    ).innerText.trim();
 
-    const content = <HTMLElement>doc.querySelector("div.content[id]");
+    const content = doc.querySelector("div.content[id]") as HTMLElement;
     if (content) {
       const ad = `您可以在百度里搜索“${bookname} .+(${document.location.hostname})”查找最新章节！`;
       content.innerHTML = content.innerHTML.replaceAll(ad, "");
@@ -129,9 +131,9 @@ export class soxscc extends BaseRuleClass {
           }
         }
       });
-      let { dom, text, images } = await cleanDOM(content, "TM");
+      const { dom, text, images } = await cleanDOM(content, "TM");
       return {
-        chapterName: chapterName,
+        chapterName,
         contentRaw: content,
         contentText: text,
         contentHTML: dom,
@@ -140,7 +142,7 @@ export class soxscc extends BaseRuleClass {
       };
     } else {
       return {
-        chapterName: chapterName,
+        chapterName,
         contentRaw: null,
         contentText: null,
         contentHTML: null,

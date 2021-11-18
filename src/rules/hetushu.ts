@@ -7,7 +7,7 @@ import { getHtmlDOM } from "../lib/http";
 import { introDomHandle } from "./lib/common";
 import { log } from "../log";
 
-export class hetushu extends BaseRuleClass {
+export class Hetushu extends BaseRuleClass {
   public constructor() {
     super();
     this.imageMode = "TM";
@@ -15,21 +15,23 @@ export class hetushu extends BaseRuleClass {
 
   public async bookParse() {
     const bookUrl = document.location.href;
-    const bookname = (<HTMLElement>(
-      document.querySelector(".book_info > h2")
-    )).innerText.trim();
-    const author = (<HTMLElement>(
-      document.querySelector(".book_info > div:nth-child(3) > a:nth-child(1)")
-    )).innerText.trim();
+    const bookname = (
+      document.querySelector(".book_info > h2") as HTMLElement
+    ).innerText.trim();
+    const author = (
+      document.querySelector(
+        ".book_info > div:nth-child(3) > a:nth-child(1)"
+      ) as HTMLElement
+    ).innerText.trim();
 
-    const introDom = <HTMLElement>document.querySelector(".intro");
+    const introDom = document.querySelector(".intro") as HTMLElement;
     const [introduction, introductionHTML, introCleanimages] =
       await introDomHandle(introDom);
 
     const additionalMetadate: BookAdditionalMetadate = {};
-    const coverUrl = (<HTMLImageElement>(
-      document.querySelector(".book_info > img")
-    )).src;
+    const coverUrl = (
+      document.querySelector(".book_info > img") as HTMLImageElement
+    ).src;
     if (coverUrl) {
       getImageAttachment(coverUrl, this.imageMode, "cover-")
         .then((coverClass) => {
@@ -39,17 +41,16 @@ export class hetushu extends BaseRuleClass {
     }
 
     const chapters: Chapter[] = [];
-    const chapterList = <HTMLElement[] | undefined>(
-      document.querySelector("#dir")?.childNodes
-    );
+    const chapterList = document.querySelector("#dir")?.childNodes as
+      | HTMLElement[]
+      | undefined;
 
     if (chapterList && chapterList.length !== 0) {
       let chapterNumber = 0;
       let sectionNumber = 0;
       let sectionName = null;
       let sectionChapterNumber = 0;
-      for (let i = 0; i < chapterList.length; i++) {
-        const node = chapterList[i];
+      for (const node of chapterList) {
         if (node.nodeName === "DT") {
           sectionNumber++;
           sectionChapterNumber = 0;
@@ -57,7 +58,7 @@ export class hetushu extends BaseRuleClass {
         } else if (node.nodeName === "DD") {
           chapterNumber++;
           sectionChapterNumber++;
-          const a = <HTMLLinkElement>node.firstElementChild;
+          const a = node.firstElementChild as HTMLLinkElement;
           const chapterName = a.innerText;
           const chapterUrl = a.href;
           const isVIP = false;
@@ -102,16 +103,19 @@ export class hetushu extends BaseRuleClass {
     options: object
   ) {
     async function sorfPage() {
-      //章节排序，来自：https://www.hetushu.com/command/section.js
-      let path, bid, sid, position;
+      // 章节排序，来自：https://www.hetushu.com/command/section.js
+      let path;
+      let bid;
+      let sid;
+      let position;
       if (
         /\/(book[0-9]?)\/([0-9]+)\/([0-9]+)\.html(\?position=([0-9]+))?$/.test(
-          chapterUrl //https://www.hetushu.com/book/1472/994331.html
+          chapterUrl // https://www.hetushu.com/book/1472/994331.html
         )
       ) {
-        path = RegExp.$1; //book
-        bid = RegExp.$2; //1472
-        sid = RegExp.$3; //994331
+        path = RegExp.$1; // book
+        bid = RegExp.$2; // 1472
+        sid = RegExp.$3; // 994331
         position = RegExp.$5;
       } else {
         return false;
@@ -141,53 +145,53 @@ export class hetushu extends BaseRuleClass {
         .catch((error) => log.error(error));
 
       if (token) {
-        interface token_dict {
+        interface TokenDict {
           [index: number]: number;
         }
-        const token_dict = atob(token)
+        const tokenDict = atob(token)
           .split(/[A-Z]+%/)
           .map((v) => Number(v));
 
-        const this_body = <HTMLElement>dom.querySelector("#content");
-        let b = 0,
-          star = 0;
-        for (let i = 0; i < this_body.childNodes.length; i++) {
-          if (this_body.childNodes[i].nodeName == "H2") {
+        const thisBody = doc.querySelector("#content") as HTMLElement;
+        let b = 0;
+        let star = 0;
+        for (let i = 0; i < thisBody.childNodes.length; i++) {
+          if (thisBody.childNodes[i].nodeName === "H2") {
             star = i + 1;
           }
           if (
-            this_body.childNodes[i].nodeName == "DIV" &&
-            (<HTMLDivElement>this_body.childNodes[i]).className != "chapter"
+            thisBody.childNodes[i].nodeName === "DIV" &&
+            (thisBody.childNodes[i] as HTMLDivElement).className !== "chapter"
           ) {
             break;
           }
         }
-        const this_childNode = [];
-        for (let i = 0; i < token_dict.length; i++) {
-          if (token_dict[i] < 5) {
-            this_childNode[token_dict[i]] = this_body.childNodes[i + star];
+        const thisChildNode = [];
+        for (let i = 0; i < tokenDict.length; i++) {
+          if (tokenDict[i] < 5) {
+            thisChildNode[tokenDict[i]] = thisBody.childNodes[i + star];
             b++;
           } else {
-            this_childNode[token_dict[i] - b] = this_body.childNodes[i + star];
+            thisChildNode[tokenDict[i] - b] = thisBody.childNodes[i + star];
           }
         }
-        for (let i = 0; i < this_childNode.length; i++) {
-          if (!this_childNode[i]) {
+        for (const childNode of thisChildNode) {
+          if (!childNode) {
             continue;
           }
-          this_body.appendChild(this_childNode[i]);
+          thisBody.appendChild(childNode);
         }
       }
     }
 
-    const dom = await getHtmlDOM(chapterUrl, charset);
+    const doc = await getHtmlDOM(chapterUrl, charset);
 
-    chapterName = (<HTMLElement>(
-      dom.querySelector("#content .h2")
-    )).innerText.trim();
+    chapterName = (
+      doc.querySelector("#content .h2") as HTMLElement
+    ).innerText.trim();
 
     await sorfPage();
-    const content = <HTMLElement>dom.querySelector("#content");
+    const content = doc.querySelector("#content") as HTMLElement;
     if (content) {
       const tagRemoved =
         "h2, acronym, bdo, big, cite, code, dfn, kbd, q, s, samp, strike, tt, u, var";
@@ -199,9 +203,9 @@ export class hetushu extends BaseRuleClass {
         newNode.innerHTML = oldNode.innerHTML;
         oldNode.parentNode?.replaceChild(newNode, oldNode);
       });
-      let { dom, text, images } = await cleanDOM(content, "TM");
+      const { dom, text, images } = await cleanDOM(content, "TM");
       return {
-        chapterName: chapterName,
+        chapterName,
         contentRaw: content,
         contentText: text,
         contentHTML: dom,
@@ -210,7 +214,7 @@ export class hetushu extends BaseRuleClass {
       };
     } else {
       return {
-        chapterName: chapterName,
+        chapterName,
         contentRaw: null,
         contentText: null,
         contentHTML: null,

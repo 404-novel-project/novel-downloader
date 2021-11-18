@@ -7,7 +7,7 @@ import { getHtmlDOM } from "../lib/http";
 import { introDomHandle } from "./lib/common";
 import { log } from "../log";
 
-export class xiaoshuodaquan extends BaseRuleClass {
+export class Xiaoshuodaquan extends BaseRuleClass {
   public constructor() {
     super();
     this.imageMode = "TM";
@@ -19,33 +19,37 @@ export class xiaoshuodaquan extends BaseRuleClass {
     const ccount = document.querySelector(".crumbswrap")?.childElementCount;
     let bookUrl = document.location.href;
     if (ccount) {
-      bookUrl = (<HTMLLinkElement>(
-        document.querySelector(`.crumbswrap > a:nth-child(${ccount - 2})`)
-      )).href;
+      bookUrl = (
+        document.querySelector(
+          `.crumbswrap > a:nth-child(${ccount - 2})`
+        ) as HTMLLinkElement
+      ).href;
     }
 
-    const bookname = (<HTMLElement>(
-      document.querySelector("div.dirwraps > h1")
-    )).innerText
+    const bookname = (
+      document.querySelector("div.dirwraps > h1") as HTMLElement
+    ).innerText
       .replace("《", "")
       .replace("》", "")
       .trim();
-    const author = (<HTMLElement>(
-      document.querySelector(".smallcons > span:nth-child(1) > a:nth-child(1)")
-    )).innerText.trim();
+    const author = (
+      document.querySelector(
+        ".smallcons > span:nth-child(1) > a:nth-child(1)"
+      ) as HTMLElement
+    ).innerText.trim();
 
-    const introDom = <HTMLElement>document.querySelector(".bookintro");
+    const introDom = document.querySelector(".bookintro") as HTMLElement;
     const [introduction, introductionHTML, introCleanimages] =
-      await introDomHandle(introDom, (introDom) => {
-        introDom.innerHTML = introDom.innerHTML.replace("内容简介:", "");
-        return introDom;
+      await introDomHandle(introDom, (introDomI) => {
+        introDomI.innerHTML = introDomI.innerHTML.replace("内容简介:", "");
+        return introDomI;
       });
 
     const additionalMetadate: BookAdditionalMetadate = {};
     let coverUrl;
     if (ccount) {
       const dom = await getHtmlDOM(bookUrl, "GBK");
-      coverUrl = (<HTMLImageElement>dom.querySelector(".con_limg > img")).src;
+      coverUrl = (dom.querySelector(".con_limg > img") as HTMLImageElement).src;
     }
     if (coverUrl) {
       getImageAttachment(coverUrl, this.imageMode, "cover-")
@@ -67,18 +71,17 @@ export class xiaoshuodaquan extends BaseRuleClass {
       const sectionObj = sections[i];
       const sectionNumber = i + 1;
 
-      const sectionName = (<HTMLElement>(
-        sectionNameObj.firstElementChild
-      ))?.innerText
+      const sectionName = (
+        sectionNameObj.firstElementChild as HTMLElement
+      )?.innerText
         .replace(bookname, "")
         .trim();
 
       let sectionChapterNumber = 0;
       const cos = sectionObj.querySelectorAll("ul>li>a");
-      for (let j = 0; j < cos.length; j++) {
+      for (const a of Array.from(cos) as HTMLLinkElement[]) {
         chapterNumber++;
         sectionChapterNumber++;
-        const a = <HTMLLinkElement>cos[j];
         const chapterName = a.innerText;
         const chapterUrl = a.href;
         const isVIP = false;
@@ -122,22 +125,22 @@ export class xiaoshuodaquan extends BaseRuleClass {
     charset: string,
     options: object
   ) {
-    const dom = await getHtmlDOM(chapterUrl, charset);
+    const doc = await getHtmlDOM(chapterUrl, charset);
 
-    chapterName = (<HTMLElement>(
-      dom.querySelector(".page-body > h1:nth-child(4)")
-    )).innerText.trim();
+    chapterName = (
+      doc.querySelector(".page-body > h1:nth-child(4)") as HTMLElement
+    ).innerText.trim();
 
-    const _content = <HTMLElement>dom.querySelector("#content");
+    const _content = doc.querySelector("#content") as HTMLElement;
     if (_content) {
       rm("div", true, _content);
       rm("script", true, _content);
 
       const content = document.createElement("div");
       content.innerHTML = _content.innerHTML.replace(/\n/g, "<br/>");
-      let { dom, text, images } = await cleanDOM(content, "TM");
+      const { dom, text, images } = await cleanDOM(content, "TM");
       return {
-        chapterName: chapterName,
+        chapterName,
         contentRaw: content,
         contentText: text,
         contentHTML: dom,
@@ -146,7 +149,7 @@ export class xiaoshuodaquan extends BaseRuleClass {
       };
     } else {
       return {
-        chapterName: chapterName,
+        chapterName,
         contentRaw: null,
         contentText: null,
         contentHTML: null,

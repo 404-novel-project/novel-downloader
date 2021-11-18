@@ -1,6 +1,6 @@
 import {
   BookAdditionalMetadate,
-  attachmentClass,
+  AttachmentClass,
   Chapter,
   Status,
   Book,
@@ -14,13 +14,13 @@ import {
   getImageAttachment,
 } from "../lib/attachments";
 import { getHtmlDOM, ggetHtmlDOM } from "../lib/http";
-import { BaseRuleClass, chapterParseObject } from "../rules";
+import { BaseRuleClass, ChapterParseObject } from "../rules";
 import { retryLimit } from "../setting";
 import { replaceJjwxcCharacter } from "./lib/jjwxcFontDecode";
 import { introDomHandle } from "./lib/common";
 import { log } from "../log";
 
-export class jjwxc extends BaseRuleClass {
+export class Jjwxc extends BaseRuleClass {
   public constructor() {
     super();
     this.imageMode = "TM";
@@ -33,7 +33,7 @@ export class jjwxc extends BaseRuleClass {
     const getInformationBlocked = () => {
       const fl = Array.from(document.querySelectorAll(".smallreadbody")).filter(
         (div) =>
-          (<HTMLDivElement>div).innerText.includes(
+          (div as HTMLDivElement).innerText.includes(
             "文案信息审核未通过，等待作者修改后重新审核"
           )
       );
@@ -45,19 +45,19 @@ export class jjwxc extends BaseRuleClass {
     };
 
     let bookname = "";
-    let additionalMetadate: BookAdditionalMetadate = {};
+    const additionalMetadate: BookAdditionalMetadate = {};
     let author = "佚名";
     let introduction: string | null = null;
     let introductionHTML: HTMLElement | null = null;
-    let introCleanimages: attachmentClass[] | null = null;
+    let introCleanimages: AttachmentClass[] | null = null;
     if (!getInformationBlocked()) {
-      bookname = (<HTMLElement>(
-        document.querySelector('h1[itemprop="name"] > span')
-      )).innerText.trim();
+      bookname = (
+        document.querySelector('h1[itemprop="name"] > span') as HTMLElement
+      ).innerText.trim();
 
-      author = (<HTMLElement>(
-        document.querySelector("td.sptd h2 a span")
-      )).innerText
+      author = (
+        document.querySelector("td.sptd h2 a span") as HTMLElement
+      ).innerText
         .replace(/作\s+者:/, "")
         .trim();
       const introDom = document.querySelector("#novelintro");
@@ -68,9 +68,9 @@ export class jjwxc extends BaseRuleClass {
         additionalMetadate.attachments = [...introCleanimages];
       }
 
-      let coverUrl = (<HTMLImageElement>(
-        document.querySelector(".noveldefaultimage")
-      )).src;
+      const coverUrl = (
+        document.querySelector(".noveldefaultimage") as HTMLImageElement
+      ).src;
       if (coverUrl) {
         getImageAttachment(coverUrl, this.imageMode, "cover-")
           .then((coverClass) => {
@@ -79,50 +79,52 @@ export class jjwxc extends BaseRuleClass {
           .catch((error) => log.error(error));
       }
 
-      let tags = (<HTMLSpanElement>(
+      let tags = (
         document.querySelector(
           "table > tbody > tr > td.readtd > div.righttd > ul.rightul > li:nth-child(1) > span:nth-child(2)"
-        )
-      )).innerText.split("-");
+        ) as HTMLSpanElement
+      ).innerText.split("-");
       tags = tags.concat(
         Array.from(
           document.querySelectorAll("div.smallreadbody:nth-child(3) > span > a")
-        ).map((a) => (<HTMLAnchorElement>a).innerText)
+        ).map((a) => (a as HTMLAnchorElement).innerText)
       );
-      const perspective = (<HTMLLIElement>(
+      const perspective = (
         document.querySelector(
           "table > tbody > tr > td.readtd > div.righttd > ul.rightul > li:nth-child(2)"
-        )
-      )).innerText.replace("\n", "");
-      const workStyle = (<HTMLLIElement>(
+        ) as HTMLLIElement
+      ).innerText.replace("\n", "");
+      const workStyle = (
         document.querySelector(
           "table > tbody > tr > td.readtd > div.righttd > ul.rightul > li:nth-child(3)"
-        )
-      )).innerText.replace("\n", "");
+        ) as HTMLLIElement
+      ).innerText.replace("\n", "");
       tags.push(perspective);
       tags.push(workStyle);
       additionalMetadate.tags = tags;
     } else {
       window.scrollTo(0, document.body.scrollHeight);
       await sleep(3000);
-      bookname = (<HTMLAnchorElement>(
-        document.querySelector("td[id^=comment_] span.coltext > a")
-      ))?.innerText
+      bookname = (
+        document.querySelector(
+          "td[id^=comment_] span.coltext > a"
+        ) as HTMLAnchorElement
+      )?.innerText
         .trim()
         .replace(/《|》/g, "");
       window.scrollTo(0, 0);
       if (!bookname) {
         throw new Error("抓取书名出错");
       }
-      const authorPageUrl = (<HTMLAnchorElement>(
+      const authorPageUrl = (
         document.querySelector(
           "#oneboolt > tbody > tr:nth-child(1) > td > div > h2 > a"
-        )
-      ))?.href;
+        ) as HTMLAnchorElement
+      )?.href;
       if (authorPageUrl) {
         const authorPage = await getHtmlDOM(authorPageUrl, this.charset);
         author =
-          (<HTMLSpanElement>authorPage.querySelector('span[itemprop="name"]'))
+          (authorPage.querySelector('span[itemprop="name"]') as HTMLSpanElement)
             ?.innerText ?? author;
       }
     }
@@ -133,21 +135,20 @@ export class jjwxc extends BaseRuleClass {
     let sectionNumber = 0;
     let sectionName = null;
     let sectionChapterNumber = 0;
-    for (let i = 0; i < trList.length; i++) {
-      const tr = trList[i];
+    for (const tr of Array.from(trList)) {
       if (tr.getAttribute("bgcolor")) {
         sectionNumber++;
         sectionChapterNumber = 0;
-        sectionName = (<HTMLElement>(
-          tr.querySelector("b.volumnfont")
-        ))?.innerText.trim();
+        sectionName = (
+          tr.querySelector("b.volumnfont") as HTMLElement
+        )?.innerText.trim();
       } else if (tr.getAttribute("itemprop")) {
         chapterNumber++;
         sectionChapterNumber++;
         const td = tr.querySelector("td:nth-child(2)");
         const a = td?.querySelector("a:nth-child(1)");
         const isLocked = () => {
-          if ((<HTMLElement>td)?.innerText.trim() === "[锁]") {
+          if ((td as HTMLElement)?.innerText.trim() === "[锁]") {
             return true;
           } else {
             return false;
@@ -163,8 +164,8 @@ export class jjwxc extends BaseRuleClass {
 
         if (!isLocked()) {
           if (isVIP()) {
-            const chapterName = (<HTMLAnchorElement>a).innerText.trim();
-            const chapterUrl = (<HTMLAnchorElement>a).getAttribute("rel");
+            const chapterName = (a as HTMLAnchorElement).innerText.trim();
+            const chapterUrl = (a as HTMLAnchorElement).getAttribute("rel");
             if (chapterUrl) {
               const chapter = new Chapter(
                 bookUrl,
@@ -194,8 +195,8 @@ export class jjwxc extends BaseRuleClass {
               chapters.push(chapter);
             }
           } else {
-            const chapterName = (<HTMLAnchorElement>a).innerText.trim();
-            const chapterUrl = (<HTMLAnchorElement>a).href;
+            const chapterName = (a as HTMLAnchorElement).innerText.trim();
+            const chapterUrl = (a as HTMLAnchorElement).href;
             const chapter = new Chapter(
               bookUrl,
               bookname,
@@ -267,19 +268,20 @@ export class jjwxc extends BaseRuleClass {
     charset: string,
     options: object
   ) {
-    async function publicChapter(): Promise<chapterParseObject> {
-      const dom = await getHtmlDOM(chapterUrl, charset);
-      const chapterName = (<HTMLElement>(
-        dom.querySelector("div.noveltext h2")
-      )).innerText.trim();
+    async function publicChapter(): Promise<ChapterParseObject> {
+      const doc = await getHtmlDOM(chapterUrl, charset);
+      chapterName = (
+        doc.querySelector("div.noveltext h2") as HTMLElement
+      ).innerText.trim();
 
-      const content = <HTMLElement>dom.querySelector("div.noveltext");
+      const content = doc.querySelector("div.noveltext") as HTMLElement;
       if (content) {
         rm("hr", true, content);
         const rawAuthorSayDom = content.querySelector(".readsmall");
-        let authorSayDom, authorSayText;
+        let authorSayDom;
+        let authorSayText;
         if (rawAuthorSayDom) {
-          let {
+          const {
             dom: adom,
             text: atext,
             images: aimages,
@@ -291,6 +293,7 @@ export class jjwxc extends BaseRuleClass {
           "@无限好文，尽在晋江文学城",
           ""
         );
+        // tslint:disable-next-line:prefer-const
         let { dom, text, images } = await cleanDOM(content, "TM");
         if (rawAuthorSayDom && authorSayDom && authorSayText) {
           const hr = document.createElement("hr");
@@ -301,7 +304,7 @@ export class jjwxc extends BaseRuleClass {
           text = text + "\n\n" + "-".repeat(20) + "\n\n" + authorSayText;
         }
         return {
-          chapterName: chapterName,
+          chapterName,
           contentRaw: content,
           contentText: text,
           contentHTML: dom,
@@ -310,7 +313,7 @@ export class jjwxc extends BaseRuleClass {
         };
       }
       return {
-        chapterName: chapterName,
+        chapterName,
         contentRaw: null,
         contentText: null,
         contentHTML: null,
@@ -319,13 +322,14 @@ export class jjwxc extends BaseRuleClass {
       };
     }
 
-    async function vipChapter(): Promise<chapterParseObject> {
+    async function vipChapter(): Promise<ChapterParseObject> {
       async function getFont(): Promise<
-        [string | null, attachmentClass | null, HTMLStyleElement | null]
+        [string | null, AttachmentClass | null, HTMLStyleElement | null]
       > {
         function getFontInfo() {
-          const s = <HTMLStyleElement>dom.querySelectorAll("body > style")[1];
-          let fontName: string, fontUrl: string;
+          const s = dom.querySelectorAll("body > style")[1] as HTMLStyleElement;
+          let fontNameI: string;
+          let fontUrlI: string;
 
           if (s.sheet) {
             const f = s.sheet.cssRules[s.sheet.cssRules.length - 2];
@@ -333,15 +337,15 @@ export class jjwxc extends BaseRuleClass {
             const m1 = f.cssText.match(/jjwxcfont_[\d\w]+/);
             const m2 = f.cssText.match(/{(.*)}/);
             if (m1 && m2) {
-              fontName = m1[0];
+              fontNameI = m1[0];
 
               const ft = m2[1];
               for (const k of ft.split(",")) {
                 if (k.includes('format("woff2")')) {
                   const m3 = k.match(/url\("(.*)"\)\s/);
                   if (m3) {
-                    fontUrl = document.location.protocol + m3[1];
-                    return [fontName, fontUrl];
+                    fontUrlI = document.location.protocol + m3[1];
+                    return [fontNameI, fontUrlI];
                   }
                 }
               }
@@ -351,22 +355,22 @@ export class jjwxc extends BaseRuleClass {
           const _fontName =
             document.querySelector("div.noveltext")?.classList[1];
           if (_fontName) {
-            fontName = _fontName;
-            fontUrl =
+            fontNameI = _fontName;
+            fontUrlI =
               document.location.protocol +
-              `//static.jjwxc.net/tmp/fonts/${fontName}.woff2?h=my.jjwxc.net`;
-            return [fontName, fontUrl];
+              `//static.jjwxc.net/tmp/fonts/${fontNameI}.woff2?h=my.jjwxc.net`;
+            return [fontNameI, fontUrlI];
           }
 
           return [null, null];
         }
 
         let retryTime = 0;
-        function fetchFont(fontUrl: string): Promise<Blob | null | void> {
+        function fetchFont(fontUrlI: string): Promise<Blob | null | void> {
           log.debug(
-            `[Chapter]请求 ${fontUrl} Referer ${chapterUrl} 重试次数 ${retryTime}`
+            `[Chapter]请求 ${fontUrlI} Referer ${chapterUrl} 重试次数 ${retryTime}`
           );
-          return gfetch(fontUrl, {
+          return gfetch(fontUrlI, {
             headers: {
               accept: "*/*",
               Referer: chapterUrl,
@@ -375,14 +379,14 @@ export class jjwxc extends BaseRuleClass {
           })
             .then((response) => {
               if (response.status >= 200 && response.status <= 299) {
-                return <Blob>response.response;
+                return response.response as Blob;
               } else {
                 log.error(
-                  `[Chapter]请求 ${fontUrl} 失败 Referer ${chapterUrl}`
+                  `[Chapter]请求 ${fontUrlI} 失败 Referer ${chapterUrl}`
                 );
                 if (retryTime < retryLimit) {
                   retryTime++;
-                  return fetchFont(fontUrl);
+                  return fetchFont(fontUrlI);
                 } else {
                   return null;
                 }
@@ -394,13 +398,13 @@ export class jjwxc extends BaseRuleClass {
         const [fontName, fontUrl] = getFontInfo();
         if (fontName && fontUrl) {
           const fontFileName = `${fontName}.woff2`;
-          let fontClassObj: attachmentClass;
+          let fontClassObj: AttachmentClass;
           const fontClassObjCache = getAttachmentClassCache(fontUrl);
           if (fontClassObjCache) {
             fontClassObj = fontClassObjCache;
           } else {
             const fontBlob = await fetchFont(fontUrl);
-            fontClassObj = new attachmentClass(fontUrl, fontFileName, "TM");
+            fontClassObj = new AttachmentClass(fontUrl, fontFileName, "TM");
             fontClassObj.imageBlob = fontBlob;
             fontClassObj.status = Status.finished;
             putAttachmentClassCache(fontClassObj);
@@ -424,7 +428,7 @@ export class jjwxc extends BaseRuleClass {
       }
 
       const dom = await ggetHtmlDOM(chapterUrl, charset);
-      const isPaid = () => {
+      const isPaidF = () => {
         if (
           !dom.querySelector("#buy_content") &&
           dom.querySelector("div.noveltext")
@@ -435,18 +439,19 @@ export class jjwxc extends BaseRuleClass {
         }
       };
 
-      if (isPaid()) {
-        const chapterName = (<HTMLElement>(
-          dom.querySelector("div.noveltext h2")
-        )).innerText.trim();
+      if (isPaidF()) {
+        const ChapterName = (
+          dom.querySelector("div.noveltext h2") as HTMLElement
+        ).innerText.trim();
 
-        const content = <HTMLElement>dom.querySelector("div.noveltext");
+        const content = dom.querySelector("div.noveltext") as HTMLElement;
         if (content) {
           rm("hr", true, content);
           const rawAuthorSayDom = content.querySelector(".readsmall");
-          let authorSayDom, authorSayText;
+          let authorSayDom;
+          let authorSayText;
           if (rawAuthorSayDom) {
-            let {
+            const {
               dom: adom,
               text: atext,
               images: aimages,
@@ -459,9 +464,9 @@ export class jjwxc extends BaseRuleClass {
             ""
           );
           let {
-            dom: rawDom,
+            dom: rawDom, // tslint:disable-line
             text: rawText,
-            images,
+            images, // tslint:disable-line
           } = await cleanDOM(content, "TM");
           if (rawAuthorSayDom && authorSayDom && authorSayText) {
             const hr = document.createElement("hr");
@@ -480,7 +485,7 @@ export class jjwxc extends BaseRuleClass {
             // Replace Text
             finalText = await replaceJjwxcCharacter(fontName, rawText);
 
-            //DOM
+            // DOM
             images.push(fontClassObj);
             finalDom = document.createElement("div");
 
@@ -491,7 +496,7 @@ export class jjwxc extends BaseRuleClass {
               rawDom.innerHTML
             );
 
-            //Backup raw DOM
+            // Backup raw DOM
             finalDom.appendChild(fontStyleDom);
             rawDom.className = `${fontName} hide`;
             finalDom.appendChild(rawDom);
@@ -500,7 +505,7 @@ export class jjwxc extends BaseRuleClass {
           }
 
           return {
-            chapterName: chapterName,
+            chapterName: ChapterName,
             contentRaw: content,
             contentText: finalText,
             contentHTML: finalDom,
@@ -510,7 +515,7 @@ export class jjwxc extends BaseRuleClass {
         }
       }
       return {
-        chapterName: chapterName,
+        chapterName,
         contentRaw: null,
         contentText: null,
         contentHTML: null,

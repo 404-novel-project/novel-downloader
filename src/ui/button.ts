@@ -2,7 +2,7 @@ import { createEl, createStyle } from "../lib/createEl";
 import { iconSetting, iconStart0, iconStart1, iconJump } from "../setting";
 import { getRule } from "../router/download";
 import { getUI } from "../router/ui";
-import { newWindow } from "../global";
+import { NewWindow } from "../global";
 import { log } from "../log";
 import buttonHtml from "./button.html";
 import buttonCss from "./button.css";
@@ -26,13 +26,13 @@ export const vm = Vue.createApp({
   },
   methods: {
     startButtonClick() {
-      if ((window as newWindow & typeof globalThis).downloading) {
+      if ((window as NewWindow & typeof globalThis).downloading) {
         alert("正在下载中，请耐心等待……");
         return;
       }
 
       const self = this;
-      self["imgStart"] = iconStart1;
+      self.imgStart = iconStart1;
 
       async function run() {
         const ruleClass = await getRule();
@@ -41,12 +41,12 @@ export const vm = Vue.createApp({
 
       run()
         .then(() => {
-          self["imgStart"] = iconStart0;
+          self.imgStart = iconStart0;
         })
         .catch((error) => log.error(error));
     },
     settingButtonClick() {
-      //@ts-expect-error
+      // @ts-expect-error
       settingVM.openSetting();
     },
     jumpButtonClick() {

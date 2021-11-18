@@ -6,31 +6,35 @@ import { getHtmlDOM } from "../lib/http";
 import { introDomHandle, nextPageParse } from "./lib/common";
 import { log } from "../log";
 
-export class yibige extends BaseRuleClass {
+export class Yibige extends BaseRuleClass {
   public constructor() {
     super();
     this.imageMode = "TM";
   }
 
   public async bookParse() {
-    const bookUrl = (<HTMLAnchorElement>(
-      document.querySelector("#list_hb > li:nth-child(2) > a:nth-child(1)")
-    )).href;
+    const bookUrl = (
+      document.querySelector(
+        "#list_hb > li:nth-child(2) > a:nth-child(1)"
+      ) as HTMLAnchorElement
+    ).href;
 
     const doc = await getHtmlDOM(bookUrl, undefined);
-    const bookname = (<HTMLHeadElement>(
-      doc.querySelector(".title > h1:nth-child(1)")
-    )).innerText.trim();
-    const author = (<HTMLAnchorElement>(
-      doc.querySelector("div.xsxq_2:nth-child(2) > a:nth-child(1)")
-    )).innerText.trim();
+    const bookname = (
+      doc.querySelector(".title > h1:nth-child(1)") as HTMLHeadElement
+    ).innerText.trim();
+    const author = (
+      doc.querySelector(
+        "div.xsxq_2:nth-child(2) > a:nth-child(1)"
+      ) as HTMLAnchorElement
+    ).innerText.trim();
 
     const introDom = document.createElement("p");
-    const _introDom = <HTMLElement>doc.querySelector(".nr");
+    const _introDom = doc.querySelector(".nr") as HTMLElement;
     for (const node of Array.from(_introDom.childNodes)) {
       if (
         node.nodeName.toLowerCase() === "#text" &&
-        (<Text>node).textContent?.trim() === "相关："
+        (node as Text).textContent?.trim() === "相关："
       ) {
         break;
       }
@@ -40,9 +44,9 @@ export class yibige extends BaseRuleClass {
       await introDomHandle(introDom);
 
     const additionalMetadate: BookAdditionalMetadate = {};
-    const coverUrl = (<HTMLImageElement>(
-      doc.querySelector(".limg > img:nth-child(1)")
-    )).src;
+    const coverUrl = (
+      doc.querySelector(".limg > img:nth-child(1)") as HTMLImageElement
+    ).src;
     if (coverUrl) {
       getImageAttachment(coverUrl, this.imageMode, "cover-")
         .then((coverClass) => {
@@ -57,7 +61,7 @@ export class yibige extends BaseRuleClass {
       const dlc = Array.from(dl.children);
       if (
         dlc[0].nodeName === "DT" &&
-        (<HTMLTableDataCellElement>dlc[0]).innerText.includes("最新12章节")
+        (dlc[0] as HTMLTableDataCellElement).innerText.includes("最新12章节")
       ) {
         for (let i = 0; i < dl?.childElementCount; i++) {
           if (i !== 0 && dlc[i].nodeName === "DT") {
@@ -75,8 +79,7 @@ export class yibige extends BaseRuleClass {
       let sectionNumber = 0;
       let sectionName = null;
       let sectionChapterNumber = 0;
-      for (let i = 0; i < chapterList.length; i++) {
-        const node = <HTMLElement>chapterList[i];
+      for (const node of chapterList as HTMLElement[]) {
         if (node.nodeName === "DT") {
           sectionNumber++;
           sectionChapterNumber = 0;
@@ -87,7 +90,7 @@ export class yibige extends BaseRuleClass {
           }
           chapterNumber++;
           sectionChapterNumber++;
-          const a = <HTMLLinkElement>node.firstElementChild;
+          const a = node.firstElementChild as HTMLLinkElement;
           const chapterName = a.innerText;
           const chapterUrl = a.href;
           const isVIP = false;
@@ -105,7 +108,7 @@ export class yibige extends BaseRuleClass {
             sectionChapterNumber,
             this.chapterParse,
             "UTF-8",
-            { bookname: bookname }
+            { bookname }
           );
           chapters.push(chapter);
         }
@@ -146,7 +149,8 @@ export class yibige extends BaseRuleClass {
         return _content;
       },
       (doc) =>
-        (<HTMLAnchorElement>doc.querySelector(".nr_fy > a:nth-child(4)")).href,
+        (doc.querySelector(".nr_fy > a:nth-child(4)") as HTMLAnchorElement)
+          .href,
       (_content, nextLink) => new URL(nextLink).pathname.includes("_")
     );
   }

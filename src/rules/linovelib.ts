@@ -6,7 +6,7 @@ import { BaseRuleClass } from "../rules";
 import { introDomHandle, nextPageParse } from "./lib/common";
 import { log } from "../log";
 
-export class linovelib extends BaseRuleClass {
+export class Linovelib extends BaseRuleClass {
   public constructor() {
     super();
     this.imageMode = "TM";
@@ -14,15 +14,15 @@ export class linovelib extends BaseRuleClass {
 
   public async bookParse() {
     const bookUrl = document.location.href.replace(/\/catalog$/, ".html");
-    const bookname = (<HTMLElement>(
-      document.querySelector(".book-meta > h1")
-    )).innerText.trim();
+    const bookname = (
+      document.querySelector(".book-meta > h1") as HTMLElement
+    ).innerText.trim();
 
-    const author = (<HTMLElement>(
+    const author = (
       document.querySelector(
         ".book-meta > p:nth-child(2) > span:nth-child(1) > a:nth-child(2)"
-      )
-    )).innerText.trim();
+      ) as HTMLElement
+    ).innerText.trim();
 
     const doc = await getHtmlDOM(bookUrl, undefined);
     const introDom = doc.querySelector(".book-dec > p:nth-child(1)");
@@ -30,7 +30,7 @@ export class linovelib extends BaseRuleClass {
       await introDomHandle(introDom);
 
     const additionalMetadate: BookAdditionalMetadate = {};
-    const coverUrl = (<HTMLImageElement>doc.querySelector(".book-img > img"))
+    const coverUrl = (doc.querySelector(".book-img > img") as HTMLImageElement)
       .src;
     if (coverUrl) {
       getImageAttachment(coverUrl, this.imageMode, "cover-")
@@ -42,7 +42,7 @@ export class linovelib extends BaseRuleClass {
 
     additionalMetadate.tags = Array.from(
       doc.querySelectorAll(".book-label a")
-    ).map((a) => (<HTMLAnchorElement>a).innerText.trim());
+    ).map((a) => (a as HTMLAnchorElement).innerText.trim());
 
     const chapters: Chapter[] = [];
 
@@ -55,13 +55,12 @@ export class linovelib extends BaseRuleClass {
     let sectionNumber = 0;
     let sectionName = null;
     let sectionChapterNumber = 0;
-    for (let i = 0; i < liList.length; i++) {
-      const node = liList[i];
+    for (const node of Array.from(liList)) {
       const nodeNmae = node.nodeName.toLowerCase();
       if (nodeNmae === "div") {
         sectionNumber++;
         sectionChapterNumber = 0;
-        sectionName = (<HTMLDivElement>node).innerText.trim();
+        sectionName = (node as HTMLDivElement).innerText.trim();
       } else if (nodeNmae === "li") {
         chapterNumber++;
         sectionChapterNumber++;
@@ -117,15 +116,15 @@ export class linovelib extends BaseRuleClass {
       charset,
       "#TextContent",
       (_content, doc) => {
-        const s = Array.from(doc.querySelectorAll("script")).find((s) =>
+        const ss = Array.from(doc.querySelectorAll("script")).find((s) =>
           s.innerHTML.includes('document.getElementById("chapter_last")')
         );
-        if (s) {
-          const _dom_nr = s.innerText.trim().match(/let dom_nr = '(.+)';/);
-          if (_dom_nr) {
-            const dom_nr = _dom_nr[1];
-            (<HTMLSpanElement>doc.getElementById("chapter_last")).innerHTML =
-              dom_nr;
+        if (ss) {
+          const _domNr = ss.innerText.trim().match(/let dom_nr = '(.+)';/);
+          if (_domNr) {
+            const domNr = _domNr[1];
+            (doc.getElementById("chapter_last") as HTMLSpanElement).innerHTML =
+              domNr;
           }
         }
 
@@ -134,7 +133,7 @@ export class linovelib extends BaseRuleClass {
         return _content;
       },
       (doc) =>
-        (<HTMLAnchorElement>doc.querySelector(".mlfy_page > a:nth-child(5)"))
+        (doc.querySelector(".mlfy_page > a:nth-child(5)") as HTMLAnchorElement)
           .href,
       (_content, nextLink) => new URL(nextLink).pathname.includes("_")
     );

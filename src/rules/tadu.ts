@@ -1,5 +1,5 @@
 import { BookAdditionalMetadate, Chapter, Status, Book } from "../main";
-import { BaseRuleClass, chapterParseObject } from "../rules";
+import { BaseRuleClass, ChapterParseObject } from "../rules";
 import { gfetch } from "../lib/http";
 import { cleanDOM } from "../lib/cleanDOM";
 import { getImageAttachment } from "../lib/attachments";
@@ -7,7 +7,7 @@ import { getHtmlDOM } from "../lib/http";
 import { introDomHandle } from "./lib/common";
 import { log } from "../log";
 
-export class tadu extends BaseRuleClass {
+export class Tadu extends BaseRuleClass {
   public constructor() {
     super();
     this.imageMode = "TM";
@@ -15,27 +15,25 @@ export class tadu extends BaseRuleClass {
   }
 
   public async bookParse() {
-    let bookUrl = document.location.href;
+    const bookUrl = document.location.href;
 
-    const bookname = (<HTMLElement>(
-      document.querySelector("div.bookNm > a.bkNm")
-    )).innerText.trim();
-    const author = (<HTMLElement>(
-      document.querySelector("div.authorInfo > a.author > span")
-    )).innerText.trim();
+    const bookname = (
+      document.querySelector("div.bookNm > a.bkNm") as HTMLElement
+    ).innerText.trim();
+    const author = (
+      document.querySelector("div.authorInfo > a.author > span") as HTMLElement
+    ).innerText.trim();
 
-    const introDom = <HTMLElement>(
-      document.querySelector(
-        "div.boxCenter.boxT.clearfix > div.lf.lfO > p.intro"
-      )
-    );
+    const introDom = document.querySelector(
+      "div.boxCenter.boxT.clearfix > div.lf.lfO > p.intro"
+    ) as HTMLElement;
     const [introduction, introductionHTML, introCleanimages] =
       await introDomHandle(introDom);
 
     const additionalMetadate: BookAdditionalMetadate = {};
-    const coverUrl = (<HTMLImageElement>(
-      document.querySelector("a.bookImg > img")
-    )).getAttribute("data-src");
+    const coverUrl = (
+      document.querySelector("a.bookImg > img") as HTMLImageElement
+    ).getAttribute("data-src");
     if (coverUrl) {
       getImageAttachment(coverUrl, this.imageMode, "cover-")
         .then((coverClass) => {
@@ -49,8 +47,8 @@ export class tadu extends BaseRuleClass {
     let chapterNumber = 0;
     for (const aElem of Array.from(cos)) {
       chapterNumber++;
-      const chapterName = (<HTMLAnchorElement>aElem).innerText;
-      const chapterUrl = (<HTMLAnchorElement>aElem).href;
+      const chapterName = (aElem as HTMLAnchorElement).innerText;
+      const chapterUrl = (aElem as HTMLAnchorElement).href;
       const isVIP = () => {
         if (aElem.childElementCount) {
           return true;
@@ -59,7 +57,7 @@ export class tadu extends BaseRuleClass {
         }
       };
       const isPaid = () => {
-        //Todo
+        // Todo
         return false;
       };
       const chapter = new Chapter(
@@ -78,7 +76,7 @@ export class tadu extends BaseRuleClass {
         {}
       );
       const isLogin = () => {
-        //Todo
+        // Todo
         return false;
       };
       if (isVIP() && !(isLogin() && chapter.isPaid)) {
@@ -107,7 +105,7 @@ export class tadu extends BaseRuleClass {
     charset: string,
     options: object
   ) {
-    async function publicChapter(): Promise<chapterParseObject> {
+    async function publicChapter(): Promise<ChapterParseObject> {
       log.debug(`[Chapter]请求 ${chapterUrl}`);
       const doc = await getHtmlDOM(chapterUrl, charset);
 
@@ -141,18 +139,19 @@ export class tadu extends BaseRuleClass {
         if (!jsonpText) {
           throw new Error("jsonp request failed!");
         }
-        interface contentObj {
+        interface ContentObj {
           content: string;
         }
         const callback = (obj: object) => {
           return obj;
         };
-        const contentObj: contentObj = eval(jsonpText);
+        // tslint:disable-next-line:no-eval
+        const contentObj: ContentObj = eval(jsonpText);
         if (typeof contentObj === "object") {
           content.innerHTML = contentObj.content;
-          let { dom, text, images } = await cleanDOM(content, "TM");
+          const { dom, text, images } = await cleanDOM(content, "TM");
           return {
-            chapterName: chapterName,
+            chapterName,
             contentRaw: content,
             contentText: text,
             contentHTML: dom,
@@ -162,7 +161,7 @@ export class tadu extends BaseRuleClass {
         }
       }
       return {
-        chapterName: chapterName,
+        chapterName,
         contentRaw: null,
         contentText: null,
         contentHTML: null,
@@ -171,10 +170,10 @@ export class tadu extends BaseRuleClass {
       };
     }
 
-    async function vipChapter(): Promise<chapterParseObject> {
-      //Todo
+    async function vipChapter(): Promise<ChapterParseObject> {
+      // Todo
       return {
-        chapterName: chapterName,
+        chapterName,
         contentRaw: null,
         contentText: null,
         contentHTML: null,

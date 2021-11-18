@@ -6,7 +6,7 @@ import { getHtmlDOM } from "../lib/http";
 import { introDomHandle } from "./lib/common";
 import { log } from "../log";
 
-export class imiaobige extends BaseRuleClass {
+export class Imiaobige extends BaseRuleClass {
   public constructor() {
     super();
     this.imageMode = "TM";
@@ -18,19 +18,19 @@ export class imiaobige extends BaseRuleClass {
       .replace("/read/", "/novel/")
       .replace(/\/$/, ".html");
     const doc = await getHtmlDOM(bookUrl, this.charset);
-    const bookname = (<HTMLElement>(
-      doc.querySelector(".booktitle > h1")
-    )).innerText.trim();
-    const author = (<HTMLElement>(
-      doc.querySelector("#author > a")
-    )).innerText.trim();
+    const bookname = (
+      doc.querySelector(".booktitle > h1") as HTMLElement
+    ).innerText.trim();
+    const author = (
+      doc.querySelector("#author > a") as HTMLElement
+    ).innerText.trim();
 
-    const introDom = <HTMLElement>doc.querySelector("#bookintro");
+    const introDom = doc.querySelector("#bookintro") as HTMLElement;
     const [introduction, introductionHTML, introCleanimages] =
       await introDomHandle(introDom);
 
     const additionalMetadate: BookAdditionalMetadate = {};
-    const coverUrl = (<HTMLImageElement>doc.querySelector("#bookimg > img"))
+    const coverUrl = (doc.querySelector("#bookimg > img") as HTMLImageElement)
       .src;
     if (coverUrl) {
       getImageAttachment(coverUrl, this.imageMode, "cover-")
@@ -46,7 +46,7 @@ export class imiaobige extends BaseRuleClass {
     for (let i = 0; i < sections.length; i++) {
       const s = sections[i];
       const sectionNumber = i + 1;
-      const sectionName = (<HTMLHeadElement>s.querySelector("h3")).innerText
+      const sectionName = (s.querySelector("h3") as HTMLHeadElement).innerText
         .replace(bookname, "")
         .trim();
 
@@ -55,12 +55,11 @@ export class imiaobige extends BaseRuleClass {
       }
       let sectionChapterNumber = 0;
       const cs = s.querySelectorAll("li > a");
-      for (let j = 0; j < cs.length; j++) {
-        const a = cs[j];
+      for (const a of Array.from(cs)) {
         chapterNumber++;
         sectionChapterNumber++;
-        const chapterName = (<HTMLAnchorElement>a).innerText.trim();
-        const chapterUrl = (<HTMLAnchorElement>a).href;
+        const chapterName = (a as HTMLAnchorElement).innerText.trim();
+        const chapterUrl = (a as HTMLAnchorElement).href;
 
         const chapter = new Chapter(
           bookUrl,
@@ -75,7 +74,7 @@ export class imiaobige extends BaseRuleClass {
           sectionChapterNumber,
           this.chapterParse,
           this.charset,
-          { bookname: bookname }
+          { bookname }
         );
         chapters.push(chapter);
       }
@@ -101,23 +100,23 @@ export class imiaobige extends BaseRuleClass {
     charset: string,
     options: object
   ) {
-    interface options {
+    interface Options {
       bookname: string;
     }
-    const bookname = (<options>options).bookname;
-    const dom = await getHtmlDOM(chapterUrl, charset);
-    chapterName = (<HTMLElement>(
-      dom.querySelector(".title > h1:nth-child(1)")
-    )).innerText.trim();
-    const content = <HTMLElement>dom.querySelector("#content");
+    const bookname = (options as Options).bookname;
+    const doc = await getHtmlDOM(chapterUrl, charset);
+    chapterName = (
+      doc.querySelector(".title > h1:nth-child(1)") as HTMLElement
+    ).innerText.trim();
+    const content = doc.querySelector("#content") as HTMLElement;
     if (content) {
       content.innerHTML = content.innerHTML.replace(
         `<p>您可以在百度里搜索“${bookname} 妙笔阁(imiaobige.com)”查找最新章节！</p>`,
         ""
       );
-      let { dom, text, images } = await cleanDOM(content, "TM");
+      const { dom, text, images } = await cleanDOM(content, "TM");
       return {
-        chapterName: chapterName,
+        chapterName,
         contentRaw: content,
         contentText: text,
         contentHTML: dom,
@@ -126,7 +125,7 @@ export class imiaobige extends BaseRuleClass {
       };
     } else {
       return {
-        chapterName: chapterName,
+        chapterName,
         contentRaw: null,
         contentText: null,
         contentHTML: null,

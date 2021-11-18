@@ -1,8 +1,8 @@
-import { BaseRuleClass, chapterParseObject } from "./rules";
+import { BaseRuleClass, ChapterParseObject } from "./rules";
 import { retryLimit } from "./setting";
 import { sleep } from "./lib/misc";
 import { gfetch } from "./lib/http";
-import { saveOptions } from "./save/save";
+import { SaveOptions } from "./save/save";
 import { log } from "./log";
 
 export enum Status {
@@ -15,8 +15,8 @@ export enum Status {
 }
 
 export interface BookAdditionalMetadate {
-  cover?: attachmentClass;
-  attachments?: attachmentClass[];
+  cover?: AttachmentClass;
+  attachments?: AttachmentClass[];
   tags?: string[];
   lastModified?: number;
   serires?: string;
@@ -34,7 +34,7 @@ export class Book {
   public introductionHTML: HTMLElement | null;
   public additionalMetadate: BookAdditionalMetadate;
   public chapters: Chapter[];
-  public saveOptions!: saveOptions;
+  public saveOptions!: SaveOptions;
 
   public constructor(
     bookUrl: string,
@@ -59,6 +59,8 @@ export class Book {
 export interface ChapterAdditionalMetadate {
   lastModified?: number;
 }
+
+// tslint:disable-next-line:max-classes-per-file
 export class Chapter {
   public bookUrl: string;
   public bookname: string;
@@ -83,7 +85,7 @@ export class Chapter {
   public contentRaw!: HTMLElement | null;
   public contentText!: string | null;
   public contentHTML!: HTMLElement | null;
-  public contentImages!: attachmentClass[] | null;
+  public contentImages!: AttachmentClass[] | null;
   public additionalMetadate!: ChapterAdditionalMetadate | null;
 
   public chapterHtmlFileName!: string | number;
@@ -153,7 +155,7 @@ isNull:${!Boolean(this.contentHTML)} 解析成功。`);
     return this;
   }
 
-  private async parse(): Promise<chapterParseObject> {
+  private async parse(): Promise<ChapterParseObject> {
     this.status = Status.downloading;
 
     return this.chapterParse(
@@ -207,7 +209,8 @@ isNull:${!Boolean(this.contentHTML)} 解析成功。`);
   }
 }
 
-export class attachmentClass {
+// tslint:disable-next-line:max-classes-per-file
+export class AttachmentClass {
   public url: string;
   public name: string;
   public mode: "naive" | "TM";
@@ -247,7 +250,7 @@ export class attachmentClass {
   private downloadImage(): Promise<Blob | null> {
     const headers = Object.assign(this.defaultHeader, this.headers);
     const referer = headers.Referer;
-    delete headers["Referer"];
+    delete headers.Referer;
     this.status = Status.downloading;
     return fetch(this.url, {
       headers: { ...headers },
@@ -294,7 +297,7 @@ export class attachmentClass {
       .then((response) => {
         if (response.status >= 200 && response.status <= 299) {
           this.status = Status.finished;
-          return <Blob>response.response;
+          return response.response as Blob;
         } else {
           if (response.status === 404) {
             this.status = Status.failed;
@@ -321,4 +324,5 @@ export class attachmentClass {
   }
 }
 
+// tslint:disable-next-line:max-classes-per-file
 export class ExpectError extends Error {}

@@ -1,7 +1,7 @@
-import { attachmentClass, ExpectError } from "../main";
+import { AttachmentClass as attachmentClassGlobal, ExpectError } from "../main";
 import { calculateMd5 } from "./misc";
 
-let attachmentClassCache: attachmentClass[] = [];
+let attachmentClassCache: attachmentClassGlobal[] = [];
 export function getAttachmentClassCache(url: string) {
   const found = attachmentClassCache.find(
     (attachmentClass) => attachmentClass.url === url
@@ -9,7 +9,9 @@ export function getAttachmentClassCache(url: string) {
   return found;
 }
 
-export function putAttachmentClassCache(attachmentClass: attachmentClass) {
+export function putAttachmentClassCache(
+  attachmentClass: attachmentClassGlobal
+) {
   attachmentClassCache.push(attachmentClass);
   return true;
 }
@@ -31,7 +33,7 @@ export async function getImageAttachment(
   if (imgClassCache) {
     imgClass = imgClassCache;
   } else {
-    imgClass = new attachmentClass(url, tmpImageName, imgMode);
+    imgClass = new attachmentClassGlobal(url, tmpImageName, imgMode);
     const blob = await imgClass.init();
     if (blob) {
       const hash = await calculateMd5(blob);

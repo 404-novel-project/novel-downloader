@@ -1,5 +1,5 @@
 import { BookAdditionalMetadate, Chapter, Book } from "../main";
-import { BaseRuleClass, chapterParseObject } from "../rules";
+import { BaseRuleClass, ChapterParseObject } from "../rules";
 import { PublicConstructor, rm, sleep } from "../lib/misc";
 import { cleanDOM } from "../lib/cleanDOM";
 import { getImageAttachment } from "../lib/attachments";
@@ -46,8 +46,10 @@ export async function bookParseTemp({
     const dlc = Array.from(dl.children);
     if (
       dlc[0].nodeName === "DT" &&
-      ((<HTMLTableDataCellElement>dlc[0]).innerText.includes("最新章节") ||
-        (<HTMLTableDataCellElement>dlc[0]).innerText.includes("最新的八个章节"))
+      ((dlc[0] as HTMLTableDataCellElement).innerText.includes("最新章节") ||
+        (dlc[0] as HTMLTableDataCellElement).innerText.includes(
+          "最新的八个章节"
+        ))
     ) {
       for (let i = 0; i < dl?.childElementCount; i++) {
         if (i !== 0 && dlc[i].nodeName === "DT") {
@@ -63,8 +65,7 @@ export async function bookParseTemp({
     let sectionNumber = 0;
     let sectionName = null;
     let sectionChapterNumber = 0;
-    for (let i = 0; i < chapterList.length; i++) {
-      const node = <HTMLElement>chapterList[i];
+    for (const node of chapterList as HTMLElement[]) {
       if (node.nodeName === "DT") {
         sectionNumber++;
         sectionChapterNumber = 0;
@@ -79,7 +80,7 @@ export async function bookParseTemp({
         }
         chapterNumber++;
         sectionChapterNumber++;
-        const a = <HTMLLinkElement>node.firstElementChild;
+        const a = node.firstElementChild as HTMLLinkElement;
         const chapterName = a.innerText;
         const chapterUrl = a.href;
         const isVIP = false;
@@ -97,7 +98,7 @@ export async function bookParseTemp({
           sectionChapterNumber,
           chapterParse,
           charset,
-          { bookname: bookname }
+          { bookname }
         );
         chapters.push(chapter);
       }
@@ -116,7 +117,7 @@ export async function bookParseTemp({
   return book;
 }
 
-interface chapterParseOption {
+interface ChapterParseOption {
   bookname: string;
 }
 async function chapterParseTemp({
@@ -133,22 +134,22 @@ async function chapterParseTemp({
   contenSelector: string;
   contentPatch: (content: HTMLElement) => HTMLElement;
   charset: string;
-}): Promise<chapterParseObject> {
-  let content = <HTMLElement>dom.querySelector(contenSelector);
+}): Promise<ChapterParseObject> {
+  let content = dom.querySelector(contenSelector) as HTMLElement;
   if (content) {
     content = contentPatch(content);
-    let { dom, text, images } = await cleanDOM(content, "TM");
+    const { dom: domClean, text, images } = await cleanDOM(content, "TM");
     return {
-      chapterName: chapterName,
+      chapterName,
       contentRaw: content,
       contentText: text,
-      contentHTML: dom,
+      contentHTML: domClean,
       contentImages: images,
       additionalMetadate: null,
     };
   } else {
     return {
-      chapterName: chapterName,
+      chapterName,
       contentRaw: null,
       contentText: null,
       contentHTML: null,
@@ -161,7 +162,7 @@ async function chapterParseTemp({
 function mkBiqugeClass(
   introDomPatch: (introDom: HTMLElement) => HTMLElement,
   contentPatch: (content: HTMLElement) => HTMLElement,
-  concurrencyLimit: number | undefined = undefined
+  concurrencyLimit?: number
 ): PublicConstructor<BaseRuleClass> {
   return class extends BaseRuleClass {
     public constructor() {
@@ -178,19 +179,19 @@ function mkBiqugeClass(
       const self = this;
       return bookParseTemp({
         bookUrl: document.location.href,
-        bookname: (<HTMLElement>(
-          document.querySelector("#info h1:nth-of-type(1)")
-        )).innerText
+        bookname: (
+          document.querySelector("#info h1:nth-of-type(1)") as HTMLElement
+        ).innerText
           .trim()
           .replace(/最新章节$/, ""),
-        author: (<HTMLElement>(
-          document.querySelector("#info > p:nth-child(2)")
-        )).innerText
+        author: (
+          document.querySelector("#info > p:nth-child(2)") as HTMLElement
+        ).innerText
           .replace(/作(\s+)?者[：:]/, "")
           .trim(),
-        introDom: <HTMLElement>document.querySelector("#intro"),
-        introDomPatch: introDomPatch,
-        coverUrl: (<HTMLImageElement>document.querySelector("#fmimg > img"))
+        introDom: document.querySelector("#intro") as HTMLElement,
+        introDomPatch,
+        coverUrl: (document.querySelector("#fmimg > img") as HTMLImageElement)
           .src,
         chapterListSelector: "#list>dl",
         charset: document.charset,
@@ -210,16 +211,18 @@ function mkBiqugeClass(
       return chapterParseTemp({
         dom,
         chapterUrl,
-        chapterName: (<HTMLElement>(
-          dom.querySelector(".bookname > h1:nth-child(1)")
-        )).innerText.trim(),
+        chapterName: (
+          dom.querySelector(".bookname > h1:nth-child(1)") as HTMLElement
+        ).innerText.trim(),
         contenSelector: "#content",
-        contentPatch: contentPatch,
+        contentPatch,
         charset,
       });
     }
 
-    public overrideConstructor(self: this) {}
+    public overrideConstructor(self: this) {
+      // overrideConstructor
+    }
   };
 }
 
@@ -302,7 +305,8 @@ export const tycqxs = () =>
     }
   );
 
-export class c25zw extends BaseRuleClass {
+// tslint:disable-next-line:max-classes-per-file
+export class C25zw extends BaseRuleClass {
   public constructor() {
     super();
     this.imageMode = "TM";
@@ -313,23 +317,24 @@ export class c25zw extends BaseRuleClass {
     const self = this;
     return bookParseTemp({
       bookUrl: document.location.href,
-      bookname: (<HTMLElement>(
-        document.querySelector("#info h1:nth-of-type(1)")
-      )).innerText
+      bookname: (
+        document.querySelector("#info h1:nth-of-type(1)") as HTMLElement
+      ).innerText
         .trim()
         .replace(/最新章节$/, ""),
-      author: (<HTMLElement>(
-        document.querySelector("#info > p:nth-child(2)")
-      )).innerText
+      author: (
+        document.querySelector("#info > p:nth-child(2)") as HTMLElement
+      ).innerText
         .replace(/作(\s+)?者[：:]/, "")
         .trim(),
-      introDom: <HTMLElement>document.querySelector("#intro"),
+      introDom: document.querySelector("#intro") as HTMLElement,
       introDomPatch: (introDom) => {
         introDom.querySelector("font")?.parentElement?.remove();
         introDom.innerHTML = introDom.innerHTML.replace("简介:", "");
         return introDom;
       },
-      coverUrl: (<HTMLImageElement>document.querySelector("#fmimg > img")).src,
+      coverUrl: (document.querySelector("#fmimg > img") as HTMLImageElement)
+        .src,
       chapterListSelector: "#list>dl",
       charset: document.charset,
       chapterParse: self.chapterParse,
@@ -348,9 +353,9 @@ export class c25zw extends BaseRuleClass {
     return chapterParseTemp({
       dom,
       chapterUrl,
-      chapterName: (<HTMLElement>(
-        dom.querySelector(".zhangjieming > h1")
-      )).innerText.trim(),
+      chapterName: (
+        dom.querySelector(".zhangjieming > h1") as HTMLElement
+      ).innerText.trim(),
       contenSelector: "#content",
       contentPatch: (content) => {
         rm(".bottem", false, content);
@@ -400,8 +405,9 @@ export const dijiubook = () => {
 function mkBiqugeClass2(
   introDomPatch: (introDom: HTMLElement) => HTMLElement,
   contentPatch: (content: HTMLElement) => HTMLElement,
-  concurrencyLimit: number | undefined = undefined
+  concurrencyLimit?: number
 ): PublicConstructor<BaseRuleClass> {
+  // tslint:disable-next-line:max-classes-per-file
   return class extends BaseRuleClass {
     public constructor() {
       super();
@@ -417,19 +423,21 @@ function mkBiqugeClass2(
       const self = this;
       return bookParseTemp({
         bookUrl: document.location.href,
-        bookname: (<HTMLElement>document.querySelector(".info > h2")).innerText
+        bookname: (
+          document.querySelector(".info > h2") as HTMLElement
+        ).innerText
           .trim()
           .replace(/最新章节$/, ""),
-        author: (<HTMLElement>(
-          document.querySelector(".small > span:nth-child(1)")
-        )).innerText
+        author: (
+          document.querySelector(".small > span:nth-child(1)") as HTMLElement
+        ).innerText
           .replace(/作(\s+)?者[：:]/, "")
           .trim(),
-        introDom: <HTMLElement>document.querySelector(".intro"),
-        introDomPatch: introDomPatch,
-        coverUrl: (<HTMLImageElement>(
-          document.querySelector(".info > .cover > img")
-        )).src,
+        introDom: document.querySelector(".intro") as HTMLElement,
+        introDomPatch,
+        coverUrl: (
+          document.querySelector(".info > .cover > img") as HTMLImageElement
+        ).src,
         chapterListSelector: ".listmain>dl",
         charset: document.charset,
         chapterParse: self.chapterParse,
@@ -448,16 +456,18 @@ function mkBiqugeClass2(
       return chapterParseTemp({
         dom,
         chapterUrl,
-        chapterName: (<HTMLElement>(
-          dom.querySelector(".content > h1:nth-child(1)")
-        )).innerText.trim(),
+        chapterName: (
+          dom.querySelector(".content > h1:nth-child(1)") as HTMLElement
+        ).innerText.trim(),
         contenSelector: "#content",
-        contentPatch: contentPatch,
+        contentPatch,
         charset,
       });
     }
 
-    public overrideConstructor(self: this) {}
+    public overrideConstructor(self: this) {
+      // overrideConstructor
+    }
   };
 }
 
@@ -466,7 +476,7 @@ export const shuquge = () =>
     (introDom) => {
       document.querySelector(".noshow")?.classList.remove("noshow");
       if (document.querySelector(".showall")) {
-        (<HTMLElement>document.querySelector(".showall")).innerHTML = "";
+        (document.querySelector(".showall") as HTMLElement).innerHTML = "";
       }
 
       introDom.innerHTML = introDom.innerHTML
@@ -514,7 +524,9 @@ export const xyqxs = () =>
       return content;
     }
   );
-export class xbiquge extends BaseRuleClass {
+
+// tslint:disable-next-line:max-classes-per-file
+export class Xbiquge extends BaseRuleClass {
   public constructor() {
     super();
     this.imageMode = "TM";
@@ -525,17 +537,18 @@ export class xbiquge extends BaseRuleClass {
     const self = this;
     return bookParseTemp({
       bookUrl: document.location.href,
-      bookname: (<HTMLElement>(
-        document.querySelector("#info > h1:nth-child(1)")
-      )).innerText.trim(),
-      author: (<HTMLElement>(
-        document.querySelector("#info > p:nth-child(2)")
-      )).innerText
+      bookname: (
+        document.querySelector("#info > h1:nth-child(1)") as HTMLElement
+      ).innerText.trim(),
+      author: (
+        document.querySelector("#info > p:nth-child(2)") as HTMLElement
+      ).innerText
         .replace(/作(\s+)?者[：:]/, "")
         .trim(),
-      introDom: <HTMLElement>document.querySelector("#intro"),
+      introDom: document.querySelector("#intro") as HTMLElement,
       introDomPatch: (introDom) => introDom,
-      coverUrl: (<HTMLImageElement>document.querySelector("#fmimg > img"))?.src,
+      coverUrl: (document.querySelector("#fmimg > img") as HTMLImageElement)
+        ?.src,
       chapterListSelector: "#list>dl",
       charset: "GBK",
       chapterParse: self.chapterParse,
@@ -554,14 +567,14 @@ export class xbiquge extends BaseRuleClass {
     return chapterParseTemp({
       dom,
       chapterUrl,
-      chapterName: (<HTMLElement>(
-        dom.querySelector(".bookname > h1:nth-child(1)")
-      )).innerText.trim(),
+      chapterName: (
+        dom.querySelector(".bookname > h1:nth-child(1)") as HTMLElement
+      ).innerText.trim(),
       contenSelector: "#content",
       contentPatch: (content) => {
         content.innerHTML = content.innerHTML.replace(
           `笔趣阁 www.xbiquge.so，最快更新${
-            (<chapterParseOption>options).bookname
+            (options as ChapterParseOption).bookname
           } ！`,
           ""
         );

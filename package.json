@@ -1,16 +1,18 @@
 {
   "name": "novel-downloader",
-  "version": "4.4.7",
+  "version": "4.4.8",
   "description": "novel downloader",
   "main": "index.js",
   "scripts": {
     "build": "webpack build",
     "dev": "webpack serve --node-env development",
+    "lint": "tslint -c tslint.json 'src/**/*.ts'",
     "pretty": "prettier src -w",
     "build-tester": "webpack -c webpack-tester.config.js",
     "dev-tester": "webpack serve -c webpack-tester.config.js --node-env development"
   },
   "pre-commit": [
+    "lint",
     "pretty",
     "build",
     "build-tester"
@@ -36,6 +38,7 @@
     "pre-commit": "^1.2.2",
     "prettier": "^2.2.1",
     "ts-loader": "^9.2.6",
+    "tslint": "^6.1.3",
     "typescript": "^4.2.3",
     "vue": "^3.2.21",
     "webpack": "^5.30.0",
