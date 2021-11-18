@@ -1,5 +1,4 @@
 import * as Vue from "vue";
-import "./injectVue";
 import FilterTabHtml from "./FilterTab.html";
 import FilterTabCss from "./FilterTab.css";
 import { Chapter } from "../main";

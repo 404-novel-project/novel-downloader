@@ -1,5 +1,4 @@
 import * as Vue from "vue";
-import "./injectVue";
 import { createEl, createStyle } from "../lib/createEl";
 import { deepcopy, sleep } from "../lib/misc";
 import { log } from "../log";

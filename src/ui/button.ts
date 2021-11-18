@@ -1,3 +1,4 @@
+import * as Vue from "vue";
 import { createEl, createStyle } from "../lib/createEl";
 import { iconSetting, iconStart0, iconStart1, iconJump } from "../setting";
 import { getRule } from "../router/download";
@@ -8,9 +9,6 @@ import buttonHtml from "./button.html";
 import buttonCss from "./button.css";
 import { vm as settingVM } from "./setting";
 import { _GM_info } from "../lib/GM";
-
-import * as Vue from "vue";
-import "./injectVue";
 
 createStyle(buttonCss, "button-div-style");
 export const el = createEl("<div></div>");

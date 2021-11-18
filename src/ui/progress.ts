@@ -1,9 +1,7 @@
+import * as Vue from "vue";
 import { createEl, createStyle } from "../lib/createEl";
 import progressCss from "./progress.css";
 import progressHtml from "./progress.html";
-
-import * as Vue from "vue";
-import "./injectVue";
 
 createStyle(progressCss);
 

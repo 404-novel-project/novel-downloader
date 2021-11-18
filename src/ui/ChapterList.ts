@@ -1,5 +1,4 @@
 import * as Vue from "vue";
-import "./injectVue";
 import { getRule } from "../router/download";
 import { Chapter, Status } from "../main";
 import { getSectionsObj, SectionObj } from "../save/save";
