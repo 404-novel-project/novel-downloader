@@ -1,6 +1,8 @@
 <div>
   <div v-if="loading">
-    <div class="loading"><h2>正在载入章节列表中，请耐心等待……</h2></div>
+    <div class="chapter-list-loading">
+      <h2>正在载入章节列表中，请耐心等待……</h2>
+    </div>
   </div>
   <div class="chapter-list" v-else>
     <div
@@ -20,6 +22,7 @@
         v-bind:class="{
               good: this.filter(chapter),
               bad: !this.filter(chapter),
+              warning: this.warningFilter(chapter)
             }"
         v-bind:title="chapter.chapterNumber"
       >

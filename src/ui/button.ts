@@ -6,8 +6,8 @@ import { log } from "../log";
 import { getRule } from "../router/download";
 import { getUI } from "../router/ui";
 import { iconJump, iconSetting, iconStart0, iconStart1 } from "../setting";
-import buttonCss from "./button.css";
 import buttonHtml from "./button.html";
+import buttonCss from "./button.less";
 import { vm as settingVM } from "./setting";
 
 createStyle(buttonCss, "button-div-style");

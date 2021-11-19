@@ -18,6 +18,11 @@
       <input type="checkbox" id="hiddenBad" v-model="hiddenBad" />
       <label for="hiddenBad">只显示符合条件章节</label>
       <div class="filter-description" v-html="filterDescription"></div>
+      <div v-if="false">
+        <span class="good"></span>
+        <span class="warning"></span>
+        <span class="bad"></span>
+      </div>
     </div>
   </div>
   <chapter-list />

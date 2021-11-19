@@ -4,8 +4,8 @@ import { createStyle } from "../lib/createEl";
 import { Chapter, Status } from "../main";
 import { getRule } from "../router/download";
 import { getSectionsObj, SectionObj } from "../save/save";
-import ChapterListCss from "./ChapterList.css";
 import ChapterListHtml from "./ChapterList.html";
+import ChapterListCss from "./ChapterList.less";
 import {
   FilterSetting as filterSettingGlobal,
   getFilterFunction,
@@ -58,6 +58,12 @@ export default Vue.defineComponent({
       }
       return true;
     };
+    const warningFilter = (chapter: Chapter) => {
+      if (chapter.isVIP === true && chapter.isPaid !== true) {
+        return true;
+      }
+      return false;
+    };
 
     const isChapterDisabled = (chapter: Chapter) => {
       if (!chapter?.chapterUrl) {
@@ -81,6 +87,7 @@ export default Vue.defineComponent({
       sectionsObj,
       loading,
       filter,
+      warningFilter,
       isChapterDisabled,
       isChapterSeen,
       isSectionSeen,

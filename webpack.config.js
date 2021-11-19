@@ -48,6 +48,10 @@ module.exports = {
         test: /\.css$/i,
         use: ["css-loader"],
       },
+      {
+        test: /\.less$/i,
+        use: ["css-loader", "less-loader"],
+      },
     ],
   },
   externals: {

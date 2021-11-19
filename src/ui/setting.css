@@ -45,6 +45,7 @@
 
 /* 彩色斜纹 来自：https://www.zhangxinxu.com/wordpress/2021/05/css-html-hr/ */
 .hr-twill-colorful {
+  all: revert;
   border: 0;
   padding: 3px;
   background: linear-gradient(135deg, red, orange, green, blue, purple);
@@ -60,6 +61,7 @@
 }
 /* 两头虚 来自：https://www.zhangxinxu.com/wordpress/2021/05/css-html-hr/ */
 .hr-edge-weak {
+  all: revert;
   border: 0;
   padding-top: 1px;
   background: linear-gradient(to right, transparent, #d0d0d5, transparent);

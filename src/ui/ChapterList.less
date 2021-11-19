@@ -1,0 +1,71 @@
+:root {
+  --good-chapter-color: #41b883;
+  --bad-chapter-color: #e73838;
+  --warning-chapter-color: #ff9900;
+}
+
+div.chapter-list-loading {
+  padding-top: 5em;
+  padding-bottom: 5em;
+  text-align: center;
+}
+div.chapter-list {
+  max-height: 200px;
+  overflow-y: scroll;
+}
+div.chapter-list {
+  .section {
+    margin-top: 1.5em;
+    display: grid;
+    grid-template-columns: 32% 32% 32%;
+  }
+  .section > h3:first-child {
+    grid-column-end: span 3;
+    text-align: center;
+  }
+  .section > div.chapter {
+    text-align: center;
+    padding-top: 0.5em;
+    padding-bottom: 0.3em;
+    padding-left: 23px;
+    padding-right: 20px;
+    border: 1px solid #d9d9d9;
+    border-radius: 5px;
+    margin-left: 10px;
+    margin-top: 5px;
+    margin-right: 0;
+    margin-bottom: 0;
+  }
+  .section a.disabled {
+    pointer-events: none;
+    cursor: default;
+  }
+  .section a {
+    text-decoration: none;
+  }
+  div.chapter.good {
+    background: var(--good-chapter-color);
+  }
+  div.chapter.bad {
+    background: var(--bad-chapter-color);
+  }
+  div.chapter.good.warning {
+    background: var(--warning-chapter-color);
+  }
+  div.chapter.bad a,
+  div.chapter.good a {
+    color: white;
+  }
+}
+
+.nd-setting-body {
+  span.good {
+    color: var(--good-chapter-color);
+  }
+  span.bad {
+    color: var(--bad-chapter-color);
+  }
+  span.warning {
+    color: var(--warning-chapter-color);
+  }
+}
