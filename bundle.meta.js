@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.4.10.317
+// @version        4.4.10.318
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -140,8 +140,8 @@
 // @namespace      https://blog.bgme.me
 // @icon           https://cdn.jsdelivr.net/gh/yingziwu/novel-downloader/assets/icon.png
 // @license        AGPL-3.0
-// @run-at         document-idle
-// @noframes       true
+// @run-at         document-start
+// @noframes       
 // @compatible     Firefox 77+
 // @compatible     Chrome 85+
 // @compatible     Edge 85+

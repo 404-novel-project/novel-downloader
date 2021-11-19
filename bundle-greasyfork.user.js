@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.4.10.317
+// @version        4.4.10.318
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -140,8 +140,8 @@
 // @namespace      https://blog.bgme.me
 // @icon           https://cdn.jsdelivr.net/gh/yingziwu/novel-downloader/assets/icon.png
 // @license        AGPL-3.0
-// @run-at         document-idle
-// @noframes       true
+// @run-at         document-start
+// @noframes       
 // @compatible     Firefox 77+
 // @compatible     Chrome 85+
 // @compatible     Edge 85+
@@ -4192,7 +4192,6 @@ function createStyle(style, id) {
     if (id) {
         el.id = id;
     }
-    document.head.appendChild(el);
     return el;
 }
 exports.createStyle = createStyle;
@@ -11734,10 +11733,7 @@ class Tadu extends rules_1.BaseRuleClass {
                 if (!jsonpText) {
                     throw new Error("jsonp request failed!");
                 }
-                function callback(obj) {
-                    return obj;
-                }
-                const getContentObj = new Function(`${callback.toString()} return ${jsonpText};`);
+                const getContentObj = new Function(`function callback(obj) { return obj; } return ${jsonpText};`);
                 const contentObj = getContentObj();
                 if (typeof contentObj === "object") {
                     content.innerHTML = contentObj.content;
@@ -13684,6 +13680,7 @@ exports.resetStat = resetStat;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.style = void 0;
 const Vue = __webpack_require__("vue");
 const createEl_1 = __webpack_require__("./src/lib/createEl.ts");
 const main_1 = __webpack_require__("./src/main.ts");
@@ -13704,7 +13701,7 @@ async function getSections() {
         return window._sections;
     }
 }
-(0, createEl_1.createStyle)(ChapterList_less_1.default);
+exports.style = (0, createEl_1.createStyle)(ChapterList_less_1.default);
 exports["default"] = Vue.defineComponent({
     name: "ChapterList",
     setup(props, context) {
@@ -13776,23 +13773,12 @@ exports["default"] = Vue.defineComponent({
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getFilterFunction = exports.filterOptionDict = exports.getFunctionBody = void 0;
+exports.style = exports.getFilterFunction = exports.getFunctionBody = exports.filterOptionDict = void 0;
 const Vue = __webpack_require__("vue");
 const createEl_1 = __webpack_require__("./src/lib/createEl.ts");
 const ChapterList_1 = __webpack_require__("./src/ui/ChapterList.ts");
 const FilterTab_css_1 = __webpack_require__("./src/ui/FilterTab.css");
 const FilterTab_html_1 = __webpack_require__("./src/ui/FilterTab.html");
-function getFunctionBody(fn) {
-    return fn
-        .toString()
-        .replace("(arg) => {", "")
-        .replace(/}$/, "")
-        .split("\n")
-        .map((l) => l.trim())
-        .join(" ")
-        .trim();
-}
-exports.getFunctionBody = getFunctionBody;
 exports.filterOptionDict = {
     null: {
         raw: (arg) => {
@@ -13875,6 +13861,10 @@ exports.filterOptionDict = {
         abbreviation: "章节标题",
     },
 };
+function getFunctionBody(fn) {
+    return `return (${fn.toString()})(arg)`;
+}
+exports.getFunctionBody = getFunctionBody;
 function getFilterFunction(arg, functionBody) {
     const filterFunctionFactor = new Function("arg", functionBody);
     const filterFunction = filterFunctionFactor(arg);
@@ -13927,7 +13917,7 @@ exports["default"] = Vue.defineComponent({
     },
     template: FilterTab_html_1.default,
 });
-(0, createEl_1.createStyle)(FilterTab_css_1.default);
+exports.style = (0, createEl_1.createStyle)(FilterTab_css_1.default);
 
 
 /***/ }),
@@ -13938,7 +13928,7 @@ exports["default"] = Vue.defineComponent({
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.vm = exports.el = void 0;
+exports.vm = exports.el = exports.style = void 0;
 const Vue = __webpack_require__("vue");
 const createEl_1 = __webpack_require__("./src/lib/createEl.ts");
 const GM_1 = __webpack_require__("./src/lib/GM.ts");
@@ -13949,7 +13939,7 @@ const setting_1 = __webpack_require__("./src/setting.ts");
 const button_html_1 = __webpack_require__("./src/ui/button.html");
 const button_less_1 = __webpack_require__("./src/ui/button.less");
 const setting_2 = __webpack_require__("./src/ui/setting.ts");
-(0, createEl_1.createStyle)(button_less_1.default, "button-div-style");
+exports.style = (0, createEl_1.createStyle)(button_less_1.default, "button-div-style");
 exports.el = (0, createEl_1.createEl)("<div></div>");
 exports.vm = Vue.createApp({
     data() {
@@ -13983,7 +13973,7 @@ exports.vm = Vue.createApp({
             setting_2.vm.openSetting();
         },
         jumpButtonClick() {
-            document.location = this.uiObj.jumpUrl;
+            document.location.href = this.uiObj.jumpUrl;
         },
     },
     template: button_html_1.default,
@@ -14055,16 +14045,10 @@ globalThis.Function = new Proxy(Function, {
         }
         function hook() {
             function getGlobalObjectKeys() {
-                function _get() {
-                    const _g = [];
-                    for (const key of Object.getOwnPropertyNames(window)) {
-                        if (window[key] === window) {
-                            _g.push(key);
-                        }
-                    }
-                    return _g;
-                }
-                const _f = new target(`${_get.toString()};return _get()`);
+                const _get = () => {
+                    return Object.getOwnPropertyNames(window).filter((key) => window[key] === window);
+                };
+                const _f = new target(`return (${_get.toString()})()`);
                 return _f();
             }
             const globalObjectKeys = getGlobalObjectKeys();
@@ -14095,12 +14079,12 @@ globalThis.Function = new Proxy(Function, {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.vm = exports.el = void 0;
+exports.vm = exports.el = exports.style = void 0;
 const Vue = __webpack_require__("vue");
 const createEl_1 = __webpack_require__("./src/lib/createEl.ts");
 const progress_css_1 = __webpack_require__("./src/ui/progress.css");
 const progress_html_1 = __webpack_require__("./src/ui/progress.html");
-(0, createEl_1.createStyle)(progress_css_1.default);
+exports.style = (0, createEl_1.createStyle)(progress_css_1.default);
 exports.el = (0, createEl_1.createEl)(`<div id="progress-bar"></div>`);
 exports.vm = Vue.createApp({
     data() {
@@ -14156,7 +14140,7 @@ exports.vm = Vue.createApp({
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.vm = exports.el = void 0;
+exports.vm = exports.el = exports.style = void 0;
 const Vue = __webpack_require__("vue");
 const createEl_1 = __webpack_require__("./src/lib/createEl.ts");
 const misc_1 = __webpack_require__("./src/lib/misc.ts");
@@ -14166,7 +14150,7 @@ const setting_1 = __webpack_require__("./src/setting.ts");
 const FilterTab_1 = __webpack_require__("./src/ui/FilterTab.ts");
 const setting_css_1 = __webpack_require__("./src/ui/setting.css");
 const setting_html_1 = __webpack_require__("./src/ui/setting.html");
-(0, createEl_1.createStyle)(setting_css_1.default);
+exports.style = (0, createEl_1.createStyle)(setting_css_1.default);
 exports.el = (0, createEl_1.createEl)(`<div id="setting"></div>`);
 exports.vm = Vue.createApp({
     name: "nd-setting",
@@ -14331,7 +14315,9 @@ exports.vm = Vue.createApp({
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.init = void 0;
 const button_1 = __webpack_require__("./src/ui/button.ts");
+const ChapterList_1 = __webpack_require__("./src/ui/ChapterList.ts");
 const dialog_1 = __webpack_require__("./src/ui/dialog.ts");
+const FilterTab_1 = __webpack_require__("./src/ui/FilterTab.ts");
 const progress_1 = __webpack_require__("./src/ui/progress.ts");
 const setting_1 = __webpack_require__("./src/ui/setting.ts");
 function register() {
@@ -14342,6 +14328,11 @@ function init() {
     document.body.appendChild(button_1.el);
     document.body.appendChild(progress_1.el);
     document.body.appendChild(setting_1.el);
+    document.head.appendChild(button_1.style);
+    document.head.appendChild(progress_1.style);
+    document.head.appendChild(setting_1.style);
+    document.head.appendChild(FilterTab_1.style);
+    document.head.appendChild(ChapterList_1.style);
 }
 exports.init = init;
 

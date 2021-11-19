@@ -1,4 +1,5 @@
 import * as Vue from "vue";
+export declare const style: HTMLElement;
 export declare const el: HTMLElement;
 export interface ProgressVM extends Vue.ComponentPublicInstance {
     totalChapterNumber: number;

@@ -1,6 +1,7 @@
 import * as Vue from "vue";
 import { Chapter } from "../main";
 import { SectionObj } from "../save/save";
+export declare const style: HTMLElement;
 declare const _default: Vue.DefineComponent<{}, {
     sectionsObj: never[];
     loading: Vue.Ref<boolean>;

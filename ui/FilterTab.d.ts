@@ -1,6 +1,5 @@
 import * as Vue from "vue";
 import { Chapter } from "../main";
-export declare function getFunctionBody(fn: FilterOption["raw"]): string;
 interface FilterOption {
     raw: (arg: string) => ((chapter: Chapter) => boolean) | undefined;
     description: string;
@@ -10,6 +9,7 @@ interface FilterOptionDict {
     [index: string]: FilterOption;
 }
 export declare const filterOptionDict: FilterOptionDict;
+export declare function getFunctionBody(fn: FilterOption["raw"]): string;
 export declare function getFilterFunction(arg: string, functionBody: string): ((chapter: Chapter) => boolean) | undefined;
 export interface FilterSetting {
     arg: string;
@@ -27,3 +27,4 @@ declare const _default: Vue.DefineComponent<{}, {
     onFilterupdate?: ((...args: any[]) => any) | undefined;
 }, {}>;
 export default _default;
+export declare const style: HTMLElement;
