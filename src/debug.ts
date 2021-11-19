@@ -1,5 +1,5 @@
 import { saveAs } from "file-saver";
-import { NewUnsafeWindow } from "./global";
+import { NewUnsafeWindow, NewWindow } from "./global";
 import { getRule } from "./router/download";
 
 export async function debug() {
@@ -7,6 +7,7 @@ export async function debug() {
   const book = await rule.bookParse();
   (unsafeWindow as NewUnsafeWindow).rule = rule;
   (unsafeWindow as NewUnsafeWindow).book = book;
+  (window as NewWindow & typeof globalThis)._book = book;
   // @ts-ignore
   (unsafeWindow as NewUnsafeWindow).saveAs = saveAs;
 

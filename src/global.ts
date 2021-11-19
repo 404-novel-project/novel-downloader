@@ -10,6 +10,7 @@ export interface NewWindow extends Window {
   customStorage: LocalStorageExpired;
   stopFlag: boolean;
   _sections: SectionObj[];
+  _book: Book;
 }
 
 export interface NewUnsafeWindow extends unsafeWindow {

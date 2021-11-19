@@ -17,6 +17,7 @@ async function getSections() {
   } else {
     const rule = await getRule();
     const book = await rule.bookParse();
+    (window as NewWindow & typeof globalThis)._book = book;
     (window as NewWindow & typeof globalThis)._sections = getSectionsObj(
       book.chapters
     );

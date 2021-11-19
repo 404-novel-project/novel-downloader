@@ -74,7 +74,15 @@ export abstract class BaseRuleClass {
     try {
       if (!self.preHook()) return;
 
-      self.book = await self.bookParse();
+      if (
+        typeof (window as NewWindow & typeof globalThis)._book !== undefined
+      ) {
+        self.book = (window as NewWindow & typeof globalThis)._book;
+      } else {
+        self.book = await self.bookParse();
+        (window as NewWindow & typeof globalThis)._book = self.book;
+      }
+
       log.debug("[book]Book object:\n" + JSON.stringify(self.book));
       const saveBookObj = self.getSave(self.book);
       await self.initChapters(self.book, saveBookObj);
