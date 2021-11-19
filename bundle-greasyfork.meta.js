@@ -256,6 +256,6 @@
 // @connect        *
 // @require        https://cdn.jsdelivr.net/npm/crypto-js@4.1.1/crypto-js.js#sha256-8L3yX9qPmvWSDIIHB3WGTH4RZusxVA0DDmuAo4LjnOE=
 // @require        https://cdn.jsdelivr.net/npm/nunjucks@3.2.3/browser/nunjucks.min.js#sha256-+CJElYLgP9RjEvMt/VTU1+qF8CuntjliUUBKp26fPck=
-// @downloadURL    https://github.com/yingziwu/novel-downloader/raw/gh-pages/bundle.user.js
-// @updateURL      https://github.com/yingziwu/novel-downloader/raw/gh-pages/bundle.meta.js
+// @downloadURL    https://github.com/yingziwu/novel-downloader/raw/gh-pages/bundle-greasyfork.user.js
+// @updateURL      https://github.com/yingziwu/novel-downloader/raw/gh-pages/bundle-greasyfork.meta.js
 // ==/UserScript==
