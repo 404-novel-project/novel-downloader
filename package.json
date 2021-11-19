@@ -29,7 +29,6 @@
     "@types/file-saver": "^2.0.1",
     "@types/node": "^16.10.3",
     "@types/nunjucks": "^3.2.0",
-    "crypto-js": "^4.1.1",
     "css-loader": "^6.5.1",
     "eslint": "^8.0.0",
     "eslint-config-prettier": "^8.1.0",
@@ -37,7 +36,6 @@
     "less": "^4.1.2",
     "less-loader": "^10.2.0",
     "npm-run-all": "^4.1.5",
-    "nunjucks": "^3.2.3",
     "path": "^0.12.7",
     "pre-commit": "^1.2.2",
     "prettier": "^2.2.1",
@@ -51,10 +49,12 @@
   },
   "dependencies": {
     "@mozilla/readability": "^0.4.1",
+    "crypto-js": "^4.1.1",
     "fflate": "^0.7.1",
     "file-saver": "^2.0.5",
     "idb-keyval": "^6.0.3",
     "loglevel": "^1.7.1",
+    "nunjucks": "^3.2.3",
     "vue": "^3.2.22"
   }
 }
