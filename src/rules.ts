@@ -75,7 +75,7 @@ export abstract class BaseRuleClass {
       if (!self.preHook()) return;
 
       if (
-        typeof (window as NewWindow & typeof globalThis)._book !== undefined
+        typeof (window as NewWindow & typeof globalThis)._book !== "undefined"
       ) {
         self.book = (window as NewWindow & typeof globalThis)._book;
       } else {

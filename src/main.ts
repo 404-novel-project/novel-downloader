@@ -221,6 +221,7 @@ export class AttachmentClass {
   public retryTime: number;
 
   public imageBlob!: Blob | null | void;
+  public comments!: string;
 
   public constructor(imageUrl: string, name: string, mode: "naive" | "TM") {
     this.url = imageUrl;
@@ -265,7 +266,7 @@ export class AttachmentClass {
             this.status = Status.failed;
           }
           throw new Error(
-            `Image request response is not ok!\nImage url: ${this.url} .`
+            `Bad response!\nRequest url: ${this.url}\nStatus code: ${response.status}`
           );
         }
       })
@@ -302,7 +303,9 @@ export class AttachmentClass {
           if (response.status === 404) {
             this.status = Status.failed;
           }
-          throw new Error(`Bad response!\nRequest url: ${this.url}`);
+          throw new Error(
+            `Bad response!\nRequest url: ${this.url}\nStatus code: ${response.status}`
+          );
         }
       })
       .catch(async (err: Error) => {
@@ -312,7 +315,7 @@ export class AttachmentClass {
         );
 
         if (this.status !== Status.failed && this.retryTime < retryLimit) {
-          await sleep(this.retryTime * 1500);
+          await sleep(this.retryTime * 1000);
           return this.tmDownloadImage();
         } else {
           this.status = Status.failed;

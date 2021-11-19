@@ -24,7 +24,8 @@ export async function getImageAttachment(
   url: string,
   imgMode: "naive" | "TM" = "TM",
   prefix: string = "",
-  noMD5: boolean = false
+  noMD5: boolean = false,
+  comments?: string
 ) {
   const tmpImageName = Math.random().toString().replace("0.", "");
 
@@ -71,8 +72,11 @@ export async function getImageAttachment(
       imgClass.name = imageName;
       putAttachmentClassCache(imgClass);
     } else {
-      throw new ExpectError("[getImageAttachment] Init Image failed!");
+      // throw new ExpectError("[getImageAttachment] Init Image failed!");
     }
+  }
+  if (comments) {
+    imgClass.comments = comments;
   }
   return imgClass;
 }

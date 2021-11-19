@@ -1,3 +1,4 @@
+import { log } from "../log";
 import { AttachmentClass, ExpectError } from "../main";
 import { getImageAttachment } from "./attachments";
 
@@ -184,44 +185,30 @@ async function formatImage(
 async function _formatImage(
   elem: HTMLImageElement,
   builder: Builder
-): Promise<[HTMLImageElement, string, AttachmentClass | null] | void> {
+): Promise<[HTMLImageElement, string, Promise<AttachmentClass> | null] | void> {
   if (!elem.src) {
     return;
   }
 
   const imgMode = builder.imgMode;
   const imageUrl = elem.src;
-  try {
-    let noMD5 = false;
-    if (builder.option?.keepImageName) {
-      noMD5 = true;
-    }
-    const imgClass = await getImageAttachment(imageUrl, imgMode, "", noMD5);
-    const imageName = imgClass.name;
-
-    const filterdImages = builder.images.find((img) => img.url === elem.src);
-    if (!filterdImages) {
-      builder.images.push(imgClass);
-    }
-
-    const imgElem = document.createElement("img");
-    imgElem.setAttribute("data-src-address", imageName);
-    imgElem.alt = imageUrl;
-
-    const imgText = `![${imageUrl}](${imageName})`;
-    return [imgElem, imgText, imgClass];
-  } catch (error) {
-    if (error instanceof ExpectError) {
-      const imgElem = document.createElement("img");
-      imgElem.setAttribute("data-src-address", imageUrl);
-      imgElem.alt = imageUrl;
-
-      const imgText = `![${imageUrl}](${imageUrl})`;
-      return [imgElem, imgText, null];
-    } else {
-      throw error;
-    }
+  let noMD5 = false;
+  if (builder.option?.keepImageName) {
+    noMD5 = true;
   }
+  const imageName = `__imageName__${Math.random()
+    .toString()
+    .replace("0.", "")}__`;
+  const imgClass = getImageAttachment(imageUrl, imgMode, "", noMD5, imageName);
+
+  builder.images.push(imgClass);
+
+  const imgElem = document.createElement("img");
+  imgElem.setAttribute("data-src-address", imageName);
+  imgElem.alt = imageUrl;
+
+  const imgText = `![${imageUrl}](${imageName})`;
+  return [imgElem, imgText, imgClass];
 }
 
 async function formatMisc(elem: HTMLElement, builder: Builder) {
@@ -449,7 +436,7 @@ interface BuilderOption {
 interface Builder {
   dom: HTMLElement;
   text: string;
-  images: AttachmentClass[];
+  images: Promise<AttachmentClass>[];
   imgMode: "naive" | "TM";
   option: BuilderOption | null;
 }
@@ -545,10 +532,41 @@ export async function cleanDOM(
     option,
   };
   await walk(DOM as HTMLElement, builder);
+
+  const dom = builder.dom;
+  let text = builder.text;
+  const pImages = builder.images;
+  let images: AttachmentClass[] | undefined;
+  try {
+    images = await Promise.all(pImages);
+  } catch (error) {
+    log.error(error);
+    log.trace(error);
+  }
+  if (!images) {
+    log.error("[cleanDom] images is undefined!");
+    images = [];
+  }
+  for (const img of images) {
+    const comments = img.comments;
+    const blob = img.imageBlob;
+    if (comments) {
+      const _imgDom = dom.querySelector(`img[data-src-address="${comments}"]`);
+      if (blob) {
+        _imgDom?.setAttribute("data-src-address", img.name);
+        text = text.replaceAll(comments, img.name);
+      } else {
+        _imgDom?.setAttribute("data-src-address", img.url);
+        text = text.replaceAll(comments, img.url);
+      }
+    }
+  }
+  text = text.trim();
+
   return {
-    dom: builder.dom,
-    text: builder.text.trim(),
-    images: builder.images,
+    dom,
+    text,
+    images,
   };
 }
 
