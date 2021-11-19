@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.4.10.318
+// @version        4.4.10.319
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -3618,7 +3618,7 @@ function clearAttachmentClassCache() {
     attachmentClassCache = [];
 }
 exports.clearAttachmentClassCache = clearAttachmentClassCache;
-async function getImageAttachment(url, imgMode = "TM", prefix = "", noMD5 = false) {
+async function getImageAttachment(url, imgMode = "TM", prefix = "", noMD5 = false, comments) {
     const tmpImageName = Math.random().toString().replace("0.", "");
     let imgClass;
     const imgClassCache = getAttachmentClassCache(url);
@@ -3660,8 +3660,10 @@ async function getImageAttachment(url, imgMode = "TM", prefix = "", noMD5 = fals
             putAttachmentClassCache(imgClass);
         }
         else {
-            throw new main_1.ExpectError("[getImageAttachment] Init Image failed!");
         }
+    }
+    if (comments) {
+        imgClass.comments = comments;
     }
     return imgClass;
 }
@@ -3677,7 +3679,7 @@ exports.getImageAttachment = getImageAttachment;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.htmlTrim = exports.cleanDOM = void 0;
-const main_1 = __webpack_require__("./src/main.ts");
+const log_1 = __webpack_require__("./src/log.ts");
 const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
 const BlockElements = [
     "article",
@@ -3834,35 +3836,20 @@ async function _formatImage(elem, builder) {
     }
     const imgMode = builder.imgMode;
     const imageUrl = elem.src;
-    try {
-        let noMD5 = false;
-        if (builder.option?.keepImageName) {
-            noMD5 = true;
-        }
-        const imgClass = await (0, attachments_1.getImageAttachment)(imageUrl, imgMode, "", noMD5);
-        const imageName = imgClass.name;
-        const filterdImages = builder.images.find((img) => img.url === elem.src);
-        if (!filterdImages) {
-            builder.images.push(imgClass);
-        }
-        const imgElem = document.createElement("img");
-        imgElem.setAttribute("data-src-address", imageName);
-        imgElem.alt = imageUrl;
-        const imgText = `![${imageUrl}](${imageName})`;
-        return [imgElem, imgText, imgClass];
+    let noMD5 = false;
+    if (builder.option?.keepImageName) {
+        noMD5 = true;
     }
-    catch (error) {
-        if (error instanceof main_1.ExpectError) {
-            const imgElem = document.createElement("img");
-            imgElem.setAttribute("data-src-address", imageUrl);
-            imgElem.alt = imageUrl;
-            const imgText = `![${imageUrl}](${imageUrl})`;
-            return [imgElem, imgText, null];
-        }
-        else {
-            throw error;
-        }
-    }
+    const imageName = `__imageName__${Math.random()
+        .toString()
+        .replace("0.", "")}__`;
+    const imgClass = (0, attachments_1.getImageAttachment)(imageUrl, imgMode, "", noMD5, imageName);
+    builder.images.push(imgClass);
+    const imgElem = document.createElement("img");
+    imgElem.setAttribute("data-src-address", imageName);
+    imgElem.alt = imageUrl;
+    const imgText = `![${imageUrl}](${imageName})`;
+    return [imgElem, imgText, imgClass];
 }
 async function formatMisc(elem, builder) {
     if (elem.childElementCount === 0) {
@@ -4136,10 +4123,41 @@ async function cleanDOM(DOM, imgMode, option = null) {
         option,
     };
     await walk(DOM, builder);
+    const dom = builder.dom;
+    let text = builder.text;
+    const pImages = builder.images;
+    let images;
+    try {
+        images = await Promise.all(pImages);
+    }
+    catch (error) {
+        log_1.log.error(error);
+        log_1.log.trace(error);
+    }
+    if (!images) {
+        log_1.log.error("[cleanDom] images is undefined!");
+        images = [];
+    }
+    for (const img of images) {
+        const comments = img.comments;
+        const blob = img.imageBlob;
+        if (comments) {
+            const _imgDom = dom.querySelector(`img[data-src-address="${comments}"]`);
+            if (blob) {
+                _imgDom?.setAttribute("data-src-address", img.name);
+                text = text.replaceAll(comments, img.name);
+            }
+            else {
+                _imgDom?.setAttribute("data-src-address", img.url);
+                text = text.replaceAll(comments, img.url);
+            }
+        }
+    }
+    text = text.trim();
     return {
-        dom: builder.dom,
-        text: builder.text.trim(),
-        images: builder.images,
+        dom,
+        text,
+        images,
     };
 }
 exports.cleanDOM = cleanDOM;
@@ -4803,7 +4821,7 @@ class AttachmentClass {
                 if (response.status === 404) {
                     this.status = Status.failed;
                 }
-                throw new Error(`Image request response is not ok!\nImage url: ${this.url} .`);
+                throw new Error(`Bad response!\nRequest url: ${this.url}\nStatus code: ${response.status}`);
             }
         })
             .catch(async (err) => {
@@ -4837,14 +4855,14 @@ class AttachmentClass {
                 if (response.status === 404) {
                     this.status = Status.failed;
                 }
-                throw new Error(`Bad response!\nRequest url: ${this.url}`);
+                throw new Error(`Bad response!\nRequest url: ${this.url}\nStatus code: ${response.status}`);
             }
         })
             .catch(async (err) => {
             this.retryTime++;
             log_1.log.error(`[attachment]下载 ${this.url} 出错，第${this.retryTime}次重试，下载模式：${this.mode}`);
             if (this.status !== Status.failed && this.retryTime < setting_1.retryLimit) {
-                await (0, misc_1.sleep)(this.retryTime * 1500);
+                await (0, misc_1.sleep)(this.retryTime * 1000);
                 return this.tmDownloadImage();
             }
             else {
@@ -5312,7 +5330,7 @@ class BaseRuleClass {
         try {
             if (!self.preHook())
                 return;
-            if (typeof window._book !== undefined) {
+            if (typeof window._book !== "undefined") {
                 self.book = window._book;
             }
             else {

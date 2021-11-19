@@ -70,6 +70,7 @@ export declare class AttachmentClass {
     status: Status;
     retryTime: number;
     imageBlob: Blob | null | void;
+    comments: string;
     constructor(imageUrl: string, name: string, mode: "naive" | "TM");
     init(): Promise<Blob | null>;
     private downloadImage;
