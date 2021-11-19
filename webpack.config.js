@@ -18,8 +18,7 @@ try {
 module.exports = {
   mode: dev ? "development" : "production",
   optimization: {
-    minimize: false,
-    moduleIds: "named",
+    moduleIds: "natural",
     usedExports: true,
   },
   entry: path.resolve(__dirname, "src", "index.ts"),

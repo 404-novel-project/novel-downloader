@@ -4,22 +4,23 @@
   "description": "novel downloader",
   "main": "index.js",
   "scripts": {
-    "build": "webpack build",
     "dev": "webpack serve --node-env development",
     "lint": "tslint -c tslint.json 'src/**/*.ts'",
     "pretty": "prettier src -w",
+    "build": "webpack build -c webpack.config.js",
+    "build-greasyfork": "webpack -c webpack-greasyfork.config.js",
+    "dev-tester": "webpack serve -c webpack-tester.config.js --node-env development",
     "build-tester": "webpack -c webpack-tester.config.js",
-    "dev-tester": "webpack serve -c webpack-tester.config.js --node-env development"
+    "github": "run-s lint pretty build build-greasyfork build-tester"
   },
   "pre-commit": [
-    "lint",
-    "pretty",
-    "build",
-    "build-tester"
+    "github"
   ],
   "sideEffects": [
     "./src/index.ts",
-    "./src/global.ts"
+    "./src/global.ts",
+    "src/ui/*",
+    "*.css"
   ],
   "author": "BGME",
   "license": "AGPL-3.0",
@@ -33,6 +34,7 @@
     "eslint": "^8.0.0",
     "eslint-config-prettier": "^8.1.0",
     "html-loader": "^3.0.1",
+    "npm-run-all": "^4.1.5",
     "nunjucks": "^3.2.3",
     "path": "^0.12.7",
     "pre-commit": "^1.2.2",
