@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.4.10.319
+// @version        4.4.10.320
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -4910,12 +4910,12 @@ async function getRule() {
         }
         case "www.shuquge.com":
         case "www.sizhicn.com": {
-            const { shuquge } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge.ts"));
+            const { shuquge } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge/type2.ts"));
             ruleClass = shuquge();
             break;
         }
         case "www.dingdiann.net": {
-            const { Dingdiann } = await Promise.resolve().then(() => __webpack_require__("./src/rules/dingdiann.ts"));
+            const { Dingdiann } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge/dingdiann.ts"));
             ruleClass = Dingdiann;
             break;
         }
@@ -4950,7 +4950,7 @@ async function getRule() {
             break;
         }
         case "www.gebiqu.com": {
-            const { gebiqu } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge.ts"));
+            const { gebiqu } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge/type1.ts"));
             ruleClass = gebiqu();
             break;
         }
@@ -4980,13 +4980,13 @@ async function getRule() {
         case "www.biquwoo.com":
         case "www.biquwo.org":
         case "www.hongyeshuzhai.com": {
-            const { common } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge.ts"));
+            const { common } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge/type1.ts"));
             ruleClass = common();
             break;
         }
         case "www.81book.com":
         case "www.81zw.com": {
-            const { c81book } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge.ts"));
+            const { c81book } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge/type1.ts"));
             ruleClass = c81book();
             break;
         }
@@ -5025,7 +5025,7 @@ async function getRule() {
             break;
         }
         case "www.xinwanben.com": {
-            const { Xinwanben } = await Promise.resolve().then(() => __webpack_require__("./src/rules/xinwanben.ts"));
+            const { Xinwanben } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge/xinwanben.ts"));
             ruleClass = Xinwanben;
             break;
         }
@@ -5081,7 +5081,7 @@ async function getRule() {
         }
         case "www.mht.tw":
         case "www.mht99.com": {
-            const { Mht } = await Promise.resolve().then(() => __webpack_require__("./src/rules/mht.ts"));
+            const { Mht } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge/mht.ts"));
             ruleClass = Mht;
             break;
         }
@@ -5093,7 +5093,7 @@ async function getRule() {
             break;
         }
         case "www.xbiquge.so": {
-            const { Xbiquge } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge.ts"));
+            const { Xbiquge } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge/xbiquge.ts"));
             ruleClass = Xbiquge;
             break;
         }
@@ -5103,7 +5103,7 @@ async function getRule() {
             break;
         }
         case "www.luoqiuzw.com": {
-            const { luoqiuzw } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge.ts"));
+            const { luoqiuzw } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge/type1.ts"));
             ruleClass = luoqiuzw();
             break;
         }
@@ -5136,7 +5136,7 @@ async function getRule() {
             break;
         }
         case "www.xyqxs.cc": {
-            const { xyqxs } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge.ts"));
+            const { xyqxs } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge/type2.ts"));
             ruleClass = xyqxs();
             break;
         }
@@ -5185,7 +5185,7 @@ async function getRule() {
             break;
         }
         case "www.lwxs9.org": {
-            const { lwxs9 } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge.ts"));
+            const { lwxs9 } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge/type1.ts"));
             ruleClass = lwxs9();
             break;
         }
@@ -5227,22 +5227,22 @@ async function getRule() {
             break;
         }
         case "dijiubook.net": {
-            const { dijiubook } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge.ts"));
+            const { dijiubook } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge/type1.ts"));
             ruleClass = dijiubook();
             break;
         }
         case "www.biquwx.la": {
-            const { biquwx } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge.ts"));
+            const { biquwx } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge/type1.ts"));
             ruleClass = biquwx();
             break;
         }
         case "www.25zw.com": {
-            const { C25zw } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge.ts"));
+            const { C25zw } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge/25zw.ts"));
             ruleClass = C25zw;
             break;
         }
         case "www.tycqxs.com": {
-            const { tycqxs } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge.ts"));
+            const { tycqxs } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge/type1.ts"));
             ruleClass = tycqxs();
             break;
         }
@@ -5781,17 +5781,178 @@ exports.C226ks = C226ks;
 
 /***/ }),
 
-/***/ "./src/rules/biquge.ts":
+/***/ "./src/rules/biquge/25zw.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Xbiquge = exports.xyqxs = exports.shuquge = exports.dijiubook = exports.C25zw = exports.tycqxs = exports.biquwx = exports.lwxs9 = exports.luoqiuzw = exports.gebiqu = exports.c81book = exports.common = exports.bookParseTemp = void 0;
+exports.C25zw = void 0;
+const http_1 = __webpack_require__("./src/lib/http.ts");
+const misc_1 = __webpack_require__("./src/lib/misc.ts");
+const rules_1 = __webpack_require__("./src/rules.ts");
+const template_1 = __webpack_require__("./src/rules/biquge/template.ts");
+class C25zw extends rules_1.BaseRuleClass {
+    constructor() {
+        super();
+        this.imageMode = "TM";
+        this.charset = document.charset;
+    }
+    async bookParse() {
+        const self = this;
+        return (0, template_1.bookParseTemp)({
+            bookUrl: document.location.href,
+            bookname: document.querySelector("#info h1:nth-of-type(1)").innerText
+                .trim()
+                .replace(/最新章节$/, ""),
+            author: document.querySelector("#info > p:nth-child(2)").innerText
+                .replace(/作(\s+)?者[：:]/, "")
+                .trim(),
+            introDom: document.querySelector("#intro"),
+            introDomPatch: (introDom) => {
+                introDom.querySelector("font")?.parentElement?.remove();
+                introDom.innerHTML = introDom.innerHTML.replace("简介:", "");
+                return introDom;
+            },
+            coverUrl: document.querySelector("#fmimg > img")
+                .src,
+            chapterListSelector: "#list>dl",
+            charset: document.charset,
+            chapterParse: self.chapterParse,
+        });
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+        const dom = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
+        return (0, template_1.chapterParseTemp)({
+            dom,
+            chapterUrl,
+            chapterName: dom.querySelector(".zhangjieming > h1").innerText.trim(),
+            contenSelector: "#content",
+            contentPatch: (content) => {
+                (0, misc_1.rm)(".bottem", false, content);
+                return content;
+            },
+            charset,
+        });
+    }
+}
+exports.C25zw = C25zw;
+
+
+/***/ }),
+
+/***/ "./src/rules/biquge/dingdiann.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Dingdiann = void 0;
+const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
+const misc_1 = __webpack_require__("./src/lib/misc.ts");
+const rules_1 = __webpack_require__("./src/rules.ts");
+const common_1 = __webpack_require__("./src/rules/lib/common.ts");
+const template_1 = __webpack_require__("./src/rules/biquge/template.ts");
+class Dingdiann extends rules_1.BaseRuleClass {
+    constructor() {
+        super();
+        this.imageMode = "TM";
+    }
+    async bookParse() {
+        const self = this;
+        return (0, template_1.bookParseTemp)({
+            bookUrl: document.location.href,
+            bookname: document.querySelector("#info > h1:nth-child(1)").innerText.trim(),
+            author: document.querySelector("#info > p:nth-child(2)").innerText
+                .replace(/作(\s+)?者[：:]/, "")
+                .trim(),
+            introDom: document.querySelector("#intro"),
+            introDomPatch: (introDom) => introDom,
+            coverUrl: document.querySelector("#fmimg > img")
+                .src,
+            chapterListSelector: "#list>dl",
+            charset: "UTF-8",
+            chapterParse: self.chapterParse,
+        });
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+        return (0, common_1.nextPageParse)(chapterName, chapterUrl, charset, "#content", (_content, doc) => {
+            (0, misc_1.rm)("div[align]", false, _content);
+            (0, misc_1.rm)("script", true, _content);
+            const removelist = [
+                "一秒记住，精彩小说无弹窗免费阅读！",
+                "&lt;/a　:&gt;",
+                "--&gt;&gt;",
+                "本章未完，点击下一页继续阅读",
+            ];
+            removelist.forEach((removeStr) => (_content.innerHTML = _content.innerHTML.replaceAll(removeStr, "")));
+            (0, cleanDOM_1.htmlTrim)(_content);
+            return _content;
+        }, (doc) => doc.querySelector(".bottem2 > a:nth-child(4)")
+            .href, (_content, nextLink) => _content.innerText.includes("本章未完，点击下一页继续阅读"));
+    }
+}
+exports.Dingdiann = Dingdiann;
+
+
+/***/ }),
+
+/***/ "./src/rules/biquge/mht.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Mht = void 0;
+const misc_1 = __webpack_require__("./src/lib/misc.ts");
+const rules_1 = __webpack_require__("./src/rules.ts");
+const common_1 = __webpack_require__("./src/rules/lib/common.ts");
+const template_1 = __webpack_require__("./src/rules/biquge/template.ts");
+class Mht extends rules_1.BaseRuleClass {
+    constructor() {
+        super();
+        this.imageMode = "TM";
+    }
+    async bookParse() {
+        const self = this;
+        return (0, template_1.bookParseTemp)({
+            bookUrl: document.location.href,
+            bookname: document.querySelector("#info > h1:nth-child(1)").innerText.trim(),
+            author: document.querySelector("#info > p:nth-child(2)").innerText
+                .replace(/作(\s+)?者[：:]/, "")
+                .trim(),
+            introDom: document.querySelector("#intro"),
+            introDomPatch: (introDom) => introDom,
+            coverUrl: document.querySelector("#fmimg > img")
+                .src,
+            chapterListSelector: "#list>dl",
+            charset: "UTF-8",
+            chapterParse: self.chapterParse,
+        });
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+        return (0, common_1.nextPageParse)(chapterName, chapterUrl, charset, "#content", (_content, doc) => {
+            (0, misc_1.rm)("p[data-id]", true, _content);
+            return _content;
+        }, (doc) => doc.querySelector(".bottem2 > a:nth-child(4)")
+            .href, (_content, nextLink) => new URL(nextLink).pathname.includes("_"));
+    }
+}
+exports.Mht = Mht;
+
+
+/***/ }),
+
+/***/ "./src/rules/biquge/template.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.mkBiqugeClass2 = exports.mkBiqugeClass = exports.chapterParseTemp = exports.bookParseTemp = void 0;
 const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
 const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
 const http_1 = __webpack_require__("./src/lib/http.ts");
-const misc_1 = __webpack_require__("./src/lib/misc.ts");
 const log_1 = __webpack_require__("./src/log.ts");
 const main_1 = __webpack_require__("./src/main.ts");
 const rules_1 = __webpack_require__("./src/rules.ts");
@@ -5882,6 +6043,7 @@ async function chapterParseTemp({ dom, chapterUrl, chapterName, contenSelector, 
         };
     }
 }
+exports.chapterParseTemp = chapterParseTemp;
 function mkBiqugeClass(introDomPatch, contentPatch, concurrencyLimit) {
     return class extends rules_1.BaseRuleClass {
         constructor() {
@@ -5927,116 +6089,7 @@ function mkBiqugeClass(introDomPatch, contentPatch, concurrencyLimit) {
         }
     };
 }
-const common = () => mkBiqugeClass((introDom) => introDom, (content) => content);
-exports.common = common;
-const c81book = () => mkBiqugeClass((introDom) => introDom, (content) => content);
-exports.c81book = c81book;
-const gebiqu = () => mkBiqugeClass((introDom) => {
-    introDom.innerHTML = introDom.innerHTML.replace(/如果您喜欢.+，别忘记分享给朋友/g, "");
-    (0, misc_1.rm)('a[href^="http://down.gebiqu.com"]', false, introDom);
-    return introDom;
-}, (content) => {
-    content.innerHTML = content.innerHTML.replace(/"www.gebiqu.com"/g, "");
-    return content;
-});
-exports.gebiqu = gebiqu;
-const luoqiuzw = () => mkBiqugeClass((introDom) => introDom, (content) => {
-    const ad = content.firstElementChild;
-    if (ad.innerText.includes("天才一秒记住本站地址：")) {
-        ad.remove();
-    }
-    const ads = ["记住网址m.luoqｉｕｘｚｗ．ｃｏｍ"];
-    ads.forEach((adt) => (content.innerHTML = content.innerHTML.replace(adt, "")));
-    return content;
-});
-exports.luoqiuzw = luoqiuzw;
-const lwxs9 = () => mkBiqugeClass((introDom) => introDom, (content) => {
-    (0, misc_1.rm)("div[align]", false, content);
-    return content;
-});
-exports.lwxs9 = lwxs9;
-const biquwx = () => mkBiqugeClass((introDom) => {
-    introDom.innerHTML = introDom.innerHTML.replace(/本站提示：各位书友要是觉得《.+》还不错的话请不要忘记向您QQ群和微博里的朋友推荐哦！/, "");
-    return introDom;
-}, (content) => content, 1);
-exports.biquwx = biquwx;
-const tycqxs = () => mkBiqugeClass((introDom) => introDom, (content) => {
-    content.innerHTML = content.innerHTML.replace(/推荐都市大神老施新书:<a href="https:\/\/www\.tycqxs\.com\/[\d_]+\/" target="_blank">.+<\/a>/, "");
-    return content;
-});
-exports.tycqxs = tycqxs;
-class C25zw extends rules_1.BaseRuleClass {
-    constructor() {
-        super();
-        this.imageMode = "TM";
-        this.charset = document.charset;
-    }
-    async bookParse() {
-        const self = this;
-        return bookParseTemp({
-            bookUrl: document.location.href,
-            bookname: document.querySelector("#info h1:nth-of-type(1)").innerText
-                .trim()
-                .replace(/最新章节$/, ""),
-            author: document.querySelector("#info > p:nth-child(2)").innerText
-                .replace(/作(\s+)?者[：:]/, "")
-                .trim(),
-            introDom: document.querySelector("#intro"),
-            introDomPatch: (introDom) => {
-                introDom.querySelector("font")?.parentElement?.remove();
-                introDom.innerHTML = introDom.innerHTML.replace("简介:", "");
-                return introDom;
-            },
-            coverUrl: document.querySelector("#fmimg > img")
-                .src,
-            chapterListSelector: "#list>dl",
-            charset: document.charset,
-            chapterParse: self.chapterParse,
-        });
-    }
-    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        const dom = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
-        return chapterParseTemp({
-            dom,
-            chapterUrl,
-            chapterName: dom.querySelector(".zhangjieming > h1").innerText.trim(),
-            contenSelector: "#content",
-            contentPatch: (content) => {
-                (0, misc_1.rm)(".bottem", false, content);
-                return content;
-            },
-            charset,
-        });
-    }
-}
-exports.C25zw = C25zw;
-const dijiubook = () => {
-    const c = mkBiqugeClass((introDom) => {
-        introDom.innerHTML = introDom.innerHTML.replace("本书网址：", "");
-        (0, misc_1.rm)('a[href^="https://dijiubook.net/"]', false, introDom);
-        (0, misc_1.rm)("dl > dt:nth-of-type(2)", false, document.querySelector("#list"));
-        document
-            .querySelectorAll('#list a[href^="https://m.dijiubook.net"]')
-            .forEach((elem) => elem.parentElement?.remove());
-        document
-            .querySelectorAll('#list a[href$=".apk"]')
-            .forEach((elem) => elem.parentElement?.remove());
-        return introDom;
-    }, (content) => {
-        (0, misc_1.rm)("a", true, content);
-        return content;
-    });
-    c.prototype.overrideConstructor = (classThis) => {
-        classThis.concurrencyLimit = 1;
-        classThis.maxRunLimit = 1;
-        classThis.postChapterParseHook = async (obj) => {
-            await (0, misc_1.sleep)(3000 * Math.random());
-            return obj;
-        };
-    };
-    return c;
-};
-exports.dijiubook = dijiubook;
+exports.mkBiqugeClass = mkBiqugeClass;
 function mkBiqugeClass2(introDomPatch, contentPatch, concurrencyLimit) {
     return class extends rules_1.BaseRuleClass {
         constructor() {
@@ -6081,7 +6134,99 @@ function mkBiqugeClass2(introDomPatch, contentPatch, concurrencyLimit) {
         }
     };
 }
-const shuquge = () => mkBiqugeClass2((introDom) => {
+exports.mkBiqugeClass2 = mkBiqugeClass2;
+
+
+/***/ }),
+
+/***/ "./src/rules/biquge/type1.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.dijiubook = exports.tycqxs = exports.biquwx = exports.lwxs9 = exports.luoqiuzw = exports.gebiqu = exports.c81book = exports.common = void 0;
+const misc_1 = __webpack_require__("./src/lib/misc.ts");
+const template_1 = __webpack_require__("./src/rules/biquge/template.ts");
+const common = () => (0, template_1.mkBiqugeClass)((introDom) => introDom, (content) => content);
+exports.common = common;
+const c81book = () => (0, template_1.mkBiqugeClass)((introDom) => introDom, (content) => content);
+exports.c81book = c81book;
+const gebiqu = () => (0, template_1.mkBiqugeClass)((introDom) => {
+    introDom.innerHTML = introDom.innerHTML.replace(/如果您喜欢.+，别忘记分享给朋友/g, "");
+    (0, misc_1.rm)('a[href^="http://down.gebiqu.com"]', false, introDom);
+    return introDom;
+}, (content) => {
+    content.innerHTML = content.innerHTML.replace(/"www.gebiqu.com"/g, "");
+    return content;
+});
+exports.gebiqu = gebiqu;
+const luoqiuzw = () => (0, template_1.mkBiqugeClass)((introDom) => introDom, (content) => {
+    const ad = content.firstElementChild;
+    if (ad.innerText.includes("天才一秒记住本站地址：")) {
+        ad.remove();
+    }
+    const ads = ["记住网址m.luoqｉｕｘｚｗ．ｃｏｍ"];
+    ads.forEach((adt) => (content.innerHTML = content.innerHTML.replace(adt, "")));
+    return content;
+});
+exports.luoqiuzw = luoqiuzw;
+const lwxs9 = () => (0, template_1.mkBiqugeClass)((introDom) => introDom, (content) => {
+    (0, misc_1.rm)("div[align]", false, content);
+    return content;
+});
+exports.lwxs9 = lwxs9;
+const biquwx = () => (0, template_1.mkBiqugeClass)((introDom) => {
+    introDom.innerHTML = introDom.innerHTML.replace(/本站提示：各位书友要是觉得《.+》还不错的话请不要忘记向您QQ群和微博里的朋友推荐哦！/, "");
+    return introDom;
+}, (content) => content, 1);
+exports.biquwx = biquwx;
+const tycqxs = () => (0, template_1.mkBiqugeClass)((introDom) => introDom, (content) => {
+    content.innerHTML = content.innerHTML.replace(/推荐都市大神老施新书:<a href="https:\/\/www\.tycqxs\.com\/[\d_]+\/" target="_blank">.+<\/a>/, "");
+    return content;
+});
+exports.tycqxs = tycqxs;
+const dijiubook = () => {
+    const c = (0, template_1.mkBiqugeClass)((introDom) => {
+        introDom.innerHTML = introDom.innerHTML.replace("本书网址：", "");
+        (0, misc_1.rm)('a[href^="https://dijiubook.net/"]', false, introDom);
+        (0, misc_1.rm)("dl > dt:nth-of-type(2)", false, document.querySelector("#list"));
+        document
+            .querySelectorAll('#list a[href^="https://m.dijiubook.net"]')
+            .forEach((elem) => elem.parentElement?.remove());
+        document
+            .querySelectorAll('#list a[href$=".apk"]')
+            .forEach((elem) => elem.parentElement?.remove());
+        return introDom;
+    }, (content) => {
+        (0, misc_1.rm)("a", true, content);
+        return content;
+    });
+    c.prototype.overrideConstructor = (classThis) => {
+        classThis.concurrencyLimit = 1;
+        classThis.maxRunLimit = 1;
+        classThis.postChapterParseHook = async (obj) => {
+            await (0, misc_1.sleep)(3000 * Math.random());
+            return obj;
+        };
+    };
+    return c;
+};
+exports.dijiubook = dijiubook;
+
+
+/***/ }),
+
+/***/ "./src/rules/biquge/type2.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.xyqxs = exports.shuquge = void 0;
+const misc_1 = __webpack_require__("./src/lib/misc.ts");
+const template_1 = __webpack_require__("./src/rules/biquge/template.ts");
+const shuquge = () => (0, template_1.mkBiqugeClass2)((introDom) => {
     document.querySelector(".noshow")?.classList.remove("noshow");
     if (document.querySelector(".showall")) {
         document.querySelector(".showall").innerHTML = "";
@@ -6097,7 +6242,7 @@ const shuquge = () => mkBiqugeClass2((introDom) => {
     return content;
 }, 1);
 exports.shuquge = shuquge;
-const xyqxs = () => mkBiqugeClass2((introDom) => {
+const xyqxs = () => (0, template_1.mkBiqugeClass2)((introDom) => {
     introDom.innerHTML = introDom.innerHTML.replace(/推荐地址：https:\/\/www.xyqxs.cc\/html\/\d+\/\d+\/index\.html/g, "");
     return introDom;
 }, (content) => {
@@ -6110,6 +6255,20 @@ const xyqxs = () => mkBiqugeClass2((introDom) => {
     return content;
 });
 exports.xyqxs = xyqxs;
+
+
+/***/ }),
+
+/***/ "./src/rules/biquge/xbiquge.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Xbiquge = void 0;
+const http_1 = __webpack_require__("./src/lib/http.ts");
+const rules_1 = __webpack_require__("./src/rules.ts");
+const template_1 = __webpack_require__("./src/rules/biquge/template.ts");
 class Xbiquge extends rules_1.BaseRuleClass {
     constructor() {
         super();
@@ -6118,7 +6277,7 @@ class Xbiquge extends rules_1.BaseRuleClass {
     }
     async bookParse() {
         const self = this;
-        return bookParseTemp({
+        return (0, template_1.bookParseTemp)({
             bookUrl: document.location.href,
             bookname: document.querySelector("#info > h1:nth-child(1)").innerText.trim(),
             author: document.querySelector("#info > p:nth-child(2)").innerText
@@ -6135,7 +6294,7 @@ class Xbiquge extends rules_1.BaseRuleClass {
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         const dom = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
-        return chapterParseTemp({
+        return (0, template_1.chapterParseTemp)({
             dom,
             chapterUrl,
             chapterName: dom.querySelector(".bookname > h1:nth-child(1)").innerText.trim(),
@@ -6149,6 +6308,70 @@ class Xbiquge extends rules_1.BaseRuleClass {
     }
 }
 exports.Xbiquge = Xbiquge;
+
+
+/***/ }),
+
+/***/ "./src/rules/biquge/xinwanben.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Xinwanben = void 0;
+const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
+const rules_1 = __webpack_require__("./src/rules.ts");
+const common_1 = __webpack_require__("./src/rules/lib/common.ts");
+const template_1 = __webpack_require__("./src/rules/biquge/template.ts");
+class Xinwanben extends rules_1.BaseRuleClass {
+    constructor() {
+        super();
+        this.imageMode = "TM";
+    }
+    async bookParse() {
+        const self = this;
+        return (0, template_1.bookParseTemp)({
+            bookUrl: document.location.href,
+            bookname: document.querySelector("#info > h1:nth-child(1)").innerText.trim(),
+            author: document.querySelector("#info > p:nth-child(2)").innerText
+                .replace(/作(\s+)?者[：:]/, "")
+                .trim(),
+            introDom: document.querySelector("#intro"),
+            introDomPatch: (introDom) => {
+                const _bookname = introDom.innerHTML.match(/《(.*)》/);
+                let bookname;
+                if (_bookname?.length === 2) {
+                    bookname = _bookname[1];
+                }
+                introDom.querySelectorAll("p").forEach((p) => {
+                    const adList = [
+                        "还不错的话请不要忘记向您QQ群和微博里的朋友推荐哦！",
+                        "小说免费阅读地址：",
+                    ];
+                    for (const ad of adList) {
+                        if (p.innerText.includes(ad)) {
+                            p.remove();
+                        }
+                    }
+                });
+                introDom.innerHTML = introDom.innerHTML.replace(`${bookname}小说简介：`, "");
+                return introDom;
+            },
+            coverUrl: document.querySelector("#fmimg > img")
+                .src,
+            chapterListSelector: "div.box_con:nth-child(5) > div:nth-child(2) > dl:nth-child(1)",
+            charset: "UTF-8",
+            chapterParse: self.chapterParse,
+        });
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+        return (0, common_1.nextPageParse)(chapterName, chapterUrl, charset, "#content", (_content, doc) => {
+            (0, cleanDOM_1.htmlTrim)(_content);
+            return _content;
+        }, (doc) => doc.querySelector("#next_url").href, (_content, nextLink) => nextLink.includes("_"));
+    }
+}
+exports.Xinwanben = Xinwanben;
 
 
 /***/ }),
@@ -6559,62 +6782,6 @@ class Dierbanzhu extends rules_1.BaseRuleClass {
     }
 }
 exports.Dierbanzhu = Dierbanzhu;
-
-
-/***/ }),
-
-/***/ "./src/rules/dingdiann.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Dingdiann = void 0;
-const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
-const misc_1 = __webpack_require__("./src/lib/misc.ts");
-const rules_1 = __webpack_require__("./src/rules.ts");
-const biquge_1 = __webpack_require__("./src/rules/biquge.ts");
-const common_1 = __webpack_require__("./src/rules/lib/common.ts");
-class Dingdiann extends rules_1.BaseRuleClass {
-    constructor() {
-        super();
-        this.imageMode = "TM";
-    }
-    async bookParse() {
-        const self = this;
-        return (0, biquge_1.bookParseTemp)({
-            bookUrl: document.location.href,
-            bookname: document.querySelector("#info > h1:nth-child(1)").innerText.trim(),
-            author: document.querySelector("#info > p:nth-child(2)").innerText
-                .replace(/作(\s+)?者[：:]/, "")
-                .trim(),
-            introDom: document.querySelector("#intro"),
-            introDomPatch: (introDom) => introDom,
-            coverUrl: document.querySelector("#fmimg > img")
-                .src,
-            chapterListSelector: "#list>dl",
-            charset: "UTF-8",
-            chapterParse: self.chapterParse,
-        });
-    }
-    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        return (0, common_1.nextPageParse)(chapterName, chapterUrl, charset, "#content", (_content, doc) => {
-            (0, misc_1.rm)("div[align]", false, _content);
-            (0, misc_1.rm)("script", true, _content);
-            const removelist = [
-                "一秒记住，精彩小说无弹窗免费阅读！",
-                "&lt;/a　:&gt;",
-                "--&gt;&gt;",
-                "本章未完，点击下一页继续阅读",
-            ];
-            removelist.forEach((removeStr) => (_content.innerHTML = _content.innerHTML.replaceAll(removeStr, "")));
-            (0, cleanDOM_1.htmlTrim)(_content);
-            return _content;
-        }, (doc) => doc.querySelector(".bottem2 > a:nth-child(4)")
-            .href, (_content, nextLink) => _content.innerText.includes("本章未完，点击下一页继续阅读"));
-    }
-}
-exports.Dingdiann = Dingdiann;
 
 
 /***/ }),
@@ -8125,13 +8292,10 @@ exports.Jjwxc = Jjwxc;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.mkRuleClass1 = exports.nextPageParse = exports.introDomHandle = void 0;
-const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
+exports.nextPageParse = exports.introDomHandle = void 0;
 const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
 const http_1 = __webpack_require__("./src/lib/http.ts");
 const log_1 = __webpack_require__("./src/log.ts");
-const main_1 = __webpack_require__("./src/main.ts");
-const rules_1 = __webpack_require__("./src/rules.ts");
 async function introDomHandle(introDom, domPatch) {
     if (introDom === null) {
         return [null, null, null];
@@ -8187,67 +8351,6 @@ async function nextPageParse(chapterName, chapterUrl, charset, selector, content
     };
 }
 exports.nextPageParse = nextPageParse;
-function mkRuleClass1(optionis) {
-    const { bookUrl, bookname, author, introDom, introDomPatch, coverUrl, cos, getContent, contentPatch, } = optionis;
-    return class extends rules_1.BaseRuleClass {
-        constructor() {
-            super();
-            this.imageMode = "TM";
-            this.charset = document.charset;
-        }
-        async bookParse() {
-            const [introduction, introductionHTML, introCleanimages] = await introDomHandle(introDom, introDomPatch);
-            const additionalMetadate = {};
-            if (coverUrl) {
-                (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
-                    .then((coverClass) => {
-                    additionalMetadate.cover = coverClass;
-                })
-                    .catch((error) => log_1.log.error(error));
-            }
-            const chapters = [];
-            let chapterNumber = 0;
-            for (const aElem of Array.from(cos)) {
-                chapterNumber++;
-                const chapterName = aElem.innerText;
-                const chapterUrl = aElem.href;
-                const isVIP = false;
-                const isPaid = false;
-                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, null, null, null, this.chapterParse, this.charset, { bookname });
-                chapters.push(chapter);
-            }
-            const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
-            return book;
-        }
-        async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-            const doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
-            let content = getContent(doc);
-            if (content) {
-                content = contentPatch(content);
-                const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
-                return {
-                    chapterName,
-                    contentRaw: content,
-                    contentText: text,
-                    contentHTML: dom,
-                    contentImages: images,
-                    additionalMetadate: null,
-                };
-            }
-            else {
-                return {
-                    chapterName,
-                    contentRaw: null,
-                    contentText: null,
-                    contentHTML: null,
-                    contentImages: null,
-                    additionalMetadate: null,
-                };
-            }
-        }
-    };
-}
-exports.mkRuleClass1 = mkRuleClass1;
 
 
 /***/ }),
@@ -9964,52 +10067,6 @@ exports.Meegoq = Meegoq;
 
 /***/ }),
 
-/***/ "./src/rules/mht.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Mht = void 0;
-const misc_1 = __webpack_require__("./src/lib/misc.ts");
-const rules_1 = __webpack_require__("./src/rules.ts");
-const biquge_1 = __webpack_require__("./src/rules/biquge.ts");
-const common_1 = __webpack_require__("./src/rules/lib/common.ts");
-class Mht extends rules_1.BaseRuleClass {
-    constructor() {
-        super();
-        this.imageMode = "TM";
-    }
-    async bookParse() {
-        const self = this;
-        return (0, biquge_1.bookParseTemp)({
-            bookUrl: document.location.href,
-            bookname: document.querySelector("#info > h1:nth-child(1)").innerText.trim(),
-            author: document.querySelector("#info > p:nth-child(2)").innerText
-                .replace(/作(\s+)?者[：:]/, "")
-                .trim(),
-            introDom: document.querySelector("#intro"),
-            introDomPatch: (introDom) => introDom,
-            coverUrl: document.querySelector("#fmimg > img")
-                .src,
-            chapterListSelector: "#list>dl",
-            charset: "UTF-8",
-            chapterParse: self.chapterParse,
-        });
-    }
-    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        return (0, common_1.nextPageParse)(chapterName, chapterUrl, charset, "#content", (_content, doc) => {
-            (0, misc_1.rm)("p[data-id]", true, _content);
-            return _content;
-        }, (doc) => doc.querySelector(".bottem2 > a:nth-child(4)")
-            .href, (_content, nextLink) => new URL(nextLink).pathname.includes("_"));
-    }
-}
-exports.Mht = Mht;
-
-
-/***/ }),
-
 /***/ "./src/rules/qidian.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
@@ -11316,8 +11373,8 @@ exports.Shuhai = Shuhai;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.c256wxc = void 0;
-const common_1 = __webpack_require__("./src/rules/lib/common.ts");
-exports.c256wxc = (0, common_1.mkRuleClass1)({
+const template_1 = __webpack_require__("./src/rules/simple/template.ts");
+exports.c256wxc = (0, template_1.mkRuleClass1)({
     bookUrl: document.location.href,
     bookname: document.querySelector(".art_tit").innerText.trim(),
     author: (document.querySelector("span.bookinfo:nth-child(1) > a") ??
@@ -11342,8 +11399,8 @@ exports.c256wxc = (0, common_1.mkRuleClass1)({
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.c630shu = void 0;
-const common_1 = __webpack_require__("./src/rules/lib/common.ts");
-exports.c630shu = (0, common_1.mkRuleClass1)({
+const template_1 = __webpack_require__("./src/rules/simple/template.ts");
+exports.c630shu = (0, template_1.mkRuleClass1)({
     bookUrl: document.location.href,
     bookname: document.querySelector("#info > h1").innerText.trim(),
     author: document.querySelector("div.options > span.item:nth-child(1) > a").innerText.trim(),
@@ -11361,6 +11418,85 @@ exports.c630shu = (0, common_1.mkRuleClass1)({
 
 /***/ }),
 
+/***/ "./src/rules/simple/template.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.mkRuleClass1 = void 0;
+const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
+const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
+const http_1 = __webpack_require__("./src/lib/http.ts");
+const log_1 = __webpack_require__("./src/log.ts");
+const main_1 = __webpack_require__("./src/main.ts");
+const rules_1 = __webpack_require__("./src/rules.ts");
+const common_1 = __webpack_require__("./src/rules/lib/common.ts");
+function mkRuleClass1(optionis) {
+    const { bookUrl, bookname, author, introDom, introDomPatch, coverUrl, cos, getContent, contentPatch, } = optionis;
+    return class extends rules_1.BaseRuleClass {
+        constructor() {
+            super();
+            this.imageMode = "TM";
+            this.charset = document.charset;
+        }
+        async bookParse() {
+            const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom, introDomPatch);
+            const additionalMetadate = {};
+            if (coverUrl) {
+                (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
+                    .then((coverClass) => {
+                    additionalMetadate.cover = coverClass;
+                })
+                    .catch((error) => log_1.log.error(error));
+            }
+            const chapters = [];
+            let chapterNumber = 0;
+            for (const aElem of Array.from(cos)) {
+                chapterNumber++;
+                const chapterName = aElem.innerText;
+                const chapterUrl = aElem.href;
+                const isVIP = false;
+                const isPaid = false;
+                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, null, null, null, this.chapterParse, this.charset, { bookname });
+                chapters.push(chapter);
+            }
+            const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+            return book;
+        }
+        async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+            const doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
+            let content = getContent(doc);
+            if (content) {
+                content = contentPatch(content);
+                const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+                return {
+                    chapterName,
+                    contentRaw: content,
+                    contentText: text,
+                    contentHTML: dom,
+                    contentImages: images,
+                    additionalMetadate: null,
+                };
+            }
+            else {
+                return {
+                    chapterName,
+                    contentRaw: null,
+                    contentText: null,
+                    contentHTML: null,
+                    contentImages: null,
+                    additionalMetadate: null,
+                };
+            }
+        }
+    };
+}
+exports.mkRuleClass1 = mkRuleClass1;
+
+
+/***/ }),
+
 /***/ "./src/rules/simple/trxs.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
@@ -11368,8 +11504,8 @@ exports.c630shu = (0, common_1.mkRuleClass1)({
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.tongrenquan = exports.trxs = void 0;
-const common_1 = __webpack_require__("./src/rules/lib/common.ts");
-const trxs = () => (0, common_1.mkRuleClass1)({
+const template_1 = __webpack_require__("./src/rules/simple/template.ts");
+const trxs = () => (0, template_1.mkRuleClass1)({
     bookUrl: document.location.href,
     bookname: document.querySelector(".infos > h1").innerText
         .split("(")[0]
@@ -11383,7 +11519,7 @@ const trxs = () => (0, common_1.mkRuleClass1)({
     contentPatch: (content) => content,
 });
 exports.trxs = trxs;
-const tongrenquan = () => (0, common_1.mkRuleClass1)({
+const tongrenquan = () => (0, template_1.mkRuleClass1)({
     bookUrl: document.location.href,
     bookname: document.querySelector(".infos > h1").innerText
         .split("(")[0]
@@ -12320,70 +12456,6 @@ class Xiaoshuodaquan extends rules_1.BaseRuleClass {
     }
 }
 exports.Xiaoshuodaquan = Xiaoshuodaquan;
-
-
-/***/ }),
-
-/***/ "./src/rules/xinwanben.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Xinwanben = void 0;
-const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
-const rules_1 = __webpack_require__("./src/rules.ts");
-const biquge_1 = __webpack_require__("./src/rules/biquge.ts");
-const common_1 = __webpack_require__("./src/rules/lib/common.ts");
-class Xinwanben extends rules_1.BaseRuleClass {
-    constructor() {
-        super();
-        this.imageMode = "TM";
-    }
-    async bookParse() {
-        const self = this;
-        return (0, biquge_1.bookParseTemp)({
-            bookUrl: document.location.href,
-            bookname: document.querySelector("#info > h1:nth-child(1)").innerText.trim(),
-            author: document.querySelector("#info > p:nth-child(2)").innerText
-                .replace(/作(\s+)?者[：:]/, "")
-                .trim(),
-            introDom: document.querySelector("#intro"),
-            introDomPatch: (introDom) => {
-                const _bookname = introDom.innerHTML.match(/《(.*)》/);
-                let bookname;
-                if (_bookname?.length === 2) {
-                    bookname = _bookname[1];
-                }
-                introDom.querySelectorAll("p").forEach((p) => {
-                    const adList = [
-                        "还不错的话请不要忘记向您QQ群和微博里的朋友推荐哦！",
-                        "小说免费阅读地址：",
-                    ];
-                    for (const ad of adList) {
-                        if (p.innerText.includes(ad)) {
-                            p.remove();
-                        }
-                    }
-                });
-                introDom.innerHTML = introDom.innerHTML.replace(`${bookname}小说简介：`, "");
-                return introDom;
-            },
-            coverUrl: document.querySelector("#fmimg > img")
-                .src,
-            chapterListSelector: "div.box_con:nth-child(5) > div:nth-child(2) > dl:nth-child(1)",
-            charset: "UTF-8",
-            chapterParse: self.chapterParse,
-        });
-    }
-    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        return (0, common_1.nextPageParse)(chapterName, chapterUrl, charset, "#content", (_content, doc) => {
-            (0, cleanDOM_1.htmlTrim)(_content);
-            return _content;
-        }, (doc) => doc.querySelector("#next_url").href, (_content, nextLink) => nextLink.includes("_"));
-    }
-}
-exports.Xinwanben = Xinwanben;
 
 
 /***/ }),

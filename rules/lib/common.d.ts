@@ -1,6 +1,4 @@
-import { PublicConstructor } from "../../lib/misc";
 import { AttachmentClass } from "../../main";
-import { BaseRuleClass } from "../../rules";
 export declare function introDomHandle(introDom: (Element | HTMLElement) | null, domPatch?: (introDom: HTMLElement) => HTMLElement): Promise<[string | null, HTMLElement | null, AttachmentClass[] | null]>;
 export declare function nextPageParse(chapterName: string | null, chapterUrl: string, charset: string, selector: string, contentPatch: (_content: HTMLElement, doc: Document) => HTMLElement, getNextPage: (doc: Document) => string, continueCondition: (_content: HTMLElement, nextLink: string) => boolean): Promise<{
     chapterName: string | null;
@@ -10,16 +8,3 @@ export declare function nextPageParse(chapterName: string | null, chapterUrl: st
     contentImages: AttachmentClass[];
     additionalMetadate: null;
 }>;
-interface MkRuleClassOptions1 {
-    bookUrl: string;
-    bookname: string;
-    author: string;
-    introDom: HTMLElement;
-    introDomPatch: (introDom: HTMLElement) => HTMLElement;
-    coverUrl: string | null;
-    cos: NodeListOf<Element>;
-    getContent: (doc: Document) => HTMLElement;
-    contentPatch: (content: HTMLElement) => HTMLElement;
-}
-export declare function mkRuleClass1(optionis: MkRuleClassOptions1): PublicConstructor<BaseRuleClass>;
-export {};
