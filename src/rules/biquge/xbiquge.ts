@@ -1,12 +1,16 @@
-import { rm } from "../lib/misc";
-import { BaseRuleClass } from "../rules";
-import { bookParseTemp } from "./biquge";
-import { nextPageParse } from "./lib/common";
+import { getHtmlDOM } from "../../lib/http";
+import { BaseRuleClass } from "../../rules";
+import {
+  bookParseTemp,
+  ChapterParseOption,
+  chapterParseTemp,
+} from "./template";
 
-export class Mht extends BaseRuleClass {
+export class Xbiquge extends BaseRuleClass {
   public constructor() {
     super();
     this.imageMode = "TM";
+    this.charset = "GBK";
   }
 
   public async bookParse() {
@@ -24,9 +28,9 @@ export class Mht extends BaseRuleClass {
       introDom: document.querySelector("#intro") as HTMLElement,
       introDomPatch: (introDom) => introDom,
       coverUrl: (document.querySelector("#fmimg > img") as HTMLImageElement)
-        .src,
+        ?.src,
       chapterListSelector: "#list>dl",
-      charset: "UTF-8",
+      charset: "GBK",
       chapterParse: self.chapterParse,
     });
   }
@@ -39,19 +43,24 @@ export class Mht extends BaseRuleClass {
     charset: string,
     options: object
   ) {
-    return nextPageParse(
-      chapterName,
+    const dom = await getHtmlDOM(chapterUrl, charset);
+    return chapterParseTemp({
+      dom,
       chapterUrl,
-      charset,
-      "#content",
-      (_content, doc) => {
-        rm("p[data-id]", true, _content);
-        return _content;
+      chapterName: (
+        dom.querySelector(".bookname > h1:nth-child(1)") as HTMLElement
+      ).innerText.trim(),
+      contenSelector: "#content",
+      contentPatch: (content) => {
+        content.innerHTML = content.innerHTML.replace(
+          `笔趣阁 www.xbiquge.so，最快更新${
+            (options as ChapterParseOption).bookname
+          } ！`,
+          ""
+        );
+        return content;
       },
-      (doc) =>
-        (doc.querySelector(".bottem2 > a:nth-child(4)") as HTMLAnchorElement)
-          .href,
-      (_content, nextLink) => new URL(nextLink).pathname.includes("_")
-    );
+      charset,
+    });
   }
 }

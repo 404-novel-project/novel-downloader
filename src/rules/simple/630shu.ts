@@ -1,4 +1,4 @@
-import { mkRuleClass1 } from "../lib/common";
+import { mkRuleClass1 } from "./template";
 
 export const c630shu = mkRuleClass1({
   bookUrl: document.location.href,

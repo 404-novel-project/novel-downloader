@@ -1,4 +1,4 @@
-import { mkRuleClass1 } from "../lib/common";
+import { mkRuleClass1 } from "./template";
 
 export const trxs = () =>
   mkRuleClass1({

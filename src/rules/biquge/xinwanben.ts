@@ -1,7 +1,7 @@
-import { htmlTrim } from "../lib/cleanDOM";
-import { BaseRuleClass } from "../rules";
-import { bookParseTemp } from "./biquge";
-import { nextPageParse } from "./lib/common";
+import { htmlTrim } from "../../lib/cleanDOM";
+import { BaseRuleClass } from "../../rules";
+import { nextPageParse } from "../lib/common";
+import { bookParseTemp } from "./template";
 
 export class Xinwanben extends BaseRuleClass {
   public constructor() {
