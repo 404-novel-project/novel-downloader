@@ -142,11 +142,8 @@ export class Tadu extends BaseRuleClass {
         interface ContentObj {
           content: string;
         }
-        function callback(obj: object) {
-          return obj;
-        }
         const getContentObj = new Function(
-          `${callback.toString()} return ${jsonpText};`
+          `function callback(obj) { return obj; } return ${jsonpText};`
         );
         const contentObj: ContentObj = getContentObj();
         if (typeof contentObj === "object") {

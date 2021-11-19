@@ -13,7 +13,7 @@ import FilterTab, {
 import settingCss from "./setting.css";
 import settingHtml from "./setting.html";
 
-createStyle(settingCss);
+export const style = createStyle(settingCss);
 export const el = createEl(`<div id="setting"></div>`);
 export const vm = Vue.createApp({
   name: "nd-setting",

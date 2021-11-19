@@ -13,6 +13,5 @@ export function createStyle(style: string, id?: string) {
   if (id) {
     el.id = id;
   }
-  document.head.appendChild(el);
   return el;
 }

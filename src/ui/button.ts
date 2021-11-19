@@ -10,7 +10,7 @@ import buttonHtml from "./button.html";
 import buttonCss from "./button.less";
 import { vm as settingVM } from "./setting";
 
-createStyle(buttonCss, "button-div-style");
+export const style = createStyle(buttonCss, "button-div-style");
 export const el = createEl("<div></div>");
 export const vm = Vue.createApp({
   data() {
@@ -48,7 +48,7 @@ export const vm = Vue.createApp({
       settingVM.openSetting();
     },
     jumpButtonClick() {
-      document.location = this.uiObj.jumpUrl;
+      document.location.href = this.uiObj.jumpUrl;
     },
   },
   template: buttonHtml,

@@ -25,7 +25,7 @@ async function getSections() {
   }
 }
 
-createStyle(ChapterListCss);
+export const style = createStyle(ChapterListCss);
 export default Vue.defineComponent({
   name: "ChapterList",
   setup(props, context) {

@@ -3,8 +3,7 @@ import { createEl, createStyle } from "../lib/createEl";
 import progressCss from "./progress.css";
 import progressHtml from "./progress.html";
 
-createStyle(progressCss);
-
+export const style = createStyle(progressCss);
 export const el = createEl(`<div id="progress-bar"></div>`);
 export interface ProgressVM extends Vue.ComponentPublicInstance {
   totalChapterNumber: number;

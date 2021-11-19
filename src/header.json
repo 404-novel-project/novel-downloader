@@ -9,8 +9,8 @@
   "supportURL": "https://github.com/yingziwu/novel-downloader",
   "icon": "https://cdn.jsdelivr.net/gh/yingziwu/novel-downloader/assets/icon.png",
   "license": "AGPL-3.0",
-  "run-at": "document-idle",
-  "noframes": "true",
+  "run-at": "document-start",
+  "noframes": true,
   "compatible": [
     "Firefox 77+",
     "Chrome 85+",

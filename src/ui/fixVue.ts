@@ -15,17 +15,13 @@ globalThis.Function = new Proxy(Function, {
 
     function hook() {
       function getGlobalObjectKeys() {
-        function _get() {
-          const _g = [];
-          for (const key of Object.getOwnPropertyNames(window)) {
+        const _get = () => {
+          return Object.getOwnPropertyNames(window).filter(
             // @ts-ignore
-            if (window[key] === window) {
-              _g.push(key);
-            }
-          }
-          return _g;
-        }
-        const _f = new target(`${_get.toString()};return _get()`);
+            (key) => window[key] === window
+          );
+        };
+        const _f = new target(`return (${_get.toString()})()`);
         return _f();
       }
       const globalObjectKeys = getGlobalObjectKeys();

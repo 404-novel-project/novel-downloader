@@ -5,16 +5,6 @@ import ChapterList from "./ChapterList";
 import FilterTabCss from "./FilterTab.css";
 import FilterTabHtml from "./FilterTab.html";
 
-export function getFunctionBody(fn: FilterOption["raw"]) {
-  return fn
-    .toString()
-    .replace("(arg) => {", "")
-    .replace(/}$/, "")
-    .split("\n")
-    .map((l) => l.trim())
-    .join(" ")
-    .trim();
-}
 interface FilterOption {
   raw: (arg: string) => ((chapter: Chapter) => boolean) | undefined;
   description: string;
@@ -115,6 +105,9 @@ export const filterOptionDict: FilterOptionDict = {
     abbreviation: "章节标题",
   },
 };
+export function getFunctionBody(fn: FilterOption["raw"]) {
+  return `return (${fn.toString()})(arg)`;
+}
 export function getFilterFunction(arg: string, functionBody: string) {
   const filterFunctionFactor = new Function("arg", functionBody);
   const filterFunction = filterFunctionFactor(arg);
@@ -184,4 +177,4 @@ export default Vue.defineComponent({
   },
   template: FilterTabHtml,
 });
-createStyle(FilterTabCss);
+export const style = createStyle(FilterTabCss);
