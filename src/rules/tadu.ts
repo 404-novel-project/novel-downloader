@@ -142,11 +142,13 @@ export class Tadu extends BaseRuleClass {
         interface ContentObj {
           content: string;
         }
-        const callback = (obj: object) => {
+        function callback(obj: object) {
           return obj;
-        };
-        // tslint:disable-next-line:no-eval
-        const contentObj: ContentObj = eval(jsonpText);
+        }
+        const getContentObj = new Function(
+          `${callback.toString()} return ${jsonpText};`
+        );
+        const contentObj: ContentObj = getContentObj();
         if (typeof contentObj === "object") {
           content.innerHTML = contentObj.content;
           const { dom, text, images } = await cleanDOM(content, "TM");
