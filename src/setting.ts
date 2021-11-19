@@ -2,7 +2,7 @@ import { NewUnsafeWindow } from "./global";
 
 export const retryLimit = 5;
 export const enableDebug = {
-  value: (unsafeWindow as NewUnsafeWindow).enableDebug ?? false,
+  value: false,
 };
 export const enableCustomFinishCallback = true;
 export const enableCustomChapterFilter = true;

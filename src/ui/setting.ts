@@ -1,4 +1,5 @@
 import * as Vue from "vue";
+import { debug } from "../debug";
 import { NewUnsafeWindow } from "../global";
 import { createEl, createStyle } from "../lib/createEl";
 import { deepcopy, sleep } from "../lib/misc";
@@ -117,6 +118,9 @@ export const vm = Vue.createApp({
         if (typeof config.enableDebug === "boolean") {
           config.enableDebug ? log.setLevel("trace") : log.setLevel("info");
           enableDebug.value = config.enableDebug;
+          if (config.enableDebug) {
+            debug();
+          }
         }
       }
       function setCustomSaveOption() {

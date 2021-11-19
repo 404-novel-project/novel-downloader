@@ -4,7 +4,12 @@ import { getRule } from "./router/download";
 
 export async function debug() {
   const rule = await getRule();
-  const book = await rule.bookParse();
+  let book;
+  if (typeof (window as NewWindow & typeof globalThis)._book !== "undefined") {
+    book = (window as NewWindow & typeof globalThis)._book;
+  } else {
+    book = await rule.bookParse();
+  }
   (unsafeWindow as NewUnsafeWindow).rule = rule;
   (unsafeWindow as NewUnsafeWindow).book = book;
   (window as NewWindow & typeof globalThis)._book = book;

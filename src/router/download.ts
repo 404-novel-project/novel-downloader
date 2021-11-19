@@ -160,6 +160,7 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = Wenku8;
       break;
     }
+    case "manhua.dmzj.com":
     case "www.dmzj.com": {
       const { Dmzj } = await import("../rules/dmzj");
       ruleClass = Dmzj;

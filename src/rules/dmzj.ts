@@ -15,26 +15,32 @@ export class Dmzj extends BaseRuleClass {
 
   public async bookParse() {
     const bookUrl = document.location.href;
+    const isWwwHost = document.location.host === "www.dmzj.com";
 
-    const bookname = (
-      document.querySelector(".comic_deCon > h1 > a") as HTMLElement
-    ).innerText.trim();
-    const author = (
-      document.querySelector(
-        ".comic_deCon_liO > li:nth-child(1)"
-      ) as HTMLElement
-    ).innerText
+    const bookDom = isWwwHost
+      ? document.querySelector(".comic_deCon > h1 > a")
+      : document.querySelector(".anim_title_text > a > h1");
+    const bookname = (bookDom as HTMLElement).innerText.trim();
+    const authorDom = isWwwHost
+      ? document.querySelector(".comic_deCon_liO > li:nth-child(1)")
+      : document.querySelector(
+          ".anim-main_list > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(3) > td:nth-child(2) > a:nth-child(1)"
+        );
+    const author = (authorDom as HTMLElement).innerText
       .replace("作者：", "")
       .trim();
 
-    const introDom = document.querySelector(".comic_deCon_d") as HTMLElement;
+    const introDom = isWwwHost
+      ? document.querySelector(".comic_deCon_d")
+      : (document.querySelector(".line_height_content") as HTMLElement);
     const [introduction, introductionHTML, introCleanimages] =
       await introDomHandle(introDom);
 
     const additionalMetadate: BookAdditionalMetadate = {};
-    const coverUrl = (
-      document.querySelector(".comic_i_img > a > img") as HTMLImageElement
-    ).src;
+    const coverDom = isWwwHost
+      ? document.querySelector(".comic_i_img > a > img")
+      : document.querySelector("#cover_pic");
+    const coverUrl = (coverDom as HTMLImageElement).src;
     if (coverUrl) {
       getImageAttachment(coverUrl, this.imageMode, "cover-")
         .then((coverClass) => {
@@ -44,15 +50,22 @@ export class Dmzj extends BaseRuleClass {
     }
 
     const chapters: Chapter[] = [];
-    const cos = document.querySelectorAll(
-      "div.zj_list_con:nth-child(4) > ul.list_con_li > li"
-    );
+    const cos = isWwwHost
+      ? document.querySelectorAll(
+          "div.zj_list_con:nth-child(4) > ul.list_con_li > li"
+        )
+      : document.querySelectorAll(".cartoon_online_border > ul > li");
     let chapterNumber = 0;
     for (const co of Array.from(cos)) {
       chapterNumber++;
       const a = co.firstElementChild as HTMLAnchorElement;
-      const span = a.lastElementChild as HTMLSpanElement;
-      const chapterName = span.innerText;
+      let chapterName;
+      if (isWwwHost) {
+        const span = a.lastElementChild as HTMLSpanElement;
+        chapterName = span.innerText;
+      } else {
+        chapterName = a.innerText;
+      }
       const chapterUrl = a.href;
       const isVIP = false;
       const isPaid = false;
@@ -97,22 +110,30 @@ export class Dmzj extends BaseRuleClass {
     function getpicUrlList(docI: Document) {
       const imgPrefix = "https://images.dmzj.com/";
 
+      const scriptElement = Array.from(
+        docI.querySelectorAll("head > script")
+      ).filter((s) => s.innerHTML.includes("eval("))[0];
       let pages = sandboxed(
-        (docI.querySelector("head > script") as HTMLScriptElement).innerText +
-          ";return pages;"
+        (scriptElement as HTMLScriptElement).innerText + ";return pages;"
       );
       pages = pages.replace(/\n/g, "");
       pages = pages.replace(/\r/g, "|");
       const info = sandboxed("return (" + pages + ")");
       if (info) {
-        const picUrlListI = info.page_url
-          .split("|")
-          .map((pic: string) => imgPrefix + pic);
+        let picUrlListI;
+        if (isWwwHost) {
+          picUrlListI = info.page_url
+            .split("|")
+            .map((pic: string) => imgPrefix + pic);
+        } else {
+          picUrlListI = info.map((pic: string) => imgPrefix + pic);
+        }
         return picUrlListI;
       }
     }
 
     log.debug(`[Chapter]请求 ${chapterUrl}`);
+    const isWwwHost = document.location.host === "www.dmzj.com";
     const doc = await getHtmlDOM(chapterUrl, charset);
     const picUrlList = getpicUrlList(doc);
     if (picUrlList) {
