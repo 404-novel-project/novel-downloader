@@ -3,6 +3,7 @@ import { environments } from "./detect";
 import { init as globalInit } from "./global";
 import { log } from "./log";
 import { enableDebug } from "./setting";
+import "./ui/fixVue";
 import { init as uiInit } from "./ui/ui";
 
 function printEnvironments() {

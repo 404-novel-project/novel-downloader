@@ -53,7 +53,7 @@ module.exports = {
   externals: {
     "crypto-js": "CryptoJS",
     nunjucks: "nunjucks",
-    // vue: "Vue",
+    vue: "Vue",
   },
   devServer: {
     port: 11944,
