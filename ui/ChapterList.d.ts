@@ -5,6 +5,7 @@ declare const _default: Vue.DefineComponent<{}, {
     sectionsObj: never[];
     loading: Vue.Ref<boolean>;
     filter: (chapter: Chapter) => boolean;
+    warningFilter: (chapter: Chapter) => boolean;
     isChapterDisabled: (chapter: Chapter) => boolean;
     isChapterSeen: (chapter: Chapter) => boolean;
     isSectionSeen: (sectionObj: SectionObj) => boolean;
