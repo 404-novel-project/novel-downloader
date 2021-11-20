@@ -1,4 +1,4 @@
-import { NewUnsafeWindow, NewWindow } from "./global";
+import { GmWindow, NewUnsafeWindow, NewWindow } from "./global";
 import { clearAttachmentClassCache } from "./lib/attachments";
 import { concurrencyRun } from "./lib/misc";
 import { log, saveLogTextToFile } from "./log";
@@ -75,14 +75,13 @@ export abstract class BaseRuleClass {
       if (!self.preHook()) return;
 
       if (
-        typeof (window as NewWindow & typeof globalThis)._book !==
-          "undefined" &&
-        (window as NewWindow & typeof globalThis)._book
+        typeof (window as GmWindow)._book !== "undefined" &&
+        (window as GmWindow)._book
       ) {
-        self.book = (window as NewWindow & typeof globalThis)._book;
+        self.book = (window as GmWindow)._book;
       } else {
         self.book = await self.bookParse();
-        (window as NewWindow & typeof globalThis)._book = self.book;
+        (window as GmWindow)._book = self.book;
       }
 
       log.debug("[book]Book object:\n" + JSON.stringify(self.book));
@@ -105,7 +104,7 @@ export abstract class BaseRuleClass {
 
   protected preTest() {
     const self = this;
-    const storage = (window as NewWindow & typeof globalThis).customStorage;
+    const storage = (window as GmWindow).customStorage;
     let workStatus: WorkStatusObj | undefined = storage.get(workStatusKeyName);
     if (workStatus) {
       const nowNumber = Object.keys(workStatus).length;
@@ -150,7 +149,7 @@ export abstract class BaseRuleClass {
     };
     window.onbeforeunload = confirmExit;
 
-    (window as NewWindow & typeof globalThis).downloading = true;
+    (window as GmWindow).downloading = true;
 
     return true;
   }
@@ -174,7 +173,7 @@ export abstract class BaseRuleClass {
 
   protected postHook() {
     const self = this;
-    const storage = (window as NewWindow & typeof globalThis).customStorage;
+    const storage = (window as GmWindow).customStorage;
     const workStatus: WorkStatusObj | null = storage.get(workStatusKeyName);
     if (workStatus) {
       delete workStatus[document.location.href];
@@ -186,7 +185,7 @@ export abstract class BaseRuleClass {
     self.audio?.remove();
 
     window.onbeforeunload = null;
-    (window as NewWindow & typeof globalThis).downloading = false;
+    (window as GmWindow).downloading = false;
 
     (progress as ProgressVM).reset();
 
@@ -288,7 +287,7 @@ export abstract class BaseRuleClass {
 
     if (self.concurrencyLimit === 1) {
       for (const chapter of chapters) {
-        if ((window as NewWindow & typeof globalThis).stopFlag) {
+        if ((window as GmWindow).stopFlag) {
           log.info("[chapter]收到停止信号，停止继续下载。");
           break;
         }
@@ -308,7 +307,7 @@ export abstract class BaseRuleClass {
           if (curChapter === undefined) {
             return Promise.resolve();
           }
-          if ((window as NewWindow & typeof globalThis).stopFlag) {
+          if ((window as GmWindow).stopFlag) {
             log.info("[chapter]收到停止信号，停止继续下载。");
             return Promise.resolve();
           }
@@ -334,7 +333,7 @@ export abstract class BaseRuleClass {
     chapter: Chapter,
     saveBookObj: SaveBook
   ): Promise<Chapter> {
-    const storage = (window as NewWindow & typeof globalThis).customStorage;
+    const storage = (window as GmWindow).customStorage;
     let workStatus: WorkStatusObj = storage.get(workStatusKeyName);
     if (workStatus) {
       workStatus[document.location.href] = true;

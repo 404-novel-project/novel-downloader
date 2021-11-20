@@ -1,5 +1,5 @@
 import * as Vue from "vue";
-import { NewWindow } from "../global";
+import { GmWindow, NewWindow } from "../global";
 import { createEl, createStyle } from "../lib/createEl";
 import { _GM_info } from "../lib/GM";
 import { log } from "../log";
@@ -24,7 +24,7 @@ export const vm = Vue.createApp({
   },
   methods: {
     startButtonClick() {
-      if ((window as NewWindow & typeof globalThis).downloading) {
+      if ((window as GmWindow).downloading) {
         alert("正在下载中，请耐心等待……");
         return;
       }

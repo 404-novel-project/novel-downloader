@@ -1,5 +1,5 @@
 import * as Vue from "vue";
-import { NewWindow } from "../global";
+import { GmWindow, NewWindow } from "../global";
 import { createStyle } from "../lib/createEl";
 import { Chapter, Status } from "../main";
 import { getRule } from "../router/download";
@@ -12,16 +12,14 @@ import {
 } from "./FilterTab";
 
 async function getSections() {
-  if ((window as NewWindow & typeof globalThis)._sections) {
-    return (window as NewWindow & typeof globalThis)._sections;
+  if ((window as GmWindow)._sections) {
+    return (window as GmWindow)._sections;
   } else {
     const rule = await getRule();
     const book = await rule.bookParse();
-    (window as NewWindow & typeof globalThis)._book = book;
-    (window as NewWindow & typeof globalThis)._sections = getSectionsObj(
-      book.chapters
-    );
-    return (window as NewWindow & typeof globalThis)._sections;
+    (window as GmWindow)._book = book;
+    (window as GmWindow)._sections = getSectionsObj(book.chapters);
+    return (window as GmWindow)._sections;
   }
 }
 

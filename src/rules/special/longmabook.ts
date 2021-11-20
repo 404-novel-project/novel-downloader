@@ -1,4 +1,4 @@
-import { NewWindow } from "../../global";
+import { GmWindow, NewWindow } from "../../global";
 import { getImageAttachment } from "../../lib/attachments";
 import { cleanDOM } from "../../lib/cleanDOM";
 import { getHtmlDOM } from "../../lib/http";
@@ -237,11 +237,11 @@ export class Longmabook extends BaseRuleClass {
         "您目前正在海棠清水區，只能觀看清水認證文章。"
       )
     ) {
-      if (!(window as NewWindow & typeof globalThis).stopFlag) {
+      if (!(window as GmWindow).stopFlag) {
         alert(
           "您目前正在海棠清水區，只能觀看清水認證文章。請使用海棠其他網址進入。"
         );
-        (window as NewWindow & typeof globalThis).stopFlag = true;
+        (window as GmWindow).stopFlag = true;
       }
       throw new Error(
         "您目前正在海棠清水區，只能觀看清水認證文章。請使用海棠其他網址進入。"

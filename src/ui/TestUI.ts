@@ -1,5 +1,5 @@
 import * as Vue from "vue";
-import { NewWindow } from "../global";
+import { GmWindow, NewWindow } from "../global";
 import { createStyle } from "../lib/createEl";
 import { sleep } from "../lib/misc";
 import { Book, Chapter, Status } from "../main";
@@ -14,7 +14,7 @@ export default Vue.defineComponent({
     const chapter = Vue.reactive({} as Chapter);
 
     async function initBook(retry: number): Promise<Book | undefined> {
-      const _book = (window as NewWindow & typeof globalThis)._book;
+      const _book = (window as GmWindow)._book;
       if (_book) {
         Object.assign(book, _book);
         return _book;

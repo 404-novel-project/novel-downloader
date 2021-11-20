@@ -12,6 +12,7 @@ export interface NewWindow extends Window {
   _sections?: SectionObj[];
   _book?: Book;
 }
+export type GmWindow = NewWindow & typeof globalThis;
 
 export interface NewUnsafeWindow extends unsafeWindow {
   rule?: BaseRuleClass;
@@ -29,8 +30,7 @@ export interface NewUnsafeWindow extends unsafeWindow {
 }
 
 export function init() {
-  (window as NewWindow & typeof globalThis).downloading = false;
-  (window as NewWindow & typeof globalThis).customStorage =
-    new LocalStorageExpired();
-  (window as NewWindow & typeof globalThis).stopFlag = false;
+  (window as GmWindow).downloading = false;
+  (window as GmWindow).customStorage = new LocalStorageExpired();
+  (window as GmWindow).stopFlag = false;
 }
