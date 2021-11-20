@@ -56,6 +56,9 @@ module.exports = {
   },
   externals: {
     "crypto-js": "CryptoJS",
+    fflate: "fflate",
+    "idb-keyval": "idbKeyval",
+    loglevel: "log",
     nunjucks: "nunjucks",
     vue: "Vue",
   },
@@ -93,7 +96,7 @@ module.exports = {
         header["version"] = version;
         return header;
       },
-      ssri: false,
+      ssri: true,
       pretty: true,
       downloadBaseUrl:
         "https://github.com/yingziwu/novel-downloader/raw/gh-pages/",

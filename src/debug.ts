@@ -16,14 +16,14 @@ export async function debug() {
   // @ts-ignore
   (unsafeWindow as NewUnsafeWindow).saveAs = saveAs;
 
-  const { parse, fetchAndParse, gfetchAndParse } = await import(
-    "./rules/lib/readability"
-  );
-  const readability = {
-    parse,
-    fetchAndParse,
-    gfetchAndParse,
-  };
-  (unsafeWindow as NewUnsafeWindow).readability = readability;
+  // const { parse, fetchAndParse, gfetchAndParse } = await import(
+  //   "./rules/lib/readability"
+  // );
+  // const readability = {
+  //   parse,
+  //   fetchAndParse,
+  //   gfetchAndParse,
+  // };
+  // (unsafeWindow as NewUnsafeWindow).readability = readability;
   return;
 }

@@ -118,7 +118,7 @@ export class SaveBook {
       log.debug("[save]保存仅标题章节文件");
       this.chapters
         .filter((c) => c.status !== Status.saved)
-        .forEach((c) => this.addChapter(c));
+        .forEach((c) => this.addChapter(c, "Stub"));
     }
 
     log.info("[save]开始保存ZIP文件");
@@ -220,10 +220,10 @@ export class SaveBook {
     )}${chapter.chapterNumber.toString()}`;
   }
 
-  public addChapter(chapter: Chapter) {
+  public addChapter(chapter: Chapter, suffix: string = "") {
     const chapterName = this.getchapterName(chapter);
     const chapterNumberToSave = this.getChapterNumberToSave(chapter);
-    const chapterHtmlFileName = `No${chapterNumberToSave}Chapter.html`;
+    const chapterHtmlFileName = `No${chapterNumberToSave}Chapter${suffix}.html`;
 
     log.debug(`[save]保存章HTML文件：${chapterName}`);
     const chapterHTMLBlob = this.genChapterHtmlFile(chapter);

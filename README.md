@@ -124,26 +124,7 @@ ZIP压缩包，请在解压后，直接双击打开HTML文件（`index.html` 为
 
 ### 启用调试功能
 
-使用如下用户脚本开启调式模式。
-
-```javascript
-// ==UserScript==
-// @name         novel-downloader-debug
-// @namespace    http://tampermonkey.net/
-// @version      0.1
-// @author       You
-// @match        *://*/*
-// @icon         https://www.google.com/s2/favicons?domain=tadu.com
-// @grant        unsafeWindow
-// @run-at document-start
-// ==/UserScript==
-
-(function() {
-    'use strict';
-
-    unsafeWindow.enableDebug = true
-})();
-```
+设置菜单中按击开启。
 
 ### 自定义筛选函数
 
