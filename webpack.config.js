@@ -60,13 +60,18 @@ module.exports = {
     vue: "Vue",
   },
   devServer: {
+    server: "http",
     port: 11944,
-    allowedHosts: ["all"],
-    liveReload: false,
+    allowedHosts: "all",
+    hot: true,
+    liveReload: true,
     headers: {
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Headers":
         "Origin, X-Requested-With, Content-Type, Accept",
+    },
+    client: {
+      webSocketURL: "wss://webpack.lo.bgme.me/ws",
     },
   },
   plugins: [

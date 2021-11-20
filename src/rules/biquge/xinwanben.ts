@@ -55,24 +55,25 @@ export class Xinwanben extends BaseRuleClass {
   }
 
   public async chapterParse(
-    chapterUrl: string,
-    chapterName: string | null,
+    _chapterUrl: string,
+    _chapterName: string | null,
     isVIP: boolean,
     isPaid: boolean,
-    charset: string,
+    _charset: string,
     options: object
   ) {
-    return nextPageParse(
-      chapterName,
-      chapterUrl,
-      charset,
-      "#content",
-      (_content, doc) => {
+    return nextPageParse({
+      chapterName: _chapterName,
+      chapterUrl: _chapterUrl,
+      charset: _charset,
+      selector: "#content",
+      contentPatch: (_content, doc) => {
         htmlTrim(_content);
         return _content;
       },
-      (doc) => (doc.querySelector("#next_url") as HTMLAnchorElement).href,
-      (_content, nextLink) => nextLink.includes("_")
-    );
+      getNextPage: (doc) =>
+        (doc.querySelector("#next_url") as HTMLAnchorElement).href,
+      continueCondition: (_content, nextLink) => nextLink.includes("_"),
+    });
   }
 }

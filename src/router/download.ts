@@ -39,8 +39,10 @@ export async function getRule(): Promise<BaseRuleClass> {
       break;
     }
     case "www.266ks.com": {
-      const { C226ks } = await import("../rules/226ks");
-      ruleClass = C226ks;
+      const { c226ks } = await import(
+        "../rules/onePageWithoutSectionWithMultiIndexPage/226ks"
+      );
+      ruleClass = c226ks();
       break;
     }
     case "book.sfacg.com": {

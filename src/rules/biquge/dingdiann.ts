@@ -33,19 +33,19 @@ export class Dingdiann extends BaseRuleClass {
   }
 
   public async chapterParse(
-    chapterUrl: string,
-    chapterName: string | null,
+    _chapterUrl: string,
+    _chapterName: string | null,
     isVIP: boolean,
     isPaid: boolean,
-    charset: string,
+    _charset: string,
     options: object
   ) {
-    return nextPageParse(
-      chapterName,
-      chapterUrl,
-      charset,
-      "#content",
-      (_content, doc) => {
+    return nextPageParse({
+      chapterName: _chapterName,
+      chapterUrl: _chapterUrl,
+      charset: _charset,
+      selector: "#content",
+      contentPatch: (_content, doc) => {
         rm("div[align]", false, _content);
         rm("script", true, _content);
 
@@ -59,15 +59,14 @@ export class Dingdiann extends BaseRuleClass {
           (removeStr) =>
             (_content.innerHTML = _content.innerHTML.replaceAll(removeStr, ""))
         );
-
         htmlTrim(_content);
         return _content;
       },
-      (doc) =>
+      getNextPage: (doc) =>
         (doc.querySelector(".bottem2 > a:nth-child(4)") as HTMLAnchorElement)
           .href,
-      (_content, nextLink) =>
-        _content.innerText.includes("本章未完，点击下一页继续阅读")
-    );
+      continueCondition: (_content, nextLink) =>
+        _content.innerText.includes("本章未完，点击下一页继续阅读"),
+    });
   }
 }

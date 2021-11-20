@@ -3,7 +3,8 @@
   "extends": ["tslint:recommended"],
   "jsRules": {},
   "rules": {
-    "ordered-imports": true
+    "ordered-imports": true,
+    "one-variable-per-declaration": false
   },
   "rulesDirectory": [],
   "linterOptions": {

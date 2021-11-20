@@ -5,6 +5,7 @@ import { PublicConstructor } from "../../lib/misc";
 import { log } from "../../log";
 import { Book, BookAdditionalMetadate, Chapter } from "../../main";
 import { BaseRuleClass } from "../../rules";
+import { retryLimit } from "../../setting";
 import { introDomHandle } from "../lib/common";
 
 interface MkRuleClassOptions {
@@ -14,7 +15,8 @@ interface MkRuleClassOptions {
   introDom: HTMLElement;
   introDomPatch: (introDom: HTMLElement) => HTMLElement;
   coverUrl: string | null;
-  aList: NodeListOf<Element>;
+  getIndexUrls: () => string[];
+  getAList: (doc: Document) => NodeListOf<Element>;
   getContentFromUrl?: (
     chapterUrl: string,
     chapterName: string | null,
@@ -33,7 +35,8 @@ export function mkRuleClass(
     introDom,
     introDomPatch,
     coverUrl,
-    aList: cos,
+    getIndexUrls,
+    getAList,
     getContentFromUrl,
     getContent,
     contentPatch,
@@ -43,7 +46,6 @@ export function mkRuleClass(
       super();
       this.imageMode = "TM";
     }
-
     public async bookParse() {
       const [introduction, introductionHTML, introCleanimages] =
         await introDomHandle(introDom, introDomPatch);
@@ -57,9 +59,48 @@ export function mkRuleClass(
           .catch((error) => log.error(error));
       }
 
+      const indexUrls = getIndexUrls();
+      const getIndexDom: (
+        url: string,
+        retry: number
+      ) => Promise<Document | null> = (url: string, retry) => {
+        return getHtmlDOM(url)
+          .then((dom) => dom)
+          .catch((error) => {
+            log.error(error);
+            log.error(
+              `[bookParse][getIndexDom]抓取目录页失败: ${url}, 第${
+                retryLimit - retry
+              }次重试`
+            );
+            retry--;
+            if (retry > 0) {
+              return getIndexDom(url, retry);
+            } else {
+              return null;
+            }
+          });
+      };
+      const _indexPage = indexUrls.map((url) => getIndexDom(url, retryLimit));
+      const indexPage = await Promise.all(_indexPage);
+      const _aListList = indexPage
+        .map((doc) => {
+          if (doc) {
+            return getAList(doc);
+          } else {
+            log.error("[bookParse]部分目录页抓取失败！");
+            return null;
+          }
+        })
+        .filter((a) => a !== null) as NodeListOf<Element>[];
+      const aListList: HTMLAnchorElement[] = [];
+      _aListList.forEach((alist) =>
+        Array.from(alist).forEach((a) => aListList.push(a as HTMLAnchorElement))
+      );
+
       const chapters: Chapter[] = [];
       let chapterNumber = 0;
-      for (const aElem of Array.from(cos) as HTMLAnchorElement[]) {
+      for (const aElem of Array.from(aListList)) {
         chapterNumber++;
         const chapterName = aElem.innerText;
         const chapterUrl = aElem.href;

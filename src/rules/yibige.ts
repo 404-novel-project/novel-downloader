@@ -128,19 +128,19 @@ export class Yibige extends BaseRuleClass {
   }
 
   public async chapterParse(
-    chapterUrl: string,
-    chapterName: string | null,
+    _chapterUrl: string,
+    _chapterName: string | null,
     isVIP: boolean,
     isPaid: boolean,
-    charset: string,
+    _charset: string,
     options: object
   ) {
-    return nextPageParse(
-      chapterName,
-      chapterUrl,
-      charset,
-      "#fontsize",
-      (_content, doc) => {
+    return nextPageParse({
+      chapterName: _chapterName,
+      chapterUrl: _chapterUrl,
+      charset: _charset,
+      selector: "#fontsize",
+      contentPatch: (_content, doc) => {
         rm("div", true, _content);
         rm("script", true, _content);
         _content.innerHTML = _content.innerHTML
@@ -148,10 +148,11 @@ export class Yibige extends BaseRuleClass {
           .replaceAll("测试广告2", "");
         return _content;
       },
-      (doc) =>
+      getNextPage: (doc) =>
         (doc.querySelector(".nr_fy > a:nth-child(4)") as HTMLAnchorElement)
           .href,
-      (_content, nextLink) => new URL(nextLink).pathname.includes("_")
-    );
+      continueCondition: (_content, nextLink) =>
+        new URL(nextLink).pathname.includes("_"),
+    });
   }
 }

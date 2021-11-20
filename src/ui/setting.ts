@@ -121,6 +121,7 @@ export const vm = Vue.createApp({
           if (config.enableDebug) {
             debug();
           }
+          log.info(`[Init]enableDebug: ${enableDebug.value}`);
         }
       }
       function setCustomSaveOption() {

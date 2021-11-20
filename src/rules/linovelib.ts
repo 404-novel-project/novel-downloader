@@ -103,19 +103,19 @@ export class Linovelib extends BaseRuleClass {
   }
 
   public async chapterParse(
-    chapterUrl: string,
-    chapterName: string | null,
+    _chapterUrl: string,
+    _chapterName: string | null,
     isVIP: boolean,
     isPaid: boolean,
-    charset: string,
+    _charset: string,
     options: object
   ) {
-    return nextPageParse(
-      chapterName,
-      chapterUrl,
-      charset,
-      "#TextContent",
-      (_content, doc) => {
+    return nextPageParse({
+      chapterName: _chapterName,
+      chapterUrl: _chapterUrl,
+      charset: _charset,
+      selector: "#TextContent",
+      contentPatch: (_content, doc) => {
         const ss = Array.from(doc.querySelectorAll("script")).find((s) =>
           s.innerHTML.includes('document.getElementById("chapter_last")')
         );
@@ -132,10 +132,11 @@ export class Linovelib extends BaseRuleClass {
         rm(".bd", true, _content);
         return _content;
       },
-      (doc) =>
+      getNextPage: (doc) =>
         (doc.querySelector(".mlfy_page > a:nth-child(5)") as HTMLAnchorElement)
           .href,
-      (_content, nextLink) => new URL(nextLink).pathname.includes("_")
-    );
+      continueCondition: (_content, nextLink) =>
+        new URL(nextLink).pathname.includes("_"),
+    });
   }
 }
