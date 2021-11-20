@@ -9,6 +9,9 @@ if (enableDebug.value) {
 }
 
 export let logText = "";
+export function getLogText() {
+  return logText;
+}
 const originalFactory = log.methodFactory;
 log.methodFactory = (methodName, logLevel, loggerName) => {
   const rawMethod = originalFactory(methodName, logLevel, loggerName);

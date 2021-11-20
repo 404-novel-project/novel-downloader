@@ -19,6 +19,20 @@
         >
           自定义筛选条件
         </button>
+        <button
+          v-if="setting.enableTestPage"
+          v-bind:class="['tab-button', { active: currentTab === 'tab-3'}]"
+          v-on:click="currentTab = 'tab-3'"
+        >
+          抓取测试
+        </button>
+        <button
+          v-if="setting.enableTestPage"
+          v-bind:class="['tab-button', { active: currentTab === 'tab-4'}]"
+          v-on:click="currentTab = 'tab-4'"
+        >
+          日志
+        </button>
       </div>
       <div class="nd-setting-body">
         <div
@@ -29,6 +43,12 @@
           <div>
             <input type="checkbox" id="debug" v-model="setting.enableDebug" />
             <label for="debug">启用调式模式。（输出更详细日志）</label>
+            <input
+              type="checkbox"
+              id="test-page"
+              v-model="setting.enableTestPage"
+            />
+            <label for="test-page">启用测试视图</label>
           </div>
           <hr class="hr-twill-colorful" />
           <div>
@@ -52,6 +72,22 @@
           v-show="currentTab === 'tab-2'"
         >
           <filter-tab v-on:filterupdate="saveFilter" />
+        </div>
+        <div
+          v-if="setting.enableTestPage"
+          id="nd-setting-tab-3"
+          class="tab-page"
+          v-show="currentTab === 'tab-3'"
+        >
+          <test-ui></test-ui>
+        </div>
+        <div
+          v-if="setting.enableTestPage"
+          id="nd-setting-tab-4"
+          class="tab-page"
+          v-show="currentTab === 'tab-4'"
+        >
+          <log-ui></log-ui>
         </div>
       </div>
       <div class="nd-setting-footer">

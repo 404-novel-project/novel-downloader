@@ -4,6 +4,7 @@ import Dialog from "./dialog";
 import { style as filterTabStyel } from "./FilterTab";
 import { el as progressEl, style as progressStyel } from "./progress";
 import { el as settingEl, style as settingStyle } from "./setting";
+import { style as testUIStyle } from "./TestUI";
 
 function register() {
   customElements.define("dialog-ui", Dialog);
@@ -20,4 +21,5 @@ export function init() {
   document.head.appendChild(settingStyle);
   document.head.appendChild(filterTabStyel);
   document.head.appendChild(chapterListStyel);
+  document.head.appendChild(testUIStyle);
 }

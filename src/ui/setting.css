@@ -66,3 +66,9 @@
   padding-top: 1px;
   background: linear-gradient(to right, transparent, #d0d0d5, transparent);
 }
+
+/* 日志页面 */
+#novel-downloader-log {
+  max-height: 300px;
+  overflow: scroll;
+}

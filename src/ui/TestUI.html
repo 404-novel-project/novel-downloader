@@ -1,0 +1,30 @@
+<div>
+  <div id="test-page-div">
+    <h2>元数据</h2>
+    <table>
+      <tbody>
+        <tr v-for="(value, key) in metaData">
+          <td>{{ key }}</td>
+          <td v-html="getData(key, value)"></td>
+        </tr>
+      </tbody>
+    </table>
+    <hr class="hr-edge-weak" />
+    <h2>章节测试</h2>
+    <div v-if="this.isSeenChapter(chapter)">
+      <h4>
+        <a
+          v-bind:href="chapter.chapterUrl"
+          target="_blank"
+          rel="noopener noreferrer"
+          >{{ chapter.chapterName }}</a
+        >
+      </h4>
+      <div class="chapter" v-html="chapter.contentHTML.outerHTML"></div>
+    </div>
+    <div v-else>
+      <p v-if="this.isChapterFailed(chapter)">章节加载失败！</p>
+      <p v-else>正在加载章节中……</p>
+    </div>
+  </div>
+</div>

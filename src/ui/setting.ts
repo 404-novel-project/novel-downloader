@@ -11,17 +11,20 @@ import FilterTab, {
   FilterSetting as filterSettingGlobal,
   getFilterFunction,
 } from "./FilterTab";
+import LogUI from "./LogUI";
 import settingCss from "./setting.css";
 import settingHtml from "./setting.html";
+import TestUI from "./TestUI";
 
 export const style = createStyle(settingCss);
 export const el = createEl(`<div id="setting"></div>`);
 export const vm = Vue.createApp({
   name: "nd-setting",
-  components: { "filter-tab": FilterTab },
+  components: { "filter-tab": FilterTab, "log-ui": LogUI, "test-ui": TestUI },
   setup(props, context) {
     interface Setting {
       enableDebug?: boolean;
+      enableTestPage?: boolean;
       chooseSaveOption?: string;
       filterSetting?: filterSettingGlobal;
     }
@@ -89,6 +92,7 @@ export const vm = Vue.createApp({
     ];
     setting.enableDebug = enableDebug.value;
     setting.chooseSaveOption = "null";
+    setting.enableTestPage = false;
     const curSaveOption = () => {
       const _s = saveOptions.find((s) => s.key === setting.chooseSaveOption);
       if (_s) {
