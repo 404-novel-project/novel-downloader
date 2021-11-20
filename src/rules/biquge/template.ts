@@ -209,8 +209,9 @@ export function mkBiqugeClass(
           .trim(),
         introDom: document.querySelector("#intro") as HTMLElement,
         introDomPatch,
-        coverUrl: (document.querySelector("#fmimg > img") as HTMLImageElement)
-          .src,
+        coverUrl:
+          (document.querySelector("#fmimg > img") as HTMLImageElement)?.src ??
+          "",
         chapterListSelector: "#list>dl",
         charset: document.charset,
         chapterParse: self.chapterParse,
@@ -284,9 +285,9 @@ export function mkBiqugeClass2(
           .trim(),
         introDom: document.querySelector(".intro") as HTMLElement,
         introDomPatch,
-        coverUrl: (
-          document.querySelector(".info > .cover > img") as HTMLImageElement
-        ).src,
+        coverUrl:
+          (document.querySelector(".info > .cover > img") as HTMLImageElement)
+            ?.src ?? "",
         chapterListSelector: ".listmain>dl",
         charset: document.charset,
         chapterParse: self.chapterParse,
@@ -359,8 +360,9 @@ export function mkBiqugeClass3(
           .trim(),
         introDom: document.querySelector("#intro") as HTMLElement,
         introDomPatch,
-        coverUrl: (document.querySelector("#fmimg > img") as HTMLImageElement)
-          .src,
+        coverUrl:
+          (document.querySelector("#fmimg > img") as HTMLImageElement)?.src ??
+          "",
         chapterListSelector: "#list>dl",
         charset: document.charset,
         chapterParse: self.chapterParse,

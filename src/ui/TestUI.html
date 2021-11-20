@@ -20,7 +20,7 @@
           >{{ chapter.chapterName }}</a
         >
       </h4>
-      <div class="chapter" v-html="chapter.contentHTML.outerHTML"></div>
+      <div class="chapter" v-html="getChapterHtml(chapter)"></div>
     </div>
     <div v-else>
       <p v-if="this.isChapterFailed(chapter)">章节加载失败！</p>

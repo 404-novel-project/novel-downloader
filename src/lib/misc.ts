@@ -15,27 +15,34 @@ export function rm(selector: string, all = false, dom: HTMLElement) {
   }
 }
 
-export function rm2(content: Node, filters: (string | RegExp)[]) {
-  Array.from(content.childNodes).forEach((node) => {
-    let text = "";
-    if (node.nodeName === "#text") {
-      text = (node as Text).textContent ?? "";
-    } else {
-      text = (node as HTMLParagraphElement).innerText;
-    }
-    for (const filter of filters) {
-      if (filter instanceof RegExp) {
-        if (filter.test(text)) {
-          node.remove();
-        }
+export function rm2(content: HTMLElement, filters: (string | RegExp)[]) {
+  function doRemove(nodes: HTMLElement | Text) {
+    Array.from(nodes.childNodes).forEach((node) => {
+      let text = "";
+      if (node.nodeName === "#text") {
+        text = (node as Text).textContent ?? "";
+      } else {
+        text = (node as HTMLElement).innerText;
       }
-      if (typeof filter === "string") {
-        if (text.includes(filter)) {
-          node.remove();
+      if (text.length < 200 || node instanceof Text) {
+        for (const filter of filters) {
+          if (filter instanceof RegExp) {
+            if (filter.test(text)) {
+              node.remove();
+            }
+          }
+          if (typeof filter === "string") {
+            if (text.includes(filter)) {
+              node.remove();
+            }
+          }
         }
+      } else {
+        doRemove(node as HTMLElement | Text);
       }
-    }
-  });
+    });
+  }
+  doRemove(content);
 }
 
 // source: https://segmentfault.com/a/1190000013128649

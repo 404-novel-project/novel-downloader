@@ -33,20 +33,16 @@ interface NextPageParseOptions {
   continueCondition: (_content: HTMLElement, nextLink: string) => boolean;
   enableCleanDOM?: boolean;
 }
-export async function nextPageParse(
-  options: NextPageParseOptions
-): Promise<ChapterParseObject> {
-  const {
-    chapterName,
-    chapterUrl,
-    charset,
-    selector,
-    contentPatch,
-    getNextPage,
-    continueCondition,
-    enableCleanDOM,
-  } = options;
-
+export async function nextPageParse({
+  chapterName,
+  chapterUrl,
+  charset,
+  selector,
+  contentPatch,
+  getNextPage,
+  continueCondition,
+  enableCleanDOM,
+}: NextPageParseOptions): Promise<ChapterParseObject> {
   log.debug(`[Chapter]请求 ${chapterUrl}`);
   let nowUrl = chapterUrl;
   let doc = await getHtmlDOM(chapterUrl, charset);
@@ -112,7 +108,7 @@ export function getSectionName(
     const position = chapterElement.compareDocumentPosition(sElem);
     // tslint:disable-next-line: no-bitwise
     if (position & Node.DOCUMENT_POSITION_DISCONNECTED) {
-      return "";
+      return null;
     }
     // tslint:disable-next-line: no-bitwise
     if (position & Node.DOCUMENT_POSITION_PRECEDING) {

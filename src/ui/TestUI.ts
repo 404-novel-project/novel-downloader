@@ -62,6 +62,15 @@ export default Vue.defineComponent({
     function isChapterFailed(_chapter: Chapter) {
       return _chapter.status === Status.failed;
     }
+    function getChapterHtml(_chapter: Chapter) {
+      const imgs = _chapter.contentHTML?.querySelectorAll("img");
+      if (imgs) {
+        Array.from(imgs).forEach((img) => {
+          img.src = img.alt;
+        });
+      }
+      return _chapter.contentHTML?.outerHTML;
+    }
     Vue.onMounted(async () => {
       await initBook(retryLimit);
       if (book) {
@@ -78,7 +87,14 @@ export default Vue.defineComponent({
       }
     });
 
-    return { metaData, getData, chapter, isSeenChapter, isChapterFailed };
+    return {
+      metaData,
+      getData,
+      chapter,
+      isSeenChapter,
+      isChapterFailed,
+      getChapterHtml,
+    };
   },
   template: TestUIHtml,
 });

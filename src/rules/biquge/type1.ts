@@ -1,4 +1,4 @@
-import { rm, sleep } from "../../lib/misc";
+import { rm, rm2, sleep } from "../../lib/misc";
 import { Chapter } from "../../main";
 import { mkBiqugeClass } from "./template";
 
@@ -149,4 +149,14 @@ export const xbiquge = () =>
       );
       return content;
     }
+  );
+
+export const yruan = () =>
+  mkBiqugeClass(
+    (introDom) => {
+      rm2(introDom, ["本站提示：各位书友要是觉得"]);
+      return introDom;
+    },
+    (content) => content,
+    3
   );
