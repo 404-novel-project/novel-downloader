@@ -7,19 +7,19 @@ import { Book, BookAdditionalMetadate, Chapter } from "../../main";
 import { BaseRuleClass } from "../../rules";
 import { introDomHandle } from "../lib/common";
 
-interface MkRuleClassOptions1 {
+interface MkRuleClassOptions {
   bookUrl: string;
   bookname: string;
   author: string;
   introDom: HTMLElement;
   introDomPatch: (introDom: HTMLElement) => HTMLElement;
   coverUrl: string | null;
-  cos: NodeListOf<Element>;
+  aList: NodeListOf<Element>;
   getContent: (doc: Document) => HTMLElement;
   contentPatch: (content: HTMLElement) => HTMLElement;
 }
-export function mkRuleClass1(
-  optionis: MkRuleClassOptions1
+export function mkRuleClass(
+  optionis: MkRuleClassOptions
 ): PublicConstructor<BaseRuleClass> {
   const {
     bookUrl,
@@ -28,7 +28,7 @@ export function mkRuleClass1(
     introDom,
     introDomPatch,
     coverUrl,
-    cos,
+    aList: cos,
     getContent,
     contentPatch,
   } = optionis;

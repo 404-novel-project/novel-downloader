@@ -1,6 +1,6 @@
 // Tampermonkey API : https://www.tampermonkey.net/documentation.php
 
-interface unsafeWindow extends Window {}
+type unsafeWindow = typeof globalThis;
 declare const unsafeWindow: unsafeWindow;
 
 declare const GM_addStyle: (css: string) => HTMLElement;

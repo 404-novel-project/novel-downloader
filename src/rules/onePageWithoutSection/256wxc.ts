@@ -1,6 +1,6 @@
-import { mkRuleClass1 } from "./template";
+import { mkRuleClass } from "./template";
 
-export const c256wxc = mkRuleClass1({
+export const c256wxc = mkRuleClass({
   bookUrl: document.location.href,
   bookname: (
     document.querySelector(".art_tit") as HTMLHeadElement
@@ -16,7 +16,7 @@ export const c256wxc = mkRuleClass1({
   introDom: document.querySelector(".infotype > p") as HTMLElement,
   introDomPatch: (introDom) => introDom,
   coverUrl: null,
-  cos: document.querySelectorAll(".catalog > li > a"),
+  aList: document.querySelectorAll(".catalog > li > a"),
   getContent: (doc) => doc.querySelector(".book_con") as HTMLElement,
   contentPatch: (content) => content,
 });

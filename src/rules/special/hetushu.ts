@@ -1,11 +1,11 @@
-import { getImageAttachment } from "../lib/attachments";
-import { cleanDOM } from "../lib/cleanDOM";
-import { getHtmlDOM } from "../lib/http";
-import { rm } from "../lib/misc";
-import { log } from "../log";
-import { Book, BookAdditionalMetadate, Chapter } from "../main";
-import { BaseRuleClass } from "../rules";
-import { introDomHandle } from "./lib/common";
+import { getImageAttachment } from "../../lib/attachments";
+import { cleanDOM } from "../../lib/cleanDOM";
+import { getHtmlDOM } from "../../lib/http";
+import { rm } from "../../lib/misc";
+import { log } from "../../log";
+import { Book, BookAdditionalMetadate, Chapter } from "../../main";
+import { BaseRuleClass } from "../../rules";
+import { introDomHandle } from "../lib/common";
 
 export class Hetushu extends BaseRuleClass {
   public constructor() {

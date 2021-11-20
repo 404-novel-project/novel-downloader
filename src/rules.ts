@@ -75,7 +75,9 @@ export abstract class BaseRuleClass {
       if (!self.preHook()) return;
 
       if (
-        typeof (window as NewWindow & typeof globalThis)._book !== "undefined"
+        typeof (window as NewWindow & typeof globalThis)._book !==
+          "undefined" &&
+        (window as NewWindow & typeof globalThis)._book
       ) {
         self.book = (window as NewWindow & typeof globalThis)._book;
       } else {
@@ -84,8 +86,8 @@ export abstract class BaseRuleClass {
       }
 
       log.debug("[book]Book object:\n" + JSON.stringify(self.book));
-      const saveBookObj = self.getSave(self.book);
-      await self.initChapters(self.book, saveBookObj);
+      const saveBookObj = self.getSave(self.book as Book);
+      await self.initChapters(self.book as Book, saveBookObj);
 
       log.debug("[run]开始保存文件");
       saveBookObj.saveTxt();
@@ -161,10 +163,12 @@ export abstract class BaseRuleClass {
     ) {
       const customFinishCallback = (unsafeWindow as NewUnsafeWindow)
         .customFinishCallback;
-      log.info(
-        `发现自定义结束回调函数，内容如下：\n${customFinishCallback.toString()}`
-      );
-      customFinishCallback();
+      if (customFinishCallback) {
+        log.info(
+          `发现自定义结束回调函数，内容如下：\n${customFinishCallback.toString()}`
+        );
+        customFinishCallback();
+      }
     }
   }
 
@@ -218,11 +222,12 @@ export abstract class BaseRuleClass {
       saveOptionsValidate((unsafeWindow as NewUnsafeWindow).saveOptions)
     ) {
       const saveOptionsInner = (unsafeWindow as NewUnsafeWindow).saveOptions;
-      log.info("[run]发现自定义保存参数，内容如下\n", saveOptionsInner);
-      return getSaveBookObj(book, saveOptionsInner);
-    } else {
-      return getSaveBookObj(book, {});
+      if (saveOptionsInner) {
+        log.info("[run]发现自定义保存参数，内容如下\n", saveOptionsInner);
+        return getSaveBookObj(book, saveOptionsInner);
+      }
     }
+    return getSaveBookObj(book, {});
   }
 
   protected getChapters(book: Book) {

@@ -1,7 +1,7 @@
-import { mkRuleClass1 } from "./template";
+import { mkRuleClass } from "./template";
 
 export const trxs = () =>
-  mkRuleClass1({
+  mkRuleClass({
     bookUrl: document.location.href,
     bookname: (
       document.querySelector(".infos > h1") as HTMLHeadElement
@@ -14,14 +14,14 @@ export const trxs = () =>
     introDom: document.querySelector(".infos > p") as HTMLElement,
     introDomPatch: (introDom) => introDom,
     coverUrl: (document.querySelector(".pic > img") as HTMLImageElement).src,
-    cos: document.querySelectorAll("div.book_list > ul.clearfix > li > a"),
+    aList: document.querySelectorAll("div.book_list > ul.clearfix > li > a"),
     getContent: (doc) =>
       doc.querySelector(".read_chapterDetail") as HTMLElement,
     contentPatch: (content) => content,
   });
 
 export const tongrenquan = () =>
-  mkRuleClass1({
+  mkRuleClass({
     bookUrl: document.location.href,
     bookname: (
       document.querySelector(".infos > h1") as HTMLHeadElement
@@ -36,7 +36,7 @@ export const tongrenquan = () =>
     introDom: document.querySelector(".infos > p") as HTMLElement,
     introDomPatch: (introDom) => introDom,
     coverUrl: (document.querySelector(".pic > img") as HTMLImageElement).src,
-    cos: document.querySelectorAll("div.book_list > ul.clearfix > li > a"),
+    aList: document.querySelectorAll("div.book_list > ul.clearfix > li > a"),
     getContent: (doc) =>
       doc.querySelector(".read_chapterDetail") as HTMLElement,
     contentPatch: (content) => content,

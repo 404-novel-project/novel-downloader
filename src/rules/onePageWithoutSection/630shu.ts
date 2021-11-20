@@ -1,6 +1,6 @@
-import { mkRuleClass1 } from "./template";
+import { mkRuleClass } from "./template";
 
-export const c630shu = mkRuleClass1({
+export const c630shu = mkRuleClass({
   bookUrl: document.location.href,
   bookname: (
     document.querySelector("#info > h1") as HTMLHeadElement
@@ -13,7 +13,7 @@ export const c630shu = mkRuleClass1({
   introDom: document.querySelector("#intro") as HTMLElement,
   introDomPatch: (introDom) => introDom,
   coverUrl: (document.querySelector(".img_in > img") as HTMLImageElement).src,
-  cos: document.querySelectorAll(".zjlist > dd > a"),
+  aList: document.querySelectorAll(".zjlist > dd > a"),
   getContent: (doc) => doc.querySelector("#content") as HTMLElement,
   contentPatch: (content) => {
     content.innerHTML = content.innerHTML.replace(

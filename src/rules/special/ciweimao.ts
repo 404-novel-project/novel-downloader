@@ -1,19 +1,19 @@
 import * as CryptoJS from "crypto-js";
-import { getImageAttachment } from "../lib/attachments";
-import { cleanDOM } from "../lib/cleanDOM";
-import { gfetch } from "../lib/http";
-import { getHtmlDOM } from "../lib/http";
-import { rm } from "../lib/misc";
-import { log } from "../log";
+import { getImageAttachment } from "../../lib/attachments";
+import { cleanDOM } from "../../lib/cleanDOM";
+import { gfetch } from "../../lib/http";
+import { getHtmlDOM } from "../../lib/http";
+import { rm } from "../../lib/misc";
+import { log } from "../../log";
 import {
   AttachmentClass,
   Book,
   BookAdditionalMetadate,
   Chapter,
   Status,
-} from "../main";
-import { BaseRuleClass, ChapterParseObject } from "../rules";
-import { introDomHandle } from "./lib/common";
+} from "../../main";
+import { BaseRuleClass, ChapterParseObject } from "../../rules";
+import { introDomHandle } from "../lib/common";
 
 export interface CiweimaoWindow extends unsafeWindow {
   HB: any;

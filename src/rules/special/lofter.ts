@@ -1,9 +1,9 @@
-import { getImageAttachment } from "../lib/attachments";
-import { cleanDOM } from "../lib/cleanDOM";
-import { getHtmlDOM, ggetHtmlDOM } from "../lib/http";
-import { log } from "../log";
-import { Book, BookAdditionalMetadate, Chapter } from "../main";
-import { BaseRuleClass, ChapterParseObject } from "../rules";
+import { getImageAttachment } from "../../lib/attachments";
+import { cleanDOM } from "../../lib/cleanDOM";
+import { getHtmlDOM, ggetHtmlDOM } from "../../lib/http";
+import { log } from "../../log";
+import { Book, BookAdditionalMetadate, Chapter } from "../../main";
+import { BaseRuleClass, ChapterParseObject } from "../../rules";
 
 export class Lofter extends BaseRuleClass {
   public constructor() {
