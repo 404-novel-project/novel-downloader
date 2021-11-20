@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.4.10.321
+// @version        4.4.10.322
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -66,6 +66,7 @@
 // @match          *://www.idejian.com/book/*/
 // @match          *://www.wenku8.net/novel/*/*/index.htm
 // @match          *://www.dmzj.com/info/*.html
+// @match          *://manhua.dmzj.com/*/
 // @match          *://www.westnovel.com/*/*/
 // @match          *://www.mht.tw/*/
 // @match          *://www.mht99.com/*/
@@ -3412,7 +3413,13 @@ const file_saver_1 = __webpack_require__("./node_modules/file-saver/dist/FileSav
 const download_1 = __webpack_require__("./src/router/download.ts");
 async function debug() {
     const rule = await (0, download_1.getRule)();
-    const book = await rule.bookParse();
+    let book;
+    if (typeof window._book !== "undefined") {
+        book = window._book;
+    }
+    else {
+        book = await rule.bookParse();
+    }
     unsafeWindow.rule = rule;
     unsafeWindow.book = book;
     window._book = book;
@@ -5049,6 +5056,7 @@ async function getRule() {
             ruleClass = Wenku8;
             break;
         }
+        case "manhua.dmzj.com":
         case "www.dmzj.com": {
             const { Dmzj } = await Promise.resolve().then(() => __webpack_require__("./src/rules/dmzj.ts"));
             ruleClass = Dmzj;
@@ -6808,14 +6816,26 @@ class Dmzj extends rules_1.BaseRuleClass {
     }
     async bookParse() {
         const bookUrl = document.location.href;
-        const bookname = document.querySelector(".comic_deCon > h1 > a").innerText.trim();
-        const author = document.querySelector(".comic_deCon_liO > li:nth-child(1)").innerText
+        const isWwwHost = document.location.host === "www.dmzj.com";
+        const bookDom = isWwwHost
+            ? document.querySelector(".comic_deCon > h1 > a")
+            : document.querySelector(".anim_title_text > a > h1");
+        const bookname = bookDom.innerText.trim();
+        const authorDom = isWwwHost
+            ? document.querySelector(".comic_deCon_liO > li:nth-child(1)")
+            : document.querySelector(".anim-main_list > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(3) > td:nth-child(2) > a:nth-child(1)");
+        const author = authorDom.innerText
             .replace("作者：", "")
             .trim();
-        const introDom = document.querySelector(".comic_deCon_d");
+        const introDom = isWwwHost
+            ? document.querySelector(".comic_deCon_d")
+            : document.querySelector(".line_height_content");
         const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom);
         const additionalMetadate = {};
-        const coverUrl = document.querySelector(".comic_i_img > a > img").src;
+        const coverDom = isWwwHost
+            ? document.querySelector(".comic_i_img > a > img")
+            : document.querySelector("#cover_pic");
+        const coverUrl = coverDom.src;
         if (coverUrl) {
             (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
                 .then((coverClass) => {
@@ -6824,13 +6844,21 @@ class Dmzj extends rules_1.BaseRuleClass {
                 .catch((error) => log_1.log.error(error));
         }
         const chapters = [];
-        const cos = document.querySelectorAll("div.zj_list_con:nth-child(4) > ul.list_con_li > li");
+        const cos = isWwwHost
+            ? document.querySelectorAll("div.zj_list_con:nth-child(4) > ul.list_con_li > li")
+            : document.querySelectorAll(".cartoon_online_border > ul > li");
         let chapterNumber = 0;
         for (const co of Array.from(cos)) {
             chapterNumber++;
             const a = co.firstElementChild;
-            const span = a.lastElementChild;
-            const chapterName = span.innerText;
+            let chapterName;
+            if (isWwwHost) {
+                const span = a.lastElementChild;
+                chapterName = span.innerText;
+            }
+            else {
+                chapterName = a.innerText;
+            }
             const chapterUrl = a.href;
             const isVIP = false;
             const isPaid = false;
@@ -6843,19 +6871,26 @@ class Dmzj extends rules_1.BaseRuleClass {
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         function getpicUrlList(docI) {
             const imgPrefix = "https://images.dmzj.com/";
-            let pages = (0, misc_1.sandboxed)(docI.querySelector("head > script").innerText +
-                ";return pages;");
+            const scriptElement = Array.from(docI.querySelectorAll("head > script")).filter((s) => s.innerHTML.includes("eval("))[0];
+            let pages = (0, misc_1.sandboxed)(scriptElement.innerText + ";return pages;");
             pages = pages.replace(/\n/g, "");
             pages = pages.replace(/\r/g, "|");
             const info = (0, misc_1.sandboxed)("return (" + pages + ")");
             if (info) {
-                const picUrlListI = info.page_url
-                    .split("|")
-                    .map((pic) => imgPrefix + pic);
+                let picUrlListI;
+                if (isWwwHost) {
+                    picUrlListI = info.page_url
+                        .split("|")
+                        .map((pic) => imgPrefix + pic);
+                }
+                else {
+                    picUrlListI = info.map((pic) => imgPrefix + pic);
+                }
                 return picUrlListI;
             }
         }
         log_1.log.debug(`[Chapter]请求 ${chapterUrl}`);
+        const isWwwHost = document.location.host === "www.dmzj.com";
         const doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
         const picUrlList = getpicUrlList(doc);
         if (picUrlList) {
@@ -13672,7 +13707,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.r18SiteList = exports.iconJump = exports.iconSetting = exports.iconStart1 = exports.iconStart0 = exports.enableJjwxcRemoteFont = exports.enableR18SiteWarning = exports.enableCustomSaveOptions = exports.enableCustomChapterFilter = exports.enableCustomFinishCallback = exports.enableDebug = exports.retryLimit = void 0;
 exports.retryLimit = 5;
 exports.enableDebug = {
-    value: unsafeWindow.enableDebug ?? false,
+    value: false,
 };
 exports.enableCustomFinishCallback = true;
 exports.enableCustomChapterFilter = true;
@@ -14232,6 +14267,7 @@ exports.vm = Vue.createApp({
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.vm = exports.el = exports.style = void 0;
 const Vue = __webpack_require__("vue");
+const debug_1 = __webpack_require__("./src/debug.ts");
 const createEl_1 = __webpack_require__("./src/lib/createEl.ts");
 const misc_1 = __webpack_require__("./src/lib/misc.ts");
 const log_1 = __webpack_require__("./src/log.ts");
@@ -14334,6 +14370,9 @@ exports.vm = Vue.createApp({
                 if (typeof config.enableDebug === "boolean") {
                     config.enableDebug ? log_1.log.setLevel("trace") : log_1.log.setLevel("info");
                     setting_1.enableDebug.value = config.enableDebug;
+                    if (config.enableDebug) {
+                        (0, debug_1.debug)();
+                    }
                 }
             }
             function setCustomSaveOption() {

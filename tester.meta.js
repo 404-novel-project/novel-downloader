@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        小说下载器测试脚本
-// @version     4.4.10.321
+// @version     4.4.10.322
 // @author      bgme
 // @description 小说下载器测试脚本
 // @match       *://www.ciweimao.com/chapter-list/*
@@ -65,6 +65,7 @@
 // @match       *://www.idejian.com/book/*/
 // @match       *://www.wenku8.net/novel/*/*/index.htm
 // @match       *://www.dmzj.com/info/*.html
+// @match       *://manhua.dmzj.com/*/
 // @match       *://www.westnovel.com/*/*/
 // @match       *://www.mht.tw/*/
 // @match       *://www.mht99.com/*/
