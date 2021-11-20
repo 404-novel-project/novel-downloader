@@ -12,7 +12,7 @@ import {
 } from "../../main";
 import { BaseRuleClass, ChapterParseObject } from "../../rules";
 import { retryLimit } from "../../setting";
-import { introDomHandle } from "../lib/common";
+import { getSectionName, introDomHandle } from "../lib/common";
 export class Sfacg extends BaseRuleClass {
   public constructor() {
     super();
@@ -69,60 +69,63 @@ export class Sfacg extends BaseRuleClass {
 
     const chapters: Chapter[] = [];
     const sections = document.querySelectorAll(".story-catalog");
-    let chapterNumber = 0;
-    for (let i = 0; i < sections.length; i++) {
-      const s = sections[i];
-      const sectionNumber = i + 1;
-      const sectionName = (
-        s.querySelector(".catalog-title") as HTMLElement
-      ).innerText
+    const chapterElems = document.querySelectorAll(".catalog-list a");
+    const getName = (sElem: Element) =>
+      (sElem.querySelector(".catalog-title") as HTMLElement).innerText
         .replace(`【${bookname}】`, "")
         .trim();
-      let sectionChapterNumber = 0;
 
-      const cs = s.querySelectorAll(".catalog-list > ul > li > a");
-      for (const c of Array.from(cs)) {
-        const _chapterName = (c as HTMLLinkElement)
-          .getAttribute("title")
-          ?.trim();
-        chapterNumber++;
-        sectionChapterNumber++;
-        const chapterName = _chapterName ? _chapterName : "";
-        const chapterUrl = (c as HTMLLinkElement).href;
-
-        let isVIP = false;
-        const isPaid = null;
-        if (
-          c.childElementCount &&
-          c.firstElementChild?.getAttribute("class") === "icn_vip"
-        ) {
-          isVIP = true;
-        }
-        const chapter = new Chapter(
-          bookUrl,
-          bookname,
-          chapterUrl,
-          chapterNumber,
-          chapterName,
-          isVIP,
-          isPaid,
-          sectionName,
-          sectionNumber,
-          sectionChapterNumber,
-          this.chapterParse,
-          "UTF-8",
-          {}
-        );
-        const isLogin =
-          document.querySelector(".user-bar > .top-link > .normal-link")
-            ?.childElementCount === 3
-            ? true
-            : false;
-        if (isVIP && !isLogin) {
-          chapter.status = Status.aborted;
-        }
-        chapters.push(chapter);
+    let chapterNumber = 0;
+    let sectionNumber = 0;
+    let sectionChapterNumber = 0;
+    let _sectionName = "";
+    for (const elem of Array.from(chapterElems)) {
+      const chapterName =
+        (elem as HTMLAnchorElement).getAttribute("title")?.trim() ?? "";
+      const chapterUrl = (elem as HTMLAnchorElement).href;
+      const sectionName = getSectionName(elem, sections, getName);
+      if (_sectionName !== sectionName) {
+        _sectionName = sectionName;
+        sectionNumber++;
+        sectionChapterNumber = 0;
       }
+      chapterNumber++;
+      sectionChapterNumber++;
+
+      const isVip = () => {
+        if (
+          elem.childElementCount !== 0 &&
+          elem.firstElementChild?.getAttribute("class") === "icn_vip"
+        ) {
+          return true;
+        } else {
+          return false;
+        }
+      };
+      // 无法从章节列表判断章节支付情况
+      const isPaid = null;
+      const chapter = new Chapter(
+        bookUrl,
+        bookname,
+        chapterUrl,
+        chapterNumber,
+        chapterName,
+        isVip(),
+        isPaid,
+        sectionName,
+        sectionNumber,
+        sectionChapterNumber,
+        this.chapterParse,
+        "UTF-8",
+        {}
+      );
+      const isLogin = !document
+        .querySelector(".user-bar > .top-link > .normal-link")
+        ?.innerHTML.includes("您好，SF游客");
+      if (chapter.isVIP && isLogin === false) {
+        chapter.status = Status.aborted;
+      }
+      chapters.push(chapter);
     }
 
     const book = new Book(

@@ -134,12 +134,12 @@ export async function getRule(): Promise<BaseRuleClass> {
     }
     case "m.yuzhaige.cc":
     case "m.yushuge123.com": {
-      const { Yuzhaige } = await import("../rules/yuzhaige");
+      const { Yuzhaige } = await import("../rules/special/yuzhaige");
       ruleClass = Yuzhaige;
       break;
     }
     case "www.linovel.net": {
-      const { Linovel } = await import("../rules/linovel");
+      const { Linovel } = await import("../rules/special/linovel");
       ruleClass = Linovel;
       break;
     }
@@ -154,12 +154,12 @@ export async function getRule(): Promise<BaseRuleClass> {
       break;
     }
     case "www.idejian.com": {
-      const { Idejian } = await import("../rules/idejian");
+      const { Idejian } = await import("../rules/special/idejian");
       ruleClass = Idejian;
       break;
     }
     case "www.qimao.com": {
-      const { Qimao } = await import("../rules/qimao");
+      const { Qimao } = await import("../rules/special/qimao");
       ruleClass = Qimao;
       break;
     }
@@ -315,7 +315,7 @@ export async function getRule(): Promise<BaseRuleClass> {
       break;
     }
     case "m.haitangtxt.net": {
-      const { Haitangtxt } = await import("../rules/haitangtxt");
+      const { Haitangtxt } = await import("../rules/special/haitangtxt");
       ruleClass = Haitangtxt;
       break;
     }

@@ -100,3 +100,28 @@ export async function nextPageParse(
     additionalMetadate: null,
   };
 }
+
+export function getSectionName(
+  chapterElement: Element,
+  sections: NodeListOf<Element>,
+  getName: (sElem: Element) => string
+) {
+  const _sections = Array.from(sections);
+  let sectionName = "";
+  for (const sElem of _sections) {
+    const position = chapterElement.compareDocumentPosition(sElem);
+    // tslint:disable-next-line: no-bitwise
+    if (position & Node.DOCUMENT_POSITION_DISCONNECTED) {
+      return "";
+    }
+    // tslint:disable-next-line: no-bitwise
+    if (position & Node.DOCUMENT_POSITION_PRECEDING) {
+      sectionName = getName(sElem);
+    }
+    // tslint:disable-next-line: no-bitwise
+    if (position & Node.DOCUMENT_POSITION_FOLLOWING) {
+      break;
+    }
+  }
+  return sectionName;
+}
