@@ -1,5 +1,5 @@
-import { Book } from "../main";
-import { BaseRuleClass, ChapterParseObject } from "../rules";
+import { Book } from "../../main";
+import { BaseRuleClass, ChapterParseObject } from "../../rules";
 export declare class Sfacg extends BaseRuleClass {
     constructor();
     bookParse(): Promise<Book>;

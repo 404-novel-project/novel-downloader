@@ -1,6 +1,6 @@
 interface UIObject {
     type: "jump" | "download" | "error";
-    jumpUrl?: string;
+    jumpFunction?: () => void;
 }
 export declare function getUI(): UIObject;
 export {};

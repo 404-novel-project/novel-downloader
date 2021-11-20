@@ -1,4 +1,5 @@
 export declare const common: () => import("../../lib/misc").PublicConstructor<import("../../rules").BaseRuleClass>;
+export declare const common1: () => import("../../lib/misc").PublicConstructor<import("../../rules").BaseRuleClass>;
 export declare const c81book: () => import("../../lib/misc").PublicConstructor<import("../../rules").BaseRuleClass>;
 export declare const gebiqu: () => import("../../lib/misc").PublicConstructor<import("../../rules").BaseRuleClass>;
 export declare const luoqiuzw: () => import("../../lib/misc").PublicConstructor<import("../../rules").BaseRuleClass>;
@@ -6,3 +7,5 @@ export declare const lwxs9: () => import("../../lib/misc").PublicConstructor<imp
 export declare const biquwx: () => import("../../lib/misc").PublicConstructor<import("../../rules").BaseRuleClass>;
 export declare const tycqxs: () => import("../../lib/misc").PublicConstructor<import("../../rules").BaseRuleClass>;
 export declare const dijiubook: () => import("../../lib/misc").PublicConstructor<import("../../rules").BaseRuleClass>;
+export declare const c25zw: () => import("../../lib/misc").PublicConstructor<import("../../rules").BaseRuleClass>;
+export declare const xbiquge: () => import("../../lib/misc").PublicConstructor<import("../../rules").BaseRuleClass>;

@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        小说下载器测试脚本
-// @version     4.4.10.322
+// @version     4.4.10.326
 // @author      bgme
 // @description 小说下载器测试脚本
 // @match       *://www.ciweimao.com/chapter-list/*
@@ -62,6 +62,7 @@
 // @match       *://m.yuzhaige.cc/*/*/
 // @match       *://m.yushuge123.com/*/*/
 // @match       *://www.xinwanben.com/*/
+// @match       *://m.xinwanben.com/*/
 // @match       *://www.idejian.com/book/*/
 // @match       *://www.wenku8.net/novel/*/*/index.htm
 // @match       *://www.dmzj.com/info/*.html
@@ -69,7 +70,6 @@
 // @match       *://www.westnovel.com/*/*/
 // @match       *://www.mht.tw/*/
 // @match       *://www.mht99.com/*/
-// @match       *://www.dierbanzhu1.com/*_*/
 // @match       *://www.bz01.org/*_*/
 // @match       *://www.banzhuer.org/*_*/
 // @match       *://www.xbiquge.so/book/*/

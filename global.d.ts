@@ -8,19 +8,18 @@ export interface NewWindow extends Window {
     downloading: boolean;
     customStorage: LocalStorageExpired;
     stopFlag: boolean;
-    _sections: SectionObj[];
-    _book: Book;
+    _sections?: SectionObj[];
+    _book?: Book;
 }
 export interface NewUnsafeWindow extends unsafeWindow {
-    rule: BaseRuleClass;
-    book: Book;
-    save(book: Book, saveOptions: SaveOptions): void;
-    saveAs(obj: any): typeof saveAs;
+    rule?: BaseRuleClass;
+    book?: Book;
+    save?: (book: Book, saveOptions: SaveOptions) => void;
+    saveAs?: (obj: any) => typeof saveAs;
     chapterFilter?: (chapter: Chapter) => boolean;
-    customFinishCallback(): void;
-    enableDebug: boolean;
-    saveOptions: SaveOptions;
-    readability: {
+    customFinishCallback?: () => void;
+    saveOptions?: SaveOptions;
+    readability?: {
         parse: typeof parse;
         fetchAndParse: typeof fetchAndParse;
         gfetchAndParse: typeof gfetchAndParse;

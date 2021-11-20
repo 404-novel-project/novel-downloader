@@ -1,5 +1,5 @@
-import { Book } from "../main";
-import { BaseRuleClass } from "../rules";
+import { Book } from "../../main";
+import { BaseRuleClass } from "../../rules";
 export declare class Sosadfun extends BaseRuleClass {
     constructor();
     bookParse(): Promise<Book>;
@@ -8,7 +8,7 @@ export declare class Sosadfun extends BaseRuleClass {
         contentRaw: HTMLDivElement;
         contentText: string;
         contentHTML: HTMLElement;
-        contentImages: import("../main").AttachmentClass[];
+        contentImages: import("../../main").AttachmentClass[];
         additionalMetadate: null;
     } | {
         chapterName: string;
