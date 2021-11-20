@@ -26,8 +26,8 @@ export async function getRule(): Promise<BaseRuleClass> {
       break;
     }
     case "www.dingdiann.net": {
-      const { Dingdiann } = await import("../rules/biquge/dingdiann");
-      ruleClass = Dingdiann;
+      const { dingdiann } = await import("../rules/biquge/type3");
+      ruleClass = dingdiann();
       break;
     }
     case "www.biquge66.com":
@@ -90,11 +90,17 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = Jjwxc;
       break;
     }
+    case "www.banzhuer.org":
     case "www.biquwoo.com":
     case "www.biquwo.org":
     case "www.hongyeshuzhai.com": {
       const { common } = await import("../rules/biquge/type1");
       ruleClass = common();
+      break;
+    }
+    case "www.bz01.org": {
+      const { common1 } = await import("../rules/biquge/type1");
+      ruleClass = common1();
       break;
     }
     case "www.81book.com":
@@ -138,8 +144,8 @@ export async function getRule(): Promise<BaseRuleClass> {
       break;
     }
     case "www.xinwanben.com": {
-      const { Xinwanben } = await import("../rules/biquge/xinwanben");
-      ruleClass = Xinwanben;
+      const { xinwanben } = await import("../rules/biquge/type3");
+      ruleClass = xinwanben();
       break;
     }
     case "www.tadu.com": {
@@ -195,20 +201,13 @@ export async function getRule(): Promise<BaseRuleClass> {
     }
     case "www.mht.tw":
     case "www.mht99.com": {
-      const { Mht } = await import("../rules/biquge/mht");
-      ruleClass = Mht;
-      break;
-    }
-    case "www.dierbanzhu1.com":
-    case "www.banzhuer.org":
-    case "www.bz01.org": {
-      const { Dierbanzhu } = await import("../rules/dierbanzhu");
-      ruleClass = Dierbanzhu;
+      const { mht } = await import("../rules/biquge/type3");
+      ruleClass = mht();
       break;
     }
     case "www.xbiquge.so": {
-      const { Xbiquge } = await import("../rules/biquge/xbiquge");
-      ruleClass = Xbiquge;
+      const { xbiquge } = await import("../rules/biquge/type1");
+      ruleClass = xbiquge();
       break;
     }
     case "www.linovelib.com": {
@@ -353,8 +352,8 @@ export async function getRule(): Promise<BaseRuleClass> {
       break;
     }
     case "www.25zw.com": {
-      const { C25zw } = await import("../rules/biquge/25zw");
-      ruleClass = C25zw;
+      const { c25zw } = await import("../rules/biquge/type1");
+      ruleClass = c25zw();
       break;
     }
     case "www.tycqxs.com": {

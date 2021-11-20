@@ -5,7 +5,7 @@ import { PublicConstructor } from "../../lib/misc";
 import { log } from "../../log";
 import { Book, BookAdditionalMetadate, Chapter } from "../../main";
 import { BaseRuleClass, ChapterParseObject } from "../../rules";
-import { introDomHandle } from "../lib/common";
+import { introDomHandle, nextPageParse } from "../lib/common";
 
 export async function bookParseTemp({
   bookUrl,
@@ -17,6 +17,7 @@ export async function bookParseTemp({
   chapterListSelector,
   charset,
   chapterParse,
+  enableIgnore = true,
 }: {
   bookUrl: string;
   bookname: string;
@@ -27,6 +28,7 @@ export async function bookParseTemp({
   chapterListSelector: string;
   charset: string;
   chapterParse: BaseRuleClass["chapterParse"];
+  enableIgnore?: boolean;
 }): Promise<Book> {
   const [introduction, introductionHTML, introCleanimages] =
     await introDomHandle(introDom, introDomPatch);
@@ -40,68 +42,73 @@ export async function bookParseTemp({
       .catch((error) => log.error(error));
   }
 
-  const chapters: Chapter[] = [];
-  const dl = document.querySelector(chapterListSelector);
-  if (dl?.childElementCount) {
-    const dlc = Array.from(dl.children);
-    if (
-      dlc[0].nodeName === "DT" &&
-      ((dlc[0] as HTMLTableDataCellElement).innerText.includes("最新章节") ||
-        (dlc[0] as HTMLTableDataCellElement).innerText.includes(
-          "最新的八个章节"
-        ))
-    ) {
-      for (let i = 0; i < dl?.childElementCount; i++) {
-        if (i !== 0 && dlc[i].nodeName === "DT") {
-          delete dlc[0];
-          break;
+  const dls = document.querySelectorAll(chapterListSelector);
+  const dlc: HTMLElement[] = [];
+  Array.from(dls)
+    .map((dl) => Array.from(dl.children))
+    .forEach((dlcList) => dlcList.forEach((dl) => dlc.push(dl as HTMLElement)));
+
+  // 删去最新章节块
+  let i = 1;
+  if (enableIgnore) {
+    if (dlc[0].nodeName === "DT") {
+      const dt = dlc[0];
+      if (/最新(.+)?章节/.test(dt.innerText)) {
+        delete dlc[0];
+        for (; i < dlc.length; i++) {
+          const d = dlc[i];
+          if (d.nodeName === "DT") {
+            break;
+          } else {
+            delete dlc[i];
+          }
         }
-        delete dlc[i];
       }
     }
+  }
 
-    const chapterList = dlc.filter((obj) => obj !== undefined);
-    let chapterNumber = 0;
-    let sectionNumber = 0;
-    let sectionName = null;
-    let sectionChapterNumber = 0;
-    for (const node of chapterList as HTMLElement[]) {
-      if (node.nodeName === "DT") {
-        sectionNumber++;
-        sectionChapterNumber = 0;
-        if (node.innerText.includes("《")) {
-          sectionName = node.innerText.replace(`《${bookname}》`, "").trim();
-        } else {
-          sectionName = node.innerText.replace(`${bookname}`, "").trim();
-        }
-      } else if (node.nodeName === "DD") {
-        if (node.childElementCount === 0) {
-          continue;
-        }
-        chapterNumber++;
-        sectionChapterNumber++;
-        const a = node.firstElementChild as HTMLLinkElement;
-        const chapterName = a.innerText;
-        const chapterUrl = a.href;
-        const isVIP = false;
-        const isPaid = false;
-        const chapter = new Chapter(
-          bookUrl,
-          bookname,
-          chapterUrl,
-          chapterNumber,
-          chapterName,
-          isVIP,
-          isPaid,
-          sectionName,
-          sectionNumber,
-          sectionChapterNumber,
-          chapterParse,
-          charset,
-          { bookname }
-        );
-        chapters.push(chapter);
+  const chapters: Chapter[] = [];
+  const chapterList = dlc.filter((obj) => obj !== undefined);
+  let chapterNumber = 0;
+  let sectionNumber = 0;
+  let sectionName = null;
+  let sectionChapterNumber = 0;
+  for (const node of chapterList as HTMLElement[]) {
+    if (node.nodeName === "DT") {
+      sectionNumber++;
+      sectionChapterNumber = 0;
+      if (node.innerText.includes("《")) {
+        sectionName = node.innerText.replace(`《${bookname}》`, "").trim();
+      } else {
+        sectionName = node.innerText.replace(`${bookname}`, "").trim();
       }
+    } else if (node.nodeName === "DD") {
+      if (node.childElementCount === 0) {
+        continue;
+      }
+      chapterNumber++;
+      sectionChapterNumber++;
+      const a = node.firstElementChild as HTMLLinkElement;
+      const chapterName = a.innerText;
+      const chapterUrl = a.href;
+      const isVIP = false;
+      const isPaid = false;
+      const chapter = new Chapter(
+        bookUrl,
+        bookname,
+        chapterUrl,
+        chapterNumber,
+        chapterName,
+        isVIP,
+        isPaid,
+        sectionName,
+        sectionNumber,
+        sectionChapterNumber,
+        chapterParse,
+        charset,
+        { bookname }
+      );
+      chapters.push(chapter);
     }
   }
 
@@ -127,17 +134,22 @@ export async function chapterParseTemp({
   contenSelector,
   contentPatch,
   charset,
+  options,
 }: {
   dom: Document;
   chapterUrl: string;
   chapterName: string;
   contenSelector: string;
-  contentPatch: (content: HTMLElement) => HTMLElement;
+  contentPatch: (
+    content: HTMLElement,
+    options: ChapterParseOption
+  ) => HTMLElement;
   charset: string;
+  options: ChapterParseOption;
 }): Promise<ChapterParseObject> {
   let content = dom.querySelector(contenSelector) as HTMLElement;
   if (content) {
-    content = contentPatch(content);
+    content = contentPatch(content, options);
     const { dom: domClean, text, images } = await cleanDOM(content, "TM");
     return {
       chapterName,
@@ -158,11 +170,14 @@ export async function chapterParseTemp({
     };
   }
 }
-
 export function mkBiqugeClass(
   introDomPatch: (introDom: HTMLElement) => HTMLElement,
-  contentPatch: (content: HTMLElement) => HTMLElement,
-  concurrencyLimit?: number
+  contentPatch: (
+    content: HTMLElement,
+    options: ChapterParseOption
+  ) => HTMLElement,
+  concurrencyLimit?: number,
+  enableIgnore?: boolean
 ): PublicConstructor<BaseRuleClass> {
   return class extends BaseRuleClass {
     public constructor() {
@@ -177,6 +192,9 @@ export function mkBiqugeClass(
 
     public async bookParse() {
       const self = this;
+      if (enableIgnore === undefined) {
+        enableIgnore = true;
+      }
       return bookParseTemp({
         bookUrl: document.location.href,
         bookname: (
@@ -196,6 +214,7 @@ export function mkBiqugeClass(
         chapterListSelector: "#list>dl",
         charset: document.charset,
         chapterParse: self.chapterParse,
+        enableIgnore,
       });
     }
 
@@ -205,18 +224,22 @@ export function mkBiqugeClass(
       isVIP: boolean,
       isPaid: boolean,
       charset: string,
-      options: object
+      options: ChapterParseOption
     ) {
-      const dom = await getHtmlDOM(chapterUrl, charset);
+      const doc = await getHtmlDOM(chapterUrl, charset);
       return chapterParseTemp({
-        dom,
+        dom: doc,
         chapterUrl,
-        chapterName: (
-          dom.querySelector(".bookname > h1:nth-child(1)") as HTMLElement
-        ).innerText.trim(),
+        chapterName:
+          ((
+            doc.querySelector(".bookname > h1:nth-child(1)") as HTMLElement
+          )?.innerText.trim() ||
+            chapterName) ??
+          "",
         contenSelector: "#content",
         contentPatch,
         charset,
+        options,
       });
     }
 
@@ -225,10 +248,12 @@ export function mkBiqugeClass(
     }
   };
 }
-
 export function mkBiqugeClass2(
   introDomPatch: (introDom: HTMLElement) => HTMLElement,
-  contentPatch: (content: HTMLElement) => HTMLElement,
+  contentPatch: (
+    content: HTMLElement,
+    options: ChapterParseOption
+  ) => HTMLElement,
   concurrencyLimit?: number
 ): PublicConstructor<BaseRuleClass> {
   // tslint:disable-next-line:max-classes-per-file
@@ -274,7 +299,7 @@ export function mkBiqugeClass2(
       isVIP: boolean,
       isPaid: boolean,
       charset: string,
-      options: object
+      options: ChapterParseOption
     ) {
       const dom = await getHtmlDOM(chapterUrl, charset);
       return chapterParseTemp({
@@ -286,6 +311,79 @@ export function mkBiqugeClass2(
         contenSelector: "#content",
         contentPatch,
         charset,
+        options,
+      });
+    }
+
+    public overrideConstructor(self: this) {
+      // overrideConstructor
+    }
+  };
+}
+export function mkBiqugeClass3(
+  introDomPatch: (introDom: HTMLElement) => HTMLElement,
+  contentPatch: (content: HTMLElement, doc: Document) => HTMLElement,
+  getNextPage: (doc: Document) => string,
+  continueCondition: (content: HTMLElement, nextLink: string) => boolean,
+  concurrencyLimit?: number,
+  enableIgnore?: boolean
+): PublicConstructor<BaseRuleClass> {
+  // tslint:disable-next-line: max-classes-per-file
+  return class extends BaseRuleClass {
+    public constructor() {
+      super();
+      if (typeof concurrencyLimit === "number") {
+        this.concurrencyLimit = concurrencyLimit;
+      }
+      this.imageMode = "TM";
+      this.charset = document.charset;
+      this.overrideConstructor(this);
+    }
+
+    public async bookParse() {
+      const self = this;
+      if (enableIgnore === undefined) {
+        enableIgnore = true;
+      }
+      return bookParseTemp({
+        bookUrl: document.location.href,
+        bookname: (
+          document.querySelector("#info h1:nth-of-type(1)") as HTMLElement
+        ).innerText
+          .trim()
+          .replace(/最新章节$/, ""),
+        author: (
+          document.querySelector("#info > p:nth-child(2)") as HTMLElement
+        ).innerText
+          .replace(/作(\s+)?者[：:]/, "")
+          .trim(),
+        introDom: document.querySelector("#intro") as HTMLElement,
+        introDomPatch,
+        coverUrl: (document.querySelector("#fmimg > img") as HTMLImageElement)
+          .src,
+        chapterListSelector: "#list>dl",
+        charset: document.charset,
+        chapterParse: self.chapterParse,
+        enableIgnore,
+      });
+    }
+
+    public async chapterParse(
+      chapterUrl: string,
+      chapterName: string | null,
+      isVIP: boolean,
+      isPaid: boolean,
+      charset: string,
+      options: ChapterParseOption
+    ) {
+      return nextPageParse({
+        chapterName,
+        chapterUrl,
+        charset,
+        selector: "#content",
+        contentPatch,
+        getNextPage,
+        continueCondition,
       });
     }
 

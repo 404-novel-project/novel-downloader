@@ -48,7 +48,7 @@ export const vm = Vue.createApp({
       settingVM.openSetting();
     },
     jumpButtonClick() {
-      document.location.href = this.uiObj.jumpUrl;
+      this.uiObj.jumpFunction();
     },
   },
   template: buttonHtml,

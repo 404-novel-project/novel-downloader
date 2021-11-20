@@ -26,18 +26,18 @@ export const c226ks = () =>
       doc.querySelectorAll(
         "div.section-box:nth-child(4) > ul:nth-child(1) > li > a"
       ),
-    getContentFromUrl: async (_chapterUrl, _chapterName, _charset) => {
+    getContentFromUrl: async (chapterUrl, chapterName, charset) => {
       const {
-        chapterName,
+        chapterName: _chapterName,
         contentRaw,
         contentText,
         contentHTML,
         contentImages,
         additionalMetadate,
       } = await nextPageParse({
-        chapterName: _chapterName,
-        chapterUrl: _chapterUrl,
-        charset: _charset,
+        chapterName,
+        chapterUrl,
+        charset,
         selector: "#content",
         contentPatch: (content, doc) => {
           rm("script", true, content);

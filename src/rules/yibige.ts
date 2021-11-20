@@ -128,17 +128,17 @@ export class Yibige extends BaseRuleClass {
   }
 
   public async chapterParse(
-    _chapterUrl: string,
-    _chapterName: string | null,
+    chapterUrl: string,
+    chapterName: string | null,
     isVIP: boolean,
     isPaid: boolean,
-    _charset: string,
+    charset: string,
     options: object
   ) {
     return nextPageParse({
-      chapterName: _chapterName,
-      chapterUrl: _chapterUrl,
-      charset: _charset,
+      chapterName,
+      chapterUrl,
+      charset,
       selector: "#fontsize",
       contentPatch: (_content, doc) => {
         rm("div", true, _content);

@@ -3,11 +3,19 @@ import { Chapter } from "../../main";
 import { mkBiqugeClass } from "./template";
 
 // 笔趣阁通用模板，无contentpatch可直接使用
-
 export const common = () =>
   mkBiqugeClass(
     (introDom) => introDom,
     (content) => content
+  );
+
+// 笔趣阁通用模板，禁用怱略
+export const common1 = () =>
+  mkBiqugeClass(
+    (introDom) => introDom,
+    (content) => content,
+    undefined,
+    false
   );
 
 export const c81book = () =>
@@ -117,3 +125,28 @@ export const dijiubook = () => {
   };
   return c;
 };
+
+export const c25zw = () =>
+  mkBiqugeClass(
+    (introDom) => {
+      introDom.querySelector("font")?.parentElement?.remove();
+      introDom.innerHTML = introDom.innerHTML.replace("简介:", "");
+      return introDom;
+    },
+    (content) => {
+      rm(".bottem", false, content);
+      return content;
+    }
+  );
+
+export const xbiquge = () =>
+  mkBiqugeClass(
+    (introDom) => introDom,
+    (content, options) => {
+      content.innerHTML = content.innerHTML.replace(
+        `笔趣阁 www.xbiquge.so，最快更新${options.bookname} ！`,
+        ""
+      );
+      return content;
+    }
+  );
