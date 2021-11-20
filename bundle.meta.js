@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.4.10.326
+// @version        4.4.11.327
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -255,9 +255,12 @@
 // @connect        25zw.com
 // @connect        sina.com.cn
 // @connect        *
-// @require        https://cdn.jsdelivr.net/npm/crypto-js@4.1.1/crypto-js.js#sha256-8L3yX9qPmvWSDIIHB3WGTH4RZusxVA0DDmuAo4LjnOE=
-// @require        https://cdn.jsdelivr.net/npm/nunjucks@3.2.3/browser/nunjucks.min.js#sha256-+CJElYLgP9RjEvMt/VTU1+qF8CuntjliUUBKp26fPck=
-// @require        https://cdn.jsdelivr.net/npm/vue@3.2.21/dist/vue.global.prod.js#sha256-/vjXAc6GTRSzj94ZRmI9JLA5vL8Z/fEzwv4ByA6DdI0=
+// @require        https://cdn.jsdelivr.net/npm/crypto-js@4.1.1/crypto-js.js#sha512-NQVmLzNy4Lr5QTrmXvq/WzTMUnRHmv7nyIT/M6LyGPBS+TIeRxZ+YQaqWxjpRpvRMQSuYPQURZz/+pLi81xXeA==
+// @require        https://cdn.jsdelivr.net/npm/fflate@0.7.1/umd/index.js#sha512-laBNdxeV48sttD1kBYahmdSXpSRitYmkte49ZUqm3KEOUK4cIJAjqt1MYwScWvBqqP4WDtEftDSPYE1ii/bxCg==
+// @require        https://cdn.jsdelivr.net/npm/idb-keyval@6.0.3/dist/umd.js#sha512-+PXdWKx8apEQ52dxoVrQIwhLZj96Gde37eq+CXYQvG059IC5VF+nQ1DvD3JKqUVPL0k+TAJ8DDunVXjzKrlrHg==
+// @require        https://cdn.jsdelivr.net/npm/loglevel@1.7.1/lib/loglevel.js#sha512-M8fjILtZEfPxVu6CCA2zI+oQL7hUMODvl7SshhQXHUGrxshEmr2hUoR5xrI0/OXDoAuTxQAkA258IQ4cH7RcVg==
+// @require        https://cdn.jsdelivr.net/npm/nunjucks@3.2.3/browser/nunjucks.min.js#sha512-Uj8C5szr1tnKPNZb6ps5gFYtTGskzsUCiwY35QP/s2JIExZl7iYNletcmOJ8D6ocuaMRi9JGVrWRePaX9raujA==
+// @require        https://cdn.jsdelivr.net/npm/vue@3.2.21/dist/vue.global.prod.js#sha512-mpjwM3OYBweZsR1BySj7jw3TuvKILFaLojtwYNBKKWuieiWiYByAgHddb1VX4+YO/NBe83cKW58k6ekhgfYgbQ==
 // @downloadURL    https://github.com/yingziwu/novel-downloader/raw/gh-pages/bundle.user.js
 // @updateURL      https://github.com/yingziwu/novel-downloader/raw/gh-pages/bundle.meta.js
 // ==/UserScript==

@@ -16,7 +16,7 @@ export declare class SaveBook {
     private saveChapters;
     private saveSections;
     private getChapterNumberToSave;
-    addChapter(chapter: Chapter): void;
+    addChapter(chapter: Chapter, suffix?: string): void;
     getchapterName(chapter: Chapter): string;
     private genMetaDateTxt;
     private addImageToZip;
