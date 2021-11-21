@@ -2,10 +2,10 @@ import { getImageAttachment } from "../../../lib/attachments";
 import { cleanDOM } from "../../../lib/cleanDOM";
 import { ggetHtmlDOM, ggetText } from "../../../lib/http";
 import { rm } from "../../../lib/misc";
+import { introDomHandle } from "../../../lib/rule";
 import { log } from "../../../log";
 import { Book, BookAdditionalMetadate, Chapter } from "../../../main";
 import { BaseRuleClass } from "../../../rules";
-import { introDomHandle } from "../../lib/common";
 
 export class Idejian extends BaseRuleClass {
   public constructor() {

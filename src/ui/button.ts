@@ -1,5 +1,5 @@
 import * as Vue from "vue";
-import { GmWindow, NewWindow } from "../global";
+import { GmWindow } from "../global";
 import { createEl, createStyle } from "../lib/createEl";
 import { _GM_info } from "../lib/GM";
 import { log } from "../log";
@@ -11,7 +11,7 @@ import buttonCss from "./button.less";
 import { vm as settingVM } from "./setting";
 
 export const style = createStyle(buttonCss, "button-div-style");
-export const el = createEl("<div></div>");
+export const el = createEl('<div id="nd-button"></div>');
 export const vm = Vue.createApp({
   data() {
     return {
@@ -19,7 +19,7 @@ export const vm = Vue.createApp({
       imgSetting: iconSetting,
       isSettingSeen: _GM_info.scriptHandler !== "Greasemonkey",
       imgJump: iconJump,
-      uiObj: getUI(),
+      uiObj: {},
     };
   },
   methods: {
@@ -51,5 +51,8 @@ export const vm = Vue.createApp({
       this.uiObj.jumpFunction();
     },
   },
+  mounted() {
+    Object.assign(this.uiObj, getUI()());
+  },
   template: buttonHtml,
-}).mount(el);
+});

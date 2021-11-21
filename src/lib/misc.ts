@@ -208,3 +208,36 @@ export function deepcopy(obj: object) {
 export function regexpEscape(str: string) {
   return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
+
+export function getMaxDepth(element: Element) {
+  const descendants = element.querySelectorAll("*");
+  const depths = Array.from(descendants)
+    .filter((elem) => elem.childElementCount === 0)
+    .map((elem) => getDepth(elem, 0));
+  return Math.max(...depths);
+
+  function getDepth(elem: Element, depth: number): number {
+    if (element.isSameNode(elem)) {
+      return depth;
+    } else {
+      const parentElement = elem.parentElement;
+      if (parentElement) {
+        return getDepth(parentElement, depth + 1);
+      } else {
+        return depth;
+      }
+    }
+  }
+}
+
+export function getNodeTextLength(element: Element) {
+  return Array.from(element.childNodes)
+    .filter((node) => node.nodeName === "#text")
+    .reduce((sum, curNode) => {
+      if (!sum) {
+        sum = 0;
+      }
+      sum = sum + ((curNode as Text).textContent?.trim().length ?? 0);
+      return sum;
+    }, 0);
+}

@@ -1,4 +1,4 @@
-import { GmWindow, NewUnsafeWindow, NewWindow } from "./global";
+import { GmWindow, NewUnsafeWindow } from "./global";
 import { clearAttachmentClassCache } from "./lib/attachments";
 import { concurrencyRun } from "./lib/misc";
 import { log, saveLogTextToFile } from "./log";

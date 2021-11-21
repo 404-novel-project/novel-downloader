@@ -1,6 +1,7 @@
 import * as Vue from "vue";
-import { GmWindow, NewWindow } from "../global";
+import { GmWindow } from "../global";
 import { createStyle } from "../lib/createEl";
+import { log } from "../log";
 import { Chapter, Status } from "../main";
 import { getRule } from "../router/download";
 import { getSectionsObj, SectionObj } from "../save/save";
@@ -29,12 +30,18 @@ export default Vue.defineComponent({
   setup(props, context) {
     const sectionsObj = Vue.reactive([]);
     const loading = Vue.ref(true);
+    const failed = Vue.ref(false);
     Vue.onMounted(async () => {
       if (sectionsObj.length === 0) {
-        const _sectionsObj = await getSections();
-        Object.assign(sectionsObj, _sectionsObj);
+        try {
+          const _sectionsObj = await getSections();
+          Object.assign(sectionsObj, _sectionsObj);
+          loading.value = false;
+        } catch (error) {
+          log.error(error);
+          failed.value = true;
+        }
       }
-      loading.value = false;
     });
 
     const filterSetting = Vue.inject(
@@ -84,6 +91,7 @@ export default Vue.defineComponent({
     return {
       sectionsObj,
       loading,
+      failed,
       filter,
       warningFilter,
       isChapterDisabled,

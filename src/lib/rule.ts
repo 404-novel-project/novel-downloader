@@ -1,8 +1,8 @@
-import { cleanDOM } from "../../lib/cleanDOM";
-import { getHtmlDOM } from "../../lib/http";
-import { log } from "../../log";
-import { AttachmentClass } from "../../main";
-import { ChapterParseObject } from "../../rules";
+import { log } from "../log";
+import { AttachmentClass } from "../main";
+import { ChapterParseObject } from "../rules";
+import { cleanDOM } from "./cleanDOM";
+import { getHtmlDOM } from "./http";
 
 export async function introDomHandle(
   introDom: (Element | HTMLElement) | null,
@@ -120,4 +120,45 @@ export function getSectionName(
     }
   }
   return sectionName;
+}
+
+export function centerDetct(element: Element): [boolean, Element, number] {
+  const docEl = document.documentElement;
+  const bodyEl = document.body;
+  const vw = Math.min(docEl.clientWidth, window.innerWidth);
+  const vh = Math.min(docEl.clientHeight, window.innerHeight);
+  const tolx = vw * 0.15;
+  const toly = bodyEl.scrollHeight * 0.1;
+
+  const rect = element.getBoundingClientRect();
+  const distanceToTop = window.scrollY + rect.top;
+  const distanceToBottom = bodyEl.scrollHeight - distanceToTop;
+
+  const distanceToRight = Math.abs(vw - rect.right);
+  const distanYmin = Math.min(distanceToTop, distanceToBottom);
+  const percentY = element.scrollHeight / bodyEl.scrollHeight;
+  if (
+    rect.left < tolx ||
+    distanceToRight < tolx ||
+    distanceToTop < toly ||
+    distanceToBottom < toly
+  ) {
+    return [false, element, percentY];
+  }
+  return [true, element, percentY];
+}
+
+export function softByValue(a: [Element, number], b: [Element, number]) {
+  const aTop = a[1];
+  const bTop = b[1];
+  if (aTop > bTop) {
+    return 1;
+  }
+  if (aTop === bTop) {
+    return 0;
+  }
+  if (aTop < bTop) {
+    return -1;
+  }
+  return 0;
 }

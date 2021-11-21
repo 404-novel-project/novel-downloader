@@ -1,5 +1,5 @@
 import { rm } from "../../lib/misc";
-import { nextPageParse } from "../lib/common";
+import { nextPageParse } from "../../lib/rule";
 import { mkRuleClass } from "./tempate";
 
 export const yibige = () =>

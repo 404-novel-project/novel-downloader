@@ -89,7 +89,7 @@ module.exports = {
           .trim();
         let version;
         if (dev) {
-          version = header["version"] + `.${revision}` + `.${Date.now()}`;
+          version = header["version"] + `.${Date.now()}`;
         } else {
           version = header["version"] + `.${revision}`;
         }

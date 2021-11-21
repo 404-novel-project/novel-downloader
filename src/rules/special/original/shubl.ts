@@ -3,6 +3,7 @@ import { getImageAttachment } from "../../../lib/attachments";
 import { cleanDOM } from "../../../lib/cleanDOM";
 import { gfetch } from "../../../lib/http";
 import { rm } from "../../../lib/misc";
+import { introDomHandle } from "../../../lib/rule";
 import { log } from "../../../log";
 import {
   AttachmentClass,
@@ -12,7 +13,6 @@ import {
   Status,
 } from "../../../main";
 import { BaseRuleClass, ChapterParseObject } from "../../../rules";
-import { introDomHandle } from "../../lib/common";
 
 export class Shubl extends BaseRuleClass {
   public constructor() {

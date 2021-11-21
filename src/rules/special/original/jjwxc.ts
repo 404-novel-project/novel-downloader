@@ -7,6 +7,7 @@ import { cleanDOM } from "../../../lib/cleanDOM";
 import { gfetch } from "../../../lib/http";
 import { getHtmlDOM, ggetHtmlDOM } from "../../../lib/http";
 import { rm, sleep } from "../../../lib/misc";
+import { introDomHandle } from "../../../lib/rule";
 import { log } from "../../../log";
 import {
   AttachmentClass,
@@ -17,7 +18,6 @@ import {
 } from "../../../main";
 import { BaseRuleClass, ChapterParseObject } from "../../../rules";
 import { retryLimit } from "../../../setting";
-import { introDomHandle } from "../../lib/common";
 import { replaceJjwxcCharacter } from "../../lib/jjwxcFontDecode";
 
 export class Jjwxc extends BaseRuleClass {
@@ -46,7 +46,7 @@ export class Jjwxc extends BaseRuleClass {
 
     let bookname = "";
     const additionalMetadate: BookAdditionalMetadate = {};
-    let author = "佚名";
+    let author = "";
     let introduction: string | null = null;
     let introductionHTML: HTMLElement | null = null;
     let introCleanimages: AttachmentClass[] | null = null;

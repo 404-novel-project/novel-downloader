@@ -1,7 +1,8 @@
 <div>
   <div v-if="loading">
     <div class="chapter-list-loading">
-      <h2>正在载入章节列表中，请耐心等待……</h2>
+      <h2 v-if="failed">加载章节失败！</h2>
+      <h2 v-else>正在载入章节列表中，请耐心等待……</h2>
     </div>
   </div>
   <div class="chapter-list" v-else>

@@ -1,4 +1,4 @@
-import { el as buttonEl, style as buttonStyel } from "./button";
+import { el as buttonEl, style as buttonStyel, vm as buttonVm } from "./button";
 import { style as chapterListStyel } from "./ChapterList";
 import Dialog from "./dialog";
 import { style as filterTabStyel } from "./FilterTab";
@@ -12,6 +12,7 @@ function register() {
 
 export function init() {
   register();
+  buttonVm.mount(buttonEl);
   document.body.appendChild(buttonEl);
   document.body.appendChild(progressEl);
   document.body.appendChild(settingEl);

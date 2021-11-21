@@ -2,10 +2,10 @@ import { getImageAttachment } from "../../lib/attachments";
 import { cleanDOM } from "../../lib/cleanDOM";
 import { getHtmlDOM } from "../../lib/http";
 import { PublicConstructor } from "../../lib/misc";
+import { introDomHandle, nextPageParse } from "../../lib/rule";
 import { log } from "../../log";
 import { Book, BookAdditionalMetadate, Chapter } from "../../main";
 import { BaseRuleClass, ChapterParseObject } from "../../rules";
-import { introDomHandle, nextPageParse } from "../lib/common";
 
 export async function bookParseTemp({
   bookUrl,

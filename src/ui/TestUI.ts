@@ -1,5 +1,5 @@
 import * as Vue from "vue";
-import { GmWindow, NewWindow } from "../global";
+import { GmWindow } from "../global";
 import { createStyle } from "../lib/createEl";
 import { sleep } from "../lib/misc";
 import { Book, Chapter, Status } from "../main";
@@ -51,7 +51,7 @@ export default Vue.defineComponent({
 
     async function initChapter(_book: Book) {
       const chapters = _book.chapters;
-      const n = Math.min(17, chapters.length);
+      const n = Math.min(17, chapters.length) - 1;
       const _chapter = chapters[n];
       await _chapter.init();
       return _chapter;

@@ -27,6 +27,7 @@ export const vm = Vue.createApp({
       enableTestPage?: boolean;
       chooseSaveOption?: string;
       filterSetting?: filterSettingGlobal;
+      currentTab: string;
     }
     const setting = Vue.reactive({} as Setting);
     let settingBackup = {};
@@ -93,6 +94,7 @@ export const vm = Vue.createApp({
     setting.enableDebug = enableDebug.value;
     setting.chooseSaveOption = "null";
     setting.enableTestPage = false;
+    setting.currentTab = "tab-1";
     const curSaveOption = () => {
       const _s = saveOptions.find((s) => s.key === setting.chooseSaveOption);
       if (_s) {
@@ -155,7 +157,6 @@ export const vm = Vue.createApp({
     };
 
     const openStatus = Vue.ref("false");
-    const currentTab = Vue.ref("tab-1");
     const openSetting = () => {
       settingBackup = deepcopy(setting) as Setting;
       openStatus.value = "true";
@@ -177,7 +178,6 @@ export const vm = Vue.createApp({
 
     return {
       openStatus,
-      currentTab,
       openSetting,
       closeSetting,
       closeAndSaveSetting,

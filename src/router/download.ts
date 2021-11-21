@@ -357,6 +357,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = tycqxs();
       break;
     }
+    case "www.kanunu8.com": {
+      const { Kanunu8 } = await import("../rules/special/reprint/kanunu8");
+      ruleClass = Kanunu8;
+      break;
+    }
     default: {
       throw new Error("Not Found Rule!");
     }

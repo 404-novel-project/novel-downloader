@@ -2,10 +2,10 @@ import { getImageAttachment } from "../../../lib/attachments";
 import { cleanDOM } from "../../../lib/cleanDOM";
 import { getHtmlDOM } from "../../../lib/http";
 import { sandboxed } from "../../../lib/misc";
+import { introDomHandle } from "../../../lib/rule";
 import { log } from "../../../log";
 import { Book, BookAdditionalMetadate, Chapter } from "../../../main";
 import { BaseRuleClass } from "../../../rules";
-import { introDomHandle } from "../../lib/common";
 
 export class Dmzj extends BaseRuleClass {
   public constructor() {

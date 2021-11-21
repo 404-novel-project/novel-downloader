@@ -2,10 +2,10 @@ import { getImageAttachment } from "../../lib/attachments";
 import { cleanDOM } from "../../lib/cleanDOM";
 import { getHtmlDOM } from "../../lib/http";
 import { PublicConstructor } from "../../lib/misc";
+import { getSectionName, introDomHandle } from "../../lib/rule";
 import { log } from "../../log";
 import { Book, BookAdditionalMetadate, Chapter } from "../../main";
 import { BaseRuleClass } from "../../rules";
-import { getSectionName, introDomHandle } from "../lib/common";
 
 interface MkRuleClassOptions {
   bookUrl: string;

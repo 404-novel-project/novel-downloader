@@ -8,28 +8,28 @@
     <div class="nd-setting">
       <div class="nd-setting-tab">
         <button
-          v-bind:class="['tab-button', { active: currentTab === 'tab-1'}]"
-          v-on:click="currentTab = 'tab-1'"
+          v-bind:class="['tab-button', { active: setting.currentTab === 'tab-1'}]"
+          v-on:click="setting.currentTab = 'tab-1'"
         >
           基本设置
         </button>
         <button
-          v-bind:class="['tab-button', { active: currentTab === 'tab-2'}]"
-          v-on:click="currentTab = 'tab-2'"
+          v-bind:class="['tab-button', { active: setting.currentTab === 'tab-2'}]"
+          v-on:click="setting.currentTab = 'tab-2'"
         >
           自定义筛选条件
         </button>
         <button
           v-if="setting.enableTestPage"
-          v-bind:class="['tab-button', { active: currentTab === 'tab-3'}]"
-          v-on:click="currentTab = 'tab-3'"
+          v-bind:class="['tab-button', { active: setting.currentTab === 'tab-3'}]"
+          v-on:click="setting.currentTab = 'tab-3'"
         >
           抓取测试
         </button>
         <button
           v-if="setting.enableTestPage"
-          v-bind:class="['tab-button', { active: currentTab === 'tab-4'}]"
-          v-on:click="currentTab = 'tab-4'"
+          v-bind:class="['tab-button', { active: setting.currentTab === 'tab-4'}]"
+          v-on:click="setting.currentTab = 'tab-4'"
         >
           日志
         </button>
@@ -38,7 +38,7 @@
         <div
           id="nd-setting-tab-1"
           class="tab-page"
-          v-show="currentTab === 'tab-1'"
+          v-show="setting.currentTab === 'tab-1'"
         >
           <div>
             <input type="checkbox" id="debug" v-model="setting.enableDebug" />
@@ -69,7 +69,7 @@
         <div
           id="nd-setting-tab-2"
           class="tab-page"
-          v-show="currentTab === 'tab-2'"
+          v-show="setting.currentTab === 'tab-2'"
         >
           <filter-tab v-on:filterupdate="saveFilter" />
         </div>
@@ -77,7 +77,7 @@
           v-if="setting.enableTestPage"
           id="nd-setting-tab-3"
           class="tab-page"
-          v-show="currentTab === 'tab-3'"
+          v-show="setting.currentTab === 'tab-3'"
         >
           <test-ui></test-ui>
         </div>
@@ -85,7 +85,7 @@
           v-if="setting.enableTestPage"
           id="nd-setting-tab-4"
           class="tab-page"
-          v-show="currentTab === 'tab-4'"
+          v-show="setting.currentTab === 'tab-4'"
         >
           <log-ui></log-ui>
         </div>
