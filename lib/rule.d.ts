@@ -1,5 +1,5 @@
-import { AttachmentClass } from "../../main";
-import { ChapterParseObject } from "../../rules";
+import { AttachmentClass } from "../main";
+import { ChapterParseObject } from "../rules";
 export declare function introDomHandle(introDom: (Element | HTMLElement) | null, domPatch?: (introDom: HTMLElement) => HTMLElement): Promise<[string | null, HTMLElement | null, AttachmentClass[] | null]>;
 interface NextPageParseOptions {
     chapterName: string | null;
@@ -13,4 +13,6 @@ interface NextPageParseOptions {
 }
 export declare function nextPageParse({ chapterName, chapterUrl, charset, selector, contentPatch, getNextPage, continueCondition, enableCleanDOM, }: NextPageParseOptions): Promise<ChapterParseObject>;
 export declare function getSectionName(chapterElement: Element, sections: NodeListOf<Element>, getName: (sElem: Element) => string): string | null;
+export declare function centerDetct(element: Element): [boolean, Element, number];
+export declare function softByValue(a: [Element, number], b: [Element, number]): 0 | 1 | -1;
 export {};

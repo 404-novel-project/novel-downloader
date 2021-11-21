@@ -1,8 +1,8 @@
 import { saveAs } from "file-saver";
 import { LocalStorageExpired } from "./lib/misc";
+import { fetchAndParse, gfetchAndParse, parse } from "./lib/readability";
 import { Book, Chapter } from "./main";
 import { BaseRuleClass } from "./rules";
-import { fetchAndParse, gfetchAndParse, parse } from "./rules/lib/readability";
 import { SaveOptions, SectionObj } from "./save/save";
 export interface NewWindow extends Window {
     downloading: boolean;

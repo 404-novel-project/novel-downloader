@@ -16,3 +16,5 @@ export declare class LocalStorageExpired {
 }
 export declare function deepcopy(obj: object): any;
 export declare function regexpEscape(str: string): string;
+export declare function getMaxDepth(element: Element): number;
+export declare function getNodeTextLength(element: Element): number;

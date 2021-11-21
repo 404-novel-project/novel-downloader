@@ -5,6 +5,7 @@ export declare const style: HTMLElement;
 declare const _default: Vue.DefineComponent<{}, {
     sectionsObj: never[];
     loading: Vue.Ref<boolean>;
+    failed: Vue.Ref<boolean>;
     filter: (chapter: Chapter) => boolean;
     warningFilter: (chapter: Chapter) => boolean;
     isChapterDisabled: (chapter: Chapter) => boolean;

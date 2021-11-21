@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.4.11.330
+// @version        4.5.0.331
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -132,6 +132,7 @@
 // @match          *://www.biquwx.la/*_*/
 // @match          *://www.25zw.com/*/
 // @match          *://www.tycqxs.com/*_*/
+// @match          *://www.kanunu8.com/*
 // @name:en        novel-downloader
 // @description:en An scalable universal novel downloader.
 // @namespace      https://blog.bgme.me
@@ -146,7 +147,6 @@
 // @compatible     Safari 13.1+
 // @incompatible   Internet Explorer
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
-// @exclude        *://www.meegoq.com/book/*.html
 // @exclude        *://www.viviyzw.com/book/*.html
 // @exclude        *://www.yruan.com/article/*/*.html
 // @exclude        *://m.yuzhaige.cc/tag/*/
@@ -159,6 +159,11 @@
 // @exclude        *://m.yushuge123.com/top/*/
 // @exclude        *://m.yushuge123.com/full/*/
 // @exclude        *://m.yushuge123.com/book/*/
+// @exclude        *://m.haitangtxt.net/tag/*/
+// @exclude        *://m.haitangtxt.net/sort/*/
+// @exclude        *://m.haitangtxt.net/top/*/
+// @exclude        *://m.haitangtxt.net/full/*/
+// @exclude        *://m.haitangtxt.net/book/*/
 // @exclude        *://www.linovel.net/book/*/*.html
 // @exclude        *://www.qimao.com/shuku/*-*/
 // @exclude        *://www.trxs.cc/tongren/*/*.html
@@ -166,22 +171,6 @@
 // @exclude        *://www.tongrenquan.org/tongren/*/*.html
 // @exclude        *://tongrenquan.org/tongren/*/*.html
 // @exclude        *://www.jpxs123.com/*/*/*.html
-// @exclude        *://m.haitangtxt.net/tag/*/
-// @exclude        *://m.haitangtxt.net/sort/*/
-// @exclude        *://m.haitangtxt.net/top/*/
-// @exclude        *://m.haitangtxt.net/full/*/
-// @exclude        *://m.haitangtxt.net/book/*/
-// @exclude        *://www.tadu.com/book/*/*/*
-// @exclude        *://www.tadu.com/book/*/0*
-// @exclude        *://www.tadu.com/book/*/1*
-// @exclude        *://www.tadu.com/book/*/2*
-// @exclude        *://www.tadu.com/book/*/3*
-// @exclude        *://www.tadu.com/book/*/4*
-// @exclude        *://www.tadu.com/book/*/5*
-// @exclude        *://www.tadu.com/book/*/6*
-// @exclude        *://www.tadu.com/book/*/7*
-// @exclude        *://www.tadu.com/book/*/8*
-// @exclude        *://www.tadu.com/book/*/9*
 // @exclude        *://www.25zw.com/lastupdate/
 // @exclude        *://www.25zw.com/postdate/
 // @exclude        *://www.25zw.com/monthvisit/

@@ -1,4 +1,4 @@
-import { GfetchRequestOptions } from "../../lib/http";
+import { GfetchRequestOptions } from "./http";
 interface ReadabilityOptions {
     debug?: boolean;
     maxElemsToParse?: number;
