@@ -11,5 +11,6 @@ interface NextPageParseOptions {
     continueCondition: (_content: HTMLElement, nextLink: string) => boolean;
     enableCleanDOM?: boolean;
 }
-export declare function nextPageParse(options: NextPageParseOptions): Promise<ChapterParseObject>;
+export declare function nextPageParse({ chapterName, chapterUrl, charset, selector, contentPatch, getNextPage, continueCondition, enableCleanDOM, }: NextPageParseOptions): Promise<ChapterParseObject>;
+export declare function getSectionName(chapterElement: Element, sections: NodeListOf<Element>, getName: (sElem: Element) => string): string | null;
 export {};

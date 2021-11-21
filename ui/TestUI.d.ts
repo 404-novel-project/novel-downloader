@@ -69,6 +69,7 @@ declare const _default: Vue.DefineComponent<{}, {
     };
     isSeenChapter: (_chapter: Chapter) => boolean;
     isChapterFailed: (_chapter: Chapter) => boolean;
+    getChapterHtml: (_chapter: Chapter) => string | undefined;
 }, {}, {}, {}, Vue.ComponentOptionsMixin, Vue.ComponentOptionsMixin, Vue.EmitsOptions, string, Vue.VNodeProps & Vue.AllowedComponentProps & Vue.ComponentCustomProps, Readonly<{} & {} & {}>, {}>;
 export default _default;
 export declare const style: HTMLElement;

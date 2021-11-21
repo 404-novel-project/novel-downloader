@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.4.11.327
+// @version        4.4.11.330
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -50,14 +50,10 @@
 // @match          *://www.266ks.com/*_*/index*.html
 // @match          *://www.hetushu.com/book/*/index.html
 // @match          *://hetushu.com/book/*/index.html
-// @match          *://www.shouda8.com/*/
 // @match          *://www.shouda88.com/*/
 // @match          *://www.gebiqu.com/biquge_*/
-// @match          *://www.meegoq.com/book*.html
 // @match          *://www.viviyzw.com/book*.html
-// @match          *://www.xiaoshuodaquan.com/*/
-// @match          *://www.1pwx.com/*/
-// @match          *://1pwx.com/*/
+// @match          *://www.1pwx.com/*.htm
 // @match          *://www.81book.com/book/*/
 // @match          *://www.81zw.com/book/*/
 // @match          *://m.yuzhaige.cc/*/*/
@@ -77,7 +73,7 @@
 // @match          *://www.hongyeshuzhai.com/shuzhai/*/
 // @match          *://www.linovelib.com/novel/*/catalog
 // @match          *://www.luoqiuzw.com/book/*/
-// @match          *://www.yibige.la/*/
+// @match          *://www.yibige.cc/*/
 // @match          *://www.fushuwang.org/*/*/*/*.html
 // @match          *://www.fushuwang.org/*/*/*/*.html?*
 // @match          *://www.soxscc.net/*/
@@ -701,7 +697,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 // Module
-var code = "<div> <div id=\"test-page-div\"> <h2>元数据</h2> <table> <tbody> <tr v-for=\"(value, key) in metaData\"> <td>{{ key }}</td> <td v-html=\"getData(key, value)\"></td> </tr> </tbody> </table> <hr class=\"hr-edge-weak\"/> <h2>章节测试</h2> <div v-if=\"this.isSeenChapter(chapter)\"> <h4> <a v-bind:href=\"chapter.chapterUrl\" target=\"_blank\" rel=\"noopener noreferrer\">{{ chapter.chapterName }}</a> </h4> <div class=\"chapter\" v-html=\"chapter.contentHTML.outerHTML\"></div> </div> <div v-else> <p v-if=\"this.isChapterFailed(chapter)\">章节加载失败！</p> <p v-else>正在加载章节中……</p> </div> </div> </div> ";
+var code = "<div> <div id=\"test-page-div\"> <h2>元数据</h2> <table> <tbody> <tr v-for=\"(value, key) in metaData\"> <td>{{ key }}</td> <td v-html=\"getData(key, value)\"></td> </tr> </tbody> </table> <hr class=\"hr-edge-weak\"/> <h2>章节测试</h2> <div v-if=\"this.isSeenChapter(chapter)\"> <h4> <a v-bind:href=\"chapter.chapterUrl\" target=\"_blank\" rel=\"noopener noreferrer\">{{ chapter.chapterName }}</a> </h4> <div class=\"chapter\" v-html=\"getChapterHtml(chapter)\"></div> </div> <div v-else> <p v-if=\"this.isChapterFailed(chapter)\">章节加载失败！</p> <p v-else>正在加载章节中……</p> </div> </div> </div> ";
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (code);
 
@@ -858,8 +854,7 @@ exports.init = void 0;
 const misc_1 = __webpack_require__("./src/lib/misc.ts");
 function init() {
     window.downloading = false;
-    window.customStorage =
-        new misc_1.LocalStorageExpired();
+    window.customStorage = new misc_1.LocalStorageExpired();
     window.stopFlag = false;
 }
 exports.init = init;
@@ -1741,27 +1736,35 @@ function rm(selector, all = false, dom) {
 }
 exports.rm = rm;
 function rm2(content, filters) {
-    Array.from(content.childNodes).forEach((node) => {
-        let text = "";
-        if (node.nodeName === "#text") {
-            text = node.textContent ?? "";
-        }
-        else {
-            text = node.innerText;
-        }
-        for (const filter of filters) {
-            if (filter instanceof RegExp) {
-                if (filter.test(text)) {
-                    node.remove();
+    function doRemove(nodes) {
+        Array.from(nodes.childNodes).forEach((node) => {
+            let text = "";
+            if (node.nodeName === "#text") {
+                text = node.textContent ?? "";
+            }
+            else {
+                text = node.innerText;
+            }
+            if (text.length < 200 || node instanceof Text) {
+                for (const filter of filters) {
+                    if (filter instanceof RegExp) {
+                        if (filter.test(text)) {
+                            node.remove();
+                        }
+                    }
+                    if (typeof filter === "string") {
+                        if (text.includes(filter)) {
+                            node.remove();
+                        }
+                    }
                 }
             }
-            if (typeof filter === "string") {
-                if (text.includes(filter)) {
-                    node.remove();
-                }
+            else {
+                doRemove(node);
             }
-        }
-    });
+        });
+    }
+    doRemove(content);
 }
 exports.rm2 = rm2;
 function concurrencyRun(list, limit, asyncHandle) {
@@ -2287,18 +2290,18 @@ async function getRule() {
     let ruleClass;
     switch (host) {
         case "www.ciweimao.com": {
-            const { Ciweimao } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/ciweimao.ts"));
+            const { Ciweimao } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/original/ciweimao.ts"));
             ruleClass = Ciweimao;
             break;
         }
         case "www.uukanshu.com": {
-            const { Uukanshu } = await Promise.resolve().then(() => __webpack_require__("./src/rules/uukanshu.ts"));
+            const { Uukanshu } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/reprint/uukanshu.ts"));
             ruleClass = Uukanshu;
             break;
         }
         case "www.yruan.com": {
-            const { Yrun } = await Promise.resolve().then(() => __webpack_require__("./src/rules/yruan.ts"));
-            ruleClass = Yrun;
+            const { yruan } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge/type1.ts"));
+            ruleClass = yruan();
             break;
         }
         case "www.shuquge.com":
@@ -2316,30 +2319,29 @@ async function getRule() {
         case "www.lewenn.com":
         case "www.klxs.la":
         case "www.xkzw.org": {
-            const { Xkzw } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/xkzw.ts"));
+            const { Xkzw } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/reprint/xkzw.ts"));
             ruleClass = Xkzw;
             break;
         }
         case "www.266ks.com": {
-            const { c226ks } = await Promise.resolve().then(() => __webpack_require__("./src/rules/onePageWithoutSectionWithMultiIndexPage/226ks.ts"));
+            const { c226ks } = await Promise.resolve().then(() => __webpack_require__("./src/rules/onePageWithMultiIndexPage/226ks.ts"));
             ruleClass = c226ks();
             break;
         }
         case "book.sfacg.com": {
-            const { Sfacg } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/sfacg.ts"));
+            const { Sfacg } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/original/sfacg.ts"));
             ruleClass = Sfacg;
             break;
         }
         case "www.hetushu.com":
         case "hetushu.com": {
-            const { Hetushu } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/hetushu.ts"));
+            const { Hetushu } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/reprint/hetushu.ts"));
             ruleClass = Hetushu;
             break;
         }
-        case "www.shouda8.com":
         case "www.shouda88.com": {
-            const { Shouda8 } = await Promise.resolve().then(() => __webpack_require__("./src/rules/shouda8.ts"));
-            ruleClass = Shouda8;
+            const { shouda8 } = await Promise.resolve().then(() => __webpack_require__("./src/rules/onePage/shouda8.ts"));
+            ruleClass = shouda8();
             break;
         }
         case "www.gebiqu.com": {
@@ -2347,26 +2349,23 @@ async function getRule() {
             ruleClass = gebiqu();
             break;
         }
-        case "www.meegoq.com":
         case "www.viviyzw.com": {
-            const { Meegoq } = await Promise.resolve().then(() => __webpack_require__("./src/rules/meegoq.ts"));
-            ruleClass = Meegoq;
+            const { viviyzw } = await Promise.resolve().then(() => __webpack_require__("./src/rules/twoPage/viviyzw.ts"));
+            ruleClass = viviyzw();
             break;
         }
-        case "www.xiaoshuodaquan.com":
-        case "www.1pwx.com":
-        case "1pwx.com": {
-            const { Xiaoshuodaquan } = await Promise.resolve().then(() => __webpack_require__("./src/rules/xiaoshuodaquan.ts"));
-            ruleClass = Xiaoshuodaquan;
+        case "www.1pwx.com": {
+            const { xiaoshuodaquan } = await Promise.resolve().then(() => __webpack_require__("./src/rules/twoPage/1pwx.ts"));
+            ruleClass = xiaoshuodaquan();
             break;
         }
         case "book.qidian.com": {
-            const { Qidian } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/qidian.ts"));
+            const { Qidian } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/original/qidian.ts"));
             ruleClass = Qidian;
             break;
         }
         case "www.jjwxc.net": {
-            const { Jjwxc } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/jjwxc.ts"));
+            const { Jjwxc } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/original/jjwxc.ts"));
             ruleClass = Jjwxc;
             break;
         }
@@ -2378,6 +2377,8 @@ async function getRule() {
             ruleClass = common();
             break;
         }
+        case "www.fuguoduxs.com":
+        case "www.shubaowa.org":
         case "www.bz01.org": {
             const { common1 } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge/type1.ts"));
             ruleClass = common1();
@@ -2391,35 +2392,29 @@ async function getRule() {
         }
         case "book.zongheng.com":
         case "huayu.zongheng.com": {
-            const { Zongheng } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/zongheng.ts"));
+            const { Zongheng } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/original/zongheng.ts"));
             ruleClass = Zongheng;
             break;
         }
         case "www.17k.com": {
-            const { C17k } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/17k.ts"));
+            const { C17k } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/original/17k.ts"));
             ruleClass = C17k;
             break;
         }
         case "www.shuhai.com":
         case "mm.shuhai.com": {
-            const { Shuhai } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/shuhai.ts"));
+            const { Shuhai } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/original/shuhai.ts"));
             ruleClass = Shuhai;
             break;
         }
         case "www.gongzicp.com":
         case "gongzicp.com": {
-            const { Gongzicp } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/gongzicp.ts"));
+            const { Gongzicp } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/original/gongzicp.ts"));
             ruleClass = Gongzicp;
             break;
         }
-        case "m.yuzhaige.cc":
-        case "m.yushuge123.com": {
-            const { Yuzhaige } = await Promise.resolve().then(() => __webpack_require__("./src/rules/yuzhaige.ts"));
-            ruleClass = Yuzhaige;
-            break;
-        }
         case "www.linovel.net": {
-            const { Linovel } = await Promise.resolve().then(() => __webpack_require__("./src/rules/linovel.ts"));
+            const { Linovel } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/original/linovel.ts"));
             ruleClass = Linovel;
             break;
         }
@@ -2429,28 +2424,28 @@ async function getRule() {
             break;
         }
         case "www.tadu.com": {
-            const { Tadu } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/tadu.ts"));
+            const { Tadu } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/original/tadu.ts"));
             ruleClass = Tadu;
             break;
         }
         case "www.idejian.com": {
-            const { Idejian } = await Promise.resolve().then(() => __webpack_require__("./src/rules/idejian.ts"));
+            const { Idejian } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/reprint/idejian.ts"));
             ruleClass = Idejian;
             break;
         }
         case "www.qimao.com": {
-            const { Qimao } = await Promise.resolve().then(() => __webpack_require__("./src/rules/qimao.ts"));
+            const { Qimao } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/original/qimao.ts"));
             ruleClass = Qimao;
             break;
         }
         case "www.wenku8.net": {
-            const { Wenku8 } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/wenku8.ts"));
+            const { Wenku8 } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/reprint/wenku8.ts"));
             ruleClass = Wenku8;
             break;
         }
         case "manhua.dmzj.com":
         case "www.dmzj.com": {
-            const { Dmzj } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/dmzj.ts"));
+            const { Dmzj } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/reprint/dmzj.ts"));
             ruleClass = Dmzj;
             break;
         }
@@ -2470,13 +2465,13 @@ async function getRule() {
         case "www.xn--pxtr7m.net":
         case "sosadfun.link":
         case "www.sosadfun.link": {
-            const { Sosadfun } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/sosadfun.ts"));
+            const { Sosadfun } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/original/sosadfun.ts"));
             ruleClass = Sosadfun;
             break;
         }
         case "www.westnovel.com": {
-            const { Westnovel } = await Promise.resolve().then(() => __webpack_require__("./src/rules/westnovel.ts"));
-            ruleClass = Westnovel;
+            const { westnovel } = await Promise.resolve().then(() => __webpack_require__("./src/rules/onePage/westnovel.ts"));
+            ruleClass = westnovel();
             break;
         }
         case "www.mht.tw":
@@ -2491,7 +2486,7 @@ async function getRule() {
             break;
         }
         case "www.linovelib.com": {
-            const { Linovelib } = await Promise.resolve().then(() => __webpack_require__("./src/rules/linovelib.ts"));
+            const { Linovelib } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/reprint/linovelib.ts"));
             ruleClass = Linovelib;
             break;
         }
@@ -2500,13 +2495,13 @@ async function getRule() {
             ruleClass = luoqiuzw();
             break;
         }
-        case "www.yibige.la": {
-            const { Yibige } = await Promise.resolve().then(() => __webpack_require__("./src/rules/yibige.ts"));
-            ruleClass = Yibige;
+        case "www.yibige.cc": {
+            const { yibige } = await Promise.resolve().then(() => __webpack_require__("./src/rules/twoPage/yibige.ts"));
+            ruleClass = yibige();
             break;
         }
         case "www.fushuwang.org": {
-            const { Fushuwang } = await Promise.resolve().then(() => __webpack_require__("./src/rules/fushuwang.ts"));
+            const { Fushuwang } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/reprint/fushuwang.ts"));
             ruleClass = Fushuwang;
             break;
         }
@@ -2518,14 +2513,8 @@ async function getRule() {
         case "www.soxscc.cc":
         case "www.soshuwu.com":
         case "www.kubiji.net": {
-            const { Soxscc } = await Promise.resolve().then(() => __webpack_require__("./src/rules/soxscc.ts"));
+            const { Soxscc } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/reprint/soxscc.ts"));
             ruleClass = Soxscc;
-            break;
-        }
-        case "www.fuguoduxs.com":
-        case "www.shubaowa.org": {
-            const { Shubaowa } = await Promise.resolve().then(() => __webpack_require__("./src/rules/shubaowa.ts"));
-            ruleClass = Shubaowa;
             break;
         }
         case "www.xyqxs.cc": {
@@ -2534,12 +2523,12 @@ async function getRule() {
             break;
         }
         case "www.630shu.net": {
-            const { c630shu } = await Promise.resolve().then(() => __webpack_require__("./src/rules/onePageWithoutSection/630shu.ts"));
+            const { c630shu } = await Promise.resolve().then(() => __webpack_require__("./src/rules/onePage/630shu.ts"));
             ruleClass = c630shu;
             break;
         }
         case "www.qingoo.cn": {
-            const { Qingoo } = await Promise.resolve().then(() => __webpack_require__("./src/rules/qingoo.ts"));
+            const { Qingoo } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/original/qingoo.ts"));
             ruleClass = Qingoo;
             break;
         }
@@ -2549,7 +2538,7 @@ async function getRule() {
         case "trxs.cc":
         case "trxs123.com":
         case "jpxs123.com": {
-            const { trxs } = await Promise.resolve().then(() => __webpack_require__("./src/rules/onePageWithoutSection/trxs.ts"));
+            const { trxs } = await Promise.resolve().then(() => __webpack_require__("./src/rules/onePage/trxs.ts"));
             ruleClass = trxs();
             break;
         }
@@ -2557,23 +2546,23 @@ async function getRule() {
         case "www.tongrenquan.me":
         case "tongrenquan.me":
         case "tongrenquan.org": {
-            const { tongrenquan } = await Promise.resolve().then(() => __webpack_require__("./src/rules/onePageWithoutSection/trxs.ts"));
+            const { tongrenquan } = await Promise.resolve().then(() => __webpack_require__("./src/rules/onePage/trxs.ts"));
             ruleClass = tongrenquan();
             break;
         }
         case "www.imiaobige.com": {
-            const { Imiaobige } = await Promise.resolve().then(() => __webpack_require__("./src/rules/imiaobige.ts"));
-            ruleClass = Imiaobige;
+            const { imiaobige } = await Promise.resolve().then(() => __webpack_require__("./src/rules/twoPage/imiaobige.ts"));
+            ruleClass = imiaobige();
             break;
         }
         case "www.256wxc.com":
         case "www.256wenku.com": {
-            const { c256wxc } = await Promise.resolve().then(() => __webpack_require__("./src/rules/onePageWithoutSection/256wxc.ts"));
+            const { c256wxc } = await Promise.resolve().then(() => __webpack_require__("./src/rules/onePage/256wxc.ts"));
             ruleClass = c256wxc;
             break;
         }
         case regExpMatch(/lofter\.com$/): {
-            const { Lofter } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/lofter.ts"));
+            const { Lofter } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/original/lofter.ts"));
             ruleClass = Lofter;
             break;
         }
@@ -2583,18 +2572,24 @@ async function getRule() {
             break;
         }
         case "www.shubl.com": {
-            const { Shubl } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/shubl.ts"));
+            const { Shubl } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/original/shubl.ts"));
             ruleClass = Shubl;
             break;
         }
         case "www.ujxs.net": {
-            const { Ujxs } = await Promise.resolve().then(() => __webpack_require__("./src/rules/ujxs.ts"));
-            ruleClass = Ujxs;
+            const { ujxs } = await Promise.resolve().then(() => __webpack_require__("./src/rules/twoPage/ujxs.ts"));
+            ruleClass = ujxs();
             break;
         }
         case "m.haitangtxt.net": {
-            const { Haitangtxt } = await Promise.resolve().then(() => __webpack_require__("./src/rules/haitangtxt.ts"));
-            ruleClass = Haitangtxt;
+            const { haitangtxt } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/duplicate/haitangtxt.ts"));
+            ruleClass = haitangtxt();
+            break;
+        }
+        case "m.yuzhaige.cc":
+        case "m.yushuge123.com": {
+            const { yuzhaige } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/duplicate/haitangtxt.ts"));
+            ruleClass = yuzhaige();
             break;
         }
         case "ebook.longmabook.com":
@@ -2615,7 +2610,7 @@ async function getRule() {
         case "www.lvhtebook.com":
         case "jp.lvhtebook.com":
         case "www.htlvbooks.com": {
-            const { Longmabook } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/longmabook.ts"));
+            const { Longmabook } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/original/longmabook.ts"));
             ruleClass = Longmabook;
             break;
         }
@@ -2731,8 +2726,7 @@ class BaseRuleClass {
         try {
             if (!self.preHook())
                 return;
-            if (typeof window._book !==
-                "undefined" &&
+            if (typeof window._book !== "undefined" &&
                 window._book) {
                 self.book = window._book;
             }
@@ -3094,8 +3088,8 @@ function mkBiqugeClass(introDomPatch, contentPatch, concurrencyLimit, enableIgno
                     .trim(),
                 introDom: document.querySelector("#intro"),
                 introDomPatch,
-                coverUrl: document.querySelector("#fmimg > img")
-                    .src,
+                coverUrl: document.querySelector("#fmimg > img")?.src ??
+                    "",
                 chapterListSelector: "#list>dl",
                 charset: document.charset,
                 chapterParse: self.chapterParse,
@@ -3144,7 +3138,8 @@ function mkBiqugeClass2(introDomPatch, contentPatch, concurrencyLimit) {
                     .trim(),
                 introDom: document.querySelector(".intro"),
                 introDomPatch,
-                coverUrl: document.querySelector(".info > .cover > img").src,
+                coverUrl: document.querySelector(".info > .cover > img")
+                    ?.src ?? "",
                 chapterListSelector: ".listmain>dl",
                 charset: document.charset,
                 chapterParse: self.chapterParse,
@@ -3193,8 +3188,8 @@ function mkBiqugeClass3(introDomPatch, contentPatch, getNextPage, continueCondit
                     .trim(),
                 introDom: document.querySelector("#intro"),
                 introDomPatch,
-                coverUrl: document.querySelector("#fmimg > img")
-                    .src,
+                coverUrl: document.querySelector("#fmimg > img")?.src ??
+                    "",
                 chapterListSelector: "#list>dl",
                 charset: document.charset,
                 chapterParse: self.chapterParse,
@@ -3227,7 +3222,7 @@ exports.mkBiqugeClass3 = mkBiqugeClass3;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.xbiquge = exports.c25zw = exports.dijiubook = exports.tycqxs = exports.biquwx = exports.lwxs9 = exports.luoqiuzw = exports.gebiqu = exports.c81book = exports.common1 = exports.common = void 0;
+exports.yruan = exports.xbiquge = exports.c25zw = exports.dijiubook = exports.tycqxs = exports.biquwx = exports.lwxs9 = exports.luoqiuzw = exports.gebiqu = exports.c81book = exports.common1 = exports.common = void 0;
 const misc_1 = __webpack_require__("./src/lib/misc.ts");
 const template_1 = __webpack_require__("./src/rules/biquge/template.ts");
 const common = () => (0, template_1.mkBiqugeClass)((introDom) => introDom, (content) => content);
@@ -3311,6 +3306,11 @@ const xbiquge = () => (0, template_1.mkBiqugeClass)((introDom) => introDom, (con
     return content;
 });
 exports.xbiquge = xbiquge;
+const yruan = () => (0, template_1.mkBiqugeClass)((introDom) => {
+    (0, misc_1.rm2)(introDom, ["本站提示：各位书友要是觉得"]);
+    return introDom;
+}, (content) => content, 3);
+exports.yruan = yruan;
 
 
 /***/ }),
@@ -3417,501 +3417,13 @@ exports.xinwanben = xinwanben;
 
 /***/ }),
 
-/***/ "./src/rules/fushuwang.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Fushuwang = void 0;
-const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
-const http_1 = __webpack_require__("./src/lib/http.ts");
-const misc_1 = __webpack_require__("./src/lib/misc.ts");
-const main_1 = __webpack_require__("./src/main.ts");
-const rules_1 = __webpack_require__("./src/rules.ts");
-class Fushuwang extends rules_1.BaseRuleClass {
-    constructor() {
-        super();
-        this.imageMode = "TM";
-        this.charset = "GBK";
-        this.maxRunLimit = 5;
-        this.saveOptions = {
-            genChapterText: (chapterName, contentText) => {
-                return `${contentText}\n`;
-            },
-        };
-    }
-    async bookParse() {
-        const bookUrl = (document.location.origin + document.location.pathname).replace(/(_\d+)\.html$/, ".html");
-        const [bookname, author] = document.querySelector(".title_info > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(1) > h1:nth-child(1)").innerText.split("——");
-        const [introduction, introductionHTML] = [null, null];
-        const additionalMetadate = {};
-        const options = document.querySelectorAll("p.pageLink > select > option");
-        const urls = Array.from(options).map((option) => document.location.origin + option.getAttribute("value"));
-        const chapters = [];
-        for (let i = 0; i < urls.length; i++) {
-            const chapterUrl = urls[i];
-            const chapterName = `page${i}`;
-            const isVIP = false;
-            const isPaid = false;
-            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, i + 1, chapterName, isVIP, isPaid, null, null, null, this.chapterParse, this.charset, {});
-            chapters.push(chapter);
-        }
-        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
-        book.saveOptions = this.saveOptions;
-        return book;
-    }
-    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        const doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
-        const content = doc.querySelector("#text");
-        if (content) {
-            (0, misc_1.rm)("span", true, content);
-            (0, misc_1.rm)("p.pageLink", true, content);
-            (0, misc_1.rm)("script", true, content);
-            const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
-            return {
-                chapterName,
-                contentRaw: content,
-                contentText: text,
-                contentHTML: dom,
-                contentImages: images,
-                additionalMetadate: null,
-            };
-        }
-        else {
-            return {
-                chapterName,
-                contentRaw: null,
-                contentText: null,
-                contentHTML: null,
-                contentImages: null,
-                additionalMetadate: null,
-            };
-        }
-    }
-}
-exports.Fushuwang = Fushuwang;
-
-
-/***/ }),
-
-/***/ "./src/rules/haitangtxt.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Haitangtxt = void 0;
-const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
-const http_1 = __webpack_require__("./src/lib/http.ts");
-const misc_1 = __webpack_require__("./src/lib/misc.ts");
-const log_1 = __webpack_require__("./src/log.ts");
-const main_1 = __webpack_require__("./src/main.ts");
-const rules_1 = __webpack_require__("./src/rules.ts");
-const common_1 = __webpack_require__("./src/rules/lib/common.ts");
-const haitangtxtImageDecode_1 = __webpack_require__("./src/rules/lib/haitangtxtImageDecode.ts");
-class Haitangtxt extends rules_1.BaseRuleClass {
-    constructor() {
-        super();
-        this.imageMode = "TM";
-    }
-    async bookParse() {
-        const bookUrl = document.querySelector("div.currency_head > h1 > a").href;
-        const bookId = bookUrl.split("/").slice(-2, -1)[0];
-        log_1.log.debug(`[chapter]请求 ${bookUrl}`);
-        const dom = await (0, http_1.getHtmlDOM)(bookUrl, "UTF-8");
-        const bookname = dom.querySelector("div.cataloginfo > h3").innerText.trim();
-        const author = dom.querySelector(".infotype > p:nth-child(1) > a:nth-child(1)").innerText.trim();
-        const introDom = dom.querySelector(".intro");
-        const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom, (introDomI) => {
-            (0, misc_1.rm)("span:nth-child(1)", false, introDomI);
-            return introDomI;
-        });
-        const additionalMetadate = {};
-        const chapters = [];
-        const getMaxPageNumber = () => {
-            const pageDom = document.querySelector("div.page:nth-child(6)");
-            if (pageDom) {
-                const childNodes = Array.from(pageDom.childNodes);
-                const _maxPageNumber = childNodes
-                    .slice(-1)[0]
-                    .textContent?.match(/第\d+\/(\d+)页/);
-                if (_maxPageNumber) {
-                    return _maxPageNumber[1];
-                }
-            }
-        };
-        const getIndexUrls = () => {
-            const indexUrlsI = [];
-            const maxPageNumber = Number(getMaxPageNumber());
-            for (let i = 1; i <= maxPageNumber; i++) {
-                const indexUrl = [
-                    document.location.origin,
-                    document.location.pathname.split("/")[1],
-                    `${bookId}_${i}`,
-                ].join("/") + "/";
-                indexUrlsI.push(indexUrl);
-            }
-            return indexUrlsI;
-        };
-        const indexUrls = getIndexUrls();
-        let lis = [];
-        for (const indexUrl of indexUrls) {
-            log_1.log.debug(`[chapter]请求 ${indexUrl}`);
-            const doc = await (0, http_1.getHtmlDOM)(indexUrl, "UTF-8");
-            const ul = doc.querySelector("ul.chapters");
-            if (ul?.childElementCount) {
-                lis = lis.concat(Array.from(ul.children));
-            }
-        }
-        const chapterList = lis.filter((obj) => obj !== undefined);
-        let chapterNumber = 0;
-        for (const node of chapterList) {
-            chapterNumber++;
-            const a = node.firstElementChild;
-            const chapterName = a.innerText;
-            const chapterUrl = a.href;
-            const isVIP = false;
-            const isPaid = false;
-            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, null, null, null, this.chapterParse, "UTF-8", {});
-            chapters.push(chapter);
-        }
-        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
-        return book;
-    }
-    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        function contentAppend() {
-            function UpWz(m, i) {
-                let k = Math.ceil((i + 1) % code);
-                k = Math.ceil(m - k);
-                return k;
-            }
-            const _e = dom.getElementsByTagName("meta")[7].getAttribute("content");
-            const contentRaw = dom.querySelector("#articlecontent");
-            let codeurl;
-            let code;
-            const _codeurl = dom
-                .getElementsByTagName("script")[1]
-                .innerText.trim()
-                .match(/"(http.+)"/);
-            if (_codeurl) {
-                codeurl = _codeurl[1];
-                code = Number(new URL(codeurl).searchParams.get("code"));
-            }
-            if (_e) {
-                const e = atob(_e)
-                    .split(/[A-Z]+%/)
-                    .map((v) => Number(v));
-                const childNode = [];
-                if (Array.from(dom.querySelectorAll("script")).filter((s) => s.src.includes("/17mb/js/article.js")).length) {
-                    for (let i = 0; i < e.length; i++) {
-                        const k = UpWz(e[i], i);
-                        childNode[k] = contentRaw.childNodes[i];
-                    }
-                    for (const node of childNode) {
-                        if (node.nodeType !== 1) {
-                            continue;
-                        }
-                        if (!(node.innerText.includes("本章尚未完结,请") ||
-                            node.innerText.includes("本章已阅读完毕"))) {
-                            content.appendChild(node);
-                        }
-                    }
-                    return;
-                }
-            }
-            for (const node of Array.from(contentRaw.childNodes)) {
-                if (!(node.innerText.includes("本章尚未完结,请") ||
-                    node.innerText.includes("本章已阅读完毕"))) {
-                    content.appendChild(node);
-                }
-            }
-            return;
-        }
-        let nowUrl = chapterUrl;
-        let dom = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
-        const content = document.createElement("div");
-        let flag = false;
-        do {
-            contentAppend();
-            const nextLink = dom.querySelector(".novelbutton .p1.p3 > a:nth-child(1)").href;
-            if (new URL(nextLink).pathname.includes("_")) {
-                if (nextLink !== nowUrl) {
-                    flag = true;
-                }
-                else {
-                    log_1.log.error("网站页面出错，URL： " + nowUrl);
-                    flag = false;
-                }
-            }
-            else {
-                flag = false;
-            }
-            if (flag) {
-                nowUrl = nextLink;
-                dom = await (0, http_1.getHtmlDOM)(nextLink, charset);
-            }
-        } while (flag);
-        if (content) {
-            const { dom: oldDom, text: _text, images: finalImages, } = await (0, cleanDOM_1.cleanDOM)(content, "TM", { keepImageName: true });
-            const _newDom = document.createElement("div");
-            _newDom.innerHTML = (0, haitangtxtImageDecode_1.replaceHaitangtxtImage)(content.innerHTML);
-            const { dom: newDom, text: finalText, images, } = await (0, cleanDOM_1.cleanDOM)(_newDom, "TM", { keepImageName: true });
-            const fontStyleDom = document.createElement("style");
-            fontStyleDom.innerHTML = `.hide { display: none; }`;
-            oldDom.className = "hide";
-            const finalDom = document.createElement("div");
-            finalDom.appendChild(fontStyleDom);
-            finalDom.appendChild(oldDom);
-            finalDom.appendChild(newDom);
-            return {
-                chapterName,
-                contentRaw: content,
-                contentText: finalText,
-                contentHTML: finalDom,
-                contentImages: finalImages,
-                additionalMetadate: null,
-            };
-        }
-        else {
-            return {
-                chapterName,
-                contentRaw: null,
-                contentText: null,
-                contentHTML: null,
-                contentImages: null,
-                additionalMetadate: null,
-            };
-        }
-    }
-}
-exports.Haitangtxt = Haitangtxt;
-
-
-/***/ }),
-
-/***/ "./src/rules/idejian.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Idejian = void 0;
-const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
-const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
-const http_1 = __webpack_require__("./src/lib/http.ts");
-const misc_1 = __webpack_require__("./src/lib/misc.ts");
-const log_1 = __webpack_require__("./src/log.ts");
-const main_1 = __webpack_require__("./src/main.ts");
-const rules_1 = __webpack_require__("./src/rules.ts");
-const common_1 = __webpack_require__("./src/rules/lib/common.ts");
-class Idejian extends rules_1.BaseRuleClass {
-    constructor() {
-        super();
-        this.imageMode = "TM";
-        this.maxRunLimit = 5;
-    }
-    async bookParse() {
-        const bookUrl = document.location.href;
-        const _bookID = bookUrl.match(/\/(\d+)\/$/);
-        const bookID = _bookID && _bookID[1];
-        const bookname = document.querySelector(".detail_bkname > a").innerText.trim();
-        const _author = document.querySelector(".detail_bkauthor")
-            .childNodes[0];
-        let author = "佚名";
-        if (_author && _author.textContent) {
-            author = _author.textContent.trim();
-        }
-        const introDom = document.querySelector(".brief_con");
-        const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom);
-        const additionalMetadate = {};
-        const coverUrl = document.querySelector(".book_img > img").src;
-        if (coverUrl) {
-            (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
-                .then((coverClass) => {
-                additionalMetadate.cover = coverClass;
-            })
-                .catch((error) => log_1.log.error(error));
-        }
-        additionalMetadate.tags = Array.from(document.querySelectorAll("div.detail_bkgrade > span")).map((span) => span.innerText.trim());
-        const chapters = [];
-        const cos = document.querySelectorAll(".catelog_list > li > a");
-        let chapterNumber = 0;
-        for (const aElem of Array.from(cos)) {
-            chapterNumber++;
-            const chapterName = aElem.innerText;
-            const chapterUrl = aElem.href;
-            const isVIP = false;
-            const isPaid = false;
-            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, null, null, null, this.chapterParse, "UTF-8", { bookID });
-            chapters.push(chapter);
-        }
-        document.cookie = "";
-        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
-        return book;
-    }
-    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        const _chapterUrl = new URL(chapterUrl);
-        _chapterUrl.hostname = "m.idejian.com";
-        chapterUrl = _chapterUrl.toString();
-        const referBaseUrl = "https://m.idejian.com/catalog";
-        const _refer = new URL(referBaseUrl);
-        _refer.searchParams.set("bookId", options.bookID);
-        const referUrl = _refer.toString();
-        const fakeUA = "Mozilla/5.0 (iPhone; CPU iPhone OS 13_3_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.5 Mobile/15E148 Snapchat/10.77.5.59 (like Safari/604.1)";
-        if (document.cookie === "") {
-            await (0, http_1.ggetText)(referUrl, charset, { headers: { "User-Agent": fakeUA } });
-            await (0, http_1.ggetText)(chapterUrl, charset, {
-                headers: { "User-Agent": fakeUA, Referer: referUrl },
-            });
-        }
-        log_1.log.debug(`[Chapter]请求 ${chapterUrl}，Refer：${referUrl}`);
-        const doc = await (0, http_1.ggetHtmlDOM)(chapterUrl, charset, {
-            headers: { "User-Agent": fakeUA, Referer: referUrl },
-        });
-        chapterName = doc.querySelector(".text-title-1").innerText.trim();
-        let content;
-        if (doc.querySelectorAll("div.h5_mainbody").length === 1) {
-            content = doc.querySelector("div.h5_mainbody");
-        }
-        else {
-            content = doc.querySelectorAll("div.h5_mainbody")[1];
-        }
-        if (content) {
-            (0, misc_1.rm)("h1", false, content);
-            const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
-            return {
-                chapterName,
-                contentRaw: content,
-                contentText: text,
-                contentHTML: dom,
-                contentImages: images,
-                additionalMetadate: null,
-            };
-        }
-        else {
-            return {
-                chapterName,
-                contentRaw: null,
-                contentText: null,
-                contentHTML: null,
-                contentImages: null,
-                additionalMetadate: null,
-            };
-        }
-    }
-}
-exports.Idejian = Idejian;
-
-
-/***/ }),
-
-/***/ "./src/rules/imiaobige.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Imiaobige = void 0;
-const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
-const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
-const http_1 = __webpack_require__("./src/lib/http.ts");
-const log_1 = __webpack_require__("./src/log.ts");
-const main_1 = __webpack_require__("./src/main.ts");
-const rules_1 = __webpack_require__("./src/rules.ts");
-const common_1 = __webpack_require__("./src/rules/lib/common.ts");
-class Imiaobige extends rules_1.BaseRuleClass {
-    constructor() {
-        super();
-        this.imageMode = "TM";
-        this.charset = "UTF-8";
-    }
-    async bookParse() {
-        const bookUrl = document.location.href
-            .replace("/read/", "/novel/")
-            .replace(/\/$/, ".html");
-        const doc = await (0, http_1.getHtmlDOM)(bookUrl, this.charset);
-        const bookname = doc.querySelector(".booktitle > h1").innerText.trim();
-        const author = doc.querySelector("#author > a").innerText.trim();
-        const introDom = doc.querySelector("#bookintro");
-        const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom);
-        const additionalMetadate = {};
-        const coverUrl = doc.querySelector("#bookimg > img")
-            .src;
-        if (coverUrl) {
-            (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
-                .then((coverClass) => {
-                additionalMetadate.cover = coverClass;
-            })
-                .catch((error) => log_1.log.error(error));
-        }
-        const chapters = [];
-        const sections = document.querySelectorAll("#readerlists > ul");
-        let chapterNumber = 0;
-        for (let i = 0; i < sections.length; i++) {
-            const s = sections[i];
-            const sectionNumber = i + 1;
-            const sectionName = s.querySelector("h3").innerText
-                .replace(bookname, "")
-                .trim();
-            if (sectionName.includes("最新章节")) {
-                continue;
-            }
-            let sectionChapterNumber = 0;
-            const cs = s.querySelectorAll("li > a");
-            for (const a of Array.from(cs)) {
-                chapterNumber++;
-                sectionChapterNumber++;
-                const chapterName = a.innerText.trim();
-                const chapterUrl = a.href;
-                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, false, false, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, { bookname });
-                chapters.push(chapter);
-            }
-        }
-        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
-        return book;
-    }
-    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        const bookname = options.bookname;
-        const doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
-        chapterName = doc.querySelector(".title > h1:nth-child(1)").innerText.trim();
-        const content = doc.querySelector("#content");
-        if (content) {
-            content.innerHTML = content.innerHTML.replace(`<p>您可以在百度里搜索“${bookname} 妙笔阁(imiaobige.com)”查找最新章节！</p>`, "");
-            const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
-            return {
-                chapterName,
-                contentRaw: content,
-                contentText: text,
-                contentHTML: dom,
-                contentImages: images,
-                additionalMetadate: null,
-            };
-        }
-        else {
-            return {
-                chapterName,
-                contentRaw: null,
-                contentText: null,
-                contentHTML: null,
-                contentImages: null,
-                additionalMetadate: null,
-            };
-        }
-    }
-}
-exports.Imiaobige = Imiaobige;
-
-
-/***/ }),
-
 /***/ "./src/rules/lib/common.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.nextPageParse = exports.introDomHandle = void 0;
+exports.getSectionName = exports.nextPageParse = exports.introDomHandle = void 0;
 const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
 const http_1 = __webpack_require__("./src/lib/http.ts");
 const log_1 = __webpack_require__("./src/log.ts");
@@ -3928,8 +3440,7 @@ async function introDomHandle(introDom, domPatch) {
     }
 }
 exports.introDomHandle = introDomHandle;
-async function nextPageParse(options) {
-    const { chapterName, chapterUrl, charset, selector, contentPatch, getNextPage, continueCondition, enableCleanDOM, } = options;
+async function nextPageParse({ chapterName, chapterUrl, charset, selector, contentPatch, getNextPage, continueCondition, enableCleanDOM, }) {
     log_1.log.debug(`[Chapter]请求 ${chapterUrl}`);
     let nowUrl = chapterUrl;
     let doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
@@ -3982,6 +3493,24 @@ async function nextPageParse(options) {
     };
 }
 exports.nextPageParse = nextPageParse;
+function getSectionName(chapterElement, sections, getName) {
+    const _sections = Array.from(sections);
+    let sectionName = "";
+    for (const sElem of _sections) {
+        const position = chapterElement.compareDocumentPosition(sElem);
+        if (position & Node.DOCUMENT_POSITION_DISCONNECTED) {
+            return null;
+        }
+        if (position & Node.DOCUMENT_POSITION_PRECEDING) {
+            sectionName = getName(sElem);
+        }
+        if (position & Node.DOCUMENT_POSITION_FOLLOWING) {
+            break;
+        }
+    }
+    return sectionName;
+}
+exports.getSectionName = getSectionName;
 
 
 /***/ }),
@@ -4873,374 +4402,14 @@ const imageTable = {
 
 /***/ }),
 
-/***/ "./src/rules/linovel.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Linovel = void 0;
-const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
-const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
-const http_1 = __webpack_require__("./src/lib/http.ts");
-const log_1 = __webpack_require__("./src/log.ts");
-const main_1 = __webpack_require__("./src/main.ts");
-const rules_1 = __webpack_require__("./src/rules.ts");
-const common_1 = __webpack_require__("./src/rules/lib/common.ts");
-class Linovel extends rules_1.BaseRuleClass {
-    constructor() {
-        super();
-        this.imageMode = "TM";
-        this.concurrencyLimit = 5;
-    }
-    async bookParse() {
-        const bookUrl = document.location.href;
-        const bookname = document.querySelector(".book-title").innerText.trim();
-        const author = document.querySelector(".author-frame > .novelist > div:nth-child(3) > a").innerText.trim();
-        const introDom = document.querySelector(".about-text");
-        const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom);
-        const additionalMetadate = {};
-        const attachmentsUrlList = [];
-        const coverUrl = document.querySelector(".book-cover > a").href;
-        if (coverUrl) {
-            attachmentsUrlList.push(coverUrl);
-            (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
-                .then((coverClass) => {
-                additionalMetadate.cover = coverClass;
-            })
-                .catch((error) => log_1.log.error(error));
-        }
-        additionalMetadate.attachments = [];
-        const volumeCoverUrlList = Array.from(document.querySelectorAll(".section-list > .section > .volume-info > .volume-cover a")).map((a) => a.href);
-        for (const volumeCoverUrl of volumeCoverUrlList) {
-            if (!attachmentsUrlList.includes(volumeCoverUrl)) {
-                attachmentsUrlList.push(volumeCoverUrl);
-                (0, attachments_1.getImageAttachment)(volumeCoverUrl, this.imageMode, "volumeCover-")
-                    .then((volumeCoverObj) => {
-                    additionalMetadate.attachments?.push(volumeCoverObj);
-                })
-                    .catch((error) => log_1.log.error(error));
-            }
-        }
-        additionalMetadate.tags = Array.from(document.querySelectorAll("div.meta-info > div.book-cats.clearfix > a")).map((a) => a.innerText.trim());
-        const chapters = [];
-        const sections = document.querySelectorAll(".section-list > .section");
-        let chapterNumber = 0;
-        for (let i = 0; i < sections.length; i++) {
-            const s = sections[i];
-            const sectionNumber = i + 1;
-            const sectionName = s.querySelector(".volume-info > h2.volume-title > a").innerText.trim();
-            let sectionChapterNumber = 0;
-            const cs = s.querySelectorAll(".chapter-list > .text-content-actual div.chapter");
-            for (const div of Array.from(cs)) {
-                const a = div.firstElementChild;
-                chapterNumber++;
-                sectionChapterNumber++;
-                const chapterName = a.innerText.trim();
-                const chapterUrl = a.href;
-                const isVIP = () => {
-                    if (div.className.includes("lock")) {
-                        if (div.className.includes("unlock")) {
-                            return false;
-                        }
-                        else {
-                            return true;
-                        }
-                    }
-                    return false;
-                };
-                const isPaid = () => {
-                    return false;
-                };
-                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), isPaid(), sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, "UTF-8", {});
-                const isLogin = () => {
-                    return false;
-                };
-                if (isVIP() && !(isLogin() && chapter.isPaid)) {
-                    chapter.status = main_1.Status.aborted;
-                }
-                chapters.push(chapter);
-            }
-        }
-        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
-        return book;
-    }
-    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        async function publicChapter() {
-            const doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
-            const ChapterName = doc.querySelector(".article-title").innerText.trim();
-            const content = doc.querySelector(".article-text");
-            if (content) {
-                const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
-                return {
-                    chapterName: ChapterName,
-                    contentRaw: content,
-                    contentText: text,
-                    contentHTML: dom,
-                    contentImages: images,
-                    additionalMetadate: null,
-                };
-            }
-            else {
-                return {
-                    chapterName: ChapterName,
-                    contentRaw: null,
-                    contentText: null,
-                    contentHTML: null,
-                    contentImages: null,
-                    additionalMetadate: null,
-                };
-            }
-        }
-        async function vipChapter() {
-            return {
-                chapterName,
-                contentRaw: null,
-                contentText: null,
-                contentHTML: null,
-                contentImages: null,
-                additionalMetadate: null,
-            };
-        }
-        if (isVIP) {
-            return vipChapter();
-        }
-        else {
-            return publicChapter();
-        }
-    }
-}
-exports.Linovel = Linovel;
-
-
-/***/ }),
-
-/***/ "./src/rules/linovelib.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Linovelib = void 0;
-const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
-const http_1 = __webpack_require__("./src/lib/http.ts");
-const misc_1 = __webpack_require__("./src/lib/misc.ts");
-const log_1 = __webpack_require__("./src/log.ts");
-const main_1 = __webpack_require__("./src/main.ts");
-const rules_1 = __webpack_require__("./src/rules.ts");
-const common_1 = __webpack_require__("./src/rules/lib/common.ts");
-class Linovelib extends rules_1.BaseRuleClass {
-    constructor() {
-        super();
-        this.imageMode = "TM";
-    }
-    async bookParse() {
-        const bookUrl = document.location.href.replace(/\/catalog$/, ".html");
-        const bookname = document.querySelector(".book-meta > h1").innerText.trim();
-        const author = document.querySelector(".book-meta > p:nth-child(2) > span:nth-child(1) > a:nth-child(2)").innerText.trim();
-        const doc = await (0, http_1.getHtmlDOM)(bookUrl, undefined);
-        const introDom = doc.querySelector(".book-dec > p:nth-child(1)");
-        const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom);
-        const additionalMetadate = {};
-        const coverUrl = doc.querySelector(".book-img > img")
-            .src;
-        if (coverUrl) {
-            (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
-                .then((coverClass) => {
-                additionalMetadate.cover = coverClass;
-            })
-                .catch((error) => log_1.log.error(error));
-        }
-        additionalMetadate.tags = Array.from(doc.querySelectorAll(".book-label a")).map((a) => a.innerText.trim());
-        const chapters = [];
-        const chapterList = document.querySelector(".chapter-list");
-        if (!chapterList) {
-            throw new Error("获取章节失败！");
-        }
-        const liList = chapterList.children;
-        let chapterNumber = 0;
-        let sectionNumber = 0;
-        let sectionName = null;
-        let sectionChapterNumber = 0;
-        for (const node of Array.from(liList)) {
-            const nodeNmae = node.nodeName.toLowerCase();
-            if (nodeNmae === "div") {
-                sectionNumber++;
-                sectionChapterNumber = 0;
-                sectionName = node.innerText.trim();
-            }
-            else if (nodeNmae === "li") {
-                chapterNumber++;
-                sectionChapterNumber++;
-                const a = node.firstElementChild;
-                const isVIP = false;
-                const chapterName = a.innerText.trim();
-                const chapterUrl = a.href;
-                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, null, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, "UTF-8", {});
-                if (chapterUrl.startsWith("javascript")) {
-                    chapter.status = main_1.Status.aborted;
-                }
-                chapters.push(chapter);
-            }
-        }
-        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
-        return book;
-    }
-    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        return (0, common_1.nextPageParse)({
-            chapterName,
-            chapterUrl,
-            charset,
-            selector: "#TextContent",
-            contentPatch: (_content, doc) => {
-                const ss = Array.from(doc.querySelectorAll("script")).find((s) => s.innerHTML.includes('document.getElementById("chapter_last")'));
-                if (ss) {
-                    const _domNr = ss.innerText.trim().match(/let dom_nr = '(.+)';/);
-                    if (_domNr) {
-                        const domNr = _domNr[1];
-                        doc.getElementById("chapter_last").innerHTML =
-                            domNr;
-                    }
-                }
-                (0, misc_1.rm)(".tp", true, _content);
-                (0, misc_1.rm)(".bd", true, _content);
-                return _content;
-            },
-            getNextPage: (doc) => doc.querySelector(".mlfy_page > a:nth-child(5)")
-                .href,
-            continueCondition: (_content, nextLink) => new URL(nextLink).pathname.includes("_"),
-        });
-    }
-}
-exports.Linovelib = Linovelib;
-
-
-/***/ }),
-
-/***/ "./src/rules/meegoq.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Meegoq = void 0;
-const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
-const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
-const http_1 = __webpack_require__("./src/lib/http.ts");
-const misc_1 = __webpack_require__("./src/lib/misc.ts");
-const log_1 = __webpack_require__("./src/log.ts");
-const main_1 = __webpack_require__("./src/main.ts");
-const rules_1 = __webpack_require__("./src/rules.ts");
-const common_1 = __webpack_require__("./src/rules/lib/common.ts");
-class Meegoq extends rules_1.BaseRuleClass {
-    constructor() {
-        super();
-        this.imageMode = "TM";
-        this.concurrencyLimit = 3;
-        this.charset = "GBK";
-    }
-    async bookParse() {
-        const bookUrl = document.location.href.replace("/book", "/info");
-        const dom = await (0, http_1.getHtmlDOM)(bookUrl, "GBK");
-        const author = dom.querySelector("article.info > p.detail.pt20 > i:nth-child(1) > a").innerText.trim();
-        const bookname = dom.querySelector("article.info > header > h1").innerText.trim();
-        const introDom = dom.querySelector("article.info > p.desc");
-        const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom, (introDomI) => {
-            (0, misc_1.rm)("b", false, introDomI);
-            return introDomI;
-        });
-        const additionalMetadate = {};
-        const coverUrl = dom.querySelector("article.info > div.cover > img").src;
-        if (coverUrl) {
-            (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
-                .then((coverClass) => {
-                additionalMetadate.cover = coverClass;
-            })
-                .catch((error) => log_1.log.error(error));
-        }
-        const chapters = [];
-        const ul = document.querySelector("ul.mulu");
-        if (ul?.childElementCount) {
-            const ulc = Array.from(ul.children);
-            if (Array.from(ulc[0].classList).includes("volumn") &&
-                ulc[0].innerText.match(/最新.章/)) {
-                for (let i = 0; i < ul?.childElementCount; i++) {
-                    if (i !== 0 &&
-                        Array.from(ulc[i].classList).includes("volumn") &&
-                        ulc[i].innerText.trim() !== "全部章节") {
-                        delete ulc[0];
-                        break;
-                    }
-                    delete ulc[i];
-                }
-            }
-            const chapterList = ulc.filter((obj) => obj !== undefined);
-            let chapterNumber = 0;
-            let sectionNumber = 0;
-            let sectionName = null;
-            let sectionChapterNumber = 0;
-            for (const li of chapterList) {
-                if (Array.from(li.classList).includes("volumn")) {
-                    sectionNumber++;
-                    sectionChapterNumber = 0;
-                    sectionName = li.innerText.trim();
-                }
-                else {
-                    chapterNumber++;
-                    sectionChapterNumber++;
-                    const a = li.firstElementChild;
-                    const chapterName = a.innerText;
-                    const chapterUrl = a.href;
-                    const isVIP = false;
-                    const isPaid = false;
-                    const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, {});
-                    chapters.push(chapter);
-                }
-            }
-        }
-        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
-        return book;
-    }
-    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        const doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
-        chapterName = doc.querySelector("article > header > h1").innerText.trim();
-        const content = doc.querySelector("#content");
-        if (content) {
-            const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
-            return {
-                chapterName,
-                contentRaw: content,
-                contentText: text,
-                contentHTML: dom,
-                contentImages: images,
-                additionalMetadate: null,
-            };
-        }
-        else {
-            return {
-                chapterName,
-                contentRaw: null,
-                contentText: null,
-                contentHTML: null,
-                contentImages: null,
-                additionalMetadate: null,
-            };
-        }
-    }
-}
-exports.Meegoq = Meegoq;
-
-
-/***/ }),
-
-/***/ "./src/rules/onePageWithoutSection/256wxc.ts":
+/***/ "./src/rules/onePage/256wxc.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.c256wxc = void 0;
-const template_1 = __webpack_require__("./src/rules/onePageWithoutSection/template.ts");
+const template_1 = __webpack_require__("./src/rules/onePage/template.ts");
 exports.c256wxc = (0, template_1.mkRuleClass)({
     bookUrl: document.location.href,
     bookname: document.querySelector(".art_tit").innerText.trim(),
@@ -5259,14 +4428,14 @@ exports.c256wxc = (0, template_1.mkRuleClass)({
 
 /***/ }),
 
-/***/ "./src/rules/onePageWithoutSection/630shu.ts":
+/***/ "./src/rules/onePage/630shu.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.c630shu = void 0;
-const template_1 = __webpack_require__("./src/rules/onePageWithoutSection/template.ts");
+const template_1 = __webpack_require__("./src/rules/onePage/template.ts");
 exports.c630shu = (0, template_1.mkRuleClass)({
     bookUrl: document.location.href,
     bookname: document.querySelector("#info > h1").innerText.trim(),
@@ -5285,7 +4454,44 @@ exports.c630shu = (0, template_1.mkRuleClass)({
 
 /***/ }),
 
-/***/ "./src/rules/onePageWithoutSection/template.ts":
+/***/ "./src/rules/onePage/shouda8.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.shouda8 = void 0;
+const misc_1 = __webpack_require__("./src/lib/misc.ts");
+const template_1 = __webpack_require__("./src/rules/onePage/template.ts");
+const shouda8 = () => (0, template_1.mkRuleClass)({
+    bookUrl: document.location.href,
+    bookname: document.querySelector(".bread-crumbs > li:nth-child(4)").innerText.trim(),
+    author: document.querySelector("div.bookname > h1 > em").innerText
+        .replace("作者：", "")
+        .trim(),
+    introDom: document.querySelector(".intro"),
+    introDomPatch: (introDom) => {
+        (0, misc_1.rm)(".book_keywords", true, introDom);
+        (0, misc_1.rm)("script", true, introDom);
+        return introDom;
+    },
+    coverUrl: document.querySelector(".pic > img:nth-child(1)").src,
+    aList: document.querySelectorAll(".link_14 dd > a"),
+    sections: document.querySelectorAll(".link_14 dt > b"),
+    getName: (sElem) => sElem.innerText.trim(),
+    getContent: (doc) => doc.querySelector("#content"),
+    contentPatch: (content) => {
+        const ads = ["手打吧更新速度最快。", "www.shouda88.com"];
+        (0, misc_1.rm2)(content, ads);
+        return content;
+    },
+});
+exports.shouda8 = shouda8;
+
+
+/***/ }),
+
+/***/ "./src/rules/onePage/template.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
@@ -5299,12 +4505,14 @@ const log_1 = __webpack_require__("./src/log.ts");
 const main_1 = __webpack_require__("./src/main.ts");
 const rules_1 = __webpack_require__("./src/rules.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
-function mkRuleClass(optionis) {
-    const { bookUrl, bookname, author, introDom, introDomPatch, coverUrl, aList: cos, getContentFromUrl, getContent, contentPatch, } = optionis;
+function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, coverUrl, aList, sections, getName: _getSectionName, postHook, getContentFromUrl, getContent, contentPatch, concurrencyLimit, }) {
     return class extends rules_1.BaseRuleClass {
         constructor() {
             super();
             this.imageMode = "TM";
+            if (concurrencyLimit) {
+                this.concurrencyLimit = concurrencyLimit;
+            }
         }
         async bookParse() {
             const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom, introDomPatch);
@@ -5318,14 +4526,37 @@ function mkRuleClass(optionis) {
             }
             const chapters = [];
             let chapterNumber = 0;
-            for (const aElem of Array.from(cos)) {
-                chapterNumber++;
+            let sectionNumber = 0;
+            let sectionChapterNumber = 0;
+            let sectionName = null;
+            let hasSection = false;
+            if (sections &&
+                sections instanceof NodeList &&
+                typeof _getSectionName === "function") {
+                hasSection = true;
+            }
+            for (const aElem of Array.from(aList)) {
                 const chapterName = aElem.innerText;
                 const chapterUrl = aElem.href;
+                if (hasSection) {
+                    const _sectionName = (0, common_1.getSectionName)(aElem, sections, _getSectionName);
+                    if (_sectionName !== sectionName) {
+                        sectionName = _sectionName;
+                        sectionNumber++;
+                        sectionChapterNumber = 0;
+                    }
+                }
+                chapterNumber++;
+                sectionChapterNumber++;
                 const isVIP = false;
                 const isPaid = false;
-                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, null, null, null, this.chapterParse, this.charset, { bookname });
-                chapters.push(chapter);
+                let chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, hasSection ? sectionNumber : null, hasSection ? sectionChapterNumber : null, this.chapterParse, this.charset, { bookname });
+                if (typeof postHook === "function") {
+                    chapter = postHook(chapter);
+                }
+                if (chapter) {
+                    chapters.push(chapter);
+                }
             }
             const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
             return book;
@@ -5367,14 +4598,14 @@ exports.mkRuleClass = mkRuleClass;
 
 /***/ }),
 
-/***/ "./src/rules/onePageWithoutSection/trxs.ts":
+/***/ "./src/rules/onePage/trxs.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.tongrenquan = exports.trxs = void 0;
-const template_1 = __webpack_require__("./src/rules/onePageWithoutSection/template.ts");
+const template_1 = __webpack_require__("./src/rules/onePage/template.ts");
 const trxs = () => (0, template_1.mkRuleClass)({
     bookUrl: document.location.href,
     bookname: document.querySelector(".infos > h1").innerText
@@ -5409,7 +4640,39 @@ exports.tongrenquan = tongrenquan;
 
 /***/ }),
 
-/***/ "./src/rules/onePageWithoutSectionWithMultiIndexPage/226ks.ts":
+/***/ "./src/rules/onePage/westnovel.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.westnovel = void 0;
+const misc_1 = __webpack_require__("./src/lib/misc.ts");
+const template_1 = __webpack_require__("./src/rules/onePage/template.ts");
+const westnovel = () => (0, template_1.mkRuleClass)({
+    bookUrl: document.location.href,
+    bookname: document.querySelector(".btitle > h1 > a").innerText.trim(),
+    author: document.querySelector(".btitle > em:nth-child(2)").innerText
+        .replace("作者：", "")
+        .trim(),
+    introDom: document.querySelector(".intro-p > p:nth-child(1)"),
+    introDomPatch: (introDom) => introDom,
+    coverUrl: document.querySelector(".img-img")?.src,
+    aList: document.querySelectorAll(".chapterlist > dd > a"),
+    getContent: (doc) => doc.querySelector("#BookText"),
+    contentPatch: (content) => {
+        (0, misc_1.rm)("div.ads", true, content);
+        (0, misc_1.rm)("div.link", true, content);
+        (0, misc_1.rm)("h4", true, content);
+        return content;
+    },
+});
+exports.westnovel = westnovel;
+
+
+/***/ }),
+
+/***/ "./src/rules/onePageWithMultiIndexPage/226ks.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
@@ -5418,7 +4681,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.c226ks = void 0;
 const misc_1 = __webpack_require__("./src/lib/misc.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
-const template_1 = __webpack_require__("./src/rules/onePageWithoutSectionWithMultiIndexPage/template.ts");
+const template_1 = __webpack_require__("./src/rules/onePageWithMultiIndexPage/template.ts");
 const c226ks = () => (0, template_1.mkRuleClass)({
     bookUrl: document.location.href.replace(/index_\d+\.html/, "index_1.html"),
     bookname: document.querySelector(".info > .top > h1").innerText.trim(),
@@ -5460,7 +4723,7 @@ exports.c226ks = c226ks;
 
 /***/ }),
 
-/***/ "./src/rules/onePageWithoutSectionWithMultiIndexPage/template.ts":
+/***/ "./src/rules/onePageWithMultiIndexPage/template.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
@@ -5475,12 +4738,14 @@ const main_1 = __webpack_require__("./src/main.ts");
 const rules_1 = __webpack_require__("./src/rules.ts");
 const setting_1 = __webpack_require__("./src/setting.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
-function mkRuleClass(optionis) {
-    const { bookUrl, bookname, author, introDom, introDomPatch, coverUrl, getIndexUrls, getAList, getContentFromUrl, getContent, contentPatch, } = optionis;
+function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, coverUrl, getIndexUrls, getAList, postHook, getContentFromUrl, getContent, contentPatch, concurrencyLimit, }) {
     return class extends rules_1.BaseRuleClass {
         constructor() {
             super();
             this.imageMode = "TM";
+            if (concurrencyLimit) {
+                this.concurrencyLimit = concurrencyLimit;
+            }
         }
         async bookParse() {
             const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom, introDomPatch);
@@ -5494,7 +4759,7 @@ function mkRuleClass(optionis) {
             }
             const indexUrls = getIndexUrls();
             const getIndexDom = (url, retry) => {
-                return (0, http_1.getHtmlDOM)(url)
+                return (0, http_1.getHtmlDOM)(url, this.charset)
                     .then((dom) => dom)
                     .catch((error) => {
                     log_1.log.error(error);
@@ -5531,8 +4796,13 @@ function mkRuleClass(optionis) {
                 const chapterUrl = aElem.href;
                 const isVIP = false;
                 const isPaid = false;
-                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, null, null, null, this.chapterParse, this.charset, { bookname });
-                chapters.push(chapter);
+                let chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, null, null, null, this.chapterParse, this.charset, { bookname });
+                if (typeof postHook === "function") {
+                    chapter = postHook(chapter);
+                }
+                if (chapter) {
+                    chapters.push(chapter);
+                }
             }
             const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
             return book;
@@ -5574,85 +4844,183 @@ exports.mkRuleClass = mkRuleClass;
 
 /***/ }),
 
-/***/ "./src/rules/qimao.ts":
+/***/ "./src/rules/special/duplicate/haitangtxt.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Qimao = void 0;
-const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
+exports.yuzhaige = exports.haitangtxt = void 0;
 const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
 const http_1 = __webpack_require__("./src/lib/http.ts");
+const misc_1 = __webpack_require__("./src/lib/misc.ts");
 const log_1 = __webpack_require__("./src/log.ts");
 const main_1 = __webpack_require__("./src/main.ts");
 const rules_1 = __webpack_require__("./src/rules.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
-class Qimao extends rules_1.BaseRuleClass {
-    constructor() {
-        super();
-        this.imageMode = "TM";
-    }
-    async bookParse() {
-        const bookUrl = document.location.href;
-        const bookname = document.querySelector("h2.tit").innerText.trim();
-        const author = document.querySelector(".p-name > a").innerHTML.trim();
-        const introDom = document.querySelector(".book-introduction .article");
-        const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom);
-        const additionalMetadate = {};
-        const coverUrl = document.querySelector(".poster-pic > img").src;
-        if (coverUrl) {
-            (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
-                .then((coverClass) => {
-                additionalMetadate.cover = coverClass;
-            })
-                .catch((error) => log_1.log.error(error));
+const haitangtxtImageDecode_1 = __webpack_require__("./src/rules/lib/haitangtxtImageDecode.ts");
+const yuzhaigeImageDecode_1 = __webpack_require__("./src/rules/lib/yuzhaigeImageDecode.ts");
+function getClass(replaceFunction) {
+    return class extends rules_1.BaseRuleClass {
+        constructor() {
+            super();
+            this.imageMode = "TM";
         }
-        additionalMetadate.tags = Array.from(document.querySelectorAll(".qm-tags > a")).map((a) => a.innerText.trim());
-        const chapters = [];
-        const cos = document.querySelectorAll('.chapter-directory > dd > div[sort-type="ascending"] a');
-        let chapterNumber = 0;
-        for (const aElem of Array.from(cos)) {
-            chapterNumber++;
-            const chapterName = aElem.innerText;
-            const chapterUrl = aElem.href;
-            const isVIP = () => {
-                if (aElem.childElementCount) {
-                    return true;
+        async bookParse() {
+            const bookUrl = document.querySelector("div.currency_head > h1 > a").href;
+            const bookId = bookUrl.split("/").slice(-2, -1)[0];
+            log_1.log.debug(`[chapter]请求 ${bookUrl}`);
+            const dom = await (0, http_1.getHtmlDOM)(bookUrl, "UTF-8");
+            const bookname = dom.querySelector("div.cataloginfo > h3").innerText.trim();
+            const author = dom.querySelector(".infotype > p:nth-child(1) > a:nth-child(1)").innerText.trim();
+            const introDom = dom.querySelector(".intro");
+            const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom, (introDomI) => {
+                (0, misc_1.rm)("span:nth-child(1)", false, introDomI);
+                return introDomI;
+            });
+            const additionalMetadate = {};
+            const chapters = [];
+            const getMaxPageNumber = () => {
+                const pageDom = document.querySelector("div.page:nth-child(6)");
+                if (pageDom) {
+                    const childNodes = Array.from(pageDom.childNodes);
+                    const _maxPageNumber = childNodes
+                        .slice(-1)[0]
+                        .textContent?.match(/第\d+\/(\d+)页/);
+                    if (_maxPageNumber) {
+                        return _maxPageNumber[1];
+                    }
+                }
+            };
+            const getIndexUrls = () => {
+                const indexUrlsI = [];
+                const maxPageNumber = Number(getMaxPageNumber());
+                for (let i = 1; i <= maxPageNumber; i++) {
+                    const indexUrl = [
+                        document.location.origin,
+                        document.location.pathname.split("/")[1],
+                        `${bookId}_${i}`,
+                    ].join("/") + "/";
+                    indexUrlsI.push(indexUrl);
+                }
+                return indexUrlsI;
+            };
+            const indexUrls = getIndexUrls();
+            let lis = [];
+            for (const indexUrl of indexUrls) {
+                log_1.log.debug(`[chapter]请求 ${indexUrl}`);
+                const doc = await (0, http_1.getHtmlDOM)(indexUrl, "UTF-8");
+                const ul = doc.querySelector("ul.chapters");
+                if (ul?.childElementCount) {
+                    lis = lis.concat(Array.from(ul.children));
+                }
+            }
+            const chapterList = lis.filter((obj) => obj !== undefined);
+            let chapterNumber = 0;
+            for (const node of chapterList) {
+                chapterNumber++;
+                const a = node.firstElementChild;
+                const chapterName = a.innerText;
+                const chapterUrl = a.href;
+                const isVIP = false;
+                const isPaid = false;
+                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, null, null, null, this.chapterParse, "UTF-8", {});
+                chapters.push(chapter);
+            }
+            const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+            return book;
+        }
+        async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+            function contentAppend() {
+                function UpWz(m, i) {
+                    let k = Math.ceil((i + 1) % code);
+                    k = Math.ceil(m - k);
+                    return k;
+                }
+                const _e = dom.getElementsByTagName("meta")[7].getAttribute("content");
+                const contentRaw = dom.querySelector("#articlecontent");
+                let codeurl;
+                let code;
+                const _codeurl = dom
+                    .getElementsByTagName("script")[1]
+                    .innerText.trim()
+                    .match(/"(http.+)"/);
+                if (_codeurl) {
+                    codeurl = _codeurl[1];
+                    code = Number(new URL(codeurl).searchParams.get("code"));
+                }
+                if (_e) {
+                    const e = atob(_e)
+                        .split(/[A-Z]+%/)
+                        .map((v) => Number(v));
+                    const childNode = [];
+                    if (Array.from(dom.querySelectorAll("script")).filter((s) => s.src.includes("/17mb/js/article.js")).length) {
+                        for (let i = 0; i < e.length; i++) {
+                            const k = UpWz(e[i], i);
+                            childNode[k] = contentRaw.childNodes[i];
+                        }
+                        for (const node of childNode) {
+                            if (node.nodeType !== 1) {
+                                continue;
+                            }
+                            if (!(node.innerText.includes("本章尚未完结,请") ||
+                                node.innerText.includes("本章已阅读完毕"))) {
+                                content.appendChild(node);
+                            }
+                        }
+                        return;
+                    }
+                }
+                for (const node of Array.from(contentRaw.childNodes)) {
+                    if (!(node.innerText.includes("本章尚未完结,请") ||
+                        node.innerText.includes("本章已阅读完毕"))) {
+                        content.appendChild(node);
+                    }
+                }
+                return;
+            }
+            let nowUrl = chapterUrl;
+            let dom = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
+            const content = document.createElement("div");
+            let flag = false;
+            do {
+                contentAppend();
+                const nextLink = dom.querySelector(".novelbutton .p1.p3 > a:nth-child(1)").href;
+                if (new URL(nextLink).pathname.includes("_")) {
+                    if (nextLink !== nowUrl) {
+                        flag = true;
+                    }
+                    else {
+                        log_1.log.error("网站页面出错，URL： " + nowUrl);
+                        flag = false;
+                    }
                 }
                 else {
-                    return false;
+                    flag = false;
                 }
-            };
-            const isPaid = () => {
-                return false;
-            };
-            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), isPaid(), null, null, null, this.chapterParse, "UTF-8", {});
-            const isLogin = () => {
-                return false;
-            };
-            if (isVIP() && !(isLogin() && chapter.isPaid)) {
-                chapter.status = main_1.Status.aborted;
-            }
-            chapters.push(chapter);
-        }
-        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
-        return book;
-    }
-    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        async function publicChapter() {
-            log_1.log.debug(`[Chapter]请求 ${chapterUrl}`);
-            const doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
-            chapterName = doc.querySelector(".title").innerText.trim();
-            const content = doc.querySelector(".article");
+                if (flag) {
+                    nowUrl = nextLink;
+                    dom = await (0, http_1.getHtmlDOM)(nextLink, charset);
+                }
+            } while (flag);
             if (content) {
-                const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+                const { dom: oldDom, text: _text, images: finalImages, } = await (0, cleanDOM_1.cleanDOM)(content, "TM", { keepImageName: true });
+                const _newDom = document.createElement("div");
+                _newDom.innerHTML = replaceFunction(content.innerHTML);
+                const { dom: newDom, text: finalText, images, } = await (0, cleanDOM_1.cleanDOM)(_newDom, "TM", { keepImageName: true });
+                const fontStyleDom = document.createElement("style");
+                fontStyleDom.innerHTML = `.hide { display: none; }`;
+                oldDom.className = "hide";
+                const finalDom = document.createElement("div");
+                finalDom.appendChild(fontStyleDom);
+                finalDom.appendChild(oldDom);
+                finalDom.appendChild(newDom);
                 return {
                     chapterName,
                     contentRaw: content,
-                    contentText: text,
-                    contentHTML: dom,
-                    contentImages: images,
+                    contentText: finalText,
+                    contentHTML: finalDom,
+                    contentImages: finalImages,
                     additionalMetadate: null,
                 };
             }
@@ -5667,409 +5035,17 @@ class Qimao extends rules_1.BaseRuleClass {
                 };
             }
         }
-        async function vipChapter() {
-            return {
-                chapterName,
-                contentRaw: null,
-                contentText: null,
-                contentHTML: null,
-                contentImages: null,
-                additionalMetadate: null,
-            };
-        }
-        if (isVIP) {
-            return vipChapter();
-        }
-        else {
-            return publicChapter();
-        }
-    }
+    };
 }
-exports.Qimao = Qimao;
+const haitangtxt = () => getClass(haitangtxtImageDecode_1.replaceHaitangtxtImage);
+exports.haitangtxt = haitangtxt;
+const yuzhaige = () => getClass(yuzhaigeImageDecode_1.replaceYuzhaigeImage);
+exports.yuzhaige = yuzhaige;
 
 
 /***/ }),
 
-/***/ "./src/rules/qingoo.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Qingoo = void 0;
-const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
-const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
-const http_1 = __webpack_require__("./src/lib/http.ts");
-const misc_1 = __webpack_require__("./src/lib/misc.ts");
-const log_1 = __webpack_require__("./src/log.ts");
-const main_1 = __webpack_require__("./src/main.ts");
-const rules_1 = __webpack_require__("./src/rules.ts");
-const common_1 = __webpack_require__("./src/rules/lib/common.ts");
-class Qingoo extends rules_1.BaseRuleClass {
-    constructor() {
-        super();
-        this.imageMode = "TM";
-        this.charset = "UTF-8";
-    }
-    async bookParse() {
-        const bookUrl = document.location.href;
-        const bookname = document.querySelector(".title > dl > dd > h1").innerText.trim();
-        const author = document.querySelector("#author").innerText
-            .replace("作者：", "")
-            .trim();
-        const introDom = document.querySelector("#allDesc");
-        const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom);
-        const additionalMetadate = {};
-        const coverUrl = document.querySelector(".title > dl > dt > img:nth-child(1)").src;
-        if (coverUrl) {
-            (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
-                .then((coverClass) => {
-                additionalMetadate.cover = coverClass;
-            })
-                .catch((error) => log_1.log.error(error));
-        }
-        const chapters = [];
-        const data = unsafeWindow.data;
-        const _linkTemp = document.querySelector("#chapterItem")
-            ?.firstElementChild?.href;
-        const linkTemp = new URL(_linkTemp);
-        for (const d of data) {
-            const status = d.status;
-            const chapterNumber = d.sn;
-            const chapterName = d.name;
-            linkTemp.searchParams.set("index", (chapterNumber - 1).toString());
-            const chapterUrl = linkTemp.toString();
-            const isVIP = false;
-            const isPaid = false;
-            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, null, null, null, this.chapterParse, this.charset, {});
-            if (!status) {
-                chapter.status = main_1.Status.aborted;
-            }
-            chapters.push(chapter);
-        }
-        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
-        return book;
-    }
-    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        const doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
-        chapterName = doc.querySelector("#content > h1").innerText.trim();
-        const content = doc.querySelector("#content");
-        if (content) {
-            (0, misc_1.rm)("div.header", false, content);
-            (0, misc_1.rm)("h1", false, content);
-            (0, misc_1.rm)("h6", false, content);
-            const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
-            return {
-                chapterName,
-                contentRaw: content,
-                contentText: text,
-                contentHTML: dom,
-                contentImages: images,
-                additionalMetadate: null,
-            };
-        }
-        else {
-            return {
-                chapterName,
-                contentRaw: null,
-                contentText: null,
-                contentHTML: null,
-                contentImages: null,
-                additionalMetadate: null,
-            };
-        }
-    }
-}
-exports.Qingoo = Qingoo;
-
-
-/***/ }),
-
-/***/ "./src/rules/shouda8.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Shouda8 = void 0;
-const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
-const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
-const http_1 = __webpack_require__("./src/lib/http.ts");
-const misc_1 = __webpack_require__("./src/lib/misc.ts");
-const log_1 = __webpack_require__("./src/log.ts");
-const main_1 = __webpack_require__("./src/main.ts");
-const rules_1 = __webpack_require__("./src/rules.ts");
-const common_1 = __webpack_require__("./src/rules/lib/common.ts");
-class Shouda8 extends rules_1.BaseRuleClass {
-    constructor() {
-        super();
-        this.imageMode = "TM";
-    }
-    async bookParse() {
-        const bookUrl = document.location.href;
-        const bookname = document.querySelector(".bread-crumbs > li:nth-child(4)").innerText.trim();
-        const author = document.querySelector("div.bookname > h1 > em").innerText
-            .replace("作者：", "")
-            .trim();
-        const introDom = document.querySelector(".intro");
-        const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom, (introDomI) => {
-            (0, misc_1.rm)(".book_keywords", false, introDomI);
-            (0, misc_1.rm)("script", true, introDomI);
-            (0, misc_1.rm)("#cambrian0", false, introDomI);
-            return introDomI;
-        });
-        const additionalMetadate = {};
-        const coverUrl = document.querySelector(".pic > img:nth-child(1)").src;
-        if (coverUrl) {
-            (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
-                .then((coverClass) => {
-                additionalMetadate.cover = coverClass;
-            })
-                .catch((error) => log_1.log.error(error));
-        }
-        const chapters = [];
-        const chapterList = document.querySelectorAll(".link_14 > dl dd a");
-        for (let i = 0; i < chapterList.length; i++) {
-            const a = chapterList[i];
-            const chapterName = a.innerText;
-            const chapterUrl = a.href;
-            const isVIP = false;
-            const isPaid = false;
-            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, i + 1, chapterName, isVIP, isPaid, null, null, null, this.chapterParse, "UTF-8", {});
-            chapters.push(chapter);
-        }
-        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
-        return book;
-    }
-    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        const doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
-        chapterName = doc.querySelector(".kfyd > h2:nth-child(1)").innerText.trim();
-        const content = doc.querySelector("#content");
-        if (content) {
-            (0, misc_1.rm)("p:last-child", false, content);
-            const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
-            return {
-                chapterName,
-                contentRaw: content,
-                contentText: text,
-                contentHTML: dom,
-                contentImages: images,
-                additionalMetadate: null,
-            };
-        }
-        else {
-            return {
-                chapterName,
-                contentRaw: null,
-                contentText: null,
-                contentHTML: null,
-                contentImages: null,
-                additionalMetadate: null,
-            };
-        }
-    }
-}
-exports.Shouda8 = Shouda8;
-
-
-/***/ }),
-
-/***/ "./src/rules/shubaowa.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Shubaowa = void 0;
-const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
-const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
-const http_1 = __webpack_require__("./src/lib/http.ts");
-const log_1 = __webpack_require__("./src/log.ts");
-const main_1 = __webpack_require__("./src/main.ts");
-const rules_1 = __webpack_require__("./src/rules.ts");
-const common_1 = __webpack_require__("./src/rules/lib/common.ts");
-class Shubaowa extends rules_1.BaseRuleClass {
-    constructor() {
-        super();
-        this.imageMode = "TM";
-        this.charset = "GBK";
-    }
-    async bookParse() {
-        const bookUrl = document.location.href;
-        const bookname = document.querySelector("#info > h1:nth-child(1)").innerText.trim();
-        const author = document.querySelector("#info > p:nth-child(2)").innerText
-            .replace(/作(\s+)?者[：:]/, "")
-            .trim();
-        const introDom = document.querySelector("#intro");
-        const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom);
-        const additionalMetadate = {};
-        const coverUrl = document.querySelector("#fmimg > img")?.src;
-        if (coverUrl) {
-            (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
-                .then((coverClass) => {
-                additionalMetadate.cover = coverClass;
-            })
-                .catch((error) => log_1.log.error(error));
-        }
-        const chapters = [];
-        const cos = document.querySelectorAll("#list > dl > dd > a");
-        let chapterNumber = 0;
-        for (const aElem of Array.from(cos)) {
-            chapterNumber++;
-            const chapterName = aElem.innerText;
-            const chapterUrl = aElem.href;
-            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, false, false, null, null, null, this.chapterParse, this.charset, {});
-            chapters.push(chapter);
-        }
-        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
-        return book;
-    }
-    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        const doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
-        chapterName = doc.querySelector(".bookname > h1:nth-child(1)").innerText.trim();
-        const content = doc.querySelector("#content");
-        if (content) {
-            const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
-            return {
-                chapterName,
-                contentRaw: content,
-                contentText: text,
-                contentHTML: dom,
-                contentImages: images,
-                additionalMetadate: null,
-            };
-        }
-        else {
-            return {
-                chapterName,
-                contentRaw: null,
-                contentText: null,
-                contentHTML: null,
-                contentImages: null,
-                additionalMetadate: null,
-            };
-        }
-    }
-}
-exports.Shubaowa = Shubaowa;
-
-
-/***/ }),
-
-/***/ "./src/rules/soxscc.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Soxscc = void 0;
-const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
-const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
-const http_1 = __webpack_require__("./src/lib/http.ts");
-const misc_1 = __webpack_require__("./src/lib/misc.ts");
-const log_1 = __webpack_require__("./src/log.ts");
-const main_1 = __webpack_require__("./src/main.ts");
-const rules_1 = __webpack_require__("./src/rules.ts");
-const common_1 = __webpack_require__("./src/rules/lib/common.ts");
-class Soxscc extends rules_1.BaseRuleClass {
-    constructor() {
-        super();
-        this.imageMode = "TM";
-    }
-    async bookParse() {
-        const bookUrl = document.location.href;
-        const bookname = document.querySelector(".xiaoshuo > h1").innerText.trim();
-        const author = document.querySelector(".xiaoshuo > h6:nth-child(3) > a").innerText.trim();
-        const introDom = document.querySelector("#intro");
-        const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom, (introDomI) => {
-            (0, misc_1.rm)("span.tags", false, introDomI);
-            (0, misc_1.rm)("q", true, introDomI);
-            return introDomI;
-        });
-        const additionalMetadate = {};
-        const coverUrl = document.querySelector(".book_cover > img").src;
-        if (coverUrl) {
-            (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
-                .then((coverClass) => {
-                additionalMetadate.cover = coverClass;
-            })
-                .catch((error) => log_1.log.error(error));
-        }
-        const chapters = [];
-        const novelList = document.querySelector("div.novel_list[id]");
-        const sections = Array.from(novelList.children);
-        let chapterNumber = 0;
-        for (let i = 0; i < sections.length; i++) {
-            const section = sections[i];
-            const sectionName = section.querySelector("dt > b")
-                ?.innerText;
-            const cos = Array.from(section.querySelectorAll("dd > a"));
-            let sectionChapterNumber = 0;
-            for (const a of cos) {
-                chapterNumber++;
-                sectionChapterNumber++;
-                const chapterUrl = a.href;
-                const chapterName = a.innerText;
-                const isVIP = false;
-                const isPaid = false;
-                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, i + 1, sectionChapterNumber, this.chapterParse, "UTF-8", { bookname });
-                chapters.push(chapter);
-            }
-        }
-        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
-        return book;
-    }
-    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        const doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
-        const bookname = options.bookname;
-        chapterName = doc.querySelector(".read_title > h1").innerText.trim();
-        const content = doc.querySelector("div.content[id]");
-        if (content) {
-            const ad = `您可以在百度里搜索“${bookname} .+(${document.location.hostname})”查找最新章节！`;
-            content.innerHTML = content.innerHTML.replaceAll(ad, "");
-            Array.from(content.querySelectorAll("p")).forEach((p) => {
-                const adwords = [
-                    "最新章节地址：",
-                    "全文阅读地址：",
-                    "txt下载地址：",
-                    "手机阅读：",
-                    '为了方便下次阅读，你可以点击下方的"收藏"记录本次',
-                    "请向你的朋友（QQ、博客、微信等方式）推荐本书",
-                ];
-                for (const adword of adwords) {
-                    if (p.innerText.includes(adword)) {
-                        p.remove();
-                    }
-                }
-            });
-            const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
-            return {
-                chapterName,
-                contentRaw: content,
-                contentText: text,
-                contentHTML: dom,
-                contentImages: images,
-                additionalMetadate: null,
-            };
-        }
-        else {
-            return {
-                chapterName,
-                contentRaw: null,
-                contentText: null,
-                contentHTML: null,
-                contentImages: null,
-                additionalMetadate: null,
-            };
-        }
-    }
-}
-exports.Soxscc = Soxscc;
-
-
-/***/ }),
-
-/***/ "./src/rules/special/17k.ts":
+/***/ "./src/rules/special/original/17k.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
@@ -6200,7 +5176,7 @@ exports.C17k = C17k;
 
 /***/ }),
 
-/***/ "./src/rules/special/ciweimao.ts":
+/***/ "./src/rules/special/original/ciweimao.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
@@ -6510,140 +5486,7 @@ exports.Ciweimao = Ciweimao;
 
 /***/ }),
 
-/***/ "./src/rules/special/dmzj.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Dmzj = void 0;
-const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
-const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
-const http_1 = __webpack_require__("./src/lib/http.ts");
-const misc_1 = __webpack_require__("./src/lib/misc.ts");
-const log_1 = __webpack_require__("./src/log.ts");
-const main_1 = __webpack_require__("./src/main.ts");
-const rules_1 = __webpack_require__("./src/rules.ts");
-const common_1 = __webpack_require__("./src/rules/lib/common.ts");
-class Dmzj extends rules_1.BaseRuleClass {
-    constructor() {
-        super();
-        this.imageMode = "TM";
-    }
-    async bookParse() {
-        const bookUrl = document.location.href;
-        const isWwwHost = document.location.host === "www.dmzj.com";
-        const bookDom = isWwwHost
-            ? document.querySelector(".comic_deCon > h1 > a")
-            : document.querySelector(".anim_title_text > a > h1");
-        const bookname = bookDom.innerText.trim();
-        const authorDom = isWwwHost
-            ? document.querySelector(".comic_deCon_liO > li:nth-child(1)")
-            : document.querySelector(".anim-main_list > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(3) > td:nth-child(2) > a:nth-child(1)");
-        const author = authorDom.innerText
-            .replace("作者：", "")
-            .trim();
-        const introDom = isWwwHost
-            ? document.querySelector(".comic_deCon_d")
-            : document.querySelector(".line_height_content");
-        const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom);
-        const additionalMetadate = {};
-        const coverDom = isWwwHost
-            ? document.querySelector(".comic_i_img > a > img")
-            : document.querySelector("#cover_pic");
-        const coverUrl = coverDom.src;
-        if (coverUrl) {
-            (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
-                .then((coverClass) => {
-                additionalMetadate.cover = coverClass;
-            })
-                .catch((error) => log_1.log.error(error));
-        }
-        const chapters = [];
-        const cos = isWwwHost
-            ? document.querySelectorAll("div.zj_list_con:nth-child(4) > ul.list_con_li > li")
-            : document.querySelectorAll(".cartoon_online_border > ul > li");
-        let chapterNumber = 0;
-        for (const co of Array.from(cos)) {
-            chapterNumber++;
-            const a = co.firstElementChild;
-            let chapterName;
-            if (isWwwHost) {
-                const span = a.lastElementChild;
-                chapterName = span.innerText;
-            }
-            else {
-                chapterName = a.innerText;
-            }
-            const chapterUrl = a.href;
-            const isVIP = false;
-            const isPaid = false;
-            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, null, null, null, this.chapterParse, "UTF-8", {});
-            chapters.push(chapter);
-        }
-        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
-        return book;
-    }
-    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        function getpicUrlList(docI) {
-            const imgPrefix = "https://images.dmzj.com/";
-            const scriptElement = Array.from(docI.querySelectorAll("head > script")).filter((s) => s.innerHTML.includes("eval("))[0];
-            let pages = (0, misc_1.sandboxed)(scriptElement.innerText + ";return pages;");
-            pages = pages.replace(/\n/g, "");
-            pages = pages.replace(/\r/g, "|");
-            const info = (0, misc_1.sandboxed)("return (" + pages + ")");
-            if (info) {
-                let picUrlListI;
-                if (isWwwHost) {
-                    picUrlListI = info.page_url
-                        .split("|")
-                        .map((pic) => imgPrefix + pic);
-                }
-                else {
-                    picUrlListI = info.map((pic) => imgPrefix + pic);
-                }
-                return picUrlListI;
-            }
-        }
-        log_1.log.debug(`[Chapter]请求 ${chapterUrl}`);
-        const isWwwHost = document.location.host === "www.dmzj.com";
-        const doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
-        const picUrlList = getpicUrlList(doc);
-        if (picUrlList) {
-            const content = document.createElement("div");
-            for (const picUrl of picUrlList) {
-                const pElem = document.createElement("p");
-                const imgElem = document.createElement("img");
-                imgElem.src = picUrl;
-                pElem.appendChild(imgElem);
-                content.appendChild(pElem);
-            }
-            const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
-            return {
-                chapterName,
-                contentRaw: content,
-                contentText: text,
-                contentHTML: dom,
-                contentImages: images,
-                additionalMetadate: null,
-            };
-        }
-        return {
-            chapterName,
-            contentRaw: null,
-            contentText: null,
-            contentHTML: null,
-            contentImages: null,
-            additionalMetadate: null,
-        };
-    }
-}
-exports.Dmzj = Dmzj;
-
-
-/***/ }),
-
-/***/ "./src/rules/special/gongzicp.ts":
+/***/ "./src/rules/special/original/gongzicp.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
@@ -6992,183 +5835,7 @@ exports.Gongzicp = Gongzicp;
 
 /***/ }),
 
-/***/ "./src/rules/special/hetushu.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Hetushu = void 0;
-const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
-const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
-const http_1 = __webpack_require__("./src/lib/http.ts");
-const misc_1 = __webpack_require__("./src/lib/misc.ts");
-const log_1 = __webpack_require__("./src/log.ts");
-const main_1 = __webpack_require__("./src/main.ts");
-const rules_1 = __webpack_require__("./src/rules.ts");
-const common_1 = __webpack_require__("./src/rules/lib/common.ts");
-class Hetushu extends rules_1.BaseRuleClass {
-    constructor() {
-        super();
-        this.imageMode = "TM";
-    }
-    async bookParse() {
-        const bookUrl = document.location.href;
-        const bookname = document.querySelector(".book_info > h2").innerText.trim();
-        const author = document.querySelector(".book_info > div:nth-child(3) > a:nth-child(1)").innerText.trim();
-        const introDom = document.querySelector(".intro");
-        const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom);
-        const additionalMetadate = {};
-        const coverUrl = document.querySelector(".book_info > img").src;
-        if (coverUrl) {
-            (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
-                .then((coverClass) => {
-                additionalMetadate.cover = coverClass;
-            })
-                .catch((error) => log_1.log.error(error));
-        }
-        const chapters = [];
-        const chapterList = document.querySelector("#dir")?.childNodes;
-        if (chapterList && chapterList.length !== 0) {
-            let chapterNumber = 0;
-            let sectionNumber = 0;
-            let sectionName = null;
-            let sectionChapterNumber = 0;
-            for (const node of chapterList) {
-                if (node.nodeName === "DT") {
-                    sectionNumber++;
-                    sectionChapterNumber = 0;
-                    sectionName = node.innerText.trim();
-                }
-                else if (node.nodeName === "DD") {
-                    chapterNumber++;
-                    sectionChapterNumber++;
-                    const a = node.firstElementChild;
-                    const chapterName = a.innerText;
-                    const chapterUrl = a.href;
-                    const isVIP = false;
-                    const isPaid = false;
-                    const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, "UTF-8", {});
-                    chapters.push(chapter);
-                }
-            }
-        }
-        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
-        return book;
-    }
-    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        async function sorfPage() {
-            let path;
-            let bid;
-            let sid;
-            let position;
-            if (/\/(book[0-9]?)\/([0-9]+)\/([0-9]+)\.html(\?position=([0-9]+))?$/.test(chapterUrl)) {
-                path = RegExp.$1;
-                bid = RegExp.$2;
-                sid = RegExp.$3;
-                position = RegExp.$5;
-            }
-            else {
-                return false;
-            }
-            const url = [
-                document.location.origin,
-                path,
-                bid,
-                "r" + sid + ".json",
-            ].join("/");
-            log_1.log.debug(`[Chapter]请求 ${url} Referer ${chapterUrl}`);
-            const token = await fetch(url, {
-                headers: {
-                    accept: "*/*",
-                    "cache-control": "no-cache",
-                    "content-type": "application/x-www-form-urlencoded",
-                    pragma: "no-cache",
-                    "x-requested-with": "XMLHttpRequest",
-                },
-                referrer: chapterUrl,
-                method: "GET",
-                mode: "cors",
-                credentials: "include",
-            })
-                .then((response) => response.headers.get("token"))
-                .catch((error) => log_1.log.error(error));
-            if (token) {
-                const tokenDict = atob(token)
-                    .split(/[A-Z]+%/)
-                    .map((v) => Number(v));
-                const thisBody = doc.querySelector("#content");
-                let b = 0;
-                let star = 0;
-                for (let i = 0; i < thisBody.childNodes.length; i++) {
-                    if (thisBody.childNodes[i].nodeName === "H2") {
-                        star = i + 1;
-                    }
-                    if (thisBody.childNodes[i].nodeName === "DIV" &&
-                        thisBody.childNodes[i].className !== "chapter") {
-                        break;
-                    }
-                }
-                const thisChildNode = [];
-                for (let i = 0; i < tokenDict.length; i++) {
-                    if (tokenDict[i] < 5) {
-                        thisChildNode[tokenDict[i]] = thisBody.childNodes[i + star];
-                        b++;
-                    }
-                    else {
-                        thisChildNode[tokenDict[i] - b] = thisBody.childNodes[i + star];
-                    }
-                }
-                for (const childNode of thisChildNode) {
-                    if (!childNode) {
-                        continue;
-                    }
-                    thisBody.appendChild(childNode);
-                }
-            }
-        }
-        const doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
-        chapterName = doc.querySelector("#content .h2").innerText.trim();
-        await sorfPage();
-        const content = doc.querySelector("#content");
-        if (content) {
-            const tagRemoved = "h2, acronym, bdo, big, cite, code, dfn, kbd, q, s, samp, strike, tt, u, var";
-            tagRemoved.split(", ").forEach((s) => {
-                (0, misc_1.rm)(s, true, content);
-            });
-            Array.from(content.querySelectorAll("div")).map((oldNode) => {
-                const newNode = document.createElement("p");
-                newNode.innerHTML = oldNode.innerHTML;
-                oldNode.parentNode?.replaceChild(newNode, oldNode);
-            });
-            const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
-            return {
-                chapterName,
-                contentRaw: content,
-                contentText: text,
-                contentHTML: dom,
-                contentImages: images,
-                additionalMetadate: null,
-            };
-        }
-        else {
-            return {
-                chapterName,
-                contentRaw: null,
-                contentText: null,
-                contentHTML: null,
-                contentImages: null,
-                additionalMetadate: null,
-            };
-        }
-    }
-}
-exports.Hetushu = Hetushu;
-
-
-/***/ }),
-
-/***/ "./src/rules/special/jjwxc.ts":
+/***/ "./src/rules/special/original/jjwxc.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
@@ -7549,7 +6216,149 @@ exports.Jjwxc = Jjwxc;
 
 /***/ }),
 
-/***/ "./src/rules/special/lofter.ts":
+/***/ "./src/rules/special/original/linovel.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Linovel = void 0;
+const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
+const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
+const http_1 = __webpack_require__("./src/lib/http.ts");
+const log_1 = __webpack_require__("./src/log.ts");
+const main_1 = __webpack_require__("./src/main.ts");
+const rules_1 = __webpack_require__("./src/rules.ts");
+const common_1 = __webpack_require__("./src/rules/lib/common.ts");
+class Linovel extends rules_1.BaseRuleClass {
+    constructor() {
+        super();
+        this.imageMode = "TM";
+        this.concurrencyLimit = 5;
+    }
+    async bookParse() {
+        const bookUrl = document.location.href;
+        const bookname = document.querySelector(".book-title").innerText.trim();
+        const author = document.querySelector(".author-frame > .novelist > div:nth-child(3) > a").innerText.trim();
+        const introDom = document.querySelector(".about-text");
+        const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom);
+        const additionalMetadate = {};
+        const attachmentsUrlList = [];
+        const coverUrl = document.querySelector(".book-cover > a").href;
+        if (coverUrl) {
+            attachmentsUrlList.push(coverUrl);
+            (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
+                .then((coverClass) => {
+                additionalMetadate.cover = coverClass;
+            })
+                .catch((error) => log_1.log.error(error));
+        }
+        additionalMetadate.attachments = [];
+        const volumeCoverUrlList = Array.from(document.querySelectorAll(".section-list > .section > .volume-info > .volume-cover a")).map((a) => a.href);
+        for (const volumeCoverUrl of volumeCoverUrlList) {
+            if (!attachmentsUrlList.includes(volumeCoverUrl)) {
+                attachmentsUrlList.push(volumeCoverUrl);
+                (0, attachments_1.getImageAttachment)(volumeCoverUrl, this.imageMode, "volumeCover-")
+                    .then((volumeCoverObj) => {
+                    additionalMetadate.attachments?.push(volumeCoverObj);
+                })
+                    .catch((error) => log_1.log.error(error));
+            }
+        }
+        additionalMetadate.tags = Array.from(document.querySelectorAll("div.meta-info > div.book-cats.clearfix > a")).map((a) => a.innerText.trim());
+        const chapters = [];
+        const sections = document.querySelectorAll(".section-list > .section");
+        let chapterNumber = 0;
+        for (let i = 0; i < sections.length; i++) {
+            const s = sections[i];
+            const sectionNumber = i + 1;
+            const sectionName = s.querySelector(".volume-info > h2.volume-title > a").innerText.trim();
+            let sectionChapterNumber = 0;
+            const cs = s.querySelectorAll(".chapter-list > .text-content-actual div.chapter");
+            for (const div of Array.from(cs)) {
+                const a = div.firstElementChild;
+                chapterNumber++;
+                sectionChapterNumber++;
+                const chapterName = a.innerText.trim();
+                const chapterUrl = a.href;
+                const isVIP = () => {
+                    if (div.className.includes("lock")) {
+                        if (div.className.includes("unlock")) {
+                            return false;
+                        }
+                        else {
+                            return true;
+                        }
+                    }
+                    return false;
+                };
+                const isPaid = () => {
+                    return false;
+                };
+                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), isPaid(), sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, "UTF-8", {});
+                const isLogin = () => {
+                    return false;
+                };
+                if (isVIP() && !(isLogin() && chapter.isPaid)) {
+                    chapter.status = main_1.Status.aborted;
+                }
+                chapters.push(chapter);
+            }
+        }
+        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        return book;
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+        async function publicChapter() {
+            const doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
+            const ChapterName = doc.querySelector(".article-title").innerText.trim();
+            const content = doc.querySelector(".article-text");
+            if (content) {
+                const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+                return {
+                    chapterName: ChapterName,
+                    contentRaw: content,
+                    contentText: text,
+                    contentHTML: dom,
+                    contentImages: images,
+                    additionalMetadate: null,
+                };
+            }
+            else {
+                return {
+                    chapterName: ChapterName,
+                    contentRaw: null,
+                    contentText: null,
+                    contentHTML: null,
+                    contentImages: null,
+                    additionalMetadate: null,
+                };
+            }
+        }
+        async function vipChapter() {
+            return {
+                chapterName,
+                contentRaw: null,
+                contentText: null,
+                contentHTML: null,
+                contentImages: null,
+                additionalMetadate: null,
+            };
+        }
+        if (isVIP) {
+            return vipChapter();
+        }
+        else {
+            return publicChapter();
+        }
+    }
+}
+exports.Linovel = Linovel;
+
+
+/***/ }),
+
+/***/ "./src/rules/special/original/lofter.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
@@ -7705,7 +6514,7 @@ exports.Lofter = Lofter;
 
 /***/ }),
 
-/***/ "./src/rules/special/longmabook.ts":
+/***/ "./src/rules/special/original/longmabook.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
@@ -7989,7 +6798,7 @@ exports.Longmabook = Longmabook;
 
 /***/ }),
 
-/***/ "./src/rules/special/qidian.ts":
+/***/ "./src/rules/special/original/qidian.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
@@ -8264,7 +7073,218 @@ exports.Qidian = Qidian;
 
 /***/ }),
 
-/***/ "./src/rules/special/sfacg.ts":
+/***/ "./src/rules/special/original/qimao.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Qimao = void 0;
+const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
+const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
+const http_1 = __webpack_require__("./src/lib/http.ts");
+const log_1 = __webpack_require__("./src/log.ts");
+const main_1 = __webpack_require__("./src/main.ts");
+const rules_1 = __webpack_require__("./src/rules.ts");
+const common_1 = __webpack_require__("./src/rules/lib/common.ts");
+class Qimao extends rules_1.BaseRuleClass {
+    constructor() {
+        super();
+        this.imageMode = "TM";
+    }
+    async bookParse() {
+        const bookUrl = document.location.href;
+        const bookname = document.querySelector("h2.tit").innerText.trim();
+        const author = document.querySelector(".p-name > a").innerHTML.trim();
+        const introDom = document.querySelector(".book-introduction .article");
+        const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom);
+        const additionalMetadate = {};
+        const coverUrl = document.querySelector(".poster-pic > img").src;
+        if (coverUrl) {
+            (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
+                .then((coverClass) => {
+                additionalMetadate.cover = coverClass;
+            })
+                .catch((error) => log_1.log.error(error));
+        }
+        additionalMetadate.tags = Array.from(document.querySelectorAll(".qm-tags > a")).map((a) => a.innerText.trim());
+        const chapters = [];
+        const cos = document.querySelectorAll('.chapter-directory > dd > div[sort-type="ascending"] a');
+        let chapterNumber = 0;
+        for (const aElem of Array.from(cos)) {
+            chapterNumber++;
+            const chapterName = aElem.innerText;
+            const chapterUrl = aElem.href;
+            const isVIP = () => {
+                if (aElem.childElementCount) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            };
+            const isPaid = () => {
+                return false;
+            };
+            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), isPaid(), null, null, null, this.chapterParse, "UTF-8", {});
+            const isLogin = () => {
+                return false;
+            };
+            if (isVIP() && !(isLogin() && chapter.isPaid)) {
+                chapter.status = main_1.Status.aborted;
+            }
+            chapters.push(chapter);
+        }
+        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        return book;
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+        async function publicChapter() {
+            log_1.log.debug(`[Chapter]请求 ${chapterUrl}`);
+            const doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
+            chapterName = doc.querySelector(".title").innerText.trim();
+            const content = doc.querySelector(".article");
+            if (content) {
+                const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+                return {
+                    chapterName,
+                    contentRaw: content,
+                    contentText: text,
+                    contentHTML: dom,
+                    contentImages: images,
+                    additionalMetadate: null,
+                };
+            }
+            else {
+                return {
+                    chapterName,
+                    contentRaw: null,
+                    contentText: null,
+                    contentHTML: null,
+                    contentImages: null,
+                    additionalMetadate: null,
+                };
+            }
+        }
+        async function vipChapter() {
+            return {
+                chapterName,
+                contentRaw: null,
+                contentText: null,
+                contentHTML: null,
+                contentImages: null,
+                additionalMetadate: null,
+            };
+        }
+        if (isVIP) {
+            return vipChapter();
+        }
+        else {
+            return publicChapter();
+        }
+    }
+}
+exports.Qimao = Qimao;
+
+
+/***/ }),
+
+/***/ "./src/rules/special/original/qingoo.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Qingoo = void 0;
+const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
+const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
+const http_1 = __webpack_require__("./src/lib/http.ts");
+const misc_1 = __webpack_require__("./src/lib/misc.ts");
+const log_1 = __webpack_require__("./src/log.ts");
+const main_1 = __webpack_require__("./src/main.ts");
+const rules_1 = __webpack_require__("./src/rules.ts");
+const common_1 = __webpack_require__("./src/rules/lib/common.ts");
+class Qingoo extends rules_1.BaseRuleClass {
+    constructor() {
+        super();
+        this.imageMode = "TM";
+        this.charset = "UTF-8";
+    }
+    async bookParse() {
+        const bookUrl = document.location.href;
+        const bookname = document.querySelector(".title > dl > dd > h1").innerText.trim();
+        const author = document.querySelector("#author").innerText
+            .replace("作者：", "")
+            .trim();
+        const introDom = document.querySelector("#allDesc");
+        const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom);
+        const additionalMetadate = {};
+        const coverUrl = document.querySelector(".title > dl > dt > img:nth-child(1)").src;
+        if (coverUrl) {
+            (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
+                .then((coverClass) => {
+                additionalMetadate.cover = coverClass;
+            })
+                .catch((error) => log_1.log.error(error));
+        }
+        const chapters = [];
+        const data = unsafeWindow.data;
+        const _linkTemp = document.querySelector("#chapterItem")
+            ?.firstElementChild?.href;
+        const linkTemp = new URL(_linkTemp);
+        for (const d of data) {
+            const status = d.status;
+            const chapterNumber = d.sn;
+            const chapterName = d.name;
+            linkTemp.searchParams.set("index", (chapterNumber - 1).toString());
+            const chapterUrl = linkTemp.toString();
+            const isVIP = false;
+            const isPaid = false;
+            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, null, null, null, this.chapterParse, this.charset, {});
+            if (!status) {
+                chapter.status = main_1.Status.aborted;
+            }
+            chapters.push(chapter);
+        }
+        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        return book;
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+        const doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
+        chapterName = doc.querySelector("#content > h1").innerText.trim();
+        const content = doc.querySelector("#content");
+        if (content) {
+            (0, misc_1.rm)("div.header", false, content);
+            (0, misc_1.rm)("h1", false, content);
+            (0, misc_1.rm)("h6", false, content);
+            const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+            return {
+                chapterName,
+                contentRaw: content,
+                contentText: text,
+                contentHTML: dom,
+                contentImages: images,
+                additionalMetadate: null,
+            };
+        }
+        else {
+            return {
+                chapterName,
+                contentRaw: null,
+                contentText: null,
+                contentHTML: null,
+                contentImages: null,
+                additionalMetadate: null,
+            };
+        }
+    }
+}
+exports.Qingoo = Qingoo;
+
+
+/***/ }),
+
+/***/ "./src/rules/special/original/sfacg.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
@@ -8317,39 +7337,43 @@ class Sfacg extends rules_1.BaseRuleClass {
         }
         const chapters = [];
         const sections = document.querySelectorAll(".story-catalog");
+        const chapterElems = document.querySelectorAll(".catalog-list a");
+        const getName = (sElem) => sElem.querySelector(".catalog-title").innerText
+            .replace(`【${bookname}】`, "")
+            .trim();
         let chapterNumber = 0;
-        for (let i = 0; i < sections.length; i++) {
-            const s = sections[i];
-            const sectionNumber = i + 1;
-            const sectionName = s.querySelector(".catalog-title").innerText
-                .replace(`【${bookname}】`, "")
-                .trim();
-            let sectionChapterNumber = 0;
-            const cs = s.querySelectorAll(".catalog-list > ul > li > a");
-            for (const c of Array.from(cs)) {
-                const _chapterName = c
-                    .getAttribute("title")
-                    ?.trim();
-                chapterNumber++;
-                sectionChapterNumber++;
-                const chapterName = _chapterName ? _chapterName : "";
-                const chapterUrl = c.href;
-                let isVIP = false;
-                const isPaid = null;
-                if (c.childElementCount &&
-                    c.firstElementChild?.getAttribute("class") === "icn_vip") {
-                    isVIP = true;
-                }
-                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, "UTF-8", {});
-                const isLogin = document.querySelector(".user-bar > .top-link > .normal-link")
-                    ?.childElementCount === 3
-                    ? true
-                    : false;
-                if (isVIP && !isLogin) {
-                    chapter.status = main_1.Status.aborted;
-                }
-                chapters.push(chapter);
+        let sectionNumber = 0;
+        let sectionChapterNumber = 0;
+        let _sectionName = "";
+        for (const elem of Array.from(chapterElems)) {
+            const chapterName = elem.getAttribute("title")?.trim() ?? "";
+            const chapterUrl = elem.href;
+            const sectionName = (0, common_1.getSectionName)(elem, sections, getName);
+            if (_sectionName !== sectionName) {
+                _sectionName = sectionName;
+                sectionNumber++;
+                sectionChapterNumber = 0;
             }
+            chapterNumber++;
+            sectionChapterNumber++;
+            const isVip = () => {
+                if (elem.childElementCount !== 0 &&
+                    elem.firstElementChild?.getAttribute("class") === "icn_vip") {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            };
+            const isPaid = null;
+            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVip(), isPaid, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, "UTF-8", {});
+            const isLogin = !document
+                .querySelector(".user-bar > .top-link > .normal-link")
+                ?.innerHTML.includes("您好，SF游客");
+            if (chapter.isVIP && isLogin === false) {
+                chapter.status = main_1.Status.aborted;
+            }
+            chapters.push(chapter);
         }
         const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
         return book;
@@ -8483,7 +7507,7 @@ exports.Sfacg = Sfacg;
 
 /***/ }),
 
-/***/ "./src/rules/special/shubl.ts":
+/***/ "./src/rules/special/original/shubl.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
@@ -8767,7 +7791,7 @@ exports.Shubl = Shubl;
 
 /***/ }),
 
-/***/ "./src/rules/special/shuhai.ts":
+/***/ "./src/rules/special/original/shuhai.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
@@ -8906,7 +7930,7 @@ exports.Shuhai = Shuhai;
 
 /***/ }),
 
-/***/ "./src/rules/special/sosadfun.ts":
+/***/ "./src/rules/special/original/sosadfun.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
@@ -9045,7 +8069,7 @@ exports.Sosadfun = Sosadfun;
 
 /***/ }),
 
-/***/ "./src/rules/special/tadu.ts":
+/***/ "./src/rules/special/original/tadu.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
@@ -9188,7 +8212,978 @@ exports.Tadu = Tadu;
 
 /***/ }),
 
-/***/ "./src/rules/special/wenku8.ts":
+/***/ "./src/rules/special/original/zongheng.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Zongheng = void 0;
+const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
+const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
+const http_1 = __webpack_require__("./src/lib/http.ts");
+const log_1 = __webpack_require__("./src/log.ts");
+const main_1 = __webpack_require__("./src/main.ts");
+const rules_1 = __webpack_require__("./src/rules.ts");
+const common_1 = __webpack_require__("./src/rules/lib/common.ts");
+class Zongheng extends rules_1.BaseRuleClass {
+    constructor() {
+        super();
+        this.imageMode = "TM";
+        this.concurrencyLimit = 5;
+    }
+    async bookParse() {
+        const bookUrl = document.location.href.replace("/showchapter/", "/book/");
+        const bookname = document.querySelector("div.book-meta > h1").innerText.trim();
+        const author = document.querySelector("div.book-meta > p > span:nth-child(1) > a").innerText.trim();
+        const doc = await (0, http_1.getHtmlDOM)(bookUrl, undefined);
+        const introDom = doc.querySelector("div.book-info > div.book-dec");
+        const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom);
+        const additionalMetadate = {};
+        const coverUrl = doc.querySelector("div.book-img > img").src;
+        if (coverUrl) {
+            (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
+                .then((coverClass) => {
+                additionalMetadate.cover = coverClass;
+            })
+                .catch((error) => log_1.log.error(error));
+        }
+        additionalMetadate.tags = Array.from(doc.querySelectorAll(".book-info>.book-label a")).map((a) => a.innerText.trim());
+        const chapters = [];
+        const sections = document.querySelectorAll(".volume-list");
+        let chapterNumber = 0;
+        for (let i = 0; i < sections.length; i++) {
+            const s = sections[i];
+            const sectionNumber = i + 1;
+            const sectionLabel = s.querySelector("div.volume");
+            Array.from(sectionLabel.children).forEach((ele) => ele.remove());
+            const sectionName = sectionLabel.innerText.trim();
+            let sectionChapterNumber = 0;
+            const cs = s.querySelectorAll("ul.chapter-list > li");
+            for (const c of Array.from(cs)) {
+                const a = c.querySelector("a");
+                chapterNumber++;
+                sectionChapterNumber++;
+                const chapterName = a.innerText.trim();
+                const chapterUrl = a.href;
+                const isVIP = () => {
+                    if (c.className.includes("vip")) {
+                        return true;
+                    }
+                    else {
+                        return false;
+                    }
+                };
+                const isPaid = () => {
+                    return false;
+                };
+                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), isPaid(), sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, "UTF-8", {});
+                const isLogin = () => {
+                    return false;
+                };
+                if (isVIP() && !(isLogin() && chapter.isPaid)) {
+                    chapter.status = main_1.Status.aborted;
+                }
+                chapters.push(chapter);
+            }
+        }
+        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        return book;
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+        async function publicChapter() {
+            const doc = await (0, http_1.ggetHtmlDOM)(chapterUrl, charset);
+            const ChapterName = doc.querySelector("div.title_txtbox").innerText.trim();
+            const content = doc.querySelector("div.content");
+            if (content) {
+                const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+                return {
+                    chapterName: ChapterName,
+                    contentRaw: content,
+                    contentText: text,
+                    contentHTML: dom,
+                    contentImages: images,
+                    additionalMetadate: null,
+                };
+            }
+            else {
+                return {
+                    chapterName: ChapterName,
+                    contentRaw: null,
+                    contentText: null,
+                    contentHTML: null,
+                    contentImages: null,
+                    additionalMetadate: null,
+                };
+            }
+        }
+        async function vipChapter() {
+            return {
+                chapterName,
+                contentRaw: null,
+                contentText: null,
+                contentHTML: null,
+                contentImages: null,
+                additionalMetadate: null,
+            };
+        }
+        if (isVIP) {
+            return vipChapter();
+        }
+        else {
+            return publicChapter();
+        }
+    }
+}
+exports.Zongheng = Zongheng;
+
+
+/***/ }),
+
+/***/ "./src/rules/special/reprint/dmzj.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Dmzj = void 0;
+const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
+const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
+const http_1 = __webpack_require__("./src/lib/http.ts");
+const misc_1 = __webpack_require__("./src/lib/misc.ts");
+const log_1 = __webpack_require__("./src/log.ts");
+const main_1 = __webpack_require__("./src/main.ts");
+const rules_1 = __webpack_require__("./src/rules.ts");
+const common_1 = __webpack_require__("./src/rules/lib/common.ts");
+class Dmzj extends rules_1.BaseRuleClass {
+    constructor() {
+        super();
+        this.imageMode = "TM";
+    }
+    async bookParse() {
+        const bookUrl = document.location.href;
+        const isWwwHost = document.location.host === "www.dmzj.com";
+        const bookDom = isWwwHost
+            ? document.querySelector(".comic_deCon > h1 > a")
+            : document.querySelector(".anim_title_text > a > h1");
+        const bookname = bookDom.innerText.trim();
+        const authorDom = isWwwHost
+            ? document.querySelector(".comic_deCon_liO > li:nth-child(1)")
+            : document.querySelector(".anim-main_list > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(3) > td:nth-child(2) > a:nth-child(1)");
+        const author = authorDom.innerText
+            .replace("作者：", "")
+            .trim();
+        const introDom = isWwwHost
+            ? document.querySelector(".comic_deCon_d")
+            : document.querySelector(".line_height_content");
+        const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom);
+        const additionalMetadate = {};
+        const coverDom = isWwwHost
+            ? document.querySelector(".comic_i_img > a > img")
+            : document.querySelector("#cover_pic");
+        const coverUrl = coverDom.src;
+        if (coverUrl) {
+            (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
+                .then((coverClass) => {
+                additionalMetadate.cover = coverClass;
+            })
+                .catch((error) => log_1.log.error(error));
+        }
+        const chapters = [];
+        const cos = isWwwHost
+            ? document.querySelectorAll("div.zj_list_con:nth-child(4) > ul.list_con_li > li")
+            : document.querySelectorAll(".cartoon_online_border > ul > li");
+        let chapterNumber = 0;
+        for (const co of Array.from(cos)) {
+            chapterNumber++;
+            const a = co.firstElementChild;
+            let chapterName;
+            if (isWwwHost) {
+                const span = a.lastElementChild;
+                chapterName = span.innerText;
+            }
+            else {
+                chapterName = a.innerText;
+            }
+            const chapterUrl = a.href;
+            const isVIP = false;
+            const isPaid = false;
+            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, null, null, null, this.chapterParse, "UTF-8", {});
+            chapters.push(chapter);
+        }
+        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        return book;
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+        function getpicUrlList(docI) {
+            const imgPrefix = "https://images.dmzj.com/";
+            const scriptElement = Array.from(docI.querySelectorAll("head > script")).filter((s) => s.innerHTML.includes("eval("))[0];
+            let pages = (0, misc_1.sandboxed)(scriptElement.innerText + ";return pages;");
+            pages = pages.replace(/\n/g, "");
+            pages = pages.replace(/\r/g, "|");
+            const info = (0, misc_1.sandboxed)("return (" + pages + ")");
+            if (info) {
+                let picUrlListI;
+                if (isWwwHost) {
+                    picUrlListI = info.page_url
+                        .split("|")
+                        .map((pic) => imgPrefix + pic);
+                }
+                else {
+                    picUrlListI = info.map((pic) => imgPrefix + pic);
+                }
+                return picUrlListI;
+            }
+        }
+        log_1.log.debug(`[Chapter]请求 ${chapterUrl}`);
+        const isWwwHost = document.location.host === "www.dmzj.com";
+        const doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
+        const picUrlList = getpicUrlList(doc);
+        if (picUrlList) {
+            const content = document.createElement("div");
+            for (const picUrl of picUrlList) {
+                const pElem = document.createElement("p");
+                const imgElem = document.createElement("img");
+                imgElem.src = picUrl;
+                pElem.appendChild(imgElem);
+                content.appendChild(pElem);
+            }
+            const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+            return {
+                chapterName,
+                contentRaw: content,
+                contentText: text,
+                contentHTML: dom,
+                contentImages: images,
+                additionalMetadate: null,
+            };
+        }
+        return {
+            chapterName,
+            contentRaw: null,
+            contentText: null,
+            contentHTML: null,
+            contentImages: null,
+            additionalMetadate: null,
+        };
+    }
+}
+exports.Dmzj = Dmzj;
+
+
+/***/ }),
+
+/***/ "./src/rules/special/reprint/fushuwang.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Fushuwang = void 0;
+const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
+const http_1 = __webpack_require__("./src/lib/http.ts");
+const misc_1 = __webpack_require__("./src/lib/misc.ts");
+const main_1 = __webpack_require__("./src/main.ts");
+const rules_1 = __webpack_require__("./src/rules.ts");
+class Fushuwang extends rules_1.BaseRuleClass {
+    constructor() {
+        super();
+        this.imageMode = "TM";
+        this.charset = "GBK";
+        this.maxRunLimit = 5;
+        this.saveOptions = {
+            genChapterText: (chapterName, contentText) => {
+                return `${contentText}\n`;
+            },
+        };
+    }
+    async bookParse() {
+        const bookUrl = (document.location.origin + document.location.pathname).replace(/(_\d+)\.html$/, ".html");
+        const [bookname, author] = document.querySelector(".title_info > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(1) > h1:nth-child(1)").innerText.split("——");
+        const [introduction, introductionHTML] = [null, null];
+        const additionalMetadate = {};
+        const options = document.querySelectorAll("p.pageLink > select > option");
+        const urls = Array.from(options).map((option) => document.location.origin + option.getAttribute("value"));
+        const chapters = [];
+        for (let i = 0; i < urls.length; i++) {
+            const chapterUrl = urls[i];
+            const chapterName = `page${i}`;
+            const isVIP = false;
+            const isPaid = false;
+            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, i + 1, chapterName, isVIP, isPaid, null, null, null, this.chapterParse, this.charset, {});
+            chapters.push(chapter);
+        }
+        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        book.saveOptions = this.saveOptions;
+        return book;
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+        const doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
+        const content = doc.querySelector("#text");
+        if (content) {
+            (0, misc_1.rm)("span", true, content);
+            (0, misc_1.rm)("p.pageLink", true, content);
+            (0, misc_1.rm)("script", true, content);
+            const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+            return {
+                chapterName,
+                contentRaw: content,
+                contentText: text,
+                contentHTML: dom,
+                contentImages: images,
+                additionalMetadate: null,
+            };
+        }
+        else {
+            return {
+                chapterName,
+                contentRaw: null,
+                contentText: null,
+                contentHTML: null,
+                contentImages: null,
+                additionalMetadate: null,
+            };
+        }
+    }
+}
+exports.Fushuwang = Fushuwang;
+
+
+/***/ }),
+
+/***/ "./src/rules/special/reprint/hetushu.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Hetushu = void 0;
+const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
+const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
+const http_1 = __webpack_require__("./src/lib/http.ts");
+const misc_1 = __webpack_require__("./src/lib/misc.ts");
+const log_1 = __webpack_require__("./src/log.ts");
+const main_1 = __webpack_require__("./src/main.ts");
+const rules_1 = __webpack_require__("./src/rules.ts");
+const common_1 = __webpack_require__("./src/rules/lib/common.ts");
+class Hetushu extends rules_1.BaseRuleClass {
+    constructor() {
+        super();
+        this.imageMode = "TM";
+    }
+    async bookParse() {
+        const bookUrl = document.location.href;
+        const bookname = document.querySelector(".book_info > h2").innerText.trim();
+        const author = document.querySelector(".book_info > div:nth-child(3) > a:nth-child(1)").innerText.trim();
+        const introDom = document.querySelector(".intro");
+        const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom);
+        const additionalMetadate = {};
+        const coverUrl = document.querySelector(".book_info > img").src;
+        if (coverUrl) {
+            (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
+                .then((coverClass) => {
+                additionalMetadate.cover = coverClass;
+            })
+                .catch((error) => log_1.log.error(error));
+        }
+        const chapters = [];
+        const chapterList = document.querySelector("#dir")?.childNodes;
+        if (chapterList && chapterList.length !== 0) {
+            let chapterNumber = 0;
+            let sectionNumber = 0;
+            let sectionName = null;
+            let sectionChapterNumber = 0;
+            for (const node of chapterList) {
+                if (node.nodeName === "DT") {
+                    sectionNumber++;
+                    sectionChapterNumber = 0;
+                    sectionName = node.innerText.trim();
+                }
+                else if (node.nodeName === "DD") {
+                    chapterNumber++;
+                    sectionChapterNumber++;
+                    const a = node.firstElementChild;
+                    const chapterName = a.innerText;
+                    const chapterUrl = a.href;
+                    const isVIP = false;
+                    const isPaid = false;
+                    const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, "UTF-8", {});
+                    chapters.push(chapter);
+                }
+            }
+        }
+        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        return book;
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+        async function sorfPage() {
+            let path;
+            let bid;
+            let sid;
+            let position;
+            if (/\/(book[0-9]?)\/([0-9]+)\/([0-9]+)\.html(\?position=([0-9]+))?$/.test(chapterUrl)) {
+                path = RegExp.$1;
+                bid = RegExp.$2;
+                sid = RegExp.$3;
+                position = RegExp.$5;
+            }
+            else {
+                return false;
+            }
+            const url = [
+                document.location.origin,
+                path,
+                bid,
+                "r" + sid + ".json",
+            ].join("/");
+            log_1.log.debug(`[Chapter]请求 ${url} Referer ${chapterUrl}`);
+            const token = await fetch(url, {
+                headers: {
+                    accept: "*/*",
+                    "cache-control": "no-cache",
+                    "content-type": "application/x-www-form-urlencoded",
+                    pragma: "no-cache",
+                    "x-requested-with": "XMLHttpRequest",
+                },
+                referrer: chapterUrl,
+                method: "GET",
+                mode: "cors",
+                credentials: "include",
+            })
+                .then((response) => response.headers.get("token"))
+                .catch((error) => log_1.log.error(error));
+            if (token) {
+                const tokenDict = atob(token)
+                    .split(/[A-Z]+%/)
+                    .map((v) => Number(v));
+                const thisBody = doc.querySelector("#content");
+                let b = 0;
+                let star = 0;
+                for (let i = 0; i < thisBody.childNodes.length; i++) {
+                    if (thisBody.childNodes[i].nodeName === "H2") {
+                        star = i + 1;
+                    }
+                    if (thisBody.childNodes[i].nodeName === "DIV" &&
+                        thisBody.childNodes[i].className !== "chapter") {
+                        break;
+                    }
+                }
+                const thisChildNode = [];
+                for (let i = 0; i < tokenDict.length; i++) {
+                    if (tokenDict[i] < 5) {
+                        thisChildNode[tokenDict[i]] = thisBody.childNodes[i + star];
+                        b++;
+                    }
+                    else {
+                        thisChildNode[tokenDict[i] - b] = thisBody.childNodes[i + star];
+                    }
+                }
+                for (const childNode of thisChildNode) {
+                    if (!childNode) {
+                        continue;
+                    }
+                    thisBody.appendChild(childNode);
+                }
+            }
+        }
+        const doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
+        chapterName = doc.querySelector("#content .h2").innerText.trim();
+        await sorfPage();
+        const content = doc.querySelector("#content");
+        if (content) {
+            const tagRemoved = "h2, acronym, bdo, big, cite, code, dfn, kbd, q, s, samp, strike, tt, u, var";
+            tagRemoved.split(", ").forEach((s) => {
+                (0, misc_1.rm)(s, true, content);
+            });
+            Array.from(content.querySelectorAll("div")).map((oldNode) => {
+                const newNode = document.createElement("p");
+                newNode.innerHTML = oldNode.innerHTML;
+                oldNode.parentNode?.replaceChild(newNode, oldNode);
+            });
+            const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+            return {
+                chapterName,
+                contentRaw: content,
+                contentText: text,
+                contentHTML: dom,
+                contentImages: images,
+                additionalMetadate: null,
+            };
+        }
+        else {
+            return {
+                chapterName,
+                contentRaw: null,
+                contentText: null,
+                contentHTML: null,
+                contentImages: null,
+                additionalMetadate: null,
+            };
+        }
+    }
+}
+exports.Hetushu = Hetushu;
+
+
+/***/ }),
+
+/***/ "./src/rules/special/reprint/idejian.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Idejian = void 0;
+const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
+const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
+const http_1 = __webpack_require__("./src/lib/http.ts");
+const misc_1 = __webpack_require__("./src/lib/misc.ts");
+const log_1 = __webpack_require__("./src/log.ts");
+const main_1 = __webpack_require__("./src/main.ts");
+const rules_1 = __webpack_require__("./src/rules.ts");
+const common_1 = __webpack_require__("./src/rules/lib/common.ts");
+class Idejian extends rules_1.BaseRuleClass {
+    constructor() {
+        super();
+        this.imageMode = "TM";
+        this.maxRunLimit = 5;
+    }
+    async bookParse() {
+        const bookUrl = document.location.href;
+        const _bookID = bookUrl.match(/\/(\d+)\/$/);
+        const bookID = _bookID && _bookID[1];
+        const bookname = document.querySelector(".detail_bkname > a").innerText.trim();
+        const _author = document.querySelector(".detail_bkauthor")
+            .childNodes[0];
+        let author = "佚名";
+        if (_author && _author.textContent) {
+            author = _author.textContent.trim();
+        }
+        const introDom = document.querySelector(".brief_con");
+        const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom);
+        const additionalMetadate = {};
+        const coverUrl = document.querySelector(".book_img > img").src;
+        if (coverUrl) {
+            (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
+                .then((coverClass) => {
+                additionalMetadate.cover = coverClass;
+            })
+                .catch((error) => log_1.log.error(error));
+        }
+        additionalMetadate.tags = Array.from(document.querySelectorAll("div.detail_bkgrade > span")).map((span) => span.innerText.trim());
+        const chapters = [];
+        const cos = document.querySelectorAll(".catelog_list > li > a");
+        let chapterNumber = 0;
+        for (const aElem of Array.from(cos)) {
+            chapterNumber++;
+            const chapterName = aElem.innerText;
+            const chapterUrl = aElem.href;
+            const isVIP = false;
+            const isPaid = false;
+            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, null, null, null, this.chapterParse, "UTF-8", { bookID });
+            chapters.push(chapter);
+        }
+        document.cookie = "";
+        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        return book;
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+        const _chapterUrl = new URL(chapterUrl);
+        _chapterUrl.hostname = "m.idejian.com";
+        chapterUrl = _chapterUrl.toString();
+        const referBaseUrl = "https://m.idejian.com/catalog";
+        const _refer = new URL(referBaseUrl);
+        _refer.searchParams.set("bookId", options.bookID);
+        const referUrl = _refer.toString();
+        const fakeUA = "Mozilla/5.0 (iPhone; CPU iPhone OS 13_3_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.5 Mobile/15E148 Snapchat/10.77.5.59 (like Safari/604.1)";
+        if (document.cookie === "") {
+            await (0, http_1.ggetText)(referUrl, charset, { headers: { "User-Agent": fakeUA } });
+            await (0, http_1.ggetText)(chapterUrl, charset, {
+                headers: { "User-Agent": fakeUA, Referer: referUrl },
+            });
+        }
+        log_1.log.debug(`[Chapter]请求 ${chapterUrl}，Refer：${referUrl}`);
+        const doc = await (0, http_1.ggetHtmlDOM)(chapterUrl, charset, {
+            headers: { "User-Agent": fakeUA, Referer: referUrl },
+        });
+        chapterName = doc.querySelector(".text-title-1").innerText.trim();
+        let content;
+        if (doc.querySelectorAll("div.h5_mainbody").length === 1) {
+            content = doc.querySelector("div.h5_mainbody");
+        }
+        else {
+            content = doc.querySelectorAll("div.h5_mainbody")[1];
+        }
+        if (content) {
+            (0, misc_1.rm)("h1", false, content);
+            const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+            return {
+                chapterName,
+                contentRaw: content,
+                contentText: text,
+                contentHTML: dom,
+                contentImages: images,
+                additionalMetadate: null,
+            };
+        }
+        else {
+            return {
+                chapterName,
+                contentRaw: null,
+                contentText: null,
+                contentHTML: null,
+                contentImages: null,
+                additionalMetadate: null,
+            };
+        }
+    }
+}
+exports.Idejian = Idejian;
+
+
+/***/ }),
+
+/***/ "./src/rules/special/reprint/linovelib.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Linovelib = void 0;
+const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
+const http_1 = __webpack_require__("./src/lib/http.ts");
+const misc_1 = __webpack_require__("./src/lib/misc.ts");
+const log_1 = __webpack_require__("./src/log.ts");
+const main_1 = __webpack_require__("./src/main.ts");
+const rules_1 = __webpack_require__("./src/rules.ts");
+const common_1 = __webpack_require__("./src/rules/lib/common.ts");
+class Linovelib extends rules_1.BaseRuleClass {
+    constructor() {
+        super();
+        this.imageMode = "TM";
+    }
+    async bookParse() {
+        const bookUrl = document.location.href.replace(/\/catalog$/, ".html");
+        const bookname = document.querySelector(".book-meta > h1").innerText.trim();
+        const author = document.querySelector(".book-meta > p:nth-child(2) > span:nth-child(1) > a:nth-child(2)").innerText.trim();
+        const doc = await (0, http_1.getHtmlDOM)(bookUrl, undefined);
+        const introDom = doc.querySelector(".book-dec > p:nth-child(1)");
+        const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom);
+        const additionalMetadate = {};
+        const coverUrl = doc.querySelector(".book-img > img")
+            .src;
+        if (coverUrl) {
+            (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
+                .then((coverClass) => {
+                additionalMetadate.cover = coverClass;
+            })
+                .catch((error) => log_1.log.error(error));
+        }
+        additionalMetadate.tags = Array.from(doc.querySelectorAll(".book-label a")).map((a) => a.innerText.trim());
+        const chapters = [];
+        const chapterList = document.querySelector(".chapter-list");
+        if (!chapterList) {
+            throw new Error("获取章节失败！");
+        }
+        const liList = chapterList.children;
+        let chapterNumber = 0;
+        let sectionNumber = 0;
+        let sectionName = null;
+        let sectionChapterNumber = 0;
+        for (const node of Array.from(liList)) {
+            const nodeNmae = node.nodeName.toLowerCase();
+            if (nodeNmae === "div") {
+                sectionNumber++;
+                sectionChapterNumber = 0;
+                sectionName = node.innerText.trim();
+            }
+            else if (nodeNmae === "li") {
+                chapterNumber++;
+                sectionChapterNumber++;
+                const a = node.firstElementChild;
+                const isVIP = false;
+                const chapterName = a.innerText.trim();
+                const chapterUrl = a.href;
+                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, null, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, "UTF-8", {});
+                if (chapterUrl.startsWith("javascript")) {
+                    chapter.status = main_1.Status.aborted;
+                }
+                chapters.push(chapter);
+            }
+        }
+        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        return book;
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+        return (0, common_1.nextPageParse)({
+            chapterName,
+            chapterUrl,
+            charset,
+            selector: "#TextContent",
+            contentPatch: (_content, doc) => {
+                const ss = Array.from(doc.querySelectorAll("script")).find((s) => s.innerHTML.includes('document.getElementById("chapter_last")'));
+                if (ss) {
+                    const _domNr = ss.innerText.trim().match(/let dom_nr = '(.+)';/);
+                    if (_domNr) {
+                        const domNr = _domNr[1];
+                        doc.getElementById("chapter_last").innerHTML =
+                            domNr;
+                    }
+                }
+                (0, misc_1.rm)(".tp", true, _content);
+                (0, misc_1.rm)(".bd", true, _content);
+                return _content;
+            },
+            getNextPage: (doc) => doc.querySelector(".mlfy_page > a:nth-child(5)")
+                .href,
+            continueCondition: (_content, nextLink) => new URL(nextLink).pathname.includes("_"),
+        });
+    }
+}
+exports.Linovelib = Linovelib;
+
+
+/***/ }),
+
+/***/ "./src/rules/special/reprint/soxscc.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Soxscc = void 0;
+const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
+const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
+const http_1 = __webpack_require__("./src/lib/http.ts");
+const misc_1 = __webpack_require__("./src/lib/misc.ts");
+const log_1 = __webpack_require__("./src/log.ts");
+const main_1 = __webpack_require__("./src/main.ts");
+const rules_1 = __webpack_require__("./src/rules.ts");
+const common_1 = __webpack_require__("./src/rules/lib/common.ts");
+class Soxscc extends rules_1.BaseRuleClass {
+    constructor() {
+        super();
+        this.imageMode = "TM";
+    }
+    async bookParse() {
+        const bookUrl = document.location.href;
+        const bookname = document.querySelector(".xiaoshuo > h1").innerText.trim();
+        const author = document.querySelector(".xiaoshuo > h6:nth-child(3) > a").innerText.trim();
+        const introDom = document.querySelector("#intro");
+        const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom, (introDomI) => {
+            (0, misc_1.rm)("span.tags", false, introDomI);
+            (0, misc_1.rm)("q", true, introDomI);
+            return introDomI;
+        });
+        const additionalMetadate = {};
+        const coverUrl = document.querySelector(".book_cover > img").src;
+        if (coverUrl) {
+            (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
+                .then((coverClass) => {
+                additionalMetadate.cover = coverClass;
+            })
+                .catch((error) => log_1.log.error(error));
+        }
+        const chapters = [];
+        const novelList = document.querySelector("div.novel_list[id]");
+        const sections = Array.from(novelList.children);
+        let chapterNumber = 0;
+        for (let i = 0; i < sections.length; i++) {
+            const section = sections[i];
+            const sectionName = section.querySelector("dt > b")
+                ?.innerText;
+            const cos = Array.from(section.querySelectorAll("dd > a"));
+            let sectionChapterNumber = 0;
+            for (const a of cos) {
+                chapterNumber++;
+                sectionChapterNumber++;
+                const chapterUrl = a.href;
+                const chapterName = a.innerText;
+                const isVIP = false;
+                const isPaid = false;
+                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, i + 1, sectionChapterNumber, this.chapterParse, "UTF-8", { bookname });
+                chapters.push(chapter);
+            }
+        }
+        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        return book;
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+        const doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
+        const bookname = options.bookname;
+        chapterName = doc.querySelector(".read_title > h1").innerText.trim();
+        const content = doc.querySelector("div.content[id]");
+        if (content) {
+            const ad = `您可以在百度里搜索“${bookname} .+(${document.location.hostname})”查找最新章节！`;
+            content.innerHTML = content.innerHTML.replaceAll(ad, "");
+            Array.from(content.querySelectorAll("p")).forEach((p) => {
+                const adwords = [
+                    "最新章节地址：",
+                    "全文阅读地址：",
+                    "txt下载地址：",
+                    "手机阅读：",
+                    '为了方便下次阅读，你可以点击下方的"收藏"记录本次',
+                    "请向你的朋友（QQ、博客、微信等方式）推荐本书",
+                ];
+                for (const adword of adwords) {
+                    if (p.innerText.includes(adword)) {
+                        p.remove();
+                    }
+                }
+            });
+            const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+            return {
+                chapterName,
+                contentRaw: content,
+                contentText: text,
+                contentHTML: dom,
+                contentImages: images,
+                additionalMetadate: null,
+            };
+        }
+        else {
+            return {
+                chapterName,
+                contentRaw: null,
+                contentText: null,
+                contentHTML: null,
+                contentImages: null,
+                additionalMetadate: null,
+            };
+        }
+    }
+}
+exports.Soxscc = Soxscc;
+
+
+/***/ }),
+
+/***/ "./src/rules/special/reprint/uukanshu.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Uukanshu = void 0;
+const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
+const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
+const http_1 = __webpack_require__("./src/lib/http.ts");
+const misc_1 = __webpack_require__("./src/lib/misc.ts");
+const log_1 = __webpack_require__("./src/log.ts");
+const main_1 = __webpack_require__("./src/main.ts");
+const rules_1 = __webpack_require__("./src/rules.ts");
+const common_1 = __webpack_require__("./src/rules/lib/common.ts");
+class Uukanshu extends rules_1.BaseRuleClass {
+    constructor() {
+        super();
+        this.imageMode = "TM";
+        this.charset = "GBK";
+    }
+    async bookParse() {
+        const bookUrl = document.location.href;
+        const bookname = document.querySelector("dd.jieshao_content > h1 > a").innerText
+            .replace("最新章节", "")
+            .trim();
+        const author = document.querySelector("dd.jieshao_content > h2 > a").innerText.trim();
+        const introDom = document.querySelector("dd.jieshao_content > h3");
+        const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom, (introDomI) => {
+            introDomI.innerHTML = introDomI.innerHTML
+                .replace(/^.+简介：\s+www.uukanshu.com\s+/, "")
+                .replace(/\s+https:\/\/www.uukanshu.com/, "")
+                .replace(/－+/, "");
+            return introDomI;
+        });
+        const additionalMetadate = {};
+        const coverUrl = document.querySelector("a.bookImg > img").src;
+        if (coverUrl) {
+            (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
+                .then((coverClass) => {
+                additionalMetadate.cover = coverClass;
+            })
+                .catch((error) => log_1.log.error(error));
+        }
+        const chapters = [];
+        const button = document.querySelector('span[onclick="javascript:reverse(this);"]');
+        const reverse = unsafeWindow.reverse;
+        if (button.innerText === "顺序排列") {
+            reverse(button);
+        }
+        const chapterList = document.getElementById("chapterList")?.childNodes;
+        if (chapterList && chapterList.length !== 0) {
+            let chapterNumber = 0;
+            let sectionNumber = 0;
+            let sectionName = null;
+            let sectionChapterNumber = 0;
+            for (const li of Array.from(chapterList)) {
+                if (li.className === "volume") {
+                    sectionNumber++;
+                    sectionChapterNumber = 0;
+                    sectionName = li.innerText;
+                }
+                else {
+                    chapterNumber++;
+                    sectionChapterNumber++;
+                    const a = li.firstElementChild;
+                    const chapterName = a.innerText;
+                    const chapterUrl = a.href;
+                    const isVIP = false;
+                    const isPaid = false;
+                    const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, {});
+                    chapters.push(chapter);
+                }
+            }
+        }
+        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        return book;
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+        const doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
+        chapterName = doc.querySelector("#timu").innerText.trim();
+        const content = doc.querySelector("#contentbox");
+        if (content) {
+            (0, misc_1.rm)(".ad_content", true, content);
+            const contentReplace = [
+                /[ＵｕUu]+看书\s*[wｗ]+.[ＵｕUu]+[kｋ][aａ][nｎ][ｓs][hｈ][ＵｕUu].[nｎ][eｅ][tｔ]/g,
+                /[ＵｕUu]+看书\s*[wｗ]+.[ＵｕUu]+[kｋ][aａ][nｎ][ｓs][hｈ][ＵｕUu].[cＣｃ][oＯｏ][mＭｍ]/g,
+                /[UＵ]*看书[（\\(].*?[）\\)]文字首发。/,
+                /请记住本书首发域名：。?/g,
+                /笔趣阁手机版阅读网址：/g,
+                /小说网手机版阅读网址：/g,
+                /https:\/\//g,
+                /http:\/\//g,
+                /UU看书\s+欢迎广大书友光临阅读，最新、最快、最火的连载作品尽在UU看书！UU看书。;?/g,
+            ];
+            for (const r of contentReplace) {
+                content.innerHTML = content.innerHTML.replace(r, "");
+            }
+            const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+            return {
+                chapterName,
+                contentRaw: content,
+                contentText: text,
+                contentHTML: dom,
+                contentImages: images,
+                additionalMetadate: null,
+            };
+        }
+        else {
+            return {
+                chapterName,
+                contentRaw: null,
+                contentText: null,
+                contentHTML: null,
+                contentImages: null,
+                additionalMetadate: null,
+            };
+        }
+    }
+}
+exports.Uukanshu = Uukanshu;
+
+
+/***/ }),
+
+/***/ "./src/rules/special/reprint/wenku8.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
@@ -9285,7 +9280,7 @@ exports.Wenku8 = Wenku8;
 
 /***/ }),
 
-/***/ "./src/rules/special/xkzw.ts":
+/***/ "./src/rules/special/reprint/xkzw.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
@@ -9582,13 +9577,100 @@ exports.Xkzw = Xkzw;
 
 /***/ }),
 
-/***/ "./src/rules/special/zongheng.ts":
+/***/ "./src/rules/twoPage/1pwx.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Zongheng = void 0;
+exports.xiaoshuodaquan = void 0;
+const misc_1 = __webpack_require__("./src/lib/misc.ts");
+const tempate_1 = __webpack_require__("./src/rules/twoPage/tempate.ts");
+const xiaoshuodaquan = () => (0, tempate_1.mkRuleClass)({
+    bookUrl: document.location.href,
+    anotherPageUrl: document.querySelector(".viewalllinks").href,
+    getBookname: (doc) => document.querySelector(".r420 > h1").innerText.trim(),
+    getAuthor: (doc) => document.querySelector(".author a").innerText.trim(),
+    getIntroDom: (doc) => doc.querySelector(".bookintro"),
+    introDomPatch: (introDom) => introDom,
+    getCoverUrl: (doc) => document.querySelector(".con_limg > img")?.src,
+    getAList: (doc) => doc.querySelectorAll("div.clearfix li > a"),
+    getSections: (doc) => doc.querySelectorAll("div.dirtitone > h2"),
+    getName: (sElem) => sElem.innerText.trim(),
+    postHook: (chapter) => {
+        chapter.sectionName =
+            chapter.sectionName?.replace(chapter.bookname, "").trim() ?? null;
+        return chapter;
+    },
+    getContent: (doc) => doc.querySelector("#content"),
+    contentPatch: (content) => {
+        (0, misc_1.rm)("div", true, content);
+        (0, misc_1.rm)("script", true, content);
+        const c = document.createElement("div");
+        c.innerHTML = content.innerHTML.replace(/\n/g, "<br/><br/>");
+        return c;
+    },
+});
+exports.xiaoshuodaquan = xiaoshuodaquan;
+
+
+/***/ }),
+
+/***/ "./src/rules/twoPage/imiaobige.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.imiaobige = void 0;
+const misc_1 = __webpack_require__("./src/lib/misc.ts");
+const tempate_1 = __webpack_require__("./src/rules/twoPage/tempate.ts");
+const imiaobige = () => {
+    const bookUrl = document.location.href
+        .replace("/read/", "/novel/")
+        .replace(/\/$/, ".html");
+    const getName = (sElem) => sElem.firstElementChild?.innerText
+        .split(" ")
+        .slice(-1)?.[0] ?? "";
+    return (0, tempate_1.mkRuleClass)({
+        bookUrl,
+        anotherPageUrl: bookUrl,
+        getBookname: (doc) => doc.querySelector(".booktitle > h1").innerText.trim(),
+        getAuthor: (doc) => doc.querySelector("#author > a").innerText.trim(),
+        getIntroDom: (doc) => doc.querySelector("#bookintro"),
+        introDomPatch: (introDom) => introDom,
+        getCoverUrl: (doc) => doc.querySelector("#bookimg > img").src,
+        getSections: (doc) => document.querySelectorAll("#readerlists > ul"),
+        getAList: (doc) => document.querySelectorAll("#readerlists  a"),
+        getName,
+        postHook: (chapter) => {
+            if (chapter.sectionName?.includes("最新章节")) {
+                return;
+            }
+            chapter.sectionName =
+                chapter.sectionName?.replace(chapter.bookname, "").trim() ?? null;
+            return chapter;
+        },
+        getContent: (doc) => doc.querySelector("#content"),
+        contentPatch: (content) => {
+            const ads = ["您可以在百度里搜索“"];
+            (0, misc_1.rm2)(content, ads);
+            return content;
+        },
+    });
+};
+exports.imiaobige = imiaobige;
+
+
+/***/ }),
+
+/***/ "./src/rules/twoPage/tempate.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.mkRuleClass = void 0;
 const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
 const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
 const http_1 = __webpack_require__("./src/lib/http.ts");
@@ -9596,79 +9678,86 @@ const log_1 = __webpack_require__("./src/log.ts");
 const main_1 = __webpack_require__("./src/main.ts");
 const rules_1 = __webpack_require__("./src/rules.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
-class Zongheng extends rules_1.BaseRuleClass {
-    constructor() {
-        super();
-        this.imageMode = "TM";
-        this.concurrencyLimit = 5;
-    }
-    async bookParse() {
-        const bookUrl = document.location.href.replace("/showchapter/", "/book/");
-        const bookname = document.querySelector("div.book-meta > h1").innerText.trim();
-        const author = document.querySelector("div.book-meta > p > span:nth-child(1) > a").innerText.trim();
-        const doc = await (0, http_1.getHtmlDOM)(bookUrl, undefined);
-        const introDom = doc.querySelector("div.book-info > div.book-dec");
-        const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom);
-        const additionalMetadate = {};
-        const coverUrl = doc.querySelector("div.book-img > img").src;
-        if (coverUrl) {
-            (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
-                .then((coverClass) => {
-                additionalMetadate.cover = coverClass;
-            })
-                .catch((error) => log_1.log.error(error));
-        }
-        additionalMetadate.tags = Array.from(doc.querySelectorAll(".book-info>.book-label a")).map((a) => a.innerText.trim());
-        const chapters = [];
-        const sections = document.querySelectorAll(".volume-list");
-        let chapterNumber = 0;
-        for (let i = 0; i < sections.length; i++) {
-            const s = sections[i];
-            const sectionNumber = i + 1;
-            const sectionLabel = s.querySelector("div.volume");
-            Array.from(sectionLabel.children).forEach((ele) => ele.remove());
-            const sectionName = sectionLabel.innerText.trim();
-            let sectionChapterNumber = 0;
-            const cs = s.querySelectorAll("ul.chapter-list > li");
-            for (const c of Array.from(cs)) {
-                const a = c.querySelector("a");
-                chapterNumber++;
-                sectionChapterNumber++;
-                const chapterName = a.innerText.trim();
-                const chapterUrl = a.href;
-                const isVIP = () => {
-                    if (c.className.includes("vip")) {
-                        return true;
-                    }
-                    else {
-                        return false;
-                    }
-                };
-                const isPaid = () => {
-                    return false;
-                };
-                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), isPaid(), sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, "UTF-8", {});
-                const isLogin = () => {
-                    return false;
-                };
-                if (isVIP() && !(isLogin() && chapter.isPaid)) {
-                    chapter.status = main_1.Status.aborted;
-                }
-                chapters.push(chapter);
+function mkRuleClass({ bookUrl, anotherPageUrl, getBookname, getAuthor, getIntroDom, introDomPatch, getCoverUrl, getAList, getSections, getName: _getSectionName, postHook, getContentFromUrl, getContent, contentPatch, concurrencyLimit, }) {
+    return class extends rules_1.BaseRuleClass {
+        constructor() {
+            super();
+            this.imageMode = "TM";
+            if (concurrencyLimit) {
+                this.concurrencyLimit = concurrencyLimit;
             }
         }
-        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
-        return book;
-    }
-    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        async function publicChapter() {
-            const doc = await (0, http_1.ggetHtmlDOM)(chapterUrl, charset);
-            const ChapterName = doc.querySelector("div.title_txtbox").innerText.trim();
-            const content = doc.querySelector("div.content");
+        async bookParse() {
+            const doc = await (0, http_1.getHtmlDOM)(anotherPageUrl, this.charset);
+            const bookname = getBookname(doc);
+            const author = getAuthor(doc);
+            const introDom = getIntroDom(doc);
+            const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom, introDomPatch);
+            const coverUrl = getCoverUrl(doc);
+            const additionalMetadate = {};
+            if (coverUrl) {
+                (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
+                    .then((coverClass) => {
+                    additionalMetadate.cover = coverClass;
+                })
+                    .catch((error) => log_1.log.error(error));
+            }
+            let sections;
+            if (typeof getSections === "function") {
+                sections = getSections(doc);
+            }
+            const chapters = [];
+            let chapterNumber = 0;
+            let sectionNumber = 0;
+            let sectionChapterNumber = 0;
+            let sectionName = null;
+            let hasSection = false;
+            if (sections &&
+                sections instanceof NodeList &&
+                typeof _getSectionName === "function") {
+                hasSection = true;
+            }
+            const aList = getAList(doc);
+            for (const aElem of Array.from(aList)) {
+                const chapterName = aElem.innerText;
+                const chapterUrl = aElem.href;
+                if (hasSection) {
+                    const _sectionName = (0, common_1.getSectionName)(aElem, sections, _getSectionName);
+                    if (_sectionName !== sectionName) {
+                        sectionName = _sectionName;
+                        sectionNumber++;
+                        sectionChapterNumber = 0;
+                    }
+                }
+                chapterNumber++;
+                sectionChapterNumber++;
+                const isVIP = false;
+                const isPaid = false;
+                let chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, hasSection ? sectionNumber : null, hasSection ? sectionChapterNumber : null, this.chapterParse, this.charset, { bookname });
+                if (typeof postHook === "function") {
+                    chapter = postHook(chapter);
+                }
+                if (chapter) {
+                    chapters.push(chapter);
+                }
+            }
+            const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+            return book;
+        }
+        async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+            let content;
+            if (getContentFromUrl !== undefined) {
+                content = await getContentFromUrl(chapterUrl, chapterName, charset);
+            }
+            else if (getContent !== undefined) {
+                const doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
+                content = getContent(doc);
+            }
             if (content) {
+                content = contentPatch(content);
                 const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
                 return {
-                    chapterName: ChapterName,
+                    chapterName,
                     contentRaw: content,
                     contentText: text,
                     contentHTML: dom,
@@ -9676,18 +9765,6 @@ class Zongheng extends rules_1.BaseRuleClass {
                     additionalMetadate: null,
                 };
             }
-            else {
-                return {
-                    chapterName: ChapterName,
-                    contentRaw: null,
-                    contentText: null,
-                    contentHTML: null,
-                    contentImages: null,
-                    additionalMetadate: null,
-                };
-            }
-        }
-        async function vipChapter() {
             return {
                 chapterName,
                 contentRaw: null,
@@ -9697,836 +9774,138 @@ class Zongheng extends rules_1.BaseRuleClass {
                 additionalMetadate: null,
             };
         }
-        if (isVIP) {
-            return vipChapter();
-        }
-        else {
-            return publicChapter();
-        }
-    }
+    };
 }
-exports.Zongheng = Zongheng;
+exports.mkRuleClass = mkRuleClass;
 
 
 /***/ }),
 
-/***/ "./src/rules/ujxs.ts":
+/***/ "./src/rules/twoPage/ujxs.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Ujxs = void 0;
-const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
-const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
-const http_1 = __webpack_require__("./src/lib/http.ts");
+exports.ujxs = void 0;
 const misc_1 = __webpack_require__("./src/lib/misc.ts");
-const log_1 = __webpack_require__("./src/log.ts");
-const main_1 = __webpack_require__("./src/main.ts");
-const rules_1 = __webpack_require__("./src/rules.ts");
-const common_1 = __webpack_require__("./src/rules/lib/common.ts");
-class Ujxs extends rules_1.BaseRuleClass {
-    constructor() {
-        super();
-        this.imageMode = "TM";
-        this.charset = "GBK";
-    }
-    async bookParse() {
-        const bookUrl = document.location.origin +
-            document.location.pathname.replace(/^\/read/, "/book");
-        const bookname = document.querySelector("#smallcons > h1").innerText.trim();
-        const author = document.querySelector("#smallcons > span:nth-child(3) > a").innerText.trim();
-        const doc = await (0, http_1.getHtmlDOM)(bookUrl, this.charset);
-        const introDom = doc.querySelector("#bookintro");
-        const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom);
-        const additionalMetadate = {};
-        const coverUrl = doc.querySelector(".img > img")?.src;
-        if (coverUrl) {
-            (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
-                .then((coverClass) => {
-                additionalMetadate.cover = coverClass;
-            })
-                .catch((error) => log_1.log.error(error));
-        }
-        const liList = document.querySelectorAll("#readerlist > ul > li");
-        const chapters = [];
-        let chapterNumber = 0;
-        let sectionNumber = 0;
-        let sectionName = null;
-        let sectionChapterNumber = 0;
-        for (const li of Array.from(liList)) {
-            if (li.getAttribute("class")) {
-                sectionNumber++;
-                sectionChapterNumber = 0;
-                sectionName =
-                    li.querySelector("h3")?.innerText.replace(bookname, "").trim() ??
-                        null;
-            }
-            else {
-                const aElem = li.firstElementChild;
-                chapterNumber++;
-                sectionChapterNumber++;
-                const chapterName = aElem.innerText;
-                const chapterUrl = aElem.href;
-                const isVIP = false;
-                const isPaid = false;
-                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, { bookname });
-                chapters.push(chapter);
-            }
-        }
-        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
-        return book;
-    }
-    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        const doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
-        const content = doc.querySelector(".read-content");
-        if (content) {
+const tempate_1 = __webpack_require__("./src/rules/twoPage/tempate.ts");
+const ujxs = () => {
+    const bookUrl = document.location.origin +
+        document.location.pathname.replace(/^\/read/, "/book");
+    return (0, tempate_1.mkRuleClass)({
+        bookUrl,
+        anotherPageUrl: bookUrl,
+        getBookname: (doc) => document.querySelector("#smallcons > h1").innerText.trim(),
+        getAuthor: (doc) => document.querySelector("#smallcons > span:nth-child(3) > a").innerText.trim(),
+        getIntroDom: (doc) => doc.querySelector("#bookintro"),
+        introDomPatch: (introDom) => introDom,
+        getCoverUrl: (doc) => doc.querySelector(".img > img")?.src,
+        getAList: (doc) => document.querySelectorAll("#readerlist  li > a"),
+        getSections: (doc) => document.querySelectorAll("#readerlist  li.fj > h3"),
+        getName: (sElem) => sElem.innerText,
+        postHook: (chapter) => {
+            chapter.sectionName =
+                chapter.sectionName?.replace(chapter.bookname, "") ?? null;
+            return chapter;
+        },
+        getContent: (doc) => doc.querySelector(".read-content"),
+        contentPatch: (content) => {
             (0, misc_1.rm)("script", true, content);
-            const ads = [
-                "【悠久小説網ωωω.ＵＪХＳ.ｎｅｔ】，免费小说无弹窗免费阅读！",
-                "佰度搜索 【悠久小說網 ＷＷＷ.ＵＪХＳ．ＮＥＴ】 全集TXT电子书免费下载！",
-            ];
-            ads.forEach((ad) => (content.innerHTML = content.innerHTML.replaceAll(ad, "")));
-            const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
-            return {
-                chapterName,
-                contentRaw: content,
-                contentText: text,
-                contentHTML: dom,
-                contentImages: images,
-                additionalMetadate: null,
-            };
-        }
-        else {
-            return {
-                chapterName,
-                contentRaw: null,
-                contentText: null,
-                contentHTML: null,
-                contentImages: null,
-                additionalMetadate: null,
-            };
-        }
-    }
-}
-exports.Ujxs = Ujxs;
+            const ads = ["免费小说无弹窗免费阅读！", "全集TXT电子书免费下载！"];
+            (0, misc_1.rm2)(content, ads);
+            return content;
+        },
+    });
+};
+exports.ujxs = ujxs;
 
 
 /***/ }),
 
-/***/ "./src/rules/uukanshu.ts":
+/***/ "./src/rules/twoPage/viviyzw.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Uukanshu = void 0;
-const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
-const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
-const http_1 = __webpack_require__("./src/lib/http.ts");
-const misc_1 = __webpack_require__("./src/lib/misc.ts");
-const log_1 = __webpack_require__("./src/log.ts");
-const main_1 = __webpack_require__("./src/main.ts");
-const rules_1 = __webpack_require__("./src/rules.ts");
-const common_1 = __webpack_require__("./src/rules/lib/common.ts");
-class Uukanshu extends rules_1.BaseRuleClass {
-    constructor() {
-        super();
-        this.imageMode = "TM";
-        this.charset = "GBK";
-    }
-    async bookParse() {
-        const bookUrl = document.location.href;
-        const bookname = document.querySelector("dd.jieshao_content > h1 > a").innerText
-            .replace("最新章节", "")
-            .trim();
-        const author = document.querySelector("dd.jieshao_content > h2 > a").innerText.trim();
-        const introDom = document.querySelector("dd.jieshao_content > h3");
-        const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom, (introDomI) => {
-            introDomI.innerHTML = introDomI.innerHTML
-                .replace(/^.+简介：\s+www.uukanshu.com\s+/, "")
-                .replace(/\s+https:\/\/www.uukanshu.com/, "")
-                .replace(/－+/, "");
-            return introDomI;
-        });
-        const additionalMetadate = {};
-        const coverUrl = document.querySelector("a.bookImg > img").src;
-        if (coverUrl) {
-            (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
-                .then((coverClass) => {
-                additionalMetadate.cover = coverClass;
-            })
-                .catch((error) => log_1.log.error(error));
-        }
-        const chapters = [];
-        const button = document.querySelector('span[onclick="javascript:reverse(this);"]');
-        const reverse = unsafeWindow.reverse;
-        if (button.innerText === "顺序排列") {
-            reverse(button);
-        }
-        const chapterList = document.getElementById("chapterList")?.childNodes;
-        if (chapterList && chapterList.length !== 0) {
-            let chapterNumber = 0;
-            let sectionNumber = 0;
-            let sectionName = null;
-            let sectionChapterNumber = 0;
-            for (const li of Array.from(chapterList)) {
-                if (li.className === "volume") {
-                    sectionNumber++;
-                    sectionChapterNumber = 0;
-                    sectionName = li.innerText;
-                }
-                else {
-                    chapterNumber++;
-                    sectionChapterNumber++;
-                    const a = li.firstElementChild;
-                    const chapterName = a.innerText;
-                    const chapterUrl = a.href;
-                    const isVIP = false;
-                    const isPaid = false;
-                    const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, {});
-                    chapters.push(chapter);
-                }
+exports.viviyzw = void 0;
+const tempate_1 = __webpack_require__("./src/rules/twoPage/tempate.ts");
+const viviyzw = () => {
+    const bookUrl = document.location.href.replace("/book", "/info");
+    return (0, tempate_1.mkRuleClass)({
+        bookUrl,
+        anotherPageUrl: bookUrl,
+        getBookname: (doc) => doc.querySelector("article.info > header > h1").innerText.trim(),
+        getAuthor: (doc) => doc.querySelector("article.info > p.detail.pt20 > i:nth-child(1) > a").innerText.trim(),
+        getIntroDom: (doc) => doc.querySelector("article.info > p.desc"),
+        introDomPatch: (content) => content,
+        getCoverUrl: (doc) => doc.querySelector("article.info > div.cover > img")
+            .src,
+        getAList: (doc) => document.querySelectorAll("ul.mulu > li.col3 > a"),
+        getSections: (doc) => document.querySelectorAll("li.col1.volumn"),
+        getName: (sElem) => sElem.innerText,
+        postHook: (chapter) => {
+            if (chapter.sectionName?.includes("最新九章")) {
+                return;
             }
-        }
-        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
-        return book;
-    }
-    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        const doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
-        chapterName = doc.querySelector("#timu").innerText.trim();
-        const content = doc.querySelector("#contentbox");
-        if (content) {
-            (0, misc_1.rm)(".ad_content", true, content);
-            const contentReplace = [
-                /[ＵｕUu]+看书\s*[wｗ]+.[ＵｕUu]+[kｋ][aａ][nｎ][ｓs][hｈ][ＵｕUu].[nｎ][eｅ][tｔ]/g,
-                /[ＵｕUu]+看书\s*[wｗ]+.[ＵｕUu]+[kｋ][aａ][nｎ][ｓs][hｈ][ＵｕUu].[cＣｃ][oＯｏ][mＭｍ]/g,
-                /[UＵ]*看书[（\\(].*?[）\\)]文字首发。/,
-                /请记住本书首发域名：。?/g,
-                /笔趣阁手机版阅读网址：/g,
-                /小说网手机版阅读网址：/g,
-                /https:\/\//g,
-                /http:\/\//g,
-                /UU看书\s+欢迎广大书友光临阅读，最新、最快、最火的连载作品尽在UU看书！UU看书。;?/g,
-            ];
-            for (const r of contentReplace) {
-                content.innerHTML = content.innerHTML.replace(r, "");
-            }
-            const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
-            return {
-                chapterName,
-                contentRaw: content,
-                contentText: text,
-                contentHTML: dom,
-                contentImages: images,
-                additionalMetadate: null,
-            };
-        }
-        else {
-            return {
-                chapterName,
-                contentRaw: null,
-                contentText: null,
-                contentHTML: null,
-                contentImages: null,
-                additionalMetadate: null,
-            };
-        }
-    }
-}
-exports.Uukanshu = Uukanshu;
+            return chapter;
+        },
+        getContent: (doc) => doc.querySelector("#content"),
+        contentPatch: (content) => content,
+    });
+};
+exports.viviyzw = viviyzw;
 
 
 /***/ }),
 
-/***/ "./src/rules/westnovel.ts":
+/***/ "./src/rules/twoPage/yibige.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Westnovel = void 0;
-const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
-const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
-const http_1 = __webpack_require__("./src/lib/http.ts");
+exports.yibige = void 0;
 const misc_1 = __webpack_require__("./src/lib/misc.ts");
-const log_1 = __webpack_require__("./src/log.ts");
-const main_1 = __webpack_require__("./src/main.ts");
-const rules_1 = __webpack_require__("./src/rules.ts");
 const common_1 = __webpack_require__("./src/rules/lib/common.ts");
-class Westnovel extends rules_1.BaseRuleClass {
-    constructor() {
-        super();
-        this.imageMode = "TM";
-    }
-    async bookParse() {
-        const bookUrl = document.location.href;
-        const bookname = document.querySelector(".btitle > h1 > a").innerText.trim();
-        const author = document.querySelector(".btitle > em:nth-child(2)").innerText
-            .replace("作者：", "")
-            .trim();
-        const introDom = document.querySelector(".intro-p > p:nth-child(1)");
-        const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom);
-        const additionalMetadate = {};
-        const coverUrl = document.querySelector(".img-img")
-            .src;
-        if (coverUrl) {
-            (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
-                .then((coverClass) => {
-                additionalMetadate.cover = coverClass;
-            })
-                .catch((error) => log_1.log.error(error));
-        }
-        const chapters = [];
-        const aList = document.querySelectorAll(".chapterlist > dd > a");
-        let chapterNumber = 0;
-        for (const a of Array.from(aList)) {
-            chapterNumber++;
-            const chapterName = a.innerText.trim();
-            const chapterUrl = a.href;
-            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, false, false, null, null, null, this.chapterParse, "UTF-8", {});
-            chapters.push(chapter);
-        }
-        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
-        return book;
-    }
-    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        const doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
-        chapterName = doc.querySelector("#BookCon > h1:nth-child(1)").innerText.trim();
-        const content = doc.querySelector("#BookText");
-        if (content) {
-            (0, misc_1.rm)("div.ads", true, content);
-            (0, misc_1.rm)("div.link", true, content);
-            (0, misc_1.rm)("h4", true, content);
-            const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
-            return {
-                chapterName,
-                contentRaw: content,
-                contentText: text,
-                contentHTML: dom,
-                contentImages: images,
-                additionalMetadate: null,
-            };
-        }
-        else {
-            return {
-                chapterName,
-                contentRaw: null,
-                contentText: null,
-                contentHTML: null,
-                contentImages: null,
-                additionalMetadate: null,
-            };
-        }
-    }
-}
-exports.Westnovel = Westnovel;
-
-
-/***/ }),
-
-/***/ "./src/rules/xiaoshuodaquan.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Xiaoshuodaquan = void 0;
-const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
-const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
-const http_1 = __webpack_require__("./src/lib/http.ts");
-const misc_1 = __webpack_require__("./src/lib/misc.ts");
-const log_1 = __webpack_require__("./src/log.ts");
-const main_1 = __webpack_require__("./src/main.ts");
-const rules_1 = __webpack_require__("./src/rules.ts");
-const common_1 = __webpack_require__("./src/rules/lib/common.ts");
-class Xiaoshuodaquan extends rules_1.BaseRuleClass {
-    constructor() {
-        super();
-        this.imageMode = "TM";
-        this.charset = "GBK";
-        this.concurrencyLimit = 5;
-    }
-    async bookParse() {
-        const ccount = document.querySelector(".crumbswrap")?.childElementCount;
-        let bookUrl = document.location.href;
-        if (ccount) {
-            bookUrl = document.querySelector(`.crumbswrap > a:nth-child(${ccount - 2})`).href;
-        }
-        const bookname = document.querySelector("div.dirwraps > h1").innerText
-            .replace("《", "")
-            .replace("》", "")
-            .trim();
-        const author = document.querySelector(".smallcons > span:nth-child(1) > a:nth-child(1)").innerText.trim();
-        const introDom = document.querySelector(".bookintro");
-        const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom, (introDomI) => {
-            introDomI.innerHTML = introDomI.innerHTML.replace("内容简介:", "");
-            return introDomI;
-        });
-        const additionalMetadate = {};
-        let coverUrl;
-        if (ccount) {
-            const dom = await (0, http_1.getHtmlDOM)(bookUrl, "GBK");
-            coverUrl = dom.querySelector(".con_limg > img").src;
-        }
-        if (coverUrl) {
-            (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
-                .then((coverClass) => {
-                additionalMetadate.cover = coverClass;
-            })
-                .catch((error) => log_1.log.error(error));
-        }
-        const chapters = [];
-        const sectionNames = document.querySelectorAll(".dirwraps > div.dirtitone");
-        const sections = document.querySelectorAll(".dirwraps > div.clearfix.dirconone");
-        let chapterNumber = 0;
-        for (let i = 0; i < sections.length; i++) {
-            const sectionNameObj = sectionNames[i];
-            const sectionObj = sections[i];
-            const sectionNumber = i + 1;
-            const sectionName = sectionNameObj.firstElementChild?.innerText
-                .replace(bookname, "")
-                .trim();
-            let sectionChapterNumber = 0;
-            const cos = sectionObj.querySelectorAll("ul>li>a");
-            for (const a of Array.from(cos)) {
-                chapterNumber++;
-                sectionChapterNumber++;
-                const chapterName = a.innerText;
-                const chapterUrl = a.href;
-                const isVIP = false;
-                const isPaid = false;
-                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, {});
-                chapters.push(chapter);
-            }
-        }
-        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
-        return book;
-    }
-    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        const doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
-        chapterName = doc.querySelector(".page-body > h1:nth-child(4)").innerText.trim();
-        const _content = doc.querySelector("#content");
-        if (_content) {
-            (0, misc_1.rm)("div", true, _content);
-            (0, misc_1.rm)("script", true, _content);
-            const content = document.createElement("div");
-            content.innerHTML = _content.innerHTML.replace(/\n/g, "<br/>");
-            const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
-            return {
-                chapterName,
-                contentRaw: content,
-                contentText: text,
-                contentHTML: dom,
-                contentImages: images,
-                additionalMetadate: null,
-            };
-        }
-        else {
-            return {
-                chapterName,
-                contentRaw: null,
-                contentText: null,
-                contentHTML: null,
-                contentImages: null,
-                additionalMetadate: null,
-            };
-        }
-    }
-}
-exports.Xiaoshuodaquan = Xiaoshuodaquan;
-
-
-/***/ }),
-
-/***/ "./src/rules/yibige.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Yibige = void 0;
-const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
-const http_1 = __webpack_require__("./src/lib/http.ts");
-const misc_1 = __webpack_require__("./src/lib/misc.ts");
-const log_1 = __webpack_require__("./src/log.ts");
-const main_1 = __webpack_require__("./src/main.ts");
-const rules_1 = __webpack_require__("./src/rules.ts");
-const common_1 = __webpack_require__("./src/rules/lib/common.ts");
-class Yibige extends rules_1.BaseRuleClass {
-    constructor() {
-        super();
-        this.imageMode = "TM";
-    }
-    async bookParse() {
-        const bookUrl = document.querySelector("#list_hb > li:nth-child(2) > a:nth-child(1)").href;
-        const doc = await (0, http_1.getHtmlDOM)(bookUrl, undefined);
-        const bookname = doc.querySelector(".title > h1:nth-child(1)").innerText.trim();
-        const author = doc.querySelector("div.xsxq_2:nth-child(2) > a:nth-child(1)").innerText.trim();
-        const introDom = document.createElement("p");
-        const _introDom = doc.querySelector(".nr");
-        for (const node of Array.from(_introDom.childNodes)) {
-            if (node.nodeName.toLowerCase() === "#text" &&
-                node.textContent?.trim() === "相关：") {
-                break;
-            }
-            introDom.appendChild(node.cloneNode(true));
-        }
-        const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom);
-        const additionalMetadate = {};
-        const coverUrl = doc.querySelector(".limg > img:nth-child(1)").src;
-        if (coverUrl) {
-            (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
-                .then((coverClass) => {
-                additionalMetadate.cover = coverClass;
-            })
-                .catch((error) => log_1.log.error(error));
-        }
-        const chapters = [];
-        const dl = document.querySelector(".books_li");
-        if (dl?.childElementCount) {
-            const dlc = Array.from(dl.children);
-            if (dlc[0].nodeName === "DT" &&
-                dlc[0].innerText.includes("最新12章节")) {
-                for (let i = 0; i < dl?.childElementCount; i++) {
-                    if (i !== 0 && dlc[i].nodeName === "DT") {
-                        delete dlc[0];
-                        break;
-                    }
-                    delete dlc[i];
-                }
-            }
-            const chapterList = dlc.filter((obj) => obj !== undefined && obj.getAttribute("style") === null);
-            let chapterNumber = 0;
-            let sectionNumber = 0;
-            let sectionName = null;
-            let sectionChapterNumber = 0;
-            for (const node of chapterList) {
-                if (node.nodeName === "DT") {
-                    sectionNumber++;
-                    sectionChapterNumber = 0;
-                    sectionName = node.innerText.replace(`《${bookname}》`, "").trim();
-                }
-                else if (node.nodeName === "DD") {
-                    if (node.childElementCount === 0) {
-                        continue;
-                    }
-                    chapterNumber++;
-                    sectionChapterNumber++;
-                    const a = node.firstElementChild;
-                    const chapterName = a.innerText;
-                    const chapterUrl = a.href;
-                    const isVIP = false;
-                    const isPaid = false;
-                    const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, "UTF-8", { bookname });
-                    chapters.push(chapter);
-                }
-            }
-        }
-        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
-        return book;
-    }
-    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        return (0, common_1.nextPageParse)({
+const tempate_1 = __webpack_require__("./src/rules/twoPage/tempate.ts");
+const yibige = () => (0, tempate_1.mkRuleClass)({
+    bookUrl: document.location.href,
+    anotherPageUrl: document.location.href + "index.html",
+    getBookname: (doc) => document.querySelector("#info h1:nth-of-type(1)").innerText.trim(),
+    getAuthor: (doc) => document.querySelector("#info > p:nth-child(2)").innerText
+        .replace(/作(\s+)?者[：:]/, "")
+        .trim(),
+    getIntroDom: (doc) => document.querySelector("#intro > p:nth-child(1)"),
+    introDomPatch: (introDom) => introDom,
+    getCoverUrl: (doc) => document.querySelector("#fmimg > img")?.src ?? "",
+    getAList: (doc) => doc.querySelectorAll("#list dd > a"),
+    getContent: (doc) => doc.querySelector("#content"),
+    getContentFromUrl: async (chapterUrl, chapterName, charset) => {
+        const { chapterName: _chapterName, contentRaw, contentText, contentHTML, contentImages, additionalMetadate, } = await (0, common_1.nextPageParse)({
             chapterName,
             chapterUrl,
             charset,
-            selector: "#fontsize",
-            contentPatch: (_content, doc) => {
-                (0, misc_1.rm)("div", true, _content);
-                (0, misc_1.rm)("script", true, _content);
-                _content.innerHTML = _content.innerHTML
-                    .replaceAll("测试广告1", "")
-                    .replaceAll("测试广告2", "");
-                return _content;
+            selector: "#content",
+            contentPatch: (content, doc) => {
+                (0, misc_1.rm)("script", true, content);
+                (0, misc_1.rm)("div[style]", true, content);
+                return content;
             },
-            getNextPage: (doc) => doc.querySelector(".nr_fy > a:nth-child(4)")
+            getNextPage: (doc) => doc.querySelector(".bottem1 > a:nth-child(4)")
                 .href,
-            continueCondition: (_content, nextLink) => new URL(nextLink).pathname.includes("_"),
+            continueCondition: (_content, nextLink) => {
+                const pathname = nextLink.split("/").slice(-1)[0];
+                return pathname.includes("_");
+            },
+            enableCleanDOM: false,
         });
-    }
-}
-exports.Yibige = Yibige;
-
-
-/***/ }),
-
-/***/ "./src/rules/yruan.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Yrun = void 0;
-const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
-const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
-const http_1 = __webpack_require__("./src/lib/http.ts");
-const log_1 = __webpack_require__("./src/log.ts");
-const main_1 = __webpack_require__("./src/main.ts");
-const rules_1 = __webpack_require__("./src/rules.ts");
-const common_1 = __webpack_require__("./src/rules/lib/common.ts");
-class Yrun extends rules_1.BaseRuleClass {
-    constructor() {
-        super();
-        this.imageMode = "TM";
-        this.concurrencyLimit = 1;
-    }
-    async bookParse() {
-        const bookUrl = document.location.href;
-        const bookname = document.querySelector("#info > h1:nth-child(1)").innerText.trim();
-        const author = document.querySelector("#info > p:nth-child(2)").innerText
-            .replace(/作(\s+)?者[：:]/, "")
-            .trim();
-        const introDom = document.querySelector("#intro > p");
-        const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom);
-        const additionalMetadate = {};
-        const coverUrl = document.querySelector("#fmimg > img").src;
-        if (coverUrl) {
-            (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
-                .then((coverClass) => {
-                additionalMetadate.cover = coverClass;
-            })
-                .catch((error) => log_1.log.error(error));
-        }
-        const chapters = [];
-        const chapterList = document.querySelectorAll("#list>dl>dd>a");
-        if (chapterList && chapterList.length !== 0) {
-            for (let i = 0; i < chapterList.length; i++) {
-                const a = chapterList[i];
-                const chapterName = a.innerText;
-                const chapterUrl = a.href;
-                const isVIP = false;
-                const isPaid = false;
-                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, i, chapterName, isVIP, isPaid, null, null, null, this.chapterParse, "UTF-8", {});
-                chapters.push(chapter);
-            }
-        }
-        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
-        return book;
-    }
-    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        const doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
-        chapterName = doc.querySelector(".bookname > h1:nth-child(1)").innerText.trim();
-        const content = doc.querySelector("#content");
-        if (content) {
-            const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
-            return {
-                chapterName,
-                contentRaw: content,
-                contentText: text,
-                contentHTML: dom,
-                contentImages: images,
-                additionalMetadate: null,
-            };
-        }
-        else {
-            return {
-                chapterName,
-                contentRaw: null,
-                contentText: null,
-                contentHTML: null,
-                contentImages: null,
-                additionalMetadate: null,
-            };
-        }
-    }
-}
-exports.Yrun = Yrun;
-
-
-/***/ }),
-
-/***/ "./src/rules/yuzhaige.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Yuzhaige = void 0;
-const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
-const http_1 = __webpack_require__("./src/lib/http.ts");
-const misc_1 = __webpack_require__("./src/lib/misc.ts");
-const log_1 = __webpack_require__("./src/log.ts");
-const main_1 = __webpack_require__("./src/main.ts");
-const rules_1 = __webpack_require__("./src/rules.ts");
-const common_1 = __webpack_require__("./src/rules/lib/common.ts");
-const yuzhaigeImageDecode_1 = __webpack_require__("./src/rules/lib/yuzhaigeImageDecode.ts");
-class Yuzhaige extends rules_1.BaseRuleClass {
-    constructor() {
-        super();
-        this.imageMode = "TM";
-    }
-    async bookParse() {
-        const bookUrl = document.querySelector("div.currency_head > h1 > a").href;
-        const bookId = bookUrl.split("/").slice(-2, -1)[0];
-        log_1.log.debug(`[chapter]请求 ${bookUrl}`);
-        const dom = await (0, http_1.getHtmlDOM)(bookUrl, "UTF-8");
-        const bookname = dom.querySelector("div.cataloginfo > h3").innerText.trim();
-        const author = dom.querySelector(".infotype > p:nth-child(1) > a:nth-child(1)").innerText.trim();
-        const introDom = dom.querySelector(".intro");
-        const [introduction, introductionHTML, introCleanimages] = await (0, common_1.introDomHandle)(introDom, (introDomI) => {
-            (0, misc_1.rm)("span:nth-child(1)", false, introDomI);
-            return introDomI;
-        });
-        const additionalMetadate = {};
-        const chapters = [];
-        const getMaxPageNumber = () => {
-            const pageDom = document.querySelector("div.page:nth-child(6)");
-            if (pageDom) {
-                const childNodes = Array.from(pageDom.childNodes);
-                const _maxPageNumber = childNodes
-                    .slice(-1)[0]
-                    .textContent?.match(/第\d+\/(\d+)页/);
-                if (_maxPageNumber) {
-                    return _maxPageNumber[1];
-                }
-            }
-        };
-        const getIndexUrls = () => {
-            const indexUrlsI = [];
-            const maxPageNumber = Number(getMaxPageNumber());
-            for (let i = 1; i <= maxPageNumber; i++) {
-                const indexUrl = [
-                    document.location.origin,
-                    document.location.pathname.split("/")[1],
-                    `${bookId}_${i}`,
-                ].join("/") + "/";
-                indexUrlsI.push(indexUrl);
-            }
-            return indexUrlsI;
-        };
-        const indexUrls = getIndexUrls();
-        let lis = [];
-        for (const indexUrl of indexUrls) {
-            log_1.log.debug(`[chapter]请求 ${indexUrl}`);
-            const doc = await (0, http_1.getHtmlDOM)(indexUrl, "UTF-8");
-            const ul = doc.querySelector("ul.chapters");
-            if (ul?.childElementCount) {
-                lis = lis.concat(Array.from(ul.children));
-            }
-        }
-        const chapterList = lis.filter((obj) => obj !== undefined);
-        let chapterNumber = 0;
-        for (const node of chapterList) {
-            chapterNumber++;
-            const a = node.firstElementChild;
-            const chapterName = a.innerText;
-            const chapterUrl = a.href;
-            const isVIP = false;
-            const isPaid = false;
-            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, null, null, null, this.chapterParse, "UTF-8", {});
-            chapters.push(chapter);
-        }
-        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
-        return book;
-    }
-    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        function contentAppend() {
-            function UpWz(m, i) {
-                let k = Math.ceil((i + 1) % code);
-                k = Math.ceil(m - k);
-                return k;
-            }
-            const _e = dom.getElementsByTagName("meta")[7].getAttribute("content");
-            const contentRaw = dom.querySelector("#articlecontent");
-            let codeurl;
-            let code;
-            const _codeurl = dom
-                .getElementsByTagName("script")[1]
-                .innerText.trim()
-                .match(/"(http.+)"/);
-            if (_codeurl) {
-                codeurl = _codeurl[1];
-                code = Number(new URL(codeurl).searchParams.get("code"));
-            }
-            if (_e) {
-                const e = atob(_e)
-                    .split(/[A-Z]+%/)
-                    .map((v) => Number(v));
-                const childNode = [];
-                if (Array.from(dom.querySelectorAll("script")).filter((s) => s.src.includes("/17mb/js/article.js")).length) {
-                    for (let i = 0; i < e.length; i++) {
-                        const k = UpWz(e[i], i);
-                        childNode[k] = contentRaw.childNodes[i];
-                    }
-                    for (const node of childNode) {
-                        if (node.nodeType !== 1) {
-                            continue;
-                        }
-                        if (!(node.innerText.includes("本章尚未完结,请") ||
-                            node.innerText.includes("本章已阅读完毕"))) {
-                            content.appendChild(node);
-                        }
-                    }
-                    return;
-                }
-            }
-            for (const node of Array.from(contentRaw.childNodes)) {
-                if (!(node.innerText.includes("本章尚未完结,请") ||
-                    node.innerText.includes("本章已阅读完毕"))) {
-                    content.appendChild(node);
-                }
-            }
-            return;
-        }
-        let nowUrl = chapterUrl;
-        let dom = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
-        const content = document.createElement("div");
-        let flag = false;
-        do {
-            contentAppend();
-            const nextLink = dom.querySelector(".novelbutton .p1.p3 > a:nth-child(1)").href;
-            if (new URL(nextLink).pathname.includes("_")) {
-                if (nextLink !== nowUrl) {
-                    flag = true;
-                }
-                else {
-                    log_1.log.error("网站页面出错，URL： " + nowUrl);
-                    flag = false;
-                }
-            }
-            else {
-                flag = false;
-            }
-            if (flag) {
-                nowUrl = nextLink;
-                dom = await (0, http_1.getHtmlDOM)(nextLink, charset);
-            }
-        } while (flag);
-        if (content) {
-            const { dom: oldDom, text: _text, images: finalImages, } = await (0, cleanDOM_1.cleanDOM)(content, "TM", { keepImageName: true });
-            const _newDom = document.createElement("div");
-            _newDom.innerHTML = (0, yuzhaigeImageDecode_1.replaceYuzhaigeImage)(content.innerHTML);
-            const { dom: newDom, text: finalText, images, } = await (0, cleanDOM_1.cleanDOM)(_newDom, "TM", { keepImageName: true });
-            const fontStyleDom = document.createElement("style");
-            fontStyleDom.innerHTML = `.hide { display: none; }`;
-            oldDom.className = "hide";
-            const finalDom = document.createElement("div");
-            finalDom.appendChild(fontStyleDom);
-            finalDom.appendChild(oldDom);
-            finalDom.appendChild(newDom);
-            return {
-                chapterName,
-                contentRaw: content,
-                contentText: finalText,
-                contentHTML: finalDom,
-                contentImages: finalImages,
-                additionalMetadate: null,
-            };
-        }
-        else {
-            return {
-                chapterName,
-                contentRaw: null,
-                contentText: null,
-                contentHTML: null,
-                contentImages: null,
-                additionalMetadate: null,
-            };
-        }
-    }
-}
-exports.Yuzhaige = Yuzhaige;
+        return contentRaw;
+    },
+    contentPatch: (content) => content,
+});
+exports.yibige = yibige;
 
 
 /***/ }),
@@ -11370,6 +10749,15 @@ exports["default"] = Vue.defineComponent({
         function isChapterFailed(_chapter) {
             return _chapter.status === main_1.Status.failed;
         }
+        function getChapterHtml(_chapter) {
+            const imgs = _chapter.contentHTML?.querySelectorAll("img");
+            if (imgs) {
+                Array.from(imgs).forEach((img) => {
+                    img.src = img.alt;
+                });
+            }
+            return _chapter.contentHTML?.outerHTML;
+        }
         Vue.onMounted(async () => {
             await initBook(setting_1.retryLimit);
             if (book) {
@@ -11385,7 +10773,14 @@ exports["default"] = Vue.defineComponent({
                 Object.assign(metaData, _metaData);
             }
         });
-        return { metaData, getData, chapter, isSeenChapter, isChapterFailed };
+        return {
+            metaData,
+            getData,
+            chapter,
+            isSeenChapter,
+            isChapterFailed,
+            getChapterHtml,
+        };
     },
     template: TestUI_html_1.default,
 });

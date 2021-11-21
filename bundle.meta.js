@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.4.11.327
+// @version        4.4.11.330
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -50,14 +50,10 @@
 // @match          *://www.266ks.com/*_*/index*.html
 // @match          *://www.hetushu.com/book/*/index.html
 // @match          *://hetushu.com/book/*/index.html
-// @match          *://www.shouda8.com/*/
 // @match          *://www.shouda88.com/*/
 // @match          *://www.gebiqu.com/biquge_*/
-// @match          *://www.meegoq.com/book*.html
 // @match          *://www.viviyzw.com/book*.html
-// @match          *://www.xiaoshuodaquan.com/*/
-// @match          *://www.1pwx.com/*/
-// @match          *://1pwx.com/*/
+// @match          *://www.1pwx.com/*.htm
 // @match          *://www.81book.com/book/*/
 // @match          *://www.81zw.com/book/*/
 // @match          *://m.yuzhaige.cc/*/*/
@@ -77,7 +73,7 @@
 // @match          *://www.hongyeshuzhai.com/shuzhai/*/
 // @match          *://www.linovelib.com/novel/*/catalog
 // @match          *://www.luoqiuzw.com/book/*/
-// @match          *://www.yibige.la/*/
+// @match          *://www.yibige.cc/*/
 // @match          *://www.fushuwang.org/*/*/*/*.html
 // @match          *://www.fushuwang.org/*/*/*/*.html?*
 // @match          *://www.soxscc.net/*/

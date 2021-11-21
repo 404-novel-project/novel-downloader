@@ -11,6 +11,7 @@ export interface NewWindow extends Window {
     _sections?: SectionObj[];
     _book?: Book;
 }
+export declare type GmWindow = NewWindow & typeof globalThis;
 export interface NewUnsafeWindow extends unsafeWindow {
     rule?: BaseRuleClass;
     book?: Book;
