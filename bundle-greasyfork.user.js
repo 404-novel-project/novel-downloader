@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.5.1.345
+// @version        4.5.1.348
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -5469,8 +5469,7 @@ class BaseRuleClass {
     }
     postCallback() {
         if (setting_1.enableCustomFinishCallback &&
-            typeof unsafeWindow.customFinishCallback ===
-                "function") {
+            typeof unsafeWindow.customFinishCallback === "function") {
             const customFinishCallback = unsafeWindow
                 .customFinishCallback;
             if (customFinishCallback) {
