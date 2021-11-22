@@ -1,5 +1,3 @@
-import { NewUnsafeWindow } from "./global";
-
 export const retryLimit = 5;
 export const enableDebug = {
   value: false,

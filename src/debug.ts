@@ -1,5 +1,5 @@
 import { saveAs } from "file-saver";
-import { GmWindow, NewUnsafeWindow } from "./global";
+import { GmWindow, UnsafeWindow } from "./global";
 import { getRule } from "./router/download";
 
 export async function debug() {
@@ -11,14 +11,14 @@ export async function debug() {
     } else {
       book = await rule.bookParse();
     }
-    (unsafeWindow as NewUnsafeWindow).rule = rule;
-    (unsafeWindow as NewUnsafeWindow).book = book;
+    (unsafeWindow as UnsafeWindow).rule = rule;
+    (unsafeWindow as UnsafeWindow).book = book;
     (window as GmWindow)._book = book;
     // tslint:disable-next-line: no-empty
   } catch (error) {}
 
   // @ts-ignore
-  (unsafeWindow as NewUnsafeWindow).saveAs = saveAs;
+  (unsafeWindow as UnsafeWindow).saveAs = saveAs;
   const { parse, fetchAndParse, gfetchAndParse } = await import(
     "./lib/readability"
   );
@@ -27,6 +27,6 @@ export async function debug() {
     fetchAndParse,
     gfetchAndParse,
   };
-  (unsafeWindow as NewUnsafeWindow).readability = readability;
+  (unsafeWindow as UnsafeWindow).readability = readability;
   return;
 }

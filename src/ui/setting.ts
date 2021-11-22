@@ -1,6 +1,6 @@
 import * as Vue from "vue";
 import { debug } from "../debug";
-import { NewUnsafeWindow } from "../global";
+import { UnsafeWindow } from "../global";
 import { createEl, createStyle } from "../lib/createEl";
 import { deepcopy, sleep } from "../lib/misc";
 import { log } from "../log";
@@ -131,12 +131,12 @@ export const vm = Vue.createApp({
         }
       }
       function setCustomSaveOption() {
-        (unsafeWindow as NewUnsafeWindow).saveOptions = curSaveOption();
+        (unsafeWindow as UnsafeWindow).saveOptions = curSaveOption();
       }
       function setCustomFilter() {
         if (config.filterSetting) {
           if (config.filterSetting.filterType === "null") {
-            (unsafeWindow as NewUnsafeWindow).chapterFilter = undefined;
+            (unsafeWindow as UnsafeWindow).chapterFilter = undefined;
           } else {
             const filterFunction = getFilterFunction(
               config.filterSetting.arg,
@@ -149,7 +149,7 @@ export const vm = Vue.createApp({
                 }
                 return filterFunction(chapter);
               };
-              (unsafeWindow as NewUnsafeWindow).chapterFilter = chapterFilter;
+              (unsafeWindow as UnsafeWindow).chapterFilter = chapterFilter;
             }
           }
         }

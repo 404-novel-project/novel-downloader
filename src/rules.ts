@@ -1,4 +1,4 @@
-import { GmWindow, NewUnsafeWindow } from "./global";
+import { GmWindow, UnsafeWindow } from "./global";
 import { clearAttachmentClassCache } from "./lib/attachments";
 import { concurrencyRun } from "./lib/misc";
 import { log, saveLogTextToFile } from "./log";
@@ -159,10 +159,9 @@ export abstract class BaseRuleClass {
   protected postCallback() {
     if (
       enableCustomFinishCallback &&
-      typeof (unsafeWindow as NewUnsafeWindow).customFinishCallback ===
-        "function"
+      typeof (unsafeWindow as UnsafeWindow).customFinishCallback === "function"
     ) {
-      const customFinishCallback = (unsafeWindow as NewUnsafeWindow)
+      const customFinishCallback = (unsafeWindow as UnsafeWindow)
         .customFinishCallback;
       if (customFinishCallback) {
         log.info(
@@ -221,10 +220,10 @@ export abstract class BaseRuleClass {
     log.debug("[run]保存数据");
     if (
       enableCustomSaveOptions &&
-      typeof (unsafeWindow as NewUnsafeWindow).saveOptions === "object" &&
-      saveOptionsValidate((unsafeWindow as NewUnsafeWindow).saveOptions)
+      typeof (unsafeWindow as UnsafeWindow).saveOptions === "object" &&
+      saveOptionsValidate((unsafeWindow as UnsafeWindow).saveOptions)
     ) {
-      const saveOptionsInner = (unsafeWindow as NewUnsafeWindow).saveOptions;
+      const saveOptionsInner = (unsafeWindow as UnsafeWindow).saveOptions;
       if (saveOptionsInner) {
         log.info("[run]发现自定义保存参数，内容如下\n", saveOptionsInner);
         return getSaveBookObj(book, saveOptionsInner);
@@ -237,12 +236,12 @@ export abstract class BaseRuleClass {
     function isEnable() {
       if (
         enableCustomChapterFilter &&
-        typeof (unsafeWindow as NewUnsafeWindow).chapterFilter === "function"
+        typeof (unsafeWindow as UnsafeWindow).chapterFilter === "function"
       ) {
         let text =
           "[initChapters]发现自定义筛选函数，自定义筛选函数内容如下：\n";
         // @ts-expect-error
-        text += (unsafeWindow as NewUnsafeWindow).chapterFilter.toString();
+        text += (unsafeWindow as UnsafeWindow).chapterFilter.toString();
         log.info(text);
         return true;
       } else {
@@ -254,7 +253,7 @@ export abstract class BaseRuleClass {
       let b = true;
       try {
         // @ts-expect-error
-        const u = (unsafeWindow as NewUnsafeWindow).chapterFilter(chapter);
+        const u = (unsafeWindow as UnsafeWindow).chapterFilter(chapter);
         if (typeof u === "boolean") {
           b = u;
         }
