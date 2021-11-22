@@ -149,7 +149,9 @@
     "*://www.25zw.com/*/",
     "*://www.tycqxs.com/*_*/",
     "*://www.kanunu8.com/*",
-    "*://www.ciyuanji.com/bookDetails/*"
+    "*://www.ciyuanji.com/bookDetails/*",
+    "*://m.wanben.org/*/",
+    "*://www.wanben.org/*/"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",

@@ -68,6 +68,12 @@ export function getUI(): () => UIObject {
         return defaultObject;
       };
     }
+    case "m.wanben.org": {
+      return () => ({
+        type: "jump",
+        jumpFunction: () => (document.location.host = "www.wanben.org"),
+      });
+    }
     default: {
       return () => defaultObject;
     }

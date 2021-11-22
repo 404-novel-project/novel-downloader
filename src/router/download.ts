@@ -367,6 +367,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = Ciyuanji;
       break;
     }
+    case "www.wanben.org": {
+      const { wanben } = await import("../rules/onePage/wanben");
+      ruleClass = wanben();
+      break;
+    }
     default: {
       throw new Error("Not Found Rule!");
     }

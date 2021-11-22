@@ -125,6 +125,7 @@ export class Ciyuanji extends BaseRuleClass {
         sectionChapterNumber = 0;
       }
       chapterNumber++;
+      sectionChapterNumber++;
       const isVIP = chapterObj.isFee === "1";
       const isPaid = chapterObj.isBuy === "1";
       const chapter = new Chapter(

@@ -1,29 +1,25 @@
 import { htmlTrim } from "../../lib/cleanDOM";
-import { rm } from "../../lib/misc";
+import { rm, rm2 } from "../../lib/misc";
 import { nextPageParse } from "../../lib/rule";
-import { mkRuleClass } from "./tempate";
+import { mkRuleClass } from "./template";
 
-export const yibige = () =>
+export const wanben = () =>
   mkRuleClass({
     bookUrl: document.location.href,
-    anotherPageUrl: document.location.href + "index.html",
-    getBookname: (doc) =>
-      (
-        document.querySelector("#info h1:nth-of-type(1)") as HTMLElement
-      ).innerText.trim(),
-    getAuthor: (doc) =>
-      (
-        document.querySelector("#info > p:nth-child(2)") as HTMLElement
-      ).innerText
-        .replace(/作(\s+)?者[：:]/, "")
-        .trim(),
-    getIntroDom: (doc) =>
-      document.querySelector("#intro > p:nth-child(1)") as HTMLElement,
+    bookname: (
+      document.querySelector(".detailTitle > h1") as HTMLHeadingElement
+    ).innerText.trim(),
+    author: (
+      document.querySelector(".writer > a") as HTMLAnchorElement
+    ).innerText.trim(),
+    introDom: document.querySelector(
+      ".detailTopMid > table:nth-child(3) > tbody:nth-child(1) > tr:nth-child(3) > td:nth-child(2)"
+    ) as HTMLElement,
     introDomPatch: (introDom) => introDom,
-    getCoverUrl: (doc) =>
-      (document.querySelector("#fmimg > img") as HTMLImageElement)?.src ?? "",
-    getAList: (doc) => doc.querySelectorAll("#list dd > a"),
-    getContent: (doc) => doc.querySelector("#content"),
+    coverUrl: (
+      document.querySelector(".detailTopLeft > img") as HTMLImageElement
+    )?.src,
+    aList: document.querySelectorAll(".chapter li > a"),
     getContentFromUrl: async (chapterUrl, chapterName, charset) => {
       const {
         chapterName: _chapterName,
@@ -36,15 +32,19 @@ export const yibige = () =>
         chapterName,
         chapterUrl,
         charset,
-        selector: "#content",
+        selector: "div.readerCon",
         contentPatch: (content, doc) => {
           rm("script", true, content);
           rm("div[style]", true, content);
+          const ads = [
+            "【提示】：如果觉得此文不错，请推荐给更多小伙伴吧！分享也是一种享受。",
+          ];
+          rm2(content, ads);
           htmlTrim(content);
           return content;
         },
         getNextPage: (doc) =>
-          (doc.querySelector(".bottem1 > a:nth-child(4)") as HTMLAnchorElement)
+          (doc.querySelector(".readPage > a:nth-child(3)") as HTMLAnchorElement)
             .href,
         continueCondition: (_content, nextLink) => {
           const pathname = nextLink.split("/").slice(-1)[0];
