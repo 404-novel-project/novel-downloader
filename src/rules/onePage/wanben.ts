@@ -38,6 +38,8 @@ export const wanben = () =>
           rm("div[style]", true, content);
           const ads = [
             "【提示】：如果觉得此文不错，请推荐给更多小伙伴吧！分享也是一种享受。",
+            "【看书助手】",
+            "百万热门书籍终身无广告免费阅读",
           ];
           rm2(content, ads);
           htmlTrim(content);

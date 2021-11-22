@@ -382,6 +382,13 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = washuge();
       break;
     }
+    case "m.baihexs.com": {
+      const { baihexs } = await import(
+        "../rules/onePageWithMultiIndexPage/baihexs"
+      );
+      ruleClass = baihexs();
+      break;
+    }
     default: {
       throw new Error("Not Found Rule!");
     }

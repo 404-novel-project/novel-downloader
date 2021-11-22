@@ -1,7 +1,7 @@
 import { getImageAttachment } from "../../lib/attachments";
 import { cleanDOM } from "../../lib/cleanDOM";
 import { getHtmlDOM } from "../../lib/http";
-import { PublicConstructor } from "../../lib/misc";
+import { concurrencyRun, PublicConstructor, sleep } from "../../lib/misc";
 import { introDomHandle } from "../../lib/rule";
 import { log } from "../../log";
 import { Book, BookAdditionalMetadate, Chapter } from "../../main";
@@ -15,7 +15,7 @@ interface MkRuleClassOptions {
   introDom: HTMLElement;
   introDomPatch: (introDom: HTMLElement) => HTMLElement;
   coverUrl: string | null;
-  getIndexUrls: () => string[];
+  getIndexUrls: () => string[] | Promise<string[]>;
   getAList: (doc: Document) => NodeListOf<Element>;
   postHook?: (chapter: Chapter) => Chapter | void;
   getContentFromUrl?: (
@@ -63,30 +63,57 @@ export function mkRuleClass({
           .catch((error) => log.error(error));
       }
 
-      const indexUrls = getIndexUrls();
-      const getIndexDom: (
+      const indexUrls = await getIndexUrls();
+      const getIndexDom = async (
         url: string,
         retry: number
-      ) => Promise<Document | null> = (url: string, retry) => {
-        return getHtmlDOM(url, this.charset)
-          .then((dom) => dom)
-          .catch((error) => {
-            log.error(error);
-            log.error(
-              `[bookParse][getIndexDom]抓取目录页失败: ${url}, 第${
-                retryLimit - retry
-              }次重试`
-            );
-            retry--;
-            if (retry > 0) {
-              return getIndexDom(url, retry);
-            } else {
-              return null;
-            }
-          });
+      ): Promise<Document | null> => {
+        try {
+          const doc = await getHtmlDOM(url, this.charset);
+          if (doc) {
+            return doc;
+          } else {
+            return doRetry();
+          }
+        } catch (error) {
+          log.error(error);
+          return doRetry();
+        }
+        async function doRetry() {
+          log.error(
+            `[bookParse][getIndexDom]抓取目录页失败: ${url}, 第${
+              retryLimit - retry
+            }次重试`
+          );
+
+          retry--;
+          await sleep(1000 * (retryLimit - retry));
+          if (retry > 0) {
+            return getIndexDom(url, retry);
+          } else {
+            return null;
+          }
+        }
       };
-      const _indexPage = indexUrls.map((url) => getIndexDom(url, retryLimit));
-      const indexPage = await Promise.all(_indexPage);
+      const _indexPage: [Document | null, string][] = [];
+      await concurrencyRun(
+        indexUrls,
+        this.concurrencyLimit,
+        async (url: string) => {
+          log.info(`[BookParse]抓取目录页：${url}`);
+          const doc = await getIndexDom(url, retryLimit);
+          _indexPage.push([doc, url]);
+          return doc;
+        }
+      );
+      const indexPage = _indexPage
+        .sort((a: [Document | null, string], b: [Document | null, string]) => {
+          const aUrl = a[1];
+          const bUrl = b[1];
+          // https://stackoverflow.com/questions/13304543/javascript-sort-array-based-on-another-array
+          return indexUrls.indexOf(aUrl) - indexUrls.indexOf(bUrl);
+        })
+        .map((l) => l[0]);
       const _aListList = indexPage
         .map((doc) => {
           if (doc) {

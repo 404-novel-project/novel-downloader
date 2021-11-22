@@ -46,9 +46,20 @@ export function rm2(content: HTMLElement, filters: (string | RegExp)[]) {
   doRemove(content);
 }
 
+export function rms(ads: (string | RegExp)[], dom: HTMLElement) {
+  for (const ad of ads) {
+    if (typeof ad === "string") {
+      dom.innerHTML = dom.innerHTML.replaceAll(ad, "");
+    } else if (ad instanceof RegExp) {
+      dom.innerHTML = dom.innerHTML.replace(ad, "");
+    }
+  }
+  return dom;
+}
+
 // source: https://segmentfault.com/a/1190000013128649
 export function concurrencyRun(
-  list: object[],
+  list: any[],
   limit: number,
   asyncHandle: (arg: any) => any
 ) {

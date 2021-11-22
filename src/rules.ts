@@ -52,7 +52,7 @@ export abstract class BaseRuleClass {
 
   public constructor() {
     this.imageMode = "TM";
-    this.charset = document.charset;
+    this.charset = document.characterSet;
     this.concurrencyLimit = 10;
   }
 

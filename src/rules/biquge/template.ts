@@ -192,7 +192,7 @@ export function mkBiqugeClass(
         this.concurrencyLimit = concurrencyLimit;
       }
       this.imageMode = "TM";
-      this.charset = document.charset;
+      this.charset = document.characterSet;
       this.overrideConstructor(this);
     }
 
@@ -219,7 +219,7 @@ export function mkBiqugeClass(
           (document.querySelector("#fmimg > img") as HTMLImageElement)?.src ??
           "",
         chapterListSelector: "#list>dl",
-        charset: document.charset,
+        charset: document.characterSet,
         chapterParse: self.chapterParse,
         enableIgnore,
         customVolumeFilter,
@@ -274,7 +274,7 @@ export function mkBiqugeClass2(
         this.concurrencyLimit = concurrencyLimit;
       }
       this.imageMode = "TM";
-      this.charset = document.charset;
+      this.charset = document.characterSet;
       this.overrideConstructor(this);
     }
 
@@ -298,7 +298,7 @@ export function mkBiqugeClass2(
           (document.querySelector(".info > .cover > img") as HTMLImageElement)
             ?.src ?? "",
         chapterListSelector: ".listmain>dl",
-        charset: document.charset,
+        charset: document.characterSet,
         chapterParse: self.chapterParse,
         enableIgnore,
         customVolumeFilter,
@@ -349,7 +349,7 @@ export function mkBiqugeClass3(
         this.concurrencyLimit = concurrencyLimit;
       }
       this.imageMode = "TM";
-      this.charset = document.charset;
+      this.charset = document.characterSet;
       this.overrideConstructor(this);
     }
 
@@ -376,7 +376,7 @@ export function mkBiqugeClass3(
           (document.querySelector("#fmimg > img") as HTMLImageElement)?.src ??
           "",
         chapterListSelector: "#list>dl",
-        charset: document.charset,
+        charset: document.characterSet,
         chapterParse: self.chapterParse,
         enableIgnore,
         customVolumeFilter,

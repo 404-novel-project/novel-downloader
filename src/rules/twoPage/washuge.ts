@@ -3,6 +3,9 @@ import { mkRuleClass } from "./tempate";
 export const washuge = () => {
   const bookUrl = document.location.href;
   const bookId = /(\d+)\/?$/.exec(bookUrl)?.[1];
+  if (!bookId) {
+    throw Error("获取书籍信息出错！");
+  }
   const anotherPageUrl = `${document.location.origin}/books/book${bookId}.html`;
 
   return mkRuleClass({

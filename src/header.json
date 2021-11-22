@@ -153,7 +153,8 @@
     "*://m.wanben.org/*/",
     "*://www.wanben.org/*/",
     "*://www.ranwen.la/files/article/*/*/",
-    "*://www.washuge.com/books/*/*/"
+    "*://www.washuge.com/books/*/*/",
+    "*://m.baihexs.com/info-*/"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",
@@ -254,6 +255,7 @@
     "25zw.com",
     "sina.com.cn",
     "ciyuanji.com",
+    "baihexs.com",
     "*"
   ],
   "require": [
