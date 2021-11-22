@@ -1,24 +1,24 @@
-import { saveAs } from "file-saver";
+import FileSaver = require("file-saver");
 import { LocalStorageExpired } from "./lib/misc";
 import { fetchAndParse, gfetchAndParse, parse } from "./lib/readability";
 import { Book, Chapter } from "./main";
 import { BaseRuleClass } from "./rules";
 import { SaveOptions, SectionObj } from "./save/save";
 
-export interface NewWindow extends Window {
+export interface WindowObject extends Window {
   downloading: boolean;
   customStorage: LocalStorageExpired;
   stopFlag: boolean;
   _sections?: SectionObj[];
   _book?: Book;
 }
-export type GmWindow = NewWindow & typeof globalThis;
+export type GmWindow = WindowObject & typeof globalThis;
 
-export interface NewUnsafeWindow extends unsafeWindow {
+interface UnsafeWindowObject {
   rule?: BaseRuleClass;
   book?: Book;
   save?: (book: Book, saveOptions: SaveOptions) => void;
-  saveAs?: (obj: any) => typeof saveAs;
+  saveAs?: typeof FileSaver;
   chapterFilter?: (chapter: Chapter) => boolean;
   customFinishCallback?: () => void;
   saveOptions?: SaveOptions;
@@ -28,6 +28,7 @@ export interface NewUnsafeWindow extends unsafeWindow {
     gfetchAndParse: typeof gfetchAndParse;
   };
 }
+export type UnsafeWindow = UnsafeWindowObject & typeof globalThis;
 
 export function init() {
   (window as GmWindow).downloading = false;
