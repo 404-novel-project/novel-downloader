@@ -377,6 +377,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = ranwen();
       break;
     }
+    case "www.washuge.com": {
+      const { washuge } = await import("../rules/twoPage/washuge");
+      ruleClass = washuge();
+      break;
+    }
     default: {
       throw new Error("Not Found Rule!");
     }
