@@ -154,7 +154,8 @@
     "*://www.wanben.org/*/",
     "*://www.ranwen.la/files/article/*/*/",
     "*://www.washuge.com/books/*/*/",
-    "*://m.baihexs.com/info-*/"
+    "*://m.baihexs.com/info-*/",
+    "*://www.quanshuzhai.com/book/*.html"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",

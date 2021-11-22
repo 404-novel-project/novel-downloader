@@ -389,6 +389,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = baihexs();
       break;
     }
+    case "www.quanshuzhai.com": {
+      const { quanshuzhai } = await import("../rules/onePage/quanshuzhai");
+      ruleClass = quanshuzhai();
+      break;
+    }
     default: {
       throw new Error("Not Found Rule!");
     }
