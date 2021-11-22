@@ -47,6 +47,7 @@ ZIP压缩包，请在解压后，直接双击打开HTML文件（`index.html` 为
 |[长佩文学](https://www.gongzicp.com/)|✅|✅|反爬较严，限制下载速度，每分钟约可下载6章，请耐心等待。<br>长佩文学为单页应用，如打开书籍详情页右上角未出现下载图标，请按下F5重新加载当前页面。|
 |[书耽](https://www.shubl.com/)|✅|✅|VIP章节仅支持图片版。|
 |[海棠文化线上文学城](https://ebook.longmabook.com/)|✅|✅||
+|[次元姬](https://www.ciyuanji.com/)|✅|✅||
 |[轻之文库轻小说](https://www.linovel.net/)|✅|❌|VIP章节仅支持APP查看|
 |[纵横中文网](http://www.zongheng.com/)|✅|❌||
 |[花语女生网](http://huayu.zongheng.com/)|✅|❌||

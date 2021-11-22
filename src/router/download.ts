@@ -362,6 +362,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = Kanunu8;
       break;
     }
+    case "www.ciyuanji.com": {
+      const { Ciyuanji } = await import("../rules/special/original/ciyuanji");
+      ruleClass = Ciyuanji;
+      break;
+    }
     default: {
       throw new Error("Not Found Rule!");
     }

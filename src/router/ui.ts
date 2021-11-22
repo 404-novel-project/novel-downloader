@@ -56,6 +56,18 @@ export function getUI(): () => UIObject {
         return errorObject;
       };
     }
+    case "www.ciyuanji.com": {
+      return () => {
+        if (document.location.pathname === "/bookDetails/info") {
+          return {
+            type: "jump",
+            jumpFunction: () =>
+              (document.location.pathname = "/bookDetails/catalog"),
+          };
+        }
+        return defaultObject;
+      };
+    }
     default: {
       return () => defaultObject;
     }

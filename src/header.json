@@ -148,7 +148,8 @@
     "*://www.biquwx.la/*_*/",
     "*://www.25zw.com/*/",
     "*://www.tycqxs.com/*_*/",
-    "*://www.kanunu8.com/*"
+    "*://www.kanunu8.com/*",
+    "*://www.ciyuanji.com/bookDetails/*"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",
@@ -248,6 +249,7 @@
     "dijiuzww.com",
     "25zw.com",
     "sina.com.cn",
+    "ciyuanji.com",
     "*"
   ],
   "require": [
