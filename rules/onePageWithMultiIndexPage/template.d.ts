@@ -8,7 +8,7 @@ interface MkRuleClassOptions {
     introDom: HTMLElement;
     introDomPatch: (introDom: HTMLElement) => HTMLElement;
     coverUrl: string | null;
-    getIndexUrls: () => string[];
+    getIndexUrls: () => string[] | Promise<string[]>;
     getAList: (doc: Document) => NodeListOf<Element>;
     postHook?: (chapter: Chapter) => Chapter | void;
     getContentFromUrl?: (chapterUrl: string, chapterName: string | null, charset: string) => Promise<HTMLElement | null>;

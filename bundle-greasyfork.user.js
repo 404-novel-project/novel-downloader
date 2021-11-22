@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.5.1.349
+// @version        4.5.1.350
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -138,6 +138,7 @@
 // @match          *://www.wanben.org/*/
 // @match          *://www.ranwen.la/files/article/*/*/
 // @match          *://www.washuge.com/books/*/*/
+// @match          *://m.baihexs.com/info-*/
 // @name:en        novel-downloader
 // @description:en An scalable universal novel downloader.
 // @namespace      https://blog.bgme.me
@@ -245,6 +246,7 @@
 // @connect        25zw.com
 // @connect        sina.com.cn
 // @connect        ciyuanji.com
+// @connect        baihexs.com
 // @connect        *
 // @require        https://cdn.jsdelivr.net/npm/crypto-js@4.1.1/crypto-js.js#sha512-NQVmLzNy4Lr5QTrmXvq/WzTMUnRHmv7nyIT/M6LyGPBS+TIeRxZ+YQaqWxjpRpvRMQSuYPQURZz/+pLi81xXeA==
 // @require        https://cdn.jsdelivr.net/npm/fflate@0.7.1/umd/index.js#sha512-laBNdxeV48sttD1kBYahmdSXpSRitYmkte49ZUqm3KEOUK4cIJAjqt1MYwScWvBqqP4WDtEftDSPYE1ii/bxCg==
@@ -4121,7 +4123,7 @@ exports.ggetHtmlDOM = ggetHtmlDOM;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getNodeTextLength = exports.getMaxDepth = exports.regexpEscape = exports.deepcopy = exports.LocalStorageExpired = exports.calculateMd5 = exports.storageAvailable = exports.sandboxed = exports.sleep = exports.concurrencyRun = exports.rm2 = exports.rm = void 0;
+exports.getNodeTextLength = exports.getMaxDepth = exports.regexpEscape = exports.deepcopy = exports.LocalStorageExpired = exports.calculateMd5 = exports.storageAvailable = exports.sandboxed = exports.sleep = exports.concurrencyRun = exports.rms = exports.rm2 = exports.rm = void 0;
 const CryptoJS = __webpack_require__("crypto-js");
 const log_1 = __webpack_require__("./src/log.ts");
 function rm(selector, all = false, dom) {
@@ -4169,6 +4171,18 @@ function rm2(content, filters) {
     doRemove(content);
 }
 exports.rm2 = rm2;
+function rms(ads, dom) {
+    for (const ad of ads) {
+        if (typeof ad === "string") {
+            dom.innerHTML = dom.innerHTML.replaceAll(ad, "");
+        }
+        else if (ad instanceof RegExp) {
+            dom.innerHTML = dom.innerHTML.replace(ad, "");
+        }
+    }
+    return dom;
+}
+exports.rms = rms;
 function concurrencyRun(list, limit, asyncHandle) {
     async function recursion(arr) {
         const obj = await asyncHandle(arr.shift());
@@ -5275,6 +5289,11 @@ async function getRule() {
             ruleClass = washuge();
             break;
         }
+        case "m.baihexs.com": {
+            const { baihexs } = await Promise.resolve().then(() => __webpack_require__("./src/rules/onePageWithMultiIndexPage/baihexs.ts"));
+            ruleClass = baihexs();
+            break;
+        }
         default: {
             throw new Error("Not Found Rule!");
         }
@@ -5397,7 +5416,7 @@ const workStatusKeyName = "novel-downloader-EaraVl9TtSM2405L";
 class BaseRuleClass {
     constructor() {
         this.imageMode = "TM";
-        this.charset = document.charset;
+        this.charset = document.characterSet;
         this.concurrencyLimit = 10;
     }
     async run() {
@@ -5750,7 +5769,7 @@ function mkBiqugeClass(introDomPatch, contentPatch, concurrencyLimit, enableIgno
                 this.concurrencyLimit = concurrencyLimit;
             }
             this.imageMode = "TM";
-            this.charset = document.charset;
+            this.charset = document.characterSet;
             this.overrideConstructor(this);
         }
         async bookParse() {
@@ -5771,7 +5790,7 @@ function mkBiqugeClass(introDomPatch, contentPatch, concurrencyLimit, enableIgno
                 coverUrl: document.querySelector("#fmimg > img")?.src ??
                     "",
                 chapterListSelector: "#list>dl",
-                charset: document.charset,
+                charset: document.characterSet,
                 chapterParse: self.chapterParse,
                 enableIgnore,
                 customVolumeFilter,
@@ -5804,7 +5823,7 @@ function mkBiqugeClass2(introDomPatch, contentPatch, concurrencyLimit, enableIgn
                 this.concurrencyLimit = concurrencyLimit;
             }
             this.imageMode = "TM";
-            this.charset = document.charset;
+            this.charset = document.characterSet;
             this.overrideConstructor(this);
         }
         async bookParse() {
@@ -5822,7 +5841,7 @@ function mkBiqugeClass2(introDomPatch, contentPatch, concurrencyLimit, enableIgn
                 coverUrl: document.querySelector(".info > .cover > img")
                     ?.src ?? "",
                 chapterListSelector: ".listmain>dl",
-                charset: document.charset,
+                charset: document.characterSet,
                 chapterParse: self.chapterParse,
                 enableIgnore,
                 customVolumeFilter,
@@ -5853,7 +5872,7 @@ function mkBiqugeClass3(introDomPatch, contentPatch, getNextPage, continueCondit
                 this.concurrencyLimit = concurrencyLimit;
             }
             this.imageMode = "TM";
-            this.charset = document.charset;
+            this.charset = document.characterSet;
             this.overrideConstructor(this);
         }
         async bookParse() {
@@ -5874,7 +5893,7 @@ function mkBiqugeClass3(introDomPatch, contentPatch, getNextPage, continueCondit
                 coverUrl: document.querySelector("#fmimg > img")?.src ??
                     "",
                 chapterListSelector: "#list>dl",
-                charset: document.charset,
+                charset: document.characterSet,
                 chapterParse: self.chapterParse,
                 enableIgnore,
                 customVolumeFilter,
@@ -7261,6 +7280,8 @@ const wanben = () => (0, template_1.mkRuleClass)({
                 (0, misc_1.rm)("div[style]", true, content);
                 const ads = [
                     "【提示】：如果觉得此文不错，请推荐给更多小伙伴吧！分享也是一种享受。",
+                    "【看书助手】",
+                    "百万热门书籍终身无广告免费阅读",
                 ];
                 (0, misc_1.rm2)(content, ads);
                 (0, cleanDOM_1.htmlTrim)(content);
@@ -7366,6 +7387,64 @@ exports.c226ks = c226ks;
 
 /***/ }),
 
+/***/ "./src/rules/onePageWithMultiIndexPage/baihexs.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.baihexs = void 0;
+const http_1 = __webpack_require__("./src/lib/http.ts");
+const misc_1 = __webpack_require__("./src/lib/misc.ts");
+const template_1 = __webpack_require__("./src/rules/onePageWithMultiIndexPage/template.ts");
+const baihexs = () => {
+    const bookUrl = document.location.href;
+    const bookId = /(\d+)\/?$/.exec(document.location.href)?.[1];
+    if (!bookId) {
+        throw Error("获取书籍信息出错！");
+    }
+    return (0, template_1.mkRuleClass)({
+        bookUrl,
+        bookname: document.querySelector(".block_txt2 > h2 > a").innerText.trim(),
+        author: document.querySelector(".block_txt2 > p:nth-child(4)").innerText
+            .replace("作者：", "")
+            .trim(),
+        introDom: document.querySelector(".intro_info"),
+        introDomPatch: (dom) => dom,
+        coverUrl: document.querySelector(".block_img2 > img")
+            ?.src,
+        getIndexUrls: async () => {
+            const contentPageUrl = `${document.location.origin}/wapbook-${bookId}`;
+            const doc = await (0, http_1.getHtmlDOM)(contentPageUrl + "/", document.characterSet);
+            const a = doc.querySelector("div.page > a:nth-last-child(1)");
+            const maxNumber = /(\d+)\/?$/.exec(a.href)?.[1];
+            if (!maxNumber) {
+                throw Error("获取章节列表时出错！");
+            }
+            const indexUrls = [];
+            for (let i = 1; i <= parseInt(maxNumber, 10); i++) {
+                const url = contentPageUrl + `_${i}/`;
+                indexUrls.push(url);
+            }
+            return indexUrls;
+        },
+        getAList: (doc) => doc.querySelectorAll(".chapter > li > a"),
+        getContent: (doc) => doc.querySelector("#nr1"),
+        contentPatch: (dom) => {
+            const ads = [
+                /请牢记：百合小说网.+免费最快更新无防盗无防盗/,
+            ];
+            (0, misc_1.rms)(ads, dom);
+            return dom;
+        },
+        concurrencyLimit: 3,
+    });
+};
+exports.baihexs = baihexs;
+
+
+/***/ }),
+
 /***/ "./src/rules/onePageWithMultiIndexPage/template.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
@@ -7376,6 +7455,7 @@ exports.mkRuleClass = void 0;
 const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
 const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
 const http_1 = __webpack_require__("./src/lib/http.ts");
+const misc_1 = __webpack_require__("./src/lib/misc.ts");
 const rule_1 = __webpack_require__("./src/lib/rule.ts");
 const log_1 = __webpack_require__("./src/log.ts");
 const main_1 = __webpack_require__("./src/main.ts");
@@ -7400,24 +7480,47 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
                 })
                     .catch((error) => log_1.log.error(error));
             }
-            const indexUrls = getIndexUrls();
-            const getIndexDom = (url, retry) => {
-                return (0, http_1.getHtmlDOM)(url, this.charset)
-                    .then((dom) => dom)
-                    .catch((error) => {
+            const indexUrls = await getIndexUrls();
+            const getIndexDom = async (url, retry) => {
+                try {
+                    const doc = await (0, http_1.getHtmlDOM)(url, this.charset);
+                    if (doc) {
+                        return doc;
+                    }
+                    else {
+                        return doRetry();
+                    }
+                }
+                catch (error) {
                     log_1.log.error(error);
+                    return doRetry();
+                }
+                async function doRetry() {
                     log_1.log.error(`[bookParse][getIndexDom]抓取目录页失败: ${url}, 第${setting_1.retryLimit - retry}次重试`);
                     retry--;
+                    await (0, misc_1.sleep)(1000 * (setting_1.retryLimit - retry));
                     if (retry > 0) {
                         return getIndexDom(url, retry);
                     }
                     else {
                         return null;
                     }
-                });
+                }
             };
-            const _indexPage = indexUrls.map((url) => getIndexDom(url, setting_1.retryLimit));
-            const indexPage = await Promise.all(_indexPage);
+            const _indexPage = [];
+            await (0, misc_1.concurrencyRun)(indexUrls, this.concurrencyLimit, async (url) => {
+                log_1.log.info(`[BookParse]抓取目录页：${url}`);
+                const doc = await getIndexDom(url, setting_1.retryLimit);
+                _indexPage.push([doc, url]);
+                return doc;
+            });
+            const indexPage = _indexPage
+                .sort((a, b) => {
+                const aUrl = a[1];
+                const bUrl = b[1];
+                return indexUrls.indexOf(aUrl) - indexUrls.indexOf(bUrl);
+            })
+                .map((l) => l[0]);
             const _aListList = indexPage
                 .map((doc) => {
                 if (doc) {
@@ -12801,6 +12904,9 @@ const tempate_1 = __webpack_require__("./src/rules/twoPage/tempate.ts");
 const washuge = () => {
     const bookUrl = document.location.href;
     const bookId = /(\d+)\/?$/.exec(bookUrl)?.[1];
+    if (!bookId) {
+        throw Error("获取书籍信息出错！");
+    }
     const anotherPageUrl = `${document.location.origin}/books/book${bookId}.html`;
     return (0, tempate_1.mkRuleClass)({
         bookUrl,

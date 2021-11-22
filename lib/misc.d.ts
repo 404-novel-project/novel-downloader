@@ -1,7 +1,8 @@
 export declare type PublicConstructor<T> = new () => T;
 export declare function rm(selector: string, all: boolean | undefined, dom: HTMLElement): void;
 export declare function rm2(content: HTMLElement, filters: (string | RegExp)[]): void;
-export declare function concurrencyRun(list: object[], limit: number, asyncHandle: (arg: any) => any): Promise<any[]>;
+export declare function rms(ads: (string | RegExp)[], dom: HTMLElement): HTMLElement;
+export declare function concurrencyRun(list: any[], limit: number, asyncHandle: (arg: any) => any): Promise<any[]>;
 export declare function sleep(ms: number): Promise<unknown>;
 export declare function sandboxed(code: string): any;
 export declare function storageAvailable(type: string): any;
