@@ -18,6 +18,7 @@ export async function bookParseTemp({
   charset,
   chapterParse,
   enableIgnore = true,
+  customVolumeFilter,
 }: {
   bookUrl: string;
   bookname: string;
@@ -29,6 +30,7 @@ export async function bookParseTemp({
   charset: string;
   chapterParse: BaseRuleClass["chapterParse"];
   enableIgnore?: boolean;
+  customVolumeFilter?: RegExp;
 }): Promise<Book> {
   const [introduction, introductionHTML, introCleanimages] =
     await introDomHandle(introDom, introDomPatch);
@@ -48,12 +50,15 @@ export async function bookParseTemp({
     .map((dl) => Array.from(dl.children))
     .forEach((dlcList) => dlcList.forEach((dl) => dlc.push(dl as HTMLElement)));
 
-  // 删去最新章节块
+  // 删去第一个章节块
   let i = 1;
   if (enableIgnore) {
     if (dlc[0].nodeName === "DT") {
       const dt = dlc[0];
-      if (/最新(.+)?章节/.test(dt.innerText)) {
+      if (
+        /最新(.+)?章节/.test(dt.innerText) ||
+        (customVolumeFilter && customVolumeFilter.test(dt.innerText))
+      ) {
         delete dlc[0];
         for (; i < dlc.length; i++) {
           const d = dlc[i];
@@ -177,7 +182,8 @@ export function mkBiqugeClass(
     options: ChapterParseOption
   ) => HTMLElement,
   concurrencyLimit?: number,
-  enableIgnore?: boolean
+  enableIgnore?: boolean,
+  customVolumeFilter?: RegExp
 ): PublicConstructor<BaseRuleClass> {
   return class extends BaseRuleClass {
     public constructor() {
@@ -216,6 +222,7 @@ export function mkBiqugeClass(
         charset: document.charset,
         chapterParse: self.chapterParse,
         enableIgnore,
+        customVolumeFilter,
       });
     }
 
@@ -255,7 +262,9 @@ export function mkBiqugeClass2(
     content: HTMLElement,
     options: ChapterParseOption
   ) => HTMLElement,
-  concurrencyLimit?: number
+  concurrencyLimit?: number,
+  enableIgnore?: boolean,
+  customVolumeFilter?: RegExp
 ): PublicConstructor<BaseRuleClass> {
   // tslint:disable-next-line:max-classes-per-file
   return class extends BaseRuleClass {
@@ -291,6 +300,8 @@ export function mkBiqugeClass2(
         chapterListSelector: ".listmain>dl",
         charset: document.charset,
         chapterParse: self.chapterParse,
+        enableIgnore,
+        customVolumeFilter,
       });
     }
 
@@ -327,7 +338,8 @@ export function mkBiqugeClass3(
   getNextPage: (doc: Document) => string,
   continueCondition: (content: HTMLElement, nextLink: string) => boolean,
   concurrencyLimit?: number,
-  enableIgnore?: boolean
+  enableIgnore?: boolean,
+  customVolumeFilter?: RegExp
 ): PublicConstructor<BaseRuleClass> {
   // tslint:disable-next-line: max-classes-per-file
   return class extends BaseRuleClass {
@@ -367,6 +379,7 @@ export function mkBiqugeClass3(
         charset: document.charset,
         chapterParse: self.chapterParse,
         enableIgnore,
+        customVolumeFilter,
       });
     }
 

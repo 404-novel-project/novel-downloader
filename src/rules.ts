@@ -105,7 +105,9 @@ export abstract class BaseRuleClass {
   protected preTest() {
     const self = this;
     const storage = (window as GmWindow).customStorage;
-    let workStatus: WorkStatusObj | undefined = storage.get(workStatusKeyName);
+    let workStatus = storage.get(workStatusKeyName) as
+      | WorkStatusObj
+      | undefined;
     if (workStatus) {
       const nowNumber = Object.keys(workStatus).length;
       if (self.maxRunLimit && nowNumber >= self.maxRunLimit) {
@@ -174,7 +176,9 @@ export abstract class BaseRuleClass {
   protected postHook() {
     const self = this;
     const storage = (window as GmWindow).customStorage;
-    const workStatus: WorkStatusObj | null = storage.get(workStatusKeyName);
+    const workStatus = storage.get(workStatusKeyName) as
+      | WorkStatusObj
+      | undefined;
     if (workStatus) {
       delete workStatus[document.location.href];
     }
@@ -334,7 +338,9 @@ export abstract class BaseRuleClass {
     saveBookObj: SaveBook
   ): Promise<Chapter> {
     const storage = (window as GmWindow).customStorage;
-    let workStatus: WorkStatusObj = storage.get(workStatusKeyName);
+    let workStatus = storage.get(workStatusKeyName) as
+      | WorkStatusObj
+      | undefined;
     if (workStatus) {
       workStatus[document.location.href] = true;
     } else {

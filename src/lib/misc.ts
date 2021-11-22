@@ -1,4 +1,5 @@
 import * as CryptoJS from "crypto-js";
+import { log } from "../log";
 import { _GM_xmlhttpRequest } from "./GM";
 
 export type PublicConstructor<T> = new () => T;
@@ -160,15 +161,19 @@ export class LocalStorageExpired {
     });
   }
 
-  set(key: string, value: string | object, expired: number) {
+  set(key: string, value: string | object, expired: number): void {
     const storage = this.storage;
-    storage[key] = JSON.stringify(value);
-    if (expired) {
-      storage[`${key}__expires__`] = Date.now() + 1000 * expired;
+    try {
+      storage[key] = JSON.stringify(value);
+      if (expired) {
+        storage[`${key}__expires__`] = Date.now() + 1000 * expired;
+      }
+    } catch (error) {
+      log.error(error);
     }
   }
 
-  get(key: string) {
+  get(key: string): object | undefined {
     const storage = this.storage;
     const expired = storage[`${key}__expires__`] ?? false;
     const now = Date.now();
@@ -190,7 +195,7 @@ export class LocalStorageExpired {
     }
   }
 
-  remove(key: string) {
+  remove(key: string): void {
     const storage = this.storage;
     if (storage[key]) {
       delete storage[key];

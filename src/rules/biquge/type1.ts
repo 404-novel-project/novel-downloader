@@ -160,3 +160,15 @@ export const yruan = () =>
     (content) => content,
     3
   );
+
+export const ranwen = () =>
+  mkBiqugeClass(
+    (introDom) => {
+      rm2(introDom, ["还不错的话请不要忘记向您QQ群和微博里的朋友推荐哦！"]);
+      return introDom;
+    },
+    (content) => content,
+    undefined,
+    undefined,
+    /全文阅读/
+  );

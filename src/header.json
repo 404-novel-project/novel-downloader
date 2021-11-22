@@ -151,7 +151,8 @@
     "*://www.kanunu8.com/*",
     "*://www.ciyuanji.com/bookDetails/*",
     "*://m.wanben.org/*/",
-    "*://www.wanben.org/*/"
+    "*://www.wanben.org/*/",
+    "*://www.ranwen.la/files/article/*/*/"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",
