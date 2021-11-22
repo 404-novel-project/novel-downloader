@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.5.1.343
+// @version        4.5.1.345
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -134,6 +134,9 @@
 // @match          *://www.tycqxs.com/*_*/
 // @match          *://www.kanunu8.com/*
 // @match          *://www.ciyuanji.com/bookDetails/*
+// @match          *://m.wanben.org/*/
+// @match          *://www.wanben.org/*/
+// @match          *://www.ranwen.la/files/article/*/*/
 // @name:en        novel-downloader
 // @description:en An scalable universal novel downloader.
 // @namespace      https://blog.bgme.me
@@ -4119,6 +4122,7 @@ exports.ggetHtmlDOM = ggetHtmlDOM;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getNodeTextLength = exports.getMaxDepth = exports.regexpEscape = exports.deepcopy = exports.LocalStorageExpired = exports.calculateMd5 = exports.storageAvailable = exports.sandboxed = exports.sleep = exports.concurrencyRun = exports.rm2 = exports.rm = void 0;
 const CryptoJS = __webpack_require__("crypto-js");
+const log_1 = __webpack_require__("./src/log.ts");
 function rm(selector, all = false, dom) {
     if (all) {
         const rs = dom.querySelectorAll(selector);
@@ -4257,9 +4261,14 @@ class LocalStorageExpired {
     }
     set(key, value, expired) {
         const storage = this.storage;
-        storage[key] = JSON.stringify(value);
-        if (expired) {
-            storage[`${key}__expires__`] = Date.now() + 1000 * expired;
+        try {
+            storage[key] = JSON.stringify(value);
+            if (expired) {
+                storage[`${key}__expires__`] = Date.now() + 1000 * expired;
+            }
+        }
+        catch (error) {
+            log_1.log.error(error);
         }
     }
     get(key) {
@@ -5250,6 +5259,16 @@ async function getRule() {
             ruleClass = Ciyuanji;
             break;
         }
+        case "www.wanben.org": {
+            const { wanben } = await Promise.resolve().then(() => __webpack_require__("./src/rules/onePage/wanben.ts"));
+            ruleClass = wanben();
+            break;
+        }
+        case "www.ranwen.la": {
+            const { ranwen } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge/type1.ts"));
+            ruleClass = ranwen();
+            break;
+        }
         default: {
             throw new Error("Not Found Rule!");
         }
@@ -5336,6 +5355,12 @@ function getUI() {
                 }
                 return defaultObject;
             };
+        }
+        case "m.wanben.org": {
+            return () => ({
+                type: "jump",
+                jumpFunction: () => (document.location.host = "www.wanben.org"),
+            });
         }
         default: {
             return () => defaultObject;
@@ -5616,7 +5641,7 @@ const rule_1 = __webpack_require__("./src/lib/rule.ts");
 const log_1 = __webpack_require__("./src/log.ts");
 const main_1 = __webpack_require__("./src/main.ts");
 const rules_1 = __webpack_require__("./src/rules.ts");
-async function bookParseTemp({ bookUrl, bookname, author, introDom, introDomPatch, coverUrl, chapterListSelector, charset, chapterParse, enableIgnore = true, }) {
+async function bookParseTemp({ bookUrl, bookname, author, introDom, introDomPatch, coverUrl, chapterListSelector, charset, chapterParse, enableIgnore = true, customVolumeFilter, }) {
     const [introduction, introductionHTML, introCleanimages] = await (0, rule_1.introDomHandle)(introDom, introDomPatch);
     const additionalMetadate = {};
     if (coverUrl) {
@@ -5635,7 +5660,8 @@ async function bookParseTemp({ bookUrl, bookname, author, introDom, introDomPatc
     if (enableIgnore) {
         if (dlc[0].nodeName === "DT") {
             const dt = dlc[0];
-            if (/最新(.+)?章节/.test(dt.innerText)) {
+            if (/最新(.+)?章节/.test(dt.innerText) ||
+                (customVolumeFilter && customVolumeFilter.test(dt.innerText))) {
                 delete dlc[0];
                 for (; i < dlc.length; i++) {
                     const d = dlc[i];
@@ -5711,7 +5737,7 @@ async function chapterParseTemp({ dom, chapterUrl, chapterName, contenSelector, 
     }
 }
 exports.chapterParseTemp = chapterParseTemp;
-function mkBiqugeClass(introDomPatch, contentPatch, concurrencyLimit, enableIgnore) {
+function mkBiqugeClass(introDomPatch, contentPatch, concurrencyLimit, enableIgnore, customVolumeFilter) {
     return class extends rules_1.BaseRuleClass {
         constructor() {
             super();
@@ -5743,6 +5769,7 @@ function mkBiqugeClass(introDomPatch, contentPatch, concurrencyLimit, enableIgno
                 charset: document.charset,
                 chapterParse: self.chapterParse,
                 enableIgnore,
+                customVolumeFilter,
             });
         }
         async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
@@ -5764,7 +5791,7 @@ function mkBiqugeClass(introDomPatch, contentPatch, concurrencyLimit, enableIgno
     };
 }
 exports.mkBiqugeClass = mkBiqugeClass;
-function mkBiqugeClass2(introDomPatch, contentPatch, concurrencyLimit) {
+function mkBiqugeClass2(introDomPatch, contentPatch, concurrencyLimit, enableIgnore, customVolumeFilter) {
     return class extends rules_1.BaseRuleClass {
         constructor() {
             super();
@@ -5792,6 +5819,8 @@ function mkBiqugeClass2(introDomPatch, contentPatch, concurrencyLimit) {
                 chapterListSelector: ".listmain>dl",
                 charset: document.charset,
                 chapterParse: self.chapterParse,
+                enableIgnore,
+                customVolumeFilter,
             });
         }
         async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
@@ -5811,7 +5840,7 @@ function mkBiqugeClass2(introDomPatch, contentPatch, concurrencyLimit) {
     };
 }
 exports.mkBiqugeClass2 = mkBiqugeClass2;
-function mkBiqugeClass3(introDomPatch, contentPatch, getNextPage, continueCondition, concurrencyLimit, enableIgnore) {
+function mkBiqugeClass3(introDomPatch, contentPatch, getNextPage, continueCondition, concurrencyLimit, enableIgnore, customVolumeFilter) {
     return class extends rules_1.BaseRuleClass {
         constructor() {
             super();
@@ -5843,6 +5872,7 @@ function mkBiqugeClass3(introDomPatch, contentPatch, getNextPage, continueCondit
                 charset: document.charset,
                 chapterParse: self.chapterParse,
                 enableIgnore,
+                customVolumeFilter,
             });
         }
         async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
@@ -5871,7 +5901,7 @@ exports.mkBiqugeClass3 = mkBiqugeClass3;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.yruan = exports.xbiquge = exports.c25zw = exports.dijiubook = exports.tycqxs = exports.biquwx = exports.lwxs9 = exports.luoqiuzw = exports.gebiqu = exports.c81book = exports.common1 = exports.common = void 0;
+exports.ranwen = exports.yruan = exports.xbiquge = exports.c25zw = exports.dijiubook = exports.tycqxs = exports.biquwx = exports.lwxs9 = exports.luoqiuzw = exports.gebiqu = exports.c81book = exports.common1 = exports.common = void 0;
 const misc_1 = __webpack_require__("./src/lib/misc.ts");
 const template_1 = __webpack_require__("./src/rules/biquge/template.ts");
 const common = () => (0, template_1.mkBiqugeClass)((introDom) => introDom, (content) => content);
@@ -5960,6 +5990,11 @@ const yruan = () => (0, template_1.mkBiqugeClass)((introDom) => {
     return introDom;
 }, (content) => content, 3);
 exports.yruan = yruan;
+const ranwen = () => (0, template_1.mkBiqugeClass)((introDom) => {
+    (0, misc_1.rm2)(introDom, ["还不错的话请不要忘记向您QQ群和微博里的朋友推荐哦！"]);
+    return introDom;
+}, (content) => content, undefined, undefined, /全文阅读/);
+exports.ranwen = ranwen;
 
 
 /***/ }),
@@ -7191,6 +7226,58 @@ exports.tongrenquan = tongrenquan;
 
 /***/ }),
 
+/***/ "./src/rules/onePage/wanben.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.wanben = void 0;
+const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
+const misc_1 = __webpack_require__("./src/lib/misc.ts");
+const rule_1 = __webpack_require__("./src/lib/rule.ts");
+const template_1 = __webpack_require__("./src/rules/onePage/template.ts");
+const wanben = () => (0, template_1.mkRuleClass)({
+    bookUrl: document.location.href,
+    bookname: document.querySelector(".detailTitle > h1").innerText.trim(),
+    author: document.querySelector(".writer > a").innerText.trim(),
+    introDom: document.querySelector(".detailTopMid > table:nth-child(3) > tbody:nth-child(1) > tr:nth-child(3) > td:nth-child(2)"),
+    introDomPatch: (introDom) => introDom,
+    coverUrl: document.querySelector(".detailTopLeft > img")?.src,
+    aList: document.querySelectorAll(".chapter li > a"),
+    getContentFromUrl: async (chapterUrl, chapterName, charset) => {
+        const { chapterName: _chapterName, contentRaw, contentText, contentHTML, contentImages, additionalMetadate, } = await (0, rule_1.nextPageParse)({
+            chapterName,
+            chapterUrl,
+            charset,
+            selector: "div.readerCon",
+            contentPatch: (content, doc) => {
+                (0, misc_1.rm)("script", true, content);
+                (0, misc_1.rm)("div[style]", true, content);
+                const ads = [
+                    "【提示】：如果觉得此文不错，请推荐给更多小伙伴吧！分享也是一种享受。",
+                ];
+                (0, misc_1.rm2)(content, ads);
+                (0, cleanDOM_1.htmlTrim)(content);
+                return content;
+            },
+            getNextPage: (doc) => doc.querySelector(".readPage > a:nth-child(3)")
+                .href,
+            continueCondition: (_content, nextLink) => {
+                const pathname = nextLink.split("/").slice(-1)[0];
+                return pathname.includes("_");
+            },
+            enableCleanDOM: false,
+        });
+        return contentRaw;
+    },
+    contentPatch: (content) => content,
+});
+exports.wanben = wanben;
+
+
+/***/ }),
+
 /***/ "./src/rules/onePage/westnovel.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
@@ -8097,6 +8184,7 @@ class Ciyuanji extends rules_1.BaseRuleClass {
                 sectionChapterNumber = 0;
             }
             chapterNumber++;
+            sectionChapterNumber++;
             const isVIP = chapterObj.isFee === "1";
             const isPaid = chapterObj.isBuy === "1";
             const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, {});
@@ -12704,6 +12792,7 @@ exports.viviyzw = viviyzw;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.yibige = void 0;
+const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
 const misc_1 = __webpack_require__("./src/lib/misc.ts");
 const rule_1 = __webpack_require__("./src/lib/rule.ts");
 const tempate_1 = __webpack_require__("./src/rules/twoPage/tempate.ts");
@@ -12728,6 +12817,7 @@ const yibige = () => (0, tempate_1.mkRuleClass)({
             contentPatch: (content, doc) => {
                 (0, misc_1.rm)("script", true, content);
                 (0, misc_1.rm)("div[style]", true, content);
+                (0, cleanDOM_1.htmlTrim)(content);
                 return content;
             },
             getNextPage: (doc) => doc.querySelector(".bottem1 > a:nth-child(4)")

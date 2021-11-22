@@ -10,3 +10,4 @@ export declare const dijiubook: () => import("../../lib/misc").PublicConstructor
 export declare const c25zw: () => import("../../lib/misc").PublicConstructor<import("../../rules").BaseRuleClass>;
 export declare const xbiquge: () => import("../../lib/misc").PublicConstructor<import("../../rules").BaseRuleClass>;
 export declare const yruan: () => import("../../lib/misc").PublicConstructor<import("../../rules").BaseRuleClass>;
+export declare const ranwen: () => import("../../lib/misc").PublicConstructor<import("../../rules").BaseRuleClass>;

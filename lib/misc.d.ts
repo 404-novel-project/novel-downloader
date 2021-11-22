@@ -11,7 +11,7 @@ export declare class LocalStorageExpired {
     constructor();
     private init;
     set(key: string, value: string | object, expired: number): void;
-    get(key: string): any;
+    get(key: string): object | undefined;
     remove(key: string): void;
 }
 export declare function deepcopy(obj: object): any;
