@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.5.0.331
+// @version        4.5.1.332
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -133,6 +133,7 @@
 // @match          *://www.25zw.com/*/
 // @match          *://www.tycqxs.com/*_*/
 // @match          *://www.kanunu8.com/*
+// @match          *://www.ciyuanji.com/bookDetails/*
 // @name:en        novel-downloader
 // @description:en An scalable universal novel downloader.
 // @namespace      https://blog.bgme.me
@@ -239,6 +240,7 @@
 // @connect        dijiuzww.com
 // @connect        25zw.com
 // @connect        sina.com.cn
+// @connect        ciyuanji.com
 // @connect        *
 // @require        https://cdn.jsdelivr.net/npm/crypto-js@4.1.1/crypto-js.js#sha512-NQVmLzNy4Lr5QTrmXvq/WzTMUnRHmv7nyIT/M6LyGPBS+TIeRxZ+YQaqWxjpRpvRMQSuYPQURZz/+pLi81xXeA==
 // @require        https://cdn.jsdelivr.net/npm/fflate@0.7.1/umd/index.js#sha512-laBNdxeV48sttD1kBYahmdSXpSRitYmkte49ZUqm3KEOUK4cIJAjqt1MYwScWvBqqP4WDtEftDSPYE1ii/bxCg==
@@ -5243,6 +5245,11 @@ async function getRule() {
             ruleClass = Kanunu8;
             break;
         }
+        case "www.ciyuanji.com": {
+            const { Ciyuanji } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/original/ciyuanji.ts"));
+            ruleClass = Ciyuanji;
+            break;
+        }
         default: {
             throw new Error("Not Found Rule!");
         }
@@ -5317,6 +5324,17 @@ function getUI() {
                     return defaultObject;
                 }
                 return errorObject;
+            };
+        }
+        case "www.ciyuanji.com": {
+            return () => {
+                if (document.location.pathname === "/bookDetails/info") {
+                    return {
+                        type: "jump",
+                        jumpFunction: () => (document.location.pathname = "/bookDetails/catalog"),
+                    };
+                }
+                return defaultObject;
             };
         }
         default: {
@@ -8015,6 +8033,142 @@ class Ciweimao extends rules_1.BaseRuleClass {
     }
 }
 exports.Ciweimao = Ciweimao;
+
+
+/***/ }),
+
+/***/ "./src/rules/special/original/ciyuanji.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Ciyuanji = void 0;
+const CryptoJS = __webpack_require__("crypto-js");
+const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
+const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
+const http_1 = __webpack_require__("./src/lib/http.ts");
+const misc_1 = __webpack_require__("./src/lib/misc.ts");
+const rule_1 = __webpack_require__("./src/lib/rule.ts");
+const log_1 = __webpack_require__("./src/log.ts");
+const main_1 = __webpack_require__("./src/main.ts");
+const rules_1 = __webpack_require__("./src/rules.ts");
+class Ciyuanji extends rules_1.BaseRuleClass {
+    constructor() {
+        super();
+        this.imageMode = "TM";
+        this.concurrencyLimit = 1;
+    }
+    async bookParse() {
+        const bookUrl = document.location.href;
+        const bookObject = unsafeWindow.__NUXT__.data[0].book;
+        const bookId = bookObject.bookId;
+        const bookname = bookObject.bookName;
+        const author = bookObject.authorName;
+        const introDom = document.createElement("div");
+        introDom.innerHTML = bookObject.notes.replace("/\n/g", "<br/><br/>");
+        const [introduction, introductionHTML, introCleanimages] = await (0, rule_1.introDomHandle)(introDom);
+        const additionalMetadate = {};
+        const coverUrl = bookObject.imgUrl;
+        if (coverUrl) {
+            (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
+                .then((coverClass) => {
+                additionalMetadate.cover = coverClass;
+            })
+                .catch((error) => log_1.log.error(error));
+        }
+        additionalMetadate.tags = bookObject.tagList.map((tagobj) => tagobj.tagName);
+        const bookChapterObject = unsafeWindow.__NUXT__
+            .data[1].bookChapter;
+        const chapterList = bookChapterObject.chapterList;
+        const chapters = [];
+        let chapterNumber = 0;
+        let sectionName = null;
+        let sectionNumber = 0;
+        let sectionChapterNumber = 0;
+        for (const chapterObj of chapterList) {
+            const chapterId = chapterObj.chapterId;
+            const chapterUrl = `${document.location.origin}/chapter/${chapterId}?bookId=${bookId}`;
+            const chapterName = chapterObj.chapterName;
+            const _sectionName = chapterObj.title;
+            if (sectionName !== _sectionName) {
+                sectionName = _sectionName;
+                sectionNumber++;
+                sectionChapterNumber = 0;
+            }
+            chapterNumber++;
+            const isVIP = chapterObj.isFee === "1";
+            const isPaid = chapterObj.isBuy === "1";
+            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, {});
+            if (chapter.isVIP === true && chapter.isPaid === false) {
+                chapter.status = main_1.Status.aborted;
+            }
+            chapters.push(chapter);
+        }
+        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        return book;
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+        const doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
+        const _script = Array.from(doc.querySelectorAll("script")).filter((s) => /^window\.__NUXT__/.test(s.innerHTML));
+        if (_script.length === 1) {
+            const script = _script[0];
+            const scriptText = script.innerHTML.replace(/^window\./, "const ");
+            const __NUXT__ = (0, misc_1.sandboxed)(`${scriptText}; return __NUXT__`);
+            const chapterObj = __NUXT__.data[0].chapter;
+            const data = {
+                key: "ZUreQN0Epkpxh3pooWOgixjTfPwumCTYWzYTQ7SMgDnqFLQ1s9tqpVhkGf02we89moQwhSQ07DVzc3LWupRgbVvm29aYeY7zyFN",
+                type1: "PC-Token",
+                type2: "PC-UserInfo",
+                type3: "PC-Enum",
+                type4: "PC-IsActivityStart",
+                f: "NpkTYvpvhJjEog8Y051gQDHmReY54z5t3F0zSd9QEFuxWGqfC8g8Y4GPuabq0KPdxArlji4dSnnHCARHnkqYBLu7iIw55ibTo18",
+            };
+            function encrypt(input) {
+                if (input && "string" === typeof input) {
+                    const key = CryptoJS.enc.Utf8.parse(data.key);
+                    return CryptoJS.DES.encrypt(input, key, {
+                        mode: CryptoJS.mode.ECB,
+                        padding: CryptoJS.pad.Pkcs7,
+                    }).toString();
+                }
+            }
+            function decrypt(input) {
+                if (input && "string" === typeof input) {
+                    input = input.replace(/\n/g, "");
+                    const key = CryptoJS.enc.Utf8.parse(data.key);
+                    return CryptoJS.DES.decrypt(input, key, {
+                        mode: CryptoJS.mode.ECB,
+                        padding: CryptoJS.pad.Pkcs7,
+                    }).toString(CryptoJS.enc.Utf8);
+                }
+            }
+            const content = document.createElement("div");
+            const chapterContent = decrypt(chapterObj.chapterContentFormat);
+            if (chapterContent) {
+                content.innerHTML = chapterContent;
+                const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+                return {
+                    chapterName,
+                    contentRaw: content,
+                    contentText: text,
+                    contentHTML: dom,
+                    contentImages: images,
+                    additionalMetadate: null,
+                };
+            }
+        }
+        return {
+            chapterName,
+            contentRaw: null,
+            contentText: null,
+            contentHTML: null,
+            contentImages: null,
+            additionalMetadate: null,
+        };
+    }
+}
+exports.Ciyuanji = Ciyuanji;
 
 
 /***/ }),
