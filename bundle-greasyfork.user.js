@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.5.1.348
+// @version        4.5.1.349
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -137,6 +137,7 @@
 // @match          *://m.wanben.org/*/
 // @match          *://www.wanben.org/*/
 // @match          *://www.ranwen.la/files/article/*/*/
+// @match          *://www.washuge.com/books/*/*/
 // @name:en        novel-downloader
 // @description:en An scalable universal novel downloader.
 // @namespace      https://blog.bgme.me
@@ -5267,6 +5268,11 @@ async function getRule() {
         case "www.ranwen.la": {
             const { ranwen } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge/type1.ts"));
             ruleClass = ranwen();
+            break;
+        }
+        case "www.washuge.com": {
+            const { washuge } = await Promise.resolve().then(() => __webpack_require__("./src/rules/twoPage/washuge.ts"));
+            ruleClass = washuge();
             break;
         }
         default: {
@@ -12780,6 +12786,39 @@ const viviyzw = () => {
     });
 };
 exports.viviyzw = viviyzw;
+
+
+/***/ }),
+
+/***/ "./src/rules/twoPage/washuge.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.washuge = void 0;
+const tempate_1 = __webpack_require__("./src/rules/twoPage/tempate.ts");
+const washuge = () => {
+    const bookUrl = document.location.href;
+    const bookId = /(\d+)\/?$/.exec(bookUrl)?.[1];
+    const anotherPageUrl = `${document.location.origin}/books/book${bookId}.html`;
+    return (0, tempate_1.mkRuleClass)({
+        bookUrl,
+        anotherPageUrl,
+        getBookname: (doc) => doc.querySelector("#content > dd > h1")?.innerText
+            .replace("全文阅读", "")
+            .trim(),
+        getAuthor: (doc) => doc.querySelector("#at > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(4)")?.innerText.trim(),
+        getIntroDom: (doc) => doc.querySelector("#content > dd:nth-child(7) > p:nth-child(3)"),
+        introDomPatch: (dom) => dom,
+        getCoverUrl: (doc) => doc.querySelector(".hst > img").src,
+        getAList: (doc) => document.querySelectorAll("#at > tbody td > a"),
+        getContent: (doc) => doc.querySelector("#contents"),
+        contentPatch: (dom) => dom,
+        concurrencyLimit: 1,
+    });
+};
+exports.washuge = washuge;
 
 
 /***/ }),

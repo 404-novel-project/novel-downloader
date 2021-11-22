@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        小说下载器测试脚本
-// @version     4.5.1.348
+// @version     4.5.1.349
 // @author      bgme
 // @description 小说下载器测试脚本
 // @match       *://www.ciweimao.com/chapter-list/*
@@ -136,6 +136,7 @@
 // @match       *://m.wanben.org/*/
 // @match       *://www.wanben.org/*/
 // @match       *://www.ranwen.la/files/article/*/*/
+// @match       *://www.washuge.com/books/*/*/
 // @match       https://greasyfork.org/*/scripts/406070-%E5%B0%8F%E8%AF%B4%E4%B8%8B%E8%BD%BD%E5%99%A8
 // @name:en     novel-downloader-tester
 // @namespace   https://blog.bgme.me
