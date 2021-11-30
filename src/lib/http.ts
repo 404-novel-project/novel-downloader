@@ -1,5 +1,7 @@
 import { log } from "../log";
+import { retryLimit } from "../setting";
 import { _GM_xmlhttpRequest } from "./GM";
+import { sleep } from "./misc";
 
 // Forbidden header name
 // https://developer.mozilla.org/en-US/docs/Glossary/Forbidden_header_name
@@ -145,6 +147,27 @@ export async function getHtmlDOM(
   return new DOMParser().parseFromString(htmlText, "text/html");
 }
 
+export async function getHtmlDomWithRetry(
+  url: string,
+  charset?: string,
+  init?: RequestInit
+): Promise<Document | null> {
+  let retry = retryLimit;
+  let doc = null;
+  while (retry > 0) {
+    try {
+      doc = await getHtmlDOM(url, charset, init);
+      retry = 0;
+    } catch (error) {
+      log.error(`抓取${url}失败，重试第${retryLimit - retry}次。`);
+      log.error(error);
+      retry--;
+      await sleep(1000 * (retryLimit - retry));
+    }
+  }
+  return doc;
+}
+
 export async function ggetText(
   url: string,
   charset?: string,
@@ -193,4 +216,24 @@ export async function ggetHtmlDOM(
     throw new Error("Fetch Content failed!");
   }
   return new DOMParser().parseFromString(htmlText, "text/html");
+}
+
+export async function ggetHtmlDomWithRetry(
+  url: string,
+  charset?: string,
+  init?: GfetchRequestOptions
+): Promise<Document | null> {
+  let retry = retryLimit;
+  let doc = null;
+  while (retry > 0) {
+    try {
+      doc = await ggetHtmlDOM(url, charset, init);
+      retry = 0;
+    } catch (error) {
+      log.error(`抓取${url}失败，重试第${retryLimit - retry}次。`);
+      retry--;
+      await sleep(1000 * (retryLimit - retry));
+    }
+  }
+  return doc;
 }

@@ -1,12 +1,11 @@
 import { getImageAttachment } from "../../lib/attachments";
 import { cleanDOM } from "../../lib/cleanDOM";
-import { getHtmlDOM } from "../../lib/http";
+import { getHtmlDOM, getHtmlDomWithRetry } from "../../lib/http";
 import { concurrencyRun, PublicConstructor, sleep } from "../../lib/misc";
 import { introDomHandle } from "../../lib/rule";
 import { log } from "../../log";
 import { Book, BookAdditionalMetadate, Chapter } from "../../main";
 import { BaseRuleClass } from "../../rules";
-import { retryLimit } from "../../setting";
 
 interface MkRuleClassOptions {
   bookUrl: string;
@@ -64,44 +63,13 @@ export function mkRuleClass({
       }
 
       const indexUrls = await getIndexUrls();
-      const getIndexDom = async (
-        url: string,
-        retry: number
-      ): Promise<Document | null> => {
-        try {
-          const doc = await getHtmlDOM(url, this.charset);
-          if (doc) {
-            return doc;
-          } else {
-            return doRetry();
-          }
-        } catch (error) {
-          log.error(error);
-          return doRetry();
-        }
-        async function doRetry() {
-          log.error(
-            `[bookParse][getIndexDom]抓取目录页失败: ${url}, 第${
-              retryLimit - retry
-            }次重试`
-          );
-
-          retry--;
-          await sleep(1000 * (retryLimit - retry));
-          if (retry > 0) {
-            return getIndexDom(url, retry);
-          } else {
-            return null;
-          }
-        }
-      };
       const _indexPage: [Document | null, string][] = [];
       await concurrencyRun(
         indexUrls,
         this.concurrencyLimit,
         async (url: string) => {
           log.info(`[BookParse]抓取目录页：${url}`);
-          const doc = await getIndexDom(url, retryLimit);
+          const doc = await getHtmlDomWithRetry(url);
           _indexPage.push([doc, url]);
           return doc;
         }
