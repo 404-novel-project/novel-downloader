@@ -1,4 +1,4 @@
-import FileSaver = require("file-saver");
+import * as FileSaver from "file-saver";
 import { LocalStorageExpired } from "./lib/misc";
 import { fetchAndParse, gfetchAndParse, parse } from "./lib/readability";
 import { Book, Chapter } from "./main";

@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.5.1.351
+// @version        4.5.1.353
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -110,24 +110,24 @@
 // @match          *://www.shubl.com/book/book_detail/*
 // @match          *://www.ujxs.net/read/*/
 // @match          *://m.haitangtxt.net/*/*/
-// @match          *://ebook.longmabook.com/?act=showinfo&bookwritercode=*&bookid=*
-// @match          *://www.longmabookcn.com/?act=showinfo&bookwritercode=*&bookid=*
-// @match          *://ebook.lmbooks.com/?act=showinfo&bookwritercode=*&bookid=*
-// @match          *://www.lmebooks.com/?act=showinfo&bookwritercode=*&bookid=*
-// @match          *://www.haitbook.com/?act=showinfo&bookwritercode=*&bookid=*
-// @match          *://www.htwhbook.com/?act=showinfo&bookwritercode=*&bookid=*
-// @match          *://www.myhtebook.com/?act=showinfo&bookwritercode=*&bookid=*
-// @match          *://www.lovehtbooks.com/?act=showinfo&bookwritercode=*&bookid=*
-// @match          *://www.myhtebooks.com/?act=showinfo&bookwritercode=*&bookid=*
-// @match          *://www.myhtlmebook.com/?act=showinfo&bookwritercode=*&bookid=*
-// @match          *://jp.myhtebook.com/?act=showinfo&bookwritercode=*&bookid=*
-// @match          *://jp.myhtlmebook.com/?act=showinfo&bookwritercode=*&bookid=*
-// @match          *://ebook.urhtbooks.com/?act=showinfo&bookwritercode=*&bookid=*
-// @match          *://www.urhtbooks.com/?act=showinfo&bookwritercode=*&bookid=*
-// @match          *://www.newhtbook.com/?act=showinfo&bookwritercode=*&bookid=*
-// @match          *://www.lvhtebook.com/?act=showinfo&bookwritercode=*&bookid=*
-// @match          *://jp.lvhtebook.com/?act=showinfo&bookwritercode=*&bookid=*
-// @match          *://www.htlvbooks.com/?act=showinfo&bookwritercode=*&bookid=*
+// @match          *://ebook.longmabook.com/*
+// @match          *://www.longmabookcn.com/*
+// @match          *://ebook.lmbooks.com/*
+// @match          *://www.lmebooks.com/*
+// @match          *://www.haitbook.com/*
+// @match          *://www.htwhbook.com/*
+// @match          *://www.myhtebook.com/*
+// @match          *://www.lovehtbooks.com/*
+// @match          *://www.myhtebooks.com/*
+// @match          *://www.myhtlmebook.com/*
+// @match          *://jp.myhtebook.com/*
+// @match          *://jp.myhtlmebook.com/*
+// @match          *://ebook.urhtbooks.com/*
+// @match          *://www.urhtbooks.com/*
+// @match          *://www.newhtbook.com/*
+// @match          *://www.lvhtebook.com/*
+// @match          *://jp.lvhtebook.com/*
+// @match          *://www.htlvbooks.com/*
 // @match          *://dijiubook.net/*_*/
 // @match          *://www.biquwx.la/*_*/
 // @match          *://www.25zw.com/*/
@@ -2730,6 +2730,30 @@ ___CSS_LOADER_EXPORT___.push([module.id, ".button-div {\n  position: fixed;\n  t
 
 /***/ }),
 
+/***/ "./src/ui/setting.less":
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/css-loader/dist/runtime/noSourceMaps.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
+// Imports
+
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, ".nd-setting-body {\n  background: #e0e0e0;\n  padding: 1em;\n  border-top-right-radius: 3px;\n}\n.nd-setting-body hr {\n  margin-top: 0.8em;\n  margin-bottom: 0.8em;\n}\n.nd-setting-body input[type=\"checkbox\"],\n.nd-setting-body input[type=\"radio\"],\n.nd-setting-body input[type=\"text\"] {\n  position: static;\n  opacity: 1;\n  all: revert;\n}\ndialog-ui .tab-button {\n  padding: 6px 10px;\n  border-top-left-radius: 3px;\n  border-top-right-radius: 3px;\n  border: 1px solid #ccc;\n  cursor: pointer;\n  background: #f0f0f0;\n  margin-bottom: -1px;\n  margin-right: -1px;\n  color: black;\n  line-height: normal;\n  display: inline-block;\n  text-align: center;\n  font-weight: bold;\n  max-width: 9em;\n  box-sizing: initial;\n}\ndialog-ui .tab-button:hover {\n  background: #e0e0e0;\n}\ndialog-ui .tab-button.active {\n  background: #e0e0e0;\n}\ndialog-ui #nd-setting-tab-1 input + label {\n  all: revert;\n}\ndialog-ui #nd-setting-tab-2 select {\n  all: revert;\n}\n.nd-setting-footer {\n  background: #e0e0e0;\n  padding-bottom: 0.7em;\n  text-align: center;\n  border-bottom-left-radius: 3px;\n  border-bottom-right-radius: 3px;\n}\n.nd-setting-footer > button {\n  all: revert;\n}\n/* 日志页面 */\n#novel-downloader-log {\n  max-height: 300px;\n  overflow: scroll;\n}\n/* 彩色斜纹 来自：https://www.zhangxinxu.com/wordpress/2021/05/css-html-hr/ */\n.hr-twill-colorful {\n  all: revert;\n  border: 0;\n  padding: 3px;\n  background: linear-gradient(135deg, red, orange, green, blue, purple);\n  --mask-image: repeating-linear-gradient(135deg, #000 0px, #000 1px, transparent 1px, transparent 6px);\n  -webkit-mask-image: var(--mask-image);\n  mask-image: var(--mask-image);\n}\n/* 两头虚 来自：https://www.zhangxinxu.com/wordpress/2021/05/css-html-hr/ */\n.hr-edge-weak {\n  all: revert;\n  border: 0;\n  padding-top: 1px;\n  background: linear-gradient(to right, transparent, #d0d0d5, transparent);\n}\n", ""]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
+
+/***/ }),
+
 /***/ "./src/save/main.css":
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
@@ -2844,30 +2868,6 @@ __webpack_require__.r(__webpack_exports__);
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
 ___CSS_LOADER_EXPORT___.push([module.id, "#nd-progress {\n  position: fixed;\n  bottom: 8%;\n  right: 3%;\n  z-index: 2147483647;\n  border-style: none;\n  text-align: center;\n  vertical-align: baseline;\n  background-color: rgba(210, 210, 210, 0.2);\n  padding: 6px;\n  border-radius: 12px;\n}\n#chapter-progress {\n  --color: green;\n  --position: 0%;\n  width: 200px;\n  height: 10px;\n  border-radius: 30px;\n  background-color: #ccc;\n  background-image: radial-gradient(\n      closest-side circle at var(--position),\n      var(--color),\n      var(--color) 100%,\n      transparent\n    ),\n    linear-gradient(var(--color), var(--color));\n  background-image: -webkit-radial-gradient(\n      var(--position),\n      circle closest-side,\n      var(--color),\n      var(--color) 100%,\n      transparent\n    ),\n    -webkit-linear-gradient(var(--color), var(--color));\n  background-size: 100%, var(--position);\n  background-repeat: no-repeat;\n}\n#zip-progress {\n  --color: yellow;\n  --position: 0%;\n  width: 200px;\n  height: 10px;\n  border-radius: 30px;\n  background-color: #ccc;\n  background-image: radial-gradient(\n      closest-side circle at var(--position),\n      var(--color),\n      var(--color) 100%,\n      transparent\n    ),\n    linear-gradient(var(--color), var(--color));\n  background-image: -webkit-radial-gradient(\n      var(--position),\n      circle closest-side,\n      var(--color),\n      var(--color) 100%,\n      transparent\n    ),\n    -webkit-linear-gradient(var(--color), var(--color));\n  background-size: 100%, var(--position);\n  background-repeat: no-repeat;\n  margin-top: 5px;\n}\n", ""]);
-// Exports
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
-
-
-/***/ }),
-
-/***/ "./src/ui/setting.css":
-/***/ ((module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/css-loader/dist/runtime/noSourceMaps.js");
-/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/css-loader/dist/runtime/api.js");
-/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
-// Imports
-
-
-var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
-// Module
-___CSS_LOADER_EXPORT___.push([module.id, ".nd-setting-body input[type=\"checkbox\"],\n.nd-setting-body input[type=\"radio\"],\n.nd-setting-body input[type=\"text\"] {\n  position: static;\n  opacity: 1;\n  all: revert;\n}\n.nd-setting-body {\n  background: #e0e0e0;\n  padding: 1em;\n  border-top-right-radius: 3px;\n}\n.nd-setting-body hr {\n  margin-top: 0.8em;\n  margin-bottom: 0.8em;\n}\n\n.tab-button {\n  padding: 6px 10px;\n  border-top-left-radius: 3px;\n  border-top-right-radius: 3px;\n  border: 1px solid #ccc;\n  cursor: pointer;\n  background: #f0f0f0;\n  margin-bottom: -1px;\n  margin-right: -1px;\n}\n.tab-button:hover {\n  background: #e0e0e0;\n}\n.tab-button.active {\n  background: #e0e0e0;\n}\n\n.nd-setting-footer {\n  background: #e0e0e0;\n  padding-bottom: 0.7em;\n  text-align: center;\n  border-bottom-left-radius: 3px;\n  border-bottom-right-radius: 3px;\n}\n.nd-setting-footer > button {\n  all: revert;\n}\n\n/* 彩色斜纹 来自：https://www.zhangxinxu.com/wordpress/2021/05/css-html-hr/ */\n.hr-twill-colorful {\n  all: revert;\n  border: 0;\n  padding: 3px;\n  background: linear-gradient(135deg, red, orange, green, blue, purple);\n  --mask-image: repeating-linear-gradient(\n    135deg,\n    #000 0px,\n    #000 1px,\n    transparent 1px,\n    transparent 6px\n  );\n  -webkit-mask-image: var(--mask-image);\n  mask-image: var(--mask-image);\n}\n/* 两头虚 来自：https://www.zhangxinxu.com/wordpress/2021/05/css-html-hr/ */\n.hr-edge-weak {\n  all: revert;\n  border: 0;\n  padding-top: 1px;\n  background: linear-gradient(to right, transparent, #d0d0d5, transparent);\n}\n\n/* 日志页面 */\n#novel-downloader-log {\n  max-height: 300px;\n  overflow: scroll;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -3987,9 +3987,11 @@ exports.createStyle = createStyle;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.ggetHtmlDOM = exports.ggetText = exports.getHtmlDOM = exports.getText = exports.gfetch = void 0;
+exports.ggetHtmlDomWithRetry = exports.ggetHtmlDOM = exports.ggetText = exports.getHtmlDomWithRetry = exports.getHtmlDOM = exports.getText = exports.gfetch = void 0;
 const log_1 = __webpack_require__("./src/log.ts");
+const setting_1 = __webpack_require__("./src/setting.ts");
 const GM_1 = __webpack_require__("./src/lib/GM.ts");
+const misc_1 = __webpack_require__("./src/lib/misc.ts");
 function gfetch(url, { method = "GET", headers, data, cookie, binary, nocache, revalidate, timeout, context, responseType, overrideMimeType, anonymous, username, password, } = {}) {
     return new Promise((resolve, reject) => {
         if (GM_1._GM_xmlhttpRequest) {
@@ -4068,6 +4070,24 @@ async function getHtmlDOM(url, charset, init) {
     return new DOMParser().parseFromString(htmlText, "text/html");
 }
 exports.getHtmlDOM = getHtmlDOM;
+async function getHtmlDomWithRetry(url, charset, init) {
+    let retry = setting_1.retryLimit;
+    let doc = null;
+    while (retry > 0) {
+        try {
+            doc = await getHtmlDOM(url, charset, init);
+            retry = 0;
+        }
+        catch (error) {
+            log_1.log.error(`抓取${url}失败，重试第${setting_1.retryLimit - retry}次。`);
+            log_1.log.error(error);
+            retry--;
+            await (0, misc_1.sleep)(1000 * (setting_1.retryLimit - retry));
+        }
+    }
+    return doc;
+}
+exports.getHtmlDomWithRetry = getHtmlDomWithRetry;
 async function ggetText(url, charset, init) {
     if (charset === undefined) {
         return gfetch(url, init)
@@ -4114,6 +4134,23 @@ async function ggetHtmlDOM(url, charset, init) {
     return new DOMParser().parseFromString(htmlText, "text/html");
 }
 exports.ggetHtmlDOM = ggetHtmlDOM;
+async function ggetHtmlDomWithRetry(url, charset, init) {
+    let retry = setting_1.retryLimit;
+    let doc = null;
+    while (retry > 0) {
+        try {
+            doc = await ggetHtmlDOM(url, charset, init);
+            retry = 0;
+        }
+        catch (error) {
+            log_1.log.error(`抓取${url}失败，重试第${setting_1.retryLimit - retry}次。`);
+            retry--;
+            await (0, misc_1.sleep)(1000 * (setting_1.retryLimit - retry));
+        }
+    }
+    return doc;
+}
+exports.ggetHtmlDomWithRetry = ggetHtmlDomWithRetry;
 
 
 /***/ }),
@@ -5392,6 +5429,34 @@ function getUI() {
                 type: "jump",
                 jumpFunction: () => (document.location.host = "www.wanben.org"),
             });
+        }
+        case "ebook.longmabook.com":
+        case "www.longmabookcn.com":
+        case "ebook.lmbooks.com":
+        case "www.lmebooks.com":
+        case "www.haitbook.com":
+        case "www.htwhbook.com":
+        case "www.myhtebook.com":
+        case "www.lovehtbooks.com":
+        case "www.myhtebooks.com":
+        case "www.myhtlmebook.com":
+        case "jp.myhtebook.com":
+        case "jp.myhtlmebook.com":
+        case "ebook.urhtbooks.com":
+        case "www.urhtbooks.com":
+        case "www.newhtbook.com":
+        case "www.lvhtebook.com":
+        case "jp.lvhtebook.com":
+        case "www.htlvbooks.com": {
+            return () => {
+                const params = new URLSearchParams(document.location.search);
+                if (params.get("act") === "showinfo" &&
+                    params.has("bookwritercode") &&
+                    params.has("bookid")) {
+                    return defaultObject;
+                }
+                return errorObject;
+            };
         }
         default: {
             return () => defaultObject;
@@ -7490,7 +7555,6 @@ const rule_1 = __webpack_require__("./src/lib/rule.ts");
 const log_1 = __webpack_require__("./src/log.ts");
 const main_1 = __webpack_require__("./src/main.ts");
 const rules_1 = __webpack_require__("./src/rules.ts");
-const setting_1 = __webpack_require__("./src/setting.ts");
 function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, coverUrl, getIndexUrls, getAList, postHook, getContentFromUrl, getContent, contentPatch, concurrencyLimit, }) {
     return class extends rules_1.BaseRuleClass {
         constructor() {
@@ -7511,36 +7575,10 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
                     .catch((error) => log_1.log.error(error));
             }
             const indexUrls = await getIndexUrls();
-            const getIndexDom = async (url, retry) => {
-                try {
-                    const doc = await (0, http_1.getHtmlDOM)(url, this.charset);
-                    if (doc) {
-                        return doc;
-                    }
-                    else {
-                        return doRetry();
-                    }
-                }
-                catch (error) {
-                    log_1.log.error(error);
-                    return doRetry();
-                }
-                async function doRetry() {
-                    log_1.log.error(`[bookParse][getIndexDom]抓取目录页失败: ${url}, 第${setting_1.retryLimit - retry}次重试`);
-                    retry--;
-                    await (0, misc_1.sleep)(1000 * (setting_1.retryLimit - retry));
-                    if (retry > 0) {
-                        return getIndexDom(url, retry);
-                    }
-                    else {
-                        return null;
-                    }
-                }
-            };
             const _indexPage = [];
             await (0, misc_1.concurrencyRun)(indexUrls, this.concurrencyLimit, async (url) => {
                 log_1.log.info(`[BookParse]抓取目录页：${url}`);
-                const doc = await getIndexDom(url, setting_1.retryLimit);
+                const doc = await (0, http_1.getHtmlDomWithRetry)(url);
                 _indexPage.push([doc, url]);
                 return doc;
             });
@@ -9494,95 +9532,99 @@ class Longmabook extends rules_1.BaseRuleClass {
             document.querySelector('#mypages > div:nth-child(8) > div:nth-child(1) > font[color="#800080"]')?.innerText
                 .split("/")
                 .map((item) => item.trim()) ?? [];
-        async function getLiList() {
-            const showbooklistAPIUrl = document.location.origin + "/showbooklist.php";
-            let flag = false;
-            let page = 1;
-            let pageMax = 0;
-            const showbooklistParams = {
-                ebookid: bookId,
-                pages: page.toString(),
-                showbooklisttype: "1",
+        const showbooklistAPIUrl = document.location.origin + "/showbooklist.php";
+        const initShowbooklistParams = {
+            ebookid: bookId,
+            pages: "1",
+            showbooklisttype: "1",
+        };
+        const getInitObj = (showbooklistParams) => ({
+            headers: {
+                "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+                "x-requested-with": "XMLHttpRequest",
+            },
+            body: new URLSearchParams(showbooklistParams).toString(),
+            method: "POST",
+            mode: "cors",
+            credentials: "include",
+        });
+        const getPages = (doc) => {
+            const aList = doc.querySelectorAll("a[onclick^=showbooklist]");
+            const getPageNumber = (a) => {
+                const s = a.getAttribute("onclick");
+                if (s) {
+                    const n = /'(\d+)'\)/.exec(s)?.slice(-1)[0];
+                    if (n) {
+                        return parseInt(n, 10);
+                    }
+                }
             };
-            const liListTemp = [];
-            do {
-                log_1.log.info(`[book]请求章节目录中，page: ${page}`);
-                const doc = await (0, http_1.getHtmlDOM)(showbooklistAPIUrl, self.charset, {
-                    headers: {
-                        "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-                        "x-requested-with": "XMLHttpRequest",
-                    },
-                    body: new URLSearchParams(showbooklistParams).toString(),
-                    method: "POST",
-                    mode: "cors",
-                    credentials: "include",
-                });
-                if (doc.documentElement.innerText.includes("章節數量較多，採分頁顯示")) {
-                    const pageLi = Array.from(doc.querySelectorAll(".uk-list.uk-list-divider > li")).filter((li) => li.innerHTML.includes("換頁：&nbsp;&nbsp;"))[0];
-                    const pages = Array.from(pageLi.querySelectorAll("a"))
-                        .map((a) => {
-                        const _page = a
-                            .getAttribute("onclick")
-                            ?.match(/\('\d+','(\d+)'\)/);
-                        if (_page?.length === 2) {
-                            return Number(_page[1]);
-                        }
-                    })
-                        .filter((p) => p);
-                    pageMax = Math.max(...pages);
-                    page++;
-                    if (page !== 1 && page <= pageMax) {
-                        showbooklistParams.pages = page.toString();
-                        flag = true;
-                    }
-                    else {
-                        flag = false;
+            const _ns = Array.from(aList)
+                .map(getPageNumber)
+                .filter((n) => n !== undefined);
+            return Array.from(new Set(_ns)).sort();
+        };
+        const getChapters = (doc) => doc.querySelectorAll('span[uk-icon="file-text"] + a');
+        const getSections = (doc) => doc.querySelectorAll('span[uk-icon="folder"] + b > font');
+        const getSName = (sElem) => sElem.innerText.trim();
+        const getIsVip = (a) => a.parentElement?.innerText.includes("$") ?? false;
+        const getIsPaid = (a) => a.parentElement?.innerText.includes("已購買，三年內可直接閱讀") ?? false;
+        const getChapterObjs = (doc) => {
+            const chapterAList = getChapters(doc);
+            const sections = getSections(doc);
+            const _chapterObjs = Array.from(chapterAList).map((a) => {
+                const chapterName = a.innerText;
+                const chapterUrl = a.href;
+                const _sectionName = (0, rule_1.getSectionName)(a, sections, getSName);
+                const isVip = getIsVip(a);
+                let isPaid = false;
+                if (isVip) {
+                    isPaid = getIsPaid(a);
+                }
+                return {
+                    chapterName,
+                    chapterUrl,
+                    _sectionName,
+                    isVip,
+                    isPaid,
+                };
+            });
+            return _chapterObjs;
+        };
+        const chapterObjs = [];
+        const initDoc = await (0, http_1.getHtmlDomWithRetry)(showbooklistAPIUrl, self.charset, getInitObj(initShowbooklistParams));
+        if (initDoc) {
+            chapterObjs.push(...getChapterObjs(initDoc));
+            const pages = getPages(initDoc);
+            if (pages.length !== 0) {
+                for (const page of pages) {
+                    const showbooklistParams = (0, misc_1.deepcopy)(initShowbooklistParams);
+                    showbooklistParams.pages = page.toString();
+                    const doc = await (0, http_1.getHtmlDomWithRetry)(showbooklistAPIUrl, self.charset, getInitObj(showbooklistParams));
+                    if (doc) {
+                        chapterObjs.push(...getChapterObjs(doc));
                     }
                 }
-                else {
-                    flag = false;
-                }
-                const _liList = Array.from(doc.querySelectorAll(".uk-list.uk-list-divider > li")).filter((li) => {
-                    const filters = ["章節數量較多，採分頁顯示", "換頁：&nbsp;&nbsp;"];
-                    for (const f of filters) {
-                        if (li.innerHTML.includes(f)) {
-                            return false;
-                        }
-                    }
-                    return true;
-                });
-                _liList.push(..._liList);
-            } while (flag);
-            return liListTemp;
+            }
         }
         const chapters = [];
-        const liList = await getLiList();
         let chapterNumber = 0;
         let sectionNumber = 0;
         let sectionName = null;
         let sectionChapterNumber = 0;
-        for (const li of liList) {
-            const ukIcon = li.querySelector("span")?.getAttribute("uk-icon");
-            if (ukIcon === "folder") {
-                const _sectionName = li.querySelector("b > font")?.innerText.trim();
-                if (_sectionName !== sectionName) {
-                    sectionName = _sectionName;
-                    sectionNumber++;
-                    sectionChapterNumber = 0;
-                }
+        for (const { chapterName, chapterUrl, _sectionName, isVip: isVIP, isPaid, } of chapterObjs) {
+            if (_sectionName !== sectionName) {
+                sectionName = _sectionName;
+                sectionNumber++;
+                sectionChapterNumber = 0;
             }
-            else if (ukIcon === "file-text") {
-                chapterNumber++;
-                sectionChapterNumber++;
-                const a = li.querySelector("a");
-                const chapterName = a?.innerText.trim();
-                const chapterUrl = a?.href;
-                const isVIP = Boolean(li.innerText.match(/\$[\d\.]+/));
-                if (chapterUrl && chapterName) {
-                    const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, null, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, { bookId, bookwritercode });
-                    chapters.push(chapter);
-                }
+            chapterNumber++;
+            sectionChapterNumber++;
+            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, { bookId, bookwritercode });
+            if (chapter.isVIP === true && chapter.isPaid === false) {
+                chapter.status = main_1.Status.aborted;
             }
+            chapters.push(chapter);
         }
         const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
         return book;
@@ -14125,10 +14167,10 @@ const main_1 = __webpack_require__("./src/main.ts");
 const setting_1 = __webpack_require__("./src/setting.ts");
 const FilterTab_1 = __webpack_require__("./src/ui/FilterTab.ts");
 const LogUI_1 = __webpack_require__("./src/ui/LogUI.ts");
-const setting_css_1 = __webpack_require__("./src/ui/setting.css");
 const setting_html_1 = __webpack_require__("./src/ui/setting.html");
+const setting_less_1 = __webpack_require__("./src/ui/setting.less");
 const TestUI_1 = __webpack_require__("./src/ui/TestUI.ts");
-exports.style = (0, createEl_1.createStyle)(setting_css_1.default);
+exports.style = (0, createEl_1.createStyle)(setting_less_1.default);
 exports.el = (0, createEl_1.createEl)(`<div id="setting"></div>`);
 exports.vm = Vue.createApp({
     name: "nd-setting",
