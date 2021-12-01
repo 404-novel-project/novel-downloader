@@ -25,7 +25,7 @@ export const ujxs = () => {
       (doc.querySelector(".img > img") as HTMLImageElement)?.src,
     getAList: (doc) => document.querySelectorAll("#readerlist  li > a"),
     getSections: (doc) => document.querySelectorAll("#readerlist  li.fj > h3"),
-    getName: (sElem) => (sElem as HTMLElement).innerText,
+    getSName: (sElem) => (sElem as HTMLElement).innerText,
     postHook: (chapter) => {
       chapter.sectionName =
         chapter.sectionName?.replace(chapter.bookname, "") ?? null;

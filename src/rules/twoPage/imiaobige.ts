@@ -23,7 +23,7 @@ export const imiaobige = () => {
       (doc.querySelector("#bookimg > img") as HTMLImageElement).src,
     getSections: (doc) => document.querySelectorAll("#readerlists > ul"),
     getAList: (doc) => document.querySelectorAll("#readerlists  a"),
-    getName,
+    getSName: getName,
     postHook: (chapter) => {
       if (chapter.sectionName?.includes("最新章节")) {
         return;

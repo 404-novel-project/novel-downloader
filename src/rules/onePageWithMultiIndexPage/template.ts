@@ -16,6 +16,7 @@ interface MkRuleClassOptions {
   coverUrl: string | null;
   getIndexUrls: () => string[] | Promise<string[]>;
   getAList: (doc: Document) => NodeListOf<Element>;
+  getAName?: (aElem: Element) => string;
   postHook?: (chapter: Chapter) => Chapter | void;
   getContentFromUrl?: (
     chapterUrl: string,
@@ -35,6 +36,7 @@ export function mkRuleClass({
   coverUrl,
   getIndexUrls,
   getAList,
+  getAName,
   postHook,
   getContentFromUrl,
   getContent,
@@ -101,7 +103,12 @@ export function mkRuleClass({
       let chapterNumber = 0;
       for (const aElem of Array.from(aListList)) {
         chapterNumber++;
-        const chapterName = aElem.innerText;
+        let chapterName;
+        if (getAName) {
+          chapterName = getAName(aElem);
+        } else {
+          chapterName = aElem.innerText;
+        }
         const chapterUrl = aElem.href;
         const isVIP = false;
         const isPaid = false;

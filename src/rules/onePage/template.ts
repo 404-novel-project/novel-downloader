@@ -14,9 +14,13 @@ interface MkRuleClassOptions {
   introDom: HTMLElement;
   introDomPatch: (introDom: HTMLElement) => HTMLElement;
   coverUrl: string | null;
+  additionalMetadatePatch?: (
+    additionalMetadate: BookAdditionalMetadate
+  ) => BookAdditionalMetadate;
   aList: NodeListOf<Element>;
+  getAName?: (aElem: Element) => string;
   sections?: NodeListOf<Element>;
-  getName?: (sElem: Element) => string;
+  getSName?: (sElem: Element) => string;
   postHook?: (chapter: Chapter) => Chapter | void;
   getContentFromUrl?: (
     chapterUrl: string,
@@ -34,9 +38,11 @@ export function mkRuleClass({
   introDom,
   introDomPatch,
   coverUrl,
+  additionalMetadatePatch,
   aList,
+  getAName,
   sections,
-  getName: _getSectionName,
+  getSName: _getSectionName,
   postHook,
   getContentFromUrl,
   getContent,
@@ -64,6 +70,12 @@ export function mkRuleClass({
           })
           .catch((error) => log.error(error));
       }
+      if (additionalMetadatePatch) {
+        Object.assign(
+          additionalMetadate,
+          additionalMetadatePatch(additionalMetadate)
+        );
+      }
 
       const chapters: Chapter[] = [];
       let chapterNumber = 0;
@@ -79,7 +91,12 @@ export function mkRuleClass({
         hasSection = true;
       }
       for (const aElem of Array.from(aList) as HTMLAnchorElement[]) {
-        const chapterName = aElem.innerText;
+        let chapterName;
+        if (getAName) {
+          chapterName = getAName(aElem);
+        } else {
+          chapterName = aElem.innerText;
+        }
         const chapterUrl = aElem.href;
         if (hasSection) {
           const _sectionName = getSectionName(

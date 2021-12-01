@@ -23,7 +23,7 @@ export const shouda8 = () =>
     ).src,
     aList: document.querySelectorAll(".link_14 dd > a"),
     sections: document.querySelectorAll(".link_14 dt > b"),
-    getName: (sElem) => (sElem as HTMLElement).innerText.trim(),
+    getSName: (sElem) => (sElem as HTMLElement).innerText.trim(),
     getContent: (doc) => doc.querySelector("#content") as HTMLElement,
     contentPatch: (content) => {
       const ads = ["手打吧更新速度最快。", "www.shouda88.com"];

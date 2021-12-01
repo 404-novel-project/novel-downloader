@@ -394,6 +394,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = quanshuzhai();
       break;
     }
+    case "masiro.me": {
+      const { masiro } = await import("../rules/onePage/masiro");
+      ruleClass = masiro();
+      break;
+    }
     default: {
       throw new Error("Not Found Rule!");
     }

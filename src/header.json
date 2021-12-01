@@ -155,7 +155,8 @@
     "*://www.ranwen.la/files/article/*/*/",
     "*://www.washuge.com/books/*/*/",
     "*://m.baihexs.com/info-*/",
-    "*://www.quanshuzhai.com/book/*.html"
+    "*://www.quanshuzhai.com/book/*.html",
+    "*://masiro.me/admin/novelView?novel_id=*"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",
@@ -257,6 +258,7 @@
     "sina.com.cn",
     "ciyuanji.com",
     "baihexs.com",
+    "masiro.me",
     "*"
   ],
   "require": [

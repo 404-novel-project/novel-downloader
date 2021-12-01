@@ -16,8 +16,9 @@ interface MkRuleClassOptions {
   introDomPatch: (introDom: HTMLElement) => HTMLElement;
   getCoverUrl: (doc: Document) => string | null;
   getAList: (doc: Document) => NodeListOf<Element> | Element[];
+  getAName?: (aElem: Element) => string;
   getSections?: (doc: Document) => NodeListOf<Element>;
-  getName?: (sElem: Element) => string;
+  getSName?: (sElem: Element) => string;
   postHook?: (chapter: Chapter) => Chapter | void;
   getContentFromUrl?: (
     chapterUrl: string,
@@ -37,8 +38,9 @@ export function mkRuleClass({
   introDomPatch,
   getCoverUrl,
   getAList,
+  getAName,
   getSections,
-  getName: _getSectionName,
+  getSName: _getSectionName,
   postHook,
   getContentFromUrl,
   getContent,
@@ -93,7 +95,12 @@ export function mkRuleClass({
 
       const aList = getAList(doc);
       for (const aElem of Array.from(aList) as HTMLAnchorElement[]) {
-        const chapterName = aElem.innerText;
+        let chapterName;
+        if (getAName) {
+          chapterName = getAName(aElem);
+        } else {
+          chapterName = aElem.innerText;
+        }
         const chapterUrl = aElem.href;
         if (hasSection) {
           const _sectionName = getSectionName(

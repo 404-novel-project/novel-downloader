@@ -19,7 +19,7 @@ export const xiaoshuodaquan = () =>
       (document.querySelector(".con_limg > img") as HTMLImageElement)?.src,
     getAList: (doc) => doc.querySelectorAll("div.clearfix li > a"),
     getSections: (doc) => doc.querySelectorAll("div.dirtitone > h2"),
-    getName: (sElem) => (sElem as HTMLElement).innerText.trim(),
+    getSName: (sElem) => (sElem as HTMLElement).innerText.trim(),
     postHook: (chapter) => {
       chapter.sectionName =
         chapter.sectionName?.replace(chapter.bookname, "").trim() ?? null;

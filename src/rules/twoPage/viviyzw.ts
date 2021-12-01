@@ -23,7 +23,7 @@ export const viviyzw = () => {
         .src,
     getAList: (doc) => document.querySelectorAll("ul.mulu > li.col3 > a"),
     getSections: (doc) => document.querySelectorAll("li.col1.volumn"),
-    getName: (sElem) => (sElem as HTMLLIElement).innerText,
+    getSName: (sElem) => (sElem as HTMLLIElement).innerText,
     postHook: (chapter) => {
       if (chapter.sectionName?.includes("最新九章")) {
         return;
