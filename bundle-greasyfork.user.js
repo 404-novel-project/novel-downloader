@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.5.1.363
+// @version        4.5.1.364
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -3992,9 +3992,34 @@ const log_1 = __webpack_require__("./src/log.ts");
 const setting_1 = __webpack_require__("./src/setting.ts");
 const GM_1 = __webpack_require__("./src/lib/GM.ts");
 const misc_1 = __webpack_require__("./src/lib/misc.ts");
+globalThis.fetch = new Proxy(globalThis.fetch, {
+    apply(target, thisArg, argArray) {
+        log_1.log.debug("[debug]fetch:");
+        log_1.log.debug(argArray);
+        return Reflect.apply(target, thisArg, argArray);
+    },
+});
 function gfetch(url, { method = "GET", headers, data, cookie, binary, nocache, revalidate, timeout, context, responseType, overrideMimeType, anonymous, username, password, } = {}) {
     return new Promise((resolve, reject) => {
         if (GM_1._GM_xmlhttpRequest) {
+            log_1.log.debug("[debug]gfetch:");
+            log_1.log.debug({
+                url,
+                method,
+                headers,
+                data,
+                cookie,
+                binary,
+                nocache,
+                revalidate,
+                timeout,
+                context,
+                responseType,
+                overrideMimeType,
+                anonymous,
+                username,
+                password,
+            });
             (0, GM_1._GM_xmlhttpRequest)({
                 url,
                 method,
@@ -4161,7 +4186,7 @@ exports.ggetHtmlDomWithRetry = ggetHtmlDomWithRetry;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getNodeTextLength = exports.getMaxDepth = exports.regexpEscape = exports.deepcopy = exports.LocalStorageExpired = exports.calculateMd5 = exports.storageAvailable = exports.sandboxed = exports.sleep = exports.concurrencyRun = exports.rms = exports.rm2 = exports.rm = void 0;
+exports.getCookie = exports.getNodeTextLength = exports.getMaxDepth = exports.regexpEscape = exports.deepcopy = exports.LocalStorageExpired = exports.calculateMd5 = exports.storageAvailable = exports.sandboxed = exports.sleep = exports.concurrencyRun = exports.rms = exports.rm2 = exports.rm = void 0;
 const CryptoJS = __webpack_require__("crypto-js");
 const log_1 = __webpack_require__("./src/log.ts");
 function rm(selector, all = false, dom) {
@@ -4398,6 +4423,18 @@ function getNodeTextLength(element) {
     }, 0);
 }
 exports.getNodeTextLength = getNodeTextLength;
+function getCookie(name) {
+    let arr;
+    const reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
+    arr = document.cookie.match(reg);
+    if (arr) {
+        return arr[2];
+    }
+    else {
+        return null;
+    }
+}
+exports.getCookie = getCookie;
 
 
 /***/ }),
@@ -4448,7 +4485,7 @@ exports.gfetchAndParse = gfetchAndParse;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.softByValue = exports.centerDetct = exports.getSectionName = exports.nextPageParse = exports.introDomHandle = void 0;
+exports.getFrameContent = exports.softByValue = exports.centerDetct = exports.getSectionName = exports.nextPageParse = exports.introDomHandle = void 0;
 const log_1 = __webpack_require__("./src/log.ts");
 const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
 const http_1 = __webpack_require__("./src/lib/http.ts");
@@ -4573,6 +4610,23 @@ function softByValue(a, b) {
     return 0;
 }
 exports.softByValue = softByValue;
+async function getFrameContent(url) {
+    const frame = document.createElement("iframe");
+    frame.src = url;
+    frame.width = "1";
+    frame.height = "1";
+    const promise = new Promise((resolve, reject) => {
+        frame.addEventListener("load", function (event) {
+            const doc = this.contentWindow?.document ?? null;
+            this.remove();
+            resolve(doc);
+        });
+    });
+    log_1.log.debug("[debug]getFrameContent:" + url);
+    document.body.appendChild(frame);
+    return promise;
+}
+exports.getFrameContent = getFrameContent;
 
 
 /***/ }),
@@ -9763,7 +9817,6 @@ exports.Qidian = void 0;
 const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
 const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
 const http_1 = __webpack_require__("./src/lib/http.ts");
-const http_2 = __webpack_require__("./src/lib/http.ts");
 const misc_1 = __webpack_require__("./src/lib/misc.ts");
 const rule_1 = __webpack_require__("./src/lib/rule.ts");
 const log_1 = __webpack_require__("./src/log.ts");
@@ -9773,7 +9826,7 @@ class Qidian extends rules_1.BaseRuleClass {
     constructor() {
         super();
         this.imageMode = "TM";
-        this.concurrencyLimit = 5;
+        this.concurrencyLimit = 1;
     }
     async bookParse() {
         let bookId = document.getElementById("bookImg");
@@ -9827,7 +9880,8 @@ class Qidian extends rules_1.BaseRuleClass {
                 .trim()
                 .split("\n")
                 .slice(-1)[0]
-                .split("·")[0];
+                .split("·")[0]
+                .trim();
             let sectionChapterNumber = 0;
             const cs = s.querySelectorAll("ul.cf > li");
             for (const c of Array.from(cs)) {
@@ -9856,7 +9910,7 @@ class Qidian extends rules_1.BaseRuleClass {
                 };
                 let chapterId;
                 if (isVIP()) {
-                    chapterId = chapterUrl.split("/").slice(-1)[0];
+                    chapterId = /(\d+)\/?/.exec(chapterUrl)?.slice(-1)[0] ?? null;
                 }
                 else {
                     chapterId = null;
@@ -9894,133 +9948,75 @@ class Qidian extends rules_1.BaseRuleClass {
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+        const _csrfToken = options._csrfToken;
         const bookId = options.bookId;
         const authorId = options.authorId;
         const chapterId = options.chapterId;
         const limitFree = options.limitFree;
-        const _csrfToken = options._csrfToken;
-        async function publicChapter() {
-            const doc = await (0, http_2.ggetHtmlDOM)(chapterUrl, charset);
-            chapterName = doc.querySelector(".j_chapterName > .content-wrap").innerText.trim();
-            const nullObj = {
-                chapterName,
-                contentRaw: null,
-                contentText: null,
-                contentHTML: null,
-                contentImages: null,
-                additionalMetadate: null,
-            };
-            if (doc.querySelector(".vip-limit-wrap")) {
-                return nullObj;
-            }
-            const content = doc.querySelector(".read-content");
-            const authorSayWrap = doc.querySelector(".author-say-wrap");
-            if (content) {
-                if (authorSayWrap) {
-                    const authorSay = authorSayWrap.querySelector("div.author-say > p:nth-child(3)");
-                    const hr = document.createElement("hr");
-                    content.appendChild(hr);
-                    content.appendChild(authorSay);
-                }
-                const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
-                return {
-                    chapterName,
-                    contentRaw: content,
-                    contentText: text,
-                    contentHTML: dom,
-                    contentImages: images,
-                    additionalMetadate: null,
-                };
+        const nullObj = {
+            chapterName,
+            contentRaw: null,
+            contentText: null,
+            contentHTML: null,
+            contentImages: null,
+            additionalMetadate: null,
+        };
+        async function getChapter() {
+            let doc;
+            if (isVIP) {
+                doc = await (0, rule_1.getFrameContent)(chapterUrl);
             }
             else {
-                return nullObj;
+                doc = await (0, http_1.ggetHtmlDOM)(chapterUrl, charset);
             }
-        }
-        async function vipChapter() {
-            async function getChapterInfo() {
-                const baseUrl = "https://vipreader.qidian.com/ajax/chapter/chapterInfo";
-                const search = new URLSearchParams({
-                    _csrfToken,
-                    bookId,
-                    chapterId,
-                    authorId,
-                });
-                const url = baseUrl + "?" + search.toString();
-                log_1.log.debug(`[Chapter]请求 ${url} Referer ${chapterUrl}`);
-                return (0, http_1.gfetch)(url, {
-                    headers: {
-                        accept: "application/json, text/javascript, */*; q=0.01",
-                        "x-requested-with": "XMLHttpRequest",
-                        Referer: chapterUrl,
-                    },
-                    responseType: "json",
-                })
-                    .then((response) => response.response)
-                    .catch((error) => log_1.log.error(error));
-            }
-            async function getByAPI() {
-                const chapterInfo = await getChapterInfo();
-                if (!chapterInfo) {
-                    throw new Error("Request Api failed!");
+            if (doc) {
+                chapterName = doc.querySelector(".j_chapterName > .content-wrap").innerText.trim();
+                if (doc.querySelector(".vip-limit-wrap")) {
+                    return nullObj;
                 }
-                if (chapterInfo.code === 0) {
-                    const authorSay = chapterInfo.data.chapterInfo.authorSay;
-                    const _content = chapterInfo.data.chapterInfo.content;
-                    const content = document.createElement("div");
-                    content.innerHTML = _content;
-                    if (authorSay) {
+                const content = document.createElement("div");
+                let contentText = "";
+                const contentMain = doc.querySelector(".read-content");
+                (0, misc_1.rm)("span.review-count", true, contentMain);
+                Array.from(contentMain.querySelectorAll("span.content-wrap")).forEach((span) => {
+                    const parentEl = span.parentElement;
+                    if (parentEl) {
+                        parentEl.innerHTML = span.innerHTML;
+                    }
+                });
+                const authorSayWrap = doc.querySelector(".author-say-wrap");
+                if (contentMain) {
+                    const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(contentMain, "TM");
+                    (0, cleanDOM_1.htmlTrim)(dom);
+                    content.appendChild(dom);
+                    contentText = contentText + text;
+                    if (authorSayWrap) {
+                        const authorSay = authorSayWrap.querySelector("div.author-say");
+                        (0, misc_1.rm)("a.avatar", false, authorSay);
+                        (0, misc_1.rm)("h4", false, authorSay);
+                        const { dom: authorDom, text: authorText, images: authorImages, } = await (0, cleanDOM_1.cleanDOM)(authorSayWrap, "TM");
+                        (0, cleanDOM_1.htmlTrim)(authorDom);
+                        authorDom.className = "authorSay";
                         const hr = document.createElement("hr");
                         content.appendChild(hr);
-                        const authorSayDom = document.createElement("p");
-                        authorSayDom.innerHTML = authorSay;
-                        content.appendChild(authorSayDom);
+                        content.appendChild(authorSay);
+                        contentText =
+                            contentText + "\n\n" + "-".repeat(10) + "\n\n" + authorText;
+                        images.push(...authorImages);
                     }
-                    const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
                     return {
                         chapterName,
                         contentRaw: content,
-                        contentText: text,
-                        contentHTML: dom,
+                        contentText,
+                        contentHTML: content,
                         contentImages: images,
                         additionalMetadate: null,
                     };
                 }
-                else {
-                    log_1.log.error(`[chapter]VIP章节API请求失败！\n${JSON.stringify(chapterInfo)}`);
-                    return {
-                        chapterName,
-                        contentRaw: null,
-                        contentText: null,
-                        contentHTML: null,
-                        contentImages: null,
-                        additionalMetadate: null,
-                    };
-                }
             }
-            if (limitFree || isPaid) {
-                const _obj = await publicChapter();
-                if (!_obj.contentHTML) {
-                    return getByAPI();
-                }
-                else {
-                    return _obj;
-                }
-            }
-            return {
-                chapterName,
-                contentRaw: null,
-                contentText: null,
-                contentHTML: null,
-                contentImages: null,
-                additionalMetadate: null,
-            };
+            return nullObj;
         }
-        if (isVIP) {
-            return vipChapter();
-        }
-        else {
-            return publicChapter();
-        }
+        return getChapter();
     }
 }
 exports.Qidian = Qidian;
@@ -13139,7 +13135,9 @@ class SaveBook {
         }
         log_1.log.info("[save]开始保存ZIP文件");
         const self = this;
-        self.saveLog();
+        if (setting_1.enableDebug.value) {
+            self.saveLog();
+        }
         return new Promise((resolve, reject) => {
             const finalHandle = (blob) => {
                 (0, file_saver_1.saveAs)(blob, `${self.saveFileNameBase}.zip`);
@@ -13815,16 +13813,18 @@ exports["default"] = Vue.defineComponent({
         function onMount(fn) {
             Vue.onUnmounted(() => fn());
         }
-        let intervalID;
+        let requestID;
         Vue.onMounted(() => {
             logText.value = (0, log_1.getLogText)();
-            intervalID = globalThis.setInterval(() => {
+            function step() {
                 logText.value = (0, log_1.getLogText)();
-            }, 100);
+                requestID = globalThis.requestAnimationFrame(step);
+            }
+            requestID = globalThis.requestAnimationFrame(step);
         });
         Vue.onUnmounted(() => {
-            if (intervalID) {
-                globalThis.clearInterval(intervalID);
+            if (requestID) {
+                globalThis.cancelAnimationFrame(requestID);
             }
         });
         return { logText };

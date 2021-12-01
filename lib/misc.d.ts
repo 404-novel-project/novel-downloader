@@ -19,3 +19,4 @@ export declare function deepcopy<T>(obj: T): T;
 export declare function regexpEscape(str: string): string;
 export declare function getMaxDepth(element: Element): number;
 export declare function getNodeTextLength(element: Element): number;
+export declare function getCookie(name: string): string | null;
