@@ -74,6 +74,36 @@ export function getUI(): () => UIObject {
         jumpFunction: () => (document.location.host = "www.wanben.org"),
       });
     }
+    case "ebook.longmabook.com":
+    case "www.longmabookcn.com":
+    case "ebook.lmbooks.com":
+    case "www.lmebooks.com":
+    case "www.haitbook.com":
+    case "www.htwhbook.com":
+    case "www.myhtebook.com":
+    case "www.lovehtbooks.com":
+    case "www.myhtebooks.com":
+    case "www.myhtlmebook.com":
+    case "jp.myhtebook.com":
+    case "jp.myhtlmebook.com":
+    case "ebook.urhtbooks.com":
+    case "www.urhtbooks.com":
+    case "www.newhtbook.com":
+    case "www.lvhtebook.com":
+    case "jp.lvhtebook.com":
+    case "www.htlvbooks.com": {
+      return () => {
+        const params = new URLSearchParams(document.location.search);
+        if (
+          params.get("act") === "showinfo" &&
+          params.has("bookwritercode") &&
+          params.has("bookid")
+        ) {
+          return defaultObject;
+        }
+        return errorObject;
+      };
+    }
     default: {
       return () => defaultObject;
     }

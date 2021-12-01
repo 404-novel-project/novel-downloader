@@ -12,8 +12,8 @@ import FilterTab, {
   getFilterFunction,
 } from "./FilterTab";
 import LogUI from "./LogUI";
-import settingCss from "./setting.css";
 import settingHtml from "./setting.html";
+import settingCss from "./setting.less";
 import TestUI from "./TestUI";
 
 export const style = createStyle(settingCss);

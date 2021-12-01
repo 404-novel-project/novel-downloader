@@ -1,35 +1,57 @@
-.nd-setting-body input[type="checkbox"],
-.nd-setting-body input[type="radio"],
-.nd-setting-body input[type="text"] {
-  position: static;
-  opacity: 1;
-  all: revert;
-}
 .nd-setting-body {
   background: #e0e0e0;
   padding: 1em;
   border-top-right-radius: 3px;
 }
-.nd-setting-body hr {
-  margin-top: 0.8em;
-  margin-bottom: 0.8em;
+.nd-setting-body {
+  hr {
+    margin-top: 0.8em;
+    margin-bottom: 0.8em;
+  }
+  input[type="checkbox"],
+  input[type="radio"],
+  input[type="text"] {
+    position: static;
+    opacity: 1;
+    all: revert;
+  }
 }
 
-.tab-button {
-  padding: 6px 10px;
-  border-top-left-radius: 3px;
-  border-top-right-radius: 3px;
-  border: 1px solid #ccc;
-  cursor: pointer;
-  background: #f0f0f0;
-  margin-bottom: -1px;
-  margin-right: -1px;
-}
-.tab-button:hover {
-  background: #e0e0e0;
-}
-.tab-button.active {
-  background: #e0e0e0;
+dialog-ui {
+  .tab-button {
+    padding: 6px 10px;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    background: #f0f0f0;
+    margin-bottom: -1px;
+    margin-right: -1px;
+    color: black;
+    line-height: normal;
+    display: inline-block;
+    text-align: center;
+    font-weight: bold;
+    max-width: 9em;
+    box-sizing: initial;
+  }
+  .tab-button:hover {
+    background: #e0e0e0;
+  }
+  .tab-button.active {
+    background: #e0e0e0;
+  }
+
+  #nd-setting-tab-1 {
+    input + label {
+      all: revert;
+    }
+  }
+  #nd-setting-tab-2 {
+    select {
+      all: revert;
+    }
+  }
 }
 
 .nd-setting-footer {
@@ -41,6 +63,12 @@
 }
 .nd-setting-footer > button {
   all: revert;
+}
+
+/* 日志页面 */
+#novel-downloader-log {
+  max-height: 300px;
+  overflow: scroll;
 }
 
 /* 彩色斜纹 来自：https://www.zhangxinxu.com/wordpress/2021/05/css-html-hr/ */
@@ -65,10 +93,4 @@
   border: 0;
   padding-top: 1px;
   background: linear-gradient(to right, transparent, #d0d0d5, transparent);
-}
-
-/* 日志页面 */
-#novel-downloader-log {
-  max-height: 300px;
-  overflow: scroll;
 }

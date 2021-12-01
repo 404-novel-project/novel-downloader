@@ -1,9 +1,9 @@
 import { GmWindow } from "../../../global";
 import { getImageAttachment } from "../../../lib/attachments";
 import { cleanDOM } from "../../../lib/cleanDOM";
-import { getHtmlDOM } from "../../../lib/http";
-import { rm } from "../../../lib/misc";
-import { introDomHandle } from "../../../lib/rule";
+import { getHtmlDOM, getHtmlDomWithRetry } from "../../../lib/http";
+import { deepcopy, rm } from "../../../lib/misc";
+import { getSectionName, introDomHandle } from "../../../lib/rule";
 import { log } from "../../../log";
 import {
   AttachmentClass,
@@ -11,6 +11,7 @@ import {
   BookAdditionalMetadate,
   Chapter,
   ExpectError,
+  Status,
 } from "../../../main";
 import { BaseRuleClass } from "../../../rules";
 
@@ -94,120 +95,145 @@ export class Longmabook extends BaseRuleClass {
         .split("/")
         .map((item) => item.trim()) ?? [];
 
-    async function getLiList() {
-      const showbooklistAPIUrl = document.location.origin + "/showbooklist.php";
-      let flag = false;
-      let page = 1;
-      let pageMax = 0;
-      const showbooklistParams = {
-        ebookid: bookId as string,
-        pages: page.toString(),
-        showbooklisttype: "1",
-      };
-      const liListTemp: HTMLLIElement[] = [];
-      do {
-        log.info(`[book]请求章节目录中，page: ${page}`);
-        const doc = await getHtmlDOM(showbooklistAPIUrl, self.charset, {
-          headers: {
-            "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-            "x-requested-with": "XMLHttpRequest",
-          },
-          body: new URLSearchParams(showbooklistParams).toString(),
-          method: "POST",
-          mode: "cors",
-          credentials: "include",
-        });
+    const showbooklistAPIUrl = document.location.origin + "/showbooklist.php";
+    const initShowbooklistParams = {
+      ebookid: bookId as string,
+      pages: "1",
+      showbooklisttype: "1",
+    };
+    const getInitObj = (
+      showbooklistParams: typeof initShowbooklistParams
+    ): RequestInit => ({
+      headers: {
+        "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+        "x-requested-with": "XMLHttpRequest",
+      },
+      body: new URLSearchParams(showbooklistParams).toString(),
+      method: "POST",
+      mode: "cors",
+      credentials: "include",
+    });
 
-        if (
-          doc.documentElement.innerText.includes("章節數量較多，採分頁顯示")
-        ) {
-          const pageLi = Array.from(
-            doc.querySelectorAll(".uk-list.uk-list-divider > li")
-          ).filter((li) => li.innerHTML.includes("換頁：&nbsp;&nbsp;"))[0];
-          const pages = Array.from(pageLi.querySelectorAll("a"))
-            .map((a) => {
-              const _page = a
-                .getAttribute("onclick")
-                ?.match(/\('\d+','(\d+)'\)/);
-              if (_page?.length === 2) {
-                return Number(_page[1]);
-              }
-            })
-            .filter((p) => p);
-          pageMax = Math.max(...(pages as number[]));
-          page++;
-          if (page !== 1 && page <= pageMax) {
-            showbooklistParams.pages = page.toString();
-            flag = true;
-          } else {
-            flag = false;
+    const getPages = (doc: Document) => {
+      const aList = doc.querySelectorAll("a[onclick^=showbooklist]");
+      const getPageNumber = (a: Element) => {
+        const s = a.getAttribute("onclick");
+        if (s) {
+          const n = /'(\d+)'\)/.exec(s)?.slice(-1)[0];
+          if (n) {
+            return parseInt(n, 10);
           }
-        } else {
-          flag = false;
         }
+      };
+      const _ns = Array.from(aList)
+        .map(getPageNumber)
+        .filter((n) => n !== undefined) as number[];
+      return Array.from(new Set(_ns)).sort();
+    };
 
-        const _liList = Array.from(
-          doc.querySelectorAll(".uk-list.uk-list-divider > li")
-        ).filter((li) => {
-          const filters = ["章節數量較多，採分頁顯示", "換頁：&nbsp;&nbsp;"];
-          for (const f of filters) {
-            if ((li as HTMLLIElement).innerHTML.includes(f)) {
-              return false;
-            }
+    const getChapters = (doc: Document) =>
+      doc.querySelectorAll('span[uk-icon="file-text"] + a');
+    const getSections = (doc: Document) =>
+      doc.querySelectorAll('span[uk-icon="folder"] + b > font');
+    const getSName = (sElem: Element) =>
+      (sElem as HTMLElement).innerText.trim();
+    const getIsVip = (a: Element) =>
+      a.parentElement?.innerText.includes("$") ?? false;
+    const getIsPaid = (a: Element) =>
+      a.parentElement?.innerText.includes("已購買，三年內可直接閱讀") ?? false;
+    interface ChapterObj {
+      chapterName: string;
+      chapterUrl: string;
+      _sectionName: string | null;
+      isVip: boolean;
+      isPaid: boolean;
+    }
+    const getChapterObjs = (doc: Document): ChapterObj[] => {
+      const chapterAList = getChapters(doc);
+      const sections = getSections(doc);
+      const _chapterObjs = Array.from(chapterAList).map((a) => {
+        const chapterName = (a as HTMLAnchorElement).innerText;
+        const chapterUrl = (a as HTMLAnchorElement).href;
+        const _sectionName = getSectionName(a, sections, getSName);
+        const isVip = getIsVip(a);
+        let isPaid = false;
+        if (isVip) {
+          isPaid = getIsPaid(a);
+        }
+        return {
+          chapterName,
+          chapterUrl,
+          _sectionName,
+          isVip,
+          isPaid,
+        };
+      });
+      return _chapterObjs;
+    };
+
+    const chapterObjs: ChapterObj[] = [];
+    const initDoc = await getHtmlDomWithRetry(
+      showbooklistAPIUrl,
+      self.charset,
+      getInitObj(initShowbooklistParams)
+    );
+    if (initDoc) {
+      chapterObjs.push(...getChapterObjs(initDoc));
+      const pages = getPages(initDoc);
+      if (pages.length !== 0) {
+        for (const page of pages) {
+          const showbooklistParams = deepcopy(initShowbooklistParams);
+          showbooklistParams.pages = page.toString();
+          const doc = await getHtmlDomWithRetry(
+            showbooklistAPIUrl,
+            self.charset,
+            getInitObj(showbooklistParams)
+          );
+          if (doc) {
+            chapterObjs.push(...getChapterObjs(doc));
           }
-          return true;
-        });
-        _liList.push(...(_liList as HTMLLIElement[]));
-      } while (flag);
-      return liListTemp;
+        }
+      }
     }
 
     const chapters: Chapter[] = [];
-    const liList = await getLiList();
     let chapterNumber = 0;
     let sectionNumber = 0;
     let sectionName = null;
     let sectionChapterNumber = 0;
-    for (const li of liList) {
-      const ukIcon = li.querySelector("span")?.getAttribute("uk-icon");
-      if (ukIcon === "folder") {
-        const _sectionName = (
-          li.querySelector("b > font") as HTMLElement
-        )?.innerText.trim();
-        if (_sectionName !== sectionName) {
-          sectionName = _sectionName;
-          sectionNumber++;
-          sectionChapterNumber = 0;
-        }
-      } else if (ukIcon === "file-text") {
-        chapterNumber++;
-        sectionChapterNumber++;
-        const a = li.querySelector("a");
-        const chapterName = a?.innerText.trim();
-        const chapterUrl = a?.href;
-        const isVIP = Boolean(
-          (li as HTMLLIElement).innerText.match(/\$[\d\.]+/)
-        );
-
-        if (chapterUrl && chapterName) {
-          const chapter = new Chapter(
-            bookUrl,
-            bookname,
-            chapterUrl,
-            chapterNumber,
-            chapterName,
-            isVIP,
-            null,
-            sectionName,
-            sectionNumber,
-            sectionChapterNumber,
-            this.chapterParse,
-            this.charset,
-            { bookId, bookwritercode }
-          );
-          chapters.push(chapter);
-        }
+    for (const {
+      chapterName,
+      chapterUrl,
+      _sectionName,
+      isVip: isVIP,
+      isPaid,
+    } of chapterObjs) {
+      if (_sectionName !== sectionName) {
+        sectionName = _sectionName;
+        sectionNumber++;
+        sectionChapterNumber = 0;
       }
+      chapterNumber++;
+      sectionChapterNumber++;
+      const chapter = new Chapter(
+        bookUrl,
+        bookname,
+        chapterUrl,
+        chapterNumber,
+        chapterName,
+        isVIP,
+        isPaid,
+        sectionName,
+        sectionNumber,
+        sectionChapterNumber,
+        this.chapterParse,
+        this.charset,
+        { bookId, bookwritercode }
+      );
+      if (chapter.isVIP === true && chapter.isPaid === false) {
+        chapter.status = Status.aborted;
+      }
+      chapters.push(chapter);
     }
 
     const book = new Book(

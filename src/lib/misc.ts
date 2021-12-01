@@ -217,7 +217,7 @@ export class LocalStorageExpired {
   }
 }
 
-export function deepcopy(obj: object) {
+export function deepcopy<T>(obj: T): T {
   return JSON.parse(JSON.stringify(obj));
 }
 
