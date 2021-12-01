@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.5.1.364
+// @version        4.5.1.365
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -140,6 +140,7 @@
 // @match          *://www.washuge.com/books/*/*/
 // @match          *://m.baihexs.com/info-*/
 // @match          *://www.quanshuzhai.com/book/*.html
+// @match          *://masiro.me/admin/novelView?novel_id=*
 // @name:en        novel-downloader
 // @description:en An scalable universal novel downloader.
 // @namespace      https://blog.bgme.me
@@ -248,6 +249,7 @@
 // @connect        sina.com.cn
 // @connect        ciyuanji.com
 // @connect        baihexs.com
+// @connect        masiro.me
 // @connect        *
 // @require        https://cdn.jsdelivr.net/npm/crypto-js@4.1.1/crypto-js.js#sha512-NQVmLzNy4Lr5QTrmXvq/WzTMUnRHmv7nyIT/M6LyGPBS+TIeRxZ+YQaqWxjpRpvRMQSuYPQURZz/+pLi81xXeA==
 // @require        https://cdn.jsdelivr.net/npm/fflate@0.7.1/umd/index.js#sha512-laBNdxeV48sttD1kBYahmdSXpSRitYmkte49ZUqm3KEOUK4cIJAjqt1MYwScWvBqqP4WDtEftDSPYE1ii/bxCg==
@@ -5391,6 +5393,11 @@ async function getRule() {
             ruleClass = quanshuzhai();
             break;
         }
+        case "masiro.me": {
+            const { masiro } = await Promise.resolve().then(() => __webpack_require__("./src/rules/onePage/masiro.ts"));
+            ruleClass = masiro();
+            break;
+        }
         default: {
             throw new Error("Not Found Rule!");
         }
@@ -7189,6 +7196,38 @@ exports.c630shu = (0, template_1.mkRuleClass)({
 
 /***/ }),
 
+/***/ "./src/rules/onePage/masiro.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.masiro = void 0;
+const template_1 = __webpack_require__("./src/rules/onePage/template.ts");
+const masiro = () => (0, template_1.mkRuleClass)({
+    bookUrl: document.location.href,
+    bookname: document.querySelector(".novel-title").innerText.trim(),
+    author: document.querySelector(".author > a").innerText.trim(),
+    introDom: document.querySelector(".brief"),
+    introDomPatch: (dom) => dom,
+    coverUrl: document.querySelector("div.mailbox-attachment-icon > a > img.img").src,
+    additionalMetadatePatch: (additionalMetadate) => {
+        additionalMetadate.tags = Array.from(document.querySelectorAll("div.n-detail > div.tags a")).map((a) => a.innerText);
+        return additionalMetadate;
+    },
+    aList: document.querySelectorAll("a.to-read"),
+    getAName: (dom) => dom.querySelector('span[style^="overflow: hidden;"]').innerText.trim(),
+    sections: document.querySelectorAll("li.chapter-box > span + b"),
+    getSName: (dom) => dom.innerText.trim(),
+    getContent: (dom) => dom.querySelector("div.box-body.nvl-content"),
+    contentPatch: (dom) => dom,
+    concurrencyLimit: 3,
+});
+exports.masiro = masiro;
+
+
+/***/ }),
+
 /***/ "./src/rules/onePage/quanshuzhai.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
@@ -7237,7 +7276,7 @@ const shouda8 = () => (0, template_1.mkRuleClass)({
     coverUrl: document.querySelector(".pic > img:nth-child(1)").src,
     aList: document.querySelectorAll(".link_14 dd > a"),
     sections: document.querySelectorAll(".link_14 dt > b"),
-    getName: (sElem) => sElem.innerText.trim(),
+    getSName: (sElem) => sElem.innerText.trim(),
     getContent: (doc) => doc.querySelector("#content"),
     contentPatch: (content) => {
         const ads = ["手打吧更新速度最快。", "www.shouda88.com"];
@@ -7264,7 +7303,7 @@ const rule_1 = __webpack_require__("./src/lib/rule.ts");
 const log_1 = __webpack_require__("./src/log.ts");
 const main_1 = __webpack_require__("./src/main.ts");
 const rules_1 = __webpack_require__("./src/rules.ts");
-function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, coverUrl, aList, sections, getName: _getSectionName, postHook, getContentFromUrl, getContent, contentPatch, concurrencyLimit, }) {
+function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, coverUrl, additionalMetadatePatch, aList, getAName, sections, getSName: _getSectionName, postHook, getContentFromUrl, getContent, contentPatch, concurrencyLimit, }) {
     return class extends rules_1.BaseRuleClass {
         constructor() {
             super();
@@ -7283,6 +7322,9 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
                 })
                     .catch((error) => log_1.log.error(error));
             }
+            if (additionalMetadatePatch) {
+                Object.assign(additionalMetadate, additionalMetadatePatch(additionalMetadate));
+            }
             const chapters = [];
             let chapterNumber = 0;
             let sectionNumber = 0;
@@ -7295,7 +7337,13 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
                 hasSection = true;
             }
             for (const aElem of Array.from(aList)) {
-                const chapterName = aElem.innerText;
+                let chapterName;
+                if (getAName) {
+                    chapterName = getAName(aElem);
+                }
+                else {
+                    chapterName = aElem.innerText;
+                }
                 const chapterUrl = aElem.href;
                 if (hasSection) {
                     const _sectionName = (0, rule_1.getSectionName)(aElem, sections, _getSectionName);
@@ -7609,7 +7657,7 @@ const rule_1 = __webpack_require__("./src/lib/rule.ts");
 const log_1 = __webpack_require__("./src/log.ts");
 const main_1 = __webpack_require__("./src/main.ts");
 const rules_1 = __webpack_require__("./src/rules.ts");
-function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, coverUrl, getIndexUrls, getAList, postHook, getContentFromUrl, getContent, contentPatch, concurrencyLimit, }) {
+function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, coverUrl, getIndexUrls, getAList, getAName, postHook, getContentFromUrl, getContent, contentPatch, concurrencyLimit, }) {
     return class extends rules_1.BaseRuleClass {
         constructor() {
             super();
@@ -7660,7 +7708,13 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
             let chapterNumber = 0;
             for (const aElem of Array.from(aListList)) {
                 chapterNumber++;
-                const chapterName = aElem.innerText;
+                let chapterName;
+                if (getAName) {
+                    chapterName = getAName(aElem);
+                }
+                else {
+                    chapterName = aElem.innerText;
+                }
                 const chapterUrl = aElem.href;
                 const isVIP = false;
                 const isPaid = false;
@@ -12697,7 +12751,7 @@ const xiaoshuodaquan = () => (0, tempate_1.mkRuleClass)({
     getCoverUrl: (doc) => document.querySelector(".con_limg > img")?.src,
     getAList: (doc) => doc.querySelectorAll("div.clearfix li > a"),
     getSections: (doc) => doc.querySelectorAll("div.dirtitone > h2"),
-    getName: (sElem) => sElem.innerText.trim(),
+    getSName: (sElem) => sElem.innerText.trim(),
     postHook: (chapter) => {
         chapter.sectionName =
             chapter.sectionName?.replace(chapter.bookname, "").trim() ?? null;
@@ -12743,7 +12797,7 @@ const imiaobige = () => {
         getCoverUrl: (doc) => doc.querySelector("#bookimg > img").src,
         getSections: (doc) => document.querySelectorAll("#readerlists > ul"),
         getAList: (doc) => document.querySelectorAll("#readerlists  a"),
-        getName,
+        getSName: getName,
         postHook: (chapter) => {
             if (chapter.sectionName?.includes("最新章节")) {
                 return;
@@ -12779,7 +12833,7 @@ const rule_1 = __webpack_require__("./src/lib/rule.ts");
 const log_1 = __webpack_require__("./src/log.ts");
 const main_1 = __webpack_require__("./src/main.ts");
 const rules_1 = __webpack_require__("./src/rules.ts");
-function mkRuleClass({ bookUrl, anotherPageUrl, getBookname, getAuthor, getIntroDom, introDomPatch, getCoverUrl, getAList, getSections, getName: _getSectionName, postHook, getContentFromUrl, getContent, contentPatch, concurrencyLimit, }) {
+function mkRuleClass({ bookUrl, anotherPageUrl, getBookname, getAuthor, getIntroDom, introDomPatch, getCoverUrl, getAList, getAName, getSections, getSName: _getSectionName, postHook, getContentFromUrl, getContent, contentPatch, concurrencyLimit, }) {
     return class extends rules_1.BaseRuleClass {
         constructor() {
             super();
@@ -12820,7 +12874,13 @@ function mkRuleClass({ bookUrl, anotherPageUrl, getBookname, getAuthor, getIntro
             }
             const aList = getAList(doc);
             for (const aElem of Array.from(aList)) {
-                const chapterName = aElem.innerText;
+                let chapterName;
+                if (getAName) {
+                    chapterName = getAName(aElem);
+                }
+                else {
+                    chapterName = aElem.innerText;
+                }
                 const chapterUrl = aElem.href;
                 if (hasSection) {
                     const _sectionName = (0, rule_1.getSectionName)(aElem, sections, _getSectionName);
@@ -12904,7 +12964,7 @@ const ujxs = () => {
         getCoverUrl: (doc) => doc.querySelector(".img > img")?.src,
         getAList: (doc) => document.querySelectorAll("#readerlist  li > a"),
         getSections: (doc) => document.querySelectorAll("#readerlist  li.fj > h3"),
-        getName: (sElem) => sElem.innerText,
+        getSName: (sElem) => sElem.innerText,
         postHook: (chapter) => {
             chapter.sectionName =
                 chapter.sectionName?.replace(chapter.bookname, "") ?? null;
@@ -12945,7 +13005,7 @@ const viviyzw = () => {
             .src,
         getAList: (doc) => document.querySelectorAll("ul.mulu > li.col3 > a"),
         getSections: (doc) => document.querySelectorAll("li.col1.volumn"),
-        getName: (sElem) => sElem.innerText,
+        getSName: (sElem) => sElem.innerText,
         postHook: (chapter) => {
             if (chapter.sectionName?.includes("最新九章")) {
                 return;
