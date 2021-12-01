@@ -257,3 +257,14 @@ export function getNodeTextLength(element: Element) {
       return sum;
     }, 0);
 }
+
+export function getCookie(name: string) {
+  let arr;
+  const reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
+  arr = document.cookie.match(reg);
+  if (arr) {
+    return arr[2];
+  } else {
+    return null;
+  }
+}

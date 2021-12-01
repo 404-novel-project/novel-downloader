@@ -3,6 +3,14 @@ import { retryLimit } from "../setting";
 import { _GM_xmlhttpRequest } from "./GM";
 import { sleep } from "./misc";
 
+globalThis.fetch = new Proxy(globalThis.fetch, {
+  apply(target, thisArg, argArray) {
+    log.debug("[debug]fetch:");
+    log.debug(argArray);
+    return Reflect.apply(target, thisArg, argArray);
+  },
+});
+
 // Forbidden header name
 // https://developer.mozilla.org/en-US/docs/Glossary/Forbidden_header_name
 // Accept-Charset
@@ -66,6 +74,24 @@ export function gfetch(
 ): Promise<GM_xmlhttpResponse> {
   return new Promise((resolve, reject) => {
     if (_GM_xmlhttpRequest) {
+      log.debug("[debug]gfetch:");
+      log.debug({
+        url,
+        method,
+        headers,
+        data,
+        cookie,
+        binary,
+        nocache,
+        revalidate,
+        timeout,
+        context,
+        responseType,
+        overrideMimeType,
+        anonymous,
+        username,
+        password,
+      });
       _GM_xmlhttpRequest({
         url,
         method,

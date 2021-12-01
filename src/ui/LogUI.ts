@@ -9,16 +9,18 @@ export default Vue.defineComponent({
     function onMount(fn: () => void) {
       Vue.onUnmounted(() => fn());
     }
-    let intervalID: NodeJS.Timer;
+    let requestID: number;
     Vue.onMounted(() => {
       logText.value = getLogText();
-      intervalID = globalThis.setInterval(() => {
+      function step() {
         logText.value = getLogText();
-      }, 100);
+        requestID = globalThis.requestAnimationFrame(step);
+      }
+      requestID = globalThis.requestAnimationFrame(step);
     });
     Vue.onUnmounted(() => {
-      if (intervalID) {
-        globalThis.clearInterval(intervalID);
+      if (requestID) {
+        globalThis.cancelAnimationFrame(requestID);
       }
     });
     return { logText };

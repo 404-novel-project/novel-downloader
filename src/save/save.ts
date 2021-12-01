@@ -123,7 +123,9 @@ export class SaveBook {
 
     log.info("[save]开始保存ZIP文件");
     const self = this;
-    self.saveLog();
+    if (enableDebug.value) {
+      self.saveLog();
+    }
 
     return new Promise((resolve, reject) => {
       const finalHandle = (blob: Blob) => {

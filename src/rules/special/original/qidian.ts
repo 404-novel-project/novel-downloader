@@ -1,9 +1,8 @@
 import { getImageAttachment } from "../../../lib/attachments";
-import { cleanDOM } from "../../../lib/cleanDOM";
-import { gfetch } from "../../../lib/http";
+import { cleanDOM, htmlTrim } from "../../../lib/cleanDOM";
 import { ggetHtmlDOM } from "../../../lib/http";
-import { sleep } from "../../../lib/misc";
-import { introDomHandle } from "../../../lib/rule";
+import { rm, sleep } from "../../../lib/misc";
+import { getFrameContent, introDomHandle } from "../../../lib/rule";
 import { log } from "../../../log";
 import { Book, BookAdditionalMetadate, Chapter, Status } from "../../../main";
 import { BaseRuleClass, ChapterParseObject } from "../../../rules";
@@ -12,7 +11,7 @@ export class Qidian extends BaseRuleClass {
   public constructor() {
     super();
     this.imageMode = "TM";
-    this.concurrencyLimit = 5;
+    this.concurrencyLimit = 1;
   }
 
   public async bookParse() {
@@ -99,7 +98,8 @@ export class Qidian extends BaseRuleClass {
         .trim()
         .split("\n")
         .slice(-1)[0]
-        .split("·")[0];
+        .split("·")[0]
+        .trim();
       let sectionChapterNumber = 0;
 
       const cs = s.querySelectorAll("ul.cf > li");
@@ -129,7 +129,7 @@ export class Qidian extends BaseRuleClass {
         };
         let chapterId;
         if (isVIP()) {
-          chapterId = chapterUrl.split("/").slice(-1)[0];
+          chapterId = /(\d+)\/?/.exec(chapterUrl)?.slice(-1)[0] ?? null;
         } else {
           chapterId = null;
         }
@@ -173,6 +173,7 @@ export class Qidian extends BaseRuleClass {
             chapter.status = Status.pending;
           }
         }
+        //
         chapters.push(chapter);
       }
     }
@@ -204,203 +205,100 @@ export class Qidian extends BaseRuleClass {
       chapterId: string;
       limitFree: boolean;
     }
+    const _csrfToken = (options as Options)._csrfToken;
     const bookId = (options as Options).bookId;
     const authorId = (options as Options).authorId;
     const chapterId = (options as Options).chapterId;
     const limitFree = (options as Options).limitFree;
-    const _csrfToken = (options as Options)._csrfToken;
 
-    async function publicChapter(): Promise<ChapterParseObject> {
-      const doc = await ggetHtmlDOM(chapterUrl, charset);
-      chapterName = (
-        doc.querySelector(".j_chapterName > .content-wrap") as HTMLElement
-      ).innerText.trim();
+    const nullObj = {
+      chapterName,
+      contentRaw: null,
+      contentText: null,
+      contentHTML: null,
+      contentImages: null,
+      additionalMetadate: null,
+    };
 
-      const nullObj = {
-        chapterName,
-        contentRaw: null,
-        contentText: null,
-        contentHTML: null,
-        contentImages: null,
-        additionalMetadate: null,
-      };
-      // VIP章节
-      if (doc.querySelector(".vip-limit-wrap")) {
-        return nullObj;
-      }
-
-      const content = doc.querySelector(".read-content") as HTMLElement;
-      const authorSayWrap = doc.querySelector(
-        ".author-say-wrap"
-      ) as HTMLElement;
-      if (content) {
-        if (authorSayWrap) {
-          const authorSay = authorSayWrap.querySelector(
-            "div.author-say > p:nth-child(3)"
-          );
-          const hr = document.createElement("hr");
-          content.appendChild(hr);
-          content.appendChild(authorSay as HTMLElement);
-        }
-
-        const { dom, text, images } = await cleanDOM(content, "TM");
-        return {
-          chapterName,
-          contentRaw: content,
-          contentText: text,
-          contentHTML: dom,
-          contentImages: images,
-          additionalMetadate: null,
-        };
+    async function getChapter(): Promise<ChapterParseObject> {
+      let doc;
+      if (isVIP) {
+        doc = await getFrameContent(chapterUrl);
       } else {
-        return nullObj;
-      }
-    }
-
-    async function vipChapter(): Promise<ChapterParseObject> {
-      interface ChapterInfo {
-        code: number;
-        data: {
-          chapterInfo: {
-            actualWords: number;
-            authorRecommend: [];
-            authorSay: string;
-            authorWords: {
-              avatar: string;
-              content: string;
-              time: string;
-            };
-            cbid: number;
-            ccid: string;
-            chapterId: number;
-            chapterName: string;
-            chapterOrder: number;
-            content: string;
-            cvid: number;
-            extra: {
-              nextName: string;
-              nextUrl: string;
-              nextVipStatus: number;
-              preUrl: string;
-              prevName: string;
-              prevVipStatus: number;
-              volumeBody: boolean;
-              volumeName: string;
-            };
-            fineLayout: number;
-            freeStatus: number;
-            isBuy: number;
-            isContentEncode: number;
-            isFirst: number;
-            modifyTime: number;
-            next: number;
-            nextCcid: number;
-            prev: number;
-            prevCcid: number;
-            updateTime: string;
-            updateTimestamp: number;
-            uuid: number;
-            vipStatus: number;
-            volumeId: number;
-            wordsCount: number;
-          };
-          hongBaoStatus: number;
-          pageOps: { hasAd: number };
-        };
-        msg: string;
-      }
-      async function getChapterInfo(): Promise<ChapterInfo | void> {
-        const baseUrl = "https://vipreader.qidian.com/ajax/chapter/chapterInfo";
-        const search = new URLSearchParams({
-          _csrfToken,
-          bookId,
-          chapterId,
-          authorId,
-        });
-
-        const url = baseUrl + "?" + search.toString();
-
-        log.debug(`[Chapter]请求 ${url} Referer ${chapterUrl}`);
-        return gfetch(url, {
-          headers: {
-            accept: "application/json, text/javascript, */*; q=0.01",
-            "x-requested-with": "XMLHttpRequest",
-            Referer: chapterUrl,
-          },
-          responseType: "json",
-        })
-          .then((response) => response.response as ChapterInfo)
-          .catch((error) => log.error(error));
+        doc = await ggetHtmlDOM(chapterUrl, charset);
       }
 
-      async function getByAPI() {
-        const chapterInfo = await getChapterInfo();
-        if (!chapterInfo) {
-          throw new Error("Request Api failed!");
+      if (doc) {
+        chapterName = (
+          doc.querySelector(".j_chapterName > .content-wrap") as HTMLElement
+        ).innerText.trim();
+
+        // VIP章节
+        if (doc.querySelector(".vip-limit-wrap")) {
+          return nullObj;
         }
-        if (chapterInfo.code === 0) {
-          const authorSay = chapterInfo.data.chapterInfo.authorSay;
-          const _content = chapterInfo.data.chapterInfo.content;
 
-          const content = document.createElement("div");
-          content.innerHTML = _content;
+        const content = document.createElement("div");
+        let contentText = "";
 
-          if (authorSay) {
+        const contentMain = doc.querySelector(".read-content") as HTMLElement;
+        rm("span.review-count", true, contentMain);
+        Array.from(contentMain.querySelectorAll("span.content-wrap")).forEach(
+          (span) => {
+            const parentEl = span.parentElement;
+            if (parentEl) {
+              parentEl.innerHTML = span.innerHTML;
+            }
+          }
+        );
+        const authorSayWrap = doc.querySelector(
+          ".author-say-wrap"
+        ) as HTMLElement;
+        if (contentMain) {
+          const { dom, text, images } = await cleanDOM(contentMain, "TM");
+          htmlTrim(dom);
+          content.appendChild(dom);
+
+          contentText = contentText + text;
+
+          if (authorSayWrap) {
+            const authorSay = authorSayWrap.querySelector(
+              "div.author-say"
+            ) as never;
+            rm("a.avatar", false, authorSay);
+            rm("h4", false, authorSay);
+            const {
+              dom: authorDom,
+              text: authorText,
+              images: authorImages,
+            } = await cleanDOM(authorSayWrap, "TM");
+            htmlTrim(authorDom);
+            authorDom.className = "authorSay";
+
             const hr = document.createElement("hr");
             content.appendChild(hr);
-            const authorSayDom = document.createElement("p");
-            authorSayDom.innerHTML = authorSay;
-            content.appendChild(authorSayDom);
+            content.appendChild(authorSay as HTMLElement);
+
+            contentText =
+              contentText + "\n\n" + "-".repeat(10) + "\n\n" + authorText;
+
+            images.push(...authorImages);
           }
 
-          const { dom, text, images } = await cleanDOM(content, "TM");
           return {
             chapterName,
             contentRaw: content,
-            contentText: text,
-            contentHTML: dom,
+            contentText,
+            contentHTML: content,
             contentImages: images,
             additionalMetadate: null,
           };
-        } else {
-          log.error(
-            `[chapter]VIP章节API请求失败！\n${JSON.stringify(chapterInfo)}`
-          );
-
-          return {
-            chapterName,
-            contentRaw: null,
-            contentText: null,
-            contentHTML: null,
-            contentImages: null,
-            additionalMetadate: null,
-          };
         }
       }
 
-      if (limitFree || isPaid) {
-        const _obj = await publicChapter();
-        if (!_obj.contentHTML) {
-          return getByAPI();
-        } else {
-          return _obj;
-        }
-      }
-
-      return {
-        chapterName,
-        contentRaw: null,
-        contentText: null,
-        contentHTML: null,
-        contentImages: null,
-        additionalMetadate: null,
-      };
+      return nullObj;
     }
 
-    if (isVIP) {
-      return vipChapter();
-    } else {
-      return publicChapter();
-    }
+    return getChapter();
   }
 }

@@ -162,3 +162,20 @@ export function softByValue(a: [Element, number], b: [Element, number]) {
   }
   return 0;
 }
+
+export async function getFrameContent(url: string): Promise<Document | null> {
+  const frame = document.createElement("iframe");
+  frame.src = url;
+  frame.width = "1";
+  frame.height = "1";
+  const promise = new Promise((resolve, reject) => {
+    frame.addEventListener("load", function (event) {
+      const doc = this.contentWindow?.document ?? null;
+      this.remove();
+      resolve(doc);
+    });
+  }) as Promise<Document | null>;
+  log.debug("[debug]getFrameContent:" + url);
+  document.body.appendChild(frame);
+  return promise;
+}
