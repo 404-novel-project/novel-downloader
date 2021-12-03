@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.5.1.365
+// @version        4.5.1.366
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -7345,7 +7345,7 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
                     chapterName = aElem.innerText;
                 }
                 const chapterUrl = aElem.href;
-                if (hasSection) {
+                if (hasSection && sections && _getSectionName) {
                     const _sectionName = (0, rule_1.getSectionName)(aElem, sections, _getSectionName);
                     if (_sectionName !== sectionName) {
                         sectionName = _sectionName;
@@ -9964,7 +9964,7 @@ class Qidian extends rules_1.BaseRuleClass {
                 };
                 let chapterId;
                 if (isVIP()) {
-                    chapterId = /(\d+)\/?/.exec(chapterUrl)?.slice(-1)[0] ?? null;
+                    chapterId = /(\d+)\/?$/.exec(chapterUrl)?.slice(-1)[0] ?? null;
                 }
                 else {
                     chapterId = null;
@@ -10046,17 +10046,19 @@ class Qidian extends rules_1.BaseRuleClass {
                     contentText = contentText + text;
                     if (authorSayWrap) {
                         const authorSay = authorSayWrap.querySelector("div.author-say");
-                        (0, misc_1.rm)("a.avatar", false, authorSay);
-                        (0, misc_1.rm)("h4", false, authorSay);
-                        const { dom: authorDom, text: authorText, images: authorImages, } = await (0, cleanDOM_1.cleanDOM)(authorSayWrap, "TM");
-                        (0, cleanDOM_1.htmlTrim)(authorDom);
-                        authorDom.className = "authorSay";
-                        const hr = document.createElement("hr");
-                        content.appendChild(hr);
-                        content.appendChild(authorSay);
-                        contentText =
-                            contentText + "\n\n" + "-".repeat(10) + "\n\n" + authorText;
-                        images.push(...authorImages);
+                        if (authorSay) {
+                            (0, misc_1.rm)("a.avatar", false, authorSay);
+                            (0, misc_1.rm)("h4", false, authorSay);
+                            const { dom: authorDom, text: authorText, images: authorImages, } = await (0, cleanDOM_1.cleanDOM)(authorSayWrap, "TM");
+                            (0, cleanDOM_1.htmlTrim)(authorDom);
+                            authorDom.className = "authorSay";
+                            const hr = document.createElement("hr");
+                            content.appendChild(hr);
+                            content.appendChild(authorSay);
+                            contentText =
+                                contentText + "\n\n" + "-".repeat(10) + "\n\n" + authorText;
+                            images.push(...authorImages);
+                        }
                     }
                     return {
                         chapterName,
@@ -10354,7 +10356,7 @@ class Sfacg extends rules_1.BaseRuleClass {
             const chapterName = elem.getAttribute("title")?.trim() ?? "";
             const chapterUrl = elem.href;
             const sectionName = (0, rule_1.getSectionName)(elem, sections, getName);
-            if (_sectionName !== sectionName) {
+            if (sectionName && _sectionName !== sectionName) {
                 _sectionName = sectionName;
                 sectionNumber++;
                 sectionChapterNumber = 0;
@@ -12882,7 +12884,7 @@ function mkRuleClass({ bookUrl, anotherPageUrl, getBookname, getAuthor, getIntro
                     chapterName = aElem.innerText;
                 }
                 const chapterUrl = aElem.href;
-                if (hasSection) {
+                if (hasSection && sections && _getSectionName) {
                     const _sectionName = (0, rule_1.getSectionName)(aElem, sections, _getSectionName);
                     if (_sectionName !== sectionName) {
                         sectionName = _sectionName;
