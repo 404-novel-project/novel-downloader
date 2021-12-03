@@ -83,8 +83,8 @@ export class Sfacg extends BaseRuleClass {
       const chapterName =
         (elem as HTMLAnchorElement).getAttribute("title")?.trim() ?? "";
       const chapterUrl = (elem as HTMLAnchorElement).href;
-      const sectionName = getSectionName(elem, sections, getName) as never;
-      if (_sectionName !== sectionName) {
+      const sectionName = getSectionName(elem, sections, getName);
+      if (sectionName && _sectionName !== sectionName) {
         _sectionName = sectionName;
         sectionNumber++;
         sectionChapterNumber = 0;

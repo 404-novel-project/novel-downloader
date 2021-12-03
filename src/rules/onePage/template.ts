@@ -98,12 +98,8 @@ export function mkRuleClass({
           chapterName = aElem.innerText;
         }
         const chapterUrl = aElem.href;
-        if (hasSection) {
-          const _sectionName = getSectionName(
-            aElem,
-            sections as never,
-            _getSectionName as never
-          );
+        if (hasSection && sections && _getSectionName) {
+          const _sectionName = getSectionName(aElem, sections, _getSectionName);
           if (_sectionName !== sectionName) {
             sectionName = _sectionName;
             sectionNumber++;

@@ -129,7 +129,7 @@ export class Qidian extends BaseRuleClass {
         };
         let chapterId;
         if (isVIP()) {
-          chapterId = /(\d+)\/?/.exec(chapterUrl)?.slice(-1)[0] ?? null;
+          chapterId = /(\d+)\/?$/.exec(chapterUrl)?.slice(-1)[0] ?? null;
         } else {
           chapterId = null;
         }
@@ -262,27 +262,27 @@ export class Qidian extends BaseRuleClass {
           contentText = contentText + text;
 
           if (authorSayWrap) {
-            const authorSay = authorSayWrap.querySelector(
-              "div.author-say"
-            ) as never;
-            rm("a.avatar", false, authorSay);
-            rm("h4", false, authorSay);
-            const {
-              dom: authorDom,
-              text: authorText,
-              images: authorImages,
-            } = await cleanDOM(authorSayWrap, "TM");
-            htmlTrim(authorDom);
-            authorDom.className = "authorSay";
+            const authorSay = authorSayWrap.querySelector("div.author-say");
+            if (authorSay) {
+              rm("a.avatar", false, authorSay as HTMLElement);
+              rm("h4", false, authorSay as HTMLElement);
+              const {
+                dom: authorDom,
+                text: authorText,
+                images: authorImages,
+              } = await cleanDOM(authorSayWrap, "TM");
+              htmlTrim(authorDom);
+              authorDom.className = "authorSay";
 
-            const hr = document.createElement("hr");
-            content.appendChild(hr);
-            content.appendChild(authorSay as HTMLElement);
+              const hr = document.createElement("hr");
+              content.appendChild(hr);
+              content.appendChild(authorSay as HTMLElement);
 
-            contentText =
-              contentText + "\n\n" + "-".repeat(10) + "\n\n" + authorText;
+              contentText =
+                contentText + "\n\n" + "-".repeat(10) + "\n\n" + authorText;
 
-            images.push(...authorImages);
+              images.push(...authorImages);
+            }
           }
 
           return {
