@@ -421,6 +421,12 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = syosetu();
       break;
     }
+    case "zhaoze.art":
+    case "houhuayuan.xyz": {
+      const { houhuayuan } = await import("../rules/onePage/houhuayuan");
+      ruleClass = houhuayuan();
+      break;
+    }
     default: {
       throw new Error("Not Found Rule!");
     }

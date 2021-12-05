@@ -121,6 +121,8 @@ ZIP压缩包，请在解压后，直接双击打开HTML文件（`index.html` 为
 |[望书阁](https://www.washuge.com/)|✅|❎||
 |[百合小说网](https://m.baihexs.com/)|✅|❎||
 |[全书斋](https://www.quanshuzhai.com/)|✅|❎||
+|[蔷薇后花园](https://houhuayuan.xyz/)|✅|❎||
+|[黑沼泽俱乐部](https://houhuayuan.xyz/)|✅|❎||
 
 </details>
 

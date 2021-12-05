@@ -11,13 +11,13 @@ interface MkRuleClassOptions {
   bookUrl: string;
   bookname: string;
   author: string;
-  introDom: HTMLElement;
-  introDomPatch: (introDom: HTMLElement) => HTMLElement;
-  coverUrl: string | null;
+  introDom?: HTMLElement;
+  introDomPatch?: (introDom: HTMLElement) => HTMLElement;
+  coverUrl?: string | null;
   additionalMetadatePatch?: (
     additionalMetadate: BookAdditionalMetadate
   ) => BookAdditionalMetadate;
-  aList: NodeListOf<Element>;
+  aList: NodeListOf<Element> | Element[];
   getAName?: (aElem: Element) => string;
   sections?: NodeListOf<Element>;
   getSName?: (sElem: Element) => string;
@@ -59,8 +59,13 @@ export function mkRuleClass({
     }
 
     public async bookParse() {
-      const [introduction, introductionHTML, introCleanimages] =
-        await introDomHandle(introDom, introDomPatch);
+      let introduction = null;
+      let introductionHTML = null;
+      let introCleanimages = null;
+      if (introDom && introDomPatch) {
+        [introduction, introductionHTML, introCleanimages] =
+          await introDomHandle(introDom, introDomPatch);
+      }
 
       const additionalMetadate: BookAdditionalMetadate = {};
       if (coverUrl) {

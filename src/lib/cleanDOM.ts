@@ -1,5 +1,5 @@
 import { log } from "../log";
-import { AttachmentClass, ExpectError } from "../main";
+import { AttachmentClass } from "../main";
 import { getImageAttachment } from "./attachments";
 
 const BlockElements = [
@@ -30,6 +30,7 @@ const BlockElements = [
   "small",
   "samp",
   "s",
+  "blockquote",
 ];
 const IgnoreElements = [
   "script",
@@ -415,7 +416,7 @@ async function formatA(elem: HTMLAnchorElement, builder: Builder) {
       const aText = `[${elem.innerText}](${elem.href})`;
 
       builder.dom.appendChild(aElem);
-      builder.text = builder + "\n\n" + aText;
+      builder.text = builder.text + "\n\n" + aText;
       return;
     } else {
       return;
@@ -472,6 +473,12 @@ async function walk(dom: HTMLElement, builder: Builder) {
         await formatMisc(node as HTMLElement, builder);
         break;
       }
+      case "h1":
+      case "h2":
+      case "h3":
+      case "h4":
+      case "h5":
+      case "h6":
       case "div":
       case "p": {
         await formatParagraph(node as HTMLParagraphElement, builder);

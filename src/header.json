@@ -160,7 +160,9 @@
     "*://www.pixiv.net/novel/show.php?*",
     "*://www.pixiv.net/novel/series/*",
     "*://kakuyomu.jp/works/*",
-    "*://ncode.syosetu.com/*"
+    "*://ncode.syosetu.com/*",
+    "*://houhuayuan.xyz/*",
+    "*://zhaoze.art/*/"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",
