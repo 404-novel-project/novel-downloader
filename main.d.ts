@@ -32,6 +32,7 @@ export declare class Book {
 }
 export interface ChapterAdditionalMetadate {
     lastModified?: number;
+    tags?: string[];
 }
 export declare class Chapter {
     bookUrl: string;

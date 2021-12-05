@@ -63,6 +63,7 @@ declare const _default: Vue.DefineComponent<{}, {
         }[] | null;
         additionalMetadate: {
             lastModified?: number | undefined;
+            tags?: string[] | undefined;
         } | null;
         chapterHtmlFileName: string | number;
         init: () => Promise<Chapter>;

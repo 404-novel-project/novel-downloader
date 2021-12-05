@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.5.1.366
+// @version        4.5.1.369
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -141,6 +141,8 @@
 // @match          *://m.baihexs.com/info-*/
 // @match          *://www.quanshuzhai.com/book/*.html
 // @match          *://masiro.me/admin/novelView?novel_id=*
+// @match          *://www.pixiv.net/novel/show.php?*
+// @match          *://www.pixiv.net/novel/series/*
 // @name:en        novel-downloader
 // @description:en An scalable universal novel downloader.
 // @namespace      https://blog.bgme.me
@@ -248,8 +250,10 @@
 // @connect        25zw.com
 // @connect        sina.com.cn
 // @connect        ciyuanji.com
+// @connect        wanben.org
 // @connect        baihexs.com
 // @connect        masiro.me
+// @connect        pximg.net
 // @connect        *
 // @require        https://cdn.jsdelivr.net/npm/crypto-js@4.1.1/crypto-js.js#sha512-NQVmLzNy4Lr5QTrmXvq/WzTMUnRHmv7nyIT/M6LyGPBS+TIeRxZ+YQaqWxjpRpvRMQSuYPQURZz/+pLi81xXeA==
 // @require        https://cdn.jsdelivr.net/npm/fflate@0.7.1/umd/index.js#sha512-laBNdxeV48sttD1kBYahmdSXpSRitYmkte49ZUqm3KEOUK4cIJAjqt1MYwScWvBqqP4WDtEftDSPYE1ii/bxCg==
@@ -5373,6 +5377,11 @@ async function getRule() {
             ruleClass = wanben();
             break;
         }
+        case "m.wanben.org": {
+            const { wanben } = await Promise.resolve().then(() => __webpack_require__("./src/rules/onePageWithMultiIndexPage/wanben.ts"));
+            ruleClass = wanben();
+            break;
+        }
         case "www.ranwen.la": {
             const { ranwen } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge/type1.ts"));
             ruleClass = ranwen();
@@ -5396,6 +5405,11 @@ async function getRule() {
         case "masiro.me": {
             const { masiro } = await Promise.resolve().then(() => __webpack_require__("./src/rules/onePage/masiro.ts"));
             ruleClass = masiro();
+            break;
+        }
+        case "www.pixiv.net": {
+            const { Pixiv } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/original/pixiv.ts"));
+            ruleClass = Pixiv;
             break;
         }
         default: {
@@ -5433,12 +5447,10 @@ function getUI() {
     switch (host) {
         case "m.shuquge.com": {
             return () => {
-                const _pathname = document.location.pathname.split("/").slice(-1)[0];
-                const _id = _pathname.match(/^(\d+)/);
-                if (!_id) {
+                const id = /^(\d+)\/?$/.exec(document.location.pathname)?.[1];
+                if (!id) {
                     return errorObject;
                 }
-                const id = _id[0];
                 return {
                     type: "jump",
                     jumpFunction() {
@@ -5484,12 +5496,6 @@ function getUI() {
                 }
                 return defaultObject;
             };
-        }
-        case "m.wanben.org": {
-            return () => ({
-                type: "jump",
-                jumpFunction: () => (document.location.host = "www.wanben.org"),
-            });
         }
         case "ebook.longmabook.com":
         case "www.longmabookcn.com":
@@ -7766,6 +7772,82 @@ exports.mkRuleClass = mkRuleClass;
 
 /***/ }),
 
+/***/ "./src/rules/onePageWithMultiIndexPage/wanben.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.wanben = void 0;
+const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
+const http_1 = __webpack_require__("./src/lib/http.ts");
+const misc_1 = __webpack_require__("./src/lib/misc.ts");
+const rule_1 = __webpack_require__("./src/lib/rule.ts");
+const template_1 = __webpack_require__("./src/rules/onePageWithMultiIndexPage/template.ts");
+const wanben = () => {
+    const getIntroDom = () => {
+        const a = document.querySelector(".bookInfo > a");
+        if (a) {
+            a.click();
+            a.remove();
+        }
+        return document.querySelector(".bookInfo");
+    };
+    return (0, template_1.mkRuleClass)({
+        bookUrl: document.location.href,
+        bookname: document.querySelector("div.bookPhr > h2").innerText.trim(),
+        author: document.querySelector("div.bookPhrMid > p:nth-child(1)").innerText
+            .replace("作者：", "")
+            .trim(),
+        introDom: getIntroDom(),
+        introDomPatch: (dom) => dom,
+        coverUrl: document.querySelector("div.bookImg > img")
+            ?.src,
+        getIndexUrls: async () => {
+            const contentPageUrl = document.querySelector("#contentbox > div.detailDiv > div.category > a").href;
+            const doc = await (0, http_1.getHtmlDOM)(contentPageUrl, document.characterSet);
+            const aList = doc.querySelectorAll("div.pageBg div.pagenum a");
+            const indexUrls = Array.from(aList).map((a) => a.href);
+            return indexUrls;
+        },
+        getAList: (doc) => doc.querySelectorAll("div.chapterDiv > div.chapterList > ul > a"),
+        getContentFromUrl: async (chapterUrl, chapterName, charset) => {
+            const { chapterName: _chapterName, contentRaw, contentText, contentHTML, contentImages, additionalMetadate, } = await (0, rule_1.nextPageParse)({
+                chapterName,
+                chapterUrl,
+                charset,
+                selector: "div.raderCon",
+                contentPatch: (content, doc) => {
+                    (0, misc_1.rm)("script", true, content);
+                    (0, misc_1.rm)("[style]", true, content);
+                    const ads = [
+                        "【提示】：如果觉得此文不错，请推荐给更多小伙伴吧！分享也是一种享受。",
+                        "【看书助手】",
+                        "【完本神站】",
+                        "百万热门书籍终身无广告免费阅读",
+                    ];
+                    (0, misc_1.rm2)(content, ads);
+                    (0, cleanDOM_1.htmlTrim)(content);
+                    return content;
+                },
+                getNextPage: (doc) => doc.querySelector("div.page > a:nth-child(3)")
+                    .href,
+                continueCondition: (_content, nextLink) => {
+                    const pathname = nextLink.split("/").slice(-1)[0];
+                    return pathname.includes("_");
+                },
+                enableCleanDOM: false,
+            });
+            return contentRaw;
+        },
+        contentPatch: (dom) => dom,
+    });
+};
+exports.wanben = wanben;
+
+
+/***/ }),
+
 /***/ "./src/rules/special/duplicate/haitangtxt.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
@@ -9857,6 +9939,239 @@ class Longmabook extends rules_1.BaseRuleClass {
     }
 }
 exports.Longmabook = Longmabook;
+
+
+/***/ }),
+
+/***/ "./src/rules/special/original/pixiv.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Pixiv = void 0;
+const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
+const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
+const http_1 = __webpack_require__("./src/lib/http.ts");
+const log_1 = __webpack_require__("./src/log.ts");
+const main_1 = __webpack_require__("./src/main.ts");
+const rules_1 = __webpack_require__("./src/rules.ts");
+class Pixiv extends rules_1.BaseRuleClass {
+    constructor() {
+        super();
+        this.imageMode = "TM";
+    }
+    async bookParse() {
+        const self = this;
+        const _lang = document.documentElement.getAttribute("lang");
+        const lang = _lang ? { lang: _lang } : {};
+        let bookG;
+        if (document.location.pathname.startsWith("/novel/series")) {
+            const _seriesID = /(\d+)\/?$/.exec(document.location.pathname)?.[0];
+            if (_seriesID) {
+                const seriesID = parseInt(_seriesID, 10);
+                bookG = await series(seriesID);
+            }
+        }
+        else {
+            const obj = await getPreloadData(document.location.href, self.charset);
+            if (obj) {
+                const { preloadData, novel, user } = obj;
+                if (novel) {
+                    const seriesNavData = novel.seriesNavData;
+                    if (seriesNavData) {
+                        const seriesID = seriesNavData.seriesId;
+                        bookG = await series(seriesID);
+                    }
+                    else {
+                        bookG = await onePage(novel);
+                    }
+                }
+            }
+        }
+        if (!bookG) {
+            throw new Error("初始化图书信息失败！");
+        }
+        return bookG;
+        async function series(id) {
+            const seriesMetaBody = await getSeriesMeta(id);
+            if (seriesMetaBody) {
+                const bookUrl = "https://www.pixiv.net/novel/series/" + id.toString();
+                const bookname = seriesMetaBody.title;
+                const author = seriesMetaBody.userName;
+                const introduction = seriesMetaBody.caption;
+                const introductionHTML = document.createElement("div");
+                introductionHTML.innerText = introduction;
+                const additionalMetadate = {};
+                const coverUrl = seriesMetaBody.firstEpisode.url;
+                if (coverUrl) {
+                    (0, attachments_1.getImageAttachment)(coverUrl, self.imageMode, "cover-")
+                        .then((coverClass) => {
+                        additionalMetadate.cover = coverClass;
+                    })
+                        .catch((error) => log_1.log.error(error));
+                }
+                additionalMetadate.lastModified = seriesMetaBody.updatedTimestamp;
+                const seriesContents = await getSeriesContents(id, seriesMetaBody.publishedContentCount);
+                const chapters = [];
+                const chapterUrlBase = "https://www.pixiv.net/novel/show.php?id=";
+                for (const sc of seriesContents) {
+                    const chapterUrl = chapterUrlBase + sc.id;
+                    const chapterNumber = sc.series.contentOrder;
+                    const chapterName = `#${sc.series.contentOrder} ${sc.title}`;
+                    const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, false, false, null, null, null, self.chapterParse, self.charset, { id: sc.id });
+                    chapters.push(chapter);
+                }
+                const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+                return book;
+            }
+        }
+        async function getSeriesMeta(id) {
+            const referrer = "https://www.pixiv.net/novel/series/" + id.toString();
+            const apiMetaBase = "https://www.pixiv.net/ajax/novel/series/";
+            const apiMeta = apiMetaBase +
+                id.toString() +
+                "?" +
+                new URLSearchParams(lang).toString();
+            const respMeta = await fetch(apiMeta, {
+                credentials: "include",
+                headers: {
+                    Accept: "application/json",
+                    Pragma: "no-cache",
+                    "Cache-Control": "no-cache",
+                },
+                referrer,
+                method: "GET",
+                mode: "cors",
+            });
+            const seriesMeta = (await respMeta.json());
+            if (seriesMeta.error === false) {
+                return seriesMeta.body;
+            }
+        }
+        async function getSeriesContents(id, publishedContentCount) {
+            const referrer = "https://www.pixiv.net/novel/series/" + id.toString();
+            const apiBase = "https://www.pixiv.net/ajax/novel/series_content/";
+            const api = apiBase + id.toString();
+            let lastOrder = 0;
+            const getSearchParams = () => ({
+                limit: "10",
+                last_order: lastOrder.toString(),
+                order_by: "asc",
+                ...lang,
+            });
+            const seriesContents = [];
+            while (lastOrder < publishedContentCount) {
+                const url = api + "?" + new URLSearchParams(getSearchParams()).toString();
+                const resp = await fetch(url, {
+                    credentials: "include",
+                    headers: {
+                        Accept: "application/json",
+                    },
+                    referrer,
+                    method: "GET",
+                    mode: "cors",
+                });
+                const _seriesContents = (await resp.json());
+                if (_seriesContents.error === false) {
+                    seriesContents.push(..._seriesContents.body.seriesContents);
+                }
+                lastOrder = lastOrder + 10;
+            }
+            return seriesContents;
+        }
+        async function onePage(novel) {
+            const bookUrl = document.location.href;
+            const bookname = novel.title;
+            const author = novel.userName;
+            const introductionHTML = document.createElement("div");
+            introductionHTML.innerHTML = novel.description;
+            const introduction = introductionHTML.innerText;
+            const additionalMetadate = {};
+            const coverUrl = novel.coverUrl;
+            if (coverUrl) {
+                (0, attachments_1.getImageAttachment)(coverUrl, self.imageMode, "cover-")
+                    .then((coverClass) => {
+                    additionalMetadate.cover = coverClass;
+                })
+                    .catch((error) => log_1.log.error(error));
+            }
+            additionalMetadate.lastModified = new Date(novel.uploadDate).getTime();
+            additionalMetadate.tags = novel.tags.tags.map((t) => t.tag);
+            additionalMetadate.languages = novel.language;
+            const chapterUrl = bookUrl;
+            const chapterName = bookname;
+            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, 1, chapterName, false, false, null, null, null, self.chapterParse, self.charset, {});
+            const contentRaw = document.createElement("div");
+            contentRaw.innerHTML = novel.content.replace(/\n/g, "<br/>");
+            const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(contentRaw, "TM");
+            chapter.contentRaw = contentRaw;
+            chapter.contentHTML = dom;
+            chapter.contentText = text;
+            chapter.contentImages = images;
+            chapter.additionalMetadate = {
+                lastModified: new Date(novel.uploadDate).getTime(),
+                tags: novel.tags.tags.map((t) => t.tag),
+            };
+            chapter.status = main_1.Status.finished;
+            const chapters = [chapter];
+            const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+            return book;
+        }
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+        const obj = await getPreloadData(chapterUrl, charset);
+        if (obj) {
+            const { preloadData, novel, user } = obj;
+            if (novel) {
+                const contentRaw = document.createElement("div");
+                contentRaw.innerHTML = novel.content.replace(/\n/g, "<br/>");
+                const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(contentRaw, "TM");
+                const additionalMetadate = {
+                    lastModified: new Date(novel.uploadDate).getTime(),
+                    tags: novel.tags.tags.map((t) => t.tag),
+                };
+                return {
+                    chapterName,
+                    contentRaw,
+                    contentText: text,
+                    contentHTML: dom,
+                    contentImages: images,
+                    additionalMetadate,
+                };
+            }
+        }
+        return {
+            chapterName,
+            contentRaw: null,
+            contentText: null,
+            contentHTML: null,
+            contentImages: null,
+            additionalMetadate: null,
+        };
+    }
+}
+exports.Pixiv = Pixiv;
+async function getPreloadData(chapterUrl, charset) {
+    const doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
+    const _preloadData = doc
+        .querySelector("meta#meta-preload-data")
+        ?.getAttribute("content");
+    if (_preloadData) {
+        const preloadData = JSON.parse(_preloadData);
+        let novel;
+        const _novel = Object.entries(preloadData.novel);
+        if (_novel.length !== 0) {
+            novel = _novel[0][1];
+        }
+        let user;
+        const _user = Object.entries(preloadData.user);
+        if (_user.length !== 0) {
+            user = _user[0][1];
+        }
+        return { preloadData, novel, user };
+    }
+}
 
 
 /***/ }),
