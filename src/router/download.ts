@@ -372,6 +372,13 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = wanben();
       break;
     }
+    case "m.wanben.org": {
+      const { wanben } = await import(
+        "../rules/onePageWithMultiIndexPage/wanben"
+      );
+      ruleClass = wanben();
+      break;
+    }
     case "www.ranwen.la": {
       const { ranwen } = await import("../rules/biquge/type1");
       ruleClass = ranwen();

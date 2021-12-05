@@ -13,12 +13,10 @@ export function getUI(): () => UIObject {
   switch (host) {
     case "m.shuquge.com": {
       return () => {
-        const _pathname = document.location.pathname.split("/").slice(-1)[0];
-        const _id = _pathname.match(/^(\d+)/);
-        if (!_id) {
+        const id = /^(\d+)\/?$/.exec(document.location.pathname)?.[1];
+        if (!id) {
           return errorObject;
         }
-        const id = _id[0];
         return {
           type: "jump",
           jumpFunction() {
@@ -67,12 +65,6 @@ export function getUI(): () => UIObject {
         }
         return defaultObject;
       };
-    }
-    case "m.wanben.org": {
-      return () => ({
-        type: "jump",
-        jumpFunction: () => (document.location.host = "www.wanben.org"),
-      });
     }
     case "ebook.longmabook.com":
     case "www.longmabookcn.com":
