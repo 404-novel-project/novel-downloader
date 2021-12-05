@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.5.3.374
+// @version        4.5.3.375
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -5636,7 +5636,7 @@ const houhuayuan = () => {
                 if (_content0) {
                     (0,_lib_misc__WEBPACK_IMPORTED_MODULE_2__/* .childNodesCopy */ .vR)(_content0, content);
                 }
-                const pageUrls = Array.from(doc.querySelectorAll(".page-links > a.post-page-numbers")).map((a) => a.href);
+                const pageUrls = Array.from(pageLinks).map((a) => a.href);
                 for (const url of pageUrls) {
                     const docc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .dL)(url, charset);
                     const _content1 = docc.querySelector("header + div.entry-content");
