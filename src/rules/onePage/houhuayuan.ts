@@ -61,9 +61,9 @@ export const houhuayuan = () => {
         if (_content0) {
           childNodesCopy(_content0, content);
         }
-        const pageUrls = Array.from(
-          doc.querySelectorAll(".page-links > a.post-page-numbers")
-        ).map((a) => (a as HTMLAnchorElement).href);
+        const pageUrls = Array.from(pageLinks).map(
+          (a) => (a as HTMLAnchorElement).href
+        );
         for (const url of pageUrls) {
           const docc = await getHtmlDOM(url, charset);
           const _content1 = docc.querySelector("header + div.entry-content");
