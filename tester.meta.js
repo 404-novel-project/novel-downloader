@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        小说下载器测试脚本
-// @version     4.5.1.369
+// @version     4.5.1.370
 // @author      bgme
 // @description 小说下载器测试脚本
 // @match       *://www.ciweimao.com/chapter-list/*
@@ -38,8 +38,8 @@
 // @match       *://www.biquwoo.com/bqw*/
 // @match       *://www.biquwo.org/bqw*/
 // @match       *://www.shuquge.com/txt/*/index.html
-// @match       *://m.shuquge.com/s/*.html
-// @match       *://m.shuquge.com/d/*.html
+// @match       *://wap.shuquge.com/s/*.html
+// @match       *://wap.shuquge.com/d/*.html
 // @match       *://www.sizhicn.com/txt/*/index.html
 // @match       *://www.dingdiann.net/ddk*/
 // @match       *://www.xkzw.org/xkzw*/
