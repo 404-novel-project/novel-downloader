@@ -5,11 +5,11 @@ interface MkRuleClassOptions {
     bookUrl: string;
     bookname: string;
     author: string;
-    introDom: HTMLElement;
-    introDomPatch: (introDom: HTMLElement) => HTMLElement;
-    coverUrl: string | null;
+    introDom?: HTMLElement;
+    introDomPatch?: (introDom: HTMLElement) => HTMLElement;
+    coverUrl?: string | null;
     additionalMetadatePatch?: (additionalMetadate: BookAdditionalMetadate) => BookAdditionalMetadate;
-    aList: NodeListOf<Element>;
+    aList: NodeListOf<Element> | Element[];
     getAName?: (aElem: Element) => string;
     sections?: NodeListOf<Element>;
     getSName?: (sElem: Element) => string;

@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.5.1.372
+// @version        4.5.2.373
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -145,6 +145,8 @@
 // @match          *://www.pixiv.net/novel/series/*
 // @match          *://kakuyomu.jp/works/*
 // @match          *://ncode.syosetu.com/*
+// @match          *://houhuayuan.xyz/*
+// @match          *://zhaoze.art/*/
 // @name:en        novel-downloader
 // @description:en An scalable universal novel downloader.
 // @namespace      https://blog.bgme.me
@@ -3482,6 +3484,7 @@ const BlockElements = [
     "small",
     "samp",
     "s",
+    "blockquote",
 ];
 const IgnoreElements = [
     "script",
@@ -3799,7 +3802,7 @@ async function formatA(elem, builder) {
             aElem.rel = "noopener noreferrer";
             const aText = `[${elem.innerText}](${elem.href})`;
             builder.dom.appendChild(aElem);
-            builder.text = builder + "\n\n" + aText;
+            builder.text = builder.text + "\n\n" + aText;
             return;
         }
         else {
@@ -3843,6 +3846,12 @@ async function walk(dom, builder) {
                 await formatMisc(node, builder);
                 break;
             }
+            case "h1":
+            case "h2":
+            case "h3":
+            case "h4":
+            case "h5":
+            case "h6":
             case "div":
             case "p": {
                 await formatParagraph(node, builder);
@@ -5423,6 +5432,12 @@ async function getRule() {
         case "ncode.syosetu.com": {
             const { syosetu } = await Promise.resolve().then(() => __webpack_require__("./src/rules/onePage/syosetu.ts"));
             ruleClass = syosetu();
+            break;
+        }
+        case "zhaoze.art":
+        case "houhuayuan.xyz": {
+            const { houhuayuan } = await Promise.resolve().then(() => __webpack_require__("./src/rules/onePage/houhuayuan.ts"));
+            ruleClass = houhuayuan();
             break;
         }
         default: {
@@ -7215,6 +7230,79 @@ exports.c630shu = (0, template_1.mkRuleClass)({
 
 /***/ }),
 
+/***/ "./src/rules/onePage/houhuayuan.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.houhuayuan = void 0;
+const misc_1 = __webpack_require__("./src/lib/misc.ts");
+const template_1 = __webpack_require__("./src/rules/onePage/template.ts");
+const houhuayuan = () => {
+    const seriesbox = document.querySelector(".seriesbox");
+    let bookUrl;
+    let bookname;
+    let author = document.querySelector("h3.author")?.innerText
+        .replace(/♥|作者: /g, "")
+        .trim();
+    if (author === "") {
+        author = "佚名";
+    }
+    const aList = [];
+    if (seriesbox) {
+        const lis = seriesbox.querySelectorAll("ul.serieslist-ul > li");
+        for (const li of Array.from(lis)) {
+            if (li.className === "serieslist-li") {
+                const a = li.querySelector("a");
+                if (a) {
+                    aList.push(a);
+                }
+            }
+            else if (li.className === "serieslist-li-current") {
+                const a = document.createElement("a");
+                a.innerText = document.querySelector(".entry-title").innerText.trim();
+                a.href = document.location.href;
+                aList.push(a);
+            }
+        }
+        const aFirst = aList[0];
+        bookname = aFirst.innerText
+            .replace(/第.+章$|\s序$/, "")
+            .trim();
+        bookUrl = aFirst.href;
+    }
+    else {
+        bookUrl = document.location.href;
+        bookname = document.querySelector(".entry-title").innerText.trim();
+        const a = document.createElement("a");
+        a.innerText = bookname;
+        a.href = bookUrl;
+        aList.push(a);
+    }
+    return (0, template_1.mkRuleClass)({
+        bookUrl,
+        bookname,
+        author,
+        aList,
+        getContent: (doc) => doc.querySelector("header + div.entry-content"),
+        contentPatch: (dom) => {
+            (0, misc_1.rm)('div[id^="stage-"]', true, dom);
+            (0, misc_1.rm)('div[id^="zhaoz-"]', true, dom);
+            (0, misc_1.rm)("div.seriesbox", false, dom);
+            (0, misc_1.rm)("fieldset", false, dom);
+            (0, misc_1.rm)("div.wpulike", false, dom);
+            (0, misc_1.rm)(".simplefavorite-button", false, dom);
+            (0, misc_1.rm2)(dom, [" – 蔷薇后花园", " – 黑沼泽俱乐部"]);
+            return dom;
+        },
+    });
+};
+exports.houhuayuan = houhuayuan;
+
+
+/***/ }),
+
 /***/ "./src/rules/onePage/kakuyomu.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
@@ -7411,7 +7499,13 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
             }
         }
         async bookParse() {
-            const [introduction, introductionHTML, introCleanimages] = await (0, rule_1.introDomHandle)(introDom, introDomPatch);
+            let introduction = null;
+            let introductionHTML = null;
+            let introCleanimages = null;
+            if (introDom && introDomPatch) {
+                [introduction, introductionHTML, introCleanimages] =
+                    await (0, rule_1.introDomHandle)(introDom, introDomPatch);
+            }
             const additionalMetadate = {};
             if (coverUrl) {
                 (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
