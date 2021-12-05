@@ -156,7 +156,9 @@
     "*://www.washuge.com/books/*/*/",
     "*://m.baihexs.com/info-*/",
     "*://www.quanshuzhai.com/book/*.html",
-    "*://masiro.me/admin/novelView?novel_id=*"
+    "*://masiro.me/admin/novelView?novel_id=*",
+    "*://www.pixiv.net/novel/show.php?*",
+    "*://www.pixiv.net/novel/series/*"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",
@@ -259,6 +261,7 @@
     "ciyuanji.com",
     "baihexs.com",
     "masiro.me",
+    "pximg.net",
     "*"
   ],
   "require": [

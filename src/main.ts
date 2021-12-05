@@ -58,6 +58,7 @@ export class Book {
 
 export interface ChapterAdditionalMetadate {
   lastModified?: number;
+  tags?: string[];
 }
 
 // tslint:disable-next-line:max-classes-per-file

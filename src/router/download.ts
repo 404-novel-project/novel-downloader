@@ -399,6 +399,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = masiro();
       break;
     }
+    case "www.pixiv.net": {
+      const { Pixiv } = await import("../rules/special/original/pixiv");
+      ruleClass = Pixiv;
+      break;
+    }
     default: {
       throw new Error("Not Found Rule!");
     }
