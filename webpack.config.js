@@ -1,6 +1,7 @@
 const path = require("path");
 const fs = require("fs");
 const WebpackUserscript = require("webpack-userscript");
+const webpack = require("webpack");
 
 const dev = process.env.NODE_ENV === "development";
 console.log(`development: ${dev}`);
@@ -106,6 +107,9 @@ module.exports = {
         baseUrl: "https://webpack.lo.bgme.me/",
         enable: dev,
       },
+    }),
+    new webpack.optimize.LimitChunkCountPlugin({
+      maxChunks: 1,
     }),
   ],
 };

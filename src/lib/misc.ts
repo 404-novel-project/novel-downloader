@@ -57,6 +57,11 @@ export function rms(ads: (string | RegExp)[], dom: HTMLElement) {
   return dom;
 }
 
+export function childNodesCopy(src: Element, dest: Element) {
+  const childrens = Array.from(src.childNodes);
+  childrens.forEach((node) => dest.appendChild(node));
+}
+
 // source: https://segmentfault.com/a/1190000013128649
 export function concurrencyRun(
   list: any[],

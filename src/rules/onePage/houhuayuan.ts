@@ -1,4 +1,5 @@
-import { rm, rm2 } from "../../lib/misc";
+import { getHtmlDOM } from "../../lib/http";
+import { childNodesCopy, rm, rm2 } from "../../lib/misc";
 import { mkRuleClass } from "./template";
 
 export const houhuayuan = () => {
@@ -49,15 +50,44 @@ export const houhuayuan = () => {
     bookname,
     author,
     aList,
-    getContent: (doc) => doc.querySelector("header + div.entry-content"),
+    getContentFromUrl: async (chapterUrl, chapterName, charset) => {
+      const doc = await getHtmlDOM(chapterUrl, charset);
+      const pageLinks = doc.querySelectorAll(
+        ".page-links > a.post-page-numbers"
+      );
+      if (pageLinks) {
+        const content = document.createElement("div");
+        const _content0 = doc.querySelector("header + div.entry-content");
+        if (_content0) {
+          childNodesCopy(_content0, content);
+        }
+        const pageUrls = Array.from(
+          doc.querySelectorAll(".page-links > a.post-page-numbers")
+        ).map((a) => (a as HTMLAnchorElement).href);
+        for (const url of pageUrls) {
+          const docc = await getHtmlDOM(url, charset);
+          const _content1 = docc.querySelector("header + div.entry-content");
+          if (_content1) {
+            childNodesCopy(_content1, content);
+          }
+        }
+        return content;
+      } else {
+        return doc.querySelector("header + div.entry-content") as HTMLElement;
+      }
+    },
     contentPatch: (dom) => {
       rm('div[id^="stage-"]', true, dom);
       rm('div[id^="zhaoz-"]', true, dom);
-      rm("div.seriesbox", false, dom);
-      rm("fieldset", false, dom);
-      rm("div.wpulike", false, dom);
-      rm(".simplefavorite-button", false, dom);
+      rm("div.seriesbox", true, dom);
+      rm("fieldset", true, dom);
+      rm("div.wpulike", true, dom);
+      rm(".simplefavorite-button", true, dom);
+      rm(".page-links", true, dom);
       rm2(dom, [" – 蔷薇后花园", " – 黑沼泽俱乐部"]);
+      Array.from(dom.querySelectorAll("img")).forEach(
+        (img) => (img.src = img.getAttribute("data-src") ?? "")
+      );
       return dom;
     },
   });
