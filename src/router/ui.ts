@@ -11,9 +11,9 @@ const errorObject: UIObject = {
 export function getUI(): () => UIObject {
   const host: string = document.location.host;
   switch (host) {
-    case "m.shuquge.com": {
+    case "wap.shuquge.com": {
       return () => {
-        const id = /^(\d+)\/?$/.exec(document.location.pathname)?.[1];
+        const id = /(\d+)\.html$/.exec(document.location.pathname)?.[1];
         if (!id) {
           return errorObject;
         }
