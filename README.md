@@ -53,6 +53,8 @@ ZIP压缩包，请在解压后，直接双击打开HTML文件（`index.html` 为
 |[花语女生网](http://huayu.zongheng.com/)|✅|❌||
 |[17K小说网](https://www.17k.com/)|✅|❌||
 |[书海小说网](http://www.shuhai.com/)|✅|❌||
+|[塔读文学](https://www.tadu.com/)|✅|❌||
+|[七猫中文网](https://www.qimao.com/)|✅|❌||
 |[废文网](https://sosad.fun/)|✅|❎|部分小说或章节需登录后查看。|
 |[pixiv](https://www.pixiv.net/novel/)|✅|❎||
 |[动漫之家](https://www.dmzj.com/)|✅|❎|需下载大量图片，速度较慢，请耐心等待。<br>需占用大量内存，请保证最终生成文件4倍以上内存，即最终下载生成500MB ZIP文件，运行时请保证至少2GB内存空间。可使用筛选函数，分次下载。|
@@ -65,8 +67,7 @@ ZIP压缩包，请在解压后，直接双击打开HTML文件（`index.html` 为
 
 |站点|公共章节|付费章节|备注|
 |---|-------|------|----|
-|[塔读文学](https://www.tadu.com/)|✅|❌||
-|[七猫中文网](https://www.qimao.com/)|✅|❌||
+|[カクヨム](https://kakuyomu.jp/)|✅|❎||
 |[UU看书网](https://www.uukanshu.com/)|✅|❎||
 |[亿软网](http://www.yruan.com/)|✅|❎|网站性能差，降低抓取频率，请耐心等待。|
 |[笔趣窝](http://www.biquwoo.com/)|✅|❎||

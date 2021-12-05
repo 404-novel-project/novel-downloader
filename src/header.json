@@ -158,7 +158,8 @@
     "*://www.quanshuzhai.com/book/*.html",
     "*://masiro.me/admin/novelView?novel_id=*",
     "*://www.pixiv.net/novel/show.php?*",
-    "*://www.pixiv.net/novel/series/*"
+    "*://www.pixiv.net/novel/series/*",
+    "*://kakuyomu.jp/works/*"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",

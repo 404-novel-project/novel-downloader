@@ -411,6 +411,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = Pixiv;
       break;
     }
+    case "kakuyomu.jp": {
+      const { kakuyomu } = await import("../rules/onePage/kakuyomu");
+      ruleClass = kakuyomu();
+      break;
+    }
     default: {
       throw new Error("Not Found Rule!");
     }
