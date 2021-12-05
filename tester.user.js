@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        小说下载器测试脚本
-// @version     4.5.2.373
+// @version     4.5.3.374
 // @author      bgme
 // @description 小说下载器测试脚本
 // @match       *://www.ciweimao.com/chapter-list/*
@@ -194,12 +194,6 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	"use strict";
 var __webpack_exports__ = {};
-// This entry need to be wrapped in an IIFE because it uses a non-standard name for the exports (exports).
-(() => {
-var exports = __webpack_exports__;
-var __webpack_unused_export__;
-
-__webpack_unused_export__ = ({ value: true });
 const TabDataKeyName = "data-5186766268769811";
 function setTabData(key, value) {
     return new Promise((resolve, reject) => {
@@ -501,7 +495,6 @@ else {
 }
 console.log("[novel-downloader-tester]测试脚本载入成功……");
 
-})();
 
 /******/ })()
 ;

@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.5.2.373
+// @version        4.5.3.374
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -2673,9 +2673,8 @@ module.exports = {
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */   "Z": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/css-loader/dist/runtime/noSourceMaps.js");
 /* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
@@ -2697,9 +2696,8 @@ ___CSS_LOADER_EXPORT___.push([module.id, ":root {\n  --good-chapter-color: #41b8
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */   "Z": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/css-loader/dist/runtime/noSourceMaps.js");
 /* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
@@ -2721,9 +2719,8 @@ ___CSS_LOADER_EXPORT___.push([module.id, "#test-page-div {\n  max-height: 300px;
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */   "Z": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/css-loader/dist/runtime/noSourceMaps.js");
 /* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
@@ -2745,9 +2742,8 @@ ___CSS_LOADER_EXPORT___.push([module.id, ".button-div {\n  position: fixed;\n  t
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */   "Z": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/css-loader/dist/runtime/noSourceMaps.js");
 /* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
@@ -2769,9 +2765,8 @@ ___CSS_LOADER_EXPORT___.push([module.id, ".nd-setting-body {\n  background: #e0e
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */   "Z": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/css-loader/dist/runtime/noSourceMaps.js");
 /* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
@@ -2793,9 +2788,8 @@ ___CSS_LOADER_EXPORT___.push([module.id, "body {\n  background-color: #f0f0f2;\n
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */   "Z": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/css-loader/dist/runtime/noSourceMaps.js");
 /* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
@@ -2817,9 +2811,8 @@ ___CSS_LOADER_EXPORT___.push([module.id, "img {\n  max-width: 100%;\n  max-heigh
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */   "Z": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/css-loader/dist/runtime/noSourceMaps.js");
 /* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
@@ -2841,9 +2834,8 @@ ___CSS_LOADER_EXPORT___.push([module.id, ".filter-setting {\n  padding-top: 0.4e
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */   "Z": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/css-loader/dist/runtime/noSourceMaps.js");
 /* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
@@ -2865,9 +2857,8 @@ ___CSS_LOADER_EXPORT___.push([module.id, ".overlay {\n  visibility: hidden;\n  o
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */   "Z": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/css-loader/dist/runtime/noSourceMaps.js");
 /* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
@@ -3018,273 +3009,21 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 /***/ }),
 
-/***/ "./src/save/chapter.html.j2":
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-// Module
-var code = "<!DOCTYPE html> <html> <head> <meta charset=\"UTF-8\"/> <meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"/> <meta name=\"referrer\" content=\"same-origin\"/> <meta name=\"generator\" content=\"https://github.com/yingziwu/novel-downloader\"/> <meta name=\"source\" content=\"{{ chapterUrl }}\"/> <link href=\"style.css\" rel=\"stylesheet\"/> <title>{{ chapterName }}</title> </head> <body> <div class=\"main\"> <h2>{{ chapterName }}</h2> {{ outerHTML }} </div> </body> </html> ";
-// Exports
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (code);
-
-/***/ }),
-
-/***/ "./src/save/index.html.j2":
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-// Module
-var code = "<!DOCTYPE html> <html> <head> <meta charset=\"UTF-8\"/> <meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"/> <meta name=\"referrer\" content=\"same-origin\"/> <meta name=\"generator\" content=\"https://github.com/yingziwu/novel-downloader\"/> <meta name=\"date-creation\" content=\"{{ creationDate }}\"/> <link href=\"style.css\" rel=\"stylesheet\"/> <title>{{ bookname }}</title> <style></style> </head> <body> <div class=\"main\"> <h1>{{ bookname }}</h1> <h3 class=\"author\">{{ author }}</h3> <div class=\"info\"> {% if cover -%} <img class=\"cover\" data-src-address=\"{{ cover.name }}\"/> {%- endif %} {% if introductionHTML -%} <div> <h3>简介</h3> <div class=\"introduction\">{{ introductionHTML }}</div> </div> {%- endif %} </div> <div class=\"bookurl\"> <a href=\"{{ bookUrl }}\">打开原始网站</a> </div> <hr/> {% for sectionObj in sectionsObj -%} <div id=\"section{{ sectionObj.sectionNumber }}\" class=\"section\"> {% if sectionObj.sectionName %} <h2 class=\"section-label\">{{ sectionObj.sectionName }}</h2> {% endif %} {% for chapter in sectionObj.chpaters -%} <div class=\"chapter\"> {% if not (chapter.contentHTML or chapter.status === Status.saved) -%} <a class=\"disabled\" href=\"{{ chapter.chapterHtmlFileName }}\">{{ chapter.chapterName }}</a> {%- else -%} <a href=\"{{ chapter.chapterHtmlFileName }}\">{{ chapter.chapterName }}</a> {%- endif %} </div> {%- endfor %} </div> {%- endfor %} </div> </body> </html>";
-// Exports
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (code);
-
-/***/ }),
-
-/***/ "./src/save/section.html.j2":
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-// Module
-var code = "<!DOCTYPE html> <html> <head> <meta charset=\"UTF-8\"/> <meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"/> <meta name=\"referrer\" content=\"same-origin\"/> <meta name=\"generator\" content=\"https://github.com/yingziwu/novel-downloader\"/> <link href=\"style.css\" rel=\"stylesheet\"/> <title>{{ sectionName }}</title> </head> <body> <div class=\"main\"><h1>{{ sectionName }}</h1></div> </body> </html> ";
-// Exports
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (code);
-
-/***/ }),
-
-/***/ "./src/ui/ChapterList.html":
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-// Module
-var code = "<div> <div v-if=\"loading\"> <div class=\"chapter-list-loading\"> <h2 v-if=\"failed\">加载章节失败！</h2> <h2 v-else>正在载入章节列表中，请耐心等待……</h2> </div> </div> <div class=\"chapter-list\" v-else> <div v-for=\"sectionObj in sectionsObj\" v-show=\"isSectionSeen(sectionObj)\" v-bind:key=\"sectionObj.sectionNumber\" class=\"section\"> <h3 class=\"section-label\" v-if=\"sectionObj.sectionName\"> {{ sectionObj.sectionName }} </h3> <div v-for=\"chapter in sectionObj.chpaters\" v-show=\"isChapterSeen(chapter)\" v-bind:key=\"chapter.chapterNumber\" class=\"chapter\" v-bind:class=\"{\n              good: this.filter(chapter),\n              bad: !this.filter(chapter),\n              warning: this.warningFilter(chapter)\n            }\" v-bind:title=\"chapter.chapterNumber\"> <a v-bind:href=\"chapter.chapterUrl\" v-bind:class=\"{\n                disabled: this.isChapterDisabled(chapter),\n              }\" target=\"_blank\" rel=\"noopener noreferrer\">{{ chapter.chapterName }}</a> </div> </div> </div> </div> ";
-// Exports
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (code);
-
-/***/ }),
-
-/***/ "./src/ui/FilterTab.html":
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-// Module
-var code = "<div> <div class=\"filter-setting\"> <div v-if=\"filterType !== 'null'\" class=\"filter-input\"> <p>请输入过滤的条件：<input type=\"text\" v-model=\"arg\"/></p> </div> <div class=\"filter-setter\"> <div> <span>当前过滤方法：</span> <select v-model=\"filterType\"> <option v-for=\"filterOption in filterOptionList\" v-bind:value=\"filterOption[0]\"> {{ filterOption[1][\"abbreviation\"] }} </option> </select> </div> <input type=\"checkbox\" id=\"hiddenBad\" v-model=\"hiddenBad\"/> <label for=\"hiddenBad\">只显示符合条件章节</label> <div class=\"filter-description\" v-html=\"filterDescription\"></div> <div v-if=\"false\"> <span class=\"good\"></span> <span class=\"warning\"></span> <span class=\"bad\"></span> </div> </div> </div> <chapter-list/> </div> ";
-// Exports
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (code);
-
-/***/ }),
-
-/***/ "./src/ui/TestUI.html":
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-// Module
-var code = "<div> <div id=\"test-page-div\"> <h2>元数据</h2> <table> <tbody> <tr v-for=\"(value, key) in metaData\"> <td>{{ key }}</td> <td v-html=\"getData(key, value)\"></td> </tr> </tbody> </table> <hr class=\"hr-edge-weak\"/> <h2>章节测试</h2> <div v-if=\"this.isSeenChapter(chapter)\"> <h4> <a v-bind:href=\"chapter.chapterUrl\" target=\"_blank\" rel=\"noopener noreferrer\">{{ chapter.chapterName }}</a> </h4> <div class=\"chapter\" v-html=\"getChapterHtml(chapter)\"></div> </div> <div v-else> <p v-if=\"this.isChapterFailed(chapter)\">章节加载失败！</p> <p v-else>正在加载章节中……</p> </div> </div> </div> ";
-// Exports
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (code);
-
-/***/ }),
-
-/***/ "./src/ui/button.html":
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-// Module
-var code = "<div class=\"button-div\" id=\"button-div\"> <div v-if=\"uiObj.type !== 'error'\"> <div class=\"jump\" v-if=\"uiObj.type === 'jump'\"> <button class=\"jump\"> <img class=\"jump\" v-bind:src=\"imgJump\" v-on:click=\"jumpButtonClick\"/> </button> </div> <div class=\"download\" v-if=\"uiObj.type === 'download'\"> <button class=\"start\"> <img class=\"start\" v-bind:src=\"imgStart\" v-on:click=\"startButtonClick\"/> </button> <button class=\"setting\" v-if=\"isSettingSeen\"> <img class=\"setting\" v-bind:src=\"imgSetting\" v-on:click=\"settingButtonClick\"/> </button> </div> </div> </div> ";
-// Exports
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (code);
-
-/***/ }),
-
-/***/ "./src/ui/dialog.html":
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-// Module
-var code = "<div class=\"overlay\" v-bind:class=\"{ open: myPrivateStatus }\" v-if=\"myPrivateStatus\"></div> <div class=\"out\" v-if=\"myPrivateStatus\"> <div id=\"dialog\" class=\"dialog\" v-bind:class=\"{ open: myPrivateStatus }\"> <div class=\"titlebar\"> <h1 class=\"dialog-title\">{{ dialogTitle }}</h1> <button class=\"dialog-close\" v-on:click=\"dialogClose\">❌</button> </div> <div class=\"body\"> <slot></slot> </div> </div> </div> ";
-// Exports
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (code);
-
-/***/ }),
-
-/***/ "./src/ui/progress.html":
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-// Module
-var code = "<div> <div id=\"nd-progress\" v-if=\"ntProgressSeen\"> <div v-if=\"chapterProgressSeen\" id=\"chapter-progress\" v-bind:style=\"{'--position': chapterPercent+'%'}\" v-bind:title=\"chapterProgressTitle\"></div> <div v-if=\"zipProgressSeen\" id=\"zip-progress\" title=\"ZIP\" v-bind:style=\"{'--position': zipPercent+'%'}\"></div> </div> </div> ";
-// Exports
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (code);
-
-/***/ }),
-
-/***/ "./src/ui/setting.html":
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-// Module
-var code = "<div> <dialog-ui dialog-title=\"设置\" v-bind:status=\"openStatus\" v-on:dialogclose=\"closeSetting\" v-if=\"openStatus === 'true'\"> <div class=\"nd-setting\"> <div class=\"nd-setting-tab\"> <button v-bind:class=\"['tab-button', { active: setting.currentTab === 'tab-1'}]\" v-on:click=\"setting.currentTab = 'tab-1'\"> 基本设置 </button> <button v-bind:class=\"['tab-button', { active: setting.currentTab === 'tab-2'}]\" v-on:click=\"setting.currentTab = 'tab-2'\"> 自定义筛选条件 </button> <button v-if=\"setting.enableTestPage\" v-bind:class=\"['tab-button', { active: setting.currentTab === 'tab-3'}]\" v-on:click=\"setting.currentTab = 'tab-3'\"> 抓取测试 </button> <button v-if=\"setting.enableTestPage\" v-bind:class=\"['tab-button', { active: setting.currentTab === 'tab-4'}]\" v-on:click=\"setting.currentTab = 'tab-4'\"> 日志 </button> </div> <div class=\"nd-setting-body\"> <div id=\"nd-setting-tab-1\" class=\"tab-page\" v-show=\"setting.currentTab === 'tab-1'\"> <div> <input type=\"checkbox\" id=\"debug\" v-model=\"setting.enableDebug\"/> <label for=\"debug\">启用调式模式。（输出更详细日志）</label> <input type=\"checkbox\" id=\"test-page\" v-model=\"setting.enableTestPage\"/> <label for=\"test-page\">启用测试视图</label> </div> <hr class=\"hr-twill-colorful\"/> <div> <h3>自定义保存参数</h3> <ul> <li v-for=\"item of saveOptions\"> <input type=\"radio\" v-bind:id=\"item.key\" v-bind:value=\"item.key\" v-model=\"setting.chooseSaveOption\"/> <label v-bind:for=\"item.key\">{{ item.value }}</label> </li> </ul> </div> </div> <div id=\"nd-setting-tab-2\" class=\"tab-page\" v-show=\"setting.currentTab === 'tab-2'\"> <filter-tab v-on:filterupdate=\"saveFilter\"/> </div> <div v-if=\"setting.enableTestPage\" id=\"nd-setting-tab-3\" class=\"tab-page\" v-show=\"setting.currentTab === 'tab-3'\"> <test-ui></test-ui> </div> <div v-if=\"setting.enableTestPage\" id=\"nd-setting-tab-4\" class=\"tab-page\" v-show=\"setting.currentTab === 'tab-4'\"> <log-ui></log-ui> </div> </div> <div class=\"nd-setting-footer\"> <button v-on:click=\"closeAndSaveSetting\">Save</button> <button v-on:click=\"closeSetting\">Cancel</button> </div> </div> </dialog-ui> </div> ";
-// Exports
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (code);
-
-/***/ }),
-
-/***/ "./src/debug.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.debug = void 0;
-const file_saver_1 = __webpack_require__("./node_modules/file-saver/dist/FileSaver.min.js");
-const download_1 = __webpack_require__("./src/router/download.ts");
-async function debug() {
-    try {
-        const rule = await (0, download_1.getRule)();
-        let book;
-        if (typeof window._book !== "undefined") {
-            book = window._book;
-        }
-        else {
-            book = await rule.bookParse();
-        }
-        unsafeWindow.rule = rule;
-        unsafeWindow.book = book;
-        window._book = book;
-    }
-    catch (error) { }
-    unsafeWindow.saveAs = file_saver_1.saveAs;
-    const { parse, fetchAndParse, gfetchAndParse } = await Promise.resolve().then(() => __webpack_require__("./src/lib/readability.ts"));
-    const readability = {
-        parse,
-        fetchAndParse,
-        gfetchAndParse,
-    };
-    unsafeWindow.readability = readability;
-    return;
-}
-exports.debug = debug;
-
-
-/***/ }),
-
-/***/ "./src/detect.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.environments = void 0;
-const GM_1 = __webpack_require__("./src/lib/GM.ts");
-const misc_1 = __webpack_require__("./src/lib/misc.ts");
-const setting_1 = __webpack_require__("./src/setting.ts");
-function check(name) {
-    const target = window[name];
-    const targetLength = target.toString().length;
-    const targetPrototype = target.prototype;
-    const nativeFunctionRe = /function \w+\(\) {\n?(\s+)?\[native code\]\n?(\s+)?}/;
-    try {
-        if (targetPrototype === undefined ||
-            Boolean(target.toString().match(nativeFunctionRe))) {
-            return [true, targetLength].join(", ");
-        }
-    }
-    catch {
-        return [true, targetLength].join(", ");
-    }
-    return [false, targetLength].join(", ");
-}
-exports.environments = {
-    当前时间: new Date().toISOString(),
-    当前页URL: document.location.href,
-    当前页Referrer: document.referrer,
-    浏览器UA: navigator.userAgent,
-    浏览器语言: navigator.languages,
-    设备运行平台: navigator.platform,
-    设备内存: navigator.deviceMemory ?? "",
-    CPU核心数: navigator.hardwareConcurrency,
-    eval: check("eval"),
-    fetch: check("fetch"),
-    XMLHttpRequest: check("XMLHttpRequest"),
-    window: Object.keys(window).length,
-    localStorage: (0, misc_1.storageAvailable)("localStorage"),
-    sessionStorage: (0, misc_1.storageAvailable)("sessionStorage"),
-    Cookie: navigator.cookieEnabled,
-    doNotTrack: navigator.doNotTrack ?? 0,
-    ScriptHandler: GM_1._GM_info.scriptHandler,
-    "ScriptHandler version": GM_1._GM_info.version,
-    "Novel-downloader version": GM_1._GM_info.script.version,
-    enableDebug: setting_1.enableDebug.value,
-};
-
-
-/***/ }),
-
-/***/ "./src/global.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.init = void 0;
-const misc_1 = __webpack_require__("./src/lib/misc.ts");
-function init() {
-    window.downloading = false;
-    window.customStorage = new misc_1.LocalStorageExpired();
-    window.stopFlag = false;
-}
-exports.init = init;
-
-
-/***/ }),
-
 /***/ "./src/lib/GM.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "_p": () => (/* binding */ _GM_info),
+/* harmony export */   "UX": () => (/* binding */ _GM_xmlhttpRequest),
+/* harmony export */   "_u": () => (/* binding */ _GM_setValue),
+/* harmony export */   "QG": () => (/* binding */ _GM_getValue)
+/* harmony export */ });
+/* unused harmony export _GM_deleteValue */
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_0__);
 
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports._GM_deleteValue = exports._GM_getValue = exports._GM_setValue = exports._GM_xmlhttpRequest = exports._GM_info = void 0;
-const log_1 = __webpack_require__("./src/log.ts");
+let _GM_info;
 if (typeof GM_info === "undefined") {
     if (typeof GM === "undefined") {
         throw new Error("未发现 GM_info");
@@ -3294,13 +3033,14 @@ if (typeof GM_info === "undefined") {
             throw new Error("未发现 GM_info");
         }
         else {
-            exports._GM_info = GM.info;
+            _GM_info = GM.info;
         }
     }
 }
 else {
-    exports._GM_info = GM_info;
+    _GM_info = GM_info;
 }
+let _GM_xmlhttpRequest;
 if (typeof GM_xmlhttpRequest === "undefined") {
     if (typeof GM === "undefined") {
         throw new Error("未发现 GM_xmlhttpRequest");
@@ -3310,89 +3050,94 @@ if (typeof GM_xmlhttpRequest === "undefined") {
             throw new Error("未发现 GM_xmlhttpRequest");
         }
         else {
-            exports._GM_xmlhttpRequest = GM.xmlHttpRequest;
+            _GM_xmlhttpRequest = GM.xmlHttpRequest;
         }
     }
 }
 else {
-    exports._GM_xmlhttpRequest = GM_xmlhttpRequest;
+    _GM_xmlhttpRequest = GM_xmlhttpRequest;
 }
+let _GM_setValue;
 if (typeof GM_setValue === "undefined") {
     if (typeof GM === "undefined") {
-        log_1.log.warn("未发现 GM_setValue");
+        _log__WEBPACK_IMPORTED_MODULE_0___default().warn("未发现 GM_setValue");
     }
     else {
         if (typeof GM.setValue === "undefined") {
-            log_1.log.warn("未发现 GM_setValue");
+            _log__WEBPACK_IMPORTED_MODULE_0___default().warn("未发现 GM_setValue");
         }
         else {
-            exports._GM_setValue = GM.setValue;
+            _GM_setValue = GM.setValue;
         }
     }
 }
 else {
-    exports._GM_setValue = GM_setValue;
+    _GM_setValue = GM_setValue;
 }
+let _GM_getValue;
 if (typeof GM_getValue === "undefined") {
     if (typeof GM === "undefined") {
-        log_1.log.warn("未发现 GM_getValue");
+        _log__WEBPACK_IMPORTED_MODULE_0___default().warn("未发现 GM_getValue");
     }
     else {
         if (typeof GM.getValue === "undefined") {
-            log_1.log.warn("未发现 GM_getValue");
+            _log__WEBPACK_IMPORTED_MODULE_0___default().warn("未发现 GM_getValue");
         }
         else {
-            exports._GM_getValue = GM.getValue;
+            _GM_getValue = GM.getValue;
         }
     }
 }
 else {
-    exports._GM_getValue = GM_getValue;
+    _GM_getValue = GM_getValue;
 }
+let _GM_deleteValue;
 if (typeof GM_deleteValue === "undefined") {
     if (typeof GM === "undefined") {
-        log_1.log.warn("未发现 GM_deleteValue");
+        _log__WEBPACK_IMPORTED_MODULE_0___default().warn("未发现 GM_deleteValue");
     }
     else {
         if (typeof GM.deleteValue === "undefined") {
-            log_1.log.warn("未发现 GM_deleteValue");
+            _log__WEBPACK_IMPORTED_MODULE_0___default().warn("未发现 GM_deleteValue");
         }
         else {
-            exports._GM_deleteValue = GM.deleteValue;
+            _GM_deleteValue = GM.deleteValue;
         }
     }
 }
 else {
-    exports._GM_deleteValue = GM_deleteValue;
+    _GM_deleteValue = GM_deleteValue;
 }
 
 
 /***/ }),
 
 /***/ "./src/lib/attachments.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "gc": () => (/* binding */ getAttachmentClassCache),
+/* harmony export */   "dK": () => (/* binding */ putAttachmentClassCache),
+/* harmony export */   "pN": () => (/* binding */ clearAttachmentClassCache),
+/* harmony export */   "CE": () => (/* binding */ getImageAttachment)
+/* harmony export */ });
+/* harmony import */ var _main__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/main.ts");
+/* harmony import */ var _misc__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/misc.ts");
 
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getImageAttachment = exports.clearAttachmentClassCache = exports.putAttachmentClassCache = exports.getAttachmentClassCache = void 0;
-const main_1 = __webpack_require__("./src/main.ts");
-const misc_1 = __webpack_require__("./src/lib/misc.ts");
+
 let attachmentClassCache = [];
 function getAttachmentClassCache(url) {
     const found = attachmentClassCache.find((attachmentClass) => attachmentClass.url === url);
     return found;
 }
-exports.getAttachmentClassCache = getAttachmentClassCache;
 function putAttachmentClassCache(attachmentClass) {
     attachmentClassCache.push(attachmentClass);
     return true;
 }
-exports.putAttachmentClassCache = putAttachmentClassCache;
 function clearAttachmentClassCache() {
     attachmentClassCache = [];
 }
-exports.clearAttachmentClassCache = clearAttachmentClassCache;
 async function getImageAttachment(url, imgMode = "TM", prefix = "", noMD5 = false, comments) {
     const tmpImageName = Math.random().toString().replace("0.", "");
     let imgClass;
@@ -3401,10 +3146,10 @@ async function getImageAttachment(url, imgMode = "TM", prefix = "", noMD5 = fals
         imgClass = imgClassCache;
     }
     else {
-        imgClass = new main_1.AttachmentClass(url, tmpImageName, imgMode);
+        imgClass = new _main__WEBPACK_IMPORTED_MODULE_0__/* .AttachmentClass */ .Jh(url, tmpImageName, imgMode);
         const blob = await imgClass.init();
         if (blob) {
-            const hash = await (0, misc_1.calculateMd5)(blob);
+            const hash = await (0,_misc__WEBPACK_IMPORTED_MODULE_1__/* .calculateMd5 */ .Pu)(blob);
             const contentType = blob.type.split("/")[1];
             const contentTypeBlackList = ["octet-stream"];
             let ext = contentType;
@@ -3442,20 +3187,23 @@ async function getImageAttachment(url, imgMode = "TM", prefix = "", noMD5 = fals
     }
     return imgClass;
 }
-exports.getImageAttachment = getImageAttachment;
 
 
 /***/ }),
 
 /***/ "./src/lib/cleanDOM.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "z": () => (/* binding */ cleanDOM),
+/* harmony export */   "i": () => (/* binding */ htmlTrim)
+/* harmony export */ });
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _attachments__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/attachments.ts");
 
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.htmlTrim = exports.cleanDOM = void 0;
-const log_1 = __webpack_require__("./src/log.ts");
-const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
+
 const BlockElements = [
     "article",
     "aside",
@@ -3619,7 +3367,7 @@ async function _formatImage(elem, builder) {
     const imageName = `__imageName__${Math.random()
         .toString()
         .replace("0.", "")}__`;
-    const imgClass = (0, attachments_1.getImageAttachment)(imageUrl, imgMode, "", noMD5, imageName);
+    const imgClass = (0,_attachments__WEBPACK_IMPORTED_MODULE_0__/* .getImageAttachment */ .CE)(imageUrl, imgMode, "", noMD5, imageName);
     builder.images.push(imgClass);
     const imgElem = document.createElement("img");
     imgElem.setAttribute("data-src-address", imageName);
@@ -3913,11 +3661,11 @@ async function cleanDOM(DOM, imgMode, option = null) {
         images = await Promise.all(pImages);
     }
     catch (error) {
-        log_1.log.error(error);
-        log_1.log.trace(error);
+        _log__WEBPACK_IMPORTED_MODULE_1___default().error(error);
+        _log__WEBPACK_IMPORTED_MODULE_1___default().trace(error);
     }
     if (!images) {
-        log_1.log.error("[cleanDom] images is undefined!");
+        _log__WEBPACK_IMPORTED_MODULE_1___default().error("[cleanDom] images is undefined!");
         images = [];
     }
     for (const img of images) {
@@ -3942,7 +3690,6 @@ async function cleanDOM(DOM, imgMode, option = null) {
         images,
     };
 }
-exports.cleanDOM = cleanDOM;
 function htmlTrim(dom) {
     const childNodesR = Array.from(dom.childNodes).reverse();
     for (const node of childNodesR) {
@@ -3964,18 +3711,18 @@ function htmlTrim(dom) {
         }
     }
 }
-exports.htmlTrim = htmlTrim;
 
 
 /***/ }),
 
 /***/ "./src/lib/createEl.ts":
-/***/ ((__unused_webpack_module, exports) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.createStyle = exports.createEl = void 0;
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "u": () => (/* binding */ createEl),
+/* harmony export */   "w": () => (/* binding */ createStyle)
+/* harmony export */ });
 function createEl(el) {
     const _el = document.createElement("div");
     _el.innerHTML = el;
@@ -3986,7 +3733,6 @@ function createEl(el) {
         throw new Error("Create HTMLElement Failed!");
     }
 }
-exports.createEl = createEl;
 function createStyle(style, id) {
     const el = createEl(`<style>${style}</style>`);
     if (id) {
@@ -3994,34 +3740,43 @@ function createStyle(style, id) {
     }
     return el;
 }
-exports.createStyle = createStyle;
 
 
 /***/ }),
 
 /***/ "./src/lib/http.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "GF": () => (/* binding */ gfetch),
+/* harmony export */   "dL": () => (/* binding */ getHtmlDOM),
+/* harmony export */   "rf": () => (/* binding */ getHtmlDomWithRetry),
+/* harmony export */   "_7": () => (/* binding */ ggetText),
+/* harmony export */   "Fz": () => (/* binding */ ggetHtmlDOM)
+/* harmony export */ });
+/* unused harmony exports getText, ggetHtmlDomWithRetry */
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _setting__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/setting.ts");
+/* harmony import */ var _GM__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/GM.ts");
+/* harmony import */ var _misc__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/misc.ts");
 
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.ggetHtmlDomWithRetry = exports.ggetHtmlDOM = exports.ggetText = exports.getHtmlDomWithRetry = exports.getHtmlDOM = exports.getText = exports.gfetch = void 0;
-const log_1 = __webpack_require__("./src/log.ts");
-const setting_1 = __webpack_require__("./src/setting.ts");
-const GM_1 = __webpack_require__("./src/lib/GM.ts");
-const misc_1 = __webpack_require__("./src/lib/misc.ts");
+
+
+
 globalThis.fetch = new Proxy(globalThis.fetch, {
     apply(target, thisArg, argArray) {
-        log_1.log.debug("[debug]fetch:");
-        log_1.log.debug(argArray);
+        _log__WEBPACK_IMPORTED_MODULE_0___default().debug("[debug]fetch:");
+        _log__WEBPACK_IMPORTED_MODULE_0___default().debug(argArray);
         return Reflect.apply(target, thisArg, argArray);
     },
 });
 function gfetch(url, { method = "GET", headers, data, cookie, binary, nocache, revalidate, timeout, context, responseType, overrideMimeType, anonymous, username, password, } = {}) {
     return new Promise((resolve, reject) => {
-        if (GM_1._GM_xmlhttpRequest) {
-            log_1.log.debug("[debug]gfetch:");
-            log_1.log.debug({
+        if (_GM__WEBPACK_IMPORTED_MODULE_1__/* ._GM_xmlhttpRequest */ .UX) {
+            _log__WEBPACK_IMPORTED_MODULE_0___default().debug("[debug]gfetch:");
+            _log__WEBPACK_IMPORTED_MODULE_0___default().debug({
                 url,
                 method,
                 headers,
@@ -4038,7 +3793,7 @@ function gfetch(url, { method = "GET", headers, data, cookie, binary, nocache, r
                 username,
                 password,
             });
-            (0, GM_1._GM_xmlhttpRequest)({
+            (0,_GM__WEBPACK_IMPORTED_MODULE_1__/* ._GM_xmlhttpRequest */ .UX)({
                 url,
                 method,
                 headers,
@@ -4067,7 +3822,6 @@ function gfetch(url, { method = "GET", headers, data, cookie, binary, nocache, r
         }
     });
 }
-exports.gfetch = gfetch;
 async function getText(url, charset, init) {
     const _url = new URL(url);
     if (document.location.protocol === "https:" && _url.protocol === "http:") {
@@ -4084,7 +3838,7 @@ async function getText(url, charset, init) {
                 throw new Error(`Bad response! ${url}`);
             }
         })
-            .catch((error) => log_1.log.error(error));
+            .catch((error) => _log__WEBPACK_IMPORTED_MODULE_0___default().error(error));
     }
     else {
         return fetch(url, init)
@@ -4101,10 +3855,9 @@ async function getText(url, charset, init) {
             const text = decoder.decode(buffer);
             return text;
         })
-            .catch((error) => log_1.log.error(error));
+            .catch((error) => _log__WEBPACK_IMPORTED_MODULE_0___default().error(error));
     }
 }
-exports.getText = getText;
 async function getHtmlDOM(url, charset, init) {
     const htmlText = await getText(url, charset, init);
     if (!htmlText) {
@@ -4112,9 +3865,8 @@ async function getHtmlDOM(url, charset, init) {
     }
     return new DOMParser().parseFromString(htmlText, "text/html");
 }
-exports.getHtmlDOM = getHtmlDOM;
 async function getHtmlDomWithRetry(url, charset, init) {
-    let retry = setting_1.retryLimit;
+    let retry = _setting__WEBPACK_IMPORTED_MODULE_2__/* .retryLimit */ .o5;
     let doc = null;
     while (retry > 0) {
         try {
@@ -4122,15 +3874,14 @@ async function getHtmlDomWithRetry(url, charset, init) {
             retry = 0;
         }
         catch (error) {
-            log_1.log.error(`抓取${url}失败，重试第${setting_1.retryLimit - retry}次。`);
-            log_1.log.error(error);
+            _log__WEBPACK_IMPORTED_MODULE_0___default().error(`抓取${url}失败，重试第${_setting__WEBPACK_IMPORTED_MODULE_2__/* .retryLimit */ .o5 - retry}次。`);
+            _log__WEBPACK_IMPORTED_MODULE_0___default().error(error);
             retry--;
-            await (0, misc_1.sleep)(1000 * (setting_1.retryLimit - retry));
+            await (0,_misc__WEBPACK_IMPORTED_MODULE_3__/* .sleep */ ._v)(1000 * (_setting__WEBPACK_IMPORTED_MODULE_2__/* .retryLimit */ .o5 - retry));
         }
     }
     return doc;
 }
-exports.getHtmlDomWithRetry = getHtmlDomWithRetry;
 async function ggetText(url, charset, init) {
     if (charset === undefined) {
         return gfetch(url, init)
@@ -4142,7 +3893,7 @@ async function ggetText(url, charset, init) {
                 throw new Error(`Bad response! ${url}`);
             }
         })
-            .catch((error) => log_1.log.error(error));
+            .catch((error) => _log__WEBPACK_IMPORTED_MODULE_0___default().error(error));
     }
     else {
         if (init) {
@@ -4165,10 +3916,9 @@ async function ggetText(url, charset, init) {
             const text = decoder.decode(buffer);
             return text;
         })
-            .catch((error) => log_1.log.error(error));
+            .catch((error) => _log__WEBPACK_IMPORTED_MODULE_0___default().error(error));
     }
 }
-exports.ggetText = ggetText;
 async function ggetHtmlDOM(url, charset, init) {
     const htmlText = await ggetText(url, charset, init);
     if (!htmlText) {
@@ -4176,9 +3926,8 @@ async function ggetHtmlDOM(url, charset, init) {
     }
     return new DOMParser().parseFromString(htmlText, "text/html");
 }
-exports.ggetHtmlDOM = ggetHtmlDOM;
 async function ggetHtmlDomWithRetry(url, charset, init) {
-    let retry = setting_1.retryLimit;
+    let retry = retryLimit;
     let doc = null;
     while (retry > 0) {
         try {
@@ -4186,27 +3935,43 @@ async function ggetHtmlDomWithRetry(url, charset, init) {
             retry = 0;
         }
         catch (error) {
-            log_1.log.error(`抓取${url}失败，重试第${setting_1.retryLimit - retry}次。`);
+            log.error(`抓取${url}失败，重试第${retryLimit - retry}次。`);
             retry--;
-            await (0, misc_1.sleep)(1000 * (setting_1.retryLimit - retry));
+            await sleep(1000 * (retryLimit - retry));
         }
     }
     return doc;
 }
-exports.ggetHtmlDomWithRetry = ggetHtmlDomWithRetry;
 
 
 /***/ }),
 
 /***/ "./src/lib/misc.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "rm": () => (/* binding */ rm),
+/* harmony export */   "vS": () => (/* binding */ rm2),
+/* harmony export */   "up": () => (/* binding */ rms),
+/* harmony export */   "vR": () => (/* binding */ childNodesCopy),
+/* harmony export */   "C1": () => (/* binding */ concurrencyRun),
+/* harmony export */   "_v": () => (/* binding */ sleep),
+/* harmony export */   "J0": () => (/* binding */ sandboxed),
+/* harmony export */   "oZ": () => (/* binding */ storageAvailable),
+/* harmony export */   "Pu": () => (/* binding */ calculateMd5),
+/* harmony export */   "Z2": () => (/* binding */ LocalStorageExpired),
+/* harmony export */   "X8": () => (/* binding */ deepcopy),
+/* harmony export */   "wd": () => (/* binding */ getMaxDepth),
+/* harmony export */   "MK": () => (/* binding */ getNodeTextLength)
+/* harmony export */ });
+/* unused harmony exports regexpEscape, getCookie */
+/* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("crypto-js");
+/* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(crypto_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_1__);
 
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getCookie = exports.getNodeTextLength = exports.getMaxDepth = exports.regexpEscape = exports.deepcopy = exports.LocalStorageExpired = exports.calculateMd5 = exports.storageAvailable = exports.sandboxed = exports.sleep = exports.concurrencyRun = exports.rms = exports.rm2 = exports.rm = void 0;
-const CryptoJS = __webpack_require__("crypto-js");
-const log_1 = __webpack_require__("./src/log.ts");
+
 function rm(selector, all = false, dom) {
     if (all) {
         const rs = dom.querySelectorAll(selector);
@@ -4219,7 +3984,6 @@ function rm(selector, all = false, dom) {
         }
     }
 }
-exports.rm = rm;
 function rm2(content, filters) {
     function doRemove(nodes) {
         Array.from(nodes.childNodes).forEach((node) => {
@@ -4251,7 +4015,6 @@ function rm2(content, filters) {
     }
     doRemove(content);
 }
-exports.rm2 = rm2;
 function rms(ads, dom) {
     for (const ad of ads) {
         if (typeof ad === "string") {
@@ -4263,7 +4026,10 @@ function rms(ads, dom) {
     }
     return dom;
 }
-exports.rms = rms;
+function childNodesCopy(src, dest) {
+    const childrens = Array.from(src.childNodes);
+    childrens.forEach((node) => dest.appendChild(node));
+}
 function concurrencyRun(list, limit, asyncHandle) {
     async function recursion(arr) {
         const obj = await asyncHandle(arr.shift());
@@ -4281,11 +4047,9 @@ function concurrencyRun(list, limit, asyncHandle) {
     }
     return Promise.all(asyncList);
 }
-exports.concurrencyRun = concurrencyRun;
 function sleep(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
 }
-exports.sleep = sleep;
 function sandboxed(code) {
     const frame = document.createElement("iframe");
     document.body.appendChild(frame);
@@ -4296,7 +4060,6 @@ function sandboxed(code) {
         return F(args, code)();
     }
 }
-exports.sandboxed = sandboxed;
 function storageAvailable(type) {
     let storage;
     try {
@@ -4316,15 +4079,14 @@ function storageAvailable(type) {
             storage.length !== 0);
     }
 }
-exports.storageAvailable = storageAvailable;
 function calculateMd5(blob) {
     return new Promise((resolve, rejects) => {
         const reader = new FileReader();
         reader.readAsArrayBuffer(blob);
         reader.onloadend = () => {
             if (reader.result) {
-                const wordArray = CryptoJS.lib.WordArray.create(reader.result);
-                const hash = CryptoJS.MD5(wordArray).toString();
+                const wordArray = crypto_js__WEBPACK_IMPORTED_MODULE_0__.lib.WordArray.create(reader.result);
+                const hash = crypto_js__WEBPACK_IMPORTED_MODULE_0__.MD5(wordArray).toString();
                 resolve(hash);
             }
             else {
@@ -4334,7 +4096,6 @@ function calculateMd5(blob) {
         };
     });
 }
-exports.calculateMd5 = calculateMd5;
 class LocalStorageExpired {
     constructor() {
         if (storageAvailable("localStorage")) {
@@ -4364,7 +4125,7 @@ class LocalStorageExpired {
             }
         }
         catch (error) {
-            log_1.log.error(error);
+            _log__WEBPACK_IMPORTED_MODULE_1___default().error(error);
         }
     }
     get(key) {
@@ -4398,15 +4159,12 @@ class LocalStorageExpired {
         }
     }
 }
-exports.LocalStorageExpired = LocalStorageExpired;
 function deepcopy(obj) {
     return JSON.parse(JSON.stringify(obj));
 }
-exports.deepcopy = deepcopy;
 function regexpEscape(str) {
     return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
-exports.regexpEscape = regexpEscape;
 function getMaxDepth(element) {
     const descendants = element.querySelectorAll("*");
     const depths = Array.from(descendants)
@@ -4428,7 +4186,6 @@ function getMaxDepth(element) {
         }
     }
 }
-exports.getMaxDepth = getMaxDepth;
 function getNodeTextLength(element) {
     return Array.from(element.childNodes)
         .filter((node) => node.nodeName === "#text")
@@ -4440,7 +4197,6 @@ function getNodeTextLength(element) {
         return sum;
     }, 0);
 }
-exports.getNodeTextLength = getNodeTextLength;
 function getCookie(name) {
     let arr;
     const reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
@@ -4452,61 +4208,73 @@ function getCookie(name) {
         return null;
     }
 }
-exports.getCookie = getCookie;
 
 
 /***/ }),
 
 /***/ "./src/lib/readability.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "parse": () => (/* binding */ parse),
+/* harmony export */   "fetchAndParse": () => (/* binding */ fetchAndParse),
+/* harmony export */   "gfetchAndParse": () => (/* binding */ gfetchAndParse)
+/* harmony export */ });
+/* harmony import */ var _mozilla_readability__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/@mozilla/readability/index.js");
+/* harmony import */ var _mozilla_readability__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_mozilla_readability__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _createEl__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/createEl.ts");
+/* harmony import */ var _http__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/http.ts");
 
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.gfetchAndParse = exports.fetchAndParse = exports.parse = void 0;
-const readability_1 = __webpack_require__("./node_modules/@mozilla/readability/index.js");
-const createEl_1 = __webpack_require__("./src/lib/createEl.ts");
-const http_1 = __webpack_require__("./src/lib/http.ts");
+
+
 function parse(doc, options) {
-    const obj = new readability_1.Readability(doc, options).parse();
+    const obj = new _mozilla_readability__WEBPACK_IMPORTED_MODULE_0__.Readability(doc, options).parse();
     if (obj) {
         if (typeof obj.content === "string") {
-            obj.content = (0, createEl_1.createEl)(obj.content);
+            obj.content = (0,_createEl__WEBPACK_IMPORTED_MODULE_1__/* .createEl */ .u)(obj.content);
         }
     }
     return obj;
 }
-exports.parse = parse;
 async function fetchAndParse(url, charset, init, patch, options) {
-    let doc = await (0, http_1.getHtmlDOM)(url, charset, init);
+    let doc = await (0,_http__WEBPACK_IMPORTED_MODULE_2__/* .getHtmlDOM */ .dL)(url, charset, init);
     if (typeof patch === "function") {
         doc = patch(doc);
     }
     return parse(doc, options);
 }
-exports.fetchAndParse = fetchAndParse;
 async function gfetchAndParse(url, charset, init, patch, options) {
-    let doc = await (0, http_1.ggetHtmlDOM)(url, charset, init);
+    let doc = await (0,_http__WEBPACK_IMPORTED_MODULE_2__/* .ggetHtmlDOM */ .Fz)(url, charset, init);
     if (typeof patch === "function") {
         doc = patch(doc);
     }
     return parse(doc, options);
 }
-exports.gfetchAndParse = gfetchAndParse;
 
 
 /***/ }),
 
 /***/ "./src/lib/rule.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "SN": () => (/* binding */ introDomHandle),
+/* harmony export */   "I2": () => (/* binding */ nextPageParse),
+/* harmony export */   "$d": () => (/* binding */ getSectionName),
+/* harmony export */   "$4": () => (/* binding */ centerDetct),
+/* harmony export */   "BL": () => (/* binding */ softByValue),
+/* harmony export */   "jt": () => (/* binding */ getFrameContent)
+/* harmony export */ });
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _cleanDOM__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _http__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/http.ts");
 
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getFrameContent = exports.softByValue = exports.centerDetct = exports.getSectionName = exports.nextPageParse = exports.introDomHandle = void 0;
-const log_1 = __webpack_require__("./src/log.ts");
-const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
-const http_1 = __webpack_require__("./src/lib/http.ts");
+
+
 async function introDomHandle(introDom, domPatch) {
     if (introDom === null) {
         return [null, null, null];
@@ -4515,15 +4283,14 @@ async function introDomHandle(introDom, domPatch) {
         if (domPatch) {
             introDom = domPatch(introDom.cloneNode(true));
         }
-        const { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = await (0, cleanDOM_1.cleanDOM)(introDom, "TM");
+        const { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = await (0,_cleanDOM__WEBPACK_IMPORTED_MODULE_0__/* .cleanDOM */ .z)(introDom, "TM");
         return [introCleantext, introCleanDom, introCleanimages];
     }
 }
-exports.introDomHandle = introDomHandle;
 async function nextPageParse({ chapterName, chapterUrl, charset, selector, contentPatch, getNextPage, continueCondition, enableCleanDOM, }) {
-    log_1.log.debug(`[Chapter]请求 ${chapterUrl}`);
+    _log__WEBPACK_IMPORTED_MODULE_1___default().debug(`[Chapter]请求 ${chapterUrl}`);
     let nowUrl = chapterUrl;
-    let doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
+    let doc = await (0,_http__WEBPACK_IMPORTED_MODULE_2__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
     const content = document.createElement("div");
     let flag = false;
     do {
@@ -4534,7 +4301,7 @@ async function nextPageParse({ chapterName, chapterUrl, charset, selector, conte
                 flag = true;
             }
             else {
-                log_1.log.error("网站页面出错，URL： " + nowUrl);
+                _log__WEBPACK_IMPORTED_MODULE_1___default().error("网站页面出错，URL： " + nowUrl);
                 flag = false;
             }
         }
@@ -4546,14 +4313,14 @@ async function nextPageParse({ chapterName, chapterUrl, charset, selector, conte
             content.appendChild(_c.cloneNode(true));
         }
         if (flag) {
-            log_1.log.debug(`[Chapter]请求 ${nextLink}`);
+            _log__WEBPACK_IMPORTED_MODULE_1___default().debug(`[Chapter]请求 ${nextLink}`);
             nowUrl = nextLink;
-            doc = await (0, http_1.getHtmlDOM)(nextLink, charset);
+            doc = await (0,_http__WEBPACK_IMPORTED_MODULE_2__/* .getHtmlDOM */ .dL)(nextLink, charset);
         }
     } while (flag);
     let dom, text, images;
     if (enableCleanDOM || enableCleanDOM === undefined) {
-        const obj = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+        const obj = await (0,_cleanDOM__WEBPACK_IMPORTED_MODULE_0__/* .cleanDOM */ .z)(content, "TM");
         dom = obj.dom;
         text = obj.text;
         images = obj.images;
@@ -4572,7 +4339,6 @@ async function nextPageParse({ chapterName, chapterUrl, charset, selector, conte
         additionalMetadate: null,
     };
 }
-exports.nextPageParse = nextPageParse;
 function getSectionName(chapterElement, sections, getName) {
     const _sections = Array.from(sections);
     let sectionName = "";
@@ -4590,7 +4356,6 @@ function getSectionName(chapterElement, sections, getName) {
     }
     return sectionName;
 }
-exports.getSectionName = getSectionName;
 function centerDetct(element) {
     const docEl = document.documentElement;
     const bodyEl = document.body;
@@ -4612,7 +4377,6 @@ function centerDetct(element) {
     }
     return [true, element, percentY];
 }
-exports.centerDetct = centerDetct;
 function softByValue(a, b) {
     const aTop = a[1];
     const bTop = b[1];
@@ -4627,7 +4391,6 @@ function softByValue(a, b) {
     }
     return 0;
 }
-exports.softByValue = softByValue;
 async function getFrameContent(url) {
     const frame = document.createElement("iframe");
     frame.src = url;
@@ -4640,181 +4403,93 @@ async function getFrameContent(url) {
             resolve(doc);
         });
     });
-    log_1.log.debug("[debug]getFrameContent:" + url);
+    _log__WEBPACK_IMPORTED_MODULE_1___default().debug("[debug]getFrameContent:" + url);
     document.body.appendChild(frame);
     return promise;
 }
-exports.getFrameContent = getFrameContent;
-
-
-/***/ }),
-
-/***/ "./src/lib/zip.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.FflateZip = void 0;
-const fflate_1 = __webpack_require__("fflate");
-const log_1 = __webpack_require__("./src/log.ts");
-const misc_1 = __webpack_require__("./src/lib/misc.ts");
-class FflateZip {
-    constructor(memlimit = false) {
-        this.count = 0;
-        this.zcount = 0;
-        this.tcount = 0;
-        this.memlimit = memlimit;
-        this.filenameList = [];
-        this.zipOut = [];
-        const self = this;
-        this.savedZip = new fflate_1.Zip((err, dat, final) => {
-            if (err) {
-                log_1.log.error(err);
-                log_1.log.trace(err);
-                throw err;
-            }
-            self.zipOut.push(dat);
-            self.zcount++;
-            if (final) {
-                const zipBlob = new Blob(self.zipOut, { type: "application/zip" });
-                log_1.log.debug("[fflateZip][debug][zcount]" + self.zcount);
-                log_1.log.debug("[fflateZip][debug][count]" + self.count);
-                log_1.log.info("[fflateZip] ZIP生成完毕，文件大小：" + zipBlob.size);
-                self.zipOut = [];
-                if (typeof self.onFinal === "function") {
-                    if (typeof self.onUpdateId !== "undefined") {
-                        clearInterval(self.onUpdateId);
-                    }
-                    try {
-                        self.onFinal(zipBlob);
-                    }
-                    catch (error) {
-                        if (typeof self.onFinalError === "function") {
-                            self.onFinalError(error);
-                        }
-                    }
-                }
-                else {
-                    throw new Error("[fflateZip] 完成函数出错");
-                }
-            }
-        });
-    }
-    file(filename, file) {
-        if (this.filenameList.includes(filename)) {
-            log_1.log.error(`filename ${filename} has existed on zip.`);
-            return;
-        }
-        this.count++;
-        this.filenameList.push(filename);
-        file
-            .arrayBuffer()
-            .then((buffer) => new Uint8Array(buffer))
-            .then((chunk) => {
-            if (this.memlimit || file.type.includes("image/")) {
-                const nonStreamingFile = new fflate_1.ZipPassThrough(filename);
-                this.addToSavedZip(this.savedZip, nonStreamingFile, chunk);
-                this.tcount++;
-            }
-            else {
-                const nonStreamingFile = new fflate_1.AsyncZipDeflate(filename, {
-                    level: 6,
-                });
-                this.addToSavedZip(this.savedZip, nonStreamingFile, chunk);
-                this.tcount++;
-            }
-        })
-            .catch((error) => log_1.log.error(error));
-    }
-    addToSavedZip(savedZip, nonStreamingFile, chunk) {
-        savedZip.add(nonStreamingFile);
-        nonStreamingFile.push(chunk, true);
-    }
-    async generateAsync(onUpdate) {
-        while (this.tcount !== this.count) {
-            await (0, misc_1.sleep)(500);
-        }
-        const self = this;
-        this.onUpdateId = window.setInterval(() => {
-            const percent = (self.zcount / 3 / self.count) * 100;
-            if (typeof onUpdate === "function") {
-                onUpdate(percent);
-            }
-        }, 100);
-        this.savedZip.end();
-    }
-}
-exports.FflateZip = FflateZip;
 
 
 /***/ }),
 
 /***/ "./src/log.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "KC": () => (/* binding */ logText),
+/* harmony export */   "mZ": () => (/* binding */ getLogText),
+/* harmony export */   "qS": () => (/* binding */ saveLogTextToFile)
+/* harmony export */ });
+/* harmony import */ var file_saver__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/file-saver/dist/FileSaver.min.js");
+/* harmony import */ var file_saver__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(file_saver__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var loglevel__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("loglevel");
+/* harmony import */ var loglevel__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(loglevel__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _setting__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/setting.ts");
 
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.log = exports.saveLogTextToFile = exports.getLogText = exports.logText = void 0;
-const file_saver_1 = __webpack_require__("./node_modules/file-saver/dist/FileSaver.min.js");
-const loglevel_1 = __webpack_require__("loglevel");
-exports.log = loglevel_1.default;
-const setting_1 = __webpack_require__("./src/setting.ts");
-if (setting_1.enableDebug.value) {
-    loglevel_1.default.setLevel("trace");
+
+
+if (_setting__WEBPACK_IMPORTED_MODULE_2__/* .enableDebug.value */ .Cy.value) {
+    loglevel__WEBPACK_IMPORTED_MODULE_1___default().setLevel("trace");
 }
 else {
-    loglevel_1.default.setLevel("info");
+    loglevel__WEBPACK_IMPORTED_MODULE_1___default().setLevel("info");
 }
-exports.logText = "";
+let logText = "";
 function getLogText() {
-    return exports.logText;
+    return logText;
 }
-exports.getLogText = getLogText;
-const originalFactory = loglevel_1.default.methodFactory;
-loglevel_1.default.methodFactory = (methodName, logLevel, loggerName) => {
+const originalFactory = (loglevel__WEBPACK_IMPORTED_MODULE_1___default().methodFactory);
+(loglevel__WEBPACK_IMPORTED_MODULE_1___default().methodFactory) = (methodName, logLevel, loggerName) => {
     const rawMethod = originalFactory(methodName, logLevel, loggerName);
     return (message) => {
         try {
             if (typeof message === "object") {
                 if (message instanceof Error) {
-                    exports.logText += message.stack;
+                    logText += message.stack;
                 }
                 else {
-                    exports.logText += JSON.stringify(message, undefined, 2) + "\n";
+                    logText += JSON.stringify(message, undefined, 2) + "\n";
                 }
             }
             else {
-                exports.logText += message + "\n";
+                logText += message + "\n";
             }
         }
         catch (error) {
-            loglevel_1.default.error(error);
+            loglevel__WEBPACK_IMPORTED_MODULE_1___default().error(error);
         }
         rawMethod(message);
     };
 };
-loglevel_1.default.setLevel(loglevel_1.default.getLevel());
+loglevel__WEBPACK_IMPORTED_MODULE_1___default().setLevel(loglevel__WEBPACK_IMPORTED_MODULE_1___default().getLevel());
 function saveLogTextToFile() {
-    (0, file_saver_1.saveAs)(new Blob([exports.logText], { type: "text/plain; charset=UTF-8" }), `novel-downloader-${Date.now().toString()}.log`);
+    (0,file_saver__WEBPACK_IMPORTED_MODULE_0__.saveAs)(new Blob([logText], { type: "text/plain; charset=UTF-8" }), `novel-downloader-${Date.now().toString()}.log`);
 }
-exports.saveLogTextToFile = saveLogTextToFile;
+
 
 
 /***/ }),
 
 /***/ "./src/main.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "qb": () => (/* binding */ Status),
+/* harmony export */   "fy": () => (/* binding */ Book),
+/* harmony export */   "WC": () => (/* binding */ Chapter),
+/* harmony export */   "Jh": () => (/* binding */ AttachmentClass),
+/* harmony export */   "K2": () => (/* binding */ ExpectError)
+/* harmony export */ });
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/misc.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _setting__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/setting.ts");
 
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.ExpectError = exports.AttachmentClass = exports.Chapter = exports.Book = exports.Status = void 0;
-const http_1 = __webpack_require__("./src/lib/http.ts");
-const misc_1 = __webpack_require__("./src/lib/misc.ts");
-const log_1 = __webpack_require__("./src/log.ts");
-const setting_1 = __webpack_require__("./src/setting.ts");
+
+
+
 var Status;
 (function (Status) {
     Status[Status["pending"] = 0] = "pending";
@@ -4823,7 +4498,7 @@ var Status;
     Status[Status["finished"] = 3] = "finished";
     Status[Status["aborted"] = 4] = "aborted";
     Status[Status["saved"] = 5] = "saved";
-})(Status = exports.Status || (exports.Status = {}));
+})(Status || (Status = {}));
 class Book {
     constructor(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters) {
         this.bookUrl = bookUrl;
@@ -4833,10 +4508,9 @@ class Book {
         this.introductionHTML = introductionHTML;
         this.additionalMetadate = additionalMetadate;
         this.chapters = chapters;
-        log_1.log.debug("[Book]初始化完成");
+        _log__WEBPACK_IMPORTED_MODULE_0___default().debug("[Book]初始化完成");
     }
 }
-exports.Book = Book;
 class Chapter {
     constructor(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, chapterParse, charset, options) {
         this.bookUrl = bookUrl;
@@ -4864,13 +4538,13 @@ class Chapter {
         this.contentImages = contentImages;
         this.additionalMetadate = additionalMetadate;
         if (this.status === Status.failed) {
-            log_1.log.error(`[Chapter]章节名：${this.chapterName}, \
+            _log__WEBPACK_IMPORTED_MODULE_0___default().error(`[Chapter]章节名：${this.chapterName}, \
 分卷名：${this.sectionName}, URL:${this.chapterUrl}, \
 VIP:${this.isVIP}, Paid:${this.isPaid}, \
 isNull:${!Boolean(this.contentHTML)} 解析出错。`);
         }
         else {
-            log_1.log.info(`[Chapter]章节名：${this.chapterName}, \
+            _log__WEBPACK_IMPORTED_MODULE_0___default().info(`[Chapter]章节名：${this.chapterName}, \
 分卷名：${this.sectionName}, URL:${this.chapterUrl}, \
 VIP:${this.isVIP}, Paid:${this.isPaid}, \
 isNull:${!Boolean(this.contentHTML)} 解析成功。`);
@@ -4885,7 +4559,7 @@ isNull:${!Boolean(this.contentHTML)} 解析成功。`);
             if (contentImages) {
                 let downloadingImages = contentImages.filter((imgObj) => imgObj.status === Status.downloading);
                 while (downloadingImages.length) {
-                    await (0, misc_1.sleep)(500);
+                    await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__/* .sleep */ ._v)(500);
                     downloadingImages = contentImages.filter((imgObj) => imgObj.status === Status.downloading);
                 }
             }
@@ -4894,15 +4568,15 @@ isNull:${!Boolean(this.contentHTML)} 解析成功。`);
         })
             .catch(async (err) => {
             this.retryTime++;
-            log_1.log.error(`[Chapter]${this.chapterName}解析出错，第${this.retryTime}次重试，章节地址：${this.chapterUrl}`);
-            if (this.status !== Status.failed && this.retryTime < setting_1.retryLimit) {
-                await (0, misc_1.sleep)(this.retryTime * 1500);
+            _log__WEBPACK_IMPORTED_MODULE_0___default().error(`[Chapter]${this.chapterName}解析出错，第${this.retryTime}次重试，章节地址：${this.chapterUrl}`);
+            if (this.status !== Status.failed && this.retryTime < _setting__WEBPACK_IMPORTED_MODULE_2__/* .retryLimit */ .o5) {
+                await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__/* .sleep */ ._v)(this.retryTime * 1500);
                 return this.parse();
             }
             else {
                 this.status = Status.failed;
-                log_1.log.error(err);
-                log_1.log.trace(err);
+                _log__WEBPACK_IMPORTED_MODULE_0___default().error(err);
+                _log__WEBPACK_IMPORTED_MODULE_0___default().trace(err);
                 return {
                     chapterName: this.chapterName,
                     contentRaw: null,
@@ -4915,7 +4589,6 @@ isNull:${!Boolean(this.contentHTML)} 解析成功。`);
         });
     }
 }
-exports.Chapter = Chapter;
 class AttachmentClass {
     constructor(imageUrl, name, mode) {
         this.url = imageUrl;
@@ -4935,7 +4608,7 @@ class AttachmentClass {
             this.imageBlob = await this.tmDownloadImage();
         }
         if (this.imageBlob) {
-            log_1.log.info(`[attachment] ${this.url} 下载完成。`);
+            _log__WEBPACK_IMPORTED_MODULE_0___default().info(`[attachment] ${this.url} 下载完成。`);
         }
         return this.imageBlob;
     }
@@ -4962,15 +4635,15 @@ class AttachmentClass {
         })
             .catch(async (err) => {
             this.retryTime++;
-            log_1.log.error(`[attachment]下载 ${this.url} 出错，第${this.retryTime}次重试，下载模式：${this.mode}`);
-            if (this.status !== Status.failed && this.retryTime < setting_1.retryLimit) {
-                await (0, misc_1.sleep)(this.retryTime * 1500);
+            _log__WEBPACK_IMPORTED_MODULE_0___default().error(`[attachment]下载 ${this.url} 出错，第${this.retryTime}次重试，下载模式：${this.mode}`);
+            if (this.status !== Status.failed && this.retryTime < _setting__WEBPACK_IMPORTED_MODULE_2__/* .retryLimit */ .o5) {
+                await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__/* .sleep */ ._v)(this.retryTime * 1500);
                 return this.downloadImage();
             }
             else {
                 this.status = Status.failed;
-                log_1.log.error(err);
-                log_1.log.trace(err);
+                _log__WEBPACK_IMPORTED_MODULE_0___default().error(err);
+                _log__WEBPACK_IMPORTED_MODULE_0___default().trace(err);
                 return null;
             }
         });
@@ -4978,7 +4651,7 @@ class AttachmentClass {
     tmDownloadImage() {
         const headers = Object.assign(this.defaultHeader, this.headers);
         this.status = Status.downloading;
-        return (0, http_1.gfetch)(this.url, {
+        return (0,_lib_http__WEBPACK_IMPORTED_MODULE_3__/* .gfetch */ .GF)(this.url, {
             headers: { ...headers },
             responseType: "blob",
         })
@@ -4996,588 +4669,123 @@ class AttachmentClass {
         })
             .catch(async (err) => {
             this.retryTime++;
-            log_1.log.error(`[attachment]下载 ${this.url} 出错，第${this.retryTime}次重试，下载模式：${this.mode}`);
-            if (this.status !== Status.failed && this.retryTime < setting_1.retryLimit) {
-                await (0, misc_1.sleep)(this.retryTime * 1000);
+            _log__WEBPACK_IMPORTED_MODULE_0___default().error(`[attachment]下载 ${this.url} 出错，第${this.retryTime}次重试，下载模式：${this.mode}`);
+            if (this.status !== Status.failed && this.retryTime < _setting__WEBPACK_IMPORTED_MODULE_2__/* .retryLimit */ .o5) {
+                await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__/* .sleep */ ._v)(this.retryTime * 1000);
                 return this.tmDownloadImage();
             }
             else {
                 this.status = Status.failed;
-                log_1.log.error(err);
-                log_1.log.trace(err);
+                _log__WEBPACK_IMPORTED_MODULE_0___default().error(err);
+                _log__WEBPACK_IMPORTED_MODULE_0___default().trace(err);
                 return null;
             }
         });
     }
 }
-exports.AttachmentClass = AttachmentClass;
 class ExpectError extends Error {
 }
-exports.ExpectError = ExpectError;
-
-
-/***/ }),
-
-/***/ "./src/router/download.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getRule = void 0;
-async function getRule() {
-    const host = document.location.host;
-    let ruleClass;
-    switch (host) {
-        case "www.ciweimao.com": {
-            const { Ciweimao } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/original/ciweimao.ts"));
-            ruleClass = Ciweimao;
-            break;
-        }
-        case "www.uukanshu.com": {
-            const { Uukanshu } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/reprint/uukanshu.ts"));
-            ruleClass = Uukanshu;
-            break;
-        }
-        case "www.yruan.com": {
-            const { yruan } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge/type1.ts"));
-            ruleClass = yruan();
-            break;
-        }
-        case "www.shuquge.com":
-        case "www.sizhicn.com": {
-            const { shuquge } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge/type2.ts"));
-            ruleClass = shuquge();
-            break;
-        }
-        case "www.dingdiann.net": {
-            const { dingdiann } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge/type3.ts"));
-            ruleClass = dingdiann();
-            break;
-        }
-        case "www.biquge66.com":
-        case "www.lewenn.com":
-        case "www.klxs.la":
-        case "www.xkzw.org": {
-            const { Xkzw } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/reprint/xkzw.ts"));
-            ruleClass = Xkzw;
-            break;
-        }
-        case "www.266ks.com": {
-            const { c226ks } = await Promise.resolve().then(() => __webpack_require__("./src/rules/onePageWithMultiIndexPage/226ks.ts"));
-            ruleClass = c226ks();
-            break;
-        }
-        case "book.sfacg.com": {
-            const { Sfacg } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/original/sfacg.ts"));
-            ruleClass = Sfacg;
-            break;
-        }
-        case "www.hetushu.com":
-        case "hetushu.com": {
-            const { Hetushu } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/reprint/hetushu.ts"));
-            ruleClass = Hetushu;
-            break;
-        }
-        case "www.shouda88.com": {
-            const { shouda8 } = await Promise.resolve().then(() => __webpack_require__("./src/rules/onePage/shouda8.ts"));
-            ruleClass = shouda8();
-            break;
-        }
-        case "www.gebiqu.com": {
-            const { gebiqu } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge/type1.ts"));
-            ruleClass = gebiqu();
-            break;
-        }
-        case "www.viviyzw.com": {
-            const { viviyzw } = await Promise.resolve().then(() => __webpack_require__("./src/rules/twoPage/viviyzw.ts"));
-            ruleClass = viviyzw();
-            break;
-        }
-        case "www.1pwx.com": {
-            const { xiaoshuodaquan } = await Promise.resolve().then(() => __webpack_require__("./src/rules/twoPage/1pwx.ts"));
-            ruleClass = xiaoshuodaquan();
-            break;
-        }
-        case "book.qidian.com": {
-            const { Qidian } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/original/qidian.ts"));
-            ruleClass = Qidian;
-            break;
-        }
-        case "www.jjwxc.net": {
-            const { Jjwxc } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/original/jjwxc.ts"));
-            ruleClass = Jjwxc;
-            break;
-        }
-        case "www.banzhuer.org":
-        case "www.biquwoo.com":
-        case "www.biquwo.org":
-        case "www.hongyeshuzhai.com": {
-            const { common } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge/type1.ts"));
-            ruleClass = common();
-            break;
-        }
-        case "www.fuguoduxs.com":
-        case "www.shubaowa.org":
-        case "www.bz01.org": {
-            const { common1 } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge/type1.ts"));
-            ruleClass = common1();
-            break;
-        }
-        case "www.81book.com":
-        case "www.81zw.com": {
-            const { c81book } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge/type1.ts"));
-            ruleClass = c81book();
-            break;
-        }
-        case "book.zongheng.com":
-        case "huayu.zongheng.com": {
-            const { Zongheng } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/original/zongheng.ts"));
-            ruleClass = Zongheng;
-            break;
-        }
-        case "www.17k.com": {
-            const { C17k } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/original/17k.ts"));
-            ruleClass = C17k;
-            break;
-        }
-        case "www.shuhai.com":
-        case "mm.shuhai.com": {
-            const { Shuhai } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/original/shuhai.ts"));
-            ruleClass = Shuhai;
-            break;
-        }
-        case "www.gongzicp.com":
-        case "gongzicp.com": {
-            const { Gongzicp } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/original/gongzicp.ts"));
-            ruleClass = Gongzicp;
-            break;
-        }
-        case "www.linovel.net": {
-            const { Linovel } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/original/linovel.ts"));
-            ruleClass = Linovel;
-            break;
-        }
-        case "www.xinwanben.com": {
-            const { xinwanben } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge/type3.ts"));
-            ruleClass = xinwanben();
-            break;
-        }
-        case "www.tadu.com": {
-            const { Tadu } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/original/tadu.ts"));
-            ruleClass = Tadu;
-            break;
-        }
-        case "www.idejian.com": {
-            const { Idejian } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/reprint/idejian.ts"));
-            ruleClass = Idejian;
-            break;
-        }
-        case "www.qimao.com": {
-            const { Qimao } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/original/qimao.ts"));
-            ruleClass = Qimao;
-            break;
-        }
-        case "www.wenku8.net": {
-            const { Wenku8 } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/reprint/wenku8.ts"));
-            ruleClass = Wenku8;
-            break;
-        }
-        case "manhua.dmzj.com":
-        case "www.dmzj.com": {
-            const { Dmzj } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/reprint/dmzj.ts"));
-            ruleClass = Dmzj;
-            break;
-        }
-        case "sosad.fun":
-        case "www.sosad.fun":
-        case "wenzhan.org":
-        case "www.wenzhan.org":
-        case "sosadfun.com":
-        case "www.sosadfun.com":
-        case "xn--pxtr7m5ny.com":
-        case "www.xn--pxtr7m5ny.com":
-        case "xn--pxtr7m.com":
-        case "www.xn--pxtr7m.com":
-        case "xn--pxtr7m5ny.net":
-        case "www.xn--pxtr7m5ny.net":
-        case "xn--pxtr7m.net":
-        case "www.xn--pxtr7m.net":
-        case "sosadfun.link":
-        case "www.sosadfun.link": {
-            const { Sosadfun } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/original/sosadfun.ts"));
-            ruleClass = Sosadfun;
-            break;
-        }
-        case "www.westnovel.com": {
-            const { westnovel } = await Promise.resolve().then(() => __webpack_require__("./src/rules/onePage/westnovel.ts"));
-            ruleClass = westnovel();
-            break;
-        }
-        case "www.mht.tw":
-        case "www.mht99.com": {
-            const { mht } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge/type3.ts"));
-            ruleClass = mht();
-            break;
-        }
-        case "www.xbiquge.so": {
-            const { xbiquge } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge/type1.ts"));
-            ruleClass = xbiquge();
-            break;
-        }
-        case "www.linovelib.com": {
-            const { Linovelib } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/reprint/linovelib.ts"));
-            ruleClass = Linovelib;
-            break;
-        }
-        case "www.luoqiuzw.com": {
-            const { luoqiuzw } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge/type1.ts"));
-            ruleClass = luoqiuzw();
-            break;
-        }
-        case "www.yibige.cc": {
-            const { yibige } = await Promise.resolve().then(() => __webpack_require__("./src/rules/twoPage/yibige.ts"));
-            ruleClass = yibige();
-            break;
-        }
-        case "www.fushuwang.org": {
-            const { Fushuwang } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/reprint/fushuwang.ts"));
-            ruleClass = Fushuwang;
-            break;
-        }
-        case "www.soxscc.net":
-        case "www.soxscc.org":
-        case "www.soxs.cc":
-        case "www.soshuw.com":
-        case "www.soshuwu.org":
-        case "www.soxscc.cc":
-        case "www.soshuwu.com":
-        case "www.kubiji.net": {
-            const { Soxscc } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/reprint/soxscc.ts"));
-            ruleClass = Soxscc;
-            break;
-        }
-        case "www.xyqxs.cc": {
-            const { xyqxs } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge/type2.ts"));
-            ruleClass = xyqxs();
-            break;
-        }
-        case "www.630shu.net": {
-            const { c630shu } = await Promise.resolve().then(() => __webpack_require__("./src/rules/onePage/630shu.ts"));
-            ruleClass = c630shu;
-            break;
-        }
-        case "www.qingoo.cn": {
-            const { Qingoo } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/original/qingoo.ts"));
-            ruleClass = Qingoo;
-            break;
-        }
-        case "www.trxs.cc":
-        case "www.trxs123.com":
-        case "www.jpxs123.com":
-        case "trxs.cc":
-        case "trxs123.com":
-        case "jpxs123.com": {
-            const { trxs } = await Promise.resolve().then(() => __webpack_require__("./src/rules/onePage/trxs.ts"));
-            ruleClass = trxs();
-            break;
-        }
-        case "www.tongrenquan.org":
-        case "www.tongrenquan.me":
-        case "tongrenquan.me":
-        case "tongrenquan.org": {
-            const { tongrenquan } = await Promise.resolve().then(() => __webpack_require__("./src/rules/onePage/trxs.ts"));
-            ruleClass = tongrenquan();
-            break;
-        }
-        case "www.imiaobige.com": {
-            const { imiaobige } = await Promise.resolve().then(() => __webpack_require__("./src/rules/twoPage/imiaobige.ts"));
-            ruleClass = imiaobige();
-            break;
-        }
-        case "www.256wxc.com":
-        case "www.256wenku.com": {
-            const { c256wxc } = await Promise.resolve().then(() => __webpack_require__("./src/rules/onePage/256wxc.ts"));
-            ruleClass = c256wxc;
-            break;
-        }
-        case regExpMatch(/lofter\.com$/): {
-            const { Lofter } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/original/lofter.ts"));
-            ruleClass = Lofter;
-            break;
-        }
-        case "www.lwxs9.org": {
-            const { lwxs9 } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge/type1.ts"));
-            ruleClass = lwxs9();
-            break;
-        }
-        case "www.shubl.com": {
-            const { Shubl } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/original/shubl.ts"));
-            ruleClass = Shubl;
-            break;
-        }
-        case "www.ujxs.net": {
-            const { ujxs } = await Promise.resolve().then(() => __webpack_require__("./src/rules/twoPage/ujxs.ts"));
-            ruleClass = ujxs();
-            break;
-        }
-        case "m.haitangtxt.net": {
-            const { haitangtxt } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/duplicate/haitangtxt.ts"));
-            ruleClass = haitangtxt();
-            break;
-        }
-        case "m.yuzhaige.cc":
-        case "m.yushuge123.com": {
-            const { yuzhaige } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/duplicate/haitangtxt.ts"));
-            ruleClass = yuzhaige();
-            break;
-        }
-        case "ebook.longmabook.com":
-        case "www.longmabookcn.com":
-        case "ebook.lmbooks.com":
-        case "www.lmebooks.com":
-        case "www.haitbook.com":
-        case "www.htwhbook.com":
-        case "www.myhtebook.com":
-        case "www.lovehtbooks.com":
-        case "www.myhtebooks.com":
-        case "www.myhtlmebook.com":
-        case "jp.myhtebook.com":
-        case "jp.myhtlmebook.com":
-        case "ebook.urhtbooks.com":
-        case "www.urhtbooks.com":
-        case "www.newhtbook.com":
-        case "www.lvhtebook.com":
-        case "jp.lvhtebook.com":
-        case "www.htlvbooks.com": {
-            const { Longmabook } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/original/longmabook.ts"));
-            ruleClass = Longmabook;
-            break;
-        }
-        case "dijiubook.net": {
-            const { dijiubook } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge/type1.ts"));
-            ruleClass = dijiubook();
-            break;
-        }
-        case "www.biquwx.la": {
-            const { biquwx } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge/type1.ts"));
-            ruleClass = biquwx();
-            break;
-        }
-        case "www.25zw.com": {
-            const { c25zw } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge/type1.ts"));
-            ruleClass = c25zw();
-            break;
-        }
-        case "www.tycqxs.com": {
-            const { tycqxs } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge/type1.ts"));
-            ruleClass = tycqxs();
-            break;
-        }
-        case "www.kanunu8.com": {
-            const { Kanunu8 } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/reprint/kanunu8.ts"));
-            ruleClass = Kanunu8;
-            break;
-        }
-        case "www.ciyuanji.com": {
-            const { Ciyuanji } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/original/ciyuanji.ts"));
-            ruleClass = Ciyuanji;
-            break;
-        }
-        case "www.wanben.org": {
-            const { wanben } = await Promise.resolve().then(() => __webpack_require__("./src/rules/onePage/wanben.ts"));
-            ruleClass = wanben();
-            break;
-        }
-        case "m.wanben.org": {
-            const { wanben } = await Promise.resolve().then(() => __webpack_require__("./src/rules/onePageWithMultiIndexPage/wanben.ts"));
-            ruleClass = wanben();
-            break;
-        }
-        case "www.ranwen.la": {
-            const { ranwen } = await Promise.resolve().then(() => __webpack_require__("./src/rules/biquge/type1.ts"));
-            ruleClass = ranwen();
-            break;
-        }
-        case "www.washuge.com": {
-            const { washuge } = await Promise.resolve().then(() => __webpack_require__("./src/rules/twoPage/washuge.ts"));
-            ruleClass = washuge();
-            break;
-        }
-        case "m.baihexs.com": {
-            const { baihexs } = await Promise.resolve().then(() => __webpack_require__("./src/rules/onePageWithMultiIndexPage/baihexs.ts"));
-            ruleClass = baihexs();
-            break;
-        }
-        case "www.quanshuzhai.com": {
-            const { quanshuzhai } = await Promise.resolve().then(() => __webpack_require__("./src/rules/onePage/quanshuzhai.ts"));
-            ruleClass = quanshuzhai();
-            break;
-        }
-        case "masiro.me": {
-            const { masiro } = await Promise.resolve().then(() => __webpack_require__("./src/rules/onePage/masiro.ts"));
-            ruleClass = masiro();
-            break;
-        }
-        case "www.pixiv.net": {
-            const { Pixiv } = await Promise.resolve().then(() => __webpack_require__("./src/rules/special/original/pixiv.ts"));
-            ruleClass = Pixiv;
-            break;
-        }
-        case "kakuyomu.jp": {
-            const { kakuyomu } = await Promise.resolve().then(() => __webpack_require__("./src/rules/onePage/kakuyomu.ts"));
-            ruleClass = kakuyomu();
-            break;
-        }
-        case "ncode.syosetu.com": {
-            const { syosetu } = await Promise.resolve().then(() => __webpack_require__("./src/rules/onePage/syosetu.ts"));
-            ruleClass = syosetu();
-            break;
-        }
-        case "zhaoze.art":
-        case "houhuayuan.xyz": {
-            const { houhuayuan } = await Promise.resolve().then(() => __webpack_require__("./src/rules/onePage/houhuayuan.ts"));
-            ruleClass = houhuayuan();
-            break;
-        }
-        default: {
-            throw new Error("Not Found Rule!");
-        }
-    }
-    const rule = new ruleClass();
-    return rule;
-    function regExpMatch(regexp) {
-        if (regexp.test(host)) {
-            return host;
-        }
-    }
-}
-exports.getRule = getRule;
-
-
-/***/ }),
-
-/***/ "./src/router/ui.ts":
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getUI = void 0;
-const defaultObject = {
-    type: "download",
-};
-const errorObject = {
-    type: "error",
-};
-function getUI() {
-    const host = document.location.host;
-    switch (host) {
-        case "wap.shuquge.com": {
-            return () => {
-                const id = /(\d+)\.html$/.exec(document.location.pathname)?.[1];
-                if (!id) {
-                    return errorObject;
-                }
-                return {
-                    type: "jump",
-                    jumpFunction() {
-                        document.location.href = `https://www.shuquge.com/txt/${id}/index.html`;
-                    },
-                };
-            };
-        }
-        case "m.xinwanben.com": {
-            return () => ({
-                type: "jump",
-                jumpFunction() {
-                    document.location.host = "www.xinwanben.com";
-                },
-            });
-        }
-        case "www.tadu.com": {
-            return () => {
-                const re = /^\/book\/\d+\/?$/;
-                if (re.test(document.location.pathname)) {
-                    return defaultObject;
-                }
-                return errorObject;
-            };
-        }
-        case "www.kanunu8.com": {
-            return () => {
-                if (document.body.innerHTML.includes("作者：") ||
-                    document.body.innerHTML.includes("作者:") ||
-                    document.body.innerHTML.includes("内容简介")) {
-                    return defaultObject;
-                }
-                return errorObject;
-            };
-        }
-        case "www.ciyuanji.com": {
-            return () => {
-                if (document.location.pathname === "/bookDetails/info") {
-                    return {
-                        type: "jump",
-                        jumpFunction: () => (document.location.pathname = "/bookDetails/catalog"),
-                    };
-                }
-                return defaultObject;
-            };
-        }
-        case "ebook.longmabook.com":
-        case "www.longmabookcn.com":
-        case "ebook.lmbooks.com":
-        case "www.lmebooks.com":
-        case "www.haitbook.com":
-        case "www.htwhbook.com":
-        case "www.myhtebook.com":
-        case "www.lovehtbooks.com":
-        case "www.myhtebooks.com":
-        case "www.myhtlmebook.com":
-        case "jp.myhtebook.com":
-        case "jp.myhtlmebook.com":
-        case "ebook.urhtbooks.com":
-        case "www.urhtbooks.com":
-        case "www.newhtbook.com":
-        case "www.lvhtebook.com":
-        case "jp.lvhtebook.com":
-        case "www.htlvbooks.com": {
-            return () => {
-                const params = new URLSearchParams(document.location.search);
-                if (params.get("act") === "showinfo" &&
-                    params.has("bookwritercode") &&
-                    params.has("bookid")) {
-                    return defaultObject;
-                }
-                return errorObject;
-            };
-        }
-        default: {
-            return () => defaultObject;
-        }
-    }
-}
-exports.getUI = getUI;
 
 
 /***/ }),
 
 /***/ "./src/rules.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.BaseRuleClass = void 0;
-const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
-const misc_1 = __webpack_require__("./src/lib/misc.ts");
-const log_1 = __webpack_require__("./src/log.ts");
-const main_1 = __webpack_require__("./src/main.ts");
-const save_1 = __webpack_require__("./src/save/save.ts");
-const setting_1 = __webpack_require__("./src/setting.ts");
-const stat_1 = __webpack_require__("./src/stat.ts");
-const progress_1 = __webpack_require__("./src/ui/progress.ts");
+// EXPORTS
+__webpack_require__.d(__webpack_exports__, {
+  "c": () => (/* binding */ BaseRuleClass)
+});
+
+// EXTERNAL MODULE: ./src/lib/attachments.ts
+var attachments = __webpack_require__("./src/lib/attachments.ts");
+// EXTERNAL MODULE: ./src/lib/misc.ts
+var misc = __webpack_require__("./src/lib/misc.ts");
+// EXTERNAL MODULE: ./src/log.ts
+var log = __webpack_require__("./src/log.ts");
+// EXTERNAL MODULE: external "log"
+var external_log_ = __webpack_require__("loglevel");
+var external_log_default = /*#__PURE__*/__webpack_require__.n(external_log_);
+// EXTERNAL MODULE: ./src/main.ts
+var main = __webpack_require__("./src/main.ts");
+// EXTERNAL MODULE: ./src/save/save.ts + 7 modules
+var save = __webpack_require__("./src/save/save.ts");
+// EXTERNAL MODULE: ./src/setting.ts
+var setting = __webpack_require__("./src/setting.ts");
+// EXTERNAL MODULE: ./src/lib/GM.ts
+var GM = __webpack_require__("./src/lib/GM.ts");
+;// CONCATENATED MODULE: ./src/stat.ts
+
+
+const statKeyName = "novel-downloader-22932304826849026";
+const domain = document.location.hostname;
+async function getStatData() {
+    const _data = await (0,GM/* _GM_getValue */.QG)(statKeyName);
+    let statData;
+    if (_data) {
+        statData = JSON.parse(_data);
+    }
+    else {
+        statData = { success: {}, failed: {} };
+    }
+    return statData;
+}
+const saveData = async (statData) => {
+    const dataJSON = JSON.stringify(statData);
+    await (0,GM/* _GM_setValue */._u)(statKeyName, dataJSON);
+    return statData;
+};
+const dataPlus = async (key) => {
+    const statData = await getStatData();
+    const tmpData = statData[key];
+    if (tmpData[domain]) {
+        tmpData[domain] = tmpData[domain] + 1;
+    }
+    else {
+        tmpData[domain] = 1;
+    }
+    return saveData(statData);
+};
+const successPlus = () => {
+    return dataPlus("success");
+};
+const failedPlus = () => {
+    return dataPlus("failed");
+};
+const printStat = async () => {
+    const statData = await getStatData();
+    external_log_default().info("[stat]小说下载器脚本运行情况统计：");
+    external_log_default().info(statData);
+    for (const k in statData) {
+        if (Object.prototype.hasOwnProperty.call(statData, k)) {
+            external_log_default().info(`[stat]${k}:`);
+            const subData = statData[k];
+            for (const j in subData) {
+                if (Object.prototype.hasOwnProperty.call(subData, j)) {
+                    external_log_default().info(`  [stat]${j}: ${subData[j]}`);
+                }
+            }
+        }
+    }
+};
+const resetStat = () => {
+    const statData = { success: {}, failed: {} };
+    return saveData(statData);
+};
+
+// EXTERNAL MODULE: ./src/ui/progress.ts + 1 modules
+var progress = __webpack_require__("./src/ui/progress.ts");
+;// CONCATENATED MODULE: ./src/rules.ts
+
+
+
+
+
+
+
+
 const workStatusKeyName = "novel-downloader-EaraVl9TtSM2405L";
 class BaseRuleClass {
     constructor() {
@@ -5586,7 +4794,7 @@ class BaseRuleClass {
         this.concurrencyLimit = 10;
     }
     async run() {
-        log_1.log.info(`[run]下载开始`);
+        external_log_default().info(`[run]下载开始`);
         const self = this;
         try {
             if (!self.preHook())
@@ -5599,16 +4807,16 @@ class BaseRuleClass {
                 self.book = await self.bookParse();
                 window._book = self.book;
             }
-            log_1.log.debug("[book]Book object:\n" + JSON.stringify(self.book));
+            external_log_default().debug("[book]Book object:\n" + JSON.stringify(self.book));
             const saveBookObj = self.getSave(self.book);
             await self.initChapters(self.book, saveBookObj);
-            log_1.log.debug("[run]开始保存文件");
+            external_log_default().debug("[run]开始保存文件");
             saveBookObj.saveTxt();
             await saveBookObj.saveZip(false);
             self.postHook();
             self.postCallback();
-            (0, stat_1.successPlus)();
-            (0, stat_1.printStat)();
+            successPlus();
+            printStat();
             return self.book;
         }
         catch (error) {
@@ -5640,7 +4848,7 @@ class BaseRuleClass {
         if (!self.preTest()) {
             const alertText = `当前网站目前最多允许${self.maxRunLimit}个下载任务同时进行。\n请待其它下载任务完成后，再行尝试。`;
             alert(alertText);
-            log_1.log.info(`[run]${alertText}`);
+            external_log_default().info(`[run]${alertText}`);
             return false;
         }
         if (!self.preWarning()) {
@@ -5659,12 +4867,12 @@ class BaseRuleClass {
         return true;
     }
     postCallback() {
-        if (setting_1.enableCustomFinishCallback &&
+        if (setting/* enableCustomFinishCallback */.Vo &&
             typeof unsafeWindow.customFinishCallback === "function") {
             const customFinishCallback = unsafeWindow
                 .customFinishCallback;
             if (customFinishCallback) {
-                log_1.log.info(`发现自定义结束回调函数，内容如下：\n${customFinishCallback.toString()}`);
+                external_log_default().info(`发现自定义结束回调函数，内容如下：\n${customFinishCallback.toString()}`);
                 customFinishCallback();
             }
         }
@@ -5676,47 +4884,47 @@ class BaseRuleClass {
         if (workStatus) {
             delete workStatus[document.location.href];
         }
-        (0, attachments_1.clearAttachmentClassCache)();
+        (0,attachments/* clearAttachmentClassCache */.pN)();
         self.audio?.pause();
         self.audio?.remove();
         window.onbeforeunload = null;
         window.downloading = false;
-        progress_1.vm.reset();
+        progress.vm.reset();
         return true;
     }
     catchError(error) {
         const self = this;
-        log_1.log.error(error);
-        log_1.log.trace(error);
+        external_log_default().error(error);
+        external_log_default().trace(error);
         self.postHook();
-        if (!(error instanceof main_1.ExpectError)) {
+        if (!(error instanceof main/* ExpectError */.K2)) {
             document.getElementById("button-div")?.remove();
-            log_1.log.error("运行过程出错，请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/yingziwu/novel-downloader");
-            (0, stat_1.failedPlus)();
+            external_log_default().error("运行过程出错，请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/yingziwu/novel-downloader");
+            failedPlus();
             alert("运行过程出错，请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/yingziwu/novel-downloader");
-            (0, log_1.saveLogTextToFile)();
+            (0,log/* saveLogTextToFile */.qS)();
         }
     }
     getSave(book) {
-        log_1.log.debug("[run]保存数据");
-        if (setting_1.enableCustomSaveOptions &&
+        external_log_default().debug("[run]保存数据");
+        if (setting/* enableCustomSaveOptions */.EI &&
             typeof unsafeWindow.saveOptions === "object" &&
-            (0, save_1.saveOptionsValidate)(unsafeWindow.saveOptions)) {
+            (0,save/* saveOptionsValidate */.hh)(unsafeWindow.saveOptions)) {
             const saveOptionsInner = unsafeWindow.saveOptions;
             if (saveOptionsInner) {
-                log_1.log.info("[run]发现自定义保存参数，内容如下\n", saveOptionsInner);
-                return (0, save_1.getSaveBookObj)(book, saveOptionsInner);
+                external_log_default().info("[run]发现自定义保存参数，内容如下\n", saveOptionsInner);
+                return (0,save/* getSaveBookObj */.Zd)(book, saveOptionsInner);
             }
         }
-        return (0, save_1.getSaveBookObj)(book, {});
+        return (0,save/* getSaveBookObj */.Zd)(book, {});
     }
     getChapters(book) {
         function isEnable() {
-            if (setting_1.enableCustomChapterFilter &&
+            if (setting/* enableCustomChapterFilter */.Td &&
                 typeof unsafeWindow.chapterFilter === "function") {
                 let text = "[initChapters]发现自定义筛选函数，自定义筛选函数内容如下：\n";
                 text += unsafeWindow.chapterFilter.toString();
-                log_1.log.info(text);
+                external_log_default().info(text);
                 return true;
             }
             else {
@@ -5732,33 +4940,33 @@ class BaseRuleClass {
                 }
             }
             catch (error) {
-                log_1.log.error("运行自定义筛选函数时出错。", error);
-                log_1.log.trace(error);
+                external_log_default().error("运行自定义筛选函数时出错。", error);
+                external_log_default().trace(error);
             }
             return b;
         }
-        let chapters = book.chapters.filter((chapter) => chapter.status === main_1.Status.pending);
+        let chapters = book.chapters.filter((chapter) => chapter.status === main/* Status.pending */.qb.pending);
         const enabled = isEnable();
         if (enabled) {
-            log_1.log.debug("[initChapters]筛选需下载章节");
+            external_log_default().debug("[initChapters]筛选需下载章节");
             chapters = chapters.filter((chapter) => _filter(chapter));
         }
         return chapters;
     }
     async initChapters(book, saveBookObj) {
         const self = this;
-        log_1.log.info(`[initChapters]开始初始化章节`);
-        Object.entries(self).forEach((kv) => log_1.log.info(`[initChapters] ${kv[0]}: ${kv[1]}`));
+        external_log_default().info(`[initChapters]开始初始化章节`);
+        Object.entries(self).forEach((kv) => external_log_default().info(`[initChapters] ${kv[0]}: ${kv[1]}`));
         const chapters = self.getChapters(book);
         if (chapters.length === 0) {
-            log_1.log.error(`[initChapters]初始化章节出错，未找到需初始化章节`);
+            external_log_default().error(`[initChapters]初始化章节出错，未找到需初始化章节`);
             return [];
         }
-        progress_1.vm.totalChapterNumber = chapters.length;
+        progress.vm.totalChapterNumber = chapters.length;
         if (self.concurrencyLimit === 1) {
             for (const chapter of chapters) {
                 if (window.stopFlag) {
-                    log_1.log.info("[chapter]收到停止信号，停止继续下载。");
+                    external_log_default().info("[chapter]收到停止信号，停止继续下载。");
                     break;
                 }
                 try {
@@ -5766,18 +4974,18 @@ class BaseRuleClass {
                     chapterObj = await self.postChapterParseHook(chapterObj, saveBookObj);
                 }
                 catch (error) {
-                    log_1.log.error(error);
-                    log_1.log.trace(error);
+                    external_log_default().error(error);
+                    external_log_default().trace(error);
                 }
             }
         }
         else {
-            await (0, misc_1.concurrencyRun)(chapters, self.concurrencyLimit, async (curChapter) => {
+            await (0,misc/* concurrencyRun */.C1)(chapters, self.concurrencyLimit, async (curChapter) => {
                 if (curChapter === undefined) {
                     return Promise.resolve();
                 }
                 if (window.stopFlag) {
-                    log_1.log.info("[chapter]收到停止信号，停止继续下载。");
+                    external_log_default().info("[chapter]收到停止信号，停止继续下载。");
                     return Promise.resolve();
                 }
                 try {
@@ -5786,12 +4994,12 @@ class BaseRuleClass {
                     return chapterObj;
                 }
                 catch (error) {
-                    log_1.log.error(error);
-                    log_1.log.trace(error);
+                    external_log_default().error(error);
+                    external_log_default().trace(error);
                 }
             });
         }
-        log_1.log.info(`[initChapters]章节初始化完毕`);
+        external_log_default().info(`[initChapters]章节初始化完毕`);
         return chapters;
     }
     async postChapterParseHook(chapter, saveBookObj) {
@@ -5807,39 +5015,49 @@ class BaseRuleClass {
         storage.set(workStatusKeyName, workStatus, 20);
         if (chapter.contentHTML !== undefined) {
             saveBookObj.addChapter(chapter);
-            progress_1.vm.finishedChapterNumber++;
+            progress.vm.finishedChapterNumber++;
         }
         return chapter;
     }
 }
-exports.BaseRuleClass = BaseRuleClass;
 
 
 /***/ }),
 
 /***/ "./src/rules/biquge/template.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Rt": () => (/* binding */ mkBiqugeClass),
+/* harmony export */   "kQ": () => (/* binding */ mkBiqugeClass2),
+/* harmony export */   "O6": () => (/* binding */ mkBiqugeClass3)
+/* harmony export */ });
+/* unused harmony exports bookParseTemp, chapterParseTemp */
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _main__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/main.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/rules.ts");
 
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.mkBiqugeClass3 = exports.mkBiqugeClass2 = exports.mkBiqugeClass = exports.chapterParseTemp = exports.bookParseTemp = void 0;
-const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
-const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
-const http_1 = __webpack_require__("./src/lib/http.ts");
-const rule_1 = __webpack_require__("./src/lib/rule.ts");
-const log_1 = __webpack_require__("./src/log.ts");
-const main_1 = __webpack_require__("./src/main.ts");
-const rules_1 = __webpack_require__("./src/rules.ts");
+
+
+
+
+
+
 async function bookParseTemp({ bookUrl, bookname, author, introDom, introDomPatch, coverUrl, chapterListSelector, charset, chapterParse, enableIgnore = true, customVolumeFilter, }) {
-    const [introduction, introductionHTML, introCleanimages] = await (0, rule_1.introDomHandle)(introDom, introDomPatch);
+    const [introduction, introductionHTML, introCleanimages] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_0__/* .introDomHandle */ .SN)(introDom, introDomPatch);
     const additionalMetadate = {};
     if (coverUrl) {
-        (0, attachments_1.getImageAttachment)(coverUrl, "TM", "cover-")
+        (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getImageAttachment */ .CE)(coverUrl, "TM", "cover-")
             .then((coverClass) => {
             additionalMetadate.cover = coverClass;
         })
-            .catch((error) => log_1.log.error(error));
+            .catch((error) => _log__WEBPACK_IMPORTED_MODULE_2___default().error(error));
     }
     const dls = document.querySelectorAll(chapterListSelector);
     const dlc = [];
@@ -5893,19 +5111,18 @@ async function bookParseTemp({ bookUrl, bookname, author, introDom, introDomPatc
             const chapterUrl = a.href;
             const isVIP = false;
             const isPaid = false;
-            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, chapterParse, charset, { bookname });
+            const chapter = new _main__WEBPACK_IMPORTED_MODULE_3__/* .Chapter */ .WC(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, chapterParse, charset, { bookname });
             chapters.push(chapter);
         }
     }
-    const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+    const book = new _main__WEBPACK_IMPORTED_MODULE_3__/* .Book */ .fy(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
     return book;
 }
-exports.bookParseTemp = bookParseTemp;
 async function chapterParseTemp({ dom, chapterUrl, chapterName, contenSelector, contentPatch, charset, options, }) {
     let content = dom.querySelector(contenSelector);
     if (content) {
         content = contentPatch(content, options);
-        const { dom: domClean, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+        const { dom: domClean, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_4__/* .cleanDOM */ .z)(content, "TM");
         return {
             chapterName,
             contentRaw: content,
@@ -5926,9 +5143,8 @@ async function chapterParseTemp({ dom, chapterUrl, chapterName, contenSelector, 
         };
     }
 }
-exports.chapterParseTemp = chapterParseTemp;
 function mkBiqugeClass(introDomPatch, contentPatch, concurrencyLimit, enableIgnore, customVolumeFilter) {
-    return class extends rules_1.BaseRuleClass {
+    return class extends _rules__WEBPACK_IMPORTED_MODULE_5__/* .BaseRuleClass */ .c {
         constructor() {
             super();
             if (typeof concurrencyLimit === "number") {
@@ -5963,7 +5179,7 @@ function mkBiqugeClass(introDomPatch, contentPatch, concurrencyLimit, enableIgno
             });
         }
         async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-            const doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
+            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_6__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
             return chapterParseTemp({
                 dom: doc,
                 chapterUrl,
@@ -5980,9 +5196,8 @@ function mkBiqugeClass(introDomPatch, contentPatch, concurrencyLimit, enableIgno
         }
     };
 }
-exports.mkBiqugeClass = mkBiqugeClass;
 function mkBiqugeClass2(introDomPatch, contentPatch, concurrencyLimit, enableIgnore, customVolumeFilter) {
-    return class extends rules_1.BaseRuleClass {
+    return class extends _rules__WEBPACK_IMPORTED_MODULE_5__/* .BaseRuleClass */ .c {
         constructor() {
             super();
             if (typeof concurrencyLimit === "number") {
@@ -6014,7 +5229,7 @@ function mkBiqugeClass2(introDomPatch, contentPatch, concurrencyLimit, enableIgn
             });
         }
         async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-            const dom = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
+            const dom = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_6__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
             return chapterParseTemp({
                 dom,
                 chapterUrl,
@@ -6029,9 +5244,8 @@ function mkBiqugeClass2(introDomPatch, contentPatch, concurrencyLimit, enableIgn
         }
     };
 }
-exports.mkBiqugeClass2 = mkBiqugeClass2;
 function mkBiqugeClass3(introDomPatch, contentPatch, getNextPage, continueCondition, concurrencyLimit, enableIgnore, customVolumeFilter) {
-    return class extends rules_1.BaseRuleClass {
+    return class extends _rules__WEBPACK_IMPORTED_MODULE_5__/* .BaseRuleClass */ .c {
         constructor() {
             super();
             if (typeof concurrencyLimit === "number") {
@@ -6066,7 +5280,7 @@ function mkBiqugeClass3(introDomPatch, contentPatch, getNextPage, continueCondit
             });
         }
         async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-            return (0, rule_1.nextPageParse)({
+            return (0,_lib_rule__WEBPACK_IMPORTED_MODULE_0__/* .nextPageParse */ .I2)({
                 chapterName,
                 chapterUrl,
                 charset,
@@ -6080,36 +5294,46 @@ function mkBiqugeClass3(introDomPatch, contentPatch, getNextPage, continueCondit
         }
     };
 }
-exports.mkBiqugeClass3 = mkBiqugeClass3;
 
 
 /***/ }),
 
 /***/ "./src/rules/biquge/type1.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "common": () => (/* binding */ common),
+/* harmony export */   "common1": () => (/* binding */ common1),
+/* harmony export */   "c81book": () => (/* binding */ c81book),
+/* harmony export */   "gebiqu": () => (/* binding */ gebiqu),
+/* harmony export */   "luoqiuzw": () => (/* binding */ luoqiuzw),
+/* harmony export */   "lwxs9": () => (/* binding */ lwxs9),
+/* harmony export */   "biquwx": () => (/* binding */ biquwx),
+/* harmony export */   "tycqxs": () => (/* binding */ tycqxs),
+/* harmony export */   "dijiubook": () => (/* binding */ dijiubook),
+/* harmony export */   "c25zw": () => (/* binding */ c25zw),
+/* harmony export */   "xbiquge": () => (/* binding */ xbiquge),
+/* harmony export */   "yruan": () => (/* binding */ yruan),
+/* harmony export */   "ranwen": () => (/* binding */ ranwen)
+/* harmony export */ });
+/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/misc.ts");
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/biquge/template.ts");
 
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.ranwen = exports.yruan = exports.xbiquge = exports.c25zw = exports.dijiubook = exports.tycqxs = exports.biquwx = exports.lwxs9 = exports.luoqiuzw = exports.gebiqu = exports.c81book = exports.common1 = exports.common = void 0;
-const misc_1 = __webpack_require__("./src/lib/misc.ts");
-const template_1 = __webpack_require__("./src/rules/biquge/template.ts");
-const common = () => (0, template_1.mkBiqugeClass)((introDom) => introDom, (content) => content);
-exports.common = common;
-const common1 = () => (0, template_1.mkBiqugeClass)((introDom) => introDom, (content) => content, undefined, false);
-exports.common1 = common1;
-const c81book = () => (0, template_1.mkBiqugeClass)((introDom) => introDom, (content) => content);
-exports.c81book = c81book;
-const gebiqu = () => (0, template_1.mkBiqugeClass)((introDom) => {
+
+const common = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass */ .Rt)((introDom) => introDom, (content) => content);
+const common1 = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass */ .Rt)((introDom) => introDom, (content) => content, undefined, false);
+const c81book = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass */ .Rt)((introDom) => introDom, (content) => content);
+const gebiqu = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass */ .Rt)((introDom) => {
     introDom.innerHTML = introDom.innerHTML.replace(/如果您喜欢.+，别忘记分享给朋友/g, "");
-    (0, misc_1.rm)('a[href^="http://down.gebiqu.com"]', false, introDom);
+    (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__.rm)('a[href^="http://down.gebiqu.com"]', false, introDom);
     return introDom;
 }, (content) => {
     content.innerHTML = content.innerHTML.replace(/"www.gebiqu.com"/g, "");
     return content;
 });
-exports.gebiqu = gebiqu;
-const luoqiuzw = () => (0, template_1.mkBiqugeClass)((introDom) => introDom, (content) => {
+const luoqiuzw = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass */ .Rt)((introDom) => introDom, (content) => {
     const ad = content.firstElementChild;
     if (ad.innerText.includes("天才一秒记住本站地址：")) {
         ad.remove();
@@ -6118,27 +5342,23 @@ const luoqiuzw = () => (0, template_1.mkBiqugeClass)((introDom) => introDom, (co
     ads.forEach((adt) => (content.innerHTML = content.innerHTML.replace(adt, "")));
     return content;
 });
-exports.luoqiuzw = luoqiuzw;
-const lwxs9 = () => (0, template_1.mkBiqugeClass)((introDom) => introDom, (content) => {
-    (0, misc_1.rm)("div[align]", false, content);
+const lwxs9 = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass */ .Rt)((introDom) => introDom, (content) => {
+    (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__.rm)("div[align]", false, content);
     return content;
 });
-exports.lwxs9 = lwxs9;
-const biquwx = () => (0, template_1.mkBiqugeClass)((introDom) => {
+const biquwx = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass */ .Rt)((introDom) => {
     introDom.innerHTML = introDom.innerHTML.replace(/本站提示：各位书友要是觉得《.+》还不错的话请不要忘记向您QQ群和微博里的朋友推荐哦！/, "");
     return introDom;
 }, (content) => content, 1);
-exports.biquwx = biquwx;
-const tycqxs = () => (0, template_1.mkBiqugeClass)((introDom) => introDom, (content) => {
+const tycqxs = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass */ .Rt)((introDom) => introDom, (content) => {
     content.innerHTML = content.innerHTML.replace(/推荐都市大神老施新书:<a href="https:\/\/www\.tycqxs\.com\/[\d_]+\/" target="_blank">.+<\/a>/, "");
     return content;
 });
-exports.tycqxs = tycqxs;
 const dijiubook = () => {
-    const c = (0, template_1.mkBiqugeClass)((introDom) => {
+    const c = (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass */ .Rt)((introDom) => {
         introDom.innerHTML = introDom.innerHTML.replace("本书网址：", "");
-        (0, misc_1.rm)('a[href^="https://dijiubook.net/"]', false, introDom);
-        (0, misc_1.rm)("dl > dt:nth-of-type(2)", false, document.querySelector("#list"));
+        (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__.rm)('a[href^="https://dijiubook.net/"]', false, introDom);
+        (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__.rm)("dl > dt:nth-of-type(2)", false, document.querySelector("#list"));
         document
             .querySelectorAll('#list a[href^="https://m.dijiubook.net"]')
             .forEach((elem) => elem.parentElement?.remove());
@@ -6147,58 +5367,57 @@ const dijiubook = () => {
             .forEach((elem) => elem.parentElement?.remove());
         return introDom;
     }, (content) => {
-        (0, misc_1.rm)("a", true, content);
+        (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__.rm)("a", true, content);
         return content;
     });
     c.prototype.overrideConstructor = (classThis) => {
         classThis.concurrencyLimit = 1;
         classThis.maxRunLimit = 1;
         classThis.postChapterParseHook = async (obj) => {
-            await (0, misc_1.sleep)(3000 * Math.random());
+            await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__/* .sleep */ ._v)(3000 * Math.random());
             return obj;
         };
     };
     return c;
 };
-exports.dijiubook = dijiubook;
-const c25zw = () => (0, template_1.mkBiqugeClass)((introDom) => {
+const c25zw = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass */ .Rt)((introDom) => {
     introDom.querySelector("font")?.parentElement?.remove();
     introDom.innerHTML = introDom.innerHTML.replace("简介:", "");
     return introDom;
 }, (content) => {
-    (0, misc_1.rm)(".bottem", false, content);
+    (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__.rm)(".bottem", false, content);
     return content;
 });
-exports.c25zw = c25zw;
-const xbiquge = () => (0, template_1.mkBiqugeClass)((introDom) => introDom, (content, options) => {
+const xbiquge = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass */ .Rt)((introDom) => introDom, (content, options) => {
     content.innerHTML = content.innerHTML.replace(`笔趣阁 www.xbiquge.so，最快更新${options.bookname} ！`, "");
     return content;
 });
-exports.xbiquge = xbiquge;
-const yruan = () => (0, template_1.mkBiqugeClass)((introDom) => {
-    (0, misc_1.rm2)(introDom, ["本站提示：各位书友要是觉得"]);
+const yruan = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass */ .Rt)((introDom) => {
+    (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .vS)(introDom, ["本站提示：各位书友要是觉得"]);
     return introDom;
 }, (content) => content, 3);
-exports.yruan = yruan;
-const ranwen = () => (0, template_1.mkBiqugeClass)((introDom) => {
-    (0, misc_1.rm2)(introDom, ["还不错的话请不要忘记向您QQ群和微博里的朋友推荐哦！"]);
+const ranwen = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass */ .Rt)((introDom) => {
+    (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .vS)(introDom, ["还不错的话请不要忘记向您QQ群和微博里的朋友推荐哦！"]);
     return introDom;
 }, (content) => content, undefined, undefined, /全文阅读/);
-exports.ranwen = ranwen;
 
 
 /***/ }),
 
 /***/ "./src/rules/biquge/type2.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "shuquge": () => (/* binding */ shuquge),
+/* harmony export */   "xyqxs": () => (/* binding */ xyqxs)
+/* harmony export */ });
+/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/misc.ts");
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/biquge/template.ts");
 
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.xyqxs = exports.shuquge = void 0;
-const misc_1 = __webpack_require__("./src/lib/misc.ts");
-const template_1 = __webpack_require__("./src/rules/biquge/template.ts");
-const shuquge = () => (0, template_1.mkBiqugeClass2)((introDom) => {
+
+const shuquge = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass2 */ .kQ)((introDom) => {
     document.querySelector(".noshow")?.classList.remove("noshow");
     if (document.querySelector(".showall")) {
         document.querySelector(".showall").innerHTML = "";
@@ -6213,37 +5432,41 @@ const shuquge = () => (0, template_1.mkBiqugeClass2)((introDom) => {
         .replace(/https?:\/\/www.shuquge.com\/txt\/\d+\/\d+\.html/, "");
     return content;
 }, 1);
-exports.shuquge = shuquge;
-const xyqxs = () => (0, template_1.mkBiqugeClass2)((introDom) => {
+const xyqxs = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass2 */ .kQ)((introDom) => {
     introDom.innerHTML = introDom.innerHTML.replace(/推荐地址：https:\/\/www.xyqxs.cc\/html\/\d+\/\d+\/index\.html/g, "");
     return introDom;
 }, (content) => {
-    (0, misc_1.rm)("div[style]", true, content);
-    (0, misc_1.rm)("script", true, content);
-    (0, misc_1.rm)('div[align="center"]', false, content);
+    (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__.rm)("div[style]", true, content);
+    (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__.rm)("script", true, content);
+    (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__.rm)('div[align="center"]', false, content);
     content.innerHTML = content.innerHTML
         .replace("请记住本书首发域名：www.xyqxs.cc。笔趣阁手机版阅读网址：m.xyqxs.cc", "")
         .replace(/\(https:\/\/www.xyqxs.cc\/html\/\d+\/\d+\/\d+\.html\)/, "");
     return content;
 });
-exports.xyqxs = xyqxs;
 
 
 /***/ }),
 
 /***/ "./src/rules/biquge/type3.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "dingdiann": () => (/* binding */ dingdiann),
+/* harmony export */   "mht": () => (/* binding */ mht),
+/* harmony export */   "xinwanben": () => (/* binding */ xinwanben)
+/* harmony export */ });
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/misc.ts");
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/biquge/template.ts");
 
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.xinwanben = exports.mht = exports.dingdiann = void 0;
-const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
-const misc_1 = __webpack_require__("./src/lib/misc.ts");
-const template_1 = __webpack_require__("./src/rules/biquge/template.ts");
-const dingdiann = () => (0, template_1.mkBiqugeClass3)((introDom) => introDom, (content, doc) => {
-    (0, misc_1.rm)("div[align]", false, content);
-    (0, misc_1.rm)("script", true, content);
+
+
+const dingdiann = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass3 */ .O6)((introDom) => introDom, (content, doc) => {
+    (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__.rm)("div[align]", false, content);
+    (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__.rm)("script", true, content);
     const removelist = [
         "一秒记住，精彩小说无弹窗免费阅读！",
         "&lt;/a　:&gt;",
@@ -6251,19 +5474,17 @@ const dingdiann = () => (0, template_1.mkBiqugeClass3)((introDom) => introDom, (
         "本章未完，点击下一页继续阅读",
     ];
     removelist.forEach((removeStr) => (content.innerHTML = content.innerHTML.replaceAll(removeStr, "")));
-    (0, cleanDOM_1.htmlTrim)(content);
+    (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__/* .htmlTrim */ .i)(content);
     return content;
 }, (doc) => doc.querySelector(".bottem2 > a:nth-child(4)")
     .href, (_content, nextLink) => _content.innerText.includes("本章未完，点击下一页继续阅读"));
-exports.dingdiann = dingdiann;
-const mht = () => (0, template_1.mkBiqugeClass3)((introDom) => introDom, (content, doc) => {
-    (0, misc_1.rm)("p[data-id]", true, content);
-    (0, cleanDOM_1.htmlTrim)(content);
+const mht = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass3 */ .O6)((introDom) => introDom, (content, doc) => {
+    (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__.rm)("p[data-id]", true, content);
+    (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__/* .htmlTrim */ .i)(content);
     return content;
 }, (doc) => doc.querySelector(".bottem2 > a:nth-child(4)")
     .href, (_content, nextLink) => new URL(nextLink).pathname.includes("_"));
-exports.mht = mht;
-const xinwanben = () => (0, template_1.mkBiqugeClass3)((introDom) => {
+const xinwanben = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass3 */ .O6)((introDom) => {
     const _bookname = introDom.innerHTML.match(/《(.*)》/);
     let bookname;
     if (_bookname?.length === 2) {
@@ -6273,7 +5494,7 @@ const xinwanben = () => (0, template_1.mkBiqugeClass3)((introDom) => {
         "还不错的话请不要忘记向您QQ群和微博里的朋友推荐哦！",
         "小说免费阅读地址：",
     ];
-    (0, misc_1.rm2)(introDom, adList);
+    (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .vS)(introDom, adList);
     introDom.innerHTML = introDom.innerHTML.replace(`${bookname}小说简介：`, "");
     return introDom;
 }, (content, doc) => {
@@ -6282,22 +5503,970 @@ const xinwanben = () => (0, template_1.mkBiqugeClass3)((introDom) => {
         "提示：浏览器搜索",
         "把本站分享那些需要的小伙伴！找不到书请留言！",
     ];
-    (0, misc_1.rm2)(content, filters);
-    (0, cleanDOM_1.htmlTrim)(content);
+    (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .vS)(content, filters);
+    (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__/* .htmlTrim */ .i)(content);
     return content;
 }, (doc) => doc.querySelector("#next_url").href, (_content, nextLink) => new URL(nextLink).pathname.includes("_"), undefined, true);
-exports.xinwanben = xinwanben;
 
 
 /***/ }),
 
-/***/ "./src/rules/lib/haitangtxtImageDecode.ts":
-/***/ ((__unused_webpack_module, exports) => {
+/***/ "./src/rules/onePage/256wxc.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "c256wxc": () => (/* binding */ c256wxc)
+/* harmony export */ });
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
 
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.replaceHaitangtxtImage = void 0;
+const c256wxc = (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+    bookUrl: document.location.href,
+    bookname: document.querySelector(".art_tit").innerText.trim(),
+    author: (document.querySelector("span.bookinfo:nth-child(1) > a") ??
+        document.querySelector("span.bookinfo:nth-child(1)")).innerText
+        .replace(/^作者：/, "")
+        .trim(),
+    introDom: document.querySelector(".infotype > p"),
+    introDomPatch: (introDom) => introDom,
+    coverUrl: null,
+    aList: document.querySelectorAll(".catalog > li > a"),
+    getContent: (doc) => doc.querySelector(".book_con"),
+    contentPatch: (content) => content,
+});
+
+
+/***/ }),
+
+/***/ "./src/rules/onePage/630shu.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "c630shu": () => (/* binding */ c630shu)
+/* harmony export */ });
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
+
+const c630shu = (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+    bookUrl: document.location.href,
+    bookname: document.querySelector("#info > h1").innerText.trim(),
+    author: document.querySelector("div.options > span.item:nth-child(1) > a").innerText.trim(),
+    introDom: document.querySelector("#intro"),
+    introDomPatch: (introDom) => introDom,
+    coverUrl: document.querySelector(".img_in > img").src,
+    aList: document.querySelectorAll(".zjlist > dd > a"),
+    getContent: (doc) => doc.querySelector("#content"),
+    contentPatch: (content) => {
+        content.innerHTML = content.innerHTML.replace(/恋上你看书网 WWW.630SHU.NET ，最快更新.+最新章节！/, "");
+        return content;
+    },
+});
+
+
+/***/ }),
+
+/***/ "./src/rules/onePage/houhuayuan.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "houhuayuan": () => (/* binding */ houhuayuan)
+/* harmony export */ });
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/misc.ts");
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
+
+
+
+const houhuayuan = () => {
+    const seriesbox = document.querySelector(".seriesbox");
+    let bookUrl;
+    let bookname;
+    let author = document.querySelector("h3.author")?.innerText
+        .replace(/♥|作者: /g, "")
+        .trim();
+    if (author === "") {
+        author = "佚名";
+    }
+    const aList = [];
+    if (seriesbox) {
+        const lis = seriesbox.querySelectorAll("ul.serieslist-ul > li");
+        for (const li of Array.from(lis)) {
+            if (li.className === "serieslist-li") {
+                const a = li.querySelector("a");
+                if (a) {
+                    aList.push(a);
+                }
+            }
+            else if (li.className === "serieslist-li-current") {
+                const a = document.createElement("a");
+                a.innerText = document.querySelector(".entry-title").innerText.trim();
+                a.href = document.location.href;
+                aList.push(a);
+            }
+        }
+        const aFirst = aList[0];
+        bookname = aFirst.innerText
+            .replace(/第.+章$|\s序$/, "")
+            .trim();
+        bookUrl = aFirst.href;
+    }
+    else {
+        bookUrl = document.location.href;
+        bookname = document.querySelector(".entry-title").innerText.trim();
+        const a = document.createElement("a");
+        a.innerText = bookname;
+        a.href = bookUrl;
+        aList.push(a);
+    }
+    return (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+        bookUrl,
+        bookname,
+        author,
+        aList,
+        getContentFromUrl: async (chapterUrl, chapterName, charset) => {
+            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
+            const pageLinks = doc.querySelectorAll(".page-links > a.post-page-numbers");
+            if (pageLinks) {
+                const content = document.createElement("div");
+                const _content0 = doc.querySelector("header + div.entry-content");
+                if (_content0) {
+                    (0,_lib_misc__WEBPACK_IMPORTED_MODULE_2__/* .childNodesCopy */ .vR)(_content0, content);
+                }
+                const pageUrls = Array.from(doc.querySelectorAll(".page-links > a.post-page-numbers")).map((a) => a.href);
+                for (const url of pageUrls) {
+                    const docc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .dL)(url, charset);
+                    const _content1 = docc.querySelector("header + div.entry-content");
+                    if (_content1) {
+                        (0,_lib_misc__WEBPACK_IMPORTED_MODULE_2__/* .childNodesCopy */ .vR)(_content1, content);
+                    }
+                }
+                return content;
+            }
+            else {
+                return doc.querySelector("header + div.entry-content");
+            }
+        },
+        contentPatch: (dom) => {
+            (0,_lib_misc__WEBPACK_IMPORTED_MODULE_2__.rm)('div[id^="stage-"]', true, dom);
+            (0,_lib_misc__WEBPACK_IMPORTED_MODULE_2__.rm)('div[id^="zhaoz-"]', true, dom);
+            (0,_lib_misc__WEBPACK_IMPORTED_MODULE_2__.rm)("div.seriesbox", true, dom);
+            (0,_lib_misc__WEBPACK_IMPORTED_MODULE_2__.rm)("fieldset", true, dom);
+            (0,_lib_misc__WEBPACK_IMPORTED_MODULE_2__.rm)("div.wpulike", true, dom);
+            (0,_lib_misc__WEBPACK_IMPORTED_MODULE_2__.rm)(".simplefavorite-button", true, dom);
+            (0,_lib_misc__WEBPACK_IMPORTED_MODULE_2__.rm)(".page-links", true, dom);
+            (0,_lib_misc__WEBPACK_IMPORTED_MODULE_2__/* .rm2 */ .vS)(dom, [" – 蔷薇后花园", " – 黑沼泽俱乐部"]);
+            Array.from(dom.querySelectorAll("img")).forEach((img) => (img.src = img.getAttribute("data-src") ?? ""));
+            return dom;
+        },
+    });
+};
+
+
+/***/ }),
+
+/***/ "./src/rules/onePage/kakuyomu.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "kakuyomu": () => (/* binding */ kakuyomu)
+/* harmony export */ });
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
+
+const kakuyomu = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+    bookUrl: document.location.href,
+    bookname: document.querySelector("#workTitle > a").innerText.trim(),
+    author: document.querySelector("#workAuthor-activityName > a").innerText.trim(),
+    introDom: document.querySelector("#introduction"),
+    introDomPatch: (dom) => dom,
+    coverUrl: null,
+    additionalMetadatePatch: (additionalMetadate) => {
+        additionalMetadate.tags = Array.from(document.querySelectorAll("#workMeta-tags > li > a")).map((a) => a.innerText);
+        return additionalMetadate;
+    },
+    aList: document.querySelectorAll("li.widget-toc-episode > a"),
+    getAName: (dom) => dom.querySelector("span.widget-toc-episode-titleLabel").innerText.trim(),
+    sections: document.querySelectorAll("li.widget-toc-chapter > span"),
+    getSName: (dom) => dom.innerText.trim(),
+    getContent: (dom) => dom.querySelector(".widget-episodeBody"),
+    contentPatch: (dom) => dom,
+});
+
+
+/***/ }),
+
+/***/ "./src/rules/onePage/masiro.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "masiro": () => (/* binding */ masiro)
+/* harmony export */ });
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
+
+const masiro = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+    bookUrl: document.location.href,
+    bookname: document.querySelector(".novel-title").innerText.trim(),
+    author: document.querySelector(".author > a").innerText.trim(),
+    introDom: document.querySelector(".brief"),
+    introDomPatch: (dom) => dom,
+    coverUrl: document.querySelector("div.mailbox-attachment-icon > a > img.img").src,
+    additionalMetadatePatch: (additionalMetadate) => {
+        additionalMetadate.tags = Array.from(document.querySelectorAll("div.n-detail > div.tags a")).map((a) => a.innerText);
+        return additionalMetadate;
+    },
+    aList: document.querySelectorAll("a.to-read"),
+    getAName: (dom) => dom.querySelector('span[style^="overflow: hidden;"]').innerText.trim(),
+    sections: document.querySelectorAll("li.chapter-box > span + b"),
+    getSName: (dom) => dom.innerText.trim(),
+    getContent: (dom) => dom.querySelector("div.box-body.nvl-content"),
+    contentPatch: (dom) => dom,
+    concurrencyLimit: 3,
+});
+
+
+/***/ }),
+
+/***/ "./src/rules/onePage/quanshuzhai.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "quanshuzhai": () => (/* binding */ quanshuzhai)
+/* harmony export */ });
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
+
+const quanshuzhai = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+    bookUrl: document.location.href,
+    bookname: document.querySelector(".booktitle").innerText.trim(),
+    author: document.querySelector("a.red").innerText.trim(),
+    introDom: document.querySelector(".bookintro"),
+    introDomPatch: (dom) => dom,
+    coverUrl: null,
+    aList: document.querySelectorAll("#list-chapterAll > dd > a"),
+    getContent: (doc) => doc.querySelector(".readcontent"),
+    contentPatch: (dom) => dom,
+});
+
+
+/***/ }),
+
+/***/ "./src/rules/onePage/shouda8.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "shouda8": () => (/* binding */ shouda8)
+/* harmony export */ });
+/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/misc.ts");
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
+
+
+const shouda8 = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+    bookUrl: document.location.href,
+    bookname: document.querySelector(".bread-crumbs > li:nth-child(4)").innerText.trim(),
+    author: document.querySelector("div.bookname > h1 > em").innerText
+        .replace("作者：", "")
+        .trim(),
+    introDom: document.querySelector(".intro"),
+    introDomPatch: (introDom) => {
+        (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__.rm)(".book_keywords", true, introDom);
+        (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__.rm)("script", true, introDom);
+        return introDom;
+    },
+    coverUrl: document.querySelector(".pic > img:nth-child(1)").src,
+    aList: document.querySelectorAll(".link_14 dd > a"),
+    sections: document.querySelectorAll(".link_14 dt > b"),
+    getSName: (sElem) => sElem.innerText.trim(),
+    getContent: (doc) => doc.querySelector("#content"),
+    contentPatch: (content) => {
+        const ads = ["手打吧更新速度最快。", "www.shouda88.com"];
+        (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .vS)(content, ads);
+        return content;
+    },
+});
+
+
+/***/ }),
+
+/***/ "./src/rules/onePage/syosetu.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "syosetu": () => (/* binding */ syosetu)
+/* harmony export */ });
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
+
+const syosetu = () => {
+    const getIntroDom = () => {
+        const a = document.querySelector("#novel_ex > .more");
+        if (a) {
+            a.click();
+        }
+        return document.querySelector("#novel_ex");
+    };
+    return (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+        bookUrl: document.location.href,
+        bookname: document.querySelector(".novel_title").innerText.trim(),
+        author: document.querySelector(".novel_writername > a").innerText.trim(),
+        introDom: getIntroDom(),
+        introDomPatch: (dom) => dom,
+        coverUrl: null,
+        aList: document.querySelectorAll("dl.novel_sublist2 dd.subtitle > a"),
+        sections: document.querySelectorAll("div.chapter_title"),
+        getSName: (dom) => dom.innerText.trim(),
+        getContent: (dom) => {
+            const content = document.createElement("div");
+            const novelHonbun = dom.querySelector("#novel_honbun");
+            const novelA = dom.querySelector("#novel_a");
+            if (novelHonbun) {
+                content.appendChild(novelHonbun);
+            }
+            if (novelA) {
+                const hr = dom.createElement("hr");
+                content.appendChild(hr);
+                content.appendChild(novelA);
+            }
+            return content;
+        },
+        contentPatch: (dom) => dom,
+    });
+};
+
+
+/***/ }),
+
+/***/ "./src/rules/onePage/template.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "x": () => (/* binding */ mkRuleClass)
+/* harmony export */ });
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _main__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
+
+
+
+
+
+
+
+function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, coverUrl, additionalMetadatePatch, aList, getAName, sections, getSName: _getSectionName, postHook, getContentFromUrl, getContent, contentPatch, concurrencyLimit, }) {
+    return class extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
+        constructor() {
+            super();
+            this.imageMode = "TM";
+            if (concurrencyLimit) {
+                this.concurrencyLimit = concurrencyLimit;
+            }
+        }
+        async bookParse() {
+            let introduction = null;
+            let introductionHTML = null;
+            let introCleanimages = null;
+            if (introDom && introDomPatch) {
+                [introduction, introductionHTML, introCleanimages] =
+                    await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .SN)(introDom, introDomPatch);
+            }
+            const additionalMetadate = {};
+            if (coverUrl) {
+                (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getImageAttachment */ .CE)(coverUrl, this.imageMode, "cover-")
+                    .then((coverClass) => {
+                    additionalMetadate.cover = coverClass;
+                })
+                    .catch((error) => _log__WEBPACK_IMPORTED_MODULE_3___default().error(error));
+            }
+            if (additionalMetadatePatch) {
+                Object.assign(additionalMetadate, additionalMetadatePatch(additionalMetadate));
+            }
+            const chapters = [];
+            let chapterNumber = 0;
+            let sectionNumber = 0;
+            let sectionChapterNumber = 0;
+            let sectionName = null;
+            let hasSection = false;
+            if (sections &&
+                sections instanceof NodeList &&
+                typeof _getSectionName === "function") {
+                hasSection = true;
+            }
+            for (const aElem of Array.from(aList)) {
+                let chapterName;
+                if (getAName) {
+                    chapterName = getAName(aElem);
+                }
+                else {
+                    chapterName = aElem.innerText;
+                }
+                const chapterUrl = aElem.href;
+                if (hasSection && sections && _getSectionName) {
+                    const _sectionName = (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .getSectionName */ .$d)(aElem, sections, _getSectionName);
+                    if (_sectionName !== sectionName) {
+                        sectionName = _sectionName;
+                        sectionNumber++;
+                        sectionChapterNumber = 0;
+                    }
+                }
+                chapterNumber++;
+                sectionChapterNumber++;
+                const isVIP = false;
+                const isPaid = false;
+                let chapter = new _main__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .WC(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, hasSection ? sectionNumber : null, hasSection ? sectionChapterNumber : null, this.chapterParse, this.charset, { bookname });
+                if (typeof postHook === "function") {
+                    chapter = postHook(chapter);
+                }
+                if (chapter) {
+                    chapters.push(chapter);
+                }
+            }
+            const book = new _main__WEBPACK_IMPORTED_MODULE_4__/* .Book */ .fy(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+            return book;
+        }
+        async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+            let content;
+            if (getContentFromUrl !== undefined) {
+                content = await getContentFromUrl(chapterUrl, chapterName, charset);
+            }
+            else if (getContent !== undefined) {
+                const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_5__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
+                content = getContent(doc);
+            }
+            if (content) {
+                content = contentPatch(content);
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_6__/* .cleanDOM */ .z)(content, "TM");
+                return {
+                    chapterName,
+                    contentRaw: content,
+                    contentText: text,
+                    contentHTML: dom,
+                    contentImages: images,
+                    additionalMetadate: null,
+                };
+            }
+            return {
+                chapterName,
+                contentRaw: null,
+                contentText: null,
+                contentHTML: null,
+                contentImages: null,
+                additionalMetadate: null,
+            };
+        }
+    };
+}
+
+
+/***/ }),
+
+/***/ "./src/rules/onePage/trxs.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "trxs": () => (/* binding */ trxs),
+/* harmony export */   "tongrenquan": () => (/* binding */ tongrenquan)
+/* harmony export */ });
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
+
+const trxs = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+    bookUrl: document.location.href,
+    bookname: document.querySelector(".infos > h1").innerText
+        .split("(")[0]
+        .trim(),
+    author: document.querySelector(".date > span > a").innerText.trim(),
+    introDom: document.querySelector(".infos > p"),
+    introDomPatch: (introDom) => introDom,
+    coverUrl: document.querySelector(".pic > img").src,
+    aList: document.querySelectorAll("div.book_list > ul.clearfix > li > a"),
+    getContent: (doc) => doc.querySelector(".read_chapterDetail"),
+    contentPatch: (content) => content,
+});
+const tongrenquan = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+    bookUrl: document.location.href,
+    bookname: document.querySelector(".infos > h1").innerText
+        .split("(")[0]
+        .trim(),
+    author: document.querySelector(".date > span").innerText
+        .replace("作者：", "")
+        .trim(),
+    introDom: document.querySelector(".infos > p"),
+    introDomPatch: (introDom) => introDom,
+    coverUrl: document.querySelector(".pic > img").src,
+    aList: document.querySelectorAll("div.book_list > ul.clearfix > li > a"),
+    getContent: (doc) => doc.querySelector(".read_chapterDetail"),
+    contentPatch: (content) => content,
+});
+
+
+/***/ }),
+
+/***/ "./src/rules/onePage/wanben.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "wanben": () => (/* binding */ wanben)
+/* harmony export */ });
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/misc.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
+
+
+
+
+const wanben = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+    bookUrl: document.location.href,
+    bookname: document.querySelector(".detailTitle > h1").innerText.trim(),
+    author: document.querySelector(".writer > a").innerText.trim(),
+    introDom: document.querySelector(".detailTopMid > table:nth-child(3) > tbody:nth-child(1) > tr:nth-child(3) > td:nth-child(2)"),
+    introDomPatch: (introDom) => introDom,
+    coverUrl: document.querySelector(".detailTopLeft > img")?.src,
+    aList: document.querySelectorAll(".chapter li > a"),
+    getContentFromUrl: async (chapterUrl, chapterName, charset) => {
+        const { chapterName: _chapterName, contentRaw, contentText, contentHTML, contentImages, additionalMetadate, } = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .nextPageParse */ .I2)({
+            chapterName,
+            chapterUrl,
+            charset,
+            selector: "div.readerCon",
+            contentPatch: (content, doc) => {
+                (0,_lib_misc__WEBPACK_IMPORTED_MODULE_2__.rm)("script", true, content);
+                (0,_lib_misc__WEBPACK_IMPORTED_MODULE_2__.rm)("div[style]", true, content);
+                const ads = [
+                    "【提示】：如果觉得此文不错，请推荐给更多小伙伴吧！分享也是一种享受。",
+                    "【看书助手】",
+                    "百万热门书籍终身无广告免费阅读",
+                ];
+                (0,_lib_misc__WEBPACK_IMPORTED_MODULE_2__/* .rm2 */ .vS)(content, ads);
+                (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_3__/* .htmlTrim */ .i)(content);
+                return content;
+            },
+            getNextPage: (doc) => doc.querySelector(".readPage > a:nth-child(3)")
+                .href,
+            continueCondition: (_content, nextLink) => {
+                const pathname = nextLink.split("/").slice(-1)[0];
+                return pathname.includes("_");
+            },
+            enableCleanDOM: false,
+        });
+        return contentRaw;
+    },
+    contentPatch: (content) => content,
+});
+
+
+/***/ }),
+
+/***/ "./src/rules/onePage/westnovel.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "westnovel": () => (/* binding */ westnovel)
+/* harmony export */ });
+/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/misc.ts");
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
+
+
+const westnovel = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+    bookUrl: document.location.href,
+    bookname: document.querySelector(".btitle > h1 > a").innerText.trim(),
+    author: document.querySelector(".btitle > em:nth-child(2)").innerText
+        .replace("作者：", "")
+        .trim(),
+    introDom: document.querySelector(".intro-p > p:nth-child(1)"),
+    introDomPatch: (introDom) => introDom,
+    coverUrl: document.querySelector(".img-img")?.src,
+    aList: document.querySelectorAll(".chapterlist > dd > a"),
+    getContent: (doc) => doc.querySelector("#BookText"),
+    contentPatch: (content) => {
+        (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__.rm)("div.ads", true, content);
+        (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__.rm)("div.link", true, content);
+        (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__.rm)("h4", true, content);
+        return content;
+    },
+});
+
+
+/***/ }),
+
+/***/ "./src/rules/onePageWithMultiIndexPage/226ks.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "c226ks": () => (/* binding */ c226ks)
+/* harmony export */ });
+/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/misc.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePageWithMultiIndexPage/template.ts");
+
+
+
+const c226ks = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+    bookUrl: document.location.href.replace(/index_\d+\.html/, "index_1.html"),
+    bookname: document.querySelector(".info > .top > h1").innerText.trim(),
+    author: document.querySelector(".info > .top > .fix > p:nth-child(1)").innerText
+        .replace(/作(\s+)?者[：:]/, "")
+        .trim(),
+    introDom: document.querySelector(".desc"),
+    introDomPatch: (introDom) => introDom,
+    coverUrl: document.querySelector(".imgbox > img").src,
+    getIndexUrls: () => Array.from(document.querySelectorAll('[name="pageselect"] > option')).map((opt) => document.location.origin + opt.getAttribute("value")),
+    getAList: (doc) => doc.querySelectorAll("div.section-box:nth-child(4) > ul:nth-child(1) > li > a"),
+    getContentFromUrl: async (chapterUrl, chapterName, charset) => {
+        const { chapterName: _chapterName, contentRaw, contentText, contentHTML, contentImages, additionalMetadate, } = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .nextPageParse */ .I2)({
+            chapterName,
+            chapterUrl,
+            charset,
+            selector: "#content",
+            contentPatch: (content, doc) => {
+                (0,_lib_misc__WEBPACK_IMPORTED_MODULE_2__.rm)("script", true, content);
+                (0,_lib_misc__WEBPACK_IMPORTED_MODULE_2__.rm)("div.posterror", false, content);
+                (0,_lib_misc__WEBPACK_IMPORTED_MODULE_2__.rm)("div[onclick]", true, content);
+                const ad = '<div class="posterror"><a href="javascript:postError();" class="red">章节错误,点此举报(免注册)</a>,举报后维护人员会在两分钟内校正章节内容,请耐心等待,并刷新页面。</div>';
+                content.innerHTML = content.innerHTML.replace(ad, "");
+                return content;
+            },
+            getNextPage: (doc) => doc.querySelector("div.section-opt.m-bottom-opt > a:nth-child(5)").href,
+            continueCondition: (_content, nextLink) => {
+                const pathname = nextLink.split("/").slice(-1)[0];
+                return pathname.includes("_");
+            },
+            enableCleanDOM: false,
+        });
+        return contentRaw;
+    },
+    contentPatch: (content) => content,
+});
+
+
+/***/ }),
+
+/***/ "./src/rules/onePageWithMultiIndexPage/baihexs.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "baihexs": () => (/* binding */ baihexs)
+/* harmony export */ });
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/misc.ts");
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePageWithMultiIndexPage/template.ts");
+
+
+
+const baihexs = () => {
+    const bookUrl = document.location.href;
+    const bookId = /(\d+)\/?$/.exec(document.location.href)?.[1];
+    if (!bookId) {
+        throw Error("获取书籍信息出错！");
+    }
+    return (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+        bookUrl,
+        bookname: document.querySelector(".block_txt2 > h2 > a").innerText.trim(),
+        author: document.querySelector(".block_txt2 > p:nth-child(4)").innerText
+            .replace("作者：", "")
+            .trim(),
+        introDom: document.querySelector(".intro_info"),
+        introDomPatch: (dom) => dom,
+        coverUrl: document.querySelector(".block_img2 > img")
+            ?.src,
+        getIndexUrls: async () => {
+            const contentPageUrl = `${document.location.origin}/wapbook-${bookId}`;
+            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .dL)(contentPageUrl + "/", document.characterSet);
+            const a = doc.querySelector("div.page > a:nth-last-child(1)");
+            const maxNumber = /(\d+)\/?$/.exec(a.href)?.[1];
+            if (!maxNumber) {
+                throw Error("获取章节列表时出错！");
+            }
+            const indexUrls = [];
+            for (let i = 1; i <= parseInt(maxNumber, 10); i++) {
+                const url = contentPageUrl + `_${i}/`;
+                indexUrls.push(url);
+            }
+            return indexUrls;
+        },
+        getAList: (doc) => doc.querySelectorAll(".chapter > li > a"),
+        getContent: (doc) => doc.querySelector("#nr1"),
+        contentPatch: (dom) => {
+            const ads = [
+                /请牢记：百合小说网.+免费最快更新无防盗无防盗/,
+            ];
+            (0,_lib_misc__WEBPACK_IMPORTED_MODULE_2__/* .rms */ .up)(ads, dom);
+            return dom;
+        },
+        concurrencyLimit: 3,
+    });
+};
+
+
+/***/ }),
+
+/***/ "./src/rules/onePageWithMultiIndexPage/template.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "x": () => (/* binding */ mkRuleClass)
+/* harmony export */ });
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/misc.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _main__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
+
+
+
+
+
+
+
+
+function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, coverUrl, getIndexUrls, getAList, getAName, postHook, getContentFromUrl, getContent, contentPatch, concurrencyLimit, }) {
+    return class extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
+        constructor() {
+            super();
+            this.imageMode = "TM";
+            if (concurrencyLimit) {
+                this.concurrencyLimit = concurrencyLimit;
+            }
+        }
+        async bookParse() {
+            const [introduction, introductionHTML, introCleanimages] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .SN)(introDom, introDomPatch);
+            const additionalMetadate = {};
+            if (coverUrl) {
+                (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getImageAttachment */ .CE)(coverUrl, this.imageMode, "cover-")
+                    .then((coverClass) => {
+                    additionalMetadate.cover = coverClass;
+                })
+                    .catch((error) => _log__WEBPACK_IMPORTED_MODULE_3___default().error(error));
+            }
+            const indexUrls = await getIndexUrls();
+            const _indexPage = [];
+            await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_4__/* .concurrencyRun */ .C1)(indexUrls, this.concurrencyLimit, async (url) => {
+                _log__WEBPACK_IMPORTED_MODULE_3___default().info(`[BookParse]抓取目录页：${url}`);
+                const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_5__/* .getHtmlDomWithRetry */ .rf)(url);
+                _indexPage.push([doc, url]);
+                return doc;
+            });
+            const indexPage = _indexPage
+                .sort((a, b) => {
+                const aUrl = a[1];
+                const bUrl = b[1];
+                return indexUrls.indexOf(aUrl) - indexUrls.indexOf(bUrl);
+            })
+                .map((l) => l[0]);
+            const _aListList = indexPage
+                .map((doc) => {
+                if (doc) {
+                    return getAList(doc);
+                }
+                else {
+                    _log__WEBPACK_IMPORTED_MODULE_3___default().error("[bookParse]部分目录页抓取失败！");
+                    return null;
+                }
+            })
+                .filter((a) => a !== null);
+            const aListList = [];
+            _aListList.forEach((alist) => Array.from(alist).forEach((a) => aListList.push(a)));
+            const chapters = [];
+            let chapterNumber = 0;
+            for (const aElem of Array.from(aListList)) {
+                chapterNumber++;
+                let chapterName;
+                if (getAName) {
+                    chapterName = getAName(aElem);
+                }
+                else {
+                    chapterName = aElem.innerText;
+                }
+                const chapterUrl = aElem.href;
+                const isVIP = false;
+                const isPaid = false;
+                let chapter = new _main__WEBPACK_IMPORTED_MODULE_6__/* .Chapter */ .WC(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, null, null, null, this.chapterParse, this.charset, { bookname });
+                if (typeof postHook === "function") {
+                    chapter = postHook(chapter);
+                }
+                if (chapter) {
+                    chapters.push(chapter);
+                }
+            }
+            const book = new _main__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .fy(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+            return book;
+        }
+        async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+            let content;
+            if (getContentFromUrl !== undefined) {
+                content = await getContentFromUrl(chapterUrl, chapterName, charset);
+            }
+            else if (getContent !== undefined) {
+                const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_5__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
+                content = getContent(doc);
+            }
+            if (content) {
+                content = contentPatch(content);
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__/* .cleanDOM */ .z)(content, "TM");
+                return {
+                    chapterName,
+                    contentRaw: content,
+                    contentText: text,
+                    contentHTML: dom,
+                    contentImages: images,
+                    additionalMetadate: null,
+                };
+            }
+            return {
+                chapterName,
+                contentRaw: null,
+                contentText: null,
+                contentHTML: null,
+                contentImages: null,
+                additionalMetadate: null,
+            };
+        }
+    };
+}
+
+
+/***/ }),
+
+/***/ "./src/rules/onePageWithMultiIndexPage/wanben.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "wanben": () => (/* binding */ wanben)
+/* harmony export */ });
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/misc.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePageWithMultiIndexPage/template.ts");
+
+
+
+
+
+const wanben = () => {
+    const getIntroDom = () => {
+        const a = document.querySelector(".bookInfo > a");
+        if (a) {
+            a.click();
+            a.remove();
+        }
+        return document.querySelector(".bookInfo");
+    };
+    return (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+        bookUrl: document.location.href,
+        bookname: document.querySelector("div.bookPhr > h2").innerText.trim(),
+        author: document.querySelector("div.bookPhrMid > p:nth-child(1)").innerText
+            .replace("作者：", "")
+            .trim(),
+        introDom: getIntroDom(),
+        introDomPatch: (dom) => dom,
+        coverUrl: document.querySelector("div.bookImg > img")
+            ?.src,
+        getIndexUrls: async () => {
+            const contentPageUrl = document.querySelector("#contentbox > div.detailDiv > div.category > a").href;
+            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .dL)(contentPageUrl, document.characterSet);
+            const aList = doc.querySelectorAll("div.pageBg div.pagenum a");
+            const indexUrls = Array.from(aList).map((a) => a.href);
+            return indexUrls;
+        },
+        getAList: (doc) => doc.querySelectorAll("div.chapterDiv > div.chapterList > ul > a"),
+        getContentFromUrl: async (chapterUrl, chapterName, charset) => {
+            const { chapterName: _chapterName, contentRaw, contentText, contentHTML, contentImages, additionalMetadate, } = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .nextPageParse */ .I2)({
+                chapterName,
+                chapterUrl,
+                charset,
+                selector: "div.raderCon",
+                contentPatch: (content, doc) => {
+                    (0,_lib_misc__WEBPACK_IMPORTED_MODULE_3__.rm)("script", true, content);
+                    (0,_lib_misc__WEBPACK_IMPORTED_MODULE_3__.rm)("[style]", true, content);
+                    const ads = [
+                        "【提示】：如果觉得此文不错，请推荐给更多小伙伴吧！分享也是一种享受。",
+                        "【看书助手】",
+                        "【完本神站】",
+                        "百万热门书籍终身无广告免费阅读",
+                    ];
+                    (0,_lib_misc__WEBPACK_IMPORTED_MODULE_3__/* .rm2 */ .vS)(content, ads);
+                    (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_4__/* .htmlTrim */ .i)(content);
+                    return content;
+                },
+                getNextPage: (doc) => doc.querySelector("div.page > a:nth-child(3)")
+                    .href,
+                continueCondition: (_content, nextLink) => {
+                    const pathname = nextLink.split("/").slice(-1)[0];
+                    return pathname.includes("_");
+                },
+                enableCleanDOM: false,
+            });
+            return contentRaw;
+        },
+        contentPatch: (dom) => dom,
+    });
+};
+
+
+/***/ }),
+
+/***/ "./src/rules/special/duplicate/haitangtxt.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+// ESM COMPAT FLAG
+__webpack_require__.r(__webpack_exports__);
+
+// EXPORTS
+__webpack_require__.d(__webpack_exports__, {
+  "haitangtxt": () => (/* binding */ haitangtxt),
+  "yuzhaige": () => (/* binding */ yuzhaige)
+});
+
+// EXTERNAL MODULE: ./src/lib/cleanDOM.ts
+var cleanDOM = __webpack_require__("./src/lib/cleanDOM.ts");
+// EXTERNAL MODULE: ./src/lib/http.ts
+var http = __webpack_require__("./src/lib/http.ts");
+// EXTERNAL MODULE: ./src/lib/misc.ts
+var misc = __webpack_require__("./src/lib/misc.ts");
+// EXTERNAL MODULE: ./src/lib/rule.ts
+var rule = __webpack_require__("./src/lib/rule.ts");
+// EXTERNAL MODULE: external "log"
+var external_log_ = __webpack_require__("loglevel");
+var external_log_default = /*#__PURE__*/__webpack_require__.n(external_log_);
+// EXTERNAL MODULE: ./src/main.ts
+var main = __webpack_require__("./src/main.ts");
+// EXTERNAL MODULE: ./src/rules.ts + 1 modules
+var rules = __webpack_require__("./src/rules.ts");
+;// CONCATENATED MODULE: ./src/rules/lib/haitangtxtImageDecode.ts
 function replaceHaitangtxtImage(inputText) {
     let outputText = inputText;
     for (const imageFilename in imageTable) {
@@ -6309,140 +6478,21 @@ function replaceHaitangtxtImage(inputText) {
     }
     return outputText;
 }
-exports.replaceHaitangtxtImage = replaceHaitangtxtImage;
 const imageTable = {};
 
-
-/***/ }),
-
-/***/ "./src/rules/lib/jjwxcFontDecode.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.replaceJjwxcCharacter = void 0;
-const idb_keyval_1 = __webpack_require__("idb-keyval");
-const log_1 = __webpack_require__("./src/log.ts");
-const setting_1 = __webpack_require__("./src/setting.ts");
-async function replaceJjwxcCharacter(fontName, inputText) {
-    let outputText = inputText;
-    const jjwxcFontTable = await getJjwxcFontTable(fontName);
-    if (jjwxcFontTable) {
-        for (const jjwxcCharacter in jjwxcFontTable) {
-            if (Object.prototype.hasOwnProperty.call(jjwxcFontTable, jjwxcCharacter)) {
-                const normalCharacter = jjwxcFontTable[jjwxcCharacter];
-                outputText = outputText.replaceAll(jjwxcCharacter, normalCharacter);
-            }
-        }
-        outputText = outputText.replace(/\u200c/g, "");
-    }
-    return outputText;
-}
-exports.replaceJjwxcCharacter = replaceJjwxcCharacter;
-async function getJjwxcFontTable(fontName) {
-    const jjwxcFontTables = await getJjwxcFontTables();
-    const jjwxcFontTableLocal = jjwxcFontTables[fontName];
-    if (jjwxcFontTableLocal) {
-        return jjwxcFontTableLocal;
-    }
-    else if (setting_1.enableJjwxcRemoteFont) {
-        return await fetchRemoteFont(fontName);
-    }
-    else {
-        return undefined;
-    }
-}
-async function fetchRemoteFont(fontName) {
-    const url = `https://jjwxc.bgme.bid/${fontName}.json`;
-    try {
-        log_1.log.info(`[jjwxc-font]开始请求远程字体对照表 ${fontName}`);
-        const resp = await fetch(url);
-        if (resp.status === 200) {
-            log_1.log.info(`[jjwxc-font]远程字体对照表 ${fontName} 下载成功`);
-            return (await resp.json());
-        }
-        else {
-            log_1.log.info(`[jjwxc-font]远程字体对照表 ${fontName} 下载失败`);
-            return undefined;
-        }
-    }
-    catch (error) {
-        log_1.log.error(error);
-        log_1.log.info(`[jjwxc-font]远程字体对照表 ${fontName} 下载失败`);
-        return undefined;
-    }
-}
-async function getJjwxcFontTables() {
-    const JjwxcFontTablesKeyName = "novel-downloader-jjwxcFontTables";
-    const JjwxcFontTablesExpiresKeyName = "novel-downloader-jjwxcFontTables__expires__";
-    const JjwxcFontTablesUrl = "https://cdn.jsdelivr.net/gh/yingziwu/jjwxcFontTables@gh-pages/bundle.json";
-    async function fetchAndSave() {
-        try {
-            log_1.log.info("[jjwxc-font]开始下载字体对照表打包文件。");
-            const resp = await fetch(JjwxcFontTablesUrl);
-            _jjwxcFontTables = await resp.json();
-            if (_jjwxcFontTables) {
-                if (await (0, idb_keyval_1.get)(JjwxcFontTablesKeyName)) {
-                    await (0, idb_keyval_1.update)(JjwxcFontTablesKeyName, (val) => _jjwxcFontTables);
-                }
-                else {
-                    await (0, idb_keyval_1.set)(JjwxcFontTablesKeyName, _jjwxcFontTables);
-                }
-                if (await (0, idb_keyval_1.get)(JjwxcFontTablesExpiresKeyName)) {
-                    await (0, idb_keyval_1.update)(JjwxcFontTablesExpiresKeyName, (val) => Date.now() + 1000 * 86400);
-                }
-                else {
-                    await (0, idb_keyval_1.set)(JjwxcFontTablesExpiresKeyName, Date.now() + 1000 * 86400);
-                }
-                return _jjwxcFontTables;
-            }
-            else {
-                return {};
-            }
-        }
-        catch (error) {
-            return {};
-        }
-    }
-    let _jjwxcFontTables = await (0, idb_keyval_1.get)(JjwxcFontTablesKeyName);
-    if (_jjwxcFontTables) {
-        if ((await (0, idb_keyval_1.get)(JjwxcFontTablesExpiresKeyName)) &&
-            (await (0, idb_keyval_1.get)(JjwxcFontTablesExpiresKeyName)) > Date.now()) {
-            return _jjwxcFontTables;
-        }
-        else {
-            return await fetchAndSave();
-        }
-    }
-    else {
-        return await fetchAndSave();
-    }
-}
-
-
-/***/ }),
-
-/***/ "./src/rules/lib/yuzhaigeImageDecode.ts":
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.replaceYuzhaigeImage = void 0;
+;// CONCATENATED MODULE: ./src/rules/lib/yuzhaigeImageDecode.ts
 function replaceYuzhaigeImage(inputText) {
     let outputText = inputText;
-    for (const imageFilename in imageTable) {
-        if (Object.prototype.hasOwnProperty.call(imageTable, imageFilename)) {
-            const normalCharacter = imageTable[imageFilename];
+    for (const imageFilename in yuzhaigeImageDecode_imageTable) {
+        if (Object.prototype.hasOwnProperty.call(yuzhaigeImageDecode_imageTable, imageFilename)) {
+            const normalCharacter = yuzhaigeImageDecode_imageTable[imageFilename];
             const imageHTML = `<img src="${document.location.origin}/wzbodyimg/${imageFilename}">`;
             outputText = outputText.replaceAll(imageHTML, normalCharacter);
         }
     }
     return outputText;
 }
-exports.replaceYuzhaigeImage = replaceYuzhaigeImage;
-const imageTable = {
+const yuzhaigeImageDecode_imageTable = {
     "wc5pDq.png": "\u52c3",
     "wEwIpN.png": "\u8404",
     "WFOBXF.png": "\u4f26",
@@ -7175,883 +7225,18 @@ const imageTable = {
     "H53jMR.png": "\u96CF",
 };
 
+;// CONCATENATED MODULE: ./src/rules/special/duplicate/haitangtxt.ts
 
-/***/ }),
 
-/***/ "./src/rules/onePage/256wxc.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
-"use strict";
 
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.c256wxc = void 0;
-const template_1 = __webpack_require__("./src/rules/onePage/template.ts");
-exports.c256wxc = (0, template_1.mkRuleClass)({
-    bookUrl: document.location.href,
-    bookname: document.querySelector(".art_tit").innerText.trim(),
-    author: (document.querySelector("span.bookinfo:nth-child(1) > a") ??
-        document.querySelector("span.bookinfo:nth-child(1)")).innerText
-        .replace(/^作者：/, "")
-        .trim(),
-    introDom: document.querySelector(".infotype > p"),
-    introDomPatch: (introDom) => introDom,
-    coverUrl: null,
-    aList: document.querySelectorAll(".catalog > li > a"),
-    getContent: (doc) => doc.querySelector(".book_con"),
-    contentPatch: (content) => content,
-});
 
 
-/***/ }),
 
-/***/ "./src/rules/onePage/630shu.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
-"use strict";
 
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.c630shu = void 0;
-const template_1 = __webpack_require__("./src/rules/onePage/template.ts");
-exports.c630shu = (0, template_1.mkRuleClass)({
-    bookUrl: document.location.href,
-    bookname: document.querySelector("#info > h1").innerText.trim(),
-    author: document.querySelector("div.options > span.item:nth-child(1) > a").innerText.trim(),
-    introDom: document.querySelector("#intro"),
-    introDomPatch: (introDom) => introDom,
-    coverUrl: document.querySelector(".img_in > img").src,
-    aList: document.querySelectorAll(".zjlist > dd > a"),
-    getContent: (doc) => doc.querySelector("#content"),
-    contentPatch: (content) => {
-        content.innerHTML = content.innerHTML.replace(/恋上你看书网 WWW.630SHU.NET ，最快更新.+最新章节！/, "");
-        return content;
-    },
-});
-
-
-/***/ }),
-
-/***/ "./src/rules/onePage/houhuayuan.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.houhuayuan = void 0;
-const misc_1 = __webpack_require__("./src/lib/misc.ts");
-const template_1 = __webpack_require__("./src/rules/onePage/template.ts");
-const houhuayuan = () => {
-    const seriesbox = document.querySelector(".seriesbox");
-    let bookUrl;
-    let bookname;
-    let author = document.querySelector("h3.author")?.innerText
-        .replace(/♥|作者: /g, "")
-        .trim();
-    if (author === "") {
-        author = "佚名";
-    }
-    const aList = [];
-    if (seriesbox) {
-        const lis = seriesbox.querySelectorAll("ul.serieslist-ul > li");
-        for (const li of Array.from(lis)) {
-            if (li.className === "serieslist-li") {
-                const a = li.querySelector("a");
-                if (a) {
-                    aList.push(a);
-                }
-            }
-            else if (li.className === "serieslist-li-current") {
-                const a = document.createElement("a");
-                a.innerText = document.querySelector(".entry-title").innerText.trim();
-                a.href = document.location.href;
-                aList.push(a);
-            }
-        }
-        const aFirst = aList[0];
-        bookname = aFirst.innerText
-            .replace(/第.+章$|\s序$/, "")
-            .trim();
-        bookUrl = aFirst.href;
-    }
-    else {
-        bookUrl = document.location.href;
-        bookname = document.querySelector(".entry-title").innerText.trim();
-        const a = document.createElement("a");
-        a.innerText = bookname;
-        a.href = bookUrl;
-        aList.push(a);
-    }
-    return (0, template_1.mkRuleClass)({
-        bookUrl,
-        bookname,
-        author,
-        aList,
-        getContent: (doc) => doc.querySelector("header + div.entry-content"),
-        contentPatch: (dom) => {
-            (0, misc_1.rm)('div[id^="stage-"]', true, dom);
-            (0, misc_1.rm)('div[id^="zhaoz-"]', true, dom);
-            (0, misc_1.rm)("div.seriesbox", false, dom);
-            (0, misc_1.rm)("fieldset", false, dom);
-            (0, misc_1.rm)("div.wpulike", false, dom);
-            (0, misc_1.rm)(".simplefavorite-button", false, dom);
-            (0, misc_1.rm2)(dom, [" – 蔷薇后花园", " – 黑沼泽俱乐部"]);
-            return dom;
-        },
-    });
-};
-exports.houhuayuan = houhuayuan;
-
-
-/***/ }),
-
-/***/ "./src/rules/onePage/kakuyomu.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.kakuyomu = void 0;
-const template_1 = __webpack_require__("./src/rules/onePage/template.ts");
-const kakuyomu = () => (0, template_1.mkRuleClass)({
-    bookUrl: document.location.href,
-    bookname: document.querySelector("#workTitle > a").innerText.trim(),
-    author: document.querySelector("#workAuthor-activityName > a").innerText.trim(),
-    introDom: document.querySelector("#introduction"),
-    introDomPatch: (dom) => dom,
-    coverUrl: null,
-    additionalMetadatePatch: (additionalMetadate) => {
-        additionalMetadate.tags = Array.from(document.querySelectorAll("#workMeta-tags > li > a")).map((a) => a.innerText);
-        return additionalMetadate;
-    },
-    aList: document.querySelectorAll("li.widget-toc-episode > a"),
-    getAName: (dom) => dom.querySelector("span.widget-toc-episode-titleLabel").innerText.trim(),
-    sections: document.querySelectorAll("li.widget-toc-chapter > span"),
-    getSName: (dom) => dom.innerText.trim(),
-    getContent: (dom) => dom.querySelector(".widget-episodeBody"),
-    contentPatch: (dom) => dom,
-});
-exports.kakuyomu = kakuyomu;
-
-
-/***/ }),
-
-/***/ "./src/rules/onePage/masiro.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.masiro = void 0;
-const template_1 = __webpack_require__("./src/rules/onePage/template.ts");
-const masiro = () => (0, template_1.mkRuleClass)({
-    bookUrl: document.location.href,
-    bookname: document.querySelector(".novel-title").innerText.trim(),
-    author: document.querySelector(".author > a").innerText.trim(),
-    introDom: document.querySelector(".brief"),
-    introDomPatch: (dom) => dom,
-    coverUrl: document.querySelector("div.mailbox-attachment-icon > a > img.img").src,
-    additionalMetadatePatch: (additionalMetadate) => {
-        additionalMetadate.tags = Array.from(document.querySelectorAll("div.n-detail > div.tags a")).map((a) => a.innerText);
-        return additionalMetadate;
-    },
-    aList: document.querySelectorAll("a.to-read"),
-    getAName: (dom) => dom.querySelector('span[style^="overflow: hidden;"]').innerText.trim(),
-    sections: document.querySelectorAll("li.chapter-box > span + b"),
-    getSName: (dom) => dom.innerText.trim(),
-    getContent: (dom) => dom.querySelector("div.box-body.nvl-content"),
-    contentPatch: (dom) => dom,
-    concurrencyLimit: 3,
-});
-exports.masiro = masiro;
-
-
-/***/ }),
-
-/***/ "./src/rules/onePage/quanshuzhai.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.quanshuzhai = void 0;
-const template_1 = __webpack_require__("./src/rules/onePage/template.ts");
-const quanshuzhai = () => (0, template_1.mkRuleClass)({
-    bookUrl: document.location.href,
-    bookname: document.querySelector(".booktitle").innerText.trim(),
-    author: document.querySelector("a.red").innerText.trim(),
-    introDom: document.querySelector(".bookintro"),
-    introDomPatch: (dom) => dom,
-    coverUrl: null,
-    aList: document.querySelectorAll("#list-chapterAll > dd > a"),
-    getContent: (doc) => doc.querySelector(".readcontent"),
-    contentPatch: (dom) => dom,
-});
-exports.quanshuzhai = quanshuzhai;
-
-
-/***/ }),
-
-/***/ "./src/rules/onePage/shouda8.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.shouda8 = void 0;
-const misc_1 = __webpack_require__("./src/lib/misc.ts");
-const template_1 = __webpack_require__("./src/rules/onePage/template.ts");
-const shouda8 = () => (0, template_1.mkRuleClass)({
-    bookUrl: document.location.href,
-    bookname: document.querySelector(".bread-crumbs > li:nth-child(4)").innerText.trim(),
-    author: document.querySelector("div.bookname > h1 > em").innerText
-        .replace("作者：", "")
-        .trim(),
-    introDom: document.querySelector(".intro"),
-    introDomPatch: (introDom) => {
-        (0, misc_1.rm)(".book_keywords", true, introDom);
-        (0, misc_1.rm)("script", true, introDom);
-        return introDom;
-    },
-    coverUrl: document.querySelector(".pic > img:nth-child(1)").src,
-    aList: document.querySelectorAll(".link_14 dd > a"),
-    sections: document.querySelectorAll(".link_14 dt > b"),
-    getSName: (sElem) => sElem.innerText.trim(),
-    getContent: (doc) => doc.querySelector("#content"),
-    contentPatch: (content) => {
-        const ads = ["手打吧更新速度最快。", "www.shouda88.com"];
-        (0, misc_1.rm2)(content, ads);
-        return content;
-    },
-});
-exports.shouda8 = shouda8;
-
-
-/***/ }),
-
-/***/ "./src/rules/onePage/syosetu.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.syosetu = void 0;
-const template_1 = __webpack_require__("./src/rules/onePage/template.ts");
-const syosetu = () => {
-    const getIntroDom = () => {
-        const a = document.querySelector("#novel_ex > .more");
-        if (a) {
-            a.click();
-        }
-        return document.querySelector("#novel_ex");
-    };
-    return (0, template_1.mkRuleClass)({
-        bookUrl: document.location.href,
-        bookname: document.querySelector(".novel_title").innerText.trim(),
-        author: document.querySelector(".novel_writername > a").innerText.trim(),
-        introDom: getIntroDom(),
-        introDomPatch: (dom) => dom,
-        coverUrl: null,
-        aList: document.querySelectorAll("dl.novel_sublist2 dd.subtitle > a"),
-        sections: document.querySelectorAll("div.chapter_title"),
-        getSName: (dom) => dom.innerText.trim(),
-        getContent: (dom) => {
-            const content = document.createElement("div");
-            const novelHonbun = dom.querySelector("#novel_honbun");
-            const novelA = dom.querySelector("#novel_a");
-            if (novelHonbun) {
-                content.appendChild(novelHonbun);
-            }
-            if (novelA) {
-                const hr = dom.createElement("hr");
-                content.appendChild(hr);
-                content.appendChild(novelA);
-            }
-            return content;
-        },
-        contentPatch: (dom) => dom,
-    });
-};
-exports.syosetu = syosetu;
-
-
-/***/ }),
-
-/***/ "./src/rules/onePage/template.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.mkRuleClass = void 0;
-const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
-const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
-const http_1 = __webpack_require__("./src/lib/http.ts");
-const rule_1 = __webpack_require__("./src/lib/rule.ts");
-const log_1 = __webpack_require__("./src/log.ts");
-const main_1 = __webpack_require__("./src/main.ts");
-const rules_1 = __webpack_require__("./src/rules.ts");
-function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, coverUrl, additionalMetadatePatch, aList, getAName, sections, getSName: _getSectionName, postHook, getContentFromUrl, getContent, contentPatch, concurrencyLimit, }) {
-    return class extends rules_1.BaseRuleClass {
-        constructor() {
-            super();
-            this.imageMode = "TM";
-            if (concurrencyLimit) {
-                this.concurrencyLimit = concurrencyLimit;
-            }
-        }
-        async bookParse() {
-            let introduction = null;
-            let introductionHTML = null;
-            let introCleanimages = null;
-            if (introDom && introDomPatch) {
-                [introduction, introductionHTML, introCleanimages] =
-                    await (0, rule_1.introDomHandle)(introDom, introDomPatch);
-            }
-            const additionalMetadate = {};
-            if (coverUrl) {
-                (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
-                    .then((coverClass) => {
-                    additionalMetadate.cover = coverClass;
-                })
-                    .catch((error) => log_1.log.error(error));
-            }
-            if (additionalMetadatePatch) {
-                Object.assign(additionalMetadate, additionalMetadatePatch(additionalMetadate));
-            }
-            const chapters = [];
-            let chapterNumber = 0;
-            let sectionNumber = 0;
-            let sectionChapterNumber = 0;
-            let sectionName = null;
-            let hasSection = false;
-            if (sections &&
-                sections instanceof NodeList &&
-                typeof _getSectionName === "function") {
-                hasSection = true;
-            }
-            for (const aElem of Array.from(aList)) {
-                let chapterName;
-                if (getAName) {
-                    chapterName = getAName(aElem);
-                }
-                else {
-                    chapterName = aElem.innerText;
-                }
-                const chapterUrl = aElem.href;
-                if (hasSection && sections && _getSectionName) {
-                    const _sectionName = (0, rule_1.getSectionName)(aElem, sections, _getSectionName);
-                    if (_sectionName !== sectionName) {
-                        sectionName = _sectionName;
-                        sectionNumber++;
-                        sectionChapterNumber = 0;
-                    }
-                }
-                chapterNumber++;
-                sectionChapterNumber++;
-                const isVIP = false;
-                const isPaid = false;
-                let chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, hasSection ? sectionNumber : null, hasSection ? sectionChapterNumber : null, this.chapterParse, this.charset, { bookname });
-                if (typeof postHook === "function") {
-                    chapter = postHook(chapter);
-                }
-                if (chapter) {
-                    chapters.push(chapter);
-                }
-            }
-            const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
-            return book;
-        }
-        async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-            let content;
-            if (getContentFromUrl !== undefined) {
-                content = await getContentFromUrl(chapterUrl, chapterName, charset);
-            }
-            else if (getContent !== undefined) {
-                const doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
-                content = getContent(doc);
-            }
-            if (content) {
-                content = contentPatch(content);
-                const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
-                return {
-                    chapterName,
-                    contentRaw: content,
-                    contentText: text,
-                    contentHTML: dom,
-                    contentImages: images,
-                    additionalMetadate: null,
-                };
-            }
-            return {
-                chapterName,
-                contentRaw: null,
-                contentText: null,
-                contentHTML: null,
-                contentImages: null,
-                additionalMetadate: null,
-            };
-        }
-    };
-}
-exports.mkRuleClass = mkRuleClass;
-
-
-/***/ }),
-
-/***/ "./src/rules/onePage/trxs.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.tongrenquan = exports.trxs = void 0;
-const template_1 = __webpack_require__("./src/rules/onePage/template.ts");
-const trxs = () => (0, template_1.mkRuleClass)({
-    bookUrl: document.location.href,
-    bookname: document.querySelector(".infos > h1").innerText
-        .split("(")[0]
-        .trim(),
-    author: document.querySelector(".date > span > a").innerText.trim(),
-    introDom: document.querySelector(".infos > p"),
-    introDomPatch: (introDom) => introDom,
-    coverUrl: document.querySelector(".pic > img").src,
-    aList: document.querySelectorAll("div.book_list > ul.clearfix > li > a"),
-    getContent: (doc) => doc.querySelector(".read_chapterDetail"),
-    contentPatch: (content) => content,
-});
-exports.trxs = trxs;
-const tongrenquan = () => (0, template_1.mkRuleClass)({
-    bookUrl: document.location.href,
-    bookname: document.querySelector(".infos > h1").innerText
-        .split("(")[0]
-        .trim(),
-    author: document.querySelector(".date > span").innerText
-        .replace("作者：", "")
-        .trim(),
-    introDom: document.querySelector(".infos > p"),
-    introDomPatch: (introDom) => introDom,
-    coverUrl: document.querySelector(".pic > img").src,
-    aList: document.querySelectorAll("div.book_list > ul.clearfix > li > a"),
-    getContent: (doc) => doc.querySelector(".read_chapterDetail"),
-    contentPatch: (content) => content,
-});
-exports.tongrenquan = tongrenquan;
-
-
-/***/ }),
-
-/***/ "./src/rules/onePage/wanben.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.wanben = void 0;
-const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
-const misc_1 = __webpack_require__("./src/lib/misc.ts");
-const rule_1 = __webpack_require__("./src/lib/rule.ts");
-const template_1 = __webpack_require__("./src/rules/onePage/template.ts");
-const wanben = () => (0, template_1.mkRuleClass)({
-    bookUrl: document.location.href,
-    bookname: document.querySelector(".detailTitle > h1").innerText.trim(),
-    author: document.querySelector(".writer > a").innerText.trim(),
-    introDom: document.querySelector(".detailTopMid > table:nth-child(3) > tbody:nth-child(1) > tr:nth-child(3) > td:nth-child(2)"),
-    introDomPatch: (introDom) => introDom,
-    coverUrl: document.querySelector(".detailTopLeft > img")?.src,
-    aList: document.querySelectorAll(".chapter li > a"),
-    getContentFromUrl: async (chapterUrl, chapterName, charset) => {
-        const { chapterName: _chapterName, contentRaw, contentText, contentHTML, contentImages, additionalMetadate, } = await (0, rule_1.nextPageParse)({
-            chapterName,
-            chapterUrl,
-            charset,
-            selector: "div.readerCon",
-            contentPatch: (content, doc) => {
-                (0, misc_1.rm)("script", true, content);
-                (0, misc_1.rm)("div[style]", true, content);
-                const ads = [
-                    "【提示】：如果觉得此文不错，请推荐给更多小伙伴吧！分享也是一种享受。",
-                    "【看书助手】",
-                    "百万热门书籍终身无广告免费阅读",
-                ];
-                (0, misc_1.rm2)(content, ads);
-                (0, cleanDOM_1.htmlTrim)(content);
-                return content;
-            },
-            getNextPage: (doc) => doc.querySelector(".readPage > a:nth-child(3)")
-                .href,
-            continueCondition: (_content, nextLink) => {
-                const pathname = nextLink.split("/").slice(-1)[0];
-                return pathname.includes("_");
-            },
-            enableCleanDOM: false,
-        });
-        return contentRaw;
-    },
-    contentPatch: (content) => content,
-});
-exports.wanben = wanben;
-
-
-/***/ }),
-
-/***/ "./src/rules/onePage/westnovel.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.westnovel = void 0;
-const misc_1 = __webpack_require__("./src/lib/misc.ts");
-const template_1 = __webpack_require__("./src/rules/onePage/template.ts");
-const westnovel = () => (0, template_1.mkRuleClass)({
-    bookUrl: document.location.href,
-    bookname: document.querySelector(".btitle > h1 > a").innerText.trim(),
-    author: document.querySelector(".btitle > em:nth-child(2)").innerText
-        .replace("作者：", "")
-        .trim(),
-    introDom: document.querySelector(".intro-p > p:nth-child(1)"),
-    introDomPatch: (introDom) => introDom,
-    coverUrl: document.querySelector(".img-img")?.src,
-    aList: document.querySelectorAll(".chapterlist > dd > a"),
-    getContent: (doc) => doc.querySelector("#BookText"),
-    contentPatch: (content) => {
-        (0, misc_1.rm)("div.ads", true, content);
-        (0, misc_1.rm)("div.link", true, content);
-        (0, misc_1.rm)("h4", true, content);
-        return content;
-    },
-});
-exports.westnovel = westnovel;
-
-
-/***/ }),
-
-/***/ "./src/rules/onePageWithMultiIndexPage/226ks.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.c226ks = void 0;
-const misc_1 = __webpack_require__("./src/lib/misc.ts");
-const rule_1 = __webpack_require__("./src/lib/rule.ts");
-const template_1 = __webpack_require__("./src/rules/onePageWithMultiIndexPage/template.ts");
-const c226ks = () => (0, template_1.mkRuleClass)({
-    bookUrl: document.location.href.replace(/index_\d+\.html/, "index_1.html"),
-    bookname: document.querySelector(".info > .top > h1").innerText.trim(),
-    author: document.querySelector(".info > .top > .fix > p:nth-child(1)").innerText
-        .replace(/作(\s+)?者[：:]/, "")
-        .trim(),
-    introDom: document.querySelector(".desc"),
-    introDomPatch: (introDom) => introDom,
-    coverUrl: document.querySelector(".imgbox > img").src,
-    getIndexUrls: () => Array.from(document.querySelectorAll('[name="pageselect"] > option')).map((opt) => document.location.origin + opt.getAttribute("value")),
-    getAList: (doc) => doc.querySelectorAll("div.section-box:nth-child(4) > ul:nth-child(1) > li > a"),
-    getContentFromUrl: async (chapterUrl, chapterName, charset) => {
-        const { chapterName: _chapterName, contentRaw, contentText, contentHTML, contentImages, additionalMetadate, } = await (0, rule_1.nextPageParse)({
-            chapterName,
-            chapterUrl,
-            charset,
-            selector: "#content",
-            contentPatch: (content, doc) => {
-                (0, misc_1.rm)("script", true, content);
-                (0, misc_1.rm)("div.posterror", false, content);
-                (0, misc_1.rm)("div[onclick]", true, content);
-                const ad = '<div class="posterror"><a href="javascript:postError();" class="red">章节错误,点此举报(免注册)</a>,举报后维护人员会在两分钟内校正章节内容,请耐心等待,并刷新页面。</div>';
-                content.innerHTML = content.innerHTML.replace(ad, "");
-                return content;
-            },
-            getNextPage: (doc) => doc.querySelector("div.section-opt.m-bottom-opt > a:nth-child(5)").href,
-            continueCondition: (_content, nextLink) => {
-                const pathname = nextLink.split("/").slice(-1)[0];
-                return pathname.includes("_");
-            },
-            enableCleanDOM: false,
-        });
-        return contentRaw;
-    },
-    contentPatch: (content) => content,
-});
-exports.c226ks = c226ks;
-
-
-/***/ }),
-
-/***/ "./src/rules/onePageWithMultiIndexPage/baihexs.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.baihexs = void 0;
-const http_1 = __webpack_require__("./src/lib/http.ts");
-const misc_1 = __webpack_require__("./src/lib/misc.ts");
-const template_1 = __webpack_require__("./src/rules/onePageWithMultiIndexPage/template.ts");
-const baihexs = () => {
-    const bookUrl = document.location.href;
-    const bookId = /(\d+)\/?$/.exec(document.location.href)?.[1];
-    if (!bookId) {
-        throw Error("获取书籍信息出错！");
-    }
-    return (0, template_1.mkRuleClass)({
-        bookUrl,
-        bookname: document.querySelector(".block_txt2 > h2 > a").innerText.trim(),
-        author: document.querySelector(".block_txt2 > p:nth-child(4)").innerText
-            .replace("作者：", "")
-            .trim(),
-        introDom: document.querySelector(".intro_info"),
-        introDomPatch: (dom) => dom,
-        coverUrl: document.querySelector(".block_img2 > img")
-            ?.src,
-        getIndexUrls: async () => {
-            const contentPageUrl = `${document.location.origin}/wapbook-${bookId}`;
-            const doc = await (0, http_1.getHtmlDOM)(contentPageUrl + "/", document.characterSet);
-            const a = doc.querySelector("div.page > a:nth-last-child(1)");
-            const maxNumber = /(\d+)\/?$/.exec(a.href)?.[1];
-            if (!maxNumber) {
-                throw Error("获取章节列表时出错！");
-            }
-            const indexUrls = [];
-            for (let i = 1; i <= parseInt(maxNumber, 10); i++) {
-                const url = contentPageUrl + `_${i}/`;
-                indexUrls.push(url);
-            }
-            return indexUrls;
-        },
-        getAList: (doc) => doc.querySelectorAll(".chapter > li > a"),
-        getContent: (doc) => doc.querySelector("#nr1"),
-        contentPatch: (dom) => {
-            const ads = [
-                /请牢记：百合小说网.+免费最快更新无防盗无防盗/,
-            ];
-            (0, misc_1.rms)(ads, dom);
-            return dom;
-        },
-        concurrencyLimit: 3,
-    });
-};
-exports.baihexs = baihexs;
-
-
-/***/ }),
-
-/***/ "./src/rules/onePageWithMultiIndexPage/template.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.mkRuleClass = void 0;
-const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
-const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
-const http_1 = __webpack_require__("./src/lib/http.ts");
-const misc_1 = __webpack_require__("./src/lib/misc.ts");
-const rule_1 = __webpack_require__("./src/lib/rule.ts");
-const log_1 = __webpack_require__("./src/log.ts");
-const main_1 = __webpack_require__("./src/main.ts");
-const rules_1 = __webpack_require__("./src/rules.ts");
-function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, coverUrl, getIndexUrls, getAList, getAName, postHook, getContentFromUrl, getContent, contentPatch, concurrencyLimit, }) {
-    return class extends rules_1.BaseRuleClass {
-        constructor() {
-            super();
-            this.imageMode = "TM";
-            if (concurrencyLimit) {
-                this.concurrencyLimit = concurrencyLimit;
-            }
-        }
-        async bookParse() {
-            const [introduction, introductionHTML, introCleanimages] = await (0, rule_1.introDomHandle)(introDom, introDomPatch);
-            const additionalMetadate = {};
-            if (coverUrl) {
-                (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
-                    .then((coverClass) => {
-                    additionalMetadate.cover = coverClass;
-                })
-                    .catch((error) => log_1.log.error(error));
-            }
-            const indexUrls = await getIndexUrls();
-            const _indexPage = [];
-            await (0, misc_1.concurrencyRun)(indexUrls, this.concurrencyLimit, async (url) => {
-                log_1.log.info(`[BookParse]抓取目录页：${url}`);
-                const doc = await (0, http_1.getHtmlDomWithRetry)(url);
-                _indexPage.push([doc, url]);
-                return doc;
-            });
-            const indexPage = _indexPage
-                .sort((a, b) => {
-                const aUrl = a[1];
-                const bUrl = b[1];
-                return indexUrls.indexOf(aUrl) - indexUrls.indexOf(bUrl);
-            })
-                .map((l) => l[0]);
-            const _aListList = indexPage
-                .map((doc) => {
-                if (doc) {
-                    return getAList(doc);
-                }
-                else {
-                    log_1.log.error("[bookParse]部分目录页抓取失败！");
-                    return null;
-                }
-            })
-                .filter((a) => a !== null);
-            const aListList = [];
-            _aListList.forEach((alist) => Array.from(alist).forEach((a) => aListList.push(a)));
-            const chapters = [];
-            let chapterNumber = 0;
-            for (const aElem of Array.from(aListList)) {
-                chapterNumber++;
-                let chapterName;
-                if (getAName) {
-                    chapterName = getAName(aElem);
-                }
-                else {
-                    chapterName = aElem.innerText;
-                }
-                const chapterUrl = aElem.href;
-                const isVIP = false;
-                const isPaid = false;
-                let chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, null, null, null, this.chapterParse, this.charset, { bookname });
-                if (typeof postHook === "function") {
-                    chapter = postHook(chapter);
-                }
-                if (chapter) {
-                    chapters.push(chapter);
-                }
-            }
-            const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
-            return book;
-        }
-        async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-            let content;
-            if (getContentFromUrl !== undefined) {
-                content = await getContentFromUrl(chapterUrl, chapterName, charset);
-            }
-            else if (getContent !== undefined) {
-                const doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
-                content = getContent(doc);
-            }
-            if (content) {
-                content = contentPatch(content);
-                const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
-                return {
-                    chapterName,
-                    contentRaw: content,
-                    contentText: text,
-                    contentHTML: dom,
-                    contentImages: images,
-                    additionalMetadate: null,
-                };
-            }
-            return {
-                chapterName,
-                contentRaw: null,
-                contentText: null,
-                contentHTML: null,
-                contentImages: null,
-                additionalMetadate: null,
-            };
-        }
-    };
-}
-exports.mkRuleClass = mkRuleClass;
-
-
-/***/ }),
-
-/***/ "./src/rules/onePageWithMultiIndexPage/wanben.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.wanben = void 0;
-const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
-const http_1 = __webpack_require__("./src/lib/http.ts");
-const misc_1 = __webpack_require__("./src/lib/misc.ts");
-const rule_1 = __webpack_require__("./src/lib/rule.ts");
-const template_1 = __webpack_require__("./src/rules/onePageWithMultiIndexPage/template.ts");
-const wanben = () => {
-    const getIntroDom = () => {
-        const a = document.querySelector(".bookInfo > a");
-        if (a) {
-            a.click();
-            a.remove();
-        }
-        return document.querySelector(".bookInfo");
-    };
-    return (0, template_1.mkRuleClass)({
-        bookUrl: document.location.href,
-        bookname: document.querySelector("div.bookPhr > h2").innerText.trim(),
-        author: document.querySelector("div.bookPhrMid > p:nth-child(1)").innerText
-            .replace("作者：", "")
-            .trim(),
-        introDom: getIntroDom(),
-        introDomPatch: (dom) => dom,
-        coverUrl: document.querySelector("div.bookImg > img")
-            ?.src,
-        getIndexUrls: async () => {
-            const contentPageUrl = document.querySelector("#contentbox > div.detailDiv > div.category > a").href;
-            const doc = await (0, http_1.getHtmlDOM)(contentPageUrl, document.characterSet);
-            const aList = doc.querySelectorAll("div.pageBg div.pagenum a");
-            const indexUrls = Array.from(aList).map((a) => a.href);
-            return indexUrls;
-        },
-        getAList: (doc) => doc.querySelectorAll("div.chapterDiv > div.chapterList > ul > a"),
-        getContentFromUrl: async (chapterUrl, chapterName, charset) => {
-            const { chapterName: _chapterName, contentRaw, contentText, contentHTML, contentImages, additionalMetadate, } = await (0, rule_1.nextPageParse)({
-                chapterName,
-                chapterUrl,
-                charset,
-                selector: "div.raderCon",
-                contentPatch: (content, doc) => {
-                    (0, misc_1.rm)("script", true, content);
-                    (0, misc_1.rm)("[style]", true, content);
-                    const ads = [
-                        "【提示】：如果觉得此文不错，请推荐给更多小伙伴吧！分享也是一种享受。",
-                        "【看书助手】",
-                        "【完本神站】",
-                        "百万热门书籍终身无广告免费阅读",
-                    ];
-                    (0, misc_1.rm2)(content, ads);
-                    (0, cleanDOM_1.htmlTrim)(content);
-                    return content;
-                },
-                getNextPage: (doc) => doc.querySelector("div.page > a:nth-child(3)")
-                    .href,
-                continueCondition: (_content, nextLink) => {
-                    const pathname = nextLink.split("/").slice(-1)[0];
-                    return pathname.includes("_");
-                },
-                enableCleanDOM: false,
-            });
-            return contentRaw;
-        },
-        contentPatch: (dom) => dom,
-    });
-};
-exports.wanben = wanben;
-
-
-/***/ }),
-
-/***/ "./src/rules/special/duplicate/haitangtxt.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.yuzhaige = exports.haitangtxt = void 0;
-const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
-const http_1 = __webpack_require__("./src/lib/http.ts");
-const misc_1 = __webpack_require__("./src/lib/misc.ts");
-const rule_1 = __webpack_require__("./src/lib/rule.ts");
-const log_1 = __webpack_require__("./src/log.ts");
-const main_1 = __webpack_require__("./src/main.ts");
-const rules_1 = __webpack_require__("./src/rules.ts");
-const haitangtxtImageDecode_1 = __webpack_require__("./src/rules/lib/haitangtxtImageDecode.ts");
-const yuzhaigeImageDecode_1 = __webpack_require__("./src/rules/lib/yuzhaigeImageDecode.ts");
 function getClass(replaceFunction) {
-    return class extends rules_1.BaseRuleClass {
+    return class extends rules/* BaseRuleClass */.c {
         constructor() {
             super();
             this.imageMode = "TM";
@@ -8059,13 +7244,13 @@ function getClass(replaceFunction) {
         async bookParse() {
             const bookUrl = document.querySelector("div.currency_head > h1 > a").href;
             const bookId = bookUrl.split("/").slice(-2, -1)[0];
-            log_1.log.debug(`[chapter]请求 ${bookUrl}`);
-            const dom = await (0, http_1.getHtmlDOM)(bookUrl, "UTF-8");
+            external_log_default().debug(`[chapter]请求 ${bookUrl}`);
+            const dom = await (0,http/* getHtmlDOM */.dL)(bookUrl, "UTF-8");
             const bookname = dom.querySelector("div.cataloginfo > h3").innerText.trim();
             const author = dom.querySelector(".infotype > p:nth-child(1) > a:nth-child(1)").innerText.trim();
             const introDom = dom.querySelector(".intro");
-            const [introduction, introductionHTML, introCleanimages] = await (0, rule_1.introDomHandle)(introDom, (introDomI) => {
-                (0, misc_1.rm)("span:nth-child(1)", false, introDomI);
+            const [introduction, introductionHTML, introCleanimages] = await (0,rule/* introDomHandle */.SN)(introDom, (introDomI) => {
+                (0,misc.rm)("span:nth-child(1)", false, introDomI);
                 return introDomI;
             });
             const additionalMetadate = {};
@@ -8098,8 +7283,8 @@ function getClass(replaceFunction) {
             const indexUrls = getIndexUrls();
             let lis = [];
             for (const indexUrl of indexUrls) {
-                log_1.log.debug(`[chapter]请求 ${indexUrl}`);
-                const doc = await (0, http_1.getHtmlDOM)(indexUrl, "UTF-8");
+                external_log_default().debug(`[chapter]请求 ${indexUrl}`);
+                const doc = await (0,http/* getHtmlDOM */.dL)(indexUrl, "UTF-8");
                 const ul = doc.querySelector("ul.chapters");
                 if (ul?.childElementCount) {
                     lis = lis.concat(Array.from(ul.children));
@@ -8114,10 +7299,10 @@ function getClass(replaceFunction) {
                 const chapterUrl = a.href;
                 const isVIP = false;
                 const isPaid = false;
-                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, null, null, null, this.chapterParse, "UTF-8", {});
+                const chapter = new main/* Chapter */.WC(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, null, null, null, this.chapterParse, "UTF-8", {});
                 chapters.push(chapter);
             }
-            const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+            const book = new main/* Book */.fy(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
             return book;
         }
         async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
@@ -8170,7 +7355,7 @@ function getClass(replaceFunction) {
                 return;
             }
             let nowUrl = chapterUrl;
-            let dom = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
+            let dom = await (0,http/* getHtmlDOM */.dL)(chapterUrl, charset);
             const content = document.createElement("div");
             let flag = false;
             do {
@@ -8181,7 +7366,7 @@ function getClass(replaceFunction) {
                         flag = true;
                     }
                     else {
-                        log_1.log.error("网站页面出错，URL： " + nowUrl);
+                        external_log_default().error("网站页面出错，URL： " + nowUrl);
                         flag = false;
                     }
                 }
@@ -8190,14 +7375,14 @@ function getClass(replaceFunction) {
                 }
                 if (flag) {
                     nowUrl = nextLink;
-                    dom = await (0, http_1.getHtmlDOM)(nextLink, charset);
+                    dom = await (0,http/* getHtmlDOM */.dL)(nextLink, charset);
                 }
             } while (flag);
             if (content) {
-                const { dom: oldDom, text: _text, images: finalImages, } = await (0, cleanDOM_1.cleanDOM)(content, "TM", { keepImageName: true });
+                const { dom: oldDom, text: _text, images: finalImages, } = await (0,cleanDOM/* cleanDOM */.z)(content, "TM", { keepImageName: true });
                 const _newDom = document.createElement("div");
                 _newDom.innerHTML = replaceFunction(content.innerHTML);
-                const { dom: newDom, text: finalText, images, } = await (0, cleanDOM_1.cleanDOM)(_newDom, "TM", { keepImageName: true });
+                const { dom: newDom, text: finalText, images, } = await (0,cleanDOM/* cleanDOM */.z)(_newDom, "TM", { keepImageName: true });
                 const fontStyleDom = document.createElement("style");
                 fontStyleDom.innerHTML = `.hide { display: none; }`;
                 oldDom.className = "hide";
@@ -8227,30 +7412,38 @@ function getClass(replaceFunction) {
         }
     };
 }
-const haitangtxt = () => getClass(haitangtxtImageDecode_1.replaceHaitangtxtImage);
-exports.haitangtxt = haitangtxt;
-const yuzhaige = () => getClass(yuzhaigeImageDecode_1.replaceYuzhaigeImage);
-exports.yuzhaige = yuzhaige;
+const haitangtxt = () => getClass(replaceHaitangtxtImage);
+const yuzhaige = () => getClass(replaceYuzhaigeImage);
 
 
 /***/ }),
 
 /***/ "./src/rules/special/original/17k.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "C17k": () => (/* binding */ C17k)
+/* harmony export */ });
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/misc.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _main__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
 
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.C17k = void 0;
-const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
-const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
-const http_1 = __webpack_require__("./src/lib/http.ts");
-const misc_1 = __webpack_require__("./src/lib/misc.ts");
-const rule_1 = __webpack_require__("./src/lib/rule.ts");
-const log_1 = __webpack_require__("./src/log.ts");
-const main_1 = __webpack_require__("./src/main.ts");
-const rules_1 = __webpack_require__("./src/rules.ts");
-class C17k extends rules_1.BaseRuleClass {
+
+
+
+
+
+
+
+class C17k extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
     constructor() {
         super();
         this.imageMode = "TM";
@@ -8261,17 +7454,17 @@ class C17k extends rules_1.BaseRuleClass {
         const bookUrl = document.location.href.replace("/list/", "/book/");
         const bookname = document.querySelector("h1.Title").innerText.trim();
         const author = document.querySelector("div.Author > a").innerText.trim();
-        const doc = await (0, http_1.getHtmlDOM)(bookUrl, undefined);
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .dL)(bookUrl, undefined);
         const introDom = doc.querySelector("#bookInfo p.intro > a");
-        const [introduction, introductionHTML, introCleanimages] = await (0, rule_1.introDomHandle)(introDom);
+        const [introduction, introductionHTML, introCleanimages] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .introDomHandle */ .SN)(introDom);
         const additionalMetadate = {};
         const coverUrl = doc.querySelector("#bookCover img.book").src;
         if (coverUrl) {
-            (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getImageAttachment */ .CE)(coverUrl, this.imageMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
-                .catch((error) => log_1.log.error(error));
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_4___default().error(error));
         }
         const chapters = [];
         const sections = document.querySelectorAll("dl.Volume");
@@ -8299,30 +7492,30 @@ class C17k extends rules_1.BaseRuleClass {
                 const isPaid = () => {
                     return false;
                 };
-                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), isPaid(), sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, {});
+                const chapter = new _main__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .WC(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), isPaid(), sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, {});
                 const isLogin = () => {
                     return false;
                 };
                 if (isVIP() && !(isLogin() && chapter.isPaid)) {
-                    chapter.status = main_1.Status.aborted;
+                    chapter.status = _main__WEBPACK_IMPORTED_MODULE_5__/* .Status.aborted */ .qb.aborted;
                 }
                 chapters.push(chapter);
             }
         }
-        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        const book = new _main__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .fy(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         async function publicChapter() {
-            const doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
+            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
             chapterName = doc.querySelector("#readArea > div.readAreaBox.content > h1").innerText.trim();
             const content = doc.querySelector("#readArea > div.readAreaBox.content > div.p");
             if (content) {
-                (0, misc_1.rm)("p.copy", false, content);
-                (0, misc_1.rm)("#banner_content", false, content);
-                (0, misc_1.rm)("div.qrcode", false, content);
-                (0, misc_1.rm)("div.chapter_text_ad", false, content);
-                const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+                (0,_lib_misc__WEBPACK_IMPORTED_MODULE_6__.rm)("p.copy", false, content);
+                (0,_lib_misc__WEBPACK_IMPORTED_MODULE_6__.rm)("#banner_content", false, content);
+                (0,_lib_misc__WEBPACK_IMPORTED_MODULE_6__.rm)("div.qrcode", false, content);
+                (0,_lib_misc__WEBPACK_IMPORTED_MODULE_6__.rm)("div.chapter_text_ad", false, content);
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__/* .cleanDOM */ .z)(content, "TM");
                 return {
                     chapterName,
                     contentRaw: content,
@@ -8361,29 +7554,40 @@ class C17k extends rules_1.BaseRuleClass {
         }
     }
 }
-exports.C17k = C17k;
 
 
 /***/ }),
 
 /***/ "./src/rules/special/original/ciweimao.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Ciweimao": () => (/* binding */ Ciweimao)
+/* harmony export */ });
+/* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("crypto-js");
+/* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(crypto_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/misc.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _main__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/rules.ts");
 
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Ciweimao = void 0;
-const CryptoJS = __webpack_require__("crypto-js");
-const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
-const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
-const http_1 = __webpack_require__("./src/lib/http.ts");
-const http_2 = __webpack_require__("./src/lib/http.ts");
-const misc_1 = __webpack_require__("./src/lib/misc.ts");
-const rule_1 = __webpack_require__("./src/lib/rule.ts");
-const log_1 = __webpack_require__("./src/log.ts");
-const main_1 = __webpack_require__("./src/main.ts");
-const rules_1 = __webpack_require__("./src/rules.ts");
-class Ciweimao extends rules_1.BaseRuleClass {
+
+
+
+
+
+
+
+
+
+class Ciweimao extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
     constructor() {
         super();
         this.imageMode = "TM";
@@ -8396,18 +7600,18 @@ class Ciweimao extends rules_1.BaseRuleClass {
         const bookUrl = `https://www.ciweimao.com/book/${bookid}`;
         const bookname = document.querySelector(".book-catalog .hd h3").innerText.trim();
         const author = document.querySelector(".book-catalog .hd > p > a").innerText.trim();
-        const dom = await (0, http_2.getHtmlDOM)(bookUrl, undefined);
+        const dom = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .getHtmlDOM */ .dL)(bookUrl, undefined);
         const introDom = dom.querySelector(".book-intro-cnt .book-desc");
-        const [introduction, introductionHTML, introCleanimages] = await (0, rule_1.introDomHandle)(introDom);
+        const [introduction, introductionHTML, introCleanimages] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_3__/* .introDomHandle */ .SN)(introDom);
         const additionalMetadate = {};
         const coverUrl = dom.querySelector(".cover > img")
             .src;
         if (coverUrl) {
-            (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_4__/* .getImageAttachment */ .CE)(coverUrl, this.imageMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
-                .catch((error) => log_1.log.error(error));
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_5___default().error(error));
         }
         additionalMetadate.tags = Array.from(dom.querySelectorAll(".label-box > .label")).map((span) => span.innerText.trim());
         const chapters = [];
@@ -8433,17 +7637,17 @@ class Ciweimao extends rules_1.BaseRuleClass {
                         isPaid = true;
                     }
                 }
-                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, {});
+                const chapter = new _main__WEBPACK_IMPORTED_MODULE_6__/* .Chapter */ .WC(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, {});
                 const isLogin = document.querySelector(".login-info.ly-fr")?.childElementCount === 1
                     ? true
                     : false;
                 if (isVIP && !(isLogin && isPaid)) {
-                    chapter.status = main_1.Status.aborted;
+                    chapter.status = _main__WEBPACK_IMPORTED_MODULE_6__/* .Status.aborted */ .qb.aborted;
                 }
                 chapters.push(chapter);
             }
         }
-        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        const book = new _main__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .fy(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
@@ -8462,20 +7666,20 @@ class Ciweimao extends rules_1.BaseRuleClass {
                 const data = output[i];
                 const iv = btoa(message.substr(0, 16));
                 const keys255 = btoa(message.substr(16));
-                const pass = CryptoJS.format.OpenSSL.parse(keys255);
-                message = CryptoJS.AES.decrypt(pass, CryptoJS.enc.Base64.parse(data), {
-                    iv: CryptoJS.enc.Base64.parse(iv),
-                    format: CryptoJS.format.OpenSSL,
+                const pass = crypto_js__WEBPACK_IMPORTED_MODULE_0__.format.OpenSSL.parse(keys255);
+                message = crypto_js__WEBPACK_IMPORTED_MODULE_0__.AES.decrypt(pass, crypto_js__WEBPACK_IMPORTED_MODULE_0__.enc.Base64.parse(data), {
+                    iv: crypto_js__WEBPACK_IMPORTED_MODULE_0__.enc.Base64.parse(iv),
+                    format: crypto_js__WEBPACK_IMPORTED_MODULE_0__.format.OpenSSL,
                 });
                 if (i < output.length - 1) {
-                    message = message.toString(CryptoJS.enc.Base64);
+                    message = message.toString(crypto_js__WEBPACK_IMPORTED_MODULE_0__.enc.Base64);
                     message = atob(message);
                 }
             }
-            return message.toString(CryptoJS.enc.Utf8);
+            return message.toString(crypto_js__WEBPACK_IMPORTED_MODULE_0__.enc.Utf8);
         }
         async function getChapterAuthorSay() {
-            const doc = await (0, http_2.getHtmlDOM)(chapterUrl, undefined);
+            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .getHtmlDOM */ .dL)(chapterUrl, undefined);
             const chapterAuthorSays = doc.querySelectorAll("#J_BookCnt .chapter.author_say");
             let divChapterAuthorSay;
             if (chapterAuthorSays.length !== 0) {
@@ -8483,7 +7687,7 @@ class Ciweimao extends rules_1.BaseRuleClass {
                 divChapterAuthorSay = document.createElement("div");
                 divChapterAuthorSay.appendChild(hr);
                 for (const chapterAuthorSay of Array.from(chapterAuthorSays)) {
-                    (0, misc_1.rm)("i", true, chapterAuthorSay);
+                    (0,_lib_misc__WEBPACK_IMPORTED_MODULE_7__.rm)("i", true, chapterAuthorSay);
                     divChapterAuthorSay.appendChild(chapterAuthorSay);
                 }
             }
@@ -8495,8 +7699,8 @@ class Ciweimao extends rules_1.BaseRuleClass {
                 const rootPath = "https://www.ciweimao.com/";
                 const accessKeyUrl = rootPath + "chapter/ajax_get_session_code";
                 const chapterContentUrl = rootPath + "chapter/get_book_chapter_detail_info";
-                log_1.log.debug(`[Chapter]请求 ${accessKeyUrl} Referer ${refererUrl}`);
-                const accessKeyObj = await (0, http_1.gfetch)(accessKeyUrl, {
+                _log__WEBPACK_IMPORTED_MODULE_5___default().debug(`[Chapter]请求 ${accessKeyUrl} Referer ${refererUrl}`);
+                const accessKeyObj = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .gfetch */ .GF)(accessKeyUrl, {
                     method: "POST",
                     headers: {
                         Accept: "application/json, text/javascript, */*; q=0.01",
@@ -8509,11 +7713,11 @@ class Ciweimao extends rules_1.BaseRuleClass {
                     responseType: "json",
                 })
                     .then((response) => response.response)
-                    .catch((error) => log_1.log.error(error));
+                    .catch((error) => _log__WEBPACK_IMPORTED_MODULE_5___default().error(error));
                 const chapter_access_key = accessKeyObj
                     .chapter_access_key;
-                log_1.log.debug(`[Chapter]请求 ${chapterContentUrl} Referer ${refererUrl}`);
-                const chapterContentObj = await (0, http_1.gfetch)(chapterContentUrl, {
+                _log__WEBPACK_IMPORTED_MODULE_5___default().debug(`[Chapter]请求 ${chapterContentUrl} Referer ${refererUrl}`);
+                const chapterContentObj = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .gfetch */ .GF)(chapterContentUrl, {
                     method: "POST",
                     headers: {
                         Accept: "application/json, text/javascript, */*; q=0.01",
@@ -8526,9 +7730,9 @@ class Ciweimao extends rules_1.BaseRuleClass {
                     responseType: "json",
                 })
                     .then((response) => response.response)
-                    .catch((error) => log_1.log.error(error));
+                    .catch((error) => _log__WEBPACK_IMPORTED_MODULE_5___default().error(error));
                 if (chapterContentObj.code !== 100000) {
-                    log_1.log.error(chapterContentObj);
+                    _log__WEBPACK_IMPORTED_MODULE_5___default().error(chapterContentObj);
                     throw new Error(`下载 ${refererUrl} 失败`);
                 }
                 return decrypt({
@@ -8541,11 +7745,11 @@ class Ciweimao extends rules_1.BaseRuleClass {
             const content = document.createElement("div");
             const decryptDate = await chapterDecrypt(chapterId, chapterUrl);
             content.innerHTML = decryptDate;
-            (0, misc_1.rm)(".chapter span", true, content);
+            (0,_lib_misc__WEBPACK_IMPORTED_MODULE_7__.rm)(".chapter span", true, content);
             if (divChapterAuthorSay) {
                 content.appendChild(divChapterAuthorSay);
             }
-            const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .z)(content, "TM");
             return {
                 chapterName,
                 contentRaw: content,
@@ -8565,8 +7769,8 @@ class Ciweimao extends rules_1.BaseRuleClass {
                     const parentWidth = 871;
                     const setFontSize = "14";
                     const imageSessionCodeUrl = HB.config.rootPath + "chapter/ajax_get_image_session_code";
-                    log_1.log.debug(`[Chapter]请求 ${imageSessionCodeUrl} Referer ${refererUrl}`);
-                    const imageSessionCodeObject = await (0, http_1.gfetch)(imageSessionCodeUrl, {
+                    _log__WEBPACK_IMPORTED_MODULE_5___default().debug(`[Chapter]请求 ${imageSessionCodeUrl} Referer ${refererUrl}`);
+                    const imageSessionCodeObject = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .gfetch */ .GF)(imageSessionCodeUrl, {
                         method: "POST",
                         headers: {
                             Accept: "application/json, text/javascript, */*; q=0.01",
@@ -8577,9 +7781,9 @@ class Ciweimao extends rules_1.BaseRuleClass {
                         responseType: "json",
                     })
                         .then((response) => response.response)
-                        .catch((error) => log_1.log.error(error));
+                        .catch((error) => _log__WEBPACK_IMPORTED_MODULE_5___default().error(error));
                     if (imageSessionCodeObject.code !== 100000) {
-                        log_1.log.error(imageSessionCodeObject);
+                        _log__WEBPACK_IMPORTED_MODULE_5___default().error(imageSessionCodeObject);
                         throw new Error(`下载 ${refererUrl} 失败`);
                     }
                     const imageCode = decrypt({
@@ -8606,8 +7810,8 @@ class Ciweimao extends rules_1.BaseRuleClass {
                 }
                 const divChapterAuthorSay = await getChapterAuthorSay();
                 const vipCHapterImageUrl = await vipChapterDecrypt(chapterId, chapterUrl);
-                log_1.log.debug(`[Chapter]请求 ${vipCHapterImageUrl} Referer ${chapterUrl}`);
-                const vipCHapterImageBlob = await (0, http_1.gfetch)(vipCHapterImageUrl, {
+                _log__WEBPACK_IMPORTED_MODULE_5___default().debug(`[Chapter]请求 ${vipCHapterImageUrl} Referer ${chapterUrl}`);
+                const vipCHapterImageBlob = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .gfetch */ .GF)(vipCHapterImageUrl, {
                     method: "GET",
                     headers: {
                         Referer: chapterUrl,
@@ -8616,19 +7820,19 @@ class Ciweimao extends rules_1.BaseRuleClass {
                     responseType: "blob",
                 })
                     .then((response) => response.response)
-                    .catch((error) => log_1.log.error(error));
+                    .catch((error) => _log__WEBPACK_IMPORTED_MODULE_5___default().error(error));
                 const vipCHapterName = `vipCHapter${chapterId}.png`;
-                const vipCHapterImage = new main_1.AttachmentClass(vipCHapterImageUrl, vipCHapterName, "TM");
+                const vipCHapterImage = new _main__WEBPACK_IMPORTED_MODULE_6__/* .AttachmentClass */ .Jh(vipCHapterImageUrl, vipCHapterName, "TM");
                 if (vipCHapterImageBlob) {
                     vipCHapterImage.imageBlob = vipCHapterImageBlob;
-                    vipCHapterImage.status = main_1.Status.finished;
+                    vipCHapterImage.status = _main__WEBPACK_IMPORTED_MODULE_6__/* .Status.finished */ .qb.finished;
                 }
                 const contentImages = [vipCHapterImage];
                 let ddom;
                 let dtext;
                 let dimages;
                 if (divChapterAuthorSay) {
-                    const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(divChapterAuthorSay, "TM");
+                    const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .z)(divChapterAuthorSay, "TM");
                     [ddom, dtext, dimages] = [dom, text, images];
                 }
                 const img = document.createElement("img");
@@ -8671,28 +7875,39 @@ class Ciweimao extends rules_1.BaseRuleClass {
         }
     }
 }
-exports.Ciweimao = Ciweimao;
 
 
 /***/ }),
 
 /***/ "./src/rules/special/original/ciyuanji.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Ciyuanji": () => (/* binding */ Ciyuanji)
+/* harmony export */ });
+/* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("crypto-js");
+/* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(crypto_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/misc.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _main__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/rules.ts");
 
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Ciyuanji = void 0;
-const CryptoJS = __webpack_require__("crypto-js");
-const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
-const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
-const http_1 = __webpack_require__("./src/lib/http.ts");
-const misc_1 = __webpack_require__("./src/lib/misc.ts");
-const rule_1 = __webpack_require__("./src/lib/rule.ts");
-const log_1 = __webpack_require__("./src/log.ts");
-const main_1 = __webpack_require__("./src/main.ts");
-const rules_1 = __webpack_require__("./src/rules.ts");
-class Ciyuanji extends rules_1.BaseRuleClass {
+
+
+
+
+
+
+
+
+class Ciyuanji extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
     constructor() {
         super();
         this.imageMode = "TM";
@@ -8706,15 +7921,15 @@ class Ciyuanji extends rules_1.BaseRuleClass {
         const author = bookObject.authorName;
         const introDom = document.createElement("div");
         introDom.innerHTML = bookObject.notes.replace("/\n/g", "<br/><br/>");
-        const [introduction, introductionHTML, introCleanimages] = await (0, rule_1.introDomHandle)(introDom);
+        const [introduction, introductionHTML, introCleanimages] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .introDomHandle */ .SN)(introDom);
         const additionalMetadate = {};
         const coverUrl = bookObject.imgUrl;
         if (coverUrl) {
-            (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getImageAttachment */ .CE)(coverUrl, this.imageMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
-                .catch((error) => log_1.log.error(error));
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_4___default().error(error));
         }
         additionalMetadate.tags = bookObject.tagList.map((tagobj) => tagobj.tagName);
         const bookChapterObject = unsafeWindow.__NUXT__
@@ -8739,22 +7954,22 @@ class Ciyuanji extends rules_1.BaseRuleClass {
             sectionChapterNumber++;
             const isVIP = chapterObj.isFee === "1";
             const isPaid = chapterObj.isBuy === "1";
-            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, {});
+            const chapter = new _main__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .WC(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, {});
             if (chapter.isVIP === true && chapter.isPaid === false) {
-                chapter.status = main_1.Status.aborted;
+                chapter.status = _main__WEBPACK_IMPORTED_MODULE_5__/* .Status.aborted */ .qb.aborted;
             }
             chapters.push(chapter);
         }
-        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        const book = new _main__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .fy(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        const doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_6__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
         const _script = Array.from(doc.querySelectorAll("script")).filter((s) => /^window\.__NUXT__/.test(s.innerHTML));
         if (_script.length === 1) {
             const script = _script[0];
             const scriptText = script.innerHTML.replace(/^window\./, "const ");
-            const __NUXT__ = (0, misc_1.sandboxed)(`${scriptText}; return __NUXT__`);
+            const __NUXT__ = (0,_lib_misc__WEBPACK_IMPORTED_MODULE_7__/* .sandboxed */ .J0)(`${scriptText}; return __NUXT__`);
             const chapterObj = __NUXT__.data[0].chapter;
             const data = {
                 key: "ZUreQN0Epkpxh3pooWOgixjTfPwumCTYWzYTQ7SMgDnqFLQ1s9tqpVhkGf02we89moQwhSQ07DVzc3LWupRgbVvm29aYeY7zyFN",
@@ -8766,28 +7981,28 @@ class Ciyuanji extends rules_1.BaseRuleClass {
             };
             function encrypt(input) {
                 if (input && "string" === typeof input) {
-                    const key = CryptoJS.enc.Utf8.parse(data.key);
-                    return CryptoJS.DES.encrypt(input, key, {
-                        mode: CryptoJS.mode.ECB,
-                        padding: CryptoJS.pad.Pkcs7,
+                    const key = crypto_js__WEBPACK_IMPORTED_MODULE_0__.enc.Utf8.parse(data.key);
+                    return crypto_js__WEBPACK_IMPORTED_MODULE_0__.DES.encrypt(input, key, {
+                        mode: crypto_js__WEBPACK_IMPORTED_MODULE_0__.mode.ECB,
+                        padding: crypto_js__WEBPACK_IMPORTED_MODULE_0__.pad.Pkcs7,
                     }).toString();
                 }
             }
             function decrypt(input) {
                 if (input && "string" === typeof input) {
                     input = input.replace(/\n/g, "");
-                    const key = CryptoJS.enc.Utf8.parse(data.key);
-                    return CryptoJS.DES.decrypt(input, key, {
-                        mode: CryptoJS.mode.ECB,
-                        padding: CryptoJS.pad.Pkcs7,
-                    }).toString(CryptoJS.enc.Utf8);
+                    const key = crypto_js__WEBPACK_IMPORTED_MODULE_0__.enc.Utf8.parse(data.key);
+                    return crypto_js__WEBPACK_IMPORTED_MODULE_0__.DES.decrypt(input, key, {
+                        mode: crypto_js__WEBPACK_IMPORTED_MODULE_0__.mode.ECB,
+                        padding: crypto_js__WEBPACK_IMPORTED_MODULE_0__.pad.Pkcs7,
+                    }).toString(crypto_js__WEBPACK_IMPORTED_MODULE_0__.enc.Utf8);
                 }
             }
             const content = document.createElement("div");
             const chapterContent = decrypt(chapterObj.chapterContentFormat);
             if (chapterContent) {
                 content.innerHTML = chapterContent;
-                const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .z)(content, "TM");
                 return {
                     chapterName,
                     contentRaw: content,
@@ -8808,27 +8023,37 @@ class Ciyuanji extends rules_1.BaseRuleClass {
         };
     }
 }
-exports.Ciyuanji = Ciyuanji;
 
 
 /***/ }),
 
 /***/ "./src/rules/special/original/gongzicp.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Gongzicp": () => (/* binding */ Gongzicp)
+/* harmony export */ });
+/* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("crypto-js");
+/* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(crypto_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/misc.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _main__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _setting__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/setting.ts");
 
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Gongzicp = void 0;
-const CryptoJS = __webpack_require__("crypto-js");
-const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
-const misc_1 = __webpack_require__("./src/lib/misc.ts");
-const rule_1 = __webpack_require__("./src/lib/rule.ts");
-const log_1 = __webpack_require__("./src/log.ts");
-const main_1 = __webpack_require__("./src/main.ts");
-const rules_1 = __webpack_require__("./src/rules.ts");
-const setting_1 = __webpack_require__("./src/setting.ts");
-class Gongzicp extends rules_1.BaseRuleClass {
+
+
+
+
+
+
+
+class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
     constructor() {
         super();
         this.imageMode = "TM";
@@ -8843,7 +8068,7 @@ class Gongzicp extends rules_1.BaseRuleClass {
         const novelGetInfoBaseUrl = "https://webapi.gongzicp.com/novel/novelGetInfo";
         const novelGetInfoUrl = new URL(novelGetInfoBaseUrl);
         novelGetInfoUrl.searchParams.set("id", bookId);
-        log_1.log.debug(`请求地址: ${novelGetInfoUrl.toString()}`);
+        _log__WEBPACK_IMPORTED_MODULE_2___default().debug(`请求地址: ${novelGetInfoUrl.toString()}`);
         const novelInfo = await fetch(novelGetInfoUrl.toString(), {
             credentials: "include",
             headers: {
@@ -8857,7 +8082,7 @@ class Gongzicp extends rules_1.BaseRuleClass {
             mode: "cors",
         })
             .then((response) => response.json())
-            .catch((error) => log_1.log.error(error));
+            .catch((error) => _log__WEBPACK_IMPORTED_MODULE_2___default().error(error));
         if (novelInfo.code !== 200) {
             throw new Error(`数据接口请求失败，URL:${novelGetInfoUrl.toString()}`);
         }
@@ -8866,20 +8091,20 @@ class Gongzicp extends rules_1.BaseRuleClass {
         const author = data.novelInfo.author_nickname;
         const introDom = document.createElement("div");
         introDom.innerHTML = data.novelInfo.novel_info;
-        const [introduction, introductionHTML, introCleanimages] = await (0, rule_1.introDomHandle)(introDom);
+        const [introduction, introductionHTML, introCleanimages] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_3__/* .introDomHandle */ .SN)(introDom);
         const additionalMetadate = {};
         const coverUrl = data.novelInfo.novel_cover;
         if (coverUrl) {
-            (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_4__/* .getImageAttachment */ .CE)(coverUrl, this.imageMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
-                .catch((error) => log_1.log.error(error));
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_2___default().error(error));
         }
         additionalMetadate.tags = data.novelInfo.tag_list;
         async function isLogin() {
             const getUserInfoUrl = "https://webapi.gongzicp.com/user/getUserInfo";
-            log_1.log.debug(`正在请求: ${getUserInfoUrl}`);
+            _log__WEBPACK_IMPORTED_MODULE_2___default().debug(`正在请求: ${getUserInfoUrl}`);
             const userInfo = await fetch(getUserInfoUrl, {
                 headers: {
                     accept: "application/json, text/javascript, */*; q=0.01",
@@ -8890,7 +8115,7 @@ class Gongzicp extends rules_1.BaseRuleClass {
                 credentials: "include",
             })
                 .then((response) => response.json())
-                .catch((error) => log_1.log.error(error));
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_2___default().error(error));
             if (userInfo.code === 200) {
                 return true;
             }
@@ -8924,32 +8149,32 @@ class Gongzicp extends rules_1.BaseRuleClass {
                     novel_id: data.novelInfo.novel_id,
                     chapter_id: chapterObj.id,
                 };
-                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, "UTF-8", chapterOption);
+                const chapter = new _main__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .WC(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, "UTF-8", chapterOption);
                 if ((isVIP && !(logined && chapter.isPaid)) || isLock) {
-                    chapter.status = main_1.Status.aborted;
+                    chapter.status = _main__WEBPACK_IMPORTED_MODULE_5__/* .Status.aborted */ .qb.aborted;
                 }
                 chapters.push(chapter);
             }
         }
-        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        const book = new _main__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .fy(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         function cpDecrypt(contentOrig) {
             const setIv = (key) => {
                 key = key + parseInt("165455", 14).toString(32);
-                const iv = CryptoJS.enc.Utf8.parse("$h$b3!" + key);
+                const iv = crypto_js__WEBPACK_IMPORTED_MODULE_0__.enc.Utf8.parse("$h$b3!" + key);
                 return iv;
             };
             const setKey = (value) => {
                 value = value + parseInt("4d5a6c8", 14).toString(36);
-                const key = CryptoJS.enc.Utf8.parse(value + "A");
+                const key = crypto_js__WEBPACK_IMPORTED_MODULE_0__.enc.Utf8.parse(value + "A");
                 return key;
             };
             const setcfg = (iv) => {
                 return {
-                    mode: CryptoJS.mode.CBC,
-                    padding: CryptoJS.pad.Pkcs7,
+                    mode: crypto_js__WEBPACK_IMPORTED_MODULE_0__.mode.CBC,
+                    padding: crypto_js__WEBPACK_IMPORTED_MODULE_0__.pad.Pkcs7,
                     iv,
                 };
             };
@@ -8957,12 +8182,12 @@ class Gongzicp extends rules_1.BaseRuleClass {
                 if ("string" !== typeof value) {
                     value = JSON.stringify(value);
                 }
-                const xml = CryptoJS.enc.Utf8.parse(value);
-                return CryptoJS.AES.encrypt(xml, key, cfg).toString();
+                const xml = crypto_js__WEBPACK_IMPORTED_MODULE_0__.enc.Utf8.parse(value);
+                return crypto_js__WEBPACK_IMPORTED_MODULE_0__.AES.encrypt(xml, key, cfg).toString();
             };
             const decrypt = (secrets, key, cfg) => {
-                const value = CryptoJS.AES.decrypt(secrets, key, cfg);
-                return CryptoJS.enc.Utf8.stringify(value).toString();
+                const value = crypto_js__WEBPACK_IMPORTED_MODULE_0__.AES.decrypt(secrets, key, cfg);
+                return crypto_js__WEBPACK_IMPORTED_MODULE_0__.enc.Utf8.stringify(value).toString();
             };
             let _CP_NUXT;
             let LCngpxaFSubstr;
@@ -8979,7 +8204,7 @@ class Gongzicp extends rules_1.BaseRuleClass {
             return content;
         }
         function randomWalker() {
-            log_1.log.info("[chapter]随机翻页中……");
+            _log__WEBPACK_IMPORTED_MODULE_2___default().info("[chapter]随机翻页中……");
             if (document.location.pathname.includes("novel")) {
                 document.querySelector(".chapter-list > .chapter > a").click();
             }
@@ -9010,7 +8235,7 @@ class Gongzicp extends rules_1.BaseRuleClass {
             chapterGetInfoUrl.searchParams.set("nid", nid.toString());
             let retryTime = 0;
             async function getChapterInfo(url) {
-                log_1.log.debug(`请求地址: ${url}, Referrer: ${chapterUrl}，retryTime：${retryTime}`);
+                _log__WEBPACK_IMPORTED_MODULE_2___default().debug(`请求地址: ${url}, Referrer: ${chapterUrl}，retryTime：${retryTime}`);
                 const resultI = await fetch(url, {
                     credentials: "include",
                     headers: {
@@ -9024,21 +8249,21 @@ class Gongzicp extends rules_1.BaseRuleClass {
                     mode: "cors",
                 })
                     .then((resp) => resp.json())
-                    .catch((error) => log_1.log.error(error));
+                    .catch((error) => _log__WEBPACK_IMPORTED_MODULE_2___default().error(error));
                 if (resultI.data.chapterInfo.content.length !== 0 &&
                     resultI.data.chapterInfo.content.length < 30) {
                     retryTime++;
-                    if (setting_1.retryLimit > setting_1.retryLimit) {
-                        log_1.log.error(`请求 ${url} 失败`);
+                    if (_setting__WEBPACK_IMPORTED_MODULE_6__/* .retryLimit */ .o5 > _setting__WEBPACK_IMPORTED_MODULE_6__/* .retryLimit */ .o5) {
+                        _log__WEBPACK_IMPORTED_MODULE_2___default().error(`请求 ${url} 失败`);
                         throw new Error(`请求 ${url} 失败`);
                     }
-                    log_1.log.warn("[chapter]疑似被阻断，进行随机翻页……");
+                    _log__WEBPACK_IMPORTED_MODULE_2___default().warn("[chapter]疑似被阻断，进行随机翻页……");
                     randomWalker();
-                    await (0, misc_1.sleep)(3000);
+                    await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_7__/* .sleep */ ._v)(3000);
                     randomWalker();
-                    await (0, misc_1.sleep)(7000);
+                    await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_7__/* .sleep */ ._v)(7000);
                     randomWalker();
-                    await (0, misc_1.sleep)(3000);
+                    await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_7__/* .sleep */ ._v)(3000);
                     return getChapterInfo(url);
                 }
                 else {
@@ -9139,7 +8364,7 @@ class Gongzicp extends rules_1.BaseRuleClass {
             if (Math.random() < 0.2) {
                 randomWalker();
             }
-            await (0, misc_1.sleep)(3000 + Math.round(Math.random() * 4000));
+            await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_7__/* .sleep */ ._v)(3000 + Math.round(Math.random() * 4000));
         }
         async function publicChapter() {
             await antiAntiCrawler();
@@ -9157,30 +8382,154 @@ class Gongzicp extends rules_1.BaseRuleClass {
         }
     }
 }
-exports.Gongzicp = Gongzicp;
 
 
 /***/ }),
 
 /***/ "./src/rules/special/original/jjwxc.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
+// ESM COMPAT FLAG
+__webpack_require__.r(__webpack_exports__);
 
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Jjwxc = void 0;
-const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
-const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
-const http_1 = __webpack_require__("./src/lib/http.ts");
-const http_2 = __webpack_require__("./src/lib/http.ts");
-const misc_1 = __webpack_require__("./src/lib/misc.ts");
-const rule_1 = __webpack_require__("./src/lib/rule.ts");
-const log_1 = __webpack_require__("./src/log.ts");
-const main_1 = __webpack_require__("./src/main.ts");
-const rules_1 = __webpack_require__("./src/rules.ts");
-const setting_1 = __webpack_require__("./src/setting.ts");
-const jjwxcFontDecode_1 = __webpack_require__("./src/rules/lib/jjwxcFontDecode.ts");
-class Jjwxc extends rules_1.BaseRuleClass {
+// EXPORTS
+__webpack_require__.d(__webpack_exports__, {
+  "Jjwxc": () => (/* binding */ Jjwxc)
+});
+
+// EXTERNAL MODULE: ./src/lib/attachments.ts
+var attachments = __webpack_require__("./src/lib/attachments.ts");
+// EXTERNAL MODULE: ./src/lib/cleanDOM.ts
+var cleanDOM = __webpack_require__("./src/lib/cleanDOM.ts");
+// EXTERNAL MODULE: ./src/lib/http.ts
+var http = __webpack_require__("./src/lib/http.ts");
+// EXTERNAL MODULE: ./src/lib/misc.ts
+var misc = __webpack_require__("./src/lib/misc.ts");
+// EXTERNAL MODULE: ./src/lib/rule.ts
+var rule = __webpack_require__("./src/lib/rule.ts");
+// EXTERNAL MODULE: external "log"
+var external_log_ = __webpack_require__("loglevel");
+var external_log_default = /*#__PURE__*/__webpack_require__.n(external_log_);
+// EXTERNAL MODULE: ./src/main.ts
+var main = __webpack_require__("./src/main.ts");
+// EXTERNAL MODULE: ./src/rules.ts + 1 modules
+var rules = __webpack_require__("./src/rules.ts");
+// EXTERNAL MODULE: ./src/setting.ts
+var setting = __webpack_require__("./src/setting.ts");
+;// CONCATENATED MODULE: external "idbKeyval"
+const external_idbKeyval_namespaceObject = idbKeyval;
+;// CONCATENATED MODULE: ./src/rules/lib/jjwxcFontDecode.ts
+
+
+
+async function replaceJjwxcCharacter(fontName, inputText) {
+    let outputText = inputText;
+    const jjwxcFontTable = await getJjwxcFontTable(fontName);
+    if (jjwxcFontTable) {
+        for (const jjwxcCharacter in jjwxcFontTable) {
+            if (Object.prototype.hasOwnProperty.call(jjwxcFontTable, jjwxcCharacter)) {
+                const normalCharacter = jjwxcFontTable[jjwxcCharacter];
+                outputText = outputText.replaceAll(jjwxcCharacter, normalCharacter);
+            }
+        }
+        outputText = outputText.replace(/\u200c/g, "");
+    }
+    return outputText;
+}
+async function getJjwxcFontTable(fontName) {
+    const jjwxcFontTables = await getJjwxcFontTables();
+    const jjwxcFontTableLocal = jjwxcFontTables[fontName];
+    if (jjwxcFontTableLocal) {
+        return jjwxcFontTableLocal;
+    }
+    else if (setting/* enableJjwxcRemoteFont */.Z3) {
+        return await fetchRemoteFont(fontName);
+    }
+    else {
+        return undefined;
+    }
+}
+async function fetchRemoteFont(fontName) {
+    const url = `https://jjwxc.bgme.bid/${fontName}.json`;
+    try {
+        external_log_default().info(`[jjwxc-font]开始请求远程字体对照表 ${fontName}`);
+        const resp = await fetch(url);
+        if (resp.status === 200) {
+            external_log_default().info(`[jjwxc-font]远程字体对照表 ${fontName} 下载成功`);
+            return (await resp.json());
+        }
+        else {
+            external_log_default().info(`[jjwxc-font]远程字体对照表 ${fontName} 下载失败`);
+            return undefined;
+        }
+    }
+    catch (error) {
+        external_log_default().error(error);
+        external_log_default().info(`[jjwxc-font]远程字体对照表 ${fontName} 下载失败`);
+        return undefined;
+    }
+}
+async function getJjwxcFontTables() {
+    const JjwxcFontTablesKeyName = "novel-downloader-jjwxcFontTables";
+    const JjwxcFontTablesExpiresKeyName = "novel-downloader-jjwxcFontTables__expires__";
+    const JjwxcFontTablesUrl = "https://cdn.jsdelivr.net/gh/yingziwu/jjwxcFontTables@gh-pages/bundle.json";
+    async function fetchAndSave() {
+        try {
+            external_log_default().info("[jjwxc-font]开始下载字体对照表打包文件。");
+            const resp = await fetch(JjwxcFontTablesUrl);
+            _jjwxcFontTables = await resp.json();
+            if (_jjwxcFontTables) {
+                if (await (0,external_idbKeyval_namespaceObject.get)(JjwxcFontTablesKeyName)) {
+                    await (0,external_idbKeyval_namespaceObject.update)(JjwxcFontTablesKeyName, (val) => _jjwxcFontTables);
+                }
+                else {
+                    await (0,external_idbKeyval_namespaceObject.set)(JjwxcFontTablesKeyName, _jjwxcFontTables);
+                }
+                if (await (0,external_idbKeyval_namespaceObject.get)(JjwxcFontTablesExpiresKeyName)) {
+                    await (0,external_idbKeyval_namespaceObject.update)(JjwxcFontTablesExpiresKeyName, (val) => Date.now() + 1000 * 86400);
+                }
+                else {
+                    await (0,external_idbKeyval_namespaceObject.set)(JjwxcFontTablesExpiresKeyName, Date.now() + 1000 * 86400);
+                }
+                return _jjwxcFontTables;
+            }
+            else {
+                return {};
+            }
+        }
+        catch (error) {
+            return {};
+        }
+    }
+    let _jjwxcFontTables = await (0,external_idbKeyval_namespaceObject.get)(JjwxcFontTablesKeyName);
+    if (_jjwxcFontTables) {
+        if ((await (0,external_idbKeyval_namespaceObject.get)(JjwxcFontTablesExpiresKeyName)) &&
+            (await (0,external_idbKeyval_namespaceObject.get)(JjwxcFontTablesExpiresKeyName)) > Date.now()) {
+            return _jjwxcFontTables;
+        }
+        else {
+            return await fetchAndSave();
+        }
+    }
+    else {
+        return await fetchAndSave();
+    }
+}
+
+;// CONCATENATED MODULE: ./src/rules/special/original/jjwxc.ts
+
+
+
+
+
+
+
+
+
+
+
+class Jjwxc extends rules/* BaseRuleClass */.c {
     constructor() {
         super();
         this.imageMode = "TM";
@@ -9210,17 +8559,17 @@ class Jjwxc extends rules_1.BaseRuleClass {
                 .replace(/作\s+者:/, "")
                 .trim();
             const introDom = document.querySelector("#novelintro");
-            [introduction, introductionHTML, introCleanimages] = await (0, rule_1.introDomHandle)(introDom);
+            [introduction, introductionHTML, introCleanimages] = await (0,rule/* introDomHandle */.SN)(introDom);
             if (introCleanimages) {
                 additionalMetadate.attachments = [...introCleanimages];
             }
             const coverUrl = document.querySelector(".noveldefaultimage").src;
             if (coverUrl) {
-                (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
+                (0,attachments/* getImageAttachment */.CE)(coverUrl, this.imageMode, "cover-")
                     .then((coverClass) => {
                     additionalMetadate.cover = coverClass;
                 })
-                    .catch((error) => log_1.log.error(error));
+                    .catch((error) => external_log_default().error(error));
             }
             let tags = document.querySelector("table > tbody > tr > td.readtd > div.righttd > ul.rightul > li:nth-child(1) > span:nth-child(2)").innerText.split("-");
             tags = tags.concat(Array.from(document.querySelectorAll("div.smallreadbody:nth-child(3) > span > a")).map((a) => a.innerText));
@@ -9232,7 +8581,7 @@ class Jjwxc extends rules_1.BaseRuleClass {
         }
         else {
             window.scrollTo(0, document.body.scrollHeight);
-            await (0, misc_1.sleep)(3000);
+            await (0,misc/* sleep */._v)(3000);
             bookname = document.querySelector("td[id^=comment_] span.coltext > a")?.innerText
                 .trim()
                 .replace(/《|》/g, "");
@@ -9242,7 +8591,7 @@ class Jjwxc extends rules_1.BaseRuleClass {
             }
             const authorPageUrl = document.querySelector("#oneboolt > tbody > tr:nth-child(1) > td > div > h2 > a")?.href;
             if (authorPageUrl) {
-                const authorPage = await (0, http_2.getHtmlDOM)(authorPageUrl, this.charset);
+                const authorPage = await (0,http/* getHtmlDOM */.dL)(authorPageUrl, this.charset);
                 author =
                     authorPage.querySelector('span[itemprop="name"]')
                         ?.innerText ?? author;
@@ -9286,7 +8635,7 @@ class Jjwxc extends rules_1.BaseRuleClass {
                         const chapterName = a.innerText.trim();
                         const chapterUrl = a.getAttribute("rel");
                         if (chapterUrl) {
-                            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), null, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, {});
+                            const chapter = new main/* Chapter */.WC(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), null, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, {});
                             const isLogin = () => {
                                 if (document.getElementById("jj_login")) {
                                     return false;
@@ -9296,7 +8645,7 @@ class Jjwxc extends rules_1.BaseRuleClass {
                                 }
                             };
                             if (isVIP() && !isLogin()) {
-                                chapter.status = main_1.Status.aborted;
+                                chapter.status = main/* Status.aborted */.qb.aborted;
                             }
                             chapters.push(chapter);
                         }
@@ -9304,7 +8653,7 @@ class Jjwxc extends rules_1.BaseRuleClass {
                     else {
                         const chapterName = a.innerText.trim();
                         const chapterUrl = a.href;
-                        const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), null, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, {});
+                        const chapter = new main/* Chapter */.WC(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), null, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, {});
                         const isLogin = () => {
                             if (document.getElementById("jj_login")) {
                                 return false;
@@ -9314,7 +8663,7 @@ class Jjwxc extends rules_1.BaseRuleClass {
                             }
                         };
                         if (isVIP() && !isLogin()) {
-                            chapter.status = main_1.Status.aborted;
+                            chapter.status = main/* Status.aborted */.qb.aborted;
                         }
                         chapters.push(chapter);
                     }
@@ -9322,32 +8671,32 @@ class Jjwxc extends rules_1.BaseRuleClass {
                 else {
                     const chapterName = "[锁]";
                     const chapterUrl = "";
-                    const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, false, null, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, {});
-                    chapter.status = main_1.Status.aborted;
+                    const chapter = new main/* Chapter */.WC(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, false, null, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, {});
+                    chapter.status = main/* Status.aborted */.qb.aborted;
                     chapters.push(chapter);
                 }
             }
         }
-        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        const book = new main/* Book */.fy(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         async function publicChapter() {
-            const doc = await (0, http_2.getHtmlDOM)(chapterUrl, charset);
+            const doc = await (0,http/* getHtmlDOM */.dL)(chapterUrl, charset);
             chapterName = doc.querySelector("div.noveltext h2").innerText.trim();
             const content = doc.querySelector("div.noveltext");
             if (content) {
-                (0, misc_1.rm)("hr", true, content);
+                (0,misc.rm)("hr", true, content);
                 const rawAuthorSayDom = content.querySelector(".readsmall");
                 let authorSayDom;
                 let authorSayText;
                 if (rawAuthorSayDom) {
-                    const { dom: adom, text: atext, images: aimages, } = await (0, cleanDOM_1.cleanDOM)(rawAuthorSayDom, "TM");
+                    const { dom: adom, text: atext, images: aimages, } = await (0,cleanDOM/* cleanDOM */.z)(rawAuthorSayDom, "TM");
                     [authorSayDom, authorSayText] = [adom, atext];
                 }
-                (0, misc_1.rm)("div", true, content);
+                (0,misc.rm)("div", true, content);
                 content.innerHTML = content.innerHTML.replaceAll("@无限好文，尽在晋江文学城", "");
-                let { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+                let { dom, text, images } = await (0,cleanDOM/* cleanDOM */.z)(content, "TM");
                 if (rawAuthorSayDom && authorSayDom && authorSayText) {
                     const hr = document.createElement("hr");
                     authorSayDom.className = "authorSay";
@@ -9409,8 +8758,8 @@ class Jjwxc extends rules_1.BaseRuleClass {
                 }
                 let retryTime = 0;
                 function fetchFont(fontUrlI) {
-                    log_1.log.debug(`[Chapter]请求 ${fontUrlI} Referer ${chapterUrl} 重试次数 ${retryTime}`);
-                    return (0, http_1.gfetch)(fontUrlI, {
+                    external_log_default().debug(`[Chapter]请求 ${fontUrlI} Referer ${chapterUrl} 重试次数 ${retryTime}`);
+                    return (0,http/* gfetch */.GF)(fontUrlI, {
                         headers: {
                             accept: "*/*",
                             Referer: chapterUrl,
@@ -9422,8 +8771,8 @@ class Jjwxc extends rules_1.BaseRuleClass {
                             return response.response;
                         }
                         else {
-                            log_1.log.error(`[Chapter]请求 ${fontUrlI} 失败 Referer ${chapterUrl}`);
-                            if (retryTime < setting_1.retryLimit) {
+                            external_log_default().error(`[Chapter]请求 ${fontUrlI} 失败 Referer ${chapterUrl}`);
+                            if (retryTime < setting/* retryLimit */.o5) {
                                 retryTime++;
                                 return fetchFont(fontUrlI);
                             }
@@ -9432,22 +8781,22 @@ class Jjwxc extends rules_1.BaseRuleClass {
                             }
                         }
                     })
-                        .catch((error) => log_1.log.error(error));
+                        .catch((error) => external_log_default().error(error));
                 }
                 const [fontName, fontUrl] = getFontInfo();
                 if (fontName && fontUrl) {
                     const fontFileName = `${fontName}.woff2`;
                     let fontClassObj;
-                    const fontClassObjCache = (0, attachments_1.getAttachmentClassCache)(fontUrl);
+                    const fontClassObjCache = (0,attachments/* getAttachmentClassCache */.gc)(fontUrl);
                     if (fontClassObjCache) {
                         fontClassObj = fontClassObjCache;
                     }
                     else {
                         const fontBlob = await fetchFont(fontUrl);
-                        fontClassObj = new main_1.AttachmentClass(fontUrl, fontFileName, "TM");
+                        fontClassObj = new main/* AttachmentClass */.Jh(fontUrl, fontFileName, "TM");
                         fontClassObj.imageBlob = fontBlob;
-                        fontClassObj.status = main_1.Status.finished;
-                        (0, attachments_1.putAttachmentClassCache)(fontClassObj);
+                        fontClassObj.status = main/* Status.finished */.qb.finished;
+                        (0,attachments/* putAttachmentClassCache */.dK)(fontClassObj);
                     }
                     const fontStyleDom = document.createElement("style");
                     fontStyleDom.innerHTML = `.${fontName} {
@@ -9464,7 +8813,7 @@ class Jjwxc extends rules_1.BaseRuleClass {
                 }
                 return [null, null, null];
             }
-            const dom = await (0, http_2.ggetHtmlDOM)(chapterUrl, charset);
+            const dom = await (0,http/* ggetHtmlDOM */.Fz)(chapterUrl, charset);
             const isPaidF = () => {
                 if (!dom.querySelector("#buy_content") &&
                     dom.querySelector("div.noveltext")) {
@@ -9478,17 +8827,17 @@ class Jjwxc extends rules_1.BaseRuleClass {
                 const ChapterName = dom.querySelector("div.noveltext h2").innerText.trim();
                 const content = dom.querySelector("div.noveltext");
                 if (content) {
-                    (0, misc_1.rm)("hr", true, content);
+                    (0,misc.rm)("hr", true, content);
                     const rawAuthorSayDom = content.querySelector(".readsmall");
                     let authorSayDom;
                     let authorSayText;
                     if (rawAuthorSayDom) {
-                        const { dom: adom, text: atext, images: aimages, } = await (0, cleanDOM_1.cleanDOM)(rawAuthorSayDom, "TM");
+                        const { dom: adom, text: atext, images: aimages, } = await (0,cleanDOM/* cleanDOM */.z)(rawAuthorSayDom, "TM");
                         [authorSayDom, authorSayText] = [adom, atext];
                     }
-                    (0, misc_1.rm)("div", true, content);
+                    (0,misc.rm)("div", true, content);
                     content.innerHTML = content.innerHTML.replaceAll("@无限好文，尽在晋江文学城", "");
-                    let { dom: rawDom, text: rawText, images, } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+                    let { dom: rawDom, text: rawText, images, } = await (0,cleanDOM/* cleanDOM */.z)(content, "TM");
                     if (rawAuthorSayDom && authorSayDom && authorSayText) {
                         const hr = document.createElement("hr");
                         authorSayDom.className = "authorSay";
@@ -9501,11 +8850,11 @@ class Jjwxc extends rules_1.BaseRuleClass {
                     let finalText = rawText;
                     const [fontName, fontClassObj, fontStyleDom] = await getFont();
                     if (fontName && fontClassObj && fontStyleDom) {
-                        finalText = await (0, jjwxcFontDecode_1.replaceJjwxcCharacter)(fontName, rawText);
+                        finalText = await replaceJjwxcCharacter(fontName, rawText);
                         images.push(fontClassObj);
                         finalDom = document.createElement("div");
                         const replacedDom = document.createElement("div");
-                        replacedDom.innerHTML = await (0, jjwxcFontDecode_1.replaceJjwxcCharacter)(fontName, rawDom.innerHTML);
+                        replacedDom.innerHTML = await replaceJjwxcCharacter(fontName, rawDom.innerHTML);
                         finalDom.appendChild(fontStyleDom);
                         rawDom.className = `${fontName} hide`;
                         finalDom.appendChild(rawDom);
@@ -9538,26 +8887,34 @@ class Jjwxc extends rules_1.BaseRuleClass {
         }
     }
 }
-exports.Jjwxc = Jjwxc;
 
 
 /***/ }),
 
 /***/ "./src/rules/special/original/linovel.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Linovel": () => (/* binding */ Linovel)
+/* harmony export */ });
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _main__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
 
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Linovel = void 0;
-const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
-const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
-const http_1 = __webpack_require__("./src/lib/http.ts");
-const rule_1 = __webpack_require__("./src/lib/rule.ts");
-const log_1 = __webpack_require__("./src/log.ts");
-const main_1 = __webpack_require__("./src/main.ts");
-const rules_1 = __webpack_require__("./src/rules.ts");
-class Linovel extends rules_1.BaseRuleClass {
+
+
+
+
+
+
+class Linovel extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
     constructor() {
         super();
         this.imageMode = "TM";
@@ -9568,28 +8925,28 @@ class Linovel extends rules_1.BaseRuleClass {
         const bookname = document.querySelector(".book-title").innerText.trim();
         const author = document.querySelector(".author-frame > .novelist > div:nth-child(3) > a").innerText.trim();
         const introDom = document.querySelector(".about-text");
-        const [introduction, introductionHTML, introCleanimages] = await (0, rule_1.introDomHandle)(introDom);
+        const [introduction, introductionHTML, introCleanimages] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .SN)(introDom);
         const additionalMetadate = {};
         const attachmentsUrlList = [];
         const coverUrl = document.querySelector(".book-cover > a").href;
         if (coverUrl) {
             attachmentsUrlList.push(coverUrl);
-            (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getImageAttachment */ .CE)(coverUrl, this.imageMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
-                .catch((error) => log_1.log.error(error));
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_3___default().error(error));
         }
         additionalMetadate.attachments = [];
         const volumeCoverUrlList = Array.from(document.querySelectorAll(".section-list > .section > .volume-info > .volume-cover a")).map((a) => a.href);
         for (const volumeCoverUrl of volumeCoverUrlList) {
             if (!attachmentsUrlList.includes(volumeCoverUrl)) {
                 attachmentsUrlList.push(volumeCoverUrl);
-                (0, attachments_1.getImageAttachment)(volumeCoverUrl, this.imageMode, "volumeCover-")
+                (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getImageAttachment */ .CE)(volumeCoverUrl, this.imageMode, "volumeCover-")
                     .then((volumeCoverObj) => {
                     additionalMetadate.attachments?.push(volumeCoverObj);
                 })
-                    .catch((error) => log_1.log.error(error));
+                    .catch((error) => _log__WEBPACK_IMPORTED_MODULE_3___default().error(error));
             }
         }
         additionalMetadate.tags = Array.from(document.querySelectorAll("div.meta-info > div.book-cats.clearfix > a")).map((a) => a.innerText.trim());
@@ -9622,26 +8979,26 @@ class Linovel extends rules_1.BaseRuleClass {
                 const isPaid = () => {
                     return false;
                 };
-                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), isPaid(), sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, "UTF-8", {});
+                const chapter = new _main__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .WC(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), isPaid(), sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, "UTF-8", {});
                 const isLogin = () => {
                     return false;
                 };
                 if (isVIP() && !(isLogin() && chapter.isPaid)) {
-                    chapter.status = main_1.Status.aborted;
+                    chapter.status = _main__WEBPACK_IMPORTED_MODULE_4__/* .Status.aborted */ .qb.aborted;
                 }
                 chapters.push(chapter);
             }
         }
-        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        const book = new _main__WEBPACK_IMPORTED_MODULE_4__/* .Book */ .fy(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         async function publicChapter() {
-            const doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
+            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_5__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
             const ChapterName = doc.querySelector(".article-title").innerText.trim();
             const content = doc.querySelector(".article-text");
             if (content) {
-                const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_6__/* .cleanDOM */ .z)(content, "TM");
                 return {
                     chapterName: ChapterName,
                     contentRaw: content,
@@ -9680,25 +9037,32 @@ class Linovel extends rules_1.BaseRuleClass {
         }
     }
 }
-exports.Linovel = Linovel;
 
 
 /***/ }),
 
 /***/ "./src/rules/special/original/lofter.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Lofter": () => (/* binding */ Lofter)
+/* harmony export */ });
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _main__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
 
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Lofter = void 0;
-const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
-const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
-const http_1 = __webpack_require__("./src/lib/http.ts");
-const log_1 = __webpack_require__("./src/log.ts");
-const main_1 = __webpack_require__("./src/main.ts");
-const rules_1 = __webpack_require__("./src/rules.ts");
-class Lofter extends rules_1.BaseRuleClass {
+
+
+
+
+
+class Lofter extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
     constructor() {
         super();
         this.imageMode = "TM";
@@ -9725,18 +9089,18 @@ class Lofter extends rules_1.BaseRuleClass {
             const avatar = new URL(_avatar);
             avatar.search = "";
             const avatarUrl = avatar.toString();
-            (0, attachments_1.getImageAttachment)(avatarUrl, this.imageMode, "avatar-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getImageAttachment */ .CE)(avatarUrl, this.imageMode, "avatar-")
                 .then((avatarClass) => {
                 additionalMetadate.cover = avatarClass;
             })
-                .catch((error) => log_1.log.error(error));
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_2___default().error(error));
         }
         const chapters = [];
         const pageUrlSet = new Set();
         const indexPageUrls = [];
         const getPageUrl = async (url) => {
-            log_1.log.info(`[chapter]正在抓取目录页：${url}`);
-            const doc = await (0, http_1.getHtmlDOM)(url, undefined);
+            _log__WEBPACK_IMPORTED_MODULE_2___default().info(`[chapter]正在抓取目录页：${url}`);
+            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_3__/* .getHtmlDOM */ .dL)(url, undefined);
             const selector = `a[href^="${[document.location.origin, "post"].join("/")}"]`;
             const urlSet = new Set(Array.from(doc.querySelectorAll(selector)).map((a) => a.href));
             urlSet.forEach((item) => pageUrlSet.add(item));
@@ -9767,17 +9131,17 @@ class Lofter extends rules_1.BaseRuleClass {
         await getPageUrl(document.location.href);
         let i = 0;
         for (const pageUrl of Array.from(pageUrlSet)) {
-            const chapter = new main_1.Chapter(bookUrl, bookname, pageUrl, i, null, false, false, null, null, null, this.chapterParse, "UTF-8", { author });
+            const chapter = new _main__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .WC(bookUrl, bookname, pageUrl, i, null, false, false, null, null, null, this.chapterParse, "UTF-8", { author });
             chapters.push(chapter);
             i++;
         }
-        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        const book = new _main__WEBPACK_IMPORTED_MODULE_4__/* .Book */ .fy(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         async function post() {
-            log_1.log.debug(`[chapter]请求页面：${chapterUrl}`);
-            const doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
+            _log__WEBPACK_IMPORTED_MODULE_2___default().debug(`[chapter]请求页面：${chapterUrl}`);
+            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_3__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
             chapterName =
                 doc
                     .querySelector("title")
@@ -9794,7 +9158,7 @@ class Lofter extends rules_1.BaseRuleClass {
                 }
             }
             if (content) {
-                const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_5__/* .cleanDOM */ .z)(content, "TM");
                 return {
                     chapterName,
                     contentRaw: content,
@@ -9809,12 +9173,12 @@ class Lofter extends rules_1.BaseRuleClass {
             }
         }
         async function lpost() {
-            log_1.log.debug(`[chapter]请求页面：${chapterUrl}`);
-            const doc = await (0, http_1.ggetHtmlDOM)(chapterUrl, charset);
+            _log__WEBPACK_IMPORTED_MODULE_2___default().debug(`[chapter]请求页面：${chapterUrl}`);
+            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_3__/* .ggetHtmlDOM */ .Fz)(chapterUrl, charset);
             chapterName = doc.querySelector("#title")?.innerText.trim();
             const content = doc.querySelector("#m-cnt .long-text");
             if (content) {
-                const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_5__/* .cleanDOM */ .z)(content, "TM");
                 return {
                     chapterName,
                     contentRaw: content,
@@ -9836,27 +9200,36 @@ class Lofter extends rules_1.BaseRuleClass {
         }
     }
 }
-exports.Lofter = Lofter;
 
 
 /***/ }),
 
 /***/ "./src/rules/special/original/longmabook.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Longmabook": () => (/* binding */ Longmabook)
+/* harmony export */ });
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/misc.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _main__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/main.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
 
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Longmabook = void 0;
-const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
-const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
-const http_1 = __webpack_require__("./src/lib/http.ts");
-const misc_1 = __webpack_require__("./src/lib/misc.ts");
-const rule_1 = __webpack_require__("./src/lib/rule.ts");
-const log_1 = __webpack_require__("./src/log.ts");
-const main_1 = __webpack_require__("./src/main.ts");
-const rules_1 = __webpack_require__("./src/rules.ts");
-class Longmabook extends rules_1.BaseRuleClass {
+
+
+
+
+
+
+
+class Longmabook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
     constructor() {
         super();
         this.imageMode = "TM";
@@ -9866,7 +9239,7 @@ class Longmabook extends rules_1.BaseRuleClass {
         const isLogin = Boolean(document.querySelector('a[href="/?act=signinlst"]'));
         if (!isLogin) {
             alert("小说下载器：海棠文化线上文学城需登录后方可下载！请登录帐号。");
-            throw new main_1.ExpectError("海棠文化线上文学城需登录后方可浏览！");
+            throw new _main__WEBPACK_IMPORTED_MODULE_1__/* .ExpectError */ .K2("海棠文化线上文学城需登录后方可浏览！");
         }
         const self = this;
         const bookUrl = document.location.href;
@@ -9883,26 +9256,26 @@ class Longmabook extends rules_1.BaseRuleClass {
             ?.cloneNode(true);
         let [introduction, introductionHTML, introCleanimages] = [null, null, null];
         if (introDom) {
-            (0, misc_1.rm)("div", true, introDom);
-            (0, misc_1.rm)("textarea", true, introDom);
-            (0, misc_1.rm)("font", true, introDom);
-            (0, misc_1.rm)("b", true, introDom);
-            (0, misc_1.rm)("span", true, introDom);
-            (0, misc_1.rm)("h4", true, introDom);
-            (0, misc_1.rm)("img", true, introDom);
+            (0,_lib_misc__WEBPACK_IMPORTED_MODULE_2__.rm)("div", true, introDom);
+            (0,_lib_misc__WEBPACK_IMPORTED_MODULE_2__.rm)("textarea", true, introDom);
+            (0,_lib_misc__WEBPACK_IMPORTED_MODULE_2__.rm)("font", true, introDom);
+            (0,_lib_misc__WEBPACK_IMPORTED_MODULE_2__.rm)("b", true, introDom);
+            (0,_lib_misc__WEBPACK_IMPORTED_MODULE_2__.rm)("span", true, introDom);
+            (0,_lib_misc__WEBPACK_IMPORTED_MODULE_2__.rm)("h4", true, introDom);
+            (0,_lib_misc__WEBPACK_IMPORTED_MODULE_2__.rm)("img", true, introDom);
             introDom.innerHTML = introDom.innerHTML
                 .replace(/【作品编号：\d+】|【作品編號：\d+】/, "")
                 .replace("\n)\n", "");
-            [introduction, introductionHTML, introCleanimages] = await (0, rule_1.introDomHandle)(introDom, undefined);
+            [introduction, introductionHTML, introCleanimages] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_3__/* .introDomHandle */ .SN)(introDom, undefined);
         }
         const additionalMetadate = {};
         const coverUrl = document.querySelector("#mypages > div:nth-child(8) > div:nth-child(1) > img")?.src.replace("_s.", "_b.");
         if (coverUrl) {
-            (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_4__/* .getImageAttachment */ .CE)(coverUrl, this.imageMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
-                .catch((error) => log_1.log.error(error));
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_5___default().error(error));
         }
         additionalMetadate.tags =
             document.querySelector('#mypages > div:nth-child(8) > div:nth-child(1) > font[color="#800080"]')?.innerText
@@ -9951,7 +9324,7 @@ class Longmabook extends rules_1.BaseRuleClass {
             const _chapterObjs = Array.from(chapterAList).map((a) => {
                 const chapterName = a.innerText;
                 const chapterUrl = a.href;
-                const _sectionName = (0, rule_1.getSectionName)(a, sections, getSName);
+                const _sectionName = (0,_lib_rule__WEBPACK_IMPORTED_MODULE_3__/* .getSectionName */ .$d)(a, sections, getSName);
                 const isVip = getIsVip(a);
                 let isPaid = false;
                 if (isVip) {
@@ -9968,15 +9341,15 @@ class Longmabook extends rules_1.BaseRuleClass {
             return _chapterObjs;
         };
         const chapterObjs = [];
-        const initDoc = await (0, http_1.getHtmlDomWithRetry)(showbooklistAPIUrl, self.charset, getInitObj(initShowbooklistParams));
+        const initDoc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_6__/* .getHtmlDomWithRetry */ .rf)(showbooklistAPIUrl, self.charset, getInitObj(initShowbooklistParams));
         if (initDoc) {
             chapterObjs.push(...getChapterObjs(initDoc));
             const pages = getPages(initDoc);
             if (pages.length !== 0) {
                 for (const page of pages) {
-                    const showbooklistParams = (0, misc_1.deepcopy)(initShowbooklistParams);
+                    const showbooklistParams = (0,_lib_misc__WEBPACK_IMPORTED_MODULE_2__/* .deepcopy */ .X8)(initShowbooklistParams);
                     showbooklistParams.pages = page.toString();
-                    const doc = await (0, http_1.getHtmlDomWithRetry)(showbooklistAPIUrl, self.charset, getInitObj(showbooklistParams));
+                    const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_6__/* .getHtmlDomWithRetry */ .rf)(showbooklistAPIUrl, self.charset, getInitObj(showbooklistParams));
                     if (doc) {
                         chapterObjs.push(...getChapterObjs(doc));
                     }
@@ -9996,18 +9369,18 @@ class Longmabook extends rules_1.BaseRuleClass {
             }
             chapterNumber++;
             sectionChapterNumber++;
-            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, { bookId, bookwritercode });
+            const chapter = new _main__WEBPACK_IMPORTED_MODULE_1__/* .Chapter */ .WC(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, { bookId, bookwritercode });
             if (chapter.isVIP === true && chapter.isPaid === false) {
-                chapter.status = main_1.Status.aborted;
+                chapter.status = _main__WEBPACK_IMPORTED_MODULE_1__/* .Status.aborted */ .qb.aborted;
             }
             chapters.push(chapter);
         }
-        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        const book = new _main__WEBPACK_IMPORTED_MODULE_1__/* .Book */ .fy(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         const self = this;
-        const doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_6__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
         if (doc.body.innerHTML.includes("您目前正在海棠清水區，只能觀看清水認證文章。")) {
             if (!window.stopFlag) {
                 alert("您目前正在海棠清水區，只能觀看清水認證文章。請使用海棠其他網址進入。");
@@ -10024,7 +9397,7 @@ class Longmabook extends rules_1.BaseRuleClass {
             additionalMetadate: null,
         };
         if (doc.querySelector("#paperbuybtm")) {
-            log_1.log.info(`[chapter]付费章节 ${chapterName} 未购买。`);
+            _log__WEBPACK_IMPORTED_MODULE_5___default().info(`[chapter]付费章节 ${chapterName} 未购买。`);
             return nullObj;
         }
         const content = document.createElement("div");
@@ -10068,7 +9441,7 @@ class Longmabook extends rules_1.BaseRuleClass {
         async function getImages() {
             const imageDom = document.createElement("div");
             Array.from(doc.querySelectorAll("#mypages > div:nth-child(10) > div:nth-child(2) > div:nth-child(6) > ul > li:nth-child(14) > img")).forEach((img) => imageDom.appendChild(img.cloneNode(true)));
-            const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(imageDom, self.imageMode);
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__/* .cleanDOM */ .z)(imageDom, self.imageMode);
             return [dom, text, images];
         }
         async function getMainContent() {
@@ -10084,7 +9457,7 @@ class Longmabook extends rules_1.BaseRuleClass {
             const [paperid, vercodechk] = getPaperidAndVercodechk();
             if (paperid && vercodechk) {
                 const showpapercolorUrl = document.location.origin + "/showpapercolor.php";
-                log_1.log.debug(`[chapter]正在请求${showpapercolorUrl}`);
+                _log__WEBPACK_IMPORTED_MODULE_5___default().debug(`[chapter]正在请求${showpapercolorUrl}`);
                 const resp = await fetch(showpapercolorUrl, {
                     credentials: "include",
                     headers: {
@@ -10102,8 +9475,8 @@ class Longmabook extends rules_1.BaseRuleClass {
                 });
                 const contentMain = document.createElement("div");
                 contentMain.innerHTML = await resp.text();
-                (0, misc_1.rm)('img[src="/images/fullcolor.png"]', true, contentMain);
-                const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(contentMain, self.imageMode);
+                (0,_lib_misc__WEBPACK_IMPORTED_MODULE_2__.rm)('img[src="/images/fullcolor.png"]', true, contentMain);
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__/* .cleanDOM */ .z)(contentMain, self.imageMode);
                 return [dom, text, images];
             }
             else {
@@ -10113,7 +9486,7 @@ class Longmabook extends rules_1.BaseRuleClass {
         async function getAuthorSay() {
             const authorSayDom = doc.querySelector("#colorpanelwritersay");
             if (authorSayDom) {
-                const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(authorSayDom, self.imageMode);
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__/* .cleanDOM */ .z)(authorSayDom, self.imageMode);
                 return [dom, text, images];
             }
             else {
@@ -10124,25 +9497,32 @@ class Longmabook extends rules_1.BaseRuleClass {
         }
     }
 }
-exports.Longmabook = Longmabook;
 
 
 /***/ }),
 
 /***/ "./src/rules/special/original/pixiv.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Pixiv": () => (/* binding */ Pixiv)
+/* harmony export */ });
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _main__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/main.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
 
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Pixiv = void 0;
-const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
-const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
-const http_1 = __webpack_require__("./src/lib/http.ts");
-const log_1 = __webpack_require__("./src/log.ts");
-const main_1 = __webpack_require__("./src/main.ts");
-const rules_1 = __webpack_require__("./src/rules.ts");
-class Pixiv extends rules_1.BaseRuleClass {
+
+
+
+
+
+class Pixiv extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
     constructor() {
         super();
         this.imageMode = "TM";
@@ -10191,11 +9571,11 @@ class Pixiv extends rules_1.BaseRuleClass {
                 const additionalMetadate = {};
                 const coverUrl = seriesMetaBody.firstEpisode.url;
                 if (coverUrl) {
-                    (0, attachments_1.getImageAttachment)(coverUrl, self.imageMode, "cover-")
+                    (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getImageAttachment */ .CE)(coverUrl, self.imageMode, "cover-")
                         .then((coverClass) => {
                         additionalMetadate.cover = coverClass;
                     })
-                        .catch((error) => log_1.log.error(error));
+                        .catch((error) => _log__WEBPACK_IMPORTED_MODULE_2___default().error(error));
                 }
                 additionalMetadate.lastModified = seriesMetaBody.updatedTimestamp;
                 const seriesContents = await getSeriesContents(id, seriesMetaBody.publishedContentCount);
@@ -10205,10 +9585,10 @@ class Pixiv extends rules_1.BaseRuleClass {
                     const chapterUrl = chapterUrlBase + sc.id;
                     const chapterNumber = sc.series.contentOrder;
                     const chapterName = `#${sc.series.contentOrder} ${sc.title}`;
-                    const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, false, false, null, null, null, self.chapterParse, self.charset, { id: sc.id });
+                    const chapter = new _main__WEBPACK_IMPORTED_MODULE_3__/* .Chapter */ .WC(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, false, false, null, null, null, self.chapterParse, self.charset, { id: sc.id });
                     chapters.push(chapter);
                 }
-                const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+                const book = new _main__WEBPACK_IMPORTED_MODULE_3__/* .Book */ .fy(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
                 return book;
             }
         }
@@ -10276,21 +9656,21 @@ class Pixiv extends rules_1.BaseRuleClass {
             const additionalMetadate = {};
             const coverUrl = novel.coverUrl;
             if (coverUrl) {
-                (0, attachments_1.getImageAttachment)(coverUrl, self.imageMode, "cover-")
+                (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getImageAttachment */ .CE)(coverUrl, self.imageMode, "cover-")
                     .then((coverClass) => {
                     additionalMetadate.cover = coverClass;
                 })
-                    .catch((error) => log_1.log.error(error));
+                    .catch((error) => _log__WEBPACK_IMPORTED_MODULE_2___default().error(error));
             }
             additionalMetadate.lastModified = new Date(novel.uploadDate).getTime();
             additionalMetadate.tags = novel.tags.tags.map((t) => t.tag);
             additionalMetadate.languages = novel.language;
             const chapterUrl = bookUrl;
             const chapterName = bookname;
-            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, 1, chapterName, false, false, null, null, null, self.chapterParse, self.charset, {});
+            const chapter = new _main__WEBPACK_IMPORTED_MODULE_3__/* .Chapter */ .WC(bookUrl, bookname, chapterUrl, 1, chapterName, false, false, null, null, null, self.chapterParse, self.charset, {});
             const contentRaw = document.createElement("div");
             contentRaw.innerHTML = novel.content.replace(/\n/g, "<br/>");
-            const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(contentRaw, "TM");
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_4__/* .cleanDOM */ .z)(contentRaw, "TM");
             chapter.contentRaw = contentRaw;
             chapter.contentHTML = dom;
             chapter.contentText = text;
@@ -10299,9 +9679,9 @@ class Pixiv extends rules_1.BaseRuleClass {
                 lastModified: new Date(novel.uploadDate).getTime(),
                 tags: novel.tags.tags.map((t) => t.tag),
             };
-            chapter.status = main_1.Status.finished;
+            chapter.status = _main__WEBPACK_IMPORTED_MODULE_3__/* .Status.finished */ .qb.finished;
             const chapters = [chapter];
-            const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+            const book = new _main__WEBPACK_IMPORTED_MODULE_3__/* .Book */ .fy(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
             return book;
         }
     }
@@ -10312,7 +9692,7 @@ class Pixiv extends rules_1.BaseRuleClass {
             if (novel) {
                 const contentRaw = document.createElement("div");
                 contentRaw.innerHTML = novel.content.replace(/\n/g, "<br/>");
-                const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(contentRaw, "TM");
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_4__/* .cleanDOM */ .z)(contentRaw, "TM");
                 const additionalMetadate = {
                     lastModified: new Date(novel.uploadDate).getTime(),
                     tags: novel.tags.tags.map((t) => t.tag),
@@ -10337,9 +9717,8 @@ class Pixiv extends rules_1.BaseRuleClass {
         };
     }
 }
-exports.Pixiv = Pixiv;
 async function getPreloadData(chapterUrl, charset) {
-    const doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
+    const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_5__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
     const _preloadData = doc
         .querySelector("meta#meta-preload-data")
         ?.getAttribute("content");
@@ -10363,21 +9742,31 @@ async function getPreloadData(chapterUrl, charset) {
 /***/ }),
 
 /***/ "./src/rules/special/original/qidian.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Qidian": () => (/* binding */ Qidian)
+/* harmony export */ });
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/misc.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _main__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
 
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Qidian = void 0;
-const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
-const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
-const http_1 = __webpack_require__("./src/lib/http.ts");
-const misc_1 = __webpack_require__("./src/lib/misc.ts");
-const rule_1 = __webpack_require__("./src/lib/rule.ts");
-const log_1 = __webpack_require__("./src/log.ts");
-const main_1 = __webpack_require__("./src/main.ts");
-const rules_1 = __webpack_require__("./src/rules.ts");
-class Qidian extends rules_1.BaseRuleClass {
+
+
+
+
+
+
+
+class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
     constructor() {
         super();
         this.imageMode = "TM";
@@ -10402,19 +9791,19 @@ class Qidian extends rules_1.BaseRuleClass {
             .replace(/作\s+者:/, "")
             .trim();
         const introDom = document.querySelector(".book-info-detail .book-intro");
-        const [introduction, introductionHTML, introCleanimages] = await (0, rule_1.introDomHandle)(introDom);
+        const [introduction, introductionHTML, introCleanimages] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .SN)(introDom);
         const additionalMetadate = {};
         const coverUrl = document.querySelector("#bookImg > img").src;
         if (coverUrl) {
-            (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getImageAttachment */ .CE)(coverUrl, this.imageMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
-                .catch((error) => log_1.log.error(error));
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_3___default().error(error));
         }
         additionalMetadate.tags = Array.from(document.querySelectorAll(".book-info > .tag > a, .tag-wrap > .tags")).map((a) => a.innerText.trim());
         const limitFree = Boolean(document.querySelector(".book-information .flag"));
-        log_1.log.info(`[Book]限免书籍 ${limitFree}`);
+        _log__WEBPACK_IMPORTED_MODULE_3___default().info(`[Book]限免书籍 ${limitFree}`);
         const chapters = [];
         const liLength = document.querySelectorAll("#j-catalogWrap li").length;
         const getChapterTotalNumber = () => {
@@ -10424,7 +9813,7 @@ class Qidian extends rules_1.BaseRuleClass {
             }
         };
         if (!(liLength && getChapterTotalNumber() === liLength)) {
-            await (0, misc_1.sleep)(3000);
+            await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_4__/* .sleep */ ._v)(3000);
         }
         const sections = document.querySelectorAll("#j-catalogWrap > .volume-wrap > .volume");
         let chapterNumber = 0;
@@ -10470,7 +9859,7 @@ class Qidian extends rules_1.BaseRuleClass {
                 else {
                     chapterId = null;
                 }
-                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), isPaid(), sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, "UTF-8", {
+                const chapter = new _main__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .WC(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), isPaid(), sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, "UTF-8", {
                     _csrfToken,
                     bookId,
                     authorId,
@@ -10488,18 +9877,18 @@ class Qidian extends rules_1.BaseRuleClass {
                     return false;
                 };
                 if (isVIP()) {
-                    chapter.status = main_1.Status.aborted;
+                    chapter.status = _main__WEBPACK_IMPORTED_MODULE_5__/* .Status.aborted */ .qb.aborted;
                     if (limitFree) {
-                        chapter.status = main_1.Status.pending;
+                        chapter.status = _main__WEBPACK_IMPORTED_MODULE_5__/* .Status.pending */ .qb.pending;
                     }
                     if (isLogin() && chapter.isPaid) {
-                        chapter.status = main_1.Status.pending;
+                        chapter.status = _main__WEBPACK_IMPORTED_MODULE_5__/* .Status.pending */ .qb.pending;
                     }
                 }
                 chapters.push(chapter);
             }
         }
-        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        const book = new _main__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .fy(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
@@ -10519,10 +9908,10 @@ class Qidian extends rules_1.BaseRuleClass {
         async function getChapter() {
             let doc;
             if (isVIP) {
-                doc = await (0, rule_1.getFrameContent)(chapterUrl);
+                doc = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .getFrameContent */ .jt)(chapterUrl);
             }
             else {
-                doc = await (0, http_1.ggetHtmlDOM)(chapterUrl, charset);
+                doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_6__/* .ggetHtmlDOM */ .Fz)(chapterUrl, charset);
             }
             if (doc) {
                 chapterName = doc.querySelector(".j_chapterName > .content-wrap").innerText.trim();
@@ -10532,7 +9921,7 @@ class Qidian extends rules_1.BaseRuleClass {
                 const content = document.createElement("div");
                 let contentText = "";
                 const contentMain = doc.querySelector(".read-content");
-                (0, misc_1.rm)("span.review-count", true, contentMain);
+                (0,_lib_misc__WEBPACK_IMPORTED_MODULE_4__.rm)("span.review-count", true, contentMain);
                 Array.from(contentMain.querySelectorAll("span.content-wrap")).forEach((span) => {
                     const parentEl = span.parentElement;
                     if (parentEl) {
@@ -10541,17 +9930,17 @@ class Qidian extends rules_1.BaseRuleClass {
                 });
                 const authorSayWrap = doc.querySelector(".author-say-wrap");
                 if (contentMain) {
-                    const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(contentMain, "TM");
-                    (0, cleanDOM_1.htmlTrim)(dom);
+                    const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__/* .cleanDOM */ .z)(contentMain, "TM");
+                    (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__/* .htmlTrim */ .i)(dom);
                     content.appendChild(dom);
                     contentText = contentText + text;
                     if (authorSayWrap) {
                         const authorSay = authorSayWrap.querySelector("div.author-say");
                         if (authorSay) {
-                            (0, misc_1.rm)("a.avatar", false, authorSay);
-                            (0, misc_1.rm)("h4", false, authorSay);
-                            const { dom: authorDom, text: authorText, images: authorImages, } = await (0, cleanDOM_1.cleanDOM)(authorSayWrap, "TM");
-                            (0, cleanDOM_1.htmlTrim)(authorDom);
+                            (0,_lib_misc__WEBPACK_IMPORTED_MODULE_4__.rm)("a.avatar", false, authorSay);
+                            (0,_lib_misc__WEBPACK_IMPORTED_MODULE_4__.rm)("h4", false, authorSay);
+                            const { dom: authorDom, text: authorText, images: authorImages, } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__/* .cleanDOM */ .z)(authorSayWrap, "TM");
+                            (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__/* .htmlTrim */ .i)(authorDom);
                             authorDom.className = "authorSay";
                             const hr = document.createElement("hr");
                             content.appendChild(hr);
@@ -10576,26 +9965,34 @@ class Qidian extends rules_1.BaseRuleClass {
         return getChapter();
     }
 }
-exports.Qidian = Qidian;
 
 
 /***/ }),
 
 /***/ "./src/rules/special/original/qimao.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Qimao": () => (/* binding */ Qimao)
+/* harmony export */ });
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _main__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
 
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Qimao = void 0;
-const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
-const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
-const http_1 = __webpack_require__("./src/lib/http.ts");
-const rule_1 = __webpack_require__("./src/lib/rule.ts");
-const log_1 = __webpack_require__("./src/log.ts");
-const main_1 = __webpack_require__("./src/main.ts");
-const rules_1 = __webpack_require__("./src/rules.ts");
-class Qimao extends rules_1.BaseRuleClass {
+
+
+
+
+
+
+class Qimao extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
     constructor() {
         super();
         this.imageMode = "TM";
@@ -10605,15 +10002,15 @@ class Qimao extends rules_1.BaseRuleClass {
         const bookname = document.querySelector("h2.tit").innerText.trim();
         const author = document.querySelector(".p-name > a").innerHTML.trim();
         const introDom = document.querySelector(".book-introduction .article");
-        const [introduction, introductionHTML, introCleanimages] = await (0, rule_1.introDomHandle)(introDom);
+        const [introduction, introductionHTML, introCleanimages] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .SN)(introDom);
         const additionalMetadate = {};
         const coverUrl = document.querySelector(".poster-pic > img").src;
         if (coverUrl) {
-            (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getImageAttachment */ .CE)(coverUrl, this.imageMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
-                .catch((error) => log_1.log.error(error));
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_3___default().error(error));
         }
         additionalMetadate.tags = Array.from(document.querySelectorAll(".qm-tags > a")).map((a) => a.innerText.trim());
         const chapters = [];
@@ -10634,26 +10031,26 @@ class Qimao extends rules_1.BaseRuleClass {
             const isPaid = () => {
                 return false;
             };
-            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), isPaid(), null, null, null, this.chapterParse, "UTF-8", {});
+            const chapter = new _main__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .WC(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), isPaid(), null, null, null, this.chapterParse, "UTF-8", {});
             const isLogin = () => {
                 return false;
             };
             if (isVIP() && !(isLogin() && chapter.isPaid)) {
-                chapter.status = main_1.Status.aborted;
+                chapter.status = _main__WEBPACK_IMPORTED_MODULE_4__/* .Status.aborted */ .qb.aborted;
             }
             chapters.push(chapter);
         }
-        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        const book = new _main__WEBPACK_IMPORTED_MODULE_4__/* .Book */ .fy(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         async function publicChapter() {
-            log_1.log.debug(`[Chapter]请求 ${chapterUrl}`);
-            const doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
+            _log__WEBPACK_IMPORTED_MODULE_3___default().debug(`[Chapter]请求 ${chapterUrl}`);
+            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_5__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
             chapterName = doc.querySelector(".title").innerText.trim();
             const content = doc.querySelector(".article");
             if (content) {
-                const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_6__/* .cleanDOM */ .z)(content, "TM");
                 return {
                     chapterName,
                     contentRaw: content,
@@ -10692,27 +10089,36 @@ class Qimao extends rules_1.BaseRuleClass {
         }
     }
 }
-exports.Qimao = Qimao;
 
 
 /***/ }),
 
 /***/ "./src/rules/special/original/qingoo.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Qingoo": () => (/* binding */ Qingoo)
+/* harmony export */ });
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/misc.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _main__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
 
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Qingoo = void 0;
-const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
-const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
-const http_1 = __webpack_require__("./src/lib/http.ts");
-const misc_1 = __webpack_require__("./src/lib/misc.ts");
-const rule_1 = __webpack_require__("./src/lib/rule.ts");
-const log_1 = __webpack_require__("./src/log.ts");
-const main_1 = __webpack_require__("./src/main.ts");
-const rules_1 = __webpack_require__("./src/rules.ts");
-class Qingoo extends rules_1.BaseRuleClass {
+
+
+
+
+
+
+
+class Qingoo extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
     constructor() {
         super();
         this.imageMode = "TM";
@@ -10725,15 +10131,15 @@ class Qingoo extends rules_1.BaseRuleClass {
             .replace("作者：", "")
             .trim();
         const introDom = document.querySelector("#allDesc");
-        const [introduction, introductionHTML, introCleanimages] = await (0, rule_1.introDomHandle)(introDom);
+        const [introduction, introductionHTML, introCleanimages] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .SN)(introDom);
         const additionalMetadate = {};
         const coverUrl = document.querySelector(".title > dl > dt > img:nth-child(1)").src;
         if (coverUrl) {
-            (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getImageAttachment */ .CE)(coverUrl, this.imageMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
-                .catch((error) => log_1.log.error(error));
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_3___default().error(error));
         }
         const chapters = [];
         const data = unsafeWindow.data;
@@ -10748,24 +10154,24 @@ class Qingoo extends rules_1.BaseRuleClass {
             const chapterUrl = linkTemp.toString();
             const isVIP = false;
             const isPaid = false;
-            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, null, null, null, this.chapterParse, this.charset, {});
+            const chapter = new _main__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .WC(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, null, null, null, this.chapterParse, this.charset, {});
             if (!status) {
-                chapter.status = main_1.Status.aborted;
+                chapter.status = _main__WEBPACK_IMPORTED_MODULE_4__/* .Status.aborted */ .qb.aborted;
             }
             chapters.push(chapter);
         }
-        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        const book = new _main__WEBPACK_IMPORTED_MODULE_4__/* .Book */ .fy(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        const doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_5__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
         chapterName = doc.querySelector("#content > h1").innerText.trim();
         const content = doc.querySelector("#content");
         if (content) {
-            (0, misc_1.rm)("div.header", false, content);
-            (0, misc_1.rm)("h1", false, content);
-            (0, misc_1.rm)("h6", false, content);
-            const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+            (0,_lib_misc__WEBPACK_IMPORTED_MODULE_6__.rm)("div.header", false, content);
+            (0,_lib_misc__WEBPACK_IMPORTED_MODULE_6__.rm)("h1", false, content);
+            (0,_lib_misc__WEBPACK_IMPORTED_MODULE_6__.rm)("h6", false, content);
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__/* .cleanDOM */ .z)(content, "TM");
             return {
                 chapterName,
                 contentRaw: content,
@@ -10787,28 +10193,38 @@ class Qingoo extends rules_1.BaseRuleClass {
         }
     }
 }
-exports.Qingoo = Qingoo;
 
 
 /***/ }),
 
 /***/ "./src/rules/special/original/sfacg.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Sfacg": () => (/* binding */ Sfacg)
+/* harmony export */ });
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/lib/misc.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _main__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _setting__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/setting.ts");
 
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Sfacg = void 0;
-const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
-const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
-const http_1 = __webpack_require__("./src/lib/http.ts");
-const misc_1 = __webpack_require__("./src/lib/misc.ts");
-const rule_1 = __webpack_require__("./src/lib/rule.ts");
-const log_1 = __webpack_require__("./src/log.ts");
-const main_1 = __webpack_require__("./src/main.ts");
-const rules_1 = __webpack_require__("./src/rules.ts");
-const setting_1 = __webpack_require__("./src/setting.ts");
-class Sfacg extends rules_1.BaseRuleClass {
+
+
+
+
+
+
+
+
+class Sfacg extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
     constructor() {
         super();
         this.imageMode = "TM";
@@ -10817,28 +10233,28 @@ class Sfacg extends rules_1.BaseRuleClass {
     async bookParse() {
         const bookUrl = document.location.href.replace("/MainIndex/", "");
         const bookname = document.querySelector("h1.story-title").innerText.trim();
-        const dom = await (0, http_1.getHtmlDOM)(bookUrl, undefined);
+        const dom = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .dL)(bookUrl, undefined);
         const author = dom.querySelector(".author-name").innerText.trim();
         const introDom = dom.querySelector(".introduce");
-        const [introduction, introductionHTML, introCleanimages] = await (0, rule_1.introDomHandle)(introDom);
+        const [introduction, introductionHTML, introCleanimages] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .introDomHandle */ .SN)(introDom);
         const additionalMetadate = {};
         const coverUrl = dom.querySelector("#hasTicket div.pic img").src;
         if (coverUrl) {
-            (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getImageAttachment */ .CE)(coverUrl, this.imageMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
-                .catch((error) => log_1.log.error(error));
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_4___default().error(error));
         }
         additionalMetadate.tags = Array.from(dom.querySelectorAll("ul.tag-list > li.tag > a")).map((a) => {
-            (0, misc_1.rm)("span.icn", false, a);
+            (0,_lib_misc__WEBPACK_IMPORTED_MODULE_5__.rm)("span.icn", false, a);
             return a.innerText.trim().replace(/\(\d+\)$/, "");
         });
         if (dom.querySelector(".d-banner")) {
             const _beitouUrl = dom.querySelector(".d-banner")?.style.backgroundImage.split('"');
             if (_beitouUrl?.length === 3) {
                 const beitouUrl = _beitouUrl[1];
-                const beitou = new main_1.AttachmentClass(beitouUrl, `beitou.${beitouUrl.split(".").slice(-1)[0]}`, "TM");
+                const beitou = new _main__WEBPACK_IMPORTED_MODULE_6__/* .AttachmentClass */ .Jh(beitouUrl, `beitou.${beitouUrl.split(".").slice(-1)[0]}`, "TM");
                 beitou.init();
                 additionalMetadate.attachments = [beitou];
             }
@@ -10856,7 +10272,7 @@ class Sfacg extends rules_1.BaseRuleClass {
         for (const elem of Array.from(chapterElems)) {
             const chapterName = elem.getAttribute("title")?.trim() ?? "";
             const chapterUrl = elem.href;
-            const sectionName = (0, rule_1.getSectionName)(elem, sections, getName);
+            const sectionName = (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .getSectionName */ .$d)(elem, sections, getName);
             if (sectionName && _sectionName !== sectionName) {
                 _sectionName = sectionName;
                 sectionNumber++;
@@ -10874,26 +10290,26 @@ class Sfacg extends rules_1.BaseRuleClass {
                 }
             };
             const isPaid = null;
-            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVip(), isPaid, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, "UTF-8", {});
+            const chapter = new _main__WEBPACK_IMPORTED_MODULE_6__/* .Chapter */ .WC(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVip(), isPaid, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, "UTF-8", {});
             const isLogin = !document
                 .querySelector(".user-bar > .top-link > .normal-link")
                 ?.innerHTML.includes("您好，SF游客");
             if (chapter.isVIP && isLogin === false) {
-                chapter.status = main_1.Status.aborted;
+                chapter.status = _main__WEBPACK_IMPORTED_MODULE_6__/* .Status.aborted */ .qb.aborted;
             }
             chapters.push(chapter);
         }
-        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        const book = new _main__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .fy(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         const chapterId = chapterUrl.split("/").slice(-2, -1)[0];
         async function publicChapter() {
-            const doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
+            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
             chapterName = doc.querySelector("h1.article-title").innerText.trim();
             const content = doc.querySelector(".article-content");
             if (content) {
-                const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__/* .cleanDOM */ .z)(content, "TM");
                 return {
                     chapterName,
                     contentRaw: content,
@@ -10918,7 +10334,7 @@ class Sfacg extends rules_1.BaseRuleClass {
             async function getvipChapterImage(vipChapterImageUrl, vipChapterName) {
                 let retryTime = 0;
                 function fetchVipChapterImage(vipChapterImageUrlI) {
-                    log_1.log.debug(`[Chapter]请求 ${vipChapterImageUrlI} Referer ${chapterUrl} 重试次数 ${retryTime}`);
+                    _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`[Chapter]请求 ${vipChapterImageUrlI} Referer ${chapterUrl} 重试次数 ${retryTime}`);
                     return fetch(vipChapterImageUrlI, {
                         headers: {
                             accept: "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8",
@@ -10932,8 +10348,8 @@ class Sfacg extends rules_1.BaseRuleClass {
                         .then((response) => response.blob())
                         .then((blob) => {
                         if (blob.size === 53658 || blob.size === 42356) {
-                            log_1.log.error(`[Chapter]请求 ${vipChapterImageUrlI} 失败 Referer ${chapterUrl}`);
-                            if (retryTime < setting_1.retryLimit) {
+                            _log__WEBPACK_IMPORTED_MODULE_4___default().error(`[Chapter]请求 ${vipChapterImageUrlI} 失败 Referer ${chapterUrl}`);
+                            if (retryTime < _setting__WEBPACK_IMPORTED_MODULE_8__/* .retryLimit */ .o5) {
                                 retryTime++;
                                 return fetchVipChapterImage(vipChapterImageUrlI);
                             }
@@ -10945,16 +10361,16 @@ class Sfacg extends rules_1.BaseRuleClass {
                             return blob;
                         }
                     })
-                        .catch((error) => log_1.log.error(error));
+                        .catch((error) => _log__WEBPACK_IMPORTED_MODULE_4___default().error(error));
                 }
                 const vipChapterImageBlob = await fetchVipChapterImage(vipChapterImageUrl);
-                const vipChapterImage = new main_1.AttachmentClass(vipChapterImageUrl, vipChapterName, "naive");
+                const vipChapterImage = new _main__WEBPACK_IMPORTED_MODULE_6__/* .AttachmentClass */ .Jh(vipChapterImageUrl, vipChapterName, "naive");
                 if (vipChapterImageBlob) {
                     vipChapterImage.imageBlob = vipChapterImageBlob;
-                    vipChapterImage.status = main_1.Status.finished;
+                    vipChapterImage.status = _main__WEBPACK_IMPORTED_MODULE_6__/* .Status.finished */ .qb.finished;
                 }
                 else {
-                    vipChapterImage.status = main_1.Status.failed;
+                    vipChapterImage.status = _main__WEBPACK_IMPORTED_MODULE_6__/* .Status.failed */ .qb.failed;
                 }
                 return vipChapterImage;
             }
@@ -10963,7 +10379,7 @@ class Sfacg extends rules_1.BaseRuleClass {
                 ? true
                 : false;
             if (isLogin) {
-                const dom = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
+                const dom = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
                 const chapterNameI = dom.querySelector("h1.article-title").innerText.trim();
                 isPaid = dom.querySelector(".pay-section") === null;
                 if (isPaid) {
@@ -11010,28 +10426,39 @@ class Sfacg extends rules_1.BaseRuleClass {
         }
     }
 }
-exports.Sfacg = Sfacg;
 
 
 /***/ }),
 
 /***/ "./src/rules/special/original/shubl.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Shubl": () => (/* binding */ Shubl)
+/* harmony export */ });
+/* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("crypto-js");
+/* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(crypto_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/misc.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _main__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/rules.ts");
 
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Shubl = void 0;
-const CryptoJS = __webpack_require__("crypto-js");
-const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
-const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
-const http_1 = __webpack_require__("./src/lib/http.ts");
-const misc_1 = __webpack_require__("./src/lib/misc.ts");
-const rule_1 = __webpack_require__("./src/lib/rule.ts");
-const log_1 = __webpack_require__("./src/log.ts");
-const main_1 = __webpack_require__("./src/main.ts");
-const rules_1 = __webpack_require__("./src/rules.ts");
-class Shubl extends rules_1.BaseRuleClass {
+
+
+
+
+
+
+
+
+class Shubl extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
     constructor() {
         super();
         this.imageMode = "TM";
@@ -11044,7 +10471,7 @@ class Shubl extends rules_1.BaseRuleClass {
         const bookname = document.querySelector(".book-title > span").innerText.trim();
         const author = document.querySelector("div.username").innerText.trim();
         const introDom = document.querySelector(".book-brief");
-        const [introduction, introductionHTML, introCleanimages] = await (0, rule_1.introDomHandle)(introDom, (introDomI) => {
+        const [introduction, introductionHTML, introCleanimages] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .introDomHandle */ .SN)(introDom, (introDomI) => {
             introDomI.innerHTML = introDomI.innerHTML.replace("简介：", "");
             return introDomI;
         });
@@ -11052,11 +10479,11 @@ class Shubl extends rules_1.BaseRuleClass {
         const coverUrl = document.querySelector(".book-img")
             .src;
         if (coverUrl) {
-            (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getImageAttachment */ .CE)(coverUrl, this.imageMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
-                .catch((error) => log_1.log.error(error));
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_4___default().error(error));
         }
         additionalMetadate.tags = Array.from(document.querySelectorAll("div.row > span.tag")).map((span) => span.innerText.trim());
         const chapters = [];
@@ -11095,15 +10522,15 @@ class Shubl extends rules_1.BaseRuleClass {
                         }
                         return false;
                     };
-                    const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), isPaid(), sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, {});
+                    const chapter = new _main__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .WC(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), isPaid(), sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, {});
                     if (isVIP() && !(isLogin() && isPaid())) {
-                        chapter.status = main_1.Status.aborted;
+                        chapter.status = _main__WEBPACK_IMPORTED_MODULE_5__/* .Status.aborted */ .qb.aborted;
                     }
                     chapters.push(chapter);
                 }
             }
         }
-        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        const book = new _main__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .fy(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
@@ -11122,17 +10549,17 @@ class Shubl extends rules_1.BaseRuleClass {
                 const data = output[i];
                 const iv = btoa(message.substr(0, 16));
                 const keys255 = btoa(message.substr(16));
-                const pass = CryptoJS.format.OpenSSL.parse(keys255);
-                message = CryptoJS.AES.decrypt(pass, CryptoJS.enc.Base64.parse(data), {
-                    iv: CryptoJS.enc.Base64.parse(iv),
-                    format: CryptoJS.format.OpenSSL,
+                const pass = crypto_js__WEBPACK_IMPORTED_MODULE_0__.format.OpenSSL.parse(keys255);
+                message = crypto_js__WEBPACK_IMPORTED_MODULE_0__.AES.decrypt(pass, crypto_js__WEBPACK_IMPORTED_MODULE_0__.enc.Base64.parse(data), {
+                    iv: crypto_js__WEBPACK_IMPORTED_MODULE_0__.enc.Base64.parse(iv),
+                    format: crypto_js__WEBPACK_IMPORTED_MODULE_0__.format.OpenSSL,
                 });
                 if (i < output.length - 1) {
-                    message = message.toString(CryptoJS.enc.Base64);
+                    message = message.toString(crypto_js__WEBPACK_IMPORTED_MODULE_0__.enc.Base64);
                     message = atob(message);
                 }
             }
-            return message.toString(CryptoJS.enc.Utf8);
+            return message.toString(crypto_js__WEBPACK_IMPORTED_MODULE_0__.enc.Utf8);
         }
         const rootPath = "https://www.shubl.com/";
         const chapterId = chapterUrl.split("/").slice(-1)[0];
@@ -11140,8 +10567,8 @@ class Shubl extends rules_1.BaseRuleClass {
             async function chapterDecrypt(chapterIdt, refererUrl) {
                 const accessKeyUrl = rootPath + "chapter/ajax_get_session_code";
                 const chapterContentUrl = rootPath + "chapter/get_book_chapter_detail_info";
-                log_1.log.debug(`[Chapter]请求 ${accessKeyUrl} Referer ${refererUrl}`);
-                const accessKeyObj = await (0, http_1.gfetch)(accessKeyUrl, {
+                _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`[Chapter]请求 ${accessKeyUrl} Referer ${refererUrl}`);
+                const accessKeyObj = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_6__/* .gfetch */ .GF)(accessKeyUrl, {
                     method: "POST",
                     headers: {
                         Accept: "application/json, text/javascript, */*; q=0.01",
@@ -11154,11 +10581,11 @@ class Shubl extends rules_1.BaseRuleClass {
                     responseType: "json",
                 })
                     .then((response) => response.response)
-                    .catch((error) => log_1.log.error(error));
+                    .catch((error) => _log__WEBPACK_IMPORTED_MODULE_4___default().error(error));
                 const chapter_access_key = accessKeyObj
                     .chapter_access_key;
-                log_1.log.debug(`[Chapter]请求 ${chapterContentUrl} Referer ${refererUrl}`);
-                const chapterContentObj = await (0, http_1.gfetch)(chapterContentUrl, {
+                _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`[Chapter]请求 ${chapterContentUrl} Referer ${refererUrl}`);
+                const chapterContentObj = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_6__/* .gfetch */ .GF)(chapterContentUrl, {
                     method: "POST",
                     headers: {
                         Accept: "application/json, text/javascript, */*; q=0.01",
@@ -11171,9 +10598,9 @@ class Shubl extends rules_1.BaseRuleClass {
                     responseType: "json",
                 })
                     .then((response) => response.response)
-                    .catch((error) => log_1.log.error(error));
+                    .catch((error) => _log__WEBPACK_IMPORTED_MODULE_4___default().error(error));
                 if (chapterContentObj.code !== 100000) {
-                    log_1.log.error(chapterContentObj);
+                    _log__WEBPACK_IMPORTED_MODULE_4___default().error(chapterContentObj);
                     throw new Error(`下载 ${refererUrl} 失败`);
                 }
                 return decrypt({
@@ -11185,8 +10612,8 @@ class Shubl extends rules_1.BaseRuleClass {
             const content = document.createElement("div");
             const decryptDate = await chapterDecrypt(chapterId, chapterUrl);
             content.innerHTML = decryptDate;
-            (0, misc_1.rm)(".chapter span", true, content);
-            const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+            (0,_lib_misc__WEBPACK_IMPORTED_MODULE_7__.rm)(".chapter span", true, content);
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .z)(content, "TM");
             return {
                 chapterName,
                 contentRaw: content,
@@ -11202,8 +10629,8 @@ class Shubl extends rules_1.BaseRuleClass {
                     const parentWidth = 939.2;
                     const setFontSize = "18";
                     const imageSessionCodeUrl = rootPath + "chapter/ajax_get_image_session_code";
-                    log_1.log.debug(`[Chapter]请求 ${imageSessionCodeUrl} Referer ${refererUrl}`);
-                    const imageSessionCodeObject = await (0, http_1.gfetch)(imageSessionCodeUrl, {
+                    _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`[Chapter]请求 ${imageSessionCodeUrl} Referer ${refererUrl}`);
+                    const imageSessionCodeObject = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_6__/* .gfetch */ .GF)(imageSessionCodeUrl, {
                         method: "POST",
                         headers: {
                             Accept: "application/json, text/javascript, */*; q=0.01",
@@ -11214,9 +10641,9 @@ class Shubl extends rules_1.BaseRuleClass {
                         responseType: "json",
                     })
                         .then((response) => response.response)
-                        .catch((error) => log_1.log.error(error));
+                        .catch((error) => _log__WEBPACK_IMPORTED_MODULE_4___default().error(error));
                     if (imageSessionCodeObject.code !== 100000) {
-                        log_1.log.error(imageSessionCodeObject);
+                        _log__WEBPACK_IMPORTED_MODULE_4___default().error(imageSessionCodeObject);
                         throw new Error(`下载 ${refererUrl} 失败`);
                     }
                     const imageCode = decrypt({
@@ -11242,8 +10669,8 @@ class Shubl extends rules_1.BaseRuleClass {
                     return vipCHapterImageUrlI;
                 }
                 const vipCHapterImageUrl = await vipChapterDecrypt(chapterId, chapterUrl);
-                log_1.log.debug(`[Chapter]请求 ${vipCHapterImageUrl} Referer ${chapterUrl}`);
-                const vipCHapterImageBlob = await (0, http_1.gfetch)(vipCHapterImageUrl, {
+                _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`[Chapter]请求 ${vipCHapterImageUrl} Referer ${chapterUrl}`);
+                const vipCHapterImageBlob = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_6__/* .gfetch */ .GF)(vipCHapterImageUrl, {
                     method: "GET",
                     headers: {
                         Referer: chapterUrl,
@@ -11252,12 +10679,12 @@ class Shubl extends rules_1.BaseRuleClass {
                     responseType: "blob",
                 })
                     .then((response) => response.response)
-                    .catch((error) => log_1.log.error(error));
+                    .catch((error) => _log__WEBPACK_IMPORTED_MODULE_4___default().error(error));
                 const vipCHapterName = `vipCHapter${chapterId}.png`;
-                const vipCHapterImage = new main_1.AttachmentClass(vipCHapterImageUrl, vipCHapterName, "TM");
+                const vipCHapterImage = new _main__WEBPACK_IMPORTED_MODULE_5__/* .AttachmentClass */ .Jh(vipCHapterImageUrl, vipCHapterName, "TM");
                 if (vipCHapterImageBlob) {
                     vipCHapterImage.imageBlob = vipCHapterImageBlob;
-                    vipCHapterImage.status = main_1.Status.finished;
+                    vipCHapterImage.status = _main__WEBPACK_IMPORTED_MODULE_5__/* .Status.finished */ .qb.finished;
                 }
                 const contentImages = [vipCHapterImage];
                 const img = document.createElement("img");
@@ -11294,27 +10721,36 @@ class Shubl extends rules_1.BaseRuleClass {
         }
     }
 }
-exports.Shubl = Shubl;
 
 
 /***/ }),
 
 /***/ "./src/rules/special/original/shuhai.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Shuhai": () => (/* binding */ Shuhai)
+/* harmony export */ });
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/misc.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _main__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
 
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Shuhai = void 0;
-const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
-const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
-const http_1 = __webpack_require__("./src/lib/http.ts");
-const misc_1 = __webpack_require__("./src/lib/misc.ts");
-const rule_1 = __webpack_require__("./src/lib/rule.ts");
-const log_1 = __webpack_require__("./src/log.ts");
-const main_1 = __webpack_require__("./src/main.ts");
-const rules_1 = __webpack_require__("./src/rules.ts");
-class Shuhai extends rules_1.BaseRuleClass {
+
+
+
+
+
+
+
+class Shuhai extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
     constructor() {
         super();
         this.imageMode = "TM";
@@ -11329,20 +10765,20 @@ class Shuhai extends rules_1.BaseRuleClass {
             .trim();
         const introDom = document.querySelector("div.book-info-bookintro") ||
             document.querySelector("div.book-info-bookintro-all");
-        const [introduction, introductionHTML, introCleanimages] = await (0, rule_1.introDomHandle)(introDom);
+        const [introduction, introductionHTML, introCleanimages] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .SN)(introDom);
         const additionalMetadate = {};
         const coverUrl = document.querySelector(".book-cover-wrapper > img").getAttribute("data-original");
         if (coverUrl) {
-            (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getImageAttachment */ .CE)(coverUrl, this.imageMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
-                .catch((error) => log_1.log.error(error));
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_3___default().error(error));
         }
         additionalMetadate.tags = Array.from(document.querySelectorAll(".book-info-bookstate > .tag")).map((span) => span.innerText.trim());
         const chapters = [];
         if (document.querySelectorAll("#catalog > .chapter-item").length === 0) {
-            await (0, misc_1.sleep)(3000);
+            await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_4__/* .sleep */ ._v)(3000);
         }
         const dsList = document.querySelectorAll("#catalog > .chapter-item");
         let chapterNumber = 0;
@@ -11372,29 +10808,29 @@ class Shuhai extends rules_1.BaseRuleClass {
                 };
                 const chapterName = a.innerText.trim();
                 const chapterUrl = a.href;
-                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), isPaid(), sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, {});
+                const chapter = new _main__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .WC(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), isPaid(), sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, {});
                 const isLogin = () => {
                     return false;
                 };
                 if (isVIP() && !(isLogin() && chapter.isPaid)) {
-                    chapter.status = main_1.Status.aborted;
+                    chapter.status = _main__WEBPACK_IMPORTED_MODULE_5__/* .Status.aborted */ .qb.aborted;
                 }
                 chapters.push(chapter);
             }
         }
-        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        const book = new _main__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .fy(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         async function publicChapter() {
-            const doc = await (0, http_1.ggetHtmlDOM)(chapterUrl, charset);
+            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_6__/* .ggetHtmlDOM */ .Fz)(chapterUrl, charset);
             chapterName = doc.querySelector("div.chapter-name").innerText
                 .replace("正文 ", "")
                 .trim();
             const content = doc.querySelector("#reader-content > div:nth-child(1)");
             if (content) {
-                (0, misc_1.rm)("div.chaper-info", false, content);
-                const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+                (0,_lib_misc__WEBPACK_IMPORTED_MODULE_4__.rm)("div.chaper-info", false, content);
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__/* .cleanDOM */ .z)(content, "TM");
                 return {
                     chapterName,
                     contentRaw: content,
@@ -11433,23 +10869,27 @@ class Shuhai extends rules_1.BaseRuleClass {
         }
     }
 }
-exports.Shuhai = Shuhai;
 
 
 /***/ }),
 
 /***/ "./src/rules/special/original/sosadfun.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Sosadfun": () => (/* binding */ Sosadfun)
+/* harmony export */ });
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _main__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/main.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
 
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Sosadfun = void 0;
-const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
-const http_1 = __webpack_require__("./src/lib/http.ts");
-const main_1 = __webpack_require__("./src/main.ts");
-const rules_1 = __webpack_require__("./src/rules.ts");
-class Sosadfun extends rules_1.BaseRuleClass {
+
+
+
+class Sosadfun extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
     constructor() {
         super();
         this.imageMode = "TM";
@@ -11481,7 +10921,7 @@ class Sosadfun extends rules_1.BaseRuleClass {
         let introDom;
         if (needLogin()) {
             alert("本小说需要登录后浏览！");
-            throw new main_1.ExpectError("本小说需要登录后浏览！");
+            throw new _main__WEBPACK_IMPORTED_MODULE_1__/* .ExpectError */ .K2("本小说需要登录后浏览！");
         }
         else {
             introDom = document.createElement("div");
@@ -11503,7 +10943,7 @@ class Sosadfun extends rules_1.BaseRuleClass {
             introductionHTML = null;
         }
         else {
-            const { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = await (0, cleanDOM_1.cleanDOM)(introDom, "TM");
+            const { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__/* .cleanDOM */ .z)(introDom, "TM");
             introduction = introCleantext;
             introductionHTML = introCleanDom;
             if (introCleanimages) {
@@ -11517,14 +10957,14 @@ class Sosadfun extends rules_1.BaseRuleClass {
             chapterNumber++;
             const chapterName = a.innerText.trim();
             const chapterUrl = a.href;
-            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, false, false, null, null, null, this.chapterParse, "UTF-8", {});
+            const chapter = new _main__WEBPACK_IMPORTED_MODULE_1__/* .Chapter */ .WC(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, false, false, null, null, null, this.chapterParse, "UTF-8", {});
             chapters.push(chapter);
         }
-        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        const book = new _main__WEBPACK_IMPORTED_MODULE_1__/* .Book */ .fy(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        const doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_3__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
         chapterName = doc.querySelector("strong.h3").innerText.trim();
         const content = document.createElement("div");
         const _content = doc.querySelector(".main-text.no-selection > span[id^=full]");
@@ -11535,9 +10975,9 @@ class Sosadfun extends rules_1.BaseRuleClass {
             }
         }
         if (_content) {
-            let { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+            let { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__/* .cleanDOM */ .z)(content, "TM");
             if (_authorSay) {
-                const { dom: authorSayDom, text: authorySayText, images: authorSayImages, } = await (0, cleanDOM_1.cleanDOM)(_authorSay, "TM");
+                const { dom: authorSayDom, text: authorySayText, images: authorSayImages, } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__/* .cleanDOM */ .z)(_authorSay, "TM");
                 const hrElem = document.createElement("hr");
                 const authorSayDiv = document.createElement("div");
                 authorSayDiv.className = "authorSay";
@@ -11572,27 +11012,35 @@ class Sosadfun extends rules_1.BaseRuleClass {
         }
     }
 }
-exports.Sosadfun = Sosadfun;
 
 
 /***/ }),
 
 /***/ "./src/rules/special/original/tadu.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Tadu": () => (/* binding */ Tadu)
+/* harmony export */ });
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _main__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
 
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Tadu = void 0;
-const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
-const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
-const http_1 = __webpack_require__("./src/lib/http.ts");
-const http_2 = __webpack_require__("./src/lib/http.ts");
-const rule_1 = __webpack_require__("./src/lib/rule.ts");
-const log_1 = __webpack_require__("./src/log.ts");
-const main_1 = __webpack_require__("./src/main.ts");
-const rules_1 = __webpack_require__("./src/rules.ts");
-class Tadu extends rules_1.BaseRuleClass {
+
+
+
+
+
+
+
+class Tadu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
     constructor() {
         super();
         this.imageMode = "TM";
@@ -11603,15 +11051,15 @@ class Tadu extends rules_1.BaseRuleClass {
         const bookname = document.querySelector("div.bookNm > a.bkNm").innerText.trim();
         const author = document.querySelector("div.authorInfo > a.author > span").innerText.trim();
         const introDom = document.querySelector("div.boxCenter.boxT.clearfix > div.lf.lfO > p.intro");
-        const [introduction, introductionHTML, introCleanimages] = await (0, rule_1.introDomHandle)(introDom);
+        const [introduction, introductionHTML, introCleanimages] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .SN)(introDom);
         const additionalMetadate = {};
         const coverUrl = document.querySelector("a.bookImg > img").getAttribute("data-src");
         if (coverUrl) {
-            (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getImageAttachment */ .CE)(coverUrl, this.imageMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
-                .catch((error) => log_1.log.error(error));
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_3___default().error(error));
         }
         const chapters = [];
         const cos = document.querySelectorAll("div.lf.lfT > li > div > a");
@@ -11631,22 +11079,22 @@ class Tadu extends rules_1.BaseRuleClass {
             const isPaid = () => {
                 return false;
             };
-            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), isPaid(), null, null, null, this.chapterParse, "UTF-8", {});
+            const chapter = new _main__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .WC(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), isPaid(), null, null, null, this.chapterParse, "UTF-8", {});
             const isLogin = () => {
                 return false;
             };
             if (isVIP() && !(isLogin() && chapter.isPaid)) {
-                chapter.status = main_1.Status.aborted;
+                chapter.status = _main__WEBPACK_IMPORTED_MODULE_4__/* .Status.aborted */ .qb.aborted;
             }
             chapters.push(chapter);
         }
-        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        const book = new _main__WEBPACK_IMPORTED_MODULE_4__/* .Book */ .fy(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         async function publicChapter() {
-            log_1.log.debug(`[Chapter]请求 ${chapterUrl}`);
-            const doc = await (0, http_2.getHtmlDOM)(chapterUrl, charset);
+            _log__WEBPACK_IMPORTED_MODULE_3___default().debug(`[Chapter]请求 ${chapterUrl}`);
+            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_5__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
             const content = document.createElement("div");
             const _bookPartResourceUrl = doc
                 .getElementById("bookPartResourceUrl")
@@ -11654,8 +11102,8 @@ class Tadu extends rules_1.BaseRuleClass {
             if (_bookPartResourceUrl) {
                 const bookPartResourceUrl = new URL(_bookPartResourceUrl);
                 bookPartResourceUrl.searchParams.set("callback", "callback");
-                log_1.log.debug(`[Chapter]请求 ${bookPartResourceUrl.toString()}`);
-                const jsonpText = await (0, http_1.gfetch)(bookPartResourceUrl.toString(), {
+                _log__WEBPACK_IMPORTED_MODULE_3___default().debug(`[Chapter]请求 ${bookPartResourceUrl.toString()}`);
+                const jsonpText = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_5__/* .gfetch */ .GF)(bookPartResourceUrl.toString(), {
                     headers: {
                         accept: "*/*",
                         Referer: document.location.origin,
@@ -11669,7 +11117,7 @@ class Tadu extends rules_1.BaseRuleClass {
                         throw new Error(`Bad response! ${bookPartResourceUrl.toString()}`);
                     }
                 })
-                    .catch((error) => log_1.log.error(error));
+                    .catch((error) => _log__WEBPACK_IMPORTED_MODULE_3___default().error(error));
                 if (!jsonpText) {
                     throw new Error("jsonp request failed!");
                 }
@@ -11677,7 +11125,7 @@ class Tadu extends rules_1.BaseRuleClass {
                 const contentObj = getContentObj();
                 if (typeof contentObj === "object") {
                     content.innerHTML = contentObj.content;
-                    const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+                    const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_6__/* .cleanDOM */ .z)(content, "TM");
                     return {
                         chapterName,
                         contentRaw: content,
@@ -11715,26 +11163,34 @@ class Tadu extends rules_1.BaseRuleClass {
         }
     }
 }
-exports.Tadu = Tadu;
 
 
 /***/ }),
 
 /***/ "./src/rules/special/original/zongheng.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Zongheng": () => (/* binding */ Zongheng)
+/* harmony export */ });
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _main__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
 
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Zongheng = void 0;
-const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
-const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
-const http_1 = __webpack_require__("./src/lib/http.ts");
-const rule_1 = __webpack_require__("./src/lib/rule.ts");
-const log_1 = __webpack_require__("./src/log.ts");
-const main_1 = __webpack_require__("./src/main.ts");
-const rules_1 = __webpack_require__("./src/rules.ts");
-class Zongheng extends rules_1.BaseRuleClass {
+
+
+
+
+
+
+class Zongheng extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
     constructor() {
         super();
         this.imageMode = "TM";
@@ -11744,17 +11200,17 @@ class Zongheng extends rules_1.BaseRuleClass {
         const bookUrl = document.location.href.replace("/showchapter/", "/book/");
         const bookname = document.querySelector("div.book-meta > h1").innerText.trim();
         const author = document.querySelector("div.book-meta > p > span:nth-child(1) > a").innerText.trim();
-        const doc = await (0, http_1.getHtmlDOM)(bookUrl, undefined);
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .dL)(bookUrl, undefined);
         const introDom = doc.querySelector("div.book-info > div.book-dec");
-        const [introduction, introductionHTML, introCleanimages] = await (0, rule_1.introDomHandle)(introDom);
+        const [introduction, introductionHTML, introCleanimages] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .introDomHandle */ .SN)(introDom);
         const additionalMetadate = {};
         const coverUrl = doc.querySelector("div.book-img > img").src;
         if (coverUrl) {
-            (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getImageAttachment */ .CE)(coverUrl, this.imageMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
-                .catch((error) => log_1.log.error(error));
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_4___default().error(error));
         }
         additionalMetadate.tags = Array.from(doc.querySelectorAll(".book-info>.book-label a")).map((a) => a.innerText.trim());
         const chapters = [];
@@ -11785,26 +11241,26 @@ class Zongheng extends rules_1.BaseRuleClass {
                 const isPaid = () => {
                     return false;
                 };
-                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), isPaid(), sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, "UTF-8", {});
+                const chapter = new _main__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .WC(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), isPaid(), sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, "UTF-8", {});
                 const isLogin = () => {
                     return false;
                 };
                 if (isVIP() && !(isLogin() && chapter.isPaid)) {
-                    chapter.status = main_1.Status.aborted;
+                    chapter.status = _main__WEBPACK_IMPORTED_MODULE_5__/* .Status.aborted */ .qb.aborted;
                 }
                 chapters.push(chapter);
             }
         }
-        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        const book = new _main__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .fy(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         async function publicChapter() {
-            const doc = await (0, http_1.ggetHtmlDOM)(chapterUrl, charset);
+            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .ggetHtmlDOM */ .Fz)(chapterUrl, charset);
             const ChapterName = doc.querySelector("div.title_txtbox").innerText.trim();
             const content = doc.querySelector("div.content");
             if (content) {
-                const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_6__/* .cleanDOM */ .z)(content, "TM");
                 return {
                     chapterName: ChapterName,
                     contentRaw: content,
@@ -11843,27 +11299,36 @@ class Zongheng extends rules_1.BaseRuleClass {
         }
     }
 }
-exports.Zongheng = Zongheng;
 
 
 /***/ }),
 
 /***/ "./src/rules/special/reprint/dmzj.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Dmzj": () => (/* binding */ Dmzj)
+/* harmony export */ });
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/lib/misc.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _main__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
 
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Dmzj = void 0;
-const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
-const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
-const http_1 = __webpack_require__("./src/lib/http.ts");
-const misc_1 = __webpack_require__("./src/lib/misc.ts");
-const rule_1 = __webpack_require__("./src/lib/rule.ts");
-const log_1 = __webpack_require__("./src/log.ts");
-const main_1 = __webpack_require__("./src/main.ts");
-const rules_1 = __webpack_require__("./src/rules.ts");
-class Dmzj extends rules_1.BaseRuleClass {
+
+
+
+
+
+
+
+class Dmzj extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
     constructor() {
         super();
         this.imageMode = "TM";
@@ -11884,18 +11349,18 @@ class Dmzj extends rules_1.BaseRuleClass {
         const introDom = isWwwHost
             ? document.querySelector(".comic_deCon_d")
             : document.querySelector(".line_height_content");
-        const [introduction, introductionHTML, introCleanimages] = await (0, rule_1.introDomHandle)(introDom);
+        const [introduction, introductionHTML, introCleanimages] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .SN)(introDom);
         const additionalMetadate = {};
         const coverDom = isWwwHost
             ? document.querySelector(".comic_i_img > a > img")
             : document.querySelector("#cover_pic");
         const coverUrl = coverDom.src;
         if (coverUrl) {
-            (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getImageAttachment */ .CE)(coverUrl, this.imageMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
-                .catch((error) => log_1.log.error(error));
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_3___default().error(error));
         }
         const chapters = [];
         const cos = isWwwHost
@@ -11916,20 +11381,20 @@ class Dmzj extends rules_1.BaseRuleClass {
             const chapterUrl = a.href;
             const isVIP = false;
             const isPaid = false;
-            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, null, null, null, this.chapterParse, "UTF-8", {});
+            const chapter = new _main__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .WC(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, null, null, null, this.chapterParse, "UTF-8", {});
             chapters.push(chapter);
         }
-        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        const book = new _main__WEBPACK_IMPORTED_MODULE_4__/* .Book */ .fy(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         function getpicUrlList(docI) {
             const imgPrefix = "https://images.dmzj.com/";
             const scriptElement = Array.from(docI.querySelectorAll("head > script")).filter((s) => s.innerHTML.includes("eval("))[0];
-            let pages = (0, misc_1.sandboxed)(scriptElement.innerText + ";return pages;");
+            let pages = (0,_lib_misc__WEBPACK_IMPORTED_MODULE_5__/* .sandboxed */ .J0)(scriptElement.innerText + ";return pages;");
             pages = pages.replace(/\n/g, "");
             pages = pages.replace(/\r/g, "|");
-            const info = (0, misc_1.sandboxed)("return (" + pages + ")");
+            const info = (0,_lib_misc__WEBPACK_IMPORTED_MODULE_5__/* .sandboxed */ .J0)("return (" + pages + ")");
             if (info) {
                 let picUrlListI;
                 if (isWwwHost) {
@@ -11943,9 +11408,9 @@ class Dmzj extends rules_1.BaseRuleClass {
                 return picUrlListI;
             }
         }
-        log_1.log.debug(`[Chapter]请求 ${chapterUrl}`);
+        _log__WEBPACK_IMPORTED_MODULE_3___default().debug(`[Chapter]请求 ${chapterUrl}`);
         const isWwwHost = document.location.host === "www.dmzj.com";
-        const doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_6__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
         const picUrlList = getpicUrlList(doc);
         if (picUrlList) {
             const content = document.createElement("div");
@@ -11956,7 +11421,7 @@ class Dmzj extends rules_1.BaseRuleClass {
                 pElem.appendChild(imgElem);
                 content.appendChild(pElem);
             }
-            const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__/* .cleanDOM */ .z)(content, "TM");
             return {
                 chapterName,
                 contentRaw: content,
@@ -11976,24 +11441,29 @@ class Dmzj extends rules_1.BaseRuleClass {
         };
     }
 }
-exports.Dmzj = Dmzj;
 
 
 /***/ }),
 
 /***/ "./src/rules/special/reprint/fushuwang.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Fushuwang": () => (/* binding */ Fushuwang)
+/* harmony export */ });
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/misc.ts");
+/* harmony import */ var _main__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/main.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
 
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Fushuwang = void 0;
-const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
-const http_1 = __webpack_require__("./src/lib/http.ts");
-const misc_1 = __webpack_require__("./src/lib/misc.ts");
-const main_1 = __webpack_require__("./src/main.ts");
-const rules_1 = __webpack_require__("./src/rules.ts");
-class Fushuwang extends rules_1.BaseRuleClass {
+
+
+
+
+class Fushuwang extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
     constructor() {
         super();
         this.imageMode = "TM";
@@ -12018,21 +11488,21 @@ class Fushuwang extends rules_1.BaseRuleClass {
             const chapterName = `page${i}`;
             const isVIP = false;
             const isPaid = false;
-            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, i + 1, chapterName, isVIP, isPaid, null, null, null, this.chapterParse, this.charset, {});
+            const chapter = new _main__WEBPACK_IMPORTED_MODULE_1__/* .Chapter */ .WC(bookUrl, bookname, chapterUrl, i + 1, chapterName, isVIP, isPaid, null, null, null, this.chapterParse, this.charset, {});
             chapters.push(chapter);
         }
-        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        const book = new _main__WEBPACK_IMPORTED_MODULE_1__/* .Book */ .fy(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
         book.saveOptions = this.saveOptions;
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        const doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
         const content = doc.querySelector("#text");
         if (content) {
-            (0, misc_1.rm)("span", true, content);
-            (0, misc_1.rm)("p.pageLink", true, content);
-            (0, misc_1.rm)("script", true, content);
-            const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+            (0,_lib_misc__WEBPACK_IMPORTED_MODULE_3__.rm)("span", true, content);
+            (0,_lib_misc__WEBPACK_IMPORTED_MODULE_3__.rm)("p.pageLink", true, content);
+            (0,_lib_misc__WEBPACK_IMPORTED_MODULE_3__.rm)("script", true, content);
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_4__/* .cleanDOM */ .z)(content, "TM");
             return {
                 chapterName,
                 contentRaw: content,
@@ -12054,27 +11524,36 @@ class Fushuwang extends rules_1.BaseRuleClass {
         }
     }
 }
-exports.Fushuwang = Fushuwang;
 
 
 /***/ }),
 
 /***/ "./src/rules/special/reprint/hetushu.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Hetushu": () => (/* binding */ Hetushu)
+/* harmony export */ });
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/misc.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _main__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
 
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Hetushu = void 0;
-const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
-const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
-const http_1 = __webpack_require__("./src/lib/http.ts");
-const misc_1 = __webpack_require__("./src/lib/misc.ts");
-const rule_1 = __webpack_require__("./src/lib/rule.ts");
-const log_1 = __webpack_require__("./src/log.ts");
-const main_1 = __webpack_require__("./src/main.ts");
-const rules_1 = __webpack_require__("./src/rules.ts");
-class Hetushu extends rules_1.BaseRuleClass {
+
+
+
+
+
+
+
+class Hetushu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
     constructor() {
         super();
         this.imageMode = "TM";
@@ -12084,15 +11563,15 @@ class Hetushu extends rules_1.BaseRuleClass {
         const bookname = document.querySelector(".book_info > h2").innerText.trim();
         const author = document.querySelector(".book_info > div:nth-child(3) > a:nth-child(1)").innerText.trim();
         const introDom = document.querySelector(".intro");
-        const [introduction, introductionHTML, introCleanimages] = await (0, rule_1.introDomHandle)(introDom);
+        const [introduction, introductionHTML, introCleanimages] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .SN)(introDom);
         const additionalMetadate = {};
         const coverUrl = document.querySelector(".book_info > img").src;
         if (coverUrl) {
-            (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getImageAttachment */ .CE)(coverUrl, this.imageMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
-                .catch((error) => log_1.log.error(error));
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_3___default().error(error));
         }
         const chapters = [];
         const chapterList = document.querySelector("#dir")?.childNodes;
@@ -12115,12 +11594,12 @@ class Hetushu extends rules_1.BaseRuleClass {
                     const chapterUrl = a.href;
                     const isVIP = false;
                     const isPaid = false;
-                    const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, "UTF-8", {});
+                    const chapter = new _main__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .WC(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, "UTF-8", {});
                     chapters.push(chapter);
                 }
             }
         }
-        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        const book = new _main__WEBPACK_IMPORTED_MODULE_4__/* .Book */ .fy(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
@@ -12144,7 +11623,7 @@ class Hetushu extends rules_1.BaseRuleClass {
                 bid,
                 "r" + sid + ".json",
             ].join("/");
-            log_1.log.debug(`[Chapter]请求 ${url} Referer ${chapterUrl}`);
+            _log__WEBPACK_IMPORTED_MODULE_3___default().debug(`[Chapter]请求 ${url} Referer ${chapterUrl}`);
             const token = await fetch(url, {
                 headers: {
                     accept: "*/*",
@@ -12159,7 +11638,7 @@ class Hetushu extends rules_1.BaseRuleClass {
                 credentials: "include",
             })
                 .then((response) => response.headers.get("token"))
-                .catch((error) => log_1.log.error(error));
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_3___default().error(error));
             if (token) {
                 const tokenDict = atob(token)
                     .split(/[A-Z]+%/)
@@ -12194,21 +11673,21 @@ class Hetushu extends rules_1.BaseRuleClass {
                 }
             }
         }
-        const doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_5__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
         chapterName = doc.querySelector("#content .h2").innerText.trim();
         await sorfPage();
         const content = doc.querySelector("#content");
         if (content) {
             const tagRemoved = "h2, acronym, bdo, big, cite, code, dfn, kbd, q, s, samp, strike, tt, u, var";
             tagRemoved.split(", ").forEach((s) => {
-                (0, misc_1.rm)(s, true, content);
+                (0,_lib_misc__WEBPACK_IMPORTED_MODULE_6__.rm)(s, true, content);
             });
             Array.from(content.querySelectorAll("div")).map((oldNode) => {
                 const newNode = document.createElement("p");
                 newNode.innerHTML = oldNode.innerHTML;
                 oldNode.parentNode?.replaceChild(newNode, oldNode);
             });
-            const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__/* .cleanDOM */ .z)(content, "TM");
             return {
                 chapterName,
                 contentRaw: content,
@@ -12230,27 +11709,36 @@ class Hetushu extends rules_1.BaseRuleClass {
         }
     }
 }
-exports.Hetushu = Hetushu;
 
 
 /***/ }),
 
 /***/ "./src/rules/special/reprint/idejian.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Idejian": () => (/* binding */ Idejian)
+/* harmony export */ });
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/misc.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _main__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
 
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Idejian = void 0;
-const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
-const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
-const http_1 = __webpack_require__("./src/lib/http.ts");
-const misc_1 = __webpack_require__("./src/lib/misc.ts");
-const rule_1 = __webpack_require__("./src/lib/rule.ts");
-const log_1 = __webpack_require__("./src/log.ts");
-const main_1 = __webpack_require__("./src/main.ts");
-const rules_1 = __webpack_require__("./src/rules.ts");
-class Idejian extends rules_1.BaseRuleClass {
+
+
+
+
+
+
+
+class Idejian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
     constructor() {
         super();
         this.imageMode = "TM";
@@ -12268,15 +11756,15 @@ class Idejian extends rules_1.BaseRuleClass {
             author = _author.textContent.trim();
         }
         const introDom = document.querySelector(".brief_con");
-        const [introduction, introductionHTML, introCleanimages] = await (0, rule_1.introDomHandle)(introDom);
+        const [introduction, introductionHTML, introCleanimages] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .SN)(introDom);
         const additionalMetadate = {};
         const coverUrl = document.querySelector(".book_img > img").src;
         if (coverUrl) {
-            (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getImageAttachment */ .CE)(coverUrl, this.imageMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
-                .catch((error) => log_1.log.error(error));
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_3___default().error(error));
         }
         additionalMetadate.tags = Array.from(document.querySelectorAll("div.detail_bkgrade > span")).map((span) => span.innerText.trim());
         const chapters = [];
@@ -12288,11 +11776,11 @@ class Idejian extends rules_1.BaseRuleClass {
             const chapterUrl = aElem.href;
             const isVIP = false;
             const isPaid = false;
-            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, null, null, null, this.chapterParse, "UTF-8", { bookID });
+            const chapter = new _main__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .WC(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, null, null, null, this.chapterParse, "UTF-8", { bookID });
             chapters.push(chapter);
         }
         document.cookie = "";
-        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        const book = new _main__WEBPACK_IMPORTED_MODULE_4__/* .Book */ .fy(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
@@ -12305,13 +11793,13 @@ class Idejian extends rules_1.BaseRuleClass {
         const referUrl = _refer.toString();
         const fakeUA = "Mozilla/5.0 (iPhone; CPU iPhone OS 13_3_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.5 Mobile/15E148 Snapchat/10.77.5.59 (like Safari/604.1)";
         if (document.cookie === "") {
-            await (0, http_1.ggetText)(referUrl, charset, { headers: { "User-Agent": fakeUA } });
-            await (0, http_1.ggetText)(chapterUrl, charset, {
+            await (0,_lib_http__WEBPACK_IMPORTED_MODULE_5__/* .ggetText */ ._7)(referUrl, charset, { headers: { "User-Agent": fakeUA } });
+            await (0,_lib_http__WEBPACK_IMPORTED_MODULE_5__/* .ggetText */ ._7)(chapterUrl, charset, {
                 headers: { "User-Agent": fakeUA, Referer: referUrl },
             });
         }
-        log_1.log.debug(`[Chapter]请求 ${chapterUrl}，Refer：${referUrl}`);
-        const doc = await (0, http_1.ggetHtmlDOM)(chapterUrl, charset, {
+        _log__WEBPACK_IMPORTED_MODULE_3___default().debug(`[Chapter]请求 ${chapterUrl}，Refer：${referUrl}`);
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_5__/* .ggetHtmlDOM */ .Fz)(chapterUrl, charset, {
             headers: { "User-Agent": fakeUA, Referer: referUrl },
         });
         chapterName = doc.querySelector(".text-title-1").innerText.trim();
@@ -12323,8 +11811,8 @@ class Idejian extends rules_1.BaseRuleClass {
             content = doc.querySelectorAll("div.h5_mainbody")[1];
         }
         if (content) {
-            (0, misc_1.rm)("h1", false, content);
-            const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+            (0,_lib_misc__WEBPACK_IMPORTED_MODULE_6__.rm)("h1", false, content);
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__/* .cleanDOM */ .z)(content, "TM");
             return {
                 chapterName,
                 contentRaw: content,
@@ -12346,27 +11834,36 @@ class Idejian extends rules_1.BaseRuleClass {
         }
     }
 }
-exports.Idejian = Idejian;
 
 
 /***/ }),
 
 /***/ "./src/rules/special/reprint/kanunu8.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Kanunu8": () => (/* binding */ Kanunu8)
+/* harmony export */ });
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/misc.ts");
+/* harmony import */ var _lib_readability__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/readability.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _main__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
 
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Kanunu8 = void 0;
-const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
-const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
-const misc_1 = __webpack_require__("./src/lib/misc.ts");
-const readability_1 = __webpack_require__("./src/lib/readability.ts");
-const rule_1 = __webpack_require__("./src/lib/rule.ts");
-const log_1 = __webpack_require__("./src/log.ts");
-const main_1 = __webpack_require__("./src/main.ts");
-const rules_1 = __webpack_require__("./src/rules.ts");
-class Kanunu8 extends rules_1.BaseRuleClass {
+
+
+
+
+
+
+
+class Kanunu8 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
     constructor() {
         super();
         this.imageMode = "TM";
@@ -12378,7 +11875,7 @@ class Kanunu8 extends rules_1.BaseRuleClass {
             a.href.includes(".html"));
         const authorElem = _authorAList
             .map((a) => [a, a.getBoundingClientRect().top])
-            .sort(rule_1.softByValue)?.[0][0];
+            .sort(_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .softByValue */ .BL)?.[0][0];
         const author = authorElem?.innerText
             .replace("作品集", "")
             .replace("→", "")
@@ -12386,13 +11883,13 @@ class Kanunu8 extends rules_1.BaseRuleClass {
         let introDom;
         introDom = Array.from(document.body.querySelectorAll("td, p"))
             .filter((elem) => elem.innerText.length !== 0)
-            .map((elem) => [elem, (0, misc_1.getNodeTextLength)(elem)])
-            .sort(rule_1.softByValue)
+            .map((elem) => [elem, (0,_lib_misc__WEBPACK_IMPORTED_MODULE_2__/* .getNodeTextLength */ .MK)(elem)])
+            .sort(_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .softByValue */ .BL)
             .slice(-1)?.[0][0];
         let introduction = null, introductionHTML = null, introCleanimages = null;
         if (introDom) {
-            (0, misc_1.rm)("a", true, introDom);
-            [introduction, introductionHTML, introCleanimages] = await (0, rule_1.introDomHandle)(introDom);
+            (0,_lib_misc__WEBPACK_IMPORTED_MODULE_2__.rm)("a", true, introDom);
+            [introduction, introductionHTML, introCleanimages] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .SN)(introDom);
         }
         let aList = null;
         let sections = null;
@@ -12414,15 +11911,15 @@ class Kanunu8 extends rules_1.BaseRuleClass {
         else {
             const tables = document.querySelectorAll("table");
             const _table = Array.from(tables)
-                .map((tb) => [tb, (0, misc_1.getMaxDepth)(tb)])
+                .map((tb) => [tb, (0,_lib_misc__WEBPACK_IMPORTED_MODULE_2__/* .getMaxDepth */ .wd)(tb)])
                 .filter((ds) => ds[1] === 4)
-                .filter((ds) => (0, rule_1.centerDetct)(ds[0])[0])
+                .filter((ds) => (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .centerDetct */ .$4)(ds[0])[0])
                 .map((ds) => [
                 ds[0],
                 Array.from(ds[0].querySelectorAll("a")).filter(aListFilter)
                     .length,
             ])
-                .sort(rule_1.softByValue);
+                .sort(_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .softByValue */ .BL);
             if (_table.length !== 0) {
                 const table = _table.slice(-1)[0][0];
                 aList = table.querySelectorAll("a");
@@ -12435,11 +11932,11 @@ class Kanunu8 extends rules_1.BaseRuleClass {
         if (_cover.length === 1) {
             const coverUrl = _cover[0].src;
             if (coverUrl) {
-                (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
+                (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getImageAttachment */ .CE)(coverUrl, this.imageMode, "cover-")
                     .then((coverClass) => {
                     additionalMetadate.cover = coverClass;
                 })
-                    .catch((error) => log_1.log.error(error));
+                    .catch((error) => _log__WEBPACK_IMPORTED_MODULE_4___default().error(error));
             }
         }
         const chapters = [];
@@ -12454,7 +11951,7 @@ class Kanunu8 extends rules_1.BaseRuleClass {
             const chapterName = elem.innerText.trim();
             const chapterUrl = elem.href;
             if (sections && getName) {
-                const _sectionName = (0, rule_1.getSectionName)(elem, sections, getName);
+                const _sectionName = (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .getSectionName */ .$d)(elem, sections, getName);
                 if (_sectionName && sectionName !== _sectionName) {
                     sectionName = _sectionName;
                     sectionNumber++;
@@ -12465,18 +11962,18 @@ class Kanunu8 extends rules_1.BaseRuleClass {
             }
             const isVIP = false;
             const isPaid = false;
-            const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, {});
+            const chapter = new _main__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .WC(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, {});
             chapters.push(chapter);
         }
-        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        const book = new _main__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .fy(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        const obj = await (0, readability_1.fetchAndParse)(chapterUrl, this.charset);
+        const obj = await (0,_lib_readability__WEBPACK_IMPORTED_MODULE_6__.fetchAndParse)(chapterUrl, this.charset);
         if (obj) {
             const content = obj.content;
-            (0, misc_1.rm)("a", true, content);
-            const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+            (0,_lib_misc__WEBPACK_IMPORTED_MODULE_2__.rm)("a", true, content);
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__/* .cleanDOM */ .z)(content, "TM");
             return {
                 chapterName,
                 contentRaw: content,
@@ -12496,26 +11993,34 @@ class Kanunu8 extends rules_1.BaseRuleClass {
         };
     }
 }
-exports.Kanunu8 = Kanunu8;
 
 
 /***/ }),
 
 /***/ "./src/rules/special/reprint/linovelib.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Linovelib": () => (/* binding */ Linovelib)
+/* harmony export */ });
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/misc.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _main__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
 
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Linovelib = void 0;
-const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
-const http_1 = __webpack_require__("./src/lib/http.ts");
-const misc_1 = __webpack_require__("./src/lib/misc.ts");
-const rule_1 = __webpack_require__("./src/lib/rule.ts");
-const log_1 = __webpack_require__("./src/log.ts");
-const main_1 = __webpack_require__("./src/main.ts");
-const rules_1 = __webpack_require__("./src/rules.ts");
-class Linovelib extends rules_1.BaseRuleClass {
+
+
+
+
+
+
+class Linovelib extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
     constructor() {
         super();
         this.imageMode = "TM";
@@ -12524,18 +12029,18 @@ class Linovelib extends rules_1.BaseRuleClass {
         const bookUrl = document.location.href.replace(/\/catalog$/, ".html");
         const bookname = document.querySelector(".book-meta > h1").innerText.trim();
         const author = document.querySelector(".book-meta > p:nth-child(2) > span:nth-child(1) > a:nth-child(2)").innerText.trim();
-        const doc = await (0, http_1.getHtmlDOM)(bookUrl, undefined);
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .dL)(bookUrl, undefined);
         const introDom = doc.querySelector(".book-dec > p:nth-child(1)");
-        const [introduction, introductionHTML, introCleanimages] = await (0, rule_1.introDomHandle)(introDom);
+        const [introduction, introductionHTML, introCleanimages] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .introDomHandle */ .SN)(introDom);
         const additionalMetadate = {};
         const coverUrl = doc.querySelector(".book-img > img")
             .src;
         if (coverUrl) {
-            (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getImageAttachment */ .CE)(coverUrl, this.imageMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
-                .catch((error) => log_1.log.error(error));
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_4___default().error(error));
         }
         additionalMetadate.tags = Array.from(doc.querySelectorAll(".book-label a")).map((a) => a.innerText.trim());
         const chapters = [];
@@ -12562,18 +12067,18 @@ class Linovelib extends rules_1.BaseRuleClass {
                 const isVIP = false;
                 const chapterName = a.innerText.trim();
                 const chapterUrl = a.href;
-                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, null, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, "UTF-8", {});
+                const chapter = new _main__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .WC(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, null, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, "UTF-8", {});
                 if (chapterUrl.startsWith("javascript")) {
-                    chapter.status = main_1.Status.aborted;
+                    chapter.status = _main__WEBPACK_IMPORTED_MODULE_5__/* .Status.aborted */ .qb.aborted;
                 }
                 chapters.push(chapter);
             }
         }
-        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        const book = new _main__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .fy(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        return (0, rule_1.nextPageParse)({
+        return (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .nextPageParse */ .I2)({
             chapterName,
             chapterUrl,
             charset,
@@ -12588,8 +12093,8 @@ class Linovelib extends rules_1.BaseRuleClass {
                             domNr;
                     }
                 }
-                (0, misc_1.rm)(".tp", true, _content);
-                (0, misc_1.rm)(".bd", true, _content);
+                (0,_lib_misc__WEBPACK_IMPORTED_MODULE_6__.rm)(".tp", true, _content);
+                (0,_lib_misc__WEBPACK_IMPORTED_MODULE_6__.rm)(".bd", true, _content);
                 return _content;
             },
             getNextPage: (doc) => doc.querySelector(".mlfy_page > a:nth-child(5)")
@@ -12598,27 +12103,36 @@ class Linovelib extends rules_1.BaseRuleClass {
         });
     }
 }
-exports.Linovelib = Linovelib;
 
 
 /***/ }),
 
 /***/ "./src/rules/special/reprint/soxscc.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Soxscc": () => (/* binding */ Soxscc)
+/* harmony export */ });
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/misc.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _main__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
 
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Soxscc = void 0;
-const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
-const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
-const http_1 = __webpack_require__("./src/lib/http.ts");
-const misc_1 = __webpack_require__("./src/lib/misc.ts");
-const rule_1 = __webpack_require__("./src/lib/rule.ts");
-const log_1 = __webpack_require__("./src/log.ts");
-const main_1 = __webpack_require__("./src/main.ts");
-const rules_1 = __webpack_require__("./src/rules.ts");
-class Soxscc extends rules_1.BaseRuleClass {
+
+
+
+
+
+
+
+class Soxscc extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
     constructor() {
         super();
         this.imageMode = "TM";
@@ -12628,19 +12142,19 @@ class Soxscc extends rules_1.BaseRuleClass {
         const bookname = document.querySelector(".xiaoshuo > h1").innerText.trim();
         const author = document.querySelector(".xiaoshuo > h6:nth-child(3) > a").innerText.trim();
         const introDom = document.querySelector("#intro");
-        const [introduction, introductionHTML, introCleanimages] = await (0, rule_1.introDomHandle)(introDom, (introDomI) => {
-            (0, misc_1.rm)("span.tags", false, introDomI);
-            (0, misc_1.rm)("q", true, introDomI);
+        const [introduction, introductionHTML, introCleanimages] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .SN)(introDom, (introDomI) => {
+            (0,_lib_misc__WEBPACK_IMPORTED_MODULE_2__.rm)("span.tags", false, introDomI);
+            (0,_lib_misc__WEBPACK_IMPORTED_MODULE_2__.rm)("q", true, introDomI);
             return introDomI;
         });
         const additionalMetadate = {};
         const coverUrl = document.querySelector(".book_cover > img").src;
         if (coverUrl) {
-            (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getImageAttachment */ .CE)(coverUrl, this.imageMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
-                .catch((error) => log_1.log.error(error));
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_4___default().error(error));
         }
         const chapters = [];
         const novelList = document.querySelector("div.novel_list[id]");
@@ -12659,15 +12173,15 @@ class Soxscc extends rules_1.BaseRuleClass {
                 const chapterName = a.innerText;
                 const isVIP = false;
                 const isPaid = false;
-                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, i + 1, sectionChapterNumber, this.chapterParse, "UTF-8", { bookname });
+                const chapter = new _main__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .WC(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, i + 1, sectionChapterNumber, this.chapterParse, "UTF-8", { bookname });
                 chapters.push(chapter);
             }
         }
-        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        const book = new _main__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .fy(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        const doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_6__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
         const bookname = options.bookname;
         chapterName = doc.querySelector(".read_title > h1").innerText.trim();
         const content = doc.querySelector("div.content[id]");
@@ -12689,7 +12203,7 @@ class Soxscc extends rules_1.BaseRuleClass {
                     }
                 }
             });
-            const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__/* .cleanDOM */ .z)(content, "TM");
             return {
                 chapterName,
                 contentRaw: content,
@@ -12711,27 +12225,36 @@ class Soxscc extends rules_1.BaseRuleClass {
         }
     }
 }
-exports.Soxscc = Soxscc;
 
 
 /***/ }),
 
 /***/ "./src/rules/special/reprint/uukanshu.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Uukanshu": () => (/* binding */ Uukanshu)
+/* harmony export */ });
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/misc.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _main__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
 
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Uukanshu = void 0;
-const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
-const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
-const http_1 = __webpack_require__("./src/lib/http.ts");
-const misc_1 = __webpack_require__("./src/lib/misc.ts");
-const rule_1 = __webpack_require__("./src/lib/rule.ts");
-const log_1 = __webpack_require__("./src/log.ts");
-const main_1 = __webpack_require__("./src/main.ts");
-const rules_1 = __webpack_require__("./src/rules.ts");
-class Uukanshu extends rules_1.BaseRuleClass {
+
+
+
+
+
+
+
+class Uukanshu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
     constructor() {
         super();
         this.imageMode = "TM";
@@ -12744,7 +12267,7 @@ class Uukanshu extends rules_1.BaseRuleClass {
             .trim();
         const author = document.querySelector("dd.jieshao_content > h2 > a").innerText.trim();
         const introDom = document.querySelector("dd.jieshao_content > h3");
-        const [introduction, introductionHTML, introCleanimages] = await (0, rule_1.introDomHandle)(introDom, (introDomI) => {
+        const [introduction, introductionHTML, introCleanimages] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .SN)(introDom, (introDomI) => {
             introDomI.innerHTML = introDomI.innerHTML
                 .replace(/^.+简介：\s+www.uukanshu.com\s+/, "")
                 .replace(/\s+https:\/\/www.uukanshu.com/, "")
@@ -12754,11 +12277,11 @@ class Uukanshu extends rules_1.BaseRuleClass {
         const additionalMetadate = {};
         const coverUrl = document.querySelector("a.bookImg > img").src;
         if (coverUrl) {
-            (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getImageAttachment */ .CE)(coverUrl, this.imageMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
-                .catch((error) => log_1.log.error(error));
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_3___default().error(error));
         }
         const chapters = [];
         const button = document.querySelector('span[onclick="javascript:reverse(this);"]');
@@ -12786,20 +12309,20 @@ class Uukanshu extends rules_1.BaseRuleClass {
                     const chapterUrl = a.href;
                     const isVIP = false;
                     const isPaid = false;
-                    const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, {});
+                    const chapter = new _main__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .WC(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, {});
                     chapters.push(chapter);
                 }
             }
         }
-        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        const book = new _main__WEBPACK_IMPORTED_MODULE_4__/* .Book */ .fy(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        const doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_5__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
         chapterName = doc.querySelector("#timu").innerText.trim();
         const content = doc.querySelector("#contentbox");
         if (content) {
-            (0, misc_1.rm)(".ad_content", true, content);
+            (0,_lib_misc__WEBPACK_IMPORTED_MODULE_6__.rm)(".ad_content", true, content);
             const contentReplace = [
                 /[ＵｕUu]+看书\s*[wｗ]+.[ＵｕUu]+[kｋ][aａ][nｎ][ｓs][hｈ][ＵｕUu].[nｎ][eｅ][tｔ]/g,
                 /[ＵｕUu]+看书\s*[wｗ]+.[ＵｕUu]+[kｋ][aａ][nｎ][ｓs][hｈ][ＵｕUu].[cＣｃ][oＯｏ][mＭｍ]/g,
@@ -12814,7 +12337,7 @@ class Uukanshu extends rules_1.BaseRuleClass {
             for (const r of contentReplace) {
                 content.innerHTML = content.innerHTML.replace(r, "");
             }
-            const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__/* .cleanDOM */ .z)(content, "TM");
             return {
                 chapterName,
                 contentRaw: content,
@@ -12836,27 +12359,36 @@ class Uukanshu extends rules_1.BaseRuleClass {
         }
     }
 }
-exports.Uukanshu = Uukanshu;
 
 
 /***/ }),
 
 /***/ "./src/rules/special/reprint/wenku8.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Wenku8": () => (/* binding */ Wenku8)
+/* harmony export */ });
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/misc.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _main__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
 
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Wenku8 = void 0;
-const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
-const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
-const http_1 = __webpack_require__("./src/lib/http.ts");
-const misc_1 = __webpack_require__("./src/lib/misc.ts");
-const rule_1 = __webpack_require__("./src/lib/rule.ts");
-const log_1 = __webpack_require__("./src/log.ts");
-const main_1 = __webpack_require__("./src/main.ts");
-const rules_1 = __webpack_require__("./src/rules.ts");
-class Wenku8 extends rules_1.BaseRuleClass {
+
+
+
+
+
+
+
+class Wenku8 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
     constructor() {
         super();
         this.imageMode = "TM";
@@ -12866,20 +12398,20 @@ class Wenku8 extends rules_1.BaseRuleClass {
         const bookId = document.location.pathname.split("/").slice(-2, -1)[0];
         const bookUrl = [document.location.origin, "book", `${bookId}.htm`].join("/");
         const bookname = document.querySelector("#title").innerText.trim();
-        const doc = await (0, http_1.getHtmlDOM)(bookUrl, "GBK");
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .dL)(bookUrl, "GBK");
         const author = doc.querySelector("#content > div:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(2) > td:nth-child(2)").innerText
             .replace("小说作者：", "")
             .trim();
         const introDom = doc.querySelector("#content > div:nth-child(1) > table:nth-child(4) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(2) > span:nth-child(11)");
-        const [introduction, introductionHTML, introCleanimages] = await (0, rule_1.introDomHandle)(introDom);
+        const [introduction, introductionHTML, introCleanimages] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .introDomHandle */ .SN)(introDom);
         const additionalMetadate = {};
         const coverUrl = doc.querySelector("#content > div:nth-child(1) > table:nth-child(4) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(1) > img:nth-child(1)").src;
         if (coverUrl) {
-            (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getImageAttachment */ .CE)(coverUrl, this.imageMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
-                .catch((error) => log_1.log.error(error));
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_4___default().error(error));
         }
         const chapters = [];
         const tdList = Array.from(document.querySelectorAll(".css > tbody td")).filter((td) => td.innerText.trim());
@@ -12899,19 +12431,19 @@ class Wenku8 extends rules_1.BaseRuleClass {
                 const a = td.firstElementChild;
                 const chapterName = a.innerText.trim();
                 const chapterUrl = a.href;
-                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, false, false, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, {});
+                const chapter = new _main__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .WC(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, false, false, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, {});
                 chapters.push(chapter);
             }
         }
-        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        const book = new _main__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .fy(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        const doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
         const content = doc.querySelector("#content");
         if (content) {
-            (0, misc_1.rm)("#contentdp", true, content);
-            const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+            (0,_lib_misc__WEBPACK_IMPORTED_MODULE_6__.rm)("#contentdp", true, content);
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__/* .cleanDOM */ .z)(content, "TM");
             return {
                 chapterName,
                 contentRaw: content,
@@ -12933,27 +12465,37 @@ class Wenku8 extends rules_1.BaseRuleClass {
         }
     }
 }
-exports.Wenku8 = Wenku8;
 
 
 /***/ }),
 
 /***/ "./src/rules/special/reprint/xkzw.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Xkzw": () => (/* binding */ Xkzw)
+/* harmony export */ });
+/* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("crypto-js");
+/* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(crypto_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _main__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/rules.ts");
 
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Xkzw = void 0;
-const CryptoJSGlobal = __webpack_require__("crypto-js");
-const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
-const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
-const http_1 = __webpack_require__("./src/lib/http.ts");
-const rule_1 = __webpack_require__("./src/lib/rule.ts");
-const log_1 = __webpack_require__("./src/log.ts");
-const main_1 = __webpack_require__("./src/main.ts");
-const rules_1 = __webpack_require__("./src/rules.ts");
-class Xkzw extends rules_1.BaseRuleClass {
+
+
+
+
+
+
+
+class Xkzw extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
     constructor() {
         super();
         this.imageMode = "TM";
@@ -12965,20 +12507,20 @@ class Xkzw extends rules_1.BaseRuleClass {
             .replace(/作(\s+)?者[：:]/, "")
             .trim();
         const introDom = document.querySelector("#intro");
-        const [introduction, introductionHTML, introCleanimages] = await (0, rule_1.introDomHandle)(introDom);
+        const [introduction, introductionHTML, introCleanimages] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .introDomHandle */ .SN)(introDom);
         const additionalMetadate = {};
         const coverUrl = document.querySelector("#fmimg > img").src;
         if (coverUrl) {
-            (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getImageAttachment */ .CE)(coverUrl, this.imageMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
-                .catch((error) => log_1.log.error(error));
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_4___default().error(error));
         }
         const chapters = [];
         const bookid = unsafeWindow.bookId;
         const apiUrl = [document.location.origin, "action.php"].join("/");
-        log_1.log.debug(`[chapter]正在请求${apiUrl}`);
+        _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`[chapter]正在请求${apiUrl}`);
         const siteChapterList = await fetch(apiUrl, {
             headers: {
                 accept: "application/json, text/javascript, */*",
@@ -12991,7 +12533,7 @@ class Xkzw extends rules_1.BaseRuleClass {
             credentials: "include",
         })
             .then((response) => response.json())
-            .catch((error) => log_1.log.error(error));
+            .catch((error) => _log__WEBPACK_IMPORTED_MODULE_4___default().error(error));
         const dl1 = document.querySelector("#wrapper > div.box_con:nth-child(7) > div:nth-child(1) > dl:nth-child(1)");
         const dl2 = document.querySelector("#wrapper > div.box_con:nth-child(11) > div:nth-child(1) > dl:nth-child(1)");
         const mkList = (dl) => {
@@ -13090,11 +12632,11 @@ class Xkzw extends rules_1.BaseRuleClass {
                 const chapterUrl = bookUrl + (sitechapter.chapterid + bookid * 11) + ".html";
                 const isVIP = false;
                 const isPaid = false;
-                const chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, "UTF-8", {});
+                const chapter = new _main__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .WC(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, "UTF-8", {});
                 chapters.push(chapter);
             }
         }
-        const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        const book = new _main__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .fy(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
@@ -13203,12 +12745,12 @@ class Xkzw extends rules_1.BaseRuleClass {
             }
             showttt1(doc);
         }
-        const doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
-        runEval(CryptoJSGlobal);
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_6__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
+        runEval(crypto_js__WEBPACK_IMPORTED_MODULE_0__);
         chapterName = doc.querySelector(".bookname > h1:nth-child(1)").innerText.trim();
         const contentG = doc.querySelector("#content");
         if (contentG) {
-            const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(contentG, "TM");
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__/* .cleanDOM */ .z)(contentG, "TM");
             return {
                 chapterName,
                 contentRaw: contentG,
@@ -13230,21 +12772,23 @@ class Xkzw extends rules_1.BaseRuleClass {
         }
     }
 }
-exports.Xkzw = Xkzw;
 
 
 /***/ }),
 
 /***/ "./src/rules/twoPage/1pwx.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "xiaoshuodaquan": () => (/* binding */ xiaoshuodaquan)
+/* harmony export */ });
+/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/misc.ts");
+/* harmony import */ var _tempate__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/twoPage/tempate.ts");
 
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.xiaoshuodaquan = void 0;
-const misc_1 = __webpack_require__("./src/lib/misc.ts");
-const tempate_1 = __webpack_require__("./src/rules/twoPage/tempate.ts");
-const xiaoshuodaquan = () => (0, tempate_1.mkRuleClass)({
+
+const xiaoshuodaquan = () => (0,_tempate__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
     bookUrl: document.location.href,
     anotherPageUrl: document.querySelector(".viewalllinks").href,
     getBookname: (doc) => document.querySelector(".r420 > h1").innerText.trim(),
@@ -13262,27 +12806,29 @@ const xiaoshuodaquan = () => (0, tempate_1.mkRuleClass)({
     },
     getContent: (doc) => doc.querySelector("#content"),
     contentPatch: (content) => {
-        (0, misc_1.rm)("div", true, content);
-        (0, misc_1.rm)("script", true, content);
+        (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__.rm)("div", true, content);
+        (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__.rm)("script", true, content);
         const c = document.createElement("div");
         c.innerHTML = content.innerHTML.replace(/\n/g, "<br/><br/>");
         return c;
     },
 });
-exports.xiaoshuodaquan = xiaoshuodaquan;
 
 
 /***/ }),
 
 /***/ "./src/rules/twoPage/imiaobige.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "imiaobige": () => (/* binding */ imiaobige)
+/* harmony export */ });
+/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/misc.ts");
+/* harmony import */ var _tempate__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/twoPage/tempate.ts");
 
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.imiaobige = void 0;
-const misc_1 = __webpack_require__("./src/lib/misc.ts");
-const tempate_1 = __webpack_require__("./src/rules/twoPage/tempate.ts");
+
 const imiaobige = () => {
     const bookUrl = document.location.href
         .replace("/read/", "/novel/")
@@ -13290,7 +12836,7 @@ const imiaobige = () => {
     const getName = (sElem) => sElem.firstElementChild?.innerText
         .split(" ")
         .slice(-1)?.[0] ?? "";
-    return (0, tempate_1.mkRuleClass)({
+    return (0,_tempate__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
         bookUrl,
         anotherPageUrl: bookUrl,
         getBookname: (doc) => doc.querySelector(".booktitle > h1").innerText.trim(),
@@ -13312,32 +12858,39 @@ const imiaobige = () => {
         getContent: (doc) => doc.querySelector("#content"),
         contentPatch: (content) => {
             const ads = ["您可以在百度里搜索“"];
-            (0, misc_1.rm2)(content, ads);
+            (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .vS)(content, ads);
             return content;
         },
     });
 };
-exports.imiaobige = imiaobige;
 
 
 /***/ }),
 
 /***/ "./src/rules/twoPage/tempate.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "x": () => (/* binding */ mkRuleClass)
+/* harmony export */ });
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _main__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
 
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.mkRuleClass = void 0;
-const attachments_1 = __webpack_require__("./src/lib/attachments.ts");
-const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
-const http_1 = __webpack_require__("./src/lib/http.ts");
-const rule_1 = __webpack_require__("./src/lib/rule.ts");
-const log_1 = __webpack_require__("./src/log.ts");
-const main_1 = __webpack_require__("./src/main.ts");
-const rules_1 = __webpack_require__("./src/rules.ts");
+
+
+
+
+
+
 function mkRuleClass({ bookUrl, anotherPageUrl, getBookname, getAuthor, getIntroDom, introDomPatch, getCoverUrl, getAList, getAName, getSections, getSName: _getSectionName, postHook, getContentFromUrl, getContent, contentPatch, concurrencyLimit, }) {
-    return class extends rules_1.BaseRuleClass {
+    return class extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
         constructor() {
             super();
             this.imageMode = "TM";
@@ -13346,19 +12899,19 @@ function mkRuleClass({ bookUrl, anotherPageUrl, getBookname, getAuthor, getIntro
             }
         }
         async bookParse() {
-            const doc = await (0, http_1.getHtmlDOM)(anotherPageUrl, this.charset);
+            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .dL)(anotherPageUrl, this.charset);
             const bookname = getBookname(doc);
             const author = getAuthor(doc);
             const introDom = getIntroDom(doc);
-            const [introduction, introductionHTML, introCleanimages] = await (0, rule_1.introDomHandle)(introDom, introDomPatch);
+            const [introduction, introductionHTML, introCleanimages] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .introDomHandle */ .SN)(introDom, introDomPatch);
             const coverUrl = getCoverUrl(doc);
             const additionalMetadate = {};
             if (coverUrl) {
-                (0, attachments_1.getImageAttachment)(coverUrl, this.imageMode, "cover-")
+                (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getImageAttachment */ .CE)(coverUrl, this.imageMode, "cover-")
                     .then((coverClass) => {
                     additionalMetadate.cover = coverClass;
                 })
-                    .catch((error) => log_1.log.error(error));
+                    .catch((error) => _log__WEBPACK_IMPORTED_MODULE_4___default().error(error));
             }
             let sections;
             if (typeof getSections === "function") {
@@ -13386,7 +12939,7 @@ function mkRuleClass({ bookUrl, anotherPageUrl, getBookname, getAuthor, getIntro
                 }
                 const chapterUrl = aElem.href;
                 if (hasSection && sections && _getSectionName) {
-                    const _sectionName = (0, rule_1.getSectionName)(aElem, sections, _getSectionName);
+                    const _sectionName = (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .getSectionName */ .$d)(aElem, sections, _getSectionName);
                     if (_sectionName !== sectionName) {
                         sectionName = _sectionName;
                         sectionNumber++;
@@ -13397,7 +12950,7 @@ function mkRuleClass({ bookUrl, anotherPageUrl, getBookname, getAuthor, getIntro
                 sectionChapterNumber++;
                 const isVIP = false;
                 const isPaid = false;
-                let chapter = new main_1.Chapter(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, hasSection ? sectionNumber : null, hasSection ? sectionChapterNumber : null, this.chapterParse, this.charset, { bookname });
+                let chapter = new _main__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .WC(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, hasSection ? sectionNumber : null, hasSection ? sectionChapterNumber : null, this.chapterParse, this.charset, { bookname });
                 if (typeof postHook === "function") {
                     chapter = postHook(chapter);
                 }
@@ -13405,7 +12958,7 @@ function mkRuleClass({ bookUrl, anotherPageUrl, getBookname, getAuthor, getIntro
                     chapters.push(chapter);
                 }
             }
-            const book = new main_1.Book(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+            const book = new _main__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .fy(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
             return book;
         }
         async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
@@ -13414,12 +12967,12 @@ function mkRuleClass({ bookUrl, anotherPageUrl, getBookname, getAuthor, getIntro
                 content = await getContentFromUrl(chapterUrl, chapterName, charset);
             }
             else if (getContent !== undefined) {
-                const doc = await (0, http_1.getHtmlDOM)(chapterUrl, charset);
+                const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
                 content = getContent(doc);
             }
             if (content) {
                 content = contentPatch(content);
-                const { dom, text, images } = await (0, cleanDOM_1.cleanDOM)(content, "TM");
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_6__/* .cleanDOM */ .z)(content, "TM");
                 return {
                     chapterName,
                     contentRaw: content,
@@ -13440,24 +12993,26 @@ function mkRuleClass({ bookUrl, anotherPageUrl, getBookname, getAuthor, getIntro
         }
     };
 }
-exports.mkRuleClass = mkRuleClass;
 
 
 /***/ }),
 
 /***/ "./src/rules/twoPage/ujxs.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "ujxs": () => (/* binding */ ujxs)
+/* harmony export */ });
+/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/misc.ts");
+/* harmony import */ var _tempate__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/twoPage/tempate.ts");
 
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.ujxs = void 0;
-const misc_1 = __webpack_require__("./src/lib/misc.ts");
-const tempate_1 = __webpack_require__("./src/rules/twoPage/tempate.ts");
+
 const ujxs = () => {
     const bookUrl = document.location.origin +
         document.location.pathname.replace(/^\/read/, "/book");
-    return (0, tempate_1.mkRuleClass)({
+    return (0,_tempate__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
         bookUrl,
         anotherPageUrl: bookUrl,
         getBookname: (doc) => document.querySelector("#smallcons > h1").innerText.trim(),
@@ -13475,29 +13030,30 @@ const ujxs = () => {
         },
         getContent: (doc) => doc.querySelector(".read-content"),
         contentPatch: (content) => {
-            (0, misc_1.rm)("script", true, content);
+            (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__.rm)("script", true, content);
             const ads = ["免费小说无弹窗免费阅读！", "全集TXT电子书免费下载！"];
-            (0, misc_1.rm2)(content, ads);
+            (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .vS)(content, ads);
             return content;
         },
     });
 };
-exports.ujxs = ujxs;
 
 
 /***/ }),
 
 /***/ "./src/rules/twoPage/viviyzw.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "viviyzw": () => (/* binding */ viviyzw)
+/* harmony export */ });
+/* harmony import */ var _tempate__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/twoPage/tempate.ts");
 
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.viviyzw = void 0;
-const tempate_1 = __webpack_require__("./src/rules/twoPage/tempate.ts");
 const viviyzw = () => {
     const bookUrl = document.location.href.replace("/book", "/info");
-    return (0, tempate_1.mkRuleClass)({
+    return (0,_tempate__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
         bookUrl,
         anotherPageUrl: bookUrl,
         getBookname: (doc) => doc.querySelector("article.info > header > h1").innerText.trim(),
@@ -13519,19 +13075,20 @@ const viviyzw = () => {
         contentPatch: (content) => content,
     });
 };
-exports.viviyzw = viviyzw;
 
 
 /***/ }),
 
 /***/ "./src/rules/twoPage/washuge.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "washuge": () => (/* binding */ washuge)
+/* harmony export */ });
+/* harmony import */ var _tempate__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/twoPage/tempate.ts");
 
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.washuge = void 0;
-const tempate_1 = __webpack_require__("./src/rules/twoPage/tempate.ts");
 const washuge = () => {
     const bookUrl = document.location.href;
     const bookId = /(\d+)\/?$/.exec(bookUrl)?.[1];
@@ -13539,7 +13096,7 @@ const washuge = () => {
         throw Error("获取书籍信息出错！");
     }
     const anotherPageUrl = `${document.location.origin}/books/book${bookId}.html`;
-    return (0, tempate_1.mkRuleClass)({
+    return (0,_tempate__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
         bookUrl,
         anotherPageUrl,
         getBookname: (doc) => doc.querySelector("#content > dd > h1")?.innerText
@@ -13555,23 +13112,27 @@ const washuge = () => {
         concurrencyLimit: 1,
     });
 };
-exports.washuge = washuge;
 
 
 /***/ }),
 
 /***/ "./src/rules/twoPage/yibige.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "yibige": () => (/* binding */ yibige)
+/* harmony export */ });
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/misc.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _tempate__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/twoPage/tempate.ts");
 
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.yibige = void 0;
-const cleanDOM_1 = __webpack_require__("./src/lib/cleanDOM.ts");
-const misc_1 = __webpack_require__("./src/lib/misc.ts");
-const rule_1 = __webpack_require__("./src/lib/rule.ts");
-const tempate_1 = __webpack_require__("./src/rules/twoPage/tempate.ts");
-const yibige = () => (0, tempate_1.mkRuleClass)({
+
+
+
+const yibige = () => (0,_tempate__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
     bookUrl: document.location.href,
     anotherPageUrl: document.location.href + "index.html",
     getBookname: (doc) => document.querySelector("#info h1:nth-of-type(1)").innerText.trim(),
@@ -13584,15 +13145,15 @@ const yibige = () => (0, tempate_1.mkRuleClass)({
     getAList: (doc) => doc.querySelectorAll("#list dd > a"),
     getContent: (doc) => doc.querySelector("#content"),
     getContentFromUrl: async (chapterUrl, chapterName, charset) => {
-        const { chapterName: _chapterName, contentRaw, contentText, contentHTML, contentImages, additionalMetadate, } = await (0, rule_1.nextPageParse)({
+        const { chapterName: _chapterName, contentRaw, contentText, contentHTML, contentImages, additionalMetadate, } = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .nextPageParse */ .I2)({
             chapterName,
             chapterUrl,
             charset,
             selector: "#content",
             contentPatch: (content, doc) => {
-                (0, misc_1.rm)("script", true, content);
-                (0, misc_1.rm)("div[style]", true, content);
-                (0, cleanDOM_1.htmlTrim)(content);
+                (0,_lib_misc__WEBPACK_IMPORTED_MODULE_2__.rm)("script", true, content);
+                (0,_lib_misc__WEBPACK_IMPORTED_MODULE_2__.rm)("div[style]", true, content);
+                (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_3__/* .htmlTrim */ .i)(content);
                 return content;
             },
             getNextPage: (doc) => doc.querySelector(".bottem1 > a:nth-child(4)")
@@ -13607,42 +13168,188 @@ const yibige = () => (0, tempate_1.mkRuleClass)({
     },
     contentPatch: (content) => content,
 });
-exports.yibige = yibige;
 
 
 /***/ }),
 
 /***/ "./src/save/save.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getSaveBookObj = exports.saveOptionsValidate = exports.getSectionsObj = exports.SaveBook = void 0;
-const file_saver_1 = __webpack_require__("./node_modules/file-saver/dist/FileSaver.min.js");
-const zip_1 = __webpack_require__("./src/lib/zip.ts");
-const log_1 = __webpack_require__("./src/log.ts");
-const main_1 = __webpack_require__("./src/main.ts");
-const setting_1 = __webpack_require__("./src/setting.ts");
-const progress_1 = __webpack_require__("./src/ui/progress.ts");
-const main_css_1 = __webpack_require__("./src/save/main.css");
-const template_1 = __webpack_require__("./src/save/template.ts");
-const toc_css_1 = __webpack_require__("./src/save/toc.css");
+// EXPORTS
+__webpack_require__.d(__webpack_exports__, {
+  "Zd": () => (/* binding */ getSaveBookObj),
+  "f0": () => (/* binding */ getSectionsObj),
+  "hh": () => (/* binding */ saveOptionsValidate)
+});
+
+// UNUSED EXPORTS: SaveBook
+
+// EXTERNAL MODULE: ./node_modules/file-saver/dist/FileSaver.min.js
+var FileSaver_min = __webpack_require__("./node_modules/file-saver/dist/FileSaver.min.js");
+;// CONCATENATED MODULE: external "fflate"
+const external_fflate_namespaceObject = fflate;
+// EXTERNAL MODULE: external "log"
+var external_log_ = __webpack_require__("loglevel");
+var external_log_default = /*#__PURE__*/__webpack_require__.n(external_log_);
+// EXTERNAL MODULE: ./src/lib/misc.ts
+var misc = __webpack_require__("./src/lib/misc.ts");
+;// CONCATENATED MODULE: ./src/lib/zip.ts
+
+
+
+class FflateZip {
+    constructor(memlimit = false) {
+        this.count = 0;
+        this.zcount = 0;
+        this.tcount = 0;
+        this.memlimit = memlimit;
+        this.filenameList = [];
+        this.zipOut = [];
+        const self = this;
+        this.savedZip = new external_fflate_namespaceObject.Zip((err, dat, final) => {
+            if (err) {
+                external_log_default().error(err);
+                external_log_default().trace(err);
+                throw err;
+            }
+            self.zipOut.push(dat);
+            self.zcount++;
+            if (final) {
+                const zipBlob = new Blob(self.zipOut, { type: "application/zip" });
+                external_log_default().debug("[fflateZip][debug][zcount]" + self.zcount);
+                external_log_default().debug("[fflateZip][debug][count]" + self.count);
+                external_log_default().info("[fflateZip] ZIP生成完毕，文件大小：" + zipBlob.size);
+                self.zipOut = [];
+                if (typeof self.onFinal === "function") {
+                    if (typeof self.onUpdateId !== "undefined") {
+                        clearInterval(self.onUpdateId);
+                    }
+                    try {
+                        self.onFinal(zipBlob);
+                    }
+                    catch (error) {
+                        if (typeof self.onFinalError === "function") {
+                            self.onFinalError(error);
+                        }
+                    }
+                }
+                else {
+                    throw new Error("[fflateZip] 完成函数出错");
+                }
+            }
+        });
+    }
+    file(filename, file) {
+        if (this.filenameList.includes(filename)) {
+            external_log_default().error(`filename ${filename} has existed on zip.`);
+            return;
+        }
+        this.count++;
+        this.filenameList.push(filename);
+        file
+            .arrayBuffer()
+            .then((buffer) => new Uint8Array(buffer))
+            .then((chunk) => {
+            if (this.memlimit || file.type.includes("image/")) {
+                const nonStreamingFile = new external_fflate_namespaceObject.ZipPassThrough(filename);
+                this.addToSavedZip(this.savedZip, nonStreamingFile, chunk);
+                this.tcount++;
+            }
+            else {
+                const nonStreamingFile = new external_fflate_namespaceObject.AsyncZipDeflate(filename, {
+                    level: 6,
+                });
+                this.addToSavedZip(this.savedZip, nonStreamingFile, chunk);
+                this.tcount++;
+            }
+        })
+            .catch((error) => external_log_default().error(error));
+    }
+    addToSavedZip(savedZip, nonStreamingFile, chunk) {
+        savedZip.add(nonStreamingFile);
+        nonStreamingFile.push(chunk, true);
+    }
+    async generateAsync(onUpdate) {
+        while (this.tcount !== this.count) {
+            await (0,misc/* sleep */._v)(500);
+        }
+        const self = this;
+        this.onUpdateId = window.setInterval(() => {
+            const percent = (self.zcount / 3 / self.count) * 100;
+            if (typeof onUpdate === "function") {
+                onUpdate(percent);
+            }
+        }, 100);
+        this.savedZip.end();
+    }
+}
+
+// EXTERNAL MODULE: ./src/log.ts
+var log = __webpack_require__("./src/log.ts");
+// EXTERNAL MODULE: ./src/main.ts
+var main = __webpack_require__("./src/main.ts");
+// EXTERNAL MODULE: ./src/setting.ts
+var setting = __webpack_require__("./src/setting.ts");
+// EXTERNAL MODULE: ./src/ui/progress.ts + 1 modules
+var progress = __webpack_require__("./src/ui/progress.ts");
+// EXTERNAL MODULE: ./src/save/main.css
+var save_main = __webpack_require__("./src/save/main.css");
+;// CONCATENATED MODULE: ./src/save/chapter.html.j2
+// Module
+var code = "<!DOCTYPE html> <html> <head> <meta charset=\"UTF-8\"/> <meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"/> <meta name=\"referrer\" content=\"same-origin\"/> <meta name=\"generator\" content=\"https://github.com/yingziwu/novel-downloader\"/> <meta name=\"source\" content=\"{{ chapterUrl }}\"/> <link href=\"style.css\" rel=\"stylesheet\"/> <title>{{ chapterName }}</title> </head> <body> <div class=\"main\"> <h2>{{ chapterName }}</h2> {{ outerHTML }} </div> </body> </html> ";
+// Exports
+/* harmony default export */ const chapter_html = (code);
+;// CONCATENATED MODULE: ./src/save/index.html.j2
+// Module
+var index_html_code = "<!DOCTYPE html> <html> <head> <meta charset=\"UTF-8\"/> <meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"/> <meta name=\"referrer\" content=\"same-origin\"/> <meta name=\"generator\" content=\"https://github.com/yingziwu/novel-downloader\"/> <meta name=\"date-creation\" content=\"{{ creationDate }}\"/> <link href=\"style.css\" rel=\"stylesheet\"/> <title>{{ bookname }}</title> <style></style> </head> <body> <div class=\"main\"> <h1>{{ bookname }}</h1> <h3 class=\"author\">{{ author }}</h3> <div class=\"info\"> {% if cover -%} <img class=\"cover\" data-src-address=\"{{ cover.name }}\"/> {%- endif %} {% if introductionHTML -%} <div> <h3>简介</h3> <div class=\"introduction\">{{ introductionHTML }}</div> </div> {%- endif %} </div> <div class=\"bookurl\"> <a href=\"{{ bookUrl }}\">打开原始网站</a> </div> <hr/> {% for sectionObj in sectionsObj -%} <div id=\"section{{ sectionObj.sectionNumber }}\" class=\"section\"> {% if sectionObj.sectionName %} <h2 class=\"section-label\">{{ sectionObj.sectionName }}</h2> {% endif %} {% for chapter in sectionObj.chpaters -%} <div class=\"chapter\"> {% if not (chapter.contentHTML or chapter.status === Status.saved) -%} <a class=\"disabled\" href=\"{{ chapter.chapterHtmlFileName }}\">{{ chapter.chapterName }}</a> {%- else -%} <a href=\"{{ chapter.chapterHtmlFileName }}\">{{ chapter.chapterName }}</a> {%- endif %} </div> {%- endfor %} </div> {%- endfor %} </div> </body> </html>";
+// Exports
+/* harmony default export */ const index_html = (index_html_code);
+;// CONCATENATED MODULE: ./src/save/section.html.j2
+// Module
+var section_html_code = "<!DOCTYPE html> <html> <head> <meta charset=\"UTF-8\"/> <meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"/> <meta name=\"referrer\" content=\"same-origin\"/> <meta name=\"generator\" content=\"https://github.com/yingziwu/novel-downloader\"/> <link href=\"style.css\" rel=\"stylesheet\"/> <title>{{ sectionName }}</title> </head> <body> <div class=\"main\"><h1>{{ sectionName }}</h1></div> </body> </html> ";
+// Exports
+/* harmony default export */ const section_html = (section_html_code);
+;// CONCATENATED MODULE: external "nunjucks"
+const external_nunjucks_namespaceObject = nunjucks;
+;// CONCATENATED MODULE: ./src/save/template.ts
+
+
+
+
+const env = new external_nunjucks_namespaceObject.Environment(undefined, { autoescape: false });
+const section = new external_nunjucks_namespaceObject.Template(section_html, env, undefined, true);
+const chapter = new external_nunjucks_namespaceObject.Template(chapter_html, env, undefined, true);
+const index = new external_nunjucks_namespaceObject.Template(index_html, env, undefined, true);
+
+// EXTERNAL MODULE: ./src/save/toc.css
+var toc = __webpack_require__("./src/save/toc.css");
+;// CONCATENATED MODULE: ./src/save/save.ts
+
+
+
+
+
+
+
+
+
 class SaveBook {
     constructor(book) {
         this.book = book;
         this.chapters = book.chapters;
-        this.savedZip = new zip_1.FflateZip();
+        this.savedZip = new FflateZip();
         this._sections = [];
         this.savedTextArray = [];
         this.saveFileNameBase = `[${this.book.author}]${this.book.bookname}`;
-        this.mainStyleText = main_css_1.default;
-        this.tocStyleText = toc_css_1.default;
+        this.mainStyleText = save_main/* default */.Z;
+        this.tocStyleText = toc/* default */.Z;
     }
     saveTxt() {
         const metaDateText = this.genMetaDateTxt();
         this.savedTextArray.push(metaDateText);
-        log_1.log.debug("[save]对 chapters 排序");
+        external_log_default().debug("[save]对 chapters 排序");
         this.chapters.sort(this.chapterSort);
         const sections = [];
         for (const chapterTemp of this.chapters) {
@@ -13655,76 +13362,76 @@ class SaveBook {
             }
             const chapterText = this.genChapterText(chapterName, chapterTemp.contentText ?? "");
             this.savedTextArray.push(chapterText);
-            if (!setting_1.enableDebug.value) {
+            if (!setting/* enableDebug.value */.Cy.value) {
                 chapterTemp.contentText = null;
             }
         }
-        log_1.log.info("[save]保存TXT文件");
+        external_log_default().info("[save]保存TXT文件");
         const savedText = this.savedTextArray.join("\n").replaceAll("\n", "\r\n");
-        (0, file_saver_1.saveAs)(new Blob([savedText], { type: "text/plain;charset=utf-8" }), `${this.saveFileNameBase}.txt`);
+        (0,FileSaver_min.saveAs)(new Blob([savedText], { type: "text/plain;charset=utf-8" }), `${this.saveFileNameBase}.txt`);
     }
     saveLog() {
-        this.savedZip.file("debug.log", new Blob([log_1.logText], { type: "text/plain; charset=UTF-8" }));
+        this.savedZip.file("debug.log", new Blob([log/* logText */.KC], { type: "text/plain; charset=UTF-8" }));
     }
     saveZip(runSaveChapters = false) {
-        log_1.log.debug("[save]保存元数据文本");
+        external_log_default().debug("[save]保存元数据文本");
         const metaDateText = this.genMetaDateTxt();
         this.savedZip.file("info.txt", new Blob([metaDateText], { type: "text/plain;charset=utf-8" }));
-        log_1.log.debug("[save]保存样式");
+        external_log_default().debug("[save]保存样式");
         this.savedZip.file("style.css", new Blob([this.mainStyleText], { type: "text/css;charset=utf-8" }));
         if (this.book.additionalMetadate.cover) {
-            log_1.log.debug("[save]保存封面");
+            external_log_default().debug("[save]保存封面");
             this.addImageToZip(this.book.additionalMetadate.cover, this.savedZip);
         }
         if (this.book.additionalMetadate.attachments) {
-            log_1.log.debug("[save]保存书籍附件");
+            external_log_default().debug("[save]保存书籍附件");
             for (const bookAttachment of this.book.additionalMetadate.attachments) {
                 this.addImageToZip(bookAttachment, this.savedZip);
             }
         }
-        log_1.log.debug("[save]开始生成并保存卷文件");
+        external_log_default().debug("[save]开始生成并保存卷文件");
         this.saveSections();
-        log_1.log.debug("[save]开始生成并保存 index.html");
+        external_log_default().debug("[save]开始生成并保存 index.html");
         this.saveToC();
         if (runSaveChapters) {
-            log_1.log.debug("[save]开始保存章节文件");
+            external_log_default().debug("[save]开始保存章节文件");
             this.saveChapters();
         }
         else {
-            log_1.log.debug("[save]保存仅标题章节文件");
+            external_log_default().debug("[save]保存仅标题章节文件");
             this.chapters
-                .filter((c) => c.status !== main_1.Status.saved)
+                .filter((c) => c.status !== main/* Status.saved */.qb.saved)
                 .forEach((c) => this.addChapter(c, "Stub"));
         }
-        log_1.log.info("[save]开始保存ZIP文件");
+        external_log_default().info("[save]开始保存ZIP文件");
         const self = this;
-        if (setting_1.enableDebug.value) {
+        if (setting/* enableDebug.value */.Cy.value) {
             self.saveLog();
         }
         return new Promise((resolve, reject) => {
             const finalHandle = (blob) => {
-                (0, file_saver_1.saveAs)(blob, `${self.saveFileNameBase}.zip`);
+                (0,FileSaver_min.saveAs)(blob, `${self.saveFileNameBase}.zip`);
                 resolve();
             };
             const finalErrorHandle = (err) => {
-                log_1.log.error("saveZip: " + err);
-                log_1.log.trace(err);
+                external_log_default().error("saveZip: " + err);
+                external_log_default().trace(err);
                 reject(err);
             };
             this.savedZip.onFinal = finalHandle;
             this.savedZip.onFinalError = finalErrorHandle;
             this.savedZip.generateAsync((percent) => {
-                progress_1.vm.zipPercent = percent;
+                progress.vm.zipPercent = percent;
             });
         });
     }
     saveToC() {
-        log_1.log.debug("[save]对 chapters 排序");
+        external_log_default().debug("[save]对 chapters 排序");
         this.chapters.sort(this.chapterSort);
         const self = this;
         const sectionsListObj = getSectionsObj(self.chapters);
         modifyTocStyleText();
-        const indexHtmlText = template_1.index.render({
+        const indexHtmlText = index.render({
             creationDate: Date.now(),
             bookname: self.book.bookname,
             tocStyleText: self.tocStyleText,
@@ -13733,7 +13440,7 @@ class SaveBook {
             introductionHTML: self.book.introductionHTML?.outerHTML,
             bookUrl: self.book.bookUrl,
             sectionsObj: Object.values(sectionsListObj),
-            Status: main_1.Status,
+            Status: main/* Status */.qb,
         });
         this.savedZip.file("index.html", new Blob([indexHtmlText.replaceAll("data-src-address", "src")], {
             type: "text/html; charset=UTF-8",
@@ -13761,7 +13468,7 @@ class SaveBook {
         }
     }
     saveSections() {
-        log_1.log.debug("[save]对 chapters 排序");
+        external_log_default().debug("[save]对 chapters 排序");
         this.chapters.sort(this.chapterSort);
         for (const chapter of this.chapters) {
             const chapterNumberToSave = this.getChapterNumberToSave(chapter);
@@ -13769,7 +13476,7 @@ class SaveBook {
             if (chapter.sectionName) {
                 if (!this._sections.includes(chapter.sectionName)) {
                     this._sections.push(chapter.sectionName);
-                    log_1.log.debug(`[save]保存卷HTML文件：${chapter.sectionName}`);
+                    external_log_default().debug(`[save]保存卷HTML文件：${chapter.sectionName}`);
                     const sectionHTMLBlob = this.genSectionHtmlFile(chapter);
                     this.savedZip.file(sectionHtmlFileName, sectionHTMLBlob);
                 }
@@ -13784,21 +13491,21 @@ class SaveBook {
         const chapterName = this.getchapterName(chapter);
         const chapterNumberToSave = this.getChapterNumberToSave(chapter);
         const chapterHtmlFileName = `No${chapterNumberToSave}Chapter${suffix}.html`;
-        log_1.log.debug(`[save]保存章HTML文件：${chapterName}`);
+        external_log_default().debug(`[save]保存章HTML文件：${chapterName}`);
         const chapterHTMLBlob = this.genChapterHtmlFile(chapter);
-        if (!setting_1.enableDebug.value) {
+        if (!setting/* enableDebug.value */.Cy.value) {
             chapter.contentRaw = null;
             chapter.contentHTML = null;
         }
         this.savedZip.file(chapterHtmlFileName, chapterHTMLBlob);
         chapter.chapterHtmlFileName = chapterHtmlFileName;
-        chapter.status = main_1.Status.saved;
+        chapter.status = main/* Status.saved */.qb.saved;
         if (chapter.contentImages && chapter.contentImages.length !== 0) {
-            log_1.log.debug(`[save]保存章节附件：${chapterName}`);
+            external_log_default().debug(`[save]保存章节附件：${chapterName}`);
             for (const attachment of chapter.contentImages) {
                 this.addImageToZip(attachment, this.savedZip);
             }
-            if (!setting_1.enableDebug.value) {
+            if (!setting/* enableDebug.value */.Cy.value) {
                 chapter.contentImages = null;
             }
         }
@@ -13827,20 +13534,20 @@ class SaveBook {
         return metaDateText;
     }
     addImageToZip(attachment, zip) {
-        if (attachment.status === main_1.Status.finished && attachment.imageBlob) {
-            log_1.log.debug(`[save]添加附件，文件名：${attachment.name}，对象`, attachment.imageBlob);
+        if (attachment.status === main/* Status.finished */.qb.finished && attachment.imageBlob) {
+            external_log_default().debug(`[save]添加附件，文件名：${attachment.name}，对象`, attachment.imageBlob);
             zip.file(attachment.name, attachment.imageBlob);
-            attachment.status = main_1.Status.saved;
-            if (!setting_1.enableDebug.value) {
+            attachment.status = main/* Status.saved */.qb.saved;
+            if (!setting/* enableDebug.value */.Cy.value) {
                 attachment.imageBlob = null;
             }
         }
-        else if (attachment.status === main_1.Status.saved) {
-            log_1.log.debug(`[save]附件${attachment.name}已添加`);
+        else if (attachment.status === main/* Status.saved */.qb.saved) {
+            external_log_default().debug(`[save]附件${attachment.name}已添加`);
         }
         else {
-            log_1.log.warn(`[save]添加附件${attachment.name}失败，该附件未完成或内容为空。`);
-            log_1.log.warn(attachment);
+            external_log_default().warn(`[save]添加附件${attachment.name}失败，该附件未完成或内容为空。`);
+            external_log_default().warn(attachment);
         }
     }
     genSectionText(sectionName) {
@@ -13851,13 +13558,13 @@ class SaveBook {
         return `## ${chapterName}\n\n${contentText}\n\n`;
     }
     genSectionHtmlFile(chapterObj) {
-        const htmlText = template_1.section.render({ sectionName: chapterObj.sectionName });
+        const htmlText = section.render({ sectionName: chapterObj.sectionName });
         return new Blob([htmlText.replaceAll("data-src-address", "src")], {
             type: "text/html; charset=UTF-8",
         });
     }
     genChapterHtmlFile(chapterObj) {
-        const htmlText = template_1.chapter.render({
+        const htmlText = chapter.render({
             chapterUrl: chapterObj.chapterUrl,
             chapterName: chapterObj.chapterName,
             outerHTML: chapterObj.contentHTML?.outerHTML ?? "",
@@ -13879,7 +13586,6 @@ class SaveBook {
         return 0;
     }
 }
-exports.SaveBook = SaveBook;
 function getSectionsObj(chapters) {
     const _sectionsObj = {};
     for (const chapter of chapters) {
@@ -13921,7 +13627,6 @@ function getSectionsObj(chapters) {
     const sectionsListObj = _sectionsListObj.map((s) => s[1]);
     return sectionsListObj;
 }
-exports.getSectionsObj = getSectionsObj;
 function saveOptionsValidate(data) {
     const keyNamesS = ["mainStyleText", "tocStyleText"];
     const keyNamesF = [
@@ -13973,10 +13678,9 @@ function saveOptionsValidate(data) {
     }
     return true;
 }
-exports.saveOptionsValidate = saveOptionsValidate;
 function getSaveBookObj(book, options) {
     const saveBookObj = new SaveBook(book);
-    if (setting_1.enableCustomSaveOptions && saveOptionsValidate(options)) {
+    if (setting/* enableCustomSaveOptions */.EI && saveOptionsValidate(options)) {
         Object.assign(saveBookObj, options);
     }
     if (book.saveOptions !== undefined) {
@@ -13984,689 +13688,75 @@ function getSaveBookObj(book, options) {
     }
     return saveBookObj;
 }
-exports.getSaveBookObj = getSaveBookObj;
-
-
-/***/ }),
-
-/***/ "./src/save/template.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.index = exports.chapter = exports.section = void 0;
-const chapter_html_j2_1 = __webpack_require__("./src/save/chapter.html.j2");
-const index_html_j2_1 = __webpack_require__("./src/save/index.html.j2");
-const section_html_j2_1 = __webpack_require__("./src/save/section.html.j2");
-const nunjucks = __webpack_require__("nunjucks");
-const env = new nunjucks.Environment(undefined, { autoescape: false });
-exports.section = new nunjucks.Template(section_html_j2_1.default, env, undefined, true);
-exports.chapter = new nunjucks.Template(chapter_html_j2_1.default, env, undefined, true);
-exports.index = new nunjucks.Template(index_html_j2_1.default, env, undefined, true);
 
 
 /***/ }),
 
 /***/ "./src/setting.ts":
-/***/ ((__unused_webpack_module, exports) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.iconJump = exports.iconSetting = exports.iconStart1 = exports.iconStart0 = exports.enableJjwxcRemoteFont = exports.enableR18SiteWarning = exports.enableCustomSaveOptions = exports.enableCustomChapterFilter = exports.enableCustomFinishCallback = exports.enableDebug = exports.retryLimit = void 0;
-exports.retryLimit = 5;
-exports.enableDebug = {
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "o5": () => (/* binding */ retryLimit),
+/* harmony export */   "Cy": () => (/* binding */ enableDebug),
+/* harmony export */   "Vo": () => (/* binding */ enableCustomFinishCallback),
+/* harmony export */   "Td": () => (/* binding */ enableCustomChapterFilter),
+/* harmony export */   "EI": () => (/* binding */ enableCustomSaveOptions),
+/* harmony export */   "Z3": () => (/* binding */ enableJjwxcRemoteFont),
+/* harmony export */   "cl": () => (/* binding */ iconStart0),
+/* harmony export */   "wE": () => (/* binding */ iconStart1),
+/* harmony export */   "d7": () => (/* binding */ iconSetting),
+/* harmony export */   "y6": () => (/* binding */ iconJump)
+/* harmony export */ });
+/* unused harmony export enableR18SiteWarning */
+const retryLimit = 5;
+const enableDebug = {
     value: false,
 };
-exports.enableCustomFinishCallback = true;
-exports.enableCustomChapterFilter = true;
-exports.enableCustomSaveOptions = true;
-exports.enableR18SiteWarning = false;
-exports.enableJjwxcRemoteFont = true;
-exports.iconStart0 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAFYElEQVR4nO2dIUxkORyHP4XD4E6RYNZgUGvWonAnVqxDbbJiNWLNOsQ65Oo1CMQIFAnJJiQIcgY7YhIEbgTJiEkm4USPuyNh3pv2tf33tb9f8kl4fe3H0Pm37xXi50/gHJgBC+C5YB6Bv4AL4CuwH7872skBcI/9oA5lBpwAO1F7p/IcUf5fuy8L4AzYjthPVWYfeMJ+wFLxABxG660K8xv7QcrBWawOqykfsB+YnEzQv4RXOcV+UHJzD+zF6LwaMsF+QCyYo3kBALfYD4YVK+DL8C4cd+6wHwhrfgJbQztyrJEAjhvgj4F9OcrUKMA33Me778/NaLCUXKMA27ivt48BP7vArYU0k1oFAPeRHjrJPQ3u0ZGlZgHATe5+Bv6ecxooGtUuwEuOCVvsugd2vXp0ZGlFAHDL3bOA3zfHzSmqTEsCgNsjcBXwO5e4T5Hq0poA4OYFoWsg1RWNWhTgJZ8ImxdcUdFuo5YFADcvmAZcY0olRaPWBQD313wZcJ0n3Fa6UUcC/JfvAdda4TagjjYS4HWOcF/7fK/5i5FODmvcDzC0eveOsO3xt4xwRVECvJ1t3MMmvtd+AN5HuH62SIDunOC/tLxgREUjCdCf0HnBKFYUJcBm2SNsXnCZqD3RIgE2zzZuidi3PVPcxLLISAD/fMYtDvm0qdht6BIgLIf4zwuWOHmKigQIzy5hhbSiKocSYFi2cFVA3zZ+ytjGztQogMVS7Vf85gVPFLLVrEYBrGbcvlvRJzbNfJ0aBbDc1++7Fd28bFyjAOdRe8g/PlvOfhm18d/UKMCKMjZqHNM/L1hiXCmsUYBn3ILMZ+zX6N/jVgi72mr6KFqtArzwiJtsneE+li3oezLJdNGodgHGgOm3AQlgz03vKCWMBLDnrneUEkYC2CMBGkcCNI4EaBwJ0DgSYEMecE/mbkLIA59NCnCzplElEbqfLvTJXwlQGEN2z+zjv4GzKQFK/xewZPiCTumS6xOgg4cI9xiyZ08CFIIESBwJYI8E6EACJI4EsEcCdCABEkcC2CMBOpAAiSMB7JEAHUiAxJEA9kiADiRA4kgAeyRABxIgcSSAPRKgAwmQOBLAHgnQgQRIHAlgjwToQAIkjgSwRwJ0IAESRwLYYyrA7zWNKgUJkDgSwB4J0IEESBwJYE8zAqxwr0T7webv2Ivxbv2PHtc7xb1qNucDpc0I8DHTPcXIB/yPi5MAHcT4KM+dXH3ThADzXDcUMSHHxEmADr5kuqcYOSJfvzQjwIKCz8/7X3bof8O3BAjkDvtXuPcl5HBICeDB9yx3FpZj8vdHcwKsKOCsnDeyhzvNSwJkYEp5hypfY9MXTQrwjDtJo5ScYNcPzQrwTBmHOx1g+y7BpgV4xJ21Z5Ut8hV8JMAaLpPf5fqcdbRLAmTE4lj1wwHtlQCRyV0l3MHvnF8JkIGcVcLc1T4JsCE5qoQW1T4JsCGpq4RW1b5iBbhe0yhLUlYJS7xfCfAGKaqE3wq4LwngQcxTta2rfRIggDlxqoQlVPskQCAxqoQlVPskwACG7CUspdonAQYQWiUsqdonAQYSUiUsqdonASLgUyUsrdonASKwwj2y1ZcSq30SIBKbVAlLK29LgMh0VQlLrfZJgMi89aRxydU+CRCZOe5g6JfsMo6TwiVARJbABe7r3pgmfRJASAAhAQQSQCABmsdUgKs1jRL5uO0dpYSRAPZMekcpYS7WNErk47R3lBLmx5pGiXyYvi1lDFumaua6f4jS5w77jmiRBa/XM8zyjnHX0sfIkrjPPQzOAeNdTRsbUzbb2ZQ9W7i9dBNghltyjUHrny4r3JtHJ//0b9RH4P8GSxsCzEN/51YAAAAASUVORK5CYII=";
-exports.iconStart1 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAESElEQVR4nO2cLUxcQRSFv4QgEBiSKgQCh6pCouvQlbVVdaRuTFUNoqaqEkktCoVD4HBITBMMosmaVsxu+kL3l3lv7p13z5ccyc68OSf3sLtvHwghhBBCjJM/hRKNowAERwEIjgIQHAUgOApAcBSA4CgAwVEAgqMABEcBCI4CEBwFIDgKQHAUgOAoAMFRAIKjAARHAQiOAhAcBSA4CkBwFIDgKADBUQCCowAERwEIjgIQHAUgOApAcBSA4CgAzkmUm9SqUvHpjYSEvRky35iEvSky35iEvTky35iEvUky35iEvVky35iEvWky35iEvXky35iEvYky35iEvZky35iEvaky35iEvbky35iEvcky35iEvdky35iEveky35iEzA9PQuaHJyHzm2e78O8T7Zhfeq2j4i1wDvyi/GAT/s1P5Gs9J197SN4An4A7hjlgz+a/fM078lm8KXxt92wDp8BPYEL9g/ZoflcT8tmcMrKK6I54TwfueS/NV8SyEe/54D3uoZmK2GTEt2KA5dov5bYiXjvivRthsea6Mq+Ivka8V0NqrlWqahUx1IjfRGeF15DWWCMVrnG2xhpDaLCKqDHiV+ka+ADs9nA9ack6qYfX3yXv9XrJOkOruCIsRvxLPZANOXztRSwhzVkvDbDO4fR1H+asV0trV4SHEf8M/ABOVm22B1Jn3VRhvRPytT1jc7YLK8LTiN/Z/FyLSNT/Vm8HZxVhtYnZiD8oOc3GOcC+Iqou9gx8p86Ib40T8tnUrogqi1wB76k/4ltkh3xWVzQegHvgM7Df6/HEYp98hvc0EoAn8hg7HuAwonNMPtsnnAVggkZ8TboV0cfb9aIRf4ZGvCX7ZA9KKmLjEf8NjXiPHJO92bQiFICRUCUAqgBfVK+AedI/gXVx80/goorQ28BhcPs2cFlF6IOgMpr7IGiRVBHrM5qPguep5vf9rWF1v0DVxbrS18EBvw5epGv6u+fPOx7uGXQXgJnGXBHWt4Q1EYCuhrwptBYebgptNgBd3dBORcxG/A325zaaAMz0G7gA3gFbaxpSgy3yni7Ie7Q+p9EGoKtH4AtwtNqfwTia7uER+/MIF4CuboCPwN5Su/phb7pWKyM+RABmGqoiWh7xoQLQ1SPwlbKKOJq+RssjPmwAurpl/YqYjfhbB/tWAHrWBLjk/9/HzX4XeYnd7yIVgMqa/T7O+neR1jLfgKQASIYy34CkAEiGcvGACKmu5j5DKPJboQha9BZ4Lh4eEiX1o+LnCKoi2tMgTxJVRfjWRiO+FFWEH5k/TVwVUV/mD4ueh4cHTY5ZVUd8KaqI/mQ+4ktRRWwulyO+FFXEcjU14ktRRfxT8yO+lIgVMcoRX8rYP2gKNeJLGVNFhB/xpbRYERrxA+C9IjTiK+KpIjTijbGoCI14hwxdERrxDdFnRWjEN85rKkIjfoSsqgiN+EB0K0IjXgghhBDh+Avri3imoU6g/AAAAABJRU5ErkJggg==";
-exports.iconSetting = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABmJLR0QA/wD/AP+gvaeTAAAIxElEQVR4nO2dW4wWRRbHfzArzAIioFxk4oMKjLgqug9k2UUi3g0YYwKId59UXnaj0ejDamLUxTWi8cEbglFJvL7hLfFuHBGNVxBXjFGZWVC8jIoDOzPLTPtwvk+GoafOqe6qntbpf1LJZKrr1L+quqtOnXOqPqhQoUKFChUqVKhQoUKF8uDvQBIoXVUwdzOGDzYBB44JKOtPAWUFRZkHYFZAWUcHlDUk0ADsJNwUtKsms3Qo6xcwAxgVUN4fgcMCyguGsg5AyPm/jlJOQ0NpAI6KIDM3yjoAIRfgOko5AGVFG+5F9fiUMqcrZT6Ozvp3goOAXtydOT6lXJNS5v9AY2Tuv2mcAKwCfsDdkVscMtqVsiuAA+PQ/+3iNGA9dp3+KYes1wzlfwZuASbm4LxfjrJRcASwGXnD5mJb3A8BnsF/U3WTQ+ZdHnI6gFuBA4xtbEBeljXIVzrTWK4QPMvejfsauA9ZGEekPH8x8BP+nZ8ASxw8lmWQtw041yFzFvJibetX7jlHmUKxAHcDfwQeARYDE4B7lOe11OzgMjeH3Bf7yG4CrgY2KGUW+HVVeIwAPsHeSE270dKnuG0643LK7wReB3qMz28m/QsvDFemkAqduoAngFOwrS0n157vKoBbUuuDQcFEdJUxa+pB3sQrgMkZ+U0GrgFaI3Gspx+BSRk55sJ9GchqaTdwP3BoQJ4jkcV5SwS+9bQyIF8TjkU6K2QjNgGzI3IeAVwGfBOYd/3FOTYi933wauAGPAqMLoj7OOBOwr9ALcCwIhqwyEDmv8Db2LSeFUWQTsFsRKuydG478K3hucWxSTcCXxiILKo9fwhwKWI+6E557vbYhBVMRqa+gaaVF4CLEO+c5cVrJawnbx/800DiddI/xQlIY55AzACD3fl1TEZM1X3XomtI12xeQW//dbGINiGGrBCLUZb5fixwHqIlvY0spt219E3tfyuBpcD+nrKbkI6boTxnUT46avKC42Gl4gS4N0K9zcBqJLLBuiDuREzb0yPwsajfa0JX+hdsC+pJAescBdyGOFKsHd8/dSMWz5COmAsN9fYCc0JVOAy7vb49UMXTgY3GOi3pTeDgALwuxf5CvEVAn/vV2A1pP5PvSziOOJulNrJHWwwDbvSs7w4CBz1cht1K2AmclaGO6cTp/L6D4Psl7Ac86FFHD2LDioKlpOvzaWk3cImH7EbgA6PsPOkdJFLOgjHs62zSXrylHm3OhDOB/xkJ9QCXG+XeZpQZIt1g4NMIvO8hs530cJkomA/sMBLrRY9EaMa2uPUCTwMXILGeo2rpcEQ7edrIqQOYonAajl31/ZJB8BHPBr43kNtqkLXaIKcV+KtB1lz0wK4EuNsg612DnPcIo2FlwlHs66zun9YqMsaih6K34tfIqeiD0IHM8S6sUWS04L/r3gt51aSPkFgcF95V8hfiNmAlyML2lQcvLdIBxByiOdU3KfmtiNqdGSH0VC3o9T0lf76S/wywzk7nV7QgGowLJyr52gDkPvoUYgCmKvmblXwtEvpxDy6+ZbW6Ne5a2wuBppJqlk/N0ZHnZMs0RfZ2pfxopfyuHNyCQdsda2eztPCRPA4OrQM7lfJ/UMrvzsENKOaARpKzfB4/ayE+2jwIMQBdSr4WObZDyc8aFwT6ZusnJX+kkt/twSUVIQagQ8nXOvBzJf9vHlx8y2p1a56tnR5cUhFiAFwHJkAPsvpQyT/Hg0t/aIYxrW5XIDDYdvlOhBgA7S06Usl/WclfgJgXfDEPCY934SUl/89K/n/sdOJgDOJtcmkKqxUZ+6ObItrw07mbkNikvKaItYqMHcCpHryCYgo2Y9UHBlmrDHLasH0J89A7P8EWz7nVIKcbP79HEMzEFqCVIGZmzQEyHbuj51kkvmgaouePrv19MXbnSRf6Bm+SUVaCmMmvV+QFw/HYzND19D42i+GtHjLzpuXGtl6L36GSVcjmLRrOxi8+50Xsh+Aa0deTEGkdun7fF4uwewAT4HnExB4c/8DulE+Ah/A/zjmFuAcqtpItam0+chDDWs+HGetJxXAkxMKnoTeS3QxwDDaPlm9qJd+NKUd78tpEIFPIMCTIyFLpbuxOeBcmYjt07TPtaGYJC6Zid9S7zjN7Yw62xejCgHU2ItELHYZ6B0pdwL/wm/M1nGCodzsR1gHNP5oggauhMQVxoPsMREeNS4xbsl4y1L8sQr00oXeCJTx9BhIK7rtIjUHsQvcisarbkTe8q/b3euQQ+BL0HW4aLCHzC9E7/2MiqqLXGQiknZUajwS2trBnKvuUSHH0GbAcUTVfQLS9tPWiAQlC0Nq/MCZRnyNKI5EoOteh6TIMwnLSv+QW5KTMtNpzlnsoXimC8GIDkW/R7+7pOwgxj6e6sMLAr5c9J3Jcz/WgW0+DIfQx1V7kBM5BBfEfAzwWuA0PFsQdiHNQO0HessuJewHGHMSOH5L3LuREaKFYGYD4QGkLMueG1N+nAQ8Q58W5OSBPMybhZx/JktqQhTDPhR1XAG/gZ8fySVE2XVYUcV1Nwp4ra042cBqOXG1T1JU1UTZdVoxAwvcsROtX0HQanx8ojXPwacB+/cBAycf+H3XTZYV2ZdkG5JBfXd9vRjY8WTvI5ZZsziE3QS79m4Co2o+g32sXddPlg+fYm9g2RMd2Bb8uxeZz9fnkl2SQlyBr2fkp8kYCZyAKx/Z+ZbRojkIxE7k9aw1ytaP1rv6xwL/xM7Td5ZB3k4ecelqLbTfegDj870BCcQrbdFmR5zLTiYhJwHLuzHUg5ClD+Xp6A9uiPqRwILp5oN1RXruW7Afkso95cej/PtCIfmIybcoYr5TppThThxll/P2ATuAz5Zm0Y1HaNQRtwHeZGA1BPEk+dXKgxbZ0KOMXAOL4CA0tEnpQMJQGYEMEmblR1gHYGEFmKQegrGjALwRSS9UPuXmih7CHHzbWZJYOZR0ACDsNlXIBhnIPQMiFuJr/K1SoUKFChQoVKlSoUBr8Ah3QujNKRJdpAAAAAElFTkSuQmCC";
-exports.iconJump = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAG6wAABusBTDGeSgAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAeVSURBVHic7VpvTBNpHv6901L+yQU3nCfrByU9IRYrWrCVGkVzgu4ZCSFSMBDJrhcTP+iqMdlcLvFyl7sPftn9diZsiHterpYz8TxuCXsauBNy2VVoXIEIXV2hAYt/WqF/mMGZ6fzugwxXSjudlnYHWJ5kMm+n7/zmeZ55531/7ztDEBF+zKCUJqA01gxQmoDSWDNAaQJKY80ApQkojTUDlCawFNTU1Pzk3LlzzYQQkmiMFW0AABzRarVfXLx40UYISUjLijaA4zjNunXrQK/XWy5dutS5b98+dbwxVrQB4jwmIyMDtm/fXrV3796eQ4cOZcYTY0UbEAqNRgM6na7caDTeP3r0aI7c81aNAQAAaWlpsG3bNr3BYHhYW1v7npxzVpUBAABqtRoKCwu1er1+sK6uLj9W/RVtQLS1DJVKBVu3bn1fr9cPWCyWAqkYK9oAKVAUBVqtNq+kpORRQ0ODLlo9kooVoVOnTv0yOzv7F1J1Yl1XDi+e53++e/fu6uzs7AX1w8sTExPMo0eP9lmtVnt4jKQbQAhJv3z58rDBYJhveuI1pEjKLSd6nsvlYh8+fFhptVp7Qvmm4hFQAUDCqWmqkJ+frykrK+tubGz8IPR4SvqA5brQumHDBpXJZPqyqampTjy2KjvBYDAILMsCwzAQCATA5/OB1+uFqakpAACqsLDQ1tzcfAoAIO7cWQ5S3QIEQYDZ2VngOA6CwSDwPA88z8+XAQDECWKkfVZWFqXVaj9vaGiYTYkByQbP80DTNDAMAwzDAMuyABBZnJRwcY+IMDMz4x8eHuYTNoAQQk6fPn1yYmLi7x0dHb7Q/5baAliWBZqm5zc5d1WOcJGby+V6cevWrY+dTudXCRlACKHOnj17o6ioyPL8+XMGAP6WSBwRgiCAz+cDn88HDMNAMBiUJSYe4YQQCAaD4HQ6v2tra/vY7Xb3ICIdtwFms1l9/vz5DpPJVMXzPLAsqwmvg4goipj7vWAP8K6jCgQCMD09DYFAICJpKcQjnBACLMvCkydPHlit1osMw/Qj4luAODvBAwcOZJrN5i6j0Vienp4OPp8vUjX+7t27nz5+/NgoFSsZmWBWVtZPi4uLj6Snp0u2jtnZWRgaGuq02Wy/EQRhEBF5MYZsAw4fPpxjMpn+W1paqtdoNICIEUkiIksI+UtfX9+SHgs5OHjw4NHi4uIj4Y9CaDkQCEBfX9+f29vbrwCAAxGF0BiyDDh27Nh7ZWVlD0pKSrRpaWnz4qPdJUT0LkWYXFRWVnKi4Ej9gdfrFXp6ej7r7u7+EwCMYgTCMQ2oqanJ37lzZ79er39frVaDIPzfwNCyUiCEAEVR82URr1+/Zru6un53//79LxDRFe18SQNqa2sLdu3a9UCn0+VRFDUveLmkuiKP8DF+cnLS39nZ+cng4OBNRHRLxYhqwPHjx3UGg+GboqKiHACIKH65tADRAEEQYHx8/OXt27cvjI6OdiBixF46FBENsFgspaWlpb1arTYz1jR0y5YtdWfOnNkVSihSWeo/OWW/3/+v1tbWO+FcRQM4joPR0dHvb968ee7Vq1f/QUQ6suSFWGRAfX39/rKysrubN2/WSIlHRMjMzASz2Vw9PT0NDMNEHMfjGa+l9uPj45WEkN3i+B0an2VZcDgc9ra2tgt+v/9BeB3ZBtTX139gNBr/uWnTJlV4Lx9eRkSYmpoCv98fNXGJJSoezF1fFXYMaZqGp0+f3rHZbL8WBGEgdIyXg3kDTpw4Ubdnzx7bxo0bqdBnO5IJHMeBx+MBlmWXJE7u3Y8Gu93+Lcdxf+zt7bUCwEj4GC8HagCAxsbGX5WXl7fk5eWRaOJF0DQNHo8n5kiQzLsf7Ryv1+vo7e29AgCBSGO8HKgtFkvj/v37P8/NzY3Zq79582ZBk0+GqKXEmmvu/rgvHgJqeHiY93g8tJT4YDAILpcL/H7pay21SUvFEpOdZIMaGhrqvHbt2ocOh8MTOoMTEQwG4cWLF8BxXERiSt39ZIFCRJ/T6fyypaWlaWBgYEwUCrBYvBRS8cz/EMZQAACISLvd7n9fvXq1yW63f8uy7ALxUoRCJ0ZSm1g31h4RQRCERVuq0u8FL0YIIWqKovQnT568UlBQUBk+yQjfcxwHIyMjXzEM8zpicIlMMNrxaHXGxsa+7u/vb0VEVpYymVj0Zoi8+9SkqLq6+pMdO3Y0Z2RkLCAWSpDjOLh3795H3d3dHckkFQVvUzHNXpQKI6JACBlpb2///czMjNtkMl3Iyspa1AWLRqhUKg4RXyWb2A+FiJOhuaTiGSHk05mZmTcVFRW/zcnJ0SjRS6cakusBiOgihLTQND1VVVV1Zf369TkAyg5byUbMFSFEdBNC/hoIBKarq6s/y8vL+5lKpYp12oqBrPQKEX3Pnj37x40bNz6anJz8XhCEVXH3AeJ4OYqI9MuXL7uuX7/+4djYmF1OcrQSEFeCjYhv/X7/162tracdDseduXd0y2OBMFHIzeTCsjoKAHQVFRV/yM3NLU4kxnLZEv5EhrzrBNYBABPvKsxyQko+klpJWJVfiMSDNQOUJqA01gxQmoDSWDNAaQJK40dvwP8AKk+/HC2PJW8AAAAASUVORK5CYII=";
-
-
-/***/ }),
-
-/***/ "./src/stat.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.resetStat = exports.printStat = exports.failedPlus = exports.successPlus = void 0;
-const GM_1 = __webpack_require__("./src/lib/GM.ts");
-const log_1 = __webpack_require__("./src/log.ts");
-const statKeyName = "novel-downloader-22932304826849026";
-const domain = document.location.hostname;
-async function getStatData() {
-    const _data = await (0, GM_1._GM_getValue)(statKeyName);
-    let statData;
-    if (_data) {
-        statData = JSON.parse(_data);
-    }
-    else {
-        statData = { success: {}, failed: {} };
-    }
-    return statData;
-}
-const saveData = async (statData) => {
-    const dataJSON = JSON.stringify(statData);
-    await (0, GM_1._GM_setValue)(statKeyName, dataJSON);
-    return statData;
-};
-const dataPlus = async (key) => {
-    const statData = await getStatData();
-    const tmpData = statData[key];
-    if (tmpData[domain]) {
-        tmpData[domain] = tmpData[domain] + 1;
-    }
-    else {
-        tmpData[domain] = 1;
-    }
-    return saveData(statData);
-};
-const successPlus = () => {
-    return dataPlus("success");
-};
-exports.successPlus = successPlus;
-const failedPlus = () => {
-    return dataPlus("failed");
-};
-exports.failedPlus = failedPlus;
-const printStat = async () => {
-    const statData = await getStatData();
-    log_1.log.info("[stat]小说下载器脚本运行情况统计：");
-    log_1.log.info(statData);
-    for (const k in statData) {
-        if (Object.prototype.hasOwnProperty.call(statData, k)) {
-            log_1.log.info(`[stat]${k}:`);
-            const subData = statData[k];
-            for (const j in subData) {
-                if (Object.prototype.hasOwnProperty.call(subData, j)) {
-                    log_1.log.info(`  [stat]${j}: ${subData[j]}`);
-                }
-            }
-        }
-    }
-};
-exports.printStat = printStat;
-const resetStat = () => {
-    const statData = { success: {}, failed: {} };
-    return saveData(statData);
-};
-exports.resetStat = resetStat;
-
-
-/***/ }),
-
-/***/ "./src/ui/ChapterList.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.style = void 0;
-const Vue = __webpack_require__("vue");
-const createEl_1 = __webpack_require__("./src/lib/createEl.ts");
-const log_1 = __webpack_require__("./src/log.ts");
-const main_1 = __webpack_require__("./src/main.ts");
-const download_1 = __webpack_require__("./src/router/download.ts");
-const save_1 = __webpack_require__("./src/save/save.ts");
-const ChapterList_html_1 = __webpack_require__("./src/ui/ChapterList.html");
-const ChapterList_less_1 = __webpack_require__("./src/ui/ChapterList.less");
-const FilterTab_1 = __webpack_require__("./src/ui/FilterTab.ts");
-async function getSections() {
-    if (window._sections) {
-        return window._sections;
-    }
-    else {
-        const rule = await (0, download_1.getRule)();
-        const book = await rule.bookParse();
-        window._book = book;
-        window._sections = (0, save_1.getSectionsObj)(book.chapters);
-        return window._sections;
-    }
-}
-exports.style = (0, createEl_1.createStyle)(ChapterList_less_1.default);
-exports["default"] = Vue.defineComponent({
-    name: "ChapterList",
-    setup(props, context) {
-        const sectionsObj = Vue.reactive([]);
-        const loading = Vue.ref(true);
-        const failed = Vue.ref(false);
-        Vue.onMounted(async () => {
-            if (sectionsObj.length === 0) {
-                try {
-                    const _sectionsObj = await getSections();
-                    Object.assign(sectionsObj, _sectionsObj);
-                    loading.value = false;
-                }
-                catch (error) {
-                    log_1.log.error(error);
-                    failed.value = true;
-                }
-            }
-        });
-        const filterSetting = Vue.inject("filterSetting");
-        const filter = (chapter) => {
-            if (chapter.status === main_1.Status.aborted) {
-                return false;
-            }
-            if (filterSetting.value) {
-                const filterFunction = (0, FilterTab_1.getFilterFunction)(filterSetting.value.arg, filterSetting.value.functionBody);
-                if (typeof filterFunction === "function") {
-                    return filterFunction(chapter);
-                }
-            }
-            return true;
-        };
-        const warningFilter = (chapter) => {
-            if (chapter.isVIP === true && chapter.isPaid !== true) {
-                return true;
-            }
-            return false;
-        };
-        const isChapterDisabled = (chapter) => {
-            if (!chapter?.chapterUrl) {
-                return true;
-            }
-            return false;
-        };
-        const isChapterSeen = (chapter) => {
-            if (filterSetting.value.hiddenBad && filter(chapter) === false) {
-                return false;
-            }
-            else {
-                return true;
-            }
-        };
-        const isSectionSeen = (sectionObj) => {
-            const chapters = sectionObj.chpaters;
-            return chapters.some((chapter) => isChapterSeen(chapter) === true);
-        };
-        return {
-            sectionsObj,
-            loading,
-            failed,
-            filter,
-            warningFilter,
-            isChapterDisabled,
-            isChapterSeen,
-            isSectionSeen,
-        };
-    },
-    template: ChapterList_html_1.default,
-});
-
-
-/***/ }),
-
-/***/ "./src/ui/FilterTab.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.style = exports.getFilterFunction = exports.getFunctionBody = exports.filterOptionDict = void 0;
-const Vue = __webpack_require__("vue");
-const createEl_1 = __webpack_require__("./src/lib/createEl.ts");
-const ChapterList_1 = __webpack_require__("./src/ui/ChapterList.ts");
-const FilterTab_css_1 = __webpack_require__("./src/ui/FilterTab.css");
-const FilterTab_html_1 = __webpack_require__("./src/ui/FilterTab.html");
-exports.filterOptionDict = {
-    null: {
-        raw: (arg) => {
-            return (chapter) => true;
-        },
-        description: "<p>不应用任何过滤器（默认）</p>",
-        abbreviation: "无",
-    },
-    number: {
-        raw: (arg) => {
-            function characterCheck() {
-                return /^[\s\d\-,，]+$/.test(arg);
-            }
-            function match(s, n) {
-                switch (true) {
-                    case /^\d+$/.test(s): {
-                        const _m = s.match(/^(\d+)$/);
-                        if (_m?.length === 2) {
-                            const m = Number(_m[1]);
-                            if (m === n) {
-                                return true;
-                            }
-                        }
-                        return false;
-                    }
-                    case /^\d+\-\d+$/.test(s): {
-                        const _m = s.match(/^(\d+)\-(\d+)$/);
-                        if (_m?.length === 3) {
-                            const m = _m.map((_s) => Number(_s));
-                            if (n >= m[1] && n <= m[2]) {
-                                return true;
-                            }
-                        }
-                        return false;
-                    }
-                    case /^\d+\-$/.test(s): {
-                        const _m = s.match(/^(\d+)\-$/);
-                        if (_m?.length === 2) {
-                            const m = Number(_m[1]);
-                            if (n >= m) {
-                                return true;
-                            }
-                        }
-                        return false;
-                    }
-                    case /^\-\d+$/.test(s): {
-                        const _m = s.match(/^\-(\d+)$/);
-                        if (_m?.length === 2) {
-                            const m = Number(_m[1]);
-                            if (n <= m) {
-                                return true;
-                            }
-                        }
-                        return false;
-                    }
-                    default: {
-                        return false;
-                    }
-                }
-            }
-            if (!characterCheck()) {
-                return;
-            }
-            return (chapter) => {
-                const n = chapter.chapterNumber;
-                const ss = arg.split(/,|，/).map((s) => s.replace(/\s/g, "").trim());
-                return ss.map((s) => match(s, n)).some((b) => b === true);
-            };
-        },
-        description: "<p>基于章节序号过滤，章节序号可通过章节标题悬停查看。</p><p>支持以下格式：13, 1-5, 2-, -89。可通过分号（,）使用多个表达式。</p>",
-        abbreviation: "章节序号",
-    },
-    baseOnString: {
-        raw: (arg) => {
-            return (chapter) => {
-                return (chapter && chapter.chapterName?.includes(arg)) || false;
-            };
-        },
-        description: "<p>过滤出所有包含过滤条件字符的章节</p>",
-        abbreviation: "章节标题",
-    },
-};
-function getFunctionBody(fn) {
-    return `return (${fn.toString()})(arg)`;
-}
-exports.getFunctionBody = getFunctionBody;
-function getFilterFunction(arg, functionBody) {
-    const filterFunctionFactor = new Function("arg", functionBody);
-    const filterFunction = filterFunctionFactor(arg);
-    if (typeof filterFunction === "function") {
-        return filterFunction;
-    }
-    else {
-        return undefined;
-    }
-}
-exports.getFilterFunction = getFilterFunction;
-exports["default"] = Vue.defineComponent({
-    components: { "chapter-list": ChapterList_1.default },
-    emits: ["filterupdate"],
-    setup(props, { emit }) {
-        const arg = Vue.ref("");
-        const hiddenBad = Vue.ref(true);
-        const filterType = Vue.ref("null");
-        const filterOptionList = Object.entries(exports.filterOptionDict);
-        const functionBody = Vue.computed(() => getFunctionBody(exports.filterOptionDict[filterType.value].raw));
-        const filterDescription = Vue.computed(() => exports.filterOptionDict[filterType.value].description);
-        const filterSetting = Vue.computed(() => ({
-            arg: arg.value,
-            hiddenBad: hiddenBad.value,
-            filterType: filterType.value,
-            functionBody: functionBody.value,
-        }));
-        Vue.provide("filterSetting", filterSetting);
-        Vue.watch(filterSetting, () => {
-            emit("filterupdate", filterSetting.value);
-        }, {
-            deep: true,
-        });
-        const getFilterSetting = Vue.inject("getFilterSetting");
-        Vue.onMounted(() => {
-            const faterFilterSetting = getFilterSetting();
-            if (faterFilterSetting) {
-                arg.value = faterFilterSetting.arg;
-                hiddenBad.value = faterFilterSetting.hiddenBad;
-                filterType.value = faterFilterSetting.filterType;
-            }
-        });
-        return {
-            arg,
-            hiddenBad,
-            filterType,
-            filterOptionList,
-            filterDescription,
-        };
-    },
-    template: FilterTab_html_1.default,
-});
-exports.style = (0, createEl_1.createStyle)(FilterTab_css_1.default);
-
-
-/***/ }),
-
-/***/ "./src/ui/LogUI.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-const Vue = __webpack_require__("vue");
-const log_1 = __webpack_require__("./src/log.ts");
-exports["default"] = Vue.defineComponent({
-    name: "LogUI",
-    setup(props, context) {
-        const logText = Vue.ref("");
-        function onMount(fn) {
-            Vue.onUnmounted(() => fn());
-        }
-        let requestID;
-        Vue.onMounted(() => {
-            logText.value = (0, log_1.getLogText)();
-            function step() {
-                logText.value = (0, log_1.getLogText)();
-                requestID = globalThis.requestAnimationFrame(step);
-            }
-            requestID = globalThis.requestAnimationFrame(step);
-        });
-        Vue.onUnmounted(() => {
-            if (requestID) {
-                globalThis.cancelAnimationFrame(requestID);
-            }
-        });
-        return { logText };
-    },
-    template: `<div class="log"><pre v-html="logText" id="novel-downloader-log"></per></div>`,
-});
-
-
-/***/ }),
-
-/***/ "./src/ui/TestUI.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.style = void 0;
-const Vue = __webpack_require__("vue");
-const createEl_1 = __webpack_require__("./src/lib/createEl.ts");
-const misc_1 = __webpack_require__("./src/lib/misc.ts");
-const main_1 = __webpack_require__("./src/main.ts");
-const setting_1 = __webpack_require__("./src/setting.ts");
-const TestUI_html_1 = __webpack_require__("./src/ui/TestUI.html");
-const TestUI_less_1 = __webpack_require__("./src/ui/TestUI.less");
-exports["default"] = Vue.defineComponent({
-    name: "TestUI",
-    setup(props, context) {
-        const book = Vue.reactive({});
-        const chapter = Vue.reactive({});
-        async function initBook(retry) {
-            const _book = window._book;
-            if (_book) {
-                Object.assign(book, _book);
-                return _book;
-            }
-            else {
-                if (retry > 0) {
-                    await (0, misc_1.sleep)(2 ** (setting_1.retryLimit - retry) * 500);
-                    return initBook(retry);
-                }
-                else {
-                    return;
-                }
-            }
-        }
-        const metaData = Vue.reactive({});
-        function getData(key, value) {
-            if (key === "封面") {
-                return `<img src="${value}">`;
-            }
-            if (key === "简介") {
-                return value.outerHTML;
-            }
-            if (key === "网址") {
-                return `<a href="${value}">${value}</a>`;
-            }
-            return value;
-        }
-        async function initChapter(_book) {
-            const chapters = _book.chapters;
-            const n = Math.min(17, chapters.length) - 1;
-            const _chapter = chapters[n];
-            await _chapter.init();
-            return _chapter;
-        }
-        function isSeenChapter(_chapter) {
-            return _chapter.status === main_1.Status.finished;
-        }
-        function isChapterFailed(_chapter) {
-            return _chapter.status === main_1.Status.failed;
-        }
-        function getChapterHtml(_chapter) {
-            const imgs = _chapter.contentHTML?.querySelectorAll("img");
-            if (imgs) {
-                Array.from(imgs).forEach((img) => {
-                    img.src = img.alt;
-                });
-            }
-            return _chapter.contentHTML?.outerHTML;
-        }
-        Vue.onMounted(async () => {
-            await initBook(setting_1.retryLimit);
-            if (book) {
-                const _chapter = await initChapter(book);
-                Object.assign(chapter, _chapter);
-                const _metaData = {
-                    封面: book.additionalMetadate?.cover?.url ?? "",
-                    题名: book.bookname ?? "None",
-                    作者: book.author ?? "None",
-                    网址: book.bookUrl,
-                    简介: book.introductionHTML ?? "",
-                };
-                Object.assign(metaData, _metaData);
-            }
-        });
-        return {
-            metaData,
-            getData,
-            chapter,
-            isSeenChapter,
-            isChapterFailed,
-            getChapterHtml,
-        };
-    },
-    template: TestUI_html_1.default,
-});
-exports.style = (0, createEl_1.createStyle)(TestUI_less_1.default);
-
-
-/***/ }),
-
-/***/ "./src/ui/button.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.vm = exports.el = exports.style = void 0;
-const Vue = __webpack_require__("vue");
-const createEl_1 = __webpack_require__("./src/lib/createEl.ts");
-const GM_1 = __webpack_require__("./src/lib/GM.ts");
-const log_1 = __webpack_require__("./src/log.ts");
-const download_1 = __webpack_require__("./src/router/download.ts");
-const ui_1 = __webpack_require__("./src/router/ui.ts");
-const setting_1 = __webpack_require__("./src/setting.ts");
-const button_html_1 = __webpack_require__("./src/ui/button.html");
-const button_less_1 = __webpack_require__("./src/ui/button.less");
-const setting_2 = __webpack_require__("./src/ui/setting.ts");
-exports.style = (0, createEl_1.createStyle)(button_less_1.default, "button-div-style");
-exports.el = (0, createEl_1.createEl)('<div id="nd-button"></div>');
-exports.vm = Vue.createApp({
-    data() {
-        return {
-            imgStart: setting_1.iconStart0,
-            imgSetting: setting_1.iconSetting,
-            isSettingSeen: GM_1._GM_info.scriptHandler !== "Greasemonkey",
-            imgJump: setting_1.iconJump,
-            uiObj: {},
-        };
-    },
-    methods: {
-        startButtonClick() {
-            if (window.downloading) {
-                alert("正在下载中，请耐心等待……");
-                return;
-            }
-            const self = this;
-            self.imgStart = setting_1.iconStart1;
-            async function run() {
-                const ruleClass = await (0, download_1.getRule)();
-                await ruleClass.run();
-            }
-            run()
-                .then(() => {
-                self.imgStart = setting_1.iconStart0;
-            })
-                .catch((error) => log_1.log.error(error));
-        },
-        settingButtonClick() {
-            setting_2.vm.openSetting();
-        },
-        jumpButtonClick() {
-            this.uiObj.jumpFunction();
-        },
-    },
-    mounted() {
-        Object.assign(this.uiObj, (0, ui_1.getUI)()());
-    },
-    template: button_html_1.default,
-});
-
-
-/***/ }),
-
-/***/ "./src/ui/dialog.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-const Vue = __webpack_require__("vue");
-const dialog_css_1 = __webpack_require__("./src/ui/dialog.css");
-const dialog_html_1 = __webpack_require__("./src/ui/dialog.html");
-exports["default"] = Vue.defineCustomElement({
-    name: "Dialog",
-    props: {
-        dialogTitle: String,
-        status: String,
-    },
-    emits: ["dialogclose"],
-    data() {
-        return {
-            myPrivateStatus: this.status === "true",
-        };
-    },
-    methods: {
-        dialogClose() {
-            this.myPrivateStatus = false;
-            this.$emit("dialogclose");
-        },
-    },
-    mounted() {
-        this.myPrivateStatus = this.status === "true";
-    },
-    watch: {
-        status() {
-            this.myPrivateStatus = this.status === "true";
-        },
-    },
-    template: dialog_html_1.default,
-    styles: [dialog_css_1.default],
-});
-
-
-/***/ }),
-
-/***/ "./src/ui/fixVue.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-const Vue = __webpack_require__("vue");
-const log_1 = __webpack_require__("./src/log.ts");
-globalThis.Vue = Vue;
-globalThis.Function = new Proxy(Function, {
-    construct(target, args) {
-        const code = args[args.length - 1];
-        if (code.includes("Vue") && code.includes("_Vue")) {
-            log_1.log.debug("Function hook:" + code);
-            return hook();
-        }
-        else {
-            return new target(...args);
-        }
-        function hook() {
-            function getGlobalObjectKeys() {
-                const _get = () => {
-                    return Object.getOwnPropertyNames(window).filter((key) => window[key] === window);
-                };
-                const _f = new target(`return (${_get.toString()})()`);
-                return _f();
-            }
-            const globalObjectKeys = getGlobalObjectKeys();
-            const newArgs = [];
-            newArgs.push(...globalObjectKeys);
-            args[args.length - 1] = "with (window) {" + code + "}";
-            newArgs.push(...args);
-            const _newTarget = new target(...newArgs);
-            const newTarget = new Proxy(_newTarget, {
-                apply(targetI, thisArg, argumentsList) {
-                    const newArgumentsList = [];
-                    globalObjectKeys.forEach(() => newArgumentsList.push(window));
-                    newArgumentsList.push(...argumentsList);
-                    return Reflect.apply(targetI, window, newArgumentsList);
-                },
-            });
-            return newTarget;
-        }
-    },
-});
+const enableCustomFinishCallback = true;
+const enableCustomChapterFilter = true;
+const enableCustomSaveOptions = true;
+const enableR18SiteWarning = false;
+const enableJjwxcRemoteFont = true;
+const iconStart0 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAFYElEQVR4nO2dIUxkORyHP4XD4E6RYNZgUGvWonAnVqxDbbJiNWLNOsQ65Oo1CMQIFAnJJiQIcgY7YhIEbgTJiEkm4USPuyNh3pv2tf33tb9f8kl4fe3H0Pm37xXi50/gHJgBC+C5YB6Bv4AL4CuwH7872skBcI/9oA5lBpwAO1F7p/IcUf5fuy8L4AzYjthPVWYfeMJ+wFLxABxG660K8xv7QcrBWawOqykfsB+YnEzQv4RXOcV+UHJzD+zF6LwaMsF+QCyYo3kBALfYD4YVK+DL8C4cd+6wHwhrfgJbQztyrJEAjhvgj4F9OcrUKMA33Me778/NaLCUXKMA27ivt48BP7vArYU0k1oFAPeRHjrJPQ3u0ZGlZgHATe5+Bv6ecxooGtUuwEuOCVvsugd2vXp0ZGlFAHDL3bOA3zfHzSmqTEsCgNsjcBXwO5e4T5Hq0poA4OYFoWsg1RWNWhTgJZ8ImxdcUdFuo5YFADcvmAZcY0olRaPWBQD313wZcJ0n3Fa6UUcC/JfvAdda4TagjjYS4HWOcF/7fK/5i5FODmvcDzC0eveOsO3xt4xwRVECvJ1t3MMmvtd+AN5HuH62SIDunOC/tLxgREUjCdCf0HnBKFYUJcBm2SNsXnCZqD3RIgE2zzZuidi3PVPcxLLISAD/fMYtDvm0qdht6BIgLIf4zwuWOHmKigQIzy5hhbSiKocSYFi2cFVA3zZ+ytjGztQogMVS7Vf85gVPFLLVrEYBrGbcvlvRJzbNfJ0aBbDc1++7Fd28bFyjAOdRe8g/PlvOfhm18d/UKMCKMjZqHNM/L1hiXCmsUYBn3ILMZ+zX6N/jVgi72mr6KFqtArzwiJtsneE+li3oezLJdNGodgHGgOm3AQlgz03vKCWMBLDnrneUEkYC2CMBGkcCNI4EaBwJ0DgSYEMecE/mbkLIA59NCnCzplElEbqfLvTJXwlQGEN2z+zjv4GzKQFK/xewZPiCTumS6xOgg4cI9xiyZ08CFIIESBwJYI8E6EACJI4EsEcCdCABEkcC2CMBOpAAiSMB7JEAHUiAxJEA9kiADiRA4kgAeyRABxIgcSSAPRKgAwmQOBLAHgnQgQRIHAlgjwToQAIkjgSwRwJ0IAESRwLYYyrA7zWNKgUJkDgSwB4J0IEESBwJYE8zAqxwr0T7webv2Ivxbv2PHtc7xb1qNucDpc0I8DHTPcXIB/yPi5MAHcT4KM+dXH3ThADzXDcUMSHHxEmADr5kuqcYOSJfvzQjwIKCz8/7X3bof8O3BAjkDvtXuPcl5HBICeDB9yx3FpZj8vdHcwKsKOCsnDeyhzvNSwJkYEp5hypfY9MXTQrwjDtJo5ScYNcPzQrwTBmHOx1g+y7BpgV4xJ21Z5Ut8hV8JMAaLpPf5fqcdbRLAmTE4lj1wwHtlQCRyV0l3MHvnF8JkIGcVcLc1T4JsCE5qoQW1T4JsCGpq4RW1b5iBbhe0yhLUlYJS7xfCfAGKaqE3wq4LwngQcxTta2rfRIggDlxqoQlVPskQCAxqoQlVPskwACG7CUspdonAQYQWiUsqdonAQYSUiUsqdonASLgUyUsrdonASKwwj2y1ZcSq30SIBKbVAlLK29LgMh0VQlLrfZJgMi89aRxydU+CRCZOe5g6JfsMo6TwiVARJbABe7r3pgmfRJASAAhAQQSQCABmsdUgKs1jRL5uO0dpYSRAPZMekcpYS7WNErk47R3lBLmx5pGiXyYvi1lDFumaua6f4jS5w77jmiRBa/XM8zyjnHX0sfIkrjPPQzOAeNdTRsbUzbb2ZQ9W7i9dBNghltyjUHrny4r3JtHJ//0b9RH4P8GSxsCzEN/51YAAAAASUVORK5CYII=";
+const iconStart1 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAESElEQVR4nO2cLUxcQRSFv4QgEBiSKgQCh6pCouvQlbVVdaRuTFUNoqaqEkktCoVD4HBITBMMosmaVsxu+kL3l3lv7p13z5ccyc68OSf3sLtvHwghhBBCjJM/hRKNowAERwEIjgIQHAUgOApAcBSA4CgAwVEAgqMABEcBCI4CEBwFIDgKQHAUgOAoAMFRAIKjAARHAQiOAhAcBSA4CkBwFIDgKADBUQCCowAERwEIjgIQHAUgOApAcBSA4CgAzkmUm9SqUvHpjYSEvRky35iEvSky35iEvTky35iEvUky35iEvVky35iEvWky35iEvXky35iEvYky35iEvZky35iEvaky35iEvbky35iEvcky35iEvdky35iEveky35iEzA9PQuaHJyHzm2e78O8T7Zhfeq2j4i1wDvyi/GAT/s1P5Gs9J197SN4An4A7hjlgz+a/fM078lm8KXxt92wDp8BPYEL9g/ZoflcT8tmcMrKK6I54TwfueS/NV8SyEe/54D3uoZmK2GTEt2KA5dov5bYiXjvivRthsea6Mq+Ivka8V0NqrlWqahUx1IjfRGeF15DWWCMVrnG2xhpDaLCKqDHiV+ka+ADs9nA9ack6qYfX3yXv9XrJOkOruCIsRvxLPZANOXztRSwhzVkvDbDO4fR1H+asV0trV4SHEf8M/ABOVm22B1Jn3VRhvRPytT1jc7YLK8LTiN/Z/FyLSNT/Vm8HZxVhtYnZiD8oOc3GOcC+Iqou9gx8p86Ib40T8tnUrogqi1wB76k/4ltkh3xWVzQegHvgM7Df6/HEYp98hvc0EoAn8hg7HuAwonNMPtsnnAVggkZ8TboV0cfb9aIRf4ZGvCX7ZA9KKmLjEf8NjXiPHJO92bQiFICRUCUAqgBfVK+AedI/gXVx80/goorQ28BhcPs2cFlF6IOgMpr7IGiRVBHrM5qPguep5vf9rWF1v0DVxbrS18EBvw5epGv6u+fPOx7uGXQXgJnGXBHWt4Q1EYCuhrwptBYebgptNgBd3dBORcxG/A325zaaAMz0G7gA3gFbaxpSgy3yni7Ie7Q+p9EGoKtH4AtwtNqfwTia7uER+/MIF4CuboCPwN5Su/phb7pWKyM+RABmGqoiWh7xoQLQ1SPwlbKKOJq+RssjPmwAurpl/YqYjfhbB/tWAHrWBLjk/9/HzX4XeYnd7yIVgMqa/T7O+neR1jLfgKQASIYy34CkAEiGcvGACKmu5j5DKPJboQha9BZ4Lh4eEiX1o+LnCKoi2tMgTxJVRfjWRiO+FFWEH5k/TVwVUV/mD4ueh4cHTY5ZVUd8KaqI/mQ+4ktRRWwulyO+FFXEcjU14ktRRfxT8yO+lIgVMcoRX8rYP2gKNeJLGVNFhB/xpbRYERrxA+C9IjTiK+KpIjTijbGoCI14hwxdERrxDdFnRWjEN85rKkIjfoSsqgiN+EB0K0IjXgghhBDh+Avri3imoU6g/AAAAABJRU5ErkJggg==";
+const iconSetting = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABmJLR0QA/wD/AP+gvaeTAAAIxElEQVR4nO2dW4wWRRbHfzArzAIioFxk4oMKjLgqug9k2UUi3g0YYwKId59UXnaj0ejDamLUxTWi8cEbglFJvL7hLfFuHBGNVxBXjFGZWVC8jIoDOzPLTPtwvk+GoafOqe6qntbpf1LJZKrr1L+quqtOnXOqPqhQoUKFChUqVKhQoUKF8uDvQBIoXVUwdzOGDzYBB44JKOtPAWUFRZkHYFZAWUcHlDUk0ADsJNwUtKsms3Qo6xcwAxgVUN4fgcMCyguGsg5AyPm/jlJOQ0NpAI6KIDM3yjoAIRfgOko5AGVFG+5F9fiUMqcrZT6Ozvp3goOAXtydOT6lXJNS5v9AY2Tuv2mcAKwCfsDdkVscMtqVsiuAA+PQ/+3iNGA9dp3+KYes1wzlfwZuASbm4LxfjrJRcASwGXnD5mJb3A8BnsF/U3WTQ+ZdHnI6gFuBA4xtbEBeljXIVzrTWK4QPMvejfsauA9ZGEekPH8x8BP+nZ8ASxw8lmWQtw041yFzFvJibetX7jlHmUKxAHcDfwQeARYDE4B7lOe11OzgMjeH3Bf7yG4CrgY2KGUW+HVVeIwAPsHeSE270dKnuG0643LK7wReB3qMz28m/QsvDFemkAqduoAngFOwrS0n157vKoBbUuuDQcFEdJUxa+pB3sQrgMkZ+U0GrgFaI3Gspx+BSRk55sJ9GchqaTdwP3BoQJ4jkcV5SwS+9bQyIF8TjkU6K2QjNgGzI3IeAVwGfBOYd/3FOTYi933wauAGPAqMLoj7OOBOwr9ALcCwIhqwyEDmv8Db2LSeFUWQTsFsRKuydG478K3hucWxSTcCXxiILKo9fwhwKWI+6E557vbYhBVMRqa+gaaVF4CLEO+c5cVrJawnbx/800DiddI/xQlIY55AzACD3fl1TEZM1X3XomtI12xeQW//dbGINiGGrBCLUZb5fixwHqIlvY0spt219E3tfyuBpcD+nrKbkI6boTxnUT46avKC42Gl4gS4N0K9zcBqJLLBuiDuREzb0yPwsajfa0JX+hdsC+pJAescBdyGOFKsHd8/dSMWz5COmAsN9fYCc0JVOAy7vb49UMXTgY3GOi3pTeDgALwuxf5CvEVAn/vV2A1pP5PvSziOOJulNrJHWwwDbvSs7w4CBz1cht1K2AmclaGO6cTp/L6D4Psl7Ac86FFHD2LDioKlpOvzaWk3cImH7EbgA6PsPOkdJFLOgjHs62zSXrylHm3OhDOB/xkJ9QCXG+XeZpQZIt1g4NMIvO8hs530cJkomA/sMBLrRY9EaMa2uPUCTwMXILGeo2rpcEQ7edrIqQOYonAajl31/ZJB8BHPBr43kNtqkLXaIKcV+KtB1lz0wK4EuNsg612DnPcIo2FlwlHs66zun9YqMsaih6K34tfIqeiD0IHM8S6sUWS04L/r3gt51aSPkFgcF95V8hfiNmAlyML2lQcvLdIBxByiOdU3KfmtiNqdGSH0VC3o9T0lf76S/wywzk7nV7QgGowLJyr52gDkPvoUYgCmKvmblXwtEvpxDy6+ZbW6Ne5a2wuBppJqlk/N0ZHnZMs0RfZ2pfxopfyuHNyCQdsda2eztPCRPA4OrQM7lfJ/UMrvzsENKOaARpKzfB4/ayE+2jwIMQBdSr4WObZDyc8aFwT6ZusnJX+kkt/twSUVIQagQ8nXOvBzJf9vHlx8y2p1a56tnR5cUhFiAFwHJkAPsvpQyT/Hg0t/aIYxrW5XIDDYdvlOhBgA7S06Usl/WclfgJgXfDEPCY934SUl/89K/n/sdOJgDOJtcmkKqxUZ+6ObItrw07mbkNikvKaItYqMHcCpHryCYgo2Y9UHBlmrDHLasH0J89A7P8EWz7nVIKcbP79HEMzEFqCVIGZmzQEyHbuj51kkvmgaouePrv19MXbnSRf6Bm+SUVaCmMmvV+QFw/HYzND19D42i+GtHjLzpuXGtl6L36GSVcjmLRrOxi8+50Xsh+Aa0deTEGkdun7fF4uwewAT4HnExB4c/8DulE+Ah/A/zjmFuAcqtpItam0+chDDWs+HGetJxXAkxMKnoTeS3QxwDDaPlm9qJd+NKUd78tpEIFPIMCTIyFLpbuxOeBcmYjt07TPtaGYJC6Zid9S7zjN7Yw62xejCgHU2ItELHYZ6B0pdwL/wm/M1nGCodzsR1gHNP5oggauhMQVxoPsMREeNS4xbsl4y1L8sQr00oXeCJTx9BhIK7rtIjUHsQvcisarbkTe8q/b3euQQ+BL0HW4aLCHzC9E7/2MiqqLXGQiknZUajwS2trBnKvuUSHH0GbAcUTVfQLS9tPWiAQlC0Nq/MCZRnyNKI5EoOteh6TIMwnLSv+QW5KTMtNpzlnsoXimC8GIDkW/R7+7pOwgxj6e6sMLAr5c9J3Jcz/WgW0+DIfQx1V7kBM5BBfEfAzwWuA0PFsQdiHNQO0HessuJewHGHMSOH5L3LuREaKFYGYD4QGkLMueG1N+nAQ8Q58W5OSBPMybhZx/JktqQhTDPhR1XAG/gZ8fySVE2XVYUcV1Nwp4ra042cBqOXG1T1JU1UTZdVoxAwvcsROtX0HQanx8ojXPwacB+/cBAycf+H3XTZYV2ZdkG5JBfXd9vRjY8WTvI5ZZsziE3QS79m4Co2o+g32sXddPlg+fYm9g2RMd2Bb8uxeZz9fnkl2SQlyBr2fkp8kYCZyAKx/Z+ZbRojkIxE7k9aw1ytaP1rv6xwL/xM7Td5ZB3k4ecelqLbTfegDj870BCcQrbdFmR5zLTiYhJwHLuzHUg5ClD+Xp6A9uiPqRwILp5oN1RXruW7Afkso95cej/PtCIfmIybcoYr5TppThThxll/P2ATuAz5Zm0Y1HaNQRtwHeZGA1BPEk+dXKgxbZ0KOMXAOL4CA0tEnpQMJQGYEMEmblR1gHYGEFmKQegrGjALwRSS9UPuXmih7CHHzbWZJYOZR0ACDsNlXIBhnIPQMiFuJr/K1SoUKFChQoVKlSoUBr8Ah3QujNKRJdpAAAAAElFTkSuQmCC";
+const iconJump = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAG6wAABusBTDGeSgAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAeVSURBVHic7VpvTBNpHv6901L+yQU3nCfrByU9IRYrWrCVGkVzgu4ZCSFSMBDJrhcTP+iqMdlcLvFyl7sPftn9diZsiHterpYz8TxuCXsauBNy2VVoXIEIXV2hAYt/WqF/mMGZ6fzugwxXSjudlnYHWJ5kMm+n7/zmeZ55531/7ztDEBF+zKCUJqA01gxQmoDSWDNAaQJKY80ApQkojTUDlCawFNTU1Pzk3LlzzYQQkmiMFW0AABzRarVfXLx40UYISUjLijaA4zjNunXrQK/XWy5dutS5b98+dbwxVrQB4jwmIyMDtm/fXrV3796eQ4cOZcYTY0UbEAqNRgM6na7caDTeP3r0aI7c81aNAQAAaWlpsG3bNr3BYHhYW1v7npxzVpUBAABqtRoKCwu1er1+sK6uLj9W/RVtQLS1DJVKBVu3bn1fr9cPWCyWAqkYK9oAKVAUBVqtNq+kpORRQ0ODLlo9kooVoVOnTv0yOzv7F1J1Yl1XDi+e53++e/fu6uzs7AX1w8sTExPMo0eP9lmtVnt4jKQbQAhJv3z58rDBYJhveuI1pEjKLSd6nsvlYh8+fFhptVp7Qvmm4hFQAUDCqWmqkJ+frykrK+tubGz8IPR4SvqA5brQumHDBpXJZPqyqampTjy2KjvBYDAILMsCwzAQCATA5/OB1+uFqakpAACqsLDQ1tzcfAoAIO7cWQ5S3QIEQYDZ2VngOA6CwSDwPA88z8+XAQDECWKkfVZWFqXVaj9vaGiYTYkByQbP80DTNDAMAwzDAMuyABBZnJRwcY+IMDMz4x8eHuYTNoAQQk6fPn1yYmLi7x0dHb7Q/5baAliWBZqm5zc5d1WOcJGby+V6cevWrY+dTudXCRlACKHOnj17o6ioyPL8+XMGAP6WSBwRgiCAz+cDn88HDMNAMBiUJSYe4YQQCAaD4HQ6v2tra/vY7Xb3ICIdtwFms1l9/vz5DpPJVMXzPLAsqwmvg4goipj7vWAP8K6jCgQCMD09DYFAICJpKcQjnBACLMvCkydPHlit1osMw/Qj4luAODvBAwcOZJrN5i6j0Vienp4OPp8vUjX+7t27nz5+/NgoFSsZmWBWVtZPi4uLj6Snp0u2jtnZWRgaGuq02Wy/EQRhEBF5MYZsAw4fPpxjMpn+W1paqtdoNICIEUkiIksI+UtfX9+SHgs5OHjw4NHi4uIj4Y9CaDkQCEBfX9+f29vbrwCAAxGF0BiyDDh27Nh7ZWVlD0pKSrRpaWnz4qPdJUT0LkWYXFRWVnKi4Ej9gdfrFXp6ej7r7u7+EwCMYgTCMQ2oqanJ37lzZ79er39frVaDIPzfwNCyUiCEAEVR82URr1+/Zru6un53//79LxDRFe18SQNqa2sLdu3a9UCn0+VRFDUveLmkuiKP8DF+cnLS39nZ+cng4OBNRHRLxYhqwPHjx3UGg+GboqKiHACIKH65tADRAEEQYHx8/OXt27cvjI6OdiBixF46FBENsFgspaWlpb1arTYz1jR0y5YtdWfOnNkVSihSWeo/OWW/3/+v1tbWO+FcRQM4joPR0dHvb968ee7Vq1f/QUQ6suSFWGRAfX39/rKysrubN2/WSIlHRMjMzASz2Vw9PT0NDMNEHMfjGa+l9uPj45WEkN3i+B0an2VZcDgc9ra2tgt+v/9BeB3ZBtTX139gNBr/uWnTJlV4Lx9eRkSYmpoCv98fNXGJJSoezF1fFXYMaZqGp0+f3rHZbL8WBGEgdIyXg3kDTpw4Ubdnzx7bxo0bqdBnO5IJHMeBx+MBlmWXJE7u3Y8Gu93+Lcdxf+zt7bUCwEj4GC8HagCAxsbGX5WXl7fk5eWRaOJF0DQNHo8n5kiQzLsf7Ryv1+vo7e29AgCBSGO8HKgtFkvj/v37P8/NzY3Zq79582ZBk0+GqKXEmmvu/rgvHgJqeHiY93g8tJT4YDAILpcL/H7pay21SUvFEpOdZIMaGhrqvHbt2ocOh8MTOoMTEQwG4cWLF8BxXERiSt39ZIFCRJ/T6fyypaWlaWBgYEwUCrBYvBRS8cz/EMZQAACISLvd7n9fvXq1yW63f8uy7ALxUoRCJ0ZSm1g31h4RQRCERVuq0u8FL0YIIWqKovQnT568UlBQUBk+yQjfcxwHIyMjXzEM8zpicIlMMNrxaHXGxsa+7u/vb0VEVpYymVj0Zoi8+9SkqLq6+pMdO3Y0Z2RkLCAWSpDjOLh3795H3d3dHckkFQVvUzHNXpQKI6JACBlpb2///czMjNtkMl3Iyspa1AWLRqhUKg4RXyWb2A+FiJOhuaTiGSHk05mZmTcVFRW/zcnJ0SjRS6cakusBiOgihLTQND1VVVV1Zf369TkAyg5byUbMFSFEdBNC/hoIBKarq6s/y8vL+5lKpYp12oqBrPQKEX3Pnj37x40bNz6anJz8XhCEVXH3AeJ4OYqI9MuXL7uuX7/+4djYmF1OcrQSEFeCjYhv/X7/162tracdDseduXd0y2OBMFHIzeTCsjoKAHQVFRV/yM3NLU4kxnLZEv5EhrzrBNYBABPvKsxyQko+klpJWJVfiMSDNQOUJqA01gxQmoDSWDNAaQJK40dvwP8AKk+/HC2PJW8AAAAASUVORK5CYII=";
 
 
 /***/ }),
 
 /***/ "./src/ui/progress.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.vm = exports.el = exports.style = void 0;
-const Vue = __webpack_require__("vue");
-const createEl_1 = __webpack_require__("./src/lib/createEl.ts");
-const progress_css_1 = __webpack_require__("./src/ui/progress.css");
-const progress_html_1 = __webpack_require__("./src/ui/progress.html");
-exports.style = (0, createEl_1.createStyle)(progress_css_1.default);
-exports.el = (0, createEl_1.createEl)(`<div id="progress-bar"></div>`);
-exports.vm = Vue.createApp({
+// EXPORTS
+__webpack_require__.d(__webpack_exports__, {
+  "el": () => (/* binding */ el),
+  "o": () => (/* binding */ style),
+  "vm": () => (/* binding */ vm)
+});
+
+// EXTERNAL MODULE: external "Vue"
+var external_Vue_ = __webpack_require__("vue");
+// EXTERNAL MODULE: ./src/lib/createEl.ts
+var createEl = __webpack_require__("./src/lib/createEl.ts");
+// EXTERNAL MODULE: ./src/ui/progress.css
+var progress = __webpack_require__("./src/ui/progress.css");
+;// CONCATENATED MODULE: ./src/ui/progress.html
+// Module
+var code = "<div> <div id=\"nd-progress\" v-if=\"ntProgressSeen\"> <div v-if=\"chapterProgressSeen\" id=\"chapter-progress\" v-bind:style=\"{'--position': chapterPercent+'%'}\" v-bind:title=\"chapterProgressTitle\"></div> <div v-if=\"zipProgressSeen\" id=\"zip-progress\" title=\"ZIP\" v-bind:style=\"{'--position': zipPercent+'%'}\"></div> </div> </div> ";
+// Exports
+/* harmony default export */ const ui_progress = (code);
+;// CONCATENATED MODULE: ./src/ui/progress.ts
+
+
+
+
+const style = (0,createEl/* createStyle */.w)(progress/* default */.Z);
+const el = (0,createEl/* createEl */.u)(`<div id="progress-bar"></div>`);
+const vm = external_Vue_.createApp({
     data() {
         return {
             totalChapterNumber: 0,
@@ -14708,223 +13798,8 @@ exports.vm = Vue.createApp({
             this.zipPercent = 0;
         },
     },
-    template: progress_html_1.default,
-}).mount(exports.el);
-
-
-/***/ }),
-
-/***/ "./src/ui/setting.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.vm = exports.el = exports.style = void 0;
-const Vue = __webpack_require__("vue");
-const debug_1 = __webpack_require__("./src/debug.ts");
-const createEl_1 = __webpack_require__("./src/lib/createEl.ts");
-const misc_1 = __webpack_require__("./src/lib/misc.ts");
-const log_1 = __webpack_require__("./src/log.ts");
-const main_1 = __webpack_require__("./src/main.ts");
-const setting_1 = __webpack_require__("./src/setting.ts");
-const FilterTab_1 = __webpack_require__("./src/ui/FilterTab.ts");
-const LogUI_1 = __webpack_require__("./src/ui/LogUI.ts");
-const setting_html_1 = __webpack_require__("./src/ui/setting.html");
-const setting_less_1 = __webpack_require__("./src/ui/setting.less");
-const TestUI_1 = __webpack_require__("./src/ui/TestUI.ts");
-exports.style = (0, createEl_1.createStyle)(setting_less_1.default);
-exports.el = (0, createEl_1.createEl)(`<div id="setting"></div>`);
-exports.vm = Vue.createApp({
-    name: "nd-setting",
-    components: { "filter-tab": FilterTab_1.default, "log-ui": LogUI_1.default, "test-ui": TestUI_1.default },
-    setup(props, context) {
-        const setting = Vue.reactive({});
-        let settingBackup = {};
-        const saveOptions = [
-            { key: "null", value: "不使用自定义保存参数", options: {} },
-            {
-                key: "chapter_name",
-                value: "将章节名称格式修改为 第xx章 xxxx",
-                options: {
-                    getchapterName: (chapter) => {
-                        if (chapter.chapterName) {
-                            return `第${chapter.chapterNumber.toString()}章 ${chapter.chapterName}`;
-                        }
-                        else {
-                            return `第${chapter.chapterNumber.toString()}章`;
-                        }
-                    },
-                },
-            },
-            {
-                key: "txt_space",
-                value: "txt文档每个自然段前加两个空格",
-                options: {
-                    genChapterText: (chapterName, contentText) => {
-                        contentText = contentText
-                            .split("\n")
-                            .map((line) => {
-                            if (line.trim() === "") {
-                                return line;
-                            }
-                            else {
-                                return line.replace(/^/, "    ");
-                            }
-                        })
-                            .join("\n");
-                        return `## ${chapterName}\n\n${contentText}\n\n`;
-                    },
-                },
-            },
-            {
-                key: "reverse_chapters",
-                value: "保存章节时倒序排列",
-                options: {
-                    chapterSort: (a, b) => {
-                        if (a.chapterNumber > b.chapterNumber) {
-                            return -1;
-                        }
-                        if (a.chapterNumber === b.chapterNumber) {
-                            return 0;
-                        }
-                        if (a.chapterNumber < b.chapterNumber) {
-                            return 1;
-                        }
-                        return 0;
-                    },
-                },
-            },
-        ];
-        setting.enableDebug = setting_1.enableDebug.value;
-        setting.chooseSaveOption = "null";
-        setting.enableTestPage = false;
-        setting.currentTab = "tab-1";
-        const curSaveOption = () => {
-            const _s = saveOptions.find((s) => s.key === setting.chooseSaveOption);
-            if (_s) {
-                return _s.options;
-            }
-            else {
-                return saveOptions[0].options;
-            }
-        };
-        const saveFilter = (filterSetting) => {
-            setting.filterSetting = (0, misc_1.deepcopy)(filterSetting);
-        };
-        const getFilterSetting = () => {
-            if (setting.filterSetting) {
-                return setting.filterSetting;
-            }
-            else {
-                return;
-            }
-        };
-        Vue.provide("getFilterSetting", getFilterSetting);
-        const setConfig = (config) => {
-            setEnableDebug();
-            setCustomSaveOption();
-            setCustomFilter();
-            function setEnableDebug() {
-                if (typeof config.enableDebug === "boolean") {
-                    config.enableDebug ? log_1.log.setLevel("trace") : log_1.log.setLevel("info");
-                    setting_1.enableDebug.value = config.enableDebug;
-                    if (config.enableDebug) {
-                        (0, debug_1.debug)();
-                    }
-                    log_1.log.info(`[Init]enableDebug: ${setting_1.enableDebug.value}`);
-                }
-            }
-            function setCustomSaveOption() {
-                unsafeWindow.saveOptions = curSaveOption();
-            }
-            function setCustomFilter() {
-                if (config.filterSetting) {
-                    if (config.filterSetting.filterType === "null") {
-                        unsafeWindow.chapterFilter = undefined;
-                    }
-                    else {
-                        const filterFunction = (0, FilterTab_1.getFilterFunction)(config.filterSetting.arg, config.filterSetting.functionBody);
-                        if (filterFunction) {
-                            const chapterFilter = (chapter) => {
-                                if (chapter.status === main_1.Status.aborted) {
-                                    return false;
-                                }
-                                return filterFunction(chapter);
-                            };
-                            unsafeWindow.chapterFilter = chapterFilter;
-                        }
-                    }
-                }
-            }
-        };
-        const openStatus = Vue.ref("false");
-        const openSetting = () => {
-            settingBackup = (0, misc_1.deepcopy)(setting);
-            openStatus.value = "true";
-        };
-        const closeSetting = (keep) => {
-            if (keep === true) {
-                settingBackup = (0, misc_1.deepcopy)(setting);
-            }
-            else {
-                Object.assign(setting, settingBackup);
-            }
-            openStatus.value = "false";
-        };
-        const closeAndSaveSetting = async () => {
-            closeSetting(true);
-            await (0, misc_1.sleep)(30);
-            setConfig((0, misc_1.deepcopy)(setting));
-            log_1.log.info("[Init]自定义设置：" + JSON.stringify(setting));
-        };
-        return {
-            openStatus,
-            openSetting,
-            closeSetting,
-            closeAndSaveSetting,
-            saveFilter,
-            setting,
-            saveOptions,
-        };
-    },
-    template: setting_html_1.default,
-}).mount(exports.el);
-
-
-/***/ }),
-
-/***/ "./src/ui/ui.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.init = void 0;
-const button_1 = __webpack_require__("./src/ui/button.ts");
-const ChapterList_1 = __webpack_require__("./src/ui/ChapterList.ts");
-const dialog_1 = __webpack_require__("./src/ui/dialog.ts");
-const FilterTab_1 = __webpack_require__("./src/ui/FilterTab.ts");
-const progress_1 = __webpack_require__("./src/ui/progress.ts");
-const setting_1 = __webpack_require__("./src/ui/setting.ts");
-const TestUI_1 = __webpack_require__("./src/ui/TestUI.ts");
-function register() {
-    customElements.define("dialog-ui", dialog_1.default);
-}
-function init() {
-    register();
-    button_1.vm.mount(button_1.el);
-    document.body.appendChild(button_1.el);
-    document.body.appendChild(progress_1.el);
-    document.body.appendChild(setting_1.el);
-    document.head.appendChild(button_1.style);
-    document.head.appendChild(progress_1.style);
-    document.head.appendChild(setting_1.style);
-    document.head.appendChild(FilterTab_1.style);
-    document.head.appendChild(ChapterList_1.style);
-    document.head.appendChild(TestUI_1.style);
-}
-exports.init = init;
+    template: ui_progress,
+}).mount(el);
 
 
 /***/ }),
@@ -14945,35 +13820,11 @@ module.exports = Vue;
 
 /***/ }),
 
-/***/ "fflate":
-/***/ ((module) => {
-
-"use strict";
-module.exports = fflate;
-
-/***/ }),
-
-/***/ "idb-keyval":
-/***/ ((module) => {
-
-"use strict";
-module.exports = idbKeyval;
-
-/***/ }),
-
 /***/ "loglevel":
 /***/ ((module) => {
 
 "use strict";
 module.exports = log;
-
-/***/ }),
-
-/***/ "nunjucks":
-/***/ ((module) => {
-
-"use strict";
-module.exports = nunjucks;
 
 /***/ })
 
@@ -15061,36 +13912,1387 @@ var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be in strict mode.
 (() => {
 "use strict";
-var exports = __webpack_exports__;
-var __webpack_unused_export__;
 
-__webpack_unused_export__ = ({ value: true });
-const debug_1 = __webpack_require__("./src/debug.ts");
-const detect_1 = __webpack_require__("./src/detect.ts");
-const global_1 = __webpack_require__("./src/global.ts");
-const log_1 = __webpack_require__("./src/log.ts");
-const setting_1 = __webpack_require__("./src/setting.ts");
-__webpack_require__("./src/ui/fixVue.ts");
-const ui_1 = __webpack_require__("./src/ui/ui.ts");
-function printEnvironments() {
-    log_1.log.info("[Init]开始载入小说下载器……");
-    Object.entries(detect_1.environments).forEach((kv) => log_1.log.info("[Init]" + kv.join("：")));
+// EXTERNAL MODULE: ./node_modules/file-saver/dist/FileSaver.min.js
+var FileSaver_min = __webpack_require__("./node_modules/file-saver/dist/FileSaver.min.js");
+;// CONCATENATED MODULE: ./src/router/download.ts
+async function getRule() {
+    const host = document.location.host;
+    let ruleClass;
+    switch (host) {
+        case "www.ciweimao.com": {
+            const { Ciweimao } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/ciweimao.ts"));
+            ruleClass = Ciweimao;
+            break;
+        }
+        case "www.uukanshu.com": {
+            const { Uukanshu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/reprint/uukanshu.ts"));
+            ruleClass = Uukanshu;
+            break;
+        }
+        case "www.yruan.com": {
+            const { yruan } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/type1.ts"));
+            ruleClass = yruan();
+            break;
+        }
+        case "www.shuquge.com":
+        case "www.sizhicn.com": {
+            const { shuquge } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/type2.ts"));
+            ruleClass = shuquge();
+            break;
+        }
+        case "www.dingdiann.net": {
+            const { dingdiann } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/type3.ts"));
+            ruleClass = dingdiann();
+            break;
+        }
+        case "www.biquge66.com":
+        case "www.lewenn.com":
+        case "www.klxs.la":
+        case "www.xkzw.org": {
+            const { Xkzw } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/reprint/xkzw.ts"));
+            ruleClass = Xkzw;
+            break;
+        }
+        case "www.266ks.com": {
+            const { c226ks } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePageWithMultiIndexPage/226ks.ts"));
+            ruleClass = c226ks();
+            break;
+        }
+        case "book.sfacg.com": {
+            const { Sfacg } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/sfacg.ts"));
+            ruleClass = Sfacg;
+            break;
+        }
+        case "www.hetushu.com":
+        case "hetushu.com": {
+            const { Hetushu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/reprint/hetushu.ts"));
+            ruleClass = Hetushu;
+            break;
+        }
+        case "www.shouda88.com": {
+            const { shouda8 } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/shouda8.ts"));
+            ruleClass = shouda8();
+            break;
+        }
+        case "www.gebiqu.com": {
+            const { gebiqu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/type1.ts"));
+            ruleClass = gebiqu();
+            break;
+        }
+        case "www.viviyzw.com": {
+            const { viviyzw } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/viviyzw.ts"));
+            ruleClass = viviyzw();
+            break;
+        }
+        case "www.1pwx.com": {
+            const { xiaoshuodaquan } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/1pwx.ts"));
+            ruleClass = xiaoshuodaquan();
+            break;
+        }
+        case "book.qidian.com": {
+            const { Qidian } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/qidian.ts"));
+            ruleClass = Qidian;
+            break;
+        }
+        case "www.jjwxc.net": {
+            const { Jjwxc } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/jjwxc.ts"));
+            ruleClass = Jjwxc;
+            break;
+        }
+        case "www.banzhuer.org":
+        case "www.biquwoo.com":
+        case "www.biquwo.org":
+        case "www.hongyeshuzhai.com": {
+            const { common } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/type1.ts"));
+            ruleClass = common();
+            break;
+        }
+        case "www.fuguoduxs.com":
+        case "www.shubaowa.org":
+        case "www.bz01.org": {
+            const { common1 } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/type1.ts"));
+            ruleClass = common1();
+            break;
+        }
+        case "www.81book.com":
+        case "www.81zw.com": {
+            const { c81book } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/type1.ts"));
+            ruleClass = c81book();
+            break;
+        }
+        case "book.zongheng.com":
+        case "huayu.zongheng.com": {
+            const { Zongheng } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/zongheng.ts"));
+            ruleClass = Zongheng;
+            break;
+        }
+        case "www.17k.com": {
+            const { C17k } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/17k.ts"));
+            ruleClass = C17k;
+            break;
+        }
+        case "www.shuhai.com":
+        case "mm.shuhai.com": {
+            const { Shuhai } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/shuhai.ts"));
+            ruleClass = Shuhai;
+            break;
+        }
+        case "www.gongzicp.com":
+        case "gongzicp.com": {
+            const { Gongzicp } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/gongzicp.ts"));
+            ruleClass = Gongzicp;
+            break;
+        }
+        case "www.linovel.net": {
+            const { Linovel } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/linovel.ts"));
+            ruleClass = Linovel;
+            break;
+        }
+        case "www.xinwanben.com": {
+            const { xinwanben } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/type3.ts"));
+            ruleClass = xinwanben();
+            break;
+        }
+        case "www.tadu.com": {
+            const { Tadu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/tadu.ts"));
+            ruleClass = Tadu;
+            break;
+        }
+        case "www.idejian.com": {
+            const { Idejian } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/reprint/idejian.ts"));
+            ruleClass = Idejian;
+            break;
+        }
+        case "www.qimao.com": {
+            const { Qimao } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/qimao.ts"));
+            ruleClass = Qimao;
+            break;
+        }
+        case "www.wenku8.net": {
+            const { Wenku8 } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/reprint/wenku8.ts"));
+            ruleClass = Wenku8;
+            break;
+        }
+        case "manhua.dmzj.com":
+        case "www.dmzj.com": {
+            const { Dmzj } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/reprint/dmzj.ts"));
+            ruleClass = Dmzj;
+            break;
+        }
+        case "sosad.fun":
+        case "www.sosad.fun":
+        case "wenzhan.org":
+        case "www.wenzhan.org":
+        case "sosadfun.com":
+        case "www.sosadfun.com":
+        case "xn--pxtr7m5ny.com":
+        case "www.xn--pxtr7m5ny.com":
+        case "xn--pxtr7m.com":
+        case "www.xn--pxtr7m.com":
+        case "xn--pxtr7m5ny.net":
+        case "www.xn--pxtr7m5ny.net":
+        case "xn--pxtr7m.net":
+        case "www.xn--pxtr7m.net":
+        case "sosadfun.link":
+        case "www.sosadfun.link": {
+            const { Sosadfun } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/sosadfun.ts"));
+            ruleClass = Sosadfun;
+            break;
+        }
+        case "www.westnovel.com": {
+            const { westnovel } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/westnovel.ts"));
+            ruleClass = westnovel();
+            break;
+        }
+        case "www.mht.tw":
+        case "www.mht99.com": {
+            const { mht } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/type3.ts"));
+            ruleClass = mht();
+            break;
+        }
+        case "www.xbiquge.so": {
+            const { xbiquge } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/type1.ts"));
+            ruleClass = xbiquge();
+            break;
+        }
+        case "www.linovelib.com": {
+            const { Linovelib } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/reprint/linovelib.ts"));
+            ruleClass = Linovelib;
+            break;
+        }
+        case "www.luoqiuzw.com": {
+            const { luoqiuzw } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/type1.ts"));
+            ruleClass = luoqiuzw();
+            break;
+        }
+        case "www.yibige.cc": {
+            const { yibige } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/yibige.ts"));
+            ruleClass = yibige();
+            break;
+        }
+        case "www.fushuwang.org": {
+            const { Fushuwang } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/reprint/fushuwang.ts"));
+            ruleClass = Fushuwang;
+            break;
+        }
+        case "www.soxscc.net":
+        case "www.soxscc.org":
+        case "www.soxs.cc":
+        case "www.soshuw.com":
+        case "www.soshuwu.org":
+        case "www.soxscc.cc":
+        case "www.soshuwu.com":
+        case "www.kubiji.net": {
+            const { Soxscc } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/reprint/soxscc.ts"));
+            ruleClass = Soxscc;
+            break;
+        }
+        case "www.xyqxs.cc": {
+            const { xyqxs } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/type2.ts"));
+            ruleClass = xyqxs();
+            break;
+        }
+        case "www.630shu.net": {
+            const { c630shu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/630shu.ts"));
+            ruleClass = c630shu;
+            break;
+        }
+        case "www.qingoo.cn": {
+            const { Qingoo } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/qingoo.ts"));
+            ruleClass = Qingoo;
+            break;
+        }
+        case "www.trxs.cc":
+        case "www.trxs123.com":
+        case "www.jpxs123.com":
+        case "trxs.cc":
+        case "trxs123.com":
+        case "jpxs123.com": {
+            const { trxs } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/trxs.ts"));
+            ruleClass = trxs();
+            break;
+        }
+        case "www.tongrenquan.org":
+        case "www.tongrenquan.me":
+        case "tongrenquan.me":
+        case "tongrenquan.org": {
+            const { tongrenquan } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/trxs.ts"));
+            ruleClass = tongrenquan();
+            break;
+        }
+        case "www.imiaobige.com": {
+            const { imiaobige } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/imiaobige.ts"));
+            ruleClass = imiaobige();
+            break;
+        }
+        case "www.256wxc.com":
+        case "www.256wenku.com": {
+            const { c256wxc } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/256wxc.ts"));
+            ruleClass = c256wxc;
+            break;
+        }
+        case regExpMatch(/lofter\.com$/): {
+            const { Lofter } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/lofter.ts"));
+            ruleClass = Lofter;
+            break;
+        }
+        case "www.lwxs9.org": {
+            const { lwxs9 } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/type1.ts"));
+            ruleClass = lwxs9();
+            break;
+        }
+        case "www.shubl.com": {
+            const { Shubl } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/shubl.ts"));
+            ruleClass = Shubl;
+            break;
+        }
+        case "www.ujxs.net": {
+            const { ujxs } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/ujxs.ts"));
+            ruleClass = ujxs();
+            break;
+        }
+        case "m.haitangtxt.net": {
+            const { haitangtxt } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/duplicate/haitangtxt.ts"));
+            ruleClass = haitangtxt();
+            break;
+        }
+        case "m.yuzhaige.cc":
+        case "m.yushuge123.com": {
+            const { yuzhaige } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/duplicate/haitangtxt.ts"));
+            ruleClass = yuzhaige();
+            break;
+        }
+        case "ebook.longmabook.com":
+        case "www.longmabookcn.com":
+        case "ebook.lmbooks.com":
+        case "www.lmebooks.com":
+        case "www.haitbook.com":
+        case "www.htwhbook.com":
+        case "www.myhtebook.com":
+        case "www.lovehtbooks.com":
+        case "www.myhtebooks.com":
+        case "www.myhtlmebook.com":
+        case "jp.myhtebook.com":
+        case "jp.myhtlmebook.com":
+        case "ebook.urhtbooks.com":
+        case "www.urhtbooks.com":
+        case "www.newhtbook.com":
+        case "www.lvhtebook.com":
+        case "jp.lvhtebook.com":
+        case "www.htlvbooks.com": {
+            const { Longmabook } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/longmabook.ts"));
+            ruleClass = Longmabook;
+            break;
+        }
+        case "dijiubook.net": {
+            const { dijiubook } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/type1.ts"));
+            ruleClass = dijiubook();
+            break;
+        }
+        case "www.biquwx.la": {
+            const { biquwx } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/type1.ts"));
+            ruleClass = biquwx();
+            break;
+        }
+        case "www.25zw.com": {
+            const { c25zw } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/type1.ts"));
+            ruleClass = c25zw();
+            break;
+        }
+        case "www.tycqxs.com": {
+            const { tycqxs } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/type1.ts"));
+            ruleClass = tycqxs();
+            break;
+        }
+        case "www.kanunu8.com": {
+            const { Kanunu8 } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/reprint/kanunu8.ts"));
+            ruleClass = Kanunu8;
+            break;
+        }
+        case "www.ciyuanji.com": {
+            const { Ciyuanji } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/ciyuanji.ts"));
+            ruleClass = Ciyuanji;
+            break;
+        }
+        case "www.wanben.org": {
+            const { wanben } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/wanben.ts"));
+            ruleClass = wanben();
+            break;
+        }
+        case "m.wanben.org": {
+            const { wanben } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePageWithMultiIndexPage/wanben.ts"));
+            ruleClass = wanben();
+            break;
+        }
+        case "www.ranwen.la": {
+            const { ranwen } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/type1.ts"));
+            ruleClass = ranwen();
+            break;
+        }
+        case "www.washuge.com": {
+            const { washuge } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/washuge.ts"));
+            ruleClass = washuge();
+            break;
+        }
+        case "m.baihexs.com": {
+            const { baihexs } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePageWithMultiIndexPage/baihexs.ts"));
+            ruleClass = baihexs();
+            break;
+        }
+        case "www.quanshuzhai.com": {
+            const { quanshuzhai } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/quanshuzhai.ts"));
+            ruleClass = quanshuzhai();
+            break;
+        }
+        case "masiro.me": {
+            const { masiro } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/masiro.ts"));
+            ruleClass = masiro();
+            break;
+        }
+        case "www.pixiv.net": {
+            const { Pixiv } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/pixiv.ts"));
+            ruleClass = Pixiv;
+            break;
+        }
+        case "kakuyomu.jp": {
+            const { kakuyomu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/kakuyomu.ts"));
+            ruleClass = kakuyomu();
+            break;
+        }
+        case "ncode.syosetu.com": {
+            const { syosetu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/syosetu.ts"));
+            ruleClass = syosetu();
+            break;
+        }
+        case "zhaoze.art":
+        case "houhuayuan.xyz": {
+            const { houhuayuan } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/houhuayuan.ts"));
+            ruleClass = houhuayuan();
+            break;
+        }
+        default: {
+            throw new Error("Not Found Rule!");
+        }
+    }
+    const rule = new ruleClass();
+    return rule;
+    function regExpMatch(regexp) {
+        if (regexp.test(host)) {
+            return host;
+        }
+    }
 }
-function main() {
+
+;// CONCATENATED MODULE: ./src/debug.ts
+
+
+async function debug() {
+    try {
+        const rule = await getRule();
+        let book;
+        if (typeof window._book !== "undefined") {
+            book = window._book;
+        }
+        else {
+            book = await rule.bookParse();
+        }
+        unsafeWindow.rule = rule;
+        unsafeWindow.book = book;
+        window._book = book;
+    }
+    catch (error) { }
+    unsafeWindow.saveAs = FileSaver_min.saveAs;
+    const { parse, fetchAndParse, gfetchAndParse } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/lib/readability.ts"));
+    const readability = {
+        parse,
+        fetchAndParse,
+        gfetchAndParse,
+    };
+    unsafeWindow.readability = readability;
+    return;
+}
+
+// EXTERNAL MODULE: ./src/lib/GM.ts
+var GM = __webpack_require__("./src/lib/GM.ts");
+// EXTERNAL MODULE: ./src/lib/misc.ts
+var misc = __webpack_require__("./src/lib/misc.ts");
+// EXTERNAL MODULE: ./src/setting.ts
+var src_setting = __webpack_require__("./src/setting.ts");
+;// CONCATENATED MODULE: ./src/detect.ts
+
+
+
+function check(name) {
+    const target = window[name];
+    const targetLength = target.toString().length;
+    const targetPrototype = target.prototype;
+    const nativeFunctionRe = /function \w+\(\) {\n?(\s+)?\[native code\]\n?(\s+)?}/;
+    try {
+        if (targetPrototype === undefined ||
+            Boolean(target.toString().match(nativeFunctionRe))) {
+            return [true, targetLength].join(", ");
+        }
+    }
+    catch {
+        return [true, targetLength].join(", ");
+    }
+    return [false, targetLength].join(", ");
+}
+const environments = {
+    当前时间: new Date().toISOString(),
+    当前页URL: document.location.href,
+    当前页Referrer: document.referrer,
+    浏览器UA: navigator.userAgent,
+    浏览器语言: navigator.languages,
+    设备运行平台: navigator.platform,
+    设备内存: navigator.deviceMemory ?? "",
+    CPU核心数: navigator.hardwareConcurrency,
+    eval: check("eval"),
+    fetch: check("fetch"),
+    XMLHttpRequest: check("XMLHttpRequest"),
+    window: Object.keys(window).length,
+    localStorage: (0,misc/* storageAvailable */.oZ)("localStorage"),
+    sessionStorage: (0,misc/* storageAvailable */.oZ)("sessionStorage"),
+    Cookie: navigator.cookieEnabled,
+    doNotTrack: navigator.doNotTrack ?? 0,
+    ScriptHandler: GM/* _GM_info.scriptHandler */._p.scriptHandler,
+    "ScriptHandler version": GM/* _GM_info.version */._p.version,
+    "Novel-downloader version": GM/* _GM_info.script.version */._p.script.version,
+    enableDebug: src_setting/* enableDebug.value */.Cy.value,
+};
+
+;// CONCATENATED MODULE: ./src/global.ts
+
+function init() {
+    window.downloading = false;
+    window.customStorage = new misc/* LocalStorageExpired */.Z2();
+    window.stopFlag = false;
+}
+
+// EXTERNAL MODULE: external "log"
+var external_log_ = __webpack_require__("loglevel");
+var external_log_default = /*#__PURE__*/__webpack_require__.n(external_log_);
+// EXTERNAL MODULE: external "Vue"
+var external_Vue_ = __webpack_require__("vue");
+;// CONCATENATED MODULE: ./src/ui/fixVue.ts
+
+
+globalThis.Vue = external_Vue_;
+globalThis.Function = new Proxy(Function, {
+    construct(target, args) {
+        const code = args[args.length - 1];
+        if (code.includes("Vue") && code.includes("_Vue")) {
+            external_log_default().debug("Function hook:" + code);
+            return hook();
+        }
+        else {
+            return new target(...args);
+        }
+        function hook() {
+            function getGlobalObjectKeys() {
+                const _get = () => {
+                    return Object.getOwnPropertyNames(window).filter((key) => window[key] === window);
+                };
+                const _f = new target(`return (${_get.toString()})()`);
+                return _f();
+            }
+            const globalObjectKeys = getGlobalObjectKeys();
+            const newArgs = [];
+            newArgs.push(...globalObjectKeys);
+            args[args.length - 1] = "with (window) {" + code + "}";
+            newArgs.push(...args);
+            const _newTarget = new target(...newArgs);
+            const newTarget = new Proxy(_newTarget, {
+                apply(targetI, thisArg, argumentsList) {
+                    const newArgumentsList = [];
+                    globalObjectKeys.forEach(() => newArgumentsList.push(window));
+                    newArgumentsList.push(...argumentsList);
+                    return Reflect.apply(targetI, window, newArgumentsList);
+                },
+            });
+            return newTarget;
+        }
+    },
+});
+
+// EXTERNAL MODULE: ./src/lib/createEl.ts
+var createEl = __webpack_require__("./src/lib/createEl.ts");
+;// CONCATENATED MODULE: ./src/router/ui.ts
+const defaultObject = {
+    type: "download",
+};
+const errorObject = {
+    type: "error",
+};
+function getUI() {
+    const host = document.location.host;
+    switch (host) {
+        case "wap.shuquge.com": {
+            return () => {
+                const id = /(\d+)\.html$/.exec(document.location.pathname)?.[1];
+                if (!id) {
+                    return errorObject;
+                }
+                return {
+                    type: "jump",
+                    jumpFunction() {
+                        document.location.href = `https://www.shuquge.com/txt/${id}/index.html`;
+                    },
+                };
+            };
+        }
+        case "m.xinwanben.com": {
+            return () => ({
+                type: "jump",
+                jumpFunction() {
+                    document.location.host = "www.xinwanben.com";
+                },
+            });
+        }
+        case "www.tadu.com": {
+            return () => {
+                const re = /^\/book\/\d+\/?$/;
+                if (re.test(document.location.pathname)) {
+                    return defaultObject;
+                }
+                return errorObject;
+            };
+        }
+        case "www.kanunu8.com": {
+            return () => {
+                if (document.body.innerHTML.includes("作者：") ||
+                    document.body.innerHTML.includes("作者:") ||
+                    document.body.innerHTML.includes("内容简介")) {
+                    return defaultObject;
+                }
+                return errorObject;
+            };
+        }
+        case "www.ciyuanji.com": {
+            return () => {
+                if (document.location.pathname === "/bookDetails/info") {
+                    return {
+                        type: "jump",
+                        jumpFunction: () => (document.location.pathname = "/bookDetails/catalog"),
+                    };
+                }
+                return defaultObject;
+            };
+        }
+        case "ebook.longmabook.com":
+        case "www.longmabookcn.com":
+        case "ebook.lmbooks.com":
+        case "www.lmebooks.com":
+        case "www.haitbook.com":
+        case "www.htwhbook.com":
+        case "www.myhtebook.com":
+        case "www.lovehtbooks.com":
+        case "www.myhtebooks.com":
+        case "www.myhtlmebook.com":
+        case "jp.myhtebook.com":
+        case "jp.myhtlmebook.com":
+        case "ebook.urhtbooks.com":
+        case "www.urhtbooks.com":
+        case "www.newhtbook.com":
+        case "www.lvhtebook.com":
+        case "jp.lvhtebook.com":
+        case "www.htlvbooks.com": {
+            return () => {
+                const params = new URLSearchParams(document.location.search);
+                if (params.get("act") === "showinfo" &&
+                    params.has("bookwritercode") &&
+                    params.has("bookid")) {
+                    return defaultObject;
+                }
+                return errorObject;
+            };
+        }
+        default: {
+            return () => defaultObject;
+        }
+    }
+}
+
+;// CONCATENATED MODULE: ./src/ui/button.html
+// Module
+var code = "<div class=\"button-div\" id=\"button-div\"> <div v-if=\"uiObj.type !== 'error'\"> <div class=\"jump\" v-if=\"uiObj.type === 'jump'\"> <button class=\"jump\"> <img class=\"jump\" v-bind:src=\"imgJump\" v-on:click=\"jumpButtonClick\"/> </button> </div> <div class=\"download\" v-if=\"uiObj.type === 'download'\"> <button class=\"start\"> <img class=\"start\" v-bind:src=\"imgStart\" v-on:click=\"startButtonClick\"/> </button> <button class=\"setting\" v-if=\"isSettingSeen\"> <img class=\"setting\" v-bind:src=\"imgSetting\" v-on:click=\"settingButtonClick\"/> </button> </div> </div> </div> ";
+// Exports
+/* harmony default export */ const ui_button = (code);
+// EXTERNAL MODULE: ./src/ui/button.less
+var src_ui_button = __webpack_require__("./src/ui/button.less");
+// EXTERNAL MODULE: ./src/main.ts
+var main = __webpack_require__("./src/main.ts");
+// EXTERNAL MODULE: ./src/save/save.ts + 7 modules
+var save = __webpack_require__("./src/save/save.ts");
+;// CONCATENATED MODULE: ./src/ui/ChapterList.html
+// Module
+var ChapterList_code = "<div> <div v-if=\"loading\"> <div class=\"chapter-list-loading\"> <h2 v-if=\"failed\">加载章节失败！</h2> <h2 v-else>正在载入章节列表中，请耐心等待……</h2> </div> </div> <div class=\"chapter-list\" v-else> <div v-for=\"sectionObj in sectionsObj\" v-show=\"isSectionSeen(sectionObj)\" v-bind:key=\"sectionObj.sectionNumber\" class=\"section\"> <h3 class=\"section-label\" v-if=\"sectionObj.sectionName\"> {{ sectionObj.sectionName }} </h3> <div v-for=\"chapter in sectionObj.chpaters\" v-show=\"isChapterSeen(chapter)\" v-bind:key=\"chapter.chapterNumber\" class=\"chapter\" v-bind:class=\"{\n              good: this.filter(chapter),\n              bad: !this.filter(chapter),\n              warning: this.warningFilter(chapter)\n            }\" v-bind:title=\"chapter.chapterNumber\"> <a v-bind:href=\"chapter.chapterUrl\" v-bind:class=\"{\n                disabled: this.isChapterDisabled(chapter),\n              }\" target=\"_blank\" rel=\"noopener noreferrer\">{{ chapter.chapterName }}</a> </div> </div> </div> </div> ";
+// Exports
+/* harmony default export */ const ChapterList = (ChapterList_code);
+// EXTERNAL MODULE: ./src/ui/ChapterList.less
+var ui_ChapterList = __webpack_require__("./src/ui/ChapterList.less");
+;// CONCATENATED MODULE: ./src/ui/ChapterList.ts
+
+
+
+
+
+
+
+
+
+async function getSections() {
+    if (window._sections) {
+        return window._sections;
+    }
+    else {
+        const rule = await getRule();
+        const book = await rule.bookParse();
+        window._book = book;
+        window._sections = (0,save/* getSectionsObj */.f0)(book.chapters);
+        return window._sections;
+    }
+}
+const style = (0,createEl/* createStyle */.w)(ui_ChapterList/* default */.Z);
+/* harmony default export */ const src_ui_ChapterList = (external_Vue_.defineComponent({
+    name: "ChapterList",
+    setup(props, context) {
+        const sectionsObj = external_Vue_.reactive([]);
+        const loading = external_Vue_.ref(true);
+        const failed = external_Vue_.ref(false);
+        external_Vue_.onMounted(async () => {
+            if (sectionsObj.length === 0) {
+                try {
+                    const _sectionsObj = await getSections();
+                    Object.assign(sectionsObj, _sectionsObj);
+                    loading.value = false;
+                }
+                catch (error) {
+                    external_log_default().error(error);
+                    failed.value = true;
+                }
+            }
+        });
+        const filterSetting = external_Vue_.inject("filterSetting");
+        const filter = (chapter) => {
+            if (chapter.status === main/* Status.aborted */.qb.aborted) {
+                return false;
+            }
+            if (filterSetting.value) {
+                const filterFunction = getFilterFunction(filterSetting.value.arg, filterSetting.value.functionBody);
+                if (typeof filterFunction === "function") {
+                    return filterFunction(chapter);
+                }
+            }
+            return true;
+        };
+        const warningFilter = (chapter) => {
+            if (chapter.isVIP === true && chapter.isPaid !== true) {
+                return true;
+            }
+            return false;
+        };
+        const isChapterDisabled = (chapter) => {
+            if (!chapter?.chapterUrl) {
+                return true;
+            }
+            return false;
+        };
+        const isChapterSeen = (chapter) => {
+            if (filterSetting.value.hiddenBad && filter(chapter) === false) {
+                return false;
+            }
+            else {
+                return true;
+            }
+        };
+        const isSectionSeen = (sectionObj) => {
+            const chapters = sectionObj.chpaters;
+            return chapters.some((chapter) => isChapterSeen(chapter) === true);
+        };
+        return {
+            sectionsObj,
+            loading,
+            failed,
+            filter,
+            warningFilter,
+            isChapterDisabled,
+            isChapterSeen,
+            isSectionSeen,
+        };
+    },
+    template: ChapterList,
+}));
+
+// EXTERNAL MODULE: ./src/ui/FilterTab.css
+var FilterTab = __webpack_require__("./src/ui/FilterTab.css");
+;// CONCATENATED MODULE: ./src/ui/FilterTab.html
+// Module
+var FilterTab_code = "<div> <div class=\"filter-setting\"> <div v-if=\"filterType !== 'null'\" class=\"filter-input\"> <p>请输入过滤的条件：<input type=\"text\" v-model=\"arg\"/></p> </div> <div class=\"filter-setter\"> <div> <span>当前过滤方法：</span> <select v-model=\"filterType\"> <option v-for=\"filterOption in filterOptionList\" v-bind:value=\"filterOption[0]\"> {{ filterOption[1][\"abbreviation\"] }} </option> </select> </div> <input type=\"checkbox\" id=\"hiddenBad\" v-model=\"hiddenBad\"/> <label for=\"hiddenBad\">只显示符合条件章节</label> <div class=\"filter-description\" v-html=\"filterDescription\"></div> <div v-if=\"false\"> <span class=\"good\"></span> <span class=\"warning\"></span> <span class=\"bad\"></span> </div> </div> </div> <chapter-list/> </div> ";
+// Exports
+/* harmony default export */ const ui_FilterTab = (FilterTab_code);
+;// CONCATENATED MODULE: ./src/ui/FilterTab.ts
+
+
+
+
+
+const filterOptionDict = {
+    null: {
+        raw: (arg) => {
+            return (chapter) => true;
+        },
+        description: "<p>不应用任何过滤器（默认）</p>",
+        abbreviation: "无",
+    },
+    number: {
+        raw: (arg) => {
+            function characterCheck() {
+                return /^[\s\d\-,，]+$/.test(arg);
+            }
+            function match(s, n) {
+                switch (true) {
+                    case /^\d+$/.test(s): {
+                        const _m = s.match(/^(\d+)$/);
+                        if (_m?.length === 2) {
+                            const m = Number(_m[1]);
+                            if (m === n) {
+                                return true;
+                            }
+                        }
+                        return false;
+                    }
+                    case /^\d+\-\d+$/.test(s): {
+                        const _m = s.match(/^(\d+)\-(\d+)$/);
+                        if (_m?.length === 3) {
+                            const m = _m.map((_s) => Number(_s));
+                            if (n >= m[1] && n <= m[2]) {
+                                return true;
+                            }
+                        }
+                        return false;
+                    }
+                    case /^\d+\-$/.test(s): {
+                        const _m = s.match(/^(\d+)\-$/);
+                        if (_m?.length === 2) {
+                            const m = Number(_m[1]);
+                            if (n >= m) {
+                                return true;
+                            }
+                        }
+                        return false;
+                    }
+                    case /^\-\d+$/.test(s): {
+                        const _m = s.match(/^\-(\d+)$/);
+                        if (_m?.length === 2) {
+                            const m = Number(_m[1]);
+                            if (n <= m) {
+                                return true;
+                            }
+                        }
+                        return false;
+                    }
+                    default: {
+                        return false;
+                    }
+                }
+            }
+            if (!characterCheck()) {
+                return;
+            }
+            return (chapter) => {
+                const n = chapter.chapterNumber;
+                const ss = arg.split(/,|，/).map((s) => s.replace(/\s/g, "").trim());
+                return ss.map((s) => match(s, n)).some((b) => b === true);
+            };
+        },
+        description: "<p>基于章节序号过滤，章节序号可通过章节标题悬停查看。</p><p>支持以下格式：13, 1-5, 2-, -89。可通过分号（,）使用多个表达式。</p>",
+        abbreviation: "章节序号",
+    },
+    baseOnString: {
+        raw: (arg) => {
+            return (chapter) => {
+                return (chapter && chapter.chapterName?.includes(arg)) || false;
+            };
+        },
+        description: "<p>过滤出所有包含过滤条件字符的章节</p>",
+        abbreviation: "章节标题",
+    },
+};
+function getFunctionBody(fn) {
+    return `return (${fn.toString()})(arg)`;
+}
+function getFilterFunction(arg, functionBody) {
+    const filterFunctionFactor = new Function("arg", functionBody);
+    const filterFunction = filterFunctionFactor(arg);
+    if (typeof filterFunction === "function") {
+        return filterFunction;
+    }
+    else {
+        return undefined;
+    }
+}
+/* harmony default export */ const src_ui_FilterTab = (external_Vue_.defineComponent({
+    components: { "chapter-list": src_ui_ChapterList },
+    emits: ["filterupdate"],
+    setup(props, { emit }) {
+        const arg = external_Vue_.ref("");
+        const hiddenBad = external_Vue_.ref(true);
+        const filterType = external_Vue_.ref("null");
+        const filterOptionList = Object.entries(filterOptionDict);
+        const functionBody = external_Vue_.computed(() => getFunctionBody(filterOptionDict[filterType.value].raw));
+        const filterDescription = external_Vue_.computed(() => filterOptionDict[filterType.value].description);
+        const filterSetting = external_Vue_.computed(() => ({
+            arg: arg.value,
+            hiddenBad: hiddenBad.value,
+            filterType: filterType.value,
+            functionBody: functionBody.value,
+        }));
+        external_Vue_.provide("filterSetting", filterSetting);
+        external_Vue_.watch(filterSetting, () => {
+            emit("filterupdate", filterSetting.value);
+        }, {
+            deep: true,
+        });
+        const getFilterSetting = external_Vue_.inject("getFilterSetting");
+        external_Vue_.onMounted(() => {
+            const faterFilterSetting = getFilterSetting();
+            if (faterFilterSetting) {
+                arg.value = faterFilterSetting.arg;
+                hiddenBad.value = faterFilterSetting.hiddenBad;
+                filterType.value = faterFilterSetting.filterType;
+            }
+        });
+        return {
+            arg,
+            hiddenBad,
+            filterType,
+            filterOptionList,
+            filterDescription,
+        };
+    },
+    template: ui_FilterTab,
+}));
+const FilterTab_style = (0,createEl/* createStyle */.w)(FilterTab/* default */.Z);
+
+// EXTERNAL MODULE: ./src/log.ts
+var log = __webpack_require__("./src/log.ts");
+;// CONCATENATED MODULE: ./src/ui/LogUI.ts
+
+
+/* harmony default export */ const LogUI = (external_Vue_.defineComponent({
+    name: "LogUI",
+    setup(props, context) {
+        const logText = external_Vue_.ref("");
+        function onMount(fn) {
+            external_Vue_.onUnmounted(() => fn());
+        }
+        let requestID;
+        external_Vue_.onMounted(() => {
+            logText.value = (0,log/* getLogText */.mZ)();
+            function step() {
+                logText.value = (0,log/* getLogText */.mZ)();
+                requestID = globalThis.requestAnimationFrame(step);
+            }
+            requestID = globalThis.requestAnimationFrame(step);
+        });
+        external_Vue_.onUnmounted(() => {
+            if (requestID) {
+                globalThis.cancelAnimationFrame(requestID);
+            }
+        });
+        return { logText };
+    },
+    template: `<div class="log"><pre v-html="logText" id="novel-downloader-log"></per></div>`,
+}));
+
+;// CONCATENATED MODULE: ./src/ui/setting.html
+// Module
+var setting_code = "<div> <dialog-ui dialog-title=\"设置\" v-bind:status=\"openStatus\" v-on:dialogclose=\"closeSetting\" v-if=\"openStatus === 'true'\"> <div class=\"nd-setting\"> <div class=\"nd-setting-tab\"> <button v-bind:class=\"['tab-button', { active: setting.currentTab === 'tab-1'}]\" v-on:click=\"setting.currentTab = 'tab-1'\"> 基本设置 </button> <button v-bind:class=\"['tab-button', { active: setting.currentTab === 'tab-2'}]\" v-on:click=\"setting.currentTab = 'tab-2'\"> 自定义筛选条件 </button> <button v-if=\"setting.enableTestPage\" v-bind:class=\"['tab-button', { active: setting.currentTab === 'tab-3'}]\" v-on:click=\"setting.currentTab = 'tab-3'\"> 抓取测试 </button> <button v-if=\"setting.enableTestPage\" v-bind:class=\"['tab-button', { active: setting.currentTab === 'tab-4'}]\" v-on:click=\"setting.currentTab = 'tab-4'\"> 日志 </button> </div> <div class=\"nd-setting-body\"> <div id=\"nd-setting-tab-1\" class=\"tab-page\" v-show=\"setting.currentTab === 'tab-1'\"> <div> <input type=\"checkbox\" id=\"debug\" v-model=\"setting.enableDebug\"/> <label for=\"debug\">启用调式模式。（输出更详细日志）</label> <input type=\"checkbox\" id=\"test-page\" v-model=\"setting.enableTestPage\"/> <label for=\"test-page\">启用测试视图</label> </div> <hr class=\"hr-twill-colorful\"/> <div> <h3>自定义保存参数</h3> <ul> <li v-for=\"item of saveOptions\"> <input type=\"radio\" v-bind:id=\"item.key\" v-bind:value=\"item.key\" v-model=\"setting.chooseSaveOption\"/> <label v-bind:for=\"item.key\">{{ item.value }}</label> </li> </ul> </div> </div> <div id=\"nd-setting-tab-2\" class=\"tab-page\" v-show=\"setting.currentTab === 'tab-2'\"> <filter-tab v-on:filterupdate=\"saveFilter\"/> </div> <div v-if=\"setting.enableTestPage\" id=\"nd-setting-tab-3\" class=\"tab-page\" v-show=\"setting.currentTab === 'tab-3'\"> <test-ui></test-ui> </div> <div v-if=\"setting.enableTestPage\" id=\"nd-setting-tab-4\" class=\"tab-page\" v-show=\"setting.currentTab === 'tab-4'\"> <log-ui></log-ui> </div> </div> <div class=\"nd-setting-footer\"> <button v-on:click=\"closeAndSaveSetting\">Save</button> <button v-on:click=\"closeSetting\">Cancel</button> </div> </div> </dialog-ui> </div> ";
+// Exports
+/* harmony default export */ const setting = (setting_code);
+// EXTERNAL MODULE: ./src/ui/setting.less
+var ui_setting = __webpack_require__("./src/ui/setting.less");
+;// CONCATENATED MODULE: ./src/ui/TestUI.html
+// Module
+var TestUI_code = "<div> <div id=\"test-page-div\"> <h2>元数据</h2> <table> <tbody> <tr v-for=\"(value, key) in metaData\"> <td>{{ key }}</td> <td v-html=\"getData(key, value)\"></td> </tr> </tbody> </table> <hr class=\"hr-edge-weak\"/> <h2>章节测试</h2> <div v-if=\"this.isSeenChapter(chapter)\"> <h4> <a v-bind:href=\"chapter.chapterUrl\" target=\"_blank\" rel=\"noopener noreferrer\">{{ chapter.chapterName }}</a> </h4> <div class=\"chapter\" v-html=\"getChapterHtml(chapter)\"></div> </div> <div v-else> <p v-if=\"this.isChapterFailed(chapter)\">章节加载失败！</p> <p v-else>正在加载章节中……</p> </div> </div> </div> ";
+// Exports
+/* harmony default export */ const TestUI = (TestUI_code);
+// EXTERNAL MODULE: ./src/ui/TestUI.less
+var ui_TestUI = __webpack_require__("./src/ui/TestUI.less");
+;// CONCATENATED MODULE: ./src/ui/TestUI.ts
+
+
+
+
+
+
+
+/* harmony default export */ const src_ui_TestUI = (external_Vue_.defineComponent({
+    name: "TestUI",
+    setup(props, context) {
+        const book = external_Vue_.reactive({});
+        const chapter = external_Vue_.reactive({});
+        async function initBook(retry) {
+            const _book = window._book;
+            if (_book) {
+                Object.assign(book, _book);
+                return _book;
+            }
+            else {
+                if (retry > 0) {
+                    await (0,misc/* sleep */._v)(2 ** (src_setting/* retryLimit */.o5 - retry) * 500);
+                    return initBook(retry);
+                }
+                else {
+                    return;
+                }
+            }
+        }
+        const metaData = external_Vue_.reactive({});
+        function getData(key, value) {
+            if (key === "封面") {
+                return `<img src="${value}">`;
+            }
+            if (key === "简介") {
+                return value.outerHTML;
+            }
+            if (key === "网址") {
+                return `<a href="${value}">${value}</a>`;
+            }
+            return value;
+        }
+        async function initChapter(_book) {
+            const chapters = _book.chapters;
+            const n = Math.min(17, chapters.length) - 1;
+            const _chapter = chapters[n];
+            await _chapter.init();
+            return _chapter;
+        }
+        function isSeenChapter(_chapter) {
+            return _chapter.status === main/* Status.finished */.qb.finished;
+        }
+        function isChapterFailed(_chapter) {
+            return _chapter.status === main/* Status.failed */.qb.failed;
+        }
+        function getChapterHtml(_chapter) {
+            const imgs = _chapter.contentHTML?.querySelectorAll("img");
+            if (imgs) {
+                Array.from(imgs).forEach((img) => {
+                    img.src = img.alt;
+                });
+            }
+            return _chapter.contentHTML?.outerHTML;
+        }
+        external_Vue_.onMounted(async () => {
+            await initBook(src_setting/* retryLimit */.o5);
+            if (book) {
+                const _chapter = await initChapter(book);
+                Object.assign(chapter, _chapter);
+                const _metaData = {
+                    封面: book.additionalMetadate?.cover?.url ?? "",
+                    题名: book.bookname ?? "None",
+                    作者: book.author ?? "None",
+                    网址: book.bookUrl,
+                    简介: book.introductionHTML ?? "",
+                };
+                Object.assign(metaData, _metaData);
+            }
+        });
+        return {
+            metaData,
+            getData,
+            chapter,
+            isSeenChapter,
+            isChapterFailed,
+            getChapterHtml,
+        };
+    },
+    template: TestUI,
+}));
+const TestUI_style = (0,createEl/* createStyle */.w)(ui_TestUI/* default */.Z);
+
+;// CONCATENATED MODULE: ./src/ui/setting.ts
+
+
+
+
+
+
+
+
+
+
+
+
+const setting_style = (0,createEl/* createStyle */.w)(ui_setting/* default */.Z);
+const el = (0,createEl/* createEl */.u)(`<div id="setting"></div>`);
+const vm = external_Vue_.createApp({
+    name: "nd-setting",
+    components: { "filter-tab": src_ui_FilterTab, "log-ui": LogUI, "test-ui": src_ui_TestUI },
+    setup(props, context) {
+        const setting = external_Vue_.reactive({});
+        let settingBackup = {};
+        const saveOptions = [
+            { key: "null", value: "不使用自定义保存参数", options: {} },
+            {
+                key: "chapter_name",
+                value: "将章节名称格式修改为 第xx章 xxxx",
+                options: {
+                    getchapterName: (chapter) => {
+                        if (chapter.chapterName) {
+                            return `第${chapter.chapterNumber.toString()}章 ${chapter.chapterName}`;
+                        }
+                        else {
+                            return `第${chapter.chapterNumber.toString()}章`;
+                        }
+                    },
+                },
+            },
+            {
+                key: "txt_space",
+                value: "txt文档每个自然段前加两个空格",
+                options: {
+                    genChapterText: (chapterName, contentText) => {
+                        contentText = contentText
+                            .split("\n")
+                            .map((line) => {
+                            if (line.trim() === "") {
+                                return line;
+                            }
+                            else {
+                                return line.replace(/^/, "    ");
+                            }
+                        })
+                            .join("\n");
+                        return `## ${chapterName}\n\n${contentText}\n\n`;
+                    },
+                },
+            },
+            {
+                key: "reverse_chapters",
+                value: "保存章节时倒序排列",
+                options: {
+                    chapterSort: (a, b) => {
+                        if (a.chapterNumber > b.chapterNumber) {
+                            return -1;
+                        }
+                        if (a.chapterNumber === b.chapterNumber) {
+                            return 0;
+                        }
+                        if (a.chapterNumber < b.chapterNumber) {
+                            return 1;
+                        }
+                        return 0;
+                    },
+                },
+            },
+        ];
+        setting.enableDebug = src_setting/* enableDebug.value */.Cy.value;
+        setting.chooseSaveOption = "null";
+        setting.enableTestPage = false;
+        setting.currentTab = "tab-1";
+        const curSaveOption = () => {
+            const _s = saveOptions.find((s) => s.key === setting.chooseSaveOption);
+            if (_s) {
+                return _s.options;
+            }
+            else {
+                return saveOptions[0].options;
+            }
+        };
+        const saveFilter = (filterSetting) => {
+            setting.filterSetting = (0,misc/* deepcopy */.X8)(filterSetting);
+        };
+        const getFilterSetting = () => {
+            if (setting.filterSetting) {
+                return setting.filterSetting;
+            }
+            else {
+                return;
+            }
+        };
+        external_Vue_.provide("getFilterSetting", getFilterSetting);
+        const setConfig = (config) => {
+            setEnableDebug();
+            setCustomSaveOption();
+            setCustomFilter();
+            function setEnableDebug() {
+                if (typeof config.enableDebug === "boolean") {
+                    config.enableDebug ? external_log_default().setLevel("trace") : external_log_default().setLevel("info");
+                    src_setting/* enableDebug.value */.Cy.value = config.enableDebug;
+                    if (config.enableDebug) {
+                        debug();
+                    }
+                    external_log_default().info(`[Init]enableDebug: ${src_setting/* enableDebug.value */.Cy.value}`);
+                }
+            }
+            function setCustomSaveOption() {
+                unsafeWindow.saveOptions = curSaveOption();
+            }
+            function setCustomFilter() {
+                if (config.filterSetting) {
+                    if (config.filterSetting.filterType === "null") {
+                        unsafeWindow.chapterFilter = undefined;
+                    }
+                    else {
+                        const filterFunction = getFilterFunction(config.filterSetting.arg, config.filterSetting.functionBody);
+                        if (filterFunction) {
+                            const chapterFilter = (chapter) => {
+                                if (chapter.status === main/* Status.aborted */.qb.aborted) {
+                                    return false;
+                                }
+                                return filterFunction(chapter);
+                            };
+                            unsafeWindow.chapterFilter = chapterFilter;
+                        }
+                    }
+                }
+            }
+        };
+        const openStatus = external_Vue_.ref("false");
+        const openSetting = () => {
+            settingBackup = (0,misc/* deepcopy */.X8)(setting);
+            openStatus.value = "true";
+        };
+        const closeSetting = (keep) => {
+            if (keep === true) {
+                settingBackup = (0,misc/* deepcopy */.X8)(setting);
+            }
+            else {
+                Object.assign(setting, settingBackup);
+            }
+            openStatus.value = "false";
+        };
+        const closeAndSaveSetting = async () => {
+            closeSetting(true);
+            await (0,misc/* sleep */._v)(30);
+            setConfig((0,misc/* deepcopy */.X8)(setting));
+            external_log_default().info("[Init]自定义设置：" + JSON.stringify(setting));
+        };
+        return {
+            openStatus,
+            openSetting,
+            closeSetting,
+            closeAndSaveSetting,
+            saveFilter,
+            setting,
+            saveOptions,
+        };
+    },
+    template: setting,
+}).mount(el);
+
+;// CONCATENATED MODULE: ./src/ui/button.ts
+
+
+
+
+
+
+
+
+
+
+const button_style = (0,createEl/* createStyle */.w)(src_ui_button/* default */.Z, "button-div-style");
+const button_el = (0,createEl/* createEl */.u)('<div id="nd-button"></div>');
+const button_vm = external_Vue_.createApp({
+    data() {
+        return {
+            imgStart: src_setting/* iconStart0 */.cl,
+            imgSetting: src_setting/* iconSetting */.d7,
+            isSettingSeen: GM/* _GM_info.scriptHandler */._p.scriptHandler !== "Greasemonkey",
+            imgJump: src_setting/* iconJump */.y6,
+            uiObj: {},
+        };
+    },
+    methods: {
+        startButtonClick() {
+            if (window.downloading) {
+                alert("正在下载中，请耐心等待……");
+                return;
+            }
+            const self = this;
+            self.imgStart = src_setting/* iconStart1 */.wE;
+            async function run() {
+                const ruleClass = await getRule();
+                await ruleClass.run();
+            }
+            run()
+                .then(() => {
+                self.imgStart = src_setting/* iconStart0 */.cl;
+            })
+                .catch((error) => external_log_default().error(error));
+        },
+        settingButtonClick() {
+            vm.openSetting();
+        },
+        jumpButtonClick() {
+            this.uiObj.jumpFunction();
+        },
+    },
+    mounted() {
+        Object.assign(this.uiObj, getUI()());
+    },
+    template: ui_button,
+});
+
+// EXTERNAL MODULE: ./src/ui/dialog.css
+var dialog = __webpack_require__("./src/ui/dialog.css");
+;// CONCATENATED MODULE: ./src/ui/dialog.html
+// Module
+var dialog_code = "<div class=\"overlay\" v-bind:class=\"{ open: myPrivateStatus }\" v-if=\"myPrivateStatus\"></div> <div class=\"out\" v-if=\"myPrivateStatus\"> <div id=\"dialog\" class=\"dialog\" v-bind:class=\"{ open: myPrivateStatus }\"> <div class=\"titlebar\"> <h1 class=\"dialog-title\">{{ dialogTitle }}</h1> <button class=\"dialog-close\" v-on:click=\"dialogClose\">❌</button> </div> <div class=\"body\"> <slot></slot> </div> </div> </div> ";
+// Exports
+/* harmony default export */ const ui_dialog = (dialog_code);
+;// CONCATENATED MODULE: ./src/ui/dialog.ts
+
+
+
+/* harmony default export */ const src_ui_dialog = (external_Vue_.defineCustomElement({
+    name: "Dialog",
+    props: {
+        dialogTitle: String,
+        status: String,
+    },
+    emits: ["dialogclose"],
+    data() {
+        return {
+            myPrivateStatus: this.status === "true",
+        };
+    },
+    methods: {
+        dialogClose() {
+            this.myPrivateStatus = false;
+            this.$emit("dialogclose");
+        },
+    },
+    mounted() {
+        this.myPrivateStatus = this.status === "true";
+    },
+    watch: {
+        status() {
+            this.myPrivateStatus = this.status === "true";
+        },
+    },
+    template: ui_dialog,
+    styles: [dialog/* default */.Z],
+}));
+
+// EXTERNAL MODULE: ./src/ui/progress.ts + 1 modules
+var progress = __webpack_require__("./src/ui/progress.ts");
+;// CONCATENATED MODULE: ./src/ui/ui.ts
+
+
+
+
+
+
+
+function register() {
+    customElements.define("dialog-ui", src_ui_dialog);
+}
+function ui_init() {
+    register();
+    button_vm.mount(button_el);
+    document.body.appendChild(button_el);
+    document.body.appendChild(progress.el);
+    document.body.appendChild(el);
+    document.head.appendChild(button_style);
+    document.head.appendChild(progress/* style */.o);
+    document.head.appendChild(setting_style);
+    document.head.appendChild(FilterTab_style);
+    document.head.appendChild(style);
+    document.head.appendChild(TestUI_style);
+}
+
+;// CONCATENATED MODULE: ./src/index.ts
+
+
+
+
+
+
+
+function printEnvironments() {
+    external_log_default().info("[Init]开始载入小说下载器……");
+    Object.entries(environments).forEach((kv) => external_log_default().info("[Init]" + kv.join("：")));
+}
+function src_main() {
     printEnvironments();
-    (0, global_1.init)();
-    (0, ui_1.init)();
-    if (setting_1.enableDebug.value) {
-        setTimeout(debug_1.debug, 3000);
+    init();
+    ui_init();
+    if (src_setting/* enableDebug.value */.Cy.value) {
+        setTimeout(debug, 3000);
     }
 }
 if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", (event) => {
-        main();
+        src_main();
     });
 }
 else {
-    main();
+    src_main();
 }
 
 })();
