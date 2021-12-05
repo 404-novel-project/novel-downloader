@@ -58,6 +58,7 @@ ZIP压缩包，请在解压后，直接双击打开HTML文件（`index.html` 为
 |[动漫之家](https://www.dmzj.com/)|✅|❎|需下载大量图片，速度较慢，请耐心等待。<br>需占用大量内存，请保证最终生成文件4倍以上内存，即最终下载生成500MB ZIP文件，运行时请保证至少2GB内存空间。可使用筛选函数，分次下载。|
 |[Lofter](https://www.lofter.com/)|✅|❎|因本脚本会将博文中的图片也一同下载下来，对于图片特别多的博客，下载时请注意内存用量（800MB限制），根据实际情况使用筛选函数分次下载。<br>部分博文内含视频内容，为节省内存使用，加快下载速度，本脚本将跳过视频内容。<br>如您使用广告屏蔽器，可能会影响本脚本在Lofter的工作。|
 |[努努书坊](https://www.kanunu8.com/)|✅|❎|格式众多，如发现不支持页面敬请反馈。|
+|[真白萌](https://masiro.me/)|✅|❎||
 
 <details>
 <summary>点击查看全部支持网站</summary>
@@ -113,6 +114,11 @@ ZIP压缩包，请在解压后，直接双击打开HTML文件（`index.html` 为
 |[笔趣阁](https://www.biquwx.la/)|✅|❎||
 |[25中文网](http://www.25zw.com/)|✅|❎||
 |[天域小说网](https://www.tycqxs.com/)|✅|❎||
+|[完本神站](https://www.wanben.org/)|✅|❎||
+|[燃文小说](https://www.ranwen.la)|✅|❎||
+|[望书阁](https://www.washuge.com/)|✅|❎||
+|[百合小说网](https://m.baihexs.com/)|✅|❎||
+|[全书斋](https://www.quanshuzhai.com/)|✅|❎||
 
 </details>
 
