@@ -416,6 +416,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = kakuyomu();
       break;
     }
+    case "ncode.syosetu.com": {
+      const { syosetu } = await import("../rules/onePage/syosetu");
+      ruleClass = syosetu();
+      break;
+    }
     default: {
       throw new Error("Not Found Rule!");
     }

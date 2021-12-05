@@ -159,7 +159,8 @@
     "*://masiro.me/admin/novelView?novel_id=*",
     "*://www.pixiv.net/novel/show.php?*",
     "*://www.pixiv.net/novel/series/*",
-    "*://kakuyomu.jp/works/*"
+    "*://kakuyomu.jp/works/*",
+    "*://ncode.syosetu.com/*"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",
@@ -264,6 +265,7 @@
     "baihexs.com",
     "masiro.me",
     "pximg.net",
+    "mitemin.net",
     "*"
   ],
   "require": [
