@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.5.1.370
+// @version        4.5.1.372
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -143,6 +143,8 @@
 // @match          *://masiro.me/admin/novelView?novel_id=*
 // @match          *://www.pixiv.net/novel/show.php?*
 // @match          *://www.pixiv.net/novel/series/*
+// @match          *://kakuyomu.jp/works/*
+// @match          *://ncode.syosetu.com/*
 // @name:en        novel-downloader
 // @description:en An scalable universal novel downloader.
 // @namespace      https://blog.bgme.me
@@ -254,6 +256,7 @@
 // @connect        baihexs.com
 // @connect        masiro.me
 // @connect        pximg.net
+// @connect        mitemin.net
 // @connect        *
 // @require        https://cdn.jsdelivr.net/npm/crypto-js@4.1.1/crypto-js.js#sha512-NQVmLzNy4Lr5QTrmXvq/WzTMUnRHmv7nyIT/M6LyGPBS+TIeRxZ+YQaqWxjpRpvRMQSuYPQURZz/+pLi81xXeA==
 // @require        https://cdn.jsdelivr.net/npm/fflate@0.7.1/umd/index.js#sha512-laBNdxeV48sttD1kBYahmdSXpSRitYmkte49ZUqm3KEOUK4cIJAjqt1MYwScWvBqqP4WDtEftDSPYE1ii/bxCg==

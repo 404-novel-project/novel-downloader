@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.5.1.370
+// @version        4.5.1.372
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -143,6 +143,8 @@
 // @match          *://masiro.me/admin/novelView?novel_id=*
 // @match          *://www.pixiv.net/novel/show.php?*
 // @match          *://www.pixiv.net/novel/series/*
+// @match          *://kakuyomu.jp/works/*
+// @match          *://ncode.syosetu.com/*
 // @name:en        novel-downloader
 // @description:en An scalable universal novel downloader.
 // @namespace      https://blog.bgme.me
@@ -254,6 +256,7 @@
 // @connect        baihexs.com
 // @connect        masiro.me
 // @connect        pximg.net
+// @connect        mitemin.net
 // @connect        *
 // @require        https://cdn.jsdelivr.net/npm/crypto-js@4.1.1/crypto-js.js#sha512-NQVmLzNy4Lr5QTrmXvq/WzTMUnRHmv7nyIT/M6LyGPBS+TIeRxZ+YQaqWxjpRpvRMQSuYPQURZz/+pLi81xXeA==
 // @require        https://cdn.jsdelivr.net/npm/fflate@0.7.1/umd/index.js#sha512-laBNdxeV48sttD1kBYahmdSXpSRitYmkte49ZUqm3KEOUK4cIJAjqt1MYwScWvBqqP4WDtEftDSPYE1ii/bxCg==
@@ -5412,6 +5415,16 @@ async function getRule() {
             ruleClass = Pixiv;
             break;
         }
+        case "kakuyomu.jp": {
+            const { kakuyomu } = await Promise.resolve().then(() => __webpack_require__("./src/rules/onePage/kakuyomu.ts"));
+            ruleClass = kakuyomu();
+            break;
+        }
+        case "ncode.syosetu.com": {
+            const { syosetu } = await Promise.resolve().then(() => __webpack_require__("./src/rules/onePage/syosetu.ts"));
+            ruleClass = syosetu();
+            break;
+        }
         default: {
             throw new Error("Not Found Rule!");
         }
@@ -7202,6 +7215,37 @@ exports.c630shu = (0, template_1.mkRuleClass)({
 
 /***/ }),
 
+/***/ "./src/rules/onePage/kakuyomu.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.kakuyomu = void 0;
+const template_1 = __webpack_require__("./src/rules/onePage/template.ts");
+const kakuyomu = () => (0, template_1.mkRuleClass)({
+    bookUrl: document.location.href,
+    bookname: document.querySelector("#workTitle > a").innerText.trim(),
+    author: document.querySelector("#workAuthor-activityName > a").innerText.trim(),
+    introDom: document.querySelector("#introduction"),
+    introDomPatch: (dom) => dom,
+    coverUrl: null,
+    additionalMetadatePatch: (additionalMetadate) => {
+        additionalMetadate.tags = Array.from(document.querySelectorAll("#workMeta-tags > li > a")).map((a) => a.innerText);
+        return additionalMetadate;
+    },
+    aList: document.querySelectorAll("li.widget-toc-episode > a"),
+    getAName: (dom) => dom.querySelector("span.widget-toc-episode-titleLabel").innerText.trim(),
+    sections: document.querySelectorAll("li.widget-toc-chapter > span"),
+    getSName: (dom) => dom.innerText.trim(),
+    getContent: (dom) => dom.querySelector(".widget-episodeBody"),
+    contentPatch: (dom) => dom,
+});
+exports.kakuyomu = kakuyomu;
+
+
+/***/ }),
+
 /***/ "./src/rules/onePage/masiro.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
@@ -7291,6 +7335,54 @@ const shouda8 = () => (0, template_1.mkRuleClass)({
     },
 });
 exports.shouda8 = shouda8;
+
+
+/***/ }),
+
+/***/ "./src/rules/onePage/syosetu.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.syosetu = void 0;
+const template_1 = __webpack_require__("./src/rules/onePage/template.ts");
+const syosetu = () => {
+    const getIntroDom = () => {
+        const a = document.querySelector("#novel_ex > .more");
+        if (a) {
+            a.click();
+        }
+        return document.querySelector("#novel_ex");
+    };
+    return (0, template_1.mkRuleClass)({
+        bookUrl: document.location.href,
+        bookname: document.querySelector(".novel_title").innerText.trim(),
+        author: document.querySelector(".novel_writername > a").innerText.trim(),
+        introDom: getIntroDom(),
+        introDomPatch: (dom) => dom,
+        coverUrl: null,
+        aList: document.querySelectorAll("dl.novel_sublist2 dd.subtitle > a"),
+        sections: document.querySelectorAll("div.chapter_title"),
+        getSName: (dom) => dom.innerText.trim(),
+        getContent: (dom) => {
+            const content = document.createElement("div");
+            const novelHonbun = dom.querySelector("#novel_honbun");
+            const novelA = dom.querySelector("#novel_a");
+            if (novelHonbun) {
+                content.appendChild(novelHonbun);
+            }
+            if (novelA) {
+                const hr = dom.createElement("hr");
+                content.appendChild(hr);
+                content.appendChild(novelA);
+            }
+            return content;
+        },
+        contentPatch: (dom) => dom,
+    });
+};
+exports.syosetu = syosetu;
 
 
 /***/ }),
