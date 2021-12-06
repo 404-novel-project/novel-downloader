@@ -110,7 +110,7 @@ export class Myrics extends BaseRuleClass {
       };
       status_code: number;
     }
-    while (pages === 0 || page < pages) {
+    while (pages === 0 || page <= pages) {
       const chapterApiUrl =
         chapterApiBase +
         `?${new URLSearchParams(getChapterSearch(page)).toString()}`;
@@ -126,8 +126,8 @@ export class Myrics extends BaseRuleClass {
         const chapterId = item.id;
         const chapterUrl = `https://www.myrics.com/novels/${bookId}/chapters/${chapterId}`;
         const chapterNumber = item.order;
-        const chapterName = item.title;
-        const isVIP = item.coin_type === "STANDARD";
+        const chapterName = `${chapterNumber} - ${item.title}`;
+        const isVIP = item.coin !== 0;
         const isPaid = item.is_purchased;
         const chapter = new Chapter(
           bookUrl,
@@ -182,7 +182,7 @@ export class Myrics extends BaseRuleClass {
     interface ChapterApiResponse {
       result: {
         coin: number;
-        coin_type: "STANDARD" | "FREE";
+        coin_type: string;
         content: string;
         id: number;
         is_adult: boolean;
@@ -224,7 +224,7 @@ export class Myrics extends BaseRuleClass {
 
 interface ChapterItem {
   coin: number;
-  coin_type: "STANDARD" | "FREE";
+  coin_type: string;
   comment_count: number;
   id: number;
   is_adult: false;
