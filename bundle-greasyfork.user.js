@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.5.3.384
+// @version        4.5.3.385
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -9588,7 +9588,7 @@ class Myrics extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
         let pages = 0;
         let page = 1;
         const getChapterSearch = (p) => ({ page: p.toString() });
-        while (pages === 0 || page < pages) {
+        while (pages === 0 || page <= pages) {
             const chapterApiUrl = chapterApiBase +
                 `?${new URLSearchParams(getChapterSearch(page)).toString()}`;
             const respC = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .gfetch */ .GF)(chapterApiUrl, init);
@@ -9602,8 +9602,8 @@ class Myrics extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
                 const chapterId = item.id;
                 const chapterUrl = `https://www.myrics.com/novels/${bookId}/chapters/${chapterId}`;
                 const chapterNumber = item.order;
-                const chapterName = item.title;
-                const isVIP = item.coin_type === "STANDARD";
+                const chapterName = `${chapterNumber} - ${item.title}`;
+                const isVIP = item.coin !== 0;
                 const isPaid = item.is_purchased;
                 const chapter = new _main__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .WC(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, null, null, null, this.chapterParse, this.charset, { bookId, chapterId, init });
                 if (chapter.isVIP === true && chapter.isPaid === false) {
