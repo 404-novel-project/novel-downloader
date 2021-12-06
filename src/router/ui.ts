@@ -96,6 +96,39 @@ export function getUI(): () => UIObject {
         return errorObject;
       };
     }
+    case "m.sfacg.com": {
+      return () => {
+        const bookId = /(\d+)\/?$/.exec(document.location.pathname)?.[1];
+        if (bookId) {
+          return {
+            type: "jump",
+            jumpFunction: () =>
+              (document.location.href = `https://book.sfacg.com/Novel/${bookId}/MainIndex/`),
+          };
+        } else {
+          return errorObject;
+        }
+      };
+    }
+    case "book.sfacg.com": {
+      return () => {
+        const jump = /^\/Novel\/\d+\/?$/.test(document.location.pathname);
+        if (jump) {
+          const bookId = /(\d+)\/?$/.exec(document.location.pathname)?.[1];
+          if (bookId) {
+            return {
+              type: "jump",
+              jumpFunction: () =>
+                (document.location.href = `https://book.sfacg.com/Novel/${bookId}/MainIndex/`),
+            };
+          } else {
+            return errorObject;
+          }
+        } else {
+          return defaultObject;
+        }
+      };
+    }
     default: {
       return () => defaultObject;
     }
