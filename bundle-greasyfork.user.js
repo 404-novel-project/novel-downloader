@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.5.3.387
+// @version        4.5.3.388
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -271,7 +271,7 @@
 // @require        https://cdn.jsdelivr.net/npm/idb-keyval@6.0.3/dist/umd.js#sha512-+PXdWKx8apEQ52dxoVrQIwhLZj96Gde37eq+CXYQvG059IC5VF+nQ1DvD3JKqUVPL0k+TAJ8DDunVXjzKrlrHg==
 // @require        https://cdn.jsdelivr.net/npm/loglevel@1.8.0/lib/loglevel.js#sha512-95U0EjHdDBH1jc1rMsOaY4CV3tVISgHr+7i5rFVvhWDRbsj2o0RlEdWMmDmQzoR8lJV7/6VbPZT6c3pQvkW+0Q==
 // @require        https://cdn.jsdelivr.net/npm/nunjucks@3.2.3/browser/nunjucks.min.js#sha512-Uj8C5szr1tnKPNZb6ps5gFYtTGskzsUCiwY35QP/s2JIExZl7iYNletcmOJ8D6ocuaMRi9JGVrWRePaX9raujA==
-// @require        https://cdn.jsdelivr.net/npm/vue@3.2.23/dist/vue.global.prod.js#sha512-5WOyXvbLDqGtSV/q0cAJVrQrsPI+BEJhI8/MABoP4sebGxgYChr+dvKIoBpmA+kbwQN1Hz47Kf99N1F4LeTa1A==
+// @require        https://cdn.jsdelivr.net/npm/vue@3.2.24/dist/vue.global.prod.js#sha512-n+qyPcNnMLgeoZfwwFgtHWRFkENc87Y+UydB+GNqApMnmWoR7Bsn+Kj06hgRcdGKl1WYA8YgqPchEYaIFGQYNg==
 // @downloadURL    https://github.com/yingziwu/novel-downloader/raw/gh-pages/bundle-greasyfork.user.js
 // @updateURL      https://github.com/yingziwu/novel-downloader/raw/gh-pages/bundle-greasyfork.meta.js
 // ==/UserScript==
@@ -9602,17 +9602,44 @@ class Myrics extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
                 const chapterId = item.id;
                 const chapterUrl = `https://www.myrics.com/novels/${bookId}/chapters/${chapterId}`;
                 const chapterNumber = item.order;
-                const chapterName = `${chapterNumber} - ${item.title}`;
+                const chapterName = `${item.order} - ${item.title}`;
                 const isVIP = item.coin !== 0;
                 const isPaid = item.is_purchased;
-                const chapter = new _main__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .WC(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, null, null, null, this.chapterParse, this.charset, { bookId, chapterId, init });
+                const sectionNumber = item.part;
+                const sectionName = `卷${sectionNumber}`;
+                const sectionChapterNumber = item.order;
+                const isAdult = item.is_adult;
+                const chapter = new _main__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .WC(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, { bookId, chapterId, init });
                 if (chapter.isVIP === true && chapter.isPaid === false) {
+                    chapter.status = _main__WEBPACK_IMPORTED_MODULE_4__/* .Status.aborted */ .qb.aborted;
+                }
+                if (signIn === false && isAdult === true) {
                     chapter.status = _main__WEBPACK_IMPORTED_MODULE_4__/* .Status.aborted */ .qb.aborted;
                 }
                 chapters.push(chapter);
             }
         }
-        chapters.sort((a, b) => a.chapterNumber - b.chapterNumber);
+        chapters.sort((a, b) => {
+            if (a.sectionNumber && b.sectionNumber) {
+                if (a.sectionNumber !== b.sectionNumber) {
+                    return a.sectionNumber - b.sectionNumber;
+                }
+                else {
+                    if (a.sectionChapterNumber && b.sectionChapterNumber) {
+                        return a.sectionChapterNumber - b.sectionChapterNumber;
+                    }
+                }
+            }
+            else {
+                return a.chapterNumber - b.chapterNumber;
+            }
+            return 0;
+        });
+        let i = 0;
+        for (const c of chapters) {
+            c.chapterNumber = i;
+            i++;
+        }
         const book = new _main__WEBPACK_IMPORTED_MODULE_4__/* .Book */ .fy(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
         return book;
     }
