@@ -22,6 +22,10 @@ module.exports = {
     moduleIds: "natural",
     usedExports: true,
   },
+  performance: {
+    hints: "error",
+    maxAssetSize: 2 * 10 ** (3 + 3),
+  },
   entry: path.resolve(__dirname, "src", "index.ts"),
   output: {
     path: path.resolve(__dirname, "dist"),

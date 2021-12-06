@@ -165,7 +165,8 @@
     "*://kakuyomu.jp/works/*",
     "*://ncode.syosetu.com/*",
     "*://houhuayuan.xyz/*",
-    "*://zhaoze.art/*/"
+    "*://zhaoze.art/*/",
+    "*://www.myrics.com/novels/*"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",
@@ -197,7 +198,8 @@
     "*://www.25zw.com/postdate/",
     "*://www.25zw.com/monthvisit/",
     "*://www.25zw.com/goodnum/",
-    "*://www.25zw.com/goodnew/"
+    "*://www.25zw.com/goodnew/",
+    "*://www.myrics.com/novels/*/chapters/*"
   ],
   "grant": [
     "unsafeWindow",
@@ -271,6 +273,7 @@
     "masiro.me",
     "pximg.net",
     "mitemin.net",
+    "myrics.com",
     "*"
   ],
   "require": [

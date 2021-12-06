@@ -427,6 +427,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = houhuayuan();
       break;
     }
+    case "www.myrics.com": {
+      const { Myrics } = await import("../rules/special/original/myrics");
+      ruleClass = Myrics;
+      break;
+    }
     default: {
       throw new Error("Not Found Rule!");
     }
