@@ -129,6 +129,25 @@ export function getUI(): () => UIObject {
         }
       };
     }
+    case "www.ciweimao.com": {
+      return () => {
+        const jump = /^\/book\/\d+\/?$/.test(document.location.pathname);
+        if (jump) {
+          const bookId = /(\d+)\/?$/.exec(document.location.pathname)?.[1];
+          if (bookId) {
+            return {
+              type: "jump",
+              jumpFunction: () =>
+                (document.location.href = `https://www.ciweimao.com/chapter-list/${bookId}/book_detail`),
+            };
+          } else {
+            return errorObject;
+          }
+        } else {
+          return defaultObject;
+        }
+      };
+    }
     default: {
       return () => defaultObject;
     }
