@@ -126,9 +126,13 @@ export class Myrics extends BaseRuleClass {
         const chapterId = item.id;
         const chapterUrl = `https://www.myrics.com/novels/${bookId}/chapters/${chapterId}`;
         const chapterNumber = item.order;
-        const chapterName = `${chapterNumber} - ${item.title}`;
+        const chapterName = `${item.order} - ${item.title}`;
         const isVIP = item.coin !== 0;
         const isPaid = item.is_purchased;
+        const sectionNumber = item.part;
+        const sectionName = `卷${sectionNumber}`;
+        const sectionChapterNumber = item.order;
+        const isAdult = item.is_adult;
         const chapter = new Chapter(
           bookUrl,
           bookname,
@@ -137,9 +141,9 @@ export class Myrics extends BaseRuleClass {
           chapterName,
           isVIP,
           isPaid,
-          null,
-          null,
-          null,
+          sectionName,
+          sectionNumber,
+          sectionChapterNumber,
           this.chapterParse,
           this.charset,
           { bookId, chapterId, init }
@@ -147,12 +151,31 @@ export class Myrics extends BaseRuleClass {
         if (chapter.isVIP === true && chapter.isPaid === false) {
           chapter.status = Status.aborted;
         }
+        if (signIn === false && isAdult === true) {
+          chapter.status = Status.aborted;
+        }
         chapters.push(chapter);
       }
     }
-    chapters.sort(
-      (a: Chapter, b: Chapter) => a.chapterNumber - b.chapterNumber
-    );
+    chapters.sort((a: Chapter, b: Chapter) => {
+      if (a.sectionNumber && b.sectionNumber) {
+        if (a.sectionNumber !== b.sectionNumber) {
+          return a.sectionNumber - b.sectionNumber;
+        } else {
+          if (a.sectionChapterNumber && b.sectionChapterNumber) {
+            return a.sectionChapterNumber - b.sectionChapterNumber;
+          }
+        }
+      } else {
+        return a.chapterNumber - b.chapterNumber;
+      }
+      return 0;
+    });
+    let i = 0;
+    for (const c of chapters) {
+      c.chapterNumber = i;
+      i++;
+    }
 
     const book = new Book(
       bookUrl,
@@ -227,8 +250,8 @@ interface ChapterItem {
   coin_type: string;
   comment_count: number;
   id: number;
-  is_adult: false;
-  is_purchased: false;
+  is_adult: boolean;
+  is_purchased: boolean;
   novel_id: number;
   order: number;
   part: number;
