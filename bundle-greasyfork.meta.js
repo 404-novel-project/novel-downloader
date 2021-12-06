@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.5.3.383
+// @version        4.5.3.384
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -150,6 +150,7 @@
 // @match          *://ncode.syosetu.com/*
 // @match          *://houhuayuan.xyz/*
 // @match          *://zhaoze.art/*/
+// @match          *://www.myrics.com/novels/*
 // @name:en        novel-downloader
 // @description:en An scalable universal novel downloader.
 // @namespace      https://blog.bgme.me
@@ -193,6 +194,7 @@
 // @exclude        *://www.25zw.com/monthvisit/
 // @exclude        *://www.25zw.com/goodnum/
 // @exclude        *://www.25zw.com/goodnew/
+// @exclude        *://www.myrics.com/novels/*/chapters/*
 // @grant          unsafeWindow
 // @grant          GM_info
 // @grant          GM_xmlhttpRequest
@@ -262,6 +264,7 @@
 // @connect        masiro.me
 // @connect        pximg.net
 // @connect        mitemin.net
+// @connect        myrics.com
 // @connect        *
 // @require        https://cdn.jsdelivr.net/npm/crypto-js@4.1.1/crypto-js.js#sha512-NQVmLzNy4Lr5QTrmXvq/WzTMUnRHmv7nyIT/M6LyGPBS+TIeRxZ+YQaqWxjpRpvRMQSuYPQURZz/+pLi81xXeA==
 // @require        https://cdn.jsdelivr.net/npm/fflate@0.7.1/umd/index.js#sha512-laBNdxeV48sttD1kBYahmdSXpSRitYmkte49ZUqm3KEOUK4cIJAjqt1MYwScWvBqqP4WDtEftDSPYE1ii/bxCg==

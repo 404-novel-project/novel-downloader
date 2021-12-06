@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.5.3.383
+// @version        4.5.3.384
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -150,6 +150,7 @@
 // @match          *://ncode.syosetu.com/*
 // @match          *://houhuayuan.xyz/*
 // @match          *://zhaoze.art/*/
+// @match          *://www.myrics.com/novels/*
 // @name:en        novel-downloader
 // @description:en An scalable universal novel downloader.
 // @namespace      https://blog.bgme.me
@@ -193,6 +194,7 @@
 // @exclude        *://www.25zw.com/monthvisit/
 // @exclude        *://www.25zw.com/goodnum/
 // @exclude        *://www.25zw.com/goodnew/
+// @exclude        *://www.myrics.com/novels/*/chapters/*
 // @grant          unsafeWindow
 // @grant          GM_info
 // @grant          GM_xmlhttpRequest
@@ -262,6 +264,7 @@
 // @connect        masiro.me
 // @connect        pximg.net
 // @connect        mitemin.net
+// @connect        myrics.com
 // @connect        *
 // @require        https://cdn.jsdelivr.net/npm/crypto-js@4.1.1/crypto-js.js#sha512-NQVmLzNy4Lr5QTrmXvq/WzTMUnRHmv7nyIT/M6LyGPBS+TIeRxZ+YQaqWxjpRpvRMQSuYPQURZz/+pLi81xXeA==
 // @require        https://cdn.jsdelivr.net/npm/fflate@0.7.1/umd/index.js#sha512-laBNdxeV48sttD1kBYahmdSXpSRitYmkte49ZUqm3KEOUK4cIJAjqt1MYwScWvBqqP4WDtEftDSPYE1ii/bxCg==
@@ -2734,7 +2737,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, "#test-page-div {\n  max-height: 300px;
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ".button-div {\n  position: fixed;\n  top: 15%;\n  right: 5%;\n  z-index: 5000;\n}\n.button-div button {\n  border-style: none;\n  text-align: center;\n  vertical-align: baseline;\n  background-color: rgba(128, 128, 128, 0.2);\n  padding: 3px;\n  border-radius: 12px;\n  min-width: auto;\n  min-height: auto;\n}\n.button-div img.start,\n.button-div img.jump {\n  height: 2em;\n}\n.button-div img.setting {\n  height: 1em;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, ".button-div {\n  position: fixed;\n  top: 15%;\n  right: 5%;\n  z-index: 10000;\n}\n.button-div button {\n  border-style: none;\n  text-align: center;\n  vertical-align: baseline;\n  background-color: rgba(128, 128, 128, 0.2);\n  padding: 3px;\n  border-radius: 12px;\n  min-width: auto;\n  min-height: auto;\n}\n.button-div img.start,\n.button-div img.jump {\n  height: 2em;\n}\n.button-div img.setting {\n  height: 1em;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -9504,6 +9507,140 @@ class Longmabook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */
 
 /***/ }),
 
+/***/ "./src/rules/special/original/myrics.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Myrics": () => (/* binding */ Myrics)
+/* harmony export */ });
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _main__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
+
+
+
+
+
+
+class Myrics extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
+    constructor() {
+        super();
+        this.imageMode = "TM";
+    }
+    async bookParse() {
+        const bookId = /^\/novels\/(\d+)/.exec(document.location.pathname)?.[1];
+        if (!bookId) {
+            throw new Error("获取书籍信息出错！");
+        }
+        const mWindow = unsafeWindow;
+        const initialState = mWindow.__INITIAL_STATE__;
+        const lang = navigator.languages.join(", ");
+        const country = initialState.global.country;
+        const signIn = initialState.global.signIn.status === "SUCCESS";
+        const accessToken = initialState.global.signIn.user?.accessToken ?? null;
+        const infoApi = `https://api.myrics.com/v1/novels/${bookId}`;
+        const chapterApiBase = `https://api.myrics.com/v1/novels/${bookId}/chapters`;
+        const headers = {
+            Authority: "api.myrics.com",
+            Accept: "application/json",
+            Origin: "https://www.myrics.com",
+            Referer: "https://www.myrics.com/",
+            "X-Platform": "FRONT",
+            "X-Lang": lang,
+            "X-Country": country,
+        };
+        if (accessToken) {
+            headers.Authorization = accessToken;
+        }
+        const init = {
+            headers,
+            method: "GET",
+            responseType: "json",
+        };
+        const respI = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .gfetch */ .GF)(infoApi, init);
+        const info = respI.response;
+        if (info.status_code !== 200) {
+            throw new Error("获取书籍信息出错！");
+        }
+        const bookUrl = `https://www.myrics.com/novels/${bookId}`;
+        const bookname = info.result.title;
+        const author = info.result.author.pen_name;
+        const introduction = info.result.long_summary;
+        const introductionHTML = document.createElement("div");
+        introductionHTML.innerText = introduction;
+        const additionalMetadate = {};
+        const coverUrl = info.result.cover_image;
+        if (coverUrl) {
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getImageAttachment */ .CE)(coverUrl, this.imageMode, "cover-")
+                .then((coverClass) => {
+                additionalMetadate.cover = coverClass;
+            })
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_3___default().error(error));
+        }
+        additionalMetadate.tags = info.result.genres.map((g) => g.name);
+        const chapters = [];
+        let pages = 0;
+        let page = 1;
+        const getChapterSearch = (p) => ({ page: p.toString() });
+        while (pages === 0 || page < pages) {
+            const chapterApiUrl = chapterApiBase +
+                `?${new URLSearchParams(getChapterSearch(page)).toString()}`;
+            const respC = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .gfetch */ .GF)(chapterApiUrl, init);
+            const chaptersPage = respC.response;
+            if (chaptersPage.status_code !== 200) {
+                throw new Error("获取书籍信息出错！");
+            }
+            pages = chaptersPage.result.pages;
+            page++;
+            for (const item of chaptersPage.result.items) {
+                const chapterId = item.id;
+                const chapterUrl = `https://www.myrics.com/novels/${bookId}/chapters/${chapterId}`;
+                const chapterNumber = item.order;
+                const chapterName = item.title;
+                const isVIP = item.coin_type === "STANDARD";
+                const isPaid = item.is_purchased;
+                const chapter = new _main__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .WC(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, null, null, null, this.chapterParse, this.charset, { bookId, chapterId, init });
+                if (chapter.isVIP === true && chapter.isPaid === false) {
+                    chapter.status = _main__WEBPACK_IMPORTED_MODULE_4__/* .Status.aborted */ .qb.aborted;
+                }
+                chapters.push(chapter);
+            }
+        }
+        chapters.sort((a, b) => a.chapterNumber - b.chapterNumber);
+        const book = new _main__WEBPACK_IMPORTED_MODULE_4__/* .Book */ .fy(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        return book;
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+        const { bookId, chapterId, init } = options;
+        const url = `https://api.myrics.com/v1/novels/${bookId}/chapters/${chapterId}`;
+        const resp = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .gfetch */ .GF)(url, init);
+        const chapter = resp.response;
+        if (chapter.status_code !== 200) {
+            throw new Error("获取章节失败！");
+        }
+        const contentRaw = document.createElement("div");
+        contentRaw.innerHTML = chapter.result.content;
+        const { dom: contentHTML, text: contentText, images: contentImages, } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_5__/* .cleanDOM */ .z)(contentRaw, "TM");
+        return {
+            chapterName,
+            contentRaw,
+            contentText,
+            contentHTML,
+            contentImages,
+            additionalMetadate: null,
+        };
+    }
+}
+
+
+/***/ }),
+
 /***/ "./src/rules/special/original/pixiv.ts":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -14330,6 +14467,11 @@ async function getRule() {
         case "houhuayuan.xyz": {
             const { houhuayuan } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/houhuayuan.ts"));
             ruleClass = houhuayuan();
+            break;
+        }
+        case "www.myrics.com": {
+            const { Myrics } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/myrics.ts"));
+            ruleClass = Myrics;
             break;
         }
         default: {
