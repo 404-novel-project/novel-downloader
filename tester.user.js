@@ -1,10 +1,13 @@
 // ==UserScript==
 // @name        小说下载器测试脚本
-// @version     4.5.3.381
+// @version     4.5.3.383
 // @author      bgme
 // @description 小说下载器测试脚本
 // @match       *://www.ciweimao.com/chapter-list/*
+// @match       *://www.ciweimao.com/book/*
 // @match       *://book.sfacg.com/Novel/*/MainIndex/
+// @match       *://book.sfacg.com/Novel/*/
+// @match       *://m.sfacg.com/b/*/
 // @match       *://book.qidian.com/info/*
 // @match       *://www.jjwxc.net/onebook.php?novelid=*
 // @match       *://www.gongzicp.com/novel-*.html

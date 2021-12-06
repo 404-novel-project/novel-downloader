@@ -1,11 +1,14 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.5.3.381
+// @version        4.5.3.383
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
 // @match          *://www.ciweimao.com/chapter-list/*
+// @match          *://www.ciweimao.com/book/*
 // @match          *://book.sfacg.com/Novel/*/MainIndex/
+// @match          *://book.sfacg.com/Novel/*/
+// @match          *://m.sfacg.com/b/*/
 // @match          *://book.qidian.com/info/*
 // @match          *://www.jjwxc.net/onebook.php?novelid=*
 // @match          *://www.gongzicp.com/novel-*.html
