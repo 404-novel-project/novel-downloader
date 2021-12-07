@@ -437,6 +437,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = lusetxt();
       break;
     }
+    case "www.a7xs.com": {
+      const { a7xs } = await import("../rules/onePage/a7xs");
+      ruleClass = a7xs();
+      break;
+    }
     default: {
       throw new Error("Not Found Rule!");
     }

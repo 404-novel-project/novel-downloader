@@ -125,6 +125,7 @@ ZIP压缩包，请在解压后，直接双击打开HTML文件（`index.html` 为
 |[蔷薇后花园](https://houhuayuan.xyz/)|✅|❎||
 |[黑沼泽俱乐部](https://houhuayuan.xyz/)|✅|❎||
 |[绿色小说网](https://www.lusetxt.com/)|✅|❎||
+|[笔趣阁](https://www.a7xs.com/)|✅|❎||
 
 </details>
 

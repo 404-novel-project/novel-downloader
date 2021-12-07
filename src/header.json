@@ -170,7 +170,8 @@
     "*://zhaoze.art/*/",
     "*://www.myrics.com/novels/*",
     "*://m.lusetxt.com/ebook/*.html",
-    "*://www.lusetxt.com/ebook/*.html"
+    "*://www.lusetxt.com/ebook/*.html",
+    "*://www.a7xs.com/*/*/"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",
@@ -278,6 +279,7 @@
     "pximg.net",
     "mitemin.net",
     "myrics.com",
+    "a7xs.com",
     "*"
   ],
   "require": [
