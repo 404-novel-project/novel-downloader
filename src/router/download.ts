@@ -432,6 +432,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = Myrics;
       break;
     }
+    case "www.lusetxt.com": {
+      const { lusetxt } = await import("../rules/biquge/type2");
+      ruleClass = lusetxt();
+      break;
+    }
     default: {
       throw new Error("Not Found Rule!");
     }

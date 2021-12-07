@@ -1,4 +1,5 @@
-import { rm } from "../../lib/misc";
+import { htmlTrim } from "../../lib/cleanDOM";
+import { rm, rm2 } from "../../lib/misc";
 import { mkBiqugeClass2 } from "./template";
 
 export const shuquge = () =>
@@ -51,6 +52,26 @@ export const xyqxs = () =>
           ""
         )
         .replace(/\(https:\/\/www.xyqxs.cc\/html\/\d+\/\d+\/\d+\.html\)/, "");
+      return content;
+    }
+  );
+
+export const lusetxt = () =>
+  mkBiqugeClass2(
+    (introDom) => {
+      rm2(introDom, [
+        "无弹窗免费全文阅读为转载作品",
+        "无弹窗推荐地址",
+        "简介：",
+      ]);
+      return introDom;
+    },
+    (content) => {
+      rm("script", true, content);
+      rm("div[style]", true, content);
+      rm("div[align]", true, content);
+      rm2(content, ["https://www.lusetxt.com/books", "请记住本书首发域名"]);
+      htmlTrim(content);
       return content;
     }
   );

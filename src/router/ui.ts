@@ -148,6 +148,12 @@ export function getUI(): () => UIObject {
         }
       };
     }
+    case "m.lusetxt.com": {
+      return () => ({
+        type: "jump",
+        jumpFunction: () => (document.location.host = "www.lusetxt.com"),
+      });
+    }
     default: {
       return () => defaultObject;
     }

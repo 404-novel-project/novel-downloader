@@ -166,7 +166,9 @@
     "*://ncode.syosetu.com/*",
     "*://houhuayuan.xyz/*",
     "*://zhaoze.art/*/",
-    "*://www.myrics.com/novels/*"
+    "*://www.myrics.com/novels/*",
+    "*://m.lusetxt.com/ebook/*.html",
+    "*://www.lusetxt.com/ebook/*.html"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",

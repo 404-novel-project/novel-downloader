@@ -124,6 +124,7 @@ ZIP压缩包，请在解压后，直接双击打开HTML文件（`index.html` 为
 |[全书斋](https://www.quanshuzhai.com/)|✅|❎||
 |[蔷薇后花园](https://houhuayuan.xyz/)|✅|❎||
 |[黑沼泽俱乐部](https://houhuayuan.xyz/)|✅|❎||
+|[绿色小说网](https://www.lusetxt.com/)|✅|❎||
 
 </details>
 
