@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.5.4.391
+// @version        4.5.4.392
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -153,6 +153,7 @@
 // @match          *://www.myrics.com/novels/*
 // @match          *://m.lusetxt.com/ebook/*.html
 // @match          *://www.lusetxt.com/ebook/*.html
+// @match          *://www.a7xs.com/*/*/
 // @name:en        novel-downloader
 // @name:ja        小説ダウンローダー
 // @description:en An scalable universal novel downloader.
@@ -269,6 +270,7 @@
 // @connect        pximg.net
 // @connect        mitemin.net
 // @connect        myrics.com
+// @connect        a7xs.com
 // @connect        *
 // @require        https://cdn.jsdelivr.net/npm/crypto-js@4.1.1/crypto-js.js#sha512-NQVmLzNy4Lr5QTrmXvq/WzTMUnRHmv7nyIT/M6LyGPBS+TIeRxZ+YQaqWxjpRpvRMQSuYPQURZz/+pLi81xXeA==
 // @require        https://cdn.jsdelivr.net/npm/fflate@0.7.1/umd/index.js#sha512-laBNdxeV48sttD1kBYahmdSXpSRitYmkte49ZUqm3KEOUK4cIJAjqt1MYwScWvBqqP4WDtEftDSPYE1ii/bxCg==
@@ -5593,6 +5595,64 @@ const c630shu = (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)(
         content.innerHTML = content.innerHTML.replace(/恋上你看书网 WWW.630SHU.NET ，最快更新.+最新章节！/, "");
         return content;
     },
+});
+
+
+/***/ }),
+
+/***/ "./src/rules/onePage/a7xs.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "a7xs": () => (/* binding */ a7xs)
+/* harmony export */ });
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/misc.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
+
+
+
+
+const a7xs = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+    bookUrl: document.location.href,
+    bookname: document.querySelector("#info > h1").innerText.trim(),
+    author: document.querySelector("span.item:nth-child(1)").innerText.trim(),
+    introDom: document.querySelector(".bookinfo_intro"),
+    introDomPatch: (dom) => {
+        (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__.rm)("strong", true, dom);
+        (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .vS)(dom, [
+            "您要是觉得《",
+            "请不要忘记向您QQ群和微博微信里的朋友推荐哦！",
+        ]);
+        return dom;
+    },
+    coverUrl: document.querySelector(".pic > img").src,
+    aList: document.querySelectorAll(".book_list > ul > li > a"),
+    getContentFromUrl: async (chapterUrl, chapterName, charset) => {
+        const { chapterName: _chapterName, contentRaw, contentText, contentHTML, contentImages, additionalMetadate, } = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .nextPageParse */ .I2)({
+            chapterName,
+            chapterUrl,
+            charset,
+            selector: "#htmlContent",
+            contentPatch: (content, doc) => {
+                const ads = ["免费追书小说网手机版阅读网址"];
+                (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .vS)(content, ads);
+                (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_3__/* .htmlTrim */ .i)(content);
+                return content;
+            },
+            getNextPage: (doc) => doc.querySelector("a.next.pager_next").href,
+            continueCondition: (_content, nextLink) => {
+                const pathname = nextLink.split("/").slice(-1)[0];
+                return pathname.includes("_");
+            },
+            enableCleanDOM: false,
+        });
+        return contentRaw;
+    },
+    contentPatch: (content) => content,
 });
 
 
@@ -14536,6 +14596,11 @@ async function getRule() {
         case "www.lusetxt.com": {
             const { lusetxt } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/type2.ts"));
             ruleClass = lusetxt();
+            break;
+        }
+        case "www.a7xs.com": {
+            const { a7xs } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/a7xs.ts"));
+            ruleClass = a7xs();
             break;
         }
         default: {
