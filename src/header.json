@@ -1,9 +1,11 @@
 {
   "name": "小说下载器",
   "name:en": "novel-downloader",
+  "name:ja": "小説ダウンローダー",
   "author": "bgme",
   "description": "一个可扩展的通用型小说下载器。",
   "description:en": "An scalable universal novel downloader.",
+  "description:ja": "スケーラブルなユニバーサル小説ダウンローダー。",
   "version": "[version]",
   "namespace": "https://blog.bgme.me",
   "supportURL": "https://github.com/yingziwu/novel-downloader",
