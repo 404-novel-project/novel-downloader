@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.5.3.389
+// @version        4.5.4.390
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -151,6 +151,8 @@
 // @match          *://houhuayuan.xyz/*
 // @match          *://zhaoze.art/*/
 // @match          *://www.myrics.com/novels/*
+// @match          *://m.lusetxt.com/ebook/*.html
+// @match          *://www.lusetxt.com/ebook/*.html
 // @name:en        novel-downloader
 // @description:en An scalable universal novel downloader.
 // @namespace      https://blog.bgme.me

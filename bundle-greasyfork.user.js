@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.5.3.389
+// @version        4.5.4.390
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -151,6 +151,8 @@
 // @match          *://houhuayuan.xyz/*
 // @match          *://zhaoze.art/*/
 // @match          *://www.myrics.com/novels/*
+// @match          *://m.lusetxt.com/ebook/*.html
+// @match          *://www.lusetxt.com/ebook/*.html
 // @name:en        novel-downloader
 // @description:en An scalable universal novel downloader.
 // @namespace      https://blog.bgme.me
@@ -5420,10 +5422,13 @@ const ranwen = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "shuquge": () => (/* binding */ shuquge),
-/* harmony export */   "xyqxs": () => (/* binding */ xyqxs)
+/* harmony export */   "xyqxs": () => (/* binding */ xyqxs),
+/* harmony export */   "lusetxt": () => (/* binding */ lusetxt)
 /* harmony export */ });
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/cleanDOM.ts");
 /* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/misc.ts");
 /* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/biquge/template.ts");
+
 
 
 const shuquge = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass2 */ .kQ)((introDom) => {
@@ -5451,6 +5456,21 @@ const xyqxs = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass2 
     content.innerHTML = content.innerHTML
         .replace("请记住本书首发域名：www.xyqxs.cc。笔趣阁手机版阅读网址：m.xyqxs.cc", "")
         .replace(/\(https:\/\/www.xyqxs.cc\/html\/\d+\/\d+\/\d+\.html\)/, "");
+    return content;
+});
+const lusetxt = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass2 */ .kQ)((introDom) => {
+    (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .vS)(introDom, [
+        "无弹窗免费全文阅读为转载作品",
+        "无弹窗推荐地址",
+        "简介：",
+    ]);
+    return introDom;
+}, (content) => {
+    (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__.rm)("script", true, content);
+    (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__.rm)("div[style]", true, content);
+    (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__.rm)("div[align]", true, content);
+    (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .vS)(content, ["https://www.lusetxt.com/books", "请记住本书首发域名"]);
+    (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__/* .htmlTrim */ .i)(content);
     return content;
 });
 
@@ -14511,6 +14531,11 @@ async function getRule() {
             ruleClass = Myrics;
             break;
         }
+        case "www.lusetxt.com": {
+            const { lusetxt } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/type2.ts"));
+            ruleClass = lusetxt();
+            break;
+        }
         default: {
             throw new Error("Not Found Rule!");
         }
@@ -14801,6 +14826,12 @@ function getUI() {
                     return defaultObject;
                 }
             };
+        }
+        case "m.lusetxt.com": {
+            return () => ({
+                type: "jump",
+                jumpFunction: () => (document.location.host = "www.lusetxt.com"),
+            });
         }
         default: {
             return () => defaultObject;
