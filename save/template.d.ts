@@ -1,4 +1,4 @@
-import * as nunjucks from "nunjucks";
-export declare const section: nunjucks.Template;
-export declare const chapter: nunjucks.Template;
-export declare const index: nunjucks.Template;
+import { Template } from "nunjucks";
+export declare const section: Template;
+export declare const chapter: Template;
+export declare const index: Template;

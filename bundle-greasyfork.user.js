@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.5.3.388
+// @version        4.5.3.389
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -2714,7 +2714,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, ":root {\n  --good-chapter-color: #41b8
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "#test-page-div {\n  max-height: 300px;\n  overflow-y: scroll;\n}\n#test-page-div table {\n  text-align: center;\n}\n#test-page-div td {\n  all: revert;\n  padding-top: 0.3em;\n}\n#test-page-div td > img {\n  max-height: 15em;\n}\n#test-page-div tr > td:nth-child(1) {\n  font-weight: bold;\n  min-width: 7em;\n}\n#test-page-div tr > td:nth-child(2) div,\n#test-page-div tr > td:nth-child(2) p {\n  text-align: left;\n}\n#test-page-div hr {\n  margin-top: 1.5em;\n  margin-bottom: 1.5em;\n}\n#test-page-div h2 {\n  text-align: center;\n  margin-bottom: 1.3em;\n}\n#test-page-div h4 {\n  text-align: center;\n}\n#test-page-div .chapter p {\n  line-height: 1.4;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "#test-page-div {\n  max-height: 300px;\n  overflow-y: scroll;\n}\n#test-page-div table {\n  text-align: center;\n}\n#test-page-div td {\n  all: revert;\n  padding-top: 0.3em;\n}\n#test-page-div td > img {\n  max-height: 15em;\n}\n#test-page-div tr > td:nth-child(1) {\n  font-weight: bold;\n  min-width: 7em;\n}\n#test-page-div tr > td:nth-child(2) div,\n#test-page-div tr > td:nth-child(2) p {\n  text-align: left;\n}\n#test-page-div hr {\n  margin-top: 1.5em;\n  margin-bottom: 1.5em;\n}\n#test-page-div h2 {\n  text-align: center;\n  margin-bottom: 1.3em;\n}\n#test-page-div h4 {\n  text-align: center;\n}\n#test-page-div .chapter p {\n  line-height: 1.4;\n}\n#test-page-div .preview-chapter-setting {\n  text-align: center;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -4805,13 +4805,14 @@ class BaseRuleClass {
         try {
             if (!self.preHook())
                 return;
-            if (typeof window._book !== "undefined" &&
-                window._book) {
+            if (window._book &&
+                window._url === document.location.href) {
                 self.book = window._book;
             }
             else {
                 self.book = await self.bookParse();
                 window._book = self.book;
+                window._url = document.location.href;
             }
             external_log_default().debug("[book]Book object:\n" + JSON.stringify(self.book));
             const saveBookObj = self.getSave(self.book);
@@ -4896,6 +4897,8 @@ class BaseRuleClass {
         window.onbeforeunload = null;
         window.downloading = false;
         progress.vm.reset();
+        window._book = undefined;
+        window._url = undefined;
         return true;
     }
     catchError(error) {
@@ -13568,7 +13571,14 @@ class SaveBook {
             external_log_default().debug("[save]保存仅标题章节文件");
             this.chapters
                 .filter((c) => c.status !== main/* Status.saved */.qb.saved)
-                .forEach((c) => this.addChapter(c, "Stub"));
+                .forEach((c) => {
+                if (c.status === main/* Status.finished */.qb.finished) {
+                    this.addChapter(c);
+                }
+                else {
+                    this.addChapter(c, "Stub");
+                }
+            });
         }
         external_log_default().info("[save]开始保存ZIP文件");
         const self = this;
@@ -13921,7 +13931,7 @@ var code = "<div> <div id=\"nd-progress\" v-if=\"ntProgressSeen\"> <div v-if=\"c
 
 const style = (0,createEl/* createStyle */.w)(progress/* default */.Z);
 const el = (0,createEl/* createEl */.u)(`<div id="progress-bar"></div>`);
-const vm = external_Vue_.createApp({
+const vm = (0,external_Vue_.createApp)({
     data() {
         return {
             totalChapterNumber: 0,
@@ -14827,25 +14837,27 @@ var ui_ChapterList = __webpack_require__("./src/ui/ChapterList.less");
 
 
 async function getSections() {
-    if (window._sections) {
+    if (window._sections &&
+        window._url === document.location.href) {
         return window._sections;
     }
     else {
         const rule = await getRule();
         const book = await rule.bookParse();
         window._book = book;
+        window._url = document.location.href;
         window._sections = (0,save/* getSectionsObj */.f0)(book.chapters);
         return window._sections;
     }
 }
 const style = (0,createEl/* createStyle */.w)(ui_ChapterList/* default */.Z);
-/* harmony default export */ const src_ui_ChapterList = (external_Vue_.defineComponent({
+/* harmony default export */ const src_ui_ChapterList = ((0,external_Vue_.defineComponent)({
     name: "ChapterList",
     setup(props, context) {
-        const sectionsObj = external_Vue_.reactive([]);
-        const loading = external_Vue_.ref(true);
-        const failed = external_Vue_.ref(false);
-        external_Vue_.onMounted(async () => {
+        const sectionsObj = (0,external_Vue_.reactive)([]);
+        const loading = (0,external_Vue_.ref)(true);
+        const failed = (0,external_Vue_.ref)(false);
+        (0,external_Vue_.onMounted)(async () => {
             if (sectionsObj.length === 0) {
                 try {
                     const _sectionsObj = await getSections();
@@ -14858,7 +14870,7 @@ const style = (0,createEl/* createStyle */.w)(ui_ChapterList/* default */.Z);
                 }
             }
         });
-        const filterSetting = external_Vue_.inject("filterSetting");
+        const filterSetting = (0,external_Vue_.inject)("filterSetting");
         const filter = (chapter) => {
             if (chapter.status === main/* Status.aborted */.qb.aborted) {
                 return false;
@@ -15017,30 +15029,30 @@ function getFilterFunction(arg, functionBody) {
         return undefined;
     }
 }
-/* harmony default export */ const src_ui_FilterTab = (external_Vue_.defineComponent({
+/* harmony default export */ const src_ui_FilterTab = ((0,external_Vue_.defineComponent)({
     components: { "chapter-list": src_ui_ChapterList },
     emits: ["filterupdate"],
     setup(props, { emit }) {
-        const arg = external_Vue_.ref("");
-        const hiddenBad = external_Vue_.ref(true);
-        const filterType = external_Vue_.ref("null");
+        const arg = (0,external_Vue_.ref)("");
+        const hiddenBad = (0,external_Vue_.ref)(true);
+        const filterType = (0,external_Vue_.ref)("null");
         const filterOptionList = Object.entries(filterOptionDict);
-        const functionBody = external_Vue_.computed(() => getFunctionBody(filterOptionDict[filterType.value].raw));
-        const filterDescription = external_Vue_.computed(() => filterOptionDict[filterType.value].description);
-        const filterSetting = external_Vue_.computed(() => ({
+        const functionBody = (0,external_Vue_.computed)(() => getFunctionBody(filterOptionDict[filterType.value].raw));
+        const filterDescription = (0,external_Vue_.computed)(() => filterOptionDict[filterType.value].description);
+        const filterSetting = (0,external_Vue_.computed)(() => ({
             arg: arg.value,
             hiddenBad: hiddenBad.value,
             filterType: filterType.value,
             functionBody: functionBody.value,
         }));
-        external_Vue_.provide("filterSetting", filterSetting);
-        external_Vue_.watch(filterSetting, () => {
+        (0,external_Vue_.provide)("filterSetting", filterSetting);
+        (0,external_Vue_.watch)(filterSetting, () => {
             emit("filterupdate", filterSetting.value);
         }, {
             deep: true,
         });
-        const getFilterSetting = external_Vue_.inject("getFilterSetting");
-        external_Vue_.onMounted(() => {
+        const getFilterSetting = (0,external_Vue_.inject)("getFilterSetting");
+        (0,external_Vue_.onMounted)(() => {
             const faterFilterSetting = getFilterSetting();
             if (faterFilterSetting) {
                 arg.value = faterFilterSetting.arg;
@@ -15065,15 +15077,12 @@ var log = __webpack_require__("./src/log.ts");
 ;// CONCATENATED MODULE: ./src/ui/LogUI.ts
 
 
-/* harmony default export */ const LogUI = (external_Vue_.defineComponent({
+/* harmony default export */ const LogUI = ((0,external_Vue_.defineComponent)({
     name: "LogUI",
     setup(props, context) {
-        const logText = external_Vue_.ref("");
-        function onMount(fn) {
-            external_Vue_.onUnmounted(() => fn());
-        }
+        const logText = (0,external_Vue_.ref)("");
         let requestID;
-        external_Vue_.onMounted(() => {
+        (0,external_Vue_.onMounted)(() => {
             logText.value = (0,log/* getLogText */.mZ)();
             function step() {
                 logText.value = (0,log/* getLogText */.mZ)();
@@ -15081,7 +15090,7 @@ var log = __webpack_require__("./src/log.ts");
             }
             requestID = globalThis.requestAnimationFrame(step);
         });
-        external_Vue_.onUnmounted(() => {
+        (0,external_Vue_.onUnmounted)(() => {
             if (requestID) {
                 globalThis.cancelAnimationFrame(requestID);
             }
@@ -15100,7 +15109,7 @@ var setting_code = "<div> <dialog-ui dialog-title=\"设置\" v-bind:status=\"ope
 var ui_setting = __webpack_require__("./src/ui/setting.less");
 ;// CONCATENATED MODULE: ./src/ui/TestUI.html
 // Module
-var TestUI_code = "<div> <div id=\"test-page-div\"> <h2>元数据</h2> <table> <tbody> <tr v-for=\"(value, key) in metaData\"> <td>{{ key }}</td> <td v-html=\"getData(key, value)\"></td> </tr> </tbody> </table> <hr class=\"hr-edge-weak\"/> <h2>章节测试</h2> <div v-if=\"this.isSeenChapter(chapter)\"> <h4> <a v-bind:href=\"chapter.chapterUrl\" target=\"_blank\" rel=\"noopener noreferrer\">{{ chapter.chapterName }}</a> </h4> <div class=\"chapter\" v-html=\"getChapterHtml(chapter)\"></div> </div> <div v-else> <p v-if=\"this.isChapterFailed(chapter)\">章节加载失败！</p> <p v-else>正在加载章节中……</p> </div> </div> </div> ";
+var TestUI_code = "<div> <div id=\"test-page-div\"> <h2>元数据</h2> <table> <tbody> <tr v-for=\"(value, key) in metaData\"> <td>{{ key }}</td> <td v-html=\"getData(key, value)\"></td> </tr> </tbody> </table> <hr class=\"hr-edge-weak\"/> <h2>章节测试</h2> <div class=\"preview-chapter-setting\"> <label for=\"chapterNumber\">预览章节序号：</label> <input type=\"text\" id=\"chapterNumber\" v-model=\"chapterNumber\"/> </div> <div v-if=\"this.isSeenChapter(chapter)\"> <h4> <a v-bind:href=\"chapter.chapterUrl\" target=\"_blank\" rel=\"noopener noreferrer\">{{ chapter.chapterName }}</a> </h4> <div class=\"chapter\" v-html=\"getChapterHtml(chapter)\"></div> </div> <div v-else> <p v-if=\"this.isChapterFailed(chapter)\">章节加载失败！</p> <p v-else>正在加载章节中……</p> </div> </div> </div> ";
 // Exports
 /* harmony default export */ const TestUI = (TestUI_code);
 // EXTERNAL MODULE: ./src/ui/TestUI.less
@@ -15112,29 +15121,19 @@ var ui_TestUI = __webpack_require__("./src/ui/TestUI.less");
 
 
 
-
-/* harmony default export */ const src_ui_TestUI = (external_Vue_.defineComponent({
+/* harmony default export */ const src_ui_TestUI = ((0,external_Vue_.defineComponent)({
     name: "TestUI",
     setup(props, context) {
-        const book = external_Vue_.reactive({});
-        const chapter = external_Vue_.reactive({});
-        async function initBook(retry) {
-            const _book = window._book;
-            if (_book) {
-                Object.assign(book, _book);
-                return _book;
-            }
-            else {
-                if (retry > 0) {
-                    await (0,misc/* sleep */._v)(2 ** (src_setting/* retryLimit */.o5 - retry) * 500);
-                    return initBook(retry);
-                }
-                else {
-                    return;
+        const book = (0,external_Vue_.reactive)({});
+        async function waitBook() {
+            while (true) {
+                await (0,misc/* sleep */._v)(500);
+                if (window._book) {
+                    return window._book;
                 }
             }
         }
-        const metaData = external_Vue_.reactive({});
+        const metaData = (0,external_Vue_.reactive)({});
         function getData(key, value) {
             if (key === "封面") {
                 return `<img src="${value}">`;
@@ -15147,18 +15146,49 @@ var ui_TestUI = __webpack_require__("./src/ui/TestUI.less");
             }
             return value;
         }
-        async function initChapter(_book) {
-            const chapters = _book.chapters;
-            const n = Math.min(17, chapters.length) - 1;
-            const _chapter = chapters[n];
-            await _chapter.init();
-            return _chapter;
+        const chapter = (0,external_Vue_.reactive)({});
+        const chapterNumber = (0,external_Vue_.ref)(-99);
+        function getInitChapterNumber() {
+            if (book) {
+                const chapters = book.chapters;
+                const cns = chapters
+                    .filter((c) => c.status !== main/* Status.aborted */.qb.aborted)
+                    .map((c) => c.chapterNumber);
+                cns.sort();
+                return cns.slice(-3)[0];
+            }
         }
+        async function initChapter(n) {
+            const chapters = book.chapters;
+            const _chapter = chapters.filter((c) => c.chapterNumber === n)[0];
+            if (_chapter) {
+                if (_chapter.status === main/* Status.pending */.qb.pending) {
+                    await _chapter.init();
+                    Object.assign(chapter, _chapter);
+                }
+                else {
+                    Object.assign(chapter, _chapter);
+                }
+            }
+        }
+        (0,external_Vue_.watch)(chapterNumber, (value, oldValue) => {
+            if (typeof value === "string") {
+                value = parseInt(value, 10);
+            }
+            if (typeof oldValue === "string") {
+                oldValue = parseInt(oldValue, 10);
+            }
+            if (oldValue !== value) {
+                if (value !== -99) {
+                    initChapter(value);
+                }
+            }
+        });
         function isSeenChapter(_chapter) {
             return _chapter.status === main/* Status.finished */.qb.finished;
         }
         function isChapterFailed(_chapter) {
-            return _chapter.status === main/* Status.failed */.qb.failed;
+            return (_chapter.status === main/* Status.failed */.qb.failed || _chapter.status === main/* Status.aborted */.qb.aborted);
         }
         function getChapterHtml(_chapter) {
             const imgs = _chapter.contentHTML?.querySelectorAll("img");
@@ -15169,19 +15199,20 @@ var ui_TestUI = __webpack_require__("./src/ui/TestUI.less");
             }
             return _chapter.contentHTML?.outerHTML;
         }
-        external_Vue_.onMounted(async () => {
-            await initBook(src_setting/* retryLimit */.o5);
-            if (book) {
-                const _chapter = await initChapter(book);
-                Object.assign(chapter, _chapter);
-                const _metaData = {
-                    封面: book.additionalMetadate?.cover?.url ?? "",
-                    题名: book.bookname ?? "None",
-                    作者: book.author ?? "None",
-                    网址: book.bookUrl,
-                    简介: book.introductionHTML ?? "",
-                };
-                Object.assign(metaData, _metaData);
+        (0,external_Vue_.onMounted)(async () => {
+            const _book = await waitBook();
+            Object.assign(book, _book);
+            const _metaData = {
+                封面: book.additionalMetadate?.cover?.url ?? "",
+                题名: book.bookname ?? "None",
+                作者: book.author ?? "None",
+                网址: book.bookUrl,
+                简介: book.introductionHTML ?? "",
+            };
+            Object.assign(metaData, _metaData);
+            const cn = getInitChapterNumber();
+            if (cn) {
+                chapterNumber.value = cn;
             }
         });
         return {
@@ -15191,6 +15222,7 @@ var ui_TestUI = __webpack_require__("./src/ui/TestUI.less");
             isSeenChapter,
             isChapterFailed,
             getChapterHtml,
+            chapterNumber,
         };
     },
     template: TestUI,
@@ -15212,11 +15244,11 @@ const TestUI_style = (0,createEl/* createStyle */.w)(ui_TestUI/* default */.Z);
 
 const setting_style = (0,createEl/* createStyle */.w)(ui_setting/* default */.Z);
 const el = (0,createEl/* createEl */.u)(`<div id="setting"></div>`);
-const vm = external_Vue_.createApp({
+const vm = (0,external_Vue_.createApp)({
     name: "nd-setting",
     components: { "filter-tab": src_ui_FilterTab, "log-ui": LogUI, "test-ui": src_ui_TestUI },
     setup(props, context) {
-        const setting = external_Vue_.reactive({});
+        const setting = (0,external_Vue_.reactive)({});
         let settingBackup = {};
         const saveOptions = [
             { key: "null", value: "不使用自定义保存参数", options: {} },
@@ -15297,7 +15329,7 @@ const vm = external_Vue_.createApp({
                 return;
             }
         };
-        external_Vue_.provide("getFilterSetting", getFilterSetting);
+        (0,external_Vue_.provide)("getFilterSetting", getFilterSetting);
         const setConfig = (config) => {
             setEnableDebug();
             setCustomSaveOption();
@@ -15335,7 +15367,7 @@ const vm = external_Vue_.createApp({
                 }
             }
         };
-        const openStatus = external_Vue_.ref("false");
+        const openStatus = (0,external_Vue_.ref)("false");
         const openSetting = () => {
             settingBackup = (0,misc/* deepcopy */.X8)(setting);
             openStatus.value = "true";
@@ -15381,7 +15413,7 @@ const vm = external_Vue_.createApp({
 
 const button_style = (0,createEl/* createStyle */.w)(src_ui_button/* default */.Z, "button-div-style");
 const button_el = (0,createEl/* createEl */.u)('<div id="nd-button"></div>');
-const button_vm = external_Vue_.createApp({
+const button_vm = (0,external_Vue_.createApp)({
     data() {
         return {
             imgStart: src_setting/* iconStart0 */.cl,
@@ -15433,7 +15465,7 @@ var dialog_code = "<div class=\"overlay\" v-bind:class=\"{ open: myPrivateStatus
 
 
 
-/* harmony default export */ const src_ui_dialog = (external_Vue_.defineCustomElement({
+/* harmony default export */ const src_ui_dialog = ((0,external_Vue_.defineCustomElement)({
     name: "Dialog",
     props: {
         dialogTitle: String,

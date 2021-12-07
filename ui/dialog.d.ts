@@ -1,5 +1,4 @@
-import * as Vue from "vue";
-declare const _default: Vue.VueElementConstructor<{
+declare const _default: import("vue").VueElementConstructor<{
     dialogTitle?: unknown;
     status?: unknown;
 } & {} & {

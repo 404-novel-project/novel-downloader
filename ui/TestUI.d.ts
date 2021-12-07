@@ -1,7 +1,6 @@
-/// <reference types="node" />
-import * as Vue from "vue";
-import { Chapter, Status } from "../main";
-declare const _default: Vue.DefineComponent<{}, {
+import { Ref } from "vue";
+import { Chapter } from "../main";
+declare const _default: import("vue").DefineComponent<{}, {
     metaData: {
         封面: string;
         题名: string;
@@ -10,67 +9,11 @@ declare const _default: Vue.DefineComponent<{}, {
         简介: HTMLElement;
     };
     getData: (key: string, value: string | HTMLElement) => string | HTMLElement;
-    chapter: {
-        bookUrl: string;
-        bookname: string;
-        chapterUrl: string;
-        chapterNumber: number;
-        chapterName: string | null;
-        isVIP: boolean;
-        isPaid: boolean | null;
-        sectionName: string | null;
-        sectionNumber: number | null;
-        sectionChapterNumber: number | null;
-        chapterParse: (chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean | null, charset: string, options: object) => Promise<import("../rules").ChapterParseObject>;
-        charset: string;
-        options: object;
-        status: Status;
-        retryTime: number;
-        contentRaw: HTMLElement | null;
-        contentText: string | null;
-        contentHTML: HTMLElement | null;
-        contentImages: {
-            url: string;
-            name: string;
-            mode: "naive" | "TM";
-            headers?: {
-                [x: string]: string;
-            } | undefined;
-            status: Status;
-            retryTime: number;
-            imageBlob: void | {
-                readonly size: number;
-                readonly type: string;
-                arrayBuffer: {
-                    (): Promise<ArrayBuffer>;
-                    (): Promise<ArrayBuffer>;
-                };
-                slice: {
-                    (start?: number | undefined, end?: number | undefined, contentType?: string | undefined): Blob;
-                    (start?: number | undefined, end?: number | undefined, contentType?: string | undefined): Blob;
-                };
-                stream: {
-                    (): ReadableStream<any>;
-                    (): NodeJS.ReadableStream;
-                };
-                text: {
-                    (): Promise<string>;
-                    (): Promise<string>;
-                };
-            } | null;
-            comments: string;
-            init: () => Promise<Blob | null>;
-        }[] | null;
-        additionalMetadate: {
-            lastModified?: number | undefined;
-            tags?: string[] | undefined;
-        } | null;
-        chapterHtmlFileName: string | number;
-        init: () => Promise<Chapter>;
-    };
+    chapter: {};
     isSeenChapter: (_chapter: Chapter) => boolean;
     isChapterFailed: (_chapter: Chapter) => boolean;
     getChapterHtml: (_chapter: Chapter) => string | undefined;
-}, {}, {}, {}, Vue.ComponentOptionsMixin, Vue.ComponentOptionsMixin, Vue.EmitsOptions, string, Vue.VNodeProps & Vue.AllowedComponentProps & Vue.ComponentCustomProps, Readonly<{} & {} & {}>, {}>;
+    chapterNumber: Ref<string | number>;
+}, {}, {}, {}, import("vue").ComponentOptionsMixin, import("vue").ComponentOptionsMixin, import("vue").EmitsOptions, string, import("vue").VNodeProps & import("vue").AllowedComponentProps & import("vue").ComponentCustomProps, Readonly<{} & {} & {}>, {}>;
 export default _default;
 export declare const style: HTMLElement;

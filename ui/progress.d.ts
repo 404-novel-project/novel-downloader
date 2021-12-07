@@ -1,10 +1,10 @@
-import * as Vue from "vue";
+import { ComponentPublicInstance } from "vue";
 export declare const style: HTMLElement;
 export declare const el: HTMLElement;
-export interface ProgressVM extends Vue.ComponentPublicInstance {
+export interface ProgressVM extends ComponentPublicInstance {
     totalChapterNumber: number;
     finishedChapterNumber: number;
     zipPercent: number;
     reset: () => void;
 }
-export declare const vm: Vue.ComponentPublicInstance<{}, {}, {}, {}, {}, {}, {}, {}, false, Vue.ComponentOptionsBase<any, any, any, any, any, any, any, any, any, {}>>;
+export declare const vm: ComponentPublicInstance<{}, {}, {}, {}, {}, {}, {}, {}, false, import("vue").ComponentOptionsBase<any, any, any, any, any, any, any, any, any, {}>>;

@@ -1,4 +1,3 @@
-import * as Vue from "vue";
 import { Chapter } from "../main";
 interface FilterOption {
     raw: (arg: string) => ((chapter: Chapter) => boolean) | undefined;
@@ -17,13 +16,13 @@ export interface FilterSetting {
     filterType: string;
     functionBody: string;
 }
-declare const _default: Vue.DefineComponent<{}, {
-    arg: Vue.Ref<string>;
-    hiddenBad: Vue.Ref<boolean>;
-    filterType: Vue.Ref<string>;
+declare const _default: import("vue").DefineComponent<{}, {
+    arg: import("vue").Ref<string>;
+    hiddenBad: import("vue").Ref<boolean>;
+    filterType: import("vue").Ref<string>;
     filterOptionList: [string, FilterOption][];
-    filterDescription: Vue.ComputedRef<string>;
-}, {}, {}, {}, Vue.ComponentOptionsMixin, Vue.ComponentOptionsMixin, "filterupdate"[], "filterupdate", Vue.VNodeProps & Vue.AllowedComponentProps & Vue.ComponentCustomProps, Readonly<{} & {} & {}> & {
+    filterDescription: import("vue").ComputedRef<string>;
+}, {}, {}, {}, import("vue").ComponentOptionsMixin, import("vue").ComponentOptionsMixin, "filterupdate"[], "filterupdate", import("vue").VNodeProps & import("vue").AllowedComponentProps & import("vue").ComponentCustomProps, Readonly<{} & {} & {}> & {
     onFilterupdate?: ((...args: any[]) => any) | undefined;
 }, {}>;
 export default _default;

@@ -1,5 +1,4 @@
-import * as Vue from "vue";
-declare const _default: Vue.DefineComponent<{}, {
-    logText: Vue.Ref<string>;
-}, {}, {}, {}, Vue.ComponentOptionsMixin, Vue.ComponentOptionsMixin, Vue.EmitsOptions, string, Vue.VNodeProps & Vue.AllowedComponentProps & Vue.ComponentCustomProps, Readonly<{} & {} & {}>, {}>;
+declare const _default: import("vue").DefineComponent<{}, {
+    logText: import("vue").Ref<string>;
+}, {}, {}, {}, import("vue").ComponentOptionsMixin, import("vue").ComponentOptionsMixin, import("vue").EmitsOptions, string, import("vue").VNodeProps & import("vue").AllowedComponentProps & import("vue").ComponentCustomProps, Readonly<{} & {} & {}>, {}>;
 export default _default;
