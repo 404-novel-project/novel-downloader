@@ -1,16 +1,13 @@
-import * as Vue from "vue";
+import { defineComponent, onMounted, onUnmounted, ref } from "vue";
 import { getLogText } from "../log";
 
-export default Vue.defineComponent({
+export default defineComponent({
   name: "LogUI",
   setup(props, context) {
-    const logText = Vue.ref("");
+    const logText = ref("");
 
-    function onMount(fn: () => void) {
-      Vue.onUnmounted(() => fn());
-    }
     let requestID: number;
-    Vue.onMounted(() => {
+    onMounted(() => {
       logText.value = getLogText();
       function step() {
         logText.value = getLogText();
@@ -18,7 +15,7 @@ export default Vue.defineComponent({
       }
       requestID = globalThis.requestAnimationFrame(step);
     });
-    Vue.onUnmounted(() => {
+    onUnmounted(() => {
       if (requestID) {
         globalThis.cancelAnimationFrame(requestID);
       }

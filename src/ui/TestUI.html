@@ -11,6 +11,10 @@
     </table>
     <hr class="hr-edge-weak" />
     <h2>章节测试</h2>
+    <div class="preview-chapter-setting">
+      <label for="chapterNumber">预览章节序号：</label>
+      <input type="text" id="chapterNumber" v-model="chapterNumber" />
+    </div>
     <div v-if="this.isSeenChapter(chapter)">
       <h4>
         <a

@@ -1,17 +1,17 @@
-import * as Vue from "vue";
+import { ComponentPublicInstance, createApp } from "vue";
 import { createEl, createStyle } from "../lib/createEl";
 import progressCss from "./progress.css";
 import progressHtml from "./progress.html";
 
 export const style = createStyle(progressCss);
 export const el = createEl(`<div id="progress-bar"></div>`);
-export interface ProgressVM extends Vue.ComponentPublicInstance {
+export interface ProgressVM extends ComponentPublicInstance {
   totalChapterNumber: number;
   finishedChapterNumber: number;
   zipPercent: number;
   reset: () => void;
 }
-export const vm = Vue.createApp({
+export const vm = createApp({
   data() {
     return {
       totalChapterNumber: 0,

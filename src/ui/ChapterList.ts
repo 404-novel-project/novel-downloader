@@ -1,4 +1,11 @@
-import * as Vue from "vue";
+import {
+  ComputedRef,
+  defineComponent,
+  inject,
+  onMounted,
+  reactive,
+  ref,
+} from "vue";
 import { GmWindow } from "../global";
 import { createStyle } from "../lib/createEl";
 import { log } from "../log";
@@ -13,25 +20,29 @@ import {
 } from "./FilterTab";
 
 async function getSections() {
-  if ((window as GmWindow)._sections) {
+  if (
+    (window as GmWindow)._sections &&
+    (window as GmWindow)._url === document.location.href
+  ) {
     return (window as GmWindow)._sections;
   } else {
     const rule = await getRule();
     const book = await rule.bookParse();
     (window as GmWindow)._book = book;
+    (window as GmWindow)._url = document.location.href;
     (window as GmWindow)._sections = getSectionsObj(book.chapters);
     return (window as GmWindow)._sections;
   }
 }
 
 export const style = createStyle(ChapterListCss);
-export default Vue.defineComponent({
+export default defineComponent({
   name: "ChapterList",
   setup(props, context) {
-    const sectionsObj = Vue.reactive([]);
-    const loading = Vue.ref(true);
-    const failed = Vue.ref(false);
-    Vue.onMounted(async () => {
+    const sectionsObj = reactive([]);
+    const loading = ref(true);
+    const failed = ref(false);
+    onMounted(async () => {
       if (sectionsObj.length === 0) {
         try {
           const _sectionsObj = await getSections();
@@ -44,9 +55,9 @@ export default Vue.defineComponent({
       }
     });
 
-    const filterSetting = Vue.inject(
+    const filterSetting = inject(
       "filterSetting"
-    ) as Vue.ComputedRef<filterSettingGlobal>;
+    ) as ComputedRef<filterSettingGlobal>;
     const filter = (chapter: Chapter) => {
       if (chapter.status === Status.aborted) {
         return false;

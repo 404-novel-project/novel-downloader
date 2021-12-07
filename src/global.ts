@@ -11,6 +11,7 @@ export interface WindowObject extends Window {
   stopFlag: boolean;
   _sections?: SectionObj[];
   _book?: Book;
+  _url?: string;
 }
 export type GmWindow = WindowObject & typeof globalThis;
 

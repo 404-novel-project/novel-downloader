@@ -1,4 +1,12 @@
-import * as Vue from "vue";
+import {
+  computed,
+  defineComponent,
+  inject,
+  onMounted,
+  provide,
+  ref,
+  watch,
+} from "vue";
 import { createStyle } from "../lib/createEl";
 import { Chapter } from "../main";
 import ChapterList from "./ChapterList";
@@ -124,28 +132,28 @@ export interface FilterSetting {
   filterType: string;
   functionBody: string;
 }
-export default Vue.defineComponent({
+export default defineComponent({
   components: { "chapter-list": ChapterList },
   emits: ["filterupdate"],
   setup(props, { emit }) {
-    const arg = Vue.ref("");
-    const hiddenBad = Vue.ref(true);
-    const filterType = Vue.ref("null");
+    const arg = ref("");
+    const hiddenBad = ref(true);
+    const filterType = ref("null");
     const filterOptionList = Object.entries(filterOptionDict);
-    const functionBody = Vue.computed(() =>
+    const functionBody = computed(() =>
       getFunctionBody(filterOptionDict[filterType.value].raw)
     );
-    const filterDescription = Vue.computed(
+    const filterDescription = computed(
       () => filterOptionDict[filterType.value].description
     );
-    const filterSetting = Vue.computed(() => ({
+    const filterSetting = computed(() => ({
       arg: arg.value,
       hiddenBad: hiddenBad.value,
       filterType: filterType.value,
       functionBody: functionBody.value,
     }));
-    Vue.provide("filterSetting", filterSetting);
-    Vue.watch(
+    provide("filterSetting", filterSetting);
+    watch(
       filterSetting,
       () => {
         emit("filterupdate", filterSetting.value);
@@ -155,10 +163,10 @@ export default Vue.defineComponent({
       }
     );
 
-    const getFilterSetting = Vue.inject("getFilterSetting") as () =>
+    const getFilterSetting = inject("getFilterSetting") as () =>
       | FilterSetting
       | undefined;
-    Vue.onMounted(() => {
+    onMounted(() => {
       const faterFilterSetting = getFilterSetting();
       if (faterFilterSetting) {
         arg.value = faterFilterSetting.arg;

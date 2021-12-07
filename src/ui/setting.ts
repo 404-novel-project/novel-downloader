@@ -1,4 +1,4 @@
-import * as Vue from "vue";
+import { createApp, provide, reactive, ref } from "vue";
 import { debug } from "../debug";
 import { UnsafeWindow } from "../global";
 import { createEl, createStyle } from "../lib/createEl";
@@ -18,7 +18,7 @@ import TestUI from "./TestUI";
 
 export const style = createStyle(settingCss);
 export const el = createEl(`<div id="setting"></div>`);
-export const vm = Vue.createApp({
+export const vm = createApp({
   name: "nd-setting",
   components: { "filter-tab": FilterTab, "log-ui": LogUI, "test-ui": TestUI },
   setup(props, context) {
@@ -29,7 +29,7 @@ export const vm = Vue.createApp({
       filterSetting?: filterSettingGlobal;
       currentTab: string;
     }
-    const setting = Vue.reactive({} as Setting);
+    const setting = reactive({} as Setting);
     let settingBackup = {};
     interface SaveOption {
       key: string;
@@ -113,7 +113,7 @@ export const vm = Vue.createApp({
         return;
       }
     };
-    Vue.provide("getFilterSetting", getFilterSetting);
+    provide("getFilterSetting", getFilterSetting);
 
     const setConfig = (config: Setting) => {
       setEnableDebug();
@@ -156,7 +156,7 @@ export const vm = Vue.createApp({
       }
     };
 
-    const openStatus = Vue.ref("false");
+    const openStatus = ref("false");
     const openSetting = () => {
       settingBackup = deepcopy(setting) as Setting;
       openStatus.value = "true";

@@ -118,7 +118,13 @@ export class SaveBook {
       log.debug("[save]保存仅标题章节文件");
       this.chapters
         .filter((c) => c.status !== Status.saved)
-        .forEach((c) => this.addChapter(c, "Stub"));
+        .forEach((c) => {
+          if (c.status === Status.finished) {
+            this.addChapter(c);
+          } else {
+            this.addChapter(c, "Stub");
+          }
+        });
     }
 
     log.info("[save]开始保存ZIP文件");

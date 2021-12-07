@@ -75,13 +75,14 @@ export abstract class BaseRuleClass {
       if (!self.preHook()) return;
 
       if (
-        typeof (window as GmWindow)._book !== "undefined" &&
-        (window as GmWindow)._book
+        (window as GmWindow)._book &&
+        (window as GmWindow)._url === document.location.href
       ) {
         self.book = (window as GmWindow)._book;
       } else {
         self.book = await self.bookParse();
         (window as GmWindow)._book = self.book;
+        (window as GmWindow)._url = document.location.href;
       }
 
       log.debug("[book]Book object:\n" + JSON.stringify(self.book));
@@ -191,6 +192,9 @@ export abstract class BaseRuleClass {
     (window as GmWindow).downloading = false;
 
     (progress as ProgressVM).reset();
+
+    (window as GmWindow)._book = undefined;
+    (window as GmWindow)._url = undefined;
 
     return true;
   }

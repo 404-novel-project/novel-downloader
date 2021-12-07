@@ -1,4 +1,4 @@
-import * as Vue from "vue";
+import { createApp } from "vue";
 import { GmWindow } from "../global";
 import { createEl, createStyle } from "../lib/createEl";
 import { _GM_info } from "../lib/GM";
@@ -12,7 +12,7 @@ import { vm as settingVM } from "./setting";
 
 export const style = createStyle(buttonCss, "button-div-style");
 export const el = createEl('<div id="nd-button"></div>');
-export const vm = Vue.createApp({
+export const vm = createApp({
   data() {
     return {
       imgStart: iconStart0,
