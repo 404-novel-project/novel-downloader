@@ -171,7 +171,8 @@
     "*://www.myrics.com/novels/*",
     "*://m.lusetxt.com/ebook/*.html",
     "*://www.lusetxt.com/ebook/*.html",
-    "*://www.a7xs.com/*/*/"
+    "*://www.a7xs.com/*/*/",
+    "*://www.shencou.com/books/read_*.html"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",

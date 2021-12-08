@@ -7,7 +7,7 @@ import { log } from "../../log";
 import { Book, BookAdditionalMetadate, Chapter } from "../../main";
 import { BaseRuleClass, ChapterParseObject } from "../../rules";
 
-export async function bookParseTemp({
+async function bookParseTemp({
   bookUrl,
   bookname,
   author,
@@ -128,11 +128,10 @@ export async function bookParseTemp({
   );
   return book;
 }
-
-export interface ChapterParseOption {
+interface ChapterParseOption {
   bookname: string;
 }
-export async function chapterParseTemp({
+async function chapterParseTemp({
   dom,
   chapterUrl,
   chapterName,

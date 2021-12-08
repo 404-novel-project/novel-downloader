@@ -442,6 +442,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = a7xs();
       break;
     }
+    case "www.shencou.com": {
+      const { shencou } = await import("../rules/twoPage/shencou");
+      ruleClass = shencou();
+      break;
+    }
     default: {
       throw new Error("Not Found Rule!");
     }

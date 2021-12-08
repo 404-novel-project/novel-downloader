@@ -58,6 +58,9 @@ export function mkRuleClass({
 
     public async bookParse() {
       const doc = await getHtmlDOM(anotherPageUrl, this.charset);
+      const base = document.createElement("base");
+      base.href = anotherPageUrl;
+      doc.head.appendChild(base);
 
       const bookname = getBookname(doc);
       const author = getAuthor(doc);
