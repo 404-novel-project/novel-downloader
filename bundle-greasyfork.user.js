@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.5.4.392
+// @version        4.5.5.393
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -3032,93 +3032,53 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 /* harmony export */   "QG": () => (/* binding */ _GM_getValue)
 /* harmony export */ });
 /* unused harmony export _GM_deleteValue */
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("loglevel");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_0__);
-
-let _GM_info;
-if (typeof GM_info === "undefined") {
-    if (typeof GM === "undefined") {
-        throw new Error("未发现 GM_info");
+function get_GM_info() {
+    if (typeof GM_info !== "undefined") {
+        return GM_info;
     }
-    else {
-        if (typeof GM.info === "undefined") {
-            throw new Error("未发现 GM_info");
-        }
-        else {
-            _GM_info = GM.info;
-        }
+    if (typeof GM !== "undefined" && typeof GM.info !== "undefined") {
+        return GM.info;
     }
+    throw new Error("Not found: GM_info and GM.info!");
 }
-else {
-    _GM_info = GM_info;
-}
-let _GM_xmlhttpRequest;
-if (typeof GM_xmlhttpRequest === "undefined") {
-    if (typeof GM === "undefined") {
-        throw new Error("未发现 GM_xmlhttpRequest");
+const _GM_info = get_GM_info();
+function _GM_xmlhttpRequest(details) {
+    if (typeof GM_xmlhttpRequest === "function") {
+        GM_xmlhttpRequest(details);
+        return;
     }
-    else {
-        if (typeof GM.xmlHttpRequest === "undefined") {
-            throw new Error("未发现 GM_xmlhttpRequest");
-        }
-        else {
-            _GM_xmlhttpRequest = GM.xmlHttpRequest;
-        }
+    if (typeof GM !== "undefined" && typeof GM.xmlHttpRequest === "function") {
+        GM.xmlHttpRequest(details);
+        return;
     }
+    throw new Error("Not found: GM_xmlhttpRequest or GM.xmlHttpRequest!");
 }
-else {
-    _GM_xmlhttpRequest = GM_xmlhttpRequest;
-}
-let _GM_setValue;
-if (typeof GM_setValue === "undefined") {
-    if (typeof GM === "undefined") {
-        _log__WEBPACK_IMPORTED_MODULE_0___default().warn("未发现 GM_setValue");
+async function _GM_setValue(name, value) {
+    if (typeof GM_setValue === "function") {
+        return GM_setValue(name, value);
     }
-    else {
-        if (typeof GM.setValue === "undefined") {
-            _log__WEBPACK_IMPORTED_MODULE_0___default().warn("未发现 GM_setValue");
-        }
-        else {
-            _GM_setValue = GM.setValue;
-        }
+    if (typeof GM !== "undefined" && typeof GM.setValue === "function") {
+        return await GM.setValue(name, value);
     }
+    throw new Error("Not found: GM_setValue or GM.setValue!");
 }
-else {
-    _GM_setValue = GM_setValue;
-}
-let _GM_getValue;
-if (typeof GM_getValue === "undefined") {
-    if (typeof GM === "undefined") {
-        _log__WEBPACK_IMPORTED_MODULE_0___default().warn("未发现 GM_getValue");
+async function _GM_getValue(name, defaultValue) {
+    if (typeof GM_getValue === "function") {
+        return GM_getValue(name, defaultValue);
     }
-    else {
-        if (typeof GM.getValue === "undefined") {
-            _log__WEBPACK_IMPORTED_MODULE_0___default().warn("未发现 GM_getValue");
-        }
-        else {
-            _GM_getValue = GM.getValue;
-        }
+    if (typeof GM !== "undefined" && typeof GM.getValue === "function") {
+        return await GM.getValue(name, defaultValue);
     }
+    throw new Error("Not found: GM_getValue or GM.getValue!");
 }
-else {
-    _GM_getValue = GM_getValue;
-}
-let _GM_deleteValue;
-if (typeof GM_deleteValue === "undefined") {
-    if (typeof GM === "undefined") {
-        _log__WEBPACK_IMPORTED_MODULE_0___default().warn("未发现 GM_deleteValue");
+async function _GM_deleteValue(name) {
+    if (typeof GM_deleteValue === "function") {
+        return GM_deleteValue(name);
     }
-    else {
-        if (typeof GM.deleteValue === "undefined") {
-            _log__WEBPACK_IMPORTED_MODULE_0___default().warn("未发现 GM_deleteValue");
-        }
-        else {
-            _GM_deleteValue = GM.deleteValue;
-        }
+    if (typeof GM !== "undefined" && typeof GM.deleteValue === "function") {
+        return await GM.deleteValue(name);
     }
-}
-else {
-    _GM_deleteValue = GM_deleteValue;
+    throw new Error("Not found: GM_deleteValue or GM.deleteValue!");
 }
 
 
@@ -3765,7 +3725,8 @@ function createStyle(style, id) {
 /* harmony export */   "dL": () => (/* binding */ getHtmlDOM),
 /* harmony export */   "rf": () => (/* binding */ getHtmlDomWithRetry),
 /* harmony export */   "_7": () => (/* binding */ ggetText),
-/* harmony export */   "Fz": () => (/* binding */ ggetHtmlDOM)
+/* harmony export */   "Fz": () => (/* binding */ ggetHtmlDOM),
+/* harmony export */   "jt": () => (/* binding */ getFrameContent)
 /* harmony export */ });
 /* unused harmony exports getText, ggetHtmlDomWithRetry */
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("loglevel");
@@ -3784,54 +3745,33 @@ globalThis.fetch = new Proxy(globalThis.fetch, {
         return Reflect.apply(target, thisArg, argArray);
     },
 });
-function gfetch(url, { method = "GET", headers, data, cookie, binary, nocache, revalidate, timeout, context, responseType, overrideMimeType, anonymous, username, password, } = {}) {
+function gfetch(url, { method = "GET", headers, data, cookie, binary, nocache, revalidate, timeout, context, responseType, overrideMimeType, anonymous, user, password, } = {}) {
     return new Promise((resolve, reject) => {
-        if (_GM__WEBPACK_IMPORTED_MODULE_1__/* ._GM_xmlhttpRequest */ .UX) {
-            _log__WEBPACK_IMPORTED_MODULE_0___default().debug("[debug]gfetch:");
-            _log__WEBPACK_IMPORTED_MODULE_0___default().debug({
-                url,
-                method,
-                headers,
-                data,
-                cookie,
-                binary,
-                nocache,
-                revalidate,
-                timeout,
-                context,
-                responseType,
-                overrideMimeType,
-                anonymous,
-                username,
-                password,
-            });
-            (0,_GM__WEBPACK_IMPORTED_MODULE_1__/* ._GM_xmlhttpRequest */ .UX)({
-                url,
-                method,
-                headers,
-                data,
-                cookie,
-                binary,
-                nocache,
-                revalidate,
-                timeout,
-                context,
-                responseType,
-                overrideMimeType,
-                anonymous,
-                username,
-                password,
-                onload: (obj) => {
-                    resolve(obj);
-                },
-                onerror: (err) => {
-                    reject(err);
-                },
-            });
-        }
-        else {
-            throw new Error("未发现 _GM_xmlhttpRequest API");
-        }
+        _log__WEBPACK_IMPORTED_MODULE_0___default().debug("[debug]gfetch:");
+        _log__WEBPACK_IMPORTED_MODULE_0___default().debug(Array.from(arguments));
+        (0,_GM__WEBPACK_IMPORTED_MODULE_1__/* ._GM_xmlhttpRequest */ .UX)({
+            url,
+            method,
+            headers,
+            data,
+            cookie,
+            binary,
+            nocache,
+            revalidate,
+            timeout,
+            context,
+            responseType,
+            overrideMimeType,
+            anonymous,
+            user,
+            password,
+            onload: (obj) => {
+                resolve(obj);
+            },
+            onerror: (err) => {
+                reject(err);
+            },
+        });
     });
 }
 async function getText(url, charset, init) {
@@ -3953,6 +3893,22 @@ async function ggetHtmlDomWithRetry(url, charset, init) {
         }
     }
     return doc;
+}
+async function getFrameContent(url) {
+    const frame = document.createElement("iframe");
+    frame.src = url;
+    frame.width = "1";
+    frame.height = "1";
+    const promise = new Promise((resolve, reject) => {
+        frame.addEventListener("load", function (event) {
+            const doc = this.contentWindow?.document ?? null;
+            this.remove();
+            resolve(doc);
+        });
+    });
+    _log__WEBPACK_IMPORTED_MODULE_0___default().debug("[debug]getFrameContent:" + url);
+    document.body.appendChild(frame);
+    return promise;
 }
 
 
@@ -4277,8 +4233,7 @@ async function gfetchAndParse(url, charset, init, patch, options) {
 /* harmony export */   "I2": () => (/* binding */ nextPageParse),
 /* harmony export */   "$d": () => (/* binding */ getSectionName),
 /* harmony export */   "$4": () => (/* binding */ centerDetct),
-/* harmony export */   "BL": () => (/* binding */ softByValue),
-/* harmony export */   "jt": () => (/* binding */ getFrameContent)
+/* harmony export */   "BL": () => (/* binding */ softByValue)
 /* harmony export */ });
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("loglevel");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_1__);
@@ -4390,34 +4345,7 @@ function centerDetct(element) {
     return [true, element, percentY];
 }
 function softByValue(a, b) {
-    const aTop = a[1];
-    const bTop = b[1];
-    if (aTop > bTop) {
-        return 1;
-    }
-    if (aTop === bTop) {
-        return 0;
-    }
-    if (aTop < bTop) {
-        return -1;
-    }
-    return 0;
-}
-async function getFrameContent(url) {
-    const frame = document.createElement("iframe");
-    frame.src = url;
-    frame.width = "1";
-    frame.height = "1";
-    const promise = new Promise((resolve, reject) => {
-        frame.addEventListener("load", function (event) {
-            const doc = this.contentWindow?.document ?? null;
-            this.remove();
-            resolve(doc);
-        });
-    });
-    _log__WEBPACK_IMPORTED_MODULE_1___default().debug("[debug]getFrameContent:" + url);
-    document.body.appendChild(frame);
-    return promise;
+    return a[1] - b[1];
 }
 
 
@@ -4734,7 +4662,7 @@ var GM = __webpack_require__("./src/lib/GM.ts");
 const statKeyName = "novel-downloader-22932304826849026";
 const domain = document.location.hostname;
 async function getStatData() {
-    const _data = await (0,GM/* _GM_getValue */.QG)(statKeyName);
+    const _data = (await (0,GM/* _GM_getValue */.QG)(statKeyName));
     let statData;
     if (_data) {
         statData = JSON.parse(_data);
@@ -4776,7 +4704,7 @@ const printStat = async () => {
             const subData = statData[k];
             for (const j in subData) {
                 if (Object.prototype.hasOwnProperty.call(subData, j)) {
-                    external_log_default().info(`  [stat]${j}: ${subData[j]}`);
+                    external_log_default().info(`    ${j}: ${subData[j]}`);
                 }
             }
         }
@@ -9722,8 +9650,8 @@ class Myrics extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
         });
         let i = 0;
         for (const c of chapters) {
-            c.chapterNumber = i;
             i++;
+            c.chapterNumber = i;
         }
         const book = new _main__WEBPACK_IMPORTED_MODULE_4__/* .Book */ .fy(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
         return book;
@@ -10160,7 +10088,7 @@ class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
         async function getChapter() {
             let doc;
             if (isVIP) {
-                doc = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .getFrameContent */ .jt)(chapterUrl);
+                doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_6__/* .getFrameContent */ .jt)(chapterUrl);
             }
             else {
                 doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_6__/* .ggetHtmlDOM */ .Fz)(chapterUrl, charset);

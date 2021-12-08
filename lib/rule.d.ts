@@ -14,6 +14,5 @@ interface NextPageParseOptions {
 export declare function nextPageParse({ chapterName, chapterUrl, charset, selector, contentPatch, getNextPage, continueCondition, enableCleanDOM, }: NextPageParseOptions): Promise<ChapterParseObject>;
 export declare function getSectionName(chapterElement: Element, sections: NodeListOf<Element>, getName: (sElem: Element) => string): string | null;
 export declare function centerDetct(element: Element): [boolean, Element, number];
-export declare function softByValue(a: [Element, number], b: [Element, number]): 0 | 1 | -1;
-export declare function getFrameContent(url: string): Promise<Document | null>;
+export declare function softByValue(a: [Element, number], b: [Element, number]): number;
 export {};

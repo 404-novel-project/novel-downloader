@@ -1,5 +1,6 @@
-export declare let _GM_info: GM_info | GM["info"];
-export declare let _GM_xmlhttpRequest: GM_xmlhttpRequest | GM["xmlHttpRequest"];
-export declare let _GM_setValue: GM_setValue | GM["setValue"];
-export declare let _GM_getValue: GM_getValue | GM["getValue"];
-export declare let _GM_deleteValue: GM_deleteValue | GM["deleteValue"];
+/// <reference types="tampermonkey" />
+export declare const _GM_info: Tampermonkey.ScriptInfo;
+export declare function _GM_xmlhttpRequest<TContext = any>(details: Tampermonkey.Request<TContext>): void;
+export declare function _GM_setValue(name: string, value: any): Promise<void>;
+export declare function _GM_getValue<TValue>(name: string, defaultValue?: TValue): Promise<TValue>;
+export declare function _GM_deleteValue(name: string): Promise<void>;

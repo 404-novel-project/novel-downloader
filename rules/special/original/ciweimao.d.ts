@@ -1,8 +1,5 @@
 import { Book } from "../../../main";
 import { BaseRuleClass, ChapterParseObject } from "../../../rules";
-export interface CiweimaoWindow extends unsafeWindow {
-    HB: any;
-}
 export declare class Ciweimao extends BaseRuleClass {
     constructor();
     bookParse(): Promise<Book>;
