@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.5.5.393
+// @version        4.5.5.394
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -154,6 +154,7 @@
 // @match          *://m.lusetxt.com/ebook/*.html
 // @match          *://www.lusetxt.com/ebook/*.html
 // @match          *://www.a7xs.com/*/*/
+// @match          *://www.shencou.com/books/read_*.html
 // @name:en        novel-downloader
 // @name:ja        小説ダウンローダー
 // @description:en An scalable universal novel downloader.
@@ -4976,7 +4977,6 @@ class BaseRuleClass {
 /* harmony export */   "kQ": () => (/* binding */ mkBiqugeClass2),
 /* harmony export */   "O6": () => (/* binding */ mkBiqugeClass3)
 /* harmony export */ });
-/* unused harmony exports bookParseTemp, chapterParseTemp */
 /* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/attachments.ts");
 /* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/cleanDOM.ts");
 /* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/http.ts");
@@ -13047,6 +13047,54 @@ const imiaobige = () => {
 
 /***/ }),
 
+/***/ "./src/rules/twoPage/shencou.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "shencou": () => (/* binding */ shencou)
+/* harmony export */ });
+/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/misc.ts");
+/* harmony import */ var _tempate__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/twoPage/tempate.ts");
+
+
+const shencou = () => {
+    const anotherPageUrl = document.querySelector("#content > table:nth-child(2) > tbody:nth-child(1) > tr:nth-child(3) > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(1) > ul:nth-child(1) > li:nth-child(1) > a:nth-child(1)").href;
+    return (0,_tempate__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+        bookUrl: document.location.href,
+        anotherPageUrl,
+        getBookname: (doc) => document.querySelector("#content > table:nth-child(2) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(1) > span:nth-child(1) > a:nth-child(1)").innerText.trim(),
+        getAuthor: (doc) => document.querySelector("#content > table:nth-child(2) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(2) > td:nth-child(2)").innerText
+            .replace("小说作者：", "")
+            .trim(),
+        getIntroDom: (doc) => document.querySelector("#content > table:nth-child(2) > tbody:nth-child(1) > tr:nth-child(3) > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(2)"),
+        introDomPatch: (el) => {
+            (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__.rm)("a", true, el);
+            (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__.rm)(".hottext", true, el);
+            (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .vS)(el, ["论坛回帖，推荐本书，都可以得积分。每天送50积分"]);
+            return el;
+        },
+        getCoverUrl: (doc) => document.querySelector("#content > table:nth-child(2) > tbody:nth-child(1) > tr:nth-child(3) > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(2) > a:nth-child(1) > img:nth-child(1)")?.src,
+        getAList: (doc) => doc.querySelectorAll("div.zjbox ol > li > a"),
+        getSections: (doc) => doc.querySelectorAll("div.zjbox div.ttname > h2"),
+        getSName: (s) => s.innerText.trim(),
+        getContent: (doc) => {
+            doc.body.innerHTML = doc.body.innerHTML.replace('<script language="javascript">GetFont();</script>', '<div id="content" class="fonts_mesne">');
+            doc.body.innerHTML = doc.body.innerHTML.replace("<center>", "</div>");
+            return doc.querySelector("#content");
+        },
+        contentPatch: (dom) => {
+            (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__.rm)("h1", true, dom);
+            (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__.rm)("div[id^=BookSee]", true, dom);
+            return dom;
+        },
+    });
+};
+
+
+/***/ }),
+
 /***/ "./src/rules/twoPage/tempate.ts":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -13080,6 +13128,9 @@ function mkRuleClass({ bookUrl, anotherPageUrl, getBookname, getAuthor, getIntro
         }
         async bookParse() {
             const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .dL)(anotherPageUrl, this.charset);
+            const base = document.createElement("base");
+            base.href = anotherPageUrl;
+            doc.head.appendChild(base);
             const bookname = getBookname(doc);
             const author = getAuthor(doc);
             const introDom = getIntroDom(doc);
@@ -14529,6 +14580,11 @@ async function getRule() {
         case "www.a7xs.com": {
             const { a7xs } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/a7xs.ts"));
             ruleClass = a7xs();
+            break;
+        }
+        case "www.shencou.com": {
+            const { shencou } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/shencou.ts"));
+            ruleClass = shencou();
             break;
         }
         default: {

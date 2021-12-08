@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.5.5.393
+// @version        4.5.5.394
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -154,6 +154,7 @@
 // @match          *://m.lusetxt.com/ebook/*.html
 // @match          *://www.lusetxt.com/ebook/*.html
 // @match          *://www.a7xs.com/*/*/
+// @match          *://www.shencou.com/books/read_*.html
 // @name:en        novel-downloader
 // @name:ja        小説ダウンローダー
 // @description:en An scalable universal novel downloader.
