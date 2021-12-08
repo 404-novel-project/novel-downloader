@@ -149,33 +149,5 @@ export function centerDetct(element: Element): [boolean, Element, number] {
 }
 
 export function softByValue(a: [Element, number], b: [Element, number]) {
-  const aTop = a[1];
-  const bTop = b[1];
-  if (aTop > bTop) {
-    return 1;
-  }
-  if (aTop === bTop) {
-    return 0;
-  }
-  if (aTop < bTop) {
-    return -1;
-  }
-  return 0;
-}
-
-export async function getFrameContent(url: string): Promise<Document | null> {
-  const frame = document.createElement("iframe");
-  frame.src = url;
-  frame.width = "1";
-  frame.height = "1";
-  const promise = new Promise((resolve, reject) => {
-    frame.addEventListener("load", function (event) {
-      const doc = this.contentWindow?.document ?? null;
-      this.remove();
-      resolve(doc);
-    });
-  }) as Promise<Document | null>;
-  log.debug("[debug]getFrameContent:" + url);
-  document.body.appendChild(frame);
-  return promise;
+  return a[1] - b[1];
 }

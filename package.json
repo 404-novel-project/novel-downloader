@@ -1,6 +1,6 @@
 {
   "name": "novel-downloader",
-  "version": "4.5.4",
+  "version": "4.5.5",
   "description": "novel downloader",
   "main": "index.js",
   "scripts": {
@@ -29,6 +29,7 @@
     "@types/file-saver": "^2.0.1",
     "@types/node": "^16.10.3",
     "@types/nunjucks": "^3.2.0",
+    "@types/tampermonkey": "^4.0.5",
     "css-loader": "^6.5.1",
     "eslint": "^8.0.0",
     "eslint-config-prettier": "^8.1.0",

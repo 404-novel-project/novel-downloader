@@ -1,3 +1,4 @@
+import { UnsafeWindow } from "../../../global";
 import { getImageAttachment } from "../../../lib/attachments";
 import { cleanDOM } from "../../../lib/cleanDOM";
 import { getHtmlDOM } from "../../../lib/http";
@@ -7,9 +8,10 @@ import { log } from "../../../log";
 import { Book, BookAdditionalMetadate, Chapter } from "../../../main";
 import { BaseRuleClass } from "../../../rules";
 
-interface UukanshuWindow extends unsafeWindow {
+interface UukanshuObj {
   reverse(button: HTMLButtonElement): void;
 }
+type UukanshuWindow = UukanshuObj & UnsafeWindow;
 
 export class Uukanshu extends BaseRuleClass {
   public constructor() {

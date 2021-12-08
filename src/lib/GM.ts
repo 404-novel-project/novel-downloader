@@ -1,75 +1,57 @@
-import { log } from "../log";
-
-export let _GM_info: GM_info | GM["info"];
-if (typeof GM_info === "undefined") {
-  if (typeof GM === "undefined") {
-    throw new Error("未发现 GM_info");
-  } else {
-    if (typeof GM.info === "undefined") {
-      throw new Error("未发现 GM_info");
-    } else {
-      _GM_info = GM.info;
-    }
+function get_GM_info() {
+  if (typeof GM_info !== "undefined") {
+    return GM_info;
   }
-} else {
-  _GM_info = GM_info;
+  if (typeof GM !== "undefined" && typeof GM.info !== "undefined") {
+    return GM.info;
+  }
+  throw new Error("Not found: GM_info and GM.info!");
 }
-export let _GM_xmlhttpRequest: GM_xmlhttpRequest | GM["xmlHttpRequest"];
-if (typeof GM_xmlhttpRequest === "undefined") {
-  if (typeof GM === "undefined") {
-    throw new Error("未发现 GM_xmlhttpRequest");
-  } else {
-    if (typeof GM.xmlHttpRequest === "undefined") {
-      throw new Error("未发现 GM_xmlhttpRequest");
-    } else {
-      _GM_xmlhttpRequest = GM.xmlHttpRequest;
-    }
+export const _GM_info = get_GM_info();
+
+export function _GM_xmlhttpRequest<TContext = any>(
+  details: Tampermonkey.Request<TContext> // tslint:disable-line:no-unnecessary-generics
+) {
+  if (typeof GM_xmlhttpRequest === "function") {
+    GM_xmlhttpRequest(details);
+    return;
   }
-} else {
-  _GM_xmlhttpRequest = GM_xmlhttpRequest;
+  if (typeof GM !== "undefined" && typeof GM.xmlHttpRequest === "function") {
+    GM.xmlHttpRequest(details);
+    return;
+  }
+  throw new Error("Not found: GM_xmlhttpRequest or GM.xmlHttpRequest!");
 }
 
-export let _GM_setValue: GM_setValue | GM["setValue"];
-if (typeof GM_setValue === "undefined") {
-  if (typeof GM === "undefined") {
-    log.warn("未发现 GM_setValue");
-  } else {
-    if (typeof GM.setValue === "undefined") {
-      log.warn("未发现 GM_setValue");
-    } else {
-      _GM_setValue = GM.setValue;
-    }
+export async function _GM_setValue(name: string, value: any) {
+  if (typeof GM_setValue === "function") {
+    return GM_setValue(name, value);
   }
-} else {
-  _GM_setValue = GM_setValue;
+  if (typeof GM !== "undefined" && typeof GM.setValue === "function") {
+    return await GM.setValue(name, value);
+  }
+  throw new Error("Not found: GM_setValue or GM.setValue!");
 }
 
-export let _GM_getValue: GM_getValue | GM["getValue"];
-if (typeof GM_getValue === "undefined") {
-  if (typeof GM === "undefined") {
-    log.warn("未发现 GM_getValue");
-  } else {
-    if (typeof GM.getValue === "undefined") {
-      log.warn("未发现 GM_getValue");
-    } else {
-      _GM_getValue = GM.getValue;
-    }
+export async function _GM_getValue<TValue>(
+  name: string,
+  defaultValue?: TValue
+) {
+  if (typeof GM_getValue === "function") {
+    return GM_getValue(name, defaultValue);
   }
-} else {
-  _GM_getValue = GM_getValue;
+  if (typeof GM !== "undefined" && typeof GM.getValue === "function") {
+    return await GM.getValue(name, defaultValue);
+  }
+  throw new Error("Not found: GM_getValue or GM.getValue!");
 }
 
-export let _GM_deleteValue: GM_deleteValue | GM["deleteValue"];
-if (typeof GM_deleteValue === "undefined") {
-  if (typeof GM === "undefined") {
-    log.warn("未发现 GM_deleteValue");
-  } else {
-    if (typeof GM.deleteValue === "undefined") {
-      log.warn("未发现 GM_deleteValue");
-    } else {
-      _GM_deleteValue = GM.deleteValue;
-    }
+export async function _GM_deleteValue(name: string) {
+  if (typeof GM_deleteValue === "function") {
+    return GM_deleteValue(name);
   }
-} else {
-  _GM_deleteValue = GM_deleteValue;
+  if (typeof GM !== "undefined" && typeof GM.deleteValue === "function") {
+    return await GM.deleteValue(name);
+  }
+  throw new Error("Not found: GM_deleteValue or GM.deleteValue!");
 }

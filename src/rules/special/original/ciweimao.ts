@@ -1,4 +1,5 @@
 import * as CryptoJS from "crypto-js";
+import { UnsafeWindow } from "../../../global";
 import { getImageAttachment } from "../../../lib/attachments";
 import { cleanDOM } from "../../../lib/cleanDOM";
 import { gfetch } from "../../../lib/http";
@@ -15,9 +16,10 @@ import {
 } from "../../../main";
 import { BaseRuleClass, ChapterParseObject } from "../../../rules";
 
-export interface CiweimaoWindow extends unsafeWindow {
+interface CiweimaoObj {
   HB: any;
 }
+type CiweimaoWindow = CiweimaoObj & UnsafeWindow;
 
 export class Ciweimao extends BaseRuleClass {
   public constructor() {

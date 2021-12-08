@@ -156,6 +156,11 @@
   resolved "https://registry.yarnpkg.com/@types/retry/-/retry-0.12.1.tgz#d8f1c0d0dc23afad6dc16a9e993a0865774b4065"
   integrity sha512-xoDlM2S4ortawSWORYqsdU+2rxdh4LRW9ytc3zmT37RIKQh6IHyKwwtKhKis9ah8ol07DCkZxPt8BBvPjC6v4g==
 
+"@types/tampermonkey@^4.0.5":
+  version "4.0.5"
+  resolved "https://registry.yarnpkg.com/@types/tampermonkey/-/tampermonkey-4.0.5.tgz#03a0c2366a7c1fe5e1c77c88adf568f40b3c18e5"
+  integrity sha512-FGPo7d+qZkDF7vyrwY1WNhcUnfDyVpt2uyL7krAu3WKCUMCfIUzOuvt8aSk8N2axHT8XPr9stAEDGVHLvag6Pw==
+
 "@vue/compiler-core@3.2.24":
   version "3.2.24"
   resolved "https://registry.yarnpkg.com/@vue/compiler-core/-/compiler-core-3.2.24.tgz#cadcda0e026e7f1cd453ce87160be51a5f313fe0"

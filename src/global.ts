@@ -13,7 +13,7 @@ export interface WindowObject extends Window {
   _book?: Book;
   _url?: string;
 }
-export type GmWindow = WindowObject & typeof globalThis;
+export type GmWindow = WindowObject & Window & typeof globalThis;
 
 interface UnsafeWindowObject {
   rule?: BaseRuleClass;
@@ -29,7 +29,7 @@ interface UnsafeWindowObject {
     gfetchAndParse: typeof gfetchAndParse;
   };
 }
-export type UnsafeWindow = UnsafeWindowObject & typeof globalThis;
+export type UnsafeWindow = UnsafeWindowObject & Window & typeof globalThis;
 
 export function init() {
   (window as GmWindow).downloading = false;

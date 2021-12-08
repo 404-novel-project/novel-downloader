@@ -38,8 +38,8 @@ globalThis.fetch = new Proxy(globalThis.fetch, {
 // Via
 
 export interface GfetchRequestOptions {
-  method?: string;
-  headers?: object;
+  method?: "GET" | "HEAD" | "POST" | undefined;
+  headers?: Record<string, string>;
   data?: string;
   cookie?: string;
   binary?: boolean;
@@ -50,7 +50,7 @@ export interface GfetchRequestOptions {
   responseType?: "arraybuffer" | "blob" | "json";
   overrideMimeType?: string;
   anonymous?: boolean;
-  username?: string;
+  user?: string;
   password?: string;
 }
 export function gfetch(
@@ -68,56 +68,36 @@ export function gfetch(
     responseType,
     overrideMimeType,
     anonymous,
-    username,
+    user,
     password,
   }: GfetchRequestOptions = {}
-): Promise<GM_xmlhttpResponse> {
+): Promise<Tampermonkey.Response<object>> {
   return new Promise((resolve, reject) => {
-    if (_GM_xmlhttpRequest) {
-      log.debug("[debug]gfetch:");
-      log.debug({
-        url,
-        method,
-        headers,
-        data,
-        cookie,
-        binary,
-        nocache,
-        revalidate,
-        timeout,
-        context,
-        responseType,
-        overrideMimeType,
-        anonymous,
-        username,
-        password,
-      });
-      _GM_xmlhttpRequest({
-        url,
-        method,
-        headers,
-        data,
-        cookie,
-        binary,
-        nocache,
-        revalidate,
-        timeout,
-        context,
-        responseType,
-        overrideMimeType,
-        anonymous,
-        username,
-        password,
-        onload: (obj: GM_xmlhttpResponse) => {
-          resolve(obj);
-        },
-        onerror: (err: object) => {
-          reject(err);
-        },
-      });
-    } else {
-      throw new Error("未发现 _GM_xmlhttpRequest API");
-    }
+    log.debug("[debug]gfetch:");
+    log.debug(Array.from(arguments));
+    _GM_xmlhttpRequest({
+      url,
+      method,
+      headers,
+      data,
+      cookie,
+      binary,
+      nocache,
+      revalidate,
+      timeout,
+      context,
+      responseType,
+      overrideMimeType,
+      anonymous,
+      user,
+      password,
+      onload: (obj: Tampermonkey.Response<object>) => {
+        resolve(obj);
+      },
+      onerror: (err: Tampermonkey.ErrorResponse) => {
+        reject(err);
+      },
+    });
   });
 }
 
@@ -262,4 +242,21 @@ export async function ggetHtmlDomWithRetry(
     }
   }
   return doc;
+}
+
+export async function getFrameContent(url: string): Promise<Document | null> {
+  const frame = document.createElement("iframe");
+  frame.src = url;
+  frame.width = "1";
+  frame.height = "1";
+  const promise = new Promise((resolve, reject) => {
+    frame.addEventListener("load", function (event) {
+      const doc = this.contentWindow?.document ?? null;
+      this.remove();
+      resolve(doc);
+    });
+  }) as Promise<Document | null>;
+  log.debug("[debug]getFrameContent:" + url);
+  document.body.appendChild(frame);
+  return promise;
 }

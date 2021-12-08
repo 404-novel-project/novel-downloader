@@ -1,8 +1,8 @@
 import { getImageAttachment } from "../../../lib/attachments";
 import { cleanDOM, htmlTrim } from "../../../lib/cleanDOM";
-import { ggetHtmlDOM } from "../../../lib/http";
+import { getFrameContent, ggetHtmlDOM } from "../../../lib/http";
 import { rm, sleep } from "../../../lib/misc";
-import { getFrameContent, introDomHandle } from "../../../lib/rule";
+import { introDomHandle } from "../../../lib/rule";
 import { log } from "../../../log";
 import { Book, BookAdditionalMetadate, Chapter, Status } from "../../../main";
 import { BaseRuleClass, ChapterParseObject } from "../../../rules";

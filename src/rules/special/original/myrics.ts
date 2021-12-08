@@ -173,8 +173,8 @@ export class Myrics extends BaseRuleClass {
     });
     let i = 0;
     for (const c of chapters) {
-      c.chapterNumber = i;
       i++;
+      c.chapterNumber = i;
     }
 
     const book = new Book(

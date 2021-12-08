@@ -14,7 +14,7 @@ interface StatData {
 }
 
 async function getStatData() {
-  const _data = await _GM_getValue(statKeyName);
+  const _data = (await _GM_getValue(statKeyName)) as string;
   let statData: StatData;
   if (_data) {
     statData = JSON.parse(_data);
@@ -59,7 +59,7 @@ export const printStat = async () => {
       const subData = statData[k as keyof StatData];
       for (const j in subData) {
         if (Object.prototype.hasOwnProperty.call(subData, j)) {
-          log.info(`  [stat]${j}: ${subData[j]}`);
+          log.info(`    ${j}: ${subData[j]}`);
         }
       }
     }
