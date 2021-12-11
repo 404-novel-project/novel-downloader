@@ -174,7 +174,8 @@
     "*://www.a7xs.com/*/*/",
     "*://www.shencou.com/books/read_*.html",
     "*://www.tianyabooks.com/*/*/",
-    "*://www.aixiawx.com/*/*/"
+    "*://www.aixiawx.com/*/*/",
+    "*://jingcaiyuedu6.com/novel/*.html"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",
@@ -283,6 +284,7 @@
     "mitemin.net",
     "myrics.com",
     "a7xs.com",
+    "jingcaiyuedu6.com",
     "*"
   ],
   "require": [

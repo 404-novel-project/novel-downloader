@@ -453,6 +453,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = tianyabooks();
       break;
     }
+    case "jingcaiyuedu6.com": {
+      const { jingcaiyuedu6 } = await import("../rules/twoPage/jingcaiyuedu6");
+      ruleClass = jingcaiyuedu6();
+      break;
+    }
     default: {
       throw new Error("Not Found Rule!");
     }
