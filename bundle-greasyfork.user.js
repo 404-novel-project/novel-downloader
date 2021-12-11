@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.5.5.395
+// @version        4.5.5.398
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -152,10 +152,12 @@
 // @match          *://zhaoze.art/*/
 // @match          *://www.myrics.com/novels/*
 // @match          *://m.lusetxt.com/ebook/*.html
-// @match          *://www.lusetxt.com/ebook/*.html
+// @match          *://www.lstxt.cc/ebook/*.html
 // @match          *://www.a7xs.com/*/*/
 // @match          *://www.shencou.com/books/read_*.html
 // @match          *://www.tianyabooks.com/*/*/
+// @match          *://www.aixiawx.com/*/*/
+// @match          *://jingcaiyuedu6.com/novel/*.html
 // @name:en        novel-downloader
 // @name:ja        小説ダウンローダー
 // @description:en An scalable universal novel downloader.
@@ -273,6 +275,7 @@
 // @connect        mitemin.net
 // @connect        myrics.com
 // @connect        a7xs.com
+// @connect        jingcaiyuedu6.com
 // @connect        *
 // @require        https://cdn.jsdelivr.net/npm/crypto-js@4.1.1/crypto-js.js#sha512-NQVmLzNy4Lr5QTrmXvq/WzTMUnRHmv7nyIT/M6LyGPBS+TIeRxZ+YQaqWxjpRpvRMQSuYPQURZz/+pLi81xXeA==
 // @require        https://cdn.jsdelivr.net/npm/fflate@0.7.1/umd/index.js#sha512-laBNdxeV48sttD1kBYahmdSXpSRitYmkte49ZUqm3KEOUK4cIJAjqt1MYwScWvBqqP4WDtEftDSPYE1ii/bxCg==
@@ -13088,6 +13091,37 @@ const imiaobige = () => {
 
 /***/ }),
 
+/***/ "./src/rules/twoPage/jingcaiyuedu6.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "jingcaiyuedu6": () => (/* binding */ jingcaiyuedu6)
+/* harmony export */ });
+/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/misc.ts");
+/* harmony import */ var _tempate__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/twoPage/tempate.ts");
+
+
+const jingcaiyuedu6 = () => (0,_tempate__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+    bookUrl: document.location.href,
+    anotherPageUrl: document.querySelector("a.red-btn:nth-child(3)").href,
+    getBookname: (doc) => document.querySelector(".book-info > h1 > em").innerText.trim(),
+    getAuthor: (doc) => document.querySelector(".book-info > h1 > a").innerText.trim(),
+    getIntroDom: (doc) => document.querySelector(".book-info > p.intro"),
+    introDomPatch: (dom) => dom,
+    getCoverUrl: (doc) => document.querySelector(".book-img-cover").src,
+    getAList: (doc) => doc.querySelectorAll("dd.col-md-4 > a"),
+    getContent: (doc) => doc.querySelector("#htmlContent"),
+    contentPatch: (dom) => {
+        (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .vS)(dom, ["精彩小说网最新地址"]);
+        return dom;
+    },
+});
+
+
+/***/ }),
+
 /***/ "./src/rules/twoPage/shencou.ts":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -14277,6 +14311,7 @@ async function getRule() {
             ruleClass = Jjwxc;
             break;
         }
+        case "www.aixiawx.com":
         case "www.banzhuer.org":
         case "www.biquwoo.com":
         case "www.biquwo.org":
@@ -14613,7 +14648,7 @@ async function getRule() {
             ruleClass = Myrics;
             break;
         }
-        case "www.lusetxt.com": {
+        case "www.lstxt.cc": {
             const { lusetxt } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/type2.ts"));
             ruleClass = lusetxt();
             break;
@@ -14631,6 +14666,11 @@ async function getRule() {
         case "www.tianyabooks.com": {
             const { tianyabooks } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/tianyabooks.ts"));
             ruleClass = tianyabooks();
+            break;
+        }
+        case "jingcaiyuedu6.com": {
+            const { jingcaiyuedu6 } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/jingcaiyuedu6.ts"));
+            ruleClass = jingcaiyuedu6();
             break;
         }
         default: {
