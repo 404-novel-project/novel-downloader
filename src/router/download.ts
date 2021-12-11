@@ -447,6 +447,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = shencou();
       break;
     }
+    case "www.tianyabooks.com": {
+      const { tianyabooks } = await import("../rules/onePage/tianyabooks");
+      ruleClass = tianyabooks();
+      break;
+    }
     default: {
       throw new Error("Not Found Rule!");
     }

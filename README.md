@@ -62,6 +62,7 @@ ZIP压缩包，请在解压后，直接双击打开HTML文件（`index.html` 为
 |[Lofter](https://www.lofter.com/)|✅|❎|因本脚本会将博文中的图片也一同下载下来，对于图片特别多的博客，下载时请注意内存用量（800MB限制），根据实际情况使用筛选函数分次下载。<br>部分博文内含视频内容，为节省内存使用，加快下载速度，本脚本将跳过视频内容。<br>如您使用广告屏蔽器，可能会影响本脚本在Lofter的工作。|
 |[努努书坊](https://www.kanunu8.com/)|✅|❎|格式众多，如发现不支持页面敬请反馈。|
 |[真白萌](https://masiro.me/)|✅|❎||
+|[天涯书库](https://www.tianyabooks.com/)|✅|❎||
 
 <details>
 <summary>点击查看全部支持网站</summary>
