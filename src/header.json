@@ -173,7 +173,8 @@
     "*://www.lstxt.cc/ebook/*.html",
     "*://www.a7xs.com/*/*/",
     "*://www.shencou.com/books/read_*.html",
-    "*://www.tianyabooks.com/*/*/"
+    "*://www.tianyabooks.com/*/*/",
+    "*://www.aixiawx.com/*/*/"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",

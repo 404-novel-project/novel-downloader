@@ -86,6 +86,7 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = Jjwxc;
       break;
     }
+    case "www.aixiawx.com":
     case "www.banzhuer.org":
     case "www.biquwoo.com":
     case "www.biquwo.org":

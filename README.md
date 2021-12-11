@@ -128,6 +128,7 @@ ZIP压缩包，请在解压后，直接双击打开HTML文件（`index.html` 为
 |[绿色小说网](https://www.lstxt.cc/)|✅|❎||
 |[笔趣阁](https://www.a7xs.com/)|✅|❎||
 |[神凑轻小说](http://www.shencou.com/)|✅|❎||
+|[爱下书小说网](https://www.aixiawx.com/)|✅|❎||
 
 </details>
 
