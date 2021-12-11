@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.5.5.394
+// @version        4.5.5.395
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -155,6 +155,7 @@
 // @match          *://www.lusetxt.com/ebook/*.html
 // @match          *://www.a7xs.com/*/*/
 // @match          *://www.shencou.com/books/read_*.html
+// @match          *://www.tianyabooks.com/*/*/
 // @name:en        novel-downloader
 // @name:ja        小説ダウンローダー
 // @description:en An scalable universal novel downloader.
@@ -5990,6 +5991,46 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
         }
     };
 }
+
+
+/***/ }),
+
+/***/ "./src/rules/onePage/tianyabooks.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "tianyabooks": () => (/* binding */ tianyabooks)
+/* harmony export */ });
+/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/misc.ts");
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
+
+
+const tianyabooks = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+    bookUrl: document.location.href,
+    bookname: document.querySelector(".book > h1")?.innerText
+        .replace(/《|》/g, "")
+        .trim(),
+    author: document.querySelector(".book > h2 > a").innerText.trim(),
+    introDom: document.querySelector(".description"),
+    introDomPatch: (dom) => {
+        (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__.rm)("h3", false, dom);
+        return dom;
+    },
+    coverUrl: null,
+    aList: document.querySelectorAll(".book > dl > dd > a"),
+    sections: document.querySelectorAll(".book > dl > dt"),
+    getSName: (dom) => dom.innerText.trim(),
+    getContent: (doc) => doc.querySelector("#main"),
+    contentPatch: (dom) => {
+        (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__.rm)("div.crumb", false, dom);
+        (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__.rm)("h1", false, dom);
+        (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__.rm)('p[align="center"]', false, dom);
+        (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__.rm)("table", true, dom);
+        return dom;
+    },
+});
 
 
 /***/ }),
@@ -14585,6 +14626,11 @@ async function getRule() {
         case "www.shencou.com": {
             const { shencou } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/shencou.ts"));
             ruleClass = shencou();
+            break;
+        }
+        case "www.tianyabooks.com": {
+            const { tianyabooks } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/tianyabooks.ts"));
+            ruleClass = tianyabooks();
             break;
         }
         default: {
