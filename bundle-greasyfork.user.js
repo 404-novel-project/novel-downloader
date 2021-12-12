@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.5.5.402
+// @version        4.5.5.403
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -148,6 +148,7 @@
 // @match          *://www.pixiv.net/novel/series/*
 // @match          *://kakuyomu.jp/works/*
 // @match          *://ncode.syosetu.com/*
+// @match          *://syosetu.org/novel/*/
 // @match          *://houhuayuan.xyz/*
 // @match          *://zhaoze.art/*/
 // @match          *://www.myrics.com/novels/*
@@ -5834,9 +5835,12 @@ const shouda8 = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass *
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "syosetu": () => (/* binding */ syosetu)
+/* harmony export */   "syosetu": () => (/* binding */ syosetu),
+/* harmony export */   "syosetuOrg": () => (/* binding */ syosetuOrg)
 /* harmony export */ });
+/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/misc.ts");
 /* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
+
 
 const syosetu = () => {
     const getIntroDom = () => {
@@ -5879,6 +5883,36 @@ const syosetu = () => {
         contentPatch: (dom) => dom,
     });
 };
+const syosetuOrg = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+    bookUrl: document.location.href,
+    bookname: document.querySelector('div.ss > span[itemprop="name"]').innerText.trim(),
+    author: document.querySelector('div.ss span[itemprop="author"] > a')?.innerText.trim(),
+    introDom: document.querySelector("div.ss:nth-child(2)"),
+    introDomPatch: (dom) => dom,
+    coverUrl: null,
+    additionalMetadatePatch: (additionalMetadate) => {
+        additionalMetadate.tags = Array.from(document.querySelectorAll('span[itemprop="keywords"] > a, a.alert_color')).map((a) => a.innerText);
+        return additionalMetadate;
+    },
+    aList: document.querySelectorAll('tr[class^="bgcolor"] > td > a'),
+    sections: document.querySelectorAll('div.ss > table > tbody > tr > td[colspan="2"] > strong'),
+    getSName: (dom) => dom.innerText.trim(),
+    getContent: (doc) => doc.querySelector("div#maind > div.ss:nth-child(1)"),
+    contentPatch: (dom) => {
+        (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__.rm)("p:nth-child(1)", false, dom);
+        (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__.rm)("div.novelnavi", true, dom);
+        (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__.rm)('div[style*="text-align:right;"]', true, dom);
+        (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__.rm)("div#maegaki_open", true, dom);
+        (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__.rm)("div#atogaki_open", true, dom);
+        dom.querySelectorAll('a[name="img"]').forEach((a) => {
+            const img = document.createElement("img");
+            img.src = a.href;
+            img.alt = a.innerText;
+            a.replaceWith(img);
+        });
+        return dom;
+    },
+});
 
 
 /***/ }),
@@ -14795,6 +14829,11 @@ async function getRule() {
         case "ncode.syosetu.com": {
             const { syosetu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/syosetu.ts"));
             ruleClass = syosetu();
+            break;
+        }
+        case "syosetu.org": {
+            const { syosetuOrg } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/syosetu.ts"));
+            ruleClass = syosetuOrg();
             break;
         }
         case "zhaoze.art":
