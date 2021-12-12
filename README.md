@@ -72,6 +72,7 @@ ZIP压缩包，请在解压后，直接双击打开HTML文件（`index.html` 为
 |---|-------|------|----|
 |[カクヨム](https://kakuyomu.jp/)|✅|❎||
 |[小説家になろう](https://syosetu.com/)|✅|❎||
+|[ハーメルン](https://syosetu.org/)|✅|❎||
 |[UU看书网](https://www.uukanshu.com/)|✅|❎||
 |[亿软网](http://www.yruan.com/)|✅|❎|网站性能差，降低抓取频率，请耐心等待。|
 |[笔趣窝](http://www.biquwoo.com/)|✅|❎||

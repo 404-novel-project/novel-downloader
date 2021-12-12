@@ -422,6 +422,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = syosetu();
       break;
     }
+    case "syosetu.org": {
+      const { syosetuOrg } = await import("../rules/onePage/syosetu");
+      ruleClass = syosetuOrg();
+      break;
+    }
     case "zhaoze.art":
     case "houhuayuan.xyz": {
       const { houhuayuan } = await import("../rules/onePage/houhuayuan");
