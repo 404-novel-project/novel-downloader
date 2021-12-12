@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.5.5.398
+// @version        4.5.5.399
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -158,6 +158,7 @@
 // @match          *://www.tianyabooks.com/*/*/
 // @match          *://www.aixiawx.com/*/*/
 // @match          *://jingcaiyuedu6.com/novel/*.html
+// @match          *://www.hanwujinian.com/book/*
 // @name:en        novel-downloader
 // @name:ja        小説ダウンローダー
 // @description:en An scalable universal novel downloader.
@@ -8449,6 +8450,152 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
 
 /***/ }),
 
+/***/ "./src/rules/special/original/hanwujinian.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Hanwujinian": () => (/* binding */ Hanwujinian)
+/* harmony export */ });
+/* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("crypto-js");
+/* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(crypto_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/misc.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _main__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/rules.ts");
+
+
+
+
+
+
+
+
+
+class Hanwujinian extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
+    constructor() {
+        super();
+        this.imageMode = "TM";
+    }
+    async bookParse() {
+        const bookUrl = document.location.href;
+        const anotherPageUrl = document.querySelector("a.titleText_3").href;
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .getHtmlDOM */ .dL)(anotherPageUrl, this.charset);
+        const bookname = document.querySelector("span.titleText_1").innerText.trim();
+        const author = document.querySelector("span.authorText_1").innerText.trim();
+        const introDom = document.querySelector("#introtext");
+        const [introduction, introductionHTML, introCleanimages] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_3__/* .introDomHandle */ .SN)(introDom);
+        const coverUrl = document.querySelector(".wR_JSAS > img").src;
+        const additionalMetadate = {};
+        if (coverUrl) {
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_4__/* .getImageAttachment */ .CE)(coverUrl, this.imageMode, "cover-")
+                .then((coverClass) => {
+                additionalMetadate.cover = coverClass;
+            })
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_5___default().error(error));
+        }
+        additionalMetadate.tags = Array.from(document.querySelectorAll("div.labelBox_1 > span")).map((span) => span?.innerText.trim());
+        const chapters = [];
+        let chapterNumber = 0;
+        let sectionNumber = 0;
+        let sectionChapterNumber = 0;
+        let sectionName = null;
+        const signIn = document.querySelector("#userMeun") !== null;
+        const sections = doc.querySelectorAll('div.wR_JS > div.wR_JC[style*="margin: 30px auto;"]');
+        const divList = doc.querySelectorAll("div.wR_JS > div.wR_JC > div.wR_JSAC");
+        for (const divElem of Array.from(divList)) {
+            const aElem = divElem.querySelector("a");
+            const chapterName = aElem.innerText.trim();
+            const chapterUrl = aElem.href;
+            if (sections.length !== 0) {
+                const _sectionName = (0,_lib_rule__WEBPACK_IMPORTED_MODULE_3__/* .getSectionName */ .$d)(aElem, sections, (dom) => dom.innerText.trim());
+                if (_sectionName !== sectionName) {
+                    sectionName = _sectionName;
+                    sectionNumber++;
+                    sectionChapterNumber = 0;
+                }
+            }
+            chapterNumber++;
+            sectionChapterNumber++;
+            const icon = divElem.querySelector("img");
+            const isVIP = icon !== null;
+            const isPaid = isVIP ? icon.src.includes("lock_2_off.png") : false;
+            const chapter = new _main__WEBPACK_IMPORTED_MODULE_6__/* .Chapter */ .WC(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, { bookname });
+            if (chapter.isVIP) {
+                if (signIn) {
+                    if (chapter.isPaid === false) {
+                        chapter.status = _main__WEBPACK_IMPORTED_MODULE_6__/* .Status.aborted */ .qb.aborted;
+                    }
+                }
+                else {
+                    chapter.status = _main__WEBPACK_IMPORTED_MODULE_6__/* .Status.aborted */ .qb.aborted;
+                }
+            }
+            chapters.push(chapter);
+        }
+        const book = new _main__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .fy(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        return book;
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
+        const script = Array.from(doc.querySelectorAll("script")).filter((s) => s.innerHTML.includes("var chapterContent"))?.[0];
+        const getContent = (CryptoJS, chapterContent) => {
+            function AesDecrypt(content) {
+                const keys = {
+                    key: "2018122911430000",
+                    iv: "048fe2a99140c0e6",
+                };
+                const key = CryptoJS.enc.Latin1.parse(keys.key);
+                const iv = CryptoJS.enc.Latin1.parse(keys.iv);
+                const d = CryptoJS.AES.decrypt(content, key, {
+                    iv,
+                    padding: CryptoJS.pad.ZeroPadding,
+                });
+                return d.toString(CryptoJS.enc.Utf8);
+            }
+            const text = decodeURI(AesDecrypt(chapterContent));
+            const div = document.createElement("div");
+            div.innerText = text;
+            return div;
+        };
+        if (script) {
+            const chapterContentLine = script.innerHTML
+                .split("\n")
+                .filter((l) => l.includes("var chapterContent"))?.[0];
+            const content = new Function("CryptoJS", `${chapterContentLine};return (${getContent.toString()})(CryptoJS, chapterContent);`)(crypto_js__WEBPACK_IMPORTED_MODULE_0__);
+            (0,_lib_misc__WEBPACK_IMPORTED_MODULE_7__/* .rm2 */ .vS)(content, ["更多优惠快去下载寒武纪年小说APP哦"]);
+            content.innerHTML = content.innerHTML.replaceAll("%3A", "：");
+            content.innerHTML = content.innerHTML.replaceAll("++++【", "【");
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .z)(content, "TM");
+            return {
+                chapterName,
+                contentRaw: content,
+                contentText: text,
+                contentHTML: dom,
+                contentImages: images,
+                additionalMetadate: null,
+            };
+        }
+        return {
+            chapterName,
+            contentRaw: null,
+            contentText: null,
+            contentHTML: null,
+            contentImages: null,
+            additionalMetadate: null,
+        };
+    }
+}
+
+
+/***/ }),
+
 /***/ "./src/rules/special/original/jjwxc.ts":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -14671,6 +14818,11 @@ async function getRule() {
         case "jingcaiyuedu6.com": {
             const { jingcaiyuedu6 } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/jingcaiyuedu6.ts"));
             ruleClass = jingcaiyuedu6();
+            break;
+        }
+        case "www.hanwujinian.com": {
+            const { Hanwujinian } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/hanwujinian.ts"));
+            ruleClass = Hanwujinian;
             break;
         }
         default: {
