@@ -77,3 +77,21 @@ export const xinwanben = () =>
     undefined,
     true
   );
+
+export const biqu55 = () =>
+  mkBiqugeClass3(
+    (introDom) => introDom,
+    (content, doc) => {
+      rm2(content, ["精彩小说无弹窗免费阅读！"]);
+      htmlTrim(content);
+      return content;
+    },
+    (doc) =>
+      (
+        doc.querySelector(
+          'div.bottem2 > a[rel="next"]:nth-child(3)'
+        ) as HTMLAnchorElement
+      ).href,
+    (_content, nextLink) =>
+      /[\d_]+\.html$/.exec(nextLink)?.[0].includes("_") ?? false
+  );

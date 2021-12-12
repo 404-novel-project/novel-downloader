@@ -176,7 +176,8 @@
     "*://www.tianyabooks.com/*/*/",
     "*://www.aixiawx.com/*/*/",
     "*://jingcaiyuedu6.com/novel/*.html",
-    "*://www.hanwujinian.com/book/*"
+    "*://www.hanwujinian.com/book/*",
+    "*://www.biqu55.com/*_*/"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",

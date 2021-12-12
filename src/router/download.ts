@@ -465,6 +465,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = Hanwujinian;
       break;
     }
+    case "www.biqu55.com": {
+      const { biqu55 } = await import("../rules/biquge/type3");
+      ruleClass = biqu55();
+      break;
+    }
     default: {
       throw new Error("Not Found Rule!");
     }

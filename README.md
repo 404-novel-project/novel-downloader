@@ -131,6 +131,7 @@ ZIP压缩包，请在解压后，直接双击打开HTML文件（`index.html` 为
 |[神凑轻小说](http://www.shencou.com/)|✅|❎||
 |[爱下书小说网](https://www.aixiawx.com/)|✅|❎||
 |[精彩小说网](https://jingcaiyuedu6.com/)|✅|❎||
+|[笔趣读](https://www.biqu55.com/)|✅|❎||
 
 </details>
 
