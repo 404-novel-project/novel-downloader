@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.5.5.401
+// @version        4.5.5.402
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -5858,8 +5858,14 @@ const syosetu = () => {
         getSName: (dom) => dom.innerText.trim(),
         getContent: (dom) => {
             const content = document.createElement("div");
+            const novelP = dom.querySelector("#novel_p");
             const novelHonbun = dom.querySelector("#novel_honbun");
             const novelA = dom.querySelector("#novel_a");
+            if (novelP) {
+                content.appendChild(novelP);
+                const hr = dom.createElement("hr");
+                content.appendChild(hr);
+            }
             if (novelHonbun) {
                 content.appendChild(novelHonbun);
             }
