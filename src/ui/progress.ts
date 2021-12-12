@@ -41,7 +41,7 @@ export const vm = createApp({
       }
     },
     chapterProgressTitle() {
-      return `章节：${this.finishedChapterNumber}/${this.totalChapterNumber}, ${this.chapterPercent}`;
+      return `章节：${this.finishedChapterNumber}/${this.totalChapterNumber}`;
     },
   },
   methods: {
