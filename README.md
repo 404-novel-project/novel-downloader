@@ -49,6 +49,7 @@ ZIP压缩包，请在解压后，直接双击打开HTML文件（`index.html` 为
 |[海棠文化线上文学城](https://ebook.longmabook.com/)|✅|✅||
 |[次元姬](https://www.ciyuanji.com/)|✅|✅||
 |[米国度](https://www.myrics.com/)|✅|✅||
+|[寒武纪年原创网](https://www.hanwujinian.com/)|✅|✅||
 |[轻之文库轻小说](https://www.linovel.net/)|✅|❌|VIP章节仅支持APP查看|
 |[纵横中文网](http://www.zongheng.com/)|✅|❌||
 |[花语女生网](http://huayu.zongheng.com/)|✅|❌||
