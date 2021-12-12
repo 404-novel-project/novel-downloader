@@ -25,8 +25,14 @@ export const syosetu = () => {
     getSName: (dom) => (dom as HTMLElement).innerText.trim(),
     getContent: (dom) => {
       const content = document.createElement("div");
+      const novelP = dom.querySelector("#novel_p");
       const novelHonbun = dom.querySelector("#novel_honbun");
       const novelA = dom.querySelector("#novel_a");
+      if (novelP) {
+        content.appendChild(novelP);
+        const hr = dom.createElement("hr");
+        content.appendChild(hr);
+      }
       if (novelHonbun) {
         content.appendChild(novelHonbun);
       }
