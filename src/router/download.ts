@@ -417,7 +417,8 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = kakuyomu();
       break;
     }
-    case "ncode.syosetu.com": {
+    case "ncode.syosetu.com":
+    case "novel18.syosetu.com": {
       const { syosetu } = await import("../rules/onePage/syosetu");
       ruleClass = syosetu();
       break;
