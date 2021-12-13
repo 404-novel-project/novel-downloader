@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.5.5.410
+// @version        4.5.5.414
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -286,7 +286,7 @@
 // @require        https://cdn.jsdelivr.net/npm/idb-keyval@6.0.3/dist/umd.js#sha512-+PXdWKx8apEQ52dxoVrQIwhLZj96Gde37eq+CXYQvG059IC5VF+nQ1DvD3JKqUVPL0k+TAJ8DDunVXjzKrlrHg==
 // @require        https://cdn.jsdelivr.net/npm/loglevel@1.8.0/lib/loglevel.js#sha512-95U0EjHdDBH1jc1rMsOaY4CV3tVISgHr+7i5rFVvhWDRbsj2o0RlEdWMmDmQzoR8lJV7/6VbPZT6c3pQvkW+0Q==
 // @require        https://cdn.jsdelivr.net/npm/nunjucks@3.2.3/browser/nunjucks.min.js#sha512-Uj8C5szr1tnKPNZb6ps5gFYtTGskzsUCiwY35QP/s2JIExZl7iYNletcmOJ8D6ocuaMRi9JGVrWRePaX9raujA==
-// @require        https://cdn.jsdelivr.net/npm/vue@3.2.24/dist/vue.global.prod.js#sha512-n+qyPcNnMLgeoZfwwFgtHWRFkENc87Y+UydB+GNqApMnmWoR7Bsn+Kj06hgRcdGKl1WYA8YgqPchEYaIFGQYNg==
+// @require        https://cdn.jsdelivr.net/npm/vue@3.2.26/dist/vue.global.prod.js#sha512-IBbcf9iFu71zDGm4uuX3WOKuWTBZSFOaj9YWTZzCytQ15Ku3MfyOxxeJWQBwOOI/Fbc80FLXEFKrfMjj6MAw+Q==
 // @downloadURL    https://github.com/yingziwu/novel-downloader/raw/gh-pages/bundle-greasyfork.user.js
 // @updateURL      https://github.com/yingziwu/novel-downloader/raw/gh-pages/bundle-greasyfork.meta.js
 // ==/UserScript==
