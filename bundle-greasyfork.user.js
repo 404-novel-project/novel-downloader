@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.5.5.403
+// @version        4.5.5.404
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -147,7 +147,8 @@
 // @match          *://www.pixiv.net/novel/show.php?*
 // @match          *://www.pixiv.net/novel/series/*
 // @match          *://kakuyomu.jp/works/*
-// @match          *://ncode.syosetu.com/*
+// @match          *://ncode.syosetu.com/*/
+// @match          *://novel18.syosetu.com/*/
 // @match          *://syosetu.org/novel/*/
 // @match          *://houhuayuan.xyz/*
 // @match          *://zhaoze.art/*/
@@ -14826,7 +14827,8 @@ async function getRule() {
             ruleClass = kakuyomu();
             break;
         }
-        case "ncode.syosetu.com": {
+        case "ncode.syosetu.com":
+        case "novel18.syosetu.com": {
             const { syosetu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/syosetu.ts"));
             ruleClass = syosetu();
             break;
@@ -15178,6 +15180,20 @@ function getUI() {
                 type: "jump",
                 jumpFunction: () => (document.location.host = "www.lusetxt.com"),
             });
+        }
+        case "ncode.syosetu.com":
+        case "novel18.syosetu.com": {
+            return () => {
+                const num = document.location.pathname
+                    .split("/")
+                    .filter((s) => s.trim() !== "").length;
+                if (num === 1) {
+                    return defaultObject;
+                }
+                else {
+                    return errorObject;
+                }
+            };
         }
         default: {
             return () => defaultObject;
