@@ -293,7 +293,7 @@
   ],
   "require": [
     "https://cdn.jsdelivr.net/npm/crypto-js@4.1.1/crypto-js.js",
-    "https://cdn.jsdelivr.net/npm/fflate@0.7.1/umd/index.js",
+    "https://cdn.jsdelivr.net/npm/fflate@0.7.2/umd/index.js",
     "https://cdn.jsdelivr.net/npm/idb-keyval@6.0.3/dist/umd.js",
     "https://cdn.jsdelivr.net/npm/loglevel@1.8.0/lib/loglevel.js",
     "https://cdn.jsdelivr.net/npm/nunjucks@3.2.3/browser/nunjucks.min.js",

@@ -1490,10 +1490,10 @@ faye-websocket@^0.11.3:
   dependencies:
     websocket-driver ">=0.5.1"
 
-fflate@^0.7.1:
-  version "0.7.1"
-  resolved "https://registry.yarnpkg.com/fflate/-/fflate-0.7.1.tgz#56e87e87c3f2fe01b025fbb1c4ea835990c02fa2"
-  integrity sha512-VYM2Xy1gSA5MerKzCnmmuV2XljkpKwgJBKezW+495TTnTCh1x5HcYa1aH8wRU/MfTGhW4ziXqgwprgQUVl3Ohw==
+fflate@^0.7.2:
+  version "0.7.2"
+  resolved "https://registry.yarnpkg.com/fflate/-/fflate-0.7.2.tgz#1db42c416d7b2845d2883050aa4eef516c63f246"
+  integrity sha512-h/YiXnc37yYaGe61h3A4ZdsBzBqKG5hhrmopFizTru8xrfOiJuYX5oLnatBwNEpf9biOJrZVscuEQsUzIUAhpQ==
 
 file-entry-cache@^6.0.1:
   version "6.0.1"

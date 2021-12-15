@@ -22,6 +22,7 @@
     "bower_components",
     "jspm_packages",
     "Releases",
-    "dist"
+    "dist",
+    "tmp"
   ]
 }
