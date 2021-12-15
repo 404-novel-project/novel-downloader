@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.5.5.414
+// @version        4.5.5.415
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -282,7 +282,7 @@
 // @connect        jingcaiyuedu6.com
 // @connect        *
 // @require        https://cdn.jsdelivr.net/npm/crypto-js@4.1.1/crypto-js.js#sha512-NQVmLzNy4Lr5QTrmXvq/WzTMUnRHmv7nyIT/M6LyGPBS+TIeRxZ+YQaqWxjpRpvRMQSuYPQURZz/+pLi81xXeA==
-// @require        https://cdn.jsdelivr.net/npm/fflate@0.7.1/umd/index.js#sha512-laBNdxeV48sttD1kBYahmdSXpSRitYmkte49ZUqm3KEOUK4cIJAjqt1MYwScWvBqqP4WDtEftDSPYE1ii/bxCg==
+// @require        https://cdn.jsdelivr.net/npm/fflate@0.7.2/umd/index.js#sha512-b4i2Ut2Tho5Qrzt3pWKCkt9Q+4ECSNPdX0JsVzudNFXR2kIbV0ndgkm3fDlGvp2A6JG9tcH3ND38y+y0DrM/jQ==
 // @require        https://cdn.jsdelivr.net/npm/idb-keyval@6.0.3/dist/umd.js#sha512-+PXdWKx8apEQ52dxoVrQIwhLZj96Gde37eq+CXYQvG059IC5VF+nQ1DvD3JKqUVPL0k+TAJ8DDunVXjzKrlrHg==
 // @require        https://cdn.jsdelivr.net/npm/loglevel@1.8.0/lib/loglevel.js#sha512-95U0EjHdDBH1jc1rMsOaY4CV3tVISgHr+7i5rFVvhWDRbsj2o0RlEdWMmDmQzoR8lJV7/6VbPZT6c3pQvkW+0Q==
 // @require        https://cdn.jsdelivr.net/npm/nunjucks@3.2.3/browser/nunjucks.min.js#sha512-Uj8C5szr1tnKPNZb6ps5gFYtTGskzsUCiwY35QP/s2JIExZl7iYNletcmOJ8D6ocuaMRi9JGVrWRePaX9raujA==
