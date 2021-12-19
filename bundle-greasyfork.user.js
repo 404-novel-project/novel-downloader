@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.5.5.415
+// @version        4.6.0.417
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -13689,26 +13689,24 @@ __webpack_require__.d(__webpack_exports__, {
 
 // EXTERNAL MODULE: ./node_modules/file-saver/dist/FileSaver.min.js
 var FileSaver_min = __webpack_require__("./node_modules/file-saver/dist/FileSaver.min.js");
+// EXTERNAL MODULE: ./src/lib/misc.ts
+var misc = __webpack_require__("./src/lib/misc.ts");
 ;// CONCATENATED MODULE: external "fflate"
 const external_fflate_namespaceObject = fflate;
 // EXTERNAL MODULE: external "log"
 var external_log_ = __webpack_require__("loglevel");
 var external_log_default = /*#__PURE__*/__webpack_require__.n(external_log_);
-// EXTERNAL MODULE: ./src/lib/misc.ts
-var misc = __webpack_require__("./src/lib/misc.ts");
 ;// CONCATENATED MODULE: ./src/lib/zip.ts
 
 
 
 class FflateZip {
-    constructor(memlimit = false) {
-        this.count = 0;
+    constructor() {
+        const self = this;
         this.zcount = 0;
-        this.tcount = 0;
-        this.memlimit = memlimit;
+        this.count = 0;
         this.filenameList = [];
         this.zipOut = [];
-        const self = this;
         this.savedZip = new external_fflate_namespaceObject.Zip((err, dat, final) => {
             if (err) {
                 external_log_default().error(err);
@@ -13716,73 +13714,53 @@ class FflateZip {
                 throw err;
             }
             self.zipOut.push(dat);
-            self.zcount++;
             if (final) {
                 const zipBlob = new Blob(self.zipOut, { type: "application/zip" });
-                external_log_default().debug("[fflateZip][debug][zcount]" + self.zcount);
-                external_log_default().debug("[fflateZip][debug][count]" + self.count);
                 external_log_default().info("[fflateZip] ZIP生成完毕，文件大小：" + zipBlob.size);
                 self.zipOut = [];
-                if (typeof self.onFinal === "function") {
-                    if (typeof self.onUpdateId !== "undefined") {
-                        clearInterval(self.onUpdateId);
-                    }
+                if (typeof self.onFinal === "function" &&
+                    typeof self.onFinalError === "function") {
                     try {
                         self.onFinal(zipBlob);
                     }
                     catch (error) {
-                        if (typeof self.onFinalError === "function") {
-                            self.onFinalError(error);
-                        }
+                        self.onFinalError(error);
                     }
                 }
                 else {
-                    throw new Error("[fflateZip] 完成函数出错");
+                    throw new Error("[fflateZip] 未发现保存函数");
                 }
             }
         });
     }
-    file(filename, file) {
+    async file(filename, fileBlob) {
         if (this.filenameList.includes(filename)) {
-            external_log_default().error(`filename ${filename} has existed on zip.`);
+            external_log_default().warn(`filename ${filename} has existed on zip.`);
             return;
         }
-        this.count++;
         this.filenameList.push(filename);
-        file
-            .arrayBuffer()
-            .then((buffer) => new Uint8Array(buffer))
-            .then((chunk) => {
-            if (this.memlimit || file.type.includes("image/")) {
-                const nonStreamingFile = new external_fflate_namespaceObject.ZipPassThrough(filename);
-                this.addToSavedZip(this.savedZip, nonStreamingFile, chunk);
-                this.tcount++;
-            }
-            else {
-                const nonStreamingFile = new external_fflate_namespaceObject.AsyncZipDeflate(filename, {
-                    level: 6,
-                });
-                this.addToSavedZip(this.savedZip, nonStreamingFile, chunk);
-                this.tcount++;
-            }
-        })
-            .catch((error) => external_log_default().error(error));
-    }
-    addToSavedZip(savedZip, nonStreamingFile, chunk) {
-        savedZip.add(nonStreamingFile);
-        nonStreamingFile.push(chunk, true);
-    }
-    async generateAsync(onUpdate) {
-        while (this.tcount !== this.count) {
-            await (0,misc/* sleep */._v)(500);
+        this.count++;
+        const buffer = await fileBlob.arrayBuffer();
+        const chunk = new Uint8Array(buffer);
+        if (fileBlob.type.includes("image/")) {
+            const nonStreamingFile = new external_fflate_namespaceObject.ZipPassThrough(filename);
+            this.savedZip.add(nonStreamingFile);
+            nonStreamingFile.push(chunk, true);
+            this.zcount++;
         }
-        const self = this;
-        this.onUpdateId = window.setInterval(() => {
-            const percent = (self.zcount / 3 / self.count) * 100;
-            if (typeof onUpdate === "function") {
-                onUpdate(percent);
-            }
-        }, 100);
+        else {
+            const nonStreamingFile = new external_fflate_namespaceObject.AsyncZipDeflate(filename, {
+                level: 9,
+            });
+            this.savedZip.add(nonStreamingFile);
+            nonStreamingFile.push(chunk, true);
+            this.zcount++;
+        }
+    }
+    async generateAsync() {
+        while (this.count !== this.zcount) {
+            await (0,misc/* sleep */._v)(100);
+        }
         this.savedZip.end();
     }
 }
@@ -13793,8 +13771,6 @@ var log = __webpack_require__("./src/log.ts");
 var main = __webpack_require__("./src/main.ts");
 // EXTERNAL MODULE: ./src/setting.ts
 var setting = __webpack_require__("./src/setting.ts");
-// EXTERNAL MODULE: ./src/ui/progress.ts + 1 modules
-var progress = __webpack_require__("./src/ui/progress.ts");
 // EXTERNAL MODULE: ./src/save/main.css
 var save_main = __webpack_require__("./src/save/main.css");
 ;// CONCATENATED MODULE: ./src/save/chapter.html.j2
@@ -13894,22 +13870,15 @@ class SaveBook {
         this.saveSections();
         external_log_default().debug("[save]开始生成并保存 index.html");
         this.saveToC();
+        external_log_default().debug("[save]开始保存 Meta Data Json");
+        this.saveMetaJson();
         if (runSaveChapters) {
             external_log_default().debug("[save]开始保存章节文件");
             this.saveChapters();
         }
         else {
             external_log_default().debug("[save]保存仅标题章节文件");
-            this.chapters
-                .filter((c) => c.status !== main/* Status.saved */.qb.saved)
-                .forEach((c) => {
-                if (c.status === main/* Status.finished */.qb.finished) {
-                    this.addChapter(c);
-                }
-                else {
-                    this.addChapter(c, "Stub");
-                }
-            });
+            this.saveStubChapters(this.chapters);
         }
         external_log_default().info("[save]开始保存ZIP文件");
         const self = this;
@@ -13928,9 +13897,7 @@ class SaveBook {
             };
             this.savedZip.onFinal = finalHandle;
             this.savedZip.onFinalError = finalErrorHandle;
-            this.savedZip.generateAsync((percent) => {
-                progress.vm.zipPercent = percent;
-            });
+            this.savedZip.generateAsync();
         });
     }
     saveToC() {
@@ -13970,6 +13937,46 @@ class SaveBook {
             }
         }
     }
+    saveMetaJson() {
+        const book = Object.assign({}, this.book);
+        delete book.chapters;
+        this.savedZip.file("book.json", new Blob([JSON.stringify(book)], {
+            type: "application/json; charset=utf-8",
+        }));
+        const chapters = this.book.chapters
+            .map((c) => (0,misc/* deepcopy */.X8)(c))
+            .filter((c) => {
+            return c.contentHTML || c.status === main/* Status.saved */.qb.saved;
+        })
+            .map((c) => {
+            delete c.bookUrl;
+            delete c.bookname;
+            delete c.chapterParse;
+            delete c.charset;
+            delete c.options;
+            delete c.status;
+            delete c.retryTime;
+            delete c.contentRaw;
+            delete c.contentText;
+            delete c.contentHTML;
+            delete c.contentImages;
+            return c;
+        });
+        this.savedZip.file("chapters.json", new Blob([JSON.stringify(chapters)], {
+            type: "application/json; charset=utf-8",
+        }));
+    }
+    async saveStubChapters(chapters) {
+        chapters = chapters.filter((c) => c.status !== main/* Status.saved */.qb.saved);
+        for (const c of chapters) {
+            if (c.status === main/* Status.finished */.qb.finished) {
+                await this.addChapter(c);
+            }
+            else {
+                await this.addChapter(c, "Stub");
+            }
+        }
+    }
     saveChapters() {
         for (const chapter of this.chapters) {
             this.addChapter(chapter);
@@ -13995,7 +14002,7 @@ class SaveBook {
         return `${"0".repeat(this.chapters.length.toString().length -
             chapter.chapterNumber.toString().length)}${chapter.chapterNumber.toString()}`;
     }
-    addChapter(chapter, suffix = "") {
+    async addChapter(chapter, suffix = "") {
         const chapterName = this.getchapterName(chapter);
         const chapterNumberToSave = this.getChapterNumberToSave(chapter);
         const chapterHtmlFileName = `No${chapterNumberToSave}Chapter${suffix}.html`;
@@ -14005,7 +14012,7 @@ class SaveBook {
             chapter.contentRaw = null;
             chapter.contentHTML = null;
         }
-        this.savedZip.file(chapterHtmlFileName, chapterHTMLBlob);
+        await this.savedZip.file(chapterHtmlFileName, chapterHTMLBlob);
         chapter.chapterHtmlFileName = chapterHtmlFileName;
         chapter.status = main/* Status.saved */.qb.saved;
         if (chapter.contentImages && chapter.contentImages.length !== 0) {
@@ -14041,10 +14048,10 @@ class SaveBook {
         metaDateText += `\n下载时间：${new Date().toISOString()}\n本文件由小说下载器生成，软件地址：https://github.com/yingziwu/novel-downloader\n\n`;
         return metaDateText;
     }
-    addImageToZip(attachment, zip) {
+    async addImageToZip(attachment, zip) {
         if (attachment.status === main/* Status.finished */.qb.finished && attachment.imageBlob) {
             external_log_default().debug(`[save]添加附件，文件名：${attachment.name}，对象`, attachment.imageBlob);
-            zip.file(attachment.name, attachment.imageBlob);
+            await zip.file(attachment.name, attachment.imageBlob);
             attachment.status = main/* Status.saved */.qb.saved;
             if (!setting/* enableDebug.value */.Cy.value) {
                 attachment.imageBlob = null;
@@ -14120,16 +14127,7 @@ function getSectionsObj(chapters) {
     function sectionListSort(a, b) {
         const aKey = Number(a[0]);
         const bKey = Number(b[0]);
-        if (aKey > bKey) {
-            return 1;
-        }
-        if (aKey === bKey) {
-            return 0;
-        }
-        if (aKey < bKey) {
-            return -1;
-        }
-        return 0;
+        return aKey - bKey;
     }
     _sectionsListObj.sort(sectionListSort);
     const sectionsListObj = _sectionsListObj.map((s) => s[1]);
@@ -14252,7 +14250,7 @@ var createEl = __webpack_require__("./src/lib/createEl.ts");
 var progress = __webpack_require__("./src/ui/progress.css");
 ;// CONCATENATED MODULE: ./src/ui/progress.html
 // Module
-var code = "<div> <div id=\"nd-progress\" v-if=\"ntProgressSeen\"> <div v-if=\"chapterProgressSeen\" id=\"chapter-progress\" v-bind:style=\"{'--position': chapterPercent+'%'}\" v-bind:title=\"chapterProgressTitle\"></div> <div v-if=\"zipProgressSeen\" id=\"zip-progress\" title=\"ZIP\" v-bind:style=\"{'--position': zipPercent+'%'}\"></div> </div> </div> ";
+var code = "<div> <div id=\"nd-progress\" v-if=\"ntProgressSeen\"> <div v-if=\"chapterProgressSeen\" id=\"chapter-progress\" v-bind:style=\"{'--position': chapterPercent+'%'}\" v-bind:title=\"chapterProgressTitle\"></div> </div> </div> ";
 // Exports
 /* harmony default export */ const ui_progress = (code);
 ;// CONCATENATED MODULE: ./src/ui/progress.ts
@@ -14267,7 +14265,6 @@ const vm = (0,external_Vue_.createApp)({
         return {
             totalChapterNumber: 0,
             finishedChapterNumber: 0,
-            zipPercent: 0,
         };
     },
     computed: {
@@ -14281,9 +14278,6 @@ const vm = (0,external_Vue_.createApp)({
         },
         chapterProgressSeen() {
             return this.chapterPercent !== 0;
-        },
-        zipProgressSeen() {
-            return this.zipPercent !== 0;
         },
         ntProgressSeen() {
             if (this.chapterProgressSeen || this.zipProgressSeen) {
@@ -14301,7 +14295,6 @@ const vm = (0,external_Vue_.createApp)({
         reset() {
             this.totalChapterNumber = 0;
             this.finishedChapterNumber = 0;
-            this.zipPercent = 0;
         },
     },
     template: ui_progress,

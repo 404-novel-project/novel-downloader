@@ -4,7 +4,6 @@ export declare const el: HTMLElement;
 export interface ProgressVM extends ComponentPublicInstance {
     totalChapterNumber: number;
     finishedChapterNumber: number;
-    zipPercent: number;
     reset: () => void;
 }
 export declare const vm: ComponentPublicInstance<{}, {}, {}, {}, {}, {}, {}, {}, false, import("vue").ComponentOptionsBase<any, any, any, any, any, any, any, any, any, {}>>;

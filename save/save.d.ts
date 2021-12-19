@@ -13,10 +13,12 @@ export declare class SaveBook {
     saveLog(): void;
     saveZip(runSaveChapters?: boolean): Promise<void>;
     private saveToC;
+    private saveMetaJson;
+    private saveStubChapters;
     private saveChapters;
     private saveSections;
     private getChapterNumberToSave;
-    addChapter(chapter: Chapter, suffix?: string): void;
+    addChapter(chapter: Chapter, suffix?: string): Promise<void>;
     getchapterName(chapter: Chapter): string;
     private genMetaDateTxt;
     private addImageToZip;
