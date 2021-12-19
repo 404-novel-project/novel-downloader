@@ -8,7 +8,6 @@ export const el = createEl(`<div id="progress-bar"></div>`);
 export interface ProgressVM extends ComponentPublicInstance {
   totalChapterNumber: number;
   finishedChapterNumber: number;
-  zipPercent: number;
   reset: () => void;
 }
 export const vm = createApp({
@@ -16,7 +15,6 @@ export const vm = createApp({
     return {
       totalChapterNumber: 0,
       finishedChapterNumber: 0,
-      zipPercent: 0,
     };
   },
   computed: {
@@ -29,9 +27,6 @@ export const vm = createApp({
     },
     chapterProgressSeen() {
       return this.chapterPercent !== 0;
-    },
-    zipProgressSeen() {
-      return this.zipPercent !== 0;
     },
     ntProgressSeen() {
       if (this.chapterProgressSeen || this.zipProgressSeen) {
@@ -48,7 +43,6 @@ export const vm = createApp({
     reset() {
       this.totalChapterNumber = 0;
       this.finishedChapterNumber = 0;
-      this.zipPercent = 0;
     },
   },
   template: progressHtml,

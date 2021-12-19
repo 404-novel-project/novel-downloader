@@ -1,28 +1,22 @@
-import { AsyncZipDeflate, Zip, ZipDeflate, ZipPassThrough } from "fflate";
+import { AsyncZipDeflate, Zip, ZipPassThrough } from "fflate";
 import { log } from "../log";
 import { sleep } from "./misc";
 
 export class FflateZip {
   private zcount: number;
   private count: number;
-  private tcount: number;
   private filenameList: string[];
-  private savedZip: Zip;
   private zipOut: ArrayBuffer[];
-  private onUpdateId?: number;
-  public memlimit: boolean;
-  public onFinal?: (zipBlob: Blob) => any;
-  public onFinalError?: (error: Error) => any;
+  private savedZip: Zip;
+  public onFinal?: (zipBlob: Blob) => void;
+  public onFinalError?: (error: Error) => void;
 
-  public constructor(memlimit: boolean = false) {
-    this.count = 0;
+  public constructor() {
+    const self = this;
     this.zcount = 0;
-    this.tcount = 0;
-    this.memlimit = memlimit;
+    this.count = 0;
     this.filenameList = [];
     this.zipOut = [];
-
-    const self = this;
     this.savedZip = new Zip((err, dat, final) => {
       if (err) {
         log.error(err);
@@ -31,85 +25,56 @@ export class FflateZip {
       }
 
       self.zipOut.push(dat);
-      self.zcount++;
 
       if (final) {
         const zipBlob = new Blob(self.zipOut, { type: "application/zip" });
-        log.debug("[fflateZip][debug][zcount]" + self.zcount);
-        log.debug("[fflateZip][debug][count]" + self.count);
         log.info("[fflateZip] ZIP生成完毕，文件大小：" + zipBlob.size);
         self.zipOut = [];
-
-        if (typeof self.onFinal === "function") {
-          if (typeof self.onUpdateId !== "undefined") {
-            clearInterval(self.onUpdateId);
-          }
-
+        if (
+          typeof self.onFinal === "function" &&
+          typeof self.onFinalError === "function"
+        ) {
           try {
             self.onFinal(zipBlob);
           } catch (error) {
-            if (typeof self.onFinalError === "function") {
-              self.onFinalError(error as Error);
-            }
+            self.onFinalError(error as Error);
           }
         } else {
-          throw new Error("[fflateZip] 完成函数出错");
+          throw new Error("[fflateZip] 未发现保存函数");
         }
       }
     });
   }
 
-  public file(filename: string, file: Blob) {
+  public async file(filename: string, fileBlob: Blob) {
     if (this.filenameList.includes(filename)) {
-      log.error(`filename ${filename} has existed on zip.`);
+      log.warn(`filename ${filename} has existed on zip.`);
       return;
     }
-    this.count++;
     this.filenameList.push(filename);
+    this.count++;
 
-    file
-      .arrayBuffer()
-      .then((buffer) => new Uint8Array(buffer))
-      .then((chunk) => {
-        if (this.memlimit || file.type.includes("image/")) {
-          const nonStreamingFile = new ZipPassThrough(filename);
-          this.addToSavedZip(this.savedZip, nonStreamingFile, chunk);
-          this.tcount++;
-        } else {
-          const nonStreamingFile = new AsyncZipDeflate(filename, {
-            level: 6,
-          });
-          this.addToSavedZip(this.savedZip, nonStreamingFile, chunk);
-          this.tcount++;
-        }
-      })
-      .catch((error) => log.error(error));
-  }
-
-  private addToSavedZip(
-    savedZip: Zip,
-    nonStreamingFile: ZipDeflate | AsyncZipDeflate | ZipPassThrough,
-    chunk: Uint8Array
-  ) {
-    savedZip.add(nonStreamingFile);
-    nonStreamingFile.push(chunk, true);
-  }
-
-  public async generateAsync(
-    onUpdate?: (percent: number) => any
-  ): Promise<void> {
-    while (this.tcount !== this.count) {
-      await sleep(500);
+    const buffer = await fileBlob.arrayBuffer();
+    const chunk = new Uint8Array(buffer);
+    if (fileBlob.type.includes("image/")) {
+      const nonStreamingFile = new ZipPassThrough(filename);
+      this.savedZip.add(nonStreamingFile);
+      nonStreamingFile.push(chunk, true);
+      this.zcount++;
+    } else {
+      const nonStreamingFile = new AsyncZipDeflate(filename, {
+        level: 9,
+      });
+      this.savedZip.add(nonStreamingFile);
+      nonStreamingFile.push(chunk, true);
+      this.zcount++;
     }
+  }
 
-    const self = this;
-    this.onUpdateId = window.setInterval(() => {
-      const percent = (self.zcount / 3 / self.count) * 100;
-      if (typeof onUpdate === "function") {
-        onUpdate(percent);
-      }
-    }, 100);
-
+  public async generateAsync() {
+    while (this.count !== this.zcount) {
+      await sleep(100);
+    }
     this.savedZip.end();
   }
 }

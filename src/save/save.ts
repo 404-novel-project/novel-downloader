@@ -5,7 +5,6 @@ import { FflateZip } from "../lib/zip";
 import { log, logText } from "../log";
 import { AttachmentClass, Book, Chapter, Status } from "../main";
 import { enableCustomSaveOptions, enableDebug } from "../setting";
-import { ProgressVM, vm as progress } from "../ui/progress";
 import defaultMainStyleText from "./main.css";
 import { chapter as chapterGlobal, index, section } from "./template";
 import defaultTocStyleText from "./toc.css";
@@ -121,15 +120,7 @@ export class SaveBook {
       this.saveChapters();
     } else {
       log.debug("[save]保存仅标题章节文件");
-      this.chapters
-        .filter((c) => c.status !== Status.saved)
-        .forEach((c) => {
-          if (c.status === Status.finished) {
-            this.addChapter(c);
-          } else {
-            this.addChapter(c, "Stub");
-          }
-        });
+      this.saveStubChapters(this.chapters);
     }
 
     log.info("[save]开始保存ZIP文件");
@@ -151,9 +142,7 @@ export class SaveBook {
 
       this.savedZip.onFinal = finalHandle;
       this.savedZip.onFinalError = finalErrorHandle;
-      this.savedZip.generateAsync((percent) => {
-        (progress as ProgressVM).zipPercent = percent;
-      });
+      this.savedZip.generateAsync();
     });
   }
 
@@ -238,6 +227,17 @@ export class SaveBook {
     );
   }
 
+  private async saveStubChapters(chapters: Chapter[]) {
+    chapters = chapters.filter((c) => c.status !== Status.saved);
+    for (const c of chapters) {
+      if (c.status === Status.finished) {
+        await this.addChapter(c);
+      } else {
+        await this.addChapter(c, "Stub");
+      }
+    }
+  }
+
   private saveChapters() {
     for (const chapter of this.chapters) {
       this.addChapter(chapter);
@@ -271,7 +271,7 @@ export class SaveBook {
     )}${chapter.chapterNumber.toString()}`;
   }
 
-  public addChapter(chapter: Chapter, suffix: string = "") {
+  public async addChapter(chapter: Chapter, suffix: string = "") {
     const chapterName = this.getchapterName(chapter);
     const chapterNumberToSave = this.getChapterNumberToSave(chapter);
     const chapterHtmlFileName = `No${chapterNumberToSave}Chapter${suffix}.html`;
@@ -282,7 +282,7 @@ export class SaveBook {
       chapter.contentRaw = null;
       chapter.contentHTML = null;
     }
-    this.savedZip.file(chapterHtmlFileName, chapterHTMLBlob);
+    await this.savedZip.file(chapterHtmlFileName, chapterHTMLBlob);
     chapter.chapterHtmlFileName = chapterHtmlFileName;
     chapter.status = Status.saved;
 
@@ -323,13 +323,13 @@ export class SaveBook {
     return metaDateText;
   }
 
-  private addImageToZip(attachment: AttachmentClass, zip: FflateZip) {
+  private async addImageToZip(attachment: AttachmentClass, zip: FflateZip) {
     if (attachment.status === Status.finished && attachment.imageBlob) {
       log.debug(
         `[save]添加附件，文件名：${attachment.name}，对象`,
         attachment.imageBlob
       );
-      zip.file(attachment.name, attachment.imageBlob);
+      await zip.file(attachment.name, attachment.imageBlob);
       attachment.status = Status.saved;
       if (!enableDebug.value) {
         attachment.imageBlob = null;
