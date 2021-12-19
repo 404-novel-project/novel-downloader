@@ -1,4 +1,6 @@
 import { saveAs } from "file-saver";
+import { deepcopy } from "../lib/misc";
+import { Optional } from "../lib/typescript";
 import { FflateZip } from "../lib/zip";
 import { log, logText } from "../log";
 import { AttachmentClass, Book, Chapter, Status } from "../main";
@@ -111,6 +113,9 @@ export class SaveBook {
     log.debug("[save]开始生成并保存 index.html");
     this.saveToC();
 
+    log.debug("[save]开始保存 Meta Data Json");
+    this.saveMetaJson();
+
     if (runSaveChapters) {
       log.debug("[save]开始保存章节文件");
       this.saveChapters();
@@ -193,6 +198,44 @@ export class SaveBook {
   }`;
       }
     }
+  }
+
+  private saveMetaJson() {
+    const book = Object.assign({}, this.book) as Optional<Book>;
+    delete book.chapters;
+    this.savedZip.file(
+      "book.json",
+      new Blob([JSON.stringify(book)], {
+        type: "application/json; charset=utf-8",
+      })
+    );
+
+    const chapters = (this.book.chapters as Optional<Chapter>[])
+      .map((c) => deepcopy(c))
+      .filter((c) => {
+        return c.contentHTML || c.status === Status.saved;
+      })
+      .map((c) => {
+        delete c.bookUrl;
+        delete c.bookname;
+        delete c.chapterParse;
+        delete c.charset;
+        delete c.options;
+        delete c.status;
+        delete c.retryTime;
+        delete c.contentRaw;
+        delete c.contentText;
+        delete c.contentHTML;
+        delete c.contentImages;
+        return c;
+      });
+
+    this.savedZip.file(
+      "chapters.json",
+      new Blob([JSON.stringify(chapters)], {
+        type: "application/json; charset=utf-8",
+      })
+    );
   }
 
   private saveChapters() {
@@ -377,16 +420,7 @@ export function getSectionsObj(chapters: Chapter[]): SectionObj[] {
   function sectionListSort(a: [string, SectionObj], b: [string, SectionObj]) {
     const aKey = Number(a[0]);
     const bKey = Number(b[0]);
-    if (aKey > bKey) {
-      return 1;
-    }
-    if (aKey === bKey) {
-      return 0;
-    }
-    if (aKey < bKey) {
-      return -1;
-    }
-    return 0;
+    return aKey - bKey;
   }
   _sectionsListObj.sort(sectionListSort);
   const sectionsListObj = _sectionsListObj.map((s) => s[1]);
