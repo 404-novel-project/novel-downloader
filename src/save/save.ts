@@ -94,6 +94,10 @@ export class SaveBook {
       "style.css",
       new Blob([this.mainStyleText], { type: "text/css;charset=utf-8" })
     );
+    this.savedZip.file(
+      "toc.css",
+      new Blob([this.tocStyleText], { type: "text/css;charset=utf-8" })
+    );
 
     if (this.book.additionalMetadate.cover) {
       log.debug("[save]保存封面");
