@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.6.0.418
+// @version        4.6.0.419
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -8681,6 +8681,7 @@ const external_idbKeyval_namespaceObject = idbKeyval;
 
 
 
+
 async function replaceJjwxcCharacter(fontName, inputText) {
     let outputText = inputText;
     const jjwxcFontTable = await getJjwxcFontTable(fontName);
@@ -8710,22 +8711,39 @@ async function getJjwxcFontTable(fontName) {
 }
 async function fetchRemoteFont(fontName) {
     const url = `https://jjwxc.bgme.bid/${fontName}.json`;
-    try {
-        external_log_default().info(`[jjwxc-font]开始请求远程字体对照表 ${fontName}`);
-        const resp = await fetch(url);
-        if (resp.status === 200) {
+    external_log_default().info(`[jjwxc-font]开始请求远程字体对照表 ${fontName}`);
+    let retry = setting/* retryLimit */.o5;
+    while (retry > 0) {
+        let resp;
+        try {
+            resp = await fetch(url);
+        }
+        catch (error) {
+            external_log_default().error(error);
+            retry--;
+            if (retry > 0) {
+                await (0,misc/* sleep */._v)(5000);
+                continue;
+            }
+            else {
+                external_log_default().info(`[jjwxc-font]远程字体对照表 ${fontName} 下载失败`);
+                return undefined;
+            }
+        }
+        if (resp.ok) {
             external_log_default().info(`[jjwxc-font]远程字体对照表 ${fontName} 下载成功`);
             return (await resp.json());
         }
         else {
-            external_log_default().info(`[jjwxc-font]远程字体对照表 ${fontName} 下载失败`);
-            return undefined;
+            retry--;
+            if (retry > 0) {
+                await (0,misc/* sleep */._v)(5000);
+            }
+            else {
+                external_log_default().info(`[jjwxc-font]远程字体对照表 ${fontName} 下载失败`);
+                return undefined;
+            }
         }
-    }
-    catch (error) {
-        external_log_default().error(error);
-        external_log_default().info(`[jjwxc-font]远程字体对照表 ${fontName} 下载失败`);
-        return undefined;
     }
 }
 async function getJjwxcFontTables() {
