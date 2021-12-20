@@ -13,6 +13,7 @@ export declare class SaveBook {
     saveLog(): void;
     saveZip(runSaveChapters?: boolean): Promise<void>;
     private saveToC;
+    private modifyTocStyleText;
     private saveMetaJson;
     private saveStubChapters;
     private saveChapters;

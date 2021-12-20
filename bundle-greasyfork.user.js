@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.6.0.419
+// @version        4.6.0.420
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -4966,7 +4966,7 @@ class BaseRuleClass {
         }
         storage.set(workStatusKeyName, workStatus, 20);
         if (chapter.contentHTML !== undefined) {
-            saveBookObj.addChapter(chapter);
+            await saveBookObj.addChapter(chapter);
             progress.vm.finishedChapterNumber++;
         }
         return chapter;
@@ -13868,12 +13868,13 @@ class SaveBook {
     saveLog() {
         this.savedZip.file("debug.log", new Blob([log/* logText */.KC], { type: "text/plain; charset=UTF-8" }));
     }
-    saveZip(runSaveChapters = false) {
+    async saveZip(runSaveChapters = false) {
         external_log_default().debug("[save]保存元数据文本");
         const metaDateText = this.genMetaDateTxt();
         this.savedZip.file("info.txt", new Blob([metaDateText], { type: "text/plain;charset=utf-8" }));
         external_log_default().debug("[save]保存样式");
         this.savedZip.file("style.css", new Blob([this.mainStyleText], { type: "text/css;charset=utf-8" }));
+        this.modifyTocStyleText();
         this.savedZip.file("toc.css", new Blob([this.tocStyleText], { type: "text/css;charset=utf-8" }));
         if (this.book.additionalMetadate.cover) {
             external_log_default().debug("[save]保存封面");
@@ -13893,11 +13894,11 @@ class SaveBook {
         this.saveMetaJson();
         if (runSaveChapters) {
             external_log_default().debug("[save]开始保存章节文件");
-            this.saveChapters();
+            await this.saveChapters();
         }
         else {
             external_log_default().debug("[save]保存仅标题章节文件");
-            this.saveStubChapters(this.chapters);
+            await this.saveStubChapters(this.chapters);
         }
         external_log_default().info("[save]开始保存ZIP文件");
         const self = this;
@@ -13924,7 +13925,6 @@ class SaveBook {
         this.chapters.sort(this.chapterSort);
         const self = this;
         const sectionsListObj = getSectionsObj(self.chapters);
-        modifyTocStyleText();
         const indexHtmlText = index.render({
             creationDate: Date.now(),
             bookname: self.book.bookname,
@@ -13939,21 +13939,22 @@ class SaveBook {
         this.savedZip.file("index.html", new Blob([indexHtmlText.replaceAll("data-src-address", "src")], {
             type: "text/html; charset=UTF-8",
         }));
-        function modifyTocStyleText() {
-            if (self.book.additionalMetadate.cover) {
-                self.tocStyleText = `${self.tocStyleText}
-  .info {
-    display: grid;
-    grid-template-columns: 30% 70%;
-  }`;
-            }
-            else {
-                self.tocStyleText = `${self.tocStyleText}
-  .info {
-    display: grid;
-    grid-template-columns: 100%;
-  }`;
-            }
+    }
+    modifyTocStyleText() {
+        const self = this;
+        if (self.book.additionalMetadate.cover) {
+            self.tocStyleText = `${self.tocStyleText}
+.info {
+  display: grid;
+  grid-template-columns: 30% 70%;
+}`;
+        }
+        else {
+            self.tocStyleText = `${self.tocStyleText}
+.info {
+  display: grid;
+  grid-template-columns: 100%;
+}`;
         }
     }
     saveMetaJson() {
@@ -13996,9 +13997,9 @@ class SaveBook {
             }
         }
     }
-    saveChapters() {
+    async saveChapters() {
         for (const chapter of this.chapters) {
-            this.addChapter(chapter);
+            await this.addChapter(chapter);
         }
     }
     saveSections() {
