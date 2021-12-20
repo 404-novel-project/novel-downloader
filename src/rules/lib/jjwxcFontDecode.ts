@@ -1,6 +1,7 @@
 import { get, set, update } from "idb-keyval";
+import { sleep } from "../../lib/misc";
 import { log } from "../../log";
-import { enableJjwxcRemoteFont } from "../../setting";
+import { enableJjwxcRemoteFont, retryLimit } from "../../setting";
 
 export async function replaceJjwxcCharacter(
   fontName: string,
@@ -36,20 +37,35 @@ async function getJjwxcFontTable(fontName: string) {
 
 async function fetchRemoteFont(fontName: string) {
   const url = `https://jjwxc.bgme.bid/${fontName}.json`;
-  try {
-    log.info(`[jjwxc-font]开始请求远程字体对照表 ${fontName}`);
-    const resp = await fetch(url);
-    if (resp.status === 200) {
+  log.info(`[jjwxc-font]开始请求远程字体对照表 ${fontName}`);
+  let retry = retryLimit;
+  while (retry > 0) {
+    let resp;
+    try {
+      resp = await fetch(url);
+    } catch (error) {
+      log.error(error);
+      retry--;
+      if (retry > 0) {
+        await sleep(5000);
+        continue;
+      } else {
+        log.info(`[jjwxc-font]远程字体对照表 ${fontName} 下载失败`);
+        return undefined;
+      }
+    }
+    if (resp.ok) {
       log.info(`[jjwxc-font]远程字体对照表 ${fontName} 下载成功`);
       return (await resp.json()) as JjwxcFontTable;
     } else {
-      log.info(`[jjwxc-font]远程字体对照表 ${fontName} 下载失败`);
-      return undefined;
+      retry--;
+      if (retry > 0) {
+        await sleep(5000);
+      } else {
+        log.info(`[jjwxc-font]远程字体对照表 ${fontName} 下载失败`);
+        return undefined;
+      }
     }
-  } catch (error) {
-    log.error(error);
-    log.info(`[jjwxc-font]远程字体对照表 ${fontName} 下载失败`);
-    return undefined;
   }
 }
 
