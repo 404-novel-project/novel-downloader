@@ -82,7 +82,7 @@ export class SaveBook {
     );
   }
 
-  public saveZip(runSaveChapters = false): Promise<void> {
+  public async saveZip(runSaveChapters = false): Promise<void> {
     log.debug("[save]保存元数据文本");
     const metaDateText = this.genMetaDateTxt();
     this.savedZip.file(
@@ -94,6 +94,7 @@ export class SaveBook {
       "style.css",
       new Blob([this.mainStyleText], { type: "text/css;charset=utf-8" })
     );
+    this.modifyTocStyleText();
     this.savedZip.file(
       "toc.css",
       new Blob([this.tocStyleText], { type: "text/css;charset=utf-8" })
@@ -121,10 +122,10 @@ export class SaveBook {
 
     if (runSaveChapters) {
       log.debug("[save]开始保存章节文件");
-      this.saveChapters();
+      await this.saveChapters();
     } else {
       log.debug("[save]保存仅标题章节文件");
-      this.saveStubChapters(this.chapters);
+      await this.saveStubChapters(this.chapters);
     }
 
     log.info("[save]开始保存ZIP文件");
@@ -156,7 +157,6 @@ export class SaveBook {
 
     const self = this;
     const sectionsListObj = getSectionsObj(self.chapters);
-    modifyTocStyleText();
 
     const indexHtmlText = index.render({
       creationDate: Date.now(),
@@ -175,21 +175,22 @@ export class SaveBook {
         type: "text/html; charset=UTF-8",
       })
     );
+  }
 
-    function modifyTocStyleText() {
-      if (self.book.additionalMetadate.cover) {
-        self.tocStyleText = `${self.tocStyleText}
-  .info {
-    display: grid;
-    grid-template-columns: 30% 70%;
-  }`;
-      } else {
-        self.tocStyleText = `${self.tocStyleText}
-  .info {
-    display: grid;
-    grid-template-columns: 100%;
-  }`;
-      }
+  private modifyTocStyleText() {
+    const self = this;
+    if (self.book.additionalMetadate.cover) {
+      self.tocStyleText = `${self.tocStyleText}
+.info {
+  display: grid;
+  grid-template-columns: 30% 70%;
+}`;
+    } else {
+      self.tocStyleText = `${self.tocStyleText}
+.info {
+  display: grid;
+  grid-template-columns: 100%;
+}`;
     }
   }
 
@@ -242,9 +243,9 @@ export class SaveBook {
     }
   }
 
-  private saveChapters() {
+  private async saveChapters() {
     for (const chapter of this.chapters) {
-      this.addChapter(chapter);
+      await this.addChapter(chapter);
     }
   }
 

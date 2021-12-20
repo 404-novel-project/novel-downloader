@@ -353,7 +353,7 @@ export abstract class BaseRuleClass {
     storage.set(workStatusKeyName, workStatus, 20);
 
     if (chapter.contentHTML !== undefined) {
-      saveBookObj.addChapter(chapter);
+      await saveBookObj.addChapter(chapter);
       (progress as ProgressVM).finishedChapterNumber++;
     }
     return chapter;
