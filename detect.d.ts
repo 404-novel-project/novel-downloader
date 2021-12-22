@@ -1,4 +1,4 @@
-export declare const environments: {
+export declare const environments: () => Promise<{
     当前时间: string;
     当前页URL: string;
     当前页Referrer: string;
@@ -19,4 +19,5 @@ export declare const environments: {
     "ScriptHandler version": string;
     "Novel-downloader version": string;
     enableDebug: boolean;
-};
+    jsdelivr: unknown;
+}>;

@@ -29,6 +29,7 @@ export declare class Book {
     chapters: Chapter[];
     saveOptions: SaveOptions;
     constructor(bookUrl: string, bookname: string, author: string, introduction: string | null, introductionHTML: HTMLElement | null, additionalMetadate: BookAdditionalMetadate, chapters: Chapter[]);
+    private toJSON;
 }
 export interface ChapterAdditionalMetadate {
     lastModified?: number;
@@ -59,6 +60,7 @@ export declare class Chapter {
     constructor(bookUrl: string, bookname: string, chapterUrl: string, chapterNumber: number, chapterName: string | null, isVIP: boolean, isPaid: boolean | null, sectionName: string | null, sectionNumber: number | null, sectionChapterNumber: number | null, chapterParse: BaseRuleClass["chapterParse"], charset: string, options: object);
     init(): Promise<this>;
     private parse;
+    private toJSON;
 }
 export declare class AttachmentClass {
     url: string;
@@ -76,6 +78,7 @@ export declare class AttachmentClass {
     init(): Promise<Blob | null>;
     private downloadImage;
     private tmDownloadImage;
+    private toJSON;
 }
 export declare class ExpectError extends Error {
 }

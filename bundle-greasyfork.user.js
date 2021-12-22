@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.6.0.426
+// @version        4.6.1.428
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -4459,6 +4459,18 @@ class Book {
         this.chapters = chapters;
         _log__WEBPACK_IMPORTED_MODULE_0___default().debug("[Book]初始化完成");
     }
+    toJSON() {
+        return {
+            bookUrl: this.bookUrl,
+            bookname: this.bookname,
+            author: this.author,
+            introduction: this.introduction,
+            introductionHTML: this.introductionHTML
+                ? this.introductionHTML.outerHTML
+                : this.introductionHTML,
+            additionalMetadate: this.additionalMetadate,
+        };
+    }
 }
 class Chapter {
     constructor(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, chapterParse, charset, options) {
@@ -4536,6 +4548,23 @@ isNull:${!Boolean(this.contentHTML)} 解析成功。`);
                 };
             }
         });
+    }
+    toJSON() {
+        return {
+            bookUrl: this.bookUrl,
+            bookname: this.bookname,
+            chapterUrl: this.chapterUrl,
+            chapterNumber: this.chapterNumber,
+            chapterName: this.chapterName,
+            isVIP: this.isPaid,
+            isPaid: this.isPaid,
+            sectionName: this.sectionName,
+            sectionNumber: this.sectionNumber,
+            sectionChapterNumber: this.sectionChapterNumber,
+            status: this.status,
+            retryTime: this.retryTime,
+            chapterHtmlFileName: this.chapterHtmlFileName,
+        };
     }
 }
 class AttachmentClass {
@@ -4630,6 +4659,15 @@ class AttachmentClass {
                 return null;
             }
         });
+    }
+    toJSON() {
+        return {
+            url: this.url,
+            name: this.name,
+            mode: this.mode,
+            status: this.status,
+            retryTime: this.retryTime,
+        };
     }
 }
 class ExpectError extends Error {
@@ -13707,13 +13745,13 @@ __webpack_require__.d(__webpack_exports__, {
 
 // EXTERNAL MODULE: ./node_modules/file-saver/dist/FileSaver.min.js
 var FileSaver_min = __webpack_require__("./node_modules/file-saver/dist/FileSaver.min.js");
-// EXTERNAL MODULE: ./src/lib/misc.ts
-var misc = __webpack_require__("./src/lib/misc.ts");
 ;// CONCATENATED MODULE: external "fflate"
 const external_fflate_namespaceObject = fflate;
 // EXTERNAL MODULE: external "log"
 var external_log_ = __webpack_require__("loglevel");
 var external_log_default = /*#__PURE__*/__webpack_require__.n(external_log_);
+// EXTERNAL MODULE: ./src/lib/misc.ts
+var misc = __webpack_require__("./src/lib/misc.ts");
 ;// CONCATENATED MODULE: ./src/lib/zip.ts
 
 
@@ -13829,7 +13867,6 @@ var toc = __webpack_require__("./src/save/toc.css");
 
 
 
-
 class SaveBook {
     constructor(book) {
         this.book = book;
@@ -13928,7 +13965,6 @@ class SaveBook {
         const indexHtmlText = index.render({
             creationDate: Date.now(),
             bookname: self.book.bookname,
-            tocStyleText: self.tocStyleText,
             author: self.book.author,
             cover: self.book.additionalMetadate.cover,
             introductionHTML: self.book.introductionHTML?.outerHTML,
@@ -13958,31 +13994,10 @@ class SaveBook {
         }
     }
     saveMetaJson() {
-        const book = Object.assign({}, this.book);
-        delete book.chapters;
-        this.savedZip.file("book.json", new Blob([JSON.stringify(book)], {
+        this.savedZip.file("book.json", new Blob([JSON.stringify(this.book)], {
             type: "application/json; charset=utf-8",
         }));
-        const chapters = this.book.chapters
-            .map((c) => (0,misc/* deepcopy */.X8)(c))
-            .filter((c) => {
-            return c.contentHTML || c.status === main/* Status.saved */.qb.saved;
-        })
-            .map((c) => {
-            delete c.bookUrl;
-            delete c.bookname;
-            delete c.chapterParse;
-            delete c.charset;
-            delete c.options;
-            delete c.status;
-            delete c.retryTime;
-            delete c.contentRaw;
-            delete c.contentText;
-            delete c.contentHTML;
-            delete c.contentImages;
-            return c;
-        });
-        this.savedZip.file("chapters.json", new Blob([JSON.stringify(chapters)], {
+        this.savedZip.file("chapters.json", new Blob([JSON.stringify(this.book.chapters)], {
             type: "application/json; charset=utf-8",
         }));
     }
@@ -14965,7 +14980,14 @@ function check(name) {
     }
     return [false, targetLength].join(", ");
 }
-const environments = {
+function jsdelivrTest() {
+    return new Promise((resolve, reject) => {
+        fetch("https://cdn.jsdelivr.net/npm/idb-keyval/dist/umd.js")
+            .then((resp) => resolve(true))
+            .catch((error) => resolve(false));
+    });
+}
+const environments = async () => ({
     当前时间: new Date().toISOString(),
     当前页URL: document.location.href,
     当前页Referrer: document.referrer,
@@ -14986,7 +15008,8 @@ const environments = {
     "ScriptHandler version": GM/* _GM_info.version */._p.version,
     "Novel-downloader version": GM/* _GM_info.script.version */._p.script.version,
     enableDebug: src_setting/* enableDebug.value */.Cy.value,
-};
+    jsdelivr: await jsdelivrTest(),
+});
 
 ;// CONCATENATED MODULE: ./src/global.ts
 
@@ -15936,9 +15959,9 @@ function ui_init() {
 
 
 
-function printEnvironments() {
+async function printEnvironments() {
     external_log_default().info("[Init]开始载入小说下载器……");
-    Object.entries(environments).forEach((kv) => external_log_default().info("[Init]" + kv.join("：")));
+    Object.entries(await environments()).forEach((kv) => external_log_default().info("[Init]" + kv.join("：")));
 }
 function src_main() {
     printEnvironments();
