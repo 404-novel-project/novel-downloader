@@ -54,6 +54,19 @@ export class Book {
     this.chapters = chapters;
     log.debug("[Book]初始化完成");
   }
+
+  private toJSON() {
+    return {
+      bookUrl: this.bookUrl,
+      bookname: this.bookname,
+      author: this.author,
+      introduction: this.introduction,
+      introductionHTML: this.introductionHTML
+        ? this.introductionHTML.outerHTML
+        : this.introductionHTML,
+      additionalMetadate: this.additionalMetadate,
+    };
+  }
 }
 
 export interface ChapterAdditionalMetadate {
@@ -208,6 +221,24 @@ isNull:${!Boolean(this.contentHTML)} 解析成功。`);
         }
       });
   }
+
+  private toJSON() {
+    return {
+      bookUrl: this.bookUrl,
+      bookname: this.bookname,
+      chapterUrl: this.chapterUrl,
+      chapterNumber: this.chapterNumber,
+      chapterName: this.chapterName,
+      isVIP: this.isPaid,
+      isPaid: this.isPaid,
+      sectionName: this.sectionName,
+      sectionNumber: this.sectionNumber,
+      sectionChapterNumber: this.sectionChapterNumber,
+      status: this.status,
+      retryTime: this.retryTime,
+      chapterHtmlFileName: this.chapterHtmlFileName,
+    };
+  }
 }
 
 // tslint:disable-next-line:max-classes-per-file
@@ -325,6 +356,16 @@ export class AttachmentClass {
           return null;
         }
       });
+  }
+
+  private toJSON() {
+    return {
+      url: this.url,
+      name: this.name,
+      mode: this.mode,
+      status: this.status,
+      retryTime: this.retryTime,
+    };
   }
 }
 

@@ -194,41 +194,16 @@ export class SaveBook {
   }
 
   private saveMetaJson() {
-    const book = Object.assign({}, this.book) as Optional<Book>;
-    delete book.chapters;
-    if (book.introductionHTML) {
-      // @ts-expect-error
-      book.introductionHTML = book.introductionHTML.outerHTML;
-    }
     this.savedZip.file(
       "book.json",
-      new Blob([JSON.stringify(book)], {
+      new Blob([JSON.stringify(this.book)], {
         type: "application/json; charset=utf-8",
       })
     );
 
-    const chapters = (this.book.chapters as Optional<Chapter>[])
-      .map((c) => deepcopy(c))
-      .filter((c) => {
-        return c.contentHTML || c.status === Status.saved;
-      })
-      .map((c) => {
-        delete c.bookUrl;
-        delete c.bookname;
-        delete c.chapterParse;
-        delete c.charset;
-        delete c.options;
-        delete c.retryTime;
-        delete c.contentRaw;
-        delete c.contentText;
-        delete c.contentHTML;
-        delete c.contentImages;
-        return c;
-      });
-
     this.savedZip.file(
       "chapters.json",
-      new Blob([JSON.stringify(chapters)], {
+      new Blob([JSON.stringify(this.book.chapters)], {
         type: "application/json; charset=utf-8",
       })
     );
