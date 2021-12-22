@@ -161,7 +161,6 @@ export class SaveBook {
     const indexHtmlText = index.render({
       creationDate: Date.now(),
       bookname: self.book.bookname,
-      tocStyleText: self.tocStyleText,
       author: self.book.author,
       cover: self.book.additionalMetadate.cover,
       introductionHTML: self.book.introductionHTML?.outerHTML,
@@ -197,6 +196,10 @@ export class SaveBook {
   private saveMetaJson() {
     const book = Object.assign({}, this.book) as Optional<Book>;
     delete book.chapters;
+    if (book.introductionHTML) {
+      // @ts-expect-error
+      book.introductionHTML = book.introductionHTML.outerHTML;
+    }
     this.savedZip.file(
       "book.json",
       new Blob([JSON.stringify(book)], {
@@ -215,7 +218,6 @@ export class SaveBook {
         delete c.chapterParse;
         delete c.charset;
         delete c.options;
-        delete c.status;
         delete c.retryTime;
         delete c.contentRaw;
         delete c.contentText;

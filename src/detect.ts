@@ -22,7 +22,15 @@ function check(name: string) {
   return [false, targetLength].join(", ");
 }
 
-export const environments = {
+function jsdelivrTest() {
+  return new Promise((resolve, reject) => {
+    fetch("https://cdn.jsdelivr.net/npm/idb-keyval/dist/umd.js")
+      .then((resp) => resolve(true))
+      .catch((error) => resolve(false));
+  });
+}
+
+export const environments = async () => ({
   当前时间: new Date().toISOString(),
   当前页URL: document.location.href,
   当前页Referrer: document.referrer,
@@ -44,4 +52,5 @@ export const environments = {
   "ScriptHandler version": _GM_info.version,
   "Novel-downloader version": _GM_info.script.version,
   enableDebug: enableDebug.value,
-};
+  jsdelivr: await jsdelivrTest(),
+});

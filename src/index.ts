@@ -6,9 +6,9 @@ import { enableDebug } from "./setting";
 import "./ui/fixVue";
 import { init as uiInit } from "./ui/ui";
 
-function printEnvironments() {
+async function printEnvironments() {
   log.info("[Init]开始载入小说下载器……");
-  Object.entries(environments).forEach((kv) =>
+  Object.entries(await environments()).forEach((kv) =>
     log.info("[Init]" + kv.join("："))
   );
 }
