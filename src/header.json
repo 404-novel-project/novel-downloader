@@ -229,6 +229,7 @@
   ],
   "connect": [
     "self",
+    "cdn.jsdelivr.net",
     "shouda8.com",
     "shouda88.com",
     "qidian.com",

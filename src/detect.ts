@@ -1,4 +1,6 @@
+import { GmWindow } from "./global";
 import { _GM_info } from "./lib/GM";
+import { gfetch } from "./lib/http";
 import { storageAvailable } from "./lib/misc";
 import { enableDebug } from "./setting";
 
@@ -24,7 +26,7 @@ function check(name: string) {
 
 function jsdelivrTest() {
   return new Promise((resolve, reject) => {
-    fetch("https://cdn.jsdelivr.net/npm/idb-keyval/dist/umd.js")
+    gfetch("https://cdn.jsdelivr.net/npm/idb-keyval/dist/umd.js")
       .then((resp) => resolve(true))
       .catch((error) => resolve(false));
   });
@@ -33,6 +35,7 @@ function jsdelivrTest() {
 export const environments = async () => ({
   当前时间: new Date().toISOString(),
   当前页URL: document.location.href,
+  workerId: (window as GmWindow).workerId,
   当前页Referrer: document.referrer,
   浏览器UA: navigator.userAgent,
   浏览器语言: navigator.languages,

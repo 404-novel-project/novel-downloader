@@ -1,6 +1,6 @@
 import { GmWindow, UnsafeWindow } from "./global";
 import { clearAttachmentClassCache } from "./lib/attachments";
-import { concurrencyRun } from "./lib/misc";
+import { concurrencyRun, sleep } from "./lib/misc";
 import { log, saveLogTextToFile } from "./log";
 import {
   AttachmentClass,
@@ -24,10 +24,12 @@ import {
 import { failedPlus, printStat, successPlus } from "./stat";
 import { ProgressVM, vm as progress } from "./ui/progress";
 
-interface WorkStatusObj {
-  [index: string]: boolean;
+interface BcMessage {
+  type: "ping" | "pong" | "close";
+  src?: string;
+  workerId: string;
+  url: string;
 }
-const workStatusKeyName = "novel-downloader-EaraVl9TtSM2405L";
 
 export interface ChapterParseObject {
   chapterName: string | null;
@@ -49,11 +51,42 @@ export abstract class BaseRuleClass {
   public book?: Book;
 
   private audio?: HTMLAudioElement;
+  private bcWorker!: BroadcastChannel;
+  private bcWorkerMessages!: BcMessage[];
 
   public constructor() {
+    const self = this;
+
     this.imageMode = "TM";
     this.charset = document.characterSet;
     this.concurrencyLimit = 10;
+    registerBroadcastChannel();
+
+    function registerBroadcastChannel(): void {
+      self.bcWorker = new BroadcastChannel("novel-downloader-worker");
+      const broadcastChannelWorker = self.bcWorker;
+      self.bcWorkerMessages = [];
+      const messages = self.bcWorkerMessages;
+      broadcastChannelWorker.onmessage = (ev) => {
+        const message = ev.data as BcMessage;
+
+        if (message.type === "ping") {
+          const pong: BcMessage = {
+            type: "pong",
+            src: message.workerId,
+            workerId: (window as GmWindow).workerId,
+            url: document.location.href,
+          };
+          broadcastChannelWorker.postMessage(pong);
+        }
+        if (message.type === "pong") {
+          messages.push(message);
+        }
+        if (message.type === "close") {
+          //
+        }
+      };
+    }
   }
 
   public abstract bookParse(): Promise<Book>;
@@ -67,13 +100,23 @@ export abstract class BaseRuleClass {
     options: object
   ): Promise<ChapterParseObject>;
 
-  public async run() {
+  public async run(): Promise<Book | undefined> {
     log.info(`[run]下载开始`);
     const self = this;
 
     try {
-      if (!self.preHook()) return;
+      await self.preHook();
+      await initBook();
+      const saveBookObj = initSave(self.book as Book);
+      await self.initChapters(self.book as Book, saveBookObj);
+      await save(saveBookObj);
+      self.postHook();
+      return self.book;
+    } catch (error) {
+      self.catchError(error as Error);
+    }
 
+    async function initBook(): Promise<void> {
       if (
         (window as GmWindow)._book &&
         (window as GmWindow)._url === document.location.href
@@ -84,58 +127,39 @@ export abstract class BaseRuleClass {
         (window as GmWindow)._book = self.book;
         (window as GmWindow)._url = document.location.href;
       }
-
       log.debug("[book]Book object:\n" + JSON.stringify(self.book));
-      const saveBookObj = self.getSave(self.book as Book);
-      await self.initChapters(self.book as Book, saveBookObj);
-
-      log.debug("[run]开始保存文件");
-      saveBookObj.saveTxt();
-      await saveBookObj.saveZip(false);
-
-      self.postHook();
-      self.postCallback();
-      successPlus();
-      printStat();
-      return self.book;
-    } catch (error) {
-      self.catchError(error as Error);
     }
-  }
 
-  protected preTest() {
-    const self = this;
-    const storage = (window as GmWindow).customStorage;
-    let workStatus = storage.get(workStatusKeyName) as
-      | WorkStatusObj
-      | undefined;
-    if (workStatus) {
-      const nowNumber = Object.keys(workStatus).length;
-      if (self.maxRunLimit && nowNumber >= self.maxRunLimit) {
-        return false;
+    function initSave(book: Book): SaveBook {
+      log.debug("[run]保存数据");
+      if (
+        enableCustomSaveOptions &&
+        typeof (unsafeWindow as UnsafeWindow).saveOptions === "object" &&
+        saveOptionsValidate((unsafeWindow as UnsafeWindow).saveOptions)
+      ) {
+        const saveOptionsInner = (unsafeWindow as UnsafeWindow).saveOptions;
+        if (saveOptionsInner) {
+          log.info("[run]发现自定义保存参数，内容如下\n", saveOptionsInner);
+          return getSaveBookObj(book, saveOptionsInner);
+        }
       }
-    } else {
-      workStatus = {};
-      workStatus[document.location.href] = true;
-      storage.set(workStatusKeyName, workStatus, 20);
+      return getSaveBookObj(book, {});
     }
-    return true;
+
+    async function save(saveObj: SaveBook): Promise<void> {
+      log.debug("[run]开始保存文件");
+      saveObj.saveTxt();
+      await saveObj.saveZip(false);
+    }
   }
 
-  protected preWarning() {
-    return true;
-  }
-
-  protected preHook() {
+  protected async preHook(): Promise<void> {
     const self = this;
-    if (!self.preTest()) {
+    if (!(await preTest())) {
       const alertText = `当前网站目前最多允许${self.maxRunLimit}个下载任务同时进行。\n请待其它下载任务完成后，再行尝试。`;
       alert(alertText);
       log.info(`[run]${alertText}`);
-      return false;
-    }
-    if (!self.preWarning()) {
-      return false;
+      throw new ExpectError(alertText);
     }
 
     self.audio = new Audio(
@@ -144,148 +168,53 @@ export abstract class BaseRuleClass {
     self.audio.loop = true;
     self.audio.play();
 
-    const confirmExit = (e: BeforeUnloadEvent) => {
+    window.onbeforeunload = (e: BeforeUnloadEvent) => {
       e.preventDefault();
       const confirmationText =
         "您正尝试离开本页面，当前页面有下载任务正在运行，是否确认离开？";
       return (e.returnValue = confirmationText);
     };
-    window.onbeforeunload = confirmExit;
-
     (window as GmWindow).downloading = true;
 
-    return true;
-  }
+    async function preTest(): Promise<boolean> {
+      const broadcastChannelWorker = self.bcWorker;
+      const messages = self.bcWorkerMessages;
+      const ping: BcMessage = {
+        type: "ping",
+        workerId: (window as GmWindow).workerId,
+        url: document.location.href,
+      };
+      broadcastChannelWorker.postMessage(ping);
+      await sleep(300);
+      const workers = messages
+        .filter((m) => m.type === "pong")
+        .filter((m) => m.src === (window as GmWindow).workerId)
+        .map((m) => ({
+          id: m.workerId,
+          url: m.url,
+        }));
+      log.info(JSON.stringify(workers, undefined, 4));
+      const nowRunning = workers.length;
+      log.info(`[preTest]nowRunning: ${nowRunning}`);
 
-  protected postCallback() {
-    if (
-      enableCustomFinishCallback &&
-      typeof (unsafeWindow as UnsafeWindow).customFinishCallback === "function"
-    ) {
-      const customFinishCallback = (unsafeWindow as UnsafeWindow)
-        .customFinishCallback;
-      if (customFinishCallback) {
-        log.info(
-          `发现自定义结束回调函数，内容如下：\n${customFinishCallback.toString()}`
-        );
-        customFinishCallback();
-      }
-    }
-  }
-
-  protected postHook() {
-    const self = this;
-    const storage = (window as GmWindow).customStorage;
-    const workStatus = storage.get(workStatusKeyName) as
-      | WorkStatusObj
-      | undefined;
-    if (workStatus) {
-      delete workStatus[document.location.href];
-    }
-
-    clearAttachmentClassCache();
-
-    self.audio?.pause();
-    self.audio?.remove();
-
-    window.onbeforeunload = null;
-    (window as GmWindow).downloading = false;
-
-    (progress as ProgressVM).reset();
-
-    (window as GmWindow)._book = undefined;
-    (window as GmWindow)._url = undefined;
-
-    return true;
-  }
-
-  protected catchError(error: Error) {
-    const self = this;
-    log.error(error);
-    log.trace(error);
-
-    self.postHook();
-
-    if (!(error instanceof ExpectError)) {
-      document.getElementById("button-div")?.remove();
-      log.error(
-        "运行过程出错，请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/yingziwu/novel-downloader"
-      );
-
-      failedPlus();
-      alert(
-        "运行过程出错，请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/yingziwu/novel-downloader"
-      );
-      saveLogTextToFile();
-    }
-  }
-
-  protected getSave(book: Book) {
-    log.debug("[run]保存数据");
-    if (
-      enableCustomSaveOptions &&
-      typeof (unsafeWindow as UnsafeWindow).saveOptions === "object" &&
-      saveOptionsValidate((unsafeWindow as UnsafeWindow).saveOptions)
-    ) {
-      const saveOptionsInner = (unsafeWindow as UnsafeWindow).saveOptions;
-      if (saveOptionsInner) {
-        log.info("[run]发现自定义保存参数，内容如下\n", saveOptionsInner);
-        return getSaveBookObj(book, saveOptionsInner);
-      }
-    }
-    return getSaveBookObj(book, {});
-  }
-
-  protected getChapters(book: Book) {
-    function isEnable() {
-      if (
-        enableCustomChapterFilter &&
-        typeof (unsafeWindow as UnsafeWindow).chapterFilter === "function"
-      ) {
-        let text =
-          "[initChapters]发现自定义筛选函数，自定义筛选函数内容如下：\n";
-        // @ts-expect-error
-        text += (unsafeWindow as UnsafeWindow).chapterFilter.toString();
-        log.info(text);
-        return true;
+      if (self.maxRunLimit) {
+        return nowRunning < self.maxRunLimit;
       } else {
-        return false;
+        return true;
       }
     }
-
-    function _filter(chapter: Chapter) {
-      let b = true;
-      try {
-        // @ts-expect-error
-        const u = (unsafeWindow as UnsafeWindow).chapterFilter(chapter);
-        if (typeof u === "boolean") {
-          b = u;
-        }
-      } catch (error) {
-        log.error("运行自定义筛选函数时出错。", error);
-        log.trace(error);
-      }
-      return b;
-    }
-
-    let chapters = book.chapters.filter(
-      (chapter) => chapter.status === Status.pending
-    );
-    const enabled = isEnable();
-    if (enabled) {
-      log.debug("[initChapters]筛选需下载章节");
-      chapters = chapters.filter((chapter) => _filter(chapter));
-    }
-    return chapters;
   }
 
-  protected async initChapters(book: Book, saveBookObj: SaveBook) {
+  protected async initChapters(
+    book: Book,
+    saveBookObj: SaveBook
+  ): Promise<Chapter[]> {
     const self = this;
     log.info(`[initChapters]开始初始化章节`);
     Object.entries(self).forEach((kv) =>
       log.info(`[initChapters] ${kv[0]}: ${kv[1]}`)
     );
-    const chapters = self.getChapters(book);
+    const chapters = getChapters(book);
     if (chapters.length === 0) {
       log.error(`[initChapters]初始化章节出错，未找到需初始化章节`);
       return [];
@@ -300,7 +229,7 @@ export abstract class BaseRuleClass {
         }
         try {
           let chapterObj = await chapter.init();
-          chapterObj = await self.postChapterParseHook(chapterObj, saveBookObj);
+          chapterObj = await postChapterParseHook(chapterObj, saveBookObj);
         } catch (error) {
           log.error(error);
           log.trace(error);
@@ -320,10 +249,7 @@ export abstract class BaseRuleClass {
           }
           try {
             let chapterObj = await curChapter.init();
-            chapterObj = await self.postChapterParseHook(
-              chapterObj,
-              saveBookObj
-            );
+            chapterObj = await postChapterParseHook(chapterObj, saveBookObj);
             return chapterObj;
           } catch (error) {
             log.error(error);
@@ -334,28 +260,126 @@ export abstract class BaseRuleClass {
     }
     log.info(`[initChapters]章节初始化完毕`);
     return chapters;
+
+    function getChapters(_book: Book): Chapter[] {
+      function isEnable(): boolean {
+        if (
+          enableCustomChapterFilter &&
+          typeof (unsafeWindow as UnsafeWindow).chapterFilter === "function"
+        ) {
+          let text =
+            "[initChapters]发现自定义筛选函数，自定义筛选函数内容如下：\n";
+          // @ts-expect-error
+          text += (unsafeWindow as UnsafeWindow).chapterFilter.toString();
+          log.info(text);
+          return true;
+        } else {
+          return false;
+        }
+      }
+
+      function _filter(chapter: Chapter): boolean {
+        let b = true;
+        try {
+          // @ts-expect-error
+          const u = (unsafeWindow as UnsafeWindow).chapterFilter(chapter);
+          if (typeof u === "boolean") {
+            b = u;
+          }
+        } catch (error) {
+          log.error("运行自定义筛选函数时出错。", error);
+          log.trace(error);
+        }
+        return b;
+      }
+
+      let _chapters = _book.chapters.filter(
+        (chapter) => chapter.status === Status.pending
+      );
+      const enabled = isEnable();
+      if (enabled) {
+        log.debug("[initChapters]筛选需下载章节");
+        _chapters = _chapters.filter((chapter) => _filter(chapter));
+      }
+      return _chapters;
+    }
+
+    async function postChapterParseHook(
+      chapter: Chapter,
+      saveObj: SaveBook
+    ): Promise<Chapter> {
+      if (chapter.contentHTML !== undefined) {
+        await saveObj.addChapter(chapter);
+        (progress as ProgressVM).finishedChapterNumber++;
+      }
+      return chapter;
+    }
   }
 
-  public async postChapterParseHook(
-    chapter: Chapter,
-    saveBookObj: SaveBook
-  ): Promise<Chapter> {
-    const storage = (window as GmWindow).customStorage;
-    let workStatus = storage.get(workStatusKeyName) as
-      | WorkStatusObj
-      | undefined;
-    if (workStatus) {
-      workStatus[document.location.href] = true;
-    } else {
-      workStatus = {};
-      workStatus[document.location.href] = true;
-    }
-    storage.set(workStatusKeyName, workStatus, 20);
+  protected postHook(): void {
+    const self = this;
 
-    if (chapter.contentHTML !== undefined) {
-      await saveBookObj.addChapter(chapter);
-      (progress as ProgressVM).finishedChapterNumber++;
+    clearAttachmentClassCache();
+
+    self.audio?.pause();
+    self.audio?.remove();
+
+    const closeMessage: BcMessage = {
+      type: "close",
+      workerId: (window as GmWindow).workerId,
+      url: document.location.href,
+    };
+    self.bcWorker?.postMessage(closeMessage);
+    self.bcWorker?.close();
+
+    window.onbeforeunload = null;
+    (window as GmWindow).downloading = false;
+
+    (progress as ProgressVM).reset();
+
+    (window as GmWindow)._book = undefined;
+    (window as GmWindow)._url = undefined;
+
+    postCallback();
+    successPlus();
+    printStat();
+
+    function postCallback(): void {
+      if (
+        enableCustomFinishCallback &&
+        typeof (unsafeWindow as UnsafeWindow).customFinishCallback ===
+          "function"
+      ) {
+        const customFinishCallback = (unsafeWindow as UnsafeWindow)
+          .customFinishCallback;
+        if (customFinishCallback) {
+          log.info(
+            `发现自定义结束回调函数，内容如下：\n${customFinishCallback.toString()}`
+          );
+          customFinishCallback();
+        }
+      }
     }
-    return chapter;
+  }
+
+  protected catchError(error: Error): void {
+    const self = this;
+    log.error(error);
+    log.trace(error);
+
+    self.postHook();
+
+    if (!(error instanceof ExpectError)) {
+      document.getElementById("button-div")?.remove();
+      log.error(
+        "运行过程出错，请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/yingziwu/novel-downloader"
+      );
+
+      failedPlus();
+      alert(
+        "运行过程出错，请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/yingziwu/novel-downloader"
+      );
+      saveLogTextToFile();
+    }
   }
 }

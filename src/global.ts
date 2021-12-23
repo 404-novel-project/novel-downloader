@@ -6,6 +6,7 @@ import { BaseRuleClass } from "./rules";
 import { SaveOptions, SectionObj } from "./save/save";
 
 export interface WindowObject extends Window {
+  workerId: string;
   downloading: boolean;
   customStorage: LocalStorageExpired;
   stopFlag: boolean;
@@ -32,6 +33,7 @@ interface UnsafeWindowObject {
 export type UnsafeWindow = UnsafeWindowObject & Window & typeof globalThis;
 
 export function init() {
+  (window as GmWindow).workerId = Math.random().toString().replace("0.", "");
   (window as GmWindow).downloading = false;
   (window as GmWindow).customStorage = new LocalStorageExpired();
   (window as GmWindow).stopFlag = false;

@@ -1,6 +1,6 @@
 {
   "name": "novel-downloader",
-  "version": "4.6.1",
+  "version": "4.6.2",
   "description": "novel downloader",
   "main": "index.js",
   "scripts": {
@@ -29,6 +29,7 @@
     "@types/file-saver": "^2.0.1",
     "@types/node": "^17.0.1",
     "@types/nunjucks": "^3.2.0",
+    "@types/streamsaver": "^2.0.1",
     "@types/tampermonkey": "^4.0.5",
     "css-loader": "^6.5.1",
     "eslint": "^8.0.0",
@@ -56,6 +57,8 @@
     "idb-keyval": "^6.0.3",
     "loglevel": "^1.7.1",
     "nunjucks": "^3.2.3",
-    "vue": "^3.2.22"
+    "streamsaver": "^2.0.5",
+    "vue": "^3.2.22",
+    "web-streams-polyfill": "^3.2.0"
   }
 }
