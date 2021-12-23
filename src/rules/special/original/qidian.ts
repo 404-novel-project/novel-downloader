@@ -80,7 +80,7 @@ export class Qidian extends BaseRuleClass {
         document.querySelector("#J-catalogCount") as HTMLSpanElement
       ).innerText.match(/\d+/);
       if (span) {
-        return Number(span[0]);
+        return parseInt(span[0]);
       }
     };
     if (!(liLength && getChapterTotalNumber() === liLength)) {

@@ -106,7 +106,7 @@ export class Hetushu extends BaseRuleClass {
       let path;
       let bid;
       let sid;
-      let position;
+      // let position;
       if (
         /\/(book[0-9]?)\/([0-9]+)\/([0-9]+)\.html(\?position=([0-9]+))?$/.test(
           chapterUrl // https://www.hetushu.com/book/1472/994331.html
@@ -115,7 +115,7 @@ export class Hetushu extends BaseRuleClass {
         path = RegExp.$1; // book
         bid = RegExp.$2; // 1472
         sid = RegExp.$3; // 994331
-        position = RegExp.$5;
+        // position = RegExp.$5;
       } else {
         return false;
       }
@@ -144,12 +144,9 @@ export class Hetushu extends BaseRuleClass {
         .catch((error) => log.error(error));
 
       if (token) {
-        interface TokenDict {
-          [index: number]: number;
-        }
         const tokenDict = atob(token)
           .split(/[A-Z]+%/)
-          .map((v) => Number(v));
+          .map((v) => parseInt(v));
 
         const thisBody = doc.querySelector("#content") as HTMLElement;
         let b = 0;

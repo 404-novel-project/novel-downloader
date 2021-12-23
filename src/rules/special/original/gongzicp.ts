@@ -332,7 +332,7 @@ export class Gongzicp extends BaseRuleClass {
           "v4",
           `read-${chapterObj.id}.html`,
         ].join("/");
-        const chapterNumber = Number(chapterObj.order);
+        const chapterNumber = parseInt(chapterObj.order);
         const chapterName = chapterObj.name;
         const isVIP = chapterObj.pay;
         const isPaid = chapterObj.is_sub;

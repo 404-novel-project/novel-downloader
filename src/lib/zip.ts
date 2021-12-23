@@ -57,13 +57,14 @@ export class FflateZip {
       if (err) {
         log.error(err);
         log.trace(err);
-        writer.abort();
+        if (self.stream) {
+          writer.abort();
+        }
         throw err;
       }
 
       if (self.stream) {
         writer.write(dat);
-        log.info();
       } else {
         self.zipOut = new Blob([self.zipOut, dat], { type: "application/zip" });
       }

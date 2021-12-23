@@ -326,6 +326,7 @@ export abstract class BaseRuleClass {
     };
     self.bcWorker?.postMessage(closeMessage);
     self.bcWorker?.close();
+    self.bcWorkerMessages.splice(0, self.bcWorkerMessages.length);
 
     window.onbeforeunload = null;
     (window as GmWindow).downloading = false;

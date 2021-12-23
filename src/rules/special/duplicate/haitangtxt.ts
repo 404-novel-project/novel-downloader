@@ -62,7 +62,11 @@ function getClass(
       };
       const getIndexUrls = () => {
         const indexUrlsI = [];
-        const maxPageNumber = Number(getMaxPageNumber());
+        const _maxPageNumber = getMaxPageNumber();
+        if (_maxPageNumber === undefined) {
+          throw new Error("getMaxPageNumber return null ");
+        }
+        const maxPageNumber = parseInt(_maxPageNumber);
         for (let i = 1; i <= maxPageNumber; i++) {
           const indexUrl =
             [
@@ -150,13 +154,16 @@ function getClass(
           .match(/"(http.+)"/);
         if (_codeurl) {
           codeurl = _codeurl[1];
-          code = Number(new URL(codeurl).searchParams.get("code"));
+          const _code = new URL(codeurl).searchParams.get("code");
+          if (_code) {
+            code = parseInt(_code);
+          }
         }
 
         if (_e) {
           const e = atob(_e)
             .split(/[A-Z]+%/)
-            .map((v) => Number(v));
+            .map((v) => parseInt(v));
 
           const childNode = [];
           if (

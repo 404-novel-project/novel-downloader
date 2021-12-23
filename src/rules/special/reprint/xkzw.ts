@@ -99,7 +99,7 @@ export class Xkzw extends BaseRuleClass {
                 .slice(-1)[0]
                 .replace(".html", "");
               ttmpChapterList.push({
-                chapterid: Number(chapterid) - bookid * 11,
+                chapterid: parseInt(chapterid) - bookid * 11,
                 chaptername: chapterName,
                 isempty: 0,
                 originalurl: "",

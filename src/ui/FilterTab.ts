@@ -41,7 +41,7 @@ export const filterOptionDict: FilterOptionDict = {
           case /^\d+$/.test(s): {
             const _m = s.match(/^(\d+)$/);
             if (_m?.length === 2) {
-              const m = Number(_m[1]);
+              const m = parseInt(_m[1]);
               if (m === n) {
                 return true;
               }
@@ -63,7 +63,7 @@ export const filterOptionDict: FilterOptionDict = {
           case /^\d+-$/.test(s): {
             const _m = s.match(/^(\d+)-$/);
             if (_m?.length === 2) {
-              const m = Number(_m[1]);
+              const m = parseInt(_m[1]);
               if (n >= m) {
                 return true;
               }
@@ -74,7 +74,7 @@ export const filterOptionDict: FilterOptionDict = {
           case /^-\d+$/.test(s): {
             const _m = s.match(/^-(\d+)$/);
             if (_m?.length === 2) {
-              const m = Number(_m[1]);
+              const m = parseInt(_m[1]);
               if (n <= m) {
                 return true;
               }

@@ -31,8 +31,8 @@ export function getSectionsObj(chapters: Chapter[]): SectionObj[] {
   }
   const _sectionsListObj: [string, SectionObj][] = Object.entries(_sectionsObj);
   function sectionListSort(a: [string, SectionObj], b: [string, SectionObj]) {
-    const aKey = Number(a[0]);
-    const bKey = Number(b[0]);
+    const aKey = parseInt(a[0]);
+    const bKey = parseInt(b[0]);
     return aKey - bKey;
   }
   _sectionsListObj.sort(sectionListSort);
