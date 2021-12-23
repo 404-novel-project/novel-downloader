@@ -1,10 +1,12 @@
-import * as FileSaver from "file-saver";
+import { saveAs } from "file-saver";
 import { LocalStorageExpired } from "./lib/misc";
 import { fetchAndParse, gfetchAndParse, parse } from "./lib/readability";
 import { Book, Chapter } from "./main";
 import { BaseRuleClass } from "./rules";
-import { SaveOptions, SectionObj } from "./save/save";
+import { SectionObj } from "./save/misc";
+import { SaveOptions } from "./save/save";
 export interface WindowObject extends Window {
+    workerId: string;
     downloading: boolean;
     customStorage: LocalStorageExpired;
     stopFlag: boolean;
@@ -17,7 +19,7 @@ interface UnsafeWindowObject {
     rule?: BaseRuleClass;
     book?: Book;
     save?: (book: Book, saveOptions: SaveOptions) => void;
-    saveAs?: typeof FileSaver;
+    saveAs?: typeof saveAs;
     chapterFilter?: (chapter: Chapter) => boolean;
     customFinishCallback?: () => void;
     saveOptions?: SaveOptions;

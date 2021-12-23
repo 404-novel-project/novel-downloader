@@ -1,4 +1,7 @@
+export declare function streamSupport(): boolean;
 export declare class FflateZip {
+    filename: string;
+    stream: boolean;
     private zcount;
     private count;
     private filenameList;
@@ -6,7 +9,7 @@ export declare class FflateZip {
     private savedZip;
     onFinal?: (zipBlob: Blob) => void;
     onFinalError?: (error: Error) => void;
-    constructor();
+    constructor(filename: string, stream: boolean);
     file(filename: string, fileBlob: Blob): Promise<void>;
     generateAsync(): Promise<void>;
 }

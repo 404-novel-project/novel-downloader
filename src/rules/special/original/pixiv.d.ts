@@ -3,7 +3,7 @@ import { BaseRuleClass } from "../../../rules";
 export declare class Pixiv extends BaseRuleClass {
     constructor();
     bookParse(): Promise<Book>;
-    chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean, charset: string, options: object): Promise<{
+    chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean, charset: string): Promise<{
         chapterName: string | null;
         contentRaw: HTMLDivElement;
         contentText: string;

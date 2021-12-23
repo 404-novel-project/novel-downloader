@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.6.1.428
+// @version        4.6.2.432
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -66,7 +66,7 @@
 // @match          *://www.idejian.com/book/*/
 // @match          *://www.wenku8.net/novel/*/*/index.htm
 // @match          *://www.dmzj.com/info/*.html
-// @match          *://manhua.dmzj.com/*/
+// @match          *://manhua.dmzj.com/*
 // @match          *://www.westnovel.com/*/*/
 // @match          *://www.mht.tw/*/
 // @match          *://www.mht99.com/*/
@@ -220,6 +220,7 @@
 // @grant          GM.getValue
 // @grant          GM.deleteValue
 // @connect        self
+// @connect        cdn.jsdelivr.net
 // @connect        shouda8.com
 // @connect        shouda88.com
 // @connect        qidian.com

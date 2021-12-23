@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.6.1.428
+// @version        4.6.2.432
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -66,7 +66,7 @@
 // @match          *://www.idejian.com/book/*/
 // @match          *://www.wenku8.net/novel/*/*/index.htm
 // @match          *://www.dmzj.com/info/*.html
-// @match          *://manhua.dmzj.com/*/
+// @match          *://manhua.dmzj.com/*
 // @match          *://www.westnovel.com/*/*/
 // @match          *://www.mht.tw/*/
 // @match          *://www.mht99.com/*/
@@ -220,6 +220,7 @@
 // @grant          GM.getValue
 // @grant          GM.deleteValue
 // @connect        self
+// @connect        cdn.jsdelivr.net
 // @connect        shouda8.com
 // @connect        shouda88.com
 // @connect        qidian.com
@@ -3030,6 +3031,319 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 /***/ }),
 
+/***/ "./node_modules/streamsaver/StreamSaver.js":
+/***/ (function(module) {
+
+/* global chrome location ReadableStream define MessageChannel TransformStream */
+
+;((name, definition) => {
+   true
+    ? module.exports = definition()
+    : 0
+})('streamSaver', () => {
+  'use strict'
+
+  const global = typeof window === 'object' ? window : this
+  if (!global.HTMLElement) console.warn('streamsaver is meant to run on browsers main thread')
+
+  let mitmTransporter = null
+  let supportsTransferable = false
+  const test = fn => { try { fn() } catch (e) {} }
+  const ponyfill = global.WebStreamsPolyfill || {}
+  const isSecureContext = global.isSecureContext
+  // TODO: Must come up with a real detection test (#69)
+  let useBlobFallback = /constructor/i.test(global.HTMLElement) || !!global.safari || !!global.WebKitPoint
+  const downloadStrategy = isSecureContext || 'MozAppearance' in document.documentElement.style
+    ? 'iframe'
+    : 'navigate'
+
+  const streamSaver = {
+    createWriteStream,
+    WritableStream: global.WritableStream || ponyfill.WritableStream,
+    supported: true,
+    version: { full: '2.0.5', major: 2, minor: 0, dot: 5 },
+    mitm: 'https://jimmywarting.github.io/StreamSaver.js/mitm.html?version=2.0.0'
+  }
+
+  /**
+   * create a hidden iframe and append it to the DOM (body)
+   *
+   * @param  {string} src page to load
+   * @return {HTMLIFrameElement} page to load
+   */
+  function makeIframe (src) {
+    if (!src) throw new Error('meh')
+    const iframe = document.createElement('iframe')
+    iframe.hidden = true
+    iframe.src = src
+    iframe.loaded = false
+    iframe.name = 'iframe'
+    iframe.isIframe = true
+    iframe.postMessage = (...args) => iframe.contentWindow.postMessage(...args)
+    iframe.addEventListener('load', () => {
+      iframe.loaded = true
+    }, { once: true })
+    document.body.appendChild(iframe)
+    return iframe
+  }
+
+  /**
+   * create a popup that simulates the basic things
+   * of what a iframe can do
+   *
+   * @param  {string} src page to load
+   * @return {object}     iframe like object
+   */
+  function makePopup (src) {
+    const options = 'width=200,height=100'
+    const delegate = document.createDocumentFragment()
+    const popup = {
+      frame: global.open(src, 'popup', options),
+      loaded: false,
+      isIframe: false,
+      isPopup: true,
+      remove () { popup.frame.close() },
+      addEventListener (...args) { delegate.addEventListener(...args) },
+      dispatchEvent (...args) { delegate.dispatchEvent(...args) },
+      removeEventListener (...args) { delegate.removeEventListener(...args) },
+      postMessage (...args) { popup.frame.postMessage(...args) }
+    }
+
+    const onReady = evt => {
+      if (evt.source === popup.frame) {
+        popup.loaded = true
+        global.removeEventListener('message', onReady)
+        popup.dispatchEvent(new Event('load'))
+      }
+    }
+
+    global.addEventListener('message', onReady)
+
+    return popup
+  }
+
+  try {
+    // We can't look for service worker since it may still work on http
+    new Response(new ReadableStream())
+    if (isSecureContext && !('serviceWorker' in navigator)) {
+      useBlobFallback = true
+    }
+  } catch (err) {
+    useBlobFallback = true
+  }
+
+  test(() => {
+    // Transfariable stream was first enabled in chrome v73 behind a flag
+    const { readable } = new TransformStream()
+    const mc = new MessageChannel()
+    mc.port1.postMessage(readable, [readable])
+    mc.port1.close()
+    mc.port2.close()
+    supportsTransferable = true
+    // Freeze TransformStream object (can only work with native)
+    Object.defineProperty(streamSaver, 'TransformStream', {
+      configurable: false,
+      writable: false,
+      value: TransformStream
+    })
+  })
+
+  function loadTransporter () {
+    if (!mitmTransporter) {
+      mitmTransporter = isSecureContext
+        ? makeIframe(streamSaver.mitm)
+        : makePopup(streamSaver.mitm)
+    }
+  }
+
+  /**
+   * @param  {string} filename filename that should be used
+   * @param  {object} options  [description]
+   * @param  {number} size     depricated
+   * @return {WritableStream<Uint8Array>}
+   */
+  function createWriteStream (filename, options, size) {
+    let opts = {
+      size: null,
+      pathname: null,
+      writableStrategy: undefined,
+      readableStrategy: undefined
+    }
+
+    let bytesWritten = 0 // by StreamSaver.js (not the service worker)
+    let downloadUrl = null
+    let channel = null
+    let ts = null
+
+    // normalize arguments
+    if (Number.isFinite(options)) {
+      [ size, options ] = [ options, size ]
+      console.warn('[StreamSaver] Depricated pass an object as 2nd argument when creating a write stream')
+      opts.size = size
+      opts.writableStrategy = options
+    } else if (options && options.highWaterMark) {
+      console.warn('[StreamSaver] Depricated pass an object as 2nd argument when creating a write stream')
+      opts.size = size
+      opts.writableStrategy = options
+    } else {
+      opts = options || {}
+    }
+    if (!useBlobFallback) {
+      loadTransporter()
+
+      channel = new MessageChannel()
+
+      // Make filename RFC5987 compatible
+      filename = encodeURIComponent(filename.replace(/\//g, ':'))
+        .replace(/['()]/g, escape)
+        .replace(/\*/g, '%2A')
+
+      const response = {
+        transferringReadable: supportsTransferable,
+        pathname: opts.pathname || Math.random().toString().slice(-6) + '/' + filename,
+        headers: {
+          'Content-Type': 'application/octet-stream; charset=utf-8',
+          'Content-Disposition': "attachment; filename*=UTF-8''" + filename
+        }
+      }
+
+      if (opts.size) {
+        response.headers['Content-Length'] = opts.size
+      }
+
+      const args = [ response, '*', [ channel.port2 ] ]
+
+      if (supportsTransferable) {
+        const transformer = downloadStrategy === 'iframe' ? undefined : {
+          // This transformer & flush method is only used by insecure context.
+          transform (chunk, controller) {
+            if (!(chunk instanceof Uint8Array)) {
+              throw new TypeError('Can only wirte Uint8Arrays')
+            }
+            bytesWritten += chunk.length
+            controller.enqueue(chunk)
+
+            if (downloadUrl) {
+              location.href = downloadUrl
+              downloadUrl = null
+            }
+          },
+          flush () {
+            if (downloadUrl) {
+              location.href = downloadUrl
+            }
+          }
+        }
+        ts = new streamSaver.TransformStream(
+          transformer,
+          opts.writableStrategy,
+          opts.readableStrategy
+        )
+        const readableStream = ts.readable
+
+        channel.port1.postMessage({ readableStream }, [ readableStream ])
+      }
+
+      channel.port1.onmessage = evt => {
+        // Service worker sent us a link that we should open.
+        if (evt.data.download) {
+          // Special treatment for popup...
+          if (downloadStrategy === 'navigate') {
+            mitmTransporter.remove()
+            mitmTransporter = null
+            if (bytesWritten) {
+              location.href = evt.data.download
+            } else {
+              downloadUrl = evt.data.download
+            }
+          } else {
+            if (mitmTransporter.isPopup) {
+              mitmTransporter.remove()
+              mitmTransporter = null
+              // Special case for firefox, they can keep sw alive with fetch
+              if (downloadStrategy === 'iframe') {
+                makeIframe(streamSaver.mitm)
+              }
+            }
+
+            // We never remove this iframes b/c it can interrupt saving
+            makeIframe(evt.data.download)
+          }
+        }
+      }
+
+      if (mitmTransporter.loaded) {
+        mitmTransporter.postMessage(...args)
+      } else {
+        mitmTransporter.addEventListener('load', () => {
+          mitmTransporter.postMessage(...args)
+        }, { once: true })
+      }
+    }
+
+    let chunks = []
+
+    return (!useBlobFallback && ts && ts.writable) || new streamSaver.WritableStream({
+      write (chunk) {
+        if (!(chunk instanceof Uint8Array)) {
+          throw new TypeError('Can only wirte Uint8Arrays')
+        }
+        if (useBlobFallback) {
+          // Safari... The new IE6
+          // https://github.com/jimmywarting/StreamSaver.js/issues/69
+          //
+          // even doe it has everything it fails to download anything
+          // that comes from the service worker..!
+          chunks.push(chunk)
+          return
+        }
+
+        // is called when a new chunk of data is ready to be written
+        // to the underlying sink. It can return a promise to signal
+        // success or failure of the write operation. The stream
+        // implementation guarantees that this method will be called
+        // only after previous writes have succeeded, and never after
+        // close or abort is called.
+
+        // TODO: Kind of important that service worker respond back when
+        // it has been written. Otherwise we can't handle backpressure
+        // EDIT: Transfarable streams solvs this...
+        channel.port1.postMessage(chunk)
+        bytesWritten += chunk.length
+
+        if (downloadUrl) {
+          location.href = downloadUrl
+          downloadUrl = null
+        }
+      },
+      close () {
+        if (useBlobFallback) {
+          const blob = new Blob(chunks, { type: 'application/octet-stream; charset=utf-8' })
+          const link = document.createElement('a')
+          link.href = URL.createObjectURL(blob)
+          link.download = filename
+          link.click()
+        } else {
+          channel.port1.postMessage('end')
+        }
+      },
+      abort () {
+        chunks = []
+        channel.port1.postMessage('abort')
+        channel.port1.onmessage = null
+        channel.port1.close()
+        channel.port2.close()
+        channel = null
+      }
+    }, opts.writableStrategy)
+  }
+
+  return streamSaver
+})
+
+
+/***/ }),
+
 /***/ "./src/lib/GM.ts":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -3291,7 +3605,7 @@ async function formatImage(elem, builder) {
     if (!tfi) {
         return;
     }
-    const [imgElem, imgText, imgClass] = tfi;
+    const [imgElem, imgText] = tfi;
     if (elem.parentElement?.childElementCount === 1) {
         temp0();
         return;
@@ -4009,7 +4323,7 @@ function childNodesCopy(src, dest) {
 }
 function concurrencyRun(list, limit, asyncHandle) {
     async function recursion(arr) {
-        const obj = await asyncHandle(arr.shift());
+        await asyncHandle(arr.shift());
         if (arr.length !== 0) {
             return recursion(arr);
         }
@@ -4175,9 +4489,8 @@ function getNodeTextLength(element) {
     }, 0);
 }
 function getCookie(name) {
-    let arr;
     const reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
-    arr = document.cookie.match(reg);
+    const arr = document.cookie.match(reg);
     if (arr) {
         return arr[2];
     }
@@ -4336,14 +4649,12 @@ function centerDetct(element) {
     const docEl = document.documentElement;
     const bodyEl = document.body;
     const vw = Math.min(docEl.clientWidth, window.innerWidth);
-    const vh = Math.min(docEl.clientHeight, window.innerHeight);
     const tolx = vw * 0.15;
     const toly = bodyEl.scrollHeight * 0.1;
     const rect = element.getBoundingClientRect();
     const distanceToTop = window.scrollY + rect.top;
     const distanceToBottom = bodyEl.scrollHeight - distanceToTop;
     const distanceToRight = Math.abs(vw - rect.right);
-    const distanYmin = Math.min(distanceToTop, distanceToBottom);
     const percentY = element.scrollHeight / bodyEl.scrollHeight;
     if (rect.left < tolx ||
         distanceToRight < tolx ||
@@ -4355,6 +4666,137 @@ function centerDetct(element) {
 }
 function softByValue(a, b) {
     return a[1] - b[1];
+}
+
+
+/***/ }),
+
+/***/ "./src/lib/zip.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+
+// EXPORTS
+__webpack_require__.d(__webpack_exports__, {
+  "J": () => (/* binding */ FflateZip),
+  "y": () => (/* binding */ streamSupport)
+});
+
+;// CONCATENATED MODULE: external "fflate"
+const external_fflate_namespaceObject = fflate;
+// EXTERNAL MODULE: ./node_modules/file-saver/dist/FileSaver.min.js
+var FileSaver_min = __webpack_require__("./node_modules/file-saver/dist/FileSaver.min.js");
+// EXTERNAL MODULE: ./node_modules/streamsaver/StreamSaver.js
+var StreamSaver = __webpack_require__("./node_modules/streamsaver/StreamSaver.js");
+var StreamSaver_default = /*#__PURE__*/__webpack_require__.n(StreamSaver);
+// EXTERNAL MODULE: external "log"
+var external_log_ = __webpack_require__("loglevel");
+var external_log_default = /*#__PURE__*/__webpack_require__.n(external_log_);
+// EXTERNAL MODULE: ./src/lib/misc.ts
+var misc = __webpack_require__("./src/lib/misc.ts");
+;// CONCATENATED MODULE: ./src/lib/zip.ts
+
+
+
+
+
+const rawMitm = new URL((StreamSaver_default()).mitm);
+const mitm = new URL("https://cors.bgme.me/");
+mitm.pathname = rawMitm.origin + rawMitm.pathname;
+(StreamSaver_default()).mitm = mitm.href;
+function streamSupport() {
+    return (typeof ReadableStream !== "undefined" &&
+        typeof WritableStream !== "undefined" &&
+        typeof TransformStream !== "undefined");
+}
+(StreamSaver_default()).supported = streamSupport();
+class FflateZip {
+    constructor(filename, stream) {
+        external_log_default().info(`[fflateZip] filename: ${filename}, stream: ${stream}, streamSaver.supported: ${(StreamSaver_default()).supported}`);
+        const self = this;
+        this.filename = filename;
+        if ((StreamSaver_default()).supported) {
+            this.stream = stream;
+        }
+        else {
+            this.stream = false;
+        }
+        let writer;
+        if (this.stream) {
+            const fileStream = StreamSaver_default().createWriteStream(self.filename);
+            writer =
+                fileStream.getWriter();
+        }
+        this.zcount = 0;
+        this.count = 0;
+        this.filenameList = [];
+        this.zipOut = new Blob([], { type: "application/zip" });
+        this.savedZip = new external_fflate_namespaceObject.Zip((err, dat, final) => {
+            if (err) {
+                external_log_default().error(err);
+                external_log_default().trace(err);
+                writer.abort();
+                throw err;
+            }
+            if (self.stream) {
+                writer.write(dat);
+                external_log_default().info();
+            }
+            else {
+                self.zipOut = new Blob([self.zipOut, dat], { type: "application/zip" });
+            }
+            if (final) {
+                if (self.stream) {
+                    writer.close();
+                    external_log_default().info("[fflateZip] ZIP生成完毕");
+                }
+                else {
+                    nonStream();
+                }
+            }
+            function nonStream() {
+                external_log_default().info("[fflateZip] ZIP生成完毕，文件大小：" + self.zipOut.size);
+                try {
+                    (0,FileSaver_min.saveAs)(self.zipOut, self.filename);
+                    self.zipOut = new Blob([], { type: "application/zip" });
+                }
+                catch (error) {
+                    external_log_default().error("[fflateZip]" + error);
+                    external_log_default().trace(error);
+                }
+            }
+        });
+    }
+    async file(filename, fileBlob) {
+        if (this.filenameList.includes(filename)) {
+            external_log_default().warn(`filename ${filename} has existed on zip.`);
+            return;
+        }
+        this.filenameList.push(filename);
+        this.count++;
+        const buffer = await fileBlob.arrayBuffer();
+        const chunk = new Uint8Array(buffer);
+        if (fileBlob.type.includes("image/")) {
+            const nonStreamingFile = new external_fflate_namespaceObject.ZipPassThrough(filename);
+            this.savedZip.add(nonStreamingFile);
+            nonStreamingFile.push(chunk, true);
+            this.zcount++;
+        }
+        else {
+            const nonStreamingFile = new external_fflate_namespaceObject.AsyncZipDeflate(filename, {
+                level: 9,
+            });
+            this.savedZip.add(nonStreamingFile);
+            nonStreamingFile.push(chunk, true);
+            this.zcount++;
+        }
+    }
+    async generateAsync() {
+        while (this.count !== this.zcount) {
+            await (0,misc/* sleep */._v)(100);
+        }
+        this.savedZip.end();
+    }
 }
 
 
@@ -4502,13 +4944,13 @@ class Chapter {
             _log__WEBPACK_IMPORTED_MODULE_0___default().error(`[Chapter]章节名：${this.chapterName}, \
 分卷名：${this.sectionName}, URL:${this.chapterUrl}, \
 VIP:${this.isVIP}, Paid:${this.isPaid}, \
-isNull:${!Boolean(this.contentHTML)} 解析出错。`);
+isNull:${!this.contentHTML} 解析出错。`);
         }
         else {
             _log__WEBPACK_IMPORTED_MODULE_0___default().info(`[Chapter]章节名：${this.chapterName}, \
 分卷名：${this.sectionName}, URL:${this.chapterUrl}, \
 VIP:${this.isVIP}, Paid:${this.isPaid}, \
-isNull:${!Boolean(this.contentHTML)} 解析成功。`);
+isNull:${!this.contentHTML} 解析成功。`);
         }
         return this;
     }
@@ -4697,10 +5139,370 @@ var external_log_ = __webpack_require__("loglevel");
 var external_log_default = /*#__PURE__*/__webpack_require__.n(external_log_);
 // EXTERNAL MODULE: ./src/main.ts
 var main = __webpack_require__("./src/main.ts");
-// EXTERNAL MODULE: ./src/save/save.ts + 7 modules
-var save = __webpack_require__("./src/save/save.ts");
+// EXTERNAL MODULE: ./node_modules/file-saver/dist/FileSaver.min.js
+var FileSaver_min = __webpack_require__("./node_modules/file-saver/dist/FileSaver.min.js");
+// EXTERNAL MODULE: ./src/lib/zip.ts + 1 modules
+var zip = __webpack_require__("./src/lib/zip.ts");
 // EXTERNAL MODULE: ./src/setting.ts
 var setting = __webpack_require__("./src/setting.ts");
+// EXTERNAL MODULE: ./src/save/main.css
+var save_main = __webpack_require__("./src/save/main.css");
+// EXTERNAL MODULE: ./src/save/misc.ts
+var save_misc = __webpack_require__("./src/save/misc.ts");
+;// CONCATENATED MODULE: ./src/save/chapter.html.j2
+// Module
+var code = "<!DOCTYPE html> <html> <head> <meta charset=\"UTF-8\"/> <meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"/> <meta name=\"referrer\" content=\"same-origin\"/> <meta name=\"generator\" content=\"https://github.com/yingziwu/novel-downloader\"/> <meta name=\"source\" content=\"{{ chapterUrl }}\"/> <link href=\"style.css\" rel=\"stylesheet\"/> <title>{{ chapterName }}</title> </head> <body> <div class=\"main\"> <h2>{{ chapterName }}</h2> {{ outerHTML }} </div> </body> </html> ";
+// Exports
+/* harmony default export */ const chapter_html = (code);
+;// CONCATENATED MODULE: ./src/save/index.html.j2
+// Module
+var index_html_code = "<!DOCTYPE html> <html> <head> <meta charset=\"UTF-8\"/> <meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"/> <meta name=\"referrer\" content=\"same-origin\"/> <meta name=\"generator\" content=\"https://github.com/yingziwu/novel-downloader\"/> <meta name=\"date-creation\" content=\"{{ creationDate }}\"/> <link href=\"style.css\" rel=\"stylesheet\"/> <link href=\"toc.css\" rel=\"stylesheet\"/> <title>{{ bookname }}</title> </head> <body> <div class=\"main\"> <h1>{{ bookname }}</h1> <h3 class=\"author\">{{ author }}</h3> <div class=\"info\"> {% if cover -%} <img class=\"cover\" data-src-address=\"{{ cover.name }}\"/> {%- endif %} {% if introductionHTML -%} <div> <h3>简介</h3> <div class=\"introduction\">{{ introductionHTML }}</div> </div> {%- endif %} </div> <div class=\"bookurl\"> <a href=\"{{ bookUrl }}\">打开原始网站</a> </div> <hr/> {% for sectionObj in sectionsObj -%} <div id=\"section{{ sectionObj.sectionNumber }}\" class=\"section\"> {% if sectionObj.sectionName %} <h2 class=\"section-label\">{{ sectionObj.sectionName }}</h2> {% endif %} {% for chapter in sectionObj.chpaters -%} <div class=\"chapter\"> {% if not (chapter.contentHTML or chapter.status === Status.saved) -%} <a class=\"disabled\" href=\"{{ chapter.chapterHtmlFileName }}\">{{ chapter.chapterName }}</a> {%- else -%} <a href=\"{{ chapter.chapterHtmlFileName }}\">{{ chapter.chapterName }}</a> {%- endif %} </div> {%- endfor %} </div> {%- endfor %} </div> </body> </html>";
+// Exports
+/* harmony default export */ const index_html = (index_html_code);
+;// CONCATENATED MODULE: ./src/save/section.html.j2
+// Module
+var section_html_code = "<!DOCTYPE html> <html> <head> <meta charset=\"UTF-8\"/> <meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"/> <meta name=\"referrer\" content=\"same-origin\"/> <meta name=\"generator\" content=\"https://github.com/yingziwu/novel-downloader\"/> <link href=\"style.css\" rel=\"stylesheet\"/> <title>{{ sectionName }}</title> </head> <body> <div class=\"main\"><h1>{{ sectionName }}</h1></div> </body> </html> ";
+// Exports
+/* harmony default export */ const section_html = (section_html_code);
+;// CONCATENATED MODULE: external "nunjucks"
+const external_nunjucks_namespaceObject = nunjucks;
+;// CONCATENATED MODULE: ./src/save/template.ts
+
+
+
+
+const env = new external_nunjucks_namespaceObject.Environment(undefined, { autoescape: false });
+const section = new external_nunjucks_namespaceObject.Template(section_html, env, undefined, true);
+const chapter = new external_nunjucks_namespaceObject.Template(chapter_html, env, undefined, true);
+const index = new external_nunjucks_namespaceObject.Template(index_html, env, undefined, true);
+
+// EXTERNAL MODULE: ./src/save/toc.css
+var toc = __webpack_require__("./src/save/toc.css");
+;// CONCATENATED MODULE: ./src/save/save.ts
+
+
+
+
+
+
+
+
+
+function saveOptionsValidate(data) {
+    const keyNamesS = ["mainStyleText", "tocStyleText"];
+    const keyNamesF = [
+        "getchapterName",
+        "genSectionText",
+        "genChapterText",
+        "genSectionHtmlFile",
+        "genChapterHtmlFile",
+        "chapterSort",
+    ];
+    function keyNametest(keyname) {
+        const keyList = [];
+        keyList.concat(keyNamesS).concat(keyNamesF);
+        if (keyList.includes(keyname)) {
+            return true;
+        }
+        return false;
+    }
+    function keyNamesStest(keyname) {
+        if (keyNamesS.includes(keyname)) {
+            if (typeof data[keyname] === "string") {
+                return true;
+            }
+        }
+        return false;
+    }
+    function keyNamesFtest(keyname) {
+        if (keyNamesF.includes(keyname)) {
+            if (typeof data[keyname] === "function") {
+                return true;
+            }
+        }
+        return false;
+    }
+    if (typeof data !== "object") {
+        return false;
+    }
+    if (Object.keys(data).length === 0) {
+        return false;
+    }
+    for (const keyname in data) {
+        if (Object.prototype.hasOwnProperty.call(data, keyname)) {
+            if (!keyNametest(keyname)) {
+                return false;
+            }
+            if (!(keyNamesStest(keyname) || keyNamesFtest(keyname))) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+class SaveBook {
+    constructor(book, streamZip, options) {
+        this.book = book;
+        this.chapters = book.chapters;
+        this.streamZip = streamZip;
+        this.mainStyleText = save_main/* default */.Z;
+        this.tocStyleText = toc/* default */.Z;
+        this.savedTextArray = [];
+        this._sections = [];
+        this.saveFileNameBase = `[${this.book.author}]${this.book.bookname}`;
+        const zipFilename = `${this.saveFileNameBase}.zip`;
+        this.savedZip = new zip/* FflateZip */.J(zipFilename, streamZip);
+        if (options !== undefined) {
+            Object.assign(this, options);
+        }
+        if (book.saveOptions !== undefined) {
+            Object.assign(this, book.saveOptions);
+        }
+    }
+    saveTxt() {
+        const metaDateText = this.genMetaDateTxt();
+        this.savedTextArray.push(metaDateText);
+        external_log_default().debug("[save]对 chapters 排序");
+        this.chapters.sort(this.chapterSort);
+        const sections = [];
+        for (const chapterTemp of this.chapters) {
+            const chapterName = this.getchapterName(chapterTemp);
+            if (chapterTemp.sectionName &&
+                !sections.includes(chapterTemp.sectionName)) {
+                sections.push(chapterTemp.sectionName);
+                const sectionText = this.genSectionText(chapterTemp.sectionName);
+                this.savedTextArray.push(sectionText);
+            }
+            const chapterText = this.genChapterText(chapterName, chapterTemp.contentText ?? "");
+            this.savedTextArray.push(chapterText);
+            if (!setting/* enableDebug.value */.Cy.value) {
+                chapterTemp.contentText = null;
+            }
+        }
+        external_log_default().info("[save]保存TXT文件");
+        const savedText = this.savedTextArray.join("\n").replaceAll("\n", "\r\n");
+        (0,FileSaver_min.saveAs)(new Blob([savedText], { type: "text/plain;charset=utf-8" }), `${this.saveFileNameBase}.txt`);
+    }
+    saveLog() {
+        this.savedZip.file("debug.log", new Blob([log/* logText */.KC], { type: "text/plain; charset=UTF-8" }));
+    }
+    async saveZip(runSaveChapters = false) {
+        const self = this;
+        external_log_default().debug("[save]保存元数据文本");
+        const metaDateText = this.genMetaDateTxt();
+        this.savedZip.file("info.txt", new Blob([metaDateText], { type: "text/plain;charset=utf-8" }));
+        external_log_default().debug("[save]保存样式");
+        this.savedZip.file("style.css", new Blob([this.mainStyleText], { type: "text/css;charset=utf-8" }));
+        modifyTocStyleText();
+        this.savedZip.file("toc.css", new Blob([this.tocStyleText], { type: "text/css;charset=utf-8" }));
+        if (this.book.additionalMetadate.cover) {
+            external_log_default().debug("[save]保存封面");
+            this.addImageToZip(this.book.additionalMetadate.cover, this.savedZip);
+        }
+        if (this.book.additionalMetadate.attachments) {
+            external_log_default().debug("[save]保存书籍附件");
+            for (const bookAttachment of this.book.additionalMetadate.attachments) {
+                this.addImageToZip(bookAttachment, this.savedZip);
+            }
+        }
+        external_log_default().debug("[save]开始生成并保存卷文件");
+        saveSections();
+        external_log_default().debug("[save]开始生成并保存 index.html");
+        saveToC();
+        external_log_default().debug("[save]开始保存 Meta Data Json");
+        saveMetaJson();
+        if (runSaveChapters) {
+            external_log_default().debug("[save]开始保存章节文件");
+            await saveChapters();
+        }
+        else {
+            external_log_default().debug("[save]保存仅标题章节文件");
+            await saveStubChapters(this.chapters);
+        }
+        external_log_default().info("[save]开始保存ZIP文件");
+        if (setting/* enableDebug.value */.Cy.value) {
+            self.saveLog();
+        }
+        this.savedZip.generateAsync();
+        function saveToC() {
+            external_log_default().debug("[save]对 chapters 排序");
+            self.chapters.sort(self.chapterSort);
+            const sectionsListObj = (0,save_misc/* getSectionsObj */.f)(self.chapters);
+            const indexHtmlText = index.render({
+                creationDate: Date.now(),
+                bookname: self.book.bookname,
+                author: self.book.author,
+                cover: self.book.additionalMetadate.cover,
+                introductionHTML: self.book.introductionHTML?.outerHTML,
+                bookUrl: self.book.bookUrl,
+                sectionsObj: Object.values(sectionsListObj),
+                Status: main/* Status */.qb,
+            });
+            self.savedZip.file("index.html", new Blob([indexHtmlText.replaceAll("data-src-address", "src")], {
+                type: "text/html; charset=UTF-8",
+            }));
+        }
+        function modifyTocStyleText() {
+            if (self.book.additionalMetadate.cover) {
+                self.tocStyleText = `${self.tocStyleText}
+  .info {
+    display: grid;
+    grid-template-columns: 30% 70%;
+  }`;
+            }
+            else {
+                self.tocStyleText = `${self.tocStyleText}
+  .info {
+    display: grid;
+    grid-template-columns: 100%;
+  }`;
+            }
+        }
+        function saveMetaJson() {
+            self.savedZip.file("book.json", new Blob([JSON.stringify(self.book)], {
+                type: "application/json; charset=utf-8",
+            }));
+            self.savedZip.file("chapters.json", new Blob([JSON.stringify(self.book.chapters)], {
+                type: "application/json; charset=utf-8",
+            }));
+        }
+        function saveSections() {
+            external_log_default().debug("[save]对 chapters 排序");
+            self.chapters.sort(self.chapterSort);
+            for (const chapter of self.chapters) {
+                const chapterNumberToSave = self.getChapterNumberToSave(chapter);
+                const sectionHtmlFileName = `No${chapterNumberToSave}Section.html`;
+                if (chapter.sectionName) {
+                    if (!self._sections.includes(chapter.sectionName)) {
+                        self._sections.push(chapter.sectionName);
+                        external_log_default().debug(`[save]保存卷HTML文件：${chapter.sectionName}`);
+                        const sectionHTMLBlob = self.genSectionHtmlFile(chapter);
+                        self.savedZip.file(sectionHtmlFileName, sectionHTMLBlob);
+                    }
+                }
+            }
+        }
+        async function saveChapters() {
+            for (const chapter of self.chapters) {
+                await self.addChapter(chapter);
+            }
+        }
+        async function saveStubChapters(chapters) {
+            chapters = chapters.filter((c) => c.status !== main/* Status.saved */.qb.saved);
+            for (const c of chapters) {
+                if (c.status === main/* Status.finished */.qb.finished) {
+                    await self.addChapter(c);
+                }
+                else {
+                    await self.addChapter(c, "Stub");
+                }
+            }
+        }
+    }
+    async addChapter(chapter, suffix = "") {
+        const chapterName = this.getchapterName(chapter);
+        const chapterNumberToSave = this.getChapterNumberToSave(chapter);
+        const chapterHtmlFileName = `No${chapterNumberToSave}Chapter${suffix}.html`;
+        external_log_default().debug(`[save]保存章HTML文件：${chapterName}`);
+        const chapterHTMLBlob = this.genChapterHtmlFile(chapter);
+        if (!setting/* enableDebug.value */.Cy.value) {
+            chapter.contentRaw = null;
+            chapter.contentHTML = null;
+        }
+        await this.savedZip.file(chapterHtmlFileName, chapterHTMLBlob);
+        chapter.chapterHtmlFileName = chapterHtmlFileName;
+        chapter.status = main/* Status.saved */.qb.saved;
+        if (chapter.contentImages && chapter.contentImages.length !== 0) {
+            external_log_default().debug(`[save]保存章节附件：${chapterName}`);
+            for (const attachment of chapter.contentImages) {
+                this.addImageToZip(attachment, this.savedZip);
+            }
+            if (!setting/* enableDebug.value */.Cy.value) {
+                chapter.contentImages = null;
+            }
+        }
+    }
+    getchapterName(chapter) {
+        if (chapter.chapterName) {
+            return chapter.chapterName;
+        }
+        else {
+            return chapter.chapterNumber.toString();
+        }
+    }
+    genSectionText(sectionName) {
+        return (`${"=".repeat(20)}\n\n\n\n# ${sectionName}\n\n\n\n${"=".repeat(20)}` +
+            "\n\n");
+    }
+    genChapterText(chapterName, contentText) {
+        return `## ${chapterName}\n\n${contentText}\n\n`;
+    }
+    genSectionHtmlFile(chapterObj) {
+        const htmlText = section.render({ sectionName: chapterObj.sectionName });
+        return new Blob([htmlText.replaceAll("data-src-address", "src")], {
+            type: "text/html; charset=UTF-8",
+        });
+    }
+    genChapterHtmlFile(chapterObj) {
+        const htmlText = chapter.render({
+            chapterUrl: chapterObj.chapterUrl,
+            chapterName: chapterObj.chapterName,
+            outerHTML: chapterObj.contentHTML?.outerHTML ?? "",
+        });
+        return new Blob([htmlText.replaceAll("data-src-address", "src")], {
+            type: "text/html; charset=UTF-8",
+        });
+    }
+    chapterSort(a, b) {
+        if (a.chapterNumber > b.chapterNumber) {
+            return 1;
+        }
+        if (a.chapterNumber === b.chapterNumber) {
+            return 0;
+        }
+        if (a.chapterNumber < b.chapterNumber) {
+            return -1;
+        }
+        return 0;
+    }
+    getChapterNumberToSave(chapter) {
+        return `${"0".repeat(this.chapters.length.toString().length -
+            chapter.chapterNumber.toString().length)}${chapter.chapterNumber.toString()}`;
+    }
+    genMetaDateTxt() {
+        let metaDateText = `题名：${this.book.bookname}\n作者：${this.book.author}`;
+        if (this.book.additionalMetadate.tags) {
+            metaDateText += `\nTag列表：${this.book.additionalMetadate.tags.join("、")}`;
+        }
+        metaDateText += `\n原始网址：${this.book.bookUrl}`;
+        if (this.book.additionalMetadate.cover) {
+            metaDateText += `\n封面图片地址：${this.book.additionalMetadate.cover.url}`;
+        }
+        if (this.book.introduction) {
+            metaDateText += `\n简介：${this.book.introduction}`;
+        }
+        metaDateText += `\n下载时间：${new Date().toISOString()}\n本文件由小说下载器生成，软件地址：https://github.com/yingziwu/novel-downloader\n\n`;
+        return metaDateText;
+    }
+    async addImageToZip(attachment, zip) {
+        if (attachment.status === main/* Status.finished */.qb.finished && attachment.imageBlob) {
+            external_log_default().debug(`[save]添加附件，文件名：${attachment.name}，对象`, attachment.imageBlob);
+            await zip.file(attachment.name, attachment.imageBlob);
+            attachment.status = main/* Status.saved */.qb.saved;
+            if (!setting/* enableDebug.value */.Cy.value) {
+                attachment.imageBlob = null;
+            }
+        }
+        else if (attachment.status === main/* Status.saved */.qb.saved) {
+            external_log_default().debug(`[save]附件${attachment.name}已添加`);
+        }
+        else {
+            external_log_default().warn(`[save]添加附件${attachment.name}失败，该附件未完成或内容为空。`);
+            external_log_default().warn(attachment);
+        }
+    }
+}
+
 // EXTERNAL MODULE: ./src/lib/GM.ts
 var GM = __webpack_require__("./src/lib/GM.ts");
 ;// CONCATENATED MODULE: ./src/stat.ts
@@ -4773,19 +5575,54 @@ var progress = __webpack_require__("./src/ui/progress.ts");
 
 
 
-const workStatusKeyName = "novel-downloader-EaraVl9TtSM2405L";
 class BaseRuleClass {
     constructor() {
+        const self = this;
         this.imageMode = "TM";
         this.charset = document.characterSet;
         this.concurrencyLimit = 10;
+        this.streamZip = false;
+        registerBroadcastChannel();
+        function registerBroadcastChannel() {
+            self.bcWorker = new BroadcastChannel("novel-downloader-worker");
+            const broadcastChannelWorker = self.bcWorker;
+            self.bcWorkerMessages = [];
+            const messages = self.bcWorkerMessages;
+            broadcastChannelWorker.onmessage = (ev) => {
+                const message = ev.data;
+                if (message.type === "ping") {
+                    const pong = {
+                        type: "pong",
+                        src: message.workerId,
+                        workerId: window.workerId,
+                        url: document.location.href,
+                    };
+                    broadcastChannelWorker.postMessage(pong);
+                }
+                if (message.type === "pong") {
+                    messages.push(message);
+                }
+                if (message.type === "close") {
+                }
+            };
+        }
     }
     async run() {
         external_log_default().info(`[run]下载开始`);
         const self = this;
         try {
-            if (!self.preHook())
-                return;
+            await self.preHook();
+            await initBook();
+            const saveBookObj = initSave(self.book);
+            await self.initChapters(self.book, saveBookObj);
+            await save(saveBookObj);
+            self.postHook();
+            return self.book;
+        }
+        catch (error) {
+            self.catchError(error);
+        }
+        async function initBook() {
             if (window._book &&
                 window._url === document.location.href) {
                 self.book = window._book;
@@ -4796,158 +5633,76 @@ class BaseRuleClass {
                 window._url = document.location.href;
             }
             external_log_default().debug("[book]Book object:\n" + JSON.stringify(self.book));
-            const saveBookObj = self.getSave(self.book);
-            await self.initChapters(self.book, saveBookObj);
-            external_log_default().debug("[run]开始保存文件");
-            saveBookObj.saveTxt();
-            await saveBookObj.saveZip(false);
-            self.postHook();
-            self.postCallback();
-            successPlus();
-            printStat();
-            return self.book;
         }
-        catch (error) {
-            self.catchError(error);
-        }
-    }
-    preTest() {
-        const self = this;
-        const storage = window.customStorage;
-        let workStatus = storage.get(workStatusKeyName);
-        if (workStatus) {
-            const nowNumber = Object.keys(workStatus).length;
-            if (self.maxRunLimit && nowNumber >= self.maxRunLimit) {
-                return false;
+        function initSave(book) {
+            external_log_default().debug("[run]保存数据");
+            if (setting/* enableCustomSaveOptions */.EI &&
+                typeof unsafeWindow.saveOptions === "object" &&
+                saveOptionsValidate(unsafeWindow.saveOptions)) {
+                const saveOptionsInner = unsafeWindow.saveOptions;
+                if (saveOptionsInner) {
+                    external_log_default().info("[run]发现自定义保存参数，内容如下\n", saveOptionsInner);
+                    return new SaveBook(book, self.streamZip, saveOptionsInner);
+                }
             }
+            return new SaveBook(book, self.streamZip);
         }
-        else {
-            workStatus = {};
-            workStatus[document.location.href] = true;
-            storage.set(workStatusKeyName, workStatus, 20);
+        async function save(saveObj) {
+            external_log_default().debug("[run]开始保存文件");
+            saveObj.saveTxt();
+            await saveObj.saveZip(false);
         }
-        return true;
     }
-    preWarning() {
-        return true;
-    }
-    preHook() {
+    async preHook() {
         const self = this;
-        if (!self.preTest()) {
+        if (!(await preTest())) {
             const alertText = `当前网站目前最多允许${self.maxRunLimit}个下载任务同时进行。\n请待其它下载任务完成后，再行尝试。`;
             alert(alertText);
             external_log_default().info(`[run]${alertText}`);
-            return false;
-        }
-        if (!self.preWarning()) {
-            return false;
+            throw new main/* ExpectError */.K2(alertText);
         }
         self.audio = new Audio("data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU3LjcxLjEwMAAAAAAAAAAAAAAA/+M4wAAAAAAAAAAAAEluZm8AAAAPAAAAEAAABVgANTU1NTU1Q0NDQ0NDUFBQUFBQXl5eXl5ea2tra2tra3l5eXl5eYaGhoaGhpSUlJSUlKGhoaGhoaGvr6+vr6+8vLy8vLzKysrKysrX19fX19fX5eXl5eXl8vLy8vLy////////AAAAAExhdmM1Ny44OQAAAAAAAAAAAAAAACQCgAAAAAAAAAVY82AhbwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/+MYxAALACwAAP/AADwQKVE9YWDGPkQWpT66yk4+zIiYPoTUaT3tnU487uNhOvEmQDaCm1Yz1c6DPjbs6zdZVBk0pdGpMzxF/+MYxA8L0DU0AP+0ANkwmYaAMkOKDDjmYoMtwNMyDxMzDHE/MEsLow9AtDnBlQgDhTx+Eye0GgMHoCyDC8gUswJcMVMABBGj/+MYxBoK4DVpQP8iAtVmDk7LPgi8wvDzI4/MWAwK1T7rxOQwtsItMMQBazAowc4wZMC5MF4AeQAGDpruNuMEzyfjLBJhACU+/+MYxCkJ4DVcAP8MAO9J9THVg6oxRMGNMIqCCTAEwzwwBkINOPAs/iwjgBnMepYyId0PhWo+80PXMVsBFzD/AiwwfcKGMEJB/+MYxDwKKDVkAP8eAF8wMwIxMlpU/OaDPLpNKkEw4dRoBh6qP2FC8jCJQFcweQIPMHOBtTBoAVcwOoCNMYDI0u0Dd8ANTIsy/+MYxE4KUDVsAP8eAFBVpgVVPjdGeTEWQr0wdcDtMCeBgDBkgRgwFYB7Pv/zqx0yQQMCCgKNgonHKj6RRVkxM0GwML0AhDAN/+MYxF8KCDVwAP8MAIHZMDDA3DArAQo3K+TF5WOBDQw0lgcKQUJxhT5sxRcwQQI+EIPWMA7AVBoTABgTgzfBN+ajn3c0lZMe/+MYxHEJyDV0AP7MAA4eEwsqP/PDmzC/gNcwXUGaMBVBIwMEsmB6gaxhVuGkpoqMZMQjooTBwM0+S8FTMC0BcjBTgPwwOQDm/+MYxIQKKDV4AP8WADAzAKQwI4CGPhWOEwCFAiBAYQnQMT+uwXUeGzjBWQVkwTcENMBzA2zAGgFEJfSPkPSZzPXgqFy2h0xB/+MYxJYJCDV8AP7WAE0+7kK7MQrATDAvQRIwOADKMBuA9TAYQNM3AiOSPjGxowgHMKFGcBNMQU1FMy45OS41VVU/31eYM4sK/+MYxKwJaDV8AP7SAI4y1Yq0MmOIADGwBZwwlgIJMztCM0qU5TQPG/MSkn8yEROzCdAxECVMQU1FMy45OS41VTe7Ohk+Pqcx/+MYxMEJMDWAAP6MADVLDFUx+4J6Mq7NsjN2zXo8V5fjVJCXNOhwM0vTCDAxFpMYYQU+RlVMQU1FMy45OS41VVVVVVVVVVVV/+MYxNcJADWAAP7EAFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV/+MYxOsJwDWEAP7SAFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV/+MYxPMLoDV8AP+eAFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV/+MYxPQL0DVcAP+0AFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV");
         self.audio.loop = true;
         self.audio.play();
-        const confirmExit = (e) => {
+        window.onbeforeunload = (e) => {
             e.preventDefault();
             const confirmationText = "您正尝试离开本页面，当前页面有下载任务正在运行，是否确认离开？";
             return (e.returnValue = confirmationText);
         };
-        window.onbeforeunload = confirmExit;
         window.downloading = true;
-        return true;
-    }
-    postCallback() {
-        if (setting/* enableCustomFinishCallback */.Vo &&
-            typeof unsafeWindow.customFinishCallback === "function") {
-            const customFinishCallback = unsafeWindow
-                .customFinishCallback;
-            if (customFinishCallback) {
-                external_log_default().info(`发现自定义结束回调函数，内容如下：\n${customFinishCallback.toString()}`);
-                customFinishCallback();
-            }
-        }
-    }
-    postHook() {
-        const self = this;
-        const storage = window.customStorage;
-        const workStatus = storage.get(workStatusKeyName);
-        if (workStatus) {
-            delete workStatus[document.location.href];
-        }
-        (0,attachments/* clearAttachmentClassCache */.pN)();
-        self.audio?.pause();
-        self.audio?.remove();
-        window.onbeforeunload = null;
-        window.downloading = false;
-        progress.vm.reset();
-        window._book = undefined;
-        window._url = undefined;
-        return true;
-    }
-    catchError(error) {
-        const self = this;
-        external_log_default().error(error);
-        external_log_default().trace(error);
-        self.postHook();
-        if (!(error instanceof main/* ExpectError */.K2)) {
-            document.getElementById("button-div")?.remove();
-            external_log_default().error("运行过程出错，请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/yingziwu/novel-downloader");
-            failedPlus();
-            alert("运行过程出错，请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/yingziwu/novel-downloader");
-            (0,log/* saveLogTextToFile */.qS)();
-        }
-    }
-    getSave(book) {
-        external_log_default().debug("[run]保存数据");
-        if (setting/* enableCustomSaveOptions */.EI &&
-            typeof unsafeWindow.saveOptions === "object" &&
-            (0,save/* saveOptionsValidate */.hh)(unsafeWindow.saveOptions)) {
-            const saveOptionsInner = unsafeWindow.saveOptions;
-            if (saveOptionsInner) {
-                external_log_default().info("[run]发现自定义保存参数，内容如下\n", saveOptionsInner);
-                return (0,save/* getSaveBookObj */.Zd)(book, saveOptionsInner);
-            }
-        }
-        return (0,save/* getSaveBookObj */.Zd)(book, {});
-    }
-    getChapters(book) {
-        function isEnable() {
-            if (setting/* enableCustomChapterFilter */.Td &&
-                typeof unsafeWindow.chapterFilter === "function") {
-                let text = "[initChapters]发现自定义筛选函数，自定义筛选函数内容如下：\n";
-                text += unsafeWindow.chapterFilter.toString();
-                external_log_default().info(text);
-                return true;
+        async function preTest() {
+            const broadcastChannelWorker = self.bcWorker;
+            const messages = self.bcWorkerMessages;
+            const ping = {
+                type: "ping",
+                workerId: window.workerId,
+                url: document.location.href,
+            };
+            broadcastChannelWorker.postMessage(ping);
+            await (0,misc/* sleep */._v)(300);
+            const workers = messages
+                .filter((m) => m.type === "pong")
+                .filter((m) => m.src === window.workerId)
+                .map((m) => ({
+                id: m.workerId,
+                url: m.url,
+            }));
+            external_log_default().info(JSON.stringify(workers, undefined, 4));
+            const nowRunning = workers.length;
+            external_log_default().info(`[preTest]nowRunning: ${nowRunning}`);
+            if (self.maxRunLimit) {
+                return nowRunning < self.maxRunLimit;
             }
             else {
-                return false;
+                return true;
             }
         }
-        function _filter(chapter) {
-            let b = true;
-            try {
-                const u = unsafeWindow.chapterFilter(chapter);
-                if (typeof u === "boolean") {
-                    b = u;
-                }
-            }
-            catch (error) {
-                external_log_default().error("运行自定义筛选函数时出错。", error);
-                external_log_default().trace(error);
-            }
-            return b;
-        }
-        let chapters = book.chapters.filter((chapter) => chapter.status === main/* Status.pending */.qb.pending);
-        const enabled = isEnable();
-        if (enabled) {
-            external_log_default().debug("[initChapters]筛选需下载章节");
-            chapters = chapters.filter((chapter) => _filter(chapter));
-        }
-        return chapters;
     }
     async initChapters(book, saveBookObj) {
         const self = this;
         external_log_default().info(`[initChapters]开始初始化章节`);
         Object.entries(self).forEach((kv) => external_log_default().info(`[initChapters] ${kv[0]}: ${kv[1]}`));
-        const chapters = self.getChapters(book);
+        const chapters = getChapters(book);
         if (chapters.length === 0) {
             external_log_default().error(`[initChapters]初始化章节出错，未找到需初始化章节`);
             return [];
@@ -4961,7 +5716,7 @@ class BaseRuleClass {
                 }
                 try {
                     let chapterObj = await chapter.init();
-                    chapterObj = await self.postChapterParseHook(chapterObj, saveBookObj);
+                    chapterObj = await postChapterParseHook(chapterObj, saveBookObj);
                 }
                 catch (error) {
                     external_log_default().error(error);
@@ -4980,7 +5735,7 @@ class BaseRuleClass {
                 }
                 try {
                     let chapterObj = await curChapter.init();
-                    chapterObj = await self.postChapterParseHook(chapterObj, saveBookObj);
+                    chapterObj = await postChapterParseHook(chapterObj, saveBookObj);
                     return chapterObj;
                 }
                 catch (error) {
@@ -4991,23 +5746,94 @@ class BaseRuleClass {
         }
         external_log_default().info(`[initChapters]章节初始化完毕`);
         return chapters;
+        function getChapters(_book) {
+            function isEnable() {
+                if (setting/* enableCustomChapterFilter */.Td &&
+                    typeof unsafeWindow.chapterFilter === "function") {
+                    let text = "[initChapters]发现自定义筛选函数，自定义筛选函数内容如下：\n";
+                    text += unsafeWindow.chapterFilter?.toString();
+                    external_log_default().info(text);
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+            function _filter(chapter) {
+                let b = true;
+                try {
+                    const u = unsafeWindow.chapterFilter?.(chapter);
+                    if (typeof u === "boolean") {
+                        b = u;
+                    }
+                }
+                catch (error) {
+                    external_log_default().error("运行自定义筛选函数时出错。", error);
+                    external_log_default().trace(error);
+                }
+                return b;
+            }
+            let _chapters = _book.chapters.filter((chapter) => chapter.status === main/* Status.pending */.qb.pending);
+            const enabled = isEnable();
+            if (enabled) {
+                external_log_default().debug("[initChapters]筛选需下载章节");
+                _chapters = _chapters.filter((chapter) => _filter(chapter));
+            }
+            return _chapters;
+        }
+        async function postChapterParseHook(chapter, saveObj) {
+            if (chapter.contentHTML !== undefined) {
+                await saveObj.addChapter(chapter);
+                progress.vm.finishedChapterNumber++;
+            }
+            return chapter;
+        }
     }
-    async postChapterParseHook(chapter, saveBookObj) {
-        const storage = window.customStorage;
-        let workStatus = storage.get(workStatusKeyName);
-        if (workStatus) {
-            workStatus[document.location.href] = true;
+    postHook() {
+        const self = this;
+        (0,attachments/* clearAttachmentClassCache */.pN)();
+        self.audio?.pause();
+        self.audio?.remove();
+        const closeMessage = {
+            type: "close",
+            workerId: window.workerId,
+            url: document.location.href,
+        };
+        self.bcWorker?.postMessage(closeMessage);
+        self.bcWorker?.close();
+        window.onbeforeunload = null;
+        window.downloading = false;
+        progress.vm.reset();
+        window._book = undefined;
+        window._url = undefined;
+        postCallback();
+        successPlus();
+        printStat();
+        function postCallback() {
+            if (setting/* enableCustomFinishCallback */.Vo &&
+                typeof unsafeWindow.customFinishCallback ===
+                    "function") {
+                const customFinishCallback = unsafeWindow
+                    .customFinishCallback;
+                if (customFinishCallback) {
+                    external_log_default().info(`发现自定义结束回调函数，内容如下：\n${customFinishCallback.toString()}`);
+                    customFinishCallback();
+                }
+            }
         }
-        else {
-            workStatus = {};
-            workStatus[document.location.href] = true;
+    }
+    catchError(error) {
+        const self = this;
+        external_log_default().error(error);
+        external_log_default().trace(error);
+        self.postHook();
+        if (!(error instanceof main/* ExpectError */.K2)) {
+            document.getElementById("button-div")?.remove();
+            external_log_default().error("运行过程出错，请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/yingziwu/novel-downloader");
+            failedPlus();
+            alert("运行过程出错，请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/yingziwu/novel-downloader");
+            (0,log/* saveLogTextToFile */.qS)();
         }
-        storage.set(workStatusKeyName, workStatus, 20);
-        if (chapter.contentHTML !== undefined) {
-            await saveBookObj.addChapter(chapter);
-            progress.vm.finishedChapterNumber++;
-        }
-        return chapter;
     }
 }
 
@@ -5039,7 +5865,7 @@ class BaseRuleClass {
 
 
 async function bookParseTemp({ bookUrl, bookname, author, introDom, introDomPatch, coverUrl, chapterListSelector, charset, chapterParse, enableIgnore = true, customVolumeFilter, }) {
-    const [introduction, introductionHTML, introCleanimages] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_0__/* .introDomHandle */ .SN)(introDom, introDomPatch);
+    const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_0__/* .introDomHandle */ .SN)(introDom, introDomPatch);
     const additionalMetadate = {};
     if (coverUrl) {
         (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getImageAttachment */ .CE)(coverUrl, "TM", "cover-")
@@ -5612,7 +6438,7 @@ const a7xs = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .
     coverUrl: document.querySelector(".pic > img").src,
     aList: document.querySelectorAll(".book_list > ul > li > a"),
     getContentFromUrl: async (chapterUrl, chapterName, charset) => {
-        const { chapterName: _chapterName, contentRaw, contentText, contentHTML, contentImages, additionalMetadate, } = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .nextPageParse */ .I2)({
+        const { contentRaw } = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .nextPageParse */ .I2)({
             chapterName,
             chapterUrl,
             charset,
@@ -5990,10 +6816,8 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
         async bookParse() {
             let introduction = null;
             let introductionHTML = null;
-            let introCleanimages = null;
             if (introDom && introDomPatch) {
-                [introduction, introductionHTML, introCleanimages] =
-                    await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .SN)(introDom, introDomPatch);
+                [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .SN)(introDom, introDomPatch);
             }
             const additionalMetadate = {};
             if (coverUrl) {
@@ -6193,7 +7017,7 @@ const wanben = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */
     coverUrl: document.querySelector(".detailTopLeft > img")?.src,
     aList: document.querySelectorAll(".chapter li > a"),
     getContentFromUrl: async (chapterUrl, chapterName, charset) => {
-        const { chapterName: _chapterName, contentRaw, contentText, contentHTML, contentImages, additionalMetadate, } = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .nextPageParse */ .I2)({
+        const { contentRaw } = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .nextPageParse */ .I2)({
             chapterName,
             chapterUrl,
             charset,
@@ -6286,7 +7110,7 @@ const c226ks = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */
     getIndexUrls: () => Array.from(document.querySelectorAll('[name="pageselect"] > option')).map((opt) => document.location.origin + opt.getAttribute("value")),
     getAList: (doc) => doc.querySelectorAll("div.section-box:nth-child(4) > ul:nth-child(1) > li > a"),
     getContentFromUrl: async (chapterUrl, chapterName, charset) => {
-        const { chapterName: _chapterName, contentRaw, contentText, contentHTML, contentImages, additionalMetadate, } = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .nextPageParse */ .I2)({
+        const { contentRaw } = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .nextPageParse */ .I2)({
             chapterName,
             chapterUrl,
             charset,
@@ -6409,7 +7233,7 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
             }
         }
         async bookParse() {
-            const [introduction, introductionHTML, introCleanimages] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .SN)(introDom, introDomPatch);
+            const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .SN)(introDom, introDomPatch);
             const additionalMetadate = {};
             if (coverUrl) {
                 (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getImageAttachment */ .CE)(coverUrl, this.imageMode, "cover-")
@@ -6553,7 +7377,7 @@ const wanben = () => {
         },
         getAList: (doc) => doc.querySelectorAll("div.chapterDiv > div.chapterList > ul > a"),
         getContentFromUrl: async (chapterUrl, chapterName, charset) => {
-            const { chapterName: _chapterName, contentRaw, contentText, contentHTML, contentImages, additionalMetadate, } = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .nextPageParse */ .I2)({
+            const { contentRaw } = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .nextPageParse */ .I2)({
                 chapterName,
                 chapterUrl,
                 charset,
@@ -6614,7 +7438,7 @@ var external_log_ = __webpack_require__("loglevel");
 var external_log_default = /*#__PURE__*/__webpack_require__.n(external_log_);
 // EXTERNAL MODULE: ./src/main.ts
 var main = __webpack_require__("./src/main.ts");
-// EXTERNAL MODULE: ./src/rules.ts + 1 modules
+// EXTERNAL MODULE: ./src/rules.ts + 7 modules
 var rules = __webpack_require__("./src/rules.ts");
 ;// CONCATENATED MODULE: ./src/rules/lib/haitangtxtImageDecode.ts
 function replaceHaitangtxtImage(inputText) {
@@ -7399,7 +8223,7 @@ function getClass(replaceFunction) {
             const bookname = dom.querySelector("div.cataloginfo > h3").innerText.trim();
             const author = dom.querySelector(".infotype > p:nth-child(1) > a:nth-child(1)").innerText.trim();
             const introDom = dom.querySelector(".intro");
-            const [introduction, introductionHTML, introCleanimages] = await (0,rule/* introDomHandle */.SN)(introDom, (introDomI) => {
+            const [introduction, introductionHTML] = await (0,rule/* introDomHandle */.SN)(introDom, (introDomI) => {
                 (0,misc.rm)("span:nth-child(1)", false, introDomI);
                 return introDomI;
             });
@@ -7529,10 +8353,12 @@ function getClass(replaceFunction) {
                 }
             } while (flag);
             if (content) {
-                const { dom: oldDom, text: _text, images: finalImages, } = await (0,cleanDOM/* cleanDOM */.z)(content, "TM", { keepImageName: true });
+                const { dom: oldDom, images: finalImages } = await (0,cleanDOM/* cleanDOM */.z)(content, "TM", { keepImageName: true });
                 const _newDom = document.createElement("div");
                 _newDom.innerHTML = replaceFunction(content.innerHTML);
-                const { dom: newDom, text: finalText, images, } = await (0,cleanDOM/* cleanDOM */.z)(_newDom, "TM", { keepImageName: true });
+                const { dom: newDom, text: finalText } = await (0,cleanDOM/* cleanDOM */.z)(_newDom, "TM", {
+                    keepImageName: true,
+                });
                 const fontStyleDom = document.createElement("style");
                 fontStyleDom.innerHTML = `.hide { display: none; }`;
                 oldDom.className = "hide";
@@ -7606,7 +8432,7 @@ class C17k extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
         const author = document.querySelector("div.Author > a").innerText.trim();
         const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .dL)(bookUrl, undefined);
         const introDom = doc.querySelector("#bookInfo p.intro > a");
-        const [introduction, introductionHTML, introCleanimages] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .introDomHandle */ .SN)(introDom);
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .introDomHandle */ .SN)(introDom);
         const additionalMetadate = {};
         const coverUrl = doc.querySelector("#bookCover img.book").src;
         if (coverUrl) {
@@ -7752,7 +8578,7 @@ class Ciweimao extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
         const author = document.querySelector(".book-catalog .hd > p > a").innerText.trim();
         const dom = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .getHtmlDOM */ .dL)(bookUrl, undefined);
         const introDom = dom.querySelector(".book-intro-cnt .book-desc");
-        const [introduction, introductionHTML, introCleanimages] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_3__/* .introDomHandle */ .SN)(introDom);
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_3__/* .introDomHandle */ .SN)(introDom);
         const additionalMetadate = {};
         const coverUrl = dom.querySelector(".cover > img")
             .src;
@@ -7808,7 +8634,7 @@ class Ciweimao extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
             const accessKey = item.accessKey;
             const accessKeyList = accessKey.split("");
             const charsNotLatinNum = accessKeyList.length;
-            const output = new Array();
+            const output = [];
             output.push(keys[accessKeyList[charsNotLatinNum - 1].charCodeAt(0) % len]);
             output.push(keys[accessKeyList[0].charCodeAt(0) % len]);
             for (let i = 0; i < output.length; i++) {
@@ -7910,54 +8736,53 @@ class Ciweimao extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
             };
         }
         async function vipChapter() {
+            async function vipChapterDecrypt(chapterIdi, refererUrl) {
+                const HB = unsafeWindow.HB;
+                const parentWidth = 871;
+                const setFontSize = "14";
+                const imageSessionCodeUrl = HB.config.rootPath + "chapter/ajax_get_image_session_code";
+                _log__WEBPACK_IMPORTED_MODULE_5___default().debug(`[Chapter]请求 ${imageSessionCodeUrl} Referer ${refererUrl}`);
+                const imageSessionCodeObject = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .gfetch */ .GF)(imageSessionCodeUrl, {
+                    method: "POST",
+                    headers: {
+                        Accept: "application/json, text/javascript, */*; q=0.01",
+                        Referer: refererUrl,
+                        Origin: "https://www.ciweimao.com",
+                        "X-Requested-With": "XMLHttpRequest",
+                    },
+                    responseType: "json",
+                })
+                    .then((response) => response.response)
+                    .catch((error) => _log__WEBPACK_IMPORTED_MODULE_5___default().error(error));
+                if (imageSessionCodeObject.code !== 100000) {
+                    _log__WEBPACK_IMPORTED_MODULE_5___default().error(imageSessionCodeObject);
+                    throw new Error(`下载 ${refererUrl} 失败`);
+                }
+                const imageCode = decrypt({
+                    content: imageSessionCodeObject
+                        .image_code,
+                    keys: imageSessionCodeObject.encryt_keys,
+                    accessKey: imageSessionCodeObject
+                        .access_key,
+                });
+                const vipCHapterImageUrlI = HB.config.rootPath +
+                    "chapter/book_chapter_image?chapter_id=" +
+                    chapterIdi +
+                    "&area_width=" +
+                    parentWidth +
+                    "&font=undefined" +
+                    "&font_size=" +
+                    setFontSize +
+                    "&image_code=" +
+                    imageCode +
+                    "&bg_color_name=white" +
+                    "&text_color_name=white";
+                return vipCHapterImageUrlI;
+            }
             const isLogin = document.querySelector(".login-info.ly-fr")?.childElementCount === 1
                 ? true
                 : false;
             if (isLogin && isPaid) {
-                async function vipChapterDecrypt(chapterIdi, refererUrl) {
-                    const HB = unsafeWindow.HB;
-                    const parentWidth = 871;
-                    const setFontSize = "14";
-                    const imageSessionCodeUrl = HB.config.rootPath + "chapter/ajax_get_image_session_code";
-                    _log__WEBPACK_IMPORTED_MODULE_5___default().debug(`[Chapter]请求 ${imageSessionCodeUrl} Referer ${refererUrl}`);
-                    const imageSessionCodeObject = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .gfetch */ .GF)(imageSessionCodeUrl, {
-                        method: "POST",
-                        headers: {
-                            Accept: "application/json, text/javascript, */*; q=0.01",
-                            Referer: refererUrl,
-                            Origin: "https://www.ciweimao.com",
-                            "X-Requested-With": "XMLHttpRequest",
-                        },
-                        responseType: "json",
-                    })
-                        .then((response) => response.response)
-                        .catch((error) => _log__WEBPACK_IMPORTED_MODULE_5___default().error(error));
-                    if (imageSessionCodeObject.code !== 100000) {
-                        _log__WEBPACK_IMPORTED_MODULE_5___default().error(imageSessionCodeObject);
-                        throw new Error(`下载 ${refererUrl} 失败`);
-                    }
-                    const imageCode = decrypt({
-                        content: imageSessionCodeObject
-                            .image_code,
-                        keys: imageSessionCodeObject
-                            .encryt_keys,
-                        accessKey: imageSessionCodeObject
-                            .access_key,
-                    });
-                    const vipCHapterImageUrlI = HB.config.rootPath +
-                        "chapter/book_chapter_image?chapter_id=" +
-                        chapterIdi +
-                        "&area_width=" +
-                        parentWidth +
-                        "&font=undefined" +
-                        "&font_size=" +
-                        setFontSize +
-                        "&image_code=" +
-                        imageCode +
-                        "&bg_color_name=white" +
-                        "&text_color_name=white";
-                    return vipCHapterImageUrlI;
-                }
                 const divChapterAuthorSay = await getChapterAuthorSay();
                 const vipCHapterImageUrl = await vipChapterDecrypt(chapterId, chapterUrl);
                 _log__WEBPACK_IMPORTED_MODULE_5___default().debug(`[Chapter]请求 ${vipCHapterImageUrl} Referer ${chapterUrl}`);
@@ -7980,10 +8805,9 @@ class Ciweimao extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
                 const contentImages = [vipCHapterImage];
                 let ddom;
                 let dtext;
-                let dimages;
                 if (divChapterAuthorSay) {
                     const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .z)(divChapterAuthorSay, "TM");
-                    [ddom, dtext, dimages] = [dom, text, images];
+                    [ddom, dtext] = [dom, text, images];
                 }
                 const img = document.createElement("img");
                 img.src = vipCHapterName;
@@ -8071,7 +8895,7 @@ class Ciyuanji extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
         const author = bookObject.authorName;
         const introDom = document.createElement("div");
         introDom.innerHTML = bookObject.notes.replace("/\n/g", "<br/><br/>");
-        const [introduction, introductionHTML, introCleanimages] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .introDomHandle */ .SN)(introDom);
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .introDomHandle */ .SN)(introDom);
         const additionalMetadate = {};
         const coverUrl = bookObject.imgUrl;
         if (coverUrl) {
@@ -8114,6 +8938,33 @@ class Ciyuanji extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+        const data = {
+            key: "ZUreQN0Epkpxh3pooWOgixjTfPwumCTYWzYTQ7SMgDnqFLQ1s9tqpVhkGf02we89moQwhSQ07DVzc3LWupRgbVvm29aYeY7zyFN",
+            type1: "PC-Token",
+            type2: "PC-UserInfo",
+            type3: "PC-Enum",
+            type4: "PC-IsActivityStart",
+            f: "NpkTYvpvhJjEog8Y051gQDHmReY54z5t3F0zSd9QEFuxWGqfC8g8Y4GPuabq0KPdxArlji4dSnnHCARHnkqYBLu7iIw55ibTo18",
+        };
+        function encrypt(input) {
+            if (input && "string" === typeof input) {
+                const key = crypto_js__WEBPACK_IMPORTED_MODULE_0__.enc.Utf8.parse(data.key);
+                return crypto_js__WEBPACK_IMPORTED_MODULE_0__.DES.encrypt(input, key, {
+                    mode: crypto_js__WEBPACK_IMPORTED_MODULE_0__.mode.ECB,
+                    padding: crypto_js__WEBPACK_IMPORTED_MODULE_0__.pad.Pkcs7,
+                }).toString();
+            }
+        }
+        function decrypt(input) {
+            if (input && "string" === typeof input) {
+                input = input.replace(/\n/g, "");
+                const key = crypto_js__WEBPACK_IMPORTED_MODULE_0__.enc.Utf8.parse(data.key);
+                return crypto_js__WEBPACK_IMPORTED_MODULE_0__.DES.decrypt(input, key, {
+                    mode: crypto_js__WEBPACK_IMPORTED_MODULE_0__.mode.ECB,
+                    padding: crypto_js__WEBPACK_IMPORTED_MODULE_0__.pad.Pkcs7,
+                }).toString(crypto_js__WEBPACK_IMPORTED_MODULE_0__.enc.Utf8);
+            }
+        }
         const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_6__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
         const _script = Array.from(doc.querySelectorAll("script")).filter((s) => /^window\.__NUXT__/.test(s.innerHTML));
         if (_script.length === 1) {
@@ -8121,33 +8972,6 @@ class Ciyuanji extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
             const scriptText = script.innerHTML.replace(/^window\./, "const ");
             const __NUXT__ = (0,_lib_misc__WEBPACK_IMPORTED_MODULE_7__/* .sandboxed */ .J0)(`${scriptText}; return __NUXT__`);
             const chapterObj = __NUXT__.data[0].chapter;
-            const data = {
-                key: "ZUreQN0Epkpxh3pooWOgixjTfPwumCTYWzYTQ7SMgDnqFLQ1s9tqpVhkGf02we89moQwhSQ07DVzc3LWupRgbVvm29aYeY7zyFN",
-                type1: "PC-Token",
-                type2: "PC-UserInfo",
-                type3: "PC-Enum",
-                type4: "PC-IsActivityStart",
-                f: "NpkTYvpvhJjEog8Y051gQDHmReY54z5t3F0zSd9QEFuxWGqfC8g8Y4GPuabq0KPdxArlji4dSnnHCARHnkqYBLu7iIw55ibTo18",
-            };
-            function encrypt(input) {
-                if (input && "string" === typeof input) {
-                    const key = crypto_js__WEBPACK_IMPORTED_MODULE_0__.enc.Utf8.parse(data.key);
-                    return crypto_js__WEBPACK_IMPORTED_MODULE_0__.DES.encrypt(input, key, {
-                        mode: crypto_js__WEBPACK_IMPORTED_MODULE_0__.mode.ECB,
-                        padding: crypto_js__WEBPACK_IMPORTED_MODULE_0__.pad.Pkcs7,
-                    }).toString();
-                }
-            }
-            function decrypt(input) {
-                if (input && "string" === typeof input) {
-                    input = input.replace(/\n/g, "");
-                    const key = crypto_js__WEBPACK_IMPORTED_MODULE_0__.enc.Utf8.parse(data.key);
-                    return crypto_js__WEBPACK_IMPORTED_MODULE_0__.DES.decrypt(input, key, {
-                        mode: crypto_js__WEBPACK_IMPORTED_MODULE_0__.mode.ECB,
-                        padding: crypto_js__WEBPACK_IMPORTED_MODULE_0__.pad.Pkcs7,
-                    }).toString(crypto_js__WEBPACK_IMPORTED_MODULE_0__.enc.Utf8);
-                }
-            }
             const content = document.createElement("div");
             const chapterContent = decrypt(chapterObj.chapterContentFormat);
             if (chapterContent) {
@@ -8241,7 +9065,7 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
         const author = data.novelInfo.author_nickname;
         const introDom = document.createElement("div");
         introDom.innerHTML = data.novelInfo.novel_info;
-        const [introduction, introductionHTML, introCleanimages] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_3__/* .introDomHandle */ .SN)(introDom);
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_3__/* .introDomHandle */ .SN)(introDom);
         const additionalMetadate = {};
         const coverUrl = data.novelInfo.novel_cover;
         if (coverUrl) {
@@ -8576,7 +9400,7 @@ class Hanwujinian extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass *
         const bookname = document.querySelector("span.titleText_1").innerText.trim();
         const author = document.querySelector("span.authorText_1").innerText.trim();
         const introDom = document.querySelector("#introtext");
-        const [introduction, introductionHTML, introCleanimages] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_3__/* .introDomHandle */ .SN)(introDom);
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_3__/* .introDomHandle */ .SN)(introDom);
         const coverUrl = document.querySelector(".wR_JSAS > img").src;
         const additionalMetadate = {};
         if (coverUrl) {
@@ -8709,7 +9533,7 @@ var external_log_ = __webpack_require__("loglevel");
 var external_log_default = /*#__PURE__*/__webpack_require__.n(external_log_);
 // EXTERNAL MODULE: ./src/main.ts
 var main = __webpack_require__("./src/main.ts");
-// EXTERNAL MODULE: ./src/rules.ts + 1 modules
+// EXTERNAL MODULE: ./src/rules.ts + 7 modules
 var rules = __webpack_require__("./src/rules.ts");
 // EXTERNAL MODULE: ./src/setting.ts
 var setting = __webpack_require__("./src/setting.ts");
@@ -9005,7 +9829,7 @@ class Jjwxc extends rules/* BaseRuleClass */.c {
                 let authorSayDom;
                 let authorSayText;
                 if (rawAuthorSayDom) {
-                    const { dom: adom, text: atext, images: aimages, } = await (0,cleanDOM/* cleanDOM */.z)(rawAuthorSayDom, "TM");
+                    const { dom: adom, text: atext } = await (0,cleanDOM/* cleanDOM */.z)(rawAuthorSayDom, "TM");
                     [authorSayDom, authorSayText] = [adom, atext];
                 }
                 (0,misc.rm)("div", true, content);
@@ -9146,7 +9970,7 @@ class Jjwxc extends rules/* BaseRuleClass */.c {
                     let authorSayDom;
                     let authorSayText;
                     if (rawAuthorSayDom) {
-                        const { dom: adom, text: atext, images: aimages, } = await (0,cleanDOM/* cleanDOM */.z)(rawAuthorSayDom, "TM");
+                        const { dom: adom, text: atext } = await (0,cleanDOM/* cleanDOM */.z)(rawAuthorSayDom, "TM");
                         [authorSayDom, authorSayText] = [adom, atext];
                     }
                     (0,misc.rm)("div", true, content);
@@ -9239,7 +10063,7 @@ class Linovel extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c
         const bookname = document.querySelector(".book-title").innerText.trim();
         const author = document.querySelector(".author-frame > .novelist > div:nth-child(3) > a").innerText.trim();
         const introDom = document.querySelector(".about-text");
-        const [introduction, introductionHTML, introCleanimages] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .SN)(introDom);
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .SN)(introDom);
         const additionalMetadate = {};
         const attachmentsUrlList = [];
         const coverUrl = document.querySelector(".book-cover > a").href;
@@ -9568,7 +10392,7 @@ class Longmabook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */
         const introDom = document
             .querySelector("#mypages > div:nth-child(8) > div:nth-child(1)")
             ?.cloneNode(true);
-        let [introduction, introductionHTML, introCleanimages] = [null, null, null];
+        let [introduction, introductionHTML] = [null, null, null];
         if (introDom) {
             (0,_lib_misc__WEBPACK_IMPORTED_MODULE_2__.rm)("div", true, introDom);
             (0,_lib_misc__WEBPACK_IMPORTED_MODULE_2__.rm)("textarea", true, introDom);
@@ -9580,7 +10404,7 @@ class Longmabook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */
             introDom.innerHTML = introDom.innerHTML
                 .replace(/【作品编号：\d+】|【作品編號：\d+】/, "")
                 .replace("\n)\n", "");
-            [introduction, introductionHTML, introCleanimages] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_3__/* .introDomHandle */ .SN)(introDom, undefined);
+            [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_3__/* .introDomHandle */ .SN)(introDom, undefined);
         }
         const additionalMetadate = {};
         const coverUrl = document.querySelector("#mypages > div:nth-child(8) > div:nth-child(1) > img")?.src.replace("_s.", "_b.");
@@ -10017,7 +10841,7 @@ class Pixiv extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
         else {
             const obj = await getPreloadData(document.location.href, self.charset);
             if (obj) {
-                const { preloadData, novel, user } = obj;
+                const { novel } = obj;
                 if (novel) {
                     const seriesNavData = novel.seriesNavData;
                     if (seriesNavData) {
@@ -10160,10 +10984,10 @@ class Pixiv extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
             return book;
         }
     }
-    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset) {
         const obj = await getPreloadData(chapterUrl, charset);
         if (obj) {
-            const { preloadData, novel, user } = obj;
+            const { novel } = obj;
             if (novel) {
                 const contentRaw = document.createElement("div");
                 contentRaw.innerHTML = novel.content.replace(/\n/g, "<br/>");
@@ -10266,7 +11090,7 @@ class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
             .replace(/作\s+者:/, "")
             .trim();
         const introDom = document.querySelector(".book-info-detail .book-intro");
-        const [introduction, introductionHTML, introCleanimages] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .SN)(introDom);
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .SN)(introDom);
         const additionalMetadate = {};
         const coverUrl = document.querySelector("#bookImg > img").src;
         if (coverUrl) {
@@ -10367,11 +11191,6 @@ class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        const _csrfToken = options._csrfToken;
-        const bookId = options.bookId;
-        const authorId = options.authorId;
-        const chapterId = options.chapterId;
-        const limitFree = options.limitFree;
         const nullObj = {
             chapterName,
             contentRaw: null,
@@ -10477,7 +11296,7 @@ class Qimao extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
         const bookname = document.querySelector("h2.tit").innerText.trim();
         const author = document.querySelector(".p-name > a").innerHTML.trim();
         const introDom = document.querySelector(".book-introduction .article");
-        const [introduction, introductionHTML, introCleanimages] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .SN)(introDom);
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .SN)(introDom);
         const additionalMetadate = {};
         const coverUrl = document.querySelector(".poster-pic > img").src;
         if (coverUrl) {
@@ -10606,7 +11425,7 @@ class Qingoo extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
             .replace("作者：", "")
             .trim();
         const introDom = document.querySelector("#allDesc");
-        const [introduction, introductionHTML, introCleanimages] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .SN)(introDom);
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .SN)(introDom);
         const additionalMetadate = {};
         const coverUrl = document.querySelector(".title > dl > dt > img:nth-child(1)").src;
         if (coverUrl) {
@@ -10711,7 +11530,7 @@ class Sfacg extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
         const dom = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .dL)(bookUrl, undefined);
         const author = dom.querySelector(".author-name").innerText.trim();
         const introDom = dom.querySelector(".introduce");
-        const [introduction, introductionHTML, introCleanimages] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .introDomHandle */ .SN)(introDom);
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .introDomHandle */ .SN)(introDom);
         const additionalMetadate = {};
         const coverUrl = dom.querySelector("#hasTicket div.pic img").src;
         if (coverUrl) {
@@ -10946,7 +11765,7 @@ class Shubl extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
         const bookname = document.querySelector(".book-title > span").innerText.trim();
         const author = document.querySelector("div.username").innerText.trim();
         const introDom = document.querySelector(".book-brief");
-        const [introduction, introductionHTML, introCleanimages] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .introDomHandle */ .SN)(introDom, (introDomI) => {
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .introDomHandle */ .SN)(introDom, (introDomI) => {
             introDomI.innerHTML = introDomI.innerHTML.replace("简介：", "");
             return introDomI;
         });
@@ -11016,7 +11835,7 @@ class Shubl extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
             const accessKey = item.accessKey;
             const accessKeyList = accessKey.split("");
             const charsNotLatinNum = accessKeyList.length;
-            const output = new Array();
+            const output = [];
             output.push(keys[accessKeyList[charsNotLatinNum - 1].charCodeAt(0) % len]);
             output.push(keys[accessKeyList[0].charCodeAt(0) % len]);
             for (let i = 0; i < output.length; i++) {
@@ -11099,50 +11918,49 @@ class Shubl extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
             };
         }
         async function vipChapter() {
-            if (isPaid) {
-                async function vipChapterDecrypt(chapterIdi, refererUrl) {
-                    const parentWidth = 939.2;
-                    const setFontSize = "18";
-                    const imageSessionCodeUrl = rootPath + "chapter/ajax_get_image_session_code";
-                    _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`[Chapter]请求 ${imageSessionCodeUrl} Referer ${refererUrl}`);
-                    const imageSessionCodeObject = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_6__/* .gfetch */ .GF)(imageSessionCodeUrl, {
-                        method: "POST",
-                        headers: {
-                            Accept: "application/json, text/javascript, */*; q=0.01",
-                            Referer: refererUrl,
-                            Origin: document.location.origin,
-                            "X-Requested-With": "XMLHttpRequest",
-                        },
-                        responseType: "json",
-                    })
-                        .then((response) => response.response)
-                        .catch((error) => _log__WEBPACK_IMPORTED_MODULE_4___default().error(error));
-                    if (imageSessionCodeObject.code !== 100000) {
-                        _log__WEBPACK_IMPORTED_MODULE_4___default().error(imageSessionCodeObject);
-                        throw new Error(`下载 ${refererUrl} 失败`);
-                    }
-                    const imageCode = decrypt({
-                        content: imageSessionCodeObject
-                            .image_code,
-                        keys: imageSessionCodeObject
-                            .encryt_keys,
-                        accessKey: imageSessionCodeObject
-                            .access_key,
-                    });
-                    const vipCHapterImageUrlI = rootPath +
-                        "chapter/book_chapter_image?chapter_id=" +
-                        chapterIdi +
-                        "&area_width=" +
-                        parentWidth +
-                        "&font=undefined" +
-                        "&font_size=" +
-                        setFontSize +
-                        "&image_code=" +
-                        imageCode +
-                        "&bg_color_name=white" +
-                        "&text_color_name=white";
-                    return vipCHapterImageUrlI;
+            async function vipChapterDecrypt(chapterIdi, refererUrl) {
+                const parentWidth = 939.2;
+                const setFontSize = "18";
+                const imageSessionCodeUrl = rootPath + "chapter/ajax_get_image_session_code";
+                _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`[Chapter]请求 ${imageSessionCodeUrl} Referer ${refererUrl}`);
+                const imageSessionCodeObject = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_6__/* .gfetch */ .GF)(imageSessionCodeUrl, {
+                    method: "POST",
+                    headers: {
+                        Accept: "application/json, text/javascript, */*; q=0.01",
+                        Referer: refererUrl,
+                        Origin: document.location.origin,
+                        "X-Requested-With": "XMLHttpRequest",
+                    },
+                    responseType: "json",
+                })
+                    .then((response) => response.response)
+                    .catch((error) => _log__WEBPACK_IMPORTED_MODULE_4___default().error(error));
+                if (imageSessionCodeObject.code !== 100000) {
+                    _log__WEBPACK_IMPORTED_MODULE_4___default().error(imageSessionCodeObject);
+                    throw new Error(`下载 ${refererUrl} 失败`);
                 }
+                const imageCode = decrypt({
+                    content: imageSessionCodeObject
+                        .image_code,
+                    keys: imageSessionCodeObject.encryt_keys,
+                    accessKey: imageSessionCodeObject
+                        .access_key,
+                });
+                const vipCHapterImageUrlI = rootPath +
+                    "chapter/book_chapter_image?chapter_id=" +
+                    chapterIdi +
+                    "&area_width=" +
+                    parentWidth +
+                    "&font=undefined" +
+                    "&font_size=" +
+                    setFontSize +
+                    "&image_code=" +
+                    imageCode +
+                    "&bg_color_name=white" +
+                    "&text_color_name=white";
+                return vipCHapterImageUrlI;
+            }
+            if (isPaid) {
                 const vipCHapterImageUrl = await vipChapterDecrypt(chapterId, chapterUrl);
                 _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`[Chapter]请求 ${vipCHapterImageUrl} Referer ${chapterUrl}`);
                 const vipCHapterImageBlob = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_6__/* .gfetch */ .GF)(vipCHapterImageUrl, {
@@ -11240,7 +12058,7 @@ class Shuhai extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
             .trim();
         const introDom = document.querySelector("div.book-info-bookintro") ||
             document.querySelector("div.book-info-bookintro-all");
-        const [introduction, introductionHTML, introCleanimages] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .SN)(introDom);
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .SN)(introDom);
         const additionalMetadate = {};
         const coverUrl = document.querySelector(".book-cover-wrapper > img").getAttribute("data-original");
         if (coverUrl) {
@@ -11526,7 +12344,7 @@ class Tadu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
         const bookname = document.querySelector("div.bookNm > a.bkNm").innerText.trim();
         const author = document.querySelector("div.authorInfo > a.author > span").innerText.trim();
         const introDom = document.querySelector("div.boxCenter.boxT.clearfix > div.lf.lfO > p.intro");
-        const [introduction, introductionHTML, introCleanimages] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .SN)(introDom);
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .SN)(introDom);
         const additionalMetadate = {};
         const coverUrl = document.querySelector("a.bookImg > img").getAttribute("data-src");
         if (coverUrl) {
@@ -11677,7 +12495,7 @@ class Zongheng extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
         const author = document.querySelector("div.book-meta > p > span:nth-child(1) > a").innerText.trim();
         const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .dL)(bookUrl, undefined);
         const introDom = doc.querySelector("div.book-info > div.book-dec");
-        const [introduction, introductionHTML, introCleanimages] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .introDomHandle */ .SN)(introDom);
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .introDomHandle */ .SN)(introDom);
         const additionalMetadate = {};
         const coverUrl = doc.querySelector("div.book-img > img").src;
         if (coverUrl) {
@@ -11807,6 +12625,9 @@ class Dmzj extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
     constructor() {
         super();
         this.imageMode = "TM";
+        this.streamZip = true;
+        this.concurrencyLimit = 1;
+        this.maxRunLimit = 1;
     }
     async bookParse() {
         const bookUrl = document.location.href;
@@ -11824,7 +12645,7 @@ class Dmzj extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
         const introDom = isWwwHost
             ? document.querySelector(".comic_deCon_d")
             : document.querySelector(".line_height_content");
-        const [introduction, introductionHTML, introCleanimages] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .SN)(introDom);
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .SN)(introDom);
         const additionalMetadate = {};
         const coverDom = isWwwHost
             ? document.querySelector(".comic_i_img > a > img")
@@ -12038,7 +12859,7 @@ class Hetushu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c
         const bookname = document.querySelector(".book_info > h2").innerText.trim();
         const author = document.querySelector(".book_info > div:nth-child(3) > a:nth-child(1)").innerText.trim();
         const introDom = document.querySelector(".intro");
-        const [introduction, introductionHTML, introCleanimages] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .SN)(introDom);
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .SN)(introDom);
         const additionalMetadate = {};
         const coverUrl = document.querySelector(".book_info > img").src;
         if (coverUrl) {
@@ -12231,7 +13052,7 @@ class Idejian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c
             author = _author.textContent.trim();
         }
         const introDom = document.querySelector(".brief_con");
-        const [introduction, introductionHTML, introCleanimages] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .SN)(introDom);
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .SN)(introDom);
         const additionalMetadate = {};
         const coverUrl = document.querySelector(".book_img > img").src;
         if (coverUrl) {
@@ -12355,16 +13176,15 @@ class Kanunu8 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c
             .replace("作品集", "")
             .replace("→", "")
             .trim() ?? "";
-        let introDom;
-        introDom = Array.from(document.body.querySelectorAll("td, p"))
+        const introDom = Array.from(document.body.querySelectorAll("td, p"))
             .filter((elem) => elem.innerText.length !== 0)
             .map((elem) => [elem, (0,_lib_misc__WEBPACK_IMPORTED_MODULE_2__/* .getNodeTextLength */ .MK)(elem)])
             .sort(_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .softByValue */ .BL)
             .slice(-1)?.[0][0];
-        let introduction = null, introductionHTML = null, introCleanimages = null;
+        let introduction = null, introductionHTML = null;
         if (introDom) {
             (0,_lib_misc__WEBPACK_IMPORTED_MODULE_2__.rm)("a", true, introDom);
-            [introduction, introductionHTML, introCleanimages] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .SN)(introDom);
+            [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .SN)(introDom);
         }
         let aList = null;
         let sections = null;
@@ -12506,7 +13326,7 @@ class Linovelib extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ 
         const author = document.querySelector(".book-meta > p:nth-child(2) > span:nth-child(1) > a:nth-child(2)").innerText.trim();
         const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .dL)(bookUrl, undefined);
         const introDom = doc.querySelector(".book-dec > p:nth-child(1)");
-        const [introduction, introductionHTML, introCleanimages] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .introDomHandle */ .SN)(introDom);
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .introDomHandle */ .SN)(introDom);
         const additionalMetadate = {};
         const coverUrl = doc.querySelector(".book-img > img")
             .src;
@@ -12617,7 +13437,7 @@ class Soxscc extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
         const bookname = document.querySelector(".xiaoshuo > h1").innerText.trim();
         const author = document.querySelector(".xiaoshuo > h6:nth-child(3) > a").innerText.trim();
         const introDom = document.querySelector("#intro");
-        const [introduction, introductionHTML, introCleanimages] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .SN)(introDom, (introDomI) => {
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .SN)(introDom, (introDomI) => {
             (0,_lib_misc__WEBPACK_IMPORTED_MODULE_2__.rm)("span.tags", false, introDomI);
             (0,_lib_misc__WEBPACK_IMPORTED_MODULE_2__.rm)("q", true, introDomI);
             return introDomI;
@@ -12742,7 +13562,7 @@ class Uukanshu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
             .trim();
         const author = document.querySelector("dd.jieshao_content > h2 > a").innerText.trim();
         const introDom = document.querySelector("dd.jieshao_content > h3");
-        const [introduction, introductionHTML, introCleanimages] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .SN)(introDom, (introDomI) => {
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .SN)(introDom, (introDomI) => {
             introDomI.innerHTML = introDomI.innerHTML
                 .replace(/^.+简介：\s+www.uukanshu.com\s+/, "")
                 .replace(/\s+https:\/\/www.uukanshu.com/, "")
@@ -12878,7 +13698,7 @@ class Wenku8 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
             .replace("小说作者：", "")
             .trim();
         const introDom = doc.querySelector("#content > div:nth-child(1) > table:nth-child(4) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(2) > span:nth-child(11)");
-        const [introduction, introductionHTML, introCleanimages] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .introDomHandle */ .SN)(introDom);
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .introDomHandle */ .SN)(introDom);
         const additionalMetadate = {};
         const coverUrl = doc.querySelector("#content > div:nth-child(1) > table:nth-child(4) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(1) > img:nth-child(1)").src;
         if (coverUrl) {
@@ -12982,7 +13802,7 @@ class Xkzw extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
             .replace(/作(\s+)?者[：:]/, "")
             .trim();
         const introDom = document.querySelector("#intro");
-        const [introduction, introductionHTML, introCleanimages] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .introDomHandle */ .SN)(introDom);
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .introDomHandle */ .SN)(introDom);
         const additionalMetadate = {};
         const coverUrl = document.querySelector("#fmimg > img").src;
         if (coverUrl) {
@@ -13460,7 +14280,7 @@ function mkRuleClass({ bookUrl, anotherPageUrl, getBookname, getAuthor, getIntro
             const bookname = getBookname(doc);
             const author = getAuthor(doc);
             const introDom = getIntroDom(doc);
-            const [introduction, introductionHTML, introCleanimages] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .introDomHandle */ .SN)(introDom, introDomPatch);
+            const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .introDomHandle */ .SN)(introDom, introDomPatch);
             const coverUrl = getCoverUrl(doc);
             const additionalMetadate = {};
             if (coverUrl) {
@@ -13702,7 +14522,7 @@ const yibige = () => (0,_tempate__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ 
     getAList: (doc) => doc.querySelectorAll("#list dd > a"),
     getContent: (doc) => doc.querySelector("#content"),
     getContentFromUrl: async (chapterUrl, chapterName, charset) => {
-        const { chapterName: _chapterName, contentRaw, contentText, contentHTML, contentImages, additionalMetadate, } = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .nextPageParse */ .I2)({
+        const { contentRaw } = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .nextPageParse */ .I2)({
             chapterName,
             chapterUrl,
             charset,
@@ -13729,418 +14549,17 @@ const yibige = () => (0,_tempate__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ 
 
 /***/ }),
 
-/***/ "./src/save/save.ts":
+/***/ "./src/save/misc.ts":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-
-// EXPORTS
-__webpack_require__.d(__webpack_exports__, {
-  "Zd": () => (/* binding */ getSaveBookObj),
-  "f0": () => (/* binding */ getSectionsObj),
-  "hh": () => (/* binding */ saveOptionsValidate)
-});
-
-// UNUSED EXPORTS: SaveBook
-
-// EXTERNAL MODULE: ./node_modules/file-saver/dist/FileSaver.min.js
-var FileSaver_min = __webpack_require__("./node_modules/file-saver/dist/FileSaver.min.js");
-;// CONCATENATED MODULE: external "fflate"
-const external_fflate_namespaceObject = fflate;
-// EXTERNAL MODULE: external "log"
-var external_log_ = __webpack_require__("loglevel");
-var external_log_default = /*#__PURE__*/__webpack_require__.n(external_log_);
-// EXTERNAL MODULE: ./src/lib/misc.ts
-var misc = __webpack_require__("./src/lib/misc.ts");
-;// CONCATENATED MODULE: ./src/lib/zip.ts
-
-
-
-class FflateZip {
-    constructor() {
-        const self = this;
-        this.zcount = 0;
-        this.count = 0;
-        this.filenameList = [];
-        this.zipOut = [];
-        this.savedZip = new external_fflate_namespaceObject.Zip((err, dat, final) => {
-            if (err) {
-                external_log_default().error(err);
-                external_log_default().trace(err);
-                throw err;
-            }
-            self.zipOut.push(dat);
-            if (final) {
-                const zipBlob = new Blob(self.zipOut, { type: "application/zip" });
-                external_log_default().info("[fflateZip] ZIP生成完毕，文件大小：" + zipBlob.size);
-                self.zipOut = [];
-                if (typeof self.onFinal === "function" &&
-                    typeof self.onFinalError === "function") {
-                    try {
-                        self.onFinal(zipBlob);
-                    }
-                    catch (error) {
-                        self.onFinalError(error);
-                    }
-                }
-                else {
-                    throw new Error("[fflateZip] 未发现保存函数");
-                }
-            }
-        });
-    }
-    async file(filename, fileBlob) {
-        if (this.filenameList.includes(filename)) {
-            external_log_default().warn(`filename ${filename} has existed on zip.`);
-            return;
-        }
-        this.filenameList.push(filename);
-        this.count++;
-        const buffer = await fileBlob.arrayBuffer();
-        const chunk = new Uint8Array(buffer);
-        if (fileBlob.type.includes("image/")) {
-            const nonStreamingFile = new external_fflate_namespaceObject.ZipPassThrough(filename);
-            this.savedZip.add(nonStreamingFile);
-            nonStreamingFile.push(chunk, true);
-            this.zcount++;
-        }
-        else {
-            const nonStreamingFile = new external_fflate_namespaceObject.AsyncZipDeflate(filename, {
-                level: 9,
-            });
-            this.savedZip.add(nonStreamingFile);
-            nonStreamingFile.push(chunk, true);
-            this.zcount++;
-        }
-    }
-    async generateAsync() {
-        while (this.count !== this.zcount) {
-            await (0,misc/* sleep */._v)(100);
-        }
-        this.savedZip.end();
-    }
-}
-
-// EXTERNAL MODULE: ./src/log.ts
-var log = __webpack_require__("./src/log.ts");
-// EXTERNAL MODULE: ./src/main.ts
-var main = __webpack_require__("./src/main.ts");
-// EXTERNAL MODULE: ./src/setting.ts
-var setting = __webpack_require__("./src/setting.ts");
-// EXTERNAL MODULE: ./src/save/main.css
-var save_main = __webpack_require__("./src/save/main.css");
-;// CONCATENATED MODULE: ./src/save/chapter.html.j2
-// Module
-var code = "<!DOCTYPE html> <html> <head> <meta charset=\"UTF-8\"/> <meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"/> <meta name=\"referrer\" content=\"same-origin\"/> <meta name=\"generator\" content=\"https://github.com/yingziwu/novel-downloader\"/> <meta name=\"source\" content=\"{{ chapterUrl }}\"/> <link href=\"style.css\" rel=\"stylesheet\"/> <title>{{ chapterName }}</title> </head> <body> <div class=\"main\"> <h2>{{ chapterName }}</h2> {{ outerHTML }} </div> </body> </html> ";
-// Exports
-/* harmony default export */ const chapter_html = (code);
-;// CONCATENATED MODULE: ./src/save/index.html.j2
-// Module
-var index_html_code = "<!DOCTYPE html> <html> <head> <meta charset=\"UTF-8\"/> <meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"/> <meta name=\"referrer\" content=\"same-origin\"/> <meta name=\"generator\" content=\"https://github.com/yingziwu/novel-downloader\"/> <meta name=\"date-creation\" content=\"{{ creationDate }}\"/> <link href=\"style.css\" rel=\"stylesheet\"/> <link href=\"toc.css\" rel=\"stylesheet\"/> <title>{{ bookname }}</title> </head> <body> <div class=\"main\"> <h1>{{ bookname }}</h1> <h3 class=\"author\">{{ author }}</h3> <div class=\"info\"> {% if cover -%} <img class=\"cover\" data-src-address=\"{{ cover.name }}\"/> {%- endif %} {% if introductionHTML -%} <div> <h3>简介</h3> <div class=\"introduction\">{{ introductionHTML }}</div> </div> {%- endif %} </div> <div class=\"bookurl\"> <a href=\"{{ bookUrl }}\">打开原始网站</a> </div> <hr/> {% for sectionObj in sectionsObj -%} <div id=\"section{{ sectionObj.sectionNumber }}\" class=\"section\"> {% if sectionObj.sectionName %} <h2 class=\"section-label\">{{ sectionObj.sectionName }}</h2> {% endif %} {% for chapter in sectionObj.chpaters -%} <div class=\"chapter\"> {% if not (chapter.contentHTML or chapter.status === Status.saved) -%} <a class=\"disabled\" href=\"{{ chapter.chapterHtmlFileName }}\">{{ chapter.chapterName }}</a> {%- else -%} <a href=\"{{ chapter.chapterHtmlFileName }}\">{{ chapter.chapterName }}</a> {%- endif %} </div> {%- endfor %} </div> {%- endfor %} </div> </body> </html>";
-// Exports
-/* harmony default export */ const index_html = (index_html_code);
-;// CONCATENATED MODULE: ./src/save/section.html.j2
-// Module
-var section_html_code = "<!DOCTYPE html> <html> <head> <meta charset=\"UTF-8\"/> <meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"/> <meta name=\"referrer\" content=\"same-origin\"/> <meta name=\"generator\" content=\"https://github.com/yingziwu/novel-downloader\"/> <link href=\"style.css\" rel=\"stylesheet\"/> <title>{{ sectionName }}</title> </head> <body> <div class=\"main\"><h1>{{ sectionName }}</h1></div> </body> </html> ";
-// Exports
-/* harmony default export */ const section_html = (section_html_code);
-;// CONCATENATED MODULE: external "nunjucks"
-const external_nunjucks_namespaceObject = nunjucks;
-;// CONCATENATED MODULE: ./src/save/template.ts
-
-
-
-
-const env = new external_nunjucks_namespaceObject.Environment(undefined, { autoescape: false });
-const section = new external_nunjucks_namespaceObject.Template(section_html, env, undefined, true);
-const chapter = new external_nunjucks_namespaceObject.Template(chapter_html, env, undefined, true);
-const index = new external_nunjucks_namespaceObject.Template(index_html, env, undefined, true);
-
-// EXTERNAL MODULE: ./src/save/toc.css
-var toc = __webpack_require__("./src/save/toc.css");
-;// CONCATENATED MODULE: ./src/save/save.ts
-
-
-
-
-
-
-
-
-class SaveBook {
-    constructor(book) {
-        this.book = book;
-        this.chapters = book.chapters;
-        this.savedZip = new FflateZip();
-        this._sections = [];
-        this.savedTextArray = [];
-        this.saveFileNameBase = `[${this.book.author}]${this.book.bookname}`;
-        this.mainStyleText = save_main/* default */.Z;
-        this.tocStyleText = toc/* default */.Z;
-    }
-    saveTxt() {
-        const metaDateText = this.genMetaDateTxt();
-        this.savedTextArray.push(metaDateText);
-        external_log_default().debug("[save]对 chapters 排序");
-        this.chapters.sort(this.chapterSort);
-        const sections = [];
-        for (const chapterTemp of this.chapters) {
-            const chapterName = this.getchapterName(chapterTemp);
-            if (chapterTemp.sectionName &&
-                !sections.includes(chapterTemp.sectionName)) {
-                sections.push(chapterTemp.sectionName);
-                const sectionText = this.genSectionText(chapterTemp.sectionName);
-                this.savedTextArray.push(sectionText);
-            }
-            const chapterText = this.genChapterText(chapterName, chapterTemp.contentText ?? "");
-            this.savedTextArray.push(chapterText);
-            if (!setting/* enableDebug.value */.Cy.value) {
-                chapterTemp.contentText = null;
-            }
-        }
-        external_log_default().info("[save]保存TXT文件");
-        const savedText = this.savedTextArray.join("\n").replaceAll("\n", "\r\n");
-        (0,FileSaver_min.saveAs)(new Blob([savedText], { type: "text/plain;charset=utf-8" }), `${this.saveFileNameBase}.txt`);
-    }
-    saveLog() {
-        this.savedZip.file("debug.log", new Blob([log/* logText */.KC], { type: "text/plain; charset=UTF-8" }));
-    }
-    async saveZip(runSaveChapters = false) {
-        external_log_default().debug("[save]保存元数据文本");
-        const metaDateText = this.genMetaDateTxt();
-        this.savedZip.file("info.txt", new Blob([metaDateText], { type: "text/plain;charset=utf-8" }));
-        external_log_default().debug("[save]保存样式");
-        this.savedZip.file("style.css", new Blob([this.mainStyleText], { type: "text/css;charset=utf-8" }));
-        this.modifyTocStyleText();
-        this.savedZip.file("toc.css", new Blob([this.tocStyleText], { type: "text/css;charset=utf-8" }));
-        if (this.book.additionalMetadate.cover) {
-            external_log_default().debug("[save]保存封面");
-            this.addImageToZip(this.book.additionalMetadate.cover, this.savedZip);
-        }
-        if (this.book.additionalMetadate.attachments) {
-            external_log_default().debug("[save]保存书籍附件");
-            for (const bookAttachment of this.book.additionalMetadate.attachments) {
-                this.addImageToZip(bookAttachment, this.savedZip);
-            }
-        }
-        external_log_default().debug("[save]开始生成并保存卷文件");
-        this.saveSections();
-        external_log_default().debug("[save]开始生成并保存 index.html");
-        this.saveToC();
-        external_log_default().debug("[save]开始保存 Meta Data Json");
-        this.saveMetaJson();
-        if (runSaveChapters) {
-            external_log_default().debug("[save]开始保存章节文件");
-            await this.saveChapters();
-        }
-        else {
-            external_log_default().debug("[save]保存仅标题章节文件");
-            await this.saveStubChapters(this.chapters);
-        }
-        external_log_default().info("[save]开始保存ZIP文件");
-        const self = this;
-        if (setting/* enableDebug.value */.Cy.value) {
-            self.saveLog();
-        }
-        return new Promise((resolve, reject) => {
-            const finalHandle = (blob) => {
-                (0,FileSaver_min.saveAs)(blob, `${self.saveFileNameBase}.zip`);
-                resolve();
-            };
-            const finalErrorHandle = (err) => {
-                external_log_default().error("saveZip: " + err);
-                external_log_default().trace(err);
-                reject(err);
-            };
-            this.savedZip.onFinal = finalHandle;
-            this.savedZip.onFinalError = finalErrorHandle;
-            this.savedZip.generateAsync();
-        });
-    }
-    saveToC() {
-        external_log_default().debug("[save]对 chapters 排序");
-        this.chapters.sort(this.chapterSort);
-        const self = this;
-        const sectionsListObj = getSectionsObj(self.chapters);
-        const indexHtmlText = index.render({
-            creationDate: Date.now(),
-            bookname: self.book.bookname,
-            author: self.book.author,
-            cover: self.book.additionalMetadate.cover,
-            introductionHTML: self.book.introductionHTML?.outerHTML,
-            bookUrl: self.book.bookUrl,
-            sectionsObj: Object.values(sectionsListObj),
-            Status: main/* Status */.qb,
-        });
-        this.savedZip.file("index.html", new Blob([indexHtmlText.replaceAll("data-src-address", "src")], {
-            type: "text/html; charset=UTF-8",
-        }));
-    }
-    modifyTocStyleText() {
-        const self = this;
-        if (self.book.additionalMetadate.cover) {
-            self.tocStyleText = `${self.tocStyleText}
-.info {
-  display: grid;
-  grid-template-columns: 30% 70%;
-}`;
-        }
-        else {
-            self.tocStyleText = `${self.tocStyleText}
-.info {
-  display: grid;
-  grid-template-columns: 100%;
-}`;
-        }
-    }
-    saveMetaJson() {
-        this.savedZip.file("book.json", new Blob([JSON.stringify(this.book)], {
-            type: "application/json; charset=utf-8",
-        }));
-        this.savedZip.file("chapters.json", new Blob([JSON.stringify(this.book.chapters)], {
-            type: "application/json; charset=utf-8",
-        }));
-    }
-    async saveStubChapters(chapters) {
-        chapters = chapters.filter((c) => c.status !== main/* Status.saved */.qb.saved);
-        for (const c of chapters) {
-            if (c.status === main/* Status.finished */.qb.finished) {
-                await this.addChapter(c);
-            }
-            else {
-                await this.addChapter(c, "Stub");
-            }
-        }
-    }
-    async saveChapters() {
-        for (const chapter of this.chapters) {
-            await this.addChapter(chapter);
-        }
-    }
-    saveSections() {
-        external_log_default().debug("[save]对 chapters 排序");
-        this.chapters.sort(this.chapterSort);
-        for (const chapter of this.chapters) {
-            const chapterNumberToSave = this.getChapterNumberToSave(chapter);
-            const sectionHtmlFileName = `No${chapterNumberToSave}Section.html`;
-            if (chapter.sectionName) {
-                if (!this._sections.includes(chapter.sectionName)) {
-                    this._sections.push(chapter.sectionName);
-                    external_log_default().debug(`[save]保存卷HTML文件：${chapter.sectionName}`);
-                    const sectionHTMLBlob = this.genSectionHtmlFile(chapter);
-                    this.savedZip.file(sectionHtmlFileName, sectionHTMLBlob);
-                }
-            }
-        }
-    }
-    getChapterNumberToSave(chapter) {
-        return `${"0".repeat(this.chapters.length.toString().length -
-            chapter.chapterNumber.toString().length)}${chapter.chapterNumber.toString()}`;
-    }
-    async addChapter(chapter, suffix = "") {
-        const chapterName = this.getchapterName(chapter);
-        const chapterNumberToSave = this.getChapterNumberToSave(chapter);
-        const chapterHtmlFileName = `No${chapterNumberToSave}Chapter${suffix}.html`;
-        external_log_default().debug(`[save]保存章HTML文件：${chapterName}`);
-        const chapterHTMLBlob = this.genChapterHtmlFile(chapter);
-        if (!setting/* enableDebug.value */.Cy.value) {
-            chapter.contentRaw = null;
-            chapter.contentHTML = null;
-        }
-        await this.savedZip.file(chapterHtmlFileName, chapterHTMLBlob);
-        chapter.chapterHtmlFileName = chapterHtmlFileName;
-        chapter.status = main/* Status.saved */.qb.saved;
-        if (chapter.contentImages && chapter.contentImages.length !== 0) {
-            external_log_default().debug(`[save]保存章节附件：${chapterName}`);
-            for (const attachment of chapter.contentImages) {
-                this.addImageToZip(attachment, this.savedZip);
-            }
-            if (!setting/* enableDebug.value */.Cy.value) {
-                chapter.contentImages = null;
-            }
-        }
-    }
-    getchapterName(chapter) {
-        if (chapter.chapterName) {
-            return chapter.chapterName;
-        }
-        else {
-            return chapter.chapterNumber.toString();
-        }
-    }
-    genMetaDateTxt() {
-        let metaDateText = `题名：${this.book.bookname}\n作者：${this.book.author}`;
-        if (this.book.additionalMetadate.tags) {
-            metaDateText += `\nTag列表：${this.book.additionalMetadate.tags.join("、")}`;
-        }
-        metaDateText += `\n原始网址：${this.book.bookUrl}`;
-        if (this.book.additionalMetadate.cover) {
-            metaDateText += `\n封面图片地址：${this.book.additionalMetadate.cover.url}`;
-        }
-        if (this.book.introduction) {
-            metaDateText += `\n简介：${this.book.introduction}`;
-        }
-        metaDateText += `\n下载时间：${new Date().toISOString()}\n本文件由小说下载器生成，软件地址：https://github.com/yingziwu/novel-downloader\n\n`;
-        return metaDateText;
-    }
-    async addImageToZip(attachment, zip) {
-        if (attachment.status === main/* Status.finished */.qb.finished && attachment.imageBlob) {
-            external_log_default().debug(`[save]添加附件，文件名：${attachment.name}，对象`, attachment.imageBlob);
-            await zip.file(attachment.name, attachment.imageBlob);
-            attachment.status = main/* Status.saved */.qb.saved;
-            if (!setting/* enableDebug.value */.Cy.value) {
-                attachment.imageBlob = null;
-            }
-        }
-        else if (attachment.status === main/* Status.saved */.qb.saved) {
-            external_log_default().debug(`[save]附件${attachment.name}已添加`);
-        }
-        else {
-            external_log_default().warn(`[save]添加附件${attachment.name}失败，该附件未完成或内容为空。`);
-            external_log_default().warn(attachment);
-        }
-    }
-    genSectionText(sectionName) {
-        return (`${"=".repeat(20)}\n\n\n\n# ${sectionName}\n\n\n\n${"=".repeat(20)}` +
-            "\n\n");
-    }
-    genChapterText(chapterName, contentText) {
-        return `## ${chapterName}\n\n${contentText}\n\n`;
-    }
-    genSectionHtmlFile(chapterObj) {
-        const htmlText = section.render({ sectionName: chapterObj.sectionName });
-        return new Blob([htmlText.replaceAll("data-src-address", "src")], {
-            type: "text/html; charset=UTF-8",
-        });
-    }
-    genChapterHtmlFile(chapterObj) {
-        const htmlText = chapter.render({
-            chapterUrl: chapterObj.chapterUrl,
-            chapterName: chapterObj.chapterName,
-            outerHTML: chapterObj.contentHTML?.outerHTML ?? "",
-        });
-        return new Blob([htmlText.replaceAll("data-src-address", "src")], {
-            type: "text/html; charset=UTF-8",
-        });
-    }
-    chapterSort(a, b) {
-        if (a.chapterNumber > b.chapterNumber) {
-            return 1;
-        }
-        if (a.chapterNumber === b.chapterNumber) {
-            return 0;
-        }
-        if (a.chapterNumber < b.chapterNumber) {
-            return -1;
-        }
-        return 0;
-    }
-}
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "f": () => (/* binding */ getSectionsObj)
+/* harmony export */ });
 function getSectionsObj(chapters) {
     const _sectionsObj = {};
     for (const chapter of chapters) {
         let sectionNumber = null;
-        const sectionName = null;
         if (chapter.sectionNumber && chapter.sectionName) {
             sectionNumber = chapter.sectionNumber;
         }
@@ -14167,67 +14586,6 @@ function getSectionsObj(chapters) {
     _sectionsListObj.sort(sectionListSort);
     const sectionsListObj = _sectionsListObj.map((s) => s[1]);
     return sectionsListObj;
-}
-function saveOptionsValidate(data) {
-    const keyNamesS = ["mainStyleText", "tocStyleText"];
-    const keyNamesF = [
-        "getchapterName",
-        "genSectionText",
-        "genChapterText",
-        "genSectionHtmlFile",
-        "genChapterHtmlFile",
-        "chapterSort",
-    ];
-    function keyNametest(keyname) {
-        const keyList = new Array().concat(keyNamesS).concat(keyNamesF);
-        if (keyList.includes(keyname)) {
-            return true;
-        }
-        return false;
-    }
-    function keyNamesStest(keyname) {
-        if (keyNamesS.includes(keyname)) {
-            if (typeof data[keyname] === "string") {
-                return true;
-            }
-        }
-        return false;
-    }
-    function keyNamesFtest(keyname) {
-        if (keyNamesF.includes(keyname)) {
-            if (typeof data[keyname] === "function") {
-                return true;
-            }
-        }
-        return false;
-    }
-    if (typeof data !== "object") {
-        return false;
-    }
-    if (Object.keys(data).length === 0) {
-        return false;
-    }
-    for (const keyname in data) {
-        if (Object.prototype.hasOwnProperty.call(data, keyname)) {
-            if (!keyNametest(keyname)) {
-                return false;
-            }
-            if (!(keyNamesStest(keyname) || keyNamesFtest(keyname))) {
-                return false;
-            }
-        }
-    }
-    return true;
-}
-function getSaveBookObj(book, options) {
-    const saveBookObj = new SaveBook(book);
-    if (setting/* enableCustomSaveOptions */.EI && saveOptionsValidate(options)) {
-        Object.assign(saveBookObj, options);
-    }
-    if (book.saveOptions !== undefined) {
-        Object.assign(saveBookObj, book.saveOptions);
-    }
-    return saveBookObj;
 }
 
 
@@ -14956,11 +15314,17 @@ async function debug() {
 
 // EXTERNAL MODULE: ./src/lib/GM.ts
 var GM = __webpack_require__("./src/lib/GM.ts");
+// EXTERNAL MODULE: ./src/lib/http.ts
+var http = __webpack_require__("./src/lib/http.ts");
 // EXTERNAL MODULE: ./src/lib/misc.ts
 var misc = __webpack_require__("./src/lib/misc.ts");
+// EXTERNAL MODULE: ./src/lib/zip.ts + 1 modules
+var zip = __webpack_require__("./src/lib/zip.ts");
 // EXTERNAL MODULE: ./src/setting.ts
 var src_setting = __webpack_require__("./src/setting.ts");
 ;// CONCATENATED MODULE: ./src/detect.ts
+
+
 
 
 
@@ -14982,7 +15346,7 @@ function check(name) {
 }
 function jsdelivrTest() {
     return new Promise((resolve, reject) => {
-        fetch("https://cdn.jsdelivr.net/npm/idb-keyval/dist/umd.js")
+        (0,http/* gfetch */.GF)("https://cdn.jsdelivr.net/npm/idb-keyval/dist/umd.js")
             .then((resp) => resolve(true))
             .catch((error) => resolve(false));
     });
@@ -14990,6 +15354,7 @@ function jsdelivrTest() {
 const environments = async () => ({
     当前时间: new Date().toISOString(),
     当前页URL: document.location.href,
+    workerId: window.workerId,
     当前页Referrer: document.referrer,
     浏览器UA: navigator.userAgent,
     浏览器语言: navigator.languages,
@@ -14999,6 +15364,7 @@ const environments = async () => ({
     eval: check("eval"),
     fetch: check("fetch"),
     XMLHttpRequest: check("XMLHttpRequest"),
+    streamSupport: (0,zip/* streamSupport */.y)(),
     window: Object.keys(window).length,
     localStorage: (0,misc/* storageAvailable */.oZ)("localStorage"),
     sessionStorage: (0,misc/* storageAvailable */.oZ)("sessionStorage"),
@@ -15014,6 +15380,7 @@ const environments = async () => ({
 ;// CONCATENATED MODULE: ./src/global.ts
 
 function init() {
+    window.workerId = Math.random().toString().replace("0.", "");
     window.downloading = false;
     window.customStorage = new misc/* LocalStorageExpired */.Z2();
     window.stopFlag = false;
@@ -15068,6 +15435,7 @@ globalThis.Function = new Proxy(Function, {
 // EXTERNAL MODULE: ./src/lib/createEl.ts
 var createEl = __webpack_require__("./src/lib/createEl.ts");
 ;// CONCATENATED MODULE: ./src/router/ui.ts
+
 const defaultObject = {
     type: "download",
 };
@@ -15231,6 +15599,18 @@ function getUI() {
                 }
             };
         }
+        case "manhua.dmzj.com":
+        case "www.dmzj.com": {
+            return () => {
+                window.addEventListener("load", async () => {
+                    await (0,misc/* sleep */._v)(300);
+                    document
+                        .querySelectorAll('*[style*="2147483647;"]')
+                        .forEach((elem) => elem.remove());
+                });
+                return defaultObject;
+            };
+        }
         default: {
             return () => defaultObject;
         }
@@ -15246,8 +15626,8 @@ var code = "<div class=\"button-div\" id=\"button-div\"> <div v-if=\"uiObj.type 
 var src_ui_button = __webpack_require__("./src/ui/button.less");
 // EXTERNAL MODULE: ./src/main.ts
 var main = __webpack_require__("./src/main.ts");
-// EXTERNAL MODULE: ./src/save/save.ts + 7 modules
-var save = __webpack_require__("./src/save/save.ts");
+// EXTERNAL MODULE: ./src/save/misc.ts
+var save_misc = __webpack_require__("./src/save/misc.ts");
 ;// CONCATENATED MODULE: ./src/ui/ChapterList.html
 // Module
 var ChapterList_code = "<div> <div v-if=\"loading\"> <div class=\"chapter-list-loading\"> <h2 v-if=\"failed\">加载章节失败！</h2> <h2 v-else>正在载入章节列表中，请耐心等待……</h2> </div> </div> <div class=\"chapter-list\" v-else> <div v-for=\"sectionObj in sectionsObj\" v-show=\"isSectionSeen(sectionObj)\" v-bind:key=\"sectionObj.sectionNumber\" class=\"section\"> <h3 class=\"section-label\" v-if=\"sectionObj.sectionName\"> {{ sectionObj.sectionName }} </h3> <div v-for=\"chapter in sectionObj.chpaters\" v-show=\"isChapterSeen(chapter)\" v-bind:key=\"chapter.chapterNumber\" class=\"chapter\" v-bind:class=\"{\n              good: this.filter(chapter),\n              bad: !this.filter(chapter),\n              warning: this.warningFilter(chapter)\n            }\" v-bind:title=\"chapter.chapterNumber\"> <a v-bind:href=\"chapter.chapterUrl\" v-bind:class=\"{\n                disabled: this.isChapterDisabled(chapter),\n              }\" target=\"_blank\" rel=\"noopener noreferrer\">{{ chapter.chapterName }}</a> </div> </div> </div> </div> ";
@@ -15275,14 +15655,14 @@ async function getSections() {
         const book = await rule.bookParse();
         window._book = book;
         window._url = document.location.href;
-        window._sections = (0,save/* getSectionsObj */.f0)(book.chapters);
+        window._sections = (0,save_misc/* getSectionsObj */.f)(book.chapters);
         return window._sections;
     }
 }
 const style = (0,createEl/* createStyle */.w)(ui_ChapterList/* default */.Z);
 /* harmony default export */ const src_ui_ChapterList = ((0,external_Vue_.defineComponent)({
     name: "ChapterList",
-    setup(props, context) {
+    setup() {
         const sectionsObj = (0,external_Vue_.reactive)([]);
         const loading = (0,external_Vue_.ref)(true);
         const failed = (0,external_Vue_.ref)(false);
@@ -15365,8 +15745,8 @@ var FilterTab_code = "<div> <div class=\"filter-setting\"> <div v-if=\"filterTyp
 
 const filterOptionDict = {
     null: {
-        raw: (arg) => {
-            return (chapter) => true;
+        raw: () => {
+            return () => true;
         },
         description: "<p>不应用任何过滤器（默认）</p>",
         abbreviation: "无",
@@ -15388,8 +15768,8 @@ const filterOptionDict = {
                         }
                         return false;
                     }
-                    case /^\d+\-\d+$/.test(s): {
-                        const _m = s.match(/^(\d+)\-(\d+)$/);
+                    case /^\d+-\d+$/.test(s): {
+                        const _m = s.match(/^(\d+)-(\d+)$/);
                         if (_m?.length === 3) {
                             const m = _m.map((_s) => Number(_s));
                             if (n >= m[1] && n <= m[2]) {
@@ -15398,8 +15778,8 @@ const filterOptionDict = {
                         }
                         return false;
                     }
-                    case /^\d+\-$/.test(s): {
-                        const _m = s.match(/^(\d+)\-$/);
+                    case /^\d+-$/.test(s): {
+                        const _m = s.match(/^(\d+)-$/);
                         if (_m?.length === 2) {
                             const m = Number(_m[1]);
                             if (n >= m) {
@@ -15408,8 +15788,8 @@ const filterOptionDict = {
                         }
                         return false;
                     }
-                    case /^\-\d+$/.test(s): {
-                        const _m = s.match(/^\-(\d+)$/);
+                    case /^-\d+$/.test(s): {
+                        const _m = s.match(/^-(\d+)$/);
                         if (_m?.length === 2) {
                             const m = Number(_m[1]);
                             if (n <= m) {
@@ -15552,7 +15932,7 @@ var ui_TestUI = __webpack_require__("./src/ui/TestUI.less");
 
 /* harmony default export */ const src_ui_TestUI = ((0,external_Vue_.defineComponent)({
     name: "TestUI",
-    setup(props, context) {
+    setup() {
         const book = (0,external_Vue_.reactive)({});
         async function waitBook() {
             while (true) {
@@ -15676,7 +16056,7 @@ const el = (0,createEl/* createEl */.u)(`<div id="setting"></div>`);
 const vm = (0,external_Vue_.createApp)({
     name: "nd-setting",
     components: { "filter-tab": src_ui_FilterTab, "log-ui": LogUI, "test-ui": src_ui_TestUI },
-    setup(props, context) {
+    setup() {
         const setting = (0,external_Vue_.reactive)({});
         let settingBackup = {};
         const saveOptions = [
@@ -15964,9 +16344,9 @@ async function printEnvironments() {
     Object.entries(await environments()).forEach((kv) => external_log_default().info("[Init]" + kv.join("：")));
 }
 function src_main() {
-    printEnvironments();
     init();
     ui_init();
+    printEnvironments();
     if (src_setting/* enableDebug.value */.Cy.value) {
         setTimeout(debug, 3000);
     }

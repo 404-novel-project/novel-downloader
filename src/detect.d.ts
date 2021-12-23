@@ -1,6 +1,7 @@
 export declare const environments: () => Promise<{
     当前时间: string;
     当前页URL: string;
+    workerId: string;
     当前页Referrer: string;
     浏览器UA: string;
     浏览器语言: readonly string[];
@@ -10,6 +11,7 @@ export declare const environments: () => Promise<{
     eval: string;
     fetch: string;
     XMLHttpRequest: string;
+    streamSupport: boolean;
     window: number;
     localStorage: any;
     sessionStorage: any;

@@ -1,4 +1,4 @@
-import { AttachmentClass, Book } from "../../../main";
+import { Book } from "../../../main";
 import { BaseRuleClass } from "../../../rules";
 export declare class Kanunu8 extends BaseRuleClass {
     constructor();
@@ -8,7 +8,7 @@ export declare class Kanunu8 extends BaseRuleClass {
         contentRaw: HTMLElement;
         contentText: string;
         contentHTML: HTMLElement;
-        contentImages: AttachmentClass[];
+        contentImages: import("../../../main").AttachmentClass[];
         additionalMetadate: null;
     } | {
         chapterName: string | null;
