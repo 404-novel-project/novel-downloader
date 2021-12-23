@@ -1,9 +1,10 @@
 {
   "defaultSeverity": "error",
-  "extends": ["tslint:recommended"],
+  "extends": ["tslint:recommended", "tslint-etc"],
   "jsRules": {},
   "rules": {
     "ordered-imports": true,
+    "no-unused-declaration": true,
     "one-variable-per-declaration": false
   },
   "rulesDirectory": [],

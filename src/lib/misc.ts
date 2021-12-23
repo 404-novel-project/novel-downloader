@@ -1,6 +1,5 @@
 import * as CryptoJS from "crypto-js";
 import { log } from "../log";
-import { _GM_xmlhttpRequest } from "./GM";
 
 export type PublicConstructor<T> = new () => T;
 
@@ -69,7 +68,7 @@ export function concurrencyRun(
   asyncHandle: (arg: any) => any
 ) {
   async function recursion(arr: object[]): Promise<any> {
-    const obj = await asyncHandle(arr.shift());
+    await asyncHandle(arr.shift());
     if (arr.length !== 0) {
       return recursion(arr);
     } else {

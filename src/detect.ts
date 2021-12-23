@@ -2,6 +2,7 @@ import { GmWindow } from "./global";
 import { _GM_info } from "./lib/GM";
 import { gfetch } from "./lib/http";
 import { storageAvailable } from "./lib/misc";
+import { streamSupport } from "./lib/zip";
 import { enableDebug } from "./setting";
 
 function check(name: string) {
@@ -46,6 +47,7 @@ export const environments = async () => ({
   eval: check("eval"),
   fetch: check("fetch"),
   XMLHttpRequest: check("XMLHttpRequest"),
+  streamSupport: streamSupport(),
   window: Object.keys(window).length,
   localStorage: storageAvailable("localStorage"),
   sessionStorage: storageAvailable("sessionStorage"),

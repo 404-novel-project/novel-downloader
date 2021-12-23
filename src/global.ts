@@ -3,7 +3,8 @@ import { LocalStorageExpired } from "./lib/misc";
 import { fetchAndParse, gfetchAndParse, parse } from "./lib/readability";
 import { Book, Chapter } from "./main";
 import { BaseRuleClass } from "./rules";
-import { SaveOptions, SectionObj } from "./save/save";
+import { SectionObj } from "./save/misc";
+import { SaveOptions } from "./save/save";
 
 export interface WindowObject extends Window {
   workerId: string;

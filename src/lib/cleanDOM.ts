@@ -128,7 +128,7 @@ async function formatImage(
   if (!tfi) {
     return;
   }
-  const [imgElem, imgText, imgClass] = tfi;
+  const [imgElem, imgText] = tfi;
 
   if (elem.parentElement?.childElementCount === 1) {
     temp0();

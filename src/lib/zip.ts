@@ -1,46 +1,90 @@
 import { AsyncZipDeflate, Zip, ZipPassThrough } from "fflate";
+import { saveAs } from "file-saver";
+import streamSaver from "streamsaver";
 import { log } from "../log";
 import { sleep } from "./misc";
 
+const rawMitm = new URL(streamSaver.mitm);
+const mitm = new URL("https://cors.bgme.me/");
+mitm.pathname = rawMitm.origin + rawMitm.pathname;
+streamSaver.mitm = mitm.href;
+
+export function streamSupport() {
+  return (
+    typeof ReadableStream !== "undefined" &&
+    typeof WritableStream !== "undefined" &&
+    typeof TransformStream !== "undefined"
+  );
+}
+streamSaver.supported = streamSupport();
 export class FflateZip {
+  public filename: string;
+  public stream: boolean;
   private zcount: number;
   private count: number;
   private filenameList: string[];
-  private zipOut: ArrayBuffer[];
+  private zipOut: Blob;
   private savedZip: Zip;
   public onFinal?: (zipBlob: Blob) => void;
   public onFinalError?: (error: Error) => void;
 
-  public constructor() {
+  public constructor(filename: string, stream: boolean) {
+    log.info(
+      `[fflateZip] filename: ${filename}, stream: ${stream}, streamSaver.supported: ${streamSaver.supported}`
+    );
     const self = this;
+
+    this.filename = filename;
+    if (streamSaver.supported) {
+      this.stream = stream;
+    } else {
+      this.stream = false;
+    }
+
+    let writer: WritableStreamDefaultWriter<Uint8Array>;
+    if (this.stream) {
+      const fileStream = streamSaver.createWriteStream(self.filename);
+      writer =
+        fileStream.getWriter() as WritableStreamDefaultWriter<Uint8Array>;
+    }
+
     this.zcount = 0;
     this.count = 0;
     this.filenameList = [];
-    this.zipOut = [];
+    this.zipOut = new Blob([], { type: "application/zip" });
+
     this.savedZip = new Zip((err, dat, final) => {
       if (err) {
         log.error(err);
         log.trace(err);
+        writer.abort();
         throw err;
       }
 
-      self.zipOut.push(dat);
+      if (self.stream) {
+        writer.write(dat);
+        log.info();
+      } else {
+        self.zipOut = new Blob([self.zipOut, dat], { type: "application/zip" });
+      }
 
       if (final) {
-        const zipBlob = new Blob(self.zipOut, { type: "application/zip" });
-        log.info("[fflateZip] ZIP生成完毕，文件大小：" + zipBlob.size);
-        self.zipOut = [];
-        if (
-          typeof self.onFinal === "function" &&
-          typeof self.onFinalError === "function"
-        ) {
-          try {
-            self.onFinal(zipBlob);
-          } catch (error) {
-            self.onFinalError(error as Error);
-          }
+        if (self.stream) {
+          writer.close();
+          log.info("[fflateZip] ZIP生成完毕");
         } else {
-          throw new Error("[fflateZip] 未发现保存函数");
+          nonStream();
+        }
+
+        function nonStream() {
+          log.info("[fflateZip] ZIP生成完毕，文件大小：" + self.zipOut.size);
+          try {
+            saveAs(self.zipOut, self.filename);
+            self.zipOut = new Blob([], { type: "application/zip" });
+          } catch (error) {
+            log.error("[fflateZip]" + error);
+            log.trace(error);
+          }
         }
       }
     });

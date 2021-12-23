@@ -126,7 +126,7 @@ export function centerDetct(element: Element): [boolean, Element, number] {
   const docEl = document.documentElement;
   const bodyEl = document.body;
   const vw = Math.min(docEl.clientWidth, window.innerWidth);
-  const vh = Math.min(docEl.clientHeight, window.innerHeight);
+  // const vh = Math.min(docEl.clientHeight, window.innerHeight);
   const tolx = vw * 0.15;
   const toly = bodyEl.scrollHeight * 0.1;
 
@@ -135,7 +135,7 @@ export function centerDetct(element: Element): [boolean, Element, number] {
   const distanceToBottom = bodyEl.scrollHeight - distanceToTop;
 
   const distanceToRight = Math.abs(vw - rect.right);
-  const distanYmin = Math.min(distanceToTop, distanceToBottom);
+  // const distanYmin = Math.min(distanceToTop, distanceToBottom);
   const percentY = element.scrollHeight / bodyEl.scrollHeight;
   if (
     rect.left < tolx ||

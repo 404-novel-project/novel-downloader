@@ -1,4 +1,4 @@
-import { AttachmentClass as attachmentClassGlobal, ExpectError } from "../main";
+import { AttachmentClass as attachmentClassGlobal } from "../main";
 import { calculateMd5 } from "./misc";
 
 let attachmentClassCache: attachmentClassGlobal[] = [];

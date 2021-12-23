@@ -1,6 +1,6 @@
-import { log } from "../log";
-import { AttachmentClass } from "../main";
-import { getImageAttachment } from "./attachments";
+import { log } from "../src/log";
+import { AttachmentClass } from "../src/main";
+import { getImageAttachment } from "../src/lib/attachments";
 
 // https://developer.mozilla.org/en-US/docs/Web/HTML/Block-level_elements
 // Array.from(document.querySelectorAll('.main-page-content > div:nth-child(14) > dl:nth-child(2) > dt > a > code:nth-child(1)')).map((code) => code.innerText.replace(/<|>/g,""))

@@ -11,7 +11,7 @@ import { createStyle } from "../lib/createEl";
 import { log } from "../log";
 import { Chapter, Status } from "../main";
 import { getRule } from "../router/download";
-import { getSectionsObj, SectionObj } from "../save/save";
+import { getSectionsObj, SectionObj } from "../save/misc";
 import ChapterListHtml from "./ChapterList.html";
 import ChapterListCss from "./ChapterList.less";
 import {

@@ -10,12 +10,7 @@ import {
   ExpectError,
   Status,
 } from "./main";
-import {
-  getSaveBookObj,
-  SaveBook,
-  SaveOptions,
-  saveOptionsValidate,
-} from "./save/save";
+import { SaveBook, SaveOptions, saveOptionsValidate } from "./save/save";
 import {
   enableCustomChapterFilter,
   enableCustomFinishCallback,
@@ -47,6 +42,7 @@ export abstract class BaseRuleClass {
   public concurrencyLimit: number;
   public maxRunLimit?: number;
   public saveOptions?: SaveOptions;
+  public streamZip: boolean;
 
   public book?: Book;
 
@@ -60,6 +56,7 @@ export abstract class BaseRuleClass {
     this.imageMode = "TM";
     this.charset = document.characterSet;
     this.concurrencyLimit = 10;
+    this.streamZip = false;
     registerBroadcastChannel();
 
     function registerBroadcastChannel(): void {
@@ -140,10 +137,10 @@ export abstract class BaseRuleClass {
         const saveOptionsInner = (unsafeWindow as UnsafeWindow).saveOptions;
         if (saveOptionsInner) {
           log.info("[run]发现自定义保存参数，内容如下\n", saveOptionsInner);
-          return getSaveBookObj(book, saveOptionsInner);
+          return new SaveBook(book, self.streamZip, saveOptionsInner);
         }
       }
-      return getSaveBookObj(book, {});
+      return new SaveBook(book, self.streamZip);
     }
 
     async function save(saveObj: SaveBook): Promise<void> {

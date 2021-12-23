@@ -60,6 +60,7 @@ function getTabData(domain: string): Promise<TabData | null> {
   });
 }
 
+// tslint:disable-next-line: no-unused-declaration
 function deleteTabData(key: string): Promise<TabData> {
   return new Promise((resolve, reject) => {
     GM_getTab(async (curTabObject) => {

@@ -1,3 +1,5 @@
+import { sleep } from "../lib/misc";
+
 interface UIObject {
   type: "jump" | "download" | "error";
   jumpFunction?: () => void;
@@ -165,6 +167,20 @@ export function getUI(): () => UIObject {
         } else {
           return errorObject;
         }
+      };
+    }
+    case "manhua.dmzj.com":
+    case "www.dmzj.com": {
+      return () => {
+        // remove ad
+        window.addEventListener("load", async () => {
+          await sleep(300);
+          document
+            .querySelectorAll('*[style*="2147483647;"]')
+            .forEach((elem) => elem.remove());
+        });
+
+        return defaultObject;
       };
     }
     default: {

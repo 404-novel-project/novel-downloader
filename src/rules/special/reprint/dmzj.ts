@@ -11,6 +11,8 @@ export class Dmzj extends BaseRuleClass {
   public constructor() {
     super();
     this.imageMode = "TM";
+    this.streamZip = true;
+    this.concurrencyLimit = 1;
   }
 
   public async bookParse() {
