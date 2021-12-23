@@ -67,8 +67,7 @@ export class Ciyuanji extends BaseRuleClass {
     const author = bookObject.authorName;
     const introDom = document.createElement("div");
     introDom.innerHTML = bookObject.notes.replace("/\n/g", "<br/><br/>");
-    const [introduction, introductionHTML, introCleanimages] =
-      await introDomHandle(introDom);
+    const [introduction, introductionHTML] = await introDomHandle(introDom);
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = bookObject.imgUrl;
     if (coverUrl) {
@@ -168,6 +167,35 @@ export class Ciyuanji extends BaseRuleClass {
     charset: string,
     options: object
   ) {
+    const data = {
+      key: "ZUreQN0Epkpxh3pooWOgixjTfPwumCTYWzYTQ7SMgDnqFLQ1s9tqpVhkGf02we89moQwhSQ07DVzc3LWupRgbVvm29aYeY7zyFN",
+      type1: "PC-Token",
+      type2: "PC-UserInfo",
+      type3: "PC-Enum",
+      type4: "PC-IsActivityStart",
+      f: "NpkTYvpvhJjEog8Y051gQDHmReY54z5t3F0zSd9QEFuxWGqfC8g8Y4GPuabq0KPdxArlji4dSnnHCARHnkqYBLu7iIw55ibTo18",
+    };
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    function encrypt(input: string) {
+      if (input && "string" === typeof input) {
+        const key = CryptoJS.enc.Utf8.parse(data.key);
+        return CryptoJS.DES.encrypt(input, key, {
+          mode: CryptoJS.mode.ECB,
+          padding: CryptoJS.pad.Pkcs7,
+        }).toString();
+      }
+    }
+    function decrypt(input: string) {
+      if (input && "string" === typeof input) {
+        input = input.replace(/\n/g, "");
+        const key = CryptoJS.enc.Utf8.parse(data.key);
+        return CryptoJS.DES.decrypt(input, key, {
+          mode: CryptoJS.mode.ECB,
+          padding: CryptoJS.pad.Pkcs7,
+        }).toString(CryptoJS.enc.Utf8);
+      }
+    }
+
     const doc = await getHtmlDOM(chapterUrl, charset);
     const _script = Array.from(doc.querySelectorAll("script")).filter((s) =>
       /^window\.__NUXT__/.test(s.innerHTML)
@@ -199,33 +227,6 @@ export class Ciyuanji extends BaseRuleClass {
       const __NUXT__ = sandboxed(`${scriptText}; return __NUXT__`);
       const chapterObj: ChapterObject = __NUXT__.data[0].chapter;
 
-      const data = {
-        key: "ZUreQN0Epkpxh3pooWOgixjTfPwumCTYWzYTQ7SMgDnqFLQ1s9tqpVhkGf02we89moQwhSQ07DVzc3LWupRgbVvm29aYeY7zyFN",
-        type1: "PC-Token",
-        type2: "PC-UserInfo",
-        type3: "PC-Enum",
-        type4: "PC-IsActivityStart",
-        f: "NpkTYvpvhJjEog8Y051gQDHmReY54z5t3F0zSd9QEFuxWGqfC8g8Y4GPuabq0KPdxArlji4dSnnHCARHnkqYBLu7iIw55ibTo18",
-      };
-      function encrypt(input: string) {
-        if (input && "string" === typeof input) {
-          const key = CryptoJS.enc.Utf8.parse(data.key);
-          return CryptoJS.DES.encrypt(input, key, {
-            mode: CryptoJS.mode.ECB,
-            padding: CryptoJS.pad.Pkcs7,
-          }).toString();
-        }
-      }
-      function decrypt(input: string) {
-        if (input && "string" === typeof input) {
-          input = input.replace(/\n/g, "");
-          const key = CryptoJS.enc.Utf8.parse(data.key);
-          return CryptoJS.DES.decrypt(input, key, {
-            mode: CryptoJS.mode.ECB,
-            padding: CryptoJS.pad.Pkcs7,
-          }).toString(CryptoJS.enc.Utf8);
-        }
-      }
       const content = document.createElement("div");
       const chapterContent = decrypt(chapterObj.chapterContentFormat);
       if (chapterContent) {

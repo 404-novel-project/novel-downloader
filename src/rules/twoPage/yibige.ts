@@ -25,14 +25,7 @@ export const yibige = () =>
     getAList: (doc) => doc.querySelectorAll("#list dd > a"),
     getContent: (doc) => doc.querySelector("#content"),
     getContentFromUrl: async (chapterUrl, chapterName, charset) => {
-      const {
-        chapterName: _chapterName,
-        contentRaw,
-        contentText,
-        contentHTML,
-        contentImages,
-        additionalMetadate,
-      } = await nextPageParse({
+      const { contentRaw } = await nextPageParse({
         chapterName,
         chapterUrl,
         charset,

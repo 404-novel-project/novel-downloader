@@ -6,8 +6,7 @@ import { streamSupport } from "./lib/zip";
 import { enableDebug } from "./setting";
 
 function check(name: string) {
-  // @ts-ignore
-  const target = window[name];
+  const target = window[name as keyof Window];
   const targetLength = target.toString().length;
   const targetPrototype = target.prototype;
   const nativeFunctionRe =
@@ -41,6 +40,7 @@ export const environments = async () => ({
   浏览器UA: navigator.userAgent,
   浏览器语言: navigator.languages,
   设备运行平台: navigator.platform,
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-expect-error
   设备内存: navigator.deviceMemory ?? "",
   CPU核心数: navigator.hardwareConcurrency,

@@ -33,8 +33,7 @@ export class Wenku8 extends BaseRuleClass {
     const introDom = doc.querySelector(
       "#content > div:nth-child(1) > table:nth-child(4) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(2) > span:nth-child(11)"
     );
-    const [introduction, introductionHTML, introCleanimages] =
-      await introDomHandle(introDom);
+    const [introduction, introductionHTML] = await introDomHandle(introDom);
 
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = (

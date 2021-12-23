@@ -13,6 +13,7 @@ export class Dmzj extends BaseRuleClass {
     this.imageMode = "TM";
     this.streamZip = true;
     this.concurrencyLimit = 1;
+    this.maxRunLimit = 1;
   }
 
   public async bookParse() {
@@ -35,8 +36,7 @@ export class Dmzj extends BaseRuleClass {
     const introDom = isWwwHost
       ? document.querySelector(".comic_deCon_d")
       : (document.querySelector(".line_height_content") as HTMLElement);
-    const [introduction, introductionHTML, introCleanimages] =
-      await introDomHandle(introDom);
+    const [introduction, introductionHTML] = await introDomHandle(introDom);
 
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverDom = isWwwHost

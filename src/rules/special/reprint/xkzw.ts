@@ -25,8 +25,7 @@ export class Xkzw extends BaseRuleClass {
       .trim();
 
     const introDom = document.querySelector("#intro") as HTMLElement;
-    const [introduction, introductionHTML, introCleanimages] =
-      await introDomHandle(introDom);
+    const [introduction, introductionHTML] = await introDomHandle(introDom);
 
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = (

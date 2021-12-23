@@ -24,12 +24,14 @@ export class Soxscc extends BaseRuleClass {
       ) as HTMLAnchorElement
     ).innerText.trim();
     const introDom = document.querySelector("#intro");
-    const [introduction, introductionHTML, introCleanimages] =
-      await introDomHandle(introDom, (introDomI) => {
+    const [introduction, introductionHTML] = await introDomHandle(
+      introDom,
+      (introDomI) => {
         rm("span.tags", false, introDomI);
         rm("q", true, introDomI);
         return introDomI;
-      });
+      }
+    );
 
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = (

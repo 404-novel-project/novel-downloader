@@ -1,7 +1,7 @@
 import { getImageAttachment } from "../../lib/attachments";
 import { cleanDOM } from "../../lib/cleanDOM";
 import { getHtmlDOM, getHtmlDomWithRetry } from "../../lib/http";
-import { concurrencyRun, PublicConstructor, sleep } from "../../lib/misc";
+import { concurrencyRun, PublicConstructor } from "../../lib/misc";
 import { introDomHandle } from "../../lib/rule";
 import { log } from "../../log";
 import { Book, BookAdditionalMetadate, Chapter } from "../../main";
@@ -52,8 +52,10 @@ export function mkRuleClass({
       }
     }
     public async bookParse() {
-      const [introduction, introductionHTML, introCleanimages] =
-        await introDomHandle(introDom, introDomPatch);
+      const [introduction, introductionHTML] = await introDomHandle(
+        introDom,
+        introDomPatch
+      );
 
       const additionalMetadate: BookAdditionalMetadate = {};
       if (coverUrl) {

@@ -47,14 +47,7 @@ export const wanben = () => {
     getAList: (doc) =>
       doc.querySelectorAll("div.chapterDiv > div.chapterList > ul > a"),
     getContentFromUrl: async (chapterUrl, chapterName, charset) => {
-      const {
-        chapterName: _chapterName,
-        contentRaw,
-        contentText,
-        contentHTML,
-        contentImages,
-        additionalMetadate,
-      } = await nextPageParse({
+      const { contentRaw } = await nextPageParse({
         chapterName,
         chapterUrl,
         charset,

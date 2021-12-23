@@ -281,11 +281,10 @@ export class Jjwxc extends BaseRuleClass {
         let authorSayDom;
         let authorSayText;
         if (rawAuthorSayDom) {
-          const {
-            dom: adom,
-            text: atext,
-            images: aimages,
-          } = await cleanDOM(rawAuthorSayDom, "TM");
+          const { dom: adom, text: atext } = await cleanDOM(
+            rawAuthorSayDom,
+            "TM"
+          );
           [authorSayDom, authorSayText] = [adom, atext];
         }
         rm("div", true, content);
@@ -293,7 +292,7 @@ export class Jjwxc extends BaseRuleClass {
           "@无限好文，尽在晋江文学城",
           ""
         );
-        // tslint:disable-next-line:prefer-const
+        // eslint-disable-next-line prefer-const
         let { dom, text, images } = await cleanDOM(content, "TM");
         if (rawAuthorSayDom && authorSayDom && authorSayText) {
           const hr = document.createElement("hr");
@@ -451,11 +450,10 @@ export class Jjwxc extends BaseRuleClass {
           let authorSayDom;
           let authorSayText;
           if (rawAuthorSayDom) {
-            const {
-              dom: adom,
-              text: atext,
-              images: aimages,
-            } = await cleanDOM(rawAuthorSayDom, "TM");
+            const { dom: adom, text: atext } = await cleanDOM(
+              rawAuthorSayDom,
+              "TM"
+            );
             [authorSayDom, authorSayText] = [adom, atext];
           }
           rm("div", true, content);
@@ -464,9 +462,9 @@ export class Jjwxc extends BaseRuleClass {
             ""
           );
           let {
-            dom: rawDom, // tslint:disable-line
+            dom: rawDom, // eslint-disable-line
             text: rawText,
-            images, // tslint:disable-line
+            images, // eslint-disable-line
           } = await cleanDOM(content, "TM");
           if (rawAuthorSayDom && authorSayDom && authorSayText) {
             const hr = document.createElement("hr");

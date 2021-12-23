@@ -8,9 +8,10 @@ import TestUICss from "./TestUI.less";
 
 export default defineComponent({
   name: "TestUI",
-  setup(props, context) {
+  setup() {
     const book = reactive({} as Book);
     async function waitBook() {
+      // eslint-disable-next-line no-constant-condition
       while (true) {
         await sleep(500);
         if ((window as GmWindow)._book) {

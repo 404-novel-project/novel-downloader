@@ -27,8 +27,7 @@ export class Tadu extends BaseRuleClass {
     const introDom = document.querySelector(
       "div.boxCenter.boxT.clearfix > div.lf.lfO > p.intro"
     ) as HTMLElement;
-    const [introduction, introductionHTML, introCleanimages] =
-      await introDomHandle(introDom);
+    const [introduction, introductionHTML] = await introDomHandle(introDom);
 
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = (

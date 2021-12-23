@@ -1,3 +1,4 @@
+/* eslint-disable no-inner-declarations */
 import { Book, Chapter } from "../main";
 
 interface TabData {
@@ -60,7 +61,7 @@ function getTabData(domain: string): Promise<TabData | null> {
   });
 }
 
-// tslint:disable-next-line: no-unused-declaration
+// eslint-disable-next-line
 function deleteTabData(key: string): Promise<TabData> {
   return new Promise((resolve, reject) => {
     GM_getTab(async (curTabObject) => {
@@ -302,7 +303,7 @@ if (
     setTimeout(async () => {
       const runFlag = await getTabData("greasyfork.org");
       if (runFlag) {
-        // tslint:disable-next-line:no-console
+        // eslint-disable-next-line no-console
         console.log("[novel-downloader-tester]开始运行测试……");
 
         function chapterFilter(chapter: Chapter) {
@@ -321,5 +322,5 @@ if (
   });
 }
 
-// tslint:disable-next-line:no-console
+// eslint-disable-next-line no-console
 console.log("[novel-downloader-tester]测试脚本载入成功……");

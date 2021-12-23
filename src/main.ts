@@ -74,7 +74,7 @@ export interface ChapterAdditionalMetadate {
   tags?: string[];
 }
 
-// tslint:disable-next-line:max-classes-per-file
+// eslint-disable-next-line max-classes-per-file
 export class Chapter {
   public bookUrl: string;
   public bookname: string;
@@ -159,12 +159,12 @@ export class Chapter {
       log.error(`[Chapter]章节名：${this.chapterName}, \
 分卷名：${this.sectionName}, URL:${this.chapterUrl}, \
 VIP:${this.isVIP}, Paid:${this.isPaid}, \
-isNull:${!Boolean(this.contentHTML)} 解析出错。`);
+isNull:${!this.contentHTML} 解析出错。`);
     } else {
       log.info(`[Chapter]章节名：${this.chapterName}, \
 分卷名：${this.sectionName}, URL:${this.chapterUrl}, \
 VIP:${this.isVIP}, Paid:${this.isPaid}, \
-isNull:${!Boolean(this.contentHTML)} 解析成功。`);
+isNull:${!this.contentHTML} 解析成功。`);
     }
     return this;
   }
@@ -241,7 +241,7 @@ isNull:${!Boolean(this.contentHTML)} 解析成功。`);
   }
 }
 
-// tslint:disable-next-line:max-classes-per-file
+// eslint-disable-next-line max-classes-per-file
 export class AttachmentClass {
   public url: string;
   public name: string;
@@ -369,5 +369,5 @@ export class AttachmentClass {
   }
 }
 
-// tslint:disable-next-line:max-classes-per-file
+// eslint-disable-next-line max-classes-per-file
 export class ExpectError extends Error {}

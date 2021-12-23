@@ -1,8 +1,10 @@
 import * as Vue from "vue";
+import { GmWindow } from "../global";
 import { log } from "../log";
 
-// @ts-ignore
-globalThis.Vue = Vue;
+type vueType = typeof Vue;
+
+(globalThis as GmWindow & { Vue: vueType }).Vue = Vue;
 globalThis.Function = new Proxy(Function, {
   construct(target, args) {
     const code: string = args[args.length - 1];
@@ -17,8 +19,7 @@ globalThis.Function = new Proxy(Function, {
       function getGlobalObjectKeys() {
         const _get = () => {
           return Object.getOwnPropertyNames(window).filter(
-            // @ts-ignore
-            (key) => window[key] === window
+            (key) => window[key as keyof Window] === window
           );
         };
         const _f = new target(`return (${_get.toString()})()`);

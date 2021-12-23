@@ -42,8 +42,7 @@ export class Ciweimao extends BaseRuleClass {
 
     const dom = await getHtmlDOM(bookUrl, undefined);
     const introDom = dom.querySelector(".book-intro-cnt .book-desc");
-    const [introduction, introductionHTML, introCleanimages] =
-      await introDomHandle(introDom);
+    const [introduction, introductionHTML] = await introDomHandle(introDom);
 
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = (dom.querySelector(".cover > img") as HTMLImageElement)
@@ -139,14 +138,13 @@ export class Ciweimao extends BaseRuleClass {
       accessKey: string;
     }
     function decrypt(item: DecryptItem) {
-      type Message = {};
       let message = item.content;
       const keys = item.keys;
       const len = item.keys.length;
       const accessKey = item.accessKey;
       const accessKeyList = accessKey.split("");
       const charsNotLatinNum = accessKeyList.length;
-      const output = new Array();
+      const output = [];
       output.push(
         keys[accessKeyList[charsNotLatinNum - 1].charCodeAt(0) % len]
       );
@@ -280,77 +278,71 @@ export class Ciweimao extends BaseRuleClass {
     }
 
     async function vipChapter(): Promise<ChapterParseObject> {
+      async function vipChapterDecrypt(chapterIdi: string, refererUrl: string) {
+        const HB = (unsafeWindow as CiweimaoWindow).HB;
+
+        const parentWidth = 871;
+        const setFontSize = "14";
+
+        interface ImageSessionCodeObject {
+          code: number;
+          encryt_keys: string[];
+          image_code: string;
+          access_key: string;
+        }
+        const imageSessionCodeUrl =
+          HB.config.rootPath + "chapter/ajax_get_image_session_code";
+        log.debug(`[Chapter]请求 ${imageSessionCodeUrl} Referer ${refererUrl}`);
+        const imageSessionCodeObject = await gfetch(imageSessionCodeUrl, {
+          method: "POST",
+          headers: {
+            Accept: "application/json, text/javascript, */*; q=0.01",
+            Referer: refererUrl,
+            Origin: "https://www.ciweimao.com",
+            "X-Requested-With": "XMLHttpRequest",
+          },
+          responseType: "json",
+        })
+          .then((response) => response.response)
+          .catch((error) => log.error(error));
+
+        if (
+          (imageSessionCodeObject as ImageSessionCodeObject).code !== 100000
+        ) {
+          log.error(imageSessionCodeObject);
+          throw new Error(`下载 ${refererUrl} 失败`);
+        }
+
+        const imageCode = decrypt({
+          content: (imageSessionCodeObject as ImageSessionCodeObject)
+            .image_code,
+          keys: (imageSessionCodeObject as ImageSessionCodeObject).encryt_keys,
+          accessKey: (imageSessionCodeObject as ImageSessionCodeObject)
+            .access_key,
+        });
+
+        const vipCHapterImageUrlI =
+          HB.config.rootPath +
+          "chapter/book_chapter_image?chapter_id=" +
+          chapterIdi +
+          "&area_width=" +
+          parentWidth +
+          "&font=undefined" +
+          "&font_size=" +
+          setFontSize +
+          "&image_code=" +
+          imageCode +
+          "&bg_color_name=white" +
+          "&text_color_name=white";
+
+        return vipCHapterImageUrlI;
+      }
+
       const isLogin =
         document.querySelector(".login-info.ly-fr")?.childElementCount === 1
           ? true
           : false;
       if (isLogin && isPaid) {
-        async function vipChapterDecrypt(
-          chapterIdi: string,
-          refererUrl: string
-        ) {
-          const HB = (unsafeWindow as CiweimaoWindow).HB;
-
-          const parentWidth = 871;
-          const setFontSize = "14";
-
-          interface ImageSessionCodeObject {
-            code: number;
-            encryt_keys: string[];
-            image_code: string;
-            access_key: string;
-          }
-          const imageSessionCodeUrl =
-            HB.config.rootPath + "chapter/ajax_get_image_session_code";
-          log.debug(
-            `[Chapter]请求 ${imageSessionCodeUrl} Referer ${refererUrl}`
-          );
-          const imageSessionCodeObject = await gfetch(imageSessionCodeUrl, {
-            method: "POST",
-            headers: {
-              Accept: "application/json, text/javascript, */*; q=0.01",
-              Referer: refererUrl,
-              Origin: "https://www.ciweimao.com",
-              "X-Requested-With": "XMLHttpRequest",
-            },
-            responseType: "json",
-          })
-            .then((response) => response.response)
-            .catch((error) => log.error(error));
-
-          if (
-            (imageSessionCodeObject as ImageSessionCodeObject).code !== 100000
-          ) {
-            log.error(imageSessionCodeObject);
-            throw new Error(`下载 ${refererUrl} 失败`);
-          }
-
-          const imageCode = decrypt({
-            content: (imageSessionCodeObject as ImageSessionCodeObject)
-              .image_code,
-            keys: (imageSessionCodeObject as ImageSessionCodeObject)
-              .encryt_keys,
-            accessKey: (imageSessionCodeObject as ImageSessionCodeObject)
-              .access_key,
-          });
-
-          const vipCHapterImageUrlI =
-            HB.config.rootPath +
-            "chapter/book_chapter_image?chapter_id=" +
-            chapterIdi +
-            "&area_width=" +
-            parentWidth +
-            "&font=undefined" +
-            "&font_size=" +
-            setFontSize +
-            "&image_code=" +
-            imageCode +
-            "&bg_color_name=white" +
-            "&text_color_name=white";
-
-          return vipCHapterImageUrlI;
-        }
-
         const divChapterAuthorSay = await getChapterAuthorSay();
 
         const vipCHapterImageUrl = await vipChapterDecrypt(
@@ -384,13 +376,12 @@ export class Ciweimao extends BaseRuleClass {
 
         let ddom;
         let dtext;
-        let dimages;
         if (divChapterAuthorSay) {
           const { dom, text, images } = await cleanDOM(
             divChapterAuthorSay,
             "TM"
           );
-          [ddom, dtext, dimages] = [dom, text, images];
+          [ddom, dtext] = [dom, text, images];
         }
 
         const img = document.createElement("img");

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import * as CryptoJS from "crypto-js";
 import { getImageAttachment } from "../../../lib/attachments";
 import { sleep } from "../../../lib/misc";
@@ -215,8 +216,7 @@ export class Gongzicp extends BaseRuleClass {
 
     const introDom = document.createElement("div");
     introDom.innerHTML = data.novelInfo.novel_info;
-    const [introduction, introductionHTML, introCleanimages] =
-      await introDomHandle(introDom);
+    const [introduction, introductionHTML] = await introDomHandle(introDom);
 
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = data.novelInfo.novel_cover;
@@ -410,6 +410,7 @@ export class Gongzicp extends BaseRuleClass {
           iv,
         };
       };
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const encrypt = (
         value: string,
         key: CryptoJS.lib.WordArray,
@@ -479,7 +480,7 @@ export class Gongzicp extends BaseRuleClass {
       }
       // set __NUXT__
       // "const __NUXT__=(function(a,b,c,d){return {layout:\"default\",data:[{},{cid:1543527}],fetch:{},error:b,state:{config:{timeDifference:0},CpST:{LCngpxaF:\"_xu0LRrbu$En3*I\"},keepAlive:{app:{authorMain:a,indexMain:c,loginMain:d,userMain:a,reportMain:a,managerMain:a},author:{},user:{},index:{},report:{},manager:{}},user:{info:{},verify:d,author:{}}},serverRendered:c,routePath:\"\\u002Fread-1543527.html\",config:{_app:{basePath:\"\\u002Fv4\\u002F\",assetsPath:\"\\u002Fv4\\u002F_nuxt\\u002F\",cdnURL:b}}}}(void 0,null,true,false));"
-      // tslint:disable-next-line:prefer-const
+      // eslint-disable-next-line prefer-const
       let _CP_NUXT: undefined | NUXT;
       // 暂时禁用eval
       //   eval(

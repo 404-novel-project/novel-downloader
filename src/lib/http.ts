@@ -74,6 +74,7 @@ export function gfetch(
 ): Promise<Tampermonkey.Response<object>> {
   return new Promise((resolve, reject) => {
     log.debug("[debug]gfetch:");
+    // eslint-disable-next-line prefer-rest-params
     log.debug(Array.from(arguments));
     _GM_xmlhttpRequest({
       url,

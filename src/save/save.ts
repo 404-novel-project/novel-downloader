@@ -31,15 +31,15 @@ export function saveOptionsValidate(data: any) {
   ];
 
   function keyNametest(keyname: string) {
-    const keyList = new Array().concat(keyNamesS).concat(keyNamesF);
+    const keyList: string[] = [];
+    keyList.concat(keyNamesS).concat(keyNamesF);
     if (keyList.includes(keyname)) {
       return true;
     }
     return false;
   }
   function keyNamesStest(keyname: string) {
-    // @ts-expect-error
-    if (keyNamesS.includes(keyname)) {
+    if (keyNamesS.includes(keyname as keyof SaveOptions)) {
       if (typeof data[keyname] === "string") {
         return true;
       }
@@ -47,8 +47,7 @@ export function saveOptionsValidate(data: any) {
     return false;
   }
   function keyNamesFtest(keyname: string) {
-    // @ts-expect-error
-    if (keyNamesF.includes(keyname)) {
+    if (keyNamesF.includes(keyname as keyof SaveOptions)) {
       if (typeof data[keyname] === "function") {
         return true;
       }
@@ -305,7 +304,7 @@ export class SaveBook {
     }
   }
 
-  public async addChapter(chapter: Chapter, suffix: string = "") {
+  public async addChapter(chapter: Chapter, suffix = "") {
     const chapterName = this.getchapterName(chapter);
     const chapterNumberToSave = this.getChapterNumberToSave(chapter);
     const chapterHtmlFileName = `No${chapterNumberToSave}Chapter${suffix}.html`;

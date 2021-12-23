@@ -27,14 +27,7 @@ export const c226ks = () =>
         "div.section-box:nth-child(4) > ul:nth-child(1) > li > a"
       ),
     getContentFromUrl: async (chapterUrl, chapterName, charset) => {
-      const {
-        chapterName: _chapterName,
-        contentRaw,
-        contentText,
-        contentHTML,
-        contentImages,
-        additionalMetadate,
-      } = await nextPageParse({
+      const { contentRaw } = await nextPageParse({
         chapterName,
         chapterUrl,
         charset,

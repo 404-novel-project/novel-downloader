@@ -23,8 +23,8 @@ export function clearAttachmentClassCache() {
 export async function getImageAttachment(
   url: string,
   imgMode: "naive" | "TM" = "TM",
-  prefix: string = "",
-  noMD5: boolean = false,
+  prefix = "",
+  noMD5 = false,
   comments?: string
 ) {
   const tmpImageName = Math.random().toString().replace("0.", "");

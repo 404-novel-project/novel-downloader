@@ -106,15 +106,15 @@ export function getSectionName(
   let sectionName = "";
   for (const sElem of _sections) {
     const position = chapterElement.compareDocumentPosition(sElem);
-    // tslint:disable-next-line: no-bitwise
+    // eslint-disable-next-line no-bitwise
     if (position & Node.DOCUMENT_POSITION_DISCONNECTED) {
       return null;
     }
-    // tslint:disable-next-line: no-bitwise
+    // eslint-disable-next-line no-bitwise
     if (position & Node.DOCUMENT_POSITION_PRECEDING) {
       sectionName = getName(sElem);
     }
-    // tslint:disable-next-line: no-bitwise
+    // eslint-disable-next-line no-bitwise
     if (position & Node.DOCUMENT_POSITION_FOLLOWING) {
       break;
     }

@@ -23,8 +23,8 @@ interface FilterOptionDict {
 }
 export const filterOptionDict: FilterOptionDict = {
   null: {
-    raw: (arg: string) => {
-      return (chapter: Chapter) => true;
+    raw: () => {
+      return () => true;
     },
     description: "<p>不应用任何过滤器（默认）</p>",
     abbreviation: "无",
@@ -49,8 +49,8 @@ export const filterOptionDict: FilterOptionDict = {
             return false;
           }
           // 1-5
-          case /^\d+\-\d+$/.test(s): {
-            const _m = s.match(/^(\d+)\-(\d+)$/);
+          case /^\d+-\d+$/.test(s): {
+            const _m = s.match(/^(\d+)-(\d+)$/);
             if (_m?.length === 3) {
               const m = _m.map((_s) => Number(_s));
               if (n >= m[1] && n <= m[2]) {
@@ -60,8 +60,8 @@ export const filterOptionDict: FilterOptionDict = {
             return false;
           }
           // 2-
-          case /^\d+\-$/.test(s): {
-            const _m = s.match(/^(\d+)\-$/);
+          case /^\d+-$/.test(s): {
+            const _m = s.match(/^(\d+)-$/);
             if (_m?.length === 2) {
               const m = Number(_m[1]);
               if (n >= m) {
@@ -71,8 +71,8 @@ export const filterOptionDict: FilterOptionDict = {
             return false;
           }
           // -89
-          case /^\-\d+$/.test(s): {
-            const _m = s.match(/^\-(\d+)$/);
+          case /^-\d+$/.test(s): {
+            const _m = s.match(/^-(\d+)$/);
             if (_m?.length === 2) {
               const m = Number(_m[1]);
               if (n <= m) {

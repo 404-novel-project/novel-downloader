@@ -32,8 +32,10 @@ async function bookParseTemp({
   enableIgnore?: boolean;
   customVolumeFilter?: RegExp;
 }): Promise<Book> {
-  const [introduction, introductionHTML, introCleanimages] =
-    await introDomHandle(introDom, introDomPatch);
+  const [introduction, introductionHTML] = await introDomHandle(
+    introDom,
+    introDomPatch
+  );
 
   const additionalMetadate: BookAdditionalMetadate = {};
   if (coverUrl) {
@@ -265,7 +267,7 @@ export function mkBiqugeClass2(
   enableIgnore?: boolean,
   customVolumeFilter?: RegExp
 ): PublicConstructor<BaseRuleClass> {
-  // tslint:disable-next-line:max-classes-per-file
+  // eslint-disable-next-line max-classes-per-file
   return class extends BaseRuleClass {
     public constructor() {
       super();
@@ -340,7 +342,7 @@ export function mkBiqugeClass3(
   enableIgnore?: boolean,
   customVolumeFilter?: RegExp
 ): PublicConstructor<BaseRuleClass> {
-  // tslint:disable-next-line: max-classes-per-file
+  // eslint-disable-next-line max-classes-per-file
   return class extends BaseRuleClass {
     public constructor() {
       super();

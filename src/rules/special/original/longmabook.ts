@@ -51,7 +51,7 @@ export class Longmabook extends BaseRuleClass {
     const introDom = document
       .querySelector("#mypages > div:nth-child(8) > div:nth-child(1)")
       ?.cloneNode(true) as HTMLElement;
-    let [introduction, introductionHTML, introCleanimages]: [
+    let [introduction, introductionHTML]: [
       string | null,
       HTMLElement | null,
       AttachmentClass[] | null
@@ -67,7 +67,7 @@ export class Longmabook extends BaseRuleClass {
       introDom.innerHTML = introDom.innerHTML
         .replace(/【作品编号：\d+】|【作品編號：\d+】/, "")
         .replace("\n)\n", "");
-      [introduction, introductionHTML, introCleanimages] = await introDomHandle(
+      [introduction, introductionHTML] = await introDomHandle(
         introDom,
         undefined
       );

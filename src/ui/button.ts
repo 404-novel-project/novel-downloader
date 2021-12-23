@@ -44,6 +44,7 @@ export const vm = createApp({
         .catch((error) => log.error(error));
     },
     settingButtonClick() {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-expect-error
       settingVM.openSetting();
     },

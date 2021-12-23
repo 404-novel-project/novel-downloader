@@ -134,6 +134,7 @@ async function formatImage(
     temp0();
     return;
   } else {
+    // eslint-disable-next-line no-inner-declarations
     function temp1() {
       if (lastElement?.nodeName.toLowerCase() === "p") {
         lastElement.appendChild(imgElem);

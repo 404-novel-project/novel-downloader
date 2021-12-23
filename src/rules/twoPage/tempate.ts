@@ -65,8 +65,10 @@ export function mkRuleClass({
       const bookname = getBookname(doc);
       const author = getAuthor(doc);
       const introDom = getIntroDom(doc);
-      const [introduction, introductionHTML, introCleanimages] =
-        await introDomHandle(introDom, introDomPatch);
+      const [introduction, introductionHTML] = await introDomHandle(
+        introDom,
+        introDomPatch
+      );
 
       const coverUrl = getCoverUrl(doc);
       const additionalMetadate: BookAdditionalMetadate = {};

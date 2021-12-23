@@ -61,10 +61,11 @@ export function mkRuleClass({
     public async bookParse() {
       let introduction = null;
       let introductionHTML = null;
-      let introCleanimages = null;
       if (introDom && introDomPatch) {
-        [introduction, introductionHTML, introCleanimages] =
-          await introDomHandle(introDom, introDomPatch);
+        [introduction, introductionHTML] = await introDomHandle(
+          introDom,
+          introDomPatch
+        );
       }
 
       const additionalMetadate: BookAdditionalMetadate = {};

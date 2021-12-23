@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import { getImageAttachment } from "../../../lib/attachments";
 import { cleanDOM } from "../../../lib/cleanDOM";
 import { gfetch, GfetchRequestOptions } from "../../../lib/http";

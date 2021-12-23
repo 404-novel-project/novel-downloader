@@ -32,11 +32,13 @@ export class Shubl extends BaseRuleClass {
       document.querySelector("div.username") as HTMLDivElement
     ).innerText.trim();
     const introDom = document.querySelector(".book-brief");
-    const [introduction, introductionHTML, introCleanimages] =
-      await introDomHandle(introDom, (introDomI) => {
+    const [introduction, introductionHTML] = await introDomHandle(
+      introDom,
+      (introDomI) => {
         introDomI.innerHTML = introDomI.innerHTML.replace("简介：", "");
         return introDomI;
-      });
+      }
+    );
 
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = (document.querySelector(".book-img") as HTMLImageElement)
@@ -154,14 +156,13 @@ export class Shubl extends BaseRuleClass {
       accessKey: string;
     }
     function decrypt(item: DecryptItem) {
-      type Message = {};
       let message = item.content;
       const keys = item.keys;
       const len = item.keys.length;
       const accessKey = item.accessKey;
       const accessKeyList = accessKey.split("");
       const charsNotLatinNum = accessKeyList.length;
-      const output = new Array();
+      const output = [];
       output.push(
         keys[accessKeyList[charsNotLatinNum - 1].charCodeAt(0) % len]
       );
@@ -271,72 +272,66 @@ export class Shubl extends BaseRuleClass {
     }
 
     async function vipChapter(): Promise<ChapterParseObject> {
-      if (isPaid) {
-        async function vipChapterDecrypt(
-          chapterIdi: string,
-          refererUrl: string
-        ) {
-          const parentWidth = 939.2;
-          const setFontSize = "18";
+      async function vipChapterDecrypt(chapterIdi: string, refererUrl: string) {
+        const parentWidth = 939.2;
+        const setFontSize = "18";
 
-          interface ImageSessionCodeObject {
-            code: number;
-            encryt_keys: string[];
-            image_code: string;
-            access_key: string;
-          }
-
-          const imageSessionCodeUrl =
-            rootPath + "chapter/ajax_get_image_session_code";
-          log.debug(
-            `[Chapter]请求 ${imageSessionCodeUrl} Referer ${refererUrl}`
-          );
-          const imageSessionCodeObject = await gfetch(imageSessionCodeUrl, {
-            method: "POST",
-            headers: {
-              Accept: "application/json, text/javascript, */*; q=0.01",
-              Referer: refererUrl,
-              Origin: document.location.origin,
-              "X-Requested-With": "XMLHttpRequest",
-            },
-            responseType: "json",
-          })
-            .then((response) => response.response)
-            .catch((error) => log.error(error));
-
-          if (
-            (imageSessionCodeObject as ImageSessionCodeObject).code !== 100000
-          ) {
-            log.error(imageSessionCodeObject);
-            throw new Error(`下载 ${refererUrl} 失败`);
-          }
-
-          const imageCode = decrypt({
-            content: (imageSessionCodeObject as ImageSessionCodeObject)
-              .image_code,
-            keys: (imageSessionCodeObject as ImageSessionCodeObject)
-              .encryt_keys,
-            accessKey: (imageSessionCodeObject as ImageSessionCodeObject)
-              .access_key,
-          });
-
-          const vipCHapterImageUrlI =
-            rootPath +
-            "chapter/book_chapter_image?chapter_id=" +
-            chapterIdi +
-            "&area_width=" +
-            parentWidth +
-            "&font=undefined" +
-            "&font_size=" +
-            setFontSize +
-            "&image_code=" +
-            imageCode +
-            "&bg_color_name=white" +
-            "&text_color_name=white";
-
-          return vipCHapterImageUrlI;
+        interface ImageSessionCodeObject {
+          code: number;
+          encryt_keys: string[];
+          image_code: string;
+          access_key: string;
         }
 
+        const imageSessionCodeUrl =
+          rootPath + "chapter/ajax_get_image_session_code";
+        log.debug(`[Chapter]请求 ${imageSessionCodeUrl} Referer ${refererUrl}`);
+        const imageSessionCodeObject = await gfetch(imageSessionCodeUrl, {
+          method: "POST",
+          headers: {
+            Accept: "application/json, text/javascript, */*; q=0.01",
+            Referer: refererUrl,
+            Origin: document.location.origin,
+            "X-Requested-With": "XMLHttpRequest",
+          },
+          responseType: "json",
+        })
+          .then((response) => response.response)
+          .catch((error) => log.error(error));
+
+        if (
+          (imageSessionCodeObject as ImageSessionCodeObject).code !== 100000
+        ) {
+          log.error(imageSessionCodeObject);
+          throw new Error(`下载 ${refererUrl} 失败`);
+        }
+
+        const imageCode = decrypt({
+          content: (imageSessionCodeObject as ImageSessionCodeObject)
+            .image_code,
+          keys: (imageSessionCodeObject as ImageSessionCodeObject).encryt_keys,
+          accessKey: (imageSessionCodeObject as ImageSessionCodeObject)
+            .access_key,
+        });
+
+        const vipCHapterImageUrlI =
+          rootPath +
+          "chapter/book_chapter_image?chapter_id=" +
+          chapterIdi +
+          "&area_width=" +
+          parentWidth +
+          "&font=undefined" +
+          "&font_size=" +
+          setFontSize +
+          "&image_code=" +
+          imageCode +
+          "&bg_color_name=white" +
+          "&text_color_name=white";
+
+        return vipCHapterImageUrlI;
+      }
+
+      if (isPaid) {
         const vipCHapterImageUrl = await vipChapterDecrypt(
           chapterId,
           chapterUrl

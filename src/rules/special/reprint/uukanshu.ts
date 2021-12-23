@@ -34,14 +34,16 @@ export class Uukanshu extends BaseRuleClass {
     const introDom = document.querySelector(
       "dd.jieshao_content > h3"
     ) as HTMLElement;
-    const [introduction, introductionHTML, introCleanimages] =
-      await introDomHandle(introDom, (introDomI) => {
+    const [introduction, introductionHTML] = await introDomHandle(
+      introDom,
+      (introDomI) => {
         introDomI.innerHTML = introDomI.innerHTML
           .replace(/^.+简介：\s+www.uukanshu.com\s+/, "")
           .replace(/\s+https:\/\/www.uukanshu.com/, "")
           .replace(/－+/, "");
         return introDomI;
-      });
+      }
+    );
 
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = (

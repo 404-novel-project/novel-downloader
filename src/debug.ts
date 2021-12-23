@@ -14,10 +14,9 @@ export async function debug() {
     (unsafeWindow as UnsafeWindow).rule = rule;
     (unsafeWindow as UnsafeWindow).book = book;
     (window as GmWindow)._book = book;
-    // tslint:disable-next-line: no-empty
+    // eslint-disable-next-line no-empty, no-empty-function, @typescript-eslint/no-empty-function
   } catch (error) {}
 
-  // @ts-ignore
   (unsafeWindow as UnsafeWindow).saveAs = saveAs;
   const { parse, fetchAndParse, gfetchAndParse } = await import(
     "./lib/readability"

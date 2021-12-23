@@ -37,11 +37,13 @@ function getClass(
       ).innerText.trim();
 
       const introDom = dom.querySelector(".intro") as HTMLElement;
-      const [introduction, introductionHTML, introCleanimages] =
-        await introDomHandle(introDom, (introDomI) => {
+      const [introduction, introductionHTML] = await introDomHandle(
+        introDom,
+        (introDomI) => {
           rm("span:nth-child(1)", false, introDomI);
           return introDomI;
-        });
+        }
+      );
 
       const additionalMetadate: BookAdditionalMetadate = {};
 
@@ -228,18 +230,16 @@ function getClass(
       } while (flag);
 
       if (content) {
-        const {
-          dom: oldDom,
-          text: _text,
-          images: finalImages,
-        } = await cleanDOM(content, "TM", { keepImageName: true });
+        const { dom: oldDom, images: finalImages } = await cleanDOM(
+          content,
+          "TM",
+          { keepImageName: true }
+        );
         const _newDom = document.createElement("div");
         _newDom.innerHTML = replaceFunction(content.innerHTML);
-        const {
-          dom: newDom,
-          text: finalText,
-          images,
-        } = await cleanDOM(_newDom, "TM", { keepImageName: true });
+        const { dom: newDom, text: finalText } = await cleanDOM(_newDom, "TM", {
+          keepImageName: true,
+        });
 
         const fontStyleDom = document.createElement("style");
         fontStyleDom.innerHTML = `.hide { display: none; }`;

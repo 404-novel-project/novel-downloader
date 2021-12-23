@@ -75,16 +75,15 @@ export class FflateZip {
         } else {
           nonStream();
         }
-
-        function nonStream() {
-          log.info("[fflateZip] ZIP生成完毕，文件大小：" + self.zipOut.size);
-          try {
-            saveAs(self.zipOut, self.filename);
-            self.zipOut = new Blob([], { type: "application/zip" });
-          } catch (error) {
-            log.error("[fflateZip]" + error);
-            log.trace(error);
-          }
+      }
+      function nonStream() {
+        log.info("[fflateZip] ZIP生成完毕，文件大小：" + self.zipOut.size);
+        try {
+          saveAs(self.zipOut, self.filename);
+          self.zipOut = new Blob([], { type: "application/zip" });
+        } catch (error) {
+          log.error("[fflateZip]" + error);
+          log.trace(error);
         }
       }
     });

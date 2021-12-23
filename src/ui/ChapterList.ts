@@ -38,7 +38,7 @@ async function getSections() {
 export const style = createStyle(ChapterListCss);
 export default defineComponent({
   name: "ChapterList",
-  setup(props, context) {
+  setup() {
     const sectionsObj = reactive([]);
     const loading = ref(true);
     const failed = ref(false);

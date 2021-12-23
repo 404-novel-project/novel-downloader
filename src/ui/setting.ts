@@ -21,7 +21,7 @@ export const el = createEl(`<div id="setting"></div>`);
 export const vm = createApp({
   name: "nd-setting",
   components: { "filter-tab": FilterTab, "log-ui": LogUI, "test-ui": TestUI },
-  setup(props, context) {
+  setup() {
     interface Setting {
       enableDebug?: boolean;
       enableTestPage?: boolean;

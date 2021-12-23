@@ -29,8 +29,7 @@ export class Hanwujinian extends BaseRuleClass {
       document.querySelector("span.authorText_1") as HTMLElement
     ).innerText.trim();
     const introDom = document.querySelector("#introtext");
-    const [introduction, introductionHTML, introCleanimages] =
-      await introDomHandle(introDom);
+    const [introduction, introductionHTML] = await introDomHandle(introDom);
 
     const coverUrl = (
       document.querySelector(".wR_JSAS > img") as HTMLImageElement
@@ -128,7 +127,7 @@ export class Hanwujinian extends BaseRuleClass {
       s.innerHTML.includes("var chapterContent")
     )?.[0];
 
-    // tslint:disable-next-line: no-shadowed-variable
+    // eslint-disable-next-line no-shadow, @typescript-eslint/no-shadow
     const getContent = (CryptoJS: CryptoJStype, chapterContent: string) => {
       function AesDecrypt(content: string) {
         const keys = {

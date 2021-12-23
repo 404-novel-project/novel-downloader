@@ -266,8 +266,7 @@ export abstract class BaseRuleClass {
         ) {
           let text =
             "[initChapters]发现自定义筛选函数，自定义筛选函数内容如下：\n";
-          // @ts-expect-error
-          text += (unsafeWindow as UnsafeWindow).chapterFilter.toString();
+          text += (unsafeWindow as UnsafeWindow).chapterFilter?.toString();
           log.info(text);
           return true;
         } else {
@@ -278,8 +277,7 @@ export abstract class BaseRuleClass {
       function _filter(chapter: Chapter): boolean {
         let b = true;
         try {
-          // @ts-expect-error
-          const u = (unsafeWindow as UnsafeWindow).chapterFilter(chapter);
+          const u = (unsafeWindow as UnsafeWindow).chapterFilter?.(chapter);
           if (typeof u === "boolean") {
             b = u;
           }

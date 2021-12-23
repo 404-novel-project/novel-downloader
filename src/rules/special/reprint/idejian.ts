@@ -30,8 +30,7 @@ export class Idejian extends BaseRuleClass {
     }
 
     const introDom = document.querySelector(".brief_con") as HTMLElement;
-    const [introduction, introductionHTML, introCleanimages] =
-      await introDomHandle(introDom);
+    const [introduction, introductionHTML] = await introDomHandle(introDom);
 
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = (

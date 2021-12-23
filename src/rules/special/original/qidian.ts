@@ -39,8 +39,7 @@ export class Qidian extends BaseRuleClass {
       .replace(/作\s+者:/, "")
       .trim();
     const introDom = document.querySelector(".book-info-detail .book-intro");
-    const [introduction, introductionHTML, introCleanimages] =
-      await introDomHandle(introDom);
+    const [introduction, introductionHTML] = await introDomHandle(introDom);
 
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = (
@@ -205,11 +204,6 @@ export class Qidian extends BaseRuleClass {
       chapterId: string;
       limitFree: boolean;
     }
-    const _csrfToken = (options as Options)._csrfToken;
-    const bookId = (options as Options).bookId;
-    const authorId = (options as Options).authorId;
-    const chapterId = (options as Options).chapterId;
-    const limitFree = (options as Options).limitFree;
 
     const nullObj = {
       chapterName,

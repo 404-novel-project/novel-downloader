@@ -108,8 +108,7 @@ export function sandboxed(code: string) {
 export function storageAvailable(type: string) {
   let storage;
   try {
-    // @ts-expect-error
-    storage = window[type];
+    storage = window[type as keyof Window];
     const x = "__storage_test__";
     storage.setItem(x, x);
     storage.removeItem(x);
@@ -140,6 +139,7 @@ export function calculateMd5(blob: Blob) {
     reader.readAsArrayBuffer(blob);
     reader.onloadend = () => {
       if (reader.result) {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         const wordArray = CryptoJS.lib.WordArray.create(reader.result);
         const hash = CryptoJS.MD5(wordArray).toString();
@@ -263,9 +263,8 @@ export function getNodeTextLength(element: Element) {
 }
 
 export function getCookie(name: string) {
-  let arr;
   const reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
-  arr = document.cookie.match(reg);
+  const arr = document.cookie.match(reg);
   if (arr) {
     return arr[2];
   } else {

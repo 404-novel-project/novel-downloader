@@ -24,14 +24,7 @@ export const a7xs = () =>
     coverUrl: (document.querySelector(".pic > img") as HTMLImageElement).src,
     aList: document.querySelectorAll(".book_list > ul > li > a"),
     getContentFromUrl: async (chapterUrl, chapterName, charset) => {
-      const {
-        chapterName: _chapterName,
-        contentRaw,
-        contentText,
-        contentHTML,
-        contentImages,
-        additionalMetadate,
-      } = await nextPageParse({
+      const { contentRaw } = await nextPageParse({
         chapterName,
         chapterUrl,
         charset,

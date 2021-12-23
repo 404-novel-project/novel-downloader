@@ -9,12 +9,7 @@ import {
   softByValue,
 } from "../../../lib/rule";
 import { log } from "../../../log";
-import {
-  AttachmentClass,
-  Book,
-  BookAdditionalMetadate,
-  Chapter,
-} from "../../../main";
+import { Book, BookAdditionalMetadate, Chapter } from "../../../main";
 import { BaseRuleClass } from "../../../rules";
 
 export class Kanunu8 extends BaseRuleClass {
@@ -39,20 +34,16 @@ export class Kanunu8 extends BaseRuleClass {
         .replace("作品集", "")
         .replace("→", "")
         .trim() ?? "";
-    let introDom;
-    introDom = Array.from(document.body.querySelectorAll("td, p"))
+    const introDom = Array.from(document.body.querySelectorAll("td, p"))
       .filter((elem) => (elem as HTMLElement).innerText.length !== 0)
       .map((elem) => [elem, getNodeTextLength(elem)] as [Element, number])
       .sort(softByValue)
       .slice(-1)?.[0][0] as HTMLElement;
     let introduction: string | null = null,
-      introductionHTML: HTMLElement | null = null,
-      introCleanimages: AttachmentClass[] | null = null;
+      introductionHTML: HTMLElement | null = null;
     if (introDom) {
       rm("a", true, introDom);
-      [introduction, introductionHTML, introCleanimages] = await introDomHandle(
-        introDom
-      );
+      [introduction, introductionHTML] = await introDomHandle(introDom);
     }
     let aList: NodeListOf<Element> | Element[] | null = null;
     let sections: NodeListOf<Element> | null = null;

@@ -154,7 +154,7 @@ export class Sosadfun extends BaseRuleClass {
     }
 
     if (_content) {
-      // tslint:disable-next-line:prefer-const
+      // eslint-disable-next-line prefer-const
       let { dom, text, images } = await cleanDOM(content, "TM");
 
       if (_authorSay) {
