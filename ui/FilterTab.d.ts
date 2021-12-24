@@ -1,4 +1,4 @@
-import { Chapter } from "../main";
+import { Chapter } from "../main/Chapter";
 interface FilterOption {
     raw: (arg: string) => ((chapter: Chapter) => boolean) | undefined;
     description: string;

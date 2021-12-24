@@ -1,5 +1,5 @@
 import { Ref } from "vue";
-import { Chapter } from "../main";
+import { Chapter } from "../main/Chapter";
 declare const _default: import("vue").DefineComponent<{}, {
     metaData: {
         封面: string;

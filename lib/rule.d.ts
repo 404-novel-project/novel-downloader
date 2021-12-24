@@ -1,4 +1,4 @@
-import { AttachmentClass } from "../main";
+import { AttachmentClass } from "../main/Attachment";
 import { ChapterParseObject } from "../rules";
 export declare function introDomHandle(introDom: (Element | HTMLElement) | null, domPatch?: (introDom: HTMLElement) => HTMLElement): Promise<[string | null, HTMLElement | null, AttachmentClass[] | null]>;
 interface NextPageParseOptions {

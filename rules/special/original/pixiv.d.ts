@@ -1,4 +1,5 @@
-import { Book, ChapterAdditionalMetadate } from "../../../main";
+import { ChapterAdditionalMetadate } from "../../../main/Chapter";
+import { Book } from "../../../main/Book";
 import { BaseRuleClass } from "../../../rules";
 export declare class Pixiv extends BaseRuleClass {
     constructor();
@@ -8,7 +9,7 @@ export declare class Pixiv extends BaseRuleClass {
         contentRaw: HTMLDivElement;
         contentText: string;
         contentHTML: HTMLElement;
-        contentImages: import("../../../main").AttachmentClass[];
+        contentImages: import("../../../main/Attachment").AttachmentClass[];
         additionalMetadate: ChapterAdditionalMetadate;
     } | {
         chapterName: string | null;

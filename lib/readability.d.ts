@@ -1,4 +1,4 @@
-import { GfetchRequestOptions } from "./http";
+import { GfetchRequestInit } from "./http";
 interface ReadabilityOptions {
     debug?: boolean;
     maxElemsToParse?: number;
@@ -29,7 +29,7 @@ export declare function fetchAndParse(url: string, charset?: string, init?: Requ
     excerpt: string;
     siteName: string;
 } | null>;
-export declare function gfetchAndParse(url: string, charset?: string, init?: GfetchRequestOptions, patch?: (doc: Document) => Document, options?: ReadabilityOptions): Promise<{
+export declare function gfetchAndParse(url: string, charset?: string, init?: GfetchRequestInit, patch?: (doc: Document) => Document, options?: ReadabilityOptions): Promise<{
     title: string;
     byline: string;
     dir: string;

@@ -1,4 +1,4 @@
-import { Book } from "../../../main";
+import { Book } from "../../../main/Book";
 import { BaseRuleClass } from "../../../rules";
 export declare class Ciyuanji extends BaseRuleClass {
     constructor();
@@ -8,7 +8,7 @@ export declare class Ciyuanji extends BaseRuleClass {
         contentRaw: HTMLDivElement;
         contentText: string;
         contentHTML: HTMLElement;
-        contentImages: import("../../../main").AttachmentClass[];
+        contentImages: import("../../../main/Attachment").AttachmentClass[];
         additionalMetadate: null;
     } | {
         chapterName: string | null;

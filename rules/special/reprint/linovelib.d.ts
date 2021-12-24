@@ -1,4 +1,4 @@
-import { Book } from "../../../main";
+import { Book } from "../../../main/Book";
 import { BaseRuleClass } from "../../../rules";
 export declare class Linovelib extends BaseRuleClass {
     constructor();

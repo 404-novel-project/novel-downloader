@@ -1,4 +1,4 @@
-import { Book } from "../../../main";
+import { Book } from "../../../main/Book";
 import { BaseRuleClass, ChapterParseObject } from "../../../rules";
 export declare class Ciweimao extends BaseRuleClass {
     constructor();

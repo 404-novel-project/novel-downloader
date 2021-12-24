@@ -1,4 +1,4 @@
-import { Chapter } from "../main";
+import { Chapter } from "../main/Chapter";
 import { SectionObj } from "../save/misc";
 export declare const style: HTMLElement;
 declare const _default: import("vue").DefineComponent<{}, {

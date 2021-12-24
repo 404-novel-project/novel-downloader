@@ -1,4 +1,5 @@
-import { Book, Chapter } from "../main";
+import { Chapter } from "../main/Chapter";
+import { Book } from "../main/Book";
 export interface SaveOptions {
     mainStyleText?: SaveBook["mainStyleText"];
     tocStyleText?: SaveBook["tocStyleText"];

@@ -1,4 +1,4 @@
-import { Chapter } from "../main";
+import { Chapter } from "../main/Chapter";
 export interface SectionObj {
     sectionName: string | null;
     sectionNumber: number | null;

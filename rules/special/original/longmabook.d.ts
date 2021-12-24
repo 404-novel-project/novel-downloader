@@ -1,4 +1,5 @@
-import { AttachmentClass, Book } from "../../../main";
+import { AttachmentClass } from "../../../main/Attachment";
+import { Book } from "../../../main/Book";
 import { BaseRuleClass } from "../../../rules";
 export declare class Longmabook extends BaseRuleClass {
     constructor();

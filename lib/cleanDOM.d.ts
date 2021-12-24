@@ -1,6 +1,9 @@
-import { AttachmentClass } from "../main";
-interface Options {
+import { AttachmentClass } from "../main/Attachment";
+import { ReferrerMode } from "../main/main";
+export interface Options {
     keepImageName?: boolean;
+    referrerMode?: ReferrerMode;
+    customReferer?: string;
 }
 interface Output {
     dom: HTMLElement;

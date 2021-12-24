@@ -1,5 +1,6 @@
+import { Options } from "../../lib/cleanDOM";
 import { PublicConstructor } from "../../lib/misc";
-import { Chapter } from "../../main";
+import { Chapter } from "../../main/Chapter";
 import { BaseRuleClass } from "../../rules";
 interface MkRuleClassOptions {
     bookUrl: string;
@@ -16,6 +17,7 @@ interface MkRuleClassOptions {
     getContent?: (doc: Document) => HTMLElement | null;
     contentPatch: (content: HTMLElement) => HTMLElement;
     concurrencyLimit?: number;
+    cleanDomOptions?: Options;
 }
-export declare function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, coverUrl, getIndexUrls, getAList, getAName, postHook, getContentFromUrl, getContent, contentPatch, concurrencyLimit, }: MkRuleClassOptions): PublicConstructor<BaseRuleClass>;
+export declare function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, coverUrl, getIndexUrls, getAList, getAName, postHook, getContentFromUrl, getContent, contentPatch, concurrencyLimit, cleanDomOptions, }: MkRuleClassOptions): PublicConstructor<BaseRuleClass>;
 export {};
