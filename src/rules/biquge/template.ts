@@ -4,7 +4,8 @@ import { getHtmlDOM } from "../../lib/http";
 import { PublicConstructor } from "../../lib/misc";
 import { introDomHandle, nextPageParse } from "../../lib/rule";
 import { log } from "../../log";
-import { Book, BookAdditionalMetadate, Chapter } from "../../main";
+import { Chapter } from "../../main/Chapter";
+import { Book, BookAdditionalMetadate } from "../../main/Book";
 import { BaseRuleClass, ChapterParseObject } from "../../rules";
 
 async function bookParseTemp({
@@ -267,7 +268,6 @@ export function mkBiqugeClass2(
   enableIgnore?: boolean,
   customVolumeFilter?: RegExp
 ): PublicConstructor<BaseRuleClass> {
-  // eslint-disable-next-line max-classes-per-file
   return class extends BaseRuleClass {
     public constructor() {
       super();
@@ -342,7 +342,6 @@ export function mkBiqugeClass3(
   enableIgnore?: boolean,
   customVolumeFilter?: RegExp
 ): PublicConstructor<BaseRuleClass> {
-  // eslint-disable-next-line max-classes-per-file
   return class extends BaseRuleClass {
     public constructor() {
       super();

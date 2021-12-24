@@ -1,6 +1,6 @@
 import { Readability } from "@mozilla/readability";
 import { createEl } from "./createEl";
-import { getHtmlDOM, GfetchRequestOptions, ggetHtmlDOM } from "./http";
+import { getHtmlDOM, GfetchRequestInit, ggetHtmlDOM } from "./http";
 
 interface ReadabilityOptions {
   debug?: boolean;
@@ -40,7 +40,7 @@ export async function fetchAndParse(
 export async function gfetchAndParse(
   url: string,
   charset?: string,
-  init?: GfetchRequestOptions,
+  init?: GfetchRequestInit,
   patch?: (doc: Document) => Document,
   options?: ReadabilityOptions
 ) {

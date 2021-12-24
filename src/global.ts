@@ -1,7 +1,8 @@
 import { saveAs } from "file-saver";
 import { LocalStorageExpired } from "./lib/misc";
 import { fetchAndParse, gfetchAndParse, parse } from "./lib/readability";
-import { Book, Chapter } from "./main";
+import { Chapter } from "./main/Chapter";
+import { Book } from "./main/Book";
 import { BaseRuleClass } from "./rules";
 import { SectionObj } from "./save/misc";
 import { SaveOptions } from "./save/save";

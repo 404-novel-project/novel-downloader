@@ -1,4 +1,5 @@
 import { rm, rm2 } from "../../lib/misc";
+import { ReferrerMode } from "../../main/main";
 import { mkRuleClass } from "./tempate";
 
 export const shencou = () => {
@@ -56,6 +57,10 @@ export const shencou = () => {
       rm("h1", true, dom);
       rm("div[id^=BookSee]", true, dom);
       return dom;
+    },
+    cleanDomOptions: {
+      referrerMode: ReferrerMode.custom,
+      customReferer: "http://www.wenku8.net",
     },
   });
 };

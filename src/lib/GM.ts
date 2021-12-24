@@ -10,7 +10,7 @@ function get_GM_info() {
 export const _GM_info = get_GM_info();
 
 export function _GM_xmlhttpRequest<TContext = any>(
-  details: Tampermonkey.Request<TContext> // eslint-disable-line
+  details: Tampermonkey.Request<TContext>
 ) {
   if (typeof GM_xmlhttpRequest === "function") {
     GM_xmlhttpRequest(details);

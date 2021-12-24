@@ -1,4 +1,5 @@
-import { AttachmentClass as attachmentClassType } from "../main";
+import { AttachmentClass as attachmentClassType } from "../main/Attachment";
+import { ReferrerMode } from "../main/main";
 import { calculateMd5 } from "./misc";
 
 let attachmentClassCache: attachmentClassType[] = [];
@@ -23,14 +24,23 @@ export async function getImageAttachment(
   imgMode: "naive" | "TM",
   prefix = "",
   noMD5 = false,
-  comments = getRandomName()
+  comments = getRandomName(),
+  options?: {
+    referrerMode?: ReferrerMode;
+    customReferer?: string;
+  }
 ): Promise<attachmentClassType> {
   const imgClassCache = getAttachmentClassCache(url);
   if (imgClassCache) {
     return imgClassCache;
   }
-
-  const imgClass = new attachmentClassType(url, comments, imgMode);
+  const imgClass = new attachmentClassType(
+    url,
+    comments,
+    imgMode,
+    options?.referrerMode,
+    options?.customReferer
+  );
   imgClass.comments = comments;
   const blob = await imgClass.init();
   if (blob) {

@@ -9,7 +9,8 @@ import {
 import { GmWindow } from "../global";
 import { createStyle } from "../lib/createEl";
 import { log } from "../log";
-import { Chapter, Status } from "../main";
+import { Status } from "../main/main";
+import { Chapter } from "../main/Chapter";
 import { getRule } from "../router/download";
 import { getSectionsObj, SectionObj } from "../save/misc";
 import ChapterListHtml from "./ChapterList.html";

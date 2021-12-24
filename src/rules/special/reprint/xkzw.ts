@@ -4,7 +4,8 @@ import { cleanDOM } from "../../../lib/cleanDOM";
 import { getHtmlDOM } from "../../../lib/http";
 import { introDomHandle } from "../../../lib/rule";
 import { log } from "../../../log";
-import { Book, BookAdditionalMetadate, Chapter } from "../../../main";
+import { Chapter } from "../../../main/Chapter";
+import { Book, BookAdditionalMetadate } from "../../../main/Book";
 import { BaseRuleClass } from "../../../rules";
 
 export class Xkzw extends BaseRuleClass {
@@ -281,7 +282,6 @@ export class Xkzw extends BaseRuleClass {
 
         if (obj) {
           let content = obj.innerHTML.trim();
-          // eslint-disable-next-line radix
           const type = parseInt(content.substring(0, 1), 10);
           let key;
           let iv;

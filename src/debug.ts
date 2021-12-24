@@ -3,19 +3,16 @@ import { GmWindow, UnsafeWindow } from "./global";
 import { getRule } from "./router/download";
 
 export async function debug() {
-  try {
-    const rule = await getRule();
-    let book;
-    if (typeof (window as GmWindow)._book !== "undefined") {
-      book = (window as GmWindow)._book;
-    } else {
-      book = await rule.bookParse();
-    }
-    (unsafeWindow as UnsafeWindow).rule = rule;
-    (unsafeWindow as UnsafeWindow).book = book;
-    (window as GmWindow)._book = book;
-    // eslint-disable-next-line no-empty, no-empty-function, @typescript-eslint/no-empty-function
-  } catch (error) {}
+  const rule = await getRule();
+  let book;
+  if (typeof (window as GmWindow)._book !== "undefined") {
+    book = (window as GmWindow)._book;
+  } else {
+    book = await rule.bookParse();
+  }
+  (unsafeWindow as UnsafeWindow).rule = rule;
+  (unsafeWindow as UnsafeWindow).book = book;
+  (window as GmWindow)._book = book;
 
   (unsafeWindow as UnsafeWindow).saveAs = saveAs;
   const { parse, fetchAndParse, gfetchAndParse } = await import(

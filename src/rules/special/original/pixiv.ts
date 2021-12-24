@@ -2,13 +2,9 @@ import { getImageAttachment } from "../../../lib/attachments";
 import { cleanDOM } from "../../../lib/cleanDOM";
 import { getHtmlDOM } from "../../../lib/http";
 import { log } from "../../../log";
-import {
-  Book,
-  BookAdditionalMetadate,
-  Chapter,
-  ChapterAdditionalMetadate,
-  Status,
-} from "../../../main";
+import { Status } from "../../../main/main";
+import { Chapter, ChapterAdditionalMetadate } from "../../../main/Chapter";
+import { Book, BookAdditionalMetadate } from "../../../main/Book";
 import { BaseRuleClass } from "../../../rules";
 
 export class Pixiv extends BaseRuleClass {
@@ -1018,7 +1014,6 @@ async function getPreloadData(chapterUrl: string, charset: string) {
       "isBungei": false,
       "xRestrict": 1,
       "restrict": 0,
-      // eslint-disable-next-line no-irregular-whitespace
       "content": "……………………",
       "coverUrl": "https://i.pximg.net/c/600x600/novel-cover-master/img/2021/09/06/01/03/54/15963004_88cc0e6778d0185770df3bf5cecb2a81_master1200.jpg",
       "suggestedSettings": {

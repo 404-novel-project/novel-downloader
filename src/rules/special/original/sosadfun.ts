@@ -1,11 +1,8 @@
 import { cleanDOM } from "../../../lib/cleanDOM";
 import { getHtmlDOM } from "../../../lib/http";
-import {
-  Book,
-  BookAdditionalMetadate,
-  Chapter,
-  ExpectError,
-} from "../../../main";
+import { ExpectError } from "../../../main/main";
+import { Chapter } from "../../../main/Chapter";
+import { Book, BookAdditionalMetadate } from "../../../main/Book";
 import { BaseRuleClass } from "../../../rules";
 
 export class Sosadfun extends BaseRuleClass {

@@ -9,7 +9,8 @@ import {
   softByValue,
 } from "../../../lib/rule";
 import { log } from "../../../log";
-import { Book, BookAdditionalMetadate, Chapter } from "../../../main";
+import { Chapter } from "../../../main/Chapter";
+import { Book, BookAdditionalMetadate } from "../../../main/Book";
 import { BaseRuleClass } from "../../../rules";
 
 export class Kanunu8 extends BaseRuleClass {

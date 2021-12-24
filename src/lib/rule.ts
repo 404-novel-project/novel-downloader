@@ -1,5 +1,5 @@
 import { log } from "../log";
-import { AttachmentClass } from "../main";
+import { AttachmentClass } from "../main/Attachment";
 import { ChapterParseObject } from "../rules";
 import { cleanDOM } from "./cleanDOM";
 import { getHtmlDOM } from "./http";
@@ -106,15 +106,12 @@ export function getSectionName(
   let sectionName = "";
   for (const sElem of _sections) {
     const position = chapterElement.compareDocumentPosition(sElem);
-    // eslint-disable-next-line no-bitwise
     if (position & Node.DOCUMENT_POSITION_DISCONNECTED) {
       return null;
     }
-    // eslint-disable-next-line no-bitwise
     if (position & Node.DOCUMENT_POSITION_PRECEDING) {
       sectionName = getName(sElem);
     }
-    // eslint-disable-next-line no-bitwise
     if (position & Node.DOCUMENT_POSITION_FOLLOWING) {
       break;
     }

@@ -1,5 +1,6 @@
 /* eslint-disable no-inner-declarations */
-import { Book, Chapter } from "../main";
+import { Chapter } from "../main/Chapter";
+import { Book } from "../main/Book";
 
 interface TabData {
   [key: string]: string;
@@ -303,7 +304,6 @@ if (
     setTimeout(async () => {
       const runFlag = await getTabData("greasyfork.org");
       if (runFlag) {
-        // eslint-disable-next-line no-console
         console.log("[novel-downloader-tester]开始运行测试……");
 
         function chapterFilter(chapter: Chapter) {
@@ -322,5 +322,4 @@ if (
   });
 }
 
-// eslint-disable-next-line no-console
 console.log("[novel-downloader-tester]测试脚本载入成功……");

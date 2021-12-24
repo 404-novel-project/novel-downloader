@@ -1,9 +1,11 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { getImageAttachment } from "../../../lib/attachments";
 import { cleanDOM } from "../../../lib/cleanDOM";
-import { gfetch, GfetchRequestOptions } from "../../../lib/http";
+import { gfetch, GfetchRequestInit } from "../../../lib/http";
 import { log } from "../../../log";
-import { Book, BookAdditionalMetadate, Chapter, Status } from "../../../main";
+import { Status } from "../../../main/main";
+import { Chapter } from "../../../main/Chapter";
+import { Book, BookAdditionalMetadate } from "../../../main/Book";
 import { BaseRuleClass } from "../../../rules";
 
 export class Myrics extends BaseRuleClass {
@@ -41,7 +43,7 @@ export class Myrics extends BaseRuleClass {
     if (accessToken) {
       headers.Authorization = accessToken;
     }
-    const init: GfetchRequestOptions = {
+    const init: GfetchRequestInit = {
       headers,
       method: "GET",
       responseType: "json",
@@ -201,7 +203,7 @@ export class Myrics extends BaseRuleClass {
     interface Options {
       bookId: string;
       chapterId: number;
-      init: GfetchRequestOptions;
+      init: GfetchRequestInit;
     }
     interface ChapterApiResponse {
       result: {

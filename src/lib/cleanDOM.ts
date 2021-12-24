@@ -1,5 +1,6 @@
 import { log } from "../log";
-import { AttachmentClass } from "../main";
+import { AttachmentClass } from "../main/Attachment";
+import { ReferrerMode } from "../main/main";
 import {
   getAttachmentClassCache,
   getImageAttachment,
@@ -256,8 +257,10 @@ function* findBase(elem: Element, withKeep = true): Generator<Element | Text> {
   }
 }
 
-interface Options {
+export interface Options {
   keepImageName?: boolean;
+  referrerMode?: ReferrerMode;
+  customReferer?: string;
 }
 interface Output {
   dom: HTMLElement;
@@ -550,12 +553,17 @@ export async function cleanDOM(
       } else {
         const comments = getRandomName();
         const noMd5 = options?.keepImageName ?? false;
+        const imgOptions = {
+          referrerMode: options?.referrerMode,
+          customReferer: options?.customReferer,
+        };
         const imgClass = getImageAttachment(
           url,
           imgMode,
           "chapter-",
           noMd5,
-          comments
+          comments,
+          imgOptions
         );
 
         const dom = document.createElement("img");

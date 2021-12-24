@@ -5,14 +5,10 @@ import { getHtmlDOM, getHtmlDomWithRetry } from "../../../lib/http";
 import { deepcopy, rm } from "../../../lib/misc";
 import { getSectionName, introDomHandle } from "../../../lib/rule";
 import { log } from "../../../log";
-import {
-  AttachmentClass,
-  Book,
-  BookAdditionalMetadate,
-  Chapter,
-  ExpectError,
-  Status,
-} from "../../../main";
+import { ExpectError, Status } from "../../../main/main";
+import { AttachmentClass } from "../../../main/Attachment";
+import { Chapter } from "../../../main/Chapter";
+import { Book, BookAdditionalMetadate } from "../../../main/Book";
 import { BaseRuleClass } from "../../../rules";
 
 export class Longmabook extends BaseRuleClass {

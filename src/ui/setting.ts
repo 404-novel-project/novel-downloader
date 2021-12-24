@@ -4,7 +4,8 @@ import { UnsafeWindow } from "../global";
 import { createEl, createStyle } from "../lib/createEl";
 import { deepcopy, sleep } from "../lib/misc";
 import { log } from "../log";
-import { Chapter, Status } from "../main";
+import { Status } from "../main/main";
+import { Chapter } from "../main/Chapter";
 import { SaveOptions as globalSaveOptions } from "../save/save";
 import { enableDebug } from "../setting";
 import FilterTab, {

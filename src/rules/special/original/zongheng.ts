@@ -3,7 +3,9 @@ import { cleanDOM } from "../../../lib/cleanDOM";
 import { getHtmlDOM, ggetHtmlDOM } from "../../../lib/http";
 import { introDomHandle } from "../../../lib/rule";
 import { log } from "../../../log";
-import { Book, BookAdditionalMetadate, Chapter, Status } from "../../../main";
+import { Status } from "../../../main/main";
+import { Chapter } from "../../../main/Chapter";
+import { Book, BookAdditionalMetadate } from "../../../main/Book";
 import { BaseRuleClass, ChapterParseObject } from "../../../rules";
 
 export class Zongheng extends BaseRuleClass {

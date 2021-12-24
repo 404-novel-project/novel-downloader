@@ -1,10 +1,11 @@
 import { getImageAttachment } from "../../lib/attachments";
-import { cleanDOM } from "../../lib/cleanDOM";
+import { cleanDOM, Options } from "../../lib/cleanDOM";
 import { getHtmlDOM } from "../../lib/http";
 import { PublicConstructor } from "../../lib/misc";
 import { getSectionName, introDomHandle } from "../../lib/rule";
 import { log } from "../../log";
-import { Book, BookAdditionalMetadate, Chapter } from "../../main";
+import { Chapter } from "../../main/Chapter";
+import { Book, BookAdditionalMetadate } from "../../main/Book";
 import { BaseRuleClass } from "../../rules";
 
 interface MkRuleClassOptions {
@@ -30,6 +31,7 @@ interface MkRuleClassOptions {
   getContent?: (doc: Document) => HTMLElement | null;
   contentPatch: (content: HTMLElement) => HTMLElement;
   concurrencyLimit?: number;
+  cleanDomOptions?: Options;
 }
 export function mkRuleClass({
   bookUrl,
@@ -48,6 +50,7 @@ export function mkRuleClass({
   getContent,
   contentPatch,
   concurrencyLimit,
+  cleanDomOptions,
 }: MkRuleClassOptions): PublicConstructor<BaseRuleClass> {
   return class extends BaseRuleClass {
     public constructor() {
@@ -167,7 +170,11 @@ export function mkRuleClass({
       }
       if (content) {
         content = contentPatch(content);
-        const { dom, text, images } = await cleanDOM(content, "TM");
+        const { dom, text, images } = await cleanDOM(
+          content,
+          "TM",
+          cleanDomOptions
+        );
         return {
           chapterName,
           contentRaw: content,

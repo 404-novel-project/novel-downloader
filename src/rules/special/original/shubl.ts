@@ -5,13 +5,10 @@ import { gfetch } from "../../../lib/http";
 import { rm } from "../../../lib/misc";
 import { introDomHandle } from "../../../lib/rule";
 import { log } from "../../../log";
-import {
-  AttachmentClass,
-  Book,
-  BookAdditionalMetadate,
-  Chapter,
-  Status,
-} from "../../../main";
+import { Status } from "../../../main/main";
+import { AttachmentClass } from "../../../main/Attachment";
+import { Chapter } from "../../../main/Chapter";
+import { Book, BookAdditionalMetadate } from "../../../main/Book";
 import { BaseRuleClass, ChapterParseObject } from "../../../rules";
 
 export class Shubl extends BaseRuleClass {

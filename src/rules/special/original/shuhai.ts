@@ -4,7 +4,9 @@ import { ggetHtmlDOM } from "../../../lib/http";
 import { rm, sleep } from "../../../lib/misc";
 import { introDomHandle } from "../../../lib/rule";
 import { log } from "../../../log";
-import { Book, BookAdditionalMetadate, Chapter, Status } from "../../../main";
+import { Status } from "../../../main/main";
+import { Chapter } from "../../../main/Chapter";
+import { Book, BookAdditionalMetadate } from "../../../main/Book";
 import { BaseRuleClass, ChapterParseObject } from "../../../rules";
 
 export class Shuhai extends BaseRuleClass {

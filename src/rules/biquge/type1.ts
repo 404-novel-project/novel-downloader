@@ -1,5 +1,5 @@
 import { rm, rm2, sleep } from "../../lib/misc";
-import { Chapter } from "../../main";
+import { Chapter } from "../../main/Chapter";
 import { mkBiqugeClass } from "./template";
 
 // 笔趣阁通用模板，无contentpatch可直接使用

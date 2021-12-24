@@ -37,7 +37,7 @@ globalThis.fetch = new Proxy(globalThis.fetch, {
 // Upgrade
 // Via
 
-export interface GfetchRequestOptions {
+export interface GfetchRequestInit {
   method?: "GET" | "HEAD" | "POST" | undefined;
   headers?: Record<string, string>;
   data?: string;
@@ -70,7 +70,7 @@ export function gfetch(
     anonymous,
     user,
     password,
-  }: GfetchRequestOptions = {}
+  }: GfetchRequestInit = {}
 ): Promise<Tampermonkey.Response<object>> {
   return new Promise((resolve, reject) => {
     log.debug("[debug]gfetch:");
@@ -178,7 +178,7 @@ export async function getHtmlDomWithRetry(
 export async function ggetText(
   url: string,
   charset?: string,
-  init?: GfetchRequestOptions
+  init?: GfetchRequestInit
 ) {
   if (charset === undefined) {
     return gfetch(url, init)
@@ -216,7 +216,7 @@ export async function ggetText(
 export async function ggetHtmlDOM(
   url: string,
   charset?: string,
-  init?: GfetchRequestOptions
+  init?: GfetchRequestInit
 ) {
   const htmlText = await ggetText(url, charset, init);
   if (!htmlText) {
@@ -228,7 +228,7 @@ export async function ggetHtmlDOM(
 export async function ggetHtmlDomWithRetry(
   url: string,
   charset?: string,
-  init?: GfetchRequestOptions
+  init?: GfetchRequestInit
 ): Promise<Document | null> {
   let retry = retryLimit;
   let doc = null;

@@ -5,7 +5,9 @@ import { getHtmlDOM } from "../../../lib/http";
 import { rm2 } from "../../../lib/misc";
 import { getSectionName, introDomHandle } from "../../../lib/rule";
 import { log } from "../../../log";
-import { Book, BookAdditionalMetadate, Chapter, Status } from "../../../main";
+import { Status } from "../../../main/main";
+import { Chapter } from "../../../main/Chapter";
+import { Book, BookAdditionalMetadate } from "../../../main/Book";
 import { BaseRuleClass } from "../../../rules";
 
 type CryptoJStype = typeof CryptoJS;
@@ -127,7 +129,6 @@ export class Hanwujinian extends BaseRuleClass {
       s.innerHTML.includes("var chapterContent")
     )?.[0];
 
-    // eslint-disable-next-line no-shadow, @typescript-eslint/no-shadow
     const getContent = (CryptoJS: CryptoJStype, chapterContent: string) => {
       function AesDecrypt(content: string) {
         const keys = {

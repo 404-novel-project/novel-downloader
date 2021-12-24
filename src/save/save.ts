@@ -1,7 +1,10 @@
 import { saveAs } from "file-saver";
 import { FflateZip } from "../lib/zip";
 import { log, logText } from "../log";
-import { AttachmentClass, Book, Chapter, Status } from "../main";
+import { Status } from "../main/main";
+import { AttachmentClass } from "../main/Attachment";
+import { Chapter } from "../main/Chapter";
+import { Book } from "../main/Book";
 import { enableDebug } from "../setting";
 import defaultMainStyleText from "./main.css";
 import { getSectionsObj } from "./misc";

@@ -4,7 +4,9 @@ import { getHtmlDOM } from "../../../lib/http";
 import { rm } from "../../../lib/misc";
 import { introDomHandle } from "../../../lib/rule";
 import { log } from "../../../log";
-import { Book, BookAdditionalMetadate, Chapter, Status } from "../../../main";
+import { Status } from "../../../main/main";
+import { Chapter } from "../../../main/Chapter";
+import { Book, BookAdditionalMetadate } from "../../../main/Book";
 import { BaseRuleClass } from "../../../rules";
 
 export class Qingoo extends BaseRuleClass {

@@ -2,14 +2,10 @@ import { GmWindow, UnsafeWindow } from "./global";
 import { clearAttachmentClassCache } from "./lib/attachments";
 import { concurrencyRun, sleep } from "./lib/misc";
 import { log, saveLogTextToFile } from "./log";
-import {
-  AttachmentClass,
-  Book,
-  Chapter,
-  ChapterAdditionalMetadate,
-  ExpectError,
-  Status,
-} from "./main";
+import { ExpectError, Status } from "./main/main";
+import { AttachmentClass } from "./main/Attachment";
+import { Chapter, ChapterAdditionalMetadate } from "./main/Chapter";
+import { Book } from "./main/Book";
 import { SaveBook, SaveOptions, saveOptionsValidate } from "./save/save";
 import {
   enableCustomChapterFilter,
