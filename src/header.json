@@ -179,7 +179,8 @@
     "*://www.aixiawx.com/*/*/",
     "*://jingcaiyuedu6.com/novel/*.html",
     "*://www.hanwujinian.com/book/*",
-    "*://www.biqu55.com/*_*/"
+    "*://www.biqu55.com/*_*/",
+    "*://manga.bilibili.com/detail/mc*"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",

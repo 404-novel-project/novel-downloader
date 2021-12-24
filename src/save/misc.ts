@@ -30,12 +30,17 @@ export function getSectionsObj(chapters: Chapter[]): SectionObj[] {
     }
   }
   const _sectionsListObj: [string, SectionObj][] = Object.entries(_sectionsObj);
+  _sectionsListObj.sort(sectionListSort);
+  const sectionsListObj = _sectionsListObj.map((s) => s[1]);
+  sectionsListObj.forEach((s) => s.chpaters.sort(chaptersSort));
+  return sectionsListObj;
+
   function sectionListSort(a: [string, SectionObj], b: [string, SectionObj]) {
     const aKey = parseInt(a[0]);
     const bKey = parseInt(b[0]);
     return aKey - bKey;
   }
-  _sectionsListObj.sort(sectionListSort);
-  const sectionsListObj = _sectionsListObj.map((s) => s[1]);
-  return sectionsListObj;
+  function chaptersSort(a: Chapter, b: Chapter) {
+    return a.chapterNumber - b.chapterNumber;
+  }
 }

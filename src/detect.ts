@@ -37,11 +37,9 @@ function jsdelivrAvailability() {
       .catch((error) => resolve(false));
   });
 }
-function mitmPageAvailability() {
+export function mitmPageAvailability(url: string): Promise<boolean> {
   return new Promise((resolve, reject) => {
-    fetch(
-      "https://cors.bgme.me/https://jimmywarting.github.io/StreamSaver.js/mitm.html"
-    )
+    fetch(url)
       .then((resp) => resolve(true))
       .catch((error) => resolve(false));
   });

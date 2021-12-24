@@ -197,16 +197,8 @@ export class Qidian extends BaseRuleClass {
     isVIP: boolean,
     isPaid: boolean,
     charset: string,
-    options: object
+    options: chapterOptions
   ) {
-    interface Options {
-      _csrfToken: string;
-      bookId: string;
-      authorId: string;
-      chapterId: string;
-      limitFree: boolean;
-    }
-
     const nullObj = {
       chapterName,
       contentRaw: null,
@@ -297,4 +289,12 @@ export class Qidian extends BaseRuleClass {
 
     return getChapter();
   }
+}
+
+interface chapterOptions {
+  _csrfToken: string;
+  bookId: string;
+  authorId: string;
+  chapterId: string;
+  limitFree: boolean;
 }

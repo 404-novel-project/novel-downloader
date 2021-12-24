@@ -1,8 +1,8 @@
-import { AttachmentClass as attachmentClassType } from "../main/Attachment";
+import { AttachmentClass } from "../main/Attachment";
 import { ReferrerMode } from "../main/main";
 import { calculateMd5 } from "./misc";
 
-let attachmentClassCache: attachmentClassType[] = [];
+let attachmentClassCache: AttachmentClass[] = [];
 export function getAttachmentClassCache(url: string) {
   const found = attachmentClassCache.find(
     (attachmentClass) => attachmentClass.url === url
@@ -10,7 +10,7 @@ export function getAttachmentClassCache(url: string) {
   return found;
 }
 
-export function putAttachmentClassCache(attachmentClass: attachmentClassType) {
+export function putAttachmentClassCache(attachmentClass: AttachmentClass) {
   attachmentClassCache.push(attachmentClass);
   return true;
 }
@@ -29,12 +29,20 @@ export async function getImageAttachment(
     referrerMode?: ReferrerMode;
     customReferer?: string;
   }
-): Promise<attachmentClassType> {
+): Promise<AttachmentClass> {
+  if (imgMode === "naive") {
+    const u = new URL(url);
+    if (document.location.protocol === "https:" && u.protocol === "http:") {
+      u.protocol = document.location.protocol;
+      url = u.href;
+    }
+  }
+
   const imgClassCache = getAttachmentClassCache(url);
   if (imgClassCache) {
     return imgClassCache;
   }
-  const imgClass = new attachmentClassType(
+  const imgClass = new AttachmentClass(
     url,
     comments,
     imgMode,
@@ -54,28 +62,28 @@ export async function getImageAttachment(
   }
   putAttachmentClassCache(imgClass);
   return imgClass;
-
-  function getExt(b: Blob, u: string) {
-    const contentType = b.type.split("/")[1];
-    const contentTypeBlackList = ["octet-stream"];
-    if (contentTypeBlackList.includes(contentType)) {
-      return getExtFromUrl(u);
-    } else {
-      return contentType;
-    }
-  }
-  function getExtFromUrl(u: string) {
-    const _u = new URL(u);
-    const p = _u.pathname;
-    return p.substring(p.lastIndexOf(".") + 1);
-  }
-  function getLastPart(u: string) {
-    const _u = new URL(u);
-    const p = _u.pathname;
-    return p.substring(p.lastIndexOf("/") + 1);
-  }
 }
 
 export function getRandomName() {
   return "__" + Math.random().toString().replace("0.", "") + "__";
+}
+
+export function getExt(b: Blob, u: string) {
+  const contentType = b.type.split("/")[1];
+  const contentTypeBlackList = ["octet-stream"];
+  if (contentTypeBlackList.includes(contentType)) {
+    return getExtFromUrl(u);
+  } else {
+    return contentType;
+  }
+}
+function getExtFromUrl(u: string) {
+  const _u = new URL(u);
+  const p = _u.pathname;
+  return p.substring(p.lastIndexOf(".") + 1);
+}
+function getLastPart(u: string) {
+  const _u = new URL(u);
+  const p = _u.pathname;
+  return p.substring(p.lastIndexOf("/") + 1);
 }

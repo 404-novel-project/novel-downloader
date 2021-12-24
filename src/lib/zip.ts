@@ -1,16 +1,18 @@
 import { AsyncZipDeflate, Zip, ZipPassThrough } from "fflate";
 import { saveAs } from "file-saver";
 import streamSaver from "streamsaver";
-import { streamSupport } from "../detect";
+import { mitmPageAvailability, streamSupport } from "../detect";
 import { log } from "../log";
 import { sleep } from "./misc";
 
-const rawMitm = new URL(streamSaver.mitm);
-const mitm = new URL("https://cors.bgme.me/");
-mitm.pathname = rawMitm.origin + rawMitm.pathname;
-streamSaver.mitm = mitm.href;
-
-streamSaver.supported = streamSupport();
+export async function setStreamSaverSetting() {
+  const rawMitm = new URL(streamSaver.mitm);
+  const mitm = new URL("https://cors.bgme.me/");
+  mitm.pathname = rawMitm.origin + rawMitm.pathname;
+  streamSaver.mitm = mitm.href;
+  streamSaver.supported =
+    streamSupport() && (await mitmPageAvailability(mitm.href));
+}
 export class FflateZip {
   public filename: string;
   public stream: boolean;

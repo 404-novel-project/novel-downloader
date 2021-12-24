@@ -4,7 +4,6 @@ import { getAttachmentClassCache } from "../lib/attachments";
 import { createStyle } from "../lib/createEl";
 import { sleep } from "../lib/misc";
 import { Status } from "../main/main";
-import { AttachmentClass } from "../main/Attachment";
 import { Chapter } from "../main/Chapter";
 import { Book } from "../main/Book";
 import TestUIHtml from "./TestUI.html";

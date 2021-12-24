@@ -11,6 +11,22 @@ globalThis.fetch = new Proxy(globalThis.fetch, {
   },
 });
 
+export async function fetchWithRetry(
+  input: RequestInfo,
+  init?: RequestInit
+): Promise<Response> {
+  let retry = retryLimit;
+  while (retry > 0) {
+    const resp = await fetch(input, init);
+    if (resp.ok) {
+      return resp;
+    } else {
+      retry--;
+    }
+  }
+  throw new Error(`Fetch with retry failed! Url: ${input}`);
+}
+
 // Forbidden header name
 // https://developer.mozilla.org/en-US/docs/Glossary/Forbidden_header_name
 // Accept-Charset

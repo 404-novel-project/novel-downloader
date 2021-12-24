@@ -476,6 +476,13 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = biqu55();
       break;
     }
+    case "manga.bilibili.com": {
+      const { MangaBilibili } = await import(
+        "../rules/special/original/bilibili"
+      );
+      ruleClass = MangaBilibili;
+      break;
+    }
     default: {
       throw new Error("Not Found Rule!");
     }
