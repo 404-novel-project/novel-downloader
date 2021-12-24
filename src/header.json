@@ -230,6 +230,7 @@
   "connect": [
     "self",
     "cdn.jsdelivr.net",
+    "cors.bgme.me",
     "shouda8.com",
     "shouda88.com",
     "qidian.com",

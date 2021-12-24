@@ -1,602 +1,872 @@
 import { log } from "../log";
 import { AttachmentClass } from "../main";
-import { getImageAttachment } from "./attachments";
+import {
+  getAttachmentClassCache,
+  getImageAttachment,
+  getRandomName,
+} from "./attachments";
 
+// https://developer.mozilla.org/en-US/docs/Web/HTML/Block-level_elements
+// Array.from(document.querySelectorAll('.main-page-content > div:nth-child(14) > dl:nth-child(2) > dt > a > code:nth-child(1)')).map((code) => code.innerText.replace(/<|>/g,""))
 const BlockElements = [
+  "address",
   "article",
   "aside",
+  "blockquote",
+  "details",
+  "dialog",
+  "dd",
+  "div",
+  "dl",
+  "dt",
+  "fieldset",
+  "figcaption",
+  "figure",
   "footer",
   "form",
+  "h1",
+  "h2",
+  "h3",
+  "h4",
+  "h5",
+  "h6",
   "header",
+  "hgroup",
+  "hr",
+  "li",
   "main",
   "nav",
+  "ol",
+  "p",
+  "pre",
   "section",
-  "figure",
-  "div",
-  "b", // 忽略格式
-  "strong",
-  "i",
-  "em",
-  "dfn",
-  "var",
-  "cite",
-  "span",
-  "font",
-  "u",
-  "del",
-  "sup",
-  "sub",
-  "strike",
-  "small",
-  "samp",
-  "s",
-  "blockquote",
+  "table",
+  "ul",
 ];
-const IgnoreElements = [
-  "script",
-  "meta",
-  "link",
-  "style",
-  "#comment",
+
+// https://developer.mozilla.org/en-US/docs/Web/HTML/Inline_elements
+// Array.from(document.querySelectorAll('.main-page-content > div:nth-child(14) > ul:nth-child(2) > li > a > code')).map((code) => code.innerText.replace(/<|>/g,""))
+const InlineElements = [
+  "a",
+  "abbr",
+  "acronym",
+  "audio",
+  "b",
+  "bdi",
+  "bdo",
+  "big",
+  "br",
   "button",
+  "canvas",
+  "cite",
+  "code",
+  "data",
+  "datalist",
+  "del",
+  "dfn",
+  "em",
+  "embed",
+  "i",
+  "iframe",
+  "img",
   "input",
+  "ins",
+  "kbd",
+  "label",
+  "map",
+  "mark",
+  "meter",
+  "noscript",
+  "object",
+  "output",
+  "picture",
+  "progress",
+  "q",
+  "ruby",
+  "s",
+  "samp",
+  "script",
   "select",
+  "slot",
+  "small",
+  "span",
+  "strong",
+  "sub",
+  "sup",
+  "svg",
+  "template",
+  "textarea",
+  "time",
+  "u",
+  "tt",
+  "var",
+  "video",
+  "wbr",
 ];
-function* findBase(
-  dom: HTMLElement | ChildNode,
-  blockElements: string[],
-  ignoreElements: string[]
-): Generator<HTMLElement | Text> {
-  const childNodes = Array.from(dom.childNodes);
-  for (const node of childNodes) {
-    const nodeName = node.nodeName.toLowerCase();
-    if (blockElements.includes(nodeName)) {
-      yield* findBase(node, blockElements, ignoreElements);
-    } else if (nodeName === "#text") {
-      if (
-        node.parentElement?.childNodes.length === 1 &&
-        blockElements.slice(9).includes(nodeName)
-      ) {
-        yield node.parentElement as HTMLElement;
-      } else if (node.textContent?.trim()) {
-        yield node as Text;
+
+const keepElements = [
+  // aside 伴随内容
+  // 元素表示一个和其余页面内容几乎无关的部分，被认为是独立于该内容的一部分并且可以被单独的拆分出来而不会使整体受影响。其通常表现为侧边栏或者标注框（call-out boxes）。
+  "aside",
+  // blockquote 块引用
+  // 代表其中的文字是引用内容
+  // 通常在渲染时，这部分的内容会有一定的缩进（注 中说明了如何更改）。
+  "blockquote",
+  // dl 定义列表
+  // 一个包含术语定义以及描述的列表，通常用于展示词汇表或者元数据 (键-值对列表)。
+  // 内含 dt，dd
+  // dt 列表描述
+  // dd 解释内容，相较dt有一定缩进
+  // "dl", // 不再保留 dl
+  // details 详情展示组件
+  // 仅在被切换成展开状态时，它才会显示内含的信息
+  // summary 元素可为该部件提供概要或者标签
+  "details",
+  // figure 可附标题内容元素
+  // 经常与说明（caption） <figcaption> 配合使用
+  // figcaption 标题内容
+  // 这个标签经常是在主文中引用的图片，插图，表格，代码段等等
+  "figure",
+  // Heading levels 1-6
+  "h1",
+  "h2",
+  "h3",
+  "h4",
+  "h5",
+  "h6",
+  // The Thematic Break element
+  "hr",
+  // The Unordered List element
+  "ul",
+  // The Ordered List element
+  "ol",
+  // The List Item element
+  "li",
+  // The Preformatted Text element
+  "pre",
+];
+
+const IgnoreElements = [
+  // fieldset 用于在web表单中组织多组label标签
+  // legend 为 fieldset 提示
+  "fieldset",
+  // input, label, form 表单组件怱略
+  "legend",
+  "input",
+  "label",
+  "form",
+  // The Embed Audio element
+  "audio",
+  // The Button element
+  "button",
+  // The Graphics Canvas element
+  "canvas",
+  // The HTML Data List element
+  // recommended options available to choose from within other controls
+  "datalist",
+  // The Embed External Content element
+  "embed",
+  // The Inline Frame element
+  "iframe",
+  // The Image Map element
+  "map",
+  // The HTML Meter element
+  "meter",
+  // The Noscript element
+  "noscript",
+  // The External Object element
+  "object",
+  // The Output element
+  "output",
+  // The Progress Indicator element
+  "progress",
+  "script",
+  "style",
+  "link",
+  // The HTML Select element
+  "select",
+  // The Web Component Slot element
+  "slot",
+  "svg",
+  "template",
+  "video",
+  // The Line Break Opportunity element
+  "wbr",
+  // The Table element
+  "table",
+];
+
+function isBaseElem(node: Element | Text) {
+  const nodeName = node.nodeName.toLowerCase();
+  // 节点为文本
+  if (node instanceof Text) {
+    return true;
+  }
+  // 节点不含子元素
+  if (node.childElementCount === 0) {
+    return true;
+  }
+  // 节点自身为行内元素
+  if (InlineElements.includes(nodeName)) {
+    return true;
+  }
+  // 节点所有子元素为行内元素
+  return Array.from(node.children).every((child) => {
+    const n = child.nodeName.toLowerCase();
+    return InlineElements.includes(n);
+  });
+}
+
+function isBaseElemWithKeep(node: Element | Text) {
+  const nodeName = node.nodeName.toLowerCase();
+  if (keepElements.includes(nodeName)) {
+    return true;
+  }
+  return isBaseElem(node);
+}
+
+function* findBase(elem: Element, withKeep = true): Generator<Element | Text> {
+  let is;
+  if (withKeep) {
+    is = isBaseElemWithKeep;
+  } else {
+    is = isBaseElem;
+  }
+  const childNodes = Array.from(elem.childNodes).filter((node) => {
+    if (node instanceof Text) {
+      const textContent = node.textContent;
+      if (textContent === null) {
+        return false;
       }
-    } else if (!ignoreElements.includes(nodeName)) {
-      yield node as HTMLElement;
+      if (textContent.trim() === "") {
+        return false;
+      }
     }
-  }
-}
-
-function getNextSibling(elem: HTMLElement | Text) {
-  (elem as ChildNode | null) = elem.nextSibling;
-  if (
-    elem &&
-    elem.nodeName.toLowerCase() === "#text" &&
-    elem.textContent?.trim() === ""
-  ) {
-    return elem.nextSibling;
-  }
-
-  return elem;
-}
-
-function getPreviousSibling(elem: HTMLElement | Text) {
-  (elem as ChildNode | null) = elem.previousSibling;
-  if (
-    elem &&
-    elem.nodeName.toLowerCase() === "#text" &&
-    elem.textContent?.trim() === ""
-  ) {
-    return elem.previousSibling;
-  }
-
-  return elem;
-}
-
-function getParentElement(
-  elem: HTMLElement | Text
-): null | HTMLDivElement | HTMLParagraphElement {
-  const _elem = elem.parentElement;
-  if (!_elem) {
-    return null;
-  }
-  const nodename = _elem.nodeName.toLowerCase();
-  if (["div", "p"].includes(nodename)) {
-    return _elem as HTMLDivElement | HTMLParagraphElement;
-  } else {
-    return getParentElement(_elem);
-  }
-}
-
-async function formatImage(
-  elem: HTMLImageElement,
-  builder: Builder
-): Promise<void> {
-  function temp0() {
-    const pI = document.createElement("p");
-    pI.appendChild(imgElem);
-    builder.dom.appendChild(pI);
-
-    builder.text = builder.text + imgText + "\n\n";
-  }
-
-  if (!elem.src) {
-    return;
-  }
-
-  const tfi = await _formatImage(elem, builder);
-  if (!tfi) {
-    return;
-  }
-  const [imgElem, imgText] = tfi;
-
-  if (elem.parentElement?.childElementCount === 1) {
-    temp0();
-    return;
-  } else {
-    // eslint-disable-next-line no-inner-declarations
-    function temp1() {
-      if (lastElement?.nodeName.toLowerCase() === "p") {
-        lastElement.appendChild(imgElem);
-
-        builder.text = builder.text + ` ${imgText} `;
-        return;
+    return true;
+  }) as (Element | Text)[];
+  for (const child of childNodes) {
+    const childNodeName = child.nodeName.toLowerCase();
+    if (IgnoreElements.includes(childNodeName) === false) {
+      if (is(child)) {
+        yield child;
       } else {
-        const tpElem = document.createElement("p");
-        tpElem.appendChild(imgElem);
-        builder.dom.appendChild(tpElem);
-
-        builder.text = builder.text + ` ${imgText} `;
-        return;
+        yield* findBase(child as Element, withKeep);
       }
     }
-
-    const lastElement = builder.dom.lastElementChild;
-    const nextSibling = getNextSibling(elem);
-    const previousSibling = getPreviousSibling(elem);
-
-    if (
-      elem.parentElement?.nodeName.toLowerCase() === "p" &&
-      lastElement?.nodeName.toLowerCase() === "p"
-    ) {
-      if (
-        previousSibling?.nodeName.toLowerCase() === "#text" ||
-        nextSibling?.nodeName.toLowerCase() === "#text"
-      ) {
-        // 段落内前方或后方有文本
-        temp1();
-        return;
-      }
-      if (
-        previousSibling?.nodeName.toLowerCase() === "img" &&
-        lastElement.lastElementChild?.nodeName.toLowerCase() === "img" &&
-        (lastElement.lastElementChild as HTMLImageElement).alt ===
-          (previousSibling as HTMLImageElement).src
-      ) {
-        // 段落内连续图片
-        temp1();
-        return;
-      }
-    } else {
-      temp0();
-      return;
-    }
   }
 }
 
-async function _formatImage(
-  elem: HTMLImageElement,
-  builder: Builder
-): Promise<[HTMLImageElement, string, Promise<AttachmentClass> | null] | void> {
-  if (!elem.src) {
-    return;
-  }
-
-  const imgMode = builder.imgMode;
-  const imageUrl = elem.src;
-  let noMD5 = false;
-  if (builder.option?.keepImageName) {
-    noMD5 = true;
-  }
-  const imageName = `__imageName__${Math.random()
-    .toString()
-    .replace("0.", "")}__`;
-  const imgClass = getImageAttachment(imageUrl, imgMode, "", noMD5, imageName);
-
-  builder.images.push(imgClass);
-
-  const imgElem = document.createElement("img");
-  imgElem.setAttribute("data-src-address", imageName);
-  imgElem.alt = imageUrl;
-
-  const imgText = `![${imageUrl}](${imageName})`;
-  return [imgElem, imgText, imgClass];
-}
-
-async function formatMisc(elem: HTMLElement, builder: Builder) {
-  if (elem.childElementCount === 0) {
-    const lastElement = builder.dom.lastElementChild;
-    const textContent = elem.innerText.trim();
-    if (lastElement?.nodeName.toLowerCase() === "p") {
-      const textElem = document.createTextNode(textContent);
-      lastElement.appendChild(textElem);
-
-      builder.text = builder.text + textContent;
-    } else {
-      const pElem = document.createElement("p");
-      pElem.innerText = textContent;
-
-      builder.dom.appendChild(pElem);
-      builder.text = builder.text + "\n\n" + textContent;
-    }
-  } else {
-    await walk(elem, builder);
-    return;
-  }
-}
-
-async function formatParagraph(elem: HTMLParagraphElement, builder: Builder) {
-  if (elem.childElementCount === 0) {
-    const pElem = document.createElement("p");
-    pElem.innerText = elem.innerText.trim();
-
-    const pText = elem.innerText.trim() + "\n\n";
-
-    builder.dom.appendChild(pElem);
-    builder.text = builder.text + pText;
-    return;
-  } else {
-    await walk(elem, builder);
-    return;
-  }
-}
-
-function formatText(elems: (Text | HTMLBRElement)[], builder: Builder) {
-  function temp0() {
-    const tPElem = document.createElement("p");
-    tPElem.innerText = textContent;
-    builder.dom.appendChild(tPElem);
-  }
-  function temp1() {
-    const lastElementTemp = builder.dom.lastElementChild;
-    if (lastElementTemp?.nodeName.toLowerCase() === "p") {
-      const textElem = document.createTextNode(textContent);
-      lastElementTemp.appendChild(textElem);
-
-      const tPText = textContent + "\n".repeat(brCount);
-      builder.text = builder.text + tPText;
-    } else {
-      temp0();
-
-      const tPText = textContent + "\n".repeat(brCount);
-      builder.text = builder.text + tPText;
-    }
-  }
-
-  const brCount = elems.filter(
-    (ele) => ele.nodeName.toLowerCase() === "br"
-  ).length;
-  const elem = elems[0] as Text;
-  const textContent = elem.textContent ? elem.textContent.trim() : "";
-  if (!textContent) {
-    return;
-  }
-
-  // 段落内，文字位于<img>后
-  const lastElement = builder.dom.lastElementChild;
-  const previousSibling = getPreviousSibling(elem);
-
-  if (
-    elem.parentElement?.nodeName.toLowerCase() === "p" &&
-    lastElement?.nodeName.toLowerCase() === "p" &&
-    previousSibling?.nodeName.toLowerCase() === "img" &&
-    lastElement.lastElementChild?.nodeName.toLowerCase() === "img" &&
-    (lastElement.lastElementChild as HTMLImageElement).alt ===
-      (previousSibling as HTMLImageElement).src
-  ) {
-    temp1();
-    return;
-  }
-
-  // 按brCount进行处理
-  if (brCount === 0) {
-    const nextSibling = getNextSibling(elem);
-    const previousSiblingBr = getPreviousSibling(elem);
-
-    if (nextSibling === null) {
-      // previousSibling !== null
-      if (previousSiblingBr?.nodeName.toLowerCase() === "br") {
-        // 文本位于最后
-        temp0();
-
-        const tPText = textContent + "\n\n";
-        builder.text = builder.text + tPText;
-        return;
-      } else if (
-        previousSiblingBr === null &&
-        (() => {
-          const parentElement = getParentElement(elem);
-          if (parentElement?.childNodes.length === 1) {
-            return true;
-          }
-          return false;
-        })()
-      ) {
-        // 仅文本
-        // <p><span style="font-size:20px"><b>以上四个人是主角，配对不分攻受。</b></span></p>
-        temp0();
-        if (builder.text.endsWith("\n")) {
-          builder.text = builder.text + textContent + "\n\n";
-        } else {
-          builder.text = builder.text + "\n\n" + textContent + "\n\n";
-        }
-        return;
-      } else {
-        // 文本位于最后，但前一节点并非<br>节点
-        temp1();
-        return;
-      }
-    } else {
-      // nextSibling.nodeName.toLowerCase() !== "br"
-      // 文本后跟非<br>节点
-      if (previousSiblingBr === null) {
-        // 文本位于最前
-        temp0();
-
-        const tPText = textContent;
-        if (builder.text.endsWith("\n")) {
-          builder.text = builder.text + tPText;
-        } else {
-          builder.text = builder.text + "\n\n" + tPText;
-        }
-        return;
-      } else {
-        // 文本不位于最前
-        temp1();
-        return;
-      }
-    }
-  } else if (brCount === 1) {
-    const lastElementBr = builder.dom.lastElementChild;
-    if (lastElementBr?.nodeName.toLowerCase() === "p") {
-      const br = document.createElement("br");
-      const textElem = document.createTextNode(textContent);
-
-      lastElementBr.appendChild(br);
-      lastElementBr.appendChild(textElem);
-
-      const tPText = textContent + "\n";
-      builder.text = builder.text + tPText;
-      return;
-    } else {
-      temp0();
-
-      const tPText = textContent + "\n";
-      builder.text = builder.text + tPText;
-      return;
-    }
-  } else if (brCount === 2 || brCount === 3) {
-    temp0();
-
-    const tPText = textContent + "\n".repeat(brCount);
-    builder.text = builder.text + tPText;
-    return;
-  } else if (brCount > 3) {
-    temp0();
-
-    for (let i = Math.round((brCount - 2) / 3); i > 0; i--) {
-      const tPBr = document.createElement("p");
-      const br = document.createElement("br");
-      tPBr.appendChild(br);
-      builder.dom.appendChild(tPBr);
-    }
-
-    const tPText = textContent + "\n".repeat(brCount);
-    builder.text = builder.text + tPText;
-    return;
-  }
-}
-
-function formatHr(elem: HTMLHRElement, builder: Builder) {
-  const hrElem = document.createElement("hr");
-  const hrText = "-".repeat(20);
-
-  builder.dom.appendChild(hrElem);
-  builder.text = builder.text + "\n\n" + hrText + "\n\n";
-  return;
-}
-
-async function formatA(elem: HTMLAnchorElement, builder: Builder) {
-  if (elem.childElementCount === 0) {
-    if (elem.href) {
-      const aElem = document.createElement("a");
-      aElem.href = elem.href;
-      aElem.innerText = elem.innerText;
-      aElem.rel = "noopener noreferrer";
-
-      const aText = `[${elem.innerText}](${elem.href})`;
-
-      builder.dom.appendChild(aElem);
-      builder.text = builder.text + "\n\n" + aText;
-      return;
-    } else {
-      return;
-    }
-  } else {
-    return await formatMisc(elem, builder);
-  }
-}
-
-function formatVideo(elem: HTMLVideoElement, builder: Builder) {
-  builder.dom.appendChild(elem.cloneNode(true));
-  builder.text = builder.text + "\n\n" + elem.outerHTML;
-}
-
-interface BuilderOption {
+interface Options {
   keepImageName?: boolean;
 }
-interface Builder {
+interface Output {
   dom: HTMLElement;
   text: string;
-  images: Promise<AttachmentClass>[];
-  imgMode: "naive" | "TM";
-  option: BuilderOption | null;
+  images: AttachmentClass[];
 }
-async function walk(dom: HTMLElement, builder: Builder) {
-  const childNodes = [...findBase(dom, BlockElements, IgnoreElements)].filter(
-    (b) => b
-  );
-  for (let i = 0; i < childNodes.length; i++) {
-    const node = childNodes[i];
-    if (node === undefined) {
-      continue;
-    }
-    const nodeName = node.nodeName.toLowerCase();
-    switch (nodeName) {
-      case "u":
-      case "del":
-      case "sup":
-      case "sub":
-      case "strike":
-      case "small":
-      case "samp":
-      case "s":
-      case "b":
-      case "strong":
-      case "i":
-      case "em":
-      case "dfn":
-      case "var":
-      case "cite":
-      case "span":
-      case "font": {
-        // 移除格式标签
-        await formatMisc(node as HTMLElement, builder);
-        break;
-      }
-      case "h1":
-      case "h2":
-      case "h3":
-      case "h4":
-      case "h5":
-      case "h6":
-      case "div":
-      case "p": {
-        await formatParagraph(node as HTMLParagraphElement, builder);
-        break;
-      }
-      case "#text": {
-        const elems: (Text | HTMLBRElement)[] = [node as Text];
-
-        let j = i + 1;
-        let jnodeName = nodeName as string;
-        do {
-          if (j >= childNodes.length) {
-            break;
-          }
-          const jnode = childNodes[j];
-          jnodeName = jnode.nodeName.toLowerCase();
-          if (jnodeName === "br") {
-            elems.push(jnode as HTMLBRElement);
-            delete childNodes[j];
-            j++;
-          }
-        } while (jnodeName === "br");
-
-        formatText(elems, builder);
-        break;
-      }
-      case "img": {
-        await formatImage(node as HTMLImageElement, builder);
-        break;
-      }
-      case "hr": {
-        formatHr(node as HTMLHRElement, builder);
-        break;
-      }
-      case "a": {
-        await formatA(node as HTMLAnchorElement, builder);
-        break;
-      }
-      case "video": {
-        formatVideo(node as HTMLVideoElement, builder);
-        break;
-      }
-    }
-  }
-  return builder;
-}
-
 export async function cleanDOM(
-  DOM: Element,
+  elem: Element,
   imgMode: "naive" | "TM",
-  option: BuilderOption | null = null
-) {
-  const builder: Builder = {
-    dom: document.createElement("div"),
-    text: "",
-    images: [],
-    imgMode,
-    option,
-  };
-  await walk(DOM as HTMLElement, builder);
+  options?: Options
+): Promise<Output> {
+  const baseNodes = [...findBase(elem)];
+  const _obj = await loop(baseNodes, document.createElement("div"));
+  const obj = await awaitImages(_obj);
+  const output = postHook(obj);
+  return output;
 
-  const dom = builder.dom;
-  let text = builder.text;
-  const pImages = builder.images;
-  let images: AttachmentClass[] | undefined;
-  try {
-    images = await Promise.all(pImages);
-  } catch (error) {
-    log.error(error);
-    log.trace(error);
+  interface SubOutput {
+    dom: HTMLElement | Text;
+    text: string;
+    images: (Promise<AttachmentClass> | AttachmentClass)[];
   }
-  if (!images) {
-    log.error("[cleanDom] images is undefined!");
-    images = [];
-  }
-  for (const img of images) {
-    const comments = img.comments;
-    const blob = img.imageBlob;
-    if (comments) {
-      const _imgDom = dom.querySelector(`img[data-src-address="${comments}"]`);
-      if (blob) {
-        _imgDom?.setAttribute("data-src-address", img.name);
-        text = text.replaceAll(comments, img.name);
-      } else {
-        _imgDom?.setAttribute("data-src-address", img.url);
-        text = text.replaceAll(comments, img.url);
+  async function blockElement(element: Element): Promise<SubOutput | null> {
+    const map: Map<
+      string,
+      (elem: Element) => (SubOutput | null) | Promise<SubOutput | null>
+    > = new Map();
+
+    const divList = [
+      "article",
+      "dialog",
+      "div",
+      "footer",
+      "header",
+      "main",
+      "section",
+      "hgroup",
+    ];
+    function div(elem: Element) {
+      if (elem instanceof HTMLElement) {
+        const nodes = [...findBase(elem)];
+        return loop(nodes, document.createElement("div"));
       }
+      return null;
+    }
+    divList.forEach((n) => map.set(n, div));
+
+    const pList = ["address", "p", "dd", "dt", "figcaption", "dl"];
+    function p(elem: Element) {
+      if (elem instanceof HTMLElement) {
+        const nodes = [...findBase(elem)];
+        return loop(nodes, document.createElement("p"));
+      }
+      return null;
+    }
+    pList.forEach((n) => map.set(n, p));
+
+    const blockquoteList = ["aside", "blockquote"];
+    async function blockquote(elem: Element) {
+      if (elem instanceof HTMLElement) {
+        const nodes = [...findBase(elem)];
+        const { dom, text, images } = await loop(
+          nodes,
+          document.createElement("blockquote")
+        );
+        const outText = text
+          .split("\n")
+          .map((l) => l.replace(/^/, "> "))
+          .join("\n");
+        return {
+          dom,
+          text: outText,
+          images,
+        };
+      }
+      return null;
+    }
+    blockquoteList.forEach((n) => map.set(n, blockquote));
+
+    const headerList = ["h1", "h2", "h3", "h4", "h5", "h6"];
+    function header(elem: Element) {
+      if (elem instanceof HTMLElement) {
+        const nodeName = elem.nodeName.toLowerCase();
+        const n = parseInt(nodeName.substring(1));
+
+        const dom = document.createElement(nodeName);
+        dom.innerText = elem.innerText;
+        const text = "#".repeat(n) + " " + elem.innerText;
+        const images = [] as AttachmentClass[];
+        return {
+          dom,
+          text,
+          images,
+        };
+      }
+      return null;
+    }
+    headerList.forEach((n) => map.set(n, header));
+
+    const preList = ["pre", "textarea"];
+    function pre(elem: Element) {
+      if (elem instanceof HTMLElement) {
+        const dom = document.createElement("pre");
+        dom.innerText = elem.innerText;
+        const text = "```\n" + elem.innerText + "\n```";
+        const images = [] as AttachmentClass[];
+        return {
+          dom,
+          text,
+          images,
+        };
+      }
+      return null;
+    }
+    preList.forEach((n) => map.set(n, pre));
+
+    function hr(elem: Element) {
+      const dom = document.createElement("hr");
+      const text = "-".repeat(20);
+      const images = [] as AttachmentClass[];
+      return {
+        dom,
+        text,
+        images,
+      };
+    }
+    map.set("hr", hr);
+
+    async function common1(boldName: string, baseName: string, elem: Element) {
+      const bold = elem.querySelector(boldName);
+      let s;
+      let sText = "";
+      if (bold instanceof HTMLElement) {
+        s = document.createElement(boldName);
+        s.innerText = bold.innerText;
+        sText = "**" + bold.innerText + "**";
+        bold.remove();
+      }
+
+      const base = document.createElement(baseName);
+      if (s) base.appendChild(s);
+
+      const nodes = [...findBase(elem)];
+      const { dom, text, images } = await loop(nodes, base);
+      const outText = sText + "\n\n" + text;
+      return {
+        dom,
+        text: outText,
+        images,
+      };
+    }
+    function details(elem: Element) {
+      return common1("summary", "details", elem);
+    }
+    map.set("details", details);
+
+    function figure(elem: Element) {
+      return common1("figcaption", "figure", elem);
+    }
+    map.set("figure", figure);
+
+    function listItem(elem: Element) {
+      if (elem instanceof HTMLLIElement) {
+        const dom = document.createElement("li");
+        dom.innerText = elem.innerText;
+        let prefix = "-   ";
+        const parent = elem.parentNode;
+        if (parent instanceof HTMLOListElement) {
+          const start = parent.getAttribute("start");
+          const index = Array.prototype.indexOf.call(parent.children, elem);
+          prefix = (start ? Number(start) + index : index + 1) + ".  ";
+        }
+        const text = prefix + elem.innerText;
+        const images = [] as AttachmentClass[];
+        return {
+          dom,
+          text,
+          images,
+        };
+      }
+      return null;
+    }
+    map.set("li", listItem);
+
+    const listList = ["ul", "ol"];
+    function list(elem: Element) {
+      const nodeName = elem.nodeName.toLowerCase();
+      if (
+        elem instanceof HTMLUListElement ||
+        elem instanceof HTMLOListElement
+      ) {
+        const tdom = document.createElement(nodeName);
+        const nodes = [...findBase(elem)];
+        return loop(nodes, tdom);
+      }
+      return null;
+    }
+    listList.forEach((n) => map.set(n, list));
+
+    const nodeName = element.nodeName.toLowerCase();
+    const fn = map.get(nodeName);
+    if (fn) {
+      return fn(element);
+    } else {
+      return p(element);
     }
   }
-  text = text.trim();
 
-  return {
+  function inlineElement(element: Element | Text): SubOutput | null {
+    const map: Map<
+      string,
+      | ((elem: Element | Text) => SubOutput | null)
+      | ((elem: Element) => SubOutput | null)
+    > = new Map();
+
+    // 默认处理，将元素转为纯文本
+    const defaultList = [
+      "abbr",
+      "acronym",
+      "bdi",
+      "bdo",
+      "cite",
+      "data",
+      "dfn",
+      "span",
+      "time",
+      "u",
+      "tt",
+      "#text",
+    ];
+    function defaultHandler(elem: Element | Text) {
+      if (elem instanceof HTMLElement || elem instanceof Text) {
+        let text;
+        if (elem instanceof HTMLElement) {
+          text = elem.innerText.trim();
+        }
+        if (elem instanceof Text) {
+          text = elem.textContent?.trim() ?? "";
+        }
+        if (typeof text === "string") {
+          const dom = new Text(text);
+          const images = [] as AttachmentClass[];
+          return {
+            dom,
+            text,
+            images,
+          };
+        }
+      }
+      return null;
+    }
+    defaultList.forEach((n) => map.set(n, defaultHandler));
+
+    function a(elem: Element) {
+      if (elem instanceof HTMLAnchorElement) {
+        if (
+          elem.href.startsWith("https://") ||
+          elem.href.startsWith("http://")
+        ) {
+          const { href, textContent } = elem;
+          const dom = document.createElement("a");
+          dom.href = href;
+          dom.textContent = textContent;
+          const text = `[${textContent}](${href})`;
+          const images = [] as AttachmentClass[];
+          return {
+            dom,
+            text,
+            images,
+          };
+        }
+      }
+      return null;
+    }
+    map.set("a", a);
+
+    function getImg(url: string) {
+      const imgClassCache = getAttachmentClassCache(url);
+      if (imgClassCache) {
+        const dom = document.createElement("img");
+        dom.setAttribute("data-src-address", imgClassCache.name);
+        dom.alt = url;
+        const text = `![${url}](${imgClassCache.name})`;
+        const images = [imgClassCache];
+        return {
+          dom,
+          text,
+          images,
+        };
+      } else {
+        const comments = getRandomName();
+        const noMd5 = options?.keepImageName ?? false;
+        const imgClass = getImageAttachment(
+          url,
+          imgMode,
+          "chapter-",
+          noMd5,
+          comments
+        );
+
+        const dom = document.createElement("img");
+        dom.setAttribute("data-src-address", comments);
+        dom.alt = url;
+        const text = `![${url}](${comments})`;
+        const images = [imgClass];
+        return {
+          dom,
+          text,
+          images,
+        };
+      }
+    }
+
+    function img(elem: Element) {
+      if (elem instanceof HTMLImageElement) {
+        const url = elem.src;
+        return getImg(url);
+      }
+      return null;
+    }
+    map.set("img", img);
+
+    function picture(elem: Element) {
+      if (elem instanceof HTMLPictureElement) {
+        // const sources = elem.querySelectorAll("source");
+        const img = elem.querySelector("img");
+        if (img) {
+          const url = img.src;
+          return getImg(url);
+        } else {
+          log.warn("[cleanDom][picture]未发现<img>", elem);
+          return null;
+        }
+      }
+      return null;
+    }
+    map.set("picture", picture);
+
+    function ruby(elem: Element) {
+      if (elem instanceof HTMLElement) {
+        const dom = elem.cloneNode(true) as HTMLElement;
+        const text = elem.innerText;
+        const images = [] as AttachmentClass[];
+        return {
+          dom,
+          text,
+          images,
+        };
+      }
+      return null;
+    }
+    map.set("ruby", ruby);
+
+    function br(elem: Element) {
+      const dom = document.createElement("br");
+      const text = "\n";
+      const images = [] as AttachmentClass[];
+      return {
+        dom,
+        text,
+        images,
+      };
+    }
+    map.set("br", br);
+
+    function common(
+      nodeName: string,
+      getText: (textContent: string) => string,
+      elem: Element
+    ) {
+      if (elem instanceof HTMLElement) {
+        const textContent = elem.innerText.trim();
+        const dom = document.createElement(nodeName);
+        dom.innerText = textContent;
+        const text = getText(textContent);
+        const images = [] as AttachmentClass[];
+        return {
+          dom,
+          text,
+          images,
+        };
+      }
+      return null;
+    }
+
+    const strongList = ["b", "big", "mark", "samp", "strong"];
+    function strong(elem: Element) {
+      return common(
+        "strong",
+        (textContent) => `**${textContent.replaceAll("\n", "**\n**")}**`,
+        elem
+      );
+    }
+    strongList.forEach((n) => map.set(n, strong));
+
+    const codeList = ["code", "kbd"];
+    function code(elem: Element) {
+      return common("code", (textContent) => `\`${textContent}\``, elem);
+    }
+    codeList.forEach((n) => map.set(n, code));
+
+    const sList = ["del", "s"];
+    function s(elem: Element) {
+      return common("s", (textContent) => `~~${textContent}~~`, elem);
+    }
+    sList.forEach((n) => map.set(n, s));
+
+    const emList = ["em", "i", "q", "var"];
+    function em(elem: Element) {
+      return common("em", (textContent) => `*${textContent}*`, elem);
+    }
+    emList.forEach((n) => map.set(n, em));
+
+    function ins(elem: Element) {
+      return common("ins", (textContent) => `++${textContent}++`, elem);
+    }
+    map.set("ins", ins);
+
+    function small(elem: Element) {
+      return common(
+        "small",
+        (textContent) => `<small>${textContent}</small>`,
+        elem
+      );
+    }
+    map.set("small", small);
+
+    function sup(elem: Element) {
+      return common("sup", (textContent) => `<sup>${textContent}</sup>`, elem);
+    }
+    map.set("sup", sup);
+
+    function sub(elem: Element) {
+      return common("sub", (textContent) => `<sub>${textContent}</sub>`, elem);
+    }
+    map.set("sub", sub);
+
+    const nodeName = element.nodeName.toLowerCase();
+    const fn = map.get(nodeName) as (elem: Element | Text) => SubOutput | null;
+    if (fn) {
+      return fn(element);
+    } else {
+      const output = defaultHandler(element);
+      log.warn("[cleanDom]发现未知行内元素！");
+      log.warn([element.nodeName.toLowerCase(), element]);
+      return output;
+    }
+  }
+
+  async function loop(
+    nodes: (Element | Text)[],
+    _outDom: HTMLElement
+  ): Promise<{
+    dom: HTMLElement;
+    text: string;
+    images: (Promise<AttachmentClass> | AttachmentClass)[];
+  }> {
+    let _outText = "";
+    let _outImages: (Promise<AttachmentClass> | AttachmentClass)[] = [];
+    for (const node of nodes) {
+      const bNname = node.nodeName.toLowerCase();
+      // 文本 或 行内元素
+      if (node instanceof Text || InlineElements.includes(bNname)) {
+        const tobj = inlineElement(node);
+        if (tobj) {
+          const { dom: tdom, text: ttext, images: timages } = tobj;
+          _outDom.appendChild(tdom);
+          _outText = _outText + ttext;
+          _outImages = _outImages.concat(timages);
+          continue;
+        }
+      }
+      // 块元素
+      if (bNname === "textarea" || BlockElements.includes(bNname)) {
+        if (node instanceof HTMLElement) {
+          const tobj = await blockElement(node);
+          if (tobj) {
+            const { dom: tdom, text: ttext, images: timages } = tobj;
+            _outDom.appendChild(tdom);
+            _outText = _outText + "\n" + ttext + "\n";
+            _outImages = _outImages.concat(timages);
+            continue;
+          }
+        }
+      }
+    }
+
+    return {
+      dom: _outDom,
+      text: _outText,
+      images: _outImages,
+    };
+  }
+
+  async function awaitImages({
     dom,
     text,
     images,
-  };
+  }: {
+    dom: HTMLElement;
+    text: string;
+    images: (Promise<AttachmentClass> | AttachmentClass)[];
+  }): Promise<Output> {
+    const iImages = await Promise.all(images);
+    iImages.forEach((image) => {
+      dom.innerHTML = dom.innerHTML.replaceAll(image.comments, image.name);
+      text = text.replaceAll(image.comments, image.name);
+    });
+    return {
+      dom,
+      text,
+      images: iImages,
+    };
+  }
+
+  function postHook({
+    dom,
+    text,
+    images,
+  }: {
+    dom: HTMLElement;
+    text: string;
+    images: AttachmentClass[];
+  }): Output {
+    htmlTrim(dom);
+    dom = convertBr(dom);
+    text = text.trim();
+    return {
+      dom,
+      text,
+      images,
+    };
+  }
 }
 
+// 移除文档首尾空白元素
 export function htmlTrim(dom: HTMLElement) {
+  const childNodes = Array.from(dom.childNodes);
+  remove(childNodes);
   const childNodesR = Array.from(dom.childNodes).reverse();
-  for (const node of childNodesR) {
-    const ntype = node.nodeName.toLowerCase();
+  remove(childNodesR);
 
-    const ntypes = ["#text", "br"];
-    if (!ntypes.includes(ntype)) {
-      return;
-    }
-
-    if (ntype === "#text") {
-      if ((node as Text).textContent?.trim() === "") {
+  function remove(nodes: ChildNode[]) {
+    for (const node of nodes) {
+      // 非空文本或非<br>元素
+      if (
+        node instanceof Text === false ||
+        node instanceof HTMLBRElement === false
+      ) {
+        break;
+      }
+      // 文本
+      if (node instanceof Text) {
+        if (node.textContent?.trim() === "") {
+          node.remove();
+        } else {
+          break;
+        }
+      }
+      // <br>元素
+      if (node instanceof HTMLBRElement) {
         node.remove();
-      } else {
-        return;
       }
     }
-    if (ntype === "br") {
-      (node as HTMLBRElement).remove();
+  }
+}
+
+// 将Text<br>Text转为<p>
+function convertBr(dom: HTMLElement) {
+  if (onlyTextAndBr(dom) && countBr(dom) > 3) {
+    const outDom = document.createElement("div");
+    const childNodes = dom.childNodes;
+
+    let brCount = 0;
+    for (const node of Array.from(childNodes)) {
+      if (node instanceof Text) {
+        if (brCount > 3) {
+          let brRemainder = brCount - 3;
+          const brp = document.createElement("p");
+          while (brRemainder > 0) {
+            brRemainder--;
+            const br = document.createElement("br");
+            brp.appendChild(br);
+          }
+          outDom.appendChild(brp);
+        }
+
+        brCount = 0;
+        const p = document.createElement("p");
+        p.innerText = node.textContent ?? "";
+        outDom.appendChild(p);
+      }
+      if (node instanceof HTMLBRElement) {
+        brCount++;
+      }
     }
+
+    return outDom;
+  } else {
+    return dom;
+  }
+
+  function countBr(d: HTMLElement) {
+    return Array.from(d.childNodes).filter((n) => n instanceof HTMLBRElement)
+      .length;
+  }
+  function onlyTextAndBr(d: HTMLElement) {
+    return Array.from(d.childNodes)
+      .map((n) => n.nodeName.toLowerCase())
+      .every((nn) => ["#text", "br"].includes(nn));
   }
 }

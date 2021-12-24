@@ -2,10 +2,9 @@ import { GmWindow } from "./global";
 import { _GM_info } from "./lib/GM";
 import { gfetch } from "./lib/http";
 import { storageAvailable } from "./lib/misc";
-import { streamSupport } from "./lib/zip";
 import { enableDebug } from "./setting";
 
-function check(name: string) {
+function checkObjct(name: string) {
   const target = window[name as keyof Window];
   const targetLength = target.toString().length;
   const targetPrototype = target.prototype;
@@ -24,9 +23,25 @@ function check(name: string) {
   return [false, targetLength].join(", ");
 }
 
-function jsdelivrTest() {
+export function streamSupport() {
+  return (
+    typeof ReadableStream !== "undefined" &&
+    typeof WritableStream !== "undefined" &&
+    typeof TransformStream !== "undefined"
+  );
+}
+function jsdelivrAvailability() {
   return new Promise((resolve, reject) => {
     gfetch("https://cdn.jsdelivr.net/npm/idb-keyval/dist/umd.js")
+      .then((resp) => resolve(true))
+      .catch((error) => resolve(false));
+  });
+}
+function mitmPageAvailability() {
+  return new Promise((resolve, reject) => {
+    fetch(
+      "https://cors.bgme.me/https://jimmywarting.github.io/StreamSaver.js/mitm.html"
+    )
       .then((resp) => resolve(true))
       .catch((error) => resolve(false));
   });
@@ -44,18 +59,19 @@ export const environments = async () => ({
   // @ts-expect-error
   设备内存: navigator.deviceMemory ?? "",
   CPU核心数: navigator.hardwareConcurrency,
-  eval: check("eval"),
-  fetch: check("fetch"),
-  XMLHttpRequest: check("XMLHttpRequest"),
+  eval: checkObjct("eval"),
+  fetch: checkObjct("fetch"),
+  XMLHttpRequest: checkObjct("XMLHttpRequest"),
   streamSupport: streamSupport(),
   window: Object.keys(window).length,
   localStorage: storageAvailable("localStorage"),
   sessionStorage: storageAvailable("sessionStorage"),
   Cookie: navigator.cookieEnabled,
   doNotTrack: navigator.doNotTrack ?? 0,
+  jsdelivr: await jsdelivrAvailability(),
+  streamSaverMitmPage: await mitmPageAvailability(),
+  enableDebug: enableDebug.value,
   ScriptHandler: _GM_info.scriptHandler,
   "ScriptHandler version": _GM_info.version,
   "Novel-downloader version": _GM_info.script.version,
-  enableDebug: enableDebug.value,
-  jsdelivr: await jsdelivrTest(),
 });

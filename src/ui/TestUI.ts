@@ -1,8 +1,9 @@
 import { defineComponent, onMounted, reactive, ref, Ref, watch } from "vue";
 import { GmWindow } from "../global";
+import { getAttachmentClassCache } from "../lib/attachments";
 import { createStyle } from "../lib/createEl";
 import { sleep } from "../lib/misc";
-import { Book, Chapter, Status } from "../main";
+import { AttachmentClass, Book, Chapter, Status } from "../main";
 import TestUIHtml from "./TestUI.html";
 import TestUICss from "./TestUI.less";
 
@@ -27,14 +28,19 @@ export default defineComponent({
       简介: HTMLElement;
     }
     const metaData = reactive({} as MetaData);
-    function getData(key: string, value: string | HTMLElement) {
+    function getData(
+      key: string,
+      value: string | HTMLElement | [string, string]
+    ) {
       if (key === "封面") {
-        return `<img src="${value}">`;
+        return `<img src="${(value as [string, string])[0]}" alt="${
+          (value as [string, string])[1]
+        }">`;
       }
-      if (key === "简介") {
-        return (value as HTMLElement).outerHTML;
+      if (key === "简介" && value instanceof HTMLElement) {
+        return value.outerHTML;
       }
-      if (key === "网址") {
+      if (key === "网址" && typeof value === "string") {
         return `<a href="${value}">${value}</a>`;
       }
       return value;
@@ -89,7 +95,8 @@ export default defineComponent({
       const imgs = _chapter.contentHTML?.querySelectorAll("img");
       if (imgs) {
         Array.from(imgs).forEach((img) => {
-          img.src = img.alt;
+          const url = img.alt;
+          img.src = getObjectUrl(url);
         });
       }
       return _chapter.contentHTML?.outerHTML;
@@ -98,8 +105,10 @@ export default defineComponent({
     onMounted(async () => {
       const _book = await waitBook();
       Object.assign(book, _book);
+      const coverUrl = book.additionalMetadate?.cover?.url ?? "";
+      const coverSrc = coverUrl ? getObjectUrl(coverUrl) : "";
       const _metaData = {
-        封面: book.additionalMetadate?.cover?.url ?? "",
+        封面: [coverSrc, coverUrl],
         题名: book.bookname ?? "None",
         作者: book.author ?? "None",
         网址: book.bookUrl,
@@ -111,6 +120,16 @@ export default defineComponent({
         chapterNumber.value = cn;
       }
     });
+
+    function getObjectUrl(url: string) {
+      const attachment = getAttachmentClassCache(url);
+      if (attachment?.imageBlob) {
+        const blob = attachment.imageBlob;
+        const src = URL.createObjectURL(blob);
+        return src;
+      }
+      return "";
+    }
 
     return {
       metaData,

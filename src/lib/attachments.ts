@@ -1,7 +1,7 @@
-import { AttachmentClass as attachmentClassGlobal } from "../main";
+import { AttachmentClass as attachmentClassType } from "../main";
 import { calculateMd5 } from "./misc";
 
-let attachmentClassCache: attachmentClassGlobal[] = [];
+let attachmentClassCache: attachmentClassType[] = [];
 export function getAttachmentClassCache(url: string) {
   const found = attachmentClassCache.find(
     (attachmentClass) => attachmentClass.url === url
@@ -9,9 +9,7 @@ export function getAttachmentClassCache(url: string) {
   return found;
 }
 
-export function putAttachmentClassCache(
-  attachmentClass: attachmentClassGlobal
-) {
+export function putAttachmentClassCache(attachmentClass: attachmentClassType) {
   attachmentClassCache.push(attachmentClass);
   return true;
 }
@@ -22,61 +20,52 @@ export function clearAttachmentClassCache() {
 
 export async function getImageAttachment(
   url: string,
-  imgMode: "naive" | "TM" = "TM",
+  imgMode: "naive" | "TM",
   prefix = "",
   noMD5 = false,
-  comments?: string
-) {
-  const tmpImageName = Math.random().toString().replace("0.", "");
-
-  let imgClass;
+  comments = getRandomName()
+): Promise<attachmentClassType> {
   const imgClassCache = getAttachmentClassCache(url);
   if (imgClassCache) {
-    imgClass = imgClassCache;
-  } else {
-    imgClass = new attachmentClassGlobal(url, tmpImageName, imgMode);
-    const blob = await imgClass.init();
-    if (blob) {
-      const hash = await calculateMd5(blob);
-      const contentType = blob.type.split("/")[1];
-      const contentTypeBlackList = ["octet-stream"];
-      let ext = contentType;
-      if (contentTypeBlackList.includes(contentType)) {
-        const _ext = new URL(url).pathname
-          .split(".")
-          .slice(-1)[0]
-          .match(/(^[\d|\w]+)/);
-        if (_ext) {
-          ext = _ext[0];
-        } else {
-          ext = new URL(url).pathname.split(".").slice(-1)[0];
-        }
-      }
+    return imgClassCache;
+  }
 
-      let imageName: string;
-      if (noMD5) {
-        let _imageName = new URL(url).pathname.split("/").slice(-1)[0];
-        if (
-          attachmentClassCache.find(
-            (attachmentClass) =>
-              attachmentClass.name === _imageName && attachmentClass.url !== url
-          )
-        ) {
-          _imageName = new URL(url).pathname.split("/").slice(-2).join("_");
-        }
-        imageName = [prefix, _imageName].join("");
-      } else {
-        imageName = [prefix, hash, ".", ext].join("");
-      }
-
-      imgClass.name = imageName;
-      putAttachmentClassCache(imgClass);
+  const imgClass = new attachmentClassType(url, comments, imgMode);
+  imgClass.comments = comments;
+  const blob = await imgClass.init();
+  if (blob) {
+    if (noMD5) {
+      imgClass.name = getLastPart(url);
     } else {
-      // throw new ExpectError("[getImageAttachment] Init Image failed!");
+      const hash = await calculateMd5(blob);
+      const ext = getExt(blob, url);
+      imgClass.name = [prefix, hash, ".", ext].join("");
     }
   }
-  if (comments) {
-    imgClass.comments = comments;
-  }
+  putAttachmentClassCache(imgClass);
   return imgClass;
+
+  function getExt(b: Blob, u: string) {
+    const contentType = b.type.split("/")[1];
+    const contentTypeBlackList = ["octet-stream"];
+    if (contentTypeBlackList.includes(contentType)) {
+      return getExtFromUrl(u);
+    } else {
+      return contentType;
+    }
+  }
+  function getExtFromUrl(u: string) {
+    const _u = new URL(u);
+    const p = _u.pathname;
+    return p.substring(p.lastIndexOf(".") + 1);
+  }
+  function getLastPart(u: string) {
+    const _u = new URL(u);
+    const p = _u.pathname;
+    return p.substring(p.lastIndexOf("/") + 1);
+  }
+}
+
+export function getRandomName() {
+  return "__" + Math.random().toString().replace("0.", "") + "__";
 }
