@@ -1,4 +1,5 @@
 /// <reference types="tampermonkey" />
+export declare function fetchWithRetry(input: RequestInfo, init?: RequestInit): Promise<Response>;
 export interface GfetchRequestInit {
     method?: "GET" | "HEAD" | "POST" | undefined;
     headers?: Record<string, string>;

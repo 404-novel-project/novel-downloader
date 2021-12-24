@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.7.0.437
+// @version        4.7.1.438
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -162,6 +162,7 @@
 // @match          *://jingcaiyuedu6.com/novel/*.html
 // @match          *://www.hanwujinian.com/book/*
 // @match          *://www.biqu55.com/*_*/
+// @match          *://manga.bilibili.com/detail/mc*
 // @name:en        novel-downloader
 // @name:ja        小説ダウンローダー
 // @description:en An scalable universal novel downloader.
@@ -2731,7 +2732,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, ":root {\n  --good-chapter-color: #41b8
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "#test-page-div {\n  max-height: 300px;\n  overflow-y: scroll;\n}\n#test-page-div table {\n  text-align: center;\n}\n#test-page-div td {\n  all: revert;\n  padding-top: 0.3em;\n}\n#test-page-div td > img {\n  max-height: 15em;\n}\n#test-page-div tr > td:nth-child(1) {\n  font-weight: bold;\n  min-width: 7em;\n}\n#test-page-div tr > td:nth-child(2) div,\n#test-page-div tr > td:nth-child(2) p {\n  text-align: left;\n}\n#test-page-div hr {\n  margin-top: 1.5em;\n  margin-bottom: 1.5em;\n}\n#test-page-div h2 {\n  text-align: center;\n  margin-bottom: 1.3em;\n}\n#test-page-div h4 {\n  text-align: center;\n}\n#test-page-div .chapter p {\n  line-height: 1.4;\n}\n#test-page-div .preview-chapter-setting {\n  text-align: center;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "#test-page-div {\n  max-height: 300px;\n  overflow-y: scroll;\n}\n#test-page-div table {\n  text-align: center;\n}\n#test-page-div td {\n  all: revert;\n  padding-top: 0.3em;\n}\n#test-page-div td > img {\n  max-height: 15em;\n}\n#test-page-div tr > td:nth-child(1) {\n  font-weight: bold;\n  min-width: 7em;\n}\n#test-page-div tr > td:nth-child(2) div,\n#test-page-div tr > td:nth-child(2) p {\n  text-align: left;\n}\n#test-page-div hr {\n  margin-top: 1.5em;\n  margin-bottom: 1.5em;\n}\n#test-page-div h2 {\n  text-align: center;\n  margin-bottom: 1.3em;\n}\n#test-page-div h4 {\n  text-align: center;\n}\n#test-page-div .chapter p {\n  line-height: 1.4;\n}\n#test-page-div .chapter img {\n  max-width: 95%;\n}\n#test-page-div .preview-chapter-setting {\n  text-align: center;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -3350,8 +3351,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "y": () => (/* binding */ streamSupport),
-/* harmony export */   "T": () => (/* binding */ environments)
+/* harmony export */   "yt": () => (/* binding */ streamSupport),
+/* harmony export */   "Cm": () => (/* binding */ mitmPageAvailability),
+/* harmony export */   "Ty": () => (/* binding */ environments)
 /* harmony export */ });
 /* harmony import */ var _lib_GM__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/GM.ts");
 /* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/http.ts");
@@ -3389,9 +3391,9 @@ function jsdelivrAvailability() {
             .catch((error) => resolve(false));
     });
 }
-function mitmPageAvailability() {
+function mitmPageAvailability(url) {
     return new Promise((resolve, reject) => {
-        fetch("https://cors.bgme.me/https://jimmywarting.github.io/StreamSaver.js/mitm.html")
+        fetch(url)
             .then((resp) => resolve(true))
             .catch((error) => resolve(false));
     });
@@ -3497,7 +3499,8 @@ async function _GM_deleteValue(name) {
 /* harmony export */   "dK": () => (/* binding */ putAttachmentClassCache),
 /* harmony export */   "pN": () => (/* binding */ clearAttachmentClassCache),
 /* harmony export */   "CE": () => (/* binding */ getImageAttachment),
-/* harmony export */   "VO": () => (/* binding */ getRandomName)
+/* harmony export */   "VO": () => (/* binding */ getRandomName),
+/* harmony export */   "r6": () => (/* binding */ getExt)
 /* harmony export */ });
 /* harmony import */ var _main_Attachment__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/main/Attachment.ts");
 /* harmony import */ var _misc__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/misc.ts");
@@ -3516,6 +3519,13 @@ function clearAttachmentClassCache() {
     attachmentClassCache = [];
 }
 async function getImageAttachment(url, imgMode, prefix = "", noMD5 = false, comments = getRandomName(), options) {
+    if (imgMode === "naive") {
+        const u = new URL(url);
+        if (document.location.protocol === "https:" && u.protocol === "http:") {
+            u.protocol = document.location.protocol;
+            url = u.href;
+        }
+    }
     const imgClassCache = getAttachmentClassCache(url);
     if (imgClassCache) {
         return imgClassCache;
@@ -3535,29 +3545,29 @@ async function getImageAttachment(url, imgMode, prefix = "", noMD5 = false, comm
     }
     putAttachmentClassCache(imgClass);
     return imgClass;
-    function getExt(b, u) {
-        const contentType = b.type.split("/")[1];
-        const contentTypeBlackList = ["octet-stream"];
-        if (contentTypeBlackList.includes(contentType)) {
-            return getExtFromUrl(u);
-        }
-        else {
-            return contentType;
-        }
-    }
-    function getExtFromUrl(u) {
-        const _u = new URL(u);
-        const p = _u.pathname;
-        return p.substring(p.lastIndexOf(".") + 1);
-    }
-    function getLastPart(u) {
-        const _u = new URL(u);
-        const p = _u.pathname;
-        return p.substring(p.lastIndexOf("/") + 1);
-    }
 }
 function getRandomName() {
     return "__" + Math.random().toString().replace("0.", "") + "__";
+}
+function getExt(b, u) {
+    const contentType = b.type.split("/")[1];
+    const contentTypeBlackList = ["octet-stream"];
+    if (contentTypeBlackList.includes(contentType)) {
+        return getExtFromUrl(u);
+    }
+    else {
+        return contentType;
+    }
+}
+function getExtFromUrl(u) {
+    const _u = new URL(u);
+    const p = _u.pathname;
+    return p.substring(p.lastIndexOf(".") + 1);
+}
+function getLastPart(u) {
+    const _u = new URL(u);
+    const p = _u.pathname;
+    return p.substring(p.lastIndexOf("/") + 1);
 }
 
 
@@ -4304,6 +4314,7 @@ function createStyle(style, id) {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "q4": () => (/* binding */ fetchWithRetry),
 /* harmony export */   "GF": () => (/* binding */ gfetch),
 /* harmony export */   "dL": () => (/* binding */ getHtmlDOM),
 /* harmony export */   "rf": () => (/* binding */ getHtmlDomWithRetry),
@@ -4314,8 +4325,8 @@ function createStyle(style, id) {
 /* unused harmony exports getText, ggetHtmlDomWithRetry */
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("loglevel");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _setting__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/setting.ts");
-/* harmony import */ var _GM__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/GM.ts");
+/* harmony import */ var _setting__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/setting.ts");
+/* harmony import */ var _GM__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/GM.ts");
 /* harmony import */ var _misc__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/misc.ts");
 
 
@@ -4328,11 +4339,24 @@ globalThis.fetch = new Proxy(globalThis.fetch, {
         return Reflect.apply(target, thisArg, argArray);
     },
 });
+async function fetchWithRetry(input, init) {
+    let retry = _setting__WEBPACK_IMPORTED_MODULE_1__/* .retryLimit */ .o5;
+    while (retry > 0) {
+        const resp = await fetch(input, init);
+        if (resp.ok) {
+            return resp;
+        }
+        else {
+            retry--;
+        }
+    }
+    throw new Error(`Fetch with retry failed! Url: ${input}`);
+}
 function gfetch(url, { method = "GET", headers, data, cookie, binary, nocache, revalidate, timeout, context, responseType, overrideMimeType, anonymous, user, password, } = {}) {
     return new Promise((resolve, reject) => {
         _log__WEBPACK_IMPORTED_MODULE_0___default().debug("[debug]gfetch:");
         _log__WEBPACK_IMPORTED_MODULE_0___default().debug(Array.from(arguments));
-        (0,_GM__WEBPACK_IMPORTED_MODULE_1__/* ._GM_xmlhttpRequest */ .UX)({
+        (0,_GM__WEBPACK_IMPORTED_MODULE_2__/* ._GM_xmlhttpRequest */ .UX)({
             url,
             method,
             headers,
@@ -4401,7 +4425,7 @@ async function getHtmlDOM(url, charset, init) {
     return new DOMParser().parseFromString(htmlText, "text/html");
 }
 async function getHtmlDomWithRetry(url, charset, init) {
-    let retry = _setting__WEBPACK_IMPORTED_MODULE_2__/* .retryLimit */ .o5;
+    let retry = _setting__WEBPACK_IMPORTED_MODULE_1__/* .retryLimit */ .o5;
     let doc = null;
     while (retry > 0) {
         try {
@@ -4409,10 +4433,10 @@ async function getHtmlDomWithRetry(url, charset, init) {
             retry = 0;
         }
         catch (error) {
-            _log__WEBPACK_IMPORTED_MODULE_0___default().error(`抓取${url}失败，重试第${_setting__WEBPACK_IMPORTED_MODULE_2__/* .retryLimit */ .o5 - retry}次。`);
+            _log__WEBPACK_IMPORTED_MODULE_0___default().error(`抓取${url}失败，重试第${_setting__WEBPACK_IMPORTED_MODULE_1__/* .retryLimit */ .o5 - retry}次。`);
             _log__WEBPACK_IMPORTED_MODULE_0___default().error(error);
             retry--;
-            await (0,_misc__WEBPACK_IMPORTED_MODULE_3__/* .sleep */ ._v)(1000 * (_setting__WEBPACK_IMPORTED_MODULE_2__/* .retryLimit */ .o5 - retry));
+            await (0,_misc__WEBPACK_IMPORTED_MODULE_3__/* .sleep */ ._v)(1000 * (_setting__WEBPACK_IMPORTED_MODULE_1__/* .retryLimit */ .o5 - retry));
         }
     }
     return doc;
@@ -5351,11 +5375,14 @@ var detect = __webpack_require__("./src/detect.ts");
 
 
 
-const rawMitm = new URL((StreamSaver_default()).mitm);
-const mitm = new URL("https://cors.bgme.me/");
-mitm.pathname = rawMitm.origin + rawMitm.pathname;
-(StreamSaver_default()).mitm = mitm.href;
-(StreamSaver_default()).supported = (0,detect/* streamSupport */.y)();
+async function setStreamSaverSetting() {
+    const rawMitm = new URL((StreamSaver_default()).mitm);
+    const mitm = new URL("https://cors.bgme.me/");
+    mitm.pathname = rawMitm.origin + rawMitm.pathname;
+    (StreamSaver_default()).mitm = mitm.href;
+    (StreamSaver_default()).supported =
+        (0,detect/* streamSupport */.yt)() && (await (0,detect/* mitmPageAvailability */.Cm)(mitm.href));
+}
 class FflateZip {
     constructor(filename, stream) {
         external_log_default().info(`[fflateZip] filename: ${filename}, stream: ${stream}, streamSaver.supported: ${(StreamSaver_default()).supported}`);
@@ -5878,6 +5905,7 @@ var progress = __webpack_require__("./src/ui/progress.ts");
 
 
 
+
 class BaseRuleClass {
     constructor() {
         const self = this;
@@ -5964,6 +5992,7 @@ class BaseRuleClass {
             external_log_default().info(`[run]${alertText}`);
             throw new main/* ExpectError */.K2(alertText);
         }
+        await setStreamSaverSetting();
         self.audio = new Audio("data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU3LjcxLjEwMAAAAAAAAAAAAAAA/+M4wAAAAAAAAAAAAEluZm8AAAAPAAAAEAAABVgANTU1NTU1Q0NDQ0NDUFBQUFBQXl5eXl5ea2tra2tra3l5eXl5eYaGhoaGhpSUlJSUlKGhoaGhoaGvr6+vr6+8vLy8vLzKysrKysrX19fX19fX5eXl5eXl8vLy8vLy////////AAAAAExhdmM1Ny44OQAAAAAAAAAAAAAAACQCgAAAAAAAAAVY82AhbwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/+MYxAALACwAAP/AADwQKVE9YWDGPkQWpT66yk4+zIiYPoTUaT3tnU487uNhOvEmQDaCm1Yz1c6DPjbs6zdZVBk0pdGpMzxF/+MYxA8L0DU0AP+0ANkwmYaAMkOKDDjmYoMtwNMyDxMzDHE/MEsLow9AtDnBlQgDhTx+Eye0GgMHoCyDC8gUswJcMVMABBGj/+MYxBoK4DVpQP8iAtVmDk7LPgi8wvDzI4/MWAwK1T7rxOQwtsItMMQBazAowc4wZMC5MF4AeQAGDpruNuMEzyfjLBJhACU+/+MYxCkJ4DVcAP8MAO9J9THVg6oxRMGNMIqCCTAEwzwwBkINOPAs/iwjgBnMepYyId0PhWo+80PXMVsBFzD/AiwwfcKGMEJB/+MYxDwKKDVkAP8eAF8wMwIxMlpU/OaDPLpNKkEw4dRoBh6qP2FC8jCJQFcweQIPMHOBtTBoAVcwOoCNMYDI0u0Dd8ANTIsy/+MYxE4KUDVsAP8eAFBVpgVVPjdGeTEWQr0wdcDtMCeBgDBkgRgwFYB7Pv/zqx0yQQMCCgKNgonHKj6RRVkxM0GwML0AhDAN/+MYxF8KCDVwAP8MAIHZMDDA3DArAQo3K+TF5WOBDQw0lgcKQUJxhT5sxRcwQQI+EIPWMA7AVBoTABgTgzfBN+ajn3c0lZMe/+MYxHEJyDV0AP7MAA4eEwsqP/PDmzC/gNcwXUGaMBVBIwMEsmB6gaxhVuGkpoqMZMQjooTBwM0+S8FTMC0BcjBTgPwwOQDm/+MYxIQKKDV4AP8WADAzAKQwI4CGPhWOEwCFAiBAYQnQMT+uwXUeGzjBWQVkwTcENMBzA2zAGgFEJfSPkPSZzPXgqFy2h0xB/+MYxJYJCDV8AP7WAE0+7kK7MQrATDAvQRIwOADKMBuA9TAYQNM3AiOSPjGxowgHMKFGcBNMQU1FMy45OS41VVU/31eYM4sK/+MYxKwJaDV8AP7SAI4y1Yq0MmOIADGwBZwwlgIJMztCM0qU5TQPG/MSkn8yEROzCdAxECVMQU1FMy45OS41VTe7Ohk+Pqcx/+MYxMEJMDWAAP6MADVLDFUx+4J6Mq7NsjN2zXo8V5fjVJCXNOhwM0vTCDAxFpMYYQU+RlVMQU1FMy45OS41VVVVVVVVVVVV/+MYxNcJADWAAP7EAFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV/+MYxOsJwDWEAP7SAFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV/+MYxPMLoDV8AP+eAFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV/+MYxPQL0DVcAP+0AFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV");
         self.audio.loop = true;
         self.audio.play();
@@ -8851,6 +8880,242 @@ class C17k extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
         }
         else {
             return publicChapter();
+        }
+    }
+}
+
+
+/***/ }),
+
+/***/ "./src/rules/special/original/bilibili.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "MangaBilibili": () => (/* binding */ MangaBilibili)
+/* harmony export */ });
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/misc.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _main_Attachment__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/main/Attachment.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/main.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
+
+
+
+
+
+
+
+
+
+class MangaBilibili extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
+    constructor() {
+        super();
+        this.imageMode = "naive";
+        this.concurrencyLimit = 1;
+        this.streamZip = true;
+    }
+    async bookParse() {
+        const _comic_id = /\/mc(\d+)$/.exec(document.location.pathname)?.[1];
+        if (!_comic_id) {
+            throw new Error("获取 comic_id 失败！");
+        }
+        const comic_id = parseInt(_comic_id);
+        const signIn = await isSignin(comic_id);
+        const detail = await getDetail(comic_id);
+        const bookUrl = document.location.href;
+        const bookname = detail.title;
+        const author = detail.author_name.join(", ");
+        const introduction = detail.evaluate;
+        const introductionHTML = document.createElement("div");
+        introductionHTML.innerText = detail.evaluate;
+        const additionalMetadate = {};
+        (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getImageAttachment */ .CE)(detail.vertical_cover, this.imageMode, "vertical_cover-")
+            .then((coverClass) => {
+            additionalMetadate.cover = coverClass;
+        })
+            .catch((error) => _log__WEBPACK_IMPORTED_MODULE_2___default().error(error));
+        additionalMetadate.tags = detail.styles;
+        additionalMetadate.attachments = [];
+        (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getImageAttachment */ .CE)(detail.horizontal_cover, this.imageMode, "horizontal_cover-")
+            .then((coverClass) => {
+            additionalMetadate.attachments?.push(coverClass);
+        })
+            .catch((error) => _log__WEBPACK_IMPORTED_MODULE_2___default().error(error));
+        const chapters = detail.ep_list.map((ep) => {
+            const chapterUrl = `https://manga.bilibili.com/mc${comic_id}/${ep.id}?from=manga_detail`;
+            const chapterNumber = ep.ord;
+            const chapterName = [ep.short_title.trim(), ep.title.trim()].join(" ");
+            const isVIP = ep.pay_gold !== 0;
+            const isPaid = isVIP ? !ep.is_locked : true;
+            const options = {
+                comic_id,
+                ep_id: ep.id,
+            };
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_3__/* .Chapter */ .W(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, null, null, null, this.chapterParse, this.charset, options);
+            if (ep.is_locked || ep.type === 6) {
+                chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_4__/* .Status.aborted */ .qb.aborted;
+            }
+            return chapter;
+        });
+        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .f(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        return book;
+        async function isSignin(comic_id) {
+            const body = { comic_id };
+            const resp = await fetch("https://manga.bilibili.com/twirp/bookshelf.v1.Bookshelf/HasFavorite?device=pc&platform=web", {
+                headers: {
+                    Accept: "application/json, text/plain, */*",
+                    "Content-Type": "application/json;charset=utf-8",
+                },
+                body: JSON.stringify(body),
+                method: "POST",
+            });
+            return resp.ok;
+        }
+        async function getDetail(comic_id) {
+            const url = "https://manga.bilibili.com/twirp/comic.v1.Comic/ComicDetail?device=pc&platform=web";
+            const body = {
+                comic_id,
+            };
+            const headers = {
+                accept: "application/json, text/plain, */*",
+                "content-type": "application/json;charset=UTF-8",
+            };
+            const init = {
+                headers,
+                body: JSON.stringify(body),
+                method: "POST",
+            };
+            const resp = await fetch(url, init);
+            const data = (await resp.json());
+            if (data.code === 0) {
+                return data.data;
+            }
+            else {
+                throw new Error("获取目录失败！");
+            }
+        }
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+        const paths = await getImageIndex(options.ep_id);
+        const _outs = [];
+        const worker = async (path) => {
+            const obj = await getImage(path);
+            const out = {
+                path,
+                obj,
+            };
+            _outs.push(out);
+            return out;
+        };
+        await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_6__/* .concurrencyRun */ .C1)(paths, 3, worker);
+        _outs.sort((a, b) => paths.indexOf(a.path) - paths.indexOf(b.path));
+        const outs = _outs.map((out) => out.obj);
+        const dom = document.createElement("div");
+        outs.forEach((o) => {
+            const p = document.createElement("p");
+            p.appendChild(o.dom);
+            dom.appendChild(p);
+        });
+        const text = outs.map((o) => o.text).join("\n\n");
+        const images = outs.map((o) => o.images);
+        return {
+            chapterName,
+            contentRaw: dom,
+            contentText: text,
+            contentHTML: dom,
+            contentImages: images,
+            additionalMetadate: null,
+        };
+        async function getImageIndex(ep_id) {
+            const url = "https://manga.bilibili.com/twirp/comic.v1.Comic/GetImageIndex?device=pc&platform=web";
+            const body = {
+                ep_id,
+            };
+            const headers = {
+                Accept: "application/json, text/plain, */*",
+                "Content-Type": "application/json;charset=utf-8",
+            };
+            const init = {
+                headers,
+                body: JSON.stringify(body),
+                method: "POST",
+                mode: "cors",
+                credentials: "include",
+            };
+            const resp = await fetch(url, init);
+            const data = (await resp.json());
+            if (data.code === 0) {
+                const images = data.data.images;
+                return images.map((i) => i.path);
+            }
+            else {
+                throw new Error(`抓取章节图片索引失败！ ep_id： ${ep_id}, code: ${data.code}, mes: ${data.msg}`);
+            }
+        }
+        async function getImage(path) {
+            const token = await getImageToken(path);
+            if (token) {
+                const img = await getImage(token);
+                const _dom = document.createElement("img");
+                _dom.setAttribute("data-src-address", img.name);
+                _dom.alt = img.url;
+                const _text = `![${img.url}](${img.name})`;
+                _log__WEBPACK_IMPORTED_MODULE_2___default().info(`ep_id: ${options.ep_id}, path: ${path} 抓取成功！`);
+                return {
+                    dom: _dom,
+                    text: _text,
+                    images: img,
+                };
+            }
+            throw new Error("获取图片 " + path + " 失败！");
+            async function getImageToken(path) {
+                const url = "https://manga.bilibili.com/twirp/comic.v1.Comic/ImageToken?device=pc&platform=web";
+                const body = {
+                    urls: JSON.stringify([path]),
+                };
+                const headers = {
+                    Accept: "application/json, text/plain, */*",
+                    "Content-Type": "application/json;charset=utf-8",
+                };
+                const init = {
+                    headers,
+                    body: JSON.stringify(body),
+                    method: "POST",
+                    referrer: chapterUrl,
+                };
+                const resp = await fetch(url, init);
+                const data = (await resp.json());
+                if (data.code === 0) {
+                    return data.data[0];
+                }
+            }
+            async function getImage(_token) {
+                const url = _token.url + "?token=" + _token.token;
+                const headers = {
+                    Accept: "application/json, text/plain, */*",
+                };
+                const init = {
+                    headers,
+                    method: "GET",
+                };
+                const resp = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_7__/* .fetchWithRetry */ .q4)(url, init);
+                const blob = await resp.blob();
+                const hash = await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_6__/* .calculateMd5 */ .Pu)(blob);
+                const ext = (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getExt */ .r6)(blob, url);
+                const name = ["cm-", hash, ".", ext].join("");
+                const imgClass = new _main_Attachment__WEBPACK_IMPORTED_MODULE_8__/* .AttachmentClass */ .J(url, name, "naive");
+                imgClass.imageBlob = blob;
+                imgClass.status = _main_main__WEBPACK_IMPORTED_MODULE_4__/* .Status.finished */ .qb.finished;
+                (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .putAttachmentClassCache */ .dK)(imgClass);
+                return imgClass;
+            }
         }
     }
 }
@@ -15015,14 +15280,18 @@ function getSectionsObj(chapters) {
         }
     }
     const _sectionsListObj = Object.entries(_sectionsObj);
+    _sectionsListObj.sort(sectionListSort);
+    const sectionsListObj = _sectionsListObj.map((s) => s[1]);
+    sectionsListObj.forEach((s) => s.chpaters.sort(chaptersSort));
+    return sectionsListObj;
     function sectionListSort(a, b) {
         const aKey = parseInt(a[0]);
         const bKey = parseInt(b[0]);
         return aKey - bKey;
     }
-    _sectionsListObj.sort(sectionListSort);
-    const sectionsListObj = _sectionsListObj.map((s) => s[1]);
-    return sectionsListObj;
+    function chaptersSort(a, b) {
+        return a.chapterNumber - b.chapterNumber;
+    }
 }
 
 
@@ -15750,6 +16019,11 @@ async function getRule() {
         case "www.biqu55.com": {
             const { biqu55 } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/type3.ts"));
             ruleClass = biqu55();
+            break;
+        }
+        case "manga.bilibili.com": {
+            const { MangaBilibili } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/bilibili.ts"));
+            ruleClass = MangaBilibili;
             break;
         }
         default: {
@@ -16715,7 +16989,7 @@ function ui_init() {
 
 async function printEnvironments() {
     external_log_default().info("[Init]开始载入小说下载器……");
-    Object.entries(await (0,detect/* environments */.T)()).forEach((kv) => external_log_default().info("[Init]" + kv.join("：")));
+    Object.entries(await (0,detect/* environments */.Ty)()).forEach((kv) => external_log_default().info("[Init]" + kv.join("：")));
 }
 async function src_main() {
     init();

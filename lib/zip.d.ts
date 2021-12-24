@@ -1,3 +1,4 @@
+export declare function setStreamSaverSetting(): Promise<void>;
 export declare class FflateZip {
     filename: string;
     stream: boolean;

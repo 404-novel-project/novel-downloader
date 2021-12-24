@@ -1,4 +1,5 @@
 export declare function streamSupport(): boolean;
+export declare function mitmPageAvailability(url: string): Promise<boolean>;
 export declare const environments: () => Promise<{
     当前时间: string;
     当前页URL: string;
