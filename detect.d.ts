@@ -1,3 +1,4 @@
+export declare function streamSupport(): boolean;
 export declare const environments: () => Promise<{
     当前时间: string;
     当前页URL: string;
@@ -17,9 +18,10 @@ export declare const environments: () => Promise<{
     sessionStorage: any;
     Cookie: boolean;
     doNotTrack: string | number;
+    jsdelivr: unknown;
+    streamSaverMitmPage: unknown;
+    enableDebug: boolean;
     ScriptHandler: string;
     "ScriptHandler version": string;
     "Novel-downloader version": string;
-    enableDebug: boolean;
-    jsdelivr: unknown;
 }>;

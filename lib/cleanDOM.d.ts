@@ -1,11 +1,12 @@
 import { AttachmentClass } from "../main";
-interface BuilderOption {
+interface Options {
     keepImageName?: boolean;
 }
-export declare function cleanDOM(DOM: Element, imgMode: "naive" | "TM", option?: BuilderOption | null): Promise<{
+interface Output {
     dom: HTMLElement;
     text: string;
     images: AttachmentClass[];
-}>;
+}
+export declare function cleanDOM(elem: Element, imgMode: "naive" | "TM", options?: Options): Promise<Output>;
 export declare function htmlTrim(dom: HTMLElement): void;
 export {};

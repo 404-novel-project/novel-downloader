@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.6.2.432
+// @version        4.7.0.434
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -221,6 +221,7 @@
 // @grant          GM.deleteValue
 // @connect        self
 // @connect        cdn.jsdelivr.net
+// @connect        cors.bgme.me
 // @connect        shouda8.com
 // @connect        shouda88.com
 // @connect        qidian.com
@@ -3344,6 +3345,87 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 /***/ }),
 
+/***/ "./src/detect.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "y": () => (/* binding */ streamSupport),
+/* harmony export */   "T": () => (/* binding */ environments)
+/* harmony export */ });
+/* harmony import */ var _lib_GM__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/GM.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/misc.ts");
+/* harmony import */ var _setting__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/setting.ts");
+
+
+
+
+function checkObjct(name) {
+    const target = window[name];
+    const targetLength = target.toString().length;
+    const targetPrototype = target.prototype;
+    const nativeFunctionRe = /function \w+\(\) {\n?(\s+)?\[native code\]\n?(\s+)?}/;
+    try {
+        if (targetPrototype === undefined ||
+            Boolean(target.toString().match(nativeFunctionRe))) {
+            return [true, targetLength].join(", ");
+        }
+    }
+    catch {
+        return [true, targetLength].join(", ");
+    }
+    return [false, targetLength].join(", ");
+}
+function streamSupport() {
+    return (typeof ReadableStream !== "undefined" &&
+        typeof WritableStream !== "undefined" &&
+        typeof TransformStream !== "undefined");
+}
+function jsdelivrAvailability() {
+    return new Promise((resolve, reject) => {
+        (0,_lib_http__WEBPACK_IMPORTED_MODULE_0__/* .gfetch */ .GF)("https://cdn.jsdelivr.net/npm/idb-keyval/dist/umd.js")
+            .then((resp) => resolve(true))
+            .catch((error) => resolve(false));
+    });
+}
+function mitmPageAvailability() {
+    return new Promise((resolve, reject) => {
+        fetch("https://cors.bgme.me/https://jimmywarting.github.io/StreamSaver.js/mitm.html")
+            .then((resp) => resolve(true))
+            .catch((error) => resolve(false));
+    });
+}
+const environments = async () => ({
+    当前时间: new Date().toISOString(),
+    当前页URL: document.location.href,
+    workerId: window.workerId,
+    当前页Referrer: document.referrer,
+    浏览器UA: navigator.userAgent,
+    浏览器语言: navigator.languages,
+    设备运行平台: navigator.platform,
+    设备内存: navigator.deviceMemory ?? "",
+    CPU核心数: navigator.hardwareConcurrency,
+    eval: checkObjct("eval"),
+    fetch: checkObjct("fetch"),
+    XMLHttpRequest: checkObjct("XMLHttpRequest"),
+    streamSupport: streamSupport(),
+    window: Object.keys(window).length,
+    localStorage: (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__/* .storageAvailable */ .oZ)("localStorage"),
+    sessionStorage: (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__/* .storageAvailable */ .oZ)("sessionStorage"),
+    Cookie: navigator.cookieEnabled,
+    doNotTrack: navigator.doNotTrack ?? 0,
+    jsdelivr: await jsdelivrAvailability(),
+    streamSaverMitmPage: await mitmPageAvailability(),
+    enableDebug: _setting__WEBPACK_IMPORTED_MODULE_2__/* .enableDebug.value */ .Cy.value,
+    ScriptHandler: _lib_GM__WEBPACK_IMPORTED_MODULE_3__/* ._GM_info.scriptHandler */ ._p.scriptHandler,
+    "ScriptHandler version": _lib_GM__WEBPACK_IMPORTED_MODULE_3__/* ._GM_info.version */ ._p.version,
+    "Novel-downloader version": _lib_GM__WEBPACK_IMPORTED_MODULE_3__/* ._GM_info.script.version */ ._p.script.version,
+});
+
+
+/***/ }),
+
 /***/ "./src/lib/GM.ts":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -3415,7 +3497,8 @@ async function _GM_deleteValue(name) {
 /* harmony export */   "gc": () => (/* binding */ getAttachmentClassCache),
 /* harmony export */   "dK": () => (/* binding */ putAttachmentClassCache),
 /* harmony export */   "pN": () => (/* binding */ clearAttachmentClassCache),
-/* harmony export */   "CE": () => (/* binding */ getImageAttachment)
+/* harmony export */   "CE": () => (/* binding */ getImageAttachment),
+/* harmony export */   "VO": () => (/* binding */ getRandomName)
 /* harmony export */ });
 /* harmony import */ var _main__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/main.ts");
 /* harmony import */ var _misc__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/misc.ts");
@@ -3433,54 +3516,49 @@ function putAttachmentClassCache(attachmentClass) {
 function clearAttachmentClassCache() {
     attachmentClassCache = [];
 }
-async function getImageAttachment(url, imgMode = "TM", prefix = "", noMD5 = false, comments) {
-    const tmpImageName = Math.random().toString().replace("0.", "");
-    let imgClass;
+async function getImageAttachment(url, imgMode, prefix = "", noMD5 = false, comments = getRandomName()) {
     const imgClassCache = getAttachmentClassCache(url);
     if (imgClassCache) {
-        imgClass = imgClassCache;
+        return imgClassCache;
     }
-    else {
-        imgClass = new _main__WEBPACK_IMPORTED_MODULE_0__/* .AttachmentClass */ .Jh(url, tmpImageName, imgMode);
-        const blob = await imgClass.init();
-        if (blob) {
-            const hash = await (0,_misc__WEBPACK_IMPORTED_MODULE_1__/* .calculateMd5 */ .Pu)(blob);
-            const contentType = blob.type.split("/")[1];
-            const contentTypeBlackList = ["octet-stream"];
-            let ext = contentType;
-            if (contentTypeBlackList.includes(contentType)) {
-                const _ext = new URL(url).pathname
-                    .split(".")
-                    .slice(-1)[0]
-                    .match(/(^[\d|\w]+)/);
-                if (_ext) {
-                    ext = _ext[0];
-                }
-                else {
-                    ext = new URL(url).pathname.split(".").slice(-1)[0];
-                }
-            }
-            let imageName;
-            if (noMD5) {
-                let _imageName = new URL(url).pathname.split("/").slice(-1)[0];
-                if (attachmentClassCache.find((attachmentClass) => attachmentClass.name === _imageName && attachmentClass.url !== url)) {
-                    _imageName = new URL(url).pathname.split("/").slice(-2).join("_");
-                }
-                imageName = [prefix, _imageName].join("");
-            }
-            else {
-                imageName = [prefix, hash, ".", ext].join("");
-            }
-            imgClass.name = imageName;
-            putAttachmentClassCache(imgClass);
+    const imgClass = new _main__WEBPACK_IMPORTED_MODULE_0__/* .AttachmentClass */ .Jh(url, comments, imgMode);
+    imgClass.comments = comments;
+    const blob = await imgClass.init();
+    if (blob) {
+        if (noMD5) {
+            imgClass.name = getLastPart(url);
         }
         else {
+            const hash = await (0,_misc__WEBPACK_IMPORTED_MODULE_1__/* .calculateMd5 */ .Pu)(blob);
+            const ext = getExt(blob, url);
+            imgClass.name = [prefix, hash, ".", ext].join("");
         }
     }
-    if (comments) {
-        imgClass.comments = comments;
-    }
+    putAttachmentClassCache(imgClass);
     return imgClass;
+    function getExt(b, u) {
+        const contentType = b.type.split("/")[1];
+        const contentTypeBlackList = ["octet-stream"];
+        if (contentTypeBlackList.includes(contentType)) {
+            return getExtFromUrl(u);
+        }
+        else {
+            return contentType;
+        }
+    }
+    function getExtFromUrl(u) {
+        const _u = new URL(u);
+        const p = _u.pathname;
+        return p.substring(p.lastIndexOf(".") + 1);
+    }
+    function getLastPart(u) {
+        const _u = new URL(u);
+        const p = _u.pathname;
+        return p.substring(p.lastIndexOf("/") + 1);
+    }
+}
+function getRandomName() {
+    return "__" + Math.random().toString().replace("0.", "") + "__";
 }
 
 
@@ -3500,510 +3578,689 @@ async function getImageAttachment(url, imgMode = "TM", prefix = "", noMD5 = fals
 
 
 const BlockElements = [
+    "address",
     "article",
     "aside",
+    "blockquote",
+    "details",
+    "dialog",
+    "dd",
+    "div",
+    "dl",
+    "dt",
+    "fieldset",
+    "figcaption",
+    "figure",
     "footer",
     "form",
+    "h1",
+    "h2",
+    "h3",
+    "h4",
+    "h5",
+    "h6",
     "header",
+    "hgroup",
+    "hr",
+    "li",
     "main",
     "nav",
+    "ol",
+    "p",
+    "pre",
     "section",
-    "figure",
-    "div",
+    "table",
+    "ul",
+];
+const InlineElements = [
+    "a",
+    "abbr",
+    "acronym",
+    "audio",
     "b",
-    "strong",
-    "i",
-    "em",
-    "dfn",
-    "var",
+    "bdi",
+    "bdo",
+    "big",
+    "br",
+    "button",
+    "canvas",
     "cite",
-    "span",
-    "font",
-    "u",
+    "code",
+    "data",
+    "datalist",
     "del",
-    "sup",
-    "sub",
-    "strike",
-    "small",
-    "samp",
+    "dfn",
+    "em",
+    "embed",
+    "i",
+    "iframe",
+    "img",
+    "input",
+    "ins",
+    "kbd",
+    "label",
+    "map",
+    "mark",
+    "meter",
+    "noscript",
+    "object",
+    "output",
+    "picture",
+    "progress",
+    "q",
+    "ruby",
     "s",
+    "samp",
+    "script",
+    "select",
+    "slot",
+    "small",
+    "span",
+    "strong",
+    "sub",
+    "sup",
+    "svg",
+    "template",
+    "textarea",
+    "time",
+    "u",
+    "tt",
+    "var",
+    "video",
+    "wbr",
+];
+const keepElements = [
+    "aside",
     "blockquote",
+    "details",
+    "figure",
+    "h1",
+    "h2",
+    "h3",
+    "h4",
+    "h5",
+    "h6",
+    "hr",
+    "ul",
+    "ol",
+    "li",
+    "pre",
 ];
 const IgnoreElements = [
-    "script",
-    "meta",
-    "link",
-    "style",
-    "#comment",
-    "button",
+    "fieldset",
+    "legend",
     "input",
+    "label",
+    "form",
+    "audio",
+    "button",
+    "canvas",
+    "datalist",
+    "embed",
+    "iframe",
+    "map",
+    "meter",
+    "noscript",
+    "object",
+    "output",
+    "progress",
+    "script",
+    "style",
+    "link",
     "select",
+    "slot",
+    "svg",
+    "template",
+    "video",
+    "wbr",
+    "table",
 ];
-function* findBase(dom, blockElements, ignoreElements) {
-    const childNodes = Array.from(dom.childNodes);
-    for (const node of childNodes) {
-        const nodeName = node.nodeName.toLowerCase();
-        if (blockElements.includes(nodeName)) {
-            yield* findBase(node, blockElements, ignoreElements);
-        }
-        else if (nodeName === "#text") {
-            if (node.parentElement?.childNodes.length === 1 &&
-                blockElements.slice(9).includes(nodeName)) {
-                yield node.parentElement;
-            }
-            else if (node.textContent?.trim()) {
-                yield node;
-            }
-        }
-        else if (!ignoreElements.includes(nodeName)) {
-            yield node;
-        }
+function isBaseElem(node) {
+    const nodeName = node.nodeName.toLowerCase();
+    if (node instanceof Text) {
+        return true;
     }
+    if (node.childElementCount === 0) {
+        return true;
+    }
+    if (InlineElements.includes(nodeName)) {
+        return true;
+    }
+    return Array.from(node.children).every((child) => {
+        const n = child.nodeName.toLowerCase();
+        return InlineElements.includes(n);
+    });
 }
-function getNextSibling(elem) {
-    elem = elem.nextSibling;
-    if (elem &&
-        elem.nodeName.toLowerCase() === "#text" &&
-        elem.textContent?.trim() === "") {
-        return elem.nextSibling;
+function isBaseElemWithKeep(node) {
+    const nodeName = node.nodeName.toLowerCase();
+    if (keepElements.includes(nodeName)) {
+        return true;
     }
-    return elem;
+    return isBaseElem(node);
 }
-function getPreviousSibling(elem) {
-    elem = elem.previousSibling;
-    if (elem &&
-        elem.nodeName.toLowerCase() === "#text" &&
-        elem.textContent?.trim() === "") {
-        return elem.previousSibling;
-    }
-    return elem;
-}
-function getParentElement(elem) {
-    const _elem = elem.parentElement;
-    if (!_elem) {
-        return null;
-    }
-    const nodename = _elem.nodeName.toLowerCase();
-    if (["div", "p"].includes(nodename)) {
-        return _elem;
+function* findBase(elem, withKeep = true) {
+    let is;
+    if (withKeep) {
+        is = isBaseElemWithKeep;
     }
     else {
-        return getParentElement(_elem);
+        is = isBaseElem;
     }
-}
-async function formatImage(elem, builder) {
-    function temp0() {
-        const pI = document.createElement("p");
-        pI.appendChild(imgElem);
-        builder.dom.appendChild(pI);
-        builder.text = builder.text + imgText + "\n\n";
-    }
-    if (!elem.src) {
-        return;
-    }
-    const tfi = await _formatImage(elem, builder);
-    if (!tfi) {
-        return;
-    }
-    const [imgElem, imgText] = tfi;
-    if (elem.parentElement?.childElementCount === 1) {
-        temp0();
-        return;
-    }
-    else {
-        function temp1() {
-            if (lastElement?.nodeName.toLowerCase() === "p") {
-                lastElement.appendChild(imgElem);
-                builder.text = builder.text + ` ${imgText} `;
-                return;
+    const childNodes = Array.from(elem.childNodes).filter((node) => {
+        if (node instanceof Text) {
+            const textContent = node.textContent;
+            if (textContent === null) {
+                return false;
+            }
+            if (textContent.trim() === "") {
+                return false;
+            }
+        }
+        return true;
+    });
+    for (const child of childNodes) {
+        const childNodeName = child.nodeName.toLowerCase();
+        if (IgnoreElements.includes(childNodeName) === false) {
+            if (is(child)) {
+                yield child;
             }
             else {
-                const tpElem = document.createElement("p");
-                tpElem.appendChild(imgElem);
-                builder.dom.appendChild(tpElem);
-                builder.text = builder.text + ` ${imgText} `;
-                return;
+                yield* findBase(child, withKeep);
             }
         }
-        const lastElement = builder.dom.lastElementChild;
-        const nextSibling = getNextSibling(elem);
-        const previousSibling = getPreviousSibling(elem);
-        if (elem.parentElement?.nodeName.toLowerCase() === "p" &&
-            lastElement?.nodeName.toLowerCase() === "p") {
-            if (previousSibling?.nodeName.toLowerCase() === "#text" ||
-                nextSibling?.nodeName.toLowerCase() === "#text") {
-                temp1();
-                return;
+    }
+}
+async function cleanDOM(elem, imgMode, options) {
+    const baseNodes = [...findBase(elem)];
+    const _obj = await loop(baseNodes, document.createElement("div"));
+    const obj = await awaitImages(_obj);
+    const output = postHook(obj);
+    return output;
+    async function blockElement(element) {
+        const map = new Map();
+        const divList = [
+            "article",
+            "dialog",
+            "div",
+            "footer",
+            "header",
+            "main",
+            "section",
+            "hgroup",
+        ];
+        function div(elem) {
+            if (elem instanceof HTMLElement) {
+                const nodes = [...findBase(elem)];
+                return loop(nodes, document.createElement("div"));
             }
-            if (previousSibling?.nodeName.toLowerCase() === "img" &&
-                lastElement.lastElementChild?.nodeName.toLowerCase() === "img" &&
-                lastElement.lastElementChild.alt ===
-                    previousSibling.src) {
-                temp1();
-                return;
+            return null;
+        }
+        divList.forEach((n) => map.set(n, div));
+        const pList = ["address", "p", "dd", "dt", "figcaption", "dl"];
+        function p(elem) {
+            if (elem instanceof HTMLElement) {
+                const nodes = [...findBase(elem)];
+                return loop(nodes, document.createElement("p"));
             }
+            return null;
+        }
+        pList.forEach((n) => map.set(n, p));
+        const blockquoteList = ["aside", "blockquote"];
+        async function blockquote(elem) {
+            if (elem instanceof HTMLElement) {
+                const nodes = [...findBase(elem)];
+                const { dom, text, images } = await loop(nodes, document.createElement("blockquote"));
+                const outText = text
+                    .split("\n")
+                    .map((l) => l.replace(/^/, "> "))
+                    .join("\n");
+                return {
+                    dom,
+                    text: outText,
+                    images,
+                };
+            }
+            return null;
+        }
+        blockquoteList.forEach((n) => map.set(n, blockquote));
+        const headerList = ["h1", "h2", "h3", "h4", "h5", "h6"];
+        function header(elem) {
+            if (elem instanceof HTMLElement) {
+                const nodeName = elem.nodeName.toLowerCase();
+                const n = parseInt(nodeName.substring(1));
+                const dom = document.createElement(nodeName);
+                dom.innerText = elem.innerText;
+                const text = "#".repeat(n) + " " + elem.innerText;
+                const images = [];
+                return {
+                    dom,
+                    text,
+                    images,
+                };
+            }
+            return null;
+        }
+        headerList.forEach((n) => map.set(n, header));
+        const preList = ["pre", "textarea"];
+        function pre(elem) {
+            if (elem instanceof HTMLElement) {
+                const dom = document.createElement("pre");
+                dom.innerText = elem.innerText;
+                const text = "```\n" + elem.innerText + "\n```";
+                const images = [];
+                return {
+                    dom,
+                    text,
+                    images,
+                };
+            }
+            return null;
+        }
+        preList.forEach((n) => map.set(n, pre));
+        function hr(elem) {
+            const dom = document.createElement("hr");
+            const text = "-".repeat(20);
+            const images = [];
+            return {
+                dom,
+                text,
+                images,
+            };
+        }
+        map.set("hr", hr);
+        async function common1(boldName, baseName, elem) {
+            const bold = elem.querySelector(boldName);
+            let s;
+            let sText = "";
+            if (bold instanceof HTMLElement) {
+                s = document.createElement(boldName);
+                s.innerText = bold.innerText;
+                sText = "**" + bold.innerText + "**";
+                bold.remove();
+            }
+            const base = document.createElement(baseName);
+            if (s)
+                base.appendChild(s);
+            const nodes = [...findBase(elem)];
+            const { dom, text, images } = await loop(nodes, base);
+            const outText = sText + "\n\n" + text;
+            return {
+                dom,
+                text: outText,
+                images,
+            };
+        }
+        function details(elem) {
+            return common1("summary", "details", elem);
+        }
+        map.set("details", details);
+        function figure(elem) {
+            return common1("figcaption", "figure", elem);
+        }
+        map.set("figure", figure);
+        function listItem(elem) {
+            if (elem instanceof HTMLLIElement) {
+                const dom = document.createElement("li");
+                dom.innerText = elem.innerText;
+                let prefix = "-   ";
+                const parent = elem.parentNode;
+                if (parent instanceof HTMLOListElement) {
+                    const start = parent.getAttribute("start");
+                    const index = Array.prototype.indexOf.call(parent.children, elem);
+                    prefix = (start ? Number(start) + index : index + 1) + ".  ";
+                }
+                const text = prefix + elem.innerText;
+                const images = [];
+                return {
+                    dom,
+                    text,
+                    images,
+                };
+            }
+            return null;
+        }
+        map.set("li", listItem);
+        const listList = ["ul", "ol"];
+        function list(elem) {
+            const nodeName = elem.nodeName.toLowerCase();
+            if (elem instanceof HTMLUListElement ||
+                elem instanceof HTMLOListElement) {
+                const tdom = document.createElement(nodeName);
+                const nodes = [...findBase(elem)];
+                return loop(nodes, tdom);
+            }
+            return null;
+        }
+        listList.forEach((n) => map.set(n, list));
+        const nodeName = element.nodeName.toLowerCase();
+        const fn = map.get(nodeName);
+        if (fn) {
+            return fn(element);
         }
         else {
-            temp0();
-            return;
+            return p(element);
         }
     }
-}
-async function _formatImage(elem, builder) {
-    if (!elem.src) {
-        return;
-    }
-    const imgMode = builder.imgMode;
-    const imageUrl = elem.src;
-    let noMD5 = false;
-    if (builder.option?.keepImageName) {
-        noMD5 = true;
-    }
-    const imageName = `__imageName__${Math.random()
-        .toString()
-        .replace("0.", "")}__`;
-    const imgClass = (0,_attachments__WEBPACK_IMPORTED_MODULE_0__/* .getImageAttachment */ .CE)(imageUrl, imgMode, "", noMD5, imageName);
-    builder.images.push(imgClass);
-    const imgElem = document.createElement("img");
-    imgElem.setAttribute("data-src-address", imageName);
-    imgElem.alt = imageUrl;
-    const imgText = `![${imageUrl}](${imageName})`;
-    return [imgElem, imgText, imgClass];
-}
-async function formatMisc(elem, builder) {
-    if (elem.childElementCount === 0) {
-        const lastElement = builder.dom.lastElementChild;
-        const textContent = elem.innerText.trim();
-        if (lastElement?.nodeName.toLowerCase() === "p") {
-            const textElem = document.createTextNode(textContent);
-            lastElement.appendChild(textElem);
-            builder.text = builder.text + textContent;
-        }
-        else {
-            const pElem = document.createElement("p");
-            pElem.innerText = textContent;
-            builder.dom.appendChild(pElem);
-            builder.text = builder.text + "\n\n" + textContent;
-        }
-    }
-    else {
-        await walk(elem, builder);
-        return;
-    }
-}
-async function formatParagraph(elem, builder) {
-    if (elem.childElementCount === 0) {
-        const pElem = document.createElement("p");
-        pElem.innerText = elem.innerText.trim();
-        const pText = elem.innerText.trim() + "\n\n";
-        builder.dom.appendChild(pElem);
-        builder.text = builder.text + pText;
-        return;
-    }
-    else {
-        await walk(elem, builder);
-        return;
-    }
-}
-function formatText(elems, builder) {
-    function temp0() {
-        const tPElem = document.createElement("p");
-        tPElem.innerText = textContent;
-        builder.dom.appendChild(tPElem);
-    }
-    function temp1() {
-        const lastElementTemp = builder.dom.lastElementChild;
-        if (lastElementTemp?.nodeName.toLowerCase() === "p") {
-            const textElem = document.createTextNode(textContent);
-            lastElementTemp.appendChild(textElem);
-            const tPText = textContent + "\n".repeat(brCount);
-            builder.text = builder.text + tPText;
-        }
-        else {
-            temp0();
-            const tPText = textContent + "\n".repeat(brCount);
-            builder.text = builder.text + tPText;
-        }
-    }
-    const brCount = elems.filter((ele) => ele.nodeName.toLowerCase() === "br").length;
-    const elem = elems[0];
-    const textContent = elem.textContent ? elem.textContent.trim() : "";
-    if (!textContent) {
-        return;
-    }
-    const lastElement = builder.dom.lastElementChild;
-    const previousSibling = getPreviousSibling(elem);
-    if (elem.parentElement?.nodeName.toLowerCase() === "p" &&
-        lastElement?.nodeName.toLowerCase() === "p" &&
-        previousSibling?.nodeName.toLowerCase() === "img" &&
-        lastElement.lastElementChild?.nodeName.toLowerCase() === "img" &&
-        lastElement.lastElementChild.alt ===
-            previousSibling.src) {
-        temp1();
-        return;
-    }
-    if (brCount === 0) {
-        const nextSibling = getNextSibling(elem);
-        const previousSiblingBr = getPreviousSibling(elem);
-        if (nextSibling === null) {
-            if (previousSiblingBr?.nodeName.toLowerCase() === "br") {
-                temp0();
-                const tPText = textContent + "\n\n";
-                builder.text = builder.text + tPText;
-                return;
+    function inlineElement(element) {
+        const map = new Map();
+        const defaultList = [
+            "abbr",
+            "acronym",
+            "bdi",
+            "bdo",
+            "cite",
+            "data",
+            "dfn",
+            "span",
+            "time",
+            "u",
+            "tt",
+            "#text",
+        ];
+        function defaultHandler(elem) {
+            if (elem instanceof HTMLElement || elem instanceof Text) {
+                let text;
+                if (elem instanceof HTMLElement) {
+                    text = elem.innerText.trim();
+                }
+                if (elem instanceof Text) {
+                    text = elem.textContent?.trim() ?? "";
+                }
+                if (typeof text === "string") {
+                    const dom = new Text(text);
+                    const images = [];
+                    return {
+                        dom,
+                        text,
+                        images,
+                    };
+                }
             }
-            else if (previousSiblingBr === null &&
-                (() => {
-                    const parentElement = getParentElement(elem);
-                    if (parentElement?.childNodes.length === 1) {
-                        return true;
-                    }
-                    return false;
-                })()) {
-                temp0();
-                if (builder.text.endsWith("\n")) {
-                    builder.text = builder.text + textContent + "\n\n";
+            return null;
+        }
+        defaultList.forEach((n) => map.set(n, defaultHandler));
+        function a(elem) {
+            if (elem instanceof HTMLAnchorElement) {
+                if (elem.href.startsWith("https://") ||
+                    elem.href.startsWith("http://")) {
+                    const { href, textContent } = elem;
+                    const dom = document.createElement("a");
+                    dom.href = href;
+                    dom.textContent = textContent;
+                    const text = `[${textContent}](${href})`;
+                    const images = [];
+                    return {
+                        dom,
+                        text,
+                        images,
+                    };
+                }
+            }
+            return null;
+        }
+        map.set("a", a);
+        function getImg(url) {
+            const imgClassCache = (0,_attachments__WEBPACK_IMPORTED_MODULE_0__/* .getAttachmentClassCache */ .gc)(url);
+            if (imgClassCache) {
+                const dom = document.createElement("img");
+                dom.setAttribute("data-src-address", imgClassCache.name);
+                dom.alt = url;
+                const text = `![${url}](${imgClassCache.name})`;
+                const images = [imgClassCache];
+                return {
+                    dom,
+                    text,
+                    images,
+                };
+            }
+            else {
+                const comments = (0,_attachments__WEBPACK_IMPORTED_MODULE_0__/* .getRandomName */ .VO)();
+                const noMd5 = options?.keepImageName ?? false;
+                const imgClass = (0,_attachments__WEBPACK_IMPORTED_MODULE_0__/* .getImageAttachment */ .CE)(url, imgMode, "chapter-", noMd5, comments);
+                const dom = document.createElement("img");
+                dom.setAttribute("data-src-address", comments);
+                dom.alt = url;
+                const text = `![${url}](${comments})`;
+                const images = [imgClass];
+                return {
+                    dom,
+                    text,
+                    images,
+                };
+            }
+        }
+        function img(elem) {
+            if (elem instanceof HTMLImageElement) {
+                const url = elem.src;
+                return getImg(url);
+            }
+            return null;
+        }
+        map.set("img", img);
+        function picture(elem) {
+            if (elem instanceof HTMLPictureElement) {
+                const img = elem.querySelector("img");
+                if (img) {
+                    const url = img.src;
+                    return getImg(url);
                 }
                 else {
-                    builder.text = builder.text + "\n\n" + textContent + "\n\n";
+                    _log__WEBPACK_IMPORTED_MODULE_1___default().warn("[cleanDom][picture]未发现<img>", elem);
+                    return null;
                 }
-                return;
             }
-            else {
-                temp1();
-                return;
+            return null;
+        }
+        map.set("picture", picture);
+        function ruby(elem) {
+            if (elem instanceof HTMLElement) {
+                const dom = elem.cloneNode(true);
+                const text = elem.innerText;
+                const images = [];
+                return {
+                    dom,
+                    text,
+                    images,
+                };
             }
+            return null;
+        }
+        map.set("ruby", ruby);
+        function br(elem) {
+            const dom = document.createElement("br");
+            const text = "\n";
+            const images = [];
+            return {
+                dom,
+                text,
+                images,
+            };
+        }
+        map.set("br", br);
+        function common(nodeName, getText, elem) {
+            if (elem instanceof HTMLElement) {
+                const textContent = elem.innerText.trim();
+                const dom = document.createElement(nodeName);
+                dom.innerText = textContent;
+                const text = getText(textContent);
+                const images = [];
+                return {
+                    dom,
+                    text,
+                    images,
+                };
+            }
+            return null;
+        }
+        const strongList = ["b", "big", "mark", "samp", "strong"];
+        function strong(elem) {
+            return common("strong", (textContent) => `**${textContent.replaceAll("\n", "**\n**")}**`, elem);
+        }
+        strongList.forEach((n) => map.set(n, strong));
+        const codeList = ["code", "kbd"];
+        function code(elem) {
+            return common("code", (textContent) => `\`${textContent}\``, elem);
+        }
+        codeList.forEach((n) => map.set(n, code));
+        const sList = ["del", "s"];
+        function s(elem) {
+            return common("s", (textContent) => `~~${textContent}~~`, elem);
+        }
+        sList.forEach((n) => map.set(n, s));
+        const emList = ["em", "i", "q", "var"];
+        function em(elem) {
+            return common("em", (textContent) => `*${textContent}*`, elem);
+        }
+        emList.forEach((n) => map.set(n, em));
+        function ins(elem) {
+            return common("ins", (textContent) => `++${textContent}++`, elem);
+        }
+        map.set("ins", ins);
+        function small(elem) {
+            return common("small", (textContent) => `<small>${textContent}</small>`, elem);
+        }
+        map.set("small", small);
+        function sup(elem) {
+            return common("sup", (textContent) => `<sup>${textContent}</sup>`, elem);
+        }
+        map.set("sup", sup);
+        function sub(elem) {
+            return common("sub", (textContent) => `<sub>${textContent}</sub>`, elem);
+        }
+        map.set("sub", sub);
+        const nodeName = element.nodeName.toLowerCase();
+        const fn = map.get(nodeName);
+        if (fn) {
+            return fn(element);
         }
         else {
-            if (previousSiblingBr === null) {
-                temp0();
-                const tPText = textContent;
-                if (builder.text.endsWith("\n")) {
-                    builder.text = builder.text + tPText;
+            const output = defaultHandler(element);
+            _log__WEBPACK_IMPORTED_MODULE_1___default().warn("[cleanDom]发现未知行内元素！");
+            _log__WEBPACK_IMPORTED_MODULE_1___default().warn([element.nodeName.toLowerCase(), element]);
+            return output;
+        }
+    }
+    async function loop(nodes, _outDom) {
+        let _outText = "";
+        let _outImages = [];
+        for (const node of nodes) {
+            const bNname = node.nodeName.toLowerCase();
+            if (node instanceof Text || InlineElements.includes(bNname)) {
+                const tobj = inlineElement(node);
+                if (tobj) {
+                    const { dom: tdom, text: ttext, images: timages } = tobj;
+                    _outDom.appendChild(tdom);
+                    _outText = _outText + ttext;
+                    _outImages = _outImages.concat(timages);
+                    continue;
                 }
-                else {
-                    builder.text = builder.text + "\n\n" + tPText;
-                }
-                return;
             }
-            else {
-                temp1();
-                return;
-            }
-        }
-    }
-    else if (brCount === 1) {
-        const lastElementBr = builder.dom.lastElementChild;
-        if (lastElementBr?.nodeName.toLowerCase() === "p") {
-            const br = document.createElement("br");
-            const textElem = document.createTextNode(textContent);
-            lastElementBr.appendChild(br);
-            lastElementBr.appendChild(textElem);
-            const tPText = textContent + "\n";
-            builder.text = builder.text + tPText;
-            return;
-        }
-        else {
-            temp0();
-            const tPText = textContent + "\n";
-            builder.text = builder.text + tPText;
-            return;
-        }
-    }
-    else if (brCount === 2 || brCount === 3) {
-        temp0();
-        const tPText = textContent + "\n".repeat(brCount);
-        builder.text = builder.text + tPText;
-        return;
-    }
-    else if (brCount > 3) {
-        temp0();
-        for (let i = Math.round((brCount - 2) / 3); i > 0; i--) {
-            const tPBr = document.createElement("p");
-            const br = document.createElement("br");
-            tPBr.appendChild(br);
-            builder.dom.appendChild(tPBr);
-        }
-        const tPText = textContent + "\n".repeat(brCount);
-        builder.text = builder.text + tPText;
-        return;
-    }
-}
-function formatHr(elem, builder) {
-    const hrElem = document.createElement("hr");
-    const hrText = "-".repeat(20);
-    builder.dom.appendChild(hrElem);
-    builder.text = builder.text + "\n\n" + hrText + "\n\n";
-    return;
-}
-async function formatA(elem, builder) {
-    if (elem.childElementCount === 0) {
-        if (elem.href) {
-            const aElem = document.createElement("a");
-            aElem.href = elem.href;
-            aElem.innerText = elem.innerText;
-            aElem.rel = "noopener noreferrer";
-            const aText = `[${elem.innerText}](${elem.href})`;
-            builder.dom.appendChild(aElem);
-            builder.text = builder.text + "\n\n" + aText;
-            return;
-        }
-        else {
-            return;
-        }
-    }
-    else {
-        return await formatMisc(elem, builder);
-    }
-}
-function formatVideo(elem, builder) {
-    builder.dom.appendChild(elem.cloneNode(true));
-    builder.text = builder.text + "\n\n" + elem.outerHTML;
-}
-async function walk(dom, builder) {
-    const childNodes = [...findBase(dom, BlockElements, IgnoreElements)].filter((b) => b);
-    for (let i = 0; i < childNodes.length; i++) {
-        const node = childNodes[i];
-        if (node === undefined) {
-            continue;
-        }
-        const nodeName = node.nodeName.toLowerCase();
-        switch (nodeName) {
-            case "u":
-            case "del":
-            case "sup":
-            case "sub":
-            case "strike":
-            case "small":
-            case "samp":
-            case "s":
-            case "b":
-            case "strong":
-            case "i":
-            case "em":
-            case "dfn":
-            case "var":
-            case "cite":
-            case "span":
-            case "font": {
-                await formatMisc(node, builder);
-                break;
-            }
-            case "h1":
-            case "h2":
-            case "h3":
-            case "h4":
-            case "h5":
-            case "h6":
-            case "div":
-            case "p": {
-                await formatParagraph(node, builder);
-                break;
-            }
-            case "#text": {
-                const elems = [node];
-                let j = i + 1;
-                let jnodeName = nodeName;
-                do {
-                    if (j >= childNodes.length) {
-                        break;
+            if (bNname === "textarea" || BlockElements.includes(bNname)) {
+                if (node instanceof HTMLElement) {
+                    const tobj = await blockElement(node);
+                    if (tobj) {
+                        const { dom: tdom, text: ttext, images: timages } = tobj;
+                        _outDom.appendChild(tdom);
+                        _outText = _outText + "\n" + ttext + "\n";
+                        _outImages = _outImages.concat(timages);
+                        continue;
                     }
-                    const jnode = childNodes[j];
-                    jnodeName = jnode.nodeName.toLowerCase();
-                    if (jnodeName === "br") {
-                        elems.push(jnode);
-                        delete childNodes[j];
-                        j++;
-                    }
-                } while (jnodeName === "br");
-                formatText(elems, builder);
-                break;
-            }
-            case "img": {
-                await formatImage(node, builder);
-                break;
-            }
-            case "hr": {
-                formatHr(node, builder);
-                break;
-            }
-            case "a": {
-                await formatA(node, builder);
-                break;
-            }
-            case "video": {
-                formatVideo(node, builder);
-                break;
+                }
             }
         }
+        return {
+            dom: _outDom,
+            text: _outText,
+            images: _outImages,
+        };
     }
-    return builder;
-}
-async function cleanDOM(DOM, imgMode, option = null) {
-    const builder = {
-        dom: document.createElement("div"),
-        text: "",
-        images: [],
-        imgMode,
-        option,
-    };
-    await walk(DOM, builder);
-    const dom = builder.dom;
-    let text = builder.text;
-    const pImages = builder.images;
-    let images;
-    try {
-        images = await Promise.all(pImages);
+    async function awaitImages({ dom, text, images, }) {
+        const iImages = await Promise.all(images);
+        iImages.forEach((image) => {
+            dom.innerHTML = dom.innerHTML.replaceAll(image.comments, image.name);
+            text = text.replaceAll(image.comments, image.name);
+        });
+        return {
+            dom,
+            text,
+            images: iImages,
+        };
     }
-    catch (error) {
-        _log__WEBPACK_IMPORTED_MODULE_1___default().error(error);
-        _log__WEBPACK_IMPORTED_MODULE_1___default().trace(error);
+    function postHook({ dom, text, images, }) {
+        htmlTrim(dom);
+        dom = convertBr(dom);
+        text = text.trim();
+        return {
+            dom,
+            text,
+            images,
+        };
     }
-    if (!images) {
-        _log__WEBPACK_IMPORTED_MODULE_1___default().error("[cleanDom] images is undefined!");
-        images = [];
-    }
-    for (const img of images) {
-        const comments = img.comments;
-        const blob = img.imageBlob;
-        if (comments) {
-            const _imgDom = dom.querySelector(`img[data-src-address="${comments}"]`);
-            if (blob) {
-                _imgDom?.setAttribute("data-src-address", img.name);
-                text = text.replaceAll(comments, img.name);
-            }
-            else {
-                _imgDom?.setAttribute("data-src-address", img.url);
-                text = text.replaceAll(comments, img.url);
-            }
-        }
-    }
-    text = text.trim();
-    return {
-        dom,
-        text,
-        images,
-    };
 }
 function htmlTrim(dom) {
+    const childNodes = Array.from(dom.childNodes);
+    remove(childNodes);
     const childNodesR = Array.from(dom.childNodes).reverse();
-    for (const node of childNodesR) {
-        const ntype = node.nodeName.toLowerCase();
-        const ntypes = ["#text", "br"];
-        if (!ntypes.includes(ntype)) {
-            return;
-        }
-        if (ntype === "#text") {
-            if (node.textContent?.trim() === "") {
+    remove(childNodesR);
+    function remove(nodes) {
+        for (const node of nodes) {
+            if (node instanceof Text === false ||
+                node instanceof HTMLBRElement === false) {
+                break;
+            }
+            if (node instanceof Text) {
+                if (node.textContent?.trim() === "") {
+                    node.remove();
+                }
+                else {
+                    break;
+                }
+            }
+            if (node instanceof HTMLBRElement) {
                 node.remove();
             }
-            else {
-                return;
+        }
+    }
+}
+function convertBr(dom) {
+    if (onlyTextAndBr(dom) && countBr(dom) > 3) {
+        const outDom = document.createElement("div");
+        const childNodes = dom.childNodes;
+        let brCount = 0;
+        for (const node of Array.from(childNodes)) {
+            if (node instanceof Text) {
+                if (brCount > 3) {
+                    let brRemainder = brCount - 3;
+                    const brp = document.createElement("p");
+                    while (brRemainder > 0) {
+                        brRemainder--;
+                        const br = document.createElement("br");
+                        brp.appendChild(br);
+                    }
+                    outDom.appendChild(brp);
+                }
+                brCount = 0;
+                const p = document.createElement("p");
+                p.innerText = node.textContent ?? "";
+                outDom.appendChild(p);
+            }
+            if (node instanceof HTMLBRElement) {
+                brCount++;
             }
         }
-        if (ntype === "br") {
-            node.remove();
-        }
+        return outDom;
+    }
+    else {
+        return dom;
+    }
+    function countBr(d) {
+        return Array.from(d.childNodes).filter((n) => n instanceof HTMLBRElement)
+            .length;
+    }
+    function onlyTextAndBr(d) {
+        return Array.from(d.childNodes)
+            .map((n) => n.nodeName.toLowerCase())
+            .every((nn) => ["#text", "br"].includes(nn));
     }
 }
 
@@ -4671,137 +4928,6 @@ function softByValue(a, b) {
 
 /***/ }),
 
-/***/ "./src/lib/zip.ts":
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-
-// EXPORTS
-__webpack_require__.d(__webpack_exports__, {
-  "J": () => (/* binding */ FflateZip),
-  "y": () => (/* binding */ streamSupport)
-});
-
-;// CONCATENATED MODULE: external "fflate"
-const external_fflate_namespaceObject = fflate;
-// EXTERNAL MODULE: ./node_modules/file-saver/dist/FileSaver.min.js
-var FileSaver_min = __webpack_require__("./node_modules/file-saver/dist/FileSaver.min.js");
-// EXTERNAL MODULE: ./node_modules/streamsaver/StreamSaver.js
-var StreamSaver = __webpack_require__("./node_modules/streamsaver/StreamSaver.js");
-var StreamSaver_default = /*#__PURE__*/__webpack_require__.n(StreamSaver);
-// EXTERNAL MODULE: external "log"
-var external_log_ = __webpack_require__("loglevel");
-var external_log_default = /*#__PURE__*/__webpack_require__.n(external_log_);
-// EXTERNAL MODULE: ./src/lib/misc.ts
-var misc = __webpack_require__("./src/lib/misc.ts");
-;// CONCATENATED MODULE: ./src/lib/zip.ts
-
-
-
-
-
-const rawMitm = new URL((StreamSaver_default()).mitm);
-const mitm = new URL("https://cors.bgme.me/");
-mitm.pathname = rawMitm.origin + rawMitm.pathname;
-(StreamSaver_default()).mitm = mitm.href;
-function streamSupport() {
-    return (typeof ReadableStream !== "undefined" &&
-        typeof WritableStream !== "undefined" &&
-        typeof TransformStream !== "undefined");
-}
-(StreamSaver_default()).supported = streamSupport();
-class FflateZip {
-    constructor(filename, stream) {
-        external_log_default().info(`[fflateZip] filename: ${filename}, stream: ${stream}, streamSaver.supported: ${(StreamSaver_default()).supported}`);
-        const self = this;
-        this.filename = filename;
-        if ((StreamSaver_default()).supported) {
-            this.stream = stream;
-        }
-        else {
-            this.stream = false;
-        }
-        let writer;
-        if (this.stream) {
-            const fileStream = StreamSaver_default().createWriteStream(self.filename);
-            writer =
-                fileStream.getWriter();
-        }
-        this.zcount = 0;
-        this.count = 0;
-        this.filenameList = [];
-        this.zipOut = new Blob([], { type: "application/zip" });
-        this.savedZip = new external_fflate_namespaceObject.Zip((err, dat, final) => {
-            if (err) {
-                external_log_default().error(err);
-                external_log_default().trace(err);
-                writer.abort();
-                throw err;
-            }
-            if (self.stream) {
-                writer.write(dat);
-                external_log_default().info();
-            }
-            else {
-                self.zipOut = new Blob([self.zipOut, dat], { type: "application/zip" });
-            }
-            if (final) {
-                if (self.stream) {
-                    writer.close();
-                    external_log_default().info("[fflateZip] ZIP生成完毕");
-                }
-                else {
-                    nonStream();
-                }
-            }
-            function nonStream() {
-                external_log_default().info("[fflateZip] ZIP生成完毕，文件大小：" + self.zipOut.size);
-                try {
-                    (0,FileSaver_min.saveAs)(self.zipOut, self.filename);
-                    self.zipOut = new Blob([], { type: "application/zip" });
-                }
-                catch (error) {
-                    external_log_default().error("[fflateZip]" + error);
-                    external_log_default().trace(error);
-                }
-            }
-        });
-    }
-    async file(filename, fileBlob) {
-        if (this.filenameList.includes(filename)) {
-            external_log_default().warn(`filename ${filename} has existed on zip.`);
-            return;
-        }
-        this.filenameList.push(filename);
-        this.count++;
-        const buffer = await fileBlob.arrayBuffer();
-        const chunk = new Uint8Array(buffer);
-        if (fileBlob.type.includes("image/")) {
-            const nonStreamingFile = new external_fflate_namespaceObject.ZipPassThrough(filename);
-            this.savedZip.add(nonStreamingFile);
-            nonStreamingFile.push(chunk, true);
-            this.zcount++;
-        }
-        else {
-            const nonStreamingFile = new external_fflate_namespaceObject.AsyncZipDeflate(filename, {
-                level: 9,
-            });
-            this.savedZip.add(nonStreamingFile);
-            nonStreamingFile.push(chunk, true);
-            this.zcount++;
-        }
-    }
-    async generateAsync() {
-        while (this.count !== this.zcount) {
-            await (0,misc/* sleep */._v)(100);
-        }
-        this.savedZip.end();
-    }
-}
-
-
-/***/ }),
-
 /***/ "./src/log.ts":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -5141,8 +5267,115 @@ var external_log_default = /*#__PURE__*/__webpack_require__.n(external_log_);
 var main = __webpack_require__("./src/main.ts");
 // EXTERNAL MODULE: ./node_modules/file-saver/dist/FileSaver.min.js
 var FileSaver_min = __webpack_require__("./node_modules/file-saver/dist/FileSaver.min.js");
-// EXTERNAL MODULE: ./src/lib/zip.ts + 1 modules
-var zip = __webpack_require__("./src/lib/zip.ts");
+;// CONCATENATED MODULE: external "fflate"
+const external_fflate_namespaceObject = fflate;
+// EXTERNAL MODULE: ./node_modules/streamsaver/StreamSaver.js
+var StreamSaver = __webpack_require__("./node_modules/streamsaver/StreamSaver.js");
+var StreamSaver_default = /*#__PURE__*/__webpack_require__.n(StreamSaver);
+// EXTERNAL MODULE: ./src/detect.ts
+var detect = __webpack_require__("./src/detect.ts");
+;// CONCATENATED MODULE: ./src/lib/zip.ts
+
+
+
+
+
+
+const rawMitm = new URL((StreamSaver_default()).mitm);
+const mitm = new URL("https://cors.bgme.me/");
+mitm.pathname = rawMitm.origin + rawMitm.pathname;
+(StreamSaver_default()).mitm = mitm.href;
+(StreamSaver_default()).supported = (0,detect/* streamSupport */.y)();
+class FflateZip {
+    constructor(filename, stream) {
+        external_log_default().info(`[fflateZip] filename: ${filename}, stream: ${stream}, streamSaver.supported: ${(StreamSaver_default()).supported}`);
+        const self = this;
+        this.filename = filename;
+        if ((StreamSaver_default()).supported) {
+            this.stream = stream;
+        }
+        else {
+            this.stream = false;
+        }
+        let writer;
+        if (this.stream) {
+            const fileStream = StreamSaver_default().createWriteStream(self.filename);
+            writer =
+                fileStream.getWriter();
+        }
+        this.zcount = 0;
+        this.count = 0;
+        this.filenameList = [];
+        this.zipOut = new Blob([], { type: "application/zip" });
+        this.savedZip = new external_fflate_namespaceObject.Zip((err, dat, final) => {
+            if (err) {
+                external_log_default().error(err);
+                external_log_default().trace(err);
+                if (self.stream) {
+                    writer.abort();
+                }
+                throw err;
+            }
+            if (self.stream) {
+                writer.write(dat);
+            }
+            else {
+                self.zipOut = new Blob([self.zipOut, dat], { type: "application/zip" });
+            }
+            if (final) {
+                if (self.stream) {
+                    writer.close();
+                    external_log_default().info("[fflateZip] ZIP生成完毕");
+                }
+                else {
+                    nonStream();
+                }
+            }
+            function nonStream() {
+                external_log_default().info("[fflateZip] ZIP生成完毕，文件大小：" + self.zipOut.size);
+                try {
+                    (0,FileSaver_min.saveAs)(self.zipOut, self.filename);
+                    self.zipOut = new Blob([], { type: "application/zip" });
+                }
+                catch (error) {
+                    external_log_default().error("[fflateZip]" + error);
+                    external_log_default().trace(error);
+                }
+            }
+        });
+    }
+    async file(filename, fileBlob) {
+        if (this.filenameList.includes(filename)) {
+            external_log_default().warn(`filename ${filename} has existed on zip.`);
+            return;
+        }
+        this.filenameList.push(filename);
+        this.count++;
+        const buffer = await fileBlob.arrayBuffer();
+        const chunk = new Uint8Array(buffer);
+        if (fileBlob.type.includes("image/")) {
+            const nonStreamingFile = new external_fflate_namespaceObject.ZipPassThrough(filename);
+            this.savedZip.add(nonStreamingFile);
+            nonStreamingFile.push(chunk, true);
+            this.zcount++;
+        }
+        else {
+            const nonStreamingFile = new external_fflate_namespaceObject.AsyncZipDeflate(filename, {
+                level: 9,
+            });
+            this.savedZip.add(nonStreamingFile);
+            nonStreamingFile.push(chunk, true);
+            this.zcount++;
+        }
+    }
+    async generateAsync() {
+        while (this.count !== this.zcount) {
+            await (0,misc/* sleep */._v)(100);
+        }
+        this.savedZip.end();
+    }
+}
+
 // EXTERNAL MODULE: ./src/setting.ts
 var setting = __webpack_require__("./src/setting.ts");
 // EXTERNAL MODULE: ./src/save/main.css
@@ -5251,7 +5484,7 @@ class SaveBook {
         this._sections = [];
         this.saveFileNameBase = `[${this.book.author}]${this.book.bookname}`;
         const zipFilename = `${this.saveFileNameBase}.zip`;
-        this.savedZip = new zip/* FflateZip */.J(zipFilename, streamZip);
+        this.savedZip = new FflateZip(zipFilename, streamZip);
         if (options !== undefined) {
             Object.assign(this, options);
         }
@@ -5801,6 +6034,7 @@ class BaseRuleClass {
         };
         self.bcWorker?.postMessage(closeMessage);
         self.bcWorker?.close();
+        self.bcWorkerMessages.splice(0, self.bcWorkerMessages.length);
         window.onbeforeunload = null;
         window.downloading = false;
         progress.vm.reset();
@@ -7438,7 +7672,7 @@ var external_log_ = __webpack_require__("loglevel");
 var external_log_default = /*#__PURE__*/__webpack_require__.n(external_log_);
 // EXTERNAL MODULE: ./src/main.ts
 var main = __webpack_require__("./src/main.ts");
-// EXTERNAL MODULE: ./src/rules.ts + 7 modules
+// EXTERNAL MODULE: ./src/rules.ts + 9 modules
 var rules = __webpack_require__("./src/rules.ts");
 ;// CONCATENATED MODULE: ./src/rules/lib/haitangtxtImageDecode.ts
 function replaceHaitangtxtImage(inputText) {
@@ -8243,7 +8477,11 @@ function getClass(replaceFunction) {
             };
             const getIndexUrls = () => {
                 const indexUrlsI = [];
-                const maxPageNumber = Number(getMaxPageNumber());
+                const _maxPageNumber = getMaxPageNumber();
+                if (_maxPageNumber === undefined) {
+                    throw new Error("getMaxPageNumber return null ");
+                }
+                const maxPageNumber = parseInt(_maxPageNumber);
                 for (let i = 1; i <= maxPageNumber; i++) {
                     const indexUrl = [
                         document.location.origin,
@@ -8296,12 +8534,15 @@ function getClass(replaceFunction) {
                     .match(/"(http.+)"/);
                 if (_codeurl) {
                     codeurl = _codeurl[1];
-                    code = Number(new URL(codeurl).searchParams.get("code"));
+                    const _code = new URL(codeurl).searchParams.get("code");
+                    if (_code) {
+                        code = parseInt(_code);
+                    }
                 }
                 if (_e) {
                     const e = atob(_e)
                         .split(/[A-Z]+%/)
-                        .map((v) => Number(v));
+                        .map((v) => parseInt(v));
                     const childNode = [];
                     if (Array.from(dom.querySelectorAll("script")).filter((s) => s.src.includes("/17mb/js/article.js")).length) {
                         for (let i = 0; i < e.length; i++) {
@@ -9113,7 +9354,7 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
                     "v4",
                     `read-${chapterObj.id}.html`,
                 ].join("/");
-                const chapterNumber = Number(chapterObj.order);
+                const chapterNumber = parseInt(chapterObj.order);
                 const chapterName = chapterObj.name;
                 const isVIP = chapterObj.pay;
                 const isPaid = chapterObj.is_sub;
@@ -9533,7 +9774,7 @@ var external_log_ = __webpack_require__("loglevel");
 var external_log_default = /*#__PURE__*/__webpack_require__.n(external_log_);
 // EXTERNAL MODULE: ./src/main.ts
 var main = __webpack_require__("./src/main.ts");
-// EXTERNAL MODULE: ./src/rules.ts + 7 modules
+// EXTERNAL MODULE: ./src/rules.ts + 9 modules
 var rules = __webpack_require__("./src/rules.ts");
 // EXTERNAL MODULE: ./src/setting.ts
 var setting = __webpack_require__("./src/setting.ts");
@@ -11108,7 +11349,7 @@ class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
         const getChapterTotalNumber = () => {
             const span = document.querySelector("#J-catalogCount").innerText.match(/\d+/);
             if (span) {
-                return Number(span[0]);
+                return parseInt(span[0]);
             }
         };
         if (!(liLength && getChapterTotalNumber() === liLength)) {
@@ -12903,12 +13144,10 @@ class Hetushu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c
             let path;
             let bid;
             let sid;
-            let position;
             if (/\/(book[0-9]?)\/([0-9]+)\/([0-9]+)\.html(\?position=([0-9]+))?$/.test(chapterUrl)) {
                 path = RegExp.$1;
                 bid = RegExp.$2;
                 sid = RegExp.$3;
-                position = RegExp.$5;
             }
             else {
                 return false;
@@ -12938,7 +13177,7 @@ class Hetushu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c
             if (token) {
                 const tokenDict = atob(token)
                     .split(/[A-Z]+%/)
-                    .map((v) => Number(v));
+                    .map((v) => parseInt(v));
                 const thisBody = doc.querySelector("#content");
                 let b = 0;
                 let star = 0;
@@ -13849,7 +14088,7 @@ class Xkzw extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
                                 .slice(-1)[0]
                                 .replace(".html", "");
                             ttmpChapterList.push({
-                                chapterid: Number(chapterid) - bookid * 11,
+                                chapterid: parseInt(chapterid) - bookid * 11,
                                 chaptername: chapterName,
                                 isempty: 0,
                                 originalurl: "",
@@ -14579,8 +14818,8 @@ function getSectionsObj(chapters) {
     }
     const _sectionsListObj = Object.entries(_sectionsObj);
     function sectionListSort(a, b) {
-        const aKey = Number(a[0]);
-        const bKey = Number(b[0]);
+        const aKey = parseInt(a[0]);
+        const bKey = parseInt(b[0]);
         return aKey - bKey;
     }
     _sectionsListObj.sort(sectionListSort);
@@ -15312,71 +15551,10 @@ async function debug() {
     return;
 }
 
-// EXTERNAL MODULE: ./src/lib/GM.ts
-var GM = __webpack_require__("./src/lib/GM.ts");
-// EXTERNAL MODULE: ./src/lib/http.ts
-var http = __webpack_require__("./src/lib/http.ts");
+// EXTERNAL MODULE: ./src/detect.ts
+var detect = __webpack_require__("./src/detect.ts");
 // EXTERNAL MODULE: ./src/lib/misc.ts
 var misc = __webpack_require__("./src/lib/misc.ts");
-// EXTERNAL MODULE: ./src/lib/zip.ts + 1 modules
-var zip = __webpack_require__("./src/lib/zip.ts");
-// EXTERNAL MODULE: ./src/setting.ts
-var src_setting = __webpack_require__("./src/setting.ts");
-;// CONCATENATED MODULE: ./src/detect.ts
-
-
-
-
-
-function check(name) {
-    const target = window[name];
-    const targetLength = target.toString().length;
-    const targetPrototype = target.prototype;
-    const nativeFunctionRe = /function \w+\(\) {\n?(\s+)?\[native code\]\n?(\s+)?}/;
-    try {
-        if (targetPrototype === undefined ||
-            Boolean(target.toString().match(nativeFunctionRe))) {
-            return [true, targetLength].join(", ");
-        }
-    }
-    catch {
-        return [true, targetLength].join(", ");
-    }
-    return [false, targetLength].join(", ");
-}
-function jsdelivrTest() {
-    return new Promise((resolve, reject) => {
-        (0,http/* gfetch */.GF)("https://cdn.jsdelivr.net/npm/idb-keyval/dist/umd.js")
-            .then((resp) => resolve(true))
-            .catch((error) => resolve(false));
-    });
-}
-const environments = async () => ({
-    当前时间: new Date().toISOString(),
-    当前页URL: document.location.href,
-    workerId: window.workerId,
-    当前页Referrer: document.referrer,
-    浏览器UA: navigator.userAgent,
-    浏览器语言: navigator.languages,
-    设备运行平台: navigator.platform,
-    设备内存: navigator.deviceMemory ?? "",
-    CPU核心数: navigator.hardwareConcurrency,
-    eval: check("eval"),
-    fetch: check("fetch"),
-    XMLHttpRequest: check("XMLHttpRequest"),
-    streamSupport: (0,zip/* streamSupport */.y)(),
-    window: Object.keys(window).length,
-    localStorage: (0,misc/* storageAvailable */.oZ)("localStorage"),
-    sessionStorage: (0,misc/* storageAvailable */.oZ)("sessionStorage"),
-    Cookie: navigator.cookieEnabled,
-    doNotTrack: navigator.doNotTrack ?? 0,
-    ScriptHandler: GM/* _GM_info.scriptHandler */._p.scriptHandler,
-    "ScriptHandler version": GM/* _GM_info.version */._p.version,
-    "Novel-downloader version": GM/* _GM_info.script.version */._p.script.version,
-    enableDebug: src_setting/* enableDebug.value */.Cy.value,
-    jsdelivr: await jsdelivrTest(),
-});
-
 ;// CONCATENATED MODULE: ./src/global.ts
 
 function init() {
@@ -15389,6 +15567,8 @@ function init() {
 // EXTERNAL MODULE: external "log"
 var external_log_ = __webpack_require__("loglevel");
 var external_log_default = /*#__PURE__*/__webpack_require__.n(external_log_);
+// EXTERNAL MODULE: ./src/setting.ts
+var src_setting = __webpack_require__("./src/setting.ts");
 // EXTERNAL MODULE: external "Vue"
 var external_Vue_ = __webpack_require__("vue");
 ;// CONCATENATED MODULE: ./src/ui/fixVue.ts
@@ -15434,6 +15614,8 @@ globalThis.Function = new Proxy(Function, {
 
 // EXTERNAL MODULE: ./src/lib/createEl.ts
 var createEl = __webpack_require__("./src/lib/createEl.ts");
+// EXTERNAL MODULE: ./src/lib/GM.ts
+var GM = __webpack_require__("./src/lib/GM.ts");
 ;// CONCATENATED MODULE: ./src/router/ui.ts
 
 const defaultObject = {
@@ -15761,7 +15943,7 @@ const filterOptionDict = {
                     case /^\d+$/.test(s): {
                         const _m = s.match(/^(\d+)$/);
                         if (_m?.length === 2) {
-                            const m = Number(_m[1]);
+                            const m = parseInt(_m[1]);
                             if (m === n) {
                                 return true;
                             }
@@ -15781,7 +15963,7 @@ const filterOptionDict = {
                     case /^\d+-$/.test(s): {
                         const _m = s.match(/^(\d+)-$/);
                         if (_m?.length === 2) {
-                            const m = Number(_m[1]);
+                            const m = parseInt(_m[1]);
                             if (n >= m) {
                                 return true;
                             }
@@ -15791,7 +15973,7 @@ const filterOptionDict = {
                     case /^-\d+$/.test(s): {
                         const _m = s.match(/^-(\d+)$/);
                         if (_m?.length === 2) {
-                            const m = Number(_m[1]);
+                            const m = parseInt(_m[1]);
                             if (n <= m) {
                                 return true;
                             }
@@ -15916,6 +16098,8 @@ var setting_code = "<div> <dialog-ui dialog-title=\"设置\" v-bind:status=\"ope
 /* harmony default export */ const setting = (setting_code);
 // EXTERNAL MODULE: ./src/ui/setting.less
 var ui_setting = __webpack_require__("./src/ui/setting.less");
+// EXTERNAL MODULE: ./src/lib/attachments.ts
+var attachments = __webpack_require__("./src/lib/attachments.ts");
 ;// CONCATENATED MODULE: ./src/ui/TestUI.html
 // Module
 var TestUI_code = "<div> <div id=\"test-page-div\"> <h2>元数据</h2> <table> <tbody> <tr v-for=\"(value, key) in metaData\"> <td>{{ key }}</td> <td v-html=\"getData(key, value)\"></td> </tr> </tbody> </table> <hr class=\"hr-edge-weak\"/> <h2>章节测试</h2> <div class=\"preview-chapter-setting\"> <label for=\"chapterNumber\">预览章节序号：</label> <input type=\"text\" id=\"chapterNumber\" v-model=\"chapterNumber\"/> </div> <div v-if=\"this.isSeenChapter(chapter)\"> <h4> <a v-bind:href=\"chapter.chapterUrl\" target=\"_blank\" rel=\"noopener noreferrer\">{{ chapter.chapterName }}</a> </h4> <div class=\"chapter\" v-html=\"getChapterHtml(chapter)\"></div> </div> <div v-else> <p v-if=\"this.isChapterFailed(chapter)\">章节加载失败！</p> <p v-else>正在加载章节中……</p> </div> </div> </div> ";
@@ -15924,6 +16108,7 @@ var TestUI_code = "<div> <div id=\"test-page-div\"> <h2>元数据</h2> <table> <
 // EXTERNAL MODULE: ./src/ui/TestUI.less
 var ui_TestUI = __webpack_require__("./src/ui/TestUI.less");
 ;// CONCATENATED MODULE: ./src/ui/TestUI.ts
+
 
 
 
@@ -15945,12 +16130,12 @@ var ui_TestUI = __webpack_require__("./src/ui/TestUI.less");
         const metaData = (0,external_Vue_.reactive)({});
         function getData(key, value) {
             if (key === "封面") {
-                return `<img src="${value}">`;
+                return `<img src="${value[0]}" alt="${value[1]}">`;
             }
-            if (key === "简介") {
+            if (key === "简介" && value instanceof HTMLElement) {
                 return value.outerHTML;
             }
-            if (key === "网址") {
+            if (key === "网址" && typeof value === "string") {
                 return `<a href="${value}">${value}</a>`;
             }
             return value;
@@ -16003,7 +16188,8 @@ var ui_TestUI = __webpack_require__("./src/ui/TestUI.less");
             const imgs = _chapter.contentHTML?.querySelectorAll("img");
             if (imgs) {
                 Array.from(imgs).forEach((img) => {
-                    img.src = img.alt;
+                    const url = img.alt;
+                    img.src = getObjectUrl(url);
                 });
             }
             return _chapter.contentHTML?.outerHTML;
@@ -16011,8 +16197,10 @@ var ui_TestUI = __webpack_require__("./src/ui/TestUI.less");
         (0,external_Vue_.onMounted)(async () => {
             const _book = await waitBook();
             Object.assign(book, _book);
+            const coverUrl = book.additionalMetadate?.cover?.url ?? "";
+            const coverSrc = coverUrl ? getObjectUrl(coverUrl) : "";
             const _metaData = {
-                封面: book.additionalMetadate?.cover?.url ?? "",
+                封面: [coverSrc, coverUrl],
                 题名: book.bookname ?? "None",
                 作者: book.author ?? "None",
                 网址: book.bookUrl,
@@ -16024,6 +16212,15 @@ var ui_TestUI = __webpack_require__("./src/ui/TestUI.less");
                 chapterNumber.value = cn;
             }
         });
+        function getObjectUrl(url) {
+            const attachment = (0,attachments/* getAttachmentClassCache */.gc)(url);
+            if (attachment?.imageBlob) {
+                const blob = attachment.imageBlob;
+                const src = URL.createObjectURL(blob);
+                return src;
+            }
+            return "";
+        }
         return {
             metaData,
             getData,
@@ -16341,7 +16538,7 @@ function ui_init() {
 
 async function printEnvironments() {
     external_log_default().info("[Init]开始载入小说下载器……");
-    Object.entries(await environments()).forEach((kv) => external_log_default().info("[Init]" + kv.join("：")));
+    Object.entries(await (0,detect/* environments */.T)()).forEach((kv) => external_log_default().info("[Init]" + kv.join("：")));
 }
 function src_main() {
     init();

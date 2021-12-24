@@ -8,7 +8,7 @@ declare const _default: import("vue").DefineComponent<{}, {
         网址: string;
         简介: HTMLElement;
     };
-    getData: (key: string, value: string | HTMLElement) => string | HTMLElement;
+    getData: (key: string, value: string | HTMLElement | [string, string]) => string | HTMLElement | [string, string];
     chapter: {};
     isSeenChapter: (_chapter: Chapter) => boolean;
     isChapterFailed: (_chapter: Chapter) => boolean;

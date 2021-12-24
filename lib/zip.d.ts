@@ -1,4 +1,3 @@
-export declare function streamSupport(): boolean;
 export declare class FflateZip {
     filename: string;
     stream: boolean;
