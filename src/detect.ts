@@ -69,7 +69,7 @@ export const environments = async () => ({
   Cookie: navigator.cookieEnabled,
   doNotTrack: navigator.doNotTrack ?? 0,
   jsdelivr: await jsdelivrAvailability(),
-  streamSaverMitmPage: await mitmPageAvailability(),
+  // streamSaverMitmPage: await mitmPageAvailability(),
   enableDebug: enableDebug.value,
   ScriptHandler: _GM_info.scriptHandler,
   "ScriptHandler version": _GM_info.version,

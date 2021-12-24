@@ -15,8 +15,8 @@ async function printEnvironments() {
 
 function main() {
   globalInit();
-  uiInit();
   printEnvironments();
+  uiInit();
   if (enableDebug.value) {
     setTimeout(debug, 3000);
   }
