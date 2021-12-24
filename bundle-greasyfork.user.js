@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.7.0.435
+// @version        4.7.0.436
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -15043,8 +15043,53 @@ var __webpack_exports__ = {};
 (() => {
 "use strict";
 
-// EXTERNAL MODULE: ./node_modules/file-saver/dist/FileSaver.min.js
-var FileSaver_min = __webpack_require__("./node_modules/file-saver/dist/FileSaver.min.js");
+// EXTERNAL MODULE: ./src/detect.ts
+var detect = __webpack_require__("./src/detect.ts");
+// EXTERNAL MODULE: ./src/lib/misc.ts
+var misc = __webpack_require__("./src/lib/misc.ts");
+;// CONCATENATED MODULE: ./src/global.ts
+
+function init() {
+    window.workerId = Math.random().toString().replace("0.", "");
+    window.downloading = false;
+    window.customStorage = new misc/* LocalStorageExpired */.Z2();
+    window.stopFlag = false;
+}
+
+// EXTERNAL MODULE: external "log"
+var external_log_ = __webpack_require__("loglevel");
+var external_log_default = /*#__PURE__*/__webpack_require__.n(external_log_);
+// EXTERNAL MODULE: external "Vue"
+var external_Vue_ = __webpack_require__("vue");
+;// CONCATENATED MODULE: ./src/ui/fixVue.ts
+
+
+globalThis.Function = new Proxy(Function, {
+    construct(target, args) {
+        const code = args[args.length - 1];
+        if (code.includes("Vue") && code.includes("_Vue")) {
+            external_log_default().debug("Function hook:" + code);
+            return hookVue();
+        }
+        else {
+            return new target(...args);
+        }
+        function hookVue() {
+            args[args.length - 1] = "with (Vue) {" + code + "}";
+            return new Proxy(new target(...["Vue", ...args]), {
+                apply(targetI, thisArg, argumentsList) {
+                    const newArgumentsList = [external_Vue_, ...argumentsList];
+                    return Reflect.apply(targetI, thisArg, newArgumentsList);
+                },
+            });
+        }
+    },
+});
+
+// EXTERNAL MODULE: ./src/lib/createEl.ts
+var createEl = __webpack_require__("./src/lib/createEl.ts");
+// EXTERNAL MODULE: ./src/lib/GM.ts
+var GM = __webpack_require__("./src/lib/GM.ts");
 ;// CONCATENATED MODULE: ./src/router/download.ts
 async function getRule() {
     const host = document.location.host;
@@ -15521,100 +15566,6 @@ async function getRule() {
     }
 }
 
-;// CONCATENATED MODULE: ./src/debug.ts
-
-
-async function debug() {
-    try {
-        const rule = await getRule();
-        let book;
-        if (typeof window._book !== "undefined") {
-            book = window._book;
-        }
-        else {
-            book = await rule.bookParse();
-        }
-        unsafeWindow.rule = rule;
-        unsafeWindow.book = book;
-        window._book = book;
-    }
-    catch (error) { }
-    unsafeWindow.saveAs = FileSaver_min.saveAs;
-    const { parse, fetchAndParse, gfetchAndParse } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/lib/readability.ts"));
-    const readability = {
-        parse,
-        fetchAndParse,
-        gfetchAndParse,
-    };
-    unsafeWindow.readability = readability;
-    return;
-}
-
-// EXTERNAL MODULE: ./src/detect.ts
-var detect = __webpack_require__("./src/detect.ts");
-// EXTERNAL MODULE: ./src/lib/misc.ts
-var misc = __webpack_require__("./src/lib/misc.ts");
-;// CONCATENATED MODULE: ./src/global.ts
-
-function init() {
-    window.workerId = Math.random().toString().replace("0.", "");
-    window.downloading = false;
-    window.customStorage = new misc/* LocalStorageExpired */.Z2();
-    window.stopFlag = false;
-}
-
-// EXTERNAL MODULE: external "log"
-var external_log_ = __webpack_require__("loglevel");
-var external_log_default = /*#__PURE__*/__webpack_require__.n(external_log_);
-// EXTERNAL MODULE: ./src/setting.ts
-var src_setting = __webpack_require__("./src/setting.ts");
-// EXTERNAL MODULE: external "Vue"
-var external_Vue_ = __webpack_require__("vue");
-;// CONCATENATED MODULE: ./src/ui/fixVue.ts
-
-
-globalThis.Vue = external_Vue_;
-globalThis.Function = new Proxy(Function, {
-    construct(target, args) {
-        const code = args[args.length - 1];
-        if (code.includes("Vue") && code.includes("_Vue")) {
-            external_log_default().debug("Function hook:" + code);
-            return hook();
-        }
-        else {
-            return new target(...args);
-        }
-        function hook() {
-            function getGlobalObjectKeys() {
-                const _get = () => {
-                    return Object.getOwnPropertyNames(window).filter((key) => window[key] === window);
-                };
-                const _f = new target(`return (${_get.toString()})()`);
-                return _f();
-            }
-            const globalObjectKeys = getGlobalObjectKeys();
-            const newArgs = [];
-            newArgs.push(...globalObjectKeys);
-            args[args.length - 1] = "with (window) {" + code + "}";
-            newArgs.push(...args);
-            const _newTarget = new target(...newArgs);
-            const newTarget = new Proxy(_newTarget, {
-                apply(targetI, thisArg, argumentsList) {
-                    const newArgumentsList = [];
-                    globalObjectKeys.forEach(() => newArgumentsList.push(window));
-                    newArgumentsList.push(...argumentsList);
-                    return Reflect.apply(targetI, window, newArgumentsList);
-                },
-            });
-            return newTarget;
-        }
-    },
-});
-
-// EXTERNAL MODULE: ./src/lib/createEl.ts
-var createEl = __webpack_require__("./src/lib/createEl.ts");
-// EXTERNAL MODULE: ./src/lib/GM.ts
-var GM = __webpack_require__("./src/lib/GM.ts");
 ;// CONCATENATED MODULE: ./src/router/ui.ts
 
 const defaultObject = {
@@ -15798,6 +15749,8 @@ function getUI() {
     }
 }
 
+// EXTERNAL MODULE: ./src/setting.ts
+var src_setting = __webpack_require__("./src/setting.ts");
 ;// CONCATENATED MODULE: ./src/ui/button.html
 // Module
 var code = "<div class=\"button-div\" id=\"button-div\"> <div v-if=\"uiObj.type !== 'error'\"> <div class=\"jump\" v-if=\"uiObj.type === 'jump'\"> <button class=\"jump\"> <img class=\"jump\" v-bind:src=\"imgJump\" v-on:click=\"jumpButtonClick\"/> </button> </div> <div class=\"download\" v-if=\"uiObj.type === 'download'\"> <button class=\"start\"> <img class=\"start\" v-bind:src=\"imgStart\" v-on:click=\"startButtonClick\"/> </button> <button class=\"setting\" v-if=\"isSettingSeen\"> <img class=\"setting\" v-bind:src=\"imgSetting\" v-on:click=\"settingButtonClick\"/> </button> </div> </div> </div> ";
@@ -15805,6 +15758,37 @@ var code = "<div class=\"button-div\" id=\"button-div\"> <div v-if=\"uiObj.type 
 /* harmony default export */ const ui_button = (code);
 // EXTERNAL MODULE: ./src/ui/button.less
 var src_ui_button = __webpack_require__("./src/ui/button.less");
+// EXTERNAL MODULE: ./node_modules/file-saver/dist/FileSaver.min.js
+var FileSaver_min = __webpack_require__("./node_modules/file-saver/dist/FileSaver.min.js");
+;// CONCATENATED MODULE: ./src/debug.ts
+
+
+async function debug() {
+    try {
+        const rule = await getRule();
+        let book;
+        if (typeof window._book !== "undefined") {
+            book = window._book;
+        }
+        else {
+            book = await rule.bookParse();
+        }
+        unsafeWindow.rule = rule;
+        unsafeWindow.book = book;
+        window._book = book;
+    }
+    catch (error) { }
+    unsafeWindow.saveAs = FileSaver_min.saveAs;
+    const { parse, fetchAndParse, gfetchAndParse } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/lib/readability.ts"));
+    const readability = {
+        parse,
+        fetchAndParse,
+        gfetchAndParse,
+    };
+    unsafeWindow.readability = readability;
+    return;
+}
+
 // EXTERNAL MODULE: ./src/main.ts
 var main = __webpack_require__("./src/main.ts");
 // EXTERNAL MODULE: ./src/save/misc.ts
@@ -16533,19 +16517,14 @@ function ui_init() {
 
 
 
-
-
 async function printEnvironments() {
     external_log_default().info("[Init]开始载入小说下载器……");
     Object.entries(await (0,detect/* environments */.T)()).forEach((kv) => external_log_default().info("[Init]" + kv.join("：")));
 }
-function src_main() {
+async function src_main() {
     init();
+    await printEnvironments();
     ui_init();
-    printEnvironments();
-    if (src_setting/* enableDebug.value */.Cy.value) {
-        setTimeout(debug, 3000);
-    }
 }
 if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", (event) => {
