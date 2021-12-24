@@ -19,7 +19,6 @@ export declare const environments: () => Promise<{
     Cookie: boolean;
     doNotTrack: string | number;
     jsdelivr: unknown;
-    streamSaverMitmPage: unknown;
     enableDebug: boolean;
     ScriptHandler: string;
     "ScriptHandler version": string;

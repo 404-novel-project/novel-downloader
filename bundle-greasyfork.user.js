@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.7.0.434
+// @version        4.7.0.435
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -3416,7 +3416,6 @@ const environments = async () => ({
     Cookie: navigator.cookieEnabled,
     doNotTrack: navigator.doNotTrack ?? 0,
     jsdelivr: await jsdelivrAvailability(),
-    streamSaverMitmPage: await mitmPageAvailability(),
     enableDebug: _setting__WEBPACK_IMPORTED_MODULE_2__/* .enableDebug.value */ .Cy.value,
     ScriptHandler: _lib_GM__WEBPACK_IMPORTED_MODULE_3__/* ._GM_info.scriptHandler */ ._p.scriptHandler,
     "ScriptHandler version": _lib_GM__WEBPACK_IMPORTED_MODULE_3__/* ._GM_info.version */ ._p.version,
