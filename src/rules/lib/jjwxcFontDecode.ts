@@ -24,8 +24,9 @@ export async function replaceJjwxcCharacter(
 }
 
 async function getJjwxcFontTable(fontName: string) {
-  const jjwxcFontTables = await getJjwxcFontTables();
-  const jjwxcFontTableLocal = jjwxcFontTables[fontName];
+  // const jjwxcFontTables = await getJjwxcFontTables();
+  // const jjwxcFontTableLocal = jjwxcFontTables[fontName];
+  const jjwxcFontTableLocal = false;
   if (jjwxcFontTableLocal) {
     return jjwxcFontTableLocal;
   } else if (enableJjwxcRemoteFont) {
