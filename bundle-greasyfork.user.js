@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.7.2.440
+// @version        4.7.2.441
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -10199,8 +10199,7 @@ async function replaceJjwxcCharacter(fontName, inputText) {
     return outputText;
 }
 async function getJjwxcFontTable(fontName) {
-    const jjwxcFontTables = await getJjwxcFontTables();
-    const jjwxcFontTableLocal = jjwxcFontTables[fontName];
+    const jjwxcFontTableLocal = false;
     if (jjwxcFontTableLocal) {
         return jjwxcFontTableLocal;
     }
@@ -10254,21 +10253,21 @@ async function getJjwxcFontTables() {
     const JjwxcFontTablesUrl = "https://cdn.jsdelivr.net/gh/yingziwu/jjwxcFontTables@gh-pages/bundle.json";
     async function fetchAndSave() {
         try {
-            external_log_default().info("[jjwxc-font]开始下载字体对照表打包文件。");
+            log.info("[jjwxc-font]开始下载字体对照表打包文件。");
             const resp = await fetch(JjwxcFontTablesUrl);
             _jjwxcFontTables = await resp.json();
             if (_jjwxcFontTables) {
-                if (await (0,external_idbKeyval_namespaceObject.get)(JjwxcFontTablesKeyName)) {
-                    await (0,external_idbKeyval_namespaceObject.update)(JjwxcFontTablesKeyName, (val) => _jjwxcFontTables);
+                if (await get(JjwxcFontTablesKeyName)) {
+                    await update(JjwxcFontTablesKeyName, (val) => _jjwxcFontTables);
                 }
                 else {
-                    await (0,external_idbKeyval_namespaceObject.set)(JjwxcFontTablesKeyName, _jjwxcFontTables);
+                    await set(JjwxcFontTablesKeyName, _jjwxcFontTables);
                 }
-                if (await (0,external_idbKeyval_namespaceObject.get)(JjwxcFontTablesExpiresKeyName)) {
-                    await (0,external_idbKeyval_namespaceObject.update)(JjwxcFontTablesExpiresKeyName, (val) => Date.now() + 1000 * 86400);
+                if (await get(JjwxcFontTablesExpiresKeyName)) {
+                    await update(JjwxcFontTablesExpiresKeyName, (val) => Date.now() + 1000 * 86400);
                 }
                 else {
-                    await (0,external_idbKeyval_namespaceObject.set)(JjwxcFontTablesExpiresKeyName, Date.now() + 1000 * 86400);
+                    await set(JjwxcFontTablesExpiresKeyName, Date.now() + 1000 * 86400);
                 }
                 return _jjwxcFontTables;
             }
@@ -10280,10 +10279,10 @@ async function getJjwxcFontTables() {
             return {};
         }
     }
-    let _jjwxcFontTables = await (0,external_idbKeyval_namespaceObject.get)(JjwxcFontTablesKeyName);
+    let _jjwxcFontTables = await get(JjwxcFontTablesKeyName);
     if (_jjwxcFontTables) {
-        if ((await (0,external_idbKeyval_namespaceObject.get)(JjwxcFontTablesExpiresKeyName)) &&
-            (await (0,external_idbKeyval_namespaceObject.get)(JjwxcFontTablesExpiresKeyName)) > Date.now()) {
+        if ((await get(JjwxcFontTablesExpiresKeyName)) &&
+            (await get(JjwxcFontTablesExpiresKeyName)) > Date.now()) {
             return _jjwxcFontTables;
         }
         else {
