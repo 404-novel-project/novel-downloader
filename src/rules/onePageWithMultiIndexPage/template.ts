@@ -27,6 +27,7 @@ interface MkRuleClassOptions {
   getContent?: (doc: Document) => HTMLElement | null;
   contentPatch: (content: HTMLElement) => HTMLElement;
   concurrencyLimit?: number;
+  needLogin?: boolean;
   cleanDomOptions?: Options;
 }
 export function mkRuleClass({
@@ -44,6 +45,7 @@ export function mkRuleClass({
   getContent,
   contentPatch,
   concurrencyLimit,
+  needLogin,
   cleanDomOptions,
 }: MkRuleClassOptions): PublicConstructor<BaseRuleClass> {
   return class extends BaseRuleClass {
@@ -52,6 +54,9 @@ export function mkRuleClass({
       this.imageMode = "TM";
       if (concurrencyLimit) {
         this.concurrencyLimit = concurrencyLimit;
+      }
+      if (needLogin) {
+        this.needLogin = needLogin;
       }
     }
     public async bookParse() {

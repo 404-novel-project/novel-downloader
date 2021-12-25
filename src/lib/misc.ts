@@ -271,3 +271,14 @@ export function getCookie(name: string) {
     return null;
   }
 }
+
+export async function saveToArchiveOrg(url: string) {
+  const req = await fetch("https://save.bgme.bid/save", {
+    body: JSON.stringify({
+      url,
+    }),
+    method: "POST",
+  });
+  const data = await req.json();
+  return data;
+}

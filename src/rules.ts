@@ -1,6 +1,6 @@
 import { GmWindow, UnsafeWindow } from "./global";
 import { clearAttachmentClassCache } from "./lib/attachments";
-import { concurrencyRun, sleep } from "./lib/misc";
+import { concurrencyRun, saveToArchiveOrg, sleep } from "./lib/misc";
 import { log, saveLogTextToFile } from "./log";
 import { ExpectError, Status } from "./main/main";
 import { AttachmentClass } from "./main/Attachment";
@@ -11,6 +11,7 @@ import {
   enableCustomChapterFilter,
   enableCustomFinishCallback,
   enableCustomSaveOptions,
+  enableSaveToArchiveOrg,
 } from "./setting";
 import { failedPlus, printStat, successPlus } from "./stat";
 import { ProgressVM, vm as progress } from "./ui/progress";
@@ -40,6 +41,7 @@ export abstract class BaseRuleClass {
   public maxRunLimit?: number;
   public saveOptions?: SaveOptions;
   public streamZip: boolean;
+  public needLogin: boolean;
 
   public book?: Book;
 
@@ -54,6 +56,7 @@ export abstract class BaseRuleClass {
     this.charset = document.characterSet;
     this.concurrencyLimit = 10;
     this.streamZip = false;
+    this.needLogin = false;
     registerBroadcastChannel();
 
     function registerBroadcastChannel(): void {
@@ -102,6 +105,7 @@ export abstract class BaseRuleClass {
       await self.preHook();
       await initBook();
       const saveBookObj = initSave(self.book as Book);
+      hook();
       await self.initChapters(self.book as Book, saveBookObj);
       await save(saveBookObj);
       self.postHook();
@@ -138,6 +142,16 @@ export abstract class BaseRuleClass {
         }
       }
       return new SaveBook(book, self.streamZip);
+    }
+
+    function hook() {
+      if (
+        enableSaveToArchiveOrg &&
+        self.needLogin === false &&
+        self.book?.bookUrl
+      ) {
+        saveToArchiveOrg(self.book.bookUrl);
+      }
     }
 
     async function save(saveObj: SaveBook): Promise<void> {

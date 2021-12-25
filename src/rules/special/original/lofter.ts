@@ -11,6 +11,7 @@ export class Lofter extends BaseRuleClass {
     super();
     this.imageMode = "TM";
     this.concurrencyLimit = 5;
+    this.streamZip = true;
   }
 
   public async bookParse() {
