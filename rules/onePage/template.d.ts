@@ -20,7 +20,8 @@ interface MkRuleClassOptions {
     getContent?: (doc: Document) => HTMLElement | null;
     contentPatch: (content: HTMLElement) => HTMLElement;
     concurrencyLimit?: number;
+    needLogin?: boolean;
     cleanDomOptions?: Options;
 }
-export declare function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, coverUrl, additionalMetadatePatch, aList, getAName, sections, getSName: _getSectionName, postHook, getContentFromUrl, getContent, contentPatch, concurrencyLimit, cleanDomOptions, }: MkRuleClassOptions): PublicConstructor<BaseRuleClass>;
+export declare function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, coverUrl, additionalMetadatePatch, aList, getAName, sections, getSName: _getSectionName, postHook, getContentFromUrl, getContent, contentPatch, concurrencyLimit, needLogin, cleanDomOptions, }: MkRuleClassOptions): PublicConstructor<BaseRuleClass>;
 export {};

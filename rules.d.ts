@@ -17,6 +17,7 @@ export declare abstract class BaseRuleClass {
     maxRunLimit?: number;
     saveOptions?: SaveOptions;
     streamZip: boolean;
+    needLogin: boolean;
     book?: Book;
     private audio?;
     private bcWorker;

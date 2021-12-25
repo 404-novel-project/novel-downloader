@@ -21,3 +21,4 @@ export declare function regexpEscape(str: string): string;
 export declare function getMaxDepth(element: Element): number;
 export declare function getNodeTextLength(element: Element): number;
 export declare function getCookie(name: string): string | null;
+export declare function saveToArchiveOrg(url: string): Promise<any>;
