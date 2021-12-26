@@ -133,6 +133,7 @@ export class Sfacg extends BaseRuleClass {
       additionalMetadate,
       chapters
     );
+    book.ToCUrl = document.location.href;
     return book;
   }
 

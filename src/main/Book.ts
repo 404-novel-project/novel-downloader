@@ -17,6 +17,7 @@ export interface BookAdditionalMetadate {
 
 export class Book {
   public bookUrl: string;
+  public ToCUrl?: string;
   public bookname: string;
   public author: string;
   public introduction: string | null;

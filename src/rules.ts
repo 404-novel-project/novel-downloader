@@ -105,7 +105,7 @@ export abstract class BaseRuleClass {
       await self.preHook();
       await initBook();
       const saveBookObj = initSave(self.book as Book);
-      hook();
+      saveHook();
       await self.initChapters(self.book as Book, saveBookObj);
       await save(saveBookObj);
       self.postHook();
@@ -144,13 +144,16 @@ export abstract class BaseRuleClass {
       return new SaveBook(book, self.streamZip);
     }
 
-    function hook() {
+    function saveHook() {
       if (
         enableSaveToArchiveOrg &&
         self.needLogin === false &&
         self.book?.bookUrl
       ) {
         saveToArchiveOrg(self.book.bookUrl);
+        if (self.book.ToCUrl) {
+          saveToArchiveOrg(self.book.ToCUrl);
+        }
       }
     }
 

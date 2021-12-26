@@ -118,6 +118,7 @@ export class Ciweimao extends BaseRuleClass {
       additionalMetadate,
       chapters
     );
+    book.ToCUrl = document.location.href;
     return book;
   }
 

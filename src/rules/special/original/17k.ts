@@ -110,6 +110,7 @@ export class C17k extends BaseRuleClass {
       additionalMetadate,
       chapters
     );
+    book.ToCUrl = document.location.href;
     return book;
   }
 

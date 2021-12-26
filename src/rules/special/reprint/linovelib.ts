@@ -100,6 +100,7 @@ export class Linovelib extends BaseRuleClass {
       additionalMetadate,
       chapters
     );
+    book.ToCUrl = document.location.href;
     return book;
   }
 

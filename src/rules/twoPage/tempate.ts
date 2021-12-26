@@ -159,6 +159,7 @@ export function mkRuleClass({
         additionalMetadate,
         chapters
       );
+      book.ToCUrl = anotherPageUrl;
       return book;
     }
     public async chapterParse(
