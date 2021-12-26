@@ -135,10 +135,10 @@ export abstract class BaseRuleClass {
         typeof (unsafeWindow as UnsafeWindow).saveOptions === "object" &&
         saveOptionsValidate((unsafeWindow as UnsafeWindow).saveOptions)
       ) {
-        const saveOptionsInner = (unsafeWindow as UnsafeWindow).saveOptions;
-        if (saveOptionsInner) {
-          log.info("[run]发现自定义保存参数，内容如下\n", saveOptionsInner);
-          return new SaveBook(book, self.streamZip, saveOptionsInner);
+        const saveOptions = (unsafeWindow as UnsafeWindow).saveOptions;
+        if (saveOptions) {
+          log.info("[run]发现自定义保存参数，内容如下\n", saveOptions);
+          return new SaveBook(book, self.streamZip, saveOptions);
         }
       }
       return new SaveBook(book, self.streamZip);

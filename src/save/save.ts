@@ -34,8 +34,7 @@ export function saveOptionsValidate(data: any) {
   ];
 
   function keyNametest(keyname: string) {
-    const keyList: string[] = [];
-    keyList.concat(keyNamesS).concat(keyNamesF);
+    const keyList: string[] = [...keyNamesS, ...keyNamesF];
     if (keyList.includes(keyname)) {
       return true;
     }
