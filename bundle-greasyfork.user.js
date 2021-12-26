@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.7.3.442
+// @version        4.7.3.443
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -5541,8 +5541,7 @@ function saveOptionsValidate(data) {
         "chapterSort",
     ];
     function keyNametest(keyname) {
-        const keyList = [];
-        keyList.concat(keyNamesS).concat(keyNamesF);
+        const keyList = [...keyNamesS, ...keyNamesF];
         if (keyList.includes(keyname)) {
             return true;
         }
@@ -5984,10 +5983,10 @@ class BaseRuleClass {
             if (setting/* enableCustomSaveOptions */.EI &&
                 typeof unsafeWindow.saveOptions === "object" &&
                 saveOptionsValidate(unsafeWindow.saveOptions)) {
-                const saveOptionsInner = unsafeWindow.saveOptions;
-                if (saveOptionsInner) {
-                    external_log_default().info("[run]发现自定义保存参数，内容如下\n", saveOptionsInner);
-                    return new SaveBook(book, self.streamZip, saveOptionsInner);
+                const saveOptions = unsafeWindow.saveOptions;
+                if (saveOptions) {
+                    external_log_default().info("[run]发现自定义保存参数，内容如下\n", saveOptions);
+                    return new SaveBook(book, self.streamZip, saveOptions);
                 }
             }
             return new SaveBook(book, self.streamZip);
