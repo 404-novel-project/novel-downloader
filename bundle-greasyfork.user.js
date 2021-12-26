@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.7.2.441
+// @version        4.7.3.442
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -137,6 +137,7 @@
 // @match          *://www.tycqxs.com/*_*/
 // @match          *://www.kanunu8.com/*
 // @match          *://www.ciyuanji.com/bookDetails/*
+// @match          *://ciyuanji.com/bookDetails/*
 // @match          *://m.wanben.org/*/
 // @match          *://www.wanben.org/*/
 // @match          *://www.ranwen.la/files/article/*/*/
@@ -5957,7 +5958,7 @@ class BaseRuleClass {
             await self.preHook();
             await initBook();
             const saveBookObj = initSave(self.book);
-            hook();
+            saveHook();
             await self.initChapters(self.book, saveBookObj);
             await save(saveBookObj);
             self.postHook();
@@ -5991,11 +5992,14 @@ class BaseRuleClass {
             }
             return new SaveBook(book, self.streamZip);
         }
-        function hook() {
+        function saveHook() {
             if (setting/* enableSaveToArchiveOrg */.CA &&
                 self.needLogin === false &&
                 self.book?.bookUrl) {
                 (0,misc/* saveToArchiveOrg */.K$)(self.book.bookUrl);
+                if (self.book.ToCUrl) {
+                    (0,misc/* saveToArchiveOrg */.K$)(self.book.ToCUrl);
+                }
             }
         }
         async function save(saveObj) {
@@ -8859,6 +8863,7 @@ class C17k extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
             }
         }
         const book = new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .f(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        book.ToCUrl = document.location.href;
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
@@ -9246,6 +9251,7 @@ class Ciweimao extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
             }
         }
         const book = new _main_Book__WEBPACK_IMPORTED_MODULE_8__/* .Book */ .f(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        book.ToCUrl = document.location.href;
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
@@ -12273,6 +12279,7 @@ class Sfacg extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
             chapters.push(chapter);
         }
         const book = new _main_Book__WEBPACK_IMPORTED_MODULE_9__/* .Book */ .f(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        book.ToCUrl = document.location.href;
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
@@ -14083,6 +14090,7 @@ class Linovelib extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ 
             }
         }
         const book = new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .f(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        book.ToCUrl = document.location.href;
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
@@ -14450,6 +14458,7 @@ class Wenku8 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
             }
         }
         const book = new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .f(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        book.ToCUrl = document.location.href;
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
@@ -15068,6 +15077,7 @@ function mkRuleClass({ bookUrl, anotherPageUrl, getBookname, getAuthor, getIntro
                 }
             }
             const book = new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .f(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+            book.ToCUrl = anotherPageUrl;
             return book;
         }
         async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
