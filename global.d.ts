@@ -1,5 +1,5 @@
 import { saveAs } from "file-saver";
-import { LocalStorageExpired } from "./lib/misc";
+import { LocalStorageExpired } from "./lib/localStorageExpired";
 import { fetchAndParse, gfetchAndParse, parse } from "./lib/readability";
 import { Chapter } from "./main/Chapter";
 import { Book } from "./main/Book";
@@ -10,13 +10,15 @@ export interface WindowObject extends Window {
     workerId: string;
     downloading: boolean;
     customStorage: LocalStorageExpired;
-    stopFlag: boolean;
+    stopController: AbortController;
+    stopFlag: AbortSignal;
     _sections?: SectionObj[];
     _book?: Book;
     _url?: string;
 }
 export declare type GmWindow = WindowObject & Window & typeof globalThis;
 interface UnsafeWindowObject {
+    stopController: AbortController;
     rule?: BaseRuleClass;
     book?: Book;
     save?: (book: Book, saveOptions: SaveOptions) => void;

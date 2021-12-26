@@ -1,0 +1,10 @@
+export declare function rm(selector: string, all: boolean | undefined, dom: HTMLElement): void;
+export declare function rm2(content: HTMLElement, filters: (string | RegExp)[]): void;
+export declare function rms(ads: (string | RegExp)[], dom: HTMLElement): HTMLElement;
+export declare function childNodesCopy(src: Element, dest: Element): void;
+export declare function getMaxDepth(element: Element): number;
+export declare function getNodeTextLength(element: Element): number;
+export declare function sandboxed(code: string): any;
+export declare function getCookie(name: string): string | null;
+export declare function createEl(el: string): HTMLElement;
+export declare function createStyle(style: string, id?: string): HTMLElement;
