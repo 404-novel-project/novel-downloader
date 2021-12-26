@@ -1,13 +1,13 @@
-import { defineComponent, onMounted, reactive, ref, Ref, watch } from "vue";
+import { Ref, defineComponent, onMounted, reactive, ref, watch } from "vue";
 import { GmWindow } from "../global";
 import { getAttachmentClassCache } from "../lib/attachments";
-import { createStyle } from "../lib/createEl";
 import { sleep } from "../lib/misc";
 import { Status } from "../main/main";
 import { Chapter } from "../main/Chapter";
 import { Book } from "../main/Book";
 import TestUIHtml from "./TestUI.html";
 import TestUICss from "./TestUI.less";
+import { createStyle } from "../lib/dom";
 
 export default defineComponent({
   name: "TestUI",

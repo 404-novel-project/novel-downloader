@@ -106,7 +106,13 @@ export abstract class BaseRuleClass {
       await initBook();
       const saveBookObj = initSave(self.book as Book);
       saveHook();
-      await self.initChapters(self.book as Book, saveBookObj);
+      await self.initChapters(self.book as Book, saveBookObj).catch((error) => {
+        if (error instanceof ExpectError) {
+          console.warn(error);
+        } else {
+          throw error;
+        }
+      });
       await save(saveBookObj);
       self.postHook();
       return self.book;
@@ -235,9 +241,8 @@ export abstract class BaseRuleClass {
 
     if (self.concurrencyLimit === 1) {
       for (const chapter of chapters) {
-        if ((window as GmWindow).stopFlag) {
-          log.info("[chapter]收到停止信号，停止继续下载。");
-          break;
+        if ((window as GmWindow).stopFlag.aborted) {
+          throw new ExpectError("[chapter]收到停止信号，停止继续下载。");
         }
         try {
           let chapterObj = await chapter.init();
@@ -248,27 +253,23 @@ export abstract class BaseRuleClass {
         }
       }
     } else {
-      await concurrencyRun(
-        chapters,
-        self.concurrencyLimit,
-        async (curChapter: Chapter) => {
-          if (curChapter === undefined) {
-            return Promise.resolve();
-          }
-          if ((window as GmWindow).stopFlag) {
-            log.info("[chapter]收到停止信号，停止继续下载。");
-            return Promise.resolve();
-          }
-          try {
-            let chapterObj = await curChapter.init();
-            chapterObj = await postChapterParseHook(chapterObj, saveBookObj);
-            return chapterObj;
-          } catch (error) {
-            log.error(error);
-            log.trace(error);
-          }
+      const asyncHandle = async (curChapter: Chapter) => {
+        if (curChapter === undefined) {
+          return null;
         }
-      );
+        try {
+          let chapterObj = await curChapter.init();
+          chapterObj = await postChapterParseHook(chapterObj, saveBookObj);
+          return chapterObj;
+        } catch (error) {
+          log.error(error);
+          log.trace(error);
+        }
+      };
+      await concurrencyRun(chapters, self.concurrencyLimit, asyncHandle, {
+        signal: (window as GmWindow).stopFlag,
+        reason: "[chapter]收到停止信号，停止继续下载。",
+      });
     }
     log.info(`[initChapters]章节初始化完毕`);
     return chapters;

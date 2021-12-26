@@ -1,6 +1,7 @@
 import { cleanDOM } from "../../../lib/cleanDOM";
 import { getHtmlDOM } from "../../../lib/http";
-import { PublicConstructor, rm } from "../../../lib/misc";
+import { PublicConstructor } from "../../../lib/misc";
+import { rm } from "../../../lib/dom";
 import { introDomHandle } from "../../../lib/rule";
 import { log } from "../../../log";
 import { Chapter } from "../../../main/Chapter";

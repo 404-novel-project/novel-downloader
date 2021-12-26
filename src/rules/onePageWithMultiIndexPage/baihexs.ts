@@ -1,5 +1,5 @@
 import { getHtmlDOM } from "../../lib/http";
-import { rms } from "../../lib/misc";
+import { rms } from "../../lib/dom";
 import { mkRuleClass } from "./template";
 
 export const baihexs = () => {

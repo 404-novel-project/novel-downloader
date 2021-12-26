@@ -1,5 +1,5 @@
 import { getImageAttachment } from "../../lib/attachments";
-import { cleanDOM, Options } from "../../lib/cleanDOM";
+import { Options, cleanDOM } from "../../lib/cleanDOM";
 import { getHtmlDOM } from "../../lib/http";
 import { PublicConstructor } from "../../lib/misc";
 import { getSectionName, introDomHandle } from "../../lib/rule";

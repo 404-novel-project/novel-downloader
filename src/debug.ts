@@ -24,5 +24,9 @@ export async function debug() {
     gfetchAndParse,
   };
   (unsafeWindow as UnsafeWindow).readability = readability;
+
+  (unsafeWindow as UnsafeWindow).stopController = (
+    window as GmWindow
+  ).stopController;
   return;
 }

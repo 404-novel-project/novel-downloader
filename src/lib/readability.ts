@@ -1,6 +1,6 @@
 import { Readability } from "@mozilla/readability";
-import { createEl } from "./createEl";
-import { getHtmlDOM, GfetchRequestInit, ggetHtmlDOM } from "./http";
+import { createEl } from "./dom";
+import { GfetchRequestInit, getHtmlDOM, ggetHtmlDOM } from "./http";
 
 interface ReadabilityOptions {
   debug?: boolean;

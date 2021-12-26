@@ -1,7 +1,7 @@
 import { getImageAttachment } from "../../lib/attachments";
-import { cleanDOM, Options } from "../../lib/cleanDOM";
+import { Options, cleanDOM } from "../../lib/cleanDOM";
 import { getHtmlDOM, getHtmlDomWithRetry } from "../../lib/http";
-import { concurrencyRun, PublicConstructor } from "../../lib/misc";
+import { PublicConstructor, concurrencyRun } from "../../lib/misc";
 import { introDomHandle } from "../../lib/rule";
 import { log } from "../../log";
 import { Chapter } from "../../main/Chapter";

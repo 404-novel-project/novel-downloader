@@ -7,7 +7,7 @@ import {
   ref,
   watch,
 } from "vue";
-import { createStyle } from "../lib/createEl";
+import { createStyle } from "../lib/dom";
 import { Chapter } from "../main/Chapter";
 import ChapterList from "./ChapterList";
 import FilterTabCss from "./FilterTab.css";

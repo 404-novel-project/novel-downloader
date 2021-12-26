@@ -1,6 +1,6 @@
 import { createApp } from "vue";
 import { GmWindow } from "../global";
-import { createEl, createStyle } from "../lib/createEl";
+import { createEl, createStyle } from "../lib/dom";
 import { _GM_info } from "../lib/GM";
 import { log } from "../log";
 import { getRule } from "../router/download";

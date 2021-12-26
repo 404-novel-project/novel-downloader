@@ -4,7 +4,8 @@ import {
   putAttachmentClassCache,
 } from "../../../lib/attachments";
 import { fetchWithRetry } from "../../../lib/http";
-import { calculateMd5, concurrencyRun } from "../../../lib/misc";
+import { concurrencyRun } from "../../../lib/misc";
+import { calculateSha1 } from "../../../lib/hash";
 import { log } from "../../../log";
 import { AttachmentClass } from "../../../main/Attachment";
 import { Book, BookAdditionalMetadate } from "../../../main/Book";
@@ -265,7 +266,7 @@ export class MangaBilibili extends BaseRuleClass {
         };
         const resp = await fetchWithRetry(url, init);
         const blob = await resp.blob();
-        const hash = await calculateMd5(blob);
+        const hash = await calculateSha1(blob);
         const ext = getExt(blob, url);
         const name = ["cm-", hash, ".", ext].join("");
         const imgClass = new AttachmentClass(url, name, "naive");

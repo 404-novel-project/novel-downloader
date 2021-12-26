@@ -1,7 +1,8 @@
 import { getImageAttachment } from "../../../lib/attachments";
 import { cleanDOM } from "../../../lib/cleanDOM";
 import { ggetHtmlDOM } from "../../../lib/http";
-import { rm, sleep } from "../../../lib/misc";
+import { sleep } from "../../../lib/misc";
+import { rm } from "../../../lib/dom";
 import { introDomHandle } from "../../../lib/rule";
 import { log } from "../../../log";
 import { Status } from "../../../main/main";

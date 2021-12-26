@@ -1,6 +1,6 @@
 import { getImageAttachment } from "../../../lib/attachments";
 import { cleanDOM } from "../../../lib/cleanDOM";
-import { getMaxDepth, getNodeTextLength, rm } from "../../../lib/misc";
+import { getMaxDepth, getNodeTextLength, rm } from "../../../lib/dom";
 import { fetchAndParse } from "../../../lib/readability";
 import {
   centerDetct,

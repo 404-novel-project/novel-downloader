@@ -1,6 +1,6 @@
 import { AttachmentClass } from "../main/Attachment";
 import { ReferrerMode } from "../main/main";
-import { calculateMd5 } from "./misc";
+import { calculateSha1 } from "./hash";
 
 let attachmentClassCache: AttachmentClass[] = [];
 export function getAttachmentClassCache(url: string) {
@@ -55,7 +55,7 @@ export async function getImageAttachment(
     if (noMD5) {
       imgClass.name = getLastPart(url);
     } else {
-      const hash = await calculateMd5(blob);
+      const hash = await calculateSha1(blob);
       const ext = getExt(blob, url);
       imgClass.name = [prefix, hash, ".", ext].join("");
     }

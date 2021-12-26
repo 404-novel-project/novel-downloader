@@ -1,4 +1,5 @@
-import { rm, rm2, sleep } from "../../lib/misc";
+import { sleep } from "../../lib/misc";
+import { rm, rm2 } from "../../lib/dom";
 import { Chapter } from "../../main/Chapter";
 import { mkBiqugeClass } from "./template";
 

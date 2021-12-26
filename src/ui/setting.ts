@@ -1,7 +1,6 @@
 import { createApp, provide, reactive, ref } from "vue";
 import { debug } from "../debug";
 import { UnsafeWindow } from "../global";
-import { createEl, createStyle } from "../lib/createEl";
 import { deepcopy, sleep } from "../lib/misc";
 import { log } from "../log";
 import { Status } from "../main/main";
@@ -16,6 +15,7 @@ import LogUI from "./LogUI";
 import settingHtml from "./setting.html";
 import settingCss from "./setting.less";
 import TestUI from "./TestUI";
+import { createEl, createStyle } from "../lib/dom";
 
 export const style = createStyle(settingCss);
 export const el = createEl(`<div id="setting"></div>`);

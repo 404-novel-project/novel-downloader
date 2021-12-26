@@ -2,7 +2,8 @@ import { GmWindow } from "../../../global";
 import { getImageAttachment } from "../../../lib/attachments";
 import { cleanDOM } from "../../../lib/cleanDOM";
 import { getHtmlDOM, getHtmlDomWithRetry } from "../../../lib/http";
-import { deepcopy, rm } from "../../../lib/misc";
+import { deepcopy } from "../../../lib/misc";
+import { rm } from "../../../lib/dom";
 import { getSectionName, introDomHandle } from "../../../lib/rule";
 import { log } from "../../../log";
 import { ExpectError, Status } from "../../../main/main";
@@ -263,7 +264,7 @@ export class Longmabook extends BaseRuleClass {
         alert(
           "您目前正在海棠清水區，只能觀看清水認證文章。請使用海棠其他網址進入。"
         );
-        (window as GmWindow).stopFlag = true;
+        (window as GmWindow).stopController.abort();
       }
       throw new Error(
         "您目前正在海棠清水區，只能觀看清水認證文章。請使用海棠其他網址進入。"

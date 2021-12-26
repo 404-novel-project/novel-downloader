@@ -1,7 +1,7 @@
 import { GmWindow } from "./global";
 import { _GM_info } from "./lib/GM";
 import { gfetch } from "./lib/http";
-import { storageAvailable } from "./lib/misc";
+import { storageAvailable } from "./lib/localStorageExpired";
 import { enableDebug } from "./setting";
 
 function checkObjct(name: string) {

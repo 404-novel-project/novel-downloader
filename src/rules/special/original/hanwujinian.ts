@@ -2,7 +2,7 @@ import * as CryptoJS from "crypto-js";
 import { getImageAttachment } from "../../../lib/attachments";
 import { cleanDOM } from "../../../lib/cleanDOM";
 import { getHtmlDOM } from "../../../lib/http";
-import { rm2 } from "../../../lib/misc";
+import { rm2 } from "../../../lib/dom";
 import { getSectionName, introDomHandle } from "../../../lib/rule";
 import { log } from "../../../log";
 import { Status } from "../../../main/main";

@@ -1,6 +1,6 @@
 import { cleanDOM } from "../../../lib/cleanDOM";
 import { getHtmlDOM } from "../../../lib/http";
-import { rm } from "../../../lib/misc";
+import { rm } from "../../../lib/dom";
 import { Chapter } from "../../../main/Chapter";
 import { Book, BookAdditionalMetadate } from "../../../main/Book";
 import { BaseRuleClass } from "../../../rules";

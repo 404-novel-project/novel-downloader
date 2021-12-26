@@ -1,4 +1,4 @@
-import { gfetch, GfetchRequestInit } from "../lib/http";
+import { GfetchRequestInit, gfetch } from "../lib/http";
 import { sleep } from "../lib/misc";
 import { log } from "../log";
 import { retryLimit } from "../setting";

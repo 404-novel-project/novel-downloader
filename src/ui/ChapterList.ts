@@ -7,18 +7,18 @@ import {
   ref,
 } from "vue";
 import { GmWindow } from "../global";
-import { createStyle } from "../lib/createEl";
 import { log } from "../log";
 import { Status } from "../main/main";
 import { Chapter } from "../main/Chapter";
 import { getRule } from "../router/download";
-import { getSectionsObj, SectionObj } from "../save/misc";
+import { SectionObj, getSectionsObj } from "../save/misc";
 import ChapterListHtml from "./ChapterList.html";
 import ChapterListCss from "./ChapterList.less";
 import {
   FilterSetting as filterSettingGlobal,
   getFilterFunction,
 } from "./FilterTab";
+import { createStyle } from "../lib/dom";
 
 async function getSections() {
   if (

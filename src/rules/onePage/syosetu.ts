@@ -1,4 +1,4 @@
-import { rm } from "../../lib/misc";
+import { rm } from "../../lib/dom";
 import { mkRuleClass } from "./template";
 
 export const syosetu = () => {

@@ -1,6 +1,6 @@
 import { htmlTrim } from "../../lib/cleanDOM";
 import { getHtmlDOM } from "../../lib/http";
-import { rm, rm2 } from "../../lib/misc";
+import { rm, rm2 } from "../../lib/dom";
 import { nextPageParse } from "../../lib/rule";
 import { mkRuleClass } from "./template";
 

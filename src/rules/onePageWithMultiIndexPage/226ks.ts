@@ -1,4 +1,4 @@
-import { rm } from "../../lib/misc";
+import { rm } from "../../lib/dom";
 import { nextPageParse } from "../../lib/rule";
 import { mkRuleClass } from "./template";
 

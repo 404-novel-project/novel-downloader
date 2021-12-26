@@ -1,5 +1,5 @@
 import { ComponentPublicInstance, createApp } from "vue";
-import { createEl, createStyle } from "../lib/createEl";
+import { createEl, createStyle } from "../lib/dom";
 import progressCss from "./progress.css";
 import progressHtml from "./progress.html";
 

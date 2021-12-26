@@ -385,7 +385,7 @@ export class SaveBook {
   private getChapterNumberToSave(chapter: Chapter) {
     return `${"0".repeat(
       this.chapters.length.toString().length -
-        chapter.chapterNumber.toString().length
+        Math.trunc(chapter.chapterNumber).toString().length
     )}${chapter.chapterNumber.toString()}`;
   }
 

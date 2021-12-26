@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { getImageAttachment } from "../../../lib/attachments";
 import { cleanDOM } from "../../../lib/cleanDOM";
-import { gfetch, GfetchRequestInit } from "../../../lib/http";
+import { GfetchRequestInit, gfetch } from "../../../lib/http";
 import { log } from "../../../log";
 import { Status } from "../../../main/main";
 import { Chapter } from "../../../main/Chapter";

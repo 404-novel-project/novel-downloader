@@ -1,4 +1,4 @@
-import { rm, rm2 } from "../../lib/misc";
+import { rm, rm2 } from "../../lib/dom";
 import { mkRuleClass } from "./tempate";
 
 export const ujxs = () => {

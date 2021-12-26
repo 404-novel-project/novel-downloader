@@ -1,5 +1,5 @@
 import { htmlTrim } from "../../lib/cleanDOM";
-import { rm, rm2 } from "../../lib/misc";
+import { rm, rm2 } from "../../lib/dom";
 import { mkBiqugeClass2 } from "./template";
 
 export const shuquge = () =>
