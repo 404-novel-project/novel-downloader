@@ -1,3 +1,4 @@
+import { removeTrackParm } from "../lib/removeTrackParam";
 import { log } from "../log";
 import { SaveOptions } from "../save/save";
 import { AttachmentClass } from "./Attachment";
@@ -16,8 +17,8 @@ export interface BookAdditionalMetadate {
 }
 
 export class Book {
-  public bookUrl: string;
-  public ToCUrl?: string;
+  private _bookUrl: string;
+  private _ToCUrl?: string;
   public bookname: string;
   public author: string;
   public introduction: string | null;
@@ -35,7 +36,7 @@ export class Book {
     additionalMetadate: BookAdditionalMetadate,
     chapters: Chapter[]
   ) {
-    this.bookUrl = bookUrl;
+    this._bookUrl = removeTrackParm(bookUrl);
     this.bookname = bookname;
     this.author = author;
     this.introduction = introduction;
@@ -45,9 +46,26 @@ export class Book {
     log.debug("[Book]初始化完成");
   }
 
+  public set bookUrl(v: string) {
+    this._bookUrl = removeTrackParm(v);
+  }
+  public get bookUrl(): string {
+    return this._bookUrl;
+  }
+
+  public set ToCUrl(v: string | undefined) {
+    if (v) {
+      this._ToCUrl = removeTrackParm(v);
+    }
+  }
+  public get ToCUrl(): string | undefined {
+    return this._ToCUrl;
+  }
+
   private toJSON() {
     return {
       bookUrl: this.bookUrl,
+      ToCUrl: this.ToCUrl,
       bookname: this.bookname,
       author: this.author,
       introduction: this.introduction,
