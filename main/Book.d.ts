@@ -13,8 +13,8 @@ export interface BookAdditionalMetadate {
     languages?: string;
 }
 export declare class Book {
-    bookUrl: string;
-    ToCUrl?: string;
+    private _bookUrl;
+    private _ToCUrl?;
     bookname: string;
     author: string;
     introduction: string | null;
@@ -23,5 +23,9 @@ export declare class Book {
     chapters: Chapter[];
     saveOptions: SaveOptions;
     constructor(bookUrl: string, bookname: string, author: string, introduction: string | null, introductionHTML: HTMLElement | null, additionalMetadate: BookAdditionalMetadate, chapters: Chapter[]);
+    set bookUrl(v: string);
+    get bookUrl(): string;
+    set ToCUrl(v: string | undefined);
+    get ToCUrl(): string | undefined;
     private toJSON;
 }

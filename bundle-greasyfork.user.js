@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.7.4.444
+// @version        4.7.5.445
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -5213,26 +5213,175 @@ class AttachmentClass {
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "f": () => (/* binding */ Book)
-/* harmony export */ });
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("loglevel");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_0__);
+
+// EXPORTS
+__webpack_require__.d(__webpack_exports__, {
+  "f": () => (/* binding */ Book)
+});
+
+;// CONCATENATED MODULE: ./src/lib/removeTrackParam.ts
+const general = [
+    "nx_source",
+    "_zucks_suid",
+    "cmpid",
+    "asgtbndr",
+    "guccounter",
+    "guce_referrer",
+    "guce_referrer_sig",
+    "_openstat",
+    "action_object_map",
+    "action_ref_map",
+    "action_type_map",
+    "fb_action_ids",
+    "fb_action_types",
+    "fb_comment_id",
+    "fb_ref",
+    "fb_source",
+    "fbclid",
+    "xtor",
+    "utm_campaign",
+    "utm_channel",
+    "utm_cid",
+    "utm_content",
+    "utm_id",
+    "utm_medium",
+    "utm_name",
+    "utm_place",
+    "utm_pubreferrer",
+    "utm_reader",
+    "utm_referrer",
+    "utm_serial",
+    "utm_social",
+    "utm_social-type",
+    "utm_source",
+    "utm_swu",
+    "utm_term",
+    "utm_userid",
+    "utm_viz_id",
+    "utm_product",
+    "utm_campaignid",
+    "utm_ad",
+    "utm_brand",
+    "utm_emcid",
+    "utm_emmid",
+    "utm_umguk",
+    "gbraid",
+    "wbraid",
+    "gclsrc",
+    "gclid",
+    "yclid",
+    "dpg_source",
+    "dpg_campaign",
+    "dpg_medium",
+    "dpg_content",
+    "admitad_uid",
+    "adjust_tracker",
+    "adjust_adgroup",
+    "adjust_campaign",
+    "bsft_clkid",
+    "bsft_eid",
+    "bsft_mid",
+    "bsft_uid",
+    "bsft_aaid",
+    "bsft_ek",
+    "mtm_campaign",
+    "mtm_cid",
+    "mtm_content",
+    "mtm_group",
+    "mtm_keyword",
+    "mtm_medium",
+    "mtm_placement",
+    "mtm_source",
+    "pk_campaign",
+    "pk_medium",
+    "pk_source",
+    "_branch_match_id",
+    "vc_lpp",
+    "ml_subscriber",
+    "ml_subscriber_hash",
+    "rb_clickid",
+    "oly_anon_id",
+    "oly_enc_id",
+    "dt_dapp",
+    "dt_platform",
+    "spm",
+    "scm",
+];
+const specific = {
+    "bilibili.com": [
+        "from",
+        "seid",
+        "share_source",
+        "spm_id_from",
+        "from_spm_id",
+        "share_medium",
+        "share_plat",
+        "share_session_id",
+        "share_source",
+        "share_tag",
+        "timestamp",
+        "unique_k",
+        "from_source",
+    ],
+};
+function findSpecial(host) {
+    let lastPos = 0;
+    let domain = host;
+    while (lastPos >= 0) {
+        if (specific[domain]) {
+            return specific[domain];
+        }
+        lastPos = host.indexOf(".", lastPos + 1);
+        domain = host.slice(lastPos + 1);
+    }
+}
+function removeTrackParm(_url) {
+    const url = new URL(_url);
+    const host = url.hostname;
+    const search = url.searchParams;
+    general.forEach((s) => search.delete(s));
+    const special = findSpecial(host);
+    if (special) {
+        special.forEach((s) => search.delete(s));
+    }
+    return url.href;
+}
+
+// EXTERNAL MODULE: external "log"
+var external_log_ = __webpack_require__("loglevel");
+var external_log_default = /*#__PURE__*/__webpack_require__.n(external_log_);
+;// CONCATENATED MODULE: ./src/main/Book.ts
+
 
 class Book {
     constructor(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters) {
-        this.bookUrl = bookUrl;
+        this._bookUrl = removeTrackParm(bookUrl);
         this.bookname = bookname;
         this.author = author;
         this.introduction = introduction;
         this.introductionHTML = introductionHTML;
         this.additionalMetadate = additionalMetadate;
         this.chapters = chapters;
-        _log__WEBPACK_IMPORTED_MODULE_0___default().debug("[Book]初始化完成");
+        external_log_default().debug("[Book]初始化完成");
+    }
+    set bookUrl(v) {
+        this._bookUrl = removeTrackParm(v);
+    }
+    get bookUrl() {
+        return this._bookUrl;
+    }
+    set ToCUrl(v) {
+        if (v) {
+            this._ToCUrl = removeTrackParm(v);
+        }
+    }
+    get ToCUrl() {
+        return this._ToCUrl;
     }
     toJSON() {
         return {
             bookUrl: this.bookUrl,
+            ToCUrl: this.ToCUrl,
             bookname: this.bookname,
             author: this.author,
             introduction: this.introduction,
@@ -7858,7 +8007,7 @@ var external_log_ = __webpack_require__("loglevel");
 var external_log_default = /*#__PURE__*/__webpack_require__.n(external_log_);
 // EXTERNAL MODULE: ./src/main/Chapter.ts
 var Chapter = __webpack_require__("./src/main/Chapter.ts");
-// EXTERNAL MODULE: ./src/main/Book.ts
+// EXTERNAL MODULE: ./src/main/Book.ts + 1 modules
 var Book = __webpack_require__("./src/main/Book.ts");
 // EXTERNAL MODULE: ./src/rules.ts + 9 modules
 var rules = __webpack_require__("./src/rules.ts");
@@ -10231,7 +10380,7 @@ var main = __webpack_require__("./src/main/main.ts");
 var Attachment = __webpack_require__("./src/main/Attachment.ts");
 // EXTERNAL MODULE: ./src/main/Chapter.ts
 var Chapter = __webpack_require__("./src/main/Chapter.ts");
-// EXTERNAL MODULE: ./src/main/Book.ts
+// EXTERNAL MODULE: ./src/main/Book.ts + 1 modules
 var Book = __webpack_require__("./src/main/Book.ts");
 // EXTERNAL MODULE: ./src/rules.ts + 9 modules
 var rules = __webpack_require__("./src/rules.ts");
