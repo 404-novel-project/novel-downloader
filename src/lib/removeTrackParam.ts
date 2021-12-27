@@ -126,5 +126,6 @@ export function removeTrackParm(_url: string) {
   if (special) {
     special.forEach((s) => search.delete(s));
   }
+  url.hash = "";
   return url.href;
 }
