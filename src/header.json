@@ -149,7 +149,7 @@
     "*://www.lvhtebook.com/*",
     "*://jp.lvhtebook.com/*",
     "*://www.htlvbooks.com/*",
-    "*://dijiubook.net/*_*/",
+    "*://dijiubook.net/*_*",
     "*://www.biquwx.la/*_*/",
     "*://www.25zw.com/*/",
     "*://www.tycqxs.com/*_*/",
@@ -214,7 +214,8 @@
     "*://www.25zw.com/monthvisit/",
     "*://www.25zw.com/goodnum/",
     "*://www.25zw.com/goodnew/",
-    "*://www.myrics.com/novels/*/chapters/*"
+    "*://www.myrics.com/novels/*/chapters/*",
+    "*://dijiubook.net/*_*/*.html"
   ],
   "grant": [
     "unsafeWindow",
