@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.7.5.452
+// @version        4.7.5.453
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -5327,6 +5327,7 @@ const specific = {
         "timestamp",
         "unique_k",
         "from_source",
+        "refer_from",
     ],
 };
 function findSpecial(host) {
