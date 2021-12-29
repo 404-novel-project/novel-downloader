@@ -267,6 +267,7 @@ interface Output {
   text: string;
   images: AttachmentClass[];
 }
+//** 清理元素 */
 export async function cleanDOM(
   elem: Element,
   imgMode: "naive" | "TM",
@@ -781,6 +782,7 @@ export async function cleanDOM(
     };
   }
 
+  //** 后处理 */
   function postHook({
     dom,
     text,
@@ -791,7 +793,9 @@ export async function cleanDOM(
     images: AttachmentClass[];
   }): Output {
     htmlTrim(dom);
-    dom = convertBr(dom);
+    Array.from(dom.children).forEach((child) =>
+      child.replaceWith(convertBr(child as HTMLElement))
+    );
     text = text.trim();
     return {
       dom,
@@ -801,7 +805,7 @@ export async function cleanDOM(
   }
 }
 
-// 移除文档首尾空白元素
+//** 移除文档首尾空白元素 */
 export function htmlTrim(dom: HTMLElement) {
   const childNodes = Array.from(dom.childNodes);
   remove(childNodes);
@@ -833,7 +837,7 @@ export function htmlTrim(dom: HTMLElement) {
   }
 }
 
-// 将Text<br>Text转为<p>
+//** 将Text<br>Text转为<p> */
 function convertBr(dom: HTMLElement) {
   if (onlyTextAndBr(dom) && countBr(dom) > 3) {
     const outDom = document.createElement("div");

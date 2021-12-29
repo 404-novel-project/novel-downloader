@@ -488,6 +488,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = aixdzs();
       break;
     }
+    case "www.liuxs.la": {
+      const { liuxs } = await import("../rules/twoPage/liuxs");
+      ruleClass = liuxs();
+      break;
+    }
     default: {
       throw new Error("Not Found Rule!");
     }

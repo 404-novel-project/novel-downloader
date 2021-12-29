@@ -182,7 +182,8 @@
     "*://www.hanwujinian.com/book/*",
     "*://www.biqu55.com/*_*/",
     "*://manga.bilibili.com/detail/mc*",
-    "https://www.aixdzs.com/novel/*"
+    "*://www.aixdzs.com/novel/*",
+    "*://www.liuxs.la/bookinfo-*/"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",
