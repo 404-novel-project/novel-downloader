@@ -181,7 +181,8 @@
     "*://jingcaiyuedu6.com/novel/*.html",
     "*://www.hanwujinian.com/book/*",
     "*://www.biqu55.com/*_*/",
-    "*://manga.bilibili.com/detail/mc*"
+    "*://manga.bilibili.com/detail/mc*",
+    "https://www.aixdzs.com/novel/*"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",
@@ -294,6 +295,7 @@
     "myrics.com",
     "a7xs.com",
     "jingcaiyuedu6.com",
+    "aixdzs.com",
     "*"
   ],
   "require": [

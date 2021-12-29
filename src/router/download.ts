@@ -483,6 +483,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = MangaBilibili;
       break;
     }
+    case "www.aixdzs.com": {
+      const { aixdzs } = await import("../rules/onePage/aixdzs");
+      ruleClass = aixdzs();
+      break;
+    }
     default: {
       throw new Error("Not Found Rule!");
     }

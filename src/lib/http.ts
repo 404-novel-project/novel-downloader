@@ -21,6 +21,7 @@ export async function fetchWithRetry(
     if (resp.ok) {
       return resp;
     } else {
+      await sleep(1000 * (retryLimit - retry));
       retry--;
     }
   }

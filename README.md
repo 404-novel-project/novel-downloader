@@ -134,6 +134,7 @@ ZIP压缩包，请在解压后，直接双击打开HTML文件（`index.html` 为
 |[爱下书小说网](https://www.aixiawx.com/)|✅|❎||
 |[精彩小说网](https://jingcaiyuedu6.com/)|✅|❎||
 |[笔趣读](https://www.biqu55.com/)|✅|❎||
+|[爱下电子书](https://www.aixdzs.com/)|✅|❎||
 
 </details>
 
@@ -249,26 +250,14 @@ function chapterFilter(chapter) {
 ```typescript
 declare class saveBook {
     protected book: Book;
-    private chapters;
     mainStyleText: string;
     tocStyleText: string;
-    private savedZip;
-    private savedTextArray;
-    private saveFileNameBase;
-    private _sections;
-    private _savedChapters;
     constructor(book: Book);
     saveTxt(): void;
     saveLog(): void;
     saveZip(runSaveChapters?: boolean): Promise<void>;
-    private saveToC;
-    private saveChapters;
-    private saveSections;
-    private getChapterNumberToSave;
     addChapter(chapter: Chapter): void;
     getchapterName(chapter: Chapter): string;
-    private genMetaDateTxt;
-    private addImageToZip;
     genSectionText(sectionName: string): string;
     genChapterText(chapterName: string, contentText: string): string;
     genSectionHtmlFile(chapterObj: Chapter): Blob;
