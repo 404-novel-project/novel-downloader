@@ -10,7 +10,7 @@ import { SaveOptions } from "./save/save";
 export interface WindowObject extends Window {
   workerId: string;
   downloading: boolean;
-  customStorage: LocalStorageExpired;
+  localStorageExpired: LocalStorageExpired;
   stopController: AbortController;
   stopFlag: AbortSignal;
   _sections?: SectionObj[];
@@ -39,7 +39,7 @@ export type UnsafeWindow = UnsafeWindowObject & Window & typeof globalThis;
 export function init() {
   (window as GmWindow).workerId = Math.random().toString().replace("0.", "");
   (window as GmWindow).downloading = false;
-  (window as GmWindow).customStorage = new LocalStorageExpired();
+  (window as GmWindow).localStorageExpired = new LocalStorageExpired();
   const stopController = new AbortController();
   const stopFlag = stopController.signal;
   (window as GmWindow).stopController = stopController;

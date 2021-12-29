@@ -51,7 +51,7 @@ export class LocalStorageExpired {
     });
   }
 
-  set(key: string, value: string | object, expired: number): void {
+  set(key: string, value: any, expired: number): void {
     const storage = this.storage;
     try {
       storage[key] = JSON.stringify(value);
@@ -63,7 +63,7 @@ export class LocalStorageExpired {
     }
   }
 
-  get(key: string): object | undefined {
+  get(key: string): any {
     const storage = this.storage;
     const expired = storage[`${key}__expires__`] ?? false;
     const now = Date.now();

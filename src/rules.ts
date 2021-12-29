@@ -154,8 +154,20 @@ export abstract class BaseRuleClass {
       if (
         enableSaveToArchiveOrg &&
         self.needLogin === false &&
-        self.book?.bookUrl
+        self.book?.bookUrl &&
+        (window as GmWindow).localStorageExpired.get(
+          `${self.book.bookUrl}_saveToArchiveOrg`
+        ) === undefined
       ) {
+        try {
+          (window as GmWindow).localStorageExpired.set(
+            `${self.book.bookUrl}_saveToArchiveOrg`,
+            true,
+            86400
+          );
+        } catch (error) {
+          // pass
+        }
         saveToArchiveOrg(self.book.bookUrl);
         if (self.book.ToCUrl) {
           saveToArchiveOrg(self.book.ToCUrl);
