@@ -102,6 +102,7 @@ const specific: Record<string, string[]> = {
     "timestamp",
     "unique_k",
     "from_source",
+    "refer_from",
   ],
 };
 
