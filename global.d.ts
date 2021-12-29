@@ -9,7 +9,7 @@ import { SaveOptions } from "./save/save";
 export interface WindowObject extends Window {
     workerId: string;
     downloading: boolean;
-    customStorage: LocalStorageExpired;
+    localStorageExpired: LocalStorageExpired;
     stopController: AbortController;
     stopFlag: AbortSignal;
     _sections?: SectionObj[];

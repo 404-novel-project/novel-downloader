@@ -3,7 +3,7 @@ export declare class LocalStorageExpired {
     private storage;
     constructor();
     private init;
-    set(key: string, value: string | object, expired: number): void;
-    get(key: string): object | undefined;
+    set(key: string, value: any, expired: number): void;
+    get(key: string): any;
     remove(key: string): void;
 }

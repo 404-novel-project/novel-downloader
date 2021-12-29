@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.7.5.453
+// @version        4.7.6.454
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -6200,7 +6200,13 @@ class BaseRuleClass {
         function saveHook() {
             if (setting/* enableSaveToArchiveOrg */.CA &&
                 self.needLogin === false &&
-                self.book?.bookUrl) {
+                self.book?.bookUrl &&
+                window.localStorageExpired.get(`${self.book.bookUrl}_saveToArchiveOrg`) === undefined) {
+                try {
+                    window.localStorageExpired.set(`${self.book.bookUrl}_saveToArchiveOrg`, true, 86400);
+                }
+                catch (error) {
+                }
                 (0,misc/* saveToArchiveOrg */.K$)(self.book.bookUrl);
                 if (self.book.ToCUrl) {
                     (0,misc/* saveToArchiveOrg */.K$)(self.book.ToCUrl);
@@ -15849,7 +15855,7 @@ var localStorageExpired = __webpack_require__("./src/lib/localStorageExpired.ts"
 function init() {
     window.workerId = Math.random().toString().replace("0.", "");
     window.downloading = false;
-    window.customStorage = new localStorageExpired/* LocalStorageExpired */.Z();
+    window.localStorageExpired = new localStorageExpired/* LocalStorageExpired */.Z();
     const stopController = new AbortController();
     const stopFlag = stopController.signal;
     window.stopController = stopController;
