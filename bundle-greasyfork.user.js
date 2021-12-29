@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.7.5.450
+// @version        4.7.5.452
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -164,6 +164,8 @@
 // @match          *://www.hanwujinian.com/book/*
 // @match          *://www.biqu55.com/*_*/
 // @match          *://manga.bilibili.com/detail/mc*
+// @match          *://www.aixdzs.com/novel/*
+// @match          *://www.liuxs.la/bookinfo-*/
 // @name:en        novel-downloader
 // @name:ja        小説ダウンローダー
 // @description:en An scalable universal novel downloader.
@@ -285,6 +287,7 @@
 // @connect        myrics.com
 // @connect        a7xs.com
 // @connect        jingcaiyuedu6.com
+// @connect        aixdzs.com
 // @connect        *
 // @require        https://cdn.jsdelivr.net/npm/crypto-js@4.1.1/crypto-js.js#sha512-NQVmLzNy4Lr5QTrmXvq/WzTMUnRHmv7nyIT/M6LyGPBS+TIeRxZ+YQaqWxjpRpvRMQSuYPQURZz/+pLi81xXeA==
 // @require        https://cdn.jsdelivr.net/npm/fflate@0.7.2/umd/index.js#sha512-b4i2Ut2Tho5Qrzt3pWKCkt9Q+4ECSNPdX0JsVzudNFXR2kIbV0ndgkm3fDlGvp2A6JG9tcH3ND38y+y0DrM/jQ==
@@ -4203,7 +4206,7 @@ async function cleanDOM(elem, imgMode, options) {
     }
     function postHook({ dom, text, images, }) {
         htmlTrim(dom);
-        dom = convertBr(dom);
+        Array.from(dom.children).forEach((child) => child.replaceWith(convertBr(child)));
         text = text.trim();
         return {
             dom,
@@ -4488,8 +4491,8 @@ async function calculateSha1(blob) {
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("loglevel");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _setting__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/setting.ts");
-/* harmony import */ var _GM__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/GM.ts");
-/* harmony import */ var _misc__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/misc.ts");
+/* harmony import */ var _GM__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/GM.ts");
+/* harmony import */ var _misc__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/misc.ts");
 
 
 
@@ -4509,6 +4512,7 @@ async function fetchWithRetry(input, init) {
             return resp;
         }
         else {
+            await (0,_misc__WEBPACK_IMPORTED_MODULE_2__/* .sleep */ ._v)(1000 * (_setting__WEBPACK_IMPORTED_MODULE_1__/* .retryLimit */ .o5 - retry));
             retry--;
         }
     }
@@ -4518,7 +4522,7 @@ function gfetch(url, { method = "GET", headers, data, cookie, binary, nocache, r
     return new Promise((resolve, reject) => {
         _log__WEBPACK_IMPORTED_MODULE_0___default().debug("[debug]gfetch:");
         _log__WEBPACK_IMPORTED_MODULE_0___default().debug(Array.from(arguments));
-        (0,_GM__WEBPACK_IMPORTED_MODULE_2__/* ._GM_xmlhttpRequest */ .UX)({
+        (0,_GM__WEBPACK_IMPORTED_MODULE_3__/* ._GM_xmlhttpRequest */ .UX)({
             url,
             method,
             headers,
@@ -4598,7 +4602,7 @@ async function getHtmlDomWithRetry(url, charset, init) {
             _log__WEBPACK_IMPORTED_MODULE_0___default().error(`抓取${url}失败，重试第${_setting__WEBPACK_IMPORTED_MODULE_1__/* .retryLimit */ .o5 - retry}次。`);
             _log__WEBPACK_IMPORTED_MODULE_0___default().error(error);
             retry--;
-            await (0,_misc__WEBPACK_IMPORTED_MODULE_3__/* .sleep */ ._v)(1000 * (_setting__WEBPACK_IMPORTED_MODULE_1__/* .retryLimit */ .o5 - retry));
+            await (0,_misc__WEBPACK_IMPORTED_MODULE_2__/* .sleep */ ._v)(1000 * (_setting__WEBPACK_IMPORTED_MODULE_1__/* .retryLimit */ .o5 - retry));
         }
     }
     return doc;
@@ -7019,6 +7023,33 @@ const a7xs = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .
         return contentRaw;
     },
     contentPatch: (content) => content,
+});
+
+
+/***/ }),
+
+/***/ "./src/rules/onePage/aixdzs.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "aixdzs": () => (/* binding */ aixdzs)
+/* harmony export */ });
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
+
+const aixdzs = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+    bookUrl: document.location.href,
+    bookname: document.querySelector(".d_info > h1").innerText.trim(),
+    author: document.querySelector(".d_ac > ul:nth-child(1) > li:nth-child(1) > a:nth-child(2)").innerText.trim(),
+    introDom: document.querySelector(".d_co"),
+    introDomPatch: (dom) => dom,
+    coverUrl: document.querySelector(".d_af > img").src,
+    aList: document.querySelectorAll("#i-chapter li.chapter > a"),
+    sections: document.querySelectorAll("#i-chapter li.volume"),
+    getSName: (dom) => dom.innerText.trim(),
+    getContent: (doc) => doc.querySelector(".content"),
+    contentPatch: (dom) => dom,
 });
 
 
@@ -15135,6 +15166,49 @@ const jingcaiyuedu6 = () => (0,_tempate__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleCl
 
 /***/ }),
 
+/***/ "./src/rules/twoPage/liuxs.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "liuxs": () => (/* binding */ liuxs)
+/* harmony export */ });
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _tempate__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/twoPage/tempate.ts");
+
+
+const liuxs = () => (0,_tempate__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+    bookUrl: document.location.href,
+    anotherPageUrl: document.querySelector(".btopt > a")
+        .href,
+    getBookname: (doc) => doc.querySelector("div.infot:nth-child(1) > h1:nth-child(1)").innerText.trim(),
+    getAuthor: (doc) => doc.querySelector("div.infot:nth-child(1) > span:nth-child(2)").innerText
+        .replace("作者：", "")
+        .trim(),
+    getIntroDom: (doc) => document.querySelector(".intro"),
+    introDomPatch: (dom) => dom,
+    getCoverUrl: (doc) => document.querySelector(".pic > img").src,
+    getAList: (doc) => doc.querySelectorAll("#defaulthtml4 > table > tbody  div > a"),
+    getSections: (doc) => doc.querySelectorAll(".j_title > b"),
+    getSName: (dom) => dom.innerText.trim(),
+    postHook: (chapter) => {
+        const bookname = chapter.bookname;
+        if (chapter.sectionName) {
+            chapter.sectionName = chapter.sectionName.replace(`《${bookname}》`, "");
+        }
+        return chapter;
+    },
+    getContent: (doc) => doc.querySelector("#content"),
+    contentPatch: (dom) => {
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .vS)(dom, ["--＆网--网"]);
+        return dom;
+    },
+});
+
+
+/***/ }),
+
 /***/ "./src/rules/twoPage/shencou.ts":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -16281,6 +16355,16 @@ async function getRule() {
         case "manga.bilibili.com": {
             const { MangaBilibili } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/bilibili.ts"));
             ruleClass = MangaBilibili;
+            break;
+        }
+        case "www.aixdzs.com": {
+            const { aixdzs } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/aixdzs.ts"));
+            ruleClass = aixdzs();
+            break;
+        }
+        case "www.liuxs.la": {
+            const { liuxs } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/liuxs.ts"));
+            ruleClass = liuxs();
             break;
         }
         default: {
