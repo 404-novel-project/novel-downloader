@@ -1,6 +1,7 @@
 import { BaseRuleClass } from "../rules";
 import { Status } from "./main";
 import { AttachmentClass } from "./Attachment";
+import { Book } from "./Book";
 export interface ChapterAdditionalMetadate {
     lastModified?: number;
     tags?: string[];
@@ -27,6 +28,7 @@ export declare class Chapter {
     contentImages: AttachmentClass[] | null;
     additionalMetadate: ChapterAdditionalMetadate | null;
     chapterHtmlFileName: string | number;
+    book: Book;
     constructor(bookUrl: string, bookname: string, chapterUrl: string, chapterNumber: number, chapterName: string | null, isVIP: boolean, isPaid: boolean | null, sectionName: string | null, sectionNumber: number | null, sectionChapterNumber: number | null, chapterParse: BaseRuleClass["chapterParse"], charset: string, options: object);
     init(): Promise<this>;
     private parse;

@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.7.6.454
+// @version        4.7.6.455
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -3509,6 +3509,9 @@ async function _GM_deleteValue(name) {
 /* harmony export */ });
 /* harmony import */ var _main_Attachment__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/main/Attachment.ts");
 /* harmony import */ var _hash__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/hash.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_2__);
+
 
 
 let attachmentClassCache = [];
@@ -3549,13 +3552,14 @@ async function getImageAttachment(url, imgMode, prefix = "", noMD5 = false, comm
         }
     }
     putAttachmentClassCache(imgClass);
+    _log__WEBPACK_IMPORTED_MODULE_2___default().debug(`[attachment]下载附件完成！ url:${imgClass.url}, name: ${imgClass.name}`);
     return imgClass;
 }
 function getRandomName() {
     return "__" + Math.random().toString().replace("0.", "") + "__";
 }
 function getExt(b, u) {
-    const contentType = b.type.split("/")[1];
+    const contentType = b.type.split(";")[0].split("/")[1];
     const contentTypeBlackList = ["octet-stream"];
     if (contentTypeBlackList.includes(contentType)) {
         return getExtFromUrl(u);
@@ -3701,6 +3705,7 @@ const keepElements = [
     "pre",
 ];
 const IgnoreElements = [
+    "#comment",
     "fieldset",
     "legend",
     "input",
@@ -3955,7 +3960,7 @@ async function cleanDOM(elem, imgMode, options) {
             return p(element);
         }
     }
-    function inlineElement(element) {
+    async function inlineElement(element) {
         const map = new Map();
         const defaultList = [
             "abbr",
@@ -3971,8 +3976,9 @@ async function cleanDOM(elem, imgMode, options) {
             "tt",
             "#text",
         ];
-        function defaultHandler(elem) {
-            if (elem instanceof HTMLElement || elem instanceof Text) {
+        async function defaultHandler(elem) {
+            if ((elem instanceof HTMLElement && elem.childElementCount === 0) ||
+                elem instanceof Text) {
                 let text;
                 if (elem instanceof HTMLElement) {
                     text = elem.innerText.trim();
@@ -3990,19 +3996,44 @@ async function cleanDOM(elem, imgMode, options) {
                     };
                 }
             }
+            if (elem instanceof HTMLElement && elem.childElementCount !== 0) {
+                const nodes = [...findBase(elem)];
+                const { dom, text, images } = await loop(nodes, document.createElement(elem.nodeName.toLowerCase()));
+                return {
+                    dom,
+                    text,
+                    images,
+                };
+            }
             return null;
         }
         defaultList.forEach((n) => map.set(n, defaultHandler));
-        function a(elem) {
+        async function a(elem) {
             if (elem instanceof HTMLAnchorElement) {
-                if (elem.href.startsWith("https://") ||
-                    elem.href.startsWith("http://")) {
-                    const { href, textContent } = elem;
-                    const dom = document.createElement("a");
-                    dom.href = href;
-                    dom.textContent = textContent;
-                    const text = `[${textContent}](${href})`;
-                    const images = [];
+                if (elem.childElementCount === 0) {
+                    if (elem.href.startsWith("https://") ||
+                        elem.href.startsWith("http://")) {
+                        const { href, textContent } = elem;
+                        const dom = document.createElement("a");
+                        dom.href = href;
+                        dom.textContent = textContent;
+                        const text = `[${textContent}](${href})`;
+                        const images = [];
+                        return {
+                            dom,
+                            text,
+                            images,
+                        };
+                    }
+                }
+                else {
+                    const outterA = document.createElement("a");
+                    if (elem.href.startsWith("https://") ||
+                        elem.href.startsWith("http://")) {
+                        outterA.href = elem.href;
+                    }
+                    const nodes = [...findBase(elem)];
+                    const { dom, text, images } = await loop(nodes, outterA);
                     return {
                         dom,
                         text,
@@ -4095,18 +4126,29 @@ async function cleanDOM(elem, imgMode, options) {
             };
         }
         map.set("br", br);
-        function common(nodeName, getText, elem) {
+        async function common(nodeName, getText, elem) {
             if (elem instanceof HTMLElement) {
-                const textContent = elem.innerText.trim();
-                const dom = document.createElement(nodeName);
-                dom.innerText = textContent;
-                const text = getText(textContent);
-                const images = [];
-                return {
-                    dom,
-                    text,
-                    images,
-                };
+                if (elem.childElementCount === 0) {
+                    const textContent = elem.innerText.trim();
+                    const dom = document.createElement(nodeName);
+                    dom.innerText = textContent;
+                    const text = getText(textContent);
+                    const images = [];
+                    return {
+                        dom,
+                        text,
+                        images,
+                    };
+                }
+                else {
+                    const nodes = [...findBase(elem)];
+                    const { dom, text, images } = await loop(nodes, document.createElement(nodeName));
+                    return {
+                        dom,
+                        text,
+                        images,
+                    };
+                }
             }
             return null;
         }
@@ -4164,7 +4206,7 @@ async function cleanDOM(elem, imgMode, options) {
         for (const node of nodes) {
             const bNname = node.nodeName.toLowerCase();
             if (node instanceof Text || InlineElements.includes(bNname)) {
-                const tobj = inlineElement(node);
+                const tobj = await inlineElement(node);
                 if (tobj) {
                     const { dom: tdom, text: ttext, images: timages } = tobj;
                     _outDom.appendChild(tdom);
@@ -11084,13 +11126,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "Lofter": () => (/* binding */ Lofter)
 /* harmony export */ });
 /* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/attachments.ts");
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/cleanDOM.ts");
 /* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/http.ts");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("loglevel");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/Chapter.ts");
 /* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Book.ts");
 /* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/dom.ts");
+
 
 
 
@@ -11107,7 +11151,7 @@ class Lofter extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
     }
     async bookParse() {
         const bookUrl = document.location.origin;
-        const author = JSON.parse('"' + unsafeWindow._ntes_ntit.replaceAll("%", "\\") + '"');
+        const author = document.title;
         const bookname = author + "的Lofter";
         const introduction = document
             .querySelector('meta[name="Description"]')
@@ -11185,7 +11229,12 @@ class Lofter extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
                     ?.innerText.replace(new RegExp(`-${options.author}$`), "")
                     .replace("\n", "")
                     .trim() ?? null;
-            const selectors = [".ct .ctc", ".main .content", ".m-post .text"];
+            const selectors = [
+                ".ct .ctc",
+                ".main .content",
+                ".m-post .text",
+                ".content",
+            ];
             let content;
             for (const selector of selectors) {
                 const _content = doc.querySelector(selector);
@@ -11195,7 +11244,8 @@ class Lofter extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
                 }
             }
             if (content) {
-                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_6__/* .cleanDOM */ .z)(content, "TM");
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_6__.rm)(".otherinfo", true, content);
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__/* .cleanDOM */ .z)(content, "TM");
                 return {
                     chapterName,
                     contentRaw: content,
@@ -11215,7 +11265,7 @@ class Lofter extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
             chapterName = doc.querySelector("#title")?.innerText.trim();
             const content = doc.querySelector("#m-cnt .long-text");
             if (content) {
-                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_6__/* .cleanDOM */ .z)(content, "TM");
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__/* .cleanDOM */ .z)(content, "TM");
                 return {
                     chapterName,
                     contentRaw: content,
@@ -17001,14 +17051,14 @@ var ui_TestUI = __webpack_require__("./src/ui/TestUI.less");
         (0,external_Vue_.onMounted)(async () => {
             const _book = await waitBook();
             Object.assign(book, _book);
-            const coverUrl = book.additionalMetadate?.cover?.url ?? "";
+            const coverUrl = _book?.additionalMetadate?.cover?.url ?? "";
             const coverSrc = coverUrl ? getObjectUrl(coverUrl) : "";
             const _metaData = {
                 封面: [coverSrc, coverUrl],
-                题名: book.bookname ?? "None",
-                作者: book.author ?? "None",
-                网址: book.bookUrl,
-                简介: book.introductionHTML ?? "",
+                题名: _book?.bookname ?? "None",
+                作者: _book?.author ?? "None",
+                网址: _book?.bookUrl,
+                简介: _book?.introductionHTML ?? "",
             };
             Object.assign(metaData, _metaData);
             const cn = getInitChapterNumber();
