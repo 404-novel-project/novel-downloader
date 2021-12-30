@@ -5,6 +5,7 @@ import { log } from "../../../log";
 import { Chapter } from "../../../main/Chapter";
 import { Book, BookAdditionalMetadate } from "../../../main/Book";
 import { BaseRuleClass, ChapterParseObject } from "../../../rules";
+import { rm } from "../../../lib/dom";
 
 export class Lofter extends BaseRuleClass {
   public constructor() {
@@ -16,9 +17,7 @@ export class Lofter extends BaseRuleClass {
 
   public async bookParse() {
     const bookUrl = document.location.origin;
-    const author = JSON.parse(
-      '"' + (unsafeWindow as any)._ntes_ntit.replaceAll("%", "\\") + '"'
-    );
+    const author = document.title;
     const bookname = author + "的Lofter";
     const introduction =
       document
@@ -156,7 +155,12 @@ export class Lofter extends BaseRuleClass {
           .replace("\n", "")
           .trim() ?? null;
 
-      const selectors = [".ct .ctc", ".main .content", ".m-post .text"];
+      const selectors = [
+        ".ct .ctc",
+        ".main .content",
+        ".m-post .text",
+        ".content",
+      ];
       let content;
       for (const selector of selectors) {
         const _content = doc.querySelector(selector) as HTMLElement;
@@ -166,6 +170,7 @@ export class Lofter extends BaseRuleClass {
         }
       }
       if (content) {
+        rm(".otherinfo", true, content);
         const { dom, text, images } = await cleanDOM(content, "TM");
         return {
           chapterName,

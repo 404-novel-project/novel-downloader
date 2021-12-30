@@ -1,6 +1,7 @@
 import { AttachmentClass } from "../main/Attachment";
 import { ReferrerMode } from "../main/main";
 import { calculateSha1 } from "./hash";
+import { log } from "../log";
 
 let attachmentClassCache: AttachmentClass[] = [];
 export function getAttachmentClassCache(url: string) {
@@ -61,6 +62,9 @@ export async function getImageAttachment(
     }
   }
   putAttachmentClassCache(imgClass);
+  log.debug(
+    `[attachment]下载附件完成！ url:${imgClass.url}, name: ${imgClass.name}`
+  );
   return imgClass;
 }
 
@@ -69,7 +73,7 @@ export function getRandomName() {
 }
 
 export function getExt(b: Blob, u: string) {
-  const contentType = b.type.split("/")[1];
+  const contentType = b.type.split(";")[0].split("/")[1];
   const contentTypeBlackList = ["octet-stream"];
   if (contentTypeBlackList.includes(contentType)) {
     return getExtFromUrl(u);

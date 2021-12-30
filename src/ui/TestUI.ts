@@ -107,14 +107,14 @@ export default defineComponent({
     onMounted(async () => {
       const _book = await waitBook();
       Object.assign(book, _book);
-      const coverUrl = book.additionalMetadate?.cover?.url ?? "";
+      const coverUrl = _book?.additionalMetadate?.cover?.url ?? "";
       const coverSrc = coverUrl ? getObjectUrl(coverUrl) : "";
       const _metaData = {
         封面: [coverSrc, coverUrl],
-        题名: book.bookname ?? "None",
-        作者: book.author ?? "None",
-        网址: book.bookUrl,
-        简介: book.introductionHTML ?? "",
+        题名: _book?.bookname ?? "None",
+        作者: _book?.author ?? "None",
+        网址: _book?.bookUrl,
+        简介: _book?.introductionHTML ?? "",
       };
       Object.assign(metaData, _metaData);
       const cn = getInitChapterNumber();

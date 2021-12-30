@@ -4,6 +4,7 @@ import { BaseRuleClass, ChapterParseObject } from "../rules";
 import { retryLimit } from "../setting";
 import { Status } from "./main";
 import { AttachmentClass } from "./Attachment";
+import { Book } from "./Book";
 
 export interface ChapterAdditionalMetadate {
   lastModified?: number;
@@ -38,6 +39,7 @@ export class Chapter {
   public additionalMetadate!: ChapterAdditionalMetadate | null;
 
   public chapterHtmlFileName!: string | number;
+  public book!: Book;
 
   public constructor(
     bookUrl: string,

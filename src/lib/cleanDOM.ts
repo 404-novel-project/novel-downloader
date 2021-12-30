@@ -148,6 +148,8 @@ const keepElements = [
 ];
 
 const IgnoreElements = [
+  // 注释
+  "#comment",
   // fieldset 用于在web表单中组织多组label标签
   // legend 为 fieldset 提示
   "fieldset",
@@ -470,11 +472,13 @@ export async function cleanDOM(
     }
   }
 
-  function inlineElement(element: Element | Text): SubOutput | null {
+  async function inlineElement(
+    element: Element | Text
+  ): Promise<SubOutput | null> {
     const map: Map<
       string,
-      | ((elem: Element | Text) => SubOutput | null)
-      | ((elem: Element) => SubOutput | null)
+      | ((elem: Element | Text) => SubOutput | null | Promise<SubOutput | null>)
+      | ((elem: Element) => SubOutput | null | Promise<SubOutput | null>)
     > = new Map();
 
     // 默认处理，将元素转为纯文本
@@ -492,8 +496,11 @@ export async function cleanDOM(
       "tt",
       "#text",
     ];
-    function defaultHandler(elem: Element | Text) {
-      if (elem instanceof HTMLElement || elem instanceof Text) {
+    async function defaultHandler(elem: Element | Text) {
+      if (
+        (elem instanceof HTMLElement && elem.childElementCount === 0) ||
+        elem instanceof Text
+      ) {
         let text;
         if (elem instanceof HTMLElement) {
           text = elem.innerText.trim();
@@ -511,22 +518,51 @@ export async function cleanDOM(
           };
         }
       }
+      if (elem instanceof HTMLElement && elem.childElementCount !== 0) {
+        const nodes = [...findBase(elem)];
+        const { dom, text, images } = await loop(
+          nodes,
+          document.createElement(elem.nodeName.toLowerCase())
+        );
+        return {
+          dom,
+          text,
+          images,
+        };
+      }
       return null;
     }
     defaultList.forEach((n) => map.set(n, defaultHandler));
 
-    function a(elem: Element) {
+    async function a(elem: Element) {
       if (elem instanceof HTMLAnchorElement) {
-        if (
-          elem.href.startsWith("https://") ||
-          elem.href.startsWith("http://")
-        ) {
-          const { href, textContent } = elem;
-          const dom = document.createElement("a");
-          dom.href = href;
-          dom.textContent = textContent;
-          const text = `[${textContent}](${href})`;
-          const images = [] as AttachmentClass[];
+        if (elem.childElementCount === 0) {
+          if (
+            elem.href.startsWith("https://") ||
+            elem.href.startsWith("http://")
+          ) {
+            const { href, textContent } = elem;
+            const dom = document.createElement("a");
+            dom.href = href;
+            dom.textContent = textContent;
+            const text = `[${textContent}](${href})`;
+            const images = [] as AttachmentClass[];
+            return {
+              dom,
+              text,
+              images,
+            };
+          }
+        } else {
+          const outterA = document.createElement("a");
+          if (
+            elem.href.startsWith("https://") ||
+            elem.href.startsWith("http://")
+          ) {
+            outterA.href = elem.href;
+          }
+          const nodes = [...findBase(elem)];
+          const { dom, text, images } = await loop(nodes, outterA);
           return {
             dom,
             text,
@@ -632,22 +668,35 @@ export async function cleanDOM(
     }
     map.set("br", br);
 
-    function common(
+    async function common(
       nodeName: string,
       getText: (textContent: string) => string,
       elem: Element
     ) {
       if (elem instanceof HTMLElement) {
-        const textContent = elem.innerText.trim();
-        const dom = document.createElement(nodeName);
-        dom.innerText = textContent;
-        const text = getText(textContent);
-        const images = [] as AttachmentClass[];
-        return {
-          dom,
-          text,
-          images,
-        };
+        if (elem.childElementCount === 0) {
+          const textContent = elem.innerText.trim();
+          const dom = document.createElement(nodeName);
+          dom.innerText = textContent;
+          const text = getText(textContent);
+          const images = [] as AttachmentClass[];
+          return {
+            dom,
+            text,
+            images,
+          };
+        } else {
+          const nodes = [...findBase(elem)];
+          const { dom, text, images } = await loop(
+            nodes,
+            document.createElement(nodeName)
+          );
+          return {
+            dom,
+            text,
+            images,
+          };
+        }
       }
       return null;
     }
@@ -730,7 +779,7 @@ export async function cleanDOM(
       const bNname = node.nodeName.toLowerCase();
       // 文本 或 行内元素
       if (node instanceof Text || InlineElements.includes(bNname)) {
-        const tobj = inlineElement(node);
+        const tobj = await inlineElement(node);
         if (tobj) {
           const { dom: tdom, text: ttext, images: timages } = tobj;
           _outDom.appendChild(tdom);
