@@ -11,3 +11,4 @@ export declare const c25zw: () => import("../../lib/misc").PublicConstructor<imp
 export declare const xbiquge: () => import("../../lib/misc").PublicConstructor<import("../../rules").BaseRuleClass>;
 export declare const yruan: () => import("../../lib/misc").PublicConstructor<import("../../rules").BaseRuleClass>;
 export declare const ranwen: () => import("../../lib/misc").PublicConstructor<import("../../rules").BaseRuleClass>;
+export declare const b5200: () => import("../../lib/misc").PublicConstructor<import("../../rules").BaseRuleClass>;

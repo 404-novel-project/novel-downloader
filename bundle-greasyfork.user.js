@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.7.7.456
+// @version        4.7.7.457
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -167,6 +167,7 @@
 // @match          *://www.aixdzs.com/novel/*
 // @match          *://www.liuxs.la/bookinfo-*/
 // @match          *://www.cool18.com/bbs4/index.php?*
+// @match          *://www.b5200.net/*_*/
 // @name:en        novel-downloader
 // @name:ja        小説ダウンローダー
 // @description:en An scalable universal novel downloader.
@@ -289,6 +290,7 @@
 // @connect        a7xs.com
 // @connect        jingcaiyuedu6.com
 // @connect        aixdzs.com
+// @connect        b5200.net
 // @connect        *
 // @require        https://cdn.jsdelivr.net/npm/crypto-js@4.1.1/crypto-js.js#sha512-NQVmLzNy4Lr5QTrmXvq/WzTMUnRHmv7nyIT/M6LyGPBS+TIeRxZ+YQaqWxjpRpvRMQSuYPQURZz/+pLi81xXeA==
 // @require        https://cdn.jsdelivr.net/npm/fflate@0.7.2/umd/index.js#sha512-b4i2Ut2Tho5Qrzt3pWKCkt9Q+4ECSNPdX0JsVzudNFXR2kIbV0ndgkm3fDlGvp2A6JG9tcH3ND38y+y0DrM/jQ==
@@ -6330,8 +6332,9 @@ class BaseRuleClass {
             broadcastChannelWorker.postMessage(ping);
             await (0,misc/* sleep */._v)(300);
             const workers = messages
-                .filter((m) => m.type === "pong")
-                .filter((m) => m.src === window.workerId)
+                .filter((m) => m.type === "pong" &&
+                m.src === window.workerId &&
+                m.workerId !== window.workerId)
                 .map((m) => ({
                 id: m.workerId,
                 url: m.url,
@@ -6609,7 +6612,7 @@ async function chapterParseTemp({ dom, chapterUrl, chapterName, contenSelector, 
         };
     }
 }
-function mkBiqugeClass(introDomPatch, contentPatch, concurrencyLimit, enableIgnore, customVolumeFilter) {
+function mkBiqugeClass(introDomPatch, contentPatch, concurrencyLimit, enableIgnore, customVolumeFilter, overrideConstructor) {
     return class extends _rules__WEBPACK_IMPORTED_MODULE_6__/* .BaseRuleClass */ .c {
         constructor() {
             super();
@@ -6618,6 +6621,9 @@ function mkBiqugeClass(introDomPatch, contentPatch, concurrencyLimit, enableIgno
             }
             this.imageMode = "TM";
             this.charset = document.characterSet;
+            if (overrideConstructor) {
+                this.overrideConstructor = overrideConstructor;
+            }
             this.overrideConstructor(this);
         }
         async bookParse() {
@@ -6662,7 +6668,7 @@ function mkBiqugeClass(introDomPatch, contentPatch, concurrencyLimit, enableIgno
         }
     };
 }
-function mkBiqugeClass2(introDomPatch, contentPatch, concurrencyLimit, enableIgnore, customVolumeFilter) {
+function mkBiqugeClass2(introDomPatch, contentPatch, concurrencyLimit, enableIgnore, customVolumeFilter, overrideConstructor) {
     return class extends _rules__WEBPACK_IMPORTED_MODULE_6__/* .BaseRuleClass */ .c {
         constructor() {
             super();
@@ -6671,6 +6677,9 @@ function mkBiqugeClass2(introDomPatch, contentPatch, concurrencyLimit, enableIgn
             }
             this.imageMode = "TM";
             this.charset = document.characterSet;
+            if (overrideConstructor) {
+                this.overrideConstructor = overrideConstructor;
+            }
             this.overrideConstructor(this);
         }
         async bookParse() {
@@ -6710,7 +6719,7 @@ function mkBiqugeClass2(introDomPatch, contentPatch, concurrencyLimit, enableIgn
         }
     };
 }
-function mkBiqugeClass3(introDomPatch, contentPatch, getNextPage, continueCondition, concurrencyLimit, enableIgnore, customVolumeFilter) {
+function mkBiqugeClass3(introDomPatch, contentPatch, getNextPage, continueCondition, concurrencyLimit, enableIgnore, customVolumeFilter, overrideConstructor) {
     return class extends _rules__WEBPACK_IMPORTED_MODULE_6__/* .BaseRuleClass */ .c {
         constructor() {
             super();
@@ -6719,6 +6728,9 @@ function mkBiqugeClass3(introDomPatch, contentPatch, getNextPage, continueCondit
             }
             this.imageMode = "TM";
             this.charset = document.characterSet;
+            if (overrideConstructor) {
+                this.overrideConstructor = overrideConstructor;
+            }
             this.overrideConstructor(this);
         }
         async bookParse() {
@@ -6782,7 +6794,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "c25zw": () => (/* binding */ c25zw),
 /* harmony export */   "xbiquge": () => (/* binding */ xbiquge),
 /* harmony export */   "yruan": () => (/* binding */ yruan),
-/* harmony export */   "ranwen": () => (/* binding */ ranwen)
+/* harmony export */   "ranwen": () => (/* binding */ ranwen),
+/* harmony export */   "b5200": () => (/* binding */ b5200)
 /* harmony export */ });
 /* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/misc.ts");
 /* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
@@ -6822,32 +6835,30 @@ const tycqxs = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass 
     content.innerHTML = content.innerHTML.replace(/推荐都市大神老施新书:<a href="https:\/\/www\.tycqxs\.com\/[\d_]+\/" target="_blank">.+<\/a>/, "");
     return content;
 });
-const dijiubook = () => {
-    const c = (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass */ .Rt)((introDom) => {
-        introDom.innerHTML = introDom.innerHTML.replace("本书网址：", "");
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)('a[href^="https://dijiubook.net/"]', false, introDom);
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("dl > dt:nth-of-type(2)", false, document.querySelector("#list"));
-        document
-            .querySelectorAll('#list a[href^="https://m.dijiubook.net"]')
-            .forEach((elem) => elem.parentElement?.remove());
-        document
-            .querySelectorAll('#list a[href$=".apk"]')
-            .forEach((elem) => elem.parentElement?.remove());
-        return introDom;
-    }, (content) => {
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("a", true, content);
-        return content;
-    });
-    c.prototype.overrideConstructor = (classThis) => {
-        classThis.concurrencyLimit = 1;
-        classThis.maxRunLimit = 1;
-        classThis.postChapterParseHook = async (obj) => {
-            await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_2__/* .sleep */ ._v)(3000 * Math.random());
-            return obj;
-        };
+const dijiubook = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass */ .Rt)((introDom) => {
+    introDom.innerHTML = introDom.innerHTML.replace("本书网址：", "");
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)('a[href^="https://dijiubook.net/"]', false, introDom);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("dl > dt:nth-of-type(2)", false, document.querySelector("#list"));
+    document
+        .querySelectorAll('#list a[href^="https://m.dijiubook.net"]')
+        .forEach((elem) => elem.parentElement?.remove());
+    document
+        .querySelectorAll('#list a[href$=".apk"]')
+        .forEach((elem) => elem.parentElement?.remove());
+    return introDom;
+}, (content) => {
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("a", true, content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)('img[src$="alipay.png"]', true, content);
+    return content;
+}, 1, undefined, undefined, (classThis) => {
+    classThis.maxRunLimit = 1;
+    const chapterParse = classThis.chapterParse;
+    classThis.chapterParse = async (...args) => {
+        const obj = await chapterParse(...args);
+        await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_2__/* .sleep */ ._v)(3000 * Math.random());
+        return obj;
     };
-    return c;
-};
+});
 const c25zw = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass */ .Rt)((introDom) => {
     introDom.querySelector("font")?.parentElement?.remove();
     introDom.innerHTML = introDom.innerHTML.replace("简介:", "");
@@ -6868,6 +6879,7 @@ const ranwen = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass 
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .vS)(introDom, ["还不错的话请不要忘记向您QQ群和微博里的朋友推荐哦！"]);
     return introDom;
 }, (content) => content, undefined, undefined, /全文阅读/);
+const b5200 = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass */ .Rt)((introDom) => introDom, (content) => content, 1);
 
 
 /***/ }),
@@ -16628,6 +16640,11 @@ async function getRule() {
         case "www.cool18.com": {
             const { Cool18 } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/cool18.ts"));
             ruleClass = Cool18;
+            break;
+        }
+        case "www.b5200.net": {
+            const { b5200 } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/type1.ts"));
+            ruleClass = b5200();
             break;
         }
         default: {
