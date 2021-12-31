@@ -12,4 +12,5 @@ interface Output {
 }
 export declare function cleanDOM(elem: Element, imgMode: "naive" | "TM", options?: Options): Promise<Output>;
 export declare function htmlTrim(dom: HTMLElement): void;
+export declare function convertFixWidthText(node: Text): HTMLElement;
 export {};

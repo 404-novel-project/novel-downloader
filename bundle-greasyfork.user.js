@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.7.6.455
+// @version        4.7.7.456
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -166,6 +166,7 @@
 // @match          *://manga.bilibili.com/detail/mc*
 // @match          *://www.aixdzs.com/novel/*
 // @match          *://www.liuxs.la/bookinfo-*/
+// @match          *://www.cool18.com/bbs4/index.php?*
 // @name:en        novel-downloader
 // @name:ja        小説ダウンローダー
 // @description:en An scalable universal novel downloader.
@@ -3587,8 +3588,9 @@ function getLastPart(u) {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "z": () => (/* binding */ cleanDOM),
-/* harmony export */   "i": () => (/* binding */ htmlTrim)
+/* harmony export */   "zM": () => (/* binding */ cleanDOM),
+/* harmony export */   "iA": () => (/* binding */ htmlTrim),
+/* harmony export */   "d1": () => (/* binding */ convertFixWidthText)
 /* harmony export */ });
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("loglevel");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_1__);
@@ -3809,8 +3811,19 @@ async function cleanDOM(elem, imgMode, options) {
         ];
         function div(elem) {
             if (elem instanceof HTMLElement) {
-                const nodes = [...findBase(elem)];
-                return loop(nodes, document.createElement("div"));
+                if (elem.childElementCount === 0) {
+                    const div = document.createElement("div");
+                    div.innerText = elem.innerText.trim();
+                    return {
+                        dom: div,
+                        text: div.innerText,
+                        images: [],
+                    };
+                }
+                else {
+                    const nodes = [...findBase(elem)];
+                    return loop(nodes, document.createElement("div"));
+                }
             }
             return null;
         }
@@ -3818,8 +3831,19 @@ async function cleanDOM(elem, imgMode, options) {
         const pList = ["address", "p", "dd", "dt", "figcaption", "dl"];
         function p(elem) {
             if (elem instanceof HTMLElement) {
-                const nodes = [...findBase(elem)];
-                return loop(nodes, document.createElement("p"));
+                if (elem.childElementCount === 0) {
+                    const p = document.createElement("p");
+                    p.innerText = elem.innerText.trim();
+                    return {
+                        dom: p,
+                        text: p.innerText,
+                        images: [],
+                    };
+                }
+                else {
+                    const nodes = [...findBase(elem)];
+                    return loop(nodes, document.createElement("p"));
+                }
             }
             return null;
         }
@@ -4322,6 +4346,22 @@ function convertBr(dom) {
             .map((n) => n.nodeName.toLowerCase())
             .every((nn) => ["#text", "br"].includes(nn));
     }
+}
+function convertFixWidthText(node) {
+    const out = document.createElement("div");
+    const ns = node.textContent?.split("\n").map((n) => n.trim()) ?? [];
+    let text = "";
+    for (const n of ns) {
+        if (n === "") {
+            out.appendChild(new Text(text));
+            out.appendChild(document.createElement("br"));
+            text = "";
+        }
+        else {
+            text = text + n;
+        }
+    }
+    return convertBr(out);
 }
 
 
@@ -4958,7 +4998,7 @@ async function introDomHandle(introDom, domPatch) {
         if (domPatch) {
             introDom = domPatch(introDom.cloneNode(true));
         }
-        const { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = await (0,_cleanDOM__WEBPACK_IMPORTED_MODULE_0__/* .cleanDOM */ .z)(introDom, "TM");
+        const { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = await (0,_cleanDOM__WEBPACK_IMPORTED_MODULE_0__/* .cleanDOM */ .zM)(introDom, "TM");
         return [introCleantext, introCleanDom, introCleanimages];
     }
 }
@@ -4995,7 +5035,7 @@ async function nextPageParse({ chapterName, chapterUrl, charset, selector, conte
     } while (flag);
     let dom, text, images;
     if (enableCleanDOM || enableCleanDOM === undefined) {
-        const obj = await (0,_cleanDOM__WEBPACK_IMPORTED_MODULE_0__/* .cleanDOM */ .z)(content, "TM");
+        const obj = await (0,_cleanDOM__WEBPACK_IMPORTED_MODULE_0__/* .cleanDOM */ .zM)(content, "TM");
         dom = obj.dom;
         text = obj.text;
         images = obj.images;
@@ -6548,7 +6588,7 @@ async function chapterParseTemp({ dom, chapterUrl, chapterName, contenSelector, 
     let content = dom.querySelector(contenSelector);
     if (content) {
         content = contentPatch(content, options);
-        const { dom: domClean, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_5__/* .cleanDOM */ .z)(content, "TM");
+        const { dom: domClean, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_5__/* .cleanDOM */ .zM)(content, "TM");
         return {
             chapterName,
             contentRaw: content,
@@ -6887,7 +6927,7 @@ const lusetxt = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("div[style]", true, content);
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("div[align]", true, content);
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .vS)(content, ["https://www.lusetxt.com/books", "请记住本书首发域名"]);
-    (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__/* .htmlTrim */ .i)(content);
+    (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__/* .htmlTrim */ .iA)(content);
     return content;
 });
 
@@ -6921,13 +6961,13 @@ const dingdiann = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeCla
         "本章未完，点击下一页继续阅读",
     ];
     removelist.forEach((removeStr) => (content.innerHTML = content.innerHTML.replaceAll(removeStr, "")));
-    (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__/* .htmlTrim */ .i)(content);
+    (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__/* .htmlTrim */ .iA)(content);
     return content;
 }, (doc) => doc.querySelector(".bottem2 > a:nth-child(4)")
     .href, (_content, nextLink) => _content.innerText.includes("本章未完，点击下一页继续阅读"));
 const mht = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass3 */ .O6)((introDom) => introDom, (content, doc) => {
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("p[data-id]", true, content);
-    (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__/* .htmlTrim */ .i)(content);
+    (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__/* .htmlTrim */ .iA)(content);
     return content;
 }, (doc) => doc.querySelector(".bottem2 > a:nth-child(4)")
     .href, (_content, nextLink) => new URL(nextLink).pathname.includes("_"));
@@ -6951,12 +6991,12 @@ const xinwanben = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeCla
         "把本站分享那些需要的小伙伴！找不到书请留言！",
     ];
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .vS)(content, filters);
-    (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__/* .htmlTrim */ .i)(content);
+    (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__/* .htmlTrim */ .iA)(content);
     return content;
 }, (doc) => doc.querySelector("#next_url").href, (_content, nextLink) => new URL(nextLink).pathname.includes("_"), undefined, true);
 const biqu55 = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass3 */ .O6)((introDom) => introDom, (content, doc) => {
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .vS)(content, ["精彩小说无弹窗免费阅读！"]);
-    (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__/* .htmlTrim */ .i)(content);
+    (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__/* .htmlTrim */ .iA)(content);
     return content;
 }, (doc) => doc.querySelector('div.bottem2 > a[rel="next"]:nth-child(3)').href, (_content, nextLink) => /[\d_]+\.html$/.exec(nextLink)?.[0].includes("_") ?? false);
 
@@ -7059,7 +7099,7 @@ const a7xs = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .
             contentPatch: (content, doc) => {
                 const ads = ["免费追书小说网手机版阅读网址"];
                 (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .vS)(content, ads);
-                (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_3__/* .htmlTrim */ .i)(content);
+                (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_3__/* .htmlTrim */ .iA)(content);
                 return content;
             },
             getNextPage: (doc) => doc.querySelector("a.next.pager_next").href,
@@ -7530,7 +7570,7 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
             }
             if (content) {
                 content = contentPatch(content);
-                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__/* .cleanDOM */ .z)(content, "TM", cleanDomOptions);
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__/* .cleanDOM */ .zM)(content, "TM", cleanDomOptions);
                 return {
                     chapterName,
                     contentRaw: content,
@@ -7677,7 +7717,7 @@ const wanben = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */
                     "百万热门书籍终身无广告免费阅读",
                 ];
                 (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__/* .rm2 */ .vS)(content, ads);
-                (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_3__/* .htmlTrim */ .i)(content);
+                (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_3__/* .htmlTrim */ .iA)(content);
                 return content;
             },
             getNextPage: (doc) => doc.querySelector(".readPage > a:nth-child(3)")
@@ -7957,7 +7997,7 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
             }
             if (content) {
                 content = contentPatch(content);
-                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .z)(content, "TM", cleanDomOptions);
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .zM)(content, "TM", cleanDomOptions);
                 return {
                     chapterName,
                     contentRaw: content,
@@ -8043,7 +8083,7 @@ const wanben = () => {
                         "百万热门书籍终身无广告免费阅读",
                     ];
                     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_3__/* .rm2 */ .vS)(content, ads);
-                    (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_4__/* .htmlTrim */ .i)(content);
+                    (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_4__/* .htmlTrim */ .iA)(content);
                     return content;
                 },
                 getNextPage: (doc) => doc.querySelector("div.page > a:nth-child(3)")
@@ -9014,10 +9054,10 @@ function getClass(replaceFunction) {
                 }
             } while (flag);
             if (content) {
-                const { dom: oldDom, images: finalImages } = await (0,cleanDOM/* cleanDOM */.z)(content, "TM", { keepImageName: true });
+                const { dom: oldDom, images: finalImages } = await (0,cleanDOM/* cleanDOM */.zM)(content, "TM", { keepImageName: true });
                 const _newDom = document.createElement("div");
                 _newDom.innerHTML = replaceFunction(content.innerHTML);
-                const { dom: newDom, text: finalText } = await (0,cleanDOM/* cleanDOM */.z)(_newDom, "TM", {
+                const { dom: newDom, text: finalText } = await (0,cleanDOM/* cleanDOM */.zM)(_newDom, "TM", {
                     keepImageName: true,
                 });
                 const fontStyleDom = document.createElement("style");
@@ -9157,7 +9197,7 @@ class C17k extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
                 (0,_lib_dom__WEBPACK_IMPORTED_MODULE_8__.rm)("#banner_content", false, content);
                 (0,_lib_dom__WEBPACK_IMPORTED_MODULE_8__.rm)("div.qrcode", false, content);
                 (0,_lib_dom__WEBPACK_IMPORTED_MODULE_8__.rm)("div.chapter_text_ad", false, content);
-                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_9__/* .cleanDOM */ .z)(content, "TM");
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_9__/* .cleanDOM */ .zM)(content, "TM");
                 return {
                     chapterName,
                     contentRaw: content,
@@ -9636,7 +9676,7 @@ class Ciweimao extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
             if (divChapterAuthorSay) {
                 content.appendChild(divChapterAuthorSay);
             }
-            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .z)(content, "TM");
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .zM)(content, "TM");
             return {
                 chapterName,
                 contentRaw: content,
@@ -9717,7 +9757,7 @@ class Ciweimao extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
                 let ddom;
                 let dtext;
                 if (divChapterAuthorSay) {
-                    const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .z)(divChapterAuthorSay, "TM");
+                    const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .zM)(divChapterAuthorSay, "TM");
                     [ddom, dtext] = [dom, text, images];
                 }
                 const img = document.createElement("img");
@@ -9891,7 +9931,7 @@ class Ciyuanji extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
             const chapterContent = decrypt(chapterObj.chapterContentFormat);
             if (chapterContent) {
                 content.innerHTML = chapterContent;
-                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .z)(content, "TM");
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .zM)(content, "TM");
                 return {
                     chapterName,
                     contentRaw: content,
@@ -9901,6 +9941,167 @@ class Ciyuanji extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
                     additionalMetadate: null,
                 };
             }
+        }
+        return {
+            chapterName,
+            contentRaw: null,
+            contentText: null,
+            contentHTML: null,
+            contentImages: null,
+            additionalMetadate: null,
+        };
+    }
+}
+
+
+/***/ }),
+
+/***/ "./src/rules/special/original/cool18.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Cool18": () => (/* binding */ Cool18)
+/* harmony export */ });
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
+
+
+
+
+
+class Cool18 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
+    constructor() {
+        super();
+        this.imageMode = "TM";
+    }
+    async bookParse() {
+        const bookUrl = document.location.href;
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .dL)(bookUrl, this.charset);
+        const title = doc.querySelector('.show_content > center > font[size="6"] > b').innerText.trim();
+        const matchs = /[【《](.+)[】》](.+)?作者：([^\s-]+)/.exec(title);
+        let bookname = title;
+        let author = "";
+        if (matchs) {
+            bookname = matchs[1];
+            author = matchs[3];
+        }
+        const introduction = null;
+        const introductionHTML = null;
+        const additionalMetadate = {};
+        const _aElems = Array.from(document.querySelectorAll(".show_content > pre a, body > table:nth-child(7) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(1) > ul:nth-child(2) > li > a"));
+        const _a = document.createElement("a");
+        _a.href = document.location.href;
+        _a.innerText = title;
+        _aElems.push(_a);
+        const aElems = _aElems
+            .filter((a) => {
+            const href = a.href;
+            const url = new URL(href);
+            return (url.searchParams.get("act") === "threadview" &&
+                url.searchParams.has("tid"));
+        })
+            .filter((a) => a.innerText.includes("(无内容)") === false)
+            .sort((a, b) => {
+            const _aTid = new URL(a.href).searchParams.get("tid");
+            const _bTid = new URL(b.href).searchParams.get("tid");
+            const aTid = parseInt(_aTid);
+            const bTid = parseInt(_bTid);
+            return aTid - bTid;
+        });
+        const chapters = aElems.map((a) => {
+            const chapterUrl = a.href;
+            const chapterNumber = -1;
+            const chapterName = a.innerText
+                .replace(`【${bookname}】`, "")
+                .replace(`《${bookname}》`, "")
+                .replace(`作者：${author}`, "")
+                .trim();
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_2__/* .Chapter */ .W(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, false, false, null, null, null, this.chapterParse, this.charset, { bookname, author });
+            return chapter;
+        });
+        let i = 0;
+        for (const chapter of chapters) {
+            i++;
+            chapter.chapterNumber = i;
+        }
+        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_3__/* .Book */ .f(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        return book;
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
+        chapterName = doc.querySelector('.show_content > center > font[size="6"] > b').innerText
+            .replace(`【${options.bookname}】`, "")
+            .replace(`《${options.bookname}》`, "")
+            .replace(`作者：${options.author}`, "")
+            .trim();
+        const dom = doc.querySelector(".show_content > pre");
+        if (dom) {
+            Array.from(dom.querySelectorAll('font[color="#E6E6DD"]')).forEach((f) => f.remove());
+            Array.from(dom.querySelectorAll("br")).forEach((b) => b.remove());
+            const contentRaw = document.createElement("div");
+            const nodes = Array.from(dom.childNodes);
+            if (nodes.length > 10) {
+                let p = document.createElement("p");
+                for (const node of nodes) {
+                    if (node instanceof Text) {
+                        const text = new Text(node.textContent?.trim());
+                        p.appendChild(text);
+                        continue;
+                    }
+                    if (node instanceof HTMLElement) {
+                        contentRaw.appendChild(p);
+                        p = document.createElement("p");
+                        if (node instanceof HTMLParagraphElement) {
+                            if (node.nextSibling instanceof Text) {
+                                node.remove();
+                                continue;
+                            }
+                            else {
+                                contentRaw.appendChild(node);
+                                continue;
+                            }
+                        }
+                        contentRaw.appendChild(node);
+                        continue;
+                    }
+                }
+                contentRaw.appendChild(p);
+                const as = Array.from(contentRaw.querySelectorAll("a"));
+                for (const node of as) {
+                    if (node instanceof HTMLAnchorElement) {
+                        if (node.nextSibling instanceof HTMLAnchorElement ||
+                            (node.nextSibling instanceof Text &&
+                                node.nextSibling.textContent?.trim() === "" &&
+                                node.nextSibling.nextSibling instanceof HTMLAnchorElement)) {
+                            node.insertAdjacentElement("afterend", document.createElement("br"));
+                            continue;
+                        }
+                    }
+                }
+            }
+            else {
+                for (const node of nodes) {
+                    if (node instanceof Text && (node.textContent?.length ?? 0) > 200) {
+                        contentRaw.appendChild((0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_4__/* .convertFixWidthText */ .d1)(node));
+                        continue;
+                    }
+                    contentRaw.appendChild(node);
+                }
+            }
+            const { dom: contentHTML, text: contentText, images: contentImages, } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_4__/* .cleanDOM */ .zM)(contentRaw, "TM");
+            return {
+                chapterName,
+                contentRaw,
+                contentText,
+                contentHTML,
+                contentImages,
+                additionalMetadate: null,
+            };
         }
         return {
             chapterName,
@@ -10405,7 +10606,7 @@ class Hanwujinian extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass *
             (0,_lib_dom__WEBPACK_IMPORTED_MODULE_9__/* .rm2 */ .vS)(content, ["更多优惠快去下载寒武纪年小说APP哦"]);
             content.innerHTML = content.innerHTML.replaceAll("%3A", "：");
             content.innerHTML = content.innerHTML.replaceAll("++++【", "【");
-            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .z)(content, "TM");
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .zM)(content, "TM");
             return {
                 chapterName,
                 contentRaw: content,
@@ -10763,12 +10964,12 @@ class Jjwxc extends rules/* BaseRuleClass */.c {
                 let authorSayDom;
                 let authorSayText;
                 if (rawAuthorSayDom) {
-                    const { dom: adom, text: atext } = await (0,cleanDOM/* cleanDOM */.z)(rawAuthorSayDom, "TM");
+                    const { dom: adom, text: atext } = await (0,cleanDOM/* cleanDOM */.zM)(rawAuthorSayDom, "TM");
                     [authorSayDom, authorSayText] = [adom, atext];
                 }
                 (0,lib_dom.rm)("div", true, content);
                 content.innerHTML = content.innerHTML.replaceAll("@无限好文，尽在晋江文学城", "");
-                let { dom, text, images } = await (0,cleanDOM/* cleanDOM */.z)(content, "TM");
+                let { dom, text, images } = await (0,cleanDOM/* cleanDOM */.zM)(content, "TM");
                 if (rawAuthorSayDom && authorSayDom && authorSayText) {
                     const hr = document.createElement("hr");
                     authorSayDom.className = "authorSay";
@@ -10904,12 +11105,12 @@ class Jjwxc extends rules/* BaseRuleClass */.c {
                     let authorSayDom;
                     let authorSayText;
                     if (rawAuthorSayDom) {
-                        const { dom: adom, text: atext } = await (0,cleanDOM/* cleanDOM */.z)(rawAuthorSayDom, "TM");
+                        const { dom: adom, text: atext } = await (0,cleanDOM/* cleanDOM */.zM)(rawAuthorSayDom, "TM");
                         [authorSayDom, authorSayText] = [adom, atext];
                     }
                     (0,lib_dom.rm)("div", true, content);
                     content.innerHTML = content.innerHTML.replaceAll("@无限好文，尽在晋江文学城", "");
-                    let { dom: rawDom, text: rawText, images, } = await (0,cleanDOM/* cleanDOM */.z)(content, "TM");
+                    let { dom: rawDom, text: rawText, images, } = await (0,cleanDOM/* cleanDOM */.zM)(content, "TM");
                     if (rawAuthorSayDom && authorSayDom && authorSayText) {
                         const hr = document.createElement("hr");
                         authorSayDom.className = "authorSay";
@@ -11074,7 +11275,7 @@ class Linovel extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c
             const ChapterName = doc.querySelector(".article-title").innerText.trim();
             const content = doc.querySelector(".article-text");
             if (content) {
-                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .z)(content, "TM");
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .zM)(content, "TM");
                 return {
                     chapterName: ChapterName,
                     contentRaw: content,
@@ -11245,7 +11446,7 @@ class Lofter extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
             }
             if (content) {
                 (0,_lib_dom__WEBPACK_IMPORTED_MODULE_6__.rm)(".otherinfo", true, content);
-                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__/* .cleanDOM */ .z)(content, "TM");
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__/* .cleanDOM */ .zM)(content, "TM");
                 return {
                     chapterName,
                     contentRaw: content,
@@ -11265,7 +11466,7 @@ class Lofter extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
             chapterName = doc.querySelector("#title")?.innerText.trim();
             const content = doc.querySelector("#m-cnt .long-text");
             if (content) {
-                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__/* .cleanDOM */ .z)(content, "TM");
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__/* .cleanDOM */ .zM)(content, "TM");
                 return {
                     chapterName,
                     contentRaw: content,
@@ -11534,7 +11735,7 @@ class Longmabook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */
         async function getImages() {
             const imageDom = document.createElement("div");
             Array.from(doc.querySelectorAll("#mypages > div:nth-child(10) > div:nth-child(2) > div:nth-child(6) > ul > li:nth-child(14) > img")).forEach((img) => imageDom.appendChild(img.cloneNode(true)));
-            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .z)(imageDom, self.imageMode);
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .zM)(imageDom, self.imageMode);
             return [dom, text, images];
         }
         async function getMainContent() {
@@ -11569,7 +11770,7 @@ class Longmabook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */
                 const contentMain = document.createElement("div");
                 contentMain.innerHTML = await resp.text();
                 (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)('img[src="/images/fullcolor.png"]', true, contentMain);
-                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .z)(contentMain, self.imageMode);
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .zM)(contentMain, self.imageMode);
                 return [dom, text, images];
             }
             else {
@@ -11579,7 +11780,7 @@ class Longmabook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */
         async function getAuthorSay() {
             const authorSayDom = doc.querySelector("#colorpanelwritersay");
             if (authorSayDom) {
-                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .z)(authorSayDom, self.imageMode);
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .zM)(authorSayDom, self.imageMode);
                 return [dom, text, images];
             }
             else {
@@ -11744,7 +11945,7 @@ class Myrics extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
         }
         const contentRaw = document.createElement("div");
         contentRaw.innerHTML = chapter.result.content;
-        const { dom: contentHTML, text: contentText, images: contentImages, } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__/* .cleanDOM */ .z)(contentRaw, "TM");
+        const { dom: contentHTML, text: contentText, images: contentImages, } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__/* .cleanDOM */ .zM)(contentRaw, "TM");
         return {
             chapterName,
             contentRaw,
@@ -11932,7 +12133,7 @@ class Pixiv extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
             const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_3__/* .Chapter */ .W(bookUrl, bookname, chapterUrl, 1, chapterName, false, false, null, null, null, self.chapterParse, self.charset, {});
             const contentRaw = document.createElement("div");
             contentRaw.innerHTML = novel.content.replace(/\n/g, "<br/>");
-            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_5__/* .cleanDOM */ .z)(contentRaw, "TM");
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_5__/* .cleanDOM */ .zM)(contentRaw, "TM");
             chapter.contentRaw = contentRaw;
             chapter.contentHTML = dom;
             chapter.contentText = text;
@@ -11954,7 +12155,7 @@ class Pixiv extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
             if (novel) {
                 const contentRaw = document.createElement("div");
                 contentRaw.innerHTML = novel.content.replace(/\n/g, "<br/>");
-                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_5__/* .cleanDOM */ .z)(contentRaw, "TM");
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_5__/* .cleanDOM */ .zM)(contentRaw, "TM");
                 const additionalMetadate = {
                     lastModified: new Date(novel.uploadDate).getTime(),
                     tags: novel.tags.tags.map((t) => t.tag),
@@ -12193,8 +12394,8 @@ class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
                 });
                 const authorSayWrap = doc.querySelector(".author-say-wrap");
                 if (contentMain) {
-                    const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .z)(contentMain, "TM");
-                    (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .htmlTrim */ .i)(dom);
+                    const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .zM)(contentMain, "TM");
+                    (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .htmlTrim */ .iA)(dom);
                     content.appendChild(dom);
                     contentText = contentText + text;
                     if (authorSayWrap) {
@@ -12202,8 +12403,8 @@ class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
                         if (authorSay) {
                             (0,_lib_dom__WEBPACK_IMPORTED_MODULE_9__.rm)("a.avatar", false, authorSay);
                             (0,_lib_dom__WEBPACK_IMPORTED_MODULE_9__.rm)("h4", false, authorSay);
-                            const { dom: authorDom, text: authorText, images: authorImages, } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .z)(authorSayWrap, "TM");
-                            (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .htmlTrim */ .i)(authorDom);
+                            const { dom: authorDom, text: authorText, images: authorImages, } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .zM)(authorSayWrap, "TM");
+                            (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .htmlTrim */ .iA)(authorDom);
                             authorDom.className = "authorSay";
                             const hr = document.createElement("hr");
                             content.appendChild(hr);
@@ -12317,7 +12518,7 @@ class Qimao extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
             chapterName = doc.querySelector(".title").innerText.trim();
             const content = doc.querySelector(".article");
             if (content) {
-                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .z)(content, "TM");
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .zM)(content, "TM");
                 return {
                     chapterName,
                     contentRaw: content,
@@ -12442,7 +12643,7 @@ class Qingoo extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
             (0,_lib_dom__WEBPACK_IMPORTED_MODULE_8__.rm)("div.header", false, content);
             (0,_lib_dom__WEBPACK_IMPORTED_MODULE_8__.rm)("h1", false, content);
             (0,_lib_dom__WEBPACK_IMPORTED_MODULE_8__.rm)("h6", false, content);
-            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_9__/* .cleanDOM */ .z)(content, "TM");
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_9__/* .cleanDOM */ .zM)(content, "TM");
             return {
                 chapterName,
                 contentRaw: content,
@@ -12587,7 +12788,7 @@ class Sfacg extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
             chapterName = doc.querySelector("h1.article-title").innerText.trim();
             const content = doc.querySelector(".article-content");
             if (content) {
-                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .z)(content, "TM");
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .zM)(content, "TM");
                 return {
                     chapterName,
                     contentRaw: content,
@@ -12897,7 +13098,7 @@ class Shubl extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
             const decryptDate = await chapterDecrypt(chapterId, chapterUrl);
             content.innerHTML = decryptDate;
             (0,_lib_dom__WEBPACK_IMPORTED_MODULE_9__.rm)(".chapter span", true, content);
-            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .z)(content, "TM");
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .zM)(content, "TM");
             return {
                 chapterName,
                 contentRaw: content,
@@ -13119,7 +13320,7 @@ class Shuhai extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
             const content = doc.querySelector("#reader-content > div:nth-child(1)");
             if (content) {
                 (0,_lib_dom__WEBPACK_IMPORTED_MODULE_9__.rm)("div.chaper-info", false, content);
-                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .z)(content, "TM");
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .zM)(content, "TM");
                 return {
                     chapterName,
                     contentRaw: content,
@@ -13236,7 +13437,7 @@ class Sosadfun extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
             introductionHTML = null;
         }
         else {
-            const { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__/* .cleanDOM */ .z)(introDom, "TM");
+            const { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__/* .cleanDOM */ .zM)(introDom, "TM");
             introduction = introCleantext;
             introductionHTML = introCleanDom;
             if (introCleanimages) {
@@ -13268,9 +13469,9 @@ class Sosadfun extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
             }
         }
         if (_content) {
-            let { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__/* .cleanDOM */ .z)(content, "TM");
+            let { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__/* .cleanDOM */ .zM)(content, "TM");
             if (_authorSay) {
-                const { dom: authorSayDom, text: authorySayText, images: authorSayImages, } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__/* .cleanDOM */ .z)(_authorSay, "TM");
+                const { dom: authorSayDom, text: authorySayText, images: authorSayImages, } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__/* .cleanDOM */ .zM)(_authorSay, "TM");
                 const hrElem = document.createElement("hr");
                 const authorSayDiv = document.createElement("div");
                 authorSayDiv.className = "authorSay";
@@ -13422,7 +13623,7 @@ class Tadu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
                 const contentObj = getContentObj();
                 if (typeof contentObj === "object") {
                     content.innerHTML = contentObj.content;
-                    const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .z)(content, "TM");
+                    const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .zM)(content, "TM");
                     return {
                         chapterName,
                         contentRaw: content,
@@ -13561,7 +13762,7 @@ class Zongheng extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
             const ChapterName = doc.querySelector("div.title_txtbox").innerText.trim();
             const content = doc.querySelector("div.content");
             if (content) {
-                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .z)(content, "TM");
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .zM)(content, "TM");
                 return {
                     chapterName: ChapterName,
                     contentRaw: content,
@@ -13727,7 +13928,7 @@ class Dmzj extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
                 pElem.appendChild(imgElem);
                 content.appendChild(pElem);
             }
-            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .z)(content, "TM");
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .zM)(content, "TM");
             return {
                 chapterName,
                 contentRaw: content,
@@ -13810,7 +14011,7 @@ class Fushuwang extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ 
             (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__.rm)("span", true, content);
             (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__.rm)("p.pageLink", true, content);
             (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__.rm)("script", true, content);
-            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_5__/* .cleanDOM */ .z)(content, "TM");
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_5__/* .cleanDOM */ .zM)(content, "TM");
             return {
                 chapterName,
                 contentRaw: content,
@@ -13995,7 +14196,7 @@ class Hetushu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c
                 newNode.innerHTML = oldNode.innerHTML;
                 oldNode.parentNode?.replaceChild(newNode, oldNode);
             });
-            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .z)(content, "TM");
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .zM)(content, "TM");
             return {
                 chapterName,
                 contentRaw: content,
@@ -14122,7 +14323,7 @@ class Idejian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c
         }
         if (content) {
             (0,_lib_dom__WEBPACK_IMPORTED_MODULE_7__.rm)("h1", false, content);
-            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .z)(content, "TM");
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .zM)(content, "TM");
             return {
                 chapterName,
                 contentRaw: content,
@@ -14284,7 +14485,7 @@ class Kanunu8 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c
         if (obj) {
             const content = obj.content;
             (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)("a", true, content);
-            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .z)(content, "TM");
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .zM)(content, "TM");
             return {
                 chapterName,
                 contentRaw: content,
@@ -14521,7 +14722,7 @@ class Soxscc extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
                     }
                 }
             });
-            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .z)(content, "TM");
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .zM)(content, "TM");
             return {
                 chapterName,
                 contentRaw: content,
@@ -14657,7 +14858,7 @@ class Uukanshu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
             for (const r of contentReplace) {
                 content.innerHTML = content.innerHTML.replace(r, "");
             }
-            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .z)(content, "TM");
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .zM)(content, "TM");
             return {
                 chapterName,
                 contentRaw: content,
@@ -14766,7 +14967,7 @@ class Wenku8 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
         const content = doc.querySelector("#content");
         if (content) {
             (0,_lib_dom__WEBPACK_IMPORTED_MODULE_7__.rm)("#contentdp", true, content);
-            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .z)(content, "TM");
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .zM)(content, "TM");
             return {
                 chapterName,
                 contentRaw: content,
@@ -15075,7 +15276,7 @@ class Xkzw extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
         chapterName = doc.querySelector(".bookname > h1:nth-child(1)").innerText.trim();
         const contentG = doc.querySelector("#content");
         if (contentG) {
-            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .z)(contentG, "TM");
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .zM)(contentG, "TM");
             return {
                 chapterName,
                 contentRaw: contentG,
@@ -15434,7 +15635,7 @@ function mkRuleClass({ bookUrl, anotherPageUrl, getBookname, getAuthor, getIntro
             }
             if (content) {
                 content = contentPatch(content);
-                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__/* .cleanDOM */ .z)(content, "TM", cleanDomOptions);
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__/* .cleanDOM */ .zM)(content, "TM", cleanDomOptions);
                 return {
                     chapterName,
                     contentRaw: content,
@@ -15615,7 +15816,7 @@ const yibige = () => (0,_tempate__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ 
             contentPatch: (content, doc) => {
                 (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)("script", true, content);
                 (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)("div[style]", true, content);
-                (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_3__/* .htmlTrim */ .i)(content);
+                (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_3__/* .htmlTrim */ .iA)(content);
                 return content;
             },
             getNextPage: (doc) => doc.querySelector(".bottem1 > a:nth-child(4)")
@@ -16424,6 +16625,11 @@ async function getRule() {
             ruleClass = liuxs();
             break;
         }
+        case "www.cool18.com": {
+            const { Cool18 } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/cool18.ts"));
+            ruleClass = Cool18;
+            break;
+        }
         default: {
             throw new Error("Not Found Rule!");
         }
@@ -16614,6 +16820,18 @@ function getUI() {
                         .forEach((elem) => elem.remove());
                 });
                 return defaultObject;
+            };
+        }
+        case "www.cool18.com": {
+            return () => {
+                const url = new URL(document.location.href);
+                if (url.searchParams.get("act") === "threadview" &&
+                    url.searchParams.has("tid")) {
+                    return defaultObject;
+                }
+                else {
+                    return errorObject;
+                }
             };
         }
         default: {

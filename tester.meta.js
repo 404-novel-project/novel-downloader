@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        小说下载器测试脚本
-// @version     4.7.6.455
+// @version     4.7.7.456
 // @author      bgme
 // @description 小说下载器测试脚本
 // @match       *://www.ciweimao.com/chapter-list/*
@@ -165,6 +165,7 @@
 // @match       *://manga.bilibili.com/detail/mc*
 // @match       *://www.aixdzs.com/novel/*
 // @match       *://www.liuxs.la/bookinfo-*/
+// @match       *://www.cool18.com/bbs4/index.php?*
 // @match       https://greasyfork.org/*/scripts/406070-%E5%B0%8F%E8%AF%B4%E4%B8%8B%E8%BD%BD%E5%99%A8
 // @name:en     novel-downloader-tester
 // @namespace   https://blog.bgme.me

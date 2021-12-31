@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.7.6.455
+// @version        4.7.7.456
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -166,6 +166,7 @@
 // @match          *://manga.bilibili.com/detail/mc*
 // @match          *://www.aixdzs.com/novel/*
 // @match          *://www.liuxs.la/bookinfo-*/
+// @match          *://www.cool18.com/bbs4/index.php?*
 // @name:en        novel-downloader
 // @name:ja        小説ダウンローダー
 // @description:en An scalable universal novel downloader.
