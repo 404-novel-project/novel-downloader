@@ -183,6 +183,19 @@ export function getUI(): () => UIObject {
         return defaultObject;
       };
     }
+    case "www.cool18.com": {
+      return () => {
+        const url = new URL(document.location.href);
+        if (
+          url.searchParams.get("act") === "threadview" &&
+          url.searchParams.has("tid")
+        ) {
+          return defaultObject;
+        } else {
+          return errorObject;
+        }
+      };
+    }
     default: {
       return () => defaultObject;
     }

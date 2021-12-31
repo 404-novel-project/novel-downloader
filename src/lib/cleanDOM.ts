@@ -304,8 +304,18 @@ export async function cleanDOM(
     ];
     function div(elem: Element) {
       if (elem instanceof HTMLElement) {
-        const nodes = [...findBase(elem)];
-        return loop(nodes, document.createElement("div"));
+        if (elem.childElementCount === 0) {
+          const div = document.createElement("div");
+          div.innerText = elem.innerText.trim();
+          return {
+            dom: div,
+            text: div.innerText,
+            images: [],
+          };
+        } else {
+          const nodes = [...findBase(elem)];
+          return loop(nodes, document.createElement("div"));
+        }
       }
       return null;
     }
@@ -314,8 +324,18 @@ export async function cleanDOM(
     const pList = ["address", "p", "dd", "dt", "figcaption", "dl"];
     function p(elem: Element) {
       if (elem instanceof HTMLElement) {
-        const nodes = [...findBase(elem)];
-        return loop(nodes, document.createElement("p"));
+        if (elem.childElementCount === 0) {
+          const p = document.createElement("p");
+          p.innerText = elem.innerText.trim();
+          return {
+            dom: p,
+            text: p.innerText,
+            images: [],
+          };
+        } else {
+          const nodes = [...findBase(elem)];
+          return loop(nodes, document.createElement("p"));
+        }
       }
       return null;
     }
@@ -930,4 +950,21 @@ function convertBr(dom: HTMLElement) {
       .map((n) => n.nodeName.toLowerCase())
       .every((nn) => ["#text", "br"].includes(nn));
   }
+}
+
+//** 将固定宽度 Text 转为 div、p、br 元素 */
+export function convertFixWidthText(node: Text) {
+  const out = document.createElement("div");
+  const ns = node.textContent?.split("\n").map((n) => n.trim()) ?? [];
+  let text = "";
+  for (const n of ns) {
+    if (n === "") {
+      out.appendChild(new Text(text));
+      out.appendChild(document.createElement("br"));
+      text = "";
+    } else {
+      text = text + n;
+    }
+  }
+  return convertBr(out);
 }

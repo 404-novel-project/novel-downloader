@@ -493,6 +493,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = liuxs();
       break;
     }
+    case "www.cool18.com": {
+      const { Cool18 } = await import("../rules/special/original/cool18");
+      ruleClass = Cool18;
+      break;
+    }
     default: {
       throw new Error("Not Found Rule!");
     }
