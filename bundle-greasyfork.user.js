@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.7.7.457
+// @version        4.7.7.458
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -3813,19 +3813,8 @@ async function cleanDOM(elem, imgMode, options) {
         ];
         function div(elem) {
             if (elem instanceof HTMLElement) {
-                if (elem.childElementCount === 0) {
-                    const div = document.createElement("div");
-                    div.innerText = elem.innerText.trim();
-                    return {
-                        dom: div,
-                        text: div.innerText,
-                        images: [],
-                    };
-                }
-                else {
-                    const nodes = [...findBase(elem)];
-                    return loop(nodes, document.createElement("div"));
-                }
+                const nodes = [...findBase(elem)];
+                return loop(nodes, document.createElement("div"));
             }
             return null;
         }
@@ -3833,19 +3822,8 @@ async function cleanDOM(elem, imgMode, options) {
         const pList = ["address", "p", "dd", "dt", "figcaption", "dl"];
         function p(elem) {
             if (elem instanceof HTMLElement) {
-                if (elem.childElementCount === 0) {
-                    const p = document.createElement("p");
-                    p.innerText = elem.innerText.trim();
-                    return {
-                        dom: p,
-                        text: p.innerText,
-                        images: [],
-                    };
-                }
-                else {
-                    const nodes = [...findBase(elem)];
-                    return loop(nodes, document.createElement("p"));
-                }
+                const nodes = [...findBase(elem)];
+                return loop(nodes, document.createElement("p"));
             }
             return null;
         }
@@ -3874,7 +3852,7 @@ async function cleanDOM(elem, imgMode, options) {
                 const nodeName = elem.nodeName.toLowerCase();
                 const n = parseInt(nodeName.substring(1));
                 const dom = document.createElement(nodeName);
-                dom.innerText = elem.innerText;
+                dom.innerHTML = elem.innerHTML;
                 const text = "#".repeat(n) + " " + elem.innerText;
                 const images = [];
                 return {
@@ -3890,7 +3868,7 @@ async function cleanDOM(elem, imgMode, options) {
         function pre(elem) {
             if (elem instanceof HTMLElement) {
                 const dom = document.createElement("pre");
-                dom.innerText = elem.innerText;
+                dom.innerHTML = elem.innerHTML;
                 const text = "```\n" + elem.innerText + "\n```";
                 const images = [];
                 return {
@@ -3919,7 +3897,7 @@ async function cleanDOM(elem, imgMode, options) {
             let sText = "";
             if (bold instanceof HTMLElement) {
                 s = document.createElement(boldName);
-                s.innerText = bold.innerText;
+                s.innerHTML = bold.innerHTML;
                 sText = "**" + bold.innerText + "**";
                 bold.remove();
             }
@@ -3946,7 +3924,7 @@ async function cleanDOM(elem, imgMode, options) {
         function listItem(elem) {
             if (elem instanceof HTMLLIElement) {
                 const dom = document.createElement("li");
-                dom.innerText = elem.innerText;
+                dom.innerHTML = elem.innerHTML;
                 let prefix = "-   ";
                 const parent = elem.parentNode;
                 if (parent instanceof HTMLOListElement) {
@@ -4017,7 +3995,7 @@ async function cleanDOM(elem, imgMode, options) {
                     const images = [];
                     return {
                         dom,
-                        text,
+                        text: text.replaceAll("\n", ""),
                         images,
                     };
                 }
