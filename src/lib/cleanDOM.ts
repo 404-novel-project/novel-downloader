@@ -304,18 +304,8 @@ export async function cleanDOM(
     ];
     function div(elem: Element) {
       if (elem instanceof HTMLElement) {
-        if (elem.childElementCount === 0) {
-          const div = document.createElement("div");
-          div.innerText = elem.innerText.trim();
-          return {
-            dom: div,
-            text: div.innerText,
-            images: [],
-          };
-        } else {
-          const nodes = [...findBase(elem)];
-          return loop(nodes, document.createElement("div"));
-        }
+        const nodes = [...findBase(elem)];
+        return loop(nodes, document.createElement("div"));
       }
       return null;
     }
@@ -324,18 +314,8 @@ export async function cleanDOM(
     const pList = ["address", "p", "dd", "dt", "figcaption", "dl"];
     function p(elem: Element) {
       if (elem instanceof HTMLElement) {
-        if (elem.childElementCount === 0) {
-          const p = document.createElement("p");
-          p.innerText = elem.innerText.trim();
-          return {
-            dom: p,
-            text: p.innerText,
-            images: [],
-          };
-        } else {
-          const nodes = [...findBase(elem)];
-          return loop(nodes, document.createElement("p"));
-        }
+        const nodes = [...findBase(elem)];
+        return loop(nodes, document.createElement("p"));
       }
       return null;
     }
@@ -370,7 +350,7 @@ export async function cleanDOM(
         const n = parseInt(nodeName.substring(1));
 
         const dom = document.createElement(nodeName);
-        dom.innerText = elem.innerText;
+        dom.innerHTML = elem.innerHTML;
         const text = "#".repeat(n) + " " + elem.innerText;
         const images = [] as AttachmentClass[];
         return {
@@ -387,7 +367,7 @@ export async function cleanDOM(
     function pre(elem: Element) {
       if (elem instanceof HTMLElement) {
         const dom = document.createElement("pre");
-        dom.innerText = elem.innerText;
+        dom.innerHTML = elem.innerHTML;
         const text = "```\n" + elem.innerText + "\n```";
         const images = [] as AttachmentClass[];
         return {
@@ -418,7 +398,7 @@ export async function cleanDOM(
       let sText = "";
       if (bold instanceof HTMLElement) {
         s = document.createElement(boldName);
-        s.innerText = bold.innerText;
+        s.innerHTML = bold.innerHTML;
         sText = "**" + bold.innerText + "**";
         bold.remove();
       }
@@ -448,7 +428,7 @@ export async function cleanDOM(
     function listItem(elem: Element) {
       if (elem instanceof HTMLLIElement) {
         const dom = document.createElement("li");
-        dom.innerText = elem.innerText;
+        dom.innerHTML = elem.innerHTML;
         let prefix = "-   ";
         const parent = elem.parentNode;
         if (parent instanceof HTMLOListElement) {
@@ -533,7 +513,7 @@ export async function cleanDOM(
           const images = [] as AttachmentClass[];
           return {
             dom,
-            text,
+            text: text.replaceAll("\n", ""),
             images,
           };
         }
