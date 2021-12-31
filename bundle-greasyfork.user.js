@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.7.7.458
+// @version        4.7.7.459
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -3678,6 +3678,7 @@ const InlineElements = [
     "slot",
     "small",
     "span",
+    "font",
     "strong",
     "sub",
     "sup",
@@ -3975,6 +3976,7 @@ async function cleanDOM(elem, imgMode, options) {
             "data",
             "dfn",
             "span",
+            "font",
             "time",
             "u",
             "tt",
@@ -4209,16 +4211,6 @@ async function cleanDOM(elem, imgMode, options) {
         let _outImages = [];
         for (const node of nodes) {
             const bNname = node.nodeName.toLowerCase();
-            if (node instanceof Text || InlineElements.includes(bNname)) {
-                const tobj = await inlineElement(node);
-                if (tobj) {
-                    const { dom: tdom, text: ttext, images: timages } = tobj;
-                    _outDom.appendChild(tdom);
-                    _outText = _outText + ttext;
-                    _outImages = _outImages.concat(timages);
-                    continue;
-                }
-            }
             if (bNname === "textarea" || BlockElements.includes(bNname)) {
                 if (node instanceof HTMLElement) {
                     const tobj = await blockElement(node);
@@ -4229,6 +4221,16 @@ async function cleanDOM(elem, imgMode, options) {
                         _outImages = _outImages.concat(timages);
                         continue;
                     }
+                }
+            }
+            if (node instanceof Text || InlineElements.includes(bNname)) {
+                const tobj = await inlineElement(node);
+                if (tobj) {
+                    const { dom: tdom, text: ttext, images: timages } = tobj;
+                    _outDom.appendChild(tdom);
+                    _outText = _outText + ttext;
+                    _outImages = _outImages.concat(timages);
+                    continue;
                 }
             }
         }
@@ -9996,6 +9998,11 @@ class Cool18 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
                 url.searchParams.has("tid"));
         })
             .filter((a) => a.innerText.includes("(无内容)") === false)
+            .filter((item, pos, self) => {
+            const urls = self.map((a) => a.href);
+            const url = item.href;
+            return urls.indexOf(url) === pos;
+        })
             .sort((a, b) => {
             const _aTid = new URL(a.href).searchParams.get("tid");
             const _bTid = new URL(b.href).searchParams.get("tid");
@@ -10031,7 +10038,7 @@ class Cool18 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
             .trim();
         const dom = doc.querySelector(".show_content > pre");
         if (dom) {
-            Array.from(dom.querySelectorAll('font[color="#E6E6DD"]')).forEach((f) => f.remove());
+            Array.from(dom.querySelectorAll('font[color*="E6E6DD"]')).forEach((f) => f.remove());
             Array.from(dom.querySelectorAll("br")).forEach((b) => b.remove());
             const contentRaw = document.createElement("div");
             const nodes = Array.from(dom.childNodes);
@@ -10044,23 +10051,37 @@ class Cool18 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
                         continue;
                     }
                     if (node instanceof HTMLElement) {
-                        contentRaw.appendChild(p);
-                        p = document.createElement("p");
+                        if (p.innerText.trim() !== "") {
+                            contentRaw.appendChild(p);
+                            p = document.createElement("p");
+                        }
                         if (node instanceof HTMLParagraphElement) {
-                            if (node.nextSibling instanceof Text) {
-                                node.remove();
-                                continue;
+                            if (node.innerText.trim() === "") {
+                                if (node.nextSibling instanceof Text) {
+                                    if (node.nextSibling.textContent?.trim() === "") {
+                                        if (node.nextSibling.nextSibling instanceof
+                                            HTMLParagraphElement &&
+                                            node.nextSibling.nextSibling.innerText.trim() !== "") {
+                                            node.remove();
+                                            continue;
+                                        }
+                                    }
+                                    else {
+                                        node.remove();
+                                        continue;
+                                    }
+                                }
                             }
-                            else {
-                                contentRaw.appendChild(node);
-                                continue;
-                            }
+                            contentRaw.appendChild(node);
+                            continue;
                         }
                         contentRaw.appendChild(node);
                         continue;
                     }
                 }
-                contentRaw.appendChild(p);
+                if (p.innerText.trim() !== "") {
+                    contentRaw.appendChild(p);
+                }
                 const as = Array.from(contentRaw.querySelectorAll("a"));
                 for (const node of as) {
                     if (node instanceof HTMLAnchorElement) {
