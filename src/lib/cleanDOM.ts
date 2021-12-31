@@ -91,6 +91,7 @@ const InlineElements = [
   "slot",
   "small",
   "span",
+  "font",
   "strong",
   "sub",
   "sup",
@@ -491,6 +492,7 @@ export async function cleanDOM(
       "data",
       "dfn",
       "span",
+      "font",
       "time",
       "u",
       "tt",
@@ -777,17 +779,6 @@ export async function cleanDOM(
     let _outImages: (Promise<AttachmentClass> | AttachmentClass)[] = [];
     for (const node of nodes) {
       const bNname = node.nodeName.toLowerCase();
-      // 文本 或 行内元素
-      if (node instanceof Text || InlineElements.includes(bNname)) {
-        const tobj = await inlineElement(node);
-        if (tobj) {
-          const { dom: tdom, text: ttext, images: timages } = tobj;
-          _outDom.appendChild(tdom);
-          _outText = _outText + ttext;
-          _outImages = _outImages.concat(timages);
-          continue;
-        }
-      }
       // 块元素
       if (bNname === "textarea" || BlockElements.includes(bNname)) {
         if (node instanceof HTMLElement) {
@@ -799,6 +790,17 @@ export async function cleanDOM(
             _outImages = _outImages.concat(timages);
             continue;
           }
+        }
+      }
+      // 文本 或 行内元素
+      if (node instanceof Text || InlineElements.includes(bNname)) {
+        const tobj = await inlineElement(node);
+        if (tobj) {
+          const { dom: tdom, text: ttext, images: timages } = tobj;
+          _outDom.appendChild(tdom);
+          _outText = _outText + ttext;
+          _outImages = _outImages.concat(timages);
+          continue;
         }
       }
     }

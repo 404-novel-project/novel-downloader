@@ -49,6 +49,13 @@ export class Cool18 extends BaseRuleClass {
       .filter(
         (a) => (a as HTMLAnchorElement).innerText.includes("(无内容)") === false
       )
+      .filter((item, pos, self) => {
+        // 去重
+        // https://stackoverflow.com/questions/9229645/remove-duplicate-values-from-js-array
+        const urls = self.map((a) => (a as HTMLAnchorElement).href);
+        const url = (item as HTMLAnchorElement).href;
+        return urls.indexOf(url) === pos;
+      })
       .sort((a: Element, b: Element) => {
         const _aTid = new URL((a as HTMLAnchorElement).href).searchParams.get(
           "tid"
@@ -127,11 +134,24 @@ export class Cool18 extends BaseRuleClass {
     const dom = doc.querySelector(".show_content > pre");
     if (dom) {
       // 移除隐藏字符
-      Array.from(dom.querySelectorAll('font[color="#E6E6DD"]')).forEach((f) =>
+      Array.from(dom.querySelectorAll('font[color*="E6E6DD"]')).forEach((f) =>
         f.remove()
       );
       // 移除换行
-      Array.from(dom.querySelectorAll("br")).forEach((b) => b.remove());
+      Array.from(dom.querySelectorAll("br")).forEach((br) => {
+        const previous = getPreviousSibling(br);
+        const next = getNextSibling(br);
+        if (previous instanceof Text && next instanceof Text) {
+          if (
+            Math.max(
+              previous.textContent?.trim().length ?? 999,
+              next.textContent?.trim().length ?? 999
+            ) < 40
+          ) {
+            br.remove();
+          }
+        }
+      });
 
       const contentRaw = document.createElement("div");
       const nodes = Array.from(dom.childNodes);
@@ -144,24 +164,42 @@ export class Cool18 extends BaseRuleClass {
             continue;
           }
           if (node instanceof HTMLElement) {
-            contentRaw.appendChild(p);
-            p = document.createElement("p");
+            if (p.innerText.trim() !== "") {
+              contentRaw.appendChild(p);
+              p = document.createElement("p");
+            }
 
             if (node instanceof HTMLParagraphElement) {
-              if (node.nextSibling instanceof Text) {
-                node.remove();
-                continue;
-              } else {
-                contentRaw.appendChild(node);
-                continue;
+              if (node.innerText.trim() === "") {
+                if (node.nextSibling instanceof Text) {
+                  if (node.nextSibling.textContent?.trim() === "") {
+                    if (
+                      node.nextSibling.nextSibling instanceof
+                        HTMLParagraphElement &&
+                      node.nextSibling.nextSibling.innerText.trim() !== ""
+                    ) {
+                      node.remove();
+                      continue;
+                    }
+                  } else {
+                    node.remove();
+                    continue;
+                  }
+                }
               }
+              contentRaw.appendChild(node);
+              continue;
             }
 
             contentRaw.appendChild(node);
             continue;
           }
         }
-        contentRaw.appendChild(p);
+
+        if (p.innerText.trim() !== "") {
+          contentRaw.appendChild(p);
+        }
+
         const as = Array.from(contentRaw.querySelectorAll("a"));
         for (const node of as) {
           if (node instanceof HTMLAnchorElement) {
@@ -179,11 +217,26 @@ export class Cool18 extends BaseRuleClass {
             }
           }
         }
+
+        const ps = Array.from(contentRaw.querySelectorAll("p"));
+        for (const node of ps) {
+          const previousBrCount = getPreviousBrCount(node);
+          if (previousBrCount > 1 && previousBrCount < 4) {
+            removePreviousBr(node);
+          }
+        }
       } else {
         for (const node of nodes) {
           if (node instanceof Text && (node.textContent?.length ?? 0) > 200) {
-            contentRaw.appendChild(convertFixWidthText(node));
-            continue;
+            if (isFixWidthText(node)) {
+              contentRaw.appendChild(convertFixWidthText(node));
+              continue;
+            } else {
+              const div = document.createElement("div");
+              div.innerText = node.textContent?.trim() ?? "";
+              contentRaw.appendChild(div);
+              continue;
+            }
           }
           contentRaw.appendChild(node);
         }
@@ -212,5 +265,63 @@ export class Cool18 extends BaseRuleClass {
       contentImages: null,
       additionalMetadate: null,
     };
+  }
+}
+
+function isFixWidthText(node: Text) {
+  const ns = node.textContent?.split("\n").map((n) => n.trim()) ?? [];
+  const nsLengths = ns.map((l) => l.length);
+  if (Math.max(...nsLengths) < 40) {
+    return true;
+  }
+  return false;
+}
+
+function getNextSibling(node: Element | Text) {
+  if (node.nextSibling instanceof HTMLElement) {
+    return node.nextSibling;
+  }
+  if (node.nextSibling instanceof Text) {
+    if (node.nextSibling.textContent?.trim() !== "") {
+      return node.nextSibling;
+    } else {
+      return node.nextSibling.nextSibling;
+    }
+  }
+}
+
+function getPreviousSibling(node: Element | Text) {
+  if (node.previousSibling instanceof HTMLElement) {
+    return node.previousSibling;
+  }
+  if (node.previousSibling instanceof Text) {
+    if (node.previousSibling.textContent?.trim() !== "") {
+      return node.previousSibling;
+    } else {
+      return node.previousSibling.previousSibling;
+    }
+  }
+}
+
+function getPreviousBrCount(node: Element | Text): number {
+  const previous = getPreviousSibling(node);
+  if (previous instanceof HTMLBRElement) {
+    return getPreviousBrCount(previous) + 1;
+  } else {
+    return 0;
+  }
+}
+
+function removePreviousBr(node: Element | Text): void {
+  const previous = getPreviousSibling(node);
+
+  if (node instanceof HTMLBRElement) {
+    node.remove();
+  }
+
+  if (previous instanceof HTMLBRElement) {
+    return removePreviousBr(previous);
+  } else {
+    return;
   }
 }
