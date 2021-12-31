@@ -185,7 +185,8 @@ export function mkBiqugeClass(
   ) => HTMLElement,
   concurrencyLimit?: number,
   enableIgnore?: boolean,
-  customVolumeFilter?: RegExp
+  customVolumeFilter?: RegExp,
+  overrideConstructor?: (classThis: any) => any
 ): PublicConstructor<BaseRuleClass> {
   return class extends BaseRuleClass {
     public constructor() {
@@ -195,6 +196,9 @@ export function mkBiqugeClass(
       }
       this.imageMode = "TM";
       this.charset = document.characterSet;
+      if (overrideConstructor) {
+        this.overrideConstructor = overrideConstructor;
+      }
       this.overrideConstructor(this);
     }
 
@@ -266,7 +270,8 @@ export function mkBiqugeClass2(
   ) => HTMLElement,
   concurrencyLimit?: number,
   enableIgnore?: boolean,
-  customVolumeFilter?: RegExp
+  customVolumeFilter?: RegExp,
+  overrideConstructor?: (classThis: any) => any
 ): PublicConstructor<BaseRuleClass> {
   return class extends BaseRuleClass {
     public constructor() {
@@ -276,6 +281,9 @@ export function mkBiqugeClass2(
       }
       this.imageMode = "TM";
       this.charset = document.characterSet;
+      if (overrideConstructor) {
+        this.overrideConstructor = overrideConstructor;
+      }
       this.overrideConstructor(this);
     }
 
@@ -340,7 +348,8 @@ export function mkBiqugeClass3(
   continueCondition: (content: HTMLElement, nextLink: string) => boolean,
   concurrencyLimit?: number,
   enableIgnore?: boolean,
-  customVolumeFilter?: RegExp
+  customVolumeFilter?: RegExp,
+  overrideConstructor?: (classThis: any) => any
 ): PublicConstructor<BaseRuleClass> {
   return class extends BaseRuleClass {
     public constructor() {
@@ -350,6 +359,9 @@ export function mkBiqugeClass3(
       }
       this.imageMode = "TM";
       this.charset = document.characterSet;
+      if (overrideConstructor) {
+        this.overrideConstructor = overrideConstructor;
+      }
       this.overrideConstructor(this);
     }
 

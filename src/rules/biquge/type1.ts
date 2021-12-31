@@ -91,8 +91,8 @@ export const tycqxs = () =>
     }
   );
 
-export const dijiubook = () => {
-  const c = mkBiqugeClass(
+export const dijiubook = () =>
+  mkBiqugeClass(
     (introDom) => {
       introDom.innerHTML = introDom.innerHTML.replace("本书网址：", "");
       rm('a[href^="https://dijiubook.net/"]', false, introDom);
@@ -113,19 +113,22 @@ export const dijiubook = () => {
     },
     (content) => {
       rm("a", true, content);
+      rm('img[src$="alipay.png"]', true, content);
       return content;
+    },
+    1,
+    undefined,
+    undefined,
+    (classThis: any) => {
+      classThis.maxRunLimit = 1;
+      const chapterParse = classThis.chapterParse;
+      classThis.chapterParse = async (...args: any[]) => {
+        const obj = await chapterParse(...args);
+        await sleep(3000 * Math.random());
+        return obj;
+      };
     }
   );
-  c.prototype.overrideConstructor = (classThis: any) => {
-    classThis.concurrencyLimit = 1;
-    classThis.maxRunLimit = 1;
-    classThis.postChapterParseHook = async (obj: Chapter) => {
-      await sleep(3000 * Math.random());
-      return obj;
-    };
-  };
-  return c;
-};
 
 export const c25zw = () =>
   mkBiqugeClass(
@@ -172,4 +175,11 @@ export const ranwen = () =>
     undefined,
     undefined,
     /全文阅读/
+  );
+
+export const b5200 = () =>
+  mkBiqugeClass(
+    (introDom) => introDom,
+    (content) => content,
+    1
   );

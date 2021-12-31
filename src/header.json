@@ -184,7 +184,8 @@
     "*://manga.bilibili.com/detail/mc*",
     "*://www.aixdzs.com/novel/*",
     "*://www.liuxs.la/bookinfo-*/",
-    "*://www.cool18.com/bbs4/index.php?*"
+    "*://www.cool18.com/bbs4/index.php?*",
+    "*://www.b5200.net/*_*/"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",
@@ -298,6 +299,7 @@
     "a7xs.com",
     "jingcaiyuedu6.com",
     "aixdzs.com",
+    "b5200.net",
     "*"
   ],
   "require": [

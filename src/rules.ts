@@ -217,8 +217,12 @@ export abstract class BaseRuleClass {
       broadcastChannelWorker.postMessage(ping);
       await sleep(300);
       const workers = messages
-        .filter((m) => m.type === "pong")
-        .filter((m) => m.src === (window as GmWindow).workerId)
+        .filter(
+          (m) =>
+            m.type === "pong" &&
+            m.src === (window as GmWindow).workerId &&
+            m.workerId !== (window as GmWindow).workerId
+        )
         .map((m) => ({
           id: m.workerId,
           url: m.url,

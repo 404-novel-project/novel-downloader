@@ -137,6 +137,7 @@ ZIP压缩包，请在解压后，直接双击打开HTML文件（`index.html` 为
 |[笔趣读](https://www.biqu55.com/)|✅|❎||
 |[爱下电子书](https://www.aixdzs.com/)|✅|❎||
 |[56书库](https://www.liuxs.la/)|✅|❎||
+|[笔趣阁](http://www.b5200.net/)|✅|❎||
 
 </details>
 
