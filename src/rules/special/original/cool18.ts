@@ -131,7 +131,7 @@ export class Cool18 extends BaseRuleClass {
       .replace(`《${options.bookname}》`, "")
       .replace(`作者：${options.author}`, "")
       .trim();
-    const dom = doc.querySelector(".show_content > pre");
+    const dom = doc.querySelector(".show_content > pre, .show_content > div");
     if (dom) {
       // 移除隐藏字符
       Array.from(dom.querySelectorAll('font[color*="E6E6DD"]')).forEach((f) =>
