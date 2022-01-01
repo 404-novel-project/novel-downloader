@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.7.7.460
+// @version        4.7.7.459
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -10043,7 +10043,9 @@ class Cool18 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
                 const previous = getPreviousSibling(br);
                 const next = getNextSibling(br);
                 if (previous instanceof Text && next instanceof Text) {
-                    br.remove();
+                    if (Math.max(previous.textContent?.trim().length ?? 999, next.textContent?.trim().length ?? 999) < 40) {
+                        br.remove();
+                    }
                 }
             });
             const contentRaw = document.createElement("div");
@@ -10111,8 +10113,16 @@ class Cool18 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
             else {
                 for (const node of nodes) {
                     if (node instanceof Text && (node.textContent?.length ?? 0) > 200) {
-                        contentRaw.appendChild((0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_4__/* .convertFixWidthText */ .d1)(node));
-                        continue;
+                        if (isFixWidthText(node)) {
+                            contentRaw.appendChild((0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_4__/* .convertFixWidthText */ .d1)(node));
+                            continue;
+                        }
+                        else {
+                            const div = document.createElement("div");
+                            div.innerText = node.textContent?.trim() ?? "";
+                            contentRaw.appendChild(div);
+                            continue;
+                        }
                     }
                     contentRaw.appendChild(node);
                 }
@@ -10136,6 +10146,14 @@ class Cool18 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
             additionalMetadate: null,
         };
     }
+}
+function isFixWidthText(node) {
+    const ns = node.textContent?.split("\n").map((n) => n.trim()) ?? [];
+    const nsLengths = ns.map((l) => l.length);
+    if (Math.max(...nsLengths) < 40) {
+        return true;
+    }
+    return false;
 }
 function getNextSibling(node) {
     if (node.nextSibling instanceof HTMLElement) {
