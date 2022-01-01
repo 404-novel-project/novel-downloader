@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.7.7.459
+// @version        4.7.7.460
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -10036,7 +10036,7 @@ class Cool18 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
             .replace(`《${options.bookname}》`, "")
             .replace(`作者：${options.author}`, "")
             .trim();
-        const dom = doc.querySelector(".show_content > pre");
+        const dom = doc.querySelector(".show_content > pre, .show_content > div");
         if (dom) {
             Array.from(dom.querySelectorAll('font[color*="E6E6DD"]')).forEach((f) => f.remove());
             Array.from(dom.querySelectorAll("br")).forEach((br) => {
