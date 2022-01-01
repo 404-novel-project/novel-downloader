@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.7.7.459
+// @version        4.7.7.460
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -10039,7 +10039,13 @@ class Cool18 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
         const dom = doc.querySelector(".show_content > pre");
         if (dom) {
             Array.from(dom.querySelectorAll('font[color*="E6E6DD"]')).forEach((f) => f.remove());
-            Array.from(dom.querySelectorAll("br")).forEach((b) => b.remove());
+            Array.from(dom.querySelectorAll("br")).forEach((br) => {
+                const previous = getPreviousSibling(br);
+                const next = getNextSibling(br);
+                if (previous instanceof Text && next instanceof Text) {
+                    br.remove();
+                }
+            });
             const contentRaw = document.createElement("div");
             const nodes = Array.from(dom.childNodes);
             if (nodes.length > 10) {
@@ -10094,6 +10100,13 @@ class Cool18 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
                         }
                     }
                 }
+                const ps = Array.from(contentRaw.querySelectorAll("p"));
+                for (const node of ps) {
+                    const previousBrCount = getPreviousBrCount(node);
+                    if (previousBrCount > 1 && previousBrCount < 4) {
+                        removePreviousBr(node);
+                    }
+                }
             }
             else {
                 for (const node of nodes) {
@@ -10122,6 +10135,53 @@ class Cool18 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
             contentImages: null,
             additionalMetadate: null,
         };
+    }
+}
+function getNextSibling(node) {
+    if (node.nextSibling instanceof HTMLElement) {
+        return node.nextSibling;
+    }
+    if (node.nextSibling instanceof Text) {
+        if (node.nextSibling.textContent?.trim() !== "") {
+            return node.nextSibling;
+        }
+        else {
+            return node.nextSibling.nextSibling;
+        }
+    }
+}
+function getPreviousSibling(node) {
+    if (node.previousSibling instanceof HTMLElement) {
+        return node.previousSibling;
+    }
+    if (node.previousSibling instanceof Text) {
+        if (node.previousSibling.textContent?.trim() !== "") {
+            return node.previousSibling;
+        }
+        else {
+            return node.previousSibling.previousSibling;
+        }
+    }
+}
+function getPreviousBrCount(node) {
+    const previous = getPreviousSibling(node);
+    if (previous instanceof HTMLBRElement) {
+        return getPreviousBrCount(previous) + 1;
+    }
+    else {
+        return 0;
+    }
+}
+function removePreviousBr(node) {
+    const previous = getPreviousSibling(node);
+    if (node instanceof HTMLBRElement) {
+        node.remove();
+    }
+    if (previous instanceof HTMLBRElement) {
+        return removePreviousBr(previous);
+    }
+    else {
+        return;
     }
 }
 
