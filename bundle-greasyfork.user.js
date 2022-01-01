@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.7.7.460
+// @version        4.7.7.461
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -7388,6 +7388,18 @@ const syosetu = () => {
         }
         return document.querySelector("#novel_ex");
     };
+    const getAList = () => {
+        const _aList = document.querySelectorAll("dl.novel_sublist2 dd.subtitle > a");
+        if (_aList.length !== 0) {
+            return _aList;
+        }
+        else {
+            const a = document.createElement("a");
+            a.href = document.location.href;
+            a.innerText = document.querySelector(".novel_title")?.innerText;
+            return [a];
+        }
+    };
     return (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
         bookUrl: document.location.href,
         bookname: document.querySelector(".novel_title").innerText.trim(),
@@ -7395,7 +7407,7 @@ const syosetu = () => {
         introDom: getIntroDom(),
         introDomPatch: (dom) => dom,
         coverUrl: null,
-        aList: document.querySelectorAll("dl.novel_sublist2 dd.subtitle > a"),
+        aList: getAList(),
         sections: document.querySelectorAll("div.chapter_title"),
         getSName: (dom) => dom.innerText.trim(),
         getContent: (dom) => {
@@ -7421,36 +7433,64 @@ const syosetu = () => {
         contentPatch: (dom) => dom,
     });
 };
-const syosetuOrg = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
-    bookUrl: document.location.href,
-    bookname: document.querySelector('div.ss > span[itemprop="name"]').innerText.trim(),
-    author: document.querySelector('div.ss span[itemprop="author"] > a')?.innerText.trim(),
-    introDom: document.querySelector("div.ss:nth-child(2)"),
-    introDomPatch: (dom) => dom,
-    coverUrl: null,
-    additionalMetadatePatch: (additionalMetadate) => {
-        additionalMetadate.tags = Array.from(document.querySelectorAll('span[itemprop="keywords"] > a, a.alert_color')).map((a) => a.innerText);
-        return additionalMetadate;
-    },
-    aList: document.querySelectorAll('tr[class^="bgcolor"] > td > a'),
-    sections: document.querySelectorAll('div.ss > table > tbody > tr > td[colspan="2"] > strong'),
-    getSName: (dom) => dom.innerText.trim(),
-    getContent: (doc) => doc.querySelector("div#maind > div.ss:nth-child(1)"),
-    contentPatch: (dom) => {
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("p:nth-child(1)", false, dom);
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("div.novelnavi", true, dom);
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)('div[style*="text-align:right;"]', true, dom);
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("div#maegaki_open", true, dom);
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("div#atogaki_open", true, dom);
-        dom.querySelectorAll('a[name="img"]').forEach((a) => {
-            const img = document.createElement("img");
-            img.src = a.href;
-            img.alt = a.innerText;
-            a.replaceWith(img);
-        });
-        return dom;
-    },
-});
+const syosetuOrg = () => {
+    const getAList = () => {
+        const _aList = document.querySelectorAll('tr[class^="bgcolor"] > td > a');
+        if (_aList.length !== 0) {
+            return _aList;
+        }
+        else {
+            const a = document.createElement("a");
+            a.href = document.location.href;
+            a.innerText = document.querySelector("div.ss:nth-child(1) > p:nth-child(1) > span:nth-child(1) > a:nth-child(1)")?.innerText;
+            return [a];
+        }
+    };
+    const aList = getAList();
+    const getIntroDom = () => {
+        if (aList.length === 1 &&
+            aList[0].href === document.location.href) {
+            return undefined;
+        }
+        return document.querySelector("div.ss:nth-child(2)");
+    };
+    return (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+        bookUrl: document.location.href,
+        bookname: document.querySelector('div.ss > span[itemprop="name"], div.ss:nth-child(1) > p:nth-child(1) > span:nth-child(1) > a:nth-child(1)').innerText.trim(),
+        author: document.querySelector('div.ss span[itemprop="author"] > a, div.ss:nth-child(1) > p:nth-child(1) > a:nth-child(2)')?.innerText.trim(),
+        introDom: getIntroDom(),
+        introDomPatch: (dom) => dom,
+        coverUrl: null,
+        additionalMetadatePatch: (additionalMetadate) => {
+            additionalMetadate.tags = Array.from(document.querySelectorAll('span[itemprop="keywords"] > a, a.alert_color')).map((a) => a.innerText);
+            return additionalMetadate;
+        },
+        aList,
+        sections: document.querySelectorAll('div.ss > table > tbody > tr > td[colspan="2"] > strong'),
+        getSName: (dom) => dom.innerText.trim(),
+        getContent: (doc) => {
+            if (aList.length === 1 &&
+                aList[0].href === document.location.href) {
+                return doc.querySelector("div#maind > div.ss:nth-child(2)");
+            }
+            return doc.querySelector("div#maind > div.ss:nth-child(1)");
+        },
+        contentPatch: (dom) => {
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("p:nth-child(1)", false, dom);
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("div.novelnavi", true, dom);
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)('div[style*="text-align:right;"]', true, dom);
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("div#maegaki_open", true, dom);
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("div#atogaki_open", true, dom);
+            dom.querySelectorAll('a[name="img"]').forEach((a) => {
+                const img = document.createElement("img");
+                img.src = a.href;
+                img.alt = a.innerText;
+                a.replaceWith(img);
+            });
+            return dom;
+        },
+    });
+};
 
 
 /***/ }),
