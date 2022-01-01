@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.7.7.461
+// @version        4.7.7.462
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -14176,8 +14176,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/attachments.ts");
 /* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/cleanDOM.ts");
-/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/http.ts");
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/dom.ts");
 /* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("loglevel");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_3__);
@@ -14282,6 +14282,7 @@ class Hetushu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c
                     .split(/[A-Z]+%/)
                     .map((v) => parseInt(v));
                 const thisBody = doc.querySelector("#content");
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_6__.rm)(".mask.mask2", false, thisBody);
                 let b = 0;
                 let star = 0;
                 for (let i = 0; i < thisBody.childNodes.length; i++) {
@@ -14311,14 +14312,14 @@ class Hetushu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c
                 }
             }
         }
-        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_6__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_7__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
         chapterName = doc.querySelector("#content .h2").innerText.trim();
         await sorfPage();
         const content = doc.querySelector("#content");
         if (content) {
             const tagRemoved = "h2, acronym, bdo, big, cite, code, dfn, kbd, q, s, samp, strike, tt, u, var";
             tagRemoved.split(", ").forEach((s) => {
-                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_7__.rm)(s, true, content);
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_6__.rm)(s, true, content);
             });
             Array.from(content.querySelectorAll("div")).map((oldNode) => {
                 const newNode = document.createElement("p");
