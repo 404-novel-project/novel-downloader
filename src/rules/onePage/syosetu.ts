@@ -9,6 +9,21 @@ export const syosetu = () => {
     }
     return document.querySelector("#novel_ex") as HTMLElement;
   };
+  const getAList = () => {
+    const _aList = document.querySelectorAll(
+      "dl.novel_sublist2 dd.subtitle > a"
+    );
+    if (_aList.length !== 0) {
+      return _aList;
+    } else {
+      const a = document.createElement("a");
+      a.href = document.location.href;
+      a.innerText = (
+        document.querySelector(".novel_title") as HTMLElement
+      )?.innerText;
+      return [a];
+    }
+  };
 
   return mkRuleClass({
     bookUrl: document.location.href,
@@ -21,7 +36,7 @@ export const syosetu = () => {
     introDom: getIntroDom(),
     introDomPatch: (dom) => dom,
     coverUrl: null,
-    aList: document.querySelectorAll("dl.novel_sublist2 dd.subtitle > a"),
+    aList: getAList(),
     sections: document.querySelectorAll("div.chapter_title"),
     getSName: (dom) => (dom as HTMLElement).innerText.trim(),
     getContent: (dom) => {
@@ -48,18 +63,47 @@ export const syosetu = () => {
   });
 };
 
-export const syosetuOrg = () =>
-  mkRuleClass({
+export const syosetuOrg = () => {
+  const getAList = () => {
+    const _aList = document.querySelectorAll('tr[class^="bgcolor"] > td > a');
+    if (_aList.length !== 0) {
+      return _aList;
+    } else {
+      const a = document.createElement("a");
+      a.href = document.location.href;
+      a.innerText = (
+        document.querySelector(
+          "div.ss:nth-child(1) > p:nth-child(1) > span:nth-child(1) > a:nth-child(1)"
+        ) as HTMLElement
+      )?.innerText;
+      return [a];
+    }
+  };
+  const aList = getAList();
+
+  const getIntroDom = () => {
+    if (
+      aList.length === 1 &&
+      (aList[0] as HTMLAnchorElement).href === document.location.href
+    ) {
+      return undefined;
+    }
+    return document.querySelector("div.ss:nth-child(2)") as HTMLElement;
+  };
+
+  return mkRuleClass({
     bookUrl: document.location.href,
     bookname: (
-      document.querySelector('div.ss > span[itemprop="name"]') as HTMLElement
+      document.querySelector(
+        'div.ss > span[itemprop="name"], div.ss:nth-child(1) > p:nth-child(1) > span:nth-child(1) > a:nth-child(1)'
+      ) as HTMLElement
     ).innerText.trim(),
     author: (
       document.querySelector(
-        'div.ss span[itemprop="author"] > a'
+        'div.ss span[itemprop="author"] > a, div.ss:nth-child(1) > p:nth-child(1) > a:nth-child(2)'
       ) as HTMLAnchorElement
     )?.innerText.trim(),
-    introDom: document.querySelector("div.ss:nth-child(2)") as HTMLElement,
+    introDom: getIntroDom(),
     introDomPatch: (dom) => dom,
     coverUrl: null,
     additionalMetadatePatch: (additionalMetadate) => {
@@ -70,12 +114,20 @@ export const syosetuOrg = () =>
       ).map((a) => (a as HTMLAnchorElement).innerText);
       return additionalMetadate;
     },
-    aList: document.querySelectorAll('tr[class^="bgcolor"] > td > a'),
+    aList,
     sections: document.querySelectorAll(
       'div.ss > table > tbody > tr > td[colspan="2"] > strong'
     ),
     getSName: (dom) => (dom as HTMLElement).innerText.trim(),
-    getContent: (doc) => doc.querySelector("div#maind > div.ss:nth-child(1)"),
+    getContent: (doc) => {
+      if (
+        aList.length === 1 &&
+        (aList[0] as HTMLAnchorElement).href === document.location.href
+      ) {
+        return doc.querySelector("div#maind > div.ss:nth-child(2)");
+      }
+      return doc.querySelector("div#maind > div.ss:nth-child(1)");
+    },
     contentPatch: (dom) => {
       rm("p:nth-child(1)", false, dom);
       rm("div.novelnavi", true, dom);
@@ -92,3 +144,4 @@ export const syosetuOrg = () =>
       return dom;
     },
   });
+};
