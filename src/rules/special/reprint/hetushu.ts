@@ -150,6 +150,7 @@ export class Hetushu extends BaseRuleClass {
           .map((v) => parseInt(v));
 
         const thisBody = doc.querySelector("#content") as HTMLElement;
+        rm(".mask.mask2", false, thisBody);
         let b = 0;
         let star = 0;
         for (let i = 0; i < thisBody.childNodes.length; i++) {
