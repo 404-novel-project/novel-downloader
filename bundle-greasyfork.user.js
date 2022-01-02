@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.7.7.467
+// @version        4.7.7.468
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -4257,7 +4257,7 @@ async function cleanDOM(elem, imgMode, options) {
     }
     function postHook({ dom, text, images, }) {
         htmlTrim(dom);
-        convertBr(dom);
+        dom = convertBr(dom);
         Array.from(dom.children).forEach((child) => child.replaceWith(convertBr(child)));
         removeBlankParagraphElement(dom);
         text = text.trim();
@@ -4295,7 +4295,7 @@ function htmlTrim(dom) {
     }
 }
 function convertBr(dom) {
-    if (onlyTextAndBr(dom) && countBr(dom) > 2) {
+    if (onlyTextAndBr(dom) && countBr(dom) > 4) {
         const outDom = document.createElement("div");
         const childNodes = dom.childNodes;
         let brCount = 0;
