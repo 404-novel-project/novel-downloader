@@ -3,7 +3,7 @@ import { getImageAttachment } from "../../../lib/attachments";
 import { cleanDOM } from "../../../lib/cleanDOM";
 import { getHtmlDOM, getHtmlDomWithRetry } from "../../../lib/http";
 import { deepcopy } from "../../../lib/misc";
-import { rm } from "../../../lib/dom";
+import { rm, rms } from "../../../lib/dom";
 import { getSectionName, introDomHandle } from "../../../lib/rule";
 import { log } from "../../../log";
 import { ExpectError, Status } from "../../../main/main";
@@ -61,9 +61,7 @@ export class Longmabook extends BaseRuleClass {
       rm("span", true, introDom);
       rm("h4", true, introDom);
       rm("img", true, introDom);
-      introDom.innerHTML = introDom.innerHTML
-        .replace(/【作品编号：\d+】|【作品編號：\d+】/, "")
-        .replace("\n)\n", "");
+      rms([/【作品编号：\d+】|【作品編號：\d+】/, "\n)\n"], introDom);
       [introduction, introductionHTML] = await introDomHandle(
         introDom,
         undefined

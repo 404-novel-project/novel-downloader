@@ -503,6 +503,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = b5200();
       break;
     }
+    case "www.yqxs.cc": {
+      const { yqxs } = await import("../rules/biquge/type2");
+      ruleClass = yqxs();
+      break;
+    }
     default: {
       throw new Error("Not Found Rule!");
     }

@@ -10,15 +10,13 @@ export const shuquge = () =>
         (document.querySelector(".showall") as HTMLElement).innerHTML = "";
       }
 
-      introDom.innerHTML = introDom.innerHTML
-        .replace(
+      rms(
+        [
           /作者：.+所写的《.+》无弹窗免费全文阅读为转载作品,章节由网友发布。/,
-          ""
-        )
-        .replace(
           /推荐地址：https?:\/\/www.shuquge.com\/txt\/\d+\/index\.html/g,
-          ""
-        );
+        ],
+        introDom
+      );
       return introDom;
     },
     (content) => {
@@ -37,9 +35,9 @@ export const shuquge = () =>
 export const xyqxs = () =>
   mkBiqugeClass2(
     (introDom) => {
-      introDom.innerHTML = introDom.innerHTML.replace(
-        /推荐地址：https:\/\/www.xyqxs.cc\/html\/\d+\/\d+\/index\.html/g,
-        ""
+      rms(
+        [/推荐地址：https:\/\/www.xyqxs.cc\/html\/\d+\/\d+\/index\.html/g],
+        introDom
       );
       return introDom;
     },
@@ -74,6 +72,21 @@ export const lusetxt = () =>
       rm("div[align]", true, content);
       rm2(content, ["https://www.lusetxt.com/books", "请记住本书首发域名"]);
       htmlTrim(content);
+      return content;
+    }
+  );
+
+export const yqxs = () =>
+  mkBiqugeClass2(
+    (introDom) => {
+      rms(["<span>简介：</span>"], introDom);
+      rm2(introDom, ["推荐地址："]);
+      return introDom;
+    },
+    (content) => {
+      rm("script", true, content);
+      rm('div[align="center"]', false, content);
+      rm2(content, ["//www.yqxs.cc/html/", "请记住本书首发域名"]);
       return content;
     }
   );

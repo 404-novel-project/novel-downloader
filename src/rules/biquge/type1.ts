@@ -27,10 +27,7 @@ export const c81book = () =>
 export const gebiqu = () =>
   mkBiqugeClass(
     (introDom) => {
-      introDom.innerHTML = introDom.innerHTML.replace(
-        /如果您喜欢.+，别忘记分享给朋友/g,
-        ""
-      );
+      rms([/如果您喜欢.+，别忘记分享给朋友/g], introDom);
       rm('a[href^="http://down.gebiqu.com"]', false, introDom);
       return introDom;
     },
@@ -66,9 +63,11 @@ export const lwxs9 = () =>
 export const biquwx = () =>
   mkBiqugeClass(
     (introDom) => {
-      introDom.innerHTML = introDom.innerHTML.replace(
-        /本站提示：各位书友要是觉得《.+》还不错的话请不要忘记向您QQ群和微博里的朋友推荐哦！/,
-        ""
+      rms(
+        [
+          /本站提示：各位书友要是觉得《.+》还不错的话请不要忘记向您QQ群和微博里的朋友推荐哦！/,
+        ],
+        introDom
       );
       return introDom;
     },
@@ -93,7 +92,7 @@ export const tycqxs = () =>
 export const dijiubook = () =>
   mkBiqugeClass(
     (introDom) => {
-      introDom.innerHTML = introDom.innerHTML.replace("本书网址：", "");
+      rms(["本书网址："], introDom);
       rm('a[href^="https://dijiubook.net/"]', false, introDom);
 
       rm(
@@ -133,7 +132,7 @@ export const c25zw = () =>
   mkBiqugeClass(
     (introDom) => {
       introDom.querySelector("font")?.parentElement?.remove();
-      introDom.innerHTML = introDom.innerHTML.replace("简介:", "");
+      rms(["简介:"], introDom);
       return introDom;
     },
     (content) => {

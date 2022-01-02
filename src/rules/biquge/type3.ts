@@ -53,10 +53,7 @@ export const xinwanben = () =>
         "小说免费阅读地址：",
       ];
       rm2(introDom, adList);
-      introDom.innerHTML = introDom.innerHTML.replace(
-        `${bookname}小说简介：`,
-        ""
-      );
+      rms([`${bookname}小说简介：`], introDom);
       return introDom;
     },
     (content, doc) => {
