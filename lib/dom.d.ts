@@ -12,3 +12,4 @@ export declare function getNextSibling(node: Element | Text): ChildNode | null |
 export declare function getPreviousSibling(node: Element | Text): ChildNode | null | undefined;
 export declare function getPreviousBrCount(node: Element | Text): number;
 export declare function removePreviousBr(node: Element | Text): void;
+export declare function fullWidthLength(input: string): number;

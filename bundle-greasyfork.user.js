@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.7.7.465
+// @version        4.7.7.466
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -3597,6 +3597,8 @@ function getLastPart(u) {
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("loglevel");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _attachments__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/dom.ts");
+
 
 
 const BlockElements = [
@@ -4292,14 +4294,14 @@ function htmlTrim(dom) {
     }
 }
 function convertBr(dom) {
-    if (onlyTextAndBr(dom) && countBr(dom) > 3) {
+    if (onlyTextAndBr(dom) && countBr(dom) > 2) {
         const outDom = document.createElement("div");
         const childNodes = dom.childNodes;
         let brCount = 0;
         for (const node of Array.from(childNodes)) {
             if (node instanceof Text) {
-                if (brCount > 3) {
-                    let brRemainder = brCount - 3;
+                if (brCount > 2) {
+                    let brRemainder = brCount - 2;
                     const brp = document.createElement("p");
                     while (brRemainder > 0) {
                         brRemainder--;
@@ -4346,7 +4348,7 @@ function convertFixWidthText(node, width = 35, out = document.createElement("div
             text = "";
             continue;
         }
-        if (n.length > width - 5 && n.length < width + 5) {
+        if ((0,_dom__WEBPACK_IMPORTED_MODULE_2__/* .fullWidthLength */ .sp)(n) > width - 5 && (0,_dom__WEBPACK_IMPORTED_MODULE_2__/* .fullWidthLength */ .sp)(n) < width + 5) {
             text = text + n;
             continue;
         }
@@ -4394,7 +4396,8 @@ function convertFixWidthText(node, width = 35, out = document.createElement("div
 /* harmony export */   "d9": () => (/* binding */ getNextSibling),
 /* harmony export */   "U": () => (/* binding */ getPreviousSibling),
 /* harmony export */   "$N": () => (/* binding */ getPreviousBrCount),
-/* harmony export */   "Fe": () => (/* binding */ removePreviousBr)
+/* harmony export */   "Fe": () => (/* binding */ removePreviousBr),
+/* harmony export */   "sp": () => (/* binding */ fullWidthLength)
 /* harmony export */ });
 /* unused harmony export getCookie */
 function rm(selector, all = false, dom) {
@@ -4570,6 +4573,21 @@ function removePreviousBr(node) {
     else {
         return;
     }
+}
+function fullWidthLength(input) {
+    const length = Array.from(input).reduce((p, c) => {
+        const code = c.codePointAt(0);
+        if (code === undefined) {
+            return p;
+        }
+        if (code < 128) {
+            return p + 0.5;
+        }
+        else {
+            return p + 1;
+        }
+    }, 0);
+    return length;
 }
 
 
@@ -10201,8 +10219,12 @@ class Cool18 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
                         const next = node.nextSibling;
                         if (previous instanceof Text &&
                             next instanceof Text &&
-                            (previous.textContent?.length ?? 0) > 30 &&
-                            (previous.textContent?.length ?? 0) < 40) {
+                            (previous.textContent
+                                ? (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__/* .fullWidthLength */ .sp)(previous.textContent)
+                                : 0) > 30 &&
+                            (previous.textContent
+                                ? (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__/* .fullWidthLength */ .sp)(previous.textContent)
+                                : 0) < 40) {
                             node.remove();
                         }
                     });
@@ -10259,7 +10281,7 @@ class Cool18 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
                         let text = "";
                         for (const node of ps) {
                             const n = node.innerText.trim();
-                            if (n.length > 30 && n.length < 40) {
+                            if ((0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__/* .fullWidthLength */ .sp)(n) > 30 && (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__/* .fullWidthLength */ .sp)(n) < 40) {
                                 text = text + n;
                                 node.remove();
                                 continue;
@@ -10329,28 +10351,30 @@ function isFixWidth(node) {
         ns = node.textContent?.split("\n").map((n) => n.trim()) ?? [];
     }
     if (node instanceof HTMLElement) {
-        ns = [];
-        Array.from(node.childNodes)
-            .filter((n) => n instanceof Text)
-            .map((t) => t.textContent?.trim() ?? "")
-            .map((t) => {
-            if (t.includes("\n")) {
-                return t.split("\n").map((n) => n.trim());
+        const reducer = (out, cur) => {
+            if (cur instanceof Text) {
+                const t = cur.textContent?.trim() ?? "";
+                if (t.includes("\n")) {
+                    t.split("\n")
+                        .map((n) => n.trim())
+                        .forEach((n) => out.push(n));
+                    return out;
+                }
+                else {
+                    out.push(t);
+                    return out;
+                }
             }
-        })
-            .forEach((n) => {
-            if (Array.isArray(n)) {
-                n.forEach((l) => ns?.push(l));
+            else {
+                return out;
             }
-            if (typeof n === "string") {
-                ns?.push(n);
-            }
-        });
+        };
+        ns = Array.from(node.childNodes).reduce(reducer, []);
     }
     if (!ns) {
         throw new Error("ns is null");
     }
-    const lengths = ns.map((l) => l.length);
+    const lengths = ns.map((l) => (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__/* .fullWidthLength */ .sp)(l));
     const lt40 = lengths.filter((i) => i > 40).length;
     if (lt40 < 5) {
         return true;
@@ -10358,7 +10382,7 @@ function isFixWidth(node) {
     return false;
 }
 function isFixWidthP(node) {
-    const lengths = Array.from(node.querySelectorAll("p")).map((p) => p.innerText.length);
+    const lengths = Array.from(node.querySelectorAll("p")).map((p) => (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__/* .fullWidthLength */ .sp)(p.innerText.trim()));
     const lt40 = lengths.filter((i) => i > 40).length;
     if (lt40 < 5) {
         return true;
