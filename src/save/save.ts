@@ -8,7 +8,7 @@ import { Book } from "../main/Book";
 import { enableDebug } from "../setting";
 import defaultMainStyleText from "./main.css";
 import { getSectionsObj } from "./misc";
-import { chapter as chapterGlobal, index, section } from "./template";
+import { chapter as chapterTemplt, index, section } from "./template";
 import defaultTocStyleText from "./toc.css";
 
 export interface SaveOptions {
@@ -151,8 +151,8 @@ export class SaveBook {
     );
   }
 
-  public saveLog() {
-    this.savedZip.file(
+  public async saveLog() {
+    await this.savedZip.file(
       "debug.log",
       new Blob([logText], { type: "text/plain; charset=UTF-8" })
     );
@@ -163,40 +163,46 @@ export class SaveBook {
 
     log.debug("[save]保存元数据文本");
     const metaDateText = this.genMetaDateTxt();
-    this.savedZip.file(
+    await this.savedZip.file(
       "info.txt",
       new Blob([metaDateText], { type: "text/plain;charset=utf-8" })
     );
     log.debug("[save]保存样式");
-    this.savedZip.file(
+    await this.savedZip.file(
       "style.css",
       new Blob([this.mainStyleText], { type: "text/css;charset=utf-8" })
     );
     modifyTocStyleText();
-    this.savedZip.file(
+    await this.savedZip.file(
       "toc.css",
       new Blob([this.tocStyleText], { type: "text/css;charset=utf-8" })
     );
 
     if (this.book.additionalMetadate.cover) {
       log.debug("[save]保存封面");
-      this.addImageToZip(this.book.additionalMetadate.cover, this.savedZip);
+      await this.addImageToZip(
+        this.book.additionalMetadate.cover,
+        this.savedZip
+      );
     }
     if (this.book.additionalMetadate.attachments) {
       log.debug("[save]保存书籍附件");
       for (const bookAttachment of this.book.additionalMetadate.attachments) {
-        this.addImageToZip(bookAttachment, this.savedZip);
+        await this.addImageToZip(bookAttachment, this.savedZip);
       }
     }
 
     log.debug("[save]开始生成并保存卷文件");
-    saveSections();
+    await saveSections();
+
+    log.debug("[save]保存已完成章节文件");
+    await saveFinishedChapters(this.chapters);
 
     log.debug("[save]开始生成并保存 index.html");
-    saveToC();
+    await saveToC();
 
     log.debug("[save]开始保存 Meta Data Json");
-    saveMetaJson();
+    await saveMetaJson();
 
     if (runSaveChapters) {
       log.debug("[save]开始保存章节文件");
@@ -208,11 +214,11 @@ export class SaveBook {
 
     log.info("[save]开始保存ZIP文件");
     if (enableDebug.value) {
-      self.saveLog();
+      await self.saveLog();
     }
-    this.savedZip.generateAsync();
+    await this.savedZip.generateAsync();
 
-    function saveToC() {
+    async function saveToC() {
       log.debug("[save]对 chapters 排序");
       self.chapters.sort(self.chapterSort);
 
@@ -228,7 +234,7 @@ export class SaveBook {
         sectionsObj: Object.values(sectionsListObj),
         Status,
       });
-      self.savedZip.file(
+      await self.savedZip.file(
         "index.html",
         new Blob([indexHtmlText.replaceAll("data-src-address", "src")], {
           type: "text/html; charset=UTF-8",
@@ -252,15 +258,15 @@ export class SaveBook {
       }
     }
 
-    function saveMetaJson() {
-      self.savedZip.file(
+    async function saveMetaJson() {
+      await self.savedZip.file(
         "book.json",
         new Blob([JSON.stringify(self.book)], {
           type: "application/json; charset=utf-8",
         })
       );
 
-      self.savedZip.file(
+      await self.savedZip.file(
         "chapters.json",
         new Blob([JSON.stringify(self.book.chapters)], {
           type: "application/json; charset=utf-8",
@@ -268,7 +274,7 @@ export class SaveBook {
       );
     }
 
-    function saveSections() {
+    async function saveSections() {
       log.debug("[save]对 chapters 排序");
       self.chapters.sort(self.chapterSort);
 
@@ -282,7 +288,7 @@ export class SaveBook {
 
             log.debug(`[save]保存卷HTML文件：${chapter.sectionName}`);
             const sectionHTMLBlob = self.genSectionHtmlFile(chapter);
-            self.savedZip.file(sectionHtmlFileName, sectionHTMLBlob);
+            await self.savedZip.file(sectionHtmlFileName, sectionHTMLBlob);
           }
         }
       }
@@ -291,6 +297,13 @@ export class SaveBook {
     async function saveChapters() {
       for (const chapter of self.chapters) {
         await self.addChapter(chapter);
+      }
+    }
+
+    async function saveFinishedChapters(chapters: Chapter[]) {
+      const cs = chapters.filter((c) => c.status === Status.finished);
+      for (const c of cs) {
+        await self.addChapter(c);
       }
     }
 
@@ -359,7 +372,7 @@ export class SaveBook {
   }
 
   public genChapterHtmlFile(chapterObj: Chapter) {
-    const htmlText = chapterGlobal.render({
+    const htmlText = chapterTemplt.render({
       chapterUrl: chapterObj.chapterUrl,
       chapterName: chapterObj.chapterName,
       outerHTML: chapterObj.contentHTML?.outerHTML ?? "",
