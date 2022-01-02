@@ -1,5 +1,5 @@
 import { htmlTrim } from "../../lib/cleanDOM";
-import { rm, rm2 } from "../../lib/dom";
+import { rm, rm2, rms } from "../../lib/dom";
 import { mkBiqugeClass2 } from "./template";
 
 export const shuquge = () =>
@@ -22,12 +22,13 @@ export const shuquge = () =>
       return introDom;
     },
     (content) => {
-      content.innerHTML = content.innerHTML
-        .replace(
+      rms(
+        [
           "请记住本书首发域名：www.shuquge.com。书趣阁_笔趣阁手机版阅读网址：m.shuquge.com",
-          ""
-        )
-        .replace(/https?:\/\/www.shuquge.com\/txt\/\d+\/\d+\.html/, "");
+          /https?:\/\/www.shuquge.com\/txt\/\d+\/\d+\.html/,
+        ],
+        content
+      );
       return content;
     },
     1
@@ -46,12 +47,13 @@ export const xyqxs = () =>
       rm("div[style]", true, content);
       rm("script", true, content);
       rm('div[align="center"]', false, content);
-      content.innerHTML = content.innerHTML
-        .replace(
+      rms(
+        [
           "请记住本书首发域名：www.xyqxs.cc。笔趣阁手机版阅读网址：m.xyqxs.cc",
-          ""
-        )
-        .replace(/\(https:\/\/www.xyqxs.cc\/html\/\d+\/\d+\/\d+\.html\)/, "");
+          /\(https:\/\/www.xyqxs.cc\/html\/\d+\/\d+\/\d+\.html\)/,
+        ],
+        content
+      );
       return content;
     }
   );

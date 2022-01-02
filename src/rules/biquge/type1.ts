@@ -1,5 +1,5 @@
 import { sleep } from "../../lib/misc";
-import { rm, rm2 } from "../../lib/dom";
+import { rm, rm2, rms } from "../../lib/dom";
 import { mkBiqugeClass } from "./template";
 
 // 笔趣阁通用模板，无contentpatch可直接使用
@@ -35,7 +35,7 @@ export const gebiqu = () =>
       return introDom;
     },
     (content) => {
-      content.innerHTML = content.innerHTML.replace(/"www.gebiqu.com"/g, "");
+      rms([/"www.gebiqu.com"/g], content);
       return content;
     }
   );
@@ -49,9 +49,7 @@ export const luoqiuzw = () =>
         ad.remove();
       }
       const ads = ["记住网址m.luoqｉｕｘｚｗ．ｃｏｍ"];
-      ads.forEach(
-        (adt) => (content.innerHTML = content.innerHTML.replace(adt, ""))
-      );
+      rms(ads, content);
       return content;
     }
   );
@@ -82,9 +80,11 @@ export const tycqxs = () =>
   mkBiqugeClass(
     (introDom) => introDom,
     (content) => {
-      content.innerHTML = content.innerHTML.replace(
-        /推荐都市大神老施新书:<a href="https:\/\/www\.tycqxs\.com\/[\d_]+\/" target="_blank">.+<\/a>/,
-        ""
+      rms(
+        [
+          /推荐都市大神老施新书:<a href="https:\/\/www\.tycqxs\.com\/[\d_]+\/" target="_blank">.+<\/a>/,
+        ],
+        content
       );
       return content;
     }
@@ -146,10 +146,7 @@ export const xbiquge = () =>
   mkBiqugeClass(
     (introDom) => introDom,
     (content, options) => {
-      content.innerHTML = content.innerHTML.replace(
-        `笔趣阁 www.xbiquge.so，最快更新${options.bookname} ！`,
-        ""
-      );
+      rms([`笔趣阁 www.xbiquge.so，最快更新${options.bookname} ！`], content);
       return content;
     }
   );

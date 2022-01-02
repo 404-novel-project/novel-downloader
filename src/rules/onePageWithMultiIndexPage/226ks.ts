@@ -1,4 +1,4 @@
-import { rm } from "../../lib/dom";
+import { rm, rms } from "../../lib/dom";
 import { nextPageParse } from "../../lib/rule";
 import { mkRuleClass } from "./template";
 
@@ -38,7 +38,7 @@ export const c226ks = () =>
           rm("div[onclick]", true, content);
           const ad =
             '<div class="posterror"><a href="javascript:postError();" class="red">章节错误,点此举报(免注册)</a>,举报后维护人员会在两分钟内校正章节内容,请耐心等待,并刷新页面。</div>';
-          content.innerHTML = content.innerHTML.replace(ad, "");
+          rms([ad], content);
           return content;
         },
         getNextPage: (doc) =>

@@ -2,7 +2,7 @@ import { UnsafeWindow } from "../../../global";
 import { getImageAttachment } from "../../../lib/attachments";
 import { cleanDOM } from "../../../lib/cleanDOM";
 import { getHtmlDOM } from "../../../lib/http";
-import { rm } from "../../../lib/dom";
+import { rm, rms } from "../../../lib/dom";
 import { introDomHandle } from "../../../lib/rule";
 import { log } from "../../../log";
 import { Chapter } from "../../../main/Chapter";
@@ -145,9 +145,7 @@ export class Uukanshu extends BaseRuleClass {
         /http:\/\//g,
         /UU看书\s+欢迎广大书友光临阅读，最新、最快、最火的连载作品尽在UU看书！UU看书。;?/g,
       ];
-      for (const r of contentReplace) {
-        content.innerHTML = content.innerHTML.replace(r, "");
-      }
+      rms(contentReplace, content);
       const { dom, text, images } = await cleanDOM(content, "TM");
       return {
         chapterName,

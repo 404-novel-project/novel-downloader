@@ -1,3 +1,4 @@
+import { rms } from "../../lib/dom";
 import { mkRuleClass } from "./template";
 
 export const c630shu = mkRuleClass({
@@ -16,10 +17,7 @@ export const c630shu = mkRuleClass({
   aList: document.querySelectorAll(".zjlist > dd > a"),
   getContent: (doc) => doc.querySelector("#content") as HTMLElement,
   contentPatch: (content) => {
-    content.innerHTML = content.innerHTML.replace(
-      /恋上你看书网 WWW.630SHU.NET ，最快更新.+最新章节！/,
-      ""
-    );
+    rms([/恋上你看书网 WWW.630SHU.NET ，最快更新.+最新章节！/], content);
     return content;
   },
 });

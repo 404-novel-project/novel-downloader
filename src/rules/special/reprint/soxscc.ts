@@ -1,7 +1,7 @@
 import { getImageAttachment } from "../../../lib/attachments";
 import { cleanDOM } from "../../../lib/cleanDOM";
 import { getHtmlDOM } from "../../../lib/http";
-import { rm } from "../../../lib/dom";
+import { rm, rms } from "../../../lib/dom";
 import { introDomHandle } from "../../../lib/rule";
 import { log } from "../../../log";
 import { Chapter } from "../../../main/Chapter";
@@ -118,7 +118,7 @@ export class Soxscc extends BaseRuleClass {
     const content = doc.querySelector("div.content[id]") as HTMLElement;
     if (content) {
       const ad = `您可以在百度里搜索“${bookname} .+(${document.location.hostname})”查找最新章节！`;
-      content.innerHTML = content.innerHTML.replaceAll(ad, "");
+      rms([ad], content);
       Array.from(content.querySelectorAll("p")).forEach((p) => {
         const adwords = [
           "最新章节地址：",

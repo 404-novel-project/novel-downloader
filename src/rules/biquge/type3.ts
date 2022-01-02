@@ -1,5 +1,5 @@
 import { htmlTrim } from "../../lib/cleanDOM";
-import { rm, rm2 } from "../../lib/dom";
+import { rm, rm2, rms } from "../../lib/dom";
 import { mkBiqugeClass3 } from "./template";
 
 export const dingdiann = () =>
@@ -15,10 +15,7 @@ export const dingdiann = () =>
         "--&gt;&gt;",
         "本章未完，点击下一页继续阅读",
       ];
-      removelist.forEach(
-        (removeStr) =>
-          (content.innerHTML = content.innerHTML.replaceAll(removeStr, ""))
-      );
+      rms(removelist, content);
       htmlTrim(content);
       return content;
     },

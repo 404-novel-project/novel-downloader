@@ -7,7 +7,7 @@ import { cleanDOM } from "../../../lib/cleanDOM";
 import { gfetch } from "../../../lib/http";
 import { getHtmlDOM, ggetHtmlDOM } from "../../../lib/http";
 import { sleep } from "../../../lib/misc";
-import { rm } from "../../../lib/dom";
+import { rm, rms } from "../../../lib/dom";
 import { introDomHandle } from "../../../lib/rule";
 import { log } from "../../../log";
 import { Status } from "../../../main/main";
@@ -286,10 +286,7 @@ export class Jjwxc extends BaseRuleClass {
           [authorSayDom, authorSayText] = [adom, atext];
         }
         rm("div", true, content);
-        content.innerHTML = content.innerHTML.replaceAll(
-          "@无限好文，尽在晋江文学城",
-          ""
-        );
+        rms(["@无限好文，尽在晋江文学城"], content);
         // eslint-disable-next-line prefer-const
         let { dom, text, images } = await cleanDOM(content, "TM");
         if (rawAuthorSayDom && authorSayDom && authorSayText) {
@@ -455,10 +452,7 @@ export class Jjwxc extends BaseRuleClass {
             [authorSayDom, authorSayText] = [adom, atext];
           }
           rm("div", true, content);
-          content.innerHTML = content.innerHTML.replaceAll(
-            "@无限好文，尽在晋江文学城",
-            ""
-          );
+          rms(["@无限好文，尽在晋江文学城"], content);
           let {
             dom: rawDom, // eslint-disable-line
             text: rawText,
