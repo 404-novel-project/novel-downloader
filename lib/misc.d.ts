@@ -8,4 +8,6 @@ export declare function sleep(ms: number): Promise<unknown>;
 export declare function deepcopy<T>(obj: T): T;
 export declare function regexpEscape(str: string): string;
 export declare function saveToArchiveOrg(url: string): Promise<any>;
+export declare function mean(list: number[]): number;
+export declare function sd(list: number[]): number;
 export {};

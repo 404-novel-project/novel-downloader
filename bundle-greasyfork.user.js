@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.7.7.462
+// @version        4.7.7.463
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -4254,7 +4254,9 @@ async function cleanDOM(elem, imgMode, options) {
     }
     function postHook({ dom, text, images, }) {
         htmlTrim(dom);
+        convertBr(dom);
         Array.from(dom.children).forEach((child) => child.replaceWith(convertBr(child)));
+        removeBlankParagraphElement(dom);
         text = text.trim();
         return {
             dom,
@@ -4270,13 +4272,10 @@ function htmlTrim(dom) {
     remove(childNodesR);
     function remove(nodes) {
         for (const node of nodes) {
-            if (node instanceof Text === false ||
-                node instanceof HTMLBRElement === false) {
-                break;
-            }
             if (node instanceof Text) {
                 if (node.textContent?.trim() === "") {
                     node.remove();
+                    continue;
                 }
                 else {
                     break;
@@ -4284,6 +4283,10 @@ function htmlTrim(dom) {
             }
             if (node instanceof HTMLBRElement) {
                 node.remove();
+                continue;
+            }
+            if (node instanceof HTMLElement && node.nodeName.toLowerCase() !== "br") {
+                break;
             }
         }
     }
@@ -4329,20 +4332,45 @@ function convertBr(dom) {
             .every((nn) => ["#text", "br"].includes(nn));
     }
 }
-function convertFixWidthText(node) {
-    const out = document.createElement("div");
-    const ns = node.textContent?.split("\n").map((n) => n.trim()) ?? [];
+function removeBlankParagraphElement(dom) {
+    const nodes = Array.from(dom.querySelectorAll("p"));
+    nodes.filter((p) => p.innerText.trim() === "").forEach((p) => p.remove());
+}
+function convertFixWidthText(node, width = 35, out = document.createElement("div")) {
+    const ns = node.textContent?.split("\n") ?? [];
     let text = "";
     for (const n of ns) {
         if (n === "") {
             out.appendChild(new Text(text));
             out.appendChild(document.createElement("br"));
             text = "";
+            continue;
+        }
+        if (n.length > width - 5 && n.length < width + 5) {
+            text = text + n;
+            continue;
         }
         else {
-            text = text + n;
+            if (text !== "") {
+                text = text + n;
+                out.appendChild(new Text(text));
+                out.appendChild(document.createElement("br"));
+                text = "";
+                continue;
+            }
+            else {
+                out.appendChild(new Text(n));
+                out.appendChild(document.createElement("br"));
+                continue;
+            }
         }
     }
+    if (text !== "") {
+        out.appendChild(new Text(text));
+        out.appendChild(document.createElement("br"));
+        text = "";
+    }
+    htmlTrim(out);
     return convertBr(out);
 }
 
@@ -4362,7 +4390,11 @@ function convertFixWidthText(node) {
 /* harmony export */   "MK": () => (/* binding */ getNodeTextLength),
 /* harmony export */   "J0": () => (/* binding */ sandboxed),
 /* harmony export */   "ut": () => (/* binding */ createEl),
-/* harmony export */   "wj": () => (/* binding */ createStyle)
+/* harmony export */   "wj": () => (/* binding */ createStyle),
+/* harmony export */   "d9": () => (/* binding */ getNextSibling),
+/* harmony export */   "U": () => (/* binding */ getPreviousSibling),
+/* harmony export */   "$N": () => (/* binding */ getPreviousBrCount),
+/* harmony export */   "Fe": () => (/* binding */ removePreviousBr)
 /* harmony export */ });
 /* unused harmony export getCookie */
 function rm(selector, all = false, dom) {
@@ -4491,6 +4523,53 @@ function createStyle(style, id) {
         el.id = id;
     }
     return el;
+}
+function getNextSibling(node) {
+    if (node.nextSibling instanceof HTMLElement) {
+        return node.nextSibling;
+    }
+    if (node.nextSibling instanceof Text) {
+        if (node.nextSibling.textContent?.trim() !== "") {
+            return node.nextSibling;
+        }
+        else {
+            return node.nextSibling.nextSibling;
+        }
+    }
+}
+function getPreviousSibling(node) {
+    if (node.previousSibling instanceof HTMLElement) {
+        return node.previousSibling;
+    }
+    if (node.previousSibling instanceof Text) {
+        if (node.previousSibling.textContent?.trim() !== "") {
+            return node.previousSibling;
+        }
+        else {
+            return node.previousSibling.previousSibling;
+        }
+    }
+}
+function getPreviousBrCount(node) {
+    const previous = getPreviousSibling(node);
+    if (previous instanceof HTMLBRElement) {
+        return getPreviousBrCount(previous) + 1;
+    }
+    else {
+        return 0;
+    }
+}
+function removePreviousBr(node) {
+    const previous = getPreviousSibling(node);
+    if (node instanceof HTMLBRElement) {
+        node.remove();
+    }
+    if (previous instanceof HTMLBRElement) {
+        return removePreviousBr(previous);
+    }
+    else {
+        return;
+    }
 }
 
 
@@ -4858,7 +4937,7 @@ class LocalStorageExpired {
 /* harmony export */   "X8": () => (/* binding */ deepcopy),
 /* harmony export */   "K$": () => (/* binding */ saveToArchiveOrg)
 /* harmony export */ });
-/* unused harmony export regexpEscape */
+/* unused harmony exports regexpEscape, mean, sd */
 /* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/main/main.ts");
 
 function concurrencyRun(list, limit, asyncHandle, options = {}) {
@@ -4905,6 +4984,22 @@ async function saveToArchiveOrg(url) {
     });
     const data = await req.json();
     return data;
+}
+function mean(list) {
+    if (list.length === 0) {
+        return 0;
+    }
+    const sum = list.reduce((p, c) => p + c);
+    return sum / list.length;
+}
+function sd(list) {
+    if (list.length === 0) {
+        return 0;
+    }
+    const m = mean(list);
+    const variance = list.map((x) => Math.pow(x - m, 2)).reduce((p, c) => p + c) / list.length;
+    const sd = Math.sqrt(variance);
+    return sd;
 }
 
 
@@ -9996,11 +10091,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "Cool18": () => (/* binding */ Cool18)
 /* harmony export */ });
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/dom.ts");
 /* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/http.ts");
 /* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/main/Book.ts");
 /* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/main/Chapter.ts");
 /* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
+
 
 
 
@@ -10079,82 +10176,102 @@ class Cool18 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
         const dom = doc.querySelector(".show_content > pre, .show_content > div");
         if (dom) {
             Array.from(dom.querySelectorAll('font[color*="E6E6DD"]')).forEach((f) => f.remove());
-            Array.from(dom.querySelectorAll("br")).forEach((br) => {
-                const previous = getPreviousSibling(br);
-                const next = getNextSibling(br);
-                if (previous instanceof Text && next instanceof Text) {
-                    if (Math.max(previous.textContent?.trim().length ?? 999, next.textContent?.trim().length ?? 999) < 40) {
-                        br.remove();
-                    }
-                }
-            });
             const contentRaw = document.createElement("div");
             const nodes = Array.from(dom.childNodes);
             if (nodes.length > 10) {
-                let p = document.createElement("p");
-                for (const node of nodes) {
-                    if (node instanceof Text) {
-                        const text = new Text(node.textContent?.trim());
-                        p.appendChild(text);
-                        continue;
-                    }
-                    if (node instanceof HTMLElement) {
-                        if (p.innerText.trim() !== "") {
-                            contentRaw.appendChild(p);
-                            p = document.createElement("p");
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__/* .childNodesCopy */ .vR)(dom, contentRaw);
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__.rm)("a", true, contentRaw);
+                if (isFixWidth(contentRaw)) {
+                    Array.from(contentRaw.querySelectorAll("br")).forEach((node) => {
+                        const previous = node.previousSibling;
+                        const next = node.nextSibling;
+                        if (previous instanceof Text &&
+                            next instanceof Text &&
+                            (previous.textContent?.length ?? 0) > 30 &&
+                            (previous.textContent?.length ?? 0) < 40) {
+                            node.remove();
                         }
-                        if (node instanceof HTMLParagraphElement) {
-                            if (node.innerText.trim() === "") {
-                                if (node.nextSibling instanceof Text) {
-                                    if (node.nextSibling.textContent?.trim() === "") {
-                                        if (node.nextSibling.nextSibling instanceof
-                                            HTMLParagraphElement &&
-                                            node.nextSibling.nextSibling.innerText.trim() !== "") {
-                                            node.remove();
-                                            continue;
-                                        }
-                                    }
-                                    else {
-                                        node.remove();
-                                        continue;
-                                    }
+                    });
+                    const group = (texts) => {
+                        const out = [];
+                        let group = [];
+                        let whole = "";
+                        for (const text of texts) {
+                            const w = text.wholeText;
+                            if (whole !== w) {
+                                if (group.length !== 0) {
+                                    out.push(group);
+                                }
+                                whole = w;
+                                group = [text];
+                            }
+                            else {
+                                group.push(text);
+                            }
+                        }
+                        if (group.length !== 0) {
+                            out.push(group);
+                        }
+                        return out;
+                    };
+                    const merge = (groups) => {
+                        for (const g of groups) {
+                            const old = g[0];
+                            const newText = new Text(old.wholeText);
+                            old.replaceWith(newText);
+                            g.forEach((t) => t.remove());
+                        }
+                    };
+                    const ts = Array.from(contentRaw.childNodes).filter((node) => node instanceof Text && node.wholeText !== node.textContent);
+                    const gts = group(ts);
+                    merge(gts);
+                    Array.from(contentRaw.childNodes)
+                        .filter((node) => node instanceof Text)
+                        .forEach((text) => {
+                        const p = document.createElement("p");
+                        (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_5__/* .convertFixWidthText */ .d1)(text, 35, p);
+                        text.replaceWith(p);
+                    });
+                    Array.from(contentRaw.querySelectorAll("p"))
+                        .filter((p) => p.innerText.trim() === "" &&
+                        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__/* .getPreviousSibling */ .U)(p) instanceof HTMLElement &&
+                        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__/* .getNextSibling */ .d9)(p) instanceof HTMLElement)
+                        .forEach((p) => p.remove());
+                    Array.from(contentRaw.querySelectorAll("p"))
+                        .filter((p) => (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__/* .getPreviousBrCount */ .$N)(p) === 2)
+                        .forEach((p) => (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__/* .removePreviousBr */ .Fe)(p));
+                    if (isFixWidthP(contentRaw)) {
+                        const ps = Array.from(contentRaw.querySelectorAll("p"));
+                        let text = "";
+                        for (const node of ps) {
+                            const n = node.innerText.trim();
+                            if (n.length > 30 && n.length < 40) {
+                                text = text + n;
+                                node.remove();
+                                continue;
+                            }
+                            else {
+                                if (text !== "") {
+                                    text = text + n;
+                                    const newP = document.createElement("p");
+                                    newP.innerText = text;
+                                    node.replaceWith(newP);
+                                    text = "";
+                                    continue;
+                                }
+                                else {
+                                    continue;
                                 }
                             }
-                            contentRaw.appendChild(node);
-                            continue;
                         }
-                        contentRaw.appendChild(node);
-                        continue;
-                    }
-                }
-                if (p.innerText.trim() !== "") {
-                    contentRaw.appendChild(p);
-                }
-                const as = Array.from(contentRaw.querySelectorAll("a"));
-                for (const node of as) {
-                    if (node instanceof HTMLAnchorElement) {
-                        if (node.nextSibling instanceof HTMLAnchorElement ||
-                            (node.nextSibling instanceof Text &&
-                                node.nextSibling.textContent?.trim() === "" &&
-                                node.nextSibling.nextSibling instanceof HTMLAnchorElement)) {
-                            node.insertAdjacentElement("afterend", document.createElement("br"));
-                            continue;
-                        }
-                    }
-                }
-                const ps = Array.from(contentRaw.querySelectorAll("p"));
-                for (const node of ps) {
-                    const previousBrCount = getPreviousBrCount(node);
-                    if (previousBrCount > 1 && previousBrCount < 4) {
-                        removePreviousBr(node);
                     }
                 }
             }
             else {
                 for (const node of nodes) {
                     if (node instanceof Text && (node.textContent?.length ?? 0) > 200) {
-                        if (isFixWidthText(node)) {
-                            contentRaw.appendChild((0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_4__/* .convertFixWidthText */ .d1)(node));
+                        if (isFixWidth(node)) {
+                            contentRaw.appendChild((0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_5__/* .convertFixWidthText */ .d1)(node));
                             continue;
                         }
                         else {
@@ -10166,8 +10283,13 @@ class Cool18 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
                     }
                     contentRaw.appendChild(node);
                 }
+                Array.from(contentRaw.querySelectorAll("p"))
+                    .filter((p) => p.innerText.trim() === "" &&
+                    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__/* .getPreviousSibling */ .U)(p) instanceof HTMLElement &&
+                    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__/* .getNextSibling */ .d9)(p) instanceof HTMLElement)
+                    .forEach((p) => p.remove());
             }
-            const { dom: contentHTML, text: contentText, images: contentImages, } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_4__/* .cleanDOM */ .zM)(contentRaw, "TM");
+            const { dom: contentHTML, text: contentText, images: contentImages, } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_5__/* .cleanDOM */ .zM)(contentRaw, "TM");
             return {
                 chapterName,
                 contentRaw,
@@ -10187,60 +10309,47 @@ class Cool18 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
         };
     }
 }
-function isFixWidthText(node) {
-    const ns = node.textContent?.split("\n").map((n) => n.trim()) ?? [];
-    const nsLengths = ns.map((l) => l.length);
-    if (Math.max(...nsLengths) < 40) {
+function isFixWidth(node) {
+    let ns;
+    if (node instanceof Text) {
+        ns = node.textContent?.split("\n").map((n) => n.trim()) ?? [];
+    }
+    if (node instanceof HTMLElement) {
+        ns = [];
+        Array.from(node.childNodes)
+            .filter((n) => n instanceof Text)
+            .map((t) => t.textContent?.trim() ?? "")
+            .map((t) => {
+            if (t.includes("\n")) {
+                return t.split("\n").map((n) => n.trim());
+            }
+        })
+            .forEach((n) => {
+            if (Array.isArray(n)) {
+                n.forEach((l) => ns?.push(l));
+            }
+            if (typeof n === "string") {
+                ns?.push(n);
+            }
+        });
+    }
+    if (!ns) {
+        throw new Error("ns is null");
+    }
+    const lengths = ns.map((l) => l.length);
+    const lt40 = lengths.filter((i) => i > 40).length;
+    if (lt40 < 5) {
         return true;
     }
     return false;
 }
-function getNextSibling(node) {
-    if (node.nextSibling instanceof HTMLElement) {
-        return node.nextSibling;
+function isFixWidthP(node) {
+    const lengths = Array.from(node.querySelectorAll("p")).map((p) => p.innerText.length);
+    const lt40 = lengths.filter((i) => i > 40).length;
+    if (lt40 < 5) {
+        return true;
     }
-    if (node.nextSibling instanceof Text) {
-        if (node.nextSibling.textContent?.trim() !== "") {
-            return node.nextSibling;
-        }
-        else {
-            return node.nextSibling.nextSibling;
-        }
-    }
-}
-function getPreviousSibling(node) {
-    if (node.previousSibling instanceof HTMLElement) {
-        return node.previousSibling;
-    }
-    if (node.previousSibling instanceof Text) {
-        if (node.previousSibling.textContent?.trim() !== "") {
-            return node.previousSibling;
-        }
-        else {
-            return node.previousSibling.previousSibling;
-        }
-    }
-}
-function getPreviousBrCount(node) {
-    const previous = getPreviousSibling(node);
-    if (previous instanceof HTMLBRElement) {
-        return getPreviousBrCount(previous) + 1;
-    }
-    else {
-        return 0;
-    }
-}
-function removePreviousBr(node) {
-    const previous = getPreviousSibling(node);
-    if (node instanceof HTMLBRElement) {
-        node.remove();
-    }
-    if (previous instanceof HTMLBRElement) {
-        return removePreviousBr(previous);
-    }
-    else {
-        return;
-    }
+    return false;
 }
 
 

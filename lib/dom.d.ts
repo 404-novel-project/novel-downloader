@@ -8,3 +8,7 @@ export declare function sandboxed(code: string): any;
 export declare function getCookie(name: string): string | null;
 export declare function createEl(el: string): HTMLElement;
 export declare function createStyle(style: string, id?: string): HTMLElement;
+export declare function getNextSibling(node: Element | Text): ChildNode | null | undefined;
+export declare function getPreviousSibling(node: Element | Text): ChildNode | null | undefined;
+export declare function getPreviousBrCount(node: Element | Text): number;
+export declare function removePreviousBr(node: Element | Text): void;
