@@ -846,7 +846,7 @@ export async function cleanDOM(
   }): Output {
     htmlTrim(dom);
 
-    convertBr(dom);
+    dom = convertBr(dom);
     Array.from(dom.children).forEach((child) =>
       child.replaceWith(convertBr(child as HTMLElement))
     );
@@ -895,7 +895,7 @@ export function htmlTrim(dom: HTMLElement) {
 
 //** 将Text<br>Text转为<p> */
 function convertBr(dom: HTMLElement) {
-  if (onlyTextAndBr(dom) && countBr(dom) > 2) {
+  if (onlyTextAndBr(dom) && countBr(dom) > 4) {
     const outDom = document.createElement("div");
     const childNodes = dom.childNodes;
 
