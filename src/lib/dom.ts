@@ -132,3 +132,52 @@ export function createStyle(style: string, id?: string) {
   }
   return el;
 }
+
+export function getNextSibling(node: Element | Text) {
+  if (node.nextSibling instanceof HTMLElement) {
+    return node.nextSibling;
+  }
+  if (node.nextSibling instanceof Text) {
+    if (node.nextSibling.textContent?.trim() !== "") {
+      return node.nextSibling;
+    } else {
+      return node.nextSibling.nextSibling;
+    }
+  }
+}
+
+export function getPreviousSibling(node: Element | Text) {
+  if (node.previousSibling instanceof HTMLElement) {
+    return node.previousSibling;
+  }
+  if (node.previousSibling instanceof Text) {
+    if (node.previousSibling.textContent?.trim() !== "") {
+      return node.previousSibling;
+    } else {
+      return node.previousSibling.previousSibling;
+    }
+  }
+}
+
+export function getPreviousBrCount(node: Element | Text): number {
+  const previous = getPreviousSibling(node);
+  if (previous instanceof HTMLBRElement) {
+    return getPreviousBrCount(previous) + 1;
+  } else {
+    return 0;
+  }
+}
+
+export function removePreviousBr(node: Element | Text): void {
+  const previous = getPreviousSibling(node);
+
+  if (node instanceof HTMLBRElement) {
+    node.remove();
+  }
+
+  if (previous instanceof HTMLBRElement) {
+    return removePreviousBr(previous);
+  } else {
+    return;
+  }
+}

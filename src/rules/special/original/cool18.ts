@@ -1,4 +1,12 @@
 import { cleanDOM, convertFixWidthText } from "../../../lib/cleanDOM";
+import {
+  childNodesCopy,
+  getNextSibling,
+  getPreviousBrCount,
+  getPreviousSibling,
+  removePreviousBr,
+  rm,
+} from "../../../lib/dom";
 import { getHtmlDOM } from "../../../lib/http";
 import { Book } from "../../../main/Book";
 import { Chapter } from "../../../main/Chapter";
@@ -137,98 +145,123 @@ export class Cool18 extends BaseRuleClass {
       Array.from(dom.querySelectorAll('font[color*="E6E6DD"]')).forEach((f) =>
         f.remove()
       );
-      // 移除换行
-      Array.from(dom.querySelectorAll("br")).forEach((br) => {
-        const previous = getPreviousSibling(br);
-        const next = getNextSibling(br);
-        if (previous instanceof Text && next instanceof Text) {
-          if (
-            Math.max(
-              previous.textContent?.trim().length ?? 999,
-              next.textContent?.trim().length ?? 999
-            ) < 40
-          ) {
-            br.remove();
-          }
-        }
-      });
 
       const contentRaw = document.createElement("div");
       const nodes = Array.from(dom.childNodes);
       if (nodes.length > 10) {
-        let p = document.createElement("p");
-        for (const node of nodes) {
-          if (node instanceof Text) {
-            const text = new Text(node.textContent?.trim());
-            p.appendChild(text);
-            continue;
-          }
-          if (node instanceof HTMLElement) {
-            if (p.innerText.trim() !== "") {
-              contentRaw.appendChild(p);
-              p = document.createElement("p");
-            }
+        childNodesCopy(dom, contentRaw);
 
-            if (node instanceof HTMLParagraphElement) {
-              if (node.innerText.trim() === "") {
-                if (node.nextSibling instanceof Text) {
-                  if (node.nextSibling.textContent?.trim() === "") {
-                    if (
-                      node.nextSibling.nextSibling instanceof
-                        HTMLParagraphElement &&
-                      node.nextSibling.nextSibling.innerText.trim() !== ""
-                    ) {
-                      node.remove();
-                      continue;
-                    }
-                  } else {
-                    node.remove();
-                    continue;
-                  }
+        // 移除超链接
+        rm("a", true, contentRaw);
+
+        if (isFixWidth(contentRaw)) {
+          // 移除换行
+          Array.from(contentRaw.querySelectorAll("br")).forEach((node) => {
+            const previous = node.previousSibling;
+            const next = node.nextSibling;
+            if (
+              previous instanceof Text &&
+              next instanceof Text &&
+              (previous.textContent?.length ?? 0) > 30 &&
+              (previous.textContent?.length ?? 0) < 40
+            ) {
+              node.remove();
+            }
+          });
+
+          // 合并 Text
+          const group = (texts: Text[]) => {
+            const out: Text[][] = [];
+
+            let group: Text[] = [];
+            let whole = "";
+            for (const text of texts) {
+              const w = text.wholeText;
+              if (whole !== w) {
+                if (group.length !== 0) {
+                  out.push(group);
+                }
+
+                whole = w;
+                group = [text];
+              } else {
+                group.push(text);
+              }
+            }
+            if (group.length !== 0) {
+              out.push(group);
+            }
+            return out;
+          };
+          const merge = (groups: Text[][]) => {
+            for (const g of groups) {
+              const old = g[0];
+              const newText = new Text(old.wholeText);
+              old.replaceWith(newText);
+
+              g.forEach((t) => t.remove());
+            }
+          };
+          const ts = Array.from(contentRaw.childNodes).filter(
+            (node) =>
+              node instanceof Text && node.wholeText !== node.textContent
+          ) as Text[];
+          const gts = group(ts);
+          merge(gts);
+
+          // 将 Text 转换为 <p>
+          Array.from(contentRaw.childNodes)
+            .filter((node) => node instanceof Text)
+            .forEach((text) => {
+              const p = document.createElement("p");
+              convertFixWidthText(text as Text, 35, p);
+              text.replaceWith(p);
+            });
+
+          // 移除分隔空白<p>
+          Array.from(contentRaw.querySelectorAll("p"))
+            .filter(
+              (p) =>
+                p.innerText.trim() === "" &&
+                getPreviousSibling(p) instanceof HTMLElement &&
+                getNextSibling(p) instanceof HTMLElement
+            )
+            .forEach((p) => p.remove());
+
+          // 移除分隔<br>
+          Array.from(contentRaw.querySelectorAll("p"))
+            .filter((p) => getPreviousBrCount(p) === 2)
+            .forEach((p) => removePreviousBr(p));
+
+          if (isFixWidthP(contentRaw)) {
+            // 合并 35 字符宽 <p>
+            const ps = Array.from(contentRaw.querySelectorAll("p"));
+            let text = "";
+            for (const node of ps) {
+              const n = node.innerText.trim();
+              if (n.length > 30 && n.length < 40) {
+                text = text + n;
+                node.remove();
+                continue;
+              } else {
+                if (text !== "") {
+                  text = text + n;
+                  const newP = document.createElement("p");
+                  newP.innerText = text;
+                  node.replaceWith(newP);
+                  text = "";
+                  continue;
+                } else {
+                  continue;
                 }
               }
-              contentRaw.appendChild(node);
-              continue;
             }
-
-            contentRaw.appendChild(node);
-            continue;
-          }
-        }
-
-        if (p.innerText.trim() !== "") {
-          contentRaw.appendChild(p);
-        }
-
-        const as = Array.from(contentRaw.querySelectorAll("a"));
-        for (const node of as) {
-          if (node instanceof HTMLAnchorElement) {
-            if (
-              node.nextSibling instanceof HTMLAnchorElement ||
-              (node.nextSibling instanceof Text &&
-                node.nextSibling.textContent?.trim() === "" &&
-                node.nextSibling.nextSibling instanceof HTMLAnchorElement)
-            ) {
-              node.insertAdjacentElement(
-                "afterend",
-                document.createElement("br")
-              );
-              continue;
-            }
-          }
-        }
-
-        const ps = Array.from(contentRaw.querySelectorAll("p"));
-        for (const node of ps) {
-          const previousBrCount = getPreviousBrCount(node);
-          if (previousBrCount > 1 && previousBrCount < 4) {
-            removePreviousBr(node);
           }
         }
       } else {
         for (const node of nodes) {
           if (node instanceof Text && (node.textContent?.length ?? 0) > 200) {
-            if (isFixWidthText(node)) {
+            if (isFixWidth(node)) {
               contentRaw.appendChild(convertFixWidthText(node));
               continue;
             } else {
@@ -240,6 +273,16 @@ export class Cool18 extends BaseRuleClass {
           }
           contentRaw.appendChild(node);
         }
+
+        // 移除分隔空白<p>
+        Array.from(contentRaw.querySelectorAll("p"))
+          .filter(
+            (p) =>
+              p.innerText.trim() === "" &&
+              getPreviousSibling(p) instanceof HTMLElement &&
+              getNextSibling(p) instanceof HTMLElement
+          )
+          .forEach((p) => p.remove());
       }
 
       const {
@@ -268,60 +311,48 @@ export class Cool18 extends BaseRuleClass {
   }
 }
 
-function isFixWidthText(node: Text) {
-  const ns = node.textContent?.split("\n").map((n) => n.trim()) ?? [];
-  const nsLengths = ns.map((l) => l.length);
-  if (Math.max(...nsLengths) < 40) {
+function isFixWidth(node: Text | HTMLElement) {
+  let ns: string[] | undefined;
+  if (node instanceof Text) {
+    ns = node.textContent?.split("\n").map((n) => n.trim()) ?? [];
+  }
+  if (node instanceof HTMLElement) {
+    ns = [];
+    Array.from(node.childNodes)
+      .filter((n) => n instanceof Text)
+      .map((t) => t.textContent?.trim() ?? "")
+      .map((t) => {
+        if (t.includes("\n")) {
+          return t.split("\n").map((n) => n.trim());
+        }
+      })
+      .forEach((n) => {
+        if (Array.isArray(n)) {
+          n.forEach((l) => ns?.push(l));
+        }
+        if (typeof n === "string") {
+          ns?.push(n);
+        }
+      });
+  }
+  if (!ns) {
+    throw new Error("ns is null");
+  }
+  const lengths = ns.map((l) => l.length);
+  const lt40 = lengths.filter((i) => i > 40).length;
+  if (lt40 < 5) {
     return true;
   }
   return false;
 }
 
-function getNextSibling(node: Element | Text) {
-  if (node.nextSibling instanceof HTMLElement) {
-    return node.nextSibling;
+function isFixWidthP(node: HTMLElement) {
+  const lengths = Array.from(node.querySelectorAll("p")).map(
+    (p) => p.innerText.length
+  );
+  const lt40 = lengths.filter((i) => i > 40).length;
+  if (lt40 < 5) {
+    return true;
   }
-  if (node.nextSibling instanceof Text) {
-    if (node.nextSibling.textContent?.trim() !== "") {
-      return node.nextSibling;
-    } else {
-      return node.nextSibling.nextSibling;
-    }
-  }
-}
-
-function getPreviousSibling(node: Element | Text) {
-  if (node.previousSibling instanceof HTMLElement) {
-    return node.previousSibling;
-  }
-  if (node.previousSibling instanceof Text) {
-    if (node.previousSibling.textContent?.trim() !== "") {
-      return node.previousSibling;
-    } else {
-      return node.previousSibling.previousSibling;
-    }
-  }
-}
-
-function getPreviousBrCount(node: Element | Text): number {
-  const previous = getPreviousSibling(node);
-  if (previous instanceof HTMLBRElement) {
-    return getPreviousBrCount(previous) + 1;
-  } else {
-    return 0;
-  }
-}
-
-function removePreviousBr(node: Element | Text): void {
-  const previous = getPreviousSibling(node);
-
-  if (node instanceof HTMLBRElement) {
-    node.remove();
-  }
-
-  if (previous instanceof HTMLBRElement) {
-    return removePreviousBr(previous);
-  } else {
-    return;
-  }
+  return false;
 }

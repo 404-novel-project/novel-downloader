@@ -844,9 +844,14 @@ export async function cleanDOM(
     images: AttachmentClass[];
   }): Output {
     htmlTrim(dom);
+
+    convertBr(dom);
     Array.from(dom.children).forEach((child) =>
       child.replaceWith(convertBr(child as HTMLElement))
     );
+
+    removeBlankParagraphElement(dom);
+
     text = text.trim();
     return {
       dom,
@@ -865,17 +870,11 @@ export function htmlTrim(dom: HTMLElement) {
 
   function remove(nodes: ChildNode[]) {
     for (const node of nodes) {
-      // 非空文本或非<br>元素
-      if (
-        node instanceof Text === false ||
-        node instanceof HTMLBRElement === false
-      ) {
-        break;
-      }
       // 文本
       if (node instanceof Text) {
         if (node.textContent?.trim() === "") {
           node.remove();
+          continue;
         } else {
           break;
         }
@@ -883,6 +882,11 @@ export function htmlTrim(dom: HTMLElement) {
       // <br>元素
       if (node instanceof HTMLBRElement) {
         node.remove();
+        continue;
+      }
+      // 非<br>元素
+      if (node instanceof HTMLElement && node.nodeName.toLowerCase() !== "br") {
+        break;
       }
     }
   }
@@ -934,19 +938,49 @@ function convertBr(dom: HTMLElement) {
   }
 }
 
+//** 移除空白 <p> 元素 */
+function removeBlankParagraphElement(dom: HTMLElement) {
+  const nodes = Array.from(dom.querySelectorAll("p"));
+  nodes.filter((p) => p.innerText.trim() === "").forEach((p) => p.remove());
+}
+
 //** 将固定宽度 Text 转为 div、p、br 元素 */
-export function convertFixWidthText(node: Text) {
-  const out = document.createElement("div");
-  const ns = node.textContent?.split("\n").map((n) => n.trim()) ?? [];
+export function convertFixWidthText(
+  node: Text,
+  width = 35,
+  out = document.createElement("div")
+) {
+  const ns = node.textContent?.split("\n") ?? [];
   let text = "";
   for (const n of ns) {
     if (n === "") {
       out.appendChild(new Text(text));
       out.appendChild(document.createElement("br"));
       text = "";
-    } else {
+      continue;
+    }
+    if (n.length > width - 5 && n.length < width + 5) {
       text = text + n;
+      continue;
+    } else {
+      if (text !== "") {
+        text = text + n;
+        out.appendChild(new Text(text));
+        out.appendChild(document.createElement("br"));
+        text = "";
+        continue;
+      } else {
+        out.appendChild(new Text(n));
+        out.appendChild(document.createElement("br"));
+        continue;
+      }
     }
   }
+  if (text !== "") {
+    out.appendChild(new Text(text));
+    out.appendChild(document.createElement("br"));
+    text = "";
+  }
+  htmlTrim(out);
   return convertBr(out);
 }

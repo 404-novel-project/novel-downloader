@@ -61,3 +61,24 @@ export async function saveToArchiveOrg(url: string) {
   const data = await req.json();
   return data;
 }
+
+export function mean(list: number[]) {
+  if (list.length === 0) {
+    return 0;
+  }
+
+  const sum = list.reduce((p, c) => p + c);
+  return sum / list.length;
+}
+
+export function sd(list: number[]) {
+  if (list.length === 0) {
+    return 0;
+  }
+
+  const m = mean(list);
+  const variance =
+    list.map((x) => Math.pow(x - m, 2)).reduce((p, c) => p + c) / list.length;
+  const sd = Math.sqrt(variance);
+  return sd;
+}
