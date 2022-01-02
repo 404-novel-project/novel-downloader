@@ -181,3 +181,18 @@ export function removePreviousBr(node: Element | Text): void {
     return;
   }
 }
+
+export function fullWidthLength(input: string) {
+  const length = Array.from(input).reduce((p: number, c: string) => {
+    const code = c.codePointAt(0);
+    if (code === undefined) {
+      return p;
+    }
+    if (code < 128) {
+      return p + 0.5;
+    } else {
+      return p + 1;
+    }
+  }, 0);
+  return length;
+}

@@ -4,6 +4,7 @@ import {
   getNextSibling,
   getPreviousBrCount,
   getPreviousSibling,
+  fullWidthLength,
   removePreviousBr,
   rm,
 } from "../../../lib/dom";
@@ -162,8 +163,12 @@ export class Cool18 extends BaseRuleClass {
             if (
               previous instanceof Text &&
               next instanceof Text &&
-              (previous.textContent?.length ?? 0) > 30 &&
-              (previous.textContent?.length ?? 0) < 40
+              (previous.textContent
+                ? fullWidthLength(previous.textContent)
+                : 0) > 30 &&
+              (previous.textContent
+                ? fullWidthLength(previous.textContent)
+                : 0) < 40
             ) {
               node.remove();
             }
@@ -239,7 +244,7 @@ export class Cool18 extends BaseRuleClass {
             let text = "";
             for (const node of ps) {
               const n = node.innerText.trim();
-              if (n.length > 30 && n.length < 40) {
+              if (fullWidthLength(n) > 30 && fullWidthLength(n) < 40) {
                 text = text + n;
                 node.remove();
                 continue;
@@ -317,28 +322,28 @@ function isFixWidth(node: Text | HTMLElement) {
     ns = node.textContent?.split("\n").map((n) => n.trim()) ?? [];
   }
   if (node instanceof HTMLElement) {
-    ns = [];
-    Array.from(node.childNodes)
-      .filter((n) => n instanceof Text)
-      .map((t) => t.textContent?.trim() ?? "")
-      .map((t) => {
+    const reducer = (out: string[], cur: ChildNode) => {
+      if (cur instanceof Text) {
+        const t = cur.textContent?.trim() ?? "";
         if (t.includes("\n")) {
-          return t.split("\n").map((n) => n.trim());
+          t.split("\n")
+            .map((n) => n.trim())
+            .forEach((n) => out.push(n));
+          return out;
+        } else {
+          out.push(t);
+          return out;
         }
-      })
-      .forEach((n) => {
-        if (Array.isArray(n)) {
-          n.forEach((l) => ns?.push(l));
-        }
-        if (typeof n === "string") {
-          ns?.push(n);
-        }
-      });
+      } else {
+        return out;
+      }
+    };
+    ns = Array.from(node.childNodes).reduce(reducer, []);
   }
   if (!ns) {
     throw new Error("ns is null");
   }
-  const lengths = ns.map((l) => l.length);
+  const lengths = ns.map((l) => fullWidthLength(l));
   const lt40 = lengths.filter((i) => i > 40).length;
   if (lt40 < 5) {
     return true;
@@ -347,8 +352,8 @@ function isFixWidth(node: Text | HTMLElement) {
 }
 
 function isFixWidthP(node: HTMLElement) {
-  const lengths = Array.from(node.querySelectorAll("p")).map(
-    (p) => p.innerText.length
+  const lengths = Array.from(node.querySelectorAll("p")).map((p) =>
+    fullWidthLength(p.innerText.trim())
   );
   const lt40 = lengths.filter((i) => i > 40).length;
   if (lt40 < 5) {

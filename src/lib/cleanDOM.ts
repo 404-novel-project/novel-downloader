@@ -6,6 +6,7 @@ import {
   getImageAttachment,
   getRandomName,
 } from "./attachments";
+import { fullWidthLength } from "./dom";
 
 // https://developer.mozilla.org/en-US/docs/Web/HTML/Block-level_elements
 // Array.from(document.querySelectorAll('.main-page-content > div:nth-child(14) > dl:nth-child(2) > dt > a > code:nth-child(1)')).map((code) => code.innerText.replace(/<|>/g,""))
@@ -894,15 +895,15 @@ export function htmlTrim(dom: HTMLElement) {
 
 //** 将Text<br>Text转为<p> */
 function convertBr(dom: HTMLElement) {
-  if (onlyTextAndBr(dom) && countBr(dom) > 3) {
+  if (onlyTextAndBr(dom) && countBr(dom) > 2) {
     const outDom = document.createElement("div");
     const childNodes = dom.childNodes;
 
     let brCount = 0;
     for (const node of Array.from(childNodes)) {
       if (node instanceof Text) {
-        if (brCount > 3) {
-          let brRemainder = brCount - 3;
+        if (brCount > 2) {
+          let brRemainder = brCount - 2;
           const brp = document.createElement("p");
           while (brRemainder > 0) {
             brRemainder--;
@@ -959,7 +960,7 @@ export function convertFixWidthText(
       text = "";
       continue;
     }
-    if (n.length > width - 5 && n.length < width + 5) {
+    if (fullWidthLength(n) > width - 5 && fullWidthLength(n) < width + 5) {
       text = text + n;
       continue;
     } else {
