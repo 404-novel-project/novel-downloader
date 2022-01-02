@@ -23,7 +23,7 @@ export declare class SaveBook {
     private _sections;
     constructor(book: Book, streamZip: boolean, options?: SaveOptions);
     saveTxt(): void;
-    saveLog(): void;
+    saveLog(): Promise<void>;
     saveZip(runSaveChapters?: boolean): Promise<void>;
     addChapter(chapter: Chapter, suffix?: string): Promise<void>;
     getchapterName(chapter: Chapter): string;

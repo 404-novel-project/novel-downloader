@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.7.7.463
+// @version        4.7.7.465
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -5982,34 +5982,36 @@ class SaveBook {
         const savedText = this.savedTextArray.join("\n").replaceAll("\n", "\r\n");
         (0,FileSaver_min.saveAs)(new Blob([savedText], { type: "text/plain;charset=utf-8" }), `${this.saveFileNameBase}.txt`);
     }
-    saveLog() {
-        this.savedZip.file("debug.log", new Blob([log/* logText */.KC], { type: "text/plain; charset=UTF-8" }));
+    async saveLog() {
+        await this.savedZip.file("debug.log", new Blob([log/* logText */.KC], { type: "text/plain; charset=UTF-8" }));
     }
     async saveZip(runSaveChapters = false) {
         const self = this;
         external_log_default().debug("[save]保存元数据文本");
         const metaDateText = this.genMetaDateTxt();
-        this.savedZip.file("info.txt", new Blob([metaDateText], { type: "text/plain;charset=utf-8" }));
+        await this.savedZip.file("info.txt", new Blob([metaDateText], { type: "text/plain;charset=utf-8" }));
         external_log_default().debug("[save]保存样式");
-        this.savedZip.file("style.css", new Blob([this.mainStyleText], { type: "text/css;charset=utf-8" }));
+        await this.savedZip.file("style.css", new Blob([this.mainStyleText], { type: "text/css;charset=utf-8" }));
         modifyTocStyleText();
-        this.savedZip.file("toc.css", new Blob([this.tocStyleText], { type: "text/css;charset=utf-8" }));
+        await this.savedZip.file("toc.css", new Blob([this.tocStyleText], { type: "text/css;charset=utf-8" }));
         if (this.book.additionalMetadate.cover) {
             external_log_default().debug("[save]保存封面");
-            this.addImageToZip(this.book.additionalMetadate.cover, this.savedZip);
+            await this.addImageToZip(this.book.additionalMetadate.cover, this.savedZip);
         }
         if (this.book.additionalMetadate.attachments) {
             external_log_default().debug("[save]保存书籍附件");
             for (const bookAttachment of this.book.additionalMetadate.attachments) {
-                this.addImageToZip(bookAttachment, this.savedZip);
+                await this.addImageToZip(bookAttachment, this.savedZip);
             }
         }
         external_log_default().debug("[save]开始生成并保存卷文件");
-        saveSections();
+        await saveSections();
+        external_log_default().debug("[save]保存已完成章节文件");
+        await saveFinishedChapters(this.chapters);
         external_log_default().debug("[save]开始生成并保存 index.html");
-        saveToC();
+        await saveToC();
         external_log_default().debug("[save]开始保存 Meta Data Json");
-        saveMetaJson();
+        await saveMetaJson();
         if (runSaveChapters) {
             external_log_default().debug("[save]开始保存章节文件");
             await saveChapters();
@@ -6020,10 +6022,10 @@ class SaveBook {
         }
         external_log_default().info("[save]开始保存ZIP文件");
         if (setting/* enableDebug.value */.Cy.value) {
-            self.saveLog();
+            await self.saveLog();
         }
-        this.savedZip.generateAsync();
-        function saveToC() {
+        await this.savedZip.generateAsync();
+        async function saveToC() {
             external_log_default().debug("[save]对 chapters 排序");
             self.chapters.sort(self.chapterSort);
             const sectionsListObj = (0,save_misc/* getSectionsObj */.f)(self.chapters);
@@ -6037,7 +6039,7 @@ class SaveBook {
                 sectionsObj: Object.values(sectionsListObj),
                 Status: main/* Status */.qb,
             });
-            self.savedZip.file("index.html", new Blob([indexHtmlText.replaceAll("data-src-address", "src")], {
+            await self.savedZip.file("index.html", new Blob([indexHtmlText.replaceAll("data-src-address", "src")], {
                 type: "text/html; charset=UTF-8",
             }));
         }
@@ -6057,15 +6059,15 @@ class SaveBook {
   }`;
             }
         }
-        function saveMetaJson() {
-            self.savedZip.file("book.json", new Blob([JSON.stringify(self.book)], {
+        async function saveMetaJson() {
+            await self.savedZip.file("book.json", new Blob([JSON.stringify(self.book)], {
                 type: "application/json; charset=utf-8",
             }));
-            self.savedZip.file("chapters.json", new Blob([JSON.stringify(self.book.chapters)], {
+            await self.savedZip.file("chapters.json", new Blob([JSON.stringify(self.book.chapters)], {
                 type: "application/json; charset=utf-8",
             }));
         }
-        function saveSections() {
+        async function saveSections() {
             external_log_default().debug("[save]对 chapters 排序");
             self.chapters.sort(self.chapterSort);
             for (const chapter of self.chapters) {
@@ -6076,7 +6078,7 @@ class SaveBook {
                         self._sections.push(chapter.sectionName);
                         external_log_default().debug(`[save]保存卷HTML文件：${chapter.sectionName}`);
                         const sectionHTMLBlob = self.genSectionHtmlFile(chapter);
-                        self.savedZip.file(sectionHtmlFileName, sectionHTMLBlob);
+                        await self.savedZip.file(sectionHtmlFileName, sectionHTMLBlob);
                     }
                 }
             }
@@ -6084,6 +6086,12 @@ class SaveBook {
         async function saveChapters() {
             for (const chapter of self.chapters) {
                 await self.addChapter(chapter);
+            }
+        }
+        async function saveFinishedChapters(chapters) {
+            const cs = chapters.filter((c) => c.status === main/* Status.finished */.qb.finished);
+            for (const c of cs) {
+                await self.addChapter(c);
             }
         }
         async function saveStubChapters(chapters) {
@@ -6886,7 +6894,7 @@ const gebiqu = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass 
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)('a[href^="http://down.gebiqu.com"]', false, introDom);
     return introDom;
 }, (content) => {
-    content.innerHTML = content.innerHTML.replace(/"www.gebiqu.com"/g, "");
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .up)([/"www.gebiqu.com"/g], content);
     return content;
 });
 const luoqiuzw = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass */ .Rt)((introDom) => introDom, (content) => {
@@ -6895,7 +6903,7 @@ const luoqiuzw = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClas
         ad.remove();
     }
     const ads = ["记住网址m.luoqｉｕｘｚｗ．ｃｏｍ"];
-    ads.forEach((adt) => (content.innerHTML = content.innerHTML.replace(adt, "")));
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .up)(ads, content);
     return content;
 });
 const lwxs9 = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass */ .Rt)((introDom) => introDom, (content) => {
@@ -6907,7 +6915,9 @@ const biquwx = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass 
     return introDom;
 }, (content) => content, 1);
 const tycqxs = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass */ .Rt)((introDom) => introDom, (content) => {
-    content.innerHTML = content.innerHTML.replace(/推荐都市大神老施新书:<a href="https:\/\/www\.tycqxs\.com\/[\d_]+\/" target="_blank">.+<\/a>/, "");
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .up)([
+        /推荐都市大神老施新书:<a href="https:\/\/www\.tycqxs\.com\/[\d_]+\/" target="_blank">.+<\/a>/,
+    ], content);
     return content;
 });
 const dijiubook = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass */ .Rt)((introDom) => {
@@ -6943,7 +6953,7 @@ const c25zw = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass *
     return content;
 });
 const xbiquge = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass */ .Rt)((introDom) => introDom, (content, options) => {
-    content.innerHTML = content.innerHTML.replace(`笔趣阁 www.xbiquge.so，最快更新${options.bookname} ！`, "");
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .up)([`笔趣阁 www.xbiquge.so，最快更新${options.bookname} ！`], content);
     return content;
 });
 const yruan = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass */ .Rt)((introDom) => {
@@ -6985,9 +6995,10 @@ const shuquge = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass
         .replace(/推荐地址：https?:\/\/www.shuquge.com\/txt\/\d+\/index\.html/g, "");
     return introDom;
 }, (content) => {
-    content.innerHTML = content.innerHTML
-        .replace("请记住本书首发域名：www.shuquge.com。书趣阁_笔趣阁手机版阅读网址：m.shuquge.com", "")
-        .replace(/https?:\/\/www.shuquge.com\/txt\/\d+\/\d+\.html/, "");
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .up)([
+        "请记住本书首发域名：www.shuquge.com。书趣阁_笔趣阁手机版阅读网址：m.shuquge.com",
+        /https?:\/\/www.shuquge.com\/txt\/\d+\/\d+\.html/,
+    ], content);
     return content;
 }, 1);
 const xyqxs = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass2 */ .kQ)((introDom) => {
@@ -6997,9 +7008,10 @@ const xyqxs = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass2 
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("div[style]", true, content);
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("script", true, content);
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)('div[align="center"]', false, content);
-    content.innerHTML = content.innerHTML
-        .replace("请记住本书首发域名：www.xyqxs.cc。笔趣阁手机版阅读网址：m.xyqxs.cc", "")
-        .replace(/\(https:\/\/www.xyqxs.cc\/html\/\d+\/\d+\/\d+\.html\)/, "");
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .up)([
+        "请记住本书首发域名：www.xyqxs.cc。笔趣阁手机版阅读网址：m.xyqxs.cc",
+        /\(https:\/\/www.xyqxs.cc\/html\/\d+\/\d+\/\d+\.html\)/,
+    ], content);
     return content;
 });
 const lusetxt = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass2 */ .kQ)((introDom) => {
@@ -7047,7 +7059,7 @@ const dingdiann = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeCla
         "--&gt;&gt;",
         "本章未完，点击下一页继续阅读",
     ];
-    removelist.forEach((removeStr) => (content.innerHTML = content.innerHTML.replaceAll(removeStr, "")));
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .up)(removelist, content);
     (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__/* .htmlTrim */ .iA)(content);
     return content;
 }, (doc) => doc.querySelector(".bottem2 > a:nth-child(4)")
@@ -7126,7 +7138,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "c630shu": () => (/* binding */ c630shu)
 /* harmony export */ });
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
 /* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
+
 
 const c630shu = (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
     bookUrl: document.location.href,
@@ -7138,7 +7152,7 @@ const c630shu = (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)(
     aList: document.querySelectorAll(".zjlist > dd > a"),
     getContent: (doc) => doc.querySelector("#content"),
     contentPatch: (content) => {
-        content.innerHTML = content.innerHTML.replace(/恋上你看书网 WWW.630SHU.NET ，最快更新.+最新章节！/, "");
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .up)([/恋上你看书网 WWW.630SHU.NET ，最快更新.+最新章节！/], content);
         return content;
     },
 });
@@ -7933,7 +7947,7 @@ const c226ks = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */
                 (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)("div.posterror", false, content);
                 (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)("div[onclick]", true, content);
                 const ad = '<div class="posterror"><a href="javascript:postError();" class="red">章节错误,点此举报(免注册)</a>,举报后维护人员会在两分钟内校正章节内容,请耐心等待,并刷新页面。</div>';
-                content.innerHTML = content.innerHTML.replace(ad, "");
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__/* .rms */ .up)([ad], content);
                 return content;
             },
             getNextPage: (doc) => doc.querySelector("div.section-opt.m-bottom-opt > a:nth-child(5)").href,
@@ -11206,7 +11220,7 @@ class Jjwxc extends rules/* BaseRuleClass */.c {
                     [authorSayDom, authorSayText] = [adom, atext];
                 }
                 (0,lib_dom.rm)("div", true, content);
-                content.innerHTML = content.innerHTML.replaceAll("@无限好文，尽在晋江文学城", "");
+                (0,lib_dom/* rms */.up)(["@无限好文，尽在晋江文学城"], content);
                 let { dom, text, images } = await (0,cleanDOM/* cleanDOM */.zM)(content, "TM");
                 if (rawAuthorSayDom && authorSayDom && authorSayText) {
                     const hr = document.createElement("hr");
@@ -11347,7 +11361,7 @@ class Jjwxc extends rules/* BaseRuleClass */.c {
                         [authorSayDom, authorSayText] = [adom, atext];
                     }
                     (0,lib_dom.rm)("div", true, content);
-                    content.innerHTML = content.innerHTML.replaceAll("@无限好文，尽在晋江文学城", "");
+                    (0,lib_dom/* rms */.up)(["@无限好文，尽在晋江文学城"], content);
                     let { dom: rawDom, text: rawText, images, } = await (0,cleanDOM/* cleanDOM */.zM)(content, "TM");
                     if (rawAuthorSayDom && authorSayDom && authorSayText) {
                         const hr = document.createElement("hr");
@@ -14945,7 +14959,7 @@ class Soxscc extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
         const content = doc.querySelector("div.content[id]");
         if (content) {
             const ad = `您可以在百度里搜索“${bookname} .+(${document.location.hostname})”查找最新章节！`;
-            content.innerHTML = content.innerHTML.replaceAll(ad, "");
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__/* .rms */ .up)([ad], content);
             Array.from(content.querySelectorAll("p")).forEach((p) => {
                 const adwords = [
                     "最新章节地址：",
@@ -15094,9 +15108,7 @@ class Uukanshu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
                 /http:\/\//g,
                 /UU看书\s+欢迎广大书友光临阅读，最新、最快、最火的连载作品尽在UU看书！UU看书。;?/g,
             ];
-            for (const r of contentReplace) {
-                content.innerHTML = content.innerHTML.replace(r, "");
-            }
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_7__/* .rms */ .up)(contentReplace, content);
             const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .zM)(content, "TM");
             return {
                 chapterName,
