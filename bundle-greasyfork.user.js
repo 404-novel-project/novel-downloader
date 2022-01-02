@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.7.7.466
+// @version        4.7.7.467
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -168,6 +168,7 @@
 // @match          *://www.liuxs.la/bookinfo-*/
 // @match          *://www.cool18.com/bbs4/index.php?*
 // @match          *://www.b5200.net/*_*/
+// @match          *://www.yqxs.cc/html/*/*/index.html
 // @name:en        novel-downloader
 // @name:ja        小説ダウンローダー
 // @description:en An scalable universal novel downloader.
@@ -6908,7 +6909,7 @@ const common = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass 
 const common1 = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass */ .Rt)((introDom) => introDom, (content) => content, undefined, false);
 const c81book = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass */ .Rt)((introDom) => introDom, (content) => content);
 const gebiqu = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass */ .Rt)((introDom) => {
-    introDom.innerHTML = introDom.innerHTML.replace(/如果您喜欢.+，别忘记分享给朋友/g, "");
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .up)([/如果您喜欢.+，别忘记分享给朋友/g], introDom);
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)('a[href^="http://down.gebiqu.com"]', false, introDom);
     return introDom;
 }, (content) => {
@@ -6929,7 +6930,9 @@ const lwxs9 = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass *
     return content;
 });
 const biquwx = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass */ .Rt)((introDom) => {
-    introDom.innerHTML = introDom.innerHTML.replace(/本站提示：各位书友要是觉得《.+》还不错的话请不要忘记向您QQ群和微博里的朋友推荐哦！/, "");
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .up)([
+        /本站提示：各位书友要是觉得《.+》还不错的话请不要忘记向您QQ群和微博里的朋友推荐哦！/,
+    ], introDom);
     return introDom;
 }, (content) => content, 1);
 const tycqxs = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass */ .Rt)((introDom) => introDom, (content) => {
@@ -6939,7 +6942,7 @@ const tycqxs = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass 
     return content;
 });
 const dijiubook = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass */ .Rt)((introDom) => {
-    introDom.innerHTML = introDom.innerHTML.replace("本书网址：", "");
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .up)(["本书网址："], introDom);
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)('a[href^="https://dijiubook.net/"]', false, introDom);
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("dl > dt:nth-of-type(2)", false, document.querySelector("#list"));
     document
@@ -6964,7 +6967,7 @@ const dijiubook = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeCla
 });
 const c25zw = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass */ .Rt)((introDom) => {
     introDom.querySelector("font")?.parentElement?.remove();
-    introDom.innerHTML = introDom.innerHTML.replace("简介:", "");
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .up)(["简介:"], introDom);
     return introDom;
 }, (content) => {
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)(".bottem", false, content);
@@ -6995,7 +6998,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "shuquge": () => (/* binding */ shuquge),
 /* harmony export */   "xyqxs": () => (/* binding */ xyqxs),
-/* harmony export */   "lusetxt": () => (/* binding */ lusetxt)
+/* harmony export */   "lusetxt": () => (/* binding */ lusetxt),
+/* harmony export */   "yqxs": () => (/* binding */ yqxs)
 /* harmony export */ });
 /* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/cleanDOM.ts");
 /* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
@@ -7008,9 +7012,10 @@ const shuquge = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass
     if (document.querySelector(".showall")) {
         document.querySelector(".showall").innerHTML = "";
     }
-    introDom.innerHTML = introDom.innerHTML
-        .replace(/作者：.+所写的《.+》无弹窗免费全文阅读为转载作品,章节由网友发布。/, "")
-        .replace(/推荐地址：https?:\/\/www.shuquge.com\/txt\/\d+\/index\.html/g, "");
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .up)([
+        /作者：.+所写的《.+》无弹窗免费全文阅读为转载作品,章节由网友发布。/,
+        /推荐地址：https?:\/\/www.shuquge.com\/txt\/\d+\/index\.html/g,
+    ], introDom);
     return introDom;
 }, (content) => {
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .up)([
@@ -7020,7 +7025,7 @@ const shuquge = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass
     return content;
 }, 1);
 const xyqxs = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass2 */ .kQ)((introDom) => {
-    introDom.innerHTML = introDom.innerHTML.replace(/推荐地址：https:\/\/www.xyqxs.cc\/html\/\d+\/\d+\/index\.html/g, "");
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .up)([/推荐地址：https:\/\/www.xyqxs.cc\/html\/\d+\/\d+\/index\.html/g], introDom);
     return introDom;
 }, (content) => {
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("div[style]", true, content);
@@ -7045,6 +7050,16 @@ const lusetxt = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("div[align]", true, content);
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .vS)(content, ["https://www.lusetxt.com/books", "请记住本书首发域名"]);
     (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__/* .htmlTrim */ .iA)(content);
+    return content;
+});
+const yqxs = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass2 */ .kQ)((introDom) => {
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .up)(["<span>简介：</span>"], introDom);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .vS)(introDom, ["推荐地址："]);
+    return introDom;
+}, (content) => {
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("script", true, content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)('div[align="center"]', false, content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .vS)(content, ["//www.yqxs.cc/html/", "请记住本书首发域名"]);
     return content;
 });
 
@@ -7099,7 +7114,7 @@ const xinwanben = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeCla
         "小说免费阅读地址：",
     ];
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .vS)(introDom, adList);
-    introDom.innerHTML = introDom.innerHTML.replace(`${bookname}小说简介：`, "");
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .up)([`${bookname}小说简介：`], introDom);
     return introDom;
 }, (content, doc) => {
     const filters = [
@@ -11833,9 +11848,7 @@ class Longmabook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */
             (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)("span", true, introDom);
             (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)("h4", true, introDom);
             (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)("img", true, introDom);
-            introDom.innerHTML = introDom.innerHTML
-                .replace(/【作品编号：\d+】|【作品編號：\d+】/, "")
-                .replace("\n)\n", "");
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__/* .rms */ .up)([/【作品编号：\d+】|【作品編號：\d+】/, "\n)\n"], introDom);
             [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_3__/* .introDomHandle */ .SN)(introDom, undefined);
         }
         const additionalMetadate = {};
@@ -16908,6 +16921,11 @@ async function getRule() {
         case "www.b5200.net": {
             const { b5200 } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/type1.ts"));
             ruleClass = b5200();
+            break;
+        }
+        case "www.yqxs.cc": {
+            const { yqxs } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/type2.ts"));
+            ruleClass = yqxs();
             break;
         }
         default: {
