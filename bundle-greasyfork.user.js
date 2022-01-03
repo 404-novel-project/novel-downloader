@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.7.7.481
+// @version        4.7.8.482
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -4885,6 +4885,7 @@ function storageAvailable(type) {
     }
 }
 class LocalStorageExpired {
+    storage;
     constructor() {
         if (storageAvailable("localStorage")) {
             this.storage = window.localStorage;
@@ -5297,6 +5298,16 @@ function saveLogTextToFile() {
 
 
 class AttachmentClass {
+    url;
+    name;
+    mode;
+    referrerMode;
+    customReferer;
+    defaultHeader;
+    status;
+    retryTime;
+    imageBlob;
+    comments;
     constructor(url, name, mode, referrerMode = _main__WEBPACK_IMPORTED_MODULE_0__/* .ReferrerMode.keep */ .n6.keep, customReferer = "") {
         this.url = url;
         this.name = name;
@@ -5565,6 +5576,15 @@ var external_log_default = /*#__PURE__*/__webpack_require__.n(external_log_);
 
 
 class Book {
+    _bookUrl;
+    _ToCUrl;
+    bookname;
+    author;
+    introduction;
+    introductionHTML;
+    additionalMetadate;
+    chapters;
+    saveOptions;
     constructor(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters) {
         this._bookUrl = removeTrackParm(bookUrl);
         this.bookname = bookname;
@@ -5624,6 +5644,28 @@ class Book {
 
 
 class Chapter {
+    bookUrl;
+    bookname;
+    chapterUrl;
+    chapterNumber;
+    chapterName;
+    isVIP;
+    isPaid;
+    sectionName;
+    sectionNumber;
+    sectionChapterNumber;
+    chapterParse;
+    charset;
+    options;
+    status;
+    retryTime;
+    contentRaw;
+    contentText;
+    contentHTML;
+    contentImages;
+    additionalMetadate;
+    chapterHtmlFileName;
+    book;
     constructor(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, chapterParse, charset, options) {
         this.bookUrl = bookUrl;
         this.bookname = bookname;
@@ -5799,6 +5841,15 @@ async function setStreamSaverSetting() {
         (0,detect/* streamSupport */.yt)() && (await (0,detect/* mitmPageAvailability */.Cm)(mitm.href));
 }
 class FflateZip {
+    filename;
+    stream;
+    zcount;
+    count;
+    filenameList;
+    zipOut;
+    savedZip;
+    onFinal;
+    onFinalError;
     constructor(filename, stream) {
         external_log_default().info(`[fflateZip] filename: ${filename}, stream: ${stream}, streamSaver.supported: ${(StreamSaver_default()).supported}`);
         const self = this;
@@ -5985,6 +6036,15 @@ function saveOptionsValidate(data) {
     return true;
 }
 class SaveBook {
+    book;
+    streamZip;
+    chapters;
+    mainStyleText;
+    tocStyleText;
+    savedZip;
+    savedTextArray;
+    saveFileNameBase;
+    _sections;
     constructor(book, streamZip, options) {
         this.book = book;
         this.chapters = book.chapters;
@@ -6329,6 +6389,17 @@ var progress = __webpack_require__("./src/ui/progress.ts");
 
 
 class BaseRuleClass {
+    imageMode;
+    charset;
+    concurrencyLimit;
+    maxRunLimit;
+    saveOptions;
+    streamZip;
+    needLogin;
+    book;
+    audio;
+    bcWorker;
+    bcWorkerMessages;
     constructor() {
         const self = this;
         this.imageMode = "TM";
@@ -14288,6 +14359,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 class Fushuwang extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
+    saveOptions;
     constructor() {
         super();
         this.imageMode = "TM";
