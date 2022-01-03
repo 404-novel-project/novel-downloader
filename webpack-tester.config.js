@@ -44,10 +44,7 @@ module.exports = {
       headers: () => {
         const rawHeaderPath = path.resolve(__dirname, "src", "header.json");
         const rawHeader = JSON.parse(fs.readFileSync(rawHeaderPath));
-        const revision = require("child_process")
-          .execSync("cat REVISION")
-          .toString()
-          .trim();
+        const revision = fs.readFileSync("REVISION").toString().trim();
         const header = {
           name: "小说下载器测试脚本",
           "name:en": "novel-downloader-tester",

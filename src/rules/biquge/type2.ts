@@ -13,7 +13,7 @@ export const shuquge = () =>
       rms(
         [
           /作者：.+所写的《.+》无弹窗免费全文阅读为转载作品,章节由网友发布。/,
-          /推荐地址：https?:\/\/www.shuquge.com\/txt\/\d+\/index\.html/g,
+          /推荐地址：https?:\/\/www\.shuquge\.com\/txt\/\d+\/index\.html/g,
         ],
         introDom
       );
@@ -23,7 +23,7 @@ export const shuquge = () =>
       rms(
         [
           "请记住本书首发域名：www.shuquge.com。书趣阁_笔趣阁手机版阅读网址：m.shuquge.com",
-          /https?:\/\/www.shuquge.com\/txt\/\d+\/\d+\.html/,
+          /https?:\/\/www\.shuquge\.com\/txt\/\d+\/\d+\.html/,
         ],
         content
       );

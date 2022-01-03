@@ -2,7 +2,7 @@ import * as CryptoJS from "crypto-js";
 import { getImageAttachment } from "../../../lib/attachments";
 import { cleanDOM } from "../../../lib/cleanDOM";
 import { gfetch } from "../../../lib/http";
-import { rm } from "../../../lib/dom";
+import { rm, rms } from "../../../lib/dom";
 import { introDomHandle } from "../../../lib/rule";
 import { log } from "../../../log";
 import { Status } from "../../../main/main";
@@ -32,7 +32,7 @@ export class Shubl extends BaseRuleClass {
     const [introduction, introductionHTML] = await introDomHandle(
       introDom,
       (introDomI) => {
-        introDomI.innerHTML = introDomI.innerHTML.replace("简介：", "");
+        rms(["简介："], introDomI);
         return introDomI;
       }
     );

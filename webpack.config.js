@@ -4,18 +4,16 @@ const fs = require("fs");
 const WebpackUserscript = require("webpack-userscript");
 const webpack = require("webpack");
 
+const simpleGit = require("simple-git");
+const git = simpleGit();
+
 const dev = process.env.NODE_ENV === "development";
 console.log(`development: ${dev}`);
 
-// Generate revision
-try {
-  require("child_process").execSync(
-    `[ $(git rev-list --count master) != "1" ] && git rev-list --count master > REVISION \
-    || echo $(($(curl https://api.github.com/repos/yingziwu/novel-downloader/compare/80a4a3c44bee219c97952103309f66ab0910bba5...master | jq '.total_commits') + 1)) > REVISION`
-  );
-} catch (error) {
-  console.error(error);
-}
+git.raw("rev-list", "--count", "master").then((REVISION) => {
+  console.log(REVISION);
+  fs.writeFileSync("REVISION", REVISION);
+});
 
 module.exports = {
   mode: dev ? "development" : "production",
@@ -89,10 +87,7 @@ module.exports = {
       headers: () => {
         const headerPath = path.resolve(__dirname, "src", "header.json");
         const header = JSON.parse(fs.readFileSync(headerPath));
-        const revision = require("child_process")
-          .execSync("cat REVISION")
-          .toString()
-          .trim();
+        const revision = fs.readFileSync("REVISION").toString().trim();
         let version;
         if (dev) {
           version = header["version"] + `.${Date.now()}`;

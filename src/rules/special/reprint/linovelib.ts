@@ -118,18 +118,6 @@ export class Linovelib extends BaseRuleClass {
       charset,
       selector: "#TextContent",
       contentPatch: (_content, doc) => {
-        const ss = Array.from(doc.querySelectorAll("script")).find((s) =>
-          s.innerHTML.includes('document.getElementById("chapter_last")')
-        );
-        if (ss) {
-          const _domNr = ss.innerText.trim().match(/let dom_nr = '(.+)';/);
-          if (_domNr) {
-            const domNr = _domNr[1];
-            (doc.getElementById("chapter_last") as HTMLSpanElement).innerHTML =
-              domNr;
-          }
-        }
-
         rm(".tp", true, _content);
         rm(".bd", true, _content);
         return _content;

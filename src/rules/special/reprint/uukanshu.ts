@@ -38,10 +38,14 @@ export class Uukanshu extends BaseRuleClass {
     const [introduction, introductionHTML] = await introDomHandle(
       introDom,
       (introDomI) => {
-        introDomI.innerHTML = introDomI.innerHTML
-          .replace(/^.+简介：\s+www.uukanshu.com\s+/, "")
-          .replace(/\s+https:\/\/www.uukanshu.com/, "")
-          .replace(/－+/, "");
+        rms(
+          [
+            /^.+简介：\s+www\.uukanshu\.com\s+/,
+            /\s+https:\/\/www\.uukanshu\.com/,
+            /－+/,
+          ],
+          introDomI
+        );
         return introDomI;
       }
     );

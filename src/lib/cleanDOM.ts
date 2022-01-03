@@ -942,7 +942,9 @@ function convertBr(dom: HTMLElement) {
 //** 移除空白 <p> 元素 */
 function removeBlankParagraphElement(dom: HTMLElement) {
   const nodes = Array.from(dom.querySelectorAll("p"));
-  nodes.filter((p) => p.innerText.trim() === "").forEach((p) => p.remove());
+  nodes
+    .filter((p) => p.innerText.trim() === "" && p.childElementCount === 0)
+    .forEach((p) => p.remove());
 }
 
 //** 将固定宽度 Text 转为 div、p、br 元素 */

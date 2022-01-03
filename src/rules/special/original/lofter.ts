@@ -152,7 +152,7 @@ export class Lofter extends BaseRuleClass {
             new RegExp(`-${(options as Options).author}$`),
             ""
           )
-          .replace("\n", "")
+          .replaceAll("\n", "")
           .trim() ?? null;
 
       const selectors = [
