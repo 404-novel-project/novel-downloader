@@ -6,6 +6,7 @@ import { Book } from "./main/Book";
 import { BaseRuleClass } from "./rules";
 import { SectionObj } from "./save/misc";
 import { SaveOptions } from "./save/save";
+import { randomUUID } from "./lib/misc";
 
 export interface WindowObject extends Window {
   workerId: string;
@@ -37,7 +38,7 @@ interface UnsafeWindowObject {
 export type UnsafeWindow = UnsafeWindowObject & Window & typeof globalThis;
 
 export function init() {
-  (window as GmWindow).workerId = Math.random().toString().replace("0.", "");
+  (window as GmWindow).workerId = randomUUID();
   (window as GmWindow).downloading = false;
   (window as GmWindow).localStorageExpired = new LocalStorageExpired();
   const stopController = new AbortController();

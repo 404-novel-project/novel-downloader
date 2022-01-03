@@ -2,6 +2,7 @@ import { AttachmentClass } from "../main/Attachment";
 import { ReferrerMode } from "../main/main";
 import { calculateSha1 } from "./hash";
 import { log } from "../log";
+import { randomUUID } from "./misc";
 
 let attachmentClassCache: AttachmentClass[] = [];
 export function getAttachmentClassCache(url: string) {
@@ -69,7 +70,7 @@ export async function getImageAttachment(
 }
 
 export function getRandomName() {
-  return "__" + Math.random().toString().replace("0.", "") + "__";
+  return `__${randomUUID()}__`;
 }
 
 export function getExt(b: Blob, u: string) {
