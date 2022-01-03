@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.7.7.477
+// @version        4.7.7.479
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -4337,7 +4337,9 @@ function convertBr(dom) {
 }
 function removeBlankParagraphElement(dom) {
     const nodes = Array.from(dom.querySelectorAll("p"));
-    nodes.filter((p) => p.innerText.trim() === "").forEach((p) => p.remove());
+    nodes
+        .filter((p) => p.innerText.trim() === "" && p.childElementCount === 0)
+        .forEach((p) => p.remove());
 }
 function convertFixWidthText(node, width = 35, out = document.createElement("div")) {
     const ns = node.textContent?.split("\n") ?? [];
@@ -7014,13 +7016,13 @@ const shuquge = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass
     }
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .up)([
         /作者：.+所写的《.+》无弹窗免费全文阅读为转载作品,章节由网友发布。/,
-        /推荐地址：https?:\/\/www.shuquge.com\/txt\/\d+\/index\.html/g,
+        /推荐地址：https?:\/\/www\.shuquge\.com\/txt\/\d+\/index\.html/g,
     ], introDom);
     return introDom;
 }, (content) => {
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .up)([
         "请记住本书首发域名：www.shuquge.com。书趣阁_笔趣阁手机版阅读网址：m.shuquge.com",
-        /https?:\/\/www.shuquge.com\/txt\/\d+\/\d+\.html/,
+        /https?:\/\/www\.shuquge\.com\/txt\/\d+\/\d+\.html/,
     ], content);
     return content;
 }, 1);
@@ -11719,7 +11721,7 @@ class Lofter extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
                 doc
                     .querySelector("title")
                     ?.innerText.replace(new RegExp(`-${options.author}$`), "")
-                    .replace("\n", "")
+                    .replaceAll("\n", "")
                     .trim() ?? null;
             const selectors = [
                 ".ct .ctc",
@@ -13208,17 +13210,17 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("crypto-js");
 /* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(crypto_js__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/attachments.ts");
 /* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__("./src/lib/cleanDOM.ts");
-/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/http.ts");
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/dom.ts");
 /* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("loglevel");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/main.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/main/main.ts");
 /* harmony import */ var _main_Attachment__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__("./src/main/Attachment.ts");
-/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Chapter.ts");
-/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/main/Book.ts");
 /* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/rules.ts");
 
 
@@ -13246,18 +13248,18 @@ class Shubl extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
         const author = document.querySelector("div.username").innerText.trim();
         const introDom = document.querySelector(".book-brief");
         const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .introDomHandle */ .SN)(introDom, (introDomI) => {
-            introDomI.innerHTML = introDomI.innerHTML.replace("简介：", "");
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_3__/* .rms */ .up)(["简介："], introDomI);
             return introDomI;
         });
         const additionalMetadate = {};
         const coverUrl = document.querySelector(".book-img")
             .src;
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getImageAttachment */ .CE)(coverUrl, this.imageMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_4__/* .getImageAttachment */ .CE)(coverUrl, this.imageMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
-                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_4___default().error(error));
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_5___default().error(error));
         }
         additionalMetadate.tags = Array.from(document.querySelectorAll("div.row > span.tag")).map((span) => span.innerText.trim());
         const chapters = [];
@@ -13296,15 +13298,15 @@ class Shubl extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
                         }
                         return false;
                     };
-                    const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .W(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), isPaid(), sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, {});
+                    const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_6__/* .Chapter */ .W(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), isPaid(), sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, {});
                     if (isVIP() && !(isLogin() && isPaid())) {
-                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status.aborted */ .qb.aborted;
+                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_7__/* .Status.aborted */ .qb.aborted;
                     }
                     chapters.push(chapter);
                 }
             }
         }
-        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .f(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_8__/* .Book */ .f(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
@@ -13341,8 +13343,8 @@ class Shubl extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
             async function chapterDecrypt(chapterIdt, refererUrl) {
                 const accessKeyUrl = rootPath + "chapter/ajax_get_session_code";
                 const chapterContentUrl = rootPath + "chapter/get_book_chapter_detail_info";
-                _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`[Chapter]请求 ${accessKeyUrl} Referer ${refererUrl}`);
-                const accessKeyObj = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_8__/* .gfetch */ .GF)(accessKeyUrl, {
+                _log__WEBPACK_IMPORTED_MODULE_5___default().debug(`[Chapter]请求 ${accessKeyUrl} Referer ${refererUrl}`);
+                const accessKeyObj = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_9__/* .gfetch */ .GF)(accessKeyUrl, {
                     method: "POST",
                     headers: {
                         Accept: "application/json, text/javascript, */*; q=0.01",
@@ -13355,11 +13357,11 @@ class Shubl extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
                     responseType: "json",
                 })
                     .then((response) => response.response)
-                    .catch((error) => _log__WEBPACK_IMPORTED_MODULE_4___default().error(error));
+                    .catch((error) => _log__WEBPACK_IMPORTED_MODULE_5___default().error(error));
                 const chapter_access_key = accessKeyObj
                     .chapter_access_key;
-                _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`[Chapter]请求 ${chapterContentUrl} Referer ${refererUrl}`);
-                const chapterContentObj = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_8__/* .gfetch */ .GF)(chapterContentUrl, {
+                _log__WEBPACK_IMPORTED_MODULE_5___default().debug(`[Chapter]请求 ${chapterContentUrl} Referer ${refererUrl}`);
+                const chapterContentObj = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_9__/* .gfetch */ .GF)(chapterContentUrl, {
                     method: "POST",
                     headers: {
                         Accept: "application/json, text/javascript, */*; q=0.01",
@@ -13372,9 +13374,9 @@ class Shubl extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
                     responseType: "json",
                 })
                     .then((response) => response.response)
-                    .catch((error) => _log__WEBPACK_IMPORTED_MODULE_4___default().error(error));
+                    .catch((error) => _log__WEBPACK_IMPORTED_MODULE_5___default().error(error));
                 if (chapterContentObj.code !== 100000) {
-                    _log__WEBPACK_IMPORTED_MODULE_4___default().error(chapterContentObj);
+                    _log__WEBPACK_IMPORTED_MODULE_5___default().error(chapterContentObj);
                     throw new Error(`下载 ${refererUrl} 失败`);
                 }
                 return decrypt({
@@ -13386,7 +13388,7 @@ class Shubl extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
             const content = document.createElement("div");
             const decryptDate = await chapterDecrypt(chapterId, chapterUrl);
             content.innerHTML = decryptDate;
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_9__.rm)(".chapter span", true, content);
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_3__.rm)(".chapter span", true, content);
             const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .zM)(content, "TM");
             return {
                 chapterName,
@@ -13402,8 +13404,8 @@ class Shubl extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
                 const parentWidth = 939.2;
                 const setFontSize = "18";
                 const imageSessionCodeUrl = rootPath + "chapter/ajax_get_image_session_code";
-                _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`[Chapter]请求 ${imageSessionCodeUrl} Referer ${refererUrl}`);
-                const imageSessionCodeObject = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_8__/* .gfetch */ .GF)(imageSessionCodeUrl, {
+                _log__WEBPACK_IMPORTED_MODULE_5___default().debug(`[Chapter]请求 ${imageSessionCodeUrl} Referer ${refererUrl}`);
+                const imageSessionCodeObject = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_9__/* .gfetch */ .GF)(imageSessionCodeUrl, {
                     method: "POST",
                     headers: {
                         Accept: "application/json, text/javascript, */*; q=0.01",
@@ -13414,9 +13416,9 @@ class Shubl extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
                     responseType: "json",
                 })
                     .then((response) => response.response)
-                    .catch((error) => _log__WEBPACK_IMPORTED_MODULE_4___default().error(error));
+                    .catch((error) => _log__WEBPACK_IMPORTED_MODULE_5___default().error(error));
                 if (imageSessionCodeObject.code !== 100000) {
-                    _log__WEBPACK_IMPORTED_MODULE_4___default().error(imageSessionCodeObject);
+                    _log__WEBPACK_IMPORTED_MODULE_5___default().error(imageSessionCodeObject);
                     throw new Error(`下载 ${refererUrl} 失败`);
                 }
                 const imageCode = decrypt({
@@ -13442,8 +13444,8 @@ class Shubl extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
             }
             if (isPaid) {
                 const vipCHapterImageUrl = await vipChapterDecrypt(chapterId, chapterUrl);
-                _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`[Chapter]请求 ${vipCHapterImageUrl} Referer ${chapterUrl}`);
-                const vipCHapterImageBlob = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_8__/* .gfetch */ .GF)(vipCHapterImageUrl, {
+                _log__WEBPACK_IMPORTED_MODULE_5___default().debug(`[Chapter]请求 ${vipCHapterImageUrl} Referer ${chapterUrl}`);
+                const vipCHapterImageBlob = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_9__/* .gfetch */ .GF)(vipCHapterImageUrl, {
                     method: "GET",
                     headers: {
                         Referer: chapterUrl,
@@ -13452,12 +13454,12 @@ class Shubl extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
                     responseType: "blob",
                 })
                     .then((response) => response.response)
-                    .catch((error) => _log__WEBPACK_IMPORTED_MODULE_4___default().error(error));
+                    .catch((error) => _log__WEBPACK_IMPORTED_MODULE_5___default().error(error));
                 const vipCHapterName = `vipCHapter${chapterId}.png`;
                 const vipCHapterImage = new _main_Attachment__WEBPACK_IMPORTED_MODULE_11__/* .AttachmentClass */ .J(vipCHapterImageUrl, vipCHapterName, "TM");
                 if (vipCHapterImageBlob) {
                     vipCHapterImage.imageBlob = vipCHapterImageBlob;
-                    vipCHapterImage.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status.finished */ .qb.finished;
+                    vipCHapterImage.status = _main_main__WEBPACK_IMPORTED_MODULE_7__/* .Status.finished */ .qb.finished;
                 }
                 const contentImages = [vipCHapterImage];
                 const img = document.createElement("img");
@@ -14891,15 +14893,6 @@ class Linovelib extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ 
             charset,
             selector: "#TextContent",
             contentPatch: (_content, doc) => {
-                const ss = Array.from(doc.querySelectorAll("script")).find((s) => s.innerHTML.includes('document.getElementById("chapter_last")'));
-                if (ss) {
-                    const _domNr = ss.innerText.trim().match(/let dom_nr = '(.+)';/);
-                    if (_domNr) {
-                        const domNr = _domNr[1];
-                        doc.getElementById("chapter_last").innerHTML =
-                            domNr;
-                    }
-                }
                 (0,_lib_dom__WEBPACK_IMPORTED_MODULE_8__.rm)(".tp", true, _content);
                 (0,_lib_dom__WEBPACK_IMPORTED_MODULE_8__.rm)(".bd", true, _content);
                 return _content;
@@ -15046,15 +15039,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "Uukanshu": () => (/* binding */ Uukanshu)
 /* harmony export */ });
-/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/attachments.ts");
 /* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/cleanDOM.ts");
-/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/http.ts");
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/dom.ts");
 /* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("loglevel");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/Chapter.ts");
-/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Book.ts");
 /* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
 
 
@@ -15079,20 +15072,21 @@ class Uukanshu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
         const author = document.querySelector("dd.jieshao_content > h2 > a").innerText.trim();
         const introDom = document.querySelector("dd.jieshao_content > h3");
         const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .SN)(introDom, (introDomI) => {
-            introDomI.innerHTML = introDomI.innerHTML
-                .replace(/^.+简介：\s+www.uukanshu.com\s+/, "")
-                .replace(/\s+https:\/\/www.uukanshu.com/, "")
-                .replace(/－+/, "");
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__/* .rms */ .up)([
+                /^.+简介：\s+www\.uukanshu\.com\s+/,
+                /\s+https:\/\/www\.uukanshu\.com/,
+                /－+/,
+            ], introDomI);
             return introDomI;
         });
         const additionalMetadate = {};
         const coverUrl = document.querySelector("a.bookImg > img").src;
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getImageAttachment */ .CE)(coverUrl, this.imageMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getImageAttachment */ .CE)(coverUrl, this.imageMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
-                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_3___default().error(error));
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_4___default().error(error));
         }
         const chapters = [];
         const button = document.querySelector('span[onclick="javascript:reverse(this);"]');
@@ -15120,20 +15114,20 @@ class Uukanshu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
                     const chapterUrl = a.href;
                     const isVIP = false;
                     const isPaid = false;
-                    const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .W(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, {});
+                    const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .W(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, {});
                     chapters.push(chapter);
                 }
             }
         }
-        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .f(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .f(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_6__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_7__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
         chapterName = doc.querySelector("#timu").innerText.trim();
         const content = doc.querySelector("#contentbox");
         if (content) {
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_7__.rm)(".ad_content", true, content);
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)(".ad_content", true, content);
             const contentReplace = [
                 /[ＵｕUu]+看书\s*[wｗ]+.[ＵｕUu]+[kｋ][aａ][nｎ][ｓs][hｈ][ＵｕUu].[nｎ][eｅ][tｔ]/g,
                 /[ＵｕUu]+看书\s*[wｗ]+.[ＵｕUu]+[kｋ][aａ][nｎ][ｓs][hｈ][ＵｕUu].[cＣｃ][oＯｏ][mＭｍ]/g,
@@ -15145,7 +15139,7 @@ class Uukanshu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
                 /http:\/\//g,
                 /UU看书\s+欢迎广大书友光临阅读，最新、最快、最火的连载作品尽在UU看书！UU看书。;?/g,
             ];
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_7__/* .rms */ .up)(contentReplace, content);
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__/* .rms */ .up)(contentReplace, content);
             const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .zM)(content, "TM");
             return {
                 chapterName,
