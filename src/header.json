@@ -9,6 +9,7 @@
   "version": "[version]",
   "namespace": "https://blog.bgme.me",
   "supportURL": "https://github.com/yingziwu/novel-downloader",
+  "homepageURL": "https://github.com/yingziwu/novel-downloader",
   "icon": "https://cdn.jsdelivr.net/gh/yingziwu/novel-downloader/assets/icon.png",
   "license": "AGPL-3.0",
   "run-at": "document-start",
