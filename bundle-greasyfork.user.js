@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.7.7.480
+// @version        4.7.7.481
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -3516,6 +3516,8 @@ async function _GM_deleteValue(name) {
 /* harmony import */ var _hash__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/hash.ts");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("loglevel");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _misc__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/misc.ts");
+
 
 
 
@@ -3561,7 +3563,7 @@ async function getImageAttachment(url, imgMode, prefix = "", noMD5 = false, comm
     return imgClass;
 }
 function getRandomName() {
-    return "__" + Math.random().toString().replace("0.", "") + "__";
+    return `__${(0,_misc__WEBPACK_IMPORTED_MODULE_3__/* .randomUUID */ .HP)()}__`;
 }
 function getExt(b, u) {
     const contentType = b.type.split(";")[0].split("/")[1];
@@ -4957,7 +4959,8 @@ class LocalStorageExpired {
 /* harmony export */   "C1": () => (/* binding */ concurrencyRun),
 /* harmony export */   "_v": () => (/* binding */ sleep),
 /* harmony export */   "X8": () => (/* binding */ deepcopy),
-/* harmony export */   "K$": () => (/* binding */ saveToArchiveOrg)
+/* harmony export */   "K$": () => (/* binding */ saveToArchiveOrg),
+/* harmony export */   "HP": () => (/* binding */ randomUUID)
 /* harmony export */ });
 /* unused harmony exports regexpEscape, mean, sd */
 /* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/main/main.ts");
@@ -5022,6 +5025,26 @@ function sd(list) {
     const variance = list.map((x) => Math.pow(x - m, 2)).reduce((p, c) => p + c) / list.length;
     const sd = Math.sqrt(variance);
     return sd;
+}
+function createUUID() {
+    const s = new Array(36);
+    const hexDigits = "0123456789abcdef";
+    for (let i = 0; i < 36; i++) {
+        s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
+    }
+    s[14] = "4";
+    s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1);
+    s[8] = s[13] = s[18] = s[23] = "-";
+    const uuid = s.join("");
+    return uuid;
+}
+function randomUUID() {
+    if (typeof crypto.randomUUID === "function") {
+        return crypto.randomUUID();
+    }
+    else {
+        return createUUID();
+    }
 }
 
 
@@ -16384,10 +16407,13 @@ var __webpack_exports__ = {};
 var detect = __webpack_require__("./src/detect.ts");
 // EXTERNAL MODULE: ./src/lib/localStorageExpired.ts
 var localStorageExpired = __webpack_require__("./src/lib/localStorageExpired.ts");
+// EXTERNAL MODULE: ./src/lib/misc.ts
+var misc = __webpack_require__("./src/lib/misc.ts");
 ;// CONCATENATED MODULE: ./src/global.ts
 
+
 function init() {
-    window.workerId = Math.random().toString().replace("0.", "");
+    window.workerId = (0,misc/* randomUUID */.HP)();
     window.downloading = false;
     window.localStorageExpired = new localStorageExpired/* LocalStorageExpired */.Z();
     const stopController = new AbortController();
@@ -16936,8 +16962,6 @@ async function getRule() {
     }
 }
 
-// EXTERNAL MODULE: ./src/lib/misc.ts
-var misc = __webpack_require__("./src/lib/misc.ts");
 ;// CONCATENATED MODULE: ./src/router/ui.ts
 
 const defaultObject = {
