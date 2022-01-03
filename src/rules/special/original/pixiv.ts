@@ -98,15 +98,15 @@ export class Pixiv extends BaseRuleClass {
           chapters.push(chapter);
         }
 
-        const book = new Book(
+        const book = new Book({
           bookUrl,
           bookname,
           author,
           introduction,
           introductionHTML,
           additionalMetadate,
-          chapters
-        );
+          chapters,
+        });
         return book;
       }
     }
@@ -317,15 +317,15 @@ export class Pixiv extends BaseRuleClass {
       chapter.status = Status.finished;
       const chapters = [chapter];
 
-      const book = new Book(
+      const book = new Book({
         bookUrl,
         bookname,
         author,
         introduction,
         introductionHTML,
         additionalMetadate,
-        chapters
-      );
+        chapters,
+      });
       return book;
     }
   }

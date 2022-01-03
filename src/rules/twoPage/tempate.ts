@@ -150,15 +150,15 @@ export function mkRuleClass({
         }
       }
 
-      const book = new Book(
+      const book = new Book({
         bookUrl,
         bookname,
         author,
         introduction,
         introductionHTML,
         additionalMetadate,
-        chapters
-      );
+        chapters,
+      });
       book.ToCUrl = anotherPageUrl;
       return book;
     }

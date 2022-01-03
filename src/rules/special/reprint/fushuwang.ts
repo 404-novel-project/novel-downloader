@@ -61,15 +61,15 @@ export class Fushuwang extends BaseRuleClass {
       chapters.push(chapter);
     }
 
-    const book = new Book(
+    const book = new Book({
       bookUrl,
       bookname,
       author,
       introduction,
       introductionHTML,
       additionalMetadate,
-      chapters
-    );
+      chapters,
+    });
     book.saveOptions = this.saveOptions;
     return book;
   }

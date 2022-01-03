@@ -107,15 +107,15 @@ export class Cool18 extends BaseRuleClass {
       chapter.chapterNumber = i;
     }
 
-    const book = new Book(
+    const book = new Book({
       bookUrl,
       bookname,
       author,
       introduction,
       introductionHTML,
       additionalMetadate,
-      chapters
-    );
+      chapters,
+    });
     return book;
   }
 

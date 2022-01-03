@@ -90,15 +90,15 @@ export class Dmzj extends BaseRuleClass {
       chapters.push(chapter);
     }
 
-    const book = new Book(
+    const book = new Book({
       bookUrl,
       bookname,
       author,
       introduction,
       introductionHTML,
       additionalMetadate,
-      chapters
-    );
+      chapters,
+    });
     return book;
   }
 

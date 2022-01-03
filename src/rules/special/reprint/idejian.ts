@@ -79,15 +79,15 @@ export class Idejian extends BaseRuleClass {
     // 初始化章节前清除 Cookie
     document.cookie = "";
 
-    const book = new Book(
+    const book = new Book({
       bookUrl,
       bookname,
       author,
       introduction,
       introductionHTML,
       additionalMetadate,
-      chapters
-    );
+      chapters,
+    });
     return book;
   }
 

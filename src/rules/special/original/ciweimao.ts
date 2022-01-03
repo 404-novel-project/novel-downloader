@@ -109,15 +109,15 @@ export class Ciweimao extends BaseRuleClass {
       }
     }
 
-    const book = new Book(
+    const book = new Book({
       bookUrl,
       bookname,
       author,
       introduction,
       introductionHTML,
       additionalMetadate,
-      chapters
-    );
+      chapters,
+    });
     book.ToCUrl = document.location.href;
     return book;
   }

@@ -84,15 +84,15 @@ export class MangaBilibili extends BaseRuleClass {
       return chapter;
     });
 
-    const book = new Book(
+    const book = new Book({
       bookUrl,
       bookname,
       author,
       introduction,
       introductionHTML,
       additionalMetadate,
-      chapters
-    );
+      chapters,
+    });
     return book;
 
     async function isSignin(comic_id: number) {

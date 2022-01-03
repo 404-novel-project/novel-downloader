@@ -127,15 +127,15 @@ export class Shubl extends BaseRuleClass {
       }
     }
 
-    const book = new Book(
+    const book = new Book({
       bookUrl,
       bookname,
       author,
       introduction,
       introductionHTML,
       additionalMetadate,
-      chapters
-    );
+      chapters,
+    });
     return book;
   }
 
