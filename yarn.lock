@@ -4029,8 +4029,8 @@ webpack-sources@^3.2.1, webpack-sources@^3.2.2:
   integrity sha512-cp5qdmHnu5T8wRg2G3vZZHoJPN14aqQ89SyQ11NpGH5zEMDCclt49rzo+MaRazk7/UeILhAI+/sEtcM+7Fr0nw==
 
 "webpack-userscript@github:yingziwu/webpack-userscript":
-  version "2.5.7"
-  resolved "https://codeload.github.com/yingziwu/webpack-userscript/tar.gz/947751d9b2f2cd12bb11264ca71b1eaad2968399"
+  version "2.5.8"
+  resolved "https://codeload.github.com/yingziwu/webpack-userscript/tar.gz/59b7d3b7e93e654cde0375956fa2fee1b6fa08cb"
   dependencies:
     "@tkausl/userscript-meta" "^1.0.2"
     dev-null "^0.1.1"
