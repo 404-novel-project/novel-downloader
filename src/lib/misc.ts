@@ -1,4 +1,5 @@
 import { ExpectError } from "../main/main";
+import { _GM_info } from "./GM";
 
 export type PublicConstructor<T> = new () => T;
 
@@ -56,6 +57,10 @@ export async function saveToArchiveOrg(url: string) {
     body: JSON.stringify({
       url,
     }),
+    headers: {
+      "content-type": "application/json; charset=utf-8",
+      "x-requested-with": `novel-downloader ${_GM_info.script.version}; ${_GM_info.scriptHandler} ${_GM_info.version}`,
+    },
     method: "POST",
   });
   const data = await req.json();
