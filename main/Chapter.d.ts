@@ -29,7 +29,21 @@ export declare class Chapter {
     additionalMetadate: ChapterAdditionalMetadate | null;
     chapterHtmlFileName: string | number;
     book: Book;
-    constructor(bookUrl: string, bookname: string, chapterUrl: string, chapterNumber: number, chapterName: string | null, isVIP: boolean, isPaid: boolean | null, sectionName: string | null, sectionNumber: number | null, sectionChapterNumber: number | null, chapterParse: BaseRuleClass["chapterParse"], charset: string, options: object);
+    constructor({ bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, chapterParse, charset, options, }: {
+        bookUrl: string;
+        bookname: string;
+        chapterUrl: string;
+        chapterNumber: number;
+        chapterName: string | null;
+        isVIP: boolean;
+        isPaid: boolean | null;
+        sectionName: string | null;
+        sectionNumber: number | null;
+        sectionChapterNumber: number | null;
+        chapterParse: BaseRuleClass["chapterParse"];
+        charset: string;
+        options: object;
+    });
     init(): Promise<this>;
     private parse;
     private toJSON;

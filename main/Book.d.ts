@@ -22,7 +22,15 @@ export declare class Book {
     additionalMetadate: BookAdditionalMetadate;
     chapters: Chapter[];
     saveOptions: SaveOptions;
-    constructor(bookUrl: string, bookname: string, author: string, introduction: string | null, introductionHTML: HTMLElement | null, additionalMetadate: BookAdditionalMetadate, chapters: Chapter[]);
+    constructor({ bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters, }: {
+        bookUrl: string;
+        bookname: string;
+        author: string;
+        introduction: string | null;
+        introductionHTML: HTMLElement | null;
+        additionalMetadate: BookAdditionalMetadate;
+        chapters: Chapter[];
+    });
     set bookUrl(v: string);
     get bookUrl(): string;
     set ToCUrl(v: string | undefined);

@@ -4,7 +4,7 @@ import { BaseRuleClass } from "../../../rules";
 export declare class Longmabook extends BaseRuleClass {
     constructor();
     bookParse(): Promise<Book>;
-    chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean, charset: string, options: object): Promise<{
+    chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean, charset: string, options: chapterOptions): Promise<{
         chapterName: string | null;
         contentRaw: null;
         contentText: null;
@@ -20,3 +20,8 @@ export declare class Longmabook extends BaseRuleClass {
         additionalMetadate: null;
     }>;
 }
+interface chapterOptions {
+    bookId: string;
+    bookwritercode: string;
+}
+export {};

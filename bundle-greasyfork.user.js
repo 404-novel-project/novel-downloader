@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.7.8.482
+// @version        4.7.8.485
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -5576,7 +5576,7 @@ var external_log_default = /*#__PURE__*/__webpack_require__.n(external_log_);
 
 
 class Book {
-    _bookUrl;
+    _bookUrl = "";
     _ToCUrl;
     bookname;
     author;
@@ -5585,8 +5585,8 @@ class Book {
     additionalMetadate;
     chapters;
     saveOptions;
-    constructor(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters) {
-        this._bookUrl = removeTrackParm(bookUrl);
+    constructor({ bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters, }) {
+        this.bookUrl = bookUrl;
         this.bookname = bookname;
         this.author = author;
         this.introduction = introduction;
@@ -5666,7 +5666,7 @@ class Chapter {
     additionalMetadate;
     chapterHtmlFileName;
     book;
-    constructor(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, chapterParse, charset, options) {
+    constructor({ bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, chapterParse, charset, options, }) {
         this.bookUrl = bookUrl;
         this.bookname = bookname;
         this.chapterUrl = chapterUrl;
@@ -6779,11 +6779,33 @@ async function bookParseTemp({ bookUrl, bookname, author, introDom, introDomPatc
             const chapterUrl = a.href;
             const isVIP = false;
             const isPaid = false;
-            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_3__/* .Chapter */ .W(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, chapterParse, charset, { bookname });
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_3__/* .Chapter */ .W({
+                bookUrl,
+                bookname,
+                chapterUrl,
+                chapterNumber,
+                chapterName,
+                isVIP,
+                isPaid,
+                sectionName,
+                sectionNumber,
+                sectionChapterNumber,
+                chapterParse,
+                charset,
+                options: { bookname },
+            });
             chapters.push(chapter);
         }
     }
-    const book = new _main_Book__WEBPACK_IMPORTED_MODULE_4__/* .Book */ .f(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+    const book = new _main_Book__WEBPACK_IMPORTED_MODULE_4__/* .Book */ .f({
+        bookUrl,
+        bookname,
+        author,
+        introduction,
+        introductionHTML,
+        additionalMetadate,
+        chapters,
+    });
     return book;
 }
 async function chapterParseTemp({ dom, chapterUrl, chapterName, contenSelector, contentPatch, charset, options, }) {
@@ -7819,7 +7841,21 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
                 sectionChapterNumber++;
                 const isVIP = false;
                 const isPaid = false;
-                let chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .W(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, hasSection ? sectionNumber : null, hasSection ? sectionChapterNumber : null, this.chapterParse, this.charset, { bookname });
+                let chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .W({
+                    bookUrl,
+                    bookname,
+                    chapterUrl,
+                    chapterNumber,
+                    chapterName,
+                    isVIP,
+                    isPaid,
+                    sectionName,
+                    sectionNumber: hasSection ? sectionNumber : null,
+                    sectionChapterNumber: hasSection ? sectionChapterNumber : null,
+                    chapterParse: this.chapterParse,
+                    charset: this.charset,
+                    options: { bookname },
+                });
                 if (typeof postHook === "function") {
                     chapter = postHook(chapter);
                 }
@@ -7827,7 +7863,15 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
                     chapters.push(chapter);
                 }
             }
-            const book = new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .f(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+            const book = new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .f({
+                bookUrl,
+                bookname,
+                author,
+                introduction,
+                introductionHTML,
+                additionalMetadate,
+                chapters,
+            });
             return book;
         }
         async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
@@ -8246,7 +8290,21 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
                 const chapterUrl = aElem.href;
                 const isVIP = false;
                 const isPaid = false;
-                let chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_6__/* .Chapter */ .W(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, null, null, null, this.chapterParse, this.charset, { bookname });
+                let chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_6__/* .Chapter */ .W({
+                    bookUrl,
+                    bookname,
+                    chapterUrl,
+                    chapterNumber,
+                    chapterName,
+                    isVIP,
+                    isPaid,
+                    sectionName: null,
+                    sectionChapterNumber: null,
+                    sectionNumber: null,
+                    chapterParse: this.chapterParse,
+                    charset: this.charset,
+                    options: { bookname },
+                });
                 if (typeof postHook === "function") {
                     chapter = postHook(chapter);
                 }
@@ -8254,7 +8312,15 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
                     chapters.push(chapter);
                 }
             }
-            const book = new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .f(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+            const book = new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .f({
+                bookUrl,
+                bookname,
+                author,
+                introduction,
+                introductionHTML,
+                additionalMetadate,
+                chapters,
+            });
             return book;
         }
         async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
@@ -9242,10 +9308,32 @@ function getClass(replaceFunction) {
                 const chapterUrl = a.href;
                 const isVIP = false;
                 const isPaid = false;
-                const chapter = new Chapter/* Chapter */.W(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, null, null, null, this.chapterParse, "UTF-8", {});
+                const chapter = new Chapter/* Chapter */.W({
+                    bookUrl,
+                    bookname,
+                    chapterUrl,
+                    chapterNumber,
+                    chapterName,
+                    isVIP,
+                    isPaid,
+                    sectionName: null,
+                    sectionNumber: null,
+                    sectionChapterNumber: null,
+                    chapterParse: this.chapterParse,
+                    charset: this.charset,
+                    options: {},
+                });
                 chapters.push(chapter);
             }
-            const book = new Book/* Book */.f(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+            const book = new Book/* Book */.f({
+                bookUrl,
+                bookname,
+                author,
+                introduction,
+                introductionHTML,
+                additionalMetadate,
+                chapters,
+            });
             return book;
         }
         async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
@@ -9444,7 +9532,21 @@ class C17k extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
                 const isPaid = () => {
                     return false;
                 };
-                const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .W(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), isPaid(), sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, {});
+                const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .W({
+                    bookUrl,
+                    bookname,
+                    chapterUrl,
+                    chapterNumber,
+                    chapterName,
+                    isVIP: isVIP(),
+                    isPaid: isPaid(),
+                    sectionName,
+                    sectionNumber,
+                    sectionChapterNumber,
+                    chapterParse: this.chapterParse,
+                    charset: this.charset,
+                    options: {},
+                });
                 const isLogin = () => {
                     return false;
                 };
@@ -9454,7 +9556,15 @@ class C17k extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
                 chapters.push(chapter);
             }
         }
-        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .f(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .f({
+            bookUrl,
+            bookname,
+            author,
+            introduction,
+            introductionHTML,
+            additionalMetadate,
+            chapters,
+        });
         book.ToCUrl = document.location.href;
         return book;
     }
@@ -9584,13 +9694,35 @@ class MangaBilibili extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass
                 comic_id,
                 ep_id: ep.id,
             };
-            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_3__/* .Chapter */ .W(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, null, null, null, this.chapterParse, this.charset, options);
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_3__/* .Chapter */ .W({
+                bookUrl,
+                bookname,
+                chapterUrl,
+                chapterNumber,
+                chapterName,
+                isVIP,
+                isPaid,
+                sectionName: null,
+                sectionNumber: null,
+                sectionChapterNumber: null,
+                chapterParse: this.chapterParse,
+                charset: this.charset,
+                options,
+            });
             if (ep.is_locked || ep.type === 6) {
                 chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_4__/* .Status.aborted */ .qb.aborted;
             }
             return chapter;
         });
-        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .f(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .f({
+            bookUrl,
+            bookname,
+            author,
+            introduction,
+            introductionHTML,
+            additionalMetadate,
+            chapters,
+        });
         return book;
         async function isSignin(comic_id) {
             const body = { comic_id };
@@ -9834,7 +9966,21 @@ class Ciweimao extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
                         isPaid = true;
                     }
                 }
-                const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_6__/* .Chapter */ .W(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, {});
+                const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_6__/* .Chapter */ .W({
+                    bookUrl,
+                    bookname,
+                    chapterUrl,
+                    chapterNumber,
+                    chapterName,
+                    isVIP,
+                    isPaid,
+                    sectionName,
+                    sectionNumber,
+                    sectionChapterNumber,
+                    chapterParse: this.chapterParse,
+                    charset: this.charset,
+                    options: {},
+                });
                 const isLogin = document.querySelector(".login-info.ly-fr")?.childElementCount === 1
                     ? true
                     : false;
@@ -9844,7 +9990,15 @@ class Ciweimao extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
                 chapters.push(chapter);
             }
         }
-        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_8__/* .Book */ .f(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_8__/* .Book */ .f({
+            bookUrl,
+            bookname,
+            author,
+            introduction,
+            introductionHTML,
+            additionalMetadate,
+            chapters,
+        });
         book.ToCUrl = document.location.href;
         return book;
     }
@@ -10154,13 +10308,35 @@ class Ciyuanji extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
             sectionChapterNumber++;
             const isVIP = chapterObj.isFee === "1";
             const isPaid = chapterObj.isBuy === "1";
-            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .W(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, {});
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .W({
+                bookUrl,
+                bookname,
+                chapterUrl,
+                chapterNumber,
+                chapterName,
+                isVIP,
+                isPaid,
+                sectionName,
+                sectionNumber,
+                sectionChapterNumber,
+                chapterParse: this.chapterParse,
+                charset: this.charset,
+                options: {},
+            });
             if (chapter.isVIP === true && chapter.isPaid === false) {
                 chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status.aborted */ .qb.aborted;
             }
             chapters.push(chapter);
         }
-        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .f(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .f({
+            bookUrl,
+            bookname,
+            author,
+            introduction,
+            introductionHTML,
+            additionalMetadate,
+            chapters,
+        });
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
@@ -10299,7 +10475,21 @@ class Cool18 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
                 .replace(`《${bookname}》`, "")
                 .replace(`作者：${author}`, "")
                 .trim();
-            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_2__/* .Chapter */ .W(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, false, false, null, null, null, this.chapterParse, this.charset, { bookname, author });
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_2__/* .Chapter */ .W({
+                bookUrl,
+                bookname,
+                chapterUrl,
+                chapterNumber,
+                chapterName,
+                isVIP: false,
+                isPaid: false,
+                sectionName: null,
+                sectionNumber: null,
+                sectionChapterNumber: null,
+                chapterParse: this.chapterParse,
+                charset: this.charset,
+                options: { bookname, author },
+            });
             return chapter;
         });
         let i = 0;
@@ -10307,7 +10497,15 @@ class Cool18 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
             i++;
             chapter.chapterNumber = i;
         }
-        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_3__/* .Book */ .f(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_3__/* .Book */ .f({
+            bookUrl,
+            bookname,
+            author,
+            introduction,
+            introductionHTML,
+            additionalMetadate,
+            chapters,
+        });
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
@@ -10631,14 +10829,36 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
                     novel_id: data.novelInfo.novel_id,
                     chapter_id: chapterObj.id,
                 };
-                const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .W(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, "UTF-8", chapterOption);
+                const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .W({
+                    bookUrl,
+                    bookname,
+                    chapterUrl,
+                    chapterNumber,
+                    chapterName,
+                    isVIP,
+                    isPaid,
+                    sectionName,
+                    sectionNumber,
+                    sectionChapterNumber,
+                    chapterParse: this.chapterParse,
+                    charset: this.charset,
+                    options: chapterOption,
+                });
                 if ((isVIP && !(logined && chapter.isPaid)) || isLock) {
                     chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status.aborted */ .qb.aborted;
                 }
                 chapters.push(chapter);
             }
         }
-        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .f(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .f({
+            bookUrl,
+            bookname,
+            author,
+            introduction,
+            introductionHTML,
+            additionalMetadate,
+            chapters,
+        });
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
@@ -10948,7 +11168,21 @@ class Hanwujinian extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass *
             const icon = divElem.querySelector("img");
             const isVIP = icon !== null;
             const isPaid = isVIP ? icon.src.includes("lock_2_off.png") : false;
-            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_6__/* .Chapter */ .W(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, { bookname });
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_6__/* .Chapter */ .W({
+                bookUrl,
+                bookname,
+                chapterUrl,
+                chapterNumber,
+                chapterName,
+                isVIP,
+                isPaid,
+                sectionName,
+                sectionNumber,
+                sectionChapterNumber,
+                chapterParse: this.chapterParse,
+                charset: this.charset,
+                options: { bookname },
+            });
             if (chapter.isVIP) {
                 if (signIn) {
                     if (chapter.isPaid === false) {
@@ -10961,7 +11195,15 @@ class Hanwujinian extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass *
             }
             chapters.push(chapter);
         }
-        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_8__/* .Book */ .f(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_8__/* .Book */ .f({
+            bookUrl,
+            bookname,
+            author,
+            introduction,
+            introductionHTML,
+            additionalMetadate,
+            chapters,
+        });
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
@@ -11296,7 +11538,21 @@ class Jjwxc extends rules/* BaseRuleClass */.c {
                         const chapterName = a.innerText.trim();
                         const chapterUrl = a.getAttribute("rel");
                         if (chapterUrl) {
-                            const chapter = new Chapter/* Chapter */.W(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), null, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, {});
+                            const chapter = new Chapter/* Chapter */.W({
+                                bookUrl,
+                                bookname,
+                                chapterUrl,
+                                chapterNumber,
+                                chapterName,
+                                isVIP: isVIP(),
+                                isPaid: null,
+                                sectionName,
+                                sectionNumber,
+                                sectionChapterNumber,
+                                chapterParse: this.chapterParse,
+                                charset: this.charset,
+                                options: {},
+                            });
                             const isLogin = () => {
                                 if (document.getElementById("jj_login")) {
                                     return false;
@@ -11314,7 +11570,21 @@ class Jjwxc extends rules/* BaseRuleClass */.c {
                     else {
                         const chapterName = a.innerText.trim();
                         const chapterUrl = a.href;
-                        const chapter = new Chapter/* Chapter */.W(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), null, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, {});
+                        const chapter = new Chapter/* Chapter */.W({
+                            bookUrl,
+                            bookname,
+                            chapterUrl,
+                            chapterNumber,
+                            chapterName,
+                            isVIP: isVIP(),
+                            isPaid: null,
+                            sectionName,
+                            sectionNumber,
+                            sectionChapterNumber,
+                            chapterParse: this.chapterParse,
+                            charset: this.charset,
+                            options: {},
+                        });
                         const isLogin = () => {
                             if (document.getElementById("jj_login")) {
                                 return false;
@@ -11332,13 +11602,35 @@ class Jjwxc extends rules/* BaseRuleClass */.c {
                 else {
                     const chapterName = "[锁]";
                     const chapterUrl = "";
-                    const chapter = new Chapter/* Chapter */.W(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, false, null, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, {});
+                    const chapter = new Chapter/* Chapter */.W({
+                        bookUrl,
+                        bookname,
+                        chapterUrl,
+                        chapterNumber,
+                        chapterName,
+                        isVIP: false,
+                        isPaid: null,
+                        sectionName,
+                        sectionNumber,
+                        sectionChapterNumber,
+                        chapterParse: this.chapterParse,
+                        charset: this.charset,
+                        options: {},
+                    });
                     chapter.status = main/* Status.aborted */.qb.aborted;
                     chapters.push(chapter);
                 }
             }
         }
-        const book = new Book/* Book */.f(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        const book = new Book/* Book */.f({
+            bookUrl,
+            bookname,
+            author,
+            introduction,
+            introductionHTML,
+            additionalMetadate,
+            chapters,
+        });
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
@@ -11644,7 +11936,21 @@ class Linovel extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c
                 const isPaid = () => {
                     return false;
                 };
-                const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .W(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), isPaid(), sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, "UTF-8", {});
+                const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .W({
+                    bookUrl,
+                    bookname,
+                    chapterUrl,
+                    chapterNumber,
+                    chapterName,
+                    isVIP: isVIP(),
+                    isPaid: isPaid(),
+                    sectionName,
+                    sectionNumber,
+                    sectionChapterNumber,
+                    chapterParse: this.chapterParse,
+                    charset: this.charset,
+                    options: {},
+                });
                 const isLogin = () => {
                     return false;
                 };
@@ -11654,7 +11960,15 @@ class Linovel extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c
                 chapters.push(chapter);
             }
         }
-        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .f(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .f({
+            bookUrl,
+            bookname,
+            author,
+            introduction,
+            introductionHTML,
+            additionalMetadate,
+            chapters,
+        });
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
@@ -11801,11 +12115,33 @@ class Lofter extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
         await getPageUrl(document.location.href);
         let i = 0;
         for (const pageUrl of Array.from(pageUrlSet)) {
-            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .W(bookUrl, bookname, pageUrl, i, null, false, false, null, null, null, this.chapterParse, "UTF-8", { author });
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .W({
+                bookUrl,
+                bookname,
+                chapterUrl: pageUrl,
+                chapterNumber: i,
+                chapterName: null,
+                isVIP: false,
+                isPaid: false,
+                sectionName: null,
+                sectionNumber: null,
+                sectionChapterNumber: null,
+                chapterParse: this.chapterParse,
+                charset: this.charset,
+                options: { author },
+            });
             chapters.push(chapter);
             i++;
         }
-        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .f(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .f({
+            bookUrl,
+            bookname,
+            author,
+            introduction,
+            introductionHTML,
+            additionalMetadate,
+            chapters,
+        });
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
@@ -12049,13 +12385,35 @@ class Longmabook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */
             }
             chapterNumber++;
             sectionChapterNumber++;
-            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_8__/* .Chapter */ .W(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, { bookId, bookwritercode });
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_8__/* .Chapter */ .W({
+                bookUrl,
+                bookname,
+                chapterUrl,
+                chapterNumber,
+                chapterName,
+                isVIP,
+                isPaid,
+                sectionName,
+                sectionNumber,
+                sectionChapterNumber,
+                chapterParse: this.chapterParse,
+                charset: this.charset,
+                options: { bookId, bookwritercode },
+            });
             if (chapter.isVIP === true && chapter.isPaid === false) {
                 chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_1__/* .Status.aborted */ .qb.aborted;
             }
             chapters.push(chapter);
         }
-        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_9__/* .Book */ .f(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_9__/* .Book */ .f({
+            bookUrl,
+            bookname,
+            author,
+            introduction,
+            introductionHTML,
+            additionalMetadate,
+            chapters,
+        });
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
@@ -12287,7 +12645,21 @@ class Myrics extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
                 const sectionName = `卷${sectionNumber}`;
                 const sectionChapterNumber = item.order;
                 const isAdult = item.is_adult;
-                const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .W(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, { bookId, chapterId, init });
+                const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .W({
+                    bookUrl,
+                    bookname,
+                    chapterUrl,
+                    chapterNumber,
+                    chapterName,
+                    isVIP,
+                    isPaid,
+                    sectionName,
+                    sectionNumber,
+                    sectionChapterNumber,
+                    chapterParse: this.chapterParse,
+                    charset: this.charset,
+                    options: { bookId, chapterId, init },
+                });
                 if (chapter.isVIP === true && chapter.isPaid === false) {
                     chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_5__/* .Status.aborted */ .qb.aborted;
                 }
@@ -12318,7 +12690,15 @@ class Myrics extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
             i++;
             c.chapterNumber = i;
         }
-        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .f(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .f({
+            bookUrl,
+            bookname,
+            author,
+            introduction,
+            introductionHTML,
+            additionalMetadate,
+            chapters,
+        });
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
@@ -12434,10 +12814,32 @@ class Pixiv extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
                     const chapterUrl = chapterUrlBase + sc.id;
                     const chapterNumber = sc.series.contentOrder;
                     const chapterName = `#${sc.series.contentOrder} ${sc.title}`;
-                    const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_3__/* .Chapter */ .W(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, false, false, null, null, null, self.chapterParse, self.charset, { id: sc.id });
+                    const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_3__/* .Chapter */ .W({
+                        bookUrl,
+                        bookname,
+                        chapterUrl,
+                        chapterNumber,
+                        chapterName,
+                        isVIP: false,
+                        isPaid: false,
+                        sectionName: null,
+                        sectionNumber: null,
+                        sectionChapterNumber: null,
+                        chapterParse: self.chapterParse,
+                        charset: self.charset,
+                        options: { id: sc.id },
+                    });
                     chapters.push(chapter);
                 }
-                const book = new _main_Book__WEBPACK_IMPORTED_MODULE_4__/* .Book */ .f(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+                const book = new _main_Book__WEBPACK_IMPORTED_MODULE_4__/* .Book */ .f({
+                    bookUrl,
+                    bookname,
+                    author,
+                    introduction,
+                    introductionHTML,
+                    additionalMetadate,
+                    chapters,
+                });
                 return book;
             }
         }
@@ -12516,7 +12918,21 @@ class Pixiv extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
             additionalMetadate.languages = novel.language;
             const chapterUrl = bookUrl;
             const chapterName = bookname;
-            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_3__/* .Chapter */ .W(bookUrl, bookname, chapterUrl, 1, chapterName, false, false, null, null, null, self.chapterParse, self.charset, {});
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_3__/* .Chapter */ .W({
+                bookUrl,
+                bookname,
+                chapterUrl,
+                chapterNumber: 1,
+                chapterName,
+                isVIP: false,
+                isPaid: false,
+                sectionName: null,
+                sectionNumber: null,
+                sectionChapterNumber: null,
+                chapterParse: self.chapterParse,
+                charset: self.charset,
+                options: {},
+            });
             const contentRaw = document.createElement("div");
             contentRaw.innerHTML = novel.content.replace(/\n/g, "<br/>");
             const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_5__/* .cleanDOM */ .zM)(contentRaw, "TM");
@@ -12530,7 +12946,15 @@ class Pixiv extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
             };
             chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status.finished */ .qb.finished;
             const chapters = [chapter];
-            const book = new _main_Book__WEBPACK_IMPORTED_MODULE_4__/* .Book */ .f(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+            const book = new _main_Book__WEBPACK_IMPORTED_MODULE_4__/* .Book */ .f({
+                bookUrl,
+                bookname,
+                author,
+                introduction,
+                introductionHTML,
+                additionalMetadate,
+                chapters,
+            });
             return book;
         }
     }
@@ -12714,12 +13138,26 @@ class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
                 else {
                     chapterId = null;
                 }
-                const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .W(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), isPaid(), sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, "UTF-8", {
-                    _csrfToken,
-                    bookId,
-                    authorId,
-                    chapterId,
-                    limitFree,
+                const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .W({
+                    bookUrl,
+                    bookname,
+                    chapterUrl,
+                    chapterNumber,
+                    chapterName,
+                    isVIP: isVIP(),
+                    isPaid: isPaid(),
+                    sectionName,
+                    sectionNumber,
+                    sectionChapterNumber,
+                    chapterParse: this.chapterParse,
+                    charset: this.charset,
+                    options: {
+                        _csrfToken,
+                        bookId,
+                        authorId,
+                        chapterId,
+                        limitFree,
+                    },
                 });
                 const isLogin = () => {
                     const signInDom = document.querySelector(".sign-in");
@@ -12743,7 +13181,15 @@ class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
                 chapters.push(chapter);
             }
         }
-        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .f(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .f({
+            bookUrl,
+            bookname,
+            author,
+            introduction,
+            introductionHTML,
+            additionalMetadate,
+            chapters,
+        });
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
@@ -12885,7 +13331,21 @@ class Qimao extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
             const isPaid = () => {
                 return false;
             };
-            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .W(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), isPaid(), null, null, null, this.chapterParse, "UTF-8", {});
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .W({
+                bookUrl,
+                bookname,
+                chapterUrl,
+                chapterNumber,
+                chapterName,
+                isVIP: isVIP(),
+                isPaid: isPaid(),
+                sectionName: null,
+                sectionNumber: null,
+                sectionChapterNumber: null,
+                chapterParse: this.chapterParse,
+                charset: this.charset,
+                options: {},
+            });
             const isLogin = () => {
                 return false;
             };
@@ -12894,7 +13354,15 @@ class Qimao extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
             }
             chapters.push(chapter);
         }
-        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .f(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .f({
+            bookUrl,
+            bookname,
+            author,
+            introduction,
+            introductionHTML,
+            additionalMetadate,
+            chapters,
+        });
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
@@ -12980,7 +13448,6 @@ class Qingoo extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
     constructor() {
         super();
         this.imageMode = "TM";
-        this.charset = "UTF-8";
     }
     async bookParse() {
         const bookUrl = document.location.href;
@@ -13012,13 +13479,35 @@ class Qingoo extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
             const chapterUrl = linkTemp.toString();
             const isVIP = false;
             const isPaid = false;
-            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .W(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, null, null, null, this.chapterParse, this.charset, {});
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .W({
+                bookUrl,
+                bookname,
+                chapterUrl,
+                chapterNumber,
+                chapterName,
+                isVIP,
+                isPaid,
+                sectionName: null,
+                sectionNumber: null,
+                sectionChapterNumber: null,
+                chapterParse: this.chapterParse,
+                charset: this.charset,
+                options: {},
+            });
             if (!status) {
                 chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_5__/* .Status.aborted */ .qb.aborted;
             }
             chapters.push(chapter);
         }
-        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .f(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .f({
+            bookUrl,
+            bookname,
+            author,
+            introduction,
+            introductionHTML,
+            additionalMetadate,
+            chapters,
+        });
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
@@ -13154,7 +13643,21 @@ class Sfacg extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
                 }
             };
             const isPaid = null;
-            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_7__/* .Chapter */ .W(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVip(), isPaid, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, "UTF-8", {});
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_7__/* .Chapter */ .W({
+                bookUrl,
+                bookname,
+                chapterUrl,
+                chapterNumber,
+                chapterName,
+                isVIP: isVip(),
+                isPaid,
+                sectionName,
+                sectionNumber,
+                sectionChapterNumber,
+                chapterParse: this.chapterParse,
+                charset: this.charset,
+                options: {},
+            });
             const isLogin = !document
                 .querySelector(".user-bar > .top-link > .normal-link")
                 ?.innerHTML.includes("您好，SF游客");
@@ -13163,7 +13666,15 @@ class Sfacg extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
             }
             chapters.push(chapter);
         }
-        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_9__/* .Book */ .f(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_9__/* .Book */ .f({
+            bookUrl,
+            bookname,
+            author,
+            introduction,
+            introductionHTML,
+            additionalMetadate,
+            chapters,
+        });
         book.ToCUrl = document.location.href;
         return book;
     }
@@ -13333,7 +13844,6 @@ class Shubl extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
     constructor() {
         super();
         this.imageMode = "TM";
-        this.charset = "UTF-8";
         this.concurrencyLimit = 1;
         this.maxRunLimit = 1;
     }
@@ -13393,7 +13903,21 @@ class Shubl extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
                         }
                         return false;
                     };
-                    const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_6__/* .Chapter */ .W(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), isPaid(), sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, {});
+                    const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_6__/* .Chapter */ .W({
+                        bookUrl,
+                        bookname,
+                        chapterUrl,
+                        chapterNumber,
+                        chapterName,
+                        isVIP: isVIP(),
+                        isPaid: isPaid(),
+                        sectionName,
+                        sectionNumber,
+                        sectionChapterNumber,
+                        chapterParse: this.chapterParse,
+                        charset: this.charset,
+                        options: {},
+                    });
                     if (isVIP() && !(isLogin() && isPaid())) {
                         chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_7__/* .Status.aborted */ .qb.aborted;
                     }
@@ -13401,7 +13925,15 @@ class Shubl extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
                 }
             }
         }
-        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_8__/* .Book */ .f(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_8__/* .Book */ .f({
+            bookUrl,
+            bookname,
+            author,
+            introduction,
+            introductionHTML,
+            additionalMetadate,
+            chapters,
+        });
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
@@ -13684,7 +14216,21 @@ class Shuhai extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
                 };
                 const chapterName = a.innerText.trim();
                 const chapterUrl = a.href;
-                const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .W(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), isPaid(), sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, {});
+                const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .W({
+                    bookUrl,
+                    bookname,
+                    chapterUrl,
+                    chapterNumber,
+                    chapterName,
+                    isVIP: isVIP(),
+                    isPaid: isPaid(),
+                    sectionName,
+                    sectionNumber,
+                    sectionChapterNumber,
+                    chapterParse: this.chapterParse,
+                    charset: this.charset,
+                    options: {},
+                });
                 const isLogin = () => {
                     return false;
                 };
@@ -13694,7 +14240,15 @@ class Shuhai extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
                 chapters.push(chapter);
             }
         }
-        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .f(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .f({
+            bookUrl,
+            bookname,
+            author,
+            introduction,
+            introductionHTML,
+            additionalMetadate,
+            chapters,
+        });
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
@@ -13837,10 +14391,32 @@ class Sosadfun extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
             chapterNumber++;
             const chapterName = a.innerText.trim();
             const chapterUrl = a.href;
-            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_3__/* .Chapter */ .W(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, false, false, null, null, null, this.chapterParse, "UTF-8", {});
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_3__/* .Chapter */ .W({
+                bookUrl,
+                bookname,
+                chapterUrl,
+                chapterNumber,
+                chapterName,
+                isVIP: false,
+                isPaid: false,
+                sectionName: null,
+                sectionNumber: null,
+                sectionChapterNumber: null,
+                chapterParse: this.chapterParse,
+                charset: this.charset,
+                options: {},
+            });
             chapters.push(chapter);
         }
-        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_4__/* .Book */ .f(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_4__/* .Book */ .f({
+            bookUrl,
+            bookname,
+            author,
+            introduction,
+            introductionHTML,
+            additionalMetadate,
+            chapters,
+        });
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
@@ -13963,7 +14539,21 @@ class Tadu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
             const isPaid = () => {
                 return false;
             };
-            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .W(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), isPaid(), null, null, null, this.chapterParse, "UTF-8", {});
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .W({
+                bookUrl,
+                bookname,
+                chapterUrl,
+                chapterNumber,
+                chapterName,
+                isVIP: isVIP(),
+                isPaid: isPaid(),
+                sectionName: null,
+                sectionNumber: null,
+                sectionChapterNumber: null,
+                chapterParse: this.chapterParse,
+                charset: this.charset,
+                options: {},
+            });
             const isLogin = () => {
                 return false;
             };
@@ -13972,7 +14562,15 @@ class Tadu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
             }
             chapters.push(chapter);
         }
-        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .f(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .f({
+            bookUrl,
+            bookname,
+            author,
+            introduction,
+            introductionHTML,
+            additionalMetadate,
+            chapters,
+        });
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
@@ -14129,7 +14727,21 @@ class Zongheng extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
                 const isPaid = () => {
                     return false;
                 };
-                const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .W(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP(), isPaid(), sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, "UTF-8", {});
+                const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .W({
+                    bookUrl,
+                    bookname,
+                    chapterUrl,
+                    chapterNumber,
+                    chapterName,
+                    isVIP: isVIP(),
+                    isPaid: isPaid(),
+                    sectionName,
+                    sectionNumber,
+                    sectionChapterNumber,
+                    chapterParse: this.chapterParse,
+                    charset: this.charset,
+                    options: {},
+                });
                 const isLogin = () => {
                     return false;
                 };
@@ -14139,7 +14751,15 @@ class Zongheng extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
                 chapters.push(chapter);
             }
         }
-        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .f(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .f({
+            bookUrl,
+            bookname,
+            author,
+            introduction,
+            introductionHTML,
+            additionalMetadate,
+            chapters,
+        });
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
@@ -14274,10 +14894,32 @@ class Dmzj extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
             const chapterUrl = a.href;
             const isVIP = false;
             const isPaid = false;
-            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .W(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, null, null, null, this.chapterParse, "UTF-8", {});
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .W({
+                bookUrl,
+                bookname,
+                chapterUrl,
+                chapterNumber,
+                chapterName,
+                isVIP,
+                isPaid,
+                sectionName: null,
+                sectionNumber: null,
+                sectionChapterNumber: null,
+                chapterParse: this.chapterParse,
+                charset: this.charset,
+                options: {},
+            });
             chapters.push(chapter);
         }
-        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .f(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .f({
+            bookUrl,
+            bookname,
+            author,
+            introduction,
+            introductionHTML,
+            additionalMetadate,
+            chapters,
+        });
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
@@ -14384,10 +15026,32 @@ class Fushuwang extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ 
             const chapterName = `page${i}`;
             const isVIP = false;
             const isPaid = false;
-            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_1__/* .Chapter */ .W(bookUrl, bookname, chapterUrl, i + 1, chapterName, isVIP, isPaid, null, null, null, this.chapterParse, this.charset, {});
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_1__/* .Chapter */ .W({
+                bookUrl,
+                bookname,
+                chapterUrl,
+                chapterNumber: i + 1,
+                chapterName,
+                isVIP,
+                isPaid,
+                sectionName: null,
+                sectionNumber: null,
+                sectionChapterNumber: null,
+                chapterParse: this.chapterParse,
+                charset: this.charset,
+                options: {},
+            });
             chapters.push(chapter);
         }
-        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_2__/* .Book */ .f(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_2__/* .Book */ .f({
+            bookUrl,
+            bookname,
+            author,
+            introduction,
+            introductionHTML,
+            additionalMetadate,
+            chapters,
+        });
         book.saveOptions = this.saveOptions;
         return book;
     }
@@ -14492,12 +15156,34 @@ class Hetushu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c
                     const chapterUrl = a.href;
                     const isVIP = false;
                     const isPaid = false;
-                    const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .W(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, "UTF-8", {});
+                    const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .W({
+                        bookUrl,
+                        bookname,
+                        chapterUrl,
+                        chapterNumber,
+                        chapterName,
+                        isVIP,
+                        isPaid,
+                        sectionName,
+                        sectionNumber,
+                        sectionChapterNumber,
+                        chapterParse: this.chapterParse,
+                        charset: this.charset,
+                        options: {},
+                    });
                     chapters.push(chapter);
                 }
             }
         }
-        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .f(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .f({
+            bookUrl,
+            bookname,
+            author,
+            introduction,
+            introductionHTML,
+            additionalMetadate,
+            chapters,
+        });
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
@@ -14675,11 +15361,33 @@ class Idejian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c
             const chapterUrl = aElem.href;
             const isVIP = false;
             const isPaid = false;
-            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .W(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, null, null, null, this.chapterParse, "UTF-8", { bookID });
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .W({
+                bookUrl,
+                bookname,
+                chapterUrl,
+                chapterNumber,
+                chapterName,
+                isVIP,
+                isPaid,
+                sectionName: null,
+                sectionNumber: null,
+                sectionChapterNumber: null,
+                chapterParse: this.chapterParse,
+                charset: this.charset,
+                options: { bookID },
+            });
             chapters.push(chapter);
         }
         document.cookie = "";
-        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .f(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .f({
+            bookUrl,
+            bookname,
+            author,
+            introduction,
+            introductionHTML,
+            additionalMetadate,
+            chapters,
+        });
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
@@ -14862,10 +15570,32 @@ class Kanunu8 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c
             }
             const isVIP = false;
             const isPaid = false;
-            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .W(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, {});
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .W({
+                bookUrl,
+                bookname,
+                chapterUrl,
+                chapterNumber,
+                chapterName,
+                isVIP,
+                isPaid,
+                sectionName,
+                sectionNumber,
+                sectionChapterNumber,
+                chapterParse: this.chapterParse,
+                charset: this.charset,
+                options: {},
+            });
             chapters.push(chapter);
         }
-        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .f(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .f({
+            bookUrl,
+            bookname,
+            author,
+            introduction,
+            introductionHTML,
+            additionalMetadate,
+            chapters,
+        });
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
@@ -14968,17 +15698,38 @@ class Linovelib extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ 
                 chapterNumber++;
                 sectionChapterNumber++;
                 const a = node.firstElementChild;
-                const isVIP = false;
                 const chapterName = a.innerText.trim();
                 const chapterUrl = a.href;
-                const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .W(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, null, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, "UTF-8", {});
+                const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .W({
+                    bookUrl,
+                    bookname,
+                    chapterUrl,
+                    chapterNumber,
+                    chapterName,
+                    isVIP: false,
+                    isPaid: false,
+                    sectionName,
+                    sectionNumber,
+                    sectionChapterNumber,
+                    chapterParse: this.chapterParse,
+                    charset: this.charset,
+                    options: {},
+                });
                 if (chapterUrl.startsWith("javascript")) {
                     chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status.aborted */ .qb.aborted;
                 }
                 chapters.push(chapter);
             }
         }
-        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .f(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .f({
+            bookUrl,
+            bookname,
+            author,
+            introduction,
+            introductionHTML,
+            additionalMetadate,
+            chapters,
+        });
         book.ToCUrl = document.location.href;
         return book;
     }
@@ -15071,11 +15822,33 @@ class Soxscc extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
                 const chapterName = a.innerText;
                 const isVIP = false;
                 const isPaid = false;
-                const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .W(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, i + 1, sectionChapterNumber, this.chapterParse, "UTF-8", { bookname });
+                const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .W({
+                    bookUrl,
+                    bookname,
+                    chapterUrl,
+                    chapterNumber,
+                    chapterName,
+                    isVIP,
+                    isPaid,
+                    sectionName,
+                    sectionNumber: i + 1,
+                    sectionChapterNumber,
+                    chapterParse: this.chapterParse,
+                    charset: this.charset,
+                    options: { bookname },
+                });
                 chapters.push(chapter);
             }
         }
-        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .f(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .f({
+            bookUrl,
+            bookname,
+            author,
+            introduction,
+            introductionHTML,
+            additionalMetadate,
+            chapters,
+        });
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
@@ -15210,12 +15983,34 @@ class Uukanshu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
                     const chapterUrl = a.href;
                     const isVIP = false;
                     const isPaid = false;
-                    const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .W(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, {});
+                    const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .W({
+                        bookUrl,
+                        bookname,
+                        chapterUrl,
+                        chapterNumber,
+                        chapterName,
+                        isVIP,
+                        isPaid,
+                        sectionName,
+                        sectionNumber,
+                        sectionChapterNumber,
+                        chapterParse: this.chapterParse,
+                        charset: this.charset,
+                        options: {},
+                    });
                     chapters.push(chapter);
                 }
             }
         }
-        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .f(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .f({
+            bookUrl,
+            bookname,
+            author,
+            introduction,
+            introductionHTML,
+            additionalMetadate,
+            chapters,
+        });
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
@@ -15332,11 +16127,33 @@ class Wenku8 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
                 const a = td.firstElementChild;
                 const chapterName = a.innerText.trim();
                 const chapterUrl = a.href;
-                const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .W(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, false, false, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, this.charset, {});
+                const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .W({
+                    bookUrl,
+                    bookname,
+                    chapterUrl,
+                    chapterNumber,
+                    chapterName,
+                    isVIP: false,
+                    isPaid: false,
+                    sectionName,
+                    sectionNumber,
+                    sectionChapterNumber,
+                    chapterParse: this.chapterParse,
+                    charset: this.charset,
+                    options: {},
+                });
                 chapters.push(chapter);
             }
         }
-        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .f(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .f({
+            bookUrl,
+            bookname,
+            author,
+            introduction,
+            introductionHTML,
+            additionalMetadate,
+            chapters,
+        });
         book.ToCUrl = document.location.href;
         return book;
     }
@@ -15536,11 +16353,33 @@ class Xkzw extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
                 const chapterUrl = bookUrl + (sitechapter.chapterid + bookid * 11) + ".html";
                 const isVIP = false;
                 const isPaid = false;
-                const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .W(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, this.chapterParse, "UTF-8", {});
+                const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .W({
+                    bookUrl,
+                    bookname,
+                    chapterUrl,
+                    chapterNumber,
+                    chapterName,
+                    isVIP,
+                    isPaid,
+                    sectionName,
+                    sectionNumber,
+                    sectionChapterNumber,
+                    chapterParse: this.chapterParse,
+                    charset: this.charset,
+                    options: {},
+                });
                 chapters.push(chapter);
             }
         }
-        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .f(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .f({
+            bookUrl,
+            bookname,
+            author,
+            introduction,
+            introductionHTML,
+            additionalMetadate,
+            chapters,
+        });
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
@@ -15990,7 +16829,21 @@ function mkRuleClass({ bookUrl, anotherPageUrl, getBookname, getAuthor, getIntro
                 sectionChapterNumber++;
                 const isVIP = false;
                 const isPaid = false;
-                let chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .W(bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, hasSection ? sectionNumber : null, hasSection ? sectionChapterNumber : null, this.chapterParse, this.charset, { bookname });
+                let chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .W({
+                    bookUrl,
+                    bookname,
+                    chapterUrl,
+                    chapterNumber,
+                    chapterName,
+                    isVIP,
+                    isPaid,
+                    sectionName,
+                    sectionNumber: hasSection ? sectionNumber : null,
+                    sectionChapterNumber: hasSection ? sectionChapterNumber : null,
+                    chapterParse: this.chapterParse,
+                    charset: this.charset,
+                    options: { bookname },
+                });
                 if (typeof postHook === "function") {
                     chapter = postHook(chapter);
                 }
@@ -15998,7 +16851,15 @@ function mkRuleClass({ bookUrl, anotherPageUrl, getBookname, getAuthor, getIntro
                     chapters.push(chapter);
                 }
             }
-            const book = new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .f(bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters);
+            const book = new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .f({
+                bookUrl,
+                bookname,
+                author,
+                introduction,
+                introductionHTML,
+                additionalMetadate,
+                chapters,
+            });
             book.ToCUrl = anotherPageUrl;
             return book;
         }
