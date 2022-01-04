@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.7.8.485
+// @version        4.7.9.487
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -169,6 +169,7 @@
 // @match          *://www.cool18.com/bbs4/index.php?*
 // @match          *://www.b5200.net/*_*/
 // @match          *://www.yqxs.cc/html/*/*/index.html
+// @match          *://www.dushu369.com/*/*/
 // @name:en        novel-downloader
 // @name:ja        小説ダウンローダー
 // @description:en An scalable universal novel downloader.
@@ -5303,9 +5304,11 @@ class AttachmentClass {
     mode;
     referrerMode;
     customReferer;
-    defaultHeader;
-    status;
-    retryTime;
+    status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status.pending */ .qb.pending;
+    retryTime = 0;
+    defaultHeader = {
+        Referer: document.location.origin,
+    };
     imageBlob;
     comments;
     constructor(url, name, mode, referrerMode = _main__WEBPACK_IMPORTED_MODULE_0__/* .ReferrerMode.keep */ .n6.keep, customReferer = "") {
@@ -5314,11 +5317,6 @@ class AttachmentClass {
         this.mode = mode;
         this.referrerMode = referrerMode;
         this.customReferer = customReferer;
-        this.status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status.pending */ .qb.pending;
-        this.retryTime = 0;
-        this.defaultHeader = {
-            Referer: document.location.origin,
-        };
     }
     async init() {
         if (this.mode === "naive") {
@@ -5657,8 +5655,8 @@ class Chapter {
     chapterParse;
     charset;
     options;
-    status;
-    retryTime;
+    status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status.pending */ .qb.pending;
+    retryTime = 0;
     contentRaw;
     contentText;
     contentHTML;
@@ -5680,8 +5678,6 @@ class Chapter {
         this.chapterParse = chapterParse;
         this.charset = charset;
         this.options = options;
-        this.status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status.pending */ .qb.pending;
-        this.retryTime = 0;
     }
     async init() {
         const { chapterName, contentRaw, contentText, contentHTML, contentImages, additionalMetadate, } = await this.parse();
@@ -5843,13 +5839,11 @@ async function setStreamSaverSetting() {
 class FflateZip {
     filename;
     stream;
-    zcount;
-    count;
-    filenameList;
-    zipOut;
+    zcount = 0;
+    count = 0;
+    filenameList = [];
+    zipOut = new Blob([], { type: "application/zip" });
     savedZip;
-    onFinal;
-    onFinalError;
     constructor(filename, stream) {
         external_log_default().info(`[fflateZip] filename: ${filename}, stream: ${stream}, streamSaver.supported: ${(StreamSaver_default()).supported}`);
         const self = this;
@@ -5866,10 +5860,6 @@ class FflateZip {
             writer =
                 fileStream.getWriter();
         }
-        this.zcount = 0;
-        this.count = 0;
-        this.filenameList = [];
-        this.zipOut = new Blob([], { type: "application/zip" });
         this.savedZip = new external_fflate_namespaceObject.Zip((err, dat, final) => {
             if (err) {
                 external_log_default().error(err);
@@ -5974,7 +5964,10 @@ const index = new external_nunjucks_namespaceObject.Template(index_html, env, un
 
 // EXTERNAL MODULE: ./src/save/toc.css
 var toc = __webpack_require__("./src/save/toc.css");
+// EXTERNAL MODULE: ./src/lib/dom.ts
+var dom = __webpack_require__("./src/lib/dom.ts");
 ;// CONCATENATED MODULE: ./src/save/save.ts
+
 
 
 
@@ -6039,20 +6032,16 @@ class SaveBook {
     book;
     streamZip;
     chapters;
-    mainStyleText;
-    tocStyleText;
+    mainStyleText = save_main/* default */.Z;
+    tocStyleText = toc/* default */.Z;
     savedZip;
-    savedTextArray;
     saveFileNameBase;
-    _sections;
+    savedTextArray = [];
+    _sections = [];
     constructor(book, streamZip, options) {
         this.book = book;
         this.chapters = book.chapters;
         this.streamZip = streamZip;
-        this.mainStyleText = save_main/* default */.Z;
-        this.tocStyleText = toc/* default */.Z;
-        this.savedTextArray = [];
-        this._sections = [];
         this.saveFileNameBase = `[${this.book.author}]${this.book.bookname}`;
         const zipFilename = `${this.saveFileNameBase}.zip`;
         this.savedZip = new FflateZip(zipFilename, streamZip);
@@ -6247,7 +6236,7 @@ class SaveBook {
             "\n\n");
     }
     genChapterText(chapterName, contentText) {
-        return `## ${chapterName}\n\n${contentText}\n\n`;
+        return `${chapterName}\n${"=".repeat((0,dom/* fullWidthLength */.sp)(chapterName) * 2 + 10)}\n\n${contentText}\n\n`;
     }
     genSectionHtmlFile(chapterObj) {
         const htmlText = section.render({ sectionName: chapterObj.sectionName });
@@ -6389,48 +6378,37 @@ var progress = __webpack_require__("./src/ui/progress.ts");
 
 
 class BaseRuleClass {
-    imageMode;
-    charset;
-    concurrencyLimit;
+    imageMode = "TM";
+    charset = document.characterSet;
+    concurrencyLimit = 10;
+    streamZip = false;
+    needLogin = false;
     maxRunLimit;
     saveOptions;
-    streamZip;
-    needLogin;
+    bcWorker = new BroadcastChannel("novel-downloader-worker");
+    bcWorkerMessages = [];
     book;
     audio;
-    bcWorker;
-    bcWorkerMessages;
     constructor() {
-        const self = this;
-        this.imageMode = "TM";
-        this.charset = document.characterSet;
-        this.concurrencyLimit = 10;
-        this.streamZip = false;
-        this.needLogin = false;
-        registerBroadcastChannel();
-        function registerBroadcastChannel() {
-            self.bcWorker = new BroadcastChannel("novel-downloader-worker");
-            const broadcastChannelWorker = self.bcWorker;
-            self.bcWorkerMessages = [];
-            const messages = self.bcWorkerMessages;
-            broadcastChannelWorker.onmessage = (ev) => {
-                const message = ev.data;
-                if (message.type === "ping") {
-                    const pong = {
-                        type: "pong",
-                        src: message.workerId,
-                        workerId: window.workerId,
-                        url: document.location.href,
-                    };
-                    broadcastChannelWorker.postMessage(pong);
-                }
-                if (message.type === "pong") {
-                    messages.push(message);
-                }
-                if (message.type === "close") {
-                }
-            };
-        }
+        const broadcastChannelWorker = this.bcWorker;
+        const messages = this.bcWorkerMessages;
+        broadcastChannelWorker.onmessage = (ev) => {
+            const message = ev.data;
+            if (message.type === "ping") {
+                const pong = {
+                    type: "pong",
+                    src: message.workerId,
+                    workerId: window.workerId,
+                    url: document.location.href,
+                };
+                broadcastChannelWorker.postMessage(pong);
+            }
+            if (message.type === "pong") {
+                messages.push(message);
+            }
+            if (message.type === "close") {
+            }
+        };
     }
     async run() {
         external_log_default().info(`[run]下载开始`);
@@ -7393,6 +7371,36 @@ const aixdzs = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */
     getContent: (doc) => doc.querySelector(".content"),
     contentPatch: (dom) => dom,
 });
+
+
+/***/ }),
+
+/***/ "./src/rules/onePage/dushu369.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "dushu369": () => (/* binding */ dushu369)
+/* harmony export */ });
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
+
+const dushu369 = () => {
+    const title = document.querySelector(".cntitle");
+    const [author, bookname] = /(.+)《(.+)》/
+        .exec(title.innerText.trim())
+        ?.slice(1) ?? ["", title.innerText.trim()];
+    return (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+        bookUrl: document.location.href,
+        bookname,
+        author,
+        introDom: document.querySelector(".Readme"),
+        introDomPatch: (dom) => dom,
+        aList: document.querySelectorAll(".content a.a0"),
+        getContent: (doc) => doc.querySelector(".content"),
+        contentPatch: (dom) => dom,
+    });
+};
 
 
 /***/ }),
@@ -17880,6 +17888,11 @@ async function getRule() {
         case "www.yqxs.cc": {
             const { yqxs } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/type2.ts"));
             ruleClass = yqxs();
+            break;
+        }
+        case "www.dushu369.com": {
+            const { dushu369 } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/dushu369.ts"));
+            ruleClass = dushu369();
             break;
         }
         default: {

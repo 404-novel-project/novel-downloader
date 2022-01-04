@@ -18,8 +18,8 @@ export declare class SaveBook {
     mainStyleText: string;
     tocStyleText: string;
     private savedZip;
-    private savedTextArray;
     private saveFileNameBase;
+    private savedTextArray;
     private _sections;
     constructor(book: Book, streamZip: boolean, options?: SaveOptions);
     saveTxt(): void;

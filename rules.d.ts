@@ -14,14 +14,14 @@ export declare abstract class BaseRuleClass {
     imageMode: "naive" | "TM";
     charset: string;
     concurrencyLimit: number;
-    maxRunLimit?: number;
-    saveOptions?: SaveOptions;
     streamZip: boolean;
     needLogin: boolean;
-    book?: Book;
-    private audio?;
+    maxRunLimit?: number;
+    saveOptions?: SaveOptions;
     private bcWorker;
     private bcWorkerMessages;
+    book?: Book;
+    private audio?;
     constructor();
     abstract bookParse(): Promise<Book>;
     abstract chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean | null, charset: string, options: object): Promise<ChapterParseObject>;

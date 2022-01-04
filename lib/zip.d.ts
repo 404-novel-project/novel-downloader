@@ -7,8 +7,6 @@ export declare class FflateZip {
     private filenameList;
     private zipOut;
     private savedZip;
-    onFinal?: (zipBlob: Blob) => void;
-    onFinalError?: (error: Error) => void;
     constructor(filename: string, stream: boolean);
     file(filename: string, fileBlob: Blob): Promise<void>;
     generateAsync(): Promise<void>;

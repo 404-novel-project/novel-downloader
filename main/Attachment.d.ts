@@ -5,9 +5,9 @@ export declare class AttachmentClass {
     mode: "naive" | "TM";
     referrerMode: ReferrerMode;
     customReferer: string;
-    private defaultHeader;
     status: Status;
     retryTime: number;
+    private defaultHeader;
     imageBlob: Blob | null | void;
     comments: string;
     constructor(url: string, name: string, mode: "naive" | "TM", referrerMode?: ReferrerMode, customReferer?: string);
