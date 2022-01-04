@@ -19,7 +19,6 @@ export declare const environments: () => Promise<{
     sessionStorage: any;
     Cookie: boolean;
     doNotTrack: string | number;
-    jsdelivr: unknown;
     enableDebug: boolean;
     ScriptHandler: string;
     "ScriptHandler version": string;

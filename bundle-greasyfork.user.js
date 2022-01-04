@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.7.9.487
+// @version        4.7.9.488
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -3366,10 +3366,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 /* harmony export */   "Cm": () => (/* binding */ mitmPageAvailability),
 /* harmony export */   "Ty": () => (/* binding */ environments)
 /* harmony export */ });
-/* harmony import */ var _lib_GM__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/GM.ts");
-/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/http.ts");
-/* harmony import */ var _lib_localStorageExpired__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/localStorageExpired.ts");
-/* harmony import */ var _setting__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/setting.ts");
+/* harmony import */ var _lib_GM__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/GM.ts");
+/* harmony import */ var _lib_localStorageExpired__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/localStorageExpired.ts");
+/* harmony import */ var _setting__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/setting.ts");
 
 
 
@@ -3397,7 +3396,7 @@ function streamSupport() {
 }
 function jsdelivrAvailability() {
     return new Promise((resolve, reject) => {
-        (0,_lib_http__WEBPACK_IMPORTED_MODULE_0__/* .gfetch */ .GF)("https://cdn.jsdelivr.net/npm/idb-keyval/dist/umd.js")
+        gfetch("https://cdn.jsdelivr.net/npm/idb-keyval/dist/umd.js")
             .then((resp) => resolve(true))
             .catch((error) => resolve(false));
     });
@@ -3424,15 +3423,14 @@ const environments = async () => ({
     XMLHttpRequest: checkObjct("XMLHttpRequest"),
     streamSupport: streamSupport(),
     window: Object.keys(window).length,
-    localStorage: (0,_lib_localStorageExpired__WEBPACK_IMPORTED_MODULE_1__/* .storageAvailable */ .o)("localStorage"),
-    sessionStorage: (0,_lib_localStorageExpired__WEBPACK_IMPORTED_MODULE_1__/* .storageAvailable */ .o)("sessionStorage"),
+    localStorage: (0,_lib_localStorageExpired__WEBPACK_IMPORTED_MODULE_0__/* .storageAvailable */ .o)("localStorage"),
+    sessionStorage: (0,_lib_localStorageExpired__WEBPACK_IMPORTED_MODULE_0__/* .storageAvailable */ .o)("sessionStorage"),
     Cookie: navigator.cookieEnabled,
     doNotTrack: navigator.doNotTrack ?? 0,
-    jsdelivr: await jsdelivrAvailability(),
-    enableDebug: _setting__WEBPACK_IMPORTED_MODULE_2__/* .enableDebug.value */ .Cy.value,
-    ScriptHandler: _lib_GM__WEBPACK_IMPORTED_MODULE_3__/* ._GM_info.scriptHandler */ ._p.scriptHandler,
-    "ScriptHandler version": _lib_GM__WEBPACK_IMPORTED_MODULE_3__/* ._GM_info.version */ ._p.version,
-    "Novel-downloader version": _lib_GM__WEBPACK_IMPORTED_MODULE_3__/* ._GM_info.script.version */ ._p.script.version,
+    enableDebug: _setting__WEBPACK_IMPORTED_MODULE_1__/* .enableDebug.value */ .Cy.value,
+    ScriptHandler: _lib_GM__WEBPACK_IMPORTED_MODULE_2__/* ._GM_info.scriptHandler */ ._p.scriptHandler,
+    "ScriptHandler version": _lib_GM__WEBPACK_IMPORTED_MODULE_2__/* ._GM_info.version */ ._p.version,
+    "Novel-downloader version": _lib_GM__WEBPACK_IMPORTED_MODULE_2__/* ._GM_info.script.version */ ._p.script.version,
 });
 
 
@@ -4966,6 +4964,8 @@ class LocalStorageExpired {
 /* harmony export */ });
 /* unused harmony exports regexpEscape, mean, sd */
 /* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/main/main.ts");
+/* harmony import */ var _GM__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/GM.ts");
+
 
 function concurrencyRun(list, limit, asyncHandle, options = {}) {
     const { signal, reason } = options;
@@ -5007,6 +5007,10 @@ async function saveToArchiveOrg(url) {
         body: JSON.stringify({
             url,
         }),
+        headers: {
+            "content-type": "application/json; charset=utf-8",
+            "x-requested-with": `novel-downloader ${_GM__WEBPACK_IMPORTED_MODULE_1__/* ._GM_info.script.version */ ._p.script.version}; ${_GM__WEBPACK_IMPORTED_MODULE_1__/* ._GM_info.scriptHandler */ ._p.scriptHandler} ${_GM__WEBPACK_IMPORTED_MODULE_1__/* ._GM_info.version */ ._p.version}`,
+        },
         method: "POST",
     });
     const data = await req.json();
