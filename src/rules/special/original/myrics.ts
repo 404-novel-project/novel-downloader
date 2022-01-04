@@ -136,7 +136,7 @@ export class Myrics extends BaseRuleClass {
         const sectionName = `卷${sectionNumber}`;
         const sectionChapterNumber = item.order;
         const isAdult = item.is_adult;
-        const chapter = new Chapter(
+        const chapter = new Chapter({
           bookUrl,
           bookname,
           chapterUrl,
@@ -147,10 +147,10 @@ export class Myrics extends BaseRuleClass {
           sectionName,
           sectionNumber,
           sectionChapterNumber,
-          this.chapterParse,
-          this.charset,
-          { bookId, chapterId, init }
-        );
+          chapterParse: this.chapterParse,
+          charset: this.charset,
+          options: { bookId, chapterId, init },
+        });
         if (chapter.isVIP === true && chapter.isPaid === false) {
           chapter.status = Status.aborted;
         }
@@ -198,13 +198,8 @@ export class Myrics extends BaseRuleClass {
     isVIP: boolean,
     isPaid: boolean,
     charset: string,
-    options: object
+    options: chapterOptions
   ) {
-    interface Options {
-      bookId: string;
-      chapterId: number;
-      init: GfetchRequestInit;
-    }
     interface ChapterApiResponse {
       result: {
         coin: number;
@@ -223,7 +218,7 @@ export class Myrics extends BaseRuleClass {
       };
       status_code: number;
     }
-    const { bookId, chapterId, init } = options as Options;
+    const { bookId, chapterId, init } = options;
     const url = `https://api.myrics.com/v1/novels/${bookId}/chapters/${chapterId}`;
     const resp = await gfetch(url, init);
     const chapter = resp.response as ChapterApiResponse;
@@ -246,6 +241,12 @@ export class Myrics extends BaseRuleClass {
       additionalMetadate: null,
     };
   }
+}
+
+interface chapterOptions {
+  bookId: string;
+  chapterId: number;
+  init: GfetchRequestInit;
 }
 
 interface ChapterItem {

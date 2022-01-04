@@ -15,7 +15,6 @@ export class Shubl extends BaseRuleClass {
   public constructor() {
     super();
     this.imageMode = "TM";
-    this.charset = "UTF-8";
     this.concurrencyLimit = 1;
     this.maxRunLimit = 1;
   }
@@ -104,21 +103,21 @@ export class Shubl extends BaseRuleClass {
             return false;
           };
 
-          const chapter = new Chapter(
+          const chapter = new Chapter({
             bookUrl,
             bookname,
             chapterUrl,
             chapterNumber,
             chapterName,
-            isVIP(),
-            isPaid(),
+            isVIP: isVIP(),
+            isPaid: isPaid(),
             sectionName,
             sectionNumber,
             sectionChapterNumber,
-            this.chapterParse,
-            this.charset,
-            {}
-          );
+            chapterParse: this.chapterParse,
+            charset: this.charset,
+            options: {},
+          });
           if (isVIP() && !(isLogin() && isPaid())) {
             chapter.status = Status.aborted;
           }

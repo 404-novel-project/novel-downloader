@@ -210,7 +210,7 @@ export class Longmabook extends BaseRuleClass {
       }
       chapterNumber++;
       sectionChapterNumber++;
-      const chapter = new Chapter(
+      const chapter = new Chapter({
         bookUrl,
         bookname,
         chapterUrl,
@@ -221,10 +221,10 @@ export class Longmabook extends BaseRuleClass {
         sectionName,
         sectionNumber,
         sectionChapterNumber,
-        this.chapterParse,
-        this.charset,
-        { bookId, bookwritercode }
-      );
+        chapterParse: this.chapterParse,
+        charset: this.charset,
+        options: { bookId, bookwritercode },
+      });
       if (chapter.isVIP === true && chapter.isPaid === false) {
         chapter.status = Status.aborted;
       }
@@ -249,7 +249,7 @@ export class Longmabook extends BaseRuleClass {
     isVIP: boolean,
     isPaid: boolean,
     charset: string,
-    options: object
+    options: chapterOptions
   ) {
     const self = this;
     const doc = await getHtmlDOM(chapterUrl, charset);
@@ -267,10 +267,6 @@ export class Longmabook extends BaseRuleClass {
       throw new Error(
         "您目前正在海棠清水區，只能觀看清水認證文章。請使用海棠其他網址進入。"
       );
-    }
-    interface Options {
-      bookId: string;
-      bookwritercode: string;
     }
     const nullObj = {
       chapterName,
@@ -412,4 +408,9 @@ export class Longmabook extends BaseRuleClass {
       // Todo
     }
   }
+}
+
+interface chapterOptions {
+  bookId: string;
+  bookwritercode: string;
 }

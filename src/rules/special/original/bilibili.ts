@@ -63,7 +63,7 @@ export class MangaBilibili extends BaseRuleClass {
         comic_id,
         ep_id: ep.id,
       };
-      const chapter = new Chapter(
+      const chapter = new Chapter({
         bookUrl,
         bookname,
         chapterUrl,
@@ -71,13 +71,13 @@ export class MangaBilibili extends BaseRuleClass {
         chapterName,
         isVIP,
         isPaid,
-        null,
-        null,
-        null,
-        this.chapterParse,
-        this.charset,
-        options
-      );
+        sectionName: null,
+        sectionNumber: null,
+        sectionChapterNumber: null,
+        chapterParse: this.chapterParse,
+        charset: this.charset,
+        options,
+      });
       if (ep.is_locked || ep.type === 6) {
         chapter.status = Status.aborted;
       }

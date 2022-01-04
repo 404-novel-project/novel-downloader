@@ -101,7 +101,7 @@ async function bookParseTemp({
       const chapterUrl = a.href;
       const isVIP = false;
       const isPaid = false;
-      const chapter = new Chapter(
+      const chapter = new Chapter({
         bookUrl,
         bookname,
         chapterUrl,
@@ -114,8 +114,8 @@ async function bookParseTemp({
         sectionChapterNumber,
         chapterParse,
         charset,
-        { bookname }
-      );
+        options: { bookname },
+      });
       chapters.push(chapter);
     }
   }

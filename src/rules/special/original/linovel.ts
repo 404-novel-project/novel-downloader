@@ -104,21 +104,21 @@ export class Linovel extends BaseRuleClass {
           return false;
         };
 
-        const chapter = new Chapter(
+        const chapter = new Chapter({
           bookUrl,
           bookname,
           chapterUrl,
           chapterNumber,
           chapterName,
-          isVIP(),
-          isPaid(),
+          isVIP: isVIP(),
+          isPaid: isPaid(),
           sectionName,
           sectionNumber,
           sectionChapterNumber,
-          this.chapterParse,
-          "UTF-8",
-          {}
-        );
+          chapterParse: this.chapterParse,
+          charset: this.charset,
+          options: {},
+        });
 
         const isLogin = () => {
           // VIP章节仅支持APP查看

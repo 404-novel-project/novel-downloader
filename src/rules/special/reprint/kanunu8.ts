@@ -128,7 +128,7 @@ export class Kanunu8 extends BaseRuleClass {
 
       const isVIP = false;
       const isPaid = false;
-      const chapter = new Chapter(
+      const chapter = new Chapter({
         bookUrl,
         bookname,
         chapterUrl,
@@ -139,10 +139,10 @@ export class Kanunu8 extends BaseRuleClass {
         sectionName,
         sectionNumber,
         sectionChapterNumber,
-        this.chapterParse,
-        this.charset,
-        {}
-      );
+        chapterParse: this.chapterParse,
+        charset: this.charset,
+        options: {},
+      });
       chapters.push(chapter);
     }
     const book = new Book({

@@ -78,7 +78,7 @@ export class Hanwujinian extends BaseRuleClass {
       const icon = divElem.querySelector("img");
       const isVIP = icon !== null;
       const isPaid = isVIP ? icon.src.includes("lock_2_off.png") : false;
-      const chapter: Chapter | void = new Chapter(
+      const chapter = new Chapter({
         bookUrl,
         bookname,
         chapterUrl,
@@ -89,10 +89,10 @@ export class Hanwujinian extends BaseRuleClass {
         sectionName,
         sectionNumber,
         sectionChapterNumber,
-        this.chapterParse,
-        this.charset,
-        { bookname }
-      );
+        chapterParse: this.chapterParse,
+        charset: this.charset,
+        options: { bookname },
+      });
       if (chapter.isVIP) {
         if (signIn) {
           if (chapter.isPaid === false) {

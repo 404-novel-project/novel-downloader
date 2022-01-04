@@ -129,7 +129,7 @@ export class Ciyuanji extends BaseRuleClass {
       sectionChapterNumber++;
       const isVIP = chapterObj.isFee === "1";
       const isPaid = chapterObj.isBuy === "1";
-      const chapter = new Chapter(
+      const chapter = new Chapter({
         bookUrl,
         bookname,
         chapterUrl,
@@ -140,10 +140,10 @@ export class Ciyuanji extends BaseRuleClass {
         sectionName,
         sectionNumber,
         sectionChapterNumber,
-        this.chapterParse,
-        this.charset,
-        {}
-      );
+        chapterParse: this.chapterParse,
+        charset: this.charset,
+        options: {},
+      });
       if (chapter.isVIP === true && chapter.isPaid === false) {
         chapter.status = Status.aborted;
       }

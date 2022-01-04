@@ -43,21 +43,21 @@ export class Fushuwang extends BaseRuleClass {
       const chapterName = `page${i}`;
       const isVIP = false;
       const isPaid = false;
-      const chapter = new Chapter(
+      const chapter = new Chapter({
         bookUrl,
         bookname,
         chapterUrl,
-        i + 1,
+        chapterNumber: i + 1,
         chapterName,
         isVIP,
         isPaid,
-        null,
-        null,
-        null,
-        this.chapterParse,
-        this.charset,
-        {}
-      );
+        sectionName: null,
+        sectionNumber: null,
+        sectionChapterNumber: null,
+        chapterParse: this.chapterParse,
+        charset: this.charset,
+        options: {},
+      });
       chapters.push(chapter);
     }
 

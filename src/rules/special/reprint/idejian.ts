@@ -58,7 +58,7 @@ export class Idejian extends BaseRuleClass {
       const chapterUrl = (aElem as HTMLAnchorElement).href;
       const isVIP = false;
       const isPaid = false;
-      const chapter = new Chapter(
+      const chapter = new Chapter({
         bookUrl,
         bookname,
         chapterUrl,
@@ -66,13 +66,13 @@ export class Idejian extends BaseRuleClass {
         chapterName,
         isVIP,
         isPaid,
-        null,
-        null,
-        null,
-        this.chapterParse,
-        "UTF-8",
-        { bookID }
-      );
+        sectionName: null,
+        sectionNumber: null,
+        sectionChapterNumber: null,
+        chapterParse: this.chapterParse,
+        charset: this.charset,
+        options: { bookID },
+      });
       chapters.push(chapter);
     }
 

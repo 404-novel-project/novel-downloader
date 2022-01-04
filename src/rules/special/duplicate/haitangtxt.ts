@@ -101,7 +101,7 @@ function getClass(
         const chapterUrl = a.href;
         const isVIP = false;
         const isPaid = false;
-        const chapter = new Chapter(
+        const chapter = new Chapter({
           bookUrl,
           bookname,
           chapterUrl,
@@ -109,13 +109,13 @@ function getClass(
           chapterName,
           isVIP,
           isPaid,
-          null,
-          null,
-          null,
-          this.chapterParse,
-          "UTF-8",
-          {}
-        );
+          sectionName: null,
+          sectionNumber: null,
+          sectionChapterNumber: null,
+          chapterParse: this.chapterParse,
+          charset: this.charset,
+          options: {},
+        });
         chapters.push(chapter);
       }
 

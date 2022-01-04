@@ -63,7 +63,7 @@ export class Hetushu extends BaseRuleClass {
           const chapterUrl = a.href;
           const isVIP = false;
           const isPaid = false;
-          const chapter = new Chapter(
+          const chapter = new Chapter({
             bookUrl,
             bookname,
             chapterUrl,
@@ -74,10 +74,10 @@ export class Hetushu extends BaseRuleClass {
             sectionName,
             sectionNumber,
             sectionChapterNumber,
-            this.chapterParse,
-            "UTF-8",
-            {}
-          );
+            chapterParse: this.chapterParse,
+            charset: this.charset,
+            options: {},
+          });
           chapters.push(chapter);
         }
       }

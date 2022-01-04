@@ -74,21 +74,21 @@ export class C17k extends BaseRuleClass {
           return false;
         };
 
-        const chapter = new Chapter(
+        const chapter = new Chapter({
           bookUrl,
           bookname,
           chapterUrl,
           chapterNumber,
           chapterName,
-          isVIP(),
-          isPaid(),
+          isVIP: isVIP(),
+          isPaid: isPaid(),
           sectionName,
           sectionNumber,
           sectionChapterNumber,
-          this.chapterParse,
-          this.charset,
-          {}
-        );
+          chapterParse: this.chapterParse,
+          charset: this.charset,
+          options: {},
+        });
 
         const isLogin = () => {
           // Todo

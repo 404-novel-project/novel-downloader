@@ -122,7 +122,7 @@ export function mkRuleClass({
         const chapterUrl = aElem.href;
         const isVIP = false;
         const isPaid = false;
-        let chapter: Chapter | void = new Chapter(
+        let chapter: Chapter | void = new Chapter({
           bookUrl,
           bookname,
           chapterUrl,
@@ -130,13 +130,13 @@ export function mkRuleClass({
           chapterName,
           isVIP,
           isPaid,
-          null,
-          null,
-          null,
-          this.chapterParse,
-          this.charset,
-          { bookname }
-        );
+          sectionName: null,
+          sectionChapterNumber: null,
+          sectionNumber: null,
+          chapterParse: this.chapterParse,
+          charset: this.charset,
+          options: { bookname },
+        });
         if (typeof postHook === "function") {
           chapter = postHook(chapter);
         }

@@ -100,21 +100,21 @@ export class Sfacg extends BaseRuleClass {
       };
       // 无法从章节列表判断章节支付情况
       const isPaid = null;
-      const chapter = new Chapter(
+      const chapter = new Chapter({
         bookUrl,
         bookname,
         chapterUrl,
         chapterNumber,
         chapterName,
-        isVip(),
+        isVIP: isVip(),
         isPaid,
         sectionName,
         sectionNumber,
         sectionChapterNumber,
-        this.chapterParse,
-        "UTF-8",
-        {}
-      );
+        chapterParse: this.chapterParse,
+        charset: this.charset,
+        options: {},
+      });
       const isLogin = !document
         .querySelector(".user-bar > .top-link > .normal-link")
         ?.innerHTML.includes("您好，SF游客");

@@ -70,21 +70,21 @@ export class Wenku8 extends BaseRuleClass {
         const a = td.firstElementChild;
         const chapterName = (a as HTMLAnchorElement).innerText.trim();
         const chapterUrl = (a as HTMLAnchorElement).href;
-        const chapter = new Chapter(
+        const chapter = new Chapter({
           bookUrl,
           bookname,
           chapterUrl,
           chapterNumber,
           chapterName,
-          false,
-          false,
+          isVIP: false,
+          isPaid: false,
           sectionName,
           sectionNumber,
           sectionChapterNumber,
-          this.chapterParse,
-          this.charset,
-          {}
-        );
+          chapterParse: this.chapterParse,
+          charset: this.charset,
+          options: {},
+        });
         chapters.push(chapter);
       }
     }

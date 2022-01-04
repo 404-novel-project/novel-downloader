@@ -83,7 +83,7 @@ export class Ciweimao extends BaseRuleClass {
           }
         }
 
-        const chapter = new Chapter(
+        const chapter = new Chapter({
           bookUrl,
           bookname,
           chapterUrl,
@@ -94,10 +94,10 @@ export class Ciweimao extends BaseRuleClass {
           sectionName,
           sectionNumber,
           sectionChapterNumber,
-          this.chapterParse,
-          this.charset,
-          {}
-        );
+          chapterParse: this.chapterParse,
+          charset: this.charset,
+          options: {},
+        });
         const isLogin =
           document.querySelector(".login-info.ly-fr")?.childElementCount === 1
             ? true

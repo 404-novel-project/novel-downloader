@@ -41,21 +41,35 @@ export class Chapter {
   public chapterHtmlFileName!: string | number;
   public book!: Book;
 
-  public constructor(
-    bookUrl: string,
-    bookname: string,
-    chapterUrl: string,
-    chapterNumber: number,
-    chapterName: string | null,
-    isVIP: boolean,
-    isPaid: boolean | null,
-    sectionName: string | null,
-    sectionNumber: number | null,
-    sectionChapterNumber: number | null,
-    chapterParse: BaseRuleClass["chapterParse"],
-    charset: string,
-    options: object
-  ) {
+  public constructor({
+    bookUrl,
+    bookname,
+    chapterUrl,
+    chapterNumber,
+    chapterName,
+    isVIP,
+    isPaid,
+    sectionName,
+    sectionNumber,
+    sectionChapterNumber,
+    chapterParse,
+    charset,
+    options,
+  }: {
+    bookUrl: string;
+    bookname: string;
+    chapterUrl: string;
+    chapterNumber: number;
+    chapterName: string | null;
+    isVIP: boolean;
+    isPaid: boolean | null;
+    sectionName: string | null;
+    sectionNumber: number | null;
+    sectionChapterNumber: number | null;
+    chapterParse: BaseRuleClass["chapterParse"];
+    charset: string;
+    options: object;
+  }) {
     this.bookUrl = bookUrl;
     this.bookname = bookname;
 

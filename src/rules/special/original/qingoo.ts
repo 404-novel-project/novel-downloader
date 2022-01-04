@@ -13,7 +13,6 @@ export class Qingoo extends BaseRuleClass {
   public constructor() {
     super();
     this.imageMode = "TM";
-    this.charset = "UTF-8";
   }
 
   public async bookParse() {
@@ -70,7 +69,7 @@ export class Qingoo extends BaseRuleClass {
       const chapterUrl = linkTemp.toString();
       const isVIP = false;
       const isPaid = false;
-      const chapter = new Chapter(
+      const chapter = new Chapter({
         bookUrl,
         bookname,
         chapterUrl,
@@ -78,13 +77,13 @@ export class Qingoo extends BaseRuleClass {
         chapterName,
         isVIP,
         isPaid,
-        null,
-        null,
-        null,
-        this.chapterParse,
-        this.charset,
-        {}
-      );
+        sectionName: null,
+        sectionNumber: null,
+        sectionChapterNumber: null,
+        chapterParse: this.chapterParse,
+        charset: this.charset,
+        options: {},
+      });
 
       if (!status) {
         chapter.status = Status.aborted;

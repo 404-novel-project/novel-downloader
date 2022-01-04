@@ -180,7 +180,7 @@ export class Xkzw extends BaseRuleClass {
           bookUrl + (sitechapter.chapterid + bookid * 11) + ".html";
         const isVIP = false;
         const isPaid = false;
-        const chapter = new Chapter(
+        const chapter = new Chapter({
           bookUrl,
           bookname,
           chapterUrl,
@@ -191,10 +191,10 @@ export class Xkzw extends BaseRuleClass {
           sectionName,
           sectionNumber,
           sectionChapterNumber,
-          this.chapterParse,
-          "UTF-8",
-          {}
-        );
+          chapterParse: this.chapterParse,
+          charset: this.charset,
+          options: {},
+        });
         chapters.push(chapter);
       }
     }

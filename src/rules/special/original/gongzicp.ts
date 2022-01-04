@@ -344,7 +344,7 @@ export class Gongzicp extends BaseRuleClass {
           novel_id: data.novelInfo.novel_id,
           chapter_id: chapterObj.id,
         };
-        const chapter = new Chapter(
+        const chapter = new Chapter({
           bookUrl,
           bookname,
           chapterUrl,
@@ -355,10 +355,10 @@ export class Gongzicp extends BaseRuleClass {
           sectionName,
           sectionNumber,
           sectionChapterNumber,
-          this.chapterParse,
-          "UTF-8",
-          chapterOption
-        );
+          chapterParse: this.chapterParse,
+          charset: this.charset,
+          options: chapterOption,
+        });
         if ((isVIP && !(logined && chapter.isPaid)) || isLock) {
           chapter.status = Status.aborted;
         }

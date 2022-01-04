@@ -66,7 +66,7 @@ export class Soxscc extends BaseRuleClass {
         const chapterName = (a as HTMLAnchorElement).innerText;
         const isVIP = false;
         const isPaid = false;
-        const chapter = new Chapter(
+        const chapter = new Chapter({
           bookUrl,
           bookname,
           chapterUrl,
@@ -75,12 +75,12 @@ export class Soxscc extends BaseRuleClass {
           isVIP,
           isPaid,
           sectionName,
-          i + 1,
+          sectionNumber: i + 1,
           sectionChapterNumber,
-          this.chapterParse,
-          "UTF-8",
-          { bookname }
-        );
+          chapterParse: this.chapterParse,
+          charset: this.charset,
+          options: { bookname },
+        });
         chapters.push(chapter);
       }
     }

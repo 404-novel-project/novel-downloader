@@ -100,21 +100,21 @@ export class Lofter extends BaseRuleClass {
 
     let i = 0;
     for (const pageUrl of Array.from(pageUrlSet)) {
-      const chapter = new Chapter(
+      const chapter = new Chapter({
         bookUrl,
         bookname,
-        pageUrl,
-        i,
-        null,
-        false,
-        false,
-        null,
-        null,
-        null,
-        this.chapterParse,
-        "UTF-8",
-        { author }
-      );
+        chapterUrl: pageUrl,
+        chapterNumber: i,
+        chapterName: null,
+        isVIP: false,
+        isPaid: false,
+        sectionName: null,
+        sectionNumber: null,
+        sectionChapterNumber: null,
+        chapterParse: this.chapterParse,
+        charset: this.charset,
+        options: { author },
+      });
       chapters.push(chapter);
       i++;
     }

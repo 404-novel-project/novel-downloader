@@ -84,21 +84,21 @@ export class Cool18 extends BaseRuleClass {
         .replace(`《${bookname}》`, "")
         .replace(`作者：${author}`, "")
         .trim();
-      const chapter = new Chapter(
+      const chapter = new Chapter({
         bookUrl,
         bookname,
         chapterUrl,
         chapterNumber,
         chapterName,
-        false,
-        false,
-        null,
-        null,
-        null,
-        this.chapterParse,
-        this.charset,
-        { bookname, author }
-      );
+        isVIP: false,
+        isPaid: false,
+        sectionName: null,
+        sectionNumber: null,
+        sectionChapterNumber: null,
+        chapterParse: this.chapterParse,
+        charset: this.charset,
+        options: { bookname, author },
+      });
       return chapter;
     });
     let i = 0;

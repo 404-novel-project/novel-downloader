@@ -80,21 +80,21 @@ export class Pixiv extends BaseRuleClass {
           const chapterUrl = chapterUrlBase + sc.id;
           const chapterNumber = sc.series.contentOrder;
           const chapterName = `#${sc.series.contentOrder} ${sc.title}`;
-          const chapter = new Chapter(
+          const chapter = new Chapter({
             bookUrl,
             bookname,
             chapterUrl,
             chapterNumber,
             chapterName,
-            false,
-            false,
-            null,
-            null,
-            null,
-            self.chapterParse,
-            self.charset,
-            { id: sc.id }
-          );
+            isVIP: false,
+            isPaid: false,
+            sectionName: null,
+            sectionNumber: null,
+            sectionChapterNumber: null,
+            chapterParse: self.chapterParse,
+            charset: self.charset,
+            options: { id: sc.id },
+          });
           chapters.push(chapter);
         }
 
@@ -287,21 +287,21 @@ export class Pixiv extends BaseRuleClass {
 
       const chapterUrl = bookUrl;
       const chapterName = bookname;
-      const chapter = new Chapter(
+      const chapter = new Chapter({
         bookUrl,
         bookname,
         chapterUrl,
-        1,
+        chapterNumber: 1,
         chapterName,
-        false,
-        false,
-        null,
-        null,
-        null,
-        self.chapterParse,
-        self.charset,
-        {}
-      );
+        isVIP: false,
+        isPaid: false,
+        sectionName: null,
+        sectionNumber: null,
+        sectionChapterNumber: null,
+        chapterParse: self.chapterParse,
+        charset: self.charset,
+        options: {},
+      });
       const contentRaw = document.createElement("div");
       contentRaw.innerHTML = novel.content.replace(/\n/g, "<br/>");
       const { dom, text, images } = await cleanDOM(contentRaw, "TM");

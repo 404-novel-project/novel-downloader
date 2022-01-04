@@ -65,21 +65,21 @@ export class Qimao extends BaseRuleClass {
         // Todo
         return false;
       };
-      const chapter = new Chapter(
+      const chapter = new Chapter({
         bookUrl,
         bookname,
         chapterUrl,
         chapterNumber,
         chapterName,
-        isVIP(),
-        isPaid(),
-        null,
-        null,
-        null,
-        this.chapterParse,
-        "UTF-8",
-        {}
-      );
+        isVIP: isVIP(),
+        isPaid: isPaid(),
+        sectionName: null,
+        sectionNumber: null,
+        sectionChapterNumber: null,
+        chapterParse: this.chapterParse,
+        charset: this.charset,
+        options: {},
+      });
       const isLogin = () => {
         // Todo
         return false;

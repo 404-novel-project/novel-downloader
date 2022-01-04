@@ -66,24 +66,23 @@ export class Linovelib extends BaseRuleClass {
         chapterNumber++;
         sectionChapterNumber++;
         const a = node.firstElementChild as HTMLAnchorElement;
-        const isVIP = false;
         const chapterName = a.innerText.trim();
         const chapterUrl = a.href;
-        const chapter = new Chapter(
+        const chapter = new Chapter({
           bookUrl,
           bookname,
           chapterUrl,
           chapterNumber,
           chapterName,
-          isVIP,
-          null,
+          isVIP: false,
+          isPaid: false,
           sectionName,
           sectionNumber,
           sectionChapterNumber,
-          this.chapterParse,
-          "UTF-8",
-          {}
-        );
+          chapterParse: this.chapterParse,
+          charset: this.charset,
+          options: {},
+        });
         if (chapterUrl.startsWith("javascript")) {
           chapter.status = Status.aborted;
         }

@@ -165,21 +165,21 @@ export class Jjwxc extends BaseRuleClass {
             const chapterName = (a as HTMLAnchorElement).innerText.trim();
             const chapterUrl = (a as HTMLAnchorElement).getAttribute("rel");
             if (chapterUrl) {
-              const chapter = new Chapter(
+              const chapter = new Chapter({
                 bookUrl,
                 bookname,
                 chapterUrl,
                 chapterNumber,
                 chapterName,
-                isVIP(),
-                null,
+                isVIP: isVIP(),
+                isPaid: null,
                 sectionName,
                 sectionNumber,
                 sectionChapterNumber,
-                this.chapterParse,
-                this.charset,
-                {}
-              );
+                chapterParse: this.chapterParse,
+                charset: this.charset,
+                options: {},
+              });
               const isLogin = () => {
                 if (document.getElementById("jj_login")) {
                   return false;
@@ -195,21 +195,21 @@ export class Jjwxc extends BaseRuleClass {
           } else {
             const chapterName = (a as HTMLAnchorElement).innerText.trim();
             const chapterUrl = (a as HTMLAnchorElement).href;
-            const chapter = new Chapter(
+            const chapter = new Chapter({
               bookUrl,
               bookname,
               chapterUrl,
               chapterNumber,
               chapterName,
-              isVIP(),
-              null,
+              isVIP: isVIP(),
+              isPaid: null,
               sectionName,
               sectionNumber,
               sectionChapterNumber,
-              this.chapterParse,
-              this.charset,
-              {}
-            );
+              chapterParse: this.chapterParse,
+              charset: this.charset,
+              options: {},
+            });
             const isLogin = () => {
               if (document.getElementById("jj_login")) {
                 return false;
@@ -225,21 +225,21 @@ export class Jjwxc extends BaseRuleClass {
         } else {
           const chapterName = "[锁]";
           const chapterUrl = "";
-          const chapter = new Chapter(
+          const chapter = new Chapter({
             bookUrl,
             bookname,
             chapterUrl,
             chapterNumber,
             chapterName,
-            false,
-            null,
+            isVIP: false,
+            isPaid: null,
             sectionName,
             sectionNumber,
             sectionChapterNumber,
-            this.chapterParse,
-            this.charset,
-            {}
-          );
+            chapterParse: this.chapterParse,
+            charset: this.charset,
+            options: {},
+          });
           chapter.status = Status.aborted;
           chapters.push(chapter);
         }

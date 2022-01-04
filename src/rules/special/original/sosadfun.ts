@@ -93,21 +93,21 @@ export class Sosadfun extends BaseRuleClass {
       chapterNumber++;
       const chapterName = (a as HTMLAnchorElement).innerText.trim();
       const chapterUrl = (a as HTMLAnchorElement).href;
-      const chapter = new Chapter(
+      const chapter = new Chapter({
         bookUrl,
         bookname,
         chapterUrl,
         chapterNumber,
         chapterName,
-        false,
-        false,
-        null,
-        null,
-        null,
-        this.chapterParse,
-        "UTF-8",
-        {}
-      );
+        isVIP: false,
+        isPaid: false,
+        sectionName: null,
+        sectionNumber: null,
+        sectionChapterNumber: null,
+        chapterParse: this.chapterParse,
+        charset: this.charset,
+        options: {},
+      });
       chapters.push(chapter);
     }
 
