@@ -508,6 +508,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = yqxs();
       break;
     }
+    case "www.dushu369.com": {
+      const { dushu369 } = await import("../rules/onePage/dushu369");
+      ruleClass = dushu369();
+      break;
+    }
     default: {
       throw new Error("Not Found Rule!");
     }
