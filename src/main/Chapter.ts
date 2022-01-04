@@ -29,8 +29,8 @@ export class Chapter {
   public charset: string;
   public options: object;
 
-  public status: Status;
-  public retryTime: number;
+  public status: Status = Status.pending;
+  public retryTime = 0;
 
   public contentRaw!: HTMLElement | null;
   public contentText!: string | null;
@@ -85,9 +85,6 @@ export class Chapter {
     this.chapterParse = chapterParse;
     this.charset = charset;
     this.options = options;
-
-    this.status = Status.pending;
-    this.retryTime = 0;
   }
 
   public async init() {

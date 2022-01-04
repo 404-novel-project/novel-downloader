@@ -10,6 +10,7 @@ import defaultMainStyleText from "./main.css";
 import { getSectionsObj } from "./misc";
 import { chapter as chapterTemplt, index, section } from "./template";
 import defaultTocStyleText from "./toc.css";
+import { fullWidthLength } from "../lib/dom";
 
 export interface SaveOptions {
   mainStyleText?: SaveBook["mainStyleText"];
@@ -81,24 +82,20 @@ export class SaveBook {
 
   private chapters: Chapter[];
 
-  public mainStyleText: string;
-  public tocStyleText: string;
+  public mainStyleText: string = defaultMainStyleText;
+  public tocStyleText: string = defaultTocStyleText;
 
   private savedZip: FflateZip;
-  private savedTextArray: string[];
   private saveFileNameBase: string;
 
-  private _sections: string[];
+  private savedTextArray: string[] = [];
+  private _sections: string[] = [];
 
   public constructor(book: Book, streamZip: boolean, options?: SaveOptions) {
     this.book = book;
     this.chapters = book.chapters;
     this.streamZip = streamZip;
-    this.mainStyleText = defaultMainStyleText;
-    this.tocStyleText = defaultTocStyleText;
 
-    this.savedTextArray = [];
-    this._sections = [];
     this.saveFileNameBase = `[${this.book.author}]${this.book.bookname}`;
 
     const zipFilename = `${this.saveFileNameBase}.zip`;
@@ -361,7 +358,9 @@ export class SaveBook {
   }
 
   public genChapterText(chapterName: string, contentText: string) {
-    return `## ${chapterName}\n\n${contentText}\n\n`;
+    return `${chapterName}\n${"=".repeat(
+      fullWidthLength(chapterName) * 2 + 10
+    )}\n\n${contentText}\n\n`;
   }
 
   public genSectionHtmlFile(chapterObj: Chapter) {

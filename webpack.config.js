@@ -70,7 +70,7 @@ module.exports = {
     server: "http",
     port: 11944,
     allowedHosts: "all",
-    hot: false,
+    hot: true,
     liveReload: true,
     magicHtml: false,
     headers: {

@@ -35,55 +35,44 @@ export interface ChapterParseObject {
 }
 
 export abstract class BaseRuleClass {
-  public imageMode: "naive" | "TM";
-  public charset: string;
-  public concurrencyLimit: number;
+  public imageMode: "naive" | "TM" = "TM";
+  public charset: string = document.characterSet;
+  public concurrencyLimit = 10;
+  public streamZip = false;
+  public needLogin = false;
   public maxRunLimit?: number;
   public saveOptions?: SaveOptions;
-  public streamZip: boolean;
-  public needLogin: boolean;
+
+  private bcWorker: BroadcastChannel = new BroadcastChannel(
+    "novel-downloader-worker"
+  );
+  private bcWorkerMessages: BcMessage[] = [];
 
   public book?: Book;
-
   private audio?: HTMLAudioElement;
-  private bcWorker!: BroadcastChannel;
-  private bcWorkerMessages!: BcMessage[];
 
   public constructor() {
-    const self = this;
+    const broadcastChannelWorker = this.bcWorker;
+    const messages = this.bcWorkerMessages;
+    broadcastChannelWorker.onmessage = (ev) => {
+      const message = ev.data as BcMessage;
 
-    this.imageMode = "TM";
-    this.charset = document.characterSet;
-    this.concurrencyLimit = 10;
-    this.streamZip = false;
-    this.needLogin = false;
-    registerBroadcastChannel();
-
-    function registerBroadcastChannel(): void {
-      self.bcWorker = new BroadcastChannel("novel-downloader-worker");
-      const broadcastChannelWorker = self.bcWorker;
-      self.bcWorkerMessages = [];
-      const messages = self.bcWorkerMessages;
-      broadcastChannelWorker.onmessage = (ev) => {
-        const message = ev.data as BcMessage;
-
-        if (message.type === "ping") {
-          const pong: BcMessage = {
-            type: "pong",
-            src: message.workerId,
-            workerId: (window as GmWindow).workerId,
-            url: document.location.href,
-          };
-          broadcastChannelWorker.postMessage(pong);
-        }
-        if (message.type === "pong") {
-          messages.push(message);
-        }
-        if (message.type === "close") {
-          //
-        }
-      };
-    }
+      if (message.type === "ping") {
+        const pong: BcMessage = {
+          type: "pong",
+          src: message.workerId,
+          workerId: (window as GmWindow).workerId,
+          url: document.location.href,
+        };
+        broadcastChannelWorker.postMessage(pong);
+      }
+      if (message.type === "pong") {
+        messages.push(message);
+      }
+      if (message.type === "close") {
+        //
+      }
+    };
   }
 
   public abstract bookParse(): Promise<Book>;

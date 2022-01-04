@@ -16,13 +16,12 @@ export async function setStreamSaverSetting() {
 export class FflateZip {
   public filename: string;
   public stream: boolean;
-  private zcount: number;
-  private count: number;
-  private filenameList: string[];
-  private zipOut: Blob;
+
+  private zcount = 0;
+  private count = 0;
+  private filenameList: string[] = [];
+  private zipOut: Blob = new Blob([], { type: "application/zip" });
   private savedZip: Zip;
-  public onFinal?: (zipBlob: Blob) => void;
-  public onFinalError?: (error: Error) => void;
 
   public constructor(filename: string, stream: boolean) {
     log.info(
@@ -43,11 +42,6 @@ export class FflateZip {
       writer =
         fileStream.getWriter() as WritableStreamDefaultWriter<Uint8Array>;
     }
-
-    this.zcount = 0;
-    this.count = 0;
-    this.filenameList = [];
-    this.zipOut = new Blob([], { type: "application/zip" });
 
     this.savedZip = new Zip((err, dat, final) => {
       if (err) {

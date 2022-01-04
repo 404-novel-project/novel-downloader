@@ -10,10 +10,12 @@ export class AttachmentClass {
   public mode: "naive" | "TM";
   public referrerMode: ReferrerMode;
   public customReferer: string;
-  private defaultHeader: Record<string, string>;
 
-  public status: Status;
-  public retryTime: number;
+  public status: Status = Status.pending;
+  public retryTime = 0;
+  private defaultHeader: Record<string, string> = {
+    Referer: document.location.origin,
+  };
 
   public imageBlob!: Blob | null | void;
   public comments!: string;
@@ -30,13 +32,6 @@ export class AttachmentClass {
     this.mode = mode;
     this.referrerMode = referrerMode;
     this.customReferer = customReferer;
-
-    this.status = Status.pending;
-    this.retryTime = 0;
-
-    this.defaultHeader = {
-      Referer: document.location.origin,
-    };
   }
 
   public async init() {
