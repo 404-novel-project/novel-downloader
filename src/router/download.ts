@@ -509,6 +509,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = c18kanshu();
       break;
     }
+    case "www.bxwx333.org": {
+      const { bxwx333 } = await import("../rules/biquge/type1");
+      ruleClass = bxwx333();
+      break;
+    }
     default: {
       throw new Error("Not Found Rule!");
     }

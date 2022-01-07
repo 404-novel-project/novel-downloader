@@ -151,3 +151,18 @@ export const b5200 = () =>
     (content) => content,
     1
   );
+
+export const bxwx333 = () =>
+  mkBiqugeClass(
+    (introDom) => introDom,
+    (content) => {
+      content.querySelector("#xuanchuan")?.parentElement?.remove();
+      rm("div[style]", true, content);
+      rm(".bottem2", true, content);
+      return content;
+    },
+    undefined,
+    undefined,
+    undefined,
+    "#zjneirong"
+  );

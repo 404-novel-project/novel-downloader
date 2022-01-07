@@ -9,7 +9,8 @@ export function mkBiqugeClass(
   contentPatch: (content: HTMLElement) => HTMLElement,
   concurrencyLimit?: number,
   overRide?: (classThis: BaseRuleClass) => any,
-  postHook?: (chapter: Chapter) => Chapter | void
+  postHook?: (chapter: Chapter) => Chapter | void,
+  chapterContenSelector = "#content"
 ) {
   return mkRuleClass({
     bookUrl: document.location.href,
@@ -20,7 +21,7 @@ export function mkBiqugeClass(
       .replace(/最新章节$/, ""),
     author: (
       document.querySelector(
-        "#info > p:nth-child(2), .small > span:nth-child(1)"
+        "#info > p:nth-child(2), #info > div:nth-child(2), .small > span:nth-child(1)"
       ) as HTMLElement
     ).innerText
       .replace(/作(\s+)?者[：:]/, "")
@@ -60,7 +61,7 @@ export function mkBiqugeClass(
       }
       return chapter;
     },
-    getContent: (doc) => doc.querySelector("#content"),
+    getContent: (doc) => doc.querySelector(chapterContenSelector),
     contentPatch,
     concurrencyLimit,
     overrideConstructor: (classThis) => {
@@ -86,7 +87,8 @@ export function mkBiqugeClassNextPage(
   continueCondition: (content: HTMLElement, nextLink: string) => boolean,
   concurrencyLimit?: number,
   overRide?: (classThis: BaseRuleClass) => any,
-  postHook?: (chapter: Chapter) => Chapter | void
+  postHook?: (chapter: Chapter) => Chapter | void,
+  chapterContenSelector = "#content"
 ) {
   return mkRuleClass({
     bookUrl: document.location.href,
@@ -97,7 +99,7 @@ export function mkBiqugeClassNextPage(
       .replace(/最新章节$/, ""),
     author: (
       document.querySelector(
-        "#info > p:nth-child(2), .small > span:nth-child(1)"
+        "#info > p:nth-child(2), #info > div:nth-child(2), .small > span:nth-child(1)"
       ) as HTMLElement
     ).innerText
       .replace(/作(\s+)?者[：:]/, "")
@@ -146,7 +148,7 @@ export function mkBiqugeClassNextPage(
         chapterName,
         chapterUrl,
         charset,
-        selector: "#content",
+        selector: chapterContenSelector,
         contentPatch,
         getNextPage,
         continueCondition,
