@@ -114,6 +114,7 @@ export class Hanwujinian extends BaseRuleClass {
       additionalMetadate,
       chapters,
     });
+    book.ToCUrl = anotherPageUrl;
     return book;
   }
   public async chapterParse(
