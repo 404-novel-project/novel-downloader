@@ -1,9 +1,9 @@
 import { htmlTrim } from "../../lib/cleanDOM";
 import { rm, rm2, rms } from "../../lib/dom";
-import { mkBiqugeClass3 } from "./template";
+import { mkBiqugeClassNextPage } from "./template";
 
 export const dingdiann = () =>
-  mkBiqugeClass3(
+  mkBiqugeClassNextPage(
     (introDom) => introDom,
     (content, doc) => {
       rm("div[align]", false, content);
@@ -27,7 +27,7 @@ export const dingdiann = () =>
   );
 
 export const mht = () =>
-  mkBiqugeClass3(
+  mkBiqugeClassNextPage(
     (introDom) => introDom,
     (content, doc) => {
       rm("p[data-id]", true, content);
@@ -41,7 +41,7 @@ export const mht = () =>
   );
 
 export const xinwanben = () =>
-  mkBiqugeClass3(
+  mkBiqugeClassNextPage(
     (introDom) => {
       const _bookname = introDom.innerHTML.match(/《(.*)》/);
       let bookname;
@@ -67,13 +67,11 @@ export const xinwanben = () =>
       return content;
     },
     (doc) => (doc.querySelector("#next_url") as HTMLAnchorElement).href,
-    (_content, nextLink) => new URL(nextLink).pathname.includes("_"),
-    undefined,
-    true
+    (_content, nextLink) => new URL(nextLink).pathname.includes("_")
   );
 
 export const biqu55 = () =>
-  mkBiqugeClass3(
+  mkBiqugeClassNextPage(
     (introDom) => introDom,
     (content, doc) => {
       rm2(content, ["精彩小说无弹窗免费阅读！"]);

@@ -1,5 +1,6 @@
 import { log } from "../log";
 import { AttachmentClass } from "../main/Attachment";
+import { Chapter } from "../main/Chapter";
 import { ChapterParseObject } from "../rules";
 import { cleanDOM } from "./cleanDOM";
 import { getHtmlDOM } from "./http";
@@ -145,6 +146,50 @@ export function centerDetct(element: Element): [boolean, Element, number] {
   return [true, element, percentY];
 }
 
-export function softByValue(a: [Element, number], b: [Element, number]) {
-  return a[1] - b[1];
+export function reIndex(chapters: Chapter[]) {
+  let i = 0;
+  chapters = chapters.sort(
+    (a: Chapter, b: Chapter) => a.chapterNumber - b.chapterNumber
+  );
+  for (const chapter of chapters) {
+    i++;
+    chapter.chapterNumber = i;
+  }
+  return chapters;
+}
+
+export function deDuplicate(chapters: Chapter[]) {
+  interface reduceObj {
+    [index: string]: Chapter | Chapter[];
+  }
+  const obj = chapters.reduce((obj, cur) => {
+    const url = cur.chapterUrl;
+    if (obj[url] === undefined) {
+      obj[url] = cur;
+    } else if (Array.isArray(obj[url])) {
+      (obj[url] as Chapter[]).push(cur);
+    } else {
+      obj[url] = [obj[url] as Chapter, cur];
+    }
+    return obj;
+  }, {} as reduceObj);
+
+  const reducer = (out: Chapter[], cur: Chapter | Chapter[]) => {
+    if (Array.isArray(cur)) {
+      const url = cur[0].chapterUrl;
+      if (url === "") {
+        out.push(...cur);
+      } else {
+        out.push(
+          cur.sort((a, b) => a.chapterNumber - b.chapterNumber).slice(-1)[0]
+        );
+      }
+    } else {
+      out.push(cur);
+    }
+    return out;
+  };
+  const results = Object.values(obj).reduce(reducer, []);
+  reIndex(results);
+  return results;
 }

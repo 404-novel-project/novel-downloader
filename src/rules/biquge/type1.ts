@@ -9,21 +9,6 @@ export const common = () =>
     (content) => content
   );
 
-// 笔趣阁通用模板，禁用怱略
-export const common1 = () =>
-  mkBiqugeClass(
-    (introDom) => introDom,
-    (content) => content,
-    undefined,
-    false
-  );
-
-export const c81book = () =>
-  mkBiqugeClass(
-    (introDom) => introDom,
-    (content) => content
-  );
-
 export const gebiqu = () =>
   mkBiqugeClass(
     (introDom) => {
@@ -93,20 +78,6 @@ export const dijiubook = () =>
   mkBiqugeClass(
     (introDom) => {
       rms(["本书网址："], introDom);
-      rm('a[href^="https://dijiubook.net/"]', false, introDom);
-
-      rm(
-        "dl > dt:nth-of-type(2)",
-        false,
-        document.querySelector("#list") as HTMLElement
-      );
-      document
-        .querySelectorAll('#list a[href^="https://m.dijiubook.net"]')
-        .forEach((elem) => elem.parentElement?.remove());
-      document
-        .querySelectorAll('#list a[href$=".apk"]')
-        .forEach((elem) => elem.parentElement?.remove());
-
       return introDom;
     },
     (content) => {
@@ -115,8 +86,6 @@ export const dijiubook = () =>
       return content;
     },
     1,
-    undefined,
-    undefined,
     (classThis: any) => {
       classThis.maxRunLimit = 1;
       const chapterParse = classThis.chapterParse;
@@ -125,6 +94,13 @@ export const dijiubook = () =>
         await sleep(3000 * Math.random());
         return obj;
       };
+    },
+    (chapter) => {
+      const url = new URL(chapter.chapterUrl);
+      if (url.host === "m.dijiubook.net" || url.href.endsWith(".apk")) {
+        return;
+      }
+      return chapter;
     }
   );
 
@@ -144,8 +120,8 @@ export const c25zw = () =>
 export const xbiquge = () =>
   mkBiqugeClass(
     (introDom) => introDom,
-    (content, options) => {
-      rms([`笔趣阁 www.xbiquge.so，最快更新${options.bookname} ！`], content);
+    (content) => {
+      rms([`笔趣阁 www.xbiquge.so，最快更新.+ ！`], content);
       return content;
     }
   );
@@ -166,10 +142,7 @@ export const ranwen = () =>
       rm2(introDom, ["还不错的话请不要忘记向您QQ群和微博里的朋友推荐哦！"]);
       return introDom;
     },
-    (content) => content,
-    undefined,
-    undefined,
-    /全文阅读/
+    (content) => content
   );
 
 export const b5200 = () =>

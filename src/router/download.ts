@@ -86,6 +86,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = Jjwxc;
       break;
     }
+    case "www.81book.com":
+    case "www.81zw.com":
+    case "www.fuguoduxs.com":
+    case "www.shubaowa.org":
+    case "www.bz01.org":
     case "www.aixiawx.com":
     case "www.banzhuer.org":
     case "www.biquwoo.com":
@@ -93,19 +98,6 @@ export async function getRule(): Promise<BaseRuleClass> {
     case "www.hongyeshuzhai.com": {
       const { common } = await import("../rules/biquge/type1");
       ruleClass = common();
-      break;
-    }
-    case "www.fuguoduxs.com":
-    case "www.shubaowa.org":
-    case "www.bz01.org": {
-      const { common1 } = await import("../rules/biquge/type1");
-      ruleClass = common1();
-      break;
-    }
-    case "www.81book.com":
-    case "www.81zw.com": {
-      const { c81book } = await import("../rules/biquge/type1");
-      ruleClass = c81book();
       break;
     }
     case "book.zongheng.com":
@@ -192,7 +184,6 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = westnovel();
       break;
     }
-    case "www.mht.tw":
     case "www.mht99.com": {
       const { mht } = await import("../rules/biquge/type3");
       ruleClass = mht();

@@ -2,12 +2,7 @@ import { getImageAttachment } from "../../../lib/attachments";
 import { cleanDOM } from "../../../lib/cleanDOM";
 import { getMaxDepth, getNodeTextLength, rm } from "../../../lib/dom";
 import { fetchAndParse } from "../../../lib/readability";
-import {
-  centerDetct,
-  getSectionName,
-  introDomHandle,
-  softByValue,
-} from "../../../lib/rule";
+import { centerDetct, getSectionName, introDomHandle } from "../../../lib/rule";
 import { log } from "../../../log";
 import { Chapter } from "../../../main/Chapter";
 import { Book, BookAdditionalMetadate } from "../../../main/Book";
@@ -189,4 +184,8 @@ export class Kanunu8 extends BaseRuleClass {
       additionalMetadate: null,
     };
   }
+}
+
+function softByValue(a: [Element, number], b: [Element, number]) {
+  return a[1] - b[1];
 }

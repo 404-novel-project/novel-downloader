@@ -34,6 +34,7 @@ interface MkRuleClassOptions {
   needLogin?: boolean;
   nsfw?: boolean;
   cleanDomOptions?: Options;
+  overrideConstructor?: (classThis: BaseRuleClass) => any;
 }
 export function mkRuleClass({
   bookUrl,
@@ -55,6 +56,7 @@ export function mkRuleClass({
   needLogin,
   nsfw,
   cleanDomOptions,
+  overrideConstructor,
 }: MkRuleClassOptions): PublicConstructor<BaseRuleClass> {
   return class extends BaseRuleClass {
     public constructor() {
@@ -68,6 +70,9 @@ export function mkRuleClass({
       }
       if (nsfw) {
         this.nsfw = nsfw;
+      }
+      if (overrideConstructor) {
+        overrideConstructor(this);
       }
     }
 

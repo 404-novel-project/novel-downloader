@@ -96,7 +96,7 @@ ZIP压缩包，请在解压后，直接双击打开HTML文件（`index.html` 为
 |[得间小说](https://www.idejian.com/)|✅|❎||
 |[轻小说文库](https://www.wenku8.net/)|✅|❎||
 |[西方奇幻小说网](https://www.westnovel.com/)|✅|❎||
-|[棉花糖小说网](https://www.mht.tw/)|✅|❎||
+|[棉花糖小说网](https://www.mht99.com/)|✅|❎||
 |[第一版主网](https://www.bz01.org/)|✅|❎||
 |[笔趣阁](https://www.xbiquge.so/)|✅|❎||
 |[红叶书斋](https://www.hongyeshuzhai.com/)|✅|❎||

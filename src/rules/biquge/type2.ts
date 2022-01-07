@@ -1,9 +1,9 @@
 import { htmlTrim } from "../../lib/cleanDOM";
 import { rm, rm2, rms } from "../../lib/dom";
-import { mkBiqugeClass2 } from "./template";
+import { mkBiqugeClass } from "./template";
 
 export const shuquge = () =>
-  mkBiqugeClass2(
+  mkBiqugeClass(
     (introDom) => {
       document.querySelector(".noshow")?.classList.remove("noshow");
       if (document.querySelector(".showall")) {
@@ -20,20 +20,14 @@ export const shuquge = () =>
       return introDom;
     },
     (content) => {
-      rms(
-        [
-          "请记住本书首发域名：www.shuquge.com。书趣阁_笔趣阁手机版阅读网址：m.shuquge.com",
-          /https?:\/\/www\.shuquge\.com\/txt\/\d+\/\d+\.html/,
-        ],
-        content
-      );
+      rm2(content, ["请记住本书首发域名：", "www.shuquge.com"]);
       return content;
     },
     1
   );
 
 export const xyqxs = () =>
-  mkBiqugeClass2(
+  mkBiqugeClass(
     (introDom) => {
       rms(
         [/推荐地址：https:\/\/www.xyqxs.cc\/html\/\d+\/\d+\/index\.html/g],
@@ -57,7 +51,7 @@ export const xyqxs = () =>
   );
 
 export const lusetxt = () =>
-  mkBiqugeClass2(
+  mkBiqugeClass(
     (introDom) => {
       rm2(introDom, [
         "无弹窗免费全文阅读为转载作品",
@@ -77,7 +71,7 @@ export const lusetxt = () =>
   );
 
 export const yqxs = () =>
-  mkBiqugeClass2(
+  mkBiqugeClass(
     (introDom) => {
       rms(["<span>简介：</span>"], introDom);
       rm2(introDom, ["推荐地址："]);
