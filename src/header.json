@@ -188,7 +188,9 @@
     "*://www.cool18.com/bbs4/index.php?*",
     "*://www.b5200.net/*_*/",
     "*://www.yqxs.cc/html/*/*/index.html",
-    "*://www.dushu369.com/*/*/"
+    "*://www.dushu369.com/*/*/",
+    "*://www.18kanshu.com/*/*/info.html",
+    "*://www.18kanshu.com/module/novel/info.php?*"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",

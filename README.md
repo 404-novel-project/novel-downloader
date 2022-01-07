@@ -140,6 +140,7 @@ ZIP压缩包，请在解压后，直接双击打开HTML文件（`index.html` 为
 |[56书库](https://www.liuxs.la/)|✅|❎||
 |[笔趣阁](http://www.b5200.net/)|✅|❎||
 |[言情小说](https://www.yqxs.cc/)|✅|❎||
+|[18看书](https://www.18kanshu.com/)|✅|❎||
 
 </details>
 

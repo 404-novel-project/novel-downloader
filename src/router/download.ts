@@ -513,6 +513,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = dushu369();
       break;
     }
+    case "www.18kanshu.com": {
+      const { c18kanshu } = await import("../rules/twoPage/18kanshu");
+      ruleClass = c18kanshu();
+      break;
+    }
     default: {
       throw new Error("Not Found Rule!");
     }
