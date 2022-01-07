@@ -7098,6 +7098,8 @@ const ranwen = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass 
 const b5200 = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass */ .R)((introDom) => introDom, (content) => content, 1);
 const bxwx333 = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass */ .R)((introDom) => introDom, (content) => {
     content.querySelector("#xuanchuan")?.parentElement?.remove();
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("div[style]", true, content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)(".bottem2", true, content);
     return content;
 }, undefined, undefined, undefined, "#zjneirong");
 
