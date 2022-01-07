@@ -1,3 +1,4 @@
+import { convertFixWidth, isFixWidth } from "../../lib/cleanDOM";
 import { mkRuleClass } from "./tempate";
 
 export const c18kanshu = () =>
@@ -39,6 +40,21 @@ export const c18kanshu = () =>
       return aList;
     },
     getContent: (doc) => doc.querySelector(".readcontent"),
-    contentPatch: (dom) => dom,
+    contentPatch: (dom) => {
+      Array.from(dom.childNodes)
+        .filter((node) => node instanceof Text)
+        .forEach((text) => {
+          if ((text as Text).textContent?.includes("　　")) {
+            (text as Text).parentNode?.insertBefore(
+              document.createElement("br"),
+              text
+            );
+          }
+        });
+      if (isFixWidth(dom)) {
+        convertFixWidth(dom);
+      }
+      return dom;
+    },
     nsfw: true,
   });

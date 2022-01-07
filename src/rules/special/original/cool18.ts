@@ -1,11 +1,13 @@
-import { cleanDOM, convertFixWidthText } from "../../../lib/cleanDOM";
+import {
+  cleanDOM,
+  convertFixWidth,
+  convertFixWidthText,
+  isFixWidth,
+} from "../../../lib/cleanDOM";
 import {
   childNodesCopy,
   getNextSibling,
-  getPreviousBrCount,
   getPreviousSibling,
-  fullWidthLength,
-  removePreviousBr,
   rm,
 } from "../../../lib/dom";
 import { getHtmlDOM } from "../../../lib/http";
@@ -152,118 +154,8 @@ export class Cool18 extends BaseRuleClass {
       const nodes = Array.from(dom.childNodes);
       if (nodes.length > 10) {
         childNodesCopy(dom, contentRaw);
-
-        // 移除超链接
         rm("a", true, contentRaw);
-
-        if (isFixWidth(contentRaw)) {
-          // 移除换行
-          Array.from(contentRaw.querySelectorAll("br")).forEach((node) => {
-            const previous = node.previousSibling;
-            const next = node.nextSibling;
-            if (
-              previous instanceof Text &&
-              next instanceof Text &&
-              (previous.textContent
-                ? fullWidthLength(previous.textContent)
-                : 0) > 30 &&
-              (previous.textContent
-                ? fullWidthLength(previous.textContent)
-                : 0) < 40
-            ) {
-              node.remove();
-            }
-          });
-
-          // 合并 Text
-          const group = (texts: Text[]) => {
-            const out: Text[][] = [];
-
-            let group: Text[] = [];
-            let whole = "";
-            for (const text of texts) {
-              const w = text.wholeText;
-              if (whole !== w) {
-                if (group.length !== 0) {
-                  out.push(group);
-                }
-
-                whole = w;
-                group = [text];
-              } else {
-                group.push(text);
-              }
-            }
-            if (group.length !== 0) {
-              out.push(group);
-            }
-            return out;
-          };
-          const merge = (groups: Text[][]) => {
-            for (const g of groups) {
-              const old = g[0];
-              const newText = new Text(old.wholeText);
-              old.replaceWith(newText);
-
-              g.forEach((t) => t.remove());
-            }
-          };
-          const ts = Array.from(contentRaw.childNodes).filter(
-            (node) =>
-              node instanceof Text && node.wholeText !== node.textContent
-          ) as Text[];
-          const gts = group(ts);
-          merge(gts);
-
-          // 将 Text 转换为 <p>
-          Array.from(contentRaw.childNodes)
-            .filter((node) => node instanceof Text)
-            .forEach((text) => {
-              const p = document.createElement("p");
-              convertFixWidthText(text as Text, 35, p);
-              text.replaceWith(p);
-            });
-
-          // 移除分隔空白<p>
-          Array.from(contentRaw.querySelectorAll("p"))
-            .filter(
-              (p) =>
-                p.innerText.trim() === "" &&
-                getPreviousSibling(p) instanceof HTMLElement &&
-                getNextSibling(p) instanceof HTMLElement
-            )
-            .forEach((p) => p.remove());
-
-          // 移除分隔<br>
-          Array.from(contentRaw.querySelectorAll("p"))
-            .filter((p) => getPreviousBrCount(p) === 2)
-            .forEach((p) => removePreviousBr(p));
-
-          if (isFixWidthP(contentRaw)) {
-            // 合并 35 字符宽 <p>
-            const ps = Array.from(contentRaw.querySelectorAll("p"));
-            let text = "";
-            for (const node of ps) {
-              const n = node.innerText.trim();
-              if (fullWidthLength(n) > 30 && fullWidthLength(n) < 40) {
-                text = text + n;
-                node.remove();
-                continue;
-              } else {
-                if (text !== "") {
-                  text = text + n;
-                  const newP = document.createElement("p");
-                  newP.innerText = text;
-                  node.replaceWith(newP);
-                  text = "";
-                  continue;
-                } else {
-                  continue;
-                }
-              }
-            }
-          }
-        }
+        convertFixWidth(contentRaw);
       } else {
         for (const node of nodes) {
           if (node instanceof Text && (node.textContent?.length ?? 0) > 200) {
@@ -315,50 +207,4 @@ export class Cool18 extends BaseRuleClass {
       additionalMetadate: null,
     };
   }
-}
-
-function isFixWidth(node: Text | HTMLElement) {
-  let ns: string[] | undefined;
-  if (node instanceof Text) {
-    ns = node.textContent?.split("\n").map((n) => n.trim()) ?? [];
-  }
-  if (node instanceof HTMLElement) {
-    const reducer = (out: string[], cur: ChildNode) => {
-      if (cur instanceof Text) {
-        const t = cur.textContent?.trim() ?? "";
-        if (t.includes("\n")) {
-          t.split("\n")
-            .map((n) => n.trim())
-            .forEach((n) => out.push(n));
-          return out;
-        } else {
-          out.push(t);
-          return out;
-        }
-      } else {
-        return out;
-      }
-    };
-    ns = Array.from(node.childNodes).reduce(reducer, []);
-  }
-  if (!ns) {
-    throw new Error("ns is null");
-  }
-  const lengths = ns.map((l) => fullWidthLength(l));
-  const lt40 = lengths.filter((i) => i > 40).length;
-  if (lt40 < 5) {
-    return true;
-  }
-  return false;
-}
-
-function isFixWidthP(node: HTMLElement) {
-  const lengths = Array.from(node.querySelectorAll("p")).map((p) =>
-    fullWidthLength(p.innerText.trim())
-  );
-  const lt40 = lengths.filter((i) => i > 40).length;
-  if (lt40 < 5) {
-    return true;
-  }
-  return false;
 }

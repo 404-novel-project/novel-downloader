@@ -6,7 +6,13 @@ import {
   getImageAttachment,
   getRandomName,
 } from "./attachments";
-import { fullWidthLength } from "./dom";
+import {
+  fullWidthLength,
+  getNextSibling,
+  getPreviousBrCount,
+  getPreviousSibling,
+  removePreviousBr,
+} from "./dom";
 
 // https://developer.mozilla.org/en-US/docs/Web/HTML/Block-level_elements
 // Array.from(document.querySelectorAll('.main-page-content > div:nth-child(14) > dl:nth-child(2) > dt > a > code:nth-child(1)')).map((code) => code.innerText.replace(/<|>/g,""))
@@ -986,4 +992,156 @@ export function convertFixWidthText(
   }
   htmlTrim(out);
   return convertBr(out);
+}
+
+//** 转化固定宽度元素 */
+export function convertFixWidth(node: HTMLElement, width = 35) {
+  Array.from(node.querySelectorAll("br")).forEach((node) => {
+    const previous = node.previousSibling;
+    const next = node.nextSibling;
+    if (
+      previous instanceof Text &&
+      next instanceof Text &&
+      (previous.textContent ? fullWidthLength(previous.textContent) : 0) >
+        width - 5 &&
+      (previous.textContent ? fullWidthLength(previous.textContent) : 0) <
+        width + 5
+    ) {
+      node.remove();
+    }
+  });
+
+  // 合并 Text
+  const group = (texts: Text[]) => {
+    const out: Text[][] = [];
+
+    let group: Text[] = [];
+    let whole = "";
+    for (const text of texts) {
+      const w = text.wholeText;
+      if (whole !== w) {
+        if (group.length !== 0) {
+          out.push(group);
+        }
+
+        whole = w;
+        group = [text];
+      } else {
+        group.push(text);
+      }
+    }
+    if (group.length !== 0) {
+      out.push(group);
+    }
+    return out;
+  };
+  const merge = (groups: Text[][]) => {
+    for (const g of groups) {
+      const old = g[0];
+      const newText = new Text(old.wholeText);
+      old.replaceWith(newText);
+
+      g.forEach((t) => t.remove());
+    }
+  };
+  const ts = Array.from(node.childNodes).filter(
+    (node) => node instanceof Text && node.wholeText !== node.textContent
+  ) as Text[];
+  const gts = group(ts);
+  merge(gts);
+
+  // 将 Text 转换为 <p>
+  Array.from(node.childNodes)
+    .filter((node) => node instanceof Text)
+    .forEach((text) => {
+      const p = document.createElement("p");
+      convertFixWidthText(text as Text, width, p);
+      text.replaceWith(p);
+    });
+
+  // 移除分隔空白<p>
+  Array.from(node.querySelectorAll("p"))
+    .filter(
+      (p) =>
+        p.innerText.trim() === "" &&
+        getPreviousSibling(p) instanceof HTMLElement &&
+        getNextSibling(p) instanceof HTMLElement
+    )
+    .forEach((p) => p.remove());
+
+  // 移除分隔<br>
+  Array.from(node.querySelectorAll("p"))
+    .filter((p) => getPreviousBrCount(p) === 2)
+    .forEach((p) => removePreviousBr(p));
+
+  if (isFixWidthP(node)) {
+    // 合并固定字符宽 <p>
+    const ps = Array.from(node.querySelectorAll("p"));
+    let text = "";
+    for (const node of ps) {
+      const n = node.innerText.trim();
+      if (fullWidthLength(n) > width - 5 && fullWidthLength(n) < width + 5) {
+        text = text + n;
+        node.remove();
+        continue;
+      } else {
+        if (text !== "") {
+          text = text + n;
+          const newP = document.createElement("p");
+          newP.innerText = text;
+          node.replaceWith(newP);
+          text = "";
+          continue;
+        } else {
+          continue;
+        }
+      }
+    }
+  }
+
+  function isFixWidthP(node: HTMLElement) {
+    const lengths = Array.from(node.querySelectorAll("p")).map((p) =>
+      fullWidthLength(p.innerText.trim())
+    );
+    const lt = lengths.filter((i) => i > width + 5).length;
+    if (lt < 5) {
+      return true;
+    }
+    return false;
+  }
+}
+
+export function isFixWidth(node: Text | HTMLElement, width = 35) {
+  let ns: string[] | undefined;
+  if (node instanceof Text) {
+    ns = node.textContent?.split("\n").map((n) => n.trim()) ?? [];
+  }
+  if (node instanceof HTMLElement) {
+    const reducer = (out: string[], cur: ChildNode) => {
+      if (cur instanceof Text) {
+        const t = cur.textContent?.trim() ?? "";
+        if (t.includes("\n")) {
+          t.split("\n")
+            .map((n) => n.trim())
+            .forEach((n) => out.push(n));
+          return out;
+        } else {
+          out.push(t);
+          return out;
+        }
+      } else {
+        return out;
+      }
+    };
+    ns = Array.from(node.childNodes).reduce(reducer, []);
+  }
+  if (!ns) {
+    throw new Error("ns is null");
+  }
+  const lengths = ns.map((l) => fullWidthLength(l));
+  const lt = lengths.filter((i) => i > width + 5).length;
+  if (lt < 5) {
+    return true;
+  }
+  return false;
 }
