@@ -17,6 +17,7 @@ export class Longmabook extends BaseRuleClass {
     super();
     this.imageMode = "TM";
     this.concurrencyLimit = 5;
+    this.nsfw = true;
   }
 
   public async bookParse() {

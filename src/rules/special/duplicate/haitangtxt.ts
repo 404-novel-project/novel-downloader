@@ -17,6 +17,7 @@ function getClass(
     public constructor() {
       super();
       this.imageMode = "TM";
+      this.nsfw = true;
     }
 
     public async bookParse() {

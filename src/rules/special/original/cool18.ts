@@ -17,6 +17,7 @@ export class Cool18 extends BaseRuleClass {
   public constructor() {
     super();
     this.imageMode = "TM";
+    this.nsfw = true;
   }
 
   public async bookParse() {

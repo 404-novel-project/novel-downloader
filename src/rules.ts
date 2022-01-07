@@ -40,6 +40,7 @@ export abstract class BaseRuleClass {
   public concurrencyLimit = 10;
   public streamZip = false;
   public needLogin = false;
+  public nsfw = false;
   public maxRunLimit?: number;
   public saveOptions?: SaveOptions;
 

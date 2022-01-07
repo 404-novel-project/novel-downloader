@@ -28,6 +28,7 @@ interface MkRuleClassOptions {
   contentPatch: (content: HTMLElement) => HTMLElement;
   concurrencyLimit?: number;
   needLogin?: boolean;
+  nsfw?: boolean;
   cleanDomOptions?: Options;
 }
 export function mkRuleClass({
@@ -46,6 +47,7 @@ export function mkRuleClass({
   contentPatch,
   concurrencyLimit,
   needLogin,
+  nsfw,
   cleanDomOptions,
 }: MkRuleClassOptions): PublicConstructor<BaseRuleClass> {
   return class extends BaseRuleClass {
@@ -57,6 +59,9 @@ export function mkRuleClass({
       }
       if (needLogin) {
         this.needLogin = needLogin;
+      }
+      if (nsfw) {
+        this.nsfw = nsfw;
       }
     }
     public async bookParse() {

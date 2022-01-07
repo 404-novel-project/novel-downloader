@@ -25,6 +25,15 @@ export const syosetu = () => {
     }
   };
 
+  const getNsfw = () => {
+    const host = document.location.host;
+    if (host === "novel18.syosetu.com") {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
   return mkRuleClass({
     bookUrl: document.location.href,
     bookname: (
@@ -60,6 +69,7 @@ export const syosetu = () => {
       return content;
     },
     contentPatch: (dom) => dom,
+    nsfw: getNsfw(),
   });
 };
 

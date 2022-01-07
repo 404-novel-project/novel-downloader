@@ -90,5 +90,6 @@ export const houhuayuan = () => {
       );
       return dom;
     },
+    nsfw: true,
   });
 };
