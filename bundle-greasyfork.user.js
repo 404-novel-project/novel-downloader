@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.7.10.494
+// @version        4.7.10.495
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -171,6 +171,7 @@
 // @match          *://www.dushu369.com/*/*/
 // @match          *://www.18kanshu.com/*/*/info.html
 // @match          *://www.18kanshu.com/module/novel/info.php?*
+// @match          *://www.bxwx333.org/txt/*/
 // @name:en        novel-downloader
 // @name:ja        小説ダウンローダー
 // @description:en An scalable universal novel downloader.
@@ -6860,13 +6861,13 @@ class BaseRuleClass {
 /* harmony import */ var _onePage_template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
 
 
-function mkBiqugeClass(introDomPatch, contentPatch, concurrencyLimit, overRide, postHook) {
+function mkBiqugeClass(introDomPatch, contentPatch, concurrencyLimit, overRide, postHook, chapterContenSelector = "#content") {
     return (0,_onePage_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
         bookUrl: document.location.href,
         bookname: document.querySelector("#info h1, .info > h2").innerText
             .trim()
             .replace(/最新章节$/, ""),
-        author: document.querySelector("#info > p:nth-child(2), .small > span:nth-child(1)").innerText
+        author: document.querySelector("#info > p:nth-child(2), #info > div:nth-child(2), .small > span:nth-child(1)").innerText
             .replace(/作(\s+)?者[：:]/, "")
             .trim(),
         introDom: document.querySelector("#intro, .intro"),
@@ -6900,7 +6901,7 @@ function mkBiqugeClass(introDomPatch, contentPatch, concurrencyLimit, overRide, 
             }
             return chapter;
         },
-        getContent: (doc) => doc.querySelector("#content"),
+        getContent: (doc) => doc.querySelector(chapterContenSelector),
         contentPatch,
         concurrencyLimit,
         overrideConstructor: (classThis) => {
@@ -6918,13 +6919,13 @@ function mkBiqugeClass(introDomPatch, contentPatch, concurrencyLimit, overRide, 
         },
     });
 }
-function mkBiqugeClassNextPage(introDomPatch, contentPatch, getNextPage, continueCondition, concurrencyLimit, overRide, postHook) {
+function mkBiqugeClassNextPage(introDomPatch, contentPatch, getNextPage, continueCondition, concurrencyLimit, overRide, postHook, chapterContenSelector = "#content") {
     return (0,_onePage_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
         bookUrl: document.location.href,
         bookname: document.querySelector("#info h1, .info > h2").innerText
             .trim()
             .replace(/最新章节$/, ""),
-        author: document.querySelector("#info > p:nth-child(2), .small > span:nth-child(1)").innerText
+        author: document.querySelector("#info > p:nth-child(2), #info > div:nth-child(2), .small > span:nth-child(1)").innerText
             .replace(/作(\s+)?者[：:]/, "")
             .trim(),
         introDom: document.querySelector("#intro, .intro"),
@@ -6963,7 +6964,7 @@ function mkBiqugeClassNextPage(introDomPatch, contentPatch, getNextPage, continu
                 chapterName,
                 chapterUrl,
                 charset,
-                selector: "#content",
+                selector: chapterContenSelector,
                 contentPatch,
                 getNextPage,
                 continueCondition,
@@ -7009,7 +7010,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "xbiquge": () => (/* binding */ xbiquge),
 /* harmony export */   "yruan": () => (/* binding */ yruan),
 /* harmony export */   "ranwen": () => (/* binding */ ranwen),
-/* harmony export */   "b5200": () => (/* binding */ b5200)
+/* harmony export */   "b5200": () => (/* binding */ b5200),
+/* harmony export */   "bxwx333": () => (/* binding */ bxwx333)
 /* harmony export */ });
 /* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/misc.ts");
 /* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
@@ -7094,6 +7096,10 @@ const ranwen = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass 
     return introDom;
 }, (content) => content);
 const b5200 = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass */ .R)((introDom) => introDom, (content) => content, 1);
+const bxwx333 = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass */ .R)((introDom) => introDom, (content) => {
+    content.querySelector("#xuanchuan")?.parentElement?.remove();
+    return content;
+}, undefined, undefined, undefined, "#zjneirong");
 
 
 /***/ }),
@@ -17860,6 +17866,11 @@ async function getRule() {
         case "www.18kanshu.com": {
             const { c18kanshu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/18kanshu.ts"));
             ruleClass = c18kanshu();
+            break;
+        }
+        case "www.bxwx333.org": {
+            const { bxwx333 } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/type1.ts"));
+            ruleClass = bxwx333();
             break;
         }
         default: {

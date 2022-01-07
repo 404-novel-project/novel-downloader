@@ -10,3 +10,4 @@ export declare const xbiquge: () => import("../../lib/misc").PublicConstructor<i
 export declare const yruan: () => import("../../lib/misc").PublicConstructor<import("../../rules").BaseRuleClass>;
 export declare const ranwen: () => import("../../lib/misc").PublicConstructor<import("../../rules").BaseRuleClass>;
 export declare const b5200: () => import("../../lib/misc").PublicConstructor<import("../../rules").BaseRuleClass>;
+export declare const bxwx333: () => import("../../lib/misc").PublicConstructor<import("../../rules").BaseRuleClass>;
