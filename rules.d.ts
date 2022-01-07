@@ -16,6 +16,7 @@ export declare abstract class BaseRuleClass {
     concurrencyLimit: number;
     streamZip: boolean;
     needLogin: boolean;
+    nsfw: boolean;
     maxRunLimit?: number;
     saveOptions?: SaveOptions;
     private bcWorker;

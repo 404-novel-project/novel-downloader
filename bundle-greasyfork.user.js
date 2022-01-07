@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.7.9.488
+// @version        4.7.10.492
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -170,6 +170,8 @@
 // @match          *://www.b5200.net/*_*/
 // @match          *://www.yqxs.cc/html/*/*/index.html
 // @match          *://www.dushu369.com/*/*/
+// @match          *://www.18kanshu.com/*/*/info.html
+// @match          *://www.18kanshu.com/module/novel/info.php?*
 // @name:en        novel-downloader
 // @name:ja        小説ダウンローダー
 // @description:en An scalable universal novel downloader.
@@ -3595,7 +3597,9 @@ function getLastPart(u) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "zM": () => (/* binding */ cleanDOM),
 /* harmony export */   "iA": () => (/* binding */ htmlTrim),
-/* harmony export */   "d1": () => (/* binding */ convertFixWidthText)
+/* harmony export */   "d1": () => (/* binding */ convertFixWidthText),
+/* harmony export */   "FZ": () => (/* binding */ convertFixWidth),
+/* harmony export */   "Kg": () => (/* binding */ isFixWidth)
 /* harmony export */ });
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("loglevel");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_1__);
@@ -4379,6 +4383,137 @@ function convertFixWidthText(node, width = 35, out = document.createElement("div
     }
     htmlTrim(out);
     return convertBr(out);
+}
+function convertFixWidth(node, width = 35) {
+    Array.from(node.querySelectorAll("br")).forEach((node) => {
+        const previous = node.previousSibling;
+        const next = node.nextSibling;
+        if (previous instanceof Text &&
+            next instanceof Text &&
+            (previous.textContent ? (0,_dom__WEBPACK_IMPORTED_MODULE_2__/* .fullWidthLength */ .sp)(previous.textContent) : 0) >
+                width - 5 &&
+            (previous.textContent ? (0,_dom__WEBPACK_IMPORTED_MODULE_2__/* .fullWidthLength */ .sp)(previous.textContent) : 0) <
+                width + 5) {
+            node.remove();
+        }
+    });
+    const group = (texts) => {
+        const out = [];
+        let group = [];
+        let whole = "";
+        for (const text of texts) {
+            const w = text.wholeText;
+            if (whole !== w) {
+                if (group.length !== 0) {
+                    out.push(group);
+                }
+                whole = w;
+                group = [text];
+            }
+            else {
+                group.push(text);
+            }
+        }
+        if (group.length !== 0) {
+            out.push(group);
+        }
+        return out;
+    };
+    const merge = (groups) => {
+        for (const g of groups) {
+            const old = g[0];
+            const newText = new Text(old.wholeText);
+            old.replaceWith(newText);
+            g.forEach((t) => t.remove());
+        }
+    };
+    const ts = Array.from(node.childNodes).filter((node) => node instanceof Text && node.wholeText !== node.textContent);
+    const gts = group(ts);
+    merge(gts);
+    Array.from(node.childNodes)
+        .filter((node) => node instanceof Text)
+        .forEach((text) => {
+        const p = document.createElement("p");
+        convertFixWidthText(text, width, p);
+        text.replaceWith(p);
+    });
+    Array.from(node.querySelectorAll("p"))
+        .filter((p) => p.innerText.trim() === "" &&
+        (0,_dom__WEBPACK_IMPORTED_MODULE_2__/* .getPreviousSibling */ .U)(p) instanceof HTMLElement &&
+        (0,_dom__WEBPACK_IMPORTED_MODULE_2__/* .getNextSibling */ .d9)(p) instanceof HTMLElement)
+        .forEach((p) => p.remove());
+    Array.from(node.querySelectorAll("p"))
+        .filter((p) => (0,_dom__WEBPACK_IMPORTED_MODULE_2__/* .getPreviousBrCount */ .$N)(p) === 2)
+        .forEach((p) => (0,_dom__WEBPACK_IMPORTED_MODULE_2__/* .removePreviousBr */ .Fe)(p));
+    if (isFixWidthP(node)) {
+        const ps = Array.from(node.querySelectorAll("p"));
+        let text = "";
+        for (const node of ps) {
+            const n = node.innerText.trim();
+            if ((0,_dom__WEBPACK_IMPORTED_MODULE_2__/* .fullWidthLength */ .sp)(n) > width - 5 && (0,_dom__WEBPACK_IMPORTED_MODULE_2__/* .fullWidthLength */ .sp)(n) < width + 5) {
+                text = text + n;
+                node.remove();
+                continue;
+            }
+            else {
+                if (text !== "") {
+                    text = text + n;
+                    const newP = document.createElement("p");
+                    newP.innerText = text;
+                    node.replaceWith(newP);
+                    text = "";
+                    continue;
+                }
+                else {
+                    continue;
+                }
+            }
+        }
+    }
+    function isFixWidthP(node) {
+        const lengths = Array.from(node.querySelectorAll("p")).map((p) => (0,_dom__WEBPACK_IMPORTED_MODULE_2__/* .fullWidthLength */ .sp)(p.innerText.trim()));
+        const lt = lengths.filter((i) => i > width + 5).length;
+        if (lt < 5) {
+            return true;
+        }
+        return false;
+    }
+}
+function isFixWidth(node, width = 35) {
+    let ns;
+    if (node instanceof Text) {
+        ns = node.textContent?.split("\n").map((n) => n.trim()) ?? [];
+    }
+    if (node instanceof HTMLElement) {
+        const reducer = (out, cur) => {
+            if (cur instanceof Text) {
+                const t = cur.textContent?.trim() ?? "";
+                if (t.includes("\n")) {
+                    t.split("\n")
+                        .map((n) => n.trim())
+                        .forEach((n) => out.push(n));
+                    return out;
+                }
+                else {
+                    out.push(t);
+                    return out;
+                }
+            }
+            else {
+                return out;
+            }
+        };
+        ns = Array.from(node.childNodes).reduce(reducer, []);
+    }
+    if (!ns) {
+        throw new Error("ns is null");
+    }
+    const lengths = ns.map((l) => (0,_dom__WEBPACK_IMPORTED_MODULE_2__/* .fullWidthLength */ .sp)(l));
+    const lt = lengths.filter((i) => i > width + 5).length;
+    if (lt < 5) {
+        return true;
+    }
+    return false;
 }
 
 
@@ -6387,6 +6522,7 @@ class BaseRuleClass {
     concurrencyLimit = 10;
     streamZip = false;
     needLogin = false;
+    nsfw = false;
     maxRunLimit;
     saveOptions;
     bcWorker = new BroadcastChannel("novel-downloader-worker");
@@ -7504,6 +7640,7 @@ const houhuayuan = () => {
             Array.from(dom.querySelectorAll("img")).forEach((img) => (img.src = img.getAttribute("data-src") ?? ""));
             return dom;
         },
+        nsfw: true,
     });
 };
 
@@ -7673,6 +7810,15 @@ const syosetu = () => {
             return [a];
         }
     };
+    const getNsfw = () => {
+        const host = document.location.host;
+        if (host === "novel18.syosetu.com") {
+            return true;
+        }
+        else {
+            return false;
+        }
+    };
     return (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
         bookUrl: document.location.href,
         bookname: document.querySelector(".novel_title").innerText.trim(),
@@ -7704,6 +7850,7 @@ const syosetu = () => {
             return content;
         },
         contentPatch: (dom) => dom,
+        nsfw: getNsfw(),
     });
 };
 const syosetuOrg = () => {
@@ -7792,7 +7939,7 @@ const syosetuOrg = () => {
 
 
 
-function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, coverUrl, additionalMetadatePatch, aList, getAName, sections, getSName: _getSectionName, postHook, getContentFromUrl, getContent, contentPatch, concurrencyLimit, needLogin, cleanDomOptions, }) {
+function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, coverUrl, additionalMetadatePatch, aList, getAName, sections, getSName: _getSectionName, postHook, getContentFromUrl, getContent, contentPatch, concurrencyLimit, needLogin, nsfw, cleanDomOptions, }) {
     return class extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
         constructor() {
             super();
@@ -7802,6 +7949,9 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
             }
             if (needLogin) {
                 this.needLogin = needLogin;
+            }
+            if (nsfw) {
+                this.nsfw = nsfw;
             }
         }
         async bookParse() {
@@ -8238,7 +8388,7 @@ const baihexs = () => {
 
 
 
-function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, coverUrl, getIndexUrls, getAList, getAName, postHook, getContentFromUrl, getContent, contentPatch, concurrencyLimit, needLogin, cleanDomOptions, }) {
+function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, coverUrl, getIndexUrls, getAList, getAName, postHook, getContentFromUrl, getContent, contentPatch, concurrencyLimit, needLogin, nsfw, cleanDomOptions, }) {
     return class extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
         constructor() {
             super();
@@ -8248,6 +8398,9 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
             }
             if (needLogin) {
                 this.needLogin = needLogin;
+            }
+            if (nsfw) {
+                this.nsfw = nsfw;
             }
         }
         async bookParse() {
@@ -9257,6 +9410,7 @@ function getClass(replaceFunction) {
         constructor() {
             super();
             this.imageMode = "TM";
+            this.nsfw = true;
         }
         async bookParse() {
             const bookUrl = document.querySelector("div.currency_head > h1 > a").href;
@@ -10439,6 +10593,7 @@ class Cool18 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
     constructor() {
         super();
         this.imageMode = "TM";
+        this.nsfw = true;
     }
     async bookParse() {
         const bookUrl = document.location.href;
@@ -10535,100 +10690,12 @@ class Cool18 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
             if (nodes.length > 10) {
                 (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__/* .childNodesCopy */ .vR)(dom, contentRaw);
                 (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__.rm)("a", true, contentRaw);
-                if (isFixWidth(contentRaw)) {
-                    Array.from(contentRaw.querySelectorAll("br")).forEach((node) => {
-                        const previous = node.previousSibling;
-                        const next = node.nextSibling;
-                        if (previous instanceof Text &&
-                            next instanceof Text &&
-                            (previous.textContent
-                                ? (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__/* .fullWidthLength */ .sp)(previous.textContent)
-                                : 0) > 30 &&
-                            (previous.textContent
-                                ? (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__/* .fullWidthLength */ .sp)(previous.textContent)
-                                : 0) < 40) {
-                            node.remove();
-                        }
-                    });
-                    const group = (texts) => {
-                        const out = [];
-                        let group = [];
-                        let whole = "";
-                        for (const text of texts) {
-                            const w = text.wholeText;
-                            if (whole !== w) {
-                                if (group.length !== 0) {
-                                    out.push(group);
-                                }
-                                whole = w;
-                                group = [text];
-                            }
-                            else {
-                                group.push(text);
-                            }
-                        }
-                        if (group.length !== 0) {
-                            out.push(group);
-                        }
-                        return out;
-                    };
-                    const merge = (groups) => {
-                        for (const g of groups) {
-                            const old = g[0];
-                            const newText = new Text(old.wholeText);
-                            old.replaceWith(newText);
-                            g.forEach((t) => t.remove());
-                        }
-                    };
-                    const ts = Array.from(contentRaw.childNodes).filter((node) => node instanceof Text && node.wholeText !== node.textContent);
-                    const gts = group(ts);
-                    merge(gts);
-                    Array.from(contentRaw.childNodes)
-                        .filter((node) => node instanceof Text)
-                        .forEach((text) => {
-                        const p = document.createElement("p");
-                        (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_5__/* .convertFixWidthText */ .d1)(text, 35, p);
-                        text.replaceWith(p);
-                    });
-                    Array.from(contentRaw.querySelectorAll("p"))
-                        .filter((p) => p.innerText.trim() === "" &&
-                        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__/* .getPreviousSibling */ .U)(p) instanceof HTMLElement &&
-                        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__/* .getNextSibling */ .d9)(p) instanceof HTMLElement)
-                        .forEach((p) => p.remove());
-                    Array.from(contentRaw.querySelectorAll("p"))
-                        .filter((p) => (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__/* .getPreviousBrCount */ .$N)(p) === 2)
-                        .forEach((p) => (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__/* .removePreviousBr */ .Fe)(p));
-                    if (isFixWidthP(contentRaw)) {
-                        const ps = Array.from(contentRaw.querySelectorAll("p"));
-                        let text = "";
-                        for (const node of ps) {
-                            const n = node.innerText.trim();
-                            if ((0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__/* .fullWidthLength */ .sp)(n) > 30 && (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__/* .fullWidthLength */ .sp)(n) < 40) {
-                                text = text + n;
-                                node.remove();
-                                continue;
-                            }
-                            else {
-                                if (text !== "") {
-                                    text = text + n;
-                                    const newP = document.createElement("p");
-                                    newP.innerText = text;
-                                    node.replaceWith(newP);
-                                    text = "";
-                                    continue;
-                                }
-                                else {
-                                    continue;
-                                }
-                            }
-                        }
-                    }
-                }
+                (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_5__/* .convertFixWidth */ .FZ)(contentRaw);
             }
             else {
                 for (const node of nodes) {
                     if (node instanceof Text && (node.textContent?.length ?? 0) > 200) {
-                        if (isFixWidth(node)) {
+                        if ((0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_5__/* .isFixWidth */ .Kg)(node)) {
                             contentRaw.appendChild((0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_5__/* .convertFixWidthText */ .d1)(node));
                             continue;
                         }
@@ -10666,50 +10733,6 @@ class Cool18 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
             additionalMetadate: null,
         };
     }
-}
-function isFixWidth(node) {
-    let ns;
-    if (node instanceof Text) {
-        ns = node.textContent?.split("\n").map((n) => n.trim()) ?? [];
-    }
-    if (node instanceof HTMLElement) {
-        const reducer = (out, cur) => {
-            if (cur instanceof Text) {
-                const t = cur.textContent?.trim() ?? "";
-                if (t.includes("\n")) {
-                    t.split("\n")
-                        .map((n) => n.trim())
-                        .forEach((n) => out.push(n));
-                    return out;
-                }
-                else {
-                    out.push(t);
-                    return out;
-                }
-            }
-            else {
-                return out;
-            }
-        };
-        ns = Array.from(node.childNodes).reduce(reducer, []);
-    }
-    if (!ns) {
-        throw new Error("ns is null");
-    }
-    const lengths = ns.map((l) => (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__/* .fullWidthLength */ .sp)(l));
-    const lt40 = lengths.filter((i) => i > 40).length;
-    if (lt40 < 5) {
-        return true;
-    }
-    return false;
-}
-function isFixWidthP(node) {
-    const lengths = Array.from(node.querySelectorAll("p")).map((p) => (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__/* .fullWidthLength */ .sp)(p.innerText.trim()));
-    const lt40 = lengths.filter((i) => i > 40).length;
-    if (lt40 < 5) {
-        return true;
-    }
-    return false;
 }
 
 
@@ -12264,6 +12287,7 @@ class Longmabook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */
         super();
         this.imageMode = "TM";
         this.concurrencyLimit = 5;
+        this.nsfw = true;
     }
     async bookParse() {
         const isLogin = Boolean(document.querySelector('a[href="/?act=signinlst"]'));
@@ -16531,6 +16555,65 @@ class Xkzw extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
 
 /***/ }),
 
+/***/ "./src/rules/twoPage/18kanshu.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "c18kanshu": () => (/* binding */ c18kanshu)
+/* harmony export */ });
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _tempate__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/twoPage/tempate.ts");
+
+
+const c18kanshu = () => (0,_tempate__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+    bookUrl: document.location.href,
+    anotherPageUrl: document.querySelector("div.menu_more_black > a").href,
+    getBookname: (doc) => document.querySelector(".in_textone").innerText.trim(),
+    getAuthor: (doc) => {
+        const authorElem = document.querySelector("div.in_texttwo:nth-child(2)");
+        const author = /作者：(.+)$/.exec(authorElem.innerText.trim())?.[1] ?? "";
+        return author;
+    },
+    getIntroDom: (doc) => document.querySelector(".janjie"),
+    introDomPatch: (dom) => dom,
+    getCoverUrl: (doc) => document.querySelector(".book_top > div.img > img")
+        .src,
+    getAList: (doc) => {
+        const _aList = doc.querySelectorAll("div.list_main.book_list");
+        const reducer = (out, div) => {
+            const onclick = div.getAttribute("onclick");
+            const href = onclick?.substring(onclick.indexOf("'") + 1, onclick.lastIndexOf("'")) ?? "";
+            const a = document.createElement("a");
+            a.href = href;
+            a.innerHTML = div.innerHTML.trim();
+            out.push(a);
+            return out;
+        };
+        const aList = Array.from(_aList).reduce(reducer, []);
+        return aList;
+    },
+    getContent: (doc) => doc.querySelector(".readcontent"),
+    contentPatch: (dom) => {
+        Array.from(dom.childNodes)
+            .filter((node) => node instanceof Text)
+            .forEach((text) => {
+            if (text.textContent?.includes("　　")) {
+                text.parentNode?.insertBefore(document.createElement("br"), text);
+            }
+        });
+        if ((0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__/* .isFixWidth */ .Kg)(dom)) {
+            (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__/* .convertFixWidth */ .FZ)(dom);
+        }
+        return dom;
+    },
+    nsfw: true,
+});
+
+
+/***/ }),
+
 /***/ "./src/rules/twoPage/1pwx.ts":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -16774,7 +16857,7 @@ const shencou = () => {
 
 
 
-function mkRuleClass({ bookUrl, anotherPageUrl, getBookname, getAuthor, getIntroDom, introDomPatch, getCoverUrl, getAList, getAName, getSections, getSName: _getSectionName, postHook, getContentFromUrl, getContent, contentPatch, concurrencyLimit, needLogin, cleanDomOptions, }) {
+function mkRuleClass({ bookUrl, anotherPageUrl, getBookname, getAuthor, getIntroDom, introDomPatch, getCoverUrl, getAList, getAName, getSections, getSName: _getSectionName, postHook, getContentFromUrl, getContent, contentPatch, concurrencyLimit, needLogin, nsfw, cleanDomOptions, }) {
     return class extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
         constructor() {
             super();
@@ -16784,6 +16867,9 @@ function mkRuleClass({ bookUrl, anotherPageUrl, getBookname, getAuthor, getIntro
             }
             if (needLogin) {
                 this.needLogin = needLogin;
+            }
+            if (nsfw) {
+                this.nsfw = nsfw;
             }
         }
         async bookParse() {
@@ -17897,6 +17983,11 @@ async function getRule() {
         case "www.dushu369.com": {
             const { dushu369 } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/dushu369.ts"));
             ruleClass = dushu369();
+            break;
+        }
+        case "www.18kanshu.com": {
+            const { c18kanshu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/18kanshu.ts"));
+            ruleClass = c18kanshu();
             break;
         }
         default: {
