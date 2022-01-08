@@ -12,6 +12,7 @@ import {
   enableCustomFinishCallback,
   enableCustomSaveOptions,
   enableSaveToArchiveOrg,
+  getCustomEnableSaveToArchiveOrg,
 } from "./setting";
 import { failedPlus, printStat, successPlus } from "./stat";
 import { ProgressVM, vm as progress } from "./ui/progress";
@@ -140,15 +141,17 @@ export abstract class BaseRuleClass {
       return new SaveBook(book, self.streamZip);
     }
 
-    function saveHook() {
+    async function saveHook() {
       if (
         enableSaveToArchiveOrg &&
         self.needLogin === false &&
         self.book?.bookUrl &&
         (window as GmWindow).localStorageExpired.get(
           `${self.book.bookUrl}_saveToArchiveOrg`
-        ) === undefined
+        ) === undefined &&
+        (await getCustomEnableSaveToArchiveOrg())
       ) {
+        console.log("[saveToArchiveOrg]保存当前书页至 archive.org");
         try {
           (window as GmWindow).localStorageExpired.set(
             `${self.book.bookUrl}_saveToArchiveOrg`,

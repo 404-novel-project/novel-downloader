@@ -1,6 +1,5 @@
 import { GmWindow } from "./global";
 import { _GM_info } from "./lib/GM";
-import { gfetch } from "./lib/http";
 import { storageAvailable } from "./lib/localStorageExpired";
 import { enableDebug } from "./setting";
 
@@ -29,13 +28,6 @@ export function streamSupport() {
     typeof WritableStream !== "undefined" &&
     typeof TransformStream !== "undefined"
   );
-}
-function jsdelivrAvailability() {
-  return new Promise((resolve, reject) => {
-    gfetch("https://cdn.jsdelivr.net/npm/idb-keyval/dist/umd.js")
-      .then((resp) => resolve(true))
-      .catch((error) => resolve(false));
-  });
 }
 export function mitmPageAvailability(url: string): Promise<boolean> {
   return new Promise((resolve, reject) => {
@@ -66,7 +58,6 @@ export const environments = async () => ({
   sessionStorage: storageAvailable("sessionStorage"),
   Cookie: navigator.cookieEnabled,
   doNotTrack: navigator.doNotTrack ?? 0,
-  // jsdelivr: await jsdelivrAvailability(),
   enableDebug: enableDebug.value,
   ScriptHandler: _GM_info.scriptHandler,
   "ScriptHandler version": _GM_info.version,
