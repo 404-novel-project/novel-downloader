@@ -11,6 +11,7 @@ import { BaseRuleClass } from "../../rules";
 interface MkRuleClassOptions {
   bookUrl: string;
   anotherPageUrl: string;
+  ToCUrl?: string;
   getBookname: (doc: Document) => string;
   getAuthor: (doc: Document) => string;
   getIntroDom: (doc: Document) => HTMLElement;
@@ -37,6 +38,7 @@ interface MkRuleClassOptions {
 export function mkRuleClass({
   bookUrl,
   anotherPageUrl,
+  ToCUrl,
   getBookname,
   getAuthor,
   getIntroDom,
@@ -169,7 +171,11 @@ export function mkRuleClass({
         additionalMetadate,
         chapters,
       });
-      book.ToCUrl = anotherPageUrl;
+      if (ToCUrl) {
+        book.ToCUrl = ToCUrl;
+      } else if (bookUrl !== anotherPageUrl) {
+        book.ToCUrl = anotherPageUrl;
+      }
       return book;
     }
     public async chapterParse(

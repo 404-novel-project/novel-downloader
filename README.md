@@ -157,6 +157,7 @@ ZIP压缩包，请在解压后，直接双击打开HTML文件（`index.html` 为
 |[言情小说](https://www.yqxs.cc/)|✅|❎||
 |[18看书](https://www.18kanshu.com/)|✅|❎||
 |[笔下文学333](http://www.bxwx333.org/)|✅|❎||
+|[小说屋](http://www.xiaoshuowu.com/)|✅|❎||
 
 </details>
 

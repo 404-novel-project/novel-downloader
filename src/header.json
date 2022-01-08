@@ -190,7 +190,8 @@
     "*://www.dushu369.com/*/*/",
     "*://www.18kanshu.com/*/*/info.html",
     "*://www.18kanshu.com/module/novel/info.php?*",
-    "*://www.bxwx333.org/txt/*/"
+    "*://www.bxwx333.org/txt/*/",
+    "*://www.xiaoshuowu.com/html/*/*/"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",
@@ -241,8 +242,6 @@
   ],
   "connect": [
     "self",
-    "cdn.jsdelivr.net",
-    "cors.bgme.me",
     "shouda8.com",
     "shouda88.com",
     "qidian.com",
