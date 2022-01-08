@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.7.11.496
+// @version        4.7.11.497
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -172,6 +172,7 @@
 // @match          *://www.18kanshu.com/*/*/info.html
 // @match          *://www.18kanshu.com/module/novel/info.php?*
 // @match          *://www.bxwx333.org/txt/*/
+// @match          *://www.xiaoshuowu.com/html/*/*/
 // @name:en        novel-downloader
 // @name:ja        小説ダウンローダー
 // @description:en An scalable universal novel downloader.
@@ -232,8 +233,6 @@
 // @grant          GM.getValue
 // @grant          GM.deleteValue
 // @connect        self
-// @connect        cdn.jsdelivr.net
-// @connect        cors.bgme.me
 // @connect        shouda8.com
 // @connect        shouda88.com
 // @connect        qidian.com
@@ -16737,7 +16736,7 @@ const shencou = () => {
 
 
 
-function mkRuleClass({ bookUrl, anotherPageUrl, getBookname, getAuthor, getIntroDom, introDomPatch, getCoverUrl, getAList, getAName, getSections, getSName: _getSectionName, postHook, getContentFromUrl, getContent, contentPatch, concurrencyLimit, needLogin, nsfw, cleanDomOptions, overrideConstructor, }) {
+function mkRuleClass({ bookUrl, anotherPageUrl, ToCUrl, getBookname, getAuthor, getIntroDom, introDomPatch, getCoverUrl, getAList, getAName, getSections, getSName: _getSectionName, postHook, getContentFromUrl, getContent, contentPatch, concurrencyLimit, needLogin, nsfw, cleanDomOptions, overrideConstructor, }) {
     return class extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
         constructor() {
             super();
@@ -16841,7 +16840,12 @@ function mkRuleClass({ bookUrl, anotherPageUrl, getBookname, getAuthor, getIntro
                 additionalMetadate,
                 chapters,
             });
-            book.ToCUrl = anotherPageUrl;
+            if (ToCUrl) {
+                book.ToCUrl = ToCUrl;
+            }
+            else if (bookUrl !== anotherPageUrl) {
+                book.ToCUrl = anotherPageUrl;
+            }
             return book;
         }
         async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
@@ -16992,6 +16996,55 @@ const washuge = () => {
         getAList: (doc) => document.querySelectorAll("#at > tbody td > a"),
         getContent: (doc) => doc.querySelector("#contents"),
         contentPatch: (dom) => dom,
+        concurrencyLimit: 1,
+    });
+};
+
+
+/***/ }),
+
+/***/ "./src/rules/twoPage/xiaoshuowu.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "xiaoshuowu": () => (/* binding */ xiaoshuowu)
+/* harmony export */ });
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _tempate__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/twoPage/tempate.ts");
+
+
+const xiaoshuowu = () => {
+    const href = document.location.href;
+    const bookId = href.substring(href.lastIndexOf("/", href.lastIndexOf("/") - 1) + 1, href.lastIndexOf("/"));
+    const bookUrl = document.location.origin + `/book/${bookId}/`;
+    return (0,_tempate__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+        bookUrl,
+        ToCUrl: document.location.href,
+        anotherPageUrl: bookUrl,
+        getBookname: (doc) => doc.querySelector("div.divbox:nth-child(2) > div:nth-child(2) > div:nth-child(1) > span:nth-child(1)").innerText.trim(),
+        getAuthor: (doc) => doc.querySelector("div.divbox:nth-child(2) > div:nth-child(2) > div:nth-child(1) > span:nth-child(2) > a").innerText.trim(),
+        getIntroDom: (doc) => doc.querySelector("div.tabvalue:nth-child(1) > div:nth-child(1)"),
+        introDomPatch: (dom) => dom,
+        getCoverUrl: (doc) => doc.querySelector("div.divbox:nth-child(2) > div:nth-child(1) > a:nth-child(1) > img").src,
+        getAList: (doc) => document.querySelectorAll("li.chapter > a"),
+        getSections: (doc) => document.querySelectorAll(".volume"),
+        getSName: (sElem) => sElem.innerText.trim(),
+        postHook: (chapter) => {
+            if (chapter.sectionName) {
+                chapter.sectionName = chapter.sectionName.replace(chapter.bookname, "");
+            }
+            return chapter;
+        },
+        getContent: (doc) => doc.querySelector("#acontent"),
+        contentPatch: (content) => {
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("div[align]", true, content);
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)(".tishi", true, content);
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("h1", false, content);
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .up)(["(小说屋 www.xiaoshuowu.com)", "小说屋 www.xiaoshuowu.com"], content);
+            return content;
+        },
         concurrencyLimit: 1,
     });
 };
@@ -17900,6 +17953,11 @@ async function getRule() {
         case "www.bxwx333.org": {
             const { bxwx333 } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/type1.ts"));
             ruleClass = bxwx333();
+            break;
+        }
+        case "www.xiaoshuowu.com": {
+            const { xiaoshuowu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/xiaoshuowu.ts"));
+            ruleClass = xiaoshuowu();
             break;
         }
         default: {
