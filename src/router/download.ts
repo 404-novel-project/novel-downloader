@@ -519,6 +519,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = xiaoshuowu();
       break;
     }
+    case "www.xrzww.com": {
+      const { Xrzww } = await import("../rules/special/original/xrzww");
+      ruleClass = Xrzww;
+      break;
+    }
     default: {
       throw new Error("Not Found Rule!");
     }
