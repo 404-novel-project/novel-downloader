@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.7.11.497
+// @version        4.7.12.498
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -173,6 +173,7 @@
 // @match          *://www.18kanshu.com/module/novel/info.php?*
 // @match          *://www.bxwx333.org/txt/*/
 // @match          *://www.xiaoshuowu.com/html/*/*/
+// @match          *://www.xrzww.com/bookdetail/*
 // @name:en        novel-downloader
 // @name:ja        小説ダウンローダー
 // @description:en An scalable universal novel downloader.
@@ -295,6 +296,7 @@
 // @connect        jingcaiyuedu6.com
 // @connect        aixdzs.com
 // @connect        b5200.net
+// @connect        xrzww.com
 // @connect        *
 // @require        https://cdn.jsdelivr.net/npm/crypto-js@4.1.1/crypto-js.js#sha512-NQVmLzNy4Lr5QTrmXvq/WzTMUnRHmv7nyIT/M6LyGPBS+TIeRxZ+YQaqWxjpRpvRMQSuYPQURZz/+pLi81xXeA==
 // @require        https://cdn.jsdelivr.net/npm/fflate@0.7.2/umd/index.js#sha512-b4i2Ut2Tho5Qrzt3pWKCkt9Q+4ECSNPdX0JsVzudNFXR2kIbV0ndgkm3fDlGvp2A6JG9tcH3ND38y+y0DrM/jQ==
@@ -14561,6 +14563,205 @@ class Tadu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
 
 /***/ }),
 
+/***/ "./src/rules/special/original/xrzww.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Xrzww": () => (/* binding */ Xrzww)
+/* harmony export */ });
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/main.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/cleanDOM.ts");
+
+
+
+
+
+
+
+class Xrzww extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
+    constructor() {
+        super();
+        this.imageMode = "TM";
+        this.concurrencyLimit = 1;
+    }
+    async bookParse() {
+        const bookUrl = document.location.href;
+        const bookId = bookUrl.substring(bookUrl.lastIndexOf("/") + 1);
+        const apiBase = "https://pre-api.xrzww.com";
+        const ossBase = "https://oss.xrzww.com";
+        const token = localStorage.getItem("token")
+            ? localStorage.getItem("token")
+            : "";
+        const site = 1;
+        const baseHeader = {
+            Accept: "application/json, text/plain, */*",
+            Authorization: `Bearer ${token}`,
+            Site: site.toString(),
+        };
+        const signIn = token !== "";
+        const webNovelDetailUrl = new URL(`${apiBase}/api/webNovelDetail`);
+        webNovelDetailUrl.searchParams.set("novel_id", bookId);
+        const respW = await fetch(webNovelDetailUrl.href, {
+            credentials: "include",
+            headers: {
+                "Cache-Control": "max-age=0",
+                ...baseHeader,
+            },
+            method: "GET",
+            mode: "cors",
+        });
+        const webNovelDetail = (await respW.json());
+        if (webNovelDetail.code !== 200) {
+            throw new Error("获取书籍信息出错！");
+        }
+        const bookname = webNovelDetail.data.novel_name;
+        const author = webNovelDetail.data.novel_author;
+        const introduction = webNovelDetail.data.novel_info;
+        const introductionHTML = document.createElement("div");
+        introductionHTML.innerText = introduction;
+        const additionalMetadate = {};
+        const coverUrl = `${ossBase}${webNovelDetail.data.novel_cover}`;
+        (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getImageAttachment */ .CE)(coverUrl, this.imageMode, "cover-")
+            .then((coverClass) => {
+            additionalMetadate.cover = coverClass;
+        })
+            .catch((error) => _log__WEBPACK_IMPORTED_MODULE_2___default().error(error));
+        additionalMetadate.tags = webNovelDetail.data.novel_tags
+            .split(",")
+            .map((t) => t.trim());
+        additionalMetadate.tags.push(webNovelDetail.data.type_name);
+        additionalMetadate.lastModified = webNovelDetail.data.novel_uptime;
+        const directoryListUrl = new URL(`${apiBase}/api/directoryList`);
+        directoryListUrl.searchParams.set("nid", bookId);
+        directoryListUrl.searchParams.set("orderBy", "0");
+        const respD = await fetch(directoryListUrl.href, {
+            credentials: "include",
+            headers: baseHeader,
+            method: "GET",
+            mode: "cors",
+        });
+        const directoryList = (await respD.json());
+        if (directoryList.code !== 200) {
+            throw new Error("获取目录信息失败！");
+        }
+        const volumes = directoryList.data.volume.reduce((obj, vol) => {
+            obj[vol.volume_id] = {
+                name: vol.volume_name,
+                order: vol.volume_order,
+                desc: vol.volume_desc,
+            };
+            return obj;
+        }, {});
+        const chapters = [];
+        let i = 0;
+        let tSectionName;
+        let s = 0;
+        let sc = 0;
+        for (const c of directoryList.data.data) {
+            i++;
+            const chapterUrl = "";
+            const chapterName = c.chapter_name;
+            const chapterNumber = i;
+            const isVIP = c.chapter_ispay === 1;
+            const isPaid = c.is_subscribe === 1;
+            const sectionName = volumes[c.chapter_vid].name;
+            if (tSectionName !== sectionName) {
+                tSectionName = sectionName;
+                s++;
+                sc = 0;
+            }
+            const sectionNumber = s;
+            sc++;
+            const sectionChapterNumber = sc;
+            const options = {
+                nid: c.chapter_nid,
+                vid: c.chapter_vid,
+                chapter_id: c.chapter_id,
+                chapter_order: c.chapter_order,
+                apiBase,
+                headers: baseHeader,
+            };
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_3__/* .Chapter */ .W({
+                bookUrl,
+                bookname,
+                chapterUrl,
+                chapterNumber,
+                chapterName,
+                isVIP,
+                isPaid,
+                sectionName,
+                sectionNumber,
+                sectionChapterNumber,
+                chapterParse: this.chapterParse,
+                charset: this.charset,
+                options,
+            });
+            if (signIn) {
+                if (chapter.isVIP && chapter.isPaid === false) {
+                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_4__/* .Status.aborted */ .qb.aborted;
+                }
+            }
+            else {
+                if (chapter.isVIP) {
+                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_4__/* .Status.aborted */ .qb.aborted;
+                }
+            }
+            chapters.push(chapter);
+        }
+        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .f({
+            bookUrl,
+            bookname,
+            author,
+            introduction,
+            introductionHTML,
+            additionalMetadate,
+            chapters,
+        });
+        return book;
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+        const readNewUrl = new URL(`${options.apiBase}/api/readNew`);
+        readNewUrl.searchParams.set("nid", options.nid.toString());
+        readNewUrl.searchParams.set("vid", options.vid.toString());
+        readNewUrl.searchParams.set("chapter_id", options.chapter_id.toString());
+        readNewUrl.searchParams.set("chapter_order", options.chapter_order.toString());
+        readNewUrl.searchParams.set("showpic", false.toString());
+        readNewUrl.searchParams.set("is_cut", "");
+        const resp = await fetch(readNewUrl.href, {
+            credentials: "include",
+            headers: options.headers,
+            method: "GET",
+            mode: "cors",
+        });
+        const readNew = (await resp.json());
+        if (readNew.code !== 200) {
+            throw new Error("获取章节内容失败！ " + JSON.stringify(options));
+        }
+        const contentRaw = document.createElement("p");
+        contentRaw.innerText = readNew.data.content;
+        const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_6__/* .cleanDOM */ .zM)(contentRaw, "TM");
+        return {
+            chapterName,
+            contentRaw,
+            contentText: text,
+            contentHTML: dom,
+            contentImages: images,
+            additionalMetadate: { lastModified: readNew.data.chapter_uptime },
+        };
+    }
+}
+
+
+/***/ }),
+
 /***/ "./src/rules/special/original/zongheng.ts":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -17958,6 +18159,11 @@ async function getRule() {
         case "www.xiaoshuowu.com": {
             const { xiaoshuowu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/xiaoshuowu.ts"));
             ruleClass = xiaoshuowu();
+            break;
+        }
+        case "www.xrzww.com": {
+            const { Xrzww } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/xrzww.ts"));
+            ruleClass = Xrzww;
             break;
         }
         default: {
