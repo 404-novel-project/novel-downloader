@@ -197,7 +197,17 @@ export function fullWidthLength(input: string) {
   return length;
 }
 
-export function convertHTMLtoXHTML(input: string) {
-  const doc = new DOMParser().parseFromString(input, "text/html");
-  return new XMLSerializer().serializeToString(doc);
+export function convertHTMLtoXHTML(input: string | Document) {
+  let doc;
+  if (typeof input === "string") {
+    doc = new DOMParser().parseFromString(input, "text/html");
+  }
+  if (input instanceof Document) {
+    doc = input;
+  }
+  if (doc instanceof Document) {
+    return new XMLSerializer().serializeToString(doc);
+  } else {
+    throw new Error("input format error!");
+  }
 }

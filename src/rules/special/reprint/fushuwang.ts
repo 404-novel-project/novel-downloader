@@ -4,7 +4,7 @@ import { rm } from "../../../lib/dom";
 import { Chapter } from "../../../main/Chapter";
 import { Book, BookAdditionalMetadate } from "../../../main/Book";
 import { BaseRuleClass } from "../../../rules";
-import { SaveOptions } from "../../../save/save";
+import { SaveOptions } from "../../../save/options";
 
 export class Fushuwang extends BaseRuleClass {
   public saveOptions: SaveOptions;

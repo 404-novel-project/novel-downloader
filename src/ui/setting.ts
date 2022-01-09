@@ -5,7 +5,7 @@ import { deepcopy, sleep } from "../lib/misc";
 import { log } from "../log";
 import { Status } from "../main/main";
 import { Chapter } from "../main/Chapter";
-import { SaveOptions as globalSaveOptions } from "../save/save";
+import { SaveOptions as globalSaveOptions } from "../save/options";
 import { enableDebug } from "../setting";
 import FilterTab, {
   FilterSetting as filterSettingGlobal,

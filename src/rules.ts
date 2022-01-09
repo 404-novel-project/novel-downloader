@@ -6,7 +6,8 @@ import { ExpectError, Status } from "./main/main";
 import { AttachmentClass } from "./main/Attachment";
 import { Chapter, ChapterAdditionalMetadate } from "./main/Chapter";
 import { Book } from "./main/Book";
-import { SaveBook, SaveOptions, saveOptionsValidate } from "./save/save";
+import { SaveBook } from "./save/save";
+import { SaveOptions, saveOptionsValidate } from "./save/options";
 import {
   enableCustomChapterFilter,
   enableCustomFinishCallback,

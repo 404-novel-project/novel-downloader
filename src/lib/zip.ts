@@ -80,7 +80,7 @@ export class FflateZip {
     });
   }
 
-  public async file(filename: string, fileBlob: Blob) {
+  public async file(filename: string, fileBlob: Blob, nocompress = false) {
     if (this.filenameList.includes(filename)) {
       log.warn(`filename ${filename} has existed on zip.`);
       return;
@@ -90,7 +90,7 @@ export class FflateZip {
 
     const buffer = await fileBlob.arrayBuffer();
     const chunk = new Uint8Array(buffer);
-    if (fileBlob.type.includes("image/")) {
+    if (fileBlob.type.includes("image/") || nocompress) {
       const nonStreamingFile = new ZipPassThrough(filename);
       this.savedZip.add(nonStreamingFile);
       nonStreamingFile.push(chunk, true);

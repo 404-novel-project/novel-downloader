@@ -5,7 +5,7 @@ import { Chapter } from "./main/Chapter";
 import { Book } from "./main/Book";
 import { BaseRuleClass } from "./rules";
 import { SectionObj } from "./save/misc";
-import { SaveOptions } from "./save/save";
+import { SaveOptions } from "./save/options";
 import { randomUUID } from "./lib/misc";
 
 export interface WindowObject extends Window {

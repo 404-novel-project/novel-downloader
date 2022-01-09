@@ -1,6 +1,6 @@
 import { removeTrackParm } from "../lib/removeTrackParam";
 import { log } from "../log";
-import { SaveOptions } from "../save/save";
+import { SaveOptions } from "../save/options";
 import { AttachmentClass } from "./Attachment";
 import { Chapter } from "./Chapter";
 
