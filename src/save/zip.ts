@@ -8,8 +8,18 @@ import { Book } from "../main/Book";
 import { enableDebug } from "../setting";
 import { getSectionsObj } from "./misc";
 import { Options, SaveOptions } from "./options";
-import { chapter as chapterTemplt, index, section } from "./template";
 import { convertHTMLtoXHTML } from "../lib/dom";
+
+import chapterHtml from "./chapter.html.j2";
+import indexHtml from "./index.html.j2";
+import sectionHtml from "./section.html.j2";
+import { Environment, Template } from "nunjucks";
+
+const env = new Environment(undefined, { autoescape: false });
+
+export const section = new Template(sectionHtml, env, undefined, true);
+export const chapterTemplt = new Template(chapterHtml, env, undefined, true);
+const index = new Template(indexHtml, env, undefined, true);
 
 export class ZIP extends Options {
   private book: Book;
@@ -36,7 +46,7 @@ export class ZIP extends Options {
     );
   }
 
-  public async saveZip(runSaveChapters: boolean): Promise<void> {
+  public async saveZip(): Promise<void> {
     const self = this;
 
     log.debug("[save]保存元数据文本");
@@ -86,13 +96,8 @@ export class ZIP extends Options {
     log.debug("[save]开始保存 Meta Data Json");
     await saveMetaJson();
 
-    if (runSaveChapters) {
-      log.debug("[save]开始保存章节文件");
-      await saveChapters();
-    } else {
-      log.debug("[save]保存仅标题章节文件");
-      await saveStubChapters(this.chapters);
-    }
+    log.debug("[save]保存仅标题章节文件");
+    await saveStubChapters(this.chapters);
 
     log.info("[save]开始保存ZIP文件");
     if (enableDebug.value) {
@@ -104,7 +109,7 @@ export class ZIP extends Options {
       log.debug("[save]对 chapters 排序");
       self.chapters.sort(self.chapterSort);
 
-      const sectionsListObj = getSectionsObj(self.chapters);
+      const sectionsListObj = getSectionsObj(self.chapters, self.chapterSort);
 
       const _indexHtmlText = index.render({
         creationDate: Date.now(),
@@ -191,12 +196,6 @@ export class ZIP extends Options {
       }
     }
 
-    async function saveChapters() {
-      for (const chapter of self.chapters) {
-        await self.addChapter(chapter);
-      }
-    }
-
     async function saveFinishedChapters(chapters: Chapter[]) {
       const cs = chapters.filter((c) => c.status === Status.finished);
       for (const c of cs) {
@@ -250,6 +249,16 @@ export class ZIP extends Options {
     });
   }
 
+  private addWebCSS(input: string) {
+    const doc = new DOMParser().parseFromString(input, "text/html");
+    const link = document.createElement("link");
+    link.href = "web.css";
+    link.type = "text/css";
+    link.rel = "stylesheet";
+    doc.head.appendChild(link);
+    return doc;
+  }
+
   private async addAttachmentToZip(
     attachment: AttachmentClass,
     zip: FflateZip
@@ -260,10 +269,6 @@ export class ZIP extends Options {
         attachment.imageBlob
       );
       await zip.file(attachment.name, attachment.imageBlob);
-      attachment.status = Status.saved;
-      if (!enableDebug.value) {
-        attachment.imageBlob = null;
-      }
     } else if (attachment.status === Status.saved) {
       log.debug(`[save]附件${attachment.name}已添加`);
     } else {
@@ -272,15 +277,5 @@ export class ZIP extends Options {
       );
       log.warn(attachment);
     }
-  }
-
-  private addWebCSS(input: string) {
-    const doc = new DOMParser().parseFromString(input, "text/html");
-    const link = document.createElement("link");
-    link.href = "web.css";
-    link.type = "text/css";
-    link.rel = "stylesheet";
-    doc.head.appendChild(link);
-    return doc;
   }
 }

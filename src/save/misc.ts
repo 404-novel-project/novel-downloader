@@ -8,7 +8,10 @@ export interface SectionObj {
 export interface SectionsObj {
   [sectionNumber: number]: SectionObj;
 }
-export function getSectionsObj(chapters: Chapter[]): SectionObj[] {
+export function getSectionsObj(
+  chapters: Chapter[],
+  chapterSort = (a: Chapter, b: Chapter) => a.chapterNumber - b.chapterNumber
+): SectionObj[] {
   const _sectionsObj: SectionsObj = {};
   for (const chapter of chapters) {
     let sectionNumber: number | null = null;
@@ -29,18 +32,15 @@ export function getSectionsObj(chapters: Chapter[]): SectionObj[] {
       };
     }
   }
-  const _sectionsListObj: [string, SectionObj][] = Object.entries(_sectionsObj);
-  _sectionsListObj.sort(sectionListSort);
-  const sectionsListObj = _sectionsListObj.map((s) => s[1]);
-  sectionsListObj.forEach((s) => s.chpaters.sort(chaptersSort));
+
+  const sectionsListObj: SectionObj[] = Object.values(_sectionsObj);
+  sectionsListObj.sort(sectionListSort);
+  sectionsListObj.forEach((s) => s.chpaters.sort(chapterSort));
   return sectionsListObj;
 
-  function sectionListSort(a: [string, SectionObj], b: [string, SectionObj]) {
-    const aKey = parseInt(a[0]);
-    const bKey = parseInt(b[0]);
-    return aKey - bKey;
-  }
-  function chaptersSort(a: Chapter, b: Chapter) {
-    return a.chapterNumber - b.chapterNumber;
+  function sectionListSort(a: SectionObj, b: SectionObj) {
+    const aChapter = a.chpaters[0];
+    const bChapter = b.chpaters[0];
+    return chapterSort(aChapter, bChapter);
   }
 }

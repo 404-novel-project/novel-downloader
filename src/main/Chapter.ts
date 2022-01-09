@@ -38,7 +38,7 @@ export class Chapter {
   public contentImages!: AttachmentClass[] | null;
   public additionalMetadate!: ChapterAdditionalMetadate | null;
 
-  public chapterHtmlFileName!: string | number;
+  public chapterHtmlFileName!: string;
   public book!: Book;
 
   public constructor({

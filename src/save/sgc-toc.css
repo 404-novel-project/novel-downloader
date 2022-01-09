@@ -1,0 +1,30 @@
+div.sgc-toc-title {
+  font-size: 2em;
+  font-weight: bold;
+  margin-bottom: 1em;
+  text-align: center;
+}
+
+div.sgc-toc-level-1 {
+  margin-left: 0em;
+}
+
+div.sgc-toc-level-2 {
+  margin-left: 2em;
+}
+
+div.sgc-toc-level-3 {
+  margin-left: 2em;
+}
+
+div.sgc-toc-level-4 {
+  margin-left: 2em;
+}
+
+div.sgc-toc-level-5 {
+  margin-left: 2em;
+}
+
+div.sgc-toc-level-6 {
+  margin-left: 2em;
+}

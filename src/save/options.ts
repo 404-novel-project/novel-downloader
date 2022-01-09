@@ -116,15 +116,6 @@ export class Options extends Common {
   }
 
   public chapterSort(a: Chapter, b: Chapter) {
-    if (a.chapterNumber > b.chapterNumber) {
-      return 1;
-    }
-    if (a.chapterNumber === b.chapterNumber) {
-      return 0;
-    }
-    if (a.chapterNumber < b.chapterNumber) {
-      return -1;
-    }
-    return 0;
+    return a.chapterNumber - b.chapterNumber;
   }
 }

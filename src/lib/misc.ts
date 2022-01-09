@@ -104,7 +104,7 @@ function createUUID() {
   return uuid;
 }
 
-export function randomUUID() {
+export function randomUUID(): string {
   // @ts-expect-error: Property 'randomUUID' does not exist on type 'Crypto'
   if (typeof crypto.randomUUID === "function") {
     // @ts-expect-error: Property 'randomUUID' does not exist on type 'Crypto'

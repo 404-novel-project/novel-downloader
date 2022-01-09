@@ -6,7 +6,7 @@ import {
   reactive,
   ref,
 } from "vue";
-import { GmWindow } from "../global";
+import { GmWindow, UnsafeWindow } from "../global";
 import { log } from "../log";
 import { Status } from "../main/main";
 import { Chapter } from "../main/Chapter";
@@ -31,7 +31,14 @@ async function getSections() {
     const book = await rule.bookParse();
     (window as GmWindow)._book = book;
     (window as GmWindow)._url = document.location.href;
-    (window as GmWindow)._sections = getSectionsObj(book.chapters);
+    if ((unsafeWindow as UnsafeWindow).saveOptions?.chapterSort) {
+      (window as GmWindow)._sections = getSectionsObj(
+        book.chapters,
+        (unsafeWindow as UnsafeWindow).saveOptions?.chapterSort
+      );
+    } else {
+      (window as GmWindow)._sections = getSectionsObj(book.chapters);
+    }
     return (window as GmWindow)._sections;
   }
 }

@@ -172,7 +172,8 @@ export abstract class BaseRuleClass {
     async function save(saveObj: SaveBook): Promise<void> {
       log.debug("[run]开始保存文件");
       saveObj.saveTxt();
-      await saveObj.saveZip(false);
+      await saveObj.saveZip();
+      await saveObj.saveEpub();
     }
   }
 
