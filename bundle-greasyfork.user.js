@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.8.0.501
+// @version        4.8.0.502
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -6829,8 +6829,22 @@ class EPUB extends Options {
                     }
                 }
             }
-            await self.epubZip.file("OEBPS/content.opf", new Blob([new XMLSerializer().serializeToString(self.contentOpf)]));
-            await self.epubZip.file("OEBPS/toc.ncx", new Blob([new XMLSerializer().serializeToString(self.ncx)]));
+            if (sectionNavPoint) {
+                self.navMap.appendChild(sectionNavPoint);
+            }
+            if (sectionTOCDiv) {
+                self.tocBody.appendChild(sectionTOCDiv);
+            }
+            await self.epubZip.file("OEBPS/content.opf", new Blob([
+                new XMLSerializer()
+                    .serializeToString(self.contentOpf)
+                    .replaceAll('xmlns="http://www.w3.org/1999/xhtml"', ""),
+            ]));
+            await self.epubZip.file("OEBPS/toc.ncx", new Blob([
+                new XMLSerializer()
+                    .serializeToString(self.ncx)
+                    .replaceAll('xmlns="http://www.w3.org/1999/xhtml"', ""),
+            ]));
             await self.epubZip.file("OEBPS/TOC.xhtml", new Blob([new XMLSerializer().serializeToString(self.toc)]));
             function appendManifest(htmlFileName) {
                 const item = document.createElement("item");
