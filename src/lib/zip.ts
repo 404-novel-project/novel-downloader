@@ -23,7 +23,11 @@ export class FflateZip {
   private zipOut: Blob = new Blob([], { type: "application/zip" });
   private savedZip: Zip;
 
-  public constructor(filename: string, stream: boolean) {
+  public constructor(
+    filename: string,
+    stream: boolean,
+    mimetype = "application/zip"
+  ) {
     log.info(
       `[fflateZip] filename: ${filename}, stream: ${stream}, streamSaver.supported: ${streamSaver.supported}`
     );
@@ -56,7 +60,7 @@ export class FflateZip {
       if (self.stream) {
         writer.write(dat);
       } else {
-        self.zipOut = new Blob([self.zipOut, dat], { type: "application/zip" });
+        self.zipOut = new Blob([self.zipOut, dat], { type: mimetype });
       }
 
       if (final) {

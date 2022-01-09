@@ -152,7 +152,11 @@ export class EPUB extends Options {
     this.chapters = this.book.chapters;
 
     const zipFilename = `[${this.book.author}]${this.book.bookname}.epub`;
-    this.epubZip = new FflateZip(zipFilename, streamZip);
+    this.epubZip = new FflateZip(
+      zipFilename,
+      streamZip,
+      "application/epub+zip"
+    );
 
     if (options) {
       Object.assign(this, options);
