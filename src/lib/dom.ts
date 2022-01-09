@@ -196,3 +196,8 @@ export function fullWidthLength(input: string) {
   }, 0);
   return length;
 }
+
+export function convertHTMLtoXHTML(input: string) {
+  const doc = new DOMParser().parseFromString(input, "text/html");
+  return new XMLSerializer().serializeToString(doc);
+}

@@ -10,7 +10,7 @@ import defaultMainStyleText from "./main.css";
 import { getSectionsObj } from "./misc";
 import { chapter as chapterTemplt, index, section } from "./template";
 import defaultTocStyleText from "./toc.css";
-import { fullWidthLength } from "../lib/dom";
+import { convertHTMLtoXHTML, fullWidthLength } from "../lib/dom";
 
 export interface SaveOptions {
   mainStyleText?: SaveBook["mainStyleText"];
@@ -221,7 +221,7 @@ export class SaveBook {
 
       const sectionsListObj = getSectionsObj(self.chapters);
 
-      const indexHtmlText = index.render({
+      const _indexHtmlText = index.render({
         creationDate: Date.now(),
         bookname: self.book.bookname,
         author: self.book.author,
@@ -231,10 +231,11 @@ export class SaveBook {
         sectionsObj: Object.values(sectionsListObj),
         Status,
       });
+      const indexHtmlText = convertHTMLtoXHTML(_indexHtmlText);
       await self.savedZip.file(
-        "index.html",
+        "index.xhtml",
         new Blob([indexHtmlText.replaceAll("data-src-address", "src")], {
-          type: "text/html; charset=UTF-8",
+          type: "application/xhtml+xml; charset=UTF-8",
         })
       );
     }
@@ -277,7 +278,7 @@ export class SaveBook {
 
       for (const chapter of self.chapters) {
         const chapterNumberToSave = self.getChapterNumberToSave(chapter);
-        const sectionHtmlFileName = `No${chapterNumberToSave}Section.html`;
+        const sectionHtmlFileName = `No${chapterNumberToSave}Section.xhtml`;
 
         if (chapter.sectionName) {
           if (!self._sections.includes(chapter.sectionName)) {
@@ -319,7 +320,7 @@ export class SaveBook {
   public async addChapter(chapter: Chapter, suffix = "") {
     const chapterName = this.getchapterName(chapter);
     const chapterNumberToSave = this.getChapterNumberToSave(chapter);
-    const chapterHtmlFileName = `No${chapterNumberToSave}Chapter${suffix}.html`;
+    const chapterHtmlFileName = `No${chapterNumberToSave}Chapter${suffix}.xhtml`;
 
     log.debug(`[save]保存章HTML文件：${chapterName}`);
     const chapterHTMLBlob = this.genChapterHtmlFile(chapter);
@@ -364,20 +365,22 @@ export class SaveBook {
   }
 
   public genSectionHtmlFile(chapterObj: Chapter) {
-    const htmlText = section.render({ sectionName: chapterObj.sectionName });
+    const _htmlText = section.render({ sectionName: chapterObj.sectionName });
+    const htmlText = convertHTMLtoXHTML(_htmlText);
     return new Blob([htmlText.replaceAll("data-src-address", "src")], {
-      type: "text/html; charset=UTF-8",
+      type: "application/xhtml+xml; charset=UTF-8",
     });
   }
 
   public genChapterHtmlFile(chapterObj: Chapter) {
-    const htmlText = chapterTemplt.render({
+    const _htmlText = chapterTemplt.render({
       chapterUrl: chapterObj.chapterUrl,
       chapterName: chapterObj.chapterName,
       outerHTML: chapterObj.contentHTML?.outerHTML ?? "",
     });
+    const htmlText = convertHTMLtoXHTML(_htmlText);
     return new Blob([htmlText.replaceAll("data-src-address", "src")], {
-      type: "text/html; charset=UTF-8",
+      type: "application/xhtml+xml; charset=UTF-8",
     });
   }
 
