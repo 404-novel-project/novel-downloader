@@ -1,6 +1,6 @@
 import { Book } from "../../../main/Book";
 import { BaseRuleClass } from "../../../rules";
-import { SaveOptions } from "../../../save/save";
+import { SaveOptions } from "../../../save/options";
 export declare class Fushuwang extends BaseRuleClass {
     saveOptions: SaveOptions;
     constructor();

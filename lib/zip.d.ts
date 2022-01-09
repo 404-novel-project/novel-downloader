@@ -8,6 +8,6 @@ export declare class FflateZip {
     private zipOut;
     private savedZip;
     constructor(filename: string, stream: boolean);
-    file(filename: string, fileBlob: Blob): Promise<void>;
+    file(filename: string, fileBlob: Blob, nocompress?: boolean): Promise<void>;
     generateAsync(): Promise<void>;
 }

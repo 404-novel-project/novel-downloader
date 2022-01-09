@@ -5,7 +5,7 @@ import { Chapter } from "./main/Chapter";
 import { Book } from "./main/Book";
 import { BaseRuleClass } from "./rules";
 import { SectionObj } from "./save/misc";
-import { SaveOptions } from "./save/save";
+import { SaveOptions } from "./save/options";
 export interface WindowObject extends Window {
     workerId: string;
     downloading: boolean;

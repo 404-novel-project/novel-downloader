@@ -1,4 +1,4 @@
-import { SaveOptions } from "../save/save";
+import { SaveOptions } from "../save/options";
 import { AttachmentClass } from "./Attachment";
 import { Chapter } from "./Chapter";
 export interface BookAdditionalMetadate {

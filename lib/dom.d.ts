@@ -13,3 +13,4 @@ export declare function getPreviousSibling(node: Element | Text): ChildNode | nu
 export declare function getPreviousBrCount(node: Element | Text): number;
 export declare function removePreviousBr(node: Element | Text): void;
 export declare function fullWidthLength(input: string): number;
+export declare function convertHTMLtoXHTML(input: string | Document): string;

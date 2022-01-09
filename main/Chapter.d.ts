@@ -27,7 +27,7 @@ export declare class Chapter {
     contentHTML: HTMLElement | null;
     contentImages: AttachmentClass[] | null;
     additionalMetadate: ChapterAdditionalMetadate | null;
-    chapterHtmlFileName: string | number;
+    chapterHtmlFileName: string;
     book: Book;
     constructor({ bookUrl, bookname, chapterUrl, chapterNumber, chapterName, isVIP, isPaid, sectionName, sectionNumber, sectionChapterNumber, chapterParse, charset, options, }: {
         bookUrl: string;

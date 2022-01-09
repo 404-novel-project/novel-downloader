@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.7.12.498
+// @version        4.8.0.501
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -2815,7 +2815,30 @@ ___CSS_LOADER_EXPORT___.push([module.id, ".nd-setting-body {\n  background: #e0e
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "body {\n  background-color: #f0f0f2;\n  margin: 0;\n  padding: 0;\n  font-family: -apple-system, system-ui, BlinkMacSystemFont, \"Segoe UI\",\n    \"Open Sans\", \"Helvetica Neue\", Helvetica, Arial, sans-serif;\n}\ndiv.main {\n  width: 900px;\n  margin: 5em auto;\n  padding: 2em;\n  background-color: #fdfdff;\n  border-radius: 0.5em;\n  box-shadow: 2px 3px 7px 2px rgba(0, 0, 0, 0.02);\n}\n@media (max-width: 700px) {\n  div.main {\n    margin: 0 auto;\n    width: auto;\n  }\n}\nh1 {\n  line-height: 130%;\n  text-align: center;\n  font-weight: bold;\n  font-size: xxx-large;\n  margin-top: 3.2em;\n  margin-bottom: 3.3em;\n}\nh2 {\n  line-height: 130%;\n  text-align: center;\n  font-weight: bold;\n  font-size: x-large;\n  margin-top: 1.2em;\n  margin-bottom: 2.3em;\n}\ndiv {\n  margin: 0px;\n  padding: 0px;\n  text-align: justify;\n}\np {\n  text-indent: 2em;\n  display: block;\n  line-height: 1.3em;\n  margin-top: 0.4em;\n  margin-bottom: 0.4em;\n}\nimg {\n  vertical-align: text-bottom;\n  max-width: 90%;\n}\n.title {\n  margin-bottom: 0.7em;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "h1 {\n  line-height: 130%;\n  text-align: center;\n  font-weight: bold;\n  font-size: xxx-large;\n  margin-top: 3.2em;\n  margin-bottom: 3.3em;\n}\nh2 {\n  line-height: 130%;\n  text-align: center;\n  font-weight: bold;\n  font-size: x-large;\n  margin-top: 1.2em;\n  margin-bottom: 2.3em;\n}\ndiv {\n  margin: 0px;\n  padding: 0px;\n  text-align: justify;\n}\np {\n  text-indent: 2em;\n  display: block;\n  line-height: 1.3em;\n  margin-top: 0.4em;\n  margin-bottom: 0.4em;\n}\nimg {\n  vertical-align: text-bottom;\n  max-width: 90%;\n}\n.title {\n  margin-bottom: 0.7em;\n}\n", ""]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
+
+/***/ }),
+
+/***/ "./src/save/sgc-toc.css":
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Z": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/css-loader/dist/runtime/noSourceMaps.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
+// Imports
+
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, "div.sgc-toc-title {\n  font-size: 2em;\n  font-weight: bold;\n  margin-bottom: 1em;\n  text-align: center;\n}\n\ndiv.sgc-toc-level-1 {\n  margin-left: 0em;\n}\n\ndiv.sgc-toc-level-2 {\n  margin-left: 2em;\n}\n\ndiv.sgc-toc-level-3 {\n  margin-left: 2em;\n}\n\ndiv.sgc-toc-level-4 {\n  margin-left: 2em;\n}\n\ndiv.sgc-toc-level-5 {\n  margin-left: 2em;\n}\n\ndiv.sgc-toc-level-6 {\n  margin-left: 2em;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -2839,6 +2862,29 @@ ___CSS_LOADER_EXPORT___.push([module.id, "body {\n  background-color: #f0f0f2;\n
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
 ___CSS_LOADER_EXPORT___.push([module.id, "img {\n  max-width: 100%;\n  max-height: 15em;\n}\n.introduction {\n  font-size: smaller;\n  max-height: 18em;\n  overflow-y: scroll;\n}\n.introduction p {\n  text-indent: 0;\n}\n.bookurl {\n  text-align: center;\n  font-size: smaller;\n  padding-top: 1em;\n  padding-bottom: 0.5em;\n  margin-top: 0.4em;\n}\n.bookurl > a {\n  color: gray;\n}\n.info h3 {\n  padding-left: 0.5em;\n  margin-top: -1.2em;\n  margin-bottom: 0.5em;\n}\n.section {\n  margin-top: 1.5em;\n  display: grid;\n  grid-template-columns: 33% 33% 33%;\n}\n.section > h2:first-child {\n  grid-column-end: span 3;\n}\n.section > .chapter {\n  padding-bottom: 0.3em;\n  text-align: center;\n}\n.main > h1 {\n  margin-top: 1.5em;\n  margin-bottom: 1.5em;\n}\na.disabled {\n  pointer-events: none;\n  cursor: default;\n  color: gray;\n}\n.author::before {\n  content: \"作者：\";\n}\n.author {\n  text-align: center;\n  margin-top: -3em;\n  margin-bottom: 3em;\n}\n", ""]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
+
+/***/ }),
+
+/***/ "./src/save/web.css":
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Z": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/css-loader/dist/runtime/noSourceMaps.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
+// Imports
+
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, "body {\n  background-color: #f0f0f2;\n  margin: 0;\n  padding: 0;\n  font-family: -apple-system, system-ui, BlinkMacSystemFont, \"Segoe UI\",\n    \"Open Sans\", \"Helvetica Neue\", Helvetica, Arial, sans-serif;\n}\ndiv.main {\n  width: 900px;\n  margin: 5em auto;\n  padding: 2em;\n  background-color: #fdfdff;\n  border-radius: 0.5em;\n  box-shadow: 2px 3px 7px 2px rgba(0, 0, 0, 0.02);\n}\n@media (max-width: 700px) {\n  div.main {\n    margin: 0 auto;\n    width: auto;\n  }\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -4530,7 +4576,8 @@ function isFixWidth(node, width = 35) {
 /* harmony export */   "U": () => (/* binding */ getPreviousSibling),
 /* harmony export */   "$N": () => (/* binding */ getPreviousBrCount),
 /* harmony export */   "Fe": () => (/* binding */ removePreviousBr),
-/* harmony export */   "sp": () => (/* binding */ fullWidthLength)
+/* harmony export */   "sp": () => (/* binding */ fullWidthLength),
+/* harmony export */   "fI": () => (/* binding */ convertHTMLtoXHTML)
 /* harmony export */ });
 /* unused harmony export getCookie */
 function rm(selector, all = false, dom) {
@@ -4721,6 +4768,21 @@ function fullWidthLength(input) {
         }
     }, 0);
     return length;
+}
+function convertHTMLtoXHTML(input) {
+    let doc;
+    if (typeof input === "string") {
+        doc = new DOMParser().parseFromString(input, "text/html");
+    }
+    if (input instanceof Document) {
+        doc = input;
+    }
+    if (doc instanceof Document) {
+        return new XMLSerializer().serializeToString(doc);
+    }
+    else {
+        throw new Error("input format error!");
+    }
 }
 
 
@@ -5984,10 +6046,16 @@ var external_log_ = __webpack_require__("loglevel");
 var external_log_default = /*#__PURE__*/__webpack_require__.n(external_log_);
 // EXTERNAL MODULE: ./src/main/main.ts
 var main = __webpack_require__("./src/main/main.ts");
-// EXTERNAL MODULE: ./node_modules/file-saver/dist/FileSaver.min.js
-var FileSaver_min = __webpack_require__("./node_modules/file-saver/dist/FileSaver.min.js");
+// EXTERNAL MODULE: ./src/setting.ts
+var setting = __webpack_require__("./src/setting.ts");
+// EXTERNAL MODULE: ./src/save/sgc-toc.css
+var sgc_toc = __webpack_require__("./src/save/sgc-toc.css");
+// EXTERNAL MODULE: ./src/lib/GM.ts
+var GM = __webpack_require__("./src/lib/GM.ts");
 ;// CONCATENATED MODULE: external "fflate"
 const external_fflate_namespaceObject = fflate;
+// EXTERNAL MODULE: ./node_modules/file-saver/dist/FileSaver.min.js
+var FileSaver_min = __webpack_require__("./node_modules/file-saver/dist/FileSaver.min.js");
 // EXTERNAL MODULE: ./node_modules/streamsaver/StreamSaver.js
 var StreamSaver = __webpack_require__("./node_modules/streamsaver/StreamSaver.js");
 var StreamSaver_default = /*#__PURE__*/__webpack_require__.n(StreamSaver);
@@ -6069,7 +6137,7 @@ class FflateZip {
             }
         });
     }
-    async file(filename, fileBlob) {
+    async file(filename, fileBlob, nocompress = false) {
         if (this.filenameList.includes(filename)) {
             external_log_default().warn(`filename ${filename} has existed on zip.`);
             return;
@@ -6078,7 +6146,7 @@ class FflateZip {
         this.count++;
         const buffer = await fileBlob.arrayBuffer();
         const chunk = new Uint8Array(buffer);
-        if (fileBlob.type.includes("image/")) {
+        if (fileBlob.type.includes("image/") || nocompress) {
             const nonStreamingFile = new external_fflate_namespaceObject.ZipPassThrough(filename);
             this.savedZip.add(nonStreamingFile);
             nonStreamingFile.push(chunk, true);
@@ -6101,62 +6169,43 @@ class FflateZip {
     }
 }
 
-// EXTERNAL MODULE: ./src/setting.ts
-var setting = __webpack_require__("./src/setting.ts");
 // EXTERNAL MODULE: ./src/save/main.css
 var save_main = __webpack_require__("./src/save/main.css");
-// EXTERNAL MODULE: ./src/save/misc.ts
-var save_misc = __webpack_require__("./src/save/misc.ts");
-;// CONCATENATED MODULE: ./src/save/chapter.html.j2
-// Module
-var code = "<!DOCTYPE html> <html> <head> <meta charset=\"UTF-8\"/> <meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"/> <meta name=\"referrer\" content=\"same-origin\"/> <meta name=\"generator\" content=\"https://github.com/yingziwu/novel-downloader\"/> <meta name=\"source\" content=\"{{ chapterUrl }}\"/> <link href=\"style.css\" rel=\"stylesheet\"/> <title>{{ chapterName }}</title> </head> <body> <div class=\"main\"> <h2>{{ chapterName }}</h2> {{ outerHTML }} </div> </body> </html> ";
-// Exports
-/* harmony default export */ const chapter_html = (code);
-;// CONCATENATED MODULE: ./src/save/index.html.j2
-// Module
-var index_html_code = "<!DOCTYPE html> <html> <head> <meta charset=\"UTF-8\"/> <meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"/> <meta name=\"referrer\" content=\"same-origin\"/> <meta name=\"generator\" content=\"https://github.com/yingziwu/novel-downloader\"/> <meta name=\"date-creation\" content=\"{{ creationDate }}\"/> <link href=\"style.css\" rel=\"stylesheet\"/> <link href=\"toc.css\" rel=\"stylesheet\"/> <title>{{ bookname }}</title> </head> <body> <div class=\"main\"> <h1>{{ bookname }}</h1> <h3 class=\"author\">{{ author }}</h3> <div class=\"info\"> {% if cover -%} <img class=\"cover\" data-src-address=\"{{ cover.name }}\"/> {%- endif %} {% if introductionHTML -%} <div> <h3>简介</h3> <div class=\"introduction\">{{ introductionHTML }}</div> </div> {%- endif %} </div> <div class=\"bookurl\"> <a href=\"{{ bookUrl }}\">打开原始网站</a> </div> <hr/> {% for sectionObj in sectionsObj -%} <div id=\"section{{ sectionObj.sectionNumber }}\" class=\"section\"> {% if sectionObj.sectionName %} <h2 class=\"section-label\">{{ sectionObj.sectionName }}</h2> {% endif %} {% for chapter in sectionObj.chpaters -%} <div class=\"chapter\"> {% if not (chapter.contentHTML or chapter.status === Status.saved) -%} <a class=\"disabled\" href=\"{{ chapter.chapterHtmlFileName }}\">{{ chapter.chapterName }}</a> {%- else -%} <a href=\"{{ chapter.chapterHtmlFileName }}\">{{ chapter.chapterName }}</a> {%- endif %} </div> {%- endfor %} </div> {%- endfor %} </div> </body> </html>";
-// Exports
-/* harmony default export */ const index_html = (index_html_code);
-;// CONCATENATED MODULE: ./src/save/section.html.j2
-// Module
-var section_html_code = "<!DOCTYPE html> <html> <head> <meta charset=\"UTF-8\"/> <meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"/> <meta name=\"referrer\" content=\"same-origin\"/> <meta name=\"generator\" content=\"https://github.com/yingziwu/novel-downloader\"/> <link href=\"style.css\" rel=\"stylesheet\"/> <title>{{ sectionName }}</title> </head> <body> <div class=\"main\"><h1>{{ sectionName }}</h1></div> </body> </html> ";
-// Exports
-/* harmony default export */ const section_html = (section_html_code);
-;// CONCATENATED MODULE: external "nunjucks"
-const external_nunjucks_namespaceObject = nunjucks;
-;// CONCATENATED MODULE: ./src/save/template.ts
-
-
-
-
-const env = new external_nunjucks_namespaceObject.Environment(undefined, { autoescape: false });
-const section = new external_nunjucks_namespaceObject.Template(section_html, env, undefined, true);
-const chapter = new external_nunjucks_namespaceObject.Template(chapter_html, env, undefined, true);
-const index = new external_nunjucks_namespaceObject.Template(index_html, env, undefined, true);
-
 // EXTERNAL MODULE: ./src/save/toc.css
 var toc = __webpack_require__("./src/save/toc.css");
 // EXTERNAL MODULE: ./src/lib/dom.ts
 var dom = __webpack_require__("./src/lib/dom.ts");
-;// CONCATENATED MODULE: ./src/save/save.ts
+;// CONCATENATED MODULE: ./src/save/options.ts
 
 
 
-
-
-
-
-
-
-
+class Common {
+    genMetaDateTxt(book) {
+        let metaDateText = `题名：${book.bookname}\n作者：${book.author}`;
+        if (book.additionalMetadate.tags) {
+            metaDateText += `\nTag列表：${book.additionalMetadate.tags.join("、")}`;
+        }
+        metaDateText += `\n原始网址：${book.bookUrl}`;
+        if (book.additionalMetadate.cover) {
+            metaDateText += `\n封面图片地址：${book.additionalMetadate.cover.url}`;
+        }
+        if (book.introduction) {
+            metaDateText += `\n简介：${book.introduction}`;
+        }
+        metaDateText += `\n下载时间：${new Date().toISOString()}\n本文件由小说下载器生成，软件地址：https://github.com/yingziwu/novel-downloader\n\n`;
+        return metaDateText;
+    }
+    getChapterNumberToSave(chapter, chapters) {
+        return `${"0".repeat(chapters.length.toString().length -
+            Math.trunc(chapter.chapterNumber).toString().length)}${chapter.chapterNumber.toString()}`;
+    }
+}
 function saveOptionsValidate(data) {
     const keyNamesS = ["mainStyleText", "tocStyleText"];
     const keyNamesF = [
         "getchapterName",
         "genSectionText",
         "genChapterText",
-        "genSectionHtmlFile",
-        "genChapterHtmlFile",
         "chapterSort",
     ];
     function keyNametest(keyname) {
@@ -6200,74 +6249,102 @@ function saveOptionsValidate(data) {
     }
     return true;
 }
-class SaveBook {
-    book;
-    streamZip;
-    chapters;
+class Options extends Common {
     mainStyleText = save_main/* default */.Z;
     tocStyleText = toc/* default */.Z;
-    savedZip;
-    saveFileNameBase;
-    savedTextArray = [];
-    _sections = [];
-    constructor(book, streamZip, options) {
-        this.book = book;
-        this.chapters = book.chapters;
-        this.streamZip = streamZip;
-        this.saveFileNameBase = `[${this.book.author}]${this.book.bookname}`;
-        const zipFilename = `${this.saveFileNameBase}.zip`;
-        this.savedZip = new FflateZip(zipFilename, streamZip);
-        if (options !== undefined) {
-            Object.assign(this, options);
+    getchapterName(chapter) {
+        if (chapter.chapterName) {
+            return chapter.chapterName;
         }
-        if (book.saveOptions !== undefined) {
-            Object.assign(this, book.saveOptions);
+        else {
+            return chapter.chapterNumber.toString();
         }
     }
-    saveTxt() {
-        const metaDateText = this.genMetaDateTxt();
-        this.savedTextArray.push(metaDateText);
-        external_log_default().debug("[save]对 chapters 排序");
-        this.chapters.sort(this.chapterSort);
-        const sections = [];
-        for (const chapterTemp of this.chapters) {
-            const chapterName = this.getchapterName(chapterTemp);
-            if (chapterTemp.sectionName &&
-                !sections.includes(chapterTemp.sectionName)) {
-                sections.push(chapterTemp.sectionName);
-                const sectionText = this.genSectionText(chapterTemp.sectionName);
-                this.savedTextArray.push(sectionText);
-            }
-            const chapterText = this.genChapterText(chapterName, chapterTemp.contentText ?? "");
-            this.savedTextArray.push(chapterText);
-            if (!setting/* enableDebug.value */.Cy.value) {
-                chapterTemp.contentText = null;
-            }
+    genSectionText(sectionName) {
+        return (`${"=".repeat(20)}\n\n\n\n# ${sectionName}\n\n\n\n${"=".repeat(20)}` +
+            "\n\n");
+    }
+    genChapterText(chapterName, contentText) {
+        return `${chapterName}\n${"=".repeat((0,dom/* fullWidthLength */.sp)(chapterName) * 2 + 10)}\n\n${contentText}\n\n`;
+    }
+    chapterSort(a, b) {
+        return a.chapterNumber - b.chapterNumber;
+    }
+}
+
+// EXTERNAL MODULE: ./src/save/web.css
+var web = __webpack_require__("./src/save/web.css");
+// EXTERNAL MODULE: ./src/save/misc.ts
+var save_misc = __webpack_require__("./src/save/misc.ts");
+;// CONCATENATED MODULE: ./src/save/chapter.html.j2
+// Module
+var code = "<!DOCTYPE html> <html> <head> <meta charset=\"UTF-8\"/> <meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"/> <meta name=\"referrer\" content=\"same-origin\"/> <meta name=\"generator\" content=\"https://github.com/yingziwu/novel-downloader\"/> <meta name=\"source\" content=\"{{ chapterUrl }}\"/> <link href=\"style.css\" rel=\"stylesheet\"/> <title>{{ chapterName }}</title> </head> <body> <div class=\"main\"> <h2>{{ chapterName }}</h2> {{ outerHTML }} </div> </body> </html> ";
+// Exports
+/* harmony default export */ const chapter_html = (code);
+;// CONCATENATED MODULE: ./src/save/index.html.j2
+// Module
+var index_html_code = "<!DOCTYPE html> <html> <head> <meta charset=\"UTF-8\"/> <meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"/> <meta name=\"referrer\" content=\"same-origin\"/> <meta name=\"generator\" content=\"https://github.com/yingziwu/novel-downloader\"/> <meta name=\"date-creation\" content=\"{{ creationDate }}\"/> <link href=\"style.css\" rel=\"stylesheet\"/> <link href=\"web.css\" rel=\"stylesheet\"/> <link href=\"toc.css\" rel=\"stylesheet\"/> <title>{{ bookname }}</title> </head> <body> <div class=\"main\"> <h1>{{ bookname }}</h1> <h3 class=\"author\">{{ author }}</h3> <div class=\"info\"> {% if cover -%} <img class=\"cover\" data-src-address=\"{{ cover.name }}\"/> {%- endif %} {% if introductionHTML -%} <div> <h3>简介</h3> <div class=\"introduction\">{{ introductionHTML }}</div> </div> {%- endif %} </div> <div class=\"bookurl\"> <a href=\"{{ bookUrl }}\">打开原始网站</a> </div> <hr/> {% for sectionObj in sectionsObj -%} <div id=\"section{{ sectionObj.sectionNumber }}\" class=\"section\"> {% if sectionObj.sectionName %} <h2 class=\"section-label\">{{ sectionObj.sectionName }}</h2> {% endif %} {% for chapter in sectionObj.chpaters -%} <div class=\"chapter\"> {% if not (chapter.contentHTML or chapter.status === Status.saved) -%} <a class=\"disabled\" href=\"{{ chapter.chapterHtmlFileName }}\">{{ chapter.chapterName }}</a> {%- else -%} <a href=\"{{ chapter.chapterHtmlFileName }}\">{{ chapter.chapterName }}</a> {%- endif %} </div> {%- endfor %} </div> {%- endfor %} </div> </body> </html>";
+// Exports
+/* harmony default export */ const index_html = (index_html_code);
+;// CONCATENATED MODULE: ./src/save/section.html.j2
+// Module
+var section_html_code = "<!DOCTYPE html> <html> <head> <meta charset=\"UTF-8\"/> <meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"/> <meta name=\"referrer\" content=\"same-origin\"/> <meta name=\"generator\" content=\"https://github.com/yingziwu/novel-downloader\"/> <link href=\"style.css\" rel=\"stylesheet\"/> <title>{{ sectionName }}</title> </head> <body> <div class=\"main\"><h1>{{ sectionName }}</h1></div> </body> </html> ";
+// Exports
+/* harmony default export */ const section_html = (section_html_code);
+;// CONCATENATED MODULE: external "nunjucks"
+const external_nunjucks_namespaceObject = nunjucks;
+;// CONCATENATED MODULE: ./src/save/zip.ts
+
+
+
+
+
+
+
+
+
+
+
+
+const env = new external_nunjucks_namespaceObject.Environment(undefined, { autoescape: false });
+const section = new external_nunjucks_namespaceObject.Template(section_html, env, undefined, true);
+const chapterTemplt = new external_nunjucks_namespaceObject.Template(chapter_html, env, undefined, true);
+const index = new external_nunjucks_namespaceObject.Template(index_html, env, undefined, true);
+class ZIP extends Options {
+    book;
+    chapters;
+    savedZip;
+    constructor(book, streamZip, options) {
+        super();
+        this.book = book;
+        this.chapters = this.book.chapters;
+        const zipFilename = `[${this.book.author}]${this.book.bookname}.zip`;
+        this.savedZip = new FflateZip(zipFilename, streamZip);
+        if (options) {
+            Object.assign(this, options);
         }
-        external_log_default().info("[save]保存TXT文件");
-        const savedText = this.savedTextArray.join("\n").replaceAll("\n", "\r\n");
-        (0,FileSaver_min.saveAs)(new Blob([savedText], { type: "text/plain;charset=utf-8" }), `${this.saveFileNameBase}.txt`);
     }
     async saveLog() {
         await this.savedZip.file("debug.log", new Blob([log/* logText */.KC], { type: "text/plain; charset=UTF-8" }));
     }
-    async saveZip(runSaveChapters = false) {
+    async saveZip() {
         const self = this;
         external_log_default().debug("[save]保存元数据文本");
-        const metaDateText = this.genMetaDateTxt();
+        const metaDateText = this.genMetaDateTxt(this.book);
         await this.savedZip.file("info.txt", new Blob([metaDateText], { type: "text/plain;charset=utf-8" }));
         external_log_default().debug("[save]保存样式");
         await this.savedZip.file("style.css", new Blob([this.mainStyleText], { type: "text/css;charset=utf-8" }));
+        await this.savedZip.file("web.css", new Blob([web/* default */.Z], { type: "text/css;charset=utf-8" }));
         modifyTocStyleText();
         await this.savedZip.file("toc.css", new Blob([this.tocStyleText], { type: "text/css;charset=utf-8" }));
         if (this.book.additionalMetadate.cover) {
             external_log_default().debug("[save]保存封面");
-            await this.addImageToZip(this.book.additionalMetadate.cover, this.savedZip);
+            await this.addAttachmentToZip(this.book.additionalMetadate.cover, this.savedZip);
         }
         if (this.book.additionalMetadate.attachments) {
             external_log_default().debug("[save]保存书籍附件");
             for (const bookAttachment of this.book.additionalMetadate.attachments) {
-                await this.addImageToZip(bookAttachment, this.savedZip);
+                await this.addAttachmentToZip(bookAttachment, this.savedZip);
             }
         }
         external_log_default().debug("[save]开始生成并保存卷文件");
@@ -6278,14 +6355,8 @@ class SaveBook {
         await saveToC();
         external_log_default().debug("[save]开始保存 Meta Data Json");
         await saveMetaJson();
-        if (runSaveChapters) {
-            external_log_default().debug("[save]开始保存章节文件");
-            await saveChapters();
-        }
-        else {
-            external_log_default().debug("[save]保存仅标题章节文件");
-            await saveStubChapters(this.chapters);
-        }
+        external_log_default().debug("[save]保存仅标题章节文件");
+        await saveStubChapters(this.chapters);
         external_log_default().info("[save]开始保存ZIP文件");
         if (setting/* enableDebug.value */.Cy.value) {
             await self.saveLog();
@@ -6294,8 +6365,8 @@ class SaveBook {
         async function saveToC() {
             external_log_default().debug("[save]对 chapters 排序");
             self.chapters.sort(self.chapterSort);
-            const sectionsListObj = (0,save_misc/* getSectionsObj */.f)(self.chapters);
-            const indexHtmlText = index.render({
+            const sectionsListObj = (0,save_misc/* getSectionsObj */.f)(self.chapters, self.chapterSort);
+            const _indexHtmlText = index.render({
                 creationDate: Date.now(),
                 bookname: self.book.bookname,
                 author: self.book.author,
@@ -6305,8 +6376,9 @@ class SaveBook {
                 sectionsObj: Object.values(sectionsListObj),
                 Status: main/* Status */.qb,
             });
-            await self.savedZip.file("index.html", new Blob([indexHtmlText.replaceAll("data-src-address", "src")], {
-                type: "text/html; charset=UTF-8",
+            const indexHtmlText = (0,dom/* convertHTMLtoXHTML */.fI)(_indexHtmlText);
+            await self.savedZip.file("index.xhtml", new Blob([indexHtmlText.replaceAll("data-src-address", "src")], {
+                type: "application/xhtml+xml; charset=UTF-8",
             }));
         }
         function modifyTocStyleText() {
@@ -6325,6 +6397,14 @@ class SaveBook {
   }`;
             }
         }
+        function genSectionHtmlFile(chapterObj) {
+            const _htmlText = section.render({ sectionName: chapterObj.sectionName });
+            const doc = self.addWebCSS(_htmlText);
+            const htmlText = (0,dom/* convertHTMLtoXHTML */.fI)(doc);
+            return new Blob([htmlText.replaceAll("data-src-address", "src")], {
+                type: "application/xhtml+xml; charset=UTF-8",
+            });
+        }
         async function saveMetaJson() {
             await self.savedZip.file("book.json", new Blob([JSON.stringify(self.book)], {
                 type: "application/json; charset=utf-8",
@@ -6336,22 +6416,18 @@ class SaveBook {
         async function saveSections() {
             external_log_default().debug("[save]对 chapters 排序");
             self.chapters.sort(self.chapterSort);
+            const _sections = [];
             for (const chapter of self.chapters) {
-                const chapterNumberToSave = self.getChapterNumberToSave(chapter);
-                const sectionHtmlFileName = `No${chapterNumberToSave}Section.html`;
+                const chapterNumberToSave = self.getChapterNumberToSave(chapter, self.chapters);
+                const sectionHtmlFileName = `No${chapterNumberToSave}Section.xhtml`;
                 if (chapter.sectionName) {
-                    if (!self._sections.includes(chapter.sectionName)) {
-                        self._sections.push(chapter.sectionName);
+                    if (!_sections.includes(chapter.sectionName)) {
+                        _sections.push(chapter.sectionName);
                         external_log_default().debug(`[save]保存卷HTML文件：${chapter.sectionName}`);
-                        const sectionHTMLBlob = self.genSectionHtmlFile(chapter);
+                        const sectionHTMLBlob = genSectionHtmlFile(chapter);
                         await self.savedZip.file(sectionHtmlFileName, sectionHTMLBlob);
                     }
                 }
-            }
-        }
-        async function saveChapters() {
-            for (const chapter of self.chapters) {
-                await self.addChapter(chapter);
             }
         }
         async function saveFinishedChapters(chapters) {
@@ -6374,97 +6450,44 @@ class SaveBook {
     }
     async addChapter(chapter, suffix = "") {
         const chapterName = this.getchapterName(chapter);
-        const chapterNumberToSave = this.getChapterNumberToSave(chapter);
-        const chapterHtmlFileName = `No${chapterNumberToSave}Chapter${suffix}.html`;
+        const chapterNumberToSave = this.getChapterNumberToSave(chapter, this.chapters);
+        const chapterHtmlFileName = `No${chapterNumberToSave}Chapter${suffix}.xhtml`;
         external_log_default().debug(`[save]保存章HTML文件：${chapterName}`);
         const chapterHTMLBlob = this.genChapterHtmlFile(chapter);
-        if (!setting/* enableDebug.value */.Cy.value) {
-            chapter.contentRaw = null;
-            chapter.contentHTML = null;
-        }
         await this.savedZip.file(chapterHtmlFileName, chapterHTMLBlob);
         chapter.chapterHtmlFileName = chapterHtmlFileName;
-        chapter.status = main/* Status.saved */.qb.saved;
         if (chapter.contentImages && chapter.contentImages.length !== 0) {
             external_log_default().debug(`[save]保存章节附件：${chapterName}`);
             for (const attachment of chapter.contentImages) {
-                this.addImageToZip(attachment, this.savedZip);
-            }
-            if (!setting/* enableDebug.value */.Cy.value) {
-                chapter.contentImages = null;
+                await this.addAttachmentToZip(attachment, this.savedZip);
             }
         }
-    }
-    getchapterName(chapter) {
-        if (chapter.chapterName) {
-            return chapter.chapterName;
-        }
-        else {
-            return chapter.chapterNumber.toString();
-        }
-    }
-    genSectionText(sectionName) {
-        return (`${"=".repeat(20)}\n\n\n\n# ${sectionName}\n\n\n\n${"=".repeat(20)}` +
-            "\n\n");
-    }
-    genChapterText(chapterName, contentText) {
-        return `${chapterName}\n${"=".repeat((0,dom/* fullWidthLength */.sp)(chapterName) * 2 + 10)}\n\n${contentText}\n\n`;
-    }
-    genSectionHtmlFile(chapterObj) {
-        const htmlText = section.render({ sectionName: chapterObj.sectionName });
-        return new Blob([htmlText.replaceAll("data-src-address", "src")], {
-            type: "text/html; charset=UTF-8",
-        });
     }
     genChapterHtmlFile(chapterObj) {
-        const htmlText = chapter.render({
+        const _htmlText = chapterTemplt.render({
             chapterUrl: chapterObj.chapterUrl,
             chapterName: chapterObj.chapterName,
             outerHTML: chapterObj.contentHTML?.outerHTML ?? "",
         });
+        const doc = this.addWebCSS(_htmlText);
+        const htmlText = (0,dom/* convertHTMLtoXHTML */.fI)(doc);
         return new Blob([htmlText.replaceAll("data-src-address", "src")], {
-            type: "text/html; charset=UTF-8",
+            type: "application/xhtml+xml; charset=UTF-8",
         });
     }
-    chapterSort(a, b) {
-        if (a.chapterNumber > b.chapterNumber) {
-            return 1;
-        }
-        if (a.chapterNumber === b.chapterNumber) {
-            return 0;
-        }
-        if (a.chapterNumber < b.chapterNumber) {
-            return -1;
-        }
-        return 0;
+    addWebCSS(input) {
+        const doc = new DOMParser().parseFromString(input, "text/html");
+        const link = document.createElement("link");
+        link.href = "web.css";
+        link.type = "text/css";
+        link.rel = "stylesheet";
+        doc.head.appendChild(link);
+        return doc;
     }
-    getChapterNumberToSave(chapter) {
-        return `${"0".repeat(this.chapters.length.toString().length -
-            Math.trunc(chapter.chapterNumber).toString().length)}${chapter.chapterNumber.toString()}`;
-    }
-    genMetaDateTxt() {
-        let metaDateText = `题名：${this.book.bookname}\n作者：${this.book.author}`;
-        if (this.book.additionalMetadate.tags) {
-            metaDateText += `\nTag列表：${this.book.additionalMetadate.tags.join("、")}`;
-        }
-        metaDateText += `\n原始网址：${this.book.bookUrl}`;
-        if (this.book.additionalMetadate.cover) {
-            metaDateText += `\n封面图片地址：${this.book.additionalMetadate.cover.url}`;
-        }
-        if (this.book.introduction) {
-            metaDateText += `\n简介：${this.book.introduction}`;
-        }
-        metaDateText += `\n下载时间：${new Date().toISOString()}\n本文件由小说下载器生成，软件地址：https://github.com/yingziwu/novel-downloader\n\n`;
-        return metaDateText;
-    }
-    async addImageToZip(attachment, zip) {
+    async addAttachmentToZip(attachment, zip) {
         if (attachment.status === main/* Status.finished */.qb.finished && attachment.imageBlob) {
             external_log_default().debug(`[save]添加附件，文件名：${attachment.name}，对象`, attachment.imageBlob);
             await zip.file(attachment.name, attachment.imageBlob);
-            attachment.status = main/* Status.saved */.qb.saved;
-            if (!setting/* enableDebug.value */.Cy.value) {
-                attachment.imageBlob = null;
-            }
         }
         else if (attachment.status === main/* Status.saved */.qb.saved) {
             external_log_default().debug(`[save]附件${attachment.name}已添加`);
@@ -6476,8 +6499,490 @@ class SaveBook {
     }
 }
 
-// EXTERNAL MODULE: ./src/lib/GM.ts
-var GM = __webpack_require__("./src/lib/GM.ts");
+;// CONCATENATED MODULE: ./src/save/epub.ts
+
+
+
+
+
+
+
+
+
+
+function getDateString() {
+    const date = new Date();
+    const year = date.getFullYear();
+    const _monty = new Date().getMonth() + 1;
+    const monty = _monty < 10 ? `0${_monty}` : _monty;
+    const _day = date.getDate();
+    const day = _day < 10 ? `0${_day}` : _day;
+    return `${year}-${monty}-${day}`;
+}
+const uuid = (0,misc/* randomUUID */.HP)();
+const content_opf = `<?xml version="1.0" encoding="utf-8"?>
+<package version="2.0" unique-identifier="BookId" xmlns="http://www.idpf.org/2007/opf">
+  <metadata xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:opf="http://www.idpf.org/2007/opf">
+    <dc:identifier id="BookId" opf:scheme="UUID">urn:uuid:${uuid}</dc:identifier>
+    <meta content="${GM/* _GM_info.script.version */._p.script.version}" name="novel-downloader version"/>
+    <dc:date opf:event="creation">${getDateString()}</dc:date>
+    <dc:date opf:event="modification" xmlns:opf="http://www.idpf.org/2007/opf">${getDateString()}</dc:date>
+  </metadata>
+  <manifest>
+    <item id="ncx" href="toc.ncx" media-type="application/x-dtbncx+xml"/>
+    <item id="sgc-toc.css" href="sgc-toc.css" media-type="text/css"/>
+    <item id="style.css" href="style.css" media-type="text/css"/>
+    <item id="cover.xhtml" href="cover.xhtml" media-type="application/xhtml+xml"/>
+    <item id="info.xhtml" href="info.xhtml" media-type="application/xhtml+xml"/>
+    <item id="TOC.xhtml" href="TOC.xhtml" media-type="application/xhtml+xml"/>
+  </manifest>
+  <spine toc="ncx">
+    <itemref idref="cover.xhtml"/>
+    <itemref idref="info.xhtml"/>
+    <itemref idref="TOC.xhtml"/>
+  </spine>
+  <guide>
+    <reference type="cover" title="Cover" href="cover.xhtml"/>
+    <reference type="toc" title="Table of Contents" href="TOC.xhtml"/>
+  </guide>
+</package>`;
+const toc_ncx = `<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE ncx PUBLIC "-//NISO//DTD ncx 2005-1//EN"
+ "http://www.daisy.org/z3986/2005/ncx-2005-1.dtd">
+<ncx version="2005-1" xmlns="http://www.daisy.org/z3986/2005/ncx/">
+  <head>
+    <meta content="urn:uuid:${uuid}" name="dtb:uid"/>
+    <meta content="2" name="dtb:depth"/>
+    <meta content="0" name="dtb:totalPageCount"/>
+    <meta content="0" name="dtb:maxPageNumber"/>
+  </head>
+  <docTitle>
+    <text></text>
+  </docTitle>
+  <navMap>
+  </navMap>
+</ncx>`;
+const TOC_xhtml = `<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Table of Contents</title>
+  <link href="sgc-toc.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+  <div class="sgc-toc-title">
+    目录
+  </div>
+</body>
+</html>`;
+const getCoverXhtml = (coverName) => `<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Cover</title>
+</head>
+
+<body>
+  <div style="text-align: center; padding: 0pt; margin: 0pt;">
+    <svg xmlns="http://www.w3.org/2000/svg" height="100%" preserveAspectRatio="xMidYMid meet" version="1.1" viewBox="0 0 368 460" width="100%" xmlns:xlink="http://www.w3.org/1999/xlink"><image width="368" height="460" xlink:href="${coverName}"/></svg>
+  </div>
+</body>
+</html>`;
+const getInfoXhtml = (title, author) => `<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>信息页</title>
+  <link href="style.css" type="text/css" rel="stylesheet"/>
+</head>
+
+<body>
+  <div class="main">
+    <h1>${title}</h1>
+
+    ${author ? `<h2>作者：${author}</h2>` : ""}
+  </div>
+</body>
+</html>`;
+class EPUB extends Options {
+    contentOpf = new DOMParser().parseFromString(content_opf, "application/xml");
+    metadata = this.contentOpf.querySelector("metadata");
+    manifest = this.contentOpf.querySelector("manifest");
+    spine = this.contentOpf.querySelector("spine");
+    guide = this.contentOpf.querySelector("guide");
+    ncx = new DOMParser().parseFromString(toc_ncx, "application/xml");
+    navMap = this.ncx.querySelector("navMap");
+    toc = new DOMParser().parseFromString(TOC_xhtml, "application/xhtml+xml");
+    tocBody = this.toc.body;
+    book;
+    chapters;
+    epubZip;
+    constructor(book, streamZip, options) {
+        super();
+        this.book = book;
+        this.chapters = this.book.chapters;
+        const zipFilename = `[${this.book.author}]${this.book.bookname}.epub`;
+        this.epubZip = new FflateZip(zipFilename, streamZip);
+        if (options) {
+            Object.assign(this, options);
+        }
+    }
+    async addAttachment(attachment) {
+        if (attachment.status === main/* Status.finished */.qb.finished && attachment.imageBlob) {
+            external_log_default().debug(`[save-epub]添加附件，文件名：${attachment.name}，对象`, attachment.imageBlob);
+            await this.epubZip.file(`OEBPS/${attachment.name}`, attachment.imageBlob);
+            const item = document.createElement("item");
+            item.id = attachment.name;
+            item.setAttribute("href", attachment.name);
+            item.setAttribute("media-type", attachment.imageBlob.type);
+            if (!this.manifest.querySelector(`itme[id="${attachment.name}"]`)) {
+                this.manifest.appendChild(item);
+            }
+        }
+        else if (attachment.status === main/* Status.saved */.qb.saved) {
+            external_log_default().debug(`[save-epub]附件${attachment.name}已添加`);
+        }
+        else {
+            external_log_default().warn(`[save-epub]添加附件${attachment.name}失败，该附件未完成或内容为空。`);
+            external_log_default().warn(attachment);
+        }
+    }
+    async addChapter(chapter, suffix = "") {
+        const chapterName = this.getchapterName(chapter);
+        const chapterNumberToSave = this.getChapterNumberToSave(chapter, this.chapters);
+        const chapterHtmlFileName = `No${chapterNumberToSave}Chapter${suffix}.xhtml`;
+        external_log_default().debug(`[save-epub]保存章HTML文件：${chapterName}`);
+        const chapterHTMLBlob = this.genChapterHtmlFile(chapter);
+        await this.epubZip.file(`OEBPS/${chapterHtmlFileName}`, chapterHTMLBlob);
+        const item = document.createElement("item");
+        item.id = chapterHtmlFileName;
+        item.setAttribute("href", chapterHtmlFileName);
+        item.setAttribute("media-type", "application/xhtml+xml");
+        if (!this.manifest.querySelector(`itme[id="${chapterHtmlFileName}"]`)) {
+            this.manifest.appendChild(item);
+        }
+        if (chapter.contentImages && chapter.contentImages.length !== 0) {
+            external_log_default().debug(`[save-epub]保存章节附件：${chapterName}`);
+            for (const attachment of chapter.contentImages) {
+                await this.addAttachment(attachment);
+            }
+        }
+    }
+    genChapterHtmlFile(chapterObj) {
+        const _htmlText = chapterTemplt.render({
+            chapterUrl: chapterObj.chapterUrl,
+            chapterName: chapterObj.chapterName,
+            outerHTML: chapterObj.contentHTML?.outerHTML ?? "",
+        });
+        const htmlText = (0,dom/* convertHTMLtoXHTML */.fI)(_htmlText);
+        return new Blob([
+            `<?xml version="1.0" encoding="utf-8"?>
+    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+      "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">`,
+            htmlText
+                .replaceAll("data-src-address", "src")
+                .replace("<!DOCTYPE html>", ""),
+        ], {
+            type: "application/xhtml+xml",
+        });
+    }
+    async saveEpub() {
+        const self = this;
+        external_log_default().debug("[save-epub]保存epub基本文件");
+        await saveEpubMimetype();
+        external_log_default().debug("[save-epub]保存样式文件");
+        await saveStyle();
+        external_log_default().debug("[save-epub]更新Metadata");
+        await updateMetadata();
+        if (this.book.additionalMetadate.attachments) {
+            external_log_default().debug("[save]保存书籍附件");
+            for (const bookAttachment of this.book.additionalMetadate.attachments) {
+                await this.addAttachment(bookAttachment);
+            }
+        }
+        external_log_default().debug("[save-epub]保存仅标题章节文件");
+        await saveStubChapters(this.chapters);
+        external_log_default().debug("[save-epub]保存目录文件");
+        await saveToC();
+        await this.epubZip.generateAsync();
+        async function saveEpubMimetype() {
+            await self.epubZip.file("mimetype", new Blob(["application/epub+zip"]), true);
+            await self.epubZip.file("META-INF/container.xml", new Blob([
+                `<?xml version="1.0" encoding="UTF-8"?>
+<container version="1.0" xmlns="urn:oasis:names:tc:opendocument:xmlns:container">
+    <rootfiles>
+        <rootfile full-path="OEBPS/content.opf" media-type="application/oebps-package+xml"/>
+    </rootfiles>
+</container>`,
+            ]));
+        }
+        async function saveStyle() {
+            await self.epubZip.file("OEBPS/style.css", new Blob([self.mainStyleText]));
+            await self.epubZip.file("OEBPS/sgc-toc.css", new Blob([sgc_toc/* default */.Z]));
+        }
+        async function updateMetadata() {
+            const title = document.createElement("dc:title");
+            title.innerText = self.book.bookname;
+            self.metadata.appendChild(title);
+            self.ncx.querySelector("docTitle > text").innerHTML =
+                self.book.bookname;
+            const author = document.createElement("dc:creator");
+            author.setAttribute("opf:role", "");
+            author.innerText = self.book.author;
+            self.metadata.appendChild(author);
+            const source = document.createElement("dc:source");
+            source.innerText = self.book.bookUrl;
+            self.metadata.appendChild(source);
+            if (self.book.introduction) {
+                const introduction = document.createElement("dc:description");
+                introduction.innerText = self.book.introduction;
+                self.metadata.appendChild(introduction);
+            }
+            if (self.book.additionalMetadate.cover) {
+                await self.addAttachment(self.book.additionalMetadate.cover);
+                const cover = document.createElement("meta");
+                cover.name = "cover";
+                cover.content = self.book.additionalMetadate.cover.name;
+                await self.epubZip.file("OEBPS/cover.xhtml", new Blob([getCoverXhtml(self.book.additionalMetadate.cover.name)]));
+            }
+            else {
+                self.manifest.querySelector('item[id="cover.xhtml"]')?.remove();
+                self.spine.querySelector('itemref[idref="cover.xhtml"]')?.remove();
+                self.guide.querySelector('reference[type="cover"]')?.remove();
+            }
+            if (self.book.additionalMetadate.tags) {
+                for (const _tag of self.book.additionalMetadate.tags) {
+                    const tag = document.createElement("dc:subject");
+                    tag.innerText = _tag;
+                    self.metadata.appendChild(tag);
+                }
+            }
+            await self.epubZip.file("OEBPS/info.xhtml", new Blob([getInfoXhtml(self.book.bookname, self.book.author)]));
+        }
+        async function saveStubChapters(chapters) {
+            chapters = chapters.filter((c) => c.status !== main/* Status.saved */.qb.saved);
+            for (const c of chapters) {
+                if (c.status === main/* Status.finished */.qb.finished) {
+                    await self.addChapter(c);
+                }
+                else {
+                    await self.addChapter(c, "Stub");
+                }
+            }
+        }
+        async function saveToC() {
+            external_log_default().debug("[save-epub]对 chapters 排序");
+            self.chapters.sort(self.chapterSort);
+            const sectionsListObj = (0,save_misc/* getSectionsObj */.f)(self.chapters, self.chapterSort);
+            let i = 0;
+            let sectionNumberG;
+            let sectionNavPoint;
+            let sectionTOCDiv;
+            for (const sectionObj of sectionsListObj) {
+                const { sectionName, sectionNumber, chpaters } = sectionObj;
+                if (sectionNumber !== sectionNumberG) {
+                    const sectionNumberToSave = self.getChapterNumberToSave(chpaters[0], self.chapters);
+                    const sectionHtmlFileName = `No${sectionNumberToSave}Section.xhtml`;
+                    if (sectionName) {
+                        sectionNumberG = sectionNumber;
+                        external_log_default().debug(`[save-epub]保存卷HTML文件：${sectionName}`);
+                        const sectionHTMLBlob = genSectionHtmlFile(sectionName);
+                        await self.epubZip.file(`OEBPS/${sectionHtmlFileName}`, sectionHTMLBlob);
+                        appendManifest(sectionHtmlFileName);
+                        appendSpine(sectionHtmlFileName);
+                        i++;
+                        const navPoint = genNavPoint(i, sectionName, sectionHtmlFileName);
+                        if (sectionNavPoint) {
+                            self.navMap.appendChild(sectionNavPoint);
+                        }
+                        sectionNavPoint = navPoint;
+                        const div = genTocDiv("sgc-toc-level-1", sectionName, sectionHtmlFileName);
+                        if (sectionTOCDiv) {
+                            self.tocBody.appendChild(sectionTOCDiv);
+                        }
+                        sectionTOCDiv = div;
+                    }
+                }
+                for (const chpater of chpaters) {
+                    const chapterHtmlFileName = chpater.chapterHtmlFileName;
+                    if (sectionName) {
+                        appendSpine(chapterHtmlFileName);
+                        i++;
+                        const navPoint = genNavPoint(i, chpater.chapterName ?? "", chapterHtmlFileName);
+                        sectionNavPoint?.appendChild(navPoint);
+                        const div = genTocDiv("sgc-toc-level-2", chpater.chapterName ?? "", chapterHtmlFileName);
+                        sectionTOCDiv?.appendChild(div);
+                    }
+                    else {
+                        appendSpine(chapterHtmlFileName);
+                        i++;
+                        const navPoint = genNavPoint(i, chpater.chapterName ?? "", chapterHtmlFileName);
+                        self.navMap.appendChild(navPoint);
+                        const div = genTocDiv("sgc-toc-level-2", chpater.chapterName ?? "", chapterHtmlFileName);
+                        self.tocBody.appendChild(div);
+                    }
+                }
+            }
+            await self.epubZip.file("OEBPS/content.opf", new Blob([new XMLSerializer().serializeToString(self.contentOpf)]));
+            await self.epubZip.file("OEBPS/toc.ncx", new Blob([new XMLSerializer().serializeToString(self.ncx)]));
+            await self.epubZip.file("OEBPS/TOC.xhtml", new Blob([new XMLSerializer().serializeToString(self.toc)]));
+            function appendManifest(htmlFileName) {
+                const item = document.createElement("item");
+                item.id = htmlFileName;
+                item.setAttribute("href", htmlFileName);
+                item.setAttribute("media-type", "application/xhtml+xml");
+                if (!self.manifest.querySelector(`itme[id="${htmlFileName}"]`)) {
+                    self.manifest.appendChild(item);
+                }
+            }
+            function appendSpine(htmlFileName) {
+                const itemref = document.createElement("itemref");
+                itemref.setAttribute("idref", htmlFileName);
+                self.spine.appendChild(itemref);
+            }
+            function genNavPoint(num, name, htmlFileName) {
+                const xmlns_v = "urn:v";
+                const navPoint = document.createElementNS(xmlns_v, "navPoint");
+                navPoint.id = `navPoint-${num}`;
+                navPoint.setAttributeNS(xmlns_v, "playOrder", num.toString());
+                const navLabel = document.createElementNS(xmlns_v, "navLabel");
+                const text = document.createElement("text");
+                text.innerText = name;
+                const content = document.createElement("content");
+                content.setAttribute("src", htmlFileName);
+                navLabel.appendChild(text);
+                navPoint.appendChild(navLabel);
+                navPoint.appendChild(content);
+                return navPoint;
+            }
+            function genTocDiv(className, name, htmlFileName) {
+                const div = document.createElement("div");
+                div.className = className;
+                const a = document.createElement("a");
+                a.href = htmlFileName;
+                a.innerText = name;
+                div.appendChild(a);
+                return div;
+            }
+            function genSectionHtmlFile(sectionName) {
+                const _htmlText = section.render({ sectionName: sectionName });
+                const htmlText = (0,dom/* convertHTMLtoXHTML */.fI)(_htmlText);
+                return new Blob([
+                    `<?xml version="1.0" encoding="utf-8"?>
+        <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+          "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">`,
+                    htmlText
+                        .replaceAll("data-src-address", "src")
+                        .replace("<!DOCTYPE html>", ""),
+                ], {
+                    type: "application/xhtml+xml",
+                });
+            }
+        }
+    }
+}
+
+;// CONCATENATED MODULE: ./src/save/txt.ts
+
+
+
+
+class TXT extends Options {
+    book;
+    savedTextArray = [];
+    saveFileNameBase;
+    constructor(book, options) {
+        super();
+        this.book = book;
+        this.saveFileNameBase = `[${this.book.author}]${this.book.bookname}`;
+        if (options) {
+            Object.assign(this, options);
+        }
+    }
+    saveTxt() {
+        const chapters = this.book.chapters;
+        const metaDateText = this.genMetaDateTxt(this.book);
+        this.savedTextArray.push(metaDateText);
+        external_log_default().debug("[save]对 chapters 排序");
+        chapters.sort(this.chapterSort);
+        const sections = [];
+        for (const chapterTemp of chapters) {
+            const chapterName = this.getchapterName(chapterTemp);
+            if (chapterTemp.sectionName &&
+                !sections.includes(chapterTemp.sectionName)) {
+                sections.push(chapterTemp.sectionName);
+                const sectionText = this.genSectionText(chapterTemp.sectionName);
+                this.savedTextArray.push(sectionText);
+            }
+            const chapterText = this.genChapterText(chapterName, chapterTemp.contentText ?? "");
+            this.savedTextArray.push(chapterText);
+            if (!setting/* enableDebug.value */.Cy.value) {
+                chapterTemp.contentText = null;
+            }
+        }
+        external_log_default().info("[save]保存TXT文件");
+        const savedText = this.savedTextArray.join("\n").replaceAll("\n", "\r\n");
+        (0,FileSaver_min.saveAs)(new Blob([savedText], { type: "text/plain;charset=utf-8" }), `${this.saveFileNameBase}.txt`);
+    }
+}
+
+;// CONCATENATED MODULE: ./src/save/save.ts
+
+
+
+
+
+class SaveBook {
+    txt;
+    zip;
+    epub;
+    constructor(book, streamZip, options) {
+        const _options = {};
+        if (options !== undefined) {
+            Object.assign(_options, options);
+        }
+        if (book.saveOptions !== undefined) {
+            Object.assign(_options, book.saveOptions);
+        }
+        this.txt = new TXT(book, _options);
+        this.zip = new ZIP(book, streamZip, _options);
+        this.epub = new EPUB(book, streamZip, _options);
+    }
+    async addChapter(chapter) {
+        await this.zip.addChapter(chapter);
+        await this.epub.addChapter(chapter);
+        if (!setting/* enableDebug.value */.Cy.value) {
+            chapter.contentRaw = null;
+            chapter.contentHTML = null;
+            chapter.contentImages = null;
+        }
+        if (chapter.contentImages && chapter.contentImages.length !== 0) {
+            for (const attachment of chapter.contentImages) {
+                attachment.status = main/* Status.saved */.qb.saved;
+                if (!setting/* enableDebug.value */.Cy.value) {
+                    attachment.imageBlob = null;
+                }
+            }
+        }
+        chapter.status = main/* Status.saved */.qb.saved;
+    }
+    saveTxt() {
+        this.txt.saveTxt();
+    }
+    async saveZip() {
+        await this.zip.saveZip();
+    }
+    async saveEpub() {
+        await this.epub.saveEpub();
+    }
+}
+
 ;// CONCATENATED MODULE: ./src/stat.ts
 
 
@@ -6540,6 +7045,7 @@ const resetStat = () => {
 // EXTERNAL MODULE: ./src/ui/progress.ts + 1 modules
 var progress = __webpack_require__("./src/ui/progress.ts");
 ;// CONCATENATED MODULE: ./src/rules.ts
+
 
 
 
@@ -6652,7 +7158,8 @@ class BaseRuleClass {
         async function save(saveObj) {
             external_log_default().debug("[run]开始保存文件");
             saveObj.saveTxt();
-            await saveObj.saveZip(false);
+            await saveObj.saveZip();
+            await saveObj.saveEpub();
         }
     }
     async preHook() {
@@ -8510,7 +9017,7 @@ var external_log_default = /*#__PURE__*/__webpack_require__.n(external_log_);
 var Chapter = __webpack_require__("./src/main/Chapter.ts");
 // EXTERNAL MODULE: ./src/main/Book.ts + 1 modules
 var Book = __webpack_require__("./src/main/Book.ts");
-// EXTERNAL MODULE: ./src/rules.ts + 9 modules
+// EXTERNAL MODULE: ./src/rules.ts + 12 modules
 var rules = __webpack_require__("./src/rules.ts");
 ;// CONCATENATED MODULE: ./src/rules/lib/haitangtxtImageDecode.ts
 function replaceHaitangtxtImage(inputText) {
@@ -11208,7 +11715,7 @@ var Attachment = __webpack_require__("./src/main/Attachment.ts");
 var Chapter = __webpack_require__("./src/main/Chapter.ts");
 // EXTERNAL MODULE: ./src/main/Book.ts + 1 modules
 var Book = __webpack_require__("./src/main/Book.ts");
-// EXTERNAL MODULE: ./src/rules.ts + 9 modules
+// EXTERNAL MODULE: ./src/rules.ts + 12 modules
 var rules = __webpack_require__("./src/rules.ts");
 // EXTERNAL MODULE: ./src/setting.ts
 var setting = __webpack_require__("./src/setting.ts");
@@ -17316,7 +17823,7 @@ const yibige = () => (0,_tempate__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "f": () => (/* binding */ getSectionsObj)
 /* harmony export */ });
-function getSectionsObj(chapters) {
+function getSectionsObj(chapters, chapterSort = (a, b) => a.chapterNumber - b.chapterNumber) {
     const _sectionsObj = {};
     for (const chapter of chapters) {
         let sectionNumber = null;
@@ -17337,18 +17844,14 @@ function getSectionsObj(chapters) {
             };
         }
     }
-    const _sectionsListObj = Object.entries(_sectionsObj);
-    _sectionsListObj.sort(sectionListSort);
-    const sectionsListObj = _sectionsListObj.map((s) => s[1]);
-    sectionsListObj.forEach((s) => s.chpaters.sort(chaptersSort));
+    const sectionsListObj = Object.values(_sectionsObj);
+    sectionsListObj.sort(sectionListSort);
+    sectionsListObj.forEach((s) => s.chpaters.sort(chapterSort));
     return sectionsListObj;
     function sectionListSort(a, b) {
-        const aKey = parseInt(a[0]);
-        const bKey = parseInt(b[0]);
-        return aKey - bKey;
-    }
-    function chaptersSort(a, b) {
-        return a.chapterNumber - b.chapterNumber;
+        const aChapter = a.chpaters[0];
+        const bChapter = b.chpaters[0];
+        return chapterSort(aChapter, bChapter);
     }
 }
 
@@ -18443,7 +18946,12 @@ async function getSections() {
         const book = await rule.bookParse();
         window._book = book;
         window._url = document.location.href;
-        window._sections = (0,save_misc/* getSectionsObj */.f)(book.chapters);
+        if (unsafeWindow.saveOptions?.chapterSort) {
+            window._sections = (0,save_misc/* getSectionsObj */.f)(book.chapters, unsafeWindow.saveOptions?.chapterSort);
+        }
+        else {
+            window._sections = (0,save_misc/* getSectionsObj */.f)(book.chapters);
+        }
         return window._sections;
     }
 }

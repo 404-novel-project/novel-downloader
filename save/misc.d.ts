@@ -7,4 +7,4 @@ export interface SectionObj {
 export interface SectionsObj {
     [sectionNumber: number]: SectionObj;
 }
-export declare function getSectionsObj(chapters: Chapter[]): SectionObj[];
+export declare function getSectionsObj(chapters: Chapter[], chapterSort?: (a: Chapter, b: Chapter) => number): SectionObj[];
