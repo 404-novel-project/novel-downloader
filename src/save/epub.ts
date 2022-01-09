@@ -445,16 +445,30 @@ export class EPUB extends Options {
           }
         }
       }
+      if (sectionNavPoint) {
+        self.navMap.appendChild(sectionNavPoint);
+      }
+      if (sectionTOCDiv) {
+        self.tocBody.appendChild(sectionTOCDiv);
+      }
 
       // content.opf
       await self.epubZip.file(
         "OEBPS/content.opf",
-        new Blob([new XMLSerializer().serializeToString(self.contentOpf)])
+        new Blob([
+          new XMLSerializer()
+            .serializeToString(self.contentOpf)
+            .replaceAll('xmlns="http://www.w3.org/1999/xhtml"', ""),
+        ])
       );
       // toc.ncx
       await self.epubZip.file(
         "OEBPS/toc.ncx",
-        new Blob([new XMLSerializer().serializeToString(self.ncx)])
+        new Blob([
+          new XMLSerializer()
+            .serializeToString(self.ncx)
+            .replaceAll('xmlns="http://www.w3.org/1999/xhtml"', ""),
+        ])
       );
       // TOC.xhtml
       await self.epubZip.file(
