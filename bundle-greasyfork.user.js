@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.8.0.510
+// @version        4.8.1.511
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -8127,7 +8127,22 @@ const masiro = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */
         return additionalMetadate;
     },
     aList: document.querySelectorAll("a.to-read"),
-    getAName: (dom) => dom.querySelector('span[style^="overflow: hidden;"]').innerText.trim(),
+    getAName: (aElem) => aElem.querySelector('span[style^="overflow: hidden;"]').innerText.trim(),
+    getIsVIP: (aElem) => {
+        let isVIP = false;
+        let isPaid = false;
+        const small = aElem.querySelector("small");
+        if (small) {
+            const text = small.innerText.trim();
+            if (text !== "") {
+                isVIP = true;
+                if (text === "已购") {
+                    isPaid = true;
+                }
+            }
+        }
+        return { isVIP, isPaid };
+    },
     sections: document.querySelectorAll("li.chapter-box > span + b"),
     getSName: (dom) => dom.innerText.trim(),
     getContent: (dom) => dom.querySelector("div.box-body.nvl-content"),
@@ -8365,7 +8380,7 @@ const syosetuOrg = () => {
 
 
 
-function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, coverUrl, additionalMetadatePatch, aList, getAName, sections, getSName: _getSectionName, postHook, getContentFromUrl, getContent, contentPatch, concurrencyLimit, needLogin, nsfw, cleanDomOptions, overrideConstructor, }) {
+function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, coverUrl, additionalMetadatePatch, aList, getAName, getIsVIP, sections, getSName: _getSectionName, postHook, getContentFromUrl, getContent, contentPatch, concurrencyLimit, needLogin, nsfw, cleanDomOptions, overrideConstructor, }) {
     return class extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
         constructor() {
             super();
@@ -8430,8 +8445,11 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
                 }
                 chapterNumber++;
                 sectionChapterNumber++;
-                const isVIP = false;
-                const isPaid = false;
+                let isVIP = false;
+                let isPaid = false;
+                if (getIsVIP) {
+                    ({ isVIP, isPaid } = getIsVIP(aElem));
+                }
                 let chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .W({
                     bookUrl,
                     bookname,
@@ -8817,7 +8835,7 @@ const baihexs = () => {
 
 
 
-function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, coverUrl, getIndexUrls, getAList, getAName, postHook, getContentFromUrl, getContent, contentPatch, concurrencyLimit, needLogin, nsfw, cleanDomOptions, overrideConstructor, }) {
+function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, coverUrl, getIndexUrls, getAList, getAName, getIsVIP, postHook, getContentFromUrl, getContent, contentPatch, concurrencyLimit, needLogin, nsfw, cleanDomOptions, overrideConstructor, }) {
     return class extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
         constructor() {
             super();
@@ -8885,8 +8903,11 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
                     chapterName = aElem.innerText;
                 }
                 const chapterUrl = aElem.href;
-                const isVIP = false;
-                const isPaid = false;
+                let isVIP = false;
+                let isPaid = false;
+                if (getIsVIP) {
+                    ({ isVIP, isPaid } = getIsVIP(aElem));
+                }
                 let chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_6__/* .Chapter */ .W({
                     bookUrl,
                     bookname,
@@ -17492,7 +17513,7 @@ const shencou = () => {
 
 
 
-function mkRuleClass({ bookUrl, anotherPageUrl, ToCUrl, getBookname, getAuthor, getIntroDom, introDomPatch, getCoverUrl, getAList, getAName, getSections, getSName: _getSectionName, postHook, getContentFromUrl, getContent, contentPatch, concurrencyLimit, needLogin, nsfw, cleanDomOptions, overrideConstructor, }) {
+function mkRuleClass({ bookUrl, anotherPageUrl, ToCUrl, getBookname, getAuthor, getIntroDom, introDomPatch, getCoverUrl, getAList, getAName, getIsVIP, getSections, getSName: _getSectionName, postHook, getContentFromUrl, getContent, contentPatch, concurrencyLimit, needLogin, nsfw, cleanDomOptions, overrideConstructor, }) {
     return class extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
         constructor() {
             super();
@@ -17563,8 +17584,11 @@ function mkRuleClass({ bookUrl, anotherPageUrl, ToCUrl, getBookname, getAuthor, 
                 }
                 chapterNumber++;
                 sectionChapterNumber++;
-                const isVIP = false;
-                const isPaid = false;
+                let isVIP = false;
+                let isPaid = false;
+                if (getIsVIP) {
+                    ({ isVIP, isPaid } = getIsVIP(aElem));
+                }
                 let chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .W({
                     bookUrl,
                     bookname,

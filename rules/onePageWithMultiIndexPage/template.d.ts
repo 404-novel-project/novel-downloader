@@ -12,6 +12,10 @@ interface MkRuleClassOptions {
     getIndexUrls: () => string[] | Promise<string[]>;
     getAList: (doc: Document) => NodeListOf<Element>;
     getAName?: (aElem: Element) => string;
+    getIsVIP?: (aElem: Element) => {
+        isVIP: boolean;
+        isPaid: boolean;
+    };
     postHook?: (chapter: Chapter) => Chapter | void;
     getContentFromUrl?: (chapterUrl: string, chapterName: string | null, charset: string) => Promise<HTMLElement | null>;
     getContent?: (doc: Document) => HTMLElement | null;
@@ -22,5 +26,5 @@ interface MkRuleClassOptions {
     cleanDomOptions?: Options;
     overrideConstructor?: (classThis: BaseRuleClass) => any;
 }
-export declare function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, coverUrl, getIndexUrls, getAList, getAName, postHook, getContentFromUrl, getContent, contentPatch, concurrencyLimit, needLogin, nsfw, cleanDomOptions, overrideConstructor, }: MkRuleClassOptions): PublicConstructor<BaseRuleClass>;
+export declare function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, coverUrl, getIndexUrls, getAList, getAName, getIsVIP, postHook, getContentFromUrl, getContent, contentPatch, concurrencyLimit, needLogin, nsfw, cleanDomOptions, overrideConstructor, }: MkRuleClassOptions): PublicConstructor<BaseRuleClass>;
 export {};
