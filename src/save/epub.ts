@@ -172,7 +172,7 @@ export class EPUB extends Options {
 
       await this.epubZip.file(`OEBPS/${attachment.name}`, attachment.imageBlob);
 
-      const item = document.createElement("item");
+      const item = this.contentOpf.createElement("item");
       item.id = attachment.name;
       item.setAttribute("href", attachment.name);
       const mimetype = extensionToMimetype(
@@ -204,7 +204,7 @@ export class EPUB extends Options {
     const chapterHTMLBlob = this.genChapterHtmlFile(chapter);
     await this.epubZip.file(`OEBPS/${chapterHtmlFileName}`, chapterHTMLBlob);
 
-    const item = document.createElement("item");
+    const item = this.contentOpf.createElement("item");
     item.id = chapterHtmlFileName;
     item.setAttribute("href", chapterHtmlFileName);
     item.setAttribute("media-type", "application/xhtml+xml");
@@ -292,37 +292,37 @@ export class EPUB extends Options {
       await self.epubZip.file("OEBPS/sgc-toc.css", new Blob([sgc]));
     }
     async function updateMetadata() {
-      const title = document.createElement("dc:title");
-      title.innerText = self.book.bookname;
+      const title = self.contentOpf.createElement("dc:title");
+      title.textContent = self.book.bookname;
       self.metadata.appendChild(title);
       (self.ncx.querySelector("docTitle > text") as Element).innerHTML =
         self.book.bookname;
 
-      const author = document.createElement("dc:creator");
+      const author = self.contentOpf.createElement("dc:creator");
       author.setAttribute("opf:role", "");
-      author.innerText = self.book.author;
+      author.textContent = self.book.author;
       self.metadata.appendChild(author);
 
-      const source = document.createElement("dc:source");
-      source.innerText = self.book.bookUrl;
+      const source = self.contentOpf.createElement("dc:source");
+      source.textContent = self.book.bookUrl;
       self.metadata.appendChild(source);
 
       if (self.book.additionalMetadate.language) {
-        const language = document.createElement("dc:language");
-        language.innerText = self.book.additionalMetadate.language;
+        const language = self.contentOpf.createElement("dc:language");
+        language.textContent = self.book.additionalMetadate.language;
         self.metadata.appendChild(language);
       }
 
       if (self.book.introduction) {
-        const introduction = document.createElement("dc:description");
-        introduction.innerText = self.book.introduction;
+        const introduction = self.contentOpf.createElement("dc:description");
+        introduction.textContent = self.book.introduction;
         self.metadata.appendChild(introduction);
       }
 
       if (self.book.additionalMetadate.cover) {
         await self.addAttachment(self.book.additionalMetadate.cover);
 
-        const cover = document.createElement("meta");
+        const cover = self.contentOpf.createElement("meta");
         cover.name = "cover";
         cover.content = self.book.additionalMetadate.cover.name;
 
@@ -338,8 +338,8 @@ export class EPUB extends Options {
 
       if (self.book.additionalMetadate.tags) {
         for (const _tag of self.book.additionalMetadate.tags) {
-          const tag = document.createElement("dc:subject");
-          tag.innerText = _tag;
+          const tag = self.contentOpf.createElement("dc:subject");
+          tag.textContent = _tag;
           self.metadata.appendChild(tag);
         }
       }
@@ -471,7 +471,7 @@ export class EPUB extends Options {
         new Blob([
           new XMLSerializer()
             .serializeToString(self.contentOpf)
-            .replaceAll('xmlns="http://www.w3.org/1999/xhtml"', ""),
+            .replaceAll('xmlns=""', ""),
         ])
       );
       // toc.ncx
@@ -480,7 +480,7 @@ export class EPUB extends Options {
         new Blob([
           new XMLSerializer()
             .serializeToString(self.ncx)
-            .replaceAll('xmlns="http://www.w3.org/1999/xhtml"', ""),
+            .replaceAll('xmlns=""', ""),
         ])
       );
       // TOC.xhtml
@@ -490,7 +490,7 @@ export class EPUB extends Options {
       );
 
       function appendManifest(htmlFileName: string) {
-        const item = document.createElement("item");
+        const item = self.contentOpf.createElement("item");
         item.id = htmlFileName;
         item.setAttribute("href", htmlFileName);
         item.setAttribute("media-type", "application/xhtml+xml");
@@ -499,19 +499,18 @@ export class EPUB extends Options {
         }
       }
       function appendSpine(htmlFileName: string) {
-        const itemref = document.createElement("itemref");
+        const itemref = self.contentOpf.createElement("itemref");
         itemref.setAttribute("idref", htmlFileName);
         self.spine.appendChild(itemref);
       }
       function genNavPoint(num: number, name: string, htmlFileName: string) {
-        const xmlns_v = "urn:v";
-        const navPoint = document.createElementNS(xmlns_v, "navPoint");
+        const navPoint = self.ncx.createElement("navPoint");
         navPoint.id = `navPoint-${num}`;
-        navPoint.setAttributeNS(xmlns_v, "playOrder", num.toString());
-        const navLabel = document.createElementNS(xmlns_v, "navLabel");
-        const text = document.createElement("text");
-        text.innerText = name;
-        const content = document.createElement("content");
+        navPoint.setAttribute("playOrder", num.toString());
+        const navLabel = self.ncx.createElement("navLabel");
+        const text = self.ncx.createElement("text");
+        text.textContent = name;
+        const content = self.ncx.createElement("content");
         content.setAttribute("src", htmlFileName);
         navLabel.appendChild(text);
         navPoint.appendChild(navLabel);
@@ -523,9 +522,9 @@ export class EPUB extends Options {
         name: string,
         htmlFileName: string
       ) {
-        const div = document.createElement("div");
+        const div = self.toc.createElement("div");
         div.className = className;
-        const a = document.createElement("a");
+        const a = self.toc.createElement("a");
         a.href = htmlFileName;
         a.innerText = name;
         div.appendChild(a);
