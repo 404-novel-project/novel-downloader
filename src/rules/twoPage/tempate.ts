@@ -7,6 +7,7 @@ import { log } from "../../log";
 import { Chapter } from "../../main/Chapter";
 import { Book, BookAdditionalMetadate } from "../../main/Book";
 import { BaseRuleClass } from "../../rules";
+import { Status } from "../../main/main";
 
 interface MkRuleClassOptions {
   bookUrl: string;
@@ -52,7 +53,7 @@ export function mkRuleClass({
   getAName,
   getIsVIP,
   getSections,
-  getSName: _getSectionName,
+  getSName,
   postHook,
   getContentFromUrl,
   getContent,
@@ -118,7 +119,7 @@ export function mkRuleClass({
       if (
         sections &&
         sections instanceof NodeList &&
-        typeof _getSectionName === "function"
+        typeof getSName === "function"
       ) {
         hasSection = true;
       }
@@ -132,8 +133,8 @@ export function mkRuleClass({
           chapterName = aElem.innerText;
         }
         const chapterUrl = aElem.href;
-        if (hasSection && sections && _getSectionName) {
-          const _sectionName = getSectionName(aElem, sections, _getSectionName);
+        if (hasSection && sections && getSName) {
+          const _sectionName = getSectionName(aElem, sections, getSName);
           if (_sectionName !== sectionName) {
             sectionName = _sectionName;
             sectionNumber++;
@@ -162,6 +163,9 @@ export function mkRuleClass({
           charset: this.charset,
           options: { bookname },
         });
+        if (isVIP === true && isPaid === false) {
+          chapter.status = Status.aborted;
+        }
         if (typeof postHook === "function") {
           chapter = postHook(chapter);
         }

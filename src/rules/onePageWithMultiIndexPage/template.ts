@@ -7,6 +7,7 @@ import { log } from "../../log";
 import { Chapter } from "../../main/Chapter";
 import { Book, BookAdditionalMetadate } from "../../main/Book";
 import { BaseRuleClass } from "../../rules";
+import { Status } from "../../main/main";
 
 interface MkRuleClassOptions {
   bookUrl: string;
@@ -155,6 +156,9 @@ export function mkRuleClass({
           charset: this.charset,
           options: { bookname },
         });
+        if (isVIP === true && isPaid === false) {
+          chapter.status = Status.aborted;
+        }
         if (typeof postHook === "function") {
           chapter = postHook(chapter);
         }
