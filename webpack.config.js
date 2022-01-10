@@ -10,7 +10,7 @@ const git = simpleGit();
 const dev = process.env.NODE_ENV === "development";
 console.log(`development: ${dev}`);
 
-git.raw("rev-list", "--count", "master").then((REVISION) => {
+git.raw("rev-list", "--count", "HEAD").then((REVISION) => {
   console.log(REVISION);
   fs.writeFileSync("REVISION", REVISION);
 });
