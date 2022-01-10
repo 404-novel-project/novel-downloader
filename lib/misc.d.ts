@@ -11,4 +11,5 @@ export declare function saveToArchiveOrg(url: string): Promise<any>;
 export declare function mean(list: number[]): number;
 export declare function sd(list: number[]): number;
 export declare function randomUUID(): string;
+export declare function extensionToMimetype(ext: string): string;
 export {};
