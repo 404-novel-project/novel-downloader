@@ -906,8 +906,34 @@ function convertBr(dom: HTMLElement) {
     const childNodes = dom.childNodes;
 
     let brCount = 0;
+    let buffer = [];
     for (const node of Array.from(childNodes)) {
-      if (node instanceof Text) {
+      if (node instanceof HTMLBRElement) {
+        if (brCount === 0 && buffer.length !== 0) {
+          const p = document.createElement("p");
+          buffer.forEach((n) => p.appendChild(n));
+          outDom.appendChild(p);
+          buffer = [];
+        }
+        brCount++;
+        continue;
+      }
+      if (node instanceof HTMLHRElement) {
+        brCount = 0;
+        if (buffer.length !== 0) {
+          const p = document.createElement("p");
+          buffer.forEach((n) => p.appendChild(n));
+          outDom.appendChild(p);
+          buffer = [];
+        }
+        const hr = document.createElement("hr");
+        outDom.appendChild(hr);
+        continue;
+      }
+      if (brCount === 0) {
+        buffer.push(node);
+        continue;
+      } else {
         if (brCount > 2) {
           let brRemainder = brCount - 2;
           const brp = document.createElement("p");
@@ -920,13 +946,16 @@ function convertBr(dom: HTMLElement) {
         }
 
         brCount = 0;
-        const p = document.createElement("p");
-        p.innerText = node.textContent ?? "";
-        outDom.appendChild(p);
+        buffer.push(node);
+        continue;
       }
-      if (node instanceof HTMLBRElement) {
-        brCount++;
-      }
+    }
+    brCount = 0;
+    if (buffer.length !== 0) {
+      const p = document.createElement("p");
+      buffer.forEach((n) => p.appendChild(n));
+      outDom.appendChild(p);
+      buffer = [];
     }
 
     return outDom;
@@ -941,7 +970,7 @@ function convertBr(dom: HTMLElement) {
   function onlyTextAndBr(d: HTMLElement) {
     return Array.from(d.childNodes)
       .map((n) => n.nodeName.toLowerCase())
-      .every((nn) => ["#text", "br"].includes(nn));
+      .every((nn) => ["#text", "hr", ...InlineElements].includes(nn));
   }
 }
 

@@ -1,3 +1,4 @@
+import { rms } from "../../lib/dom";
 import { mkRuleClass } from "./template";
 
 export const masiro = () =>
@@ -10,7 +11,10 @@ export const masiro = () =>
       document.querySelector(".author > a") as HTMLAnchorElement
     ).innerText.trim(),
     introDom: document.querySelector(".brief") as HTMLElement,
-    introDomPatch: (dom) => dom,
+    introDomPatch: (dom) => {
+      rms(["简介："], dom);
+      return dom;
+    },
     coverUrl: (
       document.querySelector(
         "div.mailbox-attachment-icon > a > img.img"
