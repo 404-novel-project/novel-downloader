@@ -23,10 +23,26 @@ export const masiro = () =>
       return additionalMetadate;
     },
     aList: document.querySelectorAll("a.to-read"),
-    getAName: (dom) =>
+    getAName: (aElem) =>
       (
-        dom.querySelector('span[style^="overflow: hidden;"]') as HTMLElement
+        aElem.querySelector('span[style^="overflow: hidden;"]') as HTMLElement
       ).innerText.trim(),
+    getIsVIP: (aElem) => {
+      let isVIP = false;
+      let isPaid = false;
+
+      const small = aElem.querySelector("small");
+      if (small) {
+        const text = small.innerText.trim();
+        if (text !== "") {
+          isVIP = true;
+          if (text === "已购") {
+            isPaid = true;
+          }
+        }
+      }
+      return { isVIP, isPaid };
+    },
     sections: document.querySelectorAll("li.chapter-box > span + b"),
     getSName: (dom) => (dom as HTMLElement).innerText.trim(),
     getContent: (dom) => dom.querySelector("div.box-body.nvl-content"),

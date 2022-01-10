@@ -19,6 +19,10 @@ interface MkRuleClassOptions {
   getCoverUrl: (doc: Document) => string | null;
   getAList: (doc: Document) => NodeListOf<Element> | Element[];
   getAName?: (aElem: Element) => string;
+  getIsVIP?: (aElem: Element) => {
+    isVIP: boolean;
+    isPaid: boolean;
+  };
   getSections?: (doc: Document) => NodeListOf<Element>;
   getSName?: (sElem: Element) => string;
   postHook?: (chapter: Chapter) => Chapter | void;
@@ -46,6 +50,7 @@ export function mkRuleClass({
   getCoverUrl,
   getAList,
   getAName,
+  getIsVIP,
   getSections,
   getSName: _getSectionName,
   postHook,
@@ -137,8 +142,11 @@ export function mkRuleClass({
         }
         chapterNumber++;
         sectionChapterNumber++;
-        const isVIP = false;
-        const isPaid = false;
+        let isVIP = false;
+        let isPaid = false;
+        if (getIsVIP) {
+          ({ isVIP, isPaid } = getIsVIP(aElem));
+        }
         let chapter: Chapter | void = new Chapter({
           bookUrl,
           bookname,

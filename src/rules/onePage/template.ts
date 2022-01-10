@@ -20,6 +20,10 @@ interface MkRuleClassOptions {
   ) => BookAdditionalMetadate;
   aList: NodeListOf<Element> | Element[];
   getAName?: (aElem: Element) => string;
+  getIsVIP?: (aElem: Element) => {
+    isVIP: boolean;
+    isPaid: boolean;
+  };
   sections?: NodeListOf<Element>;
   getSName?: (sElem: Element) => string;
   postHook?: (chapter: Chapter) => Chapter | void;
@@ -46,6 +50,7 @@ export function mkRuleClass({
   additionalMetadatePatch,
   aList,
   getAName,
+  getIsVIP,
   sections,
   getSName: _getSectionName,
   postHook,
@@ -132,8 +137,11 @@ export function mkRuleClass({
         }
         chapterNumber++;
         sectionChapterNumber++;
-        const isVIP = false;
-        const isPaid = false;
+        let isVIP = false;
+        let isPaid = false;
+        if (getIsVIP) {
+          ({ isVIP, isPaid } = getIsVIP(aElem));
+        }
         let chapter: Chapter | void = new Chapter({
           bookUrl,
           bookname,
