@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.8.1.511
+// @version        4.8.1.512
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -8364,14 +8364,16 @@ const syosetuOrg = () => {
 /* harmony export */   "x": () => (/* binding */ mkRuleClass)
 /* harmony export */ });
 /* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/attachments.ts");
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/cleanDOM.ts");
-/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/http.ts");
 /* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("loglevel");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/Chapter.ts");
-/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Book.ts");
 /* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/main.ts");
+
 
 
 
@@ -8465,6 +8467,9 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
                     charset: this.charset,
                     options: { bookname },
                 });
+                if (isVIP === true && isPaid === false) {
+                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_5__/* .Status.aborted */ .qb.aborted;
+                }
                 if (typeof postHook === "function") {
                     chapter = postHook(chapter);
                 }
@@ -8472,7 +8477,7 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
                     chapters.push(chapter);
                 }
             }
-            const book = new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .f({
+            const book = new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .f({
                 bookUrl,
                 bookname,
                 author,
@@ -8489,12 +8494,12 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
                 content = await getContentFromUrl(chapterUrl, chapterName, charset);
             }
             else if (getContent !== undefined) {
-                const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_6__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
+                const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_7__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
                 content = getContent(doc);
             }
             if (content) {
                 content = contentPatch(content);
-                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__/* .cleanDOM */ .zM)(content, "TM", cleanDomOptions);
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .zM)(content, "TM", cleanDomOptions);
                 return {
                     chapterName,
                     contentRaw: content,
@@ -8817,15 +8822,17 @@ const baihexs = () => {
 /* harmony export */   "x": () => (/* binding */ mkRuleClass)
 /* harmony export */ });
 /* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/attachments.ts");
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("./src/lib/cleanDOM.ts");
 /* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/lib/http.ts");
 /* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/misc.ts");
 /* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("loglevel");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Chapter.ts");
-/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/main/Book.ts");
 /* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/main/main.ts");
+
 
 
 
@@ -8923,6 +8930,9 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
                     charset: this.charset,
                     options: { bookname },
                 });
+                if (isVIP === true && isPaid === false) {
+                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_7__/* .Status.aborted */ .qb.aborted;
+                }
                 if (typeof postHook === "function") {
                     chapter = postHook(chapter);
                 }
@@ -8930,7 +8940,7 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
                     chapters.push(chapter);
                 }
             }
-            const book = new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .f({
+            const book = new _main_Book__WEBPACK_IMPORTED_MODULE_8__/* .Book */ .f({
                 bookUrl,
                 bookname,
                 author,
@@ -8952,7 +8962,7 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
             }
             if (content) {
                 content = contentPatch(content);
-                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .zM)(content, "TM", cleanDomOptions);
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_9__/* .cleanDOM */ .zM)(content, "TM", cleanDomOptions);
                 return {
                     chapterName,
                     contentRaw: content,
@@ -17497,14 +17507,15 @@ const shencou = () => {
 /* harmony export */   "x": () => (/* binding */ mkRuleClass)
 /* harmony export */ });
 /* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/attachments.ts");
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/cleanDOM.ts");
 /* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/http.ts");
 /* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/rule.ts");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("loglevel");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Chapter.ts");
-/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/main/Book.ts");
 /* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/main.ts");
 
 
 
@@ -17513,7 +17524,8 @@ const shencou = () => {
 
 
 
-function mkRuleClass({ bookUrl, anotherPageUrl, ToCUrl, getBookname, getAuthor, getIntroDom, introDomPatch, getCoverUrl, getAList, getAName, getIsVIP, getSections, getSName: _getSectionName, postHook, getContentFromUrl, getContent, contentPatch, concurrencyLimit, needLogin, nsfw, cleanDomOptions, overrideConstructor, }) {
+
+function mkRuleClass({ bookUrl, anotherPageUrl, ToCUrl, getBookname, getAuthor, getIntroDom, introDomPatch, getCoverUrl, getAList, getAName, getIsVIP, getSections, getSName, postHook, getContentFromUrl, getContent, contentPatch, concurrencyLimit, needLogin, nsfw, cleanDomOptions, overrideConstructor, }) {
     return class extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
         constructor() {
             super();
@@ -17561,7 +17573,7 @@ function mkRuleClass({ bookUrl, anotherPageUrl, ToCUrl, getBookname, getAuthor, 
             let hasSection = false;
             if (sections &&
                 sections instanceof NodeList &&
-                typeof _getSectionName === "function") {
+                typeof getSName === "function") {
                 hasSection = true;
             }
             const aList = getAList(doc);
@@ -17574,8 +17586,8 @@ function mkRuleClass({ bookUrl, anotherPageUrl, ToCUrl, getBookname, getAuthor, 
                     chapterName = aElem.innerText;
                 }
                 const chapterUrl = aElem.href;
-                if (hasSection && sections && _getSectionName) {
-                    const _sectionName = (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .getSectionName */ .$d)(aElem, sections, _getSectionName);
+                if (hasSection && sections && getSName) {
+                    const _sectionName = (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .getSectionName */ .$d)(aElem, sections, getSName);
                     if (_sectionName !== sectionName) {
                         sectionName = _sectionName;
                         sectionNumber++;
@@ -17604,6 +17616,9 @@ function mkRuleClass({ bookUrl, anotherPageUrl, ToCUrl, getBookname, getAuthor, 
                     charset: this.charset,
                     options: { bookname },
                 });
+                if (isVIP === true && isPaid === false) {
+                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status.aborted */ .qb.aborted;
+                }
                 if (typeof postHook === "function") {
                     chapter = postHook(chapter);
                 }
@@ -17611,7 +17626,7 @@ function mkRuleClass({ bookUrl, anotherPageUrl, ToCUrl, getBookname, getAuthor, 
                     chapters.push(chapter);
                 }
             }
-            const book = new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .f({
+            const book = new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .f({
                 bookUrl,
                 bookname,
                 author,
@@ -17639,7 +17654,7 @@ function mkRuleClass({ bookUrl, anotherPageUrl, ToCUrl, getBookname, getAuthor, 
             }
             if (content) {
                 content = contentPatch(content);
-                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__/* .cleanDOM */ .zM)(content, "TM", cleanDomOptions);
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .zM)(content, "TM", cleanDomOptions);
                 return {
                     chapterName,
                     contentRaw: content,
