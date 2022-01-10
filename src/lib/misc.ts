@@ -1,5 +1,6 @@
 import { ExpectError } from "../main/main";
 import { _GM_info } from "./GM";
+import db from "mime-db";
 
 export type PublicConstructor<T> = new () => T;
 
@@ -112,4 +113,13 @@ export function randomUUID(): string {
   } else {
     return createUUID();
   }
+}
+
+export function extensionToMimetype(ext: string) {
+  for (const [mimetype, entry] of Object.entries(db)) {
+    if (entry.extensions?.includes(ext)) {
+      return mimetype;
+    }
+  }
+  return "application/octet-stream";
 }

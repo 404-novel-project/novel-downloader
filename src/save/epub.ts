@@ -1,6 +1,6 @@
 import sgc from "./sgc-toc.css";
 import { _GM_info } from "../lib/GM";
-import { randomUUID } from "../lib/misc";
+import { extensionToMimetype, randomUUID } from "../lib/misc";
 import { FflateZip } from "../lib/zip";
 import { log } from "../log";
 import { Book } from "../main/Book";
@@ -175,7 +175,10 @@ export class EPUB extends Options {
       const item = document.createElement("item");
       item.id = attachment.name;
       item.setAttribute("href", attachment.name);
-      item.setAttribute("media-type", attachment.imageBlob.type);
+      const mimetype = extensionToMimetype(
+        attachment.name.substring(attachment.name.lastIndexOf(".") + 1)
+      );
+      item.setAttribute("media-type", mimetype);
       if (!this.manifest.querySelector(`itme[id="${attachment.name}"]`)) {
         this.manifest.appendChild(item);
       }
@@ -303,6 +306,12 @@ export class EPUB extends Options {
       const source = document.createElement("dc:source");
       source.innerText = self.book.bookUrl;
       self.metadata.appendChild(source);
+
+      if (self.book.additionalMetadate.language) {
+        const language = document.createElement("dc:language");
+        language.innerText = self.book.additionalMetadate.language;
+        self.metadata.appendChild(language);
+      }
 
       if (self.book.introduction) {
         const introduction = document.createElement("dc:description");

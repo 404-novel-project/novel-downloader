@@ -27,6 +27,7 @@
   "devDependencies": {
     "@types/crypto-js": "^4.0.1",
     "@types/file-saver": "^2.0.1",
+    "@types/mime-db": "^1.43.1",
     "@types/node": "^17.0.1",
     "@types/nunjucks": "^3.2.0",
     "@types/tampermonkey": "^4.0.5",
@@ -57,6 +58,7 @@
     "file-saver": "^2.0.5",
     "idb-keyval": "^6.0.3",
     "loglevel": "^1.7.1",
+    "mime-db": "^1.51.0",
     "nunjucks": "^3.2.3",
     "streamsaver": "^2.0.5",
     "vue": "^3.2.22"

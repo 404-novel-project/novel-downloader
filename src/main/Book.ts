@@ -13,7 +13,7 @@ export interface BookAdditionalMetadate {
   seriresNumber?: number;
   ids?: string[] | string;
   publisher?: string;
-  languages?: string;
+  language?: string;
 }
 
 export class Book {

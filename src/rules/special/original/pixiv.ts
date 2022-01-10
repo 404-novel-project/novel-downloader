@@ -283,7 +283,7 @@ export class Pixiv extends BaseRuleClass {
       }
       additionalMetadate.lastModified = new Date(novel.uploadDate).getTime();
       additionalMetadate.tags = novel.tags.tags.map((t) => t.tag);
-      additionalMetadate.languages = novel.language;
+      additionalMetadate.language = novel.language;
 
       const chapterUrl = bookUrl;
       const chapterName = bookname;
