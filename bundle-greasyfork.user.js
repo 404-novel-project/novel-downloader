@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.8.1.512
+// @version        4.8.1.513
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -4362,8 +4362,35 @@ function convertBr(dom) {
         const outDom = document.createElement("div");
         const childNodes = dom.childNodes;
         let brCount = 0;
+        let buffer = [];
         for (const node of Array.from(childNodes)) {
-            if (node instanceof Text) {
+            if (node instanceof HTMLBRElement) {
+                if (brCount === 0 && buffer.length !== 0) {
+                    const p = document.createElement("p");
+                    buffer.forEach((n) => p.appendChild(n));
+                    outDom.appendChild(p);
+                    buffer = [];
+                }
+                brCount++;
+                continue;
+            }
+            if (node instanceof HTMLHRElement) {
+                brCount = 0;
+                if (buffer.length !== 0) {
+                    const p = document.createElement("p");
+                    buffer.forEach((n) => p.appendChild(n));
+                    outDom.appendChild(p);
+                    buffer = [];
+                }
+                const hr = document.createElement("hr");
+                outDom.appendChild(hr);
+                continue;
+            }
+            if (brCount === 0) {
+                buffer.push(node);
+                continue;
+            }
+            else {
                 if (brCount > 2) {
                     let brRemainder = brCount - 2;
                     const brp = document.createElement("p");
@@ -4375,13 +4402,16 @@ function convertBr(dom) {
                     outDom.appendChild(brp);
                 }
                 brCount = 0;
-                const p = document.createElement("p");
-                p.innerText = node.textContent ?? "";
-                outDom.appendChild(p);
+                buffer.push(node);
+                continue;
             }
-            if (node instanceof HTMLBRElement) {
-                brCount++;
-            }
+        }
+        brCount = 0;
+        if (buffer.length !== 0) {
+            const p = document.createElement("p");
+            buffer.forEach((n) => p.appendChild(n));
+            outDom.appendChild(p);
+            buffer = [];
         }
         return outDom;
     }
@@ -4395,7 +4425,7 @@ function convertBr(dom) {
     function onlyTextAndBr(d) {
         return Array.from(d.childNodes)
             .map((n) => n.nodeName.toLowerCase())
-            .every((nn) => ["#text", "br"].includes(nn));
+            .every((nn) => ["#text", "hr", ...InlineElements].includes(nn));
     }
 }
 function removeBlankParagraphElement(dom) {
@@ -8113,14 +8143,19 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "masiro": () => (/* binding */ masiro)
 /* harmony export */ });
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
 /* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
+
 
 const masiro = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
     bookUrl: document.location.href,
     bookname: document.querySelector(".novel-title").innerText.trim(),
     author: document.querySelector(".author > a").innerText.trim(),
     introDom: document.querySelector(".brief"),
-    introDomPatch: (dom) => dom,
+    introDomPatch: (dom) => {
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .up)(["简介："], dom);
+        return dom;
+    },
     coverUrl: document.querySelector("div.mailbox-attachment-icon > a > img.img").src,
     additionalMetadatePatch: (additionalMetadate) => {
         additionalMetadate.tags = Array.from(document.querySelectorAll("div.n-detail > div.tags a")).map((a) => a.innerText);
