@@ -11,6 +11,7 @@ export class Pixiv extends BaseRuleClass {
   public constructor() {
     super();
     this.imageMode = "TM";
+    this.needLogin = true;
   }
 
   public async bookParse() {
@@ -49,6 +50,24 @@ export class Pixiv extends BaseRuleClass {
       throw new Error("初始化图书信息失败！");
     }
     return bookG;
+
+    async function getUserId() {
+      const resp = await fetch(
+        "https://www.pixiv.net/ajax/linked_service/tumeng",
+        {
+          credentials: "include",
+          headers: {
+            Accept: "application/json",
+          },
+          method: "GET",
+          mode: "cors",
+        }
+      );
+      const tumeng = (await resp.json()) as tumeng;
+      if (tumeng.error === false) {
+        return tumeng.body.page.user.id;
+      }
+    }
 
     async function series(id: number) {
       const seriesMetaBody = await getSeriesMeta(id);
@@ -111,24 +130,6 @@ export class Pixiv extends BaseRuleClass {
         return book;
       }
     }
-    async function getUserId() {
-      const resp = await fetch(
-        "https://www.pixiv.net/ajax/linked_service/tumeng",
-        {
-          credentials: "include",
-          headers: {
-            Accept: "application/json",
-          },
-          method: "GET",
-          mode: "cors",
-        }
-      );
-      const tumeng = (await resp.json()) as tumeng;
-      if (tumeng.error === false) {
-        return tumeng.body.page.user.id;
-      }
-    }
-
     async function getSeriesMeta(id: number) {
       const referrer = "https://www.pixiv.net/novel/series/" + id.toString();
       const apiMetaBase = "https://www.pixiv.net/ajax/novel/series/";
@@ -283,6 +284,7 @@ export class Pixiv extends BaseRuleClass {
       }
       return seriesContents;
     }
+
     async function onePage(novel: NovelObj) {
       const bookUrl = document.location.href;
       const bookId = new URL(document.location.href).searchParams.get(
@@ -621,7 +623,10 @@ async function loadPixivimage(
     if (imgSrc) {
       const img = document.createElement("img");
       img.src = imgSrc;
-      dom.innerHTML = dom.innerHTML.replaceAll(str, img.outerHTML);
+      const a = document.createElement("a");
+      a.href = `https://www.pixiv.net/artworks/${id}`;
+      a.appendChild(img);
+      dom.innerHTML = dom.innerHTML.replaceAll(str, a.outerHTML);
     }
   }
   async function getImage(id: string) {
