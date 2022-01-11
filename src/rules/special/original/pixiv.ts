@@ -17,6 +17,7 @@ export class Pixiv extends BaseRuleClass {
     const self = this;
     const _lang = document.documentElement.getAttribute("lang");
     const lang: Record<string, string> = _lang ? { lang: _lang } : {};
+    const userId = await getUserId();
     let bookG: Book | undefined;
 
     if (document.location.pathname.startsWith("/novel/series")) {
@@ -93,7 +94,7 @@ export class Pixiv extends BaseRuleClass {
             sectionChapterNumber: null,
             chapterParse: self.chapterParse,
             charset: self.charset,
-            options: { id: sc.id },
+            options: { id: sc.id, lang: _lang, userId },
           });
           chapters.push(chapter);
         }
@@ -110,6 +111,24 @@ export class Pixiv extends BaseRuleClass {
         return book;
       }
     }
+    async function getUserId() {
+      const resp = await fetch(
+        "https://www.pixiv.net/ajax/linked_service/tumeng",
+        {
+          credentials: "include",
+          headers: {
+            Accept: "application/json",
+          },
+          method: "GET",
+          mode: "cors",
+        }
+      );
+      const tumeng = (await resp.json()) as tumeng;
+      if (tumeng.error === false) {
+        return tumeng.body.page.user.id;
+      }
+    }
+
     async function getSeriesMeta(id: number) {
       const referrer = "https://www.pixiv.net/novel/series/" + id.toString();
       const apiMetaBase = "https://www.pixiv.net/ajax/novel/series/";
@@ -266,6 +285,9 @@ export class Pixiv extends BaseRuleClass {
     }
     async function onePage(novel: NovelObj) {
       const bookUrl = document.location.href;
+      const bookId = new URL(document.location.href).searchParams.get(
+        "id"
+      ) as string;
       const bookname = novel.title;
       const author = novel.userName;
       const introductionHTML = document.createElement("div");
@@ -304,8 +326,9 @@ export class Pixiv extends BaseRuleClass {
       });
       const contentRaw = document.createElement("div");
       contentRaw.innerHTML = novel.content.replace(/\n/g, "<br/>");
-      const { dom, text, images } = await cleanDOM(contentRaw, "TM");
+      await loadPixivimage(contentRaw, bookId, _lang, userId);
 
+      const { dom, text, images } = await cleanDOM(contentRaw, "TM");
       chapter.contentRaw = contentRaw;
       chapter.contentHTML = dom;
       chapter.contentText = text;
@@ -335,7 +358,8 @@ export class Pixiv extends BaseRuleClass {
     chapterName: string | null,
     isVIP: boolean,
     isPaid: boolean,
-    charset: string
+    charset: string,
+    options: chapterOptions
   ) {
     const obj = await getPreloadData(chapterUrl, charset);
     if (obj) {
@@ -343,6 +367,12 @@ export class Pixiv extends BaseRuleClass {
       if (novel) {
         const contentRaw = document.createElement("div");
         contentRaw.innerHTML = novel.content.replace(/\n/g, "<br/>");
+        await loadPixivimage(
+          contentRaw,
+          options.id,
+          options.lang,
+          options.userId
+        );
         const { dom, text, images } = await cleanDOM(contentRaw, "TM");
         const additionalMetadate: ChapterAdditionalMetadate = {
           lastModified: new Date(novel.uploadDate).getTime(),
@@ -369,6 +399,11 @@ export class Pixiv extends BaseRuleClass {
   }
 }
 
+interface chapterOptions {
+  id: string;
+  lang: string | null;
+  userId: string | undefined;
+}
 interface Tag {
   tag: string;
   locked: boolean;
@@ -547,6 +582,7 @@ interface PreloadData {
     [index: string]: UserObj;
   };
 }
+
 async function getPreloadData(chapterUrl: string, charset: string) {
   const doc = await getHtmlDOM(chapterUrl, charset);
   const _preloadData = doc
@@ -567,6 +603,57 @@ async function getPreloadData(chapterUrl: string, charset: string) {
     return { preloadData, novel, user };
   }
 }
+
+async function loadPixivimage(
+  dom: HTMLElement,
+  nid: string,
+  lang: string | null,
+  userId: string | undefined
+) {
+  const images = dom.innerHTML.matchAll(/\[pixivimage:(\d+)\]/g);
+  for (const match of images) {
+    await mapper(match as [string, string]);
+  }
+  return dom;
+
+  async function mapper([str, id]: [string, string]) {
+    const imgSrc = await getImage(id);
+    if (imgSrc) {
+      const img = document.createElement("img");
+      img.src = imgSrc;
+      dom.innerHTML = dom.innerHTML.replaceAll(str, img.outerHTML);
+    }
+  }
+  async function getImage(id: string) {
+    const baseUrl = `https://www.pixiv.net/ajax/novel/${nid}/insert_illusts`;
+    const url = new URL(baseUrl);
+    url.searchParams.set("id[]", `${id}-1`);
+    if (lang) {
+      url.searchParams.set("lang", lang);
+    }
+    const headers: Record<string, string> = {
+      Accept: "application/json",
+    };
+    if (userId) {
+      headers["x-user-id"] = userId;
+    }
+    const resp = await fetch(url.href, {
+      credentials: "include",
+      headers,
+      method: "GET",
+      mode: "cors",
+    });
+    const illusts = (await resp.json()) as illusts;
+    if (illusts.error === false) {
+      const originalUrl = illusts.body[`${id}-1`].illust.images.original;
+      return originalUrl;
+    } else {
+      console.error(`获取插图失败: pixivimage:${id}`);
+      return;
+    }
+  }
+}
+
 /*
 /// https://www.pixiv.net/ajax/novel/series/7790652
 {
@@ -1308,3 +1395,105 @@ async function getPreloadData(chapterUrl: string, charset: string) {
   }
 }
 */
+
+// await fetch("https://www.pixiv.net/ajax/linked_service/tumeng", {
+//     "credentials": "include",
+//     "headers": {
+//         "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:95.0) Gecko/20100101 Firefox/95.0",
+//         "Accept": "application/json",
+//         "Accept-Language": "en-US,en;q=0.5",
+//         "Sec-Fetch-Dest": "empty",
+//         "Sec-Fetch-Mode": "cors",
+//         "Sec-Fetch-Site": "same-origin"
+//     },
+//     "referrer": "https://www.pixiv.net/novel/show.php?id=9381850",
+//     "method": "GET",
+//     "mode": "cors"
+// });
+
+interface tumeng {
+  error: false;
+  message: string;
+  body: {
+    page: {
+      user: {
+        id: string;
+        name: string;
+        comment: string;
+        profileImageUrl: string;
+        followerCount: number;
+        linkState: string;
+        updateDatetime: null;
+        enableCustomProfile: boolean;
+        customProfile: null;
+        profileImageConfigured: boolean;
+        meta: {
+          f0: boolean;
+        };
+      };
+      works: [];
+      totalItemCount: number;
+    };
+    tagTranslation: [];
+    thumbnails: {
+      illust: [];
+      novel: [];
+      novelSeries: [];
+      novelDraft: [];
+    };
+    illustSeries: [];
+    requests: [];
+    users: [];
+  };
+}
+
+// await fetch("https://www.pixiv.net/ajax/novel/9381850/insert_illusts?id%5B%5D=67841765-1&lang=en", {
+//     "credentials": "include",
+//     "headers": {
+//         "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:95.0) Gecko/20100101 Firefox/95.0",
+//         "Accept": "application/json",
+//         "Accept-Language": "en-US,en;q=0.5",
+//         "x-user-id": "xxxxxxx",
+//         "Sec-Fetch-Dest": "empty",
+//         "Sec-Fetch-Mode": "cors",
+//         "Sec-Fetch-Site": "same-origin"
+//     },
+//     "referrer": "https://www.pixiv.net/novel/show.php?id=9381850",
+//     "method": "GET",
+//     "mode": "cors"
+// });
+
+interface illustTag {
+  tag: string;
+  userId: string;
+}
+interface illusts {
+  error: boolean;
+  message: string;
+  body: {
+    [index: string]: {
+      visible: boolean;
+      unavailableType: null;
+      illust: {
+        title: string;
+        description: string;
+        restrict: number;
+        xRestrict: number;
+        sl: number;
+        tags: illustTag[];
+        images: {
+          small: string;
+          medium: string;
+          original: string;
+        };
+      };
+      user: {
+        id: string;
+        name: string;
+        image: string;
+      };
+      id: string;
+      page: number;
+    };
+  };
+}
