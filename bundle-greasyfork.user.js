@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.8.1.514
+// @version        4.8.1.515
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -13290,6 +13290,7 @@ class Pixiv extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
     constructor() {
         super();
         this.imageMode = "TM";
+        this.needLogin = true;
     }
     async bookParse() {
         const self = this;
@@ -13324,6 +13325,20 @@ class Pixiv extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
             throw new Error("初始化图书信息失败！");
         }
         return bookG;
+        async function getUserId() {
+            const resp = await fetch("https://www.pixiv.net/ajax/linked_service/tumeng", {
+                credentials: "include",
+                headers: {
+                    Accept: "application/json",
+                },
+                method: "GET",
+                mode: "cors",
+            });
+            const tumeng = (await resp.json());
+            if (tumeng.error === false) {
+                return tumeng.body.page.user.id;
+            }
+        }
         async function series(id) {
             const seriesMetaBody = await getSeriesMeta(id);
             if (seriesMetaBody) {
@@ -13377,20 +13392,6 @@ class Pixiv extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
                     chapters,
                 });
                 return book;
-            }
-        }
-        async function getUserId() {
-            const resp = await fetch("https://www.pixiv.net/ajax/linked_service/tumeng", {
-                credentials: "include",
-                headers: {
-                    Accept: "application/json",
-                },
-                method: "GET",
-                mode: "cors",
-            });
-            const tumeng = (await resp.json());
-            if (tumeng.error === false) {
-                return tumeng.body.page.user.id;
             }
         }
         async function getSeriesMeta(id) {
@@ -13574,7 +13575,10 @@ async function loadPixivimage(dom, nid, lang, userId) {
         if (imgSrc) {
             const img = document.createElement("img");
             img.src = imgSrc;
-            dom.innerHTML = dom.innerHTML.replaceAll(str, img.outerHTML);
+            const a = document.createElement("a");
+            a.href = `https://www.pixiv.net/artworks/${id}`;
+            a.appendChild(img);
+            dom.innerHTML = dom.innerHTML.replaceAll(str, a.outerHTML);
         }
     }
     async function getImage(id) {
