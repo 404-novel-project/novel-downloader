@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.8.1.515
+// @version        4.8.1.516
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -13487,7 +13487,13 @@ class Pixiv extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
             });
             const contentRaw = document.createElement("div");
             contentRaw.innerHTML = novel.content.replace(/\n/g, "<br/>");
-            await loadPixivimage(contentRaw, bookId, _lang, userId);
+            await loadPixivimage({
+                dom: contentRaw,
+                nid: bookId,
+                lang: _lang,
+                userId,
+                textEmbeddedImages: novel.textEmbeddedImages,
+            });
             const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_5__/* .cleanDOM */ .zM)(contentRaw, "TM");
             chapter.contentRaw = contentRaw;
             chapter.contentHTML = dom;
@@ -13518,7 +13524,13 @@ class Pixiv extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
             if (novel) {
                 const contentRaw = document.createElement("div");
                 contentRaw.innerHTML = novel.content.replace(/\n/g, "<br/>");
-                await loadPixivimage(contentRaw, options.id, options.lang, options.userId);
+                await loadPixivimage({
+                    dom: contentRaw,
+                    nid: options.id,
+                    lang: options.lang,
+                    userId: options.userId,
+                    textEmbeddedImages: novel.textEmbeddedImages,
+                });
                 const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_5__/* .cleanDOM */ .zM)(contentRaw, "TM");
                 const additionalMetadate = {
                     lastModified: new Date(novel.uploadDate).getTime(),
@@ -13564,14 +13576,18 @@ async function getPreloadData(chapterUrl, charset) {
         return { preloadData, novel, user };
     }
 }
-async function loadPixivimage(dom, nid, lang, userId) {
-    const images = dom.innerHTML.matchAll(/\[pixivimage:(\d+)\]/g);
-    for (const match of images) {
-        await mapper(match);
+async function loadPixivimage({ dom, nid, lang, userId, textEmbeddedImages, }) {
+    const pixivImages = dom.innerHTML.matchAll(/\[pixivimage:(\d+)\]/g);
+    for (const match of pixivImages) {
+        await mapperPixivImage(match);
+    }
+    const uploadedImages = dom.innerHTML.matchAll(/\[uploadedimage:(\d+)\]/g);
+    for (const match of uploadedImages) {
+        mapperUploadedImage(match);
     }
     return dom;
-    async function mapper([str, id]) {
-        const imgSrc = await getImage(id);
+    async function mapperPixivImage([str, id]) {
+        const imgSrc = await getPixivImage(id);
         if (imgSrc) {
             const img = document.createElement("img");
             img.src = imgSrc;
@@ -13581,7 +13597,7 @@ async function loadPixivimage(dom, nid, lang, userId) {
             dom.innerHTML = dom.innerHTML.replaceAll(str, a.outerHTML);
         }
     }
-    async function getImage(id) {
+    async function getPixivImage(id) {
         const baseUrl = `https://www.pixiv.net/ajax/novel/${nid}/insert_illusts`;
         const url = new URL(baseUrl);
         url.searchParams.set("id[]", `${id}-1`);
@@ -13608,6 +13624,14 @@ async function loadPixivimage(dom, nid, lang, userId) {
         else {
             console.error(`获取插图失败: pixivimage:${id}`);
             return;
+        }
+    }
+    function mapperUploadedImage([str, id]) {
+        const imgSrc = textEmbeddedImages?.[id].urls.original;
+        if (imgSrc) {
+            const img = document.createElement("img");
+            img.src = imgSrc;
+            dom.innerHTML = dom.innerHTML.replaceAll(str, img.outerHTML);
         }
     }
 }
