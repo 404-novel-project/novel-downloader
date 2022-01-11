@@ -328,7 +328,13 @@ export class Pixiv extends BaseRuleClass {
       });
       const contentRaw = document.createElement("div");
       contentRaw.innerHTML = novel.content.replace(/\n/g, "<br/>");
-      await loadPixivimage(contentRaw, bookId, _lang, userId);
+      await loadPixivimage({
+        dom: contentRaw,
+        nid: bookId,
+        lang: _lang,
+        userId,
+        textEmbeddedImages: novel.textEmbeddedImages,
+      });
 
       const { dom, text, images } = await cleanDOM(contentRaw, "TM");
       chapter.contentRaw = contentRaw;
@@ -369,12 +375,13 @@ export class Pixiv extends BaseRuleClass {
       if (novel) {
         const contentRaw = document.createElement("div");
         contentRaw.innerHTML = novel.content.replace(/\n/g, "<br/>");
-        await loadPixivimage(
-          contentRaw,
-          options.id,
-          options.lang,
-          options.userId
-        );
+        await loadPixivimage({
+          dom: contentRaw,
+          nid: options.id,
+          lang: options.lang,
+          userId: options.userId,
+          textEmbeddedImages: novel.textEmbeddedImages,
+        });
         const { dom, text, images } = await cleanDOM(contentRaw, "TM");
         const additionalMetadate: ChapterAdditionalMetadate = {
           lastModified: new Date(novel.uploadDate).getTime(),
@@ -455,6 +462,16 @@ interface OtherNovelObj {
   seriesId: string;
   seriesTitle: string;
   isUnlisted: boolean;
+}
+interface textEmbeddedImage {
+  novelImageId: string;
+  sl: string;
+  urls: {
+    "480mw": string;
+    "1200x1200": string;
+    "128x128": string;
+    original: string;
+  };
 }
 interface NovelObj {
   bookmarkCount: number;
@@ -557,7 +574,9 @@ interface NovelObj {
   titleCaptionTranslation: { workTitle: null; workCaption: null };
   isUnlisted: boolean;
   language: string;
-  textEmbeddedImages: null;
+  textEmbeddedImages: null | {
+    [index: string]: textEmbeddedImage;
+  };
   commentOff: number;
 }
 interface UserObj {
@@ -606,20 +625,32 @@ async function getPreloadData(chapterUrl: string, charset: string) {
   }
 }
 
-async function loadPixivimage(
-  dom: HTMLElement,
-  nid: string,
-  lang: string | null,
-  userId: string | undefined
-) {
-  const images = dom.innerHTML.matchAll(/\[pixivimage:(\d+)\]/g);
-  for (const match of images) {
-    await mapper(match as [string, string]);
+async function loadPixivimage({
+  dom,
+  nid,
+  lang,
+  userId,
+  textEmbeddedImages,
+}: {
+  dom: HTMLElement;
+  nid: string;
+  lang: string | null;
+  userId: string | undefined;
+  textEmbeddedImages: { [index: string]: textEmbeddedImage } | null;
+}) {
+  const pixivImages = dom.innerHTML.matchAll(/\[pixivimage:(\d+)\]/g);
+  for (const match of pixivImages) {
+    await mapperPixivImage(match as [string, string]);
+  }
+
+  const uploadedImages = dom.innerHTML.matchAll(/\[uploadedimage:(\d+)\]/g);
+  for (const match of uploadedImages) {
+    mapperUploadedImage(match as [string, string]);
   }
   return dom;
 
-  async function mapper([str, id]: [string, string]) {
-    const imgSrc = await getImage(id);
+  async function mapperPixivImage([str, id]: [string, string]) {
+    const imgSrc = await getPixivImage(id);
     if (imgSrc) {
       const img = document.createElement("img");
       img.src = imgSrc;
@@ -629,7 +660,7 @@ async function loadPixivimage(
       dom.innerHTML = dom.innerHTML.replaceAll(str, a.outerHTML);
     }
   }
-  async function getImage(id: string) {
+  async function getPixivImage(id: string) {
     const baseUrl = `https://www.pixiv.net/ajax/novel/${nid}/insert_illusts`;
     const url = new URL(baseUrl);
     url.searchParams.set("id[]", `${id}-1`);
@@ -655,6 +686,15 @@ async function loadPixivimage(
     } else {
       console.error(`获取插图失败: pixivimage:${id}`);
       return;
+    }
+  }
+
+  function mapperUploadedImage([str, id]: [string, string]) {
+    const imgSrc = textEmbeddedImages?.[id].urls.original;
+    if (imgSrc) {
+      const img = document.createElement("img");
+      img.src = imgSrc;
+      dom.innerHTML = dom.innerHTML.replaceAll(str, img.outerHTML);
     }
   }
 }
