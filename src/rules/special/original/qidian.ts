@@ -14,7 +14,7 @@ export class Qidian extends BaseRuleClass {
   public constructor() {
     super();
     this.imageMode = "TM";
-    this.concurrencyLimit = 1;
+    this.concurrencyLimit = 3;
   }
 
   public async bookParse() {
@@ -212,7 +212,19 @@ export class Qidian extends BaseRuleClass {
     async function getChapter(): Promise<ChapterParseObject> {
       let doc;
       if (isVIP) {
-        doc = await getFrameContent(chapterUrl);
+        doc = await ggetHtmlDOM(chapterUrl, charset);
+        if (
+          !doc.querySelector(".read-content") ||
+          doc.querySelector(".read-content")?.childElementCount === 0
+        ) {
+          doc = await getFrameContent(chapterUrl);
+          if (doc) {
+            doc = new DOMParser().parseFromString(
+              doc.documentElement.outerHTML,
+              "text/html"
+            );
+          }
+        }
       } else {
         doc = await ggetHtmlDOM(chapterUrl, charset);
       }
