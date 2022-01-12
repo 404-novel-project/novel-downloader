@@ -1,4 +1,5 @@
 import sgc from "./sgc-toc.css";
+import webStyleText from "./web.css";
 import { _GM_info } from "../lib/GM";
 import { extensionToMimetype, randomUUID } from "../lib/misc";
 import { FflateZip } from "../lib/zip";
@@ -8,9 +9,19 @@ import { Chapter } from "../main/Chapter";
 import { Options, SaveOptions } from "./options";
 import { AttachmentClass } from "../main/Attachment";
 import { Status } from "../main/main";
-import { chapterTemplt, section } from "./zip";
 import { convertHTMLtoXHTML } from "../lib/dom";
 import { getSectionsObj } from "./misc";
+
+import chapterHtml from "./chapter.html.j2";
+import indexHtml from "./index.html.j2";
+import sectionHtml from "./section.html.j2";
+import { Environment, Template } from "nunjucks";
+
+const env = new Environment(undefined, { autoescape: false });
+
+const section = new Template(sectionHtml, env, undefined, true);
+const chapterTemplt = new Template(chapterHtml, env, undefined, true);
+const index = new Template(indexHtml, env, undefined, true);
 
 function getDateString() {
   const date = new Date();
@@ -28,6 +39,7 @@ const content_opf = `<?xml version="1.0" encoding="utf-8"?>
   <metadata xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:opf="http://www.idpf.org/2007/opf">
     <dc:identifier id="BookId" opf:scheme="UUID">urn:uuid:${uuid}</dc:identifier>
     <meta content="${_GM_info.script.version}" name="novel-downloader version"/>
+    <meta content="https://github.com/yingziwu/novel-downloader" name="generator"/>
     <dc:date opf:event="creation">${getDateString()}</dc:date>
     <dc:date opf:event="modification" xmlns:opf="http://www.idpf.org/2007/opf">${getDateString()}</dc:date>
   </metadata>
@@ -37,11 +49,13 @@ const content_opf = `<?xml version="1.0" encoding="utf-8"?>
     <item id="style.css" href="style.css" media-type="text/css"/>
     <item id="cover.xhtml" href="cover.xhtml" media-type="application/xhtml+xml"/>
     <item id="info.xhtml" href="info.xhtml" media-type="application/xhtml+xml"/>
+    <item id="message.xhtml" href="message.xhtml" media-type="application/xhtml+xml"/>
     <item id="TOC.xhtml" href="TOC.xhtml" media-type="application/xhtml+xml"/>
   </manifest>
   <spine toc="ncx">
     <itemref idref="cover.xhtml"/>
     <itemref idref="info.xhtml"/>
+    <itemref idref="message.xhtml"/>
     <itemref idref="TOC.xhtml"/>
   </spine>
   <guide>
@@ -123,6 +137,35 @@ const getInfoXhtml = (
 </body>
 </html>`;
 
+const getMessageXhtml = (
+  title: string,
+  url: string,
+  introductionHTML: HTMLElement | null
+) => `<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>信息页</title>
+  <link href="style.css" type="text/css" rel="stylesheet"/>
+</head>
+
+<body>
+  <div class="main">
+    <div><strong>制作信息</strong></div>
+    <hr/>
+    <div>题名：${title}</div>
+    <div>原始地址：<a href="${url}">${url}</a></div>
+    ${
+      introductionHTML
+        ? `<hr/><span>简介：</span>${introductionHTML.outerHTML}`
+        : ""
+    }
+    </div>
+</body>
+</html>`;
+
 export class EPUB extends Options {
   private contentOpf = new DOMParser().parseFromString(
     content_opf,
@@ -199,6 +242,7 @@ export class EPUB extends Options {
       this.chapters
     );
     const chapterHtmlFileName = `No${chapterNumberToSave}Chapter${suffix}.xhtml`;
+    chapter.chapterHtmlFileName = chapterHtmlFileName;
 
     log.debug(`[save-epub]保存章HTML文件：${chapterName}`);
     const chapterHTMLBlob = this.genChapterHtmlFile(chapter);
@@ -261,6 +305,8 @@ export class EPUB extends Options {
     await saveStubChapters(this.chapters);
     log.debug("[save-epub]保存目录文件");
     await saveToC();
+
+    await saveZipFiles();
 
     await this.epubZip.generateAsync();
 
@@ -347,6 +393,17 @@ export class EPUB extends Options {
       await self.epubZip.file(
         "OEBPS/info.xhtml",
         new Blob([getInfoXhtml(self.book.bookname, self.book.author)])
+      );
+
+      await self.epubZip.file(
+        "OEBPS/message.xhtml",
+        new Blob([
+          getMessageXhtml(
+            self.book.bookname,
+            self.book.bookUrl,
+            self.book.introductionHTML
+          ),
+        ])
       );
     }
     async function saveStubChapters(chapters: Chapter[]) {
@@ -545,6 +602,86 @@ export class EPUB extends Options {
           {
             type: "application/xhtml+xml",
           }
+        );
+      }
+    }
+    async function saveZipFiles() {
+      log.debug("[save-zip]保存元数据文本");
+      const metaDateText = self.genMetaDateTxt(self.book);
+      await self.epubZip.file(
+        "OEBPS/info.txt",
+        new Blob([metaDateText], { type: "text/plain;charset=utf-8" })
+      );
+
+      log.debug("[save-zip]保存web样式");
+      await self.epubZip.file(
+        "OEBPS/web.css",
+        new Blob([webStyleText], { type: "text/css;charset=utf-8" })
+      );
+      modifyTocStyleText();
+      await self.epubZip.file(
+        "OEBPS/toc.css",
+        new Blob([self.tocStyleText], { type: "text/css;charset=utf-8" })
+      );
+
+      log.debug("[save-zip]开始生成并保存 index.html");
+      await saveIndex();
+
+      log.debug("[save-zip]开始保存 Meta Data Json");
+      await saveMetaJson();
+
+      function modifyTocStyleText() {
+        if (self.book.additionalMetadate.cover) {
+          self.tocStyleText = `${self.tocStyleText}
+    .info {
+      display: grid;
+      grid-template-columns: 30% 70%;
+    }`;
+        } else {
+          self.tocStyleText = `${self.tocStyleText}
+    .info {
+      display: grid;
+      grid-template-columns: 100%;
+    }`;
+        }
+      }
+      async function saveIndex() {
+        log.debug("[save]对 chapters 排序");
+        self.chapters.sort(self.chapterSort);
+
+        const sectionsListObj = getSectionsObj(self.chapters, self.chapterSort);
+
+        const _indexHtmlText = index.render({
+          creationDate: Date.now(),
+          bookname: self.book.bookname,
+          author: self.book.author,
+          cover: self.book.additionalMetadate.cover,
+          introductionHTML: self.book.introductionHTML?.outerHTML,
+          bookUrl: self.book.bookUrl,
+          sectionsObj: Object.values(sectionsListObj),
+          Status,
+        });
+        const indexHtmlText = convertHTMLtoXHTML(_indexHtmlText);
+        await self.epubZip.file(
+          "OEBPS/index.xhtml",
+          new Blob([indexHtmlText.replaceAll("data-src-address", "src")], {
+            type: "application/xhtml+xml; charset=UTF-8",
+          })
+        );
+      }
+      async function saveMetaJson() {
+        await self.epubZip.file(
+          "OEBPS/book.json",
+          new Blob([JSON.stringify(self.book)], {
+            type: "application/json; charset=utf-8",
+          })
+        );
+
+        await self.epubZip.file(
+          "OEBPS/chapters.json",
+          new Blob([JSON.stringify(self.book.chapters)], {
+            type: "application/json; charset=utf-8",
+          })
         );
       }
     }
