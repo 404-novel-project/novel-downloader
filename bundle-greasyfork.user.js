@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.8.1.516
+// @version        4.8.2.517
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -6105,16 +6105,18 @@ var external_log_ = __webpack_require__("loglevel");
 var external_log_default = /*#__PURE__*/__webpack_require__.n(external_log_);
 // EXTERNAL MODULE: ./src/main/main.ts
 var main = __webpack_require__("./src/main/main.ts");
+// EXTERNAL MODULE: ./node_modules/file-saver/dist/FileSaver.min.js
+var FileSaver_min = __webpack_require__("./node_modules/file-saver/dist/FileSaver.min.js");
 // EXTERNAL MODULE: ./src/setting.ts
 var setting = __webpack_require__("./src/setting.ts");
 // EXTERNAL MODULE: ./src/save/sgc-toc.css
 var sgc_toc = __webpack_require__("./src/save/sgc-toc.css");
+// EXTERNAL MODULE: ./src/save/web.css
+var web = __webpack_require__("./src/save/web.css");
 // EXTERNAL MODULE: ./src/lib/GM.ts
 var GM = __webpack_require__("./src/lib/GM.ts");
 ;// CONCATENATED MODULE: external "fflate"
 const external_fflate_namespaceObject = fflate;
-// EXTERNAL MODULE: ./node_modules/file-saver/dist/FileSaver.min.js
-var FileSaver_min = __webpack_require__("./node_modules/file-saver/dist/FileSaver.min.js");
 // EXTERNAL MODULE: ./node_modules/streamsaver/StreamSaver.js
 var StreamSaver = __webpack_require__("./node_modules/streamsaver/StreamSaver.js");
 var StreamSaver_default = /*#__PURE__*/__webpack_require__.n(StreamSaver);
@@ -6331,8 +6333,6 @@ class Options extends Common {
     }
 }
 
-// EXTERNAL MODULE: ./src/save/web.css
-var web = __webpack_require__("./src/save/web.css");
 // EXTERNAL MODULE: ./src/save/misc.ts
 var save_misc = __webpack_require__("./src/save/misc.ts");
 ;// CONCATENATED MODULE: ./src/save/chapter.html.j2
@@ -6352,7 +6352,9 @@ var section_html_code = "<!DOCTYPE html> <html> <head> <meta charset=\"UTF-8\"/>
 /* harmony default export */ const section_html = (section_html_code);
 ;// CONCATENATED MODULE: external "nunjucks"
 const external_nunjucks_namespaceObject = nunjucks;
-;// CONCATENATED MODULE: ./src/save/zip.ts
+;// CONCATENATED MODULE: ./src/save/epub.ts
+
+
 
 
 
@@ -6369,206 +6371,6 @@ const env = new external_nunjucks_namespaceObject.Environment(undefined, { autoe
 const section = new external_nunjucks_namespaceObject.Template(section_html, env, undefined, true);
 const chapterTemplt = new external_nunjucks_namespaceObject.Template(chapter_html, env, undefined, true);
 const index = new external_nunjucks_namespaceObject.Template(index_html, env, undefined, true);
-class ZIP extends Options {
-    book;
-    chapters;
-    savedZip;
-    constructor(book, streamZip, options) {
-        super();
-        this.book = book;
-        this.chapters = this.book.chapters;
-        const zipFilename = `[${this.book.author}]${this.book.bookname}.zip`;
-        this.savedZip = new FflateZip(zipFilename, streamZip);
-        if (options) {
-            Object.assign(this, options);
-        }
-    }
-    async saveLog() {
-        await this.savedZip.file("debug.log", new Blob([log/* logText */.KC], { type: "text/plain; charset=UTF-8" }));
-    }
-    async saveZip() {
-        const self = this;
-        external_log_default().debug("[save]保存元数据文本");
-        const metaDateText = this.genMetaDateTxt(this.book);
-        await this.savedZip.file("info.txt", new Blob([metaDateText], { type: "text/plain;charset=utf-8" }));
-        external_log_default().debug("[save]保存样式");
-        await this.savedZip.file("style.css", new Blob([this.mainStyleText], { type: "text/css;charset=utf-8" }));
-        await this.savedZip.file("web.css", new Blob([web/* default */.Z], { type: "text/css;charset=utf-8" }));
-        modifyTocStyleText();
-        await this.savedZip.file("toc.css", new Blob([this.tocStyleText], { type: "text/css;charset=utf-8" }));
-        if (this.book.additionalMetadate.cover) {
-            external_log_default().debug("[save]保存封面");
-            await this.addAttachmentToZip(this.book.additionalMetadate.cover, this.savedZip);
-        }
-        if (this.book.additionalMetadate.attachments) {
-            external_log_default().debug("[save]保存书籍附件");
-            for (const bookAttachment of this.book.additionalMetadate.attachments) {
-                await this.addAttachmentToZip(bookAttachment, this.savedZip);
-            }
-        }
-        external_log_default().debug("[save]开始生成并保存卷文件");
-        await saveSections();
-        external_log_default().debug("[save]保存已完成章节文件");
-        await saveFinishedChapters(this.chapters);
-        external_log_default().debug("[save]开始生成并保存 index.html");
-        await saveToC();
-        external_log_default().debug("[save]开始保存 Meta Data Json");
-        await saveMetaJson();
-        external_log_default().debug("[save]保存仅标题章节文件");
-        await saveStubChapters(this.chapters);
-        external_log_default().info("[save]开始保存ZIP文件");
-        if (setting/* enableDebug.value */.Cy.value) {
-            await self.saveLog();
-        }
-        await this.savedZip.generateAsync();
-        async function saveToC() {
-            external_log_default().debug("[save]对 chapters 排序");
-            self.chapters.sort(self.chapterSort);
-            const sectionsListObj = (0,save_misc/* getSectionsObj */.f)(self.chapters, self.chapterSort);
-            const _indexHtmlText = index.render({
-                creationDate: Date.now(),
-                bookname: self.book.bookname,
-                author: self.book.author,
-                cover: self.book.additionalMetadate.cover,
-                introductionHTML: self.book.introductionHTML?.outerHTML,
-                bookUrl: self.book.bookUrl,
-                sectionsObj: Object.values(sectionsListObj),
-                Status: main/* Status */.qb,
-            });
-            const indexHtmlText = (0,dom/* convertHTMLtoXHTML */.fI)(_indexHtmlText);
-            await self.savedZip.file("index.xhtml", new Blob([indexHtmlText.replaceAll("data-src-address", "src")], {
-                type: "application/xhtml+xml; charset=UTF-8",
-            }));
-        }
-        function modifyTocStyleText() {
-            if (self.book.additionalMetadate.cover) {
-                self.tocStyleText = `${self.tocStyleText}
-  .info {
-    display: grid;
-    grid-template-columns: 30% 70%;
-  }`;
-            }
-            else {
-                self.tocStyleText = `${self.tocStyleText}
-  .info {
-    display: grid;
-    grid-template-columns: 100%;
-  }`;
-            }
-        }
-        function genSectionHtmlFile(chapterObj) {
-            const _htmlText = section.render({ sectionName: chapterObj.sectionName });
-            const doc = self.addWebCSS(_htmlText);
-            const htmlText = (0,dom/* convertHTMLtoXHTML */.fI)(doc);
-            return new Blob([htmlText.replaceAll("data-src-address", "src")], {
-                type: "application/xhtml+xml; charset=UTF-8",
-            });
-        }
-        async function saveMetaJson() {
-            await self.savedZip.file("book.json", new Blob([JSON.stringify(self.book)], {
-                type: "application/json; charset=utf-8",
-            }));
-            await self.savedZip.file("chapters.json", new Blob([JSON.stringify(self.book.chapters)], {
-                type: "application/json; charset=utf-8",
-            }));
-        }
-        async function saveSections() {
-            external_log_default().debug("[save]对 chapters 排序");
-            self.chapters.sort(self.chapterSort);
-            const _sections = [];
-            for (const chapter of self.chapters) {
-                const chapterNumberToSave = self.getChapterNumberToSave(chapter, self.chapters);
-                const sectionHtmlFileName = `No${chapterNumberToSave}Section.xhtml`;
-                if (chapter.sectionName) {
-                    if (!_sections.includes(chapter.sectionName)) {
-                        _sections.push(chapter.sectionName);
-                        external_log_default().debug(`[save]保存卷HTML文件：${chapter.sectionName}`);
-                        const sectionHTMLBlob = genSectionHtmlFile(chapter);
-                        await self.savedZip.file(sectionHtmlFileName, sectionHTMLBlob);
-                    }
-                }
-            }
-        }
-        async function saveFinishedChapters(chapters) {
-            const cs = chapters.filter((c) => c.status === main/* Status.finished */.qb.finished);
-            for (const c of cs) {
-                await self.addChapter(c);
-            }
-        }
-        async function saveStubChapters(chapters) {
-            chapters = chapters.filter((c) => c.status !== main/* Status.saved */.qb.saved);
-            for (const c of chapters) {
-                if (c.status === main/* Status.finished */.qb.finished) {
-                    await self.addChapter(c);
-                }
-                else {
-                    await self.addChapter(c, "Stub");
-                }
-            }
-        }
-    }
-    async addChapter(chapter, suffix = "") {
-        const chapterName = this.getchapterName(chapter);
-        const chapterNumberToSave = this.getChapterNumberToSave(chapter, this.chapters);
-        const chapterHtmlFileName = `No${chapterNumberToSave}Chapter${suffix}.xhtml`;
-        external_log_default().debug(`[save]保存章HTML文件：${chapterName}`);
-        const chapterHTMLBlob = this.genChapterHtmlFile(chapter);
-        await this.savedZip.file(chapterHtmlFileName, chapterHTMLBlob);
-        chapter.chapterHtmlFileName = chapterHtmlFileName;
-        if (chapter.contentImages && chapter.contentImages.length !== 0) {
-            external_log_default().debug(`[save]保存章节附件：${chapterName}`);
-            for (const attachment of chapter.contentImages) {
-                await this.addAttachmentToZip(attachment, this.savedZip);
-            }
-        }
-    }
-    genChapterHtmlFile(chapterObj) {
-        const _htmlText = chapterTemplt.render({
-            chapterUrl: chapterObj.chapterUrl,
-            chapterName: chapterObj.chapterName,
-            outerHTML: chapterObj.contentHTML?.outerHTML ?? "",
-        });
-        const doc = this.addWebCSS(_htmlText);
-        const htmlText = (0,dom/* convertHTMLtoXHTML */.fI)(doc);
-        return new Blob([htmlText.replaceAll("data-src-address", "src")], {
-            type: "application/xhtml+xml; charset=UTF-8",
-        });
-    }
-    addWebCSS(input) {
-        const doc = new DOMParser().parseFromString(input, "text/html");
-        const link = document.createElement("link");
-        link.href = "web.css";
-        link.type = "text/css";
-        link.rel = "stylesheet";
-        doc.head.appendChild(link);
-        return doc;
-    }
-    async addAttachmentToZip(attachment, zip) {
-        if (attachment.status === main/* Status.finished */.qb.finished && attachment.imageBlob) {
-            external_log_default().debug(`[save]添加附件，文件名：${attachment.name}，对象`, attachment.imageBlob);
-            await zip.file(attachment.name, attachment.imageBlob);
-        }
-        else if (attachment.status === main/* Status.saved */.qb.saved) {
-            external_log_default().debug(`[save]附件${attachment.name}已添加`);
-        }
-        else {
-            external_log_default().warn(`[save]添加附件${attachment.name}失败，该附件未完成或内容为空。`);
-            external_log_default().warn(attachment);
-        }
-    }
-}
-
-;// CONCATENATED MODULE: ./src/save/epub.ts
-
-
-
-
-
-
-
-
-
-
 function getDateString() {
     const date = new Date();
     const year = date.getFullYear();
@@ -6584,6 +6386,7 @@ const content_opf = `<?xml version="1.0" encoding="utf-8"?>
   <metadata xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:opf="http://www.idpf.org/2007/opf">
     <dc:identifier id="BookId" opf:scheme="UUID">urn:uuid:${uuid}</dc:identifier>
     <meta content="${GM/* _GM_info.script.version */._p.script.version}" name="novel-downloader version"/>
+    <meta content="https://github.com/yingziwu/novel-downloader" name="generator"/>
     <dc:date opf:event="creation">${getDateString()}</dc:date>
     <dc:date opf:event="modification" xmlns:opf="http://www.idpf.org/2007/opf">${getDateString()}</dc:date>
   </metadata>
@@ -6593,11 +6396,13 @@ const content_opf = `<?xml version="1.0" encoding="utf-8"?>
     <item id="style.css" href="style.css" media-type="text/css"/>
     <item id="cover.xhtml" href="cover.xhtml" media-type="application/xhtml+xml"/>
     <item id="info.xhtml" href="info.xhtml" media-type="application/xhtml+xml"/>
+    <item id="message.xhtml" href="message.xhtml" media-type="application/xhtml+xml"/>
     <item id="TOC.xhtml" href="TOC.xhtml" media-type="application/xhtml+xml"/>
   </manifest>
   <spine toc="ncx">
     <itemref idref="cover.xhtml"/>
     <itemref idref="info.xhtml"/>
+    <itemref idref="message.xhtml"/>
     <itemref idref="TOC.xhtml"/>
   </spine>
   <guide>
@@ -6669,6 +6474,28 @@ const getInfoXhtml = (title, author) => `<?xml version="1.0" encoding="utf-8"?>
   </div>
 </body>
 </html>`;
+const getMessageXhtml = (title, url, introductionHTML) => `<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>信息页</title>
+  <link href="style.css" type="text/css" rel="stylesheet"/>
+</head>
+
+<body>
+  <div class="main">
+    <div><strong>制作信息</strong></div>
+    <hr/>
+    <div>题名：${title}</div>
+    <div>原始地址：<a href="${url}">${url}</a></div>
+    ${introductionHTML
+    ? `<hr/><span>简介：</span>${introductionHTML.outerHTML}`
+    : ""}
+    </div>
+</body>
+</html>`;
 class EPUB extends Options {
     contentOpf = new DOMParser().parseFromString(content_opf, "application/xml");
     metadata = this.contentOpf.querySelector("metadata");
@@ -6717,6 +6544,7 @@ class EPUB extends Options {
         const chapterName = this.getchapterName(chapter);
         const chapterNumberToSave = this.getChapterNumberToSave(chapter, this.chapters);
         const chapterHtmlFileName = `No${chapterNumberToSave}Chapter${suffix}.xhtml`;
+        chapter.chapterHtmlFileName = chapterHtmlFileName;
         external_log_default().debug(`[save-epub]保存章HTML文件：${chapterName}`);
         const chapterHTMLBlob = this.genChapterHtmlFile(chapter);
         await this.epubZip.file(`OEBPS/${chapterHtmlFileName}`, chapterHTMLBlob);
@@ -6770,6 +6598,7 @@ class EPUB extends Options {
         await saveStubChapters(this.chapters);
         external_log_default().debug("[save-epub]保存目录文件");
         await saveToC();
+        await saveZipFiles();
         await this.epubZip.generateAsync();
         async function saveEpubMimetype() {
             await self.epubZip.file("mimetype", new Blob(["application/epub+zip"]), true);
@@ -6829,6 +6658,9 @@ class EPUB extends Options {
                 }
             }
             await self.epubZip.file("OEBPS/info.xhtml", new Blob([getInfoXhtml(self.book.bookname, self.book.author)]));
+            await self.epubZip.file("OEBPS/message.xhtml", new Blob([
+                getMessageXhtml(self.book.bookname, self.book.bookUrl, self.book.introductionHTML),
+            ]));
         }
         async function saveStubChapters(chapters) {
             chapters = chapters.filter((c) => c.status !== main/* Status.saved */.qb.saved);
@@ -6963,6 +6795,62 @@ class EPUB extends Options {
                 });
             }
         }
+        async function saveZipFiles() {
+            external_log_default().debug("[save-zip]保存元数据文本");
+            const metaDateText = self.genMetaDateTxt(self.book);
+            await self.epubZip.file("OEBPS/info.txt", new Blob([metaDateText], { type: "text/plain;charset=utf-8" }));
+            external_log_default().debug("[save-zip]保存web样式");
+            await self.epubZip.file("OEBPS/web.css", new Blob([web/* default */.Z], { type: "text/css;charset=utf-8" }));
+            modifyTocStyleText();
+            await self.epubZip.file("OEBPS/toc.css", new Blob([self.tocStyleText], { type: "text/css;charset=utf-8" }));
+            external_log_default().debug("[save-zip]开始生成并保存 index.html");
+            await saveIndex();
+            external_log_default().debug("[save-zip]开始保存 Meta Data Json");
+            await saveMetaJson();
+            function modifyTocStyleText() {
+                if (self.book.additionalMetadate.cover) {
+                    self.tocStyleText = `${self.tocStyleText}
+    .info {
+      display: grid;
+      grid-template-columns: 30% 70%;
+    }`;
+                }
+                else {
+                    self.tocStyleText = `${self.tocStyleText}
+    .info {
+      display: grid;
+      grid-template-columns: 100%;
+    }`;
+                }
+            }
+            async function saveIndex() {
+                external_log_default().debug("[save]对 chapters 排序");
+                self.chapters.sort(self.chapterSort);
+                const sectionsListObj = (0,save_misc/* getSectionsObj */.f)(self.chapters, self.chapterSort);
+                const _indexHtmlText = index.render({
+                    creationDate: Date.now(),
+                    bookname: self.book.bookname,
+                    author: self.book.author,
+                    cover: self.book.additionalMetadate.cover,
+                    introductionHTML: self.book.introductionHTML?.outerHTML,
+                    bookUrl: self.book.bookUrl,
+                    sectionsObj: Object.values(sectionsListObj),
+                    Status: main/* Status */.qb,
+                });
+                const indexHtmlText = (0,dom/* convertHTMLtoXHTML */.fI)(_indexHtmlText);
+                await self.epubZip.file("OEBPS/index.xhtml", new Blob([indexHtmlText.replaceAll("data-src-address", "src")], {
+                    type: "application/xhtml+xml; charset=UTF-8",
+                }));
+            }
+            async function saveMetaJson() {
+                await self.epubZip.file("OEBPS/book.json", new Blob([JSON.stringify(self.book)], {
+                    type: "application/json; charset=utf-8",
+                }));
+                await self.epubZip.file("OEBPS/chapters.json", new Blob([JSON.stringify(self.book.chapters)], {
+                    type: "application/json; charset=utf-8",
+                }));
+            }
+        }
     }
 }
 
@@ -7016,9 +6904,9 @@ class TXT extends Options {
 
 
 
+
 class SaveBook {
     txt;
-    zip;
     epub;
     constructor(book, streamZip, options) {
         const _options = {};
@@ -7029,11 +6917,9 @@ class SaveBook {
             Object.assign(_options, book.saveOptions);
         }
         this.txt = new TXT(book, _options);
-        this.zip = new ZIP(book, streamZip, _options);
         this.epub = new EPUB(book, streamZip, _options);
     }
     async addChapter(chapter) {
-        await this.zip.addChapter(chapter);
         await this.epub.addChapter(chapter);
         if (!setting/* enableDebug.value */.Cy.value) {
             chapter.contentRaw = null;
@@ -7053,11 +6939,18 @@ class SaveBook {
     saveTxt() {
         this.txt.saveTxt();
     }
-    async saveZip() {
-        await this.zip.saveZip();
-    }
     async saveEpub() {
         await this.epub.saveEpub();
+    }
+    saveLog() {
+        (0,FileSaver_min.saveAs)(new Blob([log/* logText */.KC], { type: "text/plain; charset=UTF-8" }), "debug.log");
+    }
+    async save() {
+        this.saveTxt();
+        if (setting/* enableDebug.value */.Cy.value) {
+            this.saveLog();
+        }
+        await this.saveEpub();
     }
 }
 
@@ -7235,9 +7128,7 @@ class BaseRuleClass {
         }
         async function save(saveObj) {
             external_log_default().debug("[run]开始保存文件");
-            saveObj.saveTxt();
-            await saveObj.saveZip();
-            await saveObj.saveEpub();
+            await saveObj.save();
         }
     }
     async preHook() {
@@ -9131,7 +9022,7 @@ var external_log_default = /*#__PURE__*/__webpack_require__.n(external_log_);
 var Chapter = __webpack_require__("./src/main/Chapter.ts");
 // EXTERNAL MODULE: ./src/main/Book.ts + 1 modules
 var Book = __webpack_require__("./src/main/Book.ts");
-// EXTERNAL MODULE: ./src/rules.ts + 12 modules
+// EXTERNAL MODULE: ./src/rules.ts + 11 modules
 var rules = __webpack_require__("./src/rules.ts");
 ;// CONCATENATED MODULE: ./src/rules/lib/haitangtxtImageDecode.ts
 function replaceHaitangtxtImage(inputText) {
@@ -11829,7 +11720,7 @@ var Attachment = __webpack_require__("./src/main/Attachment.ts");
 var Chapter = __webpack_require__("./src/main/Chapter.ts");
 // EXTERNAL MODULE: ./src/main/Book.ts + 1 modules
 var Book = __webpack_require__("./src/main/Book.ts");
-// EXTERNAL MODULE: ./src/rules.ts + 12 modules
+// EXTERNAL MODULE: ./src/rules.ts + 11 modules
 var rules = __webpack_require__("./src/rules.ts");
 // EXTERNAL MODULE: ./src/setting.ts
 var setting = __webpack_require__("./src/setting.ts");
