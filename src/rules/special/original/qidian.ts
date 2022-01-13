@@ -215,7 +215,7 @@ export class Qidian extends BaseRuleClass {
         doc = await ggetHtmlDOM(chapterUrl, charset);
         if (
           !doc.querySelector(".read-content") ||
-          doc.querySelector(".read-content")?.childElementCount === 0
+          (doc.querySelector(".read-content")?.childElementCount ?? 0) < 10
         ) {
           doc = await getFrameContent(chapterUrl);
           if (doc) {
