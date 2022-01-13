@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        小说下载器测试脚本
-// @version     4.8.2.522
+// @version     4.8.2.523
 // @author      bgme
 // @description 小说下载器测试脚本
 // @match       *://www.ciweimao.com/chapter-list/*
@@ -147,7 +147,9 @@
 // @match       *://www.pixiv.net/novel/series/*
 // @match       *://kakuyomu.jp/works/*
 // @match       *://ncode.syosetu.com/*/
+// @match       *://ncode.syosetu.com/*
 // @match       *://novel18.syosetu.com/*/
+// @match       *://novel18.syosetu.com/*
 // @match       *://syosetu.org/novel/*/
 // @match       *://houhuayuan.xyz/*
 // @match       *://zhaoze.art/*/
@@ -213,6 +215,8 @@
 // @exclude     *://www.25zw.com/goodnew/
 // @exclude     *://www.myrics.com/novels/*/chapters/*
 // @exclude     *://dijiubook.net/*_*/*.html
+// @exclude     *://ncode.syosetu.com/*/*/
+// @exclude     *://novel18.syosetu.com/*/*/
 // @grant       unsafeWindow
 // @grant       GM_openInTab
 // @grant       window.close

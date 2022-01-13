@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.8.2.522
+// @version        4.8.2.523
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -148,7 +148,9 @@
 // @match          *://www.pixiv.net/novel/series/*
 // @match          *://kakuyomu.jp/works/*
 // @match          *://ncode.syosetu.com/*/
+// @match          *://ncode.syosetu.com/*
 // @match          *://novel18.syosetu.com/*/
+// @match          *://novel18.syosetu.com/*
 // @match          *://syosetu.org/novel/*/
 // @match          *://houhuayuan.xyz/*
 // @match          *://zhaoze.art/*/
@@ -223,6 +225,8 @@
 // @exclude        *://www.25zw.com/goodnew/
 // @exclude        *://www.myrics.com/novels/*/chapters/*
 // @exclude        *://dijiubook.net/*_*/*.html
+// @exclude        *://ncode.syosetu.com/*/*/
+// @exclude        *://novel18.syosetu.com/*/*/
 // @grant          unsafeWindow
 // @grant          GM_info
 // @grant          GM_xmlhttpRequest
@@ -8293,6 +8297,7 @@ const syosetu = () => {
         },
         contentPatch: (dom) => dom,
         nsfw: getNsfw(),
+        needLogin: getNsfw(),
     });
 };
 const syosetuOrg = () => {
@@ -19028,20 +19033,6 @@ function getUI() {
                 type: "jump",
                 jumpFunction: () => (document.location.host = "www.lusetxt.com"),
             });
-        }
-        case "ncode.syosetu.com":
-        case "novel18.syosetu.com": {
-            return () => {
-                const num = document.location.pathname
-                    .split("/")
-                    .filter((s) => s.trim() !== "").length;
-                if (num === 1) {
-                    return defaultObject;
-                }
-                else {
-                    return errorObject;
-                }
-            };
         }
         case "manhua.dmzj.com":
         case "www.dmzj.com": {
