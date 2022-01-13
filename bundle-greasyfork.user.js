@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.8.2.519
+// @version        4.8.2.520
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -6487,7 +6487,7 @@ const getInfoXhtml = (title, author) => `<?xml version="1.0" encoding="utf-8"?>
   </div>
 </body>
 </html>`;
-const getMessageXhtml = (title, url, introductionHTML) => `<?xml version="1.0" encoding="utf-8"?>
+const getMessageXhtml = (book) => `<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
   "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 
@@ -6501,12 +6501,14 @@ const getMessageXhtml = (title, url, introductionHTML) => `<?xml version="1.0" e
   <div class="main">
     <div><strong>制作信息</strong></div>
     <hr/>
-    <div>题名：${title}</div>
-    <div>原始地址：<a href="${url}">${url}</a></div>
-    ${introductionHTML
-    ? `<hr/><span>简介：</span>${introductionHTML.outerHTML}`
+    <div>题名：${book.bookname}</div>
+    <div>作者：${book.author}</div>
+    <div>原始地址：<a href="${book.bookUrl}">${book.bookUrl}</a></div>
+    <div>本文件由<a href="https://github.com/yingziwu/novel-downloader">小说下载器</a>生成。</div>
+    ${book.introductionHTML
+    ? `<hr/><span>简介：</span>${book.introductionHTML.outerHTML}`
     : ""}
-    </div>
+  </div>
 </body>
 </html>`;
 class EPUB extends Options {
@@ -6671,9 +6673,7 @@ class EPUB extends Options {
                 }
             }
             await self.epubZip.file("OEBPS/info.xhtml", new Blob([getInfoXhtml(self.book.bookname, self.book.author)]));
-            await self.epubZip.file("OEBPS/message.xhtml", new Blob([
-                getMessageXhtml(self.book.bookname, self.book.bookUrl, self.book.introductionHTML),
-            ]));
+            await self.epubZip.file("OEBPS/message.xhtml", new Blob([(0,dom/* convertHTMLtoXHTML */.fI)(getMessageXhtml(self.book))]));
         }
         async function saveStubChapters(chapters) {
             chapters = chapters.filter((c) => c.status !== main/* Status.saved */.qb.saved);
@@ -7903,6 +7903,10 @@ const fantasybooks = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleCl
             .map((span) => {
             const div = document.createElement("div");
             div.innerHTML = span.innerHTML;
+            Array.from(div.querySelectorAll("p"))
+                .filter((node) => node.childElementCount === 1 &&
+                node.children[0].nodeName === "BR")
+                .forEach((pbrp) => pbrp.remove());
             span.replaceWith(div);
         });
         return content;
