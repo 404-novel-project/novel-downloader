@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.8.2.523
+// @version        4.8.2.524
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -13802,7 +13802,7 @@ class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
             if (isVIP) {
                 doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_8__/* .ggetHtmlDOM */ .Fz)(chapterUrl, charset);
                 if (!doc.querySelector(".read-content") ||
-                    doc.querySelector(".read-content")?.childElementCount === 0) {
+                    (doc.querySelector(".read-content")?.childElementCount ?? 0) < 10) {
                     doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_8__/* .getFrameContent */ .jt)(chapterUrl);
                     if (doc) {
                         doc = new DOMParser().parseFromString(doc.documentElement.outerHTML, "text/html");
