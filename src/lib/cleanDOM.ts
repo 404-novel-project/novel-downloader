@@ -857,7 +857,7 @@ export async function cleanDOM(
       child.replaceWith(convertBr(child as HTMLElement))
     );
 
-    removeBlankParagraphElement(dom);
+    // removeBlankParagraphElement(dom);
 
     text = text.trim();
     return {
