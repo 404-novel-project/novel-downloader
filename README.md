@@ -16,6 +16,15 @@
 
 存档过程中将会搜集并上报您如下信息：IP地址、User-Agent、Referer、当前书籍详情页URL、当前书籍目录页URL（如果存在）、当前小说下载器脚本版本、当前脚本管理器版本。除上述信息外，不会搜集您任何其他信息。
 
+# 安装
+
+本软件为油猴脚本，需先在浏览器安装脚本管理器（Greasemonkey、Violentmonkey、Tampermonkey），再安装本脚本。具体可参见：[如何安装用户脚本](https://greasyfork.org/zh-CN/help/installing-user-scripts)。
+
+本脚本地址：
+
+- [github版](https://github.com/yingziwu/novel-downloader/raw/gh-pages/bundle.user.js)：启用代码压缩，更新最快。
+- [greasyfork版](https://greasyfork.org/scripts/406070-%E5%B0%8F%E8%AF%B4%E4%B8%8B%E8%BD%BD%E5%99%A8/code/%E5%B0%8F%E8%AF%B4%E4%B8%8B%E8%BD%BD%E5%99%A8.user.js)：无代码压缩，更新可能有延迟。
+
 ## 使用方法
 
 **本脚本执行下载任务时将播放无声音频，以保证脚本后台运行时不被休眠。**
