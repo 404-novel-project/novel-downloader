@@ -383,135 +383,41 @@ export class Gongzicp extends BaseRuleClass {
     isVIP: boolean,
     isPaid: boolean,
     charset: string,
-    options: object
+    options: ChapterOption
   ) {
-    interface ChapterOption {
-      novel_id: number;
-      chapter_id: number;
-    }
-    function cpDecrypt(contentOrig: string) {
-      const setIv = (key: string) => {
-        key = key + parseInt("165455", 14).toString(32);
-        const iv = CryptoJS.enc.Utf8.parse("$h$b3!" + key);
-        return iv;
-      };
-      const setKey = (value: string) => {
-        value = value + parseInt("4d5a6c8", 14).toString(36);
-        const key = CryptoJS.enc.Utf8.parse(value + "A");
-        return key;
-      };
-      interface Cfg {
-        mode: typeof CryptoJS.mode.CBC;
-        padding: typeof CryptoJS.pad.Pkcs7;
-        iv: CryptoJS.lib.WordArray;
-      }
-      const setcfg = (iv: CryptoJS.lib.WordArray): Cfg => {
-        return {
-          mode: CryptoJS.mode.CBC,
-          padding: CryptoJS.pad.Pkcs7,
-          iv,
-        };
-      };
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const encrypt = (
-        value: string,
-        key: CryptoJS.lib.WordArray,
-        cfg: Cfg
-      ) => {
-        if ("string" !== typeof value) {
-          value = JSON.stringify(value);
+    function cpDecrypt(input: string) {
+      class CP {
+        private iv;
+        private key;
+        constructor(iv: string, key: string) {
+          iv += parseInt("165455", 14).toString(32);
+          this.iv = CryptoJS.enc.Utf8.parse("$h$b3!" + iv);
+          key = atob(key) + parseInt("4d5a6c8", 14).toString(36);
+          this.key = CryptoJS.enc.Utf8.parse(key + "A");
         }
-        const xml = CryptoJS.enc.Utf8.parse(value);
-        return CryptoJS.AES.encrypt(xml, key, cfg).toString();
-      };
-      const decrypt = (
-        secrets: string,
-        key: CryptoJS.lib.WordArray,
-        cfg: Cfg
-      ) => {
-        const value = CryptoJS.AES.decrypt(secrets, key, cfg);
-        return CryptoJS.enc.Utf8.stringify(value).toString();
-      };
-
-      interface NUXT {
-        layout: string;
-        data: [
-          {},
-          {
-            cid: number;
+        public encrypt(input: string) {
+          if (typeof input === "string") {
+            const str = JSON.stringify(input);
+            const byte = CryptoJS.enc.Utf8.parse(str);
+            return CryptoJS.AES.encrypt(byte, this.key, {
+              mode: CryptoJS.mode.CBC,
+              padding: CryptoJS.pad.Pkcs7,
+              iv: this.iv,
+            });
           }
-        ];
-        fetch: object;
-        error: null;
-        state: {
-          CpST: {
-            LCngpxaF: string;
-          };
-          config: {
-            timeDifference: string;
-          };
-          keepAlive: {
-            app: {
-              authorMain: undefined;
-              indexMain: boolean;
-              loginMain: boolean;
-              managerMain: undefined;
-              reportMain: undefined;
-              userMain: undefined;
-            };
-            author: {};
-            index: {};
-            report: {};
-            user: {};
-          };
-          user: {
-            author: {};
-            info: {};
-            verify: boolean;
-          };
-        };
-        serverRendered: boolean;
-        routePath: string;
-        config: {
-          _app: {
-            basePath: string;
-            assetsPath: string;
-            cdnURL: null | string;
-          };
-        };
-      }
-      // set __NUXT__
-      // "const __NUXT__=(function(a,b,c,d){return {layout:\"default\",data:[{},{cid:1543527}],fetch:{},error:b,state:{config:{timeDifference:0},CpST:{LCngpxaF:\"_xu0LRrbu$En3*I\"},keepAlive:{app:{authorMain:a,indexMain:c,loginMain:d,userMain:a,reportMain:a,managerMain:a},author:{},user:{},index:{},report:{},manager:{}},user:{info:{},verify:d,author:{}}},serverRendered:c,routePath:\"\\u002Fread-1543527.html\",config:{_app:{basePath:\"\\u002Fv4\\u002F\",assetsPath:\"\\u002Fv4\\u002F_nuxt\\u002F\",cdnURL:b}}}}(void 0,null,true,false));"
-      // eslint-disable-next-line prefer-const
-      let _CP_NUXT: undefined | NUXT;
-      // 暂时禁用eval
-      //   eval(
-      //     (() => {
-      //       const script = document.querySelector("body > script:nth-child(2)");
-      //       if (script) {
-      //         const script_text = script.innerHTML.replace(
-      //           "window.__NUXT__",
-      //           "_CP_NUXT"
-      //         );
-      //         return script_text;
-      //       }
-      //       return "";
-      //     })()
-      //   );
-
-      let LCngpxaFSubstr; // "u0LRrbu$En"
-      if (_CP_NUXT) {
-        LCngpxaFSubstr = _CP_NUXT.state.CpST.LCngpxaF.substr(2, 10);
-      } else {
-        LCngpxaFSubstr = (
-          unsafeWindow as any
-        ).__NUXT__.state.CpST.LCngpxaF.substr(1, 10);
+        }
+        public decrypt(input: string) {
+          const byte = CryptoJS.AES.decrypt(input, this.key, {
+            mode: CryptoJS.mode.CBC,
+            padding: CryptoJS.pad.Pkcs7,
+            iv: this.iv,
+          });
+          return CryptoJS.enc.Utf8.stringify(byte).toString();
+        }
       }
 
-      const ivG = setIv("iGzsYn");
-      const keyG = setKey(LCngpxaFSubstr);
-      const cfgG = setcfg(ivG);
-      const content = decrypt(contentOrig, keyG, cfgG);
+      const cp = new CP("iGzsYn", "dTBMUnJidSRFbg==");
+      const content = cp.decrypt(input);
       return content;
     }
     interface CpChapterInfo {
@@ -552,7 +458,7 @@ export class Gongzicp extends BaseRuleClass {
       if (document.location.pathname.includes("novel")) {
         (
           document.querySelector(
-            ".chapter-list > .chapter > a"
+            ".chapter-list .chapter a"
           ) as HTMLAnchorElement
         ).click();
       }
@@ -595,13 +501,12 @@ export class Gongzicp extends BaseRuleClass {
     }
 
     async function getChapter(): Promise<ChapterParseObject> {
-      const nid = (options as ChapterOption).novel_id;
-      const cid = (options as ChapterOption).chapter_id;
+      const cid = options.chapter_id;
       const chapterGetInfoBaseUrl =
         "https://webapi.gongzicp.com/novel/chapterGetInfo";
       const chapterGetInfoUrl = new URL(chapterGetInfoBaseUrl);
       chapterGetInfoUrl.searchParams.set("cid", cid.toString());
-      chapterGetInfoUrl.searchParams.set("nid", nid.toString());
+      chapterGetInfoUrl.searchParams.set("server", "0");
 
       let retryTime = 0;
       async function getChapterInfo(url: string): Promise<ChapterInfo> {
@@ -613,7 +518,6 @@ export class Gongzicp extends BaseRuleClass {
           headers: {
             Accept: "application/json, text/plain, */*",
             Client: "pc",
-            Lang: "cn",
             "Content-Type": "application/json;charset=utf-8",
           },
           referrer: chapterUrl,
@@ -770,4 +674,9 @@ export class Gongzicp extends BaseRuleClass {
       return publicChapter();
     }
   }
+}
+
+interface ChapterOption {
+  novel_id: number;
+  chapter_id: number;
 }
