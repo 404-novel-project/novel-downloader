@@ -168,7 +168,13 @@ export async function getHtmlDOM(
   if (!htmlText) {
     throw new Error("Fetch Content failed!");
   }
-  return new DOMParser().parseFromString(htmlText, "text/html");
+  const doc = new DOMParser().parseFromString(htmlText, "text/html");
+  if (!doc.querySelector("base")) {
+    const base = doc.createElement("base");
+    base.href = url;
+    doc.head.appendChild(base);
+  }
+  return doc;
 }
 
 export async function getHtmlDomWithRetry(
@@ -239,7 +245,13 @@ export async function ggetHtmlDOM(
   if (!htmlText) {
     throw new Error("Fetch Content failed!");
   }
-  return new DOMParser().parseFromString(htmlText, "text/html");
+  const doc = new DOMParser().parseFromString(htmlText, "text/html");
+  if (!doc.querySelector("base")) {
+    const base = doc.createElement("base");
+    base.href = url;
+    doc.head.appendChild(base);
+  }
+  return doc;
 }
 
 export async function ggetHtmlDomWithRetry(

@@ -524,6 +524,13 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = Xrzww;
       break;
     }
+    case "colorful-fantasybooks.com": {
+      const { fantasybooks } = await import(
+        "../rules/onePage/colorful-fantasybooks"
+      );
+      ruleClass = fantasybooks();
+      break;
+    }
     default: {
       throw new Error("Not Found Rule!");
     }

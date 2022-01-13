@@ -192,7 +192,8 @@
     "*://www.18kanshu.com/module/novel/info.php?*",
     "*://www.bxwx333.org/txt/*/",
     "*://www.xiaoshuowu.com/html/*/*/",
-    "*://www.xrzww.com/bookdetail/*"
+    "*://www.xrzww.com/bookdetail/*",
+    "*://colorful-fantasybooks.com/module/novel/info.php?*"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",

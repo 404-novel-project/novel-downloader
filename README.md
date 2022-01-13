@@ -159,6 +159,7 @@ EPUB文件请使用相应阅读器阅读。
 |[18看书](https://www.18kanshu.com/)|✅|❎||
 |[笔下文学333](http://www.bxwx333.org/)|✅|❎||
 |[小说屋](http://www.xiaoshuowu.com/)|✅|❎||
+|[缤纷幻想](https://colorful-fantasybooks.com/)|✅|❎||
 
 </details>
 
