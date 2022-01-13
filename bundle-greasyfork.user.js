@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.8.2.524
+// @version        4.8.2.526
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -4327,7 +4327,6 @@ async function cleanDOM(elem, imgMode, options) {
         htmlTrim(dom);
         dom = convertBr(dom);
         Array.from(dom.children).forEach((child) => child.replaceWith(convertBr(child)));
-        removeBlankParagraphElement(dom);
         text = text.trim();
         return {
             dom,
@@ -11366,53 +11365,44 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        function cpDecrypt(contentOrig) {
-            const setIv = (key) => {
-                key = key + parseInt("165455", 14).toString(32);
-                const iv = crypto_js__WEBPACK_IMPORTED_MODULE_0__.enc.Utf8.parse("$h$b3!" + key);
-                return iv;
-            };
-            const setKey = (value) => {
-                value = value + parseInt("4d5a6c8", 14).toString(36);
-                const key = crypto_js__WEBPACK_IMPORTED_MODULE_0__.enc.Utf8.parse(value + "A");
-                return key;
-            };
-            const setcfg = (iv) => {
-                return {
-                    mode: crypto_js__WEBPACK_IMPORTED_MODULE_0__.mode.CBC,
-                    padding: crypto_js__WEBPACK_IMPORTED_MODULE_0__.pad.Pkcs7,
-                    iv,
-                };
-            };
-            const encrypt = (value, key, cfg) => {
-                if ("string" !== typeof value) {
-                    value = JSON.stringify(value);
+        function cpDecrypt(input) {
+            class CP {
+                iv;
+                key;
+                constructor(iv, key) {
+                    iv += parseInt("165455", 14).toString(32);
+                    this.iv = crypto_js__WEBPACK_IMPORTED_MODULE_0__.enc.Utf8.parse("$h$b3!" + iv);
+                    key = atob(key) + parseInt("4d5a6c8", 14).toString(36);
+                    this.key = crypto_js__WEBPACK_IMPORTED_MODULE_0__.enc.Utf8.parse(key + "A");
                 }
-                const xml = crypto_js__WEBPACK_IMPORTED_MODULE_0__.enc.Utf8.parse(value);
-                return crypto_js__WEBPACK_IMPORTED_MODULE_0__.AES.encrypt(xml, key, cfg).toString();
-            };
-            const decrypt = (secrets, key, cfg) => {
-                const value = crypto_js__WEBPACK_IMPORTED_MODULE_0__.AES.decrypt(secrets, key, cfg);
-                return crypto_js__WEBPACK_IMPORTED_MODULE_0__.enc.Utf8.stringify(value).toString();
-            };
-            let _CP_NUXT;
-            let LCngpxaFSubstr;
-            if (_CP_NUXT) {
-                LCngpxaFSubstr = _CP_NUXT.state.CpST.LCngpxaF.substr(2, 10);
+                encrypt(input) {
+                    if (typeof input === "string") {
+                        const str = JSON.stringify(input);
+                        const byte = crypto_js__WEBPACK_IMPORTED_MODULE_0__.enc.Utf8.parse(str);
+                        return crypto_js__WEBPACK_IMPORTED_MODULE_0__.AES.encrypt(byte, this.key, {
+                            mode: crypto_js__WEBPACK_IMPORTED_MODULE_0__.mode.CBC,
+                            padding: crypto_js__WEBPACK_IMPORTED_MODULE_0__.pad.Pkcs7,
+                            iv: this.iv,
+                        });
+                    }
+                }
+                decrypt(input) {
+                    const byte = crypto_js__WEBPACK_IMPORTED_MODULE_0__.AES.decrypt(input, this.key, {
+                        mode: crypto_js__WEBPACK_IMPORTED_MODULE_0__.mode.CBC,
+                        padding: crypto_js__WEBPACK_IMPORTED_MODULE_0__.pad.Pkcs7,
+                        iv: this.iv,
+                    });
+                    return crypto_js__WEBPACK_IMPORTED_MODULE_0__.enc.Utf8.stringify(byte).toString();
+                }
             }
-            else {
-                LCngpxaFSubstr = unsafeWindow.__NUXT__.state.CpST.LCngpxaF.substr(1, 10);
-            }
-            const ivG = setIv("iGzsYn");
-            const keyG = setKey(LCngpxaFSubstr);
-            const cfgG = setcfg(ivG);
-            const content = decrypt(contentOrig, keyG, cfgG);
+            const cp = new CP("iGzsYn", "dTBMUnJidSRFbg==");
+            const content = cp.decrypt(input);
             return content;
         }
         function randomWalker() {
             _log__WEBPACK_IMPORTED_MODULE_2___default().info("[chapter]随机翻页中……");
             if (document.location.pathname.includes("novel")) {
-                document.querySelector(".chapter-list > .chapter > a").click();
+                document.querySelector(".chapter-list .chapter a").click();
             }
             if (document.location.pathname.includes("read")) {
                 const rightMenu = document.querySelector(".right-menu");
@@ -11433,12 +11423,11 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
             }
         }
         async function getChapter() {
-            const nid = options.novel_id;
             const cid = options.chapter_id;
             const chapterGetInfoBaseUrl = "https://webapi.gongzicp.com/novel/chapterGetInfo";
             const chapterGetInfoUrl = new URL(chapterGetInfoBaseUrl);
             chapterGetInfoUrl.searchParams.set("cid", cid.toString());
-            chapterGetInfoUrl.searchParams.set("nid", nid.toString());
+            chapterGetInfoUrl.searchParams.set("server", "0");
             let retryTime = 0;
             async function getChapterInfo(url) {
                 _log__WEBPACK_IMPORTED_MODULE_2___default().debug(`请求地址: ${url}, Referrer: ${chapterUrl}，retryTime：${retryTime}`);
@@ -11447,7 +11436,6 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
                     headers: {
                         Accept: "application/json, text/plain, */*",
                         Client: "pc",
-                        Lang: "cn",
                         "Content-Type": "application/json;charset=utf-8",
                     },
                     referrer: chapterUrl,
