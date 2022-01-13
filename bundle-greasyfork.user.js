@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.8.2.520
+// @version        4.8.2.522
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -5561,6 +5561,8 @@ const originalFactory = (loglevel__WEBPACK_IMPORTED_MODULE_1___default().methodF
         try {
             if (typeof message === "object") {
                 if (message instanceof Error) {
+                    logText += message.name;
+                    logText += message.message;
                     logText += message.stack;
                 }
                 else {
@@ -6033,6 +6035,7 @@ isNull:${!this.contentHTML} 解析成功。`);
                 this.status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status.failed */ .qb.failed;
                 _log__WEBPACK_IMPORTED_MODULE_1___default().error(err);
                 _log__WEBPACK_IMPORTED_MODULE_1___default().trace(err);
+                window.failedCount++;
                 return {
                     chapterName: this.chapterName,
                     contentRaw: null,
@@ -7203,6 +7206,14 @@ class BaseRuleClass {
         progress.vm.totalChapterNumber = chapters.length;
         if (self.concurrencyLimit === 1) {
             for (const chapter of chapters) {
+                if (window.failedCount > 10) {
+                    if (!window.stopFlag.aborted) {
+                        window.stopController.abort();
+                        console.error("连续十章下载失败，放弃本次下载。\n请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/yingziwu/novel-downloader");
+                        alert("连续十章下载失败，放弃本次下载。\n请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/yingziwu/novel-downloader");
+                        (0,log/* saveLogTextToFile */.qS)();
+                    }
+                }
                 if (window.stopFlag.aborted) {
                     throw new main/* ExpectError */.K2("[chapter]收到停止信号，停止继续下载。");
                 }
@@ -7218,6 +7229,14 @@ class BaseRuleClass {
         }
         else {
             const asyncHandle = async (curChapter) => {
+                if (window.failedCount > 10) {
+                    if (!window.stopFlag.aborted) {
+                        window.stopController.abort();
+                        console.error("连续十章下载失败，放弃本次下载。\n请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/yingziwu/novel-downloader");
+                        alert("连续十章下载失败，放弃本次下载。\n请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/yingziwu/novel-downloader");
+                        (0,log/* saveLogTextToFile */.qS)();
+                    }
+                }
                 if (curChapter === undefined) {
                     return null;
                 }
@@ -18295,6 +18314,7 @@ function init() {
     const stopFlag = stopController.signal;
     window.stopController = stopController;
     window.stopFlag = stopFlag;
+    window.failedCount = 0;
 }
 
 // EXTERNAL MODULE: external "log"

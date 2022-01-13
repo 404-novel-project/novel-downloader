@@ -12,6 +12,7 @@ export interface WindowObject extends Window {
     localStorageExpired: LocalStorageExpired;
     stopController: AbortController;
     stopFlag: AbortSignal;
+    failedCount: number;
     _sections?: SectionObj[];
     _book?: Book;
     _url?: string;
