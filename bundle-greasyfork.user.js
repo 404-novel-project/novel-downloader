@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.8.2.518
+// @version        4.8.2.519
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -174,6 +174,7 @@
 // @match          *://www.bxwx333.org/txt/*/
 // @match          *://www.xiaoshuowu.com/html/*/*/
 // @match          *://www.xrzww.com/bookdetail/*
+// @match          *://colorful-fantasybooks.com/module/novel/info.php?*
 // @name:en        novel-downloader
 // @name:ja        小説ダウンローダー
 // @description:en An scalable universal novel downloader.
@@ -4992,7 +4993,13 @@ async function getHtmlDOM(url, charset, init) {
     if (!htmlText) {
         throw new Error("Fetch Content failed!");
     }
-    return new DOMParser().parseFromString(htmlText, "text/html");
+    const doc = new DOMParser().parseFromString(htmlText, "text/html");
+    if (!doc.querySelector("base")) {
+        const base = doc.createElement("base");
+        base.href = url;
+        doc.head.appendChild(base);
+    }
+    return doc;
 }
 async function getHtmlDomWithRetry(url, charset, init) {
     let retry = _setting__WEBPACK_IMPORTED_MODULE_1__/* .retryLimit */ .o5;
@@ -5053,7 +5060,13 @@ async function ggetHtmlDOM(url, charset, init) {
     if (!htmlText) {
         throw new Error("Fetch Content failed!");
     }
-    return new DOMParser().parseFromString(htmlText, "text/html");
+    const doc = new DOMParser().parseFromString(htmlText, "text/html");
+    if (!doc.querySelector("base")) {
+        const base = doc.createElement("base");
+        base.href = url;
+        doc.head.appendChild(base);
+    }
+    return doc;
 }
 async function ggetHtmlDomWithRetry(url, charset, init) {
     let retry = retryLimit;
@@ -7857,6 +7870,45 @@ const aixdzs = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */
     getSName: (dom) => dom.innerText.trim(),
     getContent: (doc) => doc.querySelector(".content"),
     contentPatch: (dom) => dom,
+});
+
+
+/***/ }),
+
+/***/ "./src/rules/onePage/colorful-fantasybooks.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "fantasybooks": () => (/* binding */ fantasybooks)
+/* harmony export */ });
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
+
+const fantasybooks = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+    bookUrl: document.location.href,
+    bookname: document.querySelector(".works-intro-title > strong").innerText.trim(),
+    author: document.querySelector(".works-intro-digi > span:nth-child(1) > em:nth-child(1)").innerText.trim(),
+    introDom: document.querySelector(".works-intro-short"),
+    introDomPatch: (dom) => dom,
+    coverUrl: document.querySelector(".works-cover > img")
+        .src,
+    aList: document.querySelectorAll(".works-chapter-list .works-chapter-item > a"),
+    sections: document.querySelectorAll(".vloume"),
+    getSName: (sElem) => sElem.innerText.trim(),
+    getContent: (doc) => doc.querySelector("#content_cust"),
+    contentPatch: (content) => {
+        Array.from(content.children)
+            .filter((node) => node.nodeName === "SPAN" && node.childNodes.length > 15)
+            .map((span) => {
+            const div = document.createElement("div");
+            div.innerHTML = span.innerHTML;
+            span.replaceWith(div);
+        });
+        return content;
+    },
+    concurrencyLimit: 3,
+    nsfw: true,
 });
 
 
@@ -17568,9 +17620,6 @@ function mkRuleClass({ bookUrl, anotherPageUrl, ToCUrl, getBookname, getAuthor, 
         }
         async bookParse() {
             const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .dL)(anotherPageUrl, this.charset);
-            const base = document.createElement("base");
-            base.href = anotherPageUrl;
-            doc.head.appendChild(base);
             const bookname = getBookname(doc);
             const author = getAuthor(doc);
             const introDom = getIntroDom(doc);
@@ -18785,6 +18834,11 @@ async function getRule() {
         case "www.xrzww.com": {
             const { Xrzww } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/xrzww.ts"));
             ruleClass = Xrzww;
+            break;
+        }
+        case "colorful-fantasybooks.com": {
+            const { fantasybooks } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/colorful-fantasybooks.ts"));
+            ruleClass = fantasybooks();
             break;
         }
         default: {
