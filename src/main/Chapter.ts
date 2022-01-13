@@ -5,6 +5,7 @@ import { retryLimit } from "../setting";
 import { Status } from "./main";
 import { AttachmentClass } from "./Attachment";
 import { Book } from "./Book";
+import { GmWindow } from "../global";
 
 export interface ChapterAdditionalMetadate {
   lastModified?: number;
@@ -158,6 +159,7 @@ isNull:${!this.contentHTML} 解析成功。`);
           this.status = Status.failed;
           log.error(err);
           log.trace(err);
+          (window as GmWindow).failedCount++;
           return {
             chapterName: this.chapterName,
             contentRaw: null,

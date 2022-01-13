@@ -250,6 +250,18 @@ export abstract class BaseRuleClass {
 
     if (self.concurrencyLimit === 1) {
       for (const chapter of chapters) {
+        if ((window as GmWindow).failedCount > 10) {
+          if (!(window as GmWindow).stopFlag.aborted) {
+            (window as GmWindow).stopController.abort();
+            console.error(
+              "连续十章下载失败，放弃本次下载。\n请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/yingziwu/novel-downloader"
+            );
+            alert(
+              "连续十章下载失败，放弃本次下载。\n请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/yingziwu/novel-downloader"
+            );
+            saveLogTextToFile();
+          }
+        }
         if ((window as GmWindow).stopFlag.aborted) {
           throw new ExpectError("[chapter]收到停止信号，停止继续下载。");
         }
@@ -263,6 +275,18 @@ export abstract class BaseRuleClass {
       }
     } else {
       const asyncHandle = async (curChapter: Chapter) => {
+        if ((window as GmWindow).failedCount > 10) {
+          if (!(window as GmWindow).stopFlag.aborted) {
+            (window as GmWindow).stopController.abort();
+            console.error(
+              "连续十章下载失败，放弃本次下载。\n请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/yingziwu/novel-downloader"
+            );
+            alert(
+              "连续十章下载失败，放弃本次下载。\n请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/yingziwu/novel-downloader"
+            );
+            saveLogTextToFile();
+          }
+        }
         if (curChapter === undefined) {
           return null;
         }

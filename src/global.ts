@@ -14,6 +14,7 @@ export interface WindowObject extends Window {
   localStorageExpired: LocalStorageExpired;
   stopController: AbortController;
   stopFlag: AbortSignal;
+  failedCount: number;
   _sections?: SectionObj[];
   _book?: Book;
   _url?: string;
@@ -45,4 +46,5 @@ export function init() {
   const stopFlag = stopController.signal;
   (window as GmWindow).stopController = stopController;
   (window as GmWindow).stopFlag = stopFlag;
+  (window as GmWindow).failedCount = 0;
 }

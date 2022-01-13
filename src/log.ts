@@ -19,6 +19,8 @@ log.methodFactory = (methodName, logLevel, loggerName) => {
     try {
       if (typeof message === "object") {
         if (message instanceof Error) {
+          logText += message.name;
+          logText += message.message;
           logText += message.stack;
         } else {
           logText += JSON.stringify(message, undefined, 2) + "\n";
