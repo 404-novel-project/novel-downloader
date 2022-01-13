@@ -156,19 +156,6 @@ export function getUI(): () => UIObject {
         jumpFunction: () => (document.location.host = "www.lusetxt.com"),
       });
     }
-    case "ncode.syosetu.com":
-    case "novel18.syosetu.com": {
-      return () => {
-        const num = document.location.pathname
-          .split("/")
-          .filter((s) => s.trim() !== "").length;
-        if (num === 1) {
-          return defaultObject;
-        } else {
-          return errorObject;
-        }
-      };
-    }
     case "manhua.dmzj.com":
     case "www.dmzj.com": {
       return () => {

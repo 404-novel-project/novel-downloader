@@ -70,6 +70,7 @@ export const syosetu = () => {
     },
     contentPatch: (dom) => dom,
     nsfw: getNsfw(),
+    needLogin: getNsfw(),
   });
 };
 
