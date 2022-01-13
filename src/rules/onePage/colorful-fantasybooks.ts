@@ -29,6 +29,13 @@ export const fantasybooks = () =>
         .map((span) => {
           const div = document.createElement("div");
           div.innerHTML = span.innerHTML;
+          Array.from(div.querySelectorAll("p"))
+            .filter(
+              (node) =>
+                node.childElementCount === 1 &&
+                node.children[0].nodeName === "BR"
+            )
+            .forEach((pbrp) => pbrp.remove());
           span.replaceWith(div);
         });
       return content;

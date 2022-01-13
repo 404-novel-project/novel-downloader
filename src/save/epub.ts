@@ -137,11 +137,7 @@ const getInfoXhtml = (
 </body>
 </html>`;
 
-const getMessageXhtml = (
-  title: string,
-  url: string,
-  introductionHTML: HTMLElement | null
-) => `<?xml version="1.0" encoding="utf-8"?>
+const getMessageXhtml = (book: Book) => `<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
   "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 
@@ -155,14 +151,16 @@ const getMessageXhtml = (
   <div class="main">
     <div><strong>制作信息</strong></div>
     <hr/>
-    <div>题名：${title}</div>
-    <div>原始地址：<a href="${url}">${url}</a></div>
+    <div>题名：${book.bookname}</div>
+    <div>作者：${book.author}</div>
+    <div>原始地址：<a href="${book.bookUrl}">${book.bookUrl}</a></div>
+    <div>本文件由<a href="https://github.com/yingziwu/novel-downloader">小说下载器</a>生成。</div>
     ${
-      introductionHTML
-        ? `<hr/><span>简介：</span>${introductionHTML.outerHTML}`
+      book.introductionHTML
+        ? `<hr/><span>简介：</span>${book.introductionHTML.outerHTML}`
         : ""
     }
-    </div>
+  </div>
 </body>
 </html>`;
 
@@ -397,13 +395,7 @@ export class EPUB extends Options {
 
       await self.epubZip.file(
         "OEBPS/message.xhtml",
-        new Blob([
-          getMessageXhtml(
-            self.book.bookname,
-            self.book.bookUrl,
-            self.book.introductionHTML
-          ),
-        ])
+        new Blob([convertHTMLtoXHTML(getMessageXhtml(self.book))])
       );
     }
     async function saveStubChapters(chapters: Chapter[]) {
