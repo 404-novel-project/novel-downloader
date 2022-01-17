@@ -1,6 +1,6 @@
 export declare function rm(selector: string, all: boolean | undefined, dom: HTMLElement): void;
-export declare function rm2(content: HTMLElement, filters: (string | RegExp)[]): void;
-export declare function rms(ads: (string | RegExp)[], dom: HTMLElement): HTMLElement;
+export declare function rm2(filters: (string | RegExp)[], dom: HTMLElement): void;
+export declare function rms(filters: (string | RegExp)[], dom: HTMLElement): HTMLElement;
 export declare function childNodesCopy(src: Element, dest: Element): void;
 export declare function getMaxDepth(element: Element): number;
 export declare function getNodeTextLength(element: Element): number;
