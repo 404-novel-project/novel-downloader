@@ -1,4 +1,4 @@
-import { sleep } from "../lib/misc";
+import { floatBuster } from "../lib/adBlocker";
 
 interface UIObject {
   type: "jump" | "download" | "error";
@@ -156,20 +156,6 @@ export function getUI(): () => UIObject {
         jumpFunction: () => (document.location.host = "www.lusetxt.com"),
       });
     }
-    case "manhua.dmzj.com":
-    case "www.dmzj.com": {
-      return () => {
-        // remove ad
-        window.addEventListener("load", async () => {
-          await sleep(300);
-          document
-            .querySelectorAll('*[style*="2147483647;"]')
-            .forEach((elem) => elem.remove());
-        });
-
-        return defaultObject;
-      };
-    }
     case "www.cool18.com": {
       return () => {
         const url = new URL(document.location.href);
@@ -184,7 +170,10 @@ export function getUI(): () => UIObject {
       };
     }
     default: {
-      return () => defaultObject;
+      return () => {
+        floatBuster();
+        return defaultObject;
+      };
     }
   }
 }

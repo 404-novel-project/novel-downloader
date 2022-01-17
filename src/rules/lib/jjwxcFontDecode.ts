@@ -1,4 +1,3 @@
-import { get, set, update } from "idb-keyval";
 import { sleep } from "../../lib/misc";
 import { log } from "../../log";
 import { enableJjwxcRemoteFont, retryLimit } from "../../setting";
@@ -24,8 +23,6 @@ export async function replaceJjwxcCharacter(
 }
 
 async function getJjwxcFontTable(fontName: string) {
-  // const jjwxcFontTables = await getJjwxcFontTables();
-  // const jjwxcFontTableLocal = jjwxcFontTables[fontName];
   const jjwxcFontTableLocal = false;
   if (jjwxcFontTableLocal) {
     return jjwxcFontTableLocal;
@@ -72,58 +69,4 @@ async function fetchRemoteFont(fontName: string) {
 
 interface JjwxcFontTable {
   [index: string]: string;
-}
-interface JjwxcFontTables {
-  [index: string]: JjwxcFontTable;
-}
-async function getJjwxcFontTables(): Promise<JjwxcFontTables> {
-  const JjwxcFontTablesKeyName = "novel-downloader-jjwxcFontTables";
-  const JjwxcFontTablesExpiresKeyName =
-    "novel-downloader-jjwxcFontTables__expires__";
-  const JjwxcFontTablesUrl =
-    "https://cdn.jsdelivr.net/gh/yingziwu/jjwxcFontTables@gh-pages/bundle.json";
-
-  async function fetchAndSave() {
-    try {
-      log.info("[jjwxc-font]开始下载字体对照表打包文件。");
-      const resp = await fetch(JjwxcFontTablesUrl);
-      _jjwxcFontTables = await resp.json();
-      if (_jjwxcFontTables) {
-        if (await get(JjwxcFontTablesKeyName)) {
-          await update(JjwxcFontTablesKeyName, (val) => _jjwxcFontTables);
-        } else {
-          await set(JjwxcFontTablesKeyName, _jjwxcFontTables);
-        }
-        if (await get(JjwxcFontTablesExpiresKeyName)) {
-          await update(
-            JjwxcFontTablesExpiresKeyName,
-            (val) => Date.now() + 1000 * 86400
-          );
-        } else {
-          await set(JjwxcFontTablesExpiresKeyName, Date.now() + 1000 * 86400);
-        }
-        return _jjwxcFontTables;
-      } else {
-        return {};
-      }
-    } catch (error) {
-      return {};
-    }
-  }
-
-  let _jjwxcFontTables: undefined | JjwxcFontTables = await get(
-    JjwxcFontTablesKeyName
-  );
-  if (_jjwxcFontTables) {
-    if (
-      (await get(JjwxcFontTablesExpiresKeyName)) &&
-      (await get(JjwxcFontTablesExpiresKeyName)) > Date.now()
-    ) {
-      return _jjwxcFontTables;
-    } else {
-      return await fetchAndSave();
-    }
-  } else {
-    return await fetchAndSave();
-  }
 }

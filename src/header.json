@@ -231,7 +231,8 @@
     "*://www.myrics.com/novels/*/chapters/*",
     "*://dijiubook.net/*_*/*.html",
     "*://ncode.syosetu.com/*/*/",
-    "*://novel18.syosetu.com/*/*/"
+    "*://novel18.syosetu.com/*/*/",
+    "*://manhua.dmzj.com"
   ],
   "grant": [
     "unsafeWindow",
@@ -316,7 +317,6 @@
   "require": [
     "https://cdn.jsdelivr.net/npm/crypto-js@4.1.1/crypto-js.js",
     "https://cdn.jsdelivr.net/npm/fflate@0.7.2/umd/index.js",
-    "https://cdn.jsdelivr.net/npm/loglevel@1.8.0/lib/loglevel.js",
     "https://cdn.jsdelivr.net/npm/nunjucks@3.2.3/browser/nunjucks.min.js",
     "https://cdn.jsdelivr.net/npm/vue@3.2.27/dist/vue.global.prod.js"
   ]

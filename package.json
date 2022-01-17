@@ -56,7 +56,6 @@
     "crypto-js": "^4.1.1",
     "fflate": "^0.7.2",
     "file-saver": "^2.0.5",
-    "idb-keyval": "^6.0.3",
     "loglevel": "^1.7.1",
     "mime-db": "^1.51.0",
     "nunjucks": "^3.2.3",

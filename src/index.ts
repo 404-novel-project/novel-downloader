@@ -11,16 +11,18 @@ async function printEnvironments() {
   );
 }
 
-async function main() {
+async function main(ev?: Event) {
+  if (ev) {
+    document.removeEventListener(ev.type, main);
+  }
+
   globalInit();
   await printEnvironments();
   uiInit();
 }
 
 if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", (event) => {
-    main();
-  });
+  document.addEventListener("DOMContentLoaded", main);
 } else {
   main();
 }

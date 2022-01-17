@@ -147,13 +147,27 @@ export function centerDetct(element: Element): [boolean, Element, number] {
 }
 
 export function reIndex(chapters: Chapter[]) {
-  let i = 0;
   chapters = chapters.sort(
     (a: Chapter, b: Chapter) => a.chapterNumber - b.chapterNumber
   );
+  let i = 0;
+  let sectionName;
+  let s = 0;
+  let si = 0;
   for (const chapter of chapters) {
     i++;
     chapter.chapterNumber = i;
+
+    if (chapter.sectionName) {
+      if (chapter.sectionName !== sectionName) {
+        sectionName = chapter.sectionName;
+        s++;
+        si = 0;
+      }
+      si++;
+      chapter.sectionNumber = s;
+      chapter.sectionChapterNumber = si;
+    }
   }
   return chapters;
 }
