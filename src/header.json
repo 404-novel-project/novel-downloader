@@ -319,6 +319,6 @@
     "https://cdn.jsdelivr.net/npm/idb-keyval@6.0.3/dist/umd.js",
     "https://cdn.jsdelivr.net/npm/loglevel@1.8.0/lib/loglevel.js",
     "https://cdn.jsdelivr.net/npm/nunjucks@3.2.3/browser/nunjucks.min.js",
-    "https://cdn.jsdelivr.net/npm/vue@3.2.26/dist/vue.global.prod.js"
+    "https://cdn.jsdelivr.net/npm/vue@3.2.27/dist/vue.global.prod.js"
   ]
 }
