@@ -281,7 +281,7 @@ export async function getRule(): Promise<BaseRuleClass> {
       break;
     }
     case "www.shubl.com": {
-      const { Shubl } = await import("../rules/special/original/shubl");
+      const { Shubl } = await import("../rules/special/original/ciweimao");
       ruleClass = Shubl;
       break;
     }
