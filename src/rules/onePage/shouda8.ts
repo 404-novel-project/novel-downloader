@@ -27,7 +27,7 @@ export const shouda8 = () =>
     getContent: (doc) => doc.querySelector("#content") as HTMLElement,
     contentPatch: (content) => {
       const ads = ["手打吧更新速度最快。", "www.shouda88.com"];
-      rm2(content, ads);
+      rm2(ads, content);
       return content;
     },
   });

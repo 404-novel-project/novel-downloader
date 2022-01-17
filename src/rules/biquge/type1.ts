@@ -129,7 +129,7 @@ export const xbiquge = () =>
 export const yruan = () =>
   mkBiqugeClass(
     (introDom) => {
-      rm2(introDom, ["本站提示：各位书友要是觉得"]);
+      rm2(["本站提示：各位书友要是觉得"], introDom);
       return introDom;
     },
     (content) => content,
@@ -139,7 +139,7 @@ export const yruan = () =>
 export const ranwen = () =>
   mkBiqugeClass(
     (introDom) => {
-      rm2(introDom, ["还不错的话请不要忘记向您QQ群和微博里的朋友推荐哦！"]);
+      rm2(["还不错的话请不要忘记向您QQ群和微博里的朋友推荐哦！"], introDom);
       return introDom;
     },
     (content) => content

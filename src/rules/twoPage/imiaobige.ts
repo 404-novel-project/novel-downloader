@@ -35,7 +35,7 @@ export const imiaobige = () => {
     getContent: (doc) => doc.querySelector("#content"),
     contentPatch: (content) => {
       const ads = ["您可以在百度里搜索“"];
-      rm2(content, ads);
+      rm2(ads, content);
       return content;
     },
   });

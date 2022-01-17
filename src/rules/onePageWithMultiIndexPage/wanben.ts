@@ -61,7 +61,7 @@ export const wanben = () => {
             "【完本神站】",
             "百万热门书籍终身无广告免费阅读",
           ];
-          rm2(content, ads);
+          rm2(ads, content);
           htmlTrim(content);
           return content;
         },

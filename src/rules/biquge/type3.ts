@@ -52,7 +52,7 @@ export const xinwanben = () =>
         "还不错的话请不要忘记向您QQ群和微博里的朋友推荐哦！",
         "小说免费阅读地址：",
       ];
-      rm2(introDom, adList);
+      rm2(adList, introDom);
       rms([`${bookname}小说简介：`], introDom);
       return introDom;
     },
@@ -62,7 +62,7 @@ export const xinwanben = () =>
         "提示：浏览器搜索",
         "把本站分享那些需要的小伙伴！找不到书请留言！",
       ];
-      rm2(content, filters);
+      rm2(filters, content);
       htmlTrim(content);
       return content;
     },
@@ -74,7 +74,7 @@ export const biqu55 = () =>
   mkBiqugeClassNextPage(
     (introDom) => introDom,
     (content, doc) => {
-      rm2(content, ["精彩小说无弹窗免费阅读！"]);
+      rm2(["精彩小说无弹窗免费阅读！"], content);
       htmlTrim(content);
       return content;
     },

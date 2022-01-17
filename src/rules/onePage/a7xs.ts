@@ -15,10 +15,10 @@ export const a7xs = () =>
     introDom: document.querySelector(".bookinfo_intro") as HTMLElement,
     introDomPatch: (dom) => {
       rm("strong", true, dom);
-      rm2(dom, [
-        "您要是觉得《",
-        "请不要忘记向您QQ群和微博微信里的朋友推荐哦！",
-      ]);
+      rm2(
+        ["您要是觉得《", "请不要忘记向您QQ群和微博微信里的朋友推荐哦！"],
+        dom
+      );
       return dom;
     },
     coverUrl: (document.querySelector(".pic > img") as HTMLImageElement).src,
@@ -31,7 +31,7 @@ export const a7xs = () =>
         selector: "#htmlContent",
         contentPatch: (content, doc) => {
           const ads = ["免费追书小说网手机版阅读网址"];
-          rm2(content, ads);
+          rm2(ads, content);
           htmlTrim(content);
           return content;
         },

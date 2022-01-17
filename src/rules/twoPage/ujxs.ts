@@ -35,7 +35,7 @@ export const ujxs = () => {
     contentPatch: (content) => {
       rm("script", true, content);
       const ads = ["免费小说无弹窗免费阅读！", "全集TXT电子书免费下载！"];
-      rm2(content, ads);
+      rm2(ads, content);
       return content;
     },
   });

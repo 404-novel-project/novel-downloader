@@ -34,7 +34,7 @@ export const wanben = () =>
             "【看书助手】",
             "百万热门书籍终身无广告免费阅读",
           ];
-          rm2(content, ads);
+          rm2(ads, content);
           htmlTrim(content);
           return content;
         },

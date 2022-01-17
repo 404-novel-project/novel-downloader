@@ -33,7 +33,7 @@ export const shencou = () => {
     introDomPatch: (el) => {
       rm("a", true, el);
       rm(".hottext", true, el);
-      rm2(el, ["论坛回帖，推荐本书，都可以得积分。每天送50积分"]);
+      rm2(["论坛回帖，推荐本书，都可以得积分。每天送50积分"], el);
       return el;
     },
     getCoverUrl: (doc) =>

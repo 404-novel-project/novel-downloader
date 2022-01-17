@@ -40,7 +40,7 @@ export const liuxs = () =>
     },
     getContent: (doc) => doc.querySelector("#content") as HTMLElement,
     contentPatch: (dom) => {
-      rm2(dom, ["--＆网--网"]);
+      rm2(["--＆网--网"], dom);
       return dom;
     },
   });

@@ -84,7 +84,7 @@ export const houhuayuan = () => {
       rm("div.wpulike", true, dom);
       rm(".simplefavorite-button", true, dom);
       rm(".page-links", true, dom);
-      rm2(dom, [" – 蔷薇后花园", " – 黑沼泽俱乐部"]);
+      rm2([" – 蔷薇后花园", " – 黑沼泽俱乐部"], dom);
       Array.from(dom.querySelectorAll("img")).forEach(
         (img) => (img.src = img.getAttribute("data-src") ?? "")
       );

@@ -23,7 +23,7 @@ export const jingcaiyuedu6 = () =>
     getAList: (doc) => doc.querySelectorAll("dd.col-md-4 > a"),
     getContent: (doc) => doc.querySelector("#htmlContent"),
     contentPatch: (dom) => {
-      rm2(dom, ["精彩小说网最新地址"]);
+      rm2(["精彩小说网最新地址"], dom);
       return dom;
     },
   });

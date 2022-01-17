@@ -159,7 +159,7 @@ export class Hanwujinian extends BaseRuleClass {
         "CryptoJS",
         `${chapterContentLine};return (${getContent.toString()})(CryptoJS, chapterContent);`
       )(CryptoJS) as HTMLElement;
-      rm2(content, ["更多优惠快去下载寒武纪年小说APP哦"]);
+      rm2(["更多优惠快去下载寒武纪年小说APP哦"], content);
       content.innerHTML = content.innerHTML.replaceAll("%3A", "：");
       content.innerHTML = content.innerHTML.replaceAll("++++【", "【");
       const { dom, text, images } = await cleanDOM(content, "TM");

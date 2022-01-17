@@ -10,7 +10,7 @@ export function rm(selector: string, all = false, dom: HTMLElement) {
   }
 }
 
-export function rm2(content: HTMLElement, filters: (string | RegExp)[]) {
+export function rm2(filters: (string | RegExp)[], dom: HTMLElement) {
   function doRemove(nodes: HTMLElement | Text) {
     Array.from(nodes.childNodes).forEach((node) => {
       let text = "";
@@ -37,11 +37,11 @@ export function rm2(content: HTMLElement, filters: (string | RegExp)[]) {
       }
     });
   }
-  doRemove(content);
+  doRemove(dom);
 }
 
-export function rms(ads: (string | RegExp)[], dom: HTMLElement) {
-  for (const ad of ads) {
+export function rms(filters: (string | RegExp)[], dom: HTMLElement) {
+  for (const ad of filters) {
     if (typeof ad === "string") {
       dom.innerHTML = dom.innerHTML.replaceAll(ad, "");
     } else if (ad instanceof RegExp) {

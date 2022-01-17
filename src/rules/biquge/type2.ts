@@ -20,7 +20,7 @@ export const shuquge = () =>
       return introDom;
     },
     (content) => {
-      rm2(content, ["请记住本书首发域名：", "www.shuquge.com"]);
+      rm2(["请记住本书首发域名：", "www.shuquge.com"], content);
       return content;
     },
     1
@@ -53,18 +53,17 @@ export const xyqxs = () =>
 export const lusetxt = () =>
   mkBiqugeClass(
     (introDom) => {
-      rm2(introDom, [
-        "无弹窗免费全文阅读为转载作品",
-        "无弹窗推荐地址",
-        "简介：",
-      ]);
+      rm2(
+        ["无弹窗免费全文阅读为转载作品", "无弹窗推荐地址", "简介："],
+        introDom
+      );
       return introDom;
     },
     (content) => {
       rm("script", true, content);
       rm("div[style]", true, content);
       rm("div[align]", true, content);
-      rm2(content, ["https://www.lusetxt.com/books", "请记住本书首发域名"]);
+      rm2(["https://www.lusetxt.com/books", "请记住本书首发域名"], content);
       htmlTrim(content);
       return content;
     }
@@ -74,13 +73,13 @@ export const yqxs = () =>
   mkBiqugeClass(
     (introDom) => {
       rms(["<span>简介：</span>"], introDom);
-      rm2(introDom, ["推荐地址："]);
+      rm2(["推荐地址："], introDom);
       return introDom;
     },
     (content) => {
       rm("script", true, content);
       rm('div[align="center"]', false, content);
-      rm2(content, ["//www.yqxs.cc/html/", "请记住本书首发域名"]);
+      rm2(["//www.yqxs.cc/html/", "请记住本书首发域名"], content);
       return content;
     }
   );
