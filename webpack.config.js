@@ -61,7 +61,6 @@ module.exports = {
   externals: {
     "crypto-js": "CryptoJS",
     fflate: "fflate",
-    "idb-keyval": "idbKeyval",
     loglevel: "log",
     nunjucks: "nunjucks",
     vue: "Vue",
