@@ -292,16 +292,14 @@ export async function getRule(): Promise<BaseRuleClass> {
     }
     case "m.haitangtxt.net": {
       const { haitangtxt } = await import(
-        "../rules/special/duplicate/haitangtxt"
+        "../rules/special/reprint/haitangtxt"
       );
       ruleClass = haitangtxt();
       break;
     }
     case "m.yuzhaige.cc":
     case "m.yushuge123.com": {
-      const { yuzhaige } = await import(
-        "../rules/special/duplicate/haitangtxt"
-      );
+      const { yuzhaige } = await import("../rules/special/reprint/haitangtxt");
       ruleClass = yuzhaige();
       break;
     }
