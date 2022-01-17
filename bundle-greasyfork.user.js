@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.8.2.542
+// @version        4.8.2.543
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -9382,1021 +9382,6 @@ const wanben = () => {
 
 /***/ }),
 
-/***/ "./src/rules/special/duplicate/haitangtxt.ts":
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-// ESM COMPAT FLAG
-__webpack_require__.r(__webpack_exports__);
-
-// EXPORTS
-__webpack_require__.d(__webpack_exports__, {
-  "haitangtxt": () => (/* binding */ haitangtxt),
-  "yuzhaige": () => (/* binding */ yuzhaige)
-});
-
-// EXTERNAL MODULE: ./src/lib/cleanDOM.ts
-var cleanDOM = __webpack_require__("./src/lib/cleanDOM.ts");
-// EXTERNAL MODULE: ./src/lib/http.ts
-var http = __webpack_require__("./src/lib/http.ts");
-// EXTERNAL MODULE: ./src/lib/dom.ts
-var lib_dom = __webpack_require__("./src/lib/dom.ts");
-// EXTERNAL MODULE: ./src/lib/rule.ts
-var rule = __webpack_require__("./src/lib/rule.ts");
-// EXTERNAL MODULE: ./node_modules/loglevel/lib/loglevel.js
-var loglevel = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
-var loglevel_default = /*#__PURE__*/__webpack_require__.n(loglevel);
-// EXTERNAL MODULE: ./src/main/Chapter.ts
-var Chapter = __webpack_require__("./src/main/Chapter.ts");
-// EXTERNAL MODULE: ./src/main/Book.ts + 1 modules
-var Book = __webpack_require__("./src/main/Book.ts");
-// EXTERNAL MODULE: ./src/rules.ts + 11 modules
-var rules = __webpack_require__("./src/rules.ts");
-;// CONCATENATED MODULE: ./src/rules/lib/haitangtxtImageDecode.ts
-function replaceHaitangtxtImage(inputText) {
-    let outputText = inputText;
-    for (const imageFilename in imageTable) {
-        if (Object.prototype.hasOwnProperty.call(imageTable, imageFilename)) {
-            const normalCharacter = imageTable[imageFilename];
-            const imageHTML = `<img src="${document.location.origin}/wzbodyimg/${imageFilename}">`;
-            outputText = outputText.replaceAll(imageHTML, normalCharacter);
-        }
-    }
-    return outputText;
-}
-const imageTable = {};
-
-;// CONCATENATED MODULE: ./src/rules/lib/yuzhaigeImageDecode.ts
-function replaceYuzhaigeImage(inputText) {
-    let outputText = inputText;
-    for (const imageFilename in yuzhaigeImageDecode_imageTable) {
-        if (Object.prototype.hasOwnProperty.call(yuzhaigeImageDecode_imageTable, imageFilename)) {
-            const normalCharacter = yuzhaigeImageDecode_imageTable[imageFilename];
-            const imageHTML = `<img src="${document.location.origin}/wzbodyimg/${imageFilename}">`;
-            outputText = outputText.replaceAll(imageHTML, normalCharacter);
-        }
-    }
-    return outputText;
-}
-const yuzhaigeImageDecode_imageTable = {
-    "wc5pDq.png": "\u52c3",
-    "wEwIpN.png": "\u8404",
-    "WFOBXF.png": "\u4f26",
-    "WFuqEG.png": "\u6eda",
-    "WNTyYB.png": "\u83ca",
-    "WrI5St.png": "\u6234",
-    "WSYLdq.png": "\u5ba0",
-    "wvHBh4.png": "\u5976",
-    "wWVoto.png": "\u5df4",
-    "wz2cGb.png": "\u4e73",
-    "wZicAt.png": "\u9053",
-    "WzS8He.png": "\u6234",
-    "X6QTS9.png": "\u80ef",
-    "XBTII5.png": "\u817f",
-    "XBv6rP.png": "\u8df3",
-    "xFVZW9.png": "\u6b96",
-    "XhuslD.png": "\u9e21",
-    "xIFlai.png": "\u98df",
-    "XK7taQ.png": "\u723d",
-    "xljRqd.png": "\u9876",
-    "xo18Yq.png": "\u5c3f",
-    "xOIyuf.png": "\u585e",
-    "xQ2ZWb.png": "\u80a1",
-    "XqsaJY.png": "\u8f6f",
-    "xrbxqL.png": "\u88f8",
-    "xw7cLW.png": "\u868c",
-    "xwkwQW.png": "\u7cbe",
-    "XXlZMA.png": "\u6b96",
-    "y3FgRm.png": "\u67f1",
-    "y4Afmt.png": "\u817f",
-    "Y4aXzR.png": "\u7c97",
-    "Y7G6Lu.png": "\u547b",
-    "YGnnuo.png": "\u871c",
-    "ygqjgt.png": "\u634f",
-    "yGwSy7.png": "\u9a9a",
-    "yjX9oi.png": "\u63c9",
-    "YNmgYJ.png": "\u809b",
-    "yuo7sA.png": "\u6469",
-    "yWAu0U.png": "\u50ac",
-    "yWhRNI.png": "\u5a07",
-    "YZ4EAh.png": "\u5589",
-    "yzS8NJ.png": "\u80ef",
-    "z0DZro.png": "\u542e",
-    "Z7byDx.png": "\u6da6",
-    "ZatUU6.png": "\u5974",
-    "zCtJCx.png": "\u6da6",
-    "ZDJHkT.png": "\u6ccc",
-    "ZKDja5.png": "\u9f9f",
-    "ZqyamF.png": "\u5c44",
-    "ZzsV7x.png": "\u777e",
-    "0bErVo.png": "\u6df1",
-    "0ShNwM.png": "\u5439",
-    "0uCAgc.png": "\u5f3a",
-    "1AMfxw.png": "\u5e72",
-    "1EmzV7.png": "\u6027",
-    "1RbeKi.png": "\u5934",
-    "1RIz6c.png": "\u611f",
-    "1ZkZsI.png": "\u6b32",
-    "2AXYPX.png": "\u6cc4",
-    "2gwsiE.png": "\u6e7f",
-    "2LQHtR.png": "\u6839",
-    "2wePG6.png": "\u4f53",
-    "2Xijao.png": "\u634f",
-    "3ha4Fq.png": "\u6b22",
-    "3RfcEA.png": "\u9ad8",
-    "3uNZxG.png": "\u80f8",
-    "4bu7Gr.png": "\u8482",
-    "4T4DPM.png": "\u64e6",
-    "4XjmUQ.png": "\u8fdb",
-    "5hjo9r.png": "\u4e0b",
-    "5ueElb.png": "\u5bab",
-    "5yFlDm.png": "\u5bab",
-    "6UsGer.png": "\u74e3",
-    "6w928M.png": "\u633a",
-    "6YavUk.png": "\u6696",
-    "7dKm1T.png": "\u8fdb",
-    "7tzEqy.png": "\u70b9",
-    "8Q4cTQ.png": "\u90e8",
-    "9Ns27O.png": "\u9633",
-    "9pAfcz.png": "\u5934",
-    "9Xkn86.png": "\u5507",
-    "62TB7X.png": "\u7d27",
-    "668QKT.png": "\u4e0b",
-    "aedVOS.png": "\u9732",
-    "AI15xh.png": "\u5a07",
-    "AikKsW.png": "\u80a0",
-    "AJcH1b.png": "\u51fa",
-    "ALnkng.png": "\u5598",
-    "anzcle.png": "\u9053",
-    "apsw0Z.png": "\u5b50",
-    "azRZNn.png": "\u6c34",
-    "B38zEI.png": "\u6c34",
-    "BAVYZd.png": "\u9634",
-    "BBioQd.png": "\u6696",
-    "BBZnCY.png": "\u5507",
-    "bE6LV6.png": "\u7f8e",
-    "bF30CY.png": "\u5438",
-    "bihdjA.png": "\u5507",
-    "BPQcCZ.png": "\u5177",
-    "BpYip0.png": "\u7ba1",
-    "BrY1ZI.png": "\u817f",
-    "BvbcsW.png": "\u7d27",
-    "bXRYQt.png": "\u5904",
-    "Caqk3D.png": "\u773c",
-    "CBylOX.png": "\u9053",
-    "ClFBCD.png": "\u5904",
-    "CLS5cG.png": "\u575a",
-    "cPjFxZ.png": "\u79cd",
-    "CUJkGk.png": "\u60c5",
-    "CZL2OC.png": "\u76ae",
-    "D3I7u1.png": "\u8482",
-    "d5KjC5.png": "\u4f53",
-    "d7fjCZ.png": "\u9732",
-    "df6AnM.png": "\u51fa",
-    "dhAaVT.png": "\u575a",
-    "dkuDIk.png": "\u820c",
-    "DSiSlL.png": "\u7231",
-    "dTnQ9K.png": "\u9b54",
-    "dXMpnD.png": "\u6655",
-    "DXtzqf.png": "\u8eab",
-    "DXXixh.png": "\u5957",
-    "DZYaDR.png": "\u9633",
-    "e5QAQ1.png": "\u5f3a",
-    "ECcmqT.png": "\u6625",
-    "eeYwrN.png": "\u6c34",
-    "eGWHWT.png": "\u6170",
-    "eOOKlp.png": "\u89e6",
-    "EvHzor.png": "\u6b32",
-    "ewwRMT.png": "\u903c",
-    "EZW46f.png": "\u6df1",
-    "FBosfH.png": "\u6027",
-    "fC5MmR.png": "\u6237",
-    "ffTW4v.png": "\u62bd",
-    "ffZqua.png": "\u6027",
-    "FgN2Tl.png": "\u4e71",
-    "fHvZK9.png": "\u7f1d",
-    "fj7veK.png": "\u957f",
-    "fkPlzo.png": "\u98df",
-    "fKWetR.png": "\u7ba1",
-    "FUmeqN.png": "\u25a1",
-    "Fus88J.png": "\u725b",
-    "G4uOno.png": "\u55b7",
-    "g7bVzL.png": "\u9ad8",
-    "GBmlnw.png": "\u8df3",
-    "gCWM61.png": "\u7cbe",
-    "GdAidg.png": "\u7b4b",
-    "GLZIqA.png": "\u5b50",
-    "gqDVGg.png": "\u5de8",
-    "gu5ykL.png": "\u8f6e",
-    "GULUze.png": "\u9ad8",
-    "h2FI8R.png": "\u80f8",
-    "h4WPDX.png": "\u6655",
-    "hCztH8.png": "\u9732",
-    "hfI2uM.png": "\u575a",
-    "hGHijB.png": "\u5668",
-    "hIhWai.png": "\u9ad8",
-    "HIUVkJ.png": "\u5c04",
-    "HkcQea.png": "\u4ea4",
-    "hm5O6l.png": "\u5957",
-    "hpFE8s.png": "\u6d41",
-    "HPxfmS.png": "\u542b",
-    "hVxPKi.png": "\u89e6",
-    "Ia3sI1.png": "\u4e71",
-    "IA8APJ.png": "\u5df4",
-    "IlUZRn.png": "\u575a",
-    "iN7Lri.png": "\u98df",
-    "iQMM3x.png": "\u611f",
-    "ISfDuf.png": "\u4f53",
-    "isWxov.png": "\u9a6c",
-    "ITILdU.png": "\u6267",
-    "IU731r.png": "\u9876",
-    "IUanTB.png": "\u878d",
-    "IUUwWq.png": "\u5165",
-    "Ixqere.png": "\u6d41",
-    "J9AEU9.png": "\u5165",
-    "JBfhPp.png": "\u64cd",
-    "jDxrrX.png": "\u5b50",
-    "jE4V2B.png": "\u6df1",
-    "jF1KPd.png": "\u25a1",
-    "jFACnh.png": "\u6bdb",
-    "jiyfGR.png": "\u6839",
-    "JLkmp8.png": "\u80a1",
-    "jWwTqU.png": "\u60c5",
-    "K00hgA.png": "\u5165",
-    "KaFnqe.png": "\u6eda",
-    "Kaqaq0.png": "\u9634",
-    "kDOkxJ.png": "\u957f",
-    "kSkOOe.png": "\u6309",
-    "KtjQU3.png": "\u634f",
-    "kWmDQN.png": "\u5904",
-    "kZQ8K6.png": "\u4e0b",
-    "l0kRFF.png": "\u7269",
-    "L9dqnM.png": "\u6b32",
-    "Ldo3hW.png": "\u8089",
-    "ljppnW.png": "\u611f",
-    "lNGSuh.png": "\u80a0",
-    "lRfqbE.png": "\u7cbe",
-    "lUzsIi.png": "\u8f6e",
-    "LZraJy.png": "\u6625",
-    "mBpVnV.png": "\u4e71",
-    "MEM8Wx.png": "\u5e72",
-    "MO2VKV.png": "\u6db2",
-    "ModDMS.png": "\u62bd",
-    "mOZJWk.png": "\u9a6c",
-    "mpgh5T.png": "\u51fa",
-    "nj29a6.png": "\u6267",
-    "NOEnvb.png": "\u8df3",
-    "nrSIO8.png": "\u6df1",
-    "o2xN3U.png": "\u82b1",
-    "O3b3KR.png": "\u6696",
-    "o5uSeU.png": "\u5bab",
-    "OaBMS5.png": "\u62d4",
-    "OB7KzU.png": "\u773c",
-    "oCH7SV.png": "\u9b54",
-    "oeeXig.png": "\u9a6c",
-    "OgBVeb.png": "\u8f6f",
-    "oHc3dE.png": "\u7269",
-    "OLHWRr.png": "\u70b9",
-    "onuRXa.png": "\u8482",
-    "oqLfcR.png": "\u6ed1",
-    "oUntUm.png": "\u6d53",
-    "OXOdsf.png": "\u9053",
-    "p3ARaM.png": "\u6d41",
-    "p068ps.png": "\u5bab",
-    "PLwxDG.png": "\u79cd",
-    "PmCTBy.png": "\u8272",
-    "pMlQBk.png": "\u6c41",
-    "pQypTa.png": "\u8fdb",
-    "PtUVdN.png": "\u62bd",
-    "PW1WSi.png": "\u6e7f",
-    "Pw3ezj.png": "\u914d",
-    "pXy3UL.png": "\u4ea4",
-    "Q7jy4x.png": "\u5185",
-    "q07XV1.png": "\u5668",
-    "Q9OBtA.png": "\u6f6e",
-    "QbYFBI.png": "\u9634",
-    "qEI00x.png": "\u4e0b",
-    "qewOBk.png": "\u6ed1",
-    "QfXoIi.png": "\u8089",
-    "qJIAe3.png": "\u6309",
-    "QkWjrV.png": "\u8eab",
-    "QnFF9j.png": "\u6839",
-    "qNFYq4.png": "\u5e72",
-    "QU7Lcv.png": "\u25a1",
-    "qwsVcX.png": "\u62bd",
-    "qxb6Lz.png": "\u70b9",
-    "QzP4Nz.png": "\u773c",
-    "R8uNPt.png": "\u5185",
-    "R9tjeh.png": "\u51fa",
-    "rFr75w.png": "\u80f8",
-    "rGA9Cq.png": "\u4ea4",
-    "RjCFQu.png": "\u7d27",
-    "RLNC0G.png": "\u70b9",
-    "rocNQb.png": "\u505a",
-    "Rpp7lC.png": "\u8482",
-    "rUJMTx.png": "\u8272",
-    "RZZBiZ.png": "\u773c",
-    "S2Dvd4.png": "\u6cc4",
-    "s8DZGN.png": "\u60c5",
-    "s560YT.png": "\u5177",
-    "SeKcc0.png": "\u8272",
-    "sFFl4b.png": "\u5ba0",
-    "SiAa7G.png": "\u5934",
-    "slAZvO.png": "\u8272",
-    "sTPB8l.png": "\u89e6",
-    "sV6OrY.png": "\u957f",
-    "syPCmu.png": "\u8f6e",
-    "Sz5U6E.png": "\u5668",
-    "SZn6xB.png": "\u7269",
-    "T6sDn9.png": "\u60c5",
-    "t9WGXQ.png": "\u903c",
-    "TCRQtC.png": "\u6ed1",
-    "TGkFFQ.png": "\u903c",
-    "tNjFEZ.png": "\u82b1",
-    "tOUYgC.png": "\u9b54",
-    "TSjC0C.png": "\u5ead",
-    "TSp4f1.png": "\u62d4",
-    "TWIhpT.png": "\u7231",
-    "TxaWbU.png": "\u878d",
-    "ua2bew.png": "\u9876",
-    "UbTLa5.png": "\u633a",
-    "uDN4sP.png": "\u5165",
-    "ueMquS.png": "\u8eab",
-    "UEVcqG.png": "\u8eab",
-    "UIFeaH.png": "\u914d",
-    "unR6fo.png": "\u9633",
-    "Upc9Pu.png": "\u4ea4",
-    "UukBzP.png": "\u6d1e",
-    "UvCU0f.png": "\u5ba0",
-    "VAOIqQ.png": "\u7f8e",
-    "vMf2zS.png": "\u914d",
-    "VnXHdX.png": "\u505a",
-    "vpHmyj.png": "\u5185",
-    "Vql6Ev.png": "\u59d0",
-    "vrkjXi.png": "\u79cd",
-    "vtnLR7.png": "\u6c34",
-    "wkUtOc.png": "\u25a1",
-    "WOHLvx.png": "\u5976",
-    "WppxBg.png": "\u7f8e",
-    "WRtMHz.png": "\u56ca",
-    "WTAi5O.png": "\u63c9",
-    "wtwCbu.png": "\u725b",
-    "WXf8jT.png": "\u5177",
-    "xpWTjp.png": "\u7269",
-    "XqFPrk.png": "\u505a",
-    "XrHw7R.png": "\u4f53",
-    "XskrJT.png": "\u9633",
-    "xubhKq.png": "\u6bdb",
-    "xxqGbU.png": "\u80f8",
-    "y2rhls.png": "\u505a",
-    "y8TJ26.png": "\u79cd",
-    "YbmlHp.png": "\u82b1",
-    "YpcoIg.png": "\u7f8e",
-    "yruS8G.png": "\u8650",
-    "YTWiNM.png": "\u82b1",
-    "YvzoUL.png": "\u5589",
-    "YY1gAh.png": "\u878d",
-    "yYS2XJ.png": "\u8fdb",
-    "ZaWg8Q.png": "\u6d53",
-    "zbUsFu.png": "\u70ed",
-    "zGqroA.png": "\u5b50",
-    "zhogXd.png": "\u9732",
-    "zM4vGZ.png": "\u6eda",
-    "ZMyXfX.png": "\u786c",
-    "Znemv4.png": "\u9a6c",
-    "ZnORLb.png": "\u5934",
-    "zovunx.png": "\u7a74",
-    "ZpcLFr.png": "\u7231",
-    "4KLtoP.png": "\u868c",
-    "k2hzhi.png": "\u854a",
-    "OpOeoc.png": "\u96cf",
-    "D6GjNJ.png": "\u90a6",
-    "nSh1y5.png": "\u90a6",
-    "ZD1bga.png": "\u819c",
-    "0JNnRt.png": "\u88c6",
-    "0laGrG.png": "\u52c3",
-    "0sEWeF.png": "\u723d",
-    "0X07Oj.png": "\u957f",
-    "0ZBaBv.png": "\u7a74",
-    "1WoJda.png": "\u633a",
-    "1yUGqq.png": "\u5957",
-    "2ABT9u.png": "\u7ba1",
-    "2BcI5e.png": "\u6838",
-    "2dfEmL.png": "\u808f",
-    "2LdPZ9.png": "\u5df4",
-    "2VLZTT.png": "\u5438",
-    "2WgKu9.png": "\u6625",
-    "03PhNV.png": "\u6469",
-    "3preuJ.png": "\u6f6e",
-    "3tNh88.png": "\u63d2",
-    "4m7wbi.png": "\u6655",
-    "4mO3Bj.png": "\u5993",
-    "4P4bWw.png": "\u70eb",
-    "4qJrgq.png": "\u50ac",
-    "4xMdlq.png": "\u6345",
-    "5aHMLF.png": "\u6d53",
-    "5caAaX.png": "\u542b",
-    "5IL1sE.png": "\u817a",
-    "5qxLLo.png": "\u8404",
-    "5rXkkk.png": "\u5f04",
-    "5uAxU4.png": "\u63c9",
-    "5XAgwu.png": "\u5978",
-    "6A9MvV.png": "\u52c3",
-    "6jL6AP.png": "\u8361",
-    "6ontyx.png": "\u8461",
-    "6VRwjR.png": "\u7c97",
-    "6zcWUT.png": "\u6cc4",
-    "7aWXdF.png": "\u6f6e",
-    "7Bz8yG.png": "\u68cd",
-    "7fhmqV.png": "\u88e4",
-    "7jKFaP.png": "\u5978",
-    "7lNejO.png": "\u704c",
-    "7pFdxn.png": "\u64b8",
-    "7Q7Jrg.png": "\u5c4c",
-    "8BNYPM.png": "\u6696",
-    "8J5geS.png": "\u541f",
-    "8Kf7GD.png": "\u830e",
-    "8mHmVv.png": "\u830e",
-    "8N16Hq.png": "\u8650",
-    "8UniDu.png": "\u6237",
-    "8w5K9T.png": "\u88f8",
-    "8wm13p.png": "\u6655",
-    "8ZNrSv.png": "\u786c",
-    "9BRV3o.png": "\u5c4c",
-    "9Nqw8t.png": "\u762b",
-    "9RBhTJ.png": "\u9a9a",
-    "9RvnBS.png": "\u8089",
-    "9TaMmD.png": "\u6ccc",
-    "9UaEDH.png": "\u6d1e",
-    "9zWVtd.png": "\u59d0",
-    "47FrvB.png": "\u4e73",
-    "76gAv7.png": "\u723d",
-    "77lL1M.png": "\u541f",
-    "798jja.png": "\u76ae",
-    "a0mCeq.png": "\u8f6f",
-    "ACrPlr.png": "\u98df",
-    "aFoXhJ.png": "\u75d2",
-    "Afr6zx.png": "\u6b96",
-    "aHuUcm.png": "\u83ca",
-    "AiDkbY.png": "\u809b",
-    "aOxG78.png": "\u8461",
-    "AQZ08I.png": "\u809b",
-    "ARAUs9.png": "\u5c41",
-    "arEzdS.png": "\u5976",
-    "axdkbW.png": "\u58c1",
-    "aYGWo2.png": "\u83ca",
-    "b1C6Pu.png": "\u75d2",
-    "bCQ2nL.png": "\u654f",
-    "BgJzfk.png": "\u6b22",
-    "BhgFcH.png": "\u56ca",
-    "bOoL0J.png": "\u6deb",
-    "BqO1fa.png": "\u820c",
-    "bqXZDH.png": "\u80a5",
-    "BsU6ka.png": "\u854a",
-    "Bu9FZQ.png": "\u6deb",
-    "bufT6t.png": "\u819c",
-    "bWdbXA.png": "\u6eda",
-    "C4UN5R.png": "\u6deb",
-    "CgqkFG.png": "\u8361",
-    "CH67yh.png": "\u5a07",
-    "CM7jpY.png": "\u5b55",
-    "cNghja.png": "\u8361",
-    "CnOBoo.png": "\u63d2",
-    "CNQW3o.png": "\u70eb",
-    "cow4Kc.png": "\u5f3a",
-    "CXC9uz.png": "\u8089",
-    "Cy7Ynb.png": "\u762b",
-    "czWHZw.png": "\u96cf",
-    "D0Lwo9.png": "\u871c",
-    "dB0uJO.png": "\u820c",
-    "dHuyiO.png": "\u5c4c",
-    "DQWBph.png": "\u4e38",
-    "DsEJTV.png": "\u547b",
-    "dUrJvn.png": "\u819c",
-    "Ea3lho.png": "\u81c0",
-    "EboGWZ.png": "\u80a0",
-    "eifoua.png": "\u5b55",
-    "EiUhlF.png": "\u5957",
-    "ENwWoX.png": "\u4e71",
-    "EQEgJx.png": "\u6469",
-    "EQiUab.png": "\u88e4",
-    "er8NJ7.png": "\u542e",
-    "F0WoiN.png": "\u5177",
-    "f1YTv0.png": "\u6f6e",
-    "f2N1vL.png": "\u5978",
-    "F3nlmb.png": "\u88e4",
-    "F6lW1R.png": "\u80bf",
-    "f60BEY.png": "\u5c3f",
-    "f461mD.png": "\u6839",
-    "fd6C8F.png": "\u9e21",
-    "Fdz1Vc.png": "\u58c1",
-    "FetNxM.png": "\u5c4c",
-    "FfxOzl.png": "\u88f8",
-    "Fge27m.png": "\u8404",
-    "fGpEWq.png": "\u547b",
-    "Fl20Ip.png": "\u9f9f",
-    "fNXZyj.png": "\u6234",
-    "fRmx68.png": "\u90e8",
-    "fSdsL1.png": "\u88c6",
-    "FT9nI5.png": "\u83ca",
-    "FVVqzv.png": "\u86cb",
-    "FwjZJi.png": "\u5438",
-    "fX4WIp.png": "\u4f26",
-    "FXgFwc.png": "\u63d2",
-    "FXmf8I.png": "\u647a",
-    "fxPcW3.png": "\u6d1e",
-    "g2jVxn.png": "\u808f",
-    "gb3LOX.png": "\u80ef",
-    "gDVng6.png": "\u5ba0",
-    "gImiVY.png": "\u5f04",
-    "gJDFQC.png": "\u8214",
-    "gJDG8l.png": "\u5b55",
-    "GJodYn.png": "\u62d4",
-    "GmLjKa.png": "\u5c09",
-    "gNlJMc.png": "\u68cd",
-    "GppocX.png": "\u914d",
-    "gsRjtr.png": "\u67f1",
-    "GTOAc4.png": "\u633a",
-    "GzjpTS.png": "\u7cbe",
-    "h8zRxr.png": "\u80a1",
-    "H17DtI.png": "\u5c41",
-    "ha14XV.png": "\u89e6",
-    "hatLmR.png": "\u81c0",
-    "hbrRIS.png": "\u857e",
-    "hC4NbQ.png": "\u777e",
-    "hG0SRP.png": "\u64e6",
-    "HhNUaw.png": "\u854a",
-    "hKjWPG.png": "\u64b8",
-    "Hn8Afh.png": "\u74e3",
-    "hngWaZ.png": "\u5438",
-    "htV3uv.png": "\u58c1",
-    "hVaVng.png": "\u6309",
-    "HVHPCy.png": "\u74e3",
-    "hVwy7k.png": "\u8214",
-    "i4tyrQ.png": "\u830e",
-    "i5s28n.png": "\u4f26",
-    "IAloq6.png": "\u542e",
-    "ICHARH.png": "\u6237",
-    "icI6Ey.png": "\u81c0",
-    "iCRh88.png": "\u68d2",
-    "Iej2pu.png": "\u5993",
-    "IkqJmu.png": "\u8650",
-    "imVjMj.png": "\u4e73",
-    "iNIMEL.png": "\u86cb",
-    "IOjnEP.png": "\u6b22",
-    "ip6KUM.png": "\u79bd",
-    "IPC2R8.png": "\u9e21",
-    "ipVGiA.png": "\u6345",
-    "IpYNG3.png": "\u5974",
-    "ITUjFq.png": "\u76ae",
-    "ixiion.png": "\u90e8",
-    "IZcCzq.png": "\u871c",
-    "IzJ4WG.png": "\u830e",
-    "J1CBtB.png": "\u8df3",
-    "j9C44i.png": "\u70eb",
-    "JCQtUs.png": "\u4e73",
-    "JEcz0E.png": "\u871c",
-    "JfPEEe.png": "\u4f26",
-    "jHi6Vu.png": "\u9f9f",
-    "jjfR6D.png": "\u8461",
-    "jktdia.png": "\u64e6",
-    "JlkuRa.png": "\u8404",
-    "jnAvXp.png": "\u5ead",
-    "jnCCk9.png": "\u6cc4",
-    "jvj3DG.png": "\u786c",
-    "Jy4pAI.png": "\u74e3",
-    "jZyPEL.png": "\u5b55",
-    "K2AtMQ.png": "\u9a9a",
-    "K2jjT6.png": "\u857e",
-    "k6X0xy.png": "\u80bf",
-    "k9h8DR.png": "\u903c",
-    "k9zXwG.png": "\u723d",
-    "KalRLt.png": "\u6da6",
-    "kawcM7.png": "\u68cd",
-    "kdsEv6.png": "\u5f04",
-    "KdwL4R.png": "\u86cb",
-    "kPG0vR.png": "\u704c",
-    "KSqmoM.png": "\u6db2",
-    "kTCaM9.png": "\u86cb",
-    "kVLLjB.png": "\u8361",
-    "kygbuo.png": "\u725b",
-    "kZDlEj.png": "\u7ba1",
-    "l0BNLC.png": "\u6ccc",
-    "l1Dmft.png": "\u725b",
-    "L1yl45.png": "\u5c04",
-    "L3a5ft.png": "\u56ca",
-    "L3LaNQ.png": "\u5439",
-    "L9F6F8.png": "\u50ac",
-    "LB1WMg.png": "\u64cd",
-    "LBPqYj.png": "\u6d1e",
-    "LDjbfQ.png": "\u5c3f",
-    "ldo7FB.png": "\u7d27",
-    "lErO3o.png": "\u67f1",
-    "LFBZKA.png": "\u59d0",
-    "lfGqdb.png": "\u68d2",
-    "lGKjej.png": "\u5993",
-    "LjemA3.png": "\u809b",
-    "Ljh7qo.png": "\u63d2",
-    "LJSiT5.png": "\u5c44",
-    "Lk5uQy.png": "\u6838",
-    "lngKEo.png": "\u55b7",
-    "lOfDdC.png": "\u4e38",
-    "Lsq92O.png": "\u541f",
-    "LsyPdc.png": "\u541f",
-    "lVbZkd.png": "\u634f",
-    "lVMTQu.png": "\u654f",
-    "LVmymH.png": "\u80a0",
-    "lyYo4Y.png": "\u547b",
-    "lZtabT.png": "\u9634",
-    "M3VjF9.png": "\u64b8",
-    "m4yvu3.png": "\u7a74",
-    "M8bV3k.png": "\u56ca",
-    "MBhDEi.png": "\u75d2",
-    "MC5lZn.png": "\u585e",
-    "Mc8JM6.png": "\u62d4",
-    "mD7hPS.png": "\u5c41",
-    "mExNDV.png": "\u704c",
-    "MKapwC.png": "\u80a5",
-    "mKxUHv.png": "\u64e6",
-    "Mo31Ax.png": "\u6bdb",
-    "mRFQJQ.png": "\u5589",
-    "MsUFfR.png": "\u6b96",
-    "mTzxxd.png": "\u7f1d",
-    "n2ufBJ.png": "\u5978",
-    "n3oOgA.png": "\u6345",
-    "n9j6EC.png": "\u5ead",
-    "n49ZFH.png": "\u88c6",
-    "nCrl80.png": "\u762b",
-    "NDlwhm.png": "\u817a",
-    "nE1Y7y.png": "\u762b",
-    "neIgqc.png": "\u5439",
-    "NeKVfz.png": "\u6170",
-    "NHH9A1.png": "\u777e",
-    "NKN1rk.png": "\u542e",
-    "NKUSkP.png": "\u58c1",
-    "NlfTkc.png": "\u5c44",
-    "NlZDDQ.png": "\u817f",
-    "nmoPI2.png": "\u4e38",
-    "NnfPEJ.png": "\u9f9f",
-    "NP33MO.png": "\u6c41",
-    "NQ7oga.png": "\u611f",
-    "nsDzuq.png": "\u90a6",
-    "NsIwni.png": "\u5de8",
-    "oaLZIg.png": "\u777e",
-    "oC3HDZ.png": "\u7c97",
-    "OFx7ZU.png": "\u88f8",
-    "OHU6tX.png": "\u6db2",
-    "olFcqI.png": "\u5e72",
-    "OMdbeV.png": "\u819c",
-    "On4f9C.png": "\u7b4b",
-    "oncaJq.png": "\u76ae",
-    "Oo8iWN.png": "\u6309",
-    "OUWXqz.png": "\u6625",
-    "OuXWg2.png": "\u4e38",
-    "ozF5Kr.png": "\u8650",
-    "p0bqZi.png": "\u5c44",
-    "p1H9RN.png": "\u5c04",
-    "p5QCRV.png": "\u6ed1",
-    "p5zEbo.png": "\u857e",
-    "P43O6G.png": "\u6234",
-    "PalsBW.png": "\u5974",
-    "PcAvOY.png": "\u5ae9",
-    "pHfPTa.png": "\u5de8",
-    "pi2z0b.png": "\u7b4b",
-    "plFlPb.png": "\u68cd",
-    "pNPlu5.png": "\u704c",
-    "PnZNBC.png": "\u6deb",
-    "pQ1W2F.png": "\u88e4",
-    "PX3jJ6.png": "\u6ccc",
-    "q14YbK.png": "\u9876",
-    "Qc9LRh.png": "\u5598",
-    "qe2YZi.png": "\u63c9",
-    "qEy1kT.png": "\u90e8",
-    "Qfs9DA.png": "\u50ac",
-    "Qg8Qwg.png": "\u857e",
-    "qJ1X2h.png": "\u59d0",
-    "qm0ZBO.png": "\u6170",
-    "QmcP4w.png": "\u654f",
-    "Qn3xBM.png": "\u5ae9",
-    "qNGvlk.png": "\u5c3f",
-    "qPhrVf.png": "\u5904",
-    "qPX1Ef.png": "\u542b",
-    "qr8InI.png": "\u80a5",
-    "QtLIGq.png": "\u6db2",
-    "QtSnzR.png": "\u5598",
-    "Qv3JbY.png": "\u7f1d",
-    "QYF65i.png": "\u7b4b",
-    "Qz4Txd.png": "\u81c0",
-    "qzdvCv.png": "\u5df4",
-    "r7NsvF.png": "\u5f04",
-    "r8oBsP.png": "\u9e21",
-    "r9Gw4X.png": "\u6838",
-    "R65BZO.png": "\u8214",
-    "Rf7Jf6.png": "\u6469",
-    "Rho2GL.png": "\u75d2",
-    "rlVLx7.png": "\u7231",
-    "Rm3wex.png": "\u55b7",
-    "RmrhKk.png": "\u8214",
-    "RMWsBY.png": "\u654f",
-    "rn9y6F.png": "\u585e",
-    "RnfJ8h.png": "\u67f1",
-    "RP5Oud.png": "\u5598",
-    "Rp5tmA.png": "\u64cd",
-    "rpSSYK.png": "\u80ef",
-    "rQKjMD.png": "\u6bdb",
-    "RrXcE9.png": "\u5668",
-    "RyL5jk.png": "\u6c41",
-    "s67RPe.png": "\u70eb",
-    "s95kq4.png": "\u6e7f",
-    "sdXZMk.png": "\u52c3",
-    "SGxBy7.png": "\u5c41",
-    "smhB8j.png": "\u5c04",
-    "Srgobp.png": "\u6237",
-    "srlW2t.png": "\u6d41",
-    "ST21xu.png": "\u6d53",
-    "STzFJz.png": "\u7c97",
-    "sugwEw.png": "\u5976",
-    "SzADhL.png": "\u80bf",
-    "T5yzvl.png": "\u6c41",
-    "t6K8rK.png": "\u6027",
-    "tAIV6q.png": "\u64cd",
-    "TCFRca.png": "\u68d2",
-    "te79V0.png": "\u68d2",
-    "tjbhCV.png": "\u5ae9",
-    "tNFwEz.png": "\u5589",
-    "tPTX1h.png": "\u80a5",
-    "tsQMiL.png": "\u5439",
-    "TUZb1W.png": "\u6b32",
-    "TWFykG.png": "\u5993",
-    "twLxYU.png": "\u8f6f",
-    "tXNaZ2.png": "\u878d",
-    "U3bhkh.png": "\u9a9a",
-    "u6K6ci.png": "\u6b22",
-    "u9Tibu.png": "\u5185",
-    "Ua2WwL.png": "\u5a07",
-    "Uai2en.png": "\u5f3a",
-    "UeWULF.png": "\u5ead",
-    "UfXSsz.png": "\u540e",
-    "ui0T5v.png": "\u79bd",
-    "UqClGF.png": "\u80a1",
-    "Urv1FM.png": "\u80bf",
-    "uwXRHd.png": "\u55b7",
-    "v4iqzP.png": "\u7f1d",
-    "vAdmoL.png": "\u786c",
-    "VhA8GI.png": "\u5ae9",
-    "VHsdy1.png": "\u6838",
-    "vjOssT.png": "\u585e",
-    "vkYfGf.png": "\u9b54",
-    "vMmUqq.png": "\u5974",
-    "VnvOwV.png": "\u6da6",
-    "VoAjiw.png": "\u6e7f",
-    "vrtXeW.png": "\u88c6",
-    "VUbefT.png": "\u8f6e",
-    "vulCqw.png": "\u6267",
-    "VYaPfX.png": "\u7a74",
-    "VyJ2cS.png": "\u90a6",
-    "W06Vg1.png": "\u5de8",
-    "W7cCwn.png": "\u6345",
-    "W9Y9vD.png": "\u820c",
-    "wa54S5.png": "\u542b",
-    "FNq1zS.png": "\u868C",
-    "DDpMPK.png": "\u868C",
-    "vDbU8w.png": "\u817A",
-    "SSoXSL.png": "\u8461",
-    "YB6iOy.png": "\u817A",
-    "kMqpt6.png": "\u96CF",
-    "5RwMUT.png": "\u854A",
-    "b94JXX.png": "\u8114",
-    "oxFS6J.png": "\u8114",
-    "H53jMR.png": "\u96CF",
-};
-
-;// CONCATENATED MODULE: ./src/rules/special/duplicate/haitangtxt.ts
-
-
-
-
-
-
-
-
-
-
-function getClass(replaceFunction) {
-    return class extends rules/* BaseRuleClass */.c {
-        constructor() {
-            super();
-            this.imageMode = "TM";
-            this.nsfw = true;
-        }
-        async bookParse() {
-            const bookUrl = document.querySelector("div.currency_head > h1 > a").href;
-            const bookId = bookUrl.split("/").slice(-2, -1)[0];
-            loglevel_default().debug(`[chapter]请求 ${bookUrl}`);
-            const dom = await (0,http/* getHtmlDOM */.dL)(bookUrl, "UTF-8");
-            const bookname = dom.querySelector("div.cataloginfo > h3").innerText.trim();
-            const author = dom.querySelector(".infotype > p:nth-child(1) > a:nth-child(1)").innerText.trim();
-            const introDom = dom.querySelector(".intro");
-            const [introduction, introductionHTML] = await (0,rule/* introDomHandle */.SN)(introDom, (introDomI) => {
-                (0,lib_dom.rm)("span:nth-child(1)", false, introDomI);
-                return introDomI;
-            });
-            const additionalMetadate = {};
-            const chapters = [];
-            const getMaxPageNumber = () => {
-                const pageDom = document.querySelector("div.page:nth-child(6)");
-                if (pageDom) {
-                    const childNodes = Array.from(pageDom.childNodes);
-                    const _maxPageNumber = childNodes
-                        .slice(-1)[0]
-                        .textContent?.match(/第\d+\/(\d+)页/);
-                    if (_maxPageNumber) {
-                        return _maxPageNumber[1];
-                    }
-                }
-            };
-            const getIndexUrls = () => {
-                const indexUrlsI = [];
-                const _maxPageNumber = getMaxPageNumber();
-                if (_maxPageNumber === undefined) {
-                    throw new Error("getMaxPageNumber return null ");
-                }
-                const maxPageNumber = parseInt(_maxPageNumber);
-                for (let i = 1; i <= maxPageNumber; i++) {
-                    const indexUrl = [
-                        document.location.origin,
-                        document.location.pathname.split("/")[1],
-                        `${bookId}_${i}`,
-                    ].join("/") + "/";
-                    indexUrlsI.push(indexUrl);
-                }
-                return indexUrlsI;
-            };
-            const indexUrls = getIndexUrls();
-            let lis = [];
-            for (const indexUrl of indexUrls) {
-                loglevel_default().debug(`[chapter]请求 ${indexUrl}`);
-                const doc = await (0,http/* getHtmlDOM */.dL)(indexUrl, "UTF-8");
-                const ul = doc.querySelector("ul.chapters");
-                if (ul?.childElementCount) {
-                    lis = lis.concat(Array.from(ul.children));
-                }
-            }
-            const chapterList = lis.filter((obj) => obj !== undefined);
-            let chapterNumber = 0;
-            for (const node of chapterList) {
-                chapterNumber++;
-                const a = node.firstElementChild;
-                const chapterName = a.innerText;
-                const chapterUrl = a.href;
-                const isVIP = false;
-                const isPaid = false;
-                const chapter = new Chapter/* Chapter */.W({
-                    bookUrl,
-                    bookname,
-                    chapterUrl,
-                    chapterNumber,
-                    chapterName,
-                    isVIP,
-                    isPaid,
-                    sectionName: null,
-                    sectionNumber: null,
-                    sectionChapterNumber: null,
-                    chapterParse: this.chapterParse,
-                    charset: this.charset,
-                    options: {},
-                });
-                chapters.push(chapter);
-            }
-            const book = new Book/* Book */.f({
-                bookUrl,
-                bookname,
-                author,
-                introduction,
-                introductionHTML,
-                additionalMetadate,
-                chapters,
-            });
-            return book;
-        }
-        async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-            function contentAppend() {
-                function UpWz(m, i) {
-                    let k = Math.ceil((i + 1) % code);
-                    k = Math.ceil(m - k);
-                    return k;
-                }
-                const _e = dom.getElementsByTagName("meta")[7].getAttribute("content");
-                const contentRaw = dom.querySelector("#articlecontent");
-                let codeurl;
-                let code;
-                const _codeurl = dom
-                    .getElementsByTagName("script")[1]
-                    .innerText.trim()
-                    .match(/"(http.+)"/);
-                if (_codeurl) {
-                    codeurl = _codeurl[1];
-                    const _code = new URL(codeurl).searchParams.get("code");
-                    if (_code) {
-                        code = parseInt(_code);
-                    }
-                }
-                if (_e) {
-                    const e = atob(_e)
-                        .split(/[A-Z]+%/)
-                        .map((v) => parseInt(v));
-                    const childNode = [];
-                    if (Array.from(dom.querySelectorAll("script")).filter((s) => s.src.includes("/17mb/js/article.js")).length) {
-                        for (let i = 0; i < e.length; i++) {
-                            const k = UpWz(e[i], i);
-                            childNode[k] = contentRaw.childNodes[i];
-                        }
-                        for (const node of childNode) {
-                            if (node.nodeType !== 1) {
-                                continue;
-                            }
-                            if (!(node.innerText.includes("本章尚未完结,请") ||
-                                node.innerText.includes("本章已阅读完毕"))) {
-                                content.appendChild(node);
-                            }
-                        }
-                        return;
-                    }
-                }
-                for (const node of Array.from(contentRaw.childNodes)) {
-                    if (!(node.innerText.includes("本章尚未完结,请") ||
-                        node.innerText.includes("本章已阅读完毕"))) {
-                        content.appendChild(node);
-                    }
-                }
-                return;
-            }
-            let nowUrl = chapterUrl;
-            let dom = await (0,http/* getHtmlDOM */.dL)(chapterUrl, charset);
-            const content = document.createElement("div");
-            let flag = false;
-            do {
-                contentAppend();
-                const nextLink = dom.querySelector(".novelbutton .p1.p3 > a:nth-child(1)").href;
-                if (new URL(nextLink).pathname.includes("_")) {
-                    if (nextLink !== nowUrl) {
-                        flag = true;
-                    }
-                    else {
-                        loglevel_default().error("网站页面出错，URL： " + nowUrl);
-                        flag = false;
-                    }
-                }
-                else {
-                    flag = false;
-                }
-                if (flag) {
-                    nowUrl = nextLink;
-                    dom = await (0,http/* getHtmlDOM */.dL)(nextLink, charset);
-                }
-            } while (flag);
-            if (content) {
-                const { dom: oldDom, images: finalImages } = await (0,cleanDOM/* cleanDOM */.zM)(content, "TM", { keepImageName: true });
-                const _newDom = document.createElement("div");
-                _newDom.innerHTML = replaceFunction(content.innerHTML);
-                const { dom: newDom, text: finalText } = await (0,cleanDOM/* cleanDOM */.zM)(_newDom, "TM", {
-                    keepImageName: true,
-                });
-                const fontStyleDom = document.createElement("style");
-                fontStyleDom.innerHTML = `.hide { display: none; }`;
-                oldDom.className = "hide";
-                const finalDom = document.createElement("div");
-                finalDom.appendChild(fontStyleDom);
-                finalDom.appendChild(oldDom);
-                finalDom.appendChild(newDom);
-                return {
-                    chapterName,
-                    contentRaw: content,
-                    contentText: finalText,
-                    contentHTML: finalDom,
-                    contentImages: finalImages,
-                    additionalMetadate: null,
-                };
-            }
-            else {
-                return {
-                    chapterName,
-                    contentRaw: null,
-                    contentText: null,
-                    contentHTML: null,
-                    contentImages: null,
-                    additionalMetadate: null,
-                };
-            }
-        }
-    };
-}
-const haitangtxt = () => getClass(replaceHaitangtxtImage);
-const yuzhaige = () => getClass(replaceYuzhaigeImage);
-
-
-/***/ }),
-
 /***/ "./src/rules/special/original/17k.ts":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -15941,6 +14926,1021 @@ class Fushuwang extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ 
 
 /***/ }),
 
+/***/ "./src/rules/special/reprint/haitangtxt.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+// ESM COMPAT FLAG
+__webpack_require__.r(__webpack_exports__);
+
+// EXPORTS
+__webpack_require__.d(__webpack_exports__, {
+  "haitangtxt": () => (/* binding */ haitangtxt),
+  "yuzhaige": () => (/* binding */ yuzhaige)
+});
+
+// EXTERNAL MODULE: ./src/lib/cleanDOM.ts
+var cleanDOM = __webpack_require__("./src/lib/cleanDOM.ts");
+// EXTERNAL MODULE: ./src/lib/http.ts
+var http = __webpack_require__("./src/lib/http.ts");
+// EXTERNAL MODULE: ./src/lib/dom.ts
+var lib_dom = __webpack_require__("./src/lib/dom.ts");
+// EXTERNAL MODULE: ./src/lib/rule.ts
+var rule = __webpack_require__("./src/lib/rule.ts");
+// EXTERNAL MODULE: ./node_modules/loglevel/lib/loglevel.js
+var loglevel = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+var loglevel_default = /*#__PURE__*/__webpack_require__.n(loglevel);
+// EXTERNAL MODULE: ./src/main/Chapter.ts
+var Chapter = __webpack_require__("./src/main/Chapter.ts");
+// EXTERNAL MODULE: ./src/main/Book.ts + 1 modules
+var Book = __webpack_require__("./src/main/Book.ts");
+// EXTERNAL MODULE: ./src/rules.ts + 11 modules
+var rules = __webpack_require__("./src/rules.ts");
+;// CONCATENATED MODULE: ./src/rules/lib/haitangtxtImageDecode.ts
+function replaceHaitangtxtImage(inputText) {
+    let outputText = inputText;
+    for (const imageFilename in imageTable) {
+        if (Object.prototype.hasOwnProperty.call(imageTable, imageFilename)) {
+            const normalCharacter = imageTable[imageFilename];
+            const imageHTML = `<img src="${document.location.origin}/wzbodyimg/${imageFilename}">`;
+            outputText = outputText.replaceAll(imageHTML, normalCharacter);
+        }
+    }
+    return outputText;
+}
+const imageTable = {};
+
+;// CONCATENATED MODULE: ./src/rules/lib/yuzhaigeImageDecode.ts
+function replaceYuzhaigeImage(inputText) {
+    let outputText = inputText;
+    for (const imageFilename in yuzhaigeImageDecode_imageTable) {
+        if (Object.prototype.hasOwnProperty.call(yuzhaigeImageDecode_imageTable, imageFilename)) {
+            const normalCharacter = yuzhaigeImageDecode_imageTable[imageFilename];
+            const imageHTML = `<img src="${document.location.origin}/wzbodyimg/${imageFilename}">`;
+            outputText = outputText.replaceAll(imageHTML, normalCharacter);
+        }
+    }
+    return outputText;
+}
+const yuzhaigeImageDecode_imageTable = {
+    "wc5pDq.png": "\u52c3",
+    "wEwIpN.png": "\u8404",
+    "WFOBXF.png": "\u4f26",
+    "WFuqEG.png": "\u6eda",
+    "WNTyYB.png": "\u83ca",
+    "WrI5St.png": "\u6234",
+    "WSYLdq.png": "\u5ba0",
+    "wvHBh4.png": "\u5976",
+    "wWVoto.png": "\u5df4",
+    "wz2cGb.png": "\u4e73",
+    "wZicAt.png": "\u9053",
+    "WzS8He.png": "\u6234",
+    "X6QTS9.png": "\u80ef",
+    "XBTII5.png": "\u817f",
+    "XBv6rP.png": "\u8df3",
+    "xFVZW9.png": "\u6b96",
+    "XhuslD.png": "\u9e21",
+    "xIFlai.png": "\u98df",
+    "XK7taQ.png": "\u723d",
+    "xljRqd.png": "\u9876",
+    "xo18Yq.png": "\u5c3f",
+    "xOIyuf.png": "\u585e",
+    "xQ2ZWb.png": "\u80a1",
+    "XqsaJY.png": "\u8f6f",
+    "xrbxqL.png": "\u88f8",
+    "xw7cLW.png": "\u868c",
+    "xwkwQW.png": "\u7cbe",
+    "XXlZMA.png": "\u6b96",
+    "y3FgRm.png": "\u67f1",
+    "y4Afmt.png": "\u817f",
+    "Y4aXzR.png": "\u7c97",
+    "Y7G6Lu.png": "\u547b",
+    "YGnnuo.png": "\u871c",
+    "ygqjgt.png": "\u634f",
+    "yGwSy7.png": "\u9a9a",
+    "yjX9oi.png": "\u63c9",
+    "YNmgYJ.png": "\u809b",
+    "yuo7sA.png": "\u6469",
+    "yWAu0U.png": "\u50ac",
+    "yWhRNI.png": "\u5a07",
+    "YZ4EAh.png": "\u5589",
+    "yzS8NJ.png": "\u80ef",
+    "z0DZro.png": "\u542e",
+    "Z7byDx.png": "\u6da6",
+    "ZatUU6.png": "\u5974",
+    "zCtJCx.png": "\u6da6",
+    "ZDJHkT.png": "\u6ccc",
+    "ZKDja5.png": "\u9f9f",
+    "ZqyamF.png": "\u5c44",
+    "ZzsV7x.png": "\u777e",
+    "0bErVo.png": "\u6df1",
+    "0ShNwM.png": "\u5439",
+    "0uCAgc.png": "\u5f3a",
+    "1AMfxw.png": "\u5e72",
+    "1EmzV7.png": "\u6027",
+    "1RbeKi.png": "\u5934",
+    "1RIz6c.png": "\u611f",
+    "1ZkZsI.png": "\u6b32",
+    "2AXYPX.png": "\u6cc4",
+    "2gwsiE.png": "\u6e7f",
+    "2LQHtR.png": "\u6839",
+    "2wePG6.png": "\u4f53",
+    "2Xijao.png": "\u634f",
+    "3ha4Fq.png": "\u6b22",
+    "3RfcEA.png": "\u9ad8",
+    "3uNZxG.png": "\u80f8",
+    "4bu7Gr.png": "\u8482",
+    "4T4DPM.png": "\u64e6",
+    "4XjmUQ.png": "\u8fdb",
+    "5hjo9r.png": "\u4e0b",
+    "5ueElb.png": "\u5bab",
+    "5yFlDm.png": "\u5bab",
+    "6UsGer.png": "\u74e3",
+    "6w928M.png": "\u633a",
+    "6YavUk.png": "\u6696",
+    "7dKm1T.png": "\u8fdb",
+    "7tzEqy.png": "\u70b9",
+    "8Q4cTQ.png": "\u90e8",
+    "9Ns27O.png": "\u9633",
+    "9pAfcz.png": "\u5934",
+    "9Xkn86.png": "\u5507",
+    "62TB7X.png": "\u7d27",
+    "668QKT.png": "\u4e0b",
+    "aedVOS.png": "\u9732",
+    "AI15xh.png": "\u5a07",
+    "AikKsW.png": "\u80a0",
+    "AJcH1b.png": "\u51fa",
+    "ALnkng.png": "\u5598",
+    "anzcle.png": "\u9053",
+    "apsw0Z.png": "\u5b50",
+    "azRZNn.png": "\u6c34",
+    "B38zEI.png": "\u6c34",
+    "BAVYZd.png": "\u9634",
+    "BBioQd.png": "\u6696",
+    "BBZnCY.png": "\u5507",
+    "bE6LV6.png": "\u7f8e",
+    "bF30CY.png": "\u5438",
+    "bihdjA.png": "\u5507",
+    "BPQcCZ.png": "\u5177",
+    "BpYip0.png": "\u7ba1",
+    "BrY1ZI.png": "\u817f",
+    "BvbcsW.png": "\u7d27",
+    "bXRYQt.png": "\u5904",
+    "Caqk3D.png": "\u773c",
+    "CBylOX.png": "\u9053",
+    "ClFBCD.png": "\u5904",
+    "CLS5cG.png": "\u575a",
+    "cPjFxZ.png": "\u79cd",
+    "CUJkGk.png": "\u60c5",
+    "CZL2OC.png": "\u76ae",
+    "D3I7u1.png": "\u8482",
+    "d5KjC5.png": "\u4f53",
+    "d7fjCZ.png": "\u9732",
+    "df6AnM.png": "\u51fa",
+    "dhAaVT.png": "\u575a",
+    "dkuDIk.png": "\u820c",
+    "DSiSlL.png": "\u7231",
+    "dTnQ9K.png": "\u9b54",
+    "dXMpnD.png": "\u6655",
+    "DXtzqf.png": "\u8eab",
+    "DXXixh.png": "\u5957",
+    "DZYaDR.png": "\u9633",
+    "e5QAQ1.png": "\u5f3a",
+    "ECcmqT.png": "\u6625",
+    "eeYwrN.png": "\u6c34",
+    "eGWHWT.png": "\u6170",
+    "eOOKlp.png": "\u89e6",
+    "EvHzor.png": "\u6b32",
+    "ewwRMT.png": "\u903c",
+    "EZW46f.png": "\u6df1",
+    "FBosfH.png": "\u6027",
+    "fC5MmR.png": "\u6237",
+    "ffTW4v.png": "\u62bd",
+    "ffZqua.png": "\u6027",
+    "FgN2Tl.png": "\u4e71",
+    "fHvZK9.png": "\u7f1d",
+    "fj7veK.png": "\u957f",
+    "fkPlzo.png": "\u98df",
+    "fKWetR.png": "\u7ba1",
+    "FUmeqN.png": "\u25a1",
+    "Fus88J.png": "\u725b",
+    "G4uOno.png": "\u55b7",
+    "g7bVzL.png": "\u9ad8",
+    "GBmlnw.png": "\u8df3",
+    "gCWM61.png": "\u7cbe",
+    "GdAidg.png": "\u7b4b",
+    "GLZIqA.png": "\u5b50",
+    "gqDVGg.png": "\u5de8",
+    "gu5ykL.png": "\u8f6e",
+    "GULUze.png": "\u9ad8",
+    "h2FI8R.png": "\u80f8",
+    "h4WPDX.png": "\u6655",
+    "hCztH8.png": "\u9732",
+    "hfI2uM.png": "\u575a",
+    "hGHijB.png": "\u5668",
+    "hIhWai.png": "\u9ad8",
+    "HIUVkJ.png": "\u5c04",
+    "HkcQea.png": "\u4ea4",
+    "hm5O6l.png": "\u5957",
+    "hpFE8s.png": "\u6d41",
+    "HPxfmS.png": "\u542b",
+    "hVxPKi.png": "\u89e6",
+    "Ia3sI1.png": "\u4e71",
+    "IA8APJ.png": "\u5df4",
+    "IlUZRn.png": "\u575a",
+    "iN7Lri.png": "\u98df",
+    "iQMM3x.png": "\u611f",
+    "ISfDuf.png": "\u4f53",
+    "isWxov.png": "\u9a6c",
+    "ITILdU.png": "\u6267",
+    "IU731r.png": "\u9876",
+    "IUanTB.png": "\u878d",
+    "IUUwWq.png": "\u5165",
+    "Ixqere.png": "\u6d41",
+    "J9AEU9.png": "\u5165",
+    "JBfhPp.png": "\u64cd",
+    "jDxrrX.png": "\u5b50",
+    "jE4V2B.png": "\u6df1",
+    "jF1KPd.png": "\u25a1",
+    "jFACnh.png": "\u6bdb",
+    "jiyfGR.png": "\u6839",
+    "JLkmp8.png": "\u80a1",
+    "jWwTqU.png": "\u60c5",
+    "K00hgA.png": "\u5165",
+    "KaFnqe.png": "\u6eda",
+    "Kaqaq0.png": "\u9634",
+    "kDOkxJ.png": "\u957f",
+    "kSkOOe.png": "\u6309",
+    "KtjQU3.png": "\u634f",
+    "kWmDQN.png": "\u5904",
+    "kZQ8K6.png": "\u4e0b",
+    "l0kRFF.png": "\u7269",
+    "L9dqnM.png": "\u6b32",
+    "Ldo3hW.png": "\u8089",
+    "ljppnW.png": "\u611f",
+    "lNGSuh.png": "\u80a0",
+    "lRfqbE.png": "\u7cbe",
+    "lUzsIi.png": "\u8f6e",
+    "LZraJy.png": "\u6625",
+    "mBpVnV.png": "\u4e71",
+    "MEM8Wx.png": "\u5e72",
+    "MO2VKV.png": "\u6db2",
+    "ModDMS.png": "\u62bd",
+    "mOZJWk.png": "\u9a6c",
+    "mpgh5T.png": "\u51fa",
+    "nj29a6.png": "\u6267",
+    "NOEnvb.png": "\u8df3",
+    "nrSIO8.png": "\u6df1",
+    "o2xN3U.png": "\u82b1",
+    "O3b3KR.png": "\u6696",
+    "o5uSeU.png": "\u5bab",
+    "OaBMS5.png": "\u62d4",
+    "OB7KzU.png": "\u773c",
+    "oCH7SV.png": "\u9b54",
+    "oeeXig.png": "\u9a6c",
+    "OgBVeb.png": "\u8f6f",
+    "oHc3dE.png": "\u7269",
+    "OLHWRr.png": "\u70b9",
+    "onuRXa.png": "\u8482",
+    "oqLfcR.png": "\u6ed1",
+    "oUntUm.png": "\u6d53",
+    "OXOdsf.png": "\u9053",
+    "p3ARaM.png": "\u6d41",
+    "p068ps.png": "\u5bab",
+    "PLwxDG.png": "\u79cd",
+    "PmCTBy.png": "\u8272",
+    "pMlQBk.png": "\u6c41",
+    "pQypTa.png": "\u8fdb",
+    "PtUVdN.png": "\u62bd",
+    "PW1WSi.png": "\u6e7f",
+    "Pw3ezj.png": "\u914d",
+    "pXy3UL.png": "\u4ea4",
+    "Q7jy4x.png": "\u5185",
+    "q07XV1.png": "\u5668",
+    "Q9OBtA.png": "\u6f6e",
+    "QbYFBI.png": "\u9634",
+    "qEI00x.png": "\u4e0b",
+    "qewOBk.png": "\u6ed1",
+    "QfXoIi.png": "\u8089",
+    "qJIAe3.png": "\u6309",
+    "QkWjrV.png": "\u8eab",
+    "QnFF9j.png": "\u6839",
+    "qNFYq4.png": "\u5e72",
+    "QU7Lcv.png": "\u25a1",
+    "qwsVcX.png": "\u62bd",
+    "qxb6Lz.png": "\u70b9",
+    "QzP4Nz.png": "\u773c",
+    "R8uNPt.png": "\u5185",
+    "R9tjeh.png": "\u51fa",
+    "rFr75w.png": "\u80f8",
+    "rGA9Cq.png": "\u4ea4",
+    "RjCFQu.png": "\u7d27",
+    "RLNC0G.png": "\u70b9",
+    "rocNQb.png": "\u505a",
+    "Rpp7lC.png": "\u8482",
+    "rUJMTx.png": "\u8272",
+    "RZZBiZ.png": "\u773c",
+    "S2Dvd4.png": "\u6cc4",
+    "s8DZGN.png": "\u60c5",
+    "s560YT.png": "\u5177",
+    "SeKcc0.png": "\u8272",
+    "sFFl4b.png": "\u5ba0",
+    "SiAa7G.png": "\u5934",
+    "slAZvO.png": "\u8272",
+    "sTPB8l.png": "\u89e6",
+    "sV6OrY.png": "\u957f",
+    "syPCmu.png": "\u8f6e",
+    "Sz5U6E.png": "\u5668",
+    "SZn6xB.png": "\u7269",
+    "T6sDn9.png": "\u60c5",
+    "t9WGXQ.png": "\u903c",
+    "TCRQtC.png": "\u6ed1",
+    "TGkFFQ.png": "\u903c",
+    "tNjFEZ.png": "\u82b1",
+    "tOUYgC.png": "\u9b54",
+    "TSjC0C.png": "\u5ead",
+    "TSp4f1.png": "\u62d4",
+    "TWIhpT.png": "\u7231",
+    "TxaWbU.png": "\u878d",
+    "ua2bew.png": "\u9876",
+    "UbTLa5.png": "\u633a",
+    "uDN4sP.png": "\u5165",
+    "ueMquS.png": "\u8eab",
+    "UEVcqG.png": "\u8eab",
+    "UIFeaH.png": "\u914d",
+    "unR6fo.png": "\u9633",
+    "Upc9Pu.png": "\u4ea4",
+    "UukBzP.png": "\u6d1e",
+    "UvCU0f.png": "\u5ba0",
+    "VAOIqQ.png": "\u7f8e",
+    "vMf2zS.png": "\u914d",
+    "VnXHdX.png": "\u505a",
+    "vpHmyj.png": "\u5185",
+    "Vql6Ev.png": "\u59d0",
+    "vrkjXi.png": "\u79cd",
+    "vtnLR7.png": "\u6c34",
+    "wkUtOc.png": "\u25a1",
+    "WOHLvx.png": "\u5976",
+    "WppxBg.png": "\u7f8e",
+    "WRtMHz.png": "\u56ca",
+    "WTAi5O.png": "\u63c9",
+    "wtwCbu.png": "\u725b",
+    "WXf8jT.png": "\u5177",
+    "xpWTjp.png": "\u7269",
+    "XqFPrk.png": "\u505a",
+    "XrHw7R.png": "\u4f53",
+    "XskrJT.png": "\u9633",
+    "xubhKq.png": "\u6bdb",
+    "xxqGbU.png": "\u80f8",
+    "y2rhls.png": "\u505a",
+    "y8TJ26.png": "\u79cd",
+    "YbmlHp.png": "\u82b1",
+    "YpcoIg.png": "\u7f8e",
+    "yruS8G.png": "\u8650",
+    "YTWiNM.png": "\u82b1",
+    "YvzoUL.png": "\u5589",
+    "YY1gAh.png": "\u878d",
+    "yYS2XJ.png": "\u8fdb",
+    "ZaWg8Q.png": "\u6d53",
+    "zbUsFu.png": "\u70ed",
+    "zGqroA.png": "\u5b50",
+    "zhogXd.png": "\u9732",
+    "zM4vGZ.png": "\u6eda",
+    "ZMyXfX.png": "\u786c",
+    "Znemv4.png": "\u9a6c",
+    "ZnORLb.png": "\u5934",
+    "zovunx.png": "\u7a74",
+    "ZpcLFr.png": "\u7231",
+    "4KLtoP.png": "\u868c",
+    "k2hzhi.png": "\u854a",
+    "OpOeoc.png": "\u96cf",
+    "D6GjNJ.png": "\u90a6",
+    "nSh1y5.png": "\u90a6",
+    "ZD1bga.png": "\u819c",
+    "0JNnRt.png": "\u88c6",
+    "0laGrG.png": "\u52c3",
+    "0sEWeF.png": "\u723d",
+    "0X07Oj.png": "\u957f",
+    "0ZBaBv.png": "\u7a74",
+    "1WoJda.png": "\u633a",
+    "1yUGqq.png": "\u5957",
+    "2ABT9u.png": "\u7ba1",
+    "2BcI5e.png": "\u6838",
+    "2dfEmL.png": "\u808f",
+    "2LdPZ9.png": "\u5df4",
+    "2VLZTT.png": "\u5438",
+    "2WgKu9.png": "\u6625",
+    "03PhNV.png": "\u6469",
+    "3preuJ.png": "\u6f6e",
+    "3tNh88.png": "\u63d2",
+    "4m7wbi.png": "\u6655",
+    "4mO3Bj.png": "\u5993",
+    "4P4bWw.png": "\u70eb",
+    "4qJrgq.png": "\u50ac",
+    "4xMdlq.png": "\u6345",
+    "5aHMLF.png": "\u6d53",
+    "5caAaX.png": "\u542b",
+    "5IL1sE.png": "\u817a",
+    "5qxLLo.png": "\u8404",
+    "5rXkkk.png": "\u5f04",
+    "5uAxU4.png": "\u63c9",
+    "5XAgwu.png": "\u5978",
+    "6A9MvV.png": "\u52c3",
+    "6jL6AP.png": "\u8361",
+    "6ontyx.png": "\u8461",
+    "6VRwjR.png": "\u7c97",
+    "6zcWUT.png": "\u6cc4",
+    "7aWXdF.png": "\u6f6e",
+    "7Bz8yG.png": "\u68cd",
+    "7fhmqV.png": "\u88e4",
+    "7jKFaP.png": "\u5978",
+    "7lNejO.png": "\u704c",
+    "7pFdxn.png": "\u64b8",
+    "7Q7Jrg.png": "\u5c4c",
+    "8BNYPM.png": "\u6696",
+    "8J5geS.png": "\u541f",
+    "8Kf7GD.png": "\u830e",
+    "8mHmVv.png": "\u830e",
+    "8N16Hq.png": "\u8650",
+    "8UniDu.png": "\u6237",
+    "8w5K9T.png": "\u88f8",
+    "8wm13p.png": "\u6655",
+    "8ZNrSv.png": "\u786c",
+    "9BRV3o.png": "\u5c4c",
+    "9Nqw8t.png": "\u762b",
+    "9RBhTJ.png": "\u9a9a",
+    "9RvnBS.png": "\u8089",
+    "9TaMmD.png": "\u6ccc",
+    "9UaEDH.png": "\u6d1e",
+    "9zWVtd.png": "\u59d0",
+    "47FrvB.png": "\u4e73",
+    "76gAv7.png": "\u723d",
+    "77lL1M.png": "\u541f",
+    "798jja.png": "\u76ae",
+    "a0mCeq.png": "\u8f6f",
+    "ACrPlr.png": "\u98df",
+    "aFoXhJ.png": "\u75d2",
+    "Afr6zx.png": "\u6b96",
+    "aHuUcm.png": "\u83ca",
+    "AiDkbY.png": "\u809b",
+    "aOxG78.png": "\u8461",
+    "AQZ08I.png": "\u809b",
+    "ARAUs9.png": "\u5c41",
+    "arEzdS.png": "\u5976",
+    "axdkbW.png": "\u58c1",
+    "aYGWo2.png": "\u83ca",
+    "b1C6Pu.png": "\u75d2",
+    "bCQ2nL.png": "\u654f",
+    "BgJzfk.png": "\u6b22",
+    "BhgFcH.png": "\u56ca",
+    "bOoL0J.png": "\u6deb",
+    "BqO1fa.png": "\u820c",
+    "bqXZDH.png": "\u80a5",
+    "BsU6ka.png": "\u854a",
+    "Bu9FZQ.png": "\u6deb",
+    "bufT6t.png": "\u819c",
+    "bWdbXA.png": "\u6eda",
+    "C4UN5R.png": "\u6deb",
+    "CgqkFG.png": "\u8361",
+    "CH67yh.png": "\u5a07",
+    "CM7jpY.png": "\u5b55",
+    "cNghja.png": "\u8361",
+    "CnOBoo.png": "\u63d2",
+    "CNQW3o.png": "\u70eb",
+    "cow4Kc.png": "\u5f3a",
+    "CXC9uz.png": "\u8089",
+    "Cy7Ynb.png": "\u762b",
+    "czWHZw.png": "\u96cf",
+    "D0Lwo9.png": "\u871c",
+    "dB0uJO.png": "\u820c",
+    "dHuyiO.png": "\u5c4c",
+    "DQWBph.png": "\u4e38",
+    "DsEJTV.png": "\u547b",
+    "dUrJvn.png": "\u819c",
+    "Ea3lho.png": "\u81c0",
+    "EboGWZ.png": "\u80a0",
+    "eifoua.png": "\u5b55",
+    "EiUhlF.png": "\u5957",
+    "ENwWoX.png": "\u4e71",
+    "EQEgJx.png": "\u6469",
+    "EQiUab.png": "\u88e4",
+    "er8NJ7.png": "\u542e",
+    "F0WoiN.png": "\u5177",
+    "f1YTv0.png": "\u6f6e",
+    "f2N1vL.png": "\u5978",
+    "F3nlmb.png": "\u88e4",
+    "F6lW1R.png": "\u80bf",
+    "f60BEY.png": "\u5c3f",
+    "f461mD.png": "\u6839",
+    "fd6C8F.png": "\u9e21",
+    "Fdz1Vc.png": "\u58c1",
+    "FetNxM.png": "\u5c4c",
+    "FfxOzl.png": "\u88f8",
+    "Fge27m.png": "\u8404",
+    "fGpEWq.png": "\u547b",
+    "Fl20Ip.png": "\u9f9f",
+    "fNXZyj.png": "\u6234",
+    "fRmx68.png": "\u90e8",
+    "fSdsL1.png": "\u88c6",
+    "FT9nI5.png": "\u83ca",
+    "FVVqzv.png": "\u86cb",
+    "FwjZJi.png": "\u5438",
+    "fX4WIp.png": "\u4f26",
+    "FXgFwc.png": "\u63d2",
+    "FXmf8I.png": "\u647a",
+    "fxPcW3.png": "\u6d1e",
+    "g2jVxn.png": "\u808f",
+    "gb3LOX.png": "\u80ef",
+    "gDVng6.png": "\u5ba0",
+    "gImiVY.png": "\u5f04",
+    "gJDFQC.png": "\u8214",
+    "gJDG8l.png": "\u5b55",
+    "GJodYn.png": "\u62d4",
+    "GmLjKa.png": "\u5c09",
+    "gNlJMc.png": "\u68cd",
+    "GppocX.png": "\u914d",
+    "gsRjtr.png": "\u67f1",
+    "GTOAc4.png": "\u633a",
+    "GzjpTS.png": "\u7cbe",
+    "h8zRxr.png": "\u80a1",
+    "H17DtI.png": "\u5c41",
+    "ha14XV.png": "\u89e6",
+    "hatLmR.png": "\u81c0",
+    "hbrRIS.png": "\u857e",
+    "hC4NbQ.png": "\u777e",
+    "hG0SRP.png": "\u64e6",
+    "HhNUaw.png": "\u854a",
+    "hKjWPG.png": "\u64b8",
+    "Hn8Afh.png": "\u74e3",
+    "hngWaZ.png": "\u5438",
+    "htV3uv.png": "\u58c1",
+    "hVaVng.png": "\u6309",
+    "HVHPCy.png": "\u74e3",
+    "hVwy7k.png": "\u8214",
+    "i4tyrQ.png": "\u830e",
+    "i5s28n.png": "\u4f26",
+    "IAloq6.png": "\u542e",
+    "ICHARH.png": "\u6237",
+    "icI6Ey.png": "\u81c0",
+    "iCRh88.png": "\u68d2",
+    "Iej2pu.png": "\u5993",
+    "IkqJmu.png": "\u8650",
+    "imVjMj.png": "\u4e73",
+    "iNIMEL.png": "\u86cb",
+    "IOjnEP.png": "\u6b22",
+    "ip6KUM.png": "\u79bd",
+    "IPC2R8.png": "\u9e21",
+    "ipVGiA.png": "\u6345",
+    "IpYNG3.png": "\u5974",
+    "ITUjFq.png": "\u76ae",
+    "ixiion.png": "\u90e8",
+    "IZcCzq.png": "\u871c",
+    "IzJ4WG.png": "\u830e",
+    "J1CBtB.png": "\u8df3",
+    "j9C44i.png": "\u70eb",
+    "JCQtUs.png": "\u4e73",
+    "JEcz0E.png": "\u871c",
+    "JfPEEe.png": "\u4f26",
+    "jHi6Vu.png": "\u9f9f",
+    "jjfR6D.png": "\u8461",
+    "jktdia.png": "\u64e6",
+    "JlkuRa.png": "\u8404",
+    "jnAvXp.png": "\u5ead",
+    "jnCCk9.png": "\u6cc4",
+    "jvj3DG.png": "\u786c",
+    "Jy4pAI.png": "\u74e3",
+    "jZyPEL.png": "\u5b55",
+    "K2AtMQ.png": "\u9a9a",
+    "K2jjT6.png": "\u857e",
+    "k6X0xy.png": "\u80bf",
+    "k9h8DR.png": "\u903c",
+    "k9zXwG.png": "\u723d",
+    "KalRLt.png": "\u6da6",
+    "kawcM7.png": "\u68cd",
+    "kdsEv6.png": "\u5f04",
+    "KdwL4R.png": "\u86cb",
+    "kPG0vR.png": "\u704c",
+    "KSqmoM.png": "\u6db2",
+    "kTCaM9.png": "\u86cb",
+    "kVLLjB.png": "\u8361",
+    "kygbuo.png": "\u725b",
+    "kZDlEj.png": "\u7ba1",
+    "l0BNLC.png": "\u6ccc",
+    "l1Dmft.png": "\u725b",
+    "L1yl45.png": "\u5c04",
+    "L3a5ft.png": "\u56ca",
+    "L3LaNQ.png": "\u5439",
+    "L9F6F8.png": "\u50ac",
+    "LB1WMg.png": "\u64cd",
+    "LBPqYj.png": "\u6d1e",
+    "LDjbfQ.png": "\u5c3f",
+    "ldo7FB.png": "\u7d27",
+    "lErO3o.png": "\u67f1",
+    "LFBZKA.png": "\u59d0",
+    "lfGqdb.png": "\u68d2",
+    "lGKjej.png": "\u5993",
+    "LjemA3.png": "\u809b",
+    "Ljh7qo.png": "\u63d2",
+    "LJSiT5.png": "\u5c44",
+    "Lk5uQy.png": "\u6838",
+    "lngKEo.png": "\u55b7",
+    "lOfDdC.png": "\u4e38",
+    "Lsq92O.png": "\u541f",
+    "LsyPdc.png": "\u541f",
+    "lVbZkd.png": "\u634f",
+    "lVMTQu.png": "\u654f",
+    "LVmymH.png": "\u80a0",
+    "lyYo4Y.png": "\u547b",
+    "lZtabT.png": "\u9634",
+    "M3VjF9.png": "\u64b8",
+    "m4yvu3.png": "\u7a74",
+    "M8bV3k.png": "\u56ca",
+    "MBhDEi.png": "\u75d2",
+    "MC5lZn.png": "\u585e",
+    "Mc8JM6.png": "\u62d4",
+    "mD7hPS.png": "\u5c41",
+    "mExNDV.png": "\u704c",
+    "MKapwC.png": "\u80a5",
+    "mKxUHv.png": "\u64e6",
+    "Mo31Ax.png": "\u6bdb",
+    "mRFQJQ.png": "\u5589",
+    "MsUFfR.png": "\u6b96",
+    "mTzxxd.png": "\u7f1d",
+    "n2ufBJ.png": "\u5978",
+    "n3oOgA.png": "\u6345",
+    "n9j6EC.png": "\u5ead",
+    "n49ZFH.png": "\u88c6",
+    "nCrl80.png": "\u762b",
+    "NDlwhm.png": "\u817a",
+    "nE1Y7y.png": "\u762b",
+    "neIgqc.png": "\u5439",
+    "NeKVfz.png": "\u6170",
+    "NHH9A1.png": "\u777e",
+    "NKN1rk.png": "\u542e",
+    "NKUSkP.png": "\u58c1",
+    "NlfTkc.png": "\u5c44",
+    "NlZDDQ.png": "\u817f",
+    "nmoPI2.png": "\u4e38",
+    "NnfPEJ.png": "\u9f9f",
+    "NP33MO.png": "\u6c41",
+    "NQ7oga.png": "\u611f",
+    "nsDzuq.png": "\u90a6",
+    "NsIwni.png": "\u5de8",
+    "oaLZIg.png": "\u777e",
+    "oC3HDZ.png": "\u7c97",
+    "OFx7ZU.png": "\u88f8",
+    "OHU6tX.png": "\u6db2",
+    "olFcqI.png": "\u5e72",
+    "OMdbeV.png": "\u819c",
+    "On4f9C.png": "\u7b4b",
+    "oncaJq.png": "\u76ae",
+    "Oo8iWN.png": "\u6309",
+    "OUWXqz.png": "\u6625",
+    "OuXWg2.png": "\u4e38",
+    "ozF5Kr.png": "\u8650",
+    "p0bqZi.png": "\u5c44",
+    "p1H9RN.png": "\u5c04",
+    "p5QCRV.png": "\u6ed1",
+    "p5zEbo.png": "\u857e",
+    "P43O6G.png": "\u6234",
+    "PalsBW.png": "\u5974",
+    "PcAvOY.png": "\u5ae9",
+    "pHfPTa.png": "\u5de8",
+    "pi2z0b.png": "\u7b4b",
+    "plFlPb.png": "\u68cd",
+    "pNPlu5.png": "\u704c",
+    "PnZNBC.png": "\u6deb",
+    "pQ1W2F.png": "\u88e4",
+    "PX3jJ6.png": "\u6ccc",
+    "q14YbK.png": "\u9876",
+    "Qc9LRh.png": "\u5598",
+    "qe2YZi.png": "\u63c9",
+    "qEy1kT.png": "\u90e8",
+    "Qfs9DA.png": "\u50ac",
+    "Qg8Qwg.png": "\u857e",
+    "qJ1X2h.png": "\u59d0",
+    "qm0ZBO.png": "\u6170",
+    "QmcP4w.png": "\u654f",
+    "Qn3xBM.png": "\u5ae9",
+    "qNGvlk.png": "\u5c3f",
+    "qPhrVf.png": "\u5904",
+    "qPX1Ef.png": "\u542b",
+    "qr8InI.png": "\u80a5",
+    "QtLIGq.png": "\u6db2",
+    "QtSnzR.png": "\u5598",
+    "Qv3JbY.png": "\u7f1d",
+    "QYF65i.png": "\u7b4b",
+    "Qz4Txd.png": "\u81c0",
+    "qzdvCv.png": "\u5df4",
+    "r7NsvF.png": "\u5f04",
+    "r8oBsP.png": "\u9e21",
+    "r9Gw4X.png": "\u6838",
+    "R65BZO.png": "\u8214",
+    "Rf7Jf6.png": "\u6469",
+    "Rho2GL.png": "\u75d2",
+    "rlVLx7.png": "\u7231",
+    "Rm3wex.png": "\u55b7",
+    "RmrhKk.png": "\u8214",
+    "RMWsBY.png": "\u654f",
+    "rn9y6F.png": "\u585e",
+    "RnfJ8h.png": "\u67f1",
+    "RP5Oud.png": "\u5598",
+    "Rp5tmA.png": "\u64cd",
+    "rpSSYK.png": "\u80ef",
+    "rQKjMD.png": "\u6bdb",
+    "RrXcE9.png": "\u5668",
+    "RyL5jk.png": "\u6c41",
+    "s67RPe.png": "\u70eb",
+    "s95kq4.png": "\u6e7f",
+    "sdXZMk.png": "\u52c3",
+    "SGxBy7.png": "\u5c41",
+    "smhB8j.png": "\u5c04",
+    "Srgobp.png": "\u6237",
+    "srlW2t.png": "\u6d41",
+    "ST21xu.png": "\u6d53",
+    "STzFJz.png": "\u7c97",
+    "sugwEw.png": "\u5976",
+    "SzADhL.png": "\u80bf",
+    "T5yzvl.png": "\u6c41",
+    "t6K8rK.png": "\u6027",
+    "tAIV6q.png": "\u64cd",
+    "TCFRca.png": "\u68d2",
+    "te79V0.png": "\u68d2",
+    "tjbhCV.png": "\u5ae9",
+    "tNFwEz.png": "\u5589",
+    "tPTX1h.png": "\u80a5",
+    "tsQMiL.png": "\u5439",
+    "TUZb1W.png": "\u6b32",
+    "TWFykG.png": "\u5993",
+    "twLxYU.png": "\u8f6f",
+    "tXNaZ2.png": "\u878d",
+    "U3bhkh.png": "\u9a9a",
+    "u6K6ci.png": "\u6b22",
+    "u9Tibu.png": "\u5185",
+    "Ua2WwL.png": "\u5a07",
+    "Uai2en.png": "\u5f3a",
+    "UeWULF.png": "\u5ead",
+    "UfXSsz.png": "\u540e",
+    "ui0T5v.png": "\u79bd",
+    "UqClGF.png": "\u80a1",
+    "Urv1FM.png": "\u80bf",
+    "uwXRHd.png": "\u55b7",
+    "v4iqzP.png": "\u7f1d",
+    "vAdmoL.png": "\u786c",
+    "VhA8GI.png": "\u5ae9",
+    "VHsdy1.png": "\u6838",
+    "vjOssT.png": "\u585e",
+    "vkYfGf.png": "\u9b54",
+    "vMmUqq.png": "\u5974",
+    "VnvOwV.png": "\u6da6",
+    "VoAjiw.png": "\u6e7f",
+    "vrtXeW.png": "\u88c6",
+    "VUbefT.png": "\u8f6e",
+    "vulCqw.png": "\u6267",
+    "VYaPfX.png": "\u7a74",
+    "VyJ2cS.png": "\u90a6",
+    "W06Vg1.png": "\u5de8",
+    "W7cCwn.png": "\u6345",
+    "W9Y9vD.png": "\u820c",
+    "wa54S5.png": "\u542b",
+    "FNq1zS.png": "\u868C",
+    "DDpMPK.png": "\u868C",
+    "vDbU8w.png": "\u817A",
+    "SSoXSL.png": "\u8461",
+    "YB6iOy.png": "\u817A",
+    "kMqpt6.png": "\u96CF",
+    "5RwMUT.png": "\u854A",
+    "b94JXX.png": "\u8114",
+    "oxFS6J.png": "\u8114",
+    "H53jMR.png": "\u96CF",
+};
+
+;// CONCATENATED MODULE: ./src/rules/special/reprint/haitangtxt.ts
+
+
+
+
+
+
+
+
+
+
+function getClass(replaceFunction) {
+    return class extends rules/* BaseRuleClass */.c {
+        constructor() {
+            super();
+            this.imageMode = "TM";
+            this.nsfw = true;
+        }
+        async bookParse() {
+            const bookUrl = document.querySelector("div.currency_head > h1 > a").href;
+            const bookId = bookUrl.split("/").slice(-2, -1)[0];
+            loglevel_default().debug(`[chapter]请求 ${bookUrl}`);
+            const dom = await (0,http/* getHtmlDOM */.dL)(bookUrl, "UTF-8");
+            const bookname = dom.querySelector("div.cataloginfo > h3").innerText.trim();
+            const author = dom.querySelector(".infotype > p:nth-child(1) > a:nth-child(1)").innerText.trim();
+            const introDom = dom.querySelector(".intro");
+            const [introduction, introductionHTML] = await (0,rule/* introDomHandle */.SN)(introDom, (introDomI) => {
+                (0,lib_dom.rm)("span:nth-child(1)", false, introDomI);
+                return introDomI;
+            });
+            const additionalMetadate = {};
+            const chapters = [];
+            const getMaxPageNumber = () => {
+                const pageDom = document.querySelector("div.page:nth-child(6)");
+                if (pageDom) {
+                    const childNodes = Array.from(pageDom.childNodes);
+                    const _maxPageNumber = childNodes
+                        .slice(-1)[0]
+                        .textContent?.match(/第\d+\/(\d+)页/);
+                    if (_maxPageNumber) {
+                        return _maxPageNumber[1];
+                    }
+                }
+            };
+            const getIndexUrls = () => {
+                const indexUrlsI = [];
+                const _maxPageNumber = getMaxPageNumber();
+                if (_maxPageNumber === undefined) {
+                    throw new Error("getMaxPageNumber return null ");
+                }
+                const maxPageNumber = parseInt(_maxPageNumber);
+                for (let i = 1; i <= maxPageNumber; i++) {
+                    const indexUrl = [
+                        document.location.origin,
+                        document.location.pathname.split("/")[1],
+                        `${bookId}_${i}`,
+                    ].join("/") + "/";
+                    indexUrlsI.push(indexUrl);
+                }
+                return indexUrlsI;
+            };
+            const indexUrls = getIndexUrls();
+            let lis = [];
+            for (const indexUrl of indexUrls) {
+                loglevel_default().debug(`[chapter]请求 ${indexUrl}`);
+                const doc = await (0,http/* getHtmlDOM */.dL)(indexUrl, "UTF-8");
+                const ul = doc.querySelector("ul.chapters");
+                if (ul?.childElementCount) {
+                    lis = lis.concat(Array.from(ul.children));
+                }
+            }
+            const chapterList = lis.filter((obj) => obj !== undefined);
+            let chapterNumber = 0;
+            for (const node of chapterList) {
+                chapterNumber++;
+                const a = node.firstElementChild;
+                const chapterName = a.innerText;
+                const chapterUrl = a.href;
+                const isVIP = false;
+                const isPaid = false;
+                const chapter = new Chapter/* Chapter */.W({
+                    bookUrl,
+                    bookname,
+                    chapterUrl,
+                    chapterNumber,
+                    chapterName,
+                    isVIP,
+                    isPaid,
+                    sectionName: null,
+                    sectionNumber: null,
+                    sectionChapterNumber: null,
+                    chapterParse: this.chapterParse,
+                    charset: this.charset,
+                    options: {},
+                });
+                chapters.push(chapter);
+            }
+            const book = new Book/* Book */.f({
+                bookUrl,
+                bookname,
+                author,
+                introduction,
+                introductionHTML,
+                additionalMetadate,
+                chapters,
+            });
+            return book;
+        }
+        async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+            function contentAppend() {
+                function UpWz(m, i) {
+                    let k = Math.ceil((i + 1) % code);
+                    k = Math.ceil(m - k);
+                    return k;
+                }
+                const _e = dom.getElementsByTagName("meta")[7].getAttribute("content");
+                const contentRaw = dom.querySelector("#articlecontent");
+                let codeurl;
+                let code;
+                const _codeurl = dom
+                    .getElementsByTagName("script")[1]
+                    .innerText.trim()
+                    .match(/"(http.+)"/);
+                if (_codeurl) {
+                    codeurl = _codeurl[1];
+                    const _code = new URL(codeurl).searchParams.get("code");
+                    if (_code) {
+                        code = parseInt(_code);
+                    }
+                }
+                if (_e) {
+                    const e = atob(_e)
+                        .split(/[A-Z]+%/)
+                        .map((v) => parseInt(v));
+                    const childNode = [];
+                    if (Array.from(dom.querySelectorAll("script")).filter((s) => s.src.includes("/17mb/js/article.js")).length) {
+                        for (let i = 0; i < e.length; i++) {
+                            const k = UpWz(e[i], i);
+                            childNode[k] = contentRaw.childNodes[i];
+                        }
+                        for (const node of childNode) {
+                            if (node.nodeType !== 1) {
+                                continue;
+                            }
+                            if (!(node.innerText.includes("本章尚未完结,请") ||
+                                node.innerText.includes("本章已阅读完毕"))) {
+                                content.appendChild(node);
+                            }
+                        }
+                        return;
+                    }
+                }
+                for (const node of Array.from(contentRaw.childNodes)) {
+                    if (!(node.innerText.includes("本章尚未完结,请") ||
+                        node.innerText.includes("本章已阅读完毕"))) {
+                        content.appendChild(node);
+                    }
+                }
+                return;
+            }
+            let nowUrl = chapterUrl;
+            let dom = await (0,http/* getHtmlDOM */.dL)(chapterUrl, charset);
+            const content = document.createElement("div");
+            let flag = false;
+            do {
+                contentAppend();
+                const nextLink = dom.querySelector(".novelbutton .p1.p3 > a:nth-child(1)").href;
+                if (new URL(nextLink).pathname.includes("_")) {
+                    if (nextLink !== nowUrl) {
+                        flag = true;
+                    }
+                    else {
+                        loglevel_default().error("网站页面出错，URL： " + nowUrl);
+                        flag = false;
+                    }
+                }
+                else {
+                    flag = false;
+                }
+                if (flag) {
+                    nowUrl = nextLink;
+                    dom = await (0,http/* getHtmlDOM */.dL)(nextLink, charset);
+                }
+            } while (flag);
+            if (content) {
+                const { dom: oldDom, images: finalImages } = await (0,cleanDOM/* cleanDOM */.zM)(content, "TM", { keepImageName: true });
+                const _newDom = document.createElement("div");
+                _newDom.innerHTML = replaceFunction(content.innerHTML);
+                const { dom: newDom, text: finalText } = await (0,cleanDOM/* cleanDOM */.zM)(_newDom, "TM", {
+                    keepImageName: true,
+                });
+                const fontStyleDom = document.createElement("style");
+                fontStyleDom.innerHTML = `.hide { display: none; }`;
+                oldDom.className = "hide";
+                const finalDom = document.createElement("div");
+                finalDom.appendChild(fontStyleDom);
+                finalDom.appendChild(oldDom);
+                finalDom.appendChild(newDom);
+                return {
+                    chapterName,
+                    contentRaw: content,
+                    contentText: finalText,
+                    contentHTML: finalDom,
+                    contentImages: finalImages,
+                    additionalMetadate: null,
+                };
+            }
+            else {
+                return {
+                    chapterName,
+                    contentRaw: null,
+                    contentText: null,
+                    contentHTML: null,
+                    contentImages: null,
+                    additionalMetadate: null,
+                };
+            }
+        }
+    };
+}
+const haitangtxt = () => getClass(replaceHaitangtxtImage);
+const yuzhaige = () => getClass(replaceYuzhaigeImage);
+
+
+/***/ }),
+
 /***/ "./src/rules/special/reprint/hetushu.ts":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -18689,13 +18689,13 @@ async function getRule() {
             break;
         }
         case "m.haitangtxt.net": {
-            const { haitangtxt } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/duplicate/haitangtxt.ts"));
+            const { haitangtxt } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/reprint/haitangtxt.ts"));
             ruleClass = haitangtxt();
             break;
         }
         case "m.yuzhaige.cc":
         case "m.yushuge123.com": {
-            const { yuzhaige } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/duplicate/haitangtxt.ts"));
+            const { yuzhaige } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/reprint/haitangtxt.ts"));
             ruleClass = yuzhaige();
             break;
         }
