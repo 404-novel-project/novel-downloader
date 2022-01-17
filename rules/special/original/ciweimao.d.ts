@@ -5,3 +5,19 @@ export declare class Ciweimao extends BaseRuleClass {
     bookParse(): Promise<Book>;
     chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean, charset: string, options: object): Promise<ChapterParseObject>;
 }
+export declare class Shubl extends BaseRuleClass {
+    constructor();
+    bookParse(): Promise<Book>;
+    chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean, charset: string, options: object): Promise<ChapterParseObject>;
+}
+export declare function getChapter({ chapterUrl, chapterName, isVIP, isPaid, charset, options, rootPath, parentWidth, setFontSize, }: {
+    chapterUrl: string;
+    chapterName: string | null;
+    isVIP: boolean;
+    isPaid: boolean;
+    charset: string;
+    options: object;
+    rootPath: string;
+    parentWidth: number;
+    setFontSize: string;
+}): Promise<ChapterParseObject>;

@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.8.2.538
+// @version        4.8.2.540
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -227,6 +227,7 @@
 // @exclude        *://dijiubook.net/*_*/*.html
 // @exclude        *://ncode.syosetu.com/*/*/
 // @exclude        *://novel18.syosetu.com/*/*/
+// @exclude        *://manhua.dmzj.com
 // @grant          unsafeWindow
 // @grant          GM_info
 // @grant          GM_xmlhttpRequest
@@ -305,7 +306,6 @@
 // @connect        *
 // @require        https://cdn.jsdelivr.net/npm/crypto-js@4.1.1/crypto-js.js#sha512-NQVmLzNy4Lr5QTrmXvq/WzTMUnRHmv7nyIT/M6LyGPBS+TIeRxZ+YQaqWxjpRpvRMQSuYPQURZz/+pLi81xXeA==
 // @require        https://cdn.jsdelivr.net/npm/fflate@0.7.2/umd/index.js#sha512-b4i2Ut2Tho5Qrzt3pWKCkt9Q+4ECSNPdX0JsVzudNFXR2kIbV0ndgkm3fDlGvp2A6JG9tcH3ND38y+y0DrM/jQ==
-// @require        https://cdn.jsdelivr.net/npm/loglevel@1.8.0/lib/loglevel.js#sha512-95U0EjHdDBH1jc1rMsOaY4CV3tVISgHr+7i5rFVvhWDRbsj2o0RlEdWMmDmQzoR8lJV7/6VbPZT6c3pQvkW+0Q==
 // @require        https://cdn.jsdelivr.net/npm/nunjucks@3.2.3/browser/nunjucks.min.js#sha512-Uj8C5szr1tnKPNZb6ps5gFYtTGskzsUCiwY35QP/s2JIExZl7iYNletcmOJ8D6ocuaMRi9JGVrWRePaX9raujA==
 // @require        https://cdn.jsdelivr.net/npm/vue@3.2.27/dist/vue.global.prod.js#sha512-R1lmaMsGzgFKPpUNmhMMfsIg9H7Rld3F9R/BWHtloxZnCjGw6SLv6Mu6CQAgk/hPaX9/6dpPHh1qZraXZY3Z5g==
 // @downloadURL    https://github.com/yingziwu/novel-downloader/raw/gh-pages/bundle-greasyfork.user.js
@@ -3097,6 +3097,310 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 /***/ }),
 
+/***/ "./node_modules/loglevel/lib/loglevel.js":
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*
+* loglevel - https://github.com/pimterry/loglevel
+*
+* Copyright (c) 2013 Tim Perry
+* Licensed under the MIT license.
+*/
+(function (root, definition) {
+    "use strict";
+    if (true) {
+        !(__WEBPACK_AMD_DEFINE_FACTORY__ = (definition),
+		__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+		(__WEBPACK_AMD_DEFINE_FACTORY__.call(exports, __webpack_require__, exports, module)) :
+		__WEBPACK_AMD_DEFINE_FACTORY__),
+		__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else {}
+}(this, function () {
+    "use strict";
+
+    // Slightly dubious tricks to cut down minimized file size
+    var noop = function() {};
+    var undefinedType = "undefined";
+    var isIE = (typeof window !== undefinedType) && (typeof window.navigator !== undefinedType) && (
+        /Trident\/|MSIE /.test(window.navigator.userAgent)
+    );
+
+    var logMethods = [
+        "trace",
+        "debug",
+        "info",
+        "warn",
+        "error"
+    ];
+
+    // Cross-browser bind equivalent that works at least back to IE6
+    function bindMethod(obj, methodName) {
+        var method = obj[methodName];
+        if (typeof method.bind === 'function') {
+            return method.bind(obj);
+        } else {
+            try {
+                return Function.prototype.bind.call(method, obj);
+            } catch (e) {
+                // Missing bind shim or IE8 + Modernizr, fallback to wrapping
+                return function() {
+                    return Function.prototype.apply.apply(method, [obj, arguments]);
+                };
+            }
+        }
+    }
+
+    // Trace() doesn't print the message in IE, so for that case we need to wrap it
+    function traceForIE() {
+        if (console.log) {
+            if (console.log.apply) {
+                console.log.apply(console, arguments);
+            } else {
+                // In old IE, native console methods themselves don't have apply().
+                Function.prototype.apply.apply(console.log, [console, arguments]);
+            }
+        }
+        if (console.trace) console.trace();
+    }
+
+    // Build the best logging method possible for this env
+    // Wherever possible we want to bind, not wrap, to preserve stack traces
+    function realMethod(methodName) {
+        if (methodName === 'debug') {
+            methodName = 'log';
+        }
+
+        if (typeof console === undefinedType) {
+            return false; // No method possible, for now - fixed later by enableLoggingWhenConsoleArrives
+        } else if (methodName === 'trace' && isIE) {
+            return traceForIE;
+        } else if (console[methodName] !== undefined) {
+            return bindMethod(console, methodName);
+        } else if (console.log !== undefined) {
+            return bindMethod(console, 'log');
+        } else {
+            return noop;
+        }
+    }
+
+    // These private functions always need `this` to be set properly
+
+    function replaceLoggingMethods(level, loggerName) {
+        /*jshint validthis:true */
+        for (var i = 0; i < logMethods.length; i++) {
+            var methodName = logMethods[i];
+            this[methodName] = (i < level) ?
+                noop :
+                this.methodFactory(methodName, level, loggerName);
+        }
+
+        // Define log.log as an alias for log.debug
+        this.log = this.debug;
+    }
+
+    // In old IE versions, the console isn't present until you first open it.
+    // We build realMethod() replacements here that regenerate logging methods
+    function enableLoggingWhenConsoleArrives(methodName, level, loggerName) {
+        return function () {
+            if (typeof console !== undefinedType) {
+                replaceLoggingMethods.call(this, level, loggerName);
+                this[methodName].apply(this, arguments);
+            }
+        };
+    }
+
+    // By default, we use closely bound real methods wherever possible, and
+    // otherwise we wait for a console to appear, and then try again.
+    function defaultMethodFactory(methodName, level, loggerName) {
+        /*jshint validthis:true */
+        return realMethod(methodName) ||
+               enableLoggingWhenConsoleArrives.apply(this, arguments);
+    }
+
+    function Logger(name, defaultLevel, factory) {
+      var self = this;
+      var currentLevel;
+      defaultLevel = defaultLevel == null ? "WARN" : defaultLevel;
+
+      var storageKey = "loglevel";
+      if (typeof name === "string") {
+        storageKey += ":" + name;
+      } else if (typeof name === "symbol") {
+        storageKey = undefined;
+      }
+
+      function persistLevelIfPossible(levelNum) {
+          var levelName = (logMethods[levelNum] || 'silent').toUpperCase();
+
+          if (typeof window === undefinedType || !storageKey) return;
+
+          // Use localStorage if available
+          try {
+              window.localStorage[storageKey] = levelName;
+              return;
+          } catch (ignore) {}
+
+          // Use session cookie as fallback
+          try {
+              window.document.cookie =
+                encodeURIComponent(storageKey) + "=" + levelName + ";";
+          } catch (ignore) {}
+      }
+
+      function getPersistedLevel() {
+          var storedLevel;
+
+          if (typeof window === undefinedType || !storageKey) return;
+
+          try {
+              storedLevel = window.localStorage[storageKey];
+          } catch (ignore) {}
+
+          // Fallback to cookies if local storage gives us nothing
+          if (typeof storedLevel === undefinedType) {
+              try {
+                  var cookie = window.document.cookie;
+                  var location = cookie.indexOf(
+                      encodeURIComponent(storageKey) + "=");
+                  if (location !== -1) {
+                      storedLevel = /^([^;]+)/.exec(cookie.slice(location))[1];
+                  }
+              } catch (ignore) {}
+          }
+
+          // If the stored level is not valid, treat it as if nothing was stored.
+          if (self.levels[storedLevel] === undefined) {
+              storedLevel = undefined;
+          }
+
+          return storedLevel;
+      }
+
+      function clearPersistedLevel() {
+          if (typeof window === undefinedType || !storageKey) return;
+
+          // Use localStorage if available
+          try {
+              window.localStorage.removeItem(storageKey);
+              return;
+          } catch (ignore) {}
+
+          // Use session cookie as fallback
+          try {
+              window.document.cookie =
+                encodeURIComponent(storageKey) + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
+          } catch (ignore) {}
+      }
+
+      /*
+       *
+       * Public logger API - see https://github.com/pimterry/loglevel for details
+       *
+       */
+
+      self.name = name;
+
+      self.levels = { "TRACE": 0, "DEBUG": 1, "INFO": 2, "WARN": 3,
+          "ERROR": 4, "SILENT": 5};
+
+      self.methodFactory = factory || defaultMethodFactory;
+
+      self.getLevel = function () {
+          return currentLevel;
+      };
+
+      self.setLevel = function (level, persist) {
+          if (typeof level === "string" && self.levels[level.toUpperCase()] !== undefined) {
+              level = self.levels[level.toUpperCase()];
+          }
+          if (typeof level === "number" && level >= 0 && level <= self.levels.SILENT) {
+              currentLevel = level;
+              if (persist !== false) {  // defaults to true
+                  persistLevelIfPossible(level);
+              }
+              replaceLoggingMethods.call(self, level, name);
+              if (typeof console === undefinedType && level < self.levels.SILENT) {
+                  return "No console available for logging";
+              }
+          } else {
+              throw "log.setLevel() called with invalid level: " + level;
+          }
+      };
+
+      self.setDefaultLevel = function (level) {
+          defaultLevel = level;
+          if (!getPersistedLevel()) {
+              self.setLevel(level, false);
+          }
+      };
+
+      self.resetLevel = function () {
+          self.setLevel(defaultLevel, false);
+          clearPersistedLevel();
+      };
+
+      self.enableAll = function(persist) {
+          self.setLevel(self.levels.TRACE, persist);
+      };
+
+      self.disableAll = function(persist) {
+          self.setLevel(self.levels.SILENT, persist);
+      };
+
+      // Initialize with the right level
+      var initialLevel = getPersistedLevel();
+      if (initialLevel == null) {
+          initialLevel = defaultLevel;
+      }
+      self.setLevel(initialLevel, false);
+    }
+
+    /*
+     *
+     * Top-level API
+     *
+     */
+
+    var defaultLogger = new Logger();
+
+    var _loggersByName = {};
+    defaultLogger.getLogger = function getLogger(name) {
+        if ((typeof name !== "symbol" && typeof name !== "string") || name === "") {
+          throw new TypeError("You must supply a name when creating a logger.");
+        }
+
+        var logger = _loggersByName[name];
+        if (!logger) {
+          logger = _loggersByName[name] = new Logger(
+            name, defaultLogger.getLevel(), defaultLogger.methodFactory);
+        }
+        return logger;
+    };
+
+    // Grab the current global log variable in case of overwrite
+    var _log = (typeof window !== undefinedType) ? window.log : undefined;
+    defaultLogger.noConflict = function() {
+        if (typeof window !== undefinedType &&
+               window.log === defaultLogger) {
+            window.log = _log;
+        }
+
+        return defaultLogger;
+    };
+
+    defaultLogger.getLoggers = function getLoggers() {
+        return _loggersByName;
+    };
+
+    // ES6 default export, for compatibility
+    defaultLogger['default'] = defaultLogger;
+
+    return defaultLogger;
+}));
+
+
+/***/ }),
+
 /***/ "./node_modules/mime-db/index.js":
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
@@ -3576,7 +3880,7 @@ async function _GM_deleteValue(name) {
 /* harmony export */ });
 /* harmony import */ var _main_Attachment__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/main/Attachment.ts");
 /* harmony import */ var _hash__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/hash.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _misc__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/misc.ts");
 
@@ -3662,7 +3966,7 @@ function getLastPart(u) {
 /* harmony export */   "FZ": () => (/* binding */ convertFixWidth),
 /* harmony export */   "Kg": () => (/* binding */ isFixWidth)
 /* harmony export */ });
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _attachments__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/attachments.ts");
 /* harmony import */ var _dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/dom.ts");
@@ -4895,7 +5199,7 @@ async function calculateSha1(blob) {
 /* harmony export */   "jt": () => (/* binding */ getFrameContent)
 /* harmony export */ });
 /* unused harmony exports getText, ggetHtmlDomWithRetry */
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _setting__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/setting.ts");
 /* harmony import */ var _GM__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/GM.ts");
@@ -5114,7 +5418,7 @@ async function getFrameContent(url) {
 /* harmony export */   "o": () => (/* binding */ storageAvailable),
 /* harmony export */   "Z": () => (/* binding */ LocalStorageExpired)
 /* harmony export */ });
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_0__);
 
 function storageAvailable(type) {
@@ -5376,7 +5680,7 @@ async function gfetchAndParse(url, charset, init, patch, options) {
 /* harmony export */   "uh": () => (/* binding */ deDuplicate)
 /* harmony export */ });
 /* unused harmony export reIndex */
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _cleanDOM__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/cleanDOM.ts");
 /* harmony import */ var _http__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/http.ts");
@@ -5484,11 +5788,24 @@ function centerDetct(element) {
     return [true, element, percentY];
 }
 function reIndex(chapters) {
-    let i = 0;
     chapters = chapters.sort((a, b) => a.chapterNumber - b.chapterNumber);
+    let i = 0;
+    let sectionName;
+    let s = 0;
+    let si = 0;
     for (const chapter of chapters) {
         i++;
         chapter.chapterNumber = i;
+        if (chapter.sectionName) {
+            if (chapter.sectionName !== sectionName) {
+                sectionName = chapter.sectionName;
+                s++;
+                si = 0;
+            }
+            si++;
+            chapter.sectionNumber = s;
+            chapter.sectionChapterNumber = si;
+        }
     }
     return chapters;
 }
@@ -5540,7 +5857,7 @@ function deDuplicate(chapters) {
 /* harmony export */ });
 /* harmony import */ var file_saver__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/file-saver/dist/FileSaver.min.js");
 /* harmony import */ var file_saver__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(file_saver__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var loglevel__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("loglevel");
+/* harmony import */ var loglevel__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 /* harmony import */ var loglevel__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(loglevel__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _setting__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/setting.ts");
 
@@ -5599,7 +5916,7 @@ function saveLogTextToFile() {
 /* harmony export */ });
 /* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/http.ts");
 /* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/misc.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _setting__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/setting.ts");
 /* harmony import */ var _main__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/main/main.ts");
@@ -5877,9 +6194,9 @@ function removeTrackParm(_url) {
     return url.href;
 }
 
-// EXTERNAL MODULE: external "log"
-var external_log_ = __webpack_require__("loglevel");
-var external_log_default = /*#__PURE__*/__webpack_require__.n(external_log_);
+// EXTERNAL MODULE: ./node_modules/loglevel/lib/loglevel.js
+var loglevel = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+var loglevel_default = /*#__PURE__*/__webpack_require__.n(loglevel);
 ;// CONCATENATED MODULE: ./src/main/Book.ts
 
 
@@ -5901,7 +6218,7 @@ class Book {
         this.introductionHTML = introductionHTML;
         this.additionalMetadate = additionalMetadate;
         this.chapters = chapters;
-        external_log_default().debug("[Book]初始化完成");
+        loglevel_default().debug("[Book]初始化完成");
     }
     set bookUrl(v) {
         this._bookUrl = removeTrackParm(v);
@@ -5943,7 +6260,7 @@ class Book {
 /* harmony export */   "W": () => (/* binding */ Chapter)
 /* harmony export */ });
 /* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/misc.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _setting__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/setting.ts");
 /* harmony import */ var _main__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/main/main.ts");
@@ -6118,9 +6435,9 @@ var attachments = __webpack_require__("./src/lib/attachments.ts");
 var misc = __webpack_require__("./src/lib/misc.ts");
 // EXTERNAL MODULE: ./src/log.ts
 var log = __webpack_require__("./src/log.ts");
-// EXTERNAL MODULE: external "log"
-var external_log_ = __webpack_require__("loglevel");
-var external_log_default = /*#__PURE__*/__webpack_require__.n(external_log_);
+// EXTERNAL MODULE: ./node_modules/loglevel/lib/loglevel.js
+var loglevel = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+var loglevel_default = /*#__PURE__*/__webpack_require__.n(loglevel);
 // EXTERNAL MODULE: ./src/main/main.ts
 var main = __webpack_require__("./src/main/main.ts");
 // EXTERNAL MODULE: ./node_modules/file-saver/dist/FileSaver.min.js
@@ -6164,7 +6481,7 @@ class FflateZip {
     zipOut = new Blob([], { type: "application/zip" });
     savedZip;
     constructor(filename, stream, mimetype = "application/zip") {
-        external_log_default().info(`[fflateZip] filename: ${filename}, stream: ${stream}, streamSaver.supported: ${(StreamSaver_default()).supported}`);
+        loglevel_default().info(`[fflateZip] filename: ${filename}, stream: ${stream}, streamSaver.supported: ${(StreamSaver_default()).supported}`);
         const self = this;
         this.filename = filename;
         if ((StreamSaver_default()).supported) {
@@ -6181,8 +6498,8 @@ class FflateZip {
         }
         this.savedZip = new external_fflate_namespaceObject.Zip((err, dat, final) => {
             if (err) {
-                external_log_default().error(err);
-                external_log_default().trace(err);
+                loglevel_default().error(err);
+                loglevel_default().trace(err);
                 if (self.stream) {
                     writer.abort();
                 }
@@ -6197,28 +6514,28 @@ class FflateZip {
             if (final) {
                 if (self.stream) {
                     writer.close();
-                    external_log_default().info("[fflateZip] ZIP生成完毕");
+                    loglevel_default().info("[fflateZip] ZIP生成完毕");
                 }
                 else {
                     nonStream();
                 }
             }
             function nonStream() {
-                external_log_default().info("[fflateZip] ZIP生成完毕，文件大小：" + self.zipOut.size);
+                loglevel_default().info("[fflateZip] ZIP生成完毕，文件大小：" + self.zipOut.size);
                 try {
                     (0,FileSaver_min.saveAs)(self.zipOut, self.filename);
                     self.zipOut = new Blob([], { type: "application/zip" });
                 }
                 catch (error) {
-                    external_log_default().error("[fflateZip]" + error);
-                    external_log_default().trace(error);
+                    loglevel_default().error("[fflateZip]" + error);
+                    loglevel_default().trace(error);
                 }
             }
         });
     }
     async file(filename, fileBlob, nocompress = false) {
         if (this.filenameList.includes(filename)) {
-            external_log_default().warn(`filename ${filename} has existed on zip.`);
+            loglevel_default().warn(`filename ${filename} has existed on zip.`);
             return;
         }
         this.filenameList.push(filename);
@@ -6541,7 +6858,7 @@ class EPUB extends Options {
     }
     async addAttachment(attachment) {
         if (attachment.status === main/* Status.finished */.qb.finished && attachment.imageBlob) {
-            external_log_default().debug(`[save-epub]添加附件，文件名：${attachment.name}，对象`, attachment.imageBlob);
+            loglevel_default().debug(`[save-epub]添加附件，文件名：${attachment.name}，对象`, attachment.imageBlob);
             await this.epubZip.file(`OEBPS/${attachment.name}`, attachment.imageBlob);
             const item = this.contentOpf.createElement("item");
             item.id = attachment.name;
@@ -6553,11 +6870,11 @@ class EPUB extends Options {
             }
         }
         else if (attachment.status === main/* Status.saved */.qb.saved) {
-            external_log_default().debug(`[save-epub]附件${attachment.name}已添加`);
+            loglevel_default().debug(`[save-epub]附件${attachment.name}已添加`);
         }
         else {
-            external_log_default().warn(`[save-epub]添加附件${attachment.name}失败，该附件未完成或内容为空。`);
-            external_log_default().warn(attachment);
+            loglevel_default().warn(`[save-epub]添加附件${attachment.name}失败，该附件未完成或内容为空。`);
+            loglevel_default().warn(attachment);
         }
     }
     async addChapter(chapter, suffix = "") {
@@ -6565,7 +6882,7 @@ class EPUB extends Options {
         const chapterNumberToSave = this.getChapterNumberToSave(chapter, this.chapters);
         const chapterHtmlFileName = `No${chapterNumberToSave}Chapter${suffix}.xhtml`;
         chapter.chapterHtmlFileName = chapterHtmlFileName;
-        external_log_default().debug(`[save-epub]保存章HTML文件：${chapterName}`);
+        loglevel_default().debug(`[save-epub]保存章HTML文件：${chapterName}`);
         const chapterHTMLBlob = this.genChapterHtmlFile(chapter);
         await this.epubZip.file(`OEBPS/${chapterHtmlFileName}`, chapterHTMLBlob);
         const item = this.contentOpf.createElement("item");
@@ -6576,7 +6893,7 @@ class EPUB extends Options {
             this.manifest.appendChild(item);
         }
         if (chapter.contentImages && chapter.contentImages.length !== 0) {
-            external_log_default().debug(`[save-epub]保存章节附件：${chapterName}`);
+            loglevel_default().debug(`[save-epub]保存章节附件：${chapterName}`);
             for (const attachment of chapter.contentImages) {
                 await this.addAttachment(attachment);
             }
@@ -6602,21 +6919,21 @@ class EPUB extends Options {
     }
     async saveEpub() {
         const self = this;
-        external_log_default().debug("[save-epub]保存epub基本文件");
+        loglevel_default().debug("[save-epub]保存epub基本文件");
         await saveEpubMimetype();
-        external_log_default().debug("[save-epub]保存样式文件");
+        loglevel_default().debug("[save-epub]保存样式文件");
         await saveStyle();
-        external_log_default().debug("[save-epub]更新Metadata");
+        loglevel_default().debug("[save-epub]更新Metadata");
         await updateMetadata();
         if (this.book.additionalMetadate.attachments) {
-            external_log_default().debug("[save]保存书籍附件");
+            loglevel_default().debug("[save]保存书籍附件");
             for (const bookAttachment of this.book.additionalMetadate.attachments) {
                 await this.addAttachment(bookAttachment);
             }
         }
-        external_log_default().debug("[save-epub]保存仅标题章节文件");
+        loglevel_default().debug("[save-epub]保存仅标题章节文件");
         await saveStubChapters(this.chapters);
-        external_log_default().debug("[save-epub]保存目录文件");
+        loglevel_default().debug("[save-epub]保存目录文件");
         await saveToC();
         await saveZipFiles();
         await this.epubZip.generateAsync();
@@ -6692,7 +7009,7 @@ class EPUB extends Options {
             }
         }
         async function saveToC() {
-            external_log_default().debug("[save-epub]对 chapters 排序");
+            loglevel_default().debug("[save-epub]对 chapters 排序");
             self.chapters.sort(self.chapterSort);
             const sectionsListObj = (0,save_misc/* getSectionsObj */.f)(self.chapters, self.chapterSort);
             let i = 0;
@@ -6706,7 +7023,7 @@ class EPUB extends Options {
                     const sectionHtmlFileName = `No${sectionNumberToSave}Section.xhtml`;
                     if (sectionName) {
                         sectionNumberG = sectionNumber;
-                        external_log_default().debug(`[save-epub]保存卷HTML文件：${sectionName}`);
+                        loglevel_default().debug(`[save-epub]保存卷HTML文件：${sectionName}`);
                         const sectionHTMLBlob = genSectionHtmlFile(sectionName);
                         await self.epubZip.file(`OEBPS/${sectionHtmlFileName}`, sectionHTMLBlob);
                         appendManifest(sectionHtmlFileName);
@@ -6814,16 +7131,16 @@ class EPUB extends Options {
             }
         }
         async function saveZipFiles() {
-            external_log_default().debug("[save-zip]保存元数据文本");
+            loglevel_default().debug("[save-zip]保存元数据文本");
             const metaDateText = self.genMetaDateTxt(self.book);
             await self.epubZip.file("OEBPS/info.txt", new Blob([metaDateText], { type: "text/plain;charset=utf-8" }));
-            external_log_default().debug("[save-zip]保存web样式");
+            loglevel_default().debug("[save-zip]保存web样式");
             await self.epubZip.file("OEBPS/web.css", new Blob([web/* default */.Z], { type: "text/css;charset=utf-8" }));
             modifyTocStyleText();
             await self.epubZip.file("OEBPS/toc.css", new Blob([self.tocStyleText], { type: "text/css;charset=utf-8" }));
-            external_log_default().debug("[save-zip]开始生成并保存 index.html");
+            loglevel_default().debug("[save-zip]开始生成并保存 index.html");
             await saveIndex();
-            external_log_default().debug("[save-zip]开始保存 Meta Data Json");
+            loglevel_default().debug("[save-zip]开始保存 Meta Data Json");
             await saveMetaJson();
             function modifyTocStyleText() {
                 if (self.book.additionalMetadate.cover) {
@@ -6842,7 +7159,7 @@ class EPUB extends Options {
                 }
             }
             async function saveIndex() {
-                external_log_default().debug("[save]对 chapters 排序");
+                loglevel_default().debug("[save]对 chapters 排序");
                 self.chapters.sort(self.chapterSort);
                 const sectionsListObj = (0,save_misc/* getSectionsObj */.f)(self.chapters, self.chapterSort);
                 const _indexHtmlText = index.render({
@@ -6893,7 +7210,7 @@ class TXT extends Options {
         const chapters = this.book.chapters;
         const metaDateText = this.genMetaDateTxt(this.book);
         this.savedTextArray.push(metaDateText);
-        external_log_default().debug("[save]对 chapters 排序");
+        loglevel_default().debug("[save]对 chapters 排序");
         chapters.sort(this.chapterSort);
         const sections = [];
         for (const chapterTemp of chapters) {
@@ -6910,7 +7227,7 @@ class TXT extends Options {
                 chapterTemp.contentText = null;
             }
         }
-        external_log_default().info("[save]保存TXT文件");
+        loglevel_default().info("[save]保存TXT文件");
         const savedText = this.savedTextArray.join("\n").replaceAll("\n", "\r\n");
         (0,FileSaver_min.saveAs)(new Blob([savedText], { type: "text/plain;charset=utf-8" }), `${this.saveFileNameBase}.txt`);
     }
@@ -7012,15 +7329,15 @@ const failedPlus = () => {
 };
 const printStat = async () => {
     const statData = await getStatData();
-    external_log_default().info("[stat]小说下载器脚本运行情况统计：");
-    external_log_default().info(statData);
+    loglevel_default().info("[stat]小说下载器脚本运行情况统计：");
+    loglevel_default().info(statData);
     for (const k in statData) {
         if (Object.prototype.hasOwnProperty.call(statData, k)) {
-            external_log_default().info(`[stat]${k}:`);
+            loglevel_default().info(`[stat]${k}:`);
             const subData = statData[k];
             for (const j in subData) {
                 if (Object.prototype.hasOwnProperty.call(subData, j)) {
-                    external_log_default().info(`    ${j}: ${subData[j]}`);
+                    loglevel_default().info(`    ${j}: ${subData[j]}`);
                 }
             }
         }
@@ -7079,7 +7396,7 @@ class BaseRuleClass {
         };
     }
     async run() {
-        external_log_default().info(`[run]下载开始`);
+        loglevel_default().info(`[run]下载开始`);
         const self = this;
         try {
             await self.preHook();
@@ -7111,16 +7428,16 @@ class BaseRuleClass {
                 window._book = self.book;
                 window._url = document.location.href;
             }
-            external_log_default().debug("[book]Book object:\n" + JSON.stringify(self.book));
+            loglevel_default().debug("[book]Book object:\n" + JSON.stringify(self.book));
         }
         function initSave(book) {
-            external_log_default().debug("[run]保存数据");
+            loglevel_default().debug("[run]保存数据");
             if (setting/* enableCustomSaveOptions */.EI &&
                 typeof unsafeWindow.saveOptions === "object" &&
                 saveOptionsValidate(unsafeWindow.saveOptions)) {
                 const saveOptions = unsafeWindow.saveOptions;
                 if (saveOptions) {
-                    external_log_default().info("[run]发现自定义保存参数，内容如下\n", saveOptions);
+                    loglevel_default().info("[run]发现自定义保存参数，内容如下\n", saveOptions);
                     return new SaveBook(book, self.streamZip, saveOptions);
                 }
             }
@@ -7145,7 +7462,7 @@ class BaseRuleClass {
             }
         }
         async function save(saveObj) {
-            external_log_default().debug("[run]开始保存文件");
+            loglevel_default().debug("[run]开始保存文件");
             await saveObj.save();
         }
     }
@@ -7154,7 +7471,7 @@ class BaseRuleClass {
         if (!(await preTest())) {
             const alertText = `当前网站目前最多允许${self.maxRunLimit}个下载任务同时进行。\n请待其它下载任务完成后，再行尝试。`;
             alert(alertText);
-            external_log_default().info(`[run]${alertText}`);
+            loglevel_default().info(`[run]${alertText}`);
             throw new main/* ExpectError */.K2(alertText);
         }
         await setStreamSaverSetting();
@@ -7185,9 +7502,9 @@ class BaseRuleClass {
                 id: m.workerId,
                 url: m.url,
             }));
-            external_log_default().info(JSON.stringify(workers, undefined, 4));
+            loglevel_default().info(JSON.stringify(workers, undefined, 4));
             const nowRunning = workers.length;
-            external_log_default().info(`[preTest]nowRunning: ${nowRunning}`);
+            loglevel_default().info(`[preTest]nowRunning: ${nowRunning}`);
             if (self.maxRunLimit) {
                 return nowRunning < self.maxRunLimit;
             }
@@ -7198,11 +7515,11 @@ class BaseRuleClass {
     }
     async initChapters(book, saveBookObj) {
         const self = this;
-        external_log_default().info(`[initChapters]开始初始化章节`);
-        Object.entries(self).forEach((kv) => external_log_default().info(`[initChapters] ${kv[0]}: ${kv[1]}`));
+        loglevel_default().info(`[initChapters]开始初始化章节`);
+        Object.entries(self).forEach((kv) => loglevel_default().info(`[initChapters] ${kv[0]}: ${kv[1]}`));
         const chapters = getChapters(book);
         if (chapters.length === 0) {
-            external_log_default().error(`[initChapters]初始化章节出错，未找到需初始化章节`);
+            loglevel_default().error(`[initChapters]初始化章节出错，未找到需初始化章节`);
             return [];
         }
         progress.vm.totalChapterNumber = chapters.length;
@@ -7224,8 +7541,8 @@ class BaseRuleClass {
                     chapterObj = await postChapterParseHook(chapterObj, saveBookObj);
                 }
                 catch (error) {
-                    external_log_default().error(error);
-                    external_log_default().trace(error);
+                    loglevel_default().error(error);
+                    loglevel_default().trace(error);
                 }
             }
         }
@@ -7248,8 +7565,8 @@ class BaseRuleClass {
                     return chapterObj;
                 }
                 catch (error) {
-                    external_log_default().error(error);
-                    external_log_default().trace(error);
+                    loglevel_default().error(error);
+                    loglevel_default().trace(error);
                 }
             };
             await (0,misc/* concurrencyRun */.C1)(chapters, self.concurrencyLimit, asyncHandle, {
@@ -7257,7 +7574,7 @@ class BaseRuleClass {
                 reason: "[chapter]收到停止信号，停止继续下载。",
             });
         }
-        external_log_default().info(`[initChapters]章节初始化完毕`);
+        loglevel_default().info(`[initChapters]章节初始化完毕`);
         return chapters;
         function getChapters(_book) {
             function isEnable() {
@@ -7265,7 +7582,7 @@ class BaseRuleClass {
                     typeof unsafeWindow.chapterFilter === "function") {
                     let text = "[initChapters]发现自定义筛选函数，自定义筛选函数内容如下：\n";
                     text += unsafeWindow.chapterFilter?.toString();
-                    external_log_default().info(text);
+                    loglevel_default().info(text);
                     return true;
                 }
                 else {
@@ -7281,15 +7598,15 @@ class BaseRuleClass {
                     }
                 }
                 catch (error) {
-                    external_log_default().error("运行自定义筛选函数时出错。", error);
-                    external_log_default().trace(error);
+                    loglevel_default().error("运行自定义筛选函数时出错。", error);
+                    loglevel_default().trace(error);
                 }
                 return b;
             }
             let _chapters = _book.chapters.filter((chapter) => chapter.status === main/* Status.pending */.qb.pending);
             const enabled = isEnable();
             if (enabled) {
-                external_log_default().debug("[initChapters]筛选需下载章节");
+                loglevel_default().debug("[initChapters]筛选需下载章节");
                 _chapters = _chapters.filter((chapter) => _filter(chapter));
             }
             return _chapters;
@@ -7330,7 +7647,7 @@ class BaseRuleClass {
                 const customFinishCallback = unsafeWindow
                     .customFinishCallback;
                 if (customFinishCallback) {
-                    external_log_default().info(`发现自定义结束回调函数，内容如下：\n${customFinishCallback.toString()}`);
+                    loglevel_default().info(`发现自定义结束回调函数，内容如下：\n${customFinishCallback.toString()}`);
                     customFinishCallback();
                 }
             }
@@ -7338,12 +7655,12 @@ class BaseRuleClass {
     }
     catchError(error) {
         const self = this;
-        external_log_default().error(error);
-        external_log_default().trace(error);
+        loglevel_default().error(error);
+        loglevel_default().trace(error);
         self.postHook();
         if (!(error instanceof main/* ExpectError */.K2)) {
             document.getElementById("button-div")?.remove();
-            external_log_default().error("运行过程出错，请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/yingziwu/novel-downloader");
+            loglevel_default().error("运行过程出错，请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/yingziwu/novel-downloader");
             failedPlus();
             alert("运行过程出错，请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/yingziwu/novel-downloader");
             (0,log/* saveLogTextToFile */.qS)();
@@ -8371,7 +8688,7 @@ const syosetuOrg = () => {
 /* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/cleanDOM.ts");
 /* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/http.ts");
 /* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/Chapter.ts");
 /* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Book.ts");
@@ -8830,7 +9147,7 @@ const baihexs = () => {
 /* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/lib/http.ts");
 /* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/misc.ts");
 /* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Chapter.ts");
 /* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/main/Book.ts");
@@ -9093,9 +9410,9 @@ var http = __webpack_require__("./src/lib/http.ts");
 var lib_dom = __webpack_require__("./src/lib/dom.ts");
 // EXTERNAL MODULE: ./src/lib/rule.ts
 var rule = __webpack_require__("./src/lib/rule.ts");
-// EXTERNAL MODULE: external "log"
-var external_log_ = __webpack_require__("loglevel");
-var external_log_default = /*#__PURE__*/__webpack_require__.n(external_log_);
+// EXTERNAL MODULE: ./node_modules/loglevel/lib/loglevel.js
+var loglevel = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+var loglevel_default = /*#__PURE__*/__webpack_require__.n(loglevel);
 // EXTERNAL MODULE: ./src/main/Chapter.ts
 var Chapter = __webpack_require__("./src/main/Chapter.ts");
 // EXTERNAL MODULE: ./src/main/Book.ts + 1 modules
@@ -9882,7 +10199,7 @@ function getClass(replaceFunction) {
         async bookParse() {
             const bookUrl = document.querySelector("div.currency_head > h1 > a").href;
             const bookId = bookUrl.split("/").slice(-2, -1)[0];
-            external_log_default().debug(`[chapter]请求 ${bookUrl}`);
+            loglevel_default().debug(`[chapter]请求 ${bookUrl}`);
             const dom = await (0,http/* getHtmlDOM */.dL)(bookUrl, "UTF-8");
             const bookname = dom.querySelector("div.cataloginfo > h3").innerText.trim();
             const author = dom.querySelector(".infotype > p:nth-child(1) > a:nth-child(1)").innerText.trim();
@@ -9925,7 +10242,7 @@ function getClass(replaceFunction) {
             const indexUrls = getIndexUrls();
             let lis = [];
             for (const indexUrl of indexUrls) {
-                external_log_default().debug(`[chapter]请求 ${indexUrl}`);
+                loglevel_default().debug(`[chapter]请求 ${indexUrl}`);
                 const doc = await (0,http/* getHtmlDOM */.dL)(indexUrl, "UTF-8");
                 const ul = doc.querySelector("ul.chapters");
                 if (ul?.childElementCount) {
@@ -10033,7 +10350,7 @@ function getClass(replaceFunction) {
                         flag = true;
                     }
                     else {
-                        external_log_default().error("网站页面出错，URL： " + nowUrl);
+                        loglevel_default().error("网站页面出错，URL： " + nowUrl);
                         flag = false;
                     }
                 }
@@ -10100,7 +10417,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/http.ts");
 /* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/dom.ts");
 /* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/main.ts");
 /* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Chapter.ts");
@@ -10266,7 +10583,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/http.ts");
 /* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/misc.ts");
 /* harmony import */ var _lib_hash__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/hash.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _main_Attachment__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("./src/main/Attachment.ts");
 /* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Book.ts");
@@ -10520,7 +10837,9 @@ class MangaBilibili extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Ciweimao": () => (/* binding */ Ciweimao)
+/* harmony export */   "Ciweimao": () => (/* binding */ Ciweimao),
+/* harmony export */   "Shubl": () => (/* binding */ Shubl),
+/* harmony export */   "getChapter": () => (/* binding */ getChapter)
 /* harmony export */ });
 /* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("crypto-js");
 /* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(crypto_js__WEBPACK_IMPORTED_MODULE_0__);
@@ -10529,7 +10848,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/http.ts");
 /* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("./src/lib/dom.ts");
 /* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_5__);
 /* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/main/main.ts");
 /* harmony import */ var _main_Attachment__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__("./src/main/Attachment.ts");
@@ -10636,226 +10955,348 @@ class Ciweimao extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        function decrypt(item) {
-            let message = item.content;
-            const keys = item.keys;
-            const len = item.keys.length;
-            const accessKey = item.accessKey;
-            const accessKeyList = accessKey.split("");
-            const charsNotLatinNum = accessKeyList.length;
-            const output = [];
-            output.push(keys[accessKeyList[charsNotLatinNum - 1].charCodeAt(0) % len]);
-            output.push(keys[accessKeyList[0].charCodeAt(0) % len]);
-            for (let i = 0; i < output.length; i++) {
+        const rootPath = "https://www.ciweimao.com/";
+        const [parentWidth, setFontSize] = [871, "14"];
+        return getChapter({
+            chapterUrl,
+            chapterName,
+            isVIP,
+            isPaid,
+            charset,
+            options,
+            rootPath,
+            parentWidth,
+            setFontSize,
+        });
+    }
+}
+class Shubl extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
+    constructor() {
+        super();
+        this.imageMode = "TM";
+        this.concurrencyLimit = 1;
+        this.maxRunLimit = 1;
+    }
+    async bookParse() {
+        const bookUrl = document.location.href;
+        const bookname = document.querySelector(".book-title > span").innerText.trim();
+        const author = document.querySelector("div.username").innerText.trim();
+        const introDom = document.querySelector(".book-brief");
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_3__/* .introDomHandle */ .SN)(introDom, (introDomI) => {
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_9__/* .rms */ .up)(["简介："], introDomI);
+            return introDomI;
+        });
+        const additionalMetadate = {};
+        const coverUrl = document.querySelector(".book-img")
+            .src;
+        if (coverUrl) {
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_4__/* .getImageAttachment */ .CE)(coverUrl, this.imageMode, "cover-")
+                .then((coverClass) => {
+                additionalMetadate.cover = coverClass;
+            })
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_5___default().error(error));
+        }
+        additionalMetadate.tags = Array.from(document.querySelectorAll("div.row > span.tag")).map((span) => span.innerText.trim());
+        const chapters = [];
+        const chapterTitleList = Array.from(document.querySelectorAll("#chapter_list > div.chapter > div.chapter-title")).map((div) => div.innerText.trim());
+        const articlesList = document.querySelectorAll("#chapter_list > div.chapter > div.articles");
+        const sectionLength = chapterTitleList.length;
+        let chapterNumber = 0;
+        for (let i = 0; i < sectionLength; i++) {
+            const s = articlesList[i];
+            const sectionNumber = i + 1;
+            const sectionName = chapterTitleList[i];
+            let sectionChapterNumber = 0;
+            const cs = s.querySelectorAll("span.chapter_item");
+            for (const c of Array.from(cs)) {
+                chapterNumber++;
+                sectionChapterNumber++;
+                const a = c.querySelector("a");
+                if (a) {
+                    const chapterName = a.innerText.trim();
+                    const chapterUrl = a.href;
+                    const isVIP = () => {
+                        if (c.childElementCount === 2) {
+                            return true;
+                        }
+                        return false;
+                    };
+                    const isPaid = () => {
+                        if (isVIP() && c.querySelector("i")?.className === "unlock") {
+                            return true;
+                        }
+                        return false;
+                    };
+                    const isLogin = () => {
+                        if (document.querySelector("#header > div.container > div.right.pull-right")?.childElementCount === 3) {
+                            return true;
+                        }
+                        return false;
+                    };
+                    const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_6__/* .Chapter */ .W({
+                        bookUrl,
+                        bookname,
+                        chapterUrl,
+                        chapterNumber,
+                        chapterName,
+                        isVIP: isVIP(),
+                        isPaid: isPaid(),
+                        sectionName,
+                        sectionNumber,
+                        sectionChapterNumber,
+                        chapterParse: this.chapterParse,
+                        charset: this.charset,
+                        options: {},
+                    });
+                    if (isVIP() && !(isLogin() && isPaid())) {
+                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_7__/* .Status.aborted */ .qb.aborted;
+                    }
+                    chapters.push(chapter);
+                }
+            }
+        }
+        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_8__/* .Book */ .f({
+            bookUrl,
+            bookname,
+            author,
+            introduction,
+            introductionHTML,
+            additionalMetadate,
+            chapters,
+        });
+        return book;
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+        const rootPath = "https://www.shubl.com/";
+        const [parentWidth, setFontSize] = [939.2, "18"];
+        return getChapter({
+            chapterUrl,
+            chapterName,
+            isVIP,
+            isPaid,
+            charset,
+            options,
+            rootPath,
+            parentWidth,
+            setFontSize,
+        });
+    }
+}
+function getChapter({ chapterUrl, chapterName, isVIP, isPaid, charset, options, rootPath, parentWidth, setFontSize, }) {
+    function decrypt(item) {
+        let message = item.content;
+        const keys = item.keys;
+        const len = item.keys.length;
+        const accessKey = item.accessKey;
+        const accessKeyList = accessKey.split("");
+        const charsNotLatinNum = accessKeyList.length;
+        const output = [];
+        output.push(keys[accessKeyList[charsNotLatinNum - 1].charCodeAt(0) % len]);
+        output.push(keys[accessKeyList[0].charCodeAt(0) % len]);
+        for (let i = 0; i < output.length; i++) {
+            message = atob(message);
+            const data = output[i];
+            const iv = btoa(message.substr(0, 16));
+            const keys255 = btoa(message.substr(16));
+            const pass = crypto_js__WEBPACK_IMPORTED_MODULE_0__.format.OpenSSL.parse(keys255);
+            message = crypto_js__WEBPACK_IMPORTED_MODULE_0__.AES.decrypt(pass, crypto_js__WEBPACK_IMPORTED_MODULE_0__.enc.Base64.parse(data), {
+                iv: crypto_js__WEBPACK_IMPORTED_MODULE_0__.enc.Base64.parse(iv),
+                format: crypto_js__WEBPACK_IMPORTED_MODULE_0__.format.OpenSSL,
+            });
+            if (i < output.length - 1) {
+                message = message.toString(crypto_js__WEBPACK_IMPORTED_MODULE_0__.enc.Base64);
                 message = atob(message);
-                const data = output[i];
-                const iv = btoa(message.substr(0, 16));
-                const keys255 = btoa(message.substr(16));
-                const pass = crypto_js__WEBPACK_IMPORTED_MODULE_0__.format.OpenSSL.parse(keys255);
-                message = crypto_js__WEBPACK_IMPORTED_MODULE_0__.AES.decrypt(pass, crypto_js__WEBPACK_IMPORTED_MODULE_0__.enc.Base64.parse(data), {
-                    iv: crypto_js__WEBPACK_IMPORTED_MODULE_0__.enc.Base64.parse(iv),
-                    format: crypto_js__WEBPACK_IMPORTED_MODULE_0__.format.OpenSSL,
-                });
-                if (i < output.length - 1) {
-                    message = message.toString(crypto_js__WEBPACK_IMPORTED_MODULE_0__.enc.Base64);
-                    message = atob(message);
-                }
             }
-            return message.toString(crypto_js__WEBPACK_IMPORTED_MODULE_0__.enc.Utf8);
         }
-        async function getChapterAuthorSay() {
-            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .getHtmlDOM */ .dL)(chapterUrl, undefined);
-            const chapterAuthorSays = doc.querySelectorAll("#J_BookCnt .chapter.author_say");
-            let divChapterAuthorSay;
-            if (chapterAuthorSays.length !== 0) {
-                const hr = document.createElement("hr");
-                divChapterAuthorSay = document.createElement("div");
-                divChapterAuthorSay.appendChild(hr);
-                for (const chapterAuthorSay of Array.from(chapterAuthorSays)) {
-                    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_9__.rm)("i", true, chapterAuthorSay);
-                    divChapterAuthorSay.appendChild(chapterAuthorSay);
-                }
+        return message.toString(crypto_js__WEBPACK_IMPORTED_MODULE_0__.enc.Utf8);
+    }
+    async function getChapterAuthorSay() {
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .getHtmlDOM */ .dL)(chapterUrl, undefined);
+        const chapterAuthorSays = doc.querySelectorAll("#J_BookCnt .chapter.author_say");
+        let divChapterAuthorSay;
+        if (chapterAuthorSays.length !== 0) {
+            const hr = document.createElement("hr");
+            divChapterAuthorSay = document.createElement("div");
+            divChapterAuthorSay.appendChild(hr);
+            for (const chapterAuthorSay of Array.from(chapterAuthorSays)) {
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_9__.rm)("i", true, chapterAuthorSay);
+                divChapterAuthorSay.appendChild(chapterAuthorSay);
             }
-            return divChapterAuthorSay;
         }
-        const chapterId = chapterUrl.split("/").slice(-1)[0];
-        async function publicChapter() {
-            async function chapterDecrypt(chapterIdt, refererUrl) {
-                const rootPath = "https://www.ciweimao.com/";
-                const accessKeyUrl = rootPath + "chapter/ajax_get_session_code";
-                const chapterContentUrl = rootPath + "chapter/get_book_chapter_detail_info";
-                _log__WEBPACK_IMPORTED_MODULE_5___default().debug(`[Chapter]请求 ${accessKeyUrl} Referer ${refererUrl}`);
-                const accessKeyObj = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .gfetch */ .GF)(accessKeyUrl, {
-                    method: "POST",
-                    headers: {
-                        Accept: "application/json, text/javascript, */*; q=0.01",
-                        "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-                        Referer: refererUrl,
-                        Origin: "https://www.ciweimao.com",
-                        "X-Requested-With": "XMLHttpRequest",
-                    },
-                    data: `chapter_id=${chapterIdt}`,
-                    responseType: "json",
-                })
-                    .then((response) => response.response)
-                    .catch((error) => _log__WEBPACK_IMPORTED_MODULE_5___default().error(error));
-                const chapter_access_key = accessKeyObj
-                    .chapter_access_key;
-                _log__WEBPACK_IMPORTED_MODULE_5___default().debug(`[Chapter]请求 ${chapterContentUrl} Referer ${refererUrl}`);
-                const chapterContentObj = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .gfetch */ .GF)(chapterContentUrl, {
-                    method: "POST",
-                    headers: {
-                        Accept: "application/json, text/javascript, */*; q=0.01",
-                        "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-                        Referer: refererUrl,
-                        Origin: "https://www.ciweimao.com",
-                        "X-Requested-With": "XMLHttpRequest",
-                    },
-                    data: `chapter_id=${chapterIdt}&chapter_access_key=${chapter_access_key}`,
-                    responseType: "json",
-                })
-                    .then((response) => response.response)
-                    .catch((error) => _log__WEBPACK_IMPORTED_MODULE_5___default().error(error));
-                if (chapterContentObj.code !== 100000) {
-                    _log__WEBPACK_IMPORTED_MODULE_5___default().error(chapterContentObj);
-                    throw new Error(`下载 ${refererUrl} 失败`);
-                }
-                return decrypt({
-                    content: chapterContentObj.chapter_content,
-                    keys: chapterContentObj.encryt_keys,
-                    accessKey: chapter_access_key,
-                });
+        return divChapterAuthorSay;
+    }
+    const chapterId = chapterUrl.split("/").slice(-1)[0];
+    async function publicChapter() {
+        async function chapterDecrypt(chapterIdt, refererUrl) {
+            const accessKeyUrl = rootPath + "chapter/ajax_get_session_code";
+            const chapterContentUrl = rootPath + "chapter/get_book_chapter_detail_info";
+            _log__WEBPACK_IMPORTED_MODULE_5___default().debug(`[Chapter]请求 ${accessKeyUrl} Referer ${refererUrl}`);
+            const accessKeyObj = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .gfetch */ .GF)(accessKeyUrl, {
+                method: "POST",
+                headers: {
+                    Accept: "application/json, text/javascript, */*; q=0.01",
+                    "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+                    Referer: refererUrl,
+                    Origin: "https://www.ciweimao.com",
+                    "X-Requested-With": "XMLHttpRequest",
+                },
+                data: `chapter_id=${chapterIdt}`,
+                responseType: "json",
+            })
+                .then((response) => response.response)
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_5___default().error(error));
+            const chapter_access_key = accessKeyObj
+                .chapter_access_key;
+            _log__WEBPACK_IMPORTED_MODULE_5___default().debug(`[Chapter]请求 ${chapterContentUrl} Referer ${refererUrl}`);
+            const chapterContentObj = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .gfetch */ .GF)(chapterContentUrl, {
+                method: "POST",
+                headers: {
+                    Accept: "application/json, text/javascript, */*; q=0.01",
+                    "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+                    Referer: refererUrl,
+                    Origin: "https://www.ciweimao.com",
+                    "X-Requested-With": "XMLHttpRequest",
+                },
+                data: `chapter_id=${chapterIdt}&chapter_access_key=${chapter_access_key}`,
+                responseType: "json",
+            })
+                .then((response) => response.response)
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_5___default().error(error));
+            if (chapterContentObj.code !== 100000) {
+                _log__WEBPACK_IMPORTED_MODULE_5___default().error(chapterContentObj);
+                throw new Error(`下载 ${refererUrl} 失败`);
             }
+            return decrypt({
+                content: chapterContentObj.chapter_content,
+                keys: chapterContentObj.encryt_keys,
+                accessKey: chapter_access_key,
+            });
+        }
+        const divChapterAuthorSay = await getChapterAuthorSay();
+        const content = document.createElement("div");
+        const decryptDate = await chapterDecrypt(chapterId, chapterUrl);
+        content.innerHTML = decryptDate;
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_9__.rm)(".chapter span", true, content);
+        if (divChapterAuthorSay) {
+            content.appendChild(divChapterAuthorSay);
+        }
+        const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .zM)(content, "TM");
+        return {
+            chapterName,
+            contentRaw: content,
+            contentText: text,
+            contentHTML: dom,
+            contentImages: images,
+            additionalMetadate: null,
+        };
+    }
+    async function vipChapter(parentWidth, setFontSize) {
+        async function vipChapterDecrypt(chapterIdi, refererUrl) {
+            const imageSessionCodeUrl = rootPath + "chapter/ajax_get_image_session_code";
+            _log__WEBPACK_IMPORTED_MODULE_5___default().debug(`[Chapter]请求 ${imageSessionCodeUrl} Referer ${refererUrl}`);
+            const imageSessionCodeObject = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .gfetch */ .GF)(imageSessionCodeUrl, {
+                method: "POST",
+                headers: {
+                    Accept: "application/json, text/javascript, */*; q=0.01",
+                    Referer: refererUrl,
+                    Origin: "https://www.ciweimao.com",
+                    "X-Requested-With": "XMLHttpRequest",
+                },
+                responseType: "json",
+            })
+                .then((response) => response.response)
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_5___default().error(error));
+            if (imageSessionCodeObject.code !== 100000) {
+                _log__WEBPACK_IMPORTED_MODULE_5___default().error(imageSessionCodeObject);
+                throw new Error(`下载 ${refererUrl} 失败`);
+            }
+            const imageCode = decrypt({
+                content: imageSessionCodeObject.image_code,
+                keys: imageSessionCodeObject.encryt_keys,
+                accessKey: imageSessionCodeObject
+                    .access_key,
+            });
+            const vipCHapterImageUrlI = rootPath +
+                "chapter/book_chapter_image?chapter_id=" +
+                chapterIdi +
+                "&area_width=" +
+                parentWidth +
+                "&font=undefined" +
+                "&font_size=" +
+                setFontSize +
+                "&image_code=" +
+                imageCode +
+                "&bg_color_name=white" +
+                "&text_color_name=white";
+            return vipCHapterImageUrlI;
+        }
+        const isLogin = document.querySelector(".login-info.ly-fr")?.childElementCount === 1
+            ? true
+            : false;
+        if (isLogin && isPaid) {
             const divChapterAuthorSay = await getChapterAuthorSay();
-            const content = document.createElement("div");
-            const decryptDate = await chapterDecrypt(chapterId, chapterUrl);
-            content.innerHTML = decryptDate;
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_9__.rm)(".chapter span", true, content);
-            if (divChapterAuthorSay) {
-                content.appendChild(divChapterAuthorSay);
+            const vipCHapterImageUrl = await vipChapterDecrypt(chapterId, chapterUrl);
+            _log__WEBPACK_IMPORTED_MODULE_5___default().debug(`[Chapter]请求 ${vipCHapterImageUrl} Referer ${chapterUrl}`);
+            const vipCHapterImageBlob = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .gfetch */ .GF)(vipCHapterImageUrl, {
+                method: "GET",
+                headers: {
+                    Referer: chapterUrl,
+                    Accept: "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8",
+                },
+                responseType: "blob",
+            })
+                .then((response) => response.response)
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_5___default().error(error));
+            const vipCHapterName = `vipCHapter${chapterId}.png`;
+            const vipCHapterImage = new _main_Attachment__WEBPACK_IMPORTED_MODULE_11__/* .AttachmentClass */ .J(vipCHapterImageUrl, vipCHapterName, "TM");
+            if (vipCHapterImageBlob) {
+                vipCHapterImage.imageBlob = vipCHapterImageBlob;
+                vipCHapterImage.status = _main_main__WEBPACK_IMPORTED_MODULE_7__/* .Status.finished */ .qb.finished;
             }
-            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .zM)(content, "TM");
+            const contentImages = [vipCHapterImage];
+            let ddom;
+            let dtext;
+            if (divChapterAuthorSay) {
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .zM)(divChapterAuthorSay, "TM");
+                [ddom, dtext] = [dom, text, images];
+            }
+            const img = document.createElement("img");
+            img.src = vipCHapterName;
+            img.alt = vipCHapterImageUrl;
+            const contentHTML = document.createElement("div");
+            contentHTML.appendChild(img);
+            if (ddom) {
+                contentHTML.appendChild(ddom);
+            }
+            let contentText = `VIP章节，请打开HTML文件查看。\n![${vipCHapterImageUrl}](${vipCHapterName})`;
+            if (dtext) {
+                contentText = contentText + "\n\n" + dtext;
+            }
             return {
                 chapterName,
-                contentRaw: content,
-                contentText: text,
-                contentHTML: dom,
-                contentImages: images,
+                contentRaw: contentHTML,
+                contentText,
+                contentHTML,
+                contentImages,
                 additionalMetadate: null,
             };
         }
-        async function vipChapter() {
-            async function vipChapterDecrypt(chapterIdi, refererUrl) {
-                const HB = unsafeWindow.HB;
-                const parentWidth = 871;
-                const setFontSize = "14";
-                const imageSessionCodeUrl = HB.config.rootPath + "chapter/ajax_get_image_session_code";
-                _log__WEBPACK_IMPORTED_MODULE_5___default().debug(`[Chapter]请求 ${imageSessionCodeUrl} Referer ${refererUrl}`);
-                const imageSessionCodeObject = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .gfetch */ .GF)(imageSessionCodeUrl, {
-                    method: "POST",
-                    headers: {
-                        Accept: "application/json, text/javascript, */*; q=0.01",
-                        Referer: refererUrl,
-                        Origin: "https://www.ciweimao.com",
-                        "X-Requested-With": "XMLHttpRequest",
-                    },
-                    responseType: "json",
-                })
-                    .then((response) => response.response)
-                    .catch((error) => _log__WEBPACK_IMPORTED_MODULE_5___default().error(error));
-                if (imageSessionCodeObject.code !== 100000) {
-                    _log__WEBPACK_IMPORTED_MODULE_5___default().error(imageSessionCodeObject);
-                    throw new Error(`下载 ${refererUrl} 失败`);
-                }
-                const imageCode = decrypt({
-                    content: imageSessionCodeObject
-                        .image_code,
-                    keys: imageSessionCodeObject.encryt_keys,
-                    accessKey: imageSessionCodeObject
-                        .access_key,
-                });
-                const vipCHapterImageUrlI = HB.config.rootPath +
-                    "chapter/book_chapter_image?chapter_id=" +
-                    chapterIdi +
-                    "&area_width=" +
-                    parentWidth +
-                    "&font=undefined" +
-                    "&font_size=" +
-                    setFontSize +
-                    "&image_code=" +
-                    imageCode +
-                    "&bg_color_name=white" +
-                    "&text_color_name=white";
-                return vipCHapterImageUrlI;
-            }
-            const isLogin = document.querySelector(".login-info.ly-fr")?.childElementCount === 1
-                ? true
-                : false;
-            if (isLogin && isPaid) {
-                const divChapterAuthorSay = await getChapterAuthorSay();
-                const vipCHapterImageUrl = await vipChapterDecrypt(chapterId, chapterUrl);
-                _log__WEBPACK_IMPORTED_MODULE_5___default().debug(`[Chapter]请求 ${vipCHapterImageUrl} Referer ${chapterUrl}`);
-                const vipCHapterImageBlob = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .gfetch */ .GF)(vipCHapterImageUrl, {
-                    method: "GET",
-                    headers: {
-                        Referer: chapterUrl,
-                        Accept: "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8",
-                    },
-                    responseType: "blob",
-                })
-                    .then((response) => response.response)
-                    .catch((error) => _log__WEBPACK_IMPORTED_MODULE_5___default().error(error));
-                const vipCHapterName = `vipCHapter${chapterId}.png`;
-                const vipCHapterImage = new _main_Attachment__WEBPACK_IMPORTED_MODULE_11__/* .AttachmentClass */ .J(vipCHapterImageUrl, vipCHapterName, "TM");
-                if (vipCHapterImageBlob) {
-                    vipCHapterImage.imageBlob = vipCHapterImageBlob;
-                    vipCHapterImage.status = _main_main__WEBPACK_IMPORTED_MODULE_7__/* .Status.finished */ .qb.finished;
-                }
-                const contentImages = [vipCHapterImage];
-                let ddom;
-                let dtext;
-                if (divChapterAuthorSay) {
-                    const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .zM)(divChapterAuthorSay, "TM");
-                    [ddom, dtext] = [dom, text, images];
-                }
-                const img = document.createElement("img");
-                img.src = vipCHapterName;
-                img.alt = vipCHapterImageUrl;
-                const contentHTML = document.createElement("div");
-                contentHTML.appendChild(img);
-                if (ddom) {
-                    contentHTML.appendChild(ddom);
-                }
-                let contentText = `VIP章节，请打开HTML文件查看。\n![${vipCHapterImageUrl}](${vipCHapterName})`;
-                if (dtext) {
-                    contentText = contentText + "\n\n" + dtext;
-                }
-                return {
-                    chapterName,
-                    contentRaw: contentHTML,
-                    contentText,
-                    contentHTML,
-                    contentImages,
-                    additionalMetadate: null,
-                };
-            }
-            else {
-                return {
-                    chapterName,
-                    contentRaw: null,
-                    contentText: null,
-                    contentHTML: null,
-                    contentImages: null,
-                    additionalMetadate: null,
-                };
-            }
-        }
-        if (isVIP) {
-            return vipChapter();
-        }
         else {
-            return publicChapter();
+            return {
+                chapterName,
+                contentRaw: null,
+                contentText: null,
+                contentHTML: null,
+                contentImages: null,
+                additionalMetadate: null,
+            };
         }
+    }
+    if (isVIP) {
+        return vipChapter(parentWidth, setFontSize);
+    }
+    else {
+        return publicChapter();
     }
 }
 
@@ -10876,7 +11317,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__("./src/lib/cleanDOM.ts");
 /* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/http.ts");
 /* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/main.ts");
 /* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Chapter.ts");
@@ -11218,7 +11659,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/attachments.ts");
 /* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("./src/lib/misc.ts");
 /* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/main.ts");
 /* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Chapter.ts");
@@ -11594,7 +12035,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/http.ts");
 /* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("./src/lib/dom.ts");
 /* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_5__);
 /* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/main/main.ts");
 /* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Chapter.ts");
@@ -11776,9 +12217,9 @@ var misc = __webpack_require__("./src/lib/misc.ts");
 var lib_dom = __webpack_require__("./src/lib/dom.ts");
 // EXTERNAL MODULE: ./src/lib/rule.ts
 var rule = __webpack_require__("./src/lib/rule.ts");
-// EXTERNAL MODULE: external "log"
-var external_log_ = __webpack_require__("loglevel");
-var external_log_default = /*#__PURE__*/__webpack_require__.n(external_log_);
+// EXTERNAL MODULE: ./node_modules/loglevel/lib/loglevel.js
+var loglevel = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+var loglevel_default = /*#__PURE__*/__webpack_require__.n(loglevel);
 // EXTERNAL MODULE: ./src/main/main.ts
 var main = __webpack_require__("./src/main/main.ts");
 // EXTERNAL MODULE: ./src/main/Attachment.ts
@@ -11792,7 +12233,6 @@ var rules = __webpack_require__("./src/rules.ts");
 // EXTERNAL MODULE: ./src/setting.ts
 var setting = __webpack_require__("./src/setting.ts");
 ;// CONCATENATED MODULE: ./src/rules/lib/jjwxcFontDecode.ts
-
 
 
 
@@ -11824,7 +12264,7 @@ async function getJjwxcFontTable(fontName) {
 }
 async function fetchRemoteFont(fontName) {
     const url = `https://jjwxc.bgme.bid/${fontName}.json`;
-    external_log_default().info(`[jjwxc-font]开始请求远程字体对照表 ${fontName}`);
+    loglevel_default().info(`[jjwxc-font]开始请求远程字体对照表 ${fontName}`);
     let retry = setting/* retryLimit */.o5;
     while (retry > 0) {
         let resp;
@@ -11832,19 +12272,19 @@ async function fetchRemoteFont(fontName) {
             resp = await fetch(url);
         }
         catch (error) {
-            external_log_default().error(error);
+            loglevel_default().error(error);
             retry--;
             if (retry > 0) {
                 await (0,misc/* sleep */._v)(5000);
                 continue;
             }
             else {
-                external_log_default().info(`[jjwxc-font]远程字体对照表 ${fontName} 下载失败`);
+                loglevel_default().info(`[jjwxc-font]远程字体对照表 ${fontName} 下载失败`);
                 return undefined;
             }
         }
         if (resp.ok) {
-            external_log_default().info(`[jjwxc-font]远程字体对照表 ${fontName} 下载成功`);
+            loglevel_default().info(`[jjwxc-font]远程字体对照表 ${fontName} 下载成功`);
             return (await resp.json());
         }
         else {
@@ -11853,56 +12293,10 @@ async function fetchRemoteFont(fontName) {
                 await (0,misc/* sleep */._v)(5000);
             }
             else {
-                external_log_default().info(`[jjwxc-font]远程字体对照表 ${fontName} 下载失败`);
+                loglevel_default().info(`[jjwxc-font]远程字体对照表 ${fontName} 下载失败`);
                 return undefined;
             }
         }
-    }
-}
-async function getJjwxcFontTables() {
-    const JjwxcFontTablesKeyName = "novel-downloader-jjwxcFontTables";
-    const JjwxcFontTablesExpiresKeyName = "novel-downloader-jjwxcFontTables__expires__";
-    const JjwxcFontTablesUrl = "https://cdn.jsdelivr.net/gh/yingziwu/jjwxcFontTables@gh-pages/bundle.json";
-    async function fetchAndSave() {
-        try {
-            log.info("[jjwxc-font]开始下载字体对照表打包文件。");
-            const resp = await fetch(JjwxcFontTablesUrl);
-            _jjwxcFontTables = await resp.json();
-            if (_jjwxcFontTables) {
-                if (await get(JjwxcFontTablesKeyName)) {
-                    await update(JjwxcFontTablesKeyName, (val) => _jjwxcFontTables);
-                }
-                else {
-                    await set(JjwxcFontTablesKeyName, _jjwxcFontTables);
-                }
-                if (await get(JjwxcFontTablesExpiresKeyName)) {
-                    await update(JjwxcFontTablesExpiresKeyName, (val) => Date.now() + 1000 * 86400);
-                }
-                else {
-                    await set(JjwxcFontTablesExpiresKeyName, Date.now() + 1000 * 86400);
-                }
-                return _jjwxcFontTables;
-            }
-            else {
-                return {};
-            }
-        }
-        catch (error) {
-            return {};
-        }
-    }
-    let _jjwxcFontTables = await get(JjwxcFontTablesKeyName);
-    if (_jjwxcFontTables) {
-        if ((await get(JjwxcFontTablesExpiresKeyName)) &&
-            (await get(JjwxcFontTablesExpiresKeyName)) > Date.now()) {
-            return _jjwxcFontTables;
-        }
-        else {
-            return await fetchAndSave();
-        }
-    }
-    else {
-        return await fetchAndSave();
     }
 }
 
@@ -11962,7 +12356,7 @@ class Jjwxc extends rules/* BaseRuleClass */.c {
                     .then((coverClass) => {
                     additionalMetadate.cover = coverClass;
                 })
-                    .catch((error) => external_log_default().error(error));
+                    .catch((error) => loglevel_default().error(error));
             }
             let tags = document.querySelector("table > tbody > tr > td.readtd > div.righttd > ul.rightul > li:nth-child(1) > span:nth-child(2)").innerText.split("-");
             tags = tags.concat(Array.from(document.querySelectorAll("div.smallreadbody:nth-child(3) > span > a")).map((a) => a.innerText));
@@ -12201,7 +12595,7 @@ class Jjwxc extends rules/* BaseRuleClass */.c {
                 }
                 let retryTime = 0;
                 function fetchFont(fontUrlI) {
-                    external_log_default().debug(`[Chapter]请求 ${fontUrlI} Referer ${chapterUrl} 重试次数 ${retryTime}`);
+                    loglevel_default().debug(`[Chapter]请求 ${fontUrlI} Referer ${chapterUrl} 重试次数 ${retryTime}`);
                     return (0,http/* gfetch */.GF)(fontUrlI, {
                         headers: {
                             accept: "*/*",
@@ -12214,7 +12608,7 @@ class Jjwxc extends rules/* BaseRuleClass */.c {
                             return response.response;
                         }
                         else {
-                            external_log_default().error(`[Chapter]请求 ${fontUrlI} 失败 Referer ${chapterUrl}`);
+                            loglevel_default().error(`[Chapter]请求 ${fontUrlI} 失败 Referer ${chapterUrl}`);
                             if (retryTime < setting/* retryLimit */.o5) {
                                 retryTime++;
                                 return fetchFont(fontUrlI);
@@ -12224,7 +12618,7 @@ class Jjwxc extends rules/* BaseRuleClass */.c {
                             }
                         }
                     })
-                        .catch((error) => external_log_default().error(error));
+                        .catch((error) => loglevel_default().error(error));
                 }
                 const [fontName, fontUrl] = getFontInfo();
                 if (fontName && fontUrl) {
@@ -12346,7 +12740,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/cleanDOM.ts");
 /* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/http.ts");
 /* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/main.ts");
 /* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/Chapter.ts");
@@ -12521,7 +12915,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/attachments.ts");
 /* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/cleanDOM.ts");
 /* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/http.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/Chapter.ts");
 /* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Book.ts");
@@ -12720,7 +13114,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/misc.ts");
 /* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/dom.ts");
 /* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_5__);
 /* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/main/main.ts");
 /* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/main/Chapter.ts");
@@ -13041,7 +13435,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/attachments.ts");
 /* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/cleanDOM.ts");
 /* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/http.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/main.ts");
 /* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/Chapter.ts");
@@ -13228,7 +13622,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/attachments.ts");
 /* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/lib/cleanDOM.ts");
 /* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/http.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/main.ts");
 /* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/main/Chapter.ts");
@@ -13609,7 +14003,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/misc.ts");
 /* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("./src/lib/dom.ts");
 /* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/main.ts");
 /* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Chapter.ts");
@@ -13865,7 +14259,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/cleanDOM.ts");
 /* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/http.ts");
 /* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/main.ts");
 /* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/Chapter.ts");
@@ -14016,7 +14410,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/http.ts");
 /* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/dom.ts");
 /* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/main.ts");
 /* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/Chapter.ts");
@@ -14145,7 +14539,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/http.ts");
 /* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/lib/dom.ts");
 /* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/main/main.ts");
 /* harmony import */ var _main_Attachment__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Attachment.ts");
@@ -14394,327 +14788,6 @@ class Sfacg extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
 
 /***/ }),
 
-/***/ "./src/rules/special/original/shubl.ts":
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Shubl": () => (/* binding */ Shubl)
-/* harmony export */ });
-/* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("crypto-js");
-/* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(crypto_js__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/attachments.ts");
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__("./src/lib/cleanDOM.ts");
-/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("./src/lib/http.ts");
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/dom.ts");
-/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("loglevel");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/main/main.ts");
-/* harmony import */ var _main_Attachment__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__("./src/main/Attachment.ts");
-/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Chapter.ts");
-/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/main/Book.ts");
-/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/rules.ts");
-
-
-
-
-
-
-
-
-
-
-
-
-class Shubl extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
-    constructor() {
-        super();
-        this.imageMode = "TM";
-        this.concurrencyLimit = 1;
-        this.maxRunLimit = 1;
-    }
-    async bookParse() {
-        const bookUrl = document.location.href;
-        const bookname = document.querySelector(".book-title > span").innerText.trim();
-        const author = document.querySelector("div.username").innerText.trim();
-        const introDom = document.querySelector(".book-brief");
-        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .introDomHandle */ .SN)(introDom, (introDomI) => {
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_3__/* .rms */ .up)(["简介："], introDomI);
-            return introDomI;
-        });
-        const additionalMetadate = {};
-        const coverUrl = document.querySelector(".book-img")
-            .src;
-        if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_4__/* .getImageAttachment */ .CE)(coverUrl, this.imageMode, "cover-")
-                .then((coverClass) => {
-                additionalMetadate.cover = coverClass;
-            })
-                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_5___default().error(error));
-        }
-        additionalMetadate.tags = Array.from(document.querySelectorAll("div.row > span.tag")).map((span) => span.innerText.trim());
-        const chapters = [];
-        const chapterTitleList = Array.from(document.querySelectorAll("#chapter_list > div.chapter > div.chapter-title")).map((div) => div.innerText.trim());
-        const articlesList = document.querySelectorAll("#chapter_list > div.chapter > div.articles");
-        const sectionLength = chapterTitleList.length;
-        let chapterNumber = 0;
-        for (let i = 0; i < sectionLength; i++) {
-            const s = articlesList[i];
-            const sectionNumber = i + 1;
-            const sectionName = chapterTitleList[i];
-            let sectionChapterNumber = 0;
-            const cs = s.querySelectorAll("span.chapter_item");
-            for (const c of Array.from(cs)) {
-                chapterNumber++;
-                sectionChapterNumber++;
-                const a = c.querySelector("a");
-                if (a) {
-                    const chapterName = a.innerText.trim();
-                    const chapterUrl = a.href;
-                    const isVIP = () => {
-                        if (c.childElementCount === 2) {
-                            return true;
-                        }
-                        return false;
-                    };
-                    const isPaid = () => {
-                        if (isVIP() && c.querySelector("i")?.className === "unlock") {
-                            return true;
-                        }
-                        return false;
-                    };
-                    const isLogin = () => {
-                        if (document.querySelector("#header > div.container > div.right.pull-right")?.childElementCount === 3) {
-                            return true;
-                        }
-                        return false;
-                    };
-                    const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_6__/* .Chapter */ .W({
-                        bookUrl,
-                        bookname,
-                        chapterUrl,
-                        chapterNumber,
-                        chapterName,
-                        isVIP: isVIP(),
-                        isPaid: isPaid(),
-                        sectionName,
-                        sectionNumber,
-                        sectionChapterNumber,
-                        chapterParse: this.chapterParse,
-                        charset: this.charset,
-                        options: {},
-                    });
-                    if (isVIP() && !(isLogin() && isPaid())) {
-                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_7__/* .Status.aborted */ .qb.aborted;
-                    }
-                    chapters.push(chapter);
-                }
-            }
-        }
-        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_8__/* .Book */ .f({
-            bookUrl,
-            bookname,
-            author,
-            introduction,
-            introductionHTML,
-            additionalMetadate,
-            chapters,
-        });
-        return book;
-    }
-    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        function decrypt(item) {
-            let message = item.content;
-            const keys = item.keys;
-            const len = item.keys.length;
-            const accessKey = item.accessKey;
-            const accessKeyList = accessKey.split("");
-            const charsNotLatinNum = accessKeyList.length;
-            const output = [];
-            output.push(keys[accessKeyList[charsNotLatinNum - 1].charCodeAt(0) % len]);
-            output.push(keys[accessKeyList[0].charCodeAt(0) % len]);
-            for (let i = 0; i < output.length; i++) {
-                message = atob(message);
-                const data = output[i];
-                const iv = btoa(message.substr(0, 16));
-                const keys255 = btoa(message.substr(16));
-                const pass = crypto_js__WEBPACK_IMPORTED_MODULE_0__.format.OpenSSL.parse(keys255);
-                message = crypto_js__WEBPACK_IMPORTED_MODULE_0__.AES.decrypt(pass, crypto_js__WEBPACK_IMPORTED_MODULE_0__.enc.Base64.parse(data), {
-                    iv: crypto_js__WEBPACK_IMPORTED_MODULE_0__.enc.Base64.parse(iv),
-                    format: crypto_js__WEBPACK_IMPORTED_MODULE_0__.format.OpenSSL,
-                });
-                if (i < output.length - 1) {
-                    message = message.toString(crypto_js__WEBPACK_IMPORTED_MODULE_0__.enc.Base64);
-                    message = atob(message);
-                }
-            }
-            return message.toString(crypto_js__WEBPACK_IMPORTED_MODULE_0__.enc.Utf8);
-        }
-        const rootPath = "https://www.shubl.com/";
-        const chapterId = chapterUrl.split("/").slice(-1)[0];
-        async function publicChapter() {
-            async function chapterDecrypt(chapterIdt, refererUrl) {
-                const accessKeyUrl = rootPath + "chapter/ajax_get_session_code";
-                const chapterContentUrl = rootPath + "chapter/get_book_chapter_detail_info";
-                _log__WEBPACK_IMPORTED_MODULE_5___default().debug(`[Chapter]请求 ${accessKeyUrl} Referer ${refererUrl}`);
-                const accessKeyObj = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_9__/* .gfetch */ .GF)(accessKeyUrl, {
-                    method: "POST",
-                    headers: {
-                        Accept: "application/json, text/javascript, */*; q=0.01",
-                        "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-                        Referer: refererUrl,
-                        Origin: document.location.origin,
-                        "X-Requested-With": "XMLHttpRequest",
-                    },
-                    data: `chapter_id=${chapterIdt}`,
-                    responseType: "json",
-                })
-                    .then((response) => response.response)
-                    .catch((error) => _log__WEBPACK_IMPORTED_MODULE_5___default().error(error));
-                const chapter_access_key = accessKeyObj
-                    .chapter_access_key;
-                _log__WEBPACK_IMPORTED_MODULE_5___default().debug(`[Chapter]请求 ${chapterContentUrl} Referer ${refererUrl}`);
-                const chapterContentObj = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_9__/* .gfetch */ .GF)(chapterContentUrl, {
-                    method: "POST",
-                    headers: {
-                        Accept: "application/json, text/javascript, */*; q=0.01",
-                        "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-                        Referer: refererUrl,
-                        Origin: document.location.origin,
-                        "X-Requested-With": "XMLHttpRequest",
-                    },
-                    data: `chapter_id=${chapterIdt}&chapter_access_key=${chapter_access_key}`,
-                    responseType: "json",
-                })
-                    .then((response) => response.response)
-                    .catch((error) => _log__WEBPACK_IMPORTED_MODULE_5___default().error(error));
-                if (chapterContentObj.code !== 100000) {
-                    _log__WEBPACK_IMPORTED_MODULE_5___default().error(chapterContentObj);
-                    throw new Error(`下载 ${refererUrl} 失败`);
-                }
-                return decrypt({
-                    content: chapterContentObj.chapter_content,
-                    keys: chapterContentObj.encryt_keys,
-                    accessKey: chapter_access_key,
-                });
-            }
-            const content = document.createElement("div");
-            const decryptDate = await chapterDecrypt(chapterId, chapterUrl);
-            content.innerHTML = decryptDate;
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_3__.rm)(".chapter span", true, content);
-            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .zM)(content, "TM");
-            return {
-                chapterName,
-                contentRaw: content,
-                contentText: text,
-                contentHTML: dom,
-                contentImages: images,
-                additionalMetadate: null,
-            };
-        }
-        async function vipChapter() {
-            async function vipChapterDecrypt(chapterIdi, refererUrl) {
-                const parentWidth = 939.2;
-                const setFontSize = "18";
-                const imageSessionCodeUrl = rootPath + "chapter/ajax_get_image_session_code";
-                _log__WEBPACK_IMPORTED_MODULE_5___default().debug(`[Chapter]请求 ${imageSessionCodeUrl} Referer ${refererUrl}`);
-                const imageSessionCodeObject = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_9__/* .gfetch */ .GF)(imageSessionCodeUrl, {
-                    method: "POST",
-                    headers: {
-                        Accept: "application/json, text/javascript, */*; q=0.01",
-                        Referer: refererUrl,
-                        Origin: document.location.origin,
-                        "X-Requested-With": "XMLHttpRequest",
-                    },
-                    responseType: "json",
-                })
-                    .then((response) => response.response)
-                    .catch((error) => _log__WEBPACK_IMPORTED_MODULE_5___default().error(error));
-                if (imageSessionCodeObject.code !== 100000) {
-                    _log__WEBPACK_IMPORTED_MODULE_5___default().error(imageSessionCodeObject);
-                    throw new Error(`下载 ${refererUrl} 失败`);
-                }
-                const imageCode = decrypt({
-                    content: imageSessionCodeObject
-                        .image_code,
-                    keys: imageSessionCodeObject.encryt_keys,
-                    accessKey: imageSessionCodeObject
-                        .access_key,
-                });
-                const vipCHapterImageUrlI = rootPath +
-                    "chapter/book_chapter_image?chapter_id=" +
-                    chapterIdi +
-                    "&area_width=" +
-                    parentWidth +
-                    "&font=undefined" +
-                    "&font_size=" +
-                    setFontSize +
-                    "&image_code=" +
-                    imageCode +
-                    "&bg_color_name=white" +
-                    "&text_color_name=white";
-                return vipCHapterImageUrlI;
-            }
-            if (isPaid) {
-                const vipCHapterImageUrl = await vipChapterDecrypt(chapterId, chapterUrl);
-                _log__WEBPACK_IMPORTED_MODULE_5___default().debug(`[Chapter]请求 ${vipCHapterImageUrl} Referer ${chapterUrl}`);
-                const vipCHapterImageBlob = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_9__/* .gfetch */ .GF)(vipCHapterImageUrl, {
-                    method: "GET",
-                    headers: {
-                        Referer: chapterUrl,
-                        Accept: "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8",
-                    },
-                    responseType: "blob",
-                })
-                    .then((response) => response.response)
-                    .catch((error) => _log__WEBPACK_IMPORTED_MODULE_5___default().error(error));
-                const vipCHapterName = `vipCHapter${chapterId}.png`;
-                const vipCHapterImage = new _main_Attachment__WEBPACK_IMPORTED_MODULE_11__/* .AttachmentClass */ .J(vipCHapterImageUrl, vipCHapterName, "TM");
-                if (vipCHapterImageBlob) {
-                    vipCHapterImage.imageBlob = vipCHapterImageBlob;
-                    vipCHapterImage.status = _main_main__WEBPACK_IMPORTED_MODULE_7__/* .Status.finished */ .qb.finished;
-                }
-                const contentImages = [vipCHapterImage];
-                const img = document.createElement("img");
-                img.src = vipCHapterName;
-                img.alt = vipCHapterImageUrl;
-                const contentHTML = document.createElement("div");
-                contentHTML.appendChild(img);
-                const contentText = `VIP章节，请打开HTML文件查看。\n![${vipCHapterImageUrl}](${vipCHapterName})`;
-                return {
-                    chapterName,
-                    contentRaw: contentHTML,
-                    contentText,
-                    contentHTML,
-                    contentImages,
-                    additionalMetadate: null,
-                };
-            }
-            else {
-                return {
-                    chapterName,
-                    contentRaw: null,
-                    contentText: null,
-                    contentHTML: null,
-                    contentImages: null,
-                    additionalMetadate: null,
-                };
-            }
-        }
-        if (isVIP) {
-            return vipChapter();
-        }
-        else {
-            return publicChapter();
-        }
-    }
-}
-
-
-/***/ }),
-
 /***/ "./src/rules/special/original/shuhai.ts":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -14729,7 +14802,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/misc.ts");
 /* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("./src/lib/dom.ts");
 /* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/main.ts");
 /* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Chapter.ts");
@@ -15072,7 +15145,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/cleanDOM.ts");
 /* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/http.ts");
 /* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/main.ts");
 /* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/Chapter.ts");
@@ -15245,7 +15318,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "Xrzww": () => (/* binding */ Xrzww)
 /* harmony export */ });
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/attachments.ts");
 /* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Book.ts");
@@ -15448,7 +15521,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/cleanDOM.ts");
 /* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/http.ts");
 /* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/main.ts");
 /* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Chapter.ts");
@@ -15610,7 +15683,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/cleanDOM.ts");
 /* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/http.ts");
 /* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/Chapter.ts");
 /* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Book.ts");
@@ -15888,7 +15961,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/http.ts");
 /* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/dom.ts");
 /* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/Chapter.ts");
 /* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Book.ts");
@@ -16096,7 +16169,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/http.ts");
 /* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/dom.ts");
 /* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/Chapter.ts");
 /* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Book.ts");
@@ -16245,7 +16318,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
 /* harmony import */ var _lib_readability__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/readability.ts");
 /* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Chapter.ts");
 /* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Book.ts");
@@ -16429,7 +16502,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/http.ts");
 /* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/dom.ts");
 /* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/main.ts");
 /* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Chapter.ts");
@@ -16557,7 +16630,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/http.ts");
 /* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/dom.ts");
 /* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Chapter.ts");
 /* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Book.ts");
@@ -16703,7 +16776,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/http.ts");
 /* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/dom.ts");
 /* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Chapter.ts");
 /* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Book.ts");
@@ -16860,7 +16933,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/http.ts");
 /* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/dom.ts");
 /* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Chapter.ts");
 /* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Book.ts");
@@ -16992,7 +17065,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/cleanDOM.ts");
 /* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/http.ts");
 /* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Chapter.ts");
 /* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Book.ts");
@@ -17598,7 +17671,7 @@ const shencou = () => {
 /* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/cleanDOM.ts");
 /* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/http.ts");
 /* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("loglevel");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Chapter.ts");
 /* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/main/Book.ts");
@@ -18186,14 +18259,6 @@ module.exports = Vue;
 
 /***/ }),
 
-/***/ "loglevel":
-/***/ ((module) => {
-
-"use strict";
-module.exports = log;
-
-/***/ }),
-
 /***/ "./node_modules/mime-db/db.json":
 /***/ ((module) => {
 
@@ -18307,9 +18372,9 @@ function init() {
     window.failedCount = 0;
 }
 
-// EXTERNAL MODULE: external "log"
-var external_log_ = __webpack_require__("loglevel");
-var external_log_default = /*#__PURE__*/__webpack_require__.n(external_log_);
+// EXTERNAL MODULE: ./node_modules/loglevel/lib/loglevel.js
+var loglevel = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+var loglevel_default = /*#__PURE__*/__webpack_require__.n(loglevel);
 // EXTERNAL MODULE: external "Vue"
 var external_Vue_ = __webpack_require__("vue");
 ;// CONCATENATED MODULE: ./src/ui/fixVue.ts
@@ -18319,7 +18384,7 @@ globalThis.Function = new Proxy(Function, {
     construct(target, args) {
         const code = args[args.length - 1];
         if (code.includes("Vue") && code.includes("_Vue")) {
-            external_log_default().debug("Function hook:" + code);
+            loglevel_default().debug("Function hook:" + code);
             return hookVue();
         }
         else {
@@ -18621,7 +18686,7 @@ async function getRule() {
             break;
         }
         case "www.shubl.com": {
-            const { Shubl } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/shubl.ts"));
+            const { Shubl } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/ciweimao.ts"));
             ruleClass = Shubl;
             break;
         }
@@ -18868,6 +18933,75 @@ async function getRule() {
     }
 }
 
+;// CONCATENATED MODULE: ./src/lib/adBlocker.ts
+function floatBuster() {
+    if (window !== window.top) {
+        return;
+    }
+    let tstart;
+    const ttl = 30000;
+    let delay = 0;
+    const delayStep = 50;
+    const buster = () => {
+        const button = document.querySelector("#button-div");
+        if (button) {
+            getFixNearby(button).forEach((node) => node.remove());
+            tstart = Date.now();
+        }
+        const progress = document.querySelector("#nd-progress");
+        if (progress) {
+            getFixNearby(progress).forEach((node) => node.remove());
+            tstart = Date.now();
+        }
+        if (Date.now() - tstart < ttl) {
+            delay = Math.min(delay + delayStep, 1000);
+            setTimeout(buster, delay);
+        }
+    };
+    const domReady = (ev) => {
+        if (ev) {
+            document.removeEventListener(ev.type, domReady);
+        }
+        tstart = Date.now();
+        setTimeout(buster, delay);
+    };
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", domReady);
+    }
+    else {
+        domReady();
+    }
+    function getFixNearby(elem) {
+        const docEl = document.documentElement;
+        const vw = Math.min(docEl.clientWidth, window.innerWidth);
+        const vh = Math.min(docEl.clientHeight, window.innerHeight);
+        const { x: elemX, y: elemY } = getXY(elem);
+        return Array.from(document.querySelectorAll("body *")).filter((node) => {
+            const style = window.getComputedStyle(node);
+            const { x: nodeX, y: nodeY } = getXY(node);
+            const nodeRect = node.getBoundingClientRect();
+            return (node !== elem &&
+                !(node.compareDocumentPosition(elem) & Node.DOCUMENT_POSITION_CONTAINS) &&
+                style.position === "fixed" &&
+                style.visibility === "visible" &&
+                isNaN(parseInt(style.zIndex)) === false &&
+                parseInt(style.zIndex, 10) >= 1000 &&
+                (Math.abs(nodeX - elemX) / vw < 0.15 ||
+                    Math.abs(nodeRect.left - elemX) / vw < 0.15 ||
+                    Math.abs(nodeRect.right - elemX) / vw < 0.15) &&
+                (Math.abs(nodeY - elemY) / vh < 0.2 ||
+                    Math.abs(nodeRect.top - elemY) / vh < 0.2 ||
+                    Math.abs(nodeRect.bottom - elemY) / vh < 0.2));
+        });
+        function getXY(ele) {
+            const rect = ele.getBoundingClientRect();
+            const x = (rect.left + rect.right) / 2;
+            const y = (rect.top + rect.bottom) / 2;
+            return { x, y };
+        }
+    }
+}
+
 ;// CONCATENATED MODULE: ./src/router/ui.ts
 
 const defaultObject = {
@@ -19019,18 +19153,6 @@ function getUI() {
                 jumpFunction: () => (document.location.host = "www.lusetxt.com"),
             });
         }
-        case "manhua.dmzj.com":
-        case "www.dmzj.com": {
-            return () => {
-                window.addEventListener("load", async () => {
-                    await (0,misc/* sleep */._v)(300);
-                    document
-                        .querySelectorAll('*[style*="2147483647;"]')
-                        .forEach((elem) => elem.remove());
-                });
-                return defaultObject;
-            };
-        }
         case "www.cool18.com": {
             return () => {
                 const url = new URL(document.location.href);
@@ -19044,7 +19166,10 @@ function getUI() {
             };
         }
         default: {
-            return () => defaultObject;
+            return () => {
+                floatBuster();
+                return defaultObject;
+            };
         }
     }
 }
@@ -19142,7 +19267,7 @@ const style = (0,dom/* createStyle */.wj)(ui_ChapterList/* default */.Z);
                     loading.value = false;
                 }
                 catch (error) {
-                    external_log_default().error(error);
+                    loglevel_default().error(error);
                     failed.value = true;
                 }
             }
@@ -19628,12 +19753,12 @@ const vm = (0,external_Vue_.createApp)({
             setCustomFilter();
             function setEnableDebug() {
                 if (typeof config.enableDebug === "boolean") {
-                    config.enableDebug ? external_log_default().setLevel("trace") : external_log_default().setLevel("info");
+                    config.enableDebug ? loglevel_default().setLevel("trace") : loglevel_default().setLevel("info");
                     src_setting/* enableDebug.value */.Cy.value = config.enableDebug;
                     if (config.enableDebug) {
                         debug();
                     }
-                    external_log_default().info(`[Init]enableDebug: ${src_setting/* enableDebug.value */.Cy.value}`);
+                    loglevel_default().info(`[Init]enableDebug: ${src_setting/* enableDebug.value */.Cy.value}`);
                 }
             }
             function setCustomSaveOption() {
@@ -19677,7 +19802,7 @@ const vm = (0,external_Vue_.createApp)({
             closeSetting(true);
             await (0,misc/* sleep */._v)(30);
             setConfig((0,misc/* deepcopy */.X8)(setting));
-            external_log_default().info("[Init]自定义设置：" + JSON.stringify(setting));
+            loglevel_default().info("[Init]自定义设置：" + JSON.stringify(setting));
         };
         return {
             openStatus,
@@ -19731,7 +19856,7 @@ const button_vm = (0,external_Vue_.createApp)({
                 .then(() => {
                 self.imgStart = src_setting/* iconStart0 */.cl;
             })
-                .catch((error) => external_log_default().error(error));
+                .catch((error) => loglevel_default().error(error));
         },
         settingButtonClick() {
             vm.openSetting();
@@ -19821,18 +19946,19 @@ function ui_init() {
 
 
 async function printEnvironments() {
-    external_log_default().info("[Init]开始载入小说下载器……");
-    Object.entries(await (0,detect/* environments */.Ty)()).forEach((kv) => external_log_default().info("[Init]" + kv.join("：")));
+    loglevel_default().info("[Init]开始载入小说下载器……");
+    Object.entries(await (0,detect/* environments */.Ty)()).forEach((kv) => loglevel_default().info("[Init]" + kv.join("：")));
 }
-async function src_main() {
+async function src_main(ev) {
+    if (ev) {
+        document.removeEventListener(ev.type, src_main);
+    }
     init();
     await printEnvironments();
     ui_init();
 }
 if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", (event) => {
-        src_main();
-    });
+    document.addEventListener("DOMContentLoaded", src_main);
 }
 else {
     src_main();
