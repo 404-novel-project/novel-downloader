@@ -62,7 +62,7 @@ export class Gongzicp extends BaseRuleClass {
       kt_number: string; // "3,674"
       lock: boolean; // false
       chapter_clock: number; // 0
-      chapter_status: number; // 1
+      chapter_status: number; // 1 或 2（另一种锁章）
       pay: boolean; // false
       new: boolean; // false
       is_sub: boolean; // false
@@ -338,7 +338,7 @@ export class Gongzicp extends BaseRuleClass {
         const chapterName = chapterObj.name;
         const isVIP = chapterObj.pay;
         const isPaid = chapterObj.is_sub;
-        const isLock = chapterObj.lock;
+        const isLock = chapterObj.lock || chapterObj.chapter_status !== 1;
         sectionChapterNumber++;
         const chapterOption = {
           novel_id: data.novelInfo.novel_id,
