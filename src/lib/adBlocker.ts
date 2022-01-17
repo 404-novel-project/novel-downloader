@@ -51,7 +51,10 @@ export function floatBuster() {
       return (
         node !== elem &&
         !(
-          node.compareDocumentPosition(elem) & Node.DOCUMENT_POSITION_CONTAINS
+          node.compareDocumentPosition(elem) &
+            Node.DOCUMENT_POSITION_CONTAINS ||
+          node.compareDocumentPosition(elem) &
+            Node.DOCUMENT_POSITION_CONTAINED_BY
         ) &&
         style.position === "fixed" &&
         style.visibility === "visible" &&
