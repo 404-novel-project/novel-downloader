@@ -97,6 +97,8 @@
     "*://www.yibige.cc/*/",
     "*://www.fushuwang.org/*/*/*/*.html",
     "*://www.fushuwang.org/*/*/*/*.html?*",
+    "*://www.fushuwang.org/*/*/*.html",
+    "*://www.fushuwang.org/*/*/*.html?*",
     "*://www.soxscc.net/*/",
     "*://www.soxscc.org/*/",
     "*://www.soxs.cc/*/",
