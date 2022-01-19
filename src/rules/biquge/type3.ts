@@ -69,21 +69,3 @@ export const xinwanben = () =>
     (doc) => (doc.querySelector("#next_url") as HTMLAnchorElement).href,
     (_content, nextLink) => new URL(nextLink).pathname.includes("_")
   );
-
-export const biqu55 = () =>
-  mkBiqugeClassNextPage(
-    (introDom) => introDom,
-    (content, doc) => {
-      rm2(["精彩小说无弹窗免费阅读！"], content);
-      htmlTrim(content);
-      return content;
-    },
-    (doc) =>
-      (
-        doc.querySelector(
-          'div.bottem2 > a[rel="next"]:nth-child(3)'
-        ) as HTMLAnchorElement
-      ).href,
-    (_content, nextLink) =>
-      /[\d_]+\.html$/.exec(nextLink)?.[0].includes("_") ?? false
-  );
