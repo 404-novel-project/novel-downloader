@@ -68,8 +68,8 @@
     "*://www.dingdiann.net/ddk*/",
     "*://www.xkzw.org/xkzw*/",
     "*://www.lewenn.com/lw*/",
-    "*://www.266ks.com/*_*/",
-    "*://www.266ks.com/*_*/index*.html",
+    "*://www.266ks.com/book/*/",
+    "*://www.266ks.com/book/*/index*.html",
     "*://www.hetushu.com/book/*/index.html",
     "*://hetushu.com/book/*/index.html",
     "*://www.shouda88.com/*/",
@@ -234,7 +234,8 @@
     "*://ncode.syosetu.com/*/*/",
     "*://novel18.syosetu.com/*/*/",
     "*://manhua.dmzj.com/",
-    "*://houhuayuan.xyz/"
+    "*://houhuayuan.xyz/",
+    "*://book.sfacg.com/Novel/*/*/*/"
   ],
   "grant": [
     "unsafeWindow",

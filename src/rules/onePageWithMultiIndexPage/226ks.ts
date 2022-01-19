@@ -1,50 +1,37 @@
-import { rm, rms } from "../../lib/dom";
-import { nextPageParse } from "../../lib/rule";
+import { deDuplicate, nextPageParse } from "../../lib/rule";
+import { Book } from "../../main/Book";
 import { mkRuleClass } from "./template";
 
 export const c226ks = () =>
   mkRuleClass({
-    bookUrl: document.location.href.replace(/index_\d+\.html/, "index_1.html"),
+    bookUrl: document.location.href.replace(/index_\d+\.html/, ""),
     bookname: (
-      document.querySelector(".info > .top > h1") as HTMLElement
+      document.querySelector(".info > h2.name") as HTMLElement
     ).innerText.trim(),
     author: (
-      document.querySelector(
-        ".info > .top > .fix > p:nth-child(1)"
-      ) as HTMLElement
-    ).innerText
-      .replace(/作(\s+)?者[：:]/, "")
-      .trim(),
-    introDom: document.querySelector(".desc") as HTMLElement,
+      document.querySelector(".info > .author") as HTMLElement
+    ).innerText.trim(),
+    introDom: document.querySelector(".book-intro") as HTMLElement,
     introDomPatch: (introDom) => introDom,
-    coverUrl: (document.querySelector(".imgbox > img") as HTMLImageElement).src,
+    coverUrl: (
+      document.querySelector(".book-boxs > .img > img") as HTMLImageElement
+    ).src,
     getIndexUrls: () =>
       Array.from(document.querySelectorAll('[name="pageselect"] > option')).map(
         (opt) => document.location.origin + opt.getAttribute("value")
       ),
-    getAList: (doc) =>
-      doc.querySelectorAll(
-        "div.section-box:nth-child(4) > ul:nth-child(1) > li > a"
-      ),
+    getAList: (doc) => doc.querySelectorAll("ul.list a"),
     getContentFromUrl: async (chapterUrl, chapterName, charset) => {
       const { contentRaw } = await nextPageParse({
         chapterName,
         chapterUrl,
         charset,
         selector: "#content",
-        contentPatch: (content, doc) => {
-          rm("script", true, content);
-          rm("div.posterror", false, content);
-          rm("div[onclick]", true, content);
-          const ad =
-            '<div class="posterror"><a href="javascript:postError();" class="red">章节错误,点此举报(免注册)</a>,举报后维护人员会在两分钟内校正章节内容,请耐心等待,并刷新页面。</div>';
-          rms([ad], content);
-          return content;
-        },
+        contentPatch: (content, doc) => content,
         getNextPage: (doc) =>
           (
             doc.querySelector(
-              "div.section-opt.m-bottom-opt > a:nth-child(5)"
+              "section.g-content-nav > a:nth-child(3)"
             ) as HTMLAnchorElement
           ).href,
         continueCondition: (_content, nextLink) => {
@@ -56,4 +43,14 @@ export const c226ks = () =>
       return contentRaw;
     },
     contentPatch: (content) => content,
+    overrideConstructor: (classThis) => {
+      const rawBookParse = classThis.bookParse;
+      classThis.bookParse = async () => {
+        const book = (await Reflect.apply(rawBookParse, classThis, [])) as Book;
+        const chapters = book.chapters;
+        book.chapters = deDuplicate(chapters);
+        return book;
+      };
+      return classThis;
+    },
   });

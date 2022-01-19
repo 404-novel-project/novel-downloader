@@ -54,6 +54,7 @@ export function floatBuster() {
           node.compareDocumentPosition(elem) &
             Node.DOCUMENT_POSITION_CONTAINED_BY
         ) &&
+        !["button-div", "nd-progress", "nd-setting"].includes(node.id) &&
         visibility === "visible" &&
         (position === "fixed" || parseInt(zIndex, 10) >= 1000) &&
         (nearTest(node, elem) || parseInt(zIndex, 10) > 10 ** 9)
