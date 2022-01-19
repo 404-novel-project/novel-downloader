@@ -189,11 +189,13 @@ export function mkRuleClass({
       options: object
     ) {
       let content;
-      if (getContentFromUrl !== undefined) {
+      if (typeof getContentFromUrl === "function") {
         content = await getContentFromUrl(chapterUrl, chapterName, charset);
-      } else if (getContent !== undefined) {
+      } else if (typeof getContent === "function") {
         const doc = await getHtmlDOM(chapterUrl, charset);
         content = getContent(doc);
+      } else {
+        throw Error("未发现 getContentFromUrl 或 getContent");
       }
       if (content) {
         content = contentPatch(content);

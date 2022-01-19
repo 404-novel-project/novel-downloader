@@ -2,7 +2,7 @@ import { getImageAttachment } from "../../lib/attachments";
 import { Options, cleanDOM } from "../../lib/cleanDOM";
 import { getHtmlDOM, getHtmlDomWithRetry } from "../../lib/http";
 import { PublicConstructor, concurrencyRun } from "../../lib/misc";
-import { introDomHandle } from "../../lib/rule";
+import { getSectionName, introDomHandle } from "../../lib/rule";
 import { log } from "../../log";
 import { Chapter } from "../../main/Chapter";
 import { Book, BookAdditionalMetadate } from "../../main/Book";
@@ -16,13 +16,16 @@ interface MkRuleClassOptions {
   introDom: HTMLElement;
   introDomPatch: (introDom: HTMLElement) => HTMLElement;
   coverUrl: string | null;
-  getIndexUrls: () => string[] | Promise<string[]>;
+  getIndexUrls?: () => string[] | Promise<string[]>;
+  getIndexPages?: () => Promise<(Document | null)[]>;
   getAList: (doc: Document) => NodeListOf<Element>;
   getAName?: (aElem: Element) => string;
   getIsVIP?: (aElem: Element) => {
     isVIP: boolean;
     isPaid: boolean;
   };
+  getSections?: (doc: Document) => NodeListOf<Element>;
+  getSName?: (sElem: Element) => string;
   postHook?: (chapter: Chapter) => Chapter | void;
   getContentFromUrl?: (
     chapterUrl: string,
@@ -45,9 +48,12 @@ export function mkRuleClass({
   introDomPatch,
   coverUrl,
   getIndexUrls,
+  getIndexPages,
   getAList,
   getAName,
   getIsVIP,
+  getSections,
+  getSName,
   postHook,
   getContentFromUrl,
   getContent,
@@ -90,80 +96,104 @@ export function mkRuleClass({
           .catch((error) => log.error(error));
       }
 
-      const indexUrls = await getIndexUrls();
-      const _indexPage: [Document | null, string][] = [];
-      await concurrencyRun(
-        indexUrls,
-        this.concurrencyLimit,
-        async (url: string) => {
-          log.info(`[BookParse]抓取目录页：${url}`);
-          const doc = await getHtmlDomWithRetry(url);
-          _indexPage.push([doc, url]);
-          return doc;
-        }
-      );
-      const indexPage = _indexPage
-        .sort((a: [Document | null, string], b: [Document | null, string]) => {
-          const aUrl = a[1];
-          const bUrl = b[1];
-          // https://stackoverflow.com/questions/13304543/javascript-sort-array-based-on-another-array
-          return indexUrls.indexOf(aUrl) - indexUrls.indexOf(bUrl);
-        })
-        .map((l) => l[0]);
-      const _aListList = indexPage
-        .map((doc) => {
-          if (doc) {
-            return getAList(doc);
-          } else {
-            log.error("[bookParse]部分目录页抓取失败！");
-            return null;
+      let indexPages: (Document | null)[];
+      if (typeof getIndexPages === "function") {
+        indexPages = await getIndexPages();
+      } else if (typeof getIndexUrls === "function") {
+        const indexUrls = await getIndexUrls();
+        const _indexPage: [Document | null, string][] = [];
+        await concurrencyRun(
+          indexUrls,
+          this.concurrencyLimit,
+          async (url: string) => {
+            log.info(`[BookParse]抓取目录页：${url}`);
+            const doc = await getHtmlDomWithRetry(url, this.charset);
+            _indexPage.push([doc, url]);
+            return doc;
           }
-        })
-        .filter((a) => a !== null) as NodeListOf<Element>[];
-      const aListList: HTMLAnchorElement[] = [];
-      _aListList.forEach((alist) =>
-        Array.from(alist).forEach((a) => aListList.push(a as HTMLAnchorElement))
-      );
+        );
+        indexPages = _indexPage
+          .sort(
+            (a: [Document | null, string], b: [Document | null, string]) => {
+              const aUrl = a[1];
+              const bUrl = b[1];
+              // https://stackoverflow.com/questions/13304543/javascript-sort-array-based-on-another-array
+              return indexUrls.indexOf(aUrl) - indexUrls.indexOf(bUrl);
+            }
+          )
+          .map((l) => l[0]);
+      } else {
+        throw Error("未发现 getIndexUrls 或 getIndexPages");
+      }
 
       const chapters: Chapter[] = [];
       let chapterNumber = 0;
-      for (const aElem of Array.from(aListList)) {
-        chapterNumber++;
-        let chapterName;
-        if (getAName) {
-          chapterName = getAName(aElem);
-        } else {
-          chapterName = aElem.innerText;
+      let sectionNumber = 0;
+      let sectionChapterNumber = 0;
+      let sectionName = null;
+      for (const doc of indexPages) {
+        if (!doc) {
+          continue;
         }
-        const chapterUrl = aElem.href;
-        let isVIP = false;
-        let isPaid = false;
-        if (getIsVIP) {
-          ({ isVIP, isPaid } = getIsVIP(aElem));
+        let sections;
+        let hasSection;
+        if (typeof getSections === "function") {
+          sections = getSections(doc);
         }
-        let chapter: Chapter | void = new Chapter({
-          bookUrl,
-          bookname,
-          chapterUrl,
-          chapterNumber,
-          chapterName,
-          isVIP,
-          isPaid,
-          sectionName: null,
-          sectionChapterNumber: null,
-          sectionNumber: null,
-          chapterParse: this.chapterParse,
-          charset: this.charset,
-          options: { bookname },
-        });
-        if (isVIP === true && isPaid === false) {
-          chapter.status = Status.aborted;
+        if (sections && sections instanceof NodeList) {
+          hasSection = true;
         }
-        if (typeof postHook === "function") {
-          chapter = postHook(chapter);
-        }
-        if (chapter) {
-          chapters.push(chapter);
+
+        const aList = getAList(doc);
+        for (const aElem of Array.from(aList) as HTMLAnchorElement[]) {
+          let chapterName;
+          if (getAName) {
+            chapterName = getAName(aElem);
+          } else {
+            chapterName = aElem.innerText;
+          }
+          const chapterUrl = aElem.href;
+
+          if (hasSection && sections && getSName) {
+            const _sectionName = getSectionName(aElem, sections, getSName);
+            if (_sectionName !== sectionName) {
+              sectionName = _sectionName;
+              sectionNumber++;
+              sectionChapterNumber = 0;
+            }
+          }
+
+          chapterNumber++;
+          sectionChapterNumber++;
+          let isVIP = false;
+          let isPaid = false;
+          if (getIsVIP) {
+            ({ isVIP, isPaid } = getIsVIP(aElem));
+          }
+          let chapter: Chapter | void = new Chapter({
+            bookUrl,
+            bookname,
+            chapterUrl,
+            chapterNumber,
+            chapterName,
+            isVIP,
+            isPaid,
+            sectionName,
+            sectionNumber: hasSection ? sectionNumber : null,
+            sectionChapterNumber: hasSection ? sectionChapterNumber : null,
+            chapterParse: this.chapterParse,
+            charset: this.charset,
+            options: { bookname },
+          });
+          if (isVIP === true && isPaid === false) {
+            chapter.status = Status.aborted;
+          }
+          if (typeof postHook === "function") {
+            chapter = postHook(chapter);
+          }
+          if (chapter) {
+            chapters.push(chapter);
+          }
         }
       }
 
@@ -187,11 +217,13 @@ export function mkRuleClass({
       options: object
     ) {
       let content;
-      if (getContentFromUrl !== undefined) {
+      if (typeof getContentFromUrl === "function") {
         content = await getContentFromUrl(chapterUrl, chapterName, charset);
-      } else if (getContent !== undefined) {
+      } else if (typeof getContent === "function") {
         const doc = await getHtmlDOM(chapterUrl, charset);
         content = getContent(doc);
+      } else {
+        throw Error("未发现 getContentFromUrl 或 getContent");
       }
       if (content) {
         content = contentPatch(content);

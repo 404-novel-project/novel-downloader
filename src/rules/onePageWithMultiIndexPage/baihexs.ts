@@ -1,5 +1,5 @@
 import { getHtmlDOM } from "../../lib/http";
-import { rms } from "../../lib/dom";
+import { rm2 } from "../../lib/dom";
 import { mkRuleClass } from "./template";
 
 export const baihexs = () => {
@@ -45,10 +45,7 @@ export const baihexs = () => {
     getAList: (doc) => doc.querySelectorAll(".chapter > li > a"),
     getContent: (doc) => doc.querySelector("#nr1"),
     contentPatch: (dom) => {
-      const ads: (string | RegExp)[] = [
-        /请牢记：百合小说网.+免费最快更新无防盗无防盗/,
-      ];
-      rms(ads, dom);
+      rm2(["请您牢记：百合小说网"], dom);
       return dom;
     },
     concurrencyLimit: 3,
