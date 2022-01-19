@@ -5,7 +5,7 @@
     v-on:dialogclose="closeSetting"
     v-if="openStatus === 'true'"
   >
-    <div class="nd-setting">
+    <div class="nd-setting" id="nd-setting">
       <div class="nd-setting-tab">
         <button
           v-bind:class="['tab-button', { active: setting.currentTab === 'tab-1'}]"

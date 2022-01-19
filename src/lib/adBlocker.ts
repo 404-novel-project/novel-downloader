@@ -18,6 +18,11 @@ export function floatBuster() {
       getFixNearby(progress).forEach((node) => node.remove());
       tstart = Date.now();
     }
+    const setting = document.querySelector("#nd-setting");
+    if (setting) {
+      getFixNearby(setting).forEach((node) => node.remove());
+      tstart = Date.now();
+    }
 
     if (Date.now() - tstart < ttl) {
       delay = Math.min(delay + delayStep, 1000);
@@ -39,15 +44,8 @@ export function floatBuster() {
   }
 
   function getFixNearby(elem: Element) {
-    const docEl = document.documentElement;
-    const vw = Math.min(docEl.clientWidth, window.innerWidth);
-    const vh = Math.min(docEl.clientHeight, window.innerHeight);
-    const { x: elemX, y: elemY } = getXY(elem);
-
     return Array.from(document.querySelectorAll("body *")).filter((node) => {
-      const style = window.getComputedStyle(node);
-      const { x: nodeX, y: nodeY } = getXY(node);
-      const nodeRect = node.getBoundingClientRect();
+      const { position, visibility, zIndex } = window.getComputedStyle(node);
       return (
         node !== elem &&
         !(
@@ -56,24 +54,92 @@ export function floatBuster() {
           node.compareDocumentPosition(elem) &
             Node.DOCUMENT_POSITION_CONTAINED_BY
         ) &&
-        style.position === "fixed" &&
-        style.visibility === "visible" &&
-        isNaN(parseInt(style.zIndex)) === false &&
-        parseInt(style.zIndex, 10) >= 1000 &&
-        (Math.abs(nodeX - elemX) / vw < 0.15 ||
-          Math.abs(nodeRect.left - elemX) / vw < 0.15 ||
-          Math.abs(nodeRect.right - elemX) / vw < 0.15) &&
-        (Math.abs(nodeY - elemY) / vh < 0.2 ||
-          Math.abs(nodeRect.top - elemY) / vh < 0.2 ||
-          Math.abs(nodeRect.bottom - elemY) / vh < 0.2)
+        visibility === "visible" &&
+        (position === "fixed" || parseInt(zIndex, 10) >= 1000) &&
+        nearTest(node, elem)
       );
     });
 
-    function getXY(ele: Element) {
-      const rect = ele.getBoundingClientRect();
-      const x = (rect.left + rect.right) / 2;
-      const y = (rect.top + rect.bottom) / 2;
-      return { x, y };
+    function nearTest(node: Element, element: Element) {
+      if (isOverlap(getVertex(node), getVertex(element))) {
+        return true;
+      } else if (isNearby(getVertex(node), getVertex(element))) {
+        return true;
+      } else {
+        return false;
+      }
+
+      function getVertex(
+        ele: Element
+      ): [
+        [number, number],
+        [number, number],
+        [number, number],
+        [number, number]
+      ] {
+        const { left, top, right, bottom } = ele.getBoundingClientRect();
+        return [
+          [left, top],
+          [right, top],
+          [left, bottom],
+          [right, bottom],
+        ];
+      }
+
+      function isOverlap(
+        rec1: [
+          [number, number],
+          [number, number],
+          [number, number],
+          [number, number]
+        ],
+        rec2: [
+          [number, number],
+          [number, number],
+          [number, number],
+          [number, number]
+        ]
+      ) {
+        const [left1, top1] = rec1[0];
+        const [right1, bottom1] = rec1[3];
+        const [left2, top2] = rec2[0];
+        const [right2, bottom2] = rec2[3];
+        return (
+          // 矩形X坐标是否存在交集
+          !(right1 < left2 || right2 < left1) &&
+          // 矩形Y坐标是否存在交集
+          !(bottom1 < top2 || bottom2 < top1)
+        );
+      }
+
+      function isNearby(
+        rec1: [
+          [number, number],
+          [number, number],
+          [number, number],
+          [number, number]
+        ],
+        rec2: [
+          [number, number],
+          [number, number],
+          [number, number],
+          [number, number]
+        ]
+      ) {
+        const docEl = document.documentElement;
+        const vw = Math.min(docEl.clientWidth, window.innerWidth);
+        const vh = Math.min(docEl.clientHeight, window.innerHeight);
+        const diagonal = Math.sqrt(vw ** 2 + vh ** 2);
+        for (const [x1, y1] of rec1) {
+          for (const [x2, y2] of rec2) {
+            const distance = Math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2);
+            if (distance < diagonal * 0.1) {
+              return true;
+            }
+          }
+        }
+        return false;
+      }
     }
   }
 }
