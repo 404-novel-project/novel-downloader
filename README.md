@@ -65,7 +65,7 @@ EPUB文件请使用相应阅读器阅读。
 |---|-------|------|----|
 |[刺猬猫](https://www.ciweimao.com/)|✅|✅|VIP章节仅支持图片版。|
 |[SF轻小说](https://book.sfacg.com/)|✅\*|✅\*\*|\*不支持对话小说，例：[224282](https://book.sfacg.com/Novel/224282/)。 \*\*VIP章节仅支持图片版。|
-|[起点中文网](https://book.qidian.com/)|✅|✅||
+|[起点中文网](https://www.qidian.com/)|✅|✅||
 |[起点女生网](https://www.qdmm.com/)|✅|✅||
 |[晋江文学城](http://www.jjwxc.net/)|✅|✅|VIP章节使用[晋江防盗字体对照表](https://github.com/yingziwu/jjwxcFontTables)去除空格。<br>当程序自带的防盗字体对照表未查找到相关字体时，脚本将尝试向云端请求数据，远程字体功能可通过 `enableJjwxcRemoteFont` 配置项手动关闭。|
 |[长佩文学](https://www.gongzicp.com/)|✅|✅|反爬较严，限制下载速度，每分钟约可下载6章，请耐心等待。<br>长佩文学为单页应用，如打开书籍详情页右上角未出现下载图标，请按下F5重新加载当前页面。|
@@ -114,9 +114,9 @@ EPUB文件请使用相应阅读器阅读。
 |[手打吧](https://www.shouda88.com/)|✅|❎||
 |[阁笔趣](http://www.gebiqu.com/)|✅|❎||
 |[米趣小说](http://www.viviyzw.com/)|✅|❎||
-|[书书网](https://www.xiaoshuodaquan.com/)|✅|❎||
+|[书书网](https://www.1pwx.com/)|✅|❎||
 |[八一中文网](https://www.81book.com/)|✅|❎|抓取速度慢，请耐心等待。|
-|[御书阁](http://m.yuzhaige.cc/)|✅|❎|部分文字被图片替换，请使用HTML版查看。|
+|[御书阁](http://m.yushuge123.com/)|✅|❎|部分文字被图片替换，请使用HTML版查看。|
 |[完本神站](https://www.xinwanben.com/)|✅|❎||
 |[得间小说](https://www.idejian.com/)|✅|❎||
 |[轻小说文库](https://www.wenku8.net/)|✅|❎||
@@ -127,14 +127,14 @@ EPUB文件请使用相应阅读器阅读。
 |[红叶书斋](https://www.hongyeshuzhai.com/)|✅|❎||
 |[哩哔轻小说](https://www.linovelib.com/)|✅|❎||
 |[落秋中文](https://www.luoqiuzw.com/)|✅|❎||
-|[一笔阁](https://www.yibige.la/)|✅|❎||
+|[一笔阁](https://www.yibige.cc/)|✅|❎||
 |[腐书网](https://www.fushuwang.org/)|✅|❎||
 |[搜小说](https://www.soxscc.net/)|✅|❎||
 |[腐国度](https://www.fuguoduxs.com/)|✅|❎||
 |[书包网](http://www.shubaowa.org/)|✅|❎||
 |[言情小说笔趣阁](https://www.xyqxs.cc/)|✅|❎||
 |[恋上你看书](https://www.630shu.net/)|✅|❎||
-|[青果阅读](https://www.qingoo.cn/)|✅|❎||
+|[青果阅读](https://www.qingoo.cn/)|✅|❎|暂时无法访问|
 |[同人小说网](https://www.trxs123.com/)|✅|❎||
 |[同人圈](http://www.tongrenquan.org/)|✅|❎||
 |[精品小说网](http://www.jpxs123.com/)|✅|❎||
@@ -145,12 +145,12 @@ EPUB文件请使用相应阅读器阅读。
 |[悠久小说网](https://www.ujxs.net/)|✅|❎||
 |[海棠小说网](http://m.haitangtxt.net/)|✅|❎|部分文字被图片替换，请使用HTML版查看。<br>如需替换清理图片，请自行生成图片文字对照表。|
 |[小说酷笔记](https://www.kubiji.net/)|✅|❎||
-|[笔趣阁](https://www.biquwx.la/)|✅|❎||
+|[笔趣阁](https://www.xbiquwx.la/)|✅|❎||
 |[25中文网](http://www.25zw.com/)|✅|❎||
-|[天域小说网](https://www.tycqxs.com/)|✅|❎||
+|[天域小说网](https://www.zmccx.com/)|✅|❎||
 |[完本神站](https://www.wanben.org/)|✅|❎||
 |[燃文小说](https://www.ranwen.la)|✅|❎||
-|[望书阁](https://www.washuge.com/)|✅|❎||
+|[望书阁](https://www.wangshuge.com/)|✅|❎||
 |[百合小说网](https://m.baihexs.com/)|✅|❎||
 |[全书斋](https://www.quanshuzhai.com/)|✅|❎||
 |[蔷薇后花园](https://houhuayuan.xyz/)|✅|❎||
@@ -160,13 +160,13 @@ EPUB文件请使用相应阅读器阅读。
 |[神凑轻小说](http://www.shencou.com/)|✅|❎||
 |[爱下书小说网](https://www.aixiawx.com/)|✅|❎||
 |[精彩小说网](https://jingcaiyuedu6.com/)|✅|❎||
-|[笔趣读](https://www.biqu55.com/)|✅|❎||
+|[笔趣读](https://www.biqu55.net/)|✅|❎||
 |[爱下电子书](https://www.aixdzs.com/)|✅|❎||
 |[56书库](https://www.liuxs.la/)|✅|❎||
 |[笔趣阁](http://www.b5200.net/)|✅|❎||
-|[言情小说](https://www.yqxs.cc/)|✅|❎||
+|[言情小说](https://www.xsyq.cc/)|✅|❎||
 |[18看书](https://www.18kanshu.com/)|✅|❎||
-|[笔下文学333](http://www.bxwx333.org/)|✅|❎||
+|[笔下文学333](http://www.bxwx888.org/)|✅|❎||
 |[小说屋](http://www.xiaoshuowu.com/)|✅|❎||
 |[缤纷幻想](https://colorful-fantasybooks.com/)|✅|❎||
 

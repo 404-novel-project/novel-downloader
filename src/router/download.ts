@@ -297,7 +297,6 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = haitangtxt();
       break;
     }
-    case "m.yuzhaige.cc":
     case "m.yushuge123.com": {
       const { yuzhaige } = await import("../rules/special/reprint/haitangtxt");
       ruleClass = yuzhaige();
@@ -332,7 +331,7 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = dijiubook();
       break;
     }
-    case "www.biquwx.la": {
+    case "www.xbiquwx.la": {
       const { biquwx } = await import("../rules/biquge/type1");
       ruleClass = biquwx();
       break;
@@ -342,7 +341,7 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = c25zw();
       break;
     }
-    case "www.tycqxs.com": {
+    case "www.zmccx.com": {
       const { tycqxs } = await import("../rules/biquge/type1");
       ruleClass = tycqxs();
       break;
@@ -374,7 +373,7 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = ranwen();
       break;
     }
-    case "www.washuge.com": {
+    case "www.wangshuge.com": {
       const { washuge } = await import("../rules/twoPage/washuge");
       ruleClass = washuge();
       break;
@@ -460,7 +459,7 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = Hanwujinian;
       break;
     }
-    case "www.biqu55.com": {
+    case "www.biqu55.net": {
       const { biqu55 } = await import("../rules/biquge/type3");
       ruleClass = biqu55();
       break;
@@ -492,7 +491,7 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = b5200();
       break;
     }
-    case "www.yqxs.cc": {
+    case "www.xsyq.cc": {
       const { yqxs } = await import("../rules/biquge/type2");
       ruleClass = yqxs();
       break;
@@ -507,7 +506,7 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = c18kanshu();
       break;
     }
-    case "www.bxwx333.org": {
+    case "www.bxwx888.org": {
       const { bxwx333 } = await import("../rules/biquge/type1");
       ruleClass = bxwx333();
       break;

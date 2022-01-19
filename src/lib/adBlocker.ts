@@ -56,7 +56,7 @@ export function floatBuster() {
         ) &&
         visibility === "visible" &&
         (position === "fixed" || parseInt(zIndex, 10) >= 1000) &&
-        nearTest(node, elem)
+        (nearTest(node, elem) || parseInt(zIndex, 10) > 10 ** 9)
       );
     });
 

@@ -39,9 +39,11 @@ export function getUI(): () => UIObject {
       return () => {
         const re = /^\/book\/\d+\/?$/;
         if (re.test(document.location.pathname)) {
+          floatBuster();
           return defaultObject;
+        } else {
+          return errorObject;
         }
-        return errorObject;
       };
     }
     case "www.kanunu8.com": {
@@ -51,9 +53,11 @@ export function getUI(): () => UIObject {
           document.body.innerHTML.includes("作者:") ||
           document.body.innerHTML.includes("内容简介")
         ) {
+          floatBuster();
           return defaultObject;
+        } else {
+          return errorObject;
         }
-        return errorObject;
       };
     }
     case "www.ciyuanji.com": {
@@ -64,8 +68,10 @@ export function getUI(): () => UIObject {
             jumpFunction: () =>
               (document.location.pathname = "/bookDetails/catalog"),
           };
+        } else {
+          floatBuster();
+          return defaultObject;
         }
-        return defaultObject;
       };
     }
     case "ebook.longmabook.com":
@@ -93,6 +99,7 @@ export function getUI(): () => UIObject {
           params.has("bookwritercode") &&
           params.has("bookid")
         ) {
+          floatBuster();
           return defaultObject;
         }
         return errorObject;
@@ -127,6 +134,7 @@ export function getUI(): () => UIObject {
             return errorObject;
           }
         } else {
+          floatBuster();
           return defaultObject;
         }
       };
@@ -146,6 +154,7 @@ export function getUI(): () => UIObject {
             return errorObject;
           }
         } else {
+          floatBuster();
           return defaultObject;
         }
       };
@@ -163,9 +172,62 @@ export function getUI(): () => UIObject {
           url.searchParams.get("act") === "threadview" &&
           url.searchParams.has("tid")
         ) {
+          floatBuster();
           return defaultObject;
         } else {
           return errorObject;
+        }
+      };
+    }
+    case "book.zongheng.com":
+    case "huayu.zongheng.com": {
+      return () => {
+        if (document.location.pathname.startsWith("/book/")) {
+          return {
+            type: "jump",
+            jumpFunction: () =>
+              (document.location.pathname = document.location.pathname.replace(
+                /^\/book\//,
+                "/showchapter/"
+              )),
+          };
+        } else {
+          floatBuster();
+          return defaultObject;
+        }
+      };
+    }
+    case "www.17k.com": {
+      return () => {
+        if (document.location.pathname.startsWith("/book/")) {
+          return {
+            type: "jump",
+            jumpFunction: () =>
+              (document.location.pathname = document.location.pathname.replace(
+                /^\/book\//,
+                "/list/"
+              )),
+          };
+        } else {
+          floatBuster();
+          return defaultObject;
+        }
+      };
+    }
+    case "www.linovelib.com": {
+      return () => {
+        if (document.location.pathname.endsWith(".html")) {
+          return {
+            type: "jump",
+            jumpFunction: () =>
+              (document.location.pathname = document.location.pathname.replace(
+                /\.html$/,
+                "/catalog"
+              )),
+          };
+        } else {
+          floatBuster();
+          return defaultObject;
         }
       };
     }
