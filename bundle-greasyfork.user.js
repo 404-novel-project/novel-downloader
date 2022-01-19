@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.8.2.549
+// @version        4.8.2.551
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -78,6 +78,8 @@
 // @match          *://www.yibige.cc/*/
 // @match          *://www.fushuwang.org/*/*/*/*.html
 // @match          *://www.fushuwang.org/*/*/*/*.html?*
+// @match          *://www.fushuwang.org/*/*/*.html
+// @match          *://www.fushuwang.org/*/*/*.html?*
 // @match          *://www.soxscc.net/*/
 // @match          *://www.soxscc.org/*/
 // @match          *://www.soxs.cc/*/
@@ -88,7 +90,7 @@
 // @match          *://www.kubiji.net/*/
 // @match          *://www.shubaowa.org/*_*/
 // @match          *://www.fuguoduxs.com/*_*/
-// @match          *://www.xyqxs.cc/html/*/*/index.html
+// @match          *://www.yqbiqu.com/html/*/*/index.html
 // @match          *://www.630shu.net/shu/*.html
 // @match          *://www.qingoo.cn/details?bookId=*
 // @match          *://www.trxs.cc/tongren/*.html
@@ -175,6 +177,7 @@
 // @match          *://www.xrzww.com/bookdetail/*
 // @match          *://colorful-fantasybooks.com/module/novel/info.php?*
 // @match          *://www.dizishu.com/*/*/
+// @match          *://www.xbiquge.la/*/*/
 // @name:en        novel-downloader
 // @name:ja        小説ダウンローダー
 // @description:en An scalable universal novel downloader.
@@ -7833,7 +7836,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "yruan": () => (/* binding */ yruan),
 /* harmony export */   "ranwen": () => (/* binding */ ranwen),
 /* harmony export */   "b5200": () => (/* binding */ b5200),
-/* harmony export */   "bxwx333": () => (/* binding */ bxwx333)
+/* harmony export */   "bxwx333": () => (/* binding */ bxwx333),
+/* harmony export */   "xbiqugeLa": () => (/* binding */ xbiqugeLa)
 /* harmony export */ });
 /* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/misc.ts");
 /* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
@@ -7924,6 +7928,13 @@ const bxwx333 = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)(".bottem2", true, content);
     return content;
 }, undefined, undefined, undefined, "#zjneirong");
+const xbiqugeLa = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass */ .R)((introDom) => {
+    introDom.querySelector("font")?.parentElement?.remove();
+    return introDom;
+}, (content) => {
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .vS)(["手机站全新改版升级地址"], content);
+    return content;
+}, 1);
 
 
 /***/ }),
@@ -18773,7 +18784,7 @@ async function getRule() {
             ruleClass = Soxscc;
             break;
         }
-        case "www.xyqxs.cc": {
+        case "www.yqbiqu.com": {
             const { xyqxs } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/type2.ts"));
             ruleClass = xyqxs();
             break;
@@ -19058,6 +19069,11 @@ async function getRule() {
         case "www.dizishu.com": {
             const { dizishu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/dizishu.ts"));
             ruleClass = dizishu();
+            break;
+        }
+        case "www.xbiquge.la": {
+            const { xbiqugeLa } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/type1.ts"));
+            ruleClass = xbiqugeLa();
             break;
         }
         default: {

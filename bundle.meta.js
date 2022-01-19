@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.8.2.549
+// @version        4.8.2.551
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -78,6 +78,8 @@
 // @match          *://www.yibige.cc/*/
 // @match          *://www.fushuwang.org/*/*/*/*.html
 // @match          *://www.fushuwang.org/*/*/*/*.html?*
+// @match          *://www.fushuwang.org/*/*/*.html
+// @match          *://www.fushuwang.org/*/*/*.html?*
 // @match          *://www.soxscc.net/*/
 // @match          *://www.soxscc.org/*/
 // @match          *://www.soxs.cc/*/
@@ -88,7 +90,7 @@
 // @match          *://www.kubiji.net/*/
 // @match          *://www.shubaowa.org/*_*/
 // @match          *://www.fuguoduxs.com/*_*/
-// @match          *://www.xyqxs.cc/html/*/*/index.html
+// @match          *://www.yqbiqu.com/html/*/*/index.html
 // @match          *://www.630shu.net/shu/*.html
 // @match          *://www.qingoo.cn/details?bookId=*
 // @match          *://www.trxs.cc/tongren/*.html
@@ -175,6 +177,7 @@
 // @match          *://www.xrzww.com/bookdetail/*
 // @match          *://colorful-fantasybooks.com/module/novel/info.php?*
 // @match          *://www.dizishu.com/*/*/
+// @match          *://www.xbiquge.la/*/*/
 // @name:en        novel-downloader
 // @name:ja        小説ダウンローダー
 // @description:en An scalable universal novel downloader.
