@@ -32,7 +32,6 @@ export async function getRule(): Promise<BaseRuleClass> {
     }
     case "www.biquge66.com":
     case "www.lewenn.com":
-    case "www.klxs.la":
     case "www.xkzw.org": {
       const { Xkzw } = await import("../rules/special/reprint/xkzw");
       ruleClass = Xkzw;
@@ -93,9 +92,7 @@ export async function getRule(): Promise<BaseRuleClass> {
     case "www.bz01.org":
     case "www.aixiawx.com":
     case "www.banzhuer.org":
-    case "www.biquwoo.com":
-    case "www.biquwo.org":
-    case "www.hongyeshuzhai.com": {
+    case "www.hongyeshuzhal.com": {
       const { common } = await import("../rules/biquge/type1");
       ruleClass = common();
       break;
@@ -264,7 +261,6 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = imiaobige();
       break;
     }
-    case "www.256wxc.com":
     case "www.256wenku.com": {
       const { c256wxc } = await import("../rules/onePage/256wxc");
       ruleClass = c256wxc;
@@ -283,11 +279,6 @@ export async function getRule(): Promise<BaseRuleClass> {
     case "www.shubl.com": {
       const { Shubl } = await import("../rules/special/original/ciweimao");
       ruleClass = Shubl;
-      break;
-    }
-    case "www.ujxs.net": {
-      const { ujxs } = await import("../rules/twoPage/ujxs");
-      ruleClass = ujxs();
       break;
     }
     case "m.haitangtxt.net": {

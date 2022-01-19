@@ -103,13 +103,11 @@ EPUB文件请使用相应阅读器阅读。
 |[读书369](http://www.dushu369.com/)|✅|❎||
 |[UU看书网](https://www.uukanshu.com/)|✅|❎||
 |[亿软网](http://www.yruan.com/)|✅|❎|网站性能差，降低抓取频率，请耐心等待。|
-|[笔趣窝](http://www.biquwoo.com/)|✅|❎||
 |[书趣阁](http://www.shuquge.com/)|✅|❎|网站性能差，降低抓取频率，请耐心等待。|
 |[顶点小说](https://www.dingdiann.net/)|✅|❎||
 |[星空中文](http://www.xkzw.org/)|✅|❎||
 |[乐文小说网](https://www.lewenn.com/)|✅|❎||
-|[可乐小说网](https://www.klxs.la/)|✅|❎||
-|[266看书](https://www.266ks.com/)|✅|❎||
+|[266看书](http://www.266ks.com/)|✅|❎||
 |[和图书](https://www.hetushu.com/index.php)|✅|❎||
 |[手打吧](https://www.shouda88.com/)|✅|❎||
 |[阁笔趣](http://www.gebiqu.com/)|✅|❎||
@@ -124,7 +122,7 @@ EPUB文件请使用相应阅读器阅读。
 |[棉花糖小说网](https://www.mht99.com/)|✅|❎||
 |[第一版主网](https://www.bz01.org/)|✅|❎||
 |[笔趣阁](https://www.xbiquge.so/)|✅|❎||
-|[红叶书斋](https://www.hongyeshuzhai.com/)|✅|❎||
+|[红叶书斋](https://www.hongyeshuzhal.com/)|✅|❎||
 |[哩哔轻小说](https://www.linovelib.com/)|✅|❎||
 |[落秋中文](https://www.luoqiuzw.com/)|✅|❎||
 |[一笔阁](https://www.yibige.cc/)|✅|❎||
@@ -139,10 +137,9 @@ EPUB文件请使用相应阅读器阅读。
 |[同人圈](http://www.tongrenquan.org/)|✅|❎||
 |[精品小说网](http://www.jpxs123.com/)|✅|❎||
 |[妙笔阁](https://www.imiaobige.com/)|✅|❎||
-|[256文学](https://www.256wxc.com/)|✅|❎||
+|[256文学](https://www.256wenku.com/)|✅|❎||
 |[笔趣阁小说网](http://www.biquge66.com/)|✅|❎||
 |[乐文小说网](http://www.lwxs9.org/)|✅|❎||
-|[悠久小说网](https://www.ujxs.net/)|✅|❎||
 |[海棠小说网](http://m.haitangtxt.net/)|✅|❎|部分文字被图片替换，请使用HTML版查看。<br>如需替换清理图片，请自行生成图片文字对照表。|
 |[小说酷笔记](https://www.kubiji.net/)|✅|❎||
 |[笔趣阁](https://www.xbiquwx.la/)|✅|❎||
