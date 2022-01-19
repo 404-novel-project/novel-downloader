@@ -192,7 +192,8 @@
     "*://www.bxwx888.org/txt/*/",
     "*://www.xiaoshuowu.com/html/*/*/",
     "*://www.xrzww.com/bookdetail/*",
-    "*://colorful-fantasybooks.com/module/novel/info.php?*"
+    "*://colorful-fantasybooks.com/module/novel/info.php?*",
+    "*://www.dizishu.com/*/*/"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",

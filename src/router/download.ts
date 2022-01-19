@@ -519,6 +519,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = fantasybooks();
       break;
     }
+    case "www.dizishu.com": {
+      const { dizishu } = await import("../rules/onePage/dizishu");
+      ruleClass = dizishu();
+      break;
+    }
     default: {
       throw new Error("Not Found Rule!");
     }

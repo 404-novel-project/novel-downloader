@@ -166,6 +166,7 @@ EPUB文件请使用相应阅读器阅读。
 |[笔下文学333](http://www.bxwx888.org/)|✅|❎||
 |[小说屋](http://www.xiaoshuowu.com/)|✅|❎||
 |[缤纷幻想](https://colorful-fantasybooks.com/)|✅|❎||
+|[弟子小说网](https://www.dizishu.com/xiaoshuo/)|✅|❎||
 
 </details>
 

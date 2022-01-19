@@ -57,7 +57,7 @@ export const biqu55 = () =>
         ?.innerHTML.split("\n")
         .filter((line) => !line.includes("lastread.set"))
         .join("\n");
-      const getRequest = new Function(`${script};
+      const request = new Function(`${script};
 const url = "https://www.biqu55.net/home/index/ajaxchapter";
 const payload = new URLSearchParams({
     id: article_id,
@@ -75,12 +75,11 @@ return new Request(url, {
     method: "POST",
     mode: "cors",
     credentials: "include",
-});`);
-      const request = getRequest() as Request;
+});`)() as Request;
       const resp = await fetch(request);
       const json = (await resp.json()) as ajaxchapter;
       if (json.status === "success") {
-        const contentRaw = doc.createElement("div");
+        const contentRaw = document.createElement("div");
         contentRaw.innerHTML = json.info.content;
         return contentRaw;
       } else {
