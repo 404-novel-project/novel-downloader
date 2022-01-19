@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.8.2.543
+// @version        4.8.2.549
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -14,9 +14,12 @@
 // @match          *://www.gongzicp.com/novel-*.html
 // @match          *://gongzicp.com/novel-*.html
 // @match          *://book.zongheng.com/showchapter/*.html
+// @match          *://book.zongheng.com/book/*.html
 // @match          *://huayu.zongheng.com/showchapter/*.html
+// @match          *://huayu.zongheng.com/book/*.html
 // @match          *://www.linovel.net/book/*.html
 // @match          *://www.17k.com/list/*.html
+// @match          *://www.17k.com/book/*.html
 // @match          *://www.shuhai.com/book/*.htm
 // @match          *://mm.shuhai.com/book/*.htm
 // @match          *://www.tadu.com/book/*
@@ -39,8 +42,6 @@
 // @match          *://www.sosadfun.link/threads/*/profile*
 // @match          *://www.uukanshu.com/b/*/
 // @match          *://www.yruan.com/article/*.html
-// @match          *://www.biquwoo.com/bqw*/
-// @match          *://www.biquwo.org/bqw*/
 // @match          *://www.shuquge.com/txt/*/index.html
 // @match          *://wap.shuquge.com/s/*.html
 // @match          *://wap.shuquge.com/d/*.html
@@ -48,7 +49,6 @@
 // @match          *://www.dingdiann.net/ddk*/
 // @match          *://www.xkzw.org/xkzw*/
 // @match          *://www.lewenn.com/lw*/
-// @match          *://www.klxs.la/info-*/
 // @match          *://www.266ks.com/*_*/
 // @match          *://www.266ks.com/*_*/index*.html
 // @match          *://www.hetushu.com/book/*/index.html
@@ -59,7 +59,6 @@
 // @match          *://www.1pwx.com/*.htm
 // @match          *://www.81book.com/book/*/
 // @match          *://www.81zw.com/book/*/
-// @match          *://m.yuzhaige.cc/*/*/
 // @match          *://m.yushuge123.com/*/*/
 // @match          *://www.xinwanben.com/*/
 // @match          *://m.xinwanben.com/*/
@@ -72,8 +71,9 @@
 // @match          *://www.bz01.org/*_*/
 // @match          *://www.banzhuer.org/*_*/
 // @match          *://www.xbiquge.so/book/*/
-// @match          *://www.hongyeshuzhai.com/shuzhai/*/
+// @match          *://www.hongyeshuzhal.com/shuzhai/*/
 // @match          *://www.linovelib.com/novel/*/catalog
+// @match          *://www.linovelib.com/novel/*.html
 // @match          *://www.luoqiuzw.com/book/*/
 // @match          *://www.yibige.cc/*/
 // @match          *://www.fushuwang.org/*/*/*/*.html
@@ -101,8 +101,6 @@
 // @match          *://www.tongrenquan.me/tongren/*.html
 // @match          *://tongrenquan.me/tongren/*.html
 // @match          *://www.imiaobige.com/read/*/
-// @match          *://www.256wxc.com/read/*/index.html
-// @match          *://www.256wxc.com/read/*/
 // @match          *://www.256wenku.com/read/*/index.html
 // @match          *://www.256wenku.com/read/*/
 // @match          *://www.biquge66.com/biquge*/
@@ -110,7 +108,6 @@
 // @match          *://*.lofter.com/?page=*
 // @match          *://www.lwxs9.org/*/*/
 // @match          *://www.shubl.com/book/book_detail/*
-// @match          *://www.ujxs.net/read/*/
 // @match          *://m.haitangtxt.net/*/*/
 // @match          *://ebook.longmabook.com/*
 // @match          *://www.longmabookcn.com/*
@@ -131,16 +128,16 @@
 // @match          *://jp.lvhtebook.com/*
 // @match          *://www.htlvbooks.com/*
 // @match          *://dijiubook.net/*_*
-// @match          *://www.biquwx.la/*_*/
+// @match          *://www.xbiquwx.la/*_*/
 // @match          *://www.25zw.com/*/
-// @match          *://www.tycqxs.com/*_*/
+// @match          *://www.zmccx.com/*_*/
 // @match          *://www.kanunu8.com/*
 // @match          *://www.ciyuanji.com/bookDetails/*
 // @match          *://ciyuanji.com/bookDetails/*
 // @match          *://m.wanben.org/*/
 // @match          *://www.wanben.org/*/
 // @match          *://www.ranwen.la/files/article/*/*/
-// @match          *://www.washuge.com/books/*/*/
+// @match          *://www.wangshuge.com/books/*/*/
 // @match          *://m.baihexs.com/info-*/
 // @match          *://www.quanshuzhai.com/book/*.html
 // @match          *://masiro.me/admin/novelView?novel_id=*
@@ -163,20 +160,21 @@
 // @match          *://www.aixiawx.com/*/*/
 // @match          *://jingcaiyuedu6.com/novel/*.html
 // @match          *://www.hanwujinian.com/book/*
-// @match          *://www.biqu55.com/*_*/
+// @match          *://www.biqu55.net/*_*/
 // @match          *://manga.bilibili.com/detail/mc*
 // @match          *://www.aixdzs.com/novel/*
 // @match          *://www.liuxs.la/bookinfo-*/
 // @match          *://www.cool18.com/bbs4/index.php?*
 // @match          *://www.b5200.net/*_*/
-// @match          *://www.yqxs.cc/html/*/*/index.html
+// @match          *://www.xsyq.cc/html/*/*/index.html
 // @match          *://www.dushu369.com/*/*/
 // @match          *://www.18kanshu.com/*/*/info.html
 // @match          *://www.18kanshu.com/module/novel/info.php?*
-// @match          *://www.bxwx333.org/txt/*/
+// @match          *://www.bxwx888.org/txt/*/
 // @match          *://www.xiaoshuowu.com/html/*/*/
 // @match          *://www.xrzww.com/bookdetail/*
 // @match          *://colorful-fantasybooks.com/module/novel/info.php?*
+// @match          *://www.dizishu.com/*/*/
 // @name:en        novel-downloader
 // @name:ja        小説ダウンローダー
 // @description:en An scalable universal novel downloader.
@@ -227,7 +225,8 @@
 // @exclude        *://dijiubook.net/*_*/*.html
 // @exclude        *://ncode.syosetu.com/*/*/
 // @exclude        *://novel18.syosetu.com/*/*/
-// @exclude        *://manhua.dmzj.com
+// @exclude        *://manhua.dmzj.com/
+// @exclude        *://houhuayuan.xyz/
 // @grant          unsafeWindow
 // @grant          GM_info
 // @grant          GM_xmlhttpRequest
@@ -5772,12 +5771,13 @@ function centerDetct(element) {
     const docEl = document.documentElement;
     const bodyEl = document.body;
     const vw = Math.min(docEl.clientWidth, window.innerWidth);
+    const vh = Math.min(docEl.clientHeight, window.innerHeight);
     const tolx = vw * 0.15;
-    const toly = bodyEl.scrollHeight * 0.1;
+    const toly = Math.min(bodyEl.scrollHeight * 0.1, vh * 0.3);
     const rect = element.getBoundingClientRect();
     const distanceToTop = window.scrollY + rect.top;
-    const distanceToBottom = bodyEl.scrollHeight - distanceToTop;
-    const distanceToRight = Math.abs(vw - rect.right);
+    const distanceToBottom = bodyEl.scrollHeight - distanceToTop - element.scrollHeight;
+    const distanceToRight = vw - rect.right;
     const percentY = element.scrollHeight / bodyEl.scrollHeight;
     if (rect.left < tolx ||
         distanceToRight < tolx ||
@@ -8005,8 +8005,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "dingdiann": () => (/* binding */ dingdiann),
 /* harmony export */   "mht": () => (/* binding */ mht),
-/* harmony export */   "xinwanben": () => (/* binding */ xinwanben),
-/* harmony export */   "biqu55": () => (/* binding */ biqu55)
+/* harmony export */   "xinwanben": () => (/* binding */ xinwanben)
 /* harmony export */ });
 /* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/cleanDOM.ts");
 /* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
@@ -8057,11 +8056,6 @@ const xinwanben = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeCla
     (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__/* .htmlTrim */ .iA)(content);
     return content;
 }, (doc) => doc.querySelector("#next_url").href, (_content, nextLink) => new URL(nextLink).pathname.includes("_"));
-const biqu55 = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClassNextPage */ .y)((introDom) => introDom, (content, doc) => {
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .vS)(["精彩小说无弹窗免费阅读！"], content);
-    (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__/* .htmlTrim */ .iA)(content);
-    return content;
-}, (doc) => doc.querySelector('div.bottem2 > a[rel="next"]:nth-child(3)').href, (_content, nextLink) => /[\d_]+\.html$/.exec(nextLink)?.[0].includes("_") ?? false);
 
 
 /***/ }),
@@ -8206,6 +8200,114 @@ const aixdzs = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */
 
 /***/ }),
 
+/***/ "./src/rules/onePage/biqu55.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "biqu55": () => (/* binding */ biqu55)
+/* harmony export */ });
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
+
+
+
+
+const biqu55 = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+    bookUrl: document.location.href,
+    bookname: document.querySelector("#info h1, .info > h2").innerText
+        .trim()
+        .replace(/最新章节$/, ""),
+    author: document.querySelector("#info > p:nth-child(2), #info > div:nth-child(2), .small > span:nth-child(1)").innerText
+        .replace(/作(\s+)?者[：:]/, "")
+        .trim(),
+    introDom: document.querySelector("#intro, .intro"),
+    introDomPatch: (introDom) => introDom,
+    coverUrl: document.querySelector("#fmimg > img, .info > .cover > img")?.src ?? null,
+    aList: document.querySelectorAll("#list a, .listmain a"),
+    sections: document.querySelectorAll("#list dt, .listmain dt"),
+    getSName: (sElem) => {
+        const b = sElem.querySelector("b");
+        if (b) {
+            return b.innerText;
+        }
+        return sElem.innerText;
+    },
+    postHook: (chapter) => {
+        if (chapter.sectionName) {
+            if (chapter.sectionName.includes("《")) {
+                chapter.sectionName = chapter.sectionName
+                    .replace(`《${chapter.bookname}》`, "")
+                    .trim();
+            }
+            else {
+                chapter.sectionName = chapter.sectionName
+                    .replace(chapter.bookname, "")
+                    .trim();
+            }
+        }
+        return chapter;
+    },
+    getContentFromUrl: async (chapterUrl, chapterName, charset) => {
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
+        const script = Array.from(doc.querySelectorAll("script"))
+            .filter((s) => s.innerHTML.includes("article_id"))?.[0]
+            ?.innerHTML.split("\n")
+            .filter((line) => !line.includes("lastread.set"))
+            .join("\n");
+        const request = new Function(`${script};
+const url = "https://www.biqu55.net/home/index/ajaxchapter";
+const payload = new URLSearchParams({
+    id: article_id,
+    eKey: hash,
+    cid: chapter_id,
+    basecid: chapter_id,
+});
+return new Request(url, {
+    headers: {
+    accept: "application/json, text/javascript, */*; q=0.01",
+    "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+    "x-requested-with": "XMLHttpRequest",
+    },
+    body: payload.toString(),
+    method: "POST",
+    mode: "cors",
+    credentials: "include",
+});`)();
+        const resp = await fetch(request);
+        const json = (await resp.json());
+        if (json.status === "success") {
+            const contentRaw = document.createElement("div");
+            contentRaw.innerHTML = json.info.content;
+            return contentRaw;
+        }
+        else {
+            return null;
+        }
+    },
+    contentPatch: (content) => {
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__/* .rm2 */ .vS)(["数据和书签与电脑站同步，无广告清新阅读"], content);
+        return content;
+    },
+    concurrencyLimit: 5,
+    overrideConstructor: (classThis) => {
+        const rawBookParse = classThis.bookParse;
+        classThis.bookParse = async () => {
+            const book = (await Reflect.apply(rawBookParse, classThis, []));
+            const chapters = book.chapters;
+            book.chapters = (0,_lib_rule__WEBPACK_IMPORTED_MODULE_3__/* .deDuplicate */ .uh)(chapters);
+            return book;
+        };
+        return classThis;
+    },
+});
+
+
+/***/ }),
+
 /***/ "./src/rules/onePage/colorful-fantasybooks.ts":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -8244,6 +8346,100 @@ const fantasybooks = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleCl
     },
     concurrencyLimit: 3,
     nsfw: true,
+});
+
+
+/***/ }),
+
+/***/ "./src/rules/onePage/dizishu.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "dizishu": () => (/* binding */ dizishu)
+/* harmony export */ });
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
+
+
+
+const dizishu = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+    bookUrl: document.location.href,
+    bookname: document.querySelector(".book-text > h1").innerText.trim(),
+    author: document.querySelector(".book-text > span").innerText
+        .replace("著", "")
+        .trim(),
+    introDom: document.querySelector(".intro"),
+    introDomPatch: (introDom) => introDom,
+    coverUrl: document.querySelector("#fengmian img")
+        ?.src,
+    aList: document.querySelectorAll("#list > .book-chapter-list .cf li > a"),
+    sections: document.querySelectorAll("#list > .book-chapter-list > h3"),
+    getSName: (sElem) => sElem.innerText.trim(),
+    getContentFromUrl: async (chapterUrl, chapterName, charset) => {
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
+        const script1 = Array.from(doc.querySelectorAll("script"))
+            .filter((s) => s.innerHTML.includes("chapterid="))?.[0]
+            ?.innerHTML.split("\n")
+            .filter((line) => !(line.includes("cpstr=") ||
+            line.includes("get_content()") ||
+            line.includes("xid=")))
+            .join("\n");
+        const script2 = Array.from(doc.querySelectorAll("script"))
+            .filter((s) => s.innerHTML.includes("ssid"))?.[0]
+            ?.innerHTML.split("\n")
+            .filter((line) => line.includes("var ssid") || line.includes("var hou"))
+            .join("\n");
+        const request = new Function(`${script2};${script1};
+const xid=Math.floor(bookid/1000);
+const url = \`${document.location.origin}/files/article/html\${ssid}/\${xid}/\${bookid}/\${chapterid}\${hou}\`;
+return new Request(url, {
+    headers: {
+    accept: "text/plain, */*; q=0.01",
+    "x-requested-with": "XMLHttpRequest",
+    },
+    referrer: "${document.location.origin}",
+    method: "GET",
+    mode: "cors",
+    credentials: "include",
+});`)();
+        const text = await fetch(request)
+            .then((response) => {
+            if (response.ok) {
+                return response.arrayBuffer();
+            }
+            else {
+                throw new Error(`Bad response!`);
+            }
+        })
+            .then((buffer) => {
+            const decoder = new TextDecoder(charset);
+            const text = decoder.decode(buffer);
+            return text;
+        });
+        const cctxt = new Function(`${text};return cctxt;`)();
+        if (cctxt) {
+            const contentRaw = document.createElement("div");
+            contentRaw.innerHTML = cctxt;
+            return contentRaw;
+        }
+        else {
+            return null;
+        }
+    },
+    contentPatch: (content) => content,
+    overrideConstructor: (classThis) => {
+        const rawBookParse = classThis.bookParse;
+        classThis.bookParse = async () => {
+            const book = (await Reflect.apply(rawBookParse, classThis, []));
+            const chapters = book.chapters;
+            book.chapters = (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .deDuplicate */ .uh)(chapters);
+            return book;
+        };
+        return classThis;
+    },
 });
 
 
@@ -16337,7 +16533,7 @@ class Kanunu8 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c
             a.href.includes(".html"));
         const authorElem = _authorAList
             .map((a) => [a, a.getBoundingClientRect().top])
-            .sort(softByValue)?.[0][0];
+            .sort(softByValue)?.[0]?.[0];
         const author = authorElem?.innerText
             .replace("作品集", "")
             .replace("→", "")
@@ -17830,50 +18026,6 @@ function mkRuleClass({ bookUrl, anotherPageUrl, ToCUrl, getBookname, getAuthor, 
 
 /***/ }),
 
-/***/ "./src/rules/twoPage/ujxs.ts":
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "ujxs": () => (/* binding */ ujxs)
-/* harmony export */ });
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
-/* harmony import */ var _tempate__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/twoPage/tempate.ts");
-
-
-const ujxs = () => {
-    const bookUrl = document.location.origin +
-        document.location.pathname.replace(/^\/read/, "/book");
-    return (0,_tempate__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
-        bookUrl,
-        anotherPageUrl: bookUrl,
-        getBookname: (doc) => document.querySelector("#smallcons > h1").innerText.trim(),
-        getAuthor: (doc) => document.querySelector("#smallcons > span:nth-child(3) > a").innerText.trim(),
-        getIntroDom: (doc) => doc.querySelector("#bookintro"),
-        introDomPatch: (introDom) => introDom,
-        getCoverUrl: (doc) => doc.querySelector(".img > img")?.src,
-        getAList: (doc) => document.querySelectorAll("#readerlist  li > a"),
-        getSections: (doc) => document.querySelectorAll("#readerlist  li.fj > h3"),
-        getSName: (sElem) => sElem.innerText,
-        postHook: (chapter) => {
-            chapter.sectionName =
-                chapter.sectionName?.replace(chapter.bookname, "") ?? null;
-            return chapter;
-        },
-        getContent: (doc) => doc.querySelector(".read-content"),
-        contentPatch: (content) => {
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("script", true, content);
-            const ads = ["免费小说无弹窗免费阅读！", "全集TXT电子书免费下载！"];
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .vS)(ads, content);
-            return content;
-        },
-    });
-};
-
-
-/***/ }),
-
 /***/ "./src/rules/twoPage/viviyzw.ts":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -18432,7 +18584,6 @@ async function getRule() {
         }
         case "www.biquge66.com":
         case "www.lewenn.com":
-        case "www.klxs.la":
         case "www.xkzw.org": {
             const { Xkzw } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/reprint/xkzw.ts"));
             ruleClass = Xkzw;
@@ -18491,9 +18642,7 @@ async function getRule() {
         case "www.bz01.org":
         case "www.aixiawx.com":
         case "www.banzhuer.org":
-        case "www.biquwoo.com":
-        case "www.biquwo.org":
-        case "www.hongyeshuzhai.com": {
+        case "www.hongyeshuzhal.com": {
             const { common } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/type1.ts"));
             ruleClass = common();
             break;
@@ -18662,7 +18811,6 @@ async function getRule() {
             ruleClass = imiaobige();
             break;
         }
-        case "www.256wxc.com":
         case "www.256wenku.com": {
             const { c256wxc } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/256wxc.ts"));
             ruleClass = c256wxc;
@@ -18683,17 +18831,11 @@ async function getRule() {
             ruleClass = Shubl;
             break;
         }
-        case "www.ujxs.net": {
-            const { ujxs } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/ujxs.ts"));
-            ruleClass = ujxs();
-            break;
-        }
         case "m.haitangtxt.net": {
             const { haitangtxt } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/reprint/haitangtxt.ts"));
             ruleClass = haitangtxt();
             break;
         }
-        case "m.yuzhaige.cc":
         case "m.yushuge123.com": {
             const { yuzhaige } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/reprint/haitangtxt.ts"));
             ruleClass = yuzhaige();
@@ -18726,7 +18868,7 @@ async function getRule() {
             ruleClass = dijiubook();
             break;
         }
-        case "www.biquwx.la": {
+        case "www.xbiquwx.la": {
             const { biquwx } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/type1.ts"));
             ruleClass = biquwx();
             break;
@@ -18736,7 +18878,7 @@ async function getRule() {
             ruleClass = c25zw();
             break;
         }
-        case "www.tycqxs.com": {
+        case "www.zmccx.com": {
             const { tycqxs } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/type1.ts"));
             ruleClass = tycqxs();
             break;
@@ -18766,7 +18908,7 @@ async function getRule() {
             ruleClass = ranwen();
             break;
         }
-        case "www.washuge.com": {
+        case "www.wangshuge.com": {
             const { washuge } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/washuge.ts"));
             ruleClass = washuge();
             break;
@@ -18848,8 +18990,8 @@ async function getRule() {
             ruleClass = Hanwujinian;
             break;
         }
-        case "www.biqu55.com": {
-            const { biqu55 } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/type3.ts"));
+        case "www.biqu55.net": {
+            const { biqu55 } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/biqu55.ts"));
             ruleClass = biqu55();
             break;
         }
@@ -18878,7 +19020,7 @@ async function getRule() {
             ruleClass = b5200();
             break;
         }
-        case "www.yqxs.cc": {
+        case "www.xsyq.cc": {
             const { yqxs } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/type2.ts"));
             ruleClass = yqxs();
             break;
@@ -18893,7 +19035,7 @@ async function getRule() {
             ruleClass = c18kanshu();
             break;
         }
-        case "www.bxwx333.org": {
+        case "www.bxwx888.org": {
             const { bxwx333 } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/type1.ts"));
             ruleClass = bxwx333();
             break;
@@ -18911,6 +19053,11 @@ async function getRule() {
         case "colorful-fantasybooks.com": {
             const { fantasybooks } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/colorful-fantasybooks.ts"));
             ruleClass = fantasybooks();
+            break;
+        }
+        case "www.dizishu.com": {
+            const { dizishu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/dizishu.ts"));
+            ruleClass = dizishu();
             break;
         }
         default: {
@@ -18946,6 +19093,11 @@ function floatBuster() {
             getFixNearby(progress).forEach((node) => node.remove());
             tstart = Date.now();
         }
+        const setting = document.querySelector("#nd-setting");
+        if (setting) {
+            getFixNearby(setting).forEach((node) => node.remove());
+            tstart = Date.now();
+        }
         if (Date.now() - tstart < ttl) {
             delay = Math.min(delay + delayStep, 1000);
             setTimeout(buster, delay);
@@ -18965,35 +19117,59 @@ function floatBuster() {
         domReady();
     }
     function getFixNearby(elem) {
-        const docEl = document.documentElement;
-        const vw = Math.min(docEl.clientWidth, window.innerWidth);
-        const vh = Math.min(docEl.clientHeight, window.innerHeight);
-        const { x: elemX, y: elemY } = getXY(elem);
         return Array.from(document.querySelectorAll("body *")).filter((node) => {
-            const style = window.getComputedStyle(node);
-            const { x: nodeX, y: nodeY } = getXY(node);
-            const nodeRect = node.getBoundingClientRect();
+            const { position, visibility, zIndex } = window.getComputedStyle(node);
             return (node !== elem &&
                 !(node.compareDocumentPosition(elem) &
                     Node.DOCUMENT_POSITION_CONTAINS ||
                     node.compareDocumentPosition(elem) &
                         Node.DOCUMENT_POSITION_CONTAINED_BY) &&
-                style.position === "fixed" &&
-                style.visibility === "visible" &&
-                isNaN(parseInt(style.zIndex)) === false &&
-                parseInt(style.zIndex, 10) >= 1000 &&
-                (Math.abs(nodeX - elemX) / vw < 0.15 ||
-                    Math.abs(nodeRect.left - elemX) / vw < 0.15 ||
-                    Math.abs(nodeRect.right - elemX) / vw < 0.15) &&
-                (Math.abs(nodeY - elemY) / vh < 0.2 ||
-                    Math.abs(nodeRect.top - elemY) / vh < 0.2 ||
-                    Math.abs(nodeRect.bottom - elemY) / vh < 0.2));
+                visibility === "visible" &&
+                (position === "fixed" || parseInt(zIndex, 10) >= 1000) &&
+                (nearTest(node, elem) || parseInt(zIndex, 10) > 10 ** 9));
         });
-        function getXY(ele) {
-            const rect = ele.getBoundingClientRect();
-            const x = (rect.left + rect.right) / 2;
-            const y = (rect.top + rect.bottom) / 2;
-            return { x, y };
+        function nearTest(node, element) {
+            if (isOverlap(getVertex(node), getVertex(element))) {
+                return true;
+            }
+            else if (isNearby(getVertex(node), getVertex(element))) {
+                return true;
+            }
+            else {
+                return false;
+            }
+            function getVertex(ele) {
+                const { left, top, right, bottom } = ele.getBoundingClientRect();
+                return [
+                    [left, top],
+                    [right, top],
+                    [left, bottom],
+                    [right, bottom],
+                ];
+            }
+            function isOverlap(rec1, rec2) {
+                const [left1, top1] = rec1[0];
+                const [right1, bottom1] = rec1[3];
+                const [left2, top2] = rec2[0];
+                const [right2, bottom2] = rec2[3];
+                return (!(right1 < left2 || right2 < left1) &&
+                    !(bottom1 < top2 || bottom2 < top1));
+            }
+            function isNearby(rec1, rec2) {
+                const docEl = document.documentElement;
+                const vw = Math.min(docEl.clientWidth, window.innerWidth);
+                const vh = Math.min(docEl.clientHeight, window.innerHeight);
+                const diagonal = Math.sqrt(vw ** 2 + vh ** 2);
+                for (const [x1, y1] of rec1) {
+                    for (const [x2, y2] of rec2) {
+                        const distance = Math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2);
+                        if (distance < diagonal * 0.1) {
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
         }
     }
 }
@@ -19035,9 +19211,12 @@ function getUI() {
             return () => {
                 const re = /^\/book\/\d+\/?$/;
                 if (re.test(document.location.pathname)) {
+                    floatBuster();
                     return defaultObject;
                 }
-                return errorObject;
+                else {
+                    return errorObject;
+                }
             };
         }
         case "www.kanunu8.com": {
@@ -19045,9 +19224,12 @@ function getUI() {
                 if (document.body.innerHTML.includes("作者：") ||
                     document.body.innerHTML.includes("作者:") ||
                     document.body.innerHTML.includes("内容简介")) {
+                    floatBuster();
                     return defaultObject;
                 }
-                return errorObject;
+                else {
+                    return errorObject;
+                }
             };
         }
         case "www.ciyuanji.com": {
@@ -19058,7 +19240,10 @@ function getUI() {
                         jumpFunction: () => (document.location.pathname = "/bookDetails/catalog"),
                     };
                 }
-                return defaultObject;
+                else {
+                    floatBuster();
+                    return defaultObject;
+                }
             };
         }
         case "ebook.longmabook.com":
@@ -19084,6 +19269,7 @@ function getUI() {
                 if (params.get("act") === "showinfo" &&
                     params.has("bookwritercode") &&
                     params.has("bookid")) {
+                    floatBuster();
                     return defaultObject;
                 }
                 return errorObject;
@@ -19119,6 +19305,7 @@ function getUI() {
                     }
                 }
                 else {
+                    floatBuster();
                     return defaultObject;
                 }
             };
@@ -19139,6 +19326,7 @@ function getUI() {
                     }
                 }
                 else {
+                    floatBuster();
                     return defaultObject;
                 }
             };
@@ -19154,10 +19342,54 @@ function getUI() {
                 const url = new URL(document.location.href);
                 if (url.searchParams.get("act") === "threadview" &&
                     url.searchParams.has("tid")) {
+                    floatBuster();
                     return defaultObject;
                 }
                 else {
                     return errorObject;
+                }
+            };
+        }
+        case "book.zongheng.com":
+        case "huayu.zongheng.com": {
+            return () => {
+                if (document.location.pathname.startsWith("/book/")) {
+                    return {
+                        type: "jump",
+                        jumpFunction: () => (document.location.pathname = document.location.pathname.replace(/^\/book\//, "/showchapter/")),
+                    };
+                }
+                else {
+                    floatBuster();
+                    return defaultObject;
+                }
+            };
+        }
+        case "www.17k.com": {
+            return () => {
+                if (document.location.pathname.startsWith("/book/")) {
+                    return {
+                        type: "jump",
+                        jumpFunction: () => (document.location.pathname = document.location.pathname.replace(/^\/book\//, "/list/")),
+                    };
+                }
+                else {
+                    floatBuster();
+                    return defaultObject;
+                }
+            };
+        }
+        case "www.linovelib.com": {
+            return () => {
+                if (document.location.pathname.endsWith(".html")) {
+                    return {
+                        type: "jump",
+                        jumpFunction: () => (document.location.pathname = document.location.pathname.replace(/\.html$/, "/catalog")),
+                    };
+                }
+                else {
+                    floatBuster();
+                    return defaultObject;
                 }
             };
         }
@@ -19500,7 +19732,7 @@ var log = __webpack_require__("./src/log.ts");
 
 ;// CONCATENATED MODULE: ./src/ui/setting.html
 // Module
-var setting_code = "<div> <dialog-ui dialog-title=\"设置\" v-bind:status=\"openStatus\" v-on:dialogclose=\"closeSetting\" v-if=\"openStatus === 'true'\"> <div class=\"nd-setting\"> <div class=\"nd-setting-tab\"> <button v-bind:class=\"['tab-button', { active: setting.currentTab === 'tab-1'}]\" v-on:click=\"setting.currentTab = 'tab-1'\"> 基本设置 </button> <button v-bind:class=\"['tab-button', { active: setting.currentTab === 'tab-2'}]\" v-on:click=\"setting.currentTab = 'tab-2'\"> 自定义筛选条件 </button> <button v-if=\"setting.enableTestPage\" v-bind:class=\"['tab-button', { active: setting.currentTab === 'tab-3'}]\" v-on:click=\"setting.currentTab = 'tab-3'\"> 抓取测试 </button> <button v-if=\"setting.enableTestPage\" v-bind:class=\"['tab-button', { active: setting.currentTab === 'tab-4'}]\" v-on:click=\"setting.currentTab = 'tab-4'\"> 日志 </button> </div> <div class=\"nd-setting-body\"> <div id=\"nd-setting-tab-1\" class=\"tab-page\" v-show=\"setting.currentTab === 'tab-1'\"> <div> <input type=\"checkbox\" id=\"debug\" v-model=\"setting.enableDebug\"/> <label for=\"debug\">启用调式模式。（输出更详细日志）</label> <input type=\"checkbox\" id=\"test-page\" v-model=\"setting.enableTestPage\"/> <label for=\"test-page\">启用测试视图</label> </div> <hr class=\"hr-twill-colorful\"/> <div> <h3>自定义保存参数</h3> <ul> <li v-for=\"item of saveOptions\"> <input type=\"radio\" v-bind:id=\"item.key\" v-bind:value=\"item.key\" v-model=\"setting.chooseSaveOption\"/> <label v-bind:for=\"item.key\">{{ item.value }}</label> </li> </ul> </div> </div> <div id=\"nd-setting-tab-2\" class=\"tab-page\" v-show=\"setting.currentTab === 'tab-2'\"> <filter-tab v-on:filterupdate=\"saveFilter\"/> </div> <div v-if=\"setting.enableTestPage\" id=\"nd-setting-tab-3\" class=\"tab-page\" v-show=\"setting.currentTab === 'tab-3'\"> <test-ui></test-ui> </div> <div v-if=\"setting.enableTestPage\" id=\"nd-setting-tab-4\" class=\"tab-page\" v-show=\"setting.currentTab === 'tab-4'\"> <log-ui></log-ui> </div> </div> <div class=\"nd-setting-footer\"> <button v-on:click=\"closeAndSaveSetting\">Save</button> <button v-on:click=\"closeSetting\">Cancel</button> </div> </div> </dialog-ui> </div> ";
+var setting_code = "<div> <dialog-ui dialog-title=\"设置\" v-bind:status=\"openStatus\" v-on:dialogclose=\"closeSetting\" v-if=\"openStatus === 'true'\"> <div class=\"nd-setting\" id=\"nd-setting\"> <div class=\"nd-setting-tab\"> <button v-bind:class=\"['tab-button', { active: setting.currentTab === 'tab-1'}]\" v-on:click=\"setting.currentTab = 'tab-1'\"> 基本设置 </button> <button v-bind:class=\"['tab-button', { active: setting.currentTab === 'tab-2'}]\" v-on:click=\"setting.currentTab = 'tab-2'\"> 自定义筛选条件 </button> <button v-if=\"setting.enableTestPage\" v-bind:class=\"['tab-button', { active: setting.currentTab === 'tab-3'}]\" v-on:click=\"setting.currentTab = 'tab-3'\"> 抓取测试 </button> <button v-if=\"setting.enableTestPage\" v-bind:class=\"['tab-button', { active: setting.currentTab === 'tab-4'}]\" v-on:click=\"setting.currentTab = 'tab-4'\"> 日志 </button> </div> <div class=\"nd-setting-body\"> <div id=\"nd-setting-tab-1\" class=\"tab-page\" v-show=\"setting.currentTab === 'tab-1'\"> <div> <input type=\"checkbox\" id=\"debug\" v-model=\"setting.enableDebug\"/> <label for=\"debug\">启用调式模式。（输出更详细日志）</label> <input type=\"checkbox\" id=\"test-page\" v-model=\"setting.enableTestPage\"/> <label for=\"test-page\">启用测试视图</label> </div> <hr class=\"hr-twill-colorful\"/> <div> <h3>自定义保存参数</h3> <ul> <li v-for=\"item of saveOptions\"> <input type=\"radio\" v-bind:id=\"item.key\" v-bind:value=\"item.key\" v-model=\"setting.chooseSaveOption\"/> <label v-bind:for=\"item.key\">{{ item.value }}</label> </li> </ul> </div> </div> <div id=\"nd-setting-tab-2\" class=\"tab-page\" v-show=\"setting.currentTab === 'tab-2'\"> <filter-tab v-on:filterupdate=\"saveFilter\"/> </div> <div v-if=\"setting.enableTestPage\" id=\"nd-setting-tab-3\" class=\"tab-page\" v-show=\"setting.currentTab === 'tab-3'\"> <test-ui></test-ui> </div> <div v-if=\"setting.enableTestPage\" id=\"nd-setting-tab-4\" class=\"tab-page\" v-show=\"setting.currentTab === 'tab-4'\"> <log-ui></log-ui> </div> </div> <div class=\"nd-setting-footer\"> <button v-on:click=\"closeAndSaveSetting\">Save</button> <button v-on:click=\"closeSetting\">Cancel</button> </div> </div> </dialog-ui> </div> ";
 // Exports
 /* harmony default export */ const setting = (setting_code);
 // EXTERNAL MODULE: ./src/ui/setting.less

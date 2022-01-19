@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.8.2.543
+// @version        4.8.2.549
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -14,9 +14,12 @@
 // @match          *://www.gongzicp.com/novel-*.html
 // @match          *://gongzicp.com/novel-*.html
 // @match          *://book.zongheng.com/showchapter/*.html
+// @match          *://book.zongheng.com/book/*.html
 // @match          *://huayu.zongheng.com/showchapter/*.html
+// @match          *://huayu.zongheng.com/book/*.html
 // @match          *://www.linovel.net/book/*.html
 // @match          *://www.17k.com/list/*.html
+// @match          *://www.17k.com/book/*.html
 // @match          *://www.shuhai.com/book/*.htm
 // @match          *://mm.shuhai.com/book/*.htm
 // @match          *://www.tadu.com/book/*
@@ -39,8 +42,6 @@
 // @match          *://www.sosadfun.link/threads/*/profile*
 // @match          *://www.uukanshu.com/b/*/
 // @match          *://www.yruan.com/article/*.html
-// @match          *://www.biquwoo.com/bqw*/
-// @match          *://www.biquwo.org/bqw*/
 // @match          *://www.shuquge.com/txt/*/index.html
 // @match          *://wap.shuquge.com/s/*.html
 // @match          *://wap.shuquge.com/d/*.html
@@ -48,7 +49,6 @@
 // @match          *://www.dingdiann.net/ddk*/
 // @match          *://www.xkzw.org/xkzw*/
 // @match          *://www.lewenn.com/lw*/
-// @match          *://www.klxs.la/info-*/
 // @match          *://www.266ks.com/*_*/
 // @match          *://www.266ks.com/*_*/index*.html
 // @match          *://www.hetushu.com/book/*/index.html
@@ -59,7 +59,6 @@
 // @match          *://www.1pwx.com/*.htm
 // @match          *://www.81book.com/book/*/
 // @match          *://www.81zw.com/book/*/
-// @match          *://m.yuzhaige.cc/*/*/
 // @match          *://m.yushuge123.com/*/*/
 // @match          *://www.xinwanben.com/*/
 // @match          *://m.xinwanben.com/*/
@@ -72,8 +71,9 @@
 // @match          *://www.bz01.org/*_*/
 // @match          *://www.banzhuer.org/*_*/
 // @match          *://www.xbiquge.so/book/*/
-// @match          *://www.hongyeshuzhai.com/shuzhai/*/
+// @match          *://www.hongyeshuzhal.com/shuzhai/*/
 // @match          *://www.linovelib.com/novel/*/catalog
+// @match          *://www.linovelib.com/novel/*.html
 // @match          *://www.luoqiuzw.com/book/*/
 // @match          *://www.yibige.cc/*/
 // @match          *://www.fushuwang.org/*/*/*/*.html
@@ -101,8 +101,6 @@
 // @match          *://www.tongrenquan.me/tongren/*.html
 // @match          *://tongrenquan.me/tongren/*.html
 // @match          *://www.imiaobige.com/read/*/
-// @match          *://www.256wxc.com/read/*/index.html
-// @match          *://www.256wxc.com/read/*/
 // @match          *://www.256wenku.com/read/*/index.html
 // @match          *://www.256wenku.com/read/*/
 // @match          *://www.biquge66.com/biquge*/
@@ -110,7 +108,6 @@
 // @match          *://*.lofter.com/?page=*
 // @match          *://www.lwxs9.org/*/*/
 // @match          *://www.shubl.com/book/book_detail/*
-// @match          *://www.ujxs.net/read/*/
 // @match          *://m.haitangtxt.net/*/*/
 // @match          *://ebook.longmabook.com/*
 // @match          *://www.longmabookcn.com/*
@@ -131,16 +128,16 @@
 // @match          *://jp.lvhtebook.com/*
 // @match          *://www.htlvbooks.com/*
 // @match          *://dijiubook.net/*_*
-// @match          *://www.biquwx.la/*_*/
+// @match          *://www.xbiquwx.la/*_*/
 // @match          *://www.25zw.com/*/
-// @match          *://www.tycqxs.com/*_*/
+// @match          *://www.zmccx.com/*_*/
 // @match          *://www.kanunu8.com/*
 // @match          *://www.ciyuanji.com/bookDetails/*
 // @match          *://ciyuanji.com/bookDetails/*
 // @match          *://m.wanben.org/*/
 // @match          *://www.wanben.org/*/
 // @match          *://www.ranwen.la/files/article/*/*/
-// @match          *://www.washuge.com/books/*/*/
+// @match          *://www.wangshuge.com/books/*/*/
 // @match          *://m.baihexs.com/info-*/
 // @match          *://www.quanshuzhai.com/book/*.html
 // @match          *://masiro.me/admin/novelView?novel_id=*
@@ -163,20 +160,21 @@
 // @match          *://www.aixiawx.com/*/*/
 // @match          *://jingcaiyuedu6.com/novel/*.html
 // @match          *://www.hanwujinian.com/book/*
-// @match          *://www.biqu55.com/*_*/
+// @match          *://www.biqu55.net/*_*/
 // @match          *://manga.bilibili.com/detail/mc*
 // @match          *://www.aixdzs.com/novel/*
 // @match          *://www.liuxs.la/bookinfo-*/
 // @match          *://www.cool18.com/bbs4/index.php?*
 // @match          *://www.b5200.net/*_*/
-// @match          *://www.yqxs.cc/html/*/*/index.html
+// @match          *://www.xsyq.cc/html/*/*/index.html
 // @match          *://www.dushu369.com/*/*/
 // @match          *://www.18kanshu.com/*/*/info.html
 // @match          *://www.18kanshu.com/module/novel/info.php?*
-// @match          *://www.bxwx333.org/txt/*/
+// @match          *://www.bxwx888.org/txt/*/
 // @match          *://www.xiaoshuowu.com/html/*/*/
 // @match          *://www.xrzww.com/bookdetail/*
 // @match          *://colorful-fantasybooks.com/module/novel/info.php?*
+// @match          *://www.dizishu.com/*/*/
 // @name:en        novel-downloader
 // @name:ja        小説ダウンローダー
 // @description:en An scalable universal novel downloader.
@@ -227,7 +225,8 @@
 // @exclude        *://dijiubook.net/*_*/*.html
 // @exclude        *://ncode.syosetu.com/*/*/
 // @exclude        *://novel18.syosetu.com/*/*/
-// @exclude        *://manhua.dmzj.com
+// @exclude        *://manhua.dmzj.com/
+// @exclude        *://houhuayuan.xyz/
 // @grant          unsafeWindow
 // @grant          GM_info
 // @grant          GM_xmlhttpRequest
