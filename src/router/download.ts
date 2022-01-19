@@ -223,7 +223,7 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = Soxscc;
       break;
     }
-    case "www.xyqxs.cc": {
+    case "www.yqbiqu.com": {
       const { xyqxs } = await import("../rules/biquge/type2");
       ruleClass = xyqxs();
       break;
@@ -522,6 +522,11 @@ export async function getRule(): Promise<BaseRuleClass> {
     case "www.dizishu.com": {
       const { dizishu } = await import("../rules/onePage/dizishu");
       ruleClass = dizishu();
+      break;
+    }
+    case "www.xbiquge.la": {
+      const { xbiqugeLa } = await import("../rules/biquge/type1");
+      ruleClass = xbiqugeLa();
       break;
     }
     default: {

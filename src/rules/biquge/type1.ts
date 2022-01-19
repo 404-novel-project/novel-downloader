@@ -166,3 +166,16 @@ export const bxwx333 = () =>
     undefined,
     "#zjneirong"
   );
+
+export const xbiqugeLa = () =>
+  mkBiqugeClass(
+    (introDom) => {
+      introDom.querySelector("font")?.parentElement?.remove();
+      return introDom;
+    },
+    (content) => {
+      rm2(["手机站全新改版升级地址"], content);
+      return content;
+    },
+    1
+  );

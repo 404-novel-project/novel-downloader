@@ -109,7 +109,7 @@
     "*://www.kubiji.net/*/",
     "*://www.shubaowa.org/*_*/",
     "*://www.fuguoduxs.com/*_*/",
-    "*://www.xyqxs.cc/html/*/*/index.html",
+    "*://www.yqbiqu.com/html/*/*/index.html",
     "*://www.630shu.net/shu/*.html",
     "*://www.qingoo.cn/details?bookId=*",
     "*://www.trxs.cc/tongren/*.html",
@@ -195,7 +195,8 @@
     "*://www.xiaoshuowu.com/html/*/*/",
     "*://www.xrzww.com/bookdetail/*",
     "*://colorful-fantasybooks.com/module/novel/info.php?*",
-    "*://www.dizishu.com/*/*/"
+    "*://www.dizishu.com/*/*/",
+    "*://www.xbiquge.la/*/*/"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",
