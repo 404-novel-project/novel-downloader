@@ -124,15 +124,16 @@ export function centerDetct(element: Element): [boolean, Element, number] {
   const docEl = document.documentElement;
   const bodyEl = document.body;
   const vw = Math.min(docEl.clientWidth, window.innerWidth);
-  // const vh = Math.min(docEl.clientHeight, window.innerHeight);
+  const vh = Math.min(docEl.clientHeight, window.innerHeight);
   const tolx = vw * 0.15;
-  const toly = bodyEl.scrollHeight * 0.1;
+  const toly = Math.min(bodyEl.scrollHeight * 0.1, vh * 0.3);
 
   const rect = element.getBoundingClientRect();
   const distanceToTop = window.scrollY + rect.top;
-  const distanceToBottom = bodyEl.scrollHeight - distanceToTop;
+  const distanceToBottom =
+    bodyEl.scrollHeight - distanceToTop - element.scrollHeight;
 
-  const distanceToRight = Math.abs(vw - rect.right);
+  const distanceToRight = vw - rect.right;
   // const distanYmin = Math.min(distanceToTop, distanceToBottom);
   const percentY = element.scrollHeight / bodyEl.scrollHeight;
   if (

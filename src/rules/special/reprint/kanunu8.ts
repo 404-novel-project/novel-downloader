@@ -24,7 +24,7 @@ export class Kanunu8 extends BaseRuleClass {
     );
     const authorElem = _authorAList
       .map((a) => [a, a.getBoundingClientRect().top] as [Element, number])
-      .sort(softByValue)?.[0][0];
+      .sort(softByValue)?.[0]?.[0];
     const author =
       (authorElem as HTMLAnchorElement)?.innerText
         .replace("作品集", "")
