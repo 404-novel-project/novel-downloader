@@ -1,3 +1,4 @@
+import { convertBr } from "../../lib/cleanDOM";
 import { mkRuleClass } from "./template";
 
 export const akatsuki = () =>
@@ -22,6 +23,11 @@ export const akatsuki = () =>
     sections: document.querySelectorAll("table.list td[colspan] > b"),
     getSName: (sElem) => (sElem as HTMLElement).innerText.trim(),
     getContent: (doc) => {
+      doc.querySelectorAll("center > img").forEach((img) => {
+        const parent = img.parentElement;
+        parent?.replaceWith(img);
+      });
+
       const contentRaw = document.createElement("div");
       const nodes = Array.from(
         doc.querySelectorAll(".body-novel, .body-novel + hr")
@@ -32,11 +38,16 @@ export const akatsuki = () =>
           nodes.unshift(previous);
         }
       }
+
       for (const node of nodes) {
-        contentRaw.appendChild(node);
+        if (node instanceof HTMLDivElement && node.className === "body-novel") {
+          contentRaw.appendChild(convertBr(node, true));
+        } else {
+          contentRaw.appendChild(node);
+        }
       }
       return contentRaw;
     },
     contentPatch: (content) => content,
-    concurrencyLimit: 3,
+    concurrencyLimit: 2,
   });

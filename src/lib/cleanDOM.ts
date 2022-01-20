@@ -913,8 +913,8 @@ function isBlankParagraph(node: Element) {
 }
 
 //** 将Text<br>Text转为<p> */
-function convertBr(dom: HTMLElement) {
-  if (onlyTextAndBr(dom) && countBr(dom) > 4) {
+export function convertBr(dom: HTMLElement, force = false) {
+  if (onlyTextAndBr(dom) && (countBr(dom) > 4 || force)) {
     const outDom = document.createElement("div");
     const childNodes = dom.childNodes;
 
