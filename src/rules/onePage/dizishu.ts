@@ -1,4 +1,4 @@
-import { getHtmlDOM } from "../../lib/http";
+import { getHtmlDOM, getText } from "../../lib/http";
 import { deDuplicate } from "../../lib/rule";
 import { Book } from "../../main/Book";
 import { mkRuleClass } from "./template";
@@ -53,19 +53,7 @@ return new Request(url, {
     mode: "cors",
     credentials: "include",
 });`)() as Request;
-      const text = await fetch(request)
-        .then((response) => {
-          if (response.ok) {
-            return response.arrayBuffer();
-          } else {
-            throw new Error(`Bad response!`);
-          }
-        })
-        .then((buffer) => {
-          const decoder = new TextDecoder(charset);
-          const text = decoder.decode(buffer);
-          return text;
-        });
+      const text = await getText(request, charset);
       const cctxt = new Function(`${text};return cctxt;`)() as string;
       if (cctxt) {
         const contentRaw = document.createElement("div");

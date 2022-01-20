@@ -126,7 +126,7 @@ export function mkRuleClass({
         if (getAName) {
           chapterName = getAName(aElem);
         } else {
-          chapterName = aElem.innerText;
+          chapterName = aElem.innerText.trim();
         }
         const chapterUrl = aElem.href;
         if (hasSection && sections && getSName) {

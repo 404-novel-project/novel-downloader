@@ -99,6 +99,9 @@ EPUB文件请使用相应阅读器阅读。
 |[カクヨム](https://kakuyomu.jp/)|✅|❎||
 |[小説家になろう](https://syosetu.com/)|✅|❎||
 |[ハーメルン](https://syosetu.org/)|✅|❎||
+|[暁](https://www.akatsuki-novels.com/)|✅|❎||
+|[ファンタジー小説](https://www.alphapolis.co.jp/)|✅|❎||
+|[Novel Up Plus](https://novelup.plus/)|✅|❎||
 |[禁忌书屋](https://www.cool18.com/bbs4/index.php)|✅|❎||
 |[读书369](http://www.dushu369.com/)|✅|❎||
 |[UU看书网](https://www.uukanshu.com/)|✅|❎||

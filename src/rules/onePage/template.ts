@@ -53,7 +53,7 @@ export function mkRuleClass({
   getAName,
   getIsVIP,
   sections,
-  getSName: _getSectionName,
+  getSName,
   postHook,
   getContentFromUrl,
   getContent,
@@ -116,7 +116,7 @@ export function mkRuleClass({
       if (
         sections &&
         sections instanceof NodeList &&
-        typeof _getSectionName === "function"
+        typeof getSName === "function"
       ) {
         hasSection = true;
       }
@@ -125,11 +125,11 @@ export function mkRuleClass({
         if (getAName) {
           chapterName = getAName(aElem);
         } else {
-          chapterName = aElem.innerText;
+          chapterName = aElem.innerText.trim();
         }
         const chapterUrl = aElem.href;
-        if (hasSection && sections && _getSectionName) {
-          const _sectionName = getSectionName(aElem, sections, _getSectionName);
+        if (hasSection && sections && getSName) {
+          const _sectionName = getSectionName(aElem, sections, getSName);
           if (_sectionName !== sectionName) {
             sectionName = _sectionName;
             sectionNumber++;

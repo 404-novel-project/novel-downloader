@@ -211,3 +211,11 @@ export function convertHTMLtoXHTML(input: string | Document) {
     throw new Error("input format error!");
   }
 }
+
+export function insertBrBeforeText(elem: HTMLElement) {
+  for (const node of Array.from(elem.childNodes)) {
+    if (node instanceof Text && node.textContent?.trim() !== "") {
+      node.parentElement?.insertBefore(document.createElement("br"), node);
+    }
+  }
+}

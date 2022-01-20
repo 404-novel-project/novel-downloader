@@ -373,8 +373,9 @@ export abstract class BaseRuleClass {
       workerId: (window as GmWindow).workerId,
       url: document.location.href,
     };
-    self.bcWorker?.postMessage(closeMessage);
-    self.bcWorker?.close();
+    self.bcWorker.postMessage(closeMessage);
+    self.bcWorker.onmessage = null;
+    self.bcWorker.close();
     self.bcWorkerMessages.splice(0, self.bcWorkerMessages.length);
 
     window.onbeforeunload = null;

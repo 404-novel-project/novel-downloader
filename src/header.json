@@ -196,7 +196,10 @@
     "*://www.xrzww.com/bookdetail/*",
     "*://colorful-fantasybooks.com/module/novel/info.php?*",
     "*://www.dizishu.com/*/*/",
-    "*://www.xbiquge.la/*/*/"
+    "*://www.xbiquge.la/*/*/",
+    "*://www.akatsuki-novels.com/stories/index/novel_id~*",
+    "*://www.alphapolis.co.jp/novel/*/*",
+    "*://novelup.plus/story/*"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",
@@ -235,7 +238,9 @@
     "*://novel18.syosetu.com/*/*/",
     "*://manhua.dmzj.com/",
     "*://houhuayuan.xyz/",
-    "*://book.sfacg.com/Novel/*/*/*/"
+    "*://book.sfacg.com/Novel/*/*/*/",
+    "*://www.alphapolis.co.jp/novel/*/*/episode/*",
+    "*://novelup.plus/story/*/*"
   ],
   "grant": [
     "unsafeWindow",
@@ -315,6 +320,8 @@
     "aixdzs.com",
     "b5200.net",
     "xrzww.com",
+    "akatsuki-novels.com",
+    "alphapolis.co.jp",
     "*"
   ],
   "require": [

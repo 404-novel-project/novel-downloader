@@ -120,34 +120,36 @@ export function gfetch(
 }
 
 export async function getText(
-  url: string,
+  input: RequestInfo,
   charset?: string,
   init?: RequestInit
 ) {
   // upgrade http to https
-  const _url = new URL(url);
-  if (document.location.protocol === "https:" && _url.protocol === "http:") {
-    _url.protocol = "https:";
-    url = _url.toString();
+  if (typeof input === "string") {
+    const _url = new URL(input);
+    if (document.location.protocol === "https:" && _url.protocol === "http:") {
+      _url.protocol = "https:";
+      input = _url.toString();
+    }
   }
 
   if (charset === undefined) {
-    return fetch(url, init)
+    return fetch(input, init)
       .then((response) => {
         if (response.ok) {
           return response.text();
         } else {
-          throw new Error(`Bad response! ${url}`);
+          throw new Error(`Bad response! ${input}`);
         }
       })
       .catch((error) => log.error(error));
   } else {
-    return fetch(url, init)
+    return fetch(input, init)
       .then((response) => {
         if (response.ok) {
           return response.arrayBuffer();
         } else {
-          throw new Error(`Bad response! ${url}`);
+          throw new Error(`Bad response! ${input}`);
         }
       })
       .then((buffer) => {
@@ -160,25 +162,29 @@ export async function getText(
 }
 
 export async function getHtmlDOM(
-  url: string,
+  input: RequestInfo,
   charset?: string,
   init?: RequestInit
 ) {
-  const htmlText = await getText(url, charset, init);
+  const htmlText = await getText(input, charset, init);
   if (!htmlText) {
     throw new Error("Fetch Content failed!");
   }
   const doc = new DOMParser().parseFromString(htmlText, "text/html");
   if (!doc.querySelector("base")) {
     const base = doc.createElement("base");
-    base.href = url;
+    if (typeof input === "string") {
+      base.href = input;
+    } else {
+      base.href = input.url;
+    }
     doc.head.appendChild(base);
   }
   return doc;
 }
 
 export async function getHtmlDomWithRetry(
-  url: string,
+  input: RequestInfo,
   charset?: string,
   init?: RequestInit
 ): Promise<Document | null> {
@@ -186,10 +192,10 @@ export async function getHtmlDomWithRetry(
   let doc = null;
   while (retry > 0) {
     try {
-      doc = await getHtmlDOM(url, charset, init);
+      doc = await getHtmlDOM(input, charset, init);
       retry = 0;
     } catch (error) {
-      log.error(`抓取${url}失败，重试第${retryLimit - retry}次。`);
+      log.error(`抓取${input}失败，重试第${retryLimit - retry}次。`);
       log.error(error);
       retry--;
       await sleep(1000 * (retryLimit - retry));

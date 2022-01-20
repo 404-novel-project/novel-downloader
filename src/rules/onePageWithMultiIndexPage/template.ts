@@ -139,8 +139,6 @@ export function mkRuleClass({
         let hasSection;
         if (typeof getSections === "function") {
           sections = getSections(doc);
-        }
-        if (sections && sections instanceof NodeList) {
           hasSection = true;
         }
 
@@ -150,13 +148,13 @@ export function mkRuleClass({
           if (getAName) {
             chapterName = getAName(aElem);
           } else {
-            chapterName = aElem.innerText;
+            chapterName = aElem.innerText.trim();
           }
           const chapterUrl = aElem.href;
 
           if (hasSection && sections && getSName) {
             const _sectionName = getSectionName(aElem, sections, getSName);
-            if (_sectionName !== sectionName) {
+            if (_sectionName !== null && _sectionName !== sectionName) {
               sectionName = _sectionName;
               sectionNumber++;
               sectionChapterNumber = 0;

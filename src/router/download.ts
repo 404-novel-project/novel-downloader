@@ -529,6 +529,23 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = xbiqugeLa();
       break;
     }
+    case "www.akatsuki-novels.com": {
+      const { akatsuki } = await import("../rules/onePage/akatsuki");
+      ruleClass = akatsuki();
+      break;
+    }
+    case "www.alphapolis.co.jp": {
+      const { alphapolis } = await import("../rules/onePage/alphapolis");
+      ruleClass = alphapolis();
+      break;
+    }
+    case "novelup.plus": {
+      const { novelup } = await import(
+        "../rules/onePageWithMultiIndexPage/novelup"
+      );
+      ruleClass = novelup();
+      break;
+    }
     default: {
       throw new Error("Not Found Rule!");
     }

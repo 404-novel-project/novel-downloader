@@ -104,7 +104,7 @@ export function getSectionName(
   getName: (sElem: Element) => string
 ) {
   const _sections = Array.from(sections);
-  let sectionName = "";
+  let sectionName = null;
   for (const sElem of _sections) {
     const position = chapterElement.compareDocumentPosition(sElem);
     if (position & Node.DOCUMENT_POSITION_DISCONNECTED) {
