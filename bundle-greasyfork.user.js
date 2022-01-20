@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.8.2.553
+// @version        4.8.2.554
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -4633,6 +4633,7 @@ async function cleanDOM(elem, imgMode, options) {
         htmlTrim(dom);
         dom = convertBr(dom);
         Array.from(dom.children).forEach((child) => child.replaceWith(convertBr(child)));
+        convertBlankParagraphElement(dom);
         text = text.trim();
         return {
             dom,
@@ -4661,11 +4662,20 @@ function htmlTrim(dom) {
                 node.remove();
                 continue;
             }
+            if (node instanceof HTMLParagraphElement && isBlankParagraph(node)) {
+                node.remove();
+                continue;
+            }
             if (node instanceof HTMLElement && node.nodeName.toLowerCase() !== "br") {
                 break;
             }
         }
     }
+}
+function isBlankParagraph(node) {
+    return (node instanceof HTMLParagraphElement &&
+        node.innerText.trim() === "" &&
+        Array.from(node.childNodes).every((n) => n instanceof Text));
 }
 function convertBr(dom) {
     if (onlyTextAndBr(dom) && countBr(dom) > 4) {
@@ -4738,11 +4748,28 @@ function convertBr(dom) {
             .every((nn) => ["#text", "hr", ...InlineElements].includes(nn));
     }
 }
-function removeBlankParagraphElement(dom) {
-    const nodes = Array.from(dom.querySelectorAll("p"));
-    nodes
-        .filter((p) => p.innerText.trim() === "" && p.childElementCount === 0)
-        .forEach((p) => p.remove());
+function convertBlankParagraphElement(dom) {
+    const nodes = Array.from(dom.children);
+    let count = 0;
+    let buffer = [];
+    for (const node of nodes) {
+        if (isBlankParagraph(node)) {
+            count++;
+            buffer.push(node);
+        }
+        else if (count !== 0) {
+            const p = document.createElement("p");
+            while (count > 0) {
+                count--;
+                const br = document.createElement("br");
+                p.appendChild(br);
+            }
+            buffer[0].replaceWith(p);
+            buffer.forEach((n) => n.remove());
+            count = 0;
+            buffer = [];
+        }
+    }
 }
 function convertFixWidthText(node, width = 35, out = document.createElement("div")) {
     const ns = node.textContent?.split("\n") ?? [];
