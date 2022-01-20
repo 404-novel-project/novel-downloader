@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        小说下载器测试脚本
-// @version     4.8.2.554
+// @version     4.8.2.555
 // @author      bgme
 // @description 小说下载器测试脚本
 // @match       *://www.ciweimao.com/chapter-list/*
@@ -177,6 +177,9 @@
 // @match       *://colorful-fantasybooks.com/module/novel/info.php?*
 // @match       *://www.dizishu.com/*/*/
 // @match       *://www.xbiquge.la/*/*/
+// @match       *://www.akatsuki-novels.com/stories/index/novel_id~*
+// @match       *://www.alphapolis.co.jp/novel/*/*
+// @match       *://novelup.plus/story/*
 // @match       https://greasyfork.org/*/scripts/406070-%E5%B0%8F%E8%AF%B4%E4%B8%8B%E8%BD%BD%E5%99%A8
 // @name:en     novel-downloader-tester
 // @namespace   https://blog.bgme.me
@@ -221,6 +224,8 @@
 // @exclude     *://manhua.dmzj.com/
 // @exclude     *://houhuayuan.xyz/
 // @exclude     *://book.sfacg.com/Novel/*/*/*/
+// @exclude     *://www.alphapolis.co.jp/novel/*/*/episode/*
+// @exclude     *://novelup.plus/story/*/*
 // @grant       unsafeWindow
 // @grant       GM_openInTab
 // @grant       window.close

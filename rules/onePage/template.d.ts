@@ -29,5 +29,5 @@ interface MkRuleClassOptions {
     cleanDomOptions?: Options;
     overrideConstructor?: (classThis: BaseRuleClass) => any;
 }
-export declare function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, coverUrl, additionalMetadatePatch, aList, getAName, getIsVIP, sections, getSName: _getSectionName, postHook, getContentFromUrl, getContent, contentPatch, concurrencyLimit, needLogin, nsfw, cleanDomOptions, overrideConstructor, }: MkRuleClassOptions): PublicConstructor<BaseRuleClass>;
+export declare function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, coverUrl, additionalMetadatePatch, aList, getAName, getIsVIP, sections, getSName, postHook, getContentFromUrl, getContent, contentPatch, concurrencyLimit, needLogin, nsfw, cleanDomOptions, overrideConstructor, }: MkRuleClassOptions): PublicConstructor<BaseRuleClass>;
 export {};

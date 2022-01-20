@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.8.2.554
+// @version        4.8.2.555
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -178,6 +178,9 @@
 // @match          *://colorful-fantasybooks.com/module/novel/info.php?*
 // @match          *://www.dizishu.com/*/*/
 // @match          *://www.xbiquge.la/*/*/
+// @match          *://www.akatsuki-novels.com/stories/index/novel_id~*
+// @match          *://www.alphapolis.co.jp/novel/*/*
+// @match          *://novelup.plus/story/*
 // @name:en        novel-downloader
 // @name:ja        小説ダウンローダー
 // @description:en An scalable universal novel downloader.
@@ -231,6 +234,8 @@
 // @exclude        *://manhua.dmzj.com/
 // @exclude        *://houhuayuan.xyz/
 // @exclude        *://book.sfacg.com/Novel/*/*/*/
+// @exclude        *://www.alphapolis.co.jp/novel/*/*/episode/*
+// @exclude        *://novelup.plus/story/*/*
 // @grant          unsafeWindow
 // @grant          GM_info
 // @grant          GM_xmlhttpRequest
@@ -306,6 +311,8 @@
 // @connect        aixdzs.com
 // @connect        b5200.net
 // @connect        xrzww.com
+// @connect        akatsuki-novels.com
+// @connect        alphapolis.co.jp
 // @connect        *
 // @require        https://cdn.jsdelivr.net/npm/crypto-js@4.1.1/crypto-js.js#sha512-NQVmLzNy4Lr5QTrmXvq/WzTMUnRHmv7nyIT/M6LyGPBS+TIeRxZ+YQaqWxjpRpvRMQSuYPQURZz/+pLi81xXeA==
 // @require        https://cdn.jsdelivr.net/npm/fflate@0.7.2/umd/index.js#sha512-b4i2Ut2Tho5Qrzt3pWKCkt9Q+4ECSNPdX0JsVzudNFXR2kIbV0ndgkm3fDlGvp2A6JG9tcH3ND38y+y0DrM/jQ==
