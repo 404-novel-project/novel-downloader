@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.8.2.555
+// @version        4.8.2.556
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -3972,6 +3972,7 @@ function getLastPart(u) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "zM": () => (/* binding */ cleanDOM),
 /* harmony export */   "iA": () => (/* binding */ htmlTrim),
+/* harmony export */   "Q3": () => (/* binding */ convertBr),
 /* harmony export */   "d1": () => (/* binding */ convertFixWidthText),
 /* harmony export */   "FZ": () => (/* binding */ convertFixWidth),
 /* harmony export */   "Kg": () => (/* binding */ isFixWidth)
@@ -4684,8 +4685,8 @@ function isBlankParagraph(node) {
         node.innerText.trim() === "" &&
         Array.from(node.childNodes).every((n) => n instanceof Text));
 }
-function convertBr(dom) {
-    if (onlyTextAndBr(dom) && countBr(dom) > 4) {
+function convertBr(dom, force = false) {
+    if (onlyTextAndBr(dom) && (countBr(dom) > 4 || force)) {
         const outDom = document.createElement("div");
         const childNodes = dom.childNodes;
         let brCount = 0;
@@ -8271,7 +8272,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "akatsuki": () => (/* binding */ akatsuki)
 /* harmony export */ });
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/cleanDOM.ts");
 /* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
+
 
 const akatsuki = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
     bookUrl: document.location.origin + document.location.pathname,
@@ -8285,6 +8288,10 @@ const akatsuki = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass 
     sections: document.querySelectorAll("table.list td[colspan] > b"),
     getSName: (sElem) => sElem.innerText.trim(),
     getContent: (doc) => {
+        doc.querySelectorAll("center > img").forEach((img) => {
+            const parent = img.parentElement;
+            parent?.replaceWith(img);
+        });
         const contentRaw = document.createElement("div");
         const nodes = Array.from(doc.querySelectorAll(".body-novel, .body-novel + hr"));
         if (nodes.length > 1) {
@@ -8294,12 +8301,17 @@ const akatsuki = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass 
             }
         }
         for (const node of nodes) {
-            contentRaw.appendChild(node);
+            if (node instanceof HTMLDivElement && node.className === "body-novel") {
+                contentRaw.appendChild((0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__/* .convertBr */ .Q3)(node, true));
+            }
+            else {
+                contentRaw.appendChild(node);
+            }
         }
         return contentRaw;
     },
     contentPatch: (content) => content,
-    concurrencyLimit: 3,
+    concurrencyLimit: 2,
 });
 
 
