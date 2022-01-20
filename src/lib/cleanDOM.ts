@@ -857,7 +857,7 @@ export async function cleanDOM(
       child.replaceWith(convertBr(child as HTMLElement))
     );
 
-    // removeBlankParagraphElement(dom);
+    convertBlankParagraphElement(dom);
 
     text = text.trim();
     return {
@@ -891,12 +891,25 @@ export function htmlTrim(dom: HTMLElement) {
         node.remove();
         continue;
       }
+      // 空白<p>元素
+      if (node instanceof HTMLParagraphElement && isBlankParagraph(node)) {
+        node.remove();
+        continue;
+      }
       // 非<br>元素
       if (node instanceof HTMLElement && node.nodeName.toLowerCase() !== "br") {
         break;
       }
     }
   }
+}
+
+function isBlankParagraph(node: Element) {
+  return (
+    node instanceof HTMLParagraphElement &&
+    node.innerText.trim() === "" &&
+    Array.from(node.childNodes).every((n) => n instanceof Text)
+  );
 }
 
 //** 将Text<br>Text转为<p> */
@@ -974,12 +987,29 @@ function convertBr(dom: HTMLElement) {
   }
 }
 
-//** 移除空白 <p> 元素 */
-function removeBlankParagraphElement(dom: HTMLElement) {
-  const nodes = Array.from(dom.querySelectorAll("p"));
-  nodes
-    .filter((p) => p.innerText.trim() === "" && p.childElementCount === 0)
-    .forEach((p) => p.remove());
+//** 合并空白 <p> 元素 */
+function convertBlankParagraphElement(dom: HTMLElement) {
+  const nodes = Array.from(dom.children);
+  let count = 0;
+  let buffer: Element[] = [];
+  for (const node of nodes) {
+    if (isBlankParagraph(node)) {
+      count++;
+      buffer.push(node);
+    } else if (count !== 0) {
+      const p = document.createElement("p");
+      while (count > 0) {
+        count--;
+        const br = document.createElement("br");
+        p.appendChild(br);
+      }
+      buffer[0].replaceWith(p);
+      buffer.forEach((n) => n.remove());
+
+      count = 0;
+      buffer = [];
+    }
+  }
 }
 
 //** 将固定宽度 Text 转为 div、p、br 元素 */
