@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        小说下载器测试脚本
-// @version     4.8.2.551
+// @version     4.8.2.553
 // @author      bgme
 // @description 小说下载器测试脚本
 // @match       *://www.ciweimao.com/chapter-list/*
@@ -48,8 +48,8 @@
 // @match       *://www.dingdiann.net/ddk*/
 // @match       *://www.xkzw.org/xkzw*/
 // @match       *://www.lewenn.com/lw*/
-// @match       *://www.266ks.com/*_*/
-// @match       *://www.266ks.com/*_*/index*.html
+// @match       *://www.266ks.com/book/*/
+// @match       *://www.266ks.com/book/*/index*.html
 // @match       *://www.hetushu.com/book/*/index.html
 // @match       *://hetushu.com/book/*/index.html
 // @match       *://www.shouda88.com/*/
@@ -220,6 +220,7 @@
 // @exclude     *://novel18.syosetu.com/*/*/
 // @exclude     *://manhua.dmzj.com/
 // @exclude     *://houhuayuan.xyz/
+// @exclude     *://book.sfacg.com/Novel/*/*/*/
 // @grant       unsafeWindow
 // @grant       GM_openInTab
 // @grant       window.close

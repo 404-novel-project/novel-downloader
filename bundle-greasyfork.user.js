@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.8.2.551
+// @version        4.8.2.553
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -49,8 +49,8 @@
 // @match          *://www.dingdiann.net/ddk*/
 // @match          *://www.xkzw.org/xkzw*/
 // @match          *://www.lewenn.com/lw*/
-// @match          *://www.266ks.com/*_*/
-// @match          *://www.266ks.com/*_*/index*.html
+// @match          *://www.266ks.com/book/*/
+// @match          *://www.266ks.com/book/*/index*.html
 // @match          *://www.hetushu.com/book/*/index.html
 // @match          *://hetushu.com/book/*/index.html
 // @match          *://www.shouda88.com/*/
@@ -230,6 +230,7 @@
 // @exclude        *://novel18.syosetu.com/*/*/
 // @exclude        *://manhua.dmzj.com/
 // @exclude        *://houhuayuan.xyz/
+// @exclude        *://book.sfacg.com/Novel/*/*/*/
 // @grant          unsafeWindow
 // @grant          GM_info
 // @grant          GM_xmlhttpRequest
@@ -9011,12 +9012,15 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
         }
         async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
             let content;
-            if (getContentFromUrl !== undefined) {
+            if (typeof getContentFromUrl === "function") {
                 content = await getContentFromUrl(chapterUrl, chapterName, charset);
             }
-            else if (getContent !== undefined) {
+            else if (typeof getContent === "function") {
                 const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_7__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
                 content = getContent(doc);
+            }
+            else {
+                throw Error("未发现 getContentFromUrl 或 getContent");
             }
             if (content) {
                 content = contentPatch(content);
@@ -9228,38 +9232,27 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "c226ks": () => (/* binding */ c226ks)
 /* harmony export */ });
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/dom.ts");
 /* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
 /* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePageWithMultiIndexPage/template.ts");
 
 
-
 const c226ks = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
-    bookUrl: document.location.href.replace(/index_\d+\.html/, "index_1.html"),
-    bookname: document.querySelector(".info > .top > h1").innerText.trim(),
-    author: document.querySelector(".info > .top > .fix > p:nth-child(1)").innerText
-        .replace(/作(\s+)?者[：:]/, "")
-        .trim(),
-    introDom: document.querySelector(".desc"),
+    bookUrl: document.location.href.replace(/index_\d+\.html/, ""),
+    bookname: document.querySelector(".info > h2.name").innerText.trim(),
+    author: document.querySelector(".info > .author").innerText.trim(),
+    introDom: document.querySelector(".book-intro"),
     introDomPatch: (introDom) => introDom,
-    coverUrl: document.querySelector(".imgbox > img").src,
+    coverUrl: document.querySelector(".book-boxs > .img > img").src,
     getIndexUrls: () => Array.from(document.querySelectorAll('[name="pageselect"] > option')).map((opt) => document.location.origin + opt.getAttribute("value")),
-    getAList: (doc) => doc.querySelectorAll("div.section-box:nth-child(4) > ul:nth-child(1) > li > a"),
+    getAList: (doc) => doc.querySelectorAll("ul.list a"),
     getContentFromUrl: async (chapterUrl, chapterName, charset) => {
         const { contentRaw } = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .nextPageParse */ .I2)({
             chapterName,
             chapterUrl,
             charset,
             selector: "#content",
-            contentPatch: (content, doc) => {
-                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)("script", true, content);
-                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)("div.posterror", false, content);
-                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)("div[onclick]", true, content);
-                const ad = '<div class="posterror"><a href="javascript:postError();" class="red">章节错误,点此举报(免注册)</a>,举报后维护人员会在两分钟内校正章节内容,请耐心等待,并刷新页面。</div>';
-                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__/* .rms */ .up)([ad], content);
-                return content;
-            },
-            getNextPage: (doc) => doc.querySelector("div.section-opt.m-bottom-opt > a:nth-child(5)").href,
+            contentPatch: (content, doc) => content,
+            getNextPage: (doc) => doc.querySelector("section.g-content-nav > a:nth-child(3)").href,
             continueCondition: (_content, nextLink) => {
                 const pathname = nextLink.split("/").slice(-1)[0];
                 return pathname.includes("_");
@@ -9269,6 +9262,16 @@ const c226ks = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */
         return contentRaw;
     },
     contentPatch: (content) => content,
+    overrideConstructor: (classThis) => {
+        const rawBookParse = classThis.bookParse;
+        classThis.bookParse = async () => {
+            const book = (await Reflect.apply(rawBookParse, classThis, []));
+            const chapters = book.chapters;
+            book.chapters = (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .deDuplicate */ .uh)(chapters);
+            return book;
+        };
+        return classThis;
+    },
 });
 
 
@@ -9322,10 +9325,7 @@ const baihexs = () => {
         getAList: (doc) => doc.querySelectorAll(".chapter > li > a"),
         getContent: (doc) => doc.querySelector("#nr1"),
         contentPatch: (dom) => {
-            const ads = [
-                /请牢记：百合小说网.+免费最快更新无防盗无防盗/,
-            ];
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__/* .rms */ .up)(ads, dom);
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__/* .rm2 */ .vS)(["请您牢记：百合小说网"], dom);
             return dom;
         },
         concurrencyLimit: 3,
@@ -9363,7 +9363,7 @@ const baihexs = () => {
 
 
 
-function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, coverUrl, getIndexUrls, getAList, getAName, getIsVIP, postHook, getContentFromUrl, getContent, contentPatch, concurrencyLimit, needLogin, nsfw, cleanDomOptions, overrideConstructor, }) {
+function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, coverUrl, getIndexUrls, getIndexPages, getAList, getAName, getIsVIP, getSections, getSName, postHook, getContentFromUrl, getContent, contentPatch, concurrencyLimit, needLogin, nsfw, cleanDomOptions, overrideConstructor, }) {
     return class extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
         constructor() {
             super();
@@ -9391,74 +9391,96 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
                 })
                     .catch((error) => _log__WEBPACK_IMPORTED_MODULE_3___default().error(error));
             }
-            const indexUrls = await getIndexUrls();
-            const _indexPage = [];
-            await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_4__/* .concurrencyRun */ .C1)(indexUrls, this.concurrencyLimit, async (url) => {
-                _log__WEBPACK_IMPORTED_MODULE_3___default().info(`[BookParse]抓取目录页：${url}`);
-                const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_5__/* .getHtmlDomWithRetry */ .rf)(url);
-                _indexPage.push([doc, url]);
-                return doc;
-            });
-            const indexPage = _indexPage
-                .sort((a, b) => {
-                const aUrl = a[1];
-                const bUrl = b[1];
-                return indexUrls.indexOf(aUrl) - indexUrls.indexOf(bUrl);
-            })
-                .map((l) => l[0]);
-            const _aListList = indexPage
-                .map((doc) => {
-                if (doc) {
-                    return getAList(doc);
-                }
-                else {
-                    _log__WEBPACK_IMPORTED_MODULE_3___default().error("[bookParse]部分目录页抓取失败！");
-                    return null;
-                }
-            })
-                .filter((a) => a !== null);
-            const aListList = [];
-            _aListList.forEach((alist) => Array.from(alist).forEach((a) => aListList.push(a)));
+            let indexPages;
+            if (typeof getIndexPages === "function") {
+                indexPages = await getIndexPages();
+            }
+            else if (typeof getIndexUrls === "function") {
+                const indexUrls = await getIndexUrls();
+                const _indexPage = [];
+                await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_4__/* .concurrencyRun */ .C1)(indexUrls, this.concurrencyLimit, async (url) => {
+                    _log__WEBPACK_IMPORTED_MODULE_3___default().info(`[BookParse]抓取目录页：${url}`);
+                    const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_5__/* .getHtmlDomWithRetry */ .rf)(url, this.charset);
+                    _indexPage.push([doc, url]);
+                    return doc;
+                });
+                indexPages = _indexPage
+                    .sort((a, b) => {
+                    const aUrl = a[1];
+                    const bUrl = b[1];
+                    return indexUrls.indexOf(aUrl) - indexUrls.indexOf(bUrl);
+                })
+                    .map((l) => l[0]);
+            }
+            else {
+                throw Error("未发现 getIndexUrls 或 getIndexPages");
+            }
             const chapters = [];
             let chapterNumber = 0;
-            for (const aElem of Array.from(aListList)) {
-                chapterNumber++;
-                let chapterName;
-                if (getAName) {
-                    chapterName = getAName(aElem);
+            let sectionNumber = 0;
+            let sectionChapterNumber = 0;
+            let sectionName = null;
+            for (const doc of indexPages) {
+                if (!doc) {
+                    continue;
                 }
-                else {
-                    chapterName = aElem.innerText;
+                let sections;
+                let hasSection;
+                if (typeof getSections === "function") {
+                    sections = getSections(doc);
                 }
-                const chapterUrl = aElem.href;
-                let isVIP = false;
-                let isPaid = false;
-                if (getIsVIP) {
-                    ({ isVIP, isPaid } = getIsVIP(aElem));
+                if (sections && sections instanceof NodeList) {
+                    hasSection = true;
                 }
-                let chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_6__/* .Chapter */ .W({
-                    bookUrl,
-                    bookname,
-                    chapterUrl,
-                    chapterNumber,
-                    chapterName,
-                    isVIP,
-                    isPaid,
-                    sectionName: null,
-                    sectionChapterNumber: null,
-                    sectionNumber: null,
-                    chapterParse: this.chapterParse,
-                    charset: this.charset,
-                    options: { bookname },
-                });
-                if (isVIP === true && isPaid === false) {
-                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_7__/* .Status.aborted */ .qb.aborted;
-                }
-                if (typeof postHook === "function") {
-                    chapter = postHook(chapter);
-                }
-                if (chapter) {
-                    chapters.push(chapter);
+                const aList = getAList(doc);
+                for (const aElem of Array.from(aList)) {
+                    let chapterName;
+                    if (getAName) {
+                        chapterName = getAName(aElem);
+                    }
+                    else {
+                        chapterName = aElem.innerText;
+                    }
+                    const chapterUrl = aElem.href;
+                    if (hasSection && sections && getSName) {
+                        const _sectionName = (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .getSectionName */ .$d)(aElem, sections, getSName);
+                        if (_sectionName !== sectionName) {
+                            sectionName = _sectionName;
+                            sectionNumber++;
+                            sectionChapterNumber = 0;
+                        }
+                    }
+                    chapterNumber++;
+                    sectionChapterNumber++;
+                    let isVIP = false;
+                    let isPaid = false;
+                    if (getIsVIP) {
+                        ({ isVIP, isPaid } = getIsVIP(aElem));
+                    }
+                    let chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_6__/* .Chapter */ .W({
+                        bookUrl,
+                        bookname,
+                        chapterUrl,
+                        chapterNumber,
+                        chapterName,
+                        isVIP,
+                        isPaid,
+                        sectionName,
+                        sectionNumber: hasSection ? sectionNumber : null,
+                        sectionChapterNumber: hasSection ? sectionChapterNumber : null,
+                        chapterParse: this.chapterParse,
+                        charset: this.charset,
+                        options: { bookname },
+                    });
+                    if (isVIP === true && isPaid === false) {
+                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_7__/* .Status.aborted */ .qb.aborted;
+                    }
+                    if (typeof postHook === "function") {
+                        chapter = postHook(chapter);
+                    }
+                    if (chapter) {
+                        chapters.push(chapter);
+                    }
                 }
             }
             const book = new _main_Book__WEBPACK_IMPORTED_MODULE_8__/* .Book */ .f({
@@ -9474,12 +9496,15 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
         }
         async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
             let content;
-            if (getContentFromUrl !== undefined) {
+            if (typeof getContentFromUrl === "function") {
                 content = await getContentFromUrl(chapterUrl, chapterName, charset);
             }
-            else if (getContent !== undefined) {
+            else if (typeof getContent === "function") {
                 const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_5__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
                 content = getContent(doc);
+            }
+            else {
+                throw Error("未发现 getContentFromUrl 或 getContent");
             }
             if (content) {
                 content = contentPatch(content);
@@ -18003,12 +18028,15 @@ function mkRuleClass({ bookUrl, anotherPageUrl, ToCUrl, getBookname, getAuthor, 
         }
         async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
             let content;
-            if (getContentFromUrl !== undefined) {
+            if (typeof getContentFromUrl === "function") {
                 content = await getContentFromUrl(chapterUrl, chapterName, charset);
             }
-            else if (getContent !== undefined) {
+            else if (typeof getContent === "function") {
                 const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
                 content = getContent(doc);
+            }
+            else {
+                throw Error("未发现 getContentFromUrl 或 getContent");
             }
             if (content) {
                 content = contentPatch(content);
@@ -19140,6 +19168,7 @@ function floatBuster() {
                     Node.DOCUMENT_POSITION_CONTAINS ||
                     node.compareDocumentPosition(elem) &
                         Node.DOCUMENT_POSITION_CONTAINED_BY) &&
+                !["button-div", "nd-progress", "nd-setting"].includes(node.id) &&
                 visibility === "visible" &&
                 (position === "fixed" || parseInt(zIndex, 10) >= 1000) &&
                 (nearTest(node, elem) || parseInt(zIndex, 10) > 10 ** 9));
