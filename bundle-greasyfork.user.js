@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.8.2.556
+// @version        4.8.2.557
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -92,7 +92,6 @@
 // @match          *://www.fuguoduxs.com/*_*/
 // @match          *://www.yqbiqu.com/html/*/*/index.html
 // @match          *://www.630shu.net/shu/*.html
-// @match          *://www.qingoo.cn/details?bookId=*
 // @match          *://www.trxs.cc/tongren/*.html
 // @match          *://www.trxs123.com/tongren/*.html
 // @match          *://www.jpxs123.com/*/*.html
@@ -10238,8 +10237,7 @@ class MangaBilibili extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "Ciweimao": () => (/* binding */ Ciweimao),
-/* harmony export */   "Shubl": () => (/* binding */ Shubl),
-/* harmony export */   "getChapter": () => (/* binding */ getChapter)
+/* harmony export */   "Shubl": () => (/* binding */ Shubl)
 /* harmony export */ });
 /* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("crypto-js");
 /* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(crypto_js__WEBPACK_IMPORTED_MODULE_0__);
@@ -13790,135 +13788,6 @@ class Qimao extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
         }
         else {
             return publicChapter();
-        }
-    }
-}
-
-
-/***/ }),
-
-/***/ "./src/rules/special/original/qingoo.ts":
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Qingoo": () => (/* binding */ Qingoo)
-/* harmony export */ });
-/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/attachments.ts");
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("./src/lib/cleanDOM.ts");
-/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/http.ts");
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/dom.ts");
-/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/main.ts");
-/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/Chapter.ts");
-/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Book.ts");
-/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
-
-
-
-
-
-
-
-
-
-
-class Qingoo extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
-    constructor() {
-        super();
-        this.imageMode = "TM";
-    }
-    async bookParse() {
-        const bookUrl = document.location.href;
-        const bookname = document.querySelector(".title > dl > dd > h1").innerText.trim();
-        const author = document.querySelector("#author").innerText
-            .replace("作者：", "")
-            .trim();
-        const introDom = document.querySelector("#allDesc");
-        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .SN)(introDom);
-        const additionalMetadate = {};
-        const coverUrl = document.querySelector(".title > dl > dt > img:nth-child(1)").src;
-        if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getImageAttachment */ .CE)(coverUrl, this.imageMode, "cover-")
-                .then((coverClass) => {
-                additionalMetadate.cover = coverClass;
-            })
-                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_3___default().error(error));
-        }
-        const chapters = [];
-        const data = unsafeWindow.data;
-        const _linkTemp = document.querySelector("#chapterItem")
-            ?.firstElementChild?.href;
-        const linkTemp = new URL(_linkTemp);
-        for (const d of data) {
-            const status = d.status;
-            const chapterNumber = d.sn;
-            const chapterName = d.name;
-            linkTemp.searchParams.set("index", (chapterNumber - 1).toString());
-            const chapterUrl = linkTemp.toString();
-            const isVIP = false;
-            const isPaid = false;
-            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .W({
-                bookUrl,
-                bookname,
-                chapterUrl,
-                chapterNumber,
-                chapterName,
-                isVIP,
-                isPaid,
-                sectionName: null,
-                sectionNumber: null,
-                sectionChapterNumber: null,
-                chapterParse: this.chapterParse,
-                charset: this.charset,
-                options: {},
-            });
-            if (!status) {
-                chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_5__/* .Status.aborted */ .qb.aborted;
-            }
-            chapters.push(chapter);
-        }
-        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .f({
-            bookUrl,
-            bookname,
-            author,
-            introduction,
-            introductionHTML,
-            additionalMetadate,
-            chapters,
-        });
-        return book;
-    }
-    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_7__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
-        chapterName = doc.querySelector("#content > h1").innerText.trim();
-        const content = doc.querySelector("#content");
-        if (content) {
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_8__.rm)("div.header", false, content);
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_8__.rm)("h1", false, content);
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_8__.rm)("h6", false, content);
-            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_9__/* .cleanDOM */ .zM)(content, "TM");
-            return {
-                chapterName,
-                contentRaw: content,
-                contentText: text,
-                contentHTML: dom,
-                contentImages: images,
-                additionalMetadate: null,
-            };
-        }
-        else {
-            return {
-                chapterName,
-                contentRaw: null,
-                contentText: null,
-                contentHTML: null,
-                contentImages: null,
-                additionalMetadate: null,
-            };
         }
     }
 }
@@ -19012,11 +18881,6 @@ async function getRule() {
             ruleClass = c630shu;
             break;
         }
-        case "www.qingoo.cn": {
-            const { Qingoo } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/qingoo.ts"));
-            ruleClass = Qingoo;
-            break;
-        }
         case "www.trxs.cc":
         case "www.trxs123.com":
         case "www.jpxs123.com":
@@ -19636,6 +19500,17 @@ function getUI() {
                         type: "jump",
                         jumpFunction: () => (document.location.pathname = document.location.pathname.replace(/\.html$/, "/catalog")),
                     };
+                }
+                else {
+                    floatBuster();
+                    return defaultObject;
+                }
+            };
+        }
+        case "masiro.me": {
+            return () => {
+                if (document.querySelector(".error-box")) {
+                    return errorObject;
                 }
                 else {
                     floatBuster();
