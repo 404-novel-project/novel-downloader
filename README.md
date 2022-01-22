@@ -135,7 +135,6 @@ EPUB文件请使用相应阅读器阅读。
 |[书包网](http://www.shubaowa.org/)|✅|❎||
 |[言情小说笔趣阁](https://www.yqbiqu.com/)|✅|❎||
 |[恋上你看书](https://www.630shu.net/)|✅|❎||
-|[青果阅读](https://www.qingoo.cn/)|✅|❎|暂时无法访问|
 |[同人小说网](https://www.trxs123.com/)|✅|❎||
 |[同人圈](http://www.tongrenquan.org/)|✅|❎||
 |[精品小说网](http://www.jpxs123.com/)|✅|❎||

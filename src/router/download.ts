@@ -233,11 +233,6 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = c630shu;
       break;
     }
-    case "www.qingoo.cn": {
-      const { Qingoo } = await import("../rules/special/original/qingoo");
-      ruleClass = Qingoo;
-      break;
-    }
     case "www.trxs.cc":
     case "www.trxs123.com":
     case "www.jpxs123.com":

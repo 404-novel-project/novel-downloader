@@ -297,7 +297,7 @@ export class Shubl extends BaseRuleClass {
   }
 }
 
-export function getChapter({
+function getChapter({
   chapterUrl,
   chapterName,
   isVIP,

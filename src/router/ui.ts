@@ -231,6 +231,16 @@ export function getUI(): () => UIObject {
         }
       };
     }
+    case "masiro.me": {
+      return () => {
+        if (document.querySelector(".error-box")) {
+          return errorObject;
+        } else {
+          floatBuster();
+          return defaultObject;
+        }
+      };
+    }
     default: {
       return () => {
         floatBuster();
