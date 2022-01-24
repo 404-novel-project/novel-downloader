@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.8.2.564
+// @version        4.8.2.571
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/yingziwu/novel-downloader
@@ -314,9 +314,9 @@
 // @connect        alphapolis.co.jp
 // @connect        *
 // @require        https://cdn.jsdelivr.net/npm/crypto-js@4.1.1/crypto-js.js#sha512-NQVmLzNy4Lr5QTrmXvq/WzTMUnRHmv7nyIT/M6LyGPBS+TIeRxZ+YQaqWxjpRpvRMQSuYPQURZz/+pLi81xXeA==
-// @require        https://cdn.jsdelivr.net/npm/fflate@0.7.2/umd/index.js#sha512-b4i2Ut2Tho5Qrzt3pWKCkt9Q+4ECSNPdX0JsVzudNFXR2kIbV0ndgkm3fDlGvp2A6JG9tcH3ND38y+y0DrM/jQ==
+// @require        https://cdn.jsdelivr.net/npm/fflate@0.7.3/umd/index.js#sha512-F57jcpLWPENXlHrsEj+YC8m+IHvaoRZpCpDr7Tfvu/jRtuO7kPOfbsop2gXEIRoK66ETYamk1tlTEvNw6xE8jw==
 // @require        https://cdn.jsdelivr.net/npm/nunjucks@3.2.3/browser/nunjucks.min.js#sha512-Uj8C5szr1tnKPNZb6ps5gFYtTGskzsUCiwY35QP/s2JIExZl7iYNletcmOJ8D6ocuaMRi9JGVrWRePaX9raujA==
-// @require        https://cdn.jsdelivr.net/npm/vue@3.2.27/dist/vue.global.prod.js#sha512-R1lmaMsGzgFKPpUNmhMMfsIg9H7Rld3F9R/BWHtloxZnCjGw6SLv6Mu6CQAgk/hPaX9/6dpPHh1qZraXZY3Z5g==
+// @require        https://cdn.jsdelivr.net/npm/vue@3.2.29/dist/vue.global.prod.js#sha512-/OPlqC4cW5gjYzjiKQSt382JcPJZEMBC4kFH4s0Gd5V2uK+Ib2C7hBZQgPpih337YQnUKt8rUH3nqC5/0AB+cg==
 // @downloadURL    https://github.com/yingziwu/novel-downloader/raw/gh-pages/bundle-greasyfork.user.js
 // @updateURL      https://github.com/yingziwu/novel-downloader/raw/gh-pages/bundle-greasyfork.meta.js
 // ==/UserScript==
@@ -6800,8 +6800,7 @@ const content_opf = `<?xml version="1.0" encoding="utf-8"?>
   </guide>
 </package>`;
 const toc_ncx = `<?xml version="1.0" encoding="utf-8" ?>
-<!DOCTYPE ncx PUBLIC "-//NISO//DTD ncx 2005-1//EN"
- "http://www.daisy.org/z3986/2005/ncx-2005-1.dtd">
+<!DOCTYPE ncx PUBLIC "-//NISO//DTD ncx 2005-1//EN" "http://www.daisy.org/z3986/2005/ncx-2005-1.dtd">
 <ncx version="2005-1" xmlns="http://www.daisy.org/z3986/2005/ncx/">
   <head>
     <meta content="urn:uuid:${uuid}" name="dtb:uid"/>
@@ -6816,9 +6815,7 @@ const toc_ncx = `<?xml version="1.0" encoding="utf-8" ?>
   </navMap>
 </ncx>`;
 const TOC_xhtml = `<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
-  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <title>Table of Contents</title>
@@ -6831,9 +6828,7 @@ const TOC_xhtml = `<?xml version="1.0" encoding="utf-8"?>
 </body>
 </html>`;
 const getCoverXhtml = (coverName) => `<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
-  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <title>Cover</title>
@@ -6846,9 +6841,7 @@ const getCoverXhtml = (coverName) => `<?xml version="1.0" encoding="utf-8"?>
 </body>
 </html>`;
 const getInfoXhtml = (title, author) => `<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
-  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <title>信息页</title>
@@ -6864,9 +6857,7 @@ const getInfoXhtml = (title, author) => `<?xml version="1.0" encoding="utf-8"?>
 </body>
 </html>`;
 const getMessageXhtml = (book) => `<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
-  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <title>信息页</title>
@@ -6961,9 +6952,7 @@ class EPUB extends Options {
         });
         const htmlText = (0,dom/* convertHTMLtoXHTML */.fI)(_htmlText);
         return new Blob([
-            `<?xml version="1.0" encoding="utf-8"?>
-    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
-      "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">`,
+            `<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">`,
             htmlText
                 .replaceAll("data-src-address", "src")
                 .replace("<!DOCTYPE html>", ""),
@@ -7173,9 +7162,7 @@ class EPUB extends Options {
                 const _htmlText = section.render({ sectionName: sectionName });
                 const htmlText = (0,dom/* convertHTMLtoXHTML */.fI)(_htmlText);
                 return new Blob([
-                    `<?xml version="1.0" encoding="utf-8"?>
-        <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
-          "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">`,
+                    `<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">`,
                     htmlText
                         .replaceAll("data-src-address", "src")
                         .replace("<!DOCTYPE html>", ""),
