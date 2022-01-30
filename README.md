@@ -22,7 +22,7 @@
 
 本脚本地址：
 
-- [github版](https://github.com/yingziwu/novel-downloader/raw/gh-pages/bundle.user.js)：启用代码压缩，更新最快。
+- [github版](https://github.com/404-novel-project/novel-downloader/raw/gh-pages/bundle.user.js)：启用代码压缩，更新最快。
 - [greasyfork版](https://greasyfork.org/scripts/406070-%E5%B0%8F%E8%AF%B4%E4%B8%8B%E8%BD%BD%E5%99%A8/code/%E5%B0%8F%E8%AF%B4%E4%B8%8B%E8%BD%BD%E5%99%A8.user.js)：无代码压缩，更新可能有延迟。
 
 ## 使用方法
