@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.8.2.578
+// @version        4.8.3.579
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
-// @supportURL     https://github.com/yingziwu/novel-downloader
+// @supportURL     https://github.com/404-novel-project/novel-downloader
 // @match          *://www.ciweimao.com/chapter-list/*
 // @match          *://www.ciweimao.com/book/*
 // @match          *://book.sfacg.com/Novel/*/MainIndex/
@@ -185,8 +185,8 @@
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
 // @namespace      https://blog.bgme.me
-// @homepageURL    https://github.com/yingziwu/novel-downloader
-// @icon           https://cdn.jsdelivr.net/gh/yingziwu/novel-downloader/assets/icon.png
+// @homepageURL    https://github.com/404-novel-project/novel-downloader
+// @icon           https://cdn.jsdelivr.net/gh/404-novel-project/novel-downloader/assets/icon.png
 // @license        AGPL-3.0
 // @run-at         document-start
 // @noframes       
