@@ -114,18 +114,11 @@ export class Qidian extends BaseRuleClass {
 
         const isVIP = () => {
           const host = new URL(chapterUrl).host;
-          if (host === "vipreader.qidian.com") {
-            return true;
-          }
-          return false;
+          return host === "vipreader.qidian.com";
         };
         const isPaid = () => {
           if (isVIP()) {
-            if (c.childElementCount === 2) {
-              return false;
-            } else {
-              return true;
-            }
+            return c.childElementCount !== 2;
           }
           return false;
         };

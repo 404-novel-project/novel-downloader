@@ -5,9 +5,9 @@ import { enableDebug } from "../setting";
 import { Options, SaveOptions } from "./options";
 
 export class TXT extends Options {
-  private book: Book;
-  private savedTextArray: string[] = [];
-  private saveFileNameBase: string;
+  private readonly book: Book;
+  private readonly savedTextArray: string[] = [];
+  private readonly saveFileNameBase: string;
 
   public constructor(book: Book, options?: SaveOptions) {
     super();

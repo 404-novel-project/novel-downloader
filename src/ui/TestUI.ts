@@ -1,4 +1,6 @@
-import { Ref, defineComponent, onMounted, reactive, ref, watch } from "vue";
+// noinspection NonAsciiCharacters
+
+import { defineComponent, onMounted, reactive, Ref, ref, watch } from "vue";
 import { GmWindow } from "../global";
 import { getAttachmentClassCache } from "../lib/attachments";
 import { sleep } from "../lib/misc";

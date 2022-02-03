@@ -40,6 +40,7 @@ export async function getCustomEnableSaveToArchiveOrg() {
     try {
       const v = JSON.parse(value);
       if (typeof v !== "boolean") {
+        // noinspection ExceptionCaughtLocallyJS
         throw new Error("value is not boolean");
       }
       return v;

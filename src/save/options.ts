@@ -49,10 +49,7 @@ export function saveOptionsValidate(data: any) {
 
   function keyNametest(keyname: string) {
     const keyList: string[] = [...keyNamesS, ...keyNamesF];
-    if (keyList.includes(keyname)) {
-      return true;
-    }
-    return false;
+    return keyList.includes(keyname);
   }
   function keyNamesStest(keyname: string) {
     if (keyNamesS.includes(keyname as keyof SaveOptions)) {

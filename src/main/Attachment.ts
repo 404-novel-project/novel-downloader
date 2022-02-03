@@ -1,4 +1,4 @@
-import { GfetchRequestInit, gfetch } from "../lib/http";
+import { gfetch, GfetchRequestInit } from "../lib/http";
 import { sleep } from "../lib/misc";
 import { log } from "../log";
 import { retryLimit } from "../setting";
@@ -94,8 +94,7 @@ export class AttachmentClass {
       headers = {};
     }
     if (this.referrerMode === ReferrerMode.self) {
-      const imgOrigin = new URL(this.url).origin;
-      headers["Referer"] = imgOrigin;
+      headers["Referer"] = new URL(this.url).origin;
     }
     if (
       this.referrerMode === ReferrerMode.custom &&

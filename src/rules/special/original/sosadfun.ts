@@ -31,11 +31,7 @@ export class Sosadfun extends BaseRuleClass {
       const mainDom = document.querySelector(
         ".col-xs-12 > .main-text.no-selection"
       ) as HTMLDivElement;
-      if (mainDom.innerText.trim() === "主楼隐藏，请登录后查看") {
-        return true;
-      } else {
-        return false;
-      }
+      return mainDom.innerText.trim() === "主楼隐藏，请登录后查看";
     };
 
     const additionalMetadate: BookAdditionalMetadate = {};

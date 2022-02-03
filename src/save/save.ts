@@ -52,7 +52,7 @@ export class SaveBook {
     await this.epub.saveEpub();
   }
 
-  private saveLog() {
+  private static saveLog() {
     saveAs(
       new Blob([logText], { type: "text/plain; charset=UTF-8" }),
       "debug.log"
@@ -62,7 +62,7 @@ export class SaveBook {
   public async save() {
     this.saveTxt();
     if (enableDebug.value) {
-      this.saveLog();
+      SaveBook.saveLog();
     }
     await this.saveEpub();
   }

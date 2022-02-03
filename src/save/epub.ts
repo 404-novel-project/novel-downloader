@@ -1,3 +1,5 @@
+// noinspection CssInvalidHtmlTagReference
+
 import sgc from "./sgc-toc.css";
 import webStyleText from "./web.css";
 import { _GM_info } from "../lib/GM";
@@ -156,27 +158,34 @@ const getMessageXhtml = (book: Book) => `<?xml version="1.0" encoding="utf-8"?>
 </html>`;
 
 export class EPUB extends Options {
-  private contentOpf = new DOMParser().parseFromString(
+  private readonly contentOpf = new DOMParser().parseFromString(
     content_opf,
     "application/xml"
   );
-  private metadata = this.contentOpf.querySelector("metadata") as Element;
-  private manifest = this.contentOpf.querySelector("manifest") as Element;
-  private spine = this.contentOpf.querySelector("spine") as Element;
-  private guide = this.contentOpf.querySelector("guide") as Element;
+  private readonly metadata = this.contentOpf.querySelector(
+    "metadata"
+  ) as Element;
+  private readonly manifest = this.contentOpf.querySelector(
+    "manifest"
+  ) as Element;
+  private readonly spine = this.contentOpf.querySelector("spine") as Element;
+  private readonly guide = this.contentOpf.querySelector("guide") as Element;
 
-  private ncx = new DOMParser().parseFromString(toc_ncx, "application/xml");
-  private navMap = this.ncx.querySelector("navMap") as Element;
+  private readonly ncx = new DOMParser().parseFromString(
+    toc_ncx,
+    "application/xml"
+  );
+  private readonly navMap = this.ncx.querySelector("navMap") as Element;
 
-  private toc = new DOMParser().parseFromString(
+  private readonly toc = new DOMParser().parseFromString(
     TOC_xhtml,
     "application/xhtml+xml"
   );
-  private tocBody = this.toc.body;
+  private readonly tocBody = this.toc.body;
 
-  private book: Book;
-  private chapters: Chapter[];
-  private epubZip: FflateZip;
+  private readonly book: Book;
+  private readonly chapters: Chapter[];
+  private readonly epubZip: FflateZip;
 
   public constructor(book: Book, streamZip: boolean, options?: SaveOptions) {
     super();
@@ -224,36 +233,7 @@ export class EPUB extends Options {
     }
   }
 
-  public async addChapter(chapter: Chapter, suffix = "") {
-    const chapterName = this.getchapterName(chapter);
-    const chapterNumberToSave = this.getChapterNumberToSave(
-      chapter,
-      this.chapters
-    );
-    const chapterHtmlFileName = `No${chapterNumberToSave}Chapter${suffix}.xhtml`;
-    chapter.chapterHtmlFileName = chapterHtmlFileName;
-
-    log.debug(`[save-epub]保存章HTML文件：${chapterName}`);
-    const chapterHTMLBlob = this.genChapterHtmlFile(chapter);
-    await this.epubZip.file(`OEBPS/${chapterHtmlFileName}`, chapterHTMLBlob);
-
-    const item = this.contentOpf.createElement("item");
-    item.id = chapterHtmlFileName;
-    item.setAttribute("href", chapterHtmlFileName);
-    item.setAttribute("media-type", "application/xhtml+xml");
-    if (!this.manifest.querySelector(`itme[id="${chapterHtmlFileName}"]`)) {
-      this.manifest.appendChild(item);
-    }
-
-    if (chapter.contentImages && chapter.contentImages.length !== 0) {
-      log.debug(`[save-epub]保存章节附件：${chapterName}`);
-      for (const attachment of chapter.contentImages) {
-        await this.addAttachment(attachment);
-      }
-    }
-  }
-
-  private genChapterHtmlFile(chapterObj: Chapter) {
+  private static genChapterHtmlFile(chapterObj: Chapter) {
     const _htmlText = chapterTemplt.render({
       chapterUrl: chapterObj.chapterUrl,
       chapterName: chapterObj.chapterName,
@@ -271,6 +251,35 @@ export class EPUB extends Options {
         type: "application/xhtml+xml",
       }
     );
+  }
+
+  public async addChapter(chapter: Chapter, suffix = "") {
+    const chapterName = this.getchapterName(chapter);
+    const chapterNumberToSave = this.getChapterNumberToSave(
+      chapter,
+      this.chapters
+    );
+    const chapterHtmlFileName = `No${chapterNumberToSave}Chapter${suffix}.xhtml`;
+    chapter.chapterHtmlFileName = chapterHtmlFileName;
+
+    log.debug(`[save-epub]保存章HTML文件：${chapterName}`);
+    const chapterHTMLBlob = EPUB.genChapterHtmlFile(chapter);
+    await this.epubZip.file(`OEBPS/${chapterHtmlFileName}`, chapterHTMLBlob);
+
+    const item = this.contentOpf.createElement("item");
+    item.id = chapterHtmlFileName;
+    item.setAttribute("href", chapterHtmlFileName);
+    item.setAttribute("media-type", "application/xhtml+xml");
+    if (!this.manifest.querySelector(`itme[id="${chapterHtmlFileName}"]`)) {
+      this.manifest.appendChild(item);
+    }
+
+    if (chapter.contentImages && chapter.contentImages.length !== 0) {
+      log.debug(`[save-epub]保存章节附件：${chapterName}`);
+      for (const attachment of chapter.contentImages) {
+        await this.addAttachment(attachment);
+      }
+    }
   }
 
   public async saveEpub() {
@@ -317,6 +326,7 @@ export class EPUB extends Options {
         ])
       );
     }
+
     async function saveStyle() {
       await self.epubZip.file(
         "OEBPS/style.css",
@@ -324,6 +334,7 @@ export class EPUB extends Options {
       );
       await self.epubZip.file("OEBPS/sgc-toc.css", new Blob([sgc]));
     }
+
     async function updateMetadata() {
       const title = self.contentOpf.createElement("dc:title");
       title.textContent = self.book.bookname;
@@ -387,6 +398,7 @@ export class EPUB extends Options {
         new Blob([convertHTMLtoXHTML(getMessageXhtml(self.book))])
       );
     }
+
     async function saveStubChapters(chapters: Chapter[]) {
       chapters = chapters.filter((c) => c.status !== Status.saved);
       for (const c of chapters) {
@@ -397,6 +409,7 @@ export class EPUB extends Options {
         }
       }
     }
+
     async function saveToC() {
       log.debug("[save-epub]对 chapters 排序");
       self.chapters.sort(self.chapterSort);
@@ -536,11 +549,13 @@ export class EPUB extends Options {
           self.manifest.appendChild(item);
         }
       }
+
       function appendSpine(htmlFileName: string) {
         const itemref = self.contentOpf.createElement("itemref");
         itemref.setAttribute("idref", htmlFileName);
         self.spine.appendChild(itemref);
       }
+
       function genNavPoint(num: number, name: string, htmlFileName: string) {
         const navPoint = self.ncx.createElement("navPoint");
         navPoint.id = `navPoint-${num}`;
@@ -555,6 +570,7 @@ export class EPUB extends Options {
         navPoint.appendChild(content);
         return navPoint;
       }
+
       function genTocDiv(
         className: string,
         name: string,
@@ -568,6 +584,7 @@ export class EPUB extends Options {
         div.appendChild(a);
         return div;
       }
+
       function genSectionHtmlFile(sectionName: string) {
         const _htmlText = section.render({ sectionName: sectionName });
         const htmlText = convertHTMLtoXHTML(_htmlText);
@@ -584,6 +601,7 @@ export class EPUB extends Options {
         );
       }
     }
+
     async function saveZipFiles() {
       log.debug("[save-zip]保存元数据文本");
       const metaDateText = self.genMetaDateTxt(self.book);
@@ -624,6 +642,7 @@ export class EPUB extends Options {
     }`;
         }
       }
+
       async function saveIndex() {
         log.debug("[save]对 chapters 排序");
         self.chapters.sort(self.chapterSort);
@@ -648,6 +667,7 @@ export class EPUB extends Options {
           })
         );
       }
+
       async function saveMetaJson() {
         await self.epubZip.file(
           "OEBPS/book.json",

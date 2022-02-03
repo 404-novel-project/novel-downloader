@@ -11,7 +11,7 @@ import { log } from "../log";
 import { Status } from "../main/main";
 import { Chapter } from "../main/Chapter";
 import { getRule } from "../router/download";
-import { SectionObj, getSectionsObj } from "../save/misc";
+import { getSectionsObj, SectionObj } from "../save/misc";
 import ChapterListHtml from "./ChapterList.html";
 import ChapterListCss from "./ChapterList.less";
 import {
@@ -83,28 +83,18 @@ export default defineComponent({
       return true;
     };
     const warningFilter = (chapter: Chapter) => {
-      if (chapter.isVIP === true && chapter.isPaid !== true) {
-        return true;
-      }
-      return false;
+      return chapter.isVIP && chapter.isPaid !== true;
     };
 
     const isChapterDisabled = (chapter: Chapter) => {
-      if (!chapter?.chapterUrl) {
-        return true;
-      }
-      return false;
+      return !chapter?.chapterUrl;
     };
     const isChapterSeen = (chapter: Chapter) => {
-      if (filterSetting.value.hiddenBad && filter(chapter) === false) {
-        return false;
-      } else {
-        return true;
-      }
+      return !(filterSetting.value.hiddenBad && !filter(chapter));
     };
     const isSectionSeen = (sectionObj: SectionObj) => {
       const chapters = sectionObj.chpaters;
-      return chapters.some((chapter) => isChapterSeen(chapter) === true);
+      return chapters.some((chapter) => isChapterSeen(chapter));
     };
 
     return {

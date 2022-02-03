@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import * as CryptoJS from "crypto-js";
-import { getImageAttachment } from "../../../lib/attachments";
-import { sleep } from "../../../lib/misc";
-import { introDomHandle } from "../../../lib/rule";
-import { log } from "../../../log";
-import { Status } from "../../../main/main";
-import { Chapter } from "../../../main/Chapter";
-import { Book, BookAdditionalMetadate } from "../../../main/Book";
-import { BaseRuleClass, ChapterParseObject } from "../../../rules";
-import { retryLimit } from "../../../setting";
+import {getImageAttachment} from "../../../lib/attachments";
+import {sleep} from "../../../lib/misc";
+import {introDomHandle} from "../../../lib/rule";
+import {log} from "../../../log";
+import {Status} from "../../../main/main";
+import {Chapter} from "../../../main/Chapter";
+import {Book, BookAdditionalMetadate} from "../../../main/Book";
+import {BaseRuleClass, ChapterParseObject} from "../../../rules";
+import {retryLimit} from "../../../setting";
 
 export class Gongzicp extends BaseRuleClass {
   public constructor() {
@@ -16,6 +16,7 @@ export class Gongzicp extends BaseRuleClass {
     this.imageMode = "TM";
     this.concurrencyLimit = 1;
   }
+
   public async bookParse() {
     const bookUrl = document.location.href;
 
@@ -311,10 +312,7 @@ export class Gongzicp extends BaseRuleClass {
         .then((response) => response.json())
         .catch((error) => log.error(error));
 
-      if (userInfo.code === 200) {
-        return true;
-      }
-      return false;
+      return userInfo.code === 200;
     }
     const logined = await isLogin();
 

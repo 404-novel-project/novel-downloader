@@ -94,8 +94,8 @@ export const filterOptionDict: FilterOptionDict = {
       return (chapter: Chapter) => {
         const n = chapter.chapterNumber;
 
-        const ss = arg.split(/,|，/).map((s) => s.replace(/\s/g, "").trim());
-        return ss.map((s) => match(s, n)).some((b) => b === true);
+        const ss = arg.split(/[,，]/).map((s) => s.replace(/\s/g, "").trim());
+        return ss.map((s) => match(s, n)).some((b) => b);
       };
     },
     description:

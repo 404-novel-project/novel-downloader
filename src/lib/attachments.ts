@@ -6,10 +6,9 @@ import { randomUUID } from "./misc";
 
 let attachmentClassCache: AttachmentClass[] = [];
 export function getAttachmentClassCache(url: string) {
-  const found = attachmentClassCache.find(
+  return attachmentClassCache.find(
     (attachmentClass) => attachmentClass.url === url
   );
-  return found;
 }
 
 export function putAttachmentClassCache(attachmentClass: AttachmentClass) {

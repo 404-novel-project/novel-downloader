@@ -5,7 +5,7 @@ export const tianyabooks = () =>
   mkRuleClass({
     bookUrl: document.location.href,
     bookname: (document.querySelector(".book > h1") as HTMLElement)?.innerText
-      .replace(/《|》/g, "")
+      .replace(/[《》]/g, "")
       .trim(),
     author: (
       document.querySelector(".book > h2 > a") as HTMLElement

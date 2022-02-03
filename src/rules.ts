@@ -45,16 +45,14 @@ export abstract class BaseRuleClass {
   public nsfw = false;
   public maxRunLimit?: number;
   public saveOptions?: SaveOptions;
-
+  public book?: Book;
   private bcWorker: BroadcastChannel = new BroadcastChannel(
     "novel-downloader-worker"
   );
   private bcWorkerMessages: BcMessage[] = [];
-
-  public book?: Book;
   private audio?: HTMLAudioElement;
 
-  public constructor() {
+  protected constructor() {
     const broadcastChannelWorker = this.bcWorker;
     const messages = this.bcWorkerMessages;
     broadcastChannelWorker.onmessage = (ev) => {
@@ -97,7 +95,7 @@ export abstract class BaseRuleClass {
       await self.preHook();
       await initBook();
       const saveBookObj = initSave(self.book as Book);
-      saveHook();
+      await saveHook();
       await self.initChapters(self.book as Book, saveBookObj).catch((error) => {
         if (error instanceof ExpectError) {
           console.warn(error);
@@ -145,7 +143,7 @@ export abstract class BaseRuleClass {
     async function saveHook() {
       if (
         enableSaveToArchiveOrg &&
-        self.needLogin === false &&
+        !self.needLogin &&
         self.book?.bookUrl &&
         (window as GmWindow).localStorageExpired.get(
           `${self.book.bookUrl}_saveToArchiveOrg`
@@ -162,9 +160,9 @@ export abstract class BaseRuleClass {
         } catch (error) {
           // pass
         }
-        saveToArchiveOrg(self.book.bookUrl);
+        saveToArchiveOrg(self.book.bookUrl).then((r) => log.info(r));
         if (self.book.ToCUrl) {
-          saveToArchiveOrg(self.book.ToCUrl);
+          saveToArchiveOrg(self.book.ToCUrl).then((r) => log.info(r));
         }
       }
     }
@@ -189,7 +187,7 @@ export abstract class BaseRuleClass {
       "data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU3LjcxLjEwMAAAAAAAAAAAAAAA/+M4wAAAAAAAAAAAAEluZm8AAAAPAAAAEAAABVgANTU1NTU1Q0NDQ0NDUFBQUFBQXl5eXl5ea2tra2tra3l5eXl5eYaGhoaGhpSUlJSUlKGhoaGhoaGvr6+vr6+8vLy8vLzKysrKysrX19fX19fX5eXl5eXl8vLy8vLy////////AAAAAExhdmM1Ny44OQAAAAAAAAAAAAAAACQCgAAAAAAAAAVY82AhbwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/+MYxAALACwAAP/AADwQKVE9YWDGPkQWpT66yk4+zIiYPoTUaT3tnU487uNhOvEmQDaCm1Yz1c6DPjbs6zdZVBk0pdGpMzxF/+MYxA8L0DU0AP+0ANkwmYaAMkOKDDjmYoMtwNMyDxMzDHE/MEsLow9AtDnBlQgDhTx+Eye0GgMHoCyDC8gUswJcMVMABBGj/+MYxBoK4DVpQP8iAtVmDk7LPgi8wvDzI4/MWAwK1T7rxOQwtsItMMQBazAowc4wZMC5MF4AeQAGDpruNuMEzyfjLBJhACU+/+MYxCkJ4DVcAP8MAO9J9THVg6oxRMGNMIqCCTAEwzwwBkINOPAs/iwjgBnMepYyId0PhWo+80PXMVsBFzD/AiwwfcKGMEJB/+MYxDwKKDVkAP8eAF8wMwIxMlpU/OaDPLpNKkEw4dRoBh6qP2FC8jCJQFcweQIPMHOBtTBoAVcwOoCNMYDI0u0Dd8ANTIsy/+MYxE4KUDVsAP8eAFBVpgVVPjdGeTEWQr0wdcDtMCeBgDBkgRgwFYB7Pv/zqx0yQQMCCgKNgonHKj6RRVkxM0GwML0AhDAN/+MYxF8KCDVwAP8MAIHZMDDA3DArAQo3K+TF5WOBDQw0lgcKQUJxhT5sxRcwQQI+EIPWMA7AVBoTABgTgzfBN+ajn3c0lZMe/+MYxHEJyDV0AP7MAA4eEwsqP/PDmzC/gNcwXUGaMBVBIwMEsmB6gaxhVuGkpoqMZMQjooTBwM0+S8FTMC0BcjBTgPwwOQDm/+MYxIQKKDV4AP8WADAzAKQwI4CGPhWOEwCFAiBAYQnQMT+uwXUeGzjBWQVkwTcENMBzA2zAGgFEJfSPkPSZzPXgqFy2h0xB/+MYxJYJCDV8AP7WAE0+7kK7MQrATDAvQRIwOADKMBuA9TAYQNM3AiOSPjGxowgHMKFGcBNMQU1FMy45OS41VVU/31eYM4sK/+MYxKwJaDV8AP7SAI4y1Yq0MmOIADGwBZwwlgIJMztCM0qU5TQPG/MSkn8yEROzCdAxECVMQU1FMy45OS41VTe7Ohk+Pqcx/+MYxMEJMDWAAP6MADVLDFUx+4J6Mq7NsjN2zXo8V5fjVJCXNOhwM0vTCDAxFpMYYQU+RlVMQU1FMy45OS41VVVVVVVVVVVV/+MYxNcJADWAAP7EAFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV/+MYxOsJwDWEAP7SAFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV/+MYxPMLoDV8AP+eAFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV/+MYxPQL0DVcAP+0AFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV"
     );
     self.audio.loop = true;
-    self.audio.play();
+    await self.audio.play();
 
     window.onbeforeunload = (e: BeforeUnloadEvent) => {
       e.preventDefault();
@@ -387,8 +385,10 @@ export abstract class BaseRuleClass {
     (window as GmWindow)._url = undefined;
 
     postCallback();
-    successPlus();
-    printStat();
+    successPlus().then(() => {
+      // noinspection JSIgnoredPromiseFromCall
+      printStat();
+    });
 
     function postCallback(): void {
       if (
@@ -421,6 +421,7 @@ export abstract class BaseRuleClass {
         "运行过程出错，请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/yingziwu/novel-downloader"
       );
 
+      // noinspection JSIgnoredPromiseFromCall
       failedPlus();
       alert(
         "运行过程出错，请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/yingziwu/novel-downloader"

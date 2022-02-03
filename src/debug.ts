@@ -18,12 +18,11 @@ export async function debug() {
   const { parse, fetchAndParse, gfetchAndParse } = await import(
     "./lib/readability"
   );
-  const readability = {
+  (unsafeWindow as UnsafeWindow).readability = {
     parse,
     fetchAndParse,
     gfetchAndParse,
   };
-  (unsafeWindow as UnsafeWindow).readability = readability;
 
   (unsafeWindow as UnsafeWindow).stopController = (
     window as GmWindow

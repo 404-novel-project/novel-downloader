@@ -63,11 +63,7 @@ export class C17k extends BaseRuleClass {
         const chapterUrl = (a as HTMLAnchorElement).href;
 
         const isVIP = () => {
-          if (span?.className.includes("vip")) {
-            return true;
-          } else {
-            return false;
-          }
+          return !!span?.className.includes("vip");
         };
         const isPaid = () => {
           // Todo

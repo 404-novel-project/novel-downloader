@@ -70,11 +70,7 @@ export class Zongheng extends BaseRuleClass {
         const chapterUrl = (a as HTMLAnchorElement).href;
 
         const isVIP = () => {
-          if (c.className.includes("vip")) {
-            return true;
-          } else {
-            return false;
-          }
+          return c.className.includes("vip");
         };
         const isPaid = () => {
           // Todo

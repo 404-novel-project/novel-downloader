@@ -64,10 +64,8 @@ export function floatBuster() {
     function nearTest(node: Element, element: Element) {
       if (isOverlap(getVertex(node), getVertex(element))) {
         return true;
-      } else if (isNearby(getVertex(node), getVertex(element))) {
-        return true;
       } else {
-        return false;
+        return isNearby(getVertex(node), getVertex(element));
       }
 
       function getVertex(

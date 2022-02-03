@@ -4,8 +4,7 @@ import {
   putAttachmentClassCache,
 } from "../../../lib/attachments";
 import { cleanDOM } from "../../../lib/cleanDOM";
-import { gfetch } from "../../../lib/http";
-import { getHtmlDOM, ggetHtmlDOM } from "../../../lib/http";
+import { getHtmlDOM, gfetch, ggetHtmlDOM } from "../../../lib/http";
 import { sleep } from "../../../lib/misc";
 import { rm, rms } from "../../../lib/dom";
 import { introDomHandle } from "../../../lib/rule";
@@ -35,11 +34,7 @@ export class Jjwxc extends BaseRuleClass {
             "文案信息审核未通过，等待作者修改后重新审核"
           )
       );
-      if (fl.length !== 0) {
-        return true;
-      } else {
-        return false;
-      }
+      return fl.length !== 0;
     };
 
     let bookname = "";
@@ -109,7 +104,7 @@ export class Jjwxc extends BaseRuleClass {
         ) as HTMLAnchorElement
       )?.innerText
         .trim()
-        .replace(/《|》/g, "");
+        .replace(/[《》]/g, "");
       window.scrollTo(0, 0);
       if (!bookname) {
         throw new Error("抓取书名出错");
@@ -146,18 +141,10 @@ export class Jjwxc extends BaseRuleClass {
         const td = tr.querySelector("td:nth-child(2)");
         const a = td?.querySelector("a:nth-child(1)");
         const isLocked = () => {
-          if ((td as HTMLElement)?.innerText.trim() === "[锁]") {
-            return true;
-          } else {
-            return false;
-          }
+          return (td as HTMLElement)?.innerText.trim() === "[锁]";
         };
         const isVIP = () => {
-          if (a?.getAttribute("onclick")) {
-            return true;
-          } else {
-            return false;
-          }
+          return !!a?.getAttribute("onclick");
         };
 
         if (!isLocked()) {
@@ -181,11 +168,7 @@ export class Jjwxc extends BaseRuleClass {
                 options: {},
               });
               const isLogin = () => {
-                if (document.getElementById("jj_login")) {
-                  return false;
-                } else {
-                  return true;
-                }
+                return !document.getElementById("jj_login");
               };
               if (isVIP() && !isLogin()) {
                 chapter.status = Status.aborted;
@@ -211,11 +194,7 @@ export class Jjwxc extends BaseRuleClass {
               options: {},
             });
             const isLogin = () => {
-              if (document.getElementById("jj_login")) {
-                return false;
-              } else {
-                return true;
-              }
+              return !document.getElementById("jj_login");
             };
             if (isVIP() && !isLogin()) {
               chapter.status = Status.aborted;
@@ -423,14 +402,10 @@ export class Jjwxc extends BaseRuleClass {
 
       const dom = await ggetHtmlDOM(chapterUrl, charset);
       const isPaidF = () => {
-        if (
+        return !!(
           !dom.querySelector("#buy_content") &&
           dom.querySelector("div.noveltext")
-        ) {
-          return true;
-        } else {
-          return false;
-        }
+        );
       };
 
       if (isPaidF()) {

@@ -1,3 +1,5 @@
+// noinspection NonAsciiCharacters,JSNonASCIINames
+
 import { GmWindow } from "./global";
 import { _GM_info } from "./lib/GM";
 import { storageAvailable } from "./lib/localStorageExpired";
@@ -8,7 +10,7 @@ function checkObjct(name: string) {
   const targetLength = target.toString().length;
   const targetPrototype = target.prototype;
   const nativeFunctionRe =
-    /function \w+\(\) {\n?(\s+)?\[native code\]\n?(\s+)?}/;
+    /function \w+\(\) {\n?(\s+)?\[native code]\n?(\s+)?}/;
   try {
     if (
       targetPrototype === undefined ||
@@ -29,6 +31,7 @@ export function streamSupport() {
     typeof TransformStream !== "undefined"
   );
 }
+
 export function mitmPageAvailability(url: string): Promise<boolean> {
   return new Promise((resolve, reject) => {
     fetch(url)

@@ -10,6 +10,7 @@ import { Chapter } from "../../../main/Chapter";
 import { Book, BookAdditionalMetadate } from "../../../main/Book";
 import { BaseRuleClass, ChapterParseObject } from "../../../rules";
 import { retryLimit } from "../../../setting";
+
 export class Sfacg extends BaseRuleClass {
   public constructor() {
     super();
@@ -89,14 +90,10 @@ export class Sfacg extends BaseRuleClass {
       sectionChapterNumber++;
 
       const isVip = () => {
-        if (
+        return (
           elem.childElementCount !== 0 &&
           elem.firstElementChild?.getAttribute("class") === "icn_vip"
-        ) {
-          return true;
-        } else {
-          return false;
-        }
+        );
       };
       // 无法从章节列表判断章节支付情况
       const isPaid = null;
@@ -237,9 +234,7 @@ export class Sfacg extends BaseRuleClass {
 
       const isLogin =
         document.querySelector(".user-bar > .top-link > .normal-link")
-          ?.childElementCount === 3
-          ? true
-          : false;
+          ?.childElementCount === 3;
       if (isLogin) {
         const dom = await getHtmlDOM(chapterUrl, charset);
         const chapterNameI = (

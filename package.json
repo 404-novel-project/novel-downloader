@@ -11,7 +11,7 @@
     "build-greasyfork": "webpack -c webpack-greasyfork.config.js",
     "dev-tester": "webpack serve -c webpack-tester.config.js --node-env development",
     "build-tester": "webpack -c webpack-tester.config.js",
-    "github": "run-s lint pretty build build-greasyfork build-tester"
+    "github": "run-s lint build build-greasyfork build-tester"
   },
   "pre-commit": [
     "github"
@@ -23,8 +23,9 @@
     "*.css"
   ],
   "author": "BGME",
-  "license": "AGPL-3.0",
+  "license": "AGPL-3.0-or-later",
   "devDependencies": {
+    "@babel/types": "^7.17.0",
     "@types/crypto-js": "^4.0.1",
     "@types/file-saver": "^2.0.1",
     "@types/mime-db": "^1.43.1",

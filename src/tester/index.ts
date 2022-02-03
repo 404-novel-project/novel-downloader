@@ -1,10 +1,11 @@
 /* eslint-disable no-inner-declarations */
-import { Chapter } from "../main/Chapter";
-import { Book } from "../main/Book";
+import {Chapter} from "../main/Chapter";
+import {Book} from "../main/Book";
 
 interface TabData {
   [key: string]: string;
 }
+
 interface TabDataRaw {
   domain: string;
   value: TabData;
@@ -283,7 +284,7 @@ if (
   ];
 
   async function runTest() {
-    setTabData("runTest", "true");
+    await setTabData("runTest", "true");
 
     const openWindow = (u: string[] | string) => {
       if (typeof u === "string") {

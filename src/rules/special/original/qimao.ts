@@ -55,11 +55,7 @@ export class Qimao extends BaseRuleClass {
       const chapterName = (aElem as HTMLAnchorElement).innerText;
       const chapterUrl = (aElem as HTMLAnchorElement).href;
       const isVIP = () => {
-        if (aElem.childElementCount) {
-          return true;
-        } else {
-          return false;
-        }
+        return !!aElem.childElementCount;
       };
       const isPaid = () => {
         // Todo

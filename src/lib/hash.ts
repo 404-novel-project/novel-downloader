@@ -5,6 +5,7 @@ export async function calculateSha1(blob: Blob) {
     const arrayBuffer = await blob.arrayBuffer();
     const hashBuffer = await crypto.subtle.digest("SHA-1", arrayBuffer);
     const hashArray = Array.from(new Uint8Array(hashBuffer));
+    // noinspection UnnecessaryLocalVariableJS
     const hashHex = hashArray
       .map((b) => b.toString(16).padStart(2, "0"))
       .join("");

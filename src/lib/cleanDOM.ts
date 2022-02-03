@@ -286,8 +286,7 @@ export async function cleanDOM(
   const baseNodes = [...findBase(elem)];
   const _obj = await loop(baseNodes, document.createElement("div"));
   const obj = await awaitImages(_obj);
-  const output = postHook(obj);
-  return output;
+  return postHook(obj);
 
   interface SubOutput {
     dom: HTMLElement | Text;
@@ -642,7 +641,7 @@ export async function cleanDOM(
           const url = img.src;
           return getImg(url);
         } else {
-          log.warn("[cleanDom][picture]未发现<img>", elem);
+          log.warn("[cleanDom][picture]未发现 img", elem);
           return null;
         }
       }
@@ -1163,10 +1162,7 @@ export function convertFixWidth(node: HTMLElement, width = 35) {
       fullWidthLength(p.innerText.trim())
     );
     const lt = lengths.filter((i) => i > width + 5).length;
-    if (lt < 5) {
-      return true;
-    }
-    return false;
+    return lt < 5;
   }
 }
 
@@ -1199,8 +1195,5 @@ export function isFixWidth(node: Text | HTMLElement, width = 35) {
   }
   const lengths = ns.map((l) => fullWidthLength(l));
   const lt = lengths.filter((i) => i > width + 5).length;
-  if (lt < 5) {
-    return true;
-  }
-  return false;
+  return lt < 5;
 }

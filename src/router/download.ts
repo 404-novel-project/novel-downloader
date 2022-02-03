@@ -545,6 +545,7 @@ export async function getRule(): Promise<BaseRuleClass> {
       throw new Error("Not Found Rule!");
     }
   }
+  // noinspection UnnecessaryLocalVariableJS
   const rule = new ruleClass();
   return rule;
 

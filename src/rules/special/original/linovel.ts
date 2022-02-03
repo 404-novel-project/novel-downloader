@@ -91,11 +91,7 @@ export class Linovel extends BaseRuleClass {
 
         const isVIP = () => {
           if (div.className.includes("lock")) {
-            if (div.className.includes("unlock")) {
-              return false;
-            } else {
-              return true;
-            }
+            return !div.className.includes("unlock");
           }
           return false;
         };

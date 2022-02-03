@@ -43,7 +43,7 @@ module.exports = {
     new WebpackUserscript({
       headers: () => {
         const rawHeaderPath = path.resolve(__dirname, "src", "header.json");
-        const rawHeader = JSON.parse(fs.readFileSync(rawHeaderPath));
+        const rawHeader = JSON.parse(fs.readFileSync(rawHeaderPath).toString());
         const revision = fs.readFileSync("REVISION").toString().trim();
         const header = {
           name: "小说下载器测试脚本",

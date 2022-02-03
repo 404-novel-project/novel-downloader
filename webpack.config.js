@@ -84,7 +84,7 @@ module.exports = {
     new WebpackUserscript({
       headers: () => {
         const headerPath = path.resolve(__dirname, "src", "header.json");
-        const header = JSON.parse(fs.readFileSync(headerPath));
+        const header = JSON.parse(fs.readFileSync(headerPath).toString());
         const revision = fs.readFileSync("REVISION").toString().trim();
         let version;
         if (dev) {

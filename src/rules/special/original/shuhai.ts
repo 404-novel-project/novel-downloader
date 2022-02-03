@@ -75,11 +75,7 @@ export class Shuhai extends BaseRuleClass {
         const a = node.querySelector("a");
 
         const isVIP = () => {
-          if (node.childElementCount === 2) {
-            return true;
-          } else {
-            return false;
-          }
+          return node.childElementCount === 2;
         };
         const isPaid = () => {
           // Todo

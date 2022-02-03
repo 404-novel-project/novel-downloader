@@ -24,5 +24,6 @@ async function main(ev?: Event) {
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", main);
 } else {
+  // noinspection JSIgnoredPromiseFromCall
   main();
 }

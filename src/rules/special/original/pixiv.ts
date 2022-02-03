@@ -638,12 +638,12 @@ async function loadPixivimage({
   userId: string | undefined;
   textEmbeddedImages: { [index: string]: textEmbeddedImage } | null;
 }) {
-  const pixivImages = dom.innerHTML.matchAll(/\[pixivimage:(\d+)\]/g);
+  const pixivImages = dom.innerHTML.matchAll(/\[pixivimage:(\d+)]/g);
   for (const match of pixivImages) {
     await mapperPixivImage(match as [string, string]);
   }
 
-  const uploadedImages = dom.innerHTML.matchAll(/\[uploadedimage:(\d+)\]/g);
+  const uploadedImages = dom.innerHTML.matchAll(/\[uploadedimage:(\d+)]/g);
   for (const match of uploadedImages) {
     mapperUploadedImage(match as [string, string]);
   }

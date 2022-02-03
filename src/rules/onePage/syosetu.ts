@@ -27,11 +27,7 @@ export const syosetu = () => {
 
   const getNsfw = () => {
     const host = document.location.host;
-    if (host === "novel18.syosetu.com") {
-      return true;
-    } else {
-      return false;
-    }
+    return host === "novel18.syosetu.com";
   };
 
   return mkRuleClass({

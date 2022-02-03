@@ -154,6 +154,7 @@ export async function getText(
       })
       .then((buffer) => {
         const decoder = new TextDecoder(charset);
+        // noinspection UnnecessaryLocalVariableJS
         const text = decoder.decode(buffer);
         return text;
       })
@@ -235,6 +236,7 @@ export async function ggetText(
       })
       .then((buffer: ArrayBuffer) => {
         const decoder = new TextDecoder(charset);
+        // noinspection UnnecessaryLocalVariableJS
         const text = decoder.decode(buffer);
         return text;
       })

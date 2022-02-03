@@ -2,8 +2,7 @@ import * as CryptoJS from "crypto-js";
 import { UnsafeWindow } from "../../../global";
 import { getImageAttachment } from "../../../lib/attachments";
 import { cleanDOM } from "../../../lib/cleanDOM";
-import { gfetch } from "../../../lib/http";
-import { getHtmlDOM } from "../../../lib/http";
+import { getHtmlDOM, gfetch } from "../../../lib/http";
 import { rm, rms } from "../../../lib/dom";
 import { introDomHandle } from "../../../lib/rule";
 import { log } from "../../../log";
@@ -99,9 +98,7 @@ export class Ciweimao extends BaseRuleClass {
           options: {},
         });
         const isLogin =
-          document.querySelector(".login-info.ly-fr")?.childElementCount === 1
-            ? true
-            : false;
+          document.querySelector(".login-info.ly-fr")?.childElementCount === 1;
         if (isVIP && !(isLogin && isPaid)) {
           chapter.status = Status.aborted;
         }
@@ -214,28 +211,19 @@ export class Shubl extends BaseRuleClass {
           const chapterUrl = a.href;
 
           const isVIP = () => {
-            if (c.childElementCount === 2) {
-              return true;
-            }
-            return false;
+            return c.childElementCount === 2;
           };
 
           const isPaid = () => {
-            if (isVIP() && c.querySelector("i")?.className === "unlock") {
-              return true;
-            }
-            return false;
+            return isVIP() && c.querySelector("i")?.className === "unlock";
           };
 
           const isLogin = () => {
-            if (
+            return (
               document.querySelector(
                 "#header > div.container > div.right.pull-right"
               )?.childElementCount === 3
-            ) {
-              return true;
-            }
-            return false;
+            );
           };
 
           const chapter = new Chapter({
@@ -516,9 +504,7 @@ function getChapter({
     }
 
     const isLogin =
-      document.querySelector(".login-info.ly-fr")?.childElementCount === 1
-        ? true
-        : false;
+      document.querySelector(".login-info.ly-fr")?.childElementCount === 1;
     if (isLogin && isPaid) {
       const divChapterAuthorSay = await getChapterAuthorSay();
 

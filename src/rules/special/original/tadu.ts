@@ -1,7 +1,6 @@
 import { getImageAttachment } from "../../../lib/attachments";
 import { cleanDOM } from "../../../lib/cleanDOM";
-import { gfetch } from "../../../lib/http";
-import { getHtmlDOM } from "../../../lib/http";
+import { getHtmlDOM, gfetch } from "../../../lib/http";
 import { introDomHandle } from "../../../lib/rule";
 import { log } from "../../../log";
 import { Status } from "../../../main/main";
@@ -51,11 +50,7 @@ export class Tadu extends BaseRuleClass {
       const chapterName = (aElem as HTMLAnchorElement).innerText;
       const chapterUrl = (aElem as HTMLAnchorElement).href;
       const isVIP = () => {
-        if (aElem.childElementCount) {
-          return true;
-        } else {
-          return false;
-        }
+        return !!aElem.childElementCount;
       };
       const isPaid = () => {
         // Todo

@@ -13,6 +13,7 @@ export default defineComponent({
         logText.value = getLogText();
         requestID = globalThis.requestAnimationFrame(step);
       }
+
       requestID = globalThis.requestAnimationFrame(step);
     });
     onUnmounted(() => {
@@ -22,5 +23,8 @@ export default defineComponent({
     });
     return { logText };
   },
-  template: `<div class="log"><pre v-html="logText" id="novel-downloader-log"></per></div>`,
+  template: `
+    <div class="log">
+    <pre v-html="logText" id="novel-downloader-log"></pre>
+    </div>`,
 });

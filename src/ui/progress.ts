@@ -29,11 +29,7 @@ export const vm = createApp({
       return this.chapterPercent !== 0;
     },
     ntProgressSeen() {
-      if (this.chapterProgressSeen || this.zipProgressSeen) {
-        return true;
-      } else {
-        return false;
-      }
+      return !!(this.chapterProgressSeen || this.zipProgressSeen);
     },
     chapterProgressTitle() {
       return `章节：${this.finishedChapterNumber}/${this.totalChapterNumber}`;
