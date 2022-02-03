@@ -20,11 +20,11 @@ export declare abstract class BaseRuleClass {
     nsfw: boolean;
     maxRunLimit?: number;
     saveOptions?: SaveOptions;
+    book?: Book;
     private bcWorker;
     private bcWorkerMessages;
-    book?: Book;
     private audio?;
-    constructor();
+    protected constructor();
     abstract bookParse(): Promise<Book>;
     abstract chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean | null, charset: string, options: object): Promise<ChapterParseObject>;
     run(): Promise<Book | undefined>;

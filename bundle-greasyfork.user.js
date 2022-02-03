@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.8.3.579
+// @version        4.8.3.580
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/404-novel-project/novel-downloader
@@ -187,7 +187,7 @@
 // @namespace      https://blog.bgme.me
 // @homepageURL    https://github.com/404-novel-project/novel-downloader
 // @icon           https://cdn.jsdelivr.net/gh/404-novel-project/novel-downloader/assets/icon.png
-// @license        AGPL-3.0
+// @license        AGPL-3.0-or-later
 // @run-at         document-start
 // @noframes       
 // @compatible     Firefox 77+
@@ -3760,7 +3760,7 @@ function checkObjct(name) {
     const target = window[name];
     const targetLength = target.toString().length;
     const targetPrototype = target.prototype;
-    const nativeFunctionRe = /function \w+\(\) {\n?(\s+)?\[native code\]\n?(\s+)?}/;
+    const nativeFunctionRe = /function \w+\(\) {\n?(\s+)?\[native code]\n?(\s+)?}/;
     try {
         if (targetPrototype === undefined ||
             Boolean(target.toString().match(nativeFunctionRe))) {
@@ -3898,8 +3898,7 @@ async function _GM_deleteValue(name) {
 
 let attachmentClassCache = [];
 function getAttachmentClassCache(url) {
-    const found = attachmentClassCache.find((attachmentClass) => attachmentClass.url === url);
-    return found;
+    return attachmentClassCache.find((attachmentClass) => attachmentClass.url === url);
 }
 function putAttachmentClassCache(attachmentClass) {
     attachmentClassCache.push(attachmentClass);
@@ -4182,8 +4181,7 @@ async function cleanDOM(elem, imgMode, options) {
     const baseNodes = [...findBase(elem)];
     const _obj = await loop(baseNodes, document.createElement("div"));
     const obj = await awaitImages(_obj);
-    const output = postHook(obj);
-    return output;
+    return postHook(obj);
     async function blockElement(element) {
         const map = new Map();
         const divList = [
@@ -4484,7 +4482,7 @@ async function cleanDOM(elem, imgMode, options) {
                     return getImg(url);
                 }
                 else {
-                    _log__WEBPACK_IMPORTED_MODULE_1___default().warn("[cleanDom][picture]未发现<img>", elem);
+                    _log__WEBPACK_IMPORTED_MODULE_1___default().warn("[cleanDom][picture]未发现 img", elem);
                     return null;
                 }
             }
@@ -4904,10 +4902,7 @@ function convertFixWidth(node, width = 35) {
     function isFixWidthP(node) {
         const lengths = Array.from(node.querySelectorAll("p")).map((p) => (0,_dom__WEBPACK_IMPORTED_MODULE_2__/* .fullWidthLength */ .sp)(p.innerText.trim()));
         const lt = lengths.filter((i) => i > width + 5).length;
-        if (lt < 5) {
-            return true;
-        }
-        return false;
+        return lt < 5;
     }
 }
 function isFixWidth(node, width = 35) {
@@ -4941,10 +4936,7 @@ function isFixWidth(node, width = 35) {
     }
     const lengths = ns.map((l) => (0,_dom__WEBPACK_IMPORTED_MODULE_2__/* .fullWidthLength */ .sp)(l));
     const lt = lengths.filter((i) => i > width + 5).length;
-    if (lt < 5) {
-        return true;
-    }
-    return false;
+    return lt < 5;
 }
 
 
@@ -6055,8 +6047,7 @@ class AttachmentClass {
             headers = {};
         }
         if (this.referrerMode === _main__WEBPACK_IMPORTED_MODULE_0__/* .ReferrerMode.self */ .n6.self) {
-            const imgOrigin = new URL(this.url).origin;
-            headers["Referer"] = imgOrigin;
+            headers["Referer"] = new URL(this.url).origin;
         }
         if (this.referrerMode === _main__WEBPACK_IMPORTED_MODULE_0__/* .ReferrerMode.custom */ .n6.custom &&
             this.customReferer.startsWith("http")) {
@@ -6660,10 +6651,7 @@ function saveOptionsValidate(data) {
     ];
     function keyNametest(keyname) {
         const keyList = [...keyNamesS, ...keyNamesF];
-        if (keyList.includes(keyname)) {
-            return true;
-        }
-        return false;
+        return keyList.includes(keyname);
     }
     function keyNamesStest(keyname) {
         if (keyNamesS.includes(keyname)) {
@@ -6922,29 +6910,7 @@ class EPUB extends Options {
             loglevel_default().warn(attachment);
         }
     }
-    async addChapter(chapter, suffix = "") {
-        const chapterName = this.getchapterName(chapter);
-        const chapterNumberToSave = this.getChapterNumberToSave(chapter, this.chapters);
-        const chapterHtmlFileName = `No${chapterNumberToSave}Chapter${suffix}.xhtml`;
-        chapter.chapterHtmlFileName = chapterHtmlFileName;
-        loglevel_default().debug(`[save-epub]保存章HTML文件：${chapterName}`);
-        const chapterHTMLBlob = this.genChapterHtmlFile(chapter);
-        await this.epubZip.file(`OEBPS/${chapterHtmlFileName}`, chapterHTMLBlob);
-        const item = this.contentOpf.createElement("item");
-        item.id = chapterHtmlFileName;
-        item.setAttribute("href", chapterHtmlFileName);
-        item.setAttribute("media-type", "application/xhtml+xml");
-        if (!this.manifest.querySelector(`itme[id="${chapterHtmlFileName}"]`)) {
-            this.manifest.appendChild(item);
-        }
-        if (chapter.contentImages && chapter.contentImages.length !== 0) {
-            loglevel_default().debug(`[save-epub]保存章节附件：${chapterName}`);
-            for (const attachment of chapter.contentImages) {
-                await this.addAttachment(attachment);
-            }
-        }
-    }
-    genChapterHtmlFile(chapterObj) {
+    static genChapterHtmlFile(chapterObj) {
         const _htmlText = chapterTemplt.render({
             chapterUrl: chapterObj.chapterUrl,
             chapterName: chapterObj.chapterName,
@@ -6959,6 +6925,28 @@ class EPUB extends Options {
         ], {
             type: "application/xhtml+xml",
         });
+    }
+    async addChapter(chapter, suffix = "") {
+        const chapterName = this.getchapterName(chapter);
+        const chapterNumberToSave = this.getChapterNumberToSave(chapter, this.chapters);
+        const chapterHtmlFileName = `No${chapterNumberToSave}Chapter${suffix}.xhtml`;
+        chapter.chapterHtmlFileName = chapterHtmlFileName;
+        loglevel_default().debug(`[save-epub]保存章HTML文件：${chapterName}`);
+        const chapterHTMLBlob = EPUB.genChapterHtmlFile(chapter);
+        await this.epubZip.file(`OEBPS/${chapterHtmlFileName}`, chapterHTMLBlob);
+        const item = this.contentOpf.createElement("item");
+        item.id = chapterHtmlFileName;
+        item.setAttribute("href", chapterHtmlFileName);
+        item.setAttribute("media-type", "application/xhtml+xml");
+        if (!this.manifest.querySelector(`itme[id="${chapterHtmlFileName}"]`)) {
+            this.manifest.appendChild(item);
+        }
+        if (chapter.contentImages && chapter.contentImages.length !== 0) {
+            loglevel_default().debug(`[save-epub]保存章节附件：${chapterName}`);
+            for (const attachment of chapter.contentImages) {
+                await this.addAttachment(attachment);
+            }
+        }
     }
     async saveEpub() {
         const self = this;
@@ -7318,13 +7306,13 @@ class SaveBook {
     async saveEpub() {
         await this.epub.saveEpub();
     }
-    saveLog() {
+    static saveLog() {
         (0,FileSaver_min.saveAs)(new Blob([log/* logText */.KC], { type: "text/plain; charset=UTF-8" }), "debug.log");
     }
     async save() {
         this.saveTxt();
         if (setting/* enableDebug.value */.Cy.value) {
-            this.saveLog();
+            SaveBook.saveLog();
         }
         await this.saveEpub();
     }
@@ -7411,9 +7399,9 @@ class BaseRuleClass {
     nsfw = false;
     maxRunLimit;
     saveOptions;
+    book;
     bcWorker = new BroadcastChannel("novel-downloader-worker");
     bcWorkerMessages = [];
-    book;
     audio;
     constructor() {
         const broadcastChannelWorker = this.bcWorker;
@@ -7443,7 +7431,7 @@ class BaseRuleClass {
             await self.preHook();
             await initBook();
             const saveBookObj = initSave(self.book);
-            saveHook();
+            await saveHook();
             await self.initChapters(self.book, saveBookObj).catch((error) => {
                 if (error instanceof main/* ExpectError */.K2) {
                     console.warn(error);
@@ -7486,7 +7474,7 @@ class BaseRuleClass {
         }
         async function saveHook() {
             if (setting/* enableSaveToArchiveOrg */.CA &&
-                self.needLogin === false &&
+                !self.needLogin &&
                 self.book?.bookUrl &&
                 window.localStorageExpired.get(`${self.book.bookUrl}_saveToArchiveOrg`) === undefined &&
                 (await (0,setting/* getCustomEnableSaveToArchiveOrg */.Qd)())) {
@@ -7496,9 +7484,9 @@ class BaseRuleClass {
                 }
                 catch (error) {
                 }
-                (0,misc/* saveToArchiveOrg */.K$)(self.book.bookUrl);
+                (0,misc/* saveToArchiveOrg */.K$)(self.book.bookUrl).then((r) => loglevel_default().info(r));
                 if (self.book.ToCUrl) {
-                    (0,misc/* saveToArchiveOrg */.K$)(self.book.ToCUrl);
+                    (0,misc/* saveToArchiveOrg */.K$)(self.book.ToCUrl).then((r) => loglevel_default().info(r));
                 }
             }
         }
@@ -7518,7 +7506,7 @@ class BaseRuleClass {
         await setStreamSaverSetting();
         self.audio = new Audio("data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU3LjcxLjEwMAAAAAAAAAAAAAAA/+M4wAAAAAAAAAAAAEluZm8AAAAPAAAAEAAABVgANTU1NTU1Q0NDQ0NDUFBQUFBQXl5eXl5ea2tra2tra3l5eXl5eYaGhoaGhpSUlJSUlKGhoaGhoaGvr6+vr6+8vLy8vLzKysrKysrX19fX19fX5eXl5eXl8vLy8vLy////////AAAAAExhdmM1Ny44OQAAAAAAAAAAAAAAACQCgAAAAAAAAAVY82AhbwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/+MYxAALACwAAP/AADwQKVE9YWDGPkQWpT66yk4+zIiYPoTUaT3tnU487uNhOvEmQDaCm1Yz1c6DPjbs6zdZVBk0pdGpMzxF/+MYxA8L0DU0AP+0ANkwmYaAMkOKDDjmYoMtwNMyDxMzDHE/MEsLow9AtDnBlQgDhTx+Eye0GgMHoCyDC8gUswJcMVMABBGj/+MYxBoK4DVpQP8iAtVmDk7LPgi8wvDzI4/MWAwK1T7rxOQwtsItMMQBazAowc4wZMC5MF4AeQAGDpruNuMEzyfjLBJhACU+/+MYxCkJ4DVcAP8MAO9J9THVg6oxRMGNMIqCCTAEwzwwBkINOPAs/iwjgBnMepYyId0PhWo+80PXMVsBFzD/AiwwfcKGMEJB/+MYxDwKKDVkAP8eAF8wMwIxMlpU/OaDPLpNKkEw4dRoBh6qP2FC8jCJQFcweQIPMHOBtTBoAVcwOoCNMYDI0u0Dd8ANTIsy/+MYxE4KUDVsAP8eAFBVpgVVPjdGeTEWQr0wdcDtMCeBgDBkgRgwFYB7Pv/zqx0yQQMCCgKNgonHKj6RRVkxM0GwML0AhDAN/+MYxF8KCDVwAP8MAIHZMDDA3DArAQo3K+TF5WOBDQw0lgcKQUJxhT5sxRcwQQI+EIPWMA7AVBoTABgTgzfBN+ajn3c0lZMe/+MYxHEJyDV0AP7MAA4eEwsqP/PDmzC/gNcwXUGaMBVBIwMEsmB6gaxhVuGkpoqMZMQjooTBwM0+S8FTMC0BcjBTgPwwOQDm/+MYxIQKKDV4AP8WADAzAKQwI4CGPhWOEwCFAiBAYQnQMT+uwXUeGzjBWQVkwTcENMBzA2zAGgFEJfSPkPSZzPXgqFy2h0xB/+MYxJYJCDV8AP7WAE0+7kK7MQrATDAvQRIwOADKMBuA9TAYQNM3AiOSPjGxowgHMKFGcBNMQU1FMy45OS41VVU/31eYM4sK/+MYxKwJaDV8AP7SAI4y1Yq0MmOIADGwBZwwlgIJMztCM0qU5TQPG/MSkn8yEROzCdAxECVMQU1FMy45OS41VTe7Ohk+Pqcx/+MYxMEJMDWAAP6MADVLDFUx+4J6Mq7NsjN2zXo8V5fjVJCXNOhwM0vTCDAxFpMYYQU+RlVMQU1FMy45OS41VVVVVVVVVVVV/+MYxNcJADWAAP7EAFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV/+MYxOsJwDWEAP7SAFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV/+MYxPMLoDV8AP+eAFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV/+MYxPQL0DVcAP+0AFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV");
         self.audio.loop = true;
-        self.audio.play();
+        await self.audio.play();
         window.onbeforeunload = (e) => {
             e.preventDefault();
             const confirmationText = "您正尝试离开本页面，当前页面有下载任务正在运行，是否确认离开？";
@@ -7680,8 +7668,9 @@ class BaseRuleClass {
         window._book = undefined;
         window._url = undefined;
         postCallback();
-        successPlus();
-        printStat();
+        successPlus().then(() => {
+            printStat();
+        });
         function postCallback() {
             if (setting/* enableCustomFinishCallback */.Vo &&
                 typeof unsafeWindow.customFinishCallback ===
@@ -8890,12 +8879,7 @@ const syosetu = () => {
     };
     const getNsfw = () => {
         const host = document.location.host;
-        if (host === "novel18.syosetu.com") {
-            return true;
-        }
-        else {
-            return false;
-        }
+        return host === "novel18.syosetu.com";
     };
     return (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
         bookUrl: document.location.href,
@@ -9180,7 +9164,7 @@ __webpack_require__.r(__webpack_exports__);
 const tianyabooks = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
     bookUrl: document.location.href,
     bookname: document.querySelector(".book > h1")?.innerText
-        .replace(/《|》/g, "")
+        .replace(/[《》]/g, "")
         .trim(),
     author: document.querySelector(".book > h2 > a").innerText.trim(),
     introDom: document.querySelector(".description"),
@@ -9858,12 +9842,7 @@ class C17k extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
                 const chapterName = span.innerText.trim();
                 const chapterUrl = a.href;
                 const isVIP = () => {
-                    if (span?.className.includes("vip")) {
-                        return true;
-                    }
-                    else {
-                        return false;
-                    }
+                    return !!span?.className.includes("vip");
                 };
                 const isPaid = () => {
                     return false;
@@ -10252,7 +10231,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-
 class Ciweimao extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
     constructor() {
         super();
@@ -10318,9 +10296,7 @@ class Ciweimao extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
                     charset: this.charset,
                     options: {},
                 });
-                const isLogin = document.querySelector(".login-info.ly-fr")?.childElementCount === 1
-                    ? true
-                    : false;
+                const isLogin = document.querySelector(".login-info.ly-fr")?.childElementCount === 1;
                 if (isVIP && !(isLogin && isPaid)) {
                     chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_7__/* .Status.aborted */ .qb.aborted;
                 }
@@ -10401,22 +10377,13 @@ class Shubl extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
                     const chapterName = a.innerText.trim();
                     const chapterUrl = a.href;
                     const isVIP = () => {
-                        if (c.childElementCount === 2) {
-                            return true;
-                        }
-                        return false;
+                        return c.childElementCount === 2;
                     };
                     const isPaid = () => {
-                        if (isVIP() && c.querySelector("i")?.className === "unlock") {
-                            return true;
-                        }
-                        return false;
+                        return isVIP() && c.querySelector("i")?.className === "unlock";
                     };
                     const isLogin = () => {
-                        if (document.querySelector("#header > div.container > div.right.pull-right")?.childElementCount === 3) {
-                            return true;
-                        }
-                        return false;
+                        return (document.querySelector("#header > div.container > div.right.pull-right")?.childElementCount === 3);
                     };
                     const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_6__/* .Chapter */ .W({
                         bookUrl,
@@ -10615,9 +10582,7 @@ function getChapter({ chapterUrl, chapterName, isVIP, isPaid, charset, options, 
                 "&text_color_name=white";
             return vipCHapterImageUrlI;
         }
-        const isLogin = document.querySelector(".login-info.ly-fr")?.childElementCount === 1
-            ? true
-            : false;
+        const isLogin = document.querySelector(".login-info.ly-fr")?.childElementCount === 1;
         if (isLogin && isPaid) {
             const divChapterAuthorSay = await getChapterAuthorSay();
             const vipCHapterImageUrl = await vipChapterDecrypt(chapterId, chapterUrl);
@@ -11124,10 +11089,7 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
             })
                 .then((response) => response.json())
                 .catch((error) => _log__WEBPACK_IMPORTED_MODULE_2___default().error(error));
-            if (userInfo.code === 200) {
-                return true;
-            }
-            return false;
+            return userInfo.code === 200;
         }
         const logined = await isLogin();
         const chapters = [];
@@ -11700,7 +11662,6 @@ async function fetchRemoteFont(fontName) {
 
 
 
-
 class Jjwxc extends rules/* BaseRuleClass */.c {
     constructor() {
         super();
@@ -11712,12 +11673,7 @@ class Jjwxc extends rules/* BaseRuleClass */.c {
         const bookUrl = document.location.href;
         const getInformationBlocked = () => {
             const fl = Array.from(document.querySelectorAll(".smallreadbody")).filter((div) => div.innerText.includes("文案信息审核未通过，等待作者修改后重新审核"));
-            if (fl.length !== 0) {
-                return true;
-            }
-            else {
-                return false;
-            }
+            return fl.length !== 0;
         };
         let bookname = "";
         const additionalMetadate = {};
@@ -11756,7 +11712,7 @@ class Jjwxc extends rules/* BaseRuleClass */.c {
             await (0,misc/* sleep */._v)(3000);
             bookname = document.querySelector("td[id^=comment_] span.coltext > a")?.innerText
                 .trim()
-                .replace(/《|》/g, "");
+                .replace(/[《》]/g, "");
             window.scrollTo(0, 0);
             if (!bookname) {
                 throw new Error("抓取书名出错");
@@ -11787,20 +11743,10 @@ class Jjwxc extends rules/* BaseRuleClass */.c {
                 const td = tr.querySelector("td:nth-child(2)");
                 const a = td?.querySelector("a:nth-child(1)");
                 const isLocked = () => {
-                    if (td?.innerText.trim() === "[锁]") {
-                        return true;
-                    }
-                    else {
-                        return false;
-                    }
+                    return td?.innerText.trim() === "[锁]";
                 };
                 const isVIP = () => {
-                    if (a?.getAttribute("onclick")) {
-                        return true;
-                    }
-                    else {
-                        return false;
-                    }
+                    return !!a?.getAttribute("onclick");
                 };
                 if (!isLocked()) {
                     if (isVIP()) {
@@ -11823,12 +11769,7 @@ class Jjwxc extends rules/* BaseRuleClass */.c {
                                 options: {},
                             });
                             const isLogin = () => {
-                                if (document.getElementById("jj_login")) {
-                                    return false;
-                                }
-                                else {
-                                    return true;
-                                }
+                                return !document.getElementById("jj_login");
                             };
                             if (isVIP() && !isLogin()) {
                                 chapter.status = main/* Status.aborted */.qb.aborted;
@@ -11855,12 +11796,7 @@ class Jjwxc extends rules/* BaseRuleClass */.c {
                             options: {},
                         });
                         const isLogin = () => {
-                            if (document.getElementById("jj_login")) {
-                                return false;
-                            }
-                            else {
-                                return true;
-                            }
+                            return !document.getElementById("jj_login");
                         };
                         if (isVIP() && !isLogin()) {
                             chapter.status = main/* Status.aborted */.qb.aborted;
@@ -12037,13 +11973,8 @@ class Jjwxc extends rules/* BaseRuleClass */.c {
             }
             const dom = await (0,http/* ggetHtmlDOM */.Fz)(chapterUrl, charset);
             const isPaidF = () => {
-                if (!dom.querySelector("#buy_content") &&
-                    dom.querySelector("div.noveltext")) {
-                    return true;
-                }
-                else {
-                    return false;
-                }
+                return !!(!dom.querySelector("#buy_content") &&
+                    dom.querySelector("div.noveltext"));
             };
             if (isPaidF()) {
                 const ChapterName = dom.querySelector("div.noveltext h2").innerText.trim();
@@ -12193,12 +12124,7 @@ class Linovel extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c
                 const chapterUrl = a.href;
                 const isVIP = () => {
                     if (div.className.includes("lock")) {
-                        if (div.className.includes("unlock")) {
-                            return false;
-                        }
-                        else {
-                            return true;
-                        }
+                        return !div.className.includes("unlock");
                     }
                     return false;
                 };
@@ -13312,11 +13238,11 @@ async function getPreloadData(chapterUrl, charset) {
     }
 }
 async function loadPixivimage({ dom, nid, lang, userId, textEmbeddedImages, }) {
-    const pixivImages = dom.innerHTML.matchAll(/\[pixivimage:(\d+)\]/g);
+    const pixivImages = dom.innerHTML.matchAll(/\[pixivimage:(\d+)]/g);
     for (const match of pixivImages) {
         await mapperPixivImage(match);
     }
-    const uploadedImages = dom.innerHTML.matchAll(/\[uploadedimage:(\d+)\]/g);
+    const uploadedImages = dom.innerHTML.matchAll(/\[uploadedimage:(\d+)]/g);
     for (const match of uploadedImages) {
         mapperUploadedImage(match);
     }
@@ -13475,19 +13401,11 @@ class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
                 const chapterUrl = a.href;
                 const isVIP = () => {
                     const host = new URL(chapterUrl).host;
-                    if (host === "vipreader.qidian.com") {
-                        return true;
-                    }
-                    return false;
+                    return host === "vipreader.qidian.com";
                 };
                 const isPaid = () => {
                     if (isVIP()) {
-                        if (c.childElementCount === 2) {
-                            return false;
-                        }
-                        else {
-                            return true;
-                        }
+                        return c.childElementCount !== 2;
                     }
                     return false;
                 };
@@ -13688,12 +13606,7 @@ class Qimao extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
             const chapterName = aElem.innerText;
             const chapterUrl = aElem.href;
             const isVIP = () => {
-                if (aElem.childElementCount) {
-                    return true;
-                }
-                else {
-                    return false;
-                }
+                return !!aElem.childElementCount;
             };
             const isPaid = () => {
                 return false;
@@ -13872,13 +13785,8 @@ class Sfacg extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
             chapterNumber++;
             sectionChapterNumber++;
             const isVip = () => {
-                if (elem.childElementCount !== 0 &&
-                    elem.firstElementChild?.getAttribute("class") === "icn_vip") {
-                    return true;
-                }
-                else {
-                    return false;
-                }
+                return (elem.childElementCount !== 0 &&
+                    elem.firstElementChild?.getAttribute("class") === "icn_vip");
             };
             const isPaid = null;
             const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_7__/* .Chapter */ .W({
@@ -13989,9 +13897,7 @@ class Sfacg extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
                 return vipChapterImage;
             }
             const isLogin = document.querySelector(".user-bar > .top-link > .normal-link")
-                ?.childElementCount === 3
-                ? true
-                : false;
+                ?.childElementCount === 3;
             if (isLogin) {
                 const dom = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
                 const chapterNameI = dom.querySelector("h1.article-title").innerText.trim();
@@ -14121,12 +14027,7 @@ class Shuhai extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
                 sectionChapterNumber++;
                 const a = node.querySelector("a");
                 const isVIP = () => {
-                    if (node.childElementCount === 2) {
-                        return true;
-                    }
-                    else {
-                        return false;
-                    }
+                    return node.childElementCount === 2;
                 };
                 const isPaid = () => {
                     return false;
@@ -14258,12 +14159,7 @@ class Sosadfun extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
         }
         const needLogin = () => {
             const mainDom = document.querySelector(".col-xs-12 > .main-text.no-selection");
-            if (mainDom.innerText.trim() === "主楼隐藏，请登录后查看") {
-                return true;
-            }
-            else {
-                return false;
-            }
+            return mainDom.innerText.trim() === "主楼隐藏，请登录后查看";
         };
         const additionalMetadate = {};
         additionalMetadate.tags = Array.from(document.querySelectorAll("div.h5:nth-child(1) > div:nth-child(3) > a")).map((a) => a.innerText.trim());
@@ -14416,7 +14312,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-
 class Tadu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
     constructor() {
         super();
@@ -14446,12 +14341,7 @@ class Tadu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
             const chapterName = aElem.innerText;
             const chapterUrl = aElem.href;
             const isVIP = () => {
-                if (aElem.childElementCount) {
-                    return true;
-                }
-                else {
-                    return false;
-                }
+                return !!aElem.childElementCount;
             };
             const isPaid = () => {
                 return false;
@@ -14833,12 +14723,7 @@ class Zongheng extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
                 const chapterName = a.innerText.trim();
                 const chapterUrl = a.href;
                 const isVIP = () => {
-                    if (c.className.includes("vip")) {
-                        return true;
-                    }
-                    else {
-                        return false;
-                    }
+                    return c.className.includes("vip");
                 };
                 const isPaid = () => {
                     return false;
@@ -18450,12 +18335,7 @@ const vm = (0,external_Vue_.createApp)({
             return this.chapterPercent !== 0;
         },
         ntProgressSeen() {
-            if (this.chapterProgressSeen || this.zipProgressSeen) {
-                return true;
-            }
-            else {
-                return false;
-            }
+            return !!(this.chapterProgressSeen || this.zipProgressSeen);
         },
         chapterProgressTitle() {
             return `章节：${this.finishedChapterNumber}/${this.totalChapterNumber}`;
@@ -19233,11 +19113,8 @@ function floatBuster() {
             if (isOverlap(getVertex(node), getVertex(element))) {
                 return true;
             }
-            else if (isNearby(getVertex(node), getVertex(element))) {
-                return true;
-            }
             else {
-                return false;
+                return isNearby(getVertex(node), getVertex(element));
             }
             function getVertex(ele) {
                 const { left, top, right, bottom } = ele.getBoundingClientRect();
@@ -19542,12 +19419,11 @@ async function debug() {
     window._book = book;
     unsafeWindow.saveAs = FileSaver_min.saveAs;
     const { parse, fetchAndParse, gfetchAndParse } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/lib/readability.ts"));
-    const readability = {
+    unsafeWindow.readability = {
         parse,
         fetchAndParse,
         gfetchAndParse,
     };
-    unsafeWindow.readability = readability;
     unsafeWindow.stopController = window.stopController;
     return;
 }
@@ -19626,28 +19502,17 @@ const style = (0,dom/* createStyle */.wj)(ui_ChapterList/* default */.Z);
             return true;
         };
         const warningFilter = (chapter) => {
-            if (chapter.isVIP === true && chapter.isPaid !== true) {
-                return true;
-            }
-            return false;
+            return chapter.isVIP && chapter.isPaid !== true;
         };
         const isChapterDisabled = (chapter) => {
-            if (!chapter?.chapterUrl) {
-                return true;
-            }
-            return false;
+            return !chapter?.chapterUrl;
         };
         const isChapterSeen = (chapter) => {
-            if (filterSetting.value.hiddenBad && filter(chapter) === false) {
-                return false;
-            }
-            else {
-                return true;
-            }
+            return !(filterSetting.value.hiddenBad && !filter(chapter));
         };
         const isSectionSeen = (sectionObj) => {
             const chapters = sectionObj.chpaters;
-            return chapters.some((chapter) => isChapterSeen(chapter) === true);
+            return chapters.some((chapter) => isChapterSeen(chapter));
         };
         return {
             sectionsObj,
@@ -19741,8 +19606,8 @@ const filterOptionDict = {
             }
             return (chapter) => {
                 const n = chapter.chapterNumber;
-                const ss = arg.split(/,|，/).map((s) => s.replace(/\s/g, "").trim());
-                return ss.map((s) => match(s, n)).some((b) => b === true);
+                const ss = arg.split(/[,，]/).map((s) => s.replace(/\s/g, "").trim());
+                return ss.map((s) => match(s, n)).some((b) => b);
             };
         },
         description: "<p>基于章节序号过滤，章节序号可通过章节标题悬停查看。</p><p>支持以下格式：13, 1-5, 2-, -89。可通过分号（,）使用多个表达式。</p>",
@@ -19839,7 +19704,10 @@ var log = __webpack_require__("./src/log.ts");
         });
         return { logText };
     },
-    template: `<div class="log"><pre v-html="logText" id="novel-downloader-log"></per></div>`,
+    template: `
+    <div class="log">
+    <pre v-html="logText" id="novel-downloader-log"></pre>
+    </div>`,
 }));
 
 ;// CONCATENATED MODULE: ./src/ui/setting.html

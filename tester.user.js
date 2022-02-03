@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        小说下载器测试脚本
-// @version     4.8.3.579
+// @version     4.8.3.580
 // @author      bgme
 // @description 小说下载器测试脚本
 // @match       *://www.ciweimao.com/chapter-list/*
@@ -499,7 +499,7 @@ if (document.location.origin === "https://greasyfork.org" &&
         "https://ebook.longmabook.com/?act=showinfo&bookwritercode=EB20171122105148478253",
     ];
     async function runTest() {
-        setTabData("runTest", "true");
+        await setTabData("runTest", "true");
         const openWindow = (u) => {
             if (typeof u === "string") {
                 GM_openInTab(u);

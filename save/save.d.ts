@@ -8,6 +8,6 @@ export declare class SaveBook {
     addChapter(chapter: Chapter): Promise<void>;
     private saveTxt;
     private saveEpub;
-    private saveLog;
+    private static saveLog;
     save(): Promise<void>;
 }
