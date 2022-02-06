@@ -39,7 +39,6 @@ export function getUI(): () => UIObject {
       return () => {
         const re = /^\/book\/\d+\/?$/;
         if (re.test(document.location.pathname)) {
-          floatBuster();
           return defaultObject;
         } else {
           return errorObject;
@@ -53,7 +52,6 @@ export function getUI(): () => UIObject {
           document.body.innerHTML.includes("作者:") ||
           document.body.innerHTML.includes("内容简介")
         ) {
-          floatBuster();
           return defaultObject;
         } else {
           return errorObject;
@@ -69,7 +67,6 @@ export function getUI(): () => UIObject {
               (document.location.pathname = "/bookDetails/catalog"),
           };
         } else {
-          floatBuster();
           return defaultObject;
         }
       };
@@ -99,7 +96,6 @@ export function getUI(): () => UIObject {
           params.has("bookwritercode") &&
           params.has("bookid")
         ) {
-          floatBuster();
           return defaultObject;
         }
         return errorObject;
@@ -134,7 +130,6 @@ export function getUI(): () => UIObject {
             return errorObject;
           }
         } else {
-          floatBuster();
           return defaultObject;
         }
       };
@@ -154,7 +149,6 @@ export function getUI(): () => UIObject {
             return errorObject;
           }
         } else {
-          floatBuster();
           return defaultObject;
         }
       };
@@ -172,7 +166,6 @@ export function getUI(): () => UIObject {
           url.searchParams.get("act") === "threadview" &&
           url.searchParams.has("tid")
         ) {
-          floatBuster();
           return defaultObject;
         } else {
           return errorObject;
@@ -192,7 +185,6 @@ export function getUI(): () => UIObject {
               )),
           };
         } else {
-          floatBuster();
           return defaultObject;
         }
       };
@@ -209,7 +201,6 @@ export function getUI(): () => UIObject {
               )),
           };
         } else {
-          floatBuster();
           return defaultObject;
         }
       };
@@ -226,7 +217,6 @@ export function getUI(): () => UIObject {
               )),
           };
         } else {
-          floatBuster();
           return defaultObject;
         }
       };
@@ -236,14 +226,46 @@ export function getUI(): () => UIObject {
         if (document.querySelector(".error-box")) {
           return errorObject;
         } else {
-          floatBuster();
           return defaultObject;
         }
       };
     }
-    default: {
+    case "www.yruan.com":
+    case "www.shuquge.com":
+    case "www.sizhicn.com":
+    case "www.dingdiann.net":
+    case "www.gebiqu.com":
+    case "www.81book.com":
+    case "www.81zw.com":
+    case "www.fuguoduxs.com":
+    case "www.shubaowa.org":
+    case "www.bz01.org":
+    case "www.aixiawx.com":
+    case "www.banzhuer.org":
+    case "www.hongyeshuzhal.com":
+    case "www.xinwanben.com":
+    case "www.mht99.com":
+    case "www.xbiquge.so":
+    case "www.luoqiuzw.com":
+    case "www.yqbiqu.com":
+    case "www.lwxs9.org":
+    case "dijiubook.net":
+    case "www.xbiquwx.la":
+    case "www.25zw.com":
+    case "www.zmccx.com":
+    case "www.ranwen.la":
+    case "www.lstxt.cc":
+    case "www.b5200.net":
+    case "www.xsyq.cc":
+    case "www.bxwx888.org":
+    case "www.xbiquge.la": {
       return () => {
         floatBuster();
+        return defaultObject;
+      };
+    }
+    default: {
+      return () => {
         return defaultObject;
       };
     }
