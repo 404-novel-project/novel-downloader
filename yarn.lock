@@ -3632,9 +3632,9 @@ ssri@^8.0.1:
   integrity sha1-Fhx9rBd2Wf2YEfQ3cfqZOBR4Yow=
 
 streamsaver@^2.0.5:
-  version "2.0.5"
-  resolved "https://registry.yarnpkg.com/streamsaver/-/streamsaver-2.0.5.tgz#3212f0e908fcece5b3a65591094475cf87850d00"
-  integrity sha512-KIWtBvi8A6FiFZGNSyuIZRZM6C8AvnWTiCx/TYa7so420vC5sQwcBKkdqInuGWoWMfeWy/P+/cRqMtWVf4RW9w==
+  version "2.0.6"
+  resolved "https://registry.yarnpkg.com/streamsaver/-/streamsaver-2.0.6.tgz#869d2347dd70191e0ac888d52296956a8cba2ed9"
+  integrity sha512-LK4e7TfCV8HzuM0PKXuVUfKyCB1FtT9L0EGxsFk5Up8njj0bXK8pJM9+Wq2Nya7/jslmCQwRK39LFm55h7NBTw==
 
 string.prototype.padend@^3.0.0:
   version "3.1.3"
