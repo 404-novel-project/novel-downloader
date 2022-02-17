@@ -417,7 +417,7 @@ export class EPUB extends Options {
       const sectionsListObj = getSectionsObj(self.chapters, self.chapterSort);
 
       let i = 0;
-      let sectionNumberG;
+      let sectionNumberG = null;
       let sectionNavPoint;
       let sectionTOCDiv;
       for (const sectionObj of sectionsListObj) {
@@ -619,6 +619,21 @@ export class EPUB extends Options {
       await self.epubZip.file(
         "OEBPS/toc.css",
         new Blob([self.tocStyleText], { type: "text/css;charset=utf-8" })
+      );
+      await self.epubZip.file(
+        "OEBPS/web.js",
+        new Blob(
+          [
+            `if (typeof fetch === "function" && !navigator.userAgent.includes("calibre-viewer") && navigator.userAgent.startsWith("Mozilla/5.0")) {
+  const link = document.createElement("link");
+  link.type = "text/css";
+  link.rel = "stylesheet";
+  link.href = "web.css";
+  document.head.append(link);
+}`,
+          ],
+          { type: "application/javascript" }
+        )
       );
 
       log.debug("[save-zip]开始生成并保存 index.html");
