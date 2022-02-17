@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.8.3.593
+// @version        4.8.3.603
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/404-novel-project/novel-downloader
@@ -316,7 +316,7 @@
 // @require        https://cdn.jsdelivr.net/npm/crypto-js@4.1.1/crypto-js.js#sha512-NQVmLzNy4Lr5QTrmXvq/WzTMUnRHmv7nyIT/M6LyGPBS+TIeRxZ+YQaqWxjpRpvRMQSuYPQURZz/+pLi81xXeA==
 // @require        https://cdn.jsdelivr.net/npm/fflate@0.7.3/umd/index.js#sha512-F57jcpLWPENXlHrsEj+YC8m+IHvaoRZpCpDr7Tfvu/jRtuO7kPOfbsop2gXEIRoK66ETYamk1tlTEvNw6xE8jw==
 // @require        https://cdn.jsdelivr.net/npm/nunjucks@3.2.3/browser/nunjucks.min.js#sha512-Uj8C5szr1tnKPNZb6ps5gFYtTGskzsUCiwY35QP/s2JIExZl7iYNletcmOJ8D6ocuaMRi9JGVrWRePaX9raujA==
-// @require        https://cdn.jsdelivr.net/npm/vue@3.2.29/dist/vue.global.prod.js#sha512-/OPlqC4cW5gjYzjiKQSt382JcPJZEMBC4kFH4s0Gd5V2uK+Ib2C7hBZQgPpih337YQnUKt8rUH3nqC5/0AB+cg==
+// @require        https://cdn.jsdelivr.net/npm/vue@3.2.31/dist/vue.global.prod.js#sha512-DB4qKu3/TbfQPJoPrMizkEHEA4biclKAhCFvLN6d2/zVvHOBS8aI/p8oYQgpWPHyDn6UdSJMdt+mqUCDWxLYWQ==
 // @downloadURL    https://github.com/yingziwu/novel-downloader/raw/gh-pages/bundle-greasyfork.user.js
 // @updateURL      https://github.com/yingziwu/novel-downloader/raw/gh-pages/bundle-greasyfork.meta.js
 // ==/UserScript==
@@ -382,7 +382,7 @@ function isProbablyReaderable(doc, options = {}) {
   var defaultOptions = { minScore: 20, minContentLength: 140, visibilityChecker: isNodeVisible };
   options = Object.assign(defaultOptions, options);
 
-  var nodes = doc.querySelectorAll("p, pre");
+  var nodes = doc.querySelectorAll("p, pre, article");
 
   // Get <div> nodes which have <br> node(s) and append them into the `nodes` variable.
   // Some articles' DOM structures might look like
@@ -834,8 +834,8 @@ Readability.prototype = {
           } else {
             // if the link has multiple children, they should all be preserved
             var container = this._doc.createElement("span");
-            while (link.childNodes.length > 0) {
-              container.appendChild(link.childNodes[0]);
+            while (link.firstChild) {
+              container.appendChild(link.firstChild);
             }
             link.parentNode.replaceChild(container, link);
           }
@@ -1340,6 +1340,11 @@ Readability.prototype = {
       let shouldRemoveTitleHeader = true;
 
       while (node) {
+
+        if (node.tagName === "HTML") {
+          this._articleLang = node.getAttribute("lang");
+        }
+
         var matchString = node.className + " " + node.id;
 
         if (!this._isProbablyVisible(node)) {
@@ -1529,10 +1534,9 @@ Readability.prototype = {
         neededToCreateTopCandidate = true;
         // Move everything (not just elements, also text nodes etc.) into the container
         // so we even include text directly in the body:
-        var kids = page.childNodes;
-        while (kids.length) {
-          this.log("Moving child out:", kids[0]);
-          topCandidate.appendChild(kids[0]);
+        while (page.firstChild) {
+          this.log("Moving child out:", page.firstChild);
+          topCandidate.appendChild(page.firstChild);
         }
 
         page.appendChild(topCandidate);
@@ -1663,6 +1667,9 @@ Readability.prototype = {
           }
 
           articleContent.appendChild(sibling);
+          // Fetch children again to make it compatible
+          // with DOM parsers without live collection support.
+          siblings = parentOfTopCandidate.children;
           // siblings is a reference to the children array, and
           // sibling is removed from the array when we call appendChild().
           // As a result, we must revisit this index since the nodes
@@ -1690,9 +1697,8 @@ Readability.prototype = {
         var div = doc.createElement("DIV");
         div.id = "readability-page-1";
         div.className = "page";
-        var children = articleContent.childNodes;
-        while (children.length) {
-          div.appendChild(children[0]);
+        while (articleContent.firstChild) {
+          div.appendChild(articleContent.firstChild);
         }
         articleContent.appendChild(div);
       }
@@ -1800,72 +1806,88 @@ Readability.prototype = {
   _getJSONLD: function (doc) {
     var scripts = this._getAllNodesWithTag(doc, ["script"]);
 
-    var jsonLdElement = this._findNode(scripts, function(el) {
-      return el.getAttribute("type") === "application/ld+json";
-    });
+    var metadata;
 
-    if (jsonLdElement) {
-      try {
-        // Strip CDATA markers if present
-        var content = jsonLdElement.textContent.replace(/^\s*<!\[CDATA\[|\]\]>\s*$/g, "");
-        var parsed = JSON.parse(content);
-        var metadata = {};
-        if (
-          !parsed["@context"] ||
-          !parsed["@context"].match(/^https?\:\/\/schema\.org$/)
-        ) {
-          return metadata;
-        }
-
-        if (!parsed["@type"] && Array.isArray(parsed["@graph"])) {
-          parsed = parsed["@graph"].find(function(it) {
-            return (it["@type"] || "").match(
-              this.REGEXPS.jsonLdArticleTypes
-            );
-          });
-        }
-
-        if (
-          !parsed ||
-          !parsed["@type"] ||
-          !parsed["@type"].match(this.REGEXPS.jsonLdArticleTypes)
-        ) {
-          return metadata;
-        }
-        if (typeof parsed.name === "string") {
-          metadata.title = parsed.name.trim();
-        } else if (typeof parsed.headline === "string") {
-          metadata.title = parsed.headline.trim();
-        }
-        if (parsed.author) {
-          if (typeof parsed.author.name === "string") {
-            metadata.byline = parsed.author.name.trim();
-          } else if (Array.isArray(parsed.author) && parsed.author[0] && typeof parsed.author[0].name === "string") {
-            metadata.byline = parsed.author
-              .filter(function(author) {
-                return author && typeof author.name === "string";
-              })
-              .map(function(author) {
-                return author.name.trim();
-              })
-              .join(", ");
+    this._forEachNode(scripts, function(jsonLdElement) {
+      if (!metadata && jsonLdElement.getAttribute("type") === "application/ld+json") {
+        try {
+          // Strip CDATA markers if present
+          var content = jsonLdElement.textContent.replace(/^\s*<!\[CDATA\[|\]\]>\s*$/g, "");
+          var parsed = JSON.parse(content);
+          if (
+            !parsed["@context"] ||
+            !parsed["@context"].match(/^https?\:\/\/schema\.org$/)
+          ) {
+            return;
           }
+
+          if (!parsed["@type"] && Array.isArray(parsed["@graph"])) {
+            parsed = parsed["@graph"].find(function(it) {
+              return (it["@type"] || "").match(
+                this.REGEXPS.jsonLdArticleTypes
+              );
+            });
+          }
+
+          if (
+            !parsed ||
+            !parsed["@type"] ||
+            !parsed["@type"].match(this.REGEXPS.jsonLdArticleTypes)
+          ) {
+            return;
+          }
+
+          metadata = {};
+
+          if (typeof parsed.name === "string" && typeof parsed.headline === "string" && parsed.name !== parsed.headline) {
+            // we have both name and headline element in the JSON-LD. They should both be the same but some websites like aktualne.cz
+            // put their own name into "name" and the article title to "headline" which confuses Readability. So we try to check if either
+            // "name" or "headline" closely matches the html title, and if so, use that one. If not, then we use "name" by default.
+
+            var title = this._getArticleTitle();
+            var nameMatches = this._textSimilarity(parsed.name, title) > 0.75;
+            var headlineMatches = this._textSimilarity(parsed.headline, title) > 0.75;
+
+            if (headlineMatches && !nameMatches) {
+              metadata.title = parsed.headline;
+            } else {
+              metadata.title = parsed.name;
+            }
+          } else if (typeof parsed.name === "string") {
+            metadata.title = parsed.name.trim();
+          } else if (typeof parsed.headline === "string") {
+            metadata.title = parsed.headline.trim();
+          }
+          if (parsed.author) {
+            if (typeof parsed.author.name === "string") {
+              metadata.byline = parsed.author.name.trim();
+            } else if (Array.isArray(parsed.author) && parsed.author[0] && typeof parsed.author[0].name === "string") {
+              metadata.byline = parsed.author
+                .filter(function(author) {
+                  return author && typeof author.name === "string";
+                })
+                .map(function(author) {
+                  return author.name.trim();
+                })
+                .join(", ");
+            }
+          }
+          if (typeof parsed.description === "string") {
+            metadata.excerpt = parsed.description.trim();
+          }
+          if (
+            parsed.publisher &&
+            typeof parsed.publisher.name === "string"
+          ) {
+            metadata.siteName = parsed.publisher.name.trim();
+          }
+          return;
+        } catch (err) {
+          this.log(err.message);
         }
-        if (typeof parsed.description === "string") {
-          metadata.excerpt = parsed.description.trim();
-        }
-        if (
-          parsed.publisher &&
-          typeof parsed.publisher.name === "string"
-        ) {
-          metadata.siteName = parsed.publisher.name.trim();
-        }
-        return metadata;
-      } catch (err) {
-        this.log(err.message);
       }
-    }
-    return {};
+    });
+    return metadata ? metadata : {};
   },
 
   /**
@@ -2430,7 +2452,7 @@ Readability.prototype = {
 
       for (var j = 0; j < elem.attributes.length; j++) {
         attr = elem.attributes[j];
-        if (attr.name === "src" || attr.name === "srcset") {
+        if (attr.name === "src" || attr.name === "srcset" || attr.name === "alt") {
           continue;
         }
         var copyTo = null;
@@ -2690,6 +2712,7 @@ Readability.prototype = {
       title: this._articleTitle,
       byline: metadata.byline || this._articleByline,
       dir: this._articleDir,
+      lang: this._articleLang,
       content: this._serializer(articleContent),
       textContent: textContent,
       length: textContent.length,
@@ -3431,6 +3454,8 @@ module.exports = __webpack_require__("./node_modules/mime-db/db.json")
 /***/ "./node_modules/streamsaver/StreamSaver.js":
 /***/ (function(module) {
 
+/*! streamsaver. MIT License. Jimmy Wärting <https://jimmy.warting.se/opensource> */
+
 /* global chrome location ReadableStream define MessageChannel TransformStream */
 
 ;((name, definition) => {
@@ -3530,7 +3555,7 @@ module.exports = __webpack_require__("./node_modules/mime-db/db.json")
   }
 
   test(() => {
-    // Transfariable stream was first enabled in chrome v73 behind a flag
+    // Transferable stream was first enabled in chrome v73 behind a flag
     const { readable } = new TransformStream()
     const mc = new MessageChannel()
     mc.port1.postMessage(readable, [readable])
@@ -3556,7 +3581,7 @@ module.exports = __webpack_require__("./node_modules/mime-db/db.json")
   /**
    * @param  {string} filename filename that should be used
    * @param  {object} options  [description]
-   * @param  {number} size     depricated
+   * @param  {number} size     deprecated
    * @return {WritableStream<Uint8Array>}
    */
   function createWriteStream (filename, options, size) {
@@ -3575,11 +3600,11 @@ module.exports = __webpack_require__("./node_modules/mime-db/db.json")
     // normalize arguments
     if (Number.isFinite(options)) {
       [ size, options ] = [ options, size ]
-      console.warn('[StreamSaver] Depricated pass an object as 2nd argument when creating a write stream')
+      console.warn('[StreamSaver] Deprecated pass an object as 2nd argument when creating a write stream')
       opts.size = size
       opts.writableStrategy = options
     } else if (options && options.highWaterMark) {
-      console.warn('[StreamSaver] Depricated pass an object as 2nd argument when creating a write stream')
+      console.warn('[StreamSaver] Deprecated pass an object as 2nd argument when creating a write stream')
       opts.size = size
       opts.writableStrategy = options
     } else {
@@ -3615,7 +3640,7 @@ module.exports = __webpack_require__("./node_modules/mime-db/db.json")
           // This transformer & flush method is only used by insecure context.
           transform (chunk, controller) {
             if (!(chunk instanceof Uint8Array)) {
-              throw new TypeError('Can only wirte Uint8Arrays')
+              throw new TypeError('Can only write Uint8Arrays')
             }
             bytesWritten += chunk.length
             controller.enqueue(chunk)
@@ -3666,6 +3691,13 @@ module.exports = __webpack_require__("./node_modules/mime-db/db.json")
             // We never remove this iframes b/c it can interrupt saving
             makeIframe(evt.data.download)
           }
+        } else if (evt.data.abort) {
+          chunks = []
+          channel.port1.postMessage('abort') //send back so controller is aborted
+          channel.port1.onmessage = null
+          channel.port1.close()
+          channel.port2.close()
+          channel = null
         }
       }
 
@@ -3683,13 +3715,13 @@ module.exports = __webpack_require__("./node_modules/mime-db/db.json")
     return (!useBlobFallback && ts && ts.writable) || new streamSaver.WritableStream({
       write (chunk) {
         if (!(chunk instanceof Uint8Array)) {
-          throw new TypeError('Can only wirte Uint8Arrays')
+          throw new TypeError('Can only write Uint8Arrays')
         }
         if (useBlobFallback) {
           // Safari... The new IE6
           // https://github.com/jimmywarting/StreamSaver.js/issues/69
           //
-          // even doe it has everything it fails to download anything
+          // even though it has everything it fails to download anything
           // that comes from the service worker..!
           chunks.push(chunk)
           return
@@ -3704,7 +3736,7 @@ module.exports = __webpack_require__("./node_modules/mime-db/db.json")
 
         // TODO: Kind of important that service worker respond back when
         // it has been written. Otherwise we can't handle backpressure
-        // EDIT: Transfarable streams solvs this...
+        // EDIT: Transferable streams solves this...
         channel.port1.postMessage(chunk)
         bytesWritten += chunk.length
 
@@ -6714,7 +6746,7 @@ class Options extends Common {
 var save_misc = __webpack_require__("./src/save/misc.ts");
 ;// CONCATENATED MODULE: ./src/save/chapter.html.j2
 // Module
-var code = "<!DOCTYPE html> <html> <head> <meta charset=\"UTF-8\"/> <meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"/> <meta name=\"referrer\" content=\"same-origin\"/> <meta name=\"generator\" content=\"https://github.com/yingziwu/novel-downloader\"/> <meta name=\"source\" content=\"{{ chapterUrl }}\"/> <link href=\"style.css\" rel=\"stylesheet\"/> <title>{{ chapterName }}</title> </head> <body> <div class=\"main\"> <h2>{{ chapterName }}</h2> {{ outerHTML }} </div> </body> </html> ";
+var code = "<!DOCTYPE html> <html> <head> <meta charset=\"UTF-8\"/> <meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"/> <meta name=\"referrer\" content=\"same-origin\"/> <meta name=\"generator\" content=\"https://github.com/yingziwu/novel-downloader\"/> <meta name=\"source\" content=\"{{ chapterUrl }}\"/> <link href=\"style.css\" rel=\"stylesheet\"/> <title>{{ chapterName }}</title> </head> <body> <div class=\"main\"> <h2>{{ chapterName }}</h2> {{ outerHTML }} </div> <script src=\"web.js\"></script> </body> </html> ";
 // Exports
 /* harmony default export */ const chapter_html = (code);
 ;// CONCATENATED MODULE: ./src/save/index.html.j2
@@ -7044,7 +7076,7 @@ class EPUB extends Options {
             self.chapters.sort(self.chapterSort);
             const sectionsListObj = (0,save_misc/* getSectionsObj */.f)(self.chapters, self.chapterSort);
             let i = 0;
-            let sectionNumberG;
+            let sectionNumberG = null;
             let sectionNavPoint;
             let sectionTOCDiv;
             for (const sectionObj of sectionsListObj) {
@@ -7167,6 +7199,15 @@ class EPUB extends Options {
             await self.epubZip.file("OEBPS/web.css", new Blob([web/* default */.Z], { type: "text/css;charset=utf-8" }));
             modifyTocStyleText();
             await self.epubZip.file("OEBPS/toc.css", new Blob([self.tocStyleText], { type: "text/css;charset=utf-8" }));
+            await self.epubZip.file("OEBPS/web.js", new Blob([
+                `if (typeof fetch === "function" && !navigator.userAgent.includes("calibre-viewer") && navigator.userAgent.startsWith("Mozilla/5.0")) {
+  const link = document.createElement("link");
+  link.type = "text/css";
+  link.rel = "stylesheet";
+  link.href = "web.css";
+  document.head.append(link);
+}`,
+            ], { type: "application/javascript" }));
             loglevel_default().debug("[save-zip]开始生成并保存 index.html");
             await saveIndex();
             loglevel_default().debug("[save-zip]开始保存 Meta Data Json");
