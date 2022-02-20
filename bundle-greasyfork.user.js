@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.8.3.604
+// @version        4.8.3.605
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/404-novel-project/novel-downloader
@@ -3823,8 +3823,9 @@ async function TM_4_14_bug_Detect() {
         const arrayBuffer = await blob.arrayBuffer();
         if (arrayBuffer === undefined) {
             alert(`检测到您当前使用的脚本管理器为 Tampermonkey 4.14。
-Tampermonkey 4.14 因存在 Bug 将导致本脚本无法正常运行，详情可参见：https://github.com/Tampermonkey/tampermonkey/issues/1418 。
-请您降级 Tampermonkey 版本，或使用 Violentmonkey 脚本管理器。`);
+Tampermonkey 4.14 因存在 Bug 将导致小说下载器脚本无法正常运行，详情可参见：https://github.com/Tampermonkey/tampermonkey/issues/1418 。
+如您想继续使用小说下载器脚本，请您降级 Tampermonkey 版本，或使用 Violentmonkey 脚本管理器。
+如果您不欲降级或更换脚本管理器，同时不想再看到本提示，您可以暂时禁用小说下载器脚本。`);
             throw new Error("Tampermonkey 4.14 Bug Detect");
         }
     }
