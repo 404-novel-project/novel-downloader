@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.8.3.603
+// @version        4.8.3.604
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/404-novel-project/novel-downloader
@@ -3782,9 +3782,9 @@ module.exports = __webpack_require__("./node_modules/mime-db/db.json")
 /* harmony export */   "Cm": () => (/* binding */ mitmPageAvailability),
 /* harmony export */   "Ty": () => (/* binding */ environments)
 /* harmony export */ });
-/* harmony import */ var _lib_GM__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/GM.ts");
-/* harmony import */ var _lib_localStorageExpired__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/localStorageExpired.ts");
-/* harmony import */ var _setting__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/setting.ts");
+/* harmony import */ var _lib_GM__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/GM.ts");
+/* harmony import */ var _lib_localStorageExpired__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/localStorageExpired.ts");
+/* harmony import */ var _setting__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/setting.ts");
 
 
 
@@ -3816,30 +3816,46 @@ function mitmPageAvailability(url) {
             .catch((error) => resolve(false));
     });
 }
-const environments = async () => ({
-    当前时间: new Date().toISOString(),
-    当前页URL: document.location.href,
-    workerId: window.workerId,
-    当前页Referrer: document.referrer,
-    浏览器UA: navigator.userAgent,
-    浏览器语言: navigator.languages,
-    设备运行平台: navigator.platform,
-    设备内存: navigator.deviceMemory ?? "",
-    CPU核心数: navigator.hardwareConcurrency,
-    eval: checkObjct("eval"),
-    fetch: checkObjct("fetch"),
-    XMLHttpRequest: checkObjct("XMLHttpRequest"),
-    streamSupport: streamSupport(),
-    window: Object.keys(window).length,
-    localStorage: (0,_lib_localStorageExpired__WEBPACK_IMPORTED_MODULE_0__/* .storageAvailable */ .o)("localStorage"),
-    sessionStorage: (0,_lib_localStorageExpired__WEBPACK_IMPORTED_MODULE_0__/* .storageAvailable */ .o)("sessionStorage"),
-    Cookie: navigator.cookieEnabled,
-    doNotTrack: navigator.doNotTrack ?? 0,
-    enableDebug: _setting__WEBPACK_IMPORTED_MODULE_1__/* .enableDebug.value */ .Cy.value,
-    ScriptHandler: _lib_GM__WEBPACK_IMPORTED_MODULE_2__/* ._GM_info.scriptHandler */ ._p.scriptHandler,
-    "ScriptHandler version": _lib_GM__WEBPACK_IMPORTED_MODULE_2__/* ._GM_info.version */ ._p.version,
-    "Novel-downloader version": _lib_GM__WEBPACK_IMPORTED_MODULE_2__/* ._GM_info.script.version */ ._p.script.version,
-});
+async function TM_4_14_bug_Detect() {
+    if (_lib_GM__WEBPACK_IMPORTED_MODULE_0__/* ._GM_info.scriptHandler */ ._p.scriptHandler === "Tampermonkey" &&
+        _lib_GM__WEBPACK_IMPORTED_MODULE_0__/* ._GM_info.version */ ._p.version === "4.14") {
+        const blob = new Blob(["test"]);
+        const arrayBuffer = await blob.arrayBuffer();
+        if (arrayBuffer === undefined) {
+            alert(`检测到您当前使用的脚本管理器为 Tampermonkey 4.14。
+Tampermonkey 4.14 因存在 Bug 将导致本脚本无法正常运行，详情可参见：https://github.com/Tampermonkey/tampermonkey/issues/1418 。
+请您降级 Tampermonkey 版本，或使用 Violentmonkey 脚本管理器。`);
+            throw new Error("Tampermonkey 4.14 Bug Detect");
+        }
+    }
+}
+const environments = async () => {
+    await TM_4_14_bug_Detect();
+    return {
+        当前时间: new Date().toISOString(),
+        当前页URL: document.location.href,
+        workerId: window.workerId,
+        当前页Referrer: document.referrer,
+        浏览器UA: navigator.userAgent,
+        浏览器语言: navigator.languages,
+        设备运行平台: navigator.platform,
+        设备内存: navigator.deviceMemory ?? "",
+        CPU核心数: navigator.hardwareConcurrency,
+        eval: checkObjct("eval"),
+        fetch: checkObjct("fetch"),
+        XMLHttpRequest: checkObjct("XMLHttpRequest"),
+        streamSupport: streamSupport(),
+        window: Object.keys(window).length,
+        localStorage: (0,_lib_localStorageExpired__WEBPACK_IMPORTED_MODULE_1__/* .storageAvailable */ .o)("localStorage"),
+        sessionStorage: (0,_lib_localStorageExpired__WEBPACK_IMPORTED_MODULE_1__/* .storageAvailable */ .o)("sessionStorage"),
+        Cookie: navigator.cookieEnabled,
+        doNotTrack: navigator.doNotTrack ?? 0,
+        enableDebug: _setting__WEBPACK_IMPORTED_MODULE_2__/* .enableDebug.value */ .Cy.value,
+        ScriptHandler: _lib_GM__WEBPACK_IMPORTED_MODULE_0__/* ._GM_info.scriptHandler */ ._p.scriptHandler,
+        "ScriptHandler version": _lib_GM__WEBPACK_IMPORTED_MODULE_0__/* ._GM_info.version */ ._p.version,
+        "Novel-downloader version": _lib_GM__WEBPACK_IMPORTED_MODULE_0__/* ._GM_info.script.version */ ._p.script.version,
+    };
+};
 
 
 /***/ }),
