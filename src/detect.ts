@@ -40,29 +40,50 @@ export function mitmPageAvailability(url: string): Promise<boolean> {
   });
 }
 
-export const environments = async () => ({
-  当前时间: new Date().toISOString(),
-  当前页URL: document.location.href,
-  workerId: (window as GmWindow).workerId,
-  当前页Referrer: document.referrer,
-  浏览器UA: navigator.userAgent,
-  浏览器语言: navigator.languages,
-  设备运行平台: navigator.platform,
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-expect-error
-  设备内存: navigator.deviceMemory ?? "",
-  CPU核心数: navigator.hardwareConcurrency,
-  eval: checkObjct("eval"),
-  fetch: checkObjct("fetch"),
-  XMLHttpRequest: checkObjct("XMLHttpRequest"),
-  streamSupport: streamSupport(),
-  window: Object.keys(window).length,
-  localStorage: storageAvailable("localStorage"),
-  sessionStorage: storageAvailable("sessionStorage"),
-  Cookie: navigator.cookieEnabled,
-  doNotTrack: navigator.doNotTrack ?? 0,
-  enableDebug: enableDebug.value,
-  ScriptHandler: _GM_info.scriptHandler,
-  "ScriptHandler version": _GM_info.version,
-  "Novel-downloader version": _GM_info.script.version,
-});
+async function TM_4_14_bug_Detect() {
+  if (
+    _GM_info.scriptHandler === "Tampermonkey" &&
+    _GM_info.version === "4.14"
+  ) {
+    const blob = new Blob(["test"]);
+    const arrayBuffer = await blob.arrayBuffer();
+    if (arrayBuffer === undefined) {
+      alert(
+        `检测到您当前使用的脚本管理器为 Tampermonkey 4.14。
+Tampermonkey 4.14 因存在 Bug 将导致本脚本无法正常运行，详情可参见：https://github.com/Tampermonkey/tampermonkey/issues/1418 。
+请您降级 Tampermonkey 版本，或使用 Violentmonkey 脚本管理器。`
+      );
+      throw new Error("Tampermonkey 4.14 Bug Detect");
+    }
+  }
+}
+
+export const environments = async () => {
+  await TM_4_14_bug_Detect();
+  return {
+    当前时间: new Date().toISOString(),
+    当前页URL: document.location.href,
+    workerId: (window as GmWindow).workerId,
+    当前页Referrer: document.referrer,
+    浏览器UA: navigator.userAgent,
+    浏览器语言: navigator.languages,
+    设备运行平台: navigator.platform,
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
+    设备内存: navigator.deviceMemory ?? "",
+    CPU核心数: navigator.hardwareConcurrency,
+    eval: checkObjct("eval"),
+    fetch: checkObjct("fetch"),
+    XMLHttpRequest: checkObjct("XMLHttpRequest"),
+    streamSupport: streamSupport(),
+    window: Object.keys(window).length,
+    localStorage: storageAvailable("localStorage"),
+    sessionStorage: storageAvailable("sessionStorage"),
+    Cookie: navigator.cookieEnabled,
+    doNotTrack: navigator.doNotTrack ?? 0,
+    enableDebug: enableDebug.value,
+    ScriptHandler: _GM_info.scriptHandler,
+    "ScriptHandler version": _GM_info.version,
+    "Novel-downloader version": _GM_info.script.version,
+  };
+};
