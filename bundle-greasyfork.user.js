@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.8.3.611
+// @version        4.8.3.613
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/404-novel-project/novel-downloader
@@ -3818,7 +3818,7 @@ function mitmPageAvailability(url) {
 }
 async function TM_4_14_bug_Detect() {
     if (_lib_GM__WEBPACK_IMPORTED_MODULE_0__/* ._GM_info.scriptHandler */ ._p.scriptHandler === "Tampermonkey" &&
-        _lib_GM__WEBPACK_IMPORTED_MODULE_0__/* ._GM_info.version */ ._p.version === "4.14") {
+        _lib_GM__WEBPACK_IMPORTED_MODULE_0__/* ._GM_info.version.startsWith */ ._p.version.startsWith("4.14")) {
         const blob = new Blob(["test"]);
         const arrayBuffer = await blob.arrayBuffer();
         if (arrayBuffer === undefined) {
