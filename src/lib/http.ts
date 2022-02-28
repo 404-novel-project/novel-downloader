@@ -282,16 +282,21 @@ export async function ggetHtmlDomWithRetry(
   return doc;
 }
 
-export async function getFrameContent(url: string): Promise<Document | null> {
+export async function getFrameContent(
+  url: string,
+  timeout = 0
+): Promise<Document | null> {
   const frame = document.createElement("iframe");
   frame.src = url;
   frame.width = "1";
   frame.height = "1";
   const promise = new Promise((resolve, reject) => {
-    frame.addEventListener("load", function (event) {
-      const doc = this.contentWindow?.document ?? null;
-      this.remove();
-      resolve(doc);
+    frame.addEventListener("load", function () {
+      setTimeout(() => {
+        const doc = this.contentWindow?.document ?? null;
+        this.remove();
+        resolve(doc);
+      }, timeout);
     });
   }) as Promise<Document | null>;
   log.debug("[debug]getFrameContent:" + url);

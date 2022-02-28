@@ -210,7 +210,7 @@ export class Qidian extends BaseRuleClass {
           !doc.querySelector(".read-content") ||
           (doc.querySelector(".read-content")?.childElementCount ?? 0) < 10
         ) {
-          doc = await getFrameContent(chapterUrl);
+          doc = await getFrameContent(chapterUrl, 1000);
           if (doc) {
             doc = new DOMParser().parseFromString(
               doc.documentElement.outerHTML,
@@ -237,14 +237,6 @@ export class Qidian extends BaseRuleClass {
 
         const contentMain = doc.querySelector(".read-content") as HTMLElement;
         rm("span.review-count", true, contentMain);
-        Array.from(contentMain.querySelectorAll("span.content-wrap")).forEach(
-          (span) => {
-            const parentEl = span.parentElement;
-            if (parentEl) {
-              parentEl.innerHTML = span.innerHTML;
-            }
-          }
-        );
         const authorSayWrap = doc.querySelector(
           ".author-say-wrap"
         ) as HTMLElement;
