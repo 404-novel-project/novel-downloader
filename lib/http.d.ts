@@ -23,4 +23,4 @@ export declare function getHtmlDomWithRetry(input: RequestInfo, charset?: string
 export declare function ggetText(url: string, charset?: string, init?: GfetchRequestInit): Promise<string | void>;
 export declare function ggetHtmlDOM(url: string, charset?: string, init?: GfetchRequestInit): Promise<Document>;
 export declare function ggetHtmlDomWithRetry(url: string, charset?: string, init?: GfetchRequestInit): Promise<Document | null>;
-export declare function getFrameContent(url: string): Promise<Document | null>;
+export declare function getFrameContent(url: string, timeout?: number): Promise<Document | null>;

@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.8.3.613
+// @version        4.8.3.614
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/404-novel-project/novel-downloader
@@ -5484,16 +5484,18 @@ async function ggetHtmlDomWithRetry(url, charset, init) {
     }
     return doc;
 }
-async function getFrameContent(url) {
+async function getFrameContent(url, timeout = 0) {
     const frame = document.createElement("iframe");
     frame.src = url;
     frame.width = "1";
     frame.height = "1";
     const promise = new Promise((resolve, reject) => {
-        frame.addEventListener("load", function (event) {
-            const doc = this.contentWindow?.document ?? null;
-            this.remove();
-            resolve(doc);
+        frame.addEventListener("load", function () {
+            setTimeout(() => {
+                const doc = this.contentWindow?.document ?? null;
+                this.remove();
+                resolve(doc);
+            }, timeout);
         });
     });
     _log__WEBPACK_IMPORTED_MODULE_0___default().debug("[debug]getFrameContent:" + url);
@@ -13543,7 +13545,7 @@ class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
                 doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_8__/* .ggetHtmlDOM */ .Fz)(chapterUrl, charset);
                 if (!doc.querySelector(".read-content") ||
                     (doc.querySelector(".read-content")?.childElementCount ?? 0) < 10) {
-                    doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_8__/* .getFrameContent */ .jt)(chapterUrl);
+                    doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_8__/* .getFrameContent */ .jt)(chapterUrl, 1000);
                     if (doc) {
                         doc = new DOMParser().parseFromString(doc.documentElement.outerHTML, "text/html");
                     }
@@ -13561,12 +13563,6 @@ class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
                 let contentText = "";
                 const contentMain = doc.querySelector(".read-content");
                 (0,_lib_dom__WEBPACK_IMPORTED_MODULE_9__.rm)("span.review-count", true, contentMain);
-                Array.from(contentMain.querySelectorAll("span.content-wrap")).forEach((span) => {
-                    const parentEl = span.parentElement;
-                    if (parentEl) {
-                        parentEl.innerHTML = span.innerHTML;
-                    }
-                });
                 const authorSayWrap = doc.querySelector(".author-say-wrap");
                 if (contentMain) {
                     const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .zM)(contentMain, "TM");
