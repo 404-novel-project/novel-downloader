@@ -107,7 +107,7 @@ export class Ciyuanji extends BaseRuleClass {
       copyright: number;
     }
     const bookChapterObject: BookChapterObj = (unsafeWindow as any).__NUXT__
-      .data[1].bookChapter;
+      .data[0].bookChapter;
     const chapterList = bookChapterObject.chapterList;
 
     const chapters: Chapter[] = [];

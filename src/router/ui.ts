@@ -60,11 +60,14 @@ export function getUI(): () => UIObject {
     }
     case "www.ciyuanji.com": {
       return () => {
-        if (document.location.pathname === "/bookDetails/info") {
+        if (document.location.pathname.startsWith("/bookDetails/info")) {
           return {
             type: "jump",
             jumpFunction: () =>
-              (document.location.pathname = "/bookDetails/catalog"),
+              (document.location.pathname = document.location.pathname.replace(
+                "/bookDetails/info",
+                "/bookDetails/catalog"
+              )),
           };
         } else {
           return defaultObject;
