@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.8.3.619
+// @version        4.8.3.620
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/404-novel-project/novel-downloader
@@ -10772,7 +10772,7 @@ class Ciyuanji extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
         }
         additionalMetadate.tags = bookObject.tagList.map((tagobj) => tagobj.tagName);
         const bookChapterObject = unsafeWindow.__NUXT__
-            .data[1].bookChapter;
+            .data[0].bookChapter;
         const chapterList = bookChapterObject.chapterList;
         const chapters = [];
         let chapterNumber = 0;
@@ -19265,10 +19265,10 @@ function getUI() {
         }
         case "www.ciyuanji.com": {
             return () => {
-                if (document.location.pathname === "/bookDetails/info") {
+                if (document.location.pathname.startsWith("/bookDetails/info")) {
                     return {
                         type: "jump",
-                        jumpFunction: () => (document.location.pathname = "/bookDetails/catalog"),
+                        jumpFunction: () => (document.location.pathname = document.location.pathname.replace("/bookDetails/info", "/bookDetails/catalog")),
                     };
                 }
                 else {
