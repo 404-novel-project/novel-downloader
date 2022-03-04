@@ -1,0 +1,79 @@
+name: Bug报告
+description: 填写一个BUG报告
+title: "[Bug]: "
+body:
+  - type: checkboxes
+    attributes:
+      label: 必要条件
+      description: |
+        为了减少无效报告，请确认每一个选项。
+      options:
+        - label: 我已经搜索 issue 区，并确定没有相同问题存在。
+          required: true
+        - label: 我已经尝试将脚本升级至最新版本，但问题仍存在。
+          required: true
+        - label: 在尝试下载付费章节前，我已经购买了相应付费章节。
+          required: true
+          
+   - type: checkboxes
+    attributes:
+      label: 当我尝试复现issue时……
+      options:
+        - label: 脚本管理器（Tampermonkey/Violentmonkey）是唯一浏览器插件
+        - label: 小说下载器脚本是唯一用户脚本
+
+  - type: textarea
+    attributes:
+      label: 问题描述
+      description: 请具体描述你所遇到的问题。
+    validations:
+      required: true
+      
+  - type: input
+    attributes:
+      label: 问题发生的网址：
+      description: 一个可以复现issue的网址。
+    validations:
+      required: true
+      
+  - type: textarea
+    attributes:
+      label: 复现步骤
+      placeholder: |
+        1. [第一步]
+        2. [第二步]
+        3. [and so on...]
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: 期待的行为
+      description: 你期待发生什么
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: 实际的行为
+      description: 实际发生了什么，请在此附上调试日志。
+    validations:
+      required: true  
+      
+  - type: input
+    attributes:
+      label: 小说下载器脚本版本
+    validations:
+      required: true
+
+  - type: input
+    attributes:
+      label: 脚本管理器（Tampermonkey/Violentmonkey）版本
+    validations:
+      required: true
+
+  - type: input
+    attributes:
+      label: 浏览器版本
+    validations:
+      required: true
