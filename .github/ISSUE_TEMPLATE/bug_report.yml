@@ -3,6 +3,7 @@ description: 填写一个BUG报告
 title: "[Bug]: "
 body:
   - type: checkboxes
+    id: Prerequisites
     attributes:
       label: 必要条件
       description: |
@@ -16,6 +17,7 @@ body:
           required: true
           
   - type: checkboxes
+    id: reproduce_checkboxes
     attributes:
       label: 当我尝试复现issue时……
       options:
@@ -23,6 +25,7 @@ body:
         - label: 小说下载器脚本是唯一用户脚本
 
   - type: textarea
+    id: Description
     attributes:
       label: 问题描述
       description: 请具体描述你所遇到的问题。
@@ -30,6 +33,7 @@ body:
       required: true
       
   - type: input
+    id: issue_url
     attributes:
       label: 问题发生的网址：
       description: 一个可以复现issue的网址。
@@ -37,6 +41,7 @@ body:
       required: true
       
   - type: textarea
+    id: Steps_to_Reproduce
     attributes:
       label: 复现步骤
       placeholder: |
@@ -47,6 +52,7 @@ body:
       required: true
 
   - type: textarea
+    id: Expected_behavior
     attributes:
       label: 期待的行为
       description: 你期待发生什么
@@ -54,6 +60,7 @@ body:
       required: true
 
   - type: textarea
+    id: Actual_behavior
     attributes:
       label: 实际的行为
       description: 实际发生了什么，请在此附上调试日志。
@@ -61,19 +68,22 @@ body:
       required: true  
       
   - type: input
+    id: script_version
     attributes:
       label: 小说下载器脚本版本
     validations:
       required: true
 
   - type: input
+    id: script_handler_version
     attributes:
       label: 脚本管理器（Tampermonkey/Violentmonkey）版本
     validations:
       required: true
 
   - type: input
+    id: browser_name_and_version
     attributes:
-      label: 浏览器版本
+      label: 浏览器名称及版本
     validations:
       required: true
