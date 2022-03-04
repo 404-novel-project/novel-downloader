@@ -15,7 +15,7 @@ body:
         - label: 在尝试下载付费章节前，我已经购买了相应付费章节。
           required: true
           
-   - type: checkboxes
+  - type: checkboxes
     attributes:
       label: 当我尝试复现issue时……
       options:
