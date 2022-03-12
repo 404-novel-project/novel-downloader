@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.8.3.629
+// @version        4.8.3.634
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/404-novel-project/novel-downloader
@@ -5670,8 +5670,7 @@ async function saveToArchiveOrg(url) {
         },
         method: "POST",
     });
-    const data = await req.json();
-    return data;
+    return await req.json();
 }
 function mean(list) {
     if (list.length === 0) {
