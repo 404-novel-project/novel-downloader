@@ -64,8 +64,7 @@ export async function saveToArchiveOrg(url: string) {
     },
     method: "POST",
   });
-  const data = await req.json();
-  return data;
+  return await req.json();
 }
 
 export function mean(list: number[]) {
@@ -106,9 +105,7 @@ function createUUID() {
 }
 
 export function randomUUID(): string {
-  // @ts-expect-error: Property 'randomUUID' does not exist on type 'Crypto'
   if (typeof crypto.randomUUID === "function") {
-    // @ts-expect-error: Property 'randomUUID' does not exist on type 'Crypto'
     return crypto.randomUUID();
   } else {
     return createUUID();
