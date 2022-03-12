@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.8.3.624
+// @version        4.8.3.625
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/404-novel-project/novel-downloader
@@ -3779,9 +3779,9 @@ module.exports = __webpack_require__("./node_modules/mime-db/db.json")
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "yt": () => (/* binding */ streamSupport),
 /* harmony export */   "Cm": () => (/* binding */ mitmPageAvailability),
-/* harmony export */   "Ty": () => (/* binding */ environments)
+/* harmony export */   "Ty": () => (/* binding */ environments),
+/* harmony export */   "yt": () => (/* binding */ streamSupport)
 /* harmony export */ });
 /* harmony import */ var _lib_GM__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/GM.ts");
 /* harmony import */ var _lib_localStorageExpired__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/localStorageExpired.ts");
@@ -3867,10 +3867,10 @@ const environments = async () => {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "_p": () => (/* binding */ _GM_info),
-/* harmony export */   "UX": () => (/* binding */ _GM_xmlhttpRequest),
-/* harmony export */   "_u": () => (/* binding */ _GM_setValue),
 /* harmony export */   "QG": () => (/* binding */ _GM_getValue),
+/* harmony export */   "UX": () => (/* binding */ _GM_xmlhttpRequest),
+/* harmony export */   "_p": () => (/* binding */ _GM_info),
+/* harmony export */   "_u": () => (/* binding */ _GM_setValue),
 /* harmony export */   "jF": () => (/* binding */ _GM_deleteValue)
 /* harmony export */ });
 function get_GM_info() {
@@ -3930,11 +3930,11 @@ async function _GM_deleteValue(name) {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "gc": () => (/* binding */ getAttachmentClassCache),
-/* harmony export */   "dK": () => (/* binding */ putAttachmentClassCache),
-/* harmony export */   "pN": () => (/* binding */ clearAttachmentClassCache),
 /* harmony export */   "CE": () => (/* binding */ getImageAttachment),
 /* harmony export */   "VO": () => (/* binding */ getRandomName),
+/* harmony export */   "dK": () => (/* binding */ putAttachmentClassCache),
+/* harmony export */   "gc": () => (/* binding */ getAttachmentClassCache),
+/* harmony export */   "pN": () => (/* binding */ clearAttachmentClassCache),
 /* harmony export */   "r6": () => (/* binding */ getExt)
 /* harmony export */ });
 /* harmony import */ var _main_Attachment__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/main/Attachment.ts");
@@ -4018,12 +4018,12 @@ function getLastPart(u) {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "zM": () => (/* binding */ cleanDOM),
-/* harmony export */   "iA": () => (/* binding */ htmlTrim),
+/* harmony export */   "FZ": () => (/* binding */ convertFixWidth),
+/* harmony export */   "Kg": () => (/* binding */ isFixWidth),
 /* harmony export */   "Q3": () => (/* binding */ convertBr),
 /* harmony export */   "d1": () => (/* binding */ convertFixWidthText),
-/* harmony export */   "FZ": () => (/* binding */ convertFixWidth),
-/* harmony export */   "Kg": () => (/* binding */ isFixWidth)
+/* harmony export */   "iA": () => (/* binding */ htmlTrim),
+/* harmony export */   "zM": () => (/* binding */ cleanDOM)
 /* harmony export */ });
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_1__);
@@ -4997,22 +4997,22 @@ function isFixWidth(node, width = 35) {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "rm": () => (/* binding */ rm),
-/* harmony export */   "vS": () => (/* binding */ rm2),
-/* harmony export */   "up": () => (/* binding */ rms),
-/* harmony export */   "vR": () => (/* binding */ childNodesCopy),
-/* harmony export */   "wd": () => (/* binding */ getMaxDepth),
-/* harmony export */   "MK": () => (/* binding */ getNodeTextLength),
-/* harmony export */   "J0": () => (/* binding */ sandboxed),
-/* harmony export */   "ut": () => (/* binding */ createEl),
-/* harmony export */   "wj": () => (/* binding */ createStyle),
-/* harmony export */   "d9": () => (/* binding */ getNextSibling),
-/* harmony export */   "U": () => (/* binding */ getPreviousSibling),
 /* harmony export */   "$N": () => (/* binding */ getPreviousBrCount),
+/* harmony export */   "DF": () => (/* binding */ insertBrBeforeText),
 /* harmony export */   "Fe": () => (/* binding */ removePreviousBr),
-/* harmony export */   "sp": () => (/* binding */ fullWidthLength),
+/* harmony export */   "J0": () => (/* binding */ sandboxed),
+/* harmony export */   "MK": () => (/* binding */ getNodeTextLength),
+/* harmony export */   "U": () => (/* binding */ getPreviousSibling),
+/* harmony export */   "d9": () => (/* binding */ getNextSibling),
 /* harmony export */   "fI": () => (/* binding */ convertHTMLtoXHTML),
-/* harmony export */   "DF": () => (/* binding */ insertBrBeforeText)
+/* harmony export */   "rm": () => (/* binding */ rm),
+/* harmony export */   "sp": () => (/* binding */ fullWidthLength),
+/* harmony export */   "up": () => (/* binding */ rms),
+/* harmony export */   "ut": () => (/* binding */ createEl),
+/* harmony export */   "vR": () => (/* binding */ childNodesCopy),
+/* harmony export */   "vS": () => (/* binding */ rm2),
+/* harmony export */   "wd": () => (/* binding */ getMaxDepth),
+/* harmony export */   "wj": () => (/* binding */ createStyle)
 /* harmony export */ });
 /* unused harmony export getCookie */
 function rm(selector, all = false, dom) {
@@ -5277,14 +5277,14 @@ async function calculateSha1(blob) {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "q4": () => (/* binding */ fetchWithRetry),
+/* harmony export */   "Fz": () => (/* binding */ ggetHtmlDOM),
 /* harmony export */   "GF": () => (/* binding */ gfetch),
 /* harmony export */   "Q": () => (/* binding */ getText),
-/* harmony export */   "dL": () => (/* binding */ getHtmlDOM),
-/* harmony export */   "rf": () => (/* binding */ getHtmlDomWithRetry),
 /* harmony export */   "_7": () => (/* binding */ ggetText),
-/* harmony export */   "Fz": () => (/* binding */ ggetHtmlDOM),
-/* harmony export */   "jt": () => (/* binding */ getFrameContent)
+/* harmony export */   "dL": () => (/* binding */ getHtmlDOM),
+/* harmony export */   "jt": () => (/* binding */ getFrameContent),
+/* harmony export */   "q4": () => (/* binding */ fetchWithRetry),
+/* harmony export */   "rf": () => (/* binding */ getHtmlDomWithRetry)
 /* harmony export */ });
 /* unused harmony export ggetHtmlDomWithRetry */
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
@@ -5512,8 +5512,8 @@ async function getFrameContent(url, timeout = 0) {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "o": () => (/* binding */ storageAvailable),
-/* harmony export */   "Z": () => (/* binding */ LocalStorageExpired)
+/* harmony export */   "Z": () => (/* binding */ LocalStorageExpired),
+/* harmony export */   "o": () => (/* binding */ storageAvailable)
 /* harmony export */ });
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_0__);
@@ -5611,10 +5611,10 @@ class LocalStorageExpired {
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "C1": () => (/* binding */ concurrencyRun),
-/* harmony export */   "_v": () => (/* binding */ sleep),
-/* harmony export */   "X8": () => (/* binding */ deepcopy),
-/* harmony export */   "K$": () => (/* binding */ saveToArchiveOrg),
 /* harmony export */   "HP": () => (/* binding */ randomUUID),
+/* harmony export */   "K$": () => (/* binding */ saveToArchiveOrg),
+/* harmony export */   "X8": () => (/* binding */ deepcopy),
+/* harmony export */   "_v": () => (/* binding */ sleep),
 /* harmony export */   "z9": () => (/* binding */ extensionToMimetype)
 /* harmony export */ });
 /* unused harmony exports regexpEscape, mean, sd */
@@ -5727,9 +5727,9 @@ function extensionToMimetype(ext) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "parse": () => (/* binding */ parse),
 /* harmony export */   "fetchAndParse": () => (/* binding */ fetchAndParse),
-/* harmony export */   "gfetchAndParse": () => (/* binding */ gfetchAndParse)
+/* harmony export */   "gfetchAndParse": () => (/* binding */ gfetchAndParse),
+/* harmony export */   "parse": () => (/* binding */ parse)
 /* harmony export */ });
 /* harmony import */ var _mozilla_readability__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/@mozilla/readability/index.js");
 /* harmony import */ var _mozilla_readability__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_mozilla_readability__WEBPACK_IMPORTED_MODULE_0__);
@@ -5770,10 +5770,10 @@ async function gfetchAndParse(url, charset, init, patch, options) {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "SN": () => (/* binding */ introDomHandle),
-/* harmony export */   "I2": () => (/* binding */ nextPageParse),
-/* harmony export */   "$d": () => (/* binding */ getSectionName),
 /* harmony export */   "$4": () => (/* binding */ centerDetct),
+/* harmony export */   "$d": () => (/* binding */ getSectionName),
+/* harmony export */   "I2": () => (/* binding */ nextPageParse),
+/* harmony export */   "SN": () => (/* binding */ introDomHandle),
 /* harmony export */   "uh": () => (/* binding */ deDuplicate)
 /* harmony export */ });
 /* unused harmony export reIndex */
@@ -6490,9 +6490,9 @@ isNull:${!this.contentHTML} 解析成功。`);
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "qb": () => (/* binding */ Status),
+/* harmony export */   "K2": () => (/* binding */ ExpectError),
 /* harmony export */   "n6": () => (/* binding */ ReferrerMode),
-/* harmony export */   "K2": () => (/* binding */ ExpectError)
+/* harmony export */   "qb": () => (/* binding */ Status)
 /* harmony export */ });
 var Status;
 (function (Status) {
@@ -7913,20 +7913,20 @@ function mkBiqugeClassNextPage(introDomPatch, contentPatch, getNextPage, continu
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "b5200": () => (/* binding */ b5200),
+/* harmony export */   "biquwx": () => (/* binding */ biquwx),
+/* harmony export */   "bxwx333": () => (/* binding */ bxwx333),
+/* harmony export */   "c25zw": () => (/* binding */ c25zw),
 /* harmony export */   "common": () => (/* binding */ common),
+/* harmony export */   "dijiubook": () => (/* binding */ dijiubook),
 /* harmony export */   "gebiqu": () => (/* binding */ gebiqu),
 /* harmony export */   "luoqiuzw": () => (/* binding */ luoqiuzw),
 /* harmony export */   "lwxs9": () => (/* binding */ lwxs9),
-/* harmony export */   "biquwx": () => (/* binding */ biquwx),
-/* harmony export */   "tycqxs": () => (/* binding */ tycqxs),
-/* harmony export */   "dijiubook": () => (/* binding */ dijiubook),
-/* harmony export */   "c25zw": () => (/* binding */ c25zw),
-/* harmony export */   "xbiquge": () => (/* binding */ xbiquge),
-/* harmony export */   "yruan": () => (/* binding */ yruan),
 /* harmony export */   "ranwen": () => (/* binding */ ranwen),
-/* harmony export */   "b5200": () => (/* binding */ b5200),
-/* harmony export */   "bxwx333": () => (/* binding */ bxwx333),
-/* harmony export */   "xbiqugeLa": () => (/* binding */ xbiqugeLa)
+/* harmony export */   "tycqxs": () => (/* binding */ tycqxs),
+/* harmony export */   "xbiquge": () => (/* binding */ xbiquge),
+/* harmony export */   "xbiqugeLa": () => (/* binding */ xbiqugeLa),
+/* harmony export */   "yruan": () => (/* binding */ yruan)
 /* harmony export */ });
 /* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/misc.ts");
 /* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
@@ -8034,9 +8034,9 @@ const xbiqugeLa = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeCla
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "lusetxt": () => (/* binding */ lusetxt),
 /* harmony export */   "shuquge": () => (/* binding */ shuquge),
 /* harmony export */   "xyqxs": () => (/* binding */ xyqxs),
-/* harmony export */   "lusetxt": () => (/* binding */ lusetxt),
 /* harmony export */   "yqxs": () => (/* binding */ yqxs)
 /* harmony export */ });
 /* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/cleanDOM.ts");
@@ -9256,8 +9256,8 @@ const tianyabooks = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleCla
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "trxs": () => (/* binding */ trxs),
-/* harmony export */   "tongrenquan": () => (/* binding */ tongrenquan)
+/* harmony export */   "tongrenquan": () => (/* binding */ tongrenquan),
+/* harmony export */   "trxs": () => (/* binding */ trxs)
 /* harmony export */ });
 /* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
 
@@ -18278,18 +18278,18 @@ function getSectionsObj(chapters, chapterSort = (a, b) => a.chapterNumber - b.ch
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "o5": () => (/* binding */ retryLimit),
-/* harmony export */   "Cy": () => (/* binding */ enableDebug),
-/* harmony export */   "Vo": () => (/* binding */ enableCustomFinishCallback),
-/* harmony export */   "Td": () => (/* binding */ enableCustomChapterFilter),
-/* harmony export */   "EI": () => (/* binding */ enableCustomSaveOptions),
-/* harmony export */   "Z3": () => (/* binding */ enableJjwxcRemoteFont),
 /* harmony export */   "CA": () => (/* binding */ enableSaveToArchiveOrg),
+/* harmony export */   "Cy": () => (/* binding */ enableDebug),
+/* harmony export */   "EI": () => (/* binding */ enableCustomSaveOptions),
+/* harmony export */   "Qd": () => (/* binding */ getCustomEnableSaveToArchiveOrg),
+/* harmony export */   "Td": () => (/* binding */ enableCustomChapterFilter),
+/* harmony export */   "Vo": () => (/* binding */ enableCustomFinishCallback),
+/* harmony export */   "Z3": () => (/* binding */ enableJjwxcRemoteFont),
 /* harmony export */   "cl": () => (/* binding */ iconStart0),
-/* harmony export */   "wE": () => (/* binding */ iconStart1),
 /* harmony export */   "d7": () => (/* binding */ iconSetting),
-/* harmony export */   "y6": () => (/* binding */ iconJump),
-/* harmony export */   "Qd": () => (/* binding */ getCustomEnableSaveToArchiveOrg)
+/* harmony export */   "o5": () => (/* binding */ retryLimit),
+/* harmony export */   "wE": () => (/* binding */ iconStart1),
+/* harmony export */   "y6": () => (/* binding */ iconJump)
 /* harmony export */ });
 /* harmony import */ var _lib_GM__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/GM.ts");
 
