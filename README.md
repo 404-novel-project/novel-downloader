@@ -441,9 +441,14 @@ window.customFinishCallback = customFinishCallback;
 
 1. `git clone https://github.com/yingziwu/novel-downloader.git` 将项目克隆至本地（访问github可能需要使用代理）。
 1. `yarn install` 安装依赖。
-1. 继承 `BaseRuleClass` 类，实现 `bookParse`、`chapterParse` 抽象方法，在 `router/download.ts` 文件中添加相应选择规则，在 `header.json` 文件 `match` 字段添加相应的匹配规则。
+1. 继承 `BaseRuleClass` 类，实现 `bookParse`、`chapterParse` 抽象方法，在 `router/download.ts` 文件中添加相应选择规则，在 `header.json` 文件 `match`
+   字段添加相应的匹配规则。
 1. `yarn run build` 编译生成最终脚本文件 `dist/bundle.user.js`。
 
 ## License
 
 AGPL-3.0
+
+## 致谢
+
+感谢 [JetBrains](https://www.jetbrains.com/community/opensource/) 向本项目提供 WebStorm IDE。
