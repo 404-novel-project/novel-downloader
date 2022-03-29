@@ -36,7 +36,7 @@ export class Longmabook extends BaseRuleClass {
       ) as HTMLHeadElement
     ).innerText;
     const author = (
-      document.querySelector("#writerinfos > a") as HTMLAnchorElement
+      document.querySelector("#writerinfos a") as HTMLAnchorElement
     ).innerText;
 
     const _urlSearch = new URLSearchParams(document.location.search);
