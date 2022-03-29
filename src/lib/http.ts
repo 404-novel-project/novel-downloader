@@ -282,24 +282,66 @@ export async function ggetHtmlDomWithRetry(
   return doc;
 }
 
-export async function getFrameContent(
+export function getFrameContentEvent(
   url: string,
-  timeout = 0
+  timeout = 0,
+  eventType: "load" | "DOMContentLoaded" = "load"
 ): Promise<Document | null> {
   const frame = document.createElement("iframe");
   frame.src = url;
   frame.width = "1";
   frame.height = "1";
   const promise = new Promise((resolve, reject) => {
-    frame.addEventListener("load", function () {
+    frame.addEventListener(eventType, function (event) {
+      const frameSelf = event.target;
       setTimeout(() => {
-        const doc = this.contentWindow?.document ?? null;
-        this.remove();
+        if (!frameSelf) {
+          reject(new Error("EventTarget Not Found!"));
+        }
+        const doc =
+          (frameSelf as HTMLIFrameElement).contentWindow?.document ?? null;
+        (frameSelf as HTMLIFrameElement).remove();
         resolve(doc);
       }, timeout);
     });
   }) as Promise<Document | null>;
   log.debug("[debug]getFrameContent:" + url);
+  document.body.appendChild(frame);
+  return promise;
+}
+
+export async function getFrameContentCondition(
+  url: string,
+  stopCondition: (frame: HTMLIFrameElement) => boolean
+): Promise<Document | null> {
+  const frame = document.createElement("iframe");
+  frame.src = url;
+  frame.width = "1";
+  frame.height = "1";
+
+  log.debug("[debug]getFrameContent:" + url);
+  const promise = new Promise((resolve, reject) => {
+    if (!frame) {
+      reject(new Error("Frame Not Found!"));
+    }
+
+    let timerId = 0;
+    const loopFunc = () => {
+      if (stopCondition(frame)) {
+        const doc = frame.contentWindow?.document ?? null;
+        frame.remove();
+        window.clearInterval(timerId);
+        resolve(doc);
+      }
+    };
+    timerId = window.setInterval(loopFunc, 1000);
+
+    setTimeout(() => {
+      frame.remove();
+      window.clearInterval(timerId);
+      reject(new Error("Frame Timeout!"));
+    }, 30 * 1000);
+  }) as Promise<Document | null>;
   document.body.appendChild(frame);
   return promise;
 }

@@ -1,6 +1,6 @@
 import { getImageAttachment } from "../../../lib/attachments";
 import { cleanDOM, htmlTrim } from "../../../lib/cleanDOM";
-import { getFrameContent, ggetHtmlDOM } from "../../../lib/http";
+import { getFrameContentCondition, ggetHtmlDOM } from "../../../lib/http";
 import { sleep } from "../../../lib/misc";
 import { rm } from "../../../lib/dom";
 import { introDomHandle } from "../../../lib/rule";
@@ -210,7 +210,14 @@ export class Qidian extends BaseRuleClass {
           !doc.querySelector(".read-content") ||
           (doc.querySelector(".read-content")?.childElementCount ?? 0) < 10
         ) {
-          doc = await getFrameContent(chapterUrl, 1000);
+          doc = await getFrameContentCondition(chapterUrl, (frame) => {
+            const doc = frame.contentWindow?.document ?? null;
+            if (doc) {
+              return doc.querySelectorAll(".read-content > p").length !== 0;
+            } else {
+              return false;
+            }
+          });
           if (doc) {
             doc = new DOMParser().parseFromString(
               doc.documentElement.outerHTML,
