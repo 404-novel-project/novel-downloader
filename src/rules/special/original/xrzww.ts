@@ -5,6 +5,7 @@ import { BaseRuleClass, ChapterParseObject } from "../../../rules";
 import { Chapter } from "../../../main/Chapter";
 import { Status } from "../../../main/main";
 import { cleanDOM } from "../../../lib/cleanDOM";
+import { sleep } from "../../../lib/misc";
 
 export class Xrzww extends BaseRuleClass {
   public constructor() {
@@ -85,7 +86,7 @@ export class Xrzww extends BaseRuleClass {
     }, {} as { [index: number]: { name: string; order: number; desc: string } });
     const chapters: Chapter[] = [];
     let i = 0;
-    let tSectionName;
+    let tSectionName = null;
     let s = 0;
     let sc = 0;
     for (const c of directoryList.data.data) {
@@ -187,6 +188,7 @@ export class Xrzww extends BaseRuleClass {
     const contentRaw = document.createElement("p");
     contentRaw.innerText = readNew.data.content;
     const { dom, text, images } = await cleanDOM(contentRaw, "TM");
+    await sleep(4200 * Math.random());
     return {
       chapterName,
       contentRaw,
