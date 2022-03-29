@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.8.3.648
+// @version        4.8.3.652
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/404-novel-project/novel-downloader
@@ -12518,7 +12518,7 @@ class Longmabook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */
         const self = this;
         const bookUrl = document.location.href;
         const bookname = document.querySelector("#mypages > div:nth-child(8) > div:nth-child(1) > h4").innerText;
-        const author = document.querySelector("#writerinfos > a").innerText;
+        const author = document.querySelector("#writerinfos a").innerText;
         const _urlSearch = new URLSearchParams(document.location.search);
         const bookId = _urlSearch.get("bookid");
         if (!bookId) {
@@ -14526,6 +14526,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/main/Chapter.ts");
 /* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/main.ts");
 /* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/misc.ts");
+
 
 
 
@@ -14609,7 +14611,7 @@ class Xrzww extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
         }, {});
         const chapters = [];
         let i = 0;
-        let tSectionName;
+        let tSectionName = null;
         let s = 0;
         let sc = 0;
         for (const c of directoryList.data.data) {
@@ -14695,6 +14697,7 @@ class Xrzww extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
         const contentRaw = document.createElement("p");
         contentRaw.innerText = readNew.data.content;
         const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_6__/* .cleanDOM */ .zM)(contentRaw, "TM");
+        await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_7__/* .sleep */ ._v)(4200 * Math.random());
         return {
             chapterName,
             contentRaw,
