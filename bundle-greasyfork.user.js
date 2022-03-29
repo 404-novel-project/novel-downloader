@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.8.3.652
+// @version        4.8.3.653
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/404-novel-project/novel-downloader
@@ -5277,16 +5277,16 @@ async function calculateSha1(blob) {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "CD": () => (/* binding */ getFrameContentCondition),
 /* harmony export */   "Fz": () => (/* binding */ ggetHtmlDOM),
 /* harmony export */   "GF": () => (/* binding */ gfetch),
 /* harmony export */   "Q": () => (/* binding */ getText),
 /* harmony export */   "_7": () => (/* binding */ ggetText),
 /* harmony export */   "dL": () => (/* binding */ getHtmlDOM),
-/* harmony export */   "jt": () => (/* binding */ getFrameContent),
 /* harmony export */   "q4": () => (/* binding */ fetchWithRetry),
 /* harmony export */   "rf": () => (/* binding */ getHtmlDomWithRetry)
 /* harmony export */ });
-/* unused harmony export ggetHtmlDomWithRetry */
+/* unused harmony exports ggetHtmlDomWithRetry, getFrameContentEvent */
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _setting__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/setting.ts");
@@ -5485,21 +5485,54 @@ async function ggetHtmlDomWithRetry(url, charset, init) {
     }
     return doc;
 }
-async function getFrameContent(url, timeout = 0) {
+function getFrameContentEvent(url, timeout = 0, eventType = "load") {
     const frame = document.createElement("iframe");
     frame.src = url;
     frame.width = "1";
     frame.height = "1";
     const promise = new Promise((resolve, reject) => {
-        frame.addEventListener("load", function () {
+        frame.addEventListener(eventType, function (event) {
+            const frameSelf = event.target;
             setTimeout(() => {
-                const doc = this.contentWindow?.document ?? null;
-                this.remove();
+                if (!frameSelf) {
+                    reject(new Error("EventTarget Not Found!"));
+                }
+                const doc = frameSelf.contentWindow?.document ?? null;
+                frameSelf.remove();
                 resolve(doc);
             }, timeout);
         });
     });
+    log.debug("[debug]getFrameContent:" + url);
+    document.body.appendChild(frame);
+    return promise;
+}
+async function getFrameContentCondition(url, stopCondition) {
+    const frame = document.createElement("iframe");
+    frame.src = url;
+    frame.width = "1";
+    frame.height = "1";
     _log__WEBPACK_IMPORTED_MODULE_0___default().debug("[debug]getFrameContent:" + url);
+    const promise = new Promise((resolve, reject) => {
+        if (!frame) {
+            reject(new Error("Frame Not Found!"));
+        }
+        let timerId = 0;
+        const loopFunc = () => {
+            if (stopCondition(frame)) {
+                const doc = frame.contentWindow?.document ?? null;
+                frame.remove();
+                window.clearInterval(timerId);
+                resolve(doc);
+            }
+        };
+        timerId = window.setInterval(loopFunc, 1000);
+        setTimeout(() => {
+            frame.remove();
+            window.clearInterval(timerId);
+            reject(new Error("Frame Timeout!"));
+        }, 30 * 1000);
+    });
     document.body.appendChild(frame);
     return promise;
 }
@@ -13545,7 +13578,15 @@ class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
                 doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_8__/* .ggetHtmlDOM */ .Fz)(chapterUrl, charset);
                 if (!doc.querySelector(".read-content") ||
                     (doc.querySelector(".read-content")?.childElementCount ?? 0) < 10) {
-                    doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_8__/* .getFrameContent */ .jt)(chapterUrl, 1000);
+                    doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_8__/* .getFrameContentCondition */ .CD)(chapterUrl, (frame) => {
+                        const doc = frame.contentWindow?.document ?? null;
+                        if (doc) {
+                            return doc.querySelectorAll(".read-content > p").length !== 0;
+                        }
+                        else {
+                            return false;
+                        }
+                    });
                     if (doc) {
                         doc = new DOMParser().parseFromString(doc.documentElement.outerHTML, "text/html");
                     }
