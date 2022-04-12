@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.8.3.655
+// @version        4.8.3.657
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/404-novel-project/novel-downloader
@@ -6717,7 +6717,7 @@ class Common {
         if (book.introduction) {
             metaDateText += `\n简介：${book.introduction}`;
         }
-        metaDateText += `\n下载时间：${new Date().toISOString()}\n本文件由小说下载器生成，软件地址：https://github.com/yingziwu/novel-downloader\n\n`;
+        metaDateText += `\n下载时间：${new Date().toISOString()}\n本文件由小说下载器生成，软件地址：https://github.com/404-novel-project/novel-downloader\n\n`;
         return metaDateText;
     }
     getChapterNumberToSave(chapter, chapters) {
@@ -6798,17 +6798,17 @@ class Options extends Common {
 var save_misc = __webpack_require__("./src/save/misc.ts");
 ;// CONCATENATED MODULE: ./src/save/chapter.html.j2
 // Module
-var code = "<!DOCTYPE html> <html> <head> <meta charset=\"UTF-8\"/> <meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"/> <meta name=\"referrer\" content=\"same-origin\"/> <meta name=\"generator\" content=\"https://github.com/yingziwu/novel-downloader\"/> <meta name=\"source\" content=\"{{ chapterUrl }}\"/> <link href=\"style.css\" rel=\"stylesheet\"/> <title>{{ chapterName }}</title> </head> <body> <div class=\"main\"> <h2>{{ chapterName }}</h2> {{ outerHTML }} </div> <script src=\"web.js\"></script> </body> </html> ";
+var code = "<!DOCTYPE html> <html> <head> <meta charset=\"UTF-8\"/> <meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"/> <meta name=\"referrer\" content=\"same-origin\"/> <meta name=\"generator\" content=\"https://github.com/404-novel-project/novel-downloader\"/> <meta name=\"source\" content=\"{{ chapterUrl }}\"/> <link href=\"style.css\" rel=\"stylesheet\"/> <title>{{ chapterName }}</title> </head> <body> <div class=\"main\"> <h2>{{ chapterName }}</h2> {{ outerHTML }} </div> <script src=\"web.js\"></script> </body> </html> ";
 // Exports
 /* harmony default export */ const chapter_html = (code);
 ;// CONCATENATED MODULE: ./src/save/index.html.j2
 // Module
-var index_html_code = "<!DOCTYPE html> <html> <head> <meta charset=\"UTF-8\"/> <meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"/> <meta name=\"referrer\" content=\"same-origin\"/> <meta name=\"generator\" content=\"https://github.com/yingziwu/novel-downloader\"/> <meta name=\"date-creation\" content=\"{{ creationDate }}\"/> <link href=\"style.css\" rel=\"stylesheet\"/> <link href=\"web.css\" rel=\"stylesheet\"/> <link href=\"toc.css\" rel=\"stylesheet\"/> <title>{{ bookname }}</title> </head> <body> <div class=\"main\"> <h1>{{ bookname }}</h1> <h3 class=\"author\">{{ author }}</h3> <div class=\"info\"> {% if cover -%} <img class=\"cover\" data-src-address=\"{{ cover.name }}\"/> {%- endif %} {% if introductionHTML -%} <div> <h3>简介</h3> <div class=\"introduction\">{{ introductionHTML }}</div> </div> {%- endif %} </div> <div class=\"bookurl\"> <a href=\"{{ bookUrl }}\">打开原始网站</a> </div> <hr/> {% for sectionObj in sectionsObj -%} <div id=\"section{{ sectionObj.sectionNumber }}\" class=\"section\"> {% if sectionObj.sectionName %} <h2 class=\"section-label\">{{ sectionObj.sectionName }}</h2> {% endif %} {% for chapter in sectionObj.chpaters -%} <div class=\"chapter\"> {% if not (chapter.contentHTML or chapter.status === Status.saved) -%} <a class=\"disabled\" href=\"{{ chapter.chapterHtmlFileName }}\">{{ chapter.chapterName }}</a> {%- else -%} <a href=\"{{ chapter.chapterHtmlFileName }}\">{{ chapter.chapterName }}</a> {%- endif %} </div> {%- endfor %} </div> {%- endfor %} </div> </body> </html>";
+var index_html_code = "<!DOCTYPE html> <html> <head> <meta charset=\"UTF-8\"/> <meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"/> <meta name=\"referrer\" content=\"same-origin\"/> <meta name=\"generator\" content=\"https://github.com/404-novel-project/novel-downloader\"/> <meta name=\"date-creation\" content=\"{{ creationDate }}\"/> <link href=\"style.css\" rel=\"stylesheet\"/> <link href=\"web.css\" rel=\"stylesheet\"/> <link href=\"toc.css\" rel=\"stylesheet\"/> <title>{{ bookname }}</title> </head> <body> <div class=\"main\"> <h1>{{ bookname }}</h1> <h3 class=\"author\">{{ author }}</h3> <div class=\"info\"> {% if cover -%} <img class=\"cover\" data-src-address=\"{{ cover.name }}\"/> {%- endif %} {% if introductionHTML -%} <div> <h3>简介</h3> <div class=\"introduction\">{{ introductionHTML }}</div> </div> {%- endif %} </div> <div class=\"bookurl\"> <a href=\"{{ bookUrl }}\">打开原始网站</a> </div> <hr/> {% for sectionObj in sectionsObj -%} <div id=\"section{{ sectionObj.sectionNumber }}\" class=\"section\"> {% if sectionObj.sectionName %} <h2 class=\"section-label\">{{ sectionObj.sectionName }}</h2> {% endif %} {% for chapter in sectionObj.chpaters -%} <div class=\"chapter\"> {% if not (chapter.contentHTML or chapter.status === Status.saved) -%} <a class=\"disabled\" href=\"{{ chapter.chapterHtmlFileName }}\">{{ chapter.chapterName }}</a> {%- else -%} <a href=\"{{ chapter.chapterHtmlFileName }}\">{{ chapter.chapterName }}</a> {%- endif %} </div> {%- endfor %} </div> {%- endfor %} </div> </body> </html>";
 // Exports
 /* harmony default export */ const index_html = (index_html_code);
 ;// CONCATENATED MODULE: ./src/save/section.html.j2
 // Module
-var section_html_code = "<!DOCTYPE html> <html> <head> <meta charset=\"UTF-8\"/> <meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"/> <meta name=\"referrer\" content=\"same-origin\"/> <meta name=\"generator\" content=\"https://github.com/yingziwu/novel-downloader\"/> <link href=\"style.css\" rel=\"stylesheet\"/> <title>{{ sectionName }}</title> </head> <body> <div class=\"main\"><h1>{{ sectionName }}</h1></div> </body> </html> ";
+var section_html_code = "<!DOCTYPE html> <html> <head> <meta charset=\"UTF-8\"/> <meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"/> <meta name=\"referrer\" content=\"same-origin\"/> <meta name=\"generator\" content=\"https://github.com/404-novel-project/novel-downloader\"/> <link href=\"style.css\" rel=\"stylesheet\"/> <title>{{ sectionName }}</title> </head> <body> <div class=\"main\"><h1>{{ sectionName }}</h1></div> </body> </html> ";
 // Exports
 /* harmony default export */ const section_html = (section_html_code);
 ;// CONCATENATED MODULE: external "nunjucks"
@@ -6847,7 +6847,7 @@ const content_opf = `<?xml version="1.0" encoding="utf-8"?>
   <metadata xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:opf="http://www.idpf.org/2007/opf">
     <dc:identifier id="BookId" opf:scheme="UUID">urn:uuid:${uuid}</dc:identifier>
     <meta content="${GM/* _GM_info.script.version */._p.script.version}" name="novel-downloader version"/>
-    <meta content="https://github.com/yingziwu/novel-downloader" name="generator"/>
+    <meta content="https://github.com/404-novel-project/novel-downloader" name="generator"/>
     <dc:date opf:event="creation">${getDateString()}</dc:date>
     <dc:date opf:event="modification" xmlns:opf="http://www.idpf.org/2007/opf">${getDateString()}</dc:date>
   </metadata>
@@ -6943,7 +6943,7 @@ const getMessageXhtml = (book) => `<?xml version="1.0" encoding="utf-8"?>
     <div>题名：${book.bookname}</div>
     <div>作者：${book.author}</div>
     <div>原始地址：<a href="${book.bookUrl}">${book.bookUrl}</a></div>
-    <div>本文件由<a href="https://github.com/yingziwu/novel-downloader">小说下载器</a>生成。</div>
+    <div>本文件由<a href="https://github.com/404-novel-project/novel-downloader">小说下载器</a>生成。</div>
     ${book.introductionHTML
     ? `<hr/><span>简介：</span>${book.introductionHTML.outerHTML}`
     : ""}
@@ -7650,8 +7650,8 @@ class BaseRuleClass {
                 if (window.failedCount > 10) {
                     if (!window.stopFlag.aborted) {
                         window.stopController.abort();
-                        console.error("连续十章下载失败，放弃本次下载。\n请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/yingziwu/novel-downloader");
-                        alert("连续十章下载失败，放弃本次下载。\n请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/yingziwu/novel-downloader");
+                        console.error("连续十章下载失败，放弃本次下载。\n请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/404-novel-project/novel-downloader");
+                        alert("连续十章下载失败，放弃本次下载。\n请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/404-novel-project/novel-downloader");
                         (0,log/* saveLogTextToFile */.qS)();
                     }
                 }
@@ -7673,8 +7673,8 @@ class BaseRuleClass {
                 if (window.failedCount > 10) {
                     if (!window.stopFlag.aborted) {
                         window.stopController.abort();
-                        console.error("连续十章下载失败，放弃本次下载。\n请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/yingziwu/novel-downloader");
-                        alert("连续十章下载失败，放弃本次下载。\n请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/yingziwu/novel-downloader");
+                        console.error("连续十章下载失败，放弃本次下载。\n请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/404-novel-project/novel-downloader");
+                        alert("连续十章下载失败，放弃本次下载。\n请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/404-novel-project/novel-downloader");
                         (0,log/* saveLogTextToFile */.qS)();
                     }
                 }
@@ -7784,9 +7784,10 @@ class BaseRuleClass {
         self.postHook();
         if (!(error instanceof main/* ExpectError */.K2)) {
             document.getElementById("button-div")?.remove();
-            loglevel_default().error("运行过程出错，请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/yingziwu/novel-downloader");
+            loglevel_default().error("运行过程出错，请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/404-novel-project/novel-downloader");
             failedPlus();
-            alert("运行过程出错，请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/yingziwu/novel-downloader");
+            alert("运行过程出错，请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/404-novel-project/novel-downloader");
+            window.open('https://github.com/404-novel-project/novel-downloader/issues');
             (0,log/* saveLogTextToFile */.qS)();
         }
     }
