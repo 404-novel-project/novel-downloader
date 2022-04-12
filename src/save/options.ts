@@ -1,8 +1,8 @@
 import defaultMainStyleText from "./main.css";
 import defaultTocStyleText from "./toc.css";
-import { Chapter } from "../main/Chapter";
-import { fullWidthLength } from "../lib/dom";
-import { Book } from "../main/Book";
+import {Chapter} from "../main/Chapter";
+import {fullWidthLength} from "../lib/dom";
+import {Book} from "../main/Book";
 
 class Common {
   public genMetaDateTxt(book: Book) {
@@ -17,7 +17,7 @@ class Common {
     if (book.introduction) {
       metaDateText += `\n简介：${book.introduction}`;
     }
-    metaDateText += `\n下载时间：${new Date().toISOString()}\n本文件由小说下载器生成，软件地址：https://github.com/yingziwu/novel-downloader\n\n`;
+    metaDateText += `\n下载时间：${new Date().toISOString()}\n本文件由小说下载器生成，软件地址：https://github.com/404-novel-project/novel-downloader\n\n`;
     return metaDateText;
   }
 

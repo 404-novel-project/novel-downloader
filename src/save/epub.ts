@@ -2,24 +2,24 @@
 
 import sgc from "./sgc-toc.css";
 import webStyleText from "./web.css";
-import { _GM_info } from "../lib/GM";
-import { extensionToMimetype, randomUUID } from "../lib/misc";
-import { FflateZip } from "../lib/zip";
-import { log } from "../log";
-import { Book } from "../main/Book";
-import { Chapter } from "../main/Chapter";
-import { Options, SaveOptions } from "./options";
-import { AttachmentClass } from "../main/Attachment";
-import { Status } from "../main/main";
-import { convertHTMLtoXHTML } from "../lib/dom";
-import { getSectionsObj } from "./misc";
+import {_GM_info} from "../lib/GM";
+import {extensionToMimetype, randomUUID} from "../lib/misc";
+import {FflateZip} from "../lib/zip";
+import {log} from "../log";
+import {Book} from "../main/Book";
+import {Chapter} from "../main/Chapter";
+import {Options, SaveOptions} from "./options";
+import {AttachmentClass} from "../main/Attachment";
+import {Status} from "../main/main";
+import {convertHTMLtoXHTML} from "../lib/dom";
+import {getSectionsObj} from "./misc";
 
 import chapterHtml from "./chapter.html.j2";
 import indexHtml from "./index.html.j2";
 import sectionHtml from "./section.html.j2";
-import { Environment, Template } from "nunjucks";
+import {Environment, Template} from "nunjucks";
 
-const env = new Environment(undefined, { autoescape: false });
+const env = new Environment(undefined, {autoescape: false});
 
 const section = new Template(sectionHtml, env, undefined, true);
 const chapterTemplt = new Template(chapterHtml, env, undefined, true);
@@ -41,7 +41,7 @@ const content_opf = `<?xml version="1.0" encoding="utf-8"?>
   <metadata xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:opf="http://www.idpf.org/2007/opf">
     <dc:identifier id="BookId" opf:scheme="UUID">urn:uuid:${uuid}</dc:identifier>
     <meta content="${_GM_info.script.version}" name="novel-downloader version"/>
-    <meta content="https://github.com/yingziwu/novel-downloader" name="generator"/>
+    <meta content="https://github.com/404-novel-project/novel-downloader" name="generator"/>
     <dc:date opf:event="creation">${getDateString()}</dc:date>
     <dc:date opf:event="modification" xmlns:opf="http://www.idpf.org/2007/opf">${getDateString()}</dc:date>
   </metadata>
@@ -147,7 +147,7 @@ const getMessageXhtml = (book: Book) => `<?xml version="1.0" encoding="utf-8"?>
     <div>题名：${book.bookname}</div>
     <div>作者：${book.author}</div>
     <div>原始地址：<a href="${book.bookUrl}">${book.bookUrl}</a></div>
-    <div>本文件由<a href="https://github.com/yingziwu/novel-downloader">小说下载器</a>生成。</div>
+    <div>本文件由<a href="https://github.com/404-novel-project/novel-downloader">小说下载器</a>生成。</div>
     ${
       book.introductionHTML
         ? `<hr/><span>简介：</span>${book.introductionHTML.outerHTML}`
