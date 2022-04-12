@@ -426,6 +426,7 @@ export abstract class BaseRuleClass {
       alert(
           "运行过程出错，请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/404-novel-project/novel-downloader"
       );
+      window.open('https://github.com/404-novel-project/novel-downloader/issues')
       saveLogTextToFile();
     }
   }
