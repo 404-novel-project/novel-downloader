@@ -541,6 +541,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = novelup();
       break;
     }
+    case "www.69shu.com": {
+      const { C69shu } = await import("../rules/special/reprint/69shu");
+      ruleClass = C69shu;
+      break;
+    }
     default: {
       throw new Error("Not Found Rule!");
     }

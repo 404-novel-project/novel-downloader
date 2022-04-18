@@ -200,7 +200,8 @@
     "*://www.xbiquge.la/*/*/",
     "*://www.akatsuki-novels.com/stories/index/novel_id~*",
     "*://www.alphapolis.co.jp/novel/*/*",
-    "*://novelup.plus/story/*"
+    "*://novelup.plus/story/*",
+    "*://www.69shu.com/txt/*.htm"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",
@@ -323,6 +324,7 @@
     "xrzww.com",
     "akatsuki-novels.com",
     "alphapolis.co.jp",
+    "cdn.shucdn.com",
     "*"
   ],
   "require": [

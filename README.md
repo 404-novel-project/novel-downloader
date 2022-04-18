@@ -176,6 +176,7 @@ EPUB文件请使用相应阅读器阅读。
 |[缤纷幻想](https://colorful-fantasybooks.com/)|✅|❎||
 |[弟子小说网](https://www.dizishu.com/xiaoshuo/)|✅|❎||
 |[新笔趣阁](https://www.xbiquge.la/)|✅|❎||
+|[69书吧](https://www.69shu.com/)|✅|❎||
 
 </details>
 
