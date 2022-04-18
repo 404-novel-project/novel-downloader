@@ -26,6 +26,7 @@ export class C69shu extends BaseRuleClass {
     const author = $(".booknav2 > p:nth-child(2) > a")?.innerText;
     const tocUrl = $<HTMLAnchorElement>(".addbtn > a:nth-child(1)")?.href;
     if (!bookname || !author || !tocUrl) {
+      log.info("书籍信息", { bookname, author, tocUrl });
       throw new Error("书籍信息获取失败！");
     }
 
@@ -34,11 +35,13 @@ export class C69shu extends BaseRuleClass {
     const meta: BookAdditionalMetadate = {};
     const coverUrl = $<HTMLImageElement>(".bookimg2 > img")?.src;
     if (coverUrl) {
-      try {
-        meta.cover = await getImageAttachment(coverUrl, this.imageMode);
-      } catch (e) {
-        log.error(e);
-      }
+      (async () => {
+        try {
+          meta.cover = await getImageAttachment(coverUrl, this.imageMode);
+        } catch (e) {
+          log.error(e);
+        }
+      })();
     }
 
     const chapterDoc = await getHtmlDOM(tocUrl, this.charset);
@@ -123,4 +126,3 @@ export class C69shu extends BaseRuleClass {
     return { $, $$ };
   }
 }
-
