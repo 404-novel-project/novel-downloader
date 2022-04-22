@@ -123,6 +123,7 @@
     "*://www.tongrenquan.me/tongren/*.html",
     "*://tongrenquan.me/tongren/*.html",
     "*://www.imiaobige.com/read/*/",
+    "*://www.imbg.cc/read/*/",
     "*://www.256wenku.com/read/*/index.html",
     "*://www.256wenku.com/read/*/",
     "*://www.biquge66.com/biquge*/",
@@ -201,8 +202,7 @@
     "*://www.akatsuki-novels.com/stories/index/novel_id~*",
     "*://www.alphapolis.co.jp/novel/*/*",
     "*://novelup.plus/story/*",
-    "*://www.69shu.com/txt/*.htm",
-    "*://www.imbg.cc/read/*/"
+    "*://www.69shu.com/txt/*.htm"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",

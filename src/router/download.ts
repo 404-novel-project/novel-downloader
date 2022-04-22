@@ -1,4 +1,4 @@
-import { BaseRuleClass } from "../rules";
+import {BaseRuleClass} from "../rules";
 
 export async function getRule(): Promise<BaseRuleClass> {
   const host: string = document.location.host;
@@ -543,8 +543,8 @@ export async function getRule(): Promise<BaseRuleClass> {
       break;
     }
     case "www.69shu.com": {
-      const { C69shu } = await import("../rules/special/reprint/69shu");
-      ruleClass = C69shu;
+      const {c69shu} = await import("../rules/twoPage/69shu");
+      ruleClass = c69shu();
       break;
     }
     default: {
