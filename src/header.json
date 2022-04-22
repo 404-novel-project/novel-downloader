@@ -201,7 +201,8 @@
     "*://www.akatsuki-novels.com/stories/index/novel_id~*",
     "*://www.alphapolis.co.jp/novel/*/*",
     "*://novelup.plus/story/*",
-    "*://www.69shu.com/txt/*.htm"
+    "*://www.69shu.com/txt/*.htm",
+    "*://www.imbg.cc/read/*/"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",

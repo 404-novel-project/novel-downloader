@@ -251,6 +251,7 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = tongrenquan();
       break;
     }
+    case "www.imbg.cc":
     case "www.imiaobige.com": {
       const { imiaobige } = await import("../rules/twoPage/imiaobige");
       ruleClass = imiaobige();
