@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.8.3.657
+// @version        4.8.3.664
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/404-novel-project/novel-downloader
@@ -102,6 +102,7 @@
 // @match          *://www.tongrenquan.me/tongren/*.html
 // @match          *://tongrenquan.me/tongren/*.html
 // @match          *://www.imiaobige.com/read/*/
+// @match          *://www.imbg.cc/read/*/
 // @match          *://www.256wenku.com/read/*/index.html
 // @match          *://www.256wenku.com/read/*/
 // @match          *://www.biquge66.com/biquge*/
@@ -180,6 +181,7 @@
 // @match          *://www.akatsuki-novels.com/stories/index/novel_id~*
 // @match          *://www.alphapolis.co.jp/novel/*/*
 // @match          *://novelup.plus/story/*
+// @match          *://www.69shu.com/txt/*.htm
 // @name:en        novel-downloader
 // @name:ja        小説ダウンローダー
 // @description:en An scalable universal novel downloader.
@@ -312,6 +314,7 @@
 // @connect        xrzww.com
 // @connect        akatsuki-novels.com
 // @connect        alphapolis.co.jp
+// @connect        cdn.shucdn.com
 // @connect        *
 // @require        https://cdn.jsdelivr.net/npm/crypto-js@4.1.1/crypto-js.js#sha512-NQVmLzNy4Lr5QTrmXvq/WzTMUnRHmv7nyIT/M6LyGPBS+TIeRxZ+YQaqWxjpRpvRMQSuYPQURZz/+pLi81xXeA==
 // @require        https://cdn.jsdelivr.net/npm/fflate@0.7.3/umd/index.js#sha512-F57jcpLWPENXlHrsEj+YC8m+IHvaoRZpCpDr7Tfvu/jRtuO7kPOfbsop2gXEIRoK66ETYamk1tlTEvNw6xE8jw==

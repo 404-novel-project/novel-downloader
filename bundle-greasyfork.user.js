@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.8.3.657
+// @version        4.8.3.664
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/404-novel-project/novel-downloader
@@ -102,6 +102,7 @@
 // @match          *://www.tongrenquan.me/tongren/*.html
 // @match          *://tongrenquan.me/tongren/*.html
 // @match          *://www.imiaobige.com/read/*/
+// @match          *://www.imbg.cc/read/*/
 // @match          *://www.256wenku.com/read/*/index.html
 // @match          *://www.256wenku.com/read/*/
 // @match          *://www.biquge66.com/biquge*/
@@ -180,6 +181,7 @@
 // @match          *://www.akatsuki-novels.com/stories/index/novel_id~*
 // @match          *://www.alphapolis.co.jp/novel/*/*
 // @match          *://novelup.plus/story/*
+// @match          *://www.69shu.com/txt/*.htm
 // @name:en        novel-downloader
 // @name:ja        小説ダウンローダー
 // @description:en An scalable universal novel downloader.
@@ -312,6 +314,7 @@
 // @connect        xrzww.com
 // @connect        akatsuki-novels.com
 // @connect        alphapolis.co.jp
+// @connect        cdn.shucdn.com
 // @connect        *
 // @require        https://cdn.jsdelivr.net/npm/crypto-js@4.1.1/crypto-js.js#sha512-NQVmLzNy4Lr5QTrmXvq/WzTMUnRHmv7nyIT/M6LyGPBS+TIeRxZ+YQaqWxjpRpvRMQSuYPQURZz/+pLi81xXeA==
 // @require        https://cdn.jsdelivr.net/npm/fflate@0.7.3/umd/index.js#sha512-F57jcpLWPENXlHrsEj+YC8m+IHvaoRZpCpDr7Tfvu/jRtuO7kPOfbsop2gXEIRoK66ETYamk1tlTEvNw6xE8jw==
@@ -13452,7 +13455,7 @@ class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
         const introDom = document.querySelector(".book-info-detail .book-intro");
         const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .SN)(introDom);
         const additionalMetadate = {};
-        const coverUrl = document.querySelector("#bookImg > img").src;
+        const coverUrl = document.querySelector("#bookImg > img").src.slice(0, -4);
         if (coverUrl) {
             (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getImageAttachment */ .CE)(coverUrl, this.imageMode, "cover-")
                 .then((coverClass) => {
@@ -13610,6 +13613,7 @@ class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
                     const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .zM)(contentMain, "TM");
                     (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .htmlTrim */ .iA)(dom);
                     content.appendChild(dom);
+                    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_9__/* .rm2 */ .vS)([/^谷[\u4e00-\u9fa5]{0,1}$/gm], content);
                     contentText = contentText + text;
                     if (authorSayWrap) {
                         const authorSay = authorSayWrap.querySelector("div.author-say");
@@ -17737,6 +17741,38 @@ const xiaoshuodaquan = () => (0,_tempate__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleC
 
 /***/ }),
 
+/***/ "./src/rules/twoPage/69shu.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "c69shu": () => (/* binding */ c69shu)
+/* harmony export */ });
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _tempate__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/twoPage/tempate.ts");
+
+
+const c69shu = () => ((0,_tempate__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+    bookUrl: document.location.href,
+    anotherPageUrl: document.querySelector(".addbtn > a:nth-child(1)").href,
+    getBookname: () => document.querySelector('h1')?.innerText ?? "",
+    getAuthor: () => document.querySelector(".booknav2 > p:nth-child(2) > a")?.innerText ?? "",
+    getIntroDom: () => document.querySelector(".navtxt > p:nth-child(1)"),
+    introDomPatch: (content) => content,
+    getCoverUrl: () => document.querySelector(".bookimg2 > img")?.src ?? null,
+    getAList: (doc) => doc.querySelectorAll("#catalog ul a"),
+    getContent: (doc) => doc.querySelector(".txtnav"),
+    contentPatch: (content) => {
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)(".hide720, .txtright, .bottom-ad", true, content);
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .vS)([/^谷[\u4e00-\u9fa5]{0,1}$/gm], content);
+        return content;
+    }
+}));
+
+
+/***/ }),
+
 /***/ "./src/rules/twoPage/imiaobige.ts":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -18865,6 +18901,7 @@ async function getRule() {
             ruleClass = tongrenquan();
             break;
         }
+        case "www.imbg.cc":
         case "www.imiaobige.com": {
             const { imiaobige } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/imiaobige.ts"));
             ruleClass = imiaobige();
@@ -19137,6 +19174,11 @@ async function getRule() {
         case "novelup.plus": {
             const { novelup } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePageWithMultiIndexPage/novelup.ts"));
             ruleClass = novelup();
+            break;
+        }
+        case "www.69shu.com": {
+            const { c69shu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/69shu.ts"));
+            ruleClass = c69shu();
             break;
         }
         default: {
