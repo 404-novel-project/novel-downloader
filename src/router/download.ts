@@ -1,4 +1,4 @@
-import { BaseRuleClass } from "../rules";
+import {BaseRuleClass} from "../rules";
 
 export async function getRule(): Promise<BaseRuleClass> {
   const host: string = document.location.host;
@@ -251,6 +251,7 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = tongrenquan();
       break;
     }
+    case "www.imbg.cc":
     case "www.imiaobige.com": {
       const { imiaobige } = await import("../rules/twoPage/imiaobige");
       ruleClass = imiaobige();
@@ -539,6 +540,11 @@ export async function getRule(): Promise<BaseRuleClass> {
         "../rules/onePageWithMultiIndexPage/novelup"
       );
       ruleClass = novelup();
+      break;
+    }
+    case "www.69shu.com": {
+      const {c69shu} = await import("../rules/twoPage/69shu");
+      ruleClass = c69shu();
       break;
     }
     default: {

@@ -2,7 +2,7 @@ import { getImageAttachment } from "../../../lib/attachments";
 import { cleanDOM, htmlTrim } from "../../../lib/cleanDOM";
 import { getFrameContentCondition, ggetHtmlDOM } from "../../../lib/http";
 import { sleep } from "../../../lib/misc";
-import { rm } from "../../../lib/dom";
+import { rm, rm2 } from "../../../lib/dom";
 import { introDomHandle } from "../../../lib/rule";
 import { log } from "../../../log";
 import { Status } from "../../../main/main";
@@ -47,7 +47,7 @@ export class Qidian extends BaseRuleClass {
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = (
       document.querySelector("#bookImg > img") as HTMLImageElement
-    ).src;
+    ).src.slice(0, -4);
     if (coverUrl) {
       getImageAttachment(coverUrl, this.imageMode, "cover-")
         .then((coverClass) => {
@@ -251,6 +251,7 @@ export class Qidian extends BaseRuleClass {
           const { dom, text, images } = await cleanDOM(contentMain, "TM");
           htmlTrim(dom);
           content.appendChild(dom);
+          rm2([/^谷[\u4e00-\u9fa5]{0,1}$/gm], content);
 
           contentText = contentText + text;
 
