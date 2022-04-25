@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.8.3.664
+// @version        4.8.3.665
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/404-novel-project/novel-downloader
@@ -151,7 +151,7 @@
 // @match          *://novel18.syosetu.com/*/
 // @match          *://novel18.syosetu.com/*
 // @match          *://syosetu.org/novel/*/
-// @match          *://houhuayuan.xyz/*
+// @match          *://houhuayuan.vip/*
 // @match          *://zhaoze.art/*/
 // @match          *://www.myrics.com/novels/*
 // @match          *://m.lusetxt.com/ebook/*.html
@@ -233,7 +233,7 @@
 // @exclude        *://ncode.syosetu.com/*/*/
 // @exclude        *://novel18.syosetu.com/*/*/
 // @exclude        *://manhua.dmzj.com/
-// @exclude        *://houhuayuan.xyz/
+// @exclude        *://houhuayuan.vip/
 // @exclude        *://book.sfacg.com/Novel/*/*/*/
 // @exclude        *://www.alphapolis.co.jp/novel/*/*/episode/*
 // @exclude        *://novelup.plus/story/*/*
@@ -19046,7 +19046,7 @@ async function getRule() {
             break;
         }
         case "zhaoze.art":
-        case "houhuayuan.xyz": {
+        case "houhuayuan.vip": {
             const { houhuayuan } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/houhuayuan.ts"));
             ruleClass = houhuayuan();
             break;
