@@ -404,13 +404,13 @@ export async function getRule(): Promise<BaseRuleClass> {
       break;
     }
     case "zhaoze.art":
-    case "houhuayuan.xyz": {
-      const { houhuayuan } = await import("../rules/onePage/houhuayuan");
+    case "houhuayuan.vip": {
+      const {houhuayuan} = await import("../rules/onePage/houhuayuan");
       ruleClass = houhuayuan();
       break;
     }
     case "www.myrics.com": {
-      const { Myrics } = await import("../rules/special/original/myrics");
+      const {Myrics} = await import("../rules/special/original/myrics");
       ruleClass = Myrics;
       break;
     }
