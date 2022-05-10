@@ -29,4 +29,5 @@ export const kakuyomu = () =>
     getSName: (dom) => (dom as HTMLElement).innerText.trim(),
     getContent: (dom) => dom.querySelector(".widget-episodeBody"),
     contentPatch: (dom) => dom,
+    language: "jp",
   });

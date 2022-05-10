@@ -64,5 +64,6 @@ export const novelup = () => {
       });
       return content;
     },
+    language: "jp",
   });
 };

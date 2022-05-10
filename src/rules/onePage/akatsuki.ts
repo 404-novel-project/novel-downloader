@@ -50,4 +50,5 @@ export const akatsuki = () =>
     },
     contentPatch: (content) => content,
     concurrencyLimit: 2,
+    language: "jp",
   });

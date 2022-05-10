@@ -1,5 +1,5 @@
 import { getImageAttachment } from "../../lib/attachments";
-import { Options, cleanDOM } from "../../lib/cleanDOM";
+import { cleanDOM, Options } from "../../lib/cleanDOM";
 import { getHtmlDOM } from "../../lib/http";
 import { PublicConstructor } from "../../lib/misc";
 import { getSectionName, introDomHandle } from "../../lib/rule";
@@ -39,6 +39,7 @@ interface MkRuleClassOptions {
   nsfw?: boolean;
   cleanDomOptions?: Options;
   overrideConstructor?: (classThis: BaseRuleClass) => any;
+  language?: string;
 }
 export function mkRuleClass({
   bookUrl,
@@ -63,6 +64,7 @@ export function mkRuleClass({
   nsfw,
   cleanDomOptions,
   overrideConstructor,
+  language,
 }: MkRuleClassOptions): PublicConstructor<BaseRuleClass> {
   return class extends BaseRuleClass {
     public constructor() {
@@ -93,7 +95,9 @@ export function mkRuleClass({
       );
 
       const coverUrl = getCoverUrl(doc);
-      const additionalMetadate: BookAdditionalMetadate = {};
+      const additionalMetadate: BookAdditionalMetadate = {
+        language: language ?? "zh",
+      };
       if (coverUrl) {
         getImageAttachment(coverUrl, this.imageMode, "cover-")
           .then((coverClass) => {

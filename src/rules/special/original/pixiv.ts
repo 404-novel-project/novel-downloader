@@ -64,7 +64,7 @@ export class Pixiv extends BaseRuleClass {
         }
       );
       const tumeng = (await resp.json()) as tumeng;
-      if (tumeng.error === false) {
+      if (!tumeng.error) {
         return tumeng.body.page.user.id;
       }
     }
@@ -118,6 +118,10 @@ export class Pixiv extends BaseRuleClass {
           chapters.push(chapter);
         }
 
+        additionalMetadate.language = (
+          await getPreloadData(chapters[0].chapterUrl, self.charset)
+        )?.novel?.language;
+
         const book = new Book({
           bookUrl,
           bookname,
@@ -130,6 +134,7 @@ export class Pixiv extends BaseRuleClass {
         return book;
       }
     }
+
     async function getSeriesMeta(id: number) {
       const referrer = "https://www.pixiv.net/novel/series/" + id.toString();
       const apiMetaBase = "https://www.pixiv.net/ajax/novel/series/";
@@ -138,6 +143,7 @@ export class Pixiv extends BaseRuleClass {
         id.toString() +
         "?" +
         new URLSearchParams(lang).toString();
+
       interface SeriesMeta {
         error: boolean;
         message: string;
@@ -207,6 +213,7 @@ export class Pixiv extends BaseRuleClass {
           };
         };
       }
+
       const respMeta = await fetch(apiMeta, {
         credentials: "include",
         headers: {
@@ -219,10 +226,11 @@ export class Pixiv extends BaseRuleClass {
         mode: "cors",
       });
       const seriesMeta = (await respMeta.json()) as SeriesMeta;
-      if (seriesMeta.error === false) {
+      if (!seriesMeta.error) {
         return seriesMeta.body;
       }
     }
+
     async function getSeriesContents(
       id: number,
       publishedContentCount: number
@@ -256,6 +264,7 @@ export class Pixiv extends BaseRuleClass {
         isBookmarkable: boolean;
         bookmarkData: null;
       }
+
       const seriesContents: SeriesContent[] = [];
       while (lastOrder < publishedContentCount) {
         const url =
@@ -269,6 +278,7 @@ export class Pixiv extends BaseRuleClass {
           method: "GET",
           mode: "cors",
         });
+
         interface SeriesContents {
           error: boolean;
           message: string;
@@ -276,8 +286,9 @@ export class Pixiv extends BaseRuleClass {
             seriesContents: SeriesContent[];
           };
         }
+
         const _seriesContents = (await resp.json()) as SeriesContents;
-        if (_seriesContents.error === false) {
+        if (!_seriesContents.error) {
           seriesContents.push(..._seriesContents.body.seriesContents);
         }
         lastOrder = lastOrder + 10;
@@ -413,6 +424,7 @@ interface chapterOptions {
   lang: string | null;
   userId: string | undefined;
 }
+
 interface Tag {
   tag: string;
   locked: boolean;
@@ -420,12 +432,14 @@ interface Tag {
   userId: string;
   userName: string;
 }
+
 interface SeriesNavDataOtherObj {
   title: string;
   order: number;
   id: string;
   available: boolean;
 }
+
 interface SeriesNavData {
   seriesType: "novel";
   seriesId: number;
@@ -438,6 +452,7 @@ interface SeriesNavData {
   next: SeriesNavDataOtherObj | null;
   prev: SeriesNavDataOtherObj | null;
 }
+
 interface OtherNovelObj {
   id: string;
   title: string;
@@ -463,6 +478,7 @@ interface OtherNovelObj {
   seriesTitle: string;
   isUnlisted: boolean;
 }
+
 interface textEmbeddedImage {
   novelImageId: string;
   sl: string;
@@ -473,6 +489,7 @@ interface textEmbeddedImage {
     original: string;
   };
 }
+
 interface NovelObj {
   bookmarkCount: number;
   commentCount: number;
@@ -579,6 +596,7 @@ interface NovelObj {
   };
   commentOff: number;
 }
+
 interface UserObj {
   userId: string;
   name: string;
@@ -594,6 +612,7 @@ interface UserObj {
   acceptRequest: true;
   sketchLives: [];
 }
+
 interface PreloadData {
   timestamp: string;
   novel: {
@@ -660,6 +679,7 @@ async function loadPixivimage({
       dom.innerHTML = dom.innerHTML.replaceAll(str, a.outerHTML);
     }
   }
+
   async function getPixivImage(id: string) {
     const baseUrl = `https://www.pixiv.net/ajax/novel/${nid}/insert_illusts`;
     const url = new URL(baseUrl);
@@ -680,7 +700,7 @@ async function loadPixivimage({
       mode: "cors",
     });
     const illusts = (await resp.json()) as illusts;
-    if (illusts.error === false) {
+    if (!illusts.error) {
       const originalUrl = illusts.body[`${id}-1`].illust.images.original;
       return originalUrl;
     } else {
@@ -1512,6 +1532,7 @@ interface illustTag {
   tag: string;
   userId: string;
 }
+
 interface illusts {
   error: boolean;
   message: string;

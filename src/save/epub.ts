@@ -2,24 +2,24 @@
 
 import sgc from "./sgc-toc.css";
 import webStyleText from "./web.css";
-import {_GM_info} from "../lib/GM";
-import {extensionToMimetype, randomUUID} from "../lib/misc";
-import {FflateZip} from "../lib/zip";
-import {log} from "../log";
-import {Book} from "../main/Book";
-import {Chapter} from "../main/Chapter";
-import {Options, SaveOptions} from "./options";
-import {AttachmentClass} from "../main/Attachment";
-import {Status} from "../main/main";
-import {convertHTMLtoXHTML} from "../lib/dom";
-import {getSectionsObj} from "./misc";
+import { _GM_info } from "../lib/GM";
+import { extensionToMimetype, randomUUID } from "../lib/misc";
+import { FflateZip } from "../lib/zip";
+import { log } from "../log";
+import { Book } from "../main/Book";
+import { Chapter } from "../main/Chapter";
+import { Options, SaveOptions } from "./options";
+import { AttachmentClass } from "../main/Attachment";
+import { Status } from "../main/main";
+import { convertHTMLtoXHTML } from "../lib/dom";
+import { getSectionsObj } from "./misc";
 
 import chapterHtml from "./chapter.html.j2";
 import indexHtml from "./index.html.j2";
 import sectionHtml from "./section.html.j2";
-import {Environment, Template} from "nunjucks";
+import { Environment, Template } from "nunjucks";
 
-const env = new Environment(undefined, {autoescape: false});
+const env = new Environment(undefined, { autoescape: false });
 
 const section = new Template(sectionHtml, env, undefined, true);
 const chapterTemplt = new Template(chapterHtml, env, undefined, true);
@@ -351,11 +351,9 @@ export class EPUB extends Options {
       source.textContent = self.book.bookUrl;
       self.metadata.appendChild(source);
 
-      if (self.book.additionalMetadate.language) {
-        const language = self.contentOpf.createElement("dc:language");
-        language.textContent = self.book.additionalMetadate.language;
-        self.metadata.appendChild(language);
-      }
+      const language = self.contentOpf.createElement("dc:language");
+      language.textContent = self.book.additionalMetadate.language ?? "zh";
+      self.metadata.appendChild(language);
 
       if (self.book.introduction) {
         const introduction = self.contentOpf.createElement("dc:description");
