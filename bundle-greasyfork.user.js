@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.8.3.679
+// @version        4.8.4.680
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/404-novel-project/novel-downloader
@@ -2854,7 +2854,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, ".nd-setting-body {\n  background: #e0e
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "h1 {\n  line-height: 130%;\n  text-align: center;\n  font-weight: bold;\n  font-size: xxx-large;\n  margin-top: 3.2em;\n  margin-bottom: 3.3em;\n}\nh2 {\n  line-height: 130%;\n  text-align: center;\n  font-weight: bold;\n  font-size: x-large;\n  margin-top: 1.2em;\n  margin-bottom: 2.3em;\n}\ndiv {\n  margin: 0px;\n  padding: 0px;\n  text-align: justify;\n}\np {\n  text-indent: 2em;\n  display: block;\n  line-height: 1.3em;\n  margin-top: 0.4em;\n  margin-bottom: 0.4em;\n}\nimg {\n  vertical-align: text-bottom;\n  max-width: 90%;\n}\n.title {\n  margin-bottom: 0.7em;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "h1 {\n    line-height: 130%;\n    text-align: center;\n    font-weight: bold;\n    font-size: xx-large;\n    margin-top: 3.2em;\n    margin-bottom: 3.3em;\n}\nh2 {\n  line-height: 130%;\n  text-align: center;\n  font-weight: bold;\n  font-size: x-large;\n  margin-top: 1.2em;\n  margin-bottom: 2.3em;\n}\ndiv {\n    margin: 0;\n    padding: 0;\n    text-align: justify;\n}\np {\n  text-indent: 2em;\n  display: block;\n  line-height: 1.3em;\n  margin-top: 0.4em;\n  margin-bottom: 0.4em;\n}\nimg {\n  vertical-align: text-bottom;\n  max-width: 90%;\n}\n.title {\n  margin-bottom: 0.7em;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -6801,17 +6801,17 @@ class Options extends Common {
 var save_misc = __webpack_require__("./src/save/misc.ts");
 ;// CONCATENATED MODULE: ./src/save/chapter.html.j2
 // Module
-var code = "<!DOCTYPE html> <html> <head> <meta charset=\"UTF-8\"/> <meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"/> <meta name=\"referrer\" content=\"same-origin\"/> <meta name=\"generator\" content=\"https://github.com/404-novel-project/novel-downloader\"/> <meta name=\"source\" content=\"{{ chapterUrl }}\"/> <link href=\"style.css\" rel=\"stylesheet\"/> <title>{{ chapterName }}</title> </head> <body> <div class=\"main\"> <h2>{{ chapterName }}</h2> {{ outerHTML }} </div> <script src=\"web.js\"></script> </body> </html> ";
+var code = "<!DOCTYPE html> <html> <head> <meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"/> <meta name=\"referrer\" content=\"same-origin\"/> <meta name=\"generator\" content=\"https://github.com/404-novel-project/novel-downloader\"/> <meta name=\"source\" content=\"{{ chapterUrl }}\"/> <link href=\"style.css\" rel=\"stylesheet\"/> <title>{{ chapterName }}</title> </head> <body> <div class=\"main\"> <h2>{{ chapterName }}</h2> {{ outerHTML }} </div> <script src=\"web.js\"></script> </body> </html> ";
 // Exports
 /* harmony default export */ const chapter_html = (code);
 ;// CONCATENATED MODULE: ./src/save/index.html.j2
 // Module
-var index_html_code = "<!DOCTYPE html> <html> <head> <meta charset=\"UTF-8\"/> <meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"/> <meta name=\"referrer\" content=\"same-origin\"/> <meta name=\"generator\" content=\"https://github.com/404-novel-project/novel-downloader\"/> <meta name=\"date-creation\" content=\"{{ creationDate }}\"/> <link href=\"style.css\" rel=\"stylesheet\"/> <link href=\"web.css\" rel=\"stylesheet\"/> <link href=\"toc.css\" rel=\"stylesheet\"/> <title>{{ bookname }}</title> </head> <body> <div class=\"main\"> <h1>{{ bookname }}</h1> <h3 class=\"author\">{{ author }}</h3> <div class=\"info\"> {% if cover -%} <img class=\"cover\" data-src-address=\"{{ cover.name }}\"/> {%- endif %} {% if introductionHTML -%} <div> <h3>简介</h3> <div class=\"introduction\">{{ introductionHTML }}</div> </div> {%- endif %} </div> <div class=\"bookurl\"> <a href=\"{{ bookUrl }}\">打开原始网站</a> </div> <hr/> {% for sectionObj in sectionsObj -%} <div id=\"section{{ sectionObj.sectionNumber }}\" class=\"section\"> {% if sectionObj.sectionName %} <h2 class=\"section-label\">{{ sectionObj.sectionName }}</h2> {% endif %} {% for chapter in sectionObj.chpaters -%} <div class=\"chapter\"> {% if not (chapter.contentHTML or chapter.status === Status.saved) -%} <a class=\"disabled\" href=\"{{ chapter.chapterHtmlFileName }}\">{{ chapter.chapterName }}</a> {%- else -%} <a href=\"{{ chapter.chapterHtmlFileName }}\">{{ chapter.chapterName }}</a> {%- endif %} </div> {%- endfor %} </div> {%- endfor %} </div> </body> </html>";
+var index_html_code = "<!DOCTYPE html> <html> <head> <meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"/> <meta name=\"referrer\" content=\"same-origin\"/> <meta name=\"generator\" content=\"https://github.com/404-novel-project/novel-downloader\"/> <meta name=\"date-creation\" content=\"{{ creationDate }}\"/> <link href=\"style.css\" rel=\"stylesheet\"/> <link href=\"web.css\" rel=\"stylesheet\"/> <link href=\"toc.css\" rel=\"stylesheet\"/> <title>{{ bookname }}</title> </head> <body> <div class=\"main\"> <h1>{{ bookname }}</h1> <h3 class=\"author\">{{ author }}</h3> <div class=\"info\"> {% if cover -%} <img class=\"cover\" data-src-address=\"{{ cover.name }}\"/> {%- endif %} {% if introductionHTML -%} <div> <h3>简介</h3> <div class=\"introduction\">{{ introductionHTML }}</div> </div> {%- endif %} </div> <div class=\"bookurl\"> <a href=\"{{ bookUrl }}\">打开原始网站</a> </div> <hr/> {% for sectionObj in sectionsObj -%} <div id=\"section{{ sectionObj.sectionNumber }}\" class=\"section\"> {% if sectionObj.sectionName %} <h2 class=\"section-label\">{{ sectionObj.sectionName }}</h2> {% endif %} {% for chapter in sectionObj.chpaters -%} <div class=\"chapter\"> {% if not (chapter.contentHTML or chapter.status === Status.saved) -%} <a class=\"disabled\" href=\"{{ chapter.chapterHtmlFileName }}\">{{ chapter.chapterName }}</a> {%- else -%} <a href=\"{{ chapter.chapterHtmlFileName }}\">{{ chapter.chapterName }}</a> {%- endif %} </div> {%- endfor %} </div> {%- endfor %} </div> </body> </html>";
 // Exports
 /* harmony default export */ const index_html = (index_html_code);
 ;// CONCATENATED MODULE: ./src/save/section.html.j2
 // Module
-var section_html_code = "<!DOCTYPE html> <html> <head> <meta charset=\"UTF-8\"/> <meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"/> <meta name=\"referrer\" content=\"same-origin\"/> <meta name=\"generator\" content=\"https://github.com/404-novel-project/novel-downloader\"/> <link href=\"style.css\" rel=\"stylesheet\"/> <title>{{ sectionName }}</title> </head> <body> <div class=\"main\"><h1>{{ sectionName }}</h1></div> </body> </html> ";
+var section_html_code = "<!DOCTYPE html> <html> <head> <meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"/> <meta name=\"referrer\" content=\"same-origin\"/> <meta name=\"generator\" content=\"https://github.com/404-novel-project/novel-downloader\"/> <link href=\"style.css\" rel=\"stylesheet\"/> <title>{{ sectionName }}</title> </head> <body> <div class=\"main\"><h1>{{ sectionName }}</h1></div> </body> </html> ";
 // Exports
 /* harmony default export */ const section_html = (section_html_code);
 ;// CONCATENATED MODULE: external "nunjucks"
@@ -7083,11 +7083,9 @@ class EPUB extends Options {
             const source = self.contentOpf.createElement("dc:source");
             source.textContent = self.book.bookUrl;
             self.metadata.appendChild(source);
-            if (self.book.additionalMetadate.language) {
-                const language = self.contentOpf.createElement("dc:language");
-                language.textContent = self.book.additionalMetadate.language;
-                self.metadata.appendChild(language);
-            }
+            const language = self.contentOpf.createElement("dc:language");
+            language.textContent = self.book.additionalMetadate.language ?? "zh";
+            self.metadata.appendChild(language);
             if (self.book.introduction) {
                 const introduction = self.contentOpf.createElement("dc:description");
                 introduction.textContent = self.book.introduction;
@@ -8384,6 +8382,7 @@ const akatsuki = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass 
     },
     contentPatch: (content) => content,
     concurrencyLimit: 2,
+    language: "jp",
 });
 
 
@@ -8422,6 +8421,7 @@ const alphapolis = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClas
         (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .insertBrBeforeText */ .DF)(content);
         return content;
     },
+    language: "jp",
 });
 
 
@@ -8818,6 +8818,7 @@ const kakuyomu = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass 
     getSName: (dom) => dom.innerText.trim(),
     getContent: (dom) => dom.querySelector(".widget-episodeBody"),
     contentPatch: (dom) => dom,
+    language: "jp",
 });
 
 
@@ -9011,6 +9012,7 @@ const syosetu = () => {
         contentPatch: (dom) => dom,
         nsfw: getNsfw(),
         needLogin: getNsfw(),
+        language: "jp",
     });
 };
 const syosetuOrg = () => {
@@ -9069,6 +9071,7 @@ const syosetuOrg = () => {
             });
             return dom;
         },
+        language: "jp",
     });
 };
 
@@ -9101,7 +9104,7 @@ const syosetuOrg = () => {
 
 
 
-function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, coverUrl, additionalMetadatePatch, aList, getAName, getIsVIP, sections, getSName, postHook, getContentFromUrl, getContent, contentPatch, concurrencyLimit, needLogin, nsfw, cleanDomOptions, overrideConstructor, }) {
+function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, coverUrl, additionalMetadatePatch, aList, getAName, getIsVIP, sections, getSName, postHook, getContentFromUrl, getContent, contentPatch, concurrencyLimit, needLogin, nsfw, cleanDomOptions, overrideConstructor, language, }) {
     return class extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
         constructor() {
             super();
@@ -9125,7 +9128,9 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
             if (introDom && introDomPatch) {
                 [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .SN)(introDom, introDomPatch);
             }
-            const additionalMetadate = {};
+            const additionalMetadate = {
+                language: language ?? "zh",
+            };
             if (coverUrl) {
                 (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getImageAttachment */ .CE)(coverUrl, this.imageMode, "cover-")
                     .then((coverClass) => {
@@ -9588,6 +9593,7 @@ const novelup = () => {
             });
             return content;
         },
+        language: "jp",
     });
 };
 
@@ -9622,7 +9628,7 @@ const novelup = () => {
 
 
 
-function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, coverUrl, getIndexUrls, getIndexPages, getAList, getAName, getIsVIP, getSections, getSName, postHook, getContentFromUrl, getContent, contentPatch, concurrencyLimit, needLogin, nsfw, cleanDomOptions, overrideConstructor, }) {
+function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, coverUrl, getIndexUrls, getIndexPages, getAList, getAName, getIsVIP, getSections, getSName, postHook, getContentFromUrl, getContent, contentPatch, concurrencyLimit, needLogin, nsfw, cleanDomOptions, overrideConstructor, language, }) {
     return class extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
         constructor() {
             super();
@@ -9642,7 +9648,9 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
         }
         async bookParse() {
             const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .SN)(introDom, introDomPatch);
-            const additionalMetadate = {};
+            const additionalMetadate = {
+                language: language ?? "zh",
+            };
             if (coverUrl) {
                 (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getImageAttachment */ .CE)(coverUrl, this.imageMode, "cover-")
                     .then((coverClass) => {
@@ -13093,7 +13101,7 @@ class Pixiv extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
                 mode: "cors",
             });
             const tumeng = (await resp.json());
-            if (tumeng.error === false) {
+            if (!tumeng.error) {
                 return tumeng.body.page.user.id;
             }
         }
@@ -13140,6 +13148,7 @@ class Pixiv extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
                     });
                     chapters.push(chapter);
                 }
+                additionalMetadate.language = (await getPreloadData(chapters[0].chapterUrl, self.charset))?.novel?.language;
                 const book = new _main_Book__WEBPACK_IMPORTED_MODULE_4__/* .Book */ .f({
                     bookUrl,
                     bookname,
@@ -13171,7 +13180,7 @@ class Pixiv extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
                 mode: "cors",
             });
             const seriesMeta = (await respMeta.json());
-            if (seriesMeta.error === false) {
+            if (!seriesMeta.error) {
                 return seriesMeta.body;
             }
         }
@@ -13199,7 +13208,7 @@ class Pixiv extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
                     mode: "cors",
                 });
                 const _seriesContents = (await resp.json());
-                if (_seriesContents.error === false) {
+                if (!_seriesContents.error) {
                     seriesContents.push(..._seriesContents.body.seriesContents);
                 }
                 lastOrder = lastOrder + 10;
@@ -13375,7 +13384,7 @@ async function loadPixivimage({ dom, nid, lang, userId, textEmbeddedImages, }) {
             mode: "cors",
         });
         const illusts = (await resp.json());
-        if (illusts.error === false) {
+        if (!illusts.error) {
             const originalUrl = illusts.body[`${id}-1`].illust.images.original;
             return originalUrl;
         }
@@ -17977,7 +17986,7 @@ const shencou = () => {
 
 
 
-function mkRuleClass({ bookUrl, anotherPageUrl, ToCUrl, getBookname, getAuthor, getIntroDom, introDomPatch, getCoverUrl, getAList, getAName, getIsVIP, getSections, getSName, postHook, getContentFromUrl, getContent, contentPatch, concurrencyLimit, needLogin, nsfw, cleanDomOptions, overrideConstructor, }) {
+function mkRuleClass({ bookUrl, anotherPageUrl, ToCUrl, getBookname, getAuthor, getIntroDom, introDomPatch, getCoverUrl, getAList, getAName, getIsVIP, getSections, getSName, postHook, getContentFromUrl, getContent, contentPatch, concurrencyLimit, needLogin, nsfw, cleanDomOptions, overrideConstructor, language, }) {
     return class extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
         constructor() {
             super();
@@ -18002,7 +18011,9 @@ function mkRuleClass({ bookUrl, anotherPageUrl, ToCUrl, getBookname, getAuthor, 
             const introDom = getIntroDom(doc);
             const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .introDomHandle */ .SN)(introDom, introDomPatch);
             const coverUrl = getCoverUrl(doc);
-            const additionalMetadate = {};
+            const additionalMetadate = {
+                language: language ?? "zh",
+            };
             if (coverUrl) {
                 (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getImageAttachment */ .CE)(coverUrl, this.imageMode, "cover-")
                     .then((coverClass) => {
