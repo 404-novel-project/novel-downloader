@@ -67,7 +67,7 @@ export const syosetu = () => {
     contentPatch: (dom) => dom,
     nsfw: getNsfw(),
     needLogin: getNsfw(),
-    language: "jp",
+    language: "ja",
   });
 };
 
@@ -151,6 +151,6 @@ export const syosetuOrg = () => {
       });
       return dom;
     },
-    language: "jp",
+    language: "ja",
   });
 };

@@ -33,5 +33,5 @@ export const alphapolis = () =>
       insertBrBeforeText(content);
       return content;
     },
-    language: "jp",
+    language: "ja",
   });
