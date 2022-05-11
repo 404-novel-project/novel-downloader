@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.8.4.680
+// @version        4.8.4.682
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/404-novel-project/novel-downloader
@@ -6801,7 +6801,7 @@ class Options extends Common {
 var save_misc = __webpack_require__("./src/save/misc.ts");
 ;// CONCATENATED MODULE: ./src/save/chapter.html.j2
 // Module
-var code = "<!DOCTYPE html> <html> <head> <meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"/> <meta name=\"referrer\" content=\"same-origin\"/> <meta name=\"generator\" content=\"https://github.com/404-novel-project/novel-downloader\"/> <meta name=\"source\" content=\"{{ chapterUrl }}\"/> <link href=\"style.css\" rel=\"stylesheet\"/> <title>{{ chapterName }}</title> </head> <body> <div class=\"main\"> <h2>{{ chapterName }}</h2> {{ outerHTML }} </div> <script src=\"web.js\"></script> </body> </html> ";
+var code = "<!DOCTYPE html> <html> <head> <meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"/> <meta name=\"referrer\" content=\"same-origin\"/> <meta name=\"generator\" content=\"https://github.com/404-novel-project/novel-downloader\"/> <meta name=\"source\" content=\"{{ chapterUrl }}\"/> <link href=\"style.css\" rel=\"stylesheet\"/> <title>{{ chapterName }}</title> </head> <body> <div class=\"main\"> <h2>{{ chapterName }}</h2> {{ outerHTML }} </div> </body> </html> ";
 // Exports
 /* harmony default export */ const chapter_html = (code);
 ;// CONCATENATED MODULE: ./src/save/index.html.j2
@@ -8382,7 +8382,7 @@ const akatsuki = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass 
     },
     contentPatch: (content) => content,
     concurrencyLimit: 2,
-    language: "jp",
+    language: "ja",
 });
 
 
@@ -8421,7 +8421,7 @@ const alphapolis = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClas
         (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .insertBrBeforeText */ .DF)(content);
         return content;
     },
-    language: "jp",
+    language: "ja",
 });
 
 
@@ -8818,7 +8818,7 @@ const kakuyomu = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass 
     getSName: (dom) => dom.innerText.trim(),
     getContent: (dom) => dom.querySelector(".widget-episodeBody"),
     contentPatch: (dom) => dom,
-    language: "jp",
+    language: "ja",
 });
 
 
@@ -9012,7 +9012,7 @@ const syosetu = () => {
         contentPatch: (dom) => dom,
         nsfw: getNsfw(),
         needLogin: getNsfw(),
-        language: "jp",
+        language: "ja",
     });
 };
 const syosetuOrg = () => {
@@ -9071,7 +9071,7 @@ const syosetuOrg = () => {
             });
             return dom;
         },
-        language: "jp",
+        language: "ja",
     });
 };
 
@@ -9593,7 +9593,7 @@ const novelup = () => {
             });
             return content;
         },
-        language: "jp",
+        language: "ja",
     });
 };
 
