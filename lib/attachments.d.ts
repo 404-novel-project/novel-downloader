@@ -8,4 +8,4 @@ export declare function getImageAttachment(url: string, imgMode: "naive" | "TM",
     customReferer?: string;
 }): Promise<AttachmentClass>;
 export declare function getRandomName(): string;
-export declare function getExt(b: Blob, u: string): string;
+export declare function getExt(b: Blob, u: string): Promise<string>;
