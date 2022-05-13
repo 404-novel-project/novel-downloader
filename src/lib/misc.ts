@@ -15,7 +15,7 @@ export function concurrencyRun(
   limit: number,
   asyncHandle: (arg: any) => any,
   options: concurrencyOptions = {}
-) {
+): Promise<any> {
   const { signal, reason } = options;
   const listCopy = [...list];
   const asyncList = [];
@@ -41,7 +41,7 @@ export function concurrencyRun(
   }
 }
 
-export function sleep(ms: number) {
+export function sleep(ms: number): Promise<unknown> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
@@ -49,11 +49,11 @@ export function deepcopy<T>(obj: T): T {
   return JSON.parse(JSON.stringify(obj));
 }
 
-export function regexpEscape(str: string) {
+export function regexpEscape(str: string): string {
   return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
-export async function saveToArchiveOrg(url: string) {
+export async function saveToArchiveOrg(url: string): Promise<any> {
   const req = await fetch("https://save.bgme.bid/save", {
     body: JSON.stringify({
       url,
@@ -67,7 +67,7 @@ export async function saveToArchiveOrg(url: string) {
   return await req.json();
 }
 
-export function mean(list: number[]) {
+export function mean(list: number[]): number {
   if (list.length === 0) {
     return 0;
   }
@@ -76,7 +76,7 @@ export function mean(list: number[]) {
   return sum / list.length;
 }
 
-export function sd(list: number[]) {
+export function sd(list: number[]): number {
   if (list.length === 0) {
     return 0;
   }
@@ -89,7 +89,7 @@ export function sd(list: number[]) {
 }
 
 // https://stackoverflow.com/a/873856
-function createUUID() {
+function createUUID(): string {
   // http://www.ietf.org/rfc/rfc4122.txt
   const s = new Array(36);
   const hexDigits = "0123456789abcdef";
@@ -112,11 +112,24 @@ export function randomUUID(): string {
   }
 }
 
-export function extensionToMimetype(ext: string) {
+export function extensionToMimetype(ext: string): string {
   for (const [mimetype, entry] of Object.entries(db)) {
     if (entry.extensions?.includes(ext)) {
       return mimetype;
     }
   }
   return "application/octet-stream";
+}
+
+export function mimetyepToExtension(mimeType: string): string | null {
+  for (const [mimetype, entry] of Object.entries(db)) {
+    if (
+      mimeType === mimetype &&
+      Array.isArray(entry.extensions) &&
+      entry.extensions.length !== 0
+    ) {
+      return entry.extensions[0];
+    }
+  }
+  return null;
 }

@@ -245,6 +245,8 @@ export class EPUB extends Options {
         `<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">`,
         htmlText
           .replaceAll("data-src-address", "src")
+          .replaceAll(/[\u{0000}-\u{001f}]/gu, "")
+          .replaceAll(/[\u{007f}-\u{009f}]/gu, "")
           .replace("<!DOCTYPE html>", ""),
       ],
       {
@@ -370,7 +372,9 @@ export class EPUB extends Options {
 
         await self.epubZip.file(
           "OEBPS/cover.xhtml",
-          new Blob([getCoverXhtml(self.book.additionalMetadate.cover.name)])
+          new Blob([getCoverXhtml(self.book.additionalMetadate.cover.name)], {
+            type: "application/xhtml+xml",
+          })
         );
       } else {
         self.manifest.querySelector('item[id="cover.xhtml"]')?.remove();
@@ -388,12 +392,30 @@ export class EPUB extends Options {
 
       await self.epubZip.file(
         "OEBPS/info.xhtml",
-        new Blob([getInfoXhtml(self.book.bookname, self.book.author)])
+        new Blob(
+          [
+            getInfoXhtml(self.book.bookname, self.book.author)
+              .replaceAll(/[\u{0000}-\u{001f}]/gu, "")
+              .replaceAll(/[\u{007f}-\u{009f}]/gu, ""),
+          ],
+          {
+            type: "application/xhtml+xml",
+          }
+        )
       );
 
       await self.epubZip.file(
         "OEBPS/message.xhtml",
-        new Blob([convertHTMLtoXHTML(getMessageXhtml(self.book))])
+        new Blob(
+          [
+            convertHTMLtoXHTML(getMessageXhtml(self.book))
+              .replaceAll(/[\u{0000}-\u{001f}]/gu, "")
+              .replaceAll(/[\u{007f}-\u{009f}]/gu, ""),
+          ],
+          {
+            type: "application/xhtml+xml",
+          }
+        )
       );
     }
 
@@ -529,13 +551,23 @@ export class EPUB extends Options {
         new Blob([
           new XMLSerializer()
             .serializeToString(self.ncx)
-            .replaceAll('xmlns=""', ""),
+            .replaceAll('xmlns=""', "")
+            .replaceAll(/[\u{0000}-\u{001f}]/gu, "")
+            .replaceAll(/[\u{007f}-\u{009f}]/gu, ""),
         ])
       );
       // TOC.xhtml
       await self.epubZip.file(
         "OEBPS/TOC.xhtml",
-        new Blob([new XMLSerializer().serializeToString(self.toc)])
+        new Blob(
+          [
+            new XMLSerializer()
+              .serializeToString(self.toc)
+              .replaceAll(/[\u{0000}-\u{001f}]/gu, "")
+              .replaceAll(/[\u{007f}-\u{009f}]/gu, ""),
+          ],
+          { type: "application/xhtml+xml" }
+        )
       );
 
       function appendManifest(htmlFileName: string) {
@@ -591,6 +623,8 @@ export class EPUB extends Options {
             `<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">`,
             htmlText
               .replaceAll("data-src-address", "src")
+              .replaceAll(/[\u{0000}-\u{001f}]/gu, "")
+              .replaceAll(/[\u{007f}-\u{009f}]/gu, "")
               .replace("<!DOCTYPE html>", ""),
           ],
           {
@@ -675,9 +709,17 @@ export class EPUB extends Options {
         const indexHtmlText = convertHTMLtoXHTML(_indexHtmlText);
         await self.epubZip.file(
           "OEBPS/index.xhtml",
-          new Blob([indexHtmlText.replaceAll("data-src-address", "src")], {
-            type: "application/xhtml+xml; charset=UTF-8",
-          })
+          new Blob(
+            [
+              indexHtmlText
+                .replaceAll("data-src-address", "src")
+                .replaceAll(/[\u{0000}-\u{001f}]/gu, "")
+                .replaceAll(/[\u{007f}-\u{009f}]/gu, ""),
+            ],
+            {
+              type: "application/xhtml+xml; charset=UTF-8",
+            }
+          )
         );
       }
 

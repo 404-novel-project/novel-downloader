@@ -58,6 +58,7 @@
     "fflate": "^0.7.2",
     "file-saver": "^2.0.5",
     "loglevel": "^1.7.1",
+    "magic-bytes.js": "^1.0.12",
     "mime-db": "^1.51.0",
     "nunjucks": "^3.2.3",
     "streamsaver": "^2.0.5",

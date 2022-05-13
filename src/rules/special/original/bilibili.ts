@@ -267,7 +267,7 @@ export class MangaBilibili extends BaseRuleClass {
         const resp = await fetchWithRetry(url, init);
         const blob = await resp.blob();
         const hash = await calculateSha1(blob);
-        const ext = getExt(blob, url);
+        const ext = await getExt(blob, url);
         const name = ["cm-", hash, ".", ext].join("");
         const imgClass = new AttachmentClass(url, name, "naive");
         imgClass.imageBlob = blob;

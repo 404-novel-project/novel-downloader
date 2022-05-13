@@ -4,7 +4,10 @@ import { calculateSha1 } from "./hash";
 import { log } from "../log";
 import { randomUUID } from "./misc";
 
+import { filetypeextension } from "magic-bytes.js";
+
 let attachmentClassCache: AttachmentClass[] = [];
+
 export function getAttachmentClassCache(url: string) {
   return attachmentClassCache.find(
     (attachmentClass) => attachmentClass.url === url
@@ -57,7 +60,7 @@ export async function getImageAttachment(
       imgClass.name = getLastPart(url);
     } else {
       const hash = await calculateSha1(blob);
-      const ext = getExt(blob, url);
+      const ext = await getExt(blob, url);
       imgClass.name = [prefix, hash, ".", ext].join("");
     }
   }
@@ -72,7 +75,12 @@ export function getRandomName() {
   return `__${randomUUID()}__`;
 }
 
-export function getExt(b: Blob, u: string) {
+export async function getExt(b: Blob, u: string): Promise<string> {
+  const ext = filetypeextension(new Uint8Array(await b.arrayBuffer()) as any);
+  if (ext.length !== 0) {
+    return ext[0];
+  }
+
   const contentType = b.type.split(";")[0].split("/")[1];
   const contentTypeBlackList = ["octet-stream"];
   if (contentTypeBlackList.includes(contentType)) {
@@ -81,11 +89,13 @@ export function getExt(b: Blob, u: string) {
     return contentType;
   }
 }
+
 function getExtFromUrl(u: string) {
   const _u = new URL(u);
   const p = _u.pathname;
   return p.substring(p.lastIndexOf(".") + 1);
 }
+
 function getLastPart(u: string) {
   const _u = new URL(u);
   const p = _u.pathname;
