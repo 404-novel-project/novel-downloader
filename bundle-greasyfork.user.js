@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.8.4.684
+// @version        4.8.4.685
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/404-novel-project/novel-downloader
@@ -8040,8 +8040,9 @@ class EPUB extends Options {
             if (self.book.additionalMetadate.cover) {
                 await self.addAttachment(self.book.additionalMetadate.cover);
                 const cover = self.contentOpf.createElement("meta");
-                cover.name = "cover";
-                cover.content = self.book.additionalMetadate.cover.name;
+                cover.setAttribute("name", "cover");
+                cover.setAttribute("content", self.book.additionalMetadate.cover.name);
+                self.metadata.appendChild(cover);
                 await self.epubZip.file("OEBPS/cover.xhtml", new Blob([getCoverXhtml(self.book.additionalMetadate.cover.name)], {
                     type: "application/xhtml+xml",
                 }));
