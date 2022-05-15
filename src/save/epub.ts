@@ -367,8 +367,9 @@ export class EPUB extends Options {
         await self.addAttachment(self.book.additionalMetadate.cover);
 
         const cover = self.contentOpf.createElement("meta");
-        cover.name = "cover";
-        cover.content = self.book.additionalMetadate.cover.name;
+        cover.setAttribute("name", "cover");
+        cover.setAttribute("content", self.book.additionalMetadate.cover.name);
+        self.metadata.appendChild(cover);
 
         await self.epubZip.file(
           "OEBPS/cover.xhtml",
