@@ -7814,13 +7814,13 @@ const content_opf = `<?xml version="1.0" encoding="utf-8"?>
   </metadata>
   <manifest>
     <item id="ncx" href="toc.ncx" media-type="application/x-dtbncx+xml"/>
+    <item id="navid" href="nav.xhtml" media-type="application/xhtml+xml" properties="nav"/>
     <item id="sgc-toc.css" href="sgc-toc.css" media-type="text/css"/>
     <item id="style.css" href="style.css" media-type="text/css"/>
     <item id="cover.xhtml" href="cover.xhtml" media-type="application/xhtml+xml" properties="svg"/>
     <item id="info.xhtml" href="info.xhtml" media-type="application/xhtml+xml"/>
     <item id="message.xhtml" href="message.xhtml" media-type="application/xhtml+xml"/>
     <item id="TOC.xhtml" href="TOC.xhtml" media-type="application/xhtml+xml"/>
-    <item id="navid" href="nav.xhtml" media-type="application/xhtml+xml" properties="nav"/>
   </manifest>
   <spine toc="ncx">
     <itemref idref="cover.xhtml"/>
@@ -8325,7 +8325,7 @@ class EPUB extends Options {
         item.id = chapterHtmlFileName;
         item.setAttribute("href", chapterHtmlFileName);
         item.setAttribute("media-type", "application/xhtml+xml");
-        if (!this.manifest.querySelector(`itme[id="${chapterHtmlFileName}"]`)) {
+        if (!this.manifest.querySelector(`item[id="${chapterHtmlFileName}"]`)) {
             this.manifest.appendChild(item);
         }
         if (chapter.contentImages && chapter.contentImages.length !== 0) {
