@@ -99,7 +99,9 @@ export class Pixiv extends BaseRuleClass {
         for (const sc of seriesContents) {
           const chapterUrl = chapterUrlBase + sc.id;
           const chapterNumber = sc.series.contentOrder;
-          const chapterName = `#${sc.series.contentOrder} ${sc.title}`;
+          const chapterName = `#${sc.series.contentOrder} ${
+            sc.title ?? ""
+          }`.trim();
           const chapter = new Chapter({
             bookUrl,
             bookname,
@@ -115,6 +117,9 @@ export class Pixiv extends BaseRuleClass {
             charset: self.charset,
             options: { id: sc.id, lang: _lang, userId },
           });
+          if (sc.series.viewableType !== 0) {
+            chapter.status = Status.aborted;
+          }
           chapters.push(chapter);
         }
 
