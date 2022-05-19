@@ -9,14 +9,16 @@ export declare class EPUB extends Options {
     private readonly guide;
     private readonly ncx;
     private readonly navMap;
+    private readonly navHtml;
+    private readonly navHtmlToc;
     private readonly toc;
     private readonly tocBody;
     private readonly book;
     private readonly chapters;
     private readonly epubZip;
     constructor(book: Book, streamZip: boolean, options?: SaveOptions);
-    private addAttachment;
     private static genChapterHtmlFile;
-    addChapter(chapter: Chapter, suffix?: string): Promise<void>;
     saveEpub(): Promise<void>;
+    addChapter(chapter: Chapter, suffix?: string): Promise<void>;
+    private addAttachment;
 }
