@@ -257,11 +257,11 @@ function* findBase(elem: Element, withKeep = true): Generator<Element | Text> {
   }) as (Element | Text)[];
   for (const child of childNodes) {
     const childNodeName = child.nodeName.toLowerCase();
-    if (IgnoreElements.includes(childNodeName) === false) {
+    if (!IgnoreElements.includes(childNodeName)) {
       if (is(child)) {
         yield child;
       } else {
-        yield* findBase(child as Element, withKeep);
+        yield * findBase(child as Element, withKeep);
       }
     }
   }
@@ -272,27 +272,30 @@ export interface Options {
   referrerMode?: ReferrerMode;
   customReferer?: string;
 }
+
 interface Output {
   dom: HTMLElement;
   text: string;
   images: AttachmentClass[];
 }
+
 //** 清理元素 */
 export async function cleanDOM(
   elem: Element,
   imgMode: "naive" | "TM",
   options?: Options
 ): Promise<Output> {
-  const baseNodes = [...findBase(elem)];
-  const _obj = await loop(baseNodes, document.createElement("div"));
-  const obj = await awaitImages(_obj);
-  return postHook(obj);
-
   interface SubOutput {
     dom: HTMLElement | Text;
     text: string;
     images: (Promise<AttachmentClass> | AttachmentClass)[];
   }
+
+  const baseNodes = [...findBase(elem)];
+  const _obj = await loop(baseNodes, document.createElement("div"));
+  const obj = await awaitImages(_obj);
+  return postHook(obj);
+
   async function blockElement(element: Element): Promise<SubOutput | null> {
     const map: Map<
       string,
@@ -309,6 +312,7 @@ export async function cleanDOM(
       "section",
       "hgroup",
     ];
+
     function div(elem: Element) {
       if (elem instanceof HTMLElement) {
         const nodes = [...findBase(elem)];
@@ -316,9 +320,11 @@ export async function cleanDOM(
       }
       return null;
     }
+
     divList.forEach((n) => map.set(n, div));
 
     const pList = ["address", "p", "dd", "dt", "figcaption", "dl"];
+
     function p(elem: Element) {
       if (elem instanceof HTMLElement) {
         const nodes = [...findBase(elem)];
@@ -326,9 +332,11 @@ export async function cleanDOM(
       }
       return null;
     }
+
     pList.forEach((n) => map.set(n, p));
 
     const blockquoteList = ["aside", "blockquote"];
+
     async function blockquote(elem: Element) {
       if (elem instanceof HTMLElement) {
         const nodes = [...findBase(elem)];
@@ -348,9 +356,11 @@ export async function cleanDOM(
       }
       return null;
     }
+
     blockquoteList.forEach((n) => map.set(n, blockquote));
 
     const headerList = ["h1", "h2", "h3", "h4", "h5", "h6"];
+
     function header(elem: Element) {
       if (elem instanceof HTMLElement) {
         const nodeName = elem.nodeName.toLowerCase();
@@ -368,9 +378,11 @@ export async function cleanDOM(
       }
       return null;
     }
+
     headerList.forEach((n) => map.set(n, header));
 
     const preList = ["pre", "textarea"];
+
     function pre(elem: Element) {
       if (elem instanceof HTMLElement) {
         const dom = document.createElement("pre");
@@ -385,6 +397,7 @@ export async function cleanDOM(
       }
       return null;
     }
+
     preList.forEach((n) => map.set(n, pre));
 
     function hr(elem: Element) {
@@ -397,6 +410,7 @@ export async function cleanDOM(
         images,
       };
     }
+
     map.set("hr", hr);
 
     async function common1(boldName: string, baseName: string, elem: Element) {
@@ -422,14 +436,17 @@ export async function cleanDOM(
         images,
       };
     }
+
     function details(elem: Element) {
       return common1("summary", "details", elem);
     }
+
     map.set("details", details);
 
     function figure(elem: Element) {
       return common1("figcaption", "figure", elem);
     }
+
     map.set("figure", figure);
 
     function listItem(elem: Element) {
@@ -453,9 +470,11 @@ export async function cleanDOM(
       }
       return null;
     }
+
     map.set("li", listItem);
 
     const listList = ["ul", "ol"];
+
     function list(elem: Element) {
       const nodeName = elem.nodeName.toLowerCase();
       if (
@@ -468,6 +487,7 @@ export async function cleanDOM(
       }
       return null;
     }
+
     listList.forEach((n) => map.set(n, list));
 
     const nodeName = element.nodeName.toLowerCase();
@@ -504,6 +524,7 @@ export async function cleanDOM(
       "tt",
       "#text",
     ];
+
     async function defaultHandler(elem: Element | Text) {
       if (
         (elem instanceof HTMLElement && elem.childElementCount === 0) ||
@@ -540,6 +561,7 @@ export async function cleanDOM(
       }
       return null;
     }
+
     defaultList.forEach((n) => map.set(n, defaultHandler));
 
     async function a(elem: Element) {
@@ -580,6 +602,7 @@ export async function cleanDOM(
       }
       return null;
     }
+
     map.set("a", a);
 
     function getImg(url: string) {
@@ -631,6 +654,7 @@ export async function cleanDOM(
       }
       return null;
     }
+
     map.set("img", img);
 
     function picture(elem: Element) {
@@ -647,11 +671,24 @@ export async function cleanDOM(
       }
       return null;
     }
+
     map.set("picture", picture);
 
     function ruby(elem: Element) {
       if (elem instanceof HTMLElement) {
-        const dom = elem.cloneNode(true) as HTMLElement;
+        const dom = document.createElement("ruby");
+        Array.from(elem.childNodes)
+          .map((node) => {
+            if (node instanceof Text && node.textContent?.trim()) {
+              const rb = document.createElement("rb");
+              rb.innerText = node.textContent.trim();
+              return rb;
+            } else {
+              return node;
+            }
+          })
+          .forEach((node) => dom.appendChild(node));
+
         const text = elem.innerText;
         const images = [] as AttachmentClass[];
         return {
@@ -662,6 +699,7 @@ export async function cleanDOM(
       }
       return null;
     }
+
     map.set("ruby", ruby);
 
     function br(elem: Element) {
@@ -674,6 +712,7 @@ export async function cleanDOM(
         images,
       };
     }
+
     map.set("br", br);
 
     async function common(
@@ -710,6 +749,7 @@ export async function cleanDOM(
     }
 
     const strongList = ["b", "big", "mark", "samp", "strong"];
+
     function strong(elem: Element) {
       return common(
         "strong",
@@ -717,29 +757,37 @@ export async function cleanDOM(
         elem
       );
     }
+
     strongList.forEach((n) => map.set(n, strong));
 
     const codeList = ["code", "kbd"];
+
     function code(elem: Element) {
       return common("code", (textContent) => `\`${textContent}\``, elem);
     }
+
     codeList.forEach((n) => map.set(n, code));
 
     const sList = ["del", "s"];
+
     function s(elem: Element) {
       return common("s", (textContent) => `~~${textContent}~~`, elem);
     }
+
     sList.forEach((n) => map.set(n, s));
 
     const emList = ["em", "i", "q", "var"];
+
     function em(elem: Element) {
       return common("em", (textContent) => `*${textContent}*`, elem);
     }
+
     emList.forEach((n) => map.set(n, em));
 
     function ins(elem: Element) {
       return common("ins", (textContent) => `++${textContent}++`, elem);
     }
+
     map.set("ins", ins);
 
     function small(elem: Element) {
@@ -749,16 +797,19 @@ export async function cleanDOM(
         elem
       );
     }
+
     map.set("small", small);
 
     function sup(elem: Element) {
       return common("sup", (textContent) => `<sup>${textContent}</sup>`, elem);
     }
+
     map.set("sup", sup);
 
     function sub(elem: Element) {
       return common("sub", (textContent) => `<sub>${textContent}</sub>`, elem);
     }
+
     map.set("sub", sub);
 
     const nodeName = element.nodeName.toLowerCase();
@@ -979,6 +1030,7 @@ export function convertBr(dom: HTMLElement, force = false) {
     return Array.from(d.childNodes).filter((n) => n instanceof HTMLBRElement)
       .length;
   }
+
   function onlyTextAndBr(d: HTMLElement) {
     return Array.from(d.childNodes)
       .map((n) => n.nodeName.toLowerCase())
