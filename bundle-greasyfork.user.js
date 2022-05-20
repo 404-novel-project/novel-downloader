@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.8.4.688
+// @version        4.8.5.689
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/404-novel-project/novel-downloader
@@ -14082,13 +14082,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "Pixiv": () => (/* binding */ Pixiv)
 /* harmony export */ });
 /* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/attachments.ts");
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/cleanDOM.ts");
 /* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/http.ts");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/main.ts");
+/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/main.ts");
 /* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/main/Chapter.ts");
-/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Book.ts");
 /* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
 
 
@@ -14176,7 +14176,7 @@ class Pixiv extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
                 for (const sc of seriesContents) {
                     const chapterUrl = chapterUrlBase + sc.id;
                     const chapterNumber = sc.series.contentOrder;
-                    const chapterName = `#${sc.series.contentOrder} ${sc.title}`;
+                    const chapterName = `#${sc.series.contentOrder} ${sc.title ?? ""}`.trim();
                     const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_3__/* .Chapter */ .W({
                         bookUrl,
                         bookname,
@@ -14192,10 +14192,13 @@ class Pixiv extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
                         charset: self.charset,
                         options: { id: sc.id, lang: _lang, userId },
                     });
+                    if (sc.series.viewableType !== 0) {
+                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_4__/* .Status.aborted */ .qb.aborted;
+                    }
                     chapters.push(chapter);
                 }
                 additionalMetadate.language = (await getPreloadData(chapters[0].chapterUrl, self.charset))?.novel?.language;
-                const book = new _main_Book__WEBPACK_IMPORTED_MODULE_4__/* .Book */ .f({
+                const book = new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .f({
                     bookUrl,
                     bookname,
                     author,
@@ -14307,7 +14310,7 @@ class Pixiv extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
                 userId,
                 textEmbeddedImages: novel.textEmbeddedImages,
             });
-            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_5__/* .cleanDOM */ .zM)(contentRaw, "TM");
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_6__/* .cleanDOM */ .zM)(contentRaw, "TM");
             chapter.contentRaw = contentRaw;
             chapter.contentHTML = dom;
             chapter.contentText = text;
@@ -14316,9 +14319,9 @@ class Pixiv extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
                 lastModified: new Date(novel.uploadDate).getTime(),
                 tags: novel.tags.tags.map((t) => t.tag),
             };
-            chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status.finished */ .qb.finished;
+            chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_4__/* .Status.finished */ .qb.finished;
             const chapters = [chapter];
-            const book = new _main_Book__WEBPACK_IMPORTED_MODULE_4__/* .Book */ .f({
+            const book = new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .f({
                 bookUrl,
                 bookname,
                 author,
@@ -14344,7 +14347,7 @@ class Pixiv extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
                     userId: options.userId,
                     textEmbeddedImages: novel.textEmbeddedImages,
                 });
-                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_5__/* .cleanDOM */ .zM)(contentRaw, "TM");
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_6__/* .cleanDOM */ .zM)(contentRaw, "TM");
                 const additionalMetadate = {
                     lastModified: new Date(novel.uploadDate).getTime(),
                     tags: novel.tags.tags.map((t) => t.tag),
