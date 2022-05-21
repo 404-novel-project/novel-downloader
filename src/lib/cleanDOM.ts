@@ -261,7 +261,7 @@ function* findBase(elem: Element, withKeep = true): Generator<Element | Text> {
       if (is(child)) {
         yield child;
       } else {
-        yield * findBase(child as Element, withKeep);
+        yield* findBase(child as Element, withKeep);
       }
     }
   }
@@ -400,7 +400,7 @@ export async function cleanDOM(
 
     preList.forEach((n) => map.set(n, pre));
 
-    function hr(elem: Element) {
+    function hr() {
       const dom = document.createElement("hr");
       const text = "-".repeat(20);
       const images = [] as AttachmentClass[];
@@ -676,20 +676,39 @@ export async function cleanDOM(
 
     function ruby(elem: Element) {
       if (elem instanceof HTMLElement) {
-        const dom = document.createElement("ruby");
-        Array.from(elem.childNodes)
-          .map((node) => {
-            if (node instanceof Text && node.textContent?.trim()) {
-              const rb = document.createElement("rb");
-              rb.innerText = node.textContent.trim();
-              return rb;
-            } else {
-              return node;
-            }
-          })
-          .forEach((node) => dom.appendChild(node));
+        const nodeArray = Array.from(elem.childNodes).map((node) => {
+          if (node instanceof Text && node.textContent?.trim()) {
+            const rb = document.createElement("rb");
+            rb.innerText = node.textContent.trim();
+            return rb;
+          } else {
+            return node.cloneNode(true);
+          }
+        });
 
-        const text = elem.innerText;
+        const dom = document.createElement("ruby");
+        nodeArray.forEach((node) => dom.appendChild(node));
+
+        let text: string;
+        if (
+          nodeArray.some((node) => node.nodeName.toLowerCase() === "rt") &&
+          nodeArray.some((node) => node.nodeName.toLowerCase() === "rb")
+        ) {
+          text =
+            nodeArray
+              .filter((node) => node.nodeName.toLowerCase() === "rb")
+              .map((n) => (n as HTMLElement).innerText)
+              .join() +
+            "(" +
+            nodeArray
+              .filter((node) => node.nodeName.toLowerCase() === "rt")
+              .map((n) => (n as HTMLElement).innerText)
+              .join() +
+            ")";
+        } else {
+          text = elem.innerText;
+        }
+
         const images = [] as AttachmentClass[];
         return {
           dom,
@@ -702,7 +721,7 @@ export async function cleanDOM(
 
     map.set("ruby", ruby);
 
-    function br(elem: Element) {
+    function br() {
       const dom = document.createElement("br");
       const text = "\n";
       const images = [] as AttachmentClass[];

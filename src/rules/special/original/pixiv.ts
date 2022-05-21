@@ -7,6 +7,9 @@ import { Chapter, ChapterAdditionalMetadate } from "../../../main/Chapter";
 import { Book, BookAdditionalMetadate } from "../../../main/Book";
 import { BaseRuleClass } from "../../../rules";
 
+const _lang = document.documentElement.getAttribute("lang");
+const lang: Record<string, string> = _lang ? { lang: _lang } : {};
+
 export class Pixiv extends BaseRuleClass {
   public constructor() {
     super();
@@ -16,8 +19,6 @@ export class Pixiv extends BaseRuleClass {
 
   public async bookParse() {
     const self = this;
-    const _lang = document.documentElement.getAttribute("lang");
-    const lang: Record<string, string> = _lang ? { lang: _lang } : {};
     const userId = await getUserId();
     let bookG: Book | undefined;
 
@@ -30,19 +31,17 @@ export class Pixiv extends BaseRuleClass {
       }
     } else {
       // 位于章节页
-      const obj = await getPreloadData(document.location.href, self.charset);
-      if (obj) {
-        const { novel } = obj;
-        if (novel) {
-          const seriesNavData = novel.seriesNavData;
-          if (seriesNavData) {
-            // 有目录
-            const seriesID = seriesNavData.seriesId;
-            bookG = await series(seriesID);
-          } else {
-            // 无目录
-            bookG = await onePage(novel);
-          }
+      const chapterId = new URL(document.location.href).searchParams.get("id");
+      if (chapterId) {
+        const novel = await getChapterDate(chapterId);
+        const seriesNavData = novel.seriesNavData;
+        if (seriesNavData) {
+          // 有目录
+          const seriesID = seriesNavData.seriesId;
+          bookG = await series(seriesID);
+        } else {
+          // 无目录
+          bookG = await onePage(novel);
         }
       }
     }
@@ -71,73 +70,70 @@ export class Pixiv extends BaseRuleClass {
 
     async function series(id: number) {
       const seriesMetaBody = await getSeriesMeta(id);
-      if (seriesMetaBody) {
-        const bookUrl = "https://www.pixiv.net/novel/series/" + id.toString();
-        const bookname = seriesMetaBody.title;
-        const author = seriesMetaBody.userName;
-        const introduction = seriesMetaBody.caption;
-        const introductionHTML = document.createElement("div");
-        introductionHTML.innerText = introduction;
+      const bookUrl = "https://www.pixiv.net/novel/series/" + id.toString();
+      const bookname = seriesMetaBody.title;
+      const author = seriesMetaBody.userName;
+      const introduction = seriesMetaBody.caption;
+      const introductionHTML = document.createElement("div");
+      introductionHTML.innerText = introduction;
 
-        const additionalMetadate: BookAdditionalMetadate = {};
-        const coverUrl = seriesMetaBody.firstEpisode.url;
-        if (coverUrl) {
-          getImageAttachment(coverUrl, self.imageMode, "cover-")
-            .then((coverClass) => {
-              additionalMetadate.cover = coverClass;
-            })
-            .catch((error) => log.error(error));
-        }
-        additionalMetadate.lastModified = seriesMetaBody.updatedTimestamp;
+      const additionalMetadate: BookAdditionalMetadate = {};
+      const coverUrl = seriesMetaBody.firstEpisode.url;
+      if (coverUrl) {
+        getImageAttachment(coverUrl, self.imageMode, "cover-")
+          .then((coverClass) => {
+            additionalMetadate.cover = coverClass;
+          })
+          .catch((error) => log.error(error));
+      }
+      additionalMetadate.lastModified = seriesMetaBody.updatedTimestamp;
 
-        const seriesContents = await getSeriesContents(
-          id,
-          seriesMetaBody.publishedContentCount
-        );
-        const chapters: Chapter[] = [];
-        const chapterUrlBase = "https://www.pixiv.net/novel/show.php?id=";
-        for (const sc of seriesContents) {
-          const chapterUrl = chapterUrlBase + sc.id;
-          const chapterNumber = sc.series.contentOrder;
-          const chapterName = `#${sc.series.contentOrder} ${
-            sc.title ?? ""
-          }`.trim();
-          const chapter = new Chapter({
-            bookUrl,
-            bookname,
-            chapterUrl,
-            chapterNumber,
-            chapterName,
-            isVIP: false,
-            isPaid: false,
-            sectionName: null,
-            sectionNumber: null,
-            sectionChapterNumber: null,
-            chapterParse: self.chapterParse,
-            charset: self.charset,
-            options: { id: sc.id, lang: _lang, userId },
-          });
-          if (sc.series.viewableType !== 0) {
-            chapter.status = Status.aborted;
-          }
-          chapters.push(chapter);
-        }
-
-        additionalMetadate.language = (
-          await getPreloadData(chapters[0].chapterUrl, self.charset)
-        )?.novel?.language;
-
-        const book = new Book({
+      const seriesContents = await getSeriesContents(
+        id,
+        seriesMetaBody.publishedContentCount
+      );
+      const chapters: Chapter[] = [];
+      const chapterUrlBase = "https://www.pixiv.net/novel/show.php?id=";
+      for (const sc of seriesContents) {
+        const chapterUrl = chapterUrlBase + sc.id;
+        const chapterNumber = sc.series.contentOrder;
+        const chapterName = `#${sc.series.contentOrder} ${
+          sc.title ?? ""
+        }`.trim();
+        const chapter = new Chapter({
           bookUrl,
           bookname,
-          author,
-          introduction,
-          introductionHTML,
-          additionalMetadate,
-          chapters,
+          chapterUrl,
+          chapterNumber,
+          chapterName,
+          isVIP: false,
+          isPaid: false,
+          sectionName: null,
+          sectionNumber: null,
+          sectionChapterNumber: null,
+          chapterParse: self.chapterParse,
+          charset: self.charset,
+          options: { id: sc.id, lang: _lang, userId },
         });
-        return book;
+        if (sc.series.viewableType !== 0) {
+          chapter.status = Status.aborted;
+        }
+        chapters.push(chapter);
       }
+
+      additionalMetadate.language = (
+        await getPreloadData(chapters[0].chapterUrl, self.charset)
+      )?.novel?.language;
+
+      return new Book({
+        bookUrl,
+        bookname,
+        author,
+        introduction,
+        introductionHTML,
+        additionalMetadate,
+        chapters,
+      });
     }
 
     async function getSeriesMeta(id: number) {
@@ -233,6 +229,8 @@ export class Pixiv extends BaseRuleClass {
       const seriesMeta = (await respMeta.json()) as SeriesMeta;
       if (!seriesMeta.error) {
         return seriesMeta.body;
+      } else {
+        throw new Error("series ajax failed! series ID: " + id);
       }
     }
 
@@ -351,6 +349,7 @@ export class Pixiv extends BaseRuleClass {
         userId,
         textEmbeddedImages: novel.textEmbeddedImages,
       });
+      replaceMark(contentRaw);
 
       const { dom, text, images } = await cleanDOM(contentRaw, "TM");
       chapter.contentRaw = contentRaw;
@@ -364,7 +363,7 @@ export class Pixiv extends BaseRuleClass {
       chapter.status = Status.finished;
       const chapters = [chapter];
 
-      const book = new Book({
+      return new Book({
         bookUrl,
         bookname,
         author,
@@ -373,7 +372,6 @@ export class Pixiv extends BaseRuleClass {
         additionalMetadate,
         chapters,
       });
-      return book;
     }
   }
 
@@ -385,41 +383,29 @@ export class Pixiv extends BaseRuleClass {
     charset: string,
     options: chapterOptions
   ) {
-    const obj = await getPreloadData(chapterUrl, charset);
-    if (obj) {
-      const { novel } = obj;
-      if (novel) {
-        const contentRaw = document.createElement("div");
-        contentRaw.innerHTML = novel.content.replace(/\n/g, "<br/>");
-        await loadPixivimage({
-          dom: contentRaw,
-          nid: options.id,
-          lang: options.lang,
-          userId: options.userId,
-          textEmbeddedImages: novel.textEmbeddedImages,
-        });
-        const { dom, text, images } = await cleanDOM(contentRaw, "TM");
-        const additionalMetadate: ChapterAdditionalMetadate = {
-          lastModified: new Date(novel.uploadDate).getTime(),
-          tags: novel.tags.tags.map((t) => t.tag),
-        };
-        return {
-          chapterName,
-          contentRaw,
-          contentText: text,
-          contentHTML: dom,
-          contentImages: images,
-          additionalMetadate,
-        };
-      }
-    }
+    const novel = await getChapterDate(options.id);
+    const contentRaw = document.createElement("div");
+    contentRaw.innerHTML = novel.content.replace(/\n/g, "<br/>");
+    await loadPixivimage({
+      dom: contentRaw,
+      nid: options.id,
+      lang: options.lang,
+      userId: options.userId,
+      textEmbeddedImages: novel.textEmbeddedImages,
+    });
+    replaceMark(contentRaw);
+    const { dom, text, images } = await cleanDOM(contentRaw, "TM");
+    const additionalMetadate: ChapterAdditionalMetadate = {
+      lastModified: new Date(novel.uploadDate).getTime(),
+      tags: novel.tags.tags.map((t) => t.tag),
+    };
     return {
       chapterName,
-      contentRaw: null,
-      contentText: null,
-      contentHTML: null,
-      contentImages: null,
-      additionalMetadate: null,
+      contentRaw,
+      contentText: text,
+      contentHTML: dom,
+      contentImages: images,
+      additionalMetadate,
     };
   }
 }
@@ -649,6 +635,30 @@ async function getPreloadData(chapterUrl: string, charset: string) {
   }
 }
 
+async function getChapterDate(chapterId: string) {
+  const apiBase = "https://www.pixiv.net/ajax/novel/";
+  const url = apiBase + chapterId + "?" + new URLSearchParams(lang).toString();
+
+  const resp = await fetch(url, {
+    credentials: "include",
+    headers: {
+      Accept: "application/json",
+    },
+    method: "GET",
+    mode: "cors",
+  });
+  const data = (await resp.json()) as {
+    error: boolean;
+    message: string;
+    body: NovelObj;
+  };
+  if (!data.error) {
+    return data.body;
+  } else {
+    throw new Error("chpater ajax failed! Chapter ID: " + chapterId);
+  }
+}
+
 async function loadPixivimage({
   dom,
   nid,
@@ -675,14 +685,12 @@ async function loadPixivimage({
 
   async function mapperPixivImage([str, id]: [string, string]) {
     const imgSrc = await getPixivImage(id);
-    if (imgSrc) {
-      const img = document.createElement("img");
-      img.src = imgSrc;
-      const a = document.createElement("a");
-      a.href = `https://www.pixiv.net/artworks/${id}`;
-      a.appendChild(img);
-      dom.innerHTML = dom.innerHTML.replaceAll(str, a.outerHTML);
-    }
+    const img = document.createElement("img");
+    img.src = imgSrc;
+    const a = document.createElement("a");
+    a.href = `https://www.pixiv.net/artworks/${id}`;
+    a.appendChild(img);
+    dom.innerHTML = dom.innerHTML.replaceAll(str, a.outerHTML);
   }
 
   async function getPixivImage(id: string) {
@@ -706,11 +714,9 @@ async function loadPixivimage({
     });
     const illusts = (await resp.json()) as illusts;
     if (!illusts.error) {
-      const originalUrl = illusts.body[`${id}-1`].illust.images.original;
-      return originalUrl;
+      return illusts.body[`${id}-1`].illust.images.original;
     } else {
-      console.error(`获取插图失败: pixivimage:${id}`);
-      return;
+      throw new Error(`获取插图失败: pixivimage:${id}`);
     }
   }
 
@@ -721,6 +727,53 @@ async function loadPixivimage({
       img.src = imgSrc;
       dom.innerHTML = dom.innerHTML.replaceAll(str, img.outerHTML);
     }
+  }
+}
+
+function replaceMark(dom: HTMLElement) {
+  // [newpage]
+  // https://www.pixiv.net/novel/show.php?id=12304493
+  dom.innerHTML = dom.innerHTML.replaceAll("[newpage]", "");
+
+  // jumpuri
+  // [[jumpuri:原文链接 > https://www.backchina.com/blog/250647/article-183780.html]]
+  // https://www.pixiv.net/novel/show.php?id=17253845
+  const jumpuriMatchs = dom.innerHTML.matchAll(
+      /\[\[jumpuri:(.*) (>|&gt;) (.*)]]/g
+  );
+  for (const match of jumpuriMatchs) {
+    const [str, text, , href] = match;
+    const a = document.createElement("a");
+    a.innerText = text.trim();
+    a.href = href.trim();
+    dom.innerHTML = dom.innerHTML.replaceAll(str, a.outerHTML);
+  }
+
+  // rb
+  // [[rb:莉莉丝 > Lilith]]
+  // https://www.pixiv.net/novel/show.php?id=13854092
+  const rbMatchs = dom.innerHTML.matchAll(/\[\[rb:(.*) (>|&gt;) (.*)]]/g);
+  for (const match of rbMatchs) {
+    const [str, rb, , rt] = match;
+    const ruby = document.createElement("ruby");
+
+    const rbElem = document.createElement("rb");
+    rbElem.innerText = rb.trim();
+    ruby.appendChild(rbElem);
+
+    const rpL = document.createElement("rp");
+    rpL.innerText = "(";
+    ruby.appendChild(rpL);
+
+    const rtElem = document.createElement("rt");
+    rtElem.innerText = rt.trim();
+    ruby.appendChild(rtElem);
+
+    const rpR = document.createElement("rp");
+    rpR.innerText = ")";
+    ruby.appendChild(rpR);
+
+    dom.innerHTML = dom.innerHTML.replaceAll(str, ruby.outerHTML);
   }
 }
 
