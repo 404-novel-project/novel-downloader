@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.8.5.690
+// @version        4.8.5.691
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/404-novel-project/novel-downloader
@@ -5250,7 +5250,7 @@ async function cleanDOM(elem, imgMode, options) {
             return null;
         }
         preList.forEach((n) => map.set(n, pre));
-        function hr(elem) {
+        function hr() {
             const dom = document.createElement("hr");
             const text = "-".repeat(20);
             const images = [];
@@ -5478,20 +5478,36 @@ async function cleanDOM(elem, imgMode, options) {
         map.set("picture", picture);
         function ruby(elem) {
             if (elem instanceof HTMLElement) {
-                const dom = document.createElement("ruby");
-                Array.from(elem.childNodes)
-                    .map((node) => {
+                const nodeArray = Array.from(elem.childNodes).map((node) => {
                     if (node instanceof Text && node.textContent?.trim()) {
                         const rb = document.createElement("rb");
                         rb.innerText = node.textContent.trim();
                         return rb;
                     }
                     else {
-                        return node;
+                        return node.cloneNode(true);
                     }
-                })
-                    .forEach((node) => dom.appendChild(node));
-                const text = elem.innerText;
+                });
+                const dom = document.createElement("ruby");
+                nodeArray.forEach((node) => dom.appendChild(node));
+                let text;
+                if (nodeArray.some((node) => node.nodeName.toLowerCase() === "rt") &&
+                    nodeArray.some((node) => node.nodeName.toLowerCase() === "rb")) {
+                    text =
+                        nodeArray
+                            .filter((node) => node.nodeName.toLowerCase() === "rb")
+                            .map((n) => n.innerText)
+                            .join() +
+                            "(" +
+                            nodeArray
+                                .filter((node) => node.nodeName.toLowerCase() === "rt")
+                                .map((n) => n.innerText)
+                                .join() +
+                            ")";
+                }
+                else {
+                    text = elem.innerText;
+                }
                 const images = [];
                 return {
                     dom,
@@ -5502,7 +5518,7 @@ async function cleanDOM(elem, imgMode, options) {
             return null;
         }
         map.set("ruby", ruby);
-        function br(elem) {
+        function br() {
             const dom = document.createElement("br");
             const text = "\n";
             const images = [];
@@ -14098,6 +14114,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+const _lang = document.documentElement.getAttribute("lang");
+const lang = _lang ? { lang: _lang } : {};
 class Pixiv extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
     constructor() {
         super();
@@ -14106,8 +14124,6 @@ class Pixiv extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
     }
     async bookParse() {
         const self = this;
-        const _lang = document.documentElement.getAttribute("lang");
-        const lang = _lang ? { lang: _lang } : {};
         const userId = await getUserId();
         let bookG;
         if (document.location.pathname.startsWith("/novel/series")) {
@@ -14118,18 +14134,16 @@ class Pixiv extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
             }
         }
         else {
-            const obj = await getPreloadData(document.location.href, self.charset);
-            if (obj) {
-                const { novel } = obj;
-                if (novel) {
-                    const seriesNavData = novel.seriesNavData;
-                    if (seriesNavData) {
-                        const seriesID = seriesNavData.seriesId;
-                        bookG = await series(seriesID);
-                    }
-                    else {
-                        bookG = await onePage(novel);
-                    }
+            const chapterId = new URL(document.location.href).searchParams.get("id");
+            if (chapterId) {
+                const novel = await getChapterDate(chapterId);
+                const seriesNavData = novel.seriesNavData;
+                if (seriesNavData) {
+                    const seriesID = seriesNavData.seriesId;
+                    bookG = await series(seriesID);
+                }
+                else {
+                    bookG = await onePage(novel);
                 }
             }
         }
@@ -14153,62 +14167,59 @@ class Pixiv extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
         }
         async function series(id) {
             const seriesMetaBody = await getSeriesMeta(id);
-            if (seriesMetaBody) {
-                const bookUrl = "https://www.pixiv.net/novel/series/" + id.toString();
-                const bookname = seriesMetaBody.title;
-                const author = seriesMetaBody.userName;
-                const introduction = seriesMetaBody.caption;
-                const introductionHTML = document.createElement("div");
-                introductionHTML.innerText = introduction;
-                const additionalMetadate = {};
-                const coverUrl = seriesMetaBody.firstEpisode.url;
-                if (coverUrl) {
-                    (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getImageAttachment */ .CE)(coverUrl, self.imageMode, "cover-")
-                        .then((coverClass) => {
-                        additionalMetadate.cover = coverClass;
-                    })
-                        .catch((error) => _log__WEBPACK_IMPORTED_MODULE_2___default().error(error));
-                }
-                additionalMetadate.lastModified = seriesMetaBody.updatedTimestamp;
-                const seriesContents = await getSeriesContents(id, seriesMetaBody.publishedContentCount);
-                const chapters = [];
-                const chapterUrlBase = "https://www.pixiv.net/novel/show.php?id=";
-                for (const sc of seriesContents) {
-                    const chapterUrl = chapterUrlBase + sc.id;
-                    const chapterNumber = sc.series.contentOrder;
-                    const chapterName = `#${sc.series.contentOrder} ${sc.title ?? ""}`.trim();
-                    const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_3__/* .Chapter */ .W({
-                        bookUrl,
-                        bookname,
-                        chapterUrl,
-                        chapterNumber,
-                        chapterName,
-                        isVIP: false,
-                        isPaid: false,
-                        sectionName: null,
-                        sectionNumber: null,
-                        sectionChapterNumber: null,
-                        chapterParse: self.chapterParse,
-                        charset: self.charset,
-                        options: { id: sc.id, lang: _lang, userId },
-                    });
-                    if (sc.series.viewableType !== 0) {
-                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_4__/* .Status.aborted */ .qb.aborted;
-                    }
-                    chapters.push(chapter);
-                }
-                additionalMetadate.language = (await getPreloadData(chapters[0].chapterUrl, self.charset))?.novel?.language;
-                const book = new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .f({
+            const bookUrl = "https://www.pixiv.net/novel/series/" + id.toString();
+            const bookname = seriesMetaBody.title;
+            const author = seriesMetaBody.userName;
+            const introduction = seriesMetaBody.caption;
+            const introductionHTML = document.createElement("div");
+            introductionHTML.innerText = introduction;
+            const additionalMetadate = {};
+            const coverUrl = seriesMetaBody.firstEpisode.url;
+            if (coverUrl) {
+                (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getImageAttachment */ .CE)(coverUrl, self.imageMode, "cover-")
+                    .then((coverClass) => {
+                    additionalMetadate.cover = coverClass;
+                })
+                    .catch((error) => _log__WEBPACK_IMPORTED_MODULE_2___default().error(error));
+            }
+            additionalMetadate.lastModified = seriesMetaBody.updatedTimestamp;
+            const seriesContents = await getSeriesContents(id, seriesMetaBody.publishedContentCount);
+            const chapters = [];
+            const chapterUrlBase = "https://www.pixiv.net/novel/show.php?id=";
+            for (const sc of seriesContents) {
+                const chapterUrl = chapterUrlBase + sc.id;
+                const chapterNumber = sc.series.contentOrder;
+                const chapterName = `#${sc.series.contentOrder} ${sc.title ?? ""}`.trim();
+                const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_3__/* .Chapter */ .W({
                     bookUrl,
                     bookname,
-                    author,
-                    introduction,
-                    introductionHTML,
-                    additionalMetadate,
-                    chapters,
+                    chapterUrl,
+                    chapterNumber,
+                    chapterName,
+                    isVIP: false,
+                    isPaid: false,
+                    sectionName: null,
+                    sectionNumber: null,
+                    sectionChapterNumber: null,
+                    chapterParse: self.chapterParse,
+                    charset: self.charset,
+                    options: { id: sc.id, lang: _lang, userId },
                 });
-                return book;
+                if (sc.series.viewableType !== 0) {
+                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_4__/* .Status.aborted */ .qb.aborted;
+                }
+                chapters.push(chapter);
             }
+            additionalMetadate.language = (await getPreloadData(chapters[0].chapterUrl, self.charset))?.novel?.language;
+            return new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .f({
+                bookUrl,
+                bookname,
+                author,
+                introduction,
+                introductionHTML,
+                additionalMetadate,
+                chapters,
+            });
         }
         async function getSeriesMeta(id) {
             const referrer = "https://www.pixiv.net/novel/series/" + id.toString();
@@ -14231,6 +14242,9 @@ class Pixiv extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
             const seriesMeta = (await respMeta.json());
             if (!seriesMeta.error) {
                 return seriesMeta.body;
+            }
+            else {
+                throw new Error("series ajax failed! series ID: " + id);
             }
         }
         async function getSeriesContents(id, publishedContentCount) {
@@ -14310,6 +14324,7 @@ class Pixiv extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
                 userId,
                 textEmbeddedImages: novel.textEmbeddedImages,
             });
+            replaceMark(contentRaw);
             const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_6__/* .cleanDOM */ .zM)(contentRaw, "TM");
             chapter.contentRaw = contentRaw;
             chapter.contentHTML = dom;
@@ -14321,7 +14336,7 @@ class Pixiv extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
             };
             chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_4__/* .Status.finished */ .qb.finished;
             const chapters = [chapter];
-            const book = new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .f({
+            return new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .f({
                 bookUrl,
                 bookname,
                 author,
@@ -14330,45 +14345,32 @@ class Pixiv extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
                 additionalMetadate,
                 chapters,
             });
-            return book;
         }
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        const obj = await getPreloadData(chapterUrl, charset);
-        if (obj) {
-            const { novel } = obj;
-            if (novel) {
-                const contentRaw = document.createElement("div");
-                contentRaw.innerHTML = novel.content.replace(/\n/g, "<br/>");
-                await loadPixivimage({
-                    dom: contentRaw,
-                    nid: options.id,
-                    lang: options.lang,
-                    userId: options.userId,
-                    textEmbeddedImages: novel.textEmbeddedImages,
-                });
-                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_6__/* .cleanDOM */ .zM)(contentRaw, "TM");
-                const additionalMetadate = {
-                    lastModified: new Date(novel.uploadDate).getTime(),
-                    tags: novel.tags.tags.map((t) => t.tag),
-                };
-                return {
-                    chapterName,
-                    contentRaw,
-                    contentText: text,
-                    contentHTML: dom,
-                    contentImages: images,
-                    additionalMetadate,
-                };
-            }
-        }
+        const novel = await getChapterDate(options.id);
+        const contentRaw = document.createElement("div");
+        contentRaw.innerHTML = novel.content.replace(/\n/g, "<br/>");
+        await loadPixivimage({
+            dom: contentRaw,
+            nid: options.id,
+            lang: options.lang,
+            userId: options.userId,
+            textEmbeddedImages: novel.textEmbeddedImages,
+        });
+        replaceMark(contentRaw);
+        const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_6__/* .cleanDOM */ .zM)(contentRaw, "TM");
+        const additionalMetadate = {
+            lastModified: new Date(novel.uploadDate).getTime(),
+            tags: novel.tags.tags.map((t) => t.tag),
+        };
         return {
             chapterName,
-            contentRaw: null,
-            contentText: null,
-            contentHTML: null,
-            contentImages: null,
-            additionalMetadate: null,
+            contentRaw,
+            contentText: text,
+            contentHTML: dom,
+            contentImages: images,
+            additionalMetadate,
         };
     }
 }
@@ -14392,6 +14394,25 @@ async function getPreloadData(chapterUrl, charset) {
         return { preloadData, novel, user };
     }
 }
+async function getChapterDate(chapterId) {
+    const apiBase = "https://www.pixiv.net/ajax/novel/";
+    const url = apiBase + chapterId + "?" + new URLSearchParams(lang).toString();
+    const resp = await fetch(url, {
+        credentials: "include",
+        headers: {
+            Accept: "application/json",
+        },
+        method: "GET",
+        mode: "cors",
+    });
+    const data = (await resp.json());
+    if (!data.error) {
+        return data.body;
+    }
+    else {
+        throw new Error("chpater ajax failed! Chapter ID: " + chapterId);
+    }
+}
 async function loadPixivimage({ dom, nid, lang, userId, textEmbeddedImages, }) {
     const pixivImages = dom.innerHTML.matchAll(/\[pixivimage:(\d+)]/g);
     for (const match of pixivImages) {
@@ -14404,14 +14425,12 @@ async function loadPixivimage({ dom, nid, lang, userId, textEmbeddedImages, }) {
     return dom;
     async function mapperPixivImage([str, id]) {
         const imgSrc = await getPixivImage(id);
-        if (imgSrc) {
-            const img = document.createElement("img");
-            img.src = imgSrc;
-            const a = document.createElement("a");
-            a.href = `https://www.pixiv.net/artworks/${id}`;
-            a.appendChild(img);
-            dom.innerHTML = dom.innerHTML.replaceAll(str, a.outerHTML);
-        }
+        const img = document.createElement("img");
+        img.src = imgSrc;
+        const a = document.createElement("a");
+        a.href = `https://www.pixiv.net/artworks/${id}`;
+        a.appendChild(img);
+        dom.innerHTML = dom.innerHTML.replaceAll(str, a.outerHTML);
     }
     async function getPixivImage(id) {
         const baseUrl = `https://www.pixiv.net/ajax/novel/${nid}/insert_illusts`;
@@ -14434,12 +14453,10 @@ async function loadPixivimage({ dom, nid, lang, userId, textEmbeddedImages, }) {
         });
         const illusts = (await resp.json());
         if (!illusts.error) {
-            const originalUrl = illusts.body[`${id}-1`].illust.images.original;
-            return originalUrl;
+            return illusts.body[`${id}-1`].illust.images.original;
         }
         else {
-            console.error(`获取插图失败: pixivimage:${id}`);
-            return;
+            throw new Error(`获取插图失败: pixivimage:${id}`);
         }
     }
     function mapperUploadedImage([str, id]) {
@@ -14449,6 +14466,35 @@ async function loadPixivimage({ dom, nid, lang, userId, textEmbeddedImages, }) {
             img.src = imgSrc;
             dom.innerHTML = dom.innerHTML.replaceAll(str, img.outerHTML);
         }
+    }
+}
+function replaceMark(dom) {
+    dom.innerHTML = dom.innerHTML.replaceAll("[newpage]", "");
+    const jumpuriMatchs = dom.innerHTML.matchAll(/\[\[jumpuri:(.*) (>|&gt;) (.*)]]/g);
+    for (const match of jumpuriMatchs) {
+        const [str, text, , href] = match;
+        const a = document.createElement("a");
+        a.innerText = text.trim();
+        a.href = href.trim();
+        dom.innerHTML = dom.innerHTML.replaceAll(str, a.outerHTML);
+    }
+    const rbMatchs = dom.innerHTML.matchAll(/\[\[rb:(.*) (>|&gt;) (.*)]]/g);
+    for (const match of rbMatchs) {
+        const [str, rb, , rt] = match;
+        const ruby = document.createElement("ruby");
+        const rbElem = document.createElement("rb");
+        rbElem.innerText = rb.trim();
+        ruby.appendChild(rbElem);
+        const rpL = document.createElement("rp");
+        rpL.innerText = "(";
+        ruby.appendChild(rpL);
+        const rtElem = document.createElement("rt");
+        rtElem.innerText = rt.trim();
+        ruby.appendChild(rtElem);
+        const rpR = document.createElement("rp");
+        rpR.innerText = ")";
+        ruby.appendChild(rpR);
+        dom.innerHTML = dom.innerHTML.replaceAll(str, ruby.outerHTML);
     }
 }
 

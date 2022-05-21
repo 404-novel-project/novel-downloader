@@ -11,13 +11,6 @@ export declare class Pixiv extends BaseRuleClass {
         contentHTML: HTMLElement;
         contentImages: import("../../../main/Attachment").AttachmentClass[];
         additionalMetadate: ChapterAdditionalMetadate;
-    } | {
-        chapterName: string | null;
-        contentRaw: null;
-        contentText: null;
-        contentHTML: null;
-        contentImages: null;
-        additionalMetadate: null;
     }>;
 }
 interface chapterOptions {
