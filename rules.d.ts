@@ -1,6 +1,6 @@
 import { AttachmentClass } from "./main/Attachment";
 import { Chapter, ChapterAdditionalMetadate } from "./main/Chapter";
-import { Book } from "./main/Book";
+import { Book, saveType } from "./main/Book";
 import { SaveBook } from "./save/save";
 import { SaveOptions } from "./save/options";
 export interface ChapterParseObject {
@@ -12,7 +12,7 @@ export interface ChapterParseObject {
     additionalMetadate: ChapterAdditionalMetadate | null;
 }
 export declare abstract class BaseRuleClass {
-    imageMode: "naive" | "TM";
+    attachmentMode: "naive" | "TM";
     charset: string;
     concurrencyLimit: number;
     streamZip: boolean;
@@ -21,6 +21,7 @@ export declare abstract class BaseRuleClass {
     maxRunLimit?: number;
     saveOptions?: SaveOptions;
     book?: Book;
+    protected saveType?: saveType;
     private bcWorker;
     private bcWorkerMessages;
     private audio?;

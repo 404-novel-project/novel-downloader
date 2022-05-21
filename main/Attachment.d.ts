@@ -1,18 +1,22 @@
+import { GfetchRequestInit } from "../lib/http";
 import { ReferrerMode, Status } from "./main";
 export declare class AttachmentClass {
-    url: string;
+    readonly url: string;
     name: string;
-    mode: "naive" | "TM";
-    referrerMode: ReferrerMode;
-    customReferer: string;
+    readonly mode: "naive" | "TM";
     status: Status;
     retryTime: number;
-    private defaultHeader;
-    imageBlob: Blob | null | void;
-    comments: string;
-    constructor(url: string, name: string, mode: "naive" | "TM", referrerMode?: ReferrerMode, customReferer?: string);
+    Blob: Blob | null | void;
+    comments?: string;
+    private referrerMode;
+    private _init;
+    private _TMinit;
+    constructor(url: string, name: string, mode: "naive" | "TM", referrerMode?: ReferrerMode, customReferer?: string, init?: {
+        init: RequestInit;
+        TMinit: GfetchRequestInit;
+    });
     init(): Promise<Blob | null>;
-    private downloadImage;
-    private tmDownloadImage;
+    private download;
+    private tmDownload;
     private toJSON;
 }

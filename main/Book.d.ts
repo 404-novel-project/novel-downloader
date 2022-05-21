@@ -12,14 +12,22 @@ export interface BookAdditionalMetadate {
     publisher?: string;
     language?: string;
 }
+export interface saveType {
+    epub: boolean;
+    txt: boolean;
+    raw: false | {
+        ext: string;
+    };
+}
 export declare class Book {
     private _bookUrl;
     private _ToCUrl?;
-    bookname: string;
-    author: string;
-    introduction: string | null;
-    introductionHTML: HTMLElement | null;
-    additionalMetadate: BookAdditionalMetadate;
+    saveType: saveType;
+    readonly bookname: string;
+    readonly author: string;
+    readonly introduction: string | null;
+    readonly introductionHTML: HTMLElement | null;
+    readonly additionalMetadate: BookAdditionalMetadate;
     chapters: Chapter[];
     saveOptions: SaveOptions;
     constructor({ bookUrl, bookname, author, introduction, introductionHTML, additionalMetadate, chapters, }: {

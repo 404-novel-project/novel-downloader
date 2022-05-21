@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.8.5.691
+// @version        4.9.0.692
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/404-novel-project/novel-downloader
@@ -182,6 +182,7 @@
 // @match          *://www.alphapolis.co.jp/novel/*/*
 // @match          *://novelup.plus/story/*
 // @match          *://www.69shu.com/txt/*.htm
+// @match          *://new-read.readmoo.com/mooreader/*
 // @name:en        novel-downloader
 // @name:ja        小説ダウンローダー
 // @description:en An scalable universal novel downloader.
@@ -2854,7 +2855,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, ".nd-setting-body {\n  background: #e0e
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "h1 {\n    line-height: 130%;\n    text-align: center;\n    font-weight: bold;\n    font-size: xx-large;\n    margin-top: 3.2em;\n    margin-bottom: 3.3em;\n}\nh2 {\n  line-height: 130%;\n  text-align: center;\n  font-weight: bold;\n  font-size: x-large;\n  margin-top: 1.2em;\n  margin-bottom: 2.3em;\n}\ndiv {\n    margin: 0;\n    padding: 0;\n    text-align: justify;\n}\np {\n  text-indent: 2em;\n  display: block;\n  line-height: 1.3em;\n  margin-top: 0.4em;\n  margin-bottom: 0.4em;\n}\nimg {\n  vertical-align: text-bottom;\n  max-width: 90%;\n}\n.title {\n  margin-bottom: 0.7em;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "h1 {\n    line-height: 130%;\n    text-align: center;\n    font-weight: bold;\n    font-size: xx-large;\n    margin-top: 3.2em;\n    margin-bottom: 3.3em;\n}\n\nh2 {\n  line-height: 130%;\n  text-align: center;\n  font-weight: bold;\n  font-size: x-large;\n  margin-top: 1.2em;\n  margin-bottom: 2.3em;\n}\n\ndiv {\n    margin: 0;\n    padding: 0;\n    text-align: justify;\n}\n\np {\n  text-indent: 2em;\n  display: block;\n  line-height: 1.3em;\n  margin-top: 0.4em;\n  margin-bottom: 0.4em;\n}\n\nimg {\n  vertical-align: text-bottom;\n  max-width: 90%;\n}\n\n.title {\n  margin-bottom: 0.7em;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -2900,7 +2901,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, "div.sgc-toc-title {\n  font-size: 2em;
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "img {\n  max-width: 100%;\n  max-height: 15em;\n}\n.introduction {\n  font-size: smaller;\n  max-height: 18em;\n  overflow-y: scroll;\n}\n.introduction p {\n  text-indent: 0;\n}\n.bookurl {\n  text-align: center;\n  font-size: smaller;\n  padding-top: 1em;\n  padding-bottom: 0.5em;\n  margin-top: 0.4em;\n}\n.bookurl > a {\n  color: gray;\n}\n.info h3 {\n  padding-left: 0.5em;\n  margin-top: -1.2em;\n  margin-bottom: 0.5em;\n}\n.section {\n  margin-top: 1.5em;\n  display: grid;\n  grid-template-columns: 33% 33% 33%;\n}\n.section > h2:first-child {\n  grid-column-end: span 3;\n}\n.section > .chapter {\n  padding-bottom: 0.3em;\n  text-align: center;\n}\n.main > h1 {\n  margin-top: 1.5em;\n  margin-bottom: 1.5em;\n}\na.disabled {\n  pointer-events: none;\n  cursor: default;\n  color: gray;\n}\n.author::before {\n  content: \"作者：\";\n}\n.author {\n  text-align: center;\n  margin-top: -3em;\n  margin-bottom: 3em;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "img {\n  max-width: 100%;\n  max-height: 15em;\n}\n\n.introduction {\n  font-size: smaller;\n  max-height: 18em;\n  overflow-y: scroll;\n}\n\n.introduction p {\n  text-indent: 0;\n}\n\n.bookurl {\n  text-align: center;\n  font-size: smaller;\n  padding-top: 1em;\n  padding-bottom: 0.5em;\n  margin-top: 0.4em;\n}\n\n.bookurl > a {\n  color: gray;\n}\n\n.info h3 {\n  padding-left: 0.5em;\n  margin-top: -1.2em;\n  margin-bottom: 0.5em;\n}\n\n.section {\n  margin-top: 1.5em;\n  display: grid;\n  grid-template-columns: 33% 33% 33%;\n}\n\n.section > h2:first-child {\n  grid-column-end: span 3;\n}\n\n.section > .chapter {\n  padding-bottom: 0.3em;\n  text-align: center;\n}\n\n.main > h1 {\n  margin-top: 1.5em;\n  margin-bottom: 1.5em;\n}\n\na.disabled {\n  pointer-events: none;\n  cursor: default;\n  color: gray;\n}\n\n.author::before {\n  content: \"作者：\";\n}\n\n.author {\n  text-align: center;\n  margin-top: -3em;\n  margin-bottom: 3em;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -2923,7 +2924,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, "img {\n  max-width: 100%;\n  max-heigh
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "body {\n  background-color: #f0f0f2;\n  margin: 0;\n  padding: 0;\n  font-family: -apple-system, system-ui, BlinkMacSystemFont, \"Segoe UI\",\n    \"Open Sans\", \"Helvetica Neue\", Helvetica, Arial, sans-serif;\n}\ndiv.main {\n  width: 900px;\n  margin: 5em auto;\n  padding: 2em;\n  background-color: #fdfdff;\n  border-radius: 0.5em;\n  box-shadow: 2px 3px 7px 2px rgba(0, 0, 0, 0.02);\n}\n@media (max-width: 700px) {\n  div.main {\n    margin: 0 auto;\n    width: auto;\n  }\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "body {\n  background-color: #f0f0f2;\n  margin: 0;\n  padding: 0;\n  font-family: -apple-system, system-ui, BlinkMacSystemFont, \"Segoe UI\",\n    \"Open Sans\", \"Helvetica Neue\", Helvetica, Arial, sans-serif;\n}\n\ndiv.main {\n  width: 900px;\n  margin: 5em auto;\n  padding: 2em;\n  background-color: #fdfdff;\n  border-radius: 0.5em;\n  box-shadow: 2px 3px 7px 2px rgba(0, 0, 0, 0.02);\n}\n\n@media (max-width: 700px) {\n  div.main {\n    margin: 0 auto;\n    width: auto;\n  }\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -2946,7 +2947,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, "body {\n  background-color: #f0f0f2;\n
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ".filter-setting {\n  padding-top: 0.4em;\n  padding-bottom: 0.8em;\n  text-align: center;\n}\n.filter-input + .filter-setter {\n  margin-top: 1em;\n}\n.filter-description {\n  font-size: larger;\n  color: cornflowerblue;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, ".filter-setting {\n  padding-top: 0.4em;\n  padding-bottom: 0.8em;\n  text-align: center;\n}\n\n.filter-input + .filter-setter {\n  margin-top: 1em;\n}\n\n.filter-description {\n  font-size: larger;\n  color: cornflowerblue;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -2969,7 +2970,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, ".filter-setting {\n  padding-top: 0.4e
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ".overlay {\n  visibility: hidden;\n  opacity: 0;\n  z-index: 100000;\n  position: fixed;\n  top: -50%;\n  left: -50%;\n  height: 200%;\n  width: 200%;\n  background-color: black;\n}\n.overlay.open {\n  opacity: 0.8;\n  visibility: visible;\n  transition: opacity 0.2s ease-in;\n}\n.overlay:not(.open) {\n  transition: visibility 0.2s step-end, opacity 0.2s ease-in;\n}\n\n.out {\n  position: fixed;\n  top: 0;\n  left: 0;\n  height: 100%;\n  width: 100%;\n\n  display: flex;\n  justify-content: center;\n  align-items: center;\n\n  z-index: 100001;\n}\n\n.dialog {\n  width: 720px;\n  max-height: 70%;\n  display: none;\n  opacity: 0;\n  z-index: 100100;\n  position: fixed;\n  margin: 0;\n  padding: 0;\n}\n.dialog.open {\n  opacity: 1;\n  display: block;\n  transition: opacity 0.2s ease-in;\n}\n\n.dialog > * {\n  box-sizing: border-box;\n}\n.dialog > .titlebar {\n  background-color: white;\n  min-height: 24px;\n  position: relative;\n}\n.dialog-title {\n  padding: 10px;\n  text-transform: uppercase;\n  background: #ff7bac;\n  color: #ffffff;\n  margin: 0;\n  font-size: 1.5em;\n  text-align: center;\n}\n.dialog-close {\n  background: #ff7bac;\n  color: #ffffff;\n\n  font-style: normal;\n  font-weight: 400;\n  font-variant: normal;\n  text-transform: none;\n  line-height: 1;\n  user-select: none;\n\n  cursor: pointer;\n  font-size: 120%;\n  margin: 0;\n  padding: 0;\n  width: 3.6em;\n  height: 92%;\n  border: 1px solid transparent;\n  transition-duration: 0.2s;\n  display: block;\n\n  position: absolute;\n  right: 0;\n  top: 0;\n  white-space: nowrap;\n}\n\n.dialog > .body {\n  background-color: white;\n  border: 1px solid rgb(255 125 175 / 80%);\n  text-align: left;\n\n  line-height: 1.5;\n  padding: 1em;\n\n  overflow: auto;\n  min-width: 280px;\n\n  height: calc(100% - 2.1em);\n  max-height: 900px;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, ".overlay {\n  visibility: hidden;\n  opacity: 0;\n  z-index: 100000;\n  position: fixed;\n  top: -50%;\n  left: -50%;\n  height: 200%;\n  width: 200%;\n  background-color: black;\n}\n\n.overlay.open {\n  opacity: 0.8;\n  visibility: visible;\n  transition: opacity 0.2s ease-in;\n}\n\n.overlay:not(.open) {\n  transition: visibility 0.2s step-end, opacity 0.2s ease-in;\n}\n\n.out {\n  position: fixed;\n  top: 0;\n  left: 0;\n  height: 100%;\n  width: 100%;\n\n  display: flex;\n  justify-content: center;\n  align-items: center;\n\n  z-index: 100001;\n}\n\n.dialog {\n  width: 720px;\n  max-height: 70%;\n  display: none;\n  opacity: 0;\n  z-index: 100100;\n  position: fixed;\n  margin: 0;\n  padding: 0;\n}\n\n.dialog.open {\n  opacity: 1;\n  display: block;\n  transition: opacity 0.2s ease-in;\n}\n\n.dialog > * {\n  box-sizing: border-box;\n}\n\n.dialog > .titlebar {\n  background-color: white;\n  min-height: 24px;\n  position: relative;\n}\n\n.dialog-title {\n  padding: 10px;\n  text-transform: uppercase;\n  background: #ff7bac;\n  color: #ffffff;\n  margin: 0;\n  font-size: 1.5em;\n  text-align: center;\n}\n\n.dialog-close {\n  background: #ff7bac;\n  color: #ffffff;\n\n  font-style: normal;\n  font-weight: 400;\n  font-variant: normal;\n  text-transform: none;\n  line-height: 1;\n  user-select: none;\n\n  cursor: pointer;\n  font-size: 120%;\n  margin: 0;\n  padding: 0;\n  width: 3.6em;\n  height: 92%;\n  border: 1px solid transparent;\n  transition-duration: 0.2s;\n  display: block;\n\n  position: absolute;\n  right: 0;\n  top: 0;\n  white-space: nowrap;\n}\n\n.dialog > .body {\n  background-color: white;\n  border: 1px solid rgb(255 125 175 / 80%);\n  text-align: left;\n\n  line-height: 1.5;\n  padding: 1em;\n\n  overflow: auto;\n  min-width: 280px;\n\n  height: calc(100% - 2.1em);\n  max-height: 900px;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -2992,7 +2993,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, ".overlay {\n  visibility: hidden;\n  o
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "#nd-progress {\n  position: fixed;\n  bottom: 8%;\n  right: 3%;\n  z-index: 2147483647;\n  border-style: none;\n  text-align: center;\n  vertical-align: baseline;\n  background-color: rgba(210, 210, 210, 0.2);\n  padding: 6px;\n  border-radius: 12px;\n}\n#chapter-progress {\n  --color: green;\n  --position: 0%;\n  width: 200px;\n  height: 10px;\n  border-radius: 30px;\n  background-color: #ccc;\n  background-image: radial-gradient(\n      closest-side circle at var(--position),\n      var(--color),\n      var(--color) 100%,\n      transparent\n    ),\n    linear-gradient(var(--color), var(--color));\n  background-image: -webkit-radial-gradient(\n      var(--position),\n      circle closest-side,\n      var(--color),\n      var(--color) 100%,\n      transparent\n    ),\n    -webkit-linear-gradient(var(--color), var(--color));\n  background-size: 100%, var(--position);\n  background-repeat: no-repeat;\n}\n#zip-progress {\n  --color: yellow;\n  --position: 0%;\n  width: 200px;\n  height: 10px;\n  border-radius: 30px;\n  background-color: #ccc;\n  background-image: radial-gradient(\n      closest-side circle at var(--position),\n      var(--color),\n      var(--color) 100%,\n      transparent\n    ),\n    linear-gradient(var(--color), var(--color));\n  background-image: -webkit-radial-gradient(\n      var(--position),\n      circle closest-side,\n      var(--color),\n      var(--color) 100%,\n      transparent\n    ),\n    -webkit-linear-gradient(var(--color), var(--color));\n  background-size: 100%, var(--position);\n  background-repeat: no-repeat;\n  margin-top: 5px;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "#nd-progress {\n  position: fixed;\n  bottom: 8%;\n  right: 3%;\n  z-index: 2147483647;\n  border-style: none;\n  text-align: center;\n  vertical-align: baseline;\n  background-color: rgba(210, 210, 210, 0.2);\n  padding: 6px;\n  border-radius: 12px;\n}\n\n#chapter-progress {\n  --color: green;\n  --position: 0%;\n  width: 200px;\n  height: 10px;\n  border-radius: 30px;\n  background-color: #ccc;\n  background-image: radial-gradient(\n      closest-side circle at var(--position),\n      var(--color),\n      var(--color) 100%,\n      transparent\n    ),\n    linear-gradient(var(--color), var(--color));\n  background-image: -webkit-radial-gradient(\n      var(--position),\n      circle closest-side,\n      var(--color),\n      var(--color) 100%,\n      transparent\n    ),\n    -webkit-linear-gradient(var(--color), var(--color));\n  background-size: 100%, var(--position);\n  background-repeat: no-repeat;\n}\n\n#zip-progress {\n  --color: yellow;\n  --position: 0%;\n  width: 200px;\n  height: 10px;\n  border-radius: 30px;\n  background-color: #ccc;\n  background-image: radial-gradient(\n      closest-side circle at var(--position),\n      var(--color),\n      var(--color) 100%,\n      transparent\n    ),\n    linear-gradient(var(--color), var(--color));\n  background-image: -webkit-radial-gradient(\n      var(--position),\n      circle closest-side,\n      var(--color),\n      var(--color) 100%,\n      transparent\n    ),\n    -webkit-linear-gradient(var(--color), var(--color));\n  background-size: 100%, var(--position);\n  background-repeat: no-repeat;\n  margin-top: 5px;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -5640,8 +5641,10 @@ async function cleanDOM(elem, imgMode, options) {
     async function awaitImages({ dom, text, images, }) {
         const iImages = await Promise.all(images);
         iImages.forEach((image) => {
-            dom.innerHTML = dom.innerHTML.replaceAll(image.comments, image.name);
-            text = text.replaceAll(image.comments, image.name);
+            if (image.comments) {
+                dom.innerHTML = dom.innerHTML.replaceAll(image.comments, image.name);
+                text = text.replaceAll(image.comments, image.name);
+            }
         });
         return {
             dom,
@@ -5995,7 +5998,7 @@ function rm(selector, all = false, dom) {
 function rm2(filters, dom) {
     function doRemove(nodes) {
         Array.from(nodes.childNodes).forEach((node) => {
-            let text = "";
+            let text;
             if (node.nodeName === "#text") {
                 text = node.textContent ?? "";
             }
@@ -6385,6 +6388,7 @@ async function getHtmlDomWithRetry(input, charset, init) {
     return doc;
 }
 async function ggetText(url, charset, init) {
+    let _init = init ? (0,_misc__WEBPACK_IMPORTED_MODULE_2__/* .deepcopy */ .X8)(init) : undefined;
     if (charset === undefined) {
         return gfetch(url, init)
             .then((response) => {
@@ -6398,13 +6402,13 @@ async function ggetText(url, charset, init) {
             .catch((error) => _log__WEBPACK_IMPORTED_MODULE_0___default().error(error));
     }
     else {
-        if (init) {
-            init.responseType = "arraybuffer";
+        if (_init) {
+            _init.responseType = "arraybuffer";
         }
         else {
-            init = { responseType: "arraybuffer" };
+            _init = { responseType: "arraybuffer" };
         }
-        return gfetch(url, init)
+        return gfetch(url, _init)
             .then((response) => {
             if (response.status >= 200 && response.status <= 299) {
                 return response.response;
@@ -7020,10 +7024,10 @@ function saveLogTextToFile() {
 /* harmony export */   "J": () => (/* binding */ AttachmentClass)
 /* harmony export */ });
 /* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/http.ts");
-/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/misc.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _setting__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/setting.ts");
+/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/misc.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _setting__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/setting.ts");
 /* harmony import */ var _main__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/main/main.ts");
 
 
@@ -7034,44 +7038,65 @@ class AttachmentClass {
     url;
     name;
     mode;
-    referrerMode;
-    customReferer;
     status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status.pending */ .qb.pending;
     retryTime = 0;
-    defaultHeader = {
-        Referer: document.location.origin,
-    };
-    imageBlob;
+    Blob;
     comments;
-    constructor(url, name, mode, referrerMode = _main__WEBPACK_IMPORTED_MODULE_0__/* .ReferrerMode.keep */ .n6.keep, customReferer = "") {
+    referrerMode;
+    _init;
+    _TMinit;
+    constructor(url, name, mode, referrerMode = _main__WEBPACK_IMPORTED_MODULE_0__/* .ReferrerMode.keep */ .n6.keep, customReferer = "", init) {
         this.url = url;
         this.name = name;
         this.mode = mode;
         this.referrerMode = referrerMode;
-        this.customReferer = customReferer;
+        const defaultInit = {
+            init: {
+                referrerPolicy: "strict-origin-when-cross-origin",
+            },
+            TMinit: {
+                headers: { Referer: document.location.origin },
+                responseType: "blob",
+            },
+        };
+        if (!init) {
+            ({ init: this._init, TMinit: this._TMinit } = defaultInit);
+            if (this.referrerMode === _main__WEBPACK_IMPORTED_MODULE_0__/* .ReferrerMode.none */ .n6.none) {
+                this._init.referrerPolicy = "no-referrer";
+                this._TMinit.headers = {};
+            }
+            if (this.referrerMode === _main__WEBPACK_IMPORTED_MODULE_0__/* .ReferrerMode.self */ .n6.self) {
+                this._TMinit.headers = { Referer: new URL(url).origin };
+            }
+            if (this.referrerMode === _main__WEBPACK_IMPORTED_MODULE_0__/* .ReferrerMode.custom */ .n6.custom &&
+                customReferer.startsWith("http")) {
+                this._TMinit.headers = { Referer: customReferer };
+            }
+        }
+        else {
+            init = Object.assign((0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__/* .deepcopy */ .X8)(defaultInit), init);
+            ({ init: this._init, TMinit: this._TMinit } = init);
+            this._TMinit.responseType = "blob";
+            if (this._init.responseType) {
+                delete this._init.responseType;
+            }
+        }
     }
     async init() {
         if (this.mode === "naive") {
-            this.imageBlob = await this.downloadImage();
+            this.Blob = await this.download();
         }
         else {
-            this.imageBlob = await this.tmDownloadImage();
+            this.Blob = await this.tmDownload();
         }
-        if (this.imageBlob) {
-            _log__WEBPACK_IMPORTED_MODULE_1___default().info(`[attachment] ${this.url} 下载完成。`);
+        if (this.Blob) {
+            _log__WEBPACK_IMPORTED_MODULE_2___default().info(`[attachment] ${this.url} 下载完成。`);
         }
-        return this.imageBlob;
+        return this.Blob;
     }
-    downloadImage() {
+    download() {
         this.status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status.downloading */ .qb.downloading;
-        const init = {
-            headers: this.defaultHeader,
-        };
-        if (this.referrerMode === _main__WEBPACK_IMPORTED_MODULE_0__/* .ReferrerMode.none */ .n6.none) {
-            init.headers = {};
-            init.referrerPolicy = "no-referrer";
-        }
-        return fetch(this.url, init)
+        return fetch(this.url, this._init)
             .then((response) => {
             if (response.ok) {
                 this.status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status.finished */ .qb.finished;
@@ -7086,37 +7111,22 @@ class AttachmentClass {
         })
             .catch(async (err) => {
             this.retryTime++;
-            _log__WEBPACK_IMPORTED_MODULE_1___default().error(`[attachment]下载 ${this.url} 出错，第${this.retryTime}次重试，下载模式：${this.mode}`);
-            if (this.status !== _main__WEBPACK_IMPORTED_MODULE_0__/* .Status.failed */ .qb.failed && this.retryTime < _setting__WEBPACK_IMPORTED_MODULE_2__/* .retryLimit */ .o5) {
-                await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_3__/* .sleep */ ._v)(this.retryTime * 1500);
-                return this.downloadImage();
+            _log__WEBPACK_IMPORTED_MODULE_2___default().error(`[attachment]下载 ${this.url} 出错，第${this.retryTime}次重试，下载模式：${this.mode}`);
+            if (this.status !== _main__WEBPACK_IMPORTED_MODULE_0__/* .Status.failed */ .qb.failed && this.retryTime < _setting__WEBPACK_IMPORTED_MODULE_3__/* .retryLimit */ .o5) {
+                await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__/* .sleep */ ._v)(this.retryTime * 1500);
+                return this.download();
             }
             else {
                 this.status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status.failed */ .qb.failed;
-                _log__WEBPACK_IMPORTED_MODULE_1___default().error(err);
-                _log__WEBPACK_IMPORTED_MODULE_1___default().trace(err);
+                _log__WEBPACK_IMPORTED_MODULE_2___default().error(err);
+                _log__WEBPACK_IMPORTED_MODULE_2___default().trace(err);
                 return null;
             }
         });
     }
-    tmDownloadImage() {
+    tmDownload() {
         this.status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status.downloading */ .qb.downloading;
-        let headers = this.defaultHeader;
-        if (this.referrerMode === _main__WEBPACK_IMPORTED_MODULE_0__/* .ReferrerMode.none */ .n6.none) {
-            headers = {};
-        }
-        if (this.referrerMode === _main__WEBPACK_IMPORTED_MODULE_0__/* .ReferrerMode.self */ .n6.self) {
-            headers["Referer"] = new URL(this.url).origin;
-        }
-        if (this.referrerMode === _main__WEBPACK_IMPORTED_MODULE_0__/* .ReferrerMode.custom */ .n6.custom &&
-            this.customReferer.startsWith("http")) {
-            headers["Referer"] = this.customReferer;
-        }
-        const init = {
-            headers: this.defaultHeader,
-            responseType: "blob",
-        };
-        return (0,_lib_http__WEBPACK_IMPORTED_MODULE_4__/* .gfetch */ .GF)(this.url, init)
+        return (0,_lib_http__WEBPACK_IMPORTED_MODULE_4__/* .gfetch */ .GF)(this.url, this._TMinit)
             .then((response) => {
             if (response.status >= 200 && response.status <= 299) {
                 this.status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status.finished */ .qb.finished;
@@ -7131,15 +7141,15 @@ class AttachmentClass {
         })
             .catch(async (err) => {
             this.retryTime++;
-            _log__WEBPACK_IMPORTED_MODULE_1___default().error(`[attachment]下载 ${this.url} 出错，第${this.retryTime}次重试，下载模式：${this.mode}`);
-            if (this.status !== _main__WEBPACK_IMPORTED_MODULE_0__/* .Status.failed */ .qb.failed && this.retryTime < _setting__WEBPACK_IMPORTED_MODULE_2__/* .retryLimit */ .o5) {
-                await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_3__/* .sleep */ ._v)(this.retryTime * 1000);
-                return this.tmDownloadImage();
+            _log__WEBPACK_IMPORTED_MODULE_2___default().error(`[attachment]下载 ${this.url} 出错，第${this.retryTime}次重试，下载模式：${this.mode}`);
+            if (this.status !== _main__WEBPACK_IMPORTED_MODULE_0__/* .Status.failed */ .qb.failed && this.retryTime < _setting__WEBPACK_IMPORTED_MODULE_3__/* .retryLimit */ .o5) {
+                await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__/* .sleep */ ._v)(this.retryTime * 1000);
+                return this.tmDownload();
             }
             else {
                 this.status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status.failed */ .qb.failed;
-                _log__WEBPACK_IMPORTED_MODULE_1___default().error(err);
-                _log__WEBPACK_IMPORTED_MODULE_1___default().trace(err);
+                _log__WEBPACK_IMPORTED_MODULE_2___default().error(err);
+                _log__WEBPACK_IMPORTED_MODULE_2___default().trace(err);
                 return null;
             }
         });
@@ -7307,6 +7317,11 @@ var loglevel_default = /*#__PURE__*/__webpack_require__.n(loglevel);
 class Book {
     _bookUrl = "";
     _ToCUrl;
+    saveType = {
+        epub: true,
+        txt: true,
+        raw: false,
+    };
     bookname;
     author;
     introduction;
@@ -8352,9 +8367,9 @@ class EPUB extends Options {
         }
     }
     async addAttachment(attachment) {
-        if (attachment.status === main/* Status.finished */.qb.finished && attachment.imageBlob) {
-            loglevel_default().debug(`[save-epub]添加附件，文件名：${attachment.name}，对象`, attachment.imageBlob);
-            await this.epubZip.file(`OEBPS/${attachment.name}`, attachment.imageBlob);
+        if (attachment.status === main/* Status.finished */.qb.finished && attachment.Blob) {
+            loglevel_default().debug(`[save-epub]添加附件，文件名：${attachment.name}，对象`, attachment.Blob);
+            await this.epubZip.file(`OEBPS/${attachment.name}`, attachment.Blob);
             const item = this.contentOpf.createElement("item");
             item.id = attachment.name;
             item.setAttribute("href", attachment.name);
@@ -8418,6 +8433,34 @@ class TXT extends Options {
     }
 }
 
+;// CONCATENATED MODULE: ./src/save/raw.ts
+
+
+class Raw {
+    book;
+    epubZip;
+    constructor(book) {
+        this.book = book;
+        if (this.book.saveType.raw instanceof Object) {
+            const zipFilename = `[${this.book.author}]${this.book.bookname}.${this.book.saveType.raw.ext}`;
+            this.epubZip = new FflateZip(zipFilename, false, (0,misc/* extensionToMimetype */.z9)(this.book.saveType.raw.ext));
+        }
+        else {
+            throw new Error("init raw save zip failed!");
+        }
+    }
+    async saveRaw() {
+        const attachments = this.book.additionalMetadate.attachments;
+        const tasks = attachments?.map(async (attach) => {
+            if (attach.Blob) {
+                await this.epubZip.file(attach.name, attach.Blob, attach.comments === "nocompress");
+            }
+        }) ?? [];
+        await Promise.all(tasks);
+        await this.epubZip.generateAsync();
+    }
+}
+
 ;// CONCATENATED MODULE: ./src/save/save.ts
 
 
@@ -8425,9 +8468,12 @@ class TXT extends Options {
 
 
 
+
 class SaveBook {
+    saveType;
     txt;
     epub;
+    raw;
     constructor(book, streamZip, options) {
         const _options = {};
         if (options !== undefined) {
@@ -8436,8 +8482,21 @@ class SaveBook {
         if (book.saveOptions !== undefined) {
             Object.assign(_options, book.saveOptions);
         }
+        this.saveType = book.saveType;
         this.txt = new TXT(book, _options);
         this.epub = new EPUB(book, streamZip, _options);
+        if (this.saveType.raw instanceof Object) {
+            this.raw = new Raw(book);
+        }
+    }
+    static saveLog() {
+        (0,FileSaver_min.saveAs)(new Blob([log/* logText */.KC], { type: "text/plain; charset=UTF-8" }), "debug.log");
+    }
+    saveTxt() {
+        this.txt.saveTxt();
+    }
+    async saveEpub() {
+        await this.epub.saveEpub();
     }
     async addChapter(chapter) {
         await this.epub.addChapter(chapter);
@@ -8450,27 +8509,28 @@ class SaveBook {
             for (const attachment of chapter.contentImages) {
                 attachment.status = main/* Status.saved */.qb.saved;
                 if (!setting/* enableDebug.value */.Cy.value) {
-                    attachment.imageBlob = null;
+                    attachment.Blob = null;
                 }
             }
         }
         chapter.status = main/* Status.saved */.qb.saved;
     }
-    saveTxt() {
-        this.txt.saveTxt();
-    }
-    async saveEpub() {
-        await this.epub.saveEpub();
-    }
-    static saveLog() {
-        (0,FileSaver_min.saveAs)(new Blob([log/* logText */.KC], { type: "text/plain; charset=UTF-8" }), "debug.log");
-    }
     async save() {
-        this.saveTxt();
+        if (this.saveType.txt) {
+            this.saveTxt();
+        }
         if (setting/* enableDebug.value */.Cy.value) {
             SaveBook.saveLog();
         }
-        await this.saveEpub();
+        if (this.saveType.epub) {
+            await this.saveEpub();
+        }
+        if (this.saveType.raw instanceof Object) {
+            await this.saveRaw();
+        }
+    }
+    async saveRaw() {
+        await this.raw.saveRaw();
     }
 }
 
@@ -8547,7 +8607,7 @@ var progress = __webpack_require__("./src/ui/progress.ts");
 
 
 class BaseRuleClass {
-    imageMode = "TM";
+    attachmentMode = "TM";
     charset = document.characterSet;
     concurrencyLimit = 10;
     streamZip = false;
@@ -8556,6 +8616,7 @@ class BaseRuleClass {
     maxRunLimit;
     saveOptions;
     book;
+    saveType;
     bcWorker = new BroadcastChannel("novel-downloader-worker");
     bcWorkerMessages = [];
     audio;
@@ -8577,6 +8638,7 @@ class BaseRuleClass {
                 messages.push(message);
             }
             if (message.type === "close") {
+                loglevel_default().debug(`${window.workerId} has closed!`);
             }
         };
     }
@@ -8850,7 +8912,7 @@ class BaseRuleClass {
             loglevel_default().error("运行过程出错，请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/404-novel-project/novel-downloader");
             failedPlus();
             alert("运行过程出错，请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/404-novel-project/novel-downloader");
-            window.open('https://github.com/404-novel-project/novel-downloader/issues');
+            window.open("https://github.com/404-novel-project/novel-downloader/issues");
             (0,log/* saveLogTextToFile */.qS)();
         }
     }
@@ -10170,7 +10232,7 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
     return class extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
         constructor() {
             super();
-            this.imageMode = "TM";
+            this.attachmentMode = "TM";
             if (concurrencyLimit) {
                 this.concurrencyLimit = concurrencyLimit;
             }
@@ -10194,7 +10256,7 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
                 language: language ?? "zh",
             };
             if (coverUrl) {
-                (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getImageAttachment */ .CE)(coverUrl, this.imageMode, "cover-")
+                (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getImageAttachment */ .CE)(coverUrl, this.attachmentMode, "cover-")
                     .then((coverClass) => {
                     additionalMetadate.cover = coverClass;
                 })
@@ -10263,7 +10325,7 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
                     chapters.push(chapter);
                 }
             }
-            const book = new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .f({
+            return new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .f({
                 bookUrl,
                 bookname,
                 author,
@@ -10272,7 +10334,6 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
                 additionalMetadate,
                 chapters,
             });
-            return book;
         }
         async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
             let content;
@@ -10694,7 +10755,7 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
     return class extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
         constructor() {
             super();
-            this.imageMode = "TM";
+            this.attachmentMode = "TM";
             if (concurrencyLimit) {
                 this.concurrencyLimit = concurrencyLimit;
             }
@@ -10714,7 +10775,7 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
                 language: language ?? "zh",
             };
             if (coverUrl) {
-                (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getImageAttachment */ .CE)(coverUrl, this.imageMode, "cover-")
+                (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getImageAttachment */ .CE)(coverUrl, this.attachmentMode, "cover-")
                     .then((coverClass) => {
                     additionalMetadate.cover = coverClass;
                 })
@@ -10810,7 +10871,7 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
                     }
                 }
             }
-            const book = new _main_Book__WEBPACK_IMPORTED_MODULE_8__/* .Book */ .f({
+            return new _main_Book__WEBPACK_IMPORTED_MODULE_8__/* .Book */ .f({
                 bookUrl,
                 bookname,
                 author,
@@ -10819,7 +10880,6 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
                 additionalMetadate,
                 chapters,
             });
-            return book;
         }
         async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
             let content;
@@ -10973,7 +11033,7 @@ __webpack_require__.r(__webpack_exports__);
 class C17k extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
     constructor() {
         super();
-        this.imageMode = "TM";
+        this.attachmentMode = "TM";
         this.charset = "UTF-8";
         this.concurrencyLimit = 5;
     }
@@ -10987,7 +11047,7 @@ class C17k extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
         const additionalMetadate = {};
         const coverUrl = doc.querySelector("#bookCover img.book").src;
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getImageAttachment */ .CE)(coverUrl, this.imageMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getImageAttachment */ .CE)(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
@@ -11135,7 +11195,7 @@ __webpack_require__.r(__webpack_exports__);
 class MangaBilibili extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
     constructor() {
         super();
-        this.imageMode = "naive";
+        this.attachmentMode = "naive";
         this.concurrencyLimit = 1;
         this.streamZip = true;
     }
@@ -11154,14 +11214,14 @@ class MangaBilibili extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass
         const introductionHTML = document.createElement("div");
         introductionHTML.innerText = detail.evaluate;
         const additionalMetadate = {};
-        (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getImageAttachment */ .CE)(detail.vertical_cover, this.imageMode, "vertical_cover-")
+        (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getImageAttachment */ .CE)(detail.vertical_cover, this.attachmentMode, "vertical_cover-")
             .then((coverClass) => {
             additionalMetadate.cover = coverClass;
         })
             .catch((error) => _log__WEBPACK_IMPORTED_MODULE_2___default().error(error));
         additionalMetadate.tags = detail.styles;
         additionalMetadate.attachments = [];
-        (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getImageAttachment */ .CE)(detail.horizontal_cover, this.imageMode, "horizontal_cover-")
+        (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getImageAttachment */ .CE)(detail.horizontal_cover, this.attachmentMode, "horizontal_cover-")
             .then((coverClass) => {
             additionalMetadate.attachments?.push(coverClass);
         })
@@ -11196,7 +11256,7 @@ class MangaBilibili extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass
             }
             return chapter;
         });
-        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .f({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .f({
             bookUrl,
             bookname,
             author,
@@ -11205,7 +11265,6 @@ class MangaBilibili extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass
             additionalMetadate,
             chapters,
         });
-        return book;
         async function isSignin(comic_id) {
             const body = { comic_id };
             const resp = await fetch("https://manga.bilibili.com/twirp/bookshelf.v1.Bookshelf/HasFavorite?device=pc&platform=web", {
@@ -11351,7 +11410,7 @@ class MangaBilibili extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass
                 const ext = await (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getExt */ .r6)(blob, url);
                 const name = ["cm-", hash, ".", ext].join("");
                 const imgClass = new _main_Attachment__WEBPACK_IMPORTED_MODULE_9__/* .AttachmentClass */ .J(url, name, "naive");
-                imgClass.imageBlob = blob;
+                imgClass.Blob = blob;
                 imgClass.status = _main_main__WEBPACK_IMPORTED_MODULE_4__/* .Status.finished */ .qb.finished;
                 (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .putAttachmentClassCache */ .dK)(imgClass);
                 return imgClass;
@@ -11401,7 +11460,7 @@ __webpack_require__.r(__webpack_exports__);
 class Ciweimao extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
     constructor() {
         super();
-        this.imageMode = "TM";
+        this.attachmentMode = "TM";
         this.charset = "UTF-8";
         this.concurrencyLimit = 1;
         this.maxRunLimit = 1;
@@ -11418,7 +11477,7 @@ class Ciweimao extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
         const coverUrl = dom.querySelector(".cover > img")
             .src;
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_4__/* .getImageAttachment */ .CE)(coverUrl, this.imageMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_4__/* .getImageAttachment */ .CE)(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
@@ -11501,7 +11560,7 @@ class Ciweimao extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
 class Shubl extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
     constructor() {
         super();
-        this.imageMode = "TM";
+        this.attachmentMode = "TM";
         this.concurrencyLimit = 1;
         this.maxRunLimit = 1;
     }
@@ -11518,7 +11577,7 @@ class Shubl extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
         const coverUrl = document.querySelector(".book-img")
             .src;
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_4__/* .getImageAttachment */ .CE)(coverUrl, this.imageMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_4__/* .getImageAttachment */ .CE)(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
@@ -11574,7 +11633,7 @@ class Shubl extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
                 }
             }
         }
-        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_8__/* .Book */ .f({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_8__/* .Book */ .f({
             bookUrl,
             bookname,
             author,
@@ -11583,7 +11642,6 @@ class Shubl extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
             additionalMetadate,
             chapters,
         });
-        return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         const rootPath = "https://www.shubl.com/";
@@ -11767,7 +11825,7 @@ function getChapter({ chapterUrl, chapterName, isVIP, isPaid, charset, options, 
             const vipCHapterName = `vipCHapter${chapterId}.png`;
             const vipCHapterImage = new _main_Attachment__WEBPACK_IMPORTED_MODULE_11__/* .AttachmentClass */ .J(vipCHapterImageUrl, vipCHapterName, "TM");
             if (vipCHapterImageBlob) {
-                vipCHapterImage.imageBlob = vipCHapterImageBlob;
+                vipCHapterImage.Blob = vipCHapterImageBlob;
                 vipCHapterImage.status = _main_main__WEBPACK_IMPORTED_MODULE_7__/* .Status.finished */ .qb.finished;
             }
             const contentImages = [vipCHapterImage];
@@ -11855,7 +11913,7 @@ __webpack_require__.r(__webpack_exports__);
 class Ciyuanji extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
     constructor() {
         super();
-        this.imageMode = "TM";
+        this.attachmentMode = "TM";
         this.concurrencyLimit = 1;
     }
     async bookParse() {
@@ -11870,7 +11928,7 @@ class Ciyuanji extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
         const additionalMetadate = {};
         const coverUrl = bookObject.imgUrl;
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getImageAttachment */ .CE)(coverUrl, this.imageMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getImageAttachment */ .CE)(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
@@ -12017,7 +12075,7 @@ __webpack_require__.r(__webpack_exports__);
 class Cool18 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
     constructor() {
         super();
-        this.imageMode = "TM";
+        this.attachmentMode = "TM";
         this.nsfw = true;
     }
     async bookParse() {
@@ -12067,7 +12125,7 @@ class Cool18 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
                 .replace(`《${bookname}》`, "")
                 .replace(`作者：${author}`, "")
                 .trim();
-            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_2__/* .Chapter */ .W({
+            return new _main_Chapter__WEBPACK_IMPORTED_MODULE_2__/* .Chapter */ .W({
                 bookUrl,
                 bookname,
                 chapterUrl,
@@ -12082,14 +12140,13 @@ class Cool18 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
                 charset: this.charset,
                 options: { bookname, author },
             });
-            return chapter;
         });
         let i = 0;
         for (const chapter of chapters) {
             i++;
             chapter.chapterNumber = i;
         }
-        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_3__/* .Book */ .f({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_3__/* .Book */ .f({
             bookUrl,
             bookname,
             author,
@@ -12098,7 +12155,6 @@ class Cool18 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
             additionalMetadate,
             chapters,
         });
-        return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
@@ -12196,7 +12252,7 @@ __webpack_require__.r(__webpack_exports__);
 class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
     constructor() {
         super();
-        this.imageMode = "TM";
+        this.attachmentMode = "TM";
         this.concurrencyLimit = 1;
     }
     async bookParse() {
@@ -12235,7 +12291,7 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
         const additionalMetadate = {};
         const coverUrl = data.novelInfo.novel_cover;
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_4__/* .getImageAttachment */ .CE)(coverUrl, this.imageMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_4__/* .getImageAttachment */ .CE)(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
@@ -12307,7 +12363,7 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
                 chapters.push(chapter);
             }
         }
-        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .f({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .f({
             bookUrl,
             bookname,
             author,
@@ -12316,7 +12372,6 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
             additionalMetadate,
             chapters,
         });
-        return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         function cpDecrypt(input) {
@@ -12569,7 +12624,7 @@ __webpack_require__.r(__webpack_exports__);
 class Hanwujinian extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
     constructor() {
         super();
-        this.imageMode = "TM";
+        this.attachmentMode = "TM";
     }
     async bookParse() {
         const bookUrl = document.location.href;
@@ -12582,7 +12637,7 @@ class Hanwujinian extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass *
         const coverUrl = document.querySelector(".wR_JSAS > img").src;
         const additionalMetadate = {};
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_4__/* .getImageAttachment */ .CE)(coverUrl, this.imageMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_4__/* .getImageAttachment */ .CE)(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
@@ -12742,7 +12797,7 @@ var Attachment = __webpack_require__("./src/main/Attachment.ts");
 var Chapter = __webpack_require__("./src/main/Chapter.ts");
 // EXTERNAL MODULE: ./src/main/Book.ts + 1 modules
 var Book = __webpack_require__("./src/main/Book.ts");
-// EXTERNAL MODULE: ./src/rules.ts + 11 modules
+// EXTERNAL MODULE: ./src/rules.ts + 12 modules
 var rules = __webpack_require__("./src/rules.ts");
 // EXTERNAL MODULE: ./src/setting.ts
 var setting = __webpack_require__("./src/setting.ts");
@@ -12832,7 +12887,7 @@ async function fetchRemoteFont(fontName) {
 class Jjwxc extends rules/* BaseRuleClass */.c {
     constructor() {
         super();
-        this.imageMode = "TM";
+        this.attachmentMode = "TM";
         this.concurrencyLimit = 5;
         this.charset = "GB18030";
     }
@@ -12842,7 +12897,7 @@ class Jjwxc extends rules/* BaseRuleClass */.c {
             const fl = Array.from(document.querySelectorAll(".smallreadbody")).filter((div) => div.innerText.includes("文案信息审核未通过，等待作者修改后重新审核"));
             return fl.length !== 0;
         };
-        let bookname = "";
+        let bookname;
         const additionalMetadate = {};
         let author = "";
         let introduction = null;
@@ -12860,7 +12915,7 @@ class Jjwxc extends rules/* BaseRuleClass */.c {
             }
             const coverUrl = document.querySelector(".noveldefaultimage").src;
             if (coverUrl) {
-                (0,attachments/* getImageAttachment */.CE)(coverUrl, this.imageMode, "cover-")
+                (0,attachments/* getImageAttachment */.CE)(coverUrl, this.attachmentMode, "cover-")
                     .then((coverClass) => {
                     additionalMetadate.cover = coverClass;
                 })
@@ -12994,7 +13049,7 @@ class Jjwxc extends rules/* BaseRuleClass */.c {
                 }
             }
         }
-        const book = new Book/* Book */.f({
+        return new Book/* Book */.f({
             bookUrl,
             bookname,
             author,
@@ -13003,7 +13058,6 @@ class Jjwxc extends rules/* BaseRuleClass */.c {
             additionalMetadate,
             chapters,
         });
-        return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         async function publicChapter() {
@@ -13119,7 +13173,7 @@ class Jjwxc extends rules/* BaseRuleClass */.c {
                     else {
                         const fontBlob = await fetchFont(fontUrl);
                         fontClassObj = new Attachment/* AttachmentClass */.J(fontUrl, fontFileName, "TM");
-                        fontClassObj.imageBlob = fontBlob;
+                        fontClassObj.Blob = fontBlob;
                         fontClassObj.status = main/* Status.finished */.qb.finished;
                         (0,attachments/* putAttachmentClassCache */.dK)(fontClassObj);
                     }
@@ -13241,7 +13295,7 @@ __webpack_require__.r(__webpack_exports__);
 class Linovel extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
     constructor() {
         super();
-        this.imageMode = "TM";
+        this.attachmentMode = "TM";
         this.concurrencyLimit = 5;
     }
     async bookParse() {
@@ -13255,7 +13309,7 @@ class Linovel extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c
         const coverUrl = document.querySelector(".book-cover > a").href;
         if (coverUrl) {
             attachmentsUrlList.push(coverUrl);
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getImageAttachment */ .CE)(coverUrl, this.imageMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getImageAttachment */ .CE)(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
@@ -13266,7 +13320,7 @@ class Linovel extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c
         for (const volumeCoverUrl of volumeCoverUrlList) {
             if (!attachmentsUrlList.includes(volumeCoverUrl)) {
                 attachmentsUrlList.push(volumeCoverUrl);
-                (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getImageAttachment */ .CE)(volumeCoverUrl, this.imageMode, "volumeCover-")
+                (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getImageAttachment */ .CE)(volumeCoverUrl, this.attachmentMode, "volumeCover-")
                     .then((volumeCoverObj) => {
                     additionalMetadate.attachments?.push(volumeCoverObj);
                 })
@@ -13322,7 +13376,7 @@ class Linovel extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c
                 chapters.push(chapter);
             }
         }
-        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .f({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .f({
             bookUrl,
             bookname,
             author,
@@ -13331,7 +13385,6 @@ class Linovel extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c
             additionalMetadate,
             chapters,
         });
-        return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         async function publicChapter() {
@@ -13410,7 +13463,7 @@ __webpack_require__.r(__webpack_exports__);
 class Lofter extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
     constructor() {
         super();
-        this.imageMode = "TM";
+        this.attachmentMode = "TM";
         this.concurrencyLimit = 5;
         this.streamZip = true;
     }
@@ -13435,7 +13488,7 @@ class Lofter extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
             const avatar = new URL(_avatar);
             avatar.search = "";
             const avatarUrl = avatar.toString();
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getImageAttachment */ .CE)(avatarUrl, this.imageMode, "avatar-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getImageAttachment */ .CE)(avatarUrl, this.attachmentMode, "avatar-")
                 .then((avatarClass) => {
                 additionalMetadate.cover = avatarClass;
             })
@@ -13612,7 +13665,7 @@ __webpack_require__.r(__webpack_exports__);
 class Longmabook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
     constructor() {
         super();
-        this.imageMode = "TM";
+        this.attachmentMode = "TM";
         this.concurrencyLimit = 5;
         this.nsfw = true;
     }
@@ -13650,7 +13703,7 @@ class Longmabook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */
         const additionalMetadate = {};
         const coverUrl = document.querySelector("#mypages > div:nth-child(8) > div:nth-child(1) > img")?.src.replace("_s.", "_b.");
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_4__/* .getImageAttachment */ .CE)(coverUrl, this.imageMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_4__/* .getImageAttachment */ .CE)(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
@@ -13768,7 +13821,7 @@ class Longmabook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */
             }
             chapters.push(chapter);
         }
-        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_9__/* .Book */ .f({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_9__/* .Book */ .f({
             bookUrl,
             bookname,
             author,
@@ -13777,7 +13830,6 @@ class Longmabook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */
             additionalMetadate,
             chapters,
         });
-        return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         const self = this;
@@ -13842,7 +13894,7 @@ class Longmabook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */
         async function getImages() {
             const imageDom = document.createElement("div");
             Array.from(doc.querySelectorAll("#mypages > div:nth-child(10) > div:nth-child(2) > div:nth-child(6) > ul > li:nth-child(14) > img")).forEach((img) => imageDom.appendChild(img.cloneNode(true)));
-            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .zM)(imageDom, self.imageMode);
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .zM)(imageDom, self.attachmentMode);
             return [dom, text, images];
         }
         async function getMainContent() {
@@ -13877,7 +13929,7 @@ class Longmabook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */
                 const contentMain = document.createElement("div");
                 contentMain.innerHTML = await resp.text();
                 (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)('img[src="/images/fullcolor.png"]', true, contentMain);
-                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .zM)(contentMain, self.imageMode);
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .zM)(contentMain, self.attachmentMode);
                 return [dom, text, images];
             }
             else {
@@ -13887,7 +13939,7 @@ class Longmabook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */
         async function getAuthorSay() {
             const authorSayDom = doc.querySelector("#colorpanelwritersay");
             if (authorSayDom) {
-                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .zM)(authorSayDom, self.imageMode);
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .zM)(authorSayDom, self.attachmentMode);
                 return [dom, text, images];
             }
             else {
@@ -13930,7 +13982,7 @@ __webpack_require__.r(__webpack_exports__);
 class Myrics extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
     constructor() {
         super();
-        this.imageMode = "TM";
+        this.attachmentMode = "TM";
     }
     async bookParse() {
         const bookId = /^\/novels\/(\d+)/.exec(document.location.pathname)?.[1];
@@ -13976,7 +14028,7 @@ class Myrics extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
         const additionalMetadate = {};
         const coverUrl = info.result.cover_image;
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getImageAttachment */ .CE)(coverUrl, this.imageMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getImageAttachment */ .CE)(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
@@ -14053,7 +14105,7 @@ class Myrics extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
             i++;
             c.chapterNumber = i;
         }
-        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .f({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .f({
             bookUrl,
             bookname,
             author,
@@ -14062,7 +14114,6 @@ class Myrics extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
             additionalMetadate,
             chapters,
         });
-        return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         const { bookId, chapterId, init } = options;
@@ -14119,7 +14170,7 @@ const lang = _lang ? { lang: _lang } : {};
 class Pixiv extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
     constructor() {
         super();
-        this.imageMode = "TM";
+        this.attachmentMode = "TM";
         this.needLogin = true;
     }
     async bookParse() {
@@ -14176,7 +14227,7 @@ class Pixiv extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
             const additionalMetadate = {};
             const coverUrl = seriesMetaBody.firstEpisode.url;
             if (coverUrl) {
-                (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getImageAttachment */ .CE)(coverUrl, self.imageMode, "cover-")
+                (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getImageAttachment */ .CE)(coverUrl, self.attachmentMode, "cover-")
                     .then((coverClass) => {
                     additionalMetadate.cover = coverClass;
                 })
@@ -14289,7 +14340,7 @@ class Pixiv extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
             const additionalMetadate = {};
             const coverUrl = novel.coverUrl;
             if (coverUrl) {
-                (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getImageAttachment */ .CE)(coverUrl, self.imageMode, "cover-")
+                (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getImageAttachment */ .CE)(coverUrl, self.attachmentMode, "cover-")
                     .then((coverClass) => {
                     additionalMetadate.cover = coverClass;
                 })
@@ -14535,7 +14586,7 @@ __webpack_require__.r(__webpack_exports__);
 class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
     constructor() {
         super();
-        this.imageMode = "TM";
+        this.attachmentMode = "TM";
         this.concurrencyLimit = 3;
     }
     async bookParse() {
@@ -14561,7 +14612,7 @@ class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
         const additionalMetadate = {};
         const coverUrl = document.querySelector("#bookImg > img").src.slice(0, -4);
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getImageAttachment */ .CE)(coverUrl, this.imageMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getImageAttachment */ .CE)(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
@@ -14660,7 +14711,7 @@ class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
                 chapters.push(chapter);
             }
         }
-        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .f({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .f({
             bookUrl,
             bookname,
             author,
@@ -14669,7 +14720,6 @@ class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
             additionalMetadate,
             chapters,
         });
-        return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         const nullObj = {
@@ -14784,7 +14834,7 @@ __webpack_require__.r(__webpack_exports__);
 class Qimao extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
     constructor() {
         super();
-        this.imageMode = "TM";
+        this.attachmentMode = "TM";
     }
     async bookParse() {
         const bookUrl = document.location.href;
@@ -14795,7 +14845,7 @@ class Qimao extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
         const additionalMetadate = {};
         const coverUrl = document.querySelector(".poster-pic > img").src;
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getImageAttachment */ .CE)(coverUrl, this.imageMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getImageAttachment */ .CE)(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
@@ -14838,7 +14888,7 @@ class Qimao extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
             }
             chapters.push(chapter);
         }
-        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .f({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .f({
             bookUrl,
             bookname,
             author,
@@ -14847,7 +14897,6 @@ class Qimao extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
             additionalMetadate,
             chapters,
         });
-        return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         async function publicChapter() {
@@ -14899,6 +14948,330 @@ class Qimao extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
 
 /***/ }),
 
+/***/ "./src/rules/special/original/readmoo.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+// ESM COMPAT FLAG
+__webpack_require__.r(__webpack_exports__);
+
+// EXPORTS
+__webpack_require__.d(__webpack_exports__, {
+  "Readmoo": () => (/* binding */ Readmoo)
+});
+
+;// CONCATENATED MODULE: ./node_modules/yocto-queue/index.js
+/*
+How it works:
+`this.#head` is an instance of `Node` which keeps track of its current value and nests another instance of `Node` that keeps the value that comes after it. When a value is provided to `.enqueue()`, the code needs to iterate through `this.#head`, going deeper and deeper to find the last value. However, iterating through every single item is slow. This problem is solved by saving a reference to the last value as `this.#tail` so that it can reference it to add a new value.
+*/
+
+class Node {
+	value;
+	next;
+
+	constructor(value) {
+		this.value = value;
+	}
+}
+
+class Queue {
+	#head;
+	#tail;
+	#size;
+
+	constructor() {
+		this.clear();
+	}
+
+	enqueue(value) {
+		const node = new Node(value);
+
+		if (this.#head) {
+			this.#tail.next = node;
+			this.#tail = node;
+		} else {
+			this.#head = node;
+			this.#tail = node;
+		}
+
+		this.#size++;
+	}
+
+	dequeue() {
+		const current = this.#head;
+		if (!current) {
+			return;
+		}
+
+		this.#head = this.#head.next;
+		this.#size--;
+		return current.value;
+	}
+
+	clear() {
+		this.#head = undefined;
+		this.#tail = undefined;
+		this.#size = 0;
+	}
+
+	get size() {
+		return this.#size;
+	}
+
+	* [Symbol.iterator]() {
+		let current = this.#head;
+
+		while (current) {
+			yield current.value;
+			current = current.next;
+		}
+	}
+}
+
+;// CONCATENATED MODULE: ./node_modules/p-limit/index.js
+
+
+function pLimit(concurrency) {
+	if (!((Number.isInteger(concurrency) || concurrency === Number.POSITIVE_INFINITY) && concurrency > 0)) {
+		throw new TypeError('Expected `concurrency` to be a number from 1 and up');
+	}
+
+	const queue = new Queue();
+	let activeCount = 0;
+
+	const next = () => {
+		activeCount--;
+
+		if (queue.size > 0) {
+			queue.dequeue()();
+		}
+	};
+
+	const run = async (fn, resolve, args) => {
+		activeCount++;
+
+		const result = (async () => fn(...args))();
+
+		resolve(result);
+
+		try {
+			await result;
+		} catch {}
+
+		next();
+	};
+
+	const enqueue = (fn, resolve, args) => {
+		queue.enqueue(run.bind(undefined, fn, resolve, args));
+
+		(async () => {
+			// This function needs to wait until the next microtask before comparing
+			// `activeCount` to `concurrency`, because `activeCount` is updated asynchronously
+			// when the run function is dequeued and called. The comparison in the if-statement
+			// needs to happen asynchronously as well to get an up-to-date value for `activeCount`.
+			await Promise.resolve();
+
+			if (activeCount < concurrency && queue.size > 0) {
+				queue.dequeue()();
+			}
+		})();
+	};
+
+	const generator = (fn, ...args) => new Promise(resolve => {
+		enqueue(fn, resolve, args);
+	});
+
+	Object.defineProperties(generator, {
+		activeCount: {
+			get: () => activeCount,
+		},
+		pendingCount: {
+			get: () => queue.size,
+		},
+		clearQueue: {
+			value: () => {
+				queue.clear();
+			},
+		},
+	});
+
+	return generator;
+}
+
+// EXTERNAL MODULE: ./src/main/Book.ts + 1 modules
+var Book = __webpack_require__("./src/main/Book.ts");
+// EXTERNAL MODULE: ./src/rules.ts + 12 modules
+var rules = __webpack_require__("./src/rules.ts");
+// EXTERNAL MODULE: ./src/main/Attachment.ts
+var Attachment = __webpack_require__("./src/main/Attachment.ts");
+// EXTERNAL MODULE: ./src/main/main.ts
+var main = __webpack_require__("./src/main/main.ts");
+// EXTERNAL MODULE: ./src/lib/http.ts
+var http = __webpack_require__("./src/lib/http.ts");
+// EXTERNAL MODULE: ./src/main/Chapter.ts
+var Chapter = __webpack_require__("./src/main/Chapter.ts");
+// EXTERNAL MODULE: ./src/lib/misc.ts
+var misc = __webpack_require__("./src/lib/misc.ts");
+;// CONCATENATED MODULE: ./src/rules/special/original/readmoo.ts
+
+
+
+
+
+
+
+
+class Readmoo extends rules/* BaseRuleClass */.c {
+    constructor() {
+        super();
+        this.saveType = { txt: false, epub: false, raw: { ext: "epub" } };
+        this.attachmentMode = "TM";
+    }
+    async bookParse() {
+        const Base = "https://reader.readmoo.com";
+        const navBase = `${Base}/api/book/`;
+        const navInit = {
+            headers: {
+                Accept: "*/*",
+                Authorization: "bearer TWBLXfuP-NbtCrjD2PAiFA",
+                Referer: "https://reader.readmoo.com/reader/index.html",
+                "X-Requested-With": "XMLHttpRequest",
+            },
+            responseType: "json",
+        };
+        const epubInit = {
+            headers: {
+                Accept: "text/plain, */*; q=0.01",
+                Authorization: "bearer TWBLXfuP-NbtCrjD2PAiFA",
+                Referer: "https://reader.readmoo.com/reader/index.html",
+                "X-Requested-With": "XMLHttpRequest",
+            },
+        };
+        const epubFileList = [
+            {
+                path: "mimetype",
+                data: new Blob(["application/epub+zip"]),
+                nocompress: true,
+            },
+        ];
+        const bookId = document.location.pathname.split("/").slice(-1)[0];
+        const navUrl = `${navBase}${bookId}/nav`;
+        const navResp = await (0,http/* gfetch */.GF)(navUrl, navInit);
+        const navData = navResp.response;
+        if (navData.message !== "success") {
+            throw new Error("获取 nav 失败！");
+        }
+        const epubBase = `${Base}${navData.base}`;
+        const container_xml_url = `${epubBase}META-INF/container.xml`;
+        epubFileList.push({
+            path: "META-INF/container.xml",
+            data: container_xml_url,
+        });
+        const containerResp = await (0,http/* ggetText */._7)(container_xml_url, "UTF-8", epubInit);
+        if (!containerResp) {
+            throw new Error("抓取 container.xml 失败！");
+        }
+        const containerXML = new DOMParser().parseFromString(containerResp, "application/xml");
+        const content_opf_path = containerXML
+            .querySelector("rootfile")
+            ?.getAttribute("full-path");
+        if (!content_opf_path) {
+            throw new Error("解析 container.xml 出错！");
+        }
+        const content_opf_url = `${epubBase}${content_opf_path}`;
+        epubFileList.push({ path: content_opf_path, data: content_opf_url });
+        const content_opf_resp = await (0,http/* ggetText */._7)(content_opf_url, "UTF-8", epubInit);
+        if (!content_opf_resp) {
+            throw new Error("抓取 content.opf 失败！");
+        }
+        const contentOpf = new DOMParser().parseFromString(content_opf_resp, "application/xml");
+        const bookUrl = `https://readmoo.com/book/${bookId}`;
+        const bookname = contentOpf.getElementsByTagName("dc:title")[0].textContent ?? "";
+        const author = contentOpf.getElementsByTagName("dc:creator")[0].textContent ?? "";
+        const items = contentOpf.querySelectorAll("manifest > item");
+        if (items.length === 0) {
+            throw new Error("解析 manifest item 出错！");
+        }
+        const itemObjs = Array.from(items).map((item) => {
+            const href = item.getAttribute("href");
+            const path = `${content_opf_path
+                .split("/")
+                .slice(0, -1)
+                .join("/")}/${href}`;
+            return {
+                path,
+                data: `${epubBase}${path}`,
+            };
+        });
+        epubFileList.push(...itemObjs);
+        const limit = pLimit(this.concurrencyLimit);
+        const attachmentTasks = epubFileList.map((fobj) => {
+            return limit(async () => {
+                const { path, data, nocompress } = fobj;
+                if (typeof data === "string") {
+                    const attach = new Attachment/* AttachmentClass */.J(data, path, this.attachmentMode, main/* ReferrerMode.keep */.n6.keep, "", { init: (0,misc/* deepcopy */.X8)(epubInit), TMinit: (0,misc/* deepcopy */.X8)(epubInit) });
+                    await attach.init();
+                    if (fobj.nocompress) {
+                        attach.comments = "nocompress";
+                    }
+                    return attach;
+                }
+                else {
+                    const attach = new Attachment/* AttachmentClass */.J("", path, this.attachmentMode);
+                    attach.Blob = data;
+                    attach.status = main/* Status.finished */.qb.finished;
+                    if (fobj.nocompress) {
+                        attach.comments = "nocompress";
+                    }
+                    return attach;
+                }
+            });
+        });
+        const attachments = await Promise.all(attachmentTasks);
+        const book = new Book/* Book */.f({
+            bookUrl,
+            bookname,
+            author,
+            introduction: null,
+            introductionHTML: null,
+            additionalMetadate: { attachments },
+            chapters: [
+                new Chapter/* Chapter */.W({
+                    bookUrl,
+                    bookname,
+                    chapterUrl: "",
+                    chapterName: null,
+                    chapterNumber: 0,
+                    isVIP: false,
+                    isPaid: null,
+                    sectionName: null,
+                    sectionNumber: null,
+                    sectionChapterNumber: null,
+                    chapterParse: this.chapterParse,
+                    charset: this.charset,
+                    options: {},
+                }),
+            ],
+        });
+        book.saveType = this.saveType;
+        return book;
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+        return {
+            chapterName,
+            contentRaw: null,
+            contentText: null,
+            contentHTML: null,
+            contentImages: null,
+            additionalMetadate: null,
+        };
+    }
+}
+
+
+/***/ }),
+
 /***/ "./src/rules/special/original/sfacg.ts":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -14935,7 +15308,7 @@ __webpack_require__.r(__webpack_exports__);
 class Sfacg extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
     constructor() {
         super();
-        this.imageMode = "TM";
+        this.attachmentMode = "TM";
         this.concurrencyLimit = 1;
     }
     async bookParse() {
@@ -14948,7 +15321,7 @@ class Sfacg extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
         const additionalMetadate = {};
         const coverUrl = dom.querySelector("#hasTicket div.pic img").src;
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getImageAttachment */ .CE)(coverUrl, this.imageMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getImageAttachment */ .CE)(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
@@ -15092,7 +15465,7 @@ class Sfacg extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
                 const vipChapterImageBlob = await fetchVipChapterImage(vipChapterImageUrl);
                 const vipChapterImage = new _main_Attachment__WEBPACK_IMPORTED_MODULE_6__/* .AttachmentClass */ .J(vipChapterImageUrl, vipChapterName, "naive");
                 if (vipChapterImageBlob) {
-                    vipChapterImage.imageBlob = vipChapterImageBlob;
+                    vipChapterImage.Blob = vipChapterImageBlob;
                     vipChapterImage.status = _main_main__WEBPACK_IMPORTED_MODULE_8__/* .Status.finished */ .qb.finished;
                 }
                 else {
@@ -15188,7 +15561,7 @@ __webpack_require__.r(__webpack_exports__);
 class Shuhai extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
     constructor() {
         super();
-        this.imageMode = "TM";
+        this.attachmentMode = "TM";
         this.concurrencyLimit = 5;
         this.charset = "GBK";
     }
@@ -15204,7 +15577,7 @@ class Shuhai extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
         const additionalMetadate = {};
         const coverUrl = document.querySelector(".book-cover-wrapper > img").getAttribute("data-original");
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getImageAttachment */ .CE)(coverUrl, this.imageMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getImageAttachment */ .CE)(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
@@ -15262,7 +15635,7 @@ class Shuhai extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
                 chapters.push(chapter);
             }
         }
-        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .f({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .f({
             bookUrl,
             bookname,
             author,
@@ -15271,7 +15644,6 @@ class Shuhai extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
             additionalMetadate,
             chapters,
         });
-        return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         async function publicChapter() {
@@ -15348,7 +15720,7 @@ __webpack_require__.r(__webpack_exports__);
 class Sosadfun extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
     constructor() {
         super();
-        this.imageMode = "TM";
+        this.attachmentMode = "TM";
     }
     async bookParse() {
         const bookUrl = document.location.origin + document.location.pathname;
@@ -15425,7 +15797,7 @@ class Sosadfun extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
             });
             chapters.push(chapter);
         }
-        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_4__/* .Book */ .f({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_4__/* .Book */ .f({
             bookUrl,
             bookname,
             author,
@@ -15434,7 +15806,6 @@ class Sosadfun extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
             additionalMetadate,
             chapters,
         });
-        return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_5__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
@@ -15519,7 +15890,7 @@ __webpack_require__.r(__webpack_exports__);
 class Tadu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
     constructor() {
         super();
-        this.imageMode = "TM";
+        this.attachmentMode = "TM";
         this.concurrencyLimit = 5;
     }
     async bookParse() {
@@ -15531,7 +15902,7 @@ class Tadu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
         const additionalMetadate = {};
         const coverUrl = document.querySelector("a.bookImg > img").getAttribute("data-src");
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getImageAttachment */ .CE)(coverUrl, this.imageMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getImageAttachment */ .CE)(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
@@ -15573,7 +15944,7 @@ class Tadu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
             }
             chapters.push(chapter);
         }
-        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .f({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .f({
             bookUrl,
             bookname,
             author,
@@ -15582,7 +15953,6 @@ class Tadu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
             additionalMetadate,
             chapters,
         });
-        return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         async function publicChapter() {
@@ -15688,7 +16058,7 @@ __webpack_require__.r(__webpack_exports__);
 class Xrzww extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
     constructor() {
         super();
-        this.imageMode = "TM";
+        this.attachmentMode = "TM";
         this.concurrencyLimit = 1;
     }
     async bookParse() {
@@ -15728,7 +16098,7 @@ class Xrzww extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
         introductionHTML.innerText = introduction;
         const additionalMetadate = {};
         const coverUrl = `${ossBase}${webNovelDetail.data.novel_cover}`;
-        (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getImageAttachment */ .CE)(coverUrl, this.imageMode, "cover-")
+        (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getImageAttachment */ .CE)(coverUrl, this.attachmentMode, "cover-")
             .then((coverClass) => {
             additionalMetadate.cover = coverClass;
         })
@@ -15815,7 +16185,7 @@ class Xrzww extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
             }
             chapters.push(chapter);
         }
-        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .f({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .f({
             bookUrl,
             bookname,
             author,
@@ -15824,7 +16194,6 @@ class Xrzww extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
             additionalMetadate,
             chapters,
         });
-        return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         const readNewUrl = new URL(`${options.apiBase}/api/readNew`);
@@ -15892,7 +16261,7 @@ __webpack_require__.r(__webpack_exports__);
 class Zongheng extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
     constructor() {
         super();
-        this.imageMode = "TM";
+        this.attachmentMode = "TM";
         this.concurrencyLimit = 5;
     }
     async bookParse() {
@@ -15905,7 +16274,7 @@ class Zongheng extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
         const additionalMetadate = {};
         const coverUrl = doc.querySelector("div.book-img > img").src;
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getImageAttachment */ .CE)(coverUrl, this.imageMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getImageAttachment */ .CE)(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
@@ -15959,7 +16328,7 @@ class Zongheng extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
                 chapters.push(chapter);
             }
         }
-        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .f({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .f({
             bookUrl,
             bookname,
             author,
@@ -15968,7 +16337,6 @@ class Zongheng extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
             additionalMetadate,
             chapters,
         });
-        return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         async function publicChapter() {
@@ -16049,7 +16417,7 @@ __webpack_require__.r(__webpack_exports__);
 class Dmzj extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
     constructor() {
         super();
-        this.imageMode = "TM";
+        this.attachmentMode = "TM";
         this.streamZip = true;
         this.concurrencyLimit = 1;
         this.maxRunLimit = 1;
@@ -16077,7 +16445,7 @@ class Dmzj extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
             : document.querySelector("#cover_pic");
         const coverUrl = coverDom.src;
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getImageAttachment */ .CE)(coverUrl, this.imageMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getImageAttachment */ .CE)(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
@@ -16119,7 +16487,7 @@ class Dmzj extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
             });
             chapters.push(chapter);
         }
-        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .f({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .f({
             bookUrl,
             bookname,
             author,
@@ -16128,7 +16496,6 @@ class Dmzj extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
             additionalMetadate,
             chapters,
         });
-        return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         function getpicUrlList(docI) {
@@ -16212,7 +16579,7 @@ class Fushuwang extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ 
     saveOptions;
     constructor() {
         super();
-        this.imageMode = "TM";
+        this.attachmentMode = "TM";
         this.charset = "GBK";
         this.maxRunLimit = 5;
         this.saveOptions = {
@@ -16324,7 +16691,7 @@ var loglevel_default = /*#__PURE__*/__webpack_require__.n(loglevel);
 var Chapter = __webpack_require__("./src/main/Chapter.ts");
 // EXTERNAL MODULE: ./src/main/Book.ts + 1 modules
 var Book = __webpack_require__("./src/main/Book.ts");
-// EXTERNAL MODULE: ./src/rules.ts + 11 modules
+// EXTERNAL MODULE: ./src/rules.ts + 12 modules
 var rules = __webpack_require__("./src/rules.ts");
 ;// CONCATENATED MODULE: ./src/rules/lib/haitangtxtImageDecode.ts
 function replaceHaitangtxtImage(inputText) {
@@ -17100,7 +17467,7 @@ function getClass(replaceFunction) {
     return class extends rules/* BaseRuleClass */.c {
         constructor() {
             super();
-            this.imageMode = "TM";
+            this.attachmentMode = "TM";
             this.nsfw = true;
         }
         async bookParse() {
@@ -17182,7 +17549,7 @@ function getClass(replaceFunction) {
                 });
                 chapters.push(chapter);
             }
-            const book = new Book/* Book */.f({
+            return new Book/* Book */.f({
                 bookUrl,
                 bookname,
                 author,
@@ -17191,7 +17558,6 @@ function getClass(replaceFunction) {
                 additionalMetadate,
                 chapters,
             });
-            return book;
         }
         async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
             function contentAppend() {
@@ -17341,7 +17707,7 @@ __webpack_require__.r(__webpack_exports__);
 class Hetushu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
     constructor() {
         super();
-        this.imageMode = "TM";
+        this.attachmentMode = "TM";
     }
     async bookParse() {
         const bookUrl = document.location.href;
@@ -17352,7 +17718,7 @@ class Hetushu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c
         const additionalMetadate = {};
         const coverUrl = document.querySelector(".book_info > img").src;
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getImageAttachment */ .CE)(coverUrl, this.imageMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getImageAttachment */ .CE)(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
@@ -17398,7 +17764,7 @@ class Hetushu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c
                 }
             }
         }
-        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .f({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .f({
             bookUrl,
             bookname,
             author,
@@ -17407,7 +17773,6 @@ class Hetushu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c
             additionalMetadate,
             chapters,
         });
-        return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         async function sorfPage() {
@@ -17549,7 +17914,7 @@ __webpack_require__.r(__webpack_exports__);
 class Idejian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
     constructor() {
         super();
-        this.imageMode = "TM";
+        this.attachmentMode = "TM";
         this.maxRunLimit = 5;
     }
     async bookParse() {
@@ -17568,7 +17933,7 @@ class Idejian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c
         const additionalMetadate = {};
         const coverUrl = document.querySelector(".book_img > img").src;
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getImageAttachment */ .CE)(coverUrl, this.imageMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getImageAttachment */ .CE)(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
@@ -17602,7 +17967,7 @@ class Idejian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c
             chapters.push(chapter);
         }
         document.cookie = "";
-        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .f({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .f({
             bookUrl,
             bookname,
             author,
@@ -17611,7 +17976,6 @@ class Idejian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c
             additionalMetadate,
             chapters,
         });
-        return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         const _chapterUrl = new URL(chapterUrl);
@@ -17698,7 +18062,7 @@ __webpack_require__.r(__webpack_exports__);
 class Kanunu8 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
     constructor() {
         super();
-        this.imageMode = "TM";
+        this.attachmentMode = "TM";
     }
     async bookParse() {
         const bookUrl = document.location.href;
@@ -17763,7 +18127,7 @@ class Kanunu8 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c
         if (_cover.length === 1) {
             const coverUrl = _cover[0].src;
             if (coverUrl) {
-                (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getImageAttachment */ .CE)(coverUrl, this.imageMode, "cover-")
+                (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getImageAttachment */ .CE)(coverUrl, this.attachmentMode, "cover-")
                     .then((coverClass) => {
                     additionalMetadate.cover = coverClass;
                 })
@@ -17810,7 +18174,7 @@ class Kanunu8 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c
             });
             chapters.push(chapter);
         }
-        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .f({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .f({
             bookUrl,
             bookname,
             author,
@@ -17819,7 +18183,6 @@ class Kanunu8 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c
             additionalMetadate,
             chapters,
         });
-        return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         const obj = await (0,_lib_readability__WEBPACK_IMPORTED_MODULE_7__.fetchAndParse)(chapterUrl, this.charset);
@@ -17883,7 +18246,7 @@ __webpack_require__.r(__webpack_exports__);
 class Linovelib extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
     constructor() {
         super();
-        this.imageMode = "TM";
+        this.attachmentMode = "TM";
     }
     async bookParse() {
         const bookUrl = document.location.href.replace(/\/catalog$/, ".html");
@@ -17896,7 +18259,7 @@ class Linovelib extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ 
         const coverUrl = doc.querySelector(".book-img > img")
             .src;
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getImageAttachment */ .CE)(coverUrl, this.imageMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getImageAttachment */ .CE)(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
@@ -18010,7 +18373,7 @@ __webpack_require__.r(__webpack_exports__);
 class Soxscc extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
     constructor() {
         super();
-        this.imageMode = "TM";
+        this.attachmentMode = "TM";
     }
     async bookParse() {
         const bookUrl = document.location.href;
@@ -18025,7 +18388,7 @@ class Soxscc extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
         const additionalMetadate = {};
         const coverUrl = document.querySelector(".book_cover > img").src;
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getImageAttachment */ .CE)(coverUrl, this.imageMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getImageAttachment */ .CE)(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
@@ -18066,7 +18429,7 @@ class Soxscc extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
                 chapters.push(chapter);
             }
         }
-        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .f({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .f({
             bookUrl,
             bookname,
             author,
@@ -18075,7 +18438,6 @@ class Soxscc extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
             additionalMetadate,
             chapters,
         });
-        return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_7__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
@@ -18156,7 +18518,7 @@ __webpack_require__.r(__webpack_exports__);
 class Uukanshu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
     constructor() {
         super();
-        this.imageMode = "TM";
+        this.attachmentMode = "TM";
         this.charset = "GBK";
     }
     async bookParse() {
@@ -18177,7 +18539,7 @@ class Uukanshu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
         const additionalMetadate = {};
         const coverUrl = document.querySelector("a.bookImg > img").src;
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getImageAttachment */ .CE)(coverUrl, this.imageMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getImageAttachment */ .CE)(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
@@ -18228,7 +18590,7 @@ class Uukanshu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
                 }
             }
         }
-        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .f({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .f({
             bookUrl,
             bookname,
             author,
@@ -18237,7 +18599,6 @@ class Uukanshu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
             additionalMetadate,
             chapters,
         });
-        return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_7__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
@@ -18313,7 +18674,7 @@ __webpack_require__.r(__webpack_exports__);
 class Wenku8 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
     constructor() {
         super();
-        this.imageMode = "TM";
+        this.attachmentMode = "TM";
         this.charset = "GBK";
     }
     async bookParse() {
@@ -18329,7 +18690,7 @@ class Wenku8 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
         const additionalMetadate = {};
         const coverUrl = doc.querySelector("#content > div:nth-child(1) > table:nth-child(4) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(1) > img:nth-child(1)").src;
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getImageAttachment */ .CE)(coverUrl, this.imageMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getImageAttachment */ .CE)(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
@@ -18445,7 +18806,7 @@ __webpack_require__.r(__webpack_exports__);
 class Xkzw extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
     constructor() {
         super();
-        this.imageMode = "TM";
+        this.attachmentMode = "TM";
     }
     async bookParse() {
         const bookUrl = document.location.href;
@@ -18458,7 +18819,7 @@ class Xkzw extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
         const additionalMetadate = {};
         const coverUrl = document.querySelector("#fmimg > img").src;
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getImageAttachment */ .CE)(coverUrl, this.imageMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getImageAttachment */ .CE)(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
@@ -18597,7 +18958,7 @@ class Xkzw extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
                 chapters.push(chapter);
             }
         }
-        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .f({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .f({
             bookUrl,
             bookname,
             author,
@@ -18606,7 +18967,6 @@ class Xkzw extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
             additionalMetadate,
             chapters,
         });
-        return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         function runEval(CryptoJS) {
@@ -18857,10 +19217,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _tempate__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/twoPage/tempate.ts");
 
 
-const c69shu = () => ((0,_tempate__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+const c69shu = () => (0,_tempate__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
     bookUrl: document.location.href,
     anotherPageUrl: document.querySelector(".addbtn > a:nth-child(1)").href,
-    getBookname: () => document.querySelector('h1')?.innerText ?? "",
+    getBookname: () => document.querySelector("h1")?.innerText ?? "",
     getAuthor: () => document.querySelector(".booknav2 > p:nth-child(2) > a")?.innerText ?? "",
     getIntroDom: () => document.querySelector(".navtxt > p:nth-child(1)"),
     introDomPatch: (content) => content,
@@ -18871,8 +19231,8 @@ const c69shu = () => ((0,_tempate__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */
         (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)(".hide720, .txtright, .bottom-ad", true, content);
         (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .vS)([/^谷[\u4e00-\u9fa5]{0,1}$/gm], content);
         return content;
-    }
-}));
+    },
+});
 
 
 /***/ }),
@@ -19085,7 +19445,7 @@ function mkRuleClass({ bookUrl, anotherPageUrl, ToCUrl, getBookname, getAuthor, 
     return class extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
         constructor() {
             super();
-            this.imageMode = "TM";
+            this.attachmentMode = "TM";
             if (concurrencyLimit) {
                 this.concurrencyLimit = concurrencyLimit;
             }
@@ -19110,7 +19470,7 @@ function mkRuleClass({ bookUrl, anotherPageUrl, ToCUrl, getBookname, getAuthor, 
                 language: language ?? "zh",
             };
             if (coverUrl) {
-                (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getImageAttachment */ .CE)(coverUrl, this.imageMode, "cover-")
+                (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getImageAttachment */ .CE)(coverUrl, this.attachmentMode, "cover-")
                     .then((coverClass) => {
                     additionalMetadate.cover = coverClass;
                 })
@@ -20287,6 +20647,11 @@ async function getRule() {
             ruleClass = c69shu();
             break;
         }
+        case "new-read.readmoo.com": {
+            const { Readmoo } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/readmoo.ts"));
+            ruleClass = Readmoo;
+            break;
+        }
         default: {
             throw new Error("Not Found Rule!");
         }
@@ -20651,6 +21016,9 @@ function getUI() {
                 floatBuster();
                 return defaultObject;
             };
+        }
+        case "new-read.readmoo.com": {
+            return () => ({ type: "download", isSettingSeen: false });
         }
         default: {
             return () => {
@@ -21102,8 +21470,8 @@ var ui_TestUI = __webpack_require__("./src/ui/TestUI.less");
         });
         function getObjectUrl(url) {
             const attachment = (0,attachments/* getAttachmentClassCache */.gc)(url);
-            if (attachment?.imageBlob) {
-                const blob = attachment.imageBlob;
+            if (attachment?.Blob) {
+                const blob = attachment.Blob;
                 const src = URL.createObjectURL(blob);
                 return src;
             }
@@ -21249,13 +21617,12 @@ const vm = (0,external_Vue_.createApp)({
                     else {
                         const filterFunction = getFilterFunction(config.filterSetting.arg, config.filterSetting.functionBody);
                         if (filterFunction) {
-                            const chapterFilter = (chapter) => {
+                            unsafeWindow.chapterFilter = (chapter) => {
                                 if (chapter.status === main/* Status.aborted */.qb.aborted) {
                                     return false;
                                 }
                                 return filterFunction(chapter);
                             };
-                            unsafeWindow.chapterFilter = chapterFilter;
                         }
                     }
                 }
@@ -21312,9 +21679,9 @@ const button_vm = (0,external_Vue_.createApp)({
         return {
             imgStart: src_setting/* iconStart0 */.cl,
             imgSetting: src_setting/* iconSetting */.d7,
-            isSettingSeen: GM/* _GM_info.scriptHandler */._p.scriptHandler !== "Greasemonkey",
             imgJump: src_setting/* iconJump */.y6,
-            uiObj: {},
+            isSettingSeen: GM/* _GM_info.scriptHandler */._p.scriptHandler !== "Greasemonkey",
+            uiObj: { type: "download" },
         };
     },
     methods: {
@@ -21344,6 +21711,9 @@ const button_vm = (0,external_Vue_.createApp)({
     },
     mounted() {
         Object.assign(this.uiObj, getUI()());
+        if (typeof this.uiObj.isSettingSeen !== "undefined") {
+            this.isSettingSeen = this.uiObj.isSettingSeen;
+        }
     },
     template: ui_button,
 });
