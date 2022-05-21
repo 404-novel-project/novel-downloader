@@ -5,11 +5,13 @@ import progressHtml from "./progress.html";
 
 export const style = createStyle(progressCss);
 export const el = createEl(`<div id="progress-bar"></div>`);
+
 export interface ProgressVM extends ComponentPublicInstance {
   totalChapterNumber: number;
   finishedChapterNumber: number;
   reset: () => void;
 }
+
 export const vm = createApp({
   data() {
     return {

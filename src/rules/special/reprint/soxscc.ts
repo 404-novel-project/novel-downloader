@@ -11,7 +11,7 @@ import { BaseRuleClass } from "../../../rules";
 export class Soxscc extends BaseRuleClass {
   public constructor() {
     super();
-    this.imageMode = "TM";
+    this.attachmentMode = "TM";
   }
 
   public async bookParse() {
@@ -39,7 +39,7 @@ export class Soxscc extends BaseRuleClass {
       document.querySelector(".book_cover > img") as HTMLImageElement
     ).src;
     if (coverUrl) {
-      getImageAttachment(coverUrl, this.imageMode, "cover-")
+      getImageAttachment(coverUrl, this.attachmentMode, "cover-")
         .then((coverClass) => {
           additionalMetadate.cover = coverClass;
         })
@@ -85,7 +85,7 @@ export class Soxscc extends BaseRuleClass {
       }
     }
 
-    const book = new Book({
+    return new Book({
       bookUrl,
       bookname,
       author,
@@ -94,7 +94,6 @@ export class Soxscc extends BaseRuleClass {
       additionalMetadate,
       chapters,
     });
-    return book;
   }
 
   public async chapterParse(
@@ -108,6 +107,7 @@ export class Soxscc extends BaseRuleClass {
     interface Options {
       bookname: string;
     }
+
     const doc = await getHtmlDOM(chapterUrl, charset);
     const bookname = (options as Options).bookname;
 

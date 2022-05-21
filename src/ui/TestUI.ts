@@ -15,6 +15,7 @@ export default defineComponent({
   name: "TestUI",
   setup() {
     const book = reactive({} as Book);
+
     async function waitBook() {
       // eslint-disable-next-line no-constant-condition
       while (true) {
@@ -24,6 +25,7 @@ export default defineComponent({
         }
       }
     }
+
     interface MetaData {
       封面: string;
       题名: string;
@@ -31,7 +33,9 @@ export default defineComponent({
       网址: string;
       简介: HTMLElement;
     }
+
     const metaData = reactive({} as MetaData);
+
     function getData(
       key: string,
       value: string | HTMLElement | [string, string]
@@ -52,6 +56,7 @@ export default defineComponent({
 
     const chapter = reactive({});
     const chapterNumber: Ref<number | string> = ref(-99);
+
     function getInitChapterNumber() {
       if (book) {
         const chapters = book.chapters;
@@ -62,6 +67,7 @@ export default defineComponent({
         return cns.slice(-3)[0];
       }
     }
+
     async function initChapter(n: number) {
       const chapters = book.chapters;
       const _chapter = chapters.filter((c) => c.chapterNumber === n)[0];
@@ -74,6 +80,7 @@ export default defineComponent({
         }
       }
     }
+
     watch(chapterNumber, (value, oldValue) => {
       if (typeof value === "string") {
         value = parseInt(value, 10);
@@ -87,14 +94,17 @@ export default defineComponent({
         }
       }
     });
+
     function isSeenChapter(_chapter: Chapter) {
       return _chapter.status === Status.finished;
     }
+
     function isChapterFailed(_chapter: Chapter) {
       return (
         _chapter.status === Status.failed || _chapter.status === Status.aborted
       );
     }
+
     function getChapterHtml(_chapter: Chapter) {
       const imgs = _chapter.contentHTML?.querySelectorAll("img");
       if (imgs) {
@@ -127,8 +137,8 @@ export default defineComponent({
 
     function getObjectUrl(url: string) {
       const attachment = getAttachmentClassCache(url);
-      if (attachment?.imageBlob) {
-        const blob = attachment.imageBlob;
+      if (attachment?.Blob) {
+        const blob = attachment.Blob;
         const src = URL.createObjectURL(blob);
         return src;
       }

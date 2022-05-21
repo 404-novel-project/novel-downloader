@@ -6,6 +6,7 @@ h1 {
     margin-top: 3.2em;
     margin-bottom: 3.3em;
 }
+
 h2 {
   line-height: 130%;
   text-align: center;
@@ -14,11 +15,13 @@ h2 {
   margin-top: 1.2em;
   margin-bottom: 2.3em;
 }
+
 div {
     margin: 0;
     padding: 0;
     text-align: justify;
 }
+
 p {
   text-indent: 2em;
   display: block;
@@ -26,10 +29,12 @@ p {
   margin-top: 0.4em;
   margin-bottom: 0.4em;
 }
+
 img {
   vertical-align: text-bottom;
   max-width: 90%;
 }
+
 .title {
   margin-bottom: 0.7em;
 }

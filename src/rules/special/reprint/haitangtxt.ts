@@ -16,7 +16,7 @@ function getClass(
   return class extends BaseRuleClass {
     public constructor() {
       super();
-      this.imageMode = "TM";
+      this.attachmentMode = "TM";
       this.nsfw = true;
     }
 
@@ -120,7 +120,7 @@ function getClass(
         chapters.push(chapter);
       }
 
-      const book = new Book({
+      return new Book({
         bookUrl,
         bookname,
         author,
@@ -129,7 +129,6 @@ function getClass(
         additionalMetadate,
         chapters,
       });
-      return book;
     }
 
     public async chapterParse(

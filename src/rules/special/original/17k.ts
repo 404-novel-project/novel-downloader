@@ -12,7 +12,7 @@ import { BaseRuleClass, ChapterParseObject } from "../../../rules";
 export class C17k extends BaseRuleClass {
   public constructor() {
     super();
-    this.imageMode = "TM";
+    this.attachmentMode = "TM";
     this.charset = "UTF-8";
     this.concurrencyLimit = 5;
   }
@@ -36,7 +36,7 @@ export class C17k extends BaseRuleClass {
       doc.querySelector("#bookCover img.book") as HTMLImageElement
     ).src;
     if (coverUrl) {
-      getImageAttachment(coverUrl, this.imageMode, "cover-")
+      getImageAttachment(coverUrl, this.attachmentMode, "cover-")
         .then((coverClass) => {
           additionalMetadate.cover = coverClass;
         })

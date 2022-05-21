@@ -11,10 +11,11 @@ import { Book, BookAdditionalMetadate } from "../../../main/Book";
 import { BaseRuleClass } from "../../../rules";
 
 type CryptoJStype = typeof CryptoJS;
+
 export class Hanwujinian extends BaseRuleClass {
   public constructor() {
     super();
-    this.imageMode = "TM";
+    this.attachmentMode = "TM";
   }
 
   public async bookParse() {
@@ -38,7 +39,7 @@ export class Hanwujinian extends BaseRuleClass {
     ).src;
     const additionalMetadate: BookAdditionalMetadate = {};
     if (coverUrl) {
-      getImageAttachment(coverUrl, this.imageMode, "cover-")
+      getImageAttachment(coverUrl, this.attachmentMode, "cover-")
         .then((coverClass) => {
           additionalMetadate.cover = coverClass;
         })
@@ -117,6 +118,7 @@ export class Hanwujinian extends BaseRuleClass {
     book.ToCUrl = anotherPageUrl;
     return book;
   }
+
   public async chapterParse(
     chapterUrl: string,
     chapterName: string | null,
@@ -145,6 +147,7 @@ export class Hanwujinian extends BaseRuleClass {
         });
         return d.toString(CryptoJS.enc.Utf8);
       }
+
       const text = decodeURI(AesDecrypt(chapterContent));
       const div = document.createElement("div");
       div.innerText = text;

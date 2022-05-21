@@ -899,8 +899,10 @@ export async function cleanDOM(
   }): Promise<Output> {
     const iImages = await Promise.all(images);
     iImages.forEach((image) => {
-      dom.innerHTML = dom.innerHTML.replaceAll(image.comments, image.name);
-      text = text.replaceAll(image.comments, image.name);
+      if (image.comments) {
+        dom.innerHTML = dom.innerHTML.replaceAll(image.comments, image.name);
+        text = text.replaceAll(image.comments, image.name);
+      }
     });
     return {
       dom,

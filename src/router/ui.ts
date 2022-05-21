@@ -1,15 +1,18 @@
 import { floatBuster } from "../lib/adBlocker";
 
-interface UIObject {
+export interface UIObject {
   type: "jump" | "download" | "error";
   jumpFunction?: () => void;
+  isSettingSeen?: boolean;
 }
+
 const defaultObject: UIObject = {
   type: "download",
 };
 const errorObject: UIObject = {
   type: "error",
 };
+
 export function getUI(): () => UIObject {
   const host: string = document.location.host;
   switch (host) {
@@ -266,6 +269,9 @@ export function getUI(): () => UIObject {
         floatBuster();
         return defaultObject;
       };
+    }
+    case "new-read.readmoo.com": {
+      return () => ({ type: "download", isSettingSeen: false });
     }
     default: {
       return () => {

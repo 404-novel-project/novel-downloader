@@ -11,7 +11,7 @@ import { BaseRuleClass } from "../../../rules";
 export class Idejian extends BaseRuleClass {
   public constructor() {
     super();
-    this.imageMode = "TM";
+    this.attachmentMode = "TM";
     this.maxRunLimit = 5;
   }
 
@@ -38,7 +38,7 @@ export class Idejian extends BaseRuleClass {
       document.querySelector(".book_img > img") as HTMLImageElement
     ).src;
     if (coverUrl) {
-      getImageAttachment(coverUrl, this.imageMode, "cover-")
+      getImageAttachment(coverUrl, this.attachmentMode, "cover-")
         .then((coverClass) => {
           additionalMetadate.cover = coverClass;
         })
@@ -79,7 +79,7 @@ export class Idejian extends BaseRuleClass {
     // 初始化章节前清除 Cookie
     document.cookie = "";
 
-    const book = new Book({
+    return new Book({
       bookUrl,
       bookname,
       author,
@@ -88,7 +88,6 @@ export class Idejian extends BaseRuleClass {
       additionalMetadate,
       chapters,
     });
-    return book;
   }
 
   public async chapterParse(

@@ -14,7 +14,7 @@ import { retryLimit } from "../../../setting";
 export class Sfacg extends BaseRuleClass {
   public constructor() {
     super();
-    this.imageMode = "TM";
+    this.attachmentMode = "TM";
     this.concurrencyLimit = 1;
   }
 
@@ -36,7 +36,7 @@ export class Sfacg extends BaseRuleClass {
       dom.querySelector("#hasTicket div.pic img") as HTMLImageElement
     ).src;
     if (coverUrl) {
-      getImageAttachment(coverUrl, this.imageMode, "cover-")
+      getImageAttachment(coverUrl, this.attachmentMode, "cover-")
         .then((coverClass) => {
           additionalMetadate.cover = coverClass;
         })
@@ -178,6 +178,7 @@ export class Sfacg extends BaseRuleClass {
         vipChapterName: string
       ) {
         let retryTime = 0;
+
         function fetchVipChapterImage(
           vipChapterImageUrlI: string
         ): Promise<Blob | null | void> {
@@ -224,7 +225,7 @@ export class Sfacg extends BaseRuleClass {
           "naive"
         );
         if (vipChapterImageBlob) {
-          vipChapterImage.imageBlob = vipChapterImageBlob;
+          vipChapterImage.Blob = vipChapterImageBlob;
           vipChapterImage.status = Status.finished;
         } else {
           vipChapterImage.status = Status.failed;

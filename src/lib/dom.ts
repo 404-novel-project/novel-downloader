@@ -13,7 +13,7 @@ export function rm(selector: string, all = false, dom: HTMLElement) {
 export function rm2(filters: (string | RegExp)[], dom: HTMLElement) {
   function doRemove(nodes: HTMLElement | Text) {
     Array.from(nodes.childNodes).forEach((node) => {
-      let text = "";
+      let text: string;
       if (node.nodeName === "#text") {
         text = (node as Text).textContent ?? "";
       } else {
@@ -37,6 +37,7 @@ export function rm2(filters: (string | RegExp)[], dom: HTMLElement) {
       }
     });
   }
+
   doRemove(dom);
 }
 

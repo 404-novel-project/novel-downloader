@@ -15,12 +15,13 @@ import { BaseRuleClass, ChapterParseObject } from "../../../rules";
 interface CiweimaoObj {
   HB: any;
 }
+
 type CiweimaoWindow = CiweimaoObj & UnsafeWindow;
 
 export class Ciweimao extends BaseRuleClass {
   public constructor() {
     super();
-    this.imageMode = "TM";
+    this.attachmentMode = "TM";
     this.charset = "UTF-8";
     this.concurrencyLimit = 1;
     this.maxRunLimit = 1;
@@ -44,7 +45,7 @@ export class Ciweimao extends BaseRuleClass {
     const coverUrl = (dom.querySelector(".cover > img") as HTMLImageElement)
       .src;
     if (coverUrl) {
-      getImageAttachment(coverUrl, this.imageMode, "cover-")
+      getImageAttachment(coverUrl, this.attachmentMode, "cover-")
         .then((coverClass) => {
           additionalMetadate.cover = coverClass;
         })
@@ -146,7 +147,7 @@ export class Ciweimao extends BaseRuleClass {
 export class Shubl extends BaseRuleClass {
   public constructor() {
     super();
-    this.imageMode = "TM";
+    this.attachmentMode = "TM";
     this.concurrencyLimit = 1;
     this.maxRunLimit = 1;
   }
@@ -172,7 +173,7 @@ export class Shubl extends BaseRuleClass {
     const coverUrl = (document.querySelector(".book-img") as HTMLImageElement)
       .src;
     if (coverUrl) {
-      getImageAttachment(coverUrl, this.imageMode, "cover-")
+      getImageAttachment(coverUrl, this.attachmentMode, "cover-")
         .then((coverClass) => {
           additionalMetadate.cover = coverClass;
         })
@@ -249,7 +250,7 @@ export class Shubl extends BaseRuleClass {
       }
     }
 
-    const book = new Book({
+    return new Book({
       bookUrl,
       bookname,
       author,
@@ -258,7 +259,6 @@ export class Shubl extends BaseRuleClass {
       additionalMetadate,
       chapters,
     });
-    return book;
   }
 
   public async chapterParse(
@@ -311,6 +311,7 @@ function getChapter({
     keys: string[];
     accessKey: string;
   }
+
   function decrypt(item: DecryptItem) {
     let message = item.content;
     const keys = item.keys;
@@ -342,6 +343,7 @@ function getChapter({
 
     return (message as any).toString(CryptoJS.enc.Utf8);
   }
+
   async function getChapterAuthorSay() {
     const doc = await getHtmlDOM(chapterUrl, undefined);
     const chapterAuthorSays = doc.querySelectorAll(
@@ -360,6 +362,7 @@ function getChapter({
     }
     return divChapterAuthorSay;
   }
+
   const chapterId = chapterUrl.split("/").slice(-1)[0];
 
   async function publicChapter(): Promise<ChapterParseObject> {
@@ -372,6 +375,7 @@ function getChapter({
         code: number;
         chapter_access_key: string;
       }
+
       log.debug(`[Chapter]请求 ${accessKeyUrl} Referer ${refererUrl}`);
       const accessKeyObj = await gfetch(accessKeyUrl, {
         method: "POST",
@@ -397,6 +401,7 @@ function getChapter({
         encryt_keys: string[];
         rad: number;
       }
+
       log.debug(`[Chapter]请求 ${chapterContentUrl} Referer ${refererUrl}`);
       const chapterContentObj = await gfetch(chapterContentUrl, {
         method: "POST",
@@ -458,6 +463,7 @@ function getChapter({
         image_code: string;
         access_key: string;
       }
+
       const imageSessionCodeUrl =
         rootPath + "chapter/ajax_get_image_session_code";
       log.debug(`[Chapter]请求 ${imageSessionCodeUrl} Referer ${refererUrl}`);
@@ -529,7 +535,7 @@ function getChapter({
         "TM"
       );
       if (vipCHapterImageBlob) {
-        vipCHapterImage.imageBlob = vipCHapterImageBlob as Blob;
+        vipCHapterImage.Blob = vipCHapterImageBlob as Blob;
         vipCHapterImage.status = Status.finished;
       }
       const contentImages = [vipCHapterImage];

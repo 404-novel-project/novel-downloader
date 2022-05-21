@@ -13,7 +13,7 @@ const lang: Record<string, string> = _lang ? { lang: _lang } : {};
 export class Pixiv extends BaseRuleClass {
   public constructor() {
     super();
-    this.imageMode = "TM";
+    this.attachmentMode = "TM";
     this.needLogin = true;
   }
 
@@ -80,7 +80,7 @@ export class Pixiv extends BaseRuleClass {
       const additionalMetadate: BookAdditionalMetadate = {};
       const coverUrl = seriesMetaBody.firstEpisode.url;
       if (coverUrl) {
-        getImageAttachment(coverUrl, self.imageMode, "cover-")
+        getImageAttachment(coverUrl, self.attachmentMode, "cover-")
           .then((coverClass) => {
             additionalMetadate.cover = coverClass;
           })
@@ -313,7 +313,7 @@ export class Pixiv extends BaseRuleClass {
       const additionalMetadate: BookAdditionalMetadate = {};
       const coverUrl = novel.coverUrl;
       if (coverUrl) {
-        getImageAttachment(coverUrl, self.imageMode, "cover-")
+        getImageAttachment(coverUrl, self.attachmentMode, "cover-")
           .then((coverClass) => {
             additionalMetadate.cover = coverClass;
           })
@@ -739,7 +739,7 @@ function replaceMark(dom: HTMLElement) {
   // [[jumpuri:原文链接 > https://www.backchina.com/blog/250647/article-183780.html]]
   // https://www.pixiv.net/novel/show.php?id=17253845
   const jumpuriMatchs = dom.innerHTML.matchAll(
-      /\[\[jumpuri:(.*) (>|&gt;) (.*)]]/g
+    /\[\[jumpuri:(.*) (>|&gt;) (.*)]]/g
   );
   for (const match of jumpuriMatchs) {
     const [str, text, , href] = match;

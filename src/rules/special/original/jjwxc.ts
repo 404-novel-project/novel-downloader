@@ -20,7 +20,7 @@ import { replaceJjwxcCharacter } from "../../lib/jjwxcFontDecode";
 export class Jjwxc extends BaseRuleClass {
   public constructor() {
     super();
-    this.imageMode = "TM";
+    this.attachmentMode = "TM";
     this.concurrencyLimit = 5;
     this.charset = "GB18030";
   }
@@ -37,9 +37,9 @@ export class Jjwxc extends BaseRuleClass {
       return fl.length !== 0;
     };
 
-    let bookname = "";
-    const additionalMetadate: BookAdditionalMetadate = {};
-    let author = "";
+      let bookname: string;
+      const additionalMetadate: BookAdditionalMetadate = {};
+      let author = "";
     let introduction: string | null = null;
     let introductionHTML: HTMLElement | null = null;
     let introCleanimages: AttachmentClass[] | null = null;
@@ -65,11 +65,11 @@ export class Jjwxc extends BaseRuleClass {
         document.querySelector(".noveldefaultimage") as HTMLImageElement
       ).src;
       if (coverUrl) {
-        getImageAttachment(coverUrl, this.imageMode, "cover-")
-          .then((coverClass) => {
-            additionalMetadate.cover = coverClass;
-          })
-          .catch((error) => log.error(error));
+          getImageAttachment(coverUrl, this.attachmentMode, "cover-")
+            .then((coverClass) => {
+              additionalMetadate.cover = coverClass;
+            })
+            .catch((error) => log.error(error));
       }
 
       let tags = (
@@ -225,16 +225,15 @@ export class Jjwxc extends BaseRuleClass {
       }
     }
 
-    const book = new Book({
-      bookUrl,
-      bookname,
-      author,
-      introduction,
-      introductionHTML,
-      additionalMetadate,
-      chapters,
-    });
-    return book;
+      return new Book({
+        bookUrl,
+        bookname,
+        author,
+        introduction,
+        introductionHTML,
+        additionalMetadate,
+        chapters,
+      });
   }
 
   public async chapterParse(
@@ -339,6 +338,7 @@ export class Jjwxc extends BaseRuleClass {
         }
 
         let retryTime = 0;
+
         function fetchFont(fontUrlI: string): Promise<Blob | null | void> {
           log.debug(
             `[Chapter]请求 ${fontUrlI} Referer ${chapterUrl} 重试次数 ${retryTime}`
@@ -377,10 +377,10 @@ export class Jjwxc extends BaseRuleClass {
             fontClassObj = fontClassObjCache;
           } else {
             const fontBlob = await fetchFont(fontUrl);
-            fontClassObj = new AttachmentClass(fontUrl, fontFileName, "TM");
-            fontClassObj.imageBlob = fontBlob;
-            fontClassObj.status = Status.finished;
-            putAttachmentClassCache(fontClassObj);
+              fontClassObj = new AttachmentClass(fontUrl, fontFileName, "TM");
+              fontClassObj.Blob = fontBlob;
+              fontClassObj.status = Status.finished;
+              putAttachmentClassCache(fontClassObj);
           }
 
           const fontStyleDom = document.createElement("style");

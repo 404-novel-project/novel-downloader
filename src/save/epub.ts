@@ -808,13 +808,13 @@ export class EPUB extends Options {
   }
 
   private async addAttachment(attachment: AttachmentClass) {
-    if (attachment.status === Status.finished && attachment.imageBlob) {
+    if (attachment.status === Status.finished && attachment.Blob) {
       log.debug(
         `[save-epub]添加附件，文件名：${attachment.name}，对象`,
-        attachment.imageBlob
+        attachment.Blob
       );
 
-      await this.epubZip.file(`OEBPS/${attachment.name}`, attachment.imageBlob);
+      await this.epubZip.file(`OEBPS/${attachment.name}`, attachment.Blob);
 
       const item = this.contentOpf.createElement("item");
       item.id = attachment.name;

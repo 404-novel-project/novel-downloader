@@ -41,6 +41,7 @@ interface MkRuleClassOptions {
   overrideConstructor?: (classThis: BaseRuleClass) => any;
   language?: string;
 }
+
 export function mkRuleClass({
   bookUrl,
   anotherPageUrl,
@@ -69,7 +70,7 @@ export function mkRuleClass({
   return class extends BaseRuleClass {
     public constructor() {
       super();
-      this.imageMode = "TM";
+      this.attachmentMode = "TM";
       if (concurrencyLimit) {
         this.concurrencyLimit = concurrencyLimit;
       }
@@ -99,7 +100,7 @@ export function mkRuleClass({
         language: language ?? "zh",
       };
       if (coverUrl) {
-        getImageAttachment(coverUrl, this.imageMode, "cover-")
+        getImageAttachment(coverUrl, this.attachmentMode, "cover-")
           .then((coverClass) => {
             additionalMetadate.cover = coverClass;
           })
@@ -190,6 +191,7 @@ export function mkRuleClass({
       }
       return book;
     }
+
     public async chapterParse(
       chapterUrl: string,
       chapterName: string | null,

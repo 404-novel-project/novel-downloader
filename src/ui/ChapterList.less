@@ -9,20 +9,24 @@ div.chapter-list-loading {
   padding-bottom: 5em;
   text-align: center;
 }
+
 div.chapter-list {
   max-height: 200px;
   overflow-y: scroll;
 }
+
 div.chapter-list {
   .section {
     margin-top: 1.5em;
     display: grid;
     grid-template-columns: 32% 32% 32%;
   }
+
   .section > h3:first-child {
     grid-column-end: span 3;
     text-align: center;
   }
+
   .section > div.chapter {
     text-align: center;
     padding-top: 0.5em;
@@ -36,22 +40,28 @@ div.chapter-list {
     margin-right: 0;
     margin-bottom: 0;
   }
+
   .section a.disabled {
     pointer-events: none;
     cursor: default;
   }
+
   .section a {
     text-decoration: none;
   }
+
   div.chapter.good {
     background: var(--good-chapter-color);
   }
+
   div.chapter.bad {
     background: var(--bad-chapter-color);
   }
+
   div.chapter.good.warning {
     background: var(--warning-chapter-color);
   }
+
   div.chapter.bad a,
   div.chapter.good a {
     color: white;
@@ -62,9 +72,11 @@ div.chapter-list {
   span.good {
     color: var(--good-chapter-color);
   }
+
   span.bad {
     color: var(--bad-chapter-color);
   }
+
   span.warning {
     color: var(--warning-chapter-color);
   }

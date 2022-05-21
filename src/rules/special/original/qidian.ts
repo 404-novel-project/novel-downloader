@@ -13,7 +13,7 @@ import { BaseRuleClass, ChapterParseObject } from "../../../rules";
 export class Qidian extends BaseRuleClass {
   public constructor() {
     super();
-    this.imageMode = "TM";
+    this.attachmentMode = "TM";
     this.concurrencyLimit = 3;
   }
 
@@ -49,7 +49,7 @@ export class Qidian extends BaseRuleClass {
       document.querySelector("#bookImg > img") as HTMLImageElement
     ).src.slice(0, -4);
     if (coverUrl) {
-      getImageAttachment(coverUrl, this.imageMode, "cover-")
+      getImageAttachment(coverUrl, this.attachmentMode, "cover-")
         .then((coverClass) => {
           additionalMetadate.cover = coverClass;
         })
@@ -61,15 +61,15 @@ export class Qidian extends BaseRuleClass {
 
     // 限免探测
     /*
-    const limitFreeUrl = "https://www.qidian.com/free/";
-    const limitFreeDom = await ggetHtmlDOM(limitFreeUrl, this.charset);
-    const limitFreeBookIds = Array.from(
-      limitFreeDom.querySelectorAll(
-        "#limit-list div.book-img-box > a[data-bid]"
-      )
-    ).map((a) => a.getAttribute("data-bid"));
-    const limitFree = limitFreeBookIds.includes(bookId);
-    */
+        const limitFreeUrl = "https://www.qidian.com/free/";
+        const limitFreeDom = await ggetHtmlDOM(limitFreeUrl, this.charset);
+        const limitFreeBookIds = Array.from(
+          limitFreeDom.querySelectorAll(
+            "#limit-list div.book-img-box > a[data-bid]"
+          )
+        ).map((a) => a.getAttribute("data-bid"));
+        const limitFree = limitFreeBookIds.includes(bookId);
+        */
     const limitFree = Boolean(
       document.querySelector(".book-information .flag")
     );
@@ -173,7 +173,7 @@ export class Qidian extends BaseRuleClass {
       }
     }
 
-    const book = new Book({
+    return new Book({
       bookUrl,
       bookname,
       author,
@@ -182,7 +182,6 @@ export class Qidian extends BaseRuleClass {
       additionalMetadate,
       chapters,
     });
-    return book;
   }
 
   public async chapterParse(

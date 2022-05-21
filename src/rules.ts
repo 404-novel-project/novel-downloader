@@ -1,13 +1,13 @@
-import {GmWindow, UnsafeWindow} from "./global";
-import {clearAttachmentClassCache} from "./lib/attachments";
-import {concurrencyRun, saveToArchiveOrg, sleep} from "./lib/misc";
-import {log, saveLogTextToFile} from "./log";
-import {ExpectError, Status} from "./main/main";
-import {AttachmentClass} from "./main/Attachment";
-import {Chapter, ChapterAdditionalMetadate} from "./main/Chapter";
-import {Book} from "./main/Book";
-import {SaveBook} from "./save/save";
-import {SaveOptions, saveOptionsValidate} from "./save/options";
+import { GmWindow, UnsafeWindow } from "./global";
+import { clearAttachmentClassCache } from "./lib/attachments";
+import { concurrencyRun, saveToArchiveOrg, sleep } from "./lib/misc";
+import { log, saveLogTextToFile } from "./log";
+import { ExpectError, Status } from "./main/main";
+import { AttachmentClass } from "./main/Attachment";
+import { Chapter, ChapterAdditionalMetadate } from "./main/Chapter";
+import { Book, saveType } from "./main/Book";
+import { SaveBook } from "./save/save";
+import { SaveOptions, saveOptionsValidate } from "./save/options";
 import {
   enableCustomChapterFilter,
   enableCustomFinishCallback,
@@ -15,9 +15,9 @@ import {
   enableSaveToArchiveOrg,
   getCustomEnableSaveToArchiveOrg,
 } from "./setting";
-import {failedPlus, printStat, successPlus} from "./stat";
-import {ProgressVM, vm as progress} from "./ui/progress";
-import {setStreamSaverSetting} from "./lib/zip";
+import { failedPlus, printStat, successPlus } from "./stat";
+import { ProgressVM, vm as progress } from "./ui/progress";
+import { setStreamSaverSetting } from "./lib/zip";
 
 interface BcMessage {
   type: "ping" | "pong" | "close";
@@ -37,7 +37,7 @@ export interface ChapterParseObject {
 }
 
 export abstract class BaseRuleClass {
-  public imageMode: "naive" | "TM" = "TM";
+  public attachmentMode: "naive" | "TM" = "TM";
   public charset: string = document.characterSet;
   public concurrencyLimit = 10;
   public streamZip = false;
@@ -46,6 +46,7 @@ export abstract class BaseRuleClass {
   public maxRunLimit?: number;
   public saveOptions?: SaveOptions;
   public book?: Book;
+  protected saveType?: saveType;
   private bcWorker: BroadcastChannel = new BroadcastChannel(
     "novel-downloader-worker"
   );
@@ -71,7 +72,7 @@ export abstract class BaseRuleClass {
         messages.push(message);
       }
       if (message.type === "close") {
-        //
+        log.debug(`${(window as GmWindow).workerId} has closed!`);
       }
     };
   }
@@ -252,10 +253,10 @@ export abstract class BaseRuleClass {
           if (!(window as GmWindow).stopFlag.aborted) {
             (window as GmWindow).stopController.abort();
             console.error(
-                "连续十章下载失败，放弃本次下载。\n请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/404-novel-project/novel-downloader"
+              "连续十章下载失败，放弃本次下载。\n请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/404-novel-project/novel-downloader"
             );
             alert(
-                "连续十章下载失败，放弃本次下载。\n请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/404-novel-project/novel-downloader"
+              "连续十章下载失败，放弃本次下载。\n请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/404-novel-project/novel-downloader"
             );
             saveLogTextToFile();
           }
@@ -277,10 +278,10 @@ export abstract class BaseRuleClass {
           if (!(window as GmWindow).stopFlag.aborted) {
             (window as GmWindow).stopController.abort();
             console.error(
-                "连续十章下载失败，放弃本次下载。\n请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/404-novel-project/novel-downloader"
+              "连续十章下载失败，放弃本次下载。\n请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/404-novel-project/novel-downloader"
             );
             alert(
-                "连续十章下载失败，放弃本次下载。\n请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/404-novel-project/novel-downloader"
+              "连续十章下载失败，放弃本次下载。\n请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/404-novel-project/novel-downloader"
             );
             saveLogTextToFile();
           }
@@ -418,15 +419,17 @@ export abstract class BaseRuleClass {
     if (!(error instanceof ExpectError)) {
       document.getElementById("button-div")?.remove();
       log.error(
-          "运行过程出错，请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/404-novel-project/novel-downloader"
+        "运行过程出错，请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/404-novel-project/novel-downloader"
       );
 
       // noinspection JSIgnoredPromiseFromCall
       failedPlus();
       alert(
-          "运行过程出错，请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/404-novel-project/novel-downloader"
+        "运行过程出错，请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/404-novel-project/novel-downloader"
       );
-      window.open('https://github.com/404-novel-project/novel-downloader/issues')
+      window.open(
+        "https://github.com/404-novel-project/novel-downloader/issues"
+      );
       saveLogTextToFile();
     }
   }

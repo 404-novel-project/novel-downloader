@@ -13,7 +13,7 @@ import { sandboxed } from "../../../lib/dom";
 export class Ciyuanji extends BaseRuleClass {
   public constructor() {
     super();
-    this.imageMode = "TM";
+    this.attachmentMode = "TM";
     this.concurrencyLimit = 1;
   }
 
@@ -24,6 +24,7 @@ export class Ciyuanji extends BaseRuleClass {
       tagId: number;
       tagName: string;
     }
+
     interface BookObj {
       bookId: number;
       bookName: string;
@@ -63,6 +64,7 @@ export class Ciyuanji extends BaseRuleClass {
       firstChapterName: string;
       isAutoSub: string;
     }
+
     const bookObject: BookObj = (unsafeWindow as any).__NUXT__.data[0].book;
     const bookId = bookObject.bookId;
     const bookname = bookObject.bookName;
@@ -73,7 +75,7 @@ export class Ciyuanji extends BaseRuleClass {
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = bookObject.imgUrl;
     if (coverUrl) {
-      getImageAttachment(coverUrl, this.imageMode, "cover-")
+      getImageAttachment(coverUrl, this.attachmentMode, "cover-")
         .then((coverClass) => {
           additionalMetadate.cover = coverClass;
         })
@@ -96,6 +98,7 @@ export class Ciyuanji extends BaseRuleClass {
       volumeSortNum: number;
       copyright: number;
     }
+
     interface BookChapterObj {
       bookId: number;
       bookName: string;
@@ -106,6 +109,7 @@ export class Ciyuanji extends BaseRuleClass {
       chapterList: ChapterObj[];
       copyright: number;
     }
+
     const bookChapterObject: BookChapterObj = (unsafeWindow as any).__NUXT__
       .data[0].bookChapter;
     const chapterList = bookChapterObject.chapterList;
@@ -177,6 +181,7 @@ export class Ciyuanji extends BaseRuleClass {
       type4: "PC-IsActivityStart",
       f: "NpkTYvpvhJjEog8Y051gQDHmReY54z5t3F0zSd9QEFuxWGqfC8g8Y4GPuabq0KPdxArlji4dSnnHCARHnkqYBLu7iIw55ibTo18",
     };
+
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     function encrypt(input: string) {
       if (input && "string" === typeof input) {
@@ -187,6 +192,7 @@ export class Ciyuanji extends BaseRuleClass {
         }).toString();
       }
     }
+
     function decrypt(input: string) {
       if (input && "string" === typeof input) {
         input = input.replace(/\n/g, "");
@@ -226,6 +232,7 @@ export class Ciyuanji extends BaseRuleClass {
         thirdBookId: null;
         contentUpdateTime: string;
       }
+
       const __NUXT__ = sandboxed(`${scriptText}; return __NUXT__`);
       const chapterObj: ChapterObject = __NUXT__.data[0].chapter;
 

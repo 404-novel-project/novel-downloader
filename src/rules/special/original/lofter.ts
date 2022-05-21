@@ -10,7 +10,7 @@ import { rm } from "../../../lib/dom";
 export class Lofter extends BaseRuleClass {
   public constructor() {
     super();
-    this.imageMode = "TM";
+    this.attachmentMode = "TM";
     this.concurrencyLimit = 5;
     this.streamZip = true;
   }
@@ -38,7 +38,7 @@ export class Lofter extends BaseRuleClass {
       const avatar = new URL(_avatar);
       avatar.search = "";
       const avatarUrl = avatar.toString();
-      getImageAttachment(avatarUrl, this.imageMode, "avatar-")
+      getImageAttachment(avatarUrl, this.attachmentMode, "avatar-")
         .then((avatarClass) => {
           additionalMetadate.cover = avatarClass;
         })
@@ -142,6 +142,7 @@ export class Lofter extends BaseRuleClass {
     interface Options {
       author: string;
     }
+
     async function post(): Promise<ChapterParseObject> {
       log.debug(`[chapter]请求页面：${chapterUrl}`);
       const doc = await getHtmlDOM(chapterUrl, charset);
@@ -184,6 +185,7 @@ export class Lofter extends BaseRuleClass {
         throw new Error(`[chapter]未发现内容，url：${chapterUrl}`);
       }
     }
+
     async function lpost(): Promise<ChapterParseObject> {
       log.debug(`[chapter]请求页面：${chapterUrl}`);
       const doc = await ggetHtmlDOM(chapterUrl, charset);

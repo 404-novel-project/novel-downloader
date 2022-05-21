@@ -10,6 +10,7 @@
   padding: 6px;
   border-radius: 12px;
 }
+
 #chapter-progress {
   --color: green;
   --position: 0%;
@@ -35,6 +36,7 @@
   background-size: 100%, var(--position);
   background-repeat: no-repeat;
 }
+
 #zip-progress {
   --color: yellow;
   --position: 0%;

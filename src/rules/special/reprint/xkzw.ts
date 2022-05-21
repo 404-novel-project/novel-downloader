@@ -11,7 +11,7 @@ import { BaseRuleClass } from "../../../rules";
 export class Xkzw extends BaseRuleClass {
   public constructor() {
     super();
-    this.imageMode = "TM";
+    this.attachmentMode = "TM";
   }
 
   public async bookParse() {
@@ -33,7 +33,7 @@ export class Xkzw extends BaseRuleClass {
       document.querySelector("#fmimg > img") as HTMLImageElement
     ).src;
     if (coverUrl) {
-      getImageAttachment(coverUrl, this.imageMode, "cover-")
+      getImageAttachment(coverUrl, this.attachmentMode, "cover-")
         .then((coverClass) => {
           additionalMetadate.cover = coverClass;
         })
@@ -43,6 +43,7 @@ export class Xkzw extends BaseRuleClass {
     const chapters: Chapter[] = [];
 
     const bookid = (unsafeWindow as any).bookId;
+
     interface ChapterObject {
       chapterid: number;
       chaptername: string;
@@ -50,15 +51,18 @@ export class Xkzw extends BaseRuleClass {
       originalurl: string;
       currenturl: string;
     }
+
     interface ColumnObject {
       columnname: string;
       columnid: number;
       chapterlist: ChapterObject[];
     }
+
     interface SiteChapterList {
       columnlist: ColumnObject[];
       chaptercount: number;
     }
+
     const apiUrl = [document.location.origin, "action.php"].join("/");
     log.debug(`[chapter]正在请求${apiUrl}`);
     const siteChapterList: SiteChapterList = await fetch(apiUrl, {
@@ -199,7 +203,7 @@ export class Xkzw extends BaseRuleClass {
       }
     }
 
-    const book = new Book({
+    return new Book({
       bookUrl,
       bookname,
       author,
@@ -208,7 +212,6 @@ export class Xkzw extends BaseRuleClass {
       additionalMetadate,
       chapters,
     });
-    return book;
   }
 
   public async chapterParse(

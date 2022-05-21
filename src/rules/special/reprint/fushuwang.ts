@@ -11,7 +11,7 @@ export class Fushuwang extends BaseRuleClass {
 
   public constructor() {
     super();
-    this.imageMode = "TM";
+    this.attachmentMode = "TM";
     this.charset = "GBK";
     this.maxRunLimit = 5;
     this.saveOptions = {

@@ -13,6 +13,7 @@ export async function setStreamSaverSetting() {
   streamSaver.supported =
     streamSupport() && (await mitmPageAvailability(mitm.href));
 }
+
 export class FflateZip {
   public filename: string;
   public stream: boolean;
@@ -71,6 +72,7 @@ export class FflateZip {
           nonStream();
         }
       }
+
       function nonStream() {
         log.info("[fflateZip] ZIP生成完毕，文件大小：" + self.zipOut.size);
         try {

@@ -11,7 +11,7 @@ import { BaseRuleClass, ChapterParseObject } from "../../../rules";
 export class Tadu extends BaseRuleClass {
   public constructor() {
     super();
-    this.imageMode = "TM";
+    this.attachmentMode = "TM";
     this.concurrencyLimit = 5;
   }
 
@@ -35,11 +35,11 @@ export class Tadu extends BaseRuleClass {
       document.querySelector("a.bookImg > img") as HTMLImageElement
     ).getAttribute("data-src");
     if (coverUrl) {
-      getImageAttachment(coverUrl, this.imageMode, "cover-")
-        .then((coverClass) => {
-          additionalMetadate.cover = coverClass;
-        })
-        .catch((error) => log.error(error));
+        getImageAttachment(coverUrl, this.attachmentMode, "cover-")
+          .then((coverClass) => {
+            additionalMetadate.cover = coverClass;
+          })
+          .catch((error) => log.error(error));
     }
 
     const chapters: Chapter[] = [];
@@ -81,16 +81,15 @@ export class Tadu extends BaseRuleClass {
       chapters.push(chapter);
     }
 
-    const book = new Book({
-      bookUrl,
-      bookname,
-      author,
-      introduction,
-      introductionHTML,
-      additionalMetadate,
-      chapters,
-    });
-    return book;
+      return new Book({
+        bookUrl,
+        bookname,
+        author,
+        introduction,
+        introductionHTML,
+        additionalMetadate,
+        chapters,
+      });
   }
 
   public async chapterParse(
@@ -135,12 +134,14 @@ export class Tadu extends BaseRuleClass {
         if (!jsonpText) {
           throw new Error("jsonp request failed!");
         }
-        interface ContentObj {
-          content: string;
-        }
-        const getContentObj = new Function(
-          `function callback(obj) { return obj; } return ${jsonpText};`
-        );
+
+          interface ContentObj {
+            content: string;
+          }
+
+          const getContentObj = new Function(
+            `function callback(obj) { return obj; } return ${jsonpText};`
+          );
         const contentObj: ContentObj = getContentObj();
         if (typeof contentObj === "object") {
           content.innerHTML = contentObj.content;

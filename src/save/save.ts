@@ -1,16 +1,19 @@
 import { saveAs } from "file-saver";
 import { logText } from "../log";
-import { Book } from "../main/Book";
+import { Book, saveType } from "../main/Book";
 import { Chapter } from "../main/Chapter";
 import { Status } from "../main/main";
 import { enableDebug } from "../setting";
-import { EPUB } from "./epub";
 import { SaveOptions } from "./options";
+import { EPUB } from "./epub";
 import { TXT } from "./txt";
+import { Raw } from "./raw";
 
 export class SaveBook {
+  private saveType: saveType;
   private txt: TXT;
   private epub: EPUB;
+  private raw!: Raw;
 
   public constructor(book: Book, streamZip: boolean, options?: SaveOptions) {
     const _options = {};
@@ -21,8 +24,28 @@ export class SaveBook {
       Object.assign(_options, book.saveOptions);
     }
 
+    this.saveType = book.saveType;
+
     this.txt = new TXT(book, _options);
     this.epub = new EPUB(book, streamZip, _options);
+    if (this.saveType.raw instanceof Object) {
+      this.raw = new Raw(book);
+    }
+  }
+
+  private static saveLog() {
+    saveAs(
+      new Blob([logText], { type: "text/plain; charset=UTF-8" }),
+      "debug.log"
+    );
+  }
+
+  private saveTxt() {
+    this.txt.saveTxt();
+  }
+
+  private async saveEpub() {
+    await this.epub.saveEpub();
   }
 
   public async addChapter(chapter: Chapter) {
@@ -37,33 +60,29 @@ export class SaveBook {
       for (const attachment of chapter.contentImages) {
         attachment.status = Status.saved;
         if (!enableDebug.value) {
-          attachment.imageBlob = null;
+          attachment.Blob = null;
         }
       }
     }
     chapter.status = Status.saved;
   }
 
-  private saveTxt() {
-    this.txt.saveTxt();
-  }
-
-  private async saveEpub() {
-    await this.epub.saveEpub();
-  }
-
-  private static saveLog() {
-    saveAs(
-      new Blob([logText], { type: "text/plain; charset=UTF-8" }),
-      "debug.log"
-    );
-  }
-
   public async save() {
-    this.saveTxt();
+    if (this.saveType.txt) {
+      this.saveTxt();
+    }
     if (enableDebug.value) {
       SaveBook.saveLog();
     }
-    await this.saveEpub();
+    if (this.saveType.epub) {
+      await this.saveEpub();
+    }
+    if (this.saveType.raw instanceof Object) {
+      await this.saveRaw();
+    }
+  }
+
+  private async saveRaw() {
+    await this.raw.saveRaw();
   }
 }

@@ -11,7 +11,7 @@ import { BaseRuleClass } from "../../../rules";
 export class Kanunu8 extends BaseRuleClass {
   public constructor() {
     super();
-    this.imageMode = "TM";
+    this.attachmentMode = "TM";
   }
 
   public async bookParse() {
@@ -44,6 +44,7 @@ export class Kanunu8 extends BaseRuleClass {
     let aList: NodeListOf<Element> | Element[] | null = null;
     let sections: NodeListOf<Element> | null = null;
     let getName: ((sElem: Element) => string) | null = null;
+
     function aListFilter(a: Element) {
       const filters = ["writer", "/zj/", "index.html"];
       for (const f of filters) {
@@ -53,6 +54,7 @@ export class Kanunu8 extends BaseRuleClass {
       }
       return true;
     }
+
     if (document.querySelector("div.book")) {
       aList = Array.from(document.querySelectorAll("div.book a")).filter(
         aListFilter
@@ -91,7 +93,7 @@ export class Kanunu8 extends BaseRuleClass {
     if (_cover.length === 1) {
       const coverUrl = _cover[0].src;
       if (coverUrl) {
-        getImageAttachment(coverUrl, this.imageMode, "cover-")
+        getImageAttachment(coverUrl, this.attachmentMode, "cover-")
           .then((coverClass) => {
             additionalMetadate.cover = coverClass;
           })
@@ -140,7 +142,7 @@ export class Kanunu8 extends BaseRuleClass {
       });
       chapters.push(chapter);
     }
-    const book = new Book({
+    return new Book({
       bookUrl,
       bookname,
       author,
@@ -149,7 +151,6 @@ export class Kanunu8 extends BaseRuleClass {
       additionalMetadate,
       chapters,
     });
-    return book;
   }
 
   public async chapterParse(

@@ -1,8 +1,8 @@
 import defaultMainStyleText from "./main.css";
 import defaultTocStyleText from "./toc.css";
-import {Chapter} from "../main/Chapter";
-import {fullWidthLength} from "../lib/dom";
-import {Book} from "../main/Book";
+import { Chapter } from "../main/Chapter";
+import { fullWidthLength } from "../lib/dom";
+import { Book } from "../main/Book";
 
 class Common {
   public genMetaDateTxt(book: Book) {
@@ -51,22 +51,24 @@ export function saveOptionsValidate(data: any) {
     const keyList: string[] = [...keyNamesS, ...keyNamesF];
     return keyList.includes(keyname);
   }
-  function keyNamesStest(keyname: string) {
-    if (keyNamesS.includes(keyname as keyof SaveOptions)) {
-      if (typeof data[keyname] === "string") {
-        return true;
+
+    function keyNamesStest(keyname: string) {
+      if (keyNamesS.includes(keyname as keyof SaveOptions)) {
+        if (typeof data[keyname] === "string") {
+          return true;
+        }
       }
+      return false;
     }
-    return false;
-  }
-  function keyNamesFtest(keyname: string) {
-    if (keyNamesF.includes(keyname as keyof SaveOptions)) {
-      if (typeof data[keyname] === "function") {
-        return true;
+
+    function keyNamesFtest(keyname: string) {
+      if (keyNamesF.includes(keyname as keyof SaveOptions)) {
+        if (typeof data[keyname] === "function") {
+          return true;
+        }
       }
+      return false;
     }
-    return false;
-  }
 
   if (typeof data !== "object") {
     return false;

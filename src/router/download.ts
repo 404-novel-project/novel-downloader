@@ -1,4 +1,4 @@
-import {BaseRuleClass} from "../rules";
+import { BaseRuleClass } from "../rules";
 
 export async function getRule(): Promise<BaseRuleClass> {
   const host: string = document.location.host;
@@ -405,12 +405,12 @@ export async function getRule(): Promise<BaseRuleClass> {
     }
     case "zhaoze.art":
     case "houhuayuan.vip": {
-      const {houhuayuan} = await import("../rules/onePage/houhuayuan");
+      const { houhuayuan } = await import("../rules/onePage/houhuayuan");
       ruleClass = houhuayuan();
       break;
     }
     case "www.myrics.com": {
-      const {Myrics} = await import("../rules/special/original/myrics");
+      const { Myrics } = await import("../rules/special/original/myrics");
       ruleClass = Myrics;
       break;
     }
@@ -536,15 +536,20 @@ export async function getRule(): Promise<BaseRuleClass> {
       break;
     }
     case "novelup.plus": {
-      const { novelup } = await import(
-        "../rules/onePageWithMultiIndexPage/novelup"
-      );
+      const {novelup} = await import(
+          "../rules/onePageWithMultiIndexPage/novelup"
+          );
       ruleClass = novelup();
       break;
     }
     case "www.69shu.com": {
       const {c69shu} = await import("../rules/twoPage/69shu");
       ruleClass = c69shu();
+      break;
+    }
+    case "new-read.readmoo.com": {
+      const {Readmoo} = await import("../rules/special/original/readmoo");
+      ruleClass = Readmoo;
       break;
     }
     default: {

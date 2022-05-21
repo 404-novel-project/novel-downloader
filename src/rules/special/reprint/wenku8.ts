@@ -7,10 +7,11 @@ import { log } from "../../../log";
 import { Chapter } from "../../../main/Chapter";
 import { Book, BookAdditionalMetadate } from "../../../main/Book";
 import { BaseRuleClass } from "../../../rules";
+
 export class Wenku8 extends BaseRuleClass {
   public constructor() {
     super();
-    this.imageMode = "TM";
+    this.attachmentMode = "TM";
     this.charset = "GBK";
   }
 
@@ -43,11 +44,11 @@ export class Wenku8 extends BaseRuleClass {
       ) as HTMLImageElement
     ).src;
     if (coverUrl) {
-      getImageAttachment(coverUrl, this.imageMode, "cover-")
-        .then((coverClass) => {
-          additionalMetadate.cover = coverClass;
-        })
-        .catch((error) => log.error(error));
+        getImageAttachment(coverUrl, this.attachmentMode, "cover-")
+          .then((coverClass) => {
+            additionalMetadate.cover = coverClass;
+          })
+          .catch((error) => log.error(error));
     }
 
     const chapters: Chapter[] = [];

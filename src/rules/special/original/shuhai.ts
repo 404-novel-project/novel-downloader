@@ -13,7 +13,7 @@ import { BaseRuleClass, ChapterParseObject } from "../../../rules";
 export class Shuhai extends BaseRuleClass {
   public constructor() {
     super();
-    this.imageMode = "TM";
+    this.attachmentMode = "TM";
     this.concurrencyLimit = 5;
     this.charset = "GBK";
   }
@@ -43,7 +43,7 @@ export class Shuhai extends BaseRuleClass {
       document.querySelector(".book-cover-wrapper > img") as HTMLImageElement
     ).getAttribute("data-original");
     if (coverUrl) {
-      getImageAttachment(coverUrl, this.imageMode, "cover-")
+      getImageAttachment(coverUrl, this.attachmentMode, "cover-")
         .then((coverClass) => {
           additionalMetadate.cover = coverClass;
         })
@@ -109,7 +109,7 @@ export class Shuhai extends BaseRuleClass {
       }
     }
 
-    const book = new Book({
+    return new Book({
       bookUrl,
       bookname,
       author,
@@ -118,7 +118,6 @@ export class Shuhai extends BaseRuleClass {
       additionalMetadate,
       chapters,
     });
-    return book;
   }
 
   public async chapterParse(

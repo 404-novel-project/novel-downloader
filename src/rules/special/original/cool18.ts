@@ -18,7 +18,7 @@ import { BaseRuleClass } from "../../../rules";
 export class Cool18 extends BaseRuleClass {
   public constructor() {
     super();
-    this.imageMode = "TM";
+    this.attachmentMode = "TM";
     this.nsfw = true;
   }
 
@@ -87,7 +87,7 @@ export class Cool18 extends BaseRuleClass {
         .replace(`《${bookname}》`, "")
         .replace(`作者：${author}`, "")
         .trim();
-      const chapter = new Chapter({
+      return new Chapter({
         bookUrl,
         bookname,
         chapterUrl,
@@ -102,7 +102,6 @@ export class Cool18 extends BaseRuleClass {
         charset: this.charset,
         options: { bookname, author },
       });
-      return chapter;
     });
     let i = 0;
     for (const chapter of chapters) {
@@ -110,7 +109,7 @@ export class Cool18 extends BaseRuleClass {
       chapter.chapterNumber = i;
     }
 
-    const book = new Book({
+    return new Book({
       bookUrl,
       bookname,
       author,
@@ -119,7 +118,6 @@ export class Cool18 extends BaseRuleClass {
       additionalMetadate,
       chapters,
     });
-    return book;
   }
 
   public async chapterParse(

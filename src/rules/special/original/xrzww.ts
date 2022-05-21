@@ -10,7 +10,7 @@ import { sleep } from "../../../lib/misc";
 export class Xrzww extends BaseRuleClass {
   public constructor() {
     super();
-    this.imageMode = "TM";
+    this.attachmentMode = "TM";
     this.concurrencyLimit = 1;
   }
 
@@ -52,7 +52,7 @@ export class Xrzww extends BaseRuleClass {
     introductionHTML.innerText = introduction;
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = `${ossBase}${webNovelDetail.data.novel_cover}`;
-    getImageAttachment(coverUrl, this.imageMode, "cover-")
+    getImageAttachment(coverUrl, this.attachmentMode, "cover-")
       .then((coverClass) => {
         additionalMetadate.cover = coverClass;
       })
@@ -144,7 +144,7 @@ export class Xrzww extends BaseRuleClass {
       chapters.push(chapter);
     }
 
-    const book = new Book({
+    return new Book({
       bookUrl,
       bookname,
       author,
@@ -153,7 +153,6 @@ export class Xrzww extends BaseRuleClass {
       additionalMetadate,
       chapters,
     });
-    return book;
   }
 
   public async chapterParse(
@@ -220,6 +219,7 @@ interface propLog {
   updated_at: string;
   user_nickname: string;
 }
+
 interface novel3 {
   novel_name: string;
   novel_cover: string;
@@ -239,6 +239,7 @@ interface novel3 {
   sell_name: string;
   scan_rank_status_name: string;
 }
+
 interface novel2 {
   novel_id: number;
   novel_name: string;
@@ -261,6 +262,7 @@ interface novel2 {
   user_id: number;
   site_status: number;
 }
+
 interface novel {
   novel_id: number;
   novel_name: string;
@@ -272,6 +274,7 @@ interface novel {
   sell_name: string;
   scan_rank_status_name: string;
 }
+
 interface urge {
   number: number;
   urge_uid: number;
@@ -281,6 +284,7 @@ interface urge {
   fan_level: number;
   fan_name: string;
 }
+
 interface fans {
   fans_user_id: number;
   fans_exp: number;
@@ -290,6 +294,7 @@ interface fans {
   fan_level: number;
   fan_name: string;
 }
+
 interface comment {
   id: number;
   novel_id: number;
@@ -317,6 +322,7 @@ interface comment {
   is_author: number;
   author_nickname: string;
 }
+
 interface webNovelDetail {
   code: number;
   message: string;
@@ -432,12 +438,14 @@ interface chapter {
   chapter_pirce?: string; //"11.88"
   is_subscribe?: number;
 }
+
 interface volume {
   volume_id: number; //61622,
   volume_name: string; //"第一卷",
   volume_order: number; //5,
   volume_desc: string; //"暂无简介"
 }
+
 interface directoryList {
   code: number;
   message: string;

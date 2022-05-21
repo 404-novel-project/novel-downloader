@@ -11,7 +11,7 @@ import { BaseRuleClass, ChapterParseObject } from "../../../rules";
 export class Zongheng extends BaseRuleClass {
   public constructor() {
     super();
-    this.imageMode = "TM";
+    this.attachmentMode = "TM";
     this.concurrencyLimit = 5;
   }
 
@@ -36,7 +36,7 @@ export class Zongheng extends BaseRuleClass {
       doc.querySelector("div.book-img > img") as HTMLImageElement
     ).src;
     if (coverUrl) {
-      getImageAttachment(coverUrl, this.imageMode, "cover-")
+      getImageAttachment(coverUrl, this.attachmentMode, "cover-")
         .then((coverClass) => {
           additionalMetadate.cover = coverClass;
         })
@@ -103,7 +103,7 @@ export class Zongheng extends BaseRuleClass {
       }
     }
 
-    const book = new Book({
+    return new Book({
       bookUrl,
       bookname,
       author,
@@ -112,7 +112,6 @@ export class Zongheng extends BaseRuleClass {
       additionalMetadate,
       chapters,
     });
-    return book;
   }
 
   public async chapterParse(

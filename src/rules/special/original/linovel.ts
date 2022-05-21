@@ -11,7 +11,7 @@ import { BaseRuleClass, ChapterParseObject } from "../../../rules";
 export class Linovel extends BaseRuleClass {
   public constructor() {
     super();
-    this.imageMode = "TM";
+    this.attachmentMode = "TM";
     this.concurrencyLimit = 5;
   }
 
@@ -37,7 +37,7 @@ export class Linovel extends BaseRuleClass {
     ).href;
     if (coverUrl) {
       attachmentsUrlList.push(coverUrl);
-      getImageAttachment(coverUrl, this.imageMode, "cover-")
+      getImageAttachment(coverUrl, this.attachmentMode, "cover-")
         .then((coverClass) => {
           additionalMetadate.cover = coverClass;
         })
@@ -54,7 +54,7 @@ export class Linovel extends BaseRuleClass {
     for (const volumeCoverUrl of volumeCoverUrlList) {
       if (!attachmentsUrlList.includes(volumeCoverUrl)) {
         attachmentsUrlList.push(volumeCoverUrl);
-        getImageAttachment(volumeCoverUrl, this.imageMode, "volumeCover-")
+        getImageAttachment(volumeCoverUrl, this.attachmentMode, "volumeCover-")
           .then((volumeCoverObj) => {
             additionalMetadate.attachments?.push(volumeCoverObj);
           })
@@ -127,7 +127,7 @@ export class Linovel extends BaseRuleClass {
       }
     }
 
-    const book = new Book({
+    return new Book({
       bookUrl,
       bookname,
       author,
@@ -136,7 +136,6 @@ export class Linovel extends BaseRuleClass {
       additionalMetadate,
       chapters,
     });
-    return book;
   }
 
   public async chapterParse(

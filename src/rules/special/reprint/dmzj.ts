@@ -11,7 +11,7 @@ import { sandboxed } from "../../../lib/dom";
 export class Dmzj extends BaseRuleClass {
   public constructor() {
     super();
-    this.imageMode = "TM";
+    this.attachmentMode = "TM";
     this.streamZip = true;
     this.concurrencyLimit = 1;
     this.maxRunLimit = 1;
@@ -45,7 +45,7 @@ export class Dmzj extends BaseRuleClass {
       : document.querySelector("#cover_pic");
     const coverUrl = (coverDom as HTMLImageElement).src;
     if (coverUrl) {
-      getImageAttachment(coverUrl, this.imageMode, "cover-")
+      getImageAttachment(coverUrl, this.attachmentMode, "cover-")
         .then((coverClass) => {
           additionalMetadate.cover = coverClass;
         })
@@ -90,7 +90,7 @@ export class Dmzj extends BaseRuleClass {
       chapters.push(chapter);
     }
 
-    const book = new Book({
+    return new Book({
       bookUrl,
       bookname,
       author,
@@ -99,7 +99,6 @@ export class Dmzj extends BaseRuleClass {
       additionalMetadate,
       chapters,
     });
-    return book;
   }
 
   public async chapterParse(

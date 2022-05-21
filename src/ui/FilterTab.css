@@ -3,9 +3,11 @@
   padding-bottom: 0.8em;
   text-align: center;
 }
+
 .filter-input + .filter-setter {
   margin-top: 1em;
 }
+
 .filter-description {
   font-size: larger;
   color: cornflowerblue;

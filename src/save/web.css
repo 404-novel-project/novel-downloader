@@ -5,6 +5,7 @@ body {
   font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI",
     "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
+
 div.main {
   width: 900px;
   margin: 5em auto;
@@ -13,6 +14,7 @@ div.main {
   border-radius: 0.5em;
   box-shadow: 2px 3px 7px 2px rgba(0, 0, 0, 0.02);
 }
+
 @media (max-width: 700px) {
   div.main {
     margin: 0 auto;

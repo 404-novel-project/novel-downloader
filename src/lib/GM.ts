@@ -7,6 +7,7 @@ function get_GM_info() {
   }
   throw new Error("Not found: GM_info and GM.info!");
 }
+
 export const _GM_info = get_GM_info();
 
 export function _GM_xmlhttpRequest<TContext = any>(

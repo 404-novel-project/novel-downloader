@@ -70,7 +70,7 @@ export function mkRuleClass({
   return class extends BaseRuleClass {
     public constructor() {
       super();
-      this.imageMode = "TM";
+      this.attachmentMode = "TM";
       if (concurrencyLimit) {
         this.concurrencyLimit = concurrencyLimit;
       }
@@ -99,7 +99,7 @@ export function mkRuleClass({
         language: language ?? "zh",
       };
       if (coverUrl) {
-        getImageAttachment(coverUrl, this.imageMode, "cover-")
+        getImageAttachment(coverUrl, this.attachmentMode, "cover-")
           .then((coverClass) => {
             additionalMetadate.cover = coverClass;
           })
@@ -174,7 +174,7 @@ export function mkRuleClass({
         }
       }
 
-      const book = new Book({
+      return new Book({
         bookUrl,
         bookname,
         author,
@@ -183,7 +183,6 @@ export function mkRuleClass({
         additionalMetadate,
         chapters,
       });
-      return book;
     }
 
     public async chapterParse(

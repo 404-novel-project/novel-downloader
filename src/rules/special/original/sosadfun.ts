@@ -8,7 +8,7 @@ import { BaseRuleClass } from "../../../rules";
 export class Sosadfun extends BaseRuleClass {
   public constructor() {
     super();
-    this.imageMode = "TM";
+    this.attachmentMode = "TM";
   }
 
   public async bookParse() {
@@ -107,7 +107,7 @@ export class Sosadfun extends BaseRuleClass {
       chapters.push(chapter);
     }
 
-    const book = new Book({
+    return new Book({
       bookUrl,
       bookname,
       author,
@@ -116,7 +116,6 @@ export class Sosadfun extends BaseRuleClass {
       additionalMetadate,
       chapters,
     });
-    return book;
   }
 
   public async chapterParse(

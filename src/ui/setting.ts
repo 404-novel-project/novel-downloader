@@ -30,13 +30,16 @@ export const vm = createApp({
       filterSetting?: filterSettingGlobal;
       currentTab: string;
     }
+
     const setting = reactive({} as Setting);
     let settingBackup = {};
+
     interface SaveOption {
       key: string;
       value: string;
       options: globalSaveOptions;
     }
+
     const saveOptions: SaveOption[] = [
       { key: "null", value: "不使用自定义保存参数", options: {} },
       {
@@ -131,9 +134,11 @@ export const vm = createApp({
           log.info(`[Init]enableDebug: ${enableDebug.value}`);
         }
       }
+
       function setCustomSaveOption() {
         (unsafeWindow as UnsafeWindow).saveOptions = curSaveOption();
       }
+
       function setCustomFilter() {
         if (config.filterSetting) {
           if (config.filterSetting.filterType === "null") {
@@ -144,13 +149,14 @@ export const vm = createApp({
               config.filterSetting.functionBody
             );
             if (filterFunction) {
-              const chapterFilter = (chapter: Chapter) => {
+              (unsafeWindow as UnsafeWindow).chapterFilter = (
+                chapter: Chapter
+              ) => {
                 if (chapter.status === Status.aborted) {
                   return false;
                 }
                 return filterFunction(chapter);
               };
-              (unsafeWindow as UnsafeWindow).chapterFilter = chapterFilter;
             }
           }
         }

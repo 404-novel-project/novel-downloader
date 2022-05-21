@@ -12,12 +12,13 @@ import { BaseRuleClass } from "../../../rules";
 interface UukanshuObj {
   reverse(button: HTMLButtonElement): void;
 }
+
 type UukanshuWindow = UukanshuObj & UnsafeWindow;
 
 export class Uukanshu extends BaseRuleClass {
   public constructor() {
     super();
-    this.imageMode = "TM";
+    this.attachmentMode = "TM";
     this.charset = "GBK";
   }
 
@@ -55,7 +56,7 @@ export class Uukanshu extends BaseRuleClass {
       document.querySelector("a.bookImg > img") as HTMLImageElement
     ).src;
     if (coverUrl) {
-      getImageAttachment(coverUrl, this.imageMode, "cover-")
+      getImageAttachment(coverUrl, this.attachmentMode, "cover-")
         .then((coverClass) => {
           additionalMetadate.cover = coverClass;
         })
@@ -111,7 +112,7 @@ export class Uukanshu extends BaseRuleClass {
       }
     }
 
-    const book = new Book({
+    return new Book({
       bookUrl,
       bookname,
       author,
@@ -120,7 +121,6 @@ export class Uukanshu extends BaseRuleClass {
       additionalMetadate,
       chapters,
     });
-    return book;
   }
 
   public async chapterParse(

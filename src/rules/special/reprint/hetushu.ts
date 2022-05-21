@@ -11,7 +11,7 @@ import { BaseRuleClass } from "../../../rules";
 export class Hetushu extends BaseRuleClass {
   public constructor() {
     super();
-    this.imageMode = "TM";
+    this.attachmentMode = "TM";
   }
 
   public async bookParse() {
@@ -33,7 +33,7 @@ export class Hetushu extends BaseRuleClass {
       document.querySelector(".book_info > img") as HTMLImageElement
     ).src;
     if (coverUrl) {
-      getImageAttachment(coverUrl, this.imageMode, "cover-")
+      getImageAttachment(coverUrl, this.attachmentMode, "cover-")
         .then((coverClass) => {
           additionalMetadate.cover = coverClass;
         })
@@ -82,7 +82,7 @@ export class Hetushu extends BaseRuleClass {
         }
       }
     }
-    const book = new Book({
+    return new Book({
       bookUrl,
       bookname,
       author,
@@ -91,7 +91,6 @@ export class Hetushu extends BaseRuleClass {
       additionalMetadate,
       chapters,
     });
-    return book;
   }
 
   public async chapterParse(

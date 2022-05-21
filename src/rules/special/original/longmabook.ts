@@ -15,7 +15,7 @@ import { BaseRuleClass } from "../../../rules";
 export class Longmabook extends BaseRuleClass {
   public constructor() {
     super();
-    this.imageMode = "TM";
+    this.attachmentMode = "TM";
     this.concurrencyLimit = 5;
     this.nsfw = true;
   }
@@ -76,7 +76,7 @@ export class Longmabook extends BaseRuleClass {
       ) as HTMLImageElement
     )?.src.replace("_s.", "_b.");
     if (coverUrl) {
-      getImageAttachment(coverUrl, this.imageMode, "cover-")
+      getImageAttachment(coverUrl, this.attachmentMode, "cover-")
         .then((coverClass) => {
           additionalMetadate.cover = coverClass;
         })
@@ -137,6 +137,7 @@ export class Longmabook extends BaseRuleClass {
       a.parentElement?.innerText.includes("$") ?? false;
     const getIsPaid = (a: Element) =>
       a.parentElement?.innerText.includes("已購買，三年內可直接閱讀") ?? false;
+
     interface ChapterObj {
       chapterName: string;
       chapterUrl: string;
@@ -144,6 +145,7 @@ export class Longmabook extends BaseRuleClass {
       isVip: boolean;
       isPaid: boolean;
     }
+
     const getChapterObjs = (doc: Document): ChapterObj[] => {
       const chapterAList = getChapters(doc);
       const sections = getSections(doc);
@@ -232,7 +234,7 @@ export class Longmabook extends BaseRuleClass {
       chapters.push(chapter);
     }
 
-    const book = new Book({
+    return new Book({
       bookUrl,
       bookname,
       author,
@@ -241,7 +243,6 @@ export class Longmabook extends BaseRuleClass {
       additionalMetadate,
       chapters,
     });
-    return book;
   }
 
   public async chapterParse(
@@ -331,7 +332,10 @@ export class Longmabook extends BaseRuleClass {
           "#mypages > div:nth-child(10) > div:nth-child(2) > div:nth-child(6) > ul > li:nth-child(14) > img"
         )
       ).forEach((img) => imageDom.appendChild(img.cloneNode(true)));
-      const { dom, text, images } = await cleanDOM(imageDom, self.imageMode);
+      const { dom, text, images } = await cleanDOM(
+        imageDom,
+        self.attachmentMode
+      );
       return [dom, text, images];
     }
 
@@ -380,7 +384,7 @@ export class Longmabook extends BaseRuleClass {
         rm('img[src="/images/fullcolor.png"]', true, contentMain);
         const { dom, text, images } = await cleanDOM(
           contentMain,
-          self.imageMode
+          self.attachmentMode
         );
         return [dom, text, images];
       } else {
@@ -395,7 +399,7 @@ export class Longmabook extends BaseRuleClass {
       if (authorSayDom) {
         const { dom, text, images } = await cleanDOM(
           authorSayDom,
-          self.imageMode
+          self.attachmentMode
         );
         return [dom, text, images];
       } else {

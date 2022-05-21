@@ -16,14 +16,25 @@ export interface BookAdditionalMetadate {
   language?: string;
 }
 
+export interface saveType {
+  epub: boolean;
+  txt: boolean;
+  raw: false | { ext: string };
+}
+
 export class Book {
   private _bookUrl = "";
   private _ToCUrl?: string;
-  public bookname: string;
-  public author: string;
-  public introduction: string | null;
-  public introductionHTML: HTMLElement | null;
-  public additionalMetadate: BookAdditionalMetadate;
+  public saveType: saveType = {
+    epub: true,
+    txt: true,
+    raw: false,
+  };
+  public readonly bookname: string;
+  public readonly author: string;
+  public readonly introduction: string | null;
+  public readonly introductionHTML: HTMLElement | null;
+  public readonly additionalMetadate: BookAdditionalMetadate;
   public chapters: Chapter[];
   public saveOptions!: SaveOptions;
 
@@ -57,6 +68,7 @@ export class Book {
   public set bookUrl(v: string) {
     this._bookUrl = removeTrackParm(v);
   }
+
   public get bookUrl(): string {
     return this._bookUrl;
   }
@@ -66,6 +78,7 @@ export class Book {
       this._ToCUrl = removeTrackParm(v);
     }
   }
+
   public get ToCUrl(): string | undefined {
     return this._ToCUrl;
   }

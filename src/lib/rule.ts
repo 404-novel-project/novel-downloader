@@ -34,6 +34,7 @@ interface NextPageParseOptions {
   continueCondition: (_content: HTMLElement, nextLink: string) => boolean;
   enableCleanDOM?: boolean;
 }
+
 export async function nextPageParse({
   chapterName,
   chapterUrl,
@@ -177,6 +178,7 @@ export function deDuplicate(chapters: Chapter[]) {
   interface reduceObj {
     [index: string]: Chapter | Chapter[];
   }
+
   const obj = chapters.reduce((obj, cur) => {
     const url = cur.chapterUrl;
     if (obj[url] === undefined) {

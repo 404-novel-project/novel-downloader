@@ -1,7 +1,7 @@
 import { log } from "../log";
 import { retryLimit } from "../setting";
 import { _GM_xmlhttpRequest } from "./GM";
-import { sleep } from "./misc";
+import { deepcopy, sleep } from "./misc";
 
 globalThis.fetch = new Proxy(globalThis.fetch, {
   apply(target, thisArg, argArray) {
@@ -70,6 +70,7 @@ export interface GfetchRequestInit {
   user?: string;
   password?: string;
 }
+
 export function gfetch(
   url: string,
   {
@@ -210,6 +211,7 @@ export async function ggetText(
   charset?: string,
   init?: GfetchRequestInit
 ) {
+  let _init = init ? deepcopy(init) : undefined;
   if (charset === undefined) {
     return gfetch(url, init)
       .then((response) => {
@@ -221,12 +223,12 @@ export async function ggetText(
       })
       .catch((error) => log.error(error));
   } else {
-    if (init) {
-      init.responseType = "arraybuffer";
+    if (_init) {
+      _init.responseType = "arraybuffer";
     } else {
-      init = { responseType: "arraybuffer" };
+      _init = { responseType: "arraybuffer" };
     }
-    return gfetch(url, init)
+    return gfetch(url, _init)
       .then((response) => {
         if (response.status >= 200 && response.status <= 299) {
           return response.response as ArrayBuffer;

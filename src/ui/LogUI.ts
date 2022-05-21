@@ -9,6 +9,7 @@ export default defineComponent({
     let requestID: number;
     onMounted(() => {
       logText.value = getLogText();
+
       function step() {
         logText.value = getLogText();
         requestID = globalThis.requestAnimationFrame(step);

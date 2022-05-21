@@ -5,9 +5,11 @@ export interface SectionObj {
   sectionNumber: number | null;
   chpaters: Chapter[];
 }
+
 export interface SectionsObj {
   [sectionNumber: number]: SectionObj;
 }
+
 export function getSectionsObj(
   chapters: Chapter[],
   chapterSort = (a: Chapter, b: Chapter) => a.chapterNumber - b.chapterNumber

@@ -9,11 +9,13 @@
   width: 200%;
   background-color: black;
 }
+
 .overlay.open {
   opacity: 0.8;
   visibility: visible;
   transition: opacity 0.2s ease-in;
 }
+
 .overlay:not(.open) {
   transition: visibility 0.2s step-end, opacity 0.2s ease-in;
 }
@@ -42,6 +44,7 @@
   margin: 0;
   padding: 0;
 }
+
 .dialog.open {
   opacity: 1;
   display: block;
@@ -51,11 +54,13 @@
 .dialog > * {
   box-sizing: border-box;
 }
+
 .dialog > .titlebar {
   background-color: white;
   min-height: 24px;
   position: relative;
 }
+
 .dialog-title {
   padding: 10px;
   text-transform: uppercase;
@@ -65,6 +70,7 @@
   font-size: 1.5em;
   text-align: center;
 }
+
 .dialog-close {
   background: #ff7bac;
   color: #ffffff;

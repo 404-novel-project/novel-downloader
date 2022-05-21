@@ -16,7 +16,7 @@ import { BaseRuleClass, ChapterParseObject } from "../../../rules";
 export class MangaBilibili extends BaseRuleClass {
   public constructor() {
     super();
-    this.imageMode = "naive";
+    this.attachmentMode = "naive";
     this.concurrencyLimit = 1;
     this.streamZip = true;
   }
@@ -27,32 +27,36 @@ export class MangaBilibili extends BaseRuleClass {
       throw new Error("获取 comic_id 失败！");
     }
     const comic_id = parseInt(_comic_id);
-    const signIn = await isSignin(comic_id);
-    const detail = await getDetail(comic_id);
+      const signIn = await isSignin(comic_id);
+      const detail = await getDetail(comic_id);
 
-    const bookUrl = document.location.href;
-    const bookname = detail.title;
-    const author = detail.author_name.join(", ");
-    const introduction = detail.evaluate;
-    const introductionHTML = document.createElement("div");
-    introductionHTML.innerText = detail.evaluate;
-    const additionalMetadate = {} as BookAdditionalMetadate;
-    getImageAttachment(detail.vertical_cover, this.imageMode, "vertical_cover-")
-      .then((coverClass) => {
-        additionalMetadate.cover = coverClass;
-      })
-      .catch((error) => log.error(error));
-    additionalMetadate.tags = detail.styles;
-    additionalMetadate.attachments = [];
-    getImageAttachment(
-      detail.horizontal_cover,
-      this.imageMode,
-      "horizontal_cover-"
-    )
-      .then((coverClass) => {
-        additionalMetadate.attachments?.push(coverClass);
-      })
-      .catch((error) => log.error(error));
+      const bookUrl = document.location.href;
+      const bookname = detail.title;
+      const author = detail.author_name.join(", ");
+      const introduction = detail.evaluate;
+      const introductionHTML = document.createElement("div");
+      introductionHTML.innerText = detail.evaluate;
+      const additionalMetadate = {} as BookAdditionalMetadate;
+      getImageAttachment(
+        detail.vertical_cover,
+        this.attachmentMode,
+        "vertical_cover-"
+      )
+        .then((coverClass) => {
+          additionalMetadate.cover = coverClass;
+        })
+        .catch((error) => log.error(error));
+      additionalMetadate.tags = detail.styles;
+      additionalMetadate.attachments = [];
+      getImageAttachment(
+        detail.horizontal_cover,
+        this.attachmentMode,
+        "horizontal_cover-"
+      )
+        .then((coverClass) => {
+          additionalMetadate.attachments?.push(coverClass);
+        })
+        .catch((error) => log.error(error));
     const chapters = detail.ep_list.map((ep) => {
       const chapterUrl = `https://manga.bilibili.com/mc${comic_id}/${ep.id}?from=manga_detail`;
       const chapterNumber = ep.ord;
@@ -84,32 +88,31 @@ export class MangaBilibili extends BaseRuleClass {
       return chapter;
     });
 
-    const book = new Book({
-      bookUrl,
-      bookname,
-      author,
-      introduction,
-      introductionHTML,
-      additionalMetadate,
-      chapters,
-    });
-    return book;
+      return new Book({
+        bookUrl,
+        bookname,
+        author,
+        introduction,
+        introductionHTML,
+        additionalMetadate,
+        chapters,
+      });
 
-    async function isSignin(comic_id: number) {
-      const body = { comic_id };
-      const resp = await fetch(
-        "https://manga.bilibili.com/twirp/bookshelf.v1.Bookshelf/HasFavorite?device=pc&platform=web",
-        {
-          headers: {
-            Accept: "application/json, text/plain, */*",
-            "Content-Type": "application/json;charset=utf-8",
-          },
-          body: JSON.stringify(body),
-          method: "POST",
-        }
-      );
-      return resp.ok;
-    }
+      async function isSignin(comic_id: number) {
+        const body = { comic_id };
+        const resp = await fetch(
+          "https://manga.bilibili.com/twirp/bookshelf.v1.Bookshelf/HasFavorite?device=pc&platform=web",
+          {
+            headers: {
+              Accept: "application/json, text/plain, */*",
+              "Content-Type": "application/json;charset=utf-8",
+            },
+            body: JSON.stringify(body),
+            method: "POST",
+          }
+        );
+        return resp.ok;
+      }
 
     async function getDetail(comic_id: number) {
       const url =
@@ -211,6 +214,7 @@ export class MangaBilibili extends BaseRuleClass {
       text: string;
       images: AttachmentClass;
     }
+
     async function getImage(path: string): Promise<imageResult> {
       const token = await getImageToken(path);
       if (token) {
@@ -232,6 +236,7 @@ export class MangaBilibili extends BaseRuleClass {
         url: string;
         token: string;
       }
+
       async function getImageToken(path: string): Promise<Token | undefined> {
         const url =
           "https://manga.bilibili.com/twirp/comic.v1.Comic/ImageToken?device=pc&platform=web";
@@ -270,7 +275,7 @@ export class MangaBilibili extends BaseRuleClass {
         const ext = await getExt(blob, url);
         const name = ["cm-", hash, ".", ext].join("");
         const imgClass = new AttachmentClass(url, name, "naive");
-        imgClass.imageBlob = blob;
+        imgClass.Blob = blob;
         imgClass.status = Status.finished;
         putAttachmentClassCache(imgClass);
         return imgClass;
@@ -302,6 +307,7 @@ interface ep {
   type: number;
   extra: number;
 }
+
 interface ComicDetail {
   code: number;
   msg: string;
@@ -400,6 +406,7 @@ interface GetImageIndexImage {
   video_path: "";
   video_size: "0";
 }
+
 interface GetImageIndex {
   code: number;
   msg: string;

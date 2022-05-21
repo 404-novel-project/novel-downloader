@@ -1,17 +1,17 @@
 /* eslint-disable @typescript-eslint/ban-types */
-import { getImageAttachment } from "../../../lib/attachments";
-import { cleanDOM } from "../../../lib/cleanDOM";
-import { GfetchRequestInit, gfetch } from "../../../lib/http";
-import { log } from "../../../log";
-import { Status } from "../../../main/main";
-import { Chapter } from "../../../main/Chapter";
-import { Book, BookAdditionalMetadate } from "../../../main/Book";
-import { BaseRuleClass } from "../../../rules";
+import {getImageAttachment} from "../../../lib/attachments";
+import {cleanDOM} from "../../../lib/cleanDOM";
+import {gfetch, GfetchRequestInit} from "../../../lib/http";
+import {log} from "../../../log";
+import {Status} from "../../../main/main";
+import {Chapter} from "../../../main/Chapter";
+import {Book, BookAdditionalMetadate} from "../../../main/Book";
+import {BaseRuleClass} from "../../../rules";
 
 export class Myrics extends BaseRuleClass {
   public constructor() {
     super();
-    this.imageMode = "TM";
+    this.attachmentMode = "TM";
   }
 
   public async bookParse() {
@@ -74,6 +74,7 @@ export class Myrics extends BaseRuleClass {
       };
       status_code: number;
     }
+
     const respI = await gfetch(infoApi, init);
     const info = respI.response as Info;
     if (info.status_code !== 200) {
@@ -88,7 +89,7 @@ export class Myrics extends BaseRuleClass {
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = info.result.cover_image;
     if (coverUrl) {
-      getImageAttachment(coverUrl, this.imageMode, "cover-")
+      getImageAttachment(coverUrl, this.attachmentMode, "cover-")
         .then((coverClass) => {
           additionalMetadate.cover = coverClass;
         })
@@ -101,6 +102,7 @@ export class Myrics extends BaseRuleClass {
     let pages = 0;
     let page = 1;
     const getChapterSearch = (p: number) => ({ page: p.toString() });
+
     interface ChaptersPage {
       result: {
         has_next: boolean;
@@ -113,6 +115,7 @@ export class Myrics extends BaseRuleClass {
       };
       status_code: number;
     }
+
     while (pages === 0 || page <= pages) {
       const chapterApiUrl =
         chapterApiBase +
@@ -180,7 +183,7 @@ export class Myrics extends BaseRuleClass {
       c.chapterNumber = i;
     }
 
-    const book = new Book({
+    return new Book({
       bookUrl,
       bookname,
       author,
@@ -189,7 +192,6 @@ export class Myrics extends BaseRuleClass {
       additionalMetadate,
       chapters,
     });
-    return book;
   }
 
   public async chapterParse(
@@ -218,6 +220,7 @@ export class Myrics extends BaseRuleClass {
       };
       status_code: number;
     }
+
     const { bookId, chapterId, init } = options;
     const url = `https://api.myrics.com/v1/novels/${bookId}/chapters/${chapterId}`;
     const resp = await gfetch(url, init);
@@ -297,11 +300,13 @@ interface User {
   subscribeNovelCount: number;
   unreadMailCount: number;
 }
+
 interface Genre {
   id: number;
   name: string;
   order: number;
 }
+
 interface InitialState {
   global: {
     signIn: {

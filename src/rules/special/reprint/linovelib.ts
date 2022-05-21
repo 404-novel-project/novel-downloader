@@ -11,7 +11,7 @@ import { BaseRuleClass } from "../../../rules";
 export class Linovelib extends BaseRuleClass {
   public constructor() {
     super();
-    this.imageMode = "TM";
+    this.attachmentMode = "TM";
   }
 
   public async bookParse() {
@@ -34,7 +34,7 @@ export class Linovelib extends BaseRuleClass {
     const coverUrl = (doc.querySelector(".book-img > img") as HTMLImageElement)
       .src;
     if (coverUrl) {
-      getImageAttachment(coverUrl, this.imageMode, "cover-")
+      getImageAttachment(coverUrl, this.attachmentMode, "cover-")
         .then((coverClass) => {
           additionalMetadate.cover = coverClass;
         })

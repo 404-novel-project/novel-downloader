@@ -1,6 +1,6 @@
 {
   "name": "novel-downloader",
-  "version": "4.8.5",
+  "version": "4.9.0",
   "description": "novel downloader",
   "source": "src/index.js",
   "scripts": {
@@ -61,6 +61,7 @@
     "magic-bytes.js": "^1.0.12",
     "mime-db": "^1.51.0",
     "nunjucks": "^3.2.3",
+    "p-limit": "^4.0.0",
     "streamsaver": "^2.0.5",
     "vue": "^3.2.22"
   }

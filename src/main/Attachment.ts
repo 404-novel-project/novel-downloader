@@ -1,61 +1,97 @@
 import { gfetch, GfetchRequestInit } from "../lib/http";
-import { sleep } from "../lib/misc";
+import { deepcopy, sleep } from "../lib/misc";
 import { log } from "../log";
 import { retryLimit } from "../setting";
 import { ReferrerMode, Status } from "./main";
 
 export class AttachmentClass {
-  public url: string;
+  public readonly url: string;
   public name: string;
-  public mode: "naive" | "TM";
-  public referrerMode: ReferrerMode;
-  public customReferer: string;
+  public readonly mode: "naive" | "TM";
 
   public status: Status = Status.pending;
   public retryTime = 0;
-  private defaultHeader: Record<string, string> = {
-    Referer: document.location.origin,
-  };
 
-  public imageBlob!: Blob | null | void;
-  public comments!: string;
+  public Blob!: Blob | null | void;
+  public comments?: string;
+
+  private referrerMode: ReferrerMode;
+  private _init: RequestInit;
+  private _TMinit: GfetchRequestInit;
 
   public constructor(
     url: string,
     name: string,
     mode: "naive" | "TM",
     referrerMode: ReferrerMode = ReferrerMode.keep,
-    customReferer = ""
+    customReferer = "",
+    init?: {
+      init: RequestInit;
+      TMinit: GfetchRequestInit;
+    }
   ) {
     this.url = url;
     this.name = name;
     this.mode = mode;
     this.referrerMode = referrerMode;
-    this.customReferer = customReferer;
+
+    const defaultInit: {
+      init: RequestInit;
+      TMinit: GfetchRequestInit;
+    } = {
+      init: {
+        referrerPolicy: "strict-origin-when-cross-origin",
+      },
+      TMinit: {
+        headers: { Referer: document.location.origin },
+        responseType: "blob",
+      },
+    };
+    if (!init) {
+      ({ init: this._init, TMinit: this._TMinit } = defaultInit);
+      if (this.referrerMode === ReferrerMode.none) {
+        this._init.referrerPolicy = "no-referrer";
+        this._TMinit.headers = {};
+      }
+      if (this.referrerMode === ReferrerMode.self) {
+        this._TMinit.headers = { Referer: new URL(url).origin };
+      }
+      if (
+        this.referrerMode === ReferrerMode.custom &&
+        customReferer.startsWith("http")
+      ) {
+        this._TMinit.headers = { Referer: customReferer };
+      }
+    } else {
+      init = Object.assign(deepcopy(defaultInit), init);
+      ({ init: this._init, TMinit: this._TMinit } = init);
+      this._TMinit.responseType = "blob";
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      if (this._init.responseType) {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        delete this._init.responseType;
+      }
+    }
   }
 
   public async init() {
     if (this.mode === "naive") {
-      this.imageBlob = await this.downloadImage();
+      this.Blob = await this.download();
     } else {
-      this.imageBlob = await this.tmDownloadImage();
+      this.Blob = await this.tmDownload();
     }
-    if (this.imageBlob) {
+    if (this.Blob) {
       log.info(`[attachment] ${this.url} 下载完成。`);
     }
-    return this.imageBlob;
+    return this.Blob;
   }
 
-  private downloadImage(): Promise<Blob | null> {
+  private download(): Promise<Blob | null> {
     this.status = Status.downloading;
-    const init = {
-      headers: this.defaultHeader,
-    } as RequestInit;
-    if (this.referrerMode === ReferrerMode.none) {
-      init.headers = {};
-      init.referrerPolicy = "no-referrer";
-    }
-    return fetch(this.url, init)
+
+    return fetch(this.url, this._init)
       .then((response: Response) => {
         if (response.ok) {
           this.status = Status.finished;
@@ -77,7 +113,7 @@ export class AttachmentClass {
 
         if (this.status !== Status.failed && this.retryTime < retryLimit) {
           await sleep(this.retryTime * 1500);
-          return this.downloadImage();
+          return this.download();
         } else {
           this.status = Status.failed;
           log.error(err);
@@ -87,26 +123,10 @@ export class AttachmentClass {
       });
   }
 
-  private tmDownloadImage(): Promise<Blob | null> {
+  private tmDownload(): Promise<Blob | null> {
     this.status = Status.downloading;
-    let headers = this.defaultHeader;
-    if (this.referrerMode === ReferrerMode.none) {
-      headers = {};
-    }
-    if (this.referrerMode === ReferrerMode.self) {
-      headers["Referer"] = new URL(this.url).origin;
-    }
-    if (
-      this.referrerMode === ReferrerMode.custom &&
-      this.customReferer.startsWith("http")
-    ) {
-      headers["Referer"] = this.customReferer;
-    }
-    const init = {
-      headers: this.defaultHeader,
-      responseType: "blob",
-    } as GfetchRequestInit;
-    return gfetch(this.url, init)
+
+    return gfetch(this.url, this._TMinit)
       .then((response) => {
         if (response.status >= 200 && response.status <= 299) {
           this.status = Status.finished;
@@ -128,7 +148,7 @@ export class AttachmentClass {
 
         if (this.status !== Status.failed && this.retryTime < retryLimit) {
           await sleep(this.retryTime * 1000);
-          return this.tmDownloadImage();
+          return this.tmDownload();
         } else {
           this.status = Status.failed;
           log.error(err);

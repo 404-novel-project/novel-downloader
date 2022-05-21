@@ -18,9 +18,11 @@ interface FilterOption {
   description: string;
   abbreviation: string;
 }
+
 interface FilterOptionDict {
   [index: string]: FilterOption;
 }
+
 export const filterOptionDict: FilterOptionDict = {
   null: {
     raw: () => {
@@ -35,6 +37,7 @@ export const filterOptionDict: FilterOptionDict = {
       function characterCheck() {
         return /^[\s\d\-,，]+$/.test(arg);
       }
+
       function match(s: string, n: number) {
         switch (true) {
           // 13
@@ -113,9 +116,11 @@ export const filterOptionDict: FilterOptionDict = {
     abbreviation: "章节标题",
   },
 };
+
 export function getFunctionBody(fn: FilterOption["raw"]) {
   return `return (${fn.toString()})(arg)`;
 }
+
 export function getFilterFunction(arg: string, functionBody: string) {
   const filterFunctionFactor = new Function("arg", functionBody);
   const filterFunction = filterFunctionFactor(arg);
@@ -132,6 +137,7 @@ export interface FilterSetting {
   filterType: string;
   functionBody: string;
 }
+
 export default defineComponent({
   components: { "chapter-list": ChapterList },
   emits: ["filterupdate"],

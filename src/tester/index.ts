@@ -12,6 +12,7 @@ interface TabDataRaw {
 }
 
 const TabDataKeyName = "data-5186766268769811";
+
 function setTabData(key: string, value: string): Promise<TabData> {
   return new Promise((resolve, reject) => {
     GM_getTab(async (curTabObject) => {
@@ -299,6 +300,7 @@ if (
       openWindow(u);
     }
   }
+
   (unsafeWindow as any).runTest = runTest;
 } else {
   window.addEventListener("DOMContentLoaded", () => {
@@ -310,11 +312,13 @@ if (
         function chapterFilter(chapter: Chapter) {
           return chapter.chapterNumber <= 20;
         }
+
         (unsafeWindow as any).chapterFilter = chapterFilter;
 
         function customFinishCallback(book: Book) {
           window.close();
         }
+
         (unsafeWindow as any).customFinishCallback = customFinishCallback;
 
         document.getElementById("novel-downloader")?.click();
