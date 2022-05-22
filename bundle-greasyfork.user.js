@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.9.1.696
+// @version        4.9.1.697
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/404-novel-project/novel-downloader
@@ -7962,6 +7962,9 @@ const getMessageXhtml = (book) => `<?xml version="1.0" encoding="utf-8"?>
     <div>本文件由<a href="https://github.com/404-novel-project/novel-downloader">小说下载器</a>生成。</div>
     ${book.introductionHTML
     ? `<hr/><span>简介：</span>${book.introductionHTML.outerHTML}`
+    : ""}
+    ${book.additionalMetadate.tags
+    ? `<hr/><div>Tag列表：${book.additionalMetadate.tags.join("、")}</div>`
     : ""}
   </div>
 </body>
