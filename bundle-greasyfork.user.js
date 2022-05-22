@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.9.1.695
+// @version        4.9.1.696
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/404-novel-project/novel-downloader
@@ -13755,7 +13755,7 @@ class Longmabook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */
         const getChapterObjs = (doc) => {
             const chapterAList = getChapters(doc);
             const sections = getSections(doc);
-            const _chapterObjs = Array.from(chapterAList).map((a) => {
+            return Array.from(chapterAList).map((a) => {
                 const chapterName = a.innerText;
                 const chapterUrl = a.href;
                 const _sectionName = (0,_lib_rule__WEBPACK_IMPORTED_MODULE_3__/* .getSectionName */ .$d)(a, sections, getSName);
@@ -13772,7 +13772,6 @@ class Longmabook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */
                     isPaid,
                 };
             });
-            return _chapterObjs;
         };
         const chapterObjs = [];
         const initDoc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_6__/* .getHtmlDomWithRetry */ .rf)(showbooklistAPIUrl, self.charset, getInitObj(initShowbooklistParams));
@@ -13818,7 +13817,7 @@ class Longmabook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */
                 charset: this.charset,
                 options: { bookId, bookwritercode },
             });
-            if (chapter.isVIP === true && chapter.isPaid === false) {
+            if (chapter.isVIP && !chapter.isPaid) {
                 chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_1__/* .Status.aborted */ .qb.aborted;
             }
             chapters.push(chapter);
@@ -13843,6 +13842,16 @@ class Longmabook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */
             }
             throw new Error("您目前正在海棠清水區，只能觀看清水認證文章。請使用海棠其他網址進入。");
         }
+        const getPaperidAndVercodechk = () => {
+            const ss = Array.from(doc.querySelectorAll("script")).filter((s) => s.innerText.includes("vercodechk"))[0];
+            const m = ss.innerText.match(/{\spaperid:\s'(\d+)',\svercodechk:\s'(\w+)'}/);
+            if (m?.length === 3) {
+                const [paperidInner, vercodechkInner] = m.slice(1);
+                return [paperidInner, vercodechkInner];
+            }
+            throw new Error("获取 paperid, vercodechk 失败！");
+        };
+        const [paperid, vercodechk] = getPaperidAndVercodechk();
         const nullObj = {
             chapterName,
             contentRaw: null,
@@ -13861,6 +13870,7 @@ class Longmabook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */
         const [imagesDom, imagesText, imagesImages] = await getImages();
         const [mainDom, mainText, mainImages] = await getMainContent();
         const [authorDom, authorText, authorImages] = await getAuthorSay();
+        const [eggDom, eggText, eggImages] = await getEgg();
         if (imagesDom) {
             content.appendChild(imagesDom);
             contentText += imagesText + "\n\n";
@@ -13868,12 +13878,10 @@ class Longmabook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */
                 contentImages = contentImages.concat(imagesImages);
             }
         }
-        if (mainDom) {
-            content.appendChild(mainDom);
-            contentText += mainText;
-            if (mainImages) {
-                contentImages = contentImages.concat(mainImages);
-            }
+        content.appendChild(mainDom);
+        contentText += mainText;
+        if (mainImages) {
+            contentImages = contentImages.concat(mainImages);
         }
         if (authorDom) {
             const hr = document.createElement("hr");
@@ -13883,6 +13891,16 @@ class Longmabook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */
             contentText += "\n\n" + "-".repeat(20) + "\n\n" + authorText;
             if (authorImages) {
                 contentImages = contentImages.concat(authorImages);
+            }
+        }
+        if (eggDom) {
+            const hr = document.createElement("hr");
+            eggDom.className = "egg";
+            content.appendChild(hr);
+            content.appendChild(eggDom);
+            contentText += "\n\n" + "-".repeat(20) + "\n\n" + eggText;
+            if (eggImages) {
+                contentImages = contentImages.concat(eggImages);
             }
         }
         return {
@@ -13900,43 +13918,28 @@ class Longmabook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */
             return [dom, text, images];
         }
         async function getMainContent() {
-            const getPaperidAndVercodechk = () => {
-                const ss = Array.from(doc.querySelectorAll("script")).filter((s) => s.innerText.includes("vercodechk"))[0];
-                const m = ss.innerText.match(/{\spaperid:\s'(\d+)',\svercodechk:\s'(\w+)'}/);
-                if (m?.length === 3) {
-                    const [paperidInner, vercodechkInner] = m.slice(1);
-                    return [paperidInner, vercodechkInner];
-                }
-                return [null, null];
-            };
-            const [paperid, vercodechk] = getPaperidAndVercodechk();
-            if (paperid && vercodechk) {
-                const showpapercolorUrl = document.location.origin + "/showpapercolor.php";
-                _log__WEBPACK_IMPORTED_MODULE_5___default().debug(`[chapter]正在请求${showpapercolorUrl}`);
-                const resp = await fetch(showpapercolorUrl, {
-                    credentials: "include",
-                    headers: {
-                        "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-                        "X-Requested-With": "XMLHttpRequest",
-                        "Cache-Control": "max-age=0",
-                    },
-                    referrer: chapterUrl,
-                    body: new URLSearchParams({
-                        paperid,
-                        vercodechk,
-                    }).toString(),
-                    method: "POST",
-                    mode: "cors",
-                });
-                const contentMain = document.createElement("div");
-                contentMain.innerHTML = await resp.text();
-                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)('img[src="/images/fullcolor.png"]', true, contentMain);
-                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .zM)(contentMain, self.attachmentMode);
-                return [dom, text, images];
-            }
-            else {
-                return [null, null, null];
-            }
+            const showpapercolorUrl = document.location.origin + "/showpapercolor.php";
+            _log__WEBPACK_IMPORTED_MODULE_5___default().debug(`[chapter]正在请求${showpapercolorUrl}`);
+            const resp = await fetch(showpapercolorUrl, {
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+                    "X-Requested-With": "XMLHttpRequest",
+                    "Cache-Control": "max-age=0",
+                },
+                referrer: chapterUrl,
+                body: new URLSearchParams({
+                    paperid,
+                    vercodechk,
+                }).toString(),
+                method: "POST",
+                mode: "cors",
+            });
+            const contentMain = document.createElement("div");
+            contentMain.innerHTML = await resp.text();
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)('img[src="/images/fullcolor.png"]', true, contentMain);
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .zM)(contentMain, self.attachmentMode);
+            return [dom, text, images];
         }
         async function getAuthorSay() {
             const authorSayDom = doc.querySelector("#colorpanelwritersay");
@@ -13948,7 +13951,44 @@ class Longmabook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */
                 return [null, null, null];
             }
         }
-        function getEgg() {
+        async function getEgg() {
+            const hasEgg = Array.from(doc.querySelectorAll('a[href="#gopapergbook"]'))
+                .map((node) => node.innerText.trim())
+                .some((text) => text === "發表心得留言");
+            if (hasEgg) {
+                const resp = await fetch(document.location.origin + "/showpapereggs.php", {
+                    credentials: "include",
+                    headers: {
+                        Accept: "*/*",
+                        "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+                        "X-Requested-With": "XMLHttpRequest",
+                    },
+                    referrer: chapterUrl,
+                    body: new URLSearchParams({
+                        paperid,
+                        bookwritercode: options.bookwritercode,
+                    }).toString(),
+                    method: "POST",
+                    mode: "cors",
+                });
+                const eggHTML = await resp.text();
+                if (eggHTML.includes("<img src='/images/fullcolor.png' class='fullimg'><a href='#gopapergbook' uk-icon='commenting'>下方留下評論後可完成敲蛋!</a>")) {
+                    const text = "本章含有彩蛋，但并未敲开。";
+                    const dom = document.createElement("div");
+                    dom.innerText = text;
+                    return [dom, text, []];
+                }
+                else {
+                    const eggDom = document.createElement("div");
+                    eggDom.innerHTML = eggHTML;
+                    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)('img[src="/images/fullcolor.png"]', true, eggDom);
+                    const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .zM)(eggDom, self.attachmentMode);
+                    return [dom, text, images];
+                }
+            }
+            else {
+                return [null, null, null];
+            }
         }
     }
 }
