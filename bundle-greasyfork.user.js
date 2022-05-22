@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.9.0.692
+// @version        4.9.0.693
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/404-novel-project/novel-downloader
@@ -316,6 +316,7 @@
 // @connect        akatsuki-novels.com
 // @connect        alphapolis.co.jp
 // @connect        cdn.shucdn.com
+// @connect        readmoo.com
 // @connect        *
 // @require        https://unpkg.com/crypto-js@4.1.1/crypto-js.js#sha512-NQVmLzNy4Lr5QTrmXvq/WzTMUnRHmv7nyIT/M6LyGPBS+TIeRxZ+YQaqWxjpRpvRMQSuYPQURZz/+pLi81xXeA==
 // @require        https://unpkg.com/fflate@0.7.3/umd/index.js#sha512-F57jcpLWPENXlHrsEj+YC8m+IHvaoRZpCpDr7Tfvu/jRtuO7kPOfbsop2gXEIRoK66ETYamk1tlTEvNw6xE8jw==
@@ -7074,8 +7075,7 @@ class AttachmentClass {
             }
         }
         else {
-            init = Object.assign((0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__/* .deepcopy */ .X8)(defaultInit), init);
-            ({ init: this._init, TMinit: this._TMinit } = init);
+            ({ init: this._init, TMinit: this._TMinit } = (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__/* .deepcopy */ .X8)(init));
             this._TMinit.responseType = "blob";
             if (this._init.responseType) {
                 delete this._init.responseType;
