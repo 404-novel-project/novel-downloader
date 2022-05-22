@@ -67,41 +67,42 @@ EPUB文件请使用相应阅读器阅读。
 
 **特别提醒：如欲下载支持列表中网站的付费章节，请登录相应网站帐户，并确定已购买相应付费章节。未登录网站帐户，或未购买的付费章节，下载时将直接忽略，无法进行下载。**
 
-|站点|公共章节|付费章节| 备注                                                                                                                                             |
-|---|-------|------|------------------------------------------------------------------------------------------------------------------------------------------------|
-|[刺猬猫](https://www.ciweimao.com/)|✅|✅| VIP章节仅支持图片版。                                                                                                                                   |
-|[SF轻小说](https://book.sfacg.com/)|✅\*|✅\*\*| \*不支持对话小说，例：[224282](https://book.sfacg.com/Novel/224282/)。 \*\*VIP章节仅支持图片版。                                                                   |
-|[起点中文网](https://www.qidian.com/)|✅|✅|部分小说VIP章节可能出现乱码无法下载。|
-|[起点女生网](https://www.qdmm.com/)|✅|✅||
-|[晋江文学城](http://www.jjwxc.net/)|✅|✅| VIP章节使用[晋江防盗字体对照表](https://github.com/yingziwu/jjwxcFontTables)去除空格。<br>脚本将向云端请求数据，远程字体功能可通过 `enableJjwxcRemoteFont` 配置项手动关闭。                  |
-|[长佩文学](https://www.gongzicp.com/)|✅|✅| 反爬较严，限制下载速度，每分钟约可下载6章，请耐心等待。<br>长佩文学为单页应用，如打开书籍详情页右上角未出现下载图标，请按下F5重新加载当前页面。                                                                    |
-|[书耽](https://www.shubl.com/)|✅|✅| VIP章节仅支持图片版。                                                                                                                                   |
-|[海棠文化线上文学城](https://ebook.longmabook.com/)|✅|✅||
-|[次元姬](https://www.ciyuanji.com/)|✅|✅||
-|[米国度](https://www.myrics.com/)|✅|✅||
-|[寒武纪年原创网](https://www.hanwujinian.com/)|✅|✅||
-|[哔哩哔哩漫画](https://manga.bilibili.com/)|✅|✅||
-|[息壤中文网](https://www.xrzww.com/)|✅|✅||
-|[轻之文库轻小说](https://www.linovel.net/)|✅|❌| VIP章节仅支持APP查看                                                                                                                                  |
-|[纵横中文网](http://www.zongheng.com/)|✅|❌||
-|[花语女生网](http://huayu.zongheng.com/)|✅|❌||
-|[17K小说网](https://www.17k.com/)|✅|❌||
-|[书海小说网](http://www.shuhai.com/)|✅|❌||
-|[塔读文学](https://www.tadu.com/)|✅|❌||
-|[七猫中文网](https://www.qimao.com/)|✅|❌||
-|[废文网](https://sosad.fun/)|✅|❎| 部分小说或章节需登录后查看。                                                                                                                                 |
-|[pixiv](https://www.pixiv.net/novel/)|✅|❎|单页应用，如打开书籍详情页右上角未出现下载图标，请按下F5重新加载当前页面。|
-|[动漫之家](https://www.dmzj.com/)|✅|❎| 需下载大量图片，速度较慢，请耐心等待。<br>需占用大量内存，请保证最终生成文件4倍以上内存，即最终下载生成500MB ZIP文件，运行时请保证至少2GB内存空间。可使用筛选函数，分次下载。                                                |
-|[Lofter](https://www.lofter.com/)|✅|❎| 因本脚本会将博文中的图片也一同下载下来，对于图片特别多的博客，下载时请注意内存用量（800MB限制），根据实际情况使用筛选函数分次下载。<br>部分博文内含视频内容，为节省内存使用，加快下载速度，本脚本将跳过视频内容。<br>如您使用广告屏蔽器，可能会影响本脚本在Lofter的工作。 |
-|[努努书坊](https://www.kanunu8.com/)|✅|❎| 格式众多，如发现不支持页面敬请反馈。                                                                                                                             |
-|[真白萌](https://masiro.me/)|✅|❎||
-|[天涯书库](https://www.tianyabooks.com/)|✅|❎||
-|[カクヨム](https://kakuyomu.jp/)|✅|❎||
-|[小説家になろう](https://syosetu.com/)|✅|❎||
-|[ハーメルン](https://syosetu.org/)|✅|❎||
-|[暁](https://www.akatsuki-novels.com/)|✅|❎||
-|[ファンタジー小説](https://www.alphapolis.co.jp/)|✅|❎||
-|[Novel Up Plus](https://novelup.plus/)|✅|❎||
+| 站点                                         |公共章节|付费章节| 备注                                                                                                                                             |
+|--------------------------------------------|-------|------|------------------------------------------------------------------------------------------------------------------------------------------------|
+| [刺猬猫](https://www.ciweimao.com/)           |✅|✅| VIP章节仅支持图片版。                                                                                                                                   |
+| [SF轻小说](https://book.sfacg.com/)           |✅\*|✅\*\*| \*不支持对话小说，例：[224282](https://book.sfacg.com/Novel/224282/)。 \*\*VIP章节仅支持图片版。                                                                   |
+| [起点中文网](https://www.qidian.com/)           |✅|✅|部分小说VIP章节可能出现乱码无法下载。|
+| [起点女生网](https://www.qdmm.com/)             |✅|✅||
+| [晋江文学城](http://www.jjwxc.net/)             |✅|✅| VIP章节使用[晋江防盗字体对照表](https://github.com/yingziwu/jjwxcFontTables)去除空格。<br>脚本将向云端请求数据，远程字体功能可通过 `enableJjwxcRemoteFont` 配置项手动关闭。                  |
+| [长佩文学](https://www.gongzicp.com/)          |✅|✅| 反爬较严，限制下载速度，每分钟约可下载6章，请耐心等待。<br>长佩文学为单页应用，如打开书籍详情页右上角未出现下载图标，请按下F5重新加载当前页面。                                                                    |
+| [书耽](https://www.shubl.com/)               |✅|✅| VIP章节仅支持图片版。                                                                                                                                   |
+| [海棠文化线上文学城](https://ebook.longmabook.com/) |✅|✅||
+| [次元姬](https://www.ciyuanji.com/)           |✅|✅||
+| [米国度](https://www.myrics.com/)             |✅|✅||
+| [寒武纪年原创网](https://www.hanwujinian.com/)    |✅|✅||
+| [哔哩哔哩漫画](https://manga.bilibili.com/)      |✅|✅||
+| [息壤中文网](https://www.xrzww.com/)            |✅|✅||
+| [轻之文库轻小说](https://www.linovel.net/)        |✅|❌| VIP章节仅支持APP查看                                                                                                                                  |
+| [纵横中文网](http://www.zongheng.com/)          |✅|❌||
+| [花语女生网](http://huayu.zongheng.com/)        |✅|❌||
+| [17K小说网](https://www.17k.com/)             |✅|❌||
+| [书海小说网](http://www.shuhai.com/)            |✅|❌||
+| [塔读文学](https://www.tadu.com/)              |✅|❌||
+| [七猫中文网](https://www.qimao.com/)            |✅|❌||
+| [废文网](https://sosad.fun/)                  |✅|❎| 部分小说或章节需登录后查看。                                                                                                                                 |
+| [pixiv](https://www.pixiv.net/novel/)      |✅|❎|单页应用，如打开书籍详情页右上角未出现下载图标，请按下F5重新加载当前页面。|
+| [动漫之家](https://www.dmzj.com/)              |✅|❎| 需下载大量图片，速度较慢，请耐心等待。<br>需占用大量内存，请保证最终生成文件4倍以上内存，即最终下载生成500MB ZIP文件，运行时请保证至少2GB内存空间。可使用筛选函数，分次下载。                                                |
+| [Lofter](https://www.lofter.com/)          |✅|❎| 因本脚本会将博文中的图片也一同下载下来，对于图片特别多的博客，下载时请注意内存用量（800MB限制），根据实际情况使用筛选函数分次下载。<br>部分博文内含视频内容，为节省内存使用，加快下载速度，本脚本将跳过视频内容。<br>如您使用广告屏蔽器，可能会影响本脚本在Lofter的工作。 |
+| [努努书坊](https://www.kanunu8.com/)           |✅|❎| 格式众多，如发现不支持页面敬请反馈。                                                                                                                             |
+| [真白萌](https://masiro.me/)                  |✅|❎||
+| [天涯书库](https://www.tianyabooks.com/)       |✅|❎||
+| [爱青果](https://www.iqingguo.com/)        |✅|❎||
+| [カクヨム](https://kakuyomu.jp/)               |✅|❎||
+| [小説家になろう](https://syosetu.com/)            |✅|❎||
+| [ハーメルン](https://syosetu.org/)              |✅|❎||
+| [暁](https://www.akatsuki-novels.com/)      |✅|❎||
+| [ファンタジー小説](https://www.alphapolis.co.jp/)  |✅|❎||
+| [Novel Up Plus](https://novelup.plus/)     |✅|❎||
 
 <details>
 <summary>点击查看全部支持网站</summary>

@@ -203,7 +203,8 @@
     "*://www.alphapolis.co.jp/novel/*/*",
     "*://novelup.plus/story/*",
     "*://www.69shu.com/txt/*.htm",
-    "*://new-read.readmoo.com/mooreader/*"
+    "*://new-read.readmoo.com/mooreader/*",
+    "*://www.iqingguo.com/book/detail/?id=*"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",
@@ -327,6 +328,7 @@
     "alphapolis.co.jp",
     "cdn.shucdn.com",
     "readmoo.com",
+    "qingoo.cn",
     "*"
   ],
   "require": [

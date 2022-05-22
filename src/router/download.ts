@@ -552,6 +552,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = Readmoo;
       break;
     }
+    case "www.iqingguo.com": {
+      const { Iqingguo } = await import("../rules/special/original/iqingguo");
+      ruleClass = Iqingguo;
+      break;
+    }
     default: {
       throw new Error("Not Found Rule!");
     }
