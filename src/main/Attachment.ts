@@ -63,8 +63,7 @@ export class AttachmentClass {
         this._TMinit.headers = { Referer: customReferer };
       }
     } else {
-      init = Object.assign(deepcopy(defaultInit), init);
-      ({ init: this._init, TMinit: this._TMinit } = init);
+      ({ init: this._init, TMinit: this._TMinit } = deepcopy(init));
       this._TMinit.responseType = "blob";
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
@@ -158,6 +157,7 @@ export class AttachmentClass {
       });
   }
 
+  // noinspection JSUnusedLocalSymbols
   private toJSON() {
     return {
       url: this.url,
