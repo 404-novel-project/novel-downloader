@@ -178,6 +178,11 @@ const getMessageXhtml = (book: Book) => `<?xml version="1.0" encoding="utf-8"?>
         ? `<hr/><span>简介：</span>${book.introductionHTML.outerHTML}`
         : ""
     }
+    ${
+      book.additionalMetadate.tags
+        ? `<hr/><div>Tag列表：${book.additionalMetadate.tags.join("、")}</div>`
+        : ""
+    }
   </div>
 </body>
 </html>`;
