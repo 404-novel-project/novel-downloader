@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.9.0.693
+// @version        4.9.0.694
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/404-novel-project/novel-downloader
@@ -15131,22 +15131,18 @@ class Readmoo extends rules/* BaseRuleClass */.c {
     async bookParse() {
         const Base = "https://reader.readmoo.com";
         const navBase = `${Base}/api/book/`;
+        const headers = {
+            Accept: "*/*",
+            Authorization: "bearer TWBLXfuP-NbtCrjD2PAiFA",
+            Referer: "https://reader.readmoo.com/reader/index.html",
+            "X-Requested-With": "XMLHttpRequest",
+        };
         const navInit = {
-            headers: {
-                Accept: "*/*",
-                Authorization: "bearer TWBLXfuP-NbtCrjD2PAiFA",
-                Referer: "https://reader.readmoo.com/reader/index.html",
-                "X-Requested-With": "XMLHttpRequest",
-            },
+            headers,
             responseType: "json",
         };
         const epubInit = {
-            headers: {
-                Accept: "text/plain, */*; q=0.01",
-                Authorization: "bearer TWBLXfuP-NbtCrjD2PAiFA",
-                Referer: "https://reader.readmoo.com/reader/index.html",
-                "X-Requested-With": "XMLHttpRequest",
-            },
+            headers,
         };
         const epubFileList = [
             {
