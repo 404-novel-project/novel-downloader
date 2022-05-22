@@ -37,9 +37,9 @@ export class Jjwxc extends BaseRuleClass {
       return fl.length !== 0;
     };
 
-      let bookname: string;
-      const additionalMetadate: BookAdditionalMetadate = {};
-      let author = "";
+    let bookname: string;
+    const additionalMetadate: BookAdditionalMetadate = {};
+    let author = "";
     let introduction: string | null = null;
     let introductionHTML: HTMLElement | null = null;
     let introCleanimages: AttachmentClass[] | null = null;
@@ -65,11 +65,11 @@ export class Jjwxc extends BaseRuleClass {
         document.querySelector(".noveldefaultimage") as HTMLImageElement
       ).src;
       if (coverUrl) {
-          getImageAttachment(coverUrl, this.attachmentMode, "cover-")
-            .then((coverClass) => {
-              additionalMetadate.cover = coverClass;
-            })
-            .catch((error) => log.error(error));
+        getImageAttachment(coverUrl, this.attachmentMode, "cover-")
+          .then((coverClass) => {
+            additionalMetadate.cover = coverClass;
+          })
+          .catch((error) => log.error(error));
       }
 
       let tags = (
@@ -225,15 +225,15 @@ export class Jjwxc extends BaseRuleClass {
       }
     }
 
-      return new Book({
-        bookUrl,
-        bookname,
-        author,
-        introduction,
-        introductionHTML,
-        additionalMetadate,
-        chapters,
-      });
+    return new Book({
+      bookUrl,
+      bookname,
+      author,
+      introduction,
+      introductionHTML,
+      additionalMetadate,
+      chapters,
+    });
   }
 
   public async chapterParse(
@@ -377,10 +377,10 @@ export class Jjwxc extends BaseRuleClass {
             fontClassObj = fontClassObjCache;
           } else {
             const fontBlob = await fetchFont(fontUrl);
-              fontClassObj = new AttachmentClass(fontUrl, fontFileName, "TM");
-              fontClassObj.Blob = fontBlob;
-              fontClassObj.status = Status.finished;
-              putAttachmentClassCache(fontClassObj);
+            fontClassObj = new AttachmentClass(fontUrl, fontFileName, "TM");
+            fontClassObj.Blob = fontBlob;
+            fontClassObj.status = Status.finished;
+            putAttachmentClassCache(fontClassObj);
           }
 
           const fontStyleDom = document.createElement("style");

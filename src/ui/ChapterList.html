@@ -1,42 +1,42 @@
 <div>
-  <div v-if="loading">
-    <div class="chapter-list-loading">
-      <h2 v-if="failed">加载章节失败！</h2>
-      <h2 v-else>正在载入章节列表中，请耐心等待……</h2>
+    <div v-if="loading">
+        <div class="chapter-list-loading">
+            <h2 v-if="failed">加载章节失败！</h2>
+            <h2 v-else>正在载入章节列表中，请耐心等待……</h2>
+        </div>
     </div>
-  </div>
-  <div class="chapter-list" v-else>
-    <div
-      v-for="sectionObj in sectionsObj"
-      v-show="isSectionSeen(sectionObj)"
-      v-bind:key="sectionObj.sectionNumber"
-      class="section"
-    >
-      <h3 class="section-label" v-if="sectionObj.sectionName">
-        {{ sectionObj.sectionName }}
-      </h3>
-      <div
-        v-for="chapter in sectionObj.chpaters"
-        v-show="isChapterSeen(chapter)"
-        v-bind:key="chapter.chapterNumber"
-        class="chapter"
-        v-bind:class="{
+    <div v-else class="chapter-list">
+        <div
+                v-for="sectionObj in sectionsObj"
+                v-show="isSectionSeen(sectionObj)"
+                v-bind:key="sectionObj.sectionNumber"
+                class="section"
+        >
+            <h3 v-if="sectionObj.sectionName" class="section-label">
+                {{ sectionObj.sectionName }}
+            </h3>
+            <div
+                    v-for="chapter in sectionObj.chpaters"
+                    v-show="isChapterSeen(chapter)"
+                    v-bind:key="chapter.chapterNumber"
+                    class="chapter"
+                    v-bind:class="{
               good: this.filter(chapter),
               bad: !this.filter(chapter),
               warning: this.warningFilter(chapter)
             }"
-        v-bind:title="chapter.chapterNumber"
-      >
-        <a
-          v-bind:href="chapter.chapterUrl"
-          v-bind:class="{
+                    v-bind:title="chapter.chapterNumber"
+            >
+                <a
+                        rel="noopener noreferrer"
+                        target="_blank"
+                        v-bind:class="{
                 disabled: this.isChapterDisabled(chapter),
               }"
-          target="_blank"
-          rel="noopener noreferrer"
-          >{{ chapter.chapterName }}</a
-        >
-      </div>
+                        v-bind:href="chapter.chapterUrl"
+                >{{ chapter.chapterName }}</a
+                >
+            </div>
     </div>
   </div>
 </div>

@@ -35,11 +35,11 @@ export class Tadu extends BaseRuleClass {
       document.querySelector("a.bookImg > img") as HTMLImageElement
     ).getAttribute("data-src");
     if (coverUrl) {
-        getImageAttachment(coverUrl, this.attachmentMode, "cover-")
-          .then((coverClass) => {
-            additionalMetadate.cover = coverClass;
-          })
-          .catch((error) => log.error(error));
+      getImageAttachment(coverUrl, this.attachmentMode, "cover-")
+        .then((coverClass) => {
+          additionalMetadate.cover = coverClass;
+        })
+        .catch((error) => log.error(error));
     }
 
     const chapters: Chapter[] = [];
@@ -81,15 +81,15 @@ export class Tadu extends BaseRuleClass {
       chapters.push(chapter);
     }
 
-      return new Book({
-        bookUrl,
-        bookname,
-        author,
-        introduction,
-        introductionHTML,
-        additionalMetadate,
-        chapters,
-      });
+    return new Book({
+      bookUrl,
+      bookname,
+      author,
+      introduction,
+      introductionHTML,
+      additionalMetadate,
+      chapters,
+    });
   }
 
   public async chapterParse(
@@ -135,13 +135,13 @@ export class Tadu extends BaseRuleClass {
           throw new Error("jsonp request failed!");
         }
 
-          interface ContentObj {
-            content: string;
-          }
+        interface ContentObj {
+          content: string;
+        }
 
-          const getContentObj = new Function(
-            `function callback(obj) { return obj; } return ${jsonpText};`
-          );
+        const getContentObj = new Function(
+          `function callback(obj) { return obj; } return ${jsonpText};`
+        );
         const contentObj: ContentObj = getContentObj();
         if (typeof contentObj === "object") {
           content.innerHTML = contentObj.content;

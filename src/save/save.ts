@@ -40,14 +40,6 @@ export class SaveBook {
     );
   }
 
-  private saveTxt() {
-    this.txt.saveTxt();
-  }
-
-  private async saveEpub() {
-    await this.epub.saveEpub();
-  }
-
   public async addChapter(chapter: Chapter) {
     await this.epub.addChapter(chapter);
 
@@ -80,6 +72,14 @@ export class SaveBook {
     if (this.saveType.raw instanceof Object) {
       await this.saveRaw();
     }
+  }
+
+  private saveTxt() {
+    this.txt.saveTxt();
+  }
+
+  private async saveEpub() {
+    await this.epub.saveEpub();
   }
 
   private async saveRaw() {

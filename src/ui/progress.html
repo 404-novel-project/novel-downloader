@@ -1,10 +1,10 @@
 <div>
-  <div id="nd-progress" v-if="ntProgressSeen">
-    <div
-      v-if="chapterProgressSeen"
-      id="chapter-progress"
-      v-bind:style="{'--position': chapterPercent+'%'}"
-      v-bind:title="chapterProgressTitle"
-    ></div>
-  </div>
+    <div v-if="ntProgressSeen" id="nd-progress">
+        <div
+                v-if="chapterProgressSeen"
+                id="chapter-progress"
+                v-bind:style="{'--position': chapterPercent+'%'}"
+                v-bind:title="chapterProgressTitle"
+        ></div>
+    </div>
 </div>

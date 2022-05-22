@@ -23,8 +23,6 @@ export interface saveType {
 }
 
 export class Book {
-  private _bookUrl = "";
-  private _ToCUrl?: string;
   public saveType: saveType = {
     epub: true,
     txt: true,
@@ -65,12 +63,20 @@ export class Book {
     log.debug("[Book]初始化完成");
   }
 
+  private _bookUrl = "";
+
+  public get bookUrl(): string {
+    return this._bookUrl;
+  }
+
   public set bookUrl(v: string) {
     this._bookUrl = removeTrackParm(v);
   }
 
-  public get bookUrl(): string {
-    return this._bookUrl;
+  private _ToCUrl?: string;
+
+  public get ToCUrl(): string | undefined {
+    return this._ToCUrl;
   }
 
   public set ToCUrl(v: string | undefined) {
@@ -79,10 +85,7 @@ export class Book {
     }
   }
 
-  public get ToCUrl(): string | undefined {
-    return this._ToCUrl;
-  }
-
+  // noinspection JSUnusedLocalSymbols
   private toJSON() {
     return {
       bookUrl: this.bookUrl,

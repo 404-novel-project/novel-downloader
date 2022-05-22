@@ -273,6 +273,23 @@ export function getUI(): () => UIObject {
     case "new-read.readmoo.com": {
       return () => ({ type: "download", isSettingSeen: false });
     }
+    case "www.myrics.com": {
+      return () => {
+        if (document.location.pathname.endsWith("/menu")) {
+          return {
+            type: "jump",
+            jumpFunction: () => {
+              document.location.pathname = document.location.pathname.replace(
+                /\/menu$/,
+                ""
+              );
+            },
+          };
+        } else {
+          return defaultObject;
+        }
+      };
+    }
     default: {
       return () => {
         return defaultObject;

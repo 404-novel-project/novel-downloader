@@ -1,7 +1,7 @@
 <div>
   <div class="filter-setting">
     <div v-if="filterType !== 'null'" class="filter-input">
-      <p>请输入过滤的条件：<input type="text" v-model="arg" /></p>
+      <p>请输入过滤的条件：<input v-model="arg" type="text"/></p>
     </div>
     <div class="filter-setter">
       <div>
@@ -15,7 +15,7 @@
           </option>
         </select>
       </div>
-      <input type="checkbox" id="hiddenBad" v-model="hiddenBad" />
+        <input id="hiddenBad" v-model="hiddenBad" type="checkbox"/>
       <label for="hiddenBad">只显示符合条件章节</label>
       <div class="filter-description" v-html="filterDescription"></div>
       <div v-if="false">

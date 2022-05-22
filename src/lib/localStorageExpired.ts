@@ -40,17 +40,6 @@ export class LocalStorageExpired {
     }
   }
 
-  private init() {
-    const reg = new RegExp("__expires__$");
-    const storage = this.storage;
-    const keys = Object.keys(storage);
-    keys.forEach((key) => {
-      if (!reg.test(key)) {
-        this.get(key);
-      }
-    });
-  }
-
   set(key: string, value: any, expired: number): void {
     const storage = this.storage;
     try {
@@ -75,8 +64,7 @@ export class LocalStorageExpired {
 
     if (expired) {
       try {
-        const value = JSON.parse(storage[key]);
-        return value;
+        return JSON.parse(storage[key]);
       } catch (error) {
         return storage[key];
       }
@@ -93,5 +81,16 @@ export class LocalStorageExpired {
         delete storage[`${key}__expires__`];
       }
     }
+  }
+
+  private init() {
+    const reg = new RegExp("__expires__$");
+    const storage = this.storage;
+    const keys = Object.keys(storage);
+    keys.forEach((key) => {
+      if (!reg.test(key)) {
+        this.get(key);
+      }
+    });
   }
 }

@@ -536,19 +536,19 @@ export async function getRule(): Promise<BaseRuleClass> {
       break;
     }
     case "novelup.plus": {
-      const {novelup} = await import(
-          "../rules/onePageWithMultiIndexPage/novelup"
-          );
+      const { novelup } = await import(
+        "../rules/onePageWithMultiIndexPage/novelup"
+      );
       ruleClass = novelup();
       break;
     }
     case "www.69shu.com": {
-      const {c69shu} = await import("../rules/twoPage/69shu");
+      const { c69shu } = await import("../rules/twoPage/69shu");
       ruleClass = c69shu();
       break;
     }
     case "new-read.readmoo.com": {
-      const {Readmoo} = await import("../rules/special/original/readmoo");
+      const { Readmoo } = await import("../rules/special/original/readmoo");
       ruleClass = Readmoo;
       break;
     }

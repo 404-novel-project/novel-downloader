@@ -44,11 +44,11 @@ export class Wenku8 extends BaseRuleClass {
       ) as HTMLImageElement
     ).src;
     if (coverUrl) {
-        getImageAttachment(coverUrl, this.attachmentMode, "cover-")
-          .then((coverClass) => {
-            additionalMetadate.cover = coverClass;
-          })
-          .catch((error) => log.error(error));
+      getImageAttachment(coverUrl, this.attachmentMode, "cover-")
+        .then((coverClass) => {
+          additionalMetadate.cover = coverClass;
+        })
+        .catch((error) => log.error(error));
     }
 
     const chapters: Chapter[] = [];

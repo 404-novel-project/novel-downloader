@@ -13,17 +13,17 @@
     <h2>章节测试</h2>
     <div class="preview-chapter-setting">
       <label for="chapterNumber">预览章节序号：</label>
-      <input type="text" id="chapterNumber" v-model="chapterNumber" />
+      <input id="chapterNumber" v-model="chapterNumber" type="text"/>
     </div>
     <div v-if="this.isSeenChapter(chapter)">
-      <h4>
-        <a
-          v-bind:href="chapter.chapterUrl"
-          target="_blank"
-          rel="noopener noreferrer"
-          >{{ chapter.chapterName }}</a
-        >
-      </h4>
+        <h4>
+            <a
+                    rel="noopener noreferrer"
+                    target="_blank"
+                    v-bind:href="chapter.chapterUrl"
+            >{{ chapter.chapterName }}</a
+            >
+        </h4>
       <div class="chapter" v-html="getChapterHtml(chapter)"></div>
     </div>
     <div v-else>

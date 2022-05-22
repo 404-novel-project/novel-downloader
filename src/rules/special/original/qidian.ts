@@ -61,15 +61,15 @@ export class Qidian extends BaseRuleClass {
 
     // 限免探测
     /*
-        const limitFreeUrl = "https://www.qidian.com/free/";
-        const limitFreeDom = await ggetHtmlDOM(limitFreeUrl, this.charset);
-        const limitFreeBookIds = Array.from(
-          limitFreeDom.querySelectorAll(
-            "#limit-list div.book-img-box > a[data-bid]"
-          )
-        ).map((a) => a.getAttribute("data-bid"));
-        const limitFree = limitFreeBookIds.includes(bookId);
-        */
+            const limitFreeUrl = "https://www.qidian.com/free/";
+            const limitFreeDom = await ggetHtmlDOM(limitFreeUrl, this.charset);
+            const limitFreeBookIds = Array.from(
+              limitFreeDom.querySelectorAll(
+                "#limit-list div.book-img-box > a[data-bid]"
+              )
+            ).map((a) => a.getAttribute("data-bid"));
+            const limitFree = limitFreeBookIds.includes(bookId);
+            */
     const limitFree = Boolean(
       document.querySelector(".book-information .flag")
     );
