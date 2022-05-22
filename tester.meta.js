@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        小说下载器测试脚本
-// @version     4.9.0.694
+// @version     4.9.1.695
 // @author      bgme
 // @description 小说下载器测试脚本
 // @match       *://www.ciweimao.com/chapter-list/*
@@ -219,7 +219,6 @@
 // @exclude     *://www.25zw.com/monthvisit/
 // @exclude     *://www.25zw.com/goodnum/
 // @exclude     *://www.25zw.com/goodnew/
-// @exclude     *://www.myrics.com/novels/*/chapters/*
 // @exclude     *://dijiubook.net/*_*/*.html
 // @exclude     *://ncode.syosetu.com/*/*/
 // @exclude     *://novel18.syosetu.com/*/*/

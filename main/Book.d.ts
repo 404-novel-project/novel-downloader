@@ -20,8 +20,6 @@ export interface saveType {
     };
 }
 export declare class Book {
-    private _bookUrl;
-    private _ToCUrl?;
     saveType: saveType;
     readonly bookname: string;
     readonly author: string;
@@ -39,9 +37,11 @@ export declare class Book {
         additionalMetadate: BookAdditionalMetadate;
         chapters: Chapter[];
     });
-    set bookUrl(v: string);
+    private _bookUrl;
     get bookUrl(): string;
-    set ToCUrl(v: string | undefined);
+    set bookUrl(v: string);
+    private _ToCUrl?;
     get ToCUrl(): string | undefined;
+    set ToCUrl(v: string | undefined);
     private toJSON;
 }

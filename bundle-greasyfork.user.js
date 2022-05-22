@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.9.0.694
+// @version        4.9.1.695
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/404-novel-project/novel-downloader
@@ -229,7 +229,6 @@
 // @exclude        *://www.25zw.com/monthvisit/
 // @exclude        *://www.25zw.com/goodnum/
 // @exclude        *://www.25zw.com/goodnew/
-// @exclude        *://www.myrics.com/novels/*/chapters/*
 // @exclude        *://dijiubook.net/*_*/*.html
 // @exclude        *://ncode.syosetu.com/*/*/
 // @exclude        *://novel18.syosetu.com/*/*/
@@ -6551,16 +6550,6 @@ class LocalStorageExpired {
             throw new Error("当前浏览器不支持 localStorage");
         }
     }
-    init() {
-        const reg = new RegExp("__expires__$");
-        const storage = this.storage;
-        const keys = Object.keys(storage);
-        keys.forEach((key) => {
-            if (!reg.test(key)) {
-                this.get(key);
-            }
-        });
-    }
     set(key, value, expired) {
         const storage = this.storage;
         try {
@@ -6583,8 +6572,7 @@ class LocalStorageExpired {
         }
         if (expired) {
             try {
-                const value = JSON.parse(storage[key]);
-                return value;
+                return JSON.parse(storage[key]);
             }
             catch (error) {
                 return storage[key];
@@ -6603,6 +6591,16 @@ class LocalStorageExpired {
             }
         }
     }
+    init() {
+        const reg = new RegExp("__expires__$");
+        const storage = this.storage;
+        const keys = Object.keys(storage);
+        keys.forEach((key) => {
+            if (!reg.test(key)) {
+                this.get(key);
+            }
+        });
+    }
 }
 
 
@@ -6618,6 +6616,7 @@ class LocalStorageExpired {
 /* harmony export */   "K$": () => (/* binding */ saveToArchiveOrg),
 /* harmony export */   "X8": () => (/* binding */ deepcopy),
 /* harmony export */   "_v": () => (/* binding */ sleep),
+/* harmony export */   "w6": () => (/* binding */ range),
 /* harmony export */   "z9": () => (/* binding */ extensionToMimetype)
 /* harmony export */ });
 /* unused harmony exports regexpEscape, mean, sd, mimetyepToExtension */
@@ -6728,6 +6727,9 @@ function mimetyepToExtension(mimeType) {
         }
     }
     return null;
+}
+function range(size, startAt = 0) {
+    return [...Array(size).keys()].map((i) => i + startAt);
 }
 
 
@@ -7315,8 +7317,6 @@ var loglevel_default = /*#__PURE__*/__webpack_require__.n(loglevel);
 
 
 class Book {
-    _bookUrl = "";
-    _ToCUrl;
     saveType = {
         epub: true,
         txt: true,
@@ -7339,19 +7339,21 @@ class Book {
         this.chapters = chapters;
         loglevel_default().debug("[Book]初始化完成");
     }
+    _bookUrl = "";
+    get bookUrl() {
+        return this._bookUrl;
+    }
     set bookUrl(v) {
         this._bookUrl = removeTrackParm(v);
     }
-    get bookUrl() {
-        return this._bookUrl;
+    _ToCUrl;
+    get ToCUrl() {
+        return this._ToCUrl;
     }
     set ToCUrl(v) {
         if (v) {
             this._ToCUrl = removeTrackParm(v);
         }
-    }
-    get ToCUrl() {
-        return this._ToCUrl;
     }
     toJSON() {
         return {
@@ -8492,12 +8494,6 @@ class SaveBook {
     static saveLog() {
         (0,FileSaver_min.saveAs)(new Blob([log/* logText */.KC], { type: "text/plain; charset=UTF-8" }), "debug.log");
     }
-    saveTxt() {
-        this.txt.saveTxt();
-    }
-    async saveEpub() {
-        await this.epub.saveEpub();
-    }
     async addChapter(chapter) {
         await this.epub.addChapter(chapter);
         if (!setting/* enableDebug.value */.Cy.value) {
@@ -8528,6 +8524,12 @@ class SaveBook {
         if (this.saveType.raw instanceof Object) {
             await this.saveRaw();
         }
+    }
+    saveTxt() {
+        this.txt.saveTxt();
+    }
+    async saveEpub() {
+        await this.epub.saveEpub();
     }
     async saveRaw() {
         await this.raw.saveRaw();
@@ -13962,15 +13964,17 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "Myrics": () => (/* binding */ Myrics)
 /* harmony export */ });
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/main/Book.ts");
 /* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/attachments.ts");
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/cleanDOM.ts");
-/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/http.ts");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/main.ts");
-/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/Chapter.ts");
-/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Book.ts");
-/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/misc.ts");
+/* harmony import */ var p_limit__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/p-limit/index.js");
+/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/main.ts");
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("./src/lib/cleanDOM.ts");
 
 
 
@@ -13979,133 +13983,167 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-class Myrics extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
+
+
+class Myrics extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
     constructor() {
         super();
         this.attachmentMode = "TM";
+        this.concurrencyLimit = 5;
     }
     async bookParse() {
-        const bookId = /^\/novels\/(\d+)/.exec(document.location.pathname)?.[1];
-        if (!bookId) {
-            throw new Error("获取书籍信息出错！");
+        const bookId = document.location.href.split("/").slice(-1)[0];
+        const csrf_token = document
+            .querySelector('meta[name="csrf-token"]')
+            ?.getAttribute("content");
+        if (!(bookId && csrf_token)) {
+            throw new Error("初始化失败！找不到 bookId 或 csrf-token");
         }
-        const mWindow = unsafeWindow;
-        const initialState = mWindow.__INITIAL_STATE__;
-        const lang = navigator.languages.join(", ");
-        const country = initialState.global.country;
-        const signIn = initialState.global.signIn.status === "SUCCESS";
-        const accessToken = initialState.global.signIn.user?.accessToken ?? null;
-        const infoApi = `https://api.myrics.com/v1/novels/${bookId}`;
-        const chapterApiBase = `https://api.myrics.com/v1/novels/${bookId}/chapters`;
+        const novelDetailUrl = `https://www.myrics.com/authors/api_novel_detailed/${bookId}`;
+        const authorDetailUrl = `https://www.myrics.com/novels/api_author_detailed/${bookId}`;
+        const menuUrl = "https://www.myrics.com/novels/menu";
         const headers = {
-            Authority: "api.myrics.com",
             Accept: "application/json",
-            Origin: "https://www.myrics.com",
-            Referer: "https://www.myrics.com/",
-            "X-Platform": "FRONT",
-            "X-Lang": lang,
-            "X-Country": country,
+            "Content-Type": "application/json",
+            "X-CSRFToken": csrf_token,
         };
-        if (accessToken) {
-            headers.Authorization = accessToken;
-        }
-        const init = {
+        const novelDetailResp = await fetch(novelDetailUrl, {
+            credentials: "include",
             headers,
-            method: "GET",
-            responseType: "json",
-        };
-        const respI = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .gfetch */ .GF)(infoApi, init);
-        const info = respI.response;
-        if (info.status_code !== 200) {
-            throw new Error("获取书籍信息出错！");
+            body: "null",
+            method: "POST",
+            mode: "cors",
+        });
+        const _novelDetail = (await novelDetailResp.json());
+        if (!_novelDetail.isSuccess) {
+            throw new Error("请求书籍详情失败！");
         }
-        const bookUrl = `https://www.myrics.com/novels/${bookId}`;
-        const bookname = info.result.title;
-        const author = info.result.author.pen_name;
-        const introduction = info.result.long_summary;
+        const novelDetail = _novelDetail.data;
+        const authorDetailResp = await fetch(authorDetailUrl, {
+            credentials: "include",
+            headers,
+            method: "POST",
+            mode: "cors",
+        });
+        const _authroDetail = (await authorDetailResp.json());
+        if (!_authroDetail.isSuccess) {
+            throw new Error("请求作者详情失败！");
+        }
+        const authroDetail = _authroDetail.data;
+        const bookUrl = document.location.href;
+        const tocUrl = document.location.href + "/menu";
+        const bookname = novelDetail.title;
+        const author = authroDetail.pen_name;
+        const introduction = novelDetail.long_summary;
         const introductionHTML = document.createElement("div");
         introductionHTML.innerText = introduction;
-        const additionalMetadate = {};
-        const coverUrl = info.result.cover_image;
+        const additionalMetadate = {
+            tags: [...novelDetail.geners, novelDetail.type],
+            ids: bookId,
+            language: "zh",
+        };
+        const coverUrl = novelDetail.image;
         if (coverUrl) {
             (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getImageAttachment */ .CE)(coverUrl, this.attachmentMode, "cover-")
-                .then((coverClass) => {
-                additionalMetadate.cover = coverClass;
+                .then((img) => {
+                additionalMetadate.cover = img;
             })
                 .catch((error) => _log__WEBPACK_IMPORTED_MODULE_3___default().error(error));
         }
-        additionalMetadate.tags = info.result.genres.map((g) => g.name);
-        const chapters = [];
-        let pages = 0;
-        let page = 1;
-        const getChapterSearch = (p) => ({ page: p.toString() });
-        while (pages === 0 || page <= pages) {
-            const chapterApiUrl = chapterApiBase +
-                `?${new URLSearchParams(getChapterSearch(page)).toString()}`;
-            const respC = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .gfetch */ .GF)(chapterApiUrl, init);
-            const chaptersPage = respC.response;
-            if (chaptersPage.status_code !== 200) {
-                throw new Error("获取书籍信息出错！");
+        const isLogin = async () => {
+            const resp = await fetch("https://www.myrics.com/personal/notifys", {
+                credentials: "include",
+                headers,
+                body: "{}",
+                method: "POST",
+                mode: "cors",
+            });
+            const _notifys = (await resp.json());
+            if (!_notifys.isSuccess) {
+                throw new Error("查询通知失败！");
             }
-            pages = chaptersPage.result.pages;
-            page++;
-            for (const item of chaptersPage.result.items) {
-                const chapterId = item.id;
-                const chapterUrl = `https://www.myrics.com/novels/${bookId}/chapters/${chapterId}`;
-                const chapterNumber = item.order;
-                const chapterName = `${item.order} - ${item.title}`;
-                const isVIP = item.coin !== 0;
-                const isPaid = item.is_purchased;
-                const sectionNumber = item.part;
-                const sectionName = `卷${sectionNumber}`;
-                const sectionChapterNumber = item.order;
-                const isAdult = item.is_adult;
-                const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .W({
-                    bookUrl,
-                    bookname,
-                    chapterUrl,
-                    chapterNumber,
-                    chapterName,
-                    isVIP,
-                    isPaid,
-                    sectionName,
-                    sectionNumber,
-                    sectionChapterNumber,
-                    chapterParse: this.chapterParse,
-                    charset: this.charset,
-                    options: { bookId, chapterId, init },
-                });
-                if (chapter.isVIP === true && chapter.isPaid === false) {
-                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_5__/* .Status.aborted */ .qb.aborted;
-                }
-                if (signIn === false && isAdult === true) {
-                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_5__/* .Status.aborted */ .qb.aborted;
-                }
-                chapters.push(chapter);
-            }
-        }
-        chapters.sort((a, b) => {
-            if (a.sectionNumber && b.sectionNumber) {
-                if (a.sectionNumber !== b.sectionNumber) {
-                    return a.sectionNumber - b.sectionNumber;
-                }
-                else {
-                    if (a.sectionChapterNumber && b.sectionChapterNumber) {
-                        return a.sectionChapterNumber - b.sectionChapterNumber;
-                    }
-                }
-            }
-            else {
-                return a.chapterNumber - b.chapterNumber;
-            }
-            return 0;
+            const notify = _notifys.data;
+            return !Array.isArray(notify);
+        };
+        const getMenuRequestInit = (page) => ({
+            credentials: "include",
+            headers: headers,
+            referrer: "https://www.myrics.com/novels/6747/menu",
+            body: JSON.stringify({
+                page_limit: 12,
+                id: bookId,
+                sort: "asc",
+                page,
+            }),
+            method: "POST",
+            mode: "cors",
         });
+        const getMenu = async (page) => {
+            const resp = await fetch(menuUrl, getMenuRequestInit(page));
+            const _menu = (await resp.json());
+            if (!_menu.isSuccess) {
+                throw new Error(`获取第${page}页目录失败！`);
+            }
+            return _menu.data;
+        };
+        const limit = (0,p_limit__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Z)(this.concurrencyLimit);
+        const getChapters = async () => {
+            const loginStatus = await isLogin();
+            const { total_page } = await getMenu(1);
+            const _menus = (0,_lib_misc__WEBPACK_IMPORTED_MODULE_4__/* .range */ .w6)(total_page, 1).map((page) => {
+                return limit(() => getMenu(page));
+            });
+            const menus = await Promise.all(_menus);
+            const chapters = menus
+                .map((m) => {
+                return m.list.map((item) => {
+                    const chapterId = item.id;
+                    const chapterUrl = `https://www.myrics.com/chapters/${chapterId}`;
+                    const chapterNumber = parseInt(item.id);
+                    const chapterName = `${item.sort}. ${item.title}`;
+                    const isVIP = item.coin !== 0;
+                    const isPaid = item?.had_paid ?? false;
+                    const sectionNumber = item.part;
+                    const sectionName = `卷${sectionNumber}`;
+                    const sectionChapterNumber = item.part;
+                    const isAdult = item.is_adult;
+                    const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .W({
+                        bookUrl,
+                        bookname,
+                        chapterUrl,
+                        chapterNumber,
+                        chapterName,
+                        isVIP,
+                        isPaid,
+                        sectionName,
+                        sectionNumber,
+                        sectionChapterNumber,
+                        chapterParse: this.chapterParse,
+                        charset: this.charset,
+                        options: { bookId, chapterId, created_at: item.created_at },
+                    });
+                    if (chapter.isVIP && !chapter.isPaid) {
+                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status.aborted */ .qb.aborted;
+                    }
+                    if (!loginStatus && isAdult) {
+                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status.aborted */ .qb.aborted;
+                    }
+                    return chapter;
+                });
+            })
+                .reduce((arr, cur) => {
+                arr.push(...cur);
+                return arr;
+            }, []);
+            return chapters;
+        };
+        const chapters = await getChapters();
         let i = 0;
-        for (const c of chapters) {
+        for (const chapter of chapters) {
+            chapter.chapterNumber = i;
             i++;
-            c.chapterNumber = i;
         }
-        return new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .f({
+        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .f({
             bookUrl,
             bookname,
             author,
@@ -14114,26 +14152,39 @@ class Myrics extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
             additionalMetadate,
             chapters,
         });
+        book.ToCUrl = tocUrl;
+        return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        const { bookId, chapterId, init } = options;
-        const url = `https://api.myrics.com/v1/novels/${bookId}/chapters/${chapterId}`;
-        const resp = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .gfetch */ .GF)(url, init);
-        const chapter = resp.response;
-        if (chapter.status_code !== 200) {
-            throw new Error("获取章节失败！");
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_8__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
+        const _chapterName = doc.querySelector(".container > h1")?.innerText;
+        if (_chapterName) {
+            chapterName = _chapterName;
         }
-        const contentRaw = document.createElement("div");
-        contentRaw.innerHTML = chapter.result.content;
-        const { dom: contentHTML, text: contentText, images: contentImages, } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__/* .cleanDOM */ .zM)(contentRaw, "TM");
-        return {
-            chapterName,
-            contentRaw,
-            contentText,
-            contentHTML,
-            contentImages,
-            additionalMetadate: null,
-        };
+        const content = doc.querySelector(".container > .wysiwyg");
+        if (content) {
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_9__/* .cleanDOM */ .zM)(content, "TM");
+            return {
+                chapterName,
+                contentRaw: content,
+                contentText: text,
+                contentHTML: dom,
+                contentImages: images,
+                additionalMetadate: {
+                    lastModified: new Date(options.created_at).getTime(),
+                },
+            };
+        }
+        else {
+            return {
+                chapterName,
+                contentRaw: null,
+                contentText: null,
+                contentHTML: null,
+                contentImages: null,
+                additionalMetadate: null,
+            };
+        }
     }
 }
 
@@ -14952,168 +15003,18 @@ class Qimao extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-// ESM COMPAT FLAG
 __webpack_require__.r(__webpack_exports__);
-
-// EXPORTS
-__webpack_require__.d(__webpack_exports__, {
-  "Readmoo": () => (/* binding */ Readmoo)
-});
-
-;// CONCATENATED MODULE: ./node_modules/yocto-queue/index.js
-/*
-How it works:
-`this.#head` is an instance of `Node` which keeps track of its current value and nests another instance of `Node` that keeps the value that comes after it. When a value is provided to `.enqueue()`, the code needs to iterate through `this.#head`, going deeper and deeper to find the last value. However, iterating through every single item is slow. This problem is solved by saving a reference to the last value as `this.#tail` so that it can reference it to add a new value.
-*/
-
-class Node {
-	value;
-	next;
-
-	constructor(value) {
-		this.value = value;
-	}
-}
-
-class Queue {
-	#head;
-	#tail;
-	#size;
-
-	constructor() {
-		this.clear();
-	}
-
-	enqueue(value) {
-		const node = new Node(value);
-
-		if (this.#head) {
-			this.#tail.next = node;
-			this.#tail = node;
-		} else {
-			this.#head = node;
-			this.#tail = node;
-		}
-
-		this.#size++;
-	}
-
-	dequeue() {
-		const current = this.#head;
-		if (!current) {
-			return;
-		}
-
-		this.#head = this.#head.next;
-		this.#size--;
-		return current.value;
-	}
-
-	clear() {
-		this.#head = undefined;
-		this.#tail = undefined;
-		this.#size = 0;
-	}
-
-	get size() {
-		return this.#size;
-	}
-
-	* [Symbol.iterator]() {
-		let current = this.#head;
-
-		while (current) {
-			yield current.value;
-			current = current.next;
-		}
-	}
-}
-
-;// CONCATENATED MODULE: ./node_modules/p-limit/index.js
-
-
-function pLimit(concurrency) {
-	if (!((Number.isInteger(concurrency) || concurrency === Number.POSITIVE_INFINITY) && concurrency > 0)) {
-		throw new TypeError('Expected `concurrency` to be a number from 1 and up');
-	}
-
-	const queue = new Queue();
-	let activeCount = 0;
-
-	const next = () => {
-		activeCount--;
-
-		if (queue.size > 0) {
-			queue.dequeue()();
-		}
-	};
-
-	const run = async (fn, resolve, args) => {
-		activeCount++;
-
-		const result = (async () => fn(...args))();
-
-		resolve(result);
-
-		try {
-			await result;
-		} catch {}
-
-		next();
-	};
-
-	const enqueue = (fn, resolve, args) => {
-		queue.enqueue(run.bind(undefined, fn, resolve, args));
-
-		(async () => {
-			// This function needs to wait until the next microtask before comparing
-			// `activeCount` to `concurrency`, because `activeCount` is updated asynchronously
-			// when the run function is dequeued and called. The comparison in the if-statement
-			// needs to happen asynchronously as well to get an up-to-date value for `activeCount`.
-			await Promise.resolve();
-
-			if (activeCount < concurrency && queue.size > 0) {
-				queue.dequeue()();
-			}
-		})();
-	};
-
-	const generator = (fn, ...args) => new Promise(resolve => {
-		enqueue(fn, resolve, args);
-	});
-
-	Object.defineProperties(generator, {
-		activeCount: {
-			get: () => activeCount,
-		},
-		pendingCount: {
-			get: () => queue.size,
-		},
-		clearQueue: {
-			value: () => {
-				queue.clear();
-			},
-		},
-	});
-
-	return generator;
-}
-
-// EXTERNAL MODULE: ./src/main/Book.ts + 1 modules
-var Book = __webpack_require__("./src/main/Book.ts");
-// EXTERNAL MODULE: ./src/rules.ts + 12 modules
-var rules = __webpack_require__("./src/rules.ts");
-// EXTERNAL MODULE: ./src/main/Attachment.ts
-var Attachment = __webpack_require__("./src/main/Attachment.ts");
-// EXTERNAL MODULE: ./src/main/main.ts
-var main = __webpack_require__("./src/main/main.ts");
-// EXTERNAL MODULE: ./src/lib/http.ts
-var http = __webpack_require__("./src/lib/http.ts");
-// EXTERNAL MODULE: ./src/main/Chapter.ts
-var Chapter = __webpack_require__("./src/main/Chapter.ts");
-// EXTERNAL MODULE: ./src/lib/misc.ts
-var misc = __webpack_require__("./src/lib/misc.ts");
-;// CONCATENATED MODULE: ./src/rules/special/original/readmoo.ts
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Readmoo": () => (/* binding */ Readmoo)
+/* harmony export */ });
+/* harmony import */ var p_limit__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/p-limit/index.js");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _main_Attachment__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/main/Attachment.ts");
+/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/main.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/lib/misc.ts");
 
 
 
@@ -15122,7 +15023,7 @@ var misc = __webpack_require__("./src/lib/misc.ts");
 
 
 
-class Readmoo extends rules/* BaseRuleClass */.c {
+class Readmoo extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
     constructor() {
         super();
         this.saveType = { txt: false, epub: false, raw: { ext: "epub" } };
@@ -15153,7 +15054,7 @@ class Readmoo extends rules/* BaseRuleClass */.c {
         ];
         const bookId = document.location.pathname.split("/").slice(-1)[0];
         const navUrl = `${navBase}${bookId}/nav`;
-        const navResp = await (0,http/* gfetch */.GF)(navUrl, navInit);
+        const navResp = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .gfetch */ .GF)(navUrl, navInit);
         const navData = navResp.response;
         if (navData.message !== "success") {
             throw new Error("获取 nav 失败！");
@@ -15164,7 +15065,7 @@ class Readmoo extends rules/* BaseRuleClass */.c {
             path: "META-INF/container.xml",
             data: container_xml_url,
         });
-        const containerResp = await (0,http/* ggetText */._7)(container_xml_url, "UTF-8", epubInit);
+        const containerResp = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .ggetText */ ._7)(container_xml_url, "UTF-8", epubInit);
         if (!containerResp) {
             throw new Error("抓取 container.xml 失败！");
         }
@@ -15177,7 +15078,7 @@ class Readmoo extends rules/* BaseRuleClass */.c {
         }
         const content_opf_url = `${epubBase}${content_opf_path}`;
         epubFileList.push({ path: content_opf_path, data: content_opf_url });
-        const content_opf_resp = await (0,http/* ggetText */._7)(content_opf_url, "UTF-8", epubInit);
+        const content_opf_resp = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .ggetText */ ._7)(content_opf_url, "UTF-8", epubInit);
         if (!content_opf_resp) {
             throw new Error("抓取 content.opf 失败！");
         }
@@ -15201,12 +15102,12 @@ class Readmoo extends rules/* BaseRuleClass */.c {
             };
         });
         epubFileList.push(...itemObjs);
-        const limit = pLimit(this.concurrencyLimit);
+        const limit = (0,p_limit__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Z)(this.concurrencyLimit);
         const attachmentTasks = epubFileList.map((fobj) => {
             return limit(async () => {
                 const { path, data, nocompress } = fobj;
                 if (typeof data === "string") {
-                    const attach = new Attachment/* AttachmentClass */.J(data, path, this.attachmentMode, main/* ReferrerMode.keep */.n6.keep, "", { init: (0,misc/* deepcopy */.X8)(epubInit), TMinit: (0,misc/* deepcopy */.X8)(epubInit) });
+                    const attach = new _main_Attachment__WEBPACK_IMPORTED_MODULE_3__/* .AttachmentClass */ .J(data, path, this.attachmentMode, _main_main__WEBPACK_IMPORTED_MODULE_4__/* .ReferrerMode.keep */ .n6.keep, "", { init: (0,_lib_misc__WEBPACK_IMPORTED_MODULE_5__/* .deepcopy */ .X8)(epubInit), TMinit: (0,_lib_misc__WEBPACK_IMPORTED_MODULE_5__/* .deepcopy */ .X8)(epubInit) });
                     await attach.init();
                     if (fobj.nocompress) {
                         attach.comments = "nocompress";
@@ -15214,9 +15115,9 @@ class Readmoo extends rules/* BaseRuleClass */.c {
                     return attach;
                 }
                 else {
-                    const attach = new Attachment/* AttachmentClass */.J("", path, this.attachmentMode);
+                    const attach = new _main_Attachment__WEBPACK_IMPORTED_MODULE_3__/* .AttachmentClass */ .J("", path, this.attachmentMode);
                     attach.Blob = data;
-                    attach.status = main/* Status.finished */.qb.finished;
+                    attach.status = _main_main__WEBPACK_IMPORTED_MODULE_4__/* .Status.finished */ .qb.finished;
                     if (fobj.nocompress) {
                         attach.comments = "nocompress";
                     }
@@ -15225,7 +15126,7 @@ class Readmoo extends rules/* BaseRuleClass */.c {
             });
         });
         const attachments = await Promise.all(attachmentTasks);
-        const book = new Book/* Book */.f({
+        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .f({
             bookUrl,
             bookname,
             author,
@@ -15233,7 +15134,7 @@ class Readmoo extends rules/* BaseRuleClass */.c {
             introductionHTML: null,
             additionalMetadate: { attachments },
             chapters: [
-                new Chapter/* Chapter */.W({
+                new _main_Chapter__WEBPACK_IMPORTED_MODULE_7__/* .Chapter */ .W({
                     bookUrl,
                     bookname,
                     chapterUrl: "",
@@ -19902,7 +19803,7 @@ var dom = __webpack_require__("./src/lib/dom.ts");
 var progress = __webpack_require__("./src/ui/progress.css");
 ;// CONCATENATED MODULE: ./src/ui/progress.html
 // Module
-var code = "<div>\n  <div id=\"nd-progress\" v-if=\"ntProgressSeen\">\n    <div v-if=\"chapterProgressSeen\" id=\"chapter-progress\" v-bind:style=\"{'--position': chapterPercent+'%'}\" v-bind:title=\"chapterProgressTitle\"></div>\n  </div>\n</div>\n";
+var code = "<div>\n    <div v-if=\"ntProgressSeen\" id=\"nd-progress\">\n        <div v-if=\"chapterProgressSeen\" id=\"chapter-progress\" v-bind:style=\"{'--position': chapterPercent+'%'}\" v-bind:title=\"chapterProgressTitle\"></div>\n    </div>\n</div>\n";
 // Exports
 /* harmony default export */ const ui_progress = (code);
 ;// CONCATENATED MODULE: ./src/ui/progress.ts
@@ -19963,6 +19864,158 @@ module.exports = CryptoJS;
 
 "use strict";
 module.exports = Vue;
+
+/***/ }),
+
+/***/ "./node_modules/p-limit/index.js":
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+
+// EXPORTS
+__webpack_require__.d(__webpack_exports__, {
+  "Z": () => (/* binding */ pLimit)
+});
+
+;// CONCATENATED MODULE: ./node_modules/yocto-queue/index.js
+/*
+How it works:
+`this.#head` is an instance of `Node` which keeps track of its current value and nests another instance of `Node` that keeps the value that comes after it. When a value is provided to `.enqueue()`, the code needs to iterate through `this.#head`, going deeper and deeper to find the last value. However, iterating through every single item is slow. This problem is solved by saving a reference to the last value as `this.#tail` so that it can reference it to add a new value.
+*/
+
+class Node {
+	value;
+	next;
+
+	constructor(value) {
+		this.value = value;
+	}
+}
+
+class Queue {
+	#head;
+	#tail;
+	#size;
+
+	constructor() {
+		this.clear();
+	}
+
+	enqueue(value) {
+		const node = new Node(value);
+
+		if (this.#head) {
+			this.#tail.next = node;
+			this.#tail = node;
+		} else {
+			this.#head = node;
+			this.#tail = node;
+		}
+
+		this.#size++;
+	}
+
+	dequeue() {
+		const current = this.#head;
+		if (!current) {
+			return;
+		}
+
+		this.#head = this.#head.next;
+		this.#size--;
+		return current.value;
+	}
+
+	clear() {
+		this.#head = undefined;
+		this.#tail = undefined;
+		this.#size = 0;
+	}
+
+	get size() {
+		return this.#size;
+	}
+
+	* [Symbol.iterator]() {
+		let current = this.#head;
+
+		while (current) {
+			yield current.value;
+			current = current.next;
+		}
+	}
+}
+
+;// CONCATENATED MODULE: ./node_modules/p-limit/index.js
+
+
+function pLimit(concurrency) {
+	if (!((Number.isInteger(concurrency) || concurrency === Number.POSITIVE_INFINITY) && concurrency > 0)) {
+		throw new TypeError('Expected `concurrency` to be a number from 1 and up');
+	}
+
+	const queue = new Queue();
+	let activeCount = 0;
+
+	const next = () => {
+		activeCount--;
+
+		if (queue.size > 0) {
+			queue.dequeue()();
+		}
+	};
+
+	const run = async (fn, resolve, args) => {
+		activeCount++;
+
+		const result = (async () => fn(...args))();
+
+		resolve(result);
+
+		try {
+			await result;
+		} catch {}
+
+		next();
+	};
+
+	const enqueue = (fn, resolve, args) => {
+		queue.enqueue(run.bind(undefined, fn, resolve, args));
+
+		(async () => {
+			// This function needs to wait until the next microtask before comparing
+			// `activeCount` to `concurrency`, because `activeCount` is updated asynchronously
+			// when the run function is dequeued and called. The comparison in the if-statement
+			// needs to happen asynchronously as well to get an up-to-date value for `activeCount`.
+			await Promise.resolve();
+
+			if (activeCount < concurrency && queue.size > 0) {
+				queue.dequeue()();
+			}
+		})();
+	};
+
+	const generator = (fn, ...args) => new Promise(resolve => {
+		enqueue(fn, resolve, args);
+	});
+
+	Object.defineProperties(generator, {
+		activeCount: {
+			get: () => activeCount,
+		},
+		pendingCount: {
+			get: () => queue.size,
+		},
+		clearQueue: {
+			value: () => {
+				queue.clear();
+			},
+		},
+	});
+
+	return generator;
+}
+
 
 /***/ }),
 
@@ -21016,6 +21069,21 @@ function getUI() {
         case "new-read.readmoo.com": {
             return () => ({ type: "download", isSettingSeen: false });
         }
+        case "www.myrics.com": {
+            return () => {
+                if (document.location.pathname.endsWith("/menu")) {
+                    return {
+                        type: "jump",
+                        jumpFunction: () => {
+                            document.location.pathname = document.location.pathname.replace(/\/menu$/, "");
+                        },
+                    };
+                }
+                else {
+                    return defaultObject;
+                }
+            };
+        }
         default: {
             return () => {
                 return defaultObject;
@@ -21028,7 +21096,7 @@ function getUI() {
 var src_setting = __webpack_require__("./src/setting.ts");
 ;// CONCATENATED MODULE: ./src/ui/button.html
 // Module
-var code = "<div class=\"button-div\" id=\"button-div\">\n  <div v-if=\"uiObj.type !== 'error'\">\n    <div class=\"jump\" v-if=\"uiObj.type === 'jump'\">\n      <button class=\"jump\">\n        <img class=\"jump\" v-bind:src=\"imgJump\" v-on:click=\"jumpButtonClick\">\n      </button>\n    </div>\n    <div class=\"download\" v-if=\"uiObj.type === 'download'\">\n      <button class=\"start\">\n        <img class=\"start\" v-bind:src=\"imgStart\" v-on:click=\"startButtonClick\">\n      </button>\n      <button class=\"setting\" v-if=\"isSettingSeen\">\n        <img class=\"setting\" v-bind:src=\"imgSetting\" v-on:click=\"settingButtonClick\">\n      </button>\n    </div>\n  </div>\n</div>\n";
+var code = "<div id=\"button-div\" class=\"button-div\">\n    <div v-if=\"uiObj.type !== 'error'\">\n        <div v-if=\"uiObj.type === 'jump'\" class=\"jump\">\n            <button class=\"jump\">\n                <img alt=\"jump\" class=\"jump\" v-bind:src=\"imgJump\" v-on:click=\"jumpButtonClick\">\n            </button>\n        </div>\n        <div v-if=\"uiObj.type === 'download'\" class=\"download\">\n            <button class=\"start\">\n                <img alt=\"start\" class=\"start\" v-bind:src=\"imgStart\" v-on:click=\"startButtonClick\">\n            </button>\n            <button v-if=\"isSettingSeen\" class=\"setting\">\n                <img alt=\"setting\" class=\"setting\" v-bind:src=\"imgSetting\" v-on:click=\"settingButtonClick\">\n            </button>\n        </div>\n    </div>\n</div>\n";
 // Exports
 /* harmony default export */ const ui_button = (code);
 // EXTERNAL MODULE: ./src/ui/button.less
@@ -21067,7 +21135,7 @@ var main = __webpack_require__("./src/main/main.ts");
 var save_misc = __webpack_require__("./src/save/misc.ts");
 ;// CONCATENATED MODULE: ./src/ui/ChapterList.html
 // Module
-var ChapterList_code = "<div>\n  <div v-if=\"loading\">\n    <div class=\"chapter-list-loading\">\n      <h2 v-if=\"failed\">加载章节失败！</h2>\n      <h2 v-else>正在载入章节列表中，请耐心等待……</h2>\n    </div>\n  </div>\n  <div class=\"chapter-list\" v-else>\n    <div v-for=\"sectionObj in sectionsObj\" v-show=\"isSectionSeen(sectionObj)\" v-bind:key=\"sectionObj.sectionNumber\" class=\"section\">\n      <h3 class=\"section-label\" v-if=\"sectionObj.sectionName\">\n        {{ sectionObj.sectionName }}\n      </h3>\n      <div v-for=\"chapter in sectionObj.chpaters\" v-show=\"isChapterSeen(chapter)\" v-bind:key=\"chapter.chapterNumber\" class=\"chapter\" v-bind:class=\"{\n              good: this.filter(chapter),\n              bad: !this.filter(chapter),\n              warning: this.warningFilter(chapter)\n            }\" v-bind:title=\"chapter.chapterNumber\">\n        <a v-bind:href=\"chapter.chapterUrl\" v-bind:class=\"{\n                disabled: this.isChapterDisabled(chapter),\n              }\" target=\"_blank\" rel=\"noopener noreferrer\">{{ chapter.chapterName }}</a>\n      </div>\n    </div>\n  </div>\n</div>\n";
+var ChapterList_code = "<div>\n    <div v-if=\"loading\">\n        <div class=\"chapter-list-loading\">\n            <h2 v-if=\"failed\">加载章节失败！</h2>\n            <h2 v-else>正在载入章节列表中，请耐心等待……</h2>\n        </div>\n    </div>\n    <div v-else class=\"chapter-list\">\n        <div v-for=\"sectionObj in sectionsObj\" v-show=\"isSectionSeen(sectionObj)\" v-bind:key=\"sectionObj.sectionNumber\" class=\"section\">\n            <h3 v-if=\"sectionObj.sectionName\" class=\"section-label\">\n                {{ sectionObj.sectionName }}\n            </h3>\n            <div v-for=\"chapter in sectionObj.chpaters\" v-show=\"isChapterSeen(chapter)\" v-bind:key=\"chapter.chapterNumber\" class=\"chapter\" v-bind:class=\"{\n              good: this.filter(chapter),\n              bad: !this.filter(chapter),\n              warning: this.warningFilter(chapter)\n            }\" v-bind:title=\"chapter.chapterNumber\">\n                <a rel=\"noopener noreferrer\" target=\"_blank\" v-bind:class=\"{\n                disabled: this.isChapterDisabled(chapter),\n              }\" v-bind:href=\"chapter.chapterUrl\">{{ chapter.chapterName }}</a>\n            </div>\n    </div>\n  </div>\n</div>\n";
 // Exports
 /* harmony default export */ const ChapterList = (ChapterList_code);
 // EXTERNAL MODULE: ./src/ui/ChapterList.less
@@ -21165,7 +21233,7 @@ const style = (0,dom/* createStyle */.wj)(ui_ChapterList/* default */.Z);
 var FilterTab = __webpack_require__("./src/ui/FilterTab.css");
 ;// CONCATENATED MODULE: ./src/ui/FilterTab.html
 // Module
-var FilterTab_code = "<div>\n  <div class=\"filter-setting\">\n    <div v-if=\"filterType !== 'null'\" class=\"filter-input\">\n      <p>请输入过滤的条件：<input type=\"text\" v-model=\"arg\"></p>\n    </div>\n    <div class=\"filter-setter\">\n      <div>\n        <span>当前过滤方法：</span>\n        <select v-model=\"filterType\">\n          <option v-for=\"filterOption in filterOptionList\" v-bind:value=\"filterOption[0]\">\n            {{ filterOption[1][\"abbreviation\"] }}\n          </option>\n        </select>\n      </div>\n      <input type=\"checkbox\" id=\"hiddenBad\" v-model=\"hiddenBad\">\n      <label for=\"hiddenBad\">只显示符合条件章节</label>\n      <div class=\"filter-description\" v-html=\"filterDescription\"></div>\n      <div v-if=\"false\">\n        <span class=\"good\"></span>\n        <span class=\"warning\"></span>\n        <span class=\"bad\"></span>\n      </div>\n    </div>\n  </div>\n  <chapter-list>\n</div>\n";
+var FilterTab_code = "<div>\n  <div class=\"filter-setting\">\n    <div v-if=\"filterType !== 'null'\" class=\"filter-input\">\n      <p>请输入过滤的条件：<input v-model=\"arg\" type=\"text\"></p>\n    </div>\n    <div class=\"filter-setter\">\n      <div>\n        <span>当前过滤方法：</span>\n        <select v-model=\"filterType\">\n          <option v-for=\"filterOption in filterOptionList\" v-bind:value=\"filterOption[0]\">\n            {{ filterOption[1][\"abbreviation\"] }}\n          </option>\n        </select>\n      </div>\n        <input id=\"hiddenBad\" v-model=\"hiddenBad\" type=\"checkbox\">\n      <label for=\"hiddenBad\">只显示符合条件章节</label>\n      <div class=\"filter-description\" v-html=\"filterDescription\"></div>\n      <div v-if=\"false\">\n        <span class=\"good\"></span>\n        <span class=\"warning\"></span>\n        <span class=\"bad\"></span>\n      </div>\n    </div>\n  </div>\n  <chapter-list>\n</div>\n";
 // Exports
 /* harmony default export */ const ui_FilterTab = (FilterTab_code);
 ;// CONCATENATED MODULE: ./src/ui/FilterTab.ts
@@ -21345,7 +21413,7 @@ var log = __webpack_require__("./src/log.ts");
 
 ;// CONCATENATED MODULE: ./src/ui/setting.html
 // Module
-var setting_code = "<div>\n  <dialog-ui dialog-title=\"设置\" v-bind:status=\"openStatus\" v-on:dialogclose=\"closeSetting\" v-if=\"openStatus === 'true'\">\n    <div class=\"nd-setting\" id=\"nd-setting\">\n      <div class=\"nd-setting-tab\">\n        <button v-bind:class=\"['tab-button', { active: setting.currentTab === 'tab-1'}]\" v-on:click=\"setting.currentTab = 'tab-1'\">\n          基本设置\n        </button>\n        <button v-bind:class=\"['tab-button', { active: setting.currentTab === 'tab-2'}]\" v-on:click=\"setting.currentTab = 'tab-2'\">\n          自定义筛选条件\n        </button>\n        <button v-if=\"setting.enableTestPage\" v-bind:class=\"['tab-button', { active: setting.currentTab === 'tab-3'}]\" v-on:click=\"setting.currentTab = 'tab-3'\">\n          抓取测试\n        </button>\n        <button v-if=\"setting.enableTestPage\" v-bind:class=\"['tab-button', { active: setting.currentTab === 'tab-4'}]\" v-on:click=\"setting.currentTab = 'tab-4'\">\n          日志\n        </button>\n      </div>\n      <div class=\"nd-setting-body\">\n        <div id=\"nd-setting-tab-1\" class=\"tab-page\" v-show=\"setting.currentTab === 'tab-1'\">\n          <div>\n            <input type=\"checkbox\" id=\"debug\" v-model=\"setting.enableDebug\">\n            <label for=\"debug\">启用调式模式。（输出更详细日志）</label>\n            <input type=\"checkbox\" id=\"test-page\" v-model=\"setting.enableTestPage\">\n            <label for=\"test-page\">启用测试视图</label>\n          </div>\n          <hr class=\"hr-twill-colorful\">\n          <div>\n            <h3>自定义保存参数</h3>\n            <ul>\n              <li v-for=\"item of saveOptions\">\n                <input type=\"radio\" v-bind:id=\"item.key\" v-bind:value=\"item.key\" v-model=\"setting.chooseSaveOption\">\n                <label v-bind:for=\"item.key\">{{ item.value }}</label>\n              </li>\n            </ul>\n          </div>\n        </div>\n        <div id=\"nd-setting-tab-2\" class=\"tab-page\" v-show=\"setting.currentTab === 'tab-2'\">\n          <filter-tab v-on:filterupdate=\"saveFilter\">\n        </div>\n        <div v-if=\"setting.enableTestPage\" id=\"nd-setting-tab-3\" class=\"tab-page\" v-show=\"setting.currentTab === 'tab-3'\">\n          <test-ui></test-ui>\n        </div>\n        <div v-if=\"setting.enableTestPage\" id=\"nd-setting-tab-4\" class=\"tab-page\" v-show=\"setting.currentTab === 'tab-4'\">\n          <log-ui></log-ui>\n        </div>\n      </div>\n      <div class=\"nd-setting-footer\">\n        <button v-on:click=\"closeAndSaveSetting\">Save</button>\n        <button v-on:click=\"closeSetting\">Cancel</button>\n      </div>\n    </div>\n  </dialog-ui>\n</div>\n";
+var setting_code = "<div>\n  <dialog-ui v-if=\"openStatus === 'true'\" dialog-title=\"设置\" v-bind:status=\"openStatus\" v-on:dialogclose=\"closeSetting\">\n      <div id=\"nd-setting\" class=\"nd-setting\">\n          <div class=\"nd-setting-tab\">\n              <button v-bind:class=\"['tab-button', { active: setting.currentTab === 'tab-1'}]\" v-on:click=\"setting.currentTab = 'tab-1'\">\n                  基本设置\n              </button>\n              <button v-bind:class=\"['tab-button', { active: setting.currentTab === 'tab-2'}]\" v-on:click=\"setting.currentTab = 'tab-2'\">\n                  自定义筛选条件\n              </button>\n              <button v-if=\"setting.enableTestPage\" v-bind:class=\"['tab-button', { active: setting.currentTab === 'tab-3'}]\" v-on:click=\"setting.currentTab = 'tab-3'\">\n                  抓取测试\n              </button>\n        <button v-if=\"setting.enableTestPage\" v-bind:class=\"['tab-button', { active: setting.currentTab === 'tab-4'}]\" v-on:click=\"setting.currentTab = 'tab-4'\">\n          日志\n        </button>\n      </div>\n      <div class=\"nd-setting-body\">\n          <div v-show=\"setting.currentTab === 'tab-1'\" id=\"nd-setting-tab-1\" class=\"tab-page\">\n              <div>\n                  <input id=\"debug\" v-model=\"setting.enableDebug\" type=\"checkbox\">\n                  <label for=\"debug\">启用调式模式。（输出更详细日志）</label>\n                  <input id=\"test-page\" v-model=\"setting.enableTestPage\" type=\"checkbox\">\n                  <label for=\"test-page\">启用测试视图</label>\n          </div>\n          <hr class=\"hr-twill-colorful\">\n          <div>\n            <h3>自定义保存参数</h3>\n            <ul>\n                <li v-for=\"item of saveOptions\">\n                    <input v-bind:id=\"item.key\" v-model=\"setting.chooseSaveOption\" type=\"radio\" v-bind:value=\"item.key\">\n                    <label v-bind:for=\"item.key\">{{ item.value }}</label>\n                </li>\n            </ul>\n          </div>\n        </div>\n          <div v-show=\"setting.currentTab === 'tab-2'\" id=\"nd-setting-tab-2\" class=\"tab-page\">\n              <filter-tab v-on:filterupdate=\"saveFilter\">\n          </div>\n          <div v-if=\"setting.enableTestPage\" v-show=\"setting.currentTab === 'tab-3'\" id=\"nd-setting-tab-3\" class=\"tab-page\">\n              <test-ui></test-ui>\n          </div>\n          <div v-if=\"setting.enableTestPage\" v-show=\"setting.currentTab === 'tab-4'\" id=\"nd-setting-tab-4\" class=\"tab-page\">\n              <log-ui></log-ui>\n          </div>\n      </div>\n      <div class=\"nd-setting-footer\">\n        <button v-on:click=\"closeAndSaveSetting\">Save</button>\n        <button v-on:click=\"closeSetting\">Cancel</button>\n      </div>\n    </div>\n  </dialog-ui>\n</div>\n";
 // Exports
 /* harmony default export */ const setting = (setting_code);
 // EXTERNAL MODULE: ./src/ui/setting.less
@@ -21354,7 +21422,7 @@ var ui_setting = __webpack_require__("./src/ui/setting.less");
 var attachments = __webpack_require__("./src/lib/attachments.ts");
 ;// CONCATENATED MODULE: ./src/ui/TestUI.html
 // Module
-var TestUI_code = "<div>\n  <div id=\"test-page-div\">\n    <h2>元数据</h2>\n    <table>\n      <tbody>\n        <tr v-for=\"(value, key) in metaData\">\n          <td>{{ key }}</td>\n          <td v-html=\"getData(key, value)\"></td>\n        </tr>\n      </tbody>\n    </table>\n    <hr class=\"hr-edge-weak\">\n    <h2>章节测试</h2>\n    <div class=\"preview-chapter-setting\">\n      <label for=\"chapterNumber\">预览章节序号：</label>\n      <input type=\"text\" id=\"chapterNumber\" v-model=\"chapterNumber\">\n    </div>\n    <div v-if=\"this.isSeenChapter(chapter)\">\n      <h4>\n        <a v-bind:href=\"chapter.chapterUrl\" target=\"_blank\" rel=\"noopener noreferrer\">{{ chapter.chapterName }}</a>\n      </h4>\n      <div class=\"chapter\" v-html=\"getChapterHtml(chapter)\"></div>\n    </div>\n    <div v-else>\n      <p v-if=\"this.isChapterFailed(chapter)\">章节加载失败！</p>\n      <p v-else>正在加载章节中……</p>\n    </div>\n  </div>\n</div>\n";
+var TestUI_code = "<div>\n  <div id=\"test-page-div\">\n    <h2>元数据</h2>\n    <table>\n      <tbody>\n        <tr v-for=\"(value, key) in metaData\">\n          <td>{{ key }}</td>\n          <td v-html=\"getData(key, value)\"></td>\n        </tr>\n      </tbody>\n    </table>\n    <hr class=\"hr-edge-weak\">\n    <h2>章节测试</h2>\n    <div class=\"preview-chapter-setting\">\n      <label for=\"chapterNumber\">预览章节序号：</label>\n      <input id=\"chapterNumber\" v-model=\"chapterNumber\" type=\"text\">\n    </div>\n    <div v-if=\"this.isSeenChapter(chapter)\">\n        <h4>\n            <a rel=\"noopener noreferrer\" target=\"_blank\" v-bind:href=\"chapter.chapterUrl\">{{ chapter.chapterName }}</a>\n        </h4>\n      <div class=\"chapter\" v-html=\"getChapterHtml(chapter)\"></div>\n    </div>\n    <div v-else>\n      <p v-if=\"this.isChapterFailed(chapter)\">章节加载失败！</p>\n      <p v-else>正在加载章节中……</p>\n    </div>\n  </div>\n</div>\n";
 // Exports
 /* harmony default export */ const TestUI = (TestUI_code);
 // EXTERNAL MODULE: ./src/ui/TestUI.less
@@ -21718,7 +21786,7 @@ const button_vm = (0,external_Vue_.createApp)({
 var dialog = __webpack_require__("./src/ui/dialog.css");
 ;// CONCATENATED MODULE: ./src/ui/dialog.html
 // Module
-var dialog_code = "<div class=\"overlay\" v-bind:class=\"{ open: myPrivateStatus }\" v-if=\"myPrivateStatus\"></div>\n<div class=\"out\" v-if=\"myPrivateStatus\">\n  <div id=\"dialog\" class=\"dialog\" v-bind:class=\"{ open: myPrivateStatus }\">\n    <div class=\"titlebar\">\n      <h1 class=\"dialog-title\">{{ dialogTitle }}</h1>\n      <button class=\"dialog-close\" v-on:click=\"dialogClose\">❌</button>\n    </div>\n    <div class=\"body\">\n      <slot></slot>\n    </div>\n  </div>\n</div>\n";
+var dialog_code = "<div v-if=\"myPrivateStatus\" class=\"overlay\" v-bind:class=\"{ open: myPrivateStatus }\"></div>\n<div v-if=\"myPrivateStatus\" class=\"out\">\n    <div id=\"dialog\" class=\"dialog\" v-bind:class=\"{ open: myPrivateStatus }\">\n        <div class=\"titlebar\">\n            <h1 class=\"dialog-title\">{{ dialogTitle }}</h1>\n            <button class=\"dialog-close\" v-on:click=\"dialogClose\">❌</button>\n        </div>\n        <div class=\"body\">\n            <slot></slot>\n        </div>\n    </div>\n</div>\n";
 // Exports
 /* harmony default export */ const ui_dialog = (dialog_code);
 ;// CONCATENATED MODULE: ./src/ui/dialog.ts

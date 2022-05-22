@@ -13,4 +13,5 @@ export declare function sd(list: number[]): number;
 export declare function randomUUID(): string;
 export declare function extensionToMimetype(ext: string): string;
 export declare function mimetyepToExtension(mimeType: string): string | null;
+export declare function range(size: number, startAt?: number): number[];
 export {};

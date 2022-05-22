@@ -8,9 +8,9 @@ export declare class SaveBook {
     private raw;
     constructor(book: Book, streamZip: boolean, options?: SaveOptions);
     private static saveLog;
-    private saveTxt;
-    private saveEpub;
     addChapter(chapter: Chapter): Promise<void>;
     save(): Promise<void>;
+    private saveTxt;
+    private saveEpub;
     private saveRaw;
 }
