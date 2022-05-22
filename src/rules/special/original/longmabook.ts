@@ -12,6 +12,7 @@ import { Chapter } from "../../../main/Chapter";
 import { Book, BookAdditionalMetadate } from "../../../main/Book";
 import { BaseRuleClass } from "../../../rules";
 
+// noinspection HtmlUnknownTarget,HtmlUnknownAnchorTarget,HtmlUnknownAttribute,HtmlRequiredAltAttribute
 export class Longmabook extends BaseRuleClass {
   public constructor() {
     super();
@@ -149,7 +150,7 @@ export class Longmabook extends BaseRuleClass {
     const getChapterObjs = (doc: Document): ChapterObj[] => {
       const chapterAList = getChapters(doc);
       const sections = getSections(doc);
-      const _chapterObjs = Array.from(chapterAList).map((a) => {
+      return Array.from(chapterAList).map((a) => {
         const chapterName = (a as HTMLAnchorElement).innerText;
         const chapterUrl = (a as HTMLAnchorElement).href;
         const _sectionName = getSectionName(a, sections, getSName);
@@ -166,7 +167,6 @@ export class Longmabook extends BaseRuleClass {
           isPaid,
         };
       });
-      return _chapterObjs;
     };
 
     const chapterObjs: ChapterObj[] = [];
@@ -228,7 +228,7 @@ export class Longmabook extends BaseRuleClass {
         charset: this.charset,
         options: { bookId, bookwritercode },
       });
-      if (chapter.isVIP === true && chapter.isPaid === false) {
+      if (chapter.isVIP && !chapter.isPaid) {
         chapter.status = Status.aborted;
       }
       chapters.push(chapter);
@@ -270,6 +270,23 @@ export class Longmabook extends BaseRuleClass {
         "您目前正在海棠清水區，只能觀看清水認證文章。請使用海棠其他網址進入。"
       );
     }
+
+    const getPaperidAndVercodechk = () => {
+      const ss = Array.from(doc.querySelectorAll("script")).filter((s) =>
+        s.innerText.includes("vercodechk")
+      )[0];
+      // { paperid: '6630136', vercodechk: 'd1c5b18464d8bb7587b83593641625a5'}
+      const m = ss.innerText.match(
+        /{\spaperid:\s'(\d+)',\svercodechk:\s'(\w+)'}/
+      );
+      if (m?.length === 3) {
+        const [paperidInner, vercodechkInner] = m.slice(1) as [string, string];
+        return [paperidInner, vercodechkInner];
+      }
+      throw new Error("获取 paperid, vercodechk 失败！");
+    };
+    const [paperid, vercodechk] = getPaperidAndVercodechk();
+
     const nullObj = {
       chapterName,
       contentRaw: null,
@@ -290,6 +307,8 @@ export class Longmabook extends BaseRuleClass {
     const [imagesDom, imagesText, imagesImages] = await getImages();
     const [mainDom, mainText, mainImages] = await getMainContent();
     const [authorDom, authorText, authorImages] = await getAuthorSay();
+    const [eggDom, eggText, eggImages] = await getEgg();
+
     if (imagesDom) {
       content.appendChild(imagesDom);
       contentText += imagesText + "\n\n";
@@ -297,13 +316,14 @@ export class Longmabook extends BaseRuleClass {
         contentImages = contentImages.concat(imagesImages);
       }
     }
-    if (mainDom) {
-      content.appendChild(mainDom);
-      contentText += mainText;
-      if (mainImages) {
-        contentImages = contentImages.concat(mainImages);
-      }
+
+    // Main Content
+    content.appendChild(mainDom);
+    contentText += mainText;
+    if (mainImages) {
+      contentImages = contentImages.concat(mainImages);
     }
+
     if (authorDom) {
       const hr = document.createElement("hr");
       authorDom.className = "authorSay";
@@ -314,6 +334,18 @@ export class Longmabook extends BaseRuleClass {
         contentImages = contentImages.concat(authorImages);
       }
     }
+
+    if (eggDom) {
+      const hr = document.createElement("hr");
+      eggDom.className = "egg";
+      content.appendChild(hr);
+      content.appendChild(eggDom);
+      contentText += "\n\n" + "-".repeat(20) + "\n\n" + eggText;
+      if (eggImages) {
+        contentImages = contentImages.concat(eggImages);
+      }
+    }
+
     return {
       chapterName,
       contentRaw: content,
@@ -340,60 +372,38 @@ export class Longmabook extends BaseRuleClass {
     }
 
     async function getMainContent(): Promise<
-      [HTMLElement | null, string | null, AttachmentClass[] | null]
+      [HTMLElement, string, AttachmentClass[]]
     > {
-      const getPaperidAndVercodechk = () => {
-        const ss = Array.from(doc.querySelectorAll("script")).filter((s) =>
-          s.innerText.includes("vercodechk")
-        )[0];
-        // { paperid: '6630136', vercodechk: 'd1c5b18464d8bb7587b83593641625a5'}
-        const m = ss.innerText.match(
-          /{\spaperid:\s'(\d+)',\svercodechk:\s'(\w+)'}/
-        );
-        if (m?.length === 3) {
-          const [paperidInner, vercodechkInner] = m.slice(1) as [
-            string,
-            string
-          ];
-          return [paperidInner, vercodechkInner];
-        }
-        return [null, null];
-      };
-      const [paperid, vercodechk] = getPaperidAndVercodechk();
-      if (paperid && vercodechk) {
-        const showpapercolorUrl =
-          document.location.origin + "/showpapercolor.php";
-        log.debug(`[chapter]正在请求${showpapercolorUrl}`);
-        const resp = await fetch(showpapercolorUrl, {
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-            "X-Requested-With": "XMLHttpRequest",
-            "Cache-Control": "max-age=0",
-          },
-          referrer: chapterUrl,
-          body: new URLSearchParams({
-            paperid,
-            vercodechk,
-          }).toString(),
-          method: "POST",
-          mode: "cors",
-        });
-        const contentMain = document.createElement("div");
-        contentMain.innerHTML = await resp.text();
-        rm('img[src="/images/fullcolor.png"]', true, contentMain);
-        const { dom, text, images } = await cleanDOM(
-          contentMain,
-          self.attachmentMode
-        );
-        return [dom, text, images];
-      } else {
-        return [null, null, null];
-      }
+      const showpapercolorUrl =
+        document.location.origin + "/showpapercolor.php";
+      log.debug(`[chapter]正在请求${showpapercolorUrl}`);
+      const resp = await fetch(showpapercolorUrl, {
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+          "X-Requested-With": "XMLHttpRequest",
+          "Cache-Control": "max-age=0",
+        },
+        referrer: chapterUrl,
+        body: new URLSearchParams({
+          paperid,
+          vercodechk,
+        }).toString(),
+        method: "POST",
+        mode: "cors",
+      });
+      const contentMain = document.createElement("div");
+      contentMain.innerHTML = await resp.text();
+      rm('img[src="/images/fullcolor.png"]', true, contentMain);
+      const { dom, text, images } = await cleanDOM(
+        contentMain,
+        self.attachmentMode
+      );
+      return [dom, text, images];
     }
 
     async function getAuthorSay(): Promise<
-      [HTMLElement | null, string | null, AttachmentClass[] | null]
+      [HTMLElement, string, AttachmentClass[]] | [null, null, null]
     > {
       const authorSayDom = doc.querySelector("#colorpanelwritersay");
       if (authorSayDom) {
@@ -408,9 +418,58 @@ export class Longmabook extends BaseRuleClass {
     }
 
     // 获取彩蛋
-    // https://ebook.longmabook.com/?act=showpaper&paperid=6655348#gopapergbook
-    function getEgg() {
-      // Todo
+    async function getEgg(): Promise<
+      [HTMLElement, string, AttachmentClass[]] | [null, null, null]
+    > {
+      const hasEgg = Array.from(
+        doc.querySelectorAll<HTMLAnchorElement>('a[href="#gopapergbook"]')
+      )
+        .map((node) => node.innerText.trim())
+        .some((text) => text === "發表心得留言");
+
+      if (hasEgg) {
+        const resp = await fetch(
+          document.location.origin + "/showpapereggs.php",
+          {
+            credentials: "include",
+            headers: {
+              Accept: "*/*",
+              "Content-Type":
+                "application/x-www-form-urlencoded; charset=UTF-8",
+              "X-Requested-With": "XMLHttpRequest",
+            },
+            referrer: chapterUrl,
+            body: new URLSearchParams({
+              paperid,
+              bookwritercode: options.bookwritercode,
+            }).toString(),
+            method: "POST",
+            mode: "cors",
+          }
+        );
+        const eggHTML = await resp.text();
+        if (
+          eggHTML.includes(
+            "<img src='/images/fullcolor.png' class='fullimg'><a href='#gopapergbook' uk-icon='commenting'>下方留下評論後可完成敲蛋!</a>"
+          )
+        ) {
+          const text = "本章含有彩蛋，但并未敲开。";
+          const dom = document.createElement("div");
+          dom.innerText = text;
+          return [dom, text, []];
+        } else {
+          const eggDom = document.createElement("div");
+          eggDom.innerHTML = eggHTML;
+          rm('img[src="/images/fullcolor.png"]', true, eggDom);
+          const { dom, text, images } = await cleanDOM(
+            eggDom,
+            self.attachmentMode
+          );
+          return [dom, text, images];
+        }
+      } else {
+        return [null, null, null];
+      }
     }
   }
 }
