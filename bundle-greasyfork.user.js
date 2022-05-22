@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.9.1.697
+// @version        4.9.1.698
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/404-novel-project/novel-downloader
@@ -183,6 +183,7 @@
 // @match          *://novelup.plus/story/*
 // @match          *://www.69shu.com/txt/*.htm
 // @match          *://new-read.readmoo.com/mooreader/*
+// @match          *://www.iqingguo.com/book/detail/?id=*
 // @name:en        novel-downloader
 // @name:ja        小説ダウンローダー
 // @description:en An scalable universal novel downloader.
@@ -316,6 +317,7 @@
 // @connect        alphapolis.co.jp
 // @connect        cdn.shucdn.com
 // @connect        readmoo.com
+// @connect        qingoo.cn
 // @connect        *
 // @require        https://unpkg.com/crypto-js@4.1.1/crypto-js.js#sha512-NQVmLzNy4Lr5QTrmXvq/WzTMUnRHmv7nyIT/M6LyGPBS+TIeRxZ+YQaqWxjpRpvRMQSuYPQURZz/+pLi81xXeA==
 // @require        https://unpkg.com/fflate@0.7.3/umd/index.js#sha512-F57jcpLWPENXlHrsEj+YC8m+IHvaoRZpCpDr7Tfvu/jRtuO7kPOfbsop2gXEIRoK66ETYamk1tlTEvNw6xE8jw==
@@ -2832,7 +2834,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, ".button-div {\n  position: fixed;\n  t
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ".nd-setting-body {\n  background: #e0e0e0;\n  padding: 1em;\n  border-top-right-radius: 3px;\n}\n.nd-setting-body hr {\n  margin-top: 0.8em;\n  margin-bottom: 0.8em;\n}\n.nd-setting-body input[type=\"checkbox\"],\n.nd-setting-body input[type=\"radio\"],\n.nd-setting-body input[type=\"text\"] {\n  position: static;\n  opacity: 1;\n  all: revert;\n}\ndialog-ui .tab-button {\n  padding: 6px 10px;\n  border-top-left-radius: 3px;\n  border-top-right-radius: 3px;\n  border: 1px solid #ccc;\n  cursor: pointer;\n  background: #f0f0f0;\n  margin-bottom: -1px;\n  margin-right: -1px;\n  color: black;\n  line-height: normal;\n  display: inline-block;\n  text-align: center;\n  font-weight: bold;\n  max-width: 9em;\n  box-sizing: initial;\n}\ndialog-ui .tab-button:hover {\n  background: #e0e0e0;\n}\ndialog-ui .tab-button.active {\n  background: #e0e0e0;\n}\ndialog-ui #nd-setting-tab-1 input + label {\n  all: revert;\n}\ndialog-ui #nd-setting-tab-2 select {\n  all: revert;\n}\n.nd-setting-footer {\n  background: #e0e0e0;\n  padding-bottom: 0.7em;\n  text-align: center;\n  border-bottom-left-radius: 3px;\n  border-bottom-right-radius: 3px;\n}\n.nd-setting-footer > button {\n  all: revert;\n}\n/* 日志页面 */\n#novel-downloader-log {\n  max-height: 300px;\n  overflow: scroll;\n}\n/* 彩色斜纹 来自：https://www.zhangxinxu.com/wordpress/2021/05/css-html-hr/ */\n.hr-twill-colorful {\n  all: revert;\n  border: 0;\n  padding: 3px;\n  background: linear-gradient(135deg, red, orange, green, blue, purple);\n  --mask-image: repeating-linear-gradient(135deg, #000 0px, #000 1px, transparent 1px, transparent 6px);\n  -webkit-mask-image: var(--mask-image);\n  mask-image: var(--mask-image);\n}\n/* 两头虚 来自：https://www.zhangxinxu.com/wordpress/2021/05/css-html-hr/ */\n.hr-edge-weak {\n  all: revert;\n  border: 0;\n  padding-top: 1px;\n  background: linear-gradient(to right, transparent, #d0d0d5, transparent);\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, ".nd-setting-body {\n  background: #e0e0e0;\n  padding: 1em;\n  border-top-right-radius: 3px;\n}\n.nd-setting-body hr {\n  margin-top: 0.8em;\n  margin-bottom: 0.8em;\n}\n.nd-setting-body input[type=\"checkbox\"],\n.nd-setting-body input[type=\"radio\"],\n.nd-setting-body input[type=\"text\"] {\n  position: static;\n  opacity: 1;\n  margin: auto;\n  padding: initial;\n  appearance: revert !important;\n  -webkit-appearance: revert !important;\n  all: revert;\n}\ndialog-ui .tab-button {\n  padding: 6px 10px;\n  border-top-left-radius: 3px;\n  border-top-right-radius: 3px;\n  border: 1px solid #ccc;\n  cursor: pointer;\n  background: #f0f0f0;\n  margin-bottom: -1px;\n  margin-right: -1px;\n  color: black;\n  line-height: normal;\n  display: inline-block;\n  text-align: center;\n  font-weight: bold;\n  max-width: 9em;\n  box-sizing: initial;\n}\ndialog-ui .tab-button:hover {\n  background: #e0e0e0;\n}\ndialog-ui .tab-button.active {\n  background: #e0e0e0;\n}\ndialog-ui #nd-setting-tab-1 input + label {\n  all: revert;\n}\ndialog-ui #nd-setting-tab-2 select {\n  all: revert;\n}\n.nd-setting-footer {\n  background: #e0e0e0;\n  padding-bottom: 0.7em;\n  text-align: center;\n  border-bottom-left-radius: 3px;\n  border-bottom-right-radius: 3px;\n}\n.nd-setting-footer > button {\n  all: revert;\n}\n/* 日志页面 */\n#novel-downloader-log {\n  max-height: 300px;\n  overflow: scroll;\n}\n/* 彩色斜纹 来自：https://www.zhangxinxu.com/wordpress/2021/05/css-html-hr/ */\n.hr-twill-colorful {\n  all: revert;\n  border: 0;\n  padding: 3px;\n  background: linear-gradient(135deg, red, orange, green, blue, purple);\n  --mask-image: repeating-linear-gradient(135deg, #000 0px, #000 1px, transparent 1px, transparent 6px);\n  -webkit-mask-image: var(--mask-image);\n  mask-image: var(--mask-image);\n}\n/* 两头虚 来自：https://www.zhangxinxu.com/wordpress/2021/05/css-html-hr/ */\n.hr-edge-weak {\n  all: revert;\n  border: 0;\n  padding-top: 1px;\n  background: linear-gradient(to right, transparent, #d0d0d5, transparent);\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -12767,6 +12769,156 @@ class Hanwujinian extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass *
 
 /***/ }),
 
+/***/ "./src/rules/special/original/iqingguo.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Iqingguo": () => (/* binding */ Iqingguo)
+/* harmony export */ });
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("crypto-js");
+/* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(crypto_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_3__);
+
+
+
+
+
+
+
+class Iqingguo extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
+    constructor() {
+        super();
+        this.concurrencyLimit = 2;
+        this.attachmentMode = "TM";
+    }
+    async bookParse() {
+        const bookId = new URLSearchParams(document.location.search).get("id");
+        if (!bookId) {
+            throw new Error("无法找到 bookId!");
+        }
+        const bookPath = `/v1/books/${bookId}/cover`;
+        const catalogPath = `/v1/books/${bookId}/catalog`;
+        const bookData = (await get(bookPath))
+            .cover;
+        const catalogData = await get(catalogPath);
+        const bookUrl = document.location.href;
+        const bookname = bookData.name;
+        const author = bookData.user.author;
+        const introduction = bookData.description;
+        const introductionHTML = document.createElement("div");
+        introductionHTML.innerText = introduction;
+        const coverUrl = bookData.url;
+        const additionalMetadate = {
+            lastModified: bookData.latestModified,
+            tags: [bookData.genre, bookData.subGenre],
+            language: "zh",
+            ids: bookId,
+        };
+        if (coverUrl) {
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getImageAttachment */ .CE)(coverUrl, this.attachmentMode, "cover-")
+                .then((img) => {
+                additionalMetadate.cover = img;
+            })
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_3___default().error(error));
+        }
+        const chapters = catalogData.map((c) => {
+            const chapterUrl = "https://www.iqingguo.com/book/reading?" +
+                new URLSearchParams({ id: bookId, cid: c.id }).toString();
+            return new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .W({
+                bookUrl,
+                bookname,
+                chapterUrl,
+                chapterNumber: c.sn,
+                chapterName: c.name,
+                isVIP: false,
+                isPaid: false,
+                sectionName: null,
+                sectionNumber: null,
+                sectionChapterNumber: null,
+                chapterParse: this.chapterParse,
+                charset: this.charset,
+                options: {
+                    bookId,
+                    chapterId: c.id,
+                },
+            });
+        });
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .f({
+            bookUrl,
+            bookname,
+            author,
+            introduction,
+            introductionHTML,
+            additionalMetadate,
+            chapters,
+        });
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+        const chapterPath = `/v1/chapters/${options.chapterId}`;
+        const data = await get(chapterPath);
+        chapterName = data.name;
+        const contentRaw = document.createElement("div");
+        contentRaw.innerText = data.content;
+        const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_6__/* .cleanDOM */ .zM)(contentRaw, "TM");
+        const additionalMetadate = {
+            lastModified: data.updateTime,
+        };
+        return {
+            chapterName,
+            contentRaw,
+            contentText: text,
+            contentHTML: dom,
+            contentImages: images,
+            additionalMetadate,
+        };
+    }
+}
+function sign(path, params) {
+    params = params ?? {};
+    Object.assign(params, {
+        packageName: "com.iqingoo.reader.web",
+        t: Math.ceil(new Date().getTime() / 1e3),
+    });
+    const orderd = Object.keys(params)
+        .sort()
+        .reduce((obj, key) => {
+        obj[key] = params[key];
+        return obj;
+    }, {});
+    const l = path + "?" + new URLSearchParams(orderd).toString();
+    orderd.sign = crypto_js__WEBPACK_IMPORTED_MODULE_0__.MD5(decodeURI(l)).toString(crypto_js__WEBPACK_IMPORTED_MODULE_0__.enc.Hex);
+    return orderd;
+}
+async function get(path, params) {
+    const origin = "https://iqg-api.qingoo.cn";
+    const parm = sign(path, params);
+    const url = origin + path + "?" + new URLSearchParams(parm).toString();
+    const resp = await fetch(url, {
+        headers: {
+            accept: "application/json, text/plain, */*",
+        },
+        method: "GET",
+        mode: "cors",
+        credentials: "include",
+    });
+    const _data = (await resp.json());
+    if (_data.code !== 200) {
+        throw new Error("请求出错！ " + url);
+    }
+    return _data.data;
+}
+
+
+/***/ }),
+
 /***/ "./src/rules/special/original/jjwxc.ts":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -20742,6 +20894,11 @@ async function getRule() {
         case "new-read.readmoo.com": {
             const { Readmoo } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/readmoo.ts"));
             ruleClass = Readmoo;
+            break;
+        }
+        case "www.iqingguo.com": {
+            const { Iqingguo } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/iqingguo.ts"));
+            ruleClass = Iqingguo;
             break;
         }
         default: {
