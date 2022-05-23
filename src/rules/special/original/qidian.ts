@@ -37,9 +37,12 @@ export class Qidian extends BaseRuleClass {
     ).innerText.trim();
 
     const author = (
-      document.querySelector(".book-info .writer") as HTMLElement
+      document.querySelector(
+        ".book-info .writer, .book-info > h1:nth-child(1) > span:nth-child(2)"
+      ) as HTMLElement
     ).innerText
       .replace(/作\s+者:/, "")
+      .replace(/\s+著$/, "")
       .trim();
     const introDom = document.querySelector(".book-info-detail .book-intro");
     const [introduction, introductionHTML] = await introDomHandle(introDom);
@@ -164,7 +167,7 @@ export class Qidian extends BaseRuleClass {
           if (limitFree) {
             chapter.status = Status.pending;
           }
-          if (isLogin() && chapter.isPaid) {
+          if (chapter.isPaid) {
             chapter.status = Status.pending;
           }
         }
