@@ -355,6 +355,15 @@ export function getUI(): () => UIObject {
         }
       };
     }
+    case "hongxiuzhao.me": {
+      return () => {
+        if (document.querySelector(".cover")) {
+          return defaultObject;
+        } else {
+          return errorObject;
+        }
+      };
+    }
     default: {
       return () => {
         return defaultObject;

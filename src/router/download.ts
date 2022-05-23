@@ -92,13 +92,13 @@ export async function getRule(): Promise<BaseRuleClass> {
     case "www.banzhuer.org":
     case "www.hongyeshuzhal.com":
     case "www.yb3.cc": {
-      const {common} = await import("../rules/biquge/onePage");
+      const { common } = await import("../rules/biquge/onePage");
       ruleClass = common();
       break;
     }
     case "book.zongheng.com":
     case "huayu.zongheng.com": {
-      const {Zongheng} = await import("../rules/special/original/zongheng");
+      const { Zongheng } = await import("../rules/special/original/zongheng");
       ruleClass = Zongheng;
       break;
     }
@@ -583,13 +583,18 @@ export async function getRule(): Promise<BaseRuleClass> {
       break;
     }
     case "www.znlzd.com": {
-      const { znlzd } = await import("../rules/biquge/multiIndexNextPage");
+      const {znlzd} = await import("../rules/biquge/multiIndexNextPage");
       ruleClass = znlzd();
       break;
     }
     case "www.yyun.net": {
-      const { yyun } = await import("../rules/biquge/nextPage");
+      const {yyun} = await import("../rules/biquge/nextPage");
       ruleClass = yyun();
+      break;
+    }
+    case "hongxiuzhao.me": {
+      const {hongxiuzhao} = await import("../rules/onePage/hongxiuzhao");
+      ruleClass = hongxiuzhao();
       break;
     }
     default: {
