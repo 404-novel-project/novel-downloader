@@ -220,7 +220,8 @@
     "*://www.ptwxz.net/list/*/",
     "*://www.mbtxt.la/go/*/",
     "*://www.znlzd.com/bqg/*/",
-    "*://www.znlzd.com/bqg/11365/index_*.html"
+    "*://www.znlzd.com/bqg/11365/index_*.html",
+    "*://www.yyun.net/xs/*/"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",

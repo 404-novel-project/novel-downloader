@@ -586,6 +586,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = znlzd();
       break;
     }
+    case "www.yyun.net": {
+      const { yyun } = await import("../rules/biquge/nextPage");
+      ruleClass = yyun();
+      break;
+    }
     default: {
       throw new Error("Not Found Rule!");
     }
