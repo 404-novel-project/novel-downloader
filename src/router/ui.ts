@@ -311,6 +311,29 @@ export function getUI(): () => UIObject {
         }
       };
     }
+    case "www.soxscc.net":
+    case "www.soxscc.org":
+    case "www.soxs.cc":
+    case "www.soshuw.com":
+    case "www.soshuwu.org":
+    case "www.soxscc.cc":
+    case "www.soshuwu.com":
+    case "www.kubiji.net": {
+      return () => {
+        if (document.location.pathname.startsWith("/book/")) {
+          return {
+            type: "jump",
+            jumpFunction: () => {
+              document.location.pathname = document.location.pathname
+                .replace(/^\/book/, "")
+                .replace(/\.html/, "/");
+            },
+          };
+        } else {
+          return defaultObject;
+        }
+      };
+    }
     default: {
       return () => {
         return defaultObject;

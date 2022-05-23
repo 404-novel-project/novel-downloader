@@ -219,8 +219,8 @@ export async function getRule(): Promise<BaseRuleClass> {
     case "www.soxscc.cc":
     case "www.soshuwu.com":
     case "www.kubiji.net": {
-      const { Soxscc } = await import("../rules/special/reprint/soxscc");
-      ruleClass = Soxscc;
+      const { soxscc } = await import("../rules/onePage/soxscc");
+      ruleClass = soxscc();
       break;
     }
     case "www.yqbiqu.com": {
