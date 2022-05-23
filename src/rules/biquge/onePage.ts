@@ -3,12 +3,15 @@ import { rm, rm2, rms } from "../../lib/dom";
 import { mkBiquge } from "./template";
 import { htmlTrim } from "../../lib/cleanDOM";
 
+const commonContentPatch = (content: HTMLElement) => {
+  rm("script", true, content);
+  rm("div[style]", true, content);
+  rm("div[align]", true, content);
+  return content;
+};
 // 笔趣阁通用模板，无contentpatch可直接使用
 export const common = () =>
-  mkBiquge(
-    (introDom) => introDom,
-    (content) => content
-  );
+  mkBiquge((introDom) => introDom, commonContentPatch);
 
 export const gebiqu = () =>
   mkBiquge(

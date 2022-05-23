@@ -221,7 +221,8 @@
     "*://www.mbtxt.la/go/*/",
     "*://www.znlzd.com/bqg/*/",
     "*://www.znlzd.com/bqg/11365/index_*.html",
-    "*://www.yyun.net/xs/*/"
+    "*://www.yyun.net/xs/*/",
+    "*://www.yb3.cc/5200/*/"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",
