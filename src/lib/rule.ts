@@ -4,6 +4,9 @@ import { Chapter } from "../main/Chapter";
 import { ChapterParseObject } from "../rules";
 import { cleanDOM } from "./cleanDOM";
 import { getHtmlDOM } from "./http";
+import { Book } from "../main/Book";
+import pLimit from "p-limit";
+import { Status } from "../main/main";
 
 /* 简介元素处理 */
 export async function introDomHandle(
@@ -180,9 +183,9 @@ export function reIndex(chapters: Chapter[]) {
 }
 
 /* 章节去重
-*
-* 当有多个章节时保留最后出现的章节
-* */
+ *
+ * 当有多个章节时保留最后出现的章节
+ * */
 export function deDuplicate(chapters: Chapter[]) {
   interface reduceObj {
     [index: string]: Chapter | Chapter[];
@@ -218,4 +221,37 @@ export function deDuplicate(chapters: Chapter[]) {
   const results = Object.values(obj).reduce(reducer, []);
   reIndex(results);
   return results;
+}
+
+/* 基于邻近章节修复隐藏链接的章节 */
+export async function chapterHiddenFix(
+  book: Book,
+  invalidTest: (c: Chapter) => boolean,
+  getPrevHref: (doc: Document) => string | undefined,
+  concurrencyLimit: number
+) {
+  const { chapters } = book;
+  const invalidChapterList = chapters.filter(invalidTest);
+  const limit = pLimit(concurrencyLimit);
+  const tasks = invalidChapterList.map((ic) => {
+    return limit(() => fix(ic, chapters));
+  });
+  await Promise.all(tasks);
+
+  async function fix(invalidChapter: Chapter, chapterList: Chapter[]) {
+    const no = invalidChapter.chapterNumber;
+    const nextChapter = chapterList.filter(
+      (c) => c.chapterNumber === no + 1
+    )?.[0];
+    if (nextChapter) {
+      const nextChapterUrl = nextChapter.chapterUrl;
+      const doc = await getHtmlDOM(nextChapterUrl, nextChapter.charset);
+      const href = getPrevHref(doc);
+      if (href) {
+        invalidChapter.chapterUrl = href;
+        invalidChapter.status = Status.pending;
+      }
+      return invalidChapter;
+    }
+  }
 }

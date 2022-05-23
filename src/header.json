@@ -255,7 +255,8 @@
     "*://houhuayuan.vip/",
     "*://book.sfacg.com/Novel/*/*/*/",
     "*://www.alphapolis.co.jp/novel/*/*/episode/*",
-    "*://novelup.plus/story/*/*"
+    "*://novelup.plus/story/*/*",
+    "*://www.linovelib.com/novel/*/*.html"
   ],
   "grant": [
     "unsafeWindow",

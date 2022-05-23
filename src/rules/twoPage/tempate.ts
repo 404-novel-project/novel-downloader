@@ -18,6 +18,10 @@ interface MkRuleClassOptions {
   getIntroDom: (doc: Document) => HTMLElement;
   introDomPatch: (introDom: HTMLElement) => HTMLElement;
   getCoverUrl: (doc: Document) => string | null;
+  additionalMetadatePatch?: (
+    doc: Document,
+    additionalMetadate: BookAdditionalMetadate
+  ) => BookAdditionalMetadate;
   getAList: (doc: Document) => NodeListOf<Element> | Element[];
   getAName?: (aElem: Element) => string;
   getIsVIP?: (aElem: Element) => {
@@ -51,6 +55,7 @@ export function mkRuleClass({
   getIntroDom,
   introDomPatch,
   getCoverUrl,
+  additionalMetadatePatch,
   getAList,
   getAName,
   getIsVIP,
@@ -105,6 +110,12 @@ export function mkRuleClass({
             additionalMetadate.cover = coverClass;
           })
           .catch((error) => log.error(error));
+      }
+      if (typeof additionalMetadatePatch === "function") {
+        Object.assign(
+          additionalMetadate,
+          additionalMetadatePatch(doc, additionalMetadate)
+        );
       }
 
       let sections;
@@ -164,7 +175,7 @@ export function mkRuleClass({
           charset: this.charset,
           options: { bookname },
         });
-        if (isVIP === true && isPaid === false) {
+        if (isVIP && !isPaid) {
           chapter.status = Status.aborted;
         }
         if (typeof postHook === "function") {

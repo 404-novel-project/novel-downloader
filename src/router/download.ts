@@ -192,8 +192,8 @@ export async function getRule(): Promise<BaseRuleClass> {
       break;
     }
     case "www.linovelib.com": {
-      const { Linovelib } = await import("../rules/special/reprint/linovelib");
-      ruleClass = Linovelib;
+      const { linovelib } = await import("../rules/twoPage/linovelib");
+      ruleClass = linovelib();
       break;
     }
     case "www.luoqiuzw.com": {
