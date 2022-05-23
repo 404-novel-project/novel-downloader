@@ -10,8 +10,8 @@ export async function getRule(): Promise<BaseRuleClass> {
       break;
     }
     case "www.uukanshu.com": {
-      const { Uukanshu } = await import("../rules/special/reprint/uukanshu");
-      ruleClass = Uukanshu;
+      const { uukanshu } = await import("../rules/onePage/uukanshu");
+      ruleClass = uukanshu();
       break;
     }
     case "www.yruan.com": {
