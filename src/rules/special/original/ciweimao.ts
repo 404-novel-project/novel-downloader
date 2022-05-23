@@ -1,6 +1,9 @@
 import * as CryptoJS from "crypto-js";
 import { UnsafeWindow } from "../../../global";
-import { getImageAttachment } from "../../../lib/attachments";
+import {
+  getImageAttachment,
+  putAttachmentClassCache,
+} from "../../../lib/attachments";
 import { cleanDOM } from "../../../lib/cleanDOM";
 import { getHtmlDOM, gfetch } from "../../../lib/http";
 import { rm, rms } from "../../../lib/dom";
@@ -383,7 +386,7 @@ function getChapter({
           Accept: "application/json, text/javascript, */*; q=0.01",
           "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
           Referer: refererUrl,
-          Origin: "https://www.ciweimao.com",
+          Origin: document.location.origin,
           "X-Requested-With": "XMLHttpRequest",
         },
         data: `chapter_id=${chapterIdt}`,
@@ -409,7 +412,7 @@ function getChapter({
           Accept: "application/json, text/javascript, */*; q=0.01",
           "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
           Referer: refererUrl,
-          Origin: "https://www.ciweimao.com",
+          Origin: document.location.origin,
           "X-Requested-With": "XMLHttpRequest",
         },
         data: `chapter_id=${chapterIdt}&chapter_access_key=${chapter_access_key}`,
@@ -432,6 +435,7 @@ function getChapter({
 
     const divChapterAuthorSay = await getChapterAuthorSay();
     const content = document.createElement("div");
+    // noinspection UnnecessaryLocalVariableJS
     const decryptDate = await chapterDecrypt(chapterId, chapterUrl);
 
     content.innerHTML = decryptDate;
@@ -472,7 +476,7 @@ function getChapter({
         headers: {
           Accept: "application/json, text/javascript, */*; q=0.01",
           Referer: refererUrl,
-          Origin: "https://www.ciweimao.com",
+          Origin: document.location.origin,
           "X-Requested-With": "XMLHttpRequest",
         },
         responseType: "json",
@@ -492,6 +496,7 @@ function getChapter({
           .access_key,
       });
 
+      // noinspection UnnecessaryLocalVariableJS
       const vipCHapterImageUrlI =
         rootPath +
         "chapter/book_chapter_image?chapter_id=" +
@@ -509,8 +514,19 @@ function getChapter({
       return vipCHapterImageUrlI;
     }
 
-    const isLogin =
-      document.querySelector(".login-info.ly-fr")?.childElementCount === 1;
+    const getIsLogin = () => {
+      if (document.location.host === "www.shubl.com") {
+        return (
+          document.querySelector("div.pull-right:nth-child(2)")
+            ?.childElementCount === 3
+        );
+      } else {
+        return (
+          document.querySelector(".login-info.ly-fr")?.childElementCount === 1
+        );
+      }
+    };
+    const isLogin = getIsLogin();
     if (isLogin && isPaid) {
       const divChapterAuthorSay = await getChapterAuthorSay();
 
@@ -538,6 +554,7 @@ function getChapter({
         vipCHapterImage.Blob = vipCHapterImageBlob as Blob;
         vipCHapterImage.status = Status.finished;
       }
+      putAttachmentClassCache(vipCHapterImage);
       const contentImages = [vipCHapterImage];
 
       let ddom;
@@ -548,7 +565,7 @@ function getChapter({
       }
 
       const img = document.createElement("img");
-      img.src = vipCHapterName;
+      img.setAttribute("data-src-address", vipCHapterName);
       img.alt = vipCHapterImageUrl;
       const contentHTML = document.createElement("div");
       contentHTML.appendChild(img);

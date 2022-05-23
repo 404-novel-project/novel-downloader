@@ -1,15 +1,15 @@
 // noinspection NonAsciiCharacters
 
-import { defineComponent, onMounted, reactive, Ref, ref, watch } from "vue";
-import { GmWindow } from "../global";
-import { getAttachmentClassCache } from "../lib/attachments";
-import { sleep } from "../lib/misc";
-import { Status } from "../main/main";
-import { Chapter } from "../main/Chapter";
-import { Book } from "../main/Book";
+import {defineComponent, onMounted, reactive, Ref, ref, watch} from "vue";
+import {GmWindow} from "../global";
+import {getAttachmentClassCache} from "../lib/attachments";
+import {sleep} from "../lib/misc";
+import {Status} from "../main/main";
+import {Chapter} from "../main/Chapter";
+import {Book} from "../main/Book";
 import TestUIHtml from "./TestUI.html";
 import TestUICss from "./TestUI.less";
-import { createStyle } from "../lib/dom";
+import {createStyle} from "../lib/dom";
 
 export default defineComponent({
   name: "TestUI",
@@ -106,14 +106,15 @@ export default defineComponent({
     }
 
     function getChapterHtml(_chapter: Chapter) {
-      const imgs = _chapter.contentHTML?.querySelectorAll("img");
+      const html = _chapter.contentHTML?.cloneNode(true) as HTMLElement;
+      const imgs = html.querySelectorAll("img");
       if (imgs) {
         Array.from(imgs).forEach((img) => {
           const url = img.alt;
           img.src = getObjectUrl(url);
         });
       }
-      return _chapter.contentHTML?.outerHTML;
+      return html.outerHTML;
     }
 
     onMounted(async () => {
@@ -139,6 +140,7 @@ export default defineComponent({
       const attachment = getAttachmentClassCache(url);
       if (attachment?.Blob) {
         const blob = attachment.Blob;
+        // noinspection UnnecessaryLocalVariableJS
         const src = URL.createObjectURL(blob);
         return src;
       }

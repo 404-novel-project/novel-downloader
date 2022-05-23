@@ -1,4 +1,7 @@
-import { getImageAttachment } from "../../../lib/attachments";
+import {
+  getImageAttachment,
+  putAttachmentClassCache,
+} from "../../../lib/attachments";
 import { cleanDOM } from "../../../lib/cleanDOM";
 import { getHtmlDOM } from "../../../lib/http";
 import { rm } from "../../../lib/dom";
@@ -115,7 +118,7 @@ export class Sfacg extends BaseRuleClass {
       const isLogin = !document
         .querySelector(".user-bar > .top-link > .normal-link")
         ?.innerHTML.includes("您好，SF游客");
-      if (chapter.isVIP && isLogin === false) {
+      if (chapter.isVIP && !isLogin) {
         chapter.status = Status.aborted;
       }
       chapters.push(chapter);
@@ -254,9 +257,10 @@ export class Sfacg extends BaseRuleClass {
               vipChapterImageUrl,
               vipChapterName
             );
+            putAttachmentClassCache(vipChapterImage);
             const contentImages = [vipChapterImage];
             const img = document.createElement("img");
-            img.src = vipChapterName;
+            img.setAttribute("data-src-address", vipChapterName);
             img.alt = vipChapterImageUrl;
             const contentHTML = document.createElement("div");
             contentHTML.appendChild(img);
