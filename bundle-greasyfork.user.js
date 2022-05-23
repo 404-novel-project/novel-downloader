@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.9.1.698
+// @version        4.9.2.700
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/404-novel-project/novel-downloader
@@ -184,6 +184,9 @@
 // @match          *://www.69shu.com/txt/*.htm
 // @match          *://new-read.readmoo.com/mooreader/*
 // @match          *://www.iqingguo.com/book/detail/?id=*
+// @match          *://www.ywggzy.com/bxwx/*/
+// @match          *://www.ptwxz.net/*/
+// @match          *://www.ptwxz.net/list/*/
 // @name:en        novel-downloader
 // @name:ja        小説ダウンローダー
 // @description:en An scalable universal novel downloader.
@@ -318,6 +321,7 @@
 // @connect        cdn.shucdn.com
 // @connect        readmoo.com
 // @connect        qingoo.cn
+// @connect        sundung.com
 // @connect        *
 // @require        https://unpkg.com/crypto-js@4.1.1/crypto-js.js#sha512-NQVmLzNy4Lr5QTrmXvq/WzTMUnRHmv7nyIT/M6LyGPBS+TIeRxZ+YQaqWxjpRpvRMQSuYPQURZz/+pLi81xXeA==
 // @require        https://unpkg.com/fflate@0.7.3/umd/index.js#sha512-F57jcpLWPENXlHrsEj+YC8m+IHvaoRZpCpDr7Tfvu/jRtuO7kPOfbsop2gXEIRoK66ETYamk1tlTEvNw6xE8jw==
@@ -6904,7 +6908,7 @@ function centerDetct(element) {
 function reIndex(chapters) {
     chapters = chapters.sort((a, b) => a.chapterNumber - b.chapterNumber);
     let i = 0;
-    let sectionName;
+    let sectionName = "";
     let s = 0;
     let si = 0;
     for (const chapter of chapters) {
@@ -10556,6 +10560,61 @@ const westnovel = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass
 
 /***/ }),
 
+/***/ "./src/rules/onePage/ywggzy.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "ywggzy": () => (/* binding */ ywggzy)
+/* harmony export */ });
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/rule.ts");
+
+
+
+const ywggzy = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+    bookUrl: document.location.href,
+    bookname: document.querySelector(".info h1")?.innerText.trim() ??
+        "",
+    author: document
+        .querySelector("div.fix > p:nth-child(1)")
+        ?.innerText.trim() ?? "",
+    introDom: document.querySelector(".desc") ?? undefined,
+    introDomPatch: (dom) => dom,
+    coverUrl: document.querySelector(".imgbox > img")?.src,
+    aList: document.querySelectorAll("li.book-item > a"),
+    sections: document.querySelectorAll("div.row.row-section h2.layout-tit"),
+    getSName: (sElem) => sElem.innerText.trim(),
+    postHook: (chapter) => {
+        if (chapter.sectionName) {
+            chapter.sectionName = chapter.sectionName
+                .replace(`《${chapter.bookname}》`, "")
+                .trim();
+        }
+        return chapter;
+    },
+    getContent: (doc) => doc.querySelector("#content"),
+    contentPatch: (dom) => {
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)(".posterror", false, dom);
+        return dom;
+    },
+    overrideConstructor: (classThis) => {
+        const rawBookParse = classThis.bookParse;
+        classThis.bookParse = async () => {
+            const book = (await Reflect.apply(rawBookParse, classThis, []));
+            const chapters = book.chapters;
+            book.chapters = (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .deDuplicate */ .uh)(chapters);
+            return book;
+        };
+        return classThis;
+    },
+});
+
+
+/***/ }),
+
 /***/ "./src/rules/onePageWithMultiIndexPage/226ks.ts":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -10730,6 +10789,67 @@ const novelup = () => {
 
 /***/ }),
 
+/***/ "./src/rules/onePageWithMultiIndexPage/ptwxz.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "ptwxz": () => (/* binding */ ptwxz)
+/* harmony export */ });
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePageWithMultiIndexPage/template.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/dom.ts");
+
+
+
+
+const ptwxz = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+    bookUrl: document.location.href,
+    bookname: document
+        .querySelector("#info h1")
+        ?.innerText.trim() ?? "",
+    author: document
+        .querySelector("#info > p:nth-child(2) > a:nth-child(1)")
+        ?.innerText.trim() ?? "",
+    introDom: document.querySelector("#intro") ?? undefined,
+    introDomPatch: (dom) => dom,
+    coverUrl: document.querySelector("#fmimg > img")?.src ?? null,
+    getIndexUrls: async () => {
+        const base = document.location.pathname;
+        const listUrlBase = document.location.origin + "/list" + base;
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .dL)(listUrlBase, document.characterSet);
+        return Array.from(doc.querySelectorAll("#indexselect > option")).map((o) => document.location.origin + o.getAttribute("value"));
+    },
+    getAList: (doc) => doc.querySelectorAll('a[rel="chapter"]'),
+    getContentFromUrl: async (chapterUrl, chapterName, charset) => {
+        const { contentRaw } = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .nextPageParse */ .I2)({
+            chapterName,
+            chapterUrl,
+            charset,
+            selector: "#booktxt",
+            contentPatch: (content) => {
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_3__/* .rm2 */ .vS)(["本章未完，點選下一頁繼續閱讀。"], content);
+                return content;
+            },
+            getNextPage: (doc) => doc.querySelector("#next_url")?.href ?? "",
+            continueCondition: (content, nextLink) => {
+                if (nextLink === "") {
+                    return false;
+                }
+                return nextLink.includes("_");
+            },
+            enableCleanDOM: false,
+        });
+        return contentRaw;
+    },
+    contentPatch: (dom) => dom,
+});
+
+
+/***/ }),
+
 /***/ "./src/rules/onePageWithMultiIndexPage/template.ts":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -10777,7 +10897,10 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
             }
         }
         async bookParse() {
-            const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .SN)(introDom, introDomPatch);
+            let [introduction, introductionHTML] = [null, null];
+            if (introDom && introDomPatch) {
+                [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .SN)(introDom, introDomPatch);
+            }
             const additionalMetadate = {
                 language: language ?? "zh",
             };
@@ -10867,7 +10990,7 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
                         charset: this.charset,
                         options: { bookname },
                     });
-                    if (isVIP === true && isPaid === false) {
+                    if (isVIP && !isPaid) {
                         chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_7__/* .Status.aborted */ .qb.aborted;
                     }
                     if (typeof postHook === "function") {
@@ -20901,12 +21024,21 @@ async function getRule() {
             ruleClass = Iqingguo;
             break;
         }
+        case "www.ywggzy.com": {
+            const { ywggzy } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/ywggzy.ts"));
+            ruleClass = ywggzy();
+            break;
+        }
+        case "www.ptwxz.net": {
+            const { ptwxz } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePageWithMultiIndexPage/ptwxz.ts"));
+            ruleClass = ptwxz();
+            break;
+        }
         default: {
             throw new Error("Not Found Rule!");
         }
     }
-    const rule = new ruleClass();
-    return rule;
+    return new ruleClass();
     function regExpMatch(regexp) {
         if (regexp.test(host)) {
             return host;
@@ -21232,6 +21364,7 @@ function getUI() {
                 }
             };
         }
+        case "www.ywggzy.com":
         case "www.yruan.com":
         case "www.shuquge.com":
         case "www.sizhicn.com":
@@ -21276,6 +21409,25 @@ function getUI() {
                         type: "jump",
                         jumpFunction: () => {
                             document.location.pathname = document.location.pathname.replace(/\/menu$/, "");
+                        },
+                    };
+                }
+                else {
+                    return defaultObject;
+                }
+            };
+        }
+        case "www.ptwxz.net": {
+            return () => {
+                if (document.location.pathname.startsWith("/list/")) {
+                    return {
+                        type: "jump",
+                        jumpFunction: () => {
+                            const p = document.location.pathname.match(/\/list\/(\w+)\//)?.[1];
+                            if (!p) {
+                                return errorObject;
+                            }
+                            document.location.pathname = `/${p}/`;
                         },
                     };
                 }

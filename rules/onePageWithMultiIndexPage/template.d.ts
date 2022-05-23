@@ -6,8 +6,8 @@ interface MkRuleClassOptions {
     bookUrl: string;
     bookname: string;
     author: string;
-    introDom: HTMLElement;
-    introDomPatch: (introDom: HTMLElement) => HTMLElement;
+    introDom?: HTMLElement;
+    introDomPatch?: (introDom: HTMLElement) => HTMLElement;
     coverUrl: string | null;
     getIndexUrls?: () => string[] | Promise<string[]>;
     getIndexPages?: () => Promise<(Document | null)[]>;
