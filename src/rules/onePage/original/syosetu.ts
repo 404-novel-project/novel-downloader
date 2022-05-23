@@ -1,5 +1,5 @@
-import { rm } from "../../lib/dom";
-import { mkRuleClass } from "./template";
+import { rm } from "../../../lib/dom";
+import { mkRuleClass } from "../template";
 
 export const syosetu = () => {
   const getIntroDom = () => {

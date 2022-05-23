@@ -2,7 +2,7 @@ import { rm2 } from "../../lib/dom";
 import { getHtmlDOM } from "../../lib/http";
 import { deDuplicate } from "../../lib/rule";
 import { Book } from "../../main/Book";
-import { mkRuleClass } from "./template";
+import { mkRuleClass } from "../onePage/template";
 
 export const biqu55 = () =>
   mkRuleClass({

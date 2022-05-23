@@ -1,4 +1,4 @@
-import { mkRuleClass } from "./template";
+import { mkRuleClass } from "../template";
 
 export const kakuyomu = () =>
   mkRuleClass({

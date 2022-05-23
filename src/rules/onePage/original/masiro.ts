@@ -1,5 +1,5 @@
-import { rms } from "../../lib/dom";
-import { mkRuleClass } from "./template";
+import { rms } from "../../../lib/dom";
+import { mkRuleClass } from "../template";
 
 export const masiro = () =>
   mkRuleClass({

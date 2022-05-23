@@ -373,12 +373,12 @@ export async function getRule(): Promise<BaseRuleClass> {
       break;
     }
     case "www.quanshuzhai.com": {
-      const { quanshuzhai } = await import("../rules/onePage/quanshuzhai");
+      const { quanshuzhai } = await import("../rules/mbtxt/quanshuzhai");
       ruleClass = quanshuzhai();
       break;
     }
     case "masiro.me": {
-      const { masiro } = await import("../rules/onePage/masiro");
+      const { masiro } = await import("../rules/onePage/original/masiro");
       ruleClass = masiro();
       break;
     }
@@ -388,24 +388,26 @@ export async function getRule(): Promise<BaseRuleClass> {
       break;
     }
     case "kakuyomu.jp": {
-      const { kakuyomu } = await import("../rules/onePage/kakuyomu");
+      const { kakuyomu } = await import("../rules/onePage/original/kakuyomu");
       ruleClass = kakuyomu();
       break;
     }
     case "ncode.syosetu.com":
     case "novel18.syosetu.com": {
-      const { syosetu } = await import("../rules/onePage/syosetu");
+      const { syosetu } = await import("../rules/onePage/original/syosetu");
       ruleClass = syosetu();
       break;
     }
     case "syosetu.org": {
-      const { syosetuOrg } = await import("../rules/onePage/syosetu");
+      const { syosetuOrg } = await import("../rules/onePage/original/syosetu");
       ruleClass = syosetuOrg();
       break;
     }
     case "zhaoze.art":
     case "houhuayuan.vip": {
-      const { houhuayuan } = await import("../rules/onePage/houhuayuan");
+      const { houhuayuan } = await import(
+        "../rules/onePage/original/houhuayuan"
+      );
       ruleClass = houhuayuan();
       break;
     }
@@ -447,7 +449,7 @@ export async function getRule(): Promise<BaseRuleClass> {
       break;
     }
     case "www.biqu55.net": {
-      const { biqu55 } = await import("../rules/onePage/biqu55");
+      const { biqu55 } = await import("../rules/biquge/biqu55");
       ruleClass = biqu55();
       break;
     }
@@ -526,18 +528,20 @@ export async function getRule(): Promise<BaseRuleClass> {
       break;
     }
     case "www.akatsuki-novels.com": {
-      const { akatsuki } = await import("../rules/onePage/akatsuki");
+      const { akatsuki } = await import("../rules/onePage/original/akatsuki");
       ruleClass = akatsuki();
       break;
     }
     case "www.alphapolis.co.jp": {
-      const { alphapolis } = await import("../rules/onePage/alphapolis");
+      const { alphapolis } = await import(
+        "../rules/onePage/original/alphapolis"
+      );
       ruleClass = alphapolis();
       break;
     }
     case "novelup.plus": {
       const { novelup } = await import(
-        "../rules/onePageWithMultiIndexPage/novelup"
+        "../rules/onePageWithMultiIndexPage/original/novelup"
       );
       ruleClass = novelup();
       break;

@@ -1,6 +1,6 @@
-import { getHtmlDOM } from "../../lib/http";
-import { childNodesCopy, rm, rm2 } from "../../lib/dom";
-import { mkRuleClass } from "./template";
+import { getHtmlDOM } from "../../../lib/http";
+import { childNodesCopy, rm, rm2 } from "../../../lib/dom";
+import { mkRuleClass } from "../template";
 
 export const houhuayuan = () => {
   const seriesbox = document.querySelector(".seriesbox");

@@ -1,5 +1,5 @@
-import { convertBr } from "../../lib/cleanDOM";
-import { mkRuleClass } from "./template";
+import { convertBr } from "../../../lib/cleanDOM";
+import { mkRuleClass } from "../template";
 
 export const akatsuki = () =>
   mkRuleClass({

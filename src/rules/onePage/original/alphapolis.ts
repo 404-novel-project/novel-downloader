@@ -1,5 +1,5 @@
-import { insertBrBeforeText } from "../../lib/dom";
-import { mkRuleClass } from "./template";
+import { insertBrBeforeText } from "../../../lib/dom";
+import { mkRuleClass } from "../template";
 
 export const alphapolis = () =>
   mkRuleClass({

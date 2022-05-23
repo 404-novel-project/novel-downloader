@@ -1,6 +1,6 @@
-import { insertBrBeforeText } from "../../lib/dom";
-import { getHtmlDOM } from "../../lib/http";
-import { mkRuleClass } from "./template";
+import { insertBrBeforeText } from "../../../lib/dom";
+import { getHtmlDOM } from "../../../lib/http";
+import { mkRuleClass } from "../template";
 
 export const novelup = () => {
   const bookUrl = document.location.origin + document.location.pathname;
