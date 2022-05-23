@@ -1,7 +1,9 @@
-import { log } from "../log";
-import { retryLimit } from "../setting";
-import { _GM_xmlhttpRequest } from "./GM";
-import { deepcopy, sleep } from "./misc";
+// noinspection JSUnusedLocalSymbols
+
+import {log} from "../log";
+import {retryLimit} from "../setting";
+import {_GM_xmlhttpRequest} from "./GM";
+import {deepcopy, sleep} from "./misc";
 
 globalThis.fetch = new Proxy(globalThis.fetch, {
   apply(target, thisArg, argArray) {
@@ -12,8 +14,8 @@ globalThis.fetch = new Proxy(globalThis.fetch, {
 });
 
 export async function fetchWithRetry(
-  input: RequestInfo,
-  init?: RequestInit
+    input: RequestInfo,
+    init?: RequestInit
 ): Promise<Response> {
   let retry = retryLimit;
   while (retry > 0) {
@@ -72,23 +74,23 @@ export interface GfetchRequestInit {
 }
 
 export function gfetch(
-  url: string,
-  {
-    method = "GET",
-    headers,
-    data,
-    cookie,
-    binary,
-    nocache,
-    revalidate,
-    timeout,
-    context,
-    responseType,
-    overrideMimeType,
-    anonymous,
-    user,
-    password,
-  }: GfetchRequestInit = {}
+    url: string,
+    {
+      method = "GET",
+      headers,
+      data,
+      cookie,
+      binary,
+      nocache,
+      revalidate,
+      timeout,
+      context,
+      responseType,
+      overrideMimeType,
+      anonymous,
+      user,
+      password,
+    }: GfetchRequestInit = {}
 ): Promise<Tampermonkey.Response<object>> {
   return new Promise((resolve, reject) => {
     log.debug("[debug]gfetch:");
@@ -123,7 +125,8 @@ export function gfetch(
 export async function getText(
   input: RequestInfo,
   charset?: string,
-  init?: RequestInit
+  init?: RequestInit,
+  test = (response: Response) => Promise.resolve(false)
 ) {
   // upgrade http to https
   if (typeof input === "string") {
@@ -136,8 +139,8 @@ export async function getText(
 
   if (charset === undefined) {
     return fetch(input, init)
-      .then((response) => {
-        if (response.ok) {
+      .then(async (response) => {
+        if (response.ok || (await test(response))) {
           return response.text();
         } else {
           throw new Error(`Bad response! ${input}`);
@@ -146,8 +149,8 @@ export async function getText(
       .catch((error) => log.error(error));
   } else {
     return fetch(input, init)
-      .then((response) => {
-        if (response.ok) {
+      .then(async (response) => {
+        if (response.ok || (await test(response))) {
           return response.arrayBuffer();
         } else {
           throw new Error(`Bad response! ${input}`);
@@ -166,9 +169,10 @@ export async function getText(
 export async function getHtmlDOM(
   input: RequestInfo,
   charset?: string,
-  init?: RequestInit
+  init?: RequestInit,
+  test = (response: Response) => Promise.resolve(false)
 ) {
-  const htmlText = await getText(input, charset, init);
+  const htmlText = await getText(input, charset, init, test);
   if (!htmlText) {
     throw new Error("Fetch Content failed!");
   }
@@ -188,13 +192,14 @@ export async function getHtmlDOM(
 export async function getHtmlDomWithRetry(
   input: RequestInfo,
   charset?: string,
-  init?: RequestInit
+  init?: RequestInit,
+  test = (response: Response) => Promise.resolve(false)
 ): Promise<Document | null> {
   let retry = retryLimit;
   let doc = null;
   while (retry > 0) {
     try {
-      doc = await getHtmlDOM(input, charset, init);
+      doc = await getHtmlDOM(input, charset, init, test);
       retry = 0;
     } catch (error) {
       log.error(`抓取${input}失败，重试第${retryLimit - retry}次。`);
@@ -209,13 +214,17 @@ export async function getHtmlDomWithRetry(
 export async function ggetText(
   url: string,
   charset?: string,
-  init?: GfetchRequestInit
+  init?: GfetchRequestInit,
+  test = (response: Tampermonkey.Response<object>) => Promise.resolve(false)
 ) {
   let _init = init ? deepcopy(init) : undefined;
   if (charset === undefined) {
     return gfetch(url, init)
-      .then((response) => {
-        if (response.status >= 200 && response.status <= 299) {
+      .then(async (response) => {
+        if (
+          (response.status >= 200 && response.status <= 299) ||
+          (await test(response))
+        ) {
           return response.responseText;
         } else {
           throw new Error(`Bad response! ${url}`);
@@ -230,7 +239,10 @@ export async function ggetText(
     }
     return gfetch(url, _init)
       .then((response) => {
-        if (response.status >= 200 && response.status <= 299) {
+        if (
+          (response.status >= 200 && response.status <= 299) ||
+          test(response)
+        ) {
           return response.response as ArrayBuffer;
         } else {
           throw new Error(`Bad response! ${url}`);
@@ -249,9 +261,10 @@ export async function ggetText(
 export async function ggetHtmlDOM(
   url: string,
   charset?: string,
-  init?: GfetchRequestInit
+  init?: GfetchRequestInit,
+  test = (response: Tampermonkey.Response<object>) => Promise.resolve(false)
 ) {
-  const htmlText = await ggetText(url, charset, init);
+  const htmlText = await ggetText(url, charset, init, test);
   if (!htmlText) {
     throw new Error("Fetch Content failed!");
   }
@@ -267,13 +280,14 @@ export async function ggetHtmlDOM(
 export async function ggetHtmlDomWithRetry(
   url: string,
   charset?: string,
-  init?: GfetchRequestInit
+  init?: GfetchRequestInit,
+  test = (response: Tampermonkey.Response<object>) => Promise.resolve(false)
 ): Promise<Document | null> {
   let retry = retryLimit;
   let doc = null;
   while (retry > 0) {
     try {
-      doc = await ggetHtmlDOM(url, charset, init);
+      doc = await ggetHtmlDOM(url, charset, init, test);
       retry = 0;
     } catch (error) {
       log.error(`抓取${url}失败，重试第${retryLimit - retry}次。`);
@@ -285,9 +299,9 @@ export async function ggetHtmlDomWithRetry(
 }
 
 export function getFrameContentEvent(
-  url: string,
-  timeout = 0,
-  eventType: "load" | "DOMContentLoaded" = "load"
+    url: string,
+    timeout = 0,
+    eventType: "load" | "DOMContentLoaded" = "load"
 ): Promise<Document | null> {
   const frame = document.createElement("iframe");
   frame.src = url;
@@ -301,7 +315,7 @@ export function getFrameContentEvent(
           reject(new Error("EventTarget Not Found!"));
         }
         const doc =
-          (frameSelf as HTMLIFrameElement).contentWindow?.document ?? null;
+            (frameSelf as HTMLIFrameElement).contentWindow?.document ?? null;
         (frameSelf as HTMLIFrameElement).remove();
         resolve(doc);
       }, timeout);
@@ -313,8 +327,8 @@ export function getFrameContentEvent(
 }
 
 export async function getFrameContentCondition(
-  url: string,
-  stopCondition: (frame: HTMLIFrameElement) => boolean
+    url: string,
+    stopCondition: (frame: HTMLIFrameElement) => boolean
 ): Promise<Document | null> {
   const frame = document.createElement("iframe");
   frame.src = url;

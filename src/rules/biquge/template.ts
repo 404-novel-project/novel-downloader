@@ -3,47 +3,39 @@ import { Book } from "../../main/Book";
 import { Chapter } from "../../main/Chapter";
 import { BaseRuleClass } from "../../rules";
 import { mkRuleClass } from "../onePage/template";
+import { mkRuleClass as mkRuleClassMultiIndex } from "../onePageWithMultiIndexPage/template";
 
-export function mkBiqugeClass(
+function base(
   introDomPatch: (introDom: HTMLElement) => HTMLElement,
-  contentPatch: (content: HTMLElement) => HTMLElement,
   concurrencyLimit?: number,
   overRide?: (classThis: BaseRuleClass) => any,
-  postHook?: (chapter: Chapter) => Chapter | void,
-  chapterContenSelector = "#content"
+  postHook?: (chapter: Chapter) => Chapter | void
 ) {
-  return mkRuleClass({
+  return {
     bookUrl: document.location.href,
     bookname: (
-      document.querySelector("#info h1, .info > h2") as HTMLElement
+      document.querySelector("#info h1, .info h2") as HTMLElement
     ).innerText
       .trim()
       .replace(/最新章节$/, ""),
     author: (
       document.querySelector(
-        "#info > p:nth-child(2), #info > div:nth-child(2), .small > span:nth-child(1)"
+        "#info > p:nth-child(2), #info > div:nth-child(2), .info .author, .small > span:nth-child(1)"
       ) as HTMLElement
     ).innerText
       .replace(/作(\s+)?者[：:]/, "")
       .trim(),
-    introDom: document.querySelector("#intro, .intro") as HTMLElement,
+    introDom: document.querySelector(
+      "#intro, .intro, .book-intro"
+    ) as HTMLElement,
     introDomPatch,
     coverUrl:
       (
         document.querySelector(
-          "#fmimg > img, .info > .cover > img"
+          "#fmimg > img, .info > .cover > img, .book-boxs > .img > img"
         ) as HTMLImageElement
       )?.src ?? null,
-    aList: document.querySelectorAll("#list a, .listmain a"),
-    sections: document.querySelectorAll("#list dt, .listmain dt"),
-    getSName: (sElem) => {
-      const b = sElem.querySelector("b");
-      if (b) {
-        return (b as HTMLElement).innerText;
-      }
-      return (sElem as HTMLElement).innerText;
-    },
-    postHook: (chapter) => {
+    postHook: (chapter: Chapter) => {
       if (chapter.sectionName) {
         if (chapter.sectionName.includes("《")) {
           chapter.sectionName = chapter.sectionName
@@ -56,15 +48,12 @@ export function mkBiqugeClass(
         }
       }
       if (postHook) {
-        const out = postHook(chapter);
-        return out;
+        return postHook(chapter);
       }
       return chapter;
     },
-    getContent: (doc) => doc.querySelector(chapterContenSelector),
-    contentPatch,
     concurrencyLimit,
-    overrideConstructor: (classThis) => {
+    overrideConstructor: (classThis: BaseRuleClass) => {
       const rawBookParse = classThis.bookParse;
       classThis.bookParse = async () => {
         const book = (await Reflect.apply(rawBookParse, classThis, [])) as Book;
@@ -77,10 +66,71 @@ export function mkBiqugeClass(
       }
       return classThis;
     },
+  };
+}
+
+export function baseOnePage(
+  introDomPatch: (introDom: HTMLElement) => HTMLElement,
+  concurrencyLimit?: number,
+  overRide?: (classThis: BaseRuleClass) => any,
+  postHook?: (chapter: Chapter) => Chapter | void
+) {
+  return {
+    ...base(introDomPatch, concurrencyLimit, overRide, postHook),
+    aList: document.querySelectorAll("#list a, .listmain a"),
+    sections: document.querySelectorAll("#list dt, .listmain dt"),
+    getSName: (sElem: Element) => {
+      const b = sElem.querySelector("b");
+      if (b) {
+        return (b as HTMLElement).innerText;
+      }
+      return (sElem as HTMLElement).innerText;
+    },
+  };
+}
+
+export function baseMultiIndex(
+  introDomPatch: (introDom: HTMLElement) => HTMLElement,
+  concurrencyLimit?: number,
+  overRide?: (classThis: BaseRuleClass) => any,
+  postHook?: (chapter: Chapter) => Chapter | void
+) {
+  return {
+    ...base(introDomPatch, concurrencyLimit, overRide, postHook),
+    getIndexUrls: () =>
+      Array.from(
+        document.querySelectorAll<HTMLOptionElement>(
+          'select[name="pageselect"] > option'
+        )
+      ).map((o) => document.location.origin + o.getAttribute("value")),
+    getAList: (doc: Document) => {
+      const sectionList = Array.from(
+        doc.querySelectorAll<HTMLUListElement>("ul.section-list.fix, ul.list")
+      ).slice(-1)[0];
+      if (!sectionList) {
+        throw new Error("获取章节列表失败！");
+      }
+      return sectionList.querySelectorAll("li > a");
+    },
+  };
+}
+
+export function mkBiquge(
+  introDomPatch: (introDom: HTMLElement) => HTMLElement,
+  contentPatch: (content: HTMLElement) => HTMLElement,
+  concurrencyLimit?: number,
+  overRide?: (classThis: BaseRuleClass) => any,
+  postHook?: (chapter: Chapter) => Chapter | void,
+  chapterContenSelector = "#content"
+) {
+  return mkRuleClass({
+    ...baseOnePage(introDomPatch, concurrencyLimit, overRide, postHook),
+    getContent: (doc) => doc.querySelector(chapterContenSelector),
+    contentPatch,
   });
 }
 
-export function mkBiqugeClassNextPage(
+export function mkBiqugeNextPage(
   introDomPatch: (introDom: HTMLElement) => HTMLElement,
   contentPatch: (content: HTMLElement, doc: Document) => HTMLElement,
   getNextPage: (doc: Document) => string,
@@ -91,54 +141,7 @@ export function mkBiqugeClassNextPage(
   chapterContenSelector = "#content"
 ) {
   return mkRuleClass({
-    bookUrl: document.location.href,
-    bookname: (
-      document.querySelector("#info h1, .info > h2") as HTMLElement
-    ).innerText
-      .trim()
-      .replace(/最新章节$/, ""),
-    author: (
-      document.querySelector(
-        "#info > p:nth-child(2), #info > div:nth-child(2), .small > span:nth-child(1)"
-      ) as HTMLElement
-    ).innerText
-      .replace(/作(\s+)?者[：:]/, "")
-      .trim(),
-    introDom: document.querySelector("#intro, .intro") as HTMLElement,
-    introDomPatch,
-    coverUrl:
-      (
-        document.querySelector(
-          "#fmimg > img, .info > .cover > img"
-        ) as HTMLImageElement
-      )?.src ?? null,
-    aList: document.querySelectorAll("#list a, .listmain a"),
-    sections: document.querySelectorAll("#list dt, .listmain dt"),
-    getSName: (sElem) => {
-      const b = sElem.querySelector("b");
-      if (b) {
-        return (b as HTMLElement).innerText;
-      }
-      return (sElem as HTMLElement).innerText;
-    },
-    postHook: (chapter) => {
-      if (chapter.sectionName) {
-        if (chapter.sectionName.includes("《")) {
-          chapter.sectionName = chapter.sectionName
-            .replace(`《${chapter.bookname}》`, "")
-            .trim();
-        } else {
-          chapter.sectionName = chapter.sectionName
-            .replace(chapter.bookname, "")
-            .trim();
-        }
-      }
-      if (postHook) {
-        const out = postHook(chapter);
-        return out;
-      }
-      return chapter;
-    },
+    ...baseOnePage(introDomPatch, concurrencyLimit, overRide, postHook),
     getContentFromUrl: async (
       chapterUrl: string,
       chapterName: string | null,
@@ -157,19 +160,54 @@ export function mkBiqugeClassNextPage(
       return contentRaw;
     },
     contentPatch: (dom) => dom,
-    concurrencyLimit,
-    overrideConstructor: (classThis) => {
-      const rawBookParse = classThis.bookParse;
-      classThis.bookParse = async () => {
-        const book = (await Reflect.apply(rawBookParse, classThis, [])) as Book;
-        const chapters = book.chapters;
-        book.chapters = deDuplicate(chapters);
-        return book;
-      };
-      if (overRide) {
-        overRide(classThis);
-      }
-      return classThis;
-    },
   });
 }
+
+export function mkBiqugeMultiIndexNextPage(
+  introDomPatch: (introDom: HTMLElement) => HTMLElement,
+  contentPatch: (content: HTMLElement, doc: Document) => HTMLElement,
+  getNextPage: (doc: Document) => string,
+  continueCondition: (content: HTMLElement, nextLink: string) => boolean,
+  concurrencyLimit?: number,
+  overRide?: (classThis: BaseRuleClass) => any,
+  postHook?: (chapter: Chapter) => Chapter | void,
+  chapterContenSelector = "#content"
+) {
+  return mkRuleClassMultiIndex({
+    ...baseMultiIndex(introDomPatch, concurrencyLimit, overRide, postHook),
+    getContentFromUrl: async (
+      chapterUrl: string,
+      chapterName: string | null,
+      charset: string
+    ) => {
+      const { contentRaw } = await nextPageParse({
+        chapterName,
+        chapterUrl,
+        charset,
+        selector: chapterContenSelector,
+        contentPatch,
+        getNextPage,
+        continueCondition,
+        enableCleanDOM: false,
+      });
+      return contentRaw;
+    },
+    contentPatch: (dom) => dom,
+  });
+}
+
+export function mkBiqugeMultiIndex(
+  introDomPatch: (introDom: HTMLElement) => HTMLElement,
+  contentPatch: (content: HTMLElement) => HTMLElement,
+  concurrencyLimit?: number,
+  overRide?: (classThis: BaseRuleClass) => any,
+  postHook?: (chapter: Chapter) => Chapter | void,
+  chapterContenSelector = "#content"
+) {
+  return mkRuleClassMultiIndex({
+    ...baseMultiIndex(introDomPatch, concurrencyLimit, overRide, postHook),
+    getContent: (doc) => doc.querySelector(chapterContenSelector),
+    contentPatch,
+  });
+}
+

@@ -3,7 +3,7 @@ import { AttachmentClass } from "../main/Attachment";
 import { Chapter } from "../main/Chapter";
 import { ChapterParseObject } from "../rules";
 import { cleanDOM } from "./cleanDOM";
-import { getHtmlDOM } from "./http";
+import { getHtmlDOM, ggetHtmlDOM } from "./http";
 import { Book } from "../main/Book";
 import pLimit from "p-limit";
 import { Status } from "../main/main";
@@ -35,8 +35,9 @@ interface NextPageParseOptions {
   selector: string;
   contentPatch: (_content: HTMLElement, doc: Document) => HTMLElement;
   getNextPage: (doc: Document) => string;
-  continueCondition: (_content: HTMLElement, nextLink: string) => boolean;
+  continueCondition: (content: HTMLElement, nextLink: string) => boolean;
   enableCleanDOM?: boolean;
+  getHtmlDomFunc?: typeof getHtmlDOM | typeof ggetHtmlDOM;
 }
 
 /* 自动获取下一页 */
@@ -49,10 +50,11 @@ export async function nextPageParse({
   getNextPage,
   continueCondition,
   enableCleanDOM,
+  getHtmlDomFunc = getHtmlDOM,
 }: NextPageParseOptions): Promise<ChapterParseObject> {
   log.debug(`[Chapter]请求 ${chapterUrl}`);
   let nowUrl = chapterUrl;
-  let doc = await getHtmlDOM(chapterUrl, charset);
+  let doc = await getHtmlDomFunc(chapterUrl, charset);
   const content = document.createElement("div");
 
   let flag = false;
@@ -79,7 +81,7 @@ export async function nextPageParse({
     if (flag) {
       log.debug(`[Chapter]请求 ${nextLink}`);
       nowUrl = nextLink;
-      doc = await getHtmlDOM(nextLink, charset);
+      doc = await getHtmlDomFunc(nextLink, charset);
     }
   } while (flag);
 
@@ -228,7 +230,8 @@ export async function chapterHiddenFix(
   book: Book,
   invalidTest: (c: Chapter) => boolean,
   getPrevHref: (doc: Document) => string | undefined,
-  concurrencyLimit: number
+  concurrencyLimit: number,
+  getHtmlDomFunc: typeof getHtmlDOM | typeof ggetHtmlDOM = getHtmlDOM
 ) {
   const { chapters } = book;
   const invalidChapterList = chapters.filter(invalidTest);
@@ -245,7 +248,7 @@ export async function chapterHiddenFix(
     )?.[0];
     if (nextChapter) {
       const nextChapterUrl = nextChapter.chapterUrl;
-      const doc = await getHtmlDOM(nextChapterUrl, nextChapter.charset);
+      const doc = await getHtmlDomFunc(nextChapterUrl, nextChapter.charset);
       const href = getPrevHref(doc);
       if (href) {
         invalidChapter.chapterUrl = href;

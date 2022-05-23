@@ -15,18 +15,18 @@ export async function getRule(): Promise<BaseRuleClass> {
       break;
     }
     case "www.yruan.com": {
-      const { yruan } = await import("../rules/biquge/type1");
+      const { yruan } = await import("../rules/biquge/onePage");
       ruleClass = yruan();
       break;
     }
     case "www.shuquge.com":
     case "www.sizhicn.com": {
-      const { shuquge } = await import("../rules/biquge/type2");
+      const { shuquge } = await import("../rules/biquge/onePage");
       ruleClass = shuquge();
       break;
     }
     case "www.dingdiann.net": {
-      const { dingdiann } = await import("../rules/biquge/type3");
+      const { dingdiann } = await import("../rules/biquge/onePage");
       ruleClass = dingdiann();
       break;
     }
@@ -38,9 +38,7 @@ export async function getRule(): Promise<BaseRuleClass> {
       break;
     }
     case "www.266ks.com": {
-      const { c226ks } = await import(
-        "../rules/onePageWithMultiIndexPage/226ks"
-      );
+      const { c226ks } = await import("../rules/biquge/multiIndexNextPage");
       ruleClass = c226ks();
       break;
     }
@@ -61,7 +59,7 @@ export async function getRule(): Promise<BaseRuleClass> {
       break;
     }
     case "www.gebiqu.com": {
-      const { gebiqu } = await import("../rules/biquge/type1");
+      const { gebiqu } = await import("../rules/biquge/onePage");
       ruleClass = gebiqu();
       break;
     }
@@ -93,7 +91,7 @@ export async function getRule(): Promise<BaseRuleClass> {
     case "www.aixiawx.com":
     case "www.banzhuer.org":
     case "www.hongyeshuzhal.com": {
-      const { common } = await import("../rules/biquge/type1");
+      const { common } = await import("../rules/biquge/onePage");
       ruleClass = common();
       break;
     }
@@ -126,7 +124,7 @@ export async function getRule(): Promise<BaseRuleClass> {
       break;
     }
     case "www.xinwanben.com": {
-      const { xinwanben } = await import("../rules/biquge/type3");
+      const { xinwanben } = await import("../rules/biquge/nextPage");
       ruleClass = xinwanben();
       break;
     }
@@ -182,12 +180,12 @@ export async function getRule(): Promise<BaseRuleClass> {
       break;
     }
     case "www.mht99.com": {
-      const { mht } = await import("../rules/biquge/type3");
+      const { mht } = await import("../rules/biquge/mht");
       ruleClass = mht();
       break;
     }
     case "www.xbiquge.so": {
-      const { xbiquge } = await import("../rules/biquge/type1");
+      const { xbiquge } = await import("../rules/biquge/onePage");
       ruleClass = xbiquge();
       break;
     }
@@ -202,7 +200,7 @@ export async function getRule(): Promise<BaseRuleClass> {
       break;
     }
     case "www.luoqiuzw.com": {
-      const { luoqiuzw } = await import("../rules/biquge/type1");
+      const { luoqiuzw } = await import("../rules/biquge/onePage");
       ruleClass = luoqiuzw();
       break;
     }
@@ -229,7 +227,7 @@ export async function getRule(): Promise<BaseRuleClass> {
       break;
     }
     case "www.yqbiqu.com": {
-      const { xyqxs } = await import("../rules/biquge/type2");
+      const { xyqxs } = await import("../rules/biquge/onePage");
       ruleClass = xyqxs();
       break;
     }
@@ -273,7 +271,7 @@ export async function getRule(): Promise<BaseRuleClass> {
       break;
     }
     case "www.lwxs9.org": {
-      const { lwxs9 } = await import("../rules/biquge/type1");
+      const { lwxs9 } = await import("../rules/biquge/onePage");
       ruleClass = lwxs9();
       break;
     }
@@ -319,22 +317,22 @@ export async function getRule(): Promise<BaseRuleClass> {
       break;
     }
     case "dijiubook.net": {
-      const { dijiubook } = await import("../rules/biquge/type1");
+      const { dijiubook } = await import("../rules/biquge/onePage");
       ruleClass = dijiubook();
       break;
     }
     case "www.xbiquwx.la": {
-      const { biquwx } = await import("../rules/biquge/type1");
+      const { biquwx } = await import("../rules/biquge/onePage");
       ruleClass = biquwx();
       break;
     }
     case "www.25zw.com": {
-      const { c25zw } = await import("../rules/biquge/type1");
+      const { c25zw } = await import("../rules/biquge/onePage");
       ruleClass = c25zw();
       break;
     }
     case "www.zmccx.com": {
-      const { tycqxs } = await import("../rules/biquge/type1");
+      const { tycqxs } = await import("../rules/biquge/onePage");
       ruleClass = tycqxs();
       break;
     }
@@ -361,7 +359,7 @@ export async function getRule(): Promise<BaseRuleClass> {
       break;
     }
     case "www.ranwen.la": {
-      const { ranwen } = await import("../rules/biquge/type1");
+      const { ranwen } = await import("../rules/biquge/onePage");
       ruleClass = ranwen();
       break;
     }
@@ -422,7 +420,7 @@ export async function getRule(): Promise<BaseRuleClass> {
       break;
     }
     case "www.lstxt.cc": {
-      const { lusetxt } = await import("../rules/biquge/type2");
+      const { lusetxt } = await import("../rules/biquge/onePage");
       ruleClass = lusetxt();
       break;
     }
@@ -481,12 +479,12 @@ export async function getRule(): Promise<BaseRuleClass> {
       break;
     }
     case "www.b5200.net": {
-      const { b5200 } = await import("../rules/biquge/type1");
+      const { b5200 } = await import("../rules/biquge/onePage");
       ruleClass = b5200();
       break;
     }
     case "www.xsyq.cc": {
-      const { yqxs } = await import("../rules/biquge/type2");
+      const { yqxs } = await import("../rules/biquge/onePage");
       ruleClass = yqxs();
       break;
     }
@@ -501,7 +499,7 @@ export async function getRule(): Promise<BaseRuleClass> {
       break;
     }
     case "www.bxwx888.org": {
-      const { bxwx333 } = await import("../rules/biquge/type1");
+      const { bxwx333 } = await import("../rules/biquge/onePage");
       ruleClass = bxwx333();
       break;
     }
@@ -528,7 +526,7 @@ export async function getRule(): Promise<BaseRuleClass> {
       break;
     }
     case "www.xbiquge.la": {
-      const { xbiqugeLa } = await import("../rules/biquge/type1");
+      const { xbiqugeLa } = await import("../rules/biquge/onePage");
       ruleClass = xbiqugeLa();
       break;
     }

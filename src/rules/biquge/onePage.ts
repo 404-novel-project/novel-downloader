@@ -1,16 +1,17 @@
 import { sleep } from "../../lib/misc";
 import { rm, rm2, rms } from "../../lib/dom";
-import { mkBiqugeClass } from "./template";
+import { mkBiquge } from "./template";
+import { htmlTrim } from "../../lib/cleanDOM";
 
 // 笔趣阁通用模板，无contentpatch可直接使用
 export const common = () =>
-  mkBiqugeClass(
+  mkBiquge(
     (introDom) => introDom,
     (content) => content
   );
 
 export const gebiqu = () =>
-  mkBiqugeClass(
+  mkBiquge(
     (introDom) => {
       rms([/如果您喜欢.+，别忘记分享给朋友/g], introDom);
       rm('a[href^="http://down.gebiqu.com"]', false, introDom);
@@ -23,7 +24,7 @@ export const gebiqu = () =>
   );
 
 export const luoqiuzw = () =>
-  mkBiqugeClass(
+  mkBiquge(
     (introDom) => introDom,
     (content) => {
       const ad = content.firstElementChild as HTMLParagraphElement;
@@ -37,7 +38,7 @@ export const luoqiuzw = () =>
   );
 
 export const lwxs9 = () =>
-  mkBiqugeClass(
+  mkBiquge(
     (introDom) => introDom,
     (content) => {
       rm("div[align]", false, content);
@@ -46,7 +47,7 @@ export const lwxs9 = () =>
   );
 
 export const biquwx = () =>
-  mkBiqugeClass(
+  mkBiquge(
     (introDom) => {
       rms(
         [
@@ -61,7 +62,7 @@ export const biquwx = () =>
   );
 
 export const tycqxs = () =>
-  mkBiqugeClass(
+  mkBiquge(
     (introDom) => introDom,
     (content) => {
       rms(
@@ -75,7 +76,7 @@ export const tycqxs = () =>
   );
 
 export const dijiubook = () =>
-  mkBiqugeClass(
+  mkBiquge(
     (introDom) => {
       rms(["本书网址："], introDom);
       return introDom;
@@ -94,18 +95,20 @@ export const dijiubook = () =>
         await sleep(3000 * Math.random());
         return obj;
       };
+      return classThis;
     },
     (chapter) => {
       const url = new URL(chapter.chapterUrl);
       if (url.host === "m.dijiubook.net" || url.href.endsWith(".apk")) {
         return;
+      } else {
+        return chapter;
       }
-      return chapter;
     }
   );
 
 export const c25zw = () =>
-  mkBiqugeClass(
+  mkBiquge(
     (introDom) => {
       introDom.querySelector("font")?.parentElement?.remove();
       rms(["简介:"], introDom);
@@ -118,7 +121,7 @@ export const c25zw = () =>
   );
 
 export const xbiquge = () =>
-  mkBiqugeClass(
+  mkBiquge(
     (introDom) => introDom,
     (content) => {
       rms([`笔趣阁 www.xbiquge.so，最快更新.+ ！`], content);
@@ -127,7 +130,7 @@ export const xbiquge = () =>
   );
 
 export const yruan = () =>
-  mkBiqugeClass(
+  mkBiquge(
     (introDom) => {
       rm2(["本站提示：各位书友要是觉得"], introDom);
       return introDom;
@@ -137,7 +140,7 @@ export const yruan = () =>
   );
 
 export const ranwen = () =>
-  mkBiqugeClass(
+  mkBiquge(
     (introDom) => {
       rm2(["还不错的话请不要忘记向您QQ群和微博里的朋友推荐哦！"], introDom);
       return introDom;
@@ -146,14 +149,14 @@ export const ranwen = () =>
   );
 
 export const b5200 = () =>
-  mkBiqugeClass(
+  mkBiquge(
     (introDom) => introDom,
     (content) => content,
     1
   );
 
 export const bxwx333 = () =>
-  mkBiqugeClass(
+  mkBiquge(
     (introDom) => introDom,
     (content) => {
       content.querySelector("#xuanchuan")?.parentElement?.remove();
@@ -168,7 +171,7 @@ export const bxwx333 = () =>
   );
 
 export const xbiqugeLa = () =>
-  mkBiqugeClass(
+  mkBiquge(
     (introDom) => {
       introDom.querySelector("font")?.parentElement?.remove();
       return introDom;
@@ -178,4 +181,99 @@ export const xbiqugeLa = () =>
       return content;
     },
     1
+  );
+
+export const shuquge = () =>
+  mkBiquge(
+    (introDom) => {
+      document.querySelector(".noshow")?.classList.remove("noshow");
+      if (document.querySelector(".showall")) {
+        (document.querySelector(".showall") as HTMLElement).innerHTML = "";
+      }
+
+      rms(
+        [
+          /作者：.+所写的《.+》无弹窗免费全文阅读为转载作品,章节由网友发布。/,
+          /推荐地址：https?:\/\/www\.shuquge\.com\/txt\/\d+\/index\.html/g,
+        ],
+        introDom
+      );
+      return introDom;
+    },
+    (content) => {
+      rm2(["请记住本书首发域名：", "www.shuquge.com"], content);
+      return content;
+    },
+    1
+  );
+
+export const xyqxs = () =>
+  mkBiquge(
+    (introDom) => {
+      rms(
+        [/推荐地址：https:\/\/www.xyqxs.cc\/html\/\d+\/\d+\/index\.html/g],
+        introDom
+      );
+      return introDom;
+    },
+    (content) => {
+      rm("div[style]", true, content);
+      rm("script", true, content);
+      rm('div[align="center"]', false, content);
+      rms(
+        [
+          "请记住本书首发域名：www.xyqxs.cc。笔趣阁手机版阅读网址：m.xyqxs.cc",
+          /\(https:\/\/www.xyqxs.cc\/html\/\d+\/\d+\/\d+\.html\)/,
+        ],
+        content
+      );
+      return content;
+    }
+  );
+
+export const lusetxt = () =>
+  mkBiquge(
+    (introDom) => {
+      rm2(
+        ["无弹窗免费全文阅读为转载作品", "无弹窗推荐地址", "简介："],
+        introDom
+      );
+      return introDom;
+    },
+    (content) => {
+      rm("script", true, content);
+      rm("div[style]", true, content);
+      rm("div[align]", true, content);
+      rm2(["https://www.lusetxt.com/books", "请记住本书首发域名"], content);
+      htmlTrim(content);
+      return content;
+    }
+  );
+
+export const yqxs = () =>
+  mkBiquge(
+    (introDom) => {
+      rms(["<span>简介：</span>"], introDom);
+      rm2(["推荐地址："], introDom);
+      return introDom;
+    },
+    (content) => {
+      rm("script", true, content);
+      rm('div[align="center"]', false, content);
+      rm2(["//www.yqxs.cc/html/", "请记住本书首发域名"], content);
+      return content;
+    }
+  );
+
+export const dingdiann = () =>
+  mkBiquge(
+    (introDom) => introDom,
+    (content) => {
+      rm("div", false, content);
+      rm("script", true, content);
+      rm2(["www.dingdiann.net", "最新全本："], content);
+      htmlTrim(content);
+      return content;
+    },
+    5
   );
