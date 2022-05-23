@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.9.3.710
+// @version        4.9.3.711
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/404-novel-project/novel-downloader
@@ -201,6 +201,7 @@
 // @match          *://www.znlzd.com/bqg/*/
 // @match          *://www.znlzd.com/bqg/11365/index_*.html
 // @match          *://www.yyun.net/xs/*/
+// @match          *://www.yb3.cc/5200/*/
 // @name:en        novel-downloader
 // @name:ja        小説ダウンローダー
 // @description:en An scalable universal novel downloader.
@@ -9223,53 +9224,59 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "yruan": () => (/* binding */ yruan)
 /* harmony export */ });
 /* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/misc.ts");
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
-/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/biquge/template.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/rules/biquge/template.ts");
 /* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/cleanDOM.ts");
 
 
 
 
-const common = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiquge */ .Hb)((introDom) => introDom, (content) => content);
-const gebiqu = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiquge */ .Hb)((introDom) => {
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .up)([/如果您喜欢.+，别忘记分享给朋友/g], introDom);
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)('a[href^="http://down.gebiqu.com"]', false, introDom);
+const commonContentPatch = (content) => {
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("script", true, content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("div[style]", true, content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("div[align]", true, content);
+    return content;
+};
+const common = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Hb)((introDom) => introDom, commonContentPatch);
+const gebiqu = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Hb)((introDom) => {
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rms */ .up)([/如果您喜欢.+，别忘记分享给朋友/g], introDom);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)('a[href^="http://down.gebiqu.com"]', false, introDom);
     return introDom;
 }, (content) => {
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .up)([/"www.gebiqu.com"/g], content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rms */ .up)([/"www.gebiqu.com"/g], content);
     return content;
 });
-const luoqiuzw = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiquge */ .Hb)((introDom) => introDom, (content) => {
+const luoqiuzw = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Hb)((introDom) => introDom, (content) => {
     const ad = content.firstElementChild;
     if (ad.innerText.includes("天才一秒记住本站地址：")) {
         ad.remove();
     }
     const ads = ["记住网址m.luoqｉｕｘｚｗ．ｃｏｍ"];
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .up)(ads, content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rms */ .up)(ads, content);
     return content;
 });
-const lwxs9 = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiquge */ .Hb)((introDom) => introDom, (content) => {
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("div[align]", false, content);
+const lwxs9 = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Hb)((introDom) => introDom, (content) => {
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("div[align]", false, content);
     return content;
 });
-const biquwx = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiquge */ .Hb)((introDom) => {
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .up)([
+const biquwx = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Hb)((introDom) => {
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rms */ .up)([
         /本站提示：各位书友要是觉得《.+》还不错的话请不要忘记向您QQ群和微博里的朋友推荐哦！/,
     ], introDom);
     return introDom;
 }, (content) => content, 1);
-const tycqxs = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiquge */ .Hb)((introDom) => introDom, (content) => {
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .up)([
+const tycqxs = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Hb)((introDom) => introDom, (content) => {
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rms */ .up)([
         /推荐都市大神老施新书:<a href="https:\/\/www\.tycqxs\.com\/[\d_]+\/" target="_blank">.+<\/a>/,
     ], content);
     return content;
 });
-const dijiubook = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiquge */ .Hb)((introDom) => {
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .up)(["本书网址："], introDom);
+const dijiubook = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Hb)((introDom) => {
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rms */ .up)(["本书网址："], introDom);
     return introDom;
 }, (content) => {
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("a", true, content);
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)('img[src$="alipay.png"]', true, content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("a", true, content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)('img[src$="alipay.png"]', true, content);
     return content;
 }, 1, (classThis) => {
     classThis.maxRunLimit = 1;
@@ -9289,92 +9296,92 @@ const dijiubook = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiquge */
         return chapter;
     }
 });
-const c25zw = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiquge */ .Hb)((introDom) => {
+const c25zw = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Hb)((introDom) => {
     introDom.querySelector("font")?.parentElement?.remove();
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .up)(["简介:"], introDom);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rms */ .up)(["简介:"], introDom);
     return introDom;
 }, (content) => {
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)(".bottem", false, content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)(".bottem", false, content);
     return content;
 });
-const xbiquge = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiquge */ .Hb)((introDom) => introDom, (content) => {
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .up)([`笔趣阁 www.xbiquge.so，最快更新.+ ！`], content);
+const xbiquge = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Hb)((introDom) => introDom, (content) => {
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rms */ .up)([`笔趣阁 www.xbiquge.so，最快更新.+ ！`], content);
     return content;
 });
-const yruan = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiquge */ .Hb)((introDom) => {
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .vS)(["本站提示：各位书友要是觉得"], introDom);
+const yruan = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Hb)((introDom) => {
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rm2 */ .vS)(["本站提示：各位书友要是觉得"], introDom);
     return introDom;
 }, (content) => content, 3);
-const ranwen = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiquge */ .Hb)((introDom) => {
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .vS)(["还不错的话请不要忘记向您QQ群和微博里的朋友推荐哦！"], introDom);
+const ranwen = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Hb)((introDom) => {
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rm2 */ .vS)(["还不错的话请不要忘记向您QQ群和微博里的朋友推荐哦！"], introDom);
     return introDom;
 }, (content) => content);
-const b5200 = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiquge */ .Hb)((introDom) => introDom, (content) => content, 1);
-const bxwx333 = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiquge */ .Hb)((introDom) => introDom, (content) => {
+const b5200 = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Hb)((introDom) => introDom, (content) => content, 1);
+const bxwx333 = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Hb)((introDom) => introDom, (content) => {
     content.querySelector("#xuanchuan")?.parentElement?.remove();
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("div[style]", true, content);
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)(".bottem2", true, content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("div[style]", true, content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)(".bottem2", true, content);
     return content;
 }, undefined, undefined, undefined, "#zjneirong");
-const xbiqugeLa = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiquge */ .Hb)((introDom) => {
+const xbiqugeLa = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Hb)((introDom) => {
     introDom.querySelector("font")?.parentElement?.remove();
     return introDom;
 }, (content) => {
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .vS)(["手机站全新改版升级地址"], content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rm2 */ .vS)(["手机站全新改版升级地址"], content);
     return content;
 }, 1);
-const shuquge = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiquge */ .Hb)((introDom) => {
+const shuquge = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Hb)((introDom) => {
     document.querySelector(".noshow")?.classList.remove("noshow");
     if (document.querySelector(".showall")) {
         document.querySelector(".showall").innerHTML = "";
     }
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .up)([
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rms */ .up)([
         /作者：.+所写的《.+》无弹窗免费全文阅读为转载作品,章节由网友发布。/,
         /推荐地址：https?:\/\/www\.shuquge\.com\/txt\/\d+\/index\.html/g,
     ], introDom);
     return introDom;
 }, (content) => {
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .vS)(["请记住本书首发域名：", "www.shuquge.com"], content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rm2 */ .vS)(["请记住本书首发域名：", "www.shuquge.com"], content);
     return content;
 }, 1);
-const xyqxs = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiquge */ .Hb)((introDom) => {
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .up)([/推荐地址：https:\/\/www.xyqxs.cc\/html\/\d+\/\d+\/index\.html/g], introDom);
+const xyqxs = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Hb)((introDom) => {
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rms */ .up)([/推荐地址：https:\/\/www.xyqxs.cc\/html\/\d+\/\d+\/index\.html/g], introDom);
     return introDom;
 }, (content) => {
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("div[style]", true, content);
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("script", true, content);
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)('div[align="center"]', false, content);
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .up)([
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("div[style]", true, content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("script", true, content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)('div[align="center"]', false, content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rms */ .up)([
         "请记住本书首发域名：www.xyqxs.cc。笔趣阁手机版阅读网址：m.xyqxs.cc",
         /\(https:\/\/www.xyqxs.cc\/html\/\d+\/\d+\/\d+\.html\)/,
     ], content);
     return content;
 });
-const lusetxt = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiquge */ .Hb)((introDom) => {
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .vS)(["无弹窗免费全文阅读为转载作品", "无弹窗推荐地址", "简介："], introDom);
+const lusetxt = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Hb)((introDom) => {
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rm2 */ .vS)(["无弹窗免费全文阅读为转载作品", "无弹窗推荐地址", "简介："], introDom);
     return introDom;
 }, (content) => {
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("script", true, content);
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("div[style]", true, content);
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("div[align]", true, content);
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .vS)(["https://www.lusetxt.com/books", "请记住本书首发域名"], content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("script", true, content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("div[style]", true, content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("div[align]", true, content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rm2 */ .vS)(["https://www.lusetxt.com/books", "请记住本书首发域名"], content);
     (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_3__/* .htmlTrim */ .iA)(content);
     return content;
 });
-const yqxs = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiquge */ .Hb)((introDom) => {
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .up)(["<span>简介：</span>"], introDom);
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .vS)(["推荐地址："], introDom);
+const yqxs = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Hb)((introDom) => {
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rms */ .up)(["<span>简介：</span>"], introDom);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rm2 */ .vS)(["推荐地址："], introDom);
     return introDom;
 }, (content) => {
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("script", true, content);
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)('div[align="center"]', false, content);
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .vS)(["//www.yqxs.cc/html/", "请记住本书首发域名"], content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("script", true, content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)('div[align="center"]', false, content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rm2 */ .vS)(["//www.yqxs.cc/html/", "请记住本书首发域名"], content);
     return content;
 });
-const dingdiann = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiquge */ .Hb)((introDom) => introDom, (content) => {
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("div", false, content);
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("script", true, content);
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .vS)(["www.dingdiann.net", "最新全本："], content);
+const dingdiann = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Hb)((introDom) => introDom, (content) => {
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("div", false, content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("script", true, content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rm2 */ .vS)(["www.dingdiann.net", "最新全本："], content);
     (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_3__/* .htmlTrim */ .iA)(content);
     return content;
 }, 5);
@@ -20428,7 +20435,8 @@ async function getRule() {
         case "www.bz01.org":
         case "www.aixiawx.com":
         case "www.banzhuer.org":
-        case "www.hongyeshuzhal.com": {
+        case "www.hongyeshuzhal.com":
+        case "www.yb3.cc": {
             const { common } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
             ruleClass = common();
             break;
