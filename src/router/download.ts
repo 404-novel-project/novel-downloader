@@ -581,6 +581,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = mbtxt();
       break;
     }
+    case "www.znlzd.com": {
+      const { znlzd } = await import("../rules/biquge/multiIndexNextPage");
+      ruleClass = znlzd();
+      break;
+    }
     default: {
       throw new Error("Not Found Rule!");
     }

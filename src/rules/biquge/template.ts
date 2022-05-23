@@ -14,25 +14,25 @@ function base(
   return {
     bookUrl: document.location.href,
     bookname: (
-      document.querySelector("#info h1, .info h2") as HTMLElement
+      document.querySelector("#info h1, .info h2, .info h1") as HTMLElement
     ).innerText
       .trim()
       .replace(/最新章节$/, ""),
     author: (
       document.querySelector(
-        "#info > p:nth-child(2), #info > div:nth-child(2), .info .author, .small > span:nth-child(1)"
+        "#info > p:nth-child(2), #info > div:nth-child(2), .info .author, .small > span:nth-child(1), .info .fix > p:nth-child(1)"
       ) as HTMLElement
     ).innerText
       .replace(/作(\s+)?者[：:]/, "")
       .trim(),
     introDom: document.querySelector(
-      "#intro, .intro, .book-intro"
+      "#intro, .intro, .book-intro, .desc"
     ) as HTMLElement,
     introDomPatch,
     coverUrl:
       (
         document.querySelector(
-          "#fmimg > img, .info > .cover > img, .book-boxs > .img > img"
+          "#fmimg > img, .info > .cover > img, .book-boxs > .img > img, .imgbox > img"
         ) as HTMLImageElement
       )?.src ?? null,
     postHook: (chapter: Chapter) => {

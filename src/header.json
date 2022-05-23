@@ -218,7 +218,9 @@
     "*://www.ywggzy.com/bxwx/*/",
     "*://www.ptwxz.net/*/",
     "*://www.ptwxz.net/list/*/",
-    "*://www.mbtxt.la/go/*/"
+    "*://www.mbtxt.la/go/*/",
+    "*://www.znlzd.com/bqg/*/",
+    "*://www.znlzd.com/bqg/11365/index_*.html"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",
