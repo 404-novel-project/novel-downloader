@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.9.2.707
+// @version        4.9.3.710
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/404-novel-project/novel-downloader
@@ -198,6 +198,9 @@
 // @match          *://www.ptwxz.net/*/
 // @match          *://www.ptwxz.net/list/*/
 // @match          *://www.mbtxt.la/go/*/
+// @match          *://www.znlzd.com/bqg/*/
+// @match          *://www.znlzd.com/bqg/11365/index_*.html
+// @match          *://www.yyun.net/xs/*/
 // @name:en        novel-downloader
 // @name:ja        小説ダウンローダー
 // @description:en An scalable universal novel downloader.
@@ -6333,7 +6336,7 @@ function gfetch(url, { method = "GET", headers, data, cookie, binary, nocache, r
         });
     });
 }
-async function getText(input, charset, init) {
+async function getText(input, charset, init, test = (response) => Promise.resolve(false)) {
     if (typeof input === "string") {
         const _url = new URL(input);
         if (document.location.protocol === "https:" && _url.protocol === "http:") {
@@ -6343,8 +6346,8 @@ async function getText(input, charset, init) {
     }
     if (charset === undefined) {
         return fetch(input, init)
-            .then((response) => {
-            if (response.ok) {
+            .then(async (response) => {
+            if (response.ok || (await test(response))) {
                 return response.text();
             }
             else {
@@ -6355,8 +6358,8 @@ async function getText(input, charset, init) {
     }
     else {
         return fetch(input, init)
-            .then((response) => {
-            if (response.ok) {
+            .then(async (response) => {
+            if (response.ok || (await test(response))) {
                 return response.arrayBuffer();
             }
             else {
@@ -6371,8 +6374,8 @@ async function getText(input, charset, init) {
             .catch((error) => _log__WEBPACK_IMPORTED_MODULE_0___default().error(error));
     }
 }
-async function getHtmlDOM(input, charset, init) {
-    const htmlText = await getText(input, charset, init);
+async function getHtmlDOM(input, charset, init, test = (response) => Promise.resolve(false)) {
+    const htmlText = await getText(input, charset, init, test);
     if (!htmlText) {
         throw new Error("Fetch Content failed!");
     }
@@ -6389,12 +6392,12 @@ async function getHtmlDOM(input, charset, init) {
     }
     return doc;
 }
-async function getHtmlDomWithRetry(input, charset, init) {
+async function getHtmlDomWithRetry(input, charset, init, test = (response) => Promise.resolve(false)) {
     let retry = _setting__WEBPACK_IMPORTED_MODULE_1__/* .retryLimit */ .o5;
     let doc = null;
     while (retry > 0) {
         try {
-            doc = await getHtmlDOM(input, charset, init);
+            doc = await getHtmlDOM(input, charset, init, test);
             retry = 0;
         }
         catch (error) {
@@ -6406,12 +6409,13 @@ async function getHtmlDomWithRetry(input, charset, init) {
     }
     return doc;
 }
-async function ggetText(url, charset, init) {
+async function ggetText(url, charset, init, test = (response) => Promise.resolve(false)) {
     let _init = init ? (0,_misc__WEBPACK_IMPORTED_MODULE_2__/* .deepcopy */ .X8)(init) : undefined;
     if (charset === undefined) {
         return gfetch(url, init)
-            .then((response) => {
-            if (response.status >= 200 && response.status <= 299) {
+            .then(async (response) => {
+            if ((response.status >= 200 && response.status <= 299) ||
+                (await test(response))) {
                 return response.responseText;
             }
             else {
@@ -6429,7 +6433,8 @@ async function ggetText(url, charset, init) {
         }
         return gfetch(url, _init)
             .then((response) => {
-            if (response.status >= 200 && response.status <= 299) {
+            if ((response.status >= 200 && response.status <= 299) ||
+                test(response)) {
                 return response.response;
             }
             else {
@@ -6444,8 +6449,8 @@ async function ggetText(url, charset, init) {
             .catch((error) => _log__WEBPACK_IMPORTED_MODULE_0___default().error(error));
     }
 }
-async function ggetHtmlDOM(url, charset, init) {
-    const htmlText = await ggetText(url, charset, init);
+async function ggetHtmlDOM(url, charset, init, test = (response) => Promise.resolve(false)) {
+    const htmlText = await ggetText(url, charset, init, test);
     if (!htmlText) {
         throw new Error("Fetch Content failed!");
     }
@@ -6457,12 +6462,12 @@ async function ggetHtmlDOM(url, charset, init) {
     }
     return doc;
 }
-async function ggetHtmlDomWithRetry(url, charset, init) {
+async function ggetHtmlDomWithRetry(url, charset, init, test = (response) => Promise.resolve(false)) {
     let retry = retryLimit;
     let doc = null;
     while (retry > 0) {
         try {
-            doc = await ggetHtmlDOM(url, charset, init);
+            doc = await ggetHtmlDOM(url, charset, init, test);
             retry = 0;
         }
         catch (error) {
@@ -6811,10 +6816,10 @@ async function gfetchAndParse(url, charset, init, patch, options) {
 /* harmony export */   "uh": () => (/* binding */ deDuplicate)
 /* harmony export */ });
 /* unused harmony export reIndex */
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _cleanDOM__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/cleanDOM.ts");
-/* harmony import */ var _http__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _http__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/http.ts");
 /* harmony import */ var p_limit__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/p-limit/index.js");
 /* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/main.ts");
 
@@ -6834,10 +6839,10 @@ async function introDomHandle(introDom, domPatch) {
         return [introCleantext, introCleanDom, introCleanimages];
     }
 }
-async function nextPageParse({ chapterName, chapterUrl, charset, selector, contentPatch, getNextPage, continueCondition, enableCleanDOM, }) {
-    _log__WEBPACK_IMPORTED_MODULE_2___default().debug(`[Chapter]请求 ${chapterUrl}`);
+async function nextPageParse({ chapterName, chapterUrl, charset, selector, contentPatch, getNextPage, continueCondition, enableCleanDOM, getHtmlDomFunc = _http__WEBPACK_IMPORTED_MODULE_2__/* .getHtmlDOM */ .dL, }) {
+    _log__WEBPACK_IMPORTED_MODULE_3___default().debug(`[Chapter]请求 ${chapterUrl}`);
     let nowUrl = chapterUrl;
-    let doc = await (0,_http__WEBPACK_IMPORTED_MODULE_3__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
+    let doc = await getHtmlDomFunc(chapterUrl, charset);
     const content = document.createElement("div");
     let flag = false;
     do {
@@ -6848,7 +6853,7 @@ async function nextPageParse({ chapterName, chapterUrl, charset, selector, conte
                 flag = true;
             }
             else {
-                _log__WEBPACK_IMPORTED_MODULE_2___default().error("网站页面出错，URL： " + nowUrl);
+                _log__WEBPACK_IMPORTED_MODULE_3___default().error("网站页面出错，URL： " + nowUrl);
                 flag = false;
             }
         }
@@ -6860,9 +6865,9 @@ async function nextPageParse({ chapterName, chapterUrl, charset, selector, conte
             content.appendChild(_c.cloneNode(true));
         }
         if (flag) {
-            _log__WEBPACK_IMPORTED_MODULE_2___default().debug(`[Chapter]请求 ${nextLink}`);
+            _log__WEBPACK_IMPORTED_MODULE_3___default().debug(`[Chapter]请求 ${nextLink}`);
             nowUrl = nextLink;
-            doc = await (0,_http__WEBPACK_IMPORTED_MODULE_3__/* .getHtmlDOM */ .dL)(nextLink, charset);
+            doc = await getHtmlDomFunc(nextLink, charset);
         }
     } while (flag);
     let dom, text, images;
@@ -6978,7 +6983,7 @@ function deDuplicate(chapters) {
     reIndex(results);
     return results;
 }
-async function chapterHiddenFix(book, invalidTest, getPrevHref, concurrencyLimit) {
+async function chapterHiddenFix(book, invalidTest, getPrevHref, concurrencyLimit, getHtmlDomFunc = _http__WEBPACK_IMPORTED_MODULE_2__/* .getHtmlDOM */ .dL) {
     const { chapters } = book;
     const invalidChapterList = chapters.filter(invalidTest);
     const limit = (0,p_limit__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Z)(concurrencyLimit);
@@ -6991,7 +6996,7 @@ async function chapterHiddenFix(book, invalidTest, getPrevHref, concurrencyLimit
         const nextChapter = chapterList.filter((c) => c.chapterNumber === no + 1)?.[0];
         if (nextChapter) {
             const nextChapterUrl = nextChapter.chapterUrl;
-            const doc = await (0,_http__WEBPACK_IMPORTED_MODULE_3__/* .getHtmlDOM */ .dL)(nextChapterUrl, nextChapter.charset);
+            const doc = await getHtmlDomFunc(nextChapterUrl, nextChapter.charset);
             const href = getPrevHref(doc);
             if (href) {
                 invalidChapter.chapterUrl = href;
@@ -8981,51 +8986,18 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "biqu55": () => (/* binding */ biqu55)
 /* harmony export */ });
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/dom.ts");
-/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/http.ts");
-/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/http.ts");
 /* harmony import */ var _onePage_template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/rules/biquge/template.ts");
 
 
 
 
 const biqu55 = () => (0,_onePage_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
-    bookUrl: document.location.href,
-    bookname: document.querySelector("#info h1, .info > h2").innerText
-        .trim()
-        .replace(/最新章节$/, ""),
-    author: document.querySelector("#info > p:nth-child(2), #info > div:nth-child(2), .small > span:nth-child(1)").innerText
-        .replace(/作(\s+)?者[：:]/, "")
-        .trim(),
-    introDom: document.querySelector("#intro, .intro"),
-    introDomPatch: (introDom) => introDom,
-    coverUrl: document.querySelector("#fmimg > img, .info > .cover > img")?.src ?? null,
-    aList: document.querySelectorAll("#list a, .listmain a"),
-    sections: document.querySelectorAll("#list dt, .listmain dt"),
-    getSName: (sElem) => {
-        const b = sElem.querySelector("b");
-        if (b) {
-            return b.innerText;
-        }
-        return sElem.innerText;
-    },
-    postHook: (chapter) => {
-        if (chapter.sectionName) {
-            if (chapter.sectionName.includes("《")) {
-                chapter.sectionName = chapter.sectionName
-                    .replace(`《${chapter.bookname}》`, "")
-                    .trim();
-            }
-            else {
-                chapter.sectionName = chapter.sectionName
-                    .replace(chapter.bookname, "")
-                    .trim();
-            }
-        }
-        return chapter;
-    },
+    ...(0,_template__WEBPACK_IMPORTED_MODULE_1__/* .baseOnePage */ .FG)((introDom) => introDom, 5),
     getContentFromUrl: async (chapterUrl, chapterName, charset) => {
-        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
         const script = Array.from(doc.querySelectorAll("script"))
             .filter((s) => s.innerHTML.includes("article_id"))?.[0]
             ?.innerHTML.split("\n")
@@ -9062,170 +9034,169 @@ return new Request(url, {
         }
     },
     contentPatch: (content) => {
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__/* .rm2 */ .vS)(["数据和书签与电脑站同步，无广告清新阅读"], content);
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_3__/* .rm2 */ .vS)(["数据和书签与电脑站同步，无广告清新阅读"], content);
         return content;
-    },
-    concurrencyLimit: 5,
-    overrideConstructor: (classThis) => {
-        const rawBookParse = classThis.bookParse;
-        classThis.bookParse = async () => {
-            const book = (await Reflect.apply(rawBookParse, classThis, []));
-            const chapters = book.chapters;
-            book.chapters = (0,_lib_rule__WEBPACK_IMPORTED_MODULE_3__/* .deDuplicate */ .uh)(chapters);
-            return book;
-        };
-        return classThis;
     },
 });
 
 
 /***/ }),
 
-/***/ "./src/rules/biquge/template.ts":
+/***/ "./src/rules/biquge/mht.ts":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
+__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "R": () => (/* binding */ mkBiqugeClass),
-/* harmony export */   "y": () => (/* binding */ mkBiqugeClassNextPage)
+/* harmony export */   "mht": () => (/* binding */ mht)
 /* harmony export */ });
-/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
 /* harmony import */ var _onePage_template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/rules/biquge/template.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/lib/cleanDOM.ts");
 
 
-function mkBiqugeClass(introDomPatch, contentPatch, concurrencyLimit, overRide, postHook, chapterContenSelector = "#content") {
-    return (0,_onePage_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
-        bookUrl: document.location.href,
-        bookname: document.querySelector("#info h1, .info > h2").innerText
-            .trim()
-            .replace(/最新章节$/, ""),
-        author: document.querySelector("#info > p:nth-child(2), #info > div:nth-child(2), .small > span:nth-child(1)").innerText
-            .replace(/作(\s+)?者[：:]/, "")
-            .trim(),
-        introDom: document.querySelector("#intro, .intro"),
-        introDomPatch,
-        coverUrl: document.querySelector("#fmimg > img, .info > .cover > img")?.src ?? null,
-        aList: document.querySelectorAll("#list a, .listmain a"),
-        sections: document.querySelectorAll("#list dt, .listmain dt"),
-        getSName: (sElem) => {
-            const b = sElem.querySelector("b");
-            if (b) {
-                return b.innerText;
-            }
-            return sElem.innerText;
-        },
-        postHook: (chapter) => {
-            if (chapter.sectionName) {
-                if (chapter.sectionName.includes("《")) {
-                    chapter.sectionName = chapter.sectionName
-                        .replace(`《${chapter.bookname}》`, "")
-                        .trim();
-                }
-                else {
-                    chapter.sectionName = chapter.sectionName
-                        .replace(chapter.bookname, "")
-                        .trim();
-                }
-            }
-            if (postHook) {
-                const out = postHook(chapter);
-                return out;
-            }
-            return chapter;
-        },
-        getContent: (doc) => doc.querySelector(chapterContenSelector),
-        contentPatch,
-        concurrencyLimit,
-        overrideConstructor: (classThis) => {
-            const rawBookParse = classThis.bookParse;
-            classThis.bookParse = async () => {
-                const book = (await Reflect.apply(rawBookParse, classThis, []));
-                const chapters = book.chapters;
-                book.chapters = (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .deDuplicate */ .uh)(chapters);
-                return book;
+
+
+
+
+const mht = () => (0,_onePage_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+    ...(0,_template__WEBPACK_IMPORTED_MODULE_1__/* .baseOnePage */ .FG)((introDom) => introDom, 5),
+    getContentFromUrl: async (chapterUrl, chapterName, charset) => {
+        const ngetHtmlDOM = (input, charset, init) => {
+            const test = async (response) => {
+                const resp = response.clone();
+                const text = await resp.text();
+                return text.includes('<div id="content">');
             };
-            if (overRide) {
-                overRide(classThis);
-            }
-            return classThis;
-        },
-    });
-}
-function mkBiqugeClassNextPage(introDomPatch, contentPatch, getNextPage, continueCondition, concurrencyLimit, overRide, postHook, chapterContenSelector = "#content") {
-    return (0,_onePage_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
-        bookUrl: document.location.href,
-        bookname: document.querySelector("#info h1, .info > h2").innerText
-            .trim()
-            .replace(/最新章节$/, ""),
-        author: document.querySelector("#info > p:nth-child(2), #info > div:nth-child(2), .small > span:nth-child(1)").innerText
-            .replace(/作(\s+)?者[：:]/, "")
-            .trim(),
-        introDom: document.querySelector("#intro, .intro"),
-        introDomPatch,
-        coverUrl: document.querySelector("#fmimg > img, .info > .cover > img")?.src ?? null,
-        aList: document.querySelectorAll("#list a, .listmain a"),
-        sections: document.querySelectorAll("#list dt, .listmain dt"),
-        getSName: (sElem) => {
-            const b = sElem.querySelector("b");
-            if (b) {
-                return b.innerText;
-            }
-            return sElem.innerText;
-        },
-        postHook: (chapter) => {
-            if (chapter.sectionName) {
-                if (chapter.sectionName.includes("《")) {
-                    chapter.sectionName = chapter.sectionName
-                        .replace(`《${chapter.bookname}》`, "")
-                        .trim();
-                }
-                else {
-                    chapter.sectionName = chapter.sectionName
-                        .replace(chapter.bookname, "")
-                        .trim();
-                }
-            }
-            if (postHook) {
-                const out = postHook(chapter);
-                return out;
-            }
-            return chapter;
-        },
-        getContentFromUrl: async (chapterUrl, chapterName, charset) => {
-            const { contentRaw } = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .nextPageParse */ .I2)({
-                chapterName,
-                chapterUrl,
-                charset,
-                selector: chapterContenSelector,
-                contentPatch,
-                getNextPage,
-                continueCondition,
-                enableCleanDOM: false,
-            });
-            return contentRaw;
-        },
-        contentPatch: (dom) => dom,
-        concurrencyLimit,
-        overrideConstructor: (classThis) => {
-            const rawBookParse = classThis.bookParse;
-            classThis.bookParse = async () => {
-                const book = (await Reflect.apply(rawBookParse, classThis, []));
-                const chapters = book.chapters;
-                book.chapters = (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .deDuplicate */ .uh)(chapters);
-                return book;
-            };
-            if (overRide) {
-                overRide(classThis);
-            }
-            return classThis;
-        },
-    });
-}
+            return (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .getHtmlDOM */ .dL)(input, charset, init, test);
+        };
+        const { contentRaw } = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_3__/* .nextPageParse */ .I2)({
+            chapterName,
+            chapterUrl,
+            charset,
+            selector: "#content",
+            contentPatch: (content) => {
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__.rm)("p[data-id]", true, content);
+                (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_5__/* .htmlTrim */ .iA)(content);
+                return content;
+            },
+            getNextPage: (doc) => doc.querySelector(".bottem2 > a:nth-child(4)")
+                .href,
+            continueCondition: (_content, nextLink) => new URL(nextLink).pathname.includes("_"),
+            enableCleanDOM: false,
+            getHtmlDomFunc: ngetHtmlDOM,
+        });
+        return contentRaw;
+    },
+    contentPatch: (dom) => dom,
+});
 
 
 /***/ }),
 
-/***/ "./src/rules/biquge/type1.ts":
+/***/ "./src/rules/biquge/multiIndexNextPage.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "c226ks": () => (/* binding */ c226ks),
+/* harmony export */   "znlzd": () => (/* binding */ znlzd)
+/* harmony export */ });
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/biquge/template.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
+
+
+const znlzd = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeMultiIndexNextPage */ .HW)((dom) => dom, (content) => {
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("div", true, content);
+    return content;
+}, (doc) => doc.querySelector("div.section-opt:nth-child(1) > a:nth-child(5)")?.href ?? "", (_content, nextLink) => {
+    if (nextLink === "") {
+        return false;
+    }
+    const pathname = nextLink.split("/").slice(-1)[0];
+    return pathname.includes("_");
+});
+const c226ks = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeMultiIndexNextPage */ .HW)((introDom) => introDom, (content) => content, (doc) => doc.querySelector("section.g-content-nav > a:nth-child(3)").href, (_content, nextLink) => {
+    const pathname = nextLink.split("/").slice(-1)[0];
+    return pathname.includes("_");
+});
+
+
+/***/ }),
+
+/***/ "./src/rules/biquge/nextPage.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "xinwanben": () => (/* binding */ xinwanben),
+/* harmony export */   "yyun": () => (/* binding */ yyun)
+/* harmony export */ });
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/biquge/template.ts");
+
+
+
+const xinwanben = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeNextPage */ .B4)((introDom) => {
+    const _bookname = introDom.innerHTML.match(/《(.*)》/);
+    let bookname;
+    if (_bookname?.length === 2) {
+        bookname = _bookname[1];
+    }
+    const adList = [
+        "还不错的话请不要忘记向您QQ群和微博里的朋友推荐哦！",
+        "小说免费阅读地址：",
+    ];
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .vS)(adList, introDom);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .up)([`${bookname}小说简介：`], introDom);
+    return introDom;
+}, (content) => {
+    const filters = [
+        "手机用户输入地址",
+        "提示：浏览器搜索",
+        "把本站分享那些需要的小伙伴！找不到书请留言！",
+        "【完本神站】",
+    ];
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .vS)(filters, content);
+    (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__/* .htmlTrim */ .iA)(content);
+    return content;
+}, (doc) => doc.querySelector("#next_url").href, (_content, nextLink) => new URL(nextLink).pathname.includes("_"));
+const yyun = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeNextPage */ .B4)((introDom) => {
+    const _bookname = introDom.innerHTML.match(/《(.*)》/);
+    let bookname;
+    if (_bookname?.length === 2) {
+        bookname = _bookname[1];
+    }
+    const adList = [
+        "还不错的话请不要忘记向您QQ群和微博里的朋友推荐哦！",
+        "小说免费阅读地址：",
+    ];
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .vS)(adList, introDom);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .up)([`${bookname}小说简介：`], introDom);
+    return introDom;
+}, (content) => {
+    const filters = [
+        "提示♂浏览器♂搜索♂",
+        "长夜读:一秒记住",
+        "【烟云小说】",
+        "【m.yyun.net】",
+    ];
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .vS)(filters, content);
+    (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__/* .htmlTrim */ .iA)(content);
+    return content;
+}, (doc) => doc.querySelector(".bottem2 > a:nth-child(3)")
+    .href, (_content, nextLink) => new URL(nextLink).pathname.includes("_"));
+
+
+/***/ }),
+
+/***/ "./src/rules/biquge/onePage.ts":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -9237,23 +9208,30 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "c25zw": () => (/* binding */ c25zw),
 /* harmony export */   "common": () => (/* binding */ common),
 /* harmony export */   "dijiubook": () => (/* binding */ dijiubook),
+/* harmony export */   "dingdiann": () => (/* binding */ dingdiann),
 /* harmony export */   "gebiqu": () => (/* binding */ gebiqu),
 /* harmony export */   "luoqiuzw": () => (/* binding */ luoqiuzw),
+/* harmony export */   "lusetxt": () => (/* binding */ lusetxt),
 /* harmony export */   "lwxs9": () => (/* binding */ lwxs9),
 /* harmony export */   "ranwen": () => (/* binding */ ranwen),
+/* harmony export */   "shuquge": () => (/* binding */ shuquge),
 /* harmony export */   "tycqxs": () => (/* binding */ tycqxs),
 /* harmony export */   "xbiquge": () => (/* binding */ xbiquge),
 /* harmony export */   "xbiqugeLa": () => (/* binding */ xbiqugeLa),
+/* harmony export */   "xyqxs": () => (/* binding */ xyqxs),
+/* harmony export */   "yqxs": () => (/* binding */ yqxs),
 /* harmony export */   "yruan": () => (/* binding */ yruan)
 /* harmony export */ });
 /* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/misc.ts");
 /* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
 /* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/biquge/template.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/cleanDOM.ts");
 
 
 
-const common = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass */ .R)((introDom) => introDom, (content) => content);
-const gebiqu = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass */ .R)((introDom) => {
+
+const common = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiquge */ .Hb)((introDom) => introDom, (content) => content);
+const gebiqu = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiquge */ .Hb)((introDom) => {
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .up)([/如果您喜欢.+，别忘记分享给朋友/g], introDom);
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)('a[href^="http://down.gebiqu.com"]', false, introDom);
     return introDom;
@@ -9261,7 +9239,7 @@ const gebiqu = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass 
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .up)([/"www.gebiqu.com"/g], content);
     return content;
 });
-const luoqiuzw = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass */ .R)((introDom) => introDom, (content) => {
+const luoqiuzw = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiquge */ .Hb)((introDom) => introDom, (content) => {
     const ad = content.firstElementChild;
     if (ad.innerText.includes("天才一秒记住本站地址：")) {
         ad.remove();
@@ -9270,23 +9248,23 @@ const luoqiuzw = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClas
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .up)(ads, content);
     return content;
 });
-const lwxs9 = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass */ .R)((introDom) => introDom, (content) => {
+const lwxs9 = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiquge */ .Hb)((introDom) => introDom, (content) => {
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("div[align]", false, content);
     return content;
 });
-const biquwx = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass */ .R)((introDom) => {
+const biquwx = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiquge */ .Hb)((introDom) => {
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .up)([
         /本站提示：各位书友要是觉得《.+》还不错的话请不要忘记向您QQ群和微博里的朋友推荐哦！/,
     ], introDom);
     return introDom;
 }, (content) => content, 1);
-const tycqxs = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass */ .R)((introDom) => introDom, (content) => {
+const tycqxs = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiquge */ .Hb)((introDom) => introDom, (content) => {
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .up)([
         /推荐都市大神老施新书:<a href="https:\/\/www\.tycqxs\.com\/[\d_]+\/" target="_blank">.+<\/a>/,
     ], content);
     return content;
 });
-const dijiubook = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass */ .R)((introDom) => {
+const dijiubook = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiquge */ .Hb)((introDom) => {
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .up)(["本书网址："], introDom);
     return introDom;
 }, (content) => {
@@ -9301,14 +9279,17 @@ const dijiubook = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeCla
         await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_2__/* .sleep */ ._v)(3000 * Math.random());
         return obj;
     };
+    return classThis;
 }, (chapter) => {
     const url = new URL(chapter.chapterUrl);
     if (url.host === "m.dijiubook.net" || url.href.endsWith(".apk")) {
         return;
     }
-    return chapter;
+    else {
+        return chapter;
+    }
 });
-const c25zw = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass */ .R)((introDom) => {
+const c25zw = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiquge */ .Hb)((introDom) => {
     introDom.querySelector("font")?.parentElement?.remove();
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .up)(["简介:"], introDom);
     return introDom;
@@ -9316,54 +9297,33 @@ const c25zw = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass *
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)(".bottem", false, content);
     return content;
 });
-const xbiquge = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass */ .R)((introDom) => introDom, (content) => {
+const xbiquge = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiquge */ .Hb)((introDom) => introDom, (content) => {
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .up)([`笔趣阁 www.xbiquge.so，最快更新.+ ！`], content);
     return content;
 });
-const yruan = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass */ .R)((introDom) => {
+const yruan = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiquge */ .Hb)((introDom) => {
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .vS)(["本站提示：各位书友要是觉得"], introDom);
     return introDom;
 }, (content) => content, 3);
-const ranwen = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass */ .R)((introDom) => {
+const ranwen = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiquge */ .Hb)((introDom) => {
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .vS)(["还不错的话请不要忘记向您QQ群和微博里的朋友推荐哦！"], introDom);
     return introDom;
 }, (content) => content);
-const b5200 = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass */ .R)((introDom) => introDom, (content) => content, 1);
-const bxwx333 = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass */ .R)((introDom) => introDom, (content) => {
+const b5200 = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiquge */ .Hb)((introDom) => introDom, (content) => content, 1);
+const bxwx333 = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiquge */ .Hb)((introDom) => introDom, (content) => {
     content.querySelector("#xuanchuan")?.parentElement?.remove();
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("div[style]", true, content);
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)(".bottem2", true, content);
     return content;
 }, undefined, undefined, undefined, "#zjneirong");
-const xbiqugeLa = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass */ .R)((introDom) => {
+const xbiqugeLa = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiquge */ .Hb)((introDom) => {
     introDom.querySelector("font")?.parentElement?.remove();
     return introDom;
 }, (content) => {
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .vS)(["手机站全新改版升级地址"], content);
     return content;
 }, 1);
-
-
-/***/ }),
-
-/***/ "./src/rules/biquge/type2.ts":
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "lusetxt": () => (/* binding */ lusetxt),
-/* harmony export */   "shuquge": () => (/* binding */ shuquge),
-/* harmony export */   "xyqxs": () => (/* binding */ xyqxs),
-/* harmony export */   "yqxs": () => (/* binding */ yqxs)
-/* harmony export */ });
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/cleanDOM.ts");
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
-/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/biquge/template.ts");
-
-
-
-const shuquge = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass */ .R)((introDom) => {
+const shuquge = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiquge */ .Hb)((introDom) => {
     document.querySelector(".noshow")?.classList.remove("noshow");
     if (document.querySelector(".showall")) {
         document.querySelector(".showall").innerHTML = "";
@@ -9377,7 +9337,7 @@ const shuquge = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .vS)(["请记住本书首发域名：", "www.shuquge.com"], content);
     return content;
 }, 1);
-const xyqxs = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass */ .R)((introDom) => {
+const xyqxs = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiquge */ .Hb)((introDom) => {
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .up)([/推荐地址：https:\/\/www.xyqxs.cc\/html\/\d+\/\d+\/index\.html/g], introDom);
     return introDom;
 }, (content) => {
@@ -9390,7 +9350,7 @@ const xyqxs = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass *
     ], content);
     return content;
 });
-const lusetxt = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass */ .R)((introDom) => {
+const lusetxt = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiquge */ .Hb)((introDom) => {
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .vS)(["无弹窗免费全文阅读为转载作品", "无弹窗推荐地址", "简介："], introDom);
     return introDom;
 }, (content) => {
@@ -9398,10 +9358,10 @@ const lusetxt = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("div[style]", true, content);
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("div[align]", true, content);
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .vS)(["https://www.lusetxt.com/books", "请记住本书首发域名"], content);
-    (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__/* .htmlTrim */ .iA)(content);
+    (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_3__/* .htmlTrim */ .iA)(content);
     return content;
 });
-const yqxs = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass */ .R)((introDom) => {
+const yqxs = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiquge */ .Hb)((introDom) => {
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .up)(["<span>简介：</span>"], introDom);
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .vS)(["推荐地址："], introDom);
     return introDom;
@@ -9411,69 +9371,159 @@ const yqxs = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClass */
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .vS)(["//www.yqxs.cc/html/", "请记住本书首发域名"], content);
     return content;
 });
+const dingdiann = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiquge */ .Hb)((introDom) => introDom, (content) => {
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("div", false, content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("script", true, content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .vS)(["www.dingdiann.net", "最新全本："], content);
+    (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_3__/* .htmlTrim */ .iA)(content);
+    return content;
+}, 5);
 
 
 /***/ }),
 
-/***/ "./src/rules/biquge/type3.ts":
+/***/ "./src/rules/biquge/template.ts":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "dingdiann": () => (/* binding */ dingdiann),
-/* harmony export */   "mht": () => (/* binding */ mht),
-/* harmony export */   "xinwanben": () => (/* binding */ xinwanben)
+/* harmony export */   "B4": () => (/* binding */ mkBiqugeNextPage),
+/* harmony export */   "FG": () => (/* binding */ baseOnePage),
+/* harmony export */   "HW": () => (/* binding */ mkBiqugeMultiIndexNextPage),
+/* harmony export */   "Hb": () => (/* binding */ mkBiquge)
 /* harmony export */ });
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/cleanDOM.ts");
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
-/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/biquge/template.ts");
+/* unused harmony exports baseMultiIndex, mkBiqugeMultiIndex */
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _onePage_template__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/rules/onePage/template.ts");
+/* harmony import */ var _onePageWithMultiIndexPage_template__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/rules/onePageWithMultiIndexPage/template.ts");
 
 
 
-const dingdiann = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClassNextPage */ .y)((introDom) => introDom, (content, doc) => {
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("div[align]", false, content);
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("script", true, content);
-    const removelist = [
-        "一秒记住，精彩小说无弹窗免费阅读！",
-        "&lt;/a　:&gt;",
-        "--&gt;&gt;",
-        "本章未完，点击下一页继续阅读",
-    ];
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .up)(removelist, content);
-    (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__/* .htmlTrim */ .iA)(content);
-    return content;
-}, (doc) => doc.querySelector(".bottem2 > a:nth-child(4)")
-    .href, (_content, nextLink) => _content.innerText.includes("本章未完，点击下一页继续阅读"));
-const mht = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClassNextPage */ .y)((introDom) => introDom, (content, doc) => {
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("p[data-id]", true, content);
-    (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__/* .htmlTrim */ .iA)(content);
-    return content;
-}, (doc) => doc.querySelector(".bottem2 > a:nth-child(4)")
-    .href, (_content, nextLink) => new URL(nextLink).pathname.includes("_"));
-const xinwanben = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeClassNextPage */ .y)((introDom) => {
-    const _bookname = introDom.innerHTML.match(/《(.*)》/);
-    let bookname;
-    if (_bookname?.length === 2) {
-        bookname = _bookname[1];
-    }
-    const adList = [
-        "还不错的话请不要忘记向您QQ群和微博里的朋友推荐哦！",
-        "小说免费阅读地址：",
-    ];
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .vS)(adList, introDom);
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .up)([`${bookname}小说简介：`], introDom);
-    return introDom;
-}, (content, doc) => {
-    const filters = [
-        "手机用户输入地址",
-        "提示：浏览器搜索",
-        "把本站分享那些需要的小伙伴！找不到书请留言！",
-    ];
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .vS)(filters, content);
-    (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__/* .htmlTrim */ .iA)(content);
-    return content;
-}, (doc) => doc.querySelector("#next_url").href, (_content, nextLink) => new URL(nextLink).pathname.includes("_"));
+function base(introDomPatch, concurrencyLimit, overRide, postHook) {
+    return {
+        bookUrl: document.location.href,
+        bookname: document.querySelector("#info h1, .info h2, .info h1").innerText
+            .trim()
+            .replace(/最新章节$/, ""),
+        author: document.querySelector("#info > p:nth-child(2), #info > div:nth-child(2), .info .author, .small > span:nth-child(1), .info .fix > p:nth-child(1)").innerText
+            .replace(/作(\s+)?者[：:]/, "")
+            .trim(),
+        introDom: document.querySelector("#intro, .intro, .book-intro, .desc"),
+        introDomPatch,
+        coverUrl: document.querySelector("#fmimg > img, .info > .cover > img, .book-boxs > .img > img, .imgbox > img")?.src ?? null,
+        postHook: (chapter) => {
+            if (chapter.sectionName) {
+                if (chapter.sectionName.includes("《")) {
+                    chapter.sectionName = chapter.sectionName
+                        .replace(`《${chapter.bookname}》`, "")
+                        .trim();
+                }
+                else {
+                    chapter.sectionName = chapter.sectionName
+                        .replace(chapter.bookname, "")
+                        .trim();
+                }
+            }
+            if (postHook) {
+                return postHook(chapter);
+            }
+            return chapter;
+        },
+        concurrencyLimit,
+        overrideConstructor: (classThis) => {
+            const rawBookParse = classThis.bookParse;
+            classThis.bookParse = async () => {
+                const book = (await Reflect.apply(rawBookParse, classThis, []));
+                const chapters = book.chapters;
+                book.chapters = (0,_lib_rule__WEBPACK_IMPORTED_MODULE_0__/* .deDuplicate */ .uh)(chapters);
+                return book;
+            };
+            if (overRide) {
+                overRide(classThis);
+            }
+            return classThis;
+        },
+    };
+}
+function baseOnePage(introDomPatch, concurrencyLimit, overRide, postHook) {
+    return {
+        ...base(introDomPatch, concurrencyLimit, overRide, postHook),
+        aList: document.querySelectorAll("#list a, .listmain a"),
+        sections: document.querySelectorAll("#list dt, .listmain dt"),
+        getSName: (sElem) => {
+            const b = sElem.querySelector("b");
+            if (b) {
+                return b.innerText;
+            }
+            return sElem.innerText;
+        },
+    };
+}
+function baseMultiIndex(introDomPatch, concurrencyLimit, overRide, postHook) {
+    return {
+        ...base(introDomPatch, concurrencyLimit, overRide, postHook),
+        getIndexUrls: () => Array.from(document.querySelectorAll('select[name="pageselect"] > option')).map((o) => document.location.origin + o.getAttribute("value")),
+        getAList: (doc) => {
+            const sectionList = Array.from(doc.querySelectorAll("ul.section-list.fix, ul.list")).slice(-1)[0];
+            if (!sectionList) {
+                throw new Error("获取章节列表失败！");
+            }
+            return sectionList.querySelectorAll("li > a");
+        },
+    };
+}
+function mkBiquge(introDomPatch, contentPatch, concurrencyLimit, overRide, postHook, chapterContenSelector = "#content") {
+    return (0,_onePage_template__WEBPACK_IMPORTED_MODULE_1__/* .mkRuleClass */ .x)({
+        ...baseOnePage(introDomPatch, concurrencyLimit, overRide, postHook),
+        getContent: (doc) => doc.querySelector(chapterContenSelector),
+        contentPatch,
+    });
+}
+function mkBiqugeNextPage(introDomPatch, contentPatch, getNextPage, continueCondition, concurrencyLimit, overRide, postHook, chapterContenSelector = "#content") {
+    return (0,_onePage_template__WEBPACK_IMPORTED_MODULE_1__/* .mkRuleClass */ .x)({
+        ...baseOnePage(introDomPatch, concurrencyLimit, overRide, postHook),
+        getContentFromUrl: async (chapterUrl, chapterName, charset) => {
+            const { contentRaw } = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_0__/* .nextPageParse */ .I2)({
+                chapterName,
+                chapterUrl,
+                charset,
+                selector: chapterContenSelector,
+                contentPatch,
+                getNextPage,
+                continueCondition,
+                enableCleanDOM: false,
+            });
+            return contentRaw;
+        },
+        contentPatch: (dom) => dom,
+    });
+}
+function mkBiqugeMultiIndexNextPage(introDomPatch, contentPatch, getNextPage, continueCondition, concurrencyLimit, overRide, postHook, chapterContenSelector = "#content") {
+    return (0,_onePageWithMultiIndexPage_template__WEBPACK_IMPORTED_MODULE_2__/* .mkRuleClass */ .x)({
+        ...baseMultiIndex(introDomPatch, concurrencyLimit, overRide, postHook),
+        getContentFromUrl: async (chapterUrl, chapterName, charset) => {
+            const { contentRaw } = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_0__/* .nextPageParse */ .I2)({
+                chapterName,
+                chapterUrl,
+                charset,
+                selector: chapterContenSelector,
+                contentPatch,
+                getNextPage,
+                continueCondition,
+                enableCleanDOM: false,
+            });
+            return contentRaw;
+        },
+        contentPatch: (dom) => dom,
+    });
+}
+function mkBiqugeMultiIndex(introDomPatch, contentPatch, concurrencyLimit, overRide, postHook, chapterContenSelector = "#content") {
+    return mkRuleClassMultiIndex({
+        ...baseMultiIndex(introDomPatch, concurrencyLimit, overRide, postHook),
+        getContent: (doc) => doc.querySelector(chapterContenSelector),
+        contentPatch,
+    });
+}
 
 
 /***/ }),
@@ -10808,59 +10858,6 @@ const ywggzy = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */
             const book = (await Reflect.apply(rawBookParse, classThis, []));
             const chapters = book.chapters;
             book.chapters = (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .deDuplicate */ .uh)(chapters);
-            return book;
-        };
-        return classThis;
-    },
-});
-
-
-/***/ }),
-
-/***/ "./src/rules/onePageWithMultiIndexPage/226ks.ts":
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "c226ks": () => (/* binding */ c226ks)
-/* harmony export */ });
-/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePageWithMultiIndexPage/template.ts");
-
-
-const c226ks = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
-    bookUrl: document.location.href.replace(/index_\d+\.html/, ""),
-    bookname: document.querySelector(".info > h2.name").innerText.trim(),
-    author: document.querySelector(".info > .author").innerText.trim(),
-    introDom: document.querySelector(".book-intro"),
-    introDomPatch: (introDom) => introDom,
-    coverUrl: document.querySelector(".book-boxs > .img > img").src,
-    getIndexUrls: () => Array.from(document.querySelectorAll('[name="pageselect"] > option')).map((opt) => document.location.origin + opt.getAttribute("value")),
-    getAList: (doc) => doc.querySelectorAll("ul.list a"),
-    getContentFromUrl: async (chapterUrl, chapterName, charset) => {
-        const { contentRaw } = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .nextPageParse */ .I2)({
-            chapterName,
-            chapterUrl,
-            charset,
-            selector: "#content",
-            contentPatch: (content, doc) => content,
-            getNextPage: (doc) => doc.querySelector("section.g-content-nav > a:nth-child(3)").href,
-            continueCondition: (_content, nextLink) => {
-                const pathname = nextLink.split("/").slice(-1)[0];
-                return pathname.includes("_");
-            },
-            enableCleanDOM: false,
-        });
-        return contentRaw;
-    },
-    contentPatch: (content) => content,
-    overrideConstructor: (classThis) => {
-        const rawBookParse = classThis.bookParse;
-        classThis.bookParse = async () => {
-            const book = (await Reflect.apply(rawBookParse, classThis, []));
-            const chapters = book.chapters;
-            book.chapters = (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .deDuplicate */ .uh)(chapters);
             return book;
         };
         return classThis;
@@ -20356,18 +20353,18 @@ async function getRule() {
             break;
         }
         case "www.yruan.com": {
-            const { yruan } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/type1.ts"));
+            const { yruan } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
             ruleClass = yruan();
             break;
         }
         case "www.shuquge.com":
         case "www.sizhicn.com": {
-            const { shuquge } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/type2.ts"));
+            const { shuquge } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
             ruleClass = shuquge();
             break;
         }
         case "www.dingdiann.net": {
-            const { dingdiann } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/type3.ts"));
+            const { dingdiann } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
             ruleClass = dingdiann();
             break;
         }
@@ -20379,7 +20376,7 @@ async function getRule() {
             break;
         }
         case "www.266ks.com": {
-            const { c226ks } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePageWithMultiIndexPage/226ks.ts"));
+            const { c226ks } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/multiIndexNextPage.ts"));
             ruleClass = c226ks();
             break;
         }
@@ -20400,7 +20397,7 @@ async function getRule() {
             break;
         }
         case "www.gebiqu.com": {
-            const { gebiqu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/type1.ts"));
+            const { gebiqu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
             ruleClass = gebiqu();
             break;
         }
@@ -20432,7 +20429,7 @@ async function getRule() {
         case "www.aixiawx.com":
         case "www.banzhuer.org":
         case "www.hongyeshuzhal.com": {
-            const { common } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/type1.ts"));
+            const { common } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
             ruleClass = common();
             break;
         }
@@ -20465,7 +20462,7 @@ async function getRule() {
             break;
         }
         case "www.xinwanben.com": {
-            const { xinwanben } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/type3.ts"));
+            const { xinwanben } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/nextPage.ts"));
             ruleClass = xinwanben();
             break;
         }
@@ -20521,12 +20518,12 @@ async function getRule() {
             break;
         }
         case "www.mht99.com": {
-            const { mht } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/type3.ts"));
+            const { mht } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/mht.ts"));
             ruleClass = mht();
             break;
         }
         case "www.xbiquge.so": {
-            const { xbiquge } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/type1.ts"));
+            const { xbiquge } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
             ruleClass = xbiquge();
             break;
         }
@@ -20541,7 +20538,7 @@ async function getRule() {
             break;
         }
         case "www.luoqiuzw.com": {
-            const { luoqiuzw } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/type1.ts"));
+            const { luoqiuzw } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
             ruleClass = luoqiuzw();
             break;
         }
@@ -20568,7 +20565,7 @@ async function getRule() {
             break;
         }
         case "www.yqbiqu.com": {
-            const { xyqxs } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/type2.ts"));
+            const { xyqxs } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
             ruleClass = xyqxs();
             break;
         }
@@ -20612,7 +20609,7 @@ async function getRule() {
             break;
         }
         case "www.lwxs9.org": {
-            const { lwxs9 } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/type1.ts"));
+            const { lwxs9 } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
             ruleClass = lwxs9();
             break;
         }
@@ -20654,22 +20651,22 @@ async function getRule() {
             break;
         }
         case "dijiubook.net": {
-            const { dijiubook } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/type1.ts"));
+            const { dijiubook } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
             ruleClass = dijiubook();
             break;
         }
         case "www.xbiquwx.la": {
-            const { biquwx } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/type1.ts"));
+            const { biquwx } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
             ruleClass = biquwx();
             break;
         }
         case "www.25zw.com": {
-            const { c25zw } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/type1.ts"));
+            const { c25zw } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
             ruleClass = c25zw();
             break;
         }
         case "www.zmccx.com": {
-            const { tycqxs } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/type1.ts"));
+            const { tycqxs } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
             ruleClass = tycqxs();
             break;
         }
@@ -20694,7 +20691,7 @@ async function getRule() {
             break;
         }
         case "www.ranwen.la": {
-            const { ranwen } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/type1.ts"));
+            const { ranwen } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
             ruleClass = ranwen();
             break;
         }
@@ -20751,7 +20748,7 @@ async function getRule() {
             break;
         }
         case "www.lstxt.cc": {
-            const { lusetxt } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/type2.ts"));
+            const { lusetxt } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
             ruleClass = lusetxt();
             break;
         }
@@ -20806,12 +20803,12 @@ async function getRule() {
             break;
         }
         case "www.b5200.net": {
-            const { b5200 } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/type1.ts"));
+            const { b5200 } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
             ruleClass = b5200();
             break;
         }
         case "www.xsyq.cc": {
-            const { yqxs } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/type2.ts"));
+            const { yqxs } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
             ruleClass = yqxs();
             break;
         }
@@ -20826,7 +20823,7 @@ async function getRule() {
             break;
         }
         case "www.bxwx888.org": {
-            const { bxwx333 } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/type1.ts"));
+            const { bxwx333 } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
             ruleClass = bxwx333();
             break;
         }
@@ -20851,7 +20848,7 @@ async function getRule() {
             break;
         }
         case "www.xbiquge.la": {
-            const { xbiqugeLa } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/type1.ts"));
+            const { xbiqugeLa } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
             ruleClass = xbiqugeLa();
             break;
         }
@@ -20898,6 +20895,16 @@ async function getRule() {
         case "www.mbtxt.la": {
             const { mbtxt } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/mbtxt/mbtxt.ts"));
             ruleClass = mbtxt();
+            break;
+        }
+        case "www.znlzd.com": {
+            const { znlzd } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/multiIndexNextPage.ts"));
+            ruleClass = znlzd();
+            break;
+        }
+        case "www.yyun.net": {
+            const { yyun } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/nextPage.ts"));
+            ruleClass = yyun();
             break;
         }
         default: {
