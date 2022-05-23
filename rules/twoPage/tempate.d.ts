@@ -1,6 +1,7 @@
 import { Options } from "../../lib/cleanDOM";
 import { PublicConstructor } from "../../lib/misc";
 import { Chapter } from "../../main/Chapter";
+import { BookAdditionalMetadate } from "../../main/Book";
 import { BaseRuleClass } from "../../rules";
 interface MkRuleClassOptions {
     bookUrl: string;
@@ -11,6 +12,7 @@ interface MkRuleClassOptions {
     getIntroDom: (doc: Document) => HTMLElement;
     introDomPatch: (introDom: HTMLElement) => HTMLElement;
     getCoverUrl: (doc: Document) => string | null;
+    additionalMetadatePatch?: (additionalMetadate: BookAdditionalMetadate, doc: Document) => BookAdditionalMetadate;
     getAList: (doc: Document) => NodeListOf<Element> | Element[];
     getAName?: (aElem: Element) => string;
     getIsVIP?: (aElem: Element) => {
@@ -30,5 +32,5 @@ interface MkRuleClassOptions {
     overrideConstructor?: (classThis: BaseRuleClass) => any;
     language?: string;
 }
-export declare function mkRuleClass({ bookUrl, anotherPageUrl, ToCUrl, getBookname, getAuthor, getIntroDom, introDomPatch, getCoverUrl, getAList, getAName, getIsVIP, getSections, getSName, postHook, getContentFromUrl, getContent, contentPatch, concurrencyLimit, needLogin, nsfw, cleanDomOptions, overrideConstructor, language, }: MkRuleClassOptions): PublicConstructor<BaseRuleClass>;
+export declare function mkRuleClass({ bookUrl, anotherPageUrl, ToCUrl, getBookname, getAuthor, getIntroDom, introDomPatch, getCoverUrl, additionalMetadatePatch, getAList, getAName, getIsVIP, getSections, getSName, postHook, getContentFromUrl, getContent, contentPatch, concurrencyLimit, needLogin, nsfw, cleanDomOptions, overrideConstructor, language, }: MkRuleClassOptions): PublicConstructor<BaseRuleClass>;
 export {};

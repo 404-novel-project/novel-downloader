@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        小说下载器测试脚本
-// @version     4.9.2.700
+// @version     4.9.2.704
 // @author      bgme
 // @description 小说下载器测试脚本
 // @match       *://www.ciweimao.com/chapter-list/*
@@ -73,6 +73,7 @@
 // @match       *://www.hongyeshuzhal.com/shuzhai/*/
 // @match       *://www.linovelib.com/novel/*/catalog
 // @match       *://www.linovelib.com/novel/*.html
+// @match       *://w.linovelib.com/novel/*.html
 // @match       *://www.luoqiuzw.com/book/*/
 // @match       *://www.yibige.cc/*/
 // @match       *://www.fushuwang.org/*/*/*/*.html
@@ -87,6 +88,14 @@
 // @match       *://www.soxscc.cc/*/
 // @match       *://www.soshuwu.com/*/
 // @match       *://www.kubiji.net/*/
+// @match       *://www.soxscc.net/book/*.html
+// @match       *://www.soxscc.org/book/*.html
+// @match       *://www.soxs.cc/book/*.html
+// @match       *://www.soshuw.com/book/*.html
+// @match       *://www.soshuwu.org/book/*.html
+// @match       *://www.soxscc.cc/book/*.html
+// @match       *://www.soshuwu.com/book/*.html
+// @match       *://www.kubiji.net/book/*.html
 // @match       *://www.shubaowa.org/*_*/
 // @match       *://www.fuguoduxs.com/*_*/
 // @match       *://www.yqbiqu.com/html/*/*/index.html
@@ -231,6 +240,8 @@
 // @exclude     *://book.sfacg.com/Novel/*/*/*/
 // @exclude     *://www.alphapolis.co.jp/novel/*/*/episode/*
 // @exclude     *://novelup.plus/story/*/*
+// @exclude     *://www.linovelib.com/novel/*/*.html
+// @exclude     *://w.linovelib.com/novel/*/*.html
 // @grant       unsafeWindow
 // @grant       GM_openInTab
 // @grant       window.close
