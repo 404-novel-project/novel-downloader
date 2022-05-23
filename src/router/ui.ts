@@ -334,6 +334,27 @@ export function getUI(): () => UIObject {
         }
       };
     }
+    case "www.wenku8.net": {
+      return () => {
+        if (document.location.pathname.startsWith("/book/")) {
+          return {
+            type: "jump",
+            jumpFunction: () => {
+              const href = document.querySelector<HTMLAnchorElement>(
+                "#content > div:nth-child(1) > div:nth-child(6) > div:nth-child(1) > span:nth-child(1) > fieldset:nth-child(1) > div:nth-child(2) > a:nth-child(1)"
+              )?.href;
+              if (href) {
+                document.location.href = href;
+              } else {
+                return errorObject;
+              }
+            },
+          };
+        } else {
+          return defaultObject;
+        }
+      };
+    }
     default: {
       return () => {
         return defaultObject;

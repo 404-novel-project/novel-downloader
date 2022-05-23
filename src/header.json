@@ -85,6 +85,7 @@
     "*://m.xinwanben.com/*/",
     "*://www.idejian.com/book/*/",
     "*://www.wenku8.net/novel/*/*/index.htm",
+    "*://www.wenku8.net/book/*.htm",
     "*://www.dmzj.com/info/*.html",
     "*://manhua.dmzj.com/*",
     "*://www.westnovel.com/*/*/",

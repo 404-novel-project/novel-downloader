@@ -146,8 +146,8 @@ export async function getRule(): Promise<BaseRuleClass> {
       break;
     }
     case "www.wenku8.net": {
-      const { Wenku8 } = await import("../rules/special/reprint/wenku8");
-      ruleClass = Wenku8;
+      const { wenku8 } = await import("../rules/twoPage/wenku8");
+      ruleClass = wenku8();
       break;
     }
     case "manhua.dmzj.com":
