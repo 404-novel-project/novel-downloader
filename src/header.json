@@ -204,7 +204,8 @@
     "*://novelup.plus/story/*",
     "*://www.69shu.com/txt/*.htm",
     "*://new-read.readmoo.com/mooreader/*",
-    "*://www.iqingguo.com/book/detail/?id=*"
+    "*://www.iqingguo.com/book/detail/?id=*",
+    "*://www.ywggzy.com/bxwx/*/"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",
@@ -329,6 +330,7 @@
     "cdn.shucdn.com",
     "readmoo.com",
     "qingoo.cn",
+    "sundung.com",
     "*"
   ],
   "require": [

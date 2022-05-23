@@ -156,74 +156,121 @@ interface chapterOptions {
 }
 
 interface chapter {
-  id: string; //"628a40ffd9e9677766ff5a48",
-  name: string; //"第401章  登门造访",
-  sn: number; //401
+  //"628a40ffd9e9677766ff5a48",
+  id: string;
+  //"第401章  登门造访",
+  name: string;
+  //401
+  sn: number;
 }
 
 interface chapterDetail extends chapter {
-  bookId: string; //"621dc5c3d9e9677ba6a09f0c"
-  content: string; //小说正文
-  updateTime: number; //1653227775852
+  //"621dc5c3d9e9677ba6a09f0c"
+  bookId: string;
+  //小说正文
+  content: string;
+  //1653227775852
+  updateTime: number;
 }
 
 interface user {
-  id: string; //"5fcdefd0d9e9676cf9c43282",
-  author: string; //"晓看天色",
-  follwerCount: number; //11,
-  image: string; //"http://img.qingoo.cn/img/null.jpg",
-  follow: boolean; //false
+  //"5fcdefd0d9e9676cf9c43282",
+  id: string;
+  //"晓看天色",
+  author: string;
+  //11,
+  follwerCount: number;
+  //"http://img.qingoo.cn/img/null.jpg",
+  image: string;
+  //false
+  follow: boolean;
 }
 
 interface book {
-  id: string; //"621dc5c3d9e9677ba6a09f0c",
-  name: string; //"穿书后，我变成了世界第一反矫达人",
-  description: string; //"苏离言作为钢铁直女，单身孤寡了二十年。\n月老给她牵的红线，哪怕是个钢丝，她都能剪断。\n就是这样的她，一不小心穿越进总裁虐文书里，还成了被虐的女主。\n苏离言觉得——\n这书里的人，除了老娘，都特么有病！\n面对为了给母亲治病，苦苦不肯离婚的女主，苏离言翻了翻白眼。\n“离婚财产分一半，与其巴着男人受虐，不如多去读点书。”\n面对霸道总裁附体的男主，时不时还给她来个壁咚床咚，苏离言无语。\n“大哥这是得了什么病？可曾吃过什么药？小学生都没你这么中二了好吧？”\n",
-  genre: string; //"现代言情",
+  //"621dc5c3d9e9677ba6a09f0c",
+  id: string;
+  //"穿书后，我变成了世界第一反矫达人",
+  name: string;
+  //"苏离言作为钢铁直女，单身孤寡了二十年。\n月老给她牵的红线，哪怕是个钢丝，她都能剪断。\n就是这样的她，一不小心穿越进总裁虐文书里，还成了被虐的女主。\n苏离言觉得——\n这书里的人，除了老娘，都特么有病！\n面对为了给母亲治病，苦苦不肯离婚的女主，苏离言翻了翻白眼。\n“离婚财产分一半，与其巴着男人受虐，不如多去读点书。”\n面对霸道总裁附体的男主，时不时还给她来个壁咚床咚，苏离言无语。\n“大哥这是得了什么病？可曾吃过什么药？小学生都没你这么中二了好吧？”\n",
+  description: string;
+  //"现代言情",
+  genre: string;
   attribute: "serialize" | "finish";
-  status: string; //"enable",
-  imageId: string; //"6247f48db26c3a389a9d4712",
+  //"enable",
+  status: string;
+  //"6247f48db26c3a389a9d4712",
+  imageId: string;
   bannerId: string | null;
-  subGenre: string; //"豪门世家",
-  created: number; //1646118339969,
-  latestModified: number; //1653227775852,
-  lastChapterId: string; //"628a40ffd9e9677766ff5a48",
-  lastChapterSn: number; //401,
-  lastChapterName: string; //"第401章  登门造访",
-  firstChapterId: string; //"621dc63ed9e9677ba6a09f21",
-  firstChapterSn: 1;
-  firstChapterName: string; //"第1章 穿越",
-  author: string; //"晓看天色",
-  userId: string; //"5fcdefd0d9e9676cf9c43282",
-  wordCount: number; //403067;
+  //"豪门世家",
+  subGenre: string;
+  //1646118339969,
+  created: number;
+  //1653227775852,
+  latestModified: number;
+  //"628a40ffd9e9677766ff5a48",
+  lastChapterId: string;
+  //401,
+  lastChapterSn: number;
+  //"第401章  登门造访",
+  lastChapterName: string;
+  //"621dc63ed9e9677ba6a09f21",
+  firstChapterId: string;
+  //1;
+  firstChapterSn: number;
+  //"第1章 穿越",
+  firstChapterName: string;
+  //"晓看天色",
+  author: string;
+  //"5fcdefd0d9e9676cf9c43282",
+  userId: string;
+  //403067;
+  wordCount: number;
   subscribeCount: number | null;
-  clickCount: number; //0;
-  readCount: number; //12083;
-  keepRate7: number; //0;
-  keepRate1: number; //0;
-  dayPv: number; //15;
-  weekPv: number; //411;
+  //0;
+  clickCount: number;
+  //12083;
+  readCount: number;
+  //0;
+  keepRate7: number;
+  //0;
+  keepRate1: number;
+  //15;
+  dayPv: number;
+  //411;
+  weekPv: number;
   monthPv: number | null;
   bannerConfig: null;
-  follwerCount: number; //11;
+  //11;
+  follwerCount: number;
   commentCount: number | null;
-  follow: boolean; //false;
-  authorImage: string; //"http://img.qingoo.cn/img/null.jpg",
-  score: number; //0;
-  scoreNumber: number; //0;
-  supportFans: number; //0;
-  gender: string; //"girl",
+  //false;
+  follow: boolean;
+  //"http://img.qingoo.cn/img/null.jpg",
+  authorImage: string;
+  //0;
+  score: number;
+  //0;
+  scoreNumber: number;
+  //0;
+  supportFans: number;
+  //"girl",
+  gender: string;
   chapter: chapter;
   user: user;
   fansImages: [];
   fansValue: null;
-  lastChapterUpdate: number; //1653126316771;
-  url: string; //"http://img.qingoo.cn/img/6247f48db26c3a389a9d4712.jpg",
-  bannerUrl: string; //""
+  //1653126316771;
+  lastChapterUpdate: number;
+  //"http://img.qingoo.cn/img/6247f48db26c3a389a9d4712.jpg",
+  url: string;
+  //""
+  bannerUrl: string;
 }
 
 interface apiResponse<T> {
-  code: number; //200
+  //200
+  code: number;
   data: T;
-  message: string; //"success"
+  //"success"
+  message: string;
 }

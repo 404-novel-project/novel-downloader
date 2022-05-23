@@ -557,13 +557,16 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = Iqingguo;
       break;
     }
+    case "www.ywggzy.com": {
+      const { ywggzy } = await import("../rules/onePage/ywggzy");
+      ruleClass = ywggzy();
+      break;
+    }
     default: {
       throw new Error("Not Found Rule!");
     }
   }
-  // noinspection UnnecessaryLocalVariableJS
-  const rule = new ruleClass();
-  return rule;
+  return new ruleClass();
 
   function regExpMatch(regexp: RegExp) {
     if (regexp.test(host)) {

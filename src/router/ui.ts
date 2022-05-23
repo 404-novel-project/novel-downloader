@@ -236,6 +236,7 @@ export function getUI(): () => UIObject {
         }
       };
     }
+    case "www.ywggzy.com":
     case "www.yruan.com":
     case "www.shuquge.com":
     case "www.sizhicn.com":
