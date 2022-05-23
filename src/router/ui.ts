@@ -291,6 +291,25 @@ export function getUI(): () => UIObject {
         }
       };
     }
+    case "www.ptwxz.net": {
+      return () => {
+        if (document.location.pathname.startsWith("/list/")) {
+          return {
+            type: "jump",
+            jumpFunction: () => {
+              const p =
+                document.location.pathname.match(/\/list\/(\w+)\//)?.[1];
+              if (!p) {
+                return errorObject;
+              }
+              document.location.pathname = `/${p}/`;
+            },
+          };
+        } else {
+          return defaultObject;
+        }
+      };
+    }
     default: {
       return () => {
         return defaultObject;

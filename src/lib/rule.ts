@@ -5,6 +5,7 @@ import { ChapterParseObject } from "../rules";
 import { cleanDOM } from "./cleanDOM";
 import { getHtmlDOM } from "./http";
 
+/* 简介元素处理 */
 export async function introDomHandle(
   introDom: (Element | HTMLElement) | null,
   domPatch?: (introDom: HTMLElement) => HTMLElement
@@ -35,6 +36,7 @@ interface NextPageParseOptions {
   enableCleanDOM?: boolean;
 }
 
+/* 自动获取下一页 */
 export async function nextPageParse({
   chapterName,
   chapterUrl,
@@ -99,6 +101,7 @@ export async function nextPageParse({
   };
 }
 
+/* 基于元素位置获取卷名 */
 export function getSectionName(
   chapterElement: Element,
   sections: NodeListOf<Element>,
@@ -121,6 +124,7 @@ export function getSectionName(
   return sectionName;
 }
 
+/* 居中检测 */
 export function centerDetct(element: Element): [boolean, Element, number] {
   const docEl = document.documentElement;
   const bodyEl = document.body;
@@ -148,12 +152,13 @@ export function centerDetct(element: Element): [boolean, Element, number] {
   return [true, element, percentY];
 }
 
+/* 章节重排序 */
 export function reIndex(chapters: Chapter[]) {
   chapters = chapters.sort(
     (a: Chapter, b: Chapter) => a.chapterNumber - b.chapterNumber
   );
   let i = 0;
-  let sectionName;
+  let sectionName = "";
   let s = 0;
   let si = 0;
   for (const chapter of chapters) {
@@ -174,6 +179,10 @@ export function reIndex(chapters: Chapter[]) {
   return chapters;
 }
 
+/* 章节去重
+*
+* 当有多个章节时保留最后出现的章节
+* */
 export function deDuplicate(chapters: Chapter[]) {
   interface reduceObj {
     [index: string]: Chapter | Chapter[];

@@ -13,8 +13,8 @@ interface MkRuleClassOptions {
   bookUrl: string;
   bookname: string;
   author: string;
-  introDom: HTMLElement;
-  introDomPatch: (introDom: HTMLElement) => HTMLElement;
+  introDom?: HTMLElement;
+  introDomPatch?: (introDom: HTMLElement) => HTMLElement;
   coverUrl: string | null;
   getIndexUrls?: () => string[] | Promise<string[]>;
   getIndexPages?: () => Promise<(Document | null)[]>;
@@ -86,11 +86,16 @@ export function mkRuleClass({
     }
 
     public async bookParse() {
-      const [introduction, introductionHTML] = await introDomHandle(
-        introDom,
-        introDomPatch
-      );
-
+      let [introduction, introductionHTML]: [
+        string | null,
+        HTMLElement | null
+      ] = [null, null];
+      if (introDom && introDomPatch) {
+        [introduction, introductionHTML] = await introDomHandle(
+          introDom,
+          introDomPatch
+        );
+      }
       const additionalMetadate: BookAdditionalMetadate = {
         language: language ?? "zh",
       };
@@ -189,7 +194,7 @@ export function mkRuleClass({
             charset: this.charset,
             options: { bookname },
           });
-          if (isVIP === true && isPaid === false) {
+          if (isVIP && !isPaid) {
             chapter.status = Status.aborted;
           }
           if (typeof postHook === "function") {

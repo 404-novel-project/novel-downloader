@@ -562,6 +562,13 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = ywggzy();
       break;
     }
+    case "www.ptwxz.net": {
+      const { ptwxz } = await import(
+        "../rules/onePageWithMultiIndexPage/ptwxz"
+      );
+      ruleClass = ptwxz();
+      break;
+    }
     default: {
       throw new Error("Not Found Rule!");
     }

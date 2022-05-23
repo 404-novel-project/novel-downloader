@@ -179,6 +179,7 @@ EPUB文件请使用相应阅读器阅读。
 | [新笔趣阁](https://www.xbiquge.la/)               |✅|❎||
 | [69书吧](https://www.69shu.com/)                |✅|❎||
 | [笔下文学](https://www.ywggzy.com/)               |✅|❎||
+| [飘天文学](https://www.ptwxz.net/)                |✅|❎||
 
 </details>
 

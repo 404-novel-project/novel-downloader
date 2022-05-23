@@ -1,3 +1,4 @@
+/* 移除匹配选择器的元素 */
 export function rm(selector: string, all = false, dom: HTMLElement) {
   if (all) {
     const rs = dom.querySelectorAll(selector);
@@ -10,6 +11,7 @@ export function rm(selector: string, all = false, dom: HTMLElement) {
   }
 }
 
+/* 移除包含相应文本或匹配相应正则的段落元素 */
 export function rm2(filters: (string | RegExp)[], dom: HTMLElement) {
   function doRemove(nodes: HTMLElement | Text) {
     Array.from(nodes.childNodes).forEach((node) => {
@@ -41,6 +43,7 @@ export function rm2(filters: (string | RegExp)[], dom: HTMLElement) {
   doRemove(dom);
 }
 
+/* 替换HTML源码 */
 export function rms(filters: (string | RegExp)[], dom: HTMLElement) {
   for (const ad of filters) {
     if (typeof ad === "string") {
@@ -52,16 +55,18 @@ export function rms(filters: (string | RegExp)[], dom: HTMLElement) {
   return dom;
 }
 
+/* 将某元素下的所有子元素拷备至另一元素下 */
 export function childNodesCopy(src: Element, dest: Element) {
   const childrens = Array.from(src.childNodes);
   childrens.forEach((node) => dest.appendChild(node));
 }
 
+/* 获取元素最大深度 */
 export function getMaxDepth(element: Element) {
   const descendants = element.querySelectorAll("*");
   const depths = Array.from(descendants)
-    .filter((elem) => elem.childElementCount === 0)
-    .map((elem) => getDepth(elem, 0));
+      .filter((elem) => elem.childElementCount === 0)
+      .map((elem) => getDepth(elem, 0));
   return Math.max(...depths);
 
   function getDepth(elem: Element, depth: number): number {
@@ -78,6 +83,7 @@ export function getMaxDepth(element: Element) {
   }
 }
 
+/* 获取该元素下文本总长度 */
 export function getNodeTextLength(element: Element) {
   return Array.from(element.childNodes)
     .filter((node) => node.nodeName === "#text")
@@ -91,6 +97,7 @@ export function getNodeTextLength(element: Element) {
 }
 
 // https://stackoverflow.com/questions/11869582/make-sandbox-around-function-in-javascript
+/* 代码运行沙箱 */
 export function sandboxed(code: string) {
   const frame = document.createElement("iframe");
   document.body.appendChild(frame);
@@ -106,6 +113,7 @@ export function sandboxed(code: string) {
   }
 }
 
+/* 获取 Cookie */
 export function getCookie(name: string) {
   const reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
   const arr = document.cookie.match(reg);
@@ -116,6 +124,7 @@ export function getCookie(name: string) {
   }
 }
 
+/* 创建元素 */
 export function createEl(el: string): HTMLElement {
   const _el = document.createElement("div");
   _el.innerHTML = el;
@@ -126,6 +135,7 @@ export function createEl(el: string): HTMLElement {
   }
 }
 
+/* 创建 style 元素 */
 export function createStyle(style: string, id?: string) {
   const el = createEl(`<style>${style}</style>`);
   if (id) {
@@ -134,6 +144,7 @@ export function createStyle(style: string, id?: string) {
   return el;
 }
 
+/* 获取下一非空领居 */
 export function getNextSibling(node: Element | Text) {
   if (node.nextSibling instanceof HTMLElement) {
     return node.nextSibling;
@@ -147,6 +158,7 @@ export function getNextSibling(node: Element | Text) {
   }
 }
 
+/* 获取前一非空领居 */
 export function getPreviousSibling(node: Element | Text) {
   if (node.previousSibling instanceof HTMLElement) {
     return node.previousSibling;
@@ -160,6 +172,7 @@ export function getPreviousSibling(node: Element | Text) {
   }
 }
 
+/* 获取前一非空领居元素至当前元素之间的 <br> 数量 */
 export function getPreviousBrCount(node: Element | Text): number {
   const previous = getPreviousSibling(node);
   if (previous instanceof HTMLBRElement) {
@@ -169,6 +182,7 @@ export function getPreviousBrCount(node: Element | Text): number {
   }
 }
 
+/* 移除元素前 <br> */
 export function removePreviousBr(node: Element | Text): void {
   const previous = getPreviousSibling(node);
 
@@ -183,6 +197,7 @@ export function removePreviousBr(node: Element | Text): void {
   }
 }
 
+/* 输出全角字符宽度 */
 export function fullWidthLength(input: string) {
   // noinspection UnnecessaryLocalVariableJS
   const length = Array.from(input).reduce((p: number, c: string) => {
@@ -199,6 +214,7 @@ export function fullWidthLength(input: string) {
   return length;
 }
 
+/* HTML 转 XHMTL */
 export function convertHTMLtoXHTML(input: string | Document) {
   let doc;
   if (typeof input === "string") {
@@ -214,6 +230,7 @@ export function convertHTMLtoXHTML(input: string | Document) {
   }
 }
 
+/* Text 前插入 <br> */
 export function insertBrBeforeText(elem: HTMLElement) {
   for (const node of Array.from(elem.childNodes)) {
     if (node instanceof Text && node.textContent?.trim() !== "") {
