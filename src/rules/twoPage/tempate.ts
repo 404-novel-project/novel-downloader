@@ -19,8 +19,8 @@ interface MkRuleClassOptions {
   introDomPatch: (introDom: HTMLElement) => HTMLElement;
   getCoverUrl: (doc: Document) => string | null;
   additionalMetadatePatch?: (
-    doc: Document,
-    additionalMetadate: BookAdditionalMetadate
+    additionalMetadate: BookAdditionalMetadate,
+    doc: Document
   ) => BookAdditionalMetadate;
   getAList: (doc: Document) => NodeListOf<Element> | Element[];
   getAName?: (aElem: Element) => string;
@@ -114,7 +114,7 @@ export function mkRuleClass({
       if (typeof additionalMetadatePatch === "function") {
         Object.assign(
           additionalMetadate,
-          additionalMetadatePatch(doc, additionalMetadate)
+          additionalMetadatePatch(additionalMetadate, doc)
         );
       }
 

@@ -95,6 +95,7 @@
     "*://www.hongyeshuzhal.com/shuzhai/*/",
     "*://www.linovelib.com/novel/*/catalog",
     "*://www.linovelib.com/novel/*.html",
+    "*://w.linovelib.com/novel/*.html",
     "*://www.luoqiuzw.com/book/*/",
     "*://www.yibige.cc/*/",
     "*://www.fushuwang.org/*/*/*/*.html",
@@ -256,7 +257,8 @@
     "*://book.sfacg.com/Novel/*/*/*/",
     "*://www.alphapolis.co.jp/novel/*/*/episode/*",
     "*://novelup.plus/story/*/*",
-    "*://www.linovelib.com/novel/*/*.html"
+    "*://www.linovelib.com/novel/*/*.html",
+    "*://w.linovelib.com/novel/*/*.html"
   ],
   "grant": [
     "unsafeWindow",
