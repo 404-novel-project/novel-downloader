@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.9.3.711
+// @version        4.9.3.713
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/404-novel-project/novel-downloader
@@ -12050,7 +12050,7 @@ function getChapter({ chapterUrl, chapterName, isVIP, isPaid, charset, options, 
                     Accept: "application/json, text/javascript, */*; q=0.01",
                     "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
                     Referer: refererUrl,
-                    Origin: "https://www.ciweimao.com",
+                    Origin: document.location.origin,
                     "X-Requested-With": "XMLHttpRequest",
                 },
                 data: `chapter_id=${chapterIdt}`,
@@ -12067,7 +12067,7 @@ function getChapter({ chapterUrl, chapterName, isVIP, isPaid, charset, options, 
                     Accept: "application/json, text/javascript, */*; q=0.01",
                     "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
                     Referer: refererUrl,
-                    Origin: "https://www.ciweimao.com",
+                    Origin: document.location.origin,
                     "X-Requested-With": "XMLHttpRequest",
                 },
                 data: `chapter_id=${chapterIdt}&chapter_access_key=${chapter_access_key}`,
@@ -12112,7 +12112,7 @@ function getChapter({ chapterUrl, chapterName, isVIP, isPaid, charset, options, 
                 headers: {
                     Accept: "application/json, text/javascript, */*; q=0.01",
                     Referer: refererUrl,
-                    Origin: "https://www.ciweimao.com",
+                    Origin: document.location.origin,
                     "X-Requested-With": "XMLHttpRequest",
                 },
                 responseType: "json",
@@ -12143,7 +12143,16 @@ function getChapter({ chapterUrl, chapterName, isVIP, isPaid, charset, options, 
                 "&text_color_name=white";
             return vipCHapterImageUrlI;
         }
-        const isLogin = document.querySelector(".login-info.ly-fr")?.childElementCount === 1;
+        const getIsLogin = () => {
+            if (document.location.host === "www.shubl.com") {
+                return (document.querySelector("div.pull-right:nth-child(2)")
+                    ?.childElementCount === 3);
+            }
+            else {
+                return (document.querySelector(".login-info.ly-fr")?.childElementCount === 1);
+            }
+        };
+        const isLogin = getIsLogin();
         if (isLogin && isPaid) {
             const divChapterAuthorSay = await getChapterAuthorSay();
             const vipCHapterImageUrl = await vipChapterDecrypt(chapterId, chapterUrl);
@@ -12164,6 +12173,7 @@ function getChapter({ chapterUrl, chapterName, isVIP, isPaid, charset, options, 
                 vipCHapterImage.Blob = vipCHapterImageBlob;
                 vipCHapterImage.status = _main_main__WEBPACK_IMPORTED_MODULE_7__/* .Status.finished */ .qb.finished;
             }
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_4__/* .putAttachmentClassCache */ .dK)(vipCHapterImage);
             const contentImages = [vipCHapterImage];
             let ddom;
             let dtext;
@@ -12172,7 +12182,7 @@ function getChapter({ chapterUrl, chapterName, isVIP, isPaid, charset, options, 
                 [ddom, dtext] = [dom, text, images];
             }
             const img = document.createElement("img");
-            img.src = vipCHapterName;
+            img.setAttribute("data-src-address", vipCHapterName);
             img.alt = vipCHapterImageUrl;
             const contentHTML = document.createElement("div");
             contentHTML.appendChild(img);
@@ -15179,8 +15189,9 @@ class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
             ._csrfToken;
         const bookUrl = document.location.href;
         const bookname = document.querySelector(".book-info > h1 > em").innerText.trim();
-        const author = document.querySelector(".book-info .writer").innerText
+        const author = document.querySelector(".book-info .writer, .book-info > h1:nth-child(1) > span:nth-child(2)").innerText
             .replace(/作\s+者:/, "")
+            .replace(/\s+著$/, "")
             .trim();
         const introDom = document.querySelector(".book-info-detail .book-intro");
         const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .SN)(introDom);
@@ -15279,7 +15290,7 @@ class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
                     if (limitFree) {
                         chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status.pending */ .qb.pending;
                     }
-                    if (isLogin() && chapter.isPaid) {
+                    if (chapter.isPaid) {
                         chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status.pending */ .qb.pending;
                     }
                 }
@@ -15805,7 +15816,7 @@ class Sfacg extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
             const isLogin = !document
                 .querySelector(".user-bar > .top-link > .normal-link")
                 ?.innerHTML.includes("您好，SF游客");
-            if (chapter.isVIP && isLogin === false) {
+            if (chapter.isVIP && !isLogin) {
                 chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_8__/* .Status.aborted */ .qb.aborted;
             }
             chapters.push(chapter);
@@ -15906,9 +15917,10 @@ class Sfacg extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
                         const vipChapterImageUrl = vipChapterDom.src;
                         const vipChapterName = `vipCHapter${chapterId}.gif`;
                         const vipChapterImage = await getvipChapterImage(vipChapterImageUrl, vipChapterName);
+                        (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .putAttachmentClassCache */ .dK)(vipChapterImage);
                         const contentImages = [vipChapterImage];
                         const img = document.createElement("img");
-                        img.src = vipChapterName;
+                        img.setAttribute("data-src-address", vipChapterName);
                         img.alt = vipChapterImageUrl;
                         const contentHTML = document.createElement("div");
                         contentHTML.appendChild(img);
@@ -21784,14 +21796,15 @@ var ui_TestUI = __webpack_require__("./src/ui/TestUI.less");
             return (_chapter.status === main/* Status.failed */.qb.failed || _chapter.status === main/* Status.aborted */.qb.aborted);
         }
         function getChapterHtml(_chapter) {
-            const imgs = _chapter.contentHTML?.querySelectorAll("img");
+            const html = _chapter.contentHTML?.cloneNode(true);
+            const imgs = html.querySelectorAll("img");
             if (imgs) {
                 Array.from(imgs).forEach((img) => {
                     const url = img.alt;
                     img.src = getObjectUrl(url);
                 });
             }
-            return _chapter.contentHTML?.outerHTML;
+            return html.outerHTML;
         }
         (0,external_Vue_.onMounted)(async () => {
             const _book = await waitBook();

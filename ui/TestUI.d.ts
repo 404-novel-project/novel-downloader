@@ -12,7 +12,7 @@ declare const _default: import("vue").DefineComponent<{}, {
     chapter: {};
     isSeenChapter: (_chapter: Chapter) => boolean;
     isChapterFailed: (_chapter: Chapter) => boolean;
-    getChapterHtml: (_chapter: Chapter) => string | undefined;
+    getChapterHtml: (_chapter: Chapter) => string;
     chapterNumber: Ref<string | number>;
 }, {}, {}, {}, import("vue").ComponentOptionsMixin, import("vue").ComponentOptionsMixin, import("vue").EmitsOptions, string, import("vue").VNodeProps & import("vue").AllowedComponentProps & import("vue").ComponentCustomProps, Readonly<import("vue").ExtractPropTypes<{}>>, {}>;
 export default _default;
