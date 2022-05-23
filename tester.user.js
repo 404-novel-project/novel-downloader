@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        小说下载器测试脚本
-// @version     4.9.2.704
+// @version     4.9.2.707
 // @author      bgme
 // @description 小说下载器测试脚本
 // @match       *://www.ciweimao.com/chapter-list/*
@@ -63,6 +63,7 @@
 // @match       *://m.xinwanben.com/*/
 // @match       *://www.idejian.com/book/*/
 // @match       *://www.wenku8.net/novel/*/*/index.htm
+// @match       *://www.wenku8.net/book/*.htm
 // @match       *://www.dmzj.com/info/*.html
 // @match       *://manhua.dmzj.com/*
 // @match       *://www.westnovel.com/*/*/
@@ -195,6 +196,7 @@
 // @match       *://www.ywggzy.com/bxwx/*/
 // @match       *://www.ptwxz.net/*/
 // @match       *://www.ptwxz.net/list/*/
+// @match       *://www.mbtxt.la/go/*/
 // @match       https://greasyfork.org/*/scripts/406070-%E5%B0%8F%E8%AF%B4%E4%B8%8B%E8%BD%BD%E5%99%A8
 // @name:en     novel-downloader-tester
 // @namespace   https://blog.bgme.me
