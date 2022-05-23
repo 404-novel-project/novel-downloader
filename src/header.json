@@ -217,7 +217,8 @@
     "*://www.iqingguo.com/book/detail/?id=*",
     "*://www.ywggzy.com/bxwx/*/",
     "*://www.ptwxz.net/*/",
-    "*://www.ptwxz.net/list/*/"
+    "*://www.ptwxz.net/list/*/",
+    "*://www.mbtxt.la/go/*/"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",

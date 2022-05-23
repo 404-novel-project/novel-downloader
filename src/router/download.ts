@@ -578,6 +578,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = ptwxz();
       break;
     }
+    case "www.mbtxt.la": {
+      const { mbtxt } = await import("../rules/mbtxt/mbtxt");
+      ruleClass = mbtxt();
+      break;
+    }
     default: {
       throw new Error("Not Found Rule!");
     }
