@@ -114,6 +114,7 @@ export async function getRule(): Promise<BaseRuleClass> {
       break;
     }
     case "www.gongzicp.com":
+    case "m.gongzicp.com":
     case "gongzicp.com": {
       const { Gongzicp } = await import("../rules/special/original/gongzicp");
       ruleClass = Gongzicp;
@@ -583,17 +584,17 @@ export async function getRule(): Promise<BaseRuleClass> {
       break;
     }
     case "www.znlzd.com": {
-      const {znlzd} = await import("../rules/biquge/multiIndexNextPage");
+      const { znlzd } = await import("../rules/biquge/multiIndexNextPage");
       ruleClass = znlzd();
       break;
     }
     case "www.yyun.net": {
-      const {yyun} = await import("../rules/biquge/nextPage");
+      const { yyun } = await import("../rules/biquge/nextPage");
       ruleClass = yyun();
       break;
     }
     case "hongxiuzhao.me": {
-      const {hongxiuzhao} = await import("../rules/onePage/hongxiuzhao");
+      const { hongxiuzhao } = await import("../rules/onePage/hongxiuzhao");
       ruleClass = hongxiuzhao();
       break;
     }
