@@ -65,3 +65,32 @@ export const yyun = () =>
         .href,
     (_content, nextLink) => new URL(nextLink).pathname.includes("_")
   );
+
+export const mijiashe = () =>
+  mkBiqugeNextPage(
+    (introDom) => {
+      const _bookname = introDom.innerHTML.match(/《(.*)》/);
+      let bookname;
+      if (_bookname?.length === 2) {
+        bookname = _bookname[1];
+      }
+      const adList = [
+        "还不错的话请不要忘记向您QQ群和微博里的朋友推荐哦！",
+        "小说免费阅读地址：",
+      ];
+      rm2(adList, introDom);
+      rms([`${bookname}小说简介：`], introDom);
+      return introDom;
+    },
+    (content) => {
+      const filters = [
+        "谨记我们的网址，祝大家阅读愉快！别忘了多多宣传宣传。",
+        "【提示】：如果觉得此文不错，请推荐给更多小伙伴吧！分享也是一种享受。",
+      ];
+      rm2(filters, content);
+      htmlTrim(content);
+      return content;
+    },
+    (doc) => (doc.querySelector("#next_url") as HTMLAnchorElement).href,
+    (_content, nextLink) => new URL(nextLink).pathname.includes("_")
+  );

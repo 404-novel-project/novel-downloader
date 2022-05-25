@@ -180,6 +180,8 @@ EPUB文件请使用相应阅读器阅读。
 | [69书吧](https://www.69shu.com/)                |✅|❎||
 | [笔下文学](https://www.ywggzy.com/)               |✅|❎||
 | [飘天文学](https://www.ptwxz.net/)                |✅|❎||
+| [红袖招](https://hongxiuzhao.me/)                |✅|❎||
+| [38看书](https://www.mijiashe.com/)             |✅|❎||
 
 </details>
 

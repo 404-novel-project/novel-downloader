@@ -598,6 +598,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = hongxiuzhao();
       break;
     }
+    case "www.mijiashe.com": {
+      const { mijiashe } = await import("../rules/biquge/nextPage");
+      ruleClass = mijiashe();
+      break;
+    }
     default: {
       throw new Error("Not Found Rule!");
     }

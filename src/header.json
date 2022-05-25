@@ -224,7 +224,8 @@
     "*://www.znlzd.com/bqg/11365/index_*.html",
     "*://www.yyun.net/xs/*/",
     "*://www.yb3.cc/5200/*/",
-    "*://hongxiuzhao.me/*.html"
+    "*://hongxiuzhao.me/*.html",
+    "*://www.mijiashe.com/*/"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",
