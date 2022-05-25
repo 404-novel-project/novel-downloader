@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.9.3.715
+// @version        4.9.3.716
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/404-novel-project/novel-downloader
@@ -204,6 +204,7 @@
 // @match          *://www.yyun.net/xs/*/
 // @match          *://www.yb3.cc/5200/*/
 // @match          *://hongxiuzhao.me/*.html
+// @match          *://www.mijiashe.com/*/
 // @name:en        novel-downloader
 // @name:ja        小説ダウンローダー
 // @description:en An scalable universal novel downloader.
@@ -9137,6 +9138,7 @@ const c226ks = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeMultiI
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "mijiashe": () => (/* binding */ mijiashe),
 /* harmony export */   "xinwanben": () => (/* binding */ xinwanben),
 /* harmony export */   "yyun": () => (/* binding */ yyun)
 /* harmony export */ });
@@ -9195,6 +9197,28 @@ const yyun = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeNextPage
     return content;
 }, (doc) => doc.querySelector(".bottem2 > a:nth-child(3)")
     .href, (_content, nextLink) => new URL(nextLink).pathname.includes("_"));
+const mijiashe = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeNextPage */ .B4)((introDom) => {
+    const _bookname = introDom.innerHTML.match(/《(.*)》/);
+    let bookname;
+    if (_bookname?.length === 2) {
+        bookname = _bookname[1];
+    }
+    const adList = [
+        "还不错的话请不要忘记向您QQ群和微博里的朋友推荐哦！",
+        "小说免费阅读地址：",
+    ];
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .vS)(adList, introDom);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .up)([`${bookname}小说简介：`], introDom);
+    return introDom;
+}, (content) => {
+    const filters = [
+        "谨记我们的网址，祝大家阅读愉快！别忘了多多宣传宣传。",
+        "【提示】：如果觉得此文不错，请推荐给更多小伙伴吧！分享也是一种享受。",
+    ];
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .vS)(filters, content);
+    (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__/* .htmlTrim */ .iA)(content);
+    return content;
+}, (doc) => doc.querySelector("#next_url").href, (_content, nextLink) => new URL(nextLink).pathname.includes("_"));
 
 
 /***/ }),
@@ -21122,6 +21146,11 @@ async function getRule() {
         case "hongxiuzhao.me": {
             const { hongxiuzhao } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/hongxiuzhao.ts"));
             ruleClass = hongxiuzhao();
+            break;
+        }
+        case "www.mijiashe.com": {
+            const { mijiashe } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/nextPage.ts"));
+            ruleClass = mijiashe();
             break;
         }
         default: {
