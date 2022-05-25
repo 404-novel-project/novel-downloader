@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        小说下载器测试脚本
-// @version     4.9.3.714
+// @version     4.9.3.715
 // @author      bgme
 // @description 小说下载器测试脚本
 // @match       *://www.ciweimao.com/chapter-list/*
@@ -11,6 +11,7 @@
 // @match       *://book.qidian.com/info/*
 // @match       *://www.jjwxc.net/onebook.php?novelid=*
 // @match       *://www.gongzicp.com/novel-*.html
+// @match       *://m.gongzicp.com/novel-*.html
 // @match       *://gongzicp.com/novel-*.html
 // @match       *://book.zongheng.com/showchapter/*.html
 // @match       *://book.zongheng.com/book/*.html
