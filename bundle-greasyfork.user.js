@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.9.3.716
+// @version        4.9.3.717
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/404-novel-project/novel-downloader
@@ -242,6 +242,7 @@
 // @exclude        *://www.linovel.net/book/*/*.html
 // @exclude        *://www.qimao.com/shuku/*-*/
 // @exclude        *://www.trxs.cc/tongren/*/*.html
+// @exclude        *://www.trxs.me/tongren/*/*.html
 // @exclude        *://www.trxs123.com/tongren/*/*.html
 // @exclude        *://www.tongrenquan.org/tongren/*/*.html
 // @exclude        *://tongrenquan.org/tongren/*/*.html
@@ -20811,6 +20812,7 @@ async function getRule() {
             break;
         }
         case "www.trxs.cc":
+        case "www.trxs.me":
         case "www.trxs123.com":
         case "www.jpxs123.com":
         case "trxs.cc":

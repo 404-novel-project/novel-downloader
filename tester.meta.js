@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        小说下载器测试脚本
-// @version     4.9.3.716
+// @version     4.9.3.717
 // @author      bgme
 // @description 小说下载器测试脚本
 // @match       *://www.ciweimao.com/chapter-list/*
@@ -232,6 +232,7 @@
 // @exclude     *://www.linovel.net/book/*/*.html
 // @exclude     *://www.qimao.com/shuku/*-*/
 // @exclude     *://www.trxs.cc/tongren/*/*.html
+// @exclude     *://www.trxs.me/tongren/*/*.html
 // @exclude     *://www.trxs123.com/tongren/*/*.html
 // @exclude     *://www.tongrenquan.org/tongren/*/*.html
 // @exclude     *://tongrenquan.org/tongren/*/*.html
