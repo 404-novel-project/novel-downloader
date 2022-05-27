@@ -104,6 +104,7 @@
 // @match          *://www.yqbiqu.com/html/*/*/index.html
 // @match          *://www.630shu.net/shu/*.html
 // @match          *://www.trxs.cc/tongren/*.html
+// @match          *://www.trxs.me/tongren/*.html
 // @match          *://www.trxs123.com/tongren/*.html
 // @match          *://www.jpxs123.com/*/*.html
 // @match          *://trxs.cc/tongren/*.html
