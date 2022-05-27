@@ -234,7 +234,7 @@ export async function getRule(): Promise<BaseRuleClass> {
       break;
     }
     case "www.630shu.net": {
-      const { c630shu } = await import("../rules/onePage/630shu");
+      const {c630shu} = await import("../rules/onePage/630shu");
       ruleClass = c630shu;
       break;
     }
@@ -242,19 +242,16 @@ export async function getRule(): Promise<BaseRuleClass> {
     case "www.trxs.me":
     case "www.trxs123.com":
     case "www.jpxs123.com":
-    case "trxs.cc":
-    case "trxs123.com":
-    case "jpxs123.com": {
-      const { trxs } = await import("../rules/onePage/trxs");
-      ruleClass = trxs();
-      break;
-    }
     case "www.tongrenquan.org":
     case "www.tongrenquan.me":
+    case "trxs.cc":
+    case "trxs.me":
+    case "trxs123.com":
+    case "jpxs123.com":
     case "tongrenquan.me":
     case "tongrenquan.org": {
-      const { tongrenquan } = await import("../rules/onePage/trxs");
-      ruleClass = tongrenquan();
+      const {trxs} = await import("../rules/onePage/trxs");
+      ruleClass = trxs();
       break;
     }
     case "www.imbg.cc":
