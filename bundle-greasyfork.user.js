@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.9.3.717
+// @version        4.9.3.718
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/404-novel-project/novel-downloader
@@ -107,11 +107,13 @@
 // @match          *://www.trxs.me/tongren/*.html
 // @match          *://www.trxs123.com/tongren/*.html
 // @match          *://www.jpxs123.com/*/*.html
-// @match          *://trxs.cc/tongren/*.html
-// @match          *://trxs123.com/tongren/*.html
-// @match          *://jpxs123.com/*/*.html
 // @match          *://www.tongrenquan.org/tongren/*.html
 // @match          *://www.tongrenquan.me/tongren/*.html
+// @match          *://trxs.cc/tongren/*.html
+// @match          *://trxs.me/tongren/*.html
+// @match          *://trxs123.com/tongren/*.html
+// @match          *://jpxs123.com/*/*.html
+// @match          *://tongrenquan.org/tongren/*.html
 // @match          *://tongrenquan.me/tongren/*.html
 // @match          *://www.imiaobige.com/read/*/
 // @match          *://www.imbg.cc/read/*/
@@ -245,9 +247,15 @@
 // @exclude        *://www.trxs.cc/tongren/*/*.html
 // @exclude        *://www.trxs.me/tongren/*/*.html
 // @exclude        *://www.trxs123.com/tongren/*/*.html
-// @exclude        *://www.tongrenquan.org/tongren/*/*.html
-// @exclude        *://tongrenquan.org/tongren/*/*.html
 // @exclude        *://www.jpxs123.com/*/*/*.html
+// @exclude        *://www.tongrenquan.org/tongren/*/*.html
+// @exclude        *://www.tongrenquan.me/tongren/*/*.html
+// @exclude        *://trxs.cc/tongren/*/*.html
+// @exclude        *://trxs.me/tongren/*/*.html
+// @exclude        *://trxs123.com/tongren/*/*.html
+// @exclude        *://jpxs123.com/*/*/*.html
+// @exclude        *://tongrenquan.org/tongren/*/*.html
+// @exclude        *://tongrenquan.me/tongren/*/*.html
 // @exclude        *://www.25zw.com/lastupdate/
 // @exclude        *://www.25zw.com/postdate/
 // @exclude        *://www.25zw.com/monthvisit/
@@ -10846,7 +10854,6 @@ const tianyabooks = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleCla
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "tongrenquan": () => (/* binding */ tongrenquan),
 /* harmony export */   "trxs": () => (/* binding */ trxs)
 /* harmony export */ });
 /* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
@@ -10856,20 +10863,7 @@ const trxs = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .
     bookname: document.querySelector(".infos > h1").innerText
         .split("(")[0]
         .trim(),
-    author: document.querySelector(".date > span > a").innerText.trim(),
-    introDom: document.querySelector(".infos > p"),
-    introDomPatch: (introDom) => introDom,
-    coverUrl: document.querySelector(".pic > img").src,
-    aList: document.querySelectorAll("div.book_list > ul.clearfix > li > a"),
-    getContent: (doc) => doc.querySelector(".read_chapterDetail"),
-    contentPatch: (content) => content,
-});
-const tongrenquan = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
-    bookUrl: document.location.href,
-    bookname: document.querySelector(".infos > h1").innerText
-        .split("(")[0]
-        .trim(),
-    author: document.querySelector(".date > span").innerText
+    author: document.querySelector(".date > span > a, .date > span").innerText
         .replace("作者：", "")
         .trim(),
     introDom: document.querySelector(".infos > p"),
@@ -20816,19 +20810,16 @@ async function getRule() {
         case "www.trxs.me":
         case "www.trxs123.com":
         case "www.jpxs123.com":
-        case "trxs.cc":
-        case "trxs123.com":
-        case "jpxs123.com": {
-            const { trxs } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/trxs.ts"));
-            ruleClass = trxs();
-            break;
-        }
         case "www.tongrenquan.org":
         case "www.tongrenquan.me":
+        case "trxs.cc":
+        case "trxs.me":
+        case "trxs123.com":
+        case "jpxs123.com":
         case "tongrenquan.me":
         case "tongrenquan.org": {
-            const { tongrenquan } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/trxs.ts"));
-            ruleClass = tongrenquan();
+            const { trxs } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/trxs.ts"));
+            ruleClass = trxs();
             break;
         }
         case "www.imbg.cc":

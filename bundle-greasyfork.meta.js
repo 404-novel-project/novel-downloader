@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.9.3.717
+// @version        4.9.3.718
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/404-novel-project/novel-downloader
@@ -107,11 +107,13 @@
 // @match          *://www.trxs.me/tongren/*.html
 // @match          *://www.trxs123.com/tongren/*.html
 // @match          *://www.jpxs123.com/*/*.html
-// @match          *://trxs.cc/tongren/*.html
-// @match          *://trxs123.com/tongren/*.html
-// @match          *://jpxs123.com/*/*.html
 // @match          *://www.tongrenquan.org/tongren/*.html
 // @match          *://www.tongrenquan.me/tongren/*.html
+// @match          *://trxs.cc/tongren/*.html
+// @match          *://trxs.me/tongren/*.html
+// @match          *://trxs123.com/tongren/*.html
+// @match          *://jpxs123.com/*/*.html
+// @match          *://tongrenquan.org/tongren/*.html
 // @match          *://tongrenquan.me/tongren/*.html
 // @match          *://www.imiaobige.com/read/*/
 // @match          *://www.imbg.cc/read/*/
@@ -245,9 +247,15 @@
 // @exclude        *://www.trxs.cc/tongren/*/*.html
 // @exclude        *://www.trxs.me/tongren/*/*.html
 // @exclude        *://www.trxs123.com/tongren/*/*.html
-// @exclude        *://www.tongrenquan.org/tongren/*/*.html
-// @exclude        *://tongrenquan.org/tongren/*/*.html
 // @exclude        *://www.jpxs123.com/*/*/*.html
+// @exclude        *://www.tongrenquan.org/tongren/*/*.html
+// @exclude        *://www.tongrenquan.me/tongren/*/*.html
+// @exclude        *://trxs.cc/tongren/*/*.html
+// @exclude        *://trxs.me/tongren/*/*.html
+// @exclude        *://trxs123.com/tongren/*/*.html
+// @exclude        *://jpxs123.com/*/*/*.html
+// @exclude        *://tongrenquan.org/tongren/*/*.html
+// @exclude        *://tongrenquan.me/tongren/*/*.html
 // @exclude        *://www.25zw.com/lastupdate/
 // @exclude        *://www.25zw.com/postdate/
 // @exclude        *://www.25zw.com/monthvisit/
