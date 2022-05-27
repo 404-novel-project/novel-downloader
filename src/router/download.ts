@@ -239,6 +239,7 @@ export async function getRule(): Promise<BaseRuleClass> {
       break;
     }
     case "www.trxs.cc":
+    case "www.trxs.me":
     case "www.trxs123.com":
     case "www.jpxs123.com":
     case "trxs.cc":
