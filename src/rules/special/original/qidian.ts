@@ -1,4 +1,4 @@
-import { getImageAttachment } from "../../../lib/attachments";
+import { getAttachment } from "../../../lib/attachments";
 import { cleanDOM, htmlTrim } from "../../../lib/cleanDOM";
 import { getFrameContentCondition, ggetHtmlDOM } from "../../../lib/http";
 import { sleep } from "../../../lib/misc";
@@ -52,7 +52,7 @@ export class Qidian extends BaseRuleClass {
       document.querySelector("#bookImg > img") as HTMLImageElement
     ).src.slice(0, -4);
     if (coverUrl) {
-      getImageAttachment(coverUrl, this.attachmentMode, "cover-")
+      getAttachment(coverUrl, this.attachmentMode, "cover-")
         .then((coverClass) => {
           additionalMetadate.cover = coverClass;
         })

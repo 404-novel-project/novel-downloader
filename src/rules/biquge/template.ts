@@ -210,4 +210,3 @@ export function mkBiqugeMultiIndex(
     contentPatch,
   });
 }
-

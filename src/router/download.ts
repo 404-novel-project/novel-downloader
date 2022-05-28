@@ -234,7 +234,7 @@ export async function getRule(): Promise<BaseRuleClass> {
       break;
     }
     case "www.630shu.net": {
-      const {c630shu} = await import("../rules/onePage/630shu");
+      const { c630shu } = await import("../rules/onePage/630shu");
       ruleClass = c630shu;
       break;
     }
@@ -250,7 +250,7 @@ export async function getRule(): Promise<BaseRuleClass> {
     case "jpxs123.com":
     case "tongrenquan.me":
     case "tongrenquan.org": {
-      const {trxs} = await import("../rules/onePage/trxs");
+      const { trxs } = await import("../rules/onePage/trxs");
       ruleClass = trxs();
       break;
     }

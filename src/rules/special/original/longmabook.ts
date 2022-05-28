@@ -1,5 +1,5 @@
 import { GmWindow } from "../../../global";
-import { getImageAttachment } from "../../../lib/attachments";
+import { getAttachment } from "../../../lib/attachments";
 import { cleanDOM } from "../../../lib/cleanDOM";
 import { getHtmlDOM, getHtmlDomWithRetry } from "../../../lib/http";
 import { deepcopy } from "../../../lib/misc";
@@ -77,7 +77,7 @@ export class Longmabook extends BaseRuleClass {
       ) as HTMLImageElement
     )?.src.replace("_s.", "_b.");
     if (coverUrl) {
-      getImageAttachment(coverUrl, this.attachmentMode, "cover-")
+      getAttachment(coverUrl, this.attachmentMode, "cover-")
         .then((coverClass) => {
           additionalMetadate.cover = coverClass;
         })

@@ -1,7 +1,7 @@
 import * as CryptoJS from "crypto-js";
 import { UnsafeWindow } from "../../../global";
 import {
-  getImageAttachment,
+  getAttachment,
   putAttachmentClassCache,
 } from "../../../lib/attachments";
 import { cleanDOM } from "../../../lib/cleanDOM";
@@ -48,7 +48,7 @@ export class Ciweimao extends BaseRuleClass {
     const coverUrl = (dom.querySelector(".cover > img") as HTMLImageElement)
       .src;
     if (coverUrl) {
-      getImageAttachment(coverUrl, this.attachmentMode, "cover-")
+      getAttachment(coverUrl, this.attachmentMode, "cover-")
         .then((coverClass) => {
           additionalMetadate.cover = coverClass;
         })
@@ -176,7 +176,7 @@ export class Shubl extends BaseRuleClass {
     const coverUrl = (document.querySelector(".book-img") as HTMLImageElement)
       .src;
     if (coverUrl) {
-      getImageAttachment(coverUrl, this.attachmentMode, "cover-")
+      getAttachment(coverUrl, this.attachmentMode, "cover-")
         .then((coverClass) => {
           additionalMetadate.cover = coverClass;
         })

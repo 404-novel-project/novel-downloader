@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import * as CryptoJS from "crypto-js";
-import {getImageAttachment} from "../../../lib/attachments";
-import {sleep} from "../../../lib/misc";
+import { getAttachment } from "../../../lib/attachments";
+import { sleep } from "../../../lib/misc";
 import {introDomHandle} from "../../../lib/rule";
 import {log} from "../../../log";
 import {Status} from "../../../main/main";
 import {Chapter} from "../../../main/Chapter";
 import {Book, BookAdditionalMetadate} from "../../../main/Book";
 import {BaseRuleClass, ChapterParseObject} from "../../../rules";
-import {retryLimit} from "../../../setting";
+import { retryLimit } from "../../../setting";
 
 export class Gongzicp extends BaseRuleClass {
   public constructor() {
@@ -233,7 +233,7 @@ export class Gongzicp extends BaseRuleClass {
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = data.novelInfo.novel_cover;
     if (coverUrl) {
-      getImageAttachment(coverUrl, this.attachmentMode, "cover-")
+      getAttachment(coverUrl, this.attachmentMode, "cover-")
         .then((coverClass) => {
           additionalMetadate.cover = coverClass;
         })

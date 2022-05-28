@@ -2,8 +2,8 @@ import { log } from "../log";
 import { AttachmentClass } from "../main/Attachment";
 import { ReferrerMode } from "../main/main";
 import {
+  getAttachment,
   getAttachmentClassCache,
-  getImageAttachment,
   getRandomName,
 } from "./attachments";
 import {
@@ -166,8 +166,6 @@ const IgnoreElements = [
   "input",
   "label",
   "form",
-  // The Embed Audio element
-  "audio",
   // The Button element
   "button",
   // The Graphics Canvas element
@@ -203,8 +201,6 @@ const IgnoreElements = [
   "video",
   // The Line Break Opportunity element
   "wbr",
-  // The Table element
-  "table",
 ];
 
 function isBaseElem(node: Element | Text) {
@@ -293,7 +289,7 @@ export async function cleanDOM(
 
   const baseNodes = [...findBase(elem)];
   const _obj = await loop(baseNodes, document.createElement("div"));
-  const obj = await awaitImages(_obj);
+  const obj = await awaitAttachments(_obj);
   return postHook(obj);
 
   async function blockElement(element: Element): Promise<SubOutput | null> {
@@ -490,6 +486,125 @@ export async function cleanDOM(
 
     listList.forEach((n) => map.set(n, list));
 
+    function table(elem: Element) {
+      if (elem instanceof HTMLTableElement) {
+        const dom = elem.cloneNode(true) as HTMLTableElement;
+        const text = processTable(elem);
+        const images = [] as AttachmentClass[];
+        return { dom, text, images };
+      }
+      return null;
+
+      // HTML Table to Markdown
+      // https://jmalarcon.github.io/markdowntables/scripts/code.js
+      function fixText(text: string) {
+        //Remove tabs (it's HTML, so they don't affect the final render, but in Markdown, they do.)
+        return text.trim().replace("\t", "");
+      }
+
+      function processTable(tableDom: HTMLTableElement) {
+        // set the strings to hold the data
+        let markdown_string = "";
+        let table_header = "|";
+        let table_header_footer = "|";
+        let table_rows = "";
+        let table_header_found = false;
+        let table_header_cell_count = 0;
+        let prev_row_cell_count = 0; //To allow only same number of cells per row
+
+        // if there is a thead we append
+        Array.from(
+          tableDom.querySelectorAll<HTMLTableCellElement>("thead > tr > td")
+        ).forEach((td) => {
+          table_header_cell_count++;
+          table_header = table_header + fixText(td.innerText) + "|";
+          table_header_footer = table_header_footer + "--- |";
+          table_header_found = true;
+        });
+
+        // loop all the rows
+        Array.from(
+          tableDom.querySelectorAll<HTMLTableRowElement>("tr")
+        ).forEach((tr) => {
+          // get the header if it was not present as thead
+          if (!table_header_found) {
+            Array.from(
+              tr.querySelectorAll<HTMLTableHeaderCellElement>("th")
+            ).forEach((th) => {
+              table_header_cell_count++;
+              table_header = table_header + fixText(th.innerText) + "|";
+              table_header_footer = table_header_footer + "--- |";
+              table_header_found = true;
+            });
+          }
+
+          // get the cells if they are not in thead
+          let table_row = "";
+          let curr_row_cell_count = 0;
+          Array.from(tr.querySelectorAll("td"))
+            .filter(
+              (td) =>
+                !Array.from(
+                  tableDom.querySelectorAll<HTMLTableCellElement>(
+                    "thead > tr > td"
+                  )
+                ).includes(td)
+            )
+            .forEach((td) => {
+              curr_row_cell_count++;
+              table_row = table_row + fixText(td.innerText) + "|";
+            });
+
+          //Check that the number of cells match in all the rows
+          if (
+            prev_row_cell_count != 0 &&
+            curr_row_cell_count != prev_row_cell_count
+          ) {
+            //Show error and exit forEach
+            markdown_string =
+              "ERROR: Your HTML table rows don't have the same number of cells. Colspan not supported.";
+            return false;
+          }
+
+          // only add row if it has data
+          if (curr_row_cell_count) {
+            table_rows += "|" + table_row + "\n";
+            prev_row_cell_count = curr_row_cell_count;
+          }
+        });
+
+        //Only do the rest of the processing if there hasn't been an error processing the rows
+        if (markdown_string == "") {
+          // if table header exists
+          if (table_header_found) {
+            //Check if the number of cells in header is the same as in rows
+            if (table_header_cell_count != prev_row_cell_count) {
+              throw new Error(
+                "ERROR: The number of cells in your header doesn't match the number of cells in your rows."
+              );
+            }
+          } else {
+            //It it's missing, add an empty header, since most of the Markdown processors can't render a table without a header
+            for (let i = 0; i < prev_row_cell_count; i++) {
+              table_header = table_header + "|";
+              table_header_footer = table_header_footer + "--- |";
+            }
+          }
+
+          //Append header at the beggining
+          markdown_string += table_header + "\n";
+          markdown_string += table_header_footer + "\n";
+
+          //add all the rows
+          markdown_string += table_rows;
+        }
+
+        return markdown_string;
+      }
+    }
+
+    map.set("table", table);
+
     const nodeName = element.nodeName.toLowerCase();
     const fn = map.get(nodeName);
     if (fn) {
@@ -611,6 +726,7 @@ export async function cleanDOM(
         const dom = document.createElement("img");
         dom.setAttribute("data-src-address", imgClassCache.name);
         dom.alt = url;
+        dom.title = url;
         const text = `![${url}](${imgClassCache.name})`;
         const images = [imgClassCache];
         return {
@@ -625,7 +741,7 @@ export async function cleanDOM(
           referrerMode: options?.referrerMode,
           customReferer: options?.customReferer,
         };
-        const imgClass = getImageAttachment(
+        const imgClass = getAttachment(
           url,
           imgMode,
           "chapter-",
@@ -637,6 +753,7 @@ export async function cleanDOM(
         const dom = document.createElement("img");
         dom.setAttribute("data-src-address", comments);
         dom.alt = url;
+        dom.title = url;
         const text = `![${url}](${comments})`;
         const images = [imgClass];
         return {
@@ -656,6 +773,62 @@ export async function cleanDOM(
     }
 
     map.set("img", img);
+
+    function audio(elem: Element) {
+      if (elem instanceof HTMLAudioElement) {
+        const url = elem.src;
+        const attachmentCache = getAttachmentClassCache(url);
+        if (attachmentCache) {
+          const dom = document.createElement("audio");
+          dom.innerText = "Your browser does not support the audio element.";
+          dom.setAttribute("data-src-address", attachmentCache.name);
+          dom.setAttribute("controls", "");
+          dom.setAttribute("preload", "metadata");
+          dom.title = url;
+
+          const text = dom.outerHTML;
+          const images = [attachmentCache];
+          return {
+            dom,
+            text,
+            images,
+          };
+        } else {
+          const comments = getRandomName();
+          const noMd5 = options?.keepImageName ?? false;
+          const attachmentOptions = {
+            referrerMode: options?.referrerMode,
+            customReferer: options?.customReferer,
+          };
+          const attachment = getAttachment(
+            url,
+            imgMode,
+            "chapter-",
+            noMd5,
+            comments,
+            attachmentOptions
+          );
+
+          const dom = document.createElement("audio");
+          dom.innerText = "Your browser does not support the audio element.";
+          dom.setAttribute("data-src-address", comments);
+          dom.setAttribute("controls", "");
+          dom.setAttribute("preload", "metadata");
+          dom.title = url;
+
+          const text = dom.outerHTML;
+          const images = [attachment];
+          return {
+            dom,
+            text,
+            images,
+          };
+        }
+      }
+      return null;
+    }
+
+    map.set("audio", audio);
 
     function picture(elem: Element) {
       if (elem instanceof HTMLPictureElement) {
@@ -888,7 +1061,7 @@ export async function cleanDOM(
     };
   }
 
-  async function awaitImages({
+  async function awaitAttachments({
     dom,
     text,
     images,
@@ -897,17 +1070,17 @@ export async function cleanDOM(
     text: string;
     images: (Promise<AttachmentClass> | AttachmentClass)[];
   }): Promise<Output> {
-    const iImages = await Promise.all(images);
-    iImages.forEach((image) => {
-      if (image.comments) {
-        dom.innerHTML = dom.innerHTML.replaceAll(image.comments, image.name);
-        text = text.replaceAll(image.comments, image.name);
+    const attachments = await Promise.all(images);
+    attachments.forEach((attach) => {
+      if (attach.comments) {
+        dom.innerHTML = dom.innerHTML.replaceAll(attach.comments, attach.name);
+        text = text.replaceAll(attach.comments, attach.name);
       }
     });
     return {
       dom,
       text,
-      images: iImages,
+      images: attachments,
     };
   }
 

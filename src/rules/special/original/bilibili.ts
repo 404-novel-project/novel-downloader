@@ -1,6 +1,6 @@
 import {
   getExt,
-  getImageAttachment,
+  getAttachment,
   putAttachmentClassCache,
 } from "../../../lib/attachments";
 import { fetchWithRetry } from "../../../lib/http";
@@ -37,18 +37,14 @@ export class MangaBilibili extends BaseRuleClass {
     const introductionHTML = document.createElement("div");
     introductionHTML.innerText = detail.evaluate;
     const additionalMetadate = {} as BookAdditionalMetadate;
-    getImageAttachment(
-      detail.vertical_cover,
-      this.attachmentMode,
-      "vertical_cover-"
-    )
+    getAttachment(detail.vertical_cover, this.attachmentMode, "vertical_cover-")
       .then((coverClass) => {
         additionalMetadate.cover = coverClass;
       })
       .catch((error) => log.error(error));
     additionalMetadate.tags = detail.styles;
     additionalMetadate.attachments = [];
-    getImageAttachment(
+    getAttachment(
       detail.horizontal_cover,
       this.attachmentMode,
       "horizontal_cover-"

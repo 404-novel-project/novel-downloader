@@ -1,4 +1,4 @@
-import { getImageAttachment } from "../../../lib/attachments";
+import { getAttachment } from "../../../lib/attachments";
 import { cleanDOM } from "../../../lib/cleanDOM";
 import { getHtmlDOM } from "../../../lib/http";
 import { log } from "../../../log";
@@ -80,7 +80,7 @@ export class Pixiv extends BaseRuleClass {
       const additionalMetadate: BookAdditionalMetadate = {};
       const coverUrl = seriesMetaBody.firstEpisode.url;
       if (coverUrl) {
-        getImageAttachment(coverUrl, self.attachmentMode, "cover-")
+        getAttachment(coverUrl, self.attachmentMode, "cover-")
           .then((coverClass) => {
             additionalMetadate.cover = coverClass;
           })
@@ -313,7 +313,7 @@ export class Pixiv extends BaseRuleClass {
       const additionalMetadate: BookAdditionalMetadate = {};
       const coverUrl = novel.coverUrl;
       if (coverUrl) {
-        getImageAttachment(coverUrl, self.attachmentMode, "cover-")
+        getAttachment(coverUrl, self.attachmentMode, "cover-")
           .then((coverClass) => {
             additionalMetadate.cover = coverClass;
           })

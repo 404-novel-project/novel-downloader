@@ -1,4 +1,4 @@
-import { getImageAttachment } from "../../../lib/attachments";
+import { getAttachment } from "../../../lib/attachments";
 import { cleanDOM } from "../../../lib/cleanDOM";
 import { getHtmlDOM } from "../../../lib/http";
 import { introDomHandle } from "../../../lib/rule";
@@ -37,7 +37,7 @@ export class Linovel extends BaseRuleClass {
     ).href;
     if (coverUrl) {
       attachmentsUrlList.push(coverUrl);
-      getImageAttachment(coverUrl, this.attachmentMode, "cover-")
+      getAttachment(coverUrl, this.attachmentMode, "cover-")
         .then((coverClass) => {
           additionalMetadate.cover = coverClass;
         })
@@ -54,7 +54,7 @@ export class Linovel extends BaseRuleClass {
     for (const volumeCoverUrl of volumeCoverUrlList) {
       if (!attachmentsUrlList.includes(volumeCoverUrl)) {
         attachmentsUrlList.push(volumeCoverUrl);
-        getImageAttachment(volumeCoverUrl, this.attachmentMode, "volumeCover-")
+        getAttachment(volumeCoverUrl, this.attachmentMode, "volumeCover-")
           .then((volumeCoverObj) => {
             additionalMetadate.attachments?.push(volumeCoverObj);
           })

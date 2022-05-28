@@ -3,7 +3,7 @@ import { saveAs } from "file-saver";
 import streamSaver from "streamsaver";
 import { mitmPageAvailability, streamSupport } from "../detect";
 import { log } from "../log";
-import { sleep } from "./misc";
+import { extensionToMimetype, mimetyepToCompressible, sleep } from "./misc";
 
 export async function setStreamSaverSetting() {
   const rawMitm = new URL(streamSaver.mitm);
@@ -96,7 +96,14 @@ export class FflateZip {
 
     const buffer = await fileBlob.arrayBuffer();
     const chunk = new Uint8Array(buffer);
-    if (fileBlob.type.includes("image/") || nocompress) {
+    if (
+      !(
+        mimetyepToCompressible(
+          extensionToMimetype(filename.split(".").slice(-1)[0])
+        ) || mimetyepToCompressible(fileBlob.type)
+      ) ||
+      nocompress
+    ) {
       const nonStreamingFile = new ZipPassThrough(filename);
       this.savedZip.add(nonStreamingFile);
       nonStreamingFile.push(chunk, true);

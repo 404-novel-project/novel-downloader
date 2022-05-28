@@ -1,5 +1,5 @@
 import * as CryptoJS from "crypto-js";
-import { getImageAttachment } from "../../../lib/attachments";
+import { getAttachment } from "../../../lib/attachments";
 import { cleanDOM } from "../../../lib/cleanDOM";
 import { getHtmlDOM } from "../../../lib/http";
 import { rm2 } from "../../../lib/dom";
@@ -39,7 +39,7 @@ export class Hanwujinian extends BaseRuleClass {
     ).src;
     const additionalMetadate: BookAdditionalMetadate = {};
     if (coverUrl) {
-      getImageAttachment(coverUrl, this.attachmentMode, "cover-")
+      getAttachment(coverUrl, this.attachmentMode, "cover-")
         .then((coverClass) => {
           additionalMetadate.cover = coverClass;
         })

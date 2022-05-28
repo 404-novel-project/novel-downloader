@@ -107,11 +107,13 @@ export default defineComponent({
 
     function getChapterHtml(_chapter: Chapter) {
       const html = _chapter.contentHTML?.cloneNode(true) as HTMLElement;
-      const imgs = html.querySelectorAll("img");
-      if (imgs) {
-        Array.from(imgs).forEach((img) => {
-          const url = img.alt;
-          img.src = getObjectUrl(url);
+      const nodes = html.querySelectorAll<HTMLImageElement | HTMLAudioElement>(
+        "img, audio"
+      );
+      if (nodes) {
+        Array.from(nodes).forEach((node) => {
+          const url = node.title || (node as HTMLImageElement).alt;
+          node.src = getObjectUrl(url);
         });
       }
       return html.outerHTML;

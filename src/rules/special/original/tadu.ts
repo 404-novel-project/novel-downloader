@@ -1,4 +1,4 @@
-import { getImageAttachment } from "../../../lib/attachments";
+import { getAttachment } from "../../../lib/attachments";
 import { cleanDOM } from "../../../lib/cleanDOM";
 import { getHtmlDOM, gfetch } from "../../../lib/http";
 import { introDomHandle } from "../../../lib/rule";
@@ -35,7 +35,7 @@ export class Tadu extends BaseRuleClass {
       document.querySelector("a.bookImg > img") as HTMLImageElement
     ).getAttribute("data-src");
     if (coverUrl) {
-      getImageAttachment(coverUrl, this.attachmentMode, "cover-")
+      getAttachment(coverUrl, this.attachmentMode, "cover-")
         .then((coverClass) => {
           additionalMetadate.cover = coverClass;
         })

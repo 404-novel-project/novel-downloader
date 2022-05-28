@@ -3,7 +3,7 @@ import * as CryptoJS from "crypto-js";
 import { Book, BookAdditionalMetadate } from "../../../main/Book";
 import { cleanDOM } from "../../../lib/cleanDOM";
 import { Chapter, ChapterAdditionalMetadate } from "../../../main/Chapter";
-import { getImageAttachment } from "../../../lib/attachments";
+import { getAttachment } from "../../../lib/attachments";
 import { log } from "../../../log";
 
 export class Iqingguo extends BaseRuleClass {
@@ -40,7 +40,7 @@ export class Iqingguo extends BaseRuleClass {
       ids: bookId,
     };
     if (coverUrl) {
-      getImageAttachment(coverUrl, this.attachmentMode, "cover-")
+      getAttachment(coverUrl, this.attachmentMode, "cover-")
         .then((img) => {
           additionalMetadate.cover = img;
         })

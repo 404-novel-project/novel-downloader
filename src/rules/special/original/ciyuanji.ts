@@ -1,5 +1,5 @@
 import * as CryptoJS from "crypto-js";
-import { getImageAttachment } from "../../../lib/attachments";
+import { getAttachment } from "../../../lib/attachments";
 import { cleanDOM } from "../../../lib/cleanDOM";
 import { getHtmlDOM } from "../../../lib/http";
 import { introDomHandle } from "../../../lib/rule";
@@ -75,7 +75,7 @@ export class Ciyuanji extends BaseRuleClass {
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = bookObject.imgUrl;
     if (coverUrl) {
-      getImageAttachment(coverUrl, this.attachmentMode, "cover-")
+      getAttachment(coverUrl, this.attachmentMode, "cover-")
         .then((coverClass) => {
           additionalMetadate.cover = coverClass;
         })
@@ -148,12 +148,12 @@ export class Ciyuanji extends BaseRuleClass {
         charset: this.charset,
         options: {},
       });
-      if (chapter.isVIP === true && chapter.isPaid === false) {
+      if (chapter.isVIP && !chapter.isPaid) {
         chapter.status = Status.aborted;
       }
       chapters.push(chapter);
     }
-    const book = new Book({
+    return new Book({
       bookUrl,
       bookname,
       author,
@@ -162,7 +162,6 @@ export class Ciyuanji extends BaseRuleClass {
       additionalMetadate,
       chapters,
     });
-    return book;
   }
 
   public async chapterParse(

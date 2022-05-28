@@ -1,4 +1,4 @@
-import { getImageAttachment } from "../../../lib/attachments";
+import { getAttachment } from "../../../lib/attachments";
 import { cleanDOM } from "../../../lib/cleanDOM";
 import { getHtmlDOM, ggetHtmlDOM } from "../../../lib/http";
 import { introDomHandle } from "../../../lib/rule";
@@ -36,7 +36,7 @@ export class Zongheng extends BaseRuleClass {
       doc.querySelector("div.book-img > img") as HTMLImageElement
     ).src;
     if (coverUrl) {
-      getImageAttachment(coverUrl, this.attachmentMode, "cover-")
+      getAttachment(coverUrl, this.attachmentMode, "cover-")
         .then((coverClass) => {
           additionalMetadate.cover = coverClass;
         })

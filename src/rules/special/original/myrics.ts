@@ -1,6 +1,6 @@
 import { BaseRuleClass, ChapterParseObject } from "../../../rules";
 import { Book, BookAdditionalMetadate } from "../../../main/Book";
-import { getImageAttachment } from "../../../lib/attachments";
+import { getAttachment } from "../../../lib/attachments";
 import { log } from "../../../log";
 import { range } from "../../../lib/misc";
 import pLimit from "p-limit";
@@ -76,7 +76,7 @@ export class Myrics extends BaseRuleClass {
 
     const coverUrl = novelDetail.image;
     if (coverUrl) {
-      getImageAttachment(coverUrl, this.attachmentMode, "cover-")
+      getAttachment(coverUrl, this.attachmentMode, "cover-")
         .then((img) => {
           additionalMetadate.cover = img;
         })

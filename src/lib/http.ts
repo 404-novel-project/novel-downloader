@@ -74,23 +74,23 @@ export interface GfetchRequestInit {
 }
 
 export function gfetch(
-    url: string,
-    {
-      method = "GET",
-      headers,
-      data,
-      cookie,
-      binary,
-      nocache,
-      revalidate,
-      timeout,
-      context,
-      responseType,
-      overrideMimeType,
-      anonymous,
-      user,
-      password,
-    }: GfetchRequestInit = {}
+  url: string,
+  {
+    method = "GET",
+    headers,
+    data,
+    cookie,
+    binary,
+    nocache,
+    revalidate,
+    timeout,
+    context,
+    responseType,
+    overrideMimeType,
+    anonymous,
+    user,
+    password,
+  }: GfetchRequestInit = {}
 ): Promise<Tampermonkey.Response<object>> {
   return new Promise((resolve, reject) => {
     log.debug("[debug]gfetch:");
@@ -299,9 +299,9 @@ export async function ggetHtmlDomWithRetry(
 }
 
 export function getFrameContentEvent(
-    url: string,
-    timeout = 0,
-    eventType: "load" | "DOMContentLoaded" = "load"
+  url: string,
+  timeout = 0,
+  eventType: "load" | "DOMContentLoaded" = "load"
 ): Promise<Document | null> {
   const frame = document.createElement("iframe");
   frame.src = url;
@@ -315,7 +315,7 @@ export function getFrameContentEvent(
           reject(new Error("EventTarget Not Found!"));
         }
         const doc =
-            (frameSelf as HTMLIFrameElement).contentWindow?.document ?? null;
+          (frameSelf as HTMLIFrameElement).contentWindow?.document ?? null;
         (frameSelf as HTMLIFrameElement).remove();
         resolve(doc);
       }, timeout);
@@ -327,8 +327,8 @@ export function getFrameContentEvent(
 }
 
 export async function getFrameContentCondition(
-    url: string,
-    stopCondition: (frame: HTMLIFrameElement) => boolean
+  url: string,
+  stopCondition: (frame: HTMLIFrameElement) => boolean
 ): Promise<Document | null> {
   const frame = document.createElement("iframe");
   frame.src = url;

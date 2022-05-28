@@ -1,4 +1,4 @@
-import { getImageAttachment } from "../../../lib/attachments";
+import { getAttachment } from "../../../lib/attachments";
 import { cleanDOM } from "../../../lib/cleanDOM";
 import { getHtmlDOM, ggetHtmlDOM } from "../../../lib/http";
 import { log } from "../../../log";
@@ -38,7 +38,7 @@ export class Lofter extends BaseRuleClass {
       const avatar = new URL(_avatar);
       avatar.search = "";
       const avatarUrl = avatar.toString();
-      getImageAttachment(avatarUrl, this.attachmentMode, "avatar-")
+      getAttachment(avatarUrl, this.attachmentMode, "avatar-")
         .then((avatarClass) => {
           additionalMetadate.cover = avatarClass;
         })

@@ -121,17 +121,14 @@ export function extensionToMimetype(ext: string): string {
   return "application/octet-stream";
 }
 
-export function mimetyepToExtension(mimeType: string): string | null {
-  for (const [mimetype, entry] of Object.entries(db)) {
-    if (
-      mimeType === mimetype &&
-      Array.isArray(entry.extensions) &&
-      entry.extensions.length !== 0
-    ) {
-      return entry.extensions[0];
+export function mimetyepToCompressible(mimeType: string): boolean {
+  if (db[mimeType]) {
+    const entry = db[mimeType];
+    if (entry["compressible"]) {
+      return entry["compressible"];
     }
   }
-  return null;
+  return false;
 }
 
 // https://stackoverflow.com/questions/3895478/does-javascript-have-a-method-like-range-to-generate-a-range-within-the-supp

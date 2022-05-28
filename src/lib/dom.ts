@@ -65,8 +65,8 @@ export function childNodesCopy(src: Element, dest: Element) {
 export function getMaxDepth(element: Element) {
   const descendants = element.querySelectorAll("*");
   const depths = Array.from(descendants)
-      .filter((elem) => elem.childElementCount === 0)
-      .map((elem) => getDepth(elem, 0));
+    .filter((elem) => elem.childElementCount === 0)
+    .map((elem) => getDepth(elem, 0));
   return Math.max(...depths);
 
   function getDepth(elem: Element, depth: number): number {

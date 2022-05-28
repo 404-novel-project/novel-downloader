@@ -1,5 +1,5 @@
 import {
-  getImageAttachment,
+  getAttachment,
   putAttachmentClassCache,
 } from "../../../lib/attachments";
 import { cleanDOM } from "../../../lib/cleanDOM";
@@ -39,7 +39,7 @@ export class Sfacg extends BaseRuleClass {
       dom.querySelector("#hasTicket div.pic img") as HTMLImageElement
     ).src;
     if (coverUrl) {
-      getImageAttachment(coverUrl, this.attachmentMode, "cover-")
+      getAttachment(coverUrl, this.attachmentMode, "cover-")
         .then((coverClass) => {
           additionalMetadate.cover = coverClass;
         })

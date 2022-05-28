@@ -1,5 +1,5 @@
 import { log } from "../../../log";
-import { getImageAttachment } from "../../../lib/attachments";
+import { getAttachment } from "../../../lib/attachments";
 import { Book, BookAdditionalMetadate } from "../../../main/Book";
 import { BaseRuleClass, ChapterParseObject } from "../../../rules";
 import { Chapter } from "../../../main/Chapter";
@@ -52,7 +52,7 @@ export class Xrzww extends BaseRuleClass {
     introductionHTML.innerText = introduction;
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = `${ossBase}${webNovelDetail.data.novel_cover}`;
-    getImageAttachment(coverUrl, this.attachmentMode, "cover-")
+    getAttachment(coverUrl, this.attachmentMode, "cover-")
       .then((coverClass) => {
         additionalMetadate.cover = coverClass;
       })

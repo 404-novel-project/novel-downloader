@@ -2,7 +2,12 @@
     <div v-if="uiObj.type !== 'error'">
         <div v-if="uiObj.type === 'jump'" class="jump">
             <button class="jump">
-                <img alt="jump" class="jump" v-bind:src="imgJump" v-on:click="jumpButtonClick"/>
+                <img
+                        alt="jump"
+                        class="jump"
+                        v-bind:src="imgJump"
+                        v-on:click="jumpButtonClick"
+                />
             </button>
         </div>
         <div v-if="uiObj.type === 'download'" class="download">

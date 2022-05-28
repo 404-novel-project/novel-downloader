@@ -1,4 +1,4 @@
-import { getImageAttachment } from "../../../lib/attachments";
+import { getAttachment } from "../../../lib/attachments";
 import { cleanDOM } from "../../../lib/cleanDOM";
 import { getMaxDepth, getNodeTextLength, rm } from "../../../lib/dom";
 import { fetchAndParse } from "../../../lib/readability";
@@ -93,7 +93,7 @@ export class Kanunu8 extends BaseRuleClass {
     if (_cover.length === 1) {
       const coverUrl = _cover[0].src;
       if (coverUrl) {
-        getImageAttachment(coverUrl, this.attachmentMode, "cover-")
+        getAttachment(coverUrl, this.attachmentMode, "cover-")
           .then((coverClass) => {
             additionalMetadate.cover = coverClass;
           })

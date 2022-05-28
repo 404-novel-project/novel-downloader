@@ -26,74 +26,74 @@
               >
                   抓取测试
               </button>
-        <button
-          v-if="setting.enableTestPage"
-          v-bind:class="['tab-button', { active: setting.currentTab === 'tab-4'}]"
-          v-on:click="setting.currentTab = 'tab-4'"
-        >
-          日志
-        </button>
+              <button
+                      v-if="setting.enableTestPage"
+                      v-bind:class="['tab-button', { active: setting.currentTab === 'tab-4'}]"
+                      v-on:click="setting.currentTab = 'tab-4'"
+              >
+                  日志
+              </button>
+          </div>
+          <div class="nd-setting-body">
+              <div
+                      v-show="setting.currentTab === 'tab-1'"
+                      id="nd-setting-tab-1"
+                      class="tab-page"
+              >
+                  <div>
+                      <input id="debug" v-model="setting.enableDebug" type="checkbox"/>
+                      <label for="debug">启用调式模式。（输出更详细日志）</label>
+                      <input
+                              id="test-page"
+                              v-model="setting.enableTestPage"
+                              type="checkbox"
+                      />
+                      <label for="test-page">启用测试视图</label>
+                  </div>
+                  <hr class="hr-twill-colorful"/>
+                  <div>
+                      <h3>自定义保存参数</h3>
+                      <ul>
+                          <li v-for="item of saveOptions">
+                              <input
+                                      v-bind:id="item.key"
+                                      v-model="setting.chooseSaveOption"
+                                      type="radio"
+                                      v-bind:value="item.key"
+                              />
+                              <label v-bind:for="item.key">{{ item.value }}</label>
+                          </li>
+                      </ul>
+                  </div>
+              </div>
+              <div
+                      v-show="setting.currentTab === 'tab-2'"
+                      id="nd-setting-tab-2"
+                      class="tab-page"
+              >
+                  <filter-tab v-on:filterupdate="saveFilter"/>
+              </div>
+              <div
+                      v-if="setting.enableTestPage"
+                      v-show="setting.currentTab === 'tab-3'"
+                      id="nd-setting-tab-3"
+                      class="tab-page"
+              >
+                  <test-ui></test-ui>
+              </div>
+              <div
+                      v-if="setting.enableTestPage"
+                      v-show="setting.currentTab === 'tab-4'"
+                      id="nd-setting-tab-4"
+                      class="tab-page"
+              >
+                  <log-ui></log-ui>
+              </div>
+          </div>
+          <div class="nd-setting-footer">
+              <button v-on:click="closeAndSaveSetting">Save</button>
+              <button v-on:click="closeSetting">Cancel</button>
+          </div>
       </div>
-      <div class="nd-setting-body">
-          <div
-                  v-show="setting.currentTab === 'tab-1'"
-                  id="nd-setting-tab-1"
-                  class="tab-page"
-          >
-              <div>
-                  <input id="debug" v-model="setting.enableDebug" type="checkbox"/>
-                  <label for="debug">启用调式模式。（输出更详细日志）</label>
-                  <input
-                          id="test-page"
-                          v-model="setting.enableTestPage"
-                          type="checkbox"
-                  />
-                  <label for="test-page">启用测试视图</label>
-          </div>
-          <hr class="hr-twill-colorful" />
-          <div>
-            <h3>自定义保存参数</h3>
-            <ul>
-                <li v-for="item of saveOptions">
-                    <input
-                            v-bind:id="item.key"
-                            v-model="setting.chooseSaveOption"
-                            type="radio"
-                            v-bind:value="item.key"
-                    />
-                    <label v-bind:for="item.key">{{ item.value }}</label>
-                </li>
-            </ul>
-          </div>
-        </div>
-          <div
-                  v-show="setting.currentTab === 'tab-2'"
-                  id="nd-setting-tab-2"
-                  class="tab-page"
-          >
-              <filter-tab v-on:filterupdate="saveFilter"/>
-          </div>
-          <div
-                  v-if="setting.enableTestPage"
-                  v-show="setting.currentTab === 'tab-3'"
-                  id="nd-setting-tab-3"
-                  class="tab-page"
-          >
-              <test-ui></test-ui>
-          </div>
-          <div
-                  v-if="setting.enableTestPage"
-                  v-show="setting.currentTab === 'tab-4'"
-                  id="nd-setting-tab-4"
-                  class="tab-page"
-          >
-              <log-ui></log-ui>
-          </div>
-      </div>
-      <div class="nd-setting-footer">
-        <button v-on:click="closeAndSaveSetting">Save</button>
-        <button v-on:click="closeSetting">Cancel</button>
-      </div>
-    </div>
   </dialog-ui>
 </div>

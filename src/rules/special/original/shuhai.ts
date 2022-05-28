@@ -1,4 +1,4 @@
-import { getImageAttachment } from "../../../lib/attachments";
+import { getAttachment } from "../../../lib/attachments";
 import { cleanDOM } from "../../../lib/cleanDOM";
 import { ggetHtmlDOM } from "../../../lib/http";
 import { sleep } from "../../../lib/misc";
@@ -43,7 +43,7 @@ export class Shuhai extends BaseRuleClass {
       document.querySelector(".book-cover-wrapper > img") as HTMLImageElement
     ).getAttribute("data-original");
     if (coverUrl) {
-      getImageAttachment(coverUrl, this.attachmentMode, "cover-")
+      getAttachment(coverUrl, this.attachmentMode, "cover-")
         .then((coverClass) => {
           additionalMetadate.cover = coverClass;
         })

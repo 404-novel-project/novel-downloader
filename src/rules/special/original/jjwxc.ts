@@ -1,6 +1,6 @@
 import {
   getAttachmentClassCache,
-  getImageAttachment,
+  getAttachment,
   putAttachmentClassCache,
 } from "../../../lib/attachments";
 import { cleanDOM } from "../../../lib/cleanDOM";
@@ -65,7 +65,7 @@ export class Jjwxc extends BaseRuleClass {
         document.querySelector(".noveldefaultimage") as HTMLImageElement
       ).src;
       if (coverUrl) {
-        getImageAttachment(coverUrl, this.attachmentMode, "cover-")
+        getAttachment(coverUrl, this.attachmentMode, "cover-")
           .then((coverClass) => {
             additionalMetadate.cover = coverClass;
           })

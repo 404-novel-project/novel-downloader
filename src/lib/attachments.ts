@@ -23,9 +23,9 @@ export function clearAttachmentClassCache() {
   attachmentClassCache = [];
 }
 
-export async function getImageAttachment(
+export async function getAttachment(
   url: string,
-  imgMode: "naive" | "TM",
+  mode: "naive" | "TM",
   prefix = "",
   noMD5 = false,
   comments = getRandomName(),
@@ -34,7 +34,7 @@ export async function getImageAttachment(
     customReferer?: string;
   }
 ): Promise<AttachmentClass> {
-  if (imgMode === "naive") {
+  if (mode === "naive") {
     const u = new URL(url);
     if (document.location.protocol === "https:" && u.protocol === "http:") {
       u.protocol = document.location.protocol;
@@ -49,7 +49,7 @@ export async function getImageAttachment(
   const imgClass = new AttachmentClass(
     url,
     comments,
-    imgMode,
+    mode,
     options?.referrerMode,
     options?.customReferer
   );
