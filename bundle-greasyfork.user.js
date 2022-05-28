@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.9.3.720
+// @version        4.9.3.721
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/404-novel-project/novel-downloader
@@ -5285,15 +5285,18 @@ async function cleanDOM(elem, imgMode, options) {
             return null;
         }
         preList.forEach((n) => map.set(n, pre));
-        function hr() {
-            const dom = document.createElement("hr");
-            const text = "-".repeat(20);
-            const images = [];
-            return {
-                dom,
-                text,
-                images,
-            };
+        function hr(elem) {
+            if (elem instanceof HTMLHRElement) {
+                const dom = document.createElement("hr");
+                const text = "-".repeat(20);
+                const images = [];
+                return {
+                    dom,
+                    text,
+                    images,
+                };
+            }
+            return null;
         }
         map.set("hr", hr);
         async function common1(boldName, baseName, elem) {
@@ -5434,13 +5437,22 @@ async function cleanDOM(elem, imgMode, options) {
         }
         map.set("table", table);
         const nodeName = element.nodeName.toLowerCase();
-        const fn = map.get(nodeName);
-        if (fn) {
-            return fn(element);
+        const fn = map.get(nodeName) ?? p;
+        const obj = await fn(element);
+        if (!obj) {
+            return null;
         }
-        else {
-            return p(element);
+        const { dom, text, images } = obj;
+        if (element.getAttribute("data-keep")) {
+            const dk = element.getAttribute("data-keep");
+            const keeps = dk.split(",").map((k) => k.trim());
+            keeps.forEach((k) => {
+                if (dom instanceof HTMLElement && element.getAttribute(k)) {
+                    dom.setAttribute(k, element.getAttribute(k));
+                }
+            });
         }
+        return { dom, text, images };
     }
     async function inlineElement(element) {
         const map = new Map();
@@ -5498,7 +5510,12 @@ async function cleanDOM(elem, imgMode, options) {
                         elem.href.startsWith("http://")) {
                         const { href, textContent } = elem;
                         const dom = document.createElement("a");
-                        dom.href = href;
+                        if (elem.getAttribute("href")?.startsWith("#")) {
+                            dom.href = elem.getAttribute("href");
+                        }
+                        else {
+                            dom.href = href;
+                        }
                         dom.textContent = textContent;
                         const text = `[${textContent}](${href})`;
                         const images = [];
@@ -5749,7 +5766,21 @@ async function cleanDOM(elem, imgMode, options) {
         const nodeName = element.nodeName.toLowerCase();
         const fn = map.get(nodeName);
         if (fn) {
-            return fn(element);
+            const obj = await fn(element);
+            if (!obj) {
+                return null;
+            }
+            const { dom, text, images } = obj;
+            if (element instanceof Element && element.getAttribute("data-keep")) {
+                const dk = element.getAttribute("data-keep");
+                const keeps = dk.split(",").map((k) => k.trim());
+                keeps.forEach((k) => {
+                    if (dom instanceof HTMLElement && element.getAttribute(k)) {
+                        dom.setAttribute(k, element.getAttribute(k));
+                    }
+                });
+            }
+            return { dom, text, images };
         }
         else {
             const output = defaultHandler(element);
@@ -15269,7 +15300,7 @@ class Pixiv extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
                 options: {},
             });
             const contentRaw = document.createElement("div");
-            contentRaw.innerHTML = novel.content.replace(/\n/g, "<br/>");
+            contentRaw.innerText = novel.content;
             await loadPixivimage({
                 dom: contentRaw,
                 nid: bookId,
@@ -15303,7 +15334,7 @@ class Pixiv extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         const novel = await getChapterDate(options.id);
         const contentRaw = document.createElement("div");
-        contentRaw.innerHTML = novel.content.replace(/\n/g, "<br/>");
+        contentRaw.innerText = novel.content;
         await loadPixivimage({
             dom: contentRaw,
             nid: options.id,
@@ -15422,16 +15453,37 @@ async function loadPixivimage({ dom, nid, lang, userId, textEmbeddedImages, }) {
     }
 }
 function replaceMark(dom) {
-    dom.innerHTML = dom.innerHTML.replaceAll("[newpage]", "");
-    const jumpuriMatchs = dom.innerHTML.matchAll(/\[\[jumpuri:(.*) (>|&gt;) (.*)]]/g);
+    const chapterMatchs = dom.innerHTML.matchAll(/\[chapter:(.*?)]/g);
+    for (const match of chapterMatchs) {
+        const [str, heading] = match;
+        const strong = document.createElement("strong");
+        strong.innerText = heading.trim();
+        dom.innerHTML = dom.innerHTML.replace(str, strong.outerHTML);
+    }
+    const newpageMatchs = dom.innerHTML.matchAll(/\[newpage]/g);
+    let page = 1;
+    for (const match of newpageMatchs) {
+        const [str] = match;
+        page++;
+        dom.innerHTML = dom.innerHTML.replace(str, `<hr/><a id="page${page}" data-keep="id" href="#"></a>`);
+    }
+    const jumpMatchs = dom.innerHTML.matchAll(/\[jump:(\d+)]/g);
+    for (const match of jumpMatchs) {
+        const [str, page] = match;
+        const a = document.createElement("a");
+        a.innerText = `To page ${page.trim()}`;
+        a.href = `#page${page.trim()}`;
+        dom.innerHTML = dom.innerHTML.replace(str, a.outerHTML);
+    }
+    const jumpuriMatchs = dom.innerHTML.matchAll(/\[\[jumpuri:(.*?) (>|&gt;) (.*?)]]/gm);
     for (const match of jumpuriMatchs) {
         const [str, text, , href] = match;
         const a = document.createElement("a");
         a.innerText = text.trim();
         a.href = href.trim();
-        dom.innerHTML = dom.innerHTML.replaceAll(str, a.outerHTML);
+        dom.innerHTML = dom.innerHTML.replace(str, a.outerHTML);
     }
-    const rbMatchs = dom.innerHTML.matchAll(/\[\[rb:(.*) (>|&gt;) (.*)]]/g);
+    const rbMatchs = dom.innerHTML.matchAll(/\[\[rb:(.*?) (>|&gt;) (.*?)]]/g);
     for (const match of rbMatchs) {
         const [str, rb, , rt] = match;
         const ruby = document.createElement("ruby");
@@ -15447,7 +15499,7 @@ function replaceMark(dom) {
         const rpR = document.createElement("rp");
         rpR.innerText = ")";
         ruby.appendChild(rpR);
-        dom.innerHTML = dom.innerHTML.replaceAll(str, ruby.outerHTML);
+        dom.innerHTML = dom.innerHTML.replace(str, ruby.outerHTML);
     }
 }
 
