@@ -83,20 +83,13 @@ export class Myrics extends BaseRuleClass {
         .catch((error) => log.error(error));
     }
 
-    const isLogin = async () => {
-      const resp = await fetch("https://www.myrics.com/personal/notifys", {
-        credentials: "include",
-        headers,
-        body: "{}",
-        method: "POST",
-        mode: "cors",
-      });
-      const _notifys = (await resp.json()) as apiResponse<notifys | []>;
-      if (!_notifys.isSuccess) {
-        throw new Error("查询通知失败！");
-      }
-      const notify = _notifys.data;
-      return !Array.isArray(notify);
+    const isLogin = () => {
+      // 基于有无签到按钮判断是否登录
+      return (
+        Array.from(document.querySelectorAll("a")).filter(
+          (a) => a.getAttribute("@click") === "checkin"
+        ).length !== 0
+      );
     };
 
     const getMenuRequestInit = (page: number): RequestInit => ({
@@ -122,7 +115,7 @@ export class Myrics extends BaseRuleClass {
     };
     const limit = pLimit(this.concurrencyLimit);
     const getChapters = async (): Promise<Chapter[]> => {
-      const loginStatus = await isLogin();
+      const loginStatus = isLogin();
 
       const { total_page } = await getMenu(1);
       const _menus = range(total_page, 1).map((page) => {
@@ -301,19 +294,6 @@ interface menu {
   total_page: number;
   list: chapter[];
   sort: "desc" | "asc";
-}
-
-interface notify {
-  created_at: string;
-  content: string;
-  mail_id: number;
-  url: string;
-  image: string;
-}
-
-interface notifys {
-  list: notify[];
-  has_new_mail: boolean;
 }
 
 interface apiResponse<T> {
