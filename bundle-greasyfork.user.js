@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.9.3.718
+// @version        4.9.3.720
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/404-novel-project/novel-downloader
@@ -4897,7 +4897,7 @@ async function _GM_deleteValue(name) {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "CE": () => (/* binding */ getImageAttachment),
+/* harmony export */   "FG": () => (/* binding */ getAttachment),
 /* harmony export */   "VO": () => (/* binding */ getRandomName),
 /* harmony export */   "dK": () => (/* binding */ putAttachmentClassCache),
 /* harmony export */   "gc": () => (/* binding */ getAttachmentClassCache),
@@ -4927,8 +4927,8 @@ function putAttachmentClassCache(attachmentClass) {
 function clearAttachmentClassCache() {
     attachmentClassCache = [];
 }
-async function getImageAttachment(url, imgMode, prefix = "", noMD5 = false, comments = getRandomName(), options) {
-    if (imgMode === "naive") {
+async function getAttachment(url, mode, prefix = "", noMD5 = false, comments = getRandomName(), options) {
+    if (mode === "naive") {
         const u = new URL(url);
         if (document.location.protocol === "https:" && u.protocol === "http:") {
             u.protocol = document.location.protocol;
@@ -4939,7 +4939,7 @@ async function getImageAttachment(url, imgMode, prefix = "", noMD5 = false, comm
     if (imgClassCache) {
         return imgClassCache;
     }
-    const imgClass = new _main_Attachment__WEBPACK_IMPORTED_MODULE_1__/* .AttachmentClass */ .J(url, comments, imgMode, options?.referrerMode, options?.customReferer);
+    const imgClass = new _main_Attachment__WEBPACK_IMPORTED_MODULE_1__/* .AttachmentClass */ .J(url, comments, mode, options?.referrerMode, options?.customReferer);
     imgClass.comments = comments;
     const blob = await imgClass.init();
     if (blob) {
@@ -5123,7 +5123,6 @@ const IgnoreElements = [
     "input",
     "label",
     "form",
-    "audio",
     "button",
     "canvas",
     "datalist",
@@ -5144,7 +5143,6 @@ const IgnoreElements = [
     "template",
     "video",
     "wbr",
-    "table",
 ];
 function isBaseElem(node) {
     const nodeName = node.nodeName.toLowerCase();
@@ -5204,7 +5202,7 @@ function* findBase(elem, withKeep = true) {
 async function cleanDOM(elem, imgMode, options) {
     const baseNodes = [...findBase(elem)];
     const _obj = await loop(baseNodes, document.createElement("div"));
-    const obj = await awaitImages(_obj);
+    const obj = await awaitAttachments(_obj);
     return postHook(obj);
     async function blockElement(element) {
         const map = new Map();
@@ -5362,6 +5360,79 @@ async function cleanDOM(elem, imgMode, options) {
             return null;
         }
         listList.forEach((n) => map.set(n, list));
+        function table(elem) {
+            if (elem instanceof HTMLTableElement) {
+                const dom = elem.cloneNode(true);
+                const text = processTable(elem);
+                const images = [];
+                return { dom, text, images };
+            }
+            return null;
+            function fixText(text) {
+                return text.trim().replace("\t", "");
+            }
+            function processTable(tableDom) {
+                let markdown_string = "";
+                let table_header = "|";
+                let table_header_footer = "|";
+                let table_rows = "";
+                let table_header_found = false;
+                let table_header_cell_count = 0;
+                let prev_row_cell_count = 0;
+                Array.from(tableDom.querySelectorAll("thead > tr > td")).forEach((td) => {
+                    table_header_cell_count++;
+                    table_header = table_header + fixText(td.innerText) + "|";
+                    table_header_footer = table_header_footer + "--- |";
+                    table_header_found = true;
+                });
+                Array.from(tableDom.querySelectorAll("tr")).forEach((tr) => {
+                    if (!table_header_found) {
+                        Array.from(tr.querySelectorAll("th")).forEach((th) => {
+                            table_header_cell_count++;
+                            table_header = table_header + fixText(th.innerText) + "|";
+                            table_header_footer = table_header_footer + "--- |";
+                            table_header_found = true;
+                        });
+                    }
+                    let table_row = "";
+                    let curr_row_cell_count = 0;
+                    Array.from(tr.querySelectorAll("td"))
+                        .filter((td) => !Array.from(tableDom.querySelectorAll("thead > tr > td")).includes(td))
+                        .forEach((td) => {
+                        curr_row_cell_count++;
+                        table_row = table_row + fixText(td.innerText) + "|";
+                    });
+                    if (prev_row_cell_count != 0 &&
+                        curr_row_cell_count != prev_row_cell_count) {
+                        markdown_string =
+                            "ERROR: Your HTML table rows don't have the same number of cells. Colspan not supported.";
+                        return false;
+                    }
+                    if (curr_row_cell_count) {
+                        table_rows += "|" + table_row + "\n";
+                        prev_row_cell_count = curr_row_cell_count;
+                    }
+                });
+                if (markdown_string == "") {
+                    if (table_header_found) {
+                        if (table_header_cell_count != prev_row_cell_count) {
+                            throw new Error("ERROR: The number of cells in your header doesn't match the number of cells in your rows.");
+                        }
+                    }
+                    else {
+                        for (let i = 0; i < prev_row_cell_count; i++) {
+                            table_header = table_header + "|";
+                            table_header_footer = table_header_footer + "--- |";
+                        }
+                    }
+                    markdown_string += table_header + "\n";
+                    markdown_string += table_header_footer + "\n";
+                    markdown_string += table_rows;
+                }
+                return markdown_string;
+            }
+        }
+        map.set("table", table);
         const nodeName = element.nodeName.toLowerCase();
         const fn = map.get(nodeName);
         if (fn) {
@@ -5462,6 +5533,7 @@ async function cleanDOM(elem, imgMode, options) {
                 const dom = document.createElement("img");
                 dom.setAttribute("data-src-address", imgClassCache.name);
                 dom.alt = url;
+                dom.title = url;
                 const text = `![${url}](${imgClassCache.name})`;
                 const images = [imgClassCache];
                 return {
@@ -5477,10 +5549,11 @@ async function cleanDOM(elem, imgMode, options) {
                     referrerMode: options?.referrerMode,
                     customReferer: options?.customReferer,
                 };
-                const imgClass = (0,_attachments__WEBPACK_IMPORTED_MODULE_0__/* .getImageAttachment */ .CE)(url, imgMode, "chapter-", noMd5, comments, imgOptions);
+                const imgClass = (0,_attachments__WEBPACK_IMPORTED_MODULE_0__/* .getAttachment */ .FG)(url, imgMode, "chapter-", noMd5, comments, imgOptions);
                 const dom = document.createElement("img");
                 dom.setAttribute("data-src-address", comments);
                 dom.alt = url;
+                dom.title = url;
                 const text = `![${url}](${comments})`;
                 const images = [imgClass];
                 return {
@@ -5498,6 +5571,51 @@ async function cleanDOM(elem, imgMode, options) {
             return null;
         }
         map.set("img", img);
+        function audio(elem) {
+            if (elem instanceof HTMLAudioElement) {
+                const url = elem.src;
+                const attachmentCache = (0,_attachments__WEBPACK_IMPORTED_MODULE_0__/* .getAttachmentClassCache */ .gc)(url);
+                if (attachmentCache) {
+                    const dom = document.createElement("audio");
+                    dom.innerText = "Your browser does not support the audio element.";
+                    dom.setAttribute("data-src-address", attachmentCache.name);
+                    dom.setAttribute("controls", "");
+                    dom.setAttribute("preload", "metadata");
+                    dom.title = url;
+                    const text = dom.outerHTML;
+                    const images = [attachmentCache];
+                    return {
+                        dom,
+                        text,
+                        images,
+                    };
+                }
+                else {
+                    const comments = (0,_attachments__WEBPACK_IMPORTED_MODULE_0__/* .getRandomName */ .VO)();
+                    const noMd5 = options?.keepImageName ?? false;
+                    const attachmentOptions = {
+                        referrerMode: options?.referrerMode,
+                        customReferer: options?.customReferer,
+                    };
+                    const attachment = (0,_attachments__WEBPACK_IMPORTED_MODULE_0__/* .getAttachment */ .FG)(url, imgMode, "chapter-", noMd5, comments, attachmentOptions);
+                    const dom = document.createElement("audio");
+                    dom.innerText = "Your browser does not support the audio element.";
+                    dom.setAttribute("data-src-address", comments);
+                    dom.setAttribute("controls", "");
+                    dom.setAttribute("preload", "metadata");
+                    dom.title = url;
+                    const text = dom.outerHTML;
+                    const images = [attachment];
+                    return {
+                        dom,
+                        text,
+                        images,
+                    };
+                }
+            }
+            return null;
+        }
+        map.set("audio", audio);
         function picture(elem) {
             if (elem instanceof HTMLPictureElement) {
                 const img = elem.querySelector("img");
@@ -5674,18 +5792,18 @@ async function cleanDOM(elem, imgMode, options) {
             images: _outImages,
         };
     }
-    async function awaitImages({ dom, text, images, }) {
-        const iImages = await Promise.all(images);
-        iImages.forEach((image) => {
-            if (image.comments) {
-                dom.innerHTML = dom.innerHTML.replaceAll(image.comments, image.name);
-                text = text.replaceAll(image.comments, image.name);
+    async function awaitAttachments({ dom, text, images, }) {
+        const attachments = await Promise.all(images);
+        attachments.forEach((attach) => {
+            if (attach.comments) {
+                dom.innerHTML = dom.innerHTML.replaceAll(attach.comments, attach.name);
+                text = text.replaceAll(attach.comments, attach.name);
             }
         });
         return {
             dom,
             text,
-            images: iImages,
+            images: attachments,
         };
     }
     function postHook({ dom, text, images, }) {
@@ -6654,10 +6772,11 @@ class LocalStorageExpired {
 /* harmony export */   "K$": () => (/* binding */ saveToArchiveOrg),
 /* harmony export */   "X8": () => (/* binding */ deepcopy),
 /* harmony export */   "_v": () => (/* binding */ sleep),
+/* harmony export */   "tA": () => (/* binding */ mimetyepToCompressible),
 /* harmony export */   "w6": () => (/* binding */ range),
 /* harmony export */   "z9": () => (/* binding */ extensionToMimetype)
 /* harmony export */ });
-/* unused harmony exports regexpEscape, mean, sd, mimetyepToExtension */
+/* unused harmony exports regexpEscape, mean, sd */
 /* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/main/main.ts");
 /* harmony import */ var _GM__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/GM.ts");
 /* harmony import */ var mime_db__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/mime-db/index.js");
@@ -6756,15 +6875,14 @@ function extensionToMimetype(ext) {
     }
     return "application/octet-stream";
 }
-function mimetyepToExtension(mimeType) {
-    for (const [mimetype, entry] of Object.entries(db)) {
-        if (mimeType === mimetype &&
-            Array.isArray(entry.extensions) &&
-            entry.extensions.length !== 0) {
-            return entry.extensions[0];
+function mimetyepToCompressible(mimeType) {
+    if (mime_db__WEBPACK_IMPORTED_MODULE_0__[mimeType]) {
+        const entry = mime_db__WEBPACK_IMPORTED_MODULE_0__[mimeType];
+        if (entry["compressible"]) {
+            return entry["compressible"];
         }
     }
-    return null;
+    return false;
 }
 function range(size, startAt = 0) {
     return [...Array(size).keys()].map((i) => i + startAt);
@@ -7729,7 +7847,8 @@ class FflateZip {
         this.count++;
         const buffer = await fileBlob.arrayBuffer();
         const chunk = new Uint8Array(buffer);
-        if (fileBlob.type.includes("image/") || nocompress) {
+        if (!((0,misc/* mimetyepToCompressible */.tA)((0,misc/* extensionToMimetype */.z9)(filename.split(".").slice(-1)[0])) || (0,misc/* mimetyepToCompressible */.tA)(fileBlob.type)) ||
+            nocompress) {
             const nonStreamingFile = new external_fflate_namespaceObject.ZipPassThrough(filename);
             this.savedZip.add(nonStreamingFile);
             nonStreamingFile.push(chunk, true);
@@ -10690,7 +10809,7 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
                 language: language ?? "zh",
             };
             if (coverUrl) {
-                (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getImageAttachment */ .CE)(coverUrl, this.attachmentMode, "cover-")
+                (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ .FG)(coverUrl, this.attachmentMode, "cover-")
                     .then((coverClass) => {
                     additionalMetadate.cover = coverClass;
                 })
@@ -10749,7 +10868,7 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
                     charset: this.charset,
                     options: { bookname },
                 });
-                if (isVIP === true && isPaid === false) {
+                if (isVIP && !isPaid) {
                     chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_5__/* .Status.aborted */ .qb.aborted;
                 }
                 if (typeof postHook === "function") {
@@ -11322,7 +11441,7 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
                 language: language ?? "zh",
             };
             if (coverUrl) {
-                (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getImageAttachment */ .CE)(coverUrl, this.attachmentMode, "cover-")
+                (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ .FG)(coverUrl, this.attachmentMode, "cover-")
                     .then((coverClass) => {
                     additionalMetadate.cover = coverClass;
                 })
@@ -11594,7 +11713,7 @@ class C17k extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
         const additionalMetadate = {};
         const coverUrl = doc.querySelector("#bookCover img.book").src;
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getImageAttachment */ .CE)(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getAttachment */ .FG)(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
@@ -11761,14 +11880,14 @@ class MangaBilibili extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass
         const introductionHTML = document.createElement("div");
         introductionHTML.innerText = detail.evaluate;
         const additionalMetadate = {};
-        (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getImageAttachment */ .CE)(detail.vertical_cover, this.attachmentMode, "vertical_cover-")
+        (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getAttachment */ .FG)(detail.vertical_cover, this.attachmentMode, "vertical_cover-")
             .then((coverClass) => {
             additionalMetadate.cover = coverClass;
         })
             .catch((error) => _log__WEBPACK_IMPORTED_MODULE_2___default().error(error));
         additionalMetadate.tags = detail.styles;
         additionalMetadate.attachments = [];
-        (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getImageAttachment */ .CE)(detail.horizontal_cover, this.attachmentMode, "horizontal_cover-")
+        (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getAttachment */ .FG)(detail.horizontal_cover, this.attachmentMode, "horizontal_cover-")
             .then((coverClass) => {
             additionalMetadate.attachments?.push(coverClass);
         })
@@ -12024,7 +12143,7 @@ class Ciweimao extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
         const coverUrl = dom.querySelector(".cover > img")
             .src;
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_4__/* .getImageAttachment */ .CE)(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_4__/* .getAttachment */ .FG)(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
@@ -12124,7 +12243,7 @@ class Shubl extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
         const coverUrl = document.querySelector(".book-img")
             .src;
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_4__/* .getImageAttachment */ .CE)(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_4__/* .getAttachment */ .FG)(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
@@ -12485,7 +12604,7 @@ class Ciyuanji extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
         const additionalMetadate = {};
         const coverUrl = bookObject.imgUrl;
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getImageAttachment */ .CE)(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getAttachment */ .FG)(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
@@ -12529,12 +12648,12 @@ class Ciyuanji extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
                 charset: this.charset,
                 options: {},
             });
-            if (chapter.isVIP === true && chapter.isPaid === false) {
+            if (chapter.isVIP && !chapter.isPaid) {
                 chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status.aborted */ .qb.aborted;
             }
             chapters.push(chapter);
         }
-        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .f({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .f({
             bookUrl,
             bookname,
             author,
@@ -12543,7 +12662,6 @@ class Ciyuanji extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
             additionalMetadate,
             chapters,
         });
-        return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         const data = {
@@ -12848,7 +12966,7 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
         const additionalMetadate = {};
         const coverUrl = data.novelInfo.novel_cover;
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_4__/* .getImageAttachment */ .CE)(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_4__/* .getAttachment */ .FG)(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
@@ -13194,7 +13312,7 @@ class Hanwujinian extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass *
         const coverUrl = document.querySelector(".wR_JSAS > img").src;
         const additionalMetadate = {};
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_4__/* .getImageAttachment */ .CE)(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_4__/* .getAttachment */ .FG)(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
@@ -13373,7 +13491,7 @@ class Iqingguo extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
             ids: bookId,
         };
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getImageAttachment */ .CE)(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ .FG)(coverUrl, this.attachmentMode, "cover-")
                 .then((img) => {
                 additionalMetadate.cover = img;
             })
@@ -13622,7 +13740,7 @@ class Jjwxc extends rules/* BaseRuleClass */.c {
             }
             const coverUrl = document.querySelector(".noveldefaultimage").src;
             if (coverUrl) {
-                (0,attachments/* getImageAttachment */.CE)(coverUrl, this.attachmentMode, "cover-")
+                (0,attachments/* getAttachment */.FG)(coverUrl, this.attachmentMode, "cover-")
                     .then((coverClass) => {
                     additionalMetadate.cover = coverClass;
                 })
@@ -14016,7 +14134,7 @@ class Linovel extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c
         const coverUrl = document.querySelector(".book-cover > a").href;
         if (coverUrl) {
             attachmentsUrlList.push(coverUrl);
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getImageAttachment */ .CE)(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ .FG)(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
@@ -14027,7 +14145,7 @@ class Linovel extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c
         for (const volumeCoverUrl of volumeCoverUrlList) {
             if (!attachmentsUrlList.includes(volumeCoverUrl)) {
                 attachmentsUrlList.push(volumeCoverUrl);
-                (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getImageAttachment */ .CE)(volumeCoverUrl, this.attachmentMode, "volumeCover-")
+                (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ .FG)(volumeCoverUrl, this.attachmentMode, "volumeCover-")
                     .then((volumeCoverObj) => {
                     additionalMetadate.attachments?.push(volumeCoverObj);
                 })
@@ -14195,7 +14313,7 @@ class Lofter extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
             const avatar = new URL(_avatar);
             avatar.search = "";
             const avatarUrl = avatar.toString();
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getImageAttachment */ .CE)(avatarUrl, this.attachmentMode, "avatar-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getAttachment */ .FG)(avatarUrl, this.attachmentMode, "avatar-")
                 .then((avatarClass) => {
                 additionalMetadate.cover = avatarClass;
             })
@@ -14410,7 +14528,7 @@ class Longmabook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */
         const additionalMetadate = {};
         const coverUrl = document.querySelector("#mypages > div:nth-child(8) > div:nth-child(1) > img")?.src.replace("_s.", "_b.");
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_4__/* .getImageAttachment */ .CE)(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_4__/* .getAttachment */ .FG)(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
@@ -14789,26 +14907,14 @@ class Myrics extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c 
         };
         const coverUrl = novelDetail.image;
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getImageAttachment */ .CE)(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ .FG)(coverUrl, this.attachmentMode, "cover-")
                 .then((img) => {
                 additionalMetadate.cover = img;
             })
                 .catch((error) => _log__WEBPACK_IMPORTED_MODULE_3___default().error(error));
         }
-        const isLogin = async () => {
-            const resp = await fetch("https://www.myrics.com/personal/notifys", {
-                credentials: "include",
-                headers,
-                body: "{}",
-                method: "POST",
-                mode: "cors",
-            });
-            const _notifys = (await resp.json());
-            if (!_notifys.isSuccess) {
-                throw new Error("查询通知失败！");
-            }
-            const notify = _notifys.data;
-            return !Array.isArray(notify);
+        const isLogin = () => {
+            return (Array.from(document.querySelectorAll("a")).filter((a) => a.getAttribute("@click") === "checkin").length !== 0);
         };
         const getMenuRequestInit = (page) => ({
             credentials: "include",
@@ -14833,7 +14939,7 @@ class Myrics extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c 
         };
         const limit = (0,p_limit__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Z)(this.concurrencyLimit);
         const getChapters = async () => {
-            const loginStatus = await isLogin();
+            const loginStatus = isLogin();
             const { total_page } = await getMenu(1);
             const _menus = (0,_lib_misc__WEBPACK_IMPORTED_MODULE_4__/* .range */ .w6)(total_page, 1).map((page) => {
                 return limit(() => getMenu(page));
@@ -15023,7 +15129,7 @@ class Pixiv extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
             const additionalMetadate = {};
             const coverUrl = seriesMetaBody.firstEpisode.url;
             if (coverUrl) {
-                (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getImageAttachment */ .CE)(coverUrl, self.attachmentMode, "cover-")
+                (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getAttachment */ .FG)(coverUrl, self.attachmentMode, "cover-")
                     .then((coverClass) => {
                     additionalMetadate.cover = coverClass;
                 })
@@ -15136,7 +15242,7 @@ class Pixiv extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
             const additionalMetadate = {};
             const coverUrl = novel.coverUrl;
             if (coverUrl) {
-                (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getImageAttachment */ .CE)(coverUrl, self.attachmentMode, "cover-")
+                (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getAttachment */ .FG)(coverUrl, self.attachmentMode, "cover-")
                     .then((coverClass) => {
                     additionalMetadate.cover = coverClass;
                 })
@@ -15409,7 +15515,7 @@ class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
         const additionalMetadate = {};
         const coverUrl = document.querySelector("#bookImg > img").src.slice(0, -4);
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getImageAttachment */ .CE)(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ .FG)(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
@@ -15642,7 +15748,7 @@ class Qimao extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
         const additionalMetadate = {};
         const coverUrl = document.querySelector(".poster-pic > img").src;
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getImageAttachment */ .CE)(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ .FG)(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
@@ -15964,7 +16070,7 @@ class Sfacg extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
         const additionalMetadate = {};
         const coverUrl = dom.querySelector("#hasTicket div.pic img").src;
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getImageAttachment */ .CE)(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getAttachment */ .FG)(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
@@ -16221,7 +16327,7 @@ class Shuhai extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
         const additionalMetadate = {};
         const coverUrl = document.querySelector(".book-cover-wrapper > img").getAttribute("data-original");
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getImageAttachment */ .CE)(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ .FG)(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
@@ -16546,7 +16652,7 @@ class Tadu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
         const additionalMetadate = {};
         const coverUrl = document.querySelector("a.bookImg > img").getAttribute("data-src");
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getImageAttachment */ .CE)(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ .FG)(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
@@ -16742,7 +16848,7 @@ class Xrzww extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
         introductionHTML.innerText = introduction;
         const additionalMetadate = {};
         const coverUrl = `${ossBase}${webNovelDetail.data.novel_cover}`;
-        (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getImageAttachment */ .CE)(coverUrl, this.attachmentMode, "cover-")
+        (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getAttachment */ .FG)(coverUrl, this.attachmentMode, "cover-")
             .then((coverClass) => {
             additionalMetadate.cover = coverClass;
         })
@@ -16918,7 +17024,7 @@ class Zongheng extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
         const additionalMetadate = {};
         const coverUrl = doc.querySelector("div.book-img > img").src;
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getImageAttachment */ .CE)(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getAttachment */ .FG)(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
@@ -17089,7 +17195,7 @@ class Dmzj extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
             : document.querySelector("#cover_pic");
         const coverUrl = coverDom.src;
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getImageAttachment */ .CE)(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ .FG)(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
@@ -18362,7 +18468,7 @@ class Hetushu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c
         const additionalMetadate = {};
         const coverUrl = document.querySelector(".book_info > img").src;
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getImageAttachment */ .CE)(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ .FG)(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
@@ -18577,7 +18683,7 @@ class Idejian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c
         const additionalMetadate = {};
         const coverUrl = document.querySelector(".book_img > img").src;
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getImageAttachment */ .CE)(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ .FG)(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
@@ -18771,7 +18877,7 @@ class Kanunu8 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c
         if (_cover.length === 1) {
             const coverUrl = _cover[0].src;
             if (coverUrl) {
-                (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getImageAttachment */ .CE)(coverUrl, this.attachmentMode, "cover-")
+                (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getAttachment */ .FG)(coverUrl, this.attachmentMode, "cover-")
                     .then((coverClass) => {
                     additionalMetadate.cover = coverClass;
                 })
@@ -18904,7 +19010,7 @@ class Xkzw extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
         const additionalMetadate = {};
         const coverUrl = document.querySelector("#fmimg > img").src;
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getImageAttachment */ .CE)(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getAttachment */ .FG)(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
@@ -19724,7 +19830,7 @@ function mkRuleClass({ bookUrl, anotherPageUrl, ToCUrl, getBookname, getAuthor, 
                 language: language ?? "zh",
             };
             if (coverUrl) {
-                (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getImageAttachment */ .CE)(coverUrl, this.attachmentMode, "cover-")
+                (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getAttachment */ .FG)(coverUrl, this.attachmentMode, "cover-")
                     .then((coverClass) => {
                     additionalMetadate.cover = coverClass;
                 })
@@ -21934,7 +22040,7 @@ var log = __webpack_require__("./src/log.ts");
 
 ;// CONCATENATED MODULE: ./src/ui/setting.html
 // Module
-var setting_code = "<div>\n  <dialog-ui v-if=\"openStatus === 'true'\" dialog-title=\"设置\" v-bind:status=\"openStatus\" v-on:dialogclose=\"closeSetting\">\n      <div id=\"nd-setting\" class=\"nd-setting\">\n          <div class=\"nd-setting-tab\">\n              <button v-bind:class=\"['tab-button', { active: setting.currentTab === 'tab-1'}]\" v-on:click=\"setting.currentTab = 'tab-1'\">\n                  基本设置\n              </button>\n              <button v-bind:class=\"['tab-button', { active: setting.currentTab === 'tab-2'}]\" v-on:click=\"setting.currentTab = 'tab-2'\">\n                  自定义筛选条件\n              </button>\n              <button v-if=\"setting.enableTestPage\" v-bind:class=\"['tab-button', { active: setting.currentTab === 'tab-3'}]\" v-on:click=\"setting.currentTab = 'tab-3'\">\n                  抓取测试\n              </button>\n        <button v-if=\"setting.enableTestPage\" v-bind:class=\"['tab-button', { active: setting.currentTab === 'tab-4'}]\" v-on:click=\"setting.currentTab = 'tab-4'\">\n          日志\n        </button>\n      </div>\n      <div class=\"nd-setting-body\">\n          <div v-show=\"setting.currentTab === 'tab-1'\" id=\"nd-setting-tab-1\" class=\"tab-page\">\n              <div>\n                  <input id=\"debug\" v-model=\"setting.enableDebug\" type=\"checkbox\">\n                  <label for=\"debug\">启用调式模式。（输出更详细日志）</label>\n                  <input id=\"test-page\" v-model=\"setting.enableTestPage\" type=\"checkbox\">\n                  <label for=\"test-page\">启用测试视图</label>\n          </div>\n          <hr class=\"hr-twill-colorful\">\n          <div>\n            <h3>自定义保存参数</h3>\n            <ul>\n                <li v-for=\"item of saveOptions\">\n                    <input v-bind:id=\"item.key\" v-model=\"setting.chooseSaveOption\" type=\"radio\" v-bind:value=\"item.key\">\n                    <label v-bind:for=\"item.key\">{{ item.value }}</label>\n                </li>\n            </ul>\n          </div>\n        </div>\n          <div v-show=\"setting.currentTab === 'tab-2'\" id=\"nd-setting-tab-2\" class=\"tab-page\">\n              <filter-tab v-on:filterupdate=\"saveFilter\">\n          </div>\n          <div v-if=\"setting.enableTestPage\" v-show=\"setting.currentTab === 'tab-3'\" id=\"nd-setting-tab-3\" class=\"tab-page\">\n              <test-ui></test-ui>\n          </div>\n          <div v-if=\"setting.enableTestPage\" v-show=\"setting.currentTab === 'tab-4'\" id=\"nd-setting-tab-4\" class=\"tab-page\">\n              <log-ui></log-ui>\n          </div>\n      </div>\n      <div class=\"nd-setting-footer\">\n        <button v-on:click=\"closeAndSaveSetting\">Save</button>\n        <button v-on:click=\"closeSetting\">Cancel</button>\n      </div>\n    </div>\n  </dialog-ui>\n</div>\n";
+var setting_code = "<div>\n  <dialog-ui v-if=\"openStatus === 'true'\" dialog-title=\"设置\" v-bind:status=\"openStatus\" v-on:dialogclose=\"closeSetting\">\n      <div id=\"nd-setting\" class=\"nd-setting\">\n          <div class=\"nd-setting-tab\">\n              <button v-bind:class=\"['tab-button', { active: setting.currentTab === 'tab-1'}]\" v-on:click=\"setting.currentTab = 'tab-1'\">\n                  基本设置\n              </button>\n              <button v-bind:class=\"['tab-button', { active: setting.currentTab === 'tab-2'}]\" v-on:click=\"setting.currentTab = 'tab-2'\">\n                  自定义筛选条件\n              </button>\n              <button v-if=\"setting.enableTestPage\" v-bind:class=\"['tab-button', { active: setting.currentTab === 'tab-3'}]\" v-on:click=\"setting.currentTab = 'tab-3'\">\n                  抓取测试\n              </button>\n              <button v-if=\"setting.enableTestPage\" v-bind:class=\"['tab-button', { active: setting.currentTab === 'tab-4'}]\" v-on:click=\"setting.currentTab = 'tab-4'\">\n                  日志\n              </button>\n          </div>\n          <div class=\"nd-setting-body\">\n              <div v-show=\"setting.currentTab === 'tab-1'\" id=\"nd-setting-tab-1\" class=\"tab-page\">\n                  <div>\n                      <input id=\"debug\" v-model=\"setting.enableDebug\" type=\"checkbox\">\n                      <label for=\"debug\">启用调式模式。（输出更详细日志）</label>\n                      <input id=\"test-page\" v-model=\"setting.enableTestPage\" type=\"checkbox\">\n                      <label for=\"test-page\">启用测试视图</label>\n                  </div>\n                  <hr class=\"hr-twill-colorful\">\n                  <div>\n                      <h3>自定义保存参数</h3>\n                      <ul>\n                          <li v-for=\"item of saveOptions\">\n                              <input v-bind:id=\"item.key\" v-model=\"setting.chooseSaveOption\" type=\"radio\" v-bind:value=\"item.key\">\n                              <label v-bind:for=\"item.key\">{{ item.value }}</label>\n                          </li>\n                      </ul>\n                  </div>\n              </div>\n              <div v-show=\"setting.currentTab === 'tab-2'\" id=\"nd-setting-tab-2\" class=\"tab-page\">\n                  <filter-tab v-on:filterupdate=\"saveFilter\">\n              </div>\n              <div v-if=\"setting.enableTestPage\" v-show=\"setting.currentTab === 'tab-3'\" id=\"nd-setting-tab-3\" class=\"tab-page\">\n                  <test-ui></test-ui>\n              </div>\n              <div v-if=\"setting.enableTestPage\" v-show=\"setting.currentTab === 'tab-4'\" id=\"nd-setting-tab-4\" class=\"tab-page\">\n                  <log-ui></log-ui>\n              </div>\n          </div>\n          <div class=\"nd-setting-footer\">\n              <button v-on:click=\"closeAndSaveSetting\">Save</button>\n              <button v-on:click=\"closeSetting\">Cancel</button>\n          </div>\n      </div>\n  </dialog-ui>\n</div>\n";
 // Exports
 /* harmony default export */ const setting = (setting_code);
 // EXTERNAL MODULE: ./src/ui/setting.less
@@ -21943,7 +22049,7 @@ var ui_setting = __webpack_require__("./src/ui/setting.less");
 var attachments = __webpack_require__("./src/lib/attachments.ts");
 ;// CONCATENATED MODULE: ./src/ui/TestUI.html
 // Module
-var TestUI_code = "<div>\n  <div id=\"test-page-div\">\n    <h2>元数据</h2>\n    <table>\n      <tbody>\n        <tr v-for=\"(value, key) in metaData\">\n          <td>{{ key }}</td>\n          <td v-html=\"getData(key, value)\"></td>\n        </tr>\n      </tbody>\n    </table>\n    <hr class=\"hr-edge-weak\">\n    <h2>章节测试</h2>\n    <div class=\"preview-chapter-setting\">\n      <label for=\"chapterNumber\">预览章节序号：</label>\n      <input id=\"chapterNumber\" v-model=\"chapterNumber\" type=\"text\">\n    </div>\n    <div v-if=\"this.isSeenChapter(chapter)\">\n        <h4>\n            <a rel=\"noopener noreferrer\" target=\"_blank\" v-bind:href=\"chapter.chapterUrl\">{{ chapter.chapterName }}</a>\n        </h4>\n      <div class=\"chapter\" v-html=\"getChapterHtml(chapter)\"></div>\n    </div>\n    <div v-else>\n      <p v-if=\"this.isChapterFailed(chapter)\">章节加载失败！</p>\n      <p v-else>正在加载章节中……</p>\n    </div>\n  </div>\n</div>\n";
+var TestUI_code = "<div>\n  <div id=\"test-page-div\">\n    <h2>元数据</h2>\n    <table>\n      <tbody>\n        <tr v-for=\"(value, key) in metaData\">\n          <td>{{ key }}</td>\n            <td v-html=\"getData(key, value)\"></td>\n        </tr>\n      </tbody>\n    </table>\n      <hr class=\"hr-edge-weak\">\n      <h2>章节测试</h2>\n      <div class=\"preview-chapter-setting\">\n          <label for=\"chapterNumber\">预览章节序号：</label>\n          <input id=\"chapterNumber\" v-model=\"chapterNumber\" type=\"text\">\n      </div>\n      <div v-if=\"this.isSeenChapter(chapter)\">\n          <h4>\n              <a rel=\"noopener noreferrer\" target=\"_blank\" v-bind:href=\"chapter.chapterUrl\">{{ chapter.chapterName }}</a>\n          </h4>\n          <div class=\"chapter\" v-html=\"getChapterHtml(chapter)\"></div>\n      </div>\n      <div v-else>\n          <p v-if=\"this.isChapterFailed(chapter)\">章节加载失败！</p>\n          <p v-else>正在加载章节中……</p>\n      </div>\n  </div>\n</div>\n";
 // Exports
 /* harmony default export */ const TestUI = (TestUI_code);
 // EXTERNAL MODULE: ./src/ui/TestUI.less
@@ -22027,11 +22133,11 @@ var ui_TestUI = __webpack_require__("./src/ui/TestUI.less");
         }
         function getChapterHtml(_chapter) {
             const html = _chapter.contentHTML?.cloneNode(true);
-            const imgs = html.querySelectorAll("img");
-            if (imgs) {
-                Array.from(imgs).forEach((img) => {
-                    const url = img.alt;
-                    img.src = getObjectUrl(url);
+            const nodes = html.querySelectorAll("img, audio");
+            if (nodes) {
+                Array.from(nodes).forEach((node) => {
+                    const url = node.title || node.alt;
+                    node.src = getObjectUrl(url);
                 });
             }
             return html.outerHTML;
