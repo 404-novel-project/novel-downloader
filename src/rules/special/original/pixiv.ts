@@ -341,7 +341,7 @@ export class Pixiv extends BaseRuleClass {
         options: {},
       });
       const contentRaw = document.createElement("div");
-      contentRaw.innerHTML = novel.content.replace(/\n/g, "<br/>");
+      contentRaw.innerText = novel.content;
       await loadPixivimage({
         dom: contentRaw,
         nid: bookId,
@@ -385,7 +385,7 @@ export class Pixiv extends BaseRuleClass {
   ) {
     const novel = await getChapterDate(options.id);
     const contentRaw = document.createElement("div");
-    contentRaw.innerHTML = novel.content.replace(/\n/g, "<br/>");
+    contentRaw.innerText = novel.content;
     await loadPixivimage({
       dom: contentRaw,
       nid: options.id,
@@ -731,28 +731,60 @@ async function loadPixivimage({
 }
 
 function replaceMark(dom: HTMLElement) {
+  // chapter
+  // [chapter:企画概要]
+  // https://www.pixiv.net/novel/show.php?id=16142454
+  const chapterMatchs = dom.innerHTML.matchAll(/\[chapter:(.*?)]/g);
+  for (const match of chapterMatchs) {
+    const [str, heading] = match;
+    const strong = document.createElement("strong");
+    strong.innerText = heading.trim();
+    dom.innerHTML = dom.innerHTML.replace(str, strong.outerHTML);
+  }
+
   // [newpage]
   // https://www.pixiv.net/novel/show.php?id=12304493
-  dom.innerHTML = dom.innerHTML.replaceAll("[newpage]", "");
+  const newpageMatchs = dom.innerHTML.matchAll(/\[newpage]/g);
+  let page = 1;
+  for (const match of newpageMatchs) {
+    const [str] = match;
+    page++;
+    dom.innerHTML = dom.innerHTML.replace(
+      str,
+      `<hr/><a id="page${page}" data-keep="id" href="#"></a>`
+    );
+  }
+
+  // jump
+  // [jump:2]
+  // https://www.pixiv.net/novel/show.php?id=16142454
+  const jumpMatchs = dom.innerHTML.matchAll(/\[jump:(\d+)]/g);
+  for (const match of jumpMatchs) {
+    const [str, page] = match;
+    const a = document.createElement("a");
+    a.innerText = `To page ${page.trim()}`;
+    a.href = `#page${page.trim()}`;
+    dom.innerHTML = dom.innerHTML.replace(str, a.outerHTML);
+  }
 
   // jumpuri
   // [[jumpuri:原文链接 > https://www.backchina.com/blog/250647/article-183780.html]]
   // https://www.pixiv.net/novel/show.php?id=17253845
   const jumpuriMatchs = dom.innerHTML.matchAll(
-    /\[\[jumpuri:(.*) (>|&gt;) (.*)]]/g
+    /\[\[jumpuri:(.*?) (>|&gt;) (.*?)]]/gm
   );
   for (const match of jumpuriMatchs) {
     const [str, text, , href] = match;
     const a = document.createElement("a");
     a.innerText = text.trim();
     a.href = href.trim();
-    dom.innerHTML = dom.innerHTML.replaceAll(str, a.outerHTML);
+    dom.innerHTML = dom.innerHTML.replace(str, a.outerHTML);
   }
 
   // rb
   // [[rb:莉莉丝 > Lilith]]
   // https://www.pixiv.net/novel/show.php?id=13854092
-  const rbMatchs = dom.innerHTML.matchAll(/\[\[rb:(.*) (>|&gt;) (.*)]]/g);
+  const rbMatchs = dom.innerHTML.matchAll(/\[\[rb:(.*?) (>|&gt;) (.*?)]]/g);
   for (const match of rbMatchs) {
     const [str, rb, , rt] = match;
     const ruby = document.createElement("ruby");
@@ -773,7 +805,7 @@ function replaceMark(dom: HTMLElement) {
     rpR.innerText = ")";
     ruby.appendChild(rpR);
 
-    dom.innerHTML = dom.innerHTML.replaceAll(str, ruby.outerHTML);
+    dom.innerHTML = dom.innerHTML.replace(str, ruby.outerHTML);
   }
 }
 

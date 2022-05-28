@@ -1,6 +1,8 @@
-import { log } from "../log";
-import { AttachmentClass } from "../main/Attachment";
-import { ReferrerMode } from "../main/main";
+// noinspection UnnecessaryContinueJS
+
+import {log} from "../log";
+import {AttachmentClass} from "../main/Attachment";
+import {ReferrerMode} from "../main/main";
 import {
   getAttachment,
   getAttachmentClassCache,
@@ -275,7 +277,12 @@ interface Output {
   images: AttachmentClass[];
 }
 
-//** 清理元素 */
+//** 清理元素
+//*
+//* 可通过设置 ``data-keep`` 属性指定需保留的属性值。
+//* 如 ``<hr id="page2" data-keep="id" />`` 即保留名称为 ``id`` 的属性值。
+//* 如需保留多个值，可使用 ``,`` 分隔
+//**/
 export async function cleanDOM(
   elem: Element,
   imgMode: "naive" | "TM",
@@ -396,15 +403,18 @@ export async function cleanDOM(
 
     preList.forEach((n) => map.set(n, pre));
 
-    function hr() {
-      const dom = document.createElement("hr");
-      const text = "-".repeat(20);
-      const images = [] as AttachmentClass[];
-      return {
-        dom,
-        text,
-        images,
-      };
+    function hr(elem: Element) {
+      if (elem instanceof HTMLHRElement) {
+        const dom = document.createElement("hr");
+        const text = "-".repeat(20);
+        const images = [] as AttachmentClass[];
+        return {
+          dom,
+          text,
+          images,
+        };
+      }
+      return null;
     }
 
     map.set("hr", hr);
@@ -606,12 +616,22 @@ export async function cleanDOM(
     map.set("table", table);
 
     const nodeName = element.nodeName.toLowerCase();
-    const fn = map.get(nodeName);
-    if (fn) {
-      return fn(element);
-    } else {
-      return p(element);
+    const fn = map.get(nodeName) ?? p;
+    const obj = await fn(element);
+    if (!obj) {
+      return null;
     }
+    const { dom, text, images } = obj;
+    if (element.getAttribute("data-keep")) {
+      const dk = element.getAttribute("data-keep") as string;
+      const keeps = dk.split(",").map((k) => k.trim());
+      keeps.forEach((k) => {
+        if (dom instanceof HTMLElement && element.getAttribute(k)) {
+          dom.setAttribute(k, element.getAttribute(k) as string);
+        }
+      });
+    }
+    return { dom, text, images };
   }
 
   async function inlineElement(
@@ -688,7 +708,11 @@ export async function cleanDOM(
           ) {
             const { href, textContent } = elem;
             const dom = document.createElement("a");
-            dom.href = href;
+            if (elem.getAttribute("href")?.startsWith("#")) {
+              dom.href = elem.getAttribute("href") as string;
+            } else {
+              dom.href = href;
+            }
             dom.textContent = textContent;
             const text = `[${textContent}](${href})`;
             const images = [] as AttachmentClass[];
@@ -1007,7 +1031,21 @@ export async function cleanDOM(
     const nodeName = element.nodeName.toLowerCase();
     const fn = map.get(nodeName) as (elem: Element | Text) => SubOutput | null;
     if (fn) {
-      return fn(element);
+      const obj = await fn(element);
+      if (!obj) {
+        return null;
+      }
+      const { dom, text, images } = obj;
+      if (element instanceof Element && element.getAttribute("data-keep")) {
+        const dk = element.getAttribute("data-keep") as string;
+        const keeps = dk.split(",").map((k) => k.trim());
+        keeps.forEach((k) => {
+          if (dom instanceof HTMLElement && element.getAttribute(k)) {
+            dom.setAttribute(k, element.getAttribute(k) as string);
+          }
+        });
+      }
+      return { dom, text, images };
     } else {
       const output = defaultHandler(element);
       log.warn("[cleanDom]发现未知行内元素！");
@@ -1150,9 +1188,9 @@ export function htmlTrim(dom: HTMLElement) {
 
 function isBlankParagraph(node: Element) {
   return (
-    node instanceof HTMLParagraphElement &&
-    node.innerText.trim() === "" &&
-    Array.from(node.childNodes).every((n) => n instanceof Text)
+      node instanceof HTMLParagraphElement &&
+      node.innerText.trim() === "" &&
+      Array.from(node.childNodes).every((n) => n instanceof Text)
   );
 }
 
@@ -1222,13 +1260,13 @@ export function convertBr(dom: HTMLElement, force = false) {
 
   function countBr(d: HTMLElement) {
     return Array.from(d.childNodes).filter((n) => n instanceof HTMLBRElement)
-      .length;
+        .length;
   }
 
   function onlyTextAndBr(d: HTMLElement) {
     return Array.from(d.childNodes)
-      .map((n) => n.nodeName.toLowerCase())
-      .every((nn) => ["#text", "hr", ...InlineElements].includes(nn));
+        .map((n) => n.nodeName.toLowerCase())
+        .every((nn) => ["#text", "hr", ...InlineElements].includes(nn));
   }
 }
 
@@ -1259,9 +1297,9 @@ function convertBlankParagraphElement(dom: HTMLElement) {
 
 //** 将固定宽度 Text 转为 div、p、br 元素 */
 export function convertFixWidthText(
-  node: Text,
-  width = 35,
-  out = document.createElement("div")
+    node: Text,
+    width = 35,
+    out = document.createElement("div")
 ) {
   const ns = node.textContent?.split("\n") ?? [];
   let text = "";
@@ -1304,11 +1342,11 @@ export function convertFixWidth(node: HTMLElement, width = 35) {
     const previous = node.previousSibling;
     const next = node.nextSibling;
     if (
-      previous instanceof Text &&
-      next instanceof Text &&
-      (previous.textContent ? fullWidthLength(previous.textContent) : 0) >
+        previous instanceof Text &&
+        next instanceof Text &&
+        (previous.textContent ? fullWidthLength(previous.textContent) : 0) >
         width - 5 &&
-      (previous.textContent ? fullWidthLength(previous.textContent) : 0) <
+        (previous.textContent ? fullWidthLength(previous.textContent) : 0) <
         width + 5
     ) {
       node.remove();
@@ -1349,34 +1387,34 @@ export function convertFixWidth(node: HTMLElement, width = 35) {
     }
   };
   const ts = Array.from(node.childNodes).filter(
-    (node) => node instanceof Text && node.wholeText !== node.textContent
+      (node) => node instanceof Text && node.wholeText !== node.textContent
   ) as Text[];
   const gts = group(ts);
   merge(gts);
 
   // 将 Text 转换为 <p>
   Array.from(node.childNodes)
-    .filter((node) => node instanceof Text)
-    .forEach((text) => {
-      const p = document.createElement("p");
-      convertFixWidthText(text as Text, width, p);
-      text.replaceWith(p);
-    });
+      .filter((node) => node instanceof Text)
+      .forEach((text) => {
+        const p = document.createElement("p");
+        convertFixWidthText(text as Text, width, p);
+        text.replaceWith(p);
+      });
 
   // 移除分隔空白<p>
   Array.from(node.querySelectorAll("p"))
-    .filter(
-      (p) =>
-        p.innerText.trim() === "" &&
-        getPreviousSibling(p) instanceof HTMLElement &&
-        getNextSibling(p) instanceof HTMLElement
-    )
-    .forEach((p) => p.remove());
+      .filter(
+          (p) =>
+              p.innerText.trim() === "" &&
+              getPreviousSibling(p) instanceof HTMLElement &&
+              getNextSibling(p) instanceof HTMLElement
+      )
+      .forEach((p) => p.remove());
 
   // 移除分隔<br>
   Array.from(node.querySelectorAll("p"))
-    .filter((p) => getPreviousBrCount(p) === 2)
-    .forEach((p) => removePreviousBr(p));
+      .filter((p) => getPreviousBrCount(p) === 2)
+      .forEach((p) => removePreviousBr(p));
 
   if (isFixWidthP(node)) {
     // 合并固定字符宽 <p>
@@ -1405,7 +1443,7 @@ export function convertFixWidth(node: HTMLElement, width = 35) {
 
   function isFixWidthP(node: HTMLElement) {
     const lengths = Array.from(node.querySelectorAll("p")).map((p) =>
-      fullWidthLength(p.innerText.trim())
+        fullWidthLength(p.innerText.trim())
     );
     const lt = lengths.filter((i) => i > width + 5).length;
     return lt < 5;
@@ -1423,8 +1461,8 @@ export function isFixWidth(node: Text | HTMLElement, width = 35) {
         const t = cur.textContent?.trim() ?? "";
         if (t.includes("\n")) {
           t.split("\n")
-            .map((n) => n.trim())
-            .forEach((n) => out.push(n));
+              .map((n) => n.trim())
+              .forEach((n) => out.push(n));
           return out;
         } else {
           out.push(t);
