@@ -68,12 +68,8 @@ export const tycqxs = () =>
   mkBiquge(
     (introDom) => introDom,
     (content) => {
-      rms(
-        [
-          /推荐都市大神老施新书:<a href="https:\/\/www\.tycqxs\.com\/[\d_]+\/" target="_blank">.+<\/a>/,
-        ],
-        content
-      );
+      rm("a", true, content);
+      rms(["推荐都市大神老施新书:"], content);
       return content;
     }
   );
