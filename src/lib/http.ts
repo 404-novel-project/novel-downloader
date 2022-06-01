@@ -278,10 +278,10 @@ export async function ggetHtmlDOM(
 }
 
 export async function ggetHtmlDomWithRetry(
-  url: string,
-  charset?: string,
-  init?: GfetchRequestInit,
-  test = (response: Tampermonkey.Response<object>) => Promise.resolve(false)
+    url: string,
+    charset?: string,
+    init?: GfetchRequestInit,
+    test = (response: Tampermonkey.Response<object>) => Promise.resolve(false)
 ): Promise<Document | null> {
   let retry = retryLimit;
   let doc = null;
@@ -301,12 +301,16 @@ export async function ggetHtmlDomWithRetry(
 export function getFrameContentEvent(
   url: string,
   timeout = 0,
-  eventType: "load" | "DOMContentLoaded" = "load"
+  eventType: "load" | "DOMContentLoaded" = "load",
+  sandboxs?: string[]
 ): Promise<Document | null> {
   const frame = document.createElement("iframe");
   frame.src = url;
   frame.width = "1";
   frame.height = "1";
+  sandboxs?.forEach((s) => frame.sandbox.add(s));
+  frame.addEventListener("error", (error) => log.error(error));
+
   const promise = new Promise((resolve, reject) => {
     frame.addEventListener(eventType, function (event) {
       const frameSelf = event.target;
@@ -328,12 +332,15 @@ export function getFrameContentEvent(
 
 export async function getFrameContentCondition(
   url: string,
-  stopCondition: (frame: HTMLIFrameElement) => boolean
+  stopCondition: (frame: HTMLIFrameElement) => boolean,
+  sandboxs?: string[]
 ): Promise<Document | null> {
   const frame = document.createElement("iframe");
   frame.src = url;
   frame.width = "1";
   frame.height = "1";
+  sandboxs?.forEach((s) => frame.sandbox.add(s));
+  frame.addEventListener("error", (error) => log.error(error));
 
   log.debug("[debug]getFrameContent:" + url);
   const promise = new Promise((resolve, reject) => {

@@ -101,7 +101,7 @@ EPUB文件请使用相应阅读器阅读。
 | [小説家になろう](https://syosetu.com/)            |✅|❎||
 | [ハーメルン](https://syosetu.org/)              |✅|❎||
 | [暁](https://www.akatsuki-novels.com/)      |✅|❎||
-| [ファンタジー小説](https://www.alphapolis.co.jp/)  |✅|❎||
+| [ファンタジー小説](https://www.alphapolis.co.jp/)  |✅|❌||
 | [Novel Up Plus](https://novelup.plus/)     |✅|❎||
 
 <details>
