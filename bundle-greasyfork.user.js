@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.9.3.721
+// @version        4.9.3.723
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/404-novel-project/novel-downloader
@@ -6641,11 +6641,13 @@ async function ggetHtmlDomWithRetry(url, charset, init, test = (response) => Pro
     }
     return doc;
 }
-function getFrameContentEvent(url, timeout = 0, eventType = "load") {
+function getFrameContentEvent(url, timeout = 0, eventType = "load", sandboxs) {
     const frame = document.createElement("iframe");
     frame.src = url;
     frame.width = "1";
     frame.height = "1";
+    sandboxs?.forEach((s) => frame.sandbox.add(s));
+    frame.addEventListener("error", (error) => log.error(error));
     const promise = new Promise((resolve, reject) => {
         frame.addEventListener(eventType, function (event) {
             const frameSelf = event.target;
@@ -6663,11 +6665,13 @@ function getFrameContentEvent(url, timeout = 0, eventType = "load") {
     document.body.appendChild(frame);
     return promise;
 }
-async function getFrameContentCondition(url, stopCondition) {
+async function getFrameContentCondition(url, stopCondition, sandboxs) {
     const frame = document.createElement("iframe");
     frame.src = url;
     frame.width = "1";
     frame.height = "1";
+    sandboxs?.forEach((s) => frame.sandbox.add(s));
+    frame.addEventListener("error", (error) => _log__WEBPACK_IMPORTED_MODULE_0___default().error(error));
     _log__WEBPACK_IMPORTED_MODULE_0___default().debug("[debug]getFrameContent:" + url);
     const promise = new Promise((resolve, reject) => {
         if (!frame) {
@@ -9452,9 +9456,8 @@ const biquwx = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .H
     return introDom;
 }, (content) => content, 1);
 const tycqxs = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Hb)((introDom) => introDom, (content) => {
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rms */ .up)([
-        /推荐都市大神老施新书:<a href="https:\/\/www\.tycqxs\.com\/[\d_]+\/" target="_blank">.+<\/a>/,
-    ], content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("a", true, content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rms */ .up)(["推荐都市大神老施新书:"], content);
     return content;
 });
 const dijiubook = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Hb)((introDom) => {
@@ -13725,7 +13728,10 @@ async function fetchRemoteFont(fontName) {
     }
 }
 
+// EXTERNAL MODULE: external "CryptoJS"
+var external_CryptoJS_ = __webpack_require__("crypto-js");
 ;// CONCATENATED MODULE: ./src/rules/special/original/jjwxc.ts
+
 
 
 
@@ -13771,7 +13777,7 @@ class Jjwxc extends rules/* BaseRuleClass */.c {
             }
             const coverUrl = document.querySelector(".noveldefaultimage").src;
             if (coverUrl) {
-                (0,attachments/* getAttachment */.FG)(coverUrl, this.attachmentMode, "cover-")
+                (0,attachments/* getAttachment */.FG)(coverUrl, this.attachmentMode, "cover-", false, (0,attachments/* getRandomName */.VO)(), { referrerMode: main/* ReferrerMode.none */.n6.none })
                     .then((coverClass) => {
                     additionalMetadate.cover = coverClass;
                 })
@@ -13958,7 +13964,7 @@ class Jjwxc extends rules/* BaseRuleClass */.c {
             };
         }
         async function vipChapter() {
-            async function getFont() {
+            async function getFont(dom) {
                 function getFontInfo() {
                     const s = dom.querySelectorAll("body > style")[1];
                     let fontNameI;
@@ -14048,57 +14054,107 @@ class Jjwxc extends rules/* BaseRuleClass */.c {
                 }
                 return [null, null, null];
             }
-            const dom = await (0,http/* ggetHtmlDOM */.Fz)(chapterUrl, charset);
+            function decrypt(doc) {
+                const children = doc.querySelector("#contentvars")?.children;
+                if (!children) {
+                    throw new Error("获取章节失败");
+                }
+                const data = {};
+                Array.from(children).forEach((item) => (data[item.getAttribute("name")] = item.getAttribute("value")));
+                const novelid = parseInt(data["novelid"]);
+                const chapterid = parseInt(data["chapterid"]);
+                const _readerid = unsafeWindow.getCookie("readerid");
+                if (!_readerid) {
+                    throw new Error("无法获取客户号");
+                }
+                const readerid = parseInt(_readerid);
+                const accessKey = data["accessKey"];
+                const _hash = novelid + "." + chapterid + "." + readerid + "." + accessKey;
+                const hash = external_CryptoJS_.MD5(_hash).toString();
+                const convert = (input) => {
+                    let out = 0;
+                    for (let i = 0; i < input.length; i++) {
+                        out += input.charCodeAt(i);
+                    }
+                    return out;
+                };
+                const accessKeyConvert = convert(accessKey);
+                const hashSlice = hash.slice(accessKeyConvert % hash.length) +
+                    hash.slice(0, accessKeyConvert % hash.length);
+                let hashSlice16 = hashSlice.slice(0, 16);
+                let hashSlice_16 = hashSlice.slice(-16);
+                if (hash.charCodeAt(0)) {
+                    [hashSlice16, hashSlice_16] = [hashSlice_16, hashSlice16];
+                }
+                const cryptInfo = data["cryptInfo"];
+                const _decrypedtCryptInfo = external_CryptoJS_.DES.decrypt(cryptInfo, external_CryptoJS_.enc.Utf8.parse(hashSlice16), {
+                    iv: external_CryptoJS_.enc.Utf8.parse(hashSlice_16),
+                }).toString(external_CryptoJS_.enc.Utf8);
+                const decrypedtCryptInfo = JSON.parse(atob(_decrypedtCryptInfo));
+                const verifyTime = (obj) => {
+                    if (new Date()["getTime"]() / 1000 - obj["time"] > 86400) {
+                        throw new Error("章节内容解码失败，内容生成时间与当前设备时间相差过大，请刷新页面或校准当前设备时间。内容生成时间为:" +
+                            new Date(obj["time"] * 100).toLocaleString());
+                    }
+                };
+                verifyTime(decrypedtCryptInfo);
+                const md5sum = external_CryptoJS_.MD5(decrypedtCryptInfo["key"] + decrypedtCryptInfo["time"] + readerid).toString();
+                const t = md5sum["slice"](accessKeyConvert % md5sum["length"]) +
+                    md5sum["slice"](0, accessKeyConvert % md5sum["length"]);
+                const key = t.slice(0, 16);
+                const iv = t.slice(-16);
+                return external_CryptoJS_.DES.decrypt(data["content"], external_CryptoJS_.enc.Utf8.parse(key), { iv: external_CryptoJS_.enc.Utf8.parse(iv) }).toString(external_CryptoJS_.enc.Utf8);
+            }
+            const doc = await (0,http/* ggetHtmlDOM */.Fz)(chapterUrl, charset);
             const isPaidF = () => {
-                return !!(!dom.querySelector("#buy_content") &&
-                    dom.querySelector("div.noveltext"));
+                return !!(!doc.querySelector("#buy_content") &&
+                    doc.querySelector("div.noveltext"));
             };
             if (isPaidF()) {
-                const ChapterName = dom.querySelector("div.noveltext h2").innerText.trim();
-                const content = dom.querySelector("div.noveltext");
-                if (content) {
-                    (0,lib_dom.rm)("hr", true, content);
-                    const rawAuthorSayDom = content.querySelector(".readsmall");
-                    let authorSayDom;
-                    let authorSayText;
-                    if (rawAuthorSayDom) {
-                        const { dom: adom, text: atext } = await (0,cleanDOM/* cleanDOM */.zM)(rawAuthorSayDom, "TM");
-                        [authorSayDom, authorSayText] = [adom, atext];
-                    }
-                    (0,lib_dom.rm)("div", true, content);
-                    (0,lib_dom/* rms */.up)(["@无限好文，尽在晋江文学城"], content);
-                    let { dom: rawDom, text: rawText, images, } = await (0,cleanDOM/* cleanDOM */.zM)(content, "TM");
-                    if (rawAuthorSayDom && authorSayDom && authorSayText) {
-                        const hr = document.createElement("hr");
-                        authorSayDom.className = "authorSay";
-                        rawDom.appendChild(hr);
-                        rawDom.appendChild(authorSayDom);
-                        rawText =
-                            rawText + "\n\n" + "-".repeat(20) + "\n\n" + authorSayText;
-                    }
-                    let finalDom = rawDom;
-                    let finalText = rawText;
-                    const [fontName, fontClassObj, fontStyleDom] = await getFont();
-                    if (fontName && fontClassObj && fontStyleDom) {
-                        finalText = await replaceJjwxcCharacter(fontName, rawText);
-                        images.push(fontClassObj);
-                        finalDom = document.createElement("div");
-                        const replacedDom = document.createElement("div");
-                        replacedDom.innerHTML = await replaceJjwxcCharacter(fontName, rawDom.innerHTML);
-                        finalDom.appendChild(fontStyleDom);
-                        rawDom.className = `${fontName} hide`;
-                        finalDom.appendChild(rawDom);
-                        finalDom.appendChild(replacedDom);
-                    }
-                    return {
-                        chapterName: ChapterName,
-                        contentRaw: content,
-                        contentText: finalText,
-                        contentHTML: finalDom,
-                        contentImages: images,
-                        additionalMetadate: null,
-                    };
+                const ChapterName = doc.querySelector("div.noveltext h2").innerText.trim();
+                const content = document.createElement("div");
+                content.innerHTML = decrypt(doc);
+                (0,lib_dom.rm)("hr", true, content);
+                const rawAuthorSayDom = doc.querySelector(".readsmall");
+                let authorSayDom;
+                let authorSayText;
+                if (rawAuthorSayDom) {
+                    (0,lib_dom.rm)("hr", true, rawAuthorSayDom);
+                    const { dom: adom, text: atext } = await (0,cleanDOM/* cleanDOM */.zM)(rawAuthorSayDom, "TM");
+                    [authorSayDom, authorSayText] = [adom, atext];
                 }
+                (0,lib_dom.rm)("div", true, content);
+                (0,lib_dom/* rms */.up)(["@无限好文，尽在晋江文学城"], content);
+                let { dom: rawDom, text: rawText, images, } = await (0,cleanDOM/* cleanDOM */.zM)(content, "TM");
+                if (rawAuthorSayDom && authorSayDom && authorSayText) {
+                    const hr = document.createElement("hr");
+                    authorSayDom.className = "authorSay";
+                    rawDom.appendChild(hr);
+                    rawDom.appendChild(authorSayDom);
+                    rawText = rawText + "\n\n" + "-".repeat(20) + "\n\n" + authorSayText;
+                }
+                let finalDom = rawDom;
+                let finalText = rawText;
+                const [fontName, fontClassObj, fontStyleDom] = await getFont(doc);
+                if (fontName && fontClassObj && fontStyleDom) {
+                    finalText = await replaceJjwxcCharacter(fontName, rawText);
+                    images.push(fontClassObj);
+                    finalDom = document.createElement("div");
+                    const replacedDom = document.createElement("div");
+                    replacedDom.innerHTML = await replaceJjwxcCharacter(fontName, rawDom.innerHTML);
+                    finalDom.appendChild(fontStyleDom);
+                    rawDom.className = `${fontName} hide`;
+                    finalDom.appendChild(rawDom);
+                    finalDom.appendChild(replacedDom);
+                }
+                return {
+                    chapterName: ChapterName,
+                    contentRaw: content,
+                    contentText: finalText,
+                    contentHTML: finalDom,
+                    contentImages: images,
+                    additionalMetadate: null,
+                };
             }
             return {
                 chapterName,
