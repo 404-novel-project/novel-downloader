@@ -238,10 +238,10 @@ export async function ggetText(
       _init = { responseType: "arraybuffer" };
     }
     return gfetch(url, _init)
-      .then((response) => {
+      .then(async (response) => {
         if (
           (response.status >= 200 && response.status <= 299) ||
-          test(response)
+          (await test(response))
         ) {
           return response.response as ArrayBuffer;
         } else {
@@ -299,10 +299,10 @@ export async function ggetHtmlDomWithRetry(
 }
 
 export function getFrameContentEvent(
-  url: string,
-  timeout = 0,
-  eventType: "load" | "DOMContentLoaded" = "load",
-  sandboxs?: string[]
+    url: string,
+    timeout = 0,
+    eventType: "load" | "DOMContentLoaded" = "load",
+    sandboxs?: string[]
 ): Promise<Document | null> {
   const frame = document.createElement("iframe");
   frame.src = url;
@@ -331,9 +331,9 @@ export function getFrameContentEvent(
 }
 
 export async function getFrameContentCondition(
-  url: string,
-  stopCondition: (frame: HTMLIFrameElement) => boolean,
-  sandboxs?: string[]
+    url: string,
+    stopCondition: (frame: HTMLIFrameElement) => boolean,
+    sandboxs?: string[]
 ): Promise<Document | null> {
   const frame = document.createElement("iframe");
   frame.src = url;
