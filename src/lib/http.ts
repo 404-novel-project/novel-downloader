@@ -6,11 +6,11 @@ import {_GM_xmlhttpRequest} from "./GM";
 import {deepcopy, sleep} from "./misc";
 
 globalThis.fetch = new Proxy(globalThis.fetch, {
-  apply(target, thisArg, argArray) {
-    log.debug("[debug]fetch:");
-    log.debug(argArray);
-    return Reflect.apply(target, thisArg, argArray);
-  },
+    apply(target, thisArg, argArray) {
+        log.debug("[debug]fetch:");
+        log.debug(argArray);
+        return Reflect.apply(target, thisArg, argArray);
+    },
 });
 
 export async function fetchWithRetry(
@@ -278,10 +278,10 @@ export async function ggetHtmlDOM(
 }
 
 export async function ggetHtmlDomWithRetry(
-    url: string,
-    charset?: string,
-    init?: GfetchRequestInit,
-    test = (response: Tampermonkey.Response<object>) => Promise.resolve(false)
+  url: string,
+  charset?: string,
+  init?: GfetchRequestInit,
+  test = (response: Tampermonkey.Response<object>) => Promise.resolve(false)
 ): Promise<Document | null> {
   let retry = retryLimit;
   let doc = null;

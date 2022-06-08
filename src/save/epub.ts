@@ -1,3 +1,4 @@
+/* eslint-disable no-control-regex */
 // noinspection CssInvalidHtmlTagReference
 
 import sgc from "./sgc-toc.css";
@@ -44,8 +45,8 @@ const content_opf = `<?xml version="1.0" encoding="utf-8"?>
     <meta content="https://github.com/404-novel-project/novel-downloader" name="generator"/>
     <meta property="dcterms:created">${getDateString()}</meta>
     <meta property="dcterms:modified">${new Date()
-      .toISOString()
-      .replace(/\.\d\d\dZ$/, "Z")}</meta>
+    .toISOString()
+    .replace(/\.\d\d\dZ$/, "Z")}</meta>
   </metadata>
   <manifest>
     <item id="ncx" href="toc.ncx" media-type="application/x-dtbncx+xml"/>
@@ -122,7 +123,7 @@ const nav_xhtml = `<?xml version="1.0" encoding="utf-8"?>
 </html>`;
 
 const getCoverXhtml = (
-  coverName: string
+    coverName: string
 ) => `<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
@@ -138,8 +139,8 @@ const getCoverXhtml = (
 </html>`;
 
 const getInfoXhtml = (
-  title: string,
-  author: string
+    title: string,
+    author: string
 ) => `<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
@@ -174,48 +175,48 @@ const getMessageXhtml = (book: Book) => `<?xml version="1.0" encoding="utf-8"?>
     <div>原始地址：<a href="${book.bookUrl}">${book.bookUrl}</a></div>
     <div>本文件由<a href="https://github.com/404-novel-project/novel-downloader">小说下载器</a>生成。</div>
     ${
-      book.introductionHTML
+    book.introductionHTML
         ? `<hr/><span>简介：</span>${book.introductionHTML.outerHTML}`
         : ""
-    }
+}
     ${
-      book.additionalMetadate.tags
+    book.additionalMetadate.tags
         ? `<hr/><div>Tag列表：${book.additionalMetadate.tags.join("、")}</div>`
         : ""
-    }
+}
   </div>
 </body>
 </html>`;
 
 export class EPUB extends Options {
   private readonly contentOpf = new DOMParser().parseFromString(
-    content_opf,
-    "application/xml"
+      content_opf,
+      "application/xml"
   );
   private readonly metadata = this.contentOpf.querySelector(
-    "metadata"
+      "metadata"
   ) as Element;
   private readonly manifest = this.contentOpf.querySelector(
-    "manifest"
+      "manifest"
   ) as Element;
   private readonly spine = this.contentOpf.querySelector("spine") as Element;
   private readonly guide = this.contentOpf.querySelector("guide") as Element;
 
   private readonly ncx = new DOMParser().parseFromString(
-    toc_ncx,
-    "application/xml"
+      toc_ncx,
+      "application/xml"
   );
   private readonly navMap = this.ncx.querySelector("navMap") as Element;
 
   private readonly navHtml = new DOMParser().parseFromString(
-    nav_xhtml,
-    "application/xhtml+xml"
+      nav_xhtml,
+      "application/xhtml+xml"
   );
   private readonly navHtmlToc = this.navHtml.getElementById("toc") as Element;
 
   private readonly toc = new DOMParser().parseFromString(
-    TOC_xhtml,
-    "application/xhtml+xml"
+      TOC_xhtml,
+      "application/xhtml+xml"
   );
   private readonly tocBody = this.toc.body;
 
@@ -230,9 +231,9 @@ export class EPUB extends Options {
 
     const zipFilename = `[${this.book.author}]${this.book.bookname}.epub`;
     this.epubZip = new FflateZip(
-      zipFilename,
-      streamZip,
-      "application/epub+zip"
+        zipFilename,
+        streamZip,
+        "application/epub+zip"
     );
 
     if (options) {
@@ -248,20 +249,20 @@ export class EPUB extends Options {
     });
     const htmlText = convertHTMLtoXHTML(_htmlText);
     return new Blob(
-      [
-        `<?xml version="1.0" encoding="utf-8"?>`,
-        htmlText
-          .replaceAll("data-src-address", "src")
-          .replaceAll(/[\u{0000}-\u{001f}]/gu, "")
-          .replaceAll(/[\u{007f}-\u{009f}]/gu, "")
-          .replace(
-            '<html xmlns="http://www.w3.org/1999/xhtml">',
-            '<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">'
-          ),
-      ],
-      {
-        type: "application/xhtml+xml",
-      }
+        [
+          `<?xml version="1.0" encoding="utf-8"?>`,
+          htmlText
+              .replaceAll("data-src-address", "src")
+              .replaceAll(/[\u{0000}-\u{001f}]/gu, "")
+              .replaceAll(/[\u{007f}-\u{009f}]/gu, "")
+              .replace(
+                  '<html xmlns="http://www.w3.org/1999/xhtml">',
+                  '<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">'
+              ),
+        ],
+        {
+          type: "application/xhtml+xml",
+        }
     );
   }
 
@@ -292,28 +293,28 @@ export class EPUB extends Options {
     async function saveEpubMimetype() {
       // mimetype
       await self.epubZip.file(
-        "mimetype",
-        new Blob(["application/epub+zip"]),
-        true
+          "mimetype",
+          new Blob(["application/epub+zip"]),
+          true
       );
       // container.xml
       await self.epubZip.file(
-        "META-INF/container.xml",
-        new Blob([
-          `<?xml version="1.0" encoding="UTF-8"?>
+          "META-INF/container.xml",
+          new Blob([
+            `<?xml version="1.0" encoding="UTF-8"?>
 <container version="1.0" xmlns="urn:oasis:names:tc:opendocument:xmlns:container">
     <rootfiles>
         <rootfile full-path="OEBPS/content.opf" media-type="application/oebps-package+xml"/>
     </rootfiles>
 </container>`,
-        ])
+          ])
       );
     }
 
     async function saveStyle() {
       await self.epubZip.file(
-        "OEBPS/style.css",
-        new Blob([self.mainStyleText])
+          "OEBPS/style.css",
+          new Blob([self.mainStyleText])
       );
       await self.epubZip.file("OEBPS/sgc-toc.css", new Blob([sgc]));
     }
@@ -323,7 +324,7 @@ export class EPUB extends Options {
       title.textContent = self.book.bookname;
       self.metadata.appendChild(title);
       (self.ncx.querySelector("docTitle > text") as Element).innerHTML =
-        self.book.bookname;
+          self.book.bookname;
 
       const author = self.contentOpf.createElement("dc:creator");
       author.setAttribute("id", "cre");
@@ -359,10 +360,10 @@ export class EPUB extends Options {
         self.metadata.appendChild(cover);
 
         await self.epubZip.file(
-          "OEBPS/cover.xhtml",
-          new Blob([getCoverXhtml(self.book.additionalMetadate.cover.name)], {
-            type: "application/xhtml+xml",
-          })
+            "OEBPS/cover.xhtml",
+            new Blob([getCoverXhtml(self.book.additionalMetadate.cover.name)], {
+              type: "application/xhtml+xml",
+            })
         );
       } else {
         self.manifest.querySelector('item[id="cover.xhtml"]')?.remove();
@@ -379,31 +380,31 @@ export class EPUB extends Options {
       }
 
       await self.epubZip.file(
-        "OEBPS/info.xhtml",
-        new Blob(
-          [
-            getInfoXhtml(self.book.bookname, self.book.author)
-              .replaceAll(/[\u{0000}-\u{001f}]/gu, "")
-              .replaceAll(/[\u{007f}-\u{009f}]/gu, ""),
-          ],
-          {
-            type: "application/xhtml+xml",
-          }
-        )
+          "OEBPS/info.xhtml",
+          new Blob(
+              [
+                getInfoXhtml(self.book.bookname, self.book.author)
+                    .replaceAll(/[\u{0000}-\u{001f}]/gu, "")
+                    .replaceAll(/[\u{007f}-\u{009f}]/gu, ""),
+              ],
+              {
+                type: "application/xhtml+xml",
+              }
+          )
       );
 
       await self.epubZip.file(
-        "OEBPS/message.xhtml",
-        new Blob(
-          [
-            convertHTMLtoXHTML(getMessageXhtml(self.book))
-              .replaceAll(/[\u{0000}-\u{001f}]/gu, "")
-              .replaceAll(/[\u{007f}-\u{009f}]/gu, ""),
-          ],
-          {
-            type: "application/xhtml+xml",
-          }
-        )
+          "OEBPS/message.xhtml",
+          new Blob(
+              [
+                convertHTMLtoXHTML(getMessageXhtml(self.book))
+                    .replaceAll(/[\u{0000}-\u{001f}]/gu, "")
+                    .replaceAll(/[\u{007f}-\u{009f}]/gu, ""),
+              ],
+              {
+                type: "application/xhtml+xml",
+              }
+          )
       );
     }
 
@@ -435,8 +436,8 @@ export class EPUB extends Options {
         const { sectionName, sectionNumber, chpaters } = sectionObj;
         if (sectionNumber !== sectionNumberG) {
           const sectionNumberToSave = self.getChapterNumberToSave(
-            chpaters[0],
-            self.chapters
+              chpaters[0],
+              self.chapters
           );
           const sectionHtmlFileName = `No${sectionNumberToSave}Section.xhtml`;
           if (sectionName) {
@@ -445,8 +446,8 @@ export class EPUB extends Options {
             log.debug(`[save-epub]保存卷HTML文件：${sectionName}`);
             const sectionHTMLBlob = genSectionHtmlFile(sectionName);
             await self.epubZip.file(
-              `OEBPS/${sectionHtmlFileName}`,
-              sectionHTMLBlob
+                `OEBPS/${sectionHtmlFileName}`,
+                sectionHTMLBlob
             );
 
             // manifest
@@ -471,9 +472,9 @@ export class EPUB extends Options {
 
             // TOC.html
             const div = genTocDiv(
-              "sgc-toc-level-1",
-              sectionName,
-              sectionHtmlFileName
+                "sgc-toc-level-1",
+                sectionName,
+                sectionHtmlFileName
             );
             if (sectionTOCDiv) {
               self.tocBody.appendChild(sectionTOCDiv);
@@ -490,22 +491,22 @@ export class EPUB extends Options {
             // navMap
             i++;
             const navPoint = genNavPoint(
-              i,
-              chpater.chapterName ?? "",
-              chapterHtmlFileName
+                i,
+                chpater.chapterName ?? "",
+                chapterHtmlFileName
             );
             sectionNavPoint?.appendChild(navPoint);
 
             // navHTML
             sectionNavOl?.appendChild(
-              genNavHtmlLi(chpater.chapterName ?? "", chapterHtmlFileName)
+                genNavHtmlLi(chpater.chapterName ?? "", chapterHtmlFileName)
             );
 
             // TOC.html
             const div = genTocDiv(
-              "sgc-toc-level-2",
-              chpater.chapterName ?? "",
-              chapterHtmlFileName
+                "sgc-toc-level-2",
+                chpater.chapterName ?? "",
+                chapterHtmlFileName
             );
             sectionTOCDiv?.appendChild(div);
           } else {
@@ -515,22 +516,22 @@ export class EPUB extends Options {
             // navMap
             i++;
             const navPoint = genNavPoint(
-              i,
-              chpater.chapterName ?? "",
-              chapterHtmlFileName
+                i,
+                chpater.chapterName ?? "",
+                chapterHtmlFileName
             );
             self.navMap.appendChild(navPoint);
 
             // navHTML
             navHtmlTocOl.appendChild(
-              genNavHtmlLi(chpater.chapterName ?? "", chapterHtmlFileName)
+                genNavHtmlLi(chpater.chapterName ?? "", chapterHtmlFileName)
             );
 
             // TOC.html
             const div = genTocDiv(
-              "sgc-toc-level-2",
-              chpater.chapterName ?? "",
-              chapterHtmlFileName
+                "sgc-toc-level-2",
+                chpater.chapterName ?? "",
+                chapterHtmlFileName
             );
             self.tocBody.appendChild(div);
           }
@@ -545,59 +546,59 @@ export class EPUB extends Options {
 
       // content.opf
       await self.epubZip.file(
-        "OEBPS/content.opf",
-        new Blob(
-          [
-            new XMLSerializer()
-              .serializeToString(self.contentOpf)
-              .replaceAll('xmlns=""', "")
-              .replaceAll(/[\u{0000}-\u{001f}]/gu, "")
-              .replaceAll(/[\u{007f}-\u{009f}]/gu, ""),
-          ],
-          { type: "application/oebps-package+xml" }
-        )
+          "OEBPS/content.opf",
+          new Blob(
+              [
+                new XMLSerializer()
+                    .serializeToString(self.contentOpf)
+                    .replaceAll('xmlns=""', "")
+                    .replaceAll(/[\u{0000}-\u{001f}]/gu, "")
+                    .replaceAll(/[\u{007f}-\u{009f}]/gu, ""),
+              ],
+              { type: "application/oebps-package+xml" }
+          )
       );
       // toc.ncx
       await self.epubZip.file(
-        "OEBPS/toc.ncx",
-        new Blob(
-          [
-            new XMLSerializer()
-              .serializeToString(self.ncx)
-              .replaceAll('xmlns=""', "")
-              .replaceAll(/[\u{0000}-\u{001f}]/gu, "")
-              .replaceAll(/[\u{007f}-\u{009f}]/gu, ""),
-          ],
-          { type: "application/x-dtbncx+xml" }
-        )
+          "OEBPS/toc.ncx",
+          new Blob(
+              [
+                new XMLSerializer()
+                    .serializeToString(self.ncx)
+                    .replaceAll('xmlns=""', "")
+                    .replaceAll(/[\u{0000}-\u{001f}]/gu, "")
+                    .replaceAll(/[\u{007f}-\u{009f}]/gu, ""),
+              ],
+              { type: "application/x-dtbncx+xml" }
+          )
       );
       // nav.xhtml
       await self.epubZip.file(
-        "OEBPS/nav.xhtml",
-        new Blob(
-          [
-            new XMLSerializer()
-              .serializeToString(self.navHtml)
-              .replaceAll(/[\u{0000}-\u{001f}]/gu, "")
-              .replaceAll(/[\u{007f}-\u{009f}]/gu, ""),
-          ],
-          {
-            type: "application/xhtml+xml",
-          }
-        )
+          "OEBPS/nav.xhtml",
+          new Blob(
+              [
+                new XMLSerializer()
+                    .serializeToString(self.navHtml)
+                    .replaceAll(/[\u{0000}-\u{001f}]/gu, "")
+                    .replaceAll(/[\u{007f}-\u{009f}]/gu, ""),
+              ],
+              {
+                type: "application/xhtml+xml",
+              }
+          )
       );
       // TOC.xhtml
       await self.epubZip.file(
-        "OEBPS/TOC.xhtml",
-        new Blob(
-          [
-            new XMLSerializer()
-              .serializeToString(self.toc)
-              .replaceAll(/[\u{0000}-\u{001f}]/gu, "")
-              .replaceAll(/[\u{007f}-\u{009f}]/gu, ""),
-          ],
-          { type: "application/xhtml+xml" }
-        )
+          "OEBPS/TOC.xhtml",
+          new Blob(
+              [
+                new XMLSerializer()
+                    .serializeToString(self.toc)
+                    .replaceAll(/[\u{0000}-\u{001f}]/gu, "")
+                    .replaceAll(/[\u{007f}-\u{009f}]/gu, ""),
+              ],
+              { type: "application/xhtml+xml" }
+          )
       );
 
       function appendManifest(htmlFileName: string) {
@@ -641,9 +642,9 @@ export class EPUB extends Options {
       }
 
       function genTocDiv(
-        className: string,
-        name: string,
-        htmlFileName: string
+          className: string,
+          name: string,
+          htmlFileName: string
       ) {
         const div = self.toc.createElement("div");
         div.className = className;
@@ -658,20 +659,20 @@ export class EPUB extends Options {
         const _htmlText = section.render({ sectionName: sectionName });
         const htmlText = convertHTMLtoXHTML(_htmlText);
         return new Blob(
-          [
-            `<?xml version="1.0" encoding="utf-8"?>`,
-            htmlText
-              .replaceAll("data-src-address", "src")
-              .replaceAll(/[\u{0000}-\u{001f}]/gu, "")
-              .replaceAll(/[\u{007f}-\u{009f}]/gu, "")
-              .replace(
-                '<html xmlns="http://www.w3.org/1999/xhtml">',
-                '<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">'
-              ),
-          ],
-          {
-            type: "application/xhtml+xml",
-          }
+            [
+              `<?xml version="1.0" encoding="utf-8"?>`,
+              htmlText
+                  .replaceAll("data-src-address", "src")
+                  .replaceAll(/[\u{0000}-\u{001f}]/gu, "")
+                  .replaceAll(/[\u{007f}-\u{009f}]/gu, "")
+                  .replace(
+                      '<html xmlns="http://www.w3.org/1999/xhtml">',
+                      '<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">'
+                  ),
+            ],
+            {
+              type: "application/xhtml+xml",
+            }
         );
       }
     }
@@ -680,34 +681,34 @@ export class EPUB extends Options {
       log.debug("[save-zip]保存元数据文本");
       const metaDateText = self.genMetaDateTxt(self.book);
       await self.epubZip.file(
-        "OEBPS/info.txt",
-        new Blob([metaDateText], { type: "text/plain;charset=utf-8" })
+          "OEBPS/info.txt",
+          new Blob([metaDateText], { type: "text/plain;charset=utf-8" })
       );
 
       log.debug("[save-zip]保存web样式");
       await self.epubZip.file(
-        "OEBPS/web.css",
-        new Blob([webStyleText], { type: "text/css;charset=utf-8" })
+          "OEBPS/web.css",
+          new Blob([webStyleText], { type: "text/css;charset=utf-8" })
       );
       modifyTocStyleText();
       await self.epubZip.file(
-        "OEBPS/toc.css",
-        new Blob([self.tocStyleText], { type: "text/css;charset=utf-8" })
+          "OEBPS/toc.css",
+          new Blob([self.tocStyleText], { type: "text/css;charset=utf-8" })
       );
       await self.epubZip.file(
-        "OEBPS/web.js",
-        new Blob(
-          [
-            `if (typeof fetch === "function" && !navigator.userAgent.includes("calibre-viewer") && navigator.userAgent.startsWith("Mozilla/5.0")) {
+          "OEBPS/web.js",
+          new Blob(
+              [
+                `if (typeof fetch === "function" && !navigator.userAgent.includes("calibre-viewer") && navigator.userAgent.startsWith("Mozilla/5.0")) {
   const link = document.createElement("link");
   link.type = "text/css";
   link.rel = "stylesheet";
   link.href = "web.css";
   document.head.append(link);
 }`,
-          ],
-          { type: "application/javascript" }
-        )
+              ],
+              { type: "application/javascript" }
+          )
       );
 
       log.debug("[save-zip]开始生成并保存 index.html");
@@ -750,34 +751,34 @@ export class EPUB extends Options {
         });
         const indexHtmlText = convertHTMLtoXHTML(_indexHtmlText);
         await self.epubZip.file(
-          "OEBPS/index.xhtml",
-          new Blob(
-            [
-              indexHtmlText
-                .replaceAll("data-src-address", "src")
-                .replaceAll(/[\u{0000}-\u{001f}]/gu, "")
-                .replaceAll(/[\u{007f}-\u{009f}]/gu, ""),
-            ],
-            {
-              type: "application/xhtml+xml; charset=UTF-8",
-            }
-          )
+            "OEBPS/index.xhtml",
+            new Blob(
+                [
+                  indexHtmlText
+                      .replaceAll("data-src-address", "src")
+                      .replaceAll(/[\u{0000}-\u{001f}]/gu, "")
+                      .replaceAll(/[\u{007f}-\u{009f}]/gu, ""),
+                ],
+                {
+                  type: "application/xhtml+xml; charset=UTF-8",
+                }
+            )
         );
       }
 
       async function saveMetaJson() {
         await self.epubZip.file(
-          "OEBPS/book.json",
-          new Blob([JSON.stringify(self.book)], {
-            type: "application/json; charset=utf-8",
-          })
+            "OEBPS/book.json",
+            new Blob([JSON.stringify(self.book)], {
+              type: "application/json; charset=utf-8",
+            })
         );
 
         await self.epubZip.file(
-          "OEBPS/chapters.json",
-          new Blob([JSON.stringify(self.book.chapters)], {
-            type: "application/json; charset=utf-8",
-          })
+            "OEBPS/chapters.json",
+            new Blob([JSON.stringify(self.book.chapters)], {
+              type: "application/json; charset=utf-8",
+            })
         );
       }
     }
@@ -786,8 +787,8 @@ export class EPUB extends Options {
   public async addChapter(chapter: Chapter, suffix = "") {
     const chapterName = this.getchapterName(chapter);
     const chapterNumberToSave = this.getChapterNumberToSave(
-      chapter,
-      this.chapters
+        chapter,
+        this.chapters
     );
     const chapterHtmlFileName = `No${chapterNumberToSave}Chapter${suffix}.xhtml`;
     chapter.chapterHtmlFileName = chapterHtmlFileName;
@@ -815,8 +816,8 @@ export class EPUB extends Options {
   private async addAttachment(attachment: AttachmentClass) {
     if (attachment.status === Status.finished && attachment.Blob) {
       log.debug(
-        `[save-epub]添加附件，文件名：${attachment.name}，对象`,
-        attachment.Blob
+          `[save-epub]添加附件，文件名：${attachment.name}，对象`,
+          attachment.Blob
       );
 
       await this.epubZip.file(`OEBPS/${attachment.name}`, attachment.Blob);
@@ -825,7 +826,7 @@ export class EPUB extends Options {
       item.id = attachment.name;
       item.setAttribute("href", attachment.name);
       const mimetype = extensionToMimetype(
-        attachment.name.substring(attachment.name.lastIndexOf(".") + 1)
+          attachment.name.substring(attachment.name.lastIndexOf(".") + 1)
       );
       item.setAttribute("media-type", mimetype);
       if (!this.manifest.querySelector(`item[id="${attachment.name}"]`)) {
@@ -835,7 +836,7 @@ export class EPUB extends Options {
       log.debug(`[save-epub]附件${attachment.name}已添加`);
     } else {
       log.warn(
-        `[save-epub]添加附件${attachment.name}失败，该附件未完成或内容为空。`
+          `[save-epub]添加附件${attachment.name}失败，该附件未完成或内容为空。`
       );
       log.warn(attachment);
     }

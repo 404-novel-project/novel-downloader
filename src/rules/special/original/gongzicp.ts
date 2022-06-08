@@ -1,23 +1,23 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import * as CryptoJS from "crypto-js";
-import { getAttachment } from "../../../lib/attachments";
-import { sleep } from "../../../lib/misc";
+import {getAttachment} from "../../../lib/attachments";
+import {sleep} from "../../../lib/misc";
 import {introDomHandle} from "../../../lib/rule";
 import {log} from "../../../log";
 import {Status} from "../../../main/main";
 import {Chapter} from "../../../main/Chapter";
 import {Book, BookAdditionalMetadate} from "../../../main/Book";
 import {BaseRuleClass, ChapterParseObject} from "../../../rules";
-import { retryLimit } from "../../../setting";
+import {retryLimit} from "../../../setting";
 
 export class Gongzicp extends BaseRuleClass {
-  public constructor() {
-    super();
-    this.attachmentMode = "TM";
-    this.concurrencyLimit = 1;
-  }
+    public constructor() {
+        super();
+        this.attachmentMode = "TM";
+        this.concurrencyLimit = 1;
+    }
 
-  public async bookParse() {
+    public async bookParse() {
     const bookUrl = document.location.href;
 
     const bookId = (

@@ -1,14 +1,14 @@
 <div>
   <div id="test-page-div">
-    <h2>元数据</h2>
-    <table>
-      <tbody>
-        <tr v-for="(value, key) in metaData">
-          <td>{{ key }}</td>
-            <td v-html="getData(key, value)"></td>
-        </tr>
-      </tbody>
-    </table>
+      <h2>元数据</h2>
+      <table>
+          <tbody>
+          <tr v-for="(value, key) in metaData">
+              <td>{{ key }}</td>
+              <td v-html="getData(key, value)"></td>
+          </tr>
+          </tbody>
+      </table>
       <hr class="hr-edge-weak"/>
       <h2>章节测试</h2>
       <div class="preview-chapter-setting">
