@@ -20,7 +20,23 @@ export function parse(doc: Document, options?: ReadabilityOptions) {
       obj.content = createEl(obj.content);
     }
   }
-  return obj;
+  return obj as null | {
+    /** article title */
+    title: string;
+    /** author metadata */
+    byline: string;
+    /** content direction */
+    dir: string;
+    /** HTML of processed article content */
+    content: HTMLElement;
+    /** text content of the article (all HTML removed) */
+    textContent: string;
+    /** length of an article, in characters */
+    length: number;
+    /** article description, or short excerpt from the content */
+    excerpt: string;
+    siteName: string;
+  };
 }
 
 export async function fetchAndParse(

@@ -5,7 +5,8 @@ import { log } from "../../../log";
 import { Chapter } from "../../../main/Chapter";
 import { Book, BookAdditionalMetadate } from "../../../main/Book";
 import { BaseRuleClass, ChapterParseObject } from "../../../rules";
-import { rm } from "../../../lib/dom";
+import { isHidden, rm } from "../../../lib/dom";
+import { parse } from "../../../lib/readability";
 
 export class Lofter extends BaseRuleClass {
   public constructor() {
@@ -75,8 +76,7 @@ export class Lofter extends BaseRuleClass {
       // 获取新目录页
       const getIndexPageNumber = (urlI: string) => {
         const _pageNumber = new URL(urlI).searchParams.get("page") ?? "1";
-        const indexPageNumber = Number(_pageNumber);
-        return indexPageNumber;
+        return parseInt(_pageNumber);
       };
       const nowIndexPageNumber = getIndexPageNumber(url);
       const indexPages = doc.querySelectorAll('a[href^="?page"]');
@@ -119,7 +119,7 @@ export class Lofter extends BaseRuleClass {
       i++;
     }
 
-    const book = new Book({
+    return new Book({
       bookUrl,
       bookname,
       author,
@@ -128,7 +128,6 @@ export class Lofter extends BaseRuleClass {
       additionalMetadate,
       chapters,
     });
-    return book;
   }
 
   public async chapterParse(
@@ -164,10 +163,16 @@ export class Lofter extends BaseRuleClass {
       ];
       let content;
       for (const selector of selectors) {
-        const _content = doc.querySelector(selector) as HTMLElement;
-        if (_content !== null) {
+        const _content = doc.querySelector<HTMLElement>(selector);
+        if (_content !== null && !isHidden(_content)) {
           content = _content;
           break;
+        }
+      }
+      if (!content) {
+        const obj = parse(doc);
+        if (obj?.content) {
+          content = obj.content;
         }
       }
       if (content) {

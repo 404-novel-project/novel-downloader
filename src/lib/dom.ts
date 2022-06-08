@@ -238,3 +238,9 @@ export function insertBrBeforeText(elem: HTMLElement) {
     }
   }
 }
+
+// https://stackoverflow.com/questions/19669786/check-if-element-is-visible-in-dom
+/* 元素可见性测试 */
+export function isHidden(el: HTMLElement): boolean {
+  return el.offsetParent === null;
+}
