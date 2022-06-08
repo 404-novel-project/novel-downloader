@@ -12,11 +12,11 @@ import TestUICss from "./TestUI.less";
 import {createStyle} from "../lib/dom";
 
 export default defineComponent({
-  name: "TestUI",
-  setup() {
-    const book = reactive({} as Book);
+    name: "TestUI",
+    setup() {
+        const book = reactive({} as Book);
 
-    async function waitBook() {
+        async function waitBook() {
       // eslint-disable-next-line no-constant-condition
       while (true) {
         await sleep(500);
