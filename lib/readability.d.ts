@@ -13,7 +13,7 @@ export declare function parse(doc: Document, options?: ReadabilityOptions): {
     title: string;
     byline: string;
     dir: string;
-    content: string | Element;
+    content: HTMLElement;
     textContent: string;
     length: number;
     excerpt: string;
@@ -23,7 +23,7 @@ export declare function fetchAndParse(url: string, charset?: string, init?: Requ
     title: string;
     byline: string;
     dir: string;
-    content: string | Element;
+    content: HTMLElement;
     textContent: string;
     length: number;
     excerpt: string;
@@ -33,7 +33,7 @@ export declare function gfetchAndParse(url: string, charset?: string, init?: Gfe
     title: string;
     byline: string;
     dir: string;
-    content: string | Element;
+    content: HTMLElement;
     textContent: string;
     length: number;
     excerpt: string;

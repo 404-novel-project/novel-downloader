@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.9.3.731
+// @version        4.9.3.742
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/404-novel-project/novel-downloader
@@ -356,7 +356,7 @@
 // @require        https://unpkg.com/crypto-js@4.1.1/crypto-js.js#sha512-NQVmLzNy4Lr5QTrmXvq/WzTMUnRHmv7nyIT/M6LyGPBS+TIeRxZ+YQaqWxjpRpvRMQSuYPQURZz/+pLi81xXeA==
 // @require        https://unpkg.com/fflate@0.7.3/umd/index.js#sha512-F57jcpLWPENXlHrsEj+YC8m+IHvaoRZpCpDr7Tfvu/jRtuO7kPOfbsop2gXEIRoK66ETYamk1tlTEvNw6xE8jw==
 // @require        https://unpkg.com/nunjucks@3.2.3/browser/nunjucks.min.js#sha512-Uj8C5szr1tnKPNZb6ps5gFYtTGskzsUCiwY35QP/s2JIExZl7iYNletcmOJ8D6ocuaMRi9JGVrWRePaX9raujA==
-// @require        https://unpkg.com/vue@3.2.33/dist/vue.global.prod.js#sha512-iUCDw8vYsHwsf4l/59rnM96yLXB50udB2qKnaoD80DUjuQUAN/truZob78ZDFJF3eEs3fLBPAZRI6G1qU9QW1g==
+// @require        https://unpkg.com/vue@3.2.36/dist/vue.global.prod.js#sha512-UtZg4Q8FiRAVpCWnwTyEpZ9o4s2IFZdiLCsldvVqXTnLg78EldA/RipIBBBHSo4P7TcBUR4DOO8MhzH0pcH4ZQ==
 // @downloadURL    https://github.com/yingziwu/novel-downloader/raw/gh-pages/bundle-greasyfork.user.js
 // @updateURL      https://github.com/yingziwu/novel-downloader/raw/gh-pages/bundle-greasyfork.meta.js
 // ==/UserScript==
@@ -6165,7 +6165,8 @@ function isFixWidth(node, width = 35) {
 /* harmony export */   "vR": () => (/* binding */ childNodesCopy),
 /* harmony export */   "vS": () => (/* binding */ rm2),
 /* harmony export */   "wd": () => (/* binding */ getMaxDepth),
-/* harmony export */   "wj": () => (/* binding */ createStyle)
+/* harmony export */   "wj": () => (/* binding */ createStyle),
+/* harmony export */   "xj": () => (/* binding */ isHidden)
 /* harmony export */ });
 /* unused harmony export getCookie */
 function rm(selector, all = false, dom) {
@@ -6378,6 +6379,9 @@ function insertBrBeforeText(elem) {
             node.parentElement?.insertBefore(document.createElement("br"), node);
         }
     }
+}
+function isHidden(el) {
+    return el.offsetParent === null;
 }
 
 
@@ -6595,9 +6599,9 @@ async function ggetText(url, charset, init, test = (response) => Promise.resolve
             _init = { responseType: "arraybuffer" };
         }
         return gfetch(url, _init)
-            .then((response) => {
+            .then(async (response) => {
             if ((response.status >= 200 && response.status <= 299) ||
-                test(response)) {
+                (await test(response))) {
                 return response.response;
             }
             else {
@@ -14356,7 +14360,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "Lofter": () => (/* binding */ Lofter)
 /* harmony export */ });
 /* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/attachments.ts");
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/cleanDOM.ts");
 /* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/http.ts");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_2__);
@@ -14364,6 +14368,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Book.ts");
 /* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
 /* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _lib_readability__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/readability.ts");
+
 
 
 
@@ -14420,8 +14426,7 @@ class Lofter extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
             urlSetl.forEach((item) => pageUrlSet.add(item));
             const getIndexPageNumber = (urlI) => {
                 const _pageNumber = new URL(urlI).searchParams.get("page") ?? "1";
-                const indexPageNumber = Number(_pageNumber);
-                return indexPageNumber;
+                return parseInt(_pageNumber);
             };
             const nowIndexPageNumber = getIndexPageNumber(url);
             const indexPages = doc.querySelectorAll('a[href^="?page"]');
@@ -14460,7 +14465,7 @@ class Lofter extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
             chapters.push(chapter);
             i++;
         }
-        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .f({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .f({
             bookUrl,
             bookname,
             author,
@@ -14469,7 +14474,6 @@ class Lofter extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
             additionalMetadate,
             chapters,
         });
-        return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         async function post() {
@@ -14490,14 +14494,20 @@ class Lofter extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
             let content;
             for (const selector of selectors) {
                 const _content = doc.querySelector(selector);
-                if (_content !== null) {
+                if (_content !== null && !(0,_lib_dom__WEBPACK_IMPORTED_MODULE_6__/* .isHidden */ .xj)(_content)) {
                     content = _content;
                     break;
                 }
             }
+            if (!content) {
+                const obj = (0,_lib_readability__WEBPACK_IMPORTED_MODULE_7__.parse)(doc);
+                if (obj?.content) {
+                    content = obj.content;
+                }
+            }
             if (content) {
                 (0,_lib_dom__WEBPACK_IMPORTED_MODULE_6__.rm)(".otherinfo", true, content);
-                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__/* .cleanDOM */ .zM)(content, "TM");
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .zM)(content, "TM");
                 return {
                     chapterName,
                     contentRaw: content,
@@ -14517,7 +14527,7 @@ class Lofter extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
             chapterName = doc.querySelector("#title")?.innerText.trim();
             const content = doc.querySelector("#m-cnt .long-text");
             if (content) {
-                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__/* .cleanDOM */ .zM)(content, "TM");
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .zM)(content, "TM");
                 return {
                     chapterName,
                     contentRaw: content,
@@ -22157,7 +22167,7 @@ var ui_setting = __webpack_require__("./src/ui/setting.less");
 var attachments = __webpack_require__("./src/lib/attachments.ts");
 ;// CONCATENATED MODULE: ./src/ui/TestUI.html
 // Module
-var TestUI_code = "<div>\n  <div id=\"test-page-div\">\n    <h2>元数据</h2>\n    <table>\n      <tbody>\n        <tr v-for=\"(value, key) in metaData\">\n          <td>{{ key }}</td>\n            <td v-html=\"getData(key, value)\"></td>\n        </tr>\n      </tbody>\n    </table>\n      <hr class=\"hr-edge-weak\">\n      <h2>章节测试</h2>\n      <div class=\"preview-chapter-setting\">\n          <label for=\"chapterNumber\">预览章节序号：</label>\n          <input id=\"chapterNumber\" v-model=\"chapterNumber\" type=\"text\">\n      </div>\n      <div v-if=\"this.isSeenChapter(chapter)\">\n          <h4>\n              <a rel=\"noopener noreferrer\" target=\"_blank\" v-bind:href=\"chapter.chapterUrl\">{{ chapter.chapterName }}</a>\n          </h4>\n          <div class=\"chapter\" v-html=\"getChapterHtml(chapter)\"></div>\n      </div>\n      <div v-else>\n          <p v-if=\"this.isChapterFailed(chapter)\">章节加载失败！</p>\n          <p v-else>正在加载章节中……</p>\n      </div>\n  </div>\n</div>\n";
+var TestUI_code = "<div>\n  <div id=\"test-page-div\">\n      <h2>元数据</h2>\n      <table>\n          <tbody>\n          <tr v-for=\"(value, key) in metaData\">\n              <td>{{ key }}</td>\n              <td v-html=\"getData(key, value)\"></td>\n          </tr>\n          </tbody>\n      </table>\n      <hr class=\"hr-edge-weak\">\n      <h2>章节测试</h2>\n      <div class=\"preview-chapter-setting\">\n          <label for=\"chapterNumber\">预览章节序号：</label>\n          <input id=\"chapterNumber\" v-model=\"chapterNumber\" type=\"text\">\n      </div>\n      <div v-if=\"this.isSeenChapter(chapter)\">\n          <h4>\n              <a rel=\"noopener noreferrer\" target=\"_blank\" v-bind:href=\"chapter.chapterUrl\">{{ chapter.chapterName }}</a>\n          </h4>\n          <div class=\"chapter\" v-html=\"getChapterHtml(chapter)\"></div>\n      </div>\n      <div v-else>\n          <p v-if=\"this.isChapterFailed(chapter)\">章节加载失败！</p>\n          <p v-else>正在加载章节中……</p>\n      </div>\n  </div>\n</div>\n";
 // Exports
 /* harmony default export */ const TestUI = (TestUI_code);
 // EXTERNAL MODULE: ./src/ui/TestUI.less
