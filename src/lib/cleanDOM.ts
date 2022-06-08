@@ -509,7 +509,7 @@ export async function cleanDOM(
       // https://jmalarcon.github.io/markdowntables/scripts/code.js
       function fixText(text: string) {
         //Remove tabs (it's HTML, so they don't affect the final render, but in Markdown, they do.)
-        return text.trim().replace("\t", "");
+        return text.trim().replaceAll("\t", "");
       }
 
       function processTable(tableDom: HTMLTableElement) {
