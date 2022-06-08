@@ -21,6 +21,7 @@ body:
     attributes:
       label: 当我尝试复现issue时……
       options:
+        - label: 我使用的浏览器是最新版 Chrome 或 Firefox
         - label: 脚本管理器（Tampermonkey/Violentmonkey）是唯一浏览器插件
         - label: 小说下载器脚本是唯一用户脚本
 
