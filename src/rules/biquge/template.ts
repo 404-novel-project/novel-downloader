@@ -77,8 +77,8 @@ export function baseOnePage(
 ) {
   return {
     ...base(introDomPatch, concurrencyLimit, overRide, postHook),
-    aList: document.querySelectorAll("#list a, .listmain a"),
-    sections: document.querySelectorAll("#list dt, .listmain dt"),
+    aList: document.querySelectorAll("#list a, .listmain a, .book-item a"),
+    sections: document.querySelectorAll("#list dt, .listmain dt, .layout-tit"),
     getSName: (sElem: Element) => {
       const b = sElem.querySelector("b");
       if (b) {

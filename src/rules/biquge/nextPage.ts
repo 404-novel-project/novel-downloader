@@ -1,5 +1,5 @@
 import { htmlTrim } from "../../lib/cleanDOM";
-import { rm2, rms } from "../../lib/dom";
+import { rm, rm2, rms } from "../../lib/dom";
 import { mkBiqugeNextPage } from "./template";
 
 export const xinwanben = () =>
@@ -92,5 +92,19 @@ export const mijiashe = () =>
       return content;
     },
     (doc) => (doc.querySelector("#next_url") as HTMLAnchorElement).href,
+    (_content, nextLink) => new URL(nextLink).pathname.includes("_")
+  );
+
+export const ywggzy = () =>
+  mkBiqugeNextPage(
+    (initroDom) => initroDom,
+    (content) => {
+      rm(".posterror", false, content);
+      return content;
+    },
+    (doc) =>
+      doc.querySelector<HTMLAnchorElement>(
+        "div.section-opt:nth-child(1) > a:nth-child(5)"
+      )?.href ?? "",
     (_content, nextLink) => new URL(nextLink).pathname.includes("_")
   );
