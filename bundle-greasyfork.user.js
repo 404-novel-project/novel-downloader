@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.9.3.743
+// @version        4.9.3.747
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/404-novel-project/novel-downloader
@@ -109,12 +109,14 @@
 // @match          *://www.jpxs123.com/*/*.html
 // @match          *://www.tongrenquan.org/tongren/*.html
 // @match          *://www.tongrenquan.me/tongren/*.html
+// @match          *://www.tongrenquan.cc/tongren/*.html
 // @match          *://trxs.cc/tongren/*.html
 // @match          *://trxs.me/tongren/*.html
 // @match          *://trxs123.com/tongren/*.html
 // @match          *://jpxs123.com/*/*.html
 // @match          *://tongrenquan.org/tongren/*.html
 // @match          *://tongrenquan.me/tongren/*.html
+// @match          *://tongrenquan.cc/tongren/*.html
 // @match          *://www.imiaobige.com/read/*/
 // @match          *://www.imbg.cc/read/*/
 // @match          *://www.256wenku.com/read/*/index.html
@@ -250,12 +252,14 @@
 // @exclude        *://www.jpxs123.com/*/*/*.html
 // @exclude        *://www.tongrenquan.org/tongren/*/*.html
 // @exclude        *://www.tongrenquan.me/tongren/*/*.html
+// @exclude        *://www.tongrenquan.cc/tongren/*/*.html
 // @exclude        *://trxs.cc/tongren/*/*.html
 // @exclude        *://trxs.me/tongren/*/*.html
 // @exclude        *://trxs123.com/tongren/*/*.html
 // @exclude        *://jpxs123.com/*/*/*.html
 // @exclude        *://tongrenquan.org/tongren/*/*.html
 // @exclude        *://tongrenquan.me/tongren/*/*.html
+// @exclude        *://tongrenquan.cc/tongren/*/*.html
 // @exclude        *://www.25zw.com/lastupdate/
 // @exclude        *://www.25zw.com/postdate/
 // @exclude        *://www.25zw.com/monthvisit/
@@ -9308,6 +9312,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "mijiashe": () => (/* binding */ mijiashe),
 /* harmony export */   "xinwanben": () => (/* binding */ xinwanben),
+/* harmony export */   "ywggzy": () => (/* binding */ ywggzy),
 /* harmony export */   "yyun": () => (/* binding */ yyun)
 /* harmony export */ });
 /* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/cleanDOM.ts");
@@ -9387,6 +9392,10 @@ const mijiashe = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeNext
     (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__/* .htmlTrim */ .iA)(content);
     return content;
 }, (doc) => doc.querySelector("#next_url").href, (_content, nextLink) => new URL(nextLink).pathname.includes("_"));
+const ywggzy = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeNextPage */ .B4)((initroDom) => initroDom, (content) => {
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)(".posterror", false, content);
+    return content;
+}, (doc) => doc.querySelector("div.section-opt:nth-child(1) > a:nth-child(5)")?.href ?? "", (_content, nextLink) => new URL(nextLink).pathname.includes("_"));
 
 
 /***/ }),
@@ -9648,8 +9657,8 @@ function base(introDomPatch, concurrencyLimit, overRide, postHook) {
 function baseOnePage(introDomPatch, concurrencyLimit, overRide, postHook) {
     return {
         ...base(introDomPatch, concurrencyLimit, overRide, postHook),
-        aList: document.querySelectorAll("#list a, .listmain a"),
-        sections: document.querySelectorAll("#list dt, .listmain dt"),
+        aList: document.querySelectorAll("#list a, .listmain a, .book-item a"),
+        sections: document.querySelectorAll("#list dt, .listmain dt, .layout-tit"),
         getSName: (sElem) => {
             const b = sElem.querySelector("b");
             if (b) {
@@ -10106,14 +10115,19 @@ const dushu369 = () => {
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
+// ESM COMPAT FLAG
 __webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "hongxiuzhao": () => (/* binding */ hongxiuzhao)
-/* harmony export */ });
-/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
 
+// EXPORTS
+__webpack_require__.d(__webpack_exports__, {
+  "hongxiuzhao": () => (/* binding */ hongxiuzhao)
+});
 
+// EXTERNAL MODULE: ./src/rules/onePage/template.ts
+var template = __webpack_require__("./src/rules/onePage/template.ts");
+// EXTERNAL MODULE: ./src/lib/dom.ts
+var lib_dom = __webpack_require__("./src/lib/dom.ts");
+;// CONCATENATED MODULE: ./src/rules/lib/hongxiuzhao.ts
 const table = {
     "\ue2a9": "\u5634",
     "\ue2ba": "\u4e0b",
@@ -10253,7 +10267,12 @@ const table = {
     "\ue296": "\u5438",
     "\ue2ac": "\u67de",
 };
-const hongxiuzhao = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+
+;// CONCATENATED MODULE: ./src/rules/onePage/hongxiuzhao.ts
+
+
+
+const hongxiuzhao = () => (0,template/* mkRuleClass */.x)({
     bookUrl: document.location.href,
     bookname: document
         .querySelector(".m-bookdetail div.f-fl > h1")
@@ -10263,8 +10282,8 @@ const hongxiuzhao = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleCla
         ?.innerText.trim() ?? "",
     introDom: document.querySelector(".summery") ?? undefined,
     introDomPatch: (dom) => {
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("strong", false, dom);
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("em", false, dom);
+        (0,lib_dom.rm)("strong", false, dom);
+        (0,lib_dom.rm)("em", false, dom);
         return dom;
     },
     coverUrl: document.querySelector(".cover > img")?.src,
@@ -10275,12 +10294,12 @@ const hongxiuzhao = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleCla
     aList: document.querySelectorAll(".m-chapters li > a"),
     getContent: (doc) => doc.querySelector(".article-content"),
     contentPatch: (content) => {
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("mark", true, content);
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("h1", true, content);
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("ins", true, content);
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("script", true, content);
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("p[style]", true, content);
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)('a[href="https://hongxiuzh.com"]', true, content);
+        (0,lib_dom.rm)("mark", true, content);
+        (0,lib_dom.rm)("h1", true, content);
+        (0,lib_dom.rm)("ins", true, content);
+        (0,lib_dom.rm)("script", true, content);
+        (0,lib_dom.rm)("p[style]", true, content);
+        (0,lib_dom.rm)('a[href="https://hongxiuzh.com"]', true, content);
         for (const k in table) {
             content.innerHTML = content.innerHTML.replaceAll(k, table[k]);
         }
@@ -11181,61 +11200,6 @@ const westnovel = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass
         (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("div.link", true, content);
         (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("h4", true, content);
         return content;
-    },
-});
-
-
-/***/ }),
-
-/***/ "./src/rules/onePage/ywggzy.ts":
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "ywggzy": () => (/* binding */ ywggzy)
-/* harmony export */ });
-/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
-/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/rule.ts");
-
-
-
-const ywggzy = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
-    bookUrl: document.location.href,
-    bookname: document.querySelector(".info h1")?.innerText.trim() ??
-        "",
-    author: document
-        .querySelector("div.fix > p:nth-child(1)")
-        ?.innerText.trim() ?? "",
-    introDom: document.querySelector(".desc") ?? undefined,
-    introDomPatch: (dom) => dom,
-    coverUrl: document.querySelector(".imgbox > img")?.src,
-    aList: document.querySelectorAll("li.book-item > a"),
-    sections: document.querySelectorAll("div.row.row-section h2.layout-tit"),
-    getSName: (sElem) => sElem.innerText.trim(),
-    postHook: (chapter) => {
-        if (chapter.sectionName) {
-            chapter.sectionName = chapter.sectionName
-                .replace(`《${chapter.bookname}》`, "")
-                .trim();
-        }
-        return chapter;
-    },
-    getContent: (doc) => doc.querySelector("#content"),
-    contentPatch: (dom) => {
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)(".posterror", false, dom);
-        return dom;
-    },
-    overrideConstructor: (classThis) => {
-        const rawBookParse = classThis.bookParse;
-        classThis.bookParse = async () => {
-            const book = (await Reflect.apply(rawBookParse, classThis, []));
-            const chapters = book.chapters;
-            book.chapters = (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .deDuplicate */ .uh)(chapters);
-            return book;
-        };
-        return classThis;
     },
 });
 
@@ -19631,15 +19595,129 @@ const jingcaiyuedu6 = () => (0,_tempate__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleCl
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
+// ESM COMPAT FLAG
 __webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "linovelib": () => (/* binding */ linovelib),
-/* harmony export */   "wlinovelib": () => (/* binding */ wlinovelib)
-/* harmony export */ });
-/* harmony import */ var _tempate__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/twoPage/tempate.ts");
-/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/main/main.ts");
-/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/dom.ts");
+
+// EXPORTS
+__webpack_require__.d(__webpack_exports__, {
+  "linovelib": () => (/* binding */ linovelib),
+  "wlinovelib": () => (/* binding */ wlinovelib)
+});
+
+// EXTERNAL MODULE: ./src/rules/twoPage/tempate.ts
+var tempate = __webpack_require__("./src/rules/twoPage/tempate.ts");
+// EXTERNAL MODULE: ./src/main/main.ts
+var main = __webpack_require__("./src/main/main.ts");
+// EXTERNAL MODULE: ./src/lib/rule.ts
+var rule = __webpack_require__("./src/lib/rule.ts");
+// EXTERNAL MODULE: ./src/lib/dom.ts
+var dom = __webpack_require__("./src/lib/dom.ts");
+;// CONCATENATED MODULE: ./src/rules/lib/linovelib.ts
+const table = {
+    "\ue800": "\u7684",
+    "\ue801": "\u4e00",
+    "\ue802": "\u662f",
+    "\ue803": "\u4e86",
+    "\ue804": "\u6211",
+    "\ue805": "\u4e2a",
+    "\ue806": "\u4eba",
+    "\ue807": "\u4ed5",
+    "\ue808": "\u4ed6",
+    "\ue809": "\u6709",
+    "\ue80a": "\u8fd9",
+    "\ue80b": "\u4e2a",
+    "\ue80c": "\u4e0a",
+    "\ue80d": "\u4eec",
+    "\ue80e": "\u6765",
+    "\ue80f": "\u5230",
+    "\ue810": "\u65f6",
+    "\ue811": "\u5927",
+    "\ue812": "\u5730",
+    "\ue813": "\u4e3a",
+    "\ue814": "\u5b50",
+    "\ue815": "\u4e2d",
+    "\ue816": "\u4f60",
+    "\ue817": "\u8bf4",
+    "\ue818": "\u751f",
+    "\ue819": "\u56fd",
+    "\ue81a": "\u5e74",
+    "\ue81b": "\u770b",
+    "\ue81c": "\u5c31",
+    "\ue81d": "\u90a3",
+    "\ue81e": "\u548c",
+    "\ue81f": "\u8981",
+    "\ue820": "\u5979",
+    "\ue821": "\u51fa",
+    "\ue822": "\u4e5f",
+    "\ue823": "\u5f97",
+    "\ue824": "\u91cc",
+    "\ue825": "\u540e",
+    "\ue826": "\u81ea",
+    "\ue827": "\u4ee5",
+    "\ue828": "\u4f1a",
+    "\ue829": "\u5bb6",
+    "\ue82a": "\u53ef",
+    "\ue82b": "\u4e0b",
+    "\ue82c": "\u800c",
+    "\ue82d": "\u8fc7",
+    "\ue82e": "\u5929",
+    "\ue82f": "\u53bb",
+    "\ue830": "\u80fd",
+    "\ue831": "\u5bf9",
+    "\ue832": "\u5c0f",
+    "\ue833": "\u591a",
+    "\ue834": "\u7136",
+    "\ue835": "\u4e8e",
+    "\ue836": "\u5fc3",
+    "\ue837": "\u5b66",
+    "\ue838": "\u4e48",
+    "\ue839": "\u4e4b",
+    "\ue83a": "\u90fd",
+    "\ue83b": "\u597d",
+    "\ue83c": "\u770b",
+    "\ue83d": "\u8d77",
+    "\ue83e": "\u53d1",
+    "\ue83f": "\u5f53",
+    "\ue840": "\u6ca1",
+    "\ue841": "\u6210",
+    "\ue842": "\u53ea",
+    "\ue843": "\u5982",
+    "\ue844": "\u4e8b",
+    "\ue845": "\u628a",
+    "\ue846": "\u8fd8",
+    "\ue847": "\u7528",
+    "\ue848": "\u7b2c",
+    "\ue849": "\u6837",
+    "\ue84a": "\u9053",
+    "\ue84b": "\u60f3",
+    "\ue84c": "\u4f5c",
+    "\ue84d": "\u79cd",
+    "\ue84e": "\u5f00",
+    "\ue84f": "\u7f8e",
+    "\ue850": "\u4e73",
+    "\ue851": "\u9634",
+    "\ue852": "\u6db2",
+    "\ue853": "\u830e",
+    "\ue854": "\u6b32",
+    "\ue855": "\u547b",
+    "\ue856": "\u8089",
+    "\ue857": "\u4ea4",
+    "\ue858": "\u6027",
+    "\ue859": "\u80f8",
+    "\ue85a": "\u79c1",
+    "\ue85b": "\u7a74",
+    "\ue85c": "\u6deb",
+    "\ue85d": "\u81c2",
+    "\ue85e": "\u8214",
+    "\ue85f": "\u5c04",
+    "\ue860": "\u8131",
+    "\ue861": "\u88f8",
+    "\ue862": "\u9a9a",
+    "\ue863": "\u5507",
+};
+
+;// CONCATENATED MODULE: ./src/rules/twoPage/linovelib.ts
+
 
 
 
@@ -19647,7 +19725,7 @@ __webpack_require__.r(__webpack_exports__);
 const linovelib = () => {
     const ToCurl = document.location.href;
     const bookUrl = ToCurl.replace(/\/catalog$/, ".html");
-    return (0,_tempate__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+    return (0,tempate/* mkRuleClass */.x)({
         bookUrl,
         anotherPageUrl: bookUrl,
         ToCUrl: ToCurl,
@@ -19665,7 +19743,7 @@ const linovelib = () => {
         getSName: (sElem) => sElem.innerText.trim(),
         postHook: (chapter) => {
             if (chapter.chapterUrl.startsWith("javascript")) {
-                chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_1__/* .Status.aborted */ .qb.aborted;
+                chapter.status = main/* Status.aborted */.qb.aborted;
             }
             return chapter;
         },
@@ -19676,20 +19754,20 @@ const linovelib = () => {
                 const invalidTest = (c) => c.chapterUrl.startsWith("javascript");
                 const getPrevHref = (doc) => doc.querySelector(".mlfy_page > a:nth-child(1)")
                     ?.href;
-                await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .chapterHiddenFix */ .ii)(book, invalidTest, getPrevHref, classThis.concurrencyLimit);
+                await (0,rule/* chapterHiddenFix */.ii)(book, invalidTest, getPrevHref, classThis.concurrencyLimit);
                 return book;
             };
             return classThis;
         },
         getContentFromUrl: async (chapterUrl, chapterName, charset) => {
-            const { contentRaw } = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .nextPageParse */ .I2)({
+            const { contentRaw } = await (0,rule/* nextPageParse */.I2)({
                 chapterName,
                 chapterUrl,
                 charset,
                 selector: "#TextContent",
                 contentPatch: (_content) => {
-                    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_3__.rm)(".tp", true, _content);
-                    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_3__.rm)(".bd", true, _content);
+                    (0,dom.rm)(".tp", true, _content);
+                    (0,dom.rm)(".bd", true, _content);
                     return _content;
                 },
                 getNextPage: (doc) => doc.querySelector(".mlfy_page > a:nth-child(5)").href,
@@ -19698,7 +19776,12 @@ const linovelib = () => {
             });
             return contentRaw;
         },
-        contentPatch: (dom) => dom,
+        contentPatch: (content) => {
+            for (const k in table) {
+                content.innerHTML = content.innerHTML.replaceAll(k, table[k]);
+            }
+            return content;
+        },
     });
 };
 const wlinovelib = () => {
@@ -19707,14 +19790,14 @@ const wlinovelib = () => {
     function getReadParams(doc) {
         const script = Array.from(doc.querySelectorAll("script")).filter((s) => s.innerHTML.includes("ReadParams"))?.[0];
         if (script) {
-            const ReadParams = (0,_lib_dom__WEBPACK_IMPORTED_MODULE_3__/* .sandboxed */ .J0)(`${script.innerHTML}; return ReadParams;`);
+            const ReadParams = (0,dom/* sandboxed */.J0)(`${script.innerHTML}; return ReadParams;`);
             return ReadParams;
         }
         else {
             return null;
         }
     }
-    return (0,_tempate__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+    return (0,tempate/* mkRuleClass */.x)({
         bookUrl,
         anotherPageUrl: tocUrl,
         ToCUrl: tocUrl,
@@ -19736,7 +19819,7 @@ const wlinovelib = () => {
         getSName: (sElem) => sElem.innerText.trim(),
         postHook: (chapter) => {
             if (chapter.chapterUrl.startsWith("javascript")) {
-                chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_1__/* .Status.aborted */ .qb.aborted;
+                chapter.status = main/* Status.aborted */.qb.aborted;
             }
             return chapter;
         },
@@ -19754,20 +19837,20 @@ const wlinovelib = () => {
                         return;
                     }
                 };
-                await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .chapterHiddenFix */ .ii)(book, invalidTest, getPrevHref, classThis.concurrencyLimit);
+                await (0,rule/* chapterHiddenFix */.ii)(book, invalidTest, getPrevHref, classThis.concurrencyLimit);
                 return book;
             };
             return classThis;
         },
         getContentFromUrl: async (chapterUrl, chapterName, charset) => {
-            const { contentRaw } = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .nextPageParse */ .I2)({
+            const { contentRaw } = await (0,rule/* nextPageParse */.I2)({
                 chapterName,
                 chapterUrl,
                 charset,
                 selector: "#acontent",
                 contentPatch: (_content) => {
-                    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_3__.rm)(".cgo", true, _content);
-                    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_3__.rm)("script", true, _content);
+                    (0,dom.rm)(".cgo", true, _content);
+                    (0,dom.rm)("script", true, _content);
                     return _content;
                 },
                 getNextPage: (doc) => {
@@ -21036,12 +21119,14 @@ async function getRule() {
         case "www.jpxs123.com":
         case "www.tongrenquan.org":
         case "www.tongrenquan.me":
+        case "www.tongrenquan.cc":
         case "trxs.cc":
         case "trxs.me":
         case "trxs123.com":
         case "jpxs123.com":
         case "tongrenquan.me":
-        case "tongrenquan.org": {
+        case "tongrenquan.org":
+        case "tongrenquan.cc": {
             const { trxs } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/trxs.ts"));
             ruleClass = trxs();
             break;
@@ -21337,7 +21422,7 @@ async function getRule() {
             break;
         }
         case "www.ywggzy.com": {
-            const { ywggzy } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/ywggzy.ts"));
+            const { ywggzy } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/nextPage.ts"));
             ruleClass = ywggzy();
             break;
         }

@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        小说下载器测试脚本
-// @version     4.9.3.743
+// @version     4.9.3.747
 // @author      bgme
 // @description 小说下载器测试脚本
 // @match       *://www.ciweimao.com/chapter-list/*
@@ -108,12 +108,14 @@
 // @match       *://www.jpxs123.com/*/*.html
 // @match       *://www.tongrenquan.org/tongren/*.html
 // @match       *://www.tongrenquan.me/tongren/*.html
+// @match       *://www.tongrenquan.cc/tongren/*.html
 // @match       *://trxs.cc/tongren/*.html
 // @match       *://trxs.me/tongren/*.html
 // @match       *://trxs123.com/tongren/*.html
 // @match       *://jpxs123.com/*/*.html
 // @match       *://tongrenquan.org/tongren/*.html
 // @match       *://tongrenquan.me/tongren/*.html
+// @match       *://tongrenquan.cc/tongren/*.html
 // @match       *://www.imiaobige.com/read/*/
 // @match       *://www.imbg.cc/read/*/
 // @match       *://www.256wenku.com/read/*/index.html
@@ -240,12 +242,14 @@
 // @exclude     *://www.jpxs123.com/*/*/*.html
 // @exclude     *://www.tongrenquan.org/tongren/*/*.html
 // @exclude     *://www.tongrenquan.me/tongren/*/*.html
+// @exclude     *://www.tongrenquan.cc/tongren/*/*.html
 // @exclude     *://trxs.cc/tongren/*/*.html
 // @exclude     *://trxs.me/tongren/*/*.html
 // @exclude     *://trxs123.com/tongren/*/*.html
 // @exclude     *://jpxs123.com/*/*/*.html
 // @exclude     *://tongrenquan.org/tongren/*/*.html
 // @exclude     *://tongrenquan.me/tongren/*/*.html
+// @exclude     *://tongrenquan.cc/tongren/*/*.html
 // @exclude     *://www.25zw.com/lastupdate/
 // @exclude     *://www.25zw.com/postdate/
 // @exclude     *://www.25zw.com/monthvisit/
