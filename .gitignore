@@ -132,3 +132,8 @@ temp/
 
 .vscode
 REVISION
+
+# tools/font/
+tools/font/*.ttf
+tools/font/*.woff2
+tools/font/*.html

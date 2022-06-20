@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="referrer" content="no-referrer"/>
+    <title>{{ fontname }}</title>
+    <style>
+        body {
+            background-color: #f0f0f2;
+            margin: 0;
+            padding: 0;
+            font-family: Source Han Sans SC Normal, -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI",
+            "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+
+        div.main {
+            width: 600px;
+            margin: 5em auto;
+            padding: 2em;
+            background-color: #fdfdff;
+            border-radius: 0.5em;
+            box-shadow: 2px 3px 7px 2px rgba(0, 0, 0, 0.02);
+        }
+
+        .jjfont {
+            font-family: {{ fontname }}, 'Microsoft YaHei', PingFangSC-Regular, HelveticaNeue-Light, 'Helvetica Neue Light', sans-serif !important;;
+        }
+
+        @font-face {
+            font-family: {{ fontname }};
+        {% if is_woff2 %}
+            src: url({{ fontname }}) format('woff2');
+        {% else %}
+            src: url({{ fontpath }});
+        {% endif %}
+        }
+    </style>
+    <script>
+        function download(filename, text) {
+            const element = document.createElement('a');
+            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+            element.setAttribute('download', filename);
+
+            element.style.display = 'none';
+            document.body.appendChild(element);
+
+            element.click();
+
+            document.body.removeChild(element);
+        }
+
+        function save() {
+            const fontname = document.querySelector('.main > h1').innerText;
+            const table = getTable();
+            download(fontname + '.json', JSON.stringify(table));
+
+            function getTable() {
+                const tableList = Array.from(document.querySelectorAll('.data')).map((tr) => [
+                    tr.querySelector('.jjfont').innerText.trim(),
+                    tr.querySelector('.normal').innerText.trim()
+                ]);
+                return Object.fromEntries(tableList);
+            }
+        }
+    </script>
+</head>
+<body>
+<div class="main">
+    <h1>{{ fontname }}</h1>
+    <div>
+        <table>
+            <thead>
+            <tr>
+                <th>自定义字符（编码）</th>
+                <th>自定义字符（渲染）</th>
+                <th>通用字符</th>
+            </tr>
+            </thead>
+            <tbody>
+            {%- for jjdict in jjdicts -%}
+                <tr class="data">
+                    <td>{{ jjdict.ord|e }}</td>
+                    <td class="jjfont">{{ jjdict.jjcode|e }}</td>
+                    <td class="normal">{{ jjdict.unicode|e }}</td>
+                </tr>
+            {%- endfor -%}
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>
