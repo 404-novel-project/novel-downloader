@@ -4,6 +4,7 @@ import { chapterHiddenFix, nextPageParse } from "../../lib/rule";
 import { rm, sandboxed } from "../../lib/dom";
 import { Book } from "../../main/Book";
 import { Chapter } from "../../main/Chapter";
+import { table } from "../lib/linovelib";
 
 export const linovelib = () => {
   const ToCurl = document.location.href;
@@ -84,7 +85,12 @@ export const linovelib = () => {
       });
       return contentRaw;
     },
-    contentPatch: (dom) => dom,
+    contentPatch: (content) => {
+      for (const k in table) {
+        content.innerHTML = content.innerHTML.replaceAll(k, table[k]);
+      }
+      return content;
+    },
   });
 };
 
