@@ -244,12 +244,14 @@ export async function getRule(): Promise<BaseRuleClass> {
     case "www.jpxs123.com":
     case "www.tongrenquan.org":
     case "www.tongrenquan.me":
+    case "www.tongrenquan.cc":
     case "trxs.cc":
     case "trxs.me":
     case "trxs123.com":
     case "jpxs123.com":
     case "tongrenquan.me":
-    case "tongrenquan.org": {
+    case "tongrenquan.org":
+    case "tongrenquan.cc": {
       const { trxs } = await import("../rules/onePage/trxs");
       ruleClass = trxs();
       break;
