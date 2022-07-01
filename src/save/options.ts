@@ -23,7 +23,7 @@ class Common {
 
   public getChapterNumberToSave(chapter: Chapter, chapters: Chapter[]) {
     return `${"0".repeat(
-      chapters.length.toString().length -
+      Math.max(chapters.length.toString().length, 5) -
         Math.trunc(chapter.chapterNumber).toString().length
     )}${chapter.chapterNumber.toString()}`;
   }
