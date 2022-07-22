@@ -288,6 +288,148 @@ export class Shubl extends BaseRuleClass {
   }
 }
 
+export class Duread extends BaseRuleClass {
+  public constructor() {
+    super();
+    this.attachmentMode = "TM";
+    this.concurrencyLimit = 1;
+    this.maxRunLimit = 1;
+  }
+
+  public async bookParse() {
+    const bookUrl = document.location.href;
+    const bookname = (
+        document.querySelector(".book-title > span") as HTMLSpanElement
+    ).innerText.trim();
+    const author = (
+        document.querySelector("div.username") as HTMLDivElement
+    ).innerText.trim();
+    const introDom = document.querySelector(".book-brief");
+    const [introduction, introductionHTML] = await introDomHandle(
+        introDom,
+        (introDomI) => {
+          rms(["简介："], introDomI);
+          return introDomI;
+        }
+    );
+
+    const additionalMetadate: BookAdditionalMetadate = {};
+    const coverUrl = (document.querySelector(".book-img") as HTMLImageElement)
+        .src;
+    if (coverUrl) {
+      getAttachment(coverUrl, this.attachmentMode, "cover-")
+          .then((coverClass) => {
+            additionalMetadate.cover = coverClass;
+          })
+          .catch((error) => log.error(error));
+    }
+    additionalMetadate.tags = Array.from(
+        document.querySelectorAll("div.row > span.tag")
+    ).map((span) => (span as HTMLSpanElement).innerText.trim());
+
+    const chapters: Chapter[] = [];
+    const chapterTitleList = Array.from(
+        document.querySelectorAll(
+            "#chapter_list > div.chapter > div.chapter-title"
+        )
+    ).map((div) => (div as HTMLDivElement).innerText.trim());
+    const articlesList = document.querySelectorAll(
+        "#chapter_list > div.chapter > div.articles"
+    );
+    const sectionLength = chapterTitleList.length;
+
+    let chapterNumber = 0;
+    for (let i = 0; i < sectionLength; i++) {
+      const s = articlesList[i];
+      const sectionNumber = i + 1;
+      const sectionName = chapterTitleList[i];
+      let sectionChapterNumber = 0;
+
+      const cs = s.querySelectorAll("span.chapter_item");
+      for (const c of Array.from(cs)) {
+        chapterNumber++;
+        sectionChapterNumber++;
+
+        const a = c.querySelector("a");
+        if (a) {
+          const chapterName = a.innerText.trim();
+          const chapterUrl = a.href;
+
+          const isVIP = () => {
+            return c.childElementCount === 2;
+          };
+
+          const isPaid = () => {
+            return isVIP() && c.querySelector("i")?.className === "unlock";
+          };
+
+          const isLogin = () => {
+            return (
+                document.querySelector(
+                    "#header > div.container > div.right.pull-right"
+                )?.childElementCount === 3
+            );
+          };
+
+          const chapter = new Chapter({
+            bookUrl,
+            bookname,
+            chapterUrl,
+            chapterNumber,
+            chapterName,
+            isVIP: isVIP(),
+            isPaid: isPaid(),
+            sectionName,
+            sectionNumber,
+            sectionChapterNumber,
+            chapterParse: this.chapterParse,
+            charset: this.charset,
+            options: {},
+          });
+          if (isVIP() && !(isLogin() && isPaid())) {
+            chapter.status = Status.aborted;
+          }
+          chapters.push(chapter);
+        }
+      }
+    }
+
+    return new Book({
+      bookUrl,
+      bookname,
+      author,
+      introduction,
+      introductionHTML,
+      additionalMetadate,
+      chapters,
+    });
+  }
+
+  public async chapterParse(
+      chapterUrl: string,
+      chapterName: string | null,
+      isVIP: boolean,
+      isPaid: boolean,
+      charset: string,
+      options: object
+  ) {
+    const rootPath = "https://www.duread8.com/";
+    const [parentWidth, setFontSize] = [939.2, "18"];
+    return getChapter({
+      chapterUrl,
+      chapterName,
+      isVIP,
+      isPaid,
+      charset,
+      options,
+      rootPath,
+      parentWidth,
+      setFontSize,
+    });
+  }
+}
+
+
 function getChapter({
   chapterUrl,
   chapterName,
@@ -515,7 +657,12 @@ function getChapter({
     }
 
     const getIsLogin = () => {
-      if (document.location.host === "www.shubl.com") {
+      if (document.location.host === "www.duread8.com") {
+        return (
+            document.querySelector("div.dropdown-menu")
+                ?.childElementCount === 3
+        );
+      } else if (document.location.host === "www.shubl.com") {
         return (
           document.querySelector("div.pull-right:nth-child(2)")
             ?.childElementCount === 3

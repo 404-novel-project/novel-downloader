@@ -603,6 +603,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = mijiashe();
       break;
     }
+    case "www.duread8.com": {
+      const { Duread } = await import("../rules/special/original/ciweimao");
+      ruleClass = Duread;
+      break;
+    }
     default: {
       throw new Error("Not Found Rule!");
     }
