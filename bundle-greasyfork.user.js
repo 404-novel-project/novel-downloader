@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.9.3.777
+// @version        4.9.3.778
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/404-novel-project/novel-downloader
@@ -7783,11 +7783,11 @@ __webpack_require__.d(__webpack_exports__, {
 var attachments = __webpack_require__("./src/lib/attachments.ts");
 // EXTERNAL MODULE: ./src/lib/misc.ts
 var misc = __webpack_require__("./src/lib/misc.ts");
-// EXTERNAL MODULE: ./src/log.ts
-var log = __webpack_require__("./src/log.ts");
 // EXTERNAL MODULE: ./node_modules/loglevel/lib/loglevel.js
 var loglevel = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 var loglevel_default = /*#__PURE__*/__webpack_require__.n(loglevel);
+// EXTERNAL MODULE: ./src/log.ts
+var log = __webpack_require__("./src/log.ts");
 // EXTERNAL MODULE: ./src/main/main.ts
 var main = __webpack_require__("./src/main/main.ts");
 // EXTERNAL MODULE: ./node_modules/file-saver/dist/FileSaver.min.js
