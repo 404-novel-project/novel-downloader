@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.9.3.774
+// @version        4.9.3.775
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/404-novel-project/novel-downloader
@@ -8020,7 +8020,7 @@ class Options extends Common {
 var save_misc = __webpack_require__("./src/save/misc.ts");
 ;// CONCATENATED MODULE: ./src/save/chapter.html.j2
 // Module
-var code = "<!DOCTYPE html>\n<html>\n  <head>\n    <meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\n    <meta name=\"referrer\" content=\"same-origin\">\n    <meta name=\"generator\" content=\"https://github.com/404-novel-project/novel-downloader\">\n    <meta name=\"source\" content=\"{{ chapterUrl }}\">\n    <link href=\"style.css\" type=\"text/css\" rel=\"stylesheet\">\n    <title>{{ chapterName }}</title>\n  </head>\n  <body>\n    <div class=\"main\">\n      <h2>{{ chapterName }}</h2>\n      {{ outerHTML }}\n    </div>\n  <!-- <script type=\"text/javascript\" src=\"web.js\"></script> -->\n  </body>\n</html>\n";
+var code = "<!DOCTYPE html>\n<html>\n  <head>\n    <meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\n    <meta name=\"referrer\" content=\"same-origin\">\n    <meta name=\"generator\" content=\"https://github.com/404-novel-project/novel-downloader\">\n    <meta name=\"source\" content=\"{{ chapterUrl }}\">\n    <link href=\"style.css\" type=\"text/css\" rel=\"stylesheet\">\n    <title>{{ chapterName }}</title>\n  </head>\n  <body>\n    <div class=\"main\">\n      <h2>{{ chapterName }}</h2>\n      {{ outerHTML }}\n    </div>\n  <!-- <" + "script type=\"text/javascript\" src=\"web.js\"><" + "/script> -->\n  </body>\n</html>\n";
 // Exports
 /* harmony default export */ const chapter_html = (code);
 ;// CONCATENATED MODULE: ./src/save/index.html.j2
