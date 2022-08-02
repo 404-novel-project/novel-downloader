@@ -230,7 +230,8 @@
     "*://www.yyun.net/xs/*/",
     "*://www.yb3.cc/5200/*/",
     "*://hongxiuzhao.me/*.html",
-    "*://www.mijiashe.com/*/"
+    "*://www.mijiashe.com/*/",
+    "*://www.duread8.com/book/*"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",
@@ -367,6 +368,7 @@
     "readmoo.com",
     "qingoo.cn",
     "sundung.com",
+    "duread8.com",
     "*"
   ],
   "require": [
