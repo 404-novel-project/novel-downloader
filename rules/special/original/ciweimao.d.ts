@@ -10,3 +10,8 @@ export declare class Shubl extends BaseRuleClass {
     bookParse(): Promise<Book>;
     chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean, charset: string, options: object): Promise<ChapterParseObject>;
 }
+export declare class Duread extends BaseRuleClass {
+    constructor();
+    bookParse(): Promise<Book>;
+    chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean, charset: string, options: object): Promise<ChapterParseObject>;
+}

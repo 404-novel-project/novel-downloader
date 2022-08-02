@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.9.3.769
+// @version        4.9.3.772
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/404-novel-project/novel-downloader
@@ -210,6 +210,7 @@
 // @match          *://www.yb3.cc/5200/*/
 // @match          *://hongxiuzhao.me/*.html
 // @match          *://www.mijiashe.com/*/
+// @match          *://www.duread8.com/book/*
 // @name:en        novel-downloader
 // @name:ja        小説ダウンローダー
 // @description:en An scalable universal novel downloader.
@@ -356,6 +357,7 @@
 // @connect        readmoo.com
 // @connect        qingoo.cn
 // @connect        sundung.com
+// @connect        duread8.com
 // @connect        *
 // @require        https://unpkg.com/crypto-js@4.1.1/crypto-js.js#sha512-NQVmLzNy4Lr5QTrmXvq/WzTMUnRHmv7nyIT/M6LyGPBS+TIeRxZ+YQaqWxjpRpvRMQSuYPQURZz/+pLi81xXeA==
 // @require        https://unpkg.com/fflate@0.7.3/umd/index.js#sha512-F57jcpLWPENXlHrsEj+YC8m+IHvaoRZpCpDr7Tfvu/jRtuO7kPOfbsop2gXEIRoK66ETYamk1tlTEvNw6xE8jw==
@@ -12097,6 +12099,7 @@ class MangaBilibili extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "Ciweimao": () => (/* binding */ Ciweimao),
+/* harmony export */   "Duread": () => (/* binding */ Duread),
 /* harmony export */   "Shubl": () => (/* binding */ Shubl)
 /* harmony export */ });
 /* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("crypto-js");
@@ -12327,6 +12330,108 @@ class Shubl extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
         });
     }
 }
+class Duread extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
+    constructor() {
+        super();
+        this.attachmentMode = "TM";
+        this.concurrencyLimit = 1;
+        this.maxRunLimit = 1;
+    }
+    async bookParse() {
+        const bookUrl = document.location.href;
+        const bookname = document.querySelector(".book-title > span").innerText.trim();
+        const author = document.querySelector("div.username").innerText.trim();
+        const introDom = document.querySelector(".book-brief");
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_3__/* .introDomHandle */ .SN)(introDom, (introDomI) => {
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_9__/* .rms */ .up)(["简介："], introDomI);
+            return introDomI;
+        });
+        const additionalMetadate = {};
+        const coverUrl = document.querySelector(".book-img")
+            .src;
+        if (coverUrl) {
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_4__/* .getAttachment */ .FG)(coverUrl, this.attachmentMode, "cover-")
+                .then((coverClass) => {
+                additionalMetadate.cover = coverClass;
+            })
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_5___default().error(error));
+        }
+        additionalMetadate.tags = Array.from(document.querySelectorAll("div.row > span.tag")).map((span) => span.innerText.trim());
+        const chapters = [];
+        const chapterTitleList = Array.from(document.querySelectorAll("#chapter_list > div.chapter > div.chapter-title")).map((div) => div.innerText.trim());
+        const articlesList = document.querySelectorAll("#chapter_list > div.chapter > div.articles");
+        const sectionLength = chapterTitleList.length;
+        let chapterNumber = 0;
+        for (let i = 0; i < sectionLength; i++) {
+            const s = articlesList[i];
+            const sectionNumber = i + 1;
+            const sectionName = chapterTitleList[i];
+            let sectionChapterNumber = 0;
+            const cs = s.querySelectorAll("span.chapter_item");
+            for (const c of Array.from(cs)) {
+                chapterNumber++;
+                sectionChapterNumber++;
+                const a = c.querySelector("a");
+                if (a) {
+                    const chapterName = a.innerText.trim();
+                    const chapterUrl = a.href;
+                    const isVIP = () => {
+                        return c.childElementCount === 2;
+                    };
+                    const isPaid = () => {
+                        return isVIP() && c.querySelector("i")?.className === "unlock";
+                    };
+                    const isLogin = () => {
+                        return (document.querySelector("#header > div.container > div.right.pull-right")?.childElementCount === 3);
+                    };
+                    const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_6__/* .Chapter */ .W({
+                        bookUrl,
+                        bookname,
+                        chapterUrl,
+                        chapterNumber,
+                        chapterName,
+                        isVIP: isVIP(),
+                        isPaid: isPaid(),
+                        sectionName,
+                        sectionNumber,
+                        sectionChapterNumber,
+                        chapterParse: this.chapterParse,
+                        charset: this.charset,
+                        options: {},
+                    });
+                    if (isVIP() && !(isLogin() && isPaid())) {
+                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_7__/* .Status.aborted */ .qb.aborted;
+                    }
+                    chapters.push(chapter);
+                }
+            }
+        }
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_8__/* .Book */ .f({
+            bookUrl,
+            bookname,
+            author,
+            introduction,
+            introductionHTML,
+            additionalMetadate,
+            chapters,
+        });
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+        const rootPath = "https://www.duread8.com/";
+        const [parentWidth, setFontSize] = [939.2, "18"];
+        return getChapter({
+            chapterUrl,
+            chapterName,
+            isVIP,
+            isPaid,
+            charset,
+            options,
+            rootPath,
+            parentWidth,
+            setFontSize,
+        });
+    }
+}
 function getChapter({ chapterUrl, chapterName, isVIP, isPaid, charset, options, rootPath, parentWidth, setFontSize, }) {
     function decrypt(item) {
         let message = item.content;
@@ -12476,7 +12581,11 @@ function getChapter({ chapterUrl, chapterName, isVIP, isPaid, charset, options, 
             return vipCHapterImageUrlI;
         }
         const getIsLogin = () => {
-            if (document.location.host === "www.shubl.com") {
+            if (document.location.host === "www.duread8.com") {
+                return (document.querySelector("div.dropdown-menu")
+                    ?.childElementCount === 3);
+            }
+            else if (document.location.host === "www.shubl.com") {
                 return (document.querySelector("div.pull-right:nth-child(2)")
                     ?.childElementCount === 3);
             }
@@ -21454,6 +21563,11 @@ async function getRule() {
         case "www.mijiashe.com": {
             const { mijiashe } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/nextPage.ts"));
             ruleClass = mijiashe();
+            break;
+        }
+        case "www.duread8.com": {
+            const { Duread } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/ciweimao.ts"));
+            ruleClass = Duread;
             break;
         }
         default: {
