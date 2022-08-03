@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.9.3.780
+// @version        4.9.4.781
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/404-novel-project/novel-downloader
@@ -10634,7 +10634,9 @@ const syosetu = () => {
     return (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
         bookUrl: document.location.href,
         bookname: document.querySelector(".novel_title").innerText.trim(),
-        author: document.querySelector(".novel_writername > a").innerText.trim(),
+        author: document.querySelector(".novel_writername > a, .novel_writername").innerText
+            .replace("作者：", "")
+            .trim(),
         introDom: getIntroDom(),
         introDomPatch: (dom) => dom,
         coverUrl: null,
