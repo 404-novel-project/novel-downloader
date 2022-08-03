@@ -36,8 +36,12 @@ export const syosetu = () => {
       document.querySelector(".novel_title") as HTMLElement
     ).innerText.trim(),
     author: (
-      document.querySelector(".novel_writername > a") as HTMLAnchorElement
-    ).innerText.trim(),
+      document.querySelector(
+        ".novel_writername > a, .novel_writername"
+      ) as HTMLAnchorElement
+    ).innerText
+      .replace("作者：", "")
+      .trim(),
     introDom: getIntroDom(),
     introDomPatch: (dom) => dom,
     coverUrl: null,
