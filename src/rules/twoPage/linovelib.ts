@@ -20,7 +20,7 @@ export const linovelib = () => {
     getAuthor: () =>
       (
         document.querySelector(
-          ".book-meta > p:nth-child(2) > span:nth-child(1) > a:nth-child(2)"
+          ".book-meta > p:nth-child(2) > span:nth-child(1) > a:nth-child(1)"
         ) as HTMLElement
       ).innerText.trim(),
     getIntroDom: (doc) =>
