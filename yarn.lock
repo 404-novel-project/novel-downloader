@@ -2510,9 +2510,9 @@ lru-cache@^6.0.0:
     yallist "^4.0.0"
 
 magic-bytes.js@^1.0.12:
-  version "1.0.12"
-  resolved "https://registry.yarnpkg.com/magic-bytes.js/-/magic-bytes.js-1.0.12.tgz#6287de1070f4c33da4a6e8bffb2752d513a2d287"
-  integrity sha512-Rkukya32FnY3dF5nJeAS4Qcry76tXeOe2sXIQGAt969sV04QLormWHXmHn4o/yIbb4wRlnCqWu8fpVg3TU7sFg==
+  version "1.0.13"
+  resolved "https://registry.yarnpkg.com/magic-bytes.js/-/magic-bytes.js-1.0.13.tgz#b8e72e7c78900bf7be8647bb71098d4371b3c818"
+  integrity sha512-DiI8gdaLxnO4+H0WglSlDSCIQRff1L42ZhOVTuAbb0uwCFIVLM3J28oQ4XMX6LJmFTiqMV/ejYV8bc/eewwdmQ==
 
 magic-string@^0.25.7:
   version "0.25.7"
