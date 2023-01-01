@@ -313,9 +313,9 @@
     "@types/node" "*"
 
 "@types/tampermonkey@^4.0.5":
-  version "4.0.5"
-  resolved "https://registry.yarnpkg.com/@types/tampermonkey/-/tampermonkey-4.0.5.tgz#03a0c2366a7c1fe5e1c77c88adf568f40b3c18e5"
-  integrity sha512-FGPo7d+qZkDF7vyrwY1WNhcUnfDyVpt2uyL7krAu3WKCUMCfIUzOuvt8aSk8N2axHT8XPr9stAEDGVHLvag6Pw==
+  version "4.0.6"
+  resolved "https://registry.yarnpkg.com/@types/tampermonkey/-/tampermonkey-4.0.6.tgz#fdf68be456c1e0dea59b333e075258fa216bdb6d"
+  integrity sha512-AcsLVRraaqGVlLgybHvxfWTvQpHnSBiT/IGVosf9FcLj+ijcltPgtygpQCXBh5dginAVFJ7U+6Plss/7/BVilQ==
 
 "@types/ws@^8.5.1":
   version "8.5.3"
