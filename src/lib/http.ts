@@ -6,11 +6,11 @@ import {_GM_xmlhttpRequest} from "./GM";
 import {deepcopy, sleep} from "./misc";
 
 globalThis.fetch = new Proxy(globalThis.fetch, {
-    apply(target, thisArg, argArray) {
-        log.debug("[debug]fetch:");
-        log.debug(argArray);
-        return Reflect.apply(target, thisArg, argArray);
-    },
+  apply(target, thisArg, argArray) {
+    log.debug("[debug]fetch:");
+    log.debug(argArray);
+    return Reflect.apply(target, thisArg, argArray);
+  },
 });
 
 export async function fetchWithRetry(
@@ -28,6 +28,18 @@ export async function fetchWithRetry(
     }
   }
   throw new Error(`Fetch with retry failed! Url: ${input}`);
+}
+
+// https://dmitripavlutin.com/timeout-fetch-request/
+export async function fetchWithTimeout(input: string, options: RequestInit = {}, timeout = 8000) {
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), timeout);
+  const response = await fetch(input, {
+    ...options,
+    signal: controller.signal
+  });
+  clearTimeout(id);
+  return response;
 }
 
 // Forbidden header name
@@ -278,10 +290,10 @@ export async function ggetHtmlDOM(
 }
 
 export async function ggetHtmlDomWithRetry(
-  url: string,
-  charset?: string,
-  init?: GfetchRequestInit,
-  test = (response: Tampermonkey.Response<object>) => Promise.resolve(false)
+    url: string,
+    charset?: string,
+    init?: GfetchRequestInit,
+    test = (response: Tampermonkey.Response<object>) => Promise.resolve(false)
 ): Promise<Document | null> {
   let retry = retryLimit;
   let doc = null;

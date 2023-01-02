@@ -7,7 +7,7 @@ import { extensionToMimetype, mimetyepToCompressible, sleep } from "./misc";
 
 export async function setStreamSaverSetting() {
   const rawMitm = new URL(streamSaver.mitm);
-  const mitm = new URL("https://cors.bgme.me/");
+  const mitm = new URL("https://cors.bgme.bid/");
   mitm.pathname = rawMitm.origin + rawMitm.pathname;
   streamSaver.mitm = mitm.href;
   streamSaver.supported =
@@ -35,11 +35,12 @@ export class FflateZip {
     const self = this;
 
     this.filename = filename;
-    if (streamSaver.supported) {
-      this.stream = stream;
-    } else {
-      this.stream = false;
-    }
+    this.stream = false;
+    // if (streamSaver.supported) {
+    //   this.stream = stream;
+    // } else {
+    //   this.stream = false;
+    // }
 
     let writer: WritableStreamDefaultWriter<Uint8Array>;
     if (this.stream) {

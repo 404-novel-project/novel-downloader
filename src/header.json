@@ -373,8 +373,8 @@
   ],
   "require": [
     "https://unpkg.com/crypto-js@4.1.1/crypto-js.js",
-    "https://unpkg.com/fflate@0.7.3/umd/index.js",
+    "https://unpkg.com/fflate@0.7.4/umd/index.js",
     "https://unpkg.com/nunjucks@3.2.3/browser/nunjucks.min.js",
-    "https://unpkg.com/vue@3.2.37/dist/vue.global.prod.js"
+    "https://unpkg.com/vue@3.2.45/dist/vue.global.prod.js"
   ]
 }

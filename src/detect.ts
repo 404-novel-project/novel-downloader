@@ -4,6 +4,7 @@ import { GmWindow } from "./global";
 import { _GM_info } from "./lib/GM";
 import { storageAvailable } from "./lib/localStorageExpired";
 import { enableDebug } from "./setting";
+import { fetchWithRetry, fetchWithTimeout } from "./lib/http";
 
 function checkObjct(name: string) {
   const target = window[name as keyof Window];
@@ -34,7 +35,7 @@ export function streamSupport() {
 
 export function mitmPageAvailability(url: string): Promise<boolean> {
   return new Promise((resolve, reject) => {
-    fetch(url)
+    fetchWithTimeout(url, {}, 2500)
       .then((resp) => resolve(true))
       .catch((error) => resolve(false));
   });
