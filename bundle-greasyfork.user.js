@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.9.4.792
+// @version        4.9.4.793
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/404-novel-project/novel-downloader
@@ -19641,7 +19641,7 @@ const linovelib = () => {
         anotherPageUrl: bookUrl,
         ToCUrl: ToCurl,
         getBookname: () => document.querySelector(".book-meta > h1").innerText.trim(),
-        getAuthor: () => document.querySelector(".book-meta > p:nth-child(2) > span:nth-child(1) > a:nth-child(2)").innerText.trim(),
+        getAuthor: () => document.querySelector(".book-meta > p:nth-child(2) > span:nth-child(1) > a:nth-child(1)").innerText.trim(),
         getIntroDom: (doc) => doc.querySelector(".book-dec > p:nth-child(1)"),
         introDomPatch: (dom) => dom,
         getCoverUrl: (doc) => doc.querySelector(".book-img > img").src,
