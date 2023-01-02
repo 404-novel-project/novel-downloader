@@ -1,3 +1,3 @@
-export declare type Optional<T> = {
+export type Optional<T> = {
     [key in keyof T]?: T[key];
 };

@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.9.4.789
+// @version        4.9.4.791
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/404-novel-project/novel-downloader
@@ -360,9 +360,9 @@
 // @connect        duread8.com
 // @connect        *
 // @require        https://unpkg.com/crypto-js@4.1.1/crypto-js.js#sha512-NQVmLzNy4Lr5QTrmXvq/WzTMUnRHmv7nyIT/M6LyGPBS+TIeRxZ+YQaqWxjpRpvRMQSuYPQURZz/+pLi81xXeA==
-// @require        https://unpkg.com/fflate@0.7.3/umd/index.js#sha512-F57jcpLWPENXlHrsEj+YC8m+IHvaoRZpCpDr7Tfvu/jRtuO7kPOfbsop2gXEIRoK66ETYamk1tlTEvNw6xE8jw==
+// @require        https://unpkg.com/fflate@0.7.4/umd/index.js#sha512-j3RSYniik9MPzPj4jENl0Q6Um2f3OHPK/KQP7SEh8RL/gyAGSj/PaiyUPrgY88TA5COsEx8D34hkc3vNVCFaSw==
 // @require        https://unpkg.com/nunjucks@3.2.3/browser/nunjucks.min.js#sha512-Uj8C5szr1tnKPNZb6ps5gFYtTGskzsUCiwY35QP/s2JIExZl7iYNletcmOJ8D6ocuaMRi9JGVrWRePaX9raujA==
-// @require        https://unpkg.com/vue@3.2.37/dist/vue.global.prod.js#sha512-VC8LIX6RUdL/9FVtkhQhUB9Z4rTs9s6gPUtxXRaIlSQWFUOpiBptW8NXZbH3l/nbXqLsueQGz1uERtmlf9HjFA==
+// @require        https://unpkg.com/vue@3.2.45/dist/vue.global.prod.js#sha512-di9sSfVNcYUswh8QUkaD/3Lt8tkt82BQmC8kd0w7zl931jqMHk9ku/ftiJ3dPfJPJoKKsgUBecVxaiuKenUW0g==
 // @downloadURL    https://github.com/yingziwu/novel-downloader/raw/gh-pages/bundle-greasyfork.user.js
 // @updateURL      https://github.com/yingziwu/novel-downloader/raw/gh-pages/bundle-greasyfork.meta.js
 // ==/UserScript==

@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.9.4.789
+// @version        4.9.4.791
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/404-novel-project/novel-downloader
@@ -360,9 +360,9 @@
 // @connect        duread8.com
 // @connect        *
 // @require        https://unpkg.com/crypto-js@4.1.1/crypto-js.js#sha512-NQVmLzNy4Lr5QTrmXvq/WzTMUnRHmv7nyIT/M6LyGPBS+TIeRxZ+YQaqWxjpRpvRMQSuYPQURZz/+pLi81xXeA==
-// @require        https://unpkg.com/fflate@0.7.3/umd/index.js#sha512-F57jcpLWPENXlHrsEj+YC8m+IHvaoRZpCpDr7Tfvu/jRtuO7kPOfbsop2gXEIRoK66ETYamk1tlTEvNw6xE8jw==
+// @require        https://unpkg.com/fflate@0.7.4/umd/index.js#sha512-j3RSYniik9MPzPj4jENl0Q6Um2f3OHPK/KQP7SEh8RL/gyAGSj/PaiyUPrgY88TA5COsEx8D34hkc3vNVCFaSw==
 // @require        https://unpkg.com/nunjucks@3.2.3/browser/nunjucks.min.js#sha512-Uj8C5szr1tnKPNZb6ps5gFYtTGskzsUCiwY35QP/s2JIExZl7iYNletcmOJ8D6ocuaMRi9JGVrWRePaX9raujA==
-// @require        https://unpkg.com/vue@3.2.37/dist/vue.global.prod.js#sha512-VC8LIX6RUdL/9FVtkhQhUB9Z4rTs9s6gPUtxXRaIlSQWFUOpiBptW8NXZbH3l/nbXqLsueQGz1uERtmlf9HjFA==
+// @require        https://unpkg.com/vue@3.2.45/dist/vue.global.prod.js#sha512-di9sSfVNcYUswh8QUkaD/3Lt8tkt82BQmC8kd0w7zl931jqMHk9ku/ftiJ3dPfJPJoKKsgUBecVxaiuKenUW0g==
 // @downloadURL    https://github.com/yingziwu/novel-downloader/raw/gh-pages/bundle-greasyfork.user.js
 // @updateURL      https://github.com/yingziwu/novel-downloader/raw/gh-pages/bundle-greasyfork.meta.js
 // ==/UserScript==
@@ -3053,68 +3053,55 @@ ___CSS_LOADER_EXPORT___.push([module.id, "#nd-progress {\n  position: fixed;\n  
   Author Tobias Koppers @sokra
 */
 module.exports = function (cssWithMappingToString) {
-  var list = []; // return the list of modules as css string
+  var list = [];
 
+  // return the list of modules as css string
   list.toString = function toString() {
     return this.map(function (item) {
       var content = "";
       var needLayer = typeof item[5] !== "undefined";
-
       if (item[4]) {
         content += "@supports (".concat(item[4], ") {");
       }
-
       if (item[2]) {
         content += "@media ".concat(item[2], " {");
       }
-
       if (needLayer) {
         content += "@layer".concat(item[5].length > 0 ? " ".concat(item[5]) : "", " {");
       }
-
       content += cssWithMappingToString(item);
-
       if (needLayer) {
         content += "}";
       }
-
       if (item[2]) {
         content += "}";
       }
-
       if (item[4]) {
         content += "}";
       }
-
       return content;
     }).join("");
-  }; // import a list of modules into the list
+  };
 
-
+  // import a list of modules into the list
   list.i = function i(modules, media, dedupe, supports, layer) {
     if (typeof modules === "string") {
       modules = [[null, modules, undefined]];
     }
-
     var alreadyImportedModules = {};
-
     if (dedupe) {
       for (var k = 0; k < this.length; k++) {
         var id = this[k][0];
-
         if (id != null) {
           alreadyImportedModules[id] = true;
         }
       }
     }
-
     for (var _k = 0; _k < modules.length; _k++) {
       var item = [].concat(modules[_k]);
-
       if (dedupe && alreadyImportedModules[item[0]]) {
         continue;
       }
-
       if (typeof layer !== "undefined") {
         if (typeof item[5] === "undefined") {
           item[5] = layer;
@@ -3123,7 +3110,6 @@ module.exports = function (cssWithMappingToString) {
           item[5] = layer;
         }
       }
-
       if (media) {
         if (!item[2]) {
           item[2] = media;
@@ -3132,7 +3118,6 @@ module.exports = function (cssWithMappingToString) {
           item[2] = media;
         }
       }
-
       if (supports) {
         if (!item[4]) {
           item[4] = "".concat(supports);
@@ -3141,11 +3126,9 @@ module.exports = function (cssWithMappingToString) {
           item[4] = supports;
         }
       }
-
       list.push(item);
     }
   };
-
   return list;
 };
 
@@ -4118,6 +4101,7 @@ add("psd", ["0x38", "0x42", "0x50", "0x53"], {
     mime: "application/x-photoshop",
     extension: "psd",
 });
+add("clip", ["0x43", "0x53", "0x46", "0x43", "0x48", "0x55", "0x4e", "0x4b"]);
 add("wav", [
     "0x52",
     "0x49",
@@ -4743,94 +4727,6 @@ module.exports = __webpack_require__("./node_modules/mime-db/db.json")
 
   return streamSaver
 })
-
-
-/***/ }),
-
-/***/ "./src/detect.ts":
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Cm": () => (/* binding */ mitmPageAvailability),
-/* harmony export */   "Ty": () => (/* binding */ environments),
-/* harmony export */   "yt": () => (/* binding */ streamSupport)
-/* harmony export */ });
-/* harmony import */ var _lib_GM__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/GM.ts");
-/* harmony import */ var _lib_localStorageExpired__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/localStorageExpired.ts");
-/* harmony import */ var _setting__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/setting.ts");
-
-
-
-function checkObjct(name) {
-    const target = window[name];
-    const targetLength = target.toString().length;
-    const targetPrototype = target.prototype;
-    const nativeFunctionRe = /function \w+\(\) {\n?(\s+)?\[native code]\n?(\s+)?}/;
-    try {
-        if (targetPrototype === undefined ||
-            Boolean(target.toString().match(nativeFunctionRe))) {
-            return [true, targetLength].join(", ");
-        }
-    }
-    catch {
-        return [true, targetLength].join(", ");
-    }
-    return [false, targetLength].join(", ");
-}
-function streamSupport() {
-    return (typeof ReadableStream !== "undefined" &&
-        typeof WritableStream !== "undefined" &&
-        typeof TransformStream !== "undefined");
-}
-function mitmPageAvailability(url) {
-    return new Promise((resolve, reject) => {
-        fetch(url)
-            .then((resp) => resolve(true))
-            .catch((error) => resolve(false));
-    });
-}
-async function TM_4_14_bug_Detect() {
-    if (_lib_GM__WEBPACK_IMPORTED_MODULE_0__/* ._GM_info.scriptHandler */ ._p.scriptHandler === "Tampermonkey" &&
-        _lib_GM__WEBPACK_IMPORTED_MODULE_0__/* ._GM_info.version.startsWith */ ._p.version.startsWith("4.14")) {
-        const blob = new Blob(["test"]);
-        const arrayBuffer = await blob.arrayBuffer();
-        if (arrayBuffer === undefined) {
-            alert(`检测到您当前使用的脚本管理器为 Tampermonkey 4.14。
-Tampermonkey 4.14 因存在 Bug 将导致小说下载器脚本无法正常运行，详情可参见：https://github.com/Tampermonkey/tampermonkey/issues/1418 。
-如您想继续使用小说下载器脚本，请您降级 Tampermonkey 版本，或使用 Violentmonkey 脚本管理器。
-如果您不欲降级或更换脚本管理器，同时不想再看到本提示，您可以暂时禁用小说下载器脚本。`);
-            throw new Error("Tampermonkey 4.14 Bug Detect");
-        }
-    }
-}
-const environments = async () => {
-    await TM_4_14_bug_Detect();
-    return {
-        当前时间: new Date().toISOString(),
-        当前页URL: document.location.href,
-        workerId: window.workerId,
-        当前页Referrer: document.referrer,
-        浏览器UA: navigator.userAgent,
-        浏览器语言: navigator.languages,
-        设备运行平台: navigator.platform,
-        设备内存: navigator.deviceMemory ?? "",
-        CPU核心数: navigator.hardwareConcurrency,
-        eval: checkObjct("eval"),
-        fetch: checkObjct("fetch"),
-        XMLHttpRequest: checkObjct("XMLHttpRequest"),
-        streamSupport: streamSupport(),
-        window: Object.keys(window).length,
-        localStorage: (0,_lib_localStorageExpired__WEBPACK_IMPORTED_MODULE_1__/* .storageAvailable */ .o)("localStorage"),
-        sessionStorage: (0,_lib_localStorageExpired__WEBPACK_IMPORTED_MODULE_1__/* .storageAvailable */ .o)("sessionStorage"),
-        Cookie: navigator.cookieEnabled,
-        doNotTrack: navigator.doNotTrack ?? 0,
-        enableDebug: _setting__WEBPACK_IMPORTED_MODULE_2__/* .enableDebug.value */ .Cy.value,
-        ScriptHandler: _lib_GM__WEBPACK_IMPORTED_MODULE_0__/* ._GM_info.scriptHandler */ ._p.scriptHandler,
-        "ScriptHandler version": _lib_GM__WEBPACK_IMPORTED_MODULE_0__/* ._GM_info.version */ ._p.version,
-        "Novel-downloader version": _lib_GM__WEBPACK_IMPORTED_MODULE_0__/* ._GM_info.script.version */ ._p.script.version,
-    };
-};
 
 
 /***/ }),
@@ -6449,7 +6345,7 @@ async function calculateSha1(blob) {
 /* harmony export */   "q4": () => (/* binding */ fetchWithRetry),
 /* harmony export */   "rf": () => (/* binding */ getHtmlDomWithRetry)
 /* harmony export */ });
-/* unused harmony exports ggetHtmlDomWithRetry, getFrameContentEvent */
+/* unused harmony exports fetchWithTimeout, ggetHtmlDomWithRetry, getFrameContentEvent */
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _setting__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/setting.ts");
@@ -6479,6 +6375,16 @@ async function fetchWithRetry(input, init) {
         }
     }
     throw new Error(`Fetch with retry failed! Url: ${input}`);
+}
+async function fetchWithTimeout(input, options = {}, timeout = 8000) {
+    const controller = new AbortController();
+    const id = setTimeout(() => controller.abort(), timeout);
+    const response = await fetch(input, {
+        ...options,
+        signal: controller.signal
+    });
+    clearTimeout(id);
+    return response;
 }
 function gfetch(url, { method = "GET", headers, data, cookie, binary, nocache, revalidate, timeout, context, responseType, overrideMimeType, anonymous, user, password, } = {}) {
     return new Promise((resolve, reject) => {
@@ -6705,103 +6611,6 @@ async function getFrameContentCondition(url, stopCondition, sandboxs) {
     });
     document.body.appendChild(frame);
     return promise;
-}
-
-
-/***/ }),
-
-/***/ "./src/lib/localStorageExpired.ts":
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Z": () => (/* binding */ LocalStorageExpired),
-/* harmony export */   "o": () => (/* binding */ storageAvailable)
-/* harmony export */ });
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_0__);
-
-function storageAvailable(type) {
-    let storage;
-    try {
-        storage = window[type];
-        const x = "__storage_test__";
-        storage.setItem(x, x);
-        storage.removeItem(x);
-        return true;
-    }
-    catch (e) {
-        return (e instanceof DOMException &&
-            (e.code === 22 ||
-                e.code === 1014 ||
-                e.name === "QuotaExceededError" ||
-                e.name === "NS_ERROR_DOM_QUOTA_REACHED") &&
-            storage &&
-            storage.length !== 0);
-    }
-}
-class LocalStorageExpired {
-    storage;
-    constructor() {
-        if (storageAvailable("localStorage")) {
-            this.storage = window.localStorage;
-            this.init();
-        }
-        else {
-            throw new Error("当前浏览器不支持 localStorage");
-        }
-    }
-    set(key, value, expired) {
-        const storage = this.storage;
-        try {
-            storage[key] = JSON.stringify(value);
-            if (expired) {
-                storage[`${key}__expires__`] = Date.now() + 1000 * expired;
-            }
-        }
-        catch (error) {
-            _log__WEBPACK_IMPORTED_MODULE_0___default().error(error);
-        }
-    }
-    get(key) {
-        const storage = this.storage;
-        const expired = storage[`${key}__expires__`] ?? false;
-        const now = Date.now();
-        if (expired && now >= expired) {
-            this.remove(key);
-            return;
-        }
-        if (expired) {
-            try {
-                return JSON.parse(storage[key]);
-            }
-            catch (error) {
-                return storage[key];
-            }
-        }
-        else {
-            return storage[key];
-        }
-    }
-    remove(key) {
-        const storage = this.storage;
-        if (storage[key]) {
-            delete storage[key];
-            if (storage[`${key}__expires__`]) {
-                delete storage[`${key}__expires__`];
-            }
-        }
-    }
-    init() {
-        const reg = new RegExp("__expires__$");
-        const storage = this.storage;
-        const keys = Object.keys(storage);
-        keys.forEach((key) => {
-            if (!reg.test(key)) {
-                this.get(key);
-            }
-        });
-    }
 }
 
 
@@ -7805,8 +7614,6 @@ const external_fflate_namespaceObject = fflate;
 // EXTERNAL MODULE: ./node_modules/streamsaver/StreamSaver.js
 var StreamSaver = __webpack_require__("./node_modules/streamsaver/StreamSaver.js");
 var StreamSaver_default = /*#__PURE__*/__webpack_require__.n(StreamSaver);
-// EXTERNAL MODULE: ./src/detect.ts
-var detect = __webpack_require__("./src/detect.ts");
 ;// CONCATENATED MODULE: ./src/lib/zip.ts
 
 
@@ -7815,12 +7622,12 @@ var detect = __webpack_require__("./src/detect.ts");
 
 
 async function setStreamSaverSetting() {
-    const rawMitm = new URL((StreamSaver_default()).mitm);
-    const mitm = new URL("https://cors.bgme.me/");
+    const rawMitm = new URL(streamSaver.mitm);
+    const mitm = new URL("https://cors.bgme.bid/");
     mitm.pathname = rawMitm.origin + rawMitm.pathname;
-    (StreamSaver_default()).mitm = mitm.href;
-    (StreamSaver_default()).supported =
-        (0,detect/* streamSupport */.yt)() && (await (0,detect/* mitmPageAvailability */.Cm)(mitm.href));
+    streamSaver.mitm = mitm.href;
+    streamSaver.supported =
+        streamSupport() && (await mitmPageAvailability(mitm.href));
 }
 class FflateZip {
     filename;
@@ -7834,12 +7641,7 @@ class FflateZip {
         loglevel_default().info(`[fflateZip] filename: ${filename}, stream: ${stream}, streamSaver.supported: ${(StreamSaver_default()).supported}`);
         const self = this;
         this.filename = filename;
-        if ((StreamSaver_default()).supported) {
-            this.stream = stream;
-        }
-        else {
-            this.stream = false;
-        }
+        this.stream = false;
         let writer;
         if (this.stream) {
             const fileStream = StreamSaver_default().createWriteStream(self.filename);
@@ -8840,7 +8642,6 @@ var progress = __webpack_require__("./src/ui/progress.ts");
 
 
 
-
 class BaseRuleClass {
     attachmentMode = "TM";
     charset = document.characterSet;
@@ -8956,7 +8757,6 @@ class BaseRuleClass {
             loglevel_default().info(`[run]${alertText}`);
             throw new main/* ExpectError */.K2(alertText);
         }
-        await setStreamSaverSetting();
         self.audio = new Audio("data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU3LjcxLjEwMAAAAAAAAAAAAAAA/+M4wAAAAAAAAAAAAEluZm8AAAAPAAAAEAAABVgANTU1NTU1Q0NDQ0NDUFBQUFBQXl5eXl5ea2tra2tra3l5eXl5eYaGhoaGhpSUlJSUlKGhoaGhoaGvr6+vr6+8vLy8vLzKysrKysrX19fX19fX5eXl5eXl8vLy8vLy////////AAAAAExhdmM1Ny44OQAAAAAAAAAAAAAAACQCgAAAAAAAAAVY82AhbwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/+MYxAALACwAAP/AADwQKVE9YWDGPkQWpT66yk4+zIiYPoTUaT3tnU487uNhOvEmQDaCm1Yz1c6DPjbs6zdZVBk0pdGpMzxF/+MYxA8L0DU0AP+0ANkwmYaAMkOKDDjmYoMtwNMyDxMzDHE/MEsLow9AtDnBlQgDhTx+Eye0GgMHoCyDC8gUswJcMVMABBGj/+MYxBoK4DVpQP8iAtVmDk7LPgi8wvDzI4/MWAwK1T7rxOQwtsItMMQBazAowc4wZMC5MF4AeQAGDpruNuMEzyfjLBJhACU+/+MYxCkJ4DVcAP8MAO9J9THVg6oxRMGNMIqCCTAEwzwwBkINOPAs/iwjgBnMepYyId0PhWo+80PXMVsBFzD/AiwwfcKGMEJB/+MYxDwKKDVkAP8eAF8wMwIxMlpU/OaDPLpNKkEw4dRoBh6qP2FC8jCJQFcweQIPMHOBtTBoAVcwOoCNMYDI0u0Dd8ANTIsy/+MYxE4KUDVsAP8eAFBVpgVVPjdGeTEWQr0wdcDtMCeBgDBkgRgwFYB7Pv/zqx0yQQMCCgKNgonHKj6RRVkxM0GwML0AhDAN/+MYxF8KCDVwAP8MAIHZMDDA3DArAQo3K+TF5WOBDQw0lgcKQUJxhT5sxRcwQQI+EIPWMA7AVBoTABgTgzfBN+ajn3c0lZMe/+MYxHEJyDV0AP7MAA4eEwsqP/PDmzC/gNcwXUGaMBVBIwMEsmB6gaxhVuGkpoqMZMQjooTBwM0+S8FTMC0BcjBTgPwwOQDm/+MYxIQKKDV4AP8WADAzAKQwI4CGPhWOEwCFAiBAYQnQMT+uwXUeGzjBWQVkwTcENMBzA2zAGgFEJfSPkPSZzPXgqFy2h0xB/+MYxJYJCDV8AP7WAE0+7kK7MQrATDAvQRIwOADKMBuA9TAYQNM3AiOSPjGxowgHMKFGcBNMQU1FMy45OS41VVU/31eYM4sK/+MYxKwJaDV8AP7SAI4y1Yq0MmOIADGwBZwwlgIJMztCM0qU5TQPG/MSkn8yEROzCdAxECVMQU1FMy45OS41VTe7Ohk+Pqcx/+MYxMEJMDWAAP6MADVLDFUx+4J6Mq7NsjN2zXo8V5fjVJCXNOhwM0vTCDAxFpMYYQU+RlVMQU1FMy45OS41VVVVVVVVVVVV/+MYxNcJADWAAP7EAFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV/+MYxOsJwDWEAP7SAFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV/+MYxPMLoDV8AP+eAFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV/+MYxPQL0DVcAP+0AFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV");
         self.audio.loop = true;
         await self.audio.play();
@@ -20931,10 +20731,173 @@ var __webpack_exports__ = {};
 (() => {
 "use strict";
 
-// EXTERNAL MODULE: ./src/detect.ts
-var detect = __webpack_require__("./src/detect.ts");
-// EXTERNAL MODULE: ./src/lib/localStorageExpired.ts
-var localStorageExpired = __webpack_require__("./src/lib/localStorageExpired.ts");
+// EXTERNAL MODULE: ./src/lib/GM.ts
+var GM = __webpack_require__("./src/lib/GM.ts");
+// EXTERNAL MODULE: ./node_modules/loglevel/lib/loglevel.js
+var loglevel = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+var loglevel_default = /*#__PURE__*/__webpack_require__.n(loglevel);
+;// CONCATENATED MODULE: ./src/lib/localStorageExpired.ts
+
+function storageAvailable(type) {
+    let storage;
+    try {
+        storage = window[type];
+        const x = "__storage_test__";
+        storage.setItem(x, x);
+        storage.removeItem(x);
+        return true;
+    }
+    catch (e) {
+        return (e instanceof DOMException &&
+            (e.code === 22 ||
+                e.code === 1014 ||
+                e.name === "QuotaExceededError" ||
+                e.name === "NS_ERROR_DOM_QUOTA_REACHED") &&
+            storage &&
+            storage.length !== 0);
+    }
+}
+class LocalStorageExpired {
+    storage;
+    constructor() {
+        if (storageAvailable("localStorage")) {
+            this.storage = window.localStorage;
+            this.init();
+        }
+        else {
+            throw new Error("当前浏览器不支持 localStorage");
+        }
+    }
+    set(key, value, expired) {
+        const storage = this.storage;
+        try {
+            storage[key] = JSON.stringify(value);
+            if (expired) {
+                storage[`${key}__expires__`] = Date.now() + 1000 * expired;
+            }
+        }
+        catch (error) {
+            loglevel_default().error(error);
+        }
+    }
+    get(key) {
+        const storage = this.storage;
+        const expired = storage[`${key}__expires__`] ?? false;
+        const now = Date.now();
+        if (expired && now >= expired) {
+            this.remove(key);
+            return;
+        }
+        if (expired) {
+            try {
+                return JSON.parse(storage[key]);
+            }
+            catch (error) {
+                return storage[key];
+            }
+        }
+        else {
+            return storage[key];
+        }
+    }
+    remove(key) {
+        const storage = this.storage;
+        if (storage[key]) {
+            delete storage[key];
+            if (storage[`${key}__expires__`]) {
+                delete storage[`${key}__expires__`];
+            }
+        }
+    }
+    init() {
+        const reg = new RegExp("__expires__$");
+        const storage = this.storage;
+        const keys = Object.keys(storage);
+        keys.forEach((key) => {
+            if (!reg.test(key)) {
+                this.get(key);
+            }
+        });
+    }
+}
+
+// EXTERNAL MODULE: ./src/setting.ts
+var src_setting = __webpack_require__("./src/setting.ts");
+;// CONCATENATED MODULE: ./src/detect.ts
+
+
+
+
+function checkObjct(name) {
+    const target = window[name];
+    const targetLength = target.toString().length;
+    const targetPrototype = target.prototype;
+    const nativeFunctionRe = /function \w+\(\) {\n?(\s+)?\[native code]\n?(\s+)?}/;
+    try {
+        if (targetPrototype === undefined ||
+            Boolean(target.toString().match(nativeFunctionRe))) {
+            return [true, targetLength].join(", ");
+        }
+    }
+    catch {
+        return [true, targetLength].join(", ");
+    }
+    return [false, targetLength].join(", ");
+}
+function streamSupport() {
+    return (typeof ReadableStream !== "undefined" &&
+        typeof WritableStream !== "undefined" &&
+        typeof TransformStream !== "undefined");
+}
+function mitmPageAvailability(url) {
+    return new Promise((resolve, reject) => {
+        fetchWithTimeout(url, {}, 2500)
+            .then((resp) => resolve(true))
+            .catch((error) => resolve(false));
+    });
+}
+async function TM_4_14_bug_Detect() {
+    if (GM/* _GM_info.scriptHandler */._p.scriptHandler === "Tampermonkey" &&
+        GM/* _GM_info.version.startsWith */._p.version.startsWith("4.14")) {
+        const blob = new Blob(["test"]);
+        const arrayBuffer = await blob.arrayBuffer();
+        if (arrayBuffer === undefined) {
+            alert(`检测到您当前使用的脚本管理器为 Tampermonkey 4.14。
+Tampermonkey 4.14 因存在 Bug 将导致小说下载器脚本无法正常运行，详情可参见：https://github.com/Tampermonkey/tampermonkey/issues/1418 。
+如您想继续使用小说下载器脚本，请您降级 Tampermonkey 版本，或使用 Violentmonkey 脚本管理器。
+如果您不欲降级或更换脚本管理器，同时不想再看到本提示，您可以暂时禁用小说下载器脚本。`);
+            throw new Error("Tampermonkey 4.14 Bug Detect");
+        }
+    }
+}
+const environments = async () => {
+    await TM_4_14_bug_Detect();
+    return {
+        当前时间: new Date().toISOString(),
+        当前页URL: document.location.href,
+        workerId: window.workerId,
+        当前页Referrer: document.referrer,
+        浏览器UA: navigator.userAgent,
+        浏览器语言: navigator.languages,
+        设备运行平台: navigator.platform,
+        设备内存: navigator.deviceMemory ?? "",
+        CPU核心数: navigator.hardwareConcurrency,
+        eval: checkObjct("eval"),
+        fetch: checkObjct("fetch"),
+        XMLHttpRequest: checkObjct("XMLHttpRequest"),
+        streamSupport: streamSupport(),
+        window: Object.keys(window).length,
+        localStorage: storageAvailable("localStorage"),
+        sessionStorage: storageAvailable("sessionStorage"),
+        Cookie: navigator.cookieEnabled,
+        doNotTrack: navigator.doNotTrack ?? 0,
+        enableDebug: src_setting/* enableDebug.value */.Cy.value,
+        ScriptHandler: GM/* _GM_info.scriptHandler */._p.scriptHandler,
+        "ScriptHandler version": GM/* _GM_info.version */._p.version,
+        "Novel-downloader version": GM/* _GM_info.script.version */._p.script.version,
+    };
+};
+
 // EXTERNAL MODULE: ./src/lib/misc.ts
 var misc = __webpack_require__("./src/lib/misc.ts");
 ;// CONCATENATED MODULE: ./src/global.ts
@@ -20943,7 +20906,7 @@ var misc = __webpack_require__("./src/lib/misc.ts");
 function init() {
     window.workerId = (0,misc/* randomUUID */.HP)();
     window.downloading = false;
-    window.localStorageExpired = new localStorageExpired/* LocalStorageExpired */.Z();
+    window.localStorageExpired = new LocalStorageExpired();
     const stopController = new AbortController();
     const stopFlag = stopController.signal;
     window.stopController = stopController;
@@ -20951,9 +20914,6 @@ function init() {
     window.failedCount = 0;
 }
 
-// EXTERNAL MODULE: ./node_modules/loglevel/lib/loglevel.js
-var loglevel = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
-var loglevel_default = /*#__PURE__*/__webpack_require__.n(loglevel);
 // EXTERNAL MODULE: external "Vue"
 var external_Vue_ = __webpack_require__("vue");
 ;// CONCATENATED MODULE: ./src/ui/fixVue.ts
@@ -20983,8 +20943,6 @@ globalThis.Function = new Proxy(Function, {
 
 // EXTERNAL MODULE: ./src/lib/dom.ts
 var dom = __webpack_require__("./src/lib/dom.ts");
-// EXTERNAL MODULE: ./src/lib/GM.ts
-var GM = __webpack_require__("./src/lib/GM.ts");
 ;// CONCATENATED MODULE: ./src/router/download.ts
 async function getRule() {
     const host = document.location.host;
@@ -22038,8 +21996,6 @@ function getUI() {
     }
 }
 
-// EXTERNAL MODULE: ./src/setting.ts
-var src_setting = __webpack_require__("./src/setting.ts");
 ;// CONCATENATED MODULE: ./src/ui/button.html
 // Module
 var code = "<div id=\"button-div\" class=\"button-div\">\n    <div v-if=\"uiObj.type !== 'error'\">\n        <div v-if=\"uiObj.type === 'jump'\" class=\"jump\">\n            <button class=\"jump\">\n                <img alt=\"jump\" class=\"jump\" v-bind:src=\"imgJump\" v-on:click=\"jumpButtonClick\">\n            </button>\n        </div>\n        <div v-if=\"uiObj.type === 'download'\" class=\"download\">\n            <button class=\"start\">\n                <img alt=\"start\" class=\"start\" v-bind:src=\"imgStart\" v-on:click=\"startButtonClick\">\n            </button>\n            <button v-if=\"isSettingSeen\" class=\"setting\">\n                <img alt=\"setting\" class=\"setting\" v-bind:src=\"imgSetting\" v-on:click=\"settingButtonClick\">\n            </button>\n        </div>\n    </div>\n</div>\n";
@@ -22805,7 +22761,7 @@ function ui_init() {
 
 async function printEnvironments() {
     loglevel_default().info("[Init]开始载入小说下载器……");
-    Object.entries(await (0,detect/* environments */.Ty)()).forEach((kv) => loglevel_default().info("[Init]" + kv.join("：")));
+    Object.entries(await environments()).forEach((kv) => loglevel_default().info("[Init]" + kv.join("：")));
 }
 async function src_main(ev) {
     if (ev) {

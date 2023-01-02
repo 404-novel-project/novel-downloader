@@ -1,4 +1,4 @@
-export declare type PublicConstructor<T> = new () => T;
+export type PublicConstructor<T> = new () => T;
 interface concurrencyOptions {
     signal?: AbortSignal;
     reason?: string;

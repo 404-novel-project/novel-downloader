@@ -6,4 +6,4 @@ export interface ProgressVM extends ComponentPublicInstance {
     finishedChapterNumber: number;
     reset: () => void;
 }
-export declare const vm: ComponentPublicInstance<{}, {}, {}, {}, {}, {}, {}, {}, false, import("vue").ComponentOptionsBase<any, any, any, any, any, any, any, any, any, {}>>;
+export declare const vm: ComponentPublicInstance<{}, {}, {}, {}, {}, {}, {}, {}, false, import("vue").ComponentOptionsBase<any, any, any, any, any, any, any, any, any, {}, {}, string>, {}>;
