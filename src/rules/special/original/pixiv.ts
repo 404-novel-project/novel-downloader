@@ -292,7 +292,7 @@ export class Pixiv extends BaseRuleClass {
 
         const _seriesContents = (await resp.json()) as SeriesContents;
         if (!_seriesContents.error) {
-          seriesContents.push(..._seriesContents.body.seriesContents);
+          seriesContents.push(..._seriesContents.body.page.seriesContents);
         }
         lastOrder = lastOrder + 10;
       }
