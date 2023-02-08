@@ -549,7 +549,7 @@ export class Gongzicp extends BaseRuleClass {
           resultI.data.chapterInfo.content.length < 30
         ) {
           retryTime++;
-          if (retryLimit > retryLimit) {
+          if (retryTime > retryLimit) {
             log.error(`请求 ${url} 失败`);
             throw new Error(`请求 ${url} 失败`);
           }
@@ -647,6 +647,7 @@ export class Gongzicp extends BaseRuleClass {
               chapterInfo.postscript,
             ].join("\n\n");
           }
+          await sleep(10000);
           return {
             chapterName,
             contentRaw,
