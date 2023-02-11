@@ -19,6 +19,7 @@ import { retryLimit } from "../../../setting";
 import { replaceJjwxcCharacter } from "../../lib/jjwxcFontDecode";
 import { UnsafeWindow } from "../../../global";
 import * as CryptoJS from "crypto-js";
+import { _GM_xmlhttpRequest } from "../../../lib/GM";
 
 type JJWindow = UnsafeWindow & { getCookie: (key: string) => string };
 
@@ -587,11 +588,149 @@ export class Jjwxc extends BaseRuleClass {
         additionalMetadate: null,
       };
     }
+        interface ChapterInfo {
+            chapterId: string;//"39",
+            chapterName: string;//"另一种可能",
+            chapterIntro: string;//"算是番外吗？",
+            chapterSize: string;//"1484",
+            chapterDate: string;//"2012-03-17 20:54:01",
+            sayBody: string;//"\r\n原谅我挤牙膏一样的速度吧，最近各种卡文，各种想开新坑啊（给自己两个大耳瓜子= =）如果我某天我突然失踪了，不要担心，六月我还会回来的（再给自己两个大耳瓜子= =）尽量不坑（再再给自己两个大耳瓜子= =）",
+            upDown: number;//1,
+            update: number;//1,
+            content: string;//"另一种可能\n
+            isvip: number;//0,
+            authorid: string;//"376815",
+            autobuystatus: string;//"0",
+            noteislock: string;//"1"
+            message: string;//"[本章节已锁定]"
+        }
+        let retryTime = 0;
+        async function getChapter(): Promise<ChapterParseObject> {
+            let chapterGetInfoUrl = chapterUrl.replace("id", "Id");
+            chapterGetInfoUrl = chapterGetInfoUrl.replace("id", "Id");
+            chapterGetInfoUrl = chapterGetInfoUrl.replace("http://www.jjwxc.net/onebook.php?", "https://app.jjwxc.net/androidapi/chapterContent?");
+            chapterGetInfoUrl = chapterGetInfoUrl.replace("http://my.jjwxc.net/onebook_vip.php?", "https://app.jjwxc.net/androidapi/chapterContent?");
+            async function getChapterInfo(url: string): Promise<ChapterInfo> {
+                log.debug(
+                    `请求地址: ${url}, Referrer: ${chapterUrl}, 重试次数: ${retryTime}`
+                );
+                return new Promise((resolve) => {
+                    _GM_xmlhttpRequest({
+                        url: url,
+                        headers: {
+                            accept: 'application/json',
+                            referer: "http://android.jjwxc.net?v=277",
+                            "not_tip": "updateTime",
+                            "user-agent": "Mozilla/ 5.0(Linux; Android 12; Pixel 3 XL Build / SP1A.210812.016.C1; wv) AppleWebKit / 537.36(KHTML, like Gecko) Version / 4.0 Chrome / 108.0.5359.128 Mobile Safari / 537.36 / JINJIANG - Android / 277(Pixel3XL; Scale / 3.5)",
+                            "accept-encoding": "gzip",
+                        },
+                        method: "GET",
+                        onload: function (response) {         
+                            if (response.status === 200) {
+                                retryTime = 0;
+                                const resultI: ChapterInfo = JSON.parse(response.responseText);
+                                resolve(resultI);
+                            }
+                            else {
+                                const resultI: ChapterInfo = JSON.parse('{"message":"try again!"}');
+                                resolve(resultI);
+                            }
+                        }
+                    });
+                });
+            }
+            let result = await getChapterInfo(chapterGetInfoUrl.toString());
+            while (("message" in result) && (result.message == "try again!"))
+            {
+                retryTime++;
+                if (retryTime > retryLimit)
+                {
+                    retryTime = 0;
+                    log.error(`请求 ${chapterGetInfoUrl.toString() } 失败`);
+                    throw new Error(`请求 ${chapterGetInfoUrl.toString()} 失败`);
+                }
+                result = await getChapterInfo(chapterGetInfoUrl.toString());
+            }
+            retryTime = 0;
+            if ("content" in result) {
+                const content = result.content;
+                let postscript = result.sayBody;
+                if (result.sayBody == null)
+                    postscript = " ";
+                const contentRaw = document.createElement("pre");
+                contentRaw.innerHTML = content;
+                let contentText = content
+                    .split("\n")
+                    .map((p: string) => p.trim())
+                    .join("\n\n");
+                const _contentHTML = document.createElement("div");
+                _contentHTML.innerHTML = content
+                    .split("\n")
+                    .map((p: string) => p.trim())
+                    .map((p: string) => {
+                        if (p.length === 0) {
+                            return "<p><br/></p>";
+                        } else {
+                            return `<p>${p}</p>`;
+                        }
+                    })
+                    .join("\n");
+                const contentHTML = document.createElement("div");
+                contentHTML.className = "main";
 
+                const hr = document.createElement("hr");
+                const authorSayDom = document.createElement("div");
+                authorSayDom.innerHTML = postscript
+                    .split("\n")
+                    .map((p: string) => {
+                        if (p.length === 0) {
+                            return "<p><br/></p>";
+                        } else {
+                            return `<p>${p}</p>`;
+                        }
+                    })
+                    .join("\n");
+
+                contentHTML.appendChild(_contentHTML);
+                contentHTML.appendChild(hr);
+                contentHTML.appendChild(authorSayDom);
+
+                contentRaw.innerHTML = [
+                    contentRaw.innerHTML,
+                    "-".repeat(20),
+                    postscript,
+                ].join("\n\n");
+                contentText = [
+                    contentText,
+                    "-".repeat(20),
+                    postscript,
+                ].join("\n\n");
+                await sleep(2000 + Math.round(Math.random() * 2000));
+                return {
+                    chapterName,
+                    contentRaw,
+                    contentText,
+                    contentHTML,
+                    contentImages: null,
+                    additionalMetadate: null,
+                };
+            }
+            else {
+                await sleep(1000 + Math.round(Math.random() * 1000));
+                return {
+                    chapterName,
+                    contentRaw: null,
+                    contentText: null,
+                    contentHTML: null,
+                    contentImages: null,
+                    additionalMetadate: null,
+                };
+            }
+        }
     if (isVIP) {
-      return vipChapter();
+      return getChapter(); //vipChapter();
     } else {
-      return publicChapter();
+      return getChapter(); //publicChapter();
     }
   }
 }
