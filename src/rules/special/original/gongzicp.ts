@@ -1,23 +1,23 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import * as CryptoJS from "crypto-js";
-import {getAttachment} from "../../../lib/attachments";
-import {sleep} from "../../../lib/misc";
-import {introDomHandle} from "../../../lib/rule";
-import {log} from "../../../log";
-import {Status} from "../../../main/main";
-import {Chapter} from "../../../main/Chapter";
-import {Book, BookAdditionalMetadate} from "../../../main/Book";
-import {BaseRuleClass, ChapterParseObject} from "../../../rules";
-import {retryLimit} from "../../../setting";
+import { getAttachment } from "../../../lib/attachments";
+import { sleep } from "../../../lib/misc";
+import { introDomHandle } from "../../../lib/rule";
+import { log } from "../../../log";
+import { Status } from "../../../main/main";
+import { Chapter } from "../../../main/Chapter";
+import { Book, BookAdditionalMetadate } from "../../../main/Book";
+import { BaseRuleClass, ChapterParseObject } from "../../../rules";
+import { retryLimit } from "../../../setting";
 
 export class Gongzicp extends BaseRuleClass {
-    public constructor() {
-        super();
-        this.attachmentMode = "TM";
-        this.concurrencyLimit = 1;
-    }
+  public constructor() {
+    super();
+    this.attachmentMode = "TM";
+    this.concurrencyLimit = 1;
+  }
 
-    public async bookParse() {
+  public async bookParse() {
     const bookUrl = document.location.href;
 
     const bookId = (
@@ -27,7 +27,7 @@ export class Gongzicp extends BaseRuleClass {
       throw new Error("获取bookID出错");
     }
     const novelGetInfoBaseUrl =
-      "https://webapi.gongzicp.com/novel/novelGetInfo";
+      "https://www.gongzicp.com/webapi/novel/novelGetInfo";
     const novelGetInfoUrl = new URL(novelGetInfoBaseUrl);
     novelGetInfoUrl.searchParams.set("id", bookId);
 
@@ -309,7 +309,7 @@ export class Gongzicp extends BaseRuleClass {
         count?: number;
       }
 
-      const getUserInfoUrl = "https://webapi.gongzicp.com/user/getUserInfo";
+      const getUserInfoUrl = "https://www.gongzicp.com/webapi/user/getUserInfo";
       log.debug(`正在请求: ${getUserInfoUrl}`);
       const userInfo: UserInfo = await fetch(getUserInfoUrl, {
         headers: {
@@ -519,7 +519,7 @@ export class Gongzicp extends BaseRuleClass {
     async function getChapter(): Promise<ChapterParseObject> {
       const cid = options.chapter_id;
       const chapterGetInfoBaseUrl =
-        "https://webapi.gongzicp.com/novel/chapterGetInfo";
+        "https://www.gongzicp.com/webapi/novel/chapterGetInfo";
       const chapterGetInfoUrl = new URL(chapterGetInfoBaseUrl);
       chapterGetInfoUrl.searchParams.set("cid", cid.toString());
       chapterGetInfoUrl.searchParams.set("server", "0");
@@ -549,18 +549,18 @@ export class Gongzicp extends BaseRuleClass {
           resultI.data.chapterInfo.content.length < 30
         ) {
           retryTime++;
-          if (retryLimit > retryLimit) {
+          if (retryTime > retryLimit) {
             log.error(`请求 ${url} 失败`);
             throw new Error(`请求 ${url} 失败`);
           }
 
           log.warn("[chapter]疑似被阻断，进行随机翻页……");
-          randomWalker();
-          await sleep(3000);
-          randomWalker();
-          await sleep(7000);
-          randomWalker();
-          await sleep(3000);
+          const ci = Math.round(Math.random() * retryTime)+1;
+          for (let i = 0; i < ci; i++) {
+            await sleep(3000 + Math.round(Math.random() * 5000));
+            randomWalker();
+          }
+          await sleep(3000 + Math.round(Math.random() * 2000));
           return getChapterInfo(url);
         } else {
           retryTime = 0;
@@ -647,6 +647,7 @@ export class Gongzicp extends BaseRuleClass {
               chapterInfo.postscript,
             ].join("\n\n");
           }
+          await sleep(3000 + Math.round(Math.random() * 5000));
           return {
             chapterName,
             contentRaw,
@@ -671,7 +672,7 @@ export class Gongzicp extends BaseRuleClass {
     async function antiAntiCrawler() {
       // 随机游走，对抗阿里云验证码
       // https://help.aliyun.com/document_detail/122071.html
-      if (Math.random() < 0.2) {
+      if (Math.random() < 0.15) {
         randomWalker();
       }
       // 随机休眠3-7秒，反反爬
