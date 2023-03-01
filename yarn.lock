@@ -271,9 +271,9 @@
   integrity sha512-DHQpWGjyQKSHj3ebjFI/wRKcqQcdR+MoFBygntYOZytCqNfkd2ZC4ARDJ2DQqhjH5p85Nnd3jhUJIXrszFX/JA==
 
 "@types/nunjucks@^3.2.1":
-  version "3.2.1"
-  resolved "https://registry.yarnpkg.com/@types/nunjucks/-/nunjucks-3.2.1.tgz#02a3ade3dc4d3950029c6466a4034565dba7cf8c"
-  integrity sha512-hUh5HIC7peH+0MvlYU5KM2RydWxG1mBceivHsQGwlelU9zlczLICyJmjMwgjkI3m0+N50n46GVHkw35lIim6LQ==
+  version "3.2.2"
+  resolved "https://registry.yarnpkg.com/@types/nunjucks/-/nunjucks-3.2.2.tgz#657b1f0f9eb32c5bb3efa8afe62a2e4232c09d1c"
+  integrity sha512-qarGBZOVxv1pF6BxQHwYHYYxim/TCm3aXF8BUt/kyF/+xi/DXMoj1Bhw3hXVBl2Yov+w47reDldm0iXXFZTotA==
 
 "@types/qs@*":
   version "6.9.7"
