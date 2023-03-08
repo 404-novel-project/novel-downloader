@@ -1,18 +1,18 @@
 // noinspection UnnecessaryContinueJS
 
-import {log} from "../log";
-import {AttachmentClass} from "../main/Attachment";
-import {ReferrerMode} from "../main/main";
+import { log } from "../log";
+import { AttachmentClass } from "../main/Attachment";
+import { ReferrerMode } from "../main/main";
 import {
-    getAttachment,
-    getAttachmentClassCache,
-    getRandomName,
+  getAttachment,
+  getAttachmentClassCache,
+  getRandomName,
 } from "./attachments";
 import {
-    fullWidthLength,
-    getNextSibling,
-    getPreviousBrCount,
-    getPreviousSibling,
+  fullWidthLength,
+  getNextSibling,
+  getPreviousBrCount,
+  getPreviousSibling,
   removePreviousBr,
 } from "./dom";
 

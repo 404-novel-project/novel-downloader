@@ -299,42 +299,42 @@ export class Duread extends BaseRuleClass {
   public async bookParse() {
     const bookUrl = document.location.href;
     const bookname = (
-        document.querySelector(".book-title > span") as HTMLSpanElement
+      document.querySelector(".book-title > span") as HTMLSpanElement
     ).innerText.trim();
     const author = (
-        document.querySelector("div.username") as HTMLDivElement
+      document.querySelector("div.username") as HTMLDivElement
     ).innerText.trim();
     const introDom = document.querySelector(".book-brief");
     const [introduction, introductionHTML] = await introDomHandle(
-        introDom,
-        (introDomI) => {
-          rms(["简介："], introDomI);
-          return introDomI;
-        }
+      introDom,
+      (introDomI) => {
+        rms(["简介："], introDomI);
+        return introDomI;
+      }
     );
 
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = (document.querySelector(".book-img") as HTMLImageElement)
-        .src;
+      .src;
     if (coverUrl) {
       getAttachment(coverUrl, this.attachmentMode, "cover-")
-          .then((coverClass) => {
-            additionalMetadate.cover = coverClass;
-          })
-          .catch((error) => log.error(error));
+        .then((coverClass) => {
+          additionalMetadate.cover = coverClass;
+        })
+        .catch((error) => log.error(error));
     }
     additionalMetadate.tags = Array.from(
-        document.querySelectorAll("div.row > span.tag")
+      document.querySelectorAll("div.row > span.tag")
     ).map((span) => (span as HTMLSpanElement).innerText.trim());
 
     const chapters: Chapter[] = [];
     const chapterTitleList = Array.from(
-        document.querySelectorAll(
-            "#chapter_list > div.chapter > div.chapter-title"
-        )
+      document.querySelectorAll(
+        "#chapter_list > div.chapter > div.chapter-title"
+      )
     ).map((div) => (div as HTMLDivElement).innerText.trim());
     const articlesList = document.querySelectorAll(
-        "#chapter_list > div.chapter > div.articles"
+      "#chapter_list > div.chapter > div.articles"
     );
     const sectionLength = chapterTitleList.length;
 
@@ -365,9 +365,9 @@ export class Duread extends BaseRuleClass {
 
           const isLogin = () => {
             return (
-                document.querySelector(
-                    "#header > div.container > div.right.pull-right"
-                )?.childElementCount === 3
+              document.querySelector(
+                "#header > div.container > div.right.pull-right"
+              )?.childElementCount === 3
             );
           };
 
@@ -406,12 +406,12 @@ export class Duread extends BaseRuleClass {
   }
 
   public async chapterParse(
-      chapterUrl: string,
-      chapterName: string | null,
-      isVIP: boolean,
-      isPaid: boolean,
-      charset: string,
-      options: object
+    chapterUrl: string,
+    chapterName: string | null,
+    isVIP: boolean,
+    isPaid: boolean,
+    charset: string,
+    options: object
   ) {
     const rootPath = "https://www.duread8.com/";
     const [parentWidth, setFontSize] = [939.2, "18"];
@@ -428,7 +428,6 @@ export class Duread extends BaseRuleClass {
     });
   }
 }
-
 
 function getChapter({
   chapterUrl,
@@ -659,8 +658,7 @@ function getChapter({
     const getIsLogin = () => {
       if (document.location.host === "www.duread8.com") {
         return (
-            document.querySelector("div.dropdown-menu")
-                ?.childElementCount === 3
+          document.querySelector("div.dropdown-menu")?.childElementCount === 3
         );
       } else if (document.location.host === "www.shubl.com") {
         return (

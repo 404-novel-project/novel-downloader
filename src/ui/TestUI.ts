@@ -1,22 +1,22 @@
 // noinspection NonAsciiCharacters
 
-import {defineComponent, onMounted, reactive, Ref, ref, watch} from "vue";
-import {GmWindow} from "../global";
-import {getAttachmentClassCache} from "../lib/attachments";
-import {sleep} from "../lib/misc";
-import {Status} from "../main/main";
-import {Chapter} from "../main/Chapter";
-import {Book} from "../main/Book";
+import { defineComponent, onMounted, reactive, Ref, ref, watch } from "vue";
+import { GmWindow } from "../global";
+import { getAttachmentClassCache } from "../lib/attachments";
+import { sleep } from "../lib/misc";
+import { Status } from "../main/main";
+import { Chapter } from "../main/Chapter";
+import { Book } from "../main/Book";
 import TestUIHtml from "./TestUI.html";
 import TestUICss from "./TestUI.less";
-import {createStyle} from "../lib/dom";
+import { createStyle } from "../lib/dom";
 
 export default defineComponent({
-    name: "TestUI",
-    setup() {
-        const book = reactive({} as Book);
+  name: "TestUI",
+  setup() {
+    const book = reactive({} as Book);
 
-        async function waitBook() {
+    async function waitBook() {
       // eslint-disable-next-line no-constant-condition
       while (true) {
         await sleep(500);

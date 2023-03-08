@@ -87,11 +87,13 @@ dialog-ui {
   border: 0;
   padding: 3px;
   background: linear-gradient(135deg, red, orange, green, blue, purple);
-  --mask-image: repeating-linear-gradient(135deg,
-  #000 0px,
-  #000 1px,
-  transparent 1px,
-  transparent 6px);
+  --mask-image: repeating-linear-gradient(
+    135deg,
+    #000 0px,
+    #000 1px,
+    transparent 1px,
+    transparent 6px
+  );
   -webkit-mask-image: var(--mask-image);
   mask-image: var(--mask-image);
 }

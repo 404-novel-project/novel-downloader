@@ -1,34 +1,34 @@
 <div>
   <div id="test-page-div">
-      <h2>元数据</h2>
-      <table>
-          <tbody>
-          <tr v-for="(value, key) in metaData">
-              <td>{{ key }}</td>
-              <td v-html="getData(key, value)"></td>
-          </tr>
-          </tbody>
-      </table>
-      <hr class="hr-edge-weak"/>
-      <h2>章节测试</h2>
-      <div class="preview-chapter-setting">
-          <label for="chapterNumber">预览章节序号：</label>
-          <input id="chapterNumber" v-model="chapterNumber" type="text"/>
-      </div>
-      <div v-if="this.isSeenChapter(chapter)">
-          <h4>
-              <a
-                      rel="noopener noreferrer"
-                      target="_blank"
-                      v-bind:href="chapter.chapterUrl"
-              >{{ chapter.chapterName }}</a
-              >
-          </h4>
-          <div class="chapter" v-html="getChapterHtml(chapter)"></div>
-      </div>
-      <div v-else>
-          <p v-if="this.isChapterFailed(chapter)">章节加载失败！</p>
-          <p v-else>正在加载章节中……</p>
-      </div>
+    <h2>元数据</h2>
+    <table>
+      <tbody>
+        <tr v-for="(value, key) in metaData">
+          <td>{{ key }}</td>
+          <td v-html="getData(key, value)"></td>
+        </tr>
+      </tbody>
+    </table>
+    <hr class="hr-edge-weak" />
+    <h2>章节测试</h2>
+    <div class="preview-chapter-setting">
+      <label for="chapterNumber">预览章节序号：</label>
+      <input id="chapterNumber" v-model="chapterNumber" type="text" />
+    </div>
+    <div v-if="this.isSeenChapter(chapter)">
+      <h4>
+        <a
+          rel="noopener noreferrer"
+          target="_blank"
+          v-bind:href="chapter.chapterUrl"
+          >{{ chapter.chapterName }}</a
+        >
+      </h4>
+      <div class="chapter" v-html="getChapterHtml(chapter)"></div>
+    </div>
+    <div v-else>
+      <p v-if="this.isChapterFailed(chapter)">章节加载失败！</p>
+      <p v-else>正在加载章节中……</p>
+    </div>
   </div>
 </div>

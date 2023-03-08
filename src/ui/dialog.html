@@ -1,16 +1,16 @@
 <div
-        v-if="myPrivateStatus"
-        class="overlay"
-        v-bind:class="{ open: myPrivateStatus }"
+  v-if="myPrivateStatus"
+  class="overlay"
+  v-bind:class="{ open: myPrivateStatus }"
 ></div>
 <div v-if="myPrivateStatus" class="out">
-    <div id="dialog" class="dialog" v-bind:class="{ open: myPrivateStatus }">
-        <div class="titlebar">
-            <h1 class="dialog-title">{{ dialogTitle }}</h1>
-            <button class="dialog-close" v-on:click="dialogClose">❌</button>
-        </div>
-        <div class="body">
-            <slot></slot>
-        </div>
+  <div id="dialog" class="dialog" v-bind:class="{ open: myPrivateStatus }">
+    <div class="titlebar">
+      <h1 class="dialog-title">{{ dialogTitle }}</h1>
+      <button class="dialog-close" v-on:click="dialogClose">❌</button>
     </div>
+    <div class="body">
+      <slot></slot>
+    </div>
+  </div>
 </div>

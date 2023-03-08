@@ -1,10 +1,10 @@
 h1 {
-    line-height: 130%;
-    text-align: center;
-    font-weight: bold;
-    font-size: xx-large;
-    margin-top: 3.2em;
-    margin-bottom: 3.3em;
+  line-height: 130%;
+  text-align: center;
+  font-weight: bold;
+  font-size: xx-large;
+  margin-top: 3.2em;
+  margin-bottom: 3.3em;
 }
 
 h2 {
@@ -17,9 +17,9 @@ h2 {
 }
 
 div {
-    margin: 0;
-    padding: 0;
-    text-align: justify;
+  margin: 0;
+  padding: 0;
+  text-align: justify;
 }
 
 p {

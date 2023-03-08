@@ -1,14 +1,14 @@
 /* eslint-disable no-inner-declarations */
-import {Chapter} from "../main/Chapter";
-import {Book} from "../main/Book";
+import { Chapter } from "../main/Chapter";
+import { Book } from "../main/Book";
 
 interface TabData {
-    [key: string]: string;
+  [key: string]: string;
 }
 
 interface TabDataRaw {
-    domain: string;
-    value: TabData;
+  domain: string;
+  value: TabData;
 }
 
 const TabDataKeyName = "data-5186766268769811";

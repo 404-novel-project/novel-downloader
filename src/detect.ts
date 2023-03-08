@@ -44,7 +44,7 @@ export function mitmPageAvailability(url: string): Promise<boolean> {
 async function TM_4_14_bug_Detect() {
   if (
     _GM_info.scriptHandler === "Tampermonkey" &&
-    _GM_info.version.startsWith("4.14")
+    _GM_info.version?.startsWith("4.14")
   ) {
     const blob = new Blob(["test"]);
     const arrayBuffer = await blob.arrayBuffer();

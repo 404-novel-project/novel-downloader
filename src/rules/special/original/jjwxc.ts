@@ -17,9 +17,10 @@ import { Book, BookAdditionalMetadate } from "../../../main/Book";
 import { BaseRuleClass, ChapterParseObject } from "../../../rules";
 import { retryLimit } from "../../../setting";
 import { replaceJjwxcCharacter } from "../../lib/jjwxcFontDecode";
+import { UnsafeWindow } from "../../../global";
 import * as CryptoJS from "crypto-js";
 
-type JJWindow = Window & { getCookie: (key: string) => string };
+type JJWindow = UnsafeWindow & { getCookie: (key: string) => string };
 
 export class Jjwxc extends BaseRuleClass {
   public constructor() {

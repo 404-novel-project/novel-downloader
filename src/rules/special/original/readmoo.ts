@@ -1,23 +1,23 @@
 // noinspection CssInvalidHtmlTagReference
 
 import pLimit from "p-limit";
-import {Book, saveType} from "../../../main/Book";
-import {BaseRuleClass, ChapterParseObject} from "../../../rules";
-import {AttachmentClass} from "../../../main/Attachment";
-import {ReferrerMode, Status} from "../../../main/main";
-import {gfetch, GfetchRequestInit, ggetText} from "../../../lib/http";
-import {Chapter} from "../../../main/Chapter";
-import {deepcopy} from "../../../lib/misc";
+import { Book, saveType } from "../../../main/Book";
+import { BaseRuleClass, ChapterParseObject } from "../../../rules";
+import { AttachmentClass } from "../../../main/Attachment";
+import { ReferrerMode, Status } from "../../../main/main";
+import { gfetch, GfetchRequestInit, ggetText } from "../../../lib/http";
+import { Chapter } from "../../../main/Chapter";
+import { deepcopy } from "../../../lib/misc";
 
 export class Readmoo extends BaseRuleClass {
-    public constructor() {
-        super();
-        this.saveType = {txt: false, epub: false, raw: {ext: "epub"}};
-        this.attachmentMode = "TM";
-    }
+  public constructor() {
+    super();
+    this.saveType = { txt: false, epub: false, raw: { ext: "epub" } };
+    this.attachmentMode = "TM";
+  }
 
-    public async bookParse(): Promise<Book> {
-        const Base = "https://reader.readmoo.com";
+  public async bookParse(): Promise<Book> {
+    const Base = "https://reader.readmoo.com";
     const navBase = `${Base}/api/book/`;
     // https://reader.readmoo.com/_single-bundle/mooreader-js-viewer_all.min.js?b=3.12.9_756
     const headers = {

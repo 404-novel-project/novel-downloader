@@ -1,9 +1,9 @@
 // noinspection JSUnusedLocalSymbols
 
-import {log} from "../log";
-import {retryLimit} from "../setting";
-import {_GM_xmlhttpRequest} from "./GM";
-import {deepcopy, sleep} from "./misc";
+import { log } from "../log";
+import { retryLimit } from "../setting";
+import { _GM_xmlhttpRequest } from "./GM";
+import { deepcopy, sleep } from "./misc";
 
 globalThis.fetch = new Proxy(globalThis.fetch, {
   apply(target, thisArg, argArray) {
@@ -14,8 +14,8 @@ globalThis.fetch = new Proxy(globalThis.fetch, {
 });
 
 export async function fetchWithRetry(
-    input: RequestInfo,
-    init?: RequestInit
+  input: RequestInfo,
+  init?: RequestInit
 ): Promise<Response> {
   let retry = retryLimit;
   while (retry > 0) {
@@ -31,12 +31,16 @@ export async function fetchWithRetry(
 }
 
 // https://dmitripavlutin.com/timeout-fetch-request/
-export async function fetchWithTimeout(input: string, options: RequestInit = {}, timeout = 8000) {
+export async function fetchWithTimeout(
+  input: string,
+  options: RequestInit = {},
+  timeout = 8000
+) {
   const controller = new AbortController();
   const id = setTimeout(() => controller.abort(), timeout);
   const response = await fetch(input, {
     ...options,
-    signal: controller.signal
+    signal: controller.signal,
   });
   clearTimeout(id);
   return response;
@@ -290,10 +294,10 @@ export async function ggetHtmlDOM(
 }
 
 export async function ggetHtmlDomWithRetry(
-    url: string,
-    charset?: string,
-    init?: GfetchRequestInit,
-    test = (response: Tampermonkey.Response<object>) => Promise.resolve(false)
+  url: string,
+  charset?: string,
+  init?: GfetchRequestInit,
+  test = (response: Tampermonkey.Response<object>) => Promise.resolve(false)
 ): Promise<Document | null> {
   let retry = retryLimit;
   let doc = null;
@@ -311,10 +315,10 @@ export async function ggetHtmlDomWithRetry(
 }
 
 export function getFrameContentEvent(
-    url: string,
-    timeout = 0,
-    eventType: "load" | "DOMContentLoaded" = "load",
-    sandboxs?: string[]
+  url: string,
+  timeout = 0,
+  eventType: "load" | "DOMContentLoaded" = "load",
+  sandboxs?: string[]
 ): Promise<Document | null> {
   const frame = document.createElement("iframe");
   frame.src = url;
@@ -343,9 +347,9 @@ export function getFrameContentEvent(
 }
 
 export async function getFrameContentCondition(
-    url: string,
-    stopCondition: (frame: HTMLIFrameElement) => boolean,
-    sandboxs?: string[]
+  url: string,
+  stopCondition: (frame: HTMLIFrameElement) => boolean,
+  sandboxs?: string[]
 ): Promise<Document | null> {
   const frame = document.createElement("iframe");
   frame.src = url;
