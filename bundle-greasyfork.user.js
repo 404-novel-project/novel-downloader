@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.9.4.797
+// @version        4.9.4.801
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/404-novel-project/novel-downloader
@@ -12850,7 +12850,7 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
         if (!bookId) {
             throw new Error("获取bookID出错");
         }
-        const novelGetInfoBaseUrl = "https://webapi.gongzicp.com/novel/novelGetInfo";
+        const novelGetInfoBaseUrl = "https://www.gongzicp.com/webapi/novel/novelGetInfo";
         const novelGetInfoUrl = new URL(novelGetInfoBaseUrl);
         novelGetInfoUrl.searchParams.set("id", bookId);
         _log__WEBPACK_IMPORTED_MODULE_2___default().debug(`请求地址: ${novelGetInfoUrl.toString()}`);
@@ -12888,7 +12888,7 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
         }
         additionalMetadate.tags = data.novelInfo.tag_list;
         async function isLogin() {
-            const getUserInfoUrl = "https://webapi.gongzicp.com/user/getUserInfo";
+            const getUserInfoUrl = "https://www.gongzicp.com/webapi/user/getUserInfo";
             _log__WEBPACK_IMPORTED_MODULE_2___default().debug(`正在请求: ${getUserInfoUrl}`);
             const userInfo = await fetch(getUserInfoUrl, {
                 headers: {
@@ -13022,7 +13022,7 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
         }
         async function getChapter() {
             const cid = options.chapter_id;
-            const chapterGetInfoBaseUrl = "https://webapi.gongzicp.com/novel/chapterGetInfo";
+            const chapterGetInfoBaseUrl = "https://www.gongzicp.com/webapi/novel/chapterGetInfo";
             const chapterGetInfoUrl = new URL(chapterGetInfoBaseUrl);
             chapterGetInfoUrl.searchParams.set("cid", cid.toString());
             chapterGetInfoUrl.searchParams.set("server", "0");
@@ -13045,17 +13045,17 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
                 if (resultI.data.chapterInfo.content.length !== 0 &&
                     resultI.data.chapterInfo.content.length < 30) {
                     retryTime++;
-                    if (_setting__WEBPACK_IMPORTED_MODULE_8__/* .retryLimit */ .o5 > _setting__WEBPACK_IMPORTED_MODULE_8__/* .retryLimit */ .o5) {
+                    if (retryTime > _setting__WEBPACK_IMPORTED_MODULE_8__/* .retryLimit */ .o5) {
                         _log__WEBPACK_IMPORTED_MODULE_2___default().error(`请求 ${url} 失败`);
                         throw new Error(`请求 ${url} 失败`);
                     }
                     _log__WEBPACK_IMPORTED_MODULE_2___default().warn("[chapter]疑似被阻断，进行随机翻页……");
-                    randomWalker();
-                    await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_9__/* .sleep */ ._v)(3000);
-                    randomWalker();
-                    await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_9__/* .sleep */ ._v)(7000);
-                    randomWalker();
-                    await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_9__/* .sleep */ ._v)(3000);
+                    const ci = Math.round(Math.random() * retryTime) + 1;
+                    for (let i = 0; i < ci; i++) {
+                        await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_9__/* .sleep */ ._v)(3000 + Math.round(Math.random() * 5000));
+                        randomWalker();
+                    }
+                    await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_9__/* .sleep */ ._v)(3000 + Math.round(Math.random() * 2000));
                     return getChapterInfo(url);
                 }
                 else {
@@ -13133,6 +13133,7 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
                             chapterInfo.postscript,
                         ].join("\n\n");
                     }
+                    await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_9__/* .sleep */ ._v)(3000 + Math.round(Math.random() * 5000));
                     return {
                         chapterName,
                         contentRaw,
@@ -13153,7 +13154,7 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
             };
         }
         async function antiAntiCrawler() {
-            if (Math.random() < 0.2) {
+            if (Math.random() < 0.15) {
                 randomWalker();
             }
             await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_9__/* .sleep */ ._v)(3000 + Math.round(Math.random() * 4000));
@@ -13610,7 +13611,10 @@ async function fetchRemoteFont(fontName) {
 
 // EXTERNAL MODULE: external "CryptoJS"
 var external_CryptoJS_ = __webpack_require__("crypto-js");
+// EXTERNAL MODULE: ./src/lib/GM.ts
+var GM = __webpack_require__("./src/lib/GM.ts");
 ;// CONCATENATED MODULE: ./src/rules/special/original/jjwxc.ts
+
 
 
 
@@ -14045,11 +14049,125 @@ class Jjwxc extends rules/* BaseRuleClass */.c {
                 additionalMetadate: null,
             };
         }
+        let retryTime = 0;
+        async function getChapter() {
+            let chapterGetInfoUrl = chapterUrl.replace("id", "Id");
+            chapterGetInfoUrl = chapterGetInfoUrl.replace("id", "Id");
+            chapterGetInfoUrl = chapterGetInfoUrl.replace("http://www.jjwxc.net/onebook.php?", "https://app.jjwxc.net/androidapi/chapterContent?");
+            chapterGetInfoUrl = chapterGetInfoUrl.replace("http://my.jjwxc.net/onebook_vip.php?", "https://app.jjwxc.net/androidapi/chapterContent?");
+            async function getChapterInfo(url) {
+                loglevel_default().debug(`请求地址: ${url}, Referrer: ${chapterUrl}, 重试次数: ${retryTime}`);
+                return new Promise((resolve) => {
+                    (0,GM/* _GM_xmlhttpRequest */.UX)({
+                        url: url,
+                        headers: {
+                            accept: "application/json",
+                            referer: "http://android.jjwxc.net?v=277",
+                            not_tip: "updateTime",
+                            "user-agent": "Mozilla/ 5.0(Linux; Android 12; Pixel 3 XL Build / SP1A.210812.016.C1; wv) AppleWebKit / 537.36(KHTML, like Gecko) Version / 4.0 Chrome / 108.0.5359.128 Mobile Safari / 537.36 / JINJIANG - Android / 277(Pixel3XL; Scale / 3.5)",
+                            "accept-encoding": "gzip",
+                        },
+                        method: "GET",
+                        onload: function (response) {
+                            if (response.status === 200) {
+                                retryTime = 0;
+                                const resultI = JSON.parse(response.responseText);
+                                resolve(resultI);
+                            }
+                            else {
+                                const resultI = JSON.parse('{"message":"try again!"}');
+                                resolve(resultI);
+                            }
+                        },
+                    });
+                });
+            }
+            let result = await getChapterInfo(chapterGetInfoUrl.toString());
+            while ("message" in result && result.message == "try again!") {
+                retryTime++;
+                if (retryTime > setting/* retryLimit */.o5) {
+                    retryTime = 0;
+                    loglevel_default().error(`请求 ${chapterGetInfoUrl.toString()} 失败`);
+                    throw new Error(`请求 ${chapterGetInfoUrl.toString()} 失败`);
+                }
+                result = await getChapterInfo(chapterGetInfoUrl.toString());
+            }
+            retryTime = 0;
+            if ("content" in result) {
+                const content = result.content;
+                let postscript = result.sayBody;
+                if (result.sayBody == null)
+                    postscript = " ";
+                const contentRaw = document.createElement("pre");
+                contentRaw.innerHTML = content;
+                let contentText = content
+                    .split("\n")
+                    .map((p) => p.trim())
+                    .join("\n\n");
+                const _contentHTML = document.createElement("div");
+                _contentHTML.innerHTML = content
+                    .split("\n")
+                    .map((p) => p.trim())
+                    .map((p) => {
+                    if (p.length === 0) {
+                        return "<p><br/></p>";
+                    }
+                    else {
+                        return `<p>${p}</p>`;
+                    }
+                })
+                    .join("\n");
+                const contentHTML = document.createElement("div");
+                contentHTML.className = "main";
+                const hr = document.createElement("hr");
+                const authorSayDom = document.createElement("div");
+                authorSayDom.innerHTML = postscript
+                    .split("\n")
+                    .map((p) => {
+                    if (p.length === 0) {
+                        return "<p><br/></p>";
+                    }
+                    else {
+                        return `<p>${p}</p>`;
+                    }
+                })
+                    .join("\n");
+                contentHTML.appendChild(_contentHTML);
+                contentHTML.appendChild(hr);
+                contentHTML.appendChild(authorSayDom);
+                contentRaw.innerHTML = [
+                    contentRaw.innerHTML,
+                    "-".repeat(20),
+                    postscript,
+                ].join("\n\n");
+                contentText = [contentText, "-".repeat(20), postscript].join("\n\n");
+                await (0,misc/* sleep */._v)(2000 + Math.round(Math.random() * 2000));
+                return {
+                    chapterName,
+                    contentRaw,
+                    contentText,
+                    contentHTML,
+                    contentImages: null,
+                    additionalMetadate: null,
+                };
+            }
+            else {
+                await (0,misc/* sleep */._v)(1000 + Math.round(Math.random() * 1000));
+                return {
+                    chapterName,
+                    contentRaw: null,
+                    contentText: null,
+                    contentHTML: null,
+                    contentImages: null,
+                    additionalMetadate: null,
+                };
+            }
+        }
         if (isVIP) {
-            return vipChapter();
+            return getChapter();
         }
         else {
-            return publicChapter();
+            return getChapter();
         }
     }
 }
@@ -15198,7 +15316,7 @@ class Pixiv extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
                 });
                 const _seriesContents = (await resp.json());
                 if (!_seriesContents.error) {
-                    seriesContents.push(..._seriesContents.body.seriesContents);
+                    seriesContents.push(..._seriesContents.body.page.seriesContents);
                 }
                 lastOrder = lastOrder + 10;
             }
