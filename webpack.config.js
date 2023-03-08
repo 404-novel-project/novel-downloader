@@ -103,7 +103,7 @@ module.exports = {
         "https://github.com/yingziwu/novel-downloader/raw/gh-pages/",
       proxyScript: {
         filename: "[basename].proxy.user.js",
-        baseUrl: "https://webpack.lo.bgme.me/",
+        baseUrl: "http://webpack.localhost:11944/",
         enable: dev,
       },
     }),
