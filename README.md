@@ -51,12 +51,12 @@ EPUB文件请使用相应阅读器阅读。
     
     如需反馈问题，请至[本项目支持页面](https://github.com/yingziwu/novel-downloader/issues)提交issue， 对于greasyfork评论区的反馈跟进不及时敬请谅解。
     
-    文件上传可使用： https://send.bgme.bid/
-
 - Q：希望支持某某网站。
 
     A：请提交issue并附上以上信息，网站URL，原创网站或转载网站，有无收费章节，有无如登录墙等额外限制，希望添加的理由等。开发者将视情况，酌情添加。
 
+- Q：请问有交流群组吗？
+    A：有的。Matrix空间：[#404-novel-project:bgme.me](https://matrix.to/#/#404-novel-project:bgme.me)，Telegram群组：https://t.me/+ZCngCQiJ_xo2NDI1 。
 ## 目前支持小说网站
 
 **特别提醒：如欲下载支持列表中网站的付费章节，请登录相应网站帐户，并确定已购买相应付费章节。未登录网站帐户，或未购买的付费章节，下载时将直接忽略，无法进行下载。**
