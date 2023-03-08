@@ -555,7 +555,7 @@ export class Gongzicp extends BaseRuleClass {
           }
 
           log.warn("[chapter]疑似被阻断，进行随机翻页……");
-          const ci = Math.round(Math.random() * retryTime)+1;
+          const ci = Math.round(Math.random() * retryTime) + 1;
           for (let i = 0; i < ci; i++) {
             await sleep(3000 + Math.round(Math.random() * 5000));
             randomWalker();
