@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           小说下载器
-// @version        4.9.4.793
+// @version        4.9.4.796
 // @author         bgme
 // @description    一个可扩展的通用型小说下载器。
 // @supportURL     https://github.com/404-novel-project/novel-downloader
@@ -362,7 +362,7 @@
 // @require        https://unpkg.com/crypto-js@4.1.1/crypto-js.js#sha512-NQVmLzNy4Lr5QTrmXvq/WzTMUnRHmv7nyIT/M6LyGPBS+TIeRxZ+YQaqWxjpRpvRMQSuYPQURZz/+pLi81xXeA==
 // @require        https://unpkg.com/fflate@0.7.4/umd/index.js#sha512-j3RSYniik9MPzPj4jENl0Q6Um2f3OHPK/KQP7SEh8RL/gyAGSj/PaiyUPrgY88TA5COsEx8D34hkc3vNVCFaSw==
 // @require        https://unpkg.com/nunjucks@3.2.3/browser/nunjucks.min.js#sha512-Uj8C5szr1tnKPNZb6ps5gFYtTGskzsUCiwY35QP/s2JIExZl7iYNletcmOJ8D6ocuaMRi9JGVrWRePaX9raujA==
-// @require        https://unpkg.com/vue@3.2.45/dist/vue.global.prod.js#sha512-di9sSfVNcYUswh8QUkaD/3Lt8tkt82BQmC8kd0w7zl931jqMHk9ku/ftiJ3dPfJPJoKKsgUBecVxaiuKenUW0g==
+// @require        https://unpkg.com/vue@3.2.47/dist/vue.global.prod.js#sha512-GBVIWsyfp4G1USUI5RMOWK0h3Z47VIF/9Ek/og00XZ2O3DTQauGlHA88kM9SJWOxpNEvKMkLkOhM6gqFGaeEeg==
 // @downloadURL    https://github.com/yingziwu/novel-downloader/raw/gh-pages/bundle-greasyfork.user.js
 // @updateURL      https://github.com/yingziwu/novel-downloader/raw/gh-pages/bundle-greasyfork.meta.js
 // ==/UserScript==
@@ -2897,7 +2897,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, ".nd-setting-body {\n  background: #e0e
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "h1 {\n    line-height: 130%;\n    text-align: center;\n    font-weight: bold;\n    font-size: xx-large;\n    margin-top: 3.2em;\n    margin-bottom: 3.3em;\n}\n\nh2 {\n  line-height: 130%;\n  text-align: center;\n  font-weight: bold;\n  font-size: x-large;\n  margin-top: 1.2em;\n  margin-bottom: 2.3em;\n}\n\ndiv {\n    margin: 0;\n    padding: 0;\n    text-align: justify;\n}\n\np {\n  text-indent: 2em;\n  display: block;\n  line-height: 1.3em;\n  margin-top: 0.4em;\n  margin-bottom: 0.4em;\n}\n\nimg {\n  vertical-align: text-bottom;\n  max-width: 90%;\n}\n\n.title {\n  margin-bottom: 0.7em;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "h1 {\n  line-height: 130%;\n  text-align: center;\n  font-weight: bold;\n  font-size: xx-large;\n  margin-top: 3.2em;\n  margin-bottom: 3.3em;\n}\n\nh2 {\n  line-height: 130%;\n  text-align: center;\n  font-weight: bold;\n  font-size: x-large;\n  margin-top: 1.2em;\n  margin-bottom: 2.3em;\n}\n\ndiv {\n  margin: 0;\n  padding: 0;\n  text-align: justify;\n}\n\np {\n  text-indent: 2em;\n  display: block;\n  line-height: 1.3em;\n  margin-top: 0.4em;\n  margin-bottom: 0.4em;\n}\n\nimg {\n  vertical-align: text-bottom;\n  max-width: 90%;\n}\n\n.title {\n  margin-bottom: 0.7em;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -4131,6 +4131,8 @@ add("avi", [
     "0x20",
 ], { mime: "video/x-msvideo", extension: "avi" });
 add("mp3", ["0xFF", "0xFB"], { mime: "audio/mpeg", extension: "mp3" });
+add("mp3", ["0xFF", "0xF3"], { mime: "audio/mpeg", extension: "mp3" });
+add("mp3", ["0xFF", "0xF2"], { mime: "audio/mpeg", extension: "mp3" });
 add("mp3", ["0x49", "0x44", "0x33"], { mime: "audio/mpeg", extension: "mp3" });
 add("bmp", ["0x42", "0x4D"], { mime: "image/bmp", extension: "bmp" });
 add("iso", ["0x43", "0x44", "0x30", "0x30", "0x31"]);
@@ -6381,7 +6383,7 @@ async function fetchWithTimeout(input, options = {}, timeout = 8000) {
     const id = setTimeout(() => controller.abort(), timeout);
     const response = await fetch(input, {
         ...options,
-        signal: controller.signal
+        signal: controller.signal,
     });
     clearTimeout(id);
     return response;
@@ -12384,8 +12386,7 @@ function getChapter({ chapterUrl, chapterName, isVIP, isPaid, charset, options, 
         }
         const getIsLogin = () => {
             if (document.location.host === "www.duread8.com") {
-                return (document.querySelector("div.dropdown-menu")
-                    ?.childElementCount === 3);
+                return (document.querySelector("div.dropdown-menu")?.childElementCount === 3);
             }
             else if (document.location.host === "www.shubl.com") {
                 return (document.querySelector("div.pull-right:nth-child(2)")
@@ -20422,7 +20423,7 @@ var dom = __webpack_require__("./src/lib/dom.ts");
 var progress = __webpack_require__("./src/ui/progress.css");
 ;// CONCATENATED MODULE: ./src/ui/progress.html
 // Module
-var code = "<div>\n    <div v-if=\"ntProgressSeen\" id=\"nd-progress\">\n        <div v-if=\"chapterProgressSeen\" id=\"chapter-progress\" v-bind:style=\"{'--position': chapterPercent+'%'}\" v-bind:title=\"chapterProgressTitle\"></div>\n    </div>\n</div>\n";
+var code = "<div>\n  <div v-if=\"ntProgressSeen\" id=\"nd-progress\">\n    <div v-if=\"chapterProgressSeen\" id=\"chapter-progress\" v-bind:style=\"{'--position': chapterPercent+'%'}\" v-bind:title=\"chapterProgressTitle\"></div>\n  </div>\n</div>\n";
 // Exports
 /* harmony default export */ const ui_progress = (code);
 ;// CONCATENATED MODULE: ./src/ui/progress.ts
@@ -20858,7 +20859,7 @@ function mitmPageAvailability(url) {
 }
 async function TM_4_14_bug_Detect() {
     if (GM/* _GM_info.scriptHandler */._p.scriptHandler === "Tampermonkey" &&
-        GM/* _GM_info.version.startsWith */._p.version.startsWith("4.14")) {
+        GM/* _GM_info.version */._p.version?.startsWith("4.14")) {
         const blob = new Blob(["test"]);
         const arrayBuffer = await blob.arrayBuffer();
         if (arrayBuffer === undefined) {
@@ -21998,7 +21999,7 @@ function getUI() {
 
 ;// CONCATENATED MODULE: ./src/ui/button.html
 // Module
-var code = "<div id=\"button-div\" class=\"button-div\">\n    <div v-if=\"uiObj.type !== 'error'\">\n        <div v-if=\"uiObj.type === 'jump'\" class=\"jump\">\n            <button class=\"jump\">\n                <img alt=\"jump\" class=\"jump\" v-bind:src=\"imgJump\" v-on:click=\"jumpButtonClick\">\n            </button>\n        </div>\n        <div v-if=\"uiObj.type === 'download'\" class=\"download\">\n            <button class=\"start\">\n                <img alt=\"start\" class=\"start\" v-bind:src=\"imgStart\" v-on:click=\"startButtonClick\">\n            </button>\n            <button v-if=\"isSettingSeen\" class=\"setting\">\n                <img alt=\"setting\" class=\"setting\" v-bind:src=\"imgSetting\" v-on:click=\"settingButtonClick\">\n            </button>\n        </div>\n    </div>\n</div>\n";
+var code = "<div id=\"button-div\" class=\"button-div\">\n  <div v-if=\"uiObj.type !== 'error'\">\n    <div v-if=\"uiObj.type === 'jump'\" class=\"jump\">\n      <button class=\"jump\">\n        <img alt=\"jump\" class=\"jump\" v-bind:src=\"imgJump\" v-on:click=\"jumpButtonClick\">\n      </button>\n    </div>\n    <div v-if=\"uiObj.type === 'download'\" class=\"download\">\n      <button class=\"start\">\n        <img alt=\"start\" class=\"start\" v-bind:src=\"imgStart\" v-on:click=\"startButtonClick\">\n      </button>\n      <button v-if=\"isSettingSeen\" class=\"setting\">\n        <img alt=\"setting\" class=\"setting\" v-bind:src=\"imgSetting\" v-on:click=\"settingButtonClick\">\n      </button>\n    </div>\n  </div>\n</div>\n";
 // Exports
 /* harmony default export */ const ui_button = (code);
 // EXTERNAL MODULE: ./src/ui/button.less
@@ -22037,7 +22038,7 @@ var main = __webpack_require__("./src/main/main.ts");
 var save_misc = __webpack_require__("./src/save/misc.ts");
 ;// CONCATENATED MODULE: ./src/ui/ChapterList.html
 // Module
-var ChapterList_code = "<div>\n    <div v-if=\"loading\">\n        <div class=\"chapter-list-loading\">\n            <h2 v-if=\"failed\">加载章节失败！</h2>\n            <h2 v-else>正在载入章节列表中，请耐心等待……</h2>\n        </div>\n    </div>\n    <div v-else class=\"chapter-list\">\n        <div v-for=\"sectionObj in sectionsObj\" v-show=\"isSectionSeen(sectionObj)\" v-bind:key=\"sectionObj.sectionNumber\" class=\"section\">\n            <h3 v-if=\"sectionObj.sectionName\" class=\"section-label\">\n                {{ sectionObj.sectionName }}\n            </h3>\n            <div v-for=\"chapter in sectionObj.chpaters\" v-show=\"isChapterSeen(chapter)\" v-bind:key=\"chapter.chapterNumber\" class=\"chapter\" v-bind:class=\"{\n              good: this.filter(chapter),\n              bad: !this.filter(chapter),\n              warning: this.warningFilter(chapter)\n            }\" v-bind:title=\"chapter.chapterNumber\">\n                <a rel=\"noopener noreferrer\" target=\"_blank\" v-bind:class=\"{\n                disabled: this.isChapterDisabled(chapter),\n              }\" v-bind:href=\"chapter.chapterUrl\">{{ chapter.chapterName }}</a>\n            </div>\n    </div>\n  </div>\n</div>\n";
+var ChapterList_code = "<div>\n  <div v-if=\"loading\">\n    <div class=\"chapter-list-loading\">\n      <h2 v-if=\"failed\">加载章节失败！</h2>\n      <h2 v-else>正在载入章节列表中，请耐心等待……</h2>\n    </div>\n  </div>\n  <div v-else class=\"chapter-list\">\n    <div v-for=\"sectionObj in sectionsObj\" v-show=\"isSectionSeen(sectionObj)\" v-bind:key=\"sectionObj.sectionNumber\" class=\"section\">\n      <h3 v-if=\"sectionObj.sectionName\" class=\"section-label\">\n        {{ sectionObj.sectionName }}\n      </h3>\n      <div v-for=\"chapter in sectionObj.chpaters\" v-show=\"isChapterSeen(chapter)\" v-bind:key=\"chapter.chapterNumber\" class=\"chapter\" v-bind:class=\"{\n              good: this.filter(chapter),\n              bad: !this.filter(chapter),\n              warning: this.warningFilter(chapter)\n            }\" v-bind:title=\"chapter.chapterNumber\">\n        <a rel=\"noopener noreferrer\" target=\"_blank\" v-bind:class=\"{\n                disabled: this.isChapterDisabled(chapter),\n              }\" v-bind:href=\"chapter.chapterUrl\">{{ chapter.chapterName }}</a>\n      </div>\n    </div>\n  </div>\n</div>\n";
 // Exports
 /* harmony default export */ const ChapterList = (ChapterList_code);
 // EXTERNAL MODULE: ./src/ui/ChapterList.less
@@ -22135,7 +22136,7 @@ const style = (0,dom/* createStyle */.wj)(ui_ChapterList/* default */.Z);
 var FilterTab = __webpack_require__("./src/ui/FilterTab.css");
 ;// CONCATENATED MODULE: ./src/ui/FilterTab.html
 // Module
-var FilterTab_code = "<div>\n  <div class=\"filter-setting\">\n    <div v-if=\"filterType !== 'null'\" class=\"filter-input\">\n      <p>请输入过滤的条件：<input v-model=\"arg\" type=\"text\"></p>\n    </div>\n    <div class=\"filter-setter\">\n      <div>\n        <span>当前过滤方法：</span>\n        <select v-model=\"filterType\">\n          <option v-for=\"filterOption in filterOptionList\" v-bind:value=\"filterOption[0]\">\n            {{ filterOption[1][\"abbreviation\"] }}\n          </option>\n        </select>\n      </div>\n        <input id=\"hiddenBad\" v-model=\"hiddenBad\" type=\"checkbox\">\n      <label for=\"hiddenBad\">只显示符合条件章节</label>\n      <div class=\"filter-description\" v-html=\"filterDescription\"></div>\n      <div v-if=\"false\">\n        <span class=\"good\"></span>\n        <span class=\"warning\"></span>\n        <span class=\"bad\"></span>\n      </div>\n    </div>\n  </div>\n  <chapter-list>\n</div>\n";
+var FilterTab_code = "<div>\n  <div class=\"filter-setting\">\n    <div v-if=\"filterType !== 'null'\" class=\"filter-input\">\n      <p>请输入过滤的条件：<input v-model=\"arg\" type=\"text\"></p>\n    </div>\n    <div class=\"filter-setter\">\n      <div>\n        <span>当前过滤方法：</span>\n        <select v-model=\"filterType\">\n          <option v-for=\"filterOption in filterOptionList\" v-bind:value=\"filterOption[0]\">\n            {{ filterOption[1][\"abbreviation\"] }}\n          </option>\n        </select>\n      </div>\n      <input id=\"hiddenBad\" v-model=\"hiddenBad\" type=\"checkbox\">\n      <label for=\"hiddenBad\">只显示符合条件章节</label>\n      <div class=\"filter-description\" v-html=\"filterDescription\"></div>\n      <div v-if=\"false\">\n        <span class=\"good\"></span>\n        <span class=\"warning\"></span>\n        <span class=\"bad\"></span>\n      </div>\n    </div>\n  </div>\n  <chapter-list>\n</div>\n";
 // Exports
 /* harmony default export */ const ui_FilterTab = (FilterTab_code);
 ;// CONCATENATED MODULE: ./src/ui/FilterTab.ts
@@ -22315,7 +22316,7 @@ var log = __webpack_require__("./src/log.ts");
 
 ;// CONCATENATED MODULE: ./src/ui/setting.html
 // Module
-var setting_code = "<div>\n  <dialog-ui v-if=\"openStatus === 'true'\" dialog-title=\"设置\" v-bind:status=\"openStatus\" v-on:dialogclose=\"closeSetting\">\n      <div id=\"nd-setting\" class=\"nd-setting\">\n          <div class=\"nd-setting-tab\">\n              <button v-bind:class=\"['tab-button', { active: setting.currentTab === 'tab-1'}]\" v-on:click=\"setting.currentTab = 'tab-1'\">\n                  基本设置\n              </button>\n              <button v-bind:class=\"['tab-button', { active: setting.currentTab === 'tab-2'}]\" v-on:click=\"setting.currentTab = 'tab-2'\">\n                  自定义筛选条件\n              </button>\n              <button v-if=\"setting.enableTestPage\" v-bind:class=\"['tab-button', { active: setting.currentTab === 'tab-3'}]\" v-on:click=\"setting.currentTab = 'tab-3'\">\n                  抓取测试\n              </button>\n              <button v-if=\"setting.enableTestPage\" v-bind:class=\"['tab-button', { active: setting.currentTab === 'tab-4'}]\" v-on:click=\"setting.currentTab = 'tab-4'\">\n                  日志\n              </button>\n          </div>\n          <div class=\"nd-setting-body\">\n              <div v-show=\"setting.currentTab === 'tab-1'\" id=\"nd-setting-tab-1\" class=\"tab-page\">\n                  <div>\n                      <input id=\"debug\" v-model=\"setting.enableDebug\" type=\"checkbox\">\n                      <label for=\"debug\">启用调试模式。（输出更详细日志）</label>\n                      <input id=\"test-page\" v-model=\"setting.enableTestPage\" type=\"checkbox\">\n                      <label for=\"test-page\">启用测试视图</label>\n                  </div>\n                  <hr class=\"hr-twill-colorful\">\n                  <div>\n                      <h3>自定义保存参数</h3>\n                      <ul>\n                          <li v-for=\"item of saveOptions\">\n                              <input v-bind:id=\"item.key\" v-model=\"setting.chooseSaveOption\" type=\"radio\" v-bind:value=\"item.key\">\n                              <label v-bind:for=\"item.key\">{{ item.value }}</label>\n                          </li>\n                      </ul>\n                  </div>\n              </div>\n              <div v-show=\"setting.currentTab === 'tab-2'\" id=\"nd-setting-tab-2\" class=\"tab-page\">\n                  <filter-tab v-on:filterupdate=\"saveFilter\">\n              </div>\n              <div v-if=\"setting.enableTestPage\" v-show=\"setting.currentTab === 'tab-3'\" id=\"nd-setting-tab-3\" class=\"tab-page\">\n                  <test-ui></test-ui>\n              </div>\n              <div v-if=\"setting.enableTestPage\" v-show=\"setting.currentTab === 'tab-4'\" id=\"nd-setting-tab-4\" class=\"tab-page\">\n                  <log-ui></log-ui>\n              </div>\n          </div>\n          <div class=\"nd-setting-footer\">\n              <button v-on:click=\"closeAndSaveSetting\">Save</button>\n              <button v-on:click=\"closeSetting\">Cancel</button>\n          </div>\n      </div>\n  </dialog-ui>\n</div>\n";
+var setting_code = "<div>\n  <dialog-ui v-if=\"openStatus === 'true'\" dialog-title=\"设置\" v-bind:status=\"openStatus\" v-on:dialogclose=\"closeSetting\">\n    <div id=\"nd-setting\" class=\"nd-setting\">\n      <div class=\"nd-setting-tab\">\n        <button v-bind:class=\"['tab-button', { active: setting.currentTab === 'tab-1'}]\" v-on:click=\"setting.currentTab = 'tab-1'\">\n          基本设置\n        </button>\n        <button v-bind:class=\"['tab-button', { active: setting.currentTab === 'tab-2'}]\" v-on:click=\"setting.currentTab = 'tab-2'\">\n          自定义筛选条件\n        </button>\n        <button v-if=\"setting.enableTestPage\" v-bind:class=\"['tab-button', { active: setting.currentTab === 'tab-3'}]\" v-on:click=\"setting.currentTab = 'tab-3'\">\n          抓取测试\n        </button>\n        <button v-if=\"setting.enableTestPage\" v-bind:class=\"['tab-button', { active: setting.currentTab === 'tab-4'}]\" v-on:click=\"setting.currentTab = 'tab-4'\">\n          日志\n        </button>\n      </div>\n      <div class=\"nd-setting-body\">\n        <div v-show=\"setting.currentTab === 'tab-1'\" id=\"nd-setting-tab-1\" class=\"tab-page\">\n          <div>\n            <input id=\"debug\" v-model=\"setting.enableDebug\" type=\"checkbox\">\n            <label for=\"debug\">启用调试模式。（输出更详细日志）</label>\n            <input id=\"test-page\" v-model=\"setting.enableTestPage\" type=\"checkbox\">\n            <label for=\"test-page\">启用测试视图</label>\n          </div>\n          <hr class=\"hr-twill-colorful\">\n          <div>\n            <h3>自定义保存参数</h3>\n            <ul>\n              <li v-for=\"item of saveOptions\">\n                <input v-bind:id=\"item.key\" v-model=\"setting.chooseSaveOption\" type=\"radio\" v-bind:value=\"item.key\">\n                <label v-bind:for=\"item.key\">{{ item.value }}</label>\n              </li>\n            </ul>\n          </div>\n        </div>\n        <div v-show=\"setting.currentTab === 'tab-2'\" id=\"nd-setting-tab-2\" class=\"tab-page\">\n          <filter-tab v-on:filterupdate=\"saveFilter\">\n        </div>\n        <div v-if=\"setting.enableTestPage\" v-show=\"setting.currentTab === 'tab-3'\" id=\"nd-setting-tab-3\" class=\"tab-page\">\n          <test-ui></test-ui>\n        </div>\n        <div v-if=\"setting.enableTestPage\" v-show=\"setting.currentTab === 'tab-4'\" id=\"nd-setting-tab-4\" class=\"tab-page\">\n          <log-ui></log-ui>\n        </div>\n      </div>\n      <div class=\"nd-setting-footer\">\n        <button v-on:click=\"closeAndSaveSetting\">Save</button>\n        <button v-on:click=\"closeSetting\">Cancel</button>\n      </div>\n    </div>\n  </dialog-ui>\n</div>\n";
 // Exports
 /* harmony default export */ const setting = (setting_code);
 // EXTERNAL MODULE: ./src/ui/setting.less
@@ -22324,7 +22325,7 @@ var ui_setting = __webpack_require__("./src/ui/setting.less");
 var attachments = __webpack_require__("./src/lib/attachments.ts");
 ;// CONCATENATED MODULE: ./src/ui/TestUI.html
 // Module
-var TestUI_code = "<div>\n  <div id=\"test-page-div\">\n      <h2>元数据</h2>\n      <table>\n          <tbody>\n          <tr v-for=\"(value, key) in metaData\">\n              <td>{{ key }}</td>\n              <td v-html=\"getData(key, value)\"></td>\n          </tr>\n          </tbody>\n      </table>\n      <hr class=\"hr-edge-weak\">\n      <h2>章节测试</h2>\n      <div class=\"preview-chapter-setting\">\n          <label for=\"chapterNumber\">预览章节序号：</label>\n          <input id=\"chapterNumber\" v-model=\"chapterNumber\" type=\"text\">\n      </div>\n      <div v-if=\"this.isSeenChapter(chapter)\">\n          <h4>\n              <a rel=\"noopener noreferrer\" target=\"_blank\" v-bind:href=\"chapter.chapterUrl\">{{ chapter.chapterName }}</a>\n          </h4>\n          <div class=\"chapter\" v-html=\"getChapterHtml(chapter)\"></div>\n      </div>\n      <div v-else>\n          <p v-if=\"this.isChapterFailed(chapter)\">章节加载失败！</p>\n          <p v-else>正在加载章节中……</p>\n      </div>\n  </div>\n</div>\n";
+var TestUI_code = "<div>\n  <div id=\"test-page-div\">\n    <h2>元数据</h2>\n    <table>\n      <tbody>\n        <tr v-for=\"(value, key) in metaData\">\n          <td>{{ key }}</td>\n          <td v-html=\"getData(key, value)\"></td>\n        </tr>\n      </tbody>\n    </table>\n    <hr class=\"hr-edge-weak\">\n    <h2>章节测试</h2>\n    <div class=\"preview-chapter-setting\">\n      <label for=\"chapterNumber\">预览章节序号：</label>\n      <input id=\"chapterNumber\" v-model=\"chapterNumber\" type=\"text\">\n    </div>\n    <div v-if=\"this.isSeenChapter(chapter)\">\n      <h4>\n        <a rel=\"noopener noreferrer\" target=\"_blank\" v-bind:href=\"chapter.chapterUrl\">{{ chapter.chapterName }}</a>\n      </h4>\n      <div class=\"chapter\" v-html=\"getChapterHtml(chapter)\"></div>\n    </div>\n    <div v-else>\n      <p v-if=\"this.isChapterFailed(chapter)\">章节加载失败！</p>\n      <p v-else>正在加载章节中……</p>\n    </div>\n  </div>\n</div>\n";
 // Exports
 /* harmony default export */ const TestUI = (TestUI_code);
 // EXTERNAL MODULE: ./src/ui/TestUI.less
@@ -22689,7 +22690,7 @@ const button_vm = (0,external_Vue_.createApp)({
 var dialog = __webpack_require__("./src/ui/dialog.css");
 ;// CONCATENATED MODULE: ./src/ui/dialog.html
 // Module
-var dialog_code = "<div v-if=\"myPrivateStatus\" class=\"overlay\" v-bind:class=\"{ open: myPrivateStatus }\"></div>\n<div v-if=\"myPrivateStatus\" class=\"out\">\n    <div id=\"dialog\" class=\"dialog\" v-bind:class=\"{ open: myPrivateStatus }\">\n        <div class=\"titlebar\">\n            <h1 class=\"dialog-title\">{{ dialogTitle }}</h1>\n            <button class=\"dialog-close\" v-on:click=\"dialogClose\">❌</button>\n        </div>\n        <div class=\"body\">\n            <slot></slot>\n        </div>\n    </div>\n</div>\n";
+var dialog_code = "<div v-if=\"myPrivateStatus\" class=\"overlay\" v-bind:class=\"{ open: myPrivateStatus }\"></div>\n<div v-if=\"myPrivateStatus\" class=\"out\">\n  <div id=\"dialog\" class=\"dialog\" v-bind:class=\"{ open: myPrivateStatus }\">\n    <div class=\"titlebar\">\n      <h1 class=\"dialog-title\">{{ dialogTitle }}</h1>\n      <button class=\"dialog-close\" v-on:click=\"dialogClose\">❌</button>\n    </div>\n    <div class=\"body\">\n      <slot></slot>\n    </div>\n  </div>\n</div>\n";
 // Exports
 /* harmony default export */ const ui_dialog = (dialog_code);
 ;// CONCATENATED MODULE: ./src/ui/dialog.ts

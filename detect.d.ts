@@ -21,6 +21,6 @@ export declare const environments: () => Promise<{
     doNotTrack: string | number;
     enableDebug: boolean;
     ScriptHandler: string;
-    "ScriptHandler version": string;
+    "ScriptHandler version": string | undefined;
     "Novel-downloader version": string;
 }>;
