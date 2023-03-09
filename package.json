@@ -2,6 +2,7 @@
   "name": "novel-downloader",
   "version": "4.9.4",
   "description": "novel downloader",
+  "type": "module",
   "source": "src/index.js",
   "scripts": {
     "dev": "webpack serve --node-env development",

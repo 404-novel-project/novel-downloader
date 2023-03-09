@@ -1,8 +1,7 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-const webpackConfig = require("./webpack.config");
+import webpackConfig from "./webpack.config.js";
 
 webpackConfig.optimization.minimize = false;
 webpackConfig.optimization.moduleIds = "named";
 webpackConfig.output.filename = "bundle-greasyfork.js";
 
-module.exports = webpackConfig;
+export default webpackConfig;

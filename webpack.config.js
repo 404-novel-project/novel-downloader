@@ -1,10 +1,15 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-const path = require("path");
-const fs = require("fs");
-const WebpackUserscript = require("webpack-userscript").default;
-const webpack = require("webpack");
+import path from "node:path";
+import fs from "node:fs";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
 
-const simpleGit = require("simple-git");
+import webpack from "webpack";
+import { UserscriptPlugin as WebpackUserscript } from "webpack-userscript";
+import simpleGit from "simple-git";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 const git = simpleGit();
 
 const dev = process.env.NODE_ENV === "development";
@@ -15,7 +20,7 @@ git.raw("rev-list", "--count", "HEAD").then((REVISION) => {
   fs.writeFileSync("REVISION", REVISION);
 });
 
-module.exports = {
+export default {
   mode: dev ? "development" : "production",
   optimization: {
     moduleIds: "natural",
