@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const path = require("path");
 const fs = require("fs");
-const WebpackUserscript = require("webpack-userscript");
+const WebpackUserscript = require("webpack-userscript").default;
 const webpack = require("webpack");
 
 const simpleGit = require("simple-git");
@@ -23,7 +23,8 @@ module.exports = {
   },
   performance: {
     hints: "error",
-    maxAssetSize: 2 * 10 ** (3 + 3),
+    maxEntrypointSize: 2000 * 10 ** 3,
+    maxAssetSize: 2000 * 10 ** 3,
   },
   entry: path.resolve(__dirname, "src", "index.ts"),
   output: {
@@ -97,14 +98,16 @@ module.exports = {
         header["version"] = version;
         return header;
       },
+      strict: false,
       ssri: !dev,
       pretty: true,
-      downloadBaseUrl:
+      downloadBaseURL:
+        "https://github.com/yingziwu/novel-downloader/raw/gh-pages/",
+      updateBaseURL:
         "https://github.com/yingziwu/novel-downloader/raw/gh-pages/",
       proxyScript: {
         filename: "[basename].proxy.user.js",
-        baseUrl: "http://webpack.localhost:11944/",
-        enable: dev,
+        baseURL: "http://webpack.localhost:11944/",
       },
     }),
     new webpack.optimize.LimitChunkCountPlugin({

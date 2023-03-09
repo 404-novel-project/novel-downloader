@@ -9,9 +9,7 @@
     "pretty": "prettier src -w",
     "build": "webpack build -c webpack.config.js",
     "build-greasyfork": "webpack -c webpack-greasyfork.config.js",
-    "dev-tester": "webpack serve -c webpack-tester.config.js --node-env development",
-    "build-tester": "webpack -c webpack-tester.config.js",
-    "github": "run-s lint build build-greasyfork build-tester"
+    "github": "run-s lint build build-greasyfork"
   },
   "pre-commit": [
     "github"
@@ -50,7 +48,7 @@
     "webpack": "^5.75.0",
     "webpack-cli": "^5.0.1",
     "webpack-dev-server": "^4.11.1",
-    "webpack-userscript": "github:yingziwu/webpack-userscript"
+    "webpack-userscript": "^3.0.0"
   },
   "dependencies": {
     "@mozilla/readability": "^0.4.2",
