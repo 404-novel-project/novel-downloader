@@ -2,8 +2,7 @@
 name: Feature request
 about: 新功能请求
 title: "[Feature Requset]"
-assignees: ''
-
+assignees: ""
 ---
 
 **存在问题**
