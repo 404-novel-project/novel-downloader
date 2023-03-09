@@ -339,7 +339,6 @@
 // @connect        *
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @downloadURL    https://github.com/yingziwu/novel-downloader/raw/gh-pages/bundle.user.js
 // @grant          unsafeWindow
 // @grant          GM_info
 // @grant          GM_xmlhttpRequest
@@ -363,6 +362,6 @@
 // @require        https://unpkg.com/fflate@0.7.4/umd/index.js#sha512-j3RSYniik9MPzPj4jENl0Q6Um2f3OHPK/KQP7SEh8RL/gyAGSj/PaiyUPrgY88TA5COsEx8D34hkc3vNVCFaSw==
 // @require        https://unpkg.com/nunjucks@3.2.3/browser/nunjucks.min.js#sha512-Uj8C5szr1tnKPNZb6ps5gFYtTGskzsUCiwY35QP/s2JIExZl7iYNletcmOJ8D6ocuaMRi9JGVrWRePaX9raujA==
 // @require        https://unpkg.com/vue@3.2.47/dist/vue.global.prod.js#sha512-GBVIWsyfp4G1USUI5RMOWK0h3Z47VIF/9Ek/og00XZ2O3DTQauGlHA88kM9SJWOxpNEvKMkLkOhM6gqFGaeEeg==
+// @require        http://webpack.localhost:11944/bundle.user.js
 // @run-at         document-start
-// @updateURL      https://github.com/yingziwu/novel-downloader/raw/gh-pages/bundle.meta.js
 // ==/UserScript==
