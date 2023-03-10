@@ -155,7 +155,6 @@ EPUB 文件请使用相应阅读器阅读。
 | [蔷薇后花园](https://houhuayuan.xyz/)             | ✅       | ❎       |                                                                                          |
 | [黑沼泽俱乐部](https://houhuayuan.xyz/)           | ✅       | ❎       |                                                                                          |
 | [绿色小说网](https://www.lstxt.cc/)               | ✅       | ❎       |                                                                                          |
-| [笔趣阁](https://www.a7xs.com/)                   | ✅       | ❎       |                                                                                          |
 | [神凑轻小说](http://www.shencou.com/)             | ✅       | ❎       |                                                                                          |
 | [爱下书小说网](https://www.aixiawx.com/)          | ✅       | ❎       |                                                                                          |
 | [精彩小说网](https://jingcaiyuedu6.com/)          | ✅       | ❎       |                                                                                          |
