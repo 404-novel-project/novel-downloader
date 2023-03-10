@@ -284,7 +284,7 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = syosetuOrg();
       break;
     }
-    case "zhaoze.art":
+    case "zhaoze.vip":
     case "houhuayuan.vip": {
       const { houhuayuan } = await import(
         "../rules/onePage/original/houhuayuan"
