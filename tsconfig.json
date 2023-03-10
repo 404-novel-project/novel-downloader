@@ -16,7 +16,8 @@
     "alwaysStrict": true,
 
     "moduleResolution": "node",
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "skipLibCheck": true
   },
   "exclude": [
     "node_modules",
