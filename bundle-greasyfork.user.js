@@ -1,370 +1,325 @@
 // ==UserScript==
-// @name           小说下载器
-// @description    一个可扩展的通用型小说下载器。
-// @version        [version].813
-// @author         bgme
-// @supportURL     https://github.com/404-novel-project/novel-downloader
-// @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
-// @exclude        *://www.viviyzw.com/book/*.html
-// @exclude        *://www.yruan.com/article/*/*.html
-// @exclude        *://m.yuzhaige.cc/tag/*/
-// @exclude        *://m.yuzhaige.cc/sort/*/
-// @exclude        *://m.yuzhaige.cc/top/*/
-// @exclude        *://m.yuzhaige.cc/full/*/
-// @exclude        *://m.yuzhaige.cc/book/*/
-// @exclude        *://m.yushuge123.com/tag/*/
-// @exclude        *://m.yushuge123.com/sort/*/
-// @exclude        *://m.yushuge123.com/top/*/
-// @exclude        *://m.yushuge123.com/full/*/
-// @exclude        *://m.yushuge123.com/book/*/
-// @exclude        *://m.haitangtxt.net/tag/*/
-// @exclude        *://m.haitangtxt.net/sort/*/
-// @exclude        *://m.haitangtxt.net/top/*/
-// @exclude        *://m.haitangtxt.net/full/*/
-// @exclude        *://m.haitangtxt.net/book/*/
-// @exclude        *://www.linovel.net/book/*/*.html
-// @exclude        *://www.qimao.com/shuku/*-*/
-// @exclude        *://www.trxs.cc/tongren/*/*.html
-// @exclude        *://www.trxs.me/tongren/*/*.html
-// @exclude        *://www.trxs123.com/tongren/*/*.html
-// @exclude        *://www.jpxs123.com/*/*/*.html
-// @exclude        *://www.tongrenquan.org/tongren/*/*.html
-// @exclude        *://www.tongrenquan.me/tongren/*/*.html
-// @exclude        *://www.tongrenquan.cc/tongren/*/*.html
-// @exclude        *://trxs.cc/tongren/*/*.html
-// @exclude        *://trxs.me/tongren/*/*.html
-// @exclude        *://trxs123.com/tongren/*/*.html
-// @exclude        *://jpxs123.com/*/*/*.html
-// @exclude        *://tongrenquan.org/tongren/*/*.html
-// @exclude        *://tongrenquan.me/tongren/*/*.html
-// @exclude        *://tongrenquan.cc/tongren/*/*.html
-// @exclude        *://www.25zw.com/lastupdate/
-// @exclude        *://www.25zw.com/postdate/
-// @exclude        *://www.25zw.com/monthvisit/
-// @exclude        *://www.25zw.com/goodnum/
-// @exclude        *://www.25zw.com/goodnew/
-// @exclude        *://dijiubook.net/*_*/*.html
-// @exclude        *://ncode.syosetu.com/*/*/
-// @exclude        *://novel18.syosetu.com/*/*/
-// @exclude        *://manhua.dmzj.com/
-// @exclude        *://houhuayuan.vip/
-// @exclude        *://book.sfacg.com/Novel/*/*/*/
-// @exclude        *://www.alphapolis.co.jp/novel/*/*/episode/*
-// @exclude        *://novelup.plus/story/*/*
-// @exclude        *://www.linovelib.com/novel/*/*.html
-// @exclude        *://w.linovelib.com/novel/*/*.html
-// @match          *://www.ciweimao.com/chapter-list/*
-// @match          *://www.ciweimao.com/book/*
-// @match          *://book.sfacg.com/Novel/*/MainIndex/
-// @match          *://book.sfacg.com/Novel/*/
-// @match          *://m.sfacg.com/b/*/
-// @match          *://book.qidian.com/info/*
-// @match          *://www.jjwxc.net/onebook.php?novelid=*
-// @match          *://www.gongzicp.com/novel-*.html
-// @match          *://m.gongzicp.com/novel-*.html
-// @match          *://gongzicp.com/novel-*.html
-// @match          *://book.zongheng.com/showchapter/*.html
-// @match          *://book.zongheng.com/book/*.html
-// @match          *://huayu.zongheng.com/showchapter/*.html
-// @match          *://huayu.zongheng.com/book/*.html
-// @match          *://www.linovel.net/book/*.html
-// @match          *://www.17k.com/list/*.html
-// @match          *://www.17k.com/book/*.html
-// @match          *://www.shuhai.com/book/*.htm
-// @match          *://mm.shuhai.com/book/*.htm
-// @match          *://www.tadu.com/book/*
-// @match          *://www.qimao.com/shuku/*/
-// @match          *://sosad.fun/threads/*/profile*
-// @match          *://wenzhan.org/threads/*/profile*
-// @match          *://sosadfun.com/threads/*/profile*
-// @match          *://xn--pxtr7m5ny.com/threads/*/profile*
-// @match          *://xn--pxtr7m.com/threads/*/profile*
-// @match          *://xn--pxtr7m5ny.net/threads/*/profile*
-// @match          *://xn--pxtr7m.net/threads/*/profile*
-// @match          *://sosadfun.link/threads/*/profile*
-// @match          *://www.sosad.fun/threads/*/profile*
-// @match          *://www.wenzhan.org/threads/*/profile*
-// @match          *://www.sosadfun.com/threads/*/profile*
-// @match          *://www.xn--pxtr7m5ny.com/threads/*/profile*
-// @match          *://www.xn--pxtr7m.com/threads/*/profile*
-// @match          *://www.xn--pxtr7m5ny.net/threads/*/profile*
-// @match          *://www.xn--pxtr7m.net/threads/*/profile*
-// @match          *://www.sosadfun.link/threads/*/profile*
-// @match          *://www.uukanshu.com/b/*/
-// @match          *://www.yruan.com/article/*.html
-// @match          *://www.shuquge.com/txt/*/index.html
-// @match          *://wap.shuquge.com/s/*.html
-// @match          *://wap.shuquge.com/d/*.html
-// @match          *://www.sizhicn.com/txt/*/index.html
-// @match          *://www.dingdiann.net/ddk*/
-// @match          *://www.xkzw.org/xkzw*/
-// @match          *://www.lewenn.com/lw*/
-// @match          *://www.266ks.com/book/*/
-// @match          *://www.266ks.com/book/*/index*.html
-// @match          *://www.hetushu.com/book/*/index.html
-// @match          *://hetushu.com/book/*/index.html
-// @match          *://www.shouda88.com/*/
-// @match          *://www.gebiqu.com/biquge_*/
-// @match          *://www.viviyzw.com/book*.html
-// @match          *://www.1pwx.com/*.htm
-// @match          *://www.81book.com/book/*/
-// @match          *://www.81zw.com/book/*/
-// @match          *://m.yushuge123.com/*/*/
-// @match          *://www.xinwanben.com/*/
-// @match          *://m.xinwanben.com/*/
-// @match          *://www.idejian.com/book/*/
-// @match          *://www.wenku8.net/novel/*/*/index.htm
-// @match          *://www.wenku8.net/book/*.htm
-// @match          *://www.dmzj.com/info/*.html
-// @match          *://manhua.dmzj.com/*
-// @match          *://www.westnovel.com/*/*/
-// @match          *://www.mht99.com/*/
-// @match          *://www.bz01.org/*_*/
-// @match          *://www.banzhuer.org/*_*/
-// @match          *://www.xbiquge.so/book/*/
-// @match          *://www.hongyeshuzhal.com/shuzhai/*/
-// @match          *://www.linovelib.com/novel/*/catalog
-// @match          *://www.linovelib.com/novel/*.html
-// @match          *://w.linovelib.com/novel/*.html
-// @match          *://www.luoqiuzw.com/book/*/
-// @match          *://www.yibige.cc/*/
-// @match          *://www.fushuwang.org/*/*/*/*.html
-// @match          *://www.fushuwang.org/*/*/*/*.html?*
-// @match          *://www.fushuwang.org/*/*/*.html
-// @match          *://www.fushuwang.org/*/*/*.html?*
-// @match          *://www.soxscc.net/*/
-// @match          *://www.soxscc.org/*/
-// @match          *://www.soxs.cc/*/
-// @match          *://www.soshuw.com/*/
-// @match          *://www.soshuwu.org/*/
-// @match          *://www.soxscc.cc/*/
-// @match          *://www.soshuwu.com/*/
-// @match          *://www.kubiji.net/*/
-// @match          *://www.soxscc.net/book/*.html
-// @match          *://www.soxscc.org/book/*.html
-// @match          *://www.soxs.cc/book/*.html
-// @match          *://www.soshuw.com/book/*.html
-// @match          *://www.soshuwu.org/book/*.html
-// @match          *://www.soxscc.cc/book/*.html
-// @match          *://www.soshuwu.com/book/*.html
-// @match          *://www.kubiji.net/book/*.html
-// @match          *://www.shubaowa.org/*_*/
-// @match          *://www.fuguoduxs.com/*_*/
-// @match          *://www.yqbiqu.com/html/*/*/index.html
-// @match          *://www.630shu.net/shu/*.html
-// @match          *://www.trxs.cc/tongren/*.html
-// @match          *://www.trxs.me/tongren/*.html
-// @match          *://www.trxs123.com/tongren/*.html
-// @match          *://www.jpxs123.com/*/*.html
-// @match          *://www.tongrenquan.org/tongren/*.html
-// @match          *://www.tongrenquan.me/tongren/*.html
-// @match          *://www.tongrenquan.cc/tongren/*.html
-// @match          *://trxs.cc/tongren/*.html
-// @match          *://trxs.me/tongren/*.html
-// @match          *://trxs123.com/tongren/*.html
-// @match          *://jpxs123.com/*/*.html
-// @match          *://tongrenquan.org/tongren/*.html
-// @match          *://tongrenquan.me/tongren/*.html
-// @match          *://tongrenquan.cc/tongren/*.html
-// @match          *://www.imiaobige.com/read/*/
-// @match          *://www.imbg.cc/read/*/
-// @match          *://www.256wenku.com/read/*/index.html
-// @match          *://www.256wenku.com/read/*/
-// @match          *://www.biquge66.com/biquge*/
-// @match          *://*.lofter.com/
-// @match          *://*.lofter.com/?page=*
-// @match          *://www.lwxs9.org/*/*/
-// @match          *://www.shubl.com/book/book_detail/*
-// @match          *://m.haitangtxt.net/*/*/
-// @match          *://ebook.longmabook.com/*
-// @match          *://www.longmabookcn.com/*
-// @match          *://ebook.lmbooks.com/*
-// @match          *://www.lmebooks.com/*
-// @match          *://www.haitbook.com/*
-// @match          *://www.htwhbook.com/*
-// @match          *://www.myhtebook.com/*
-// @match          *://www.lovehtbooks.com/*
-// @match          *://www.myhtebooks.com/*
-// @match          *://www.myhtlmebook.com/*
-// @match          *://jp.myhtebook.com/*
-// @match          *://jp.myhtlmebook.com/*
-// @match          *://ebook.urhtbooks.com/*
-// @match          *://www.urhtbooks.com/*
-// @match          *://www.newhtbook.com/*
-// @match          *://www.lvhtebook.com/*
-// @match          *://jp.lvhtebook.com/*
-// @match          *://www.htlvbooks.com/*
-// @match          *://dijiubook.net/*_*
-// @match          *://www.xbiquwx.la/*_*/
-// @match          *://www.25zw.com/*/
-// @match          *://www.zmccx.com/*_*/
-// @match          *://www.kanunu8.com/*
-// @match          *://www.ciyuanji.com/bookDetails/*
-// @match          *://ciyuanji.com/bookDetails/*
-// @match          *://m.wanben.org/*/
-// @match          *://www.wanben.org/*/
-// @match          *://www.ranwen.la/files/article/*/*/
-// @match          *://www.wangshuge.com/books/*/*/
-// @match          *://m.baihexs.com/info-*/
-// @match          *://www.quanshuzhai.com/book/*.html
-// @match          *://masiro.me/admin/novelView?novel_id=*
-// @match          *://www.pixiv.net/novel/show.php?*
-// @match          *://www.pixiv.net/novel/series/*
-// @match          *://kakuyomu.jp/works/*
-// @match          *://ncode.syosetu.com/*/
-// @match          *://ncode.syosetu.com/*
-// @match          *://novel18.syosetu.com/*/
-// @match          *://novel18.syosetu.com/*
-// @match          *://syosetu.org/novel/*/
-// @match          *://houhuayuan.vip/*
-// @match          *://zhaoze.art/*/
-// @match          *://www.myrics.com/novels/*
-// @match          *://m.lusetxt.com/ebook/*.html
-// @match          *://www.lstxt.cc/ebook/*.html
-// @match          *://www.a7xs.com/*/*/
-// @match          *://www.shencou.com/books/read_*.html
-// @match          *://www.tianyabooks.com/*/*/
-// @match          *://www.aixiawx.com/*/*/
-// @match          *://jingcaiyuedu6.com/novel/*.html
-// @match          *://www.hanwujinian.com/book/*
-// @match          *://www.biqu55.net/*_*/
-// @match          *://manga.bilibili.com/detail/mc*
-// @match          *://www.aixdzs.com/novel/*
-// @match          *://www.liuxs.la/bookinfo-*/
-// @match          *://www.cool18.com/bbs4/index.php?*
-// @match          *://www.b5200.net/*_*/
-// @match          *://www.xsyq.cc/html/*/*/index.html
-// @match          *://www.dushu369.com/*/*/
-// @match          *://www.18kanshu.com/*/*/info.html
-// @match          *://www.18kanshu.com/module/novel/info.php?*
-// @match          *://www.bxwx888.org/txt/*/
-// @match          *://www.xiaoshuowu.com/html/*/*/
-// @match          *://www.xrzww.com/bookdetail/*
-// @match          *://colorful-fantasybooks.com/module/novel/info.php?*
-// @match          *://www.dizishu.com/*/*/
-// @match          *://www.xbiquge.la/*/*/
-// @match          *://www.akatsuki-novels.com/stories/index/novel_id~*
-// @match          *://www.alphapolis.co.jp/novel/*/*
-// @match          *://novelup.plus/story/*
-// @match          *://www.69shu.com/txt/*.htm
-// @match          *://new-read.readmoo.com/mooreader/*
-// @match          *://www.iqingguo.com/book/detail/?id=*
-// @match          *://www.ywggzy.com/bxwx/*/
-// @match          *://www.ptwxz.net/*/
-// @match          *://www.ptwxz.net/list/*/
-// @match          *://www.mbtxt.la/go/*/
-// @match          *://www.znlzd.com/bqg/*/
-// @match          *://www.znlzd.com/bqg/11365/index_*.html
-// @match          *://www.yyun.net/xs/*/
-// @match          *://www.yb3.cc/5200/*/
-// @match          *://hongxiuzhao.me/*.html
-// @match          *://www.mijiashe.com/*/
-// @match          *://www.duread8.com/book/*
-// @compatible     Firefox 77+
-// @compatible     Chrome 85+
-// @compatible     Edge 85+
-// @compatible     Opera 71+
-// @compatible     Safari 13.1+
-// @connect        self
-// @connect        shouda8.com
-// @connect        shouda88.com
-// @connect        qidian.com
-// @connect        yuewen.com
-// @connect        kuangxiangit.com
-// @connect        sinaimg.cn
-// @connect        jjwxc.net
-// @connect        image.gebiqu.com
-// @connect        qpic.cn
-// @connect        zongheng.com
-// @connect        17k.com
-// @connect        img.uukanshu.com
-// @connect        aliyuncs.com
-// @connect        cdn.bcebos.com
-// @connect        rs.sfacg.com
-// @connect        shuhai.com
-// @connect        ch-intel.com
-// @connect        huluxia.com
-// @connect        linovel.net
-// @connect        ax1x.com
-// @connect        tadu.com
-// @connect        zhangyue01.com
-// @connect        cdn.wtzw.com
-// @connect        wenku8.com
-// @connect        dmzj.com
-// @connect        hongyeshuzhal.com
-// @connect        hongyeshuzhai.com
-// @connect        linovelib.com
-// @connect        soxscc.net
-// @connect        soxscc.org
-// @connect        soxs.cc
-// @connect        soshuw.com
-// @connect        soxscc.cc
-// @connect        soshuwu.com
-// @connect        kubiji.net
-// @connect        idejian.com
-// @connect        img.imiaobige.com
-// @connect        postimg.cc
-// @connect        lofter.com
-// @connect        lf127.net
-// @connect        126.net
-// @connect        shubl.com
-// @connect        loli.net
-// @connect        alicdn.com
-// @connect        toutiaoimg.com
-// @connect        imgdb.cn
-// @connect        meego.cn
-// @connect        poco.cn
-// @connect        dijiuzww.com
-// @connect        25zw.com
-// @connect        sina.com.cn
-// @connect        ciyuanji.com
-// @connect        wanben.org
-// @connect        baihexs.com
-// @connect        masiro.me
-// @connect        pximg.net
-// @connect        mitemin.net
-// @connect        myrics.com
-// @connect        a7xs.com
-// @connect        jingcaiyuedu6.com
-// @connect        aixdzs.com
-// @connect        b5200.net
-// @connect        xrzww.com
-// @connect        akatsuki-novels.com
-// @connect        alphapolis.co.jp
-// @connect        cdn.shucdn.com
-// @connect        readmoo.com
-// @connect        qingoo.cn
-// @connect        sundung.com
-// @connect        duread8.com
-// @connect        *
-// @description:en An scalable universal novel downloader.
-// @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @downloadURL    https://github.com/yingziwu/novel-downloader/raw/gh-pages/bundle-greasyfork.user.js
-// @grant          unsafeWindow
-// @grant          GM_info
-// @grant          GM_xmlhttpRequest
-// @grant          GM_setValue
-// @grant          GM_getValue
-// @grant          GM_deleteValue
-// @grant          GM.info
-// @grant          GM.xmlHttpRequest
-// @grant          GM.setValue
-// @grant          GM.getValue
-// @grant          GM.deleteValue
-// @homepageURL    https://github.com/404-novel-project/novel-downloader
-// @icon           https://cdn.jsdelivr.net/gh/404-novel-project/novel-downloader/assets/icon.png
-// @incompatible   Internet Explorer
-// @license        AGPL-3.0-or-later
-// @name:en        novel-downloader
-// @name:ja        小説ダウンローダー
-// @namespace      https://blog.bgme.me
+// @name        小说下载器
+// @description 一个可扩展的通用型小说下载器。
+// @version     5.0.814
+// @author      bgme
+// @supportURL  https://github.com/404-novel-project/novel-downloader
+// @exclude     *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
+// @exclude     *://m.yuzhaige.cc/tag/*/
+// @exclude     *://m.yuzhaige.cc/sort/*/
+// @exclude     *://m.yuzhaige.cc/top/*/
+// @exclude     *://m.yuzhaige.cc/full/*/
+// @exclude     *://m.yuzhaige.cc/book/*/
+// @exclude     *://m.yushuge123.com/tag/*/
+// @exclude     *://m.yushuge123.com/sort/*/
+// @exclude     *://m.yushuge123.com/top/*/
+// @exclude     *://m.yushuge123.com/full/*/
+// @exclude     *://m.yushuge123.com/book/*/
+// @exclude     *://m.haitangtxt.net/tag/*/
+// @exclude     *://m.haitangtxt.net/sort/*/
+// @exclude     *://m.haitangtxt.net/top/*/
+// @exclude     *://m.haitangtxt.net/full/*/
+// @exclude     *://m.haitangtxt.net/book/*/
+// @exclude     *://www.linovel.net/book/*/*.html
+// @exclude     *://www.qimao.com/shuku/*-*/
+// @exclude     *://www.trxs.cc/tongren/*/*.html
+// @exclude     *://www.trxs.me/tongren/*/*.html
+// @exclude     *://www.trxs123.com/tongren/*/*.html
+// @exclude     *://www.jpxs123.com/*/*/*.html
+// @exclude     *://www.tongrenquan.org/tongren/*/*.html
+// @exclude     *://www.tongrenquan.me/tongren/*/*.html
+// @exclude     *://trxs.cc/tongren/*/*.html
+// @exclude     *://trxs.me/tongren/*/*.html
+// @exclude     *://trxs123.com/tongren/*/*.html
+// @exclude     *://jpxs123.com/*/*/*.html
+// @exclude     *://tongrenquan.org/tongren/*/*.html
+// @exclude     *://tongrenquan.me/tongren/*/*.html
+// @exclude     *://www.25zw.org/lastupdate/
+// @exclude     *://www.25zw.org/postdate/
+// @exclude     *://www.25zw.org/monthvisit/
+// @exclude     *://www.25zw.org/goodnum/
+// @exclude     *://www.25zw.org/goodnew/
+// @exclude     *://dijiuben.com/*_*/*.html
+// @exclude     *://ncode.syosetu.com/*/*/
+// @exclude     *://novel18.syosetu.com/*/*/
+// @exclude     *://manhua.dmzj.com/
+// @exclude     *://houhuayuan.vip/
+// @exclude     *://book.sfacg.com/Novel/*/*/*/
+// @exclude     *://www.alphapolis.co.jp/novel/*/*/episode/*
+// @exclude     *://novelup.plus/story/*/*
+// @exclude     *://www.linovelib.com/novel/*/*.html
+// @exclude     *://w.linovelib.com/novel/*/*.html
+// @match       *://book.sfacg.com/Novel/*/MainIndex/
+// @match       *://book.sfacg.com/Novel/*/
+// @match       *://m.sfacg.com/b/*/
+// @match       *://book.qidian.com/info/*
+// @match       *://www.jjwxc.net/onebook.php?novelid=*
+// @match       *://www.gongzicp.com/novel-*.html
+// @match       *://m.gongzicp.com/novel-*.html
+// @match       *://book.zongheng.com/showchapter/*.html
+// @match       *://book.zongheng.com/book/*.html
+// @match       *://huayu.zongheng.com/showchapter/*.html
+// @match       *://huayu.zongheng.com/book/*.html
+// @match       *://www.linovel.net/book/*.html
+// @match       *://www.17k.com/list/*.html
+// @match       *://www.17k.com/book/*.html
+// @match       *://www.shuhai.com/book/*.htm
+// @match       *://mm.shuhai.com/book/*.htm
+// @match       *://www.tadu.com/book/*
+// @match       *://www.qimao.com/shuku/*/
+// @match       *://sosad.fun/threads/*/profile*
+// @match       *://wenzhan.org/threads/*/profile*
+// @match       *://sosadfun.com/threads/*/profile*
+// @match       *://xn--pxtr7m5ny.com/threads/*/profile*
+// @match       *://xn--pxtr7m.com/threads/*/profile*
+// @match       *://xn--pxtr7m5ny.net/threads/*/profile*
+// @match       *://xn--pxtr7m.net/threads/*/profile*
+// @match       *://sosadfun.link/threads/*/profile*
+// @match       *://www.sosad.fun/threads/*/profile*
+// @match       *://www.wenzhan.org/threads/*/profile*
+// @match       *://www.sosadfun.com/threads/*/profile*
+// @match       *://www.xn--pxtr7m5ny.com/threads/*/profile*
+// @match       *://www.xn--pxtr7m.com/threads/*/profile*
+// @match       *://www.xn--pxtr7m5ny.net/threads/*/profile*
+// @match       *://www.xn--pxtr7m.net/threads/*/profile*
+// @match       *://www.sosadfun.link/threads/*/profile*
+// @match       *://www.uukanshu.com/b/*/
+// @match       *://www.yiruan.la/article/*.html
+// @match       *://www.ishuquge.org/txt/*/index.html
+// @match       *://wap.ishuquge.org/s/*.html
+// @match       *://wap.ishuquge.org/d/*.html
+// @match       *://www.xkzw.org/xkzw*/
+// @match       *://www.lewenn.net/lw*/
+// @match       *://www.266ks.com/book/*/
+// @match       *://www.266ks.com/book/*/index*.html
+// @match       *://www.hetushu.com/book/*/index.html
+// @match       *://hetushu.com/book/*/index.html
+// @match       *://www.gashuw.com/biquge_*/
+// @match       *://www.1pwx.com/*.htm
+// @match       *://www.81book.com/book/*/
+// @match       *://www.81zw.com/book/*/
+// @match       *://m.yushuge123.com/*/*/
+// @match       *://www.wanben.info/*/
+// @match       *://m.wanben.info/*/
+// @match       *://www.idejian.com/book/*/
+// @match       *://www.wenku8.net/novel/*/*/index.htm
+// @match       *://www.wenku8.net/book/*.htm
+// @match       *://www.dmzj.com/info/*.html
+// @match       *://manhua.dmzj.com/*
+// @match       *://www.westnovel.com/*/*/
+// @match       *://www.mht99.com/*/
+// @match       *://www.banzhuer.org/*_*/
+// @match       *://www.xbiquge.so/book/*/
+// @match       *://www.007zw.com/shuzhai/*/
+// @match       *://www.linovelib.com/novel/*/catalog
+// @match       *://www.linovelib.com/novel/*.html
+// @match       *://w.linovelib.com/novel/*.html
+// @match       *://www.luoqiuzw.com/book/*/
+// @match       *://www.yibige.cc/*/
+// @match       *://www.fushuwang.org/*/*/*/*.html
+// @match       *://www.fushuwang.org/*/*/*/*.html?*
+// @match       *://www.fushuwang.org/*/*/*.html
+// @match       *://www.fushuwang.org/*/*/*.html?*
+// @match       *://www.soxscc.net/*/
+// @match       *://www.soxscc.org/*/
+// @match       *://www.soxs.cc/*/
+// @match       *://www.soxscc.cc/*/
+// @match       *://www.soshuwu.com/*/
+// @match       *://www.soxscc.net/book/*.html
+// @match       *://www.soxscc.org/book/*.html
+// @match       *://www.soxs.cc/book/*.html
+// @match       *://www.soxscc.cc/book/*.html
+// @match       *://www.soshuwu.com/book/*.html
+// @match       *://www.shubaowa.org/*_*/
+// @match       *://www.fuguoduxs.com/*_*/
+// @match       *://www.630shu.net/shu/*.html
+// @match       *://www.trxs.cc/tongren/*.html
+// @match       *://www.trxs.me/tongren/*.html
+// @match       *://www.trxs123.com/tongren/*.html
+// @match       *://www.jpxs123.com/*/*.html
+// @match       *://www.tongrenquan.org/tongren/*.html
+// @match       *://www.tongrenquan.me/tongren/*.html
+// @match       *://trxs.cc/tongren/*.html
+// @match       *://trxs.me/tongren/*.html
+// @match       *://trxs123.com/tongren/*.html
+// @match       *://jpxs123.com/*/*.html
+// @match       *://tongrenquan.org/tongren/*.html
+// @match       *://tongrenquan.me/tongren/*.html
+// @match       *://www.256wenku.com/read/*/index.html
+// @match       *://www.256wenku.com/read/*/
+// @match       *://www.biquge66.com/biquge*/
+// @match       *://*.lofter.com/
+// @match       *://*.lofter.com/?page=*
+// @match       *://www.shubl.com/book/book_detail/*
+// @match       *://m.haitangtxt.net/*/*/
+// @match       *://ebook.longmabook.com/*
+// @match       *://www.longmabookcn.com/*
+// @match       *://ebook.lmbooks.com/*
+// @match       *://www.lmebooks.com/*
+// @match       *://www.haitbook.com/*
+// @match       *://www.htwhbook.com/*
+// @match       *://www.myhtebook.com/*
+// @match       *://www.lovehtbooks.com/*
+// @match       *://www.myhtebooks.com/*
+// @match       *://www.myhtlmebook.com/*
+// @match       *://jp.myhtebook.com/*
+// @match       *://jp.myhtlmebook.com/*
+// @match       *://ebook.urhtbooks.com/*
+// @match       *://www.urhtbooks.com/*
+// @match       *://www.newhtbook.com/*
+// @match       *://www.lvhtebook.com/*
+// @match       *://jp.lvhtebook.com/*
+// @match       *://www.htlvbooks.com/*
+// @match       *://dijiuben.com/*_*
+// @match       *://www.biquzw.la/*_*/
+// @match       *://www.25zw.org/*/
+// @match       *://www.tycqzw.com/*_*/
+// @match       *://www.kanunu8.com/*
+// @match       *://www.ciyuanji.com/bookDetails/*
+// @match       *://ciyuanji.com/bookDetails/*
+// @match       *://m.wanben.org/*/
+// @match       *://www.wanben.org/*/
+// @match       *://www.ranwen.la/files/article/*/*/
+// @match       *://www.wangshuge.la/books/*/*/
+// @match       *://m.baihexs.com/info-*/
+// @match       *://www.quanshuzhai.com/book/*.html
+// @match       *://masiro.me/admin/novelView?novel_id=*
+// @match       *://www.pixiv.net/novel/show.php?*
+// @match       *://www.pixiv.net/novel/series/*
+// @match       *://kakuyomu.jp/works/*
+// @match       *://ncode.syosetu.com/*/
+// @match       *://ncode.syosetu.com/*
+// @match       *://novel18.syosetu.com/*/
+// @match       *://novel18.syosetu.com/*
+// @match       *://syosetu.org/novel/*/
+// @match       *://houhuayuan.vip/*
+// @match       *://zhaoze.vip/*/
+// @match       *://www.myrics.com/novels/*
+// @match       *://m.lvsewx.com/ebook/*.html
+// @match       *://www.lvsewx.com/ebook/*.html
+// @match       *://www.shencou.com/books/read_*.html
+// @match       *://www.tianyabooks.com/*/*/
+// @match       *://www.aixiaxs.net/*/*/
+// @match       *://jingcaiyuedu6.com/novel/*.html
+// @match       *://www.hanwujinian.com/book/*
+// @match       *://manga.bilibili.com/detail/mc*
+// @match       *://www.aixdzs.com/novel/*
+// @match       *://www.cool18.com/bbs4/index.php?*
+// @match       *://www.b5200.net/*_*/
+// @match       *://www.yqxsge.cc/html/*/*/index.html
+// @match       *://www.18kanshu.com/*/*/info.html
+// @match       *://www.18kanshu.com/module/novel/info.php?*
+// @match       *://www.bixia3.com/txt/*/
+// @match       *://www.xiaoshuowu.com/html/*/*/
+// @match       *://www.xrzww.com/bookdetail/*
+// @match       *://colorful-fantasybooks.com/module/novel/info.php?*
+// @match       *://www.dizishu.com/*/*/
+// @match       *://www.ibiquge.la/*/*/
+// @match       *://www.akatsuki-novels.com/stories/index/novel_id~*
+// @match       *://www.alphapolis.co.jp/novel/*/*
+// @match       *://novelup.plus/story/*
+// @match       *://www.69shu.com/txt/*.htm
+// @match       *://new-read.readmoo.com/mooreader/*
+// @match       *://www.iqingguo.com/book/detail/?id=*
+// @match       *://www.ywggzy.com/bxwx/*/
+// @match       *://www.ptwxz.net/*/
+// @match       *://www.ptwxz.net/list/*/
+// @match       *://www.mbtxt.la/go/*/
+// @match       *://m.kuangguwenhua.com/bqg/*/
+// @match       *://m.kuangguwenhua.com/bqg/11365/index_*.html
+// @match       *://www.xyb3.net/5200/*/
+// @match       *://hongxiuzhao.me/*.html
+// @match       *://www.mijiashe.com/*/
+// @match       *://www.duread8.com/book/*
+// @connect     self
+// @connect     qidian.com
+// @connect     yuewen.com
+// @connect     kuangxiangit.com
+// @connect     sinaimg.cn
+// @connect     jjwxc.net
+// @connect     gashuw.com
+// @connect     qpic.cn
+// @connect     zongheng.com
+// @connect     17k.com
+// @connect     uukanshu.com
+// @connect     aliyuncs.com
+// @connect     cdn.bcebos.com
+// @connect     rs.sfacg.com
+// @connect     shuhai.com
+// @connect     ch-intel.com
+// @connect     huluxia.com
+// @connect     linovel.net
+// @connect     ax1x.com
+// @connect     tadu.com
+// @connect     zhangyue01.com
+// @connect     cdn.wtzw.com
+// @connect     wenku8.com
+// @connect     dmzj.com
+// @connect     007zw.com
+// @connect     hongyeshuzhai.com
+// @connect     linovelib.com
+// @connect     soxscc.net
+// @connect     soxscc.org
+// @connect     soxs.cc
+// @connect     soxscc.cc
+// @connect     soshuwu.com
+// @connect     idejian.com
+// @connect     postimg.cc
+// @connect     lofter.com
+// @connect     lf127.net
+// @connect     126.net
+// @connect     shubl.com
+// @connect     loli.net
+// @connect     alicdn.com
+// @connect     toutiaoimg.com
+// @connect     imgdb.cn
+// @connect     meego.cn
+// @connect     poco.cn
+// @connect     dijiuzww.com
+// @connect     dijiushu.net
+// @connect     25zw.com
+// @connect     sina.com.cn
+// @connect     ciyuanji.com
+// @connect     wanben.org
+// @connect     baihexs.com
+// @connect     masiro.me
+// @connect     pximg.net
+// @connect     mitemin.net
+// @connect     myrics.com
+// @connect     jingcaiyuedu6.com
+// @connect     aixdzs.com
+// @connect     b5200.net
+// @connect     xrzww.com
+// @connect     akatsuki-novels.com
+// @connect     alphapolis.co.jp
+// @connect     cdn.shucdn.com
+// @connect     readmoo.com
+// @connect     qingoo.cn
+// @connect     sundung.com
+// @connect     duread8.com
+// @connect     *
+// @downloadURL https://github.com/yingziwu/novel-downloader/raw/gh-pages/bundle-greasyfork.user.js
+// @grant       unsafeWindow
+// @grant       GM_info
+// @grant       GM_xmlhttpRequest
+// @grant       GM_setValue
+// @grant       GM_getValue
+// @grant       GM_deleteValue
+// @grant       GM.info
+// @grant       GM.xmlHttpRequest
+// @grant       GM.setValue
+// @grant       GM.getValue
+// @grant       GM.deleteValue
+// @homepageURL https://github.com/404-novel-project/novel-downloader
+// @icon        https://cdn.jsdelivr.net/gh/404-novel-project/novel-downloader/assets/icon.png
+// @namespace   https://blog.bgme.me
 // @noframes
-// @require        https://unpkg.com/crypto-js@4.1.1/crypto-js.js#sha512-NQVmLzNy4Lr5QTrmXvq/WzTMUnRHmv7nyIT/M6LyGPBS+TIeRxZ+YQaqWxjpRpvRMQSuYPQURZz/+pLi81xXeA==
-// @require        https://unpkg.com/fflate@0.7.4/umd/index.js#sha512-j3RSYniik9MPzPj4jENl0Q6Um2f3OHPK/KQP7SEh8RL/gyAGSj/PaiyUPrgY88TA5COsEx8D34hkc3vNVCFaSw==
-// @require        https://unpkg.com/nunjucks@3.2.3/browser/nunjucks.min.js#sha512-Uj8C5szr1tnKPNZb6ps5gFYtTGskzsUCiwY35QP/s2JIExZl7iYNletcmOJ8D6ocuaMRi9JGVrWRePaX9raujA==
-// @require        https://unpkg.com/vue@3.2.47/dist/vue.global.prod.js#sha512-GBVIWsyfp4G1USUI5RMOWK0h3Z47VIF/9Ek/og00XZ2O3DTQauGlHA88kM9SJWOxpNEvKMkLkOhM6gqFGaeEeg==
-// @run-at         document-start
-// @updateURL      https://github.com/yingziwu/novel-downloader/raw/gh-pages/bundle-greasyfork.meta.js
+// @require     https://unpkg.com/crypto-js@4.1.1/crypto-js.js#sha512-NQVmLzNy4Lr5QTrmXvq/WzTMUnRHmv7nyIT/M6LyGPBS+TIeRxZ+YQaqWxjpRpvRMQSuYPQURZz/+pLi81xXeA==
+// @require     https://unpkg.com/fflate@0.7.4/umd/index.js#sha512-j3RSYniik9MPzPj4jENl0Q6Um2f3OHPK/KQP7SEh8RL/gyAGSj/PaiyUPrgY88TA5COsEx8D34hkc3vNVCFaSw==
+// @require     https://unpkg.com/nunjucks@3.2.3/browser/nunjucks.min.js#sha512-Uj8C5szr1tnKPNZb6ps5gFYtTGskzsUCiwY35QP/s2JIExZl7iYNletcmOJ8D6ocuaMRi9JGVrWRePaX9raujA==
+// @require     https://unpkg.com/vue@3.2.47/dist/vue.global.prod.js#sha512-GBVIWsyfp4G1USUI5RMOWK0h3Z47VIF/9Ek/og00XZ2O3DTQauGlHA88kM9SJWOxpNEvKMkLkOhM6gqFGaeEeg==
+// @run-at      document-start
+// @updateURL   https://github.com/yingziwu/novel-downloader/raw/gh-pages/bundle-greasyfork.meta.js
 // ==/UserScript==
 
 /******/ (() => { // webpackBootstrap
@@ -8958,70 +8913,6 @@ class BaseRuleClass {
 
 /***/ }),
 
-/***/ "./src/rules/biquge/biqu55.ts":
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "biqu55": () => (/* binding */ biqu55)
-/* harmony export */ });
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/dom.ts");
-/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/http.ts");
-/* harmony import */ var _onePage_template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
-/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/rules/biquge/template.ts");
-
-
-
-
-const biqu55 = () => (0,_onePage_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
-    ...(0,_template__WEBPACK_IMPORTED_MODULE_1__/* .baseOnePage */ .FG)((introDom) => introDom, 5),
-    getContentFromUrl: async (chapterUrl, chapterName, charset) => {
-        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
-        const script = Array.from(doc.querySelectorAll("script"))
-            .filter((s) => s.innerHTML.includes("article_id"))?.[0]
-            ?.innerHTML.split("\n")
-            .filter((line) => !line.includes("lastread.set"))
-            .join("\n");
-        const request = new Function(`${script};
-const url = "https://www.biqu55.net/home/index/ajaxchapter";
-const payload = new URLSearchParams({
-    id: article_id,
-    eKey: hash,
-    cid: chapter_id,
-    basecid: chapter_id,
-});
-return new Request(url, {
-    headers: {
-    accept: "application/json, text/javascript, */*; q=0.01",
-    "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-    "x-requested-with": "XMLHttpRequest",
-    },
-    body: payload.toString(),
-    method: "POST",
-    mode: "cors",
-    credentials: "include",
-});`)();
-        const resp = await fetch(request);
-        const json = (await resp.json());
-        if (json.status === "success") {
-            const contentRaw = document.createElement("div");
-            contentRaw.innerHTML = json.info.content;
-            return contentRaw;
-        }
-        else {
-            return null;
-        }
-    },
-    contentPatch: (content) => {
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_3__/* .rm2 */ .vS)(["数据和书签与电脑站同步，无广告清新阅读"], content);
-        return content;
-    },
-});
-
-
-/***/ }),
-
 /***/ "./src/rules/biquge/mht.ts":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -9099,7 +8990,7 @@ const znlzd = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeMultiIn
     }
     const pathname = nextLink.split("/").slice(-1)[0];
     return pathname.includes("_");
-});
+}, 3);
 const c226ks = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeMultiIndexNextPage */ .HW)((introDom) => introDom, (content) => content, (doc) => doc.querySelector("section.g-content-nav > a:nth-child(3)").href, (_content, nextLink) => {
     const pathname = nextLink.split("/").slice(-1)[0];
     return pathname.includes("_");
@@ -9116,8 +9007,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "mijiashe": () => (/* binding */ mijiashe),
 /* harmony export */   "xinwanben": () => (/* binding */ xinwanben),
-/* harmony export */   "ywggzy": () => (/* binding */ ywggzy),
-/* harmony export */   "yyun": () => (/* binding */ yyun)
+/* harmony export */   "ywggzy": () => (/* binding */ ywggzy)
 /* harmony export */ });
 /* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/cleanDOM.ts");
 /* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
@@ -9149,31 +9039,6 @@ const xinwanben = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeNex
     (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__/* .htmlTrim */ .iA)(content);
     return content;
 }, (doc) => doc.querySelector("#next_url").href, (_content, nextLink) => new URL(nextLink).pathname.includes("_"));
-const yyun = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeNextPage */ .B4)((introDom) => {
-    const _bookname = introDom.innerHTML.match(/《(.*)》/);
-    let bookname;
-    if (_bookname?.length === 2) {
-        bookname = _bookname[1];
-    }
-    const adList = [
-        "还不错的话请不要忘记向您QQ群和微博里的朋友推荐哦！",
-        "小说免费阅读地址：",
-    ];
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .vS)(adList, introDom);
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .up)([`${bookname}小说简介：`], introDom);
-    return introDom;
-}, (content) => {
-    const filters = [
-        "提示♂浏览器♂搜索♂",
-        "长夜读:一秒记住",
-        "【烟云小说】",
-        "【m.yyun.net】",
-    ];
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .vS)(filters, content);
-    (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__/* .htmlTrim */ .iA)(content);
-    return content;
-}, (doc) => doc.querySelector(".bottem2 > a:nth-child(3)")
-    .href, (_content, nextLink) => new URL(nextLink).pathname.includes("_"));
 const mijiashe = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeNextPage */ .B4)((introDom) => {
     const _bookname = introDom.innerHTML.match(/《(.*)》/);
     let bookname;
@@ -9216,17 +9081,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "c25zw": () => (/* binding */ c25zw),
 /* harmony export */   "common": () => (/* binding */ common),
 /* harmony export */   "dijiubook": () => (/* binding */ dijiubook),
-/* harmony export */   "dingdiann": () => (/* binding */ dingdiann),
 /* harmony export */   "gebiqu": () => (/* binding */ gebiqu),
+/* harmony export */   "lewenn": () => (/* binding */ lewenn),
 /* harmony export */   "luoqiuzw": () => (/* binding */ luoqiuzw),
 /* harmony export */   "lusetxt": () => (/* binding */ lusetxt),
-/* harmony export */   "lwxs9": () => (/* binding */ lwxs9),
 /* harmony export */   "ranwen": () => (/* binding */ ranwen),
 /* harmony export */   "shuquge": () => (/* binding */ shuquge),
 /* harmony export */   "tycqxs": () => (/* binding */ tycqxs),
 /* harmony export */   "xbiquge": () => (/* binding */ xbiquge),
 /* harmony export */   "xbiqugeLa": () => (/* binding */ xbiqugeLa),
-/* harmony export */   "xyqxs": () => (/* binding */ xyqxs),
+/* harmony export */   "xyb3": () => (/* binding */ xyb3),
 /* harmony export */   "yqxs": () => (/* binding */ yqxs),
 /* harmony export */   "yruan": () => (/* binding */ yruan)
 /* harmony export */ });
@@ -9250,7 +9114,7 @@ const gebiqu = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .H
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)('a[href^="http://down.gebiqu.com"]', false, introDom);
     return introDom;
 }, (content) => {
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rms */ .up)([/"www.gebiqu.com"/g], content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rms */ .up)([/"www.gashuw.com"/g], content);
     return content;
 });
 const luoqiuzw = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Hb)((introDom) => introDom, (content) => {
@@ -9260,10 +9124,6 @@ const luoqiuzw = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ 
     }
     const ads = ["记住网址m.luoqｉｕｘｚｗ．ｃｏｍ"];
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rms */ .up)(ads, content);
-    return content;
-});
-const lwxs9 = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Hb)((introDom) => introDom, (content) => {
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("div[align]", false, content);
     return content;
 });
 const biquwx = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Hb)((introDom) => {
@@ -9295,7 +9155,7 @@ const dijiubook = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */
     return classThis;
 }, (chapter) => {
     const url = new URL(chapter.chapterUrl);
-    if (url.host === "m.dijiubook.net" || url.href.endsWith(".apk")) {
+    if (url.host === "m.dijiuben.com" || url.href.endsWith(".apk")) {
         return;
     }
     else {
@@ -9317,7 +9177,10 @@ const xbiquge = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .
 const yruan = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Hb)((introDom) => {
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rm2 */ .vS)(["本站提示：各位书友要是觉得"], introDom);
     return introDom;
-}, (content) => content, 3);
+}, (content) => {
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("b", true, content);
+    return content;
+}, 3);
 const ranwen = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Hb)((introDom) => {
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rm2 */ .vS)(["还不错的话请不要忘记向您QQ群和微博里的朋友推荐哦！"], introDom);
     return introDom;
@@ -9343,26 +9206,13 @@ const shuquge = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .
     }
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rms */ .up)([
         /作者：.+所写的《.+》无弹窗免费全文阅读为转载作品,章节由网友发布。/,
-        /推荐地址：https?:\/\/www\.shuquge\.com\/txt\/\d+\/index\.html/g,
+        /推荐地址：https?:\/\/www\.ishuquge\.org\/txt\/\d+\/index\.html/g,
     ], introDom);
     return introDom;
 }, (content) => {
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rm2 */ .vS)(["请记住本书首发域名：", "www.shuquge.com"], content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rm2 */ .vS)(["请记住本书首发域名：", "www.ishuquge.org"], content);
     return content;
 }, 1);
-const xyqxs = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Hb)((introDom) => {
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rms */ .up)([/推荐地址：https:\/\/www.xyqxs.cc\/html\/\d+\/\d+\/index\.html/g], introDom);
-    return introDom;
-}, (content) => {
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("div[style]", true, content);
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("script", true, content);
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)('div[align="center"]', false, content);
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rms */ .up)([
-        "请记住本书首发域名：www.xyqxs.cc。笔趣阁手机版阅读网址：m.xyqxs.cc",
-        /\(https:\/\/www.xyqxs.cc\/html\/\d+\/\d+\/\d+\.html\)/,
-    ], content);
-    return content;
-});
 const lusetxt = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Hb)((introDom) => {
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rm2 */ .vS)(["无弹窗免费全文阅读为转载作品", "无弹窗推荐地址", "简介："], introDom);
     return introDom;
@@ -9370,7 +9220,7 @@ const lusetxt = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("script", true, content);
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("div[style]", true, content);
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("div[align]", true, content);
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rm2 */ .vS)(["https://www.lusetxt.com/books", "请记住本书首发域名"], content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rm2 */ .vS)(["https://www.lvsewx.com/books", "请记住本书首发域名"], content);
     (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_3__/* .htmlTrim */ .iA)(content);
     return content;
 });
@@ -9381,16 +9231,32 @@ const yqxs = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Hb)
 }, (content) => {
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("script", true, content);
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)('div[align="center"]', false, content);
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rm2 */ .vS)(["//www.yqxs.cc/html/", "请记住本书首发域名"], content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rm2 */ .vS)(["//www.yqxsge.cc/html/", "请记住本书首发域名"], content);
     return content;
 });
-const dingdiann = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Hb)((introDom) => introDom, (content) => {
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("div", false, content);
+const lewenn = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Hb)((introDom) => {
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rms */ .up)([
+        /各位书友要是觉得《.*》还不错的话请不要忘记向您QQ群和微博里的朋友推荐哦！/,
+    ], introDom);
+    return introDom;
+}, (content) => {
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("script", true, content);
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rm2 */ .vS)(["www.dingdiann.net", "最新全本："], content);
-    (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_3__/* .htmlTrim */ .iA)(content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)('div[align="center"]', false, content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rm2 */ .vS)(["//www.lewenn.net/lw", "1秒记住乐文小说网"], content);
     return content;
-}, 5);
+});
+const xyb3 = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Hb)((introDom) => introDom, (content) => {
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("script", true, content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("div[style]", true, content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("div[align]", true, content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rm2 */ .vS)([
+        "由于各种问题yb3.cc地址更改为xyb3.net请大家收藏新地址避免迷路",
+        "网页版章节内容慢，请下载好阅小说app阅读最新内容",
+        "请退出转码页面，请下载好阅小说app 阅读最新章节。",
+        "https://www.xyb3.net",
+    ], content);
+    return content;
+});
 
 
 /***/ }),
@@ -9679,61 +9545,6 @@ const c630shu = (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)(
 
 /***/ }),
 
-/***/ "./src/rules/onePage/a7xs.ts":
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "a7xs": () => (/* binding */ a7xs)
-/* harmony export */ });
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/cleanDOM.ts");
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
-/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
-
-
-
-
-const a7xs = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
-    bookUrl: document.location.href,
-    bookname: document.querySelector("#info > h1").innerText.trim(),
-    author: document.querySelector("span.item:nth-child(1)").innerText.trim(),
-    introDom: document.querySelector(".bookinfo_intro"),
-    introDomPatch: (dom) => {
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("strong", true, dom);
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .vS)(["您要是觉得《", "请不要忘记向您QQ群和微博微信里的朋友推荐哦！"], dom);
-        return dom;
-    },
-    coverUrl: document.querySelector(".pic > img").src,
-    aList: document.querySelectorAll(".book_list > ul > li > a"),
-    getContentFromUrl: async (chapterUrl, chapterName, charset) => {
-        const { contentRaw } = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .nextPageParse */ .I2)({
-            chapterName,
-            chapterUrl,
-            charset,
-            selector: "#htmlContent",
-            contentPatch: (content, doc) => {
-                const ads = ["免费追书小说网手机版阅读网址"];
-                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .vS)(ads, content);
-                (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_3__/* .htmlTrim */ .iA)(content);
-                return content;
-            },
-            getNextPage: (doc) => doc.querySelector("a.next.pager_next").href,
-            continueCondition: (_content, nextLink) => {
-                const pathname = nextLink.split("/").slice(-1)[0];
-                return pathname.includes("_");
-            },
-            enableCleanDOM: false,
-        });
-        return contentRaw;
-    },
-    contentPatch: (content) => content,
-});
-
-
-/***/ }),
-
 /***/ "./src/rules/onePage/aixdzs.ts":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -9881,36 +9692,6 @@ return new Request(url, {
         return classThis;
     },
 });
-
-
-/***/ }),
-
-/***/ "./src/rules/onePage/dushu369.ts":
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "dushu369": () => (/* binding */ dushu369)
-/* harmony export */ });
-/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
-
-const dushu369 = () => {
-    const title = document.querySelector(".cntitle");
-    const [author, bookname] = /(.+)《(.+)》/
-        .exec(title.innerText.trim())
-        ?.slice(1) ?? ["", title.innerText.trim()];
-    return (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
-        bookUrl: document.location.href,
-        bookname,
-        author,
-        introDom: document.querySelector(".Readme"),
-        introDomPatch: (dom) => dom,
-        aList: document.querySelectorAll(".content a.a0"),
-        getContent: (doc) => doc.querySelector(".content"),
-        contentPatch: (dom) => dom,
-    });
-};
 
 
 /***/ }),
@@ -10530,45 +10311,6 @@ const syosetuOrg = () => {
         language: "ja",
     });
 };
-
-
-/***/ }),
-
-/***/ "./src/rules/onePage/shouda8.ts":
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "shouda8": () => (/* binding */ shouda8)
-/* harmony export */ });
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
-/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
-
-
-const shouda8 = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
-    bookUrl: document.location.href,
-    bookname: document.querySelector(".bread-crumbs > li:nth-child(4)").innerText.trim(),
-    author: document.querySelector("div.bookname > h1 > em").innerText
-        .replace("作者：", "")
-        .trim(),
-    introDom: document.querySelector(".intro"),
-    introDomPatch: (introDom) => {
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)(".book_keywords", true, introDom);
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("script", true, introDom);
-        return introDom;
-    },
-    coverUrl: document.querySelector(".pic > img:nth-child(1)").src,
-    aList: document.querySelectorAll(".link_14 dd > a"),
-    sections: document.querySelectorAll(".link_14 dt > b"),
-    getSName: (sElem) => sElem.innerText.trim(),
-    getContent: (doc) => doc.querySelector("#content"),
-    contentPatch: (content) => {
-        const ads = ["手打吧更新速度最快。", "www.shouda88.com"];
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .vS)(ads, content);
-        return content;
-    },
-});
 
 
 /***/ }),
@@ -11902,7 +11644,6 @@ class MangaBilibili extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Ciweimao": () => (/* binding */ Ciweimao),
 /* harmony export */   "Duread": () => (/* binding */ Duread),
 /* harmony export */   "Shubl": () => (/* binding */ Shubl)
 /* harmony export */ });
@@ -11910,9 +11651,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(crypto_js__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/attachments.ts");
 /* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__("./src/lib/cleanDOM.ts");
-/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/http.ts");
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("./src/lib/dom.ts");
-/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/rule.ts");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_5__);
 /* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/main/main.ts");
@@ -11932,106 +11673,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-class Ciweimao extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
-    constructor() {
-        super();
-        this.attachmentMode = "TM";
-        this.charset = "UTF-8";
-        this.concurrencyLimit = 1;
-        this.maxRunLimit = 1;
-    }
-    async bookParse() {
-        const bookid = unsafeWindow.HB.book.book_id;
-        const bookUrl = `https://www.ciweimao.com/book/${bookid}`;
-        const bookname = document.querySelector(".book-catalog .hd h3").innerText.trim();
-        const author = document.querySelector(".book-catalog .hd > p > a").innerText.trim();
-        const dom = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .getHtmlDOM */ .dL)(bookUrl, undefined);
-        const introDom = dom.querySelector(".book-intro-cnt .book-desc");
-        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_3__/* .introDomHandle */ .SN)(introDom);
-        const additionalMetadate = {};
-        const coverUrl = dom.querySelector(".cover > img")
-            .src;
-        if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_4__/* .getAttachment */ .FG)(coverUrl, this.attachmentMode, "cover-")
-                .then((coverClass) => {
-                additionalMetadate.cover = coverClass;
-            })
-                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_5___default().error(error));
-        }
-        additionalMetadate.tags = Array.from(dom.querySelectorAll(".label-box > .label")).map((span) => span.innerText.trim());
-        const chapters = [];
-        const sections = document.querySelectorAll(".book-chapter > .book-chapter-box");
-        let chapterNumber = 0;
-        for (let i = 0; i < sections.length; i++) {
-            const s = sections[i];
-            const sectionNumber = i + 1;
-            const sectionName = s.querySelector(".sub-tit")
-                .innerText;
-            let sectionChapterNumber = 0;
-            const cs = s.querySelectorAll(".book-chapter-list > li > a");
-            for (const c of Array.from(cs)) {
-                chapterNumber++;
-                sectionChapterNumber++;
-                const chapterName = c.innerText.trim();
-                const chapterUrl = c.href;
-                let isVIP = false;
-                let isPaid = false;
-                if (c.childElementCount) {
-                    isVIP = true;
-                    if (c.firstElementChild?.className === "icon-unlock") {
-                        isPaid = true;
-                    }
-                }
-                const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_6__/* .Chapter */ .W({
-                    bookUrl,
-                    bookname,
-                    chapterUrl,
-                    chapterNumber,
-                    chapterName,
-                    isVIP,
-                    isPaid,
-                    sectionName,
-                    sectionNumber,
-                    sectionChapterNumber,
-                    chapterParse: this.chapterParse,
-                    charset: this.charset,
-                    options: {},
-                });
-                const isLogin = document.querySelector(".login-info.ly-fr")?.childElementCount === 1;
-                if (isVIP && !(isLogin && isPaid)) {
-                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_7__/* .Status.aborted */ .qb.aborted;
-                }
-                chapters.push(chapter);
-            }
-        }
-        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_8__/* .Book */ .f({
-            bookUrl,
-            bookname,
-            author,
-            introduction,
-            introductionHTML,
-            additionalMetadate,
-            chapters,
-        });
-        book.ToCUrl = document.location.href;
-        return book;
-    }
-    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        const rootPath = "https://www.ciweimao.com/";
-        const [parentWidth, setFontSize] = [871, "14"];
-        return getChapter({
-            chapterUrl,
-            chapterName,
-            isVIP,
-            isPaid,
-            charset,
-            options,
-            rootPath,
-            parentWidth,
-            setFontSize,
-        });
-    }
-}
 class Shubl extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
     constructor() {
         super();
@@ -12044,8 +11685,8 @@ class Shubl extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
         const bookname = document.querySelector(".book-title > span").innerText.trim();
         const author = document.querySelector("div.username").innerText.trim();
         const introDom = document.querySelector(".book-brief");
-        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_3__/* .introDomHandle */ .SN)(introDom, (introDomI) => {
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_9__/* .rms */ .up)(["简介："], introDomI);
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .introDomHandle */ .SN)(introDom, (introDomI) => {
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_3__/* .rms */ .up)(["简介："], introDomI);
             return introDomI;
         });
         const additionalMetadate = {};
@@ -12146,8 +11787,8 @@ class Duread extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c 
         const bookname = document.querySelector(".book-title > span").innerText.trim();
         const author = document.querySelector("div.username").innerText.trim();
         const introDom = document.querySelector(".book-brief");
-        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_3__/* .introDomHandle */ .SN)(introDom, (introDomI) => {
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_9__/* .rms */ .up)(["简介："], introDomI);
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .introDomHandle */ .SN)(introDom, (introDomI) => {
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_3__/* .rms */ .up)(["简介："], introDomI);
             return introDomI;
         });
         const additionalMetadate = {};
@@ -12265,7 +11906,7 @@ function getChapter({ chapterUrl, chapterName, isVIP, isPaid, charset, options, 
         return message.toString(crypto_js__WEBPACK_IMPORTED_MODULE_0__.enc.Utf8);
     }
     async function getChapterAuthorSay() {
-        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .getHtmlDOM */ .dL)(chapterUrl, undefined);
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_9__/* .getHtmlDOM */ .dL)(chapterUrl, undefined);
         const chapterAuthorSays = doc.querySelectorAll("#J_BookCnt .chapter.author_say");
         let divChapterAuthorSay;
         if (chapterAuthorSays.length !== 0) {
@@ -12273,7 +11914,7 @@ function getChapter({ chapterUrl, chapterName, isVIP, isPaid, charset, options, 
             divChapterAuthorSay = document.createElement("div");
             divChapterAuthorSay.appendChild(hr);
             for (const chapterAuthorSay of Array.from(chapterAuthorSays)) {
-                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_9__.rm)("i", true, chapterAuthorSay);
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_3__.rm)("i", true, chapterAuthorSay);
                 divChapterAuthorSay.appendChild(chapterAuthorSay);
             }
         }
@@ -12285,7 +11926,7 @@ function getChapter({ chapterUrl, chapterName, isVIP, isPaid, charset, options, 
             const accessKeyUrl = rootPath + "chapter/ajax_get_session_code";
             const chapterContentUrl = rootPath + "chapter/get_book_chapter_detail_info";
             _log__WEBPACK_IMPORTED_MODULE_5___default().debug(`[Chapter]请求 ${accessKeyUrl} Referer ${refererUrl}`);
-            const accessKeyObj = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .gfetch */ .GF)(accessKeyUrl, {
+            const accessKeyObj = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_9__/* .gfetch */ .GF)(accessKeyUrl, {
                 method: "POST",
                 headers: {
                     Accept: "application/json, text/javascript, */*; q=0.01",
@@ -12302,7 +11943,7 @@ function getChapter({ chapterUrl, chapterName, isVIP, isPaid, charset, options, 
             const chapter_access_key = accessKeyObj
                 .chapter_access_key;
             _log__WEBPACK_IMPORTED_MODULE_5___default().debug(`[Chapter]请求 ${chapterContentUrl} Referer ${refererUrl}`);
-            const chapterContentObj = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .gfetch */ .GF)(chapterContentUrl, {
+            const chapterContentObj = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_9__/* .gfetch */ .GF)(chapterContentUrl, {
                 method: "POST",
                 headers: {
                     Accept: "application/json, text/javascript, */*; q=0.01",
@@ -12330,7 +11971,7 @@ function getChapter({ chapterUrl, chapterName, isVIP, isPaid, charset, options, 
         const content = document.createElement("div");
         const decryptDate = await chapterDecrypt(chapterId, chapterUrl);
         content.innerHTML = decryptDate;
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_9__.rm)(".chapter span", true, content);
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_3__.rm)(".chapter span", true, content);
         if (divChapterAuthorSay) {
             content.appendChild(divChapterAuthorSay);
         }
@@ -12348,7 +11989,7 @@ function getChapter({ chapterUrl, chapterName, isVIP, isPaid, charset, options, 
         async function vipChapterDecrypt(chapterIdi, refererUrl) {
             const imageSessionCodeUrl = rootPath + "chapter/ajax_get_image_session_code";
             _log__WEBPACK_IMPORTED_MODULE_5___default().debug(`[Chapter]请求 ${imageSessionCodeUrl} Referer ${refererUrl}`);
-            const imageSessionCodeObject = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .gfetch */ .GF)(imageSessionCodeUrl, {
+            const imageSessionCodeObject = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_9__/* .gfetch */ .GF)(imageSessionCodeUrl, {
                 method: "POST",
                 headers: {
                     Accept: "application/json, text/javascript, */*; q=0.01",
@@ -12401,7 +12042,7 @@ function getChapter({ chapterUrl, chapterName, isVIP, isPaid, charset, options, 
             const divChapterAuthorSay = await getChapterAuthorSay();
             const vipCHapterImageUrl = await vipChapterDecrypt(chapterId, chapterUrl);
             _log__WEBPACK_IMPORTED_MODULE_5___default().debug(`[Chapter]请求 ${vipCHapterImageUrl} Referer ${chapterUrl}`);
-            const vipCHapterImageBlob = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .gfetch */ .GF)(vipCHapterImageUrl, {
+            const vipCHapterImageBlob = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_9__/* .gfetch */ .GF)(vipCHapterImageUrl, {
                 method: "GET",
                 headers: {
                     Referer: chapterUrl,
@@ -19540,56 +19181,6 @@ const c69shu = () => (0,_tempate__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ 
 
 /***/ }),
 
-/***/ "./src/rules/twoPage/imiaobige.ts":
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "imiaobige": () => (/* binding */ imiaobige)
-/* harmony export */ });
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
-/* harmony import */ var _tempate__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/twoPage/tempate.ts");
-
-
-const imiaobige = () => {
-    const bookUrl = document.location.href
-        .replace("/read/", "/novel/")
-        .replace(/\/$/, ".html");
-    const getName = (sElem) => sElem.firstElementChild?.innerText
-        .split(" ")
-        .slice(-1)?.[0] ?? "";
-    return (0,_tempate__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
-        bookUrl,
-        anotherPageUrl: bookUrl,
-        getBookname: (doc) => doc.querySelector(".booktitle > h1").innerText.trim(),
-        getAuthor: (doc) => doc.querySelector("#author > a").innerText.trim(),
-        getIntroDom: (doc) => doc.querySelector("#bookintro"),
-        introDomPatch: (introDom) => introDom,
-        getCoverUrl: (doc) => doc.querySelector("#bookimg > img").src,
-        getSections: (doc) => document.querySelectorAll("#readerlists > ul"),
-        getAList: (doc) => document.querySelectorAll("#readerlists  a"),
-        getSName: getName,
-        postHook: (chapter) => {
-            if (chapter.sectionName?.includes("最新章节")) {
-                return;
-            }
-            chapter.sectionName =
-                chapter.sectionName?.replace(chapter.bookname, "").trim() ?? null;
-            return chapter;
-        },
-        getContent: (doc) => doc.querySelector("#content"),
-        contentPatch: (content) => {
-            const ads = ["您可以在百度里搜索“"];
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .vS)(ads, content);
-            return content;
-        },
-    });
-};
-
-
-/***/ }),
-
 /***/ "./src/rules/twoPage/jingcaiyuedu6.ts":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -19909,49 +19500,6 @@ const wlinovelib = () => {
 
 /***/ }),
 
-/***/ "./src/rules/twoPage/liuxs.ts":
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "liuxs": () => (/* binding */ liuxs)
-/* harmony export */ });
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
-/* harmony import */ var _tempate__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/twoPage/tempate.ts");
-
-
-const liuxs = () => (0,_tempate__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
-    bookUrl: document.location.href,
-    anotherPageUrl: document.querySelector(".btopt > a")
-        .href,
-    getBookname: (doc) => doc.querySelector("div.infot:nth-child(1) > h1:nth-child(1)").innerText.trim(),
-    getAuthor: (doc) => doc.querySelector("div.infot:nth-child(1) > span:nth-child(2)").innerText
-        .replace("作者：", "")
-        .trim(),
-    getIntroDom: (doc) => document.querySelector(".intro"),
-    introDomPatch: (dom) => dom,
-    getCoverUrl: (doc) => document.querySelector(".pic > img").src,
-    getAList: (doc) => doc.querySelectorAll("#defaulthtml4 > table > tbody  div > a"),
-    getSections: (doc) => doc.querySelectorAll(".j_title > b"),
-    getSName: (dom) => dom.innerText.trim(),
-    postHook: (chapter) => {
-        const bookname = chapter.bookname;
-        if (chapter.sectionName) {
-            chapter.sectionName = chapter.sectionName.replace(`《${bookname}》`, "");
-        }
-        return chapter;
-    },
-    getContent: (doc) => doc.querySelector("#content"),
-    contentPatch: (dom) => {
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .vS)(["--＆网--网"], dom);
-        return dom;
-    },
-});
-
-
-/***/ }),
-
 /***/ "./src/rules/twoPage/shencou.ts":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -20187,44 +19735,6 @@ function mkRuleClass({ bookUrl, anotherPageUrl, ToCUrl, getBookname, getAuthor, 
         }
     };
 }
-
-
-/***/ }),
-
-/***/ "./src/rules/twoPage/viviyzw.ts":
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "viviyzw": () => (/* binding */ viviyzw)
-/* harmony export */ });
-/* harmony import */ var _tempate__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/twoPage/tempate.ts");
-
-const viviyzw = () => {
-    const bookUrl = document.location.href.replace("/book", "/info");
-    return (0,_tempate__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
-        bookUrl,
-        anotherPageUrl: bookUrl,
-        getBookname: (doc) => doc.querySelector("article.info > header > h1").innerText.trim(),
-        getAuthor: (doc) => doc.querySelector("article.info > p.detail.pt20 > i:nth-child(1) > a").innerText.trim(),
-        getIntroDom: (doc) => doc.querySelector("article.info > p.desc"),
-        introDomPatch: (content) => content,
-        getCoverUrl: (doc) => doc.querySelector("article.info > div.cover > img")
-            .src,
-        getAList: (doc) => document.querySelectorAll("ul.mulu > li.col3 > a"),
-        getSections: (doc) => document.querySelectorAll("li.col1.volumn"),
-        getSName: (sElem) => sElem.innerText,
-        postHook: (chapter) => {
-            if (chapter.sectionName?.includes("最新九章")) {
-                return;
-            }
-            return chapter;
-        },
-        getContent: (doc) => doc.querySelector("#content"),
-        contentPatch: (content) => content,
-    });
-};
 
 
 /***/ }),
@@ -21067,42 +20577,10 @@ async function getRule() {
     const host = document.location.host;
     let ruleClass;
     switch (host) {
-        case "www.ciweimao.com": {
-            const { Ciweimao } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/ciweimao.ts"));
-            ruleClass = Ciweimao;
-            break;
-        }
-        case "www.uukanshu.com": {
-            const { uukanshu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/uukanshu.ts"));
-            ruleClass = uukanshu();
-            break;
-        }
-        case "www.yruan.com": {
-            const { yruan } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
-            ruleClass = yruan();
-            break;
-        }
-        case "www.shuquge.com":
-        case "www.sizhicn.com": {
-            const { shuquge } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
-            ruleClass = shuquge();
-            break;
-        }
-        case "www.dingdiann.net": {
-            const { dingdiann } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
-            ruleClass = dingdiann();
-            break;
-        }
         case "www.biquge66.com":
-        case "www.lewenn.com":
         case "www.xkzw.org": {
             const { Xkzw } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/reprint/xkzw.ts"));
             ruleClass = Xkzw;
-            break;
-        }
-        case "www.266ks.com": {
-            const { c226ks } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/multiIndexNextPage.ts"));
-            ruleClass = c226ks();
             break;
         }
         case "book.sfacg.com": {
@@ -21116,26 +20594,6 @@ async function getRule() {
             ruleClass = Hetushu;
             break;
         }
-        case "www.shouda88.com": {
-            const { shouda8 } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/shouda8.ts"));
-            ruleClass = shouda8();
-            break;
-        }
-        case "www.gebiqu.com": {
-            const { gebiqu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
-            ruleClass = gebiqu();
-            break;
-        }
-        case "www.viviyzw.com": {
-            const { viviyzw } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/viviyzw.ts"));
-            ruleClass = viviyzw();
-            break;
-        }
-        case "www.1pwx.com": {
-            const { xiaoshuodaquan } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/1pwx.ts"));
-            ruleClass = xiaoshuodaquan();
-            break;
-        }
         case "book.qidian.com": {
             const { Qidian } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/qidian.ts"));
             ruleClass = Qidian;
@@ -21144,19 +20602,6 @@ async function getRule() {
         case "www.jjwxc.net": {
             const { Jjwxc } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/jjwxc.ts"));
             ruleClass = Jjwxc;
-            break;
-        }
-        case "www.81book.com":
-        case "www.81zw.com":
-        case "www.fuguoduxs.com":
-        case "www.shubaowa.org":
-        case "www.bz01.org":
-        case "www.aixiawx.com":
-        case "www.banzhuer.org":
-        case "www.hongyeshuzhal.com":
-        case "www.yb3.cc": {
-            const { common } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
-            ruleClass = common();
             break;
         }
         case "book.zongheng.com":
@@ -21177,8 +20622,7 @@ async function getRule() {
             break;
         }
         case "www.gongzicp.com":
-        case "m.gongzicp.com":
-        case "gongzicp.com": {
+        case "m.gongzicp.com": {
             const { Gongzicp } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/gongzicp.ts"));
             ruleClass = Gongzicp;
             break;
@@ -21186,11 +20630,6 @@ async function getRule() {
         case "www.linovel.net": {
             const { Linovel } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/linovel.ts"));
             ruleClass = Linovel;
-            break;
-        }
-        case "www.xinwanben.com": {
-            const { xinwanben } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/nextPage.ts"));
-            ruleClass = xinwanben();
             break;
         }
         case "www.tadu.com": {
@@ -21206,11 +20645,6 @@ async function getRule() {
         case "www.qimao.com": {
             const { Qimao } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/qimao.ts"));
             ruleClass = Qimao;
-            break;
-        }
-        case "www.wenku8.net": {
-            const { wenku8 } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/wenku8.ts"));
-            ruleClass = wenku8();
             break;
         }
         case "manhua.dmzj.com":
@@ -21239,105 +20673,14 @@ async function getRule() {
             ruleClass = Sosadfun;
             break;
         }
-        case "www.westnovel.com": {
-            const { westnovel } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/westnovel.ts"));
-            ruleClass = westnovel();
-            break;
-        }
-        case "www.mht99.com": {
-            const { mht } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/mht.ts"));
-            ruleClass = mht();
-            break;
-        }
-        case "www.xbiquge.so": {
-            const { xbiquge } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
-            ruleClass = xbiquge();
-            break;
-        }
-        case "www.linovelib.com": {
-            const { linovelib } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/linovelib.ts"));
-            ruleClass = linovelib();
-            break;
-        }
-        case "w.linovelib.com": {
-            const { wlinovelib } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/linovelib.ts"));
-            ruleClass = wlinovelib();
-            break;
-        }
-        case "www.luoqiuzw.com": {
-            const { luoqiuzw } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
-            ruleClass = luoqiuzw();
-            break;
-        }
-        case "www.yibige.cc": {
-            const { yibige } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/yibige.ts"));
-            ruleClass = yibige();
-            break;
-        }
         case "www.fushuwang.org": {
             const { Fushuwang } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/reprint/fushuwang.ts"));
             ruleClass = Fushuwang;
             break;
         }
-        case "www.soxscc.net":
-        case "www.soxscc.org":
-        case "www.soxs.cc":
-        case "www.soshuw.com":
-        case "www.soshuwu.org":
-        case "www.soxscc.cc":
-        case "www.soshuwu.com":
-        case "www.kubiji.net": {
-            const { soxscc } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/soxscc.ts"));
-            ruleClass = soxscc();
-            break;
-        }
-        case "www.yqbiqu.com": {
-            const { xyqxs } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
-            ruleClass = xyqxs();
-            break;
-        }
-        case "www.630shu.net": {
-            const { c630shu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/630shu.ts"));
-            ruleClass = c630shu;
-            break;
-        }
-        case "www.trxs.cc":
-        case "www.trxs.me":
-        case "www.trxs123.com":
-        case "www.jpxs123.com":
-        case "www.tongrenquan.org":
-        case "www.tongrenquan.me":
-        case "www.tongrenquan.cc":
-        case "trxs.cc":
-        case "trxs.me":
-        case "trxs123.com":
-        case "jpxs123.com":
-        case "tongrenquan.me":
-        case "tongrenquan.org":
-        case "tongrenquan.cc": {
-            const { trxs } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/trxs.ts"));
-            ruleClass = trxs();
-            break;
-        }
-        case "www.imbg.cc":
-        case "www.imiaobige.com": {
-            const { imiaobige } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/imiaobige.ts"));
-            ruleClass = imiaobige();
-            break;
-        }
-        case "www.256wenku.com": {
-            const { c256wxc } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/256wxc.ts"));
-            ruleClass = c256wxc;
-            break;
-        }
         case regExpMatch(/lofter\.com$/): {
             const { Lofter } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/lofter.ts"));
             ruleClass = Lofter;
-            break;
-        }
-        case "www.lwxs9.org": {
-            const { lwxs9 } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
-            ruleClass = lwxs9();
             break;
         }
         case "www.shubl.com": {
@@ -21377,26 +20720,6 @@ async function getRule() {
             ruleClass = Longmabook;
             break;
         }
-        case "dijiubook.net": {
-            const { dijiubook } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
-            ruleClass = dijiubook();
-            break;
-        }
-        case "www.xbiquwx.la": {
-            const { biquwx } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
-            ruleClass = biquwx();
-            break;
-        }
-        case "www.25zw.com": {
-            const { c25zw } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
-            ruleClass = c25zw();
-            break;
-        }
-        case "www.zmccx.com": {
-            const { tycqxs } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
-            ruleClass = tycqxs();
-            break;
-        }
         case "www.kanunu8.com": {
             const { Kanunu8 } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/reprint/kanunu8.ts"));
             ruleClass = Kanunu8;
@@ -21407,44 +20730,104 @@ async function getRule() {
             ruleClass = Ciyuanji;
             break;
         }
+        case "www.pixiv.net": {
+            const { Pixiv } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/pixiv.ts"));
+            ruleClass = Pixiv;
+            break;
+        }
+        case "www.myrics.com": {
+            const { Myrics } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/myrics.ts"));
+            ruleClass = Myrics;
+            break;
+        }
+        case "www.hanwujinian.com": {
+            const { Hanwujinian } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/hanwujinian.ts"));
+            ruleClass = Hanwujinian;
+            break;
+        }
+        case "manga.bilibili.com": {
+            const { MangaBilibili } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/bilibili.ts"));
+            ruleClass = MangaBilibili;
+            break;
+        }
+        case "www.cool18.com": {
+            const { Cool18 } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/cool18.ts"));
+            ruleClass = Cool18;
+            break;
+        }
+        case "www.xrzww.com": {
+            const { Xrzww } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/xrzww.ts"));
+            ruleClass = Xrzww;
+            break;
+        }
+        case "new-read.readmoo.com": {
+            const { Readmoo } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/readmoo.ts"));
+            ruleClass = Readmoo;
+            break;
+        }
+        case "www.iqingguo.com": {
+            const { Iqingguo } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/iqingguo.ts"));
+            ruleClass = Iqingguo;
+            break;
+        }
+        case "www.duread8.com": {
+            const { Duread } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/ciweimao.ts"));
+            ruleClass = Duread;
+            break;
+        }
+        case "www.uukanshu.com": {
+            const { uukanshu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/uukanshu.ts"));
+            ruleClass = uukanshu();
+            break;
+        }
+        case "www.westnovel.com": {
+            const { westnovel } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/westnovel.ts"));
+            ruleClass = westnovel();
+            break;
+        }
+        case "www.soxscc.net":
+        case "www.soxscc.org":
+        case "www.soxs.cc":
+        case "www.soxscc.cc":
+        case "www.soshuwu.com": {
+            const { soxscc } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/soxscc.ts"));
+            ruleClass = soxscc();
+            break;
+        }
+        case "www.630shu.net": {
+            const { c630shu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/630shu.ts"));
+            ruleClass = c630shu;
+            break;
+        }
+        case "www.trxs.cc":
+        case "www.trxs.me":
+        case "www.trxs123.com":
+        case "www.jpxs123.com":
+        case "www.tongrenquan.org":
+        case "www.tongrenquan.me":
+        case "trxs.cc":
+        case "trxs.me":
+        case "trxs123.com":
+        case "jpxs123.com":
+        case "tongrenquan.me":
+        case "tongrenquan.org": {
+            const { trxs } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/trxs.ts"));
+            ruleClass = trxs();
+            break;
+        }
+        case "www.256wenku.com": {
+            const { c256wxc } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/256wxc.ts"));
+            ruleClass = c256wxc;
+            break;
+        }
         case "www.wanben.org": {
             const { wanben } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/wanben.ts"));
             ruleClass = wanben();
             break;
         }
-        case "m.wanben.org": {
-            const { wanben } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePageWithMultiIndexPage/wanben.ts"));
-            ruleClass = wanben();
-            break;
-        }
-        case "www.ranwen.la": {
-            const { ranwen } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
-            ruleClass = ranwen();
-            break;
-        }
-        case "www.wangshuge.com": {
-            const { washuge } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/washuge.ts"));
-            ruleClass = washuge();
-            break;
-        }
-        case "m.baihexs.com": {
-            const { baihexs } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePageWithMultiIndexPage/baihexs.ts"));
-            ruleClass = baihexs();
-            break;
-        }
-        case "www.quanshuzhai.com": {
-            const { quanshuzhai } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/mbtxt/quanshuzhai.ts"));
-            ruleClass = quanshuzhai();
-            break;
-        }
         case "masiro.me": {
             const { masiro } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/original/masiro.ts"));
             ruleClass = masiro();
-            break;
-        }
-        case "www.pixiv.net": {
-            const { Pixiv } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/pixiv.ts"));
-            ruleClass = Pixiv;
             break;
         }
         case "kakuyomu.jp": {
@@ -21463,30 +20846,10 @@ async function getRule() {
             ruleClass = syosetuOrg();
             break;
         }
-        case "zhaoze.art":
+        case "zhaoze.vip":
         case "houhuayuan.vip": {
             const { houhuayuan } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/original/houhuayuan.ts"));
             ruleClass = houhuayuan();
-            break;
-        }
-        case "www.myrics.com": {
-            const { Myrics } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/myrics.ts"));
-            ruleClass = Myrics;
-            break;
-        }
-        case "www.lstxt.cc": {
-            const { lusetxt } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
-            ruleClass = lusetxt();
-            break;
-        }
-        case "www.a7xs.com": {
-            const { a7xs } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/a7xs.ts"));
-            ruleClass = a7xs();
-            break;
-        }
-        case "www.shencou.com": {
-            const { shencou } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/shencou.ts"));
-            ruleClass = shencou();
             break;
         }
         case "www.tianyabooks.com": {
@@ -21494,74 +20857,9 @@ async function getRule() {
             ruleClass = tianyabooks();
             break;
         }
-        case "jingcaiyuedu6.com": {
-            const { jingcaiyuedu6 } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/jingcaiyuedu6.ts"));
-            ruleClass = jingcaiyuedu6();
-            break;
-        }
-        case "www.hanwujinian.com": {
-            const { Hanwujinian } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/hanwujinian.ts"));
-            ruleClass = Hanwujinian;
-            break;
-        }
-        case "www.biqu55.net": {
-            const { biqu55 } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/biqu55.ts"));
-            ruleClass = biqu55();
-            break;
-        }
-        case "manga.bilibili.com": {
-            const { MangaBilibili } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/bilibili.ts"));
-            ruleClass = MangaBilibili;
-            break;
-        }
         case "www.aixdzs.com": {
             const { aixdzs } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/aixdzs.ts"));
             ruleClass = aixdzs();
-            break;
-        }
-        case "www.liuxs.la": {
-            const { liuxs } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/liuxs.ts"));
-            ruleClass = liuxs();
-            break;
-        }
-        case "www.cool18.com": {
-            const { Cool18 } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/cool18.ts"));
-            ruleClass = Cool18;
-            break;
-        }
-        case "www.b5200.net": {
-            const { b5200 } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
-            ruleClass = b5200();
-            break;
-        }
-        case "www.xsyq.cc": {
-            const { yqxs } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
-            ruleClass = yqxs();
-            break;
-        }
-        case "www.dushu369.com": {
-            const { dushu369 } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/dushu369.ts"));
-            ruleClass = dushu369();
-            break;
-        }
-        case "www.18kanshu.com": {
-            const { c18kanshu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/18kanshu.ts"));
-            ruleClass = c18kanshu();
-            break;
-        }
-        case "www.bxwx888.org": {
-            const { bxwx333 } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
-            ruleClass = bxwx333();
-            break;
-        }
-        case "www.xiaoshuowu.com": {
-            const { xiaoshuowu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/xiaoshuowu.ts"));
-            ruleClass = xiaoshuowu();
-            break;
-        }
-        case "www.xrzww.com": {
-            const { Xrzww } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/xrzww.ts"));
-            ruleClass = Xrzww;
             break;
         }
         case "colorful-fantasybooks.com": {
@@ -21574,11 +20872,6 @@ async function getRule() {
             ruleClass = dizishu();
             break;
         }
-        case "www.xbiquge.la": {
-            const { xbiqugeLa } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
-            ruleClass = xbiqugeLa();
-            break;
-        }
         case "www.akatsuki-novels.com": {
             const { akatsuki } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/original/akatsuki.ts"));
             ruleClass = akatsuki();
@@ -21589,29 +20882,19 @@ async function getRule() {
             ruleClass = alphapolis();
             break;
         }
+        case "hongxiuzhao.me": {
+            const { hongxiuzhao } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/hongxiuzhao.ts"));
+            ruleClass = hongxiuzhao();
+            break;
+        }
+        case "m.baihexs.com": {
+            const { baihexs } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePageWithMultiIndexPage/baihexs.ts"));
+            ruleClass = baihexs();
+            break;
+        }
         case "novelup.plus": {
             const { novelup } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePageWithMultiIndexPage/original/novelup.ts"));
             ruleClass = novelup();
-            break;
-        }
-        case "www.69shu.com": {
-            const { c69shu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/69shu.ts"));
-            ruleClass = c69shu();
-            break;
-        }
-        case "new-read.readmoo.com": {
-            const { Readmoo } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/readmoo.ts"));
-            ruleClass = Readmoo;
-            break;
-        }
-        case "www.iqingguo.com": {
-            const { Iqingguo } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/iqingguo.ts"));
-            ruleClass = Iqingguo;
-            break;
-        }
-        case "www.ywggzy.com": {
-            const { ywggzy } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/nextPage.ts"));
-            ruleClass = ywggzy();
             break;
         }
         case "www.ptwxz.net": {
@@ -21619,24 +20902,185 @@ async function getRule() {
             ruleClass = ptwxz();
             break;
         }
+        case "m.wanben.org": {
+            const { wanben } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePageWithMultiIndexPage/wanben.ts"));
+            ruleClass = wanben();
+            break;
+        }
+        case "www.1pwx.com": {
+            const { xiaoshuodaquan } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/1pwx.ts"));
+            ruleClass = xiaoshuodaquan();
+            break;
+        }
+        case "www.wenku8.net": {
+            const { wenku8 } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/wenku8.ts"));
+            ruleClass = wenku8();
+            break;
+        }
+        case "www.linovelib.com": {
+            const { linovelib } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/linovelib.ts"));
+            ruleClass = linovelib();
+            break;
+        }
+        case "w.linovelib.com": {
+            const { wlinovelib } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/linovelib.ts"));
+            ruleClass = wlinovelib();
+            break;
+        }
+        case "www.yibige.cc": {
+            const { yibige } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/yibige.ts"));
+            ruleClass = yibige();
+            break;
+        }
+        case "www.wangshuge.la": {
+            const { washuge } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/washuge.ts"));
+            ruleClass = washuge();
+            break;
+        }
+        case "www.shencou.com": {
+            const { shencou } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/shencou.ts"));
+            ruleClass = shencou();
+            break;
+        }
+        case "jingcaiyuedu6.com": {
+            const { jingcaiyuedu6 } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/jingcaiyuedu6.ts"));
+            ruleClass = jingcaiyuedu6();
+            break;
+        }
+        case "www.18kanshu.com": {
+            const { c18kanshu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/18kanshu.ts"));
+            ruleClass = c18kanshu();
+            break;
+        }
+        case "www.xiaoshuowu.com": {
+            const { xiaoshuowu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/xiaoshuowu.ts"));
+            ruleClass = xiaoshuowu();
+            break;
+        }
+        case "www.69shu.com": {
+            const { c69shu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/69shu.ts"));
+            ruleClass = c69shu();
+            break;
+        }
+        case "www.quanshuzhai.com": {
+            const { quanshuzhai } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/mbtxt/quanshuzhai.ts"));
+            ruleClass = quanshuzhai();
+            break;
+        }
         case "www.mbtxt.la": {
             const { mbtxt } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/mbtxt/mbtxt.ts"));
             ruleClass = mbtxt();
             break;
         }
-        case "www.znlzd.com": {
-            const { znlzd } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/multiIndexNextPage.ts"));
-            ruleClass = znlzd();
+        case "www.81book.com":
+        case "www.81zw.com":
+        case "www.fuguoduxs.com":
+        case "www.shubaowa.org":
+        case "www.aixiaxs.net":
+        case "www.banzhuer.org":
+        case "www.007zw.com": {
+            const { common } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
+            ruleClass = common();
             break;
         }
-        case "www.yyun.net": {
-            const { yyun } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/nextPage.ts"));
-            ruleClass = yyun();
+        case "www.mht99.com": {
+            const { mht } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/mht.ts"));
+            ruleClass = mht();
             break;
         }
-        case "hongxiuzhao.me": {
-            const { hongxiuzhao } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/hongxiuzhao.ts"));
-            ruleClass = hongxiuzhao();
+        case "www.xbiquge.so": {
+            const { xbiquge } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
+            ruleClass = xbiquge();
+            break;
+        }
+        case "www.luoqiuzw.com": {
+            const { luoqiuzw } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
+            ruleClass = luoqiuzw();
+            break;
+        }
+        case "dijiuben.com": {
+            const { dijiubook } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
+            ruleClass = dijiubook();
+            break;
+        }
+        case "www.biquzw.la": {
+            const { biquwx } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
+            ruleClass = biquwx();
+            break;
+        }
+        case "www.25zw.org": {
+            const { c25zw } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
+            ruleClass = c25zw();
+            break;
+        }
+        case "www.tycqzw.com": {
+            const { tycqxs } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
+            ruleClass = tycqxs();
+            break;
+        }
+        case "www.ranwen.la": {
+            const { ranwen } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
+            ruleClass = ranwen();
+            break;
+        }
+        case "www.lvsewx.com": {
+            const { lusetxt } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
+            ruleClass = lusetxt();
+            break;
+        }
+        case "www.b5200.net": {
+            const { b5200 } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
+            ruleClass = b5200();
+            break;
+        }
+        case "www.yqxsge.cc": {
+            const { yqxs } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
+            ruleClass = yqxs();
+            break;
+        }
+        case "www.bixia3.com": {
+            const { bxwx333 } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
+            ruleClass = bxwx333();
+            break;
+        }
+        case "www.ibiquge.la": {
+            const { xbiqugeLa } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
+            ruleClass = xbiqugeLa();
+            break;
+        }
+        case "www.yiruan.la": {
+            const { yruan } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
+            ruleClass = yruan();
+            break;
+        }
+        case "www.ishuquge.org": {
+            const { shuquge } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
+            ruleClass = shuquge();
+            break;
+        }
+        case "www.gashuw.com": {
+            const { gebiqu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
+            ruleClass = gebiqu();
+            break;
+        }
+        case "www.lewenn.net": {
+            const { lewenn } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
+            ruleClass = lewenn();
+            break;
+        }
+        case "www.xyb3.net": {
+            const { xyb3 } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
+            ruleClass = xyb3();
+            break;
+        }
+        case "www.wanben.info": {
+            const { xinwanben } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/nextPage.ts"));
+            ruleClass = xinwanben();
+            break;
+        }
+        case "www.ywggzy.com": {
+            const { ywggzy } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/nextPage.ts"));
+            ruleClass = ywggzy();
             break;
         }
         case "www.mijiashe.com": {
@@ -21644,9 +21088,14 @@ async function getRule() {
             ruleClass = mijiashe();
             break;
         }
-        case "www.duread8.com": {
-            const { Duread } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/ciweimao.ts"));
-            ruleClass = Duread;
+        case "m.kuangguwenhua.com": {
+            const { znlzd } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/multiIndexNextPage.ts"));
+            ruleClass = znlzd();
+            break;
+        }
+        case "www.266ks.com": {
+            const { c226ks } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/multiIndexNextPage.ts"));
+            ruleClass = c226ks();
             break;
         }
         default: {
@@ -21771,7 +21220,7 @@ const errorObject = {
 function getUI() {
     const host = document.location.host;
     switch (host) {
-        case "wap.shuquge.com": {
+        case "wap.ishuquge.org": {
             return () => {
                 const id = /(\d+)\.html$/.exec(document.location.pathname)?.[1];
                 if (!id) {
@@ -21780,16 +21229,16 @@ function getUI() {
                 return {
                     type: "jump",
                     jumpFunction() {
-                        document.location.href = `https://www.shuquge.com/txt/${id}/index.html`;
+                        document.location.href = `https://www.ishuquge.org/txt/${id}/index.html`;
                     },
                 };
             };
         }
-        case "m.xinwanben.com": {
+        case "m.wanben.info": {
             return () => ({
                 type: "jump",
                 jumpFunction() {
-                    document.location.host = "www.xinwanben.com";
+                    document.location.host = "www.wanben.info";
                 },
             });
         }
@@ -21891,30 +21340,10 @@ function getUI() {
                 }
             };
         }
-        case "www.ciweimao.com": {
-            return () => {
-                const jump = /^\/book\/\d+\/?$/.test(document.location.pathname);
-                if (jump) {
-                    const bookId = /(\d+)\/?$/.exec(document.location.pathname)?.[1];
-                    if (bookId) {
-                        return {
-                            type: "jump",
-                            jumpFunction: () => (document.location.href = `https://www.ciweimao.com/chapter-list/${bookId}/book_detail`),
-                        };
-                    }
-                    else {
-                        return errorObject;
-                    }
-                }
-                else {
-                    return defaultObject;
-                }
-            };
-        }
-        case "m.lusetxt.com": {
+        case "m.lvsewx.com": {
             return () => ({
                 type: "jump",
-                jumpFunction: () => (document.location.host = "www.lusetxt.com"),
+                jumpFunction: () => (document.location.host = "www.lvsewx.com"),
             });
         }
         case "www.cool18.com": {
@@ -21980,36 +21409,30 @@ function getUI() {
             };
         }
         case "www.ywggzy.com":
-        case "www.yruan.com":
-        case "www.shuquge.com":
-        case "www.sizhicn.com":
-        case "www.dingdiann.net":
-        case "www.gebiqu.com":
+        case "www.yiruan.la":
+        case "www.ishuquge.org":
+        case "www.gashuw.com":
         case "www.81book.com":
         case "www.81zw.com":
         case "www.fuguoduxs.com":
         case "www.shubaowa.org":
-        case "www.bz01.org":
-        case "www.aixiawx.com":
+        case "www.aixiaxs.net":
         case "www.banzhuer.org":
-        case "www.hongyeshuzhal.com":
-        case "www.xinwanben.com":
+        case "www.007zw.com":
+        case "www.wanben.info":
         case "www.mht99.com":
         case "www.xbiquge.so":
         case "www.luoqiuzw.com":
-        case "www.yqbiqu.com":
-        case "www.lwxs9.org":
-        case "dijiubook.net":
-        case "www.xbiquwx.la":
-        case "www.25zw.com":
-        case "www.zmccx.com":
+        case "dijiuben.com":
+        case "www.biquzw.la":
+        case "www.25zw.org":
+        case "www.tycqzw.com":
         case "www.ranwen.la":
-        case "www.lstxt.cc":
         case "www.b5200.net":
-        case "www.xsyq.cc":
-        case "www.bxwx888.org":
+        case "www.yqxsge.cc":
+        case "www.bixia3.com":
         case "www.quanshuzhai.com":
-        case "www.xbiquge.la": {
+        case "www.ibiquge.la": {
             return () => {
                 floatBuster();
                 return defaultObject;
@@ -22055,11 +21478,8 @@ function getUI() {
         case "www.soxscc.net":
         case "www.soxscc.org":
         case "www.soxs.cc":
-        case "www.soshuw.com":
-        case "www.soshuwu.org":
         case "www.soxscc.cc":
-        case "www.soshuwu.com":
-        case "www.kubiji.net": {
+        case "www.soshuwu.com": {
             return () => {
                 if (document.location.pathname.startsWith("/book/")) {
                     return {
