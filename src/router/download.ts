@@ -462,11 +462,6 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = aixdzs();
       break;
     }
-    case "www.liuxs.la": {
-      const { liuxs } = await import("../rules/twoPage/liuxs");
-      ruleClass = liuxs();
-      break;
-    }
     case "www.cool18.com": {
       const { Cool18 } = await import("../rules/special/original/cool18");
       ruleClass = Cool18;
