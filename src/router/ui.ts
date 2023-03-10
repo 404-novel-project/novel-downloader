@@ -140,10 +140,10 @@ export function getUI(): () => UIObject {
         }
       };
     }
-    case "m.lusetxt.com": {
+    case "m.lvsewx.com": {
       return () => ({
         type: "jump",
-        jumpFunction: () => (document.location.host = "www.lusetxt.com"),
+        jumpFunction: () => (document.location.host = "www.lvsewx.com"),
       });
     }
     case "www.cool18.com": {

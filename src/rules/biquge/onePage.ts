@@ -234,7 +234,7 @@ export const lusetxt = () =>
       rm("script", true, content);
       rm("div[style]", true, content);
       rm("div[align]", true, content);
-      rm2(["https://www.lusetxt.com/books", "请记住本书首发域名"], content);
+      rm2(["https://www.lvsewx.com/books", "请记住本书首发域名"], content);
       htmlTrim(content);
       return content;
     }

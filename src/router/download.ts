@@ -390,7 +390,7 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = Myrics;
       break;
     }
-    case "www.lstxt.cc": {
+    case "www.lvsewx.com": {
       const { lusetxt } = await import("../rules/biquge/onePage");
       ruleClass = lusetxt();
       break;
