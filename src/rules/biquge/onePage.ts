@@ -21,7 +21,7 @@ export const gebiqu = () =>
       return introDom;
     },
     (content) => {
-      rms([/"www.gebiqu.com"/g], content);
+      rms([/"www.gashuw.com"/g], content);
       return content;
     }
   );

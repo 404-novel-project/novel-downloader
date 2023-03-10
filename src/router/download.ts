@@ -58,7 +58,7 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = shouda8();
       break;
     }
-    case "www.gebiqu.com": {
+    case "www.gashuw.com": {
       const { gebiqu } = await import("../rules/biquge/onePage");
       ruleClass = gebiqu();
       break;
