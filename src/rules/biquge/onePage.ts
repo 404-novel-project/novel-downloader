@@ -184,14 +184,14 @@ export const shuquge = () =>
       rms(
         [
           /作者：.+所写的《.+》无弹窗免费全文阅读为转载作品,章节由网友发布。/,
-          /推荐地址：https?:\/\/www\.shuquge\.com\/txt\/\d+\/index\.html/g,
+          /推荐地址：https?:\/\/www\.ishuquge\.org\/txt\/\d+\/index\.html/g,
         ],
         introDom
       );
       return introDom;
     },
     (content) => {
-      rm2(["请记住本书首发域名：", "www.shuquge.com"], content);
+      rm2(["请记住本书首发域名：", "www.ishuquge.org"], content);
       return content;
     },
     1

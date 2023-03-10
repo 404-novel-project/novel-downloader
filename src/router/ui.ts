@@ -16,7 +16,7 @@ const errorObject: UIObject = {
 export function getUI(): () => UIObject {
   const host: string = document.location.host;
   switch (host) {
-    case "wap.shuquge.com": {
+    case "wap.ishuquge.org": {
       return () => {
         const id = /(\d+)\.html$/.exec(document.location.pathname)?.[1];
         if (!id) {
@@ -25,7 +25,7 @@ export function getUI(): () => UIObject {
         return {
           type: "jump",
           jumpFunction() {
-            document.location.href = `https://www.shuquge.com/txt/${id}/index.html`;
+            document.location.href = `https://www.ishuquge.org/txt/${id}/index.html`;
           },
         };
       };
@@ -219,7 +219,7 @@ export function getUI(): () => UIObject {
     }
     case "www.ywggzy.com":
     case "www.yruan.com":
-    case "www.shuquge.com":
+    case "www.ishuquge.org":
     case "www.sizhicn.com":
     case "www.dingdiann.net":
     case "www.gashuw.com":

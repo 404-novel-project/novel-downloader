@@ -14,7 +14,7 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = yruan();
       break;
     }
-    case "www.shuquge.com":
+    case "www.ishuquge.org":
     case "www.sizhicn.com": {
       const { shuquge } = await import("../rules/biquge/onePage");
       ruleClass = shuquge();
