@@ -4,6 +4,7 @@ on:
     paths-ignore:
       - README.md
       - license.txt
+      - third-party-license.txt
       - tools/*
     branches-ignore:
       - gh-pages
@@ -25,7 +26,7 @@ jobs:
         uses: 404-novel-project/novel-downloader-action@v1
 
       - name: Run 🔧
-        run: yarn run ts-node --esm tester/sites.ts
+        run: yarn run ts-node --esm test/sites.ts
 
       - name: Upload Artifact 🚀
         uses: actions/upload-artifact@v3

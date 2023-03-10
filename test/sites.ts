@@ -154,7 +154,11 @@ async function main() {
   console.table(output);
 
   const csv = toCsv(output);
-  const csvPath = path.resolve(__dirname, "..", "dist/sites.csv");
+  const csvDirPath = path.resolve(__dirname, "..", "dist/csv");
+  const csvPath = path.resolve(csvDirPath, "sites.csv");
+  if (!fs.existsSync(csvDirPath)) {
+    fs.mkdirSync(csvDirPath, { recursive: true });
+  }
   fs.writeFileSync(csvPath, csv);
 }
 

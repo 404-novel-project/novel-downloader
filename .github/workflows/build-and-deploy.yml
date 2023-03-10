@@ -4,7 +4,8 @@ on:
     paths-ignore:
       - README.md
       - license.txt
-      - tester/*
+      - third-party-license.txt
+      - test/*
       - tools/*
     branches-ignore:
       - gh-pages
