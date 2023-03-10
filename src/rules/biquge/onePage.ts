@@ -98,7 +98,7 @@ export const dijiubook = () =>
     },
     (chapter) => {
       const url = new URL(chapter.chapterUrl);
-      if (url.host === "m.dijiubook.net" || url.href.endsWith(".apk")) {
+      if (url.host === "m.dijiuben.com" || url.href.endsWith(".apk")) {
         return;
       } else {
         return chapter;

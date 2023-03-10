@@ -163,7 +163,7 @@
     "*://www.lvhtebook.com/*",
     "*://jp.lvhtebook.com/*",
     "*://www.htlvbooks.com/*",
-    "*://dijiubook.net/*_*",
+    "*://dijiuben.com/*_*",
     "*://www.xbiquwx.la/*_*/",
     "*://www.25zw.com/*/",
     "*://www.zmccx.com/*_*/",
@@ -270,7 +270,7 @@
     "*://www.25zw.com/monthvisit/",
     "*://www.25zw.com/goodnum/",
     "*://www.25zw.com/goodnew/",
-    "*://dijiubook.net/*_*/*.html",
+    "*://dijiuben.com/*_*/*.html",
     "*://ncode.syosetu.com/*/*/",
     "*://novel18.syosetu.com/*/*/",
     "*://manhua.dmzj.com/",
@@ -366,6 +366,7 @@
     "qingoo.cn",
     "sundung.com",
     "duread8.com",
+    "dijiushu.net",
     "*"
   ],
   "require": [

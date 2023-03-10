@@ -318,7 +318,7 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = Longmabook;
       break;
     }
-    case "dijiubook.net": {
+    case "dijiuben.com": {
       const { dijiubook } = await import("../rules/biquge/onePage");
       ruleClass = dijiubook();
       break;
