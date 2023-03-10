@@ -108,16 +108,7 @@ export default {
         header["version"] = version;
         return header;
       },
-      strict: true,
-      whitelist: [
-        "name:en",
-        "name:ja",
-        "description:en",
-        "description:ja",
-        "license",
-        "compatible",
-        "incompatible",
-      ],
+      strict: false,
       ssri: !dev,
       pretty: true,
       downloadBaseURL:
