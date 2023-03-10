@@ -100,9 +100,9 @@ export default {
         const revision = fs.readFileSync("REVISION").toString().trim();
         let version = packageJson.version;
         if (dev) {
-          version = version + `-${revision}-${Date.now()}`;
+          version = version.replace(/\.0$/, "." + Date.now());
         } else {
-          version = version + `-${revision}`;
+          version = version.replace(/\.0$/, "." + revision);
         }
         console.log(`version: ${version}`);
         header["version"] = version;
