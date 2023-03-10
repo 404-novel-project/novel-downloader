@@ -109,7 +109,6 @@ EPUB 文件请使用相应阅读器阅读。
 | [UU 看书网](https://www.uukanshu.com/)            | ✅       | ❎       |                                                                                          |
 | [亿软网](http://www.yruan.com/)                   | ✅       | ❎       | 网站性能差，降低抓取频率，请耐心等待。                                                   |
 | [书趣阁](http://www.ishuquge.org/)                | ✅       | ❎       | 网站性能差，降低抓取频率，请耐心等待。                                                   |
-| [顶点小说](https://www.dingdiann.net/)            | ✅       | ❎       |                                                                                          |
 | [星空中文](http://www.xkzw.org/)                  | ✅       | ❎       |                                                                                          |
 | [乐文小说网](https://www.lewenn.com/)             | ✅       | ❎       |                                                                                          |
 | [266 看书](http://www.266ks.com/)                 | ✅       | ❎       |                                                                                          |

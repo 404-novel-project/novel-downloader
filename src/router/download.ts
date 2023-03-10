@@ -20,11 +20,6 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = shuquge();
       break;
     }
-    case "www.dingdiann.net": {
-      const { dingdiann } = await import("../rules/biquge/onePage");
-      ruleClass = dingdiann();
-      break;
-    }
     case "www.biquge66.com":
     case "www.lewenn.com":
     case "www.xkzw.org": {

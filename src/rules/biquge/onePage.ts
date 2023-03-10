@@ -254,16 +254,3 @@ export const yqxs = () =>
       return content;
     }
   );
-
-export const dingdiann = () =>
-  mkBiquge(
-    (introDom) => introDom,
-    (content) => {
-      rm("div", false, content);
-      rm("script", true, content);
-      rm2(["www.dingdiann.net", "最新全本："], content);
-      htmlTrim(content);
-      return content;
-    },
-    5
-  );
