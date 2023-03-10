@@ -70,7 +70,6 @@
     "*://www.hetushu.com/book/*/index.html",
     "*://hetushu.com/book/*/index.html",
     "*://www.gashuw.com/biquge_*/",
-    "*://www.viviyzw.com/book*.html",
     "*://www.1pwx.com/*.htm",
     "*://www.81book.com/book/*/",
     "*://www.81zw.com/book/*/",
@@ -215,7 +214,6 @@
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",
-    "*://www.viviyzw.com/book/*.html",
     "*://www.yruan.com/article/*/*.html",
     "*://m.yuzhaige.cc/tag/*/",
     "*://m.yuzhaige.cc/sort/*/",

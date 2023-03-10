@@ -53,11 +53,6 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = gebiqu();
       break;
     }
-    case "www.viviyzw.com": {
-      const { viviyzw } = await import("../rules/twoPage/viviyzw");
-      ruleClass = viviyzw();
-      break;
-    }
     case "www.1pwx.com": {
       const { xiaoshuodaquan } = await import("../rules/twoPage/1pwx");
       ruleClass = xiaoshuodaquan();

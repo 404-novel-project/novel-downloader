@@ -115,7 +115,6 @@ EPUB 文件请使用相应阅读器阅读。
 | [266 看书](http://www.266ks.com/)                 | ✅       | ❎       |                                                                                          |
 | [和图书](https://www.hetushu.com/index.php)       | ✅       | ❎       |                                                                                          |
 | [阁笔趣](http://www.gashuw.com/)                  | ✅       | ❎       |                                                                                          |
-| [米趣小说](http://www.viviyzw.com/)               | ✅       | ❎       |                                                                                          |
 | [书书网](https://www.1pwx.com/)                   | ✅       | ❎       |                                                                                          |
 | [八一中文网](https://www.81book.com/)             | ✅       | ❎       | 抓取速度慢，请耐心等待。                                                                 |
 | [御书阁](http://m.yushuge123.com/)                | ✅       | ❎       | 部分文字被图片替换，请使用 HTML 版查看。                                                 |
