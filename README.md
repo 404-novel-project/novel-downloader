@@ -110,7 +110,7 @@ EPUB 文件请使用相应阅读器阅读。
 | [亿软网](http://www.yruan.com/)                   | ✅       | ❎       | 网站性能差，降低抓取频率，请耐心等待。                                                   |
 | [书趣阁](http://www.ishuquge.org/)                | ✅       | ❎       | 网站性能差，降低抓取频率，请耐心等待。                                                   |
 | [星空中文](http://www.xkzw.org/)                  | ✅       | ❎       |                                                                                          |
-| [乐文小说网](https://www.lewenn.com/)             | ✅       | ❎       |                                                                                          |
+| [乐文小说网](https://www.lewenn.net/)             | ✅       | ❎       |                                                                                          |
 | [266 看书](http://www.266ks.com/)                 | ✅       | ❎       |                                                                                          |
 | [和图书](https://www.hetushu.com/index.php)       | ✅       | ❎       |                                                                                          |
 | [阁笔趣](http://www.gashuw.com/)                  | ✅       | ❎       |                                                                                          |

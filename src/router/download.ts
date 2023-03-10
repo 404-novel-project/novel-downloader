@@ -4,32 +4,10 @@ export async function getRule(): Promise<BaseRuleClass> {
   const host: string = document.location.host;
   let ruleClass;
   switch (host) {
-    case "www.uukanshu.com": {
-      const { uukanshu } = await import("../rules/onePage/uukanshu");
-      ruleClass = uukanshu();
-      break;
-    }
-    case "www.yruan.com": {
-      const { yruan } = await import("../rules/biquge/onePage");
-      ruleClass = yruan();
-      break;
-    }
-    case "www.ishuquge.org":
-    case "www.sizhicn.com": {
-      const { shuquge } = await import("../rules/biquge/onePage");
-      ruleClass = shuquge();
-      break;
-    }
     case "www.biquge66.com":
-    case "www.lewenn.com":
     case "www.xkzw.org": {
       const { Xkzw } = await import("../rules/special/reprint/xkzw");
       ruleClass = Xkzw;
-      break;
-    }
-    case "www.266ks.com": {
-      const { c226ks } = await import("../rules/biquge/multiIndexNextPage");
-      ruleClass = c226ks();
       break;
     }
     case "book.sfacg.com": {
@@ -43,16 +21,6 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = Hetushu;
       break;
     }
-    case "www.gashuw.com": {
-      const { gebiqu } = await import("../rules/biquge/onePage");
-      ruleClass = gebiqu();
-      break;
-    }
-    case "www.1pwx.com": {
-      const { xiaoshuodaquan } = await import("../rules/twoPage/1pwx");
-      ruleClass = xiaoshuodaquan();
-      break;
-    }
     case "book.qidian.com": {
       const { Qidian } = await import("../rules/special/original/qidian");
       ruleClass = Qidian;
@@ -61,18 +29,6 @@ export async function getRule(): Promise<BaseRuleClass> {
     case "www.jjwxc.net": {
       const { Jjwxc } = await import("../rules/special/original/jjwxc");
       ruleClass = Jjwxc;
-      break;
-    }
-    case "www.81book.com":
-    case "www.81zw.com":
-    case "www.fuguoduxs.com":
-    case "www.shubaowa.org":
-    case "www.aixiaxs.net":
-    case "www.banzhuer.org":
-    case "www.007zw.com":
-    case "www.yb3.cc": {
-      const { common } = await import("../rules/biquge/onePage");
-      ruleClass = common();
       break;
     }
     case "book.zongheng.com":
@@ -103,11 +59,6 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = Linovel;
       break;
     }
-    case "www.wanben.info": {
-      const { xinwanben } = await import("../rules/biquge/nextPage");
-      ruleClass = xinwanben();
-      break;
-    }
     case "www.tadu.com": {
       const { Tadu } = await import("../rules/special/original/tadu");
       ruleClass = Tadu;
@@ -121,11 +72,6 @@ export async function getRule(): Promise<BaseRuleClass> {
     case "www.qimao.com": {
       const { Qimao } = await import("../rules/special/original/qimao");
       ruleClass = Qimao;
-      break;
-    }
-    case "www.wenku8.net": {
-      const { wenku8 } = await import("../rules/twoPage/wenku8");
-      ruleClass = wenku8();
       break;
     }
     case "manhua.dmzj.com":
@@ -154,84 +100,9 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = Sosadfun;
       break;
     }
-    case "www.westnovel.com": {
-      const { westnovel } = await import("../rules/onePage/westnovel");
-      ruleClass = westnovel();
-      break;
-    }
-    case "www.mht99.com": {
-      const { mht } = await import("../rules/biquge/mht");
-      ruleClass = mht();
-      break;
-    }
-    case "www.xbiquge.so": {
-      const { xbiquge } = await import("../rules/biquge/onePage");
-      ruleClass = xbiquge();
-      break;
-    }
-    case "www.linovelib.com": {
-      const { linovelib } = await import("../rules/twoPage/linovelib");
-      ruleClass = linovelib();
-      break;
-    }
-    case "w.linovelib.com": {
-      const { wlinovelib } = await import("../rules/twoPage/linovelib");
-      ruleClass = wlinovelib();
-      break;
-    }
-    case "www.luoqiuzw.com": {
-      const { luoqiuzw } = await import("../rules/biquge/onePage");
-      ruleClass = luoqiuzw();
-      break;
-    }
-    case "www.yibige.cc": {
-      const { yibige } = await import("../rules/twoPage/yibige");
-      ruleClass = yibige();
-      break;
-    }
     case "www.fushuwang.org": {
       const { Fushuwang } = await import("../rules/special/reprint/fushuwang");
       ruleClass = Fushuwang;
-      break;
-    }
-    case "www.soxscc.net":
-    case "www.soxscc.org":
-    case "www.soxs.cc":
-    case "www.soxscc.cc":
-    case "www.soshuwu.com": {
-      const { soxscc } = await import("../rules/onePage/soxscc");
-      ruleClass = soxscc();
-      break;
-    }
-    case "www.yqbiqu.com": {
-      const { xyqxs } = await import("../rules/biquge/onePage");
-      ruleClass = xyqxs();
-      break;
-    }
-    case "www.630shu.net": {
-      const { c630shu } = await import("../rules/onePage/630shu");
-      ruleClass = c630shu;
-      break;
-    }
-    case "www.trxs.cc":
-    case "www.trxs.me":
-    case "www.trxs123.com":
-    case "www.jpxs123.com":
-    case "www.tongrenquan.org":
-    case "www.tongrenquan.me":
-    case "trxs.cc":
-    case "trxs.me":
-    case "trxs123.com":
-    case "jpxs123.com":
-    case "tongrenquan.me":
-    case "tongrenquan.org": {
-      const { trxs } = await import("../rules/onePage/trxs");
-      ruleClass = trxs();
-      break;
-    }
-    case "www.256wenku.com": {
-      const { c256wxc } = await import("../rules/onePage/256wxc");
-      ruleClass = c256wxc;
       break;
     }
     case regExpMatch(/lofter\.com$/): {
@@ -280,26 +151,6 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = Longmabook;
       break;
     }
-    case "dijiuben.com": {
-      const { dijiubook } = await import("../rules/biquge/onePage");
-      ruleClass = dijiubook();
-      break;
-    }
-    case "www.xbiquwx.la": {
-      const { biquwx } = await import("../rules/biquge/onePage");
-      ruleClass = biquwx();
-      break;
-    }
-    case "www.25zw.org": {
-      const { c25zw } = await import("../rules/biquge/onePage");
-      ruleClass = c25zw();
-      break;
-    }
-    case "www.zmccx.com": {
-      const { tycqxs } = await import("../rules/biquge/onePage");
-      ruleClass = tycqxs();
-      break;
-    }
     case "www.kanunu8.com": {
       const { Kanunu8 } = await import("../rules/special/reprint/kanunu8");
       ruleClass = Kanunu8;
@@ -310,48 +161,111 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = Ciyuanji;
       break;
     }
+
+    case "www.pixiv.net": {
+      const { Pixiv } = await import("../rules/special/original/pixiv");
+      ruleClass = Pixiv;
+      break;
+    }
+    case "www.myrics.com": {
+      const { Myrics } = await import("../rules/special/original/myrics");
+      ruleClass = Myrics;
+      break;
+    }
+    case "www.hanwujinian.com": {
+      const { Hanwujinian } = await import(
+        "../rules/special/original/hanwujinian"
+      );
+      ruleClass = Hanwujinian;
+      break;
+    }
+    case "manga.bilibili.com": {
+      const { MangaBilibili } = await import(
+        "../rules/special/original/bilibili"
+      );
+      ruleClass = MangaBilibili;
+      break;
+    }
+    case "www.cool18.com": {
+      const { Cool18 } = await import("../rules/special/original/cool18");
+      ruleClass = Cool18;
+      break;
+    }
+    case "www.xrzww.com": {
+      const { Xrzww } = await import("../rules/special/original/xrzww");
+      ruleClass = Xrzww;
+      break;
+    }
+    case "new-read.readmoo.com": {
+      const { Readmoo } = await import("../rules/special/original/readmoo");
+      ruleClass = Readmoo;
+      break;
+    }
+    case "www.iqingguo.com": {
+      const { Iqingguo } = await import("../rules/special/original/iqingguo");
+      ruleClass = Iqingguo;
+      break;
+    }
+    case "www.duread8.com": {
+      const { Duread } = await import("../rules/special/original/ciweimao");
+      ruleClass = Duread;
+      break;
+    }
+
+    /* onePage */
+    case "www.uukanshu.com": {
+      const { uukanshu } = await import("../rules/onePage/uukanshu");
+      ruleClass = uukanshu();
+      break;
+    }
+    case "www.westnovel.com": {
+      const { westnovel } = await import("../rules/onePage/westnovel");
+      ruleClass = westnovel();
+      break;
+    }
+    case "www.soxscc.net":
+    case "www.soxscc.org":
+    case "www.soxs.cc":
+    case "www.soxscc.cc":
+    case "www.soshuwu.com": {
+      const { soxscc } = await import("../rules/onePage/soxscc");
+      ruleClass = soxscc();
+      break;
+    }
+    case "www.630shu.net": {
+      const { c630shu } = await import("../rules/onePage/630shu");
+      ruleClass = c630shu;
+      break;
+    }
+    case "www.trxs.cc":
+    case "www.trxs.me":
+    case "www.trxs123.com":
+    case "www.jpxs123.com":
+    case "www.tongrenquan.org":
+    case "www.tongrenquan.me":
+    case "trxs.cc":
+    case "trxs.me":
+    case "trxs123.com":
+    case "jpxs123.com":
+    case "tongrenquan.me":
+    case "tongrenquan.org": {
+      const { trxs } = await import("../rules/onePage/trxs");
+      ruleClass = trxs();
+      break;
+    }
+    case "www.256wenku.com": {
+      const { c256wxc } = await import("../rules/onePage/256wxc");
+      ruleClass = c256wxc;
+      break;
+    }
     case "www.wanben.org": {
       const { wanben } = await import("../rules/onePage/wanben");
       ruleClass = wanben();
       break;
     }
-    case "m.wanben.org": {
-      const { wanben } = await import(
-        "../rules/onePageWithMultiIndexPage/wanben"
-      );
-      ruleClass = wanben();
-      break;
-    }
-    case "www.ranwen.la": {
-      const { ranwen } = await import("../rules/biquge/onePage");
-      ruleClass = ranwen();
-      break;
-    }
-    case "www.wangshuge.com": {
-      const { washuge } = await import("../rules/twoPage/washuge");
-      ruleClass = washuge();
-      break;
-    }
-    case "m.baihexs.com": {
-      const { baihexs } = await import(
-        "../rules/onePageWithMultiIndexPage/baihexs"
-      );
-      ruleClass = baihexs();
-      break;
-    }
-    case "www.quanshuzhai.com": {
-      const { quanshuzhai } = await import("../rules/mbtxt/quanshuzhai");
-      ruleClass = quanshuzhai();
-      break;
-    }
     case "masiro.me": {
       const { masiro } = await import("../rules/onePage/original/masiro");
       ruleClass = masiro();
-      break;
-    }
-    case "www.pixiv.net": {
-      const { Pixiv } = await import("../rules/special/original/pixiv");
-      ruleClass = Pixiv;
       break;
     }
     case "kakuyomu.jp": {
@@ -378,83 +292,14 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = houhuayuan();
       break;
     }
-    case "www.myrics.com": {
-      const { Myrics } = await import("../rules/special/original/myrics");
-      ruleClass = Myrics;
-      break;
-    }
-    case "www.lvsewx.com": {
-      const { lusetxt } = await import("../rules/biquge/onePage");
-      ruleClass = lusetxt();
-      break;
-    }
-    case "www.shencou.com": {
-      const { shencou } = await import("../rules/twoPage/shencou");
-      ruleClass = shencou();
-      break;
-    }
     case "www.tianyabooks.com": {
       const { tianyabooks } = await import("../rules/onePage/tianyabooks");
       ruleClass = tianyabooks();
       break;
     }
-    case "jingcaiyuedu6.com": {
-      const { jingcaiyuedu6 } = await import("../rules/twoPage/jingcaiyuedu6");
-      ruleClass = jingcaiyuedu6();
-      break;
-    }
-    case "www.hanwujinian.com": {
-      const { Hanwujinian } = await import(
-        "../rules/special/original/hanwujinian"
-      );
-      ruleClass = Hanwujinian;
-      break;
-    }
-    case "manga.bilibili.com": {
-      const { MangaBilibili } = await import(
-        "../rules/special/original/bilibili"
-      );
-      ruleClass = MangaBilibili;
-      break;
-    }
     case "www.aixdzs.com": {
       const { aixdzs } = await import("../rules/onePage/aixdzs");
       ruleClass = aixdzs();
-      break;
-    }
-    case "www.cool18.com": {
-      const { Cool18 } = await import("../rules/special/original/cool18");
-      ruleClass = Cool18;
-      break;
-    }
-    case "www.b5200.net": {
-      const { b5200 } = await import("../rules/biquge/onePage");
-      ruleClass = b5200();
-      break;
-    }
-    case "www.xsyq.cc": {
-      const { yqxs } = await import("../rules/biquge/onePage");
-      ruleClass = yqxs();
-      break;
-    }
-    case "www.18kanshu.com": {
-      const { c18kanshu } = await import("../rules/twoPage/18kanshu");
-      ruleClass = c18kanshu();
-      break;
-    }
-    case "www.bixia3.com": {
-      const { bxwx333 } = await import("../rules/biquge/onePage");
-      ruleClass = bxwx333();
-      break;
-    }
-    case "www.xiaoshuowu.com": {
-      const { xiaoshuowu } = await import("../rules/twoPage/xiaoshuowu");
-      ruleClass = xiaoshuowu();
-      break;
-    }
-    case "www.xrzww.com": {
-      const { Xrzww } = await import("../rules/special/original/xrzww");
-      ruleClass = Xrzww;
       break;
     }
     case "colorful-fantasybooks.com": {
@@ -469,11 +314,6 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = dizishu();
       break;
     }
-    case "www.xbiquge.la": {
-      const { xbiqugeLa } = await import("../rules/biquge/onePage");
-      ruleClass = xbiqugeLa();
-      break;
-    }
     case "www.akatsuki-novels.com": {
       const { akatsuki } = await import("../rules/onePage/original/akatsuki");
       ruleClass = akatsuki();
@@ -486,31 +326,26 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = alphapolis();
       break;
     }
+    case "hongxiuzhao.me": {
+      const { hongxiuzhao } = await import("../rules/onePage/hongxiuzhao");
+      ruleClass = hongxiuzhao();
+      break;
+    }
+    /* onePage End */
+
+    /* onePageWithMultiIndexPage End */
+    case "m.baihexs.com": {
+      const { baihexs } = await import(
+        "../rules/onePageWithMultiIndexPage/baihexs"
+      );
+      ruleClass = baihexs();
+      break;
+    }
     case "novelup.plus": {
       const { novelup } = await import(
         "../rules/onePageWithMultiIndexPage/original/novelup"
       );
       ruleClass = novelup();
-      break;
-    }
-    case "www.69shu.com": {
-      const { c69shu } = await import("../rules/twoPage/69shu");
-      ruleClass = c69shu();
-      break;
-    }
-    case "new-read.readmoo.com": {
-      const { Readmoo } = await import("../rules/special/original/readmoo");
-      ruleClass = Readmoo;
-      break;
-    }
-    case "www.iqingguo.com": {
-      const { Iqingguo } = await import("../rules/special/original/iqingguo");
-      ruleClass = Iqingguo;
-      break;
-    }
-    case "www.ywggzy.com": {
-      const { ywggzy } = await import("../rules/biquge/nextPage");
-      ruleClass = ywggzy();
       break;
     }
     case "www.ptwxz.net": {
@@ -520,14 +355,199 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = ptwxz();
       break;
     }
+    case "m.wanben.org": {
+      const { wanben } = await import(
+        "../rules/onePageWithMultiIndexPage/wanben"
+      );
+      ruleClass = wanben();
+      break;
+    }
+    /* onePageWithMultiIndexPage End */
+
+    /* twoPage */
+    case "www.1pwx.com": {
+      const { xiaoshuodaquan } = await import("../rules/twoPage/1pwx");
+      ruleClass = xiaoshuodaquan();
+      break;
+    }
+    case "www.wenku8.net": {
+      const { wenku8 } = await import("../rules/twoPage/wenku8");
+      ruleClass = wenku8();
+      break;
+    }
+    case "www.linovelib.com": {
+      const { linovelib } = await import("../rules/twoPage/linovelib");
+      ruleClass = linovelib();
+      break;
+    }
+    case "w.linovelib.com": {
+      const { wlinovelib } = await import("../rules/twoPage/linovelib");
+      ruleClass = wlinovelib();
+      break;
+    }
+    case "www.yibige.cc": {
+      const { yibige } = await import("../rules/twoPage/yibige");
+      ruleClass = yibige();
+      break;
+    }
+    case "www.wangshuge.com": {
+      const { washuge } = await import("../rules/twoPage/washuge");
+      ruleClass = washuge();
+      break;
+    }
+    case "www.shencou.com": {
+      const { shencou } = await import("../rules/twoPage/shencou");
+      ruleClass = shencou();
+      break;
+    }
+    case "jingcaiyuedu6.com": {
+      const { jingcaiyuedu6 } = await import("../rules/twoPage/jingcaiyuedu6");
+      ruleClass = jingcaiyuedu6();
+      break;
+    }
+    case "www.18kanshu.com": {
+      const { c18kanshu } = await import("../rules/twoPage/18kanshu");
+      ruleClass = c18kanshu();
+      break;
+    }
+    case "www.xiaoshuowu.com": {
+      const { xiaoshuowu } = await import("../rules/twoPage/xiaoshuowu");
+      ruleClass = xiaoshuowu();
+      break;
+    }
+    case "www.69shu.com": {
+      const { c69shu } = await import("../rules/twoPage/69shu");
+      ruleClass = c69shu();
+      break;
+    }
+    /* twoPage End */
+
+    /** mbtxt **/
+    case "www.quanshuzhai.com": {
+      const { quanshuzhai } = await import("../rules/mbtxt/quanshuzhai");
+      ruleClass = quanshuzhai();
+      break;
+    }
     case "www.mbtxt.la": {
       const { mbtxt } = await import("../rules/mbtxt/mbtxt");
       ruleClass = mbtxt();
       break;
     }
-    case "www.znlzd.com": {
-      const { znlzd } = await import("../rules/biquge/multiIndexNextPage");
-      ruleClass = znlzd();
+    /** mbtxt End **/
+
+    /** 笔趣阁 **/
+    case "www.81book.com":
+    case "www.81zw.com":
+    case "www.fuguoduxs.com":
+    case "www.shubaowa.org":
+    case "www.aixiaxs.net":
+    case "www.banzhuer.org":
+    case "www.007zw.com":
+    case "www.yb3.cc": {
+      const { common } = await import("../rules/biquge/onePage");
+      ruleClass = common();
+      break;
+    }
+    case "www.mht99.com": {
+      const { mht } = await import("../rules/biquge/mht");
+      ruleClass = mht();
+      break;
+    }
+    case "www.xbiquge.so": {
+      const { xbiquge } = await import("../rules/biquge/onePage");
+      ruleClass = xbiquge();
+      break;
+    }
+    case "www.luoqiuzw.com": {
+      const { luoqiuzw } = await import("../rules/biquge/onePage");
+      ruleClass = luoqiuzw();
+      break;
+    }
+    case "www.yqbiqu.com": {
+      const { xyqxs } = await import("../rules/biquge/onePage");
+      ruleClass = xyqxs();
+      break;
+    }
+    case "dijiuben.com": {
+      const { dijiubook } = await import("../rules/biquge/onePage");
+      ruleClass = dijiubook();
+      break;
+    }
+    case "www.xbiquwx.la": {
+      const { biquwx } = await import("../rules/biquge/onePage");
+      ruleClass = biquwx();
+      break;
+    }
+    case "www.25zw.org": {
+      const { c25zw } = await import("../rules/biquge/onePage");
+      ruleClass = c25zw();
+      break;
+    }
+    case "www.zmccx.com": {
+      const { tycqxs } = await import("../rules/biquge/onePage");
+      ruleClass = tycqxs();
+      break;
+    }
+    case "www.ranwen.la": {
+      const { ranwen } = await import("../rules/biquge/onePage");
+      ruleClass = ranwen();
+      break;
+    }
+    case "www.lvsewx.com": {
+      const { lusetxt } = await import("../rules/biquge/onePage");
+      ruleClass = lusetxt();
+      break;
+    }
+    case "www.b5200.net": {
+      const { b5200 } = await import("../rules/biquge/onePage");
+      ruleClass = b5200();
+      break;
+    }
+    case "www.xsyq.cc": {
+      const { yqxs } = await import("../rules/biquge/onePage");
+      ruleClass = yqxs();
+      break;
+    }
+    case "www.bixia3.com": {
+      const { bxwx333 } = await import("../rules/biquge/onePage");
+      ruleClass = bxwx333();
+      break;
+    }
+    case "www.xbiquge.la": {
+      const { xbiqugeLa } = await import("../rules/biquge/onePage");
+      ruleClass = xbiqugeLa();
+      break;
+    }
+    case "www.yruan.com": {
+      const { yruan } = await import("../rules/biquge/onePage");
+      ruleClass = yruan();
+      break;
+    }
+    case "www.ishuquge.org":
+    case "www.sizhicn.com": {
+      const { shuquge } = await import("../rules/biquge/onePage");
+      ruleClass = shuquge();
+      break;
+    }
+    case "www.gashuw.com": {
+      const { gebiqu } = await import("../rules/biquge/onePage");
+      ruleClass = gebiqu();
+      break;
+    }
+    case "www.lewenn.net": {
+      const { lewenn } = await import("../rules/biquge/onePage");
+      ruleClass = lewenn();
+      break;
+    }
+
+    case "www.wanben.info": {
+      const { xinwanben } = await import("../rules/biquge/nextPage");
+      ruleClass = xinwanben();
+      break;
+    }
+    case "www.ywggzy.com": {
+      const { ywggzy } = await import("../rules/biquge/nextPage");
+      ruleClass = ywggzy();
       break;
     }
     case "www.yyun.net": {
@@ -535,21 +555,24 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = yyun();
       break;
     }
-    case "hongxiuzhao.me": {
-      const { hongxiuzhao } = await import("../rules/onePage/hongxiuzhao");
-      ruleClass = hongxiuzhao();
-      break;
-    }
     case "www.mijiashe.com": {
       const { mijiashe } = await import("../rules/biquge/nextPage");
       ruleClass = mijiashe();
       break;
     }
-    case "www.duread8.com": {
-      const { Duread } = await import("../rules/special/original/ciweimao");
-      ruleClass = Duread;
+
+    case "www.znlzd.com": {
+      const { znlzd } = await import("../rules/biquge/multiIndexNextPage");
+      ruleClass = znlzd();
       break;
     }
+    case "www.266ks.com": {
+      const { c226ks } = await import("../rules/biquge/multiIndexNextPage");
+      ruleClass = c226ks();
+      break;
+    }
+    /** 笔趣阁END **/
+
     default: {
       throw new Error("Not Found Rule!");
     }

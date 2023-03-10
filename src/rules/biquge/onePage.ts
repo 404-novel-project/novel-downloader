@@ -254,3 +254,22 @@ export const yqxs = () =>
       return content;
     }
   );
+
+export const lewenn = () =>
+  mkBiquge(
+    (introDom) => {
+      rms(
+        [
+          /各位书友要是觉得《.*》还不错的话请不要忘记向您QQ群和微博里的朋友推荐哦！/,
+        ],
+        introDom
+      );
+      return introDom;
+    },
+    (content) => {
+      rm("script", true, content);
+      rm('div[align="center"]', false, content);
+      rm2(["//www.lewenn.net/lw", "1秒记住乐文小说网"], content);
+      return content;
+    }
+  );
