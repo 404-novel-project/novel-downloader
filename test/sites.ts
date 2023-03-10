@@ -73,13 +73,25 @@ async function siteTester(domain: string): Promise<siteTestResult> {
         match: isMatch(resp),
       };
     } catch (error) {
-      return {
-        error: (error as RequestError).code,
-        ok: false,
-        status: 0,
-        length: 0,
-        match: false,
-      };
+      const code = (error as RequestError).code;
+      if (code === "ERR_NON_2XX_3XX_RESPONSE") {
+        const resp = (error as RequestError).response as Response<string>;
+        return {
+          error: code,
+          ok: resp.ok,
+          status: resp.statusCode,
+          length: resp.body.length,
+          match: isMatch(resp),
+        };
+      } else {
+        return {
+          error: code,
+          ok: false,
+          status: 0,
+          length: 0,
+          match: false,
+        };
+      }
     }
   }
   function isGOk(rs: testResult[]): boolean {
