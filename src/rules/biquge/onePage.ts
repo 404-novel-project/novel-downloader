@@ -273,3 +273,23 @@ export const lewenn = () =>
       return content;
     }
   );
+
+export const xyb3 = () =>
+  mkBiquge(
+    (introDom) => introDom,
+    (content: HTMLElement) => {
+      rm("script", true, content);
+      rm("div[style]", true, content);
+      rm("div[align]", true, content);
+      rm2(
+        [
+          "由于各种问题yb3.cc地址更改为xyb3.net请大家收藏新地址避免迷路",
+          "网页版章节内容慢，请下载好阅小说app阅读最新内容",
+          "请退出转码页面，请下载好阅小说app 阅读最新章节。",
+          "https://www.xyb3.net",
+        ],
+        content
+      );
+      return content;
+    }
+  );

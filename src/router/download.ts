@@ -442,8 +442,7 @@ export async function getRule(): Promise<BaseRuleClass> {
     case "www.shubaowa.org":
     case "www.aixiaxs.net":
     case "www.banzhuer.org":
-    case "www.007zw.com":
-    case "www.yb3.cc": {
+    case "www.007zw.com": {
       const { common } = await import("../rules/biquge/onePage");
       ruleClass = common();
       break;
@@ -536,6 +535,11 @@ export async function getRule(): Promise<BaseRuleClass> {
     case "www.lewenn.net": {
       const { lewenn } = await import("../rules/biquge/onePage");
       ruleClass = lewenn();
+      break;
+    }
+    case "www.xyb3.net": {
+      const { xyb3 } = await import("../rules/biquge/onePage");
+      ruleClass = xyb3();
       break;
     }
 
