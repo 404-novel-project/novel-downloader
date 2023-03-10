@@ -242,7 +242,7 @@ export function getUI(): () => UIObject {
     case "www.xsyq.cc":
     case "www.bixia3.com":
     case "www.quanshuzhai.com":
-    case "www.xbiquge.la": {
+    case "www.ibiquge.la": {
       return () => {
         floatBuster();
         return defaultObject;

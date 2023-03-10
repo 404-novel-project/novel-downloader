@@ -513,7 +513,7 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = bxwx333();
       break;
     }
-    case "www.xbiquge.la": {
+    case "www.ibiquge.la": {
       const { xbiqugeLa } = await import("../rules/biquge/onePage");
       ruleClass = xbiqugeLa();
       break;
