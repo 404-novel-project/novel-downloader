@@ -455,11 +455,6 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = yqxs();
       break;
     }
-    case "www.dushu369.com": {
-      const { dushu369 } = await import("../rules/onePage/dushu369");
-      ruleClass = dushu369();
-      break;
-    }
     case "www.18kanshu.com": {
       const { c18kanshu } = await import("../rules/twoPage/18kanshu");
       ruleClass = c18kanshu();
