@@ -20,22 +20,8 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout 🛎️
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-
-      - name: Setup Node 🛎️
-        uses: actions/setup-node@v3
-        with:
-          node-version: "19"
-          check-latest: true
-
-      - name: Check Version 🛎️
-        run: node --version && npm --version && yarn --version
-
-      - name: Install 🔧
-        run: yarn install
+      - name: Init 🛎️
+        uses: 404-novel-project/novel-downloader-action@v1
 
       - name: Build 🔧
         run: yarn run github
@@ -47,7 +33,7 @@ jobs:
           path: dist/bundle*.js
 
       - name: Deploy 🚀
-        uses: JamesIves/github-pages-deploy-action@4
+        uses: JamesIves/github-pages-deploy-action@v4
         if: ${{  github.ref == 'refs/heads/master' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') }}
         with:
           branch: gh-pages
