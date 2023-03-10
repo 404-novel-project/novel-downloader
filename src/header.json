@@ -57,7 +57,7 @@
     "*://www.xn--pxtr7m.net/threads/*/profile*",
     "*://www.sosadfun.link/threads/*/profile*",
     "*://www.uukanshu.com/b/*/",
-    "*://www.yruan.com/article/*.html",
+    "*://www.yiruan.la/article/*.html",
     "*://www.ishuquge.org/txt/*/index.html",
     "*://wap.ishuquge.org/s/*.html",
     "*://wap.ishuquge.org/d/*.html",
@@ -208,7 +208,7 @@
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",
-    "*://www.yruan.com/article/*/*.html",
+    "*://www.yiruan.la/article/*/*.html",
     "*://m.yuzhaige.cc/tag/*/",
     "*://m.yuzhaige.cc/sort/*/",
     "*://m.yuzhaige.cc/top/*/",

@@ -512,7 +512,7 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = xbiqugeLa();
       break;
     }
-    case "www.yruan.com": {
+    case "www.yiruan.la": {
       const { yruan } = await import("../rules/biquge/onePage");
       ruleClass = yruan();
       break;

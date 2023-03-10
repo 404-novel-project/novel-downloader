@@ -218,7 +218,7 @@ export function getUI(): () => UIObject {
       };
     }
     case "www.ywggzy.com":
-    case "www.yruan.com":
+    case "www.yiruan.la":
     case "www.ishuquge.org":
     case "www.gashuw.com":
     case "www.81book.com":

@@ -125,7 +125,10 @@ export const yruan = () =>
       rm2(["本站提示：各位书友要是觉得"], introDom);
       return introDom;
     },
-    (content) => content,
+    (content) => {
+      rm("b", true, content);
+      return content;
+    },
     3
   );
 
