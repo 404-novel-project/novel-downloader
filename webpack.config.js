@@ -100,15 +100,24 @@ export default {
         const revision = fs.readFileSync("REVISION").toString().trim();
         let version = packageJson.version;
         if (dev) {
-          version = version + `.${Date.now()}`;
+          version = version + `-${revision}-${Date.now()}`;
         } else {
-          version = version + `.${revision}`;
+          version = version + `-${revision}`;
         }
         console.log(`version: ${version}`);
         header["version"] = version;
         return header;
       },
-      strict: false,
+      strict: true,
+      whitelist: [
+        "name:en",
+        "name:ja",
+        "description:en",
+        "description:ja",
+        "license",
+        "compatible",
+        "incompatible",
+      ],
       ssri: !dev,
       pretty: true,
       downloadBaseURL:

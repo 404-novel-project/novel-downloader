@@ -14,7 +14,7 @@
   "run-at": "document-start",
   "noframes": true,
   "compatible": [
-    "Firefox 77+",
+    "Firefox 100+",
     "Chrome 85+",
     "Edge 85+",
     "Opera 71+",
