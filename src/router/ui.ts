@@ -263,7 +263,7 @@ export function getUI(): () => UIObject {
     case "www.lstxt.cc":
     case "www.b5200.net":
     case "www.xsyq.cc":
-    case "www.bxwx888.org":
+    case "www.bixia3.com":
     case "www.quanshuzhai.com":
     case "www.xbiquge.la": {
       return () => {
