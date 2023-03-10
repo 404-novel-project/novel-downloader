@@ -200,7 +200,6 @@
     "*://www.mbtxt.la/go/*/",
     "*://www.znlzd.com/bqg/*/",
     "*://www.znlzd.com/bqg/11365/index_*.html",
-    "*://www.yyun.net/xs/*/",
     "*://www.xyb3.net/5200/*/",
     "*://hongxiuzhao.me/*.html",
     "*://www.mijiashe.com/*/",
@@ -208,7 +207,6 @@
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",
-    "*://www.yiruan.la/article/*/*.html",
     "*://m.yuzhaige.cc/tag/*/",
     "*://m.yuzhaige.cc/sort/*/",
     "*://m.yuzhaige.cc/top/*/",

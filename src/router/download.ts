@@ -548,11 +548,6 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = ywggzy();
       break;
     }
-    case "www.yyun.net": {
-      const { yyun } = await import("../rules/biquge/nextPage");
-      ruleClass = yyun();
-      break;
-    }
     case "www.mijiashe.com": {
       const { mijiashe } = await import("../rules/biquge/nextPage");
       ruleClass = mijiashe();
