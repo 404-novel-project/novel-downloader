@@ -72,7 +72,7 @@ export async function getRule(): Promise<BaseRuleClass> {
     case "www.81zw.com":
     case "www.fuguoduxs.com":
     case "www.shubaowa.org":
-    case "www.aixiawx.com":
+    case "www.aixiaxs.net":
     case "www.banzhuer.org":
     case "www.hongyeshuzhal.com":
     case "www.yb3.cc": {

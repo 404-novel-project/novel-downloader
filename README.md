@@ -152,7 +152,7 @@ EPUB 文件请使用相应阅读器阅读。
 | [黑沼泽俱乐部](https://houhuayuan.xyz/)           | ✅       | ❎       |                                                                                          |
 | [绿色小说网](https://www.lstxt.cc/)               | ✅       | ❎       |                                                                                          |
 | [神凑轻小说](http://www.shencou.com/)             | ✅       | ❎       |                                                                                          |
-| [爱下书小说网](https://www.aixiawx.com/)          | ✅       | ❎       |                                                                                          |
+| [爱下书小说网](https://www.aixiaxs.net/)          | ✅       | ❎       |                                                                                          |
 | [精彩小说网](https://jingcaiyuedu6.com/)          | ✅       | ❎       |                                                                                          |
 | [笔趣读](https://www.biqu55.net/)                 | ✅       | ❎       |                                                                                          |
 | [爱下电子书](https://www.aixdzs.com/)             | ✅       | ❎       |                                                                                          |
