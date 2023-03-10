@@ -131,7 +131,6 @@ EPUB 文件请使用相应阅读器阅读。
 | [搜小说](https://www.soxscc.net/)                 | ✅       | ❎       |                                                                                          |
 | [腐国度](https://www.fuguoduxs.com/)              | ✅       | ❎       |                                                                                          |
 | [书包网](http://www.shubaowa.org/)                | ✅       | ❎       |                                                                                          |
-| [言情小说笔趣阁](https://www.yqbiqu.com/)         | ✅       | ❎       |                                                                                          |
 | [恋上你看书](https://www.630shu.net/)             | ✅       | ❎       |                                                                                          |
 | [同人小说网](https://www.trxs123.com/)            | ✅       | ❎       |                                                                                          |
 | [同人圈](http://www.tongrenquan.org/)             | ✅       | ❎       |                                                                                          |

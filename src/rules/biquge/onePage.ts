@@ -197,30 +197,6 @@ export const shuquge = () =>
     1
   );
 
-export const xyqxs = () =>
-  mkBiquge(
-    (introDom) => {
-      rms(
-        [/推荐地址：https:\/\/www.xyqxs.cc\/html\/\d+\/\d+\/index\.html/g],
-        introDom
-      );
-      return introDom;
-    },
-    (content) => {
-      rm("div[style]", true, content);
-      rm("script", true, content);
-      rm('div[align="center"]', false, content);
-      rms(
-        [
-          "请记住本书首发域名：www.xyqxs.cc。笔趣阁手机版阅读网址：m.xyqxs.cc",
-          /\(https:\/\/www.xyqxs.cc\/html\/\d+\/\d+\/\d+\.html\)/,
-        ],
-        content
-      );
-      return content;
-    }
-  );
-
 export const lusetxt = () =>
   mkBiquge(
     (introDom) => {
