@@ -21,7 +21,7 @@ export const gebiqu = () =>
       return introDom;
     },
     (content) => {
-      rms([/"www.gebiqu.com"/g], content);
+      rms([/"www.gashuw.com"/g], content);
       return content;
     }
   );
@@ -36,15 +36,6 @@ export const luoqiuzw = () =>
       }
       const ads = ["记住网址m.luoqｉｕｘｚｗ．ｃｏｍ"];
       rms(ads, content);
-      return content;
-    }
-  );
-
-export const lwxs9 = () =>
-  mkBiquge(
-    (introDom) => introDom,
-    (content) => {
-      rm("div[align]", false, content);
       return content;
     }
   );
@@ -98,7 +89,7 @@ export const dijiubook = () =>
     },
     (chapter) => {
       const url = new URL(chapter.chapterUrl);
-      if (url.host === "m.dijiubook.net" || url.href.endsWith(".apk")) {
+      if (url.host === "m.dijiuben.com" || url.href.endsWith(".apk")) {
         return;
       } else {
         return chapter;
@@ -134,7 +125,10 @@ export const yruan = () =>
       rm2(["本站提示：各位书友要是觉得"], introDom);
       return introDom;
     },
-    (content) => content,
+    (content) => {
+      rm("b", true, content);
+      return content;
+    },
     3
   );
 
@@ -193,41 +187,17 @@ export const shuquge = () =>
       rms(
         [
           /作者：.+所写的《.+》无弹窗免费全文阅读为转载作品,章节由网友发布。/,
-          /推荐地址：https?:\/\/www\.shuquge\.com\/txt\/\d+\/index\.html/g,
+          /推荐地址：https?:\/\/www\.ishuquge\.org\/txt\/\d+\/index\.html/g,
         ],
         introDom
       );
       return introDom;
     },
     (content) => {
-      rm2(["请记住本书首发域名：", "www.shuquge.com"], content);
+      rm2(["请记住本书首发域名：", "www.ishuquge.org"], content);
       return content;
     },
     1
-  );
-
-export const xyqxs = () =>
-  mkBiquge(
-    (introDom) => {
-      rms(
-        [/推荐地址：https:\/\/www.xyqxs.cc\/html\/\d+\/\d+\/index\.html/g],
-        introDom
-      );
-      return introDom;
-    },
-    (content) => {
-      rm("div[style]", true, content);
-      rm("script", true, content);
-      rm('div[align="center"]', false, content);
-      rms(
-        [
-          "请记住本书首发域名：www.xyqxs.cc。笔趣阁手机版阅读网址：m.xyqxs.cc",
-          /\(https:\/\/www.xyqxs.cc\/html\/\d+\/\d+\/\d+\.html\)/,
-        ],
-        content
-      );
-      return content;
-    }
   );
 
 export const lusetxt = () =>
@@ -243,7 +213,7 @@ export const lusetxt = () =>
       rm("script", true, content);
       rm("div[style]", true, content);
       rm("div[align]", true, content);
-      rm2(["https://www.lusetxt.com/books", "请记住本书首发域名"], content);
+      rm2(["https://www.lvsewx.com/books", "请记住本书首发域名"], content);
       htmlTrim(content);
       return content;
     }
@@ -259,20 +229,46 @@ export const yqxs = () =>
     (content) => {
       rm("script", true, content);
       rm('div[align="center"]', false, content);
-      rm2(["//www.yqxs.cc/html/", "请记住本书首发域名"], content);
+      rm2(["//www.yqxsge.cc/html/", "请记住本书首发域名"], content);
       return content;
     }
   );
 
-export const dingdiann = () =>
+export const lewenn = () =>
+  mkBiquge(
+    (introDom) => {
+      rms(
+        [
+          /各位书友要是觉得《.*》还不错的话请不要忘记向您QQ群和微博里的朋友推荐哦！/,
+        ],
+        introDom
+      );
+      return introDom;
+    },
+    (content) => {
+      rm("script", true, content);
+      rm('div[align="center"]', false, content);
+      rm2(["//www.lewenn.net/lw", "1秒记住乐文小说网"], content);
+      return content;
+    }
+  );
+
+export const xyb3 = () =>
   mkBiquge(
     (introDom) => introDom,
-    (content) => {
-      rm("div", false, content);
+    (content: HTMLElement) => {
       rm("script", true, content);
-      rm2(["www.dingdiann.net", "最新全本："], content);
-      htmlTrim(content);
+      rm("div[style]", true, content);
+      rm("div[align]", true, content);
+      rm2(
+        [
+          "由于各种问题yb3.cc地址更改为xyb3.net请大家收藏新地址避免迷路",
+          "网页版章节内容慢，请下载好阅小说app阅读最新内容",
+          "请退出转码页面，请下载好阅小说app 阅读最新章节。",
+          "https://www.xyb3.net",
+        ],
+        content
+      );
       return content;
-    },
-    5
+    }
   );

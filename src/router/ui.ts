@@ -16,7 +16,7 @@ const errorObject: UIObject = {
 export function getUI(): () => UIObject {
   const host: string = document.location.host;
   switch (host) {
-    case "wap.shuquge.com": {
+    case "wap.ishuquge.org": {
       return () => {
         const id = /(\d+)\.html$/.exec(document.location.pathname)?.[1];
         if (!id) {
@@ -25,16 +25,16 @@ export function getUI(): () => UIObject {
         return {
           type: "jump",
           jumpFunction() {
-            document.location.href = `https://www.shuquge.com/txt/${id}/index.html`;
+            document.location.href = `https://www.ishuquge.org/txt/${id}/index.html`;
           },
         };
       };
     }
-    case "m.xinwanben.com": {
+    case "m.wanben.info": {
       return () => ({
         type: "jump",
         jumpFunction() {
-          document.location.host = "www.xinwanben.com";
+          document.location.host = "www.wanben.info";
         },
       });
     }
@@ -140,29 +140,10 @@ export function getUI(): () => UIObject {
         }
       };
     }
-    case "www.ciweimao.com": {
-      return () => {
-        const jump = /^\/book\/\d+\/?$/.test(document.location.pathname);
-        if (jump) {
-          const bookId = /(\d+)\/?$/.exec(document.location.pathname)?.[1];
-          if (bookId) {
-            return {
-              type: "jump",
-              jumpFunction: () =>
-                (document.location.href = `https://www.ciweimao.com/chapter-list/${bookId}/book_detail`),
-            };
-          } else {
-            return errorObject;
-          }
-        } else {
-          return defaultObject;
-        }
-      };
-    }
-    case "m.lusetxt.com": {
+    case "m.lvsewx.com": {
       return () => ({
         type: "jump",
-        jumpFunction: () => (document.location.host = "www.lusetxt.com"),
+        jumpFunction: () => (document.location.host = "www.lvsewx.com"),
       });
     }
     case "www.cool18.com": {
@@ -237,36 +218,30 @@ export function getUI(): () => UIObject {
       };
     }
     case "www.ywggzy.com":
-    case "www.yruan.com":
-    case "www.shuquge.com":
-    case "www.sizhicn.com":
-    case "www.dingdiann.net":
-    case "www.gebiqu.com":
+    case "www.yiruan.la":
+    case "www.ishuquge.org":
+    case "www.gashuw.com":
     case "www.81book.com":
     case "www.81zw.com":
     case "www.fuguoduxs.com":
     case "www.shubaowa.org":
-    case "www.bz01.org":
-    case "www.aixiawx.com":
+    case "www.aixiaxs.net":
     case "www.banzhuer.org":
-    case "www.hongyeshuzhal.com":
-    case "www.xinwanben.com":
+    case "www.007zw.com":
+    case "www.wanben.info":
     case "www.mht99.com":
     case "www.xbiquge.so":
     case "www.luoqiuzw.com":
-    case "www.yqbiqu.com":
-    case "www.lwxs9.org":
-    case "dijiubook.net":
-    case "www.xbiquwx.la":
-    case "www.25zw.com":
-    case "www.zmccx.com":
+    case "dijiuben.com":
+    case "www.biquzw.la":
+    case "www.25zw.org":
+    case "www.tycqzw.com":
     case "www.ranwen.la":
-    case "www.lstxt.cc":
     case "www.b5200.net":
-    case "www.xsyq.cc":
-    case "www.bxwx888.org":
+    case "www.yqxsge.cc":
+    case "www.bixia3.com":
     case "www.quanshuzhai.com":
-    case "www.xbiquge.la": {
+    case "www.ibiquge.la": {
       return () => {
         floatBuster();
         return defaultObject;
@@ -314,11 +289,8 @@ export function getUI(): () => UIObject {
     case "www.soxscc.net":
     case "www.soxscc.org":
     case "www.soxs.cc":
-    case "www.soshuw.com":
-    case "www.soshuwu.org":
     case "www.soxscc.cc":
-    case "www.soshuwu.com":
-    case "www.kubiji.net": {
+    case "www.soshuwu.com": {
       return () => {
         if (document.location.pathname.startsWith("/book/")) {
           return {
