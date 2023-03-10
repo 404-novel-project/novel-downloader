@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           小说下载器
 // @description    一个可扩展的通用型小说下载器。
-// @version        [version].810
+// @version        [version].811
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
