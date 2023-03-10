@@ -4,6 +4,7 @@ import { fileURLToPath } from "url";
 import { dirname } from "path";
 
 import got, { OptionsInit, Response, RequestError } from "got";
+import pLimit from "p-limit";
 
 /*
 本脚本用于检测match列表中的网站是否仍然存活，是否变更域名。
@@ -59,6 +60,7 @@ async function siteTester(domain: string): Promise<siteTestResult> {
   }
   async function runTest(url: string): Promise<testResult> {
     try {
+      console.info(`Request ${url}`);
       const resp = (await got({
         url,
         ...options,
@@ -101,7 +103,8 @@ async function siteTester(domain: string): Promise<siteTestResult> {
 
 async function run() {
   const domains = getDomains(getHeader());
-  const _results = domains.map((x) => siteTester(x));
+  const limit = pLimit(10);
+  const _results = domains.map((x) => limit(() => siteTester(x)));
   const results = await Promise.all(_results);
 
   const output = Object.fromEntries(
@@ -130,12 +133,29 @@ async function main() {
     }
     return nv;
   }
+  function toCsv(input: { [k: string]: Record<string, string | boolean> }) {
+    const ins = Object.entries(input);
+    const out: string[] = [];
+
+    const header = ["(index)", ...Object.keys(ins[0][1])].join(", ");
+    out.push(header);
+
+    for (const l of ins) {
+      const line = [l[0], ...Object.values(l[1])].join(", ");
+      out.push(line);
+    }
+    return out.join("\n");
+  }
 
   const _output = await run();
   const output = Object.fromEntries(
     Object.entries(_output).map((k, i) => [k[0], convert(k[1])])
   );
   console.table(output);
+
+  const csv = toCsv(output);
+  const csvPath = path.resolve(__dirname, "..", "dist/sites.csv");
+  fs.writeFileSync(csvPath, csv);
 }
 
 if (import.meta.url === `file://${__filename}`) {
