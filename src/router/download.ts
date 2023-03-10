@@ -108,7 +108,7 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = Linovel;
       break;
     }
-    case "www.xinwanben.com": {
+    case "www.wanben.info": {
       const { xinwanben } = await import("../rules/biquge/nextPage");
       ruleClass = xinwanben();
       break;

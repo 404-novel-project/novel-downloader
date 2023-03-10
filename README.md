@@ -118,7 +118,7 @@ EPUB 文件请使用相应阅读器阅读。
 | [书书网](https://www.1pwx.com/)                   | ✅       | ❎       |                                                                                          |
 | [八一中文网](https://www.81book.com/)             | ✅       | ❎       | 抓取速度慢，请耐心等待。                                                                 |
 | [御书阁](http://m.yushuge123.com/)                | ✅       | ❎       | 部分文字被图片替换，请使用 HTML 版查看。                                                 |
-| [完本神站](https://www.xinwanben.com/)            | ✅       | ❎       |                                                                                          |
+| [完本神站](https://www.wanben.info/)              | ✅       | ❎       |                                                                                          |
 | [得间小说](https://www.idejian.com/)              | ✅       | ❎       |                                                                                          |
 | [轻小说文库](https://www.wenku8.net/)             | ✅       | ❎       |                                                                                          |
 | [西方奇幻小说网](https://www.westnovel.com/)      | ✅       | ❎       |                                                                                          |

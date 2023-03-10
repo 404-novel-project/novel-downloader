@@ -30,11 +30,11 @@ export function getUI(): () => UIObject {
         };
       };
     }
-    case "m.xinwanben.com": {
+    case "m.wanben.info": {
       return () => ({
         type: "jump",
         jumpFunction() {
-          document.location.host = "www.xinwanben.com";
+          document.location.host = "www.wanben.info";
         },
       });
     }
@@ -230,7 +230,7 @@ export function getUI(): () => UIObject {
     case "www.aixiawx.com":
     case "www.banzhuer.org":
     case "www.hongyeshuzhal.com":
-    case "www.xinwanben.com":
+    case "www.wanben.info":
     case "www.mht99.com":
     case "www.xbiquge.so":
     case "www.luoqiuzw.com":
