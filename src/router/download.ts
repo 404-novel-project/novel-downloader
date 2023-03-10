@@ -524,7 +524,7 @@ export async function getRule(): Promise<BaseRuleClass> {
       break;
     }
     case "www.ishuquge.org":
-    case "www.sizhicn.com": {
+     {
       const { shuquge } = await import("../rules/biquge/onePage");
       ruleClass = shuquge();
       break;
