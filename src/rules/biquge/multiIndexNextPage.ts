@@ -18,7 +18,8 @@ export const znlzd = () =>
       }
       const pathname = nextLink.split("/").slice(-1)[0];
       return pathname.includes("_");
-    }
+    },
+    3
   );
 
 export const c226ks = () =>

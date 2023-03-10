@@ -554,7 +554,7 @@ export async function getRule(): Promise<BaseRuleClass> {
       break;
     }
 
-    case "www.znlzd.com": {
+    case "m.kuangguwenhua.com": {
       const { znlzd } = await import("../rules/biquge/multiIndexNextPage");
       ruleClass = znlzd();
       break;
