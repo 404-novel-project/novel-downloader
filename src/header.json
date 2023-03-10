@@ -71,7 +71,6 @@
     "*://www.266ks.com/book/*/index*.html",
     "*://www.hetushu.com/book/*/index.html",
     "*://hetushu.com/book/*/index.html",
-    "*://www.shouda88.com/*/",
     "*://www.gashuw.com/biquge_*/",
     "*://www.viviyzw.com/book*.html",
     "*://www.1pwx.com/*.htm",
@@ -289,8 +288,6 @@
   ],
   "connect": [
     "self",
-    "shouda8.com",
-    "shouda88.com",
     "qidian.com",
     "yuewen.com",
     "kuangxiangit.com",

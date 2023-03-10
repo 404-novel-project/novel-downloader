@@ -53,11 +53,6 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = Hetushu;
       break;
     }
-    case "www.shouda88.com": {
-      const { shouda8 } = await import("../rules/onePage/shouda8");
-      ruleClass = shouda8();
-      break;
-    }
     case "www.gashuw.com": {
       const { gebiqu } = await import("../rules/biquge/onePage");
       ruleClass = gebiqu();
