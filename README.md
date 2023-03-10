@@ -140,7 +140,7 @@ EPUB 文件请使用相应阅读器阅读。
 | [海棠小说网](http://m.haitangtxt.net/)            | ✅       | ❎       | 部分文字被图片替换，请使用 HTML 版查看。<br>如需替换清理图片，请自行生成图片文字对照表。 |
 | [笔趣阁](https://www.biquzw.la/)                  | ✅       | ❎       |                                                                                          |
 | [25 中文网](http://www.25zw.org/)                 | ✅       | ❎       |                                                                                          |
-| [天域小说网](https://www.zmccx.com/)              | ✅       | ❎       |                                                                                          |
+| [天域小说网](https://www.tycqzw.com/)             | ✅       | ❎       |                                                                                          |
 | [完本神站](https://www.wanben.org/)               | ✅       | ❎       |                                                                                          |
 | [燃文小说](https://www.ranwen.la)                 | ✅       | ❎       |                                                                                          |
 | [望书阁](https://www.wangshuge.la/)               | ✅       | ❎       |                                                                                          |
