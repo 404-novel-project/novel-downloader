@@ -4,11 +4,6 @@ export async function getRule(): Promise<BaseRuleClass> {
   const host: string = document.location.host;
   let ruleClass;
   switch (host) {
-    case "www.ciweimao.com": {
-      const { Ciweimao } = await import("../rules/special/original/ciweimao");
-      ruleClass = Ciweimao;
-      break;
-    }
     case "www.uukanshu.com": {
       const { uukanshu } = await import("../rules/onePage/uukanshu");
       ruleClass = uukanshu();
