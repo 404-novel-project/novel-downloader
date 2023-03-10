@@ -144,7 +144,7 @@ EPUB 文件请使用相应阅读器阅读。
 | [天域小说网](https://www.zmccx.com/)              | ✅       | ❎       |                                                                                          |
 | [完本神站](https://www.wanben.org/)               | ✅       | ❎       |                                                                                          |
 | [燃文小说](https://www.ranwen.la)                 | ✅       | ❎       |                                                                                          |
-| [望书阁](https://www.wangshuge.com/)              | ✅       | ❎       |                                                                                          |
+| [望书阁](https://www.wangshuge.la/)               | ✅       | ❎       |                                                                                          |
 | [百合小说网](https://m.baihexs.com/)              | ✅       | ❎       |                                                                                          |
 | [全书斋](https://www.quanshuzhai.com/)            | ✅       | ❎       |                                                                                          |
 | [蔷薇后花园](https://houhuayuan.xyz/)             | ✅       | ❎       |                                                                                          |

@@ -390,7 +390,7 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = yibige();
       break;
     }
-    case "www.wangshuge.com": {
+    case "www.wangshuge.la": {
       const { washuge } = await import("../rules/twoPage/washuge");
       ruleClass = washuge();
       break;
@@ -523,8 +523,7 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = yruan();
       break;
     }
-    case "www.ishuquge.org":
-     {
+    case "www.ishuquge.org": {
       const { shuquge } = await import("../rules/biquge/onePage");
       ruleClass = shuquge();
       break;
