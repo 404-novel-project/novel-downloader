@@ -264,11 +264,6 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = Lofter;
       break;
     }
-    case "www.lwxs9.org": {
-      const { lwxs9 } = await import("../rules/biquge/onePage");
-      ruleClass = lwxs9();
-      break;
-    }
     case "www.shubl.com": {
       const { Shubl } = await import("../rules/special/original/ciweimao");
       ruleClass = Shubl;

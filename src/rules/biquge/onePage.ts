@@ -40,15 +40,6 @@ export const luoqiuzw = () =>
     }
   );
 
-export const lwxs9 = () =>
-  mkBiquge(
-    (introDom) => introDom,
-    (content) => {
-      rm("div[align]", false, content);
-      return content;
-    }
-  );
-
 export const biquwx = () =>
   mkBiquge(
     (introDom) => {

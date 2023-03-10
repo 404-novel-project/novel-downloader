@@ -144,7 +144,6 @@ EPUB 文件请使用相应阅读器阅读。
 | [精品小说网](http://www.jpxs123.com/)             | ✅       | ❎       |                                                                                          |
 | [256 文学](https://www.256wenku.com/)             | ✅       | ❎       |                                                                                          |
 | [笔趣阁小说网](http://www.biquge66.com/)          | ✅       | ❎       |                                                                                          |
-| [乐文小说网](http://www.lwxs9.org/)               | ✅       | ❎       |                                                                                          |
 | [海棠小说网](http://m.haitangtxt.net/)            | ✅       | ❎       | 部分文字被图片替换，请使用 HTML 版查看。<br>如需替换清理图片，请自行生成图片文字对照表。 |
 | [笔趣阁](https://www.xbiquwx.la/)                 | ✅       | ❎       |                                                                                          |
 | [25 中文网](http://www.25zw.com/)                 | ✅       | ❎       |                                                                                          |
