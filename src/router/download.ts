@@ -114,8 +114,7 @@ export async function getRule(): Promise<BaseRuleClass> {
       break;
     }
     case "www.gongzicp.com":
-    case "m.gongzicp.com":
-    case "gongzicp.com": {
+    case "m.gongzicp.com": {
       const { Gongzicp } = await import("../rules/special/original/gongzicp");
       ruleClass = Gongzicp;
       break;
