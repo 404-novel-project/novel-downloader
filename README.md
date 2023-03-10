@@ -123,7 +123,7 @@ EPUB 文件请使用相应阅读器阅读。
 | [西方奇幻小说网](https://www.westnovel.com/)      | ✅       | ❎       |                                                                                          |
 | [棉花糖小说网](https://www.mht99.com/)            | ✅       | ❎       |                                                                                          |
 | [笔趣阁](https://www.xbiquge.so/)                 | ✅       | ❎       |                                                                                          |
-| [红叶书斋](https://www.hongyeshuzhal.com/)        | ✅       | ❎       |                                                                                          |
+| [红叶书斋](https://www.007zw.com/)                | ✅       | ❎       |                                                                                          |
 | [哩哔轻小说](https://www.linovelib.com/)          | ✅       | ❎       |                                                                                          |
 | [落秋中文](https://www.luoqiuzw.com/)             | ✅       | ❎       |                                                                                          |
 | [一笔阁](https://www.yibige.cc/)                  | ✅       | ❎       |                                                                                          |

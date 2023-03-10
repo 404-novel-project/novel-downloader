@@ -69,7 +69,7 @@ export async function getRule(): Promise<BaseRuleClass> {
     case "www.shubaowa.org":
     case "www.aixiaxs.net":
     case "www.banzhuer.org":
-    case "www.hongyeshuzhal.com":
+    case "www.007zw.com":
     case "www.yb3.cc": {
       const { common } = await import("../rules/biquge/onePage");
       ruleClass = common();
