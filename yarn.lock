@@ -4135,10 +4135,10 @@ webpack-sources@^3.2.3:
   resolved "https://registry.yarnpkg.com/webpack-sources/-/webpack-sources-3.2.3.tgz#2d4daab8451fd4b240cc27055ff6a0c2ccea0cde"
   integrity sha512-/DyMEOrDgLKKIG0fmvtz+4dUX/3Ghozwgm6iPp8KRhvn+eQf9+Q7GWxVNMk3+uCPWfdXYC4ExGBckIXdFEfH1w==
 
-webpack-userscript@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/webpack-userscript/-/webpack-userscript-3.0.0.tgz#6a197b63cf022dc9af1bb4be206b455c2e9cccf7"
-  integrity sha512-yjam6na/xcqzVUYRawBsXRqKIwkJRjC/hcw0mh/HqWNBTLS2DF9Bd+tUDvelxRm9GbO54KQ2IWXdLyJ079mtwg==
+webpack-userscript@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/webpack-userscript/-/webpack-userscript-3.0.1.tgz#df82df8c5da06baf71cf8816e5f3bd1d456d1cdd"
+  integrity sha512-4X1gv66vqAIvYec7yCtb2gxfx3jWr6EK84kVmeGhQ2Dl7br55kF49sA5rIiEIceo9HegBu6OWNtrmXFgTC81hQ==
   dependencies:
     class-transformer "^0.5.1"
     class-validator "^0.14.0"

@@ -16,7 +16,7 @@ const dev = process.env.NODE_ENV === "development";
 console.log(`development: ${dev}`);
 
 git.raw("rev-list", "--count", "HEAD").then((REVISION) => {
-  console.log(REVISION);
+  console.log(`commit count: ${REVISION.trim()}`);
   fs.writeFileSync("REVISION", REVISION);
 });
 
@@ -84,20 +84,25 @@ export default {
         "Origin, X-Requested-With, Content-Type, Accept",
     },
     client: {
-      webSocketURL: "wss://webpack.lo.bgme.me/ws",
+      webSocketURL: "wss://webpack.localhost:11944/ws",
     },
   },
   plugins: [
     new WebpackUserscript({
       headers: () => {
         const headerPath = path.resolve(__dirname, "src", "header.json");
+        const packageJsonPath = path.resolve(__dirname, "package.json");
         const header = JSON.parse(fs.readFileSync(headerPath).toString());
+        const packageJson = JSON.parse(
+          fs.readFileSync(packageJsonPath).toString()
+        );
+
         const revision = fs.readFileSync("REVISION").toString().trim();
-        let version;
+        let version = packageJson.version;
         if (dev) {
-          version = header["version"] + `.${Date.now()}`;
+          version = version + `.${Date.now()}`;
         } else {
-          version = header["version"] + `.${revision}`;
+          version = version + `.${revision}`;
         }
         console.log(`version: ${version}`);
         header["version"] = version;
