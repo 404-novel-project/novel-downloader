@@ -415,11 +415,6 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = Hanwujinian;
       break;
     }
-    case "www.biqu55.net": {
-      const { biqu55 } = await import("../rules/biquge/biqu55");
-      ruleClass = biqu55();
-      break;
-    }
     case "manga.bilibili.com": {
       const { MangaBilibili } = await import(
         "../rules/special/original/bilibili"
