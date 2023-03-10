@@ -142,7 +142,6 @@ EPUB 文件请使用相应阅读器阅读。
 | [同人小说网](https://www.trxs123.com/)            | ✅       | ❎       |                                                                                          |
 | [同人圈](http://www.tongrenquan.org/)             | ✅       | ❎       |                                                                                          |
 | [精品小说网](http://www.jpxs123.com/)             | ✅       | ❎       |                                                                                          |
-| [妙笔阁](https://www.imiaobige.com/)              | ✅       | ❎       |                                                                                          |
 | [256 文学](https://www.256wenku.com/)             | ✅       | ❎       |                                                                                          |
 | [笔趣阁小说网](http://www.biquge66.com/)          | ✅       | ❎       |                                                                                          |
 | [乐文小说网](http://www.lwxs9.org/)               | ✅       | ❎       |                                                                                          |

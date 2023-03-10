@@ -255,12 +255,6 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = trxs();
       break;
     }
-    case "www.imbg.cc":
-    case "www.imiaobige.com": {
-      const { imiaobige } = await import("../rules/twoPage/imiaobige");
-      ruleClass = imiaobige();
-      break;
-    }
     case "www.256wenku.com": {
       const { c256wxc } = await import("../rules/onePage/256wxc");
       ruleClass = c256wxc;
