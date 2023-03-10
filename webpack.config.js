@@ -84,7 +84,7 @@ export default {
         "Origin, X-Requested-With, Content-Type, Accept",
     },
     client: {
-      webSocketURL: "wss://webpack.localhost:11944/ws",
+      webSocketURL: "ws://webpack.localhost:11944/ws",
     },
   },
   plugins: [

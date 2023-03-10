@@ -293,7 +293,6 @@ export function getUI(): () => UIObject {
     case "www.soxscc.net":
     case "www.soxscc.org":
     case "www.soxs.cc":
-    case "www.soshuw.com":
     case "www.soxscc.cc":
     case "www.soshuwu.com": {
       return () => {
