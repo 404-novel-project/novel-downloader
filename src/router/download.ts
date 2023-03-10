@@ -503,7 +503,7 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = b5200();
       break;
     }
-    case "www.xsyq.cc": {
+    case "www.yqxsge.cc": {
       const { yqxs } = await import("../rules/biquge/onePage");
       ruleClass = yqxs();
       break;

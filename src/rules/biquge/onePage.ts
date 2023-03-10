@@ -250,7 +250,7 @@ export const yqxs = () =>
     (content) => {
       rm("script", true, content);
       rm('div[align="center"]', false, content);
-      rm2(["//www.yqxs.cc/html/", "请记住本书首发域名"], content);
+      rm2(["//www.yqxsge.cc/html/", "请记住本书首发域名"], content);
       return content;
     }
   );
