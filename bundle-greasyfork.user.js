@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           小说下载器
 // @description    一个可扩展的通用型小说下载器。
-// @version        5.0.815
+// @version        5.0.816
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -14795,12 +14795,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/attachments.ts");
 /* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/cleanDOM.ts");
-/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/http.ts");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/main.ts");
+/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/main.ts");
 /* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/main/Chapter.ts");
-/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/Book.ts");
 /* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
 
 
@@ -14809,9 +14808,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-
-const _lang = document.documentElement.getAttribute("lang");
-const lang = _lang ? { lang: _lang } : {};
 class Pixiv extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
     constructor() {
         super();
@@ -14820,245 +14816,130 @@ class Pixiv extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
     }
     async bookParse() {
         const self = this;
-        const userId = await getUserId();
-        let bookG;
+        const meta = {
+            lang: getLang(),
+            version: "0e6ff4f1fa77cd8630159156c6ca02363ac6e1a8",
+        };
         if (document.location.pathname.startsWith("/novel/series")) {
-            const _seriesID = /(\d+)\/?$/.exec(document.location.pathname)?.[0];
-            if (_seriesID) {
-                const seriesID = parseInt(_seriesID, 10);
-                bookG = await series(seriesID);
+            const seriesID = /(\d+)\/?$/.exec(document.location.pathname)?.[0];
+            if (!seriesID) {
+                throw Error("not found seriesID!");
             }
+            return doSeries(seriesID);
         }
         else {
-            const chapterId = new URL(document.location.href).searchParams.get("id");
-            if (chapterId) {
-                const novel = await getChapterDate(chapterId);
-                const seriesNavData = novel.seriesNavData;
-                if (seriesNavData) {
-                    const seriesID = seriesNavData.seriesId;
-                    bookG = await series(seriesID);
-                }
-                else {
-                    bookG = await onePage(novel);
-                }
+            const novelID = new URL(document.location.href).searchParams.get("id");
+            if (!novelID) {
+                throw Error("not found novelID");
             }
-        }
-        if (!bookG) {
-            throw new Error("初始化图书信息失败！");
-        }
-        return bookG;
-        async function getUserId() {
-            const resp = await fetch("https://www.pixiv.net/ajax/linked_service/tumeng", {
-                credentials: "include",
-                headers: {
-                    Accept: "application/json",
-                },
-                method: "GET",
-                mode: "cors",
-            });
-            const tumeng = (await resp.json());
-            if (!tumeng.error) {
-                return tumeng.body.page.user.id;
+            const novel = await getNovel(novelID, meta.lang, meta.version);
+            if (novel.seriesID) {
+                return doSeries(novel.seriesID);
             }
-        }
-        async function series(id) {
-            const seriesMetaBody = await getSeriesMeta(id);
-            const bookUrl = "https://www.pixiv.net/novel/series/" + id.toString();
-            const bookname = seriesMetaBody.title;
-            const author = seriesMetaBody.userName;
-            const introduction = seriesMetaBody.caption;
-            const introductionHTML = document.createElement("div");
-            introductionHTML.innerText = introduction;
-            const additionalMetadate = {};
-            const coverUrl = seriesMetaBody.firstEpisode.url;
-            if (coverUrl) {
-                (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getAttachment */ .FG)(coverUrl, self.attachmentMode, "cover-")
+            else {
+                const bookUrl = `https://www.pixiv.net/novel/show.php?id=${novelID}`;
+                const bookname = novel.title;
+                const author = novel.userName;
+                const introductionHTML = document.createElement("div");
+                introductionHTML.innerHTML = novel.description;
+                const introduction = introductionHTML.innerText;
+                const additionalMetadate = {};
+                (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getAttachment */ .FG)(novel.coverUrl, self.attachmentMode, "cover-")
                     .then((coverClass) => {
                     additionalMetadate.cover = coverClass;
                 })
                     .catch((error) => _log__WEBPACK_IMPORTED_MODULE_2___default().error(error));
-            }
-            additionalMetadate.lastModified = seriesMetaBody.updatedTimestamp;
-            const seriesContents = await getSeriesContents(id, seriesMetaBody.publishedContentCount);
-            const chapters = [];
-            const chapterUrlBase = "https://www.pixiv.net/novel/show.php?id=";
-            for (const sc of seriesContents) {
-                const chapterUrl = chapterUrlBase + sc.id;
-                const chapterNumber = sc.series.contentOrder;
-                const chapterName = `#${sc.series.contentOrder} ${sc.title ?? ""}`.trim();
+                additionalMetadate.lastModified = new Date(novel.uploadDate).getTime();
+                additionalMetadate.tags = novel.tags;
                 const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_3__/* .Chapter */ .W({
                     bookUrl,
                     bookname,
-                    chapterUrl,
-                    chapterNumber,
-                    chapterName,
+                    chapterUrl: bookUrl,
+                    chapterNumber: 0,
+                    chapterName: bookname,
                     isVIP: false,
                     isPaid: false,
+                    charset: self.charset,
                     sectionName: null,
                     sectionNumber: null,
                     sectionChapterNumber: null,
                     chapterParse: self.chapterParse,
-                    charset: self.charset,
-                    options: { id: sc.id, lang: _lang, userId },
-                });
-                if (sc.series.viewableType !== 0) {
-                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_4__/* .Status.aborted */ .qb.aborted;
-                }
-                chapters.push(chapter);
-            }
-            additionalMetadate.language = (await getPreloadData(chapters[0].chapterUrl, self.charset))?.novel?.language;
-            return new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .f({
-                bookUrl,
-                bookname,
-                author,
-                introduction,
-                introductionHTML,
-                additionalMetadate,
-                chapters,
-            });
-        }
-        async function getSeriesMeta(id) {
-            const referrer = "https://www.pixiv.net/novel/series/" + id.toString();
-            const apiMetaBase = "https://www.pixiv.net/ajax/novel/series/";
-            const apiMeta = apiMetaBase +
-                id.toString() +
-                "?" +
-                new URLSearchParams(lang).toString();
-            const respMeta = await fetch(apiMeta, {
-                credentials: "include",
-                headers: {
-                    Accept: "application/json",
-                    Pragma: "no-cache",
-                    "Cache-Control": "no-cache",
-                },
-                referrer,
-                method: "GET",
-                mode: "cors",
-            });
-            const seriesMeta = (await respMeta.json());
-            if (!seriesMeta.error) {
-                return seriesMeta.body;
-            }
-            else {
-                throw new Error("series ajax failed! series ID: " + id);
-            }
-        }
-        async function getSeriesContents(id, publishedContentCount) {
-            const referrer = "https://www.pixiv.net/novel/series/" + id.toString();
-            const apiBase = "https://www.pixiv.net/ajax/novel/series_content/";
-            const api = apiBase + id.toString();
-            let lastOrder = 0;
-            const getSearchParams = () => ({
-                limit: "10",
-                last_order: lastOrder.toString(),
-                order_by: "asc",
-                ...lang,
-            });
-            const seriesContents = [];
-            while (lastOrder < publishedContentCount) {
-                const url = api + "?" + new URLSearchParams(getSearchParams()).toString();
-                const resp = await fetch(url, {
-                    credentials: "include",
-                    headers: {
-                        Accept: "application/json",
+                    options: {
+                        id: novelID,
+                        lang: meta.lang,
+                        version: meta.version,
                     },
-                    referrer,
-                    method: "GET",
-                    mode: "cors",
                 });
-                const _seriesContents = (await resp.json());
-                if (!_seriesContents.error) {
-                    seriesContents.push(..._seriesContents.body.page.seriesContents);
-                }
-                lastOrder = lastOrder + 10;
+                return new _main_Book__WEBPACK_IMPORTED_MODULE_4__/* .Book */ .f({
+                    bookUrl,
+                    bookname,
+                    author,
+                    introduction,
+                    introductionHTML,
+                    additionalMetadate,
+                    chapters: [chapter],
+                });
             }
-            return seriesContents;
         }
-        async function onePage(novel) {
-            const bookUrl = document.location.href;
-            const bookId = new URL(document.location.href).searchParams.get("id");
-            const bookname = novel.title;
-            const author = novel.userName;
+        async function doSeries(seriesID) {
+            const series = await getSeries(seriesID, meta.lang, meta.version);
+            const bookUrl = `https://www.pixiv.net/novel/series/${seriesID}`;
+            const bookname = series.bookname;
+            const author = series.author;
+            const introduction = series.introduction;
             const introductionHTML = document.createElement("div");
-            introductionHTML.innerHTML = novel.description;
-            const introduction = introductionHTML.innerText;
+            introductionHTML.innerText = introduction;
             const additionalMetadate = {};
-            const coverUrl = novel.coverUrl;
-            if (coverUrl) {
-                (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getAttachment */ .FG)(coverUrl, self.attachmentMode, "cover-")
-                    .then((coverClass) => {
-                    additionalMetadate.cover = coverClass;
-                })
-                    .catch((error) => _log__WEBPACK_IMPORTED_MODULE_2___default().error(error));
-            }
-            additionalMetadate.lastModified = new Date(novel.uploadDate).getTime();
-            additionalMetadate.tags = novel.tags.tags.map((t) => t.tag);
-            additionalMetadate.language = novel.language;
-            const chapterUrl = bookUrl;
-            const chapterName = bookname;
-            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_3__/* .Chapter */ .W({
-                bookUrl,
-                bookname,
-                chapterUrl,
-                chapterNumber: 1,
-                chapterName,
-                isVIP: false,
-                isPaid: false,
-                sectionName: null,
-                sectionNumber: null,
-                sectionChapterNumber: null,
-                chapterParse: self.chapterParse,
-                charset: self.charset,
-                options: {},
-            });
-            const contentRaw = document.createElement("div");
-            contentRaw.innerText = novel.content;
-            await loadPixivimage({
-                dom: contentRaw,
-                nid: bookId,
-                lang: _lang,
-                userId,
-                textEmbeddedImages: novel.textEmbeddedImages,
-            });
-            replaceMark(contentRaw);
-            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_6__/* .cleanDOM */ .zM)(contentRaw, "TM");
-            chapter.contentRaw = contentRaw;
-            chapter.contentHTML = dom;
-            chapter.contentText = text;
-            chapter.contentImages = images;
-            chapter.additionalMetadate = {
-                lastModified: new Date(novel.uploadDate).getTime(),
-                tags: novel.tags.tags.map((t) => t.tag),
-            };
-            chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_4__/* .Status.finished */ .qb.finished;
-            const chapters = [chapter];
-            return new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .f({
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getAttachment */ .FG)(series.coverURL, self.attachmentMode, "cover-")
+                .then((coverClass) => {
+                additionalMetadate.cover = coverClass;
+            })
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_2___default().error(error));
+            additionalMetadate.lastModified = series.lastModified;
+            additionalMetadate.tags = series.tags;
+            return new _main_Book__WEBPACK_IMPORTED_MODULE_4__/* .Book */ .f({
                 bookUrl,
                 bookname,
                 author,
                 introduction,
                 introductionHTML,
                 additionalMetadate,
-                chapters,
+                chapters: series.chapterObjList.map((c) => {
+                    const { viewableType, ...cp } = c;
+                    const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_3__/* .Chapter */ .W({
+                        bookUrl,
+                        bookname,
+                        isVIP: false,
+                        isPaid: false,
+                        charset: self.charset,
+                        sectionName: null,
+                        sectionNumber: null,
+                        sectionChapterNumber: null,
+                        chapterParse: self.chapterParse,
+                        ...cp,
+                    });
+                    if (viewableType !== 0) {
+                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_5__/* .Status.aborted */ .qb.aborted;
+                    }
+                    return chapter;
+                }),
             });
         }
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        const novel = await getChapterDate(options.id);
+        const novel = await getNovel(options.id, options.lang, options.version);
         const contentRaw = document.createElement("div");
         contentRaw.innerText = novel.content;
         await loadPixivimage({
             dom: contentRaw,
             nid: options.id,
-            lang: options.lang,
-            userId: options.userId,
             textEmbeddedImages: novel.textEmbeddedImages,
         });
         replaceMark(contentRaw);
         const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_6__/* .cleanDOM */ .zM)(contentRaw, "TM");
         const additionalMetadate = {
             lastModified: new Date(novel.uploadDate).getTime(),
-            tags: novel.tags.tags.map((t) => t.tag),
+            tags: novel.tags,
         };
         return {
             chapterName,
@@ -15068,31 +14949,114 @@ class Pixiv extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
             contentImages: images,
             additionalMetadate,
         };
+        async function loadPixivimage({ dom, nid, textEmbeddedImages, }) {
+            const pixivImages = dom.innerHTML.matchAll(/\[pixivimage:(\d+)]/g);
+            for (const match of pixivImages) {
+                await mapperPixivImage(match);
+            }
+            const uploadedImages = dom.innerHTML.matchAll(/\[uploadedimage:(\d+)]/g);
+            for (const match of uploadedImages) {
+                mapperUploadedImage(match);
+            }
+            return dom;
+            async function mapperPixivImage([str, id]) {
+                const imgSrc = await getPixivImage(id);
+                const img = document.createElement("img");
+                img.src = imgSrc;
+                const a = document.createElement("a");
+                a.href = `https://www.pixiv.net/artworks/${id}`;
+                a.appendChild(img);
+                dom.innerHTML = dom.innerHTML.replaceAll(str, a.outerHTML);
+            }
+            async function getPixivImage(id) {
+                const url = new URL(`https://www.pixiv.net/ajax/novel/${nid}/insert_illusts`);
+                url.searchParams.append("id[]", `${id}-1`);
+                url.searchParams.append("lang", options.lang);
+                url.searchParams.append("version", options.version);
+                const resp = await fetch(url.href, {
+                    credentials: "include",
+                    headers: {
+                        Accept: "application/json",
+                    },
+                    method: "GET",
+                    mode: "cors",
+                });
+                const illusts = (await resp.json());
+                if (!illusts.error) {
+                    return illusts.body[`${id}-1`].illust.images.original;
+                }
+                else {
+                    throw new Error(`获取插图失败: pixivimage:${id}`);
+                }
+            }
+            function mapperUploadedImage([str, id]) {
+                const imgSrc = textEmbeddedImages?.[id].urls.original;
+                if (imgSrc) {
+                    const img = document.createElement("img");
+                    img.src = imgSrc;
+                    dom.innerHTML = dom.innerHTML.replaceAll(str, img.outerHTML);
+                }
+            }
+        }
+        function replaceMark(dom) {
+            const chapterMatchs = dom.innerHTML.matchAll(/\[chapter:(.*?)]/g);
+            for (const match of chapterMatchs) {
+                const [str, heading] = match;
+                const strong = document.createElement("strong");
+                strong.innerText = heading.trim();
+                dom.innerHTML = dom.innerHTML.replace(str, strong.outerHTML);
+            }
+            const newpageMatchs = dom.innerHTML.matchAll(/\[newpage]/g);
+            let page = 1;
+            for (const match of newpageMatchs) {
+                const [str] = match;
+                page++;
+                dom.innerHTML = dom.innerHTML.replace(str, `<hr/><a id="page${page}" data-keep="id" href="#"></a>`);
+            }
+            const jumpMatchs = dom.innerHTML.matchAll(/\[jump:(\d+)]/g);
+            for (const match of jumpMatchs) {
+                const [str, page] = match;
+                const a = document.createElement("a");
+                a.innerText = `To page ${page.trim()}`;
+                a.href = `#page${page.trim()}`;
+                dom.innerHTML = dom.innerHTML.replace(str, a.outerHTML);
+            }
+            const jumpuriMatchs = dom.innerHTML.matchAll(/\[\[jumpuri:(.*?) (>|&gt;) (.*?)]]/gm);
+            for (const match of jumpuriMatchs) {
+                const [str, text, , href] = match;
+                const a = document.createElement("a");
+                a.innerText = text.trim();
+                a.href = href.trim();
+                dom.innerHTML = dom.innerHTML.replace(str, a.outerHTML);
+            }
+            const rbMatchs = dom.innerHTML.matchAll(/\[\[rb:(.*?) (>|&gt;) (.*?)]]/g);
+            for (const match of rbMatchs) {
+                const [str, rb, , rt] = match;
+                const ruby = document.createElement("ruby");
+                const rbElem = document.createElement("rb");
+                rbElem.innerText = rb.trim();
+                ruby.appendChild(rbElem);
+                const rpL = document.createElement("rp");
+                rpL.innerText = "(";
+                ruby.appendChild(rpL);
+                const rtElem = document.createElement("rt");
+                rtElem.innerText = rt.trim();
+                ruby.appendChild(rtElem);
+                const rpR = document.createElement("rp");
+                rpR.innerText = ")";
+                ruby.appendChild(rpR);
+                dom.innerHTML = dom.innerHTML.replace(str, ruby.outerHTML);
+            }
+        }
     }
 }
-async function getPreloadData(chapterUrl, charset) {
-    const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_7__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
-    const _preloadData = doc
-        .querySelector("meta#meta-preload-data")
-        ?.getAttribute("content");
-    if (_preloadData) {
-        const preloadData = JSON.parse(_preloadData);
-        let novel;
-        const _novel = Object.entries(preloadData.novel);
-        if (_novel.length !== 0) {
-            novel = _novel[0][1];
-        }
-        let user;
-        const _user = Object.entries(preloadData.user);
-        if (_user.length !== 0) {
-            user = _user[0][1];
-        }
-        return { preloadData, novel, user };
-    }
+function getLang() {
+    return document.querySelector("html")?.getAttribute("lang") ?? "en";
 }
-async function getChapterDate(chapterId) {
-    const apiBase = "https://www.pixiv.net/ajax/novel/";
-    const url = apiBase + chapterId + "?" + new URLSearchParams(lang).toString();
+async function getSeries(seriesID, lang, version) {
+    const url = new URL(`https://www.pixiv.net/ajax/novel/series/${seriesID}`);
+    url.searchParams.append("lang", lang);
+    url.searchParams.append("version", version);
     const resp = await fetch(url, {
         credentials: "include",
         headers: {
@@ -15102,117 +15066,83 @@ async function getChapterDate(chapterId) {
         mode: "cors",
     });
     const data = (await resp.json());
-    if (!data.error) {
-        return data.body;
-    }
-    else {
-        throw new Error("chpater ajax failed! Chapter ID: " + chapterId);
-    }
-}
-async function loadPixivimage({ dom, nid, lang, userId, textEmbeddedImages, }) {
-    const pixivImages = dom.innerHTML.matchAll(/\[pixivimage:(\d+)]/g);
-    for (const match of pixivImages) {
-        await mapperPixivImage(match);
-    }
-    const uploadedImages = dom.innerHTML.matchAll(/\[uploadedimage:(\d+)]/g);
-    for (const match of uploadedImages) {
-        mapperUploadedImage(match);
-    }
-    return dom;
-    async function mapperPixivImage([str, id]) {
-        const imgSrc = await getPixivImage(id);
-        const img = document.createElement("img");
-        img.src = imgSrc;
-        const a = document.createElement("a");
-        a.href = `https://www.pixiv.net/artworks/${id}`;
-        a.appendChild(img);
-        dom.innerHTML = dom.innerHTML.replaceAll(str, a.outerHTML);
-    }
-    async function getPixivImage(id) {
-        const baseUrl = `https://www.pixiv.net/ajax/novel/${nid}/insert_illusts`;
-        const url = new URL(baseUrl);
-        url.searchParams.set("id[]", `${id}-1`);
-        if (lang) {
-            url.searchParams.set("lang", lang);
+    const seriesTotal = data.body.total;
+    const chapterObjList = [];
+    if (seriesTotal > 1) {
+        const limit = 30;
+        let lastOrder = 0;
+        while (lastOrder < seriesTotal) {
+            const url2 = new URL(`https://www.pixiv.net/ajax/novel/series_content/${seriesID}`);
+            url2.searchParams.append("limit", limit.toString());
+            url2.searchParams.append("last_order", lastOrder.toString());
+            url2.searchParams.append("order_by", "asc");
+            url2.searchParams.append("lang", lang);
+            url2.searchParams.append("version", version);
+            const resp2 = await fetch(url2, {
+                credentials: "include",
+                headers: {
+                    Accept: "application/json",
+                },
+                method: "GET",
+                mode: "cors",
+            });
+            const data2 = (await resp2.json());
+            const seriesContents = data2.body.page.seriesContents;
+            const chapterObjs = seriesContents.map((s) => {
+                const id = s.id;
+                return {
+                    chapterUrl: `https://www.pixiv.net/novel/show.php?id=${id}`,
+                    chapterName: s.title,
+                    chapterNumber: s.series.contentOrder,
+                    options: {
+                        id,
+                        lang,
+                        version,
+                    },
+                    viewableType: s.series.viewableType,
+                };
+            });
+            chapterObjList.push(...chapterObjs);
+            lastOrder = lastOrder + limit;
         }
-        const headers = {
+    }
+    return {
+        seriesID,
+        seriesTotal,
+        chapterObjList,
+        bookname: data.body.title,
+        author: data.body.userName,
+        introduction: data.body.caption,
+        coverURL: data.body.cover.urls.original,
+        language: data.body.language,
+        tags: data.body.tags,
+        lastModified: data.body.updatedTimestamp,
+    };
+}
+async function getNovel(novelID, lang, version) {
+    const url = new URL(`https://www.pixiv.net/ajax/novel/${novelID}`);
+    url.searchParams.append("lang", lang);
+    url.searchParams.append("version", version);
+    const resp = await fetch(url, {
+        credentials: "include",
+        headers: {
             Accept: "application/json",
-        };
-        if (userId) {
-            headers["x-user-id"] = userId;
-        }
-        const resp = await fetch(url.href, {
-            credentials: "include",
-            headers,
-            method: "GET",
-            mode: "cors",
-        });
-        const illusts = (await resp.json());
-        if (!illusts.error) {
-            return illusts.body[`${id}-1`].illust.images.original;
-        }
-        else {
-            throw new Error(`获取插图失败: pixivimage:${id}`);
-        }
-    }
-    function mapperUploadedImage([str, id]) {
-        const imgSrc = textEmbeddedImages?.[id].urls.original;
-        if (imgSrc) {
-            const img = document.createElement("img");
-            img.src = imgSrc;
-            dom.innerHTML = dom.innerHTML.replaceAll(str, img.outerHTML);
-        }
-    }
-}
-function replaceMark(dom) {
-    const chapterMatchs = dom.innerHTML.matchAll(/\[chapter:(.*?)]/g);
-    for (const match of chapterMatchs) {
-        const [str, heading] = match;
-        const strong = document.createElement("strong");
-        strong.innerText = heading.trim();
-        dom.innerHTML = dom.innerHTML.replace(str, strong.outerHTML);
-    }
-    const newpageMatchs = dom.innerHTML.matchAll(/\[newpage]/g);
-    let page = 1;
-    for (const match of newpageMatchs) {
-        const [str] = match;
-        page++;
-        dom.innerHTML = dom.innerHTML.replace(str, `<hr/><a id="page${page}" data-keep="id" href="#"></a>`);
-    }
-    const jumpMatchs = dom.innerHTML.matchAll(/\[jump:(\d+)]/g);
-    for (const match of jumpMatchs) {
-        const [str, page] = match;
-        const a = document.createElement("a");
-        a.innerText = `To page ${page.trim()}`;
-        a.href = `#page${page.trim()}`;
-        dom.innerHTML = dom.innerHTML.replace(str, a.outerHTML);
-    }
-    const jumpuriMatchs = dom.innerHTML.matchAll(/\[\[jumpuri:(.*?) (>|&gt;) (.*?)]]/gm);
-    for (const match of jumpuriMatchs) {
-        const [str, text, , href] = match;
-        const a = document.createElement("a");
-        a.innerText = text.trim();
-        a.href = href.trim();
-        dom.innerHTML = dom.innerHTML.replace(str, a.outerHTML);
-    }
-    const rbMatchs = dom.innerHTML.matchAll(/\[\[rb:(.*?) (>|&gt;) (.*?)]]/g);
-    for (const match of rbMatchs) {
-        const [str, rb, , rt] = match;
-        const ruby = document.createElement("ruby");
-        const rbElem = document.createElement("rb");
-        rbElem.innerText = rb.trim();
-        ruby.appendChild(rbElem);
-        const rpL = document.createElement("rp");
-        rpL.innerText = "(";
-        ruby.appendChild(rpL);
-        const rtElem = document.createElement("rt");
-        rtElem.innerText = rt.trim();
-        ruby.appendChild(rtElem);
-        const rpR = document.createElement("rp");
-        rpR.innerText = ")";
-        ruby.appendChild(rpR);
-        dom.innerHTML = dom.innerHTML.replace(str, ruby.outerHTML);
-    }
+        },
+        method: "GET",
+        mode: "cors",
+    });
+    const data = (await resp.json());
+    return {
+        title: data.body.title,
+        userName: data.body.userName,
+        content: data.body.content,
+        description: data.body.description,
+        uploadDate: data.body.uploadDate,
+        coverUrl: data.body.coverUrl,
+        tags: data.body.tags.tags.map((t) => t.tag),
+        seriesID: data.body.seriesNavData?.seriesId.toString() ?? null,
+        textEmbeddedImages: data.body.textEmbeddedImages,
+    };
 }
 
 

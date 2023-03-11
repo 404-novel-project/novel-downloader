@@ -27,7 +27,7 @@ export declare abstract class BaseRuleClass {
     private audio?;
     protected constructor();
     abstract bookParse(): Promise<Book>;
-    abstract chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean | null, charset: string, options: object): Promise<ChapterParseObject>;
+    abstract chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean | null, charset: string, options: Record<string, any>): Promise<ChapterParseObject>;
     run(): Promise<Book | undefined>;
     protected preHook(): Promise<void>;
     protected initChapters(book: Book, saveBookObj: SaveBook): Promise<Chapter[]>;

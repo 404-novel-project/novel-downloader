@@ -1,21 +1,12 @@
-import { ChapterAdditionalMetadate } from "../../../main/Chapter";
+/// <reference path="../../../../../src/rules/special/original/pixiv.d.ts" />
 import { Book } from "../../../main/Book";
-import { BaseRuleClass } from "../../../rules";
+import { BaseRuleClass, ChapterParseObject } from "../../../rules";
 export declare class Pixiv extends BaseRuleClass {
     constructor();
     bookParse(): Promise<Book>;
-    chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean, charset: string, options: chapterOptions): Promise<{
-        chapterName: string | null;
-        contentRaw: HTMLDivElement;
-        contentText: string;
-        contentHTML: HTMLElement;
-        contentImages: import("../../../main/Attachment").AttachmentClass[];
-        additionalMetadate: ChapterAdditionalMetadate;
-    }>;
+    chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean | null, charset: string, options: {
+        id: string;
+        lang: string;
+        version: string;
+    }): Promise<ChapterParseObject>;
 }
-interface chapterOptions {
-    id: string;
-    lang: string | null;
-    userId: string | undefined;
-}
-export {};

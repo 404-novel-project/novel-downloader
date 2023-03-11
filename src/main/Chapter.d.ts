@@ -42,7 +42,7 @@ export declare class Chapter {
         sectionChapterNumber: number | null;
         chapterParse: BaseRuleClass["chapterParse"];
         charset: string;
-        options: object;
+        options: Record<string, any>;
     });
     init(): Promise<this>;
     private parse;
