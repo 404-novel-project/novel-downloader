@@ -29,5 +29,6 @@ module.exports = {
         args: "none",
       },
     ],
+    "@typescript-eslint/triple-slash-reference": "warn",
   },
 };

@@ -69,7 +69,7 @@ export class Chapter {
     sectionChapterNumber: number | null;
     chapterParse: BaseRuleClass["chapterParse"];
     charset: string;
-    options: object;
+    options: Record<string, any>;
   }) {
     this.bookUrl = bookUrl;
     this.bookname = bookname;

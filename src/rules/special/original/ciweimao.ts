@@ -1,5 +1,4 @@
 import * as CryptoJS from "crypto-js";
-import { UnsafeWindow } from "../../../global";
 import {
   getAttachment,
   putAttachmentClassCache,

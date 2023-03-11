@@ -85,7 +85,7 @@ export abstract class BaseRuleClass {
     isVIP: boolean,
     isPaid: boolean | null,
     charset: string,
-    options: object
+    options: Record<string, any>
   ): Promise<ChapterParseObject>;
 
   public async run(): Promise<Book | undefined> {
