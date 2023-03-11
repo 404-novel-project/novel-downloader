@@ -348,48 +348,48 @@ async function getSeries(seriesID: string, lang: string, version: string) {
   const data = (await resp.json()) as PixivResponse<SeriesBody>;
   const seriesTotal = data.body.total;
   const chapterObjList: chapterObj[] = [];
-  if (seriesTotal > 1) {
-    const limit = 30;
-    let lastOrder = 0;
-    while (lastOrder < seriesTotal) {
-      const url2 = new URL(
-        `https://www.pixiv.net/ajax/novel/series_content/${seriesID}`
-      );
-      url2.searchParams.append("limit", limit.toString());
-      url2.searchParams.append("last_order", lastOrder.toString());
-      url2.searchParams.append("order_by", "asc");
-      url2.searchParams.append("lang", lang);
-      url2.searchParams.append("version", version);
 
-      const resp2 = await fetch(url2, {
-        credentials: "include",
-        headers: {
-          Accept: "application/json",
+  const limit = 30;
+  let lastOrder = 0;
+  while (lastOrder < seriesTotal) {
+    const url2 = new URL(
+      `https://www.pixiv.net/ajax/novel/series_content/${seriesID}`
+    );
+    url2.searchParams.append("limit", limit.toString());
+    url2.searchParams.append("last_order", lastOrder.toString());
+    url2.searchParams.append("order_by", "asc");
+    url2.searchParams.append("lang", lang);
+    url2.searchParams.append("version", version);
+
+    const resp2 = await fetch(url2, {
+      credentials: "include",
+      headers: {
+        Accept: "application/json",
+      },
+      method: "GET",
+      mode: "cors",
+    });
+    const data2 = (await resp2.json()) as PixivResponse<SeriesContentBody>;
+    const seriesContents = data2.body.page.seriesContents;
+    const chapterObjs = seriesContents.map((s): chapterObj => {
+      const id = s.id;
+      return {
+        chapterUrl: `https://www.pixiv.net/novel/show.php?id=${id}`,
+        chapterName: s.title,
+        chapterNumber: s.series.contentOrder,
+        options: {
+          id,
+          lang,
+          version,
         },
-        method: "GET",
-        mode: "cors",
-      });
-      const data2 = (await resp2.json()) as PixivResponse<SeriesContentBody>;
-      const seriesContents = data2.body.page.seriesContents;
-      const chapterObjs = seriesContents.map((s): chapterObj => {
-        const id = s.id;
-        return {
-          chapterUrl: `https://www.pixiv.net/novel/show.php?id=${id}`,
-          chapterName: s.title,
-          chapterNumber: s.series.contentOrder,
-          options: {
-            id,
-            lang,
-            version,
-          },
-          viewableType: s.series.viewableType,
-        };
-      });
-      chapterObjList.push(...chapterObjs);
+        viewableType: s.series.viewableType,
+      };
+    });
+    chapterObjList.push(...chapterObjs);
 
-      lastOrder = lastOrder + limit;
-    }
+    lastOrder = lastOrder + limit;
   }
+
   return {
     seriesID,
     seriesTotal,
