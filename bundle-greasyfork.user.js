@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           小说下载器
 // @description    一个可扩展的通用型小说下载器。
-// @version        5.0.816
+// @version        5.1.817
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -15068,43 +15068,41 @@ async function getSeries(seriesID, lang, version) {
     const data = (await resp.json());
     const seriesTotal = data.body.total;
     const chapterObjList = [];
-    if (seriesTotal > 1) {
-        const limit = 30;
-        let lastOrder = 0;
-        while (lastOrder < seriesTotal) {
-            const url2 = new URL(`https://www.pixiv.net/ajax/novel/series_content/${seriesID}`);
-            url2.searchParams.append("limit", limit.toString());
-            url2.searchParams.append("last_order", lastOrder.toString());
-            url2.searchParams.append("order_by", "asc");
-            url2.searchParams.append("lang", lang);
-            url2.searchParams.append("version", version);
-            const resp2 = await fetch(url2, {
-                credentials: "include",
-                headers: {
-                    Accept: "application/json",
+    const limit = 30;
+    let lastOrder = 0;
+    while (lastOrder < seriesTotal) {
+        const url2 = new URL(`https://www.pixiv.net/ajax/novel/series_content/${seriesID}`);
+        url2.searchParams.append("limit", limit.toString());
+        url2.searchParams.append("last_order", lastOrder.toString());
+        url2.searchParams.append("order_by", "asc");
+        url2.searchParams.append("lang", lang);
+        url2.searchParams.append("version", version);
+        const resp2 = await fetch(url2, {
+            credentials: "include",
+            headers: {
+                Accept: "application/json",
+            },
+            method: "GET",
+            mode: "cors",
+        });
+        const data2 = (await resp2.json());
+        const seriesContents = data2.body.page.seriesContents;
+        const chapterObjs = seriesContents.map((s) => {
+            const id = s.id;
+            return {
+                chapterUrl: `https://www.pixiv.net/novel/show.php?id=${id}`,
+                chapterName: s.title,
+                chapterNumber: s.series.contentOrder,
+                options: {
+                    id,
+                    lang,
+                    version,
                 },
-                method: "GET",
-                mode: "cors",
-            });
-            const data2 = (await resp2.json());
-            const seriesContents = data2.body.page.seriesContents;
-            const chapterObjs = seriesContents.map((s) => {
-                const id = s.id;
-                return {
-                    chapterUrl: `https://www.pixiv.net/novel/show.php?id=${id}`,
-                    chapterName: s.title,
-                    chapterNumber: s.series.contentOrder,
-                    options: {
-                        id,
-                        lang,
-                        version,
-                    },
-                    viewableType: s.series.viewableType,
-                };
-            });
-            chapterObjList.push(...chapterObjs);
-            lastOrder = lastOrder + limit;
-        }
+                viewableType: s.series.viewableType,
+            };
+        });
+        chapterObjList.push(...chapterObjs);
+        lastOrder = lastOrder + limit;
     }
     return {
         seriesID,
