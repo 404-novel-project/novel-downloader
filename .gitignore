@@ -151,7 +151,6 @@ dist
 ## Custom
 tmp/
 .vscode
-REVISION
 
 # tools/font/
 tools/font/*.ttf
