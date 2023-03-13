@@ -64,5 +64,6 @@
     "p-limit": "^4.0.0",
     "streamsaver": "^2.0.6",
     "vue": "^3.2.47"
-  }
+  },
+  "packageManager": "yarn@3.4.1"
 }
