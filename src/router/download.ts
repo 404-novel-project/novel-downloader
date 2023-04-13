@@ -212,6 +212,14 @@ export async function getRule(): Promise<BaseRuleClass> {
       break;
     }
 
+    case "www.ttkan.co":
+    case "cn.ttkan.co":
+    case "tw.ttkan.co": {
+      const { Ttkan } = await import("../rules/special/reprint/ttkan");
+      ruleClass = Ttkan;
+      break;
+    }
+
     /* onePage */
     case "www.uukanshu.com": {
       const { uukanshu } = await import("../rules/onePage/uukanshu");
@@ -258,7 +266,8 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = c256wxc;
       break;
     }
-    case "www.wanben.org": {
+    case "www.wanben.org":
+    case "www.xiaoshuowanben.com": {
       const { wanben } = await import("../rules/onePage/wanben");
       ruleClass = wanben();
       break;
@@ -329,6 +338,11 @@ export async function getRule(): Promise<BaseRuleClass> {
     case "hongxiuzhao.me": {
       const { hongxiuzhao } = await import("../rules/onePage/hongxiuzhao");
       ruleClass = hongxiuzhao();
+      break;
+    }
+    case "www.xbyuan.com": {
+      const { xbyuan } = await import("../rules/onePage/xbyuan");
+      ruleClass = xbyuan();
       break;
     }
     /* onePage End */
