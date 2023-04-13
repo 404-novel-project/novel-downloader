@@ -107,7 +107,7 @@ export default defineComponent({
 
     function getChapterHtml(_chapter: Chapter) {
       const html = _chapter.contentHTML?.cloneNode(true) as HTMLElement;
-      const nodes = html.querySelectorAll<HTMLImageElement | HTMLAudioElement>(
+      const nodes = html?.querySelectorAll<HTMLImageElement | HTMLAudioElement>(
         "img, audio"
       );
       if (nodes) {
@@ -116,7 +116,7 @@ export default defineComponent({
           node.src = getObjectUrl(url);
         });
       }
-      return html.outerHTML;
+      return html?.outerHTML;
     }
 
     onMounted(async () => {
