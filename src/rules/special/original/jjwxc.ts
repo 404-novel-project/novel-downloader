@@ -640,10 +640,12 @@ export class Jjwxc extends BaseRuleClass {
         "https://android.jjwxc.net/androidapi/androidChapterBatchDownload?"
       );
       const sid = getCookieObj("sid");
-      if (sid == "error2333")
-        log.warn(
+      if (sid == "error2333" && isVIP){
+        log.error(
           `请登录一下m.jjwxc.net再使用！`
         );
+        throw new Error(`请登录一下m.jjwxc.net再使用！`);
+      }
       if (isVIP) {
         chapterGetInfoUrl = chapterGetInfoUrl.replace("chapterId", "chapterIds");
         chapterGetInfoUrl += "&versionCode=287&token=" + sid + "&noteislock=1";
