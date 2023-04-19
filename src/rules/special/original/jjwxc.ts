@@ -605,7 +605,27 @@ export class Jjwxc extends BaseRuleClass {
       message: string; //"[本章节已锁定]"
     }
     let retryTime = 0;
-    async function getChapter(): Promise<ChapterParseObject> {
+    function decodeVIPText(text: string){ 
+      const keyHex = CryptoJS.enc.Utf8.parse("KW8Dvm2N");
+      const ivHex = CryptoJS.enc.Utf8.parse("1ae2c94b");
+      const decrypted = CryptoJS.DES.decrypt(text, keyHex, {
+        iv: ivHex,
+        mode: CryptoJS.mode.CBC,
+        padding: CryptoJS.pad.Pkcs7
+      })
+      return decrypted.toString(CryptoJS.enc.Utf8);
+    }
+    function getCookieObj(pairKey:string) {
+      const cookieStr = document.cookie;
+      const pairList = cookieStr.split(';');
+      for (let _i = 0, pairList_1 = pairList; _i < pairList_1.length; _i++) {
+        const pair = pairList_1[_i];
+        const _a = pair.trim().split('='), key = _a[0], value = _a[1];
+        if (key == pairKey) return value;
+      }
+      return "error2333";
+    }
+    async function getChapter(isVIPC:boolean): Promise<ChapterParseObject> {
       let chapterGetInfoUrl = chapterUrl.replace("id", "Id");
       chapterGetInfoUrl = chapterGetInfoUrl.replace("id", "Id");
       chapterGetInfoUrl = chapterGetInfoUrl.replace(
@@ -614,8 +634,17 @@ export class Jjwxc extends BaseRuleClass {
       );
       chapterGetInfoUrl = chapterGetInfoUrl.replace(
         "http://my.jjwxc.net/onebook_vip.php?",
-        "https://app.jjwxc.net/androidapi/chapterContent?"
+        "https://android.jjwxc.net/androidapi/androidChapterBatchDownload?"
       );
+      const sid = getCookieObj("sid");
+      if (sid == "error2333")
+        log.warn(
+          `请登录一下m.jjwxc.net再使用！`
+        );
+      if (isVIPC) {
+        chapterGetInfoUrl = chapterGetInfoUrl.replace("chapterId", "chapterIds");
+        chapterGetInfoUrl += "&versionCode=287&token=" + sid + "&noteislock=1";
+      }
       async function getChapterInfo(url: string): Promise<ChapterInfo> {
         log.debug(
           `请求地址: ${url}, Referrer: ${chapterUrl}, 重试次数: ${retryTime}`
@@ -625,10 +654,10 @@ export class Jjwxc extends BaseRuleClass {
             url: url,
             headers: {
               accept: "application/json",
-              referer: "http://android.jjwxc.net?v=277",
+              referer: "http://android.jjwxc.net?v=287",
               not_tip: "updateTime",
               "user-agent":
-                "Mozilla/ 5.0(Linux; Android 12; Pixel 3 XL Build / SP1A.210812.016.C1; wv) AppleWebKit / 537.36(KHTML, like Gecko) Version / 4.0 Chrome / 108.0.5359.128 Mobile Safari / 537.36 / JINJIANG - Android / 277(Pixel3XL; Scale / 3.5)",
+                "Mozilla/ 5.0(Linux; Android 12; Pixel 3 XL Build / SP1A.210812.016.C1; wv) AppleWebKit / 537.36(KHTML, like Gecko) Version / 4.0 Chrome / 108.0.5359.128 Mobile Safari / 537.36 / JINJIANG - Android / 287(Pixel3XL; Scale / 3.5)",
               "accept-encoding": "gzip",
             },
             method: "GET",
@@ -659,7 +688,9 @@ export class Jjwxc extends BaseRuleClass {
       }
       retryTime = 0;
       if ("content" in result) {
-        const content = result.content;
+        let content = result.content;
+        if (isVIPC)
+          content = decodeVIPText(content);
         let postscript = result.sayBody;
         if (result.sayBody == null) postscript = " ";
         const contentRaw = document.createElement("pre");
@@ -728,9 +759,9 @@ export class Jjwxc extends BaseRuleClass {
       }
     }
     if (isVIP) {
-      return getChapter(); //vipChapter();
+      return getChapter(true); //vipChapter();
     } else {
-      return getChapter(); //publicChapter();
+      return getChapter(false); //publicChapter();
     }
   }
 }
