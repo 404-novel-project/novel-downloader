@@ -589,7 +589,7 @@ export class Jjwxc extends BaseRuleClass {
       };
     }
     interface vipChapterInfo{
-      downloadContent: ChapterInfo;
+      downloadContent: ChapterInfo[];
     }
     interface ChapterInfo {
       chapterId: string; //"39",
@@ -669,7 +669,7 @@ export class Jjwxc extends BaseRuleClass {
                 retryTime = 0;
                 if (isVIP) {
                   const resultI: vipChapterInfo = JSON.parse(response.responseText);
-                  resolve(resultI.downloadContent);
+                  resolve(resultI.downloadContent[0]);
                 } else {
                   const resultI: ChapterInfo = JSON.parse(response.responseText);
                   resolve(resultI);
