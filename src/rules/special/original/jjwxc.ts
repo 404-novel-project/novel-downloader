@@ -588,6 +588,9 @@ export class Jjwxc extends BaseRuleClass {
         additionalMetadate: null,
       };
     }
+    interface vipChapterInfo{
+      downloadContent: ChapterInfo;
+    }
     interface ChapterInfo {
       chapterId: string; //"39",
       chapterName: string; //"另一种可能",
@@ -625,7 +628,7 @@ export class Jjwxc extends BaseRuleClass {
       }
       return "error2333";
     }
-    async function getChapter(isVIPC:boolean): Promise<ChapterParseObject> {
+    async function getChapter(): Promise<ChapterParseObject> {
       let chapterGetInfoUrl = chapterUrl.replace("id", "Id");
       chapterGetInfoUrl = chapterGetInfoUrl.replace("id", "Id");
       chapterGetInfoUrl = chapterGetInfoUrl.replace(
@@ -641,7 +644,7 @@ export class Jjwxc extends BaseRuleClass {
         log.warn(
           `请登录一下m.jjwxc.net再使用！`
         );
-      if (isVIPC) {
+      if (isVIP) {
         chapterGetInfoUrl = chapterGetInfoUrl.replace("chapterId", "chapterIds");
         chapterGetInfoUrl += "&versionCode=287&token=" + sid + "&noteislock=1";
       }
@@ -664,7 +667,12 @@ export class Jjwxc extends BaseRuleClass {
             onload: function (response) {
               if (response.status === 200) {
                 retryTime = 0;
-                const resultI: ChapterInfo = JSON.parse(response.responseText);
+                var responseText = response.responseText;
+                if (isVIP) {
+                  const resultI1: vipChapterInfo = JSON.parse(responseText);
+                  responseText = resultI1.downloadContent;
+                }
+                const resultI: ChapterInfo = JSON.parse(responseText);
                 resolve(resultI);
               } else {
                 const resultI: ChapterInfo = JSON.parse(
@@ -689,7 +697,7 @@ export class Jjwxc extends BaseRuleClass {
       retryTime = 0;
       if ("content" in result) {
         let content = result.content;
-        if (isVIPC)
+        if (isVIP)
           content = decodeVIPText(content);
         let postscript = result.sayBody;
         if (result.sayBody == null) postscript = " ";
@@ -759,9 +767,9 @@ export class Jjwxc extends BaseRuleClass {
       }
     }
     if (isVIP) {
-      return getChapter(true); //vipChapter();
+      return getChapter(); //vipChapter();
     } else {
-      return getChapter(false); //publicChapter();
+      return getChapter(); //publicChapter();
     }
   }
 }
