@@ -667,7 +667,7 @@ export class Jjwxc extends BaseRuleClass {
             onload: function (response) {
               if (response.status === 200) {
                 retryTime = 0;
-                var responseText = response.responseText;
+                let responseText = response.responseText;
                 if (isVIP) {
                   const resultI1: vipChapterInfo = JSON.parse(responseText);
                   responseText = resultI1.downloadContent;
