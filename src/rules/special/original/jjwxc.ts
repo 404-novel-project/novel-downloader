@@ -667,13 +667,13 @@ export class Jjwxc extends BaseRuleClass {
             onload: function (response) {
               if (response.status === 200) {
                 retryTime = 0;
-                let responseText = response.responseText;
                 if (isVIP) {
-                  const resultI1: vipChapterInfo = JSON.parse(responseText);
-                  responseText = resultI1.downloadContent;
+                  const resultI: vipChapterInfo = JSON.parse(response.responseText);
+                  resolve(resultI.downloadContent);
+                } else {
+                  const resultI: ChapterInfo = JSON.parse(response.responseText);
+                  resolve(resultI);
                 }
-                const resultI: ChapterInfo = JSON.parse(responseText);
-                resolve(resultI);
               } else {
                 const resultI: ChapterInfo = JSON.parse(
                   '{"message":"try again!"}'
