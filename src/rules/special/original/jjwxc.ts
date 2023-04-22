@@ -639,16 +639,18 @@ export class Jjwxc extends BaseRuleClass {
         "http://my.jjwxc.net/onebook_vip.php?",
         "https://android.jjwxc.net/androidapi/androidChapterBatchDownload?"
       );
-      const sid = self.atob(getCookieObj("token")).replace(/\|\|.*/, '').replace(/\|/, '_');
-      if (sid == "error2333" && isVIP){
-        log.error(
-          `认证错误`
-        );
-        throw new Error(`认证错误`);
-      }
+      let sid = getCookieObj("token");
       if (isVIP) {
-        chapterGetInfoUrl = chapterGetInfoUrl.replace("chapterId", "chapterIds");
-        chapterGetInfoUrl += "&versionCode=287&token=" + sid + "&noteislock=1";
+        if (sid == "error2333"){
+          log.error(
+            `认证错误`
+          );
+          throw new Error(`认证错误`);
+        }else{
+          sid = self.atob(sid).replace(/\|\|.*/, '').replace(/\|/, '_');
+          chapterGetInfoUrl = chapterGetInfoUrl.replace("chapterId", "chapterIds");
+          chapterGetInfoUrl += "&versionCode=287&token=" + sid + "&noteislock=1";
+        }
       }
       async function getChapterInfo(url: string): Promise<ChapterInfo> {
         log.debug(
