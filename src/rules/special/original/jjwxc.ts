@@ -639,12 +639,12 @@ export class Jjwxc extends BaseRuleClass {
         "http://my.jjwxc.net/onebook_vip.php?",
         "https://android.jjwxc.net/androidapi/androidChapterBatchDownload?"
       );
-      const sid = getCookieObj("sid");
+      const sid = self.atob(getCookieObj("token")).replace(/\|\|.*/, '').replace(/\|/, '_');
       if (sid == "error2333" && isVIP){
         log.error(
-          `请登录一下m.jjwxc.net再使用！`
+          `请登录一下jjwxc.net再使用！`
         );
-        throw new Error(`请登录一下m.jjwxc.net再使用！`);
+        throw new Error(`请登录一下jjwxc.net再使用！`);
       }
       if (isVIP) {
         chapterGetInfoUrl = chapterGetInfoUrl.replace("chapterId", "chapterIds");
