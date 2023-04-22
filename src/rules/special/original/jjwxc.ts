@@ -642,9 +642,9 @@ export class Jjwxc extends BaseRuleClass {
       const sid = self.atob(getCookieObj("token")).replace(/\|\|.*/, '').replace(/\|/, '_');
       if (sid == "error2333" && isVIP){
         log.error(
-          `请登录一下jjwxc.net再使用！`
+          `认证错误`
         );
-        throw new Error(`请登录一下jjwxc.net再使用！`);
+        throw new Error(`认证错误`);
       }
       if (isVIP) {
         chapterGetInfoUrl = chapterGetInfoUrl.replace("chapterId", "chapterIds");
@@ -652,7 +652,7 @@ export class Jjwxc extends BaseRuleClass {
       }
       async function getChapterInfo(url: string): Promise<ChapterInfo> {
         log.debug(
-          `请求地址: ${url}, Referrer: ${chapterUrl}, 重试次数: ${retryTime}`
+          `请求地址: （不可见url）, Referrer: ${chapterUrl}, 重试次数: ${retryTime}`
         );
         return new Promise((resolve) => {
           _GM_xmlhttpRequest({
@@ -691,8 +691,8 @@ export class Jjwxc extends BaseRuleClass {
         retryTime++;
         if (retryTime > retryLimit) {
           retryTime = 0;
-          log.error(`请求 ${chapterGetInfoUrl.toString()} 失败`);
-          throw new Error(`请求 ${chapterGetInfoUrl.toString()} 失败`);
+          log.error(`请求 （不可见url） 失败`);
+          throw new Error(`请求 （不可见url） 失败`);
         }
         result = await getChapterInfo(chapterGetInfoUrl.toString());
       }
