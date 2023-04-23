@@ -647,7 +647,7 @@ export class Jjwxc extends BaseRuleClass {
           );
           throw new Error(`认证错误`);
         }else{
-          sid = self.atob(decodeURIComponent(sid)).replace(/\|\|.*/, '').replace(/\|/, '_');
+          sid = self.atob(decodeURIComponent(sid)).replace(/\|\|.*/, '').replace(/\|/, '_');、.replace(/\|.*/, '');
           chapterGetInfoUrl = chapterGetInfoUrl.replace("chapterId", "chapterIds");
           chapterGetInfoUrl += "&versionCode=287&token=" + sid + "&noteislock=1";
         }
