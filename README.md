@@ -181,9 +181,9 @@ EPUB 文件请使用相应阅读器阅读。
 
 ### 晋江文学城
 
-在手机抓包，登录晋江文学城 android app 并随意浏览章节，在形如https://app.jjwxc.org/androidapi/chapterContent?的get方式链接中找到&token=后的字符串（止于下一个&）。
+下载抓包精灵（可在Google Play、酷安搜索到，其他软件也可以）并配置好设置，然后登录晋江文学城 android app 并随意浏览章节，在形如“https://app.jjwxc.org/androidapi/chapterContent?” 等链接的get方式链接中找到&token=后的字符串（止于下一个&）。
 
-在脚本管理器中添加如下脚本并保存：
+在脚本管理器中新建如下脚本（不要把该脚本代码和其他脚本代码合并，除非你完全理解脚本的意思）并保存：
 
 ```javascript
 // ==UserScript==
