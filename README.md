@@ -68,8 +68,8 @@ EPUB 文件请使用相应阅读器阅读。
 | [SF 轻小说](https://book.sfacg.com/)                | ✅\*     | ✅\*\*   | \*不支持对话小说，例：[224282](https://book.sfacg.com/Novel/224282/)。 \*\*VIP 章节仅支持图片版。                                                                                                                                                                            |
 | [起点中文网](https://www.qidian.com/)               | ✅       | ✅       | 部分小说 VIP 章节可能出现乱码无法下载。                                                                                                                                                                                                                                      |
 | [起点女生网](https://www.qdmm.com/)                 | ✅       | ✅       |                                                                                                                                                                                                                                                                              |
-| [晋江文学城](http://www.jjwxc.net/)                 | ✅       | ✅       | 之前版本VIP 章节使用[晋江防盗字体对照表](https://github.com/yingziwu/jjwxcFontTables)去除空格。<br>脚本将向云端请求数据，远程字体功能可通过 `enableJjwxcRemoteFont` 配置项手动关闭。 <br><br>现使用app api，需要登录[web版网站](https://jjwxc.net)。                                                                                                |
-| [长佩文学](https://www.gongzicp.com/)               | ✅       | ✅       | 反爬较严，限制下载速度，每分钟约可下载 6 章，请耐心等待，最好不要多开页面同时下载多本长佩小说。<br>长佩文学为单页应用，如打开书籍详情页右上角未出现下载图标，请按下 F5 重新加载当前页面。                                                                                                                          |
+| [晋江文学城](http://www.jjwxc.net/)                 | ✅       | ✅       | 之前版本 VIP 章节使用[晋江防盗字体对照表](https://github.com/yingziwu/jjwxcFontTables)去除空格。<br>脚本将向云端请求数据，远程字体功能可通过 `enableJjwxcRemoteFont` 配置项手动关闭。 <br><br>现使用 app api，需要登录[web 版网站](https://jjwxc.net)。                      |
+| [长佩文学](https://www.gongzicp.com/)               | ✅       | ✅       | 反爬较严，限制下载速度，每分钟约可下载 6 章，请耐心等待，最好不要多开页面同时下载多本长佩小说。<br>长佩文学为单页应用，如打开书籍详情页右上角未出现下载图标，请按下 F5 重新加载当前页面。                                                                                    |
 | [书耽](https://www.shubl.com/)                      | ✅       | ✅       | VIP 章节仅支持图片版。                                                                                                                                                                                                                                                       |
 | [海棠文化线上文学城](https://ebook.longmabook.com/) | ✅       | ✅       |                                                                                                                                                                                                                                                                              |
 | [次元姬](https://www.ciyuanji.com/)                 | ✅       | ✅       |                                                                                                                                                                                                                                                                              |
@@ -174,6 +174,37 @@ EPUB 文件请使用相应阅读器阅读。
 - `GM_info`/`GM.info`： 获取并输出脚本运行环境。
 - `GM_xmlhttpRequest`/`GM.xmlHttpRequest`：用于跨域 HTTP 请求。
 - `GM_setValue`/`GM.setValue`、`GM_getValue`/`GM.getValue`、`GM_deleteValue`/`GM.deleteValue`： 用于统计模块，本地统计运行次数。
+
+## Token 填写
+
+当前部分网站（如晋江文学城）需要手动填写登录 token。
+
+### 晋江文学城
+
+在手机抓包，登录晋江文学城 android app 并随意浏览章节，在形如https://app.jjwxc.org/androidapi/chapterContent?的get方式链接中找到&token=后的字符串（止于下一个&）。
+
+在脚本管理器中添加如下脚本并保存：
+
+```javascript
+// ==UserScript==
+// @name         auto inject tokenOptions
+// @namespace    http://tampermonkey.net/
+// @version      0.1
+// @description  auto inject tokenOptions
+// @author       You
+// @match        *://*/*
+// @grant        none
+// ==/UserScript==
+
+(function () {
+  "use strict";
+
+  const tokenOptions = {
+    Jjwxc: "填入token，形如客户号_字符串",
+  };
+  window.tokenOptions = tokenOptions;
+})();
+```
 
 ## 高阶使用技巧
 

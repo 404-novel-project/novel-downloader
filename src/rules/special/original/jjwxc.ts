@@ -650,7 +650,7 @@ export class Jjwxc extends BaseRuleClass {
         //   throw new Error(`认证错误`);
         // }else{
         if (typeof (unsafeWindow as UnsafeWindow).tokenOptions === "object") {
-          const sid = (unsafeWindow as UnsafeWindow).tokenOptions.Jjwxc;
+          const sid = (unsafeWindow as UnsafeWindow).tokenOptions?.Jjwxc;
           //sid = self.atob(decodeURIComponent(sid)).replace(/\|\|.*/, '').replace(/\|/, '_').replace(/\|.*/, '');
           chapterGetInfoUrl = chapterGetInfoUrl.replace(
             "chapterId",
