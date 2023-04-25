@@ -588,7 +588,7 @@ export class Jjwxc extends BaseRuleClass {
         additionalMetadate: null,
       };
     }
-    interface vipChapterInfo{
+    interface vipChapterInfo {
       downloadContent: ChapterInfo[];
     }
     interface ChapterInfo {
@@ -608,22 +608,24 @@ export class Jjwxc extends BaseRuleClass {
       message: string; //"[本章节已锁定]"
     }
     let retryTime = 0;
-    function decodeVIPText(text: string){ 
+    function decodeVIPText(text: string) {
       const keyHex = CryptoJS.enc.Utf8.parse("KW8Dvm2N");
       const ivHex = CryptoJS.enc.Utf8.parse("1ae2c94b");
       const decrypted = CryptoJS.DES.decrypt(text, keyHex, {
         iv: ivHex,
         mode: CryptoJS.mode.CBC,
-        padding: CryptoJS.pad.Pkcs7
-      })
+        padding: CryptoJS.pad.Pkcs7,
+      });
       return decrypted.toString(CryptoJS.enc.Utf8);
     }
-    function getCookieObj(pairKey:string) {
+    function getCookieObj(pairKey: string) {
       const cookieStr = document.cookie;
-      const pairList = cookieStr.split(';');
+      const pairList = cookieStr.split(";");
       for (let _i = 0, pairList_1 = pairList; _i < pairList_1.length; _i++) {
         const pair = pairList_1[_i];
-        const _a = pair.trim().split('='), key = _a[0], value = _a[1];
+        const _a = pair.trim().split("="),
+          key = _a[0],
+          value = _a[1];
         if (key == pairKey) return value;
       }
       return "error2333";
@@ -639,22 +641,33 @@ export class Jjwxc extends BaseRuleClass {
         "http://my.jjwxc.net/onebook_vip.php?",
         "https://android.jjwxc.net/androidapi/androidChapterBatchDownload?"
       );
-      let sid = getCookieObj("token");
+      //let sid = getCookieObj("token");
       if (isVIP) {
-        if (sid == "error2333"){
-          log.error(
-            `认证错误`
+        // if (sid == "error2333"){
+        //   log.error(
+        //     `认证错误`
+        //   );
+        //   throw new Error(`认证错误`);
+        // }else{
+        if (typeof (unsafeWindow as UnsafeWindow).tokenOptions === "object") {
+          const sid = (unsafeWindow as UnsafeWindow).tokenOptions.Jjwxc;
+          //sid = self.atob(decodeURIComponent(sid)).replace(/\|\|.*/, '').replace(/\|/, '_').replace(/\|.*/, '');
+          chapterGetInfoUrl = chapterGetInfoUrl.replace(
+            "chapterId",
+            "chapterIds"
           );
-          throw new Error(`认证错误`);
-        }else{
-          sid = self.atob(decodeURIComponent(sid)).replace(/\|\|.*/, '').replace(/\|/, '_').replace(/\|.*/, '');
-          chapterGetInfoUrl = chapterGetInfoUrl.replace("chapterId", "chapterIds");
-          chapterGetInfoUrl += "&versionCode=287&token=" + sid + "&noteislock=1";
+          chapterGetInfoUrl +=
+            "&versionCode=287&token=" + sid + "&noteislock=1";
+        } else {
+          throw new Error(
+            `当前需要手动捕获android版app token,详见github主页说明`
+          );
         }
+        //}
       }
       async function getChapterInfo(url: string): Promise<ChapterInfo> {
         log.debug(
-          `请求地址: （不可见url）, Referrer: ${chapterUrl}, 重试次数: ${retryTime}`
+          `请求地址: ${url}, Referrer: ${chapterUrl}, 重试次数: ${retryTime}`
         );
         return new Promise((resolve) => {
           _GM_xmlhttpRequest({
@@ -672,10 +685,14 @@ export class Jjwxc extends BaseRuleClass {
               if (response.status === 200) {
                 retryTime = 0;
                 if (isVIP) {
-                  const resultI: vipChapterInfo = JSON.parse(response.responseText);
+                  const resultI: vipChapterInfo = JSON.parse(
+                    response.responseText
+                  );
                   resolve(resultI.downloadContent[0]);
                 } else {
-                  const resultI: ChapterInfo = JSON.parse(response.responseText);
+                  const resultI: ChapterInfo = JSON.parse(
+                    response.responseText
+                  );
                   resolve(resultI);
                 }
               } else {
@@ -701,8 +718,7 @@ export class Jjwxc extends BaseRuleClass {
       retryTime = 0;
       if ("content" in result) {
         let content = result.content;
-        if (isVIP)
-          content = decodeVIPText(content);
+        if (isVIP) content = decodeVIPText(content);
         let postscript = result.sayBody;
         if (result.sayBody == null) postscript = " ";
         const contentRaw = document.createElement("pre");
