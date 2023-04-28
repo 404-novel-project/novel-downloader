@@ -226,6 +226,7 @@ export class EPUB extends Options {
 
   public constructor(book: Book, streamZip: boolean, options?: SaveOptions) {
     super();
+    const self = this;
     this.book = book;
     this.chapters = this.book.chapters;
 
@@ -236,8 +237,32 @@ export class EPUB extends Options {
       "application/epub+zip"
     );
 
+    log.debug("[save-epub]保存epub基本文件");
+    saveEpubMimetype();
+
     if (options) {
       Object.assign(this, options);
+    }
+
+    async function saveEpubMimetype() {
+      // mimetype
+      await self.epubZip.file(
+        "mimetype",
+        new Blob(["application/epub+zip"]),
+        true
+      );
+      // container.xml
+      await self.epubZip.file(
+        "META-INF/container.xml",
+        new Blob([
+          `<?xml version="1.0" encoding="UTF-8"?>
+<container version="1.0" xmlns="urn:oasis:names:tc:opendocument:xmlns:container">
+    <rootfiles>
+        <rootfile full-path="OEBPS/content.opf" media-type="application/oebps-package+xml"/>
+    </rootfiles>
+</container>`,
+        ])
+      );
     }
   }
 
@@ -269,8 +294,6 @@ export class EPUB extends Options {
   public async saveEpub() {
     const self = this;
 
-    log.debug("[save-epub]保存epub基本文件");
-    await saveEpubMimetype();
     log.debug("[save-epub]保存样式文件");
     await saveStyle();
     log.debug("[save-epub]更新Metadata");
@@ -289,27 +312,6 @@ export class EPUB extends Options {
     await saveZipFiles();
 
     await this.epubZip.generateAsync();
-
-    async function saveEpubMimetype() {
-      // mimetype
-      await self.epubZip.file(
-        "mimetype",
-        new Blob(["application/epub+zip"]),
-        true
-      );
-      // container.xml
-      await self.epubZip.file(
-        "META-INF/container.xml",
-        new Blob([
-          `<?xml version="1.0" encoding="UTF-8"?>
-<container version="1.0" xmlns="urn:oasis:names:tc:opendocument:xmlns:container">
-    <rootfiles>
-        <rootfile full-path="OEBPS/content.opf" media-type="application/oebps-package+xml"/>
-    </rootfiles>
-</container>`,
-        ])
-      );
-    }
 
     async function saveStyle() {
       await self.epubZip.file(
