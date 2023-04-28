@@ -1,7 +1,11 @@
 // ==UserScript==
 // @name           小说下载器
+// @name:en        novel-downloader
+// @name:ja        小説ダウンローダー
 // @description    一个可扩展的通用型小说下载器。
-// @version        5.1.818
+// @description:en An scalable universal novel downloader.
+// @description:ja スケーラブルなユニバーサル小説ダウンローダー。
+// @version        5.1.825
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -177,8 +181,8 @@
 // @match          *://www.kanunu8.com/*
 // @match          *://www.ciyuanji.com/bookDetails/*
 // @match          *://ciyuanji.com/bookDetails/*
-// @match          *://m.wanben.org/*/
-// @match          *://www.wanben.org/*/
+// @match          *://m.xiaoshuowanben.com/*/
+// @match          *://www.xiaoshuowanben.com/*/
 // @match          *://www.ranwen.la/files/article/*/*/
 // @match          *://www.wangshuge.la/books/*/*/
 // @match          *://m.baihexs.com/info-*/
@@ -303,8 +307,6 @@
 // @connect        sundung.com
 // @connect        duread8.com
 // @connect        *
-// @description:en An scalable universal novel downloader.
-// @description:ja スケーラブルなユニバーサル小説ダウンローダー。
 // @downloadURL    https://github.com/yingziwu/novel-downloader/raw/gh-pages/bundle.user.js
 // @grant          unsafeWindow
 // @grant          GM_info
@@ -321,13 +323,11 @@
 // @icon           https://cdn.jsdelivr.net/gh/404-novel-project/novel-downloader/assets/icon.png
 // @incompatible   Internet Explorer
 // @license        AGPL-3.0-or-later
-// @name:en        novel-downloader
-// @name:ja        小説ダウンローダー
 // @namespace      https://blog.bgme.me
 // @noframes
 // @require        https://unpkg.com/crypto-js@4.1.1/crypto-js.js#sha512-NQVmLzNy4Lr5QTrmXvq/WzTMUnRHmv7nyIT/M6LyGPBS+TIeRxZ+YQaqWxjpRpvRMQSuYPQURZz/+pLi81xXeA==
 // @require        https://unpkg.com/fflate@0.7.4/umd/index.js#sha512-j3RSYniik9MPzPj4jENl0Q6Um2f3OHPK/KQP7SEh8RL/gyAGSj/PaiyUPrgY88TA5COsEx8D34hkc3vNVCFaSw==
-// @require        https://unpkg.com/nunjucks@3.2.3/browser/nunjucks.min.js#sha512-Uj8C5szr1tnKPNZb6ps5gFYtTGskzsUCiwY35QP/s2JIExZl7iYNletcmOJ8D6ocuaMRi9JGVrWRePaX9raujA==
+// @require        https://unpkg.com/nunjucks@3.2.4/browser/nunjucks.min.js#sha512-YvU0oaPCJSOIFni9rIOthOs5GgtU5kNZMKQG/Nt33t/H9g/1+TK7KJuMsCZS6v4O3+x253OZlTzPryrUtxxORw==
 // @require        https://unpkg.com/vue@3.2.47/dist/vue.global.prod.js#sha512-GBVIWsyfp4G1USUI5RMOWK0h3Z47VIF/9Ek/og00XZ2O3DTQauGlHA88kM9SJWOxpNEvKMkLkOhM6gqFGaeEeg==
 // @run-at         document-start
 // @updateURL      https://github.com/yingziwu/novel-downloader/raw/gh-pages/bundle.meta.js

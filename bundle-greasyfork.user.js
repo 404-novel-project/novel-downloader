@@ -1,7 +1,11 @@
 // ==UserScript==
 // @name           小说下载器
+// @name:en        novel-downloader
+// @name:ja        小説ダウンローダー
 // @description    一个可扩展的通用型小说下载器。
-// @version        5.1.818
+// @description:en An scalable universal novel downloader.
+// @description:ja スケーラブルなユニバーサル小説ダウンローダー。
+// @version        5.1.825
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -177,8 +181,8 @@
 // @match          *://www.kanunu8.com/*
 // @match          *://www.ciyuanji.com/bookDetails/*
 // @match          *://ciyuanji.com/bookDetails/*
-// @match          *://m.wanben.org/*/
-// @match          *://www.wanben.org/*/
+// @match          *://m.xiaoshuowanben.com/*/
+// @match          *://www.xiaoshuowanben.com/*/
 // @match          *://www.ranwen.la/files/article/*/*/
 // @match          *://www.wangshuge.la/books/*/*/
 // @match          *://m.baihexs.com/info-*/
@@ -303,8 +307,6 @@
 // @connect        sundung.com
 // @connect        duread8.com
 // @connect        *
-// @description:en An scalable universal novel downloader.
-// @description:ja スケーラブルなユニバーサル小説ダウンローダー。
 // @downloadURL    https://github.com/yingziwu/novel-downloader/raw/gh-pages/bundle-greasyfork.user.js
 // @grant          unsafeWindow
 // @grant          GM_info
@@ -321,13 +323,11 @@
 // @icon           https://cdn.jsdelivr.net/gh/404-novel-project/novel-downloader/assets/icon.png
 // @incompatible   Internet Explorer
 // @license        AGPL-3.0-or-later
-// @name:en        novel-downloader
-// @name:ja        小説ダウンローダー
 // @namespace      https://blog.bgme.me
 // @noframes
 // @require        https://unpkg.com/crypto-js@4.1.1/crypto-js.js#sha512-NQVmLzNy4Lr5QTrmXvq/WzTMUnRHmv7nyIT/M6LyGPBS+TIeRxZ+YQaqWxjpRpvRMQSuYPQURZz/+pLi81xXeA==
 // @require        https://unpkg.com/fflate@0.7.4/umd/index.js#sha512-j3RSYniik9MPzPj4jENl0Q6Um2f3OHPK/KQP7SEh8RL/gyAGSj/PaiyUPrgY88TA5COsEx8D34hkc3vNVCFaSw==
-// @require        https://unpkg.com/nunjucks@3.2.3/browser/nunjucks.min.js#sha512-Uj8C5szr1tnKPNZb6ps5gFYtTGskzsUCiwY35QP/s2JIExZl7iYNletcmOJ8D6ocuaMRi9JGVrWRePaX9raujA==
+// @require        https://unpkg.com/nunjucks@3.2.4/browser/nunjucks.min.js#sha512-YvU0oaPCJSOIFni9rIOthOs5GgtU5kNZMKQG/Nt33t/H9g/1+TK7KJuMsCZS6v4O3+x253OZlTzPryrUtxxORw==
 // @require        https://unpkg.com/vue@3.2.47/dist/vue.global.prod.js#sha512-GBVIWsyfp4G1USUI5RMOWK0h3Z47VIF/9Ek/og00XZ2O3DTQauGlHA88kM9SJWOxpNEvKMkLkOhM6gqFGaeEeg==
 // @run-at         document-start
 // @updateURL      https://github.com/yingziwu/novel-downloader/raw/gh-pages/bundle-greasyfork.meta.js
@@ -339,7 +339,6 @@
 /***/ "./node_modules/@mozilla/readability/Readability-readerable.js":
 /***/ ((module) => {
 
-/* eslint-env es6:false */
 /*
  * Copyright (c) 2010 Arc90 Inc
  *
@@ -445,6 +444,7 @@ function isProbablyReaderable(doc, options = {}) {
 }
 
 if (true) {
+  /* global module */
   module.exports = isProbablyReaderable;
 }
 
@@ -454,7 +454,6 @@ if (true) {
 /***/ "./node_modules/@mozilla/readability/Readability.js":
 /***/ ((module) => {
 
-/*eslint-env es6:false*/
 /*
  * Copyright (c) 2010 Arc90 Inc
  *
@@ -510,6 +509,7 @@ function Readability(doc, options) {
     return el.innerHTML;
   };
   this._disableJSONLD = !!options.disableJSONLD;
+  this._allowedVideoRegex = options.allowedVideoRegex || this.REGEXPS.videos;
 
   // Start with all flags set
   this._flags = this.FLAG_STRIP_UNLIKELYS |
@@ -529,12 +529,7 @@ function Readability(doc, options) {
       return `<${node.localName} ${attrPairs}>`;
     };
     this.log = function () {
-      if (typeof dump !== "undefined") {
-        var msg = Array.prototype.map.call(arguments, function(x) {
-          return (x && x.nodeName) ? logNode(x) : x;
-        }).join(" ");
-        dump("Reader: (Readability) " + msg + "\n");
-      } else if (typeof console !== "undefined") {
+      if (typeof console !== "undefined") {
         let args = Array.from(arguments, arg => {
           if (arg && arg.nodeType == this.ELEMENT_NODE) {
             return logNode(arg);
@@ -543,6 +538,12 @@ function Readability(doc, options) {
         });
         args.unshift("Reader: (Readability)");
         console.log.apply(console, args);
+      } else if (typeof dump !== "undefined") {
+        /* global dump */
+        var msg = Array.prototype.map.call(arguments, function(x) {
+          return (x && x.nodeName) ? logNode(x) : x;
+        }).join(" ");
+        dump("Reader: (Readability) " + msg + "\n");
       }
     };
   } else {
@@ -1365,6 +1366,12 @@ Readability.prototype = {
           continue;
         }
 
+        // User is not able to see elements applied with both "aria-modal = true" and "role = dialog"
+        if (node.getAttribute("aria-modal") == "true" && node.getAttribute("role") == "dialog") {
+          node = this._removeAndGetNext(node);
+          continue;
+        }
+
         // Check to see if this node is a byline, and remove it if it is.
         if (this._checkByline(node, matchString)) {
           node = this._removeAndGetNext(node);
@@ -2098,12 +2105,7 @@ Readability.prototype = {
    * @param Element
   **/
   _removeScripts: function(doc) {
-    this._removeNodes(this._getAllNodesWithTag(doc, ["script"]), function(scriptNode) {
-      scriptNode.nodeValue = "";
-      scriptNode.removeAttribute("src");
-      return true;
-    });
-    this._removeNodes(this._getAllNodesWithTag(doc, ["noscript"]));
+    this._removeNodes(this._getAllNodesWithTag(doc, ["script", "noscript"]));
   },
 
   /**
@@ -2293,13 +2295,13 @@ Readability.prototype = {
       if (isEmbed) {
         // First, check the elements attributes to see if any of them contain youtube or vimeo
         for (var i = 0; i < element.attributes.length; i++) {
-          if (this.REGEXPS.videos.test(element.attributes[i].value)) {
+          if (this._allowedVideoRegex.test(element.attributes[i].value)) {
             return false;
           }
         }
 
         // For embed with <object> tag, check inner HTML as well.
-        if (element.tagName === "object" && this.REGEXPS.videos.test(element.innerHTML)) {
+        if (element.tagName === "object" && this._allowedVideoRegex.test(element.innerHTML)) {
           return false;
         }
       }
@@ -2568,13 +2570,13 @@ Readability.prototype = {
         for (var i = 0; i < embeds.length; i++) {
           // If this embed has attribute that matches video regex, don't delete it.
           for (var j = 0; j < embeds[i].attributes.length; j++) {
-            if (this.REGEXPS.videos.test(embeds[i].attributes[j].value)) {
+            if (this._allowedVideoRegex.test(embeds[i].attributes[j].value)) {
               return false;
             }
           }
 
           // For embed with <object> tag, check inner HTML as well.
-          if (embeds[i].tagName === "object" && this.REGEXPS.videos.test(embeds[i].innerHTML)) {
+          if (embeds[i].tagName === "object" && this._allowedVideoRegex.test(embeds[i].innerHTML)) {
             return false;
           }
 
@@ -2592,6 +2594,21 @@ Readability.prototype = {
           (!isList && weight < 25 && linkDensity > 0.2) ||
           (weight >= 25 && linkDensity > 0.5) ||
           ((embedCount === 1 && contentLength < 75) || embedCount > 1);
+        // Allow simple lists of images to remain in pages
+        if (isList && haveToRemove) {
+          for (var x = 0; x < node.children.length; x++) {
+            let child = node.children[x];
+            // Don't filter in lists with li's that contain more than one child
+            if (child.children.length > 1) {
+              return haveToRemove;
+            }
+          }
+          let li_count = node.getElementsByTagName("li").length;
+          // Only allow the list to remain if every li contains an image
+          if (img == li_count) {
+            return false;
+          }
+        }
         return haveToRemove;
       }
       return false;
@@ -2735,6 +2752,7 @@ Readability.prototype = {
 };
 
 if (true) {
+  /* global module */
   module.exports = Readability;
 }
 
@@ -2744,6 +2762,7 @@ if (true) {
 /***/ "./node_modules/@mozilla/readability/index.js":
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
+/* eslint-env node */
 var Readability = __webpack_require__("./node_modules/@mozilla/readability/Readability.js");
 var isProbablyReaderable = __webpack_require__("./node_modules/@mozilla/readability/Readability-readerable.js");
 
@@ -6717,7 +6736,6 @@ function range(size, startAt = 0) {
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "fetchAndParse": () => (/* binding */ fetchAndParse),
 /* harmony export */   "gfetchAndParse": () => (/* binding */ gfetchAndParse),
@@ -7986,12 +8004,26 @@ class EPUB extends Options {
     epubZip;
     constructor(book, streamZip, options) {
         super();
+        const self = this;
         this.book = book;
         this.chapters = this.book.chapters;
         const zipFilename = `[${this.book.author}]${this.book.bookname}.epub`;
         this.epubZip = new FflateZip(zipFilename, streamZip, "application/epub+zip");
+        loglevel_default().debug("[save-epub]保存epub基本文件");
+        saveEpubMimetype();
         if (options) {
             Object.assign(this, options);
+        }
+        async function saveEpubMimetype() {
+            await self.epubZip.file("mimetype", new Blob(["application/epub+zip"]), true);
+            await self.epubZip.file("META-INF/container.xml", new Blob([
+                `<?xml version="1.0" encoding="UTF-8"?>
+<container version="1.0" xmlns="urn:oasis:names:tc:opendocument:xmlns:container">
+    <rootfiles>
+        <rootfile full-path="OEBPS/content.opf" media-type="application/oebps-package+xml"/>
+    </rootfiles>
+</container>`,
+            ]));
         }
     }
     static genChapterHtmlFile(chapterObj) {
@@ -8014,8 +8046,6 @@ class EPUB extends Options {
     }
     async saveEpub() {
         const self = this;
-        loglevel_default().debug("[save-epub]保存epub基本文件");
-        await saveEpubMimetype();
         loglevel_default().debug("[save-epub]保存样式文件");
         await saveStyle();
         loglevel_default().debug("[save-epub]更新Metadata");
@@ -8032,17 +8062,6 @@ class EPUB extends Options {
         await saveToC();
         await saveZipFiles();
         await this.epubZip.generateAsync();
-        async function saveEpubMimetype() {
-            await self.epubZip.file("mimetype", new Blob(["application/epub+zip"]), true);
-            await self.epubZip.file("META-INF/container.xml", new Blob([
-                `<?xml version="1.0" encoding="UTF-8"?>
-<container version="1.0" xmlns="urn:oasis:names:tc:opendocument:xmlns:container">
-    <rootfiles>
-        <rootfile full-path="OEBPS/content.opf" media-type="application/oebps-package+xml"/>
-    </rootfiles>
-</container>`,
-            ]));
-        }
         async function saveStyle() {
             await self.epubZip.file("OEBPS/style.css", new Blob([self.mainStyleText]));
             await self.epubZip.file("OEBPS/sgc-toc.css", new Blob([sgc_toc/* default */.Z]));
@@ -8928,7 +8947,6 @@ class BaseRuleClass {
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "mht": () => (/* binding */ mht)
 /* harmony export */ });
@@ -8983,7 +9001,6 @@ const mht = () => (0,_onePage_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleCla
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "c226ks": () => (/* binding */ c226ks),
 /* harmony export */   "znlzd": () => (/* binding */ znlzd)
@@ -9014,7 +9031,6 @@ const c226ks = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeMultiI
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "mijiashe": () => (/* binding */ mijiashe),
 /* harmony export */   "xinwanben": () => (/* binding */ xinwanben),
@@ -9084,7 +9100,6 @@ const ywggzy = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeNextPa
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "b5200": () => (/* binding */ b5200),
 /* harmony export */   "biquwx": () => (/* binding */ biquwx),
@@ -9422,7 +9437,6 @@ function mkBiqugeMultiIndex(introDomPatch, contentPatch, concurrencyLimit, overR
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "mbtxt": () => (/* binding */ mbtxt)
 /* harmony export */ });
@@ -9477,7 +9491,6 @@ const mbtxt = () => (0,_onePage_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleC
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "quanshuzhai": () => (/* binding */ quanshuzhai)
 /* harmony export */ });
@@ -9502,7 +9515,6 @@ const quanshuzhai = () => (0,_onePage_template__WEBPACK_IMPORTED_MODULE_0__/* .m
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "c256wxc": () => (/* binding */ c256wxc)
 /* harmony export */ });
@@ -9530,7 +9542,6 @@ const c256wxc = (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)(
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "c630shu": () => (/* binding */ c630shu)
 /* harmony export */ });
@@ -9560,7 +9571,6 @@ const c630shu = (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)(
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "aixdzs": () => (/* binding */ aixdzs)
 /* harmony export */ });
@@ -9587,7 +9597,6 @@ const aixdzs = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "fantasybooks": () => (/* binding */ fantasybooks)
 /* harmony export */ });
@@ -9630,7 +9639,6 @@ const fantasybooks = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleCl
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "dizishu": () => (/* binding */ dizishu)
 /* harmony export */ });
@@ -9711,8 +9719,6 @@ return new Request(url, {
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-// ESM COMPAT FLAG
-__webpack_require__.r(__webpack_exports__);
 
 // EXPORTS
 __webpack_require__.d(__webpack_exports__, {
@@ -9910,7 +9916,6 @@ const hongxiuzhao = () => (0,template/* mkRuleClass */.x)({
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "akatsuki": () => (/* binding */ akatsuki)
 /* harmony export */ });
@@ -9964,7 +9969,6 @@ const akatsuki = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass 
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "alphapolis": () => (/* binding */ alphapolis)
 /* harmony export */ });
@@ -10003,7 +10007,6 @@ const alphapolis = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClas
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "houhuayuan": () => (/* binding */ houhuayuan)
 /* harmony export */ });
@@ -10105,7 +10108,6 @@ const houhuayuan = () => {
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "kakuyomu": () => (/* binding */ kakuyomu)
 /* harmony export */ });
@@ -10138,7 +10140,6 @@ const kakuyomu = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass 
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "masiro": () => (/* binding */ masiro)
 /* harmony export */ });
@@ -10192,7 +10193,6 @@ const masiro = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "syosetu": () => (/* binding */ syosetu),
 /* harmony export */   "syosetuOrg": () => (/* binding */ syosetuOrg)
@@ -10330,7 +10330,6 @@ const syosetuOrg = () => {
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "soxscc": () => (/* binding */ soxscc)
 /* harmony export */ });
@@ -10547,7 +10546,6 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "tianyabooks": () => (/* binding */ tianyabooks)
 /* harmony export */ });
@@ -10587,7 +10585,6 @@ const tianyabooks = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleCla
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "trxs": () => (/* binding */ trxs)
 /* harmony export */ });
@@ -10616,7 +10613,6 @@ const trxs = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "uukanshu": () => (/* binding */ uukanshu)
 /* harmony export */ });
@@ -10677,7 +10673,6 @@ const uukanshu = () => {
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "wanben": () => (/* binding */ wanben)
 /* harmony export */ });
@@ -10735,7 +10730,6 @@ const wanben = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "westnovel": () => (/* binding */ westnovel)
 /* harmony export */ });
@@ -10769,7 +10763,6 @@ const westnovel = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "baihexs": () => (/* binding */ baihexs)
 /* harmony export */ });
@@ -10827,7 +10820,6 @@ const baihexs = () => {
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "novelup": () => (/* binding */ novelup)
 /* harmony export */ });
@@ -10890,7 +10882,6 @@ const novelup = () => {
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "ptwxz": () => (/* binding */ ptwxz)
 /* harmony export */ });
@@ -11151,7 +11142,6 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "wanben": () => (/* binding */ wanben)
 /* harmony export */ });
@@ -11232,7 +11222,6 @@ const wanben = () => {
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "C17k": () => (/* binding */ C17k)
 /* harmony export */ });
@@ -11394,7 +11383,6 @@ class C17k extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "MangaBilibili": () => (/* binding */ MangaBilibili)
 /* harmony export */ });
@@ -11653,7 +11641,6 @@ class MangaBilibili extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "Duread": () => (/* binding */ Duread),
 /* harmony export */   "Shubl": () => (/* binding */ Shubl)
@@ -12124,7 +12111,6 @@ function getChapter({ chapterUrl, chapterName, isVIP, isPaid, charset, options, 
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "Ciyuanji": () => (/* binding */ Ciyuanji)
 /* harmony export */ });
@@ -12297,7 +12283,6 @@ class Ciyuanji extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "Cool18": () => (/* binding */ Cool18)
 /* harmony export */ });
@@ -12464,7 +12449,6 @@ class Cool18 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "Gongzicp": () => (/* binding */ Gongzicp)
 /* harmony export */ });
@@ -12835,7 +12819,6 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "Hanwujinian": () => (/* binding */ Hanwujinian)
 /* harmony export */ });
@@ -13008,7 +12991,6 @@ class Hanwujinian extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass *
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "Iqingguo": () => (/* binding */ Iqingguo)
 /* harmony export */ });
@@ -13158,8 +13140,6 @@ async function get(path, params) {
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-// ESM COMPAT FLAG
-__webpack_require__.r(__webpack_exports__);
 
 // EXPORTS
 __webpack_require__.d(__webpack_exports__, {
@@ -13831,7 +13811,6 @@ class Jjwxc extends rules/* BaseRuleClass */.c {
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "Linovel": () => (/* binding */ Linovel)
 /* harmony export */ });
@@ -14001,7 +13980,6 @@ class Linovel extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "Lofter": () => (/* binding */ Lofter)
 /* harmony export */ });
@@ -14203,7 +14181,6 @@ class Lofter extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "Longmabook": () => (/* binding */ Longmabook)
 /* harmony export */ });
@@ -14566,7 +14543,6 @@ class Longmabook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "Myrics": () => (/* binding */ Myrics)
 /* harmony export */ });
@@ -14789,7 +14765,6 @@ class Myrics extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c 
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "Pixiv": () => (/* binding */ Pixiv)
 /* harmony export */ });
@@ -15150,7 +15125,6 @@ async function getNovel(novelID, lang, version) {
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "Qidian": () => (/* binding */ Qidian)
 /* harmony export */ });
@@ -15403,7 +15377,6 @@ class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "Qimao": () => (/* binding */ Qimao)
 /* harmony export */ });
@@ -15547,7 +15520,6 @@ class Qimao extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "Readmoo": () => (/* binding */ Readmoo)
 /* harmony export */ });
@@ -15717,7 +15689,6 @@ class Readmoo extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "Sfacg": () => (/* binding */ Sfacg)
 /* harmony export */ });
@@ -15973,7 +15944,6 @@ class Sfacg extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "Shuhai": () => (/* binding */ Shuhai)
 /* harmony export */ });
@@ -16143,7 +16113,6 @@ class Shuhai extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "Sosadfun": () => (/* binding */ Sosadfun)
 /* harmony export */ });
@@ -16306,7 +16275,6 @@ class Sosadfun extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "Tadu": () => (/* binding */ Tadu)
 /* harmony export */ });
@@ -16476,7 +16444,6 @@ class Tadu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "Xrzww": () => (/* binding */ Xrzww)
 /* harmony export */ });
@@ -16677,7 +16644,6 @@ class Xrzww extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "Zongheng": () => (/* binding */ Zongheng)
 /* harmony export */ });
@@ -16833,7 +16799,6 @@ class Zongheng extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "Dmzj": () => (/* binding */ Dmzj)
 /* harmony export */ });
@@ -17001,7 +16966,6 @@ class Dmzj extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "Fushuwang": () => (/* binding */ Fushuwang)
 /* harmony export */ });
@@ -17109,8 +17073,6 @@ class Fushuwang extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ 
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-// ESM COMPAT FLAG
-__webpack_require__.r(__webpack_exports__);
 
 // EXPORTS
 __webpack_require__.d(__webpack_exports__, {
@@ -18123,7 +18085,6 @@ const yuzhaige = () => getClass(replaceYuzhaigeImage);
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "Hetushu": () => (/* binding */ Hetushu)
 /* harmony export */ });
@@ -18330,7 +18291,6 @@ class Hetushu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "Idejian": () => (/* binding */ Idejian)
 /* harmony export */ });
@@ -18478,7 +18438,6 @@ class Idejian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "Kanunu8": () => (/* binding */ Kanunu8)
 /* harmony export */ });
@@ -18662,7 +18621,6 @@ function softByValue(a, b) {
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "Xkzw": () => (/* binding */ Xkzw)
 /* harmony export */ });
@@ -18992,7 +18950,6 @@ class Xkzw extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "c18kanshu": () => (/* binding */ c18kanshu)
 /* harmony export */ });
@@ -19051,7 +19008,6 @@ const c18kanshu = () => (0,_tempate__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass 
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "xiaoshuodaquan": () => (/* binding */ xiaoshuodaquan)
 /* harmony export */ });
@@ -19092,7 +19048,6 @@ const xiaoshuodaquan = () => (0,_tempate__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleC
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "c69shu": () => (/* binding */ c69shu)
 /* harmony export */ });
@@ -19124,7 +19079,6 @@ const c69shu = () => (0,_tempate__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ 
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "jingcaiyuedu6": () => (/* binding */ jingcaiyuedu6)
 /* harmony export */ });
@@ -19155,8 +19109,6 @@ const jingcaiyuedu6 = () => (0,_tempate__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleCl
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-// ESM COMPAT FLAG
-__webpack_require__.r(__webpack_exports__);
 
 // EXPORTS
 __webpack_require__.d(__webpack_exports__, {
@@ -19443,7 +19395,6 @@ const wlinovelib = () => {
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "shencou": () => (/* binding */ shencou)
 /* harmony export */ });
@@ -19682,7 +19633,6 @@ function mkRuleClass({ bookUrl, anotherPageUrl, ToCUrl, getBookname, getAuthor, 
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "washuge": () => (/* binding */ washuge)
 /* harmony export */ });
@@ -19719,7 +19669,6 @@ const washuge = () => {
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "wenku8": () => (/* binding */ wenku8)
 /* harmony export */ });
@@ -19760,7 +19709,6 @@ const wenku8 = () => {
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "xiaoshuowu": () => (/* binding */ xiaoshuowu)
 /* harmony export */ });
@@ -19809,7 +19757,6 @@ const xiaoshuowu = () => {
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "yibige": () => (/* binding */ yibige)
 /* harmony export */ });
@@ -20064,7 +20011,7 @@ __webpack_require__.d(__webpack_exports__, {
   "Z": () => (/* binding */ pLimit)
 });
 
-;// CONCATENATED MODULE: ./node_modules/yocto-queue/index.js
+;// CONCATENATED MODULE: ./node_modules/p-limit/node_modules/yocto-queue/index.js
 /*
 How it works:
 `this.#head` is an instance of `Node` which keeps track of its current value and nests another instance of `Node` that keeps the value that comes after it. When a value is provided to `.enqueue()`, the code needs to iterate through `this.#head`, going deeper and deeper to find the last value. However, iterating through every single item is slow. This problem is solved by saving a reference to the last value as `this.#tail` so that it can reference it to add a new value.
@@ -20280,17 +20227,6 @@ module.exports = JSON.parse('{"application/1d-interleaved-parityfec":{"source":"
 /******/ 	/* webpack/runtime/hasOwnProperty shorthand */
 /******/ 	(() => {
 /******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/make namespace object */
-/******/ 	(() => {
-/******/ 		// define __esModule on exports
-/******/ 		__webpack_require__.r = (exports) => {
-/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
-/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
-/******/ 			}
-/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
-/******/ 		};
 /******/ 	})();
 /******/ 	
 /************************************************************************/
@@ -20759,7 +20695,7 @@ async function getRule() {
             ruleClass = c256wxc;
             break;
         }
-        case "www.wanben.org": {
+        case "www.xiaoshuowanben.com": {
             const { wanben } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/wanben.ts"));
             ruleClass = wanben();
             break;
@@ -20841,7 +20777,7 @@ async function getRule() {
             ruleClass = ptwxz();
             break;
         }
-        case "m.wanben.org": {
+        case "m.xiaoshuowanben.com": {
             const { wanben } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePageWithMultiIndexPage/wanben.ts"));
             ruleClass = wanben();
             break;
