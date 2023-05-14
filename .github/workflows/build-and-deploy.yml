@@ -9,6 +9,7 @@ on:
       - tools/*
     branches-ignore:
       - gh-pages
+      - "dependabot/**"
   pull_request:
     paths-ignore:
       - README.md

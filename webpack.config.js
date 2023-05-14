@@ -15,11 +15,6 @@ const git = simpleGit();
 const dev = process.env.NODE_ENV === "development";
 console.log(`development: ${dev}`);
 
-git.raw("rev-list", "--count", "HEAD").then((REVISION) => {
-  console.log(`commit count: ${REVISION.trim()}`);
-  fs.writeFileSync("REVISION", REVISION);
-});
-
 export default {
   mode: dev ? "development" : "production",
   optimization: {
@@ -89,7 +84,7 @@ export default {
   },
   plugins: [
     new WebpackUserscript({
-      headers: () => {
+      headers: async () => {
         const headerPath = path.resolve(__dirname, "src", "header.json");
         const packageJsonPath = path.resolve(__dirname, "package.json");
         const header = JSON.parse(fs.readFileSync(headerPath).toString());
@@ -97,7 +92,9 @@ export default {
           fs.readFileSync(packageJsonPath).toString()
         );
 
-        const revision = fs.readFileSync("REVISION").toString().trim();
+        const revision = (await git.raw("rev-list", "--count", "HEAD")).trim();
+        console.log(`commit count: ${revision}`);
+
         let version = packageJson.version;
         if (dev) {
           version = version.replace(/\.0$/, "." + Date.now());
