@@ -2853,9 +2853,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"got@npm:^12.6.0":
-  version: 12.6.0
-  resolution: "got@npm:12.6.0"
+"got@npm:^13.0.0":
+  version: 13.0.0
+  resolution: "got@npm:13.0.0"
   dependencies:
     "@sindresorhus/is": ^5.2.0
     "@szmarczak/http-timer": ^5.0.1
@@ -2868,7 +2868,7 @@ __metadata:
     lowercase-keys: ^3.0.0
     p-cancelable: ^3.0.0
     responselike: ^3.0.0
-  checksum: 3621897067068dcb3578d05535cfb10f60aac07198032b3349a488f5741964e7f63d6e37c976840f1bcaaf42f5c049ed3c6d8e0d6c622b74639ca9319ad178a1
+  checksum: bcae6601efd710bc6c5b454c5e44bcb16fcfe57a1065e2d61ff918c1d69c3cf124984ebf509ca64ed10f0da2d2b5531b77da05aa786e75849d084fb8fbea711b
   languageName: node
   linkType: hard
 
@@ -4328,7 +4328,7 @@ __metadata:
     eslint-config-prettier: ^8.8.0
     fflate: ^0.7.4
     file-saver: ^2.0.5
-    got: ^12.6.0
+    got: ^13.0.0
     html-loader: ^4.2.0
     husky: ^8.0.3
     less: ^4.1.3
