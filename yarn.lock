@@ -3650,7 +3650,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"klona@npm:^2.0.4":
+"klona@npm:^2.0.6":
   version: 2.0.6
   resolution: "klona@npm:2.0.6"
   checksum: ac9ee3732e42b96feb67faae4d27cf49494e8a3bf3fa7115ce242fe04786788e0aff4741a07a45a2462e2079aa983d73d38519c85d65b70ef11447bbc3c58ce7
@@ -3668,14 +3668,14 @@ __metadata:
   linkType: hard
 
 "less-loader@npm:^11.1.0":
-  version: 11.1.0
-  resolution: "less-loader@npm:11.1.0"
+  version: 11.1.2
+  resolution: "less-loader@npm:11.1.2"
   dependencies:
-    klona: ^2.0.4
+    klona: ^2.0.6
   peerDependencies:
     less: ^3.5.0 || ^4.0.0
     webpack: ^5.0.0
-  checksum: 041216e0a6d95e24c9724f470719db3eb70b3888c45b1a1e9cd55edabe8ae79709522cd6c6713b466b3e9948544074e2a5b2be50ac3ced5ff41dfa9675f3b182
+  checksum: d9deeb44256689d72198d8684233f45fb7f172c899e93adfe5954c8dc4c1004e10e93056a65fc01d0b906ec30c41f203db3751263288073cc72bcc2009b97ddc
   languageName: node
   linkType: hard
 
