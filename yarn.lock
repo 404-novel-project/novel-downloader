@@ -487,10 +487,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:^18.16.0":
+"@types/node@npm:*":
   version: 18.16.2
   resolution: "@types/node@npm:18.16.2"
   checksum: 7ad66d23b3b93885a9f879bff98e0196790ad35589b47a3d81b52db969ad17ee298082020296df5166c2d72d3cd6a4b9ab34d254483637d967944a4b3e6febdb
+  languageName: node
+  linkType: hard
+
+"@types/node@npm:^20.2.5":
+  version: 20.2.5
+  resolution: "@types/node@npm:20.2.5"
+  checksum: 38ce7c7e9d76880dc632f71d71e0d5914fcda9d5e9a7095d6c339abda55ca4affb0f2a882aeb29398f8e09d2c5151f0b6586c81c8ccdfe529c34b1ea3337425e
   languageName: node
   linkType: hard
 
@@ -4317,7 +4324,7 @@ __metadata:
     "@types/crypto-js": ^4.1.1
     "@types/file-saver": ^2.0.5
     "@types/mime-db": ^1.43.1
-    "@types/node": ^18.16.0
+    "@types/node": ^20.2.5
     "@types/nunjucks": ^3.2.2
     "@types/tampermonkey": ^4.0.10
     "@typescript-eslint/eslint-plugin": ^5.59.1
