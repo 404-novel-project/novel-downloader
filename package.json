@@ -55,7 +55,7 @@
   "dependencies": {
     "@mozilla/readability": "^0.4.4",
     "crypto-js": "^4.1.1",
-    "fflate": "^0.7.4",
+    "fflate": "^0.8.0",
     "file-saver": "^2.0.5",
     "loglevel": "^1.8.1",
     "magic-bytes.js": "^1.0.14",
