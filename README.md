@@ -205,7 +205,10 @@ EPUB 文件请使用相应阅读器阅读。
   window.tokenOptions = tokenOptions;
 })();
 ```
-
+例如：
+```javascript
+    Jjwxc:"11111111_750afc84c839aaaaafccd841fffd11f1",
+```
 ## 高阶使用技巧
 
 ### 启用调试功能
