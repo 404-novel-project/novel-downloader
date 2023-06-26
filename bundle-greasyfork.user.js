@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.1.852
+// @version        5.1.857
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -235,6 +235,11 @@
 // @match          *://hongxiuzhao.me/*.html
 // @match          *://www.mijiashe.com/*/
 // @match          *://www.duread8.com/book/*
+// @match          *://www.ttkan.co/novel/chapters/*
+// @match          *://cn.ttkan.co/novel/chapters/*
+// @match          *://tw.ttkan.co/novel/chapters/*
+// @match          *://www.xiaoshuowanben.com/*/
+// @match          *://www.xbyuan.com/*/
 // @compatible     Firefox 100+
 // @compatible     Chrome 85+
 // @compatible     Edge 85+
@@ -306,6 +311,10 @@
 // @connect        qingoo.cn
 // @connect        sundung.com
 // @connect        duread8.com
+// @connect        ttkan.co
+// @connect        bg3.co
+// @connect        xiaoshuowanben.com
+// @connect        xbyuan.com
 // @connect        *
 // @downloadURL    https://github.com/yingziwu/novel-downloader/raw/gh-pages/bundle-greasyfork.user.js
 // @grant          unsafeWindow
@@ -6717,9 +6726,12 @@ function getNodeTextLength(element) {
 function sandboxed(code) {
     const frame = document.createElement("iframe");
     document.body.appendChild(frame);
+    const argVerify = /^[$A-Z_][0-9A-Z_$]*$/i;
     if (frame.contentWindow) {
         const F = frame.contentWindow.Function;
-        const args = Object.keys(frame.contentWindow).join();
+        const args = Object.keys(frame.contentWindow)
+            .filter((it) => argVerify.test(it))
+            .join();
         document.body.removeChild(frame);
         return F(args, code)();
     }
@@ -11273,10 +11285,13 @@ const wanben = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */
             contentPatch: (content, doc) => {
                 (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)("script", true, content);
                 (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)("div[style]", true, content);
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)("a", true, content);
                 const ads = [
                     "【提示】：如果觉得此文不错，请推荐给更多小伙伴吧！分享也是一种享受。",
                     "【看书助手】",
                     "百万热门书籍终身无广告免费阅读",
+                    "【完本神站】",
+                    "一秒记住、永不丢失！"
                 ];
                 (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__/* .rm2 */ .vS)(ads, content);
                 (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_3__/* .htmlTrim */ .iA)(content);
@@ -11324,6 +11339,71 @@ const westnovel = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass
         (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("div.ads", true, content);
         (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("div.link", true, content);
         (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("h4", true, content);
+        return content;
+    },
+});
+
+
+/***/ }),
+
+/***/ "./src/rules/onePage/xbyuan.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   xbyuan: () => (/* binding */ xbyuan)
+/* harmony export */ });
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
+
+
+
+
+const $ = (selector) => document.querySelector(selector);
+const $$ = (selector) => document.querySelectorAll(selector);
+const xbyuan = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+    bookUrl: location.href,
+    bookname: $("#info h1").innerText.trim(),
+    author: $("#info .small > span").innerText.trim(),
+    introDom: $("#intro > p"),
+    introDomPatch: (_) => _,
+    coverUrl: $("#fmimg img").src,
+    aList: $$("#list dl")[1].querySelectorAll("a"),
+    async getContentFromUrl(chapterUrl, chapterName, charset) {
+        const { contentRaw } = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .nextPageParse */ .I2)({
+            chapterName,
+            chapterUrl,
+            charset,
+            selector: "#nr_content > p",
+            contentPatch(content, doc) {
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)("a", true, content);
+                const ads = [
+                    "精华书阁",
+                    "最新章节！",
+                    "最快更新，为了您下次还能查看到本书的最快更新，请务必保存好书签！",
+                    "https://www.xbyuan.com",
+                ];
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__/* .rm2 */ .vS)(ads, content);
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__/* .rms */ .up)(["(本章未完，请点击下一页继续阅读)"], content);
+                (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_3__/* .htmlTrim */ .iA)(content);
+                return content;
+            },
+            getNextPage(doc) {
+                return doc.querySelector("#nexturl").href;
+            },
+            continueCondition(content, nextLink) {
+                const pathname = nextLink.split("/").slice(-1)[0];
+                return pathname.includes("_");
+            },
+        });
+        return contentRaw;
+    },
+    contentPatch: (content) => {
+        content.innerHTML = content.innerHTML
+            .replaceAll("「", "“")
+            .replaceAll("」", "”");
         return content;
     },
 });
@@ -19230,6 +19310,119 @@ function softByValue(a, b) {
 
 /***/ }),
 
+/***/ "./src/rules/special/reprint/ttkan.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Ttkan: () => (/* binding */ Ttkan)
+/* harmony export */ });
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
+
+
+
+
+
+
+
+
+
+class Ttkan extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
+    constructor() {
+        super();
+    }
+    async bookParse() {
+        const $ = (selector) => document.querySelector(selector);
+        const host = location.hostname;
+        const language = host.split(".")[0] === "tw" ? "tw" : "cn";
+        const bookUrl = location.href;
+        const novelId = new URL(bookUrl).pathname.split("/")[3];
+        const bookname = $(".novel_info h1").innerText;
+        const author = $('meta[name="og:novel:author"]').content;
+        const intro = $(".description");
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .SN)(intro);
+        const genre = $(".novel_info > div:nth-child(2) > ul > li:nth-child(3)").childNodes[1].data;
+        const additionalMetadate = {
+            tags: [genre],
+        };
+        const coverUrl = $(".novel_info amp-img").getAttribute("src");
+        (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ .FG)(coverUrl, this.attachmentMode, "cover-")
+            .then((coverClass) => {
+            additionalMetadate.cover = coverClass;
+        })
+            .catch((error) => _log__WEBPACK_IMPORTED_MODULE_3___default().error(error));
+        const chapters = [];
+        const tocUrl = `https://${host}/api/nq/amp_novel_chapters?language=${language}&novel_id=${novelId}&__amp_source_origin=https%3A%2F%2Fwww.ttkan.co`;
+        const res = await fetch(tocUrl, {
+            headers: {
+                Accept: "application/json",
+                "AMP-Same-Origin": "true",
+            },
+            method: "GET",
+        });
+        const data = (await res.json());
+        for (const { chapter_id, chapter_name } of data.items) {
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .W({
+                bookUrl,
+                bookname,
+                chapterUrl: `https://${host}/novel/user/page_direct?novel_id=${novelId}&page=${chapter_id}`,
+                chapterNumber: chapter_id,
+                chapterName: chapter_name,
+                isVIP: false,
+                isPaid: false,
+                sectionName: null,
+                sectionNumber: null,
+                sectionChapterNumber: null,
+                chapterParse: this.chapterParse.bind(this),
+                charset: this.charset,
+                options: {},
+            });
+            chapters.push(chapter);
+        }
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .f({
+            bookUrl,
+            bookname,
+            author,
+            introduction,
+            introductionHTML,
+            additionalMetadate,
+            chapters,
+        });
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_6__/* .ggetHtmlDOM */ .Fz)(chapterUrl, charset, {
+            headers: {
+                "Accept-Language": "zh-CN",
+            },
+        });
+        const content = doc.querySelector(".content");
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_7__.rm)("a", true, content);
+        const ttkanAd = /[wWщшω]{0,3} ?[¸◆⊕●.•＿¤☢⊙▲✿★▪]? ?(?:[tTтⓣ] ?){2}[kKκКⓚ] ?[aAǎáдāΛⓐ] ?[nNⓝ] ?[¸◆⊕●.•＿¤☢⊙▲✿★▪]? ?[cCС￠℃] ?[oO〇○Ο] ?/gi;
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_7__/* .rms */ .up)([ttkanAd], content);
+        const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .zM)(content, "TM");
+        return {
+            chapterName,
+            contentRaw: content,
+            contentText: text,
+            contentHTML: dom,
+            contentImages: images,
+            additionalMetadate: null,
+        };
+    }
+}
+
+
+/***/ }),
+
 /***/ "./src/rules/special/reprint/xkzw.ts":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -21263,6 +21456,13 @@ async function getRule() {
             ruleClass = Duread;
             break;
         }
+        case "www.ttkan.co":
+        case "cn.ttkan.co":
+        case "tw.ttkan.co": {
+            const { Ttkan } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/reprint/ttkan.ts"));
+            ruleClass = Ttkan;
+            break;
+        }
         case "www.uukanshu.com": {
             const { uukanshu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/uukanshu.ts"));
             ruleClass = uukanshu();
@@ -21373,6 +21573,11 @@ async function getRule() {
         case "hongxiuzhao.me": {
             const { hongxiuzhao } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/hongxiuzhao.ts"));
             ruleClass = hongxiuzhao();
+            break;
+        }
+        case "www.xbyuan.com": {
+            const { xbyuan } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/xbyuan.ts"));
+            ruleClass = xbyuan();
             break;
         }
         case "m.baihexs.com": {
@@ -22435,14 +22640,14 @@ var ui_TestUI = __webpack_require__("./src/ui/TestUI.less");
         }
         function getChapterHtml(_chapter) {
             const html = _chapter.contentHTML?.cloneNode(true);
-            const nodes = html.querySelectorAll("img, audio");
+            const nodes = html?.querySelectorAll("img, audio");
             if (nodes) {
                 Array.from(nodes).forEach((node) => {
                     const url = node.title || node.alt;
                     node.src = getObjectUrl(url);
                 });
             }
-            return html.outerHTML;
+            return html?.outerHTML;
         }
         (0,external_Vue_.onMounted)(async () => {
             const _book = await waitBook();
