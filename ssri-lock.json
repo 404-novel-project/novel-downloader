@@ -4,5 +4,7 @@
   "https://unpkg.com/vue@3.2.47/dist/vue.global.prod.js": "sha512-GBVIWsyfp4G1USUI5RMOWK0h3Z47VIF/9Ek/og00XZ2O3DTQauGlHA88kM9SJWOxpNEvKMkLkOhM6gqFGaeEeg==",
   "https://unpkg.com/crypto-js@4.1.1/crypto-js.js": "sha512-NQVmLzNy4Lr5QTrmXvq/WzTMUnRHmv7nyIT/M6LyGPBS+TIeRxZ+YQaqWxjpRpvRMQSuYPQURZz/+pLi81xXeA==",
   "https://unpkg.com/nunjucks@3.2.4/browser/nunjucks.min.js": "sha512-YvU0oaPCJSOIFni9rIOthOs5GgtU5kNZMKQG/Nt33t/H9g/1+TK7KJuMsCZS6v4O3+x253OZlTzPryrUtxxORw==",
-  "https://unpkg.com/vue@3.3.2/dist/vue.global.prod.js": "sha512-3pDLcc6wr++qvjPQQxBWCwldo8J+GKn3aWjh8rpS5NIWVIbGKiBpFTOmp3UlpGCSkA59ZlTQZvk+Z0pAJnM26A=="
+  "https://unpkg.com/vue@3.3.2/dist/vue.global.prod.js": "sha512-3pDLcc6wr++qvjPQQxBWCwldo8J+GKn3aWjh8rpS5NIWVIbGKiBpFTOmp3UlpGCSkA59ZlTQZvk+Z0pAJnM26A==",
+  "https://unpkg.com/fflate@0.8.0/umd/index.js": "sha512-3yw8GlXXje/3cAJoUioEOZlQkRQptqZLsWUL2KUUkvsiTMpnuXPAn6ESSAeQVLnY+2VrTHOADFMTElWqjKG/Yg==",
+  "https://unpkg.com/vue@3.3.4/dist/vue.global.prod.js": "sha512-7cmvZh1K81vCevOl9YPcvR6lCFgxol/biMYQ+YwsCiQFePxFrMVbJaHGUlu01/2EhNxKzKRpztUhWrwLyKCfiQ=="
 }
