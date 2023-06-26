@@ -244,3 +244,9 @@ export function insertBrBeforeText(elem: HTMLElement) {
 export function isHidden(el: HTMLElement): boolean {
   return el.offsetParent === null;
 }
+
+export function escapeHTML(str: string) {
+  const p = document.createElement("p");
+  p.appendChild(document.createTextNode(str));
+  return p.innerHTML;
+}

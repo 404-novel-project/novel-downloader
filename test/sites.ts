@@ -3,7 +3,7 @@ import fs from "node:fs";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
 
-import got, { OptionsInit, Response, RequestError } from "got";
+import got, { Response, RetryOptions } from "got";
 import pLimit from "p-limit";
 
 /*
@@ -28,7 +28,6 @@ function getDomains(header: any): string[] {
     })
     .filter((x) => !x.includes("*"));
 }
-
 interface testResult {
   error: string | null;
   ok: boolean;
@@ -44,41 +43,37 @@ interface siteTestResult {
 }
 async function siteTester(domain: string): Promise<siteTestResult> {
   const options = {
-    method: "GET",
     headers: {
       "User-Agent":
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36",
     },
     timeout: { request: 20000, response: 30000 },
-    retry: { limit: 1 },
+    retry: { limit: 1 } as RetryOptions,
     responseType: "text",
     http2: true,
   };
 
-  function isMatch(resp: Response): boolean {
+  function isMatch(resp: Response<string>): boolean {
     return new URL(resp.requestUrl).host === new URL(resp.url).host;
   }
   async function runTest(url: string): Promise<testResult> {
     try {
       console.info(`Request ${url}`);
-      const resp = (await got({
-        url,
-        ...options,
-      } as OptionsInit)) as Response<string>;
+      const resp = await got.get(url, options);
       return {
         error: null,
-        ok: resp.ok,
+        ok: resp.statusCode == 200,
         status: resp.statusCode,
         length: resp.body.length,
         match: isMatch(resp),
       };
     } catch (error) {
-      const code = (error as RequestError).code;
+      const code = (error as any).code;
       if (code === "ERR_NON_2XX_3XX_RESPONSE") {
-        const resp = (error as RequestError).response as Response<string>;
+        const resp = (error as any).response as Response<string>;
         return {
           error: code,
-          ok: resp.ok,
+          ok: resp.statusCode == 200,
           status: resp.statusCode,
           length: resp.body.length,
           match: isMatch(resp),

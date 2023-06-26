@@ -14,6 +14,7 @@ import { AttachmentClass } from "../main/Attachment";
 import { Status } from "../main/main";
 import { convertHTMLtoXHTML } from "../lib/dom";
 import { getSectionsObj } from "./misc";
+import { escapeHTML } from "../lib/dom";
 
 import chapterHtml from "./chapter.html.j2";
 import indexHtml from "./index.html.j2";
@@ -326,7 +327,7 @@ export class EPUB extends Options {
       title.textContent = self.book.bookname;
       self.metadata.appendChild(title);
       (self.ncx.querySelector("docTitle > text") as Element).innerHTML =
-        self.book.bookname;
+        escapeHTML(self.book.bookname);
 
       const author = self.contentOpf.createElement("dc:creator");
       author.setAttribute("id", "cre");
