@@ -32,6 +32,9 @@ interface UnsafeWindowObject {
         fetchAndParse: typeof fetchAndParse;
         gfetchAndParse: typeof gfetchAndParse;
     };
+    tokenOptions?: {
+        Jjwxc: string;
+    };
 }
 export type UnsafeWindow = UnsafeWindowObject & Window & typeof globalThis;
 export declare function init(): void;
