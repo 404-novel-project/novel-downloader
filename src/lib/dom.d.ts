@@ -16,3 +16,4 @@ export declare function fullWidthLength(input: string): number;
 export declare function convertHTMLtoXHTML(input: string | Document): string;
 export declare function insertBrBeforeText(elem: HTMLElement): void;
 export declare function isHidden(el: HTMLElement): boolean;
+export declare function escapeHTML(str: string): string;

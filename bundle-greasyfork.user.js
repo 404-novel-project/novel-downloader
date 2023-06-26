@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.1.825
+// @version        5.1.830
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -326,9 +326,9 @@
 // @namespace      https://blog.bgme.me
 // @noframes
 // @require        https://unpkg.com/crypto-js@4.1.1/crypto-js.js#sha512-NQVmLzNy4Lr5QTrmXvq/WzTMUnRHmv7nyIT/M6LyGPBS+TIeRxZ+YQaqWxjpRpvRMQSuYPQURZz/+pLi81xXeA==
-// @require        https://unpkg.com/fflate@0.7.4/umd/index.js#sha512-j3RSYniik9MPzPj4jENl0Q6Um2f3OHPK/KQP7SEh8RL/gyAGSj/PaiyUPrgY88TA5COsEx8D34hkc3vNVCFaSw==
+// @require        https://unpkg.com/fflate@0.8.0/umd/index.js#sha512-3yw8GlXXje/3cAJoUioEOZlQkRQptqZLsWUL2KUUkvsiTMpnuXPAn6ESSAeQVLnY+2VrTHOADFMTElWqjKG/Yg==
 // @require        https://unpkg.com/nunjucks@3.2.4/browser/nunjucks.min.js#sha512-YvU0oaPCJSOIFni9rIOthOs5GgtU5kNZMKQG/Nt33t/H9g/1+TK7KJuMsCZS6v4O3+x253OZlTzPryrUtxxORw==
-// @require        https://unpkg.com/vue@3.2.47/dist/vue.global.prod.js#sha512-GBVIWsyfp4G1USUI5RMOWK0h3Z47VIF/9Ek/og00XZ2O3DTQauGlHA88kM9SJWOxpNEvKMkLkOhM6gqFGaeEeg==
+// @require        https://unpkg.com/vue@3.3.4/dist/vue.global.prod.js#sha512-7cmvZh1K81vCevOl9YPcvR6lCFgxol/biMYQ+YwsCiQFePxFrMVbJaHGUlu01/2EhNxKzKRpztUhWrwLyKCfiQ==
 // @run-at         document-start
 // @updateURL      https://github.com/yingziwu/novel-downloader/raw/gh-pages/bundle-greasyfork.meta.js
 // ==/UserScript==
@@ -2779,7 +2779,7 @@ module.exports = {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Z": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */   Z: () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/css-loader/dist/runtime/noSourceMaps.js");
 /* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
@@ -2790,7 +2790,72 @@ module.exports = {
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ":root {\n  --good-chapter-color: #41b883;\n  --bad-chapter-color: #e73838;\n  --warning-chapter-color: #ff9900;\n}\ndiv.chapter-list-loading {\n  padding-top: 5em;\n  padding-bottom: 5em;\n  text-align: center;\n}\ndiv.chapter-list {\n  max-height: 200px;\n  overflow-y: scroll;\n}\ndiv.chapter-list .section {\n  margin-top: 1.5em;\n  display: grid;\n  grid-template-columns: 32% 32% 32%;\n}\ndiv.chapter-list .section > h3:first-child {\n  grid-column-end: span 3;\n  text-align: center;\n}\ndiv.chapter-list .section > div.chapter {\n  text-align: center;\n  padding-top: 0.5em;\n  padding-bottom: 0.3em;\n  padding-left: 23px;\n  padding-right: 20px;\n  border: 1px solid #d9d9d9;\n  border-radius: 5px;\n  margin-left: 10px;\n  margin-top: 5px;\n  margin-right: 0;\n  margin-bottom: 0;\n}\ndiv.chapter-list .section a.disabled {\n  pointer-events: none;\n  cursor: default;\n}\ndiv.chapter-list .section a {\n  text-decoration: none;\n}\ndiv.chapter-list div.chapter.good {\n  background: var(--good-chapter-color);\n}\ndiv.chapter-list div.chapter.bad {\n  background: var(--bad-chapter-color);\n}\ndiv.chapter-list div.chapter.good.warning {\n  background: var(--warning-chapter-color);\n}\ndiv.chapter-list div.chapter.bad a,\ndiv.chapter-list div.chapter.good a {\n  color: white;\n}\n.nd-setting-body span.good {\n  color: var(--good-chapter-color);\n}\n.nd-setting-body span.bad {\n  color: var(--bad-chapter-color);\n}\n.nd-setting-body span.warning {\n  color: var(--warning-chapter-color);\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, `:root {
+  --good-chapter-color: #41b883;
+  --bad-chapter-color: #e73838;
+  --warning-chapter-color: #ff9900;
+}
+div.chapter-list-loading {
+  padding-top: 5em;
+  padding-bottom: 5em;
+  text-align: center;
+}
+div.chapter-list {
+  max-height: 200px;
+  overflow-y: scroll;
+}
+div.chapter-list .section {
+  margin-top: 1.5em;
+  display: grid;
+  grid-template-columns: 32% 32% 32%;
+}
+div.chapter-list .section > h3:first-child {
+  grid-column-end: span 3;
+  text-align: center;
+}
+div.chapter-list .section > div.chapter {
+  text-align: center;
+  padding-top: 0.5em;
+  padding-bottom: 0.3em;
+  padding-left: 23px;
+  padding-right: 20px;
+  border: 1px solid #d9d9d9;
+  border-radius: 5px;
+  margin-left: 10px;
+  margin-top: 5px;
+  margin-right: 0;
+  margin-bottom: 0;
+}
+div.chapter-list .section a.disabled {
+  pointer-events: none;
+  cursor: default;
+}
+div.chapter-list .section a {
+  text-decoration: none;
+}
+div.chapter-list div.chapter.good {
+  background: var(--good-chapter-color);
+}
+div.chapter-list div.chapter.bad {
+  background: var(--bad-chapter-color);
+}
+div.chapter-list div.chapter.good.warning {
+  background: var(--warning-chapter-color);
+}
+div.chapter-list div.chapter.bad a,
+div.chapter-list div.chapter.good a {
+  color: white;
+}
+.nd-setting-body span.good {
+  color: var(--good-chapter-color);
+}
+.nd-setting-body span.bad {
+  color: var(--bad-chapter-color);
+}
+.nd-setting-body span.warning {
+  color: var(--warning-chapter-color);
+}
+`, ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -2802,7 +2867,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, ":root {\n  --good-chapter-color: #41b8
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Z": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */   Z: () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/css-loader/dist/runtime/noSourceMaps.js");
 /* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
@@ -2813,7 +2878,49 @@ ___CSS_LOADER_EXPORT___.push([module.id, ":root {\n  --good-chapter-color: #41b8
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "#test-page-div {\n  max-height: 300px;\n  overflow-y: scroll;\n}\n#test-page-div table {\n  text-align: center;\n}\n#test-page-div td {\n  all: revert;\n  padding-top: 0.3em;\n}\n#test-page-div td > img {\n  max-height: 15em;\n}\n#test-page-div tr > td:nth-child(1) {\n  font-weight: bold;\n  min-width: 7em;\n}\n#test-page-div tr > td:nth-child(2) div,\n#test-page-div tr > td:nth-child(2) p {\n  text-align: left;\n}\n#test-page-div hr {\n  margin-top: 1.5em;\n  margin-bottom: 1.5em;\n}\n#test-page-div h2 {\n  text-align: center;\n  margin-bottom: 1.3em;\n}\n#test-page-div h4 {\n  text-align: center;\n}\n#test-page-div .chapter p {\n  line-height: 1.4;\n}\n#test-page-div .chapter img {\n  max-width: 95%;\n}\n#test-page-div .preview-chapter-setting {\n  text-align: center;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, `#test-page-div {
+  max-height: 300px;
+  overflow-y: scroll;
+}
+#test-page-div table {
+  text-align: center;
+}
+#test-page-div td {
+  all: revert;
+  padding-top: 0.3em;
+}
+#test-page-div td > img {
+  max-height: 15em;
+}
+#test-page-div tr > td:nth-child(1) {
+  font-weight: bold;
+  min-width: 7em;
+}
+#test-page-div tr > td:nth-child(2) div,
+#test-page-div tr > td:nth-child(2) p {
+  text-align: left;
+}
+#test-page-div hr {
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+}
+#test-page-div h2 {
+  text-align: center;
+  margin-bottom: 1.3em;
+}
+#test-page-div h4 {
+  text-align: center;
+}
+#test-page-div .chapter p {
+  line-height: 1.4;
+}
+#test-page-div .chapter img {
+  max-width: 95%;
+}
+#test-page-div .preview-chapter-setting {
+  text-align: center;
+}
+`, ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -2825,7 +2932,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, "#test-page-div {\n  max-height: 300px;
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Z": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */   Z: () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/css-loader/dist/runtime/noSourceMaps.js");
 /* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
@@ -2836,7 +2943,30 @@ ___CSS_LOADER_EXPORT___.push([module.id, "#test-page-div {\n  max-height: 300px;
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ".button-div {\n  position: fixed;\n  top: 15%;\n  right: 5%;\n  z-index: 10000;\n}\n.button-div button {\n  border-style: none;\n  text-align: center;\n  vertical-align: baseline;\n  background-color: rgba(128, 128, 128, 0.2);\n  padding: 3px;\n  border-radius: 12px;\n  min-width: auto;\n  min-height: auto;\n}\n.button-div img.start,\n.button-div img.jump {\n  height: 2em;\n}\n.button-div img.setting {\n  height: 1em;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, `.button-div {
+  position: fixed;
+  top: 15%;
+  right: 5%;
+  z-index: 10000;
+}
+.button-div button {
+  border-style: none;
+  text-align: center;
+  vertical-align: baseline;
+  background-color: rgba(128, 128, 128, 0.2);
+  padding: 3px;
+  border-radius: 12px;
+  min-width: auto;
+  min-height: auto;
+}
+.button-div img.start,
+.button-div img.jump {
+  height: 2em;
+}
+.button-div img.setting {
+  height: 1em;
+}
+`, ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -2848,7 +2978,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, ".button-div {\n  position: fixed;\n  t
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Z": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */   Z: () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/css-loader/dist/runtime/noSourceMaps.js");
 /* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
@@ -2859,7 +2989,88 @@ ___CSS_LOADER_EXPORT___.push([module.id, ".button-div {\n  position: fixed;\n  t
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ".nd-setting-body {\n  background: #e0e0e0;\n  padding: 1em;\n  border-top-right-radius: 3px;\n}\n.nd-setting-body hr {\n  margin-top: 0.8em;\n  margin-bottom: 0.8em;\n}\n.nd-setting-body input[type=\"checkbox\"],\n.nd-setting-body input[type=\"radio\"],\n.nd-setting-body input[type=\"text\"] {\n  position: static;\n  opacity: 1;\n  margin: auto;\n  padding: initial;\n  appearance: revert !important;\n  -webkit-appearance: revert !important;\n  all: revert;\n}\ndialog-ui .tab-button {\n  padding: 6px 10px;\n  border-top-left-radius: 3px;\n  border-top-right-radius: 3px;\n  border: 1px solid #ccc;\n  cursor: pointer;\n  background: #f0f0f0;\n  margin-bottom: -1px;\n  margin-right: -1px;\n  color: black;\n  line-height: normal;\n  display: inline-block;\n  text-align: center;\n  font-weight: bold;\n  max-width: 9em;\n  box-sizing: initial;\n}\ndialog-ui .tab-button:hover {\n  background: #e0e0e0;\n}\ndialog-ui .tab-button.active {\n  background: #e0e0e0;\n}\ndialog-ui #nd-setting-tab-1 input + label {\n  all: revert;\n}\ndialog-ui #nd-setting-tab-2 select {\n  all: revert;\n}\n.nd-setting-footer {\n  background: #e0e0e0;\n  padding-bottom: 0.7em;\n  text-align: center;\n  border-bottom-left-radius: 3px;\n  border-bottom-right-radius: 3px;\n}\n.nd-setting-footer > button {\n  all: revert;\n}\n/* 日志页面 */\n#novel-downloader-log {\n  max-height: 300px;\n  overflow: scroll;\n}\n/* 彩色斜纹 来自：https://www.zhangxinxu.com/wordpress/2021/05/css-html-hr/ */\n.hr-twill-colorful {\n  all: revert;\n  border: 0;\n  padding: 3px;\n  background: linear-gradient(135deg, red, orange, green, blue, purple);\n  --mask-image: repeating-linear-gradient(135deg, #000 0px, #000 1px, transparent 1px, transparent 6px);\n  -webkit-mask-image: var(--mask-image);\n  mask-image: var(--mask-image);\n}\n/* 两头虚 来自：https://www.zhangxinxu.com/wordpress/2021/05/css-html-hr/ */\n.hr-edge-weak {\n  all: revert;\n  border: 0;\n  padding-top: 1px;\n  background: linear-gradient(to right, transparent, #d0d0d5, transparent);\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, `.nd-setting-body {
+  background: #e0e0e0;
+  padding: 1em;
+  border-top-right-radius: 3px;
+}
+.nd-setting-body hr {
+  margin-top: 0.8em;
+  margin-bottom: 0.8em;
+}
+.nd-setting-body input[type="checkbox"],
+.nd-setting-body input[type="radio"],
+.nd-setting-body input[type="text"] {
+  position: static;
+  opacity: 1;
+  margin: auto;
+  padding: initial;
+  appearance: revert !important;
+  -webkit-appearance: revert !important;
+  all: revert;
+}
+dialog-ui .tab-button {
+  padding: 6px 10px;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  background: #f0f0f0;
+  margin-bottom: -1px;
+  margin-right: -1px;
+  color: black;
+  line-height: normal;
+  display: inline-block;
+  text-align: center;
+  font-weight: bold;
+  max-width: 9em;
+  box-sizing: initial;
+}
+dialog-ui .tab-button:hover {
+  background: #e0e0e0;
+}
+dialog-ui .tab-button.active {
+  background: #e0e0e0;
+}
+dialog-ui #nd-setting-tab-1 input + label {
+  all: revert;
+}
+dialog-ui #nd-setting-tab-2 select {
+  all: revert;
+}
+.nd-setting-footer {
+  background: #e0e0e0;
+  padding-bottom: 0.7em;
+  text-align: center;
+  border-bottom-left-radius: 3px;
+  border-bottom-right-radius: 3px;
+}
+.nd-setting-footer > button {
+  all: revert;
+}
+/* 日志页面 */
+#novel-downloader-log {
+  max-height: 300px;
+  overflow: scroll;
+}
+/* 彩色斜纹 来自：https://www.zhangxinxu.com/wordpress/2021/05/css-html-hr/ */
+.hr-twill-colorful {
+  all: revert;
+  border: 0;
+  padding: 3px;
+  background: linear-gradient(135deg, red, orange, green, blue, purple);
+  --mask-image: repeating-linear-gradient(135deg, #000 0px, #000 1px, transparent 1px, transparent 6px);
+  -webkit-mask-image: var(--mask-image);
+  mask-image: var(--mask-image);
+}
+/* 两头虚 来自：https://www.zhangxinxu.com/wordpress/2021/05/css-html-hr/ */
+.hr-edge-weak {
+  all: revert;
+  border: 0;
+  padding-top: 1px;
+  background: linear-gradient(to right, transparent, #d0d0d5, transparent);
+}
+`, ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -2871,7 +3082,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, ".nd-setting-body {\n  background: #e0e
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Z": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */   Z: () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/css-loader/dist/runtime/noSourceMaps.js");
 /* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
@@ -2882,7 +3093,47 @@ ___CSS_LOADER_EXPORT___.push([module.id, ".nd-setting-body {\n  background: #e0e
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "h1 {\n  line-height: 130%;\n  text-align: center;\n  font-weight: bold;\n  font-size: xx-large;\n  margin-top: 3.2em;\n  margin-bottom: 3.3em;\n}\n\nh2 {\n  line-height: 130%;\n  text-align: center;\n  font-weight: bold;\n  font-size: x-large;\n  margin-top: 1.2em;\n  margin-bottom: 2.3em;\n}\n\ndiv {\n  margin: 0;\n  padding: 0;\n  text-align: justify;\n}\n\np {\n  text-indent: 2em;\n  display: block;\n  line-height: 1.3em;\n  margin-top: 0.4em;\n  margin-bottom: 0.4em;\n}\n\nimg {\n  vertical-align: text-bottom;\n  max-width: 90%;\n}\n\n.title {\n  margin-bottom: 0.7em;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, `h1 {
+  line-height: 130%;
+  text-align: center;
+  font-weight: bold;
+  font-size: xx-large;
+  margin-top: 3.2em;
+  margin-bottom: 3.3em;
+}
+
+h2 {
+  line-height: 130%;
+  text-align: center;
+  font-weight: bold;
+  font-size: x-large;
+  margin-top: 1.2em;
+  margin-bottom: 2.3em;
+}
+
+div {
+  margin: 0;
+  padding: 0;
+  text-align: justify;
+}
+
+p {
+  text-indent: 2em;
+  display: block;
+  line-height: 1.3em;
+  margin-top: 0.4em;
+  margin-bottom: 0.4em;
+}
+
+img {
+  vertical-align: text-bottom;
+  max-width: 90%;
+}
+
+.title {
+  margin-bottom: 0.7em;
+}
+`, ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -2894,7 +3145,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, "h1 {\n  line-height: 130%;\n  text-ali
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Z": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */   Z: () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/css-loader/dist/runtime/noSourceMaps.js");
 /* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
@@ -2905,7 +3156,37 @@ ___CSS_LOADER_EXPORT___.push([module.id, "h1 {\n  line-height: 130%;\n  text-ali
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "div.sgc-toc-title {\n  font-size: 2em;\n  font-weight: bold;\n  margin-bottom: 1em;\n  text-align: center;\n}\n\ndiv.sgc-toc-level-1 {\n  margin-left: 0em;\n}\n\ndiv.sgc-toc-level-2 {\n  margin-left: 2em;\n}\n\ndiv.sgc-toc-level-3 {\n  margin-left: 2em;\n}\n\ndiv.sgc-toc-level-4 {\n  margin-left: 2em;\n}\n\ndiv.sgc-toc-level-5 {\n  margin-left: 2em;\n}\n\ndiv.sgc-toc-level-6 {\n  margin-left: 2em;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, `div.sgc-toc-title {
+  font-size: 2em;
+  font-weight: bold;
+  margin-bottom: 1em;
+  text-align: center;
+}
+
+div.sgc-toc-level-1 {
+  margin-left: 0em;
+}
+
+div.sgc-toc-level-2 {
+  margin-left: 2em;
+}
+
+div.sgc-toc-level-3 {
+  margin-left: 2em;
+}
+
+div.sgc-toc-level-4 {
+  margin-left: 2em;
+}
+
+div.sgc-toc-level-5 {
+  margin-left: 2em;
+}
+
+div.sgc-toc-level-6 {
+  margin-left: 2em;
+}
+`, ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -2917,7 +3198,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, "div.sgc-toc-title {\n  font-size: 2em;
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Z": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */   Z: () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/css-loader/dist/runtime/noSourceMaps.js");
 /* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
@@ -2928,7 +3209,75 @@ ___CSS_LOADER_EXPORT___.push([module.id, "div.sgc-toc-title {\n  font-size: 2em;
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "img {\n  max-width: 100%;\n  max-height: 15em;\n}\n\n.introduction {\n  font-size: smaller;\n  max-height: 18em;\n  overflow-y: scroll;\n}\n\n.introduction p {\n  text-indent: 0;\n}\n\n.bookurl {\n  text-align: center;\n  font-size: smaller;\n  padding-top: 1em;\n  padding-bottom: 0.5em;\n  margin-top: 0.4em;\n}\n\n.bookurl > a {\n  color: gray;\n}\n\n.info h3 {\n  padding-left: 0.5em;\n  margin-top: -1.2em;\n  margin-bottom: 0.5em;\n}\n\n.section {\n  margin-top: 1.5em;\n  display: grid;\n  grid-template-columns: 33% 33% 33%;\n}\n\n.section > h2:first-child {\n  grid-column-end: span 3;\n}\n\n.section > .chapter {\n  padding-bottom: 0.3em;\n  text-align: center;\n}\n\n.main > h1 {\n  margin-top: 1.5em;\n  margin-bottom: 1.5em;\n}\n\na.disabled {\n  pointer-events: none;\n  cursor: default;\n  color: gray;\n}\n\n.author::before {\n  content: \"作者：\";\n}\n\n.author {\n  text-align: center;\n  margin-top: -3em;\n  margin-bottom: 3em;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, `img {
+  max-width: 100%;
+  max-height: 15em;
+}
+
+.introduction {
+  font-size: smaller;
+  max-height: 18em;
+  overflow-y: scroll;
+}
+
+.introduction p {
+  text-indent: 0;
+}
+
+.bookurl {
+  text-align: center;
+  font-size: smaller;
+  padding-top: 1em;
+  padding-bottom: 0.5em;
+  margin-top: 0.4em;
+}
+
+.bookurl > a {
+  color: gray;
+}
+
+.info h3 {
+  padding-left: 0.5em;
+  margin-top: -1.2em;
+  margin-bottom: 0.5em;
+}
+
+.section {
+  margin-top: 1.5em;
+  display: grid;
+  grid-template-columns: 33% 33% 33%;
+}
+
+.section > h2:first-child {
+  grid-column-end: span 3;
+}
+
+.section > .chapter {
+  padding-bottom: 0.3em;
+  text-align: center;
+}
+
+.main > h1 {
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+}
+
+a.disabled {
+  pointer-events: none;
+  cursor: default;
+  color: gray;
+}
+
+.author::before {
+  content: "作者：";
+}
+
+.author {
+  text-align: center;
+  margin-top: -3em;
+  margin-bottom: 3em;
+}
+`, ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -2940,7 +3289,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, "img {\n  max-width: 100%;\n  max-heigh
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Z": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */   Z: () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/css-loader/dist/runtime/noSourceMaps.js");
 /* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
@@ -2951,7 +3300,30 @@ ___CSS_LOADER_EXPORT___.push([module.id, "img {\n  max-width: 100%;\n  max-heigh
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "body {\n  background-color: #f0f0f2;\n  margin: 0;\n  padding: 0;\n  font-family: -apple-system, system-ui, BlinkMacSystemFont, \"Segoe UI\",\n    \"Open Sans\", \"Helvetica Neue\", Helvetica, Arial, sans-serif;\n}\n\ndiv.main {\n  width: 900px;\n  margin: 5em auto;\n  padding: 2em;\n  background-color: #fdfdff;\n  border-radius: 0.5em;\n  box-shadow: 2px 3px 7px 2px rgba(0, 0, 0, 0.02);\n}\n\n@media (max-width: 700px) {\n  div.main {\n    margin: 0 auto;\n    width: auto;\n  }\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, `body {
+  background-color: #f0f0f2;
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI",
+    "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+div.main {
+  width: 900px;
+  margin: 5em auto;
+  padding: 2em;
+  background-color: #fdfdff;
+  border-radius: 0.5em;
+  box-shadow: 2px 3px 7px 2px rgba(0, 0, 0, 0.02);
+}
+
+@media (max-width: 700px) {
+  div.main {
+    margin: 0 auto;
+    width: auto;
+  }
+}
+`, ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -2963,7 +3335,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, "body {\n  background-color: #f0f0f2;\n
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Z": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */   Z: () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/css-loader/dist/runtime/noSourceMaps.js");
 /* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
@@ -2974,7 +3346,21 @@ ___CSS_LOADER_EXPORT___.push([module.id, "body {\n  background-color: #f0f0f2;\n
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ".filter-setting {\n  padding-top: 0.4em;\n  padding-bottom: 0.8em;\n  text-align: center;\n}\n\n.filter-input + .filter-setter {\n  margin-top: 1em;\n}\n\n.filter-description {\n  font-size: larger;\n  color: cornflowerblue;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, `.filter-setting {
+  padding-top: 0.4em;
+  padding-bottom: 0.8em;
+  text-align: center;
+}
+
+.filter-input + .filter-setter {
+  margin-top: 1em;
+}
+
+.filter-description {
+  font-size: larger;
+  color: cornflowerblue;
+}
+`, ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -2986,7 +3372,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, ".filter-setting {\n  padding-top: 0.4e
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Z": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */   Z: () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/css-loader/dist/runtime/noSourceMaps.js");
 /* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
@@ -2997,7 +3383,121 @@ ___CSS_LOADER_EXPORT___.push([module.id, ".filter-setting {\n  padding-top: 0.4e
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ".overlay {\n  visibility: hidden;\n  opacity: 0;\n  z-index: 100000;\n  position: fixed;\n  top: -50%;\n  left: -50%;\n  height: 200%;\n  width: 200%;\n  background-color: black;\n}\n\n.overlay.open {\n  opacity: 0.8;\n  visibility: visible;\n  transition: opacity 0.2s ease-in;\n}\n\n.overlay:not(.open) {\n  transition: visibility 0.2s step-end, opacity 0.2s ease-in;\n}\n\n.out {\n  position: fixed;\n  top: 0;\n  left: 0;\n  height: 100%;\n  width: 100%;\n\n  display: flex;\n  justify-content: center;\n  align-items: center;\n\n  z-index: 100001;\n}\n\n.dialog {\n  width: 720px;\n  max-height: 70%;\n  display: none;\n  opacity: 0;\n  z-index: 100100;\n  position: fixed;\n  margin: 0;\n  padding: 0;\n}\n\n.dialog.open {\n  opacity: 1;\n  display: block;\n  transition: opacity 0.2s ease-in;\n}\n\n.dialog > * {\n  box-sizing: border-box;\n}\n\n.dialog > .titlebar {\n  background-color: white;\n  min-height: 24px;\n  position: relative;\n}\n\n.dialog-title {\n  padding: 10px;\n  text-transform: uppercase;\n  background: #ff7bac;\n  color: #ffffff;\n  margin: 0;\n  font-size: 1.5em;\n  text-align: center;\n}\n\n.dialog-close {\n  background: #ff7bac;\n  color: #ffffff;\n\n  font-style: normal;\n  font-weight: 400;\n  font-variant: normal;\n  text-transform: none;\n  line-height: 1;\n  user-select: none;\n\n  cursor: pointer;\n  font-size: 120%;\n  margin: 0;\n  padding: 0;\n  width: 3.6em;\n  height: 92%;\n  border: 1px solid transparent;\n  transition-duration: 0.2s;\n  display: block;\n\n  position: absolute;\n  right: 0;\n  top: 0;\n  white-space: nowrap;\n}\n\n.dialog > .body {\n  background-color: white;\n  border: 1px solid rgb(255 125 175 / 80%);\n  text-align: left;\n\n  line-height: 1.5;\n  padding: 1em;\n\n  overflow: auto;\n  min-width: 280px;\n\n  height: calc(100% - 2.1em);\n  max-height: 900px;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, `.overlay {
+  visibility: hidden;
+  opacity: 0;
+  z-index: 100000;
+  position: fixed;
+  top: -50%;
+  left: -50%;
+  height: 200%;
+  width: 200%;
+  background-color: black;
+}
+
+.overlay.open {
+  opacity: 0.8;
+  visibility: visible;
+  transition: opacity 0.2s ease-in;
+}
+
+.overlay:not(.open) {
+  transition: visibility 0.2s step-end, opacity 0.2s ease-in;
+}
+
+.out {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  z-index: 100001;
+}
+
+.dialog {
+  width: 720px;
+  max-height: 70%;
+  display: none;
+  opacity: 0;
+  z-index: 100100;
+  position: fixed;
+  margin: 0;
+  padding: 0;
+}
+
+.dialog.open {
+  opacity: 1;
+  display: block;
+  transition: opacity 0.2s ease-in;
+}
+
+.dialog > * {
+  box-sizing: border-box;
+}
+
+.dialog > .titlebar {
+  background-color: white;
+  min-height: 24px;
+  position: relative;
+}
+
+.dialog-title {
+  padding: 10px;
+  text-transform: uppercase;
+  background: #ff7bac;
+  color: #ffffff;
+  margin: 0;
+  font-size: 1.5em;
+  text-align: center;
+}
+
+.dialog-close {
+  background: #ff7bac;
+  color: #ffffff;
+
+  font-style: normal;
+  font-weight: 400;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  user-select: none;
+
+  cursor: pointer;
+  font-size: 120%;
+  margin: 0;
+  padding: 0;
+  width: 3.6em;
+  height: 92%;
+  border: 1px solid transparent;
+  transition-duration: 0.2s;
+  display: block;
+
+  position: absolute;
+  right: 0;
+  top: 0;
+  white-space: nowrap;
+}
+
+.dialog > .body {
+  background-color: white;
+  border: 1px solid rgb(255 125 175 / 80%);
+  text-align: left;
+
+  line-height: 1.5;
+  padding: 1em;
+
+  overflow: auto;
+  min-width: 280px;
+
+  height: calc(100% - 2.1em);
+  max-height: 900px;
+}
+`, ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -3009,7 +3509,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, ".overlay {\n  visibility: hidden;\n  o
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Z": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */   Z: () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/css-loader/dist/runtime/noSourceMaps.js");
 /* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
@@ -3020,7 +3520,72 @@ ___CSS_LOADER_EXPORT___.push([module.id, ".overlay {\n  visibility: hidden;\n  o
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "#nd-progress {\n  position: fixed;\n  bottom: 8%;\n  right: 3%;\n  z-index: 2147483647;\n  border-style: none;\n  text-align: center;\n  vertical-align: baseline;\n  background-color: rgba(210, 210, 210, 0.2);\n  padding: 6px;\n  border-radius: 12px;\n}\n\n#chapter-progress {\n  --color: green;\n  --position: 0%;\n  width: 200px;\n  height: 10px;\n  border-radius: 30px;\n  background-color: #ccc;\n  background-image: radial-gradient(\n      closest-side circle at var(--position),\n      var(--color),\n      var(--color) 100%,\n      transparent\n    ),\n    linear-gradient(var(--color), var(--color));\n  background-image: -webkit-radial-gradient(\n      var(--position),\n      circle closest-side,\n      var(--color),\n      var(--color) 100%,\n      transparent\n    ),\n    -webkit-linear-gradient(var(--color), var(--color));\n  background-size: 100%, var(--position);\n  background-repeat: no-repeat;\n}\n\n#zip-progress {\n  --color: yellow;\n  --position: 0%;\n  width: 200px;\n  height: 10px;\n  border-radius: 30px;\n  background-color: #ccc;\n  background-image: radial-gradient(\n      closest-side circle at var(--position),\n      var(--color),\n      var(--color) 100%,\n      transparent\n    ),\n    linear-gradient(var(--color), var(--color));\n  background-image: -webkit-radial-gradient(\n      var(--position),\n      circle closest-side,\n      var(--color),\n      var(--color) 100%,\n      transparent\n    ),\n    -webkit-linear-gradient(var(--color), var(--color));\n  background-size: 100%, var(--position);\n  background-repeat: no-repeat;\n  margin-top: 5px;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, `#nd-progress {
+  position: fixed;
+  bottom: 8%;
+  right: 3%;
+  z-index: 2147483647;
+  border-style: none;
+  text-align: center;
+  vertical-align: baseline;
+  background-color: rgba(210, 210, 210, 0.2);
+  padding: 6px;
+  border-radius: 12px;
+}
+
+#chapter-progress {
+  --color: green;
+  --position: 0%;
+  width: 200px;
+  height: 10px;
+  border-radius: 30px;
+  background-color: #ccc;
+  background-image: radial-gradient(
+      closest-side circle at var(--position),
+      var(--color),
+      var(--color) 100%,
+      transparent
+    ),
+    linear-gradient(var(--color), var(--color));
+  background-image: -webkit-radial-gradient(
+      var(--position),
+      circle closest-side,
+      var(--color),
+      var(--color) 100%,
+      transparent
+    ),
+    -webkit-linear-gradient(var(--color), var(--color));
+  background-size: 100%, var(--position);
+  background-repeat: no-repeat;
+}
+
+#zip-progress {
+  --color: yellow;
+  --position: 0%;
+  width: 200px;
+  height: 10px;
+  border-radius: 30px;
+  background-color: #ccc;
+  background-image: radial-gradient(
+      closest-side circle at var(--position),
+      var(--color),
+      var(--color) 100%,
+      transparent
+    ),
+    linear-gradient(var(--color), var(--color));
+  background-image: -webkit-radial-gradient(
+      var(--position),
+      circle closest-side,
+      var(--color),
+      var(--color) 100%,
+      transparent
+    ),
+    -webkit-linear-gradient(var(--color), var(--color));
+  background-size: 100%, var(--position);
+  background-repeat: no-repeat;
+  margin-top: 5px;
+}
+`, ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -4723,11 +5288,11 @@ module.exports = __webpack_require__("./node_modules/mime-db/db.json")
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "QG": () => (/* binding */ _GM_getValue),
-/* harmony export */   "UX": () => (/* binding */ _GM_xmlhttpRequest),
-/* harmony export */   "_p": () => (/* binding */ _GM_info),
-/* harmony export */   "_u": () => (/* binding */ _GM_setValue),
-/* harmony export */   "jF": () => (/* binding */ _GM_deleteValue)
+/* harmony export */   QG: () => (/* binding */ _GM_getValue),
+/* harmony export */   UX: () => (/* binding */ _GM_xmlhttpRequest),
+/* harmony export */   _p: () => (/* binding */ _GM_info),
+/* harmony export */   _u: () => (/* binding */ _GM_setValue),
+/* harmony export */   jF: () => (/* binding */ _GM_deleteValue)
 /* harmony export */ });
 function get_GM_info() {
     if (typeof GM_info !== "undefined") {
@@ -4786,12 +5351,12 @@ async function _GM_deleteValue(name) {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "FG": () => (/* binding */ getAttachment),
-/* harmony export */   "VO": () => (/* binding */ getRandomName),
-/* harmony export */   "dK": () => (/* binding */ putAttachmentClassCache),
-/* harmony export */   "gc": () => (/* binding */ getAttachmentClassCache),
-/* harmony export */   "pN": () => (/* binding */ clearAttachmentClassCache),
-/* harmony export */   "r6": () => (/* binding */ getExt)
+/* harmony export */   FG: () => (/* binding */ getAttachment),
+/* harmony export */   VO: () => (/* binding */ getRandomName),
+/* harmony export */   dK: () => (/* binding */ putAttachmentClassCache),
+/* harmony export */   gc: () => (/* binding */ getAttachmentClassCache),
+/* harmony export */   pN: () => (/* binding */ clearAttachmentClassCache),
+/* harmony export */   r6: () => (/* binding */ getExt)
 /* harmony export */ });
 /* harmony import */ var _main_Attachment__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/main/Attachment.ts");
 /* harmony import */ var _hash__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/hash.ts");
@@ -4881,12 +5446,12 @@ function getLastPart(u) {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "FZ": () => (/* binding */ convertFixWidth),
-/* harmony export */   "Kg": () => (/* binding */ isFixWidth),
-/* harmony export */   "Q3": () => (/* binding */ convertBr),
-/* harmony export */   "d1": () => (/* binding */ convertFixWidthText),
-/* harmony export */   "iA": () => (/* binding */ htmlTrim),
-/* harmony export */   "zM": () => (/* binding */ cleanDOM)
+/* harmony export */   FZ: () => (/* binding */ convertFixWidth),
+/* harmony export */   Kg: () => (/* binding */ isFixWidth),
+/* harmony export */   Q3: () => (/* binding */ convertBr),
+/* harmony export */   d1: () => (/* binding */ convertFixWidthText),
+/* harmony export */   iA: () => (/* binding */ htmlTrim),
+/* harmony export */   zM: () => (/* binding */ cleanDOM)
 /* harmony export */ });
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_1__);
@@ -6039,23 +6604,24 @@ function isFixWidth(node, width = 35) {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "$N": () => (/* binding */ getPreviousBrCount),
-/* harmony export */   "DF": () => (/* binding */ insertBrBeforeText),
-/* harmony export */   "Fe": () => (/* binding */ removePreviousBr),
-/* harmony export */   "J0": () => (/* binding */ sandboxed),
-/* harmony export */   "MK": () => (/* binding */ getNodeTextLength),
-/* harmony export */   "U": () => (/* binding */ getPreviousSibling),
-/* harmony export */   "d9": () => (/* binding */ getNextSibling),
-/* harmony export */   "fI": () => (/* binding */ convertHTMLtoXHTML),
-/* harmony export */   "rm": () => (/* binding */ rm),
-/* harmony export */   "sp": () => (/* binding */ fullWidthLength),
-/* harmony export */   "up": () => (/* binding */ rms),
-/* harmony export */   "ut": () => (/* binding */ createEl),
-/* harmony export */   "vR": () => (/* binding */ childNodesCopy),
-/* harmony export */   "vS": () => (/* binding */ rm2),
-/* harmony export */   "wd": () => (/* binding */ getMaxDepth),
-/* harmony export */   "wj": () => (/* binding */ createStyle),
-/* harmony export */   "xj": () => (/* binding */ isHidden)
+/* harmony export */   $N: () => (/* binding */ getPreviousBrCount),
+/* harmony export */   DF: () => (/* binding */ insertBrBeforeText),
+/* harmony export */   Fe: () => (/* binding */ removePreviousBr),
+/* harmony export */   J0: () => (/* binding */ sandboxed),
+/* harmony export */   MK: () => (/* binding */ getNodeTextLength),
+/* harmony export */   U: () => (/* binding */ getPreviousSibling),
+/* harmony export */   d9: () => (/* binding */ getNextSibling),
+/* harmony export */   fI: () => (/* binding */ convertHTMLtoXHTML),
+/* harmony export */   r: () => (/* binding */ escapeHTML),
+/* harmony export */   rm: () => (/* binding */ rm),
+/* harmony export */   sp: () => (/* binding */ fullWidthLength),
+/* harmony export */   up: () => (/* binding */ rms),
+/* harmony export */   ut: () => (/* binding */ createEl),
+/* harmony export */   vR: () => (/* binding */ childNodesCopy),
+/* harmony export */   vS: () => (/* binding */ rm2),
+/* harmony export */   wd: () => (/* binding */ getMaxDepth),
+/* harmony export */   wj: () => (/* binding */ createStyle),
+/* harmony export */   xj: () => (/* binding */ isHidden)
 /* harmony export */ });
 /* unused harmony export getCookie */
 function rm(selector, all = false, dom) {
@@ -6272,6 +6838,11 @@ function insertBrBeforeText(elem) {
 function isHidden(el) {
     return el.offsetParent === null;
 }
+function escapeHTML(str) {
+    const p = document.createElement("p");
+    p.appendChild(document.createTextNode(str));
+    return p.innerHTML;
+}
 
 
 /***/ }),
@@ -6281,7 +6852,7 @@ function isHidden(el) {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "K": () => (/* binding */ calculateSha1)
+/* harmony export */   K: () => (/* binding */ calculateSha1)
 /* harmony export */ });
 /* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("crypto-js");
 /* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(crypto_js__WEBPACK_IMPORTED_MODULE_0__);
@@ -6323,14 +6894,14 @@ async function calculateSha1(blob) {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "CD": () => (/* binding */ getFrameContentCondition),
-/* harmony export */   "Fz": () => (/* binding */ ggetHtmlDOM),
-/* harmony export */   "GF": () => (/* binding */ gfetch),
-/* harmony export */   "Q": () => (/* binding */ getText),
-/* harmony export */   "_7": () => (/* binding */ ggetText),
-/* harmony export */   "dL": () => (/* binding */ getHtmlDOM),
-/* harmony export */   "q4": () => (/* binding */ fetchWithRetry),
-/* harmony export */   "rf": () => (/* binding */ getHtmlDomWithRetry)
+/* harmony export */   CD: () => (/* binding */ getFrameContentCondition),
+/* harmony export */   Fz: () => (/* binding */ ggetHtmlDOM),
+/* harmony export */   GF: () => (/* binding */ gfetch),
+/* harmony export */   Q: () => (/* binding */ getText),
+/* harmony export */   _7: () => (/* binding */ ggetText),
+/* harmony export */   dL: () => (/* binding */ getHtmlDOM),
+/* harmony export */   q4: () => (/* binding */ fetchWithRetry),
+/* harmony export */   rf: () => (/* binding */ getHtmlDomWithRetry)
 /* harmony export */ });
 /* unused harmony exports fetchWithTimeout, ggetHtmlDomWithRetry, getFrameContentEvent */
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
@@ -6608,14 +7179,14 @@ async function getFrameContentCondition(url, stopCondition, sandboxs) {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "C1": () => (/* binding */ concurrencyRun),
-/* harmony export */   "HP": () => (/* binding */ randomUUID),
-/* harmony export */   "K$": () => (/* binding */ saveToArchiveOrg),
-/* harmony export */   "X8": () => (/* binding */ deepcopy),
-/* harmony export */   "_v": () => (/* binding */ sleep),
-/* harmony export */   "tA": () => (/* binding */ mimetyepToCompressible),
-/* harmony export */   "w6": () => (/* binding */ range),
-/* harmony export */   "z9": () => (/* binding */ extensionToMimetype)
+/* harmony export */   C1: () => (/* binding */ concurrencyRun),
+/* harmony export */   HP: () => (/* binding */ randomUUID),
+/* harmony export */   K$: () => (/* binding */ saveToArchiveOrg),
+/* harmony export */   X8: () => (/* binding */ deepcopy),
+/* harmony export */   _v: () => (/* binding */ sleep),
+/* harmony export */   tA: () => (/* binding */ mimetyepToCompressible),
+/* harmony export */   w6: () => (/* binding */ range),
+/* harmony export */   z9: () => (/* binding */ extensionToMimetype)
 /* harmony export */ });
 /* unused harmony exports regexpEscape, mean, sd */
 /* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/main/main.ts");
@@ -6666,7 +7237,7 @@ async function saveToArchiveOrg(url) {
         }),
         headers: {
             "content-type": "application/json; charset=utf-8",
-            "x-requested-with": `novel-downloader ${_GM__WEBPACK_IMPORTED_MODULE_2__/* ._GM_info.script.version */ ._p.script.version}; ${_GM__WEBPACK_IMPORTED_MODULE_2__/* ._GM_info.scriptHandler */ ._p.scriptHandler} ${_GM__WEBPACK_IMPORTED_MODULE_2__/* ._GM_info.version */ ._p.version}`,
+            "x-requested-with": `novel-downloader ${_GM__WEBPACK_IMPORTED_MODULE_2__/* ._GM_info */ ._p.script.version}; ${_GM__WEBPACK_IMPORTED_MODULE_2__/* ._GM_info */ ._p.scriptHandler} ${_GM__WEBPACK_IMPORTED_MODULE_2__/* ._GM_info */ ._p.version}`,
         },
         method: "POST",
     });
@@ -6737,9 +7308,9 @@ function range(size, startAt = 0) {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "fetchAndParse": () => (/* binding */ fetchAndParse),
-/* harmony export */   "gfetchAndParse": () => (/* binding */ gfetchAndParse),
-/* harmony export */   "parse": () => (/* binding */ parse)
+/* harmony export */   fetchAndParse: () => (/* binding */ fetchAndParse),
+/* harmony export */   gfetchAndParse: () => (/* binding */ gfetchAndParse),
+/* harmony export */   parse: () => (/* binding */ parse)
 /* harmony export */ });
 /* harmony import */ var _mozilla_readability__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/@mozilla/readability/index.js");
 /* harmony import */ var _mozilla_readability__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_mozilla_readability__WEBPACK_IMPORTED_MODULE_0__);
@@ -6780,12 +7351,12 @@ async function gfetchAndParse(url, charset, init, patch, options) {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "$4": () => (/* binding */ centerDetct),
-/* harmony export */   "$d": () => (/* binding */ getSectionName),
-/* harmony export */   "I2": () => (/* binding */ nextPageParse),
-/* harmony export */   "SN": () => (/* binding */ introDomHandle),
-/* harmony export */   "ii": () => (/* binding */ chapterHiddenFix),
-/* harmony export */   "uh": () => (/* binding */ deDuplicate)
+/* harmony export */   $4: () => (/* binding */ centerDetct),
+/* harmony export */   $d: () => (/* binding */ getSectionName),
+/* harmony export */   I2: () => (/* binding */ nextPageParse),
+/* harmony export */   SN: () => (/* binding */ introDomHandle),
+/* harmony export */   ii: () => (/* binding */ chapterHiddenFix),
+/* harmony export */   uh: () => (/* binding */ deDuplicate)
 /* harmony export */ });
 /* unused harmony export reIndex */
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
@@ -6972,7 +7543,7 @@ async function chapterHiddenFix(book, invalidTest, getPrevHref, concurrencyLimit
             const href = getPrevHref(doc);
             if (href) {
                 invalidChapter.chapterUrl = href;
-                invalidChapter.status = _main_main__WEBPACK_IMPORTED_MODULE_4__/* .Status.pending */ .qb.pending;
+                invalidChapter.status = _main_main__WEBPACK_IMPORTED_MODULE_4__/* .Status */ .qb.pending;
             }
             return invalidChapter;
         }
@@ -6987,9 +7558,9 @@ async function chapterHiddenFix(book, invalidTest, getPrevHref, concurrencyLimit
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "KC": () => (/* binding */ logText),
-/* harmony export */   "mZ": () => (/* binding */ getLogText),
-/* harmony export */   "qS": () => (/* binding */ saveLogTextToFile)
+/* harmony export */   KC: () => (/* binding */ logText),
+/* harmony export */   mZ: () => (/* binding */ getLogText),
+/* harmony export */   qS: () => (/* binding */ saveLogTextToFile)
 /* harmony export */ });
 /* harmony import */ var file_saver__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/file-saver/dist/FileSaver.min.js");
 /* harmony import */ var file_saver__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(file_saver__WEBPACK_IMPORTED_MODULE_0__);
@@ -6999,7 +7570,7 @@ async function chapterHiddenFix(book, invalidTest, getPrevHref, concurrencyLimit
 
 
 
-if (_setting__WEBPACK_IMPORTED_MODULE_2__/* .enableDebug.value */ .Cy.value) {
+if (_setting__WEBPACK_IMPORTED_MODULE_2__/* .enableDebug */ .Cy.value) {
     loglevel__WEBPACK_IMPORTED_MODULE_1___default().setLevel("trace");
 }
 else {
@@ -7048,7 +7619,7 @@ function saveLogTextToFile() {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "J": () => (/* binding */ AttachmentClass)
+/* harmony export */   J: () => (/* binding */ AttachmentClass)
 /* harmony export */ });
 /* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/http.ts");
 /* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/misc.ts");
@@ -7065,14 +7636,14 @@ class AttachmentClass {
     url;
     name;
     mode;
-    status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status.pending */ .qb.pending;
+    status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .qb.pending;
     retryTime = 0;
     Blob;
     comments;
     referrerMode;
     _init;
     _TMinit;
-    constructor(url, name, mode, referrerMode = _main__WEBPACK_IMPORTED_MODULE_0__/* .ReferrerMode.keep */ .n6.keep, customReferer = "", init) {
+    constructor(url, name, mode, referrerMode = _main__WEBPACK_IMPORTED_MODULE_0__/* .ReferrerMode */ .n6.keep, customReferer = "", init) {
         this.url = url;
         this.name = name;
         this.mode = mode;
@@ -7088,14 +7659,14 @@ class AttachmentClass {
         };
         if (!init) {
             ({ init: this._init, TMinit: this._TMinit } = defaultInit);
-            if (this.referrerMode === _main__WEBPACK_IMPORTED_MODULE_0__/* .ReferrerMode.none */ .n6.none) {
+            if (this.referrerMode === _main__WEBPACK_IMPORTED_MODULE_0__/* .ReferrerMode */ .n6.none) {
                 this._init.referrerPolicy = "no-referrer";
                 this._TMinit.headers = {};
             }
-            if (this.referrerMode === _main__WEBPACK_IMPORTED_MODULE_0__/* .ReferrerMode.self */ .n6.self) {
+            if (this.referrerMode === _main__WEBPACK_IMPORTED_MODULE_0__/* .ReferrerMode */ .n6.self) {
                 this._TMinit.headers = { Referer: new URL(url).origin };
             }
-            if (this.referrerMode === _main__WEBPACK_IMPORTED_MODULE_0__/* .ReferrerMode.custom */ .n6.custom &&
+            if (this.referrerMode === _main__WEBPACK_IMPORTED_MODULE_0__/* .ReferrerMode */ .n6.custom &&
                 customReferer.startsWith("http")) {
                 this._TMinit.headers = { Referer: customReferer };
             }
@@ -7121,16 +7692,16 @@ class AttachmentClass {
         return this.Blob;
     }
     download() {
-        this.status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status.downloading */ .qb.downloading;
+        this.status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .qb.downloading;
         return fetch(this.url, this._init)
             .then((response) => {
             if (response.ok) {
-                this.status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status.finished */ .qb.finished;
+                this.status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .qb.finished;
                 return response.blob();
             }
             else {
                 if (response.status === 404) {
-                    this.status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status.failed */ .qb.failed;
+                    this.status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .qb.failed;
                 }
                 throw new Error(`Bad response!\nRequest url: ${this.url}\nStatus code: ${response.status}`);
             }
@@ -7138,12 +7709,12 @@ class AttachmentClass {
             .catch(async (err) => {
             this.retryTime++;
             _log__WEBPACK_IMPORTED_MODULE_2___default().error(`[attachment]下载 ${this.url} 出错，第${this.retryTime}次重试，下载模式：${this.mode}`);
-            if (this.status !== _main__WEBPACK_IMPORTED_MODULE_0__/* .Status.failed */ .qb.failed && this.retryTime < _setting__WEBPACK_IMPORTED_MODULE_3__/* .retryLimit */ .o5) {
+            if (this.status !== _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .qb.failed && this.retryTime < _setting__WEBPACK_IMPORTED_MODULE_3__/* .retryLimit */ .o5) {
                 await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__/* .sleep */ ._v)(this.retryTime * 1500);
                 return this.download();
             }
             else {
-                this.status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status.failed */ .qb.failed;
+                this.status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .qb.failed;
                 _log__WEBPACK_IMPORTED_MODULE_2___default().error(err);
                 _log__WEBPACK_IMPORTED_MODULE_2___default().trace(err);
                 return null;
@@ -7151,16 +7722,16 @@ class AttachmentClass {
         });
     }
     tmDownload() {
-        this.status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status.downloading */ .qb.downloading;
+        this.status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .qb.downloading;
         return (0,_lib_http__WEBPACK_IMPORTED_MODULE_4__/* .gfetch */ .GF)(this.url, this._TMinit)
             .then((response) => {
             if (response.status >= 200 && response.status <= 299) {
-                this.status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status.finished */ .qb.finished;
+                this.status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .qb.finished;
                 return response.response;
             }
             else {
                 if (response.status === 404) {
-                    this.status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status.failed */ .qb.failed;
+                    this.status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .qb.failed;
                 }
                 throw new Error(`Bad response!\nRequest url: ${this.url}\nStatus code: ${response.status}`);
             }
@@ -7168,12 +7739,12 @@ class AttachmentClass {
             .catch(async (err) => {
             this.retryTime++;
             _log__WEBPACK_IMPORTED_MODULE_2___default().error(`[attachment]下载 ${this.url} 出错，第${this.retryTime}次重试，下载模式：${this.mode}`);
-            if (this.status !== _main__WEBPACK_IMPORTED_MODULE_0__/* .Status.failed */ .qb.failed && this.retryTime < _setting__WEBPACK_IMPORTED_MODULE_3__/* .retryLimit */ .o5) {
+            if (this.status !== _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .qb.failed && this.retryTime < _setting__WEBPACK_IMPORTED_MODULE_3__/* .retryLimit */ .o5) {
                 await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__/* .sleep */ ._v)(this.retryTime * 1000);
                 return this.tmDownload();
             }
             else {
-                this.status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status.failed */ .qb.failed;
+                this.status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .qb.failed;
                 _log__WEBPACK_IMPORTED_MODULE_2___default().error(err);
                 _log__WEBPACK_IMPORTED_MODULE_2___default().trace(err);
                 return null;
@@ -7201,7 +7772,7 @@ class AttachmentClass {
 
 // EXPORTS
 __webpack_require__.d(__webpack_exports__, {
-  "f": () => (/* binding */ Book)
+  f: () => (/* binding */ Book)
 });
 
 ;// CONCATENATED MODULE: ./src/lib/removeTrackParam.ts
@@ -7402,7 +7973,7 @@ class Book {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "W": () => (/* binding */ Chapter)
+/* harmony export */   W: () => (/* binding */ Chapter)
 /* harmony export */ });
 /* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/misc.ts");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
@@ -7427,7 +7998,7 @@ class Chapter {
     chapterParse;
     charset;
     options;
-    status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status.pending */ .qb.pending;
+    status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .qb.pending;
     retryTime = 0;
     contentRaw;
     contentText;
@@ -7459,7 +8030,7 @@ class Chapter {
         this.contentHTML = contentHTML;
         this.contentImages = contentImages;
         this.additionalMetadate = additionalMetadate;
-        if (this.status === _main__WEBPACK_IMPORTED_MODULE_0__/* .Status.failed */ .qb.failed) {
+        if (this.status === _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .qb.failed) {
             _log__WEBPACK_IMPORTED_MODULE_1___default().error(`[Chapter]章节名：${this.chapterName}, \
 分卷名：${this.sectionName}, URL:${this.chapterUrl}, \
 VIP:${this.isVIP}, Paid:${this.isPaid}, \
@@ -7474,29 +8045,29 @@ isNull:${!this.contentHTML} 解析成功。`);
         return this;
     }
     async parse() {
-        this.status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status.downloading */ .qb.downloading;
+        this.status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .qb.downloading;
         return this.chapterParse(this.chapterUrl, this.chapterName, this.isVIP, this.isPaid, this.charset, this.options)
             .then(async (obj) => {
             const contentImages = obj.contentImages;
             if (contentImages) {
-                let downloadingImages = contentImages.filter((imgObj) => imgObj.status === _main__WEBPACK_IMPORTED_MODULE_0__/* .Status.downloading */ .qb.downloading);
+                let downloadingImages = contentImages.filter((imgObj) => imgObj.status === _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .qb.downloading);
                 while (downloadingImages.length) {
                     await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_2__/* .sleep */ ._v)(500);
-                    downloadingImages = contentImages.filter((imgObj) => imgObj.status === _main__WEBPACK_IMPORTED_MODULE_0__/* .Status.downloading */ .qb.downloading);
+                    downloadingImages = contentImages.filter((imgObj) => imgObj.status === _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .qb.downloading);
                 }
             }
-            this.status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status.finished */ .qb.finished;
+            this.status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .qb.finished;
             return obj;
         })
             .catch(async (err) => {
             this.retryTime++;
             _log__WEBPACK_IMPORTED_MODULE_1___default().error(`[Chapter]${this.chapterName}解析出错，第${this.retryTime}次重试，章节地址：${this.chapterUrl}`);
-            if (this.status !== _main__WEBPACK_IMPORTED_MODULE_0__/* .Status.failed */ .qb.failed && this.retryTime < _setting__WEBPACK_IMPORTED_MODULE_3__/* .retryLimit */ .o5) {
+            if (this.status !== _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .qb.failed && this.retryTime < _setting__WEBPACK_IMPORTED_MODULE_3__/* .retryLimit */ .o5) {
                 await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_2__/* .sleep */ ._v)(this.retryTime * 1500);
                 return this.parse();
             }
             else {
-                this.status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status.failed */ .qb.failed;
+                this.status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .qb.failed;
                 _log__WEBPACK_IMPORTED_MODULE_1___default().error(err);
                 _log__WEBPACK_IMPORTED_MODULE_1___default().trace(err);
                 window.failedCount++;
@@ -7538,9 +8109,9 @@ isNull:${!this.contentHTML} 解析成功。`);
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "K2": () => (/* binding */ ExpectError),
-/* harmony export */   "n6": () => (/* binding */ ReferrerMode),
-/* harmony export */   "qb": () => (/* binding */ Status)
+/* harmony export */   K2: () => (/* binding */ ExpectError),
+/* harmony export */   n6: () => (/* binding */ ReferrerMode),
+/* harmony export */   qb: () => (/* binding */ Status)
 /* harmony export */ });
 var Status;
 (function (Status) {
@@ -7571,7 +8142,7 @@ class ExpectError extends Error {
 
 // EXPORTS
 __webpack_require__.d(__webpack_exports__, {
-  "c": () => (/* binding */ BaseRuleClass)
+  c: () => (/* binding */ BaseRuleClass)
 });
 
 // EXTERNAL MODULE: ./src/lib/attachments.ts
@@ -7838,6 +8409,7 @@ const external_nunjucks_namespaceObject = nunjucks;
 
 
 
+
 const env = new external_nunjucks_namespaceObject.Environment(undefined, { autoescape: false });
 const section = new external_nunjucks_namespaceObject.Template(section_html, env, undefined, true);
 const chapterTemplt = new external_nunjucks_namespaceObject.Template(chapter_html, env, undefined, true);
@@ -7856,7 +8428,7 @@ const content_opf = `<?xml version="1.0" encoding="utf-8"?>
 <package version="3.0" unique-identifier="BookId" prefix="rendition: http://www.idpf.org/vocab/rendition/#" xmlns="http://www.idpf.org/2007/opf">
   <metadata xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:opf="http://www.idpf.org/2007/opf">
     <dc:identifier id="BookId">urn:uuid:${uuid}</dc:identifier>
-    <meta content="${GM/* _GM_info.script.version */._p.script.version}" name="novel-downloader version"/>
+    <meta content="${GM/* _GM_info */._p.script.version}" name="novel-downloader version"/>
     <meta content="https://github.com/404-novel-project/novel-downloader" name="generator"/>
     <meta property="dcterms:created">${getDateString()}</meta>
     <meta property="dcterms:modified">${new Date()
@@ -8071,7 +8643,7 @@ class EPUB extends Options {
             title.textContent = self.book.bookname;
             self.metadata.appendChild(title);
             self.ncx.querySelector("docTitle > text").innerHTML =
-                self.book.bookname;
+                (0,dom/* escapeHTML */.r)(self.book.bookname);
             const author = self.contentOpf.createElement("dc:creator");
             author.setAttribute("id", "cre");
             author.textContent = self.book.author;
@@ -8131,9 +8703,9 @@ class EPUB extends Options {
             }));
         }
         async function saveStubChapters(chapters) {
-            chapters = chapters.filter((c) => c.status !== main/* Status.saved */.qb.saved);
+            chapters = chapters.filter((c) => c.status !== main/* Status */.qb.saved);
             for (const c of chapters) {
-                if (c.status === main/* Status.finished */.qb.finished) {
+                if (c.status === main/* Status */.qb.finished) {
                     await self.addChapter(c);
                 }
                 else {
@@ -8391,7 +8963,7 @@ class EPUB extends Options {
         }
     }
     async addAttachment(attachment) {
-        if (attachment.status === main/* Status.finished */.qb.finished && attachment.Blob) {
+        if (attachment.status === main/* Status */.qb.finished && attachment.Blob) {
             loglevel_default().debug(`[save-epub]添加附件，文件名：${attachment.name}，对象`, attachment.Blob);
             await this.epubZip.file(`OEBPS/${attachment.name}`, attachment.Blob);
             const item = this.contentOpf.createElement("item");
@@ -8403,7 +8975,7 @@ class EPUB extends Options {
                 this.manifest.appendChild(item);
             }
         }
-        else if (attachment.status === main/* Status.saved */.qb.saved) {
+        else if (attachment.status === main/* Status */.qb.saved) {
             loglevel_default().debug(`[save-epub]附件${attachment.name}已添加`);
         }
         else {
@@ -8447,7 +9019,7 @@ class TXT extends Options {
             }
             const chapterText = this.genChapterText(chapterName, chapterTemp.contentText ?? "");
             this.savedTextArray.push(chapterText);
-            if (!setting/* enableDebug.value */.Cy.value) {
+            if (!setting/* enableDebug */.Cy.value) {
                 chapterTemp.contentText = null;
             }
         }
@@ -8518,26 +9090,26 @@ class SaveBook {
     }
     async addChapter(chapter) {
         await this.epub.addChapter(chapter);
-        if (!setting/* enableDebug.value */.Cy.value) {
+        if (!setting/* enableDebug */.Cy.value) {
             chapter.contentRaw = null;
             chapter.contentHTML = null;
             chapter.contentImages = null;
         }
         if (chapter.contentImages && chapter.contentImages.length !== 0) {
             for (const attachment of chapter.contentImages) {
-                attachment.status = main/* Status.saved */.qb.saved;
-                if (!setting/* enableDebug.value */.Cy.value) {
+                attachment.status = main/* Status */.qb.saved;
+                if (!setting/* enableDebug */.Cy.value) {
                     attachment.Blob = null;
                 }
             }
         }
-        chapter.status = main/* Status.saved */.qb.saved;
+        chapter.status = main/* Status */.qb.saved;
     }
     async save() {
         if (this.saveType.txt) {
             this.saveTxt();
         }
-        if (setting/* enableDebug.value */.Cy.value) {
+        if (setting/* enableDebug */.Cy.value) {
             SaveBook.saveLog();
         }
         if (this.saveType.epub) {
@@ -8872,7 +9444,7 @@ class BaseRuleClass {
                 }
                 return b;
             }
-            let _chapters = _book.chapters.filter((chapter) => chapter.status === main/* Status.pending */.qb.pending);
+            let _chapters = _book.chapters.filter((chapter) => chapter.status === main/* Status */.qb.pending);
             const enabled = isEnable();
             if (enabled) {
                 loglevel_default().debug("[initChapters]筛选需下载章节");
@@ -8948,7 +9520,7 @@ class BaseRuleClass {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "mht": () => (/* binding */ mht)
+/* harmony export */   mht: () => (/* binding */ mht)
 /* harmony export */ });
 /* harmony import */ var _onePage_template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
 /* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/rules/biquge/template.ts");
@@ -9002,8 +9574,8 @@ const mht = () => (0,_onePage_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleCla
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "c226ks": () => (/* binding */ c226ks),
-/* harmony export */   "znlzd": () => (/* binding */ znlzd)
+/* harmony export */   c226ks: () => (/* binding */ c226ks),
+/* harmony export */   znlzd: () => (/* binding */ znlzd)
 /* harmony export */ });
 /* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/biquge/template.ts");
 /* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
@@ -9032,9 +9604,9 @@ const c226ks = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeMultiI
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "mijiashe": () => (/* binding */ mijiashe),
-/* harmony export */   "xinwanben": () => (/* binding */ xinwanben),
-/* harmony export */   "ywggzy": () => (/* binding */ ywggzy)
+/* harmony export */   mijiashe: () => (/* binding */ mijiashe),
+/* harmony export */   xinwanben: () => (/* binding */ xinwanben),
+/* harmony export */   ywggzy: () => (/* binding */ ywggzy)
 /* harmony export */ });
 /* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/cleanDOM.ts");
 /* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
@@ -9101,24 +9673,24 @@ const ywggzy = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeNextPa
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "b5200": () => (/* binding */ b5200),
-/* harmony export */   "biquwx": () => (/* binding */ biquwx),
-/* harmony export */   "bxwx333": () => (/* binding */ bxwx333),
-/* harmony export */   "c25zw": () => (/* binding */ c25zw),
-/* harmony export */   "common": () => (/* binding */ common),
-/* harmony export */   "dijiubook": () => (/* binding */ dijiubook),
-/* harmony export */   "gebiqu": () => (/* binding */ gebiqu),
-/* harmony export */   "lewenn": () => (/* binding */ lewenn),
-/* harmony export */   "luoqiuzw": () => (/* binding */ luoqiuzw),
-/* harmony export */   "lusetxt": () => (/* binding */ lusetxt),
-/* harmony export */   "ranwen": () => (/* binding */ ranwen),
-/* harmony export */   "shuquge": () => (/* binding */ shuquge),
-/* harmony export */   "tycqxs": () => (/* binding */ tycqxs),
-/* harmony export */   "xbiquge": () => (/* binding */ xbiquge),
-/* harmony export */   "xbiqugeLa": () => (/* binding */ xbiqugeLa),
-/* harmony export */   "xyb3": () => (/* binding */ xyb3),
-/* harmony export */   "yqxs": () => (/* binding */ yqxs),
-/* harmony export */   "yruan": () => (/* binding */ yruan)
+/* harmony export */   b5200: () => (/* binding */ b5200),
+/* harmony export */   biquwx: () => (/* binding */ biquwx),
+/* harmony export */   bxwx333: () => (/* binding */ bxwx333),
+/* harmony export */   c25zw: () => (/* binding */ c25zw),
+/* harmony export */   common: () => (/* binding */ common),
+/* harmony export */   dijiubook: () => (/* binding */ dijiubook),
+/* harmony export */   gebiqu: () => (/* binding */ gebiqu),
+/* harmony export */   lewenn: () => (/* binding */ lewenn),
+/* harmony export */   luoqiuzw: () => (/* binding */ luoqiuzw),
+/* harmony export */   lusetxt: () => (/* binding */ lusetxt),
+/* harmony export */   ranwen: () => (/* binding */ ranwen),
+/* harmony export */   shuquge: () => (/* binding */ shuquge),
+/* harmony export */   tycqxs: () => (/* binding */ tycqxs),
+/* harmony export */   xbiquge: () => (/* binding */ xbiquge),
+/* harmony export */   xbiqugeLa: () => (/* binding */ xbiqugeLa),
+/* harmony export */   xyb3: () => (/* binding */ xyb3),
+/* harmony export */   yqxs: () => (/* binding */ yqxs),
+/* harmony export */   yruan: () => (/* binding */ yruan)
 /* harmony export */ });
 /* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/misc.ts");
 /* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/dom.ts");
@@ -9292,10 +9864,10 @@ const xyb3 = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Hb)
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "B4": () => (/* binding */ mkBiqugeNextPage),
-/* harmony export */   "FG": () => (/* binding */ baseOnePage),
-/* harmony export */   "HW": () => (/* binding */ mkBiqugeMultiIndexNextPage),
-/* harmony export */   "Hb": () => (/* binding */ mkBiquge)
+/* harmony export */   B4: () => (/* binding */ mkBiqugeNextPage),
+/* harmony export */   FG: () => (/* binding */ baseOnePage),
+/* harmony export */   HW: () => (/* binding */ mkBiqugeMultiIndexNextPage),
+/* harmony export */   Hb: () => (/* binding */ mkBiquge)
 /* harmony export */ });
 /* unused harmony exports baseMultiIndex, mkBiqugeMultiIndex */
 /* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/rule.ts");
@@ -9438,7 +10010,7 @@ function mkBiqugeMultiIndex(introDomPatch, contentPatch, concurrencyLimit, overR
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "mbtxt": () => (/* binding */ mbtxt)
+/* harmony export */   mbtxt: () => (/* binding */ mbtxt)
 /* harmony export */ });
 /* harmony import */ var _onePage_template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
 /* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/rule.ts");
@@ -9492,7 +10064,7 @@ const mbtxt = () => (0,_onePage_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleC
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "quanshuzhai": () => (/* binding */ quanshuzhai)
+/* harmony export */   quanshuzhai: () => (/* binding */ quanshuzhai)
 /* harmony export */ });
 /* harmony import */ var _onePage_template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
 
@@ -9516,7 +10088,7 @@ const quanshuzhai = () => (0,_onePage_template__WEBPACK_IMPORTED_MODULE_0__/* .m
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "c256wxc": () => (/* binding */ c256wxc)
+/* harmony export */   c256wxc: () => (/* binding */ c256wxc)
 /* harmony export */ });
 /* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
 
@@ -9543,7 +10115,7 @@ const c256wxc = (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)(
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "c630shu": () => (/* binding */ c630shu)
+/* harmony export */   c630shu: () => (/* binding */ c630shu)
 /* harmony export */ });
 /* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
 /* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
@@ -9572,7 +10144,7 @@ const c630shu = (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)(
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "aixdzs": () => (/* binding */ aixdzs)
+/* harmony export */   aixdzs: () => (/* binding */ aixdzs)
 /* harmony export */ });
 /* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
 
@@ -9598,7 +10170,7 @@ const aixdzs = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "fantasybooks": () => (/* binding */ fantasybooks)
+/* harmony export */   fantasybooks: () => (/* binding */ fantasybooks)
 /* harmony export */ });
 /* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
 
@@ -9640,7 +10212,7 @@ const fantasybooks = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleCl
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "dizishu": () => (/* binding */ dizishu)
+/* harmony export */   dizishu: () => (/* binding */ dizishu)
 /* harmony export */ });
 /* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/http.ts");
 /* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/rule.ts");
@@ -9722,7 +10294,7 @@ return new Request(url, {
 
 // EXPORTS
 __webpack_require__.d(__webpack_exports__, {
-  "hongxiuzhao": () => (/* binding */ hongxiuzhao)
+  hongxiuzhao: () => (/* binding */ hongxiuzhao)
 });
 
 // EXTERNAL MODULE: ./src/rules/onePage/template.ts
@@ -9917,7 +10489,7 @@ const hongxiuzhao = () => (0,template/* mkRuleClass */.x)({
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "akatsuki": () => (/* binding */ akatsuki)
+/* harmony export */   akatsuki: () => (/* binding */ akatsuki)
 /* harmony export */ });
 /* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/cleanDOM.ts");
 /* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
@@ -9970,7 +10542,7 @@ const akatsuki = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass 
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "alphapolis": () => (/* binding */ alphapolis)
+/* harmony export */   alphapolis: () => (/* binding */ alphapolis)
 /* harmony export */ });
 /* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
 /* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
@@ -10008,7 +10580,7 @@ const alphapolis = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClas
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "houhuayuan": () => (/* binding */ houhuayuan)
+/* harmony export */   houhuayuan: () => (/* binding */ houhuayuan)
 /* harmony export */ });
 /* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/http.ts");
 /* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/dom.ts");
@@ -10109,7 +10681,7 @@ const houhuayuan = () => {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "kakuyomu": () => (/* binding */ kakuyomu)
+/* harmony export */   kakuyomu: () => (/* binding */ kakuyomu)
 /* harmony export */ });
 /* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
 
@@ -10141,7 +10713,7 @@ const kakuyomu = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass 
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "masiro": () => (/* binding */ masiro)
+/* harmony export */   masiro: () => (/* binding */ masiro)
 /* harmony export */ });
 /* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
 /* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
@@ -10194,8 +10766,8 @@ const masiro = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "syosetu": () => (/* binding */ syosetu),
-/* harmony export */   "syosetuOrg": () => (/* binding */ syosetuOrg)
+/* harmony export */   syosetu: () => (/* binding */ syosetu),
+/* harmony export */   syosetuOrg: () => (/* binding */ syosetuOrg)
 /* harmony export */ });
 /* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
 /* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
@@ -10331,7 +10903,7 @@ const syosetuOrg = () => {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "soxscc": () => (/* binding */ soxscc)
+/* harmony export */   soxscc: () => (/* binding */ soxscc)
 /* harmony export */ });
 /* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
 /* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
@@ -10375,7 +10947,7 @@ const soxscc = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "x": () => (/* binding */ mkRuleClass)
+/* harmony export */   x: () => (/* binding */ mkRuleClass)
 /* harmony export */ });
 /* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/attachments.ts");
 /* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/cleanDOM.ts");
@@ -10484,7 +11056,7 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
                     options: { bookname },
                 });
                 if (isVIP && !isPaid) {
-                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_5__/* .Status.aborted */ .qb.aborted;
+                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_5__/* .Status */ .qb.aborted;
                 }
                 if (typeof postHook === "function") {
                     chapter = postHook(chapter);
@@ -10547,7 +11119,7 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "tianyabooks": () => (/* binding */ tianyabooks)
+/* harmony export */   tianyabooks: () => (/* binding */ tianyabooks)
 /* harmony export */ });
 /* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
 /* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
@@ -10586,7 +11158,7 @@ const tianyabooks = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleCla
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "trxs": () => (/* binding */ trxs)
+/* harmony export */   trxs: () => (/* binding */ trxs)
 /* harmony export */ });
 /* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
 
@@ -10614,7 +11186,7 @@ const trxs = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "uukanshu": () => (/* binding */ uukanshu)
+/* harmony export */   uukanshu: () => (/* binding */ uukanshu)
 /* harmony export */ });
 /* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
 /* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
@@ -10674,7 +11246,7 @@ const uukanshu = () => {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "wanben": () => (/* binding */ wanben)
+/* harmony export */   wanben: () => (/* binding */ wanben)
 /* harmony export */ });
 /* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/cleanDOM.ts");
 /* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/dom.ts");
@@ -10731,7 +11303,7 @@ const wanben = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "westnovel": () => (/* binding */ westnovel)
+/* harmony export */   westnovel: () => (/* binding */ westnovel)
 /* harmony export */ });
 /* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
 /* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
@@ -10764,7 +11336,7 @@ const westnovel = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "baihexs": () => (/* binding */ baihexs)
+/* harmony export */   baihexs: () => (/* binding */ baihexs)
 /* harmony export */ });
 /* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/http.ts");
 /* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/dom.ts");
@@ -10821,7 +11393,7 @@ const baihexs = () => {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "novelup": () => (/* binding */ novelup)
+/* harmony export */   novelup: () => (/* binding */ novelup)
 /* harmony export */ });
 /* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
 /* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/http.ts");
@@ -10883,7 +11455,7 @@ const novelup = () => {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "ptwxz": () => (/* binding */ ptwxz)
+/* harmony export */   ptwxz: () => (/* binding */ ptwxz)
 /* harmony export */ });
 /* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePageWithMultiIndexPage/template.ts");
 /* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/http.ts");
@@ -10943,7 +11515,7 @@ const ptwxz = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ 
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "x": () => (/* binding */ mkRuleClass)
+/* harmony export */   x: () => (/* binding */ mkRuleClass)
 /* harmony export */ });
 /* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/attachments.ts");
 /* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("./src/lib/cleanDOM.ts");
@@ -11079,7 +11651,7 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
                         options: { bookname },
                     });
                     if (isVIP && !isPaid) {
-                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_7__/* .Status.aborted */ .qb.aborted;
+                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_7__/* .Status */ .qb.aborted;
                     }
                     if (typeof postHook === "function") {
                         chapter = postHook(chapter);
@@ -11143,7 +11715,7 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "wanben": () => (/* binding */ wanben)
+/* harmony export */   wanben: () => (/* binding */ wanben)
 /* harmony export */ });
 /* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/cleanDOM.ts");
 /* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/http.ts");
@@ -11223,7 +11795,7 @@ const wanben = () => {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "C17k": () => (/* binding */ C17k)
+/* harmony export */   C17k: () => (/* binding */ C17k)
 /* harmony export */ });
 /* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/attachments.ts");
 /* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("./src/lib/cleanDOM.ts");
@@ -11309,7 +11881,7 @@ class C17k extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
                     return false;
                 };
                 if (isVIP() && !(isLogin() && chapter.isPaid)) {
-                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status.aborted */ .qb.aborted;
+                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status */ .qb.aborted;
                 }
                 chapters.push(chapter);
             }
@@ -11384,7 +11956,7 @@ class C17k extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "MangaBilibili": () => (/* binding */ MangaBilibili)
+/* harmony export */   MangaBilibili: () => (/* binding */ MangaBilibili)
 /* harmony export */ });
 /* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/attachments.ts");
 /* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/http.ts");
@@ -11467,7 +12039,7 @@ class MangaBilibili extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass
                 options,
             });
             if (ep.is_locked || ep.type === 6) {
-                chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_4__/* .Status.aborted */ .qb.aborted;
+                chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_4__/* .Status */ .qb.aborted;
             }
             return chapter;
         });
@@ -11626,7 +12198,7 @@ class MangaBilibili extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass
                 const name = ["cm-", hash, ".", ext].join("");
                 const imgClass = new _main_Attachment__WEBPACK_IMPORTED_MODULE_9__/* .AttachmentClass */ .J(url, name, "naive");
                 imgClass.Blob = blob;
-                imgClass.status = _main_main__WEBPACK_IMPORTED_MODULE_4__/* .Status.finished */ .qb.finished;
+                imgClass.status = _main_main__WEBPACK_IMPORTED_MODULE_4__/* .Status */ .qb.finished;
                 (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .putAttachmentClassCache */ .dK)(imgClass);
                 return imgClass;
             }
@@ -11642,8 +12214,8 @@ class MangaBilibili extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Duread": () => (/* binding */ Duread),
-/* harmony export */   "Shubl": () => (/* binding */ Shubl)
+/* harmony export */   Duread: () => (/* binding */ Duread),
+/* harmony export */   Shubl: () => (/* binding */ Shubl)
 /* harmony export */ });
 /* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("crypto-js");
 /* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(crypto_js__WEBPACK_IMPORTED_MODULE_0__);
@@ -11741,7 +12313,7 @@ class Shubl extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
                         options: {},
                     });
                     if (isVIP() && !(isLogin() && isPaid())) {
-                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_7__/* .Status.aborted */ .qb.aborted;
+                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_7__/* .Status */ .qb.aborted;
                     }
                     chapters.push(chapter);
                 }
@@ -11843,7 +12415,7 @@ class Duread extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c 
                         options: {},
                     });
                     if (isVIP() && !(isLogin() && isPaid())) {
-                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_7__/* .Status.aborted */ .qb.aborted;
+                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_7__/* .Status */ .qb.aborted;
                     }
                     chapters.push(chapter);
                 }
@@ -12054,7 +12626,7 @@ function getChapter({ chapterUrl, chapterName, isVIP, isPaid, charset, options, 
             const vipCHapterImage = new _main_Attachment__WEBPACK_IMPORTED_MODULE_11__/* .AttachmentClass */ .J(vipCHapterImageUrl, vipCHapterName, "TM");
             if (vipCHapterImageBlob) {
                 vipCHapterImage.Blob = vipCHapterImageBlob;
-                vipCHapterImage.status = _main_main__WEBPACK_IMPORTED_MODULE_7__/* .Status.finished */ .qb.finished;
+                vipCHapterImage.status = _main_main__WEBPACK_IMPORTED_MODULE_7__/* .Status */ .qb.finished;
             }
             (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_4__/* .putAttachmentClassCache */ .dK)(vipCHapterImage);
             const contentImages = [vipCHapterImage];
@@ -12112,7 +12684,7 @@ function getChapter({ chapterUrl, chapterName, isVIP, isPaid, charset, options, 
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Ciyuanji": () => (/* binding */ Ciyuanji)
+/* harmony export */   Ciyuanji: () => (/* binding */ Ciyuanji)
 /* harmony export */ });
 /* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("crypto-js");
 /* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(crypto_js__WEBPACK_IMPORTED_MODULE_0__);
@@ -12201,7 +12773,7 @@ class Ciyuanji extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
                 options: {},
             });
             if (chapter.isVIP && !chapter.isPaid) {
-                chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status.aborted */ .qb.aborted;
+                chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status */ .qb.aborted;
             }
             chapters.push(chapter);
         }
@@ -12284,7 +12856,7 @@ class Ciyuanji extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Cool18": () => (/* binding */ Cool18)
+/* harmony export */   Cool18: () => (/* binding */ Cool18)
 /* harmony export */ });
 /* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/lib/cleanDOM.ts");
 /* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/dom.ts");
@@ -12450,7 +13022,7 @@ class Cool18 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Gongzicp": () => (/* binding */ Gongzicp)
+/* harmony export */   Gongzicp: () => (/* binding */ Gongzicp)
 /* harmony export */ });
 /* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("crypto-js");
 /* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(crypto_js__WEBPACK_IMPORTED_MODULE_0__);
@@ -12583,7 +13155,7 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
                     options: chapterOption,
                 });
                 if ((isVIP && !(logined && chapter.isPaid)) || isLock) {
-                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status.aborted */ .qb.aborted;
+                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status */ .qb.aborted;
                 }
                 chapters.push(chapter);
             }
@@ -12820,7 +13392,7 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Hanwujinian": () => (/* binding */ Hanwujinian)
+/* harmony export */   Hanwujinian: () => (/* binding */ Hanwujinian)
 /* harmony export */ });
 /* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("crypto-js");
 /* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(crypto_js__WEBPACK_IMPORTED_MODULE_0__);
@@ -12912,11 +13484,11 @@ class Hanwujinian extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass *
             if (chapter.isVIP) {
                 if (signIn) {
                     if (chapter.isPaid === false) {
-                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_7__/* .Status.aborted */ .qb.aborted;
+                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_7__/* .Status */ .qb.aborted;
                     }
                 }
                 else {
-                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_7__/* .Status.aborted */ .qb.aborted;
+                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_7__/* .Status */ .qb.aborted;
                 }
             }
             chapters.push(chapter);
@@ -12992,7 +13564,7 @@ class Hanwujinian extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass *
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Iqingguo": () => (/* binding */ Iqingguo)
+/* harmony export */   Iqingguo: () => (/* binding */ Iqingguo)
 /* harmony export */ });
 /* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/rules.ts");
 /* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("crypto-js");
@@ -13143,7 +13715,7 @@ async function get(path, params) {
 
 // EXPORTS
 __webpack_require__.d(__webpack_exports__, {
-  "Jjwxc": () => (/* binding */ Jjwxc)
+  Jjwxc: () => (/* binding */ Jjwxc)
 });
 
 // EXTERNAL MODULE: ./src/lib/attachments.ts
@@ -13293,7 +13865,7 @@ class Jjwxc extends rules/* BaseRuleClass */.c {
             }
             const coverUrl = document.querySelector(".noveldefaultimage").src;
             if (coverUrl) {
-                (0,attachments/* getAttachment */.FG)(coverUrl, this.attachmentMode, "cover-", false, (0,attachments/* getRandomName */.VO)(), { referrerMode: main/* ReferrerMode.none */.n6.none })
+                (0,attachments/* getAttachment */.FG)(coverUrl, this.attachmentMode, "cover-", false, (0,attachments/* getRandomName */.VO)(), { referrerMode: main/* ReferrerMode */.n6.none })
                     .then((coverClass) => {
                     additionalMetadate.cover = coverClass;
                 })
@@ -13372,7 +13944,7 @@ class Jjwxc extends rules/* BaseRuleClass */.c {
                                 return !document.getElementById("jj_login");
                             };
                             if (isVIP() && !isLogin()) {
-                                chapter.status = main/* Status.aborted */.qb.aborted;
+                                chapter.status = main/* Status */.qb.aborted;
                             }
                             chapters.push(chapter);
                         }
@@ -13399,7 +13971,7 @@ class Jjwxc extends rules/* BaseRuleClass */.c {
                             return !document.getElementById("jj_login");
                         };
                         if (isVIP() && !isLogin()) {
-                            chapter.status = main/* Status.aborted */.qb.aborted;
+                            chapter.status = main/* Status */.qb.aborted;
                         }
                         chapters.push(chapter);
                     }
@@ -13422,7 +13994,7 @@ class Jjwxc extends rules/* BaseRuleClass */.c {
                         charset: this.charset,
                         options: {},
                     });
-                    chapter.status = main/* Status.aborted */.qb.aborted;
+                    chapter.status = main/* Status */.qb.aborted;
                     chapters.push(chapter);
                 }
             }
@@ -13552,7 +14124,7 @@ class Jjwxc extends rules/* BaseRuleClass */.c {
                         const fontBlob = await fetchFont(fontUrl);
                         fontClassObj = new Attachment/* AttachmentClass */.J(fontUrl, fontFileName, "TM");
                         fontClassObj.Blob = fontBlob;
-                        fontClassObj.status = main/* Status.finished */.qb.finished;
+                        fontClassObj.status = main/* Status */.qb.finished;
                         (0,attachments/* putAttachmentClassCache */.dK)(fontClassObj);
                     }
                     const fontStyleDom = document.createElement("style");
@@ -13812,7 +14384,7 @@ class Jjwxc extends rules/* BaseRuleClass */.c {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Linovel": () => (/* binding */ Linovel)
+/* harmony export */   Linovel: () => (/* binding */ Linovel)
 /* harmony export */ });
 /* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/attachments.ts");
 /* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/cleanDOM.ts");
@@ -13912,7 +14484,7 @@ class Linovel extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c
                     return false;
                 };
                 if (isVIP() && !(isLogin() && chapter.isPaid)) {
-                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_5__/* .Status.aborted */ .qb.aborted;
+                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_5__/* .Status */ .qb.aborted;
                 }
                 chapters.push(chapter);
             }
@@ -13981,7 +14553,7 @@ class Linovel extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Lofter": () => (/* binding */ Lofter)
+/* harmony export */   Lofter: () => (/* binding */ Lofter)
 /* harmony export */ });
 /* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/attachments.ts");
 /* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/cleanDOM.ts");
@@ -14182,7 +14754,7 @@ class Lofter extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Longmabook": () => (/* binding */ Longmabook)
+/* harmony export */   Longmabook: () => (/* binding */ Longmabook)
 /* harmony export */ });
 /* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/attachments.ts");
 /* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__("./src/lib/cleanDOM.ts");
@@ -14361,7 +14933,7 @@ class Longmabook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */
                 options: { bookId, bookwritercode },
             });
             if (chapter.isVIP && !chapter.isPaid) {
-                chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_1__/* .Status.aborted */ .qb.aborted;
+                chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_1__/* .Status */ .qb.aborted;
             }
             chapters.push(chapter);
         }
@@ -14544,7 +15116,7 @@ class Longmabook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Myrics": () => (/* binding */ Myrics)
+/* harmony export */   Myrics: () => (/* binding */ Myrics)
 /* harmony export */ });
 /* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/rules.ts");
 /* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/main/Book.ts");
@@ -14693,10 +15265,10 @@ class Myrics extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c 
                         options: { bookId, chapterId, created_at: item.created_at },
                     });
                     if (chapter.isVIP && !chapter.isPaid) {
-                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status.aborted */ .qb.aborted;
+                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status */ .qb.aborted;
                     }
                     if (!loginStatus && isAdult) {
-                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status.aborted */ .qb.aborted;
+                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status */ .qb.aborted;
                     }
                     return chapter;
                 });
@@ -14766,7 +15338,7 @@ class Myrics extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c 
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Pixiv": () => (/* binding */ Pixiv)
+/* harmony export */   Pixiv: () => (/* binding */ Pixiv)
 /* harmony export */ });
 /* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/attachments.ts");
 /* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/cleanDOM.ts");
@@ -14788,6 +15360,7 @@ class Pixiv extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
         super();
         this.attachmentMode = "TM";
         this.needLogin = true;
+        this.concurrencyLimit = 3;
     }
     async bookParse() {
         const self = this;
@@ -14894,7 +15467,7 @@ class Pixiv extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
                         ...cp,
                     });
                     if (viewableType !== 0) {
-                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_5__/* .Status.aborted */ .qb.aborted;
+                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_5__/* .Status */ .qb.aborted;
                     }
                     return chapter;
                 }),
@@ -15126,7 +15699,7 @@ async function getNovel(novelID, lang, version) {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Qidian": () => (/* binding */ Qidian)
+/* harmony export */   Qidian: () => (/* binding */ Qidian)
 /* harmony export */ });
 /* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/attachments.ts");
 /* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__("./src/lib/cleanDOM.ts");
@@ -15269,12 +15842,12 @@ class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
                     return false;
                 };
                 if (isVIP()) {
-                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status.aborted */ .qb.aborted;
+                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status */ .qb.aborted;
                     if (limitFree) {
-                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status.pending */ .qb.pending;
+                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status */ .qb.pending;
                     }
                     if (chapter.isPaid) {
-                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status.pending */ .qb.pending;
+                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status */ .qb.pending;
                     }
                 }
                 chapters.push(chapter);
@@ -15378,7 +15951,7 @@ class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Qimao": () => (/* binding */ Qimao)
+/* harmony export */   Qimao: () => (/* binding */ Qimao)
 /* harmony export */ });
 /* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/attachments.ts");
 /* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/cleanDOM.ts");
@@ -15452,7 +16025,7 @@ class Qimao extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
                 return false;
             };
             if (isVIP() && !(isLogin() && chapter.isPaid)) {
-                chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_5__/* .Status.aborted */ .qb.aborted;
+                chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_5__/* .Status */ .qb.aborted;
             }
             chapters.push(chapter);
         }
@@ -15521,7 +16094,7 @@ class Qimao extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Readmoo": () => (/* binding */ Readmoo)
+/* harmony export */   Readmoo: () => (/* binding */ Readmoo)
 /* harmony export */ });
 /* harmony import */ var p_limit__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/p-limit/index.js");
 /* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Book.ts");
@@ -15623,7 +16196,7 @@ class Readmoo extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c
             return limit(async () => {
                 const { path, data, nocompress } = fobj;
                 if (typeof data === "string") {
-                    const attach = new _main_Attachment__WEBPACK_IMPORTED_MODULE_3__/* .AttachmentClass */ .J(data, path, this.attachmentMode, _main_main__WEBPACK_IMPORTED_MODULE_4__/* .ReferrerMode.keep */ .n6.keep, "", { init: (0,_lib_misc__WEBPACK_IMPORTED_MODULE_5__/* .deepcopy */ .X8)(epubInit), TMinit: (0,_lib_misc__WEBPACK_IMPORTED_MODULE_5__/* .deepcopy */ .X8)(epubInit) });
+                    const attach = new _main_Attachment__WEBPACK_IMPORTED_MODULE_3__/* .AttachmentClass */ .J(data, path, this.attachmentMode, _main_main__WEBPACK_IMPORTED_MODULE_4__/* .ReferrerMode */ .n6.keep, "", { init: (0,_lib_misc__WEBPACK_IMPORTED_MODULE_5__/* .deepcopy */ .X8)(epubInit), TMinit: (0,_lib_misc__WEBPACK_IMPORTED_MODULE_5__/* .deepcopy */ .X8)(epubInit) });
                     await attach.init();
                     if (fobj.nocompress) {
                         attach.comments = "nocompress";
@@ -15633,7 +16206,7 @@ class Readmoo extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c
                 else {
                     const attach = new _main_Attachment__WEBPACK_IMPORTED_MODULE_3__/* .AttachmentClass */ .J("", path, this.attachmentMode);
                     attach.Blob = data;
-                    attach.status = _main_main__WEBPACK_IMPORTED_MODULE_4__/* .Status.finished */ .qb.finished;
+                    attach.status = _main_main__WEBPACK_IMPORTED_MODULE_4__/* .Status */ .qb.finished;
                     if (fobj.nocompress) {
                         attach.comments = "nocompress";
                     }
@@ -15690,7 +16263,7 @@ class Readmoo extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Sfacg": () => (/* binding */ Sfacg)
+/* harmony export */   Sfacg: () => (/* binding */ Sfacg)
 /* harmony export */ });
 /* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/attachments.ts");
 /* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__("./src/lib/cleanDOM.ts");
@@ -15797,7 +16370,7 @@ class Sfacg extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
                 .querySelector(".user-bar > .top-link > .normal-link")
                 ?.innerHTML.includes("您好，SF游客");
             if (chapter.isVIP && !isLogin) {
-                chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_8__/* .Status.aborted */ .qb.aborted;
+                chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_8__/* .Status */ .qb.aborted;
             }
             chapters.push(chapter);
         }
@@ -15878,10 +16451,10 @@ class Sfacg extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
                 const vipChapterImage = new _main_Attachment__WEBPACK_IMPORTED_MODULE_6__/* .AttachmentClass */ .J(vipChapterImageUrl, vipChapterName, "naive");
                 if (vipChapterImageBlob) {
                     vipChapterImage.Blob = vipChapterImageBlob;
-                    vipChapterImage.status = _main_main__WEBPACK_IMPORTED_MODULE_8__/* .Status.finished */ .qb.finished;
+                    vipChapterImage.status = _main_main__WEBPACK_IMPORTED_MODULE_8__/* .Status */ .qb.finished;
                 }
                 else {
-                    vipChapterImage.status = _main_main__WEBPACK_IMPORTED_MODULE_8__/* .Status.failed */ .qb.failed;
+                    vipChapterImage.status = _main_main__WEBPACK_IMPORTED_MODULE_8__/* .Status */ .qb.failed;
                 }
                 return vipChapterImage;
             }
@@ -15945,7 +16518,7 @@ class Sfacg extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Shuhai": () => (/* binding */ Shuhai)
+/* harmony export */   Shuhai: () => (/* binding */ Shuhai)
 /* harmony export */ });
 /* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/attachments.ts");
 /* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__("./src/lib/cleanDOM.ts");
@@ -16042,7 +16615,7 @@ class Shuhai extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
                     return false;
                 };
                 if (isVIP() && !(isLogin() && chapter.isPaid)) {
-                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status.aborted */ .qb.aborted;
+                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status */ .qb.aborted;
                 }
                 chapters.push(chapter);
             }
@@ -16114,7 +16687,7 @@ class Shuhai extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Sosadfun": () => (/* binding */ Sosadfun)
+/* harmony export */   Sosadfun: () => (/* binding */ Sosadfun)
 /* harmony export */ });
 /* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/cleanDOM.ts");
 /* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/lib/http.ts");
@@ -16276,7 +16849,7 @@ class Sosadfun extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Tadu": () => (/* binding */ Tadu)
+/* harmony export */   Tadu: () => (/* binding */ Tadu)
 /* harmony export */ });
 /* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/attachments.ts");
 /* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/cleanDOM.ts");
@@ -16350,7 +16923,7 @@ class Tadu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
                 return false;
             };
             if (isVIP() && !(isLogin() && chapter.isPaid)) {
-                chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_5__/* .Status.aborted */ .qb.aborted;
+                chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_5__/* .Status */ .qb.aborted;
             }
             chapters.push(chapter);
         }
@@ -16445,7 +17018,7 @@ class Tadu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Xrzww": () => (/* binding */ Xrzww)
+/* harmony export */   Xrzww: () => (/* binding */ Xrzww)
 /* harmony export */ });
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_2__);
@@ -16584,12 +17157,12 @@ class Xrzww extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
             });
             if (signIn) {
                 if (chapter.isVIP && chapter.isPaid === false) {
-                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_4__/* .Status.aborted */ .qb.aborted;
+                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_4__/* .Status */ .qb.aborted;
                 }
             }
             else {
                 if (chapter.isVIP) {
-                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_4__/* .Status.aborted */ .qb.aborted;
+                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_4__/* .Status */ .qb.aborted;
                 }
             }
             chapters.push(chapter);
@@ -16645,7 +17218,7 @@ class Xrzww extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Zongheng": () => (/* binding */ Zongheng)
+/* harmony export */   Zongheng: () => (/* binding */ Zongheng)
 /* harmony export */ });
 /* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/attachments.ts");
 /* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/cleanDOM.ts");
@@ -16731,7 +17304,7 @@ class Zongheng extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
                     return false;
                 };
                 if (isVIP() && !(isLogin() && chapter.isPaid)) {
-                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status.aborted */ .qb.aborted;
+                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status */ .qb.aborted;
                 }
                 chapters.push(chapter);
             }
@@ -16800,7 +17373,7 @@ class Zongheng extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Dmzj": () => (/* binding */ Dmzj)
+/* harmony export */   Dmzj: () => (/* binding */ Dmzj)
 /* harmony export */ });
 /* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/attachments.ts");
 /* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/cleanDOM.ts");
@@ -16967,7 +17540,7 @@ class Dmzj extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Fushuwang": () => (/* binding */ Fushuwang)
+/* harmony export */   Fushuwang: () => (/* binding */ Fushuwang)
 /* harmony export */ });
 /* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/lib/cleanDOM.ts");
 /* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/http.ts");
@@ -17076,8 +17649,8 @@ class Fushuwang extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ 
 
 // EXPORTS
 __webpack_require__.d(__webpack_exports__, {
-  "haitangtxt": () => (/* binding */ haitangtxt),
-  "yuzhaige": () => (/* binding */ yuzhaige)
+  haitangtxt: () => (/* binding */ haitangtxt),
+  yuzhaige: () => (/* binding */ yuzhaige)
 });
 
 // EXTERNAL MODULE: ./src/lib/cleanDOM.ts
@@ -18086,7 +18659,7 @@ const yuzhaige = () => getClass(replaceYuzhaigeImage);
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Hetushu": () => (/* binding */ Hetushu)
+/* harmony export */   Hetushu: () => (/* binding */ Hetushu)
 /* harmony export */ });
 /* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/attachments.ts");
 /* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/cleanDOM.ts");
@@ -18292,7 +18865,7 @@ class Hetushu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Idejian": () => (/* binding */ Idejian)
+/* harmony export */   Idejian: () => (/* binding */ Idejian)
 /* harmony export */ });
 /* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/attachments.ts");
 /* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/cleanDOM.ts");
@@ -18439,7 +19012,7 @@ class Idejian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Kanunu8": () => (/* binding */ Kanunu8)
+/* harmony export */   Kanunu8: () => (/* binding */ Kanunu8)
 /* harmony export */ });
 /* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/attachments.ts");
 /* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/cleanDOM.ts");
@@ -18622,7 +19195,7 @@ function softByValue(a, b) {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Xkzw": () => (/* binding */ Xkzw)
+/* harmony export */   Xkzw: () => (/* binding */ Xkzw)
 /* harmony export */ });
 /* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("crypto-js");
 /* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(crypto_js__WEBPACK_IMPORTED_MODULE_0__);
@@ -18951,7 +19524,7 @@ class Xkzw extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "c18kanshu": () => (/* binding */ c18kanshu)
+/* harmony export */   c18kanshu: () => (/* binding */ c18kanshu)
 /* harmony export */ });
 /* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/cleanDOM.ts");
 /* harmony import */ var _tempate__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/twoPage/tempate.ts");
@@ -19009,7 +19582,7 @@ const c18kanshu = () => (0,_tempate__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass 
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "xiaoshuodaquan": () => (/* binding */ xiaoshuodaquan)
+/* harmony export */   xiaoshuodaquan: () => (/* binding */ xiaoshuodaquan)
 /* harmony export */ });
 /* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
 /* harmony import */ var _tempate__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/twoPage/tempate.ts");
@@ -19049,7 +19622,7 @@ const xiaoshuodaquan = () => (0,_tempate__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleC
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "c69shu": () => (/* binding */ c69shu)
+/* harmony export */   c69shu: () => (/* binding */ c69shu)
 /* harmony export */ });
 /* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
 /* harmony import */ var _tempate__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/twoPage/tempate.ts");
@@ -19080,7 +19653,7 @@ const c69shu = () => (0,_tempate__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ 
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "jingcaiyuedu6": () => (/* binding */ jingcaiyuedu6)
+/* harmony export */   jingcaiyuedu6: () => (/* binding */ jingcaiyuedu6)
 /* harmony export */ });
 /* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
 /* harmony import */ var _tempate__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/twoPage/tempate.ts");
@@ -19112,8 +19685,8 @@ const jingcaiyuedu6 = () => (0,_tempate__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleCl
 
 // EXPORTS
 __webpack_require__.d(__webpack_exports__, {
-  "linovelib": () => (/* binding */ linovelib),
-  "wlinovelib": () => (/* binding */ wlinovelib)
+  linovelib: () => (/* binding */ linovelib),
+  wlinovelib: () => (/* binding */ wlinovelib)
 });
 
 // EXTERNAL MODULE: ./src/rules/twoPage/tempate.ts
@@ -19255,7 +19828,7 @@ const linovelib = () => {
         getSName: (sElem) => sElem.innerText.trim(),
         postHook: (chapter) => {
             if (chapter.chapterUrl.startsWith("javascript")) {
-                chapter.status = main/* Status.aborted */.qb.aborted;
+                chapter.status = main/* Status */.qb.aborted;
             }
             return chapter;
         },
@@ -19331,7 +19904,7 @@ const wlinovelib = () => {
         getSName: (sElem) => sElem.innerText.trim(),
         postHook: (chapter) => {
             if (chapter.chapterUrl.startsWith("javascript")) {
-                chapter.status = main/* Status.aborted */.qb.aborted;
+                chapter.status = main/* Status */.qb.aborted;
             }
             return chapter;
         },
@@ -19396,7 +19969,7 @@ const wlinovelib = () => {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "shencou": () => (/* binding */ shencou)
+/* harmony export */   shencou: () => (/* binding */ shencou)
 /* harmony export */ });
 /* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
 /* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/main/main.ts");
@@ -19435,7 +20008,7 @@ const shencou = () => {
             return dom;
         },
         cleanDomOptions: {
-            referrerMode: _main_main__WEBPACK_IMPORTED_MODULE_2__/* .ReferrerMode.custom */ .n6.custom,
+            referrerMode: _main_main__WEBPACK_IMPORTED_MODULE_2__/* .ReferrerMode */ .n6.custom,
             customReferer: "http://www.wenku8.net",
         },
     });
@@ -19449,7 +20022,7 @@ const shencou = () => {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "x": () => (/* binding */ mkRuleClass)
+/* harmony export */   x: () => (/* binding */ mkRuleClass)
 /* harmony export */ });
 /* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/attachments.ts");
 /* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/cleanDOM.ts");
@@ -19564,7 +20137,7 @@ function mkRuleClass({ bookUrl, anotherPageUrl, ToCUrl, getBookname, getAuthor, 
                     options: { bookname },
                 });
                 if (isVIP && !isPaid) {
-                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status.aborted */ .qb.aborted;
+                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status */ .qb.aborted;
                 }
                 if (typeof postHook === "function") {
                     chapter = postHook(chapter);
@@ -19634,7 +20207,7 @@ function mkRuleClass({ bookUrl, anotherPageUrl, ToCUrl, getBookname, getAuthor, 
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "washuge": () => (/* binding */ washuge)
+/* harmony export */   washuge: () => (/* binding */ washuge)
 /* harmony export */ });
 /* harmony import */ var _tempate__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/twoPage/tempate.ts");
 
@@ -19670,7 +20243,7 @@ const washuge = () => {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "wenku8": () => (/* binding */ wenku8)
+/* harmony export */   wenku8: () => (/* binding */ wenku8)
 /* harmony export */ });
 /* harmony import */ var _tempate__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/twoPage/tempate.ts");
 /* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
@@ -19710,7 +20283,7 @@ const wenku8 = () => {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "xiaoshuowu": () => (/* binding */ xiaoshuowu)
+/* harmony export */   xiaoshuowu: () => (/* binding */ xiaoshuowu)
 /* harmony export */ });
 /* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
 /* harmony import */ var _tempate__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/twoPage/tempate.ts");
@@ -19758,7 +20331,7 @@ const xiaoshuowu = () => {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "yibige": () => (/* binding */ yibige)
+/* harmony export */   yibige: () => (/* binding */ yibige)
 /* harmony export */ });
 /* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/cleanDOM.ts");
 /* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/dom.ts");
@@ -19813,7 +20386,7 @@ const yibige = () => (0,_tempate__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ 
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "f": () => (/* binding */ getSectionsObj)
+/* harmony export */   f: () => (/* binding */ getSectionsObj)
 /* harmony export */ });
 function getSectionsObj(chapters, chapterSort = (a, b) => a.chapterNumber - b.chapterNumber) {
     const _sectionsObj = {};
@@ -19855,18 +20428,18 @@ function getSectionsObj(chapters, chapterSort = (a, b) => a.chapterNumber - b.ch
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "CA": () => (/* binding */ enableSaveToArchiveOrg),
-/* harmony export */   "Cy": () => (/* binding */ enableDebug),
-/* harmony export */   "EI": () => (/* binding */ enableCustomSaveOptions),
-/* harmony export */   "Qd": () => (/* binding */ getCustomEnableSaveToArchiveOrg),
-/* harmony export */   "Td": () => (/* binding */ enableCustomChapterFilter),
-/* harmony export */   "Vo": () => (/* binding */ enableCustomFinishCallback),
-/* harmony export */   "Z3": () => (/* binding */ enableJjwxcRemoteFont),
-/* harmony export */   "cl": () => (/* binding */ iconStart0),
-/* harmony export */   "d7": () => (/* binding */ iconSetting),
-/* harmony export */   "o5": () => (/* binding */ retryLimit),
-/* harmony export */   "wE": () => (/* binding */ iconStart1),
-/* harmony export */   "y6": () => (/* binding */ iconJump)
+/* harmony export */   CA: () => (/* binding */ enableSaveToArchiveOrg),
+/* harmony export */   Cy: () => (/* binding */ enableDebug),
+/* harmony export */   EI: () => (/* binding */ enableCustomSaveOptions),
+/* harmony export */   Qd: () => (/* binding */ getCustomEnableSaveToArchiveOrg),
+/* harmony export */   Td: () => (/* binding */ enableCustomChapterFilter),
+/* harmony export */   Vo: () => (/* binding */ enableCustomFinishCallback),
+/* harmony export */   Z3: () => (/* binding */ enableJjwxcRemoteFont),
+/* harmony export */   cl: () => (/* binding */ iconStart0),
+/* harmony export */   d7: () => (/* binding */ iconSetting),
+/* harmony export */   o5: () => (/* binding */ retryLimit),
+/* harmony export */   wE: () => (/* binding */ iconStart1),
+/* harmony export */   y6: () => (/* binding */ iconJump)
 /* harmony export */ });
 /* harmony import */ var _lib_GM__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/GM.ts");
 
@@ -19924,9 +20497,9 @@ async function getCustomEnableSaveToArchiveOrg() {
 
 // EXPORTS
 __webpack_require__.d(__webpack_exports__, {
-  "el": () => (/* binding */ el),
-  "o": () => (/* binding */ style),
-  "vm": () => (/* binding */ vm)
+  el: () => (/* binding */ el),
+  o: () => (/* binding */ style),
+  vm: () => (/* binding */ vm)
 });
 
 // EXTERNAL MODULE: external "Vue"
@@ -20008,7 +20581,7 @@ module.exports = Vue;
 
 // EXPORTS
 __webpack_require__.d(__webpack_exports__, {
-  "Z": () => (/* binding */ pLimit)
+  Z: () => (/* binding */ pLimit)
 });
 
 ;// CONCATENATED MODULE: ./node_modules/p-limit/node_modules/yocto-queue/index.js
@@ -20361,8 +20934,8 @@ function mitmPageAvailability(url) {
     });
 }
 async function TM_4_14_bug_Detect() {
-    if (GM/* _GM_info.scriptHandler */._p.scriptHandler === "Tampermonkey" &&
-        GM/* _GM_info.version */._p.version?.startsWith("4.14")) {
+    if (GM/* _GM_info */._p.scriptHandler === "Tampermonkey" &&
+        GM/* _GM_info */._p.version?.startsWith("4.14")) {
         const blob = new Blob(["test"]);
         const arrayBuffer = await blob.arrayBuffer();
         if (arrayBuffer === undefined) {
@@ -20395,10 +20968,10 @@ const environments = async () => {
         sessionStorage: storageAvailable("sessionStorage"),
         Cookie: navigator.cookieEnabled,
         doNotTrack: navigator.doNotTrack ?? 0,
-        enableDebug: src_setting/* enableDebug.value */.Cy.value,
-        ScriptHandler: GM/* _GM_info.scriptHandler */._p.scriptHandler,
-        "ScriptHandler version": GM/* _GM_info.version */._p.version,
-        "Novel-downloader version": GM/* _GM_info.script.version */._p.script.version,
+        enableDebug: src_setting/* enableDebug */.Cy.value,
+        ScriptHandler: GM/* _GM_info */._p.scriptHandler,
+        "ScriptHandler version": GM/* _GM_info */._p.version,
+        "Novel-downloader version": GM/* _GM_info */._p.script.version,
     };
 };
 
@@ -21507,7 +22080,7 @@ const style = (0,dom/* createStyle */.wj)(ui_ChapterList/* default */.Z);
         });
         const filterSetting = (0,external_Vue_.inject)("filterSetting");
         const filter = (chapter) => {
-            if (chapter.status === main/* Status.aborted */.qb.aborted) {
+            if (chapter.status === main/* Status */.qb.aborted) {
                 return false;
             }
             if (filterSetting.value) {
@@ -21782,7 +22355,7 @@ var ui_TestUI = __webpack_require__("./src/ui/TestUI.less");
             if (book) {
                 const chapters = book.chapters;
                 const cns = chapters
-                    .filter((c) => c.status !== main/* Status.aborted */.qb.aborted)
+                    .filter((c) => c.status !== main/* Status */.qb.aborted)
                     .map((c) => c.chapterNumber);
                 cns.sort();
                 return cns.slice(-3)[0];
@@ -21792,7 +22365,7 @@ var ui_TestUI = __webpack_require__("./src/ui/TestUI.less");
             const chapters = book.chapters;
             const _chapter = chapters.filter((c) => c.chapterNumber === n)[0];
             if (_chapter) {
-                if (_chapter.status === main/* Status.pending */.qb.pending) {
+                if (_chapter.status === main/* Status */.qb.pending) {
                     await _chapter.init();
                     Object.assign(chapter, _chapter);
                 }
@@ -21815,10 +22388,10 @@ var ui_TestUI = __webpack_require__("./src/ui/TestUI.less");
             }
         });
         function isSeenChapter(_chapter) {
-            return _chapter.status === main/* Status.finished */.qb.finished;
+            return _chapter.status === main/* Status */.qb.finished;
         }
         function isChapterFailed(_chapter) {
-            return (_chapter.status === main/* Status.failed */.qb.failed || _chapter.status === main/* Status.aborted */.qb.aborted);
+            return (_chapter.status === main/* Status */.qb.failed || _chapter.status === main/* Status */.qb.aborted);
         }
         function getChapterHtml(_chapter) {
             const html = _chapter.contentHTML?.cloneNode(true);
@@ -21948,7 +22521,7 @@ const vm = (0,external_Vue_.createApp)({
                 },
             },
         ];
-        setting.enableDebug = src_setting/* enableDebug.value */.Cy.value;
+        setting.enableDebug = src_setting/* enableDebug */.Cy.value;
         setting.chooseSaveOption = "null";
         setting.enableTestPage = false;
         setting.currentTab = "tab-1";
@@ -21980,11 +22553,11 @@ const vm = (0,external_Vue_.createApp)({
             function setEnableDebug() {
                 if (typeof config.enableDebug === "boolean") {
                     config.enableDebug ? loglevel_default().setLevel("trace") : loglevel_default().setLevel("info");
-                    src_setting/* enableDebug.value */.Cy.value = config.enableDebug;
+                    src_setting/* enableDebug */.Cy.value = config.enableDebug;
                     if (config.enableDebug) {
                         debug();
                     }
-                    loglevel_default().info(`[Init]enableDebug: ${src_setting/* enableDebug.value */.Cy.value}`);
+                    loglevel_default().info(`[Init]enableDebug: ${src_setting/* enableDebug */.Cy.value}`);
                 }
             }
             function setCustomSaveOption() {
@@ -21999,7 +22572,7 @@ const vm = (0,external_Vue_.createApp)({
                         const filterFunction = getFilterFunction(config.filterSetting.arg, config.filterSetting.functionBody);
                         if (filterFunction) {
                             unsafeWindow.chapterFilter = (chapter) => {
-                                if (chapter.status === main/* Status.aborted */.qb.aborted) {
+                                if (chapter.status === main/* Status */.qb.aborted) {
                                     return false;
                                 }
                                 return filterFunction(chapter);
@@ -22061,7 +22634,7 @@ const button_vm = (0,external_Vue_.createApp)({
             imgStart: src_setting/* iconStart0 */.cl,
             imgSetting: src_setting/* iconSetting */.d7,
             imgJump: src_setting/* iconJump */.y6,
-            isSettingSeen: GM/* _GM_info.scriptHandler */._p.scriptHandler !== "Greasemonkey",
+            isSettingSeen: GM/* _GM_info */._p.scriptHandler !== "Greasemonkey",
             uiObj: { type: "download" },
         };
     },

@@ -24,6 +24,6 @@ declare const _default: import("vue").DefineComponent<{}, {
     filterDescription: import("vue").ComputedRef<string>;
 }, {}, {}, {}, import("vue").ComponentOptionsMixin, import("vue").ComponentOptionsMixin, "filterupdate"[], "filterupdate", import("vue").VNodeProps & import("vue").AllowedComponentProps & import("vue").ComponentCustomProps, Readonly<import("vue").ExtractPropTypes<{}>> & {
     onFilterupdate?: ((...args: any[]) => any) | undefined;
-}, {}>;
+}, {}, {}>;
 export default _default;
 export declare const style: HTMLElement;
