@@ -165,6 +165,8 @@ EPUB 文件请使用相应阅读器阅读。
 | [飘天文学](https://www.ptwxz.net/)                | ✅       | ❎       |                                                                                          |
 | [红袖招](https://hongxiuzhao.me/)                 | ✅       | ❎       |                                                                                          |
 | [38 看书](https://www.mijiashe.com/)              | ✅       | ❎       |                                                                                          |
+| [天天看小说](https://www.ttkan.co/)               | ✅       | ❎       |                                                                                          |
+| [精华书阁](https://www.xbyuan.com/)               | ✅       | ❎       |                                                                                          |
 
 </details>
 

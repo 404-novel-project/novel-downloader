@@ -101,11 +101,14 @@ export function getNodeTextLength(element: Element) {
 export function sandboxed(code: string) {
   const frame = document.createElement("iframe");
   document.body.appendChild(frame);
+  const argVerify = /^[$A-Z_][0-9A-Z_$]*$/i;
 
   if (frame.contentWindow) {
     // @ts-expect-error Property 'Function' does not exist on type 'Window'.ts(2339)
     const F = frame.contentWindow.Function;
-    const args = Object.keys(frame.contentWindow).join();
+    const args = Object.keys(frame.contentWindow)
+      .filter((it) => argVerify.test(it))
+      .join();
 
     document.body.removeChild(frame);
 
