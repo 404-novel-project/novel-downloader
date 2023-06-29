@@ -68,7 +68,7 @@ EPUB 文件请使用相应阅读器阅读。
 | [SF 轻小说](https://book.sfacg.com/)                | ✅\*     | ✅\*\*   | \*不支持对话小说，例：[224282](https://book.sfacg.com/Novel/224282/)。 \*\*VIP 章节仅支持图片版。                                                                                                                                                                            |
 | [起点中文网](https://www.qidian.com/)               | ✅       | ✅       | 部分小说 VIP 章节可能出现乱码无法下载。                                                                                                                                                                                                                                      |
 | [起点女生网](https://www.qdmm.com/)                 | ✅       | ✅       |                                                                                                                                                                                                                                                                              |
-| [晋江文学城](http://www.jjwxc.net/)                 | ✅       | ✅       | 之前版本 VIP 章节使用[晋江防盗字体对照表](https://github.com/yingziwu/jjwxcFontTables)去除空格。<br>脚本将向云端请求数据，远程字体功能可通过 `enableJjwxcRemoteFont` 配置项手动关闭。 <br><br>现使用 app api，需要自己抓包。                      |
+| [晋江文学城](http://www.jjwxc.net/)                 | ✅       | ✅       | 晋江文学城 VIP 章节可添加 API Token 以获得更好体验，Token 添加方法参见 [Token 填写一节](#token-填写)。                                                                                                                                                                       |
 | [长佩文学](https://www.gongzicp.com/)               | ✅       | ✅       | 反爬较严，限制下载速度，每分钟约可下载 6 章，请耐心等待，最好不要多开页面同时下载多本长佩小说。<br>长佩文学为单页应用，如打开书籍详情页右上角未出现下载图标，请按下 F5 重新加载当前页面。                                                                                    |
 | [书耽](https://www.shubl.com/)                      | ✅       | ✅       | VIP 章节仅支持图片版。                                                                                                                                                                                                                                                       |
 | [海棠文化线上文学城](https://ebook.longmabook.com/) | ✅       | ✅       |                                                                                                                                                                                                                                                                              |
@@ -167,10 +167,10 @@ EPUB 文件请使用相应阅读器阅读。
 | [38 看书](https://www.mijiashe.com/)              | ✅       | ❎       |                                                                                          |
 | [天天看小说](https://www.ttkan.co/)               | ✅       | ❎       |                                                                                          |
 | [精华书阁](https://www.xbyuan.com/)               | ✅       | ❎       |                                                                                          |
-| [全职小说网](http://www.quanzhifashi.com/)        | ✅       | ❎       | 网站反爬较严，大量抓取可能导致封禁ip。 |
+| [全职小说网](http://www.quanzhifashi.com/)        | ✅       | ❎       | 网站反爬较严，大量抓取可能导致封禁 ip。                                                  |
 | [笔趣阁](https://www.42zw.la/)                    | ✅       | ❎       |                                                                                          |
 | [新笔趣阁](http://www.boqugew.com/)               | ✅       | ❎       |                                                                                          |
-| [全本同人小说](https://www.qbtr.cc/)               | ✅       | ❎       |                                                                                          |
+| [全本同人小说](https://www.qbtr.cc/)              | ✅       | ❎       |                                                                                          |
 
 </details>
 
@@ -187,7 +187,7 @@ EPUB 文件请使用相应阅读器阅读。
 
 ### 晋江文学城
 
-下载抓包精灵（可在Google Play、酷安搜索到，其他软件也可以）并配置好设置，然后登录晋江文学城 android app (iOS平台不适用)并随意浏览章节，在形如“https://app.jjwxc.org/androidapi/chapterContent?” 等链接中找到&token=后的字符串（止于下一个&）。
+下载抓包精灵（可在 Google Play、酷安搜索到，其他软件也可以）并配置好设置，然后登录晋江文学城 android app (iOS 平台不适用)并随意浏览章节，在形如“https://app.jjwxc.org/androidapi/chapterContent?” 等链接中找到&token=后的字符串（止于下一个&）。
 
 在脚本管理器中新建如下脚本（不要把该脚本代码和其他脚本代码合并，除非你完全理解脚本的意思）并保存：
 
@@ -211,10 +211,13 @@ EPUB 文件请使用相应阅读器阅读。
   window.tokenOptions = tokenOptions;
 })();
 ```
+
 例如：
+
 ```javascript
     Jjwxc:"11111111_750afc84c839aaaaafccd841fffd11f1",
 ```
+
 ## 高阶使用技巧
 
 ### 启用调试功能

@@ -799,11 +799,7 @@ export class Jjwxc extends BaseRuleClass {
         return vipChapter();
       }
     } else {
-      if (typeof (unsafeWindow as UnsafeWindow).tokenOptions === "object") {
-        return getChapterByApi();
-      } else {
-        return publicChapter();
-      }
+      return getChapterByApi();
     }
   }
 }
