@@ -114,7 +114,7 @@ export const xbiquge = () =>
   mkBiquge(
     (introDom) => introDom,
     (content) => {
-      rms([`笔趣阁 www.xbiquge.so，最快更新.+ ！`], content);
+      rms([/笔趣阁 www.xbiquge.tw，最快更新.+ ！/], content);
       return content;
     }
   );

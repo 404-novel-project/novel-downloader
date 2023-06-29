@@ -82,7 +82,7 @@
     "*://www.westnovel.com/*/*/",
     "*://www.mht99.com/*/",
     "*://www.banzhuer.org/*_*/",
-    "*://www.xbiquge.so/book/*/",
+    "*://www.xbiquge.tw/book/*/",
     "*://www.007zw.com/shuzhai/*/",
     "*://www.linovelib.com/novel/*/catalog",
     "*://www.linovelib.com/novel/*.html",
@@ -208,7 +208,8 @@
     "*://cn.ttkan.co/novel/chapters/*",
     "*://tw.ttkan.co/novel/chapters/*",
     "*://www.xiaoshuowanben.com/*/",
-    "*://www.xbyuan.com/*/"
+    "*://www.xbyuan.com/*/",
+    "*://www.quanzhifashi.com/novel/*/"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",

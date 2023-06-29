@@ -230,7 +230,7 @@ export function getUI(): () => UIObject {
     case "www.007zw.com":
     case "www.wanben.info":
     case "www.mht99.com":
-    case "www.xbiquge.so":
+    case "www.xbiquge.tw":
     case "www.luoqiuzw.com":
     case "dijiuben.com":
     case "www.biquzw.la":
@@ -336,6 +336,7 @@ export function getUI(): () => UIObject {
         }
       };
     }
+    case "www.quanzhifashi.com":
     default: {
       return () => {
         return defaultObject;
