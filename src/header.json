@@ -209,7 +209,10 @@
     "*://tw.ttkan.co/novel/chapters/*",
     "*://www.xiaoshuowanben.com/*/",
     "*://www.xbyuan.com/*/",
-    "*://www.quanzhifashi.com/novel/*/"
+    "*://www.quanzhifashi.com/novel/*/",
+    "*://www.42zw.la/book/*/",
+    "*://www.boqugew.com/shu/*/",
+    "*://www.qbtr.cc/*"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",

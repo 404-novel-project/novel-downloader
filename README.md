@@ -167,7 +167,10 @@ EPUB 文件请使用相应阅读器阅读。
 | [38 看书](https://www.mijiashe.com/)              | ✅       | ❎       |                                                                                          |
 | [天天看小说](https://www.ttkan.co/)               | ✅       | ❎       |                                                                                          |
 | [精华书阁](https://www.xbyuan.com/)               | ✅       | ❎       |                                                                                          |
-| [全职小说网](http://www.quanzhifashi.com/)        | ✅       | ❎       |                                                                                          |
+| [全职小说网](http://www.quanzhifashi.com/)        | ✅       | ❎       | 网站反爬较严，大量抓取可能导致封禁ip。 |
+| [笔趣阁](https://www.42zw.la/)                    | ✅       | ❎       |                                                                                          |
+| [新笔趣阁](http://www.boqugew.com/)               | ✅       | ❎       |                                                                                          |
+| [全本同人小说](https://www.qbtr.cc/)               | ✅       | ❎       |                                                                                          |
 
 </details>
 

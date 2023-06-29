@@ -1,4 +1,4 @@
-import { rm2 } from "../../lib/dom";
+import { rm, rms } from "../../lib/dom";
 import { mkRuleClass } from "./template";
 
 export const qzxsw = () =>
@@ -16,12 +16,12 @@ export const qzxsw = () =>
     aList: document.querySelectorAll("div.ml_list > ul > li > a"),
     getContent: (doc) => doc.querySelector(".articlecontent") as HTMLElement,
     contentPatch: (content) => {
-      const ads = [
+      rms([
         "一秒记住m.quanzhifashｉ。com",
         "ｍ．ｑuanzhifashｉ．com",
         "ｈttp://m.quanzhifashi.com首发"
-      ];
-      rm2(ads, content);
+      ], content);
+      rm("br", true, content);
       return content;
     },
   });
