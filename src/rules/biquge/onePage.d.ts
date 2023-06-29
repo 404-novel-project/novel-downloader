@@ -16,3 +16,4 @@ export declare const lusetxt: () => import("../../lib/misc").PublicConstructor<i
 export declare const yqxs: () => import("../../lib/misc").PublicConstructor<import("../../rules").BaseRuleClass>;
 export declare const lewenn: () => import("../../lib/misc").PublicConstructor<import("../../rules").BaseRuleClass>;
 export declare const xyb3: () => import("../../lib/misc").PublicConstructor<import("../../rules").BaseRuleClass>;
+export declare const la42zw: () => import("../../lib/misc").PublicConstructor<import("../../rules").BaseRuleClass>;

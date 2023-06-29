@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.1.858
+// @version        5.1.861
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -113,7 +113,7 @@
 // @match          *://www.westnovel.com/*/*/
 // @match          *://www.mht99.com/*/
 // @match          *://www.banzhuer.org/*_*/
-// @match          *://www.xbiquge.so/book/*/
+// @match          *://www.xbiquge.tw/book/*/
 // @match          *://www.007zw.com/shuzhai/*/
 // @match          *://www.linovelib.com/novel/*/catalog
 // @match          *://www.linovelib.com/novel/*.html
@@ -240,6 +240,10 @@
 // @match          *://tw.ttkan.co/novel/chapters/*
 // @match          *://www.xiaoshuowanben.com/*/
 // @match          *://www.xbyuan.com/*/
+// @match          *://www.quanzhifashi.com/novel/*/
+// @match          *://www.42zw.la/book/*/
+// @match          *://www.boqugew.com/shu/*/
+// @match          *://www.qbtr.cc/*
 // @compatible     Firefox 100+
 // @compatible     Chrome 85+
 // @compatible     Edge 85+
@@ -9692,6 +9696,7 @@ const ywggzy = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeNextPa
 /* harmony export */   common: () => (/* binding */ common),
 /* harmony export */   dijiubook: () => (/* binding */ dijiubook),
 /* harmony export */   gebiqu: () => (/* binding */ gebiqu),
+/* harmony export */   la42zw: () => (/* binding */ la42zw),
 /* harmony export */   lewenn: () => (/* binding */ lewenn),
 /* harmony export */   luoqiuzw: () => (/* binding */ luoqiuzw),
 /* harmony export */   lusetxt: () => (/* binding */ lusetxt),
@@ -9781,7 +9786,7 @@ const c25zw = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Hb
     return content;
 });
 const xbiquge = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Hb)((introDom) => introDom, (content) => {
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rms */ .up)([`笔趣阁 www.xbiquge.so，最快更新.+ ！`], content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rms */ .up)([/笔趣阁 www.xbiquge.tw，最快更新.+ ！/], content);
     return content;
 });
 const yruan = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Hb)((introDom) => {
@@ -9865,6 +9870,16 @@ const xyb3 = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Hb)
         "请退出转码页面，请下载好阅小说app 阅读最新章节。",
         "https://www.xyb3.net",
     ], content);
+    return content;
+});
+const la42zw = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Hb)((introDom) => introDom, (content) => {
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("div#content > p:first-child", false, content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rms */ .up)([
+        "首发网址ｈｔｔps://m.42zw.la",
+        "记住网址m.42zw．la",
+        "一秒记住ｈｔｔｐs://ｍ．42zw.la"
+    ], content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("br", true, content);
     return content;
 });
 
@@ -10172,6 +10187,40 @@ const aixdzs = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */
     getSName: (dom) => dom.innerText.trim(),
     getContent: (doc) => doc.querySelector(".content"),
     contentPatch: (dom) => dom,
+});
+
+
+/***/ }),
+
+/***/ "./src/rules/onePage/boqugew.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   boqugew: () => (/* binding */ boqugew)
+/* harmony export */ });
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
+
+
+const boqugew = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+    bookUrl: document.location.href,
+    bookname: document.querySelector("h1.bookTitle").innerText.trim(),
+    author: document.querySelector("p.booktag > a:first-child").innerText.replace(/作(\s+)?者[：:]/, "").trim(),
+    introDom: document.querySelector("p#bookIntro"),
+    introDomPatch: (introDom) => introDom,
+    coverUrl: document.querySelector("img.img-thumbnail").src,
+    aList: document.querySelectorAll("div#list-chapterAll > dl > dd > a"),
+    getContent: (doc) => doc.querySelector("div#htmlContent"),
+    contentPatch: (content) => {
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .up)([
+            "记住网址m.ｂｏｑｕgew．ｃｏｍ",
+            "一秒记住ｈｔｔｐ://ｍ．boqugeｗ．ｃｏｍ",
+            "首发网址ｈｔｔp://m.ｂｏｑｕｇｅｗ.com"
+        ], content);
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("br", true, content);
+        return content;
+    },
 });
 
 
@@ -10906,6 +10955,64 @@ const syosetuOrg = () => {
         language: "ja",
     });
 };
+
+
+/***/ }),
+
+/***/ "./src/rules/onePage/qbtrcc.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   qbtrcc: () => (/* binding */ qbtrcc)
+/* harmony export */ });
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
+
+const qbtrcc = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+    bookUrl: document.location.href,
+    bookname: document.querySelector("div.infos > h1").innerText.trim(),
+    author: document.querySelector("div.infos > div.date > span").innerText.replace("作者：", "").trim(),
+    introDom: document.querySelector("div.infos > p"),
+    introDomPatch: (introDom) => introDom,
+    coverUrl: "https://www.qbtr.cc/skin/default/images/bbb2.png",
+    aList: document.querySelectorAll("ul.clearfix > li > a"),
+    getContent: (doc) => doc.querySelector("div.read_chapterDetail"),
+    contentPatch: (content) => content,
+});
+
+
+/***/ }),
+
+/***/ "./src/rules/onePage/qzxsw.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   qzxsw: () => (/* binding */ qzxsw)
+/* harmony export */ });
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
+
+
+const qzxsw = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+    bookUrl: document.location.href,
+    bookname: document.querySelector("div.introduce > h1").innerText.trim(),
+    author: document.querySelector("div.introduce > p.bq > span:nth-child(2) > a").innerText.trim(),
+    introDom: document.querySelector("div.introduce > p.jj"),
+    introDomPatch: (introDom) => introDom,
+    coverUrl: document.querySelector("div.pic > img").src,
+    aList: document.querySelectorAll("div.ml_list > ul > li > a"),
+    getContent: (doc) => doc.querySelector(".articlecontent"),
+    contentPatch: (content) => {
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .up)([
+            "一秒记住m.quanzhifashｉ。com",
+            "ｍ．ｑuanzhifashｉ．com",
+            "ｈttp://m.quanzhifashi.com首发"
+        ], content);
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("br", true, content);
+        return content;
+    },
+});
 
 
 /***/ }),
@@ -21596,6 +21703,21 @@ async function getRule() {
             ruleClass = xbyuan();
             break;
         }
+        case "www.quanzhifashi.com": {
+            const { qzxsw } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/qzxsw.ts"));
+            ruleClass = qzxsw();
+            break;
+        }
+        case "www.boqugew.com": {
+            const { boqugew } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/boqugew.ts"));
+            ruleClass = boqugew();
+            break;
+        }
+        case "www.qbtr.cc": {
+            const { qbtrcc } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/qbtrcc.ts"));
+            ruleClass = qbtrcc();
+            break;
+        }
         case "m.baihexs.com": {
             const { baihexs } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePageWithMultiIndexPage/baihexs.ts"));
             ruleClass = baihexs();
@@ -21697,7 +21819,7 @@ async function getRule() {
             ruleClass = mht();
             break;
         }
-        case "www.xbiquge.so": {
+        case "www.xbiquge.tw": {
             const { xbiquge } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
             ruleClass = xbiquge();
             break;
@@ -21805,6 +21927,11 @@ async function getRule() {
         case "www.266ks.com": {
             const { c226ks } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/multiIndexNextPage.ts"));
             ruleClass = c226ks();
+            break;
+        }
+        case "www.42zw.la": {
+            const { la42zw } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
+            ruleClass = la42zw();
             break;
         }
         default: {
@@ -22130,7 +22257,7 @@ function getUI() {
         case "www.007zw.com":
         case "www.wanben.info":
         case "www.mht99.com":
-        case "www.xbiquge.so":
+        case "www.xbiquge.tw":
         case "www.luoqiuzw.com":
         case "dijiuben.com":
         case "www.biquzw.la":
@@ -22236,6 +22363,10 @@ function getUI() {
                 }
             };
         }
+        case "www.quanzhifashi.com":
+        case "www.42zw.la":
+        case "www.boqugew.com":
+        case "www.qbtr.cc":
         default: {
             return () => {
                 return defaultObject;
