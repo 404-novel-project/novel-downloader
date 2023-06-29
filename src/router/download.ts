@@ -344,6 +344,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = xbyuan();
       break;
     }
+    case "www.quanzhifashi.com": {
+      const { qzxsw } = await import("../rules/onePage/qzxsw");
+      ruleClass = qzxsw();
+      break;
+    }
     /* onePage End */
 
     /* onePageWithMultiIndexPage End */
@@ -465,7 +470,7 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = mht();
       break;
     }
-    case "www.xbiquge.so": {
+    case "www.xbiquge.tw": {
       const { xbiquge } = await import("../rules/biquge/onePage");
       ruleClass = xbiquge();
       break;
