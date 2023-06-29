@@ -315,8 +315,8 @@ export class Jjwxc extends BaseRuleClass {
       > {
         function getFontInfo() {
           const s = dom.querySelectorAll("body > style")[1] as HTMLStyleElement;
-          let fontNameI: string;
-          let fontUrlI: string;
+          let fontNameI = "";
+          let fontUrlI = "";
 
           if (s.sheet) {
             const f = s.sheet.cssRules[s.sheet.cssRules.length - 2];
@@ -339,14 +339,20 @@ export class Jjwxc extends BaseRuleClass {
             }
           }
 
-          const _fontName =
-            document.querySelector("div.noveltext")?.classList[1];
-          if (_fontName) {
-            fontNameI = _fontName;
-            fontUrlI =
-              document.location.protocol +
-              `//static.jjwxc.net/tmp/fonts/${fontNameI}.woff2?h=my.jjwxc.net`;
+          if (fontNameI !== "") {
+            fontUrlI = `${document.location.protocol}//static.jjwxc.net/tmp/fonts/${fontNameI}.woff2?h=my.jjwxc.net`;
             return [fontNameI, fontUrlI];
+          } else {
+            const css = dom.querySelector("div.noveltext")?.classList;
+            if (css) {
+              fontNameI = Array.from(css).filter((cn) =>
+                cn.startsWith("jjwxcfont_")
+              )[0];
+              if (fontNameI) {
+                fontUrlI = `${document.location.protocol}//static.jjwxc.net/tmp/fonts/${fontNameI}.woff2?h=my.jjwxc.net`;
+                return [fontNameI, fontUrlI];
+              }
+            }
           }
 
           return [null, null];
@@ -630,7 +636,7 @@ export class Jjwxc extends BaseRuleClass {
       }
       return "error2333";
     }
-    async function getChapter(): Promise<ChapterParseObject> {
+    async function getChapterByApi(): Promise<ChapterParseObject> {
       let chapterGetInfoUrl = chapterUrl.replace("id", "Id");
       chapterGetInfoUrl = chapterGetInfoUrl.replace("id", "Id");
       chapterGetInfoUrl = chapterGetInfoUrl.replace(
@@ -787,9 +793,17 @@ export class Jjwxc extends BaseRuleClass {
       }
     }
     if (isVIP) {
-      return getChapter(); //vipChapter();
+      if (typeof (unsafeWindow as UnsafeWindow).tokenOptions === "object") {
+        return getChapterByApi();
+      } else {
+        return vipChapter();
+      }
     } else {
-      return getChapter(); //publicChapter();
+      if (typeof (unsafeWindow as UnsafeWindow).tokenOptions === "object") {
+        return getChapterByApi();
+      } else {
+        return publicChapter();
+      }
     }
   }
 }

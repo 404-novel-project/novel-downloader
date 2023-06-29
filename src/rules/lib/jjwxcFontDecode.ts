@@ -34,7 +34,7 @@ async function getJjwxcFontTable(fontName: string) {
 }
 
 async function fetchRemoteFont(fontName: string) {
-  const url = `https://jjwxc.bgme.bid/${fontName}.json`;
+  const url = `https://jjwxc.bgme.bid/api/${fontName}/table`;
   log.info(`[jjwxc-font]开始请求远程字体对照表 ${fontName}`);
   let retry = retryLimit;
   while (retry > 0) {
