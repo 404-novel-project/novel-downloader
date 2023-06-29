@@ -272,3 +272,18 @@ export const xyb3 = () =>
       return content;
     }
   );
+
+export const la42zw = () =>
+  mkBiquge(
+    (introDom) => introDom,
+    (content) => {
+      rm("div#content > p:first-child", false, content);
+      rms([
+        "首发网址ｈｔｔps://m.42zw.la",
+        "记住网址m.42zw．la",
+        "一秒记住ｈｔｔｐs://ｍ．42zw.la"
+      ],content);
+      rm("br", true, content);
+      return content;
+    }
+  );

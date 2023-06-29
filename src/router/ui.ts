@@ -337,6 +337,9 @@ export function getUI(): () => UIObject {
       };
     }
     case "www.quanzhifashi.com":
+    case "www.42zw.la":
+    case "www.boqugew.com":
+    case "www.qbtr.cc":
     default: {
       return () => {
         return defaultObject;

@@ -349,6 +349,16 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = qzxsw();
       break;
     }
+    case "www.boqugew.com": {
+      const { boqugew } = await import("../rules/onePage/boqugew");
+      ruleClass = boqugew();
+      break;
+    }
+    case "www.qbtr.cc": {
+      const { qbtrcc } = await import("../rules/onePage/qbtrcc");
+      ruleClass = qbtrcc();
+      break;
+    }
     /* onePage End */
 
     /* onePageWithMultiIndexPage End */
@@ -580,6 +590,11 @@ export async function getRule(): Promise<BaseRuleClass> {
     case "www.266ks.com": {
       const { c226ks } = await import("../rules/biquge/multiIndexNextPage");
       ruleClass = c226ks();
+      break;
+    }
+    case "www.42zw.la": {
+      const { la42zw } = await import("../rules/biquge/onePage")
+      ruleClass = la42zw();
       break;
     }
     /** 笔趣阁END **/
