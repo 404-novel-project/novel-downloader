@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.1.857
+// @version        5.1.858
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -13856,7 +13856,7 @@ async function getJjwxcFontTable(fontName) {
     }
 }
 async function fetchRemoteFont(fontName) {
-    const url = `https://jjwxc.bgme.bid/${fontName}.json`;
+    const url = `https://jjwxc.bgme.bid/api/${fontName}/table`;
     loglevel_default().info(`[jjwxc-font]开始请求远程字体对照表 ${fontName}`);
     let retry = setting/* retryLimit */.o5;
     while (retry > 0) {
@@ -14135,8 +14135,8 @@ class Jjwxc extends rules/* BaseRuleClass */.c {
             async function getFont(dom) {
                 function getFontInfo() {
                     const s = dom.querySelectorAll("body > style")[1];
-                    let fontNameI;
-                    let fontUrlI;
+                    let fontNameI = "";
+                    let fontUrlI = "";
                     if (s.sheet) {
                         const f = s.sheet.cssRules[s.sheet.cssRules.length - 2];
                         const m1 = f.cssText.match(/jjwxcfont_[\d\w]+/);
@@ -14155,13 +14155,19 @@ class Jjwxc extends rules/* BaseRuleClass */.c {
                             }
                         }
                     }
-                    const _fontName = document.querySelector("div.noveltext")?.classList[1];
-                    if (_fontName) {
-                        fontNameI = _fontName;
-                        fontUrlI =
-                            document.location.protocol +
-                                `//static.jjwxc.net/tmp/fonts/${fontNameI}.woff2?h=my.jjwxc.net`;
+                    if (fontNameI !== "") {
+                        fontUrlI = `${document.location.protocol}//static.jjwxc.net/tmp/fonts/${fontNameI}.woff2?h=my.jjwxc.net`;
                         return [fontNameI, fontUrlI];
+                    }
+                    else {
+                        const css = dom.querySelector("div.noveltext")?.classList;
+                        if (css) {
+                            fontNameI = Array.from(css).filter((cn) => cn.startsWith("jjwxcfont_"))[0];
+                            if (fontNameI) {
+                                fontUrlI = `${document.location.protocol}//static.jjwxc.net/tmp/fonts/${fontNameI}.woff2?h=my.jjwxc.net`;
+                                return [fontNameI, fontUrlI];
+                            }
+                        }
                     }
                     return [null, null];
                 }
@@ -14355,7 +14361,7 @@ class Jjwxc extends rules/* BaseRuleClass */.c {
             }
             return "error2333";
         }
-        async function getChapter() {
+        async function getChapterByApi() {
             let chapterGetInfoUrl = chapterUrl.replace("id", "Id");
             chapterGetInfoUrl = chapterGetInfoUrl.replace("id", "Id");
             chapterGetInfoUrl = chapterGetInfoUrl.replace("http://www.jjwxc.net/onebook.php?", "https://app.jjwxc.net/androidapi/chapterContent?");
@@ -14488,10 +14494,20 @@ class Jjwxc extends rules/* BaseRuleClass */.c {
             }
         }
         if (isVIP) {
-            return getChapter();
+            if (typeof unsafeWindow.tokenOptions === "object") {
+                return getChapterByApi();
+            }
+            else {
+                return vipChapter();
+            }
         }
         else {
-            return getChapter();
+            if (typeof unsafeWindow.tokenOptions === "object") {
+                return getChapterByApi();
+            }
+            else {
+                return publicChapter();
+            }
         }
     }
 }
