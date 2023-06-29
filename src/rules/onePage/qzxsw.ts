@@ -16,9 +16,12 @@ export const qzxsw = () =>
     aList: document.querySelectorAll("div.ml_list > ul > li > a"),
     getContent: (doc) => doc.querySelector(".articlecontent") as HTMLElement,
     contentPatch: (content) => {
-      rm2(["一秒记住m.quanzhifashｉ。com"], content);
-      rm2(["ｍ．ｑuanzhifashｉ．com"], content);
-      rm2(["ｈttp://m.quanzhifashi.com首发"], content);
+      const ads = [
+        "一秒记住m.quanzhifashｉ。com",
+        "ｍ．ｑuanzhifashｉ．com",
+        "ｈttp://m.quanzhifashi.com首发"
+      ];
+      rm2(ads, content);
       return content;
     },
   });
