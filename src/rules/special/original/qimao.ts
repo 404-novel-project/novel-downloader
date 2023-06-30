@@ -1,12 +1,13 @@
 import { getAttachment } from "../../../lib/attachments";
 import { cleanDOM } from "../../../lib/cleanDOM";
 import { getHtmlDOM } from "../../../lib/http";
-import { introDomHandle } from "../../../lib/rule";
+//import { introDomHandle } from "../../../lib/rule";
 import { log } from "../../../log";
 import { Status } from "../../../main/main";
 import { Chapter } from "../../../main/Chapter";
 import { Book, BookAdditionalMetadate } from "../../../main/Book";
 import { BaseRuleClass, ChapterParseObject } from "../../../rules";
+import { sleep } from "../../../lib/misc";
 
 export class Qimao extends BaseRuleClass {
   public constructor() {
@@ -18,20 +19,22 @@ export class Qimao extends BaseRuleClass {
     const bookUrl = document.location.href;
 
     const bookname = (
-      document.querySelector("h2.tit") as HTMLElement
+      document.querySelector("div.title > span.txt") as HTMLElement
     ).innerText.trim();
     const author = (
-      document.querySelector(".p-name > a") as HTMLElement
+      document.querySelector("div.sub-title > span.txt > em > a") as HTMLElement
     ).innerHTML.trim();
 
     const introDom = document.querySelector(
-      ".book-introduction .article"
+      "head > meta[name='description']"
     ) as HTMLElement;
-    const [introduction, introductionHTML] = await introDomHandle(introDom);
+    const introduction = introDom.getAttribute('content') || "";
+    const introductionHTML = document.createElement("div");
+    introductionHTML.appendChild(document.createTextNode(introduction));
 
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = (
-      document.querySelector(".poster-pic > img") as HTMLImageElement
+      document.querySelector("div.wrap-pic > img") as HTMLImageElement
     ).src;
     if (coverUrl) {
       getAttachment(coverUrl, this.attachmentMode, "cover-")
@@ -41,21 +44,21 @@ export class Qimao extends BaseRuleClass {
         .catch((error) => log.error(error));
     }
     additionalMetadate.tags = Array.from(
-      document.querySelectorAll(".qm-tags > a")
+      document.querySelectorAll("em.qm-tag > a")
     ).map((a) => (a as HTMLAnchorElement).innerText.trim());
 
     // 虽然有第一卷标识，但并没有发现有多卷的图书
     const chapters: Chapter[] = [];
     const cos = document.querySelectorAll(
-      '.chapter-directory > dd > div[sort-type="ascending"] a'
+      'ul.clearfix > li > a > span.txt'
     );
     let chapterNumber = 0;
     for (const aElem of Array.from(cos)) {
       chapterNumber++;
       const chapterName = (aElem as HTMLAnchorElement).innerText;
-      const chapterUrl = (aElem as HTMLAnchorElement).href;
+      const chapterUrl = (aElem.parentNode as HTMLAnchorElement).href;
       const isVIP = () => {
-        return !!aElem.childElementCount;
+        return !!aElem.previousElementSibling;
       };
       const isPaid = () => {
         // Todo
@@ -109,7 +112,7 @@ export class Qimao extends BaseRuleClass {
       log.debug(`[Chapter]请求 ${chapterUrl}`);
       const doc = await getHtmlDOM(chapterUrl, charset);
       chapterName = (
-        doc.querySelector(".title") as HTMLElement
+        doc.querySelector(".chapter-title") as HTMLElement
       ).innerText.trim();
 
       const content = doc.querySelector(".article") as HTMLElement;
@@ -150,6 +153,7 @@ export class Qimao extends BaseRuleClass {
     if (isVIP) {
       return vipChapter();
     } else {
+      await sleep(3000 + Math.round(Math.random() * 2000));
       return publicChapter();
     }
   }

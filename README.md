@@ -84,7 +84,7 @@ EPUB 文件请使用相应阅读器阅读。
 | [17K 小说网](https://www.17k.com/)                  | ✅       | ❌       |                                                                                                                                                                                                                                                                              |
 | [书海小说网](http://www.shuhai.com/)                | ✅       | ❌       |                                                                                                                                                                                                                                                                              |
 | [塔读文学](https://www.tadu.com/)                   | ✅       | ❌       |                                                                                                                                                                                                                                                                              |
-| [七猫中文网](https://www.qimao.com/)                | ✅       | ❌       |                                                                                                                                                                                                                                                                              |
+| [七猫中文网](https://www.qimao.com/)                | ✅       | ❌       | 请先进入作品目录再运行脚本。 |
 | [废文网](https://sosad.fun/)                        | ✅       | ❎       | 部分小说或章节需登录后查看。                                                                                                                                                                                                                                                 |
 | [pixiv](https://www.pixiv.net/novel/)               | ✅       | ❎       | 单页应用，如打开书籍详情页右上角未出现下载图标，请按下 F5 重新加载当前页面。                                                                                                                                                                                                 |
 | [动漫之家](https://www.dmzj.com/)                   | ✅       | ❎       | 需下载大量图片，速度较慢，请耐心等待。<br>需占用大量内存，请保证最终生成文件 4 倍以上内存，即最终下载生成 500MB ZIP 文件，运行时请保证至少 2GB 内存空间。可使用筛选函数，分次下载。                                                                                          |
@@ -171,6 +171,7 @@ EPUB 文件请使用相应阅读器阅读。
 | [笔趣阁](https://www.42zw.la/)                    | ✅       | ❎       |                                                                                          |
 | [新笔趣阁](http://www.boqugew.com/)               | ✅       | ❎       |                                                                                          |
 | [全本同人小说](https://www.qbtr.cc/)               | ✅       | ❎       |                                                                                          |
+| [鬼大爷网](https://b.guidaye.com/)               | ✅       | ❎       |                                                                                          |
 
 </details>
 

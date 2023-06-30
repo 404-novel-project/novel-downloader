@@ -71,6 +71,10 @@ export const linovelib = () => {
         contentPatch: (_content) => {
           rm(".tp", true, _content);
           rm(".bd", true, _content);
+          _content.querySelectorAll("img.lazyload").forEach((e) => {
+            (e as HTMLImageElement).src = (e as HTMLElement).dataset.src || (e as HTMLImageElement).src;
+            return e;
+          });
           return _content;
         },
         getNextPage: (doc) =>
