@@ -359,6 +359,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = qbtrcc();
       break;
     }
+    case "b.guidaye.com": {
+      const { guidaye } = await import("../rules/onePage/guidaye");
+      ruleClass = guidaye();
+      break;
+    }
     /* onePage End */
 
     /* onePageWithMultiIndexPage End */
