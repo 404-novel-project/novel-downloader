@@ -212,7 +212,8 @@
     "*://www.quanzhifashi.com/novel/*/",
     "*://www.42zw.la/book/*/",
     "*://www.boqugew.com/shu/*/",
-    "*://www.qbtr.cc/*"
+    "*://www.qbtr.cc/*/*.html",
+    "*://b.guidaye.com/*/*/"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",
@@ -259,7 +260,8 @@
     "*://www.alphapolis.co.jp/novel/*/*/episode/*",
     "*://novelup.plus/story/*/*",
     "*://www.linovelib.com/novel/*/*.html",
-    "*://w.linovelib.com/novel/*/*.html"
+    "*://w.linovelib.com/novel/*/*.html",
+    "*://www.qbtr.cc/*/*/*.html"
   ],
   "grant": [
     "unsafeWindow",

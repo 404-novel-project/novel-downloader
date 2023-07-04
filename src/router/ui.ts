@@ -340,6 +340,13 @@ export function getUI(): () => UIObject {
     case "www.42zw.la":
     case "www.boqugew.com":
     case "www.qbtr.cc":
+    case "b.guidaye.com":
+    case "www.qimao.com": {
+      return () => {
+        document.querySelector("li.qm-tab-list-item:nth-child(2) > div")?.dispatchEvent(new MouseEvent('click'));
+        return defaultObject;
+      };
+    }
     default: {
       return () => {
         return defaultObject;
