@@ -18,8 +18,10 @@ import { BaseRuleClass, ChapterParseObject } from "../../../rules";
 import { retryLimit } from "../../../setting";
 import { replaceJjwxcCharacter } from "../../lib/jjwxcFontDecode";
 import { UnsafeWindow } from "../../../global";
-import * as CryptoJS from "crypto-js";
 import { _GM_xmlhttpRequest } from "../../../lib/GM";
+
+import * as csstree from "css-tree";
+import * as CryptoJS from "crypto-js";
 
 type JJWindow = UnsafeWindow & { getCookie: (key: string) => string };
 
@@ -500,11 +502,112 @@ export class Jjwxc extends BaseRuleClass {
         const key = t.slice(0, 16);
         const iv = t.slice(-16);
 
-        return CryptoJS.DES.decrypt(
+        const decryptContent = CryptoJS.DES.decrypt(
           data["content"],
           CryptoJS.enc.Utf8.parse(key),
           { iv: CryptoJS.enc.Utf8.parse(iv) }
         ).toString(CryptoJS.enc.Utf8);
+
+        const decryptContentDoc = new DOMParser().parseFromString(
+          decryptContent,
+          "text/html"
+        );
+
+        function decryptCssEncrypt() {
+          // 修复CSS加密文本
+          // https://github.com/404-novel-project/novel-downloader/issues/521
+
+          const cssText = Array.from(doc.querySelectorAll("style"))
+            .map((s) => s.innerText)
+            .join("\n");
+          const ast = csstree.parse(cssText);
+
+          csstree.walk(ast, function (node) {
+            if (node.type === "Declaration" && node.property === "content") {
+              const value = (
+                (
+                  node.value as csstree.Value
+                ).children.toArray()?.[0] as csstree.StringNode
+              ).value;
+
+              const selectorList = (
+                this.rule?.prelude as csstree.SelectorList
+              ).children.toArray();
+              for (const s of selectorList) {
+                const _selector = (s as csstree.Selector).children.toArray();
+                const selector = new Map(
+                  _selector.map((sc) => [
+                    sc.type,
+                    (
+                      sc as
+                        | csstree.ClassSelector
+                        | csstree.PseudoElementSelector
+                    ).name,
+                  ])
+                );
+                const classSelector = selector.get("ClassSelector");
+                const pseudoClassSelector = selector.get("PseudoClassSelector");
+
+                if (classSelector && pseudoClassSelector && value) {
+                  const sNode = decryptContentDoc.querySelector(
+                    `.${classSelector}`
+                  );
+                  if (sNode) {
+                    const pNode = sNode.parentNode;
+
+                    const iNode = decryptContentDoc.createElement("span");
+                    iNode.id = `${classSelector}-${pseudoClassSelector}`;
+                    iNode.innerText = value;
+
+                    if (pseudoClassSelector === "before") {
+                      pNode?.insertBefore(iNode, sNode);
+                    } else if (pseudoClassSelector === "after") {
+                      pNode?.insertBefore(iNode, sNode.nextSibling);
+                    }
+                  }
+                }
+              }
+            }
+          });
+
+          csstree.walk(ast, function (node) {
+            if (node.type === "Declaration" && node.property === "display") {
+              const value = (
+                (
+                  node.value as csstree.Value
+                ).children.toArray()?.[0] as csstree.Identifier
+              ).name;
+
+              const selectorList = (
+                this.rule?.prelude as csstree.SelectorList
+              ).children.toArray();
+              for (const s of selectorList) {
+                const _selector = (s as csstree.Selector).children.toArray();
+                const selector = new Map(
+                  _selector.map((sc) => [
+                    sc.type,
+                    (
+                      sc as
+                        | csstree.ClassSelector
+                        | csstree.PseudoElementSelector
+                    ).name,
+                  ])
+                );
+                const classSelector = selector.get("ClassSelector");
+                const pseudoClassSelector = selector.get("PseudoClassSelector");
+
+                if (classSelector && pseudoClassSelector && value === "none") {
+                  decryptContentDoc
+                    .querySelector(`#${classSelector}-${pseudoClassSelector}`)
+                    ?.remove();
+                }
+              }
+            }
+          });
+        }
+        decryptCssEncrypt();
+
+        return decryptContentDoc.body.innerHTML;
       }
 
       const doc = await ggetHtmlDOM(chapterUrl, charset);

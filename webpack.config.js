@@ -23,8 +23,8 @@ export default {
   },
   performance: {
     hints: "error",
-    maxEntrypointSize: 2000 * 10 ** 3,
-    maxAssetSize: 2000 * 10 ** 3,
+    maxEntrypointSize: 2 * 2 ** 20,
+    maxAssetSize: 2 * 2 ** 20,
   },
   entry: path.resolve(__dirname, "src", "index.ts"),
   output: {

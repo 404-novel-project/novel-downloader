@@ -61,7 +61,15 @@ export default defineComponent({
       if (book) {
         const chapters = book.chapters;
         const cns = chapters
-          .filter((c) => c.status !== Status.aborted)
+          .filter((c) => {
+            if (c.status === Status.aborted) {
+              return false;
+            }
+            if (c.isVIP && c.isPaid !== true) {
+              return false;
+            }
+            return true;
+          })
           .map((c) => c.chapterNumber);
         cns.sort();
         return cns.slice(-3)[0];

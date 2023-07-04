@@ -24,6 +24,7 @@
   "devDependencies": {
     "@babel/types": "^7.22.5",
     "@types/crypto-js": "^4.1.1",
+    "@types/css-tree": "^2.3.1",
     "@types/file-saver": "^2.0.5",
     "@types/got": "^9.6.12",
     "@types/mime-db": "^1.43.1",
@@ -56,6 +57,7 @@
   "dependencies": {
     "@mozilla/readability": "^0.4.4",
     "crypto-js": "^4.1.1",
+    "css-tree": "^2.3.1",
     "fflate": "^0.8.0",
     "file-saver": "^2.0.5",
     "loglevel": "^1.8.1",
