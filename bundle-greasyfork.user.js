@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.880
+// @version        5.2.881
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -27993,55 +27993,216 @@ class Jjwxc extends rules/* BaseRuleClass */.c {
                 return [null, null, null];
             }
             function decrypt(doc) {
-                const children = doc.querySelector("#contentvars")?.children;
-                if (!children) {
-                    throw new Error("获取章节失败");
-                }
-                const data = {};
-                Array.from(children).forEach((item) => (data[item.getAttribute("name")] = item.getAttribute("value")));
-                const novelid = parseInt(data["novelid"]);
-                const chapterid = parseInt(data["chapterid"]);
-                const _readerid = unsafeWindow.getCookie("readerid");
-                if (!_readerid) {
-                    throw new Error("无法获取客户号");
-                }
-                const readerid = parseInt(_readerid);
-                const accessKey = data["accessKey"];
-                const _hash = novelid + "." + chapterid + "." + readerid + "." + accessKey;
-                const hash = external_CryptoJS_.MD5(_hash).toString();
-                const convert = (input) => {
-                    let out = 0;
-                    for (let i = 0; i < input.length; i++) {
-                        out += input.charCodeAt(i);
+                function getDecryptContent() {
+                    function getCookie(name) {
+                        let cookies = "";
+                        const dc = document.cookie;
+                        const prefix = name + "=";
+                        let begin = dc.indexOf("; " + prefix);
+                        if (begin == -1) {
+                            begin = dc.indexOf(prefix);
+                            if (begin != 0)
+                                cookies = null;
+                        }
+                        else {
+                            begin += 2;
+                        }
+                        let end = document.cookie.indexOf(";", begin);
+                        if (end == -1) {
+                            end = dc.length;
+                        }
+                        if (cookies != null) {
+                            cookies = unescape(dc.substring(begin + prefix.length, end));
+                        }
+                        if (cookies == null && name != "token" && name != "managertoken") {
+                            const tokenKey = [
+                                "readerid",
+                                "ubuntu",
+                                "ptid",
+                                "email",
+                                "authorid",
+                                "cookietime",
+                                "islocaluser",
+                                "authorname",
+                                "newwindow",
+                                "showname",
+                                "examineright",
+                                "logintype",
+                                "certification",
+                                "userclosecomment",
+                                "shareweibo",
+                                "commentfilterversion",
+                            ];
+                            const managerKey = [
+                                "managerid",
+                                "managertoken",
+                                "moderatorName",
+                                "isAdmin",
+                                "managername",
+                                "loginSource",
+                                "commentSearch",
+                            ];
+                            if (tokenKey.indexOf(name) > -1) {
+                                let token = getCookie("token");
+                                const index = tokenKey.indexOf(name);
+                                if (token != null) {
+                                    token = strdecode(token);
+                                    token = token.split("|");
+                                    return token[index];
+                                }
+                            }
+                            else if (managerKey.indexOf(name) > -1) {
+                                let token = getCookie("managertoken");
+                                const index = managerKey.indexOf(name);
+                                if (token != null) {
+                                    token = strdecode(token);
+                                    token = token.split("|");
+                                    return token[index];
+                                }
+                            }
+                            return null;
+                        }
+                        return cookies;
                     }
-                    return out;
-                };
-                const accessKeyConvert = convert(accessKey);
-                const hashSlice = hash.slice(accessKeyConvert % hash.length) +
-                    hash.slice(0, accessKeyConvert % hash.length);
-                let hashSlice16 = hashSlice.slice(0, 16);
-                let hashSlice_16 = hashSlice.slice(-16);
-                if (hash.charCodeAt(0)) {
-                    [hashSlice16, hashSlice_16] = [hashSlice_16, hashSlice16];
-                }
-                const cryptInfo = data["cryptInfo"];
-                const _decrypedtCryptInfo = external_CryptoJS_.DES.decrypt(cryptInfo, external_CryptoJS_.enc.Utf8.parse(hashSlice16), {
-                    iv: external_CryptoJS_.enc.Utf8.parse(hashSlice_16),
-                }).toString(external_CryptoJS_.enc.Utf8);
-                const decrypedtCryptInfo = JSON.parse(atob(_decrypedtCryptInfo));
-                const verifyTime = (obj) => {
-                    if (new Date()["getTime"]() / 1000 - obj["time"] > 86400) {
-                        throw new Error("章节内容解码失败，内容生成时间与当前设备时间相差过大，请刷新页面或校准当前设备时间。内容生成时间为:" +
-                            new Date(obj["time"] * 100).toLocaleString());
+                    function strdecode(str) {
+                        return utf8to16(decode64(str));
                     }
-                };
-                verifyTime(decrypedtCryptInfo);
-                const md5sum = external_CryptoJS_.MD5(decrypedtCryptInfo["key"] + decrypedtCryptInfo["time"] + readerid).toString();
-                const t = md5sum["slice"](accessKeyConvert % md5sum["length"]) +
-                    md5sum["slice"](0, accessKeyConvert % md5sum["length"]);
-                const key = t.slice(0, 16);
-                const iv = t.slice(-16);
-                const decryptContent = external_CryptoJS_.DES.decrypt(data["content"], external_CryptoJS_.enc.Utf8.parse(key), { iv: external_CryptoJS_.enc.Utf8.parse(iv) }).toString(external_CryptoJS_.enc.Utf8);
+                    const base64DecodeChars = [
+                        -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+                        -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+                        -1, -1, -1, -1, -1, -1, -1, -1, -1, 62, -1, -1, -1, 63, 52, 53, 54,
+                        55, 56, 57, 58, 59, 60, 61, -1, -1, -1, -1, -1, -1, -1, 0, 1, 2, 3,
+                        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
+                        22, 23, 24, 25, -1, -1, -1, -1, -1, -1, 26, 27, 28, 29, 30, 31, 32,
+                        33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49,
+                        50, 51, -1, -1, -1, -1, -1,
+                    ];
+                    function decode64(str) {
+                        let c1, c2, c3, c4;
+                        let i, out;
+                        const len = str.length;
+                        i = 0;
+                        out = "";
+                        while (i < len) {
+                            do {
+                                c1 = base64DecodeChars[str.charCodeAt(i++) & 0xff];
+                            } while (i < len && c1 == -1);
+                            if (c1 == -1)
+                                break;
+                            do {
+                                c2 = base64DecodeChars[str.charCodeAt(i++) & 0xff];
+                            } while (i < len && c2 == -1);
+                            if (c2 == -1)
+                                break;
+                            out += String.fromCharCode((c1 << 2) | ((c2 & 0x30) >> 4));
+                            do {
+                                c3 = str.charCodeAt(i++) & 0xff;
+                                if (c3 == 61)
+                                    return out;
+                                c3 = base64DecodeChars[c3];
+                            } while (i < len && c3 == -1);
+                            if (c3 == -1)
+                                break;
+                            out += String.fromCharCode(((c2 & 0xf) << 4) | ((c3 & 0x3c) >> 2));
+                            do {
+                                c4 = str.charCodeAt(i++) & 0xff;
+                                if (c4 == 61)
+                                    return out;
+                                c4 = base64DecodeChars[c4];
+                            } while (i < len && c4 == -1);
+                            if (c4 == -1)
+                                break;
+                            out += String.fromCharCode(((c3 & 0x03) << 6) | c4);
+                        }
+                        return out;
+                    }
+                    function utf8to16(str) {
+                        let out, i, c;
+                        let char2, char3;
+                        out = "";
+                        const len = str.length;
+                        i = 0;
+                        while (i < len) {
+                            c = str.charCodeAt(i++);
+                            switch (c >> 4) {
+                                case 0:
+                                case 1:
+                                case 2:
+                                case 3:
+                                case 4:
+                                case 5:
+                                case 6:
+                                case 7:
+                                    out += str.charAt(i - 1);
+                                    break;
+                                case 12:
+                                case 13:
+                                    char2 = str.charCodeAt(i++);
+                                    out += String.fromCharCode(((c & 0x1f) << 6) | (char2 & 0x3f));
+                                    break;
+                                case 14:
+                                    char2 = str.charCodeAt(i++);
+                                    char3 = str.charCodeAt(i++);
+                                    out += String.fromCharCode(((c & 0x0f) << 12) |
+                                        ((char2 & 0x3f) << 6) |
+                                        ((char3 & 0x3f) << 0));
+                                    break;
+                            }
+                        }
+                        return out;
+                    }
+                    const children = doc.querySelector("#contentlets, #contentvars")?.children;
+                    if (!children) {
+                        throw new Error("获取章节失败");
+                    }
+                    const data = {};
+                    Array.from(children).forEach((item) => (data[item.getAttribute("name")] = item.getAttribute("value")));
+                    const novelid = parseInt(data["novelid"]);
+                    const chapterid = parseInt(data["chapterid"]);
+                    const _readerid = getCookie("readerid");
+                    if (!_readerid) {
+                        throw new Error("无法获取客户号");
+                    }
+                    const readerid = parseInt(_readerid);
+                    const accessKey = data["accessKey"];
+                    const _hash = novelid + "." + chapterid + "." + readerid + "." + accessKey;
+                    const hash = external_CryptoJS_.MD5(_hash).toString();
+                    const convert = (input) => {
+                        let out = 0;
+                        for (let i = 0; i < input.length; i++) {
+                            out += input.charCodeAt(i);
+                        }
+                        return out;
+                    };
+                    const accessKeyConvert = convert(accessKey);
+                    const hashSlice = hash.slice(accessKeyConvert % hash.length) +
+                        hash.slice(0, accessKeyConvert % hash.length);
+                    let hashSlice16 = hashSlice.slice(0, 16);
+                    let hashSlice_16 = hashSlice.slice(-16);
+                    if (hash.charCodeAt(0)) {
+                        [hashSlice16, hashSlice_16] = [hashSlice_16, hashSlice16];
+                    }
+                    const cryptInfo = data["cryptInfo"];
+                    const _decrypedtCryptInfo = external_CryptoJS_.DES.decrypt(cryptInfo, external_CryptoJS_.enc.Utf8.parse(hashSlice16), {
+                        iv: external_CryptoJS_.enc.Utf8.parse(hashSlice_16),
+                    }).toString(external_CryptoJS_.enc.Utf8);
+                    const decrypedtCryptInfo = JSON.parse(atob(_decrypedtCryptInfo));
+                    const verifyTime = (obj) => {
+                        if (new Date()["getTime"]() / 1000 - obj["time"] > 86400) {
+                            throw new Error("章节内容解码失败，内容生成时间与当前设备时间相差过大，请刷新页面或校准当前设备时间。内容生成时间为:" +
+                                new Date(obj["time"] * 100).toLocaleString());
+                        }
+                    };
+                    verifyTime(decrypedtCryptInfo);
+                    const md5sum = external_CryptoJS_.MD5(decrypedtCryptInfo["key"] + decrypedtCryptInfo["time"] + readerid).toString();
+                    const t = md5sum["slice"](accessKeyConvert % md5sum["length"]) +
+                        md5sum["slice"](0, accessKeyConvert % md5sum["length"]);
+                    const key = t.slice(0, 16);
+                    const iv = t.slice(-16);
+                    const decryptContent = external_CryptoJS_.DES.decrypt(data["content"], external_CryptoJS_.enc.Utf8.parse(key), { iv: external_CryptoJS_.enc.Utf8.parse(iv) }).toString(external_CryptoJS_.enc.Utf8);
+                    return decryptContent;
+                }
+                const decryptContent = getDecryptContent();
                 const decryptContentDoc = new DOMParser().parseFromString(decryptContent, "text/html");
                 function decryptCssEncrypt() {
                     const cssText = Array.from(doc.querySelectorAll("style"))
