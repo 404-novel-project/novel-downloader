@@ -280,7 +280,7 @@ export class Duread extends BaseRuleClass {
     charset: string,
     options: object
   ) {
-    const rootPath = "https://www.duread8.com/";
+    const rootPath = "https://www.duread.cn/";
     const [parentWidth, setFontSize] = [939.2, "18"];
     return getChapter({
       chapterUrl,
@@ -523,7 +523,7 @@ function getChapter({
     }
 
     const getIsLogin = () => {
-      if (document.location.host === "www.duread8.com") {
+      if (document.location.host === "www.duread.cn") {
         return (
           document.querySelector("div.dropdown-menu")?.childElementCount === 3
         );
