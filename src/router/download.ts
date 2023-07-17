@@ -206,7 +206,7 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = Iqingguo;
       break;
     }
-    case "www.duread8.com": {
+    case "www.duread.cn": {
       const { Duread } = await import("../rules/special/original/ciweimao");
       ruleClass = Duread;
       break;
