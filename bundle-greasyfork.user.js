@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.882
+// @version        5.2.884
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -217,6 +217,7 @@
 // @match          *://www.bixia3.com/txt/*/
 // @match          *://www.xiaoshuowu.com/html/*/*/
 // @match          *://www.xrzww.com/bookdetail/*
+// @match          *://www.youdubook.com/bookdetail/*
 // @match          *://colorful-fantasybooks.com/module/novel/info.php?*
 // @match          *://www.dizishu.com/*/*/
 // @match          *://www.ibiquge.la/*/*/
@@ -235,7 +236,7 @@
 // @match          *://www.xyb3.net/5200/*/
 // @match          *://hongxiuzhao.me/*.html
 // @match          *://www.mijiashe.com/*/
-// @match          *://www.duread8.com/book/*
+// @match          *://www.duread.cn/book/*
 // @match          *://www.ttkan.co/novel/chapters/*
 // @match          *://cn.ttkan.co/novel/chapters/*
 // @match          *://tw.ttkan.co/novel/chapters/*
@@ -310,13 +311,14 @@
 // @connect        aixdzs.com
 // @connect        b5200.net
 // @connect        xrzww.com
+// @connect        youdubook.com
 // @connect        akatsuki-novels.com
 // @connect        alphapolis.co.jp
 // @connect        cdn.shucdn.com
 // @connect        readmoo.com
 // @connect        qingoo.cn
 // @connect        sundung.com
-// @connect        duread8.com
+// @connect        duread.cn
 // @connect        ttkan.co
 // @connect        bg3.co
 // @connect        xiaoshuowanben.com
@@ -14159,7 +14161,7 @@ class Duread extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c 
         });
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        const rootPath = "https://www.duread8.com/";
+        const rootPath = "https://www.duread.cn/";
         const [parentWidth, setFontSize] = [939.2, "18"];
         return getChapter({
             chapterUrl,
@@ -14323,7 +14325,7 @@ function getChapter({ chapterUrl, chapterName, isVIP, isPaid, charset, options, 
             return vipCHapterImageUrlI;
         }
         const getIsLogin = () => {
-            if (document.location.host === "www.duread8.com") {
+            if (document.location.host === "www.duread.cn") {
                 return (document.querySelector("div.dropdown-menu")?.childElementCount === 3);
             }
             else if (document.location.host === "www.shubl.com") {
@@ -31331,6 +31333,206 @@ class Xrzww extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
 
 /***/ }),
 
+/***/ "./src/rules/special/original/youdubook.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Youdubook: () => (/* binding */ Youdubook)
+/* harmony export */ });
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/main.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/misc.ts");
+
+
+
+
+
+
+
+
+class Youdubook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
+    constructor() {
+        super();
+        this.attachmentMode = "TM";
+        this.concurrencyLimit = 1;
+    }
+    async bookParse() {
+        const bookUrl = document.location.href;
+        const bookId = bookUrl.substring(bookUrl.lastIndexOf("/") + 1);
+        const apiBase = "https://pre-api.youdubook.com";
+        const ossBase = "https://oss.youdubook.com";
+        const token = localStorage.getItem("token")
+            ? localStorage.getItem("token")
+            : "";
+        const site = 1;
+        const baseHeader = {
+            Accept: "application/json, text/plain, */*",
+            Authorization: `Bearer ${token}`,
+            Site: site.toString(),
+        };
+        const signIn = token !== "";
+        const webNovelDetailUrl = new URL(`${apiBase}/api/webNovelDetail`);
+        webNovelDetailUrl.searchParams.set("novel_id", bookId);
+        const respW = await fetch(webNovelDetailUrl.href, {
+            credentials: "include",
+            headers: {
+                "Cache-Control": "max-age=0",
+                ...baseHeader,
+            },
+            method: "GET",
+            mode: "cors",
+        });
+        const webNovelDetail = (await respW.json());
+        if (webNovelDetail.code !== 200) {
+            throw new Error("获取书籍信息出错！");
+        }
+        const bookname = webNovelDetail.data.novel_name;
+        const author = webNovelDetail.data.novel_author;
+        const introduction = webNovelDetail.data.novel_info;
+        const introductionHTML = document.createElement("div");
+        introductionHTML.innerText = introduction;
+        const additionalMetadate = {};
+        const coverUrl = `${ossBase}${webNovelDetail.data.novel_cover}`;
+        (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getAttachment */ .FG)(coverUrl, this.attachmentMode, "cover-")
+            .then((coverClass) => {
+            additionalMetadate.cover = coverClass;
+        })
+            .catch((error) => _log__WEBPACK_IMPORTED_MODULE_2___default().error(error));
+        additionalMetadate.tags = webNovelDetail.data.novel_tags
+            .split(",")
+            .map((t) => t.trim());
+        additionalMetadate.tags.push(webNovelDetail.data.type_name);
+        additionalMetadate.lastModified = webNovelDetail.data.novel_uptime;
+        const directoryListUrl = new URL(`${apiBase}/api/directoryList`);
+        directoryListUrl.searchParams.set("nid", bookId);
+        directoryListUrl.searchParams.set("orderBy", "0");
+        const respD = await fetch(directoryListUrl.href, {
+            credentials: "include",
+            headers: baseHeader,
+            method: "GET",
+            mode: "cors",
+        });
+        const directoryList = (await respD.json());
+        if (directoryList.code !== 200) {
+            throw new Error("获取目录信息失败！");
+        }
+        const volumes = directoryList.data.volume.reduce((obj, vol) => {
+            obj[vol.volume_id] = {
+                name: vol.volume_name,
+                order: vol.volume_order,
+                desc: vol.volume_desc,
+            };
+            return obj;
+        }, {});
+        const chapters = [];
+        let i = 0;
+        let tSectionName = null;
+        let s = 0;
+        let sc = 0;
+        for (const c of directoryList.data.data) {
+            i++;
+            const chapterUrl = "";
+            const chapterName = c.chapter_name;
+            const chapterNumber = i;
+            const isVIP = c.chapter_ispay === 1;
+            const isPaid = c.is_subscribe === 1;
+            const sectionName = volumes[c.chapter_vid].name;
+            if (tSectionName !== sectionName) {
+                tSectionName = sectionName;
+                s++;
+                sc = 0;
+            }
+            const sectionNumber = s;
+            sc++;
+            const sectionChapterNumber = sc;
+            const options = {
+                nid: c.chapter_nid,
+                vid: c.chapter_vid,
+                chapter_id: c.chapter_id,
+                chapter_order: c.chapter_order,
+                apiBase,
+                headers: baseHeader,
+            };
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_3__/* .Chapter */ .W({
+                bookUrl,
+                bookname,
+                chapterUrl,
+                chapterNumber,
+                chapterName,
+                isVIP,
+                isPaid,
+                sectionName,
+                sectionNumber,
+                sectionChapterNumber,
+                chapterParse: this.chapterParse,
+                charset: this.charset,
+                options,
+            });
+            if (signIn) {
+                if (chapter.isVIP && chapter.isPaid === false) {
+                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_4__/* .Status */ .qb.aborted;
+                }
+            }
+            else {
+                if (chapter.isVIP) {
+                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_4__/* .Status */ .qb.aborted;
+                }
+            }
+            chapters.push(chapter);
+        }
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .f({
+            bookUrl,
+            bookname,
+            author,
+            introduction,
+            introductionHTML,
+            additionalMetadate,
+            chapters,
+        });
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+        const readNewUrl = new URL(`${options.apiBase}/api/readNew`);
+        readNewUrl.searchParams.set("nid", options.nid.toString());
+        readNewUrl.searchParams.set("vid", options.vid.toString());
+        readNewUrl.searchParams.set("chapter_id", options.chapter_id.toString());
+        readNewUrl.searchParams.set("chapter_order", options.chapter_order.toString());
+        readNewUrl.searchParams.set("showpic", false.toString());
+        readNewUrl.searchParams.set("is_cut", "");
+        const resp = await fetch(readNewUrl.href, {
+            credentials: "include",
+            headers: options.headers,
+            method: "GET",
+            mode: "cors",
+        });
+        const readNew = (await resp.json());
+        if (readNew.code !== 200) {
+            throw new Error("获取章节内容失败！ " + JSON.stringify(options));
+        }
+        const contentRaw = document.createElement("p");
+        contentRaw.innerText = readNew.data.content;
+        const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_6__/* .cleanDOM */ .zM)(contentRaw, "TM");
+        await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_7__/* .sleep */ ._v)(4200 * Math.random());
+        return {
+            chapterName,
+            contentRaw,
+            contentText: text,
+            contentHTML: dom,
+            contentImages: images,
+            additionalMetadate: { lastModified: readNew.data.chapter_uptime },
+        };
+    }
+}
+
+
+/***/ }),
+
 /***/ "./src/rules/special/original/zongheng.ts":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -35454,6 +35656,11 @@ async function getRule() {
             ruleClass = Xrzww;
             break;
         }
+        case "www.youdubook.com": {
+            const { Youdubook } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/youdubook.ts"));
+            ruleClass = Youdubook;
+            break;
+        }
         case "new-read.readmoo.com": {
             const { Readmoo } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/readmoo.ts"));
             ruleClass = Readmoo;
@@ -35464,7 +35671,7 @@ async function getRule() {
             ruleClass = Iqingguo;
             break;
         }
-        case "www.duread8.com": {
+        case "www.duread.cn": {
             const { Duread } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/ciweimao.ts"));
             ruleClass = Duread;
             break;
