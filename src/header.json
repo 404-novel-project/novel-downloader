@@ -148,8 +148,8 @@
     "*://www.25zw.org/*/",
     "*://www.tycqzw.com/*_*/",
     "*://www.kanunu8.com/*",
-    "*://www.ciyuanji.com/bookDetails/*",
-    "*://ciyuanji.com/bookDetails/*",
+    "*://www.ciyuanji.com/*",
+    "*://ciyuanji.com/*",
     "*://m.xiaoshuowanben.com/*/",
     "*://www.xiaoshuowanben.com/*/",
     "*://www.ranwen.la/files/article/*/*/",
@@ -262,7 +262,8 @@
     "*://novelup.plus/story/*/*",
     "*://www.linovelib.com/novel/*/*.html",
     "*://w.linovelib.com/novel/*/*.html",
-    "*://www.qbtr.cc/*/*/*.html"
+    "*://www.qbtr.cc/*/*/*.html",
+    "*://www.ciyuanji.com/chapter/*"
   ],
   "grant": [
     "unsafeWindow",
