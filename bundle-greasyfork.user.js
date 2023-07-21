@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.884
+// @version        5.2.885
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -54,6 +54,7 @@
 // @exclude        *://www.linovelib.com/novel/*/*.html
 // @exclude        *://w.linovelib.com/novel/*/*.html
 // @exclude        *://www.qbtr.cc/*/*/*.html
+// @exclude        *://www.ciyuanji.com/chapter/*
 // @match          *://book.sfacg.com/Novel/*/MainIndex/
 // @match          *://book.sfacg.com/Novel/*/
 // @match          *://m.sfacg.com/b/*/
@@ -180,8 +181,8 @@
 // @match          *://www.25zw.org/*/
 // @match          *://www.tycqzw.com/*_*/
 // @match          *://www.kanunu8.com/*
-// @match          *://www.ciyuanji.com/bookDetails/*
-// @match          *://ciyuanji.com/bookDetails/*
+// @match          *://www.ciyuanji.com/*
+// @match          *://ciyuanji.com/*
 // @match          *://m.xiaoshuowanben.com/*/
 // @match          *://www.xiaoshuowanben.com/*/
 // @match          *://www.ranwen.la/files/article/*/*/
@@ -14418,7 +14419,7 @@ function getChapter({ chapterUrl, chapterName, isVIP, isPaid, charset, options, 
 /* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("crypto-js");
 /* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(crypto_js__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/attachments.ts");
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("./src/lib/cleanDOM.ts");
 /* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/http.ts");
 /* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/rule.ts");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
@@ -14427,8 +14428,6 @@ function getChapter({ chapterUrl, chapterName, isVIP, isPaid, charset, options, 
 /* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Chapter.ts");
 /* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/main/Book.ts");
 /* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/rules.ts");
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("./src/lib/dom.ts");
-
 
 
 
@@ -14447,7 +14446,7 @@ class Ciyuanji extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
     }
     async bookParse() {
         const bookUrl = document.location.href;
-        const bookObject = unsafeWindow.__NUXT__.data[0].book;
+        const bookObject = unsafeWindow.__NEXT_DATA__.props.pageProps.book;
         const bookId = bookObject.bookId;
         const bookname = bookObject.bookName;
         const author = bookObject.authorName;
@@ -14464,8 +14463,7 @@ class Ciyuanji extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
                 .catch((error) => _log__WEBPACK_IMPORTED_MODULE_4___default().error(error));
         }
         additionalMetadate.tags = bookObject.tagList.map((tagobj) => tagobj.tagName);
-        const bookChapterObject = unsafeWindow.__NUXT__
-            .data[0].bookChapter;
+        const bookChapterObject = unsafeWindow.__NEXT_DATA__.props.pageProps.bookChapter;
         const chapterList = bookChapterObject.chapterList;
         const chapters = [];
         let chapterNumber = 0;
@@ -14474,7 +14472,7 @@ class Ciyuanji extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
         let sectionChapterNumber = 0;
         for (const chapterObj of chapterList) {
             const chapterId = chapterObj.chapterId;
-            const chapterUrl = `${document.location.origin}/chapter/${chapterId}?bookId=${bookId}`;
+            const chapterUrl = `${document.location.origin}/chapter/${bookId}_${chapterId}`;
             const chapterName = chapterObj.chapterName;
             const _sectionName = chapterObj.title;
             if (sectionName !== _sectionName) {
@@ -14545,26 +14543,21 @@ class Ciyuanji extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
             }
         }
         const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_8__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
-        const _script = Array.from(doc.querySelectorAll("script")).filter((s) => /^window\.__NUXT__/.test(s.innerHTML));
-        if (_script.length === 1) {
-            const script = _script[0];
-            const scriptText = script.innerHTML.replace(/^window\./, "const ");
-            const __NUXT__ = (0,_lib_dom__WEBPACK_IMPORTED_MODULE_9__/* .sandboxed */ .J0)(`${scriptText}; return __NUXT__`);
-            const chapterObj = __NUXT__.data[0].chapter;
-            const content = document.createElement("div");
-            const chapterContent = decrypt(chapterObj.chapterContentFormat);
-            if (chapterContent) {
-                content.innerHTML = chapterContent;
-                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .zM)(content, "TM");
-                return {
-                    chapterName,
-                    contentRaw: content,
-                    contentText: text,
-                    contentHTML: dom,
-                    contentImages: images,
-                    additionalMetadate: null,
-                };
-            }
+        const __NEXT_DATA__ = JSON.parse(doc.querySelectorAll("script")[0].innerHTML);
+        const chapterObj = __NEXT_DATA__.props.pageProps.chapterContent.chapter;
+        const content = document.createElement("div");
+        const chapterContent = decrypt(chapterObj.chapterContentFormat);
+        if (chapterContent) {
+            content.innerHTML = chapterContent;
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_9__/* .cleanDOM */ .zM)(content, "TM");
+            return {
+                chapterName,
+                contentRaw: content,
+                contentText: text,
+                contentHTML: dom,
+                contentImages: images,
+                additionalMetadate: null,
+            };
         }
         return {
             chapterName,
