@@ -3890,9 +3890,9 @@ __metadata:
   linkType: hard
 
 "magic-bytes.js@npm:^1.0.14":
-  version: 1.0.14
-  resolution: "magic-bytes.js@npm:1.0.14"
-  checksum: 5431948f5134ea27134a2e9c197ce5fdc89677682d365f275b0193a816a037cb9fc1c5eeeb541920d653e3c44f9022d007ef4b159ec4f1a814945be9f6be8abc
+  version: 1.0.15
+  resolution: "magic-bytes.js@npm:1.0.15"
+  checksum: cef9a3f92853baa2ad3558bccdbf2332ec0d3f6ffc3d57b1d416709db59d0742773b11e17e3fc671d7a506c4419626a939510800d7bebec978bf73b1a7cbdd98
   languageName: node
   linkType: hard
 
