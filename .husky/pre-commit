@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-yarn run pretty-quick --staged
+# yarn run pretty-quick --staged
 yarn run github

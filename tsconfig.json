@@ -25,6 +25,7 @@
     "jspm_packages",
     "Releases",
     "dist",
-    "tmp"
+    "tmp",
+    "src/dev"
   ]
 }
