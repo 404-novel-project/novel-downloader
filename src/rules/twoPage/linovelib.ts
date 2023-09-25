@@ -237,6 +237,11 @@ export const wlinovelib = () => {
       });
       return contentRaw;
     },
-    contentPatch: (dom) => dom,
+    contentPatch: (content) => {
+      for (const k in table) {
+        content.innerHTML = content.innerHTML.replaceAll(k, table[k]);
+      }
+      return content;
+    },
   });
 };
