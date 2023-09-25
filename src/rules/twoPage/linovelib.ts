@@ -4,7 +4,7 @@ import { chapterHiddenFix, nextPageParse } from "../../lib/rule";
 import { rm, sandboxed } from "../../lib/dom";
 import { Book } from "../../main/Book";
 import { Chapter } from "../../main/Chapter";
-import { table } from "../lib/linovelib";
+import { wtable, wwwtable} from "../lib/linovelib";
 
 export const linovelib = () => {
   const ToCurl = document.location.href;
@@ -90,8 +90,8 @@ export const linovelib = () => {
       return contentRaw;
     },
     contentPatch: (content) => {
-      for (const k in table) {
-        content.innerHTML = content.innerHTML.replaceAll(k, table[k]);
+      for (const k in wwwtable) {
+        content.innerHTML = content.innerHTML.replaceAll(k, wwwtable[k]);
       }
       return content;
     },
@@ -238,8 +238,8 @@ export const wlinovelib = () => {
       return contentRaw;
     },
     contentPatch: (content) => {
-      for (const k in table) {
-        content.innerHTML = content.innerHTML.replaceAll(k, table[k]);
+      for (const k in wtable) {
+        content.innerHTML = content.innerHTML.replaceAll(k, wtable[k]);
       }
       return content;
     },
