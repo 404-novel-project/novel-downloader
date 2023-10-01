@@ -414,9 +414,9 @@ __metadata:
   linkType: hard
 
 "@types/css-tree@npm:^2.3.1":
-  version: 2.3.1
-  resolution: "@types/css-tree@npm:2.3.1"
-  checksum: ba8db6f7c15e5bb5069fca55ff8407cb269d5b375f819f89faf98b7ad17acaf7f1d5467a414009bca270418b8082ad9efc3642ea8d39d368f1bb99d5be91f3f0
+  version: 2.3.2
+  resolution: "@types/css-tree@npm:2.3.2"
+  checksum: 880bf2dfe2f53f45fa15857f35a58e268010b3f103de7c4c7c478eecdee958c9706f26b1fcb9b8430e231440e45a4d940a0861991a92bd702872c05c9ab42ea1
   languageName: node
   linkType: hard
 
