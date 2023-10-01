@@ -526,9 +526,9 @@ __metadata:
   linkType: hard
 
 "@types/mime-db@npm:^1.43.1":
-  version: 1.43.1
-  resolution: "@types/mime-db@npm:1.43.1"
-  checksum: 1e2f98b0ec87ae9604f12ce6efd32fdf26043fee9bdd4b894b53b5ccf790bdd1cc62b3be06d3d882c99ad3c01355f6336ff9cb67876cb2522fc6e9f6d1233228
+  version: 1.43.2
+  resolution: "@types/mime-db@npm:1.43.2"
+  checksum: 02346faab3faf1c4e6cbe33c08a267bbad1d7819fe95eba1d4d6d6cec30e5f511e0e1c8e1142468a23a82b4ebc2bcebf2fb311bacc5ad0d71c896e670464e070
   languageName: node
   linkType: hard
 
