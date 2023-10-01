@@ -5558,13 +5558,13 @@ __metadata:
   linkType: hard
 
 "simple-git@npm:^3.19.1":
-  version: 3.19.1
-  resolution: "simple-git@npm:3.19.1"
+  version: 3.20.0
+  resolution: "simple-git@npm:3.20.0"
   dependencies:
     "@kwsites/file-exists": ^1.1.1
     "@kwsites/promise-deferred": ^1.1.1
     debug: ^4.3.4
-  checksum: ab7c6901130eadd5758c5f1b0d957573b13cd981549cb5853e757cf13f8cb53b79a50e1acde8eaceba88da814d252f90cf7feab9bd67c64db903250adc51b02f
+  checksum: 56b50c574a950a8ddc87033083e073216708ccf6aaa3c904da05a5b3e52502287049dde49df1df42d5ec072c1050ef8219733e6cfebf71885081917ffcdbb54c
   languageName: node
   linkType: hard
 
