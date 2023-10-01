@@ -617,9 +617,9 @@ __metadata:
   linkType: hard
 
 "@types/tampermonkey@npm:^4.0.10":
-  version: 4.0.10
-  resolution: "@types/tampermonkey@npm:4.0.10"
-  checksum: dd294737a575470cf317136f30969cb05d708e1cb0e3f7982e741b5ed472ece42aa6e29e12d6e49479de3b63ce0867d61ba867c172ff00844c757d4e0aeb3e88
+  version: 4.20.3
+  resolution: "@types/tampermonkey@npm:4.20.3"
+  checksum: da47213359308cf5c887f58825991b8ebbff939df4e930e454e77b83f7058ba9a196db5564d1bd115c3ea790e1d47e7821901a5641f2530996169dc5bbf4d4b0
   languageName: node
   linkType: hard
 
