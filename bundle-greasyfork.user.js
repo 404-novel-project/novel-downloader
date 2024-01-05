@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.885
+// @version        5.2.886
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -12289,20 +12289,60 @@ const houhuayuan = () => {
 /* harmony export */ });
 /* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
 
+function clickButtonFromSpan(spanElements, targetText) {
+    spanElements.forEach(span => {
+        if (span.textContent?.includes(targetText)) {
+            const describedById = span.id;
+            if (describedById) {
+                const button = document.querySelector(`button[aria-describedby="${describedById}"]`);
+                button?.click();
+            }
+        }
+    });
+}
+function clickButtonFromDiv(divElements, targetText) {
+    divElements.forEach(div => {
+        if (div.textContent?.includes(targetText)) {
+            let parent = div;
+            while (parent && parent.nodeName !== 'BUTTON') {
+                parent = parent.parentElement;
+            }
+            parent?.click();
+        }
+    });
+}
+function clickButtonWithSVGAndH3(buttons) {
+    buttons.forEach(button => {
+        const svg = button.querySelector('svg[class^="Icons_icon"]');
+        const h3 = button.querySelector('h3');
+        if (svg && h3) {
+            const hasFlipClass = Array.from(svg.classList).some(className => className.startsWith('Icons_flip'));
+            if (!hasFlipClass) {
+                button.click();
+            }
+        }
+    });
+}
+const spanElements = document.querySelectorAll('span');
+const divElements = document.querySelectorAll('div');
+const buttons = document.querySelectorAll('button[class^="Button_button"]');
+clickButtonFromSpan(spanElements, "…続きを読む");
+clickButtonFromDiv(divElements, "つづきを表示");
+clickButtonWithSVGAndH3(buttons);
 const kakuyomu = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
     bookUrl: document.location.href,
-    bookname: document.querySelector("#workTitle > a").innerText.trim(),
-    author: document.querySelector("#workAuthor-activityName > a").innerText.trim(),
-    introDom: document.querySelector("#introduction"),
+    bookname: document.querySelector("h1").innerText.trim(),
+    author: document.querySelector("div[class*=partialGiftWidgetActivityName] > a").innerText.trim(),
+    introDom: document.querySelector("div[class*=CollapseTextWithKakuyomuLinks]"),
     introDomPatch: (dom) => dom,
     coverUrl: null,
     additionalMetadatePatch: (additionalMetadate) => {
         additionalMetadate.tags = Array.from(document.querySelectorAll("#workMeta-tags > li > a")).map((a) => a.innerText);
         return additionalMetadate;
     },
-    aList: document.querySelectorAll("li.widget-toc-episode > a"),
-    getAName: (dom) => dom.querySelector("span.widget-toc-episode-titleLabel").innerText.trim(),
-    sections: document.querySelectorAll("li.widget-toc-chapter > span"),
+    aList: document.querySelectorAll("a[class*=WorkTocSection_link]"),
+    getAName: (aElem) => aElem.querySelector('div[class*="Typography"]').innerText.trim(),
+    sections: document.querySelectorAll("h3"),
     getSName: (dom) => dom.innerText.trim(),
     getContent: (dom) => dom.querySelector(".widget-episodeBody"),
     contentPatch: (dom) => dom,
