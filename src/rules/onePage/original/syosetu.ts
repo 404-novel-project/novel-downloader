@@ -1,6 +1,45 @@
 import { rm } from "../../../lib/dom";
 import { mkRuleClass } from "../template";
 
+
+const lastPageAnchor = document.querySelector('.novelview_pager-last');
+
+// Proceed only if the element exists
+if (lastPageAnchor) {
+  const lastPageHref = lastPageAnchor.getAttribute('href');
+  const hrefMatch = lastPageHref ? lastPageHref.match(/(.*\/\?p=)(\d+)/) : null;
+
+  if (hrefMatch && hrefMatch.length === 3) {
+    const baseUrl = hrefMatch[1];
+    const lastPageNumber = parseInt(hrefMatch[2], 10);
+    const currentPageIndexBox = document.querySelector('.index_box');
+
+    // Function to fetch content and append children
+    const fetchAndAppendContent = (pageNumber: number) => {
+      fetch(`${baseUrl}${pageNumber}`)
+        .then(response => response.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(html, 'text/html');
+          const pageIndexBox = doc.querySelector('.index_box');
+
+          if (pageIndexBox && currentPageIndexBox) {
+            Array.from(pageIndexBox.children).forEach(child => {
+              currentPageIndexBox.appendChild(child.cloneNode(true));
+            });
+          }
+        })
+        .catch(error => console.error('Error fetching page:', error));
+    };
+
+    // Iterate over all pages and fetch their content
+    for (let i = 2; i <= lastPageNumber; i++) {
+      fetchAndAppendContent(i);
+    }
+  }
+}
+
+
 export const syosetu = () => {
   const getIntroDom = () => {
     const a = document.querySelector("#novel_ex > .more") as HTMLElement;
