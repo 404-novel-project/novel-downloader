@@ -890,7 +890,7 @@ export class Jjwxc extends BaseRuleClass {
     function decodeVIPResopnce(responseHeader: string, responseText:string) {
       let v43, v38, dest;
       const arr = responseHeader.trim().split(/[\r\n]+/);
-      const headerMap= { };
+      const headerMap = { "accesskey": "0", "keystring" :"0"};
       arr.forEach((line) => {
         const parts = line.split(": ");
         const header = parts.shift();
