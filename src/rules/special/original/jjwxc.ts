@@ -897,24 +897,24 @@ export class Jjwxc extends BaseRuleClass {
         const value = parts.join(": ");
         headerMap[header] = value;
       });
-      let accesskey = String(headerMap["accesskey"]);
-      let keyString = String(headerMap["keystring"]);
-      let content = String(respose.responseText);
-      let accesskeyLen = accesskey.length;
+      const accesskey = String(headerMap["accesskey"]);
+      const keyString = String(headerMap["keystring"]);
+      const content = String(respose.responseText);
+      const accesskeyLen = accesskey.length;
       let v9 = 0;
-      let v6 = String(accesskey[accesskeyLen - 1]).charCodeAt();
+      const v6 = String(accesskey[accesskeyLen - 1]).charCodeAt();
       for (let i = 0; i < accesskeyLen; i++) {
         v9 += accesskey[i].charCodeAt();
       }
-      let v15 = v9 % keyString.length;
-      let v17 = parseInt(v9 / 65);
-      let v18 = keyString.length;
+      const v15 = v9 % keyString.length;
+      const v17 = parseInt(v9 / 65);
+      const v18 = keyString.length;
       if (v17 + v15 > v18) {
         v43 = keyString.substring(v15, (v18 - v16) + v15)
       } else {
         v43 = keyString.substring(v15, v17 + v15)
       }
-      let v32 = content.length;
+      const v32 = content.length;
       if ((v6 & 1) != 0) {
         v38 = content.substring(v32 - 12, v32)
         dest = content.substring(0, v32 - 12)
@@ -922,8 +922,8 @@ export class Jjwxc extends BaseRuleClass {
         v38 = content.substring(0, 12);
         dest = content.substring(12, content.length);
       }
-      let key = CryptoJS.MD5(v43 + v38).toString().substring(0, 8);
-      let iv = CryptoJS.MD5(v38).toString().substring(0, 8);
+      const key = CryptoJS.MD5(v43 + v38).toString().substring(0, 8);
+      const iv = CryptoJS.MD5(v38).toString().substring(0, 8);
       const keyHex = CryptoJS.enc.Utf8.parse(key);
       const ivHex = CryptoJS.enc.Utf8.parse(iv);
       const decrypted = CryptoJS.DES.decrypt(content, keyHex, {
