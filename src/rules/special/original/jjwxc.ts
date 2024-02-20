@@ -918,7 +918,7 @@ export class Jjwxc extends BaseRuleClass {
       );
       chapterGetInfoUrl = chapterGetInfoUrl.replace(
         "http://my.jjwxc.net/onebook_vip.php?",
-        "https://android.jjwxc.net/androidapi/androidChapterBatchDownload"
+        "https://android.jjwxc.net/androidapi/androidChapterBatchDownload?"
       );
       //let sid = getCookieObj("token");
       if (isVIP) {
@@ -936,7 +936,7 @@ export class Jjwxc extends BaseRuleClass {
             "chapterIds"
           );
           chapterGetInfoUrl +=
-            "&versionCode=313&token=" + sid + "&noteislock=1";
+            "&versionCode=313&token=" + sid;
         } else {
           throw new Error(
             `当前需要手动捕获android版app token,详见github主页说明`
@@ -948,15 +948,14 @@ export class Jjwxc extends BaseRuleClass {
         log.debug(
           `请求地址: ${url}, Referrer: ${chapterUrl}, 重试次数: ${retryTime}`
         );
-        if (isVIP){
-          const bodycontent = url.replace("https://android.jjwxc.net/androidapi/androidChapterBatchDownload","");
+        if (isVIP) {
+          const bodycontent = url.replace("https://android.jjwxc.net/androidapi/androidChapterBatchDownload?", "");
           return new Promise((resolve) => {
             _GM_xmlhttpRequest({
               url: "https://android.jjwxc.net/androidapi/androidChapterBatchDownload",
               headers: {
                 accept: "application/json",
                 referer: "http://android.jjwxc.net?v=313",
-                not_tip: "updateTime",
                 "user-agent":
                   "Mozilla/ 5.0(Linux; Android 12; Pixel 3 XL Build / SP1A.210812.016.C1; wv) AppleWebKit / 537.36(KHTML, like Gecko) Version / 4.0 Chrome / 108.0.5359.128 Mobile Safari / 537.36 / JINJIANG - Android / 313(Pixel3XL; Scale / 3.5)",
                 "accept-encoding": "gzip",
@@ -964,12 +963,15 @@ export class Jjwxc extends BaseRuleClass {
               method: "POST",
               data: JSON.stringify(bodycontent),
               onload: function (response) {
+                log.debug(
+                  `取回内容: ${response}, `
+                );
                 if (response.status === 200) {
                   retryTime = 0;
-                    const resultI: vipChapterInfo = JSON.parse(
-                      response.responseText
-                    );
-                    resolve(resultI.downloadContent[0]);
+                  const resultI: vipChapterInfo = JSON.parse(
+                    response.responseText
+                  );
+                  resolve(resultI.downloadContent[0]);
                 } else {
                   const resultI: ChapterInfo = JSON.parse(
                     '{"message":"try again!"}'
@@ -981,34 +983,36 @@ export class Jjwxc extends BaseRuleClass {
           });
         }
         else
-        return new Promise((resolve) => {
-          _GM_xmlhttpRequest({
-            url: url,
-            headers: {
-              accept: "application/json",
-              referer: "http://android.jjwxc.net?v=313",
-              not_tip: "updateTime",
-              "user-agent":
-                "Mozilla/ 5.0(Linux; Android 12; Pixel 3 XL Build / SP1A.210812.016.C1; wv) AppleWebKit / 537.36(KHTML, like Gecko) Version / 4.0 Chrome / 108.0.5359.128 Mobile Safari / 537.36 / JINJIANG - Android / 313(Pixel3XL; Scale / 3.5)",
-              "accept-encoding": "gzip",
-            },
-            method: "GET",
-            onload: function (response) {
-              if (response.status === 200) {
-                retryTime = 0;
-                const resultI: ChapterInfo = JSON.parse(
+        {
+          return new Promise((resolve) => {
+            _GM_xmlhttpRequest({
+              url: url,
+              headers: {
+                accept: "application/json",
+                referer: "http://android.jjwxc.net?v=313",
+                not_tip: "updateTime",
+                "user-agent":
+                  "Mozilla/ 5.0(Linux; Android 12; Pixel 3 XL Build / SP1A.210812.016.C1; wv) AppleWebKit / 537.36(KHTML, like Gecko) Version / 4.0 Chrome / 108.0.5359.128 Mobile Safari / 537.36 / JINJIANG - Android / 313(Pixel3XL; Scale / 3.5)",
+                "accept-encoding": "gzip",
+              },
+              method: "GET",
+              onload: function (response) {
+                if (response.status === 200) {
+                  retryTime = 0;
+                  const resultI: ChapterInfo = JSON.parse(
                     response.responseText
-                );
-                resolve(resultI);
-              } else {
-                const resultI: ChapterInfo = JSON.parse(
-                  '{"message":"try again!"}'
-                );
-                resolve(resultI);
-              }
-            },
+                  );
+                  resolve(resultI);
+                } else {
+                  const resultI: ChapterInfo = JSON.parse(
+                    '{"message":"try again!"}'
+                  );
+                  resolve(resultI);
+                }
+              },
+            });
           });
-        });
+        }
       }
       let result = await getChapterInfo(chapterGetInfoUrl.toString());
       while ("message" in result && result.message == "try again!") {
