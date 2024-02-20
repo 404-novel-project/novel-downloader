@@ -901,7 +901,8 @@ export class Jjwxc extends BaseRuleClass {
         else if (header == "keystring")
           keyString = value;
       });
-      const content = String(responseText);
+      let content = String(responseText);
+      content = (content + '').replace(/\n*$/g, '').replace(/\n/g, '');
       const accesskeyLen = accesskey.length;
       let v9 = 0;
       const v6 = String(accesskey[accesskeyLen - 1]).charCodeAt(0);
@@ -1050,6 +1051,7 @@ export class Jjwxc extends BaseRuleClass {
         let content = result.content;
         if (isVIP) content = decodeVIPText(content);
         let postscript = result.sayBody;
+        if (isVIP) postscript
         if (result.sayBody == null) postscript = " ";
         const contentRaw = document.createElement("pre");
         contentRaw.innerHTML = content;
