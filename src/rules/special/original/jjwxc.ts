@@ -887,7 +887,7 @@ export class Jjwxc extends BaseRuleClass {
       message: string; //"[本章节已锁定]"
     }
     let retryTime = 0;
-    function decodeVIPResopnce(responseHeader: String, responseText:String) {
+    function decodeVIPResopnce(responseHeader: string, responseText:string) {
       let v43, v38, dest;
       const arr = responseHeader.trim().split(/[\r\n]+/);
       const headerMap = {};
