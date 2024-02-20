@@ -950,9 +950,6 @@ export class Jjwxc extends BaseRuleClass {
         );
         if (isVIP) {
           const bodycontent = url.replace("https://android.jjwxc.net/androidapi/androidChapterBatchDownload?", "");
-          log.debug(
-            `body内容: ${bodycontent}, `
-          );
           return new Promise((resolve) => {
             _GM_xmlhttpRequest({
               url: "https://android.jjwxc.net/androidapi/androidChapterBatchDownload",
@@ -964,7 +961,7 @@ export class Jjwxc extends BaseRuleClass {
                 "accept-encoding": "gzip",
               },
               method: "POST",
-              data: JSON.stringify(bodycontent),
+              data: bodycontent,
               onload: function (response) {
                 log.debug(
                   `取回内容: ${response}, `
