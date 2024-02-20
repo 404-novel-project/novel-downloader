@@ -889,16 +889,18 @@ export class Jjwxc extends BaseRuleClass {
     let retryTime = 0;
     function decodeVIPResopnce(responseHeader: string, responseText:string) {
       let v43, v38, dest;
+      let accesskey = "accesskey", keyString = "keystring";
       const arr = responseHeader.trim().split(/[\r\n]+/);
       const headerMap = { "accesskey": "0", "keystring" :"0"};
       arr.forEach((line) => {
         const parts = line.split(": ");
         const header = parts.shift();
         const value = parts.join(": ");
-        headerMap[header as keyof typeof String] = value;
+        if (header == "accesskey")
+          accesskey = value;
+        else if (header == "keystring")
+          keyString = value;
       });
-      const accesskey = String(headerMap["accesskey"]);
-      const keyString = String(headerMap["keystring"]);
       const content = String(responseText);
       const accesskeyLen = accesskey.length;
       let v9 = 0;
