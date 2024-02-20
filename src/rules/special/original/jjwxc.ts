@@ -949,7 +949,7 @@ export class Jjwxc extends BaseRuleClass {
           `请求地址: ${url}, Referrer: ${chapterUrl}, 重试次数: ${retryTime}`
         );
         if (isVIP){
-          bodycontent = url.replace("https://android.jjwxc.net/androidapi/androidChapterBatchDownload","");
+          let bodycontent = url.replace("https://android.jjwxc.net/androidapi/androidChapterBatchDownload","");
           return new Promise((resolve) => {
             _GM_xmlhttpRequest({
               url: "https://android.jjwxc.net/androidapi/androidChapterBatchDownload",
