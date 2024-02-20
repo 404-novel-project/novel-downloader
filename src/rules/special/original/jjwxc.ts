@@ -890,27 +890,27 @@ export class Jjwxc extends BaseRuleClass {
     function decodeVIPResopnce(responseHeader: string, responseText:string) {
       let v43, v38, dest;
       const arr = responseHeader.trim().split(/[\r\n]+/);
-      const headerMap = {};
+      const headerMap= { };
       arr.forEach((line) => {
         const parts = line.split(": ");
-        const header = String(parts.shift());
+        const header = parts.shift();
         const value = parts.join(": ");
-        headerMap[header] = value;
+        headerMap[header as string] = value;
       });
       const accesskey = String(headerMap["accesskey"]);
       const keyString = String(headerMap["keystring"]);
       const content = String(responseText);
       const accesskeyLen = accesskey.length;
       let v9 = 0;
-      const v6 = String(accesskey[accesskeyLen - 1]).charCodeAt();
+      const v6 = String(accesskey[accesskeyLen - 1]).charCodeAt(0);
       for (let i = 0; i < accesskeyLen; i++) {
-        v9 += accesskey[i].charCodeAt();
+        v9 += accesskey[i].charCodeAt(0);
       }
       const v15 = v9 % keyString.length;
-      const v17 = parseInt(v9 / 65);
+      const v17 = v9 / 65;
       const v18 = keyString.length;
       if (v17 + v15 > v18) {
-        v43 = keyString.substring(v15, (v18 - v16) + v15)
+        v43 = keyString.substring(v15, (v18 - v17) + v15)
       } else {
         v43 = keyString.substring(v15, v17 + v15)
       }
@@ -1013,7 +1013,7 @@ export class Jjwxc extends BaseRuleClass {
                 retryTime = 0;
                 if (isVIP) {
                   const decodeResponseText = decodeVIPResopnce(response.responseHeaders, String(response.responseText));
-                  const resultI: vipChapterInfo = JSON.parse(
+                  const resultI: ChapterInfo = JSON.parse(
                     decodeResponseText
                   );
                   resolve(resultI);
