@@ -963,9 +963,6 @@ export class Jjwxc extends BaseRuleClass {
               method: "POST",
               data: bodycontent,
               onload: function (response) {
-                log.debug(
-                  `取回内容: ${response}, `
-                );
                 if (response.status === 200) {
                   retryTime = 0;
                   const resultI: vipChapterInfo = JSON.parse(
@@ -982,8 +979,7 @@ export class Jjwxc extends BaseRuleClass {
             });
           });
         }
-        else
-        {
+        else{
           return new Promise((resolve) => {
             _GM_xmlhttpRequest({
               url: url,
