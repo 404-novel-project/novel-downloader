@@ -887,19 +887,19 @@ export class Jjwxc extends BaseRuleClass {
       message: string; //"[本章节已锁定]"
     }
     let retryTime = 0;
-    function decodeVIPResopnce(respose) {
+    function decodeVIPResopnce(responseHeader: String, responseText:String) {
       let v43, v38, dest;
-      const arr = respose.responseHeaders.trim().split(/[\r\n]+/);
+      const arr = responseHeader.trim().split(/[\r\n]+/);
       const headerMap = {};
       arr.forEach((line) => {
         const parts = line.split(": ");
-        const header = parts.shift();
+        const header = String(parts.shift());
         const value = parts.join(": ");
         headerMap[header] = value;
       });
       const accesskey = String(headerMap["accesskey"]);
       const keyString = String(headerMap["keystring"]);
-      const content = String(respose.responseText);
+      const content = String(responseText);
       const accesskeyLen = accesskey.length;
       let v9 = 0;
       const v6 = String(accesskey[accesskeyLen - 1]).charCodeAt();
@@ -1012,7 +1012,7 @@ export class Jjwxc extends BaseRuleClass {
               if (response.status === 200) {
                 retryTime = 0;
                 if (isVIP) {
-                  const decodeResponseText = decodeVIPResopnce(response);
+                  const decodeResponseText = decodeVIPResopnce(response.responseHeaders, String(response.responseText));
                   const resultI: vipChapterInfo = JSON.parse(
                     decodeResponseText
                   );
