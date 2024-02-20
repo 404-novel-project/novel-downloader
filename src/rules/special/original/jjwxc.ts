@@ -895,7 +895,7 @@ export class Jjwxc extends BaseRuleClass {
         const parts = line.split(": ");
         const header = parts.shift();
         const value = parts.join(": ");
-        headerMap[header as string] = value;
+        headerMap[header as keyof typeof String] = value;
       });
       const accesskey = String(headerMap["accesskey"]);
       const keyString = String(headerMap["keystring"]);
