@@ -887,6 +887,52 @@ export class Jjwxc extends BaseRuleClass {
       message: string; //"[本章节已锁定]"
     }
     let retryTime = 0;
+    function decodeVIPResopnce(respose) {
+      let v43, v38, dest;
+      const arr = respose.responseHeaders.trim().split(/[\r\n]+/);
+      const headerMap = {};
+      arr.forEach((line) => {
+        const parts = line.split(": ");
+        const header = parts.shift();
+        const value = parts.join(": ");
+        headerMap[header] = value;
+      });
+      let accesskey = String(headerMap["accesskey"]);
+      let keyString = String(headerMap["keystring"]);
+      let content = String(respose.responseText);
+      let accesskeyLen = accesskey.length;
+      let v9 = 0;
+      let v6 = String(accesskey[accesskeyLen - 1]).charCodeAt();
+      for (let i = 0; i < accesskeyLen; i++) {
+        v9 += accesskey[i].charCodeAt();
+      }
+      let v15 = v9 % keyString.length;
+      let v17 = parseInt(v9 / 65);
+      let v18 = keyString.length;
+      if (v17 + v15 > v18) {
+        v43 = keyString.substring(v15, (v18 - v16) + v15)
+      } else {
+        v43 = keyString.substring(v15, v17 + v15)
+      }
+      let v32 = content.length;
+      if ((v6 & 1) != 0) {
+        v38 = content.substring(v32 - 12, v32)
+        dest = content.substring(0, v32 - 12)
+      } else {
+        v38 = content.substring(0, 12);
+        dest = content.substring(12, content.length);
+      }
+      let key = CryptoJS.MD5(v43 + v38).toString().substring(0, 8);
+      let iv = CryptoJS.MD5(v38).toString().substring(0, 8);
+      const keyHex = CryptoJS.enc.Utf8.parse(key);
+      const ivHex = CryptoJS.enc.Utf8.parse(iv);
+      const decrypted = CryptoJS.DES.decrypt(content, keyHex, {
+        iv: ivHex,
+        mode: CryptoJS.mode.CBC,
+        padding: CryptoJS.pad.Pkcs7,
+      });
+      return decrypted.toString(CryptoJS.enc.Utf8);
+    }
     function decodeVIPText(text: string) {
       const keyHex = CryptoJS.enc.Utf8.parse("KW8Dvm2N");
       const ivHex = CryptoJS.enc.Utf8.parse("1ae2c94b");
@@ -897,6 +943,7 @@ export class Jjwxc extends BaseRuleClass {
       });
       return decrypted.toString(CryptoJS.enc.Utf8);
     }
+
     function getCookieObj(pairKey: string) {
       const cookieStr = document.cookie;
       const pairList = cookieStr.split(";");
@@ -918,7 +965,7 @@ export class Jjwxc extends BaseRuleClass {
       );
       chapterGetInfoUrl = chapterGetInfoUrl.replace(
         "http://my.jjwxc.net/onebook_vip.php?",
-        "https://android.jjwxc.net/androidapi/androidChapterBatchDownload?"
+        "https://android.jjwxc.net/androidapi/chapterContent?"
       );
       //let sid = getCookieObj("token");
       if (isVIP) {
@@ -931,12 +978,12 @@ export class Jjwxc extends BaseRuleClass {
         if (typeof (unsafeWindow as UnsafeWindow).tokenOptions === "object") {
           const sid = (unsafeWindow as UnsafeWindow).tokenOptions?.Jjwxc;
           //sid = self.atob(decodeURIComponent(sid)).replace(/\|\|.*/, '').replace(/\|/, '_').replace(/\|.*/, '');
-          chapterGetInfoUrl = chapterGetInfoUrl.replace(
-            "chapterId",
-            "chapterIds"
-          );
+          // chapterGetInfoUrl = chapterGetInfoUrl.replace(
+          //   "chapterId",
+          //   "chapterIds"
+          // );
           chapterGetInfoUrl +=
-            "&versionCode=313&token=" + sid;
+            "&versionCode=287&token=" + sid + "&noteislock=1";
         } else {
           throw new Error(
             `当前需要手动捕获android版app token,详见github主页说明`
@@ -944,71 +991,47 @@ export class Jjwxc extends BaseRuleClass {
         }
         //}
       }
+      
       async function getChapterInfo(url: string): Promise<ChapterInfo> {
         log.debug(
           `请求地址: ${url}, Referrer: ${chapterUrl}, 重试次数: ${retryTime}`
         );
-        if (isVIP) {
-          const bodycontent = url.replace("https://android.jjwxc.net/androidapi/androidChapterBatchDownload?", "");
-          return new Promise((resolve) => {
-            _GM_xmlhttpRequest({
-              url: "https://android.jjwxc.net/androidapi/androidChapterBatchDownload",
-              headers: {
-                accept: "application/json",
-                referer: "http://android.jjwxc.net?v=313",
-                "user-agent":
-                  "Mozilla/ 5.0(Linux; Android 12; Pixel 3 XL Build / SP1A.210812.016.C1; wv) AppleWebKit / 537.36(KHTML, like Gecko) Version / 4.0 Chrome / 108.0.5359.128 Mobile Safari / 537.36 / JINJIANG - Android / 313(Pixel3XL; Scale / 3.5)",
-                "accept-encoding": "gzip",
-              },
-              method: "POST",
-              data: bodycontent,
-              onload: function (response) {
-                if (response.status === 200) {
-                  retryTime = 0;
+        return new Promise((resolve) => {
+          _GM_xmlhttpRequest({
+            url: url,
+            headers: {
+              accept: "application/json",
+              referer: "http://android.jjwxc.net?v=287",
+              not_tip: "updateTime",
+              "user-agent":
+                "Mozilla/ 5.0(Linux; Android 12; Pixel 3 XL Build / SP1A.210812.016.C1; wv) AppleWebKit / 537.36(KHTML, like Gecko) Version / 4.0 Chrome / 108.0.5359.128 Mobile Safari / 537.36 / JINJIANG - Android / 287(Pixel3XL; Scale / 3.5)",
+              "accept-encoding": "gzip",
+            },
+            method: "GET",
+            onload: function (response) {
+              if (response.status === 200) {
+                retryTime = 0;
+                if (isVIP) {
+                  const decodeResponseText = decodeVIPResopnce(response);
                   const resultI: vipChapterInfo = JSON.parse(
-                    response.responseText
-                  );
-                  resolve(resultI.downloadContent[0]);
-                } else {
-                  const resultI: ChapterInfo = JSON.parse(
-                    '{"message":"try again!"}'
-                  );
-                  resolve(resultI);
-                }
-              },
-            });
-          });
-        }
-        else{
-          return new Promise((resolve) => {
-            _GM_xmlhttpRequest({
-              url: url,
-              headers: {
-                accept: "application/json",
-                referer: "http://android.jjwxc.net?v=313",
-                not_tip: "updateTime",
-                "user-agent":
-                  "Mozilla/ 5.0(Linux; Android 12; Pixel 3 XL Build / SP1A.210812.016.C1; wv) AppleWebKit / 537.36(KHTML, like Gecko) Version / 4.0 Chrome / 108.0.5359.128 Mobile Safari / 537.36 / JINJIANG - Android / 313(Pixel3XL; Scale / 3.5)",
-                "accept-encoding": "gzip",
-              },
-              method: "GET",
-              onload: function (response) {
-                if (response.status === 200) {
-                  retryTime = 0;
-                  const resultI: ChapterInfo = JSON.parse(
-                    response.responseText
+                    decodeResponseText
                   );
                   resolve(resultI);
                 } else {
                   const resultI: ChapterInfo = JSON.parse(
-                    '{"message":"try again!"}'
+                    response.responseText
                   );
                   resolve(resultI);
                 }
-              },
-            });
+              } else {
+                const resultI: ChapterInfo = JSON.parse(
+                  '{"message":"try again!"}'
+                );
+                resolve(resultI);
+              }
+            },
           });
-        }
+        });
       }
       let result = await getChapterInfo(chapterGetInfoUrl.toString());
       while ("message" in result && result.message == "try again!") {
