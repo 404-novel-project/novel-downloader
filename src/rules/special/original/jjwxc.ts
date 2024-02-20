@@ -950,6 +950,9 @@ export class Jjwxc extends BaseRuleClass {
         );
         if (isVIP) {
           const bodycontent = url.replace("https://android.jjwxc.net/androidapi/androidChapterBatchDownload?", "");
+          log.debug(
+            `body内容: ${bodycontent}, `
+          );
           return new Promise((resolve) => {
             _GM_xmlhttpRequest({
               url: "https://android.jjwxc.net/androidapi/androidChapterBatchDownload",
