@@ -918,7 +918,7 @@ export class Jjwxc extends BaseRuleClass {
       );
       chapterGetInfoUrl = chapterGetInfoUrl.replace(
         "http://my.jjwxc.net/onebook_vip.php?",
-        "https://android.jjwxc.net/androidapi/androidChapterBatchDownload?"
+        "https://android.jjwxc.net/androidapi/androidChapterBatchDownload"
       );
       //let sid = getCookieObj("token");
       if (isVIP) {
