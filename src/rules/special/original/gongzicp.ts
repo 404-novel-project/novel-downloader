@@ -613,7 +613,7 @@ export class Gongzicp extends BaseRuleClass {
             })
             .join("\n");
 
-          if (chapterInfo.postscript.length === 0) {
+          if (chapterInfo.postscript === null || chapterInfo.postscript.length === 0) {
             contentHTML = _contentHTML;
           } else {
             contentHTML = document.createElement("div");
