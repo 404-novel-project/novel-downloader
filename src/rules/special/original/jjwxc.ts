@@ -578,8 +578,8 @@ export class Jjwxc extends BaseRuleClass {
                   char3 = str.charCodeAt(i++);
                   out += String.fromCharCode(
                     ((c & 0x0f) << 12) |
-                      ((char2 & 0x3f) << 6) |
-                      ((char3 & 0x3f) << 0)
+                    ((char2 & 0x3f) << 6) |
+                    ((char3 & 0x3f) << 0)
                   );
                   break;
               }
@@ -599,9 +599,9 @@ export class Jjwxc extends BaseRuleClass {
           const data: Record<string, string> = {};
           Array.from(children).forEach(
             (item) =>
-              (data[item.getAttribute("name") as string] = item.getAttribute(
-                "value"
-              ) as string)
+            (data[item.getAttribute("name") as string] = item.getAttribute(
+              "value"
+            ) as string)
           );
 
           const novelid = parseInt(data["novelid"]);
@@ -655,7 +655,7 @@ export class Jjwxc extends BaseRuleClass {
             if (new Date()["getTime"]() / 1000 - obj["time"] > 86400) {
               throw new Error(
                 "章节内容解码失败，内容生成时间与当前设备时间相差过大，请刷新页面或校准当前设备时间。内容生成时间为:" +
-                  new Date(obj["time"] * 100).toLocaleString()
+                new Date(obj["time"] * 100).toLocaleString()
               );
             }
           };
@@ -710,8 +710,8 @@ export class Jjwxc extends BaseRuleClass {
                     sc.type,
                     (
                       sc as
-                        | csstree.ClassSelector
-                        | csstree.PseudoElementSelector
+                      | csstree.ClassSelector
+                      | csstree.PseudoElementSelector
                     ).name,
                   ])
                 );
@@ -758,8 +758,8 @@ export class Jjwxc extends BaseRuleClass {
                     sc.type,
                     (
                       sc as
-                        | csstree.ClassSelector
-                        | csstree.PseudoElementSelector
+                      | csstree.ClassSelector
+                      | csstree.PseudoElementSelector
                     ).name,
                   ])
                 );
@@ -887,11 +887,11 @@ export class Jjwxc extends BaseRuleClass {
       message: string; //"[本章节已锁定]"
     }
     let retryTime = 0;
-    function decodeVIPResopnce(responseHeader: string, responseText:string) {
+    function decodeVIPResopnce(responseHeader: string, responseText: string) {
       let v43, v38, dest;
       let accesskey = "accesskey", keyString = "keystring";
       const arr = responseHeader.trim().split(/[\r\n]+/);
-      const headerMap = { "accesskey": "0", "keystring" :"0"};
+      const headerMap = { "accesskey": "0", "keystring": "0" };
       arr.forEach((line) => {
         const parts = line.split(": ");
         const header = parts.shift();
@@ -902,7 +902,6 @@ export class Jjwxc extends BaseRuleClass {
           keyString = value;
       });
       let content = String(responseText);
-      content = (content + '').replace(/\n*$/g, '').replace(/\n/g, '');
       const accesskeyLen = accesskey.length;
       let v9 = 0;
       const v6 = String(accesskey[accesskeyLen - 1]).charCodeAt(0);
@@ -913,7 +912,7 @@ export class Jjwxc extends BaseRuleClass {
       const v17 = v9 / 65;
       const v18 = keyString.length;
       if (v17 + v15 > v18) {
-        v43 = keyString.substring(v15, (v18 - v17) + v15)
+        v43 = keyString.substring(v15, (v18 - v15) + v15)
       } else {
         v43 = keyString.substring(v15, v17 + v15)
       }
@@ -929,12 +928,19 @@ export class Jjwxc extends BaseRuleClass {
       const iv = CryptoJS.MD5(v38).toString().substring(0, 8);
       const keyHex = CryptoJS.enc.Utf8.parse(key);
       const ivHex = CryptoJS.enc.Utf8.parse(iv);
-      const decrypted = CryptoJS.DES.decrypt(content, keyHex, {
-        iv: ivHex,
-        mode: CryptoJS.mode.CBC,
-        padding: CryptoJS.pad.Pkcs7,
-      });
-      return decrypted.toString(CryptoJS.enc.Utf8);
+      let result = '{"message":"try again!"}';
+      try {
+        const decrypted = CryptoJS.DES.decrypt(dest, keyHex, {
+          iv: ivHex,
+          mode: CryptoJS.mode.CBC,
+          padding: CryptoJS.pad.Pkcs7,
+        });
+        result = decrypted.toString(CryptoJS.enc.Utf8);
+      } catch (e) {
+        //      log.debug(`请求content：${content}`);
+        result = '{"message":"try again!"}';
+      }
+      return result;
     }
     function decodeVIPText(text: string) {
       const keyHex = CryptoJS.enc.Utf8.parse("KW8Dvm2N");
@@ -968,7 +974,7 @@ export class Jjwxc extends BaseRuleClass {
       );
       chapterGetInfoUrl = chapterGetInfoUrl.replace(
         "http://my.jjwxc.net/onebook_vip.php?",
-        "https://android.jjwxc.net/androidapi/chapterContent?"
+        "https://app.jjwxc.net/androidapi/chapterContent?"
       );
       //let sid = getCookieObj("token");
       if (isVIP) {
@@ -986,7 +992,7 @@ export class Jjwxc extends BaseRuleClass {
           //   "chapterIds"
           // );
           chapterGetInfoUrl +=
-            "&versionCode=287&token=" + sid + "&noteislock=1";
+            "&versionCode=349&token=" + sid ;
         } else {
           throw new Error(
             `当前需要手动捕获android版app token,详见github主页说明`
@@ -994,7 +1000,7 @@ export class Jjwxc extends BaseRuleClass {
         }
         //}
       }
-      
+
       async function getChapterInfo(url: string): Promise<ChapterInfo> {
         log.debug(
           `请求地址: ${url}, Referrer: ${chapterUrl}, 重试次数: ${retryTime}`
@@ -1003,12 +1009,11 @@ export class Jjwxc extends BaseRuleClass {
           _GM_xmlhttpRequest({
             url: url,
             headers: {
-              accept: "application/json",
-              referer: "http://android.jjwxc.net?v=287",
-              not_tip: "updateTime",
-              "user-agent":
-                "Mozilla/ 5.0(Linux; Android 12; Pixel 3 XL Build / SP1A.210812.016.C1; wv) AppleWebKit / 537.36(KHTML, like Gecko) Version / 4.0 Chrome / 108.0.5359.128 Mobile Safari / 537.36 / JINJIANG - Android / 287(Pixel3XL; Scale / 3.5)",
-              "accept-encoding": "gzip",
+           //   accept: "application/json",
+              referer: "http://android.jjwxc.net?v=349",
+          //    not_tip: "updateTime",
+              "user-agent": "Dalvik/2.1.0",
+            //  "accept-encoding": "gzip",
             },
             method: "GET",
             onload: function (response) {
@@ -1016,9 +1021,13 @@ export class Jjwxc extends BaseRuleClass {
                 retryTime = 0;
                 if (isVIP) {
                   const decodeResponseText = decodeVIPResopnce(response.responseHeaders, String(response.responseText));
-                  const resultI: ChapterInfo = JSON.parse(
-                    decodeResponseText
-                  );
+                  let resultI = JSON.parse('{"message":"try again!"}');
+                  try {
+                    resultI = JSON.parse(decodeResponseText);
+                  } catch (e) {
+                    log.debug(`json：${decodeResponseText}`);
+                    resultI = JSON.parse('{"message":"try again!"}');
+                  }
                   resolve(resultI);
                 } else {
                   const resultI: ChapterInfo = JSON.parse(
@@ -1041,8 +1050,8 @@ export class Jjwxc extends BaseRuleClass {
         retryTime++;
         if (retryTime > retryLimit) {
           retryTime = 0;
-          log.error(`请求 （不可见url） 失败`);
-          throw new Error(`请求 （不可见url） 失败`);
+          log.error(`请求${chapterGetInfoUrl.toString() }$失败`);
+          throw new Error(`请求${chapterGetInfoUrl.toString() }$失败`);
         }
         result = await getChapterInfo(chapterGetInfoUrl.toString());
       }
