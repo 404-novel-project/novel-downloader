@@ -992,7 +992,7 @@ export class Jjwxc extends BaseRuleClass {
           //   "chapterIds"
           // );
           chapterGetInfoUrl +=
-            "&versionCode=349&token=" + sid ;
+            "&versionCode=349&token=" + sid;
         } else {
           throw new Error(
             `当前需要手动捕获android版app token,详见github主页说明`
@@ -1009,19 +1009,24 @@ export class Jjwxc extends BaseRuleClass {
           _GM_xmlhttpRequest({
             url: url,
             headers: {
-           //   accept: "application/json",
+              //   accept: "application/json",
               referer: "http://android.jjwxc.net?v=349",
-          //    not_tip: "updateTime",
+              //    not_tip: "updateTime",
               "user-agent": "Dalvik/2.1.0",
-            //  "accept-encoding": "gzip",
+              //  "accept-encoding": "gzip",
             },
             method: "GET",
             onload: function (response) {
               if (response.status === 200) {
                 retryTime = 0;
                 if (isVIP) {
-                  const decodeResponseText = decodeVIPResopnce(response.responseHeaders, String(response.responseText));
+                  let decodeResponseText = String(response.responseText);
                   let resultI = JSON.parse('{"message":"try again!"}');
+                  try {
+                    resultI = JSON.parse(decodeResponseText);
+                  } catch (e) {
+                    decodeResponseText = decodeVIPResopnce(response.responseHeaders, String(response.responseText));
+                  }
                   try {
                     resultI = JSON.parse(decodeResponseText);
                   } catch (e) {
@@ -1050,8 +1055,8 @@ export class Jjwxc extends BaseRuleClass {
         retryTime++;
         if (retryTime > retryLimit) {
           retryTime = 0;
-          log.error(`请求${chapterGetInfoUrl.toString() }$失败`);
-          throw new Error(`请求${chapterGetInfoUrl.toString() }$失败`);
+          log.error(`请求${chapterGetInfoUrl.toString()}$失败`);
+          throw new Error(`请求${chapterGetInfoUrl.toString()}$失败`);
         }
         result = await getChapterInfo(chapterGetInfoUrl.toString());
       }
