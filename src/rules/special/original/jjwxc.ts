@@ -901,7 +901,7 @@ export class Jjwxc extends BaseRuleClass {
         else if (header == "keystring")
           keyString = value;
       });
-      let content = String(responseText);
+      const content = String(responseText);
       const accesskeyLen = accesskey.length;
       let v9 = 0;
       const v6 = String(accesskey[accesskeyLen - 1]).charCodeAt(0);
