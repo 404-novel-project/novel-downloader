@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.886
+// @version        5.2.907
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -15070,7 +15070,7 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
                         }
                     })
                         .join("\n");
-                    if (chapterInfo.postscript.length === 0) {
+                    if (chapterInfo.postscript === null || chapterInfo.postscript.length === 0) {
                         contentHTML = _contentHTML;
                     }
                     else {
@@ -28359,6 +28359,63 @@ class Jjwxc extends rules/* BaseRuleClass */.c {
             };
         }
         let retryTime = 0;
+        function decodeVIPResopnce(responseHeader, responseText) {
+            let v43, v38, dest;
+            let accesskey = "accesskey", keyString = "keystring";
+            const arr = responseHeader.trim().split(/[\r\n]+/);
+            const headerMap = { "accesskey": "0", "keystring": "0" };
+            arr.forEach((line) => {
+                const parts = line.split(": ");
+                const header = parts.shift();
+                const value = parts.join(": ");
+                if (header == "accesskey")
+                    accesskey = value;
+                else if (header == "keystring")
+                    keyString = value;
+            });
+            const content = String(responseText);
+            const accesskeyLen = accesskey.length;
+            let v9 = 0;
+            const v6 = String(accesskey[accesskeyLen - 1]).charCodeAt(0);
+            for (let i = 0; i < accesskeyLen; i++) {
+                v9 += accesskey[i].charCodeAt(0);
+            }
+            const v15 = v9 % keyString.length;
+            const v17 = v9 / 65;
+            const v18 = keyString.length;
+            if (v17 + v15 > v18) {
+                v43 = keyString.substring(v15, (v18 - v15) + v15);
+            }
+            else {
+                v43 = keyString.substring(v15, v17 + v15);
+            }
+            const v32 = content.length;
+            if ((v6 & 1) != 0) {
+                v38 = content.substring(v32 - 12, v32);
+                dest = content.substring(0, v32 - 12);
+            }
+            else {
+                v38 = content.substring(0, 12);
+                dest = content.substring(12, content.length);
+            }
+            const key = external_CryptoJS_.MD5(v43 + v38).toString().substring(0, 8);
+            const iv = external_CryptoJS_.MD5(v38).toString().substring(0, 8);
+            const keyHex = external_CryptoJS_.enc.Utf8.parse(key);
+            const ivHex = external_CryptoJS_.enc.Utf8.parse(iv);
+            let result = '{"message":"try again!"}';
+            try {
+                const decrypted = external_CryptoJS_.DES.decrypt(dest, keyHex, {
+                    iv: ivHex,
+                    mode: external_CryptoJS_.mode.CBC,
+                    padding: external_CryptoJS_.pad.Pkcs7,
+                });
+                result = decrypted.toString(external_CryptoJS_.enc.Utf8);
+            }
+            catch (e) {
+                result = '{"message":"try again!"}';
+            }
+            return result;
+        }
         function decodeVIPText(text) {
             const keyHex = external_CryptoJS_.enc.Utf8.parse("KW8Dvm2N");
             const ivHex = external_CryptoJS_.enc.Utf8.parse("1ae2c94b");
@@ -28384,13 +28441,12 @@ class Jjwxc extends rules/* BaseRuleClass */.c {
             let chapterGetInfoUrl = chapterUrl.replace("id", "Id");
             chapterGetInfoUrl = chapterGetInfoUrl.replace("id", "Id");
             chapterGetInfoUrl = chapterGetInfoUrl.replace("http://www.jjwxc.net/onebook.php?", "https://app.jjwxc.net/androidapi/chapterContent?");
-            chapterGetInfoUrl = chapterGetInfoUrl.replace("http://my.jjwxc.net/onebook_vip.php?", "https://android.jjwxc.net/androidapi/androidChapterBatchDownload?");
+            chapterGetInfoUrl = chapterGetInfoUrl.replace("http://my.jjwxc.net/onebook_vip.php?", "https://app.jjwxc.net/androidapi/chapterContent?");
             if (isVIP) {
                 if (typeof unsafeWindow.tokenOptions === "object") {
                     const sid = unsafeWindow.tokenOptions?.Jjwxc;
-                    chapterGetInfoUrl = chapterGetInfoUrl.replace("chapterId", "chapterIds");
                     chapterGetInfoUrl +=
-                        "&versionCode=287&token=" + sid + "&noteislock=1";
+                        "&versionCode=349&token=" + sid;
                 }
                 else {
                     throw new Error(`当前需要手动捕获android版app token,详见github主页说明`);
@@ -28402,19 +28458,30 @@ class Jjwxc extends rules/* BaseRuleClass */.c {
                     (0,GM/* _GM_xmlhttpRequest */.UX)({
                         url: url,
                         headers: {
-                            accept: "application/json",
-                            referer: "http://android.jjwxc.net?v=287",
-                            not_tip: "updateTime",
-                            "user-agent": "Mozilla/ 5.0(Linux; Android 12; Pixel 3 XL Build / SP1A.210812.016.C1; wv) AppleWebKit / 537.36(KHTML, like Gecko) Version / 4.0 Chrome / 108.0.5359.128 Mobile Safari / 537.36 / JINJIANG - Android / 287(Pixel3XL; Scale / 3.5)",
-                            "accept-encoding": "gzip",
+                            referer: "http://android.jjwxc.net?v=349",
+                            "user-agent": "Dalvik/2.1.0",
                         },
                         method: "GET",
                         onload: function (response) {
                             if (response.status === 200) {
                                 retryTime = 0;
                                 if (isVIP) {
-                                    const resultI = JSON.parse(response.responseText);
-                                    resolve(resultI.downloadContent[0]);
+                                    let decodeResponseText = String(response.responseText);
+                                    let resultI = JSON.parse('{"message":"try again!"}');
+                                    try {
+                                        resultI = JSON.parse(decodeResponseText);
+                                    }
+                                    catch (e) {
+                                        decodeResponseText = decodeVIPResopnce(response.responseHeaders, String(response.responseText));
+                                    }
+                                    try {
+                                        resultI = JSON.parse(decodeResponseText);
+                                    }
+                                    catch (e) {
+                                        loglevel_default().debug(`json：${decodeResponseText}`);
+                                        resultI = JSON.parse('{"message":"try again!"}');
+                                    }
+                                    resolve(resultI);
                                 }
                                 else {
                                     const resultI = JSON.parse(response.responseText);
@@ -28434,8 +28501,8 @@ class Jjwxc extends rules/* BaseRuleClass */.c {
                 retryTime++;
                 if (retryTime > setting/* retryLimit */.o5) {
                     retryTime = 0;
-                    loglevel_default().error(`请求 （不可见url） 失败`);
-                    throw new Error(`请求 （不可见url） 失败`);
+                    loglevel_default().error(`请求${chapterGetInfoUrl.toString()}$失败`);
+                    throw new Error(`请求${chapterGetInfoUrl.toString()}$失败`);
                 }
                 result = await getChapterInfo(chapterGetInfoUrl.toString());
             }
@@ -28445,6 +28512,8 @@ class Jjwxc extends rules/* BaseRuleClass */.c {
                 if (isVIP)
                     content = decodeVIPText(content);
                 let postscript = result.sayBody;
+                if (isVIP)
+                    postscript;
                 if (result.sayBody == null)
                     postscript = " ";
                 const contentRaw = document.createElement("pre");
