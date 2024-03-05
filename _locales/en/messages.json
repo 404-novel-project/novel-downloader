@@ -1,0 +1,10 @@
+{
+  "extensionName": {
+    "message": "Novel Downloader",
+    "description": "Name of the extension."
+  },
+  "extensionDescription": {
+    "message": "An scalable universal novel downloader.",
+    "description": "Description of the extension."
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "extends": "../tsconfig",
+  "compilerOptions": {
+    "lib": ["ESNext"],
+    "types": ["serviceworker"],
+    "baseUrl": "../",
+    "paths": {}
+  },
+  "exclude": []
+}

@@ -1,0 +1,49 @@
+{
+  "manifest_version": 3,
+  "name": "__MSG_extensionName__",
+  "description": "__MSG_extensionDescription__",
+  "icons": {
+    "48": "assets/icon-48.png",
+    "96": "assets/icon-96.png"
+  },
+  "version": "-",
+  "author": "bgme",
+  "developer": {
+    "name": "bgme",
+    "url": "https://github.com/404-novel-project/novel-downloader"
+  },
+  "homepage_url": "https://github.com/404-novel-project/novel-downloader",
+  "default_locale": "zh",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "{e405a368-1a02-4c37-9d5b-615f06d2861f}",
+      "strict_min_version": "115.0"
+    }
+  },
+  "minimum_chrome_version": "114",
+  "permissions": [
+    "storage",
+    "unlimitedStorage",
+    "tabs",
+    "scripting",
+    "downloads",
+    "declarativeNetRequestWithHostAccess",
+    "contextualIdentities",
+    "cookies"
+  ],
+  "host_permissions": ["<all_urls>"],
+  "optional_permissions": ["notifications"],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; script-src-elem 'self'; script-src-attr 'none'; worker-src 'self'; style-src 'self' 'unsafe-inline'; object-src 'none'"
+  },
+  "action": {
+    "default_icon": "assets/icon-48.png",
+    "default_title": "__MSG_extensionName__",
+    "default_popup": "pages/popup.html"
+  },
+  "background": {
+    "scripts": ["backgroud/bundle.js"],
+    "service_worker": "backgroud/bundle.js",
+    "type": "module"
+  }
+}

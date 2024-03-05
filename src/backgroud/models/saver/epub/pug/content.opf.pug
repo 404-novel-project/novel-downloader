@@ -1,0 +1,71 @@
+mixin creator(c, role, index)
+  if c.name
+    dc:creator(id=role + index) #{ c.name }
+    meta(refines="#" + role + index, property="role", scheme="marc:relators") #{ role }
+    each a in c["alternate-script"]
+      meta(refines="#" + role + index, property="alternate-script", xml:lang=a.lang) #{ a.name }
+    meta(refines="#" + role + index, property="file-as") #{ c["file-as"] }
+  else
+    dc:creator(id=role + index) #{ c }
+    meta(refines="#" + role + index, property="role", scheme="marc:relators") #{ role }
+
+mixin contributor(c, index)
+  if c.name
+    dc:contributor(id="contributor" + index) #{ c.name }
+    each a in c["alternate-script"]
+      meta(refines="#contributor" + index, property="alternate-script", xml:lang=a.lang) #{ a.name }
+    meta(refines="#contributor" + index, property="file-as") #{ c["file-as"] }
+  else
+    dc:contributor(id="contributor" + index) #{ c }
+
+doctype xml
+
+package(version="3.0", unique-identifier="BookId", xmlns="http://www.idpf.org/2007/opf")
+  metadata(xmlns:dc="http://purl.org/dc/elements/1.1/", xmlns:opf="http://www.idpf.org/2007/opf")
+    dc:identifier#BookId urn:uuid:#{ BookId }
+    dc:title #{ Book.bookName }
+    each lang in Book.languages
+      dc:language= lang
+    meta(property="dcterms:modified") #{ modified }
+
+    meta(name="generator", content="https://github.com/404-novel-project/novel-downloader")
+    meta(name="Novel-Downloader version", content=version)
+
+    if Book.bookUrl
+      dc:source Book.bookUrl
+    each author, index in Book.author
+      +creator(author,"aut", index)
+    each translator, index in Book.translator
+      +creator(translator, "trl", index)
+    each contributor, index in Book.contributor
+      +contributor(contributor, index)
+    if Book.introduction
+      dc:description #{ Book.introduction }
+    if Book.category
+      dc:subject #{ Book.category }
+    each tag in Book.tags
+      dc:subject #{ tag }
+    if Book.nsfw
+      dc:subject R18
+    if Book.series
+      meta(property="belongs-to-collection") #{ Book.series }
+    each id in ids
+      case id.type
+        when ISBN
+          dc:identifier urn:isbn:#{ id.value }
+        when ISSN
+          dc:identifier urn:issn:#{ id.value }
+        when ASIN
+          dc:identifier urn:AMAZON:#{ id.value }
+        when DOI
+          dc:identifier urn:doi:#{ id.value }
+        when UUID
+          dc:identifier urn:uuid:#{ id.value }
+        when URL
+          dc:identifier urn:url:#{ id.value }
+
+  manifest
+    item(id="sgc-nav.css", href="Styles/sgc-nav.css", media-type="text/css")
+    item(id="nav.xhtml", href="Text/nav.xhtml", media-type="application/xhtml+xml", properties="nav")
+  spine
+    itemref(idref="nav.xhtml", linear="no")

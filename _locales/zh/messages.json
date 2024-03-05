@@ -1,0 +1,181 @@
+{
+  "extensionName": {
+    "message": "小说下载器",
+    "description": "扩展名称。"
+  },
+  "extensionDescription": {
+    "message": "一个可扩展的通用型小说下载器。",
+    "description": "扩展描述。"
+  },
+
+  "pages_popup_ui_link_options": {
+    "message": "选项",
+    "description": "工具栏面板页 > 通往后台设置页的按钮上提示语"
+  },
+  "pages_popup_ui_switch_enable": {
+    "message": "启用插件",
+    "description": "工具栏面板页 > 启用插件开关上提示语"
+  },
+  "pages_popup_ui_switch_enableNotify": {
+    "message": "启用通知",
+    "description": "工具栏面板页 > 启用通知开关上提示语"
+  },
+  "pages_popup_ui_switch_enableDebug": {
+    "message": "启用调试",
+    "description": "工具栏面板页 > 启用调试开关上提示语"
+  },
+  "pages_popup_ui_button_exportLog": {
+    "message": "保存日志",
+    "description": "工具栏面板页 > 调试菜单 > 保存日志功能按钮提示语"
+  },
+  "pages_popup_ui_button_reload": {
+    "message": "重载插件",
+    "description": "工具栏面板页 > 调试菜单 > 重载插件功能按钮提示语"
+  },
+  "pages_popup_ui_button_exportCookies": {
+    "message": "导出 Cookies",
+    "description": "工具栏面板页 > 调试菜单 > 导出 Cookies 功能按钮提示语"
+  },
+  "pages_popup_ui_button_importCookies": {
+    "message": "导入 Cookies",
+    "description": "工具栏面板页 > 调试菜单 > 导入 Cookies 链接按钮提示语"
+  },
+
+  "pages_dashboard_menu_overview": {
+    "message": "概览",
+    "description": "后台设置页面左侧菜单"
+  },
+  "pages_dashboard_menu_rules": {
+    "message": "规则管理",
+    "description": "后台设置页面左侧菜单"
+  },
+  "pages_dashboard_menu_download": {
+    "message": "下载管理（WIP）",
+    "description": "后台设置页面左侧菜单"
+  },
+  "pages_dashboard_menu_setting": {
+    "message": "插件设置",
+    "description": "后台设置页面左侧菜单"
+  },
+  "pages_dashboard_menu_resume": {
+    "message": "断点续传（WIP）",
+    "description": "后台设置页面左侧菜单"
+  },
+  "pages_dashboard_menu_cookies": {
+    "message": "导入 Cookies",
+    "description": "后台设置页面左侧菜单"
+  },
+
+  "pages_dashboard_components_SettingValueTable_columnHeader_area": {
+    "message": "存储区域",
+    "description": "后台设置页面 > 设置选项组件：表头"
+  },
+  "pages_dashboard_components_SettingValueTable_columnHeader_namespace": {
+    "message": "命名空间",
+    "description": "后台设置页面 > 设置选项组件：表头"
+  },
+  "pages_dashboard_components_SettingValueTable_columnHeader_key": {
+    "message": "名称",
+    "description": "后台设置页面 > 设置选项组件：表头"
+  },
+  "pages_dashboard_components_SettingValueTable_columnHeader_description": {
+    "message": "简介",
+    "description": "后台设置页面 > 设置选项组件：表头"
+  },
+  "pages_dashboard_components_SettingValueTable_columnHeader_value": {
+    "message": "值",
+    "description": "后台设置页面 > 设置选项组件：表头"
+  },
+  "pages_dashboard_components_SettingValueTable_columnHeader_search_placeholder": {
+    "message": "输入以筛选",
+    "description": "后台设置页面 > 设置选项组件 > 表头搜索筛查输入框"
+  },
+  "pages_dashboard_components_SettingValueTable_scope_toggle_button": {
+    "message": "切换",
+    "description": "后台设置页面 > 设置选项组件 > 数值修改界面"
+  },
+  "pages_dashboard_components_SettingValueTable_scope_edit_button": {
+    "message": "编辑",
+    "description": "后台设置页面 > 设置选项组件 > 数值修改界面"
+  },
+  "pages_dashboard_components_SettingValueTable_scope_dontSave_button": {
+    "message": "丢弃修改",
+    "description": "后台设置页面 > 设置选项组件 > 数值修改界面"
+  },
+  "pages_dashboard_components_SettingValueTable_scope_save_button": {
+    "message": "保存修改",
+    "description": "后台设置页面 > 设置选项组件 > 数值修改界面"
+  },
+  "pages_dashboard_components_SettingValueTable_scope_reset_button": {
+    "message": "重置为默认值",
+    "description": "后台设置页面 > 设置选项组件 > 数值修改界面"
+  },
+
+  "pages_dashboard_page_upload_select": {
+    "message": "请选择导出生成的 json 文件",
+    "description": "后台设置页面 > 导入 Cookies 子页面：Cookies 导出文件选择提示语"
+  },
+  "pages_dashboard_page_cookies_main_domain_col": {
+    "message": "域名",
+    "description": "后台设置页面 > 导入 Cookies 子页面 > Cookies 详情页：域名栏标题"
+  },
+  "pages_dashboard_page_cookies_main_cookies_col": {
+    "message": "Cookies",
+    "description": "后台设置页面 > 导入 Cookies 子页面 > Cookies 详情页：Cookies栏标题"
+  },
+  "pages_dashboard_page_cookies_main_detail_col": {
+    "message": "详情",
+    "description": "后台设置页面 > 导入 Cookies 子页面 > Cookies 详情页：Cookie详情栏标题"
+  },
+
+  "pages_dashboard_page_cookies_main_detail_col_delete_button": {
+    "message": "移除该条 Cookie",
+    "description": "后台设置页面 > 导入 Cookies 子页面 > Cookies 详情页 > Cookie 详情栏：移除当前 Cookie 按钮"
+  },
+  "pages_dashboard_page_cookies_main_detail_col_footer_revert_button": {
+    "message": "丢弃修改",
+    "description": "后台设置页面 > 导入 Cookies 子页面 > Cookies 详情页 > Cookie 详情栏页脚：丢弃修改按钮"
+  },
+  "pages_dashboard_page_cookies_main_detail_col_footer_save_button": {
+    "message": "保存修改",
+    "description": "后台设置页面 > 导入 Cookies 子页面 > Cookies 详情页 > Cookie 详情栏页脚：保存修改按钮"
+  },
+  "pages_dashboard_page_cookies_main_detail_col_footer_enable_edit_button": {
+    "message": "启用编辑",
+    "description": "后台设置页面 > 导入 Cookies 子页面 > Cookies 详情页 > Cookie 详情栏页脚：启用编辑按钮"
+  },
+  "pages_dashboard_page_cookies_main_detail_col_footer_clean_file_button": {
+    "message": "重选 Cookies 文件",
+    "description": "后台设置页面 > 导入 Cookies 子页面 > Cookies 详情页 > Cookie 详情栏页脚：重选 Cookies 文件按钮"
+  },
+  "pages_dashboard_page_cookies_main_detail_col_footer_import_button": {
+    "message": "导入 Cookies",
+    "description": "后台设置页面 > 导入 Cookies 子页面 > Cookies 详情页 > Cookie 详情栏页脚：导入 Cookies 按钮"
+  },
+
+  "pages_dashboard_page_cookies_main_teleport_cookieStores_dialog_title": {
+    "message": "请选择 Cookies 导入区域：",
+    "description": "后台设置页面 > 导入 Cookies 子页面 > Cookies 详情页 > 穿梭框标题"
+  },
+  "pages_dashboard_page_cookies_main_teleport_footer_cancel_button": {
+    "message": "取消",
+    "description": "后台设置页面 > 导入 Cookies 子页面 > Cookies 详情页 > 穿梭框页脚 > 取消按钮"
+  },
+  "pages_dashboard_page_cookies_main_teleport_footer_confirm_button": {
+    "message": "确认",
+    "description": "后台设置页面 > 导入 Cookies 子页面 > Cookies 详情页 > 穿梭框页脚 > 确认按钮"
+  },
+
+  "pages_dashboard_page_cookies_main_ElMessage_clickClean": {
+    "message": "取消导入操作！",
+    "description": "后台设置页面 > 导入 Cookies 子页面 > Cookies 详情页 > 弹窗提示"
+  },
+  "pages_dashboard_page_cookies_main_ElMessage_importCookies_success": {
+    "message": "导入 Cookies 成功！",
+    "description": "后台设置页面 > 导入 Cookies 子页面 > Cookies 详情页 > 弹窗提示"
+  },
+  "pages_dashboard_page_cookies_main_ElMessage_importCookies_error": {
+    "message": "导入 Cookies 失败！",
+    "description": "后台设置页面 > 导入 Cookies 子页面 > Cookies 详情页 > 弹窗提示"
+  }
+}

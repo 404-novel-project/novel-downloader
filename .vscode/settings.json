@@ -1,0 +1,16 @@
+{
+  "search.exclude": {
+    "**/.yarn": true,
+    "**/.pnp.*": true
+  },
+  "files.associations": { "api-extractor.json": "jsonc" },
+  "eslint.nodePath": ".yarn/sdks",
+  "prettier.prettierPath": ".yarn/sdks/prettier/index.js",
+  "typescript.tsdk": ".yarn/sdks/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "vue.server.petiteVue.supportHtmlFile": true,
+  "vue.updateImportsOnFileMove.enabled": true,
+  "vue.autoInsert.dotValue": false,
+  "vue.server.fullCompletionList": true,
+  "typescript.preferences.autoImportFileExcludePatterns": ["vue-router"]
+}

@@ -1,0 +1,10 @@
+{
+  "extensionName": {
+    "message": "小説ダウンローダー",
+    "description": "拡張機能の名前です。"
+  },
+  "extensionDescription": {
+    "message": "スケーラブルなユニバーサル小説ダウンローダー。",
+    "description": "拡張機能の説明です。"
+  }
+}
