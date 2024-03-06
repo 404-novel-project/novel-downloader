@@ -64,8 +64,8 @@ export class Ciyuanji extends BaseRuleClass {
       firstChapterName: string;
       isAutoSub: string;
     }
-
-    const bookObject: BookObj = (unsafeWindow as any).__NUXT__.data[0].book;
+    
+    const bookObject: BookObj = (unsafeWindow as any).__NEXT_DATA__.props.pageProps.book;
     const bookId = bookObject.bookId;
     const bookname = bookObject.bookName;
     const author = bookObject.authorName;
@@ -110,8 +110,7 @@ export class Ciyuanji extends BaseRuleClass {
       copyright: number;
     }
 
-    const bookChapterObject: BookChapterObj = (unsafeWindow as any).__NUXT__
-      .data[0].bookChapter;
+    const bookChapterObject: BookChapterObj = (unsafeWindow as any).__NEXT_DATA__.props.pageProps.bookChapter;
     const chapterList = bookChapterObject.chapterList;
 
     const chapters: Chapter[] = [];
@@ -121,7 +120,7 @@ export class Ciyuanji extends BaseRuleClass {
     let sectionChapterNumber = 0;
     for (const chapterObj of chapterList) {
       const chapterId = chapterObj.chapterId;
-      const chapterUrl = `${document.location.origin}/chapter/${chapterId}?bookId=${bookId}`;
+      const chapterUrl = `${document.location.origin}/chapter/${bookId}_${chapterId}`;
       const chapterName = chapterObj.chapterName;
       const _sectionName = chapterObj.title;
       if (sectionName !== _sectionName) {
@@ -204,51 +203,43 @@ export class Ciyuanji extends BaseRuleClass {
     }
 
     const doc = await getHtmlDOM(chapterUrl, charset);
-    const _script = Array.from(doc.querySelectorAll("script")).filter((s) =>
-      /^window\.__NUXT__/.test(s.innerHTML)
-    );
-    if (_script.length === 1) {
-      const script = _script[0];
-      const scriptText = script.innerHTML.replace(/^window\./, "const ");
 
-      interface ChapterObject {
-        id: number;
-        chapterId: number;
-        chapterName: string;
-        volumeId: number;
-        bookId: number;
-        wordCount: number;
-        content: null;
-        chapterContentFormat: string;
-        sortNum: number;
-        createTime: string;
-        updateTime: null;
-        isDelete: "0";
-        remark: null;
-        title: string;
-        volumeSortNum: number;
-        thirdChapterId: null;
-        thirdBookId: null;
-        contentUpdateTime: string;
-      }
+    interface ChapterObject {
+      id: number;
+      chapterId: number;
+      chapterName: string;
+      volumeId: number;
+      bookId: number;
+      wordCount: number;
+      content: null;
+      chapterContentFormat: string;
+      sortNum: number;
+      createTime: string;
+      updateTime: null;
+      isDelete: "0";
+      remark: null;
+      title: string;
+      volumeSortNum: number;
+      thirdChapterId: null;
+      thirdBookId: null;
+      contentUpdateTime: string;
+    }
 
-      const __NUXT__ = sandboxed(`${scriptText}; return __NUXT__`);
-      const chapterObj: ChapterObject = __NUXT__.data[0].chapter;
-
-      const content = document.createElement("div");
-      const chapterContent = decrypt(chapterObj.chapterContentFormat);
-      if (chapterContent) {
-        content.innerHTML = chapterContent;
-        const { dom, text, images } = await cleanDOM(content, "TM");
-        return {
-          chapterName,
-          contentRaw: content,
-          contentText: text,
-          contentHTML: dom,
-          contentImages: images,
-          additionalMetadate: null,
-        };
-      }
+    const __NEXT_DATA__ = JSON.parse(doc.querySelectorAll("script")[0].innerHTML);
+    const chapterObj: ChapterObject = (__NEXT_DATA__ as any).props.pageProps.chapterContent.chapter;
+    const content = document.createElement("div");
+    const chapterContent = decrypt(chapterObj.chapterContentFormat);
+    if (chapterContent) {
+      content.innerHTML = chapterContent;
+      const { dom, text, images } = await cleanDOM(content, "TM");
+      return {
+        chapterName,
+        contentRaw: content,
+        contentText: text,
+        contentHTML: dom,
+        contentImages: images,
+        additionalMetadate: null,
+      };
     }
 
     return {
@@ -264,7 +255,7 @@ export class Ciyuanji extends BaseRuleClass {
 
 /*
 // $attrs: book
-// window.__NUXT__.data[0].book
+// window.__NEXT_DATA__.props.pageProps.book
 {
     "bookId": 5028,
     "bookName": "被病娇包围的我只想日常",
@@ -314,7 +305,7 @@ export class Ciyuanji extends BaseRuleClass {
 /*
 // $router: "/bookDetails/catalog"
 // data: bookChapter
-// window.__NUXT__.data[1].bookChapter
+// window.__NEXT_DATA__.props.pageProps.bookChapter
 {
   "bookId": 6042,
   "bookName": "末世：我黑暗召唤师的身份被曝光了",
@@ -729,7 +720,7 @@ export class Ciyuanji extends BaseRuleClass {
 }
 
 //chapter
-// window.__NUXT__.data[0].chapter
+// window.props.pageProps.chapterContent.chapter
 {
   "id": 2268756,
   "chapterId": 2268756,
