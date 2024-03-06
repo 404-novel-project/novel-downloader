@@ -22,7 +22,7 @@ declare const _default: import("vue").DefineComponent<{}, {
     filterType: import("vue").Ref<string>;
     filterOptionList: [string, FilterOption][];
     filterDescription: import("vue").ComputedRef<string>;
-}, {}, {}, {}, import("vue").ComponentOptionsMixin, import("vue").ComponentOptionsMixin, "filterupdate"[], "filterupdate", import("vue").VNodeProps & import("vue").AllowedComponentProps & import("vue").ComponentCustomProps, Readonly<import("vue").ExtractPropTypes<{}>> & {
+}, {}, {}, {}, import("vue").ComponentOptionsMixin, import("vue").ComponentOptionsMixin, "filterupdate"[], "filterupdate", import("vue").PublicProps, Readonly<import("vue").ExtractPropTypes<{}>> & {
     onFilterupdate?: ((...args: any[]) => any) | undefined;
 }, {}, {}>;
 export default _default;

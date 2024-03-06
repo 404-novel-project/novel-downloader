@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.908
+// @version        5.2.910
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -615,6 +615,9 @@ Readability.prototype = {
     hashUrl: /^#.+/,
     srcsetUrl: /(\S+)(\s+[\d.]+[xw])?(\s*(?:,|$))/g,
     b64DataUrl: /^data:\s*([^\s;,]+)\s*;\s*base64\s*,/i,
+    // Commas as used in Latin, Sindhi, Chinese and various other scripts.
+    // see: https://en.wikipedia.org/wiki/Comma#Comma_variants
+    commas: /\u002C|\u060C|\uFE50|\uFE10|\uFE11|\u2E41|\u2E34|\u2E32|\uFF0C/g,
     // See: https://schema.org/Article
     jsonLdArticleTypes: /^Article|AdvertiserContentArticle|NewsArticle|AnalysisNewsArticle|AskPublicNewsArticle|BackgroundNewsArticle|OpinionNewsArticle|ReportageNewsArticle|ReviewNewsArticle|Report|SatiricalArticle|ScholarlyArticle|MedicalScholarlyArticle|SocialMediaPosting|BlogPosting|LiveBlogPosting|DiscussionForumPosting|TechArticle|APIReference$/
   },
@@ -1504,7 +1507,7 @@ Readability.prototype = {
         contentScore += 1;
 
         // Add points for any commas within this paragraph.
-        contentScore += innerText.split(",").length;
+        contentScore += innerText.split(this.REGEXPS.commas).length;
 
         // For every 100 characters in this paragraph, add another point. Up to 3 points.
         contentScore += Math.min(Math.floor(innerText.length / 100), 3);
@@ -1918,6 +1921,9 @@ Readability.prototype = {
           ) {
             metadata.siteName = parsed.publisher.name.trim();
           }
+          if (typeof parsed.datePublished === "string") {
+            metadata.datePublished = parsed.datePublished.trim();
+          }
           return;
         } catch (err) {
           this.log(err.message);
@@ -1941,7 +1947,7 @@ Readability.prototype = {
     var metaElements = this._doc.getElementsByTagName("meta");
 
     // property is a space-separated list of values
-    var propertyPattern = /\s*(dc|dcterm|og|twitter)\s*:\s*(author|creator|description|title|site_name)\s*/gi;
+    var propertyPattern = /\s*(article|dc|dcterm|og|twitter)\s*:\s*(author|creator|description|published_time|title|site_name)\s*/gi;
 
     // name is a single value
     var namePattern = /^\s*(?:(dc|dcterm|og|twitter|weibo:(article|webpage))\s*[\.:]\s*)?(author|creator|description|title|site_name)\s*$/i;
@@ -2012,12 +2018,17 @@ Readability.prototype = {
     metadata.siteName = jsonld.siteName ||
                         values["og:site_name"];
 
+    // get article published time
+    metadata.publishedTime = jsonld.datePublished ||
+      values["article:published_time"] || null;
+
     // in many sites the meta value is escaped with HTML entities,
     // so here we need to unescape it
     metadata.title = this._unescapeHtmlEntities(metadata.title);
     metadata.byline = this._unescapeHtmlEntities(metadata.byline);
     metadata.excerpt = this._unescapeHtmlEntities(metadata.excerpt);
     metadata.siteName = this._unescapeHtmlEntities(metadata.siteName);
+    metadata.publishedTime = this._unescapeHtmlEntities(metadata.publishedTime);
 
     return metadata;
   },
@@ -2696,6 +2707,7 @@ Readability.prototype = {
   _isProbablyVisible: function(node) {
     // Have to null-check node.style and node.className.indexOf to deal with SVG and MathML nodes.
     return (!node.style || node.style.display != "none")
+      && (!node.style || node.style.visibility != "hidden")
       && !node.hasAttribute("hidden")
       //check for "fallback-image" so that wikimedia math images are displayed
       && (!node.hasAttribute("aria-hidden") || node.getAttribute("aria-hidden") != "true" || (node.className && node.className.indexOf && node.className.indexOf("fallback-image") !== -1));
@@ -2764,7 +2776,8 @@ Readability.prototype = {
       textContent: textContent,
       length: textContent.length,
       excerpt: metadata.excerpt,
-      siteName: metadata.siteName || this._articleSiteName
+      siteName: metadata.siteName || this._articleSiteName,
+      publishedTime: metadata.publishedTime
     };
   }
 };
@@ -2797,7 +2810,7 @@ module.exports = {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   Z: () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */   A: () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/css-loader/dist/runtime/noSourceMaps.js");
 /* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
@@ -2885,7 +2898,7 @@ div.chapter-list div.chapter.good a {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   Z: () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */   A: () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/css-loader/dist/runtime/noSourceMaps.js");
 /* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
@@ -2950,7 +2963,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `#test-page-div {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   Z: () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */   A: () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/css-loader/dist/runtime/noSourceMaps.js");
 /* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
@@ -2996,7 +3009,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.button-div {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   Z: () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */   A: () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/css-loader/dist/runtime/noSourceMaps.js");
 /* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
@@ -3100,7 +3113,7 @@ dialog-ui #nd-setting-tab-2 select {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   Z: () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */   A: () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/css-loader/dist/runtime/noSourceMaps.js");
 /* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
@@ -3163,7 +3176,7 @@ img {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   Z: () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */   A: () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/css-loader/dist/runtime/noSourceMaps.js");
 /* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
@@ -3216,7 +3229,7 @@ div.sgc-toc-level-6 {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   Z: () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */   A: () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/css-loader/dist/runtime/noSourceMaps.js");
 /* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
@@ -3307,7 +3320,7 @@ a.disabled {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   Z: () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */   A: () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/css-loader/dist/runtime/noSourceMaps.js");
 /* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
@@ -3353,7 +3366,7 @@ div.main {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   Z: () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */   A: () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/css-loader/dist/runtime/noSourceMaps.js");
 /* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
@@ -3390,7 +3403,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.filter-setting {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   Z: () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */   A: () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/css-loader/dist/runtime/noSourceMaps.js");
 /* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
@@ -3527,7 +3540,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.overlay {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   Z: () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */   A: () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/css-loader/dist/runtime/noSourceMaps.js");
 /* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
@@ -3762,6 +3775,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*
         "error"
     ];
 
+    var _loggersByName = {};
+    var defaultLogger = null;
+
     // Cross-browser bind equivalent that works at least back to IE6
     function bindMethod(obj, methodName) {
         var method = obj[methodName];
@@ -3814,25 +3830,33 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*
 
     // These private functions always need `this` to be set properly
 
-    function replaceLoggingMethods(level, loggerName) {
+    function replaceLoggingMethods() {
         /*jshint validthis:true */
+        var level = this.getLevel();
+
+        // Replace the actual methods.
         for (var i = 0; i < logMethods.length; i++) {
             var methodName = logMethods[i];
             this[methodName] = (i < level) ?
                 noop :
-                this.methodFactory(methodName, level, loggerName);
+                this.methodFactory(methodName, level, this.name);
         }
 
         // Define log.log as an alias for log.debug
         this.log = this.debug;
+
+        // Return any important warnings.
+        if (typeof console === undefinedType && level < this.levels.SILENT) {
+            return "No console available for logging";
+        }
     }
 
     // In old IE versions, the console isn't present until you first open it.
     // We build realMethod() replacements here that regenerate logging methods
-    function enableLoggingWhenConsoleArrives(methodName, level, loggerName) {
+    function enableLoggingWhenConsoleArrives(methodName) {
         return function () {
             if (typeof console !== undefinedType) {
-                replaceLoggingMethods.call(this, level, loggerName);
+                replaceLoggingMethods.call(this);
                 this[methodName].apply(this, arguments);
             }
         };
@@ -3840,16 +3864,36 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*
 
     // By default, we use closely bound real methods wherever possible, and
     // otherwise we wait for a console to appear, and then try again.
-    function defaultMethodFactory(methodName, level, loggerName) {
+    function defaultMethodFactory(methodName, _level, _loggerName) {
         /*jshint validthis:true */
         return realMethod(methodName) ||
                enableLoggingWhenConsoleArrives.apply(this, arguments);
     }
 
-    function Logger(name, defaultLevel, factory) {
+    function Logger(name, factory) {
+      // Private instance variables.
       var self = this;
-      var currentLevel;
-      defaultLevel = defaultLevel == null ? "WARN" : defaultLevel;
+      /**
+       * The level inherited from a parent logger (or a global default). We
+       * cache this here rather than delegating to the parent so that it stays
+       * in sync with the actual logging methods that we have installed (the
+       * parent could change levels but we might not have rebuilt the loggers
+       * in this child yet).
+       * @type {number}
+       */
+      var inheritedLevel;
+      /**
+       * The default level for this logger, if any. If set, this overrides
+       * `inheritedLevel`.
+       * @type {number|null}
+       */
+      var defaultLevel;
+      /**
+       * A user-specific level for this logger. If set, this overrides
+       * `defaultLevel`.
+       * @type {number|null}
+       */
+      var userLevel;
 
       var storageKey = "loglevel";
       if (typeof name === "string") {
@@ -3889,10 +3933,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*
           if (typeof storedLevel === undefinedType) {
               try {
                   var cookie = window.document.cookie;
-                  var location = cookie.indexOf(
-                      encodeURIComponent(storageKey) + "=");
+                  var cookieName = encodeURIComponent(storageKey);
+                  var location = cookie.indexOf(cookieName + "=");
                   if (location !== -1) {
-                      storedLevel = /^([^;]+)/.exec(cookie.slice(location))[1];
+                      storedLevel = /^([^;]+)/.exec(
+                          cookie.slice(location + cookieName.length + 1)
+                      )[1];
                   }
               } catch (ignore) {}
           }
@@ -3911,7 +3957,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*
           // Use localStorage if available
           try {
               window.localStorage.removeItem(storageKey);
-              return;
           } catch (ignore) {}
 
           // Use session cookie as fallback
@@ -3919,6 +3964,18 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*
               window.document.cookie =
                 encodeURIComponent(storageKey) + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
           } catch (ignore) {}
+      }
+
+      function normalizeLevel(input) {
+          var level = input;
+          if (typeof level === "string" && self.levels[level.toUpperCase()] !== undefined) {
+              level = self.levels[level.toUpperCase()];
+          }
+          if (typeof level === "number" && level >= 0 && level <= self.levels.SILENT) {
+              return level;
+          } else {
+              throw new TypeError("log.setLevel() called with invalid level: " + input);
+          }
       }
 
       /*
@@ -3935,37 +3992,36 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*
       self.methodFactory = factory || defaultMethodFactory;
 
       self.getLevel = function () {
-          return currentLevel;
+          if (userLevel != null) {
+            return userLevel;
+          } else if (defaultLevel != null) {
+            return defaultLevel;
+          } else {
+            return inheritedLevel;
+          }
       };
 
       self.setLevel = function (level, persist) {
-          if (typeof level === "string" && self.levels[level.toUpperCase()] !== undefined) {
-              level = self.levels[level.toUpperCase()];
+          userLevel = normalizeLevel(level);
+          if (persist !== false) {  // defaults to true
+              persistLevelIfPossible(userLevel);
           }
-          if (typeof level === "number" && level >= 0 && level <= self.levels.SILENT) {
-              currentLevel = level;
-              if (persist !== false) {  // defaults to true
-                  persistLevelIfPossible(level);
-              }
-              replaceLoggingMethods.call(self, level, name);
-              if (typeof console === undefinedType && level < self.levels.SILENT) {
-                  return "No console available for logging";
-              }
-          } else {
-              throw "log.setLevel() called with invalid level: " + level;
-          }
+
+          // NOTE: in v2, this should call rebuild(), which updates children.
+          return replaceLoggingMethods.call(self);
       };
 
       self.setDefaultLevel = function (level) {
-          defaultLevel = level;
+          defaultLevel = normalizeLevel(level);
           if (!getPersistedLevel()) {
               self.setLevel(level, false);
           }
       };
 
       self.resetLevel = function () {
-          self.setLevel(defaultLevel, false);
+          userLevel = null;
           clearPersistedLevel();
+          replaceLoggingMethods.call(self);
       };
 
       self.enableAll = function(persist) {
@@ -3976,12 +4032,28 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*
           self.setLevel(self.levels.SILENT, persist);
       };
 
-      // Initialize with the right level
+      self.rebuild = function () {
+          if (defaultLogger !== self) {
+              inheritedLevel = normalizeLevel(defaultLogger.getLevel());
+          }
+          replaceLoggingMethods.call(self);
+
+          if (defaultLogger === self) {
+              for (var childName in _loggersByName) {
+                _loggersByName[childName].rebuild();
+              }
+          }
+      };
+
+      // Initialize all the internal levels.
+      inheritedLevel = normalizeLevel(
+          defaultLogger ? defaultLogger.getLevel() : "WARN"
+      );
       var initialLevel = getPersistedLevel();
-      if (initialLevel == null) {
-          initialLevel = defaultLevel;
+      if (initialLevel != null) {
+          userLevel = normalizeLevel(initialLevel);
       }
-      self.setLevel(initialLevel, false);
+      replaceLoggingMethods.call(self);
     }
 
     /*
@@ -3990,18 +4062,19 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*
      *
      */
 
-    var defaultLogger = new Logger();
+    defaultLogger = new Logger();
 
-    var _loggersByName = {};
     defaultLogger.getLogger = function getLogger(name) {
         if ((typeof name !== "symbol" && typeof name !== "string") || name === "") {
-          throw new TypeError("You must supply a name when creating a logger.");
+            throw new TypeError("You must supply a name when creating a logger.");
         }
 
         var logger = _loggersByName[name];
         if (!logger) {
-          logger = _loggersByName[name] = new Logger(
-            name, defaultLogger.getLevel(), defaultLogger.methodFactory);
+            logger = _loggersByName[name] = new Logger(
+                name,
+                defaultLogger.methodFactory
+            );
         }
         return logger;
     };
@@ -4086,9 +4159,13 @@ const walkTree = (index, bytes, node) => {
 exports["default"] = exports.filetypeinfo;
 const filetypename = (bytes) => exports.filetypeinfo(bytes).map((e) => e.typename);
 exports.filetypename = filetypename;
-const filetypemime = (bytes) => exports.filetypeinfo(bytes).map((e) => (e.mime ? e.mime : ""));
+const filetypemime = (bytes) => exports.filetypeinfo(bytes)
+    .map((e) => (e.mime ? e.mime : null))
+    .filter((x) => x !== null);
 exports.filetypemime = filetypemime;
-const filetypeextension = (bytes) => exports.filetypeinfo(bytes).map((e) => (e.extension ? e.extension : ""));
+const filetypeextension = (bytes) => exports.filetypeinfo(bytes)
+    .map((e) => (e.extension ? e.extension : null))
+    .filter((x) => x !== null);
 exports.filetypeextension = filetypeextension;
 
 
@@ -4103,13 +4180,11 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 const toHex_1 = __webpack_require__("./node_modules/magic-bytes.js/dist/model/toHex.js");
 const tree_1 = __webpack_require__("./node_modules/magic-bytes.js/dist/model/tree.js");
 // https://en.wikipedia.org/wiki/List_of_file_signatures
-let fileType = new Map();
 let tree = {
     noOffset: null,
     offset: {},
 };
 const add = (typename, signature, additionalInfo, offset) => {
-    fileType.set(typename, signature);
     if (offset) {
         const existing = tree.offset[toHex_1.toHex(offset)];
         if (!existing) {
@@ -4137,38 +4212,10 @@ add("gif", ["0x47", "0x49", "0x46", "0x38", "0x39", "0x61"], {
     mime: "image/gif",
     extension: "gif",
 });
-add("jpg", ["0xFF", "0xD8", "0xFF", "0xDB"], {
+add("jpg", ["0xFF", "0xD8", "0xFF"], {
     mime: "image/jpeg",
     extension: "jpeg",
 });
-add("jpg", [
-    "0xFF",
-    "0xD8",
-    "0xFF",
-    "0xE0",
-    "?",
-    "?",
-    "0x4A",
-    "0x46",
-    "0x49",
-    "0x46",
-    "0x00",
-    "0x01",
-], { mime: "image/jpeg", extension: "jpeg" });
-add("jpg", [
-    "0xFF",
-    "0xD8",
-    "0xFF",
-    "0xE1",
-    "?",
-    "?",
-    "0x45",
-    "0x78",
-    "0x69",
-    "0x66",
-    "0x00",
-    "0x00",
-], { mime: "image/jpeg", extension: "jpeg" });
 add("webp", [
     "0x52",
     "0x49",
@@ -4197,6 +4244,26 @@ add("ytr", ["0x00"]);
 // 66747970
 // 6D703432
 add("mp4", ["0x66", "0x74", "0x79", "0x70"], { mime: "video/mp4", extension: "mp4" }, 0x4);
+add("ttf", ["0x00", "0x01", "0x00", "0x00", "0x00"], {
+    mime: "font/ttf",
+    extension: "ttf",
+});
+add("otf", ["0x4F", "0x54", "0x54", "0x4F"], {
+    mime: "font/otf",
+    extension: "otf",
+});
+add("eot", ["0x50", "0x4C"], {
+    mime: "application/vnd.ms-fontobject",
+    extension: "eot",
+});
+add("woff", ["0x77", "0x4F", "0x46", "0x46"], {
+    mime: "font/woff",
+    extension: "woff",
+});
+add("woff2", ["0x77", "0x4F", "0x46", "0x32"], {
+    mime: "font/woff2",
+    extension: "woff2",
+});
 add("pdb", [
     "0x00",
     "0x00",
@@ -4546,15 +4613,42 @@ add("pptx", ["0x50", "0x4B", "0x07", "0x08"], {
     mime: "application/vnd.openxmlformats-officedocument.presentationml.presentation",
     extension: "pptx",
 });
-add("vsdx", ["0x50", "0x4B", "0x03", "0x04"]);
-add("vsdx", ["0x50", "0x4B", "0x05", "0x06"]);
-add("vsdx", ["0x50", "0x4B", "0x07", "0x08"]);
-add("apk", ["0x50", "0x4B", "0x03", "0x04"]);
-add("apk", ["0x50", "0x4B", "0x05", "0x06"]);
-add("apk", ["0x50", "0x4B", "0x07", "0x08"]);
-add("aar", ["0x50", "0x4B", "0x03", "0x04"]);
-add("aar", ["0x50", "0x4B", "0x05", "0x06"]);
-add("aar", ["0x50", "0x4B", "0x07", "0x08"]);
+add("vsdx", ["0x50", "0x4B", "0x03", "0x04"], {
+    mime: "application/vnd.ms-visio.drawing",
+    extension: "vsdx",
+});
+add("vsdx", ["0x50", "0x4B", "0x05", "0x06"], {
+    mime: "application/vnd.ms-visio.drawing",
+    extension: "vsdx",
+});
+add("vsdx", ["0x50", "0x4B", "0x07", "0x08"], {
+    mime: "application/vnd.ms-visio.drawing",
+    extension: "vsdx",
+});
+add("apk", ["0x50", "0x4B", "0x03", "0x04"], {
+    mime: "application/vnd.android.package-archive",
+    extension: "apk",
+});
+add("apk", ["0x50", "0x4B", "0x05", "0x06"], {
+    mime: "application/vnd.android.package-archive",
+    extension: "apk",
+});
+add("apk", ["0x50", "0x4B", "0x07", "0x08"], {
+    mime: "application/vnd.android.package-archive",
+    extension: "apk",
+});
+add("aar", ["0x50", "0x4B", "0x03", "0x04"], {
+    mime: "application/vnd.android.package-archive",
+    extension: "aar",
+});
+add("aar", ["0x50", "0x4B", "0x05", "0x06"], {
+    mime: "application/vnd.android.package-archive",
+    extension: "aar",
+});
+add("aar", ["0x50", "0x4B", "0x07", "0x08"], {
+    mime: "application/vnd.android.package-archive",
+    extension: "aar",
+});
 add("rar", ["0x52", "0x61", "0x72", "0x21", "0x1A", "0x07", "0x00"], {
     mime: "application/vnd.rar",
     extension: "rar",
@@ -4584,7 +4678,10 @@ add("class", ["0xCF", "0xFA", "0xed", "0xFE"]);
 add("class", ["0xFF", "0xFE"]);
 add("class", ["0xFF", "0xFE"]);
 add("class", ["0xFF", "0xFE", "0x00", "0x00"]);
-add("ps", ["0x25", "0x21", "0x50", "0x53"]);
+add("ps", ["0x25", "0x21", "0x50", "0x53"], {
+    mime: "application/postscript",
+    extension: ".ps"
+});
 add("pdf", ["0x25", "0x50", "0x44", "0x46"], {
     mime: "application/pdf",
     extension: "pdf",
@@ -4653,17 +4750,213 @@ add("deploymentimage", [
     "0x30",
     "0x31",
 ]);
-add("ogg", ["0x4F", "0x67", "0x67", "0x53"], {
-    mime: "audio/ogg",
-    extension: "ogg",
+// ogg video ' theora'
+add("ogv", [
+    "0x4F",
+    "0x67",
+    "0x67",
+    "0x53",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "0x80",
+    "0x74",
+    "0x68",
+    "0x65",
+    "0x6F",
+    "0x72",
+    "0x61",
+], {
+    mime: "video/ogg",
+    extension: "ogv",
 });
-add("oga", ["0x4F", "0x67", "0x67", "0x53"], {
+// ogg video '\x01video'
+add("ogm", [
+    "0x4F",
+    "0x67",
+    "0x67",
+    "0x53",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "0x01",
+    "0x76",
+    "0x69",
+    "0x64",
+    "0x65",
+    "0x6F",
+    "0x00",
+], {
+    mime: "video/ogg",
+    extension: "ogm",
+});
+// ogg audio ' FLAC'
+add("oga", [
+    "0x4F",
+    "0x67",
+    "0x67",
+    "0x53",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "0x7F",
+    "0x46",
+    "0x4C",
+    "0x41",
+    "0x43",
+], {
     mime: "audio/ogg",
     extension: "oga",
 });
-add("ogv", ["0x4F", "0x67", "0x67", "0x53"], {
-    mime: "video/ogg",
-    extension: "ogv",
+// ogg audio 'Speex  '
+add("spx", [
+    "0x4F",
+    "0x67",
+    "0x67",
+    "0x53",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "0x53",
+    "0x70",
+    "0x65",
+    "0x65",
+    "0x78",
+    "0x20",
+    "0x20",
+], {
+    mime: "audio/ogg",
+    extension: "spx",
+});
+// ogg audio '\x01vorbis '
+add("ogg", [
+    "0x4F",
+    "0x67",
+    "0x67",
+    "0x53",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "?",
+    "0x01",
+    "0x76",
+    "0x6F",
+    "0x72",
+    "0x62",
+    "0x69",
+    "0x73",
+], {
+    mime: "audio/ogg",
+    extension: "ogg",
+});
+// default OGG container
+add("ogx", ["0x4F", "0x67", "0x67", "0x53"], {
+    mime: "application/ogg",
+    extension: "ogx",
 });
 add("psd", ["0x38", "0x42", "0x50", "0x53"], {
     mime: "application/x-photoshop",
@@ -4784,8 +5077,18 @@ add("dmg", ["0x78", "0x01", "0x73", "0x0D", "0x62", "0x62", "0x60"]);
 add("xar", ["0x78", "0x61", "0x72", "0x21"]);
 add("dat", ["0x50", "0x4D", "0x4F", "0x43", "0x43", "0x4D", "0x4F", "0x43"]);
 add("nes", ["0x4E", "0x45", "0x53", "0x1A"]);
-add("tar", ["0x75", "0x73", "0x74", "0x61", "0x72", "0x00", "0x30", "0x30"], undefined, 0x101);
-add("tar", ["0x75", "0x73", "0x74", "0x61", "0x72", "0x20", "0x20", "0x00"], undefined, 0x101);
+add("tar", ["0x75", "0x73", "0x74", "0x61", "0x72", "0x00", "0x30", "0x30"], {
+    // As per Mozilla documentation available at:
+    // https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types
+    // or wikipedia page:
+    // https://en.wikipedia.org/wiki/List_of_archive_formats
+    mime: "application/x-tar",
+    extension: "tar"
+}, 0x101);
+add("tar", ["0x75", "0x73", "0x74", "0x61", "0x72", "0x20", "0x20", "0x00"], {
+    mime: "application/x-tar",
+    extension: "tar"
+}, 0x101);
 add("tox", ["0x74", "0x6F", "0x78", "0x33"]);
 add("mlv", ["0x4D", "0x4C", "0x56", "0x49"]);
 add("windowsupdate", [
@@ -4817,9 +5120,18 @@ add("tar.xz", ["0xFD", "0x37", "0x7A", "0x58", "0x5A", "0x00", "0x00"], {
 });
 add("lz2", ["0x04", "0x22", "0x4D", "0x18"]);
 add("cab", ["0x4D", "0x53", "0x43", "0x46"]);
-add("mkv", ["0x1A", "0x45", "0xDF", "0xA3"]);
-add("mka", ["0x1A", "0x45", "0xDF", "0xA3"]);
-add("mks", ["0x1A", "0x45", "0xDF", "0xA3"]);
+add("mkv", ["0x1A", "0x45", "0xDF", "0xA3"], {
+    mime: "video/x-matroska",
+    extension: "mkv",
+});
+add("mka", ["0x1A", "0x45", "0xDF", "0xA3"], {
+    mime: "audio/x-matroska",
+    extension: "mka",
+});
+add("mks", ["0x1A", "0x45", "0xDF", "0xA3"], {
+    mime: "video/x-matroska",
+    extension: "mks",
+});
 add("mk3d", ["0x1A", "0x45", "0xDF", "0xA3"]);
 add("webm", ["0x1A", "0x45", "0xDF", "0xA3"], {
     mime: "audio/webm",
@@ -4830,7 +5142,10 @@ add("xml", ["0x3C", "0x3f", "0x78", "0x6d", "0x6C", "0x20"], {
     mime: "application/xml",
     extension: "xml",
 });
-add("wasm", ["0x00", "0x61", "0x73", "0x6d"]);
+add("wasm", ["0x00", "0x61", "0x73", "0x6d"], {
+    mime: "application/wasm",
+    extension: "wasm",
+});
 add("lep", ["0xCF", "0x84", "0x01"]);
 add("swf", ["0x43", "0x57", "0x53"], {
     mime: "application/x-shockwave-flash",
@@ -4860,7 +5175,160 @@ add("mpeg", ["0x00", "0x00", "0x01", "0xB3"], {
     mime: "video/mpeg",
     extension: "mpeg",
 });
-add("hl2demo", ["48", "4C", "32", "44", "45", "4D", "4F"]);
+// mov 'free' TODO: find test file
+add("mov", ["0x66", "0x72", "0x65", "0x65"], {
+    mime: "video/quicktime",
+    extension: "mov",
+}, 0x4);
+// mov 'mdat'
+add("mov", ["0x6D", "0x64", "0x61", "0x74"], {
+    mime: "video/quicktime",
+    extension: "mov",
+}, 0x4);
+// mov 'moov' TODO: find test file
+add("mov", ["0x6D", "0x6F", "0x6F", "0x76"], {
+    mime: "video/quicktime",
+    extension: "mov",
+}, 0x4);
+// move 'wide' TODO: find test file
+add("mov", ["0x77", "0x69", "0x64", "0x65"], {
+    mime: "video/quicktime",
+    extension: "mov",
+}, 0x4);
+// mov 'ftypqt'
+add("mov", ["0x66", "0x74", "0x79", "0x70", "0x71", "0x74"], {
+    mime: "video/quicktime",
+    extension: "mov",
+}, 0x4);
+add("hl2demo", ["0x48", "0x4C", "0x32", "0x44", "0x45", "0x4D", "0x4F"]);
+add("txt", ["0xEF", "0xBB", "0xBF"], {
+    mime: "text/plain; charset=UTF-8",
+    extension: "txt",
+});
+add("txt", ["0xFF", "0xFE"], {
+    mime: "text/plain; charset=UTF-16LE",
+    extension: "txt",
+});
+add("txt", ["0xFE", "0xFF"], {
+    mime: "text/plain; charset=UTF-16BE",
+    extension: "txt",
+});
+add("txt", ["0xFF", "0xFE", "0x00", "0x00"], {
+    mime: "text/plain; charset=UTF-32LE",
+    extension: "txt",
+});
+add("txt", ["0x00", "0x00", "0xFE", "0xFF"], {
+    mime: "text/plain; charset=UTF-32BE",
+    extension: "txt",
+});
+add("SubRip", ["0x31", "0x0D", "0x0A", "0x30", "0x30", "0x3A"], {
+    mime: "application/x-subrip",
+    extension: "srt",
+});
+add("WebVTT", [
+    "0xEF",
+    "0xBB",
+    "0xBF",
+    "0x57",
+    "0x45",
+    "0x42",
+    "0x56",
+    "0x54",
+    "0x54",
+    "0x0A",
+], {
+    mime: "text/vtt",
+    extension: "vtt",
+});
+add("WebVTT", [
+    "0xEF",
+    "0xBB",
+    "0xBF",
+    "0x57",
+    "0x45",
+    "0x42",
+    "0x56",
+    "0x54",
+    "0x54",
+    "0x0D",
+], {
+    mime: "text/vtt",
+    extension: "vtt",
+});
+add("WebVTT", [
+    "0xEF",
+    "0xBB",
+    "0xBF",
+    "0x57",
+    "0x45",
+    "0x42",
+    "0x56",
+    "0x54",
+    "0x54",
+    "0x20",
+], {
+    mime: "text/vtt",
+    extension: "vtt",
+});
+add("WebVTT", [
+    "0xEF",
+    "0xBB",
+    "0xBF",
+    "0x57",
+    "0x45",
+    "0x42",
+    "0x56",
+    "0x54",
+    "0x54",
+    "0x09",
+], {
+    mime: "text/vtt",
+    extension: "vtt",
+});
+add("WebVTT", ["0x57", "0x45", "0x42", "0x56", "0x54", "0x54", "0x0A"], {
+    mime: "text/vtt",
+    extension: "vtt",
+});
+add("WebVTT", ["0x57", "0x45", "0x42", "0x56", "0x54", "0x54", "0x0D"], {
+    mime: "text/vtt",
+    extension: "vtt",
+});
+add("WebVTT", ["0x57", "0x45", "0x42", "0x56", "0x54", "0x54", "0x20"], {
+    mime: "text/vtt",
+    extension: "vtt",
+});
+add("WebVTT", ["0x57", "0x45", "0x42", "0x56", "0x54", "0x54", "0x09"], {
+    mime: "text/vtt",
+    extension: "vtt",
+});
+add("Json", ["0x7B"], {
+    mime: "application/json",
+    extension: ".json",
+});
+add("Json", ["0x5B"], {
+    mime: "application/json",
+    extension: ".json",
+});
+add("ELF", ["0x7F", "0x45", "0x4C", "0x46"], {
+    mime: "application/x-executable",
+    extension: ".elf",
+});
+add("Mach-O", ["0xFE", "0xED", "0xFA", "0xC"], {
+    mime: "application/x-mach-binary",
+    extension: ".o",
+});
+add("Mach-O", ["0xFE", "0xED", "0xFA", "0xCF"], {
+    mime: "application/x-executable",
+    extension: "elf",
+});
+add("EML", ["0x52", "0x65", "0x63", "0x65", "0x69", "0x76", "0x65", "0x64", "0x3A"], {
+    mime: "message/rfc822",
+    extension: ".eml",
+});
+add("SVG", ["0x3c", "0x73", "0x76", "0x67"], {
+    mime: "image/svg+xml",
+    extension: "svg",
+});
 exports["default"] = () => tree;
 
 
@@ -5102,7 +5570,7 @@ ArraySet.prototype.toArray = function ArraySet_toArray() {
   return this._array.slice();
 };
 
-exports.I = ArraySet;
+exports.C = ArraySet;
 
 
 /***/ }),
@@ -5409,7 +5877,7 @@ MappingList.prototype.toArray = function MappingList_toArray() {
   return this._array;
 };
 
-exports.H = MappingList;
+exports.P = MappingList;
 
 
 /***/ }),
@@ -5426,8 +5894,8 @@ exports.H = MappingList;
 
 var base64VLQ = __webpack_require__("./node_modules/source-map-js/lib/base64-vlq.js");
 var util = __webpack_require__("./node_modules/source-map-js/lib/util.js");
-var ArraySet = (__webpack_require__("./node_modules/source-map-js/lib/array-set.js")/* .ArraySet */ .I);
-var MappingList = (__webpack_require__("./node_modules/source-map-js/lib/mapping-list.js")/* .MappingList */ .H);
+var ArraySet = (__webpack_require__("./node_modules/source-map-js/lib/array-set.js")/* .ArraySet */ .C);
+var MappingList = (__webpack_require__("./node_modules/source-map-js/lib/mapping-list.js")/* .MappingList */ .P);
 
 /**
  * An instance of the SourceMapGenerator represents a source map which is
@@ -5841,7 +6309,7 @@ SourceMapGenerator.prototype.toString =
     return JSON.stringify(this.toJSON());
   };
 
-exports.h = SourceMapGenerator;
+exports.x = SourceMapGenerator;
 
 
 /***/ }),
@@ -6774,11 +7242,11 @@ exports.computeSourceURL = computeSourceURL;
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   QG: () => (/* binding */ _GM_getValue),
-/* harmony export */   UX: () => (/* binding */ _GM_xmlhttpRequest),
-/* harmony export */   _p: () => (/* binding */ _GM_info),
-/* harmony export */   _u: () => (/* binding */ _GM_setValue),
-/* harmony export */   jF: () => (/* binding */ _GM_deleteValue)
+/* harmony export */   JU: () => (/* binding */ _GM_deleteValue),
+/* harmony export */   JX: () => (/* binding */ _GM_info),
+/* harmony export */   er: () => (/* binding */ _GM_getValue),
+/* harmony export */   mN: () => (/* binding */ _GM_setValue),
+/* harmony export */   nV: () => (/* binding */ _GM_xmlhttpRequest)
 /* harmony export */ });
 function get_GM_info() {
     if (typeof GM_info !== "undefined") {
@@ -6837,12 +7305,12 @@ async function _GM_deleteValue(name) {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   FG: () => (/* binding */ getAttachment),
-/* harmony export */   VO: () => (/* binding */ getRandomName),
-/* harmony export */   dK: () => (/* binding */ putAttachmentClassCache),
-/* harmony export */   gc: () => (/* binding */ getAttachmentClassCache),
-/* harmony export */   pN: () => (/* binding */ clearAttachmentClassCache),
-/* harmony export */   r6: () => (/* binding */ getExt)
+/* harmony export */   Ld: () => (/* binding */ putAttachmentClassCache),
+/* harmony export */   VJ: () => (/* binding */ getRandomName),
+/* harmony export */   _s: () => (/* binding */ getAttachmentClassCache),
+/* harmony export */   an: () => (/* binding */ getExt),
+/* harmony export */   "if": () => (/* binding */ getAttachment),
+/* harmony export */   rd: () => (/* binding */ clearAttachmentClassCache)
 /* harmony export */ });
 /* harmony import */ var _main_Attachment__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/main/Attachment.ts");
 /* harmony import */ var _hash__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/hash.ts");
@@ -6879,7 +7347,7 @@ async function getAttachment(url, mode, prefix = "", noMD5 = false, comments = g
     if (imgClassCache) {
         return imgClassCache;
     }
-    const imgClass = new _main_Attachment__WEBPACK_IMPORTED_MODULE_1__/* .AttachmentClass */ .J(url, comments, mode, options?.referrerMode, options?.customReferer);
+    const imgClass = new _main_Attachment__WEBPACK_IMPORTED_MODULE_1__/* .AttachmentClass */ .q(url, comments, mode, options?.referrerMode, options?.customReferer);
     imgClass.comments = comments;
     const blob = await imgClass.init();
     if (blob) {
@@ -6887,7 +7355,7 @@ async function getAttachment(url, mode, prefix = "", noMD5 = false, comments = g
             imgClass.name = getLastPart(url);
         }
         else {
-            const hash = await (0,_hash__WEBPACK_IMPORTED_MODULE_2__/* .calculateSha1 */ .K)(blob);
+            const hash = await (0,_hash__WEBPACK_IMPORTED_MODULE_2__/* .calculateSha1 */ .Q)(blob);
             const ext = await getExt(blob, url);
             imgClass.name = [prefix, hash, ".", ext].join("");
         }
@@ -6897,7 +7365,7 @@ async function getAttachment(url, mode, prefix = "", noMD5 = false, comments = g
     return imgClass;
 }
 function getRandomName() {
-    return `__${(0,_misc__WEBPACK_IMPORTED_MODULE_4__/* .randomUUID */ .HP)()}__`;
+    return `__${(0,_misc__WEBPACK_IMPORTED_MODULE_4__/* .randomUUID */ .N4)()}__`;
 }
 async function getExt(b, u) {
     const ext = (0,magic_bytes_js__WEBPACK_IMPORTED_MODULE_0__.filetypeextension)(new Uint8Array(await b.arrayBuffer()));
@@ -6932,12 +7400,12 @@ function getLastPart(u) {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   FZ: () => (/* binding */ convertFixWidth),
-/* harmony export */   Kg: () => (/* binding */ isFixWidth),
-/* harmony export */   Q3: () => (/* binding */ convertBr),
-/* harmony export */   d1: () => (/* binding */ convertFixWidthText),
-/* harmony export */   iA: () => (/* binding */ htmlTrim),
-/* harmony export */   zM: () => (/* binding */ cleanDOM)
+/* harmony export */   N0: () => (/* binding */ convertFixWidth),
+/* harmony export */   U9: () => (/* binding */ convertBr),
+/* harmony export */   WF: () => (/* binding */ convertFixWidthText),
+/* harmony export */   an: () => (/* binding */ cleanDOM),
+/* harmony export */   eu: () => (/* binding */ isFixWidth),
+/* harmony export */   is: () => (/* binding */ htmlTrim)
 /* harmony export */ });
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_1__);
@@ -7485,7 +7953,7 @@ async function cleanDOM(elem, imgMode, options) {
         }
         map.set("a", a);
         function getImg(url) {
-            const imgClassCache = (0,_attachments__WEBPACK_IMPORTED_MODULE_0__/* .getAttachmentClassCache */ .gc)(url);
+            const imgClassCache = (0,_attachments__WEBPACK_IMPORTED_MODULE_0__/* .getAttachmentClassCache */ ._s)(url);
             if (imgClassCache) {
                 const dom = document.createElement("img");
                 dom.setAttribute("data-src-address", imgClassCache.name);
@@ -7500,13 +7968,13 @@ async function cleanDOM(elem, imgMode, options) {
                 };
             }
             else {
-                const comments = (0,_attachments__WEBPACK_IMPORTED_MODULE_0__/* .getRandomName */ .VO)();
+                const comments = (0,_attachments__WEBPACK_IMPORTED_MODULE_0__/* .getRandomName */ .VJ)();
                 const noMd5 = options?.keepImageName ?? false;
                 const imgOptions = {
                     referrerMode: options?.referrerMode,
                     customReferer: options?.customReferer,
                 };
-                const imgClass = (0,_attachments__WEBPACK_IMPORTED_MODULE_0__/* .getAttachment */ .FG)(url, imgMode, "chapter-", noMd5, comments, imgOptions);
+                const imgClass = (0,_attachments__WEBPACK_IMPORTED_MODULE_0__/* .getAttachment */ ["if"])(url, imgMode, "chapter-", noMd5, comments, imgOptions);
                 const dom = document.createElement("img");
                 dom.setAttribute("data-src-address", comments);
                 dom.alt = url;
@@ -7531,7 +7999,7 @@ async function cleanDOM(elem, imgMode, options) {
         function audio(elem) {
             if (elem instanceof HTMLAudioElement) {
                 const url = elem.src;
-                const attachmentCache = (0,_attachments__WEBPACK_IMPORTED_MODULE_0__/* .getAttachmentClassCache */ .gc)(url);
+                const attachmentCache = (0,_attachments__WEBPACK_IMPORTED_MODULE_0__/* .getAttachmentClassCache */ ._s)(url);
                 if (attachmentCache) {
                     const dom = document.createElement("audio");
                     dom.innerText = "Your browser does not support the audio element.";
@@ -7548,13 +8016,13 @@ async function cleanDOM(elem, imgMode, options) {
                     };
                 }
                 else {
-                    const comments = (0,_attachments__WEBPACK_IMPORTED_MODULE_0__/* .getRandomName */ .VO)();
+                    const comments = (0,_attachments__WEBPACK_IMPORTED_MODULE_0__/* .getRandomName */ .VJ)();
                     const noMd5 = options?.keepImageName ?? false;
                     const attachmentOptions = {
                         referrerMode: options?.referrerMode,
                         customReferer: options?.customReferer,
                     };
-                    const attachment = (0,_attachments__WEBPACK_IMPORTED_MODULE_0__/* .getAttachment */ .FG)(url, imgMode, "chapter-", noMd5, comments, attachmentOptions);
+                    const attachment = (0,_attachments__WEBPACK_IMPORTED_MODULE_0__/* .getAttachment */ ["if"])(url, imgMode, "chapter-", noMd5, comments, attachmentOptions);
                     const dom = document.createElement("audio");
                     dom.innerText = "Your browser does not support the audio element.";
                     dom.setAttribute("data-src-address", comments);
@@ -7929,7 +8397,7 @@ function convertFixWidthText(node, width = 35, out = document.createElement("div
             text = "";
             continue;
         }
-        if ((0,_dom__WEBPACK_IMPORTED_MODULE_2__/* .fullWidthLength */ .sp)(n) > width - 5 && (0,_dom__WEBPACK_IMPORTED_MODULE_2__/* .fullWidthLength */ .sp)(n) < width + 5) {
+        if ((0,_dom__WEBPACK_IMPORTED_MODULE_2__/* .fullWidthLength */ .QJ)(n) > width - 5 && (0,_dom__WEBPACK_IMPORTED_MODULE_2__/* .fullWidthLength */ .QJ)(n) < width + 5) {
             text = text + n;
             continue;
         }
@@ -7962,9 +8430,9 @@ function convertFixWidth(node, width = 35) {
         const next = node.nextSibling;
         if (previous instanceof Text &&
             next instanceof Text &&
-            (previous.textContent ? (0,_dom__WEBPACK_IMPORTED_MODULE_2__/* .fullWidthLength */ .sp)(previous.textContent) : 0) >
+            (previous.textContent ? (0,_dom__WEBPACK_IMPORTED_MODULE_2__/* .fullWidthLength */ .QJ)(previous.textContent) : 0) >
                 width - 5 &&
-            (previous.textContent ? (0,_dom__WEBPACK_IMPORTED_MODULE_2__/* .fullWidthLength */ .sp)(previous.textContent) : 0) <
+            (previous.textContent ? (0,_dom__WEBPACK_IMPORTED_MODULE_2__/* .fullWidthLength */ .QJ)(previous.textContent) : 0) <
                 width + 5) {
             node.remove();
         }
@@ -8011,18 +8479,18 @@ function convertFixWidth(node, width = 35) {
     });
     Array.from(node.querySelectorAll("p"))
         .filter((p) => p.innerText.trim() === "" &&
-        (0,_dom__WEBPACK_IMPORTED_MODULE_2__/* .getPreviousSibling */ .U)(p) instanceof HTMLElement &&
-        (0,_dom__WEBPACK_IMPORTED_MODULE_2__/* .getNextSibling */ .d9)(p) instanceof HTMLElement)
+        (0,_dom__WEBPACK_IMPORTED_MODULE_2__/* .getPreviousSibling */ .UN)(p) instanceof HTMLElement &&
+        (0,_dom__WEBPACK_IMPORTED_MODULE_2__/* .getNextSibling */ .wX)(p) instanceof HTMLElement)
         .forEach((p) => p.remove());
     Array.from(node.querySelectorAll("p"))
-        .filter((p) => (0,_dom__WEBPACK_IMPORTED_MODULE_2__/* .getPreviousBrCount */ .$N)(p) === 2)
-        .forEach((p) => (0,_dom__WEBPACK_IMPORTED_MODULE_2__/* .removePreviousBr */ .Fe)(p));
+        .filter((p) => (0,_dom__WEBPACK_IMPORTED_MODULE_2__/* .getPreviousBrCount */ .Jw)(p) === 2)
+        .forEach((p) => (0,_dom__WEBPACK_IMPORTED_MODULE_2__/* .removePreviousBr */ .S0)(p));
     if (isFixWidthP(node)) {
         const ps = Array.from(node.querySelectorAll("p"));
         let text = "";
         for (const node of ps) {
             const n = node.innerText.trim();
-            if ((0,_dom__WEBPACK_IMPORTED_MODULE_2__/* .fullWidthLength */ .sp)(n) > width - 5 && (0,_dom__WEBPACK_IMPORTED_MODULE_2__/* .fullWidthLength */ .sp)(n) < width + 5) {
+            if ((0,_dom__WEBPACK_IMPORTED_MODULE_2__/* .fullWidthLength */ .QJ)(n) > width - 5 && (0,_dom__WEBPACK_IMPORTED_MODULE_2__/* .fullWidthLength */ .QJ)(n) < width + 5) {
                 text = text + n;
                 node.remove();
                 continue;
@@ -8043,7 +8511,7 @@ function convertFixWidth(node, width = 35) {
         }
     }
     function isFixWidthP(node) {
-        const lengths = Array.from(node.querySelectorAll("p")).map((p) => (0,_dom__WEBPACK_IMPORTED_MODULE_2__/* .fullWidthLength */ .sp)(p.innerText.trim()));
+        const lengths = Array.from(node.querySelectorAll("p")).map((p) => (0,_dom__WEBPACK_IMPORTED_MODULE_2__/* .fullWidthLength */ .QJ)(p.innerText.trim()));
         const lt = lengths.filter((i) => i > width + 5).length;
         return lt < 5;
     }
@@ -8077,7 +8545,7 @@ function isFixWidth(node, width = 35) {
     if (!ns) {
         throw new Error("ns is null");
     }
-    const lengths = ns.map((l) => (0,_dom__WEBPACK_IMPORTED_MODULE_2__/* .fullWidthLength */ .sp)(l));
+    const lengths = ns.map((l) => (0,_dom__WEBPACK_IMPORTED_MODULE_2__/* .fullWidthLength */ .QJ)(l));
     const lt = lengths.filter((i) => i > width + 5).length;
     return lt < 5;
 }
@@ -8090,24 +8558,24 @@ function isFixWidth(node, width = 35) {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   $N: () => (/* binding */ getPreviousBrCount),
-/* harmony export */   DF: () => (/* binding */ insertBrBeforeText),
-/* harmony export */   Fe: () => (/* binding */ removePreviousBr),
-/* harmony export */   J0: () => (/* binding */ sandboxed),
-/* harmony export */   MK: () => (/* binding */ getNodeTextLength),
-/* harmony export */   U: () => (/* binding */ getPreviousSibling),
-/* harmony export */   d9: () => (/* binding */ getNextSibling),
-/* harmony export */   fI: () => (/* binding */ convertHTMLtoXHTML),
-/* harmony export */   r: () => (/* binding */ escapeHTML),
+/* harmony export */   Fv: () => (/* binding */ childNodesCopy),
+/* harmony export */   Jw: () => (/* binding */ getPreviousBrCount),
+/* harmony export */   K4: () => (/* binding */ getNodeTextLength),
+/* harmony export */   Md: () => (/* binding */ insertBrBeforeText),
+/* harmony export */   QJ: () => (/* binding */ fullWidthLength),
+/* harmony export */   S0: () => (/* binding */ removePreviousBr),
+/* harmony export */   Sf: () => (/* binding */ rm2),
+/* harmony export */   UN: () => (/* binding */ getPreviousSibling),
+/* harmony export */   Zn: () => (/* binding */ escapeHTML),
+/* harmony export */   _r: () => (/* binding */ createStyle),
+/* harmony export */   a_: () => (/* binding */ createEl),
+/* harmony export */   d6: () => (/* binding */ sandboxed),
+/* harmony export */   dK: () => (/* binding */ isHidden),
+/* harmony export */   e_: () => (/* binding */ getMaxDepth),
+/* harmony export */   j3: () => (/* binding */ rms),
+/* harmony export */   pI: () => (/* binding */ convertHTMLtoXHTML),
 /* harmony export */   rm: () => (/* binding */ rm),
-/* harmony export */   sp: () => (/* binding */ fullWidthLength),
-/* harmony export */   up: () => (/* binding */ rms),
-/* harmony export */   ut: () => (/* binding */ createEl),
-/* harmony export */   vR: () => (/* binding */ childNodesCopy),
-/* harmony export */   vS: () => (/* binding */ rm2),
-/* harmony export */   wd: () => (/* binding */ getMaxDepth),
-/* harmony export */   wj: () => (/* binding */ createStyle),
-/* harmony export */   xj: () => (/* binding */ isHidden)
+/* harmony export */   wX: () => (/* binding */ getNextSibling)
 /* harmony export */ });
 /* unused harmony export getCookie */
 function rm(selector, all = false, dom) {
@@ -8341,7 +8809,7 @@ function escapeHTML(str) {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   K: () => (/* binding */ calculateSha1)
+/* harmony export */   Q: () => (/* binding */ calculateSha1)
 /* harmony export */ });
 /* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("crypto-js");
 /* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(crypto_js__WEBPACK_IMPORTED_MODULE_0__);
@@ -8383,14 +8851,14 @@ async function calculateSha1(blob) {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   CD: () => (/* binding */ getFrameContentCondition),
-/* harmony export */   Fz: () => (/* binding */ ggetHtmlDOM),
-/* harmony export */   GF: () => (/* binding */ gfetch),
-/* harmony export */   Q: () => (/* binding */ getText),
-/* harmony export */   _7: () => (/* binding */ ggetText),
-/* harmony export */   dL: () => (/* binding */ getHtmlDOM),
-/* harmony export */   q4: () => (/* binding */ fetchWithRetry),
-/* harmony export */   rf: () => (/* binding */ getHtmlDomWithRetry)
+/* harmony export */   J5: () => (/* binding */ fetchWithRetry),
+/* harmony export */   _V: () => (/* binding */ gfetch),
+/* harmony export */   bx: () => (/* binding */ ggetText),
+/* harmony export */   eF: () => (/* binding */ getFrameContentCondition),
+/* harmony export */   kP: () => (/* binding */ getHtmlDomWithRetry),
+/* harmony export */   pG: () => (/* binding */ ggetHtmlDOM),
+/* harmony export */   q4: () => (/* binding */ getText),
+/* harmony export */   wA: () => (/* binding */ getHtmlDOM)
 /* harmony export */ });
 /* unused harmony exports fetchWithTimeout, ggetHtmlDomWithRetry, getFrameContentEvent */
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
@@ -8410,14 +8878,14 @@ globalThis.fetch = new Proxy(globalThis.fetch, {
     },
 });
 async function fetchWithRetry(input, init) {
-    let retry = _setting__WEBPACK_IMPORTED_MODULE_1__/* .retryLimit */ .o5;
+    let retry = _setting__WEBPACK_IMPORTED_MODULE_1__/* .retryLimit */ .Iz;
     while (retry > 0) {
         const resp = await fetch(input, init);
         if (resp.ok) {
             return resp;
         }
         else {
-            await (0,_misc__WEBPACK_IMPORTED_MODULE_2__/* .sleep */ ._v)(1000 * (_setting__WEBPACK_IMPORTED_MODULE_1__/* .retryLimit */ .o5 - retry));
+            await (0,_misc__WEBPACK_IMPORTED_MODULE_2__/* .sleep */ .yy)(1000 * (_setting__WEBPACK_IMPORTED_MODULE_1__/* .retryLimit */ .Iz - retry));
             retry--;
         }
     }
@@ -8437,7 +8905,7 @@ function gfetch(url, { method = "GET", headers, data, cookie, binary, nocache, r
     return new Promise((resolve, reject) => {
         _log__WEBPACK_IMPORTED_MODULE_0___default().debug("[debug]gfetch:");
         _log__WEBPACK_IMPORTED_MODULE_0___default().debug(Array.from(arguments));
-        (0,_GM__WEBPACK_IMPORTED_MODULE_3__/* ._GM_xmlhttpRequest */ .UX)({
+        (0,_GM__WEBPACK_IMPORTED_MODULE_3__/* ._GM_xmlhttpRequest */ .nV)({
             url,
             method,
             headers,
@@ -8519,7 +8987,7 @@ async function getHtmlDOM(input, charset, init, test = (response) => Promise.res
     return doc;
 }
 async function getHtmlDomWithRetry(input, charset, init, test = (response) => Promise.resolve(false)) {
-    let retry = _setting__WEBPACK_IMPORTED_MODULE_1__/* .retryLimit */ .o5;
+    let retry = _setting__WEBPACK_IMPORTED_MODULE_1__/* .retryLimit */ .Iz;
     let doc = null;
     while (retry > 0) {
         try {
@@ -8527,16 +8995,16 @@ async function getHtmlDomWithRetry(input, charset, init, test = (response) => Pr
             retry = 0;
         }
         catch (error) {
-            _log__WEBPACK_IMPORTED_MODULE_0___default().error(`抓取${input}失败，重试第${_setting__WEBPACK_IMPORTED_MODULE_1__/* .retryLimit */ .o5 - retry}次。`);
+            _log__WEBPACK_IMPORTED_MODULE_0___default().error(`抓取${input}失败，重试第${_setting__WEBPACK_IMPORTED_MODULE_1__/* .retryLimit */ .Iz - retry}次。`);
             _log__WEBPACK_IMPORTED_MODULE_0___default().error(error);
             retry--;
-            await (0,_misc__WEBPACK_IMPORTED_MODULE_2__/* .sleep */ ._v)(1000 * (_setting__WEBPACK_IMPORTED_MODULE_1__/* .retryLimit */ .o5 - retry));
+            await (0,_misc__WEBPACK_IMPORTED_MODULE_2__/* .sleep */ .yy)(1000 * (_setting__WEBPACK_IMPORTED_MODULE_1__/* .retryLimit */ .Iz - retry));
         }
     }
     return doc;
 }
 async function ggetText(url, charset, init, test = (response) => Promise.resolve(false)) {
-    let _init = init ? (0,_misc__WEBPACK_IMPORTED_MODULE_2__/* .deepcopy */ .X8)(init) : undefined;
+    let _init = init ? (0,_misc__WEBPACK_IMPORTED_MODULE_2__/* .deepcopy */ .OJ)(init) : undefined;
     if (charset === undefined) {
         return gfetch(url, init)
             .then(async (response) => {
@@ -8668,14 +9136,14 @@ async function getFrameContentCondition(url, stopCondition, sandboxs) {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   C1: () => (/* binding */ concurrencyRun),
-/* harmony export */   HP: () => (/* binding */ randomUUID),
-/* harmony export */   K$: () => (/* binding */ saveToArchiveOrg),
-/* harmony export */   X8: () => (/* binding */ deepcopy),
-/* harmony export */   _v: () => (/* binding */ sleep),
-/* harmony export */   tA: () => (/* binding */ mimetyepToCompressible),
-/* harmony export */   w6: () => (/* binding */ range),
-/* harmony export */   z9: () => (/* binding */ extensionToMimetype)
+/* harmony export */   N4: () => (/* binding */ randomUUID),
+/* harmony export */   OH: () => (/* binding */ mimetyepToCompressible),
+/* harmony export */   OJ: () => (/* binding */ deepcopy),
+/* harmony export */   ZA: () => (/* binding */ saveToArchiveOrg),
+/* harmony export */   dB: () => (/* binding */ extensionToMimetype),
+/* harmony export */   rr: () => (/* binding */ concurrencyRun),
+/* harmony export */   y1: () => (/* binding */ range),
+/* harmony export */   yy: () => (/* binding */ sleep)
 /* harmony export */ });
 /* unused harmony exports regexpEscape, mean, sd */
 /* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/main/main.ts");
@@ -8695,10 +9163,10 @@ function concurrencyRun(list, limit, asyncHandle, options = {}) {
     async function recursion(arr) {
         if (signal?.aborted) {
             if (reason) {
-                throw new _main_main__WEBPACK_IMPORTED_MODULE_1__/* .ExpectError */ .K2(reason);
+                throw new _main_main__WEBPACK_IMPORTED_MODULE_1__/* .ExpectError */ .K5(reason);
             }
             else {
-                throw new _main_main__WEBPACK_IMPORTED_MODULE_1__/* .ExpectError */ .K2("concurrencyRun was aborted!");
+                throw new _main_main__WEBPACK_IMPORTED_MODULE_1__/* .ExpectError */ .K5("concurrencyRun was aborted!");
             }
         }
         await asyncHandle(arr.shift());
@@ -8726,7 +9194,7 @@ async function saveToArchiveOrg(url) {
         }),
         headers: {
             "content-type": "application/json; charset=utf-8",
-            "x-requested-with": `novel-downloader ${_GM__WEBPACK_IMPORTED_MODULE_2__/* ._GM_info */ ._p.script.version}; ${_GM__WEBPACK_IMPORTED_MODULE_2__/* ._GM_info */ ._p.scriptHandler} ${_GM__WEBPACK_IMPORTED_MODULE_2__/* ._GM_info */ ._p.version}`,
+            "x-requested-with": `novel-downloader ${_GM__WEBPACK_IMPORTED_MODULE_2__/* ._GM_info */ .JX.script.version}; ${_GM__WEBPACK_IMPORTED_MODULE_2__/* ._GM_info */ .JX.scriptHandler} ${_GM__WEBPACK_IMPORTED_MODULE_2__/* ._GM_info */ .JX.version}`,
         },
         method: "POST",
     });
@@ -8812,20 +9280,20 @@ function parse(doc, options) {
     const obj = new _mozilla_readability__WEBPACK_IMPORTED_MODULE_0__.Readability(doc, options).parse();
     if (obj) {
         if (typeof obj.content === "string") {
-            obj.content = (0,_dom__WEBPACK_IMPORTED_MODULE_1__/* .createEl */ .ut)(obj.content);
+            obj.content = (0,_dom__WEBPACK_IMPORTED_MODULE_1__/* .createEl */ .a_)(obj.content);
         }
     }
     return obj;
 }
 async function fetchAndParse(url, charset, init, patch, options) {
-    let doc = await (0,_http__WEBPACK_IMPORTED_MODULE_2__/* .getHtmlDOM */ .dL)(url, charset, init);
+    let doc = await (0,_http__WEBPACK_IMPORTED_MODULE_2__/* .getHtmlDOM */ .wA)(url, charset, init);
     if (typeof patch === "function") {
         doc = patch(doc);
     }
     return parse(doc, options);
 }
 async function gfetchAndParse(url, charset, init, patch, options) {
-    let doc = await (0,_http__WEBPACK_IMPORTED_MODULE_2__/* .ggetHtmlDOM */ .Fz)(url, charset, init);
+    let doc = await (0,_http__WEBPACK_IMPORTED_MODULE_2__/* .ggetHtmlDOM */ .pG)(url, charset, init);
     if (typeof patch === "function") {
         doc = patch(doc);
     }
@@ -8840,12 +9308,12 @@ async function gfetchAndParse(url, charset, init, patch, options) {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   $4: () => (/* binding */ centerDetct),
-/* harmony export */   $d: () => (/* binding */ getSectionName),
-/* harmony export */   I2: () => (/* binding */ nextPageParse),
-/* harmony export */   SN: () => (/* binding */ introDomHandle),
-/* harmony export */   ii: () => (/* binding */ chapterHiddenFix),
-/* harmony export */   uh: () => (/* binding */ deDuplicate)
+/* harmony export */   $l: () => (/* binding */ chapterHiddenFix),
+/* harmony export */   HV: () => (/* binding */ introDomHandle),
+/* harmony export */   hR: () => (/* binding */ deDuplicate),
+/* harmony export */   lq: () => (/* binding */ getSectionName),
+/* harmony export */   sy: () => (/* binding */ centerDetct),
+/* harmony export */   u1: () => (/* binding */ nextPageParse)
 /* harmony export */ });
 /* unused harmony export reIndex */
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
@@ -8867,11 +9335,11 @@ async function introDomHandle(introDom, domPatch) {
         if (domPatch) {
             introDom = domPatch(introDom.cloneNode(true));
         }
-        const { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = await (0,_cleanDOM__WEBPACK_IMPORTED_MODULE_1__/* .cleanDOM */ .zM)(introDom, "TM");
+        const { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = await (0,_cleanDOM__WEBPACK_IMPORTED_MODULE_1__/* .cleanDOM */ .an)(introDom, "TM");
         return [introCleantext, introCleanDom, introCleanimages];
     }
 }
-async function nextPageParse({ chapterName, chapterUrl, charset, selector, contentPatch, getNextPage, continueCondition, enableCleanDOM, getHtmlDomFunc = _http__WEBPACK_IMPORTED_MODULE_2__/* .getHtmlDOM */ .dL, }) {
+async function nextPageParse({ chapterName, chapterUrl, charset, selector, contentPatch, getNextPage, continueCondition, enableCleanDOM, getHtmlDomFunc = _http__WEBPACK_IMPORTED_MODULE_2__/* .getHtmlDOM */ .wA, }) {
     _log__WEBPACK_IMPORTED_MODULE_3___default().debug(`[Chapter]请求 ${chapterUrl}`);
     let nowUrl = chapterUrl;
     let doc = await getHtmlDomFunc(chapterUrl, charset);
@@ -8904,7 +9372,7 @@ async function nextPageParse({ chapterName, chapterUrl, charset, selector, conte
     } while (flag);
     let dom, text, images;
     if (enableCleanDOM || enableCleanDOM === undefined) {
-        const obj = await (0,_cleanDOM__WEBPACK_IMPORTED_MODULE_1__/* .cleanDOM */ .zM)(content, "TM");
+        const obj = await (0,_cleanDOM__WEBPACK_IMPORTED_MODULE_1__/* .cleanDOM */ .an)(content, "TM");
         dom = obj.dom;
         text = obj.text;
         images = obj.images;
@@ -9015,10 +9483,10 @@ function deDuplicate(chapters) {
     reIndex(results);
     return results;
 }
-async function chapterHiddenFix(book, invalidTest, getPrevHref, concurrencyLimit, getHtmlDomFunc = _http__WEBPACK_IMPORTED_MODULE_2__/* .getHtmlDOM */ .dL) {
+async function chapterHiddenFix(book, invalidTest, getPrevHref, concurrencyLimit, getHtmlDomFunc = _http__WEBPACK_IMPORTED_MODULE_2__/* .getHtmlDOM */ .wA) {
     const { chapters } = book;
     const invalidChapterList = chapters.filter(invalidTest);
-    const limit = (0,p_limit__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Z)(concurrencyLimit);
+    const limit = (0,p_limit__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A)(concurrencyLimit);
     const tasks = invalidChapterList.map((ic) => {
         return limit(() => fix(ic, chapters));
     });
@@ -9032,7 +9500,7 @@ async function chapterHiddenFix(book, invalidTest, getPrevHref, concurrencyLimit
             const href = getPrevHref(doc);
             if (href) {
                 invalidChapter.chapterUrl = href;
-                invalidChapter.status = _main_main__WEBPACK_IMPORTED_MODULE_4__/* .Status */ .qb.pending;
+                invalidChapter.status = _main_main__WEBPACK_IMPORTED_MODULE_4__/* .Status */ .nW.pending;
             }
             return invalidChapter;
         }
@@ -9047,9 +9515,9 @@ async function chapterHiddenFix(book, invalidTest, getPrevHref, concurrencyLimit
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   KC: () => (/* binding */ logText),
-/* harmony export */   mZ: () => (/* binding */ getLogText),
-/* harmony export */   qS: () => (/* binding */ saveLogTextToFile)
+/* harmony export */   M6: () => (/* binding */ saveLogTextToFile),
+/* harmony export */   gh: () => (/* binding */ getLogText),
+/* harmony export */   kc: () => (/* binding */ logText)
 /* harmony export */ });
 /* harmony import */ var file_saver__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/file-saver/dist/FileSaver.min.js");
 /* harmony import */ var file_saver__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(file_saver__WEBPACK_IMPORTED_MODULE_0__);
@@ -9059,7 +9527,7 @@ async function chapterHiddenFix(book, invalidTest, getPrevHref, concurrencyLimit
 
 
 
-if (_setting__WEBPACK_IMPORTED_MODULE_2__/* .enableDebug */ .Cy.value) {
+if (_setting__WEBPACK_IMPORTED_MODULE_2__/* .enableDebug */ .Nw.value) {
     loglevel__WEBPACK_IMPORTED_MODULE_1___default().setLevel("trace");
 }
 else {
@@ -9108,7 +9576,7 @@ function saveLogTextToFile() {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   J: () => (/* binding */ AttachmentClass)
+/* harmony export */   q: () => (/* binding */ AttachmentClass)
 /* harmony export */ });
 /* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/http.ts");
 /* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/misc.ts");
@@ -9125,14 +9593,14 @@ class AttachmentClass {
     url;
     name;
     mode;
-    status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .qb.pending;
+    status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .nW.pending;
     retryTime = 0;
     Blob;
     comments;
     referrerMode;
     _init;
     _TMinit;
-    constructor(url, name, mode, referrerMode = _main__WEBPACK_IMPORTED_MODULE_0__/* .ReferrerMode */ .n6.keep, customReferer = "", init) {
+    constructor(url, name, mode, referrerMode = _main__WEBPACK_IMPORTED_MODULE_0__/* .ReferrerMode */ .ls.keep, customReferer = "", init) {
         this.url = url;
         this.name = name;
         this.mode = mode;
@@ -9148,20 +9616,20 @@ class AttachmentClass {
         };
         if (!init) {
             ({ init: this._init, TMinit: this._TMinit } = defaultInit);
-            if (this.referrerMode === _main__WEBPACK_IMPORTED_MODULE_0__/* .ReferrerMode */ .n6.none) {
+            if (this.referrerMode === _main__WEBPACK_IMPORTED_MODULE_0__/* .ReferrerMode */ .ls.none) {
                 this._init.referrerPolicy = "no-referrer";
                 this._TMinit.headers = {};
             }
-            if (this.referrerMode === _main__WEBPACK_IMPORTED_MODULE_0__/* .ReferrerMode */ .n6.self) {
+            if (this.referrerMode === _main__WEBPACK_IMPORTED_MODULE_0__/* .ReferrerMode */ .ls.self) {
                 this._TMinit.headers = { Referer: new URL(url).origin };
             }
-            if (this.referrerMode === _main__WEBPACK_IMPORTED_MODULE_0__/* .ReferrerMode */ .n6.custom &&
+            if (this.referrerMode === _main__WEBPACK_IMPORTED_MODULE_0__/* .ReferrerMode */ .ls.custom &&
                 customReferer.startsWith("http")) {
                 this._TMinit.headers = { Referer: customReferer };
             }
         }
         else {
-            ({ init: this._init, TMinit: this._TMinit } = (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__/* .deepcopy */ .X8)(init));
+            ({ init: this._init, TMinit: this._TMinit } = (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__/* .deepcopy */ .OJ)(init));
             this._TMinit.responseType = "blob";
             if (this._init.responseType) {
                 delete this._init.responseType;
@@ -9181,16 +9649,16 @@ class AttachmentClass {
         return this.Blob;
     }
     download() {
-        this.status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .qb.downloading;
+        this.status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .nW.downloading;
         return fetch(this.url, this._init)
             .then((response) => {
             if (response.ok) {
-                this.status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .qb.finished;
+                this.status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .nW.finished;
                 return response.blob();
             }
             else {
                 if (response.status === 404) {
-                    this.status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .qb.failed;
+                    this.status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .nW.failed;
                 }
                 throw new Error(`Bad response!\nRequest url: ${this.url}\nStatus code: ${response.status}`);
             }
@@ -9198,12 +9666,12 @@ class AttachmentClass {
             .catch(async (err) => {
             this.retryTime++;
             _log__WEBPACK_IMPORTED_MODULE_2___default().error(`[attachment]下载 ${this.url} 出错，第${this.retryTime}次重试，下载模式：${this.mode}`);
-            if (this.status !== _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .qb.failed && this.retryTime < _setting__WEBPACK_IMPORTED_MODULE_3__/* .retryLimit */ .o5) {
-                await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__/* .sleep */ ._v)(this.retryTime * 1500);
+            if (this.status !== _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .nW.failed && this.retryTime < _setting__WEBPACK_IMPORTED_MODULE_3__/* .retryLimit */ .Iz) {
+                await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__/* .sleep */ .yy)(this.retryTime * 1500);
                 return this.download();
             }
             else {
-                this.status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .qb.failed;
+                this.status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .nW.failed;
                 _log__WEBPACK_IMPORTED_MODULE_2___default().error(err);
                 _log__WEBPACK_IMPORTED_MODULE_2___default().trace(err);
                 return null;
@@ -9211,16 +9679,16 @@ class AttachmentClass {
         });
     }
     tmDownload() {
-        this.status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .qb.downloading;
-        return (0,_lib_http__WEBPACK_IMPORTED_MODULE_4__/* .gfetch */ .GF)(this.url, this._TMinit)
+        this.status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .nW.downloading;
+        return (0,_lib_http__WEBPACK_IMPORTED_MODULE_4__/* .gfetch */ ._V)(this.url, this._TMinit)
             .then((response) => {
             if (response.status >= 200 && response.status <= 299) {
-                this.status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .qb.finished;
+                this.status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .nW.finished;
                 return response.response;
             }
             else {
                 if (response.status === 404) {
-                    this.status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .qb.failed;
+                    this.status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .nW.failed;
                 }
                 throw new Error(`Bad response!\nRequest url: ${this.url}\nStatus code: ${response.status}`);
             }
@@ -9228,12 +9696,12 @@ class AttachmentClass {
             .catch(async (err) => {
             this.retryTime++;
             _log__WEBPACK_IMPORTED_MODULE_2___default().error(`[attachment]下载 ${this.url} 出错，第${this.retryTime}次重试，下载模式：${this.mode}`);
-            if (this.status !== _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .qb.failed && this.retryTime < _setting__WEBPACK_IMPORTED_MODULE_3__/* .retryLimit */ .o5) {
-                await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__/* .sleep */ ._v)(this.retryTime * 1000);
+            if (this.status !== _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .nW.failed && this.retryTime < _setting__WEBPACK_IMPORTED_MODULE_3__/* .retryLimit */ .Iz) {
+                await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__/* .sleep */ .yy)(this.retryTime * 1000);
                 return this.tmDownload();
             }
             else {
-                this.status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .qb.failed;
+                this.status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .nW.failed;
                 _log__WEBPACK_IMPORTED_MODULE_2___default().error(err);
                 _log__WEBPACK_IMPORTED_MODULE_2___default().trace(err);
                 return null;
@@ -9261,7 +9729,7 @@ class AttachmentClass {
 
 // EXPORTS
 __webpack_require__.d(__webpack_exports__, {
-  f: () => (/* binding */ Book)
+  E: () => (/* binding */ Book)
 });
 
 ;// CONCATENATED MODULE: ./src/lib/removeTrackParam.ts
@@ -9462,7 +9930,7 @@ class Book {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   W: () => (/* binding */ Chapter)
+/* harmony export */   I: () => (/* binding */ Chapter)
 /* harmony export */ });
 /* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/misc.ts");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
@@ -9487,7 +9955,7 @@ class Chapter {
     chapterParse;
     charset;
     options;
-    status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .qb.pending;
+    status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .nW.pending;
     retryTime = 0;
     contentRaw;
     contentText;
@@ -9519,7 +9987,7 @@ class Chapter {
         this.contentHTML = contentHTML;
         this.contentImages = contentImages;
         this.additionalMetadate = additionalMetadate;
-        if (this.status === _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .qb.failed) {
+        if (this.status === _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .nW.failed) {
             _log__WEBPACK_IMPORTED_MODULE_1___default().error(`[Chapter]章节名：${this.chapterName}, \
 分卷名：${this.sectionName}, URL:${this.chapterUrl}, \
 VIP:${this.isVIP}, Paid:${this.isPaid}, \
@@ -9534,29 +10002,29 @@ isNull:${!this.contentHTML} 解析成功。`);
         return this;
     }
     async parse() {
-        this.status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .qb.downloading;
+        this.status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .nW.downloading;
         return this.chapterParse(this.chapterUrl, this.chapterName, this.isVIP, this.isPaid, this.charset, this.options)
             .then(async (obj) => {
             const contentImages = obj.contentImages;
             if (contentImages) {
-                let downloadingImages = contentImages.filter((imgObj) => imgObj.status === _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .qb.downloading);
+                let downloadingImages = contentImages.filter((imgObj) => imgObj.status === _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .nW.downloading);
                 while (downloadingImages.length) {
-                    await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_2__/* .sleep */ ._v)(500);
-                    downloadingImages = contentImages.filter((imgObj) => imgObj.status === _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .qb.downloading);
+                    await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_2__/* .sleep */ .yy)(500);
+                    downloadingImages = contentImages.filter((imgObj) => imgObj.status === _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .nW.downloading);
                 }
             }
-            this.status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .qb.finished;
+            this.status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .nW.finished;
             return obj;
         })
             .catch(async (err) => {
             this.retryTime++;
             _log__WEBPACK_IMPORTED_MODULE_1___default().error(`[Chapter]${this.chapterName}解析出错，第${this.retryTime}次重试，章节地址：${this.chapterUrl}`);
-            if (this.status !== _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .qb.failed && this.retryTime < _setting__WEBPACK_IMPORTED_MODULE_3__/* .retryLimit */ .o5) {
-                await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_2__/* .sleep */ ._v)(this.retryTime * 1500);
+            if (this.status !== _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .nW.failed && this.retryTime < _setting__WEBPACK_IMPORTED_MODULE_3__/* .retryLimit */ .Iz) {
+                await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_2__/* .sleep */ .yy)(this.retryTime * 1500);
                 return this.parse();
             }
             else {
-                this.status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .qb.failed;
+                this.status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .nW.failed;
                 _log__WEBPACK_IMPORTED_MODULE_1___default().error(err);
                 _log__WEBPACK_IMPORTED_MODULE_1___default().trace(err);
                 window.failedCount++;
@@ -9598,9 +10066,9 @@ isNull:${!this.contentHTML} 解析成功。`);
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   K2: () => (/* binding */ ExpectError),
-/* harmony export */   n6: () => (/* binding */ ReferrerMode),
-/* harmony export */   qb: () => (/* binding */ Status)
+/* harmony export */   K5: () => (/* binding */ ExpectError),
+/* harmony export */   ls: () => (/* binding */ ReferrerMode),
+/* harmony export */   nW: () => (/* binding */ Status)
 /* harmony export */ });
 var Status;
 (function (Status) {
@@ -9631,7 +10099,7 @@ class ExpectError extends Error {
 
 // EXPORTS
 __webpack_require__.d(__webpack_exports__, {
-  c: () => (/* binding */ BaseRuleClass)
+  Q: () => (/* binding */ BaseRuleClass)
 });
 
 // EXTERNAL MODULE: ./src/lib/attachments.ts
@@ -9740,7 +10208,7 @@ class FflateZip {
         this.count++;
         const buffer = await fileBlob.arrayBuffer();
         const chunk = new Uint8Array(buffer);
-        if (!((0,misc/* mimetyepToCompressible */.tA)((0,misc/* extensionToMimetype */.z9)(filename.split(".").slice(-1)[0])) || (0,misc/* mimetyepToCompressible */.tA)(fileBlob.type)) ||
+        if (!((0,misc/* mimetyepToCompressible */.OH)((0,misc/* extensionToMimetype */.dB)(filename.split(".").slice(-1)[0])) || (0,misc/* mimetyepToCompressible */.OH)(fileBlob.type)) ||
             nocompress) {
             const nonStreamingFile = new external_fflate_namespaceObject.ZipPassThrough(filename);
             this.savedZip.add(nonStreamingFile);
@@ -9758,7 +10226,7 @@ class FflateZip {
     }
     async generateAsync() {
         while (this.count !== this.zcount) {
-            await (0,misc/* sleep */._v)(100);
+            await (0,misc/* sleep */.yy)(100);
         }
         this.savedZip.end();
     }
@@ -9842,8 +10310,8 @@ function saveOptionsValidate(data) {
     return true;
 }
 class Options extends Common {
-    mainStyleText = save_main/* default */.Z;
-    tocStyleText = toc/* default */.Z;
+    mainStyleText = save_main/* default */.A;
+    tocStyleText = toc/* default */.A;
     getchapterName(chapter) {
         if (chapter.chapterName) {
             return chapter.chapterName;
@@ -9857,7 +10325,7 @@ class Options extends Common {
             "\n\n");
     }
     genChapterText(chapterName, contentText) {
-        return `${chapterName}\n${"=".repeat((0,dom/* fullWidthLength */.sp)(chapterName) * 2 + 10)}\n\n${contentText}\n\n`;
+        return `${chapterName}\n${"=".repeat((0,dom/* fullWidthLength */.QJ)(chapterName) * 2 + 10)}\n\n${contentText}\n\n`;
     }
     chapterSort(a, b) {
         return a.chapterNumber - b.chapterNumber;
@@ -9912,12 +10380,12 @@ function getDateString() {
     const day = _day < 10 ? `0${_day}` : _day;
     return `${year}-${monty}-${day}`;
 }
-const uuid = (0,misc/* randomUUID */.HP)();
+const uuid = (0,misc/* randomUUID */.N4)();
 const content_opf = `<?xml version="1.0" encoding="utf-8"?>
 <package version="3.0" unique-identifier="BookId" prefix="rendition: http://www.idpf.org/vocab/rendition/#" xmlns="http://www.idpf.org/2007/opf">
   <metadata xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:opf="http://www.idpf.org/2007/opf">
     <dc:identifier id="BookId">urn:uuid:${uuid}</dc:identifier>
-    <meta content="${GM/* _GM_info */._p.script.version}" name="novel-downloader version"/>
+    <meta content="${GM/* _GM_info */.JX.script.version}" name="novel-downloader version"/>
     <meta content="https://github.com/404-novel-project/novel-downloader" name="generator"/>
     <meta property="dcterms:created">${getDateString()}</meta>
     <meta property="dcterms:modified">${new Date()
@@ -10093,7 +10561,7 @@ class EPUB extends Options {
             chapterName: chapterObj.chapterName,
             outerHTML: chapterObj.contentHTML?.outerHTML ?? "",
         });
-        const htmlText = (0,dom/* convertHTMLtoXHTML */.fI)(_htmlText);
+        const htmlText = (0,dom/* convertHTMLtoXHTML */.pI)(_htmlText);
         return new Blob([
             `<?xml version="1.0" encoding="utf-8"?>`,
             htmlText
@@ -10125,14 +10593,14 @@ class EPUB extends Options {
         await this.epubZip.generateAsync();
         async function saveStyle() {
             await self.epubZip.file("OEBPS/style.css", new Blob([self.mainStyleText]));
-            await self.epubZip.file("OEBPS/sgc-toc.css", new Blob([sgc_toc/* default */.Z]));
+            await self.epubZip.file("OEBPS/sgc-toc.css", new Blob([sgc_toc/* default */.A]));
         }
         async function updateMetadata() {
             const title = self.contentOpf.createElement("dc:title");
             title.textContent = self.book.bookname;
             self.metadata.appendChild(title);
             self.ncx.querySelector("docTitle > text").innerHTML =
-                (0,dom/* escapeHTML */.r)(self.book.bookname);
+                (0,dom/* escapeHTML */.Zn)(self.book.bookname);
             const author = self.contentOpf.createElement("dc:creator");
             author.setAttribute("id", "cre");
             author.textContent = self.book.author;
@@ -10184,7 +10652,7 @@ class EPUB extends Options {
                 type: "application/xhtml+xml",
             }));
             await self.epubZip.file("OEBPS/message.xhtml", new Blob([
-                (0,dom/* convertHTMLtoXHTML */.fI)(getMessageXhtml(self.book))
+                (0,dom/* convertHTMLtoXHTML */.pI)(getMessageXhtml(self.book))
                     .replaceAll(/[\u{0000}-\u{001f}]/gu, "")
                     .replaceAll(/[\u{007f}-\u{009f}]/gu, ""),
             ], {
@@ -10192,9 +10660,9 @@ class EPUB extends Options {
             }));
         }
         async function saveStubChapters(chapters) {
-            chapters = chapters.filter((c) => c.status !== main/* Status */.qb.saved);
+            chapters = chapters.filter((c) => c.status !== main/* Status */.nW.saved);
             for (const c of chapters) {
-                if (c.status === main/* Status */.qb.finished) {
+                if (c.status === main/* Status */.nW.finished) {
                     await self.addChapter(c);
                 }
                 else {
@@ -10205,7 +10673,7 @@ class EPUB extends Options {
         async function saveToC() {
             loglevel_default().debug("[save-epub]对 chapters 排序");
             self.chapters.sort(self.chapterSort);
-            const sectionsListObj = (0,save_misc/* getSectionsObj */.f)(self.chapters, self.chapterSort);
+            const sectionsListObj = (0,save_misc/* getSectionsObj */.e)(self.chapters, self.chapterSort);
             let i = 0;
             let sectionNumberG = null;
             let sectionNavPoint;
@@ -10345,7 +10813,7 @@ class EPUB extends Options {
             }
             function genSectionHtmlFile(sectionName) {
                 const _htmlText = section.render({ sectionName: sectionName });
-                const htmlText = (0,dom/* convertHTMLtoXHTML */.fI)(_htmlText);
+                const htmlText = (0,dom/* convertHTMLtoXHTML */.pI)(_htmlText);
                 return new Blob([
                     `<?xml version="1.0" encoding="utf-8"?>`,
                     htmlText
@@ -10363,7 +10831,7 @@ class EPUB extends Options {
             const metaDateText = self.genMetaDateTxt(self.book);
             await self.epubZip.file("OEBPS/info.txt", new Blob([metaDateText], { type: "text/plain;charset=utf-8" }));
             loglevel_default().debug("[save-zip]保存web样式");
-            await self.epubZip.file("OEBPS/web.css", new Blob([web/* default */.Z], { type: "text/css;charset=utf-8" }));
+            await self.epubZip.file("OEBPS/web.css", new Blob([web/* default */.A], { type: "text/css;charset=utf-8" }));
             modifyTocStyleText();
             await self.epubZip.file("OEBPS/toc.css", new Blob([self.tocStyleText], { type: "text/css;charset=utf-8" }));
             await self.epubZip.file("OEBPS/web.js", new Blob([
@@ -10398,7 +10866,7 @@ class EPUB extends Options {
             async function saveIndex() {
                 loglevel_default().debug("[save]对 chapters 排序");
                 self.chapters.sort(self.chapterSort);
-                const sectionsListObj = (0,save_misc/* getSectionsObj */.f)(self.chapters, self.chapterSort);
+                const sectionsListObj = (0,save_misc/* getSectionsObj */.e)(self.chapters, self.chapterSort);
                 const _indexHtmlText = index.render({
                     creationDate: Date.now(),
                     bookname: self.book.bookname,
@@ -10407,9 +10875,9 @@ class EPUB extends Options {
                     introductionHTML: self.book.introductionHTML?.outerHTML,
                     bookUrl: self.book.bookUrl,
                     sectionsObj: Object.values(sectionsListObj),
-                    Status: main/* Status */.qb,
+                    Status: main/* Status */.nW,
                 });
-                const indexHtmlText = (0,dom/* convertHTMLtoXHTML */.fI)(_indexHtmlText);
+                const indexHtmlText = (0,dom/* convertHTMLtoXHTML */.pI)(_indexHtmlText);
                 await self.epubZip.file("OEBPS/index.xhtml", new Blob([
                     indexHtmlText
                         .replaceAll("data-src-address", "src")
@@ -10452,19 +10920,19 @@ class EPUB extends Options {
         }
     }
     async addAttachment(attachment) {
-        if (attachment.status === main/* Status */.qb.finished && attachment.Blob) {
+        if (attachment.status === main/* Status */.nW.finished && attachment.Blob) {
             loglevel_default().debug(`[save-epub]添加附件，文件名：${attachment.name}，对象`, attachment.Blob);
             await this.epubZip.file(`OEBPS/${attachment.name}`, attachment.Blob);
             const item = this.contentOpf.createElement("item");
             item.id = attachment.name;
             item.setAttribute("href", attachment.name);
-            const mimetype = (0,misc/* extensionToMimetype */.z9)(attachment.name.substring(attachment.name.lastIndexOf(".") + 1));
+            const mimetype = (0,misc/* extensionToMimetype */.dB)(attachment.name.substring(attachment.name.lastIndexOf(".") + 1));
             item.setAttribute("media-type", mimetype);
             if (!this.manifest.querySelector(`item[id="${attachment.name}"]`)) {
                 this.manifest.appendChild(item);
             }
         }
-        else if (attachment.status === main/* Status */.qb.saved) {
+        else if (attachment.status === main/* Status */.nW.saved) {
             loglevel_default().debug(`[save-epub]附件${attachment.name}已添加`);
         }
         else {
@@ -10508,7 +10976,7 @@ class TXT extends Options {
             }
             const chapterText = this.genChapterText(chapterName, chapterTemp.contentText ?? "");
             this.savedTextArray.push(chapterText);
-            if (!setting/* enableDebug */.Cy.value) {
+            if (!setting/* enableDebug */.Nw.value) {
                 chapterTemp.contentText = null;
             }
         }
@@ -10528,7 +10996,7 @@ class Raw {
         this.book = book;
         if (this.book.saveType.raw instanceof Object) {
             const zipFilename = `[${this.book.author}]${this.book.bookname}.${this.book.saveType.raw.ext}`;
-            this.epubZip = new FflateZip(zipFilename, false, (0,misc/* extensionToMimetype */.z9)(this.book.saveType.raw.ext));
+            this.epubZip = new FflateZip(zipFilename, false, (0,misc/* extensionToMimetype */.dB)(this.book.saveType.raw.ext));
         }
         else {
             throw new Error("init raw save zip failed!");
@@ -10575,30 +11043,30 @@ class SaveBook {
         }
     }
     static saveLog() {
-        (0,FileSaver_min.saveAs)(new Blob([log/* logText */.KC], { type: "text/plain; charset=UTF-8" }), "debug.log");
+        (0,FileSaver_min.saveAs)(new Blob([log/* logText */.kc], { type: "text/plain; charset=UTF-8" }), "debug.log");
     }
     async addChapter(chapter) {
         await this.epub.addChapter(chapter);
-        if (!setting/* enableDebug */.Cy.value) {
+        if (!setting/* enableDebug */.Nw.value) {
             chapter.contentRaw = null;
             chapter.contentHTML = null;
             chapter.contentImages = null;
         }
         if (chapter.contentImages && chapter.contentImages.length !== 0) {
             for (const attachment of chapter.contentImages) {
-                attachment.status = main/* Status */.qb.saved;
-                if (!setting/* enableDebug */.Cy.value) {
+                attachment.status = main/* Status */.nW.saved;
+                if (!setting/* enableDebug */.Nw.value) {
                     attachment.Blob = null;
                 }
             }
         }
-        chapter.status = main/* Status */.qb.saved;
+        chapter.status = main/* Status */.nW.saved;
     }
     async save() {
         if (this.saveType.txt) {
             this.saveTxt();
         }
-        if (setting/* enableDebug */.Cy.value) {
+        if (setting/* enableDebug */.Nw.value) {
             SaveBook.saveLog();
         }
         if (this.saveType.epub) {
@@ -10625,7 +11093,7 @@ class SaveBook {
 const statKeyName = "novel-downloader-22932304826849026";
 const domain = document.location.hostname;
 async function getStatData() {
-    const _data = (await (0,GM/* _GM_getValue */.QG)(statKeyName));
+    const _data = (await (0,GM/* _GM_getValue */.er)(statKeyName));
     let statData;
     if (_data) {
         statData = JSON.parse(_data);
@@ -10637,7 +11105,7 @@ async function getStatData() {
 }
 const saveData = async (statData) => {
     const dataJSON = JSON.stringify(statData);
-    await (0,GM/* _GM_setValue */._u)(statKeyName, dataJSON);
+    await (0,GM/* _GM_setValue */.mN)(statKeyName, dataJSON);
     return statData;
 };
 const dataPlus = async (key) => {
@@ -10735,7 +11203,7 @@ class BaseRuleClass {
             const saveBookObj = initSave(self.book);
             await saveHook();
             await self.initChapters(self.book, saveBookObj).catch((error) => {
-                if (error instanceof main/* ExpectError */.K2) {
+                if (error instanceof main/* ExpectError */.K5) {
                     console.warn(error);
                 }
                 else {
@@ -10763,7 +11231,7 @@ class BaseRuleClass {
         }
         function initSave(book) {
             loglevel_default().debug("[run]保存数据");
-            if (setting/* enableCustomSaveOptions */.EI &&
+            if (setting/* enableCustomSaveOptions */.k8 &&
                 typeof unsafeWindow.saveOptions === "object" &&
                 saveOptionsValidate(unsafeWindow.saveOptions)) {
                 const saveOptions = unsafeWindow.saveOptions;
@@ -10775,20 +11243,20 @@ class BaseRuleClass {
             return new SaveBook(book, self.streamZip);
         }
         async function saveHook() {
-            if (setting/* enableSaveToArchiveOrg */.CA &&
+            if (setting/* enableSaveToArchiveOrg */.KV &&
                 !self.needLogin &&
                 self.book?.bookUrl &&
                 window.localStorageExpired.get(`${self.book.bookUrl}_saveToArchiveOrg`) === undefined &&
-                (await (0,setting/* getCustomEnableSaveToArchiveOrg */.Qd)())) {
+                (await (0,setting/* getCustomEnableSaveToArchiveOrg */.BV)())) {
                 console.log("[saveToArchiveOrg]保存当前书页至 archive.org");
                 try {
                     window.localStorageExpired.set(`${self.book.bookUrl}_saveToArchiveOrg`, true, 86400);
                 }
                 catch (error) {
                 }
-                (0,misc/* saveToArchiveOrg */.K$)(self.book.bookUrl).then((r) => loglevel_default().info(r));
+                (0,misc/* saveToArchiveOrg */.ZA)(self.book.bookUrl).then((r) => loglevel_default().info(r));
                 if (self.book.ToCUrl) {
-                    (0,misc/* saveToArchiveOrg */.K$)(self.book.ToCUrl).then((r) => loglevel_default().info(r));
+                    (0,misc/* saveToArchiveOrg */.ZA)(self.book.ToCUrl).then((r) => loglevel_default().info(r));
                 }
             }
         }
@@ -10803,7 +11271,7 @@ class BaseRuleClass {
             const alertText = `当前网站目前最多允许${self.maxRunLimit}个下载任务同时进行。\n请待其它下载任务完成后，再行尝试。`;
             alert(alertText);
             loglevel_default().info(`[run]${alertText}`);
-            throw new main/* ExpectError */.K2(alertText);
+            throw new main/* ExpectError */.K5(alertText);
         }
         self.audio = new Audio("data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU3LjcxLjEwMAAAAAAAAAAAAAAA/+M4wAAAAAAAAAAAAEluZm8AAAAPAAAAEAAABVgANTU1NTU1Q0NDQ0NDUFBQUFBQXl5eXl5ea2tra2tra3l5eXl5eYaGhoaGhpSUlJSUlKGhoaGhoaGvr6+vr6+8vLy8vLzKysrKysrX19fX19fX5eXl5eXl8vLy8vLy////////AAAAAExhdmM1Ny44OQAAAAAAAAAAAAAAACQCgAAAAAAAAAVY82AhbwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/+MYxAALACwAAP/AADwQKVE9YWDGPkQWpT66yk4+zIiYPoTUaT3tnU487uNhOvEmQDaCm1Yz1c6DPjbs6zdZVBk0pdGpMzxF/+MYxA8L0DU0AP+0ANkwmYaAMkOKDDjmYoMtwNMyDxMzDHE/MEsLow9AtDnBlQgDhTx+Eye0GgMHoCyDC8gUswJcMVMABBGj/+MYxBoK4DVpQP8iAtVmDk7LPgi8wvDzI4/MWAwK1T7rxOQwtsItMMQBazAowc4wZMC5MF4AeQAGDpruNuMEzyfjLBJhACU+/+MYxCkJ4DVcAP8MAO9J9THVg6oxRMGNMIqCCTAEwzwwBkINOPAs/iwjgBnMepYyId0PhWo+80PXMVsBFzD/AiwwfcKGMEJB/+MYxDwKKDVkAP8eAF8wMwIxMlpU/OaDPLpNKkEw4dRoBh6qP2FC8jCJQFcweQIPMHOBtTBoAVcwOoCNMYDI0u0Dd8ANTIsy/+MYxE4KUDVsAP8eAFBVpgVVPjdGeTEWQr0wdcDtMCeBgDBkgRgwFYB7Pv/zqx0yQQMCCgKNgonHKj6RRVkxM0GwML0AhDAN/+MYxF8KCDVwAP8MAIHZMDDA3DArAQo3K+TF5WOBDQw0lgcKQUJxhT5sxRcwQQI+EIPWMA7AVBoTABgTgzfBN+ajn3c0lZMe/+MYxHEJyDV0AP7MAA4eEwsqP/PDmzC/gNcwXUGaMBVBIwMEsmB6gaxhVuGkpoqMZMQjooTBwM0+S8FTMC0BcjBTgPwwOQDm/+MYxIQKKDV4AP8WADAzAKQwI4CGPhWOEwCFAiBAYQnQMT+uwXUeGzjBWQVkwTcENMBzA2zAGgFEJfSPkPSZzPXgqFy2h0xB/+MYxJYJCDV8AP7WAE0+7kK7MQrATDAvQRIwOADKMBuA9TAYQNM3AiOSPjGxowgHMKFGcBNMQU1FMy45OS41VVU/31eYM4sK/+MYxKwJaDV8AP7SAI4y1Yq0MmOIADGwBZwwlgIJMztCM0qU5TQPG/MSkn8yEROzCdAxECVMQU1FMy45OS41VTe7Ohk+Pqcx/+MYxMEJMDWAAP6MADVLDFUx+4J6Mq7NsjN2zXo8V5fjVJCXNOhwM0vTCDAxFpMYYQU+RlVMQU1FMy45OS41VVVVVVVVVVVV/+MYxNcJADWAAP7EAFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV/+MYxOsJwDWEAP7SAFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV/+MYxPMLoDV8AP+eAFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV/+MYxPQL0DVcAP+0AFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV");
         self.audio.loop = true;
@@ -10823,7 +11291,7 @@ class BaseRuleClass {
                 url: document.location.href,
             };
             broadcastChannelWorker.postMessage(ping);
-            await (0,misc/* sleep */._v)(300);
+            await (0,misc/* sleep */.yy)(300);
             const workers = messages
                 .filter((m) => m.type === "pong" &&
                 m.src === window.workerId &&
@@ -10860,11 +11328,11 @@ class BaseRuleClass {
                         window.stopController.abort();
                         console.error("连续十章下载失败，放弃本次下载。\n请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/404-novel-project/novel-downloader");
                         alert("连续十章下载失败，放弃本次下载。\n请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/404-novel-project/novel-downloader");
-                        (0,log/* saveLogTextToFile */.qS)();
+                        (0,log/* saveLogTextToFile */.M6)();
                     }
                 }
                 if (window.stopFlag.aborted) {
-                    throw new main/* ExpectError */.K2("[chapter]收到停止信号，停止继续下载。");
+                    throw new main/* ExpectError */.K5("[chapter]收到停止信号，停止继续下载。");
                 }
                 try {
                     let chapterObj = await chapter.init();
@@ -10883,7 +11351,7 @@ class BaseRuleClass {
                         window.stopController.abort();
                         console.error("连续十章下载失败，放弃本次下载。\n请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/404-novel-project/novel-downloader");
                         alert("连续十章下载失败，放弃本次下载。\n请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/404-novel-project/novel-downloader");
-                        (0,log/* saveLogTextToFile */.qS)();
+                        (0,log/* saveLogTextToFile */.M6)();
                     }
                 }
                 if (curChapter === undefined) {
@@ -10899,7 +11367,7 @@ class BaseRuleClass {
                     loglevel_default().trace(error);
                 }
             };
-            await (0,misc/* concurrencyRun */.C1)(chapters, self.concurrencyLimit, asyncHandle, {
+            await (0,misc/* concurrencyRun */.rr)(chapters, self.concurrencyLimit, asyncHandle, {
                 signal: window.stopFlag,
                 reason: "[chapter]收到停止信号，停止继续下载。",
             });
@@ -10908,7 +11376,7 @@ class BaseRuleClass {
         return chapters;
         function getChapters(_book) {
             function isEnable() {
-                if (setting/* enableCustomChapterFilter */.Td &&
+                if (setting/* enableCustomChapterFilter */.U5 &&
                     typeof unsafeWindow.chapterFilter === "function") {
                     let text = "[initChapters]发现自定义筛选函数，自定义筛选函数内容如下：\n";
                     text += unsafeWindow.chapterFilter?.toString();
@@ -10933,7 +11401,7 @@ class BaseRuleClass {
                 }
                 return b;
             }
-            let _chapters = _book.chapters.filter((chapter) => chapter.status === main/* Status */.qb.pending);
+            let _chapters = _book.chapters.filter((chapter) => chapter.status === main/* Status */.nW.pending);
             const enabled = isEnable();
             if (enabled) {
                 loglevel_default().debug("[initChapters]筛选需下载章节");
@@ -10951,7 +11419,7 @@ class BaseRuleClass {
     }
     postHook() {
         const self = this;
-        (0,attachments/* clearAttachmentClassCache */.pN)();
+        (0,attachments/* clearAttachmentClassCache */.rd)();
         self.audio?.pause();
         self.audio?.remove();
         const closeMessage = {
@@ -10973,7 +11441,7 @@ class BaseRuleClass {
             printStat();
         });
         function postCallback() {
-            if (setting/* enableCustomFinishCallback */.Vo &&
+            if (setting/* enableCustomFinishCallback */.zb &&
                 typeof unsafeWindow.customFinishCallback ===
                     "function") {
                 const customFinishCallback = unsafeWindow
@@ -10990,13 +11458,13 @@ class BaseRuleClass {
         loglevel_default().error(error);
         loglevel_default().trace(error);
         self.postHook();
-        if (!(error instanceof main/* ExpectError */.K2)) {
+        if (!(error instanceof main/* ExpectError */.K5)) {
             document.getElementById("button-div")?.remove();
             loglevel_default().error("运行过程出错，请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/404-novel-project/novel-downloader");
             failedPlus();
             alert("运行过程出错，请附上相关日志至支持地址进行反馈。\n支持地址：https://github.com/404-novel-project/novel-downloader");
             window.open("https://github.com/404-novel-project/novel-downloader/issues");
-            (0,log/* saveLogTextToFile */.qS)();
+            (0,log/* saveLogTextToFile */.M6)();
         }
     }
 }
@@ -11023,8 +11491,8 @@ class BaseRuleClass {
 
 
 
-const mht = () => (0,_onePage_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
-    ...(0,_template__WEBPACK_IMPORTED_MODULE_1__/* .baseOnePage */ .FG)((introDom) => introDom, 5),
+const mht = () => (0,_onePage_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
+    ...(0,_template__WEBPACK_IMPORTED_MODULE_1__/* .baseOnePage */ .Tm)((introDom) => introDom, 5),
     getContentFromUrl: async (chapterUrl, chapterName, charset) => {
         const ngetHtmlDOM = (input, charset, init) => {
             const test = async (response) => {
@@ -11032,16 +11500,16 @@ const mht = () => (0,_onePage_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleCla
                 const text = await resp.text();
                 return text.includes('<div id="content">');
             };
-            return (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .getHtmlDOM */ .dL)(input, charset, init, test);
+            return (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .getHtmlDOM */ .wA)(input, charset, init, test);
         };
-        const { contentRaw } = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_3__/* .nextPageParse */ .I2)({
+        const { contentRaw } = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_3__/* .nextPageParse */ .u1)({
             chapterName,
             chapterUrl,
             charset,
             selector: "#content",
             contentPatch: (content) => {
                 (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__.rm)("p[data-id]", true, content);
-                (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_5__/* .htmlTrim */ .iA)(content);
+                (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_5__/* .htmlTrim */ .is)(content);
                 return content;
             },
             getNextPage: (doc) => doc.querySelector(".bottem2 > a:nth-child(4)")
@@ -11070,7 +11538,7 @@ const mht = () => (0,_onePage_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleCla
 /* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
 
 
-const znlzd = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeMultiIndexNextPage */ .HW)((dom) => dom, (content) => {
+const znlzd = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeMultiIndexNextPage */ .FN)((dom) => dom, (content) => {
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("div", true, content);
     return content;
 }, (doc) => doc.querySelector("div.section-opt:nth-child(1) > a:nth-child(5)")?.href ?? "", (_content, nextLink) => {
@@ -11080,7 +11548,7 @@ const znlzd = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeMultiIn
     const pathname = nextLink.split("/").slice(-1)[0];
     return pathname.includes("_");
 }, 3);
-const c226ks = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeMultiIndexNextPage */ .HW)((introDom) => introDom, (content) => content, (doc) => doc.querySelector("section.g-content-nav > a:nth-child(3)").href, (_content, nextLink) => {
+const c226ks = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeMultiIndexNextPage */ .FN)((introDom) => introDom, (content) => content, (doc) => doc.querySelector("section.g-content-nav > a:nth-child(3)").href, (_content, nextLink) => {
     const pathname = nextLink.split("/").slice(-1)[0];
     return pathname.includes("_");
 });
@@ -11103,7 +11571,7 @@ const c226ks = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeMultiI
 
 
 
-const xinwanben = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeNextPage */ .B4)((introDom) => {
+const xinwanben = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeNextPage */ .uk)((introDom) => {
     const _bookname = introDom.innerHTML.match(/《(.*)》/);
     let bookname;
     if (_bookname?.length === 2) {
@@ -11113,8 +11581,8 @@ const xinwanben = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeNex
         "还不错的话请不要忘记向您QQ群和微博里的朋友推荐哦！",
         "小说免费阅读地址：",
     ];
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .vS)(adList, introDom);
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .up)([`${bookname}小说简介：`], introDom);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .Sf)(adList, introDom);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .j3)([`${bookname}小说简介：`], introDom);
     return introDom;
 }, (content) => {
     const filters = [
@@ -11123,11 +11591,11 @@ const xinwanben = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeNex
         "把本站分享那些需要的小伙伴！找不到书请留言！",
         "【完本神站】",
     ];
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .vS)(filters, content);
-    (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__/* .htmlTrim */ .iA)(content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .Sf)(filters, content);
+    (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__/* .htmlTrim */ .is)(content);
     return content;
 }, (doc) => doc.querySelector("#next_url").href, (_content, nextLink) => new URL(nextLink).pathname.includes("_"));
-const mijiashe = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeNextPage */ .B4)((introDom) => {
+const mijiashe = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeNextPage */ .uk)((introDom) => {
     const _bookname = introDom.innerHTML.match(/《(.*)》/);
     let bookname;
     if (_bookname?.length === 2) {
@@ -11137,19 +11605,19 @@ const mijiashe = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeNext
         "还不错的话请不要忘记向您QQ群和微博里的朋友推荐哦！",
         "小说免费阅读地址：",
     ];
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .vS)(adList, introDom);
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .up)([`${bookname}小说简介：`], introDom);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .Sf)(adList, introDom);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .j3)([`${bookname}小说简介：`], introDom);
     return introDom;
 }, (content) => {
     const filters = [
         "谨记我们的网址，祝大家阅读愉快！别忘了多多宣传宣传。",
         "【提示】：如果觉得此文不错，请推荐给更多小伙伴吧！分享也是一种享受。",
     ];
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .vS)(filters, content);
-    (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__/* .htmlTrim */ .iA)(content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .Sf)(filters, content);
+    (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__/* .htmlTrim */ .is)(content);
     return content;
 }, (doc) => doc.querySelector("#next_url").href, (_content, nextLink) => new URL(nextLink).pathname.includes("_"));
-const ywggzy = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeNextPage */ .B4)((initroDom) => initroDom, (content) => {
+const ywggzy = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeNextPage */ .uk)((initroDom) => initroDom, (content) => {
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)(".posterror", false, content);
     return content;
 }, (doc) => doc.querySelector("div.section-opt:nth-child(1) > a:nth-child(5)")?.href ?? "", (_content, nextLink) => new URL(nextLink).pathname.includes("_"));
@@ -11196,37 +11664,37 @@ const commonContentPatch = (content) => {
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("div[align]", true, content);
     return content;
 };
-const common = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Hb)((introDom) => introDom, commonContentPatch);
-const gebiqu = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Hb)((introDom) => {
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rms */ .up)([/如果您喜欢.+，别忘记分享给朋友/g], introDom);
+const common = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Wt)((introDom) => introDom, commonContentPatch);
+const gebiqu = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Wt)((introDom) => {
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rms */ .j3)([/如果您喜欢.+，别忘记分享给朋友/g], introDom);
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)('a[href^="http://down.gebiqu.com"]', false, introDom);
     return introDom;
 }, (content) => {
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rms */ .up)([/"www.gashuw.com"/g], content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rms */ .j3)([/"www.gashuw.com"/g], content);
     return content;
 });
-const luoqiuzw = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Hb)((introDom) => introDom, (content) => {
+const luoqiuzw = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Wt)((introDom) => introDom, (content) => {
     const ad = content.firstElementChild;
     if (ad.innerText.includes("天才一秒记住本站地址：")) {
         ad.remove();
     }
     const ads = ["记住网址m.luoqｉｕｘｚｗ．ｃｏｍ"];
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rms */ .up)(ads, content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rms */ .j3)(ads, content);
     return content;
 });
-const biquwx = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Hb)((introDom) => {
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rms */ .up)([
+const biquwx = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Wt)((introDom) => {
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rms */ .j3)([
         /本站提示：各位书友要是觉得《.+》还不错的话请不要忘记向您QQ群和微博里的朋友推荐哦！/,
     ], introDom);
     return introDom;
 }, (content) => content, 1);
-const tycqxs = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Hb)((introDom) => introDom, (content) => {
+const tycqxs = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Wt)((introDom) => introDom, (content) => {
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("a", true, content);
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rms */ .up)(["推荐都市大神老施新书:"], content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rms */ .j3)(["推荐都市大神老施新书:"], content);
     return content;
 });
-const dijiubook = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Hb)((introDom) => {
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rms */ .up)(["本书网址："], introDom);
+const dijiubook = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Wt)((introDom) => {
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rms */ .j3)(["本书网址："], introDom);
     return introDom;
 }, (content) => {
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("a", true, content);
@@ -11237,7 +11705,7 @@ const dijiubook = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */
     const chapterParse = classThis.chapterParse;
     classThis.chapterParse = async (...args) => {
         const obj = await chapterParse(...args);
-        await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_2__/* .sleep */ ._v)(3000 * Math.random());
+        await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_2__/* .sleep */ .yy)(3000 * Math.random());
         return obj;
     };
     return classThis;
@@ -11250,94 +11718,94 @@ const dijiubook = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */
         return chapter;
     }
 });
-const c25zw = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Hb)((introDom) => {
+const c25zw = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Wt)((introDom) => {
     introDom.querySelector("font")?.parentElement?.remove();
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rms */ .up)(["简介:"], introDom);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rms */ .j3)(["简介:"], introDom);
     return introDom;
 }, (content) => {
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)(".bottem", false, content);
     return content;
 });
-const xbiquge = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Hb)((introDom) => introDom, (content) => {
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rms */ .up)([/笔趣阁 www.xbiquge.tw，最快更新.+ ！/], content);
+const xbiquge = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Wt)((introDom) => introDom, (content) => {
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rms */ .j3)([/笔趣阁 www.xbiquge.tw，最快更新.+ ！/], content);
     return content;
 });
-const yruan = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Hb)((introDom) => {
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rm2 */ .vS)(["本站提示：各位书友要是觉得"], introDom);
+const yruan = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Wt)((introDom) => {
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rm2 */ .Sf)(["本站提示：各位书友要是觉得"], introDom);
     return introDom;
 }, (content) => {
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("b", true, content);
     return content;
 }, 3);
-const ranwen = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Hb)((introDom) => {
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rm2 */ .vS)(["还不错的话请不要忘记向您QQ群和微博里的朋友推荐哦！"], introDom);
+const ranwen = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Wt)((introDom) => {
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rm2 */ .Sf)(["还不错的话请不要忘记向您QQ群和微博里的朋友推荐哦！"], introDom);
     return introDom;
 }, (content) => content);
-const b5200 = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Hb)((introDom) => introDom, (content) => content, 1);
-const bxwx333 = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Hb)((introDom) => introDom, (content) => {
+const b5200 = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Wt)((introDom) => introDom, (content) => content, 1);
+const bxwx333 = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Wt)((introDom) => introDom, (content) => {
     content.querySelector("#xuanchuan")?.parentElement?.remove();
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("div[style]", true, content);
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)(".bottem2", true, content);
     return content;
 }, undefined, undefined, undefined, "#zjneirong");
-const xbiqugeLa = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Hb)((introDom) => {
+const xbiqugeLa = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Wt)((introDom) => {
     introDom.querySelector("font")?.parentElement?.remove();
     return introDom;
 }, (content) => {
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rm2 */ .vS)(["手机站全新改版升级地址"], content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rm2 */ .Sf)(["手机站全新改版升级地址"], content);
     return content;
 }, 1);
-const shuquge = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Hb)((introDom) => {
+const shuquge = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Wt)((introDom) => {
     document.querySelector(".noshow")?.classList.remove("noshow");
     if (document.querySelector(".showall")) {
         document.querySelector(".showall").innerHTML = "";
     }
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rms */ .up)([
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rms */ .j3)([
         /作者：.+所写的《.+》无弹窗免费全文阅读为转载作品,章节由网友发布。/,
         /推荐地址：https?:\/\/www\.ishuquge\.org\/txt\/\d+\/index\.html/g,
     ], introDom);
     return introDom;
 }, (content) => {
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rm2 */ .vS)(["请记住本书首发域名：", "www.ishuquge.org"], content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rm2 */ .Sf)(["请记住本书首发域名：", "www.ishuquge.org"], content);
     return content;
 }, 1);
-const lusetxt = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Hb)((introDom) => {
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rm2 */ .vS)(["无弹窗免费全文阅读为转载作品", "无弹窗推荐地址", "简介："], introDom);
+const lusetxt = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Wt)((introDom) => {
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rm2 */ .Sf)(["无弹窗免费全文阅读为转载作品", "无弹窗推荐地址", "简介："], introDom);
     return introDom;
 }, (content) => {
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("script", true, content);
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("div[style]", true, content);
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("div[align]", true, content);
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rm2 */ .vS)(["https://www.lvsewx.com/books", "请记住本书首发域名"], content);
-    (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_3__/* .htmlTrim */ .iA)(content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rm2 */ .Sf)(["https://www.lvsewx.com/books", "请记住本书首发域名"], content);
+    (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_3__/* .htmlTrim */ .is)(content);
     return content;
 });
-const yqxs = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Hb)((introDom) => {
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rms */ .up)(["<span>简介：</span>"], introDom);
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rm2 */ .vS)(["推荐地址："], introDom);
+const yqxs = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Wt)((introDom) => {
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rms */ .j3)(["<span>简介：</span>"], introDom);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rm2 */ .Sf)(["推荐地址："], introDom);
     return introDom;
 }, (content) => {
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("script", true, content);
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)('div[align="center"]', false, content);
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rm2 */ .vS)(["//www.yqxsge.cc/html/", "请记住本书首发域名"], content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rm2 */ .Sf)(["//www.yqxsge.cc/html/", "请记住本书首发域名"], content);
     return content;
 });
-const lewenn = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Hb)((introDom) => {
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rms */ .up)([
+const lewenn = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Wt)((introDom) => {
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rms */ .j3)([
         /各位书友要是觉得《.*》还不错的话请不要忘记向您QQ群和微博里的朋友推荐哦！/,
     ], introDom);
     return introDom;
 }, (content) => {
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("script", true, content);
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)('div[align="center"]', false, content);
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rm2 */ .vS)(["//www.lewenn.net/lw", "1秒记住乐文小说网"], content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rm2 */ .Sf)(["//www.lewenn.net/lw", "1秒记住乐文小说网"], content);
     return content;
 });
-const xyb3 = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Hb)((introDom) => introDom, (content) => {
+const xyb3 = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Wt)((introDom) => introDom, (content) => {
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("script", true, content);
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("div[style]", true, content);
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("div[align]", true, content);
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rm2 */ .vS)([
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rm2 */ .Sf)([
         "由于各种问题yb3.cc地址更改为xyb3.net请大家收藏新地址避免迷路",
         "网页版章节内容慢，请下载好阅小说app阅读最新内容",
         "请退出转码页面，请下载好阅小说app 阅读最新章节。",
@@ -11345,9 +11813,9 @@ const xyb3 = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Hb)
     ], content);
     return content;
 });
-const la42zw = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Hb)((introDom) => introDom, (content) => {
+const la42zw = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Wt)((introDom) => introDom, (content) => {
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("div#content > p:first-child", false, content);
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rms */ .up)([
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rms */ .j3)([
         "首发网址ｈｔｔps://m.42zw.la",
         "记住网址m.42zw．la",
         "一秒记住ｈｔｔｐs://ｍ．42zw.la"
@@ -11364,10 +11832,10 @@ const la42zw = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .H
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   B4: () => (/* binding */ mkBiqugeNextPage),
-/* harmony export */   FG: () => (/* binding */ baseOnePage),
-/* harmony export */   HW: () => (/* binding */ mkBiqugeMultiIndexNextPage),
-/* harmony export */   Hb: () => (/* binding */ mkBiquge)
+/* harmony export */   FN: () => (/* binding */ mkBiqugeMultiIndexNextPage),
+/* harmony export */   Tm: () => (/* binding */ baseOnePage),
+/* harmony export */   Wt: () => (/* binding */ mkBiquge),
+/* harmony export */   uk: () => (/* binding */ mkBiqugeNextPage)
 /* harmony export */ });
 /* unused harmony exports baseMultiIndex, mkBiqugeMultiIndex */
 /* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/rule.ts");
@@ -11412,7 +11880,7 @@ function base(introDomPatch, concurrencyLimit, overRide, postHook) {
             classThis.bookParse = async () => {
                 const book = (await Reflect.apply(rawBookParse, classThis, []));
                 const chapters = book.chapters;
-                book.chapters = (0,_lib_rule__WEBPACK_IMPORTED_MODULE_0__/* .deDuplicate */ .uh)(chapters);
+                book.chapters = (0,_lib_rule__WEBPACK_IMPORTED_MODULE_0__/* .deDuplicate */ .hR)(chapters);
                 return book;
             };
             if (overRide) {
@@ -11450,17 +11918,17 @@ function baseMultiIndex(introDomPatch, concurrencyLimit, overRide, postHook) {
     };
 }
 function mkBiquge(introDomPatch, contentPatch, concurrencyLimit, overRide, postHook, chapterContenSelector = "#content") {
-    return (0,_onePage_template__WEBPACK_IMPORTED_MODULE_1__/* .mkRuleClass */ .x)({
+    return (0,_onePage_template__WEBPACK_IMPORTED_MODULE_1__/* .mkRuleClass */ .N)({
         ...baseOnePage(introDomPatch, concurrencyLimit, overRide, postHook),
         getContent: (doc) => doc.querySelector(chapterContenSelector),
         contentPatch,
     });
 }
 function mkBiqugeNextPage(introDomPatch, contentPatch, getNextPage, continueCondition, concurrencyLimit, overRide, postHook, chapterContenSelector = "#content") {
-    return (0,_onePage_template__WEBPACK_IMPORTED_MODULE_1__/* .mkRuleClass */ .x)({
+    return (0,_onePage_template__WEBPACK_IMPORTED_MODULE_1__/* .mkRuleClass */ .N)({
         ...baseOnePage(introDomPatch, concurrencyLimit, overRide, postHook),
         getContentFromUrl: async (chapterUrl, chapterName, charset) => {
-            const { contentRaw } = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_0__/* .nextPageParse */ .I2)({
+            const { contentRaw } = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_0__/* .nextPageParse */ .u1)({
                 chapterName,
                 chapterUrl,
                 charset,
@@ -11476,10 +11944,10 @@ function mkBiqugeNextPage(introDomPatch, contentPatch, getNextPage, continueCond
     });
 }
 function mkBiqugeMultiIndexNextPage(introDomPatch, contentPatch, getNextPage, continueCondition, concurrencyLimit, overRide, postHook, chapterContenSelector = "#content") {
-    return (0,_onePageWithMultiIndexPage_template__WEBPACK_IMPORTED_MODULE_2__/* .mkRuleClass */ .x)({
+    return (0,_onePageWithMultiIndexPage_template__WEBPACK_IMPORTED_MODULE_2__/* .mkRuleClass */ .N)({
         ...baseMultiIndex(introDomPatch, concurrencyLimit, overRide, postHook),
         getContentFromUrl: async (chapterUrl, chapterName, charset) => {
-            const { contentRaw } = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_0__/* .nextPageParse */ .I2)({
+            const { contentRaw } = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_0__/* .nextPageParse */ .u1)({
                 chapterName,
                 chapterUrl,
                 charset,
@@ -11518,7 +11986,7 @@ function mkBiqugeMultiIndex(introDomPatch, contentPatch, concurrencyLimit, overR
 
 
 
-const mbtxt = () => (0,_onePage_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+const mbtxt = () => (0,_onePage_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
     bookUrl: document.location.href,
     bookname: document.querySelector(".booktitle").innerText.trim(),
     author: document.querySelector("a.red").innerText.trim(),
@@ -11530,7 +11998,7 @@ const mbtxt = () => (0,_onePage_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleC
     coverUrl: document.querySelector(".bookcover > img")?.src,
     aList: document.querySelectorAll("#list-chapterAll > dd > a"),
     getContentFromUrl: async (chapterUrl, chapterName, charset) => {
-        const { contentRaw } = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .nextPageParse */ .I2)({
+        const { contentRaw } = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .nextPageParse */ .u1)({
             chapterName,
             chapterUrl,
             charset,
@@ -11539,7 +12007,7 @@ const mbtxt = () => (0,_onePage_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleC
                 (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)(".kongwen", true, content);
                 (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)(".readmiddle", true, content);
                 (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)(".text-danger.text-center", true, content);
-                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .up)(["-->>"], content);
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .j3)(["-->>"], content);
                 return content;
             },
             getNextPage: (doc) => doc.querySelector("#linkNext")?.href ?? "",
@@ -11568,7 +12036,7 @@ const mbtxt = () => (0,_onePage_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleC
 /* harmony export */ });
 /* harmony import */ var _onePage_template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
 
-const quanshuzhai = () => (0,_onePage_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+const quanshuzhai = () => (0,_onePage_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
     bookUrl: document.location.href,
     bookname: document.querySelector(".booktitle").innerText.trim(),
     author: document.querySelector("a.red").innerText.trim(),
@@ -11592,7 +12060,7 @@ const quanshuzhai = () => (0,_onePage_template__WEBPACK_IMPORTED_MODULE_0__/* .m
 /* harmony export */ });
 /* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
 
-const c256wxc = (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+const c256wxc = (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
     bookUrl: document.location.href,
     bookname: document.querySelector(".art_tit").innerText.trim(),
     author: (document.querySelector("span.bookinfo:nth-child(1) > a") ??
@@ -11621,7 +12089,7 @@ const c256wxc = (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)(
 /* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
 
 
-const c630shu = (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+const c630shu = (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
     bookUrl: document.location.href,
     bookname: document.querySelector("#info > h1").innerText.trim(),
     author: document.querySelector("div.options > span.item:nth-child(1) > a").innerText.trim(),
@@ -11631,7 +12099,7 @@ const c630shu = (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)(
     aList: document.querySelectorAll(".zjlist > dd > a"),
     getContent: (doc) => doc.querySelector("#content"),
     contentPatch: (content) => {
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .up)([/恋上你看书网 WWW.630SHU.NET ，最快更新.+最新章节！/], content);
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .j3)([/恋上你看书网 WWW.630SHU.NET ，最快更新.+最新章节！/], content);
         return content;
     },
 });
@@ -11648,7 +12116,7 @@ const c630shu = (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)(
 /* harmony export */ });
 /* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
 
-const aixdzs = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+const aixdzs = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
     bookUrl: document.location.href,
     bookname: document.querySelector(".d_info > h1").innerText.trim(),
     author: document.querySelector(".d_ac > ul:nth-child(1) > li:nth-child(1) > a:nth-child(2)").innerText.trim(),
@@ -11676,7 +12144,7 @@ const aixdzs = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */
 /* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
 
 
-const boqugew = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+const boqugew = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
     bookUrl: document.location.href,
     bookname: document.querySelector("h1.bookTitle").innerText.trim(),
     author: document.querySelector("p.booktag > a:first-child").innerText.replace(/作(\s+)?者[：:]/, "").trim(),
@@ -11686,7 +12154,7 @@ const boqugew = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass *
     aList: document.querySelectorAll("div#list-chapterAll > dl > dd > a"),
     getContent: (doc) => doc.querySelector("div#htmlContent"),
     contentPatch: (content) => {
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .up)([
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .j3)([
             "记住网址m.ｂｏｑｕgew．ｃｏｍ",
             "一秒记住ｈｔｔｐ://ｍ．boqugeｗ．ｃｏｍ",
             "首发网址ｈｔｔp://m.ｂｏｑｕｇｅｗ.com"
@@ -11708,7 +12176,7 @@ const boqugew = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass *
 /* harmony export */ });
 /* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
 
-const fantasybooks = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+const fantasybooks = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
     bookUrl: document.location.href,
     bookname: document.querySelector(".works-intro-title > strong").innerText.trim(),
     author: document.querySelector(".works-intro-digi > span:nth-child(1) > em:nth-child(1)").innerText.trim(),
@@ -11754,7 +12222,7 @@ const fantasybooks = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleCl
 
 
 
-const dizishu = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+const dizishu = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
     bookUrl: document.location.href,
     bookname: document.querySelector(".book-text > h1").innerText.trim(),
     author: document.querySelector(".book-text > span").innerText
@@ -11768,7 +12236,7 @@ const dizishu = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass *
     sections: document.querySelectorAll("#list > .book-chapter-list > h3"),
     getSName: (sElem) => sElem.innerText.trim(),
     getContentFromUrl: async (chapterUrl, chapterName, charset) => {
-        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
         const script1 = Array.from(doc.querySelectorAll("script"))
             .filter((s) => s.innerHTML.includes("chapterid="))?.[0]
             ?.innerHTML.split("\n")
@@ -11794,7 +12262,7 @@ return new Request(url, {
     mode: "cors",
     credentials: "include",
 });`)();
-        const text = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getText */ .Q)(request, charset);
+        const text = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getText */ .q4)(request, charset);
         const cctxt = new Function(`${text};return cctxt;`)();
         if (cctxt) {
             const contentRaw = document.createElement("div");
@@ -11811,7 +12279,7 @@ return new Request(url, {
         classThis.bookParse = async () => {
             const book = (await Reflect.apply(rawBookParse, classThis, []));
             const chapters = book.chapters;
-            book.chapters = (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .deDuplicate */ .uh)(chapters);
+            book.chapters = (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .deDuplicate */ .hR)(chapters);
             return book;
         };
         return classThis;
@@ -11870,7 +12338,7 @@ const guidaye = async () => {
         _log__WEBPACK_IMPORTED_MODULE_0___default().info("[guidaye]列表生成完毕");
         return htm.querySelectorAll("a");
     };
-    return (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkRuleClass */ .x)({
+    return (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkRuleClass */ .N)({
         bookUrl: document.location.href,
         bookname: document.querySelector("div.book-describe > h1").innerText.trim(),
         author: document.querySelector("div.book-describe > p").innerText
@@ -12050,7 +12518,7 @@ const table = {
 
 
 
-const hongxiuzhao = () => (0,template/* mkRuleClass */.x)({
+const hongxiuzhao = () => (0,template/* mkRuleClass */.N)({
     bookUrl: document.location.href,
     bookname: document
         .querySelector(".m-bookdetail div.f-fl > h1")
@@ -12099,7 +12567,7 @@ const hongxiuzhao = () => (0,template/* mkRuleClass */.x)({
 /* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
 
 
-const akatsuki = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+const akatsuki = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
     bookUrl: document.location.origin + document.location.pathname,
     bookname: document.querySelector("#LookNovel").innerText.trim(),
     author: document.querySelector(".box.story > h3.font-bb:nth-last-of-type(1) > a").innerText.trim(),
@@ -12125,7 +12593,7 @@ const akatsuki = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass 
         }
         for (const node of nodes) {
             if (node instanceof HTMLDivElement && node.className === "body-novel") {
-                contentRaw.appendChild((0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__/* .convertBr */ .Q3)(node, true));
+                contentRaw.appendChild((0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__/* .convertBr */ .U9)(node, true));
             }
             else {
                 contentRaw.appendChild(node);
@@ -12152,7 +12620,7 @@ const akatsuki = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass 
 /* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
 
 
-const alphapolis = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+const alphapolis = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
     bookUrl: document.location.href,
     bookname: document.querySelector("h2.title").innerText.trim(),
     author: document.querySelector("div.author > span:nth-child(1) > a:nth-child(1)").innerText.trim(),
@@ -12170,7 +12638,7 @@ const alphapolis = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClas
     getSName: (sElem) => sElem.innerText.trim(),
     getContent: (doc) => doc.querySelector("#novelBoby"),
     contentPatch: (content) => {
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .insertBrBeforeText */ .DF)(content);
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .insertBrBeforeText */ .Md)(content);
         return content;
     },
     language: "ja",
@@ -12233,26 +12701,26 @@ const houhuayuan = () => {
         a.href = bookUrl;
         aList.push(a);
     }
-    return (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+    return (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
         bookUrl,
         bookname,
         author,
         aList,
         getContentFromUrl: async (chapterUrl, chapterName, charset) => {
-            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
+            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
             const pageLinks = doc.querySelectorAll(".page-links > a.post-page-numbers");
             if (pageLinks) {
                 const content = document.createElement("div");
                 const _content0 = doc.querySelector("header + div.entry-content");
                 if (_content0) {
-                    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__/* .childNodesCopy */ .vR)(_content0, content);
+                    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__/* .childNodesCopy */ .Fv)(_content0, content);
                 }
                 const pageUrls = Array.from(pageLinks).map((a) => a.href);
                 for (const url of pageUrls) {
-                    const docc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .dL)(url, charset);
+                    const docc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .wA)(url, charset);
                     const _content1 = docc.querySelector("header + div.entry-content");
                     if (_content1) {
-                        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__/* .childNodesCopy */ .vR)(_content1, content);
+                        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__/* .childNodesCopy */ .Fv)(_content1, content);
                     }
                 }
                 return content;
@@ -12269,7 +12737,7 @@ const houhuayuan = () => {
             (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)("div.wpulike", true, dom);
             (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)(".simplefavorite-button", true, dom);
             (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)(".page-links", true, dom);
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__/* .rm2 */ .vS)([" – 蔷薇后花园", " – 黑沼泽俱乐部"], dom);
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__/* .rm2 */ .Sf)([" – 蔷薇后花园", " – 黑沼泽俱乐部"], dom);
             Array.from(dom.querySelectorAll("img")).forEach((img) => (img.src = img.getAttribute("data-src") ?? ""));
             return dom;
         },
@@ -12329,7 +12797,7 @@ const buttons = document.querySelectorAll('button[class^="Button_button"]');
 clickButtonFromSpan(spanElements, "…続きを読む");
 clickButtonFromDiv(divElements, "つづきを表示");
 clickButtonWithSVGAndH3(buttons);
-const kakuyomu = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+const kakuyomu = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
     bookUrl: document.location.href,
     bookname: document.querySelector("h1").innerText.trim(),
     author: document.querySelector("div[class*=partialGiftWidgetActivityName] > a").innerText.trim(),
@@ -12363,13 +12831,13 @@ const kakuyomu = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass 
 /* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
 
 
-const masiro = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+const masiro = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
     bookUrl: document.location.href,
     bookname: document.querySelector(".novel-title").innerText.trim(),
     author: document.querySelector(".author > a").innerText.trim(),
     introDom: document.querySelector(".brief"),
     introDomPatch: (dom) => {
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .up)(["简介："], dom);
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .j3)(["简介："], dom);
         return dom;
     },
     coverUrl: document.querySelector("div.mailbox-attachment-icon > a > img.img").src,
@@ -12441,7 +12909,7 @@ const syosetu = () => {
         const host = document.location.host;
         return host === "novel18.syosetu.com";
     };
-    return (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+    return (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
         bookUrl: document.location.href,
         bookname: document.querySelector(".novel_title").innerText.trim(),
         author: document.querySelector(".novel_writername > a, .novel_writername").innerText
@@ -12500,7 +12968,7 @@ const syosetuOrg = () => {
         }
         return document.querySelector("div.ss:nth-child(2)");
     };
-    return (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+    return (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
         bookUrl: document.location.href,
         bookname: document.querySelector('div.ss > span[itemprop="name"], div.ss:nth-child(1) > p:nth-child(1) > span:nth-child(1) > a:nth-child(1)').innerText.trim(),
         author: document.querySelector('div.ss span[itemprop="author"] > a, div.ss:nth-child(1) > p:nth-child(1) > a:nth-child(2)')?.innerText.trim(),
@@ -12551,7 +13019,7 @@ const syosetuOrg = () => {
 /* harmony export */ });
 /* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
 
-const qbtrcc = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+const qbtrcc = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
     bookUrl: document.location.href,
     bookname: document.querySelector("div.infos > h1").innerText.trim(),
     author: document.querySelector("div.infos > div.date > span").innerText.replace("作者：", "").trim(),
@@ -12577,7 +13045,7 @@ const qbtrcc = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */
 /* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
 
 
-const qzxsw = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+const qzxsw = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
     bookUrl: document.location.href,
     bookname: document.querySelector("div.introduce > h1").innerText.trim(),
     author: document.querySelector("div.introduce > p.bq > span:nth-child(2) > a").innerText.trim(),
@@ -12587,7 +13055,7 @@ const qzxsw = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ 
     aList: document.querySelectorAll("div.ml_list > ul > li > a"),
     getContent: (doc) => doc.querySelector(".articlecontent"),
     contentPatch: (content) => {
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .up)([
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .j3)([
             "一秒记住m.quanzhifashｉ。com",
             "ｍ．ｑuanzhifashｉ．com",
             "ｈttp://m.quanzhifashi.com首发"
@@ -12611,7 +13079,7 @@ const qzxsw = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ 
 /* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
 
 
-const soxscc = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+const soxscc = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
     bookUrl: document.location.href,
     bookname: document.querySelector(".xiaoshuo > h1").innerText.trim(),
     author: document.querySelector(".xiaoshuo > h6:nth-child(3) > a").innerText.trim(),
@@ -12628,7 +13096,7 @@ const soxscc = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */
     getSName: (sElem) => sElem.innerText.trim(),
     getContent: (doc) => doc.querySelector("div.content[id]"),
     contentPatch: (content) => {
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .vS)([
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .Sf)([
             "最新章节地址：",
             "全文阅读地址：",
             "txt下载地址：",
@@ -12649,7 +13117,7 @@ const soxscc = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   x: () => (/* binding */ mkRuleClass)
+/* harmony export */   N: () => (/* binding */ mkRuleClass)
 /* harmony export */ });
 /* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/attachments.ts");
 /* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/cleanDOM.ts");
@@ -12671,7 +13139,7 @@ const soxscc = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */
 
 
 function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, coverUrl, additionalMetadatePatch, aList, getAName, getIsVIP, sections, getSName, postHook, getContentFromUrl, getContent, contentPatch, concurrencyLimit, needLogin, nsfw, cleanDomOptions, overrideConstructor, language, }) {
-    return class extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
+    return class extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
         constructor() {
             super();
             this.attachmentMode = "TM";
@@ -12692,13 +13160,13 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
             let introduction = null;
             let introductionHTML = null;
             if (introDom && introDomPatch) {
-                [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .SN)(introDom, introDomPatch);
+                [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .HV)(introDom, introDomPatch);
             }
             const additionalMetadate = {
                 language: language ?? "zh",
             };
             if (coverUrl) {
-                (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ .FG)(coverUrl, this.attachmentMode, "cover-")
+                (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
                     .then((coverClass) => {
                     additionalMetadate.cover = coverClass;
                 })
@@ -12728,7 +13196,7 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
                 }
                 const chapterUrl = aElem.href;
                 if (hasSection && sections && getSName) {
-                    const _sectionName = (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .getSectionName */ .$d)(aElem, sections, getSName);
+                    const _sectionName = (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .getSectionName */ .lq)(aElem, sections, getSName);
                     if (_sectionName !== sectionName) {
                         sectionName = _sectionName;
                         sectionNumber++;
@@ -12742,7 +13210,7 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
                 if (getIsVIP) {
                     ({ isVIP, isPaid } = getIsVIP(aElem));
                 }
-                let chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .W({
+                let chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .I({
                     bookUrl,
                     bookname,
                     chapterUrl,
@@ -12758,7 +13226,7 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
                     options: { bookname },
                 });
                 if (isVIP && !isPaid) {
-                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_5__/* .Status */ .qb.aborted;
+                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_5__/* .Status */ .nW.aborted;
                 }
                 if (typeof postHook === "function") {
                     chapter = postHook(chapter);
@@ -12767,7 +13235,7 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
                     chapters.push(chapter);
                 }
             }
-            return new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .f({
+            return new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .E({
                 bookUrl,
                 bookname,
                 author,
@@ -12783,7 +13251,7 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
                 content = await getContentFromUrl(chapterUrl, chapterName, charset);
             }
             else if (typeof getContent === "function") {
-                const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_7__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
+                const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_7__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
                 content = getContent(doc);
             }
             else {
@@ -12791,7 +13259,7 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
             }
             if (content) {
                 content = contentPatch(content);
-                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .zM)(content, "TM", cleanDomOptions);
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .an)(content, "TM", cleanDomOptions);
                 return {
                     chapterName,
                     contentRaw: content,
@@ -12827,7 +13295,7 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
 /* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
 
 
-const tianyabooks = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+const tianyabooks = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
     bookUrl: document.location.href,
     bookname: document.querySelector(".book > h1")?.innerText
         .replace(/[《》]/g, "")
@@ -12864,7 +13332,7 @@ const tianyabooks = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleCla
 /* harmony export */ });
 /* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
 
-const trxs = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+const trxs = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
     bookUrl: document.location.href,
     bookname: document.querySelector(".infos > h1").innerText
         .split("(")[0]
@@ -12900,7 +13368,7 @@ const uukanshu = () => {
     if (button.innerText === "顺序排列") {
         reverse(button);
     }
-    return (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+    return (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
         bookUrl: document.location.href,
         bookname: document.querySelector("dd.jieshao_content > h1 > a").innerText
             .replace("最新章节", "")
@@ -12908,7 +13376,7 @@ const uukanshu = () => {
         author: document.querySelector("dd.jieshao_content > h2 > a").innerText.trim(),
         introDom: document.querySelector("dd.jieshao_content > h3"),
         introDomPatch: (dom) => {
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .up)([
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .j3)([
                 /^.+简介：\s+www\.uukanshu\.com\s+/,
                 /\s+https:\/\/www\.uukanshu\.com/,
                 /－+/,
@@ -12934,7 +13402,7 @@ const uukanshu = () => {
                 /http:\/\//g,
                 /UU看书\s+欢迎广大书友光临阅读，最新、最快、最火的连载作品尽在UU看书！UU看书。;?/g,
             ];
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .up)(adReplace, content);
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .j3)(adReplace, content);
             return content;
         },
     });
@@ -12958,7 +13426,7 @@ const uukanshu = () => {
 
 
 
-const wanben = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+const wanben = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
     bookUrl: document.location.href,
     bookname: document.querySelector(".detailTitle > h1").innerText.trim(),
     author: document.querySelector(".writer > a").innerText.trim(),
@@ -12967,7 +13435,7 @@ const wanben = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */
     coverUrl: document.querySelector(".detailTopLeft > img")?.src,
     aList: document.querySelectorAll(".chapter li > a"),
     getContentFromUrl: async (chapterUrl, chapterName, charset) => {
-        const { contentRaw } = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .nextPageParse */ .I2)({
+        const { contentRaw } = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .nextPageParse */ .u1)({
             chapterName,
             chapterUrl,
             charset,
@@ -12983,8 +13451,8 @@ const wanben = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */
                     "【完本神站】",
                     "一秒记住、永不丢失！"
                 ];
-                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__/* .rm2 */ .vS)(ads, content);
-                (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_3__/* .htmlTrim */ .iA)(content);
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__/* .rm2 */ .Sf)(ads, content);
+                (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_3__/* .htmlTrim */ .is)(content);
                 return content;
             },
             getNextPage: (doc) => doc.querySelector(".readPage > a:nth-child(3)")
@@ -13014,7 +13482,7 @@ const wanben = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */
 /* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
 
 
-const westnovel = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+const westnovel = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
     bookUrl: document.location.href,
     bookname: document.querySelector(".btitle > h1 > a").innerText.trim(),
     author: document.querySelector(".btitle > em:nth-child(2)").innerText
@@ -13053,7 +13521,7 @@ const westnovel = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass
 
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => document.querySelectorAll(selector);
-const xbyuan = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+const xbyuan = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
     bookUrl: location.href,
     bookname: $("#info h1").innerText.trim(),
     author: $("#info .small > span").innerText.trim(),
@@ -13062,7 +13530,7 @@ const xbyuan = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */
     coverUrl: $("#fmimg img").src,
     aList: $$("#list dl")[1].querySelectorAll("a"),
     async getContentFromUrl(chapterUrl, chapterName, charset) {
-        const { contentRaw } = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .nextPageParse */ .I2)({
+        const { contentRaw } = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .nextPageParse */ .u1)({
             chapterName,
             chapterUrl,
             charset,
@@ -13075,9 +13543,9 @@ const xbyuan = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */
                     "最快更新，为了您下次还能查看到本书的最快更新，请务必保存好书签！",
                     "https://www.xbyuan.com",
                 ];
-                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__/* .rm2 */ .vS)(ads, content);
-                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__/* .rms */ .up)(["(本章未完，请点击下一页继续阅读)"], content);
-                (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_3__/* .htmlTrim */ .iA)(content);
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__/* .rm2 */ .Sf)(ads, content);
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__/* .rms */ .j3)(["(本章未完，请点击下一页继续阅读)"], content);
+                (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_3__/* .htmlTrim */ .is)(content);
                 return content;
             },
             getNextPage(doc) {
@@ -13120,7 +13588,7 @@ const baihexs = () => {
     if (!bookId) {
         throw Error("获取书籍信息出错！");
     }
-    return (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+    return (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
         bookUrl,
         bookname: document.querySelector(".block_txt2 > h2 > a").innerText.trim(),
         author: document.querySelector(".block_txt2 > p:nth-child(4)").innerText
@@ -13132,7 +13600,7 @@ const baihexs = () => {
             ?.src,
         getIndexUrls: async () => {
             const contentPageUrl = `${document.location.origin}/wapbook-${bookId}`;
-            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .dL)(contentPageUrl + "/", document.characterSet);
+            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .wA)(contentPageUrl + "/", document.characterSet);
             const a = doc.querySelector("div.page > a:nth-last-child(1)");
             const maxNumber = /(\d+)\/?$/.exec(a.href)?.[1];
             if (!maxNumber) {
@@ -13148,7 +13616,7 @@ const baihexs = () => {
         getAList: (doc) => doc.querySelectorAll(".chapter > li > a"),
         getContent: (doc) => doc.querySelector("#nr1"),
         contentPatch: (dom) => {
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__/* .rm2 */ .vS)(["请您牢记：百合小说网"], dom);
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__/* .rm2 */ .Sf)(["请您牢记：百合小说网"], dom);
             return dom;
         },
         concurrencyLimit: 3,
@@ -13173,7 +13641,7 @@ const baihexs = () => {
 
 const novelup = () => {
     const bookUrl = document.location.origin + document.location.pathname;
-    return (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+    return (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
         bookUrl,
         bookname: document.querySelector("#section_episode_info_table > div:nth-child(2) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(2)").innerText.trim(),
         author: document.querySelector("#section_episode_info_table > div:nth-child(2) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(2) > td:nth-child(2) > a:nth-child(1)").innerText.trim(),
@@ -13182,7 +13650,7 @@ const novelup = () => {
             Array.from(dom.querySelectorAll("p")).forEach((p) => {
                 const div = document.createElement("div");
                 div.innerHTML = p.innerHTML.split("\n").join("<br>");
-                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .insertBrBeforeText */ .DF)(div);
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .insertBrBeforeText */ .Md)(div);
                 p.replaceWith(div);
             });
             return dom;
@@ -13193,7 +13661,7 @@ const novelup = () => {
             const indexPages = [];
             let nextUrl = bookUrl;
             do {
-                const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .getHtmlDOM */ .dL)(nextUrl);
+                const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .getHtmlDOM */ .wA)(nextUrl);
                 indexPages.push(doc);
                 nextUrl =
                     doc.querySelector("div.move_set:nth-child(4) > div:nth-child(3) > a")?.href ?? null;
@@ -13208,7 +13676,7 @@ const novelup = () => {
             Array.from(content.querySelectorAll("p")).forEach((p) => {
                 const div = document.createElement("div");
                 div.innerHTML = p.innerHTML.split("\n").join("<br>");
-                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .insertBrBeforeText */ .DF)(div);
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .insertBrBeforeText */ .Md)(div);
                 p.replaceWith(div);
             });
             return content;
@@ -13235,7 +13703,7 @@ const novelup = () => {
 
 
 
-const ptwxz = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+const ptwxz = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
     bookUrl: document.location.href,
     bookname: document
         .querySelector("#info h1")
@@ -13249,18 +13717,18 @@ const ptwxz = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ 
     getIndexUrls: async () => {
         const base = document.location.pathname;
         const listUrlBase = document.location.origin + "/list" + base;
-        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .dL)(listUrlBase, document.characterSet);
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .wA)(listUrlBase, document.characterSet);
         return Array.from(doc.querySelectorAll("#indexselect > option")).map((o) => document.location.origin + o.getAttribute("value"));
     },
     getAList: (doc) => doc.querySelectorAll('a[rel="chapter"]'),
     getContentFromUrl: async (chapterUrl, chapterName, charset) => {
-        const { contentRaw } = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .nextPageParse */ .I2)({
+        const { contentRaw } = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .nextPageParse */ .u1)({
             chapterName,
             chapterUrl,
             charset,
             selector: "#booktxt",
             contentPatch: (content) => {
-                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_3__/* .rm2 */ .vS)(["本章未完，點選下一頁繼續閱讀。"], content);
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_3__/* .rm2 */ .Sf)(["本章未完，點選下一頁繼續閱讀。"], content);
                 return content;
             },
             getNextPage: (doc) => doc.querySelector("#next_url")?.href ?? "",
@@ -13285,7 +13753,7 @@ const ptwxz = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ 
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   x: () => (/* binding */ mkRuleClass)
+/* harmony export */   N: () => (/* binding */ mkRuleClass)
 /* harmony export */ });
 /* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/attachments.ts");
 /* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("./src/lib/cleanDOM.ts");
@@ -13309,7 +13777,7 @@ const ptwxz = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ 
 
 
 function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, coverUrl, getIndexUrls, getIndexPages, getAList, getAName, getIsVIP, getSections, getSName, postHook, getContentFromUrl, getContent, contentPatch, concurrencyLimit, needLogin, nsfw, cleanDomOptions, overrideConstructor, language, }) {
-    return class extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
+    return class extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
         constructor() {
             super();
             this.attachmentMode = "TM";
@@ -13329,13 +13797,13 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
         async bookParse() {
             let [introduction, introductionHTML] = [null, null];
             if (introDom && introDomPatch) {
-                [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .SN)(introDom, introDomPatch);
+                [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .HV)(introDom, introDomPatch);
             }
             const additionalMetadate = {
                 language: language ?? "zh",
             };
             if (coverUrl) {
-                (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ .FG)(coverUrl, this.attachmentMode, "cover-")
+                (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
                     .then((coverClass) => {
                     additionalMetadate.cover = coverClass;
                 })
@@ -13348,9 +13816,9 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
             else if (typeof getIndexUrls === "function") {
                 const indexUrls = await getIndexUrls();
                 const _indexPage = [];
-                await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_4__/* .concurrencyRun */ .C1)(indexUrls, this.concurrencyLimit, async (url) => {
+                await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_4__/* .concurrencyRun */ .rr)(indexUrls, this.concurrencyLimit, async (url) => {
                     _log__WEBPACK_IMPORTED_MODULE_3___default().info(`[BookParse]抓取目录页：${url}`);
-                    const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_5__/* .getHtmlDomWithRetry */ .rf)(url, this.charset);
+                    const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_5__/* .getHtmlDomWithRetry */ .kP)(url, this.charset);
                     _indexPage.push([doc, url]);
                     return doc;
                 });
@@ -13391,7 +13859,7 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
                     }
                     const chapterUrl = aElem.href;
                     if (hasSection && sections && getSName) {
-                        const _sectionName = (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .getSectionName */ .$d)(aElem, sections, getSName);
+                        const _sectionName = (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .getSectionName */ .lq)(aElem, sections, getSName);
                         if (_sectionName !== null && _sectionName !== sectionName) {
                             sectionName = _sectionName;
                             sectionNumber++;
@@ -13405,7 +13873,7 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
                     if (getIsVIP) {
                         ({ isVIP, isPaid } = getIsVIP(aElem));
                     }
-                    let chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_6__/* .Chapter */ .W({
+                    let chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_6__/* .Chapter */ .I({
                         bookUrl,
                         bookname,
                         chapterUrl,
@@ -13421,7 +13889,7 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
                         options: { bookname },
                     });
                     if (isVIP && !isPaid) {
-                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_7__/* .Status */ .qb.aborted;
+                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_7__/* .Status */ .nW.aborted;
                     }
                     if (typeof postHook === "function") {
                         chapter = postHook(chapter);
@@ -13431,7 +13899,7 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
                     }
                 }
             }
-            return new _main_Book__WEBPACK_IMPORTED_MODULE_8__/* .Book */ .f({
+            return new _main_Book__WEBPACK_IMPORTED_MODULE_8__/* .Book */ .E({
                 bookUrl,
                 bookname,
                 author,
@@ -13447,7 +13915,7 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
                 content = await getContentFromUrl(chapterUrl, chapterName, charset);
             }
             else if (typeof getContent === "function") {
-                const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_5__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
+                const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_5__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
                 content = getContent(doc);
             }
             else {
@@ -13455,7 +13923,7 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
             }
             if (content) {
                 content = contentPatch(content);
-                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_9__/* .cleanDOM */ .zM)(content, "TM", cleanDomOptions);
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_9__/* .cleanDOM */ .an)(content, "TM", cleanDomOptions);
                 return {
                     chapterName,
                     contentRaw: content,
@@ -13506,7 +13974,7 @@ const wanben = () => {
         }
         return document.querySelector(".bookInfo");
     };
-    return (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+    return (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
         bookUrl: document.location.href,
         bookname: document.querySelector("div.bookPhr > h2").innerText.trim(),
         author: document.querySelector("div.bookPhrMid > p:nth-child(1)").innerText
@@ -13518,14 +13986,14 @@ const wanben = () => {
             ?.src,
         getIndexUrls: async () => {
             const contentPageUrl = document.querySelector("#contentbox > div.detailDiv > div.category > a").href;
-            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .dL)(contentPageUrl, document.characterSet);
+            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .wA)(contentPageUrl, document.characterSet);
             const aList = doc.querySelectorAll("div.pageBg div.pagenum a");
             const indexUrls = Array.from(aList).map((a) => a.href);
             return indexUrls;
         },
         getAList: (doc) => doc.querySelectorAll("div.chapterDiv > div.chapterList > ul > a"),
         getContentFromUrl: async (chapterUrl, chapterName, charset) => {
-            const { contentRaw } = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .nextPageParse */ .I2)({
+            const { contentRaw } = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .nextPageParse */ .u1)({
                 chapterName,
                 chapterUrl,
                 charset,
@@ -13539,8 +14007,8 @@ const wanben = () => {
                         "【完本神站】",
                         "百万热门书籍终身无广告免费阅读",
                     ];
-                    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_3__/* .rm2 */ .vS)(ads, content);
-                    (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_4__/* .htmlTrim */ .iA)(content);
+                    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_3__/* .rm2 */ .Sf)(ads, content);
+                    (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_4__/* .htmlTrim */ .is)(content);
                     return content;
                 },
                 getNextPage: (doc) => doc.querySelector("div.page > a:nth-child(3)")
@@ -13588,7 +14056,7 @@ const wanben = () => {
 
 
 
-class C17k extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
+class C17k extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.attachmentMode = "TM";
@@ -13599,13 +14067,13 @@ class C17k extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
         const bookUrl = document.location.href.replace("/list/", "/book/");
         const bookname = document.querySelector("h1.Title").innerText.trim();
         const author = document.querySelector("div.Author > a").innerText.trim();
-        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .dL)(bookUrl, undefined);
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .wA)(bookUrl, undefined);
         const introDom = doc.querySelector("#bookInfo p.intro > a");
-        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .introDomHandle */ .SN)(introDom);
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .introDomHandle */ .HV)(introDom);
         const additionalMetadate = {};
         const coverUrl = doc.querySelector("#bookCover img.book").src;
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getAttachment */ .FG)(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
@@ -13632,7 +14100,7 @@ class C17k extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
                 const isPaid = () => {
                     return false;
                 };
-                const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .W({
+                const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .I({
                     bookUrl,
                     bookname,
                     chapterUrl,
@@ -13651,12 +14119,12 @@ class C17k extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
                     return false;
                 };
                 if (isVIP() && !(isLogin() && chapter.isPaid)) {
-                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status */ .qb.aborted;
+                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status */ .nW.aborted;
                 }
                 chapters.push(chapter);
             }
         }
-        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .f({
+        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -13670,7 +14138,7 @@ class C17k extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         async function publicChapter() {
-            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
+            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
             chapterName = doc.querySelector("#readArea > div.readAreaBox.content > h1").innerText.trim();
             const content = doc.querySelector("#readArea > div.readAreaBox.content > div.p");
             if (content) {
@@ -13678,7 +14146,7 @@ class C17k extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
                 (0,_lib_dom__WEBPACK_IMPORTED_MODULE_8__.rm)("#banner_content", false, content);
                 (0,_lib_dom__WEBPACK_IMPORTED_MODULE_8__.rm)("div.qrcode", false, content);
                 (0,_lib_dom__WEBPACK_IMPORTED_MODULE_8__.rm)("div.chapter_text_ad", false, content);
-                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_9__/* .cleanDOM */ .zM)(content, "TM");
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_9__/* .cleanDOM */ .an)(content, "TM");
                 return {
                     chapterName,
                     contentRaw: content,
@@ -13749,7 +14217,7 @@ class C17k extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
 
 
 
-class MangaBilibili extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
+class MangaBilibili extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.attachmentMode = "naive";
@@ -13771,14 +14239,14 @@ class MangaBilibili extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass
         const introductionHTML = document.createElement("div");
         introductionHTML.innerText = detail.evaluate;
         const additionalMetadate = {};
-        (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getAttachment */ .FG)(detail.vertical_cover, this.attachmentMode, "vertical_cover-")
+        (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getAttachment */ ["if"])(detail.vertical_cover, this.attachmentMode, "vertical_cover-")
             .then((coverClass) => {
             additionalMetadate.cover = coverClass;
         })
             .catch((error) => _log__WEBPACK_IMPORTED_MODULE_2___default().error(error));
         additionalMetadate.tags = detail.styles;
         additionalMetadate.attachments = [];
-        (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getAttachment */ .FG)(detail.horizontal_cover, this.attachmentMode, "horizontal_cover-")
+        (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getAttachment */ ["if"])(detail.horizontal_cover, this.attachmentMode, "horizontal_cover-")
             .then((coverClass) => {
             additionalMetadate.attachments?.push(coverClass);
         })
@@ -13793,7 +14261,7 @@ class MangaBilibili extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass
                 comic_id,
                 ep_id: ep.id,
             };
-            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_3__/* .Chapter */ .W({
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_3__/* .Chapter */ .I({
                 bookUrl,
                 bookname,
                 chapterUrl,
@@ -13809,11 +14277,11 @@ class MangaBilibili extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass
                 options,
             });
             if (ep.is_locked || ep.type === 6) {
-                chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_4__/* .Status */ .qb.aborted;
+                chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_4__/* .Status */ .nW.aborted;
             }
             return chapter;
         });
-        return new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .f({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -13870,7 +14338,7 @@ class MangaBilibili extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass
             _outs.push(out);
             return out;
         };
-        await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_6__/* .concurrencyRun */ .C1)(paths, 3, worker);
+        await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_6__/* .concurrencyRun */ .rr)(paths, 3, worker);
         _outs.sort((a, b) => paths.indexOf(a.path) - paths.indexOf(b.path));
         const outs = _outs.map((out) => out.obj);
         const dom = document.createElement("div");
@@ -13961,15 +14429,15 @@ class MangaBilibili extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass
                     headers,
                     method: "GET",
                 };
-                const resp = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_7__/* .fetchWithRetry */ .q4)(url, init);
+                const resp = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_7__/* .fetchWithRetry */ .J5)(url, init);
                 const blob = await resp.blob();
-                const hash = await (0,_lib_hash__WEBPACK_IMPORTED_MODULE_8__/* .calculateSha1 */ .K)(blob);
-                const ext = await (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getExt */ .r6)(blob, url);
+                const hash = await (0,_lib_hash__WEBPACK_IMPORTED_MODULE_8__/* .calculateSha1 */ .Q)(blob);
+                const ext = await (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getExt */ .an)(blob, url);
                 const name = ["cm-", hash, ".", ext].join("");
-                const imgClass = new _main_Attachment__WEBPACK_IMPORTED_MODULE_9__/* .AttachmentClass */ .J(url, name, "naive");
+                const imgClass = new _main_Attachment__WEBPACK_IMPORTED_MODULE_9__/* .AttachmentClass */ .q(url, name, "naive");
                 imgClass.Blob = blob;
-                imgClass.status = _main_main__WEBPACK_IMPORTED_MODULE_4__/* .Status */ .qb.finished;
-                (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .putAttachmentClassCache */ .dK)(imgClass);
+                imgClass.status = _main_main__WEBPACK_IMPORTED_MODULE_4__/* .Status */ .nW.finished;
+                (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .putAttachmentClassCache */ .Ld)(imgClass);
                 return imgClass;
             }
         }
@@ -14013,7 +14481,7 @@ class MangaBilibili extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass
 
 
 
-class Shubl extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
+class Shubl extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.attachmentMode = "TM";
@@ -14025,15 +14493,15 @@ class Shubl extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
         const bookname = document.querySelector(".book-title > span").innerText.trim();
         const author = document.querySelector("div.username").innerText.trim();
         const introDom = document.querySelector(".book-brief");
-        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .introDomHandle */ .SN)(introDom, (introDomI) => {
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_3__/* .rms */ .up)(["简介："], introDomI);
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .introDomHandle */ .HV)(introDom, (introDomI) => {
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_3__/* .rms */ .j3)(["简介："], introDomI);
             return introDomI;
         });
         const additionalMetadate = {};
         const coverUrl = document.querySelector(".book-img")
             .src;
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_4__/* .getAttachment */ .FG)(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_4__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
@@ -14067,7 +14535,7 @@ class Shubl extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
                     const isLogin = () => {
                         return (document.querySelector("#header > div.container > div.right.pull-right")?.childElementCount === 3);
                     };
-                    const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_6__/* .Chapter */ .W({
+                    const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_6__/* .Chapter */ .I({
                         bookUrl,
                         bookname,
                         chapterUrl,
@@ -14083,13 +14551,13 @@ class Shubl extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
                         options: {},
                     });
                     if (isVIP() && !(isLogin() && isPaid())) {
-                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_7__/* .Status */ .qb.aborted;
+                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_7__/* .Status */ .nW.aborted;
                     }
                     chapters.push(chapter);
                 }
             }
         }
-        return new _main_Book__WEBPACK_IMPORTED_MODULE_8__/* .Book */ .f({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_8__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -14115,7 +14583,7 @@ class Shubl extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
         });
     }
 }
-class Duread extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
+class Duread extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.attachmentMode = "TM";
@@ -14127,15 +14595,15 @@ class Duread extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c 
         const bookname = document.querySelector(".book-title > span").innerText.trim();
         const author = document.querySelector("div.username").innerText.trim();
         const introDom = document.querySelector(".book-brief");
-        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .introDomHandle */ .SN)(introDom, (introDomI) => {
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_3__/* .rms */ .up)(["简介："], introDomI);
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .introDomHandle */ .HV)(introDom, (introDomI) => {
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_3__/* .rms */ .j3)(["简介："], introDomI);
             return introDomI;
         });
         const additionalMetadate = {};
         const coverUrl = document.querySelector(".book-img")
             .src;
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_4__/* .getAttachment */ .FG)(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_4__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
@@ -14169,7 +14637,7 @@ class Duread extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c 
                     const isLogin = () => {
                         return (document.querySelector("#header > div.container > div.right.pull-right")?.childElementCount === 3);
                     };
-                    const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_6__/* .Chapter */ .W({
+                    const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_6__/* .Chapter */ .I({
                         bookUrl,
                         bookname,
                         chapterUrl,
@@ -14185,13 +14653,13 @@ class Duread extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c 
                         options: {},
                     });
                     if (isVIP() && !(isLogin() && isPaid())) {
-                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_7__/* .Status */ .qb.aborted;
+                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_7__/* .Status */ .nW.aborted;
                     }
                     chapters.push(chapter);
                 }
             }
         }
-        return new _main_Book__WEBPACK_IMPORTED_MODULE_8__/* .Book */ .f({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_8__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -14246,7 +14714,7 @@ function getChapter({ chapterUrl, chapterName, isVIP, isPaid, charset, options, 
         return message.toString(crypto_js__WEBPACK_IMPORTED_MODULE_0__.enc.Utf8);
     }
     async function getChapterAuthorSay() {
-        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_9__/* .getHtmlDOM */ .dL)(chapterUrl, undefined);
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_9__/* .getHtmlDOM */ .wA)(chapterUrl, undefined);
         const chapterAuthorSays = doc.querySelectorAll("#J_BookCnt .chapter.author_say");
         let divChapterAuthorSay;
         if (chapterAuthorSays.length !== 0) {
@@ -14266,7 +14734,7 @@ function getChapter({ chapterUrl, chapterName, isVIP, isPaid, charset, options, 
             const accessKeyUrl = rootPath + "chapter/ajax_get_session_code";
             const chapterContentUrl = rootPath + "chapter/get_book_chapter_detail_info";
             _log__WEBPACK_IMPORTED_MODULE_5___default().debug(`[Chapter]请求 ${accessKeyUrl} Referer ${refererUrl}`);
-            const accessKeyObj = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_9__/* .gfetch */ .GF)(accessKeyUrl, {
+            const accessKeyObj = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_9__/* .gfetch */ ._V)(accessKeyUrl, {
                 method: "POST",
                 headers: {
                     Accept: "application/json, text/javascript, */*; q=0.01",
@@ -14283,7 +14751,7 @@ function getChapter({ chapterUrl, chapterName, isVIP, isPaid, charset, options, 
             const chapter_access_key = accessKeyObj
                 .chapter_access_key;
             _log__WEBPACK_IMPORTED_MODULE_5___default().debug(`[Chapter]请求 ${chapterContentUrl} Referer ${refererUrl}`);
-            const chapterContentObj = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_9__/* .gfetch */ .GF)(chapterContentUrl, {
+            const chapterContentObj = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_9__/* .gfetch */ ._V)(chapterContentUrl, {
                 method: "POST",
                 headers: {
                     Accept: "application/json, text/javascript, */*; q=0.01",
@@ -14315,7 +14783,7 @@ function getChapter({ chapterUrl, chapterName, isVIP, isPaid, charset, options, 
         if (divChapterAuthorSay) {
             content.appendChild(divChapterAuthorSay);
         }
-        const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .zM)(content, "TM");
+        const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .an)(content, "TM");
         return {
             chapterName,
             contentRaw: content,
@@ -14329,7 +14797,7 @@ function getChapter({ chapterUrl, chapterName, isVIP, isPaid, charset, options, 
         async function vipChapterDecrypt(chapterIdi, refererUrl) {
             const imageSessionCodeUrl = rootPath + "chapter/ajax_get_image_session_code";
             _log__WEBPACK_IMPORTED_MODULE_5___default().debug(`[Chapter]请求 ${imageSessionCodeUrl} Referer ${refererUrl}`);
-            const imageSessionCodeObject = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_9__/* .gfetch */ .GF)(imageSessionCodeUrl, {
+            const imageSessionCodeObject = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_9__/* .gfetch */ ._V)(imageSessionCodeUrl, {
                 method: "POST",
                 headers: {
                     Accept: "application/json, text/javascript, */*; q=0.01",
@@ -14382,7 +14850,7 @@ function getChapter({ chapterUrl, chapterName, isVIP, isPaid, charset, options, 
             const divChapterAuthorSay = await getChapterAuthorSay();
             const vipCHapterImageUrl = await vipChapterDecrypt(chapterId, chapterUrl);
             _log__WEBPACK_IMPORTED_MODULE_5___default().debug(`[Chapter]请求 ${vipCHapterImageUrl} Referer ${chapterUrl}`);
-            const vipCHapterImageBlob = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_9__/* .gfetch */ .GF)(vipCHapterImageUrl, {
+            const vipCHapterImageBlob = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_9__/* .gfetch */ ._V)(vipCHapterImageUrl, {
                 method: "GET",
                 headers: {
                     Referer: chapterUrl,
@@ -14393,17 +14861,17 @@ function getChapter({ chapterUrl, chapterName, isVIP, isPaid, charset, options, 
                 .then((response) => response.response)
                 .catch((error) => _log__WEBPACK_IMPORTED_MODULE_5___default().error(error));
             const vipCHapterName = `vipCHapter${chapterId}.png`;
-            const vipCHapterImage = new _main_Attachment__WEBPACK_IMPORTED_MODULE_11__/* .AttachmentClass */ .J(vipCHapterImageUrl, vipCHapterName, "TM");
+            const vipCHapterImage = new _main_Attachment__WEBPACK_IMPORTED_MODULE_11__/* .AttachmentClass */ .q(vipCHapterImageUrl, vipCHapterName, "TM");
             if (vipCHapterImageBlob) {
                 vipCHapterImage.Blob = vipCHapterImageBlob;
-                vipCHapterImage.status = _main_main__WEBPACK_IMPORTED_MODULE_7__/* .Status */ .qb.finished;
+                vipCHapterImage.status = _main_main__WEBPACK_IMPORTED_MODULE_7__/* .Status */ .nW.finished;
             }
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_4__/* .putAttachmentClassCache */ .dK)(vipCHapterImage);
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_4__/* .putAttachmentClassCache */ .Ld)(vipCHapterImage);
             const contentImages = [vipCHapterImage];
             let ddom;
             let dtext;
             if (divChapterAuthorSay) {
-                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .zM)(divChapterAuthorSay, "TM");
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .an)(divChapterAuthorSay, "TM");
                 [ddom, dtext] = [dom, text, images];
             }
             const img = document.createElement("img");
@@ -14478,7 +14946,7 @@ function getChapter({ chapterUrl, chapterName, isVIP, isPaid, charset, options, 
 
 
 
-class Ciyuanji extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
+class Ciyuanji extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.attachmentMode = "TM";
@@ -14492,11 +14960,11 @@ class Ciyuanji extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
         const author = bookObject.authorName;
         const introDom = document.createElement("div");
         introDom.innerHTML = bookObject.notes.replace("/\n/g", "<br/><br/>");
-        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .introDomHandle */ .SN)(introDom);
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .introDomHandle */ .HV)(introDom);
         const additionalMetadate = {};
         const coverUrl = bookObject.imgUrl;
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getAttachment */ .FG)(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
@@ -14524,7 +14992,7 @@ class Ciyuanji extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
             sectionChapterNumber++;
             const isVIP = chapterObj.isFee === "1";
             const isPaid = chapterObj.isBuy === "1";
-            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .W({
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .I({
                 bookUrl,
                 bookname,
                 chapterUrl,
@@ -14540,11 +15008,11 @@ class Ciyuanji extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
                 options: {},
             });
             if (chapter.isVIP && !chapter.isPaid) {
-                chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status */ .qb.aborted;
+                chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status */ .nW.aborted;
             }
             chapters.push(chapter);
         }
-        return new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .f({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -14582,14 +15050,14 @@ class Ciyuanji extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
                 }).toString(crypto_js__WEBPACK_IMPORTED_MODULE_0__.enc.Utf8);
             }
         }
-        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_8__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_8__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
         const __NEXT_DATA__ = JSON.parse(doc.querySelectorAll("script")[0].innerHTML);
         const chapterObj = __NEXT_DATA__.props.pageProps.chapterContent.chapter;
         const content = document.createElement("div");
         const chapterContent = decrypt(chapterObj.chapterContentFormat);
         if (chapterContent) {
             content.innerHTML = chapterContent;
-            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_9__/* .cleanDOM */ .zM)(content, "TM");
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_9__/* .cleanDOM */ .an)(content, "TM");
             return {
                 chapterName,
                 contentRaw: content,
@@ -14632,7 +15100,7 @@ class Ciyuanji extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
 
 
 
-class Cool18 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
+class Cool18 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.attachmentMode = "TM";
@@ -14640,7 +15108,7 @@ class Cool18 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
     }
     async bookParse() {
         const bookUrl = document.location.href;
-        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .dL)(bookUrl, this.charset);
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .wA)(bookUrl, this.charset);
         const title = doc.querySelector('.show_content > center > font[size="6"] > b').innerText.trim();
         const matchs = /[【《](.+)[】》](.+)?作者：([^\s-]+)/.exec(title);
         let bookname = title;
@@ -14685,7 +15153,7 @@ class Cool18 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
                 .replace(`《${bookname}》`, "")
                 .replace(`作者：${author}`, "")
                 .trim();
-            return new _main_Chapter__WEBPACK_IMPORTED_MODULE_2__/* .Chapter */ .W({
+            return new _main_Chapter__WEBPACK_IMPORTED_MODULE_2__/* .Chapter */ .I({
                 bookUrl,
                 bookname,
                 chapterUrl,
@@ -14706,7 +15174,7 @@ class Cool18 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
             i++;
             chapter.chapterNumber = i;
         }
-        return new _main_Book__WEBPACK_IMPORTED_MODULE_3__/* .Book */ .f({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_3__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -14717,7 +15185,7 @@ class Cool18 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
         });
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
         chapterName = doc.querySelector('.show_content > center > font[size="6"] > b').innerText
             .replace(`【${options.bookname}】`, "")
             .replace(`《${options.bookname}》`, "")
@@ -14729,15 +15197,15 @@ class Cool18 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
             const contentRaw = document.createElement("div");
             const nodes = Array.from(dom.childNodes);
             if (nodes.length > 10) {
-                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__/* .childNodesCopy */ .vR)(dom, contentRaw);
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__/* .childNodesCopy */ .Fv)(dom, contentRaw);
                 (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__.rm)("a", true, contentRaw);
-                (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_5__/* .convertFixWidth */ .FZ)(contentRaw);
+                (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_5__/* .convertFixWidth */ .N0)(contentRaw);
             }
             else {
                 for (const node of nodes) {
                     if (node instanceof Text && (node.textContent?.length ?? 0) > 200) {
-                        if ((0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_5__/* .isFixWidth */ .Kg)(node)) {
-                            contentRaw.appendChild((0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_5__/* .convertFixWidthText */ .d1)(node));
+                        if ((0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_5__/* .isFixWidth */ .eu)(node)) {
+                            contentRaw.appendChild((0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_5__/* .convertFixWidthText */ .WF)(node));
                             continue;
                         }
                         else {
@@ -14751,11 +15219,11 @@ class Cool18 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
                 }
                 Array.from(contentRaw.querySelectorAll("p"))
                     .filter((p) => p.innerText.trim() === "" &&
-                    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__/* .getPreviousSibling */ .U)(p) instanceof HTMLElement &&
-                    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__/* .getNextSibling */ .d9)(p) instanceof HTMLElement)
+                    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__/* .getPreviousSibling */ .UN)(p) instanceof HTMLElement &&
+                    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__/* .getNextSibling */ .wX)(p) instanceof HTMLElement)
                     .forEach((p) => p.remove());
             }
-            const { dom: contentHTML, text: contentText, images: contentImages, } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_5__/* .cleanDOM */ .zM)(contentRaw, "TM");
+            const { dom: contentHTML, text: contentText, images: contentImages, } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_5__/* .cleanDOM */ .an)(contentRaw, "TM");
             return {
                 chapterName,
                 contentRaw,
@@ -14808,7 +15276,7 @@ class Cool18 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
 
 
 
-class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
+class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.attachmentMode = "TM";
@@ -14846,11 +15314,11 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
         const author = data.novelInfo.author_nickname;
         const introDom = document.createElement("div");
         introDom.innerHTML = data.novelInfo.novel_info;
-        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_3__/* .introDomHandle */ .SN)(introDom);
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_3__/* .introDomHandle */ .HV)(introDom);
         const additionalMetadate = {};
         const coverUrl = data.novelInfo.novel_cover;
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_4__/* .getAttachment */ .FG)(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_4__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
@@ -14901,7 +15369,7 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
                     novel_id: data.novelInfo.novel_id,
                     chapter_id: chapterObj.id,
                 };
-                const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .W({
+                const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .I({
                     bookUrl,
                     bookname,
                     chapterUrl,
@@ -14917,12 +15385,12 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
                     options: chapterOption,
                 });
                 if ((isVIP && !(logined && chapter.isPaid)) || isLock) {
-                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status */ .qb.aborted;
+                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status */ .nW.aborted;
                 }
                 chapters.push(chapter);
             }
         }
-        return new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .f({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -15015,17 +15483,17 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
                 if (resultI.data.chapterInfo.content.length !== 0 &&
                     resultI.data.chapterInfo.content.length < 30) {
                     retryTime++;
-                    if (retryTime > _setting__WEBPACK_IMPORTED_MODULE_8__/* .retryLimit */ .o5) {
+                    if (retryTime > _setting__WEBPACK_IMPORTED_MODULE_8__/* .retryLimit */ .Iz) {
                         _log__WEBPACK_IMPORTED_MODULE_2___default().error(`请求 ${url} 失败`);
                         throw new Error(`请求 ${url} 失败`);
                     }
                     _log__WEBPACK_IMPORTED_MODULE_2___default().warn("[chapter]疑似被阻断，进行随机翻页……");
                     const ci = Math.round(Math.random() * retryTime) + 1;
                     for (let i = 0; i < ci; i++) {
-                        await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_9__/* .sleep */ ._v)(3000 + Math.round(Math.random() * 5000));
+                        await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_9__/* .sleep */ .yy)(3000 + Math.round(Math.random() * 5000));
                         randomWalker();
                     }
-                    await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_9__/* .sleep */ ._v)(3000 + Math.round(Math.random() * 2000));
+                    await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_9__/* .sleep */ .yy)(3000 + Math.round(Math.random() * 2000));
                     return getChapterInfo(url);
                 }
                 else {
@@ -15103,7 +15571,7 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
                             chapterInfo.postscript,
                         ].join("\n\n");
                     }
-                    await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_9__/* .sleep */ ._v)(3000 + Math.round(Math.random() * 5000));
+                    await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_9__/* .sleep */ .yy)(3000 + Math.round(Math.random() * 5000));
                     return {
                         chapterName,
                         contentRaw,
@@ -15127,7 +15595,7 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
             if (Math.random() < 0.15) {
                 randomWalker();
             }
-            await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_9__/* .sleep */ ._v)(3000 + Math.round(Math.random() * 4000));
+            await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_9__/* .sleep */ .yy)(3000 + Math.round(Math.random() * 4000));
         }
         async function publicChapter() {
             await antiAntiCrawler();
@@ -15180,7 +15648,7 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
 
 
 
-class Hanwujinian extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
+class Hanwujinian extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.attachmentMode = "TM";
@@ -15188,15 +15656,15 @@ class Hanwujinian extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass *
     async bookParse() {
         const bookUrl = document.location.href;
         const anotherPageUrl = document.querySelector("a.titleText_3").href;
-        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .getHtmlDOM */ .dL)(anotherPageUrl, this.charset);
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .getHtmlDOM */ .wA)(anotherPageUrl, this.charset);
         const bookname = document.querySelector("span.titleText_1").innerText.trim();
         const author = document.querySelector("span.authorText_1").innerText.trim();
         const introDom = document.querySelector("#introtext");
-        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_3__/* .introDomHandle */ .SN)(introDom);
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_3__/* .introDomHandle */ .HV)(introDom);
         const coverUrl = document.querySelector(".wR_JSAS > img").src;
         const additionalMetadate = {};
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_4__/* .getAttachment */ .FG)(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_4__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
@@ -15216,7 +15684,7 @@ class Hanwujinian extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass *
             const chapterName = aElem.innerText.trim();
             const chapterUrl = aElem.href;
             if (sections.length !== 0) {
-                const _sectionName = (0,_lib_rule__WEBPACK_IMPORTED_MODULE_3__/* .getSectionName */ .$d)(aElem, sections, (dom) => dom.innerText.trim());
+                const _sectionName = (0,_lib_rule__WEBPACK_IMPORTED_MODULE_3__/* .getSectionName */ .lq)(aElem, sections, (dom) => dom.innerText.trim());
                 if (_sectionName !== sectionName) {
                     sectionName = _sectionName;
                     sectionNumber++;
@@ -15228,7 +15696,7 @@ class Hanwujinian extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass *
             const icon = divElem.querySelector("img");
             const isVIP = icon !== null;
             const isPaid = isVIP ? icon.src.includes("lock_2_off.png") : false;
-            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_6__/* .Chapter */ .W({
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_6__/* .Chapter */ .I({
                 bookUrl,
                 bookname,
                 chapterUrl,
@@ -15246,16 +15714,16 @@ class Hanwujinian extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass *
             if (chapter.isVIP) {
                 if (signIn) {
                     if (chapter.isPaid === false) {
-                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_7__/* .Status */ .qb.aborted;
+                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_7__/* .Status */ .nW.aborted;
                     }
                 }
                 else {
-                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_7__/* .Status */ .qb.aborted;
+                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_7__/* .Status */ .nW.aborted;
                 }
             }
             chapters.push(chapter);
         }
-        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_8__/* .Book */ .f({
+        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_8__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -15268,7 +15736,7 @@ class Hanwujinian extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass *
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
         const script = Array.from(doc.querySelectorAll("script")).filter((s) => s.innerHTML.includes("var chapterContent"))?.[0];
         const getContent = (CryptoJS, chapterContent) => {
             function AesDecrypt(content) {
@@ -15294,10 +15762,10 @@ class Hanwujinian extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass *
                 .split("\n")
                 .filter((l) => l.includes("var chapterContent"))?.[0];
             const content = new Function("CryptoJS", `${chapterContentLine};return (${getContent.toString()})(CryptoJS, chapterContent);`)(crypto_js__WEBPACK_IMPORTED_MODULE_0__);
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_9__/* .rm2 */ .vS)(["更多优惠快去下载寒武纪年小说APP哦"], content);
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_9__/* .rm2 */ .Sf)(["更多优惠快去下载寒武纪年小说APP哦"], content);
             content.innerHTML = content.innerHTML.replaceAll("%3A", "：");
             content.innerHTML = content.innerHTML.replaceAll("++++【", "【");
-            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .zM)(content, "TM");
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .an)(content, "TM");
             return {
                 chapterName,
                 contentRaw: content,
@@ -15344,7 +15812,7 @@ class Hanwujinian extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass *
 
 
 
-class Iqingguo extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
+class Iqingguo extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.concurrencyLimit = 2;
@@ -15374,7 +15842,7 @@ class Iqingguo extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
             ids: bookId,
         };
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ .FG)(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
                 .then((img) => {
                 additionalMetadate.cover = img;
             })
@@ -15383,7 +15851,7 @@ class Iqingguo extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
         const chapters = catalogData.map((c) => {
             const chapterUrl = "https://www.iqingguo.com/book/reading?" +
                 new URLSearchParams({ id: bookId, cid: c.id }).toString();
-            return new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .W({
+            return new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .I({
                 bookUrl,
                 bookname,
                 chapterUrl,
@@ -15402,7 +15870,7 @@ class Iqingguo extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
                 },
             });
         });
-        return new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .f({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -15418,7 +15886,7 @@ class Iqingguo extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
         chapterName = data.name;
         const contentRaw = document.createElement("div");
         contentRaw.innerText = data.content;
-        const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_6__/* .cleanDOM */ .zM)(contentRaw, "TM");
+        const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_6__/* .cleanDOM */ .an)(contentRaw, "TM");
         const additionalMetadate = {
             lastModified: data.updateTime,
         };
@@ -16086,7 +16554,7 @@ async function getJjwxcFontTable(fontName) {
     if (jjwxcFontTableLocal) {
         return jjwxcFontTableLocal;
     }
-    else if (setting/* enableJjwxcRemoteFont */.Z3) {
+    else if (setting/* enableJjwxcRemoteFont */.ts) {
         return await fetchRemoteFont(fontName);
     }
     else {
@@ -16096,7 +16564,7 @@ async function getJjwxcFontTable(fontName) {
 async function fetchRemoteFont(fontName) {
     const url = `https://jjwxc.bgme.bid/api/${fontName}/table`;
     loglevel_default().info(`[jjwxc-font]开始请求远程字体对照表 ${fontName}`);
-    let retry = setting/* retryLimit */.o5;
+    let retry = setting/* retryLimit */.Iz;
     while (retry > 0) {
         let resp;
         try {
@@ -16106,7 +16574,7 @@ async function fetchRemoteFont(fontName) {
             loglevel_default().error(error);
             retry--;
             if (retry > 0) {
-                await (0,misc/* sleep */._v)(5000);
+                await (0,misc/* sleep */.yy)(5000);
                 continue;
             }
             else {
@@ -16121,7 +16589,7 @@ async function fetchRemoteFont(fontName) {
         else {
             retry--;
             if (retry > 0) {
-                await (0,misc/* sleep */._v)(5000);
+                await (0,misc/* sleep */.yy)(5000);
             }
             else {
                 loglevel_default().info(`[jjwxc-font]远程字体对照表 ${fontName} 下载失败`);
@@ -18443,7 +18911,7 @@ var source_map_generator = __webpack_require__("./node_modules/source-map-js/lib
 const trackNodes = new Set(['Atrule', 'Selector', 'Declaration']);
 
 function generateSourceMap(handlers) {
-    const map = new source_map_generator/* SourceMapGenerator */.h();
+    const map = new source_map_generator/* SourceMapGenerator */.x();
     const generated = {
         line: 1,
         column: 0
@@ -27713,7 +28181,7 @@ var external_CryptoJS_ = __webpack_require__("crypto-js");
 
 
 
-class Jjwxc extends rules/* BaseRuleClass */.c {
+class Jjwxc extends rules/* BaseRuleClass */.Q {
     constructor() {
         super();
         this.attachmentMode = "TM";
@@ -27738,13 +28206,13 @@ class Jjwxc extends rules/* BaseRuleClass */.c {
                 .replace(/作\s+者:/, "")
                 .trim();
             const introDom = document.querySelector("#novelintro");
-            [introduction, introductionHTML, introCleanimages] = await (0,rule/* introDomHandle */.SN)(introDom);
+            [introduction, introductionHTML, introCleanimages] = await (0,rule/* introDomHandle */.HV)(introDom);
             if (introCleanimages) {
                 additionalMetadate.attachments = [...introCleanimages];
             }
             const coverUrl = document.querySelector(".noveldefaultimage").src;
             if (coverUrl) {
-                (0,attachments/* getAttachment */.FG)(coverUrl, this.attachmentMode, "cover-", false, (0,attachments/* getRandomName */.VO)(), { referrerMode: main/* ReferrerMode */.n6.none })
+                (0,attachments/* getAttachment */["if"])(coverUrl, this.attachmentMode, "cover-", false, (0,attachments/* getRandomName */.VJ)(), { referrerMode: main/* ReferrerMode */.ls.none })
                     .then((coverClass) => {
                     additionalMetadate.cover = coverClass;
                 })
@@ -27760,7 +28228,7 @@ class Jjwxc extends rules/* BaseRuleClass */.c {
         }
         else {
             window.scrollTo(0, document.body.scrollHeight);
-            await (0,misc/* sleep */._v)(3000);
+            await (0,misc/* sleep */.yy)(3000);
             bookname = document.querySelector("td[id^=comment_] span.coltext > a")?.innerText
                 .trim()
                 .replace(/[《》]/g, "");
@@ -27770,7 +28238,7 @@ class Jjwxc extends rules/* BaseRuleClass */.c {
             }
             const authorPageUrl = document.querySelector("#oneboolt > tbody > tr:nth-child(1) > td > div > h2 > a")?.href;
             if (authorPageUrl) {
-                const authorPage = await (0,http/* getHtmlDOM */.dL)(authorPageUrl, this.charset);
+                const authorPage = await (0,http/* getHtmlDOM */.wA)(authorPageUrl, this.charset);
                 author =
                     authorPage.querySelector('span[itemprop="name"]')
                         ?.innerText ?? author;
@@ -27804,7 +28272,7 @@ class Jjwxc extends rules/* BaseRuleClass */.c {
                         const chapterName = a.innerText.trim();
                         const chapterUrl = a.getAttribute("rel");
                         if (chapterUrl) {
-                            const chapter = new Chapter/* Chapter */.W({
+                            const chapter = new Chapter/* Chapter */.I({
                                 bookUrl,
                                 bookname,
                                 chapterUrl,
@@ -27823,7 +28291,7 @@ class Jjwxc extends rules/* BaseRuleClass */.c {
                                 return !document.getElementById("jj_login");
                             };
                             if (isVIP() && !isLogin()) {
-                                chapter.status = main/* Status */.qb.aborted;
+                                chapter.status = main/* Status */.nW.aborted;
                             }
                             chapters.push(chapter);
                         }
@@ -27831,7 +28299,7 @@ class Jjwxc extends rules/* BaseRuleClass */.c {
                     else {
                         const chapterName = a.innerText.trim();
                         const chapterUrl = a.href;
-                        const chapter = new Chapter/* Chapter */.W({
+                        const chapter = new Chapter/* Chapter */.I({
                             bookUrl,
                             bookname,
                             chapterUrl,
@@ -27850,7 +28318,7 @@ class Jjwxc extends rules/* BaseRuleClass */.c {
                             return !document.getElementById("jj_login");
                         };
                         if (isVIP() && !isLogin()) {
-                            chapter.status = main/* Status */.qb.aborted;
+                            chapter.status = main/* Status */.nW.aborted;
                         }
                         chapters.push(chapter);
                     }
@@ -27858,7 +28326,7 @@ class Jjwxc extends rules/* BaseRuleClass */.c {
                 else {
                     const chapterName = "[锁]";
                     const chapterUrl = "";
-                    const chapter = new Chapter/* Chapter */.W({
+                    const chapter = new Chapter/* Chapter */.I({
                         bookUrl,
                         bookname,
                         chapterUrl,
@@ -27873,12 +28341,12 @@ class Jjwxc extends rules/* BaseRuleClass */.c {
                         charset: this.charset,
                         options: {},
                     });
-                    chapter.status = main/* Status */.qb.aborted;
+                    chapter.status = main/* Status */.nW.aborted;
                     chapters.push(chapter);
                 }
             }
         }
-        return new Book/* Book */.f({
+        return new Book/* Book */.E({
             bookUrl,
             bookname,
             author,
@@ -27890,7 +28358,7 @@ class Jjwxc extends rules/* BaseRuleClass */.c {
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         async function publicChapter() {
-            const doc = await (0,http/* getHtmlDOM */.dL)(chapterUrl, charset);
+            const doc = await (0,http/* getHtmlDOM */.wA)(chapterUrl, charset);
             chapterName = doc.querySelector("div.noveltext h2").innerText.trim();
             const content = doc.querySelector("div.noveltext");
             if (content) {
@@ -27899,12 +28367,12 @@ class Jjwxc extends rules/* BaseRuleClass */.c {
                 let authorSayDom;
                 let authorSayText;
                 if (rawAuthorSayDom) {
-                    const { dom: adom, text: atext } = await (0,cleanDOM/* cleanDOM */.zM)(rawAuthorSayDom, "TM");
+                    const { dom: adom, text: atext } = await (0,cleanDOM/* cleanDOM */.an)(rawAuthorSayDom, "TM");
                     [authorSayDom, authorSayText] = [adom, atext];
                 }
                 (0,lib_dom.rm)("div", true, content);
-                (0,lib_dom/* rms */.up)(["@无限好文，尽在晋江文学城"], content);
-                let { dom, text, images } = await (0,cleanDOM/* cleanDOM */.zM)(content, "TM");
+                (0,lib_dom/* rms */.j3)(["@无限好文，尽在晋江文学城"], content);
+                let { dom, text, images } = await (0,cleanDOM/* cleanDOM */.an)(content, "TM");
                 if (rawAuthorSayDom && authorSayDom && authorSayText) {
                     const hr = document.createElement("hr");
                     authorSayDom.className = "authorSay";
@@ -27973,7 +28441,7 @@ class Jjwxc extends rules/* BaseRuleClass */.c {
                 let retryTime = 0;
                 function fetchFont(fontUrlI) {
                     loglevel_default().debug(`[Chapter]请求 ${fontUrlI} Referer ${chapterUrl} 重试次数 ${retryTime}`);
-                    return (0,http/* gfetch */.GF)(fontUrlI, {
+                    return (0,http/* gfetch */._V)(fontUrlI, {
                         headers: {
                             accept: "*/*",
                             Referer: chapterUrl,
@@ -27986,7 +28454,7 @@ class Jjwxc extends rules/* BaseRuleClass */.c {
                         }
                         else {
                             loglevel_default().error(`[Chapter]请求 ${fontUrlI} 失败 Referer ${chapterUrl}`);
-                            if (retryTime < setting/* retryLimit */.o5) {
+                            if (retryTime < setting/* retryLimit */.Iz) {
                                 retryTime++;
                                 return fetchFont(fontUrlI);
                             }
@@ -28001,16 +28469,16 @@ class Jjwxc extends rules/* BaseRuleClass */.c {
                 if (fontName && fontUrl) {
                     const fontFileName = `${fontName}.woff2`;
                     let fontClassObj;
-                    const fontClassObjCache = (0,attachments/* getAttachmentClassCache */.gc)(fontUrl);
+                    const fontClassObjCache = (0,attachments/* getAttachmentClassCache */._s)(fontUrl);
                     if (fontClassObjCache) {
                         fontClassObj = fontClassObjCache;
                     }
                     else {
                         const fontBlob = await fetchFont(fontUrl);
-                        fontClassObj = new Attachment/* AttachmentClass */.J(fontUrl, fontFileName, "TM");
+                        fontClassObj = new Attachment/* AttachmentClass */.q(fontUrl, fontFileName, "TM");
                         fontClassObj.Blob = fontBlob;
-                        fontClassObj.status = main/* Status */.qb.finished;
-                        (0,attachments/* putAttachmentClassCache */.dK)(fontClassObj);
+                        fontClassObj.status = main/* Status */.nW.finished;
+                        (0,attachments/* putAttachmentClassCache */.Ld)(fontClassObj);
                     }
                     const fontStyleDom = document.createElement("style");
                     fontStyleDom.innerHTML = `.${fontName} {
@@ -28298,7 +28766,7 @@ class Jjwxc extends rules/* BaseRuleClass */.c {
                 decryptCssEncrypt();
                 return decryptContentDoc.body.innerHTML;
             }
-            const doc = await (0,http/* ggetHtmlDOM */.Fz)(chapterUrl, charset);
+            const doc = await (0,http/* ggetHtmlDOM */.pG)(chapterUrl, charset);
             const isPaidF = () => {
                 return !!(!doc.querySelector("#buy_content") &&
                     doc.querySelector("div.noveltext"));
@@ -28313,12 +28781,12 @@ class Jjwxc extends rules/* BaseRuleClass */.c {
                 let authorSayText;
                 if (rawAuthorSayDom) {
                     (0,lib_dom.rm)("hr", true, rawAuthorSayDom);
-                    const { dom: adom, text: atext } = await (0,cleanDOM/* cleanDOM */.zM)(rawAuthorSayDom, "TM");
+                    const { dom: adom, text: atext } = await (0,cleanDOM/* cleanDOM */.an)(rawAuthorSayDom, "TM");
                     [authorSayDom, authorSayText] = [adom, atext];
                 }
                 (0,lib_dom.rm)("div", true, content);
-                (0,lib_dom/* rms */.up)(["@无限好文，尽在晋江文学城"], content);
-                let { dom: rawDom, text: rawText, images, } = await (0,cleanDOM/* cleanDOM */.zM)(content, "TM");
+                (0,lib_dom/* rms */.j3)(["@无限好文，尽在晋江文学城"], content);
+                let { dom: rawDom, text: rawText, images, } = await (0,cleanDOM/* cleanDOM */.an)(content, "TM");
                 if (rawAuthorSayDom && authorSayDom && authorSayText) {
                     const hr = document.createElement("hr");
                     authorSayDom.className = "authorSay";
@@ -28455,7 +28923,7 @@ class Jjwxc extends rules/* BaseRuleClass */.c {
             async function getChapterInfo(url) {
                 loglevel_default().debug(`请求地址: ${url}, Referrer: ${chapterUrl}, 重试次数: ${retryTime}`);
                 return new Promise((resolve) => {
-                    (0,GM/* _GM_xmlhttpRequest */.UX)({
+                    (0,GM/* _GM_xmlhttpRequest */.nV)({
                         url: url,
                         headers: {
                             referer: "http://android.jjwxc.net?v=349",
@@ -28499,7 +28967,7 @@ class Jjwxc extends rules/* BaseRuleClass */.c {
             let result = await getChapterInfo(chapterGetInfoUrl.toString());
             while ("message" in result && result.message == "try again!") {
                 retryTime++;
-                if (retryTime > setting/* retryLimit */.o5) {
+                if (retryTime > setting/* retryLimit */.Iz) {
                     retryTime = 0;
                     loglevel_default().error(`请求${chapterGetInfoUrl.toString()}$失败`);
                     throw new Error(`请求${chapterGetInfoUrl.toString()}$失败`);
@@ -28559,7 +29027,7 @@ class Jjwxc extends rules/* BaseRuleClass */.c {
                     postscript,
                 ].join("\n\n");
                 contentText = [contentText, "-".repeat(20), postscript].join("\n\n");
-                await (0,misc/* sleep */._v)(2000 + Math.round(Math.random() * 2000));
+                await (0,misc/* sleep */.yy)(2000 + Math.round(Math.random() * 2000));
                 return {
                     chapterName,
                     contentRaw,
@@ -28570,7 +29038,7 @@ class Jjwxc extends rules/* BaseRuleClass */.c {
                 };
             }
             else {
-                await (0,misc/* sleep */._v)(1000 + Math.round(Math.random() * 1000));
+                await (0,misc/* sleep */.yy)(1000 + Math.round(Math.random() * 1000));
                 return {
                     chapterName,
                     contentRaw: null,
@@ -28624,7 +29092,7 @@ class Jjwxc extends rules/* BaseRuleClass */.c {
 
 
 
-class Linovel extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
+class Linovel extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.attachmentMode = "TM";
@@ -28635,13 +29103,13 @@ class Linovel extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c
         const bookname = document.querySelector(".book-title").innerText.trim();
         const author = document.querySelector(".author-frame > .novelist > div:nth-child(3) > a").innerText.trim();
         const introDom = document.querySelector(".about-text");
-        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .SN)(introDom);
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .HV)(introDom);
         const additionalMetadate = {};
         const attachmentsUrlList = [];
         const coverUrl = document.querySelector(".book-cover > a").href;
         if (coverUrl) {
             attachmentsUrlList.push(coverUrl);
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ .FG)(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
@@ -28652,7 +29120,7 @@ class Linovel extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c
         for (const volumeCoverUrl of volumeCoverUrlList) {
             if (!attachmentsUrlList.includes(volumeCoverUrl)) {
                 attachmentsUrlList.push(volumeCoverUrl);
-                (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ .FG)(volumeCoverUrl, this.attachmentMode, "volumeCover-")
+                (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ ["if"])(volumeCoverUrl, this.attachmentMode, "volumeCover-")
                     .then((volumeCoverObj) => {
                     additionalMetadate.attachments?.push(volumeCoverObj);
                 })
@@ -28684,7 +29152,7 @@ class Linovel extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c
                 const isPaid = () => {
                     return false;
                 };
-                const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .W({
+                const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .I({
                     bookUrl,
                     bookname,
                     chapterUrl,
@@ -28703,12 +29171,12 @@ class Linovel extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c
                     return false;
                 };
                 if (isVIP() && !(isLogin() && chapter.isPaid)) {
-                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_5__/* .Status */ .qb.aborted;
+                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_5__/* .Status */ .nW.aborted;
                 }
                 chapters.push(chapter);
             }
         }
-        return new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .f({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -28720,11 +29188,11 @@ class Linovel extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         async function publicChapter() {
-            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_7__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
+            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_7__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
             const ChapterName = doc.querySelector(".article-title").innerText.trim();
             const content = doc.querySelector(".article-text");
             if (content) {
-                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .zM)(content, "TM");
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .an)(content, "TM");
                 return {
                     chapterName: ChapterName,
                     contentRaw: content,
@@ -28793,7 +29261,7 @@ class Linovel extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c
 
 
 
-class Lofter extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
+class Lofter extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.attachmentMode = "TM";
@@ -28821,7 +29289,7 @@ class Lofter extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
             const avatar = new URL(_avatar);
             avatar.search = "";
             const avatarUrl = avatar.toString();
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getAttachment */ .FG)(avatarUrl, this.attachmentMode, "avatar-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getAttachment */ ["if"])(avatarUrl, this.attachmentMode, "avatar-")
                 .then((avatarClass) => {
                 additionalMetadate.cover = avatarClass;
             })
@@ -28832,7 +29300,7 @@ class Lofter extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
         const indexPageUrls = [];
         const getPageUrl = async (url) => {
             _log__WEBPACK_IMPORTED_MODULE_2___default().info(`[chapter]正在抓取目录页：${url}`);
-            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_3__/* .getHtmlDOM */ .dL)(url, undefined);
+            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_3__/* .getHtmlDOM */ .wA)(url, undefined);
             const selector = `a[href^="${[document.location.origin, "post"].join("/")}"]`;
             const urlSet = new Set(Array.from(doc.querySelectorAll(selector)).map((a) => a.href));
             urlSet.forEach((item) => pageUrlSet.add(item));
@@ -28862,7 +29330,7 @@ class Lofter extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
         await getPageUrl(document.location.href);
         let i = 0;
         for (const pageUrl of Array.from(pageUrlSet)) {
-            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .W({
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .I({
                 bookUrl,
                 bookname,
                 chapterUrl: pageUrl,
@@ -28880,7 +29348,7 @@ class Lofter extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
             chapters.push(chapter);
             i++;
         }
-        return new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .f({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -28893,7 +29361,7 @@ class Lofter extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         async function post() {
             _log__WEBPACK_IMPORTED_MODULE_2___default().debug(`[chapter]请求页面：${chapterUrl}`);
-            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_3__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
+            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_3__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
             chapterName =
                 doc
                     .querySelector("title")
@@ -28909,7 +29377,7 @@ class Lofter extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
             let content;
             for (const selector of selectors) {
                 const _content = doc.querySelector(selector);
-                if (_content !== null && !(0,_lib_dom__WEBPACK_IMPORTED_MODULE_6__/* .isHidden */ .xj)(_content)) {
+                if (_content !== null && !(0,_lib_dom__WEBPACK_IMPORTED_MODULE_6__/* .isHidden */ .dK)(_content)) {
                     content = _content;
                     break;
                 }
@@ -28922,7 +29390,7 @@ class Lofter extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
             }
             if (content) {
                 (0,_lib_dom__WEBPACK_IMPORTED_MODULE_6__.rm)(".otherinfo", true, content);
-                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .zM)(content, "TM");
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .an)(content, "TM");
                 return {
                     chapterName,
                     contentRaw: content,
@@ -28938,11 +29406,11 @@ class Lofter extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
         }
         async function lpost() {
             _log__WEBPACK_IMPORTED_MODULE_2___default().debug(`[chapter]请求页面：${chapterUrl}`);
-            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_3__/* .ggetHtmlDOM */ .Fz)(chapterUrl, charset);
+            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_3__/* .ggetHtmlDOM */ .pG)(chapterUrl, charset);
             chapterName = doc.querySelector("#title")?.innerText.trim();
             const content = doc.querySelector("#m-cnt .long-text");
             if (content) {
-                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .zM)(content, "TM");
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .an)(content, "TM");
                 return {
                     chapterName,
                     contentRaw: content,
@@ -28998,7 +29466,7 @@ class Lofter extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
 
 
 
-class Longmabook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
+class Longmabook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.attachmentMode = "TM";
@@ -29009,7 +29477,7 @@ class Longmabook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */
         const isLogin = Boolean(document.querySelector('a[href="/?act=signinlst"]'));
         if (!isLogin) {
             alert("小说下载器：海棠文化线上文学城需登录后方可下载！请登录帐号。");
-            throw new _main_main__WEBPACK_IMPORTED_MODULE_1__/* .ExpectError */ .K2("海棠文化线上文学城需登录后方可浏览！");
+            throw new _main_main__WEBPACK_IMPORTED_MODULE_1__/* .ExpectError */ .K5("海棠文化线上文学城需登录后方可浏览！");
         }
         const self = this;
         const bookUrl = document.location.href;
@@ -29033,13 +29501,13 @@ class Longmabook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */
             (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)("span", true, introDom);
             (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)("h4", true, introDom);
             (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)("img", true, introDom);
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__/* .rms */ .up)([/【作品编号：\d+】|【作品編號：\d+】/, "\n)\n"], introDom);
-            [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_3__/* .introDomHandle */ .SN)(introDom, undefined);
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__/* .rms */ .j3)([/【作品编号：\d+】|【作品編號：\d+】/, "\n)\n"], introDom);
+            [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_3__/* .introDomHandle */ .HV)(introDom, undefined);
         }
         const additionalMetadate = {};
         const coverUrl = document.querySelector("#mypages > div:nth-child(8) > div:nth-child(1) > img")?.src.replace("_s.", "_b.");
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_4__/* .getAttachment */ .FG)(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_4__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
@@ -29092,7 +29560,7 @@ class Longmabook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */
             return Array.from(chapterAList).map((a) => {
                 const chapterName = a.innerText;
                 const chapterUrl = a.href;
-                const _sectionName = (0,_lib_rule__WEBPACK_IMPORTED_MODULE_3__/* .getSectionName */ .$d)(a, sections, getSName);
+                const _sectionName = (0,_lib_rule__WEBPACK_IMPORTED_MODULE_3__/* .getSectionName */ .lq)(a, sections, getSName);
                 const isVip = getIsVip(a);
                 let isPaid = false;
                 if (isVip) {
@@ -29108,15 +29576,15 @@ class Longmabook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */
             });
         };
         const chapterObjs = [];
-        const initDoc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_6__/* .getHtmlDomWithRetry */ .rf)(showbooklistAPIUrl, self.charset, getInitObj(initShowbooklistParams));
+        const initDoc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_6__/* .getHtmlDomWithRetry */ .kP)(showbooklistAPIUrl, self.charset, getInitObj(initShowbooklistParams));
         if (initDoc) {
             chapterObjs.push(...getChapterObjs(initDoc));
             const pages = getPages(initDoc);
             if (pages.length !== 0) {
                 for (const page of pages) {
-                    const showbooklistParams = (0,_lib_misc__WEBPACK_IMPORTED_MODULE_7__/* .deepcopy */ .X8)(initShowbooklistParams);
+                    const showbooklistParams = (0,_lib_misc__WEBPACK_IMPORTED_MODULE_7__/* .deepcopy */ .OJ)(initShowbooklistParams);
                     showbooklistParams.pages = page.toString();
-                    const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_6__/* .getHtmlDomWithRetry */ .rf)(showbooklistAPIUrl, self.charset, getInitObj(showbooklistParams));
+                    const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_6__/* .getHtmlDomWithRetry */ .kP)(showbooklistAPIUrl, self.charset, getInitObj(showbooklistParams));
                     if (doc) {
                         chapterObjs.push(...getChapterObjs(doc));
                     }
@@ -29136,7 +29604,7 @@ class Longmabook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */
             }
             chapterNumber++;
             sectionChapterNumber++;
-            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_8__/* .Chapter */ .W({
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_8__/* .Chapter */ .I({
                 bookUrl,
                 bookname,
                 chapterUrl,
@@ -29152,11 +29620,11 @@ class Longmabook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */
                 options: { bookId, bookwritercode },
             });
             if (chapter.isVIP && !chapter.isPaid) {
-                chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_1__/* .Status */ .qb.aborted;
+                chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_1__/* .Status */ .nW.aborted;
             }
             chapters.push(chapter);
         }
-        return new _main_Book__WEBPACK_IMPORTED_MODULE_9__/* .Book */ .f({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_9__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -29168,7 +29636,7 @@ class Longmabook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         const self = this;
-        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_6__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_6__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
         if (doc.body.innerHTML.includes("您目前正在海棠清水區，只能觀看清水認證文章。")) {
             if (!window.stopFlag) {
                 alert("您目前正在海棠清水區，只能觀看清水認證文章。請使用海棠其他網址進入。");
@@ -29248,7 +29716,7 @@ class Longmabook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */
         async function getImages() {
             const imageDom = document.createElement("div");
             Array.from(doc.querySelectorAll("#mypages > div:nth-child(10) > div:nth-child(2) > div:nth-child(6) > ul > li:nth-child(14) > img")).forEach((img) => imageDom.appendChild(img.cloneNode(true)));
-            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .zM)(imageDom, self.attachmentMode);
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .an)(imageDom, self.attachmentMode);
             return [dom, text, images];
         }
         async function getMainContent() {
@@ -29272,13 +29740,13 @@ class Longmabook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */
             const contentMain = document.createElement("div");
             contentMain.innerHTML = await resp.text();
             (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)('img[src="/images/fullcolor.png"]', true, contentMain);
-            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .zM)(contentMain, self.attachmentMode);
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .an)(contentMain, self.attachmentMode);
             return [dom, text, images];
         }
         async function getAuthorSay() {
             const authorSayDom = doc.querySelector("#colorpanelwritersay");
             if (authorSayDom) {
-                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .zM)(authorSayDom, self.attachmentMode);
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .an)(authorSayDom, self.attachmentMode);
                 return [dom, text, images];
             }
             else {
@@ -29316,7 +29784,7 @@ class Longmabook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */
                     const eggDom = document.createElement("div");
                     eggDom.innerHTML = eggHTML;
                     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)('img[src="/images/fullcolor.png"]', true, eggDom);
-                    const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .zM)(eggDom, self.attachmentMode);
+                    const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .an)(eggDom, self.attachmentMode);
                     return [dom, text, images];
                 }
             }
@@ -29358,7 +29826,7 @@ class Longmabook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */
 
 
 
-class Myrics extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
+class Myrics extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.attachmentMode = "TM";
@@ -29417,7 +29885,7 @@ class Myrics extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c 
         };
         const coverUrl = novelDetail.image;
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ .FG)(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
                 .then((img) => {
                 additionalMetadate.cover = img;
             })
@@ -29447,11 +29915,11 @@ class Myrics extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c 
             }
             return _menu.data;
         };
-        const limit = (0,p_limit__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Z)(this.concurrencyLimit);
+        const limit = (0,p_limit__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A)(this.concurrencyLimit);
         const getChapters = async () => {
             const loginStatus = isLogin();
             const { total_page } = await getMenu(1);
-            const _menus = (0,_lib_misc__WEBPACK_IMPORTED_MODULE_4__/* .range */ .w6)(total_page, 1).map((page) => {
+            const _menus = (0,_lib_misc__WEBPACK_IMPORTED_MODULE_4__/* .range */ .y1)(total_page, 1).map((page) => {
                 return limit(() => getMenu(page));
             });
             const menus = await Promise.all(_menus);
@@ -29468,7 +29936,7 @@ class Myrics extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c 
                     const sectionName = `卷${sectionNumber}`;
                     const sectionChapterNumber = item.part;
                     const isAdult = item.is_adult;
-                    const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .W({
+                    const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .I({
                         bookUrl,
                         bookname,
                         chapterUrl,
@@ -29484,10 +29952,10 @@ class Myrics extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c 
                         options: { bookId, chapterId, created_at: item.created_at },
                     });
                     if (chapter.isVIP && !chapter.isPaid) {
-                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status */ .qb.aborted;
+                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status */ .nW.aborted;
                     }
                     if (!loginStatus && isAdult) {
-                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status */ .qb.aborted;
+                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status */ .nW.aborted;
                     }
                     return chapter;
                 });
@@ -29504,7 +29972,7 @@ class Myrics extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c 
             chapter.chapterNumber = i;
             i++;
         }
-        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .f({
+        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -29517,14 +29985,14 @@ class Myrics extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c 
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_8__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_8__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
         const _chapterName = doc.querySelector(".container > h1")?.innerText;
         if (_chapterName) {
             chapterName = _chapterName;
         }
         const content = doc.querySelector(".container > .wysiwyg");
         if (content) {
-            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_9__/* .cleanDOM */ .zM)(content, "TM");
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_9__/* .cleanDOM */ .an)(content, "TM");
             return {
                 chapterName,
                 contentRaw: content,
@@ -29574,7 +30042,7 @@ class Myrics extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c 
 
 
 
-class Pixiv extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
+class Pixiv extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.attachmentMode = "TM";
@@ -29611,14 +30079,14 @@ class Pixiv extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
                 introductionHTML.innerHTML = novel.description;
                 const introduction = introductionHTML.innerText;
                 const additionalMetadate = {};
-                (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getAttachment */ .FG)(novel.coverUrl, self.attachmentMode, "cover-")
+                (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getAttachment */ ["if"])(novel.coverUrl, self.attachmentMode, "cover-")
                     .then((coverClass) => {
                     additionalMetadate.cover = coverClass;
                 })
                     .catch((error) => _log__WEBPACK_IMPORTED_MODULE_2___default().error(error));
                 additionalMetadate.lastModified = new Date(novel.uploadDate).getTime();
                 additionalMetadate.tags = novel.tags;
-                const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_3__/* .Chapter */ .W({
+                const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_3__/* .Chapter */ .I({
                     bookUrl,
                     bookname,
                     chapterUrl: bookUrl,
@@ -29637,7 +30105,7 @@ class Pixiv extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
                         version: meta.version,
                     },
                 });
-                return new _main_Book__WEBPACK_IMPORTED_MODULE_4__/* .Book */ .f({
+                return new _main_Book__WEBPACK_IMPORTED_MODULE_4__/* .Book */ .E({
                     bookUrl,
                     bookname,
                     author,
@@ -29657,14 +30125,14 @@ class Pixiv extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
             const introductionHTML = document.createElement("div");
             introductionHTML.innerText = introduction;
             const additionalMetadate = {};
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getAttachment */ .FG)(series.coverURL, self.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getAttachment */ ["if"])(series.coverURL, self.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
                 .catch((error) => _log__WEBPACK_IMPORTED_MODULE_2___default().error(error));
             additionalMetadate.lastModified = series.lastModified;
             additionalMetadate.tags = series.tags;
-            return new _main_Book__WEBPACK_IMPORTED_MODULE_4__/* .Book */ .f({
+            return new _main_Book__WEBPACK_IMPORTED_MODULE_4__/* .Book */ .E({
                 bookUrl,
                 bookname,
                 author,
@@ -29673,7 +30141,7 @@ class Pixiv extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
                 additionalMetadate,
                 chapters: series.chapterObjList.map((c) => {
                     const { viewableType, ...cp } = c;
-                    const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_3__/* .Chapter */ .W({
+                    const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_3__/* .Chapter */ .I({
                         bookUrl,
                         bookname,
                         isVIP: false,
@@ -29686,7 +30154,7 @@ class Pixiv extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
                         ...cp,
                     });
                     if (viewableType !== 0) {
-                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_5__/* .Status */ .qb.aborted;
+                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_5__/* .Status */ .nW.aborted;
                     }
                     return chapter;
                 }),
@@ -29703,7 +30171,7 @@ class Pixiv extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
             textEmbeddedImages: novel.textEmbeddedImages,
         });
         replaceMark(contentRaw);
-        const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_6__/* .cleanDOM */ .zM)(contentRaw, "TM");
+        const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_6__/* .cleanDOM */ .an)(contentRaw, "TM");
         const additionalMetadate = {
             lastModified: new Date(novel.uploadDate).getTime(),
             tags: novel.tags,
@@ -29943,7 +30411,7 @@ async function getNovel(novelID, lang, version) {
 
 
 
-class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
+class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.attachmentMode = "TM";
@@ -29969,11 +30437,11 @@ class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
             .replace(/\s+著$/, "")
             .trim();
         const introDom = document.querySelector(".book-info-detail .book-intro");
-        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .SN)(introDom);
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .HV)(introDom);
         const additionalMetadate = {};
         const coverUrl = document.querySelector("#bookImg > img").src.slice(0, -4);
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ .FG)(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
@@ -29991,7 +30459,7 @@ class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
             }
         };
         if (!(liLength && getChapterTotalNumber() === liLength)) {
-            await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_4__/* .sleep */ ._v)(3000);
+            await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_4__/* .sleep */ .yy)(3000);
         }
         const sections = document.querySelectorAll("#j-catalogWrap > .volume-wrap > .volume");
         let chapterNumber = 0;
@@ -30029,7 +30497,7 @@ class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
                 else {
                     chapterId = null;
                 }
-                const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .W({
+                const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .I({
                     bookUrl,
                     bookname,
                     chapterUrl,
@@ -30061,18 +30529,18 @@ class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
                     return false;
                 };
                 if (isVIP()) {
-                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status */ .qb.aborted;
+                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status */ .nW.aborted;
                     if (limitFree) {
-                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status */ .qb.pending;
+                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status */ .nW.pending;
                     }
                     if (chapter.isPaid) {
-                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status */ .qb.pending;
+                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status */ .nW.pending;
                     }
                 }
                 chapters.push(chapter);
             }
         }
-        return new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .f({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -30094,10 +30562,10 @@ class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
         async function getChapter() {
             let doc;
             if (isVIP) {
-                doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_8__/* .ggetHtmlDOM */ .Fz)(chapterUrl, charset);
+                doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_8__/* .ggetHtmlDOM */ .pG)(chapterUrl, charset);
                 if (!doc.querySelector(".read-content") ||
                     (doc.querySelector(".read-content")?.childElementCount ?? 0) < 10) {
-                    doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_8__/* .getFrameContentCondition */ .CD)(chapterUrl, (frame) => {
+                    doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_8__/* .getFrameContentCondition */ .eF)(chapterUrl, (frame) => {
                         const doc = frame.contentWindow?.document ?? null;
                         if (doc) {
                             return doc.querySelectorAll(".read-content > p").length !== 0;
@@ -30112,7 +30580,7 @@ class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
                 }
             }
             else {
-                doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_8__/* .ggetHtmlDOM */ .Fz)(chapterUrl, charset);
+                doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_8__/* .ggetHtmlDOM */ .pG)(chapterUrl, charset);
             }
             if (doc) {
                 chapterName = doc.querySelector(".j_chapterName > .content-wrap").innerText.trim();
@@ -30125,18 +30593,18 @@ class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
                 (0,_lib_dom__WEBPACK_IMPORTED_MODULE_9__.rm)("span.review-count", true, contentMain);
                 const authorSayWrap = doc.querySelector(".author-say-wrap");
                 if (contentMain) {
-                    const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .zM)(contentMain, "TM");
-                    (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .htmlTrim */ .iA)(dom);
+                    const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .an)(contentMain, "TM");
+                    (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .htmlTrim */ .is)(dom);
                     content.appendChild(dom);
-                    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_9__/* .rm2 */ .vS)([/^谷[\u4e00-\u9fa5]{0,1}$/gm], content);
+                    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_9__/* .rm2 */ .Sf)([/^谷[\u4e00-\u9fa5]{0,1}$/gm], content);
                     contentText = contentText + text;
                     if (authorSayWrap) {
                         const authorSay = authorSayWrap.querySelector("div.author-say");
                         if (authorSay) {
                             (0,_lib_dom__WEBPACK_IMPORTED_MODULE_9__.rm)("a.avatar", false, authorSay);
                             (0,_lib_dom__WEBPACK_IMPORTED_MODULE_9__.rm)("h4", false, authorSay);
-                            const { dom: authorDom, text: authorText, images: authorImages, } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .zM)(authorSayWrap, "TM");
-                            (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .htmlTrim */ .iA)(authorDom);
+                            const { dom: authorDom, text: authorText, images: authorImages, } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .an)(authorSayWrap, "TM");
+                            (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .htmlTrim */ .is)(authorDom);
                             authorDom.className = "authorSay";
                             const hr = document.createElement("hr");
                             content.appendChild(hr);
@@ -30191,7 +30659,7 @@ class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
 
 
 
-class Qimao extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
+class Qimao extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.attachmentMode = "TM";
@@ -30207,7 +30675,7 @@ class Qimao extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
         const additionalMetadate = {};
         const coverUrl = document.querySelector("div.wrap-pic > img").src;
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getAttachment */ .FG)(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
@@ -30227,7 +30695,7 @@ class Qimao extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
             const isPaid = () => {
                 return false;
             };
-            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_3__/* .Chapter */ .W({
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_3__/* .Chapter */ .I({
                 bookUrl,
                 bookname,
                 chapterUrl,
@@ -30246,11 +30714,11 @@ class Qimao extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
                 return false;
             };
             if (isVIP() && !(isLogin() && chapter.isPaid)) {
-                chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_4__/* .Status */ .qb.aborted;
+                chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_4__/* .Status */ .nW.aborted;
             }
             chapters.push(chapter);
         }
-        return new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .f({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -30263,11 +30731,11 @@ class Qimao extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         async function publicChapter() {
             _log__WEBPACK_IMPORTED_MODULE_2___default().debug(`[Chapter]请求 ${chapterUrl}`);
-            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_6__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
+            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_6__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
             chapterName = doc.querySelector(".chapter-title").innerText.trim();
             const content = doc.querySelector(".article");
             if (content) {
-                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__/* .cleanDOM */ .zM)(content, "TM");
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__/* .cleanDOM */ .an)(content, "TM");
                 return {
                     chapterName,
                     contentRaw: content,
@@ -30302,7 +30770,7 @@ class Qimao extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
             return vipChapter();
         }
         else {
-            await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_8__/* .sleep */ ._v)(3000 + Math.round(Math.random() * 2000));
+            await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_8__/* .sleep */ .yy)(3000 + Math.round(Math.random() * 2000));
             return publicChapter();
         }
     }
@@ -30334,7 +30802,7 @@ class Qimao extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
 
 
 
-class Readmoo extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
+class Readmoo extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.saveType = { txt: false, epub: false, raw: { ext: "epub" } };
@@ -30365,7 +30833,7 @@ class Readmoo extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c
         ];
         const bookId = document.location.pathname.split("/").slice(-1)[0];
         const navUrl = `${navBase}${bookId}/nav`;
-        const navResp = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .gfetch */ .GF)(navUrl, navInit);
+        const navResp = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .gfetch */ ._V)(navUrl, navInit);
         const navData = navResp.response;
         if (navData.message !== "success") {
             throw new Error("获取 nav 失败！");
@@ -30376,7 +30844,7 @@ class Readmoo extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c
             path: "META-INF/container.xml",
             data: container_xml_url,
         });
-        const containerResp = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .ggetText */ ._7)(container_xml_url, "UTF-8", epubInit);
+        const containerResp = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .ggetText */ .bx)(container_xml_url, "UTF-8", epubInit);
         if (!containerResp) {
             throw new Error("抓取 container.xml 失败！");
         }
@@ -30389,7 +30857,7 @@ class Readmoo extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c
         }
         const content_opf_url = `${epubBase}${content_opf_path}`;
         epubFileList.push({ path: content_opf_path, data: content_opf_url });
-        const content_opf_resp = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .ggetText */ ._7)(content_opf_url, "UTF-8", epubInit);
+        const content_opf_resp = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .ggetText */ .bx)(content_opf_url, "UTF-8", epubInit);
         if (!content_opf_resp) {
             throw new Error("抓取 content.opf 失败！");
         }
@@ -30413,12 +30881,12 @@ class Readmoo extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c
             };
         });
         epubFileList.push(...itemObjs);
-        const limit = (0,p_limit__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Z)(this.concurrencyLimit);
+        const limit = (0,p_limit__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A)(this.concurrencyLimit);
         const attachmentTasks = epubFileList.map((fobj) => {
             return limit(async () => {
                 const { path, data, nocompress } = fobj;
                 if (typeof data === "string") {
-                    const attach = new _main_Attachment__WEBPACK_IMPORTED_MODULE_3__/* .AttachmentClass */ .J(data, path, this.attachmentMode, _main_main__WEBPACK_IMPORTED_MODULE_4__/* .ReferrerMode */ .n6.keep, "", { init: (0,_lib_misc__WEBPACK_IMPORTED_MODULE_5__/* .deepcopy */ .X8)(epubInit), TMinit: (0,_lib_misc__WEBPACK_IMPORTED_MODULE_5__/* .deepcopy */ .X8)(epubInit) });
+                    const attach = new _main_Attachment__WEBPACK_IMPORTED_MODULE_3__/* .AttachmentClass */ .q(data, path, this.attachmentMode, _main_main__WEBPACK_IMPORTED_MODULE_4__/* .ReferrerMode */ .ls.keep, "", { init: (0,_lib_misc__WEBPACK_IMPORTED_MODULE_5__/* .deepcopy */ .OJ)(epubInit), TMinit: (0,_lib_misc__WEBPACK_IMPORTED_MODULE_5__/* .deepcopy */ .OJ)(epubInit) });
                     await attach.init();
                     if (fobj.nocompress) {
                         attach.comments = "nocompress";
@@ -30426,9 +30894,9 @@ class Readmoo extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c
                     return attach;
                 }
                 else {
-                    const attach = new _main_Attachment__WEBPACK_IMPORTED_MODULE_3__/* .AttachmentClass */ .J("", path, this.attachmentMode);
+                    const attach = new _main_Attachment__WEBPACK_IMPORTED_MODULE_3__/* .AttachmentClass */ .q("", path, this.attachmentMode);
                     attach.Blob = data;
-                    attach.status = _main_main__WEBPACK_IMPORTED_MODULE_4__/* .Status */ .qb.finished;
+                    attach.status = _main_main__WEBPACK_IMPORTED_MODULE_4__/* .Status */ .nW.finished;
                     if (fobj.nocompress) {
                         attach.comments = "nocompress";
                     }
@@ -30437,7 +30905,7 @@ class Readmoo extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c
             });
         });
         const attachments = await Promise.all(attachmentTasks);
-        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .f({
+        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -30445,7 +30913,7 @@ class Readmoo extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c
             introductionHTML: null,
             additionalMetadate: { attachments },
             chapters: [
-                new _main_Chapter__WEBPACK_IMPORTED_MODULE_7__/* .Chapter */ .W({
+                new _main_Chapter__WEBPACK_IMPORTED_MODULE_7__/* .Chapter */ .I({
                     bookUrl,
                     bookname,
                     chapterUrl: "",
@@ -30512,7 +30980,7 @@ class Readmoo extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c
 
 
 
-class Sfacg extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
+class Sfacg extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.attachmentMode = "TM";
@@ -30521,14 +30989,14 @@ class Sfacg extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
     async bookParse() {
         const bookUrl = document.location.href.replace("/MainIndex/", "");
         const bookname = document.querySelector("h1.story-title").innerText.trim();
-        const dom = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .dL)(bookUrl, undefined);
+        const dom = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .wA)(bookUrl, undefined);
         const author = dom.querySelector(".author-name").innerText.trim();
         const introDom = dom.querySelector(".introduce");
-        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .introDomHandle */ .SN)(introDom);
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .introDomHandle */ .HV)(introDom);
         const additionalMetadate = {};
         const coverUrl = dom.querySelector("#hasTicket div.pic img").src;
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getAttachment */ .FG)(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
@@ -30542,7 +31010,7 @@ class Sfacg extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
             const _beitouUrl = dom.querySelector(".d-banner")?.style.backgroundImage.split('"');
             if (_beitouUrl?.length === 3) {
                 const beitouUrl = _beitouUrl[1];
-                const beitou = new _main_Attachment__WEBPACK_IMPORTED_MODULE_6__/* .AttachmentClass */ .J(beitouUrl, `beitou.${beitouUrl.split(".").slice(-1)[0]}`, "TM");
+                const beitou = new _main_Attachment__WEBPACK_IMPORTED_MODULE_6__/* .AttachmentClass */ .q(beitouUrl, `beitou.${beitouUrl.split(".").slice(-1)[0]}`, "TM");
                 beitou.init();
                 additionalMetadate.attachments = [beitou];
             }
@@ -30560,7 +31028,7 @@ class Sfacg extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
         for (const elem of Array.from(chapterElems)) {
             const chapterName = elem.getAttribute("title")?.trim() ?? "";
             const chapterUrl = elem.href;
-            const sectionName = (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .getSectionName */ .$d)(elem, sections, getName);
+            const sectionName = (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .getSectionName */ .lq)(elem, sections, getName);
             if (sectionName && _sectionName !== sectionName) {
                 _sectionName = sectionName;
                 sectionNumber++;
@@ -30573,7 +31041,7 @@ class Sfacg extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
                     elem.firstElementChild?.getAttribute("class") === "icn_vip");
             };
             const isPaid = null;
-            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_7__/* .Chapter */ .W({
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_7__/* .Chapter */ .I({
                 bookUrl,
                 bookname,
                 chapterUrl,
@@ -30592,11 +31060,11 @@ class Sfacg extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
                 .querySelector(".user-bar > .top-link > .normal-link")
                 ?.innerHTML.includes("您好，SF游客");
             if (chapter.isVIP && !isLogin) {
-                chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_8__/* .Status */ .qb.aborted;
+                chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_8__/* .Status */ .nW.aborted;
             }
             chapters.push(chapter);
         }
-        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_9__/* .Book */ .f({
+        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_9__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -30611,11 +31079,11 @@ class Sfacg extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         const chapterId = chapterUrl.split("/").slice(-2, -1)[0];
         async function publicChapter() {
-            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
+            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
             chapterName = doc.querySelector("h1.article-title").innerText.trim();
             const content = doc.querySelector(".article-content");
             if (content) {
-                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .zM)(content, "TM");
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .an)(content, "TM");
                 return {
                     chapterName,
                     contentRaw: content,
@@ -30655,7 +31123,7 @@ class Sfacg extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
                         .then((blob) => {
                         if (blob.size === 53658 || blob.size === 42356) {
                             _log__WEBPACK_IMPORTED_MODULE_4___default().error(`[Chapter]请求 ${vipChapterImageUrlI} 失败 Referer ${chapterUrl}`);
-                            if (retryTime < _setting__WEBPACK_IMPORTED_MODULE_11__/* .retryLimit */ .o5) {
+                            if (retryTime < _setting__WEBPACK_IMPORTED_MODULE_11__/* .retryLimit */ .Iz) {
                                 retryTime++;
                                 return fetchVipChapterImage(vipChapterImageUrlI);
                             }
@@ -30670,20 +31138,20 @@ class Sfacg extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
                         .catch((error) => _log__WEBPACK_IMPORTED_MODULE_4___default().error(error));
                 }
                 const vipChapterImageBlob = await fetchVipChapterImage(vipChapterImageUrl);
-                const vipChapterImage = new _main_Attachment__WEBPACK_IMPORTED_MODULE_6__/* .AttachmentClass */ .J(vipChapterImageUrl, vipChapterName, "naive");
+                const vipChapterImage = new _main_Attachment__WEBPACK_IMPORTED_MODULE_6__/* .AttachmentClass */ .q(vipChapterImageUrl, vipChapterName, "naive");
                 if (vipChapterImageBlob) {
                     vipChapterImage.Blob = vipChapterImageBlob;
-                    vipChapterImage.status = _main_main__WEBPACK_IMPORTED_MODULE_8__/* .Status */ .qb.finished;
+                    vipChapterImage.status = _main_main__WEBPACK_IMPORTED_MODULE_8__/* .Status */ .nW.finished;
                 }
                 else {
-                    vipChapterImage.status = _main_main__WEBPACK_IMPORTED_MODULE_8__/* .Status */ .qb.failed;
+                    vipChapterImage.status = _main_main__WEBPACK_IMPORTED_MODULE_8__/* .Status */ .nW.failed;
                 }
                 return vipChapterImage;
             }
             const isLogin = document.querySelector(".user-bar > .top-link > .normal-link")
                 ?.childElementCount === 3;
             if (isLogin) {
-                const dom = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
+                const dom = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
                 const chapterNameI = dom.querySelector("h1.article-title").innerText.trim();
                 isPaid = dom.querySelector(".pay-section") === null;
                 if (isPaid) {
@@ -30692,7 +31160,7 @@ class Sfacg extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
                         const vipChapterImageUrl = vipChapterDom.src;
                         const vipChapterName = `vipCHapter${chapterId}.gif`;
                         const vipChapterImage = await getvipChapterImage(vipChapterImageUrl, vipChapterName);
-                        (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .putAttachmentClassCache */ .dK)(vipChapterImage);
+                        (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .putAttachmentClassCache */ .Ld)(vipChapterImage);
                         const contentImages = [vipChapterImage];
                         const img = document.createElement("img");
                         img.setAttribute("data-src-address", vipChapterName);
@@ -30765,7 +31233,7 @@ class Sfacg extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
 
 
 
-class Shuhai extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
+class Shuhai extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.attachmentMode = "TM";
@@ -30780,11 +31248,11 @@ class Shuhai extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
             .trim();
         const introDom = document.querySelector("div.book-info-bookintro") ||
             document.querySelector("div.book-info-bookintro-all");
-        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .SN)(introDom);
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .HV)(introDom);
         const additionalMetadate = {};
         const coverUrl = document.querySelector(".book-cover-wrapper > img").getAttribute("data-original");
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ .FG)(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
@@ -30793,7 +31261,7 @@ class Shuhai extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
         additionalMetadate.tags = Array.from(document.querySelectorAll(".book-info-bookstate > .tag")).map((span) => span.innerText.trim());
         const chapters = [];
         if (document.querySelectorAll("#catalog > .chapter-item").length === 0) {
-            await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_4__/* .sleep */ ._v)(3000);
+            await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_4__/* .sleep */ .yy)(3000);
         }
         const dsList = document.querySelectorAll("#catalog > .chapter-item");
         let chapterNumber = 0;
@@ -30818,7 +31286,7 @@ class Shuhai extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
                 };
                 const chapterName = a.innerText.trim();
                 const chapterUrl = a.href;
-                const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .W({
+                const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .I({
                     bookUrl,
                     bookname,
                     chapterUrl,
@@ -30837,12 +31305,12 @@ class Shuhai extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
                     return false;
                 };
                 if (isVIP() && !(isLogin() && chapter.isPaid)) {
-                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status */ .qb.aborted;
+                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status */ .nW.aborted;
                 }
                 chapters.push(chapter);
             }
         }
-        return new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .f({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -30854,14 +31322,14 @@ class Shuhai extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         async function publicChapter() {
-            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_8__/* .ggetHtmlDOM */ .Fz)(chapterUrl, charset);
+            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_8__/* .ggetHtmlDOM */ .pG)(chapterUrl, charset);
             chapterName = doc.querySelector("div.chapter-name").innerText
                 .replace("正文 ", "")
                 .trim();
             const content = doc.querySelector("#reader-content > div:nth-child(1)");
             if (content) {
                 (0,_lib_dom__WEBPACK_IMPORTED_MODULE_9__.rm)("div.chaper-info", false, content);
-                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .zM)(content, "TM");
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .an)(content, "TM");
                 return {
                     chapterName,
                     contentRaw: content,
@@ -30923,7 +31391,7 @@ class Shuhai extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c 
 
 
 
-class Sosadfun extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
+class Sosadfun extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.attachmentMode = "TM";
@@ -30950,7 +31418,7 @@ class Sosadfun extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
         let introDom;
         if (needLogin()) {
             alert("本小说需要登录后浏览！");
-            throw new _main_main__WEBPACK_IMPORTED_MODULE_1__/* .ExpectError */ .K2("本小说需要登录后浏览！");
+            throw new _main_main__WEBPACK_IMPORTED_MODULE_1__/* .ExpectError */ .K5("本小说需要登录后浏览！");
         }
         else {
             introDom = document.createElement("div");
@@ -30972,7 +31440,7 @@ class Sosadfun extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
             introductionHTML = null;
         }
         else {
-            const { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__/* .cleanDOM */ .zM)(introDom, "TM");
+            const { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__/* .cleanDOM */ .an)(introDom, "TM");
             introduction = introCleantext;
             introductionHTML = introCleanDom;
             if (introCleanimages) {
@@ -30986,7 +31454,7 @@ class Sosadfun extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
             chapterNumber++;
             const chapterName = a.innerText.trim();
             const chapterUrl = a.href;
-            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_3__/* .Chapter */ .W({
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_3__/* .Chapter */ .I({
                 bookUrl,
                 bookname,
                 chapterUrl,
@@ -31003,7 +31471,7 @@ class Sosadfun extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
             });
             chapters.push(chapter);
         }
-        return new _main_Book__WEBPACK_IMPORTED_MODULE_4__/* .Book */ .f({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_4__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -31014,7 +31482,7 @@ class Sosadfun extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
         });
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_5__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_5__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
         chapterName = doc.querySelector("strong.h3").innerText.trim();
         const content = document.createElement("div");
         const _content = doc.querySelector(".main-text.no-selection > span[id^=full]");
@@ -31025,9 +31493,9 @@ class Sosadfun extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
             }
         }
         if (_content) {
-            let { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__/* .cleanDOM */ .zM)(content, "TM");
+            let { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__/* .cleanDOM */ .an)(content, "TM");
             if (_authorSay) {
-                const { dom: authorSayDom, text: authorySayText, images: authorSayImages, } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__/* .cleanDOM */ .zM)(_authorSay, "TM");
+                const { dom: authorSayDom, text: authorySayText, images: authorSayImages, } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__/* .cleanDOM */ .an)(_authorSay, "TM");
                 const hrElem = document.createElement("hr");
                 const authorSayDiv = document.createElement("div");
                 authorSayDiv.className = "authorSay";
@@ -31092,7 +31560,7 @@ class Sosadfun extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
 
 
 
-class Tadu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
+class Tadu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.attachmentMode = "TM";
@@ -31103,11 +31571,11 @@ class Tadu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
         const bookname = document.querySelector("div.bookNm > a.bkNm").innerText.trim();
         const author = document.querySelector("div.authorInfo > a.author > span").innerText.trim();
         const introDom = document.querySelector("div.boxCenter.boxT.clearfix > div.lf.lfO > p.intro");
-        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .SN)(introDom);
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .HV)(introDom);
         const additionalMetadate = {};
         const coverUrl = document.querySelector("a.bookImg > img").getAttribute("data-src");
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ .FG)(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
@@ -31126,7 +31594,7 @@ class Tadu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
             const isPaid = () => {
                 return false;
             };
-            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .W({
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .I({
                 bookUrl,
                 bookname,
                 chapterUrl,
@@ -31145,11 +31613,11 @@ class Tadu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
                 return false;
             };
             if (isVIP() && !(isLogin() && chapter.isPaid)) {
-                chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_5__/* .Status */ .qb.aborted;
+                chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_5__/* .Status */ .nW.aborted;
             }
             chapters.push(chapter);
         }
-        return new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .f({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -31162,7 +31630,7 @@ class Tadu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         async function publicChapter() {
             _log__WEBPACK_IMPORTED_MODULE_3___default().debug(`[Chapter]请求 ${chapterUrl}`);
-            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_7__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
+            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_7__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
             const content = document.createElement("div");
             const _bookPartResourceUrl = doc
                 .getElementById("bookPartResourceUrl")
@@ -31171,7 +31639,7 @@ class Tadu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
                 const bookPartResourceUrl = new URL(_bookPartResourceUrl);
                 bookPartResourceUrl.searchParams.set("callback", "callback");
                 _log__WEBPACK_IMPORTED_MODULE_3___default().debug(`[Chapter]请求 ${bookPartResourceUrl.toString()}`);
-                const jsonpText = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_7__/* .gfetch */ .GF)(bookPartResourceUrl.toString(), {
+                const jsonpText = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_7__/* .gfetch */ ._V)(bookPartResourceUrl.toString(), {
                     headers: {
                         accept: "*/*",
                         Referer: document.location.origin,
@@ -31193,7 +31661,7 @@ class Tadu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
                 const contentObj = getContentObj();
                 if (typeof contentObj === "object") {
                     content.innerHTML = contentObj.content;
-                    const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .zM)(content, "TM");
+                    const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .an)(content, "TM");
                     return {
                         chapterName,
                         contentRaw: content,
@@ -31259,7 +31727,7 @@ class Tadu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
 
 
 
-class Xrzww extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
+class Xrzww extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.attachmentMode = "TM";
@@ -31302,7 +31770,7 @@ class Xrzww extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
         introductionHTML.innerText = introduction;
         const additionalMetadate = {};
         const coverUrl = `${ossBase}${webNovelDetail.data.novel_cover}`;
-        (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getAttachment */ .FG)(coverUrl, this.attachmentMode, "cover-")
+        (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
             .then((coverClass) => {
             additionalMetadate.cover = coverClass;
         })
@@ -31362,7 +31830,7 @@ class Xrzww extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
                 apiBase,
                 headers: baseHeader,
             };
-            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_3__/* .Chapter */ .W({
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_3__/* .Chapter */ .I({
                 bookUrl,
                 bookname,
                 chapterUrl,
@@ -31379,17 +31847,17 @@ class Xrzww extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
             });
             if (signIn) {
                 if (chapter.isVIP && chapter.isPaid === false) {
-                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_4__/* .Status */ .qb.aborted;
+                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_4__/* .Status */ .nW.aborted;
                 }
             }
             else {
                 if (chapter.isVIP) {
-                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_4__/* .Status */ .qb.aborted;
+                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_4__/* .Status */ .nW.aborted;
                 }
             }
             chapters.push(chapter);
         }
-        return new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .f({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -31419,8 +31887,8 @@ class Xrzww extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
         }
         const contentRaw = document.createElement("p");
         contentRaw.innerText = readNew.data.content;
-        const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_6__/* .cleanDOM */ .zM)(contentRaw, "TM");
-        await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_7__/* .sleep */ ._v)(4200 * Math.random());
+        const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_6__/* .cleanDOM */ .an)(contentRaw, "TM");
+        await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_7__/* .sleep */ .yy)(4200 * Math.random());
         return {
             chapterName,
             contentRaw,
@@ -31459,7 +31927,7 @@ class Xrzww extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
 
 
 
-class Youdubook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
+class Youdubook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.attachmentMode = "TM";
@@ -31502,7 +31970,7 @@ class Youdubook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ 
         introductionHTML.innerText = introduction;
         const additionalMetadate = {};
         const coverUrl = `${ossBase}${webNovelDetail.data.novel_cover}`;
-        (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getAttachment */ .FG)(coverUrl, this.attachmentMode, "cover-")
+        (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
             .then((coverClass) => {
             additionalMetadate.cover = coverClass;
         })
@@ -31562,7 +32030,7 @@ class Youdubook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ 
                 apiBase,
                 headers: baseHeader,
             };
-            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_3__/* .Chapter */ .W({
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_3__/* .Chapter */ .I({
                 bookUrl,
                 bookname,
                 chapterUrl,
@@ -31579,17 +32047,17 @@ class Youdubook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ 
             });
             if (signIn) {
                 if (chapter.isVIP && chapter.isPaid === false) {
-                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_4__/* .Status */ .qb.aborted;
+                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_4__/* .Status */ .nW.aborted;
                 }
             }
             else {
                 if (chapter.isVIP) {
-                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_4__/* .Status */ .qb.aborted;
+                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_4__/* .Status */ .nW.aborted;
                 }
             }
             chapters.push(chapter);
         }
-        return new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .f({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -31619,8 +32087,8 @@ class Youdubook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ 
         }
         const contentRaw = document.createElement("p");
         contentRaw.innerText = readNew.data.content;
-        const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_6__/* .cleanDOM */ .zM)(contentRaw, "TM");
-        await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_7__/* .sleep */ ._v)(4200 * Math.random());
+        const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_6__/* .cleanDOM */ .an)(contentRaw, "TM");
+        await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_7__/* .sleep */ .yy)(4200 * Math.random());
         return {
             chapterName,
             contentRaw,
@@ -31661,7 +32129,7 @@ class Youdubook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ 
 
 
 
-class Zongheng extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
+class Zongheng extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.attachmentMode = "TM";
@@ -31671,13 +32139,13 @@ class Zongheng extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
         const bookUrl = document.location.href.replace("/showchapter/", "/book/");
         const bookname = document.querySelector("div.book-meta > h1").innerText.trim();
         const author = document.querySelector("div.book-meta > p > span:nth-child(1) > a").innerText.trim();
-        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .dL)(bookUrl, undefined);
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .wA)(bookUrl, undefined);
         const introDom = doc.querySelector("div.book-info > div.book-dec");
-        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .introDomHandle */ .SN)(introDom);
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .introDomHandle */ .HV)(introDom);
         const additionalMetadate = {};
         const coverUrl = doc.querySelector("div.book-img > img").src;
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getAttachment */ .FG)(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
@@ -31707,7 +32175,7 @@ class Zongheng extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
                 const isPaid = () => {
                     return false;
                 };
-                const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .W({
+                const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .I({
                     bookUrl,
                     bookname,
                     chapterUrl,
@@ -31726,12 +32194,12 @@ class Zongheng extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
                     return false;
                 };
                 if (isVIP() && !(isLogin() && chapter.isPaid)) {
-                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status */ .qb.aborted;
+                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status */ .nW.aborted;
                 }
                 chapters.push(chapter);
             }
         }
-        return new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .f({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -31743,11 +32211,11 @@ class Zongheng extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         async function publicChapter() {
-            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .ggetHtmlDOM */ .Fz)(chapterUrl, charset);
+            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .ggetHtmlDOM */ .pG)(chapterUrl, charset);
             const ChapterName = doc.querySelector("div.title_txtbox").innerText.trim();
             const content = doc.querySelector("div.content");
             if (content) {
-                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .zM)(content, "TM");
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .an)(content, "TM");
                 return {
                     chapterName: ChapterName,
                     contentRaw: content,
@@ -31816,7 +32284,7 @@ class Zongheng extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
 
 
 
-class Dmzj extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
+class Dmzj extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.attachmentMode = "TM";
@@ -31840,14 +32308,14 @@ class Dmzj extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
         const introDom = isWwwHost
             ? document.querySelector(".comic_deCon_d")
             : document.querySelector(".line_height_content");
-        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .SN)(introDom);
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .HV)(introDom);
         const additionalMetadate = {};
         const coverDom = isWwwHost
             ? document.querySelector(".comic_i_img > a > img")
             : document.querySelector("#cover_pic");
         const coverUrl = coverDom.src;
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ .FG)(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
@@ -31872,7 +32340,7 @@ class Dmzj extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
             const chapterUrl = a.href;
             const isVIP = false;
             const isPaid = false;
-            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .W({
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .I({
                 bookUrl,
                 bookname,
                 chapterUrl,
@@ -31889,7 +32357,7 @@ class Dmzj extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
             });
             chapters.push(chapter);
         }
-        return new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .f({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -31903,10 +32371,10 @@ class Dmzj extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
         function getpicUrlList(docI) {
             const imgPrefix = "https://images.dmzj.com/";
             const scriptElement = Array.from(docI.querySelectorAll("head > script")).filter((s) => s.innerHTML.includes("eval("))[0];
-            let pages = (0,_lib_dom__WEBPACK_IMPORTED_MODULE_6__/* .sandboxed */ .J0)(scriptElement.innerText + ";return pages;");
+            let pages = (0,_lib_dom__WEBPACK_IMPORTED_MODULE_6__/* .sandboxed */ .d6)(scriptElement.innerText + ";return pages;");
             pages = pages.replace(/\n/g, "");
             pages = pages.replace(/\r/g, "|");
-            const info = (0,_lib_dom__WEBPACK_IMPORTED_MODULE_6__/* .sandboxed */ .J0)("return (" + pages + ")");
+            const info = (0,_lib_dom__WEBPACK_IMPORTED_MODULE_6__/* .sandboxed */ .d6)("return (" + pages + ")");
             if (info) {
                 let picUrlListI;
                 if (isWwwHost) {
@@ -31922,7 +32390,7 @@ class Dmzj extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
         }
         _log__WEBPACK_IMPORTED_MODULE_3___default().debug(`[Chapter]请求 ${chapterUrl}`);
         const isWwwHost = document.location.host === "www.dmzj.com";
-        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_7__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_7__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
         const picUrlList = getpicUrlList(doc);
         if (picUrlList) {
             const content = document.createElement("div");
@@ -31933,7 +32401,7 @@ class Dmzj extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
                 pElem.appendChild(imgElem);
                 content.appendChild(pElem);
             }
-            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .zM)(content, "TM");
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .an)(content, "TM");
             return {
                 chapterName,
                 contentRaw: content,
@@ -31976,7 +32444,7 @@ class Dmzj extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
 
 
 
-class Fushuwang extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
+class Fushuwang extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
     saveOptions;
     constructor() {
         super();
@@ -32002,7 +32470,7 @@ class Fushuwang extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ 
             const chapterName = `page${i}`;
             const isVIP = false;
             const isPaid = false;
-            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_1__/* .Chapter */ .W({
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_1__/* .Chapter */ .I({
                 bookUrl,
                 bookname,
                 chapterUrl,
@@ -32019,7 +32487,7 @@ class Fushuwang extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ 
             });
             chapters.push(chapter);
         }
-        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_2__/* .Book */ .f({
+        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_2__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -32032,13 +32500,13 @@ class Fushuwang extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ 
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_3__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_3__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
         const content = doc.querySelector("#text");
         if (content) {
             (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__.rm)("span", true, content);
             (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__.rm)("p.pageLink", true, content);
             (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__.rm)("script", true, content);
-            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_5__/* .cleanDOM */ .zM)(content, "TM");
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_5__/* .cleanDOM */ .an)(content, "TM");
             return {
                 chapterName,
                 contentRaw: content,
@@ -32863,7 +33331,7 @@ const yuzhaigeImageDecode_imageTable = {
 
 
 function getClass(replaceFunction) {
-    return class extends rules/* BaseRuleClass */.c {
+    return class extends rules/* BaseRuleClass */.Q {
         constructor() {
             super();
             this.attachmentMode = "TM";
@@ -32873,11 +33341,11 @@ function getClass(replaceFunction) {
             const bookUrl = document.querySelector("div.currency_head > h1 > a").href;
             const bookId = bookUrl.split("/").slice(-2, -1)[0];
             loglevel_default().debug(`[chapter]请求 ${bookUrl}`);
-            const dom = await (0,http/* getHtmlDOM */.dL)(bookUrl, "UTF-8");
+            const dom = await (0,http/* getHtmlDOM */.wA)(bookUrl, "UTF-8");
             const bookname = dom.querySelector("div.cataloginfo > h3").innerText.trim();
             const author = dom.querySelector(".infotype > p:nth-child(1) > a:nth-child(1)").innerText.trim();
             const introDom = dom.querySelector(".intro");
-            const [introduction, introductionHTML] = await (0,rule/* introDomHandle */.SN)(introDom, (introDomI) => {
+            const [introduction, introductionHTML] = await (0,rule/* introDomHandle */.HV)(introDom, (introDomI) => {
                 (0,lib_dom.rm)("span:nth-child(1)", false, introDomI);
                 return introDomI;
             });
@@ -32916,7 +33384,7 @@ function getClass(replaceFunction) {
             let lis = [];
             for (const indexUrl of indexUrls) {
                 loglevel_default().debug(`[chapter]请求 ${indexUrl}`);
-                const doc = await (0,http/* getHtmlDOM */.dL)(indexUrl, "UTF-8");
+                const doc = await (0,http/* getHtmlDOM */.wA)(indexUrl, "UTF-8");
                 const ul = doc.querySelector("ul.chapters");
                 if (ul?.childElementCount) {
                     lis = lis.concat(Array.from(ul.children));
@@ -32931,7 +33399,7 @@ function getClass(replaceFunction) {
                 const chapterUrl = a.href;
                 const isVIP = false;
                 const isPaid = false;
-                const chapter = new Chapter/* Chapter */.W({
+                const chapter = new Chapter/* Chapter */.I({
                     bookUrl,
                     bookname,
                     chapterUrl,
@@ -32948,7 +33416,7 @@ function getClass(replaceFunction) {
                 });
                 chapters.push(chapter);
             }
-            return new Book/* Book */.f({
+            return new Book/* Book */.E({
                 bookUrl,
                 bookname,
                 author,
@@ -33011,7 +33479,7 @@ function getClass(replaceFunction) {
                 return;
             }
             let nowUrl = chapterUrl;
-            let dom = await (0,http/* getHtmlDOM */.dL)(chapterUrl, charset);
+            let dom = await (0,http/* getHtmlDOM */.wA)(chapterUrl, charset);
             const content = document.createElement("div");
             let flag = false;
             do {
@@ -33031,14 +33499,14 @@ function getClass(replaceFunction) {
                 }
                 if (flag) {
                     nowUrl = nextLink;
-                    dom = await (0,http/* getHtmlDOM */.dL)(nextLink, charset);
+                    dom = await (0,http/* getHtmlDOM */.wA)(nextLink, charset);
                 }
             } while (flag);
             if (content) {
-                const { dom: oldDom, images: finalImages } = await (0,cleanDOM/* cleanDOM */.zM)(content, "TM", { keepImageName: true });
+                const { dom: oldDom, images: finalImages } = await (0,cleanDOM/* cleanDOM */.an)(content, "TM", { keepImageName: true });
                 const _newDom = document.createElement("div");
                 _newDom.innerHTML = replaceFunction(content.innerHTML);
-                const { dom: newDom, text: finalText } = await (0,cleanDOM/* cleanDOM */.zM)(_newDom, "TM", {
+                const { dom: newDom, text: finalText } = await (0,cleanDOM/* cleanDOM */.an)(_newDom, "TM", {
                     keepImageName: true,
                 });
                 const fontStyleDom = document.createElement("style");
@@ -33102,7 +33570,7 @@ const yuzhaige = () => getClass(replaceYuzhaigeImage);
 
 
 
-class Hetushu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
+class Hetushu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.attachmentMode = "TM";
@@ -33112,11 +33580,11 @@ class Hetushu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c
         const bookname = document.querySelector(".book_info > h2").innerText.trim();
         const author = document.querySelector(".book_info > div:nth-child(3) > a:nth-child(1)").innerText.trim();
         const introDom = document.querySelector(".intro");
-        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .SN)(introDom);
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .HV)(introDom);
         const additionalMetadate = {};
         const coverUrl = document.querySelector(".book_info > img").src;
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ .FG)(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
@@ -33143,7 +33611,7 @@ class Hetushu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c
                     const chapterUrl = a.href;
                     const isVIP = false;
                     const isPaid = false;
-                    const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .W({
+                    const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .I({
                         bookUrl,
                         bookname,
                         chapterUrl,
@@ -33162,7 +33630,7 @@ class Hetushu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c
                 }
             }
         }
-        return new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .f({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -33242,7 +33710,7 @@ class Hetushu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c
                 }
             }
         }
-        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_7__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_7__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
         chapterName = doc.querySelector("#content .h2").innerText.trim();
         await sorfPage();
         const content = doc.querySelector("#content");
@@ -33256,7 +33724,7 @@ class Hetushu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c
                 newNode.innerHTML = oldNode.innerHTML;
                 oldNode.parentNode?.replaceChild(newNode, oldNode);
             });
-            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .zM)(content, "TM");
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .an)(content, "TM");
             return {
                 chapterName,
                 contentRaw: content,
@@ -33308,7 +33776,7 @@ class Hetushu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c
 
 
 
-class Idejian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
+class Idejian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.attachmentMode = "TM";
@@ -33326,11 +33794,11 @@ class Idejian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c
             author = _author.textContent.trim();
         }
         const introDom = document.querySelector(".brief_con");
-        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .SN)(introDom);
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .HV)(introDom);
         const additionalMetadate = {};
         const coverUrl = document.querySelector(".book_img > img").src;
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ .FG)(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
@@ -33346,7 +33814,7 @@ class Idejian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c
             const chapterUrl = aElem.href;
             const isVIP = false;
             const isPaid = false;
-            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .W({
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .I({
                 bookUrl,
                 bookname,
                 chapterUrl,
@@ -33364,7 +33832,7 @@ class Idejian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c
             chapters.push(chapter);
         }
         document.cookie = "";
-        return new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .f({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -33384,13 +33852,13 @@ class Idejian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c
         const referUrl = _refer.toString();
         const fakeUA = "Mozilla/5.0 (iPhone; CPU iPhone OS 13_3_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.5 Mobile/15E148 Snapchat/10.77.5.59 (like Safari/604.1)";
         if (document.cookie === "") {
-            await (0,_lib_http__WEBPACK_IMPORTED_MODULE_6__/* .ggetText */ ._7)(referUrl, charset, { headers: { "User-Agent": fakeUA } });
-            await (0,_lib_http__WEBPACK_IMPORTED_MODULE_6__/* .ggetText */ ._7)(chapterUrl, charset, {
+            await (0,_lib_http__WEBPACK_IMPORTED_MODULE_6__/* .ggetText */ .bx)(referUrl, charset, { headers: { "User-Agent": fakeUA } });
+            await (0,_lib_http__WEBPACK_IMPORTED_MODULE_6__/* .ggetText */ .bx)(chapterUrl, charset, {
                 headers: { "User-Agent": fakeUA, Referer: referUrl },
             });
         }
         _log__WEBPACK_IMPORTED_MODULE_3___default().debug(`[Chapter]请求 ${chapterUrl}，Refer：${referUrl}`);
-        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_6__/* .ggetHtmlDOM */ .Fz)(chapterUrl, charset, {
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_6__/* .ggetHtmlDOM */ .pG)(chapterUrl, charset, {
             headers: { "User-Agent": fakeUA, Referer: referUrl },
         });
         chapterName = doc.querySelector(".text-title-1").innerText.trim();
@@ -33403,7 +33871,7 @@ class Idejian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c
         }
         if (content) {
             (0,_lib_dom__WEBPACK_IMPORTED_MODULE_7__.rm)("h1", false, content);
-            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .zM)(content, "TM");
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .an)(content, "TM");
             return {
                 chapterName,
                 contentRaw: content,
@@ -33455,7 +33923,7 @@ class Idejian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c
 
 
 
-class Kanunu8 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
+class Kanunu8 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.attachmentMode = "TM";
@@ -33474,13 +33942,13 @@ class Kanunu8 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c
             .trim() ?? "";
         const introDom = Array.from(document.body.querySelectorAll("td, p"))
             .filter((elem) => elem.innerText.length !== 0)
-            .map((elem) => [elem, (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .getNodeTextLength */ .MK)(elem)])
+            .map((elem) => [elem, (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .getNodeTextLength */ .K4)(elem)])
             .sort(softByValue)
             .slice(-1)?.[0][0];
         let introduction = null, introductionHTML = null;
         if (introDom) {
             (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("a", true, introDom);
-            [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .introDomHandle */ .SN)(introDom);
+            [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .introDomHandle */ .HV)(introDom);
         }
         let aList = null;
         let sections = null;
@@ -33502,9 +33970,9 @@ class Kanunu8 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c
         else {
             const tables = document.querySelectorAll("table");
             const _table = Array.from(tables)
-                .map((tb) => [tb, (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .getMaxDepth */ .wd)(tb)])
+                .map((tb) => [tb, (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .getMaxDepth */ .e_)(tb)])
                 .filter((ds) => ds[1] === 4)
-                .filter((ds) => (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .centerDetct */ .$4)(ds[0])[0])
+                .filter((ds) => (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .centerDetct */ .sy)(ds[0])[0])
                 .map((ds) => [
                 ds[0],
                 Array.from(ds[0].querySelectorAll("a")).filter(aListFilter)
@@ -33523,7 +33991,7 @@ class Kanunu8 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c
         if (_cover.length === 1) {
             const coverUrl = _cover[0].src;
             if (coverUrl) {
-                (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getAttachment */ .FG)(coverUrl, this.attachmentMode, "cover-")
+                (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
                     .then((coverClass) => {
                     additionalMetadate.cover = coverClass;
                 })
@@ -33542,7 +34010,7 @@ class Kanunu8 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c
             const chapterName = elem.innerText.trim();
             const chapterUrl = elem.href;
             if (sections && getName) {
-                const _sectionName = (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .getSectionName */ .$d)(elem, sections, getName);
+                const _sectionName = (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .getSectionName */ .lq)(elem, sections, getName);
                 if (_sectionName && sectionName !== _sectionName) {
                     sectionName = _sectionName;
                     sectionNumber++;
@@ -33553,7 +34021,7 @@ class Kanunu8 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c
             }
             const isVIP = false;
             const isPaid = false;
-            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .W({
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .I({
                 bookUrl,
                 bookname,
                 chapterUrl,
@@ -33570,7 +34038,7 @@ class Kanunu8 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c
             });
             chapters.push(chapter);
         }
-        return new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .f({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -33585,7 +34053,7 @@ class Kanunu8 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c
         if (obj) {
             const content = obj.content;
             (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("a", true, content);
-            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .zM)(content, "TM");
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .an)(content, "TM");
             return {
                 chapterName,
                 contentRaw: content,
@@ -33638,7 +34106,7 @@ function softByValue(a, b) {
 
 
 
-class Ttkan extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
+class Ttkan extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
     }
@@ -33651,13 +34119,13 @@ class Ttkan extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
         const bookname = $(".novel_info h1").innerText;
         const author = $('meta[name="og:novel:author"]').content;
         const intro = $(".description");
-        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .SN)(intro);
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .HV)(intro);
         const genre = $(".novel_info > div:nth-child(2) > ul > li:nth-child(3)").childNodes[1].data;
         const additionalMetadate = {
             tags: [genre],
         };
         const coverUrl = $(".novel_info amp-img").getAttribute("src");
-        (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ .FG)(coverUrl, this.attachmentMode, "cover-")
+        (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
             .then((coverClass) => {
             additionalMetadate.cover = coverClass;
         })
@@ -33673,7 +34141,7 @@ class Ttkan extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
         });
         const data = (await res.json());
         for (const { chapter_id, chapter_name } of data.items) {
-            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .W({
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .I({
                 bookUrl,
                 bookname,
                 chapterUrl: `https://${host}/novel/user/page_direct?novel_id=${novelId}&page=${chapter_id}`,
@@ -33690,7 +34158,7 @@ class Ttkan extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
             });
             chapters.push(chapter);
         }
-        return new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .f({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -33701,7 +34169,7 @@ class Ttkan extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
         });
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_6__/* .ggetHtmlDOM */ .Fz)(chapterUrl, charset, {
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_6__/* .ggetHtmlDOM */ .pG)(chapterUrl, charset, {
             headers: {
                 "Accept-Language": "zh-CN",
             },
@@ -33709,8 +34177,8 @@ class Ttkan extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
         const content = doc.querySelector(".content");
         (0,_lib_dom__WEBPACK_IMPORTED_MODULE_7__.rm)("a", true, content);
         const ttkanAd = /[wWщшω]{0,3} ?[¸◆⊕●.•＿¤☢⊙▲✿★▪]? ?(?:[tTтⓣ] ?){2}[kKκКⓚ] ?[aAǎáдāΛⓐ] ?[nNⓝ] ?[¸◆⊕●.•＿¤☢⊙▲✿★▪]? ?[cCС￠℃] ?[oO〇○Ο] ?/gi;
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_7__/* .rms */ .up)([ttkanAd], content);
-        const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .zM)(content, "TM");
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_7__/* .rms */ .j3)([ttkanAd], content);
+        const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .an)(content, "TM");
         return {
             chapterName,
             contentRaw: content,
@@ -33752,7 +34220,7 @@ class Ttkan extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
 
 
 
-class Xkzw extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
+class Xkzw extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.attachmentMode = "TM";
@@ -33764,11 +34232,11 @@ class Xkzw extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
             .replace(/作(\s+)?者[：:]/, "")
             .trim();
         const introDom = document.querySelector("#intro");
-        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .introDomHandle */ .SN)(introDom);
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .introDomHandle */ .HV)(introDom);
         const additionalMetadate = {};
         const coverUrl = document.querySelector("#fmimg > img").src;
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getAttachment */ .FG)(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
@@ -33889,7 +34357,7 @@ class Xkzw extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
                 const chapterUrl = bookUrl + (sitechapter.chapterid + bookid * 11) + ".html";
                 const isVIP = false;
                 const isPaid = false;
-                const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .W({
+                const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .I({
                     bookUrl,
                     bookname,
                     chapterUrl,
@@ -33907,7 +34375,7 @@ class Xkzw extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
                 chapters.push(chapter);
             }
         }
-        return new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .f({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -34023,12 +34491,12 @@ class Xkzw extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
             }
             showttt1(doc);
         }
-        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_7__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_7__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
         runEval(crypto_js__WEBPACK_IMPORTED_MODULE_0__);
         chapterName = doc.querySelector(".bookname > h1:nth-child(1)").innerText.trim();
         const contentG = doc.querySelector("#content");
         if (contentG) {
-            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .zM)(contentG, "TM");
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .an)(contentG, "TM");
             return {
                 chapterName,
                 contentRaw: contentG,
@@ -34065,7 +34533,7 @@ class Xkzw extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .c {
 /* harmony import */ var _tempate__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/twoPage/tempate.ts");
 
 
-const c18kanshu = () => (0,_tempate__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+const c18kanshu = () => (0,_tempate__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
     bookUrl: document.location.href,
     anotherPageUrl: document.querySelector("div.menu_more_black > a").href,
     getBookname: (doc) => document.querySelector(".in_textone").innerText.trim(),
@@ -34101,8 +34569,8 @@ const c18kanshu = () => (0,_tempate__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass 
                 text.parentNode?.insertBefore(document.createElement("br"), text);
             }
         });
-        if ((0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__/* .isFixWidth */ .Kg)(dom)) {
-            (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__/* .convertFixWidth */ .FZ)(dom);
+        if ((0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__/* .isFixWidth */ .eu)(dom)) {
+            (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__/* .convertFixWidth */ .N0)(dom);
         }
         return dom;
     },
@@ -34123,7 +34591,7 @@ const c18kanshu = () => (0,_tempate__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass 
 /* harmony import */ var _tempate__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/twoPage/tempate.ts");
 
 
-const xiaoshuodaquan = () => (0,_tempate__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+const xiaoshuodaquan = () => (0,_tempate__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
     bookUrl: document.location.href,
     anotherPageUrl: document.querySelector(".viewalllinks").href,
     getBookname: (doc) => document.querySelector(".r420 > h1").innerText.trim(),
@@ -34163,7 +34631,7 @@ const xiaoshuodaquan = () => (0,_tempate__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleC
 /* harmony import */ var _tempate__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/twoPage/tempate.ts");
 
 
-const c69shu = () => (0,_tempate__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+const c69shu = () => (0,_tempate__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
     bookUrl: document.location.href,
     anotherPageUrl: document.querySelector(".addbtn > a:nth-child(1)").href,
     getBookname: () => document.querySelector("h1")?.innerText ?? "",
@@ -34175,7 +34643,7 @@ const c69shu = () => (0,_tempate__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ 
     getContent: (doc) => doc.querySelector(".txtnav"),
     contentPatch: (content) => {
         (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)(".hide720, .txtright, .bottom-ad", true, content);
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .vS)([/^谷[\u4e00-\u9fa5]{0,1}$/gm], content);
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .Sf)([/^谷[\u4e00-\u9fa5]{0,1}$/gm], content);
         return content;
     },
 });
@@ -34194,7 +34662,7 @@ const c69shu = () => (0,_tempate__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ 
 /* harmony import */ var _tempate__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/twoPage/tempate.ts");
 
 
-const jingcaiyuedu6 = () => (0,_tempate__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+const jingcaiyuedu6 = () => (0,_tempate__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
     bookUrl: document.location.href,
     anotherPageUrl: document.querySelector("a.red-btn:nth-child(3)").href,
     getBookname: (doc) => document.querySelector(".book-info > h1 > em").innerText.trim(),
@@ -34205,7 +34673,7 @@ const jingcaiyuedu6 = () => (0,_tempate__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleCl
     getAList: (doc) => doc.querySelectorAll("dd.col-md-4 > a"),
     getContent: (doc) => doc.querySelector("#htmlContent"),
     contentPatch: (dom) => {
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .vS)(["精彩小说网最新地址"], dom);
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .Sf)(["精彩小说网最新地址"], dom);
         return dom;
     },
 });
@@ -34345,7 +34813,7 @@ const table = {
 const linovelib = () => {
     const ToCurl = document.location.href;
     const bookUrl = ToCurl.replace(/\/catalog$/, ".html");
-    return (0,tempate/* mkRuleClass */.x)({
+    return (0,tempate/* mkRuleClass */.N)({
         bookUrl,
         anotherPageUrl: bookUrl,
         ToCUrl: ToCurl,
@@ -34363,7 +34831,7 @@ const linovelib = () => {
         getSName: (sElem) => sElem.innerText.trim(),
         postHook: (chapter) => {
             if (chapter.chapterUrl.startsWith("javascript")) {
-                chapter.status = main/* Status */.qb.aborted;
+                chapter.status = main/* Status */.nW.aborted;
             }
             return chapter;
         },
@@ -34374,13 +34842,13 @@ const linovelib = () => {
                 const invalidTest = (c) => c.chapterUrl.startsWith("javascript");
                 const getPrevHref = (doc) => doc.querySelector(".mlfy_page > a:nth-child(1)")
                     ?.href;
-                await (0,rule/* chapterHiddenFix */.ii)(book, invalidTest, getPrevHref, classThis.concurrencyLimit);
+                await (0,rule/* chapterHiddenFix */.$l)(book, invalidTest, getPrevHref, classThis.concurrencyLimit);
                 return book;
             };
             return classThis;
         },
         getContentFromUrl: async (chapterUrl, chapterName, charset) => {
-            const { contentRaw } = await (0,rule/* nextPageParse */.I2)({
+            const { contentRaw } = await (0,rule/* nextPageParse */.u1)({
                 chapterName,
                 chapterUrl,
                 charset,
@@ -34414,14 +34882,14 @@ const wlinovelib = () => {
     function getReadParams(doc) {
         const script = Array.from(doc.querySelectorAll("script")).filter((s) => s.innerHTML.includes("ReadParams"))?.[0];
         if (script) {
-            const ReadParams = (0,dom/* sandboxed */.J0)(`${script.innerHTML}; return ReadParams;`);
+            const ReadParams = (0,dom/* sandboxed */.d6)(`${script.innerHTML}; return ReadParams;`);
             return ReadParams;
         }
         else {
             return null;
         }
     }
-    return (0,tempate/* mkRuleClass */.x)({
+    return (0,tempate/* mkRuleClass */.N)({
         bookUrl,
         anotherPageUrl: tocUrl,
         ToCUrl: tocUrl,
@@ -34443,7 +34911,7 @@ const wlinovelib = () => {
         getSName: (sElem) => sElem.innerText.trim(),
         postHook: (chapter) => {
             if (chapter.chapterUrl.startsWith("javascript")) {
-                chapter.status = main/* Status */.qb.aborted;
+                chapter.status = main/* Status */.nW.aborted;
             }
             return chapter;
         },
@@ -34461,13 +34929,13 @@ const wlinovelib = () => {
                         return;
                     }
                 };
-                await (0,rule/* chapterHiddenFix */.ii)(book, invalidTest, getPrevHref, classThis.concurrencyLimit);
+                await (0,rule/* chapterHiddenFix */.$l)(book, invalidTest, getPrevHref, classThis.concurrencyLimit);
                 return book;
             };
             return classThis;
         },
         getContentFromUrl: async (chapterUrl, chapterName, charset) => {
-            const { contentRaw } = await (0,rule/* nextPageParse */.I2)({
+            const { contentRaw } = await (0,rule/* nextPageParse */.u1)({
                 chapterName,
                 chapterUrl,
                 charset,
@@ -34518,7 +34986,7 @@ const wlinovelib = () => {
 
 const shencou = () => {
     const anotherPageUrl = document.querySelector("#content > table:nth-child(2) > tbody:nth-child(1) > tr:nth-child(3) > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(1) > ul:nth-child(1) > li:nth-child(1) > a:nth-child(1)").href;
-    return (0,_tempate__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+    return (0,_tempate__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
         bookUrl: document.location.href,
         anotherPageUrl,
         getBookname: (doc) => document.querySelector("#content > table:nth-child(2) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(1) > span:nth-child(1) > a:nth-child(1)").innerText.trim(),
@@ -34529,7 +34997,7 @@ const shencou = () => {
         introDomPatch: (el) => {
             (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("a", true, el);
             (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)(".hottext", true, el);
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .vS)(["论坛回帖，推荐本书，都可以得积分。每天送50积分"], el);
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .Sf)(["论坛回帖，推荐本书，都可以得积分。每天送50积分"], el);
             return el;
         },
         getCoverUrl: (doc) => document.querySelector("#content > table:nth-child(2) > tbody:nth-child(1) > tr:nth-child(3) > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(2) > a:nth-child(1) > img:nth-child(1)")?.src,
@@ -34547,7 +35015,7 @@ const shencou = () => {
             return dom;
         },
         cleanDomOptions: {
-            referrerMode: _main_main__WEBPACK_IMPORTED_MODULE_2__/* .ReferrerMode */ .n6.custom,
+            referrerMode: _main_main__WEBPACK_IMPORTED_MODULE_2__/* .ReferrerMode */ .ls.custom,
             customReferer: "http://www.wenku8.net",
         },
     });
@@ -34561,7 +35029,7 @@ const shencou = () => {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   x: () => (/* binding */ mkRuleClass)
+/* harmony export */   N: () => (/* binding */ mkRuleClass)
 /* harmony export */ });
 /* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/attachments.ts");
 /* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/cleanDOM.ts");
@@ -34583,7 +35051,7 @@ const shencou = () => {
 
 
 function mkRuleClass({ bookUrl, anotherPageUrl, ToCUrl, getBookname, getAuthor, getIntroDom, introDomPatch, getCoverUrl, additionalMetadatePatch, getAList, getAName, getIsVIP, getSections, getSName, postHook, getContentFromUrl, getContent, contentPatch, concurrencyLimit, needLogin, nsfw, cleanDomOptions, overrideConstructor, language, }) {
-    return class extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .c {
+    return class extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
         constructor() {
             super();
             this.attachmentMode = "TM";
@@ -34601,17 +35069,17 @@ function mkRuleClass({ bookUrl, anotherPageUrl, ToCUrl, getBookname, getAuthor, 
             }
         }
         async bookParse() {
-            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .dL)(anotherPageUrl, this.charset);
+            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .wA)(anotherPageUrl, this.charset);
             const bookname = getBookname(doc);
             const author = getAuthor(doc);
             const introDom = getIntroDom(doc);
-            const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .introDomHandle */ .SN)(introDom, introDomPatch);
+            const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .introDomHandle */ .HV)(introDom, introDomPatch);
             const coverUrl = getCoverUrl(doc);
             const additionalMetadate = {
                 language: language ?? "zh",
             };
             if (coverUrl) {
-                (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getAttachment */ .FG)(coverUrl, this.attachmentMode, "cover-")
+                (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
                     .then((coverClass) => {
                     additionalMetadate.cover = coverClass;
                 })
@@ -34646,7 +35114,7 @@ function mkRuleClass({ bookUrl, anotherPageUrl, ToCUrl, getBookname, getAuthor, 
                 }
                 const chapterUrl = aElem.href;
                 if (hasSection && sections && getSName) {
-                    const _sectionName = (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .getSectionName */ .$d)(aElem, sections, getSName);
+                    const _sectionName = (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .getSectionName */ .lq)(aElem, sections, getSName);
                     if (_sectionName !== sectionName) {
                         sectionName = _sectionName;
                         sectionNumber++;
@@ -34660,7 +35128,7 @@ function mkRuleClass({ bookUrl, anotherPageUrl, ToCUrl, getBookname, getAuthor, 
                 if (getIsVIP) {
                     ({ isVIP, isPaid } = getIsVIP(aElem));
                 }
-                let chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .W({
+                let chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .I({
                     bookUrl,
                     bookname,
                     chapterUrl,
@@ -34676,7 +35144,7 @@ function mkRuleClass({ bookUrl, anotherPageUrl, ToCUrl, getBookname, getAuthor, 
                     options: { bookname },
                 });
                 if (isVIP && !isPaid) {
-                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status */ .qb.aborted;
+                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status */ .nW.aborted;
                 }
                 if (typeof postHook === "function") {
                     chapter = postHook(chapter);
@@ -34685,7 +35153,7 @@ function mkRuleClass({ bookUrl, anotherPageUrl, ToCUrl, getBookname, getAuthor, 
                     chapters.push(chapter);
                 }
             }
-            const book = new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .f({
+            const book = new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .E({
                 bookUrl,
                 bookname,
                 author,
@@ -34708,7 +35176,7 @@ function mkRuleClass({ bookUrl, anotherPageUrl, ToCUrl, getBookname, getAuthor, 
                 content = await getContentFromUrl(chapterUrl, chapterName, charset);
             }
             else if (typeof getContent === "function") {
-                const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .dL)(chapterUrl, charset);
+                const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
                 content = getContent(doc);
             }
             else {
@@ -34716,7 +35184,7 @@ function mkRuleClass({ bookUrl, anotherPageUrl, ToCUrl, getBookname, getAuthor, 
             }
             if (content) {
                 content = contentPatch(content);
-                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .zM)(content, "TM", cleanDomOptions);
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .an)(content, "TM", cleanDomOptions);
                 return {
                     chapterName,
                     contentRaw: content,
@@ -34757,7 +35225,7 @@ const washuge = () => {
         throw Error("获取书籍信息出错！");
     }
     const anotherPageUrl = `${document.location.origin}/books/book${bookId}.html`;
-    return (0,_tempate__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+    return (0,_tempate__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
         bookUrl,
         anotherPageUrl,
         getBookname: (doc) => doc.querySelector("#content > dd > h1")?.innerText
@@ -34792,7 +35260,7 @@ const wenku8 = () => {
     const bookId = document.location.pathname.split("/").slice(-2, -1)[0];
     const bookUrl = [document.location.origin, "book", `${bookId}.htm`].join("/");
     const tocUrl = document.location.href;
-    return (0,_tempate__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+    return (0,_tempate__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
         bookUrl,
         ToCUrl: tocUrl,
         anotherPageUrl: bookUrl,
@@ -34832,7 +35300,7 @@ const xiaoshuowu = () => {
     const href = document.location.href;
     const bookId = href.substring(href.lastIndexOf("/", href.lastIndexOf("/") - 1) + 1, href.lastIndexOf("/"));
     const bookUrl = document.location.origin + `/book/${bookId}/`;
-    return (0,_tempate__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+    return (0,_tempate__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
         bookUrl,
         ToCUrl: document.location.href,
         anotherPageUrl: bookUrl,
@@ -34855,7 +35323,7 @@ const xiaoshuowu = () => {
             (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("div[align]", true, content);
             (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)(".tishi", true, content);
             (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("h1", false, content);
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .up)(["(小说屋 www.xiaoshuowu.com)", "小说屋 www.xiaoshuowu.com"], content);
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .j3)(["(小说屋 www.xiaoshuowu.com)", "小说屋 www.xiaoshuowu.com"], content);
             return content;
         },
         concurrencyLimit: 1,
@@ -34880,7 +35348,7 @@ const xiaoshuowu = () => {
 
 
 
-const yibige = () => (0,_tempate__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .x)({
+const yibige = () => (0,_tempate__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
     bookUrl: document.location.href,
     anotherPageUrl: document.location.href + "index.html",
     getBookname: (doc) => document.querySelector("#info h1:nth-of-type(1)").innerText.trim(),
@@ -34893,7 +35361,7 @@ const yibige = () => (0,_tempate__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ 
     getAList: (doc) => doc.querySelectorAll("#list dd > a"),
     getContent: (doc) => doc.querySelector("#content"),
     getContentFromUrl: async (chapterUrl, chapterName, charset) => {
-        const { contentRaw } = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .nextPageParse */ .I2)({
+        const { contentRaw } = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .nextPageParse */ .u1)({
             chapterName,
             chapterUrl,
             charset,
@@ -34901,7 +35369,7 @@ const yibige = () => (0,_tempate__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ 
             contentPatch: (content, doc) => {
                 (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)("script", true, content);
                 (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)("div[style]", true, content);
-                (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_3__/* .htmlTrim */ .iA)(content);
+                (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_3__/* .htmlTrim */ .is)(content);
                 return content;
             },
             getNextPage: (doc) => doc.querySelector(".bottem1 > a:nth-child(4)")
@@ -34925,7 +35393,7 @@ const yibige = () => (0,_tempate__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ 
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   f: () => (/* binding */ getSectionsObj)
+/* harmony export */   e: () => (/* binding */ getSectionsObj)
 /* harmony export */ });
 function getSectionsObj(chapters, chapterSort = (a, b) => a.chapterNumber - b.chapterNumber) {
     const _sectionsObj = {};
@@ -34967,18 +35435,18 @@ function getSectionsObj(chapters, chapterSort = (a, b) => a.chapterNumber - b.ch
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   CA: () => (/* binding */ enableSaveToArchiveOrg),
-/* harmony export */   Cy: () => (/* binding */ enableDebug),
-/* harmony export */   EI: () => (/* binding */ enableCustomSaveOptions),
-/* harmony export */   Qd: () => (/* binding */ getCustomEnableSaveToArchiveOrg),
-/* harmony export */   Td: () => (/* binding */ enableCustomChapterFilter),
-/* harmony export */   Vo: () => (/* binding */ enableCustomFinishCallback),
-/* harmony export */   Z3: () => (/* binding */ enableJjwxcRemoteFont),
-/* harmony export */   cl: () => (/* binding */ iconStart0),
-/* harmony export */   d7: () => (/* binding */ iconSetting),
-/* harmony export */   o5: () => (/* binding */ retryLimit),
-/* harmony export */   wE: () => (/* binding */ iconStart1),
-/* harmony export */   y6: () => (/* binding */ iconJump)
+/* harmony export */   BV: () => (/* binding */ getCustomEnableSaveToArchiveOrg),
+/* harmony export */   GM: () => (/* binding */ iconJump),
+/* harmony export */   HE: () => (/* binding */ iconStart1),
+/* harmony export */   Iz: () => (/* binding */ retryLimit),
+/* harmony export */   KV: () => (/* binding */ enableSaveToArchiveOrg),
+/* harmony export */   Nw: () => (/* binding */ enableDebug),
+/* harmony export */   Og: () => (/* binding */ iconStart0),
+/* harmony export */   U5: () => (/* binding */ enableCustomChapterFilter),
+/* harmony export */   k8: () => (/* binding */ enableCustomSaveOptions),
+/* harmony export */   ts: () => (/* binding */ enableJjwxcRemoteFont),
+/* harmony export */   w1: () => (/* binding */ iconSetting),
+/* harmony export */   zb: () => (/* binding */ enableCustomFinishCallback)
 /* harmony export */ });
 /* harmony import */ var _lib_GM__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/GM.ts");
 
@@ -34997,7 +35465,7 @@ const iconSetting = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAA
 const iconJump = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAG6wAABusBTDGeSgAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAeVSURBVHic7VpvTBNpHv6901L+yQU3nCfrByU9IRYrWrCVGkVzgu4ZCSFSMBDJrhcTP+iqMdlcLvFyl7sPftn9diZsiHterpYz8TxuCXsauBNy2VVoXIEIXV2hAYt/WqF/mMGZ6fzugwxXSjudlnYHWJ5kMm+n7/zmeZ55531/7ztDEBF+zKCUJqA01gxQmoDSWDNAaQJKY80ApQkojTUDlCawFNTU1Pzk3LlzzYQQkmiMFW0AABzRarVfXLx40UYISUjLijaA4zjNunXrQK/XWy5dutS5b98+dbwxVrQB4jwmIyMDtm/fXrV3796eQ4cOZcYTY0UbEAqNRgM6na7caDTeP3r0aI7c81aNAQAAaWlpsG3bNr3BYHhYW1v7npxzVpUBAABqtRoKCwu1er1+sK6uLj9W/RVtQLS1DJVKBVu3bn1fr9cPWCyWAqkYK9oAKVAUBVqtNq+kpORRQ0ODLlo9kooVoVOnTv0yOzv7F1J1Yl1XDi+e53++e/fu6uzs7AX1w8sTExPMo0eP9lmtVnt4jKQbQAhJv3z58rDBYJhveuI1pEjKLSd6nsvlYh8+fFhptVp7Qvmm4hFQAUDCqWmqkJ+frykrK+tubGz8IPR4SvqA5brQumHDBpXJZPqyqampTjy2KjvBYDAILMsCwzAQCATA5/OB1+uFqakpAACqsLDQ1tzcfAoAIO7cWQ5S3QIEQYDZ2VngOA6CwSDwPA88z8+XAQDECWKkfVZWFqXVaj9vaGiYTYkByQbP80DTNDAMAwzDAMuyABBZnJRwcY+IMDMz4x8eHuYTNoAQQk6fPn1yYmLi7x0dHb7Q/5baAliWBZqm5zc5d1WOcJGby+V6cevWrY+dTudXCRlACKHOnj17o6ioyPL8+XMGAP6WSBwRgiCAz+cDn88HDMNAMBiUJSYe4YQQCAaD4HQ6v2tra/vY7Xb3ICIdtwFms1l9/vz5DpPJVMXzPLAsqwmvg4goipj7vWAP8K6jCgQCMD09DYFAICJpKcQjnBACLMvCkydPHlit1osMw/Qj4luAODvBAwcOZJrN5i6j0Vienp4OPp8vUjX+7t27nz5+/NgoFSsZmWBWVtZPi4uLj6Snp0u2jtnZWRgaGuq02Wy/EQRhEBF5MYZsAw4fPpxjMpn+W1paqtdoNICIEUkiIksI+UtfX9+SHgs5OHjw4NHi4uIj4Y9CaDkQCEBfX9+f29vbrwCAAxGF0BiyDDh27Nh7ZWVlD0pKSrRpaWnz4qPdJUT0LkWYXFRWVnKi4Ej9gdfrFXp6ej7r7u7+EwCMYgTCMQ2oqanJ37lzZ79er39frVaDIPzfwNCyUiCEAEVR82URr1+/Zru6un53//79LxDRFe18SQNqa2sLdu3a9UCn0+VRFDUveLmkuiKP8DF+cnLS39nZ+cng4OBNRHRLxYhqwPHjx3UGg+GboqKiHACIKH65tADRAEEQYHx8/OXt27cvjI6OdiBixF46FBENsFgspaWlpb1arTYz1jR0y5YtdWfOnNkVSihSWeo/OWW/3/+v1tbWO+FcRQM4joPR0dHvb968ee7Vq1f/QUQ6suSFWGRAfX39/rKysrubN2/WSIlHRMjMzASz2Vw9PT0NDMNEHMfjGa+l9uPj45WEkN3i+B0an2VZcDgc9ra2tgt+v/9BeB3ZBtTX139gNBr/uWnTJlV4Lx9eRkSYmpoCv98fNXGJJSoezF1fFXYMaZqGp0+f3rHZbL8WBGEgdIyXg3kDTpw4Ubdnzx7bxo0bqdBnO5IJHMeBx+MBlmWXJE7u3Y8Gu93+Lcdxf+zt7bUCwEj4GC8HagCAxsbGX5WXl7fk5eWRaOJF0DQNHo8n5kiQzLsf7Ryv1+vo7e29AgCBSGO8HKgtFkvj/v37P8/NzY3Zq79582ZBk0+GqKXEmmvu/rgvHgJqeHiY93g8tJT4YDAILpcL/H7pay21SUvFEpOdZIMaGhrqvHbt2ocOh8MTOoMTEQwG4cWLF8BxXERiSt39ZIFCRJ/T6fyypaWlaWBgYEwUCrBYvBRS8cz/EMZQAACISLvd7n9fvXq1yW63f8uy7ALxUoRCJ0ZSm1g31h4RQRCERVuq0u8FL0YIIWqKovQnT568UlBQUBk+yQjfcxwHIyMjXzEM8zpicIlMMNrxaHXGxsa+7u/vb0VEVpYymVj0Zoi8+9SkqLq6+pMdO3Y0Z2RkLCAWSpDjOLh3795H3d3dHckkFQVvUzHNXpQKI6JACBlpb2///czMjNtkMl3Iyspa1AWLRqhUKg4RXyWb2A+FiJOhuaTiGSHk05mZmTcVFRW/zcnJ0SjRS6cakusBiOgihLTQND1VVVV1Zf369TkAyg5byUbMFSFEdBNC/hoIBKarq6s/y8vL+5lKpYp12oqBrPQKEX3Pnj37x40bNz6anJz8XhCEVXH3AeJ4OYqI9MuXL7uuX7/+4djYmF1OcrQSEFeCjYhv/X7/162tracdDseduXd0y2OBMFHIzeTCsjoKAHQVFRV/yM3NLU4kxnLZEv5EhrzrBNYBABPvKsxyQko+klpJWJVfiMSDNQOUJqA01gxQmoDSWDNAaQJK40dvwP8AKk+/HC2PJW8AAAAASUVORK5CYII=";
 async function getCustomEnableSaveToArchiveOrg() {
     const keyName = "novel-downloader-enableSaveToArchiveOrg";
-    const value = (await (0,_lib_GM__WEBPACK_IMPORTED_MODULE_0__/* ._GM_getValue */ .QG)(keyName));
+    const value = (await (0,_lib_GM__WEBPACK_IMPORTED_MODULE_0__/* ._GM_getValue */ .er)(keyName));
     if (value === undefined) {
         const v = confirm(`欢迎使用小说下载器脚本！
 本脚本为404小说文库项目的组成部分之一。404小说文库项目致力于存档、保存、恢复因种种原因被删除的网络小说。
@@ -35008,7 +35476,7 @@ async function getCustomEnableSaveToArchiveOrg() {
 除上述信息外，不会搜集您任何其他信息。
 
 本存档功能为主体功能以外的附加功能，同意与否并不影响小说下载功能的正常使用。`);
-        await (0,_lib_GM__WEBPACK_IMPORTED_MODULE_0__/* ._GM_setValue */ ._u)(keyName, JSON.stringify(v));
+        await (0,_lib_GM__WEBPACK_IMPORTED_MODULE_0__/* ._GM_setValue */ .mN)(keyName, JSON.stringify(v));
         return v;
     }
     else {
@@ -35020,7 +35488,7 @@ async function getCustomEnableSaveToArchiveOrg() {
             return v;
         }
         catch (error) {
-            await (0,_lib_GM__WEBPACK_IMPORTED_MODULE_0__/* ._GM_deleteValue */ .jF)(keyName);
+            await (0,_lib_GM__WEBPACK_IMPORTED_MODULE_0__/* ._GM_deleteValue */ .JU)(keyName);
             return false;
         }
     }
@@ -35037,7 +35505,7 @@ async function getCustomEnableSaveToArchiveOrg() {
 // EXPORTS
 __webpack_require__.d(__webpack_exports__, {
   el: () => (/* binding */ el),
-  o: () => (/* binding */ style),
+  i: () => (/* binding */ style),
   vm: () => (/* binding */ vm)
 });
 
@@ -35057,8 +35525,8 @@ var code = "<div>\n  <div v-if=\"ntProgressSeen\" id=\"nd-progress\">\n    <div 
 
 
 
-const style = (0,dom/* createStyle */.wj)(progress/* default */.Z);
-const el = (0,dom/* createEl */.ut)(`<div id="progress-bar"></div>`);
+const style = (0,dom/* createStyle */._r)(progress/* default */.A);
+const el = (0,dom/* createEl */.a_)(`<div id="progress-bar"></div>`);
 const vm = (0,external_Vue_.createApp)({
     data() {
         return {
@@ -35120,7 +35588,7 @@ module.exports = Vue;
 
 // EXPORTS
 __webpack_require__.d(__webpack_exports__, {
-  Z: () => (/* binding */ pLimit)
+  A: () => (/* binding */ pLimit)
 });
 
 ;// CONCATENATED MODULE: ./node_modules/p-limit/node_modules/yocto-queue/index.js
@@ -35192,7 +35660,25 @@ class Queue {
 	}
 }
 
+;// CONCATENATED MODULE: ./node_modules/p-limit/async-hooks-stub.js
+const AsyncResource = {
+	bind(fn, _type, thisArg) {
+		return fn.bind(thisArg);
+	},
+};
+
+class AsyncLocalStorage {
+	getStore() {
+		return undefined;
+	}
+
+	run(_store, callback) {
+		return callback();
+	}
+}
+
 ;// CONCATENATED MODULE: ./node_modules/p-limit/index.js
+
 
 
 function pLimit(concurrency) {
@@ -35211,10 +35697,10 @@ function pLimit(concurrency) {
 		}
 	};
 
-	const run = async (fn, resolve, args) => {
+	const run = async (function_, resolve, arguments_) => {
 		activeCount++;
 
-		const result = (async () => fn(...args))();
+		const result = (async () => function_(...arguments_))();
 
 		resolve(result);
 
@@ -35225,8 +35711,10 @@ function pLimit(concurrency) {
 		next();
 	};
 
-	const enqueue = (fn, resolve, args) => {
-		queue.enqueue(run.bind(undefined, fn, resolve, args));
+	const enqueue = (function_, resolve, arguments_) => {
+		queue.enqueue(
+			AsyncResource.bind(run.bind(undefined, function_, resolve, arguments_)),
+		);
 
 		(async () => {
 			// This function needs to wait until the next microtask before comparing
@@ -35241,8 +35729,8 @@ function pLimit(concurrency) {
 		})();
 	};
 
-	const generator = (fn, ...args) => new Promise(resolve => {
-		enqueue(fn, resolve, args);
+	const generator = (function_, ...arguments_) => new Promise(resolve => {
+		enqueue(function_, resolve, arguments_);
 	});
 
 	Object.defineProperties(generator, {
@@ -35253,7 +35741,7 @@ function pLimit(concurrency) {
 			get: () => queue.size,
 		},
 		clearQueue: {
-			value: () => {
+			value() {
 				queue.clear();
 			},
 		},
@@ -35269,7 +35757,7 @@ function pLimit(concurrency) {
 /***/ ((module) => {
 
 "use strict";
-module.exports = JSON.parse('{"application/1d-interleaved-parityfec":{"source":"iana"},"application/3gpdash-qoe-report+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/3gpp-ims+xml":{"source":"iana","compressible":true},"application/3gpphal+json":{"source":"iana","compressible":true},"application/3gpphalforms+json":{"source":"iana","compressible":true},"application/a2l":{"source":"iana"},"application/ace+cbor":{"source":"iana"},"application/activemessage":{"source":"iana"},"application/activity+json":{"source":"iana","compressible":true},"application/alto-costmap+json":{"source":"iana","compressible":true},"application/alto-costmapfilter+json":{"source":"iana","compressible":true},"application/alto-directory+json":{"source":"iana","compressible":true},"application/alto-endpointcost+json":{"source":"iana","compressible":true},"application/alto-endpointcostparams+json":{"source":"iana","compressible":true},"application/alto-endpointprop+json":{"source":"iana","compressible":true},"application/alto-endpointpropparams+json":{"source":"iana","compressible":true},"application/alto-error+json":{"source":"iana","compressible":true},"application/alto-networkmap+json":{"source":"iana","compressible":true},"application/alto-networkmapfilter+json":{"source":"iana","compressible":true},"application/alto-updatestreamcontrol+json":{"source":"iana","compressible":true},"application/alto-updatestreamparams+json":{"source":"iana","compressible":true},"application/aml":{"source":"iana"},"application/andrew-inset":{"source":"iana","extensions":["ez"]},"application/applefile":{"source":"iana"},"application/applixware":{"source":"apache","extensions":["aw"]},"application/at+jwt":{"source":"iana"},"application/atf":{"source":"iana"},"application/atfx":{"source":"iana"},"application/atom+xml":{"source":"iana","compressible":true,"extensions":["atom"]},"application/atomcat+xml":{"source":"iana","compressible":true,"extensions":["atomcat"]},"application/atomdeleted+xml":{"source":"iana","compressible":true,"extensions":["atomdeleted"]},"application/atomicmail":{"source":"iana"},"application/atomsvc+xml":{"source":"iana","compressible":true,"extensions":["atomsvc"]},"application/atsc-dwd+xml":{"source":"iana","compressible":true,"extensions":["dwd"]},"application/atsc-dynamic-event-message":{"source":"iana"},"application/atsc-held+xml":{"source":"iana","compressible":true,"extensions":["held"]},"application/atsc-rdt+json":{"source":"iana","compressible":true},"application/atsc-rsat+xml":{"source":"iana","compressible":true,"extensions":["rsat"]},"application/atxml":{"source":"iana"},"application/auth-policy+xml":{"source":"iana","compressible":true},"application/bacnet-xdd+zip":{"source":"iana","compressible":false},"application/batch-smtp":{"source":"iana"},"application/bdoc":{"compressible":false,"extensions":["bdoc"]},"application/beep+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/calendar+json":{"source":"iana","compressible":true},"application/calendar+xml":{"source":"iana","compressible":true,"extensions":["xcs"]},"application/call-completion":{"source":"iana"},"application/cals-1840":{"source":"iana"},"application/captive+json":{"source":"iana","compressible":true},"application/cbor":{"source":"iana"},"application/cbor-seq":{"source":"iana"},"application/cccex":{"source":"iana"},"application/ccmp+xml":{"source":"iana","compressible":true},"application/ccxml+xml":{"source":"iana","compressible":true,"extensions":["ccxml"]},"application/cdfx+xml":{"source":"iana","compressible":true,"extensions":["cdfx"]},"application/cdmi-capability":{"source":"iana","extensions":["cdmia"]},"application/cdmi-container":{"source":"iana","extensions":["cdmic"]},"application/cdmi-domain":{"source":"iana","extensions":["cdmid"]},"application/cdmi-object":{"source":"iana","extensions":["cdmio"]},"application/cdmi-queue":{"source":"iana","extensions":["cdmiq"]},"application/cdni":{"source":"iana"},"application/cea":{"source":"iana"},"application/cea-2018+xml":{"source":"iana","compressible":true},"application/cellml+xml":{"source":"iana","compressible":true},"application/cfw":{"source":"iana"},"application/city+json":{"source":"iana","compressible":true},"application/clr":{"source":"iana"},"application/clue+xml":{"source":"iana","compressible":true},"application/clue_info+xml":{"source":"iana","compressible":true},"application/cms":{"source":"iana"},"application/cnrp+xml":{"source":"iana","compressible":true},"application/coap-group+json":{"source":"iana","compressible":true},"application/coap-payload":{"source":"iana"},"application/commonground":{"source":"iana"},"application/conference-info+xml":{"source":"iana","compressible":true},"application/cose":{"source":"iana"},"application/cose-key":{"source":"iana"},"application/cose-key-set":{"source":"iana"},"application/cpl+xml":{"source":"iana","compressible":true,"extensions":["cpl"]},"application/csrattrs":{"source":"iana"},"application/csta+xml":{"source":"iana","compressible":true},"application/cstadata+xml":{"source":"iana","compressible":true},"application/csvm+json":{"source":"iana","compressible":true},"application/cu-seeme":{"source":"apache","extensions":["cu"]},"application/cwt":{"source":"iana"},"application/cybercash":{"source":"iana"},"application/dart":{"compressible":true},"application/dash+xml":{"source":"iana","compressible":true,"extensions":["mpd"]},"application/dash-patch+xml":{"source":"iana","compressible":true,"extensions":["mpp"]},"application/dashdelta":{"source":"iana"},"application/davmount+xml":{"source":"iana","compressible":true,"extensions":["davmount"]},"application/dca-rft":{"source":"iana"},"application/dcd":{"source":"iana"},"application/dec-dx":{"source":"iana"},"application/dialog-info+xml":{"source":"iana","compressible":true},"application/dicom":{"source":"iana"},"application/dicom+json":{"source":"iana","compressible":true},"application/dicom+xml":{"source":"iana","compressible":true},"application/dii":{"source":"iana"},"application/dit":{"source":"iana"},"application/dns":{"source":"iana"},"application/dns+json":{"source":"iana","compressible":true},"application/dns-message":{"source":"iana"},"application/docbook+xml":{"source":"apache","compressible":true,"extensions":["dbk"]},"application/dots+cbor":{"source":"iana"},"application/dskpp+xml":{"source":"iana","compressible":true},"application/dssc+der":{"source":"iana","extensions":["dssc"]},"application/dssc+xml":{"source":"iana","compressible":true,"extensions":["xdssc"]},"application/dvcs":{"source":"iana"},"application/ecmascript":{"source":"iana","compressible":true,"extensions":["es","ecma"]},"application/edi-consent":{"source":"iana"},"application/edi-x12":{"source":"iana","compressible":false},"application/edifact":{"source":"iana","compressible":false},"application/efi":{"source":"iana"},"application/elm+json":{"source":"iana","charset":"UTF-8","compressible":true},"application/elm+xml":{"source":"iana","compressible":true},"application/emergencycalldata.cap+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/emergencycalldata.comment+xml":{"source":"iana","compressible":true},"application/emergencycalldata.control+xml":{"source":"iana","compressible":true},"application/emergencycalldata.deviceinfo+xml":{"source":"iana","compressible":true},"application/emergencycalldata.ecall.msd":{"source":"iana"},"application/emergencycalldata.providerinfo+xml":{"source":"iana","compressible":true},"application/emergencycalldata.serviceinfo+xml":{"source":"iana","compressible":true},"application/emergencycalldata.subscriberinfo+xml":{"source":"iana","compressible":true},"application/emergencycalldata.veds+xml":{"source":"iana","compressible":true},"application/emma+xml":{"source":"iana","compressible":true,"extensions":["emma"]},"application/emotionml+xml":{"source":"iana","compressible":true,"extensions":["emotionml"]},"application/encaprtp":{"source":"iana"},"application/epp+xml":{"source":"iana","compressible":true},"application/epub+zip":{"source":"iana","compressible":false,"extensions":["epub"]},"application/eshop":{"source":"iana"},"application/exi":{"source":"iana","extensions":["exi"]},"application/expect-ct-report+json":{"source":"iana","compressible":true},"application/express":{"source":"iana","extensions":["exp"]},"application/fastinfoset":{"source":"iana"},"application/fastsoap":{"source":"iana"},"application/fdt+xml":{"source":"iana","compressible":true,"extensions":["fdt"]},"application/fhir+json":{"source":"iana","charset":"UTF-8","compressible":true},"application/fhir+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/fido.trusted-apps+json":{"compressible":true},"application/fits":{"source":"iana"},"application/flexfec":{"source":"iana"},"application/font-sfnt":{"source":"iana"},"application/font-tdpfr":{"source":"iana","extensions":["pfr"]},"application/font-woff":{"source":"iana","compressible":false},"application/framework-attributes+xml":{"source":"iana","compressible":true},"application/geo+json":{"source":"iana","compressible":true,"extensions":["geojson"]},"application/geo+json-seq":{"source":"iana"},"application/geopackage+sqlite3":{"source":"iana"},"application/geoxacml+xml":{"source":"iana","compressible":true},"application/gltf-buffer":{"source":"iana"},"application/gml+xml":{"source":"iana","compressible":true,"extensions":["gml"]},"application/gpx+xml":{"source":"apache","compressible":true,"extensions":["gpx"]},"application/gxf":{"source":"apache","extensions":["gxf"]},"application/gzip":{"source":"iana","compressible":false,"extensions":["gz"]},"application/h224":{"source":"iana"},"application/held+xml":{"source":"iana","compressible":true},"application/hjson":{"extensions":["hjson"]},"application/http":{"source":"iana"},"application/hyperstudio":{"source":"iana","extensions":["stk"]},"application/ibe-key-request+xml":{"source":"iana","compressible":true},"application/ibe-pkg-reply+xml":{"source":"iana","compressible":true},"application/ibe-pp-data":{"source":"iana"},"application/iges":{"source":"iana"},"application/im-iscomposing+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/index":{"source":"iana"},"application/index.cmd":{"source":"iana"},"application/index.obj":{"source":"iana"},"application/index.response":{"source":"iana"},"application/index.vnd":{"source":"iana"},"application/inkml+xml":{"source":"iana","compressible":true,"extensions":["ink","inkml"]},"application/iotp":{"source":"iana"},"application/ipfix":{"source":"iana","extensions":["ipfix"]},"application/ipp":{"source":"iana"},"application/isup":{"source":"iana"},"application/its+xml":{"source":"iana","compressible":true,"extensions":["its"]},"application/java-archive":{"source":"apache","compressible":false,"extensions":["jar","war","ear"]},"application/java-serialized-object":{"source":"apache","compressible":false,"extensions":["ser"]},"application/java-vm":{"source":"apache","compressible":false,"extensions":["class"]},"application/javascript":{"source":"iana","charset":"UTF-8","compressible":true,"extensions":["js","mjs"]},"application/jf2feed+json":{"source":"iana","compressible":true},"application/jose":{"source":"iana"},"application/jose+json":{"source":"iana","compressible":true},"application/jrd+json":{"source":"iana","compressible":true},"application/jscalendar+json":{"source":"iana","compressible":true},"application/json":{"source":"iana","charset":"UTF-8","compressible":true,"extensions":["json","map"]},"application/json-patch+json":{"source":"iana","compressible":true},"application/json-seq":{"source":"iana"},"application/json5":{"extensions":["json5"]},"application/jsonml+json":{"source":"apache","compressible":true,"extensions":["jsonml"]},"application/jwk+json":{"source":"iana","compressible":true},"application/jwk-set+json":{"source":"iana","compressible":true},"application/jwt":{"source":"iana"},"application/kpml-request+xml":{"source":"iana","compressible":true},"application/kpml-response+xml":{"source":"iana","compressible":true},"application/ld+json":{"source":"iana","compressible":true,"extensions":["jsonld"]},"application/lgr+xml":{"source":"iana","compressible":true,"extensions":["lgr"]},"application/link-format":{"source":"iana"},"application/load-control+xml":{"source":"iana","compressible":true},"application/lost+xml":{"source":"iana","compressible":true,"extensions":["lostxml"]},"application/lostsync+xml":{"source":"iana","compressible":true},"application/lpf+zip":{"source":"iana","compressible":false},"application/lxf":{"source":"iana"},"application/mac-binhex40":{"source":"iana","extensions":["hqx"]},"application/mac-compactpro":{"source":"apache","extensions":["cpt"]},"application/macwriteii":{"source":"iana"},"application/mads+xml":{"source":"iana","compressible":true,"extensions":["mads"]},"application/manifest+json":{"source":"iana","charset":"UTF-8","compressible":true,"extensions":["webmanifest"]},"application/marc":{"source":"iana","extensions":["mrc"]},"application/marcxml+xml":{"source":"iana","compressible":true,"extensions":["mrcx"]},"application/mathematica":{"source":"iana","extensions":["ma","nb","mb"]},"application/mathml+xml":{"source":"iana","compressible":true,"extensions":["mathml"]},"application/mathml-content+xml":{"source":"iana","compressible":true},"application/mathml-presentation+xml":{"source":"iana","compressible":true},"application/mbms-associated-procedure-description+xml":{"source":"iana","compressible":true},"application/mbms-deregister+xml":{"source":"iana","compressible":true},"application/mbms-envelope+xml":{"source":"iana","compressible":true},"application/mbms-msk+xml":{"source":"iana","compressible":true},"application/mbms-msk-response+xml":{"source":"iana","compressible":true},"application/mbms-protection-description+xml":{"source":"iana","compressible":true},"application/mbms-reception-report+xml":{"source":"iana","compressible":true},"application/mbms-register+xml":{"source":"iana","compressible":true},"application/mbms-register-response+xml":{"source":"iana","compressible":true},"application/mbms-schedule+xml":{"source":"iana","compressible":true},"application/mbms-user-service-description+xml":{"source":"iana","compressible":true},"application/mbox":{"source":"iana","extensions":["mbox"]},"application/media-policy-dataset+xml":{"source":"iana","compressible":true,"extensions":["mpf"]},"application/media_control+xml":{"source":"iana","compressible":true},"application/mediaservercontrol+xml":{"source":"iana","compressible":true,"extensions":["mscml"]},"application/merge-patch+json":{"source":"iana","compressible":true},"application/metalink+xml":{"source":"apache","compressible":true,"extensions":["metalink"]},"application/metalink4+xml":{"source":"iana","compressible":true,"extensions":["meta4"]},"application/mets+xml":{"source":"iana","compressible":true,"extensions":["mets"]},"application/mf4":{"source":"iana"},"application/mikey":{"source":"iana"},"application/mipc":{"source":"iana"},"application/missing-blocks+cbor-seq":{"source":"iana"},"application/mmt-aei+xml":{"source":"iana","compressible":true,"extensions":["maei"]},"application/mmt-usd+xml":{"source":"iana","compressible":true,"extensions":["musd"]},"application/mods+xml":{"source":"iana","compressible":true,"extensions":["mods"]},"application/moss-keys":{"source":"iana"},"application/moss-signature":{"source":"iana"},"application/mosskey-data":{"source":"iana"},"application/mosskey-request":{"source":"iana"},"application/mp21":{"source":"iana","extensions":["m21","mp21"]},"application/mp4":{"source":"iana","extensions":["mp4s","m4p"]},"application/mpeg4-generic":{"source":"iana"},"application/mpeg4-iod":{"source":"iana"},"application/mpeg4-iod-xmt":{"source":"iana"},"application/mrb-consumer+xml":{"source":"iana","compressible":true},"application/mrb-publish+xml":{"source":"iana","compressible":true},"application/msc-ivr+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/msc-mixer+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/msword":{"source":"iana","compressible":false,"extensions":["doc","dot"]},"application/mud+json":{"source":"iana","compressible":true},"application/multipart-core":{"source":"iana"},"application/mxf":{"source":"iana","extensions":["mxf"]},"application/n-quads":{"source":"iana","extensions":["nq"]},"application/n-triples":{"source":"iana","extensions":["nt"]},"application/nasdata":{"source":"iana"},"application/news-checkgroups":{"source":"iana","charset":"US-ASCII"},"application/news-groupinfo":{"source":"iana","charset":"US-ASCII"},"application/news-transmission":{"source":"iana"},"application/nlsml+xml":{"source":"iana","compressible":true},"application/node":{"source":"iana","extensions":["cjs"]},"application/nss":{"source":"iana"},"application/oauth-authz-req+jwt":{"source":"iana"},"application/oblivious-dns-message":{"source":"iana"},"application/ocsp-request":{"source":"iana"},"application/ocsp-response":{"source":"iana"},"application/octet-stream":{"source":"iana","compressible":false,"extensions":["bin","dms","lrf","mar","so","dist","distz","pkg","bpk","dump","elc","deploy","exe","dll","deb","dmg","iso","img","msi","msp","msm","buffer"]},"application/oda":{"source":"iana","extensions":["oda"]},"application/odm+xml":{"source":"iana","compressible":true},"application/odx":{"source":"iana"},"application/oebps-package+xml":{"source":"iana","compressible":true,"extensions":["opf"]},"application/ogg":{"source":"iana","compressible":false,"extensions":["ogx"]},"application/omdoc+xml":{"source":"apache","compressible":true,"extensions":["omdoc"]},"application/onenote":{"source":"apache","extensions":["onetoc","onetoc2","onetmp","onepkg"]},"application/opc-nodeset+xml":{"source":"iana","compressible":true},"application/oscore":{"source":"iana"},"application/oxps":{"source":"iana","extensions":["oxps"]},"application/p21":{"source":"iana"},"application/p21+zip":{"source":"iana","compressible":false},"application/p2p-overlay+xml":{"source":"iana","compressible":true,"extensions":["relo"]},"application/parityfec":{"source":"iana"},"application/passport":{"source":"iana"},"application/patch-ops-error+xml":{"source":"iana","compressible":true,"extensions":["xer"]},"application/pdf":{"source":"iana","compressible":false,"extensions":["pdf"]},"application/pdx":{"source":"iana"},"application/pem-certificate-chain":{"source":"iana"},"application/pgp-encrypted":{"source":"iana","compressible":false,"extensions":["pgp"]},"application/pgp-keys":{"source":"iana","extensions":["asc"]},"application/pgp-signature":{"source":"iana","extensions":["asc","sig"]},"application/pics-rules":{"source":"apache","extensions":["prf"]},"application/pidf+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/pidf-diff+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/pkcs10":{"source":"iana","extensions":["p10"]},"application/pkcs12":{"source":"iana"},"application/pkcs7-mime":{"source":"iana","extensions":["p7m","p7c"]},"application/pkcs7-signature":{"source":"iana","extensions":["p7s"]},"application/pkcs8":{"source":"iana","extensions":["p8"]},"application/pkcs8-encrypted":{"source":"iana"},"application/pkix-attr-cert":{"source":"iana","extensions":["ac"]},"application/pkix-cert":{"source":"iana","extensions":["cer"]},"application/pkix-crl":{"source":"iana","extensions":["crl"]},"application/pkix-pkipath":{"source":"iana","extensions":["pkipath"]},"application/pkixcmp":{"source":"iana","extensions":["pki"]},"application/pls+xml":{"source":"iana","compressible":true,"extensions":["pls"]},"application/poc-settings+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/postscript":{"source":"iana","compressible":true,"extensions":["ai","eps","ps"]},"application/ppsp-tracker+json":{"source":"iana","compressible":true},"application/problem+json":{"source":"iana","compressible":true},"application/problem+xml":{"source":"iana","compressible":true},"application/provenance+xml":{"source":"iana","compressible":true,"extensions":["provx"]},"application/prs.alvestrand.titrax-sheet":{"source":"iana"},"application/prs.cww":{"source":"iana","extensions":["cww"]},"application/prs.cyn":{"source":"iana","charset":"7-BIT"},"application/prs.hpub+zip":{"source":"iana","compressible":false},"application/prs.nprend":{"source":"iana"},"application/prs.plucker":{"source":"iana"},"application/prs.rdf-xml-crypt":{"source":"iana"},"application/prs.xsf+xml":{"source":"iana","compressible":true},"application/pskc+xml":{"source":"iana","compressible":true,"extensions":["pskcxml"]},"application/pvd+json":{"source":"iana","compressible":true},"application/qsig":{"source":"iana"},"application/raml+yaml":{"compressible":true,"extensions":["raml"]},"application/raptorfec":{"source":"iana"},"application/rdap+json":{"source":"iana","compressible":true},"application/rdf+xml":{"source":"iana","compressible":true,"extensions":["rdf","owl"]},"application/reginfo+xml":{"source":"iana","compressible":true,"extensions":["rif"]},"application/relax-ng-compact-syntax":{"source":"iana","extensions":["rnc"]},"application/remote-printing":{"source":"iana"},"application/reputon+json":{"source":"iana","compressible":true},"application/resource-lists+xml":{"source":"iana","compressible":true,"extensions":["rl"]},"application/resource-lists-diff+xml":{"source":"iana","compressible":true,"extensions":["rld"]},"application/rfc+xml":{"source":"iana","compressible":true},"application/riscos":{"source":"iana"},"application/rlmi+xml":{"source":"iana","compressible":true},"application/rls-services+xml":{"source":"iana","compressible":true,"extensions":["rs"]},"application/route-apd+xml":{"source":"iana","compressible":true,"extensions":["rapd"]},"application/route-s-tsid+xml":{"source":"iana","compressible":true,"extensions":["sls"]},"application/route-usd+xml":{"source":"iana","compressible":true,"extensions":["rusd"]},"application/rpki-ghostbusters":{"source":"iana","extensions":["gbr"]},"application/rpki-manifest":{"source":"iana","extensions":["mft"]},"application/rpki-publication":{"source":"iana"},"application/rpki-roa":{"source":"iana","extensions":["roa"]},"application/rpki-updown":{"source":"iana"},"application/rsd+xml":{"source":"apache","compressible":true,"extensions":["rsd"]},"application/rss+xml":{"source":"apache","compressible":true,"extensions":["rss"]},"application/rtf":{"source":"iana","compressible":true,"extensions":["rtf"]},"application/rtploopback":{"source":"iana"},"application/rtx":{"source":"iana"},"application/samlassertion+xml":{"source":"iana","compressible":true},"application/samlmetadata+xml":{"source":"iana","compressible":true},"application/sarif+json":{"source":"iana","compressible":true},"application/sarif-external-properties+json":{"source":"iana","compressible":true},"application/sbe":{"source":"iana"},"application/sbml+xml":{"source":"iana","compressible":true,"extensions":["sbml"]},"application/scaip+xml":{"source":"iana","compressible":true},"application/scim+json":{"source":"iana","compressible":true},"application/scvp-cv-request":{"source":"iana","extensions":["scq"]},"application/scvp-cv-response":{"source":"iana","extensions":["scs"]},"application/scvp-vp-request":{"source":"iana","extensions":["spq"]},"application/scvp-vp-response":{"source":"iana","extensions":["spp"]},"application/sdp":{"source":"iana","extensions":["sdp"]},"application/secevent+jwt":{"source":"iana"},"application/senml+cbor":{"source":"iana"},"application/senml+json":{"source":"iana","compressible":true},"application/senml+xml":{"source":"iana","compressible":true,"extensions":["senmlx"]},"application/senml-etch+cbor":{"source":"iana"},"application/senml-etch+json":{"source":"iana","compressible":true},"application/senml-exi":{"source":"iana"},"application/sensml+cbor":{"source":"iana"},"application/sensml+json":{"source":"iana","compressible":true},"application/sensml+xml":{"source":"iana","compressible":true,"extensions":["sensmlx"]},"application/sensml-exi":{"source":"iana"},"application/sep+xml":{"source":"iana","compressible":true},"application/sep-exi":{"source":"iana"},"application/session-info":{"source":"iana"},"application/set-payment":{"source":"iana"},"application/set-payment-initiation":{"source":"iana","extensions":["setpay"]},"application/set-registration":{"source":"iana"},"application/set-registration-initiation":{"source":"iana","extensions":["setreg"]},"application/sgml":{"source":"iana"},"application/sgml-open-catalog":{"source":"iana"},"application/shf+xml":{"source":"iana","compressible":true,"extensions":["shf"]},"application/sieve":{"source":"iana","extensions":["siv","sieve"]},"application/simple-filter+xml":{"source":"iana","compressible":true},"application/simple-message-summary":{"source":"iana"},"application/simplesymbolcontainer":{"source":"iana"},"application/sipc":{"source":"iana"},"application/slate":{"source":"iana"},"application/smil":{"source":"iana"},"application/smil+xml":{"source":"iana","compressible":true,"extensions":["smi","smil"]},"application/smpte336m":{"source":"iana"},"application/soap+fastinfoset":{"source":"iana"},"application/soap+xml":{"source":"iana","compressible":true},"application/sparql-query":{"source":"iana","extensions":["rq"]},"application/sparql-results+xml":{"source":"iana","compressible":true,"extensions":["srx"]},"application/spdx+json":{"source":"iana","compressible":true},"application/spirits-event+xml":{"source":"iana","compressible":true},"application/sql":{"source":"iana"},"application/srgs":{"source":"iana","extensions":["gram"]},"application/srgs+xml":{"source":"iana","compressible":true,"extensions":["grxml"]},"application/sru+xml":{"source":"iana","compressible":true,"extensions":["sru"]},"application/ssdl+xml":{"source":"apache","compressible":true,"extensions":["ssdl"]},"application/ssml+xml":{"source":"iana","compressible":true,"extensions":["ssml"]},"application/stix+json":{"source":"iana","compressible":true},"application/swid+xml":{"source":"iana","compressible":true,"extensions":["swidtag"]},"application/tamp-apex-update":{"source":"iana"},"application/tamp-apex-update-confirm":{"source":"iana"},"application/tamp-community-update":{"source":"iana"},"application/tamp-community-update-confirm":{"source":"iana"},"application/tamp-error":{"source":"iana"},"application/tamp-sequence-adjust":{"source":"iana"},"application/tamp-sequence-adjust-confirm":{"source":"iana"},"application/tamp-status-query":{"source":"iana"},"application/tamp-status-response":{"source":"iana"},"application/tamp-update":{"source":"iana"},"application/tamp-update-confirm":{"source":"iana"},"application/tar":{"compressible":true},"application/taxii+json":{"source":"iana","compressible":true},"application/td+json":{"source":"iana","compressible":true},"application/tei+xml":{"source":"iana","compressible":true,"extensions":["tei","teicorpus"]},"application/tetra_isi":{"source":"iana"},"application/thraud+xml":{"source":"iana","compressible":true,"extensions":["tfi"]},"application/timestamp-query":{"source":"iana"},"application/timestamp-reply":{"source":"iana"},"application/timestamped-data":{"source":"iana","extensions":["tsd"]},"application/tlsrpt+gzip":{"source":"iana"},"application/tlsrpt+json":{"source":"iana","compressible":true},"application/tnauthlist":{"source":"iana"},"application/token-introspection+jwt":{"source":"iana"},"application/toml":{"compressible":true,"extensions":["toml"]},"application/trickle-ice-sdpfrag":{"source":"iana"},"application/trig":{"source":"iana","extensions":["trig"]},"application/ttml+xml":{"source":"iana","compressible":true,"extensions":["ttml"]},"application/tve-trigger":{"source":"iana"},"application/tzif":{"source":"iana"},"application/tzif-leap":{"source":"iana"},"application/ubjson":{"compressible":false,"extensions":["ubj"]},"application/ulpfec":{"source":"iana"},"application/urc-grpsheet+xml":{"source":"iana","compressible":true},"application/urc-ressheet+xml":{"source":"iana","compressible":true,"extensions":["rsheet"]},"application/urc-targetdesc+xml":{"source":"iana","compressible":true,"extensions":["td"]},"application/urc-uisocketdesc+xml":{"source":"iana","compressible":true},"application/vcard+json":{"source":"iana","compressible":true},"application/vcard+xml":{"source":"iana","compressible":true},"application/vemmi":{"source":"iana"},"application/vividence.scriptfile":{"source":"apache"},"application/vnd.1000minds.decision-model+xml":{"source":"iana","compressible":true,"extensions":["1km"]},"application/vnd.3gpp-prose+xml":{"source":"iana","compressible":true},"application/vnd.3gpp-prose-pc3ch+xml":{"source":"iana","compressible":true},"application/vnd.3gpp-v2x-local-service-information":{"source":"iana"},"application/vnd.3gpp.5gnas":{"source":"iana"},"application/vnd.3gpp.access-transfer-events+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.bsf+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.gmop+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.gtpc":{"source":"iana"},"application/vnd.3gpp.interworking-data":{"source":"iana"},"application/vnd.3gpp.lpp":{"source":"iana"},"application/vnd.3gpp.mc-signalling-ear":{"source":"iana"},"application/vnd.3gpp.mcdata-affiliation-command+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcdata-info+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcdata-payload":{"source":"iana"},"application/vnd.3gpp.mcdata-service-config+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcdata-signalling":{"source":"iana"},"application/vnd.3gpp.mcdata-ue-config+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcdata-user-profile+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcptt-affiliation-command+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcptt-floor-request+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcptt-info+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcptt-location-info+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcptt-mbms-usage-info+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcptt-service-config+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcptt-signed+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcptt-ue-config+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcptt-ue-init-config+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcptt-user-profile+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcvideo-affiliation-command+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcvideo-affiliation-info+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcvideo-info+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcvideo-location-info+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcvideo-mbms-usage-info+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcvideo-service-config+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcvideo-transmission-request+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcvideo-ue-config+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcvideo-user-profile+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mid-call+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.ngap":{"source":"iana"},"application/vnd.3gpp.pfcp":{"source":"iana"},"application/vnd.3gpp.pic-bw-large":{"source":"iana","extensions":["plb"]},"application/vnd.3gpp.pic-bw-small":{"source":"iana","extensions":["psb"]},"application/vnd.3gpp.pic-bw-var":{"source":"iana","extensions":["pvb"]},"application/vnd.3gpp.s1ap":{"source":"iana"},"application/vnd.3gpp.sms":{"source":"iana"},"application/vnd.3gpp.sms+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.srvcc-ext+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.srvcc-info+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.state-and-event-info+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.ussd+xml":{"source":"iana","compressible":true},"application/vnd.3gpp2.bcmcsinfo+xml":{"source":"iana","compressible":true},"application/vnd.3gpp2.sms":{"source":"iana"},"application/vnd.3gpp2.tcap":{"source":"iana","extensions":["tcap"]},"application/vnd.3lightssoftware.imagescal":{"source":"iana"},"application/vnd.3m.post-it-notes":{"source":"iana","extensions":["pwn"]},"application/vnd.accpac.simply.aso":{"source":"iana","extensions":["aso"]},"application/vnd.accpac.simply.imp":{"source":"iana","extensions":["imp"]},"application/vnd.acucobol":{"source":"iana","extensions":["acu"]},"application/vnd.acucorp":{"source":"iana","extensions":["atc","acutc"]},"application/vnd.adobe.air-application-installer-package+zip":{"source":"apache","compressible":false,"extensions":["air"]},"application/vnd.adobe.flash.movie":{"source":"iana"},"application/vnd.adobe.formscentral.fcdt":{"source":"iana","extensions":["fcdt"]},"application/vnd.adobe.fxp":{"source":"iana","extensions":["fxp","fxpl"]},"application/vnd.adobe.partial-upload":{"source":"iana"},"application/vnd.adobe.xdp+xml":{"source":"iana","compressible":true,"extensions":["xdp"]},"application/vnd.adobe.xfdf":{"source":"iana","extensions":["xfdf"]},"application/vnd.aether.imp":{"source":"iana"},"application/vnd.afpc.afplinedata":{"source":"iana"},"application/vnd.afpc.afplinedata-pagedef":{"source":"iana"},"application/vnd.afpc.cmoca-cmresource":{"source":"iana"},"application/vnd.afpc.foca-charset":{"source":"iana"},"application/vnd.afpc.foca-codedfont":{"source":"iana"},"application/vnd.afpc.foca-codepage":{"source":"iana"},"application/vnd.afpc.modca":{"source":"iana"},"application/vnd.afpc.modca-cmtable":{"source":"iana"},"application/vnd.afpc.modca-formdef":{"source":"iana"},"application/vnd.afpc.modca-mediummap":{"source":"iana"},"application/vnd.afpc.modca-objectcontainer":{"source":"iana"},"application/vnd.afpc.modca-overlay":{"source":"iana"},"application/vnd.afpc.modca-pagesegment":{"source":"iana"},"application/vnd.age":{"source":"iana","extensions":["age"]},"application/vnd.ah-barcode":{"source":"iana"},"application/vnd.ahead.space":{"source":"iana","extensions":["ahead"]},"application/vnd.airzip.filesecure.azf":{"source":"iana","extensions":["azf"]},"application/vnd.airzip.filesecure.azs":{"source":"iana","extensions":["azs"]},"application/vnd.amadeus+json":{"source":"iana","compressible":true},"application/vnd.amazon.ebook":{"source":"apache","extensions":["azw"]},"application/vnd.amazon.mobi8-ebook":{"source":"iana"},"application/vnd.americandynamics.acc":{"source":"iana","extensions":["acc"]},"application/vnd.amiga.ami":{"source":"iana","extensions":["ami"]},"application/vnd.amundsen.maze+xml":{"source":"iana","compressible":true},"application/vnd.android.ota":{"source":"iana"},"application/vnd.android.package-archive":{"source":"apache","compressible":false,"extensions":["apk"]},"application/vnd.anki":{"source":"iana"},"application/vnd.anser-web-certificate-issue-initiation":{"source":"iana","extensions":["cii"]},"application/vnd.anser-web-funds-transfer-initiation":{"source":"apache","extensions":["fti"]},"application/vnd.antix.game-component":{"source":"iana","extensions":["atx"]},"application/vnd.apache.arrow.file":{"source":"iana"},"application/vnd.apache.arrow.stream":{"source":"iana"},"application/vnd.apache.thrift.binary":{"source":"iana"},"application/vnd.apache.thrift.compact":{"source":"iana"},"application/vnd.apache.thrift.json":{"source":"iana"},"application/vnd.api+json":{"source":"iana","compressible":true},"application/vnd.aplextor.warrp+json":{"source":"iana","compressible":true},"application/vnd.apothekende.reservation+json":{"source":"iana","compressible":true},"application/vnd.apple.installer+xml":{"source":"iana","compressible":true,"extensions":["mpkg"]},"application/vnd.apple.keynote":{"source":"iana","extensions":["key"]},"application/vnd.apple.mpegurl":{"source":"iana","extensions":["m3u8"]},"application/vnd.apple.numbers":{"source":"iana","extensions":["numbers"]},"application/vnd.apple.pages":{"source":"iana","extensions":["pages"]},"application/vnd.apple.pkpass":{"compressible":false,"extensions":["pkpass"]},"application/vnd.arastra.swi":{"source":"iana"},"application/vnd.aristanetworks.swi":{"source":"iana","extensions":["swi"]},"application/vnd.artisan+json":{"source":"iana","compressible":true},"application/vnd.artsquare":{"source":"iana"},"application/vnd.astraea-software.iota":{"source":"iana","extensions":["iota"]},"application/vnd.audiograph":{"source":"iana","extensions":["aep"]},"application/vnd.autopackage":{"source":"iana"},"application/vnd.avalon+json":{"source":"iana","compressible":true},"application/vnd.avistar+xml":{"source":"iana","compressible":true},"application/vnd.balsamiq.bmml+xml":{"source":"iana","compressible":true,"extensions":["bmml"]},"application/vnd.balsamiq.bmpr":{"source":"iana"},"application/vnd.banana-accounting":{"source":"iana"},"application/vnd.bbf.usp.error":{"source":"iana"},"application/vnd.bbf.usp.msg":{"source":"iana"},"application/vnd.bbf.usp.msg+json":{"source":"iana","compressible":true},"application/vnd.bekitzur-stech+json":{"source":"iana","compressible":true},"application/vnd.bint.med-content":{"source":"iana"},"application/vnd.biopax.rdf+xml":{"source":"iana","compressible":true},"application/vnd.blink-idb-value-wrapper":{"source":"iana"},"application/vnd.blueice.multipass":{"source":"iana","extensions":["mpm"]},"application/vnd.bluetooth.ep.oob":{"source":"iana"},"application/vnd.bluetooth.le.oob":{"source":"iana"},"application/vnd.bmi":{"source":"iana","extensions":["bmi"]},"application/vnd.bpf":{"source":"iana"},"application/vnd.bpf3":{"source":"iana"},"application/vnd.businessobjects":{"source":"iana","extensions":["rep"]},"application/vnd.byu.uapi+json":{"source":"iana","compressible":true},"application/vnd.cab-jscript":{"source":"iana"},"application/vnd.canon-cpdl":{"source":"iana"},"application/vnd.canon-lips":{"source":"iana"},"application/vnd.capasystems-pg+json":{"source":"iana","compressible":true},"application/vnd.cendio.thinlinc.clientconf":{"source":"iana"},"application/vnd.century-systems.tcp_stream":{"source":"iana"},"application/vnd.chemdraw+xml":{"source":"iana","compressible":true,"extensions":["cdxml"]},"application/vnd.chess-pgn":{"source":"iana"},"application/vnd.chipnuts.karaoke-mmd":{"source":"iana","extensions":["mmd"]},"application/vnd.ciedi":{"source":"iana"},"application/vnd.cinderella":{"source":"iana","extensions":["cdy"]},"application/vnd.cirpack.isdn-ext":{"source":"iana"},"application/vnd.citationstyles.style+xml":{"source":"iana","compressible":true,"extensions":["csl"]},"application/vnd.claymore":{"source":"iana","extensions":["cla"]},"application/vnd.cloanto.rp9":{"source":"iana","extensions":["rp9"]},"application/vnd.clonk.c4group":{"source":"iana","extensions":["c4g","c4d","c4f","c4p","c4u"]},"application/vnd.cluetrust.cartomobile-config":{"source":"iana","extensions":["c11amc"]},"application/vnd.cluetrust.cartomobile-config-pkg":{"source":"iana","extensions":["c11amz"]},"application/vnd.coffeescript":{"source":"iana"},"application/vnd.collabio.xodocuments.document":{"source":"iana"},"application/vnd.collabio.xodocuments.document-template":{"source":"iana"},"application/vnd.collabio.xodocuments.presentation":{"source":"iana"},"application/vnd.collabio.xodocuments.presentation-template":{"source":"iana"},"application/vnd.collabio.xodocuments.spreadsheet":{"source":"iana"},"application/vnd.collabio.xodocuments.spreadsheet-template":{"source":"iana"},"application/vnd.collection+json":{"source":"iana","compressible":true},"application/vnd.collection.doc+json":{"source":"iana","compressible":true},"application/vnd.collection.next+json":{"source":"iana","compressible":true},"application/vnd.comicbook+zip":{"source":"iana","compressible":false},"application/vnd.comicbook-rar":{"source":"iana"},"application/vnd.commerce-battelle":{"source":"iana"},"application/vnd.commonspace":{"source":"iana","extensions":["csp"]},"application/vnd.contact.cmsg":{"source":"iana","extensions":["cdbcmsg"]},"application/vnd.coreos.ignition+json":{"source":"iana","compressible":true},"application/vnd.cosmocaller":{"source":"iana","extensions":["cmc"]},"application/vnd.crick.clicker":{"source":"iana","extensions":["clkx"]},"application/vnd.crick.clicker.keyboard":{"source":"iana","extensions":["clkk"]},"application/vnd.crick.clicker.palette":{"source":"iana","extensions":["clkp"]},"application/vnd.crick.clicker.template":{"source":"iana","extensions":["clkt"]},"application/vnd.crick.clicker.wordbank":{"source":"iana","extensions":["clkw"]},"application/vnd.criticaltools.wbs+xml":{"source":"iana","compressible":true,"extensions":["wbs"]},"application/vnd.cryptii.pipe+json":{"source":"iana","compressible":true},"application/vnd.crypto-shade-file":{"source":"iana"},"application/vnd.cryptomator.encrypted":{"source":"iana"},"application/vnd.cryptomator.vault":{"source":"iana"},"application/vnd.ctc-posml":{"source":"iana","extensions":["pml"]},"application/vnd.ctct.ws+xml":{"source":"iana","compressible":true},"application/vnd.cups-pdf":{"source":"iana"},"application/vnd.cups-postscript":{"source":"iana"},"application/vnd.cups-ppd":{"source":"iana","extensions":["ppd"]},"application/vnd.cups-raster":{"source":"iana"},"application/vnd.cups-raw":{"source":"iana"},"application/vnd.curl":{"source":"iana"},"application/vnd.curl.car":{"source":"apache","extensions":["car"]},"application/vnd.curl.pcurl":{"source":"apache","extensions":["pcurl"]},"application/vnd.cyan.dean.root+xml":{"source":"iana","compressible":true},"application/vnd.cybank":{"source":"iana"},"application/vnd.cyclonedx+json":{"source":"iana","compressible":true},"application/vnd.cyclonedx+xml":{"source":"iana","compressible":true},"application/vnd.d2l.coursepackage1p0+zip":{"source":"iana","compressible":false},"application/vnd.d3m-dataset":{"source":"iana"},"application/vnd.d3m-problem":{"source":"iana"},"application/vnd.dart":{"source":"iana","compressible":true,"extensions":["dart"]},"application/vnd.data-vision.rdz":{"source":"iana","extensions":["rdz"]},"application/vnd.datapackage+json":{"source":"iana","compressible":true},"application/vnd.dataresource+json":{"source":"iana","compressible":true},"application/vnd.dbf":{"source":"iana","extensions":["dbf"]},"application/vnd.debian.binary-package":{"source":"iana"},"application/vnd.dece.data":{"source":"iana","extensions":["uvf","uvvf","uvd","uvvd"]},"application/vnd.dece.ttml+xml":{"source":"iana","compressible":true,"extensions":["uvt","uvvt"]},"application/vnd.dece.unspecified":{"source":"iana","extensions":["uvx","uvvx"]},"application/vnd.dece.zip":{"source":"iana","extensions":["uvz","uvvz"]},"application/vnd.denovo.fcselayout-link":{"source":"iana","extensions":["fe_launch"]},"application/vnd.desmume.movie":{"source":"iana"},"application/vnd.dir-bi.plate-dl-nosuffix":{"source":"iana"},"application/vnd.dm.delegation+xml":{"source":"iana","compressible":true},"application/vnd.dna":{"source":"iana","extensions":["dna"]},"application/vnd.document+json":{"source":"iana","compressible":true},"application/vnd.dolby.mlp":{"source":"apache","extensions":["mlp"]},"application/vnd.dolby.mobile.1":{"source":"iana"},"application/vnd.dolby.mobile.2":{"source":"iana"},"application/vnd.doremir.scorecloud-binary-document":{"source":"iana"},"application/vnd.dpgraph":{"source":"iana","extensions":["dpg"]},"application/vnd.dreamfactory":{"source":"iana","extensions":["dfac"]},"application/vnd.drive+json":{"source":"iana","compressible":true},"application/vnd.ds-keypoint":{"source":"apache","extensions":["kpxx"]},"application/vnd.dtg.local":{"source":"iana"},"application/vnd.dtg.local.flash":{"source":"iana"},"application/vnd.dtg.local.html":{"source":"iana"},"application/vnd.dvb.ait":{"source":"iana","extensions":["ait"]},"application/vnd.dvb.dvbisl+xml":{"source":"iana","compressible":true},"application/vnd.dvb.dvbj":{"source":"iana"},"application/vnd.dvb.esgcontainer":{"source":"iana"},"application/vnd.dvb.ipdcdftnotifaccess":{"source":"iana"},"application/vnd.dvb.ipdcesgaccess":{"source":"iana"},"application/vnd.dvb.ipdcesgaccess2":{"source":"iana"},"application/vnd.dvb.ipdcesgpdd":{"source":"iana"},"application/vnd.dvb.ipdcroaming":{"source":"iana"},"application/vnd.dvb.iptv.alfec-base":{"source":"iana"},"application/vnd.dvb.iptv.alfec-enhancement":{"source":"iana"},"application/vnd.dvb.notif-aggregate-root+xml":{"source":"iana","compressible":true},"application/vnd.dvb.notif-container+xml":{"source":"iana","compressible":true},"application/vnd.dvb.notif-generic+xml":{"source":"iana","compressible":true},"application/vnd.dvb.notif-ia-msglist+xml":{"source":"iana","compressible":true},"application/vnd.dvb.notif-ia-registration-request+xml":{"source":"iana","compressible":true},"application/vnd.dvb.notif-ia-registration-response+xml":{"source":"iana","compressible":true},"application/vnd.dvb.notif-init+xml":{"source":"iana","compressible":true},"application/vnd.dvb.pfr":{"source":"iana"},"application/vnd.dvb.service":{"source":"iana","extensions":["svc"]},"application/vnd.dxr":{"source":"iana"},"application/vnd.dynageo":{"source":"iana","extensions":["geo"]},"application/vnd.dzr":{"source":"iana"},"application/vnd.easykaraoke.cdgdownload":{"source":"iana"},"application/vnd.ecdis-update":{"source":"iana"},"application/vnd.ecip.rlp":{"source":"iana"},"application/vnd.eclipse.ditto+json":{"source":"iana","compressible":true},"application/vnd.ecowin.chart":{"source":"iana","extensions":["mag"]},"application/vnd.ecowin.filerequest":{"source":"iana"},"application/vnd.ecowin.fileupdate":{"source":"iana"},"application/vnd.ecowin.series":{"source":"iana"},"application/vnd.ecowin.seriesrequest":{"source":"iana"},"application/vnd.ecowin.seriesupdate":{"source":"iana"},"application/vnd.efi.img":{"source":"iana"},"application/vnd.efi.iso":{"source":"iana"},"application/vnd.emclient.accessrequest+xml":{"source":"iana","compressible":true},"application/vnd.enliven":{"source":"iana","extensions":["nml"]},"application/vnd.enphase.envoy":{"source":"iana"},"application/vnd.eprints.data+xml":{"source":"iana","compressible":true},"application/vnd.epson.esf":{"source":"iana","extensions":["esf"]},"application/vnd.epson.msf":{"source":"iana","extensions":["msf"]},"application/vnd.epson.quickanime":{"source":"iana","extensions":["qam"]},"application/vnd.epson.salt":{"source":"iana","extensions":["slt"]},"application/vnd.epson.ssf":{"source":"iana","extensions":["ssf"]},"application/vnd.ericsson.quickcall":{"source":"iana"},"application/vnd.espass-espass+zip":{"source":"iana","compressible":false},"application/vnd.eszigno3+xml":{"source":"iana","compressible":true,"extensions":["es3","et3"]},"application/vnd.etsi.aoc+xml":{"source":"iana","compressible":true},"application/vnd.etsi.asic-e+zip":{"source":"iana","compressible":false},"application/vnd.etsi.asic-s+zip":{"source":"iana","compressible":false},"application/vnd.etsi.cug+xml":{"source":"iana","compressible":true},"application/vnd.etsi.iptvcommand+xml":{"source":"iana","compressible":true},"application/vnd.etsi.iptvdiscovery+xml":{"source":"iana","compressible":true},"application/vnd.etsi.iptvprofile+xml":{"source":"iana","compressible":true},"application/vnd.etsi.iptvsad-bc+xml":{"source":"iana","compressible":true},"application/vnd.etsi.iptvsad-cod+xml":{"source":"iana","compressible":true},"application/vnd.etsi.iptvsad-npvr+xml":{"source":"iana","compressible":true},"application/vnd.etsi.iptvservice+xml":{"source":"iana","compressible":true},"application/vnd.etsi.iptvsync+xml":{"source":"iana","compressible":true},"application/vnd.etsi.iptvueprofile+xml":{"source":"iana","compressible":true},"application/vnd.etsi.mcid+xml":{"source":"iana","compressible":true},"application/vnd.etsi.mheg5":{"source":"iana"},"application/vnd.etsi.overload-control-policy-dataset+xml":{"source":"iana","compressible":true},"application/vnd.etsi.pstn+xml":{"source":"iana","compressible":true},"application/vnd.etsi.sci+xml":{"source":"iana","compressible":true},"application/vnd.etsi.simservs+xml":{"source":"iana","compressible":true},"application/vnd.etsi.timestamp-token":{"source":"iana"},"application/vnd.etsi.tsl+xml":{"source":"iana","compressible":true},"application/vnd.etsi.tsl.der":{"source":"iana"},"application/vnd.eu.kasparian.car+json":{"source":"iana","compressible":true},"application/vnd.eudora.data":{"source":"iana"},"application/vnd.evolv.ecig.profile":{"source":"iana"},"application/vnd.evolv.ecig.settings":{"source":"iana"},"application/vnd.evolv.ecig.theme":{"source":"iana"},"application/vnd.exstream-empower+zip":{"source":"iana","compressible":false},"application/vnd.exstream-package":{"source":"iana"},"application/vnd.ezpix-album":{"source":"iana","extensions":["ez2"]},"application/vnd.ezpix-package":{"source":"iana","extensions":["ez3"]},"application/vnd.f-secure.mobile":{"source":"iana"},"application/vnd.familysearch.gedcom+zip":{"source":"iana","compressible":false},"application/vnd.fastcopy-disk-image":{"source":"iana"},"application/vnd.fdf":{"source":"iana","extensions":["fdf"]},"application/vnd.fdsn.mseed":{"source":"iana","extensions":["mseed"]},"application/vnd.fdsn.seed":{"source":"iana","extensions":["seed","dataless"]},"application/vnd.ffsns":{"source":"iana"},"application/vnd.ficlab.flb+zip":{"source":"iana","compressible":false},"application/vnd.filmit.zfc":{"source":"iana"},"application/vnd.fints":{"source":"iana"},"application/vnd.firemonkeys.cloudcell":{"source":"iana"},"application/vnd.flographit":{"source":"iana","extensions":["gph"]},"application/vnd.fluxtime.clip":{"source":"iana","extensions":["ftc"]},"application/vnd.font-fontforge-sfd":{"source":"iana"},"application/vnd.framemaker":{"source":"iana","extensions":["fm","frame","maker","book"]},"application/vnd.frogans.fnc":{"source":"iana","extensions":["fnc"]},"application/vnd.frogans.ltf":{"source":"iana","extensions":["ltf"]},"application/vnd.fsc.weblaunch":{"source":"iana","extensions":["fsc"]},"application/vnd.fujifilm.fb.docuworks":{"source":"iana"},"application/vnd.fujifilm.fb.docuworks.binder":{"source":"iana"},"application/vnd.fujifilm.fb.docuworks.container":{"source":"iana"},"application/vnd.fujifilm.fb.jfi+xml":{"source":"iana","compressible":true},"application/vnd.fujitsu.oasys":{"source":"iana","extensions":["oas"]},"application/vnd.fujitsu.oasys2":{"source":"iana","extensions":["oa2"]},"application/vnd.fujitsu.oasys3":{"source":"iana","extensions":["oa3"]},"application/vnd.fujitsu.oasysgp":{"source":"iana","extensions":["fg5"]},"application/vnd.fujitsu.oasysprs":{"source":"iana","extensions":["bh2"]},"application/vnd.fujixerox.art-ex":{"source":"iana"},"application/vnd.fujixerox.art4":{"source":"iana"},"application/vnd.fujixerox.ddd":{"source":"iana","extensions":["ddd"]},"application/vnd.fujixerox.docuworks":{"source":"iana","extensions":["xdw"]},"application/vnd.fujixerox.docuworks.binder":{"source":"iana","extensions":["xbd"]},"application/vnd.fujixerox.docuworks.container":{"source":"iana"},"application/vnd.fujixerox.hbpl":{"source":"iana"},"application/vnd.fut-misnet":{"source":"iana"},"application/vnd.futoin+cbor":{"source":"iana"},"application/vnd.futoin+json":{"source":"iana","compressible":true},"application/vnd.fuzzysheet":{"source":"iana","extensions":["fzs"]},"application/vnd.genomatix.tuxedo":{"source":"iana","extensions":["txd"]},"application/vnd.gentics.grd+json":{"source":"iana","compressible":true},"application/vnd.geo+json":{"source":"iana","compressible":true},"application/vnd.geocube+xml":{"source":"iana","compressible":true},"application/vnd.geogebra.file":{"source":"iana","extensions":["ggb"]},"application/vnd.geogebra.slides":{"source":"iana"},"application/vnd.geogebra.tool":{"source":"iana","extensions":["ggt"]},"application/vnd.geometry-explorer":{"source":"iana","extensions":["gex","gre"]},"application/vnd.geonext":{"source":"iana","extensions":["gxt"]},"application/vnd.geoplan":{"source":"iana","extensions":["g2w"]},"application/vnd.geospace":{"source":"iana","extensions":["g3w"]},"application/vnd.gerber":{"source":"iana"},"application/vnd.globalplatform.card-content-mgt":{"source":"iana"},"application/vnd.globalplatform.card-content-mgt-response":{"source":"iana"},"application/vnd.gmx":{"source":"iana","extensions":["gmx"]},"application/vnd.google-apps.document":{"compressible":false,"extensions":["gdoc"]},"application/vnd.google-apps.presentation":{"compressible":false,"extensions":["gslides"]},"application/vnd.google-apps.spreadsheet":{"compressible":false,"extensions":["gsheet"]},"application/vnd.google-earth.kml+xml":{"source":"iana","compressible":true,"extensions":["kml"]},"application/vnd.google-earth.kmz":{"source":"iana","compressible":false,"extensions":["kmz"]},"application/vnd.gov.sk.e-form+xml":{"source":"iana","compressible":true},"application/vnd.gov.sk.e-form+zip":{"source":"iana","compressible":false},"application/vnd.gov.sk.xmldatacontainer+xml":{"source":"iana","compressible":true},"application/vnd.grafeq":{"source":"iana","extensions":["gqf","gqs"]},"application/vnd.gridmp":{"source":"iana"},"application/vnd.groove-account":{"source":"iana","extensions":["gac"]},"application/vnd.groove-help":{"source":"iana","extensions":["ghf"]},"application/vnd.groove-identity-message":{"source":"iana","extensions":["gim"]},"application/vnd.groove-injector":{"source":"iana","extensions":["grv"]},"application/vnd.groove-tool-message":{"source":"iana","extensions":["gtm"]},"application/vnd.groove-tool-template":{"source":"iana","extensions":["tpl"]},"application/vnd.groove-vcard":{"source":"iana","extensions":["vcg"]},"application/vnd.hal+json":{"source":"iana","compressible":true},"application/vnd.hal+xml":{"source":"iana","compressible":true,"extensions":["hal"]},"application/vnd.handheld-entertainment+xml":{"source":"iana","compressible":true,"extensions":["zmm"]},"application/vnd.hbci":{"source":"iana","extensions":["hbci"]},"application/vnd.hc+json":{"source":"iana","compressible":true},"application/vnd.hcl-bireports":{"source":"iana"},"application/vnd.hdt":{"source":"iana"},"application/vnd.heroku+json":{"source":"iana","compressible":true},"application/vnd.hhe.lesson-player":{"source":"iana","extensions":["les"]},"application/vnd.hl7cda+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/vnd.hl7v2+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/vnd.hp-hpgl":{"source":"iana","extensions":["hpgl"]},"application/vnd.hp-hpid":{"source":"iana","extensions":["hpid"]},"application/vnd.hp-hps":{"source":"iana","extensions":["hps"]},"application/vnd.hp-jlyt":{"source":"iana","extensions":["jlt"]},"application/vnd.hp-pcl":{"source":"iana","extensions":["pcl"]},"application/vnd.hp-pclxl":{"source":"iana","extensions":["pclxl"]},"application/vnd.httphone":{"source":"iana"},"application/vnd.hydrostatix.sof-data":{"source":"iana","extensions":["sfd-hdstx"]},"application/vnd.hyper+json":{"source":"iana","compressible":true},"application/vnd.hyper-item+json":{"source":"iana","compressible":true},"application/vnd.hyperdrive+json":{"source":"iana","compressible":true},"application/vnd.hzn-3d-crossword":{"source":"iana"},"application/vnd.ibm.afplinedata":{"source":"iana"},"application/vnd.ibm.electronic-media":{"source":"iana"},"application/vnd.ibm.minipay":{"source":"iana","extensions":["mpy"]},"application/vnd.ibm.modcap":{"source":"iana","extensions":["afp","listafp","list3820"]},"application/vnd.ibm.rights-management":{"source":"iana","extensions":["irm"]},"application/vnd.ibm.secure-container":{"source":"iana","extensions":["sc"]},"application/vnd.iccprofile":{"source":"iana","extensions":["icc","icm"]},"application/vnd.ieee.1905":{"source":"iana"},"application/vnd.igloader":{"source":"iana","extensions":["igl"]},"application/vnd.imagemeter.folder+zip":{"source":"iana","compressible":false},"application/vnd.imagemeter.image+zip":{"source":"iana","compressible":false},"application/vnd.immervision-ivp":{"source":"iana","extensions":["ivp"]},"application/vnd.immervision-ivu":{"source":"iana","extensions":["ivu"]},"application/vnd.ims.imsccv1p1":{"source":"iana"},"application/vnd.ims.imsccv1p2":{"source":"iana"},"application/vnd.ims.imsccv1p3":{"source":"iana"},"application/vnd.ims.lis.v2.result+json":{"source":"iana","compressible":true},"application/vnd.ims.lti.v2.toolconsumerprofile+json":{"source":"iana","compressible":true},"application/vnd.ims.lti.v2.toolproxy+json":{"source":"iana","compressible":true},"application/vnd.ims.lti.v2.toolproxy.id+json":{"source":"iana","compressible":true},"application/vnd.ims.lti.v2.toolsettings+json":{"source":"iana","compressible":true},"application/vnd.ims.lti.v2.toolsettings.simple+json":{"source":"iana","compressible":true},"application/vnd.informedcontrol.rms+xml":{"source":"iana","compressible":true},"application/vnd.informix-visionary":{"source":"iana"},"application/vnd.infotech.project":{"source":"iana"},"application/vnd.infotech.project+xml":{"source":"iana","compressible":true},"application/vnd.innopath.wamp.notification":{"source":"iana"},"application/vnd.insors.igm":{"source":"iana","extensions":["igm"]},"application/vnd.intercon.formnet":{"source":"iana","extensions":["xpw","xpx"]},"application/vnd.intergeo":{"source":"iana","extensions":["i2g"]},"application/vnd.intertrust.digibox":{"source":"iana"},"application/vnd.intertrust.nncp":{"source":"iana"},"application/vnd.intu.qbo":{"source":"iana","extensions":["qbo"]},"application/vnd.intu.qfx":{"source":"iana","extensions":["qfx"]},"application/vnd.iptc.g2.catalogitem+xml":{"source":"iana","compressible":true},"application/vnd.iptc.g2.conceptitem+xml":{"source":"iana","compressible":true},"application/vnd.iptc.g2.knowledgeitem+xml":{"source":"iana","compressible":true},"application/vnd.iptc.g2.newsitem+xml":{"source":"iana","compressible":true},"application/vnd.iptc.g2.newsmessage+xml":{"source":"iana","compressible":true},"application/vnd.iptc.g2.packageitem+xml":{"source":"iana","compressible":true},"application/vnd.iptc.g2.planningitem+xml":{"source":"iana","compressible":true},"application/vnd.ipunplugged.rcprofile":{"source":"iana","extensions":["rcprofile"]},"application/vnd.irepository.package+xml":{"source":"iana","compressible":true,"extensions":["irp"]},"application/vnd.is-xpr":{"source":"iana","extensions":["xpr"]},"application/vnd.isac.fcs":{"source":"iana","extensions":["fcs"]},"application/vnd.iso11783-10+zip":{"source":"iana","compressible":false},"application/vnd.jam":{"source":"iana","extensions":["jam"]},"application/vnd.japannet-directory-service":{"source":"iana"},"application/vnd.japannet-jpnstore-wakeup":{"source":"iana"},"application/vnd.japannet-payment-wakeup":{"source":"iana"},"application/vnd.japannet-registration":{"source":"iana"},"application/vnd.japannet-registration-wakeup":{"source":"iana"},"application/vnd.japannet-setstore-wakeup":{"source":"iana"},"application/vnd.japannet-verification":{"source":"iana"},"application/vnd.japannet-verification-wakeup":{"source":"iana"},"application/vnd.jcp.javame.midlet-rms":{"source":"iana","extensions":["rms"]},"application/vnd.jisp":{"source":"iana","extensions":["jisp"]},"application/vnd.joost.joda-archive":{"source":"iana","extensions":["joda"]},"application/vnd.jsk.isdn-ngn":{"source":"iana"},"application/vnd.kahootz":{"source":"iana","extensions":["ktz","ktr"]},"application/vnd.kde.karbon":{"source":"iana","extensions":["karbon"]},"application/vnd.kde.kchart":{"source":"iana","extensions":["chrt"]},"application/vnd.kde.kformula":{"source":"iana","extensions":["kfo"]},"application/vnd.kde.kivio":{"source":"iana","extensions":["flw"]},"application/vnd.kde.kontour":{"source":"iana","extensions":["kon"]},"application/vnd.kde.kpresenter":{"source":"iana","extensions":["kpr","kpt"]},"application/vnd.kde.kspread":{"source":"iana","extensions":["ksp"]},"application/vnd.kde.kword":{"source":"iana","extensions":["kwd","kwt"]},"application/vnd.kenameaapp":{"source":"iana","extensions":["htke"]},"application/vnd.kidspiration":{"source":"iana","extensions":["kia"]},"application/vnd.kinar":{"source":"iana","extensions":["kne","knp"]},"application/vnd.koan":{"source":"iana","extensions":["skp","skd","skt","skm"]},"application/vnd.kodak-descriptor":{"source":"iana","extensions":["sse"]},"application/vnd.las":{"source":"iana"},"application/vnd.las.las+json":{"source":"iana","compressible":true},"application/vnd.las.las+xml":{"source":"iana","compressible":true,"extensions":["lasxml"]},"application/vnd.laszip":{"source":"iana"},"application/vnd.leap+json":{"source":"iana","compressible":true},"application/vnd.liberty-request+xml":{"source":"iana","compressible":true},"application/vnd.llamagraphics.life-balance.desktop":{"source":"iana","extensions":["lbd"]},"application/vnd.llamagraphics.life-balance.exchange+xml":{"source":"iana","compressible":true,"extensions":["lbe"]},"application/vnd.logipipe.circuit+zip":{"source":"iana","compressible":false},"application/vnd.loom":{"source":"iana"},"application/vnd.lotus-1-2-3":{"source":"iana","extensions":["123"]},"application/vnd.lotus-approach":{"source":"iana","extensions":["apr"]},"application/vnd.lotus-freelance":{"source":"iana","extensions":["pre"]},"application/vnd.lotus-notes":{"source":"iana","extensions":["nsf"]},"application/vnd.lotus-organizer":{"source":"iana","extensions":["org"]},"application/vnd.lotus-screencam":{"source":"iana","extensions":["scm"]},"application/vnd.lotus-wordpro":{"source":"iana","extensions":["lwp"]},"application/vnd.macports.portpkg":{"source":"iana","extensions":["portpkg"]},"application/vnd.mapbox-vector-tile":{"source":"iana","extensions":["mvt"]},"application/vnd.marlin.drm.actiontoken+xml":{"source":"iana","compressible":true},"application/vnd.marlin.drm.conftoken+xml":{"source":"iana","compressible":true},"application/vnd.marlin.drm.license+xml":{"source":"iana","compressible":true},"application/vnd.marlin.drm.mdcf":{"source":"iana"},"application/vnd.mason+json":{"source":"iana","compressible":true},"application/vnd.maxar.archive.3tz+zip":{"source":"iana","compressible":false},"application/vnd.maxmind.maxmind-db":{"source":"iana"},"application/vnd.mcd":{"source":"iana","extensions":["mcd"]},"application/vnd.medcalcdata":{"source":"iana","extensions":["mc1"]},"application/vnd.mediastation.cdkey":{"source":"iana","extensions":["cdkey"]},"application/vnd.meridian-slingshot":{"source":"iana"},"application/vnd.mfer":{"source":"iana","extensions":["mwf"]},"application/vnd.mfmp":{"source":"iana","extensions":["mfm"]},"application/vnd.micro+json":{"source":"iana","compressible":true},"application/vnd.micrografx.flo":{"source":"iana","extensions":["flo"]},"application/vnd.micrografx.igx":{"source":"iana","extensions":["igx"]},"application/vnd.microsoft.portable-executable":{"source":"iana"},"application/vnd.microsoft.windows.thumbnail-cache":{"source":"iana"},"application/vnd.miele+json":{"source":"iana","compressible":true},"application/vnd.mif":{"source":"iana","extensions":["mif"]},"application/vnd.minisoft-hp3000-save":{"source":"iana"},"application/vnd.mitsubishi.misty-guard.trustweb":{"source":"iana"},"application/vnd.mobius.daf":{"source":"iana","extensions":["daf"]},"application/vnd.mobius.dis":{"source":"iana","extensions":["dis"]},"application/vnd.mobius.mbk":{"source":"iana","extensions":["mbk"]},"application/vnd.mobius.mqy":{"source":"iana","extensions":["mqy"]},"application/vnd.mobius.msl":{"source":"iana","extensions":["msl"]},"application/vnd.mobius.plc":{"source":"iana","extensions":["plc"]},"application/vnd.mobius.txf":{"source":"iana","extensions":["txf"]},"application/vnd.mophun.application":{"source":"iana","extensions":["mpn"]},"application/vnd.mophun.certificate":{"source":"iana","extensions":["mpc"]},"application/vnd.motorola.flexsuite":{"source":"iana"},"application/vnd.motorola.flexsuite.adsi":{"source":"iana"},"application/vnd.motorola.flexsuite.fis":{"source":"iana"},"application/vnd.motorola.flexsuite.gotap":{"source":"iana"},"application/vnd.motorola.flexsuite.kmr":{"source":"iana"},"application/vnd.motorola.flexsuite.ttc":{"source":"iana"},"application/vnd.motorola.flexsuite.wem":{"source":"iana"},"application/vnd.motorola.iprm":{"source":"iana"},"application/vnd.mozilla.xul+xml":{"source":"iana","compressible":true,"extensions":["xul"]},"application/vnd.ms-3mfdocument":{"source":"iana"},"application/vnd.ms-artgalry":{"source":"iana","extensions":["cil"]},"application/vnd.ms-asf":{"source":"iana"},"application/vnd.ms-cab-compressed":{"source":"iana","extensions":["cab"]},"application/vnd.ms-color.iccprofile":{"source":"apache"},"application/vnd.ms-excel":{"source":"iana","compressible":false,"extensions":["xls","xlm","xla","xlc","xlt","xlw"]},"application/vnd.ms-excel.addin.macroenabled.12":{"source":"iana","extensions":["xlam"]},"application/vnd.ms-excel.sheet.binary.macroenabled.12":{"source":"iana","extensions":["xlsb"]},"application/vnd.ms-excel.sheet.macroenabled.12":{"source":"iana","extensions":["xlsm"]},"application/vnd.ms-excel.template.macroenabled.12":{"source":"iana","extensions":["xltm"]},"application/vnd.ms-fontobject":{"source":"iana","compressible":true,"extensions":["eot"]},"application/vnd.ms-htmlhelp":{"source":"iana","extensions":["chm"]},"application/vnd.ms-ims":{"source":"iana","extensions":["ims"]},"application/vnd.ms-lrm":{"source":"iana","extensions":["lrm"]},"application/vnd.ms-office.activex+xml":{"source":"iana","compressible":true},"application/vnd.ms-officetheme":{"source":"iana","extensions":["thmx"]},"application/vnd.ms-opentype":{"source":"apache","compressible":true},"application/vnd.ms-outlook":{"compressible":false,"extensions":["msg"]},"application/vnd.ms-package.obfuscated-opentype":{"source":"apache"},"application/vnd.ms-pki.seccat":{"source":"apache","extensions":["cat"]},"application/vnd.ms-pki.stl":{"source":"apache","extensions":["stl"]},"application/vnd.ms-playready.initiator+xml":{"source":"iana","compressible":true},"application/vnd.ms-powerpoint":{"source":"iana","compressible":false,"extensions":["ppt","pps","pot"]},"application/vnd.ms-powerpoint.addin.macroenabled.12":{"source":"iana","extensions":["ppam"]},"application/vnd.ms-powerpoint.presentation.macroenabled.12":{"source":"iana","extensions":["pptm"]},"application/vnd.ms-powerpoint.slide.macroenabled.12":{"source":"iana","extensions":["sldm"]},"application/vnd.ms-powerpoint.slideshow.macroenabled.12":{"source":"iana","extensions":["ppsm"]},"application/vnd.ms-powerpoint.template.macroenabled.12":{"source":"iana","extensions":["potm"]},"application/vnd.ms-printdevicecapabilities+xml":{"source":"iana","compressible":true},"application/vnd.ms-printing.printticket+xml":{"source":"apache","compressible":true},"application/vnd.ms-printschematicket+xml":{"source":"iana","compressible":true},"application/vnd.ms-project":{"source":"iana","extensions":["mpp","mpt"]},"application/vnd.ms-tnef":{"source":"iana"},"application/vnd.ms-windows.devicepairing":{"source":"iana"},"application/vnd.ms-windows.nwprinting.oob":{"source":"iana"},"application/vnd.ms-windows.printerpairing":{"source":"iana"},"application/vnd.ms-windows.wsd.oob":{"source":"iana"},"application/vnd.ms-wmdrm.lic-chlg-req":{"source":"iana"},"application/vnd.ms-wmdrm.lic-resp":{"source":"iana"},"application/vnd.ms-wmdrm.meter-chlg-req":{"source":"iana"},"application/vnd.ms-wmdrm.meter-resp":{"source":"iana"},"application/vnd.ms-word.document.macroenabled.12":{"source":"iana","extensions":["docm"]},"application/vnd.ms-word.template.macroenabled.12":{"source":"iana","extensions":["dotm"]},"application/vnd.ms-works":{"source":"iana","extensions":["wps","wks","wcm","wdb"]},"application/vnd.ms-wpl":{"source":"iana","extensions":["wpl"]},"application/vnd.ms-xpsdocument":{"source":"iana","compressible":false,"extensions":["xps"]},"application/vnd.msa-disk-image":{"source":"iana"},"application/vnd.mseq":{"source":"iana","extensions":["mseq"]},"application/vnd.msign":{"source":"iana"},"application/vnd.multiad.creator":{"source":"iana"},"application/vnd.multiad.creator.cif":{"source":"iana"},"application/vnd.music-niff":{"source":"iana"},"application/vnd.musician":{"source":"iana","extensions":["mus"]},"application/vnd.muvee.style":{"source":"iana","extensions":["msty"]},"application/vnd.mynfc":{"source":"iana","extensions":["taglet"]},"application/vnd.nacamar.ybrid+json":{"source":"iana","compressible":true},"application/vnd.ncd.control":{"source":"iana"},"application/vnd.ncd.reference":{"source":"iana"},"application/vnd.nearst.inv+json":{"source":"iana","compressible":true},"application/vnd.nebumind.line":{"source":"iana"},"application/vnd.nervana":{"source":"iana"},"application/vnd.netfpx":{"source":"iana"},"application/vnd.neurolanguage.nlu":{"source":"iana","extensions":["nlu"]},"application/vnd.nimn":{"source":"iana"},"application/vnd.nintendo.nitro.rom":{"source":"iana"},"application/vnd.nintendo.snes.rom":{"source":"iana"},"application/vnd.nitf":{"source":"iana","extensions":["ntf","nitf"]},"application/vnd.noblenet-directory":{"source":"iana","extensions":["nnd"]},"application/vnd.noblenet-sealer":{"source":"iana","extensions":["nns"]},"application/vnd.noblenet-web":{"source":"iana","extensions":["nnw"]},"application/vnd.nokia.catalogs":{"source":"iana"},"application/vnd.nokia.conml+wbxml":{"source":"iana"},"application/vnd.nokia.conml+xml":{"source":"iana","compressible":true},"application/vnd.nokia.iptv.config+xml":{"source":"iana","compressible":true},"application/vnd.nokia.isds-radio-presets":{"source":"iana"},"application/vnd.nokia.landmark+wbxml":{"source":"iana"},"application/vnd.nokia.landmark+xml":{"source":"iana","compressible":true},"application/vnd.nokia.landmarkcollection+xml":{"source":"iana","compressible":true},"application/vnd.nokia.n-gage.ac+xml":{"source":"iana","compressible":true,"extensions":["ac"]},"application/vnd.nokia.n-gage.data":{"source":"iana","extensions":["ngdat"]},"application/vnd.nokia.n-gage.symbian.install":{"source":"iana","extensions":["n-gage"]},"application/vnd.nokia.ncd":{"source":"iana"},"application/vnd.nokia.pcd+wbxml":{"source":"iana"},"application/vnd.nokia.pcd+xml":{"source":"iana","compressible":true},"application/vnd.nokia.radio-preset":{"source":"iana","extensions":["rpst"]},"application/vnd.nokia.radio-presets":{"source":"iana","extensions":["rpss"]},"application/vnd.novadigm.edm":{"source":"iana","extensions":["edm"]},"application/vnd.novadigm.edx":{"source":"iana","extensions":["edx"]},"application/vnd.novadigm.ext":{"source":"iana","extensions":["ext"]},"application/vnd.ntt-local.content-share":{"source":"iana"},"application/vnd.ntt-local.file-transfer":{"source":"iana"},"application/vnd.ntt-local.ogw_remote-access":{"source":"iana"},"application/vnd.ntt-local.sip-ta_remote":{"source":"iana"},"application/vnd.ntt-local.sip-ta_tcp_stream":{"source":"iana"},"application/vnd.oasis.opendocument.chart":{"source":"iana","extensions":["odc"]},"application/vnd.oasis.opendocument.chart-template":{"source":"iana","extensions":["otc"]},"application/vnd.oasis.opendocument.database":{"source":"iana","extensions":["odb"]},"application/vnd.oasis.opendocument.formula":{"source":"iana","extensions":["odf"]},"application/vnd.oasis.opendocument.formula-template":{"source":"iana","extensions":["odft"]},"application/vnd.oasis.opendocument.graphics":{"source":"iana","compressible":false,"extensions":["odg"]},"application/vnd.oasis.opendocument.graphics-template":{"source":"iana","extensions":["otg"]},"application/vnd.oasis.opendocument.image":{"source":"iana","extensions":["odi"]},"application/vnd.oasis.opendocument.image-template":{"source":"iana","extensions":["oti"]},"application/vnd.oasis.opendocument.presentation":{"source":"iana","compressible":false,"extensions":["odp"]},"application/vnd.oasis.opendocument.presentation-template":{"source":"iana","extensions":["otp"]},"application/vnd.oasis.opendocument.spreadsheet":{"source":"iana","compressible":false,"extensions":["ods"]},"application/vnd.oasis.opendocument.spreadsheet-template":{"source":"iana","extensions":["ots"]},"application/vnd.oasis.opendocument.text":{"source":"iana","compressible":false,"extensions":["odt"]},"application/vnd.oasis.opendocument.text-master":{"source":"iana","extensions":["odm"]},"application/vnd.oasis.opendocument.text-template":{"source":"iana","extensions":["ott"]},"application/vnd.oasis.opendocument.text-web":{"source":"iana","extensions":["oth"]},"application/vnd.obn":{"source":"iana"},"application/vnd.ocf+cbor":{"source":"iana"},"application/vnd.oci.image.manifest.v1+json":{"source":"iana","compressible":true},"application/vnd.oftn.l10n+json":{"source":"iana","compressible":true},"application/vnd.oipf.contentaccessdownload+xml":{"source":"iana","compressible":true},"application/vnd.oipf.contentaccessstreaming+xml":{"source":"iana","compressible":true},"application/vnd.oipf.cspg-hexbinary":{"source":"iana"},"application/vnd.oipf.dae.svg+xml":{"source":"iana","compressible":true},"application/vnd.oipf.dae.xhtml+xml":{"source":"iana","compressible":true},"application/vnd.oipf.mippvcontrolmessage+xml":{"source":"iana","compressible":true},"application/vnd.oipf.pae.gem":{"source":"iana"},"application/vnd.oipf.spdiscovery+xml":{"source":"iana","compressible":true},"application/vnd.oipf.spdlist+xml":{"source":"iana","compressible":true},"application/vnd.oipf.ueprofile+xml":{"source":"iana","compressible":true},"application/vnd.oipf.userprofile+xml":{"source":"iana","compressible":true},"application/vnd.olpc-sugar":{"source":"iana","extensions":["xo"]},"application/vnd.oma-scws-config":{"source":"iana"},"application/vnd.oma-scws-http-request":{"source":"iana"},"application/vnd.oma-scws-http-response":{"source":"iana"},"application/vnd.oma.bcast.associated-procedure-parameter+xml":{"source":"iana","compressible":true},"application/vnd.oma.bcast.drm-trigger+xml":{"source":"iana","compressible":true},"application/vnd.oma.bcast.imd+xml":{"source":"iana","compressible":true},"application/vnd.oma.bcast.ltkm":{"source":"iana"},"application/vnd.oma.bcast.notification+xml":{"source":"iana","compressible":true},"application/vnd.oma.bcast.provisioningtrigger":{"source":"iana"},"application/vnd.oma.bcast.sgboot":{"source":"iana"},"application/vnd.oma.bcast.sgdd+xml":{"source":"iana","compressible":true},"application/vnd.oma.bcast.sgdu":{"source":"iana"},"application/vnd.oma.bcast.simple-symbol-container":{"source":"iana"},"application/vnd.oma.bcast.smartcard-trigger+xml":{"source":"iana","compressible":true},"application/vnd.oma.bcast.sprov+xml":{"source":"iana","compressible":true},"application/vnd.oma.bcast.stkm":{"source":"iana"},"application/vnd.oma.cab-address-book+xml":{"source":"iana","compressible":true},"application/vnd.oma.cab-feature-handler+xml":{"source":"iana","compressible":true},"application/vnd.oma.cab-pcc+xml":{"source":"iana","compressible":true},"application/vnd.oma.cab-subs-invite+xml":{"source":"iana","compressible":true},"application/vnd.oma.cab-user-prefs+xml":{"source":"iana","compressible":true},"application/vnd.oma.dcd":{"source":"iana"},"application/vnd.oma.dcdc":{"source":"iana"},"application/vnd.oma.dd2+xml":{"source":"iana","compressible":true,"extensions":["dd2"]},"application/vnd.oma.drm.risd+xml":{"source":"iana","compressible":true},"application/vnd.oma.group-usage-list+xml":{"source":"iana","compressible":true},"application/vnd.oma.lwm2m+cbor":{"source":"iana"},"application/vnd.oma.lwm2m+json":{"source":"iana","compressible":true},"application/vnd.oma.lwm2m+tlv":{"source":"iana"},"application/vnd.oma.pal+xml":{"source":"iana","compressible":true},"application/vnd.oma.poc.detailed-progress-report+xml":{"source":"iana","compressible":true},"application/vnd.oma.poc.final-report+xml":{"source":"iana","compressible":true},"application/vnd.oma.poc.groups+xml":{"source":"iana","compressible":true},"application/vnd.oma.poc.invocation-descriptor+xml":{"source":"iana","compressible":true},"application/vnd.oma.poc.optimized-progress-report+xml":{"source":"iana","compressible":true},"application/vnd.oma.push":{"source":"iana"},"application/vnd.oma.scidm.messages+xml":{"source":"iana","compressible":true},"application/vnd.oma.xcap-directory+xml":{"source":"iana","compressible":true},"application/vnd.omads-email+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/vnd.omads-file+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/vnd.omads-folder+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/vnd.omaloc-supl-init":{"source":"iana"},"application/vnd.onepager":{"source":"iana"},"application/vnd.onepagertamp":{"source":"iana"},"application/vnd.onepagertamx":{"source":"iana"},"application/vnd.onepagertat":{"source":"iana"},"application/vnd.onepagertatp":{"source":"iana"},"application/vnd.onepagertatx":{"source":"iana"},"application/vnd.openblox.game+xml":{"source":"iana","compressible":true,"extensions":["obgx"]},"application/vnd.openblox.game-binary":{"source":"iana"},"application/vnd.openeye.oeb":{"source":"iana"},"application/vnd.openofficeorg.extension":{"source":"apache","extensions":["oxt"]},"application/vnd.openstreetmap.data+xml":{"source":"iana","compressible":true,"extensions":["osm"]},"application/vnd.opentimestamps.ots":{"source":"iana"},"application/vnd.openxmlformats-officedocument.custom-properties+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.customxmlproperties+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.drawing+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.drawingml.chart+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.drawingml.chartshapes+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.drawingml.diagramcolors+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.drawingml.diagramdata+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.drawingml.diagramlayout+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.drawingml.diagramstyle+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.extended-properties+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.commentauthors+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.comments+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.handoutmaster+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.notesmaster+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.notesslide+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.presentation":{"source":"iana","compressible":false,"extensions":["pptx"]},"application/vnd.openxmlformats-officedocument.presentationml.presentation.main+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.presprops+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.slide":{"source":"iana","extensions":["sldx"]},"application/vnd.openxmlformats-officedocument.presentationml.slide+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.slidelayout+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.slidemaster+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.slideshow":{"source":"iana","extensions":["ppsx"]},"application/vnd.openxmlformats-officedocument.presentationml.slideshow.main+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.slideupdateinfo+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.tablestyles+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.tags+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.template":{"source":"iana","extensions":["potx"]},"application/vnd.openxmlformats-officedocument.presentationml.template.main+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.viewprops+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.calcchain+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.chartsheet+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.comments+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.connections+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.dialogsheet+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.externallink+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.pivotcachedefinition+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.pivotcacherecords+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.pivottable+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.querytable+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.revisionheaders+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.revisionlog+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.sharedstrings+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":{"source":"iana","compressible":false,"extensions":["xlsx"]},"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.sheetmetadata+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.table+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.tablesinglecells+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.template":{"source":"iana","extensions":["xltx"]},"application/vnd.openxmlformats-officedocument.spreadsheetml.template.main+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.usernames+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.volatiledependencies+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.theme+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.themeoverride+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.vmldrawing":{"source":"iana"},"application/vnd.openxmlformats-officedocument.wordprocessingml.comments+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.wordprocessingml.document":{"source":"iana","compressible":false,"extensions":["docx"]},"application/vnd.openxmlformats-officedocument.wordprocessingml.document.glossary+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.wordprocessingml.endnotes+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.wordprocessingml.fonttable+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.wordprocessingml.footer+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.wordprocessingml.footnotes+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.wordprocessingml.numbering+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.wordprocessingml.settings+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.wordprocessingml.template":{"source":"iana","extensions":["dotx"]},"application/vnd.openxmlformats-officedocument.wordprocessingml.template.main+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.wordprocessingml.websettings+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-package.core-properties+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-package.digital-signature-xmlsignature+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-package.relationships+xml":{"source":"iana","compressible":true},"application/vnd.oracle.resource+json":{"source":"iana","compressible":true},"application/vnd.orange.indata":{"source":"iana"},"application/vnd.osa.netdeploy":{"source":"iana"},"application/vnd.osgeo.mapguide.package":{"source":"iana","extensions":["mgp"]},"application/vnd.osgi.bundle":{"source":"iana"},"application/vnd.osgi.dp":{"source":"iana","extensions":["dp"]},"application/vnd.osgi.subsystem":{"source":"iana","extensions":["esa"]},"application/vnd.otps.ct-kip+xml":{"source":"iana","compressible":true},"application/vnd.oxli.countgraph":{"source":"iana"},"application/vnd.pagerduty+json":{"source":"iana","compressible":true},"application/vnd.palm":{"source":"iana","extensions":["pdb","pqa","oprc"]},"application/vnd.panoply":{"source":"iana"},"application/vnd.paos.xml":{"source":"iana"},"application/vnd.patentdive":{"source":"iana"},"application/vnd.patientecommsdoc":{"source":"iana"},"application/vnd.pawaafile":{"source":"iana","extensions":["paw"]},"application/vnd.pcos":{"source":"iana"},"application/vnd.pg.format":{"source":"iana","extensions":["str"]},"application/vnd.pg.osasli":{"source":"iana","extensions":["ei6"]},"application/vnd.piaccess.application-licence":{"source":"iana"},"application/vnd.picsel":{"source":"iana","extensions":["efif"]},"application/vnd.pmi.widget":{"source":"iana","extensions":["wg"]},"application/vnd.poc.group-advertisement+xml":{"source":"iana","compressible":true},"application/vnd.pocketlearn":{"source":"iana","extensions":["plf"]},"application/vnd.powerbuilder6":{"source":"iana","extensions":["pbd"]},"application/vnd.powerbuilder6-s":{"source":"iana"},"application/vnd.powerbuilder7":{"source":"iana"},"application/vnd.powerbuilder7-s":{"source":"iana"},"application/vnd.powerbuilder75":{"source":"iana"},"application/vnd.powerbuilder75-s":{"source":"iana"},"application/vnd.preminet":{"source":"iana"},"application/vnd.previewsystems.box":{"source":"iana","extensions":["box"]},"application/vnd.proteus.magazine":{"source":"iana","extensions":["mgz"]},"application/vnd.psfs":{"source":"iana"},"application/vnd.publishare-delta-tree":{"source":"iana","extensions":["qps"]},"application/vnd.pvi.ptid1":{"source":"iana","extensions":["ptid"]},"application/vnd.pwg-multiplexed":{"source":"iana"},"application/vnd.pwg-xhtml-print+xml":{"source":"iana","compressible":true},"application/vnd.qualcomm.brew-app-res":{"source":"iana"},"application/vnd.quarantainenet":{"source":"iana"},"application/vnd.quark.quarkxpress":{"source":"iana","extensions":["qxd","qxt","qwd","qwt","qxl","qxb"]},"application/vnd.quobject-quoxdocument":{"source":"iana"},"application/vnd.radisys.moml+xml":{"source":"iana","compressible":true},"application/vnd.radisys.msml+xml":{"source":"iana","compressible":true},"application/vnd.radisys.msml-audit+xml":{"source":"iana","compressible":true},"application/vnd.radisys.msml-audit-conf+xml":{"source":"iana","compressible":true},"application/vnd.radisys.msml-audit-conn+xml":{"source":"iana","compressible":true},"application/vnd.radisys.msml-audit-dialog+xml":{"source":"iana","compressible":true},"application/vnd.radisys.msml-audit-stream+xml":{"source":"iana","compressible":true},"application/vnd.radisys.msml-conf+xml":{"source":"iana","compressible":true},"application/vnd.radisys.msml-dialog+xml":{"source":"iana","compressible":true},"application/vnd.radisys.msml-dialog-base+xml":{"source":"iana","compressible":true},"application/vnd.radisys.msml-dialog-fax-detect+xml":{"source":"iana","compressible":true},"application/vnd.radisys.msml-dialog-fax-sendrecv+xml":{"source":"iana","compressible":true},"application/vnd.radisys.msml-dialog-group+xml":{"source":"iana","compressible":true},"application/vnd.radisys.msml-dialog-speech+xml":{"source":"iana","compressible":true},"application/vnd.radisys.msml-dialog-transform+xml":{"source":"iana","compressible":true},"application/vnd.rainstor.data":{"source":"iana"},"application/vnd.rapid":{"source":"iana"},"application/vnd.rar":{"source":"iana","extensions":["rar"]},"application/vnd.realvnc.bed":{"source":"iana","extensions":["bed"]},"application/vnd.recordare.musicxml":{"source":"iana","extensions":["mxl"]},"application/vnd.recordare.musicxml+xml":{"source":"iana","compressible":true,"extensions":["musicxml"]},"application/vnd.renlearn.rlprint":{"source":"iana"},"application/vnd.resilient.logic":{"source":"iana"},"application/vnd.restful+json":{"source":"iana","compressible":true},"application/vnd.rig.cryptonote":{"source":"iana","extensions":["cryptonote"]},"application/vnd.rim.cod":{"source":"apache","extensions":["cod"]},"application/vnd.rn-realmedia":{"source":"apache","extensions":["rm"]},"application/vnd.rn-realmedia-vbr":{"source":"apache","extensions":["rmvb"]},"application/vnd.route66.link66+xml":{"source":"iana","compressible":true,"extensions":["link66"]},"application/vnd.rs-274x":{"source":"iana"},"application/vnd.ruckus.download":{"source":"iana"},"application/vnd.s3sms":{"source":"iana"},"application/vnd.sailingtracker.track":{"source":"iana","extensions":["st"]},"application/vnd.sar":{"source":"iana"},"application/vnd.sbm.cid":{"source":"iana"},"application/vnd.sbm.mid2":{"source":"iana"},"application/vnd.scribus":{"source":"iana"},"application/vnd.sealed.3df":{"source":"iana"},"application/vnd.sealed.csf":{"source":"iana"},"application/vnd.sealed.doc":{"source":"iana"},"application/vnd.sealed.eml":{"source":"iana"},"application/vnd.sealed.mht":{"source":"iana"},"application/vnd.sealed.net":{"source":"iana"},"application/vnd.sealed.ppt":{"source":"iana"},"application/vnd.sealed.tiff":{"source":"iana"},"application/vnd.sealed.xls":{"source":"iana"},"application/vnd.sealedmedia.softseal.html":{"source":"iana"},"application/vnd.sealedmedia.softseal.pdf":{"source":"iana"},"application/vnd.seemail":{"source":"iana","extensions":["see"]},"application/vnd.seis+json":{"source":"iana","compressible":true},"application/vnd.sema":{"source":"iana","extensions":["sema"]},"application/vnd.semd":{"source":"iana","extensions":["semd"]},"application/vnd.semf":{"source":"iana","extensions":["semf"]},"application/vnd.shade-save-file":{"source":"iana"},"application/vnd.shana.informed.formdata":{"source":"iana","extensions":["ifm"]},"application/vnd.shana.informed.formtemplate":{"source":"iana","extensions":["itp"]},"application/vnd.shana.informed.interchange":{"source":"iana","extensions":["iif"]},"application/vnd.shana.informed.package":{"source":"iana","extensions":["ipk"]},"application/vnd.shootproof+json":{"source":"iana","compressible":true},"application/vnd.shopkick+json":{"source":"iana","compressible":true},"application/vnd.shp":{"source":"iana"},"application/vnd.shx":{"source":"iana"},"application/vnd.sigrok.session":{"source":"iana"},"application/vnd.simtech-mindmapper":{"source":"iana","extensions":["twd","twds"]},"application/vnd.siren+json":{"source":"iana","compressible":true},"application/vnd.smaf":{"source":"iana","extensions":["mmf"]},"application/vnd.smart.notebook":{"source":"iana"},"application/vnd.smart.teacher":{"source":"iana","extensions":["teacher"]},"application/vnd.snesdev-page-table":{"source":"iana"},"application/vnd.software602.filler.form+xml":{"source":"iana","compressible":true,"extensions":["fo"]},"application/vnd.software602.filler.form-xml-zip":{"source":"iana"},"application/vnd.solent.sdkm+xml":{"source":"iana","compressible":true,"extensions":["sdkm","sdkd"]},"application/vnd.spotfire.dxp":{"source":"iana","extensions":["dxp"]},"application/vnd.spotfire.sfs":{"source":"iana","extensions":["sfs"]},"application/vnd.sqlite3":{"source":"iana"},"application/vnd.sss-cod":{"source":"iana"},"application/vnd.sss-dtf":{"source":"iana"},"application/vnd.sss-ntf":{"source":"iana"},"application/vnd.stardivision.calc":{"source":"apache","extensions":["sdc"]},"application/vnd.stardivision.draw":{"source":"apache","extensions":["sda"]},"application/vnd.stardivision.impress":{"source":"apache","extensions":["sdd"]},"application/vnd.stardivision.math":{"source":"apache","extensions":["smf"]},"application/vnd.stardivision.writer":{"source":"apache","extensions":["sdw","vor"]},"application/vnd.stardivision.writer-global":{"source":"apache","extensions":["sgl"]},"application/vnd.stepmania.package":{"source":"iana","extensions":["smzip"]},"application/vnd.stepmania.stepchart":{"source":"iana","extensions":["sm"]},"application/vnd.street-stream":{"source":"iana"},"application/vnd.sun.wadl+xml":{"source":"iana","compressible":true,"extensions":["wadl"]},"application/vnd.sun.xml.calc":{"source":"apache","extensions":["sxc"]},"application/vnd.sun.xml.calc.template":{"source":"apache","extensions":["stc"]},"application/vnd.sun.xml.draw":{"source":"apache","extensions":["sxd"]},"application/vnd.sun.xml.draw.template":{"source":"apache","extensions":["std"]},"application/vnd.sun.xml.impress":{"source":"apache","extensions":["sxi"]},"application/vnd.sun.xml.impress.template":{"source":"apache","extensions":["sti"]},"application/vnd.sun.xml.math":{"source":"apache","extensions":["sxm"]},"application/vnd.sun.xml.writer":{"source":"apache","extensions":["sxw"]},"application/vnd.sun.xml.writer.global":{"source":"apache","extensions":["sxg"]},"application/vnd.sun.xml.writer.template":{"source":"apache","extensions":["stw"]},"application/vnd.sus-calendar":{"source":"iana","extensions":["sus","susp"]},"application/vnd.svd":{"source":"iana","extensions":["svd"]},"application/vnd.swiftview-ics":{"source":"iana"},"application/vnd.sycle+xml":{"source":"iana","compressible":true},"application/vnd.syft+json":{"source":"iana","compressible":true},"application/vnd.symbian.install":{"source":"apache","extensions":["sis","sisx"]},"application/vnd.syncml+xml":{"source":"iana","charset":"UTF-8","compressible":true,"extensions":["xsm"]},"application/vnd.syncml.dm+wbxml":{"source":"iana","charset":"UTF-8","extensions":["bdm"]},"application/vnd.syncml.dm+xml":{"source":"iana","charset":"UTF-8","compressible":true,"extensions":["xdm"]},"application/vnd.syncml.dm.notification":{"source":"iana"},"application/vnd.syncml.dmddf+wbxml":{"source":"iana"},"application/vnd.syncml.dmddf+xml":{"source":"iana","charset":"UTF-8","compressible":true,"extensions":["ddf"]},"application/vnd.syncml.dmtnds+wbxml":{"source":"iana"},"application/vnd.syncml.dmtnds+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/vnd.syncml.ds.notification":{"source":"iana"},"application/vnd.tableschema+json":{"source":"iana","compressible":true},"application/vnd.tao.intent-module-archive":{"source":"iana","extensions":["tao"]},"application/vnd.tcpdump.pcap":{"source":"iana","extensions":["pcap","cap","dmp"]},"application/vnd.think-cell.ppttc+json":{"source":"iana","compressible":true},"application/vnd.tmd.mediaflex.api+xml":{"source":"iana","compressible":true},"application/vnd.tml":{"source":"iana"},"application/vnd.tmobile-livetv":{"source":"iana","extensions":["tmo"]},"application/vnd.tri.onesource":{"source":"iana"},"application/vnd.trid.tpt":{"source":"iana","extensions":["tpt"]},"application/vnd.triscape.mxs":{"source":"iana","extensions":["mxs"]},"application/vnd.trueapp":{"source":"iana","extensions":["tra"]},"application/vnd.truedoc":{"source":"iana"},"application/vnd.ubisoft.webplayer":{"source":"iana"},"application/vnd.ufdl":{"source":"iana","extensions":["ufd","ufdl"]},"application/vnd.uiq.theme":{"source":"iana","extensions":["utz"]},"application/vnd.umajin":{"source":"iana","extensions":["umj"]},"application/vnd.unity":{"source":"iana","extensions":["unityweb"]},"application/vnd.uoml+xml":{"source":"iana","compressible":true,"extensions":["uoml"]},"application/vnd.uplanet.alert":{"source":"iana"},"application/vnd.uplanet.alert-wbxml":{"source":"iana"},"application/vnd.uplanet.bearer-choice":{"source":"iana"},"application/vnd.uplanet.bearer-choice-wbxml":{"source":"iana"},"application/vnd.uplanet.cacheop":{"source":"iana"},"application/vnd.uplanet.cacheop-wbxml":{"source":"iana"},"application/vnd.uplanet.channel":{"source":"iana"},"application/vnd.uplanet.channel-wbxml":{"source":"iana"},"application/vnd.uplanet.list":{"source":"iana"},"application/vnd.uplanet.list-wbxml":{"source":"iana"},"application/vnd.uplanet.listcmd":{"source":"iana"},"application/vnd.uplanet.listcmd-wbxml":{"source":"iana"},"application/vnd.uplanet.signal":{"source":"iana"},"application/vnd.uri-map":{"source":"iana"},"application/vnd.valve.source.material":{"source":"iana"},"application/vnd.vcx":{"source":"iana","extensions":["vcx"]},"application/vnd.vd-study":{"source":"iana"},"application/vnd.vectorworks":{"source":"iana"},"application/vnd.vel+json":{"source":"iana","compressible":true},"application/vnd.verimatrix.vcas":{"source":"iana"},"application/vnd.veritone.aion+json":{"source":"iana","compressible":true},"application/vnd.veryant.thin":{"source":"iana"},"application/vnd.ves.encrypted":{"source":"iana"},"application/vnd.vidsoft.vidconference":{"source":"iana"},"application/vnd.visio":{"source":"iana","extensions":["vsd","vst","vss","vsw"]},"application/vnd.visionary":{"source":"iana","extensions":["vis"]},"application/vnd.vividence.scriptfile":{"source":"iana"},"application/vnd.vsf":{"source":"iana","extensions":["vsf"]},"application/vnd.wap.sic":{"source":"iana"},"application/vnd.wap.slc":{"source":"iana"},"application/vnd.wap.wbxml":{"source":"iana","charset":"UTF-8","extensions":["wbxml"]},"application/vnd.wap.wmlc":{"source":"iana","extensions":["wmlc"]},"application/vnd.wap.wmlscriptc":{"source":"iana","extensions":["wmlsc"]},"application/vnd.webturbo":{"source":"iana","extensions":["wtb"]},"application/vnd.wfa.dpp":{"source":"iana"},"application/vnd.wfa.p2p":{"source":"iana"},"application/vnd.wfa.wsc":{"source":"iana"},"application/vnd.windows.devicepairing":{"source":"iana"},"application/vnd.wmc":{"source":"iana"},"application/vnd.wmf.bootstrap":{"source":"iana"},"application/vnd.wolfram.mathematica":{"source":"iana"},"application/vnd.wolfram.mathematica.package":{"source":"iana"},"application/vnd.wolfram.player":{"source":"iana","extensions":["nbp"]},"application/vnd.wordperfect":{"source":"iana","extensions":["wpd"]},"application/vnd.wqd":{"source":"iana","extensions":["wqd"]},"application/vnd.wrq-hp3000-labelled":{"source":"iana"},"application/vnd.wt.stf":{"source":"iana","extensions":["stf"]},"application/vnd.wv.csp+wbxml":{"source":"iana"},"application/vnd.wv.csp+xml":{"source":"iana","compressible":true},"application/vnd.wv.ssp+xml":{"source":"iana","compressible":true},"application/vnd.xacml+json":{"source":"iana","compressible":true},"application/vnd.xara":{"source":"iana","extensions":["xar"]},"application/vnd.xfdl":{"source":"iana","extensions":["xfdl"]},"application/vnd.xfdl.webform":{"source":"iana"},"application/vnd.xmi+xml":{"source":"iana","compressible":true},"application/vnd.xmpie.cpkg":{"source":"iana"},"application/vnd.xmpie.dpkg":{"source":"iana"},"application/vnd.xmpie.plan":{"source":"iana"},"application/vnd.xmpie.ppkg":{"source":"iana"},"application/vnd.xmpie.xlim":{"source":"iana"},"application/vnd.yamaha.hv-dic":{"source":"iana","extensions":["hvd"]},"application/vnd.yamaha.hv-script":{"source":"iana","extensions":["hvs"]},"application/vnd.yamaha.hv-voice":{"source":"iana","extensions":["hvp"]},"application/vnd.yamaha.openscoreformat":{"source":"iana","extensions":["osf"]},"application/vnd.yamaha.openscoreformat.osfpvg+xml":{"source":"iana","compressible":true,"extensions":["osfpvg"]},"application/vnd.yamaha.remote-setup":{"source":"iana"},"application/vnd.yamaha.smaf-audio":{"source":"iana","extensions":["saf"]},"application/vnd.yamaha.smaf-phrase":{"source":"iana","extensions":["spf"]},"application/vnd.yamaha.through-ngn":{"source":"iana"},"application/vnd.yamaha.tunnel-udpencap":{"source":"iana"},"application/vnd.yaoweme":{"source":"iana"},"application/vnd.yellowriver-custom-menu":{"source":"iana","extensions":["cmp"]},"application/vnd.youtube.yt":{"source":"iana"},"application/vnd.zul":{"source":"iana","extensions":["zir","zirz"]},"application/vnd.zzazz.deck+xml":{"source":"iana","compressible":true,"extensions":["zaz"]},"application/voicexml+xml":{"source":"iana","compressible":true,"extensions":["vxml"]},"application/voucher-cms+json":{"source":"iana","compressible":true},"application/vq-rtcpxr":{"source":"iana"},"application/wasm":{"source":"iana","compressible":true,"extensions":["wasm"]},"application/watcherinfo+xml":{"source":"iana","compressible":true,"extensions":["wif"]},"application/webpush-options+json":{"source":"iana","compressible":true},"application/whoispp-query":{"source":"iana"},"application/whoispp-response":{"source":"iana"},"application/widget":{"source":"iana","extensions":["wgt"]},"application/winhlp":{"source":"apache","extensions":["hlp"]},"application/wita":{"source":"iana"},"application/wordperfect5.1":{"source":"iana"},"application/wsdl+xml":{"source":"iana","compressible":true,"extensions":["wsdl"]},"application/wspolicy+xml":{"source":"iana","compressible":true,"extensions":["wspolicy"]},"application/x-7z-compressed":{"source":"apache","compressible":false,"extensions":["7z"]},"application/x-abiword":{"source":"apache","extensions":["abw"]},"application/x-ace-compressed":{"source":"apache","extensions":["ace"]},"application/x-amf":{"source":"apache"},"application/x-apple-diskimage":{"source":"apache","extensions":["dmg"]},"application/x-arj":{"compressible":false,"extensions":["arj"]},"application/x-authorware-bin":{"source":"apache","extensions":["aab","x32","u32","vox"]},"application/x-authorware-map":{"source":"apache","extensions":["aam"]},"application/x-authorware-seg":{"source":"apache","extensions":["aas"]},"application/x-bcpio":{"source":"apache","extensions":["bcpio"]},"application/x-bdoc":{"compressible":false,"extensions":["bdoc"]},"application/x-bittorrent":{"source":"apache","extensions":["torrent"]},"application/x-blorb":{"source":"apache","extensions":["blb","blorb"]},"application/x-bzip":{"source":"apache","compressible":false,"extensions":["bz"]},"application/x-bzip2":{"source":"apache","compressible":false,"extensions":["bz2","boz"]},"application/x-cbr":{"source":"apache","extensions":["cbr","cba","cbt","cbz","cb7"]},"application/x-cdlink":{"source":"apache","extensions":["vcd"]},"application/x-cfs-compressed":{"source":"apache","extensions":["cfs"]},"application/x-chat":{"source":"apache","extensions":["chat"]},"application/x-chess-pgn":{"source":"apache","extensions":["pgn"]},"application/x-chrome-extension":{"extensions":["crx"]},"application/x-cocoa":{"source":"nginx","extensions":["cco"]},"application/x-compress":{"source":"apache"},"application/x-conference":{"source":"apache","extensions":["nsc"]},"application/x-cpio":{"source":"apache","extensions":["cpio"]},"application/x-csh":{"source":"apache","extensions":["csh"]},"application/x-deb":{"compressible":false},"application/x-debian-package":{"source":"apache","extensions":["deb","udeb"]},"application/x-dgc-compressed":{"source":"apache","extensions":["dgc"]},"application/x-director":{"source":"apache","extensions":["dir","dcr","dxr","cst","cct","cxt","w3d","fgd","swa"]},"application/x-doom":{"source":"apache","extensions":["wad"]},"application/x-dtbncx+xml":{"source":"apache","compressible":true,"extensions":["ncx"]},"application/x-dtbook+xml":{"source":"apache","compressible":true,"extensions":["dtb"]},"application/x-dtbresource+xml":{"source":"apache","compressible":true,"extensions":["res"]},"application/x-dvi":{"source":"apache","compressible":false,"extensions":["dvi"]},"application/x-envoy":{"source":"apache","extensions":["evy"]},"application/x-eva":{"source":"apache","extensions":["eva"]},"application/x-font-bdf":{"source":"apache","extensions":["bdf"]},"application/x-font-dos":{"source":"apache"},"application/x-font-framemaker":{"source":"apache"},"application/x-font-ghostscript":{"source":"apache","extensions":["gsf"]},"application/x-font-libgrx":{"source":"apache"},"application/x-font-linux-psf":{"source":"apache","extensions":["psf"]},"application/x-font-pcf":{"source":"apache","extensions":["pcf"]},"application/x-font-snf":{"source":"apache","extensions":["snf"]},"application/x-font-speedo":{"source":"apache"},"application/x-font-sunos-news":{"source":"apache"},"application/x-font-type1":{"source":"apache","extensions":["pfa","pfb","pfm","afm"]},"application/x-font-vfont":{"source":"apache"},"application/x-freearc":{"source":"apache","extensions":["arc"]},"application/x-futuresplash":{"source":"apache","extensions":["spl"]},"application/x-gca-compressed":{"source":"apache","extensions":["gca"]},"application/x-glulx":{"source":"apache","extensions":["ulx"]},"application/x-gnumeric":{"source":"apache","extensions":["gnumeric"]},"application/x-gramps-xml":{"source":"apache","extensions":["gramps"]},"application/x-gtar":{"source":"apache","extensions":["gtar"]},"application/x-gzip":{"source":"apache"},"application/x-hdf":{"source":"apache","extensions":["hdf"]},"application/x-httpd-php":{"compressible":true,"extensions":["php"]},"application/x-install-instructions":{"source":"apache","extensions":["install"]},"application/x-iso9660-image":{"source":"apache","extensions":["iso"]},"application/x-iwork-keynote-sffkey":{"extensions":["key"]},"application/x-iwork-numbers-sffnumbers":{"extensions":["numbers"]},"application/x-iwork-pages-sffpages":{"extensions":["pages"]},"application/x-java-archive-diff":{"source":"nginx","extensions":["jardiff"]},"application/x-java-jnlp-file":{"source":"apache","compressible":false,"extensions":["jnlp"]},"application/x-javascript":{"compressible":true},"application/x-keepass2":{"extensions":["kdbx"]},"application/x-latex":{"source":"apache","compressible":false,"extensions":["latex"]},"application/x-lua-bytecode":{"extensions":["luac"]},"application/x-lzh-compressed":{"source":"apache","extensions":["lzh","lha"]},"application/x-makeself":{"source":"nginx","extensions":["run"]},"application/x-mie":{"source":"apache","extensions":["mie"]},"application/x-mobipocket-ebook":{"source":"apache","extensions":["prc","mobi"]},"application/x-mpegurl":{"compressible":false},"application/x-ms-application":{"source":"apache","extensions":["application"]},"application/x-ms-shortcut":{"source":"apache","extensions":["lnk"]},"application/x-ms-wmd":{"source":"apache","extensions":["wmd"]},"application/x-ms-wmz":{"source":"apache","extensions":["wmz"]},"application/x-ms-xbap":{"source":"apache","extensions":["xbap"]},"application/x-msaccess":{"source":"apache","extensions":["mdb"]},"application/x-msbinder":{"source":"apache","extensions":["obd"]},"application/x-mscardfile":{"source":"apache","extensions":["crd"]},"application/x-msclip":{"source":"apache","extensions":["clp"]},"application/x-msdos-program":{"extensions":["exe"]},"application/x-msdownload":{"source":"apache","extensions":["exe","dll","com","bat","msi"]},"application/x-msmediaview":{"source":"apache","extensions":["mvb","m13","m14"]},"application/x-msmetafile":{"source":"apache","extensions":["wmf","wmz","emf","emz"]},"application/x-msmoney":{"source":"apache","extensions":["mny"]},"application/x-mspublisher":{"source":"apache","extensions":["pub"]},"application/x-msschedule":{"source":"apache","extensions":["scd"]},"application/x-msterminal":{"source":"apache","extensions":["trm"]},"application/x-mswrite":{"source":"apache","extensions":["wri"]},"application/x-netcdf":{"source":"apache","extensions":["nc","cdf"]},"application/x-ns-proxy-autoconfig":{"compressible":true,"extensions":["pac"]},"application/x-nzb":{"source":"apache","extensions":["nzb"]},"application/x-perl":{"source":"nginx","extensions":["pl","pm"]},"application/x-pilot":{"source":"nginx","extensions":["prc","pdb"]},"application/x-pkcs12":{"source":"apache","compressible":false,"extensions":["p12","pfx"]},"application/x-pkcs7-certificates":{"source":"apache","extensions":["p7b","spc"]},"application/x-pkcs7-certreqresp":{"source":"apache","extensions":["p7r"]},"application/x-pki-message":{"source":"iana"},"application/x-rar-compressed":{"source":"apache","compressible":false,"extensions":["rar"]},"application/x-redhat-package-manager":{"source":"nginx","extensions":["rpm"]},"application/x-research-info-systems":{"source":"apache","extensions":["ris"]},"application/x-sea":{"source":"nginx","extensions":["sea"]},"application/x-sh":{"source":"apache","compressible":true,"extensions":["sh"]},"application/x-shar":{"source":"apache","extensions":["shar"]},"application/x-shockwave-flash":{"source":"apache","compressible":false,"extensions":["swf"]},"application/x-silverlight-app":{"source":"apache","extensions":["xap"]},"application/x-sql":{"source":"apache","extensions":["sql"]},"application/x-stuffit":{"source":"apache","compressible":false,"extensions":["sit"]},"application/x-stuffitx":{"source":"apache","extensions":["sitx"]},"application/x-subrip":{"source":"apache","extensions":["srt"]},"application/x-sv4cpio":{"source":"apache","extensions":["sv4cpio"]},"application/x-sv4crc":{"source":"apache","extensions":["sv4crc"]},"application/x-t3vm-image":{"source":"apache","extensions":["t3"]},"application/x-tads":{"source":"apache","extensions":["gam"]},"application/x-tar":{"source":"apache","compressible":true,"extensions":["tar"]},"application/x-tcl":{"source":"apache","extensions":["tcl","tk"]},"application/x-tex":{"source":"apache","extensions":["tex"]},"application/x-tex-tfm":{"source":"apache","extensions":["tfm"]},"application/x-texinfo":{"source":"apache","extensions":["texinfo","texi"]},"application/x-tgif":{"source":"apache","extensions":["obj"]},"application/x-ustar":{"source":"apache","extensions":["ustar"]},"application/x-virtualbox-hdd":{"compressible":true,"extensions":["hdd"]},"application/x-virtualbox-ova":{"compressible":true,"extensions":["ova"]},"application/x-virtualbox-ovf":{"compressible":true,"extensions":["ovf"]},"application/x-virtualbox-vbox":{"compressible":true,"extensions":["vbox"]},"application/x-virtualbox-vbox-extpack":{"compressible":false,"extensions":["vbox-extpack"]},"application/x-virtualbox-vdi":{"compressible":true,"extensions":["vdi"]},"application/x-virtualbox-vhd":{"compressible":true,"extensions":["vhd"]},"application/x-virtualbox-vmdk":{"compressible":true,"extensions":["vmdk"]},"application/x-wais-source":{"source":"apache","extensions":["src"]},"application/x-web-app-manifest+json":{"compressible":true,"extensions":["webapp"]},"application/x-www-form-urlencoded":{"source":"iana","compressible":true},"application/x-x509-ca-cert":{"source":"iana","extensions":["der","crt","pem"]},"application/x-x509-ca-ra-cert":{"source":"iana"},"application/x-x509-next-ca-cert":{"source":"iana"},"application/x-xfig":{"source":"apache","extensions":["fig"]},"application/x-xliff+xml":{"source":"apache","compressible":true,"extensions":["xlf"]},"application/x-xpinstall":{"source":"apache","compressible":false,"extensions":["xpi"]},"application/x-xz":{"source":"apache","extensions":["xz"]},"application/x-zmachine":{"source":"apache","extensions":["z1","z2","z3","z4","z5","z6","z7","z8"]},"application/x400-bp":{"source":"iana"},"application/xacml+xml":{"source":"iana","compressible":true},"application/xaml+xml":{"source":"apache","compressible":true,"extensions":["xaml"]},"application/xcap-att+xml":{"source":"iana","compressible":true,"extensions":["xav"]},"application/xcap-caps+xml":{"source":"iana","compressible":true,"extensions":["xca"]},"application/xcap-diff+xml":{"source":"iana","compressible":true,"extensions":["xdf"]},"application/xcap-el+xml":{"source":"iana","compressible":true,"extensions":["xel"]},"application/xcap-error+xml":{"source":"iana","compressible":true},"application/xcap-ns+xml":{"source":"iana","compressible":true,"extensions":["xns"]},"application/xcon-conference-info+xml":{"source":"iana","compressible":true},"application/xcon-conference-info-diff+xml":{"source":"iana","compressible":true},"application/xenc+xml":{"source":"iana","compressible":true,"extensions":["xenc"]},"application/xhtml+xml":{"source":"iana","compressible":true,"extensions":["xhtml","xht"]},"application/xhtml-voice+xml":{"source":"apache","compressible":true},"application/xliff+xml":{"source":"iana","compressible":true,"extensions":["xlf"]},"application/xml":{"source":"iana","compressible":true,"extensions":["xml","xsl","xsd","rng"]},"application/xml-dtd":{"source":"iana","compressible":true,"extensions":["dtd"]},"application/xml-external-parsed-entity":{"source":"iana"},"application/xml-patch+xml":{"source":"iana","compressible":true},"application/xmpp+xml":{"source":"iana","compressible":true},"application/xop+xml":{"source":"iana","compressible":true,"extensions":["xop"]},"application/xproc+xml":{"source":"apache","compressible":true,"extensions":["xpl"]},"application/xslt+xml":{"source":"iana","compressible":true,"extensions":["xsl","xslt"]},"application/xspf+xml":{"source":"apache","compressible":true,"extensions":["xspf"]},"application/xv+xml":{"source":"iana","compressible":true,"extensions":["mxml","xhvml","xvml","xvm"]},"application/yang":{"source":"iana","extensions":["yang"]},"application/yang-data+json":{"source":"iana","compressible":true},"application/yang-data+xml":{"source":"iana","compressible":true},"application/yang-patch+json":{"source":"iana","compressible":true},"application/yang-patch+xml":{"source":"iana","compressible":true},"application/yin+xml":{"source":"iana","compressible":true,"extensions":["yin"]},"application/zip":{"source":"iana","compressible":false,"extensions":["zip"]},"application/zlib":{"source":"iana"},"application/zstd":{"source":"iana"},"audio/1d-interleaved-parityfec":{"source":"iana"},"audio/32kadpcm":{"source":"iana"},"audio/3gpp":{"source":"iana","compressible":false,"extensions":["3gpp"]},"audio/3gpp2":{"source":"iana"},"audio/aac":{"source":"iana"},"audio/ac3":{"source":"iana"},"audio/adpcm":{"source":"apache","extensions":["adp"]},"audio/amr":{"source":"iana","extensions":["amr"]},"audio/amr-wb":{"source":"iana"},"audio/amr-wb+":{"source":"iana"},"audio/aptx":{"source":"iana"},"audio/asc":{"source":"iana"},"audio/atrac-advanced-lossless":{"source":"iana"},"audio/atrac-x":{"source":"iana"},"audio/atrac3":{"source":"iana"},"audio/basic":{"source":"iana","compressible":false,"extensions":["au","snd"]},"audio/bv16":{"source":"iana"},"audio/bv32":{"source":"iana"},"audio/clearmode":{"source":"iana"},"audio/cn":{"source":"iana"},"audio/dat12":{"source":"iana"},"audio/dls":{"source":"iana"},"audio/dsr-es201108":{"source":"iana"},"audio/dsr-es202050":{"source":"iana"},"audio/dsr-es202211":{"source":"iana"},"audio/dsr-es202212":{"source":"iana"},"audio/dv":{"source":"iana"},"audio/dvi4":{"source":"iana"},"audio/eac3":{"source":"iana"},"audio/encaprtp":{"source":"iana"},"audio/evrc":{"source":"iana"},"audio/evrc-qcp":{"source":"iana"},"audio/evrc0":{"source":"iana"},"audio/evrc1":{"source":"iana"},"audio/evrcb":{"source":"iana"},"audio/evrcb0":{"source":"iana"},"audio/evrcb1":{"source":"iana"},"audio/evrcnw":{"source":"iana"},"audio/evrcnw0":{"source":"iana"},"audio/evrcnw1":{"source":"iana"},"audio/evrcwb":{"source":"iana"},"audio/evrcwb0":{"source":"iana"},"audio/evrcwb1":{"source":"iana"},"audio/evs":{"source":"iana"},"audio/flexfec":{"source":"iana"},"audio/fwdred":{"source":"iana"},"audio/g711-0":{"source":"iana"},"audio/g719":{"source":"iana"},"audio/g722":{"source":"iana"},"audio/g7221":{"source":"iana"},"audio/g723":{"source":"iana"},"audio/g726-16":{"source":"iana"},"audio/g726-24":{"source":"iana"},"audio/g726-32":{"source":"iana"},"audio/g726-40":{"source":"iana"},"audio/g728":{"source":"iana"},"audio/g729":{"source":"iana"},"audio/g7291":{"source":"iana"},"audio/g729d":{"source":"iana"},"audio/g729e":{"source":"iana"},"audio/gsm":{"source":"iana"},"audio/gsm-efr":{"source":"iana"},"audio/gsm-hr-08":{"source":"iana"},"audio/ilbc":{"source":"iana"},"audio/ip-mr_v2.5":{"source":"iana"},"audio/isac":{"source":"apache"},"audio/l16":{"source":"iana"},"audio/l20":{"source":"iana"},"audio/l24":{"source":"iana","compressible":false},"audio/l8":{"source":"iana"},"audio/lpc":{"source":"iana"},"audio/melp":{"source":"iana"},"audio/melp1200":{"source":"iana"},"audio/melp2400":{"source":"iana"},"audio/melp600":{"source":"iana"},"audio/mhas":{"source":"iana"},"audio/midi":{"source":"apache","extensions":["mid","midi","kar","rmi"]},"audio/mobile-xmf":{"source":"iana","extensions":["mxmf"]},"audio/mp3":{"compressible":false,"extensions":["mp3"]},"audio/mp4":{"source":"iana","compressible":false,"extensions":["m4a","mp4a"]},"audio/mp4a-latm":{"source":"iana"},"audio/mpa":{"source":"iana"},"audio/mpa-robust":{"source":"iana"},"audio/mpeg":{"source":"iana","compressible":false,"extensions":["mpga","mp2","mp2a","mp3","m2a","m3a"]},"audio/mpeg4-generic":{"source":"iana"},"audio/musepack":{"source":"apache"},"audio/ogg":{"source":"iana","compressible":false,"extensions":["oga","ogg","spx","opus"]},"audio/opus":{"source":"iana"},"audio/parityfec":{"source":"iana"},"audio/pcma":{"source":"iana"},"audio/pcma-wb":{"source":"iana"},"audio/pcmu":{"source":"iana"},"audio/pcmu-wb":{"source":"iana"},"audio/prs.sid":{"source":"iana"},"audio/qcelp":{"source":"iana"},"audio/raptorfec":{"source":"iana"},"audio/red":{"source":"iana"},"audio/rtp-enc-aescm128":{"source":"iana"},"audio/rtp-midi":{"source":"iana"},"audio/rtploopback":{"source":"iana"},"audio/rtx":{"source":"iana"},"audio/s3m":{"source":"apache","extensions":["s3m"]},"audio/scip":{"source":"iana"},"audio/silk":{"source":"apache","extensions":["sil"]},"audio/smv":{"source":"iana"},"audio/smv-qcp":{"source":"iana"},"audio/smv0":{"source":"iana"},"audio/sofa":{"source":"iana"},"audio/sp-midi":{"source":"iana"},"audio/speex":{"source":"iana"},"audio/t140c":{"source":"iana"},"audio/t38":{"source":"iana"},"audio/telephone-event":{"source":"iana"},"audio/tetra_acelp":{"source":"iana"},"audio/tetra_acelp_bb":{"source":"iana"},"audio/tone":{"source":"iana"},"audio/tsvcis":{"source":"iana"},"audio/uemclip":{"source":"iana"},"audio/ulpfec":{"source":"iana"},"audio/usac":{"source":"iana"},"audio/vdvi":{"source":"iana"},"audio/vmr-wb":{"source":"iana"},"audio/vnd.3gpp.iufp":{"source":"iana"},"audio/vnd.4sb":{"source":"iana"},"audio/vnd.audiokoz":{"source":"iana"},"audio/vnd.celp":{"source":"iana"},"audio/vnd.cisco.nse":{"source":"iana"},"audio/vnd.cmles.radio-events":{"source":"iana"},"audio/vnd.cns.anp1":{"source":"iana"},"audio/vnd.cns.inf1":{"source":"iana"},"audio/vnd.dece.audio":{"source":"iana","extensions":["uva","uvva"]},"audio/vnd.digital-winds":{"source":"iana","extensions":["eol"]},"audio/vnd.dlna.adts":{"source":"iana"},"audio/vnd.dolby.heaac.1":{"source":"iana"},"audio/vnd.dolby.heaac.2":{"source":"iana"},"audio/vnd.dolby.mlp":{"source":"iana"},"audio/vnd.dolby.mps":{"source":"iana"},"audio/vnd.dolby.pl2":{"source":"iana"},"audio/vnd.dolby.pl2x":{"source":"iana"},"audio/vnd.dolby.pl2z":{"source":"iana"},"audio/vnd.dolby.pulse.1":{"source":"iana"},"audio/vnd.dra":{"source":"iana","extensions":["dra"]},"audio/vnd.dts":{"source":"iana","extensions":["dts"]},"audio/vnd.dts.hd":{"source":"iana","extensions":["dtshd"]},"audio/vnd.dts.uhd":{"source":"iana"},"audio/vnd.dvb.file":{"source":"iana"},"audio/vnd.everad.plj":{"source":"iana"},"audio/vnd.hns.audio":{"source":"iana"},"audio/vnd.lucent.voice":{"source":"iana","extensions":["lvp"]},"audio/vnd.ms-playready.media.pya":{"source":"iana","extensions":["pya"]},"audio/vnd.nokia.mobile-xmf":{"source":"iana"},"audio/vnd.nortel.vbk":{"source":"iana"},"audio/vnd.nuera.ecelp4800":{"source":"iana","extensions":["ecelp4800"]},"audio/vnd.nuera.ecelp7470":{"source":"iana","extensions":["ecelp7470"]},"audio/vnd.nuera.ecelp9600":{"source":"iana","extensions":["ecelp9600"]},"audio/vnd.octel.sbc":{"source":"iana"},"audio/vnd.presonus.multitrack":{"source":"iana"},"audio/vnd.qcelp":{"source":"iana"},"audio/vnd.rhetorex.32kadpcm":{"source":"iana"},"audio/vnd.rip":{"source":"iana","extensions":["rip"]},"audio/vnd.rn-realaudio":{"compressible":false},"audio/vnd.sealedmedia.softseal.mpeg":{"source":"iana"},"audio/vnd.vmx.cvsd":{"source":"iana"},"audio/vnd.wave":{"compressible":false},"audio/vorbis":{"source":"iana","compressible":false},"audio/vorbis-config":{"source":"iana"},"audio/wav":{"compressible":false,"extensions":["wav"]},"audio/wave":{"compressible":false,"extensions":["wav"]},"audio/webm":{"source":"apache","compressible":false,"extensions":["weba"]},"audio/x-aac":{"source":"apache","compressible":false,"extensions":["aac"]},"audio/x-aiff":{"source":"apache","extensions":["aif","aiff","aifc"]},"audio/x-caf":{"source":"apache","compressible":false,"extensions":["caf"]},"audio/x-flac":{"source":"apache","extensions":["flac"]},"audio/x-m4a":{"source":"nginx","extensions":["m4a"]},"audio/x-matroska":{"source":"apache","extensions":["mka"]},"audio/x-mpegurl":{"source":"apache","extensions":["m3u"]},"audio/x-ms-wax":{"source":"apache","extensions":["wax"]},"audio/x-ms-wma":{"source":"apache","extensions":["wma"]},"audio/x-pn-realaudio":{"source":"apache","extensions":["ram","ra"]},"audio/x-pn-realaudio-plugin":{"source":"apache","extensions":["rmp"]},"audio/x-realaudio":{"source":"nginx","extensions":["ra"]},"audio/x-tta":{"source":"apache"},"audio/x-wav":{"source":"apache","extensions":["wav"]},"audio/xm":{"source":"apache","extensions":["xm"]},"chemical/x-cdx":{"source":"apache","extensions":["cdx"]},"chemical/x-cif":{"source":"apache","extensions":["cif"]},"chemical/x-cmdf":{"source":"apache","extensions":["cmdf"]},"chemical/x-cml":{"source":"apache","extensions":["cml"]},"chemical/x-csml":{"source":"apache","extensions":["csml"]},"chemical/x-pdb":{"source":"apache"},"chemical/x-xyz":{"source":"apache","extensions":["xyz"]},"font/collection":{"source":"iana","extensions":["ttc"]},"font/otf":{"source":"iana","compressible":true,"extensions":["otf"]},"font/sfnt":{"source":"iana"},"font/ttf":{"source":"iana","compressible":true,"extensions":["ttf"]},"font/woff":{"source":"iana","extensions":["woff"]},"font/woff2":{"source":"iana","extensions":["woff2"]},"image/aces":{"source":"iana","extensions":["exr"]},"image/apng":{"compressible":false,"extensions":["apng"]},"image/avci":{"source":"iana","extensions":["avci"]},"image/avcs":{"source":"iana","extensions":["avcs"]},"image/avif":{"source":"iana","compressible":false,"extensions":["avif"]},"image/bmp":{"source":"iana","compressible":true,"extensions":["bmp"]},"image/cgm":{"source":"iana","extensions":["cgm"]},"image/dicom-rle":{"source":"iana","extensions":["drle"]},"image/emf":{"source":"iana","extensions":["emf"]},"image/fits":{"source":"iana","extensions":["fits"]},"image/g3fax":{"source":"iana","extensions":["g3"]},"image/gif":{"source":"iana","compressible":false,"extensions":["gif"]},"image/heic":{"source":"iana","extensions":["heic"]},"image/heic-sequence":{"source":"iana","extensions":["heics"]},"image/heif":{"source":"iana","extensions":["heif"]},"image/heif-sequence":{"source":"iana","extensions":["heifs"]},"image/hej2k":{"source":"iana","extensions":["hej2"]},"image/hsj2":{"source":"iana","extensions":["hsj2"]},"image/ief":{"source":"iana","extensions":["ief"]},"image/jls":{"source":"iana","extensions":["jls"]},"image/jp2":{"source":"iana","compressible":false,"extensions":["jp2","jpg2"]},"image/jpeg":{"source":"iana","compressible":false,"extensions":["jpeg","jpg","jpe"]},"image/jph":{"source":"iana","extensions":["jph"]},"image/jphc":{"source":"iana","extensions":["jhc"]},"image/jpm":{"source":"iana","compressible":false,"extensions":["jpm"]},"image/jpx":{"source":"iana","compressible":false,"extensions":["jpx","jpf"]},"image/jxr":{"source":"iana","extensions":["jxr"]},"image/jxra":{"source":"iana","extensions":["jxra"]},"image/jxrs":{"source":"iana","extensions":["jxrs"]},"image/jxs":{"source":"iana","extensions":["jxs"]},"image/jxsc":{"source":"iana","extensions":["jxsc"]},"image/jxsi":{"source":"iana","extensions":["jxsi"]},"image/jxss":{"source":"iana","extensions":["jxss"]},"image/ktx":{"source":"iana","extensions":["ktx"]},"image/ktx2":{"source":"iana","extensions":["ktx2"]},"image/naplps":{"source":"iana"},"image/pjpeg":{"compressible":false},"image/png":{"source":"iana","compressible":false,"extensions":["png"]},"image/prs.btif":{"source":"iana","extensions":["btif"]},"image/prs.pti":{"source":"iana","extensions":["pti"]},"image/pwg-raster":{"source":"iana"},"image/sgi":{"source":"apache","extensions":["sgi"]},"image/svg+xml":{"source":"iana","compressible":true,"extensions":["svg","svgz"]},"image/t38":{"source":"iana","extensions":["t38"]},"image/tiff":{"source":"iana","compressible":false,"extensions":["tif","tiff"]},"image/tiff-fx":{"source":"iana","extensions":["tfx"]},"image/vnd.adobe.photoshop":{"source":"iana","compressible":true,"extensions":["psd"]},"image/vnd.airzip.accelerator.azv":{"source":"iana","extensions":["azv"]},"image/vnd.cns.inf2":{"source":"iana"},"image/vnd.dece.graphic":{"source":"iana","extensions":["uvi","uvvi","uvg","uvvg"]},"image/vnd.djvu":{"source":"iana","extensions":["djvu","djv"]},"image/vnd.dvb.subtitle":{"source":"iana","extensions":["sub"]},"image/vnd.dwg":{"source":"iana","extensions":["dwg"]},"image/vnd.dxf":{"source":"iana","extensions":["dxf"]},"image/vnd.fastbidsheet":{"source":"iana","extensions":["fbs"]},"image/vnd.fpx":{"source":"iana","extensions":["fpx"]},"image/vnd.fst":{"source":"iana","extensions":["fst"]},"image/vnd.fujixerox.edmics-mmr":{"source":"iana","extensions":["mmr"]},"image/vnd.fujixerox.edmics-rlc":{"source":"iana","extensions":["rlc"]},"image/vnd.globalgraphics.pgb":{"source":"iana"},"image/vnd.microsoft.icon":{"source":"iana","compressible":true,"extensions":["ico"]},"image/vnd.mix":{"source":"iana"},"image/vnd.mozilla.apng":{"source":"iana"},"image/vnd.ms-dds":{"compressible":true,"extensions":["dds"]},"image/vnd.ms-modi":{"source":"iana","extensions":["mdi"]},"image/vnd.ms-photo":{"source":"apache","extensions":["wdp"]},"image/vnd.net-fpx":{"source":"iana","extensions":["npx"]},"image/vnd.pco.b16":{"source":"iana","extensions":["b16"]},"image/vnd.radiance":{"source":"iana"},"image/vnd.sealed.png":{"source":"iana"},"image/vnd.sealedmedia.softseal.gif":{"source":"iana"},"image/vnd.sealedmedia.softseal.jpg":{"source":"iana"},"image/vnd.svf":{"source":"iana"},"image/vnd.tencent.tap":{"source":"iana","extensions":["tap"]},"image/vnd.valve.source.texture":{"source":"iana","extensions":["vtf"]},"image/vnd.wap.wbmp":{"source":"iana","extensions":["wbmp"]},"image/vnd.xiff":{"source":"iana","extensions":["xif"]},"image/vnd.zbrush.pcx":{"source":"iana","extensions":["pcx"]},"image/webp":{"source":"apache","extensions":["webp"]},"image/wmf":{"source":"iana","extensions":["wmf"]},"image/x-3ds":{"source":"apache","extensions":["3ds"]},"image/x-cmu-raster":{"source":"apache","extensions":["ras"]},"image/x-cmx":{"source":"apache","extensions":["cmx"]},"image/x-freehand":{"source":"apache","extensions":["fh","fhc","fh4","fh5","fh7"]},"image/x-icon":{"source":"apache","compressible":true,"extensions":["ico"]},"image/x-jng":{"source":"nginx","extensions":["jng"]},"image/x-mrsid-image":{"source":"apache","extensions":["sid"]},"image/x-ms-bmp":{"source":"nginx","compressible":true,"extensions":["bmp"]},"image/x-pcx":{"source":"apache","extensions":["pcx"]},"image/x-pict":{"source":"apache","extensions":["pic","pct"]},"image/x-portable-anymap":{"source":"apache","extensions":["pnm"]},"image/x-portable-bitmap":{"source":"apache","extensions":["pbm"]},"image/x-portable-graymap":{"source":"apache","extensions":["pgm"]},"image/x-portable-pixmap":{"source":"apache","extensions":["ppm"]},"image/x-rgb":{"source":"apache","extensions":["rgb"]},"image/x-tga":{"source":"apache","extensions":["tga"]},"image/x-xbitmap":{"source":"apache","extensions":["xbm"]},"image/x-xcf":{"compressible":false},"image/x-xpixmap":{"source":"apache","extensions":["xpm"]},"image/x-xwindowdump":{"source":"apache","extensions":["xwd"]},"message/cpim":{"source":"iana"},"message/delivery-status":{"source":"iana"},"message/disposition-notification":{"source":"iana","extensions":["disposition-notification"]},"message/external-body":{"source":"iana"},"message/feedback-report":{"source":"iana"},"message/global":{"source":"iana","extensions":["u8msg"]},"message/global-delivery-status":{"source":"iana","extensions":["u8dsn"]},"message/global-disposition-notification":{"source":"iana","extensions":["u8mdn"]},"message/global-headers":{"source":"iana","extensions":["u8hdr"]},"message/http":{"source":"iana","compressible":false},"message/imdn+xml":{"source":"iana","compressible":true},"message/news":{"source":"iana"},"message/partial":{"source":"iana","compressible":false},"message/rfc822":{"source":"iana","compressible":true,"extensions":["eml","mime"]},"message/s-http":{"source":"iana"},"message/sip":{"source":"iana"},"message/sipfrag":{"source":"iana"},"message/tracking-status":{"source":"iana"},"message/vnd.si.simp":{"source":"iana"},"message/vnd.wfa.wsc":{"source":"iana","extensions":["wsc"]},"model/3mf":{"source":"iana","extensions":["3mf"]},"model/e57":{"source":"iana"},"model/gltf+json":{"source":"iana","compressible":true,"extensions":["gltf"]},"model/gltf-binary":{"source":"iana","compressible":true,"extensions":["glb"]},"model/iges":{"source":"iana","compressible":false,"extensions":["igs","iges"]},"model/mesh":{"source":"iana","compressible":false,"extensions":["msh","mesh","silo"]},"model/mtl":{"source":"iana","extensions":["mtl"]},"model/obj":{"source":"iana","extensions":["obj"]},"model/step":{"source":"iana"},"model/step+xml":{"source":"iana","compressible":true,"extensions":["stpx"]},"model/step+zip":{"source":"iana","compressible":false,"extensions":["stpz"]},"model/step-xml+zip":{"source":"iana","compressible":false,"extensions":["stpxz"]},"model/stl":{"source":"iana","extensions":["stl"]},"model/vnd.collada+xml":{"source":"iana","compressible":true,"extensions":["dae"]},"model/vnd.dwf":{"source":"iana","extensions":["dwf"]},"model/vnd.flatland.3dml":{"source":"iana"},"model/vnd.gdl":{"source":"iana","extensions":["gdl"]},"model/vnd.gs-gdl":{"source":"apache"},"model/vnd.gs.gdl":{"source":"iana"},"model/vnd.gtw":{"source":"iana","extensions":["gtw"]},"model/vnd.moml+xml":{"source":"iana","compressible":true},"model/vnd.mts":{"source":"iana","extensions":["mts"]},"model/vnd.opengex":{"source":"iana","extensions":["ogex"]},"model/vnd.parasolid.transmit.binary":{"source":"iana","extensions":["x_b"]},"model/vnd.parasolid.transmit.text":{"source":"iana","extensions":["x_t"]},"model/vnd.pytha.pyox":{"source":"iana"},"model/vnd.rosette.annotated-data-model":{"source":"iana"},"model/vnd.sap.vds":{"source":"iana","extensions":["vds"]},"model/vnd.usdz+zip":{"source":"iana","compressible":false,"extensions":["usdz"]},"model/vnd.valve.source.compiled-map":{"source":"iana","extensions":["bsp"]},"model/vnd.vtu":{"source":"iana","extensions":["vtu"]},"model/vrml":{"source":"iana","compressible":false,"extensions":["wrl","vrml"]},"model/x3d+binary":{"source":"apache","compressible":false,"extensions":["x3db","x3dbz"]},"model/x3d+fastinfoset":{"source":"iana","extensions":["x3db"]},"model/x3d+vrml":{"source":"apache","compressible":false,"extensions":["x3dv","x3dvz"]},"model/x3d+xml":{"source":"iana","compressible":true,"extensions":["x3d","x3dz"]},"model/x3d-vrml":{"source":"iana","extensions":["x3dv"]},"multipart/alternative":{"source":"iana","compressible":false},"multipart/appledouble":{"source":"iana"},"multipart/byteranges":{"source":"iana"},"multipart/digest":{"source":"iana"},"multipart/encrypted":{"source":"iana","compressible":false},"multipart/form-data":{"source":"iana","compressible":false},"multipart/header-set":{"source":"iana"},"multipart/mixed":{"source":"iana"},"multipart/multilingual":{"source":"iana"},"multipart/parallel":{"source":"iana"},"multipart/related":{"source":"iana","compressible":false},"multipart/report":{"source":"iana"},"multipart/signed":{"source":"iana","compressible":false},"multipart/vnd.bint.med-plus":{"source":"iana"},"multipart/voice-message":{"source":"iana"},"multipart/x-mixed-replace":{"source":"iana"},"text/1d-interleaved-parityfec":{"source":"iana"},"text/cache-manifest":{"source":"iana","compressible":true,"extensions":["appcache","manifest"]},"text/calendar":{"source":"iana","extensions":["ics","ifb"]},"text/calender":{"compressible":true},"text/cmd":{"compressible":true},"text/coffeescript":{"extensions":["coffee","litcoffee"]},"text/cql":{"source":"iana"},"text/cql-expression":{"source":"iana"},"text/cql-identifier":{"source":"iana"},"text/css":{"source":"iana","charset":"UTF-8","compressible":true,"extensions":["css"]},"text/csv":{"source":"iana","compressible":true,"extensions":["csv"]},"text/csv-schema":{"source":"iana"},"text/directory":{"source":"iana"},"text/dns":{"source":"iana"},"text/ecmascript":{"source":"iana"},"text/encaprtp":{"source":"iana"},"text/enriched":{"source":"iana"},"text/fhirpath":{"source":"iana"},"text/flexfec":{"source":"iana"},"text/fwdred":{"source":"iana"},"text/gff3":{"source":"iana"},"text/grammar-ref-list":{"source":"iana"},"text/html":{"source":"iana","compressible":true,"extensions":["html","htm","shtml"]},"text/jade":{"extensions":["jade"]},"text/javascript":{"source":"iana","compressible":true},"text/jcr-cnd":{"source":"iana"},"text/jsx":{"compressible":true,"extensions":["jsx"]},"text/less":{"compressible":true,"extensions":["less"]},"text/markdown":{"source":"iana","compressible":true,"extensions":["markdown","md"]},"text/mathml":{"source":"nginx","extensions":["mml"]},"text/mdx":{"compressible":true,"extensions":["mdx"]},"text/mizar":{"source":"iana"},"text/n3":{"source":"iana","charset":"UTF-8","compressible":true,"extensions":["n3"]},"text/parameters":{"source":"iana","charset":"UTF-8"},"text/parityfec":{"source":"iana"},"text/plain":{"source":"iana","compressible":true,"extensions":["txt","text","conf","def","list","log","in","ini"]},"text/provenance-notation":{"source":"iana","charset":"UTF-8"},"text/prs.fallenstein.rst":{"source":"iana"},"text/prs.lines.tag":{"source":"iana","extensions":["dsc"]},"text/prs.prop.logic":{"source":"iana"},"text/raptorfec":{"source":"iana"},"text/red":{"source":"iana"},"text/rfc822-headers":{"source":"iana"},"text/richtext":{"source":"iana","compressible":true,"extensions":["rtx"]},"text/rtf":{"source":"iana","compressible":true,"extensions":["rtf"]},"text/rtp-enc-aescm128":{"source":"iana"},"text/rtploopback":{"source":"iana"},"text/rtx":{"source":"iana"},"text/sgml":{"source":"iana","extensions":["sgml","sgm"]},"text/shaclc":{"source":"iana"},"text/shex":{"source":"iana","extensions":["shex"]},"text/slim":{"extensions":["slim","slm"]},"text/spdx":{"source":"iana","extensions":["spdx"]},"text/strings":{"source":"iana"},"text/stylus":{"extensions":["stylus","styl"]},"text/t140":{"source":"iana"},"text/tab-separated-values":{"source":"iana","compressible":true,"extensions":["tsv"]},"text/troff":{"source":"iana","extensions":["t","tr","roff","man","me","ms"]},"text/turtle":{"source":"iana","charset":"UTF-8","extensions":["ttl"]},"text/ulpfec":{"source":"iana"},"text/uri-list":{"source":"iana","compressible":true,"extensions":["uri","uris","urls"]},"text/vcard":{"source":"iana","compressible":true,"extensions":["vcard"]},"text/vnd.a":{"source":"iana"},"text/vnd.abc":{"source":"iana"},"text/vnd.ascii-art":{"source":"iana"},"text/vnd.curl":{"source":"iana","extensions":["curl"]},"text/vnd.curl.dcurl":{"source":"apache","extensions":["dcurl"]},"text/vnd.curl.mcurl":{"source":"apache","extensions":["mcurl"]},"text/vnd.curl.scurl":{"source":"apache","extensions":["scurl"]},"text/vnd.debian.copyright":{"source":"iana","charset":"UTF-8"},"text/vnd.dmclientscript":{"source":"iana"},"text/vnd.dvb.subtitle":{"source":"iana","extensions":["sub"]},"text/vnd.esmertec.theme-descriptor":{"source":"iana","charset":"UTF-8"},"text/vnd.familysearch.gedcom":{"source":"iana","extensions":["ged"]},"text/vnd.ficlab.flt":{"source":"iana"},"text/vnd.fly":{"source":"iana","extensions":["fly"]},"text/vnd.fmi.flexstor":{"source":"iana","extensions":["flx"]},"text/vnd.gml":{"source":"iana"},"text/vnd.graphviz":{"source":"iana","extensions":["gv"]},"text/vnd.hans":{"source":"iana"},"text/vnd.hgl":{"source":"iana"},"text/vnd.in3d.3dml":{"source":"iana","extensions":["3dml"]},"text/vnd.in3d.spot":{"source":"iana","extensions":["spot"]},"text/vnd.iptc.newsml":{"source":"iana"},"text/vnd.iptc.nitf":{"source":"iana"},"text/vnd.latex-z":{"source":"iana"},"text/vnd.motorola.reflex":{"source":"iana"},"text/vnd.ms-mediapackage":{"source":"iana"},"text/vnd.net2phone.commcenter.command":{"source":"iana"},"text/vnd.radisys.msml-basic-layout":{"source":"iana"},"text/vnd.senx.warpscript":{"source":"iana"},"text/vnd.si.uricatalogue":{"source":"iana"},"text/vnd.sosi":{"source":"iana"},"text/vnd.sun.j2me.app-descriptor":{"source":"iana","charset":"UTF-8","extensions":["jad"]},"text/vnd.trolltech.linguist":{"source":"iana","charset":"UTF-8"},"text/vnd.wap.si":{"source":"iana"},"text/vnd.wap.sl":{"source":"iana"},"text/vnd.wap.wml":{"source":"iana","extensions":["wml"]},"text/vnd.wap.wmlscript":{"source":"iana","extensions":["wmls"]},"text/vtt":{"source":"iana","charset":"UTF-8","compressible":true,"extensions":["vtt"]},"text/x-asm":{"source":"apache","extensions":["s","asm"]},"text/x-c":{"source":"apache","extensions":["c","cc","cxx","cpp","h","hh","dic"]},"text/x-component":{"source":"nginx","extensions":["htc"]},"text/x-fortran":{"source":"apache","extensions":["f","for","f77","f90"]},"text/x-gwt-rpc":{"compressible":true},"text/x-handlebars-template":{"extensions":["hbs"]},"text/x-java-source":{"source":"apache","extensions":["java"]},"text/x-jquery-tmpl":{"compressible":true},"text/x-lua":{"extensions":["lua"]},"text/x-markdown":{"compressible":true,"extensions":["mkd"]},"text/x-nfo":{"source":"apache","extensions":["nfo"]},"text/x-opml":{"source":"apache","extensions":["opml"]},"text/x-org":{"compressible":true,"extensions":["org"]},"text/x-pascal":{"source":"apache","extensions":["p","pas"]},"text/x-processing":{"compressible":true,"extensions":["pde"]},"text/x-sass":{"extensions":["sass"]},"text/x-scss":{"extensions":["scss"]},"text/x-setext":{"source":"apache","extensions":["etx"]},"text/x-sfv":{"source":"apache","extensions":["sfv"]},"text/x-suse-ymp":{"compressible":true,"extensions":["ymp"]},"text/x-uuencode":{"source":"apache","extensions":["uu"]},"text/x-vcalendar":{"source":"apache","extensions":["vcs"]},"text/x-vcard":{"source":"apache","extensions":["vcf"]},"text/xml":{"source":"iana","compressible":true,"extensions":["xml"]},"text/xml-external-parsed-entity":{"source":"iana"},"text/yaml":{"compressible":true,"extensions":["yaml","yml"]},"video/1d-interleaved-parityfec":{"source":"iana"},"video/3gpp":{"source":"iana","extensions":["3gp","3gpp"]},"video/3gpp-tt":{"source":"iana"},"video/3gpp2":{"source":"iana","extensions":["3g2"]},"video/av1":{"source":"iana"},"video/bmpeg":{"source":"iana"},"video/bt656":{"source":"iana"},"video/celb":{"source":"iana"},"video/dv":{"source":"iana"},"video/encaprtp":{"source":"iana"},"video/ffv1":{"source":"iana"},"video/flexfec":{"source":"iana"},"video/h261":{"source":"iana","extensions":["h261"]},"video/h263":{"source":"iana","extensions":["h263"]},"video/h263-1998":{"source":"iana"},"video/h263-2000":{"source":"iana"},"video/h264":{"source":"iana","extensions":["h264"]},"video/h264-rcdo":{"source":"iana"},"video/h264-svc":{"source":"iana"},"video/h265":{"source":"iana"},"video/iso.segment":{"source":"iana","extensions":["m4s"]},"video/jpeg":{"source":"iana","extensions":["jpgv"]},"video/jpeg2000":{"source":"iana"},"video/jpm":{"source":"apache","extensions":["jpm","jpgm"]},"video/jxsv":{"source":"iana"},"video/mj2":{"source":"iana","extensions":["mj2","mjp2"]},"video/mp1s":{"source":"iana"},"video/mp2p":{"source":"iana"},"video/mp2t":{"source":"iana","extensions":["ts"]},"video/mp4":{"source":"iana","compressible":false,"extensions":["mp4","mp4v","mpg4"]},"video/mp4v-es":{"source":"iana"},"video/mpeg":{"source":"iana","compressible":false,"extensions":["mpeg","mpg","mpe","m1v","m2v"]},"video/mpeg4-generic":{"source":"iana"},"video/mpv":{"source":"iana"},"video/nv":{"source":"iana"},"video/ogg":{"source":"iana","compressible":false,"extensions":["ogv"]},"video/parityfec":{"source":"iana"},"video/pointer":{"source":"iana"},"video/quicktime":{"source":"iana","compressible":false,"extensions":["qt","mov"]},"video/raptorfec":{"source":"iana"},"video/raw":{"source":"iana"},"video/rtp-enc-aescm128":{"source":"iana"},"video/rtploopback":{"source":"iana"},"video/rtx":{"source":"iana"},"video/scip":{"source":"iana"},"video/smpte291":{"source":"iana"},"video/smpte292m":{"source":"iana"},"video/ulpfec":{"source":"iana"},"video/vc1":{"source":"iana"},"video/vc2":{"source":"iana"},"video/vnd.cctv":{"source":"iana"},"video/vnd.dece.hd":{"source":"iana","extensions":["uvh","uvvh"]},"video/vnd.dece.mobile":{"source":"iana","extensions":["uvm","uvvm"]},"video/vnd.dece.mp4":{"source":"iana"},"video/vnd.dece.pd":{"source":"iana","extensions":["uvp","uvvp"]},"video/vnd.dece.sd":{"source":"iana","extensions":["uvs","uvvs"]},"video/vnd.dece.video":{"source":"iana","extensions":["uvv","uvvv"]},"video/vnd.directv.mpeg":{"source":"iana"},"video/vnd.directv.mpeg-tts":{"source":"iana"},"video/vnd.dlna.mpeg-tts":{"source":"iana"},"video/vnd.dvb.file":{"source":"iana","extensions":["dvb"]},"video/vnd.fvt":{"source":"iana","extensions":["fvt"]},"video/vnd.hns.video":{"source":"iana"},"video/vnd.iptvforum.1dparityfec-1010":{"source":"iana"},"video/vnd.iptvforum.1dparityfec-2005":{"source":"iana"},"video/vnd.iptvforum.2dparityfec-1010":{"source":"iana"},"video/vnd.iptvforum.2dparityfec-2005":{"source":"iana"},"video/vnd.iptvforum.ttsavc":{"source":"iana"},"video/vnd.iptvforum.ttsmpeg2":{"source":"iana"},"video/vnd.motorola.video":{"source":"iana"},"video/vnd.motorola.videop":{"source":"iana"},"video/vnd.mpegurl":{"source":"iana","extensions":["mxu","m4u"]},"video/vnd.ms-playready.media.pyv":{"source":"iana","extensions":["pyv"]},"video/vnd.nokia.interleaved-multimedia":{"source":"iana"},"video/vnd.nokia.mp4vr":{"source":"iana"},"video/vnd.nokia.videovoip":{"source":"iana"},"video/vnd.objectvideo":{"source":"iana"},"video/vnd.radgamettools.bink":{"source":"iana"},"video/vnd.radgamettools.smacker":{"source":"iana"},"video/vnd.sealed.mpeg1":{"source":"iana"},"video/vnd.sealed.mpeg4":{"source":"iana"},"video/vnd.sealed.swf":{"source":"iana"},"video/vnd.sealedmedia.softseal.mov":{"source":"iana"},"video/vnd.uvvu.mp4":{"source":"iana","extensions":["uvu","uvvu"]},"video/vnd.vivo":{"source":"iana","extensions":["viv"]},"video/vnd.youtube.yt":{"source":"iana"},"video/vp8":{"source":"iana"},"video/vp9":{"source":"iana"},"video/webm":{"source":"apache","compressible":false,"extensions":["webm"]},"video/x-f4v":{"source":"apache","extensions":["f4v"]},"video/x-fli":{"source":"apache","extensions":["fli"]},"video/x-flv":{"source":"apache","compressible":false,"extensions":["flv"]},"video/x-m4v":{"source":"apache","extensions":["m4v"]},"video/x-matroska":{"source":"apache","compressible":false,"extensions":["mkv","mk3d","mks"]},"video/x-mng":{"source":"apache","extensions":["mng"]},"video/x-ms-asf":{"source":"apache","extensions":["asf","asx"]},"video/x-ms-vob":{"source":"apache","extensions":["vob"]},"video/x-ms-wm":{"source":"apache","extensions":["wm"]},"video/x-ms-wmv":{"source":"apache","compressible":false,"extensions":["wmv"]},"video/x-ms-wmx":{"source":"apache","extensions":["wmx"]},"video/x-ms-wvx":{"source":"apache","extensions":["wvx"]},"video/x-msvideo":{"source":"apache","extensions":["avi"]},"video/x-sgi-movie":{"source":"apache","extensions":["movie"]},"video/x-smv":{"source":"apache","extensions":["smv"]},"x-conference/x-cooltalk":{"source":"apache","extensions":["ice"]},"x-shader/x-fragment":{"compressible":true},"x-shader/x-vertex":{"compressible":true}}');
+module.exports = /*#__PURE__*/JSON.parse('{"application/1d-interleaved-parityfec":{"source":"iana"},"application/3gpdash-qoe-report+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/3gpp-ims+xml":{"source":"iana","compressible":true},"application/3gpphal+json":{"source":"iana","compressible":true},"application/3gpphalforms+json":{"source":"iana","compressible":true},"application/a2l":{"source":"iana"},"application/ace+cbor":{"source":"iana"},"application/activemessage":{"source":"iana"},"application/activity+json":{"source":"iana","compressible":true},"application/alto-costmap+json":{"source":"iana","compressible":true},"application/alto-costmapfilter+json":{"source":"iana","compressible":true},"application/alto-directory+json":{"source":"iana","compressible":true},"application/alto-endpointcost+json":{"source":"iana","compressible":true},"application/alto-endpointcostparams+json":{"source":"iana","compressible":true},"application/alto-endpointprop+json":{"source":"iana","compressible":true},"application/alto-endpointpropparams+json":{"source":"iana","compressible":true},"application/alto-error+json":{"source":"iana","compressible":true},"application/alto-networkmap+json":{"source":"iana","compressible":true},"application/alto-networkmapfilter+json":{"source":"iana","compressible":true},"application/alto-updatestreamcontrol+json":{"source":"iana","compressible":true},"application/alto-updatestreamparams+json":{"source":"iana","compressible":true},"application/aml":{"source":"iana"},"application/andrew-inset":{"source":"iana","extensions":["ez"]},"application/applefile":{"source":"iana"},"application/applixware":{"source":"apache","extensions":["aw"]},"application/at+jwt":{"source":"iana"},"application/atf":{"source":"iana"},"application/atfx":{"source":"iana"},"application/atom+xml":{"source":"iana","compressible":true,"extensions":["atom"]},"application/atomcat+xml":{"source":"iana","compressible":true,"extensions":["atomcat"]},"application/atomdeleted+xml":{"source":"iana","compressible":true,"extensions":["atomdeleted"]},"application/atomicmail":{"source":"iana"},"application/atomsvc+xml":{"source":"iana","compressible":true,"extensions":["atomsvc"]},"application/atsc-dwd+xml":{"source":"iana","compressible":true,"extensions":["dwd"]},"application/atsc-dynamic-event-message":{"source":"iana"},"application/atsc-held+xml":{"source":"iana","compressible":true,"extensions":["held"]},"application/atsc-rdt+json":{"source":"iana","compressible":true},"application/atsc-rsat+xml":{"source":"iana","compressible":true,"extensions":["rsat"]},"application/atxml":{"source":"iana"},"application/auth-policy+xml":{"source":"iana","compressible":true},"application/bacnet-xdd+zip":{"source":"iana","compressible":false},"application/batch-smtp":{"source":"iana"},"application/bdoc":{"compressible":false,"extensions":["bdoc"]},"application/beep+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/calendar+json":{"source":"iana","compressible":true},"application/calendar+xml":{"source":"iana","compressible":true,"extensions":["xcs"]},"application/call-completion":{"source":"iana"},"application/cals-1840":{"source":"iana"},"application/captive+json":{"source":"iana","compressible":true},"application/cbor":{"source":"iana"},"application/cbor-seq":{"source":"iana"},"application/cccex":{"source":"iana"},"application/ccmp+xml":{"source":"iana","compressible":true},"application/ccxml+xml":{"source":"iana","compressible":true,"extensions":["ccxml"]},"application/cdfx+xml":{"source":"iana","compressible":true,"extensions":["cdfx"]},"application/cdmi-capability":{"source":"iana","extensions":["cdmia"]},"application/cdmi-container":{"source":"iana","extensions":["cdmic"]},"application/cdmi-domain":{"source":"iana","extensions":["cdmid"]},"application/cdmi-object":{"source":"iana","extensions":["cdmio"]},"application/cdmi-queue":{"source":"iana","extensions":["cdmiq"]},"application/cdni":{"source":"iana"},"application/cea":{"source":"iana"},"application/cea-2018+xml":{"source":"iana","compressible":true},"application/cellml+xml":{"source":"iana","compressible":true},"application/cfw":{"source":"iana"},"application/city+json":{"source":"iana","compressible":true},"application/clr":{"source":"iana"},"application/clue+xml":{"source":"iana","compressible":true},"application/clue_info+xml":{"source":"iana","compressible":true},"application/cms":{"source":"iana"},"application/cnrp+xml":{"source":"iana","compressible":true},"application/coap-group+json":{"source":"iana","compressible":true},"application/coap-payload":{"source":"iana"},"application/commonground":{"source":"iana"},"application/conference-info+xml":{"source":"iana","compressible":true},"application/cose":{"source":"iana"},"application/cose-key":{"source":"iana"},"application/cose-key-set":{"source":"iana"},"application/cpl+xml":{"source":"iana","compressible":true,"extensions":["cpl"]},"application/csrattrs":{"source":"iana"},"application/csta+xml":{"source":"iana","compressible":true},"application/cstadata+xml":{"source":"iana","compressible":true},"application/csvm+json":{"source":"iana","compressible":true},"application/cu-seeme":{"source":"apache","extensions":["cu"]},"application/cwt":{"source":"iana"},"application/cybercash":{"source":"iana"},"application/dart":{"compressible":true},"application/dash+xml":{"source":"iana","compressible":true,"extensions":["mpd"]},"application/dash-patch+xml":{"source":"iana","compressible":true,"extensions":["mpp"]},"application/dashdelta":{"source":"iana"},"application/davmount+xml":{"source":"iana","compressible":true,"extensions":["davmount"]},"application/dca-rft":{"source":"iana"},"application/dcd":{"source":"iana"},"application/dec-dx":{"source":"iana"},"application/dialog-info+xml":{"source":"iana","compressible":true},"application/dicom":{"source":"iana"},"application/dicom+json":{"source":"iana","compressible":true},"application/dicom+xml":{"source":"iana","compressible":true},"application/dii":{"source":"iana"},"application/dit":{"source":"iana"},"application/dns":{"source":"iana"},"application/dns+json":{"source":"iana","compressible":true},"application/dns-message":{"source":"iana"},"application/docbook+xml":{"source":"apache","compressible":true,"extensions":["dbk"]},"application/dots+cbor":{"source":"iana"},"application/dskpp+xml":{"source":"iana","compressible":true},"application/dssc+der":{"source":"iana","extensions":["dssc"]},"application/dssc+xml":{"source":"iana","compressible":true,"extensions":["xdssc"]},"application/dvcs":{"source":"iana"},"application/ecmascript":{"source":"iana","compressible":true,"extensions":["es","ecma"]},"application/edi-consent":{"source":"iana"},"application/edi-x12":{"source":"iana","compressible":false},"application/edifact":{"source":"iana","compressible":false},"application/efi":{"source":"iana"},"application/elm+json":{"source":"iana","charset":"UTF-8","compressible":true},"application/elm+xml":{"source":"iana","compressible":true},"application/emergencycalldata.cap+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/emergencycalldata.comment+xml":{"source":"iana","compressible":true},"application/emergencycalldata.control+xml":{"source":"iana","compressible":true},"application/emergencycalldata.deviceinfo+xml":{"source":"iana","compressible":true},"application/emergencycalldata.ecall.msd":{"source":"iana"},"application/emergencycalldata.providerinfo+xml":{"source":"iana","compressible":true},"application/emergencycalldata.serviceinfo+xml":{"source":"iana","compressible":true},"application/emergencycalldata.subscriberinfo+xml":{"source":"iana","compressible":true},"application/emergencycalldata.veds+xml":{"source":"iana","compressible":true},"application/emma+xml":{"source":"iana","compressible":true,"extensions":["emma"]},"application/emotionml+xml":{"source":"iana","compressible":true,"extensions":["emotionml"]},"application/encaprtp":{"source":"iana"},"application/epp+xml":{"source":"iana","compressible":true},"application/epub+zip":{"source":"iana","compressible":false,"extensions":["epub"]},"application/eshop":{"source":"iana"},"application/exi":{"source":"iana","extensions":["exi"]},"application/expect-ct-report+json":{"source":"iana","compressible":true},"application/express":{"source":"iana","extensions":["exp"]},"application/fastinfoset":{"source":"iana"},"application/fastsoap":{"source":"iana"},"application/fdt+xml":{"source":"iana","compressible":true,"extensions":["fdt"]},"application/fhir+json":{"source":"iana","charset":"UTF-8","compressible":true},"application/fhir+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/fido.trusted-apps+json":{"compressible":true},"application/fits":{"source":"iana"},"application/flexfec":{"source":"iana"},"application/font-sfnt":{"source":"iana"},"application/font-tdpfr":{"source":"iana","extensions":["pfr"]},"application/font-woff":{"source":"iana","compressible":false},"application/framework-attributes+xml":{"source":"iana","compressible":true},"application/geo+json":{"source":"iana","compressible":true,"extensions":["geojson"]},"application/geo+json-seq":{"source":"iana"},"application/geopackage+sqlite3":{"source":"iana"},"application/geoxacml+xml":{"source":"iana","compressible":true},"application/gltf-buffer":{"source":"iana"},"application/gml+xml":{"source":"iana","compressible":true,"extensions":["gml"]},"application/gpx+xml":{"source":"apache","compressible":true,"extensions":["gpx"]},"application/gxf":{"source":"apache","extensions":["gxf"]},"application/gzip":{"source":"iana","compressible":false,"extensions":["gz"]},"application/h224":{"source":"iana"},"application/held+xml":{"source":"iana","compressible":true},"application/hjson":{"extensions":["hjson"]},"application/http":{"source":"iana"},"application/hyperstudio":{"source":"iana","extensions":["stk"]},"application/ibe-key-request+xml":{"source":"iana","compressible":true},"application/ibe-pkg-reply+xml":{"source":"iana","compressible":true},"application/ibe-pp-data":{"source":"iana"},"application/iges":{"source":"iana"},"application/im-iscomposing+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/index":{"source":"iana"},"application/index.cmd":{"source":"iana"},"application/index.obj":{"source":"iana"},"application/index.response":{"source":"iana"},"application/index.vnd":{"source":"iana"},"application/inkml+xml":{"source":"iana","compressible":true,"extensions":["ink","inkml"]},"application/iotp":{"source":"iana"},"application/ipfix":{"source":"iana","extensions":["ipfix"]},"application/ipp":{"source":"iana"},"application/isup":{"source":"iana"},"application/its+xml":{"source":"iana","compressible":true,"extensions":["its"]},"application/java-archive":{"source":"apache","compressible":false,"extensions":["jar","war","ear"]},"application/java-serialized-object":{"source":"apache","compressible":false,"extensions":["ser"]},"application/java-vm":{"source":"apache","compressible":false,"extensions":["class"]},"application/javascript":{"source":"iana","charset":"UTF-8","compressible":true,"extensions":["js","mjs"]},"application/jf2feed+json":{"source":"iana","compressible":true},"application/jose":{"source":"iana"},"application/jose+json":{"source":"iana","compressible":true},"application/jrd+json":{"source":"iana","compressible":true},"application/jscalendar+json":{"source":"iana","compressible":true},"application/json":{"source":"iana","charset":"UTF-8","compressible":true,"extensions":["json","map"]},"application/json-patch+json":{"source":"iana","compressible":true},"application/json-seq":{"source":"iana"},"application/json5":{"extensions":["json5"]},"application/jsonml+json":{"source":"apache","compressible":true,"extensions":["jsonml"]},"application/jwk+json":{"source":"iana","compressible":true},"application/jwk-set+json":{"source":"iana","compressible":true},"application/jwt":{"source":"iana"},"application/kpml-request+xml":{"source":"iana","compressible":true},"application/kpml-response+xml":{"source":"iana","compressible":true},"application/ld+json":{"source":"iana","compressible":true,"extensions":["jsonld"]},"application/lgr+xml":{"source":"iana","compressible":true,"extensions":["lgr"]},"application/link-format":{"source":"iana"},"application/load-control+xml":{"source":"iana","compressible":true},"application/lost+xml":{"source":"iana","compressible":true,"extensions":["lostxml"]},"application/lostsync+xml":{"source":"iana","compressible":true},"application/lpf+zip":{"source":"iana","compressible":false},"application/lxf":{"source":"iana"},"application/mac-binhex40":{"source":"iana","extensions":["hqx"]},"application/mac-compactpro":{"source":"apache","extensions":["cpt"]},"application/macwriteii":{"source":"iana"},"application/mads+xml":{"source":"iana","compressible":true,"extensions":["mads"]},"application/manifest+json":{"source":"iana","charset":"UTF-8","compressible":true,"extensions":["webmanifest"]},"application/marc":{"source":"iana","extensions":["mrc"]},"application/marcxml+xml":{"source":"iana","compressible":true,"extensions":["mrcx"]},"application/mathematica":{"source":"iana","extensions":["ma","nb","mb"]},"application/mathml+xml":{"source":"iana","compressible":true,"extensions":["mathml"]},"application/mathml-content+xml":{"source":"iana","compressible":true},"application/mathml-presentation+xml":{"source":"iana","compressible":true},"application/mbms-associated-procedure-description+xml":{"source":"iana","compressible":true},"application/mbms-deregister+xml":{"source":"iana","compressible":true},"application/mbms-envelope+xml":{"source":"iana","compressible":true},"application/mbms-msk+xml":{"source":"iana","compressible":true},"application/mbms-msk-response+xml":{"source":"iana","compressible":true},"application/mbms-protection-description+xml":{"source":"iana","compressible":true},"application/mbms-reception-report+xml":{"source":"iana","compressible":true},"application/mbms-register+xml":{"source":"iana","compressible":true},"application/mbms-register-response+xml":{"source":"iana","compressible":true},"application/mbms-schedule+xml":{"source":"iana","compressible":true},"application/mbms-user-service-description+xml":{"source":"iana","compressible":true},"application/mbox":{"source":"iana","extensions":["mbox"]},"application/media-policy-dataset+xml":{"source":"iana","compressible":true,"extensions":["mpf"]},"application/media_control+xml":{"source":"iana","compressible":true},"application/mediaservercontrol+xml":{"source":"iana","compressible":true,"extensions":["mscml"]},"application/merge-patch+json":{"source":"iana","compressible":true},"application/metalink+xml":{"source":"apache","compressible":true,"extensions":["metalink"]},"application/metalink4+xml":{"source":"iana","compressible":true,"extensions":["meta4"]},"application/mets+xml":{"source":"iana","compressible":true,"extensions":["mets"]},"application/mf4":{"source":"iana"},"application/mikey":{"source":"iana"},"application/mipc":{"source":"iana"},"application/missing-blocks+cbor-seq":{"source":"iana"},"application/mmt-aei+xml":{"source":"iana","compressible":true,"extensions":["maei"]},"application/mmt-usd+xml":{"source":"iana","compressible":true,"extensions":["musd"]},"application/mods+xml":{"source":"iana","compressible":true,"extensions":["mods"]},"application/moss-keys":{"source":"iana"},"application/moss-signature":{"source":"iana"},"application/mosskey-data":{"source":"iana"},"application/mosskey-request":{"source":"iana"},"application/mp21":{"source":"iana","extensions":["m21","mp21"]},"application/mp4":{"source":"iana","extensions":["mp4s","m4p"]},"application/mpeg4-generic":{"source":"iana"},"application/mpeg4-iod":{"source":"iana"},"application/mpeg4-iod-xmt":{"source":"iana"},"application/mrb-consumer+xml":{"source":"iana","compressible":true},"application/mrb-publish+xml":{"source":"iana","compressible":true},"application/msc-ivr+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/msc-mixer+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/msword":{"source":"iana","compressible":false,"extensions":["doc","dot"]},"application/mud+json":{"source":"iana","compressible":true},"application/multipart-core":{"source":"iana"},"application/mxf":{"source":"iana","extensions":["mxf"]},"application/n-quads":{"source":"iana","extensions":["nq"]},"application/n-triples":{"source":"iana","extensions":["nt"]},"application/nasdata":{"source":"iana"},"application/news-checkgroups":{"source":"iana","charset":"US-ASCII"},"application/news-groupinfo":{"source":"iana","charset":"US-ASCII"},"application/news-transmission":{"source":"iana"},"application/nlsml+xml":{"source":"iana","compressible":true},"application/node":{"source":"iana","extensions":["cjs"]},"application/nss":{"source":"iana"},"application/oauth-authz-req+jwt":{"source":"iana"},"application/oblivious-dns-message":{"source":"iana"},"application/ocsp-request":{"source":"iana"},"application/ocsp-response":{"source":"iana"},"application/octet-stream":{"source":"iana","compressible":false,"extensions":["bin","dms","lrf","mar","so","dist","distz","pkg","bpk","dump","elc","deploy","exe","dll","deb","dmg","iso","img","msi","msp","msm","buffer"]},"application/oda":{"source":"iana","extensions":["oda"]},"application/odm+xml":{"source":"iana","compressible":true},"application/odx":{"source":"iana"},"application/oebps-package+xml":{"source":"iana","compressible":true,"extensions":["opf"]},"application/ogg":{"source":"iana","compressible":false,"extensions":["ogx"]},"application/omdoc+xml":{"source":"apache","compressible":true,"extensions":["omdoc"]},"application/onenote":{"source":"apache","extensions":["onetoc","onetoc2","onetmp","onepkg"]},"application/opc-nodeset+xml":{"source":"iana","compressible":true},"application/oscore":{"source":"iana"},"application/oxps":{"source":"iana","extensions":["oxps"]},"application/p21":{"source":"iana"},"application/p21+zip":{"source":"iana","compressible":false},"application/p2p-overlay+xml":{"source":"iana","compressible":true,"extensions":["relo"]},"application/parityfec":{"source":"iana"},"application/passport":{"source":"iana"},"application/patch-ops-error+xml":{"source":"iana","compressible":true,"extensions":["xer"]},"application/pdf":{"source":"iana","compressible":false,"extensions":["pdf"]},"application/pdx":{"source":"iana"},"application/pem-certificate-chain":{"source":"iana"},"application/pgp-encrypted":{"source":"iana","compressible":false,"extensions":["pgp"]},"application/pgp-keys":{"source":"iana","extensions":["asc"]},"application/pgp-signature":{"source":"iana","extensions":["asc","sig"]},"application/pics-rules":{"source":"apache","extensions":["prf"]},"application/pidf+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/pidf-diff+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/pkcs10":{"source":"iana","extensions":["p10"]},"application/pkcs12":{"source":"iana"},"application/pkcs7-mime":{"source":"iana","extensions":["p7m","p7c"]},"application/pkcs7-signature":{"source":"iana","extensions":["p7s"]},"application/pkcs8":{"source":"iana","extensions":["p8"]},"application/pkcs8-encrypted":{"source":"iana"},"application/pkix-attr-cert":{"source":"iana","extensions":["ac"]},"application/pkix-cert":{"source":"iana","extensions":["cer"]},"application/pkix-crl":{"source":"iana","extensions":["crl"]},"application/pkix-pkipath":{"source":"iana","extensions":["pkipath"]},"application/pkixcmp":{"source":"iana","extensions":["pki"]},"application/pls+xml":{"source":"iana","compressible":true,"extensions":["pls"]},"application/poc-settings+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/postscript":{"source":"iana","compressible":true,"extensions":["ai","eps","ps"]},"application/ppsp-tracker+json":{"source":"iana","compressible":true},"application/problem+json":{"source":"iana","compressible":true},"application/problem+xml":{"source":"iana","compressible":true},"application/provenance+xml":{"source":"iana","compressible":true,"extensions":["provx"]},"application/prs.alvestrand.titrax-sheet":{"source":"iana"},"application/prs.cww":{"source":"iana","extensions":["cww"]},"application/prs.cyn":{"source":"iana","charset":"7-BIT"},"application/prs.hpub+zip":{"source":"iana","compressible":false},"application/prs.nprend":{"source":"iana"},"application/prs.plucker":{"source":"iana"},"application/prs.rdf-xml-crypt":{"source":"iana"},"application/prs.xsf+xml":{"source":"iana","compressible":true},"application/pskc+xml":{"source":"iana","compressible":true,"extensions":["pskcxml"]},"application/pvd+json":{"source":"iana","compressible":true},"application/qsig":{"source":"iana"},"application/raml+yaml":{"compressible":true,"extensions":["raml"]},"application/raptorfec":{"source":"iana"},"application/rdap+json":{"source":"iana","compressible":true},"application/rdf+xml":{"source":"iana","compressible":true,"extensions":["rdf","owl"]},"application/reginfo+xml":{"source":"iana","compressible":true,"extensions":["rif"]},"application/relax-ng-compact-syntax":{"source":"iana","extensions":["rnc"]},"application/remote-printing":{"source":"iana"},"application/reputon+json":{"source":"iana","compressible":true},"application/resource-lists+xml":{"source":"iana","compressible":true,"extensions":["rl"]},"application/resource-lists-diff+xml":{"source":"iana","compressible":true,"extensions":["rld"]},"application/rfc+xml":{"source":"iana","compressible":true},"application/riscos":{"source":"iana"},"application/rlmi+xml":{"source":"iana","compressible":true},"application/rls-services+xml":{"source":"iana","compressible":true,"extensions":["rs"]},"application/route-apd+xml":{"source":"iana","compressible":true,"extensions":["rapd"]},"application/route-s-tsid+xml":{"source":"iana","compressible":true,"extensions":["sls"]},"application/route-usd+xml":{"source":"iana","compressible":true,"extensions":["rusd"]},"application/rpki-ghostbusters":{"source":"iana","extensions":["gbr"]},"application/rpki-manifest":{"source":"iana","extensions":["mft"]},"application/rpki-publication":{"source":"iana"},"application/rpki-roa":{"source":"iana","extensions":["roa"]},"application/rpki-updown":{"source":"iana"},"application/rsd+xml":{"source":"apache","compressible":true,"extensions":["rsd"]},"application/rss+xml":{"source":"apache","compressible":true,"extensions":["rss"]},"application/rtf":{"source":"iana","compressible":true,"extensions":["rtf"]},"application/rtploopback":{"source":"iana"},"application/rtx":{"source":"iana"},"application/samlassertion+xml":{"source":"iana","compressible":true},"application/samlmetadata+xml":{"source":"iana","compressible":true},"application/sarif+json":{"source":"iana","compressible":true},"application/sarif-external-properties+json":{"source":"iana","compressible":true},"application/sbe":{"source":"iana"},"application/sbml+xml":{"source":"iana","compressible":true,"extensions":["sbml"]},"application/scaip+xml":{"source":"iana","compressible":true},"application/scim+json":{"source":"iana","compressible":true},"application/scvp-cv-request":{"source":"iana","extensions":["scq"]},"application/scvp-cv-response":{"source":"iana","extensions":["scs"]},"application/scvp-vp-request":{"source":"iana","extensions":["spq"]},"application/scvp-vp-response":{"source":"iana","extensions":["spp"]},"application/sdp":{"source":"iana","extensions":["sdp"]},"application/secevent+jwt":{"source":"iana"},"application/senml+cbor":{"source":"iana"},"application/senml+json":{"source":"iana","compressible":true},"application/senml+xml":{"source":"iana","compressible":true,"extensions":["senmlx"]},"application/senml-etch+cbor":{"source":"iana"},"application/senml-etch+json":{"source":"iana","compressible":true},"application/senml-exi":{"source":"iana"},"application/sensml+cbor":{"source":"iana"},"application/sensml+json":{"source":"iana","compressible":true},"application/sensml+xml":{"source":"iana","compressible":true,"extensions":["sensmlx"]},"application/sensml-exi":{"source":"iana"},"application/sep+xml":{"source":"iana","compressible":true},"application/sep-exi":{"source":"iana"},"application/session-info":{"source":"iana"},"application/set-payment":{"source":"iana"},"application/set-payment-initiation":{"source":"iana","extensions":["setpay"]},"application/set-registration":{"source":"iana"},"application/set-registration-initiation":{"source":"iana","extensions":["setreg"]},"application/sgml":{"source":"iana"},"application/sgml-open-catalog":{"source":"iana"},"application/shf+xml":{"source":"iana","compressible":true,"extensions":["shf"]},"application/sieve":{"source":"iana","extensions":["siv","sieve"]},"application/simple-filter+xml":{"source":"iana","compressible":true},"application/simple-message-summary":{"source":"iana"},"application/simplesymbolcontainer":{"source":"iana"},"application/sipc":{"source":"iana"},"application/slate":{"source":"iana"},"application/smil":{"source":"iana"},"application/smil+xml":{"source":"iana","compressible":true,"extensions":["smi","smil"]},"application/smpte336m":{"source":"iana"},"application/soap+fastinfoset":{"source":"iana"},"application/soap+xml":{"source":"iana","compressible":true},"application/sparql-query":{"source":"iana","extensions":["rq"]},"application/sparql-results+xml":{"source":"iana","compressible":true,"extensions":["srx"]},"application/spdx+json":{"source":"iana","compressible":true},"application/spirits-event+xml":{"source":"iana","compressible":true},"application/sql":{"source":"iana"},"application/srgs":{"source":"iana","extensions":["gram"]},"application/srgs+xml":{"source":"iana","compressible":true,"extensions":["grxml"]},"application/sru+xml":{"source":"iana","compressible":true,"extensions":["sru"]},"application/ssdl+xml":{"source":"apache","compressible":true,"extensions":["ssdl"]},"application/ssml+xml":{"source":"iana","compressible":true,"extensions":["ssml"]},"application/stix+json":{"source":"iana","compressible":true},"application/swid+xml":{"source":"iana","compressible":true,"extensions":["swidtag"]},"application/tamp-apex-update":{"source":"iana"},"application/tamp-apex-update-confirm":{"source":"iana"},"application/tamp-community-update":{"source":"iana"},"application/tamp-community-update-confirm":{"source":"iana"},"application/tamp-error":{"source":"iana"},"application/tamp-sequence-adjust":{"source":"iana"},"application/tamp-sequence-adjust-confirm":{"source":"iana"},"application/tamp-status-query":{"source":"iana"},"application/tamp-status-response":{"source":"iana"},"application/tamp-update":{"source":"iana"},"application/tamp-update-confirm":{"source":"iana"},"application/tar":{"compressible":true},"application/taxii+json":{"source":"iana","compressible":true},"application/td+json":{"source":"iana","compressible":true},"application/tei+xml":{"source":"iana","compressible":true,"extensions":["tei","teicorpus"]},"application/tetra_isi":{"source":"iana"},"application/thraud+xml":{"source":"iana","compressible":true,"extensions":["tfi"]},"application/timestamp-query":{"source":"iana"},"application/timestamp-reply":{"source":"iana"},"application/timestamped-data":{"source":"iana","extensions":["tsd"]},"application/tlsrpt+gzip":{"source":"iana"},"application/tlsrpt+json":{"source":"iana","compressible":true},"application/tnauthlist":{"source":"iana"},"application/token-introspection+jwt":{"source":"iana"},"application/toml":{"compressible":true,"extensions":["toml"]},"application/trickle-ice-sdpfrag":{"source":"iana"},"application/trig":{"source":"iana","extensions":["trig"]},"application/ttml+xml":{"source":"iana","compressible":true,"extensions":["ttml"]},"application/tve-trigger":{"source":"iana"},"application/tzif":{"source":"iana"},"application/tzif-leap":{"source":"iana"},"application/ubjson":{"compressible":false,"extensions":["ubj"]},"application/ulpfec":{"source":"iana"},"application/urc-grpsheet+xml":{"source":"iana","compressible":true},"application/urc-ressheet+xml":{"source":"iana","compressible":true,"extensions":["rsheet"]},"application/urc-targetdesc+xml":{"source":"iana","compressible":true,"extensions":["td"]},"application/urc-uisocketdesc+xml":{"source":"iana","compressible":true},"application/vcard+json":{"source":"iana","compressible":true},"application/vcard+xml":{"source":"iana","compressible":true},"application/vemmi":{"source":"iana"},"application/vividence.scriptfile":{"source":"apache"},"application/vnd.1000minds.decision-model+xml":{"source":"iana","compressible":true,"extensions":["1km"]},"application/vnd.3gpp-prose+xml":{"source":"iana","compressible":true},"application/vnd.3gpp-prose-pc3ch+xml":{"source":"iana","compressible":true},"application/vnd.3gpp-v2x-local-service-information":{"source":"iana"},"application/vnd.3gpp.5gnas":{"source":"iana"},"application/vnd.3gpp.access-transfer-events+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.bsf+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.gmop+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.gtpc":{"source":"iana"},"application/vnd.3gpp.interworking-data":{"source":"iana"},"application/vnd.3gpp.lpp":{"source":"iana"},"application/vnd.3gpp.mc-signalling-ear":{"source":"iana"},"application/vnd.3gpp.mcdata-affiliation-command+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcdata-info+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcdata-payload":{"source":"iana"},"application/vnd.3gpp.mcdata-service-config+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcdata-signalling":{"source":"iana"},"application/vnd.3gpp.mcdata-ue-config+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcdata-user-profile+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcptt-affiliation-command+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcptt-floor-request+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcptt-info+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcptt-location-info+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcptt-mbms-usage-info+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcptt-service-config+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcptt-signed+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcptt-ue-config+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcptt-ue-init-config+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcptt-user-profile+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcvideo-affiliation-command+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcvideo-affiliation-info+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcvideo-info+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcvideo-location-info+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcvideo-mbms-usage-info+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcvideo-service-config+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcvideo-transmission-request+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcvideo-ue-config+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcvideo-user-profile+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mid-call+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.ngap":{"source":"iana"},"application/vnd.3gpp.pfcp":{"source":"iana"},"application/vnd.3gpp.pic-bw-large":{"source":"iana","extensions":["plb"]},"application/vnd.3gpp.pic-bw-small":{"source":"iana","extensions":["psb"]},"application/vnd.3gpp.pic-bw-var":{"source":"iana","extensions":["pvb"]},"application/vnd.3gpp.s1ap":{"source":"iana"},"application/vnd.3gpp.sms":{"source":"iana"},"application/vnd.3gpp.sms+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.srvcc-ext+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.srvcc-info+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.state-and-event-info+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.ussd+xml":{"source":"iana","compressible":true},"application/vnd.3gpp2.bcmcsinfo+xml":{"source":"iana","compressible":true},"application/vnd.3gpp2.sms":{"source":"iana"},"application/vnd.3gpp2.tcap":{"source":"iana","extensions":["tcap"]},"application/vnd.3lightssoftware.imagescal":{"source":"iana"},"application/vnd.3m.post-it-notes":{"source":"iana","extensions":["pwn"]},"application/vnd.accpac.simply.aso":{"source":"iana","extensions":["aso"]},"application/vnd.accpac.simply.imp":{"source":"iana","extensions":["imp"]},"application/vnd.acucobol":{"source":"iana","extensions":["acu"]},"application/vnd.acucorp":{"source":"iana","extensions":["atc","acutc"]},"application/vnd.adobe.air-application-installer-package+zip":{"source":"apache","compressible":false,"extensions":["air"]},"application/vnd.adobe.flash.movie":{"source":"iana"},"application/vnd.adobe.formscentral.fcdt":{"source":"iana","extensions":["fcdt"]},"application/vnd.adobe.fxp":{"source":"iana","extensions":["fxp","fxpl"]},"application/vnd.adobe.partial-upload":{"source":"iana"},"application/vnd.adobe.xdp+xml":{"source":"iana","compressible":true,"extensions":["xdp"]},"application/vnd.adobe.xfdf":{"source":"iana","extensions":["xfdf"]},"application/vnd.aether.imp":{"source":"iana"},"application/vnd.afpc.afplinedata":{"source":"iana"},"application/vnd.afpc.afplinedata-pagedef":{"source":"iana"},"application/vnd.afpc.cmoca-cmresource":{"source":"iana"},"application/vnd.afpc.foca-charset":{"source":"iana"},"application/vnd.afpc.foca-codedfont":{"source":"iana"},"application/vnd.afpc.foca-codepage":{"source":"iana"},"application/vnd.afpc.modca":{"source":"iana"},"application/vnd.afpc.modca-cmtable":{"source":"iana"},"application/vnd.afpc.modca-formdef":{"source":"iana"},"application/vnd.afpc.modca-mediummap":{"source":"iana"},"application/vnd.afpc.modca-objectcontainer":{"source":"iana"},"application/vnd.afpc.modca-overlay":{"source":"iana"},"application/vnd.afpc.modca-pagesegment":{"source":"iana"},"application/vnd.age":{"source":"iana","extensions":["age"]},"application/vnd.ah-barcode":{"source":"iana"},"application/vnd.ahead.space":{"source":"iana","extensions":["ahead"]},"application/vnd.airzip.filesecure.azf":{"source":"iana","extensions":["azf"]},"application/vnd.airzip.filesecure.azs":{"source":"iana","extensions":["azs"]},"application/vnd.amadeus+json":{"source":"iana","compressible":true},"application/vnd.amazon.ebook":{"source":"apache","extensions":["azw"]},"application/vnd.amazon.mobi8-ebook":{"source":"iana"},"application/vnd.americandynamics.acc":{"source":"iana","extensions":["acc"]},"application/vnd.amiga.ami":{"source":"iana","extensions":["ami"]},"application/vnd.amundsen.maze+xml":{"source":"iana","compressible":true},"application/vnd.android.ota":{"source":"iana"},"application/vnd.android.package-archive":{"source":"apache","compressible":false,"extensions":["apk"]},"application/vnd.anki":{"source":"iana"},"application/vnd.anser-web-certificate-issue-initiation":{"source":"iana","extensions":["cii"]},"application/vnd.anser-web-funds-transfer-initiation":{"source":"apache","extensions":["fti"]},"application/vnd.antix.game-component":{"source":"iana","extensions":["atx"]},"application/vnd.apache.arrow.file":{"source":"iana"},"application/vnd.apache.arrow.stream":{"source":"iana"},"application/vnd.apache.thrift.binary":{"source":"iana"},"application/vnd.apache.thrift.compact":{"source":"iana"},"application/vnd.apache.thrift.json":{"source":"iana"},"application/vnd.api+json":{"source":"iana","compressible":true},"application/vnd.aplextor.warrp+json":{"source":"iana","compressible":true},"application/vnd.apothekende.reservation+json":{"source":"iana","compressible":true},"application/vnd.apple.installer+xml":{"source":"iana","compressible":true,"extensions":["mpkg"]},"application/vnd.apple.keynote":{"source":"iana","extensions":["key"]},"application/vnd.apple.mpegurl":{"source":"iana","extensions":["m3u8"]},"application/vnd.apple.numbers":{"source":"iana","extensions":["numbers"]},"application/vnd.apple.pages":{"source":"iana","extensions":["pages"]},"application/vnd.apple.pkpass":{"compressible":false,"extensions":["pkpass"]},"application/vnd.arastra.swi":{"source":"iana"},"application/vnd.aristanetworks.swi":{"source":"iana","extensions":["swi"]},"application/vnd.artisan+json":{"source":"iana","compressible":true},"application/vnd.artsquare":{"source":"iana"},"application/vnd.astraea-software.iota":{"source":"iana","extensions":["iota"]},"application/vnd.audiograph":{"source":"iana","extensions":["aep"]},"application/vnd.autopackage":{"source":"iana"},"application/vnd.avalon+json":{"source":"iana","compressible":true},"application/vnd.avistar+xml":{"source":"iana","compressible":true},"application/vnd.balsamiq.bmml+xml":{"source":"iana","compressible":true,"extensions":["bmml"]},"application/vnd.balsamiq.bmpr":{"source":"iana"},"application/vnd.banana-accounting":{"source":"iana"},"application/vnd.bbf.usp.error":{"source":"iana"},"application/vnd.bbf.usp.msg":{"source":"iana"},"application/vnd.bbf.usp.msg+json":{"source":"iana","compressible":true},"application/vnd.bekitzur-stech+json":{"source":"iana","compressible":true},"application/vnd.bint.med-content":{"source":"iana"},"application/vnd.biopax.rdf+xml":{"source":"iana","compressible":true},"application/vnd.blink-idb-value-wrapper":{"source":"iana"},"application/vnd.blueice.multipass":{"source":"iana","extensions":["mpm"]},"application/vnd.bluetooth.ep.oob":{"source":"iana"},"application/vnd.bluetooth.le.oob":{"source":"iana"},"application/vnd.bmi":{"source":"iana","extensions":["bmi"]},"application/vnd.bpf":{"source":"iana"},"application/vnd.bpf3":{"source":"iana"},"application/vnd.businessobjects":{"source":"iana","extensions":["rep"]},"application/vnd.byu.uapi+json":{"source":"iana","compressible":true},"application/vnd.cab-jscript":{"source":"iana"},"application/vnd.canon-cpdl":{"source":"iana"},"application/vnd.canon-lips":{"source":"iana"},"application/vnd.capasystems-pg+json":{"source":"iana","compressible":true},"application/vnd.cendio.thinlinc.clientconf":{"source":"iana"},"application/vnd.century-systems.tcp_stream":{"source":"iana"},"application/vnd.chemdraw+xml":{"source":"iana","compressible":true,"extensions":["cdxml"]},"application/vnd.chess-pgn":{"source":"iana"},"application/vnd.chipnuts.karaoke-mmd":{"source":"iana","extensions":["mmd"]},"application/vnd.ciedi":{"source":"iana"},"application/vnd.cinderella":{"source":"iana","extensions":["cdy"]},"application/vnd.cirpack.isdn-ext":{"source":"iana"},"application/vnd.citationstyles.style+xml":{"source":"iana","compressible":true,"extensions":["csl"]},"application/vnd.claymore":{"source":"iana","extensions":["cla"]},"application/vnd.cloanto.rp9":{"source":"iana","extensions":["rp9"]},"application/vnd.clonk.c4group":{"source":"iana","extensions":["c4g","c4d","c4f","c4p","c4u"]},"application/vnd.cluetrust.cartomobile-config":{"source":"iana","extensions":["c11amc"]},"application/vnd.cluetrust.cartomobile-config-pkg":{"source":"iana","extensions":["c11amz"]},"application/vnd.coffeescript":{"source":"iana"},"application/vnd.collabio.xodocuments.document":{"source":"iana"},"application/vnd.collabio.xodocuments.document-template":{"source":"iana"},"application/vnd.collabio.xodocuments.presentation":{"source":"iana"},"application/vnd.collabio.xodocuments.presentation-template":{"source":"iana"},"application/vnd.collabio.xodocuments.spreadsheet":{"source":"iana"},"application/vnd.collabio.xodocuments.spreadsheet-template":{"source":"iana"},"application/vnd.collection+json":{"source":"iana","compressible":true},"application/vnd.collection.doc+json":{"source":"iana","compressible":true},"application/vnd.collection.next+json":{"source":"iana","compressible":true},"application/vnd.comicbook+zip":{"source":"iana","compressible":false},"application/vnd.comicbook-rar":{"source":"iana"},"application/vnd.commerce-battelle":{"source":"iana"},"application/vnd.commonspace":{"source":"iana","extensions":["csp"]},"application/vnd.contact.cmsg":{"source":"iana","extensions":["cdbcmsg"]},"application/vnd.coreos.ignition+json":{"source":"iana","compressible":true},"application/vnd.cosmocaller":{"source":"iana","extensions":["cmc"]},"application/vnd.crick.clicker":{"source":"iana","extensions":["clkx"]},"application/vnd.crick.clicker.keyboard":{"source":"iana","extensions":["clkk"]},"application/vnd.crick.clicker.palette":{"source":"iana","extensions":["clkp"]},"application/vnd.crick.clicker.template":{"source":"iana","extensions":["clkt"]},"application/vnd.crick.clicker.wordbank":{"source":"iana","extensions":["clkw"]},"application/vnd.criticaltools.wbs+xml":{"source":"iana","compressible":true,"extensions":["wbs"]},"application/vnd.cryptii.pipe+json":{"source":"iana","compressible":true},"application/vnd.crypto-shade-file":{"source":"iana"},"application/vnd.cryptomator.encrypted":{"source":"iana"},"application/vnd.cryptomator.vault":{"source":"iana"},"application/vnd.ctc-posml":{"source":"iana","extensions":["pml"]},"application/vnd.ctct.ws+xml":{"source":"iana","compressible":true},"application/vnd.cups-pdf":{"source":"iana"},"application/vnd.cups-postscript":{"source":"iana"},"application/vnd.cups-ppd":{"source":"iana","extensions":["ppd"]},"application/vnd.cups-raster":{"source":"iana"},"application/vnd.cups-raw":{"source":"iana"},"application/vnd.curl":{"source":"iana"},"application/vnd.curl.car":{"source":"apache","extensions":["car"]},"application/vnd.curl.pcurl":{"source":"apache","extensions":["pcurl"]},"application/vnd.cyan.dean.root+xml":{"source":"iana","compressible":true},"application/vnd.cybank":{"source":"iana"},"application/vnd.cyclonedx+json":{"source":"iana","compressible":true},"application/vnd.cyclonedx+xml":{"source":"iana","compressible":true},"application/vnd.d2l.coursepackage1p0+zip":{"source":"iana","compressible":false},"application/vnd.d3m-dataset":{"source":"iana"},"application/vnd.d3m-problem":{"source":"iana"},"application/vnd.dart":{"source":"iana","compressible":true,"extensions":["dart"]},"application/vnd.data-vision.rdz":{"source":"iana","extensions":["rdz"]},"application/vnd.datapackage+json":{"source":"iana","compressible":true},"application/vnd.dataresource+json":{"source":"iana","compressible":true},"application/vnd.dbf":{"source":"iana","extensions":["dbf"]},"application/vnd.debian.binary-package":{"source":"iana"},"application/vnd.dece.data":{"source":"iana","extensions":["uvf","uvvf","uvd","uvvd"]},"application/vnd.dece.ttml+xml":{"source":"iana","compressible":true,"extensions":["uvt","uvvt"]},"application/vnd.dece.unspecified":{"source":"iana","extensions":["uvx","uvvx"]},"application/vnd.dece.zip":{"source":"iana","extensions":["uvz","uvvz"]},"application/vnd.denovo.fcselayout-link":{"source":"iana","extensions":["fe_launch"]},"application/vnd.desmume.movie":{"source":"iana"},"application/vnd.dir-bi.plate-dl-nosuffix":{"source":"iana"},"application/vnd.dm.delegation+xml":{"source":"iana","compressible":true},"application/vnd.dna":{"source":"iana","extensions":["dna"]},"application/vnd.document+json":{"source":"iana","compressible":true},"application/vnd.dolby.mlp":{"source":"apache","extensions":["mlp"]},"application/vnd.dolby.mobile.1":{"source":"iana"},"application/vnd.dolby.mobile.2":{"source":"iana"},"application/vnd.doremir.scorecloud-binary-document":{"source":"iana"},"application/vnd.dpgraph":{"source":"iana","extensions":["dpg"]},"application/vnd.dreamfactory":{"source":"iana","extensions":["dfac"]},"application/vnd.drive+json":{"source":"iana","compressible":true},"application/vnd.ds-keypoint":{"source":"apache","extensions":["kpxx"]},"application/vnd.dtg.local":{"source":"iana"},"application/vnd.dtg.local.flash":{"source":"iana"},"application/vnd.dtg.local.html":{"source":"iana"},"application/vnd.dvb.ait":{"source":"iana","extensions":["ait"]},"application/vnd.dvb.dvbisl+xml":{"source":"iana","compressible":true},"application/vnd.dvb.dvbj":{"source":"iana"},"application/vnd.dvb.esgcontainer":{"source":"iana"},"application/vnd.dvb.ipdcdftnotifaccess":{"source":"iana"},"application/vnd.dvb.ipdcesgaccess":{"source":"iana"},"application/vnd.dvb.ipdcesgaccess2":{"source":"iana"},"application/vnd.dvb.ipdcesgpdd":{"source":"iana"},"application/vnd.dvb.ipdcroaming":{"source":"iana"},"application/vnd.dvb.iptv.alfec-base":{"source":"iana"},"application/vnd.dvb.iptv.alfec-enhancement":{"source":"iana"},"application/vnd.dvb.notif-aggregate-root+xml":{"source":"iana","compressible":true},"application/vnd.dvb.notif-container+xml":{"source":"iana","compressible":true},"application/vnd.dvb.notif-generic+xml":{"source":"iana","compressible":true},"application/vnd.dvb.notif-ia-msglist+xml":{"source":"iana","compressible":true},"application/vnd.dvb.notif-ia-registration-request+xml":{"source":"iana","compressible":true},"application/vnd.dvb.notif-ia-registration-response+xml":{"source":"iana","compressible":true},"application/vnd.dvb.notif-init+xml":{"source":"iana","compressible":true},"application/vnd.dvb.pfr":{"source":"iana"},"application/vnd.dvb.service":{"source":"iana","extensions":["svc"]},"application/vnd.dxr":{"source":"iana"},"application/vnd.dynageo":{"source":"iana","extensions":["geo"]},"application/vnd.dzr":{"source":"iana"},"application/vnd.easykaraoke.cdgdownload":{"source":"iana"},"application/vnd.ecdis-update":{"source":"iana"},"application/vnd.ecip.rlp":{"source":"iana"},"application/vnd.eclipse.ditto+json":{"source":"iana","compressible":true},"application/vnd.ecowin.chart":{"source":"iana","extensions":["mag"]},"application/vnd.ecowin.filerequest":{"source":"iana"},"application/vnd.ecowin.fileupdate":{"source":"iana"},"application/vnd.ecowin.series":{"source":"iana"},"application/vnd.ecowin.seriesrequest":{"source":"iana"},"application/vnd.ecowin.seriesupdate":{"source":"iana"},"application/vnd.efi.img":{"source":"iana"},"application/vnd.efi.iso":{"source":"iana"},"application/vnd.emclient.accessrequest+xml":{"source":"iana","compressible":true},"application/vnd.enliven":{"source":"iana","extensions":["nml"]},"application/vnd.enphase.envoy":{"source":"iana"},"application/vnd.eprints.data+xml":{"source":"iana","compressible":true},"application/vnd.epson.esf":{"source":"iana","extensions":["esf"]},"application/vnd.epson.msf":{"source":"iana","extensions":["msf"]},"application/vnd.epson.quickanime":{"source":"iana","extensions":["qam"]},"application/vnd.epson.salt":{"source":"iana","extensions":["slt"]},"application/vnd.epson.ssf":{"source":"iana","extensions":["ssf"]},"application/vnd.ericsson.quickcall":{"source":"iana"},"application/vnd.espass-espass+zip":{"source":"iana","compressible":false},"application/vnd.eszigno3+xml":{"source":"iana","compressible":true,"extensions":["es3","et3"]},"application/vnd.etsi.aoc+xml":{"source":"iana","compressible":true},"application/vnd.etsi.asic-e+zip":{"source":"iana","compressible":false},"application/vnd.etsi.asic-s+zip":{"source":"iana","compressible":false},"application/vnd.etsi.cug+xml":{"source":"iana","compressible":true},"application/vnd.etsi.iptvcommand+xml":{"source":"iana","compressible":true},"application/vnd.etsi.iptvdiscovery+xml":{"source":"iana","compressible":true},"application/vnd.etsi.iptvprofile+xml":{"source":"iana","compressible":true},"application/vnd.etsi.iptvsad-bc+xml":{"source":"iana","compressible":true},"application/vnd.etsi.iptvsad-cod+xml":{"source":"iana","compressible":true},"application/vnd.etsi.iptvsad-npvr+xml":{"source":"iana","compressible":true},"application/vnd.etsi.iptvservice+xml":{"source":"iana","compressible":true},"application/vnd.etsi.iptvsync+xml":{"source":"iana","compressible":true},"application/vnd.etsi.iptvueprofile+xml":{"source":"iana","compressible":true},"application/vnd.etsi.mcid+xml":{"source":"iana","compressible":true},"application/vnd.etsi.mheg5":{"source":"iana"},"application/vnd.etsi.overload-control-policy-dataset+xml":{"source":"iana","compressible":true},"application/vnd.etsi.pstn+xml":{"source":"iana","compressible":true},"application/vnd.etsi.sci+xml":{"source":"iana","compressible":true},"application/vnd.etsi.simservs+xml":{"source":"iana","compressible":true},"application/vnd.etsi.timestamp-token":{"source":"iana"},"application/vnd.etsi.tsl+xml":{"source":"iana","compressible":true},"application/vnd.etsi.tsl.der":{"source":"iana"},"application/vnd.eu.kasparian.car+json":{"source":"iana","compressible":true},"application/vnd.eudora.data":{"source":"iana"},"application/vnd.evolv.ecig.profile":{"source":"iana"},"application/vnd.evolv.ecig.settings":{"source":"iana"},"application/vnd.evolv.ecig.theme":{"source":"iana"},"application/vnd.exstream-empower+zip":{"source":"iana","compressible":false},"application/vnd.exstream-package":{"source":"iana"},"application/vnd.ezpix-album":{"source":"iana","extensions":["ez2"]},"application/vnd.ezpix-package":{"source":"iana","extensions":["ez3"]},"application/vnd.f-secure.mobile":{"source":"iana"},"application/vnd.familysearch.gedcom+zip":{"source":"iana","compressible":false},"application/vnd.fastcopy-disk-image":{"source":"iana"},"application/vnd.fdf":{"source":"iana","extensions":["fdf"]},"application/vnd.fdsn.mseed":{"source":"iana","extensions":["mseed"]},"application/vnd.fdsn.seed":{"source":"iana","extensions":["seed","dataless"]},"application/vnd.ffsns":{"source":"iana"},"application/vnd.ficlab.flb+zip":{"source":"iana","compressible":false},"application/vnd.filmit.zfc":{"source":"iana"},"application/vnd.fints":{"source":"iana"},"application/vnd.firemonkeys.cloudcell":{"source":"iana"},"application/vnd.flographit":{"source":"iana","extensions":["gph"]},"application/vnd.fluxtime.clip":{"source":"iana","extensions":["ftc"]},"application/vnd.font-fontforge-sfd":{"source":"iana"},"application/vnd.framemaker":{"source":"iana","extensions":["fm","frame","maker","book"]},"application/vnd.frogans.fnc":{"source":"iana","extensions":["fnc"]},"application/vnd.frogans.ltf":{"source":"iana","extensions":["ltf"]},"application/vnd.fsc.weblaunch":{"source":"iana","extensions":["fsc"]},"application/vnd.fujifilm.fb.docuworks":{"source":"iana"},"application/vnd.fujifilm.fb.docuworks.binder":{"source":"iana"},"application/vnd.fujifilm.fb.docuworks.container":{"source":"iana"},"application/vnd.fujifilm.fb.jfi+xml":{"source":"iana","compressible":true},"application/vnd.fujitsu.oasys":{"source":"iana","extensions":["oas"]},"application/vnd.fujitsu.oasys2":{"source":"iana","extensions":["oa2"]},"application/vnd.fujitsu.oasys3":{"source":"iana","extensions":["oa3"]},"application/vnd.fujitsu.oasysgp":{"source":"iana","extensions":["fg5"]},"application/vnd.fujitsu.oasysprs":{"source":"iana","extensions":["bh2"]},"application/vnd.fujixerox.art-ex":{"source":"iana"},"application/vnd.fujixerox.art4":{"source":"iana"},"application/vnd.fujixerox.ddd":{"source":"iana","extensions":["ddd"]},"application/vnd.fujixerox.docuworks":{"source":"iana","extensions":["xdw"]},"application/vnd.fujixerox.docuworks.binder":{"source":"iana","extensions":["xbd"]},"application/vnd.fujixerox.docuworks.container":{"source":"iana"},"application/vnd.fujixerox.hbpl":{"source":"iana"},"application/vnd.fut-misnet":{"source":"iana"},"application/vnd.futoin+cbor":{"source":"iana"},"application/vnd.futoin+json":{"source":"iana","compressible":true},"application/vnd.fuzzysheet":{"source":"iana","extensions":["fzs"]},"application/vnd.genomatix.tuxedo":{"source":"iana","extensions":["txd"]},"application/vnd.gentics.grd+json":{"source":"iana","compressible":true},"application/vnd.geo+json":{"source":"iana","compressible":true},"application/vnd.geocube+xml":{"source":"iana","compressible":true},"application/vnd.geogebra.file":{"source":"iana","extensions":["ggb"]},"application/vnd.geogebra.slides":{"source":"iana"},"application/vnd.geogebra.tool":{"source":"iana","extensions":["ggt"]},"application/vnd.geometry-explorer":{"source":"iana","extensions":["gex","gre"]},"application/vnd.geonext":{"source":"iana","extensions":["gxt"]},"application/vnd.geoplan":{"source":"iana","extensions":["g2w"]},"application/vnd.geospace":{"source":"iana","extensions":["g3w"]},"application/vnd.gerber":{"source":"iana"},"application/vnd.globalplatform.card-content-mgt":{"source":"iana"},"application/vnd.globalplatform.card-content-mgt-response":{"source":"iana"},"application/vnd.gmx":{"source":"iana","extensions":["gmx"]},"application/vnd.google-apps.document":{"compressible":false,"extensions":["gdoc"]},"application/vnd.google-apps.presentation":{"compressible":false,"extensions":["gslides"]},"application/vnd.google-apps.spreadsheet":{"compressible":false,"extensions":["gsheet"]},"application/vnd.google-earth.kml+xml":{"source":"iana","compressible":true,"extensions":["kml"]},"application/vnd.google-earth.kmz":{"source":"iana","compressible":false,"extensions":["kmz"]},"application/vnd.gov.sk.e-form+xml":{"source":"iana","compressible":true},"application/vnd.gov.sk.e-form+zip":{"source":"iana","compressible":false},"application/vnd.gov.sk.xmldatacontainer+xml":{"source":"iana","compressible":true},"application/vnd.grafeq":{"source":"iana","extensions":["gqf","gqs"]},"application/vnd.gridmp":{"source":"iana"},"application/vnd.groove-account":{"source":"iana","extensions":["gac"]},"application/vnd.groove-help":{"source":"iana","extensions":["ghf"]},"application/vnd.groove-identity-message":{"source":"iana","extensions":["gim"]},"application/vnd.groove-injector":{"source":"iana","extensions":["grv"]},"application/vnd.groove-tool-message":{"source":"iana","extensions":["gtm"]},"application/vnd.groove-tool-template":{"source":"iana","extensions":["tpl"]},"application/vnd.groove-vcard":{"source":"iana","extensions":["vcg"]},"application/vnd.hal+json":{"source":"iana","compressible":true},"application/vnd.hal+xml":{"source":"iana","compressible":true,"extensions":["hal"]},"application/vnd.handheld-entertainment+xml":{"source":"iana","compressible":true,"extensions":["zmm"]},"application/vnd.hbci":{"source":"iana","extensions":["hbci"]},"application/vnd.hc+json":{"source":"iana","compressible":true},"application/vnd.hcl-bireports":{"source":"iana"},"application/vnd.hdt":{"source":"iana"},"application/vnd.heroku+json":{"source":"iana","compressible":true},"application/vnd.hhe.lesson-player":{"source":"iana","extensions":["les"]},"application/vnd.hl7cda+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/vnd.hl7v2+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/vnd.hp-hpgl":{"source":"iana","extensions":["hpgl"]},"application/vnd.hp-hpid":{"source":"iana","extensions":["hpid"]},"application/vnd.hp-hps":{"source":"iana","extensions":["hps"]},"application/vnd.hp-jlyt":{"source":"iana","extensions":["jlt"]},"application/vnd.hp-pcl":{"source":"iana","extensions":["pcl"]},"application/vnd.hp-pclxl":{"source":"iana","extensions":["pclxl"]},"application/vnd.httphone":{"source":"iana"},"application/vnd.hydrostatix.sof-data":{"source":"iana","extensions":["sfd-hdstx"]},"application/vnd.hyper+json":{"source":"iana","compressible":true},"application/vnd.hyper-item+json":{"source":"iana","compressible":true},"application/vnd.hyperdrive+json":{"source":"iana","compressible":true},"application/vnd.hzn-3d-crossword":{"source":"iana"},"application/vnd.ibm.afplinedata":{"source":"iana"},"application/vnd.ibm.electronic-media":{"source":"iana"},"application/vnd.ibm.minipay":{"source":"iana","extensions":["mpy"]},"application/vnd.ibm.modcap":{"source":"iana","extensions":["afp","listafp","list3820"]},"application/vnd.ibm.rights-management":{"source":"iana","extensions":["irm"]},"application/vnd.ibm.secure-container":{"source":"iana","extensions":["sc"]},"application/vnd.iccprofile":{"source":"iana","extensions":["icc","icm"]},"application/vnd.ieee.1905":{"source":"iana"},"application/vnd.igloader":{"source":"iana","extensions":["igl"]},"application/vnd.imagemeter.folder+zip":{"source":"iana","compressible":false},"application/vnd.imagemeter.image+zip":{"source":"iana","compressible":false},"application/vnd.immervision-ivp":{"source":"iana","extensions":["ivp"]},"application/vnd.immervision-ivu":{"source":"iana","extensions":["ivu"]},"application/vnd.ims.imsccv1p1":{"source":"iana"},"application/vnd.ims.imsccv1p2":{"source":"iana"},"application/vnd.ims.imsccv1p3":{"source":"iana"},"application/vnd.ims.lis.v2.result+json":{"source":"iana","compressible":true},"application/vnd.ims.lti.v2.toolconsumerprofile+json":{"source":"iana","compressible":true},"application/vnd.ims.lti.v2.toolproxy+json":{"source":"iana","compressible":true},"application/vnd.ims.lti.v2.toolproxy.id+json":{"source":"iana","compressible":true},"application/vnd.ims.lti.v2.toolsettings+json":{"source":"iana","compressible":true},"application/vnd.ims.lti.v2.toolsettings.simple+json":{"source":"iana","compressible":true},"application/vnd.informedcontrol.rms+xml":{"source":"iana","compressible":true},"application/vnd.informix-visionary":{"source":"iana"},"application/vnd.infotech.project":{"source":"iana"},"application/vnd.infotech.project+xml":{"source":"iana","compressible":true},"application/vnd.innopath.wamp.notification":{"source":"iana"},"application/vnd.insors.igm":{"source":"iana","extensions":["igm"]},"application/vnd.intercon.formnet":{"source":"iana","extensions":["xpw","xpx"]},"application/vnd.intergeo":{"source":"iana","extensions":["i2g"]},"application/vnd.intertrust.digibox":{"source":"iana"},"application/vnd.intertrust.nncp":{"source":"iana"},"application/vnd.intu.qbo":{"source":"iana","extensions":["qbo"]},"application/vnd.intu.qfx":{"source":"iana","extensions":["qfx"]},"application/vnd.iptc.g2.catalogitem+xml":{"source":"iana","compressible":true},"application/vnd.iptc.g2.conceptitem+xml":{"source":"iana","compressible":true},"application/vnd.iptc.g2.knowledgeitem+xml":{"source":"iana","compressible":true},"application/vnd.iptc.g2.newsitem+xml":{"source":"iana","compressible":true},"application/vnd.iptc.g2.newsmessage+xml":{"source":"iana","compressible":true},"application/vnd.iptc.g2.packageitem+xml":{"source":"iana","compressible":true},"application/vnd.iptc.g2.planningitem+xml":{"source":"iana","compressible":true},"application/vnd.ipunplugged.rcprofile":{"source":"iana","extensions":["rcprofile"]},"application/vnd.irepository.package+xml":{"source":"iana","compressible":true,"extensions":["irp"]},"application/vnd.is-xpr":{"source":"iana","extensions":["xpr"]},"application/vnd.isac.fcs":{"source":"iana","extensions":["fcs"]},"application/vnd.iso11783-10+zip":{"source":"iana","compressible":false},"application/vnd.jam":{"source":"iana","extensions":["jam"]},"application/vnd.japannet-directory-service":{"source":"iana"},"application/vnd.japannet-jpnstore-wakeup":{"source":"iana"},"application/vnd.japannet-payment-wakeup":{"source":"iana"},"application/vnd.japannet-registration":{"source":"iana"},"application/vnd.japannet-registration-wakeup":{"source":"iana"},"application/vnd.japannet-setstore-wakeup":{"source":"iana"},"application/vnd.japannet-verification":{"source":"iana"},"application/vnd.japannet-verification-wakeup":{"source":"iana"},"application/vnd.jcp.javame.midlet-rms":{"source":"iana","extensions":["rms"]},"application/vnd.jisp":{"source":"iana","extensions":["jisp"]},"application/vnd.joost.joda-archive":{"source":"iana","extensions":["joda"]},"application/vnd.jsk.isdn-ngn":{"source":"iana"},"application/vnd.kahootz":{"source":"iana","extensions":["ktz","ktr"]},"application/vnd.kde.karbon":{"source":"iana","extensions":["karbon"]},"application/vnd.kde.kchart":{"source":"iana","extensions":["chrt"]},"application/vnd.kde.kformula":{"source":"iana","extensions":["kfo"]},"application/vnd.kde.kivio":{"source":"iana","extensions":["flw"]},"application/vnd.kde.kontour":{"source":"iana","extensions":["kon"]},"application/vnd.kde.kpresenter":{"source":"iana","extensions":["kpr","kpt"]},"application/vnd.kde.kspread":{"source":"iana","extensions":["ksp"]},"application/vnd.kde.kword":{"source":"iana","extensions":["kwd","kwt"]},"application/vnd.kenameaapp":{"source":"iana","extensions":["htke"]},"application/vnd.kidspiration":{"source":"iana","extensions":["kia"]},"application/vnd.kinar":{"source":"iana","extensions":["kne","knp"]},"application/vnd.koan":{"source":"iana","extensions":["skp","skd","skt","skm"]},"application/vnd.kodak-descriptor":{"source":"iana","extensions":["sse"]},"application/vnd.las":{"source":"iana"},"application/vnd.las.las+json":{"source":"iana","compressible":true},"application/vnd.las.las+xml":{"source":"iana","compressible":true,"extensions":["lasxml"]},"application/vnd.laszip":{"source":"iana"},"application/vnd.leap+json":{"source":"iana","compressible":true},"application/vnd.liberty-request+xml":{"source":"iana","compressible":true},"application/vnd.llamagraphics.life-balance.desktop":{"source":"iana","extensions":["lbd"]},"application/vnd.llamagraphics.life-balance.exchange+xml":{"source":"iana","compressible":true,"extensions":["lbe"]},"application/vnd.logipipe.circuit+zip":{"source":"iana","compressible":false},"application/vnd.loom":{"source":"iana"},"application/vnd.lotus-1-2-3":{"source":"iana","extensions":["123"]},"application/vnd.lotus-approach":{"source":"iana","extensions":["apr"]},"application/vnd.lotus-freelance":{"source":"iana","extensions":["pre"]},"application/vnd.lotus-notes":{"source":"iana","extensions":["nsf"]},"application/vnd.lotus-organizer":{"source":"iana","extensions":["org"]},"application/vnd.lotus-screencam":{"source":"iana","extensions":["scm"]},"application/vnd.lotus-wordpro":{"source":"iana","extensions":["lwp"]},"application/vnd.macports.portpkg":{"source":"iana","extensions":["portpkg"]},"application/vnd.mapbox-vector-tile":{"source":"iana","extensions":["mvt"]},"application/vnd.marlin.drm.actiontoken+xml":{"source":"iana","compressible":true},"application/vnd.marlin.drm.conftoken+xml":{"source":"iana","compressible":true},"application/vnd.marlin.drm.license+xml":{"source":"iana","compressible":true},"application/vnd.marlin.drm.mdcf":{"source":"iana"},"application/vnd.mason+json":{"source":"iana","compressible":true},"application/vnd.maxar.archive.3tz+zip":{"source":"iana","compressible":false},"application/vnd.maxmind.maxmind-db":{"source":"iana"},"application/vnd.mcd":{"source":"iana","extensions":["mcd"]},"application/vnd.medcalcdata":{"source":"iana","extensions":["mc1"]},"application/vnd.mediastation.cdkey":{"source":"iana","extensions":["cdkey"]},"application/vnd.meridian-slingshot":{"source":"iana"},"application/vnd.mfer":{"source":"iana","extensions":["mwf"]},"application/vnd.mfmp":{"source":"iana","extensions":["mfm"]},"application/vnd.micro+json":{"source":"iana","compressible":true},"application/vnd.micrografx.flo":{"source":"iana","extensions":["flo"]},"application/vnd.micrografx.igx":{"source":"iana","extensions":["igx"]},"application/vnd.microsoft.portable-executable":{"source":"iana"},"application/vnd.microsoft.windows.thumbnail-cache":{"source":"iana"},"application/vnd.miele+json":{"source":"iana","compressible":true},"application/vnd.mif":{"source":"iana","extensions":["mif"]},"application/vnd.minisoft-hp3000-save":{"source":"iana"},"application/vnd.mitsubishi.misty-guard.trustweb":{"source":"iana"},"application/vnd.mobius.daf":{"source":"iana","extensions":["daf"]},"application/vnd.mobius.dis":{"source":"iana","extensions":["dis"]},"application/vnd.mobius.mbk":{"source":"iana","extensions":["mbk"]},"application/vnd.mobius.mqy":{"source":"iana","extensions":["mqy"]},"application/vnd.mobius.msl":{"source":"iana","extensions":["msl"]},"application/vnd.mobius.plc":{"source":"iana","extensions":["plc"]},"application/vnd.mobius.txf":{"source":"iana","extensions":["txf"]},"application/vnd.mophun.application":{"source":"iana","extensions":["mpn"]},"application/vnd.mophun.certificate":{"source":"iana","extensions":["mpc"]},"application/vnd.motorola.flexsuite":{"source":"iana"},"application/vnd.motorola.flexsuite.adsi":{"source":"iana"},"application/vnd.motorola.flexsuite.fis":{"source":"iana"},"application/vnd.motorola.flexsuite.gotap":{"source":"iana"},"application/vnd.motorola.flexsuite.kmr":{"source":"iana"},"application/vnd.motorola.flexsuite.ttc":{"source":"iana"},"application/vnd.motorola.flexsuite.wem":{"source":"iana"},"application/vnd.motorola.iprm":{"source":"iana"},"application/vnd.mozilla.xul+xml":{"source":"iana","compressible":true,"extensions":["xul"]},"application/vnd.ms-3mfdocument":{"source":"iana"},"application/vnd.ms-artgalry":{"source":"iana","extensions":["cil"]},"application/vnd.ms-asf":{"source":"iana"},"application/vnd.ms-cab-compressed":{"source":"iana","extensions":["cab"]},"application/vnd.ms-color.iccprofile":{"source":"apache"},"application/vnd.ms-excel":{"source":"iana","compressible":false,"extensions":["xls","xlm","xla","xlc","xlt","xlw"]},"application/vnd.ms-excel.addin.macroenabled.12":{"source":"iana","extensions":["xlam"]},"application/vnd.ms-excel.sheet.binary.macroenabled.12":{"source":"iana","extensions":["xlsb"]},"application/vnd.ms-excel.sheet.macroenabled.12":{"source":"iana","extensions":["xlsm"]},"application/vnd.ms-excel.template.macroenabled.12":{"source":"iana","extensions":["xltm"]},"application/vnd.ms-fontobject":{"source":"iana","compressible":true,"extensions":["eot"]},"application/vnd.ms-htmlhelp":{"source":"iana","extensions":["chm"]},"application/vnd.ms-ims":{"source":"iana","extensions":["ims"]},"application/vnd.ms-lrm":{"source":"iana","extensions":["lrm"]},"application/vnd.ms-office.activex+xml":{"source":"iana","compressible":true},"application/vnd.ms-officetheme":{"source":"iana","extensions":["thmx"]},"application/vnd.ms-opentype":{"source":"apache","compressible":true},"application/vnd.ms-outlook":{"compressible":false,"extensions":["msg"]},"application/vnd.ms-package.obfuscated-opentype":{"source":"apache"},"application/vnd.ms-pki.seccat":{"source":"apache","extensions":["cat"]},"application/vnd.ms-pki.stl":{"source":"apache","extensions":["stl"]},"application/vnd.ms-playready.initiator+xml":{"source":"iana","compressible":true},"application/vnd.ms-powerpoint":{"source":"iana","compressible":false,"extensions":["ppt","pps","pot"]},"application/vnd.ms-powerpoint.addin.macroenabled.12":{"source":"iana","extensions":["ppam"]},"application/vnd.ms-powerpoint.presentation.macroenabled.12":{"source":"iana","extensions":["pptm"]},"application/vnd.ms-powerpoint.slide.macroenabled.12":{"source":"iana","extensions":["sldm"]},"application/vnd.ms-powerpoint.slideshow.macroenabled.12":{"source":"iana","extensions":["ppsm"]},"application/vnd.ms-powerpoint.template.macroenabled.12":{"source":"iana","extensions":["potm"]},"application/vnd.ms-printdevicecapabilities+xml":{"source":"iana","compressible":true},"application/vnd.ms-printing.printticket+xml":{"source":"apache","compressible":true},"application/vnd.ms-printschematicket+xml":{"source":"iana","compressible":true},"application/vnd.ms-project":{"source":"iana","extensions":["mpp","mpt"]},"application/vnd.ms-tnef":{"source":"iana"},"application/vnd.ms-windows.devicepairing":{"source":"iana"},"application/vnd.ms-windows.nwprinting.oob":{"source":"iana"},"application/vnd.ms-windows.printerpairing":{"source":"iana"},"application/vnd.ms-windows.wsd.oob":{"source":"iana"},"application/vnd.ms-wmdrm.lic-chlg-req":{"source":"iana"},"application/vnd.ms-wmdrm.lic-resp":{"source":"iana"},"application/vnd.ms-wmdrm.meter-chlg-req":{"source":"iana"},"application/vnd.ms-wmdrm.meter-resp":{"source":"iana"},"application/vnd.ms-word.document.macroenabled.12":{"source":"iana","extensions":["docm"]},"application/vnd.ms-word.template.macroenabled.12":{"source":"iana","extensions":["dotm"]},"application/vnd.ms-works":{"source":"iana","extensions":["wps","wks","wcm","wdb"]},"application/vnd.ms-wpl":{"source":"iana","extensions":["wpl"]},"application/vnd.ms-xpsdocument":{"source":"iana","compressible":false,"extensions":["xps"]},"application/vnd.msa-disk-image":{"source":"iana"},"application/vnd.mseq":{"source":"iana","extensions":["mseq"]},"application/vnd.msign":{"source":"iana"},"application/vnd.multiad.creator":{"source":"iana"},"application/vnd.multiad.creator.cif":{"source":"iana"},"application/vnd.music-niff":{"source":"iana"},"application/vnd.musician":{"source":"iana","extensions":["mus"]},"application/vnd.muvee.style":{"source":"iana","extensions":["msty"]},"application/vnd.mynfc":{"source":"iana","extensions":["taglet"]},"application/vnd.nacamar.ybrid+json":{"source":"iana","compressible":true},"application/vnd.ncd.control":{"source":"iana"},"application/vnd.ncd.reference":{"source":"iana"},"application/vnd.nearst.inv+json":{"source":"iana","compressible":true},"application/vnd.nebumind.line":{"source":"iana"},"application/vnd.nervana":{"source":"iana"},"application/vnd.netfpx":{"source":"iana"},"application/vnd.neurolanguage.nlu":{"source":"iana","extensions":["nlu"]},"application/vnd.nimn":{"source":"iana"},"application/vnd.nintendo.nitro.rom":{"source":"iana"},"application/vnd.nintendo.snes.rom":{"source":"iana"},"application/vnd.nitf":{"source":"iana","extensions":["ntf","nitf"]},"application/vnd.noblenet-directory":{"source":"iana","extensions":["nnd"]},"application/vnd.noblenet-sealer":{"source":"iana","extensions":["nns"]},"application/vnd.noblenet-web":{"source":"iana","extensions":["nnw"]},"application/vnd.nokia.catalogs":{"source":"iana"},"application/vnd.nokia.conml+wbxml":{"source":"iana"},"application/vnd.nokia.conml+xml":{"source":"iana","compressible":true},"application/vnd.nokia.iptv.config+xml":{"source":"iana","compressible":true},"application/vnd.nokia.isds-radio-presets":{"source":"iana"},"application/vnd.nokia.landmark+wbxml":{"source":"iana"},"application/vnd.nokia.landmark+xml":{"source":"iana","compressible":true},"application/vnd.nokia.landmarkcollection+xml":{"source":"iana","compressible":true},"application/vnd.nokia.n-gage.ac+xml":{"source":"iana","compressible":true,"extensions":["ac"]},"application/vnd.nokia.n-gage.data":{"source":"iana","extensions":["ngdat"]},"application/vnd.nokia.n-gage.symbian.install":{"source":"iana","extensions":["n-gage"]},"application/vnd.nokia.ncd":{"source":"iana"},"application/vnd.nokia.pcd+wbxml":{"source":"iana"},"application/vnd.nokia.pcd+xml":{"source":"iana","compressible":true},"application/vnd.nokia.radio-preset":{"source":"iana","extensions":["rpst"]},"application/vnd.nokia.radio-presets":{"source":"iana","extensions":["rpss"]},"application/vnd.novadigm.edm":{"source":"iana","extensions":["edm"]},"application/vnd.novadigm.edx":{"source":"iana","extensions":["edx"]},"application/vnd.novadigm.ext":{"source":"iana","extensions":["ext"]},"application/vnd.ntt-local.content-share":{"source":"iana"},"application/vnd.ntt-local.file-transfer":{"source":"iana"},"application/vnd.ntt-local.ogw_remote-access":{"source":"iana"},"application/vnd.ntt-local.sip-ta_remote":{"source":"iana"},"application/vnd.ntt-local.sip-ta_tcp_stream":{"source":"iana"},"application/vnd.oasis.opendocument.chart":{"source":"iana","extensions":["odc"]},"application/vnd.oasis.opendocument.chart-template":{"source":"iana","extensions":["otc"]},"application/vnd.oasis.opendocument.database":{"source":"iana","extensions":["odb"]},"application/vnd.oasis.opendocument.formula":{"source":"iana","extensions":["odf"]},"application/vnd.oasis.opendocument.formula-template":{"source":"iana","extensions":["odft"]},"application/vnd.oasis.opendocument.graphics":{"source":"iana","compressible":false,"extensions":["odg"]},"application/vnd.oasis.opendocument.graphics-template":{"source":"iana","extensions":["otg"]},"application/vnd.oasis.opendocument.image":{"source":"iana","extensions":["odi"]},"application/vnd.oasis.opendocument.image-template":{"source":"iana","extensions":["oti"]},"application/vnd.oasis.opendocument.presentation":{"source":"iana","compressible":false,"extensions":["odp"]},"application/vnd.oasis.opendocument.presentation-template":{"source":"iana","extensions":["otp"]},"application/vnd.oasis.opendocument.spreadsheet":{"source":"iana","compressible":false,"extensions":["ods"]},"application/vnd.oasis.opendocument.spreadsheet-template":{"source":"iana","extensions":["ots"]},"application/vnd.oasis.opendocument.text":{"source":"iana","compressible":false,"extensions":["odt"]},"application/vnd.oasis.opendocument.text-master":{"source":"iana","extensions":["odm"]},"application/vnd.oasis.opendocument.text-template":{"source":"iana","extensions":["ott"]},"application/vnd.oasis.opendocument.text-web":{"source":"iana","extensions":["oth"]},"application/vnd.obn":{"source":"iana"},"application/vnd.ocf+cbor":{"source":"iana"},"application/vnd.oci.image.manifest.v1+json":{"source":"iana","compressible":true},"application/vnd.oftn.l10n+json":{"source":"iana","compressible":true},"application/vnd.oipf.contentaccessdownload+xml":{"source":"iana","compressible":true},"application/vnd.oipf.contentaccessstreaming+xml":{"source":"iana","compressible":true},"application/vnd.oipf.cspg-hexbinary":{"source":"iana"},"application/vnd.oipf.dae.svg+xml":{"source":"iana","compressible":true},"application/vnd.oipf.dae.xhtml+xml":{"source":"iana","compressible":true},"application/vnd.oipf.mippvcontrolmessage+xml":{"source":"iana","compressible":true},"application/vnd.oipf.pae.gem":{"source":"iana"},"application/vnd.oipf.spdiscovery+xml":{"source":"iana","compressible":true},"application/vnd.oipf.spdlist+xml":{"source":"iana","compressible":true},"application/vnd.oipf.ueprofile+xml":{"source":"iana","compressible":true},"application/vnd.oipf.userprofile+xml":{"source":"iana","compressible":true},"application/vnd.olpc-sugar":{"source":"iana","extensions":["xo"]},"application/vnd.oma-scws-config":{"source":"iana"},"application/vnd.oma-scws-http-request":{"source":"iana"},"application/vnd.oma-scws-http-response":{"source":"iana"},"application/vnd.oma.bcast.associated-procedure-parameter+xml":{"source":"iana","compressible":true},"application/vnd.oma.bcast.drm-trigger+xml":{"source":"iana","compressible":true},"application/vnd.oma.bcast.imd+xml":{"source":"iana","compressible":true},"application/vnd.oma.bcast.ltkm":{"source":"iana"},"application/vnd.oma.bcast.notification+xml":{"source":"iana","compressible":true},"application/vnd.oma.bcast.provisioningtrigger":{"source":"iana"},"application/vnd.oma.bcast.sgboot":{"source":"iana"},"application/vnd.oma.bcast.sgdd+xml":{"source":"iana","compressible":true},"application/vnd.oma.bcast.sgdu":{"source":"iana"},"application/vnd.oma.bcast.simple-symbol-container":{"source":"iana"},"application/vnd.oma.bcast.smartcard-trigger+xml":{"source":"iana","compressible":true},"application/vnd.oma.bcast.sprov+xml":{"source":"iana","compressible":true},"application/vnd.oma.bcast.stkm":{"source":"iana"},"application/vnd.oma.cab-address-book+xml":{"source":"iana","compressible":true},"application/vnd.oma.cab-feature-handler+xml":{"source":"iana","compressible":true},"application/vnd.oma.cab-pcc+xml":{"source":"iana","compressible":true},"application/vnd.oma.cab-subs-invite+xml":{"source":"iana","compressible":true},"application/vnd.oma.cab-user-prefs+xml":{"source":"iana","compressible":true},"application/vnd.oma.dcd":{"source":"iana"},"application/vnd.oma.dcdc":{"source":"iana"},"application/vnd.oma.dd2+xml":{"source":"iana","compressible":true,"extensions":["dd2"]},"application/vnd.oma.drm.risd+xml":{"source":"iana","compressible":true},"application/vnd.oma.group-usage-list+xml":{"source":"iana","compressible":true},"application/vnd.oma.lwm2m+cbor":{"source":"iana"},"application/vnd.oma.lwm2m+json":{"source":"iana","compressible":true},"application/vnd.oma.lwm2m+tlv":{"source":"iana"},"application/vnd.oma.pal+xml":{"source":"iana","compressible":true},"application/vnd.oma.poc.detailed-progress-report+xml":{"source":"iana","compressible":true},"application/vnd.oma.poc.final-report+xml":{"source":"iana","compressible":true},"application/vnd.oma.poc.groups+xml":{"source":"iana","compressible":true},"application/vnd.oma.poc.invocation-descriptor+xml":{"source":"iana","compressible":true},"application/vnd.oma.poc.optimized-progress-report+xml":{"source":"iana","compressible":true},"application/vnd.oma.push":{"source":"iana"},"application/vnd.oma.scidm.messages+xml":{"source":"iana","compressible":true},"application/vnd.oma.xcap-directory+xml":{"source":"iana","compressible":true},"application/vnd.omads-email+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/vnd.omads-file+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/vnd.omads-folder+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/vnd.omaloc-supl-init":{"source":"iana"},"application/vnd.onepager":{"source":"iana"},"application/vnd.onepagertamp":{"source":"iana"},"application/vnd.onepagertamx":{"source":"iana"},"application/vnd.onepagertat":{"source":"iana"},"application/vnd.onepagertatp":{"source":"iana"},"application/vnd.onepagertatx":{"source":"iana"},"application/vnd.openblox.game+xml":{"source":"iana","compressible":true,"extensions":["obgx"]},"application/vnd.openblox.game-binary":{"source":"iana"},"application/vnd.openeye.oeb":{"source":"iana"},"application/vnd.openofficeorg.extension":{"source":"apache","extensions":["oxt"]},"application/vnd.openstreetmap.data+xml":{"source":"iana","compressible":true,"extensions":["osm"]},"application/vnd.opentimestamps.ots":{"source":"iana"},"application/vnd.openxmlformats-officedocument.custom-properties+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.customxmlproperties+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.drawing+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.drawingml.chart+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.drawingml.chartshapes+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.drawingml.diagramcolors+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.drawingml.diagramdata+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.drawingml.diagramlayout+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.drawingml.diagramstyle+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.extended-properties+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.commentauthors+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.comments+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.handoutmaster+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.notesmaster+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.notesslide+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.presentation":{"source":"iana","compressible":false,"extensions":["pptx"]},"application/vnd.openxmlformats-officedocument.presentationml.presentation.main+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.presprops+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.slide":{"source":"iana","extensions":["sldx"]},"application/vnd.openxmlformats-officedocument.presentationml.slide+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.slidelayout+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.slidemaster+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.slideshow":{"source":"iana","extensions":["ppsx"]},"application/vnd.openxmlformats-officedocument.presentationml.slideshow.main+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.slideupdateinfo+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.tablestyles+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.tags+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.template":{"source":"iana","extensions":["potx"]},"application/vnd.openxmlformats-officedocument.presentationml.template.main+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.viewprops+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.calcchain+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.chartsheet+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.comments+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.connections+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.dialogsheet+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.externallink+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.pivotcachedefinition+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.pivotcacherecords+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.pivottable+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.querytable+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.revisionheaders+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.revisionlog+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.sharedstrings+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":{"source":"iana","compressible":false,"extensions":["xlsx"]},"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.sheetmetadata+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.table+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.tablesinglecells+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.template":{"source":"iana","extensions":["xltx"]},"application/vnd.openxmlformats-officedocument.spreadsheetml.template.main+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.usernames+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.volatiledependencies+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.theme+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.themeoverride+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.vmldrawing":{"source":"iana"},"application/vnd.openxmlformats-officedocument.wordprocessingml.comments+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.wordprocessingml.document":{"source":"iana","compressible":false,"extensions":["docx"]},"application/vnd.openxmlformats-officedocument.wordprocessingml.document.glossary+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.wordprocessingml.endnotes+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.wordprocessingml.fonttable+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.wordprocessingml.footer+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.wordprocessingml.footnotes+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.wordprocessingml.numbering+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.wordprocessingml.settings+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.wordprocessingml.template":{"source":"iana","extensions":["dotx"]},"application/vnd.openxmlformats-officedocument.wordprocessingml.template.main+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.wordprocessingml.websettings+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-package.core-properties+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-package.digital-signature-xmlsignature+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-package.relationships+xml":{"source":"iana","compressible":true},"application/vnd.oracle.resource+json":{"source":"iana","compressible":true},"application/vnd.orange.indata":{"source":"iana"},"application/vnd.osa.netdeploy":{"source":"iana"},"application/vnd.osgeo.mapguide.package":{"source":"iana","extensions":["mgp"]},"application/vnd.osgi.bundle":{"source":"iana"},"application/vnd.osgi.dp":{"source":"iana","extensions":["dp"]},"application/vnd.osgi.subsystem":{"source":"iana","extensions":["esa"]},"application/vnd.otps.ct-kip+xml":{"source":"iana","compressible":true},"application/vnd.oxli.countgraph":{"source":"iana"},"application/vnd.pagerduty+json":{"source":"iana","compressible":true},"application/vnd.palm":{"source":"iana","extensions":["pdb","pqa","oprc"]},"application/vnd.panoply":{"source":"iana"},"application/vnd.paos.xml":{"source":"iana"},"application/vnd.patentdive":{"source":"iana"},"application/vnd.patientecommsdoc":{"source":"iana"},"application/vnd.pawaafile":{"source":"iana","extensions":["paw"]},"application/vnd.pcos":{"source":"iana"},"application/vnd.pg.format":{"source":"iana","extensions":["str"]},"application/vnd.pg.osasli":{"source":"iana","extensions":["ei6"]},"application/vnd.piaccess.application-licence":{"source":"iana"},"application/vnd.picsel":{"source":"iana","extensions":["efif"]},"application/vnd.pmi.widget":{"source":"iana","extensions":["wg"]},"application/vnd.poc.group-advertisement+xml":{"source":"iana","compressible":true},"application/vnd.pocketlearn":{"source":"iana","extensions":["plf"]},"application/vnd.powerbuilder6":{"source":"iana","extensions":["pbd"]},"application/vnd.powerbuilder6-s":{"source":"iana"},"application/vnd.powerbuilder7":{"source":"iana"},"application/vnd.powerbuilder7-s":{"source":"iana"},"application/vnd.powerbuilder75":{"source":"iana"},"application/vnd.powerbuilder75-s":{"source":"iana"},"application/vnd.preminet":{"source":"iana"},"application/vnd.previewsystems.box":{"source":"iana","extensions":["box"]},"application/vnd.proteus.magazine":{"source":"iana","extensions":["mgz"]},"application/vnd.psfs":{"source":"iana"},"application/vnd.publishare-delta-tree":{"source":"iana","extensions":["qps"]},"application/vnd.pvi.ptid1":{"source":"iana","extensions":["ptid"]},"application/vnd.pwg-multiplexed":{"source":"iana"},"application/vnd.pwg-xhtml-print+xml":{"source":"iana","compressible":true},"application/vnd.qualcomm.brew-app-res":{"source":"iana"},"application/vnd.quarantainenet":{"source":"iana"},"application/vnd.quark.quarkxpress":{"source":"iana","extensions":["qxd","qxt","qwd","qwt","qxl","qxb"]},"application/vnd.quobject-quoxdocument":{"source":"iana"},"application/vnd.radisys.moml+xml":{"source":"iana","compressible":true},"application/vnd.radisys.msml+xml":{"source":"iana","compressible":true},"application/vnd.radisys.msml-audit+xml":{"source":"iana","compressible":true},"application/vnd.radisys.msml-audit-conf+xml":{"source":"iana","compressible":true},"application/vnd.radisys.msml-audit-conn+xml":{"source":"iana","compressible":true},"application/vnd.radisys.msml-audit-dialog+xml":{"source":"iana","compressible":true},"application/vnd.radisys.msml-audit-stream+xml":{"source":"iana","compressible":true},"application/vnd.radisys.msml-conf+xml":{"source":"iana","compressible":true},"application/vnd.radisys.msml-dialog+xml":{"source":"iana","compressible":true},"application/vnd.radisys.msml-dialog-base+xml":{"source":"iana","compressible":true},"application/vnd.radisys.msml-dialog-fax-detect+xml":{"source":"iana","compressible":true},"application/vnd.radisys.msml-dialog-fax-sendrecv+xml":{"source":"iana","compressible":true},"application/vnd.radisys.msml-dialog-group+xml":{"source":"iana","compressible":true},"application/vnd.radisys.msml-dialog-speech+xml":{"source":"iana","compressible":true},"application/vnd.radisys.msml-dialog-transform+xml":{"source":"iana","compressible":true},"application/vnd.rainstor.data":{"source":"iana"},"application/vnd.rapid":{"source":"iana"},"application/vnd.rar":{"source":"iana","extensions":["rar"]},"application/vnd.realvnc.bed":{"source":"iana","extensions":["bed"]},"application/vnd.recordare.musicxml":{"source":"iana","extensions":["mxl"]},"application/vnd.recordare.musicxml+xml":{"source":"iana","compressible":true,"extensions":["musicxml"]},"application/vnd.renlearn.rlprint":{"source":"iana"},"application/vnd.resilient.logic":{"source":"iana"},"application/vnd.restful+json":{"source":"iana","compressible":true},"application/vnd.rig.cryptonote":{"source":"iana","extensions":["cryptonote"]},"application/vnd.rim.cod":{"source":"apache","extensions":["cod"]},"application/vnd.rn-realmedia":{"source":"apache","extensions":["rm"]},"application/vnd.rn-realmedia-vbr":{"source":"apache","extensions":["rmvb"]},"application/vnd.route66.link66+xml":{"source":"iana","compressible":true,"extensions":["link66"]},"application/vnd.rs-274x":{"source":"iana"},"application/vnd.ruckus.download":{"source":"iana"},"application/vnd.s3sms":{"source":"iana"},"application/vnd.sailingtracker.track":{"source":"iana","extensions":["st"]},"application/vnd.sar":{"source":"iana"},"application/vnd.sbm.cid":{"source":"iana"},"application/vnd.sbm.mid2":{"source":"iana"},"application/vnd.scribus":{"source":"iana"},"application/vnd.sealed.3df":{"source":"iana"},"application/vnd.sealed.csf":{"source":"iana"},"application/vnd.sealed.doc":{"source":"iana"},"application/vnd.sealed.eml":{"source":"iana"},"application/vnd.sealed.mht":{"source":"iana"},"application/vnd.sealed.net":{"source":"iana"},"application/vnd.sealed.ppt":{"source":"iana"},"application/vnd.sealed.tiff":{"source":"iana"},"application/vnd.sealed.xls":{"source":"iana"},"application/vnd.sealedmedia.softseal.html":{"source":"iana"},"application/vnd.sealedmedia.softseal.pdf":{"source":"iana"},"application/vnd.seemail":{"source":"iana","extensions":["see"]},"application/vnd.seis+json":{"source":"iana","compressible":true},"application/vnd.sema":{"source":"iana","extensions":["sema"]},"application/vnd.semd":{"source":"iana","extensions":["semd"]},"application/vnd.semf":{"source":"iana","extensions":["semf"]},"application/vnd.shade-save-file":{"source":"iana"},"application/vnd.shana.informed.formdata":{"source":"iana","extensions":["ifm"]},"application/vnd.shana.informed.formtemplate":{"source":"iana","extensions":["itp"]},"application/vnd.shana.informed.interchange":{"source":"iana","extensions":["iif"]},"application/vnd.shana.informed.package":{"source":"iana","extensions":["ipk"]},"application/vnd.shootproof+json":{"source":"iana","compressible":true},"application/vnd.shopkick+json":{"source":"iana","compressible":true},"application/vnd.shp":{"source":"iana"},"application/vnd.shx":{"source":"iana"},"application/vnd.sigrok.session":{"source":"iana"},"application/vnd.simtech-mindmapper":{"source":"iana","extensions":["twd","twds"]},"application/vnd.siren+json":{"source":"iana","compressible":true},"application/vnd.smaf":{"source":"iana","extensions":["mmf"]},"application/vnd.smart.notebook":{"source":"iana"},"application/vnd.smart.teacher":{"source":"iana","extensions":["teacher"]},"application/vnd.snesdev-page-table":{"source":"iana"},"application/vnd.software602.filler.form+xml":{"source":"iana","compressible":true,"extensions":["fo"]},"application/vnd.software602.filler.form-xml-zip":{"source":"iana"},"application/vnd.solent.sdkm+xml":{"source":"iana","compressible":true,"extensions":["sdkm","sdkd"]},"application/vnd.spotfire.dxp":{"source":"iana","extensions":["dxp"]},"application/vnd.spotfire.sfs":{"source":"iana","extensions":["sfs"]},"application/vnd.sqlite3":{"source":"iana"},"application/vnd.sss-cod":{"source":"iana"},"application/vnd.sss-dtf":{"source":"iana"},"application/vnd.sss-ntf":{"source":"iana"},"application/vnd.stardivision.calc":{"source":"apache","extensions":["sdc"]},"application/vnd.stardivision.draw":{"source":"apache","extensions":["sda"]},"application/vnd.stardivision.impress":{"source":"apache","extensions":["sdd"]},"application/vnd.stardivision.math":{"source":"apache","extensions":["smf"]},"application/vnd.stardivision.writer":{"source":"apache","extensions":["sdw","vor"]},"application/vnd.stardivision.writer-global":{"source":"apache","extensions":["sgl"]},"application/vnd.stepmania.package":{"source":"iana","extensions":["smzip"]},"application/vnd.stepmania.stepchart":{"source":"iana","extensions":["sm"]},"application/vnd.street-stream":{"source":"iana"},"application/vnd.sun.wadl+xml":{"source":"iana","compressible":true,"extensions":["wadl"]},"application/vnd.sun.xml.calc":{"source":"apache","extensions":["sxc"]},"application/vnd.sun.xml.calc.template":{"source":"apache","extensions":["stc"]},"application/vnd.sun.xml.draw":{"source":"apache","extensions":["sxd"]},"application/vnd.sun.xml.draw.template":{"source":"apache","extensions":["std"]},"application/vnd.sun.xml.impress":{"source":"apache","extensions":["sxi"]},"application/vnd.sun.xml.impress.template":{"source":"apache","extensions":["sti"]},"application/vnd.sun.xml.math":{"source":"apache","extensions":["sxm"]},"application/vnd.sun.xml.writer":{"source":"apache","extensions":["sxw"]},"application/vnd.sun.xml.writer.global":{"source":"apache","extensions":["sxg"]},"application/vnd.sun.xml.writer.template":{"source":"apache","extensions":["stw"]},"application/vnd.sus-calendar":{"source":"iana","extensions":["sus","susp"]},"application/vnd.svd":{"source":"iana","extensions":["svd"]},"application/vnd.swiftview-ics":{"source":"iana"},"application/vnd.sycle+xml":{"source":"iana","compressible":true},"application/vnd.syft+json":{"source":"iana","compressible":true},"application/vnd.symbian.install":{"source":"apache","extensions":["sis","sisx"]},"application/vnd.syncml+xml":{"source":"iana","charset":"UTF-8","compressible":true,"extensions":["xsm"]},"application/vnd.syncml.dm+wbxml":{"source":"iana","charset":"UTF-8","extensions":["bdm"]},"application/vnd.syncml.dm+xml":{"source":"iana","charset":"UTF-8","compressible":true,"extensions":["xdm"]},"application/vnd.syncml.dm.notification":{"source":"iana"},"application/vnd.syncml.dmddf+wbxml":{"source":"iana"},"application/vnd.syncml.dmddf+xml":{"source":"iana","charset":"UTF-8","compressible":true,"extensions":["ddf"]},"application/vnd.syncml.dmtnds+wbxml":{"source":"iana"},"application/vnd.syncml.dmtnds+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/vnd.syncml.ds.notification":{"source":"iana"},"application/vnd.tableschema+json":{"source":"iana","compressible":true},"application/vnd.tao.intent-module-archive":{"source":"iana","extensions":["tao"]},"application/vnd.tcpdump.pcap":{"source":"iana","extensions":["pcap","cap","dmp"]},"application/vnd.think-cell.ppttc+json":{"source":"iana","compressible":true},"application/vnd.tmd.mediaflex.api+xml":{"source":"iana","compressible":true},"application/vnd.tml":{"source":"iana"},"application/vnd.tmobile-livetv":{"source":"iana","extensions":["tmo"]},"application/vnd.tri.onesource":{"source":"iana"},"application/vnd.trid.tpt":{"source":"iana","extensions":["tpt"]},"application/vnd.triscape.mxs":{"source":"iana","extensions":["mxs"]},"application/vnd.trueapp":{"source":"iana","extensions":["tra"]},"application/vnd.truedoc":{"source":"iana"},"application/vnd.ubisoft.webplayer":{"source":"iana"},"application/vnd.ufdl":{"source":"iana","extensions":["ufd","ufdl"]},"application/vnd.uiq.theme":{"source":"iana","extensions":["utz"]},"application/vnd.umajin":{"source":"iana","extensions":["umj"]},"application/vnd.unity":{"source":"iana","extensions":["unityweb"]},"application/vnd.uoml+xml":{"source":"iana","compressible":true,"extensions":["uoml"]},"application/vnd.uplanet.alert":{"source":"iana"},"application/vnd.uplanet.alert-wbxml":{"source":"iana"},"application/vnd.uplanet.bearer-choice":{"source":"iana"},"application/vnd.uplanet.bearer-choice-wbxml":{"source":"iana"},"application/vnd.uplanet.cacheop":{"source":"iana"},"application/vnd.uplanet.cacheop-wbxml":{"source":"iana"},"application/vnd.uplanet.channel":{"source":"iana"},"application/vnd.uplanet.channel-wbxml":{"source":"iana"},"application/vnd.uplanet.list":{"source":"iana"},"application/vnd.uplanet.list-wbxml":{"source":"iana"},"application/vnd.uplanet.listcmd":{"source":"iana"},"application/vnd.uplanet.listcmd-wbxml":{"source":"iana"},"application/vnd.uplanet.signal":{"source":"iana"},"application/vnd.uri-map":{"source":"iana"},"application/vnd.valve.source.material":{"source":"iana"},"application/vnd.vcx":{"source":"iana","extensions":["vcx"]},"application/vnd.vd-study":{"source":"iana"},"application/vnd.vectorworks":{"source":"iana"},"application/vnd.vel+json":{"source":"iana","compressible":true},"application/vnd.verimatrix.vcas":{"source":"iana"},"application/vnd.veritone.aion+json":{"source":"iana","compressible":true},"application/vnd.veryant.thin":{"source":"iana"},"application/vnd.ves.encrypted":{"source":"iana"},"application/vnd.vidsoft.vidconference":{"source":"iana"},"application/vnd.visio":{"source":"iana","extensions":["vsd","vst","vss","vsw"]},"application/vnd.visionary":{"source":"iana","extensions":["vis"]},"application/vnd.vividence.scriptfile":{"source":"iana"},"application/vnd.vsf":{"source":"iana","extensions":["vsf"]},"application/vnd.wap.sic":{"source":"iana"},"application/vnd.wap.slc":{"source":"iana"},"application/vnd.wap.wbxml":{"source":"iana","charset":"UTF-8","extensions":["wbxml"]},"application/vnd.wap.wmlc":{"source":"iana","extensions":["wmlc"]},"application/vnd.wap.wmlscriptc":{"source":"iana","extensions":["wmlsc"]},"application/vnd.webturbo":{"source":"iana","extensions":["wtb"]},"application/vnd.wfa.dpp":{"source":"iana"},"application/vnd.wfa.p2p":{"source":"iana"},"application/vnd.wfa.wsc":{"source":"iana"},"application/vnd.windows.devicepairing":{"source":"iana"},"application/vnd.wmc":{"source":"iana"},"application/vnd.wmf.bootstrap":{"source":"iana"},"application/vnd.wolfram.mathematica":{"source":"iana"},"application/vnd.wolfram.mathematica.package":{"source":"iana"},"application/vnd.wolfram.player":{"source":"iana","extensions":["nbp"]},"application/vnd.wordperfect":{"source":"iana","extensions":["wpd"]},"application/vnd.wqd":{"source":"iana","extensions":["wqd"]},"application/vnd.wrq-hp3000-labelled":{"source":"iana"},"application/vnd.wt.stf":{"source":"iana","extensions":["stf"]},"application/vnd.wv.csp+wbxml":{"source":"iana"},"application/vnd.wv.csp+xml":{"source":"iana","compressible":true},"application/vnd.wv.ssp+xml":{"source":"iana","compressible":true},"application/vnd.xacml+json":{"source":"iana","compressible":true},"application/vnd.xara":{"source":"iana","extensions":["xar"]},"application/vnd.xfdl":{"source":"iana","extensions":["xfdl"]},"application/vnd.xfdl.webform":{"source":"iana"},"application/vnd.xmi+xml":{"source":"iana","compressible":true},"application/vnd.xmpie.cpkg":{"source":"iana"},"application/vnd.xmpie.dpkg":{"source":"iana"},"application/vnd.xmpie.plan":{"source":"iana"},"application/vnd.xmpie.ppkg":{"source":"iana"},"application/vnd.xmpie.xlim":{"source":"iana"},"application/vnd.yamaha.hv-dic":{"source":"iana","extensions":["hvd"]},"application/vnd.yamaha.hv-script":{"source":"iana","extensions":["hvs"]},"application/vnd.yamaha.hv-voice":{"source":"iana","extensions":["hvp"]},"application/vnd.yamaha.openscoreformat":{"source":"iana","extensions":["osf"]},"application/vnd.yamaha.openscoreformat.osfpvg+xml":{"source":"iana","compressible":true,"extensions":["osfpvg"]},"application/vnd.yamaha.remote-setup":{"source":"iana"},"application/vnd.yamaha.smaf-audio":{"source":"iana","extensions":["saf"]},"application/vnd.yamaha.smaf-phrase":{"source":"iana","extensions":["spf"]},"application/vnd.yamaha.through-ngn":{"source":"iana"},"application/vnd.yamaha.tunnel-udpencap":{"source":"iana"},"application/vnd.yaoweme":{"source":"iana"},"application/vnd.yellowriver-custom-menu":{"source":"iana","extensions":["cmp"]},"application/vnd.youtube.yt":{"source":"iana"},"application/vnd.zul":{"source":"iana","extensions":["zir","zirz"]},"application/vnd.zzazz.deck+xml":{"source":"iana","compressible":true,"extensions":["zaz"]},"application/voicexml+xml":{"source":"iana","compressible":true,"extensions":["vxml"]},"application/voucher-cms+json":{"source":"iana","compressible":true},"application/vq-rtcpxr":{"source":"iana"},"application/wasm":{"source":"iana","compressible":true,"extensions":["wasm"]},"application/watcherinfo+xml":{"source":"iana","compressible":true,"extensions":["wif"]},"application/webpush-options+json":{"source":"iana","compressible":true},"application/whoispp-query":{"source":"iana"},"application/whoispp-response":{"source":"iana"},"application/widget":{"source":"iana","extensions":["wgt"]},"application/winhlp":{"source":"apache","extensions":["hlp"]},"application/wita":{"source":"iana"},"application/wordperfect5.1":{"source":"iana"},"application/wsdl+xml":{"source":"iana","compressible":true,"extensions":["wsdl"]},"application/wspolicy+xml":{"source":"iana","compressible":true,"extensions":["wspolicy"]},"application/x-7z-compressed":{"source":"apache","compressible":false,"extensions":["7z"]},"application/x-abiword":{"source":"apache","extensions":["abw"]},"application/x-ace-compressed":{"source":"apache","extensions":["ace"]},"application/x-amf":{"source":"apache"},"application/x-apple-diskimage":{"source":"apache","extensions":["dmg"]},"application/x-arj":{"compressible":false,"extensions":["arj"]},"application/x-authorware-bin":{"source":"apache","extensions":["aab","x32","u32","vox"]},"application/x-authorware-map":{"source":"apache","extensions":["aam"]},"application/x-authorware-seg":{"source":"apache","extensions":["aas"]},"application/x-bcpio":{"source":"apache","extensions":["bcpio"]},"application/x-bdoc":{"compressible":false,"extensions":["bdoc"]},"application/x-bittorrent":{"source":"apache","extensions":["torrent"]},"application/x-blorb":{"source":"apache","extensions":["blb","blorb"]},"application/x-bzip":{"source":"apache","compressible":false,"extensions":["bz"]},"application/x-bzip2":{"source":"apache","compressible":false,"extensions":["bz2","boz"]},"application/x-cbr":{"source":"apache","extensions":["cbr","cba","cbt","cbz","cb7"]},"application/x-cdlink":{"source":"apache","extensions":["vcd"]},"application/x-cfs-compressed":{"source":"apache","extensions":["cfs"]},"application/x-chat":{"source":"apache","extensions":["chat"]},"application/x-chess-pgn":{"source":"apache","extensions":["pgn"]},"application/x-chrome-extension":{"extensions":["crx"]},"application/x-cocoa":{"source":"nginx","extensions":["cco"]},"application/x-compress":{"source":"apache"},"application/x-conference":{"source":"apache","extensions":["nsc"]},"application/x-cpio":{"source":"apache","extensions":["cpio"]},"application/x-csh":{"source":"apache","extensions":["csh"]},"application/x-deb":{"compressible":false},"application/x-debian-package":{"source":"apache","extensions":["deb","udeb"]},"application/x-dgc-compressed":{"source":"apache","extensions":["dgc"]},"application/x-director":{"source":"apache","extensions":["dir","dcr","dxr","cst","cct","cxt","w3d","fgd","swa"]},"application/x-doom":{"source":"apache","extensions":["wad"]},"application/x-dtbncx+xml":{"source":"apache","compressible":true,"extensions":["ncx"]},"application/x-dtbook+xml":{"source":"apache","compressible":true,"extensions":["dtb"]},"application/x-dtbresource+xml":{"source":"apache","compressible":true,"extensions":["res"]},"application/x-dvi":{"source":"apache","compressible":false,"extensions":["dvi"]},"application/x-envoy":{"source":"apache","extensions":["evy"]},"application/x-eva":{"source":"apache","extensions":["eva"]},"application/x-font-bdf":{"source":"apache","extensions":["bdf"]},"application/x-font-dos":{"source":"apache"},"application/x-font-framemaker":{"source":"apache"},"application/x-font-ghostscript":{"source":"apache","extensions":["gsf"]},"application/x-font-libgrx":{"source":"apache"},"application/x-font-linux-psf":{"source":"apache","extensions":["psf"]},"application/x-font-pcf":{"source":"apache","extensions":["pcf"]},"application/x-font-snf":{"source":"apache","extensions":["snf"]},"application/x-font-speedo":{"source":"apache"},"application/x-font-sunos-news":{"source":"apache"},"application/x-font-type1":{"source":"apache","extensions":["pfa","pfb","pfm","afm"]},"application/x-font-vfont":{"source":"apache"},"application/x-freearc":{"source":"apache","extensions":["arc"]},"application/x-futuresplash":{"source":"apache","extensions":["spl"]},"application/x-gca-compressed":{"source":"apache","extensions":["gca"]},"application/x-glulx":{"source":"apache","extensions":["ulx"]},"application/x-gnumeric":{"source":"apache","extensions":["gnumeric"]},"application/x-gramps-xml":{"source":"apache","extensions":["gramps"]},"application/x-gtar":{"source":"apache","extensions":["gtar"]},"application/x-gzip":{"source":"apache"},"application/x-hdf":{"source":"apache","extensions":["hdf"]},"application/x-httpd-php":{"compressible":true,"extensions":["php"]},"application/x-install-instructions":{"source":"apache","extensions":["install"]},"application/x-iso9660-image":{"source":"apache","extensions":["iso"]},"application/x-iwork-keynote-sffkey":{"extensions":["key"]},"application/x-iwork-numbers-sffnumbers":{"extensions":["numbers"]},"application/x-iwork-pages-sffpages":{"extensions":["pages"]},"application/x-java-archive-diff":{"source":"nginx","extensions":["jardiff"]},"application/x-java-jnlp-file":{"source":"apache","compressible":false,"extensions":["jnlp"]},"application/x-javascript":{"compressible":true},"application/x-keepass2":{"extensions":["kdbx"]},"application/x-latex":{"source":"apache","compressible":false,"extensions":["latex"]},"application/x-lua-bytecode":{"extensions":["luac"]},"application/x-lzh-compressed":{"source":"apache","extensions":["lzh","lha"]},"application/x-makeself":{"source":"nginx","extensions":["run"]},"application/x-mie":{"source":"apache","extensions":["mie"]},"application/x-mobipocket-ebook":{"source":"apache","extensions":["prc","mobi"]},"application/x-mpegurl":{"compressible":false},"application/x-ms-application":{"source":"apache","extensions":["application"]},"application/x-ms-shortcut":{"source":"apache","extensions":["lnk"]},"application/x-ms-wmd":{"source":"apache","extensions":["wmd"]},"application/x-ms-wmz":{"source":"apache","extensions":["wmz"]},"application/x-ms-xbap":{"source":"apache","extensions":["xbap"]},"application/x-msaccess":{"source":"apache","extensions":["mdb"]},"application/x-msbinder":{"source":"apache","extensions":["obd"]},"application/x-mscardfile":{"source":"apache","extensions":["crd"]},"application/x-msclip":{"source":"apache","extensions":["clp"]},"application/x-msdos-program":{"extensions":["exe"]},"application/x-msdownload":{"source":"apache","extensions":["exe","dll","com","bat","msi"]},"application/x-msmediaview":{"source":"apache","extensions":["mvb","m13","m14"]},"application/x-msmetafile":{"source":"apache","extensions":["wmf","wmz","emf","emz"]},"application/x-msmoney":{"source":"apache","extensions":["mny"]},"application/x-mspublisher":{"source":"apache","extensions":["pub"]},"application/x-msschedule":{"source":"apache","extensions":["scd"]},"application/x-msterminal":{"source":"apache","extensions":["trm"]},"application/x-mswrite":{"source":"apache","extensions":["wri"]},"application/x-netcdf":{"source":"apache","extensions":["nc","cdf"]},"application/x-ns-proxy-autoconfig":{"compressible":true,"extensions":["pac"]},"application/x-nzb":{"source":"apache","extensions":["nzb"]},"application/x-perl":{"source":"nginx","extensions":["pl","pm"]},"application/x-pilot":{"source":"nginx","extensions":["prc","pdb"]},"application/x-pkcs12":{"source":"apache","compressible":false,"extensions":["p12","pfx"]},"application/x-pkcs7-certificates":{"source":"apache","extensions":["p7b","spc"]},"application/x-pkcs7-certreqresp":{"source":"apache","extensions":["p7r"]},"application/x-pki-message":{"source":"iana"},"application/x-rar-compressed":{"source":"apache","compressible":false,"extensions":["rar"]},"application/x-redhat-package-manager":{"source":"nginx","extensions":["rpm"]},"application/x-research-info-systems":{"source":"apache","extensions":["ris"]},"application/x-sea":{"source":"nginx","extensions":["sea"]},"application/x-sh":{"source":"apache","compressible":true,"extensions":["sh"]},"application/x-shar":{"source":"apache","extensions":["shar"]},"application/x-shockwave-flash":{"source":"apache","compressible":false,"extensions":["swf"]},"application/x-silverlight-app":{"source":"apache","extensions":["xap"]},"application/x-sql":{"source":"apache","extensions":["sql"]},"application/x-stuffit":{"source":"apache","compressible":false,"extensions":["sit"]},"application/x-stuffitx":{"source":"apache","extensions":["sitx"]},"application/x-subrip":{"source":"apache","extensions":["srt"]},"application/x-sv4cpio":{"source":"apache","extensions":["sv4cpio"]},"application/x-sv4crc":{"source":"apache","extensions":["sv4crc"]},"application/x-t3vm-image":{"source":"apache","extensions":["t3"]},"application/x-tads":{"source":"apache","extensions":["gam"]},"application/x-tar":{"source":"apache","compressible":true,"extensions":["tar"]},"application/x-tcl":{"source":"apache","extensions":["tcl","tk"]},"application/x-tex":{"source":"apache","extensions":["tex"]},"application/x-tex-tfm":{"source":"apache","extensions":["tfm"]},"application/x-texinfo":{"source":"apache","extensions":["texinfo","texi"]},"application/x-tgif":{"source":"apache","extensions":["obj"]},"application/x-ustar":{"source":"apache","extensions":["ustar"]},"application/x-virtualbox-hdd":{"compressible":true,"extensions":["hdd"]},"application/x-virtualbox-ova":{"compressible":true,"extensions":["ova"]},"application/x-virtualbox-ovf":{"compressible":true,"extensions":["ovf"]},"application/x-virtualbox-vbox":{"compressible":true,"extensions":["vbox"]},"application/x-virtualbox-vbox-extpack":{"compressible":false,"extensions":["vbox-extpack"]},"application/x-virtualbox-vdi":{"compressible":true,"extensions":["vdi"]},"application/x-virtualbox-vhd":{"compressible":true,"extensions":["vhd"]},"application/x-virtualbox-vmdk":{"compressible":true,"extensions":["vmdk"]},"application/x-wais-source":{"source":"apache","extensions":["src"]},"application/x-web-app-manifest+json":{"compressible":true,"extensions":["webapp"]},"application/x-www-form-urlencoded":{"source":"iana","compressible":true},"application/x-x509-ca-cert":{"source":"iana","extensions":["der","crt","pem"]},"application/x-x509-ca-ra-cert":{"source":"iana"},"application/x-x509-next-ca-cert":{"source":"iana"},"application/x-xfig":{"source":"apache","extensions":["fig"]},"application/x-xliff+xml":{"source":"apache","compressible":true,"extensions":["xlf"]},"application/x-xpinstall":{"source":"apache","compressible":false,"extensions":["xpi"]},"application/x-xz":{"source":"apache","extensions":["xz"]},"application/x-zmachine":{"source":"apache","extensions":["z1","z2","z3","z4","z5","z6","z7","z8"]},"application/x400-bp":{"source":"iana"},"application/xacml+xml":{"source":"iana","compressible":true},"application/xaml+xml":{"source":"apache","compressible":true,"extensions":["xaml"]},"application/xcap-att+xml":{"source":"iana","compressible":true,"extensions":["xav"]},"application/xcap-caps+xml":{"source":"iana","compressible":true,"extensions":["xca"]},"application/xcap-diff+xml":{"source":"iana","compressible":true,"extensions":["xdf"]},"application/xcap-el+xml":{"source":"iana","compressible":true,"extensions":["xel"]},"application/xcap-error+xml":{"source":"iana","compressible":true},"application/xcap-ns+xml":{"source":"iana","compressible":true,"extensions":["xns"]},"application/xcon-conference-info+xml":{"source":"iana","compressible":true},"application/xcon-conference-info-diff+xml":{"source":"iana","compressible":true},"application/xenc+xml":{"source":"iana","compressible":true,"extensions":["xenc"]},"application/xhtml+xml":{"source":"iana","compressible":true,"extensions":["xhtml","xht"]},"application/xhtml-voice+xml":{"source":"apache","compressible":true},"application/xliff+xml":{"source":"iana","compressible":true,"extensions":["xlf"]},"application/xml":{"source":"iana","compressible":true,"extensions":["xml","xsl","xsd","rng"]},"application/xml-dtd":{"source":"iana","compressible":true,"extensions":["dtd"]},"application/xml-external-parsed-entity":{"source":"iana"},"application/xml-patch+xml":{"source":"iana","compressible":true},"application/xmpp+xml":{"source":"iana","compressible":true},"application/xop+xml":{"source":"iana","compressible":true,"extensions":["xop"]},"application/xproc+xml":{"source":"apache","compressible":true,"extensions":["xpl"]},"application/xslt+xml":{"source":"iana","compressible":true,"extensions":["xsl","xslt"]},"application/xspf+xml":{"source":"apache","compressible":true,"extensions":["xspf"]},"application/xv+xml":{"source":"iana","compressible":true,"extensions":["mxml","xhvml","xvml","xvm"]},"application/yang":{"source":"iana","extensions":["yang"]},"application/yang-data+json":{"source":"iana","compressible":true},"application/yang-data+xml":{"source":"iana","compressible":true},"application/yang-patch+json":{"source":"iana","compressible":true},"application/yang-patch+xml":{"source":"iana","compressible":true},"application/yin+xml":{"source":"iana","compressible":true,"extensions":["yin"]},"application/zip":{"source":"iana","compressible":false,"extensions":["zip"]},"application/zlib":{"source":"iana"},"application/zstd":{"source":"iana"},"audio/1d-interleaved-parityfec":{"source":"iana"},"audio/32kadpcm":{"source":"iana"},"audio/3gpp":{"source":"iana","compressible":false,"extensions":["3gpp"]},"audio/3gpp2":{"source":"iana"},"audio/aac":{"source":"iana"},"audio/ac3":{"source":"iana"},"audio/adpcm":{"source":"apache","extensions":["adp"]},"audio/amr":{"source":"iana","extensions":["amr"]},"audio/amr-wb":{"source":"iana"},"audio/amr-wb+":{"source":"iana"},"audio/aptx":{"source":"iana"},"audio/asc":{"source":"iana"},"audio/atrac-advanced-lossless":{"source":"iana"},"audio/atrac-x":{"source":"iana"},"audio/atrac3":{"source":"iana"},"audio/basic":{"source":"iana","compressible":false,"extensions":["au","snd"]},"audio/bv16":{"source":"iana"},"audio/bv32":{"source":"iana"},"audio/clearmode":{"source":"iana"},"audio/cn":{"source":"iana"},"audio/dat12":{"source":"iana"},"audio/dls":{"source":"iana"},"audio/dsr-es201108":{"source":"iana"},"audio/dsr-es202050":{"source":"iana"},"audio/dsr-es202211":{"source":"iana"},"audio/dsr-es202212":{"source":"iana"},"audio/dv":{"source":"iana"},"audio/dvi4":{"source":"iana"},"audio/eac3":{"source":"iana"},"audio/encaprtp":{"source":"iana"},"audio/evrc":{"source":"iana"},"audio/evrc-qcp":{"source":"iana"},"audio/evrc0":{"source":"iana"},"audio/evrc1":{"source":"iana"},"audio/evrcb":{"source":"iana"},"audio/evrcb0":{"source":"iana"},"audio/evrcb1":{"source":"iana"},"audio/evrcnw":{"source":"iana"},"audio/evrcnw0":{"source":"iana"},"audio/evrcnw1":{"source":"iana"},"audio/evrcwb":{"source":"iana"},"audio/evrcwb0":{"source":"iana"},"audio/evrcwb1":{"source":"iana"},"audio/evs":{"source":"iana"},"audio/flexfec":{"source":"iana"},"audio/fwdred":{"source":"iana"},"audio/g711-0":{"source":"iana"},"audio/g719":{"source":"iana"},"audio/g722":{"source":"iana"},"audio/g7221":{"source":"iana"},"audio/g723":{"source":"iana"},"audio/g726-16":{"source":"iana"},"audio/g726-24":{"source":"iana"},"audio/g726-32":{"source":"iana"},"audio/g726-40":{"source":"iana"},"audio/g728":{"source":"iana"},"audio/g729":{"source":"iana"},"audio/g7291":{"source":"iana"},"audio/g729d":{"source":"iana"},"audio/g729e":{"source":"iana"},"audio/gsm":{"source":"iana"},"audio/gsm-efr":{"source":"iana"},"audio/gsm-hr-08":{"source":"iana"},"audio/ilbc":{"source":"iana"},"audio/ip-mr_v2.5":{"source":"iana"},"audio/isac":{"source":"apache"},"audio/l16":{"source":"iana"},"audio/l20":{"source":"iana"},"audio/l24":{"source":"iana","compressible":false},"audio/l8":{"source":"iana"},"audio/lpc":{"source":"iana"},"audio/melp":{"source":"iana"},"audio/melp1200":{"source":"iana"},"audio/melp2400":{"source":"iana"},"audio/melp600":{"source":"iana"},"audio/mhas":{"source":"iana"},"audio/midi":{"source":"apache","extensions":["mid","midi","kar","rmi"]},"audio/mobile-xmf":{"source":"iana","extensions":["mxmf"]},"audio/mp3":{"compressible":false,"extensions":["mp3"]},"audio/mp4":{"source":"iana","compressible":false,"extensions":["m4a","mp4a"]},"audio/mp4a-latm":{"source":"iana"},"audio/mpa":{"source":"iana"},"audio/mpa-robust":{"source":"iana"},"audio/mpeg":{"source":"iana","compressible":false,"extensions":["mpga","mp2","mp2a","mp3","m2a","m3a"]},"audio/mpeg4-generic":{"source":"iana"},"audio/musepack":{"source":"apache"},"audio/ogg":{"source":"iana","compressible":false,"extensions":["oga","ogg","spx","opus"]},"audio/opus":{"source":"iana"},"audio/parityfec":{"source":"iana"},"audio/pcma":{"source":"iana"},"audio/pcma-wb":{"source":"iana"},"audio/pcmu":{"source":"iana"},"audio/pcmu-wb":{"source":"iana"},"audio/prs.sid":{"source":"iana"},"audio/qcelp":{"source":"iana"},"audio/raptorfec":{"source":"iana"},"audio/red":{"source":"iana"},"audio/rtp-enc-aescm128":{"source":"iana"},"audio/rtp-midi":{"source":"iana"},"audio/rtploopback":{"source":"iana"},"audio/rtx":{"source":"iana"},"audio/s3m":{"source":"apache","extensions":["s3m"]},"audio/scip":{"source":"iana"},"audio/silk":{"source":"apache","extensions":["sil"]},"audio/smv":{"source":"iana"},"audio/smv-qcp":{"source":"iana"},"audio/smv0":{"source":"iana"},"audio/sofa":{"source":"iana"},"audio/sp-midi":{"source":"iana"},"audio/speex":{"source":"iana"},"audio/t140c":{"source":"iana"},"audio/t38":{"source":"iana"},"audio/telephone-event":{"source":"iana"},"audio/tetra_acelp":{"source":"iana"},"audio/tetra_acelp_bb":{"source":"iana"},"audio/tone":{"source":"iana"},"audio/tsvcis":{"source":"iana"},"audio/uemclip":{"source":"iana"},"audio/ulpfec":{"source":"iana"},"audio/usac":{"source":"iana"},"audio/vdvi":{"source":"iana"},"audio/vmr-wb":{"source":"iana"},"audio/vnd.3gpp.iufp":{"source":"iana"},"audio/vnd.4sb":{"source":"iana"},"audio/vnd.audiokoz":{"source":"iana"},"audio/vnd.celp":{"source":"iana"},"audio/vnd.cisco.nse":{"source":"iana"},"audio/vnd.cmles.radio-events":{"source":"iana"},"audio/vnd.cns.anp1":{"source":"iana"},"audio/vnd.cns.inf1":{"source":"iana"},"audio/vnd.dece.audio":{"source":"iana","extensions":["uva","uvva"]},"audio/vnd.digital-winds":{"source":"iana","extensions":["eol"]},"audio/vnd.dlna.adts":{"source":"iana"},"audio/vnd.dolby.heaac.1":{"source":"iana"},"audio/vnd.dolby.heaac.2":{"source":"iana"},"audio/vnd.dolby.mlp":{"source":"iana"},"audio/vnd.dolby.mps":{"source":"iana"},"audio/vnd.dolby.pl2":{"source":"iana"},"audio/vnd.dolby.pl2x":{"source":"iana"},"audio/vnd.dolby.pl2z":{"source":"iana"},"audio/vnd.dolby.pulse.1":{"source":"iana"},"audio/vnd.dra":{"source":"iana","extensions":["dra"]},"audio/vnd.dts":{"source":"iana","extensions":["dts"]},"audio/vnd.dts.hd":{"source":"iana","extensions":["dtshd"]},"audio/vnd.dts.uhd":{"source":"iana"},"audio/vnd.dvb.file":{"source":"iana"},"audio/vnd.everad.plj":{"source":"iana"},"audio/vnd.hns.audio":{"source":"iana"},"audio/vnd.lucent.voice":{"source":"iana","extensions":["lvp"]},"audio/vnd.ms-playready.media.pya":{"source":"iana","extensions":["pya"]},"audio/vnd.nokia.mobile-xmf":{"source":"iana"},"audio/vnd.nortel.vbk":{"source":"iana"},"audio/vnd.nuera.ecelp4800":{"source":"iana","extensions":["ecelp4800"]},"audio/vnd.nuera.ecelp7470":{"source":"iana","extensions":["ecelp7470"]},"audio/vnd.nuera.ecelp9600":{"source":"iana","extensions":["ecelp9600"]},"audio/vnd.octel.sbc":{"source":"iana"},"audio/vnd.presonus.multitrack":{"source":"iana"},"audio/vnd.qcelp":{"source":"iana"},"audio/vnd.rhetorex.32kadpcm":{"source":"iana"},"audio/vnd.rip":{"source":"iana","extensions":["rip"]},"audio/vnd.rn-realaudio":{"compressible":false},"audio/vnd.sealedmedia.softseal.mpeg":{"source":"iana"},"audio/vnd.vmx.cvsd":{"source":"iana"},"audio/vnd.wave":{"compressible":false},"audio/vorbis":{"source":"iana","compressible":false},"audio/vorbis-config":{"source":"iana"},"audio/wav":{"compressible":false,"extensions":["wav"]},"audio/wave":{"compressible":false,"extensions":["wav"]},"audio/webm":{"source":"apache","compressible":false,"extensions":["weba"]},"audio/x-aac":{"source":"apache","compressible":false,"extensions":["aac"]},"audio/x-aiff":{"source":"apache","extensions":["aif","aiff","aifc"]},"audio/x-caf":{"source":"apache","compressible":false,"extensions":["caf"]},"audio/x-flac":{"source":"apache","extensions":["flac"]},"audio/x-m4a":{"source":"nginx","extensions":["m4a"]},"audio/x-matroska":{"source":"apache","extensions":["mka"]},"audio/x-mpegurl":{"source":"apache","extensions":["m3u"]},"audio/x-ms-wax":{"source":"apache","extensions":["wax"]},"audio/x-ms-wma":{"source":"apache","extensions":["wma"]},"audio/x-pn-realaudio":{"source":"apache","extensions":["ram","ra"]},"audio/x-pn-realaudio-plugin":{"source":"apache","extensions":["rmp"]},"audio/x-realaudio":{"source":"nginx","extensions":["ra"]},"audio/x-tta":{"source":"apache"},"audio/x-wav":{"source":"apache","extensions":["wav"]},"audio/xm":{"source":"apache","extensions":["xm"]},"chemical/x-cdx":{"source":"apache","extensions":["cdx"]},"chemical/x-cif":{"source":"apache","extensions":["cif"]},"chemical/x-cmdf":{"source":"apache","extensions":["cmdf"]},"chemical/x-cml":{"source":"apache","extensions":["cml"]},"chemical/x-csml":{"source":"apache","extensions":["csml"]},"chemical/x-pdb":{"source":"apache"},"chemical/x-xyz":{"source":"apache","extensions":["xyz"]},"font/collection":{"source":"iana","extensions":["ttc"]},"font/otf":{"source":"iana","compressible":true,"extensions":["otf"]},"font/sfnt":{"source":"iana"},"font/ttf":{"source":"iana","compressible":true,"extensions":["ttf"]},"font/woff":{"source":"iana","extensions":["woff"]},"font/woff2":{"source":"iana","extensions":["woff2"]},"image/aces":{"source":"iana","extensions":["exr"]},"image/apng":{"compressible":false,"extensions":["apng"]},"image/avci":{"source":"iana","extensions":["avci"]},"image/avcs":{"source":"iana","extensions":["avcs"]},"image/avif":{"source":"iana","compressible":false,"extensions":["avif"]},"image/bmp":{"source":"iana","compressible":true,"extensions":["bmp"]},"image/cgm":{"source":"iana","extensions":["cgm"]},"image/dicom-rle":{"source":"iana","extensions":["drle"]},"image/emf":{"source":"iana","extensions":["emf"]},"image/fits":{"source":"iana","extensions":["fits"]},"image/g3fax":{"source":"iana","extensions":["g3"]},"image/gif":{"source":"iana","compressible":false,"extensions":["gif"]},"image/heic":{"source":"iana","extensions":["heic"]},"image/heic-sequence":{"source":"iana","extensions":["heics"]},"image/heif":{"source":"iana","extensions":["heif"]},"image/heif-sequence":{"source":"iana","extensions":["heifs"]},"image/hej2k":{"source":"iana","extensions":["hej2"]},"image/hsj2":{"source":"iana","extensions":["hsj2"]},"image/ief":{"source":"iana","extensions":["ief"]},"image/jls":{"source":"iana","extensions":["jls"]},"image/jp2":{"source":"iana","compressible":false,"extensions":["jp2","jpg2"]},"image/jpeg":{"source":"iana","compressible":false,"extensions":["jpeg","jpg","jpe"]},"image/jph":{"source":"iana","extensions":["jph"]},"image/jphc":{"source":"iana","extensions":["jhc"]},"image/jpm":{"source":"iana","compressible":false,"extensions":["jpm"]},"image/jpx":{"source":"iana","compressible":false,"extensions":["jpx","jpf"]},"image/jxr":{"source":"iana","extensions":["jxr"]},"image/jxra":{"source":"iana","extensions":["jxra"]},"image/jxrs":{"source":"iana","extensions":["jxrs"]},"image/jxs":{"source":"iana","extensions":["jxs"]},"image/jxsc":{"source":"iana","extensions":["jxsc"]},"image/jxsi":{"source":"iana","extensions":["jxsi"]},"image/jxss":{"source":"iana","extensions":["jxss"]},"image/ktx":{"source":"iana","extensions":["ktx"]},"image/ktx2":{"source":"iana","extensions":["ktx2"]},"image/naplps":{"source":"iana"},"image/pjpeg":{"compressible":false},"image/png":{"source":"iana","compressible":false,"extensions":["png"]},"image/prs.btif":{"source":"iana","extensions":["btif"]},"image/prs.pti":{"source":"iana","extensions":["pti"]},"image/pwg-raster":{"source":"iana"},"image/sgi":{"source":"apache","extensions":["sgi"]},"image/svg+xml":{"source":"iana","compressible":true,"extensions":["svg","svgz"]},"image/t38":{"source":"iana","extensions":["t38"]},"image/tiff":{"source":"iana","compressible":false,"extensions":["tif","tiff"]},"image/tiff-fx":{"source":"iana","extensions":["tfx"]},"image/vnd.adobe.photoshop":{"source":"iana","compressible":true,"extensions":["psd"]},"image/vnd.airzip.accelerator.azv":{"source":"iana","extensions":["azv"]},"image/vnd.cns.inf2":{"source":"iana"},"image/vnd.dece.graphic":{"source":"iana","extensions":["uvi","uvvi","uvg","uvvg"]},"image/vnd.djvu":{"source":"iana","extensions":["djvu","djv"]},"image/vnd.dvb.subtitle":{"source":"iana","extensions":["sub"]},"image/vnd.dwg":{"source":"iana","extensions":["dwg"]},"image/vnd.dxf":{"source":"iana","extensions":["dxf"]},"image/vnd.fastbidsheet":{"source":"iana","extensions":["fbs"]},"image/vnd.fpx":{"source":"iana","extensions":["fpx"]},"image/vnd.fst":{"source":"iana","extensions":["fst"]},"image/vnd.fujixerox.edmics-mmr":{"source":"iana","extensions":["mmr"]},"image/vnd.fujixerox.edmics-rlc":{"source":"iana","extensions":["rlc"]},"image/vnd.globalgraphics.pgb":{"source":"iana"},"image/vnd.microsoft.icon":{"source":"iana","compressible":true,"extensions":["ico"]},"image/vnd.mix":{"source":"iana"},"image/vnd.mozilla.apng":{"source":"iana"},"image/vnd.ms-dds":{"compressible":true,"extensions":["dds"]},"image/vnd.ms-modi":{"source":"iana","extensions":["mdi"]},"image/vnd.ms-photo":{"source":"apache","extensions":["wdp"]},"image/vnd.net-fpx":{"source":"iana","extensions":["npx"]},"image/vnd.pco.b16":{"source":"iana","extensions":["b16"]},"image/vnd.radiance":{"source":"iana"},"image/vnd.sealed.png":{"source":"iana"},"image/vnd.sealedmedia.softseal.gif":{"source":"iana"},"image/vnd.sealedmedia.softseal.jpg":{"source":"iana"},"image/vnd.svf":{"source":"iana"},"image/vnd.tencent.tap":{"source":"iana","extensions":["tap"]},"image/vnd.valve.source.texture":{"source":"iana","extensions":["vtf"]},"image/vnd.wap.wbmp":{"source":"iana","extensions":["wbmp"]},"image/vnd.xiff":{"source":"iana","extensions":["xif"]},"image/vnd.zbrush.pcx":{"source":"iana","extensions":["pcx"]},"image/webp":{"source":"apache","extensions":["webp"]},"image/wmf":{"source":"iana","extensions":["wmf"]},"image/x-3ds":{"source":"apache","extensions":["3ds"]},"image/x-cmu-raster":{"source":"apache","extensions":["ras"]},"image/x-cmx":{"source":"apache","extensions":["cmx"]},"image/x-freehand":{"source":"apache","extensions":["fh","fhc","fh4","fh5","fh7"]},"image/x-icon":{"source":"apache","compressible":true,"extensions":["ico"]},"image/x-jng":{"source":"nginx","extensions":["jng"]},"image/x-mrsid-image":{"source":"apache","extensions":["sid"]},"image/x-ms-bmp":{"source":"nginx","compressible":true,"extensions":["bmp"]},"image/x-pcx":{"source":"apache","extensions":["pcx"]},"image/x-pict":{"source":"apache","extensions":["pic","pct"]},"image/x-portable-anymap":{"source":"apache","extensions":["pnm"]},"image/x-portable-bitmap":{"source":"apache","extensions":["pbm"]},"image/x-portable-graymap":{"source":"apache","extensions":["pgm"]},"image/x-portable-pixmap":{"source":"apache","extensions":["ppm"]},"image/x-rgb":{"source":"apache","extensions":["rgb"]},"image/x-tga":{"source":"apache","extensions":["tga"]},"image/x-xbitmap":{"source":"apache","extensions":["xbm"]},"image/x-xcf":{"compressible":false},"image/x-xpixmap":{"source":"apache","extensions":["xpm"]},"image/x-xwindowdump":{"source":"apache","extensions":["xwd"]},"message/cpim":{"source":"iana"},"message/delivery-status":{"source":"iana"},"message/disposition-notification":{"source":"iana","extensions":["disposition-notification"]},"message/external-body":{"source":"iana"},"message/feedback-report":{"source":"iana"},"message/global":{"source":"iana","extensions":["u8msg"]},"message/global-delivery-status":{"source":"iana","extensions":["u8dsn"]},"message/global-disposition-notification":{"source":"iana","extensions":["u8mdn"]},"message/global-headers":{"source":"iana","extensions":["u8hdr"]},"message/http":{"source":"iana","compressible":false},"message/imdn+xml":{"source":"iana","compressible":true},"message/news":{"source":"iana"},"message/partial":{"source":"iana","compressible":false},"message/rfc822":{"source":"iana","compressible":true,"extensions":["eml","mime"]},"message/s-http":{"source":"iana"},"message/sip":{"source":"iana"},"message/sipfrag":{"source":"iana"},"message/tracking-status":{"source":"iana"},"message/vnd.si.simp":{"source":"iana"},"message/vnd.wfa.wsc":{"source":"iana","extensions":["wsc"]},"model/3mf":{"source":"iana","extensions":["3mf"]},"model/e57":{"source":"iana"},"model/gltf+json":{"source":"iana","compressible":true,"extensions":["gltf"]},"model/gltf-binary":{"source":"iana","compressible":true,"extensions":["glb"]},"model/iges":{"source":"iana","compressible":false,"extensions":["igs","iges"]},"model/mesh":{"source":"iana","compressible":false,"extensions":["msh","mesh","silo"]},"model/mtl":{"source":"iana","extensions":["mtl"]},"model/obj":{"source":"iana","extensions":["obj"]},"model/step":{"source":"iana"},"model/step+xml":{"source":"iana","compressible":true,"extensions":["stpx"]},"model/step+zip":{"source":"iana","compressible":false,"extensions":["stpz"]},"model/step-xml+zip":{"source":"iana","compressible":false,"extensions":["stpxz"]},"model/stl":{"source":"iana","extensions":["stl"]},"model/vnd.collada+xml":{"source":"iana","compressible":true,"extensions":["dae"]},"model/vnd.dwf":{"source":"iana","extensions":["dwf"]},"model/vnd.flatland.3dml":{"source":"iana"},"model/vnd.gdl":{"source":"iana","extensions":["gdl"]},"model/vnd.gs-gdl":{"source":"apache"},"model/vnd.gs.gdl":{"source":"iana"},"model/vnd.gtw":{"source":"iana","extensions":["gtw"]},"model/vnd.moml+xml":{"source":"iana","compressible":true},"model/vnd.mts":{"source":"iana","extensions":["mts"]},"model/vnd.opengex":{"source":"iana","extensions":["ogex"]},"model/vnd.parasolid.transmit.binary":{"source":"iana","extensions":["x_b"]},"model/vnd.parasolid.transmit.text":{"source":"iana","extensions":["x_t"]},"model/vnd.pytha.pyox":{"source":"iana"},"model/vnd.rosette.annotated-data-model":{"source":"iana"},"model/vnd.sap.vds":{"source":"iana","extensions":["vds"]},"model/vnd.usdz+zip":{"source":"iana","compressible":false,"extensions":["usdz"]},"model/vnd.valve.source.compiled-map":{"source":"iana","extensions":["bsp"]},"model/vnd.vtu":{"source":"iana","extensions":["vtu"]},"model/vrml":{"source":"iana","compressible":false,"extensions":["wrl","vrml"]},"model/x3d+binary":{"source":"apache","compressible":false,"extensions":["x3db","x3dbz"]},"model/x3d+fastinfoset":{"source":"iana","extensions":["x3db"]},"model/x3d+vrml":{"source":"apache","compressible":false,"extensions":["x3dv","x3dvz"]},"model/x3d+xml":{"source":"iana","compressible":true,"extensions":["x3d","x3dz"]},"model/x3d-vrml":{"source":"iana","extensions":["x3dv"]},"multipart/alternative":{"source":"iana","compressible":false},"multipart/appledouble":{"source":"iana"},"multipart/byteranges":{"source":"iana"},"multipart/digest":{"source":"iana"},"multipart/encrypted":{"source":"iana","compressible":false},"multipart/form-data":{"source":"iana","compressible":false},"multipart/header-set":{"source":"iana"},"multipart/mixed":{"source":"iana"},"multipart/multilingual":{"source":"iana"},"multipart/parallel":{"source":"iana"},"multipart/related":{"source":"iana","compressible":false},"multipart/report":{"source":"iana"},"multipart/signed":{"source":"iana","compressible":false},"multipart/vnd.bint.med-plus":{"source":"iana"},"multipart/voice-message":{"source":"iana"},"multipart/x-mixed-replace":{"source":"iana"},"text/1d-interleaved-parityfec":{"source":"iana"},"text/cache-manifest":{"source":"iana","compressible":true,"extensions":["appcache","manifest"]},"text/calendar":{"source":"iana","extensions":["ics","ifb"]},"text/calender":{"compressible":true},"text/cmd":{"compressible":true},"text/coffeescript":{"extensions":["coffee","litcoffee"]},"text/cql":{"source":"iana"},"text/cql-expression":{"source":"iana"},"text/cql-identifier":{"source":"iana"},"text/css":{"source":"iana","charset":"UTF-8","compressible":true,"extensions":["css"]},"text/csv":{"source":"iana","compressible":true,"extensions":["csv"]},"text/csv-schema":{"source":"iana"},"text/directory":{"source":"iana"},"text/dns":{"source":"iana"},"text/ecmascript":{"source":"iana"},"text/encaprtp":{"source":"iana"},"text/enriched":{"source":"iana"},"text/fhirpath":{"source":"iana"},"text/flexfec":{"source":"iana"},"text/fwdred":{"source":"iana"},"text/gff3":{"source":"iana"},"text/grammar-ref-list":{"source":"iana"},"text/html":{"source":"iana","compressible":true,"extensions":["html","htm","shtml"]},"text/jade":{"extensions":["jade"]},"text/javascript":{"source":"iana","compressible":true},"text/jcr-cnd":{"source":"iana"},"text/jsx":{"compressible":true,"extensions":["jsx"]},"text/less":{"compressible":true,"extensions":["less"]},"text/markdown":{"source":"iana","compressible":true,"extensions":["markdown","md"]},"text/mathml":{"source":"nginx","extensions":["mml"]},"text/mdx":{"compressible":true,"extensions":["mdx"]},"text/mizar":{"source":"iana"},"text/n3":{"source":"iana","charset":"UTF-8","compressible":true,"extensions":["n3"]},"text/parameters":{"source":"iana","charset":"UTF-8"},"text/parityfec":{"source":"iana"},"text/plain":{"source":"iana","compressible":true,"extensions":["txt","text","conf","def","list","log","in","ini"]},"text/provenance-notation":{"source":"iana","charset":"UTF-8"},"text/prs.fallenstein.rst":{"source":"iana"},"text/prs.lines.tag":{"source":"iana","extensions":["dsc"]},"text/prs.prop.logic":{"source":"iana"},"text/raptorfec":{"source":"iana"},"text/red":{"source":"iana"},"text/rfc822-headers":{"source":"iana"},"text/richtext":{"source":"iana","compressible":true,"extensions":["rtx"]},"text/rtf":{"source":"iana","compressible":true,"extensions":["rtf"]},"text/rtp-enc-aescm128":{"source":"iana"},"text/rtploopback":{"source":"iana"},"text/rtx":{"source":"iana"},"text/sgml":{"source":"iana","extensions":["sgml","sgm"]},"text/shaclc":{"source":"iana"},"text/shex":{"source":"iana","extensions":["shex"]},"text/slim":{"extensions":["slim","slm"]},"text/spdx":{"source":"iana","extensions":["spdx"]},"text/strings":{"source":"iana"},"text/stylus":{"extensions":["stylus","styl"]},"text/t140":{"source":"iana"},"text/tab-separated-values":{"source":"iana","compressible":true,"extensions":["tsv"]},"text/troff":{"source":"iana","extensions":["t","tr","roff","man","me","ms"]},"text/turtle":{"source":"iana","charset":"UTF-8","extensions":["ttl"]},"text/ulpfec":{"source":"iana"},"text/uri-list":{"source":"iana","compressible":true,"extensions":["uri","uris","urls"]},"text/vcard":{"source":"iana","compressible":true,"extensions":["vcard"]},"text/vnd.a":{"source":"iana"},"text/vnd.abc":{"source":"iana"},"text/vnd.ascii-art":{"source":"iana"},"text/vnd.curl":{"source":"iana","extensions":["curl"]},"text/vnd.curl.dcurl":{"source":"apache","extensions":["dcurl"]},"text/vnd.curl.mcurl":{"source":"apache","extensions":["mcurl"]},"text/vnd.curl.scurl":{"source":"apache","extensions":["scurl"]},"text/vnd.debian.copyright":{"source":"iana","charset":"UTF-8"},"text/vnd.dmclientscript":{"source":"iana"},"text/vnd.dvb.subtitle":{"source":"iana","extensions":["sub"]},"text/vnd.esmertec.theme-descriptor":{"source":"iana","charset":"UTF-8"},"text/vnd.familysearch.gedcom":{"source":"iana","extensions":["ged"]},"text/vnd.ficlab.flt":{"source":"iana"},"text/vnd.fly":{"source":"iana","extensions":["fly"]},"text/vnd.fmi.flexstor":{"source":"iana","extensions":["flx"]},"text/vnd.gml":{"source":"iana"},"text/vnd.graphviz":{"source":"iana","extensions":["gv"]},"text/vnd.hans":{"source":"iana"},"text/vnd.hgl":{"source":"iana"},"text/vnd.in3d.3dml":{"source":"iana","extensions":["3dml"]},"text/vnd.in3d.spot":{"source":"iana","extensions":["spot"]},"text/vnd.iptc.newsml":{"source":"iana"},"text/vnd.iptc.nitf":{"source":"iana"},"text/vnd.latex-z":{"source":"iana"},"text/vnd.motorola.reflex":{"source":"iana"},"text/vnd.ms-mediapackage":{"source":"iana"},"text/vnd.net2phone.commcenter.command":{"source":"iana"},"text/vnd.radisys.msml-basic-layout":{"source":"iana"},"text/vnd.senx.warpscript":{"source":"iana"},"text/vnd.si.uricatalogue":{"source":"iana"},"text/vnd.sosi":{"source":"iana"},"text/vnd.sun.j2me.app-descriptor":{"source":"iana","charset":"UTF-8","extensions":["jad"]},"text/vnd.trolltech.linguist":{"source":"iana","charset":"UTF-8"},"text/vnd.wap.si":{"source":"iana"},"text/vnd.wap.sl":{"source":"iana"},"text/vnd.wap.wml":{"source":"iana","extensions":["wml"]},"text/vnd.wap.wmlscript":{"source":"iana","extensions":["wmls"]},"text/vtt":{"source":"iana","charset":"UTF-8","compressible":true,"extensions":["vtt"]},"text/x-asm":{"source":"apache","extensions":["s","asm"]},"text/x-c":{"source":"apache","extensions":["c","cc","cxx","cpp","h","hh","dic"]},"text/x-component":{"source":"nginx","extensions":["htc"]},"text/x-fortran":{"source":"apache","extensions":["f","for","f77","f90"]},"text/x-gwt-rpc":{"compressible":true},"text/x-handlebars-template":{"extensions":["hbs"]},"text/x-java-source":{"source":"apache","extensions":["java"]},"text/x-jquery-tmpl":{"compressible":true},"text/x-lua":{"extensions":["lua"]},"text/x-markdown":{"compressible":true,"extensions":["mkd"]},"text/x-nfo":{"source":"apache","extensions":["nfo"]},"text/x-opml":{"source":"apache","extensions":["opml"]},"text/x-org":{"compressible":true,"extensions":["org"]},"text/x-pascal":{"source":"apache","extensions":["p","pas"]},"text/x-processing":{"compressible":true,"extensions":["pde"]},"text/x-sass":{"extensions":["sass"]},"text/x-scss":{"extensions":["scss"]},"text/x-setext":{"source":"apache","extensions":["etx"]},"text/x-sfv":{"source":"apache","extensions":["sfv"]},"text/x-suse-ymp":{"compressible":true,"extensions":["ymp"]},"text/x-uuencode":{"source":"apache","extensions":["uu"]},"text/x-vcalendar":{"source":"apache","extensions":["vcs"]},"text/x-vcard":{"source":"apache","extensions":["vcf"]},"text/xml":{"source":"iana","compressible":true,"extensions":["xml"]},"text/xml-external-parsed-entity":{"source":"iana"},"text/yaml":{"compressible":true,"extensions":["yaml","yml"]},"video/1d-interleaved-parityfec":{"source":"iana"},"video/3gpp":{"source":"iana","extensions":["3gp","3gpp"]},"video/3gpp-tt":{"source":"iana"},"video/3gpp2":{"source":"iana","extensions":["3g2"]},"video/av1":{"source":"iana"},"video/bmpeg":{"source":"iana"},"video/bt656":{"source":"iana"},"video/celb":{"source":"iana"},"video/dv":{"source":"iana"},"video/encaprtp":{"source":"iana"},"video/ffv1":{"source":"iana"},"video/flexfec":{"source":"iana"},"video/h261":{"source":"iana","extensions":["h261"]},"video/h263":{"source":"iana","extensions":["h263"]},"video/h263-1998":{"source":"iana"},"video/h263-2000":{"source":"iana"},"video/h264":{"source":"iana","extensions":["h264"]},"video/h264-rcdo":{"source":"iana"},"video/h264-svc":{"source":"iana"},"video/h265":{"source":"iana"},"video/iso.segment":{"source":"iana","extensions":["m4s"]},"video/jpeg":{"source":"iana","extensions":["jpgv"]},"video/jpeg2000":{"source":"iana"},"video/jpm":{"source":"apache","extensions":["jpm","jpgm"]},"video/jxsv":{"source":"iana"},"video/mj2":{"source":"iana","extensions":["mj2","mjp2"]},"video/mp1s":{"source":"iana"},"video/mp2p":{"source":"iana"},"video/mp2t":{"source":"iana","extensions":["ts"]},"video/mp4":{"source":"iana","compressible":false,"extensions":["mp4","mp4v","mpg4"]},"video/mp4v-es":{"source":"iana"},"video/mpeg":{"source":"iana","compressible":false,"extensions":["mpeg","mpg","mpe","m1v","m2v"]},"video/mpeg4-generic":{"source":"iana"},"video/mpv":{"source":"iana"},"video/nv":{"source":"iana"},"video/ogg":{"source":"iana","compressible":false,"extensions":["ogv"]},"video/parityfec":{"source":"iana"},"video/pointer":{"source":"iana"},"video/quicktime":{"source":"iana","compressible":false,"extensions":["qt","mov"]},"video/raptorfec":{"source":"iana"},"video/raw":{"source":"iana"},"video/rtp-enc-aescm128":{"source":"iana"},"video/rtploopback":{"source":"iana"},"video/rtx":{"source":"iana"},"video/scip":{"source":"iana"},"video/smpte291":{"source":"iana"},"video/smpte292m":{"source":"iana"},"video/ulpfec":{"source":"iana"},"video/vc1":{"source":"iana"},"video/vc2":{"source":"iana"},"video/vnd.cctv":{"source":"iana"},"video/vnd.dece.hd":{"source":"iana","extensions":["uvh","uvvh"]},"video/vnd.dece.mobile":{"source":"iana","extensions":["uvm","uvvm"]},"video/vnd.dece.mp4":{"source":"iana"},"video/vnd.dece.pd":{"source":"iana","extensions":["uvp","uvvp"]},"video/vnd.dece.sd":{"source":"iana","extensions":["uvs","uvvs"]},"video/vnd.dece.video":{"source":"iana","extensions":["uvv","uvvv"]},"video/vnd.directv.mpeg":{"source":"iana"},"video/vnd.directv.mpeg-tts":{"source":"iana"},"video/vnd.dlna.mpeg-tts":{"source":"iana"},"video/vnd.dvb.file":{"source":"iana","extensions":["dvb"]},"video/vnd.fvt":{"source":"iana","extensions":["fvt"]},"video/vnd.hns.video":{"source":"iana"},"video/vnd.iptvforum.1dparityfec-1010":{"source":"iana"},"video/vnd.iptvforum.1dparityfec-2005":{"source":"iana"},"video/vnd.iptvforum.2dparityfec-1010":{"source":"iana"},"video/vnd.iptvforum.2dparityfec-2005":{"source":"iana"},"video/vnd.iptvforum.ttsavc":{"source":"iana"},"video/vnd.iptvforum.ttsmpeg2":{"source":"iana"},"video/vnd.motorola.video":{"source":"iana"},"video/vnd.motorola.videop":{"source":"iana"},"video/vnd.mpegurl":{"source":"iana","extensions":["mxu","m4u"]},"video/vnd.ms-playready.media.pyv":{"source":"iana","extensions":["pyv"]},"video/vnd.nokia.interleaved-multimedia":{"source":"iana"},"video/vnd.nokia.mp4vr":{"source":"iana"},"video/vnd.nokia.videovoip":{"source":"iana"},"video/vnd.objectvideo":{"source":"iana"},"video/vnd.radgamettools.bink":{"source":"iana"},"video/vnd.radgamettools.smacker":{"source":"iana"},"video/vnd.sealed.mpeg1":{"source":"iana"},"video/vnd.sealed.mpeg4":{"source":"iana"},"video/vnd.sealed.swf":{"source":"iana"},"video/vnd.sealedmedia.softseal.mov":{"source":"iana"},"video/vnd.uvvu.mp4":{"source":"iana","extensions":["uvu","uvvu"]},"video/vnd.vivo":{"source":"iana","extensions":["viv"]},"video/vnd.youtube.yt":{"source":"iana"},"video/vp8":{"source":"iana"},"video/vp9":{"source":"iana"},"video/webm":{"source":"apache","compressible":false,"extensions":["webm"]},"video/x-f4v":{"source":"apache","extensions":["f4v"]},"video/x-fli":{"source":"apache","extensions":["fli"]},"video/x-flv":{"source":"apache","compressible":false,"extensions":["flv"]},"video/x-m4v":{"source":"apache","extensions":["m4v"]},"video/x-matroska":{"source":"apache","compressible":false,"extensions":["mkv","mk3d","mks"]},"video/x-mng":{"source":"apache","extensions":["mng"]},"video/x-ms-asf":{"source":"apache","extensions":["asf","asx"]},"video/x-ms-vob":{"source":"apache","extensions":["vob"]},"video/x-ms-wm":{"source":"apache","extensions":["wm"]},"video/x-ms-wmv":{"source":"apache","compressible":false,"extensions":["wmv"]},"video/x-ms-wmx":{"source":"apache","extensions":["wmx"]},"video/x-ms-wvx":{"source":"apache","extensions":["wvx"]},"video/x-msvideo":{"source":"apache","extensions":["avi"]},"video/x-sgi-movie":{"source":"apache","extensions":["movie"]},"video/x-smv":{"source":"apache","extensions":["smv"]},"x-conference/x-cooltalk":{"source":"apache","extensions":["ice"]},"x-shader/x-fragment":{"compressible":true},"x-shader/x-vertex":{"compressible":true}}');
 
 /***/ })
 
@@ -35484,8 +35972,8 @@ function mitmPageAvailability(url) {
     });
 }
 async function TM_4_14_bug_Detect() {
-    if (GM/* _GM_info */._p.scriptHandler === "Tampermonkey" &&
-        GM/* _GM_info */._p.version?.startsWith("4.14")) {
+    if (GM/* _GM_info */.JX.scriptHandler === "Tampermonkey" &&
+        GM/* _GM_info */.JX.version?.startsWith("4.14")) {
         const blob = new Blob(["test"]);
         const arrayBuffer = await blob.arrayBuffer();
         if (arrayBuffer === undefined) {
@@ -35518,10 +36006,10 @@ const environments = async () => {
         sessionStorage: storageAvailable("sessionStorage"),
         Cookie: navigator.cookieEnabled,
         doNotTrack: navigator.doNotTrack ?? 0,
-        enableDebug: src_setting/* enableDebug */.Cy.value,
-        ScriptHandler: GM/* _GM_info */._p.scriptHandler,
-        "ScriptHandler version": GM/* _GM_info */._p.version,
-        "Novel-downloader version": GM/* _GM_info */._p.script.version,
+        enableDebug: src_setting/* enableDebug */.Nw.value,
+        ScriptHandler: GM/* _GM_info */.JX.scriptHandler,
+        "ScriptHandler version": GM/* _GM_info */.JX.version,
+        "Novel-downloader version": GM/* _GM_info */.JX.script.version,
     };
 };
 
@@ -35531,7 +36019,7 @@ var misc = __webpack_require__("./src/lib/misc.ts");
 
 
 function init() {
-    window.workerId = (0,misc/* randomUUID */.HP)();
+    window.workerId = (0,misc/* randomUUID */.N4)();
     window.downloading = false;
     window.localStorageExpired = new LocalStorageExpired();
     const stopController = new AbortController();
@@ -36653,15 +37141,15 @@ async function getSections() {
         window._book = book;
         window._url = document.location.href;
         if (unsafeWindow.saveOptions?.chapterSort) {
-            window._sections = (0,save_misc/* getSectionsObj */.f)(book.chapters, unsafeWindow.saveOptions?.chapterSort);
+            window._sections = (0,save_misc/* getSectionsObj */.e)(book.chapters, unsafeWindow.saveOptions?.chapterSort);
         }
         else {
-            window._sections = (0,save_misc/* getSectionsObj */.f)(book.chapters);
+            window._sections = (0,save_misc/* getSectionsObj */.e)(book.chapters);
         }
         return window._sections;
     }
 }
-const style = (0,dom/* createStyle */.wj)(ui_ChapterList/* default */.Z);
+const style = (0,dom/* createStyle */._r)(ui_ChapterList/* default */.A);
 /* harmony default export */ const src_ui_ChapterList = ((0,external_Vue_.defineComponent)({
     name: "ChapterList",
     setup() {
@@ -36683,7 +37171,7 @@ const style = (0,dom/* createStyle */.wj)(ui_ChapterList/* default */.Z);
         });
         const filterSetting = (0,external_Vue_.inject)("filterSetting");
         const filter = (chapter) => {
-            if (chapter.status === main/* Status */.qb.aborted) {
+            if (chapter.status === main/* Status */.nW.aborted) {
                 return false;
             }
             if (filterSetting.value) {
@@ -36870,7 +37358,7 @@ function getFilterFunction(arg, functionBody) {
     },
     template: ui_FilterTab,
 }));
-const FilterTab_style = (0,dom/* createStyle */.wj)(FilterTab/* default */.Z);
+const FilterTab_style = (0,dom/* createStyle */._r)(FilterTab/* default */.A);
 
 // EXTERNAL MODULE: ./src/log.ts
 var log = __webpack_require__("./src/log.ts");
@@ -36883,9 +37371,9 @@ var log = __webpack_require__("./src/log.ts");
         const logText = (0,external_Vue_.ref)("");
         let requestID;
         (0,external_Vue_.onMounted)(() => {
-            logText.value = (0,log/* getLogText */.mZ)();
+            logText.value = (0,log/* getLogText */.gh)();
             function step() {
-                logText.value = (0,log/* getLogText */.mZ)();
+                logText.value = (0,log/* getLogText */.gh)();
                 requestID = globalThis.requestAnimationFrame(step);
             }
             requestID = globalThis.requestAnimationFrame(step);
@@ -36933,7 +37421,7 @@ var ui_TestUI = __webpack_require__("./src/ui/TestUI.less");
         const book = (0,external_Vue_.reactive)({});
         async function waitBook() {
             while (true) {
-                await (0,misc/* sleep */._v)(500);
+                await (0,misc/* sleep */.yy)(500);
                 if (window._book) {
                     return window._book;
                 }
@@ -36959,7 +37447,7 @@ var ui_TestUI = __webpack_require__("./src/ui/TestUI.less");
                 const chapters = book.chapters;
                 const cns = chapters
                     .filter((c) => {
-                    if (c.status === main/* Status */.qb.aborted) {
+                    if (c.status === main/* Status */.nW.aborted) {
                         return false;
                     }
                     if (c.isVIP && c.isPaid !== true) {
@@ -36976,7 +37464,7 @@ var ui_TestUI = __webpack_require__("./src/ui/TestUI.less");
             const chapters = book.chapters;
             const _chapter = chapters.filter((c) => c.chapterNumber === n)[0];
             if (_chapter) {
-                if (_chapter.status === main/* Status */.qb.pending) {
+                if (_chapter.status === main/* Status */.nW.pending) {
                     await _chapter.init();
                     Object.assign(chapter, _chapter);
                 }
@@ -36999,10 +37487,10 @@ var ui_TestUI = __webpack_require__("./src/ui/TestUI.less");
             }
         });
         function isSeenChapter(_chapter) {
-            return _chapter.status === main/* Status */.qb.finished;
+            return _chapter.status === main/* Status */.nW.finished;
         }
         function isChapterFailed(_chapter) {
-            return (_chapter.status === main/* Status */.qb.failed || _chapter.status === main/* Status */.qb.aborted);
+            return (_chapter.status === main/* Status */.nW.failed || _chapter.status === main/* Status */.nW.aborted);
         }
         function getChapterHtml(_chapter) {
             const html = _chapter.contentHTML?.cloneNode(true);
@@ -37034,7 +37522,7 @@ var ui_TestUI = __webpack_require__("./src/ui/TestUI.less");
             }
         });
         function getObjectUrl(url) {
-            const attachment = (0,attachments/* getAttachmentClassCache */.gc)(url);
+            const attachment = (0,attachments/* getAttachmentClassCache */._s)(url);
             if (attachment?.Blob) {
                 const blob = attachment.Blob;
                 const src = URL.createObjectURL(blob);
@@ -37054,7 +37542,7 @@ var ui_TestUI = __webpack_require__("./src/ui/TestUI.less");
     },
     template: TestUI,
 }));
-const TestUI_style = (0,dom/* createStyle */.wj)(ui_TestUI/* default */.Z);
+const TestUI_style = (0,dom/* createStyle */._r)(ui_TestUI/* default */.A);
 
 ;// CONCATENATED MODULE: ./src/ui/setting.ts
 
@@ -37069,8 +37557,8 @@ const TestUI_style = (0,dom/* createStyle */.wj)(ui_TestUI/* default */.Z);
 
 
 
-const setting_style = (0,dom/* createStyle */.wj)(ui_setting/* default */.Z);
-const el = (0,dom/* createEl */.ut)(`<div id="setting"></div>`);
+const setting_style = (0,dom/* createStyle */._r)(ui_setting/* default */.A);
+const el = (0,dom/* createEl */.a_)(`<div id="setting"></div>`);
 const vm = (0,external_Vue_.createApp)({
     name: "nd-setting",
     components: { "filter-tab": src_ui_FilterTab, "log-ui": LogUI, "test-ui": src_ui_TestUI },
@@ -37132,7 +37620,7 @@ const vm = (0,external_Vue_.createApp)({
                 },
             },
         ];
-        setting.enableDebug = src_setting/* enableDebug */.Cy.value;
+        setting.enableDebug = src_setting/* enableDebug */.Nw.value;
         setting.chooseSaveOption = "null";
         setting.enableTestPage = false;
         setting.currentTab = "tab-1";
@@ -37146,7 +37634,7 @@ const vm = (0,external_Vue_.createApp)({
             }
         };
         const saveFilter = (filterSetting) => {
-            setting.filterSetting = (0,misc/* deepcopy */.X8)(filterSetting);
+            setting.filterSetting = (0,misc/* deepcopy */.OJ)(filterSetting);
         };
         const getFilterSetting = () => {
             if (setting.filterSetting) {
@@ -37164,11 +37652,11 @@ const vm = (0,external_Vue_.createApp)({
             function setEnableDebug() {
                 if (typeof config.enableDebug === "boolean") {
                     config.enableDebug ? loglevel_default().setLevel("trace") : loglevel_default().setLevel("info");
-                    src_setting/* enableDebug */.Cy.value = config.enableDebug;
+                    src_setting/* enableDebug */.Nw.value = config.enableDebug;
                     if (config.enableDebug) {
                         debug();
                     }
-                    loglevel_default().info(`[Init]enableDebug: ${src_setting/* enableDebug */.Cy.value}`);
+                    loglevel_default().info(`[Init]enableDebug: ${src_setting/* enableDebug */.Nw.value}`);
                 }
             }
             function setCustomSaveOption() {
@@ -37183,7 +37671,7 @@ const vm = (0,external_Vue_.createApp)({
                         const filterFunction = getFilterFunction(config.filterSetting.arg, config.filterSetting.functionBody);
                         if (filterFunction) {
                             unsafeWindow.chapterFilter = (chapter) => {
-                                if (chapter.status === main/* Status */.qb.aborted) {
+                                if (chapter.status === main/* Status */.nW.aborted) {
                                     return false;
                                 }
                                 return filterFunction(chapter);
@@ -37195,12 +37683,12 @@ const vm = (0,external_Vue_.createApp)({
         };
         const openStatus = (0,external_Vue_.ref)("false");
         const openSetting = () => {
-            settingBackup = (0,misc/* deepcopy */.X8)(setting);
+            settingBackup = (0,misc/* deepcopy */.OJ)(setting);
             openStatus.value = "true";
         };
         const closeSetting = (keep) => {
             if (keep === true) {
-                settingBackup = (0,misc/* deepcopy */.X8)(setting);
+                settingBackup = (0,misc/* deepcopy */.OJ)(setting);
             }
             else {
                 Object.assign(setting, settingBackup);
@@ -37209,8 +37697,8 @@ const vm = (0,external_Vue_.createApp)({
         };
         const closeAndSaveSetting = async () => {
             closeSetting(true);
-            await (0,misc/* sleep */._v)(30);
-            setConfig((0,misc/* deepcopy */.X8)(setting));
+            await (0,misc/* sleep */.yy)(30);
+            setConfig((0,misc/* deepcopy */.OJ)(setting));
             loglevel_default().info("[Init]自定义设置：" + JSON.stringify(setting));
         };
         return {
@@ -37237,15 +37725,15 @@ const vm = (0,external_Vue_.createApp)({
 
 
 
-const button_style = (0,dom/* createStyle */.wj)(src_ui_button/* default */.Z, "button-div-style");
-const button_el = (0,dom/* createEl */.ut)('<div id="nd-button"></div>');
+const button_style = (0,dom/* createStyle */._r)(src_ui_button/* default */.A, "button-div-style");
+const button_el = (0,dom/* createEl */.a_)('<div id="nd-button"></div>');
 const button_vm = (0,external_Vue_.createApp)({
     data() {
         return {
-            imgStart: src_setting/* iconStart0 */.cl,
-            imgSetting: src_setting/* iconSetting */.d7,
-            imgJump: src_setting/* iconJump */.y6,
-            isSettingSeen: GM/* _GM_info */._p.scriptHandler !== "Greasemonkey",
+            imgStart: src_setting/* iconStart0 */.Og,
+            imgSetting: src_setting/* iconSetting */.w1,
+            imgJump: src_setting/* iconJump */.GM,
+            isSettingSeen: GM/* _GM_info */.JX.scriptHandler !== "Greasemonkey",
             uiObj: { type: "download" },
         };
     },
@@ -37256,14 +37744,14 @@ const button_vm = (0,external_Vue_.createApp)({
                 return;
             }
             const self = this;
-            self.imgStart = src_setting/* iconStart1 */.wE;
+            self.imgStart = src_setting/* iconStart1 */.HE;
             async function run() {
                 const ruleClass = await getRule();
                 await ruleClass.run();
             }
             run()
                 .then(() => {
-                self.imgStart = src_setting/* iconStart0 */.cl;
+                self.imgStart = src_setting/* iconStart0 */.Og;
             })
                 .catch((error) => loglevel_default().error(error));
         },
@@ -37321,7 +37809,7 @@ var dialog_code = "<div v-if=\"myPrivateStatus\" class=\"overlay\" v-bind:class=
         },
     },
     template: ui_dialog,
-    styles: [dialog/* default */.Z],
+    styles: [dialog/* default */.A],
 }));
 
 // EXTERNAL MODULE: ./src/ui/progress.ts + 1 modules
@@ -37344,7 +37832,7 @@ function ui_init() {
     document.body.appendChild(progress.el);
     document.body.appendChild(el);
     document.head.appendChild(button_style);
-    document.head.appendChild(progress/* style */.o);
+    document.head.appendChild(progress/* style */.i);
     document.head.appendChild(setting_style);
     document.head.appendChild(FilterTab_style);
     document.head.appendChild(style);
