@@ -1,42 +1,64 @@
 import { rm } from "../../../lib/dom";
 import { mkRuleClass } from "../template";
 
+const currentPageIndexBox = document.querySelector('.index_box');
 
+// Attempt to get the first and last page anchors
+const firstPageAnchor = document.querySelector('.novelview_pager-first');
 const lastPageAnchor = document.querySelector('.novelview_pager-last');
 
-// Proceed only if the element exists
-if (lastPageAnchor) {
-  const lastPageHref = lastPageAnchor.getAttribute('href');
-  const hrefMatch = lastPageHref ? lastPageHref.match(/(.*\/\?p=)(\d+)/) : null;
+if (firstPageAnchor && lastPageAnchor) {
+  // Fallback to the current URL if href is null, it means we're on the last or first page
+  const currentURL = window.location.pathname + window.location.search;
+  const lastPageHref = lastPageAnchor.getAttribute('href') ? lastPageAnchor.getAttribute('href'): currentURL;
+  const firstPageHref = firstPageAnchor.getAttribute('href') ? firstPageAnchor.getAttribute('href'): currentURL;
 
-  if (hrefMatch && hrefMatch.length === 3) {
-    const baseUrl = hrefMatch[1];
-    const lastPageNumber = parseInt(hrefMatch[2], 10);
-    const currentPageIndexBox = document.querySelector('.index_box');
+  // Extract the page numbers from the URLs
+  const hrefLastPageMatch = lastPageHref ? lastPageHref.match(/(.*\/\?p=)(\d+)/) : null;
+  const hrefFirstPageMatch = firstPageHref ? firstPageHref.match(/(.*\/\?p=)(\d+)/) : null;
 
-    // Function to fetch content and append children
-    const fetchAndAppendContent = (pageNumber: number) => {
-      fetch(`${baseUrl}${pageNumber}`)
-        .then(response => response.text())
-        .then(html => {
-          const parser = new DOMParser();
-          const doc = parser.parseFromString(html, 'text/html');
-          const pageIndexBox = doc.querySelector('.index_box');
+  const baseUrl = hrefLastPageMatch ? hrefLastPageMatch[1] : hrefFirstPageMatch ? hrefFirstPageMatch[1] : '';
+  const lastPageNumber = hrefLastPageMatch ? parseInt(hrefLastPageMatch[2], 10) : 1;
+  const currentPageNumberMatch = currentURL.match(/(.*\/\?p=)(\d+)/);
+  const currentPageNumber = currentPageNumberMatch ? parseInt(currentPageNumberMatch[2], 10) : 1;
 
-          if (pageIndexBox && currentPageIndexBox) {
-            Array.from(pageIndexBox.children).forEach(child => {
-              currentPageIndexBox.appendChild(child.cloneNode(true));
-            });
-          }
-        })
-        .catch(error => console.error('Error fetching page:', error));
-    };
-
-    // Iterate over all pages and fetch their content
-    for (let i = 2; i <= lastPageNumber; i++) {
-      fetchAndAppendContent(i);
+  // Function to fetch content and append children, modified to return the fetch Promise
+  const fetchAndAppendContent = async (pageNumber: number, insertAfterCurrentBox: boolean) => {
+    try {
+      const response = await fetch(`${baseUrl}${pageNumber}`);
+      const html = await response.text();
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, 'text/html');
+      const pageIndexBox = doc.querySelector('.index_box');
+      if (pageIndexBox && currentPageIndexBox) {
+        const childrenArray = Array.from(pageIndexBox.children);
+        if (insertAfterCurrentBox) {
+          childrenArray.forEach(child => {
+            currentPageIndexBox.appendChild(child.cloneNode(true));
+          });
+        } else {
+          childrenArray.reverse().forEach(child => {
+            currentPageIndexBox.insertBefore(child.cloneNode(true), currentPageIndexBox.firstChild);
+          });
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching page:', error);
     }
+  };
+
+  // Fetch previous pages' content
+  for (let i = currentPageNumber - 1; i > 0; i--) {
+    await fetchAndAppendContent(i, false);
   }
+  
+  // If lastPageNumber is -1, it indicates we are on the last page
+  const endPageNumber = lastPageNumber === -1 ? currentPageNumber : lastPageNumber;
+  
+  // Fetch next pages' content
+  for (let i = currentPageNumber + 1; i <= endPageNumber; i++) {
+    await fetchAndAppendContent(i, true);
+  }  
 }
 
 
