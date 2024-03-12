@@ -151,6 +151,8 @@ dist
 ## Custom
 tmp/
 .vscode
+secret/
+src/dev/
 
 # tools/font/
 tools/font/*.ttf
