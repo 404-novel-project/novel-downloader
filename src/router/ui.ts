@@ -267,7 +267,7 @@ export function getUI(): () => UIObject {
         }
       };
     }
-    case "www.ptwxz.net": {
+    case "www.piaotia.com": {
       return () => {
         if (document.location.pathname.startsWith("/list/")) {
           return {

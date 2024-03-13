@@ -386,9 +386,9 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = novelup();
       break;
     }
-    case "www.ptwxz.net": {
+    case "www.piaotia.com": {
       const { ptwxz } = await import(
-        "../rules/onePageWithMultiIndexPage/ptwxz"
+        "../rules/onePage/original/ptwxz"
       );
       ruleClass = ptwxz();
       break;

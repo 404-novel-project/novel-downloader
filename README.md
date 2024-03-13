@@ -163,7 +163,7 @@ EPUB 文件请使用相应阅读器阅读。
 | [新笔趣阁](https://www.ibiquge.la/)               | ✅       | ❎       |                                                                                          |
 | [69 书吧](https://www.69shu.com/)                 | ✅       | ❎       |                                                                                          |
 | [笔下文学](https://www.ywggzy.com/)               | ✅       | ❎       |                                                                                          |
-| [飘天文学](https://www.ptwxz.net/)                | ✅       | ❎       |                                                                                          |
+| [飘天文学网](https://www.piaotia.com/)                | ✅       | ❎       |                                                                                          |
 | [红袖招](https://hongxiuzhao.me/)                 | ✅       | ❎       |                                                                                          |
 | [38 看书](https://www.mijiashe.com/)              | ✅       | ❎       |                                                                                          |
 | [天天看小说](https://www.ttkan.co/)               | ✅       | ❎       |                                                                                          |
