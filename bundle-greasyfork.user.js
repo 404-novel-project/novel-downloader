@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.912
+// @version        5.2.915
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -229,8 +229,7 @@
 // @match          *://new-read.readmoo.com/mooreader/*
 // @match          *://www.iqingguo.com/book/detail/?id=*
 // @match          *://www.ywggzy.com/bxwx/*/
-// @match          *://www.ptwxz.net/*/
-// @match          *://www.ptwxz.net/list/*/
+// @match          *://www.piaotia.com/html/*
 // @match          *://www.mbtxt.la/go/*/
 // @match          *://m.kuangguwenhua.com/bqg/*/
 // @match          *://m.kuangguwenhua.com/bqg/11365/index_*.html
@@ -12873,10 +12872,63 @@ const masiro = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */
 
 /***/ }),
 
-/***/ "./src/rules/onePage/original/syosetu.ts":
+/***/ "./src/rules/onePage/original/ptwxz.ts":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   ptwxz: () => (/* binding */ ptwxz)
+/* harmony export */ });
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
+
+const ptwxz = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
+    bookUrl: document.location.href,
+    bookname: document.querySelector("h1")?.innerText.trim().replace('最新章节', '') ?? "",
+    author: document.querySelector('.list')?.textContent?.split(' \u00A0')[0]?.replace('作者：', '')?.trim() ?? "",
+    introDom: document.querySelector("#intro") ?? undefined,
+    introDomPatch: (dom) => dom,
+    coverUrl: document.location.href.replace(/(https:\/\/www\.piaotia\.com)\/html\/(\d+)\/(\d+)(\/index.html)?\/?$/, '$1/files/article/image/$2/$3/$3s.jpg'),
+    getAName: (aElem) => aElem.innerText.trim(),
+    aList: document.querySelectorAll('ul > li > a'),
+    getContent: (dom) => dom.body,
+    contentPatch: (dom) => {
+        const title = dom.querySelector('h1')?.textContent?.trim() ?? '';
+        const table = dom.querySelector('table');
+        const bottomLink = dom.querySelector("div.bottomlink");
+        if (!table || !bottomLink) {
+            throw new Error('The required elements are not found in the DOM.');
+        }
+        let content = '';
+        let currentNode = table.nextSibling;
+        while (currentNode && currentNode !== bottomLink) {
+            if (currentNode.nodeType === Node.TEXT_NODE || (currentNode.nodeType === Node.ELEMENT_NODE && currentNode.nodeName.toLowerCase() !== 'table' && currentNode.nodeName.toLowerCase() !== 'div')) {
+                let textContent = currentNode.textContent || '';
+                if (currentNode.nodeType === Node.ELEMENT_NODE && currentNode.nodeName.toLowerCase() === 'br') {
+                    textContent = '\n';
+                }
+                textContent.split('\n').forEach((line) => {
+                    const trimmedLine = line.trim();
+                    if (trimmedLine && title !== trimmedLine) {
+                        content += `<p>${trimmedLine}</p>`;
+                    }
+                });
+            }
+            currentNode = currentNode.nextSibling;
+        }
+        const divElement = document.createElement('div');
+        divElement.innerHTML = content;
+        return divElement;
+    }
+});
+
+
+/***/ }),
+
+/***/ "./src/rules/onePage/original/syosetu.ts":
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   syosetu: () => (/* binding */ syosetu),
 /* harmony export */   syosetuOrg: () => (/* binding */ syosetuOrg)
@@ -12885,6 +12937,52 @@ const masiro = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */
 /* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
 
 
+const currentPageIndexBox = document.querySelector('.index_box');
+const firstPageAnchor = document.querySelector('.novelview_pager-first');
+const lastPageAnchor = document.querySelector('.novelview_pager-last');
+if (firstPageAnchor && lastPageAnchor) {
+    const currentURL = window.location.pathname + window.location.search;
+    const lastPageHref = lastPageAnchor.getAttribute('href') ? lastPageAnchor.getAttribute('href') : currentURL;
+    const firstPageHref = firstPageAnchor.getAttribute('href') ? firstPageAnchor.getAttribute('href') : currentURL;
+    const hrefLastPageMatch = lastPageHref ? lastPageHref.match(/(.*\/\?p=)(\d+)/) : null;
+    const hrefFirstPageMatch = firstPageHref ? firstPageHref.match(/(.*\/\?p=)(\d+)/) : null;
+    const baseUrl = hrefLastPageMatch ? hrefLastPageMatch[1] : hrefFirstPageMatch ? hrefFirstPageMatch[1] : '';
+    const lastPageNumber = hrefLastPageMatch ? parseInt(hrefLastPageMatch[2], 10) : 1;
+    const currentPageNumberMatch = currentURL.match(/(.*\/\?p=)(\d+)/);
+    const currentPageNumber = currentPageNumberMatch ? parseInt(currentPageNumberMatch[2], 10) : 1;
+    const fetchAndAppendContent = async (pageNumber, insertAfterCurrentBox) => {
+        try {
+            const response = await fetch(`${baseUrl}${pageNumber}`);
+            const html = await response.text();
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            const pageIndexBox = doc.querySelector('.index_box');
+            if (pageIndexBox && currentPageIndexBox) {
+                const childrenArray = Array.from(pageIndexBox.children);
+                if (insertAfterCurrentBox) {
+                    childrenArray.forEach(child => {
+                        currentPageIndexBox.appendChild(child.cloneNode(true));
+                    });
+                }
+                else {
+                    childrenArray.reverse().forEach(child => {
+                        currentPageIndexBox.insertBefore(child.cloneNode(true), currentPageIndexBox.firstChild);
+                    });
+                }
+            }
+        }
+        catch (error) {
+            console.error('Error fetching page:', error);
+        }
+    };
+    for (let i = currentPageNumber - 1; i > 0; i--) {
+        await fetchAndAppendContent(i, false);
+    }
+    const endPageNumber = lastPageNumber === -1 ? currentPageNumber : lastPageNumber;
+    for (let i = currentPageNumber + 1; i <= endPageNumber; i++) {
+        await fetchAndAppendContent(i, true);
+    }
+}
 const syosetu = () => {
     const getIntroDom = () => {
         const a = document.querySelector("#novel_ex > .more");
@@ -13007,6 +13105,8 @@ const syosetuOrg = () => {
     });
 };
 
+__webpack_async_result__();
+} catch(e) { __webpack_async_result__(e); } }, 1);
 
 /***/ }),
 
@@ -13684,66 +13784,6 @@ const novelup = () => {
         language: "ja",
     });
 };
-
-
-/***/ }),
-
-/***/ "./src/rules/onePageWithMultiIndexPage/ptwxz.ts":
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   ptwxz: () => (/* binding */ ptwxz)
-/* harmony export */ });
-/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePageWithMultiIndexPage/template.ts");
-/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/http.ts");
-/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/dom.ts");
-
-
-
-
-const ptwxz = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
-    bookUrl: document.location.href,
-    bookname: document
-        .querySelector("#info h1")
-        ?.innerText.trim() ?? "",
-    author: document
-        .querySelector("#info > p:nth-child(2) > a:nth-child(1)")
-        ?.innerText.trim() ?? "",
-    introDom: document.querySelector("#intro") ?? undefined,
-    introDomPatch: (dom) => dom,
-    coverUrl: document.querySelector("#fmimg > img")?.src ?? null,
-    getIndexUrls: async () => {
-        const base = document.location.pathname;
-        const listUrlBase = document.location.origin + "/list" + base;
-        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .wA)(listUrlBase, document.characterSet);
-        return Array.from(doc.querySelectorAll("#indexselect > option")).map((o) => document.location.origin + o.getAttribute("value"));
-    },
-    getAList: (doc) => doc.querySelectorAll('a[rel="chapter"]'),
-    getContentFromUrl: async (chapterUrl, chapterName, charset) => {
-        const { contentRaw } = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .nextPageParse */ .u1)({
-            chapterName,
-            chapterUrl,
-            charset,
-            selector: "#booktxt",
-            contentPatch: (content) => {
-                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_3__/* .rm2 */ .Sf)(["本章未完，點選下一頁繼續閱讀。"], content);
-                return content;
-            },
-            getNextPage: (doc) => doc.querySelector("#next_url")?.href ?? "",
-            continueCondition: (content, nextLink) => {
-                if (nextLink === "") {
-                    return false;
-                }
-                return nextLink.includes("_");
-            },
-            enableCleanDOM: false,
-        });
-        return contentRaw;
-    },
-    contentPatch: (dom) => dom,
-});
 
 
 /***/ }),
@@ -35788,6 +35828,75 @@ module.exports = /*#__PURE__*/JSON.parse('{"application/1d-interleaved-parityfec
 /******/ 	}
 /******/ 	
 /************************************************************************/
+/******/ 	/* webpack/runtime/async module */
+/******/ 	(() => {
+/******/ 		var webpackQueues = typeof Symbol === "function" ? Symbol("webpack queues") : "__webpack_queues__";
+/******/ 		var webpackExports = typeof Symbol === "function" ? Symbol("webpack exports") : "__webpack_exports__";
+/******/ 		var webpackError = typeof Symbol === "function" ? Symbol("webpack error") : "__webpack_error__";
+/******/ 		var resolveQueue = (queue) => {
+/******/ 			if(queue && queue.d < 1) {
+/******/ 				queue.d = 1;
+/******/ 				queue.forEach((fn) => (fn.r--));
+/******/ 				queue.forEach((fn) => (fn.r-- ? fn.r++ : fn()));
+/******/ 			}
+/******/ 		}
+/******/ 		var wrapDeps = (deps) => (deps.map((dep) => {
+/******/ 			if(dep !== null && typeof dep === "object") {
+/******/ 				if(dep[webpackQueues]) return dep;
+/******/ 				if(dep.then) {
+/******/ 					var queue = [];
+/******/ 					queue.d = 0;
+/******/ 					dep.then((r) => {
+/******/ 						obj[webpackExports] = r;
+/******/ 						resolveQueue(queue);
+/******/ 					}, (e) => {
+/******/ 						obj[webpackError] = e;
+/******/ 						resolveQueue(queue);
+/******/ 					});
+/******/ 					var obj = {};
+/******/ 					obj[webpackQueues] = (fn) => (fn(queue));
+/******/ 					return obj;
+/******/ 				}
+/******/ 			}
+/******/ 			var ret = {};
+/******/ 			ret[webpackQueues] = x => {};
+/******/ 			ret[webpackExports] = dep;
+/******/ 			return ret;
+/******/ 		}));
+/******/ 		__webpack_require__.a = (module, body, hasAwait) => {
+/******/ 			var queue;
+/******/ 			hasAwait && ((queue = []).d = -1);
+/******/ 			var depQueues = new Set();
+/******/ 			var exports = module.exports;
+/******/ 			var currentDeps;
+/******/ 			var outerResolve;
+/******/ 			var reject;
+/******/ 			var promise = new Promise((resolve, rej) => {
+/******/ 				reject = rej;
+/******/ 				outerResolve = resolve;
+/******/ 			});
+/******/ 			promise[webpackExports] = exports;
+/******/ 			promise[webpackQueues] = (fn) => (queue && fn(queue), depQueues.forEach(fn), promise["catch"](x => {}));
+/******/ 			module.exports = promise;
+/******/ 			body((deps) => {
+/******/ 				currentDeps = wrapDeps(deps);
+/******/ 				var fn;
+/******/ 				var getResult = () => (currentDeps.map((d) => {
+/******/ 					if(d[webpackError]) throw d[webpackError];
+/******/ 					return d[webpackExports];
+/******/ 				}))
+/******/ 				var promise = new Promise((resolve) => {
+/******/ 					fn = () => (resolve(getResult));
+/******/ 					fn.r = 0;
+/******/ 					var fnQueue = (q) => (q !== queue && !depQueues.has(q) && (depQueues.add(q), q && !q.d && (fn.r++, q.push(fn))));
+/******/ 					currentDeps.map((dep) => (dep[webpackQueues](fnQueue)));
+/******/ 				});
+/******/ 				return fn.r ? promise : getResult();
+/******/ 			}, (err) => ((err ? reject(promise[webpackError] = err) : outerResolve(exports)), resolveQueue(queue)));
+/******/ 			queue && queue.d < 0 && (queue.d = 0);
+/******/ 		};
+/******/ 	})();
+/******/ 	
 /******/ 	/* webpack/runtime/compat get default export */
 /******/ 	(() => {
 /******/ 		// getDefaultExport function for compatibility with non-harmony modules
@@ -36420,8 +36529,8 @@ async function getRule() {
             ruleClass = novelup();
             break;
         }
-        case "www.ptwxz.net": {
-            const { ptwxz } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePageWithMultiIndexPage/ptwxz.ts"));
+        case "www.piaotia.com": {
+            const { ptwxz } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/original/ptwxz.ts"));
             ruleClass = ptwxz();
             break;
         }
@@ -36984,7 +37093,7 @@ function getUI() {
                 }
             };
         }
-        case "www.ptwxz.net": {
+        case "www.piaotia.com": {
             return () => {
                 if (document.location.pathname.startsWith("/list/")) {
                     return {
