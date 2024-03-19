@@ -1,3 +1,5 @@
+doctype xml
+
 mixin creator(c, role, index)
   if c.name
     dc:creator(id=role + index) #{ c.name }
@@ -17,8 +19,6 @@ mixin contributor(c, index)
     meta(refines="#contributor" + index, property="file-as") #{ c["file-as"] }
   else
     dc:contributor(id="contributor" + index) #{ c }
-
-doctype xml
 
 package(version="3.0", unique-identifier="BookId", xmlns="http://www.idpf.org/2007/opf")
   metadata(xmlns:dc="http://purl.org/dc/elements/1.1/", xmlns:opf="http://www.idpf.org/2007/opf")
