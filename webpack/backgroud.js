@@ -2,7 +2,6 @@ import fs from "fs";
 import path from "path";
 
 import webpack from "webpack";
-import PugPlugin from "pug-plugin";
 
 import getWebpackConfig, { dev, __dirname, tsconfigPath } from "./config.js";
 
@@ -42,9 +41,9 @@ const rules = [
   },
   {
     test: /\.pug$/,
-    loader: PugPlugin.loader,
+    loader: "@webdiscus/pug-loader",
     options: {
-      method: "compile",
+      mode: "compile",
     },
   },
 ];
