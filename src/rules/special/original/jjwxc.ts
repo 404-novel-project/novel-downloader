@@ -39,8 +39,8 @@ export class Jjwxc extends BaseRuleClass {
       const fl = Array.from(document.querySelectorAll(".smallreadbody")).filter(
         (div) =>
           (div as HTMLDivElement).innerText.includes(
-            "文案信息审核未通过，等待作者修改后重新审核"
-          )
+            "文案信息审核未通过，等待作者修改后重新审核",
+          ),
       );
       return fl.length !== 0;
     };
@@ -62,9 +62,8 @@ export class Jjwxc extends BaseRuleClass {
         .replace(/作\s+者:/, "")
         .trim();
       const introDom = document.querySelector("#novelintro");
-      [introduction, introductionHTML, introCleanimages] = await introDomHandle(
-        introDom
-      );
+      [introduction, introductionHTML, introCleanimages] =
+        await introDomHandle(introDom);
       if (introCleanimages) {
         additionalMetadate.attachments = [...introCleanimages];
       }
@@ -79,7 +78,7 @@ export class Jjwxc extends BaseRuleClass {
           "cover-",
           false,
           getRandomName(),
-          { referrerMode: ReferrerMode.none }
+          { referrerMode: ReferrerMode.none },
         )
           .then((coverClass) => {
             additionalMetadate.cover = coverClass;
@@ -89,22 +88,24 @@ export class Jjwxc extends BaseRuleClass {
 
       let tags = (
         document.querySelector(
-          "table > tbody > tr > td.readtd > div.righttd > ul.rightul > li:nth-child(1) > span:nth-child(2)"
+          "table > tbody > tr > td.readtd > div.righttd > ul.rightul > li:nth-child(1) > span:nth-child(2)",
         ) as HTMLSpanElement
       ).innerText.split("-");
       tags = tags.concat(
         Array.from(
-          document.querySelectorAll("div.smallreadbody:nth-child(3) > span > a")
-        ).map((a) => (a as HTMLAnchorElement).innerText)
+          document.querySelectorAll(
+            "div.smallreadbody:nth-child(3) > span > a",
+          ),
+        ).map((a) => (a as HTMLAnchorElement).innerText),
       );
       const perspective = (
         document.querySelector(
-          "table > tbody > tr > td.readtd > div.righttd > ul.rightul > li:nth-child(2)"
+          "table > tbody > tr > td.readtd > div.righttd > ul.rightul > li:nth-child(2)",
         ) as HTMLLIElement
       ).innerText.replace("\n", "");
       const workStyle = (
         document.querySelector(
-          "table > tbody > tr > td.readtd > div.righttd > ul.rightul > li:nth-child(3)"
+          "table > tbody > tr > td.readtd > div.righttd > ul.rightul > li:nth-child(3)",
         ) as HTMLLIElement
       ).innerText.replace("\n", "");
       tags.push(perspective);
@@ -115,7 +116,7 @@ export class Jjwxc extends BaseRuleClass {
       await sleep(3000);
       bookname = (
         document.querySelector(
-          "td[id^=comment_] span.coltext > a"
+          "td[id^=comment_] span.coltext > a",
         ) as HTMLAnchorElement
       )?.innerText
         .trim()
@@ -126,7 +127,7 @@ export class Jjwxc extends BaseRuleClass {
       }
       const authorPageUrl = (
         document.querySelector(
-          "#oneboolt > tbody > tr:nth-child(1) > td > div > h2 > a"
+          "#oneboolt > tbody > tr:nth-child(1) > td > div > h2 > a",
         ) as HTMLAnchorElement
       )?.href;
       if (authorPageUrl) {
@@ -257,7 +258,7 @@ export class Jjwxc extends BaseRuleClass {
     isVIP: boolean,
     isPaid: boolean,
     charset: string,
-    options: object
+    options: object,
   ) {
     async function publicChapter(): Promise<ChapterParseObject> {
       const doc = await getHtmlDOM(chapterUrl, charset);
@@ -274,7 +275,7 @@ export class Jjwxc extends BaseRuleClass {
         if (rawAuthorSayDom) {
           const { dom: adom, text: atext } = await cleanDOM(
             rawAuthorSayDom,
-            "TM"
+            "TM",
           );
           [authorSayDom, authorSayText] = [adom, atext];
         }
@@ -311,7 +312,7 @@ export class Jjwxc extends BaseRuleClass {
 
     async function vipChapter(): Promise<ChapterParseObject> {
       async function getFont(
-        dom: Document
+        dom: Document,
       ): Promise<
         [string | null, AttachmentClass | null, HTMLStyleElement | null]
       > {
@@ -348,7 +349,7 @@ export class Jjwxc extends BaseRuleClass {
             const css = dom.querySelector("div.noveltext")?.classList;
             if (css) {
               fontNameI = Array.from(css).filter((cn) =>
-                cn.startsWith("jjwxcfont_")
+                cn.startsWith("jjwxcfont_"),
               )[0];
               if (fontNameI) {
                 fontUrlI = `${document.location.protocol}//static.jjwxc.net/tmp/fonts/${fontNameI}.woff2?h=my.jjwxc.net`;
@@ -364,7 +365,7 @@ export class Jjwxc extends BaseRuleClass {
 
         function fetchFont(fontUrlI: string): Promise<Blob | null | void> {
           log.debug(
-            `[Chapter]请求 ${fontUrlI} Referer ${chapterUrl} 重试次数 ${retryTime}`
+            `[Chapter]请求 ${fontUrlI} Referer ${chapterUrl} 重试次数 ${retryTime}`,
           );
           return gfetch(fontUrlI, {
             headers: {
@@ -378,7 +379,7 @@ export class Jjwxc extends BaseRuleClass {
                 return response.response as Blob;
               } else {
                 log.error(
-                  `[Chapter]请求 ${fontUrlI} 失败 Referer ${chapterUrl}`
+                  `[Chapter]请求 ${fontUrlI} 失败 Referer ${chapterUrl}`,
                 );
                 if (retryTime < retryLimit) {
                   retryTime++;
@@ -531,7 +532,7 @@ export class Jjwxc extends BaseRuleClass {
               } while (i < len && c3 == -1);
               if (c3 == -1) break;
               out += String.fromCharCode(
-                ((c2 & 0xf) << 4) | ((c3 & 0x3c) >> 2)
+                ((c2 & 0xf) << 4) | ((c3 & 0x3c) >> 2),
               );
               do {
                 c4 = str.charCodeAt(i++) & 0xff;
@@ -569,7 +570,7 @@ export class Jjwxc extends BaseRuleClass {
                   // 110x xxxx    10xx xxxx
                   char2 = str.charCodeAt(i++);
                   out += String.fromCharCode(
-                    ((c & 0x1f) << 6) | (char2 & 0x3f)
+                    ((c & 0x1f) << 6) | (char2 & 0x3f),
                   );
                   break;
                 case 14:
@@ -578,8 +579,8 @@ export class Jjwxc extends BaseRuleClass {
                   char3 = str.charCodeAt(i++);
                   out += String.fromCharCode(
                     ((c & 0x0f) << 12) |
-                    ((char2 & 0x3f) << 6) |
-                    ((char3 & 0x3f) << 0)
+                      ((char2 & 0x3f) << 6) |
+                      ((char3 & 0x3f) << 0),
                   );
                   break;
               }
@@ -591,7 +592,7 @@ export class Jjwxc extends BaseRuleClass {
           // https://static.jjwxc.net/scripts/jjcontent.js?ver=20220527
 
           const children = doc.querySelector(
-            "#contentlets, #contentvars"
+            "#contentlets, #contentvars",
           )?.children;
           if (!children) {
             throw new Error("获取章节失败");
@@ -599,9 +600,9 @@ export class Jjwxc extends BaseRuleClass {
           const data: Record<string, string> = {};
           Array.from(children).forEach(
             (item) =>
-            (data[item.getAttribute("name") as string] = item.getAttribute(
-              "value"
-            ) as string)
+              (data[item.getAttribute("name") as string] = item.getAttribute(
+                "value",
+              ) as string),
           );
 
           const novelid = parseInt(data["novelid"]);
@@ -613,8 +614,15 @@ export class Jjwxc extends BaseRuleClass {
           const readerid = parseInt(_readerid);
           const accessKey = data["accessKey"];
 
-          const _hash =
-            novelid + "." + chapterid + "." + readerid + "." + accessKey;
+          let _hash = "";
+          let hashSlice = "";
+          if (chapterid % 2 == 1) {
+            _hash =
+              novelid + "." + chapterid + "." + readerid + "." + accessKey;
+          } else {
+            _hash =
+              accessKey + "-" + novelid + "-" + chapterid + "-" + readerid;
+          }
           const hash = CryptoJS.MD5(_hash).toString();
 
           const convert = (input: string) => {
@@ -625,9 +633,15 @@ export class Jjwxc extends BaseRuleClass {
             return out;
           };
           const accessKeyConvert = convert(accessKey);
-          const hashSlice =
-            hash.slice(accessKeyConvert % hash.length) +
-            hash.slice(0, accessKeyConvert % hash.length);
+          if (chapterid % 2 == 1) {
+            hashSlice =
+              hash.slice(accessKeyConvert % hash.length) +
+              hash.slice(0, accessKeyConvert % hash.length);
+          } else {
+            hashSlice =
+              hash.slice(accessKeyConvert % (hash.length + 1)) +
+              hash.slice(0, accessKeyConvert % (hash.length + 1));
+          }
           let hashSlice16 = hashSlice.slice(0, 16);
           let hashSlice_16 = hashSlice.slice(-16);
           if (hash.charCodeAt(0)) {
@@ -639,7 +653,7 @@ export class Jjwxc extends BaseRuleClass {
             CryptoJS.enc.Utf8.parse(hashSlice16),
             {
               iv: CryptoJS.enc.Utf8.parse(hashSlice_16),
-            }
+            },
           ).toString(CryptoJS.enc.Utf8);
 
           interface cryptInfo {
@@ -649,19 +663,19 @@ export class Jjwxc extends BaseRuleClass {
           }
 
           const decrypedtCryptInfo = JSON.parse(
-            atob(_decrypedtCryptInfo)
+            atob(_decrypedtCryptInfo),
           ) as cryptInfo;
           const verifyTime = (obj: cryptInfo) => {
             if (new Date()["getTime"]() / 1000 - obj["time"] > 86400) {
               throw new Error(
                 "章节内容解码失败，内容生成时间与当前设备时间相差过大，请刷新页面或校准当前设备时间。内容生成时间为:" +
-                new Date(obj["time"] * 100).toLocaleString()
+                  new Date(obj["time"] * 100).toLocaleString(),
               );
             }
           };
           verifyTime(decrypedtCryptInfo);
           const md5sum = CryptoJS.MD5(
-            decrypedtCryptInfo["key"] + decrypedtCryptInfo["time"] + readerid
+            decrypedtCryptInfo["key"] + decrypedtCryptInfo["time"] + readerid,
           ).toString();
           const t =
             md5sum["slice"](accessKeyConvert % md5sum["length"]) +
@@ -672,7 +686,7 @@ export class Jjwxc extends BaseRuleClass {
           const decryptContent = CryptoJS.DES.decrypt(
             data["content"],
             CryptoJS.enc.Utf8.parse(key),
-            { iv: CryptoJS.enc.Utf8.parse(iv) }
+            { iv: CryptoJS.enc.Utf8.parse(iv) },
           ).toString(CryptoJS.enc.Utf8);
           return decryptContent;
         }
@@ -680,7 +694,7 @@ export class Jjwxc extends BaseRuleClass {
         const decryptContent = getDecryptContent();
         const decryptContentDoc = new DOMParser().parseFromString(
           decryptContent,
-          "text/html"
+          "text/html",
         );
 
         function decryptCssEncrypt() {
@@ -710,17 +724,17 @@ export class Jjwxc extends BaseRuleClass {
                     sc.type,
                     (
                       sc as
-                      | csstree.ClassSelector
-                      | csstree.PseudoElementSelector
+                        | csstree.ClassSelector
+                        | csstree.PseudoElementSelector
                     ).name,
-                  ])
+                  ]),
                 );
                 const classSelector = selector.get("ClassSelector");
                 const pseudoClassSelector = selector.get("PseudoClassSelector");
 
                 if (classSelector && pseudoClassSelector && value) {
                   const sNode = decryptContentDoc.querySelector(
-                    `.${classSelector}`
+                    `.${classSelector}`,
                   );
                   if (sNode) {
                     const pNode = sNode.parentNode;
@@ -758,10 +772,10 @@ export class Jjwxc extends BaseRuleClass {
                     sc.type,
                     (
                       sc as
-                      | csstree.ClassSelector
-                      | csstree.PseudoElementSelector
+                        | csstree.ClassSelector
+                        | csstree.PseudoElementSelector
                     ).name,
-                  ])
+                  ]),
                 );
                 const classSelector = selector.get("ClassSelector");
                 const pseudoClassSelector = selector.get("PseudoClassSelector");
@@ -803,7 +817,7 @@ export class Jjwxc extends BaseRuleClass {
           rm("hr", true, rawAuthorSayDom as HTMLElement);
           const { dom: adom, text: atext } = await cleanDOM(
             rawAuthorSayDom,
-            "TM"
+            "TM",
           );
           [authorSayDom, authorSayText] = [adom, atext];
         }
@@ -838,7 +852,7 @@ export class Jjwxc extends BaseRuleClass {
           const replacedDom = document.createElement("div");
           replacedDom.innerHTML = await replaceJjwxcCharacter(
             fontName,
-            rawDom.innerHTML
+            rawDom.innerHTML,
           );
 
           // Backup raw DOM
@@ -889,17 +903,16 @@ export class Jjwxc extends BaseRuleClass {
     let retryTime = 0;
     function decodeVIPResopnce(responseHeader: string, responseText: string) {
       let v43, v38, dest;
-      let accesskey = "accesskey", keyString = "keystring";
+      let accesskey = "accesskey",
+        keyString = "keystring";
       const arr = responseHeader.trim().split(/[\r\n]+/);
-      const headerMap = { "accesskey": "0", "keystring": "0" };
+      const headerMap = { accesskey: "0", keystring: "0" };
       arr.forEach((line) => {
         const parts = line.split(": ");
         const header = parts.shift();
         const value = parts.join(": ");
-        if (header == "accesskey")
-          accesskey = value;
-        else if (header == "keystring")
-          keyString = value;
+        if (header == "accesskey") accesskey = value;
+        else if (header == "keystring") keyString = value;
       });
       const content = String(responseText);
       const accesskeyLen = accesskey.length;
@@ -912,19 +925,21 @@ export class Jjwxc extends BaseRuleClass {
       const v17 = v9 / 65;
       const v18 = keyString.length;
       if (v17 + v15 > v18) {
-        v43 = keyString.substring(v15, (v18 - v15) + v15)
+        v43 = keyString.substring(v15, v18 - v15 + v15);
       } else {
-        v43 = keyString.substring(v15, v17 + v15)
+        v43 = keyString.substring(v15, v17 + v15);
       }
       const v32 = content.length;
       if ((v6 & 1) != 0) {
-        v38 = content.substring(v32 - 12, v32)
-        dest = content.substring(0, v32 - 12)
+        v38 = content.substring(v32 - 12, v32);
+        dest = content.substring(0, v32 - 12);
       } else {
         v38 = content.substring(0, 12);
         dest = content.substring(12, content.length);
       }
-      const key = CryptoJS.MD5(v43 + v38).toString().substring(0, 8);
+      const key = CryptoJS.MD5(v43 + v38)
+        .toString()
+        .substring(0, 8);
       const iv = CryptoJS.MD5(v38).toString().substring(0, 8);
       const keyHex = CryptoJS.enc.Utf8.parse(key);
       const ivHex = CryptoJS.enc.Utf8.parse(iv);
@@ -970,11 +985,11 @@ export class Jjwxc extends BaseRuleClass {
       chapterGetInfoUrl = chapterGetInfoUrl.replace("id", "Id");
       chapterGetInfoUrl = chapterGetInfoUrl.replace(
         "http://www.jjwxc.net/onebook.php?",
-        "https://app.jjwxc.net/androidapi/chapterContent?"
+        "https://app.jjwxc.net/androidapi/chapterContent?",
       );
       chapterGetInfoUrl = chapterGetInfoUrl.replace(
         "http://my.jjwxc.net/onebook_vip.php?",
-        "https://app.jjwxc.net/androidapi/chapterContent?"
+        "https://app.jjwxc.net/androidapi/chapterContent?",
       );
       //let sid = getCookieObj("token");
       if (isVIP) {
@@ -991,11 +1006,10 @@ export class Jjwxc extends BaseRuleClass {
           //   "chapterId",
           //   "chapterIds"
           // );
-          chapterGetInfoUrl +=
-            "&versionCode=349&token=" + sid;
+          chapterGetInfoUrl += "&versionCode=349&token=" + sid;
         } else {
           throw new Error(
-            `当前需要手动捕获android版app token,详见github主页说明`
+            `当前需要手动捕获android版app token,详见github主页说明`,
           );
         }
         //}
@@ -1003,7 +1017,7 @@ export class Jjwxc extends BaseRuleClass {
 
       async function getChapterInfo(url: string): Promise<ChapterInfo> {
         log.debug(
-          `请求地址: ${url}, Referrer: ${chapterUrl}, 重试次数: ${retryTime}`
+          `请求地址: ${url}, Referrer: ${chapterUrl}, 重试次数: ${retryTime}`,
         );
         return new Promise((resolve) => {
           _GM_xmlhttpRequest({
@@ -1025,7 +1039,10 @@ export class Jjwxc extends BaseRuleClass {
                   try {
                     resultI = JSON.parse(decodeResponseText);
                   } catch (e) {
-                    decodeResponseText = decodeVIPResopnce(response.responseHeaders, String(response.responseText));
+                    decodeResponseText = decodeVIPResopnce(
+                      response.responseHeaders,
+                      String(response.responseText),
+                    );
                   }
                   try {
                     resultI = JSON.parse(decodeResponseText);
@@ -1036,13 +1053,13 @@ export class Jjwxc extends BaseRuleClass {
                   resolve(resultI);
                 } else {
                   const resultI: ChapterInfo = JSON.parse(
-                    response.responseText
+                    response.responseText,
                   );
                   resolve(resultI);
                 }
               } else {
                 const resultI: ChapterInfo = JSON.parse(
-                  '{"message":"try again!"}'
+                  '{"message":"try again!"}',
                 );
                 resolve(resultI);
               }
@@ -1065,7 +1082,7 @@ export class Jjwxc extends BaseRuleClass {
         let content = result.content;
         if (isVIP) content = decodeVIPText(content);
         let postscript = result.sayBody;
-        if (isVIP) postscript
+        if (isVIP) postscript;
         if (result.sayBody == null) postscript = " ";
         const contentRaw = document.createElement("pre");
         contentRaw.innerHTML = content;
