@@ -231,6 +231,7 @@ export function getUI(): () => UIObject {
     case "www.wanben.info":
     case "www.mht99.com":
     case "www.xbiquge.tw":
+    case "www.xsbiquge.la":
     case "www.luoqiuzw.com":
     case "dijiuben.com":
     case "www.biquzw.la":
