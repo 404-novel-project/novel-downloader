@@ -21,7 +21,7 @@ export class Gongzicp extends BaseRuleClass {
     const bookUrl = document.location.href;
 
     const bookId = (
-      document.querySelector("span.id") as HTMLSpanElement
+      document.querySelector("span.c-light-gray") as HTMLSpanElement
     ).innerText.replace("CP", "");
     if (!bookId) {
       throw new Error("获取bookID出错");
