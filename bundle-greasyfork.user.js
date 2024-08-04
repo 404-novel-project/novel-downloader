@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.916
+// @version        5.2.917
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -28967,7 +28967,7 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
                         url: url,
                         headers: {
                             referer: "http://android.jjwxc.net?v=349",
-                            "user-agent": "Dalvik/2.1.0",
+                            "user-agent": "Mobile",
                         },
                         method: "GET",
                         onload: function (response) {
