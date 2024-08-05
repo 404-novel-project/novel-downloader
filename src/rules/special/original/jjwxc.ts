@@ -1005,6 +1005,7 @@ export class Jjwxc extends BaseRuleClass {
         log.debug(
           `请求地址: ${url}, Referrer: ${chapterUrl}, 重试次数: ${retryTime}`
         );
+        const user_agent = "Mobile "+Date.now();
         return new Promise((resolve) => {
           _GM_xmlhttpRequest({
             url: url,
@@ -1012,7 +1013,7 @@ export class Jjwxc extends BaseRuleClass {
               //   accept: "application/json",
               referer: "http://android.jjwxc.net?v=349",
               //    not_tip: "updateTime",
-              "user-agent": "Mobile",
+              "user-agent": user_agent,
               //  "accept-encoding": "gzip",
             },
             method: "GET",
