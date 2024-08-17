@@ -192,7 +192,7 @@
     "*://www.akatsuki-novels.com/stories/index/novel_id~*",
     "*://www.alphapolis.co.jp/novel/*/*",
     "*://novelup.plus/story/*",
-    "*://www.69shu.com/txt/*.htm",
+    "*://69shuba.cx/book/*.htm",
     "*://new-read.readmoo.com/mooreader/*",
     "*://www.iqingguo.com/book/detail/?id=*",
     "*://www.ywggzy.com/bxwx/*/",
@@ -213,7 +213,9 @@
     "*://www.42zw.la/book/*/",
     "*://www.boqugew.com/shu/*/",
     "*://www.qbtr.cc/*/*.html",
-    "*://b.guidaye.com/*/*/"
+    "*://b.guidaye.com/*/*/",
+    "*://www.esjzone.me/detail/*",
+    "*://www.esjzone.cc/detail/*"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",

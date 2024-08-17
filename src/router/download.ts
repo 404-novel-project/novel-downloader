@@ -453,8 +453,8 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = xiaoshuowu();
       break;
     }
-    case "www.69shu.com": {
-      const { c69shu } = await import("../rules/twoPage/69shu");
+    case "69shuba.cx": {
+      const { c69shu } = await import("../rules/onePageWithMultiIndexPage/69shu");
       ruleClass = c69shu();
       break;
     }
@@ -605,6 +605,12 @@ export async function getRule(): Promise<BaseRuleClass> {
     case "www.42zw.la": {
       const { la42zw } = await import("../rules/biquge/onePage");
       ruleClass = la42zw();
+      break;
+    }
+    case "www.esjzone.cc":
+    case "www.esjzone.me": {
+      const { esjzone } = await import("../rules/onePage/original/esjzone");
+      ruleClass = esjzone();
       break;
     }
     /** 笔趣阁END **/
