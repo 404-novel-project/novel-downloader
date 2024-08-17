@@ -1012,7 +1012,7 @@ export class Jjwxc extends BaseRuleClass {
               //   accept: "application/json",
               referer: "http://android.jjwxc.net?v=349",
               //    not_tip: "updateTime",
-              "user-agent": "Dalvik/2.1.0",
+              "user-agent": "Mobile",
               //  "accept-encoding": "gzip",
             },
             method: "GET",
