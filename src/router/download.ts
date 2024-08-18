@@ -458,6 +458,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = c69shu();
       break;
     }
+    case "book.xbookcn.net": {
+      const { xbookcn } = await import("../rules/onePageWithMultiIndexPage/xbookcn");
+      ruleClass = xbookcn();
+      break;
+    }
     /* twoPage End */
 
     /** mbtxt **/

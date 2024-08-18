@@ -156,6 +156,7 @@ EPUB 文件请使用相应阅读器阅读。
 | [笔趣阁](http://www.b5200.net/)                   | ✅       | ❎       |                                                                                          |
 | [言情小说](https://www.yqxsge.cc/)                | ✅       | ❎       |                                                                                          |
 | [18 看书](https://www.18kanshu.com/)              | ✅       | ❎       |                                                                                          |
+| [长篇X小说](https://book.xbookcn.net/)              | ✅       | ❎       |                                                                                          |
 | [笔下文学 333](http://www.bixia3.com/)            | ✅       | ❎       |                                                                                          |
 | [小说屋](http://www.xiaoshuowu.com/)              | ✅       | ❎       |                                                                                          |
 | [缤纷幻想](https://colorful-fantasybooks.com/)    | ✅       | ❎       |                                                                                          |
