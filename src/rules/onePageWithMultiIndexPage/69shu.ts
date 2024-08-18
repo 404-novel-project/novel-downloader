@@ -24,12 +24,34 @@ export const c69shu = () =>
       indexPages.push(doc);
       return indexPages;
     },
-    getAList: (doc) => doc.querySelectorAll("#catalog ul a"),
+    getAList: (doc) => Array.from(doc.querySelectorAll("#catalog ul a")).reverse() as unknown as NodeListOf<Element>,
     getAName: (aElem) => (aElem as HTMLElement).innerText.trim(),
     getContent: (doc) => doc.querySelector(".txtnav"),
     contentPatch: (content) => {
       rm(".hide720, .txtright, .bottom-ad", true, content);
       rm2([/^谷[\u4e00-\u9fa5]{0,1}$/gm], content);
+
+      // Replace text nodes between <p> nodes with <p> nodes
+      const walker = document.createTreeWalker(content, NodeFilter.SHOW_TEXT, null);
+      const nodesToReplace: Node[] = [];
+
+      while (walker.nextNode()) {
+        const node = walker.currentNode;
+        if (
+          node.parentNode &&
+          node.parentNode.nodeName !== 'P' &&
+          node.textContent &&
+          node.textContent.trim() !== ''
+        ) {
+          nodesToReplace.push(node);
+        }
+      }
+
+      nodesToReplace.forEach((node) => {
+        const p = document.createElement('p');
+        p.textContent = node.textContent;
+        node.parentNode!.replaceChild(p, node);
+      });
       return content;
     },
     language: "zh",
