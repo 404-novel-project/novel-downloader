@@ -30,11 +30,11 @@ export const c69shu = () =>
     contentPatch: (content) => {
       rm(".hide720, .txtright, .bottom-ad", true, content);
       rm2([/^谷[\u4e00-\u9fa5]{0,1}$/gm], content);
-
+    
       // Replace text nodes between <p> nodes with <p> nodes
       const walker = document.createTreeWalker(content, NodeFilter.SHOW_TEXT, null);
-      const nodesToReplace: Node[] = [];
-
+      const nodesToReplace = [];
+    
       while (walker.nextNode()) {
         const node = walker.currentNode;
         if (
@@ -46,13 +46,37 @@ export const c69shu = () =>
           nodesToReplace.push(node);
         }
       }
-
+    
       nodesToReplace.forEach((node) => {
         const p = document.createElement('p');
         p.textContent = node.textContent;
-        node.parentNode!.replaceChild(p, node);
+        if (node.parentNode) {
+          node.parentNode.replaceChild(p, node);
+        }
       });
+    
+      // Split <p> elements containing <br /> tags
+      const paragraphs = content.querySelectorAll('p');
+      const brRegex = /<br\s*\/?>/i;
+      
+      paragraphs.forEach((p) => {
+        if (brRegex.test(p.innerHTML)) {
+          const parts = p.innerHTML.split(brRegex);
+          const fragment = document.createDocumentFragment();
+          parts.forEach((part) => {
+            const newP = document.createElement('p');
+            newP.innerHTML = part.trim();
+            if (newP.innerHTML !== '') {
+              fragment.appendChild(newP);
+            }
+          });
+          if (p.parentNode) {
+            p.parentNode.replaceChild(fragment, p);
+          }
+        }
+      });
+    
       return content;
     },
-    language: "zh",
+    language: "zh"
   });
