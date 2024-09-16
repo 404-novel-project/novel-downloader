@@ -15,6 +15,7 @@ export class Gongzicp extends BaseRuleClass {
     super();
     this.attachmentMode = "TM";
     this.concurrencyLimit = 1;
+    this.maxRunLimit = 1;
   }
 
   public async bookParse() {
@@ -341,7 +342,6 @@ export class Gongzicp extends BaseRuleClass {
       } else if (chapterObj.type === "item") {
         const chapterUrl = [
           document.location.origin,
-          "v4",
           `read-${chapterObj.id}.html`,
         ].join("/");
         const chapterNumber = parseInt(chapterObj.order);
@@ -535,11 +535,11 @@ export class Gongzicp extends BaseRuleClass {
           headers: {
             Accept: "application/json, text/plain, */*",
             Client: "pc",
-            "Content-Type": "application/json;charset=utf-8",
+            "Content-Type": "application/json",
           },
           referrer: chapterUrl,
           method: "GET",
-          mode: "cors",
+          //mode: "cors",
         })
           .then((resp) => resp.json())
           .catch((error) => log.error(error));
@@ -555,8 +555,8 @@ export class Gongzicp extends BaseRuleClass {
           }
 
           log.warn("[chapter]疑似被阻断，进行随机翻页……");
-          const ci = Math.round(Math.random() * retryTime) + 1;
-          for (let i = 0; i < ci; i++) {
+          const walkerTime = Math.round(Math.random() * retryTime) + 1;
+          for (let i = 0; i < walkerTime; i++) {
             await sleep(3000 + Math.round(Math.random() * 5000));
             randomWalker();
           }
@@ -672,7 +672,7 @@ export class Gongzicp extends BaseRuleClass {
     async function antiAntiCrawler() {
       // 随机游走，对抗阿里云验证码
       // https://help.aliyun.com/document_detail/122071.html
-      if (Math.random() < 0.15) {
+      if (Math.random() < 0.2) {
         randomWalker();
       }
       // 随机休眠3-7秒，反反爬
