@@ -1012,7 +1012,7 @@ export class Jjwxc extends BaseRuleClass {
               //   accept: "application/json",
               referer: "http://android.jjwxc.net?v=349",
               //    not_tip: "updateTime",
-              "user-agent": "Mobile",
+              "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36",
               //  "accept-encoding": "gzip",
             },
             method: "GET",
