@@ -110,7 +110,7 @@ export const syosetu = () => {
     getContent: (dom) => {
       const content = document.createElement("div");
       const novelP = dom.querySelector(".p-novel__text--preface");
-      const novelHonbun = dom.querySelector(".p-novel__text");
+      const novelHonbun = dom.querySelector(".p-novel__text:not(.p-novel__text--preface):not(.p-novel__text--afterword)");
       const novelA = dom.querySelector(".p-novel__text--afterword");
       if (novelP) {
         content.appendChild(novelP);
