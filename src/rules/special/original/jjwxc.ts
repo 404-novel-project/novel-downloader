@@ -183,6 +183,8 @@ export class Jjwxc extends BaseRuleClass {
                 options: {},
               });
               const isLogin = () => {
+                if (typeof (unsafeWindow as UnsafeWindow).tokenOptions === "object")
+                  return true;
                 return !document.getElementById("jj_login");
               };
               if (isVIP() && !isLogin()) {
@@ -209,6 +211,8 @@ export class Jjwxc extends BaseRuleClass {
               options: {},
             });
             const isLogin = () => {
+              if (typeof (unsafeWindow as UnsafeWindow).tokenOptions === "object")
+                return true;
               return !document.getElementById("jj_login");
             };
             if (isVIP() && !isLogin()) {
