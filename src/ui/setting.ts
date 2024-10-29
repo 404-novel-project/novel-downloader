@@ -6,7 +6,7 @@ import { log } from "../log";
 import { Status } from "../main/main";
 import { Chapter } from "../main/Chapter";
 import { SaveOptions as globalSaveOptions } from "../save/options";
-import { enableDebug } from "../setting";
+import { enableDebug, skipTxtDownload } from "../setting";
 import FilterTab, {
   FilterSetting as filterSettingGlobal,
   getFilterFunction,
@@ -17,6 +17,9 @@ import settingCss from "./setting.less";
 import TestUI from "./TestUI";
 import { createEl, createStyle } from "../lib/dom";
 
+declare const GM_setValue: (key: string, value: any) => void;
+declare const GM_getValue: (key: string, defaultValue?: any) => any;
+
 export const style = createStyle(settingCss);
 export const el = createEl(`<div id="setting"></div>`);
 export const vm = createApp({
@@ -25,6 +28,7 @@ export const vm = createApp({
   setup() {
     interface Setting {
       enableDebug?: boolean;
+      skipTxtDownload?: boolean;
       enableTestPage?: boolean;
       chooseSaveOption?: string;
       filterSetting?: filterSettingGlobal;
@@ -95,10 +99,15 @@ export const vm = createApp({
         },
       },
     ];
-    setting.enableDebug = enableDebug.value;
-    setting.chooseSaveOption = "null";
-    setting.enableTestPage = false;
-    setting.currentTab = "tab-1";
+
+    // Initialize all settings from stored values
+    setting.enableDebug = GM_getValue('enableDebug', enableDebug.value);
+    setting.skipTxtDownload = GM_getValue('skipTxtDownload', skipTxtDownload.value);
+    setting.enableTestPage = GM_getValue('enableTestPage', false);
+    setting.chooseSaveOption = GM_getValue('chooseSaveOption', 'null');
+    setting.filterSetting = GM_getValue('filterSetting', undefined);
+    setting.currentTab = GM_getValue('currentTab', 'tab-1');
+
     const curSaveOption = () => {
       const _s = saveOptions.find((s) => s.key === setting.chooseSaveOption);
       if (_s) {
@@ -109,6 +118,7 @@ export const vm = createApp({
     };
     const saveFilter = (filterSetting: filterSettingGlobal) => {
       setting.filterSetting = deepcopy(filterSetting);
+      GM_setValue('filterSetting', setting.filterSetting);
     };
     const getFilterSetting = () => {
       if (setting.filterSetting) {
@@ -121,8 +131,10 @@ export const vm = createApp({
 
     const setConfig = (config: Setting) => {
       setEnableDebug();
+      setSkipTxtDownload();
       setCustomSaveOption();
       setCustomFilter();
+      saveAllSettings();
 
       function setEnableDebug() {
         if (typeof config.enableDebug === "boolean") {
@@ -132,6 +144,13 @@ export const vm = createApp({
             debug();
           }
           log.info(`[Init]enableDebug: ${enableDebug.value}`);
+        }
+      }
+
+      function setSkipTxtDownload() {
+        if (typeof config.skipTxtDownload === "boolean") {
+          skipTxtDownload.value = config.skipTxtDownload;
+          log.info(`[Init]skipTxtDownload: ${skipTxtDownload.value}`);
         }
       }
 
@@ -160,6 +179,15 @@ export const vm = createApp({
             }
           }
         }
+      }
+
+      function saveAllSettings() {
+        GM_setValue('enableDebug', config.enableDebug);
+        GM_setValue('skipTxtDownload', config.skipTxtDownload);
+        GM_setValue('enableTestPage', config.enableTestPage);
+        GM_setValue('chooseSaveOption', config.chooseSaveOption);
+        GM_setValue('filterSetting', config.filterSetting);
+        GM_setValue('currentTab', config.currentTab);
       }
     };
 

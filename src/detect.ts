@@ -3,7 +3,7 @@
 import { GmWindow } from "./global";
 import { _GM_info } from "./lib/GM";
 import { storageAvailable } from "./lib/localStorageExpired";
-import { enableDebug } from "./setting";
+import { enableDebug, skipTxtDownload } from "./setting";
 import { fetchWithRetry, fetchWithTimeout } from "./lib/http";
 
 function checkObjct(name: string) {
@@ -84,6 +84,7 @@ export const environments = async () => {
     Cookie: navigator.cookieEnabled,
     doNotTrack: navigator.doNotTrack ?? 0,
     enableDebug: enableDebug.value,
+    skipTxtDownload: skipTxtDownload.value,
     ScriptHandler: _GM_info.scriptHandler,
     "ScriptHandler version": _GM_info.version,
     "Novel-downloader version": _GM_info.script.version,

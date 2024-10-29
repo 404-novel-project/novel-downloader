@@ -43,6 +43,8 @@
           <div>
             <input id="debug" v-model="setting.enableDebug" type="checkbox" />
             <label for="debug">启用调试模式。（输出更详细日志）</label>
+            <input id="skip-txt" v-model="setting.skipTxtDownload" type="checkbox" />
+            <label for="skip-txt">不下载Txt文件（仅下载Epub）</label>
             <input
               id="test-page"
               v-model="setting.enableTestPage"
