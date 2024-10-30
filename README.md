@@ -10,6 +10,7 @@
 - 允许跳过txt下载
 - 支持了新飘天文学网（piaotia）
 - 支持了xbookcn
+- 支持负的concurrency limit（如-1000为每两个章节间间隔1000ms，以对抗反爬虫）
 
 修复的网站包括：
 - Syosetu

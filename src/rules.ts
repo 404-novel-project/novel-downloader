@@ -247,7 +247,7 @@ export abstract class BaseRuleClass {
     }
     (progress as ProgressVM).totalChapterNumber = chapters.length;
 
-    if (self.concurrencyLimit === 1) {
+    if (self.concurrencyLimit <= 1) {
       for (const chapter of chapters) {
         if ((window as GmWindow).failedCount > 10) {
           if (!(window as GmWindow).stopFlag.aborted) {
@@ -265,6 +265,9 @@ export abstract class BaseRuleClass {
           throw new ExpectError("[chapter]收到停止信号，停止继续下载。");
         }
         try {
+          if (this.concurrencyLimit < 0) { // Add delay for each chapter
+            await sleep(-this.concurrencyLimit);
+          }
           let chapterObj = await chapter.init();
           chapterObj = await postChapterParseHook(chapterObj, saveBookObj);
         } catch (error) {
@@ -298,10 +301,17 @@ export abstract class BaseRuleClass {
           log.trace(error);
         }
       };
-      await concurrencyRun(chapters, self.concurrencyLimit, asyncHandle, {
-        signal: (window as GmWindow).stopFlag,
-        reason: "[chapter]收到停止信号，停止继续下载。",
-      });
+      if (self.concurrencyLimit < 0) {
+        await concurrencyRun(chapters, 1, asyncHandle, {
+          signal: (window as GmWindow).stopFlag,
+          reason: "[chapter]收到停止信号，停止继续下载。",
+        });
+      } else {
+        await concurrencyRun(chapters, self.concurrencyLimit, asyncHandle, {
+          signal: (window as GmWindow).stopFlag,
+          reason: "[chapter]收到停止信号，停止继续下载。",
+        });
+      }
     }
     log.info(`[initChapters]章节初始化完毕`);
     return chapters;
