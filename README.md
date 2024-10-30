@@ -2,6 +2,23 @@
 
 一个**可扩展的**通用型小说下载器。
 
+# 关于本Fork
+
+本fork脚本下载：[bundle.user.js](https://github.com/ShenSheiBot/novel-downloader/raw/refs/heads/master/dist/bundle.user.js)
+
+原作者已不再维护此仓库，此fork将继续维护，新增的功能包括：
+- 允许跳过txt下载
+- 支持了新飘天文学网（piaotia）
+- 支持了xbookcn
+
+修复的网站包括：
+- Syosetu
+- 69书吧
+- Kakuyomu
+
+如有需要修复/支持的网站，请在issue中提出。作者将在空闲时间内进行修复。
+
+
 ## 关于 404 小说文库项目
 
 在这个 404 时代，由于种种原因，起点、晋江、刺猬猫、SF 等小说网站上的小说经常毫无征兆的消失。即使该小说已经入 V，即使你已经订阅了该小说。
