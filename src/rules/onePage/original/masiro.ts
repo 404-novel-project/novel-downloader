@@ -52,5 +52,6 @@ export const masiro = () =>
     getContent: (dom) => dom.querySelector("div.box-body.nvl-content"),
     contentPatch: (dom) => dom,
     concurrencyLimit: 1,
+    sleepTime: 500,
     needLogin: true,
   });

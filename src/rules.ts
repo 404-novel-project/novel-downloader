@@ -39,7 +39,8 @@ export interface ChapterParseObject {
 export abstract class BaseRuleClass {
   public attachmentMode: "naive" | "TM" = "TM";
   public charset: string = document.characterSet;
-  public concurrencyLimit = 10;
+  public concurrencyLimit = 10; // 并发下载数量
+  public sleepTime = 50; // 当并发数量为1，每章节下载的间隔时间基数（毫秒）
   public streamZip = false;
   public needLogin = false;
   public nsfw = false;
@@ -267,7 +268,7 @@ export abstract class BaseRuleClass {
         }
         try {
           chapteri++;
-          await sleep(chapteri * 100 +Math.round(Math.random() * 1000));
+          await sleep(chapteri * self.sleepTime +Math.round(Math.random() * 2000));
           let chapterObj = await chapter.init();
           chapterObj = await postChapterParseHook(chapterObj, saveBookObj);
         } catch (error) {
