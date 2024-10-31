@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.931
+// @version        5.2.943
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -11322,6 +11322,7 @@ class BaseRuleClass {
         }
         progress.vm.totalChapterNumber = chapters.length;
         if (self.concurrencyLimit === 1) {
+            let chapteri = -1;
             for (const chapter of chapters) {
                 if (window.failedCount > 10) {
                     if (!window.stopFlag.aborted) {
@@ -11335,6 +11336,8 @@ class BaseRuleClass {
                     throw new main/* ExpectError */.K5("[chapter]收到停止信号，停止继续下载。");
                 }
                 try {
+                    chapteri++;
+                    await (0,misc/* sleep */.yy)(chapteri * 100 + Math.round(Math.random() * 1000));
                     let chapterObj = await chapter.init();
                     chapterObj = await postChapterParseHook(chapterObj, saveBookObj);
                 }
@@ -15322,10 +15325,11 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
         super();
         this.attachmentMode = "TM";
         this.concurrencyLimit = 1;
+        this.maxRunLimit = 1;
     }
     async bookParse() {
         const bookUrl = document.location.href;
-        const bookId = document.querySelector("span.id").innerText.replace("CP", "");
+        const bookId = document.querySelector("span.c-light-gray").innerText.replace("CP", "");
         if (!bookId) {
             throw new Error("获取bookID出错");
         }
@@ -15397,7 +15401,6 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
             else if (chapterObj.type === "item") {
                 const chapterUrl = [
                     document.location.origin,
-                    "v4",
                     `read-${chapterObj.id}.html`,
                 ].join("/");
                 const chapterNumber = parseInt(chapterObj.order);
@@ -15513,11 +15516,10 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
                     headers: {
                         Accept: "application/json, text/plain, */*",
                         Client: "pc",
-                        "Content-Type": "application/json;charset=utf-8",
+                        "Content-Type": "application/json",
                     },
                     referrer: chapterUrl,
                     method: "GET",
-                    mode: "cors",
                 })
                     .then((resp) => resp.json())
                     .catch((error) => _log__WEBPACK_IMPORTED_MODULE_2___default().error(error));
@@ -15529,8 +15531,8 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
                         throw new Error(`请求 ${url} 失败`);
                     }
                     _log__WEBPACK_IMPORTED_MODULE_2___default().warn("[chapter]疑似被阻断，进行随机翻页……");
-                    const ci = Math.round(Math.random() * retryTime) + 1;
-                    for (let i = 0; i < ci; i++) {
+                    const walkerTime = Math.round(Math.random() * retryTime) + 1;
+                    for (let i = 0; i < walkerTime; i++) {
                         await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_9__/* .sleep */ .yy)(3000 + Math.round(Math.random() * 5000));
                         randomWalker();
                     }
@@ -15633,7 +15635,7 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
             };
         }
         async function antiAntiCrawler() {
-            if (Math.random() < 0.15) {
+            if (Math.random() < 0.2) {
                 randomWalker();
             }
             await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_9__/* .sleep */ .yy)(3000 + Math.round(Math.random() * 4000));
@@ -28329,6 +28331,8 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
                                 options: {},
                             });
                             const isLogin = () => {
+                                if (typeof unsafeWindow.tokenOptions === "object")
+                                    return true;
                                 return !document.getElementById("jj_login");
                             };
                             if (isVIP() && !isLogin()) {
@@ -28356,6 +28360,8 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
                             options: {},
                         });
                         const isLogin = () => {
+                            if (typeof unsafeWindow.tokenOptions === "object")
+                                return true;
                             return !document.getElementById("jj_login");
                         };
                         if (isVIP() && !isLogin()) {
@@ -28868,26 +28874,25 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
             };
         }
         let retryTime = 0;
+        function extractKeys(responseHeader) {
+            const accessKeyMatch = responseHeader.match(/accesskey:([^\r\n]+)/);
+            const keyStringMatch = responseHeader.match(/keystring:([^\r\n]+)/);
+            const accessKey = accessKeyMatch ? accessKeyMatch[1].trim() : "accesskey";
+            const keyString = keyStringMatch ? keyStringMatch[1].trim() : "keystring";
+            return { accessKey, keyString };
+        }
         function decodeVIPResopnce(responseHeader, responseText) {
             let v43, v38, dest;
-            let accesskey = "accesskey", keyString = "keystring";
-            const arr = responseHeader.trim().split(/[\r\n]+/);
-            const headerMap = { "accesskey": "0", "keystring": "0" };
-            arr.forEach((line) => {
-                const parts = line.split(": ");
-                const header = parts.shift();
-                const value = parts.join(": ");
-                if (header == "accesskey")
-                    accesskey = value;
-                else if (header == "keystring")
-                    keyString = value;
-            });
+            let accessKey = "accesskey", keyString = "keystring";
+            const keys = extractKeys(responseHeader);
+            accessKey = keys.accessKey;
+            keyString = keys.keyString;
             const content = String(responseText);
-            const accesskeyLen = accesskey.length;
+            const accesskeyLen = accessKey.length;
             let v9 = 0;
-            const v6 = String(accesskey[accesskeyLen - 1]).charCodeAt(0);
+            const v6 = String(accessKey[accesskeyLen - 1]).charCodeAt(0);
             for (let i = 0; i < accesskeyLen; i++) {
-                v9 += accesskey[i].charCodeAt(0);
+                v9 += accessKey[i].charCodeAt(0);
             }
             const v15 = v9 % keyString.length;
             const v17 = v9 / 65;
@@ -28921,6 +28926,7 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
                 result = decrypted.toString(external_CryptoJS_.enc.Utf8);
             }
             catch (e) {
+                loglevel_default().debug(`decodeVIPResopnce error, 即VIP章节解密失败：${e}`);
                 result = '{"message":"try again!"}';
             }
             return result;
@@ -28963,17 +28969,17 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
             }
             async function getChapterInfo(url) {
                 loglevel_default().debug(`请求地址: ${url}, Referrer: ${chapterUrl}, 重试次数: ${retryTime}`);
+                const user_agent = "Mobile " + Date.now();
                 return new Promise((resolve) => {
                     (0,GM/* _GM_xmlhttpRequest */.nV)({
                         url: url,
                         headers: {
                             referer: "http://android.jjwxc.net?v=349",
-                            "user-agent": "Mobile",
+                            "user-agent": user_agent,
                         },
                         method: "GET",
                         onload: function (response) {
                             if (response.status === 200) {
-                                retryTime = 0;
                                 if (isVIP) {
                                     let decodeResponseText = String(response.responseText);
                                     let resultI = JSON.parse('{"message":"try again!"}');
@@ -28981,7 +28987,7 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
                                         resultI = JSON.parse(decodeResponseText);
                                     }
                                     catch (e) {
-                                        decodeResponseText = decodeVIPResopnce(response.responseHeaders, String(response.responseText));
+                                        decodeResponseText = decodeVIPResopnce(response.responseHeaders, decodeResponseText);
                                     }
                                     try {
                                         resultI = JSON.parse(decodeResponseText);
@@ -28998,6 +29004,7 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
                                 }
                             }
                             else {
+                                loglevel_default().error(`response status = ${response.status}`);
                                 const resultI = JSON.parse('{"message":"try again!"}');
                                 resolve(resultI);
                             }
