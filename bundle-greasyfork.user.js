@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.917
+// @version        5.2.921
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -116,6 +116,7 @@
 // @match          *://www.mht99.com/*/
 // @match          *://www.banzhuer.org/*_*/
 // @match          *://www.xbiquge.tw/book/*/
+// @match          *://www.xsbiquge.la/book/*/
 // @match          *://www.007zw.com/shuzhai/*/
 // @match          *://www.linovelib.com/novel/*/catalog
 // @match          *://www.linovelib.com/novel/*.html
@@ -36620,6 +36621,7 @@ async function getRule() {
             ruleClass = mht();
             break;
         }
+        case "www.xsbiquge.la":
         case "www.xbiquge.tw": {
             const { xbiquge } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
             ruleClass = xbiquge();
@@ -37059,6 +37061,7 @@ function getUI() {
         case "www.wanben.info":
         case "www.mht99.com":
         case "www.xbiquge.tw":
+        case "www.xsbiquge.la":
         case "www.luoqiuzw.com":
         case "dijiuben.com":
         case "www.biquzw.la":
