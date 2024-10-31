@@ -15,6 +15,8 @@ export declare abstract class BaseRuleClass {
     attachmentMode: "naive" | "TM";
     charset: string;
     concurrencyLimit: number;
+    sleepTime: number;
+    maxSleepTime: number;
     streamZip: boolean;
     needLogin: boolean;
     nsfw: boolean;

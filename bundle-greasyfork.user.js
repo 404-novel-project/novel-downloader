@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.953
+// @version        5.2.954
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -11162,6 +11162,8 @@ class BaseRuleClass {
     attachmentMode = "TM";
     charset = document.characterSet;
     concurrencyLimit = 10;
+    sleepTime = 50;
+    maxSleepTime = 2000;
     streamZip = false;
     needLogin = false;
     nsfw = false;
@@ -11337,7 +11339,7 @@ class BaseRuleClass {
                 }
                 try {
                     chapteri++;
-                    await (0,misc/* sleep */.yy)(chapteri * 100 + Math.round(Math.random() * 1000));
+                    await (0,misc/* sleep */.yy)(Math.min(self.maxSleepTime, chapteri * self.sleepTime) + Math.round(Math.random() * 2000));
                     let chapterObj = await chapter.init();
                     chapterObj = await postChapterParseHook(chapterObj, saveBookObj);
                 }
@@ -12848,7 +12850,7 @@ const masiro = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */
         additionalMetadate.tags = Array.from(document.querySelectorAll("div.n-detail > div.tags a")).map((a) => a.innerText);
         return additionalMetadate;
     },
-    aList: document.querySelectorAll("a.to-read"),
+    aList: document.querySelectorAll(".chapter-ul ul.episode-ul > a"),
     getAName: (aElem) => aElem.querySelector('span[style^="overflow: hidden;"]').innerText.trim(),
     getIsVIP: (aElem) => {
         let isVIP = false;
@@ -12869,7 +12871,9 @@ const masiro = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */
     getSName: (dom) => dom.innerText.trim(),
     getContent: (dom) => dom.querySelector("div.box-body.nvl-content"),
     contentPatch: (dom) => dom,
-    concurrencyLimit: 3,
+    concurrencyLimit: 1,
+    sleepTime: 100,
+    maxSleepTime: 3000,
     needLogin: true,
 });
 
@@ -13242,13 +13246,19 @@ const soxscc = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */
 
 
 
-function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, coverUrl, additionalMetadatePatch, aList, getAName, getIsVIP, sections, getSName, postHook, getContentFromUrl, getContent, contentPatch, concurrencyLimit, needLogin, nsfw, cleanDomOptions, overrideConstructor, language, }) {
+function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, coverUrl, additionalMetadatePatch, aList, getAName, getIsVIP, sections, getSName, postHook, getContentFromUrl, getContent, contentPatch, concurrencyLimit, sleepTime, maxSleepTime, needLogin, nsfw, cleanDomOptions, overrideConstructor, language, }) {
     return class extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
         constructor() {
             super();
             this.attachmentMode = "TM";
             if (concurrencyLimit) {
                 this.concurrencyLimit = concurrencyLimit;
+            }
+            if (sleepTime) {
+                this.sleepTime = sleepTime;
+            }
+            if (maxSleepTime) {
+                this.maxSleepTime = maxSleepTime;
             }
             if (needLogin) {
                 this.needLogin = needLogin;
