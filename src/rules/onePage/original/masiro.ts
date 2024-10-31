@@ -26,7 +26,7 @@ export const masiro = () =>
       ).map((a) => (a as HTMLAnchorElement).innerText);
       return additionalMetadate;
     },
-    aList: document.querySelectorAll("a.to-read"),
+    aList: document.querySelectorAll(".chapter-ul ul.episode-ul > a"),
     getAName: (aElem) =>
       (
         aElem.querySelector('span[style^="overflow: hidden;"]') as HTMLElement
@@ -51,6 +51,6 @@ export const masiro = () =>
     getSName: (dom) => (dom as HTMLElement).innerText.trim(),
     getContent: (dom) => dom.querySelector("div.box-body.nvl-content"),
     contentPatch: (dom) => dom,
-    concurrencyLimit: 3,
+    concurrencyLimit: 1,
     needLogin: true,
   });
