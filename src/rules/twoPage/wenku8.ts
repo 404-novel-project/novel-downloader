@@ -39,5 +39,6 @@ export const wenku8 = () => {
       rm("#contentdp", true, content);
       return content;
     },
+    concurrencyLimit: 1,
   });
 };
