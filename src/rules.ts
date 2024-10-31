@@ -41,6 +41,7 @@ export abstract class BaseRuleClass {
   public charset: string = document.characterSet;
   public concurrencyLimit = 10; // 并发下载数量
   public sleepTime = 50; // 当并发数量为1，每章节下载的间隔时间基数（毫秒）
+  public maxSleepTime = 4000; // 当并发数量为1，每章节下载的间隔时间最大值（毫秒）
   public streamZip = false;
   public needLogin = false;
   public nsfw = false;
@@ -268,7 +269,7 @@ export abstract class BaseRuleClass {
         }
         try {
           chapteri++;
-          await sleep(chapteri * self.sleepTime +Math.round(Math.random() * 2000));
+          await sleep(Math.min(self.maxSleepTime, chapteri * self.sleepTime) +Math.round(Math.random() * 2000));
           let chapterObj = await chapter.init();
           chapterObj = await postChapterParseHook(chapterObj, saveBookObj);
         } catch (error) {
