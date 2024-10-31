@@ -163,7 +163,7 @@ export class Xrzww extends BaseRuleClass {
     charset: string,
     options: chapterOptions
   ): Promise<ChapterParseObject> {
-	  // https://pre-api.xrzww.com/api/readNovelByWeb?nid=103835&vid=132350&chapter_id=1991496&chapter_order=70&showpic=false
+	// https://pre-api.xrzww.com/api/readNovelByWeb?nid=103835&vid=132350&chapter_id=1991496&chapter_order=70&showpic=false
     const readNewUrl = new URL(`${options.apiBase}/api/readNovelByWeb`);
     readNewUrl.searchParams.set("nid", options.nid.toString());
     readNewUrl.searchParams.set("vid", options.vid.toString());
