@@ -248,6 +248,7 @@ export abstract class BaseRuleClass {
     (progress as ProgressVM).totalChapterNumber = chapters.length;
 
     if (self.concurrencyLimit === 1) {
+      let chapteri = -1;
       for (const chapter of chapters) {
         if ((window as GmWindow).failedCount > 10) {
           if (!(window as GmWindow).stopFlag.aborted) {
@@ -265,6 +266,8 @@ export abstract class BaseRuleClass {
           throw new ExpectError("[chapter]收到停止信号，停止继续下载。");
         }
         try {
+          chapteri++;
+          await sleep(chapteri * 100 +Math.round(Math.random() * 1000));
           let chapterObj = await chapter.init();
           chapterObj = await postChapterParseHook(chapterObj, saveBookObj);
         } catch (error) {

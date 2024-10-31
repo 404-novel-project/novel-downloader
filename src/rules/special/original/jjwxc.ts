@@ -183,6 +183,8 @@ export class Jjwxc extends BaseRuleClass {
                 options: {},
               });
               const isLogin = () => {
+                if (typeof (unsafeWindow as UnsafeWindow).tokenOptions === "object")
+                  return true;
                 return !document.getElementById("jj_login");
               };
               if (isVIP() && !isLogin()) {
@@ -209,6 +211,8 @@ export class Jjwxc extends BaseRuleClass {
               options: {},
             });
             const isLogin = () => {
+              if (typeof (unsafeWindow as UnsafeWindow).tokenOptions === "object")
+                return true;
               return !document.getElementById("jj_login");
             };
             if (isVIP() && !isLogin()) {
@@ -887,26 +891,29 @@ export class Jjwxc extends BaseRuleClass {
       message: string; //"[本章节已锁定]"
     }
     let retryTime = 0;
+    function extractKeys(responseHeader: string) {
+      const accessKeyMatch = responseHeader.match(/accesskey:([^\r\n]+)/);
+      const keyStringMatch = responseHeader.match(/keystring:([^\r\n]+)/);
+
+      const accessKey = accessKeyMatch ? accessKeyMatch[1].trim() : "accesskey";
+      const keyString = keyStringMatch ? keyStringMatch[1].trim() : "keystring";
+
+      return { accessKey, keyString };
+    }
     function decodeVIPResopnce(responseHeader: string, responseText: string) {
       let v43, v38, dest;
-      let accesskey = "accesskey", keyString = "keystring";
-      const arr = responseHeader.trim().split(/[\r\n]+/);
-      const headerMap = { "accesskey": "0", "keystring": "0" };
-      arr.forEach((line) => {
-        const parts = line.split(": ");
-        const header = parts.shift();
-        const value = parts.join(": ");
-        if (header == "accesskey")
-          accesskey = value;
-        else if (header == "keystring")
-          keyString = value;
-      });
+      let accessKey = "accesskey", keyString = "keystring";
+      const keys = extractKeys(responseHeader);
+      accessKey = keys.accessKey;
+      keyString = keys.keyString;
+      // log.debug(`responseHeader: ${responseHeader}`);
+      // log.debug(`decodeVIPResopnce accesskey: ${accessKey}, keyString: ${keyString}`);
       const content = String(responseText);
-      const accesskeyLen = accesskey.length;
+      const accesskeyLen = accessKey.length;
       let v9 = 0;
-      const v6 = String(accesskey[accesskeyLen - 1]).charCodeAt(0);
+      const v6 = String(accessKey[accesskeyLen - 1]).charCodeAt(0);
       for (let i = 0; i < accesskeyLen; i++) {
-        v9 += accesskey[i].charCodeAt(0);
+        v9 += accessKey[i].charCodeAt(0);
       }
       const v15 = v9 % keyString.length;
       const v17 = v9 / 65;
@@ -937,7 +944,7 @@ export class Jjwxc extends BaseRuleClass {
         });
         result = decrypted.toString(CryptoJS.enc.Utf8);
       } catch (e) {
-        //      log.debug(`请求content：${content}`);
+        log.debug(`decodeVIPResopnce error, 即VIP章节解密失败：${e}`);
         result = '{"message":"try again!"}';
       }
       return result;
@@ -1005,6 +1012,7 @@ export class Jjwxc extends BaseRuleClass {
         log.debug(
           `请求地址: ${url}, Referrer: ${chapterUrl}, 重试次数: ${retryTime}`
         );
+        const user_agent = "Mobile "+Date.now();
         return new Promise((resolve) => {
           _GM_xmlhttpRequest({
             url: url,
@@ -1012,20 +1020,19 @@ export class Jjwxc extends BaseRuleClass {
               //   accept: "application/json",
               referer: "http://android.jjwxc.net?v=349",
               //    not_tip: "updateTime",
-              "user-agent": "Mobile",
+              "user-agent": user_agent,
               //  "accept-encoding": "gzip",
             },
             method: "GET",
             onload: function (response) {
               if (response.status === 200) {
-                retryTime = 0;
                 if (isVIP) {
                   let decodeResponseText = String(response.responseText);
                   let resultI = JSON.parse('{"message":"try again!"}');
                   try {
                     resultI = JSON.parse(decodeResponseText);
                   } catch (e) {
-                    decodeResponseText = decodeVIPResopnce(response.responseHeaders, String(response.responseText));
+                    decodeResponseText = decodeVIPResopnce(response.responseHeaders, decodeResponseText);
                   }
                   try {
                     resultI = JSON.parse(decodeResponseText);
@@ -1041,6 +1048,7 @@ export class Jjwxc extends BaseRuleClass {
                   resolve(resultI);
                 }
               } else {
+                log.error(`response status = ${response.status}`);
                 const resultI: ChapterInfo = JSON.parse(
                   '{"message":"try again!"}'
                 );

@@ -47,7 +47,7 @@
     "pretty-quick": "^4.0.0",
     "simple-git": "^3.22.0",
     "ts-loader": "^9.5.1",
-    "ts-node": "^10.9.2",
+    "tsx": "^4.19.2",
     "typescript": "^5.3.3",
     "webpack": "^5.90.3",
     "webpack-cli": "^5.1.4",

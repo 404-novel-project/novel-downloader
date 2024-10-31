@@ -27,7 +27,7 @@ jobs:
         uses: 404-novel-project/novel-downloader-action@v1
 
       - name: Run 🔧
-        run: node --experimental-specifier-resolution=node --loader ts-node/esm test/sites.ts
+        run: node --import tsx ./test/sites.ts
 
       - name: Upload Artifact 🚀
         uses: actions/upload-artifact@v3
