@@ -64,7 +64,7 @@ body:
     id: Actual_behavior
     attributes:
       label: 实际的行为
-      description: 实际发生了什么，请在此附上调试日志。
+      description: 实际发生了什么，请在此附上日志。(请上传文件)
     validations:
       required: true
 
