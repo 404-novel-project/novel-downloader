@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.943
+// @version        5.2.953
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -9732,7 +9732,7 @@ __webpack_require__.d(__webpack_exports__, {
   E: () => (/* binding */ Book)
 });
 
-;// CONCATENATED MODULE: ./src/lib/removeTrackParam.ts
+;// ./src/lib/removeTrackParam.ts
 const general = [
     "nx_source",
     "_zucks_suid",
@@ -9865,7 +9865,7 @@ function removeTrackParm(_url) {
 // EXTERNAL MODULE: ./node_modules/loglevel/lib/loglevel.js
 var loglevel = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 var loglevel_default = /*#__PURE__*/__webpack_require__.n(loglevel);
-;// CONCATENATED MODULE: ./src/main/Book.ts
+;// ./src/main/Book.ts
 
 
 class Book {
@@ -10123,12 +10123,12 @@ var sgc_toc = __webpack_require__("./src/save/sgc-toc.css");
 var web = __webpack_require__("./src/save/web.css");
 // EXTERNAL MODULE: ./src/lib/GM.ts
 var GM = __webpack_require__("./src/lib/GM.ts");
-;// CONCATENATED MODULE: external "fflate"
+;// external "fflate"
 const external_fflate_namespaceObject = fflate;
 // EXTERNAL MODULE: ./node_modules/streamsaver/StreamSaver.js
 var StreamSaver = __webpack_require__("./node_modules/streamsaver/StreamSaver.js");
 var StreamSaver_default = /*#__PURE__*/__webpack_require__.n(StreamSaver);
-;// CONCATENATED MODULE: ./src/lib/zip.ts
+;// ./src/lib/zip.ts
 
 
 
@@ -10238,7 +10238,7 @@ var save_main = __webpack_require__("./src/save/main.css");
 var toc = __webpack_require__("./src/save/toc.css");
 // EXTERNAL MODULE: ./src/lib/dom.ts
 var dom = __webpack_require__("./src/lib/dom.ts");
-;// CONCATENATED MODULE: ./src/save/options.ts
+;// ./src/save/options.ts
 
 
 
@@ -10334,24 +10334,24 @@ class Options extends Common {
 
 // EXTERNAL MODULE: ./src/save/misc.ts
 var save_misc = __webpack_require__("./src/save/misc.ts");
-;// CONCATENATED MODULE: ./src/save/chapter.html.j2
+;// ./src/save/chapter.html.j2
 // Module
 var code = "<!DOCTYPE html>\n<html>\n  <head>\n    <meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\n    <meta name=\"referrer\" content=\"same-origin\">\n    <meta name=\"generator\" content=\"https://github.com/404-novel-project/novel-downloader\">\n    <meta name=\"source\" content=\"{{ chapterUrl }}\">\n    <link href=\"style.css\" type=\"text/css\" rel=\"stylesheet\">\n    <title>{{ chapterName }}</title>\n  </head>\n  <body>\n    <div class=\"main\">\n      <h2>{{ chapterName }}</h2>\n      {{ outerHTML }}\n    </div>\n  <!-- <" + "script type=\"text/javascript\" src=\"web.js\"><" + "/script> -->\n  </body>\n</html>\n";
 // Exports
 /* harmony default export */ const chapter_html = (code);
-;// CONCATENATED MODULE: ./src/save/index.html.j2
+;// ./src/save/index.html.j2
 // Module
 var index_html_code = "<!DOCTYPE html>\n<html>\n  <head>\n    <meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\n    <meta name=\"referrer\" content=\"same-origin\">\n    <meta name=\"generator\" content=\"https://github.com/404-novel-project/novel-downloader\">\n    <meta name=\"date-creation\" content=\"{{ creationDate }}\">\n    <link href=\"style.css\" type=\"text/css\" rel=\"stylesheet\">\n    <link href=\"web.css\" type=\"text/css\" rel=\"stylesheet\">\n    <link href=\"toc.css\" type=\"text/css\" rel=\"stylesheet\">\n    <title>{{ bookname }}</title>\n  </head>\n  <body>\n    <div class=\"main\">\n      <h1>{{ bookname }}</h1>\n      <h3 class=\"author\">{{ author }}</h3>\n      <div class=\"info\">\n        {% if cover -%}\n        <img class=\"cover\" data-src-address=\"{{ cover.name }}\">\n        {%- endif %} \n        {% if introductionHTML -%}\n        <div>\n          <h3>简介</h3>\n          <div class=\"introduction\">{{ introductionHTML }}</div>\n        </div>\n        {%- endif %}\n      </div>\n      <div class=\"bookurl\">\n        <a href=\"{{ bookUrl }}\">打开原始网站</a>\n      </div>\n      <hr>\n      {% for sectionObj in sectionsObj -%}\n        <div id=\"section{{ sectionObj.sectionNumber }}\" class=\"section\">\n          {% if sectionObj.sectionName %}\n            <h2 class=\"section-label\">{{ sectionObj.sectionName }}</h2>\n          {% endif %}\n          {% for chapter in sectionObj.chpaters -%}\n          <div class=\"chapter\">\n              {% if not (chapter.contentHTML or chapter.status === Status.saved) -%}\n              <a class=\"disabled\" href=\"{{ chapter.chapterHtmlFileName }}\">{{ chapter.chapterName }}</a>\n              {%- else -%}\n              <a href=\"{{ chapter.chapterHtmlFileName }}\">{{ chapter.chapterName }}</a>\n              {%- endif %}\n          </div>\n          {%- endfor %}\n        </div>\n      {%- endfor %} \n    </div>\n  </body>\n</html>";
 // Exports
 /* harmony default export */ const index_html = (index_html_code);
-;// CONCATENATED MODULE: ./src/save/section.html.j2
+;// ./src/save/section.html.j2
 // Module
 var section_html_code = "<!DOCTYPE html>\n<html>\n  <head>\n    <meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\n    <meta name=\"referrer\" content=\"same-origin\">\n    <meta name=\"generator\" content=\"https://github.com/404-novel-project/novel-downloader\">\n    <link href=\"style.css\" type=\"text/css\" rel=\"stylesheet\">\n    <title>{{ sectionName }}</title>\n  </head>\n  <body>\n    <div class=\"main\"><h1>{{ sectionName }}</h1></div>\n  </body>\n</html>\n";
 // Exports
 /* harmony default export */ const section_html = (section_html_code);
-;// CONCATENATED MODULE: external "nunjucks"
+;// external "nunjucks"
 const external_nunjucks_namespaceObject = nunjucks;
-;// CONCATENATED MODULE: ./src/save/epub.ts
+;// ./src/save/epub.ts
 
 
 
@@ -10942,7 +10942,7 @@ class EPUB extends Options {
     }
 }
 
-;// CONCATENATED MODULE: ./src/save/txt.ts
+;// ./src/save/txt.ts
 
 
 
@@ -10986,7 +10986,7 @@ class TXT extends Options {
     }
 }
 
-;// CONCATENATED MODULE: ./src/save/raw.ts
+;// ./src/save/raw.ts
 
 
 class Raw {
@@ -11014,7 +11014,7 @@ class Raw {
     }
 }
 
-;// CONCATENATED MODULE: ./src/save/save.ts
+;// ./src/save/save.ts
 
 
 
@@ -11087,7 +11087,7 @@ class SaveBook {
     }
 }
 
-;// CONCATENATED MODULE: ./src/stat.ts
+;// ./src/stat.ts
 
 
 const statKeyName = "novel-downloader-22932304826849026";
@@ -11148,7 +11148,7 @@ const resetStat = () => {
 
 // EXTERNAL MODULE: ./src/ui/progress.ts + 1 modules
 var progress = __webpack_require__("./src/ui/progress.ts");
-;// CONCATENATED MODULE: ./src/rules.ts
+;// ./src/rules.ts
 
 
 
@@ -12376,7 +12376,7 @@ __webpack_require__.d(__webpack_exports__, {
 var template = __webpack_require__("./src/rules/onePage/template.ts");
 // EXTERNAL MODULE: ./src/lib/dom.ts
 var lib_dom = __webpack_require__("./src/lib/dom.ts");
-;// CONCATENATED MODULE: ./src/rules/lib/hongxiuzhao.ts
+;// ./src/rules/lib/hongxiuzhao.ts
 const table = {
     "\ue2a9": "\u5634",
     "\ue2ba": "\u4e0b",
@@ -12517,7 +12517,7 @@ const table = {
     "\ue2ac": "\u67de",
 };
 
-;// CONCATENATED MODULE: ./src/rules/onePage/hongxiuzhao.ts
+;// ./src/rules/onePage/hongxiuzhao.ts
 
 
 
@@ -16574,7 +16574,7 @@ var Book = __webpack_require__("./src/main/Book.ts");
 var rules = __webpack_require__("./src/rules.ts");
 // EXTERNAL MODULE: ./src/setting.ts
 var setting = __webpack_require__("./src/setting.ts");
-;// CONCATENATED MODULE: ./src/rules/lib/jjwxcFontDecode.ts
+;// ./src/rules/lib/jjwxcFontDecode.ts
 
 
 
@@ -16644,7 +16644,7 @@ async function fetchRemoteFont(fontName) {
 
 // EXTERNAL MODULE: ./src/lib/GM.ts
 var GM = __webpack_require__("./src/lib/GM.ts");
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/tokenizer/types.js
+;// ./node_modules/css-tree/lib/tokenizer/types.js
 // CSS Syntax Module Level 3
 // https://www.w3.org/TR/css-syntax-3/
 const EOF = 0;                 // <EOF-token>
@@ -16674,7 +16674,7 @@ const LeftCurlyBracket = 23;   // <{-token>
 const RightCurlyBracket = 24;  // <}-token>
 const Comment = 25;
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/tokenizer/char-code-definitions.js
+;// ./node_modules/css-tree/lib/tokenizer/char-code-definitions.js
 const char_code_definitions_EOF = 0;
 
 // https://drafts.csswg.org/css-syntax-3/
@@ -16883,7 +16883,7 @@ function charCodeCategory(code) {
     return code < 0x80 ? CATEGORY[code] : NameStartCategory;
 }
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/tokenizer/utils.js
+;// ./node_modules/css-tree/lib/tokenizer/utils.js
 
 
 function getCharCode(source, offset) {
@@ -17132,7 +17132,7 @@ function utils_decodeEscaped(escaped) {
     return String.fromCodePoint(code);
 }
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/tokenizer/names.js
+;// ./node_modules/css-tree/lib/tokenizer/names.js
 /* harmony default export */ const names = ([
     'EOF-token',
     'ident-token',
@@ -17161,7 +17161,7 @@ function utils_decodeEscaped(escaped) {
     '}-token'
 ]);
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/tokenizer/adopt-buffer.js
+;// ./node_modules/css-tree/lib/tokenizer/adopt-buffer.js
 const MIN_SIZE = 16 * 1024;
 
 function adoptBuffer(buffer = null, size) {
@@ -17172,7 +17172,7 @@ function adoptBuffer(buffer = null, size) {
     return buffer;
 };
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/tokenizer/OffsetToLocation.js
+;// ./node_modules/css-tree/lib/tokenizer/OffsetToLocation.js
 
 
 
@@ -17261,7 +17261,7 @@ class OffsetToLocation {
     }
 };
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/tokenizer/TokenStream.js
+;// ./node_modules/css-tree/lib/tokenizer/TokenStream.js
 
 
 
@@ -17523,7 +17523,7 @@ class TokenStream {
     }
 };
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/tokenizer/index.js
+;// ./node_modules/css-tree/lib/tokenizer/index.js
 
 
 
@@ -18018,7 +18018,7 @@ function tokenize(source, onToken) {
 
 
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/utils/List.js
+;// ./node_modules/css-tree/lib/utils/List.js
 //
 //                              list
 //                            ┌──────┐
@@ -18489,7 +18489,7 @@ class List_List {
     }
 }
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/utils/create-custom-error.js
+;// ./node_modules/css-tree/lib/utils/create-custom-error.js
 function createCustomError(name, message) {
     // use Object.create(), because some VMs prevent setting line/column otherwise
     // (iOS Safari 10 even throws an exception)
@@ -18505,7 +18505,7 @@ function createCustomError(name, message) {
     });
 };
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/parser/SyntaxError.js
+;// ./node_modules/css-tree/lib/parser/SyntaxError.js
 
 
 const MAX_LINE_LENGTH = 100;
@@ -18572,7 +18572,7 @@ function SyntaxError_SyntaxError(message, source, offset, line, column) {
     return error;
 }
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/parser/sequence.js
+;// ./node_modules/css-tree/lib/parser/sequence.js
 
 
 function readSequence(recognizer) {
@@ -18617,7 +18617,7 @@ function readSequence(recognizer) {
     return children;
 };
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/parser/create.js
+;// ./node_modules/css-tree/lib/parser/create.js
 
 
 
@@ -18948,7 +18948,7 @@ function createParser(config) {
 
 // EXTERNAL MODULE: ./node_modules/source-map-js/lib/source-map-generator.js
 var source_map_generator = __webpack_require__("./node_modules/source-map-js/lib/source-map-generator.js");
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/generator/sourceMap.js
+;// ./node_modules/css-tree/lib/generator/sourceMap.js
 
 
 const trackNodes = new Set(['Atrule', 'Selector', 'Declaration']);
@@ -19042,7 +19042,7 @@ function generateSourceMap(handlers) {
     return handlers;
 };
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/generator/token-before.js
+;// ./node_modules/css-tree/lib/generator/token-before.js
 
 
 const PLUSSIGN = 0x002B;    // U+002B PLUS SIGN (+)
@@ -19209,7 +19209,7 @@ function createMap(pairs) {
 const spec = createMap(specPairs);
 const safe = createMap(safePairs);
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/generator/create.js
+;// ./node_modules/css-tree/lib/generator/create.js
 
 
 
@@ -19309,7 +19309,7 @@ function createGenerator(config) {
     };
 };
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/convertor/create.js
+;// ./node_modules/css-tree/lib/convertor/create.js
 
 
 function createConvertor(walk) {
@@ -19339,7 +19339,7 @@ function createConvertor(walk) {
     };
 };
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/walker/create.js
+;// ./node_modules/css-tree/lib/walker/create.js
 const { hasOwnProperty: create_hasOwnProperty } = Object.prototype;
 const noop = function() {};
 
@@ -19628,7 +19628,7 @@ function createWalker(config) {
     return walk;
 };
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/definition-syntax/generate.js
+;// ./node_modules/css-tree/lib/definition-syntax/generate.js
 function generate_noop(value) {
     return value;
 }
@@ -19761,7 +19761,7 @@ function generate(node, options) {
     return internalGenerate(node, decorate, forceBraces, compact);
 };
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/lexer/error.js
+;// ./node_modules/css-tree/lib/lexer/error.js
 
 
 
@@ -19886,7 +19886,7 @@ const SyntaxMatchError = function(message, syntax, node, matchResult) {
     return error;
 };
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/utils/names.js
+;// ./node_modules/css-tree/lib/utils/names.js
 const keywords = new Map();
 const properties = new Map();
 const names_HYPHENMINUS = 45; // '-'.charCodeAt()
@@ -19994,7 +19994,7 @@ function getPropertyDescriptor(property) {
     return descriptor;
 }
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/lexer/generic-const.js
+;// ./node_modules/css-tree/lib/lexer/generic-const.js
 // https://drafts.csswg.org/css-cascade-5/
 const cssWideKeywords = [
     'initial',
@@ -20004,7 +20004,7 @@ const cssWideKeywords = [
     'revert-layer'
 ];
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/lexer/generic-an-plus-b.js
+;// ./node_modules/css-tree/lib/lexer/generic-an-plus-b.js
 
 
 const generic_an_plus_b_PLUSSIGN = 0x002B;    // U+002B PLUS SIGN (+)
@@ -20235,7 +20235,7 @@ function anPlusB(token, getNextToken) {
     return 0;
 };
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/lexer/generic-urange.js
+;// ./node_modules/css-tree/lib/lexer/generic-urange.js
 
 
 const generic_urange_PLUSSIGN = 0x002B;     // U+002B PLUS SIGN (+)
@@ -20381,7 +20381,7 @@ function urange(token, getNextToken) {
     return 0;
 };
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/lexer/generic.js
+;// ./node_modules/css-tree/lib/lexer/generic.js
 
 
 
@@ -20958,7 +20958,7 @@ function createGenericTypes(units) {
     };
 };
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/lexer/units.js
+;// ./node_modules/css-tree/lib/lexer/units.js
 const units_length = [
     // absolute length units https://www.w3.org/TR/css-values-3/#lengths
     'cm', 'mm', 'q', 'in', 'pt', 'pc', 'px',
@@ -20987,7 +20987,7 @@ const flex = ['fr'];                             // https://drafts.csswg.org/css
 const decibel = ['db'];                          // https://www.w3.org/TR/css3-speech/#mixing-props-voice-volume
 const semitones = ['st'];                        // https://www.w3.org/TR/css3-speech/#voice-props-voice-pitch
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/definition-syntax/SyntaxError.js
+;// ./node_modules/css-tree/lib/definition-syntax/SyntaxError.js
 
 
 function definition_syntax_SyntaxError_SyntaxError(message, input, offset) {
@@ -21001,7 +21001,7 @@ function definition_syntax_SyntaxError_SyntaxError(message, input, offset) {
     });
 };
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/definition-syntax/tokenizer.js
+;// ./node_modules/css-tree/lib/definition-syntax/tokenizer.js
 
 
 const TAB = 9;
@@ -21055,7 +21055,7 @@ class Tokenizer {
     }
 };
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/definition-syntax/parse.js
+;// ./node_modules/css-tree/lib/definition-syntax/parse.js
 
 
 const parse_TAB = 9;
@@ -21641,7 +21641,7 @@ function parse(source) {
     return result;
 };
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/definition-syntax/walk.js
+;// ./node_modules/css-tree/lib/definition-syntax/walk.js
 const walk_noop = function() {};
 
 function walk_ensureFunction(value) {
@@ -21695,13 +21695,13 @@ function walk(node, options, context) {
     walk(node, context);
 };
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/definition-syntax/index.js
+;// ./node_modules/css-tree/lib/definition-syntax/index.js
 
 
 
 
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/lexer/prepare-tokens.js
+;// ./node_modules/css-tree/lib/lexer/prepare-tokens.js
 
 
 const astToTokens = {
@@ -21753,7 +21753,7 @@ function stringToTokens(str) {
     return syntax.generate(value, astToTokens);
 };
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/lexer/match-graph.js
+;// ./node_modules/css-tree/lib/lexer/match-graph.js
 
 
 const MATCH = { type: 'Match' };
@@ -22211,7 +22211,7 @@ function buildMatchGraph(syntaxTree, ref) {
     };
 }
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/lexer/match.js
+;// ./node_modules/css-tree/lib/lexer/match.js
 
 
 
@@ -22843,7 +22843,7 @@ function matchAsTree(tokens, matchGraph, syntaxes) {
     return matchResult;
 }
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/lexer/trace.js
+;// ./node_modules/css-tree/lib/lexer/trace.js
 function getTrace(node) {
     function shouldPutToTrace(syntax) {
         if (syntax === null) {
@@ -22911,7 +22911,7 @@ function testNode(match, node, fn) {
     return trace.some(fn);
 }
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/lexer/search.js
+;// ./node_modules/css-tree/lib/lexer/search.js
 
 
 function getFirstMatchNode(matchNode) {
@@ -22974,7 +22974,7 @@ function matchFragments(lexer, ast, match, type, name) {
     return fragments;
 }
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/lexer/structure.js
+;// ./node_modules/css-tree/lib/lexer/structure.js
 
 
 const { hasOwnProperty: structure_hasOwnProperty } = Object.prototype;
@@ -23140,7 +23140,7 @@ function getStructureFromConfig(config) {
     return structure;
 };
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/lexer/Lexer.js
+;// ./node_modules/css-tree/lib/lexer/Lexer.js
 
 
 
@@ -23606,7 +23606,7 @@ class Lexer {
     }
 };
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/syntax/config/mix.js
+;// ./node_modules/css-tree/lib/syntax/config/mix.js
 function appendOrSet(a, b) {
     if (typeof b === 'string' && /^\s*\|/.test(b)) {
         return typeof a === 'string'
@@ -23723,7 +23723,7 @@ function mix(dest, src) {
     return result;
 }
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/syntax/create.js
+;// ./node_modules/css-tree/lib/syntax/create.js
 
 
 
@@ -23779,7 +23779,7 @@ function createSyntax(config) {
 
 /* harmony default export */ const create = (config => createSyntax(mix({}, config)));
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/dist/data.js
+;// ./node_modules/css-tree/dist/data.js
 /* harmony default export */ const data = ({
     "generic": true,
     "units": {
@@ -24925,7 +24925,7 @@ function createSyntax(config) {
         }
     }
 });
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/syntax/node/AnPlusB.js
+;// ./node_modules/css-tree/lib/syntax/node/AnPlusB.js
 
 
 const AnPlusB_PLUSSIGN = 0x002B;    // U+002B PLUS SIGN (+)
@@ -25212,7 +25212,7 @@ function AnPlusB_generate(node) {
     }
 }
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/syntax/node/Atrule.js
+;// ./node_modules/css-tree/lib/syntax/node/Atrule.js
 
 
 function consumeRaw(startToken) {
@@ -25309,7 +25309,7 @@ function Atrule_generate(node) {
     }
 }
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/syntax/node/AtrulePrelude.js
+;// ./node_modules/css-tree/lib/syntax/node/AtrulePrelude.js
 
 
 const AtrulePrelude_name = 'AtrulePrelude';
@@ -25355,7 +25355,7 @@ function AtrulePrelude_generate(node) {
     this.children(node);
 }
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/syntax/node/AttributeSelector.js
+;// ./node_modules/css-tree/lib/syntax/node/AttributeSelector.js
 
 
 const DOLLARSIGN = 0x0024;       // U+0024 DOLLAR SIGN ($)
@@ -25498,7 +25498,7 @@ function AttributeSelector_generate(node) {
     this.token(Delim, ']');
 }
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/syntax/node/Block.js
+;// ./node_modules/css-tree/lib/syntax/node/Block.js
 
 
 const Block_AMPERSAND = 0x0026;       // U+0026 AMPERSAND (&)
@@ -25588,7 +25588,7 @@ function Block_generate(node) {
     this.token(RightCurlyBracket, '}');
 }
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/syntax/node/Brackets.js
+;// ./node_modules/css-tree/lib/syntax/node/Brackets.js
 
 
 const Brackets_name = 'Brackets';
@@ -25621,7 +25621,7 @@ function Brackets_generate(node) {
     this.token(Delim, ']');
 }
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/syntax/node/CDC.js
+;// ./node_modules/css-tree/lib/syntax/node/CDC.js
 
 
 const CDC_name = 'CDC';
@@ -25642,7 +25642,7 @@ function CDC_generate() {
     this.token(CDC, '-->');
 }
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/syntax/node/CDO.js
+;// ./node_modules/css-tree/lib/syntax/node/CDO.js
 
 
 const CDO_name = 'CDO';
@@ -25663,7 +25663,7 @@ function CDO_generate() {
     this.token(CDO, '<!--');
 }
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/syntax/node/ClassSelector.js
+;// ./node_modules/css-tree/lib/syntax/node/ClassSelector.js
 
 
 const FULLSTOP = 0x002E; // U+002E FULL STOP (.)
@@ -25689,7 +25689,7 @@ function ClassSelector_generate(node) {
     this.token(Ident, node.name);
 }
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/syntax/node/Combinator.js
+;// ./node_modules/css-tree/lib/syntax/node/Combinator.js
 
 
 const Combinator_PLUSSIGN = 0x002B;        // U+002B PLUS SIGN (+)
@@ -25745,7 +25745,7 @@ function Combinator_generate(node) {
     this.tokenize(node.name);
 }
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/syntax/node/Comment.js
+;// ./node_modules/css-tree/lib/syntax/node/Comment.js
 
 
 const Comment_ASTERISK = 0x002A;        // U+002A ASTERISK (*)
@@ -25780,7 +25780,7 @@ function Comment_generate(node) {
     this.token(Comment, '/*' + node.value + '*/');
 }
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/syntax/node/Declaration.js
+;// ./node_modules/css-tree/lib/syntax/node/Declaration.js
 
 
 
@@ -25940,7 +25940,7 @@ function getImportant() {
     return important === 'important' ? true : important;
 }
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/syntax/node/DeclarationList.js
+;// ./node_modules/css-tree/lib/syntax/node/DeclarationList.js
 
 
 const DeclarationList_AMPERSAND = 0x0026;       // U+0026 AMPERSAND (&)
@@ -25999,7 +25999,7 @@ function DeclarationList_generate(node) {
 }
 
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/syntax/node/Dimension.js
+;// ./node_modules/css-tree/lib/syntax/node/Dimension.js
 
 
 const Dimension_name = 'Dimension';
@@ -26024,7 +26024,7 @@ function Dimension_generate(node) {
     this.token(Dimension, node.value + node.unit);
 }
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/syntax/node/Function.js
+;// ./node_modules/css-tree/lib/syntax/node/Function.js
 
 
 
@@ -26064,7 +26064,7 @@ function Function_generate(node) {
     this.token(RightParenthesis, ')');
 }
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/syntax/node/Hash.js
+;// ./node_modules/css-tree/lib/syntax/node/Hash.js
 
 
 // '#' ident
@@ -26089,7 +26089,7 @@ function Hash_generate(node) {
 }
 
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/syntax/node/Identifier.js
+;// ./node_modules/css-tree/lib/syntax/node/Identifier.js
 
 
 const Identifier_name = 'Identifier';
@@ -26109,7 +26109,7 @@ function Identifier_generate(node) {
     this.token(Ident, node.name);
 }
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/syntax/node/IdSelector.js
+;// ./node_modules/css-tree/lib/syntax/node/IdSelector.js
 
 
 const IdSelector_name = 'IdSelector';
@@ -26137,7 +26137,7 @@ function IdSelector_generate(node) {
     this.token(Delim, '#' + node.name);
 }
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/syntax/node/MediaFeature.js
+;// ./node_modules/css-tree/lib/syntax/node/MediaFeature.js
 
 
 const MediaFeature_name = 'MediaFeature';
@@ -26208,7 +26208,7 @@ function MediaFeature_generate(node) {
     this.token(RightParenthesis, ')');
 }
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/syntax/node/MediaQuery.js
+;// ./node_modules/css-tree/lib/syntax/node/MediaQuery.js
 
 
 const MediaQuery_name = 'MediaQuery';
@@ -26265,7 +26265,7 @@ function MediaQuery_generate(node) {
 }
 
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/syntax/node/MediaQueryList.js
+;// ./node_modules/css-tree/lib/syntax/node/MediaQueryList.js
 
 
 const MediaQueryList_name = 'MediaQueryList';
@@ -26301,7 +26301,7 @@ function MediaQueryList_generate(node) {
     this.children(node, () => this.token(Comma, ','));
 }
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/syntax/node/NestingSelector.js
+;// ./node_modules/css-tree/lib/syntax/node/NestingSelector.js
 
 
 const NestingSelector_AMPERSAND = 0x0026;       // U+0026 AMPERSAND (&)
@@ -26325,7 +26325,7 @@ function NestingSelector_generate() {
     this.token(Delim, '&');
 }
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/syntax/node/Nth.js
+;// ./node_modules/css-tree/lib/syntax/node/Nth.js
 
 
 const Nth_name = 'Nth';
@@ -26374,7 +26374,7 @@ function Nth_generate(node) {
     }
 }
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/syntax/node/Number.js
+;// ./node_modules/css-tree/lib/syntax/node/Number.js
 
 
 const Number_name = 'Number';
@@ -26394,7 +26394,7 @@ function Number_generate(node) {
     this.token(types_Number, node.value);
 }
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/syntax/node/Operator.js
+;// ./node_modules/css-tree/lib/syntax/node/Operator.js
 // '/' | '*' | ',' | ':' | '+' | '-'
 const Operator_name = 'Operator';
 const Operator_structure = {
@@ -26417,7 +26417,7 @@ function Operator_generate(node) {
     this.tokenize(node.value);
 }
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/syntax/node/Parentheses.js
+;// ./node_modules/css-tree/lib/syntax/node/Parentheses.js
 
 
 const Parentheses_name = 'Parentheses';
@@ -26450,7 +26450,7 @@ function Parentheses_generate(node) {
     this.token(RightParenthesis, ')');
 }
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/syntax/node/Percentage.js
+;// ./node_modules/css-tree/lib/syntax/node/Percentage.js
 
 
 const Percentage_name = 'Percentage';
@@ -26470,7 +26470,7 @@ function Percentage_generate(node) {
     this.token(Percentage, node.value + '%');
 }
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/syntax/node/PseudoClassSelector.js
+;// ./node_modules/css-tree/lib/syntax/node/PseudoClassSelector.js
 
 
 
@@ -26530,7 +26530,7 @@ function PseudoClassSelector_generate(node) {
     }
 }
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/syntax/node/PseudoElementSelector.js
+;// ./node_modules/css-tree/lib/syntax/node/PseudoElementSelector.js
 
 
 const PseudoElementSelector_name = 'PseudoElementSelector';
@@ -26591,7 +26591,7 @@ function PseudoElementSelector_generate(node) {
     }
 }
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/syntax/node/Ratio.js
+;// ./node_modules/css-tree/lib/syntax/node/Ratio.js
 
 
 const Ratio_SOLIDUS = 0x002F;  // U+002F SOLIDUS (/)
@@ -26652,7 +26652,7 @@ function Ratio_generate(node) {
     this.token(types_Number, node.right);
 }
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/syntax/node/Raw.js
+;// ./node_modules/css-tree/lib/syntax/node/Raw.js
 
 
 function getOffsetExcludeWS() {
@@ -26695,7 +26695,7 @@ function Raw_generate(node) {
     this.tokenize(node.value);
 }
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/syntax/node/Rule.js
+;// ./node_modules/css-tree/lib/syntax/node/Rule.js
 
 
 function Rule_consumeRaw(startToken) {
@@ -26748,7 +26748,7 @@ function Rule_generate(node) {
 }
 
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/syntax/node/Selector.js
+;// ./node_modules/css-tree/lib/syntax/node/Selector.js
 const Selector_name = 'Selector';
 const Selector_structure = {
     children: [[
@@ -26782,7 +26782,7 @@ function Selector_generate(node) {
     this.children(node);
 }
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/syntax/node/SelectorList.js
+;// ./node_modules/css-tree/lib/syntax/node/SelectorList.js
 
 
 const SelectorList_name = 'SelectorList';
@@ -26819,7 +26819,7 @@ function SelectorList_generate(node) {
     this.children(node, () => this.token(Comma, ','));
 }
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/utils/string.js
+;// ./node_modules/css-tree/lib/utils/string.js
 
 
 const REVERSE_SOLIDUS = 0x005c; // U+005C REVERSE SOLIDUS (\)
@@ -26914,7 +26914,7 @@ function encode(str, apostrophe) {
     return quote + encoded + quote;
 }
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/syntax/node/String.js
+;// ./node_modules/css-tree/lib/syntax/node/String.js
 
 
 
@@ -26935,7 +26935,7 @@ function String_generate(node) {
     this.token(types_String, encode(node.value));
 }
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/syntax/node/StyleSheet.js
+;// ./node_modules/css-tree/lib/syntax/node/StyleSheet.js
 
 
 const StyleSheet_EXCLAMATIONMARK = 0x0021; // U+0021 EXCLAMATION MARK (!)
@@ -27013,7 +27013,7 @@ function StyleSheet_generate(node) {
     this.children(node);
 }
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/syntax/node/TypeSelector.js
+;// ./node_modules/css-tree/lib/syntax/node/TypeSelector.js
 
 
 const TypeSelector_ASTERISK = 0x002A;     // U+002A ASTERISK (*)
@@ -27067,7 +27067,7 @@ function TypeSelector_generate(node) {
     this.tokenize(node.name);
 }
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/syntax/node/UnicodeRange.js
+;// ./node_modules/css-tree/lib/syntax/node/UnicodeRange.js
 
 
 const UnicodeRange_PLUSSIGN = 0x002B;     // U+002B PLUS SIGN (+)
@@ -27220,7 +27220,7 @@ function UnicodeRange_generate(node) {
     this.tokenize(node.value);
 }
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/utils/url.js
+;// ./node_modules/css-tree/lib/utils/url.js
 
 
 const url_SPACE = 0x0020;            // U+0020 SPACE
@@ -27324,7 +27324,7 @@ function url_encode(str) {
     return 'url(' + encoded + ')';
 }
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/syntax/node/Url.js
+;// ./node_modules/css-tree/lib/syntax/node/Url.js
 
 
 
@@ -27373,7 +27373,7 @@ function Url_generate(node) {
     this.token(Url, url_encode(node.value));
 }
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/syntax/node/Value.js
+;// ./node_modules/css-tree/lib/syntax/node/Value.js
 const Value_name = 'Value';
 const Value_structure = {
     children: [[]]
@@ -27394,7 +27394,7 @@ function Value_generate(node) {
     this.children(node);
 }
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/syntax/node/WhiteSpace.js
+;// ./node_modules/css-tree/lib/syntax/node/WhiteSpace.js
 
 
 const WhiteSpace_SPACE = Object.freeze({
@@ -27423,7 +27423,7 @@ function WhiteSpace_generate(node) {
     this.token(WhiteSpace, node.value);
 }
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/syntax/node/index.js
+;// ./node_modules/css-tree/lib/syntax/node/index.js
 
 
 
@@ -27466,7 +27466,7 @@ function WhiteSpace_generate(node) {
 
 
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/syntax/config/lexer.js
+;// ./node_modules/css-tree/lib/syntax/config/lexer.js
 
 
 
@@ -27476,7 +27476,7 @@ function WhiteSpace_generate(node) {
     node: node_namespaceObject
 });
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/syntax/scope/default.js
+;// ./node_modules/css-tree/lib/syntax/scope/default.js
 
 
 const default_NUMBERSIGN = 0x0023;  // U+0023 NUMBER SIGN (#)
@@ -27550,14 +27550,14 @@ function defaultRecognizer(context) {
     }
 };
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/syntax/scope/atrulePrelude.js
+;// ./node_modules/css-tree/lib/syntax/scope/atrulePrelude.js
 
 
 /* harmony default export */ const atrulePrelude = ({
     getNode: defaultRecognizer
 });
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/syntax/scope/selector.js
+;// ./node_modules/css-tree/lib/syntax/scope/selector.js
 
 
 const selector_NUMBERSIGN = 0x0023;      // U+0023 NUMBER SIGN (#)
@@ -27644,7 +27644,7 @@ function getNode() {
     getNode
 });
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/syntax/function/expression.js
+;// ./node_modules/css-tree/lib/syntax/function/expression.js
 // legacy IE function
 // expression( <any-value> )
 /* harmony default export */ function expression() {
@@ -27653,7 +27653,7 @@ function getNode() {
     );
 }
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/syntax/function/var.js
+;// ./node_modules/css-tree/lib/syntax/function/var.js
 
 
 // var( <ident> , <value>? )
@@ -27694,7 +27694,7 @@ function getNode() {
     return children;
 };
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/syntax/scope/value.js
+;// ./node_modules/css-tree/lib/syntax/scope/value.js
 
 
 
@@ -27721,12 +27721,12 @@ function isPlusMinusOperator(node) {
     'var': function_var
 });
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/syntax/scope/index.js
+;// ./node_modules/css-tree/lib/syntax/scope/index.js
 
 
 
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/syntax/atrule/font-face.js
+;// ./node_modules/css-tree/lib/syntax/atrule/font-face.js
 /* harmony default export */ const font_face = ({
     parse: {
         prelude: null,
@@ -27736,7 +27736,7 @@ function isPlusMinusOperator(node) {
     }
 });
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/syntax/atrule/import.js
+;// ./node_modules/css-tree/lib/syntax/atrule/import.js
 
 
 /* harmony default export */ const atrule_import = ({
@@ -27771,7 +27771,7 @@ function isPlusMinusOperator(node) {
     }
 });
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/syntax/atrule/media.js
+;// ./node_modules/css-tree/lib/syntax/atrule/media.js
 /* harmony default export */ const media = ({
     parse: {
         prelude() {
@@ -27785,7 +27785,7 @@ function isPlusMinusOperator(node) {
     }
 });
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/syntax/atrule/nest.js
+;// ./node_modules/css-tree/lib/syntax/atrule/nest.js
 /* harmony default export */ const nest = ({
     parse: {
         prelude() {
@@ -27799,7 +27799,7 @@ function isPlusMinusOperator(node) {
     }
 });
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/syntax/atrule/page.js
+;// ./node_modules/css-tree/lib/syntax/atrule/page.js
 /* harmony default export */ const page = ({
     parse: {
         prelude() {
@@ -27813,7 +27813,7 @@ function isPlusMinusOperator(node) {
     }
 });
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/syntax/atrule/supports.js
+;// ./node_modules/css-tree/lib/syntax/atrule/supports.js
 
 
 function supports_consumeRaw() {
@@ -27888,7 +27888,7 @@ function supports_readSequence() {
     }
 });
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/syntax/atrule/index.js
+;// ./node_modules/css-tree/lib/syntax/atrule/index.js
 
 
 
@@ -27905,7 +27905,7 @@ function supports_readSequence() {
     supports: supports
 });
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/syntax/pseudo/index.js
+;// ./node_modules/css-tree/lib/syntax/pseudo/index.js
 const selectorList = {
     parse() {
         return this.createSingleNodeList(
@@ -27957,7 +27957,7 @@ const nth = {
     'host-context': pseudo_selector
 });
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/syntax/node/index-parse.js
+;// ./node_modules/css-tree/lib/syntax/node/index-parse.js
 
 
 
@@ -28000,7 +28000,7 @@ const nth = {
 
 
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/syntax/config/parser.js
+;// ./node_modules/css-tree/lib/syntax/config/parser.js
 
 
 
@@ -28032,14 +28032,14 @@ const nth = {
     node: index_parse_namespaceObject
 });
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/syntax/config/walker.js
+;// ./node_modules/css-tree/lib/syntax/config/walker.js
 
 
 /* harmony default export */ const walker = ({
     node: node_namespaceObject
 });
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/syntax/index.js
+;// ./node_modules/css-tree/lib/syntax/index.js
 
 
 
@@ -28051,7 +28051,7 @@ const nth = {
     ...walker
 }));
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/utils/clone.js
+;// ./node_modules/css-tree/lib/utils/clone.js
 
 
 function clone(node) {
@@ -28074,7 +28074,7 @@ function clone(node) {
     return result;
 }
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/utils/ident.js
+;// ./node_modules/css-tree/lib/utils/ident.js
 
 
 const ident_REVERSE_SOLIDUS = 0x005c; // U+005C REVERSE SOLIDUS (\)
@@ -28172,7 +28172,7 @@ function ident_encode(str) {
     return encoded;
 }
 
-;// CONCATENATED MODULE: ./node_modules/css-tree/lib/index.js
+;// ./node_modules/css-tree/lib/index.js
 
 
 
@@ -28206,7 +28206,7 @@ const {
 
 // EXTERNAL MODULE: external "CryptoJS"
 var external_CryptoJS_ = __webpack_require__("crypto-js");
-;// CONCATENATED MODULE: ./src/rules/special/original/jjwxc.ts
+;// ./src/rules/special/original/jjwxc.ts
 
 
 
@@ -32608,7 +32608,7 @@ var Chapter = __webpack_require__("./src/main/Chapter.ts");
 var Book = __webpack_require__("./src/main/Book.ts");
 // EXTERNAL MODULE: ./src/rules.ts + 12 modules
 var rules = __webpack_require__("./src/rules.ts");
-;// CONCATENATED MODULE: ./src/rules/lib/haitangtxtImageDecode.ts
+;// ./src/rules/lib/haitangtxtImageDecode.ts
 function replaceHaitangtxtImage(inputText) {
     let outputText = inputText;
     for (const imageFilename in imageTable) {
@@ -32622,7 +32622,7 @@ function replaceHaitangtxtImage(inputText) {
 }
 const imageTable = {};
 
-;// CONCATENATED MODULE: ./src/rules/lib/yuzhaigeImageDecode.ts
+;// ./src/rules/lib/yuzhaigeImageDecode.ts
 function replaceYuzhaigeImage(inputText) {
     let outputText = inputText;
     for (const imageFilename in yuzhaigeImageDecode_imageTable) {
@@ -33367,7 +33367,7 @@ const yuzhaigeImageDecode_imageTable = {
     "H53jMR.png": "\u96CF",
 };
 
-;// CONCATENATED MODULE: ./src/rules/special/reprint/haitangtxt.ts
+;// ./src/rules/special/reprint/haitangtxt.ts
 
 
 
@@ -34748,7 +34748,7 @@ var main = __webpack_require__("./src/main/main.ts");
 var rule = __webpack_require__("./src/lib/rule.ts");
 // EXTERNAL MODULE: ./src/lib/dom.ts
 var dom = __webpack_require__("./src/lib/dom.ts");
-;// CONCATENATED MODULE: ./src/rules/lib/linovelib.ts
+;// ./src/rules/lib/linovelib.ts
 const table = {
     "\ue800": "\u7684",
     "\ue801": "\u4e00",
@@ -34852,7 +34852,7 @@ const table = {
     "\ue863": "\u5507",
 };
 
-;// CONCATENATED MODULE: ./src/rules/twoPage/linovelib.ts
+;// ./src/rules/twoPage/linovelib.ts
 
 
 
@@ -35563,12 +35563,12 @@ var external_Vue_ = __webpack_require__("vue");
 var dom = __webpack_require__("./src/lib/dom.ts");
 // EXTERNAL MODULE: ./src/ui/progress.css
 var progress = __webpack_require__("./src/ui/progress.css");
-;// CONCATENATED MODULE: ./src/ui/progress.html
+;// ./src/ui/progress.html
 // Module
 var code = "<div>\n  <div v-if=\"ntProgressSeen\" id=\"nd-progress\">\n    <div v-if=\"chapterProgressSeen\" id=\"chapter-progress\" v-bind:style=\"{'--position': chapterPercent+'%'}\" v-bind:title=\"chapterProgressTitle\"></div>\n  </div>\n</div>\n";
 // Exports
 /* harmony default export */ const ui_progress = (code);
-;// CONCATENATED MODULE: ./src/ui/progress.ts
+;// ./src/ui/progress.ts
 
 
 
@@ -35639,7 +35639,7 @@ __webpack_require__.d(__webpack_exports__, {
   A: () => (/* binding */ pLimit)
 });
 
-;// CONCATENATED MODULE: ./node_modules/p-limit/node_modules/yocto-queue/index.js
+;// ./node_modules/p-limit/node_modules/yocto-queue/index.js
 /*
 How it works:
 `this.#head` is an instance of `Node` which keeps track of its current value and nests another instance of `Node` that keeps the value that comes after it. When a value is provided to `.enqueue()`, the code needs to iterate through `this.#head`, going deeper and deeper to find the last value. However, iterating through every single item is slow. This problem is solved by saving a reference to the last value as `this.#tail` so that it can reference it to add a new value.
@@ -35708,7 +35708,7 @@ class Queue {
 	}
 }
 
-;// CONCATENATED MODULE: ./node_modules/p-limit/async-hooks-stub.js
+;// ./node_modules/p-limit/async-hooks-stub.js
 const AsyncResource = {
 	bind(fn, _type, thisArg) {
 		return fn.bind(thisArg);
@@ -35725,7 +35725,7 @@ class AsyncLocalStorage {
 	}
 }
 
-;// CONCATENATED MODULE: ./node_modules/p-limit/index.js
+;// ./node_modules/p-limit/index.js
 
 
 
@@ -35964,11 +35964,11 @@ var __webpack_exports__ = {};
 "use strict";
 
 // EXTERNAL MODULE: ./src/lib/GM.ts
-var GM = __webpack_require__("./src/lib/GM.ts");
+var src_GM = __webpack_require__("./src/lib/GM.ts");
 // EXTERNAL MODULE: ./node_modules/loglevel/lib/loglevel.js
 var loglevel = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 var loglevel_default = /*#__PURE__*/__webpack_require__.n(loglevel);
-;// CONCATENATED MODULE: ./src/lib/localStorageExpired.ts
+;// ./src/lib/localStorageExpired.ts
 
 function storageAvailable(type) {
     let storage;
@@ -36055,7 +36055,7 @@ class LocalStorageExpired {
 
 // EXTERNAL MODULE: ./src/setting.ts
 var src_setting = __webpack_require__("./src/setting.ts");
-;// CONCATENATED MODULE: ./src/detect.ts
+;// ./src/detect.ts
 
 
 
@@ -36076,12 +36076,12 @@ function checkObjct(name) {
     }
     return [false, targetLength].join(", ");
 }
-function streamSupport() {
+function src_streamSupport() {
     return (typeof ReadableStream !== "undefined" &&
         typeof WritableStream !== "undefined" &&
         typeof TransformStream !== "undefined");
 }
-function mitmPageAvailability(url) {
+function src_mitmPageAvailability(url) {
     return new Promise((resolve, reject) => {
         fetchWithTimeout(url, {}, 2500)
             .then((resp) => resolve(true))
@@ -36089,8 +36089,8 @@ function mitmPageAvailability(url) {
     });
 }
 async function TM_4_14_bug_Detect() {
-    if (GM/* _GM_info */.JX.scriptHandler === "Tampermonkey" &&
-        GM/* _GM_info */.JX.version?.startsWith("4.14")) {
+    if (src_GM/* _GM_info */.JX.scriptHandler === "Tampermonkey" &&
+        src_GM/* _GM_info */.JX.version?.startsWith("4.14")) {
         const blob = new Blob(["test"]);
         const arrayBuffer = await blob.arrayBuffer();
         if (arrayBuffer === undefined) {
@@ -36117,22 +36117,22 @@ const environments = async () => {
         eval: checkObjct("eval"),
         fetch: checkObjct("fetch"),
         XMLHttpRequest: checkObjct("XMLHttpRequest"),
-        streamSupport: streamSupport(),
+        streamSupport: src_streamSupport(),
         window: Object.keys(window).length,
         localStorage: storageAvailable("localStorage"),
         sessionStorage: storageAvailable("sessionStorage"),
         Cookie: navigator.cookieEnabled,
         doNotTrack: navigator.doNotTrack ?? 0,
         enableDebug: src_setting/* enableDebug */.Nw.value,
-        ScriptHandler: GM/* _GM_info */.JX.scriptHandler,
-        "ScriptHandler version": GM/* _GM_info */.JX.version,
-        "Novel-downloader version": GM/* _GM_info */.JX.script.version,
+        ScriptHandler: src_GM/* _GM_info */.JX.scriptHandler,
+        "ScriptHandler version": src_GM/* _GM_info */.JX.version,
+        "Novel-downloader version": src_GM/* _GM_info */.JX.script.version,
     };
 };
 
 // EXTERNAL MODULE: ./src/lib/misc.ts
 var misc = __webpack_require__("./src/lib/misc.ts");
-;// CONCATENATED MODULE: ./src/global.ts
+;// ./src/global.ts
 
 
 function init() {
@@ -36148,7 +36148,7 @@ function init() {
 
 // EXTERNAL MODULE: external "Vue"
 var external_Vue_ = __webpack_require__("vue");
-;// CONCATENATED MODULE: ./src/ui/fixVue.ts
+;// ./src/ui/fixVue.ts
 
 
 globalThis.Function = new Proxy(Function, {
@@ -36175,7 +36175,7 @@ globalThis.Function = new Proxy(Function, {
 
 // EXTERNAL MODULE: ./src/lib/dom.ts
 var dom = __webpack_require__("./src/lib/dom.ts");
-;// CONCATENATED MODULE: ./src/router/download.ts
+;// ./src/router/download.ts
 async function getRule() {
     const host = document.location.host;
     let ruleClass;
@@ -36756,7 +36756,7 @@ async function getRule() {
     }
 }
 
-;// CONCATENATED MODULE: ./src/lib/adBlocker.ts
+;// ./src/lib/adBlocker.ts
 function floatBuster() {
     if (window !== window.top) {
         return;
@@ -36855,7 +36855,7 @@ function floatBuster() {
     }
 }
 
-;// CONCATENATED MODULE: ./src/router/ui.ts
+;// ./src/router/ui.ts
 
 const defaultObject = {
     type: "download",
@@ -37193,7 +37193,7 @@ function getUI() {
     }
 }
 
-;// CONCATENATED MODULE: ./src/ui/button.html
+;// ./src/ui/button.html
 // Module
 var code = "<div id=\"button-div\" class=\"button-div\">\n  <div v-if=\"uiObj.type !== 'error'\">\n    <div v-if=\"uiObj.type === 'jump'\" class=\"jump\">\n      <button class=\"jump\">\n        <img alt=\"jump\" class=\"jump\" v-bind:src=\"imgJump\" v-on:click=\"jumpButtonClick\">\n      </button>\n    </div>\n    <div v-if=\"uiObj.type === 'download'\" class=\"download\">\n      <button class=\"start\">\n        <img alt=\"start\" class=\"start\" v-bind:src=\"imgStart\" v-on:click=\"startButtonClick\">\n      </button>\n      <button v-if=\"isSettingSeen\" class=\"setting\">\n        <img alt=\"setting\" class=\"setting\" v-bind:src=\"imgSetting\" v-on:click=\"settingButtonClick\">\n      </button>\n    </div>\n  </div>\n</div>\n";
 // Exports
@@ -37202,7 +37202,7 @@ var code = "<div id=\"button-div\" class=\"button-div\">\n  <div v-if=\"uiObj.ty
 var src_ui_button = __webpack_require__("./src/ui/button.less");
 // EXTERNAL MODULE: ./node_modules/file-saver/dist/FileSaver.min.js
 var FileSaver_min = __webpack_require__("./node_modules/file-saver/dist/FileSaver.min.js");
-;// CONCATENATED MODULE: ./src/debug.ts
+;// ./src/debug.ts
 
 
 async function debug() {
@@ -37232,14 +37232,14 @@ async function debug() {
 var main = __webpack_require__("./src/main/main.ts");
 // EXTERNAL MODULE: ./src/save/misc.ts
 var save_misc = __webpack_require__("./src/save/misc.ts");
-;// CONCATENATED MODULE: ./src/ui/ChapterList.html
+;// ./src/ui/ChapterList.html
 // Module
 var ChapterList_code = "<div>\n  <div v-if=\"loading\">\n    <div class=\"chapter-list-loading\">\n      <h2 v-if=\"failed\">加载章节失败！</h2>\n      <h2 v-else>正在载入章节列表中，请耐心等待……</h2>\n    </div>\n  </div>\n  <div v-else class=\"chapter-list\">\n    <div v-for=\"sectionObj in sectionsObj\" v-show=\"isSectionSeen(sectionObj)\" v-bind:key=\"sectionObj.sectionNumber\" class=\"section\">\n      <h3 v-if=\"sectionObj.sectionName\" class=\"section-label\">\n        {{ sectionObj.sectionName }}\n      </h3>\n      <div v-for=\"chapter in sectionObj.chpaters\" v-show=\"isChapterSeen(chapter)\" v-bind:key=\"chapter.chapterNumber\" class=\"chapter\" v-bind:class=\"{\n              good: this.filter(chapter),\n              bad: !this.filter(chapter),\n              warning: this.warningFilter(chapter)\n            }\" v-bind:title=\"chapter.chapterNumber\">\n        <a rel=\"noopener noreferrer\" target=\"_blank\" v-bind:class=\"{\n                disabled: this.isChapterDisabled(chapter),\n              }\" v-bind:href=\"chapter.chapterUrl\">{{ chapter.chapterName }}</a>\n      </div>\n    </div>\n  </div>\n</div>\n";
 // Exports
 /* harmony default export */ const ChapterList = (ChapterList_code);
 // EXTERNAL MODULE: ./src/ui/ChapterList.less
 var ui_ChapterList = __webpack_require__("./src/ui/ChapterList.less");
-;// CONCATENATED MODULE: ./src/ui/ChapterList.ts
+;// ./src/ui/ChapterList.ts
 
 
 
@@ -37330,12 +37330,12 @@ const style = (0,dom/* createStyle */._r)(ui_ChapterList/* default */.A);
 
 // EXTERNAL MODULE: ./src/ui/FilterTab.css
 var FilterTab = __webpack_require__("./src/ui/FilterTab.css");
-;// CONCATENATED MODULE: ./src/ui/FilterTab.html
+;// ./src/ui/FilterTab.html
 // Module
 var FilterTab_code = "<div>\n  <div class=\"filter-setting\">\n    <div v-if=\"filterType !== 'null'\" class=\"filter-input\">\n      <p>请输入过滤的条件：<input v-model=\"arg\" type=\"text\"></p>\n    </div>\n    <div class=\"filter-setter\">\n      <div>\n        <span>当前过滤方法：</span>\n        <select v-model=\"filterType\">\n          <option v-for=\"filterOption in filterOptionList\" v-bind:value=\"filterOption[0]\">\n            {{ filterOption[1][\"abbreviation\"] }}\n          </option>\n        </select>\n      </div>\n      <input id=\"hiddenBad\" v-model=\"hiddenBad\" type=\"checkbox\">\n      <label for=\"hiddenBad\">只显示符合条件章节</label>\n      <div class=\"filter-description\" v-html=\"filterDescription\"></div>\n      <div v-if=\"false\">\n        <span class=\"good\"></span>\n        <span class=\"warning\"></span>\n        <span class=\"bad\"></span>\n      </div>\n    </div>\n  </div>\n  <chapter-list>\n</div>\n";
 // Exports
 /* harmony default export */ const ui_FilterTab = (FilterTab_code);
-;// CONCATENATED MODULE: ./src/ui/FilterTab.ts
+;// ./src/ui/FilterTab.ts
 
 
 
@@ -37480,8 +37480,8 @@ function getFilterFunction(arg, functionBody) {
 const FilterTab_style = (0,dom/* createStyle */._r)(FilterTab/* default */.A);
 
 // EXTERNAL MODULE: ./src/log.ts
-var log = __webpack_require__("./src/log.ts");
-;// CONCATENATED MODULE: ./src/ui/LogUI.ts
+var src_log = __webpack_require__("./src/log.ts");
+;// ./src/ui/LogUI.ts
 
 
 /* harmony default export */ const LogUI = ((0,external_Vue_.defineComponent)({
@@ -37490,9 +37490,9 @@ var log = __webpack_require__("./src/log.ts");
         const logText = (0,external_Vue_.ref)("");
         let requestID;
         (0,external_Vue_.onMounted)(() => {
-            logText.value = (0,log/* getLogText */.gh)();
+            logText.value = (0,src_log/* getLogText */.gh)();
             function step() {
-                logText.value = (0,log/* getLogText */.gh)();
+                logText.value = (0,src_log/* getLogText */.gh)();
                 requestID = globalThis.requestAnimationFrame(step);
             }
             requestID = globalThis.requestAnimationFrame(step);
@@ -37510,7 +37510,7 @@ var log = __webpack_require__("./src/log.ts");
     </div>`,
 }));
 
-;// CONCATENATED MODULE: ./src/ui/setting.html
+;// ./src/ui/setting.html
 // Module
 var setting_code = "<div>\n  <dialog-ui v-if=\"openStatus === 'true'\" dialog-title=\"设置\" v-bind:status=\"openStatus\" v-on:dialogclose=\"closeSetting\">\n    <div id=\"nd-setting\" class=\"nd-setting\">\n      <div class=\"nd-setting-tab\">\n        <button v-bind:class=\"['tab-button', { active: setting.currentTab === 'tab-1'}]\" v-on:click=\"setting.currentTab = 'tab-1'\">\n          基本设置\n        </button>\n        <button v-bind:class=\"['tab-button', { active: setting.currentTab === 'tab-2'}]\" v-on:click=\"setting.currentTab = 'tab-2'\">\n          自定义筛选条件\n        </button>\n        <button v-if=\"setting.enableTestPage\" v-bind:class=\"['tab-button', { active: setting.currentTab === 'tab-3'}]\" v-on:click=\"setting.currentTab = 'tab-3'\">\n          抓取测试\n        </button>\n        <button v-if=\"setting.enableTestPage\" v-bind:class=\"['tab-button', { active: setting.currentTab === 'tab-4'}]\" v-on:click=\"setting.currentTab = 'tab-4'\">\n          日志\n        </button>\n      </div>\n      <div class=\"nd-setting-body\">\n        <div v-show=\"setting.currentTab === 'tab-1'\" id=\"nd-setting-tab-1\" class=\"tab-page\">\n          <div>\n            <input id=\"debug\" v-model=\"setting.enableDebug\" type=\"checkbox\">\n            <label for=\"debug\">启用调试模式。（输出更详细日志）</label>\n            <input id=\"test-page\" v-model=\"setting.enableTestPage\" type=\"checkbox\">\n            <label for=\"test-page\">启用测试视图</label>\n          </div>\n          <hr class=\"hr-twill-colorful\">\n          <div>\n            <h3>自定义保存参数</h3>\n            <ul>\n              <li v-for=\"item of saveOptions\">\n                <input v-bind:id=\"item.key\" v-model=\"setting.chooseSaveOption\" type=\"radio\" v-bind:value=\"item.key\">\n                <label v-bind:for=\"item.key\">{{ item.value }}</label>\n              </li>\n            </ul>\n          </div>\n        </div>\n        <div v-show=\"setting.currentTab === 'tab-2'\" id=\"nd-setting-tab-2\" class=\"tab-page\">\n          <filter-tab v-on:filterupdate=\"saveFilter\">\n        </div>\n        <div v-if=\"setting.enableTestPage\" v-show=\"setting.currentTab === 'tab-3'\" id=\"nd-setting-tab-3\" class=\"tab-page\">\n          <test-ui></test-ui>\n        </div>\n        <div v-if=\"setting.enableTestPage\" v-show=\"setting.currentTab === 'tab-4'\" id=\"nd-setting-tab-4\" class=\"tab-page\">\n          <log-ui></log-ui>\n        </div>\n      </div>\n      <div class=\"nd-setting-footer\">\n        <button v-on:click=\"closeAndSaveSetting\">Save</button>\n        <button v-on:click=\"closeSetting\">Cancel</button>\n      </div>\n    </div>\n  </dialog-ui>\n</div>\n";
 // Exports
@@ -37519,14 +37519,14 @@ var setting_code = "<div>\n  <dialog-ui v-if=\"openStatus === 'true'\" dialog-ti
 var ui_setting = __webpack_require__("./src/ui/setting.less");
 // EXTERNAL MODULE: ./src/lib/attachments.ts
 var attachments = __webpack_require__("./src/lib/attachments.ts");
-;// CONCATENATED MODULE: ./src/ui/TestUI.html
+;// ./src/ui/TestUI.html
 // Module
 var TestUI_code = "<div>\n  <div id=\"test-page-div\">\n    <h2>元数据</h2>\n    <table>\n      <tbody>\n        <tr v-for=\"(value, key) in metaData\">\n          <td>{{ key }}</td>\n          <td v-html=\"getData(key, value)\"></td>\n        </tr>\n      </tbody>\n    </table>\n    <hr class=\"hr-edge-weak\">\n    <h2>章节测试</h2>\n    <div class=\"preview-chapter-setting\">\n      <label for=\"chapterNumber\">预览章节序号：</label>\n      <input id=\"chapterNumber\" v-model=\"chapterNumber\" type=\"text\">\n    </div>\n    <div v-if=\"this.isSeenChapter(chapter)\">\n      <h4>\n        <a rel=\"noopener noreferrer\" target=\"_blank\" v-bind:href=\"chapter.chapterUrl\">{{ chapter.chapterName }}</a>\n      </h4>\n      <div class=\"chapter\" v-html=\"getChapterHtml(chapter)\"></div>\n    </div>\n    <div v-else>\n      <p v-if=\"this.isChapterFailed(chapter)\">章节加载失败！</p>\n      <p v-else>正在加载章节中……</p>\n    </div>\n  </div>\n</div>\n";
 // Exports
 /* harmony default export */ const TestUI = (TestUI_code);
 // EXTERNAL MODULE: ./src/ui/TestUI.less
 var ui_TestUI = __webpack_require__("./src/ui/TestUI.less");
-;// CONCATENATED MODULE: ./src/ui/TestUI.ts
+;// ./src/ui/TestUI.ts
 
 
 
@@ -37663,7 +37663,7 @@ var ui_TestUI = __webpack_require__("./src/ui/TestUI.less");
 }));
 const TestUI_style = (0,dom/* createStyle */._r)(ui_TestUI/* default */.A);
 
-;// CONCATENATED MODULE: ./src/ui/setting.ts
+;// ./src/ui/setting.ts
 
 
 
@@ -37833,7 +37833,7 @@ const vm = (0,external_Vue_.createApp)({
     template: setting,
 }).mount(el);
 
-;// CONCATENATED MODULE: ./src/ui/button.ts
+;// ./src/ui/button.ts
 
 
 
@@ -37852,7 +37852,7 @@ const button_vm = (0,external_Vue_.createApp)({
             imgStart: src_setting/* iconStart0 */.Og,
             imgSetting: src_setting/* iconSetting */.w1,
             imgJump: src_setting/* iconJump */.GM,
-            isSettingSeen: GM/* _GM_info */.JX.scriptHandler !== "Greasemonkey",
+            isSettingSeen: src_GM/* _GM_info */.JX.scriptHandler !== "Greasemonkey",
             uiObj: { type: "download" },
         };
     },
@@ -37892,12 +37892,12 @@ const button_vm = (0,external_Vue_.createApp)({
 
 // EXTERNAL MODULE: ./src/ui/dialog.css
 var dialog = __webpack_require__("./src/ui/dialog.css");
-;// CONCATENATED MODULE: ./src/ui/dialog.html
+;// ./src/ui/dialog.html
 // Module
 var dialog_code = "<div v-if=\"myPrivateStatus\" class=\"overlay\" v-bind:class=\"{ open: myPrivateStatus }\"></div>\n<div v-if=\"myPrivateStatus\" class=\"out\">\n  <div id=\"dialog\" class=\"dialog\" v-bind:class=\"{ open: myPrivateStatus }\">\n    <div class=\"titlebar\">\n      <h1 class=\"dialog-title\">{{ dialogTitle }}</h1>\n      <button class=\"dialog-close\" v-on:click=\"dialogClose\">❌</button>\n    </div>\n    <div class=\"body\">\n      <slot></slot>\n    </div>\n  </div>\n</div>\n";
 // Exports
 /* harmony default export */ const ui_dialog = (dialog_code);
-;// CONCATENATED MODULE: ./src/ui/dialog.ts
+;// ./src/ui/dialog.ts
 
 
 
@@ -37933,7 +37933,7 @@ var dialog_code = "<div v-if=\"myPrivateStatus\" class=\"overlay\" v-bind:class=
 
 // EXTERNAL MODULE: ./src/ui/progress.ts + 1 modules
 var progress = __webpack_require__("./src/ui/progress.ts");
-;// CONCATENATED MODULE: ./src/ui/ui.ts
+;// ./src/ui/ui.ts
 
 
 
@@ -37958,7 +37958,7 @@ function ui_init() {
     document.head.appendChild(TestUI_style);
 }
 
-;// CONCATENATED MODULE: ./src/index.ts
+;// ./src/index.ts
 
 
 
