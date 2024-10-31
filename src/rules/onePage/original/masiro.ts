@@ -53,6 +53,6 @@ export const masiro = () =>
     contentPatch: (dom) => dom,
     concurrencyLimit: 1,
     sleepTime: 100,
-    maxSleepTime: 6000,
+    maxSleepTime: 3000,
     needLogin: true,
   });
