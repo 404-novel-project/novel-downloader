@@ -19,7 +19,7 @@ on:
   workflow_dispatch:
 permissions:
   contents: write
-  pull-requests: write 
+  issues: write
 
 jobs:
   build-and-deploy:
