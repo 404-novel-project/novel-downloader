@@ -19,6 +19,7 @@ on:
   workflow_dispatch:
 permissions:
   contents: write
+  pull-requests: write 
 
 jobs:
   build-and-deploy:
@@ -31,10 +32,19 @@ jobs:
         run: yarn run github
 
       - name: Upload Artifact 🚀
-        uses: actions/upload-artifact@v3
+        id: upload-artifacts
+        uses: actions/upload-artifact@v4
         with:
           name: bundle
           path: dist/bundle*.js
+
+      - name: comment PR 📝
+        uses: thollander/actions-comment-pull-request@v3
+        if: ${{github.event_name == 'pull_request'}}
+        with:
+          message: |
+            我们已经收到您的PR，您可以在这里访问对应的脚本文件。
+            ${{ steps.upload-artifacts.outputs.artifact-url }}
 
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4
