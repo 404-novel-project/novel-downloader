@@ -280,6 +280,7 @@ EPUB 文件请使用相应阅读器阅读。
         },
   };
   window.tokenOptions = tokenOptions;
+})();
 ```
 ## 高阶使用技巧
 
