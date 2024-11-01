@@ -26,11 +26,13 @@ interface MkRuleClassOptions {
     getContent?: (doc: Document) => HTMLElement | null;
     contentPatch: (content: HTMLElement) => HTMLElement;
     concurrencyLimit?: number;
+    sleepTime?: number;
+    maxSleepTime?: number;
     needLogin?: boolean;
     nsfw?: boolean;
     cleanDomOptions?: Options;
     overrideConstructor?: (classThis: BaseRuleClass) => any;
     language?: string;
 }
-export declare function mkRuleClass({ bookUrl, anotherPageUrl, ToCUrl, getBookname, getAuthor, getIntroDom, introDomPatch, getCoverUrl, additionalMetadatePatch, getAList, getAName, getIsVIP, getSections, getSName, postHook, getContentFromUrl, getContent, contentPatch, concurrencyLimit, needLogin, nsfw, cleanDomOptions, overrideConstructor, language, }: MkRuleClassOptions): PublicConstructor<BaseRuleClass>;
+export declare function mkRuleClass({ bookUrl, anotherPageUrl, ToCUrl, getBookname, getAuthor, getIntroDom, introDomPatch, getCoverUrl, additionalMetadatePatch, getAList, getAName, getIsVIP, getSections, getSName, postHook, getContentFromUrl, getContent, contentPatch, concurrencyLimit, sleepTime, maxSleepTime, needLogin, nsfw, cleanDomOptions, overrideConstructor, language, }: MkRuleClassOptions): PublicConstructor<BaseRuleClass>;
 export {};

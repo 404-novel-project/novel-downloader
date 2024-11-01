@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.954
+// @version        5.2.955
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -219,6 +219,7 @@
 // @match          *://www.bixia3.com/txt/*/
 // @match          *://www.xiaoshuowu.com/html/*/*/
 // @match          *://www.xrzww.com/bookdetail/*
+// @match          *://xrzww.com/bookdetail/*
 // @match          *://www.youdubook.com/bookdetail/*
 // @match          *://colorful-fantasybooks.com/module/novel/info.php?*
 // @match          *://www.dizishu.com/*/*/
@@ -2876,6 +2877,7 @@ div.chapter-list div.chapter.good.warning {
 div.chapter-list div.chapter.bad a,
 div.chapter-list div.chapter.good a {
   color: white;
+  font-size: 0.9em;
 }
 .nd-setting-body span.good {
   color: var(--good-chapter-color);
@@ -11705,7 +11707,7 @@ const dijiubook = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("a", true, content);
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)('img[src$="alipay.png"]', true, content);
     return content;
-}, 1, (classThis) => {
+}, 1, 50, 3000, (classThis) => {
     classThis.maxRunLimit = 1;
     const chapterParse = classThis.chapterParse;
     classThis.chapterParse = async (...args) => {
@@ -11752,7 +11754,7 @@ const bxwx333 = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("div[style]", true, content);
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)(".bottem2", true, content);
     return content;
-}, undefined, undefined, undefined, "#zjneirong");
+}, undefined, undefined, undefined, undefined, undefined, "#zjneirong");
 const xbiqugeLa = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Wt)((introDom) => {
     introDom.querySelector("font")?.parentElement?.remove();
     return introDom;
@@ -11849,7 +11851,7 @@ const la42zw = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .W
 
 
 
-function base(introDomPatch, concurrencyLimit, overRide, postHook) {
+function base(introDomPatch, concurrencyLimit, sleepTime, maxSleepTime, overRide, postHook) {
     return {
         bookUrl: document.location.href,
         bookname: document.querySelector("#info h1, .info h2, .info h1").innerText
@@ -11880,6 +11882,8 @@ function base(introDomPatch, concurrencyLimit, overRide, postHook) {
             return chapter;
         },
         concurrencyLimit,
+        sleepTime,
+        maxSleepTime,
         overrideConstructor: (classThis) => {
             const rawBookParse = classThis.bookParse;
             classThis.bookParse = async () => {
@@ -11895,10 +11899,10 @@ function base(introDomPatch, concurrencyLimit, overRide, postHook) {
         },
     };
 }
-function baseOnePage(introDomPatch, concurrencyLimit, overRide, postHook) {
+function baseOnePage(introDomPatch, concurrencyLimit, sleepTime, maxSleepTime, overRide, postHook) {
     return {
-        ...base(introDomPatch, concurrencyLimit, overRide, postHook),
-        aList: document.querySelectorAll("#list a, .listmain a, .book-item a"),
+        ...base(introDomPatch, concurrencyLimit, sleepTime, maxSleepTime, overRide, postHook),
+        aList: document.querySelectorAll("#list a, .listmasleepTime, maxSleepTime,in a, .book-item a"),
         sections: document.querySelectorAll("#list dt, .listmain dt, .layout-tit"),
         getSName: (sElem) => {
             const b = sElem.querySelector("b");
@@ -11909,9 +11913,9 @@ function baseOnePage(introDomPatch, concurrencyLimit, overRide, postHook) {
         },
     };
 }
-function baseMultiIndex(introDomPatch, concurrencyLimit, overRide, postHook) {
+function baseMultiIndex(introDomPatch, concurrencyLimit, sleepTime, maxSleepTime, overRide, postHook) {
     return {
-        ...base(introDomPatch, concurrencyLimit, overRide, postHook),
+        ...base(introDomPatch, concurrencyLimit, sleepTime, maxSleepTime, overRide, postHook),
         getIndexUrls: () => Array.from(document.querySelectorAll('select[name="pageselect"] > option')).map((o) => document.location.origin + o.getAttribute("value")),
         getAList: (doc) => {
             const sectionList = Array.from(doc.querySelectorAll("ul.section-list.fix, ul.list")).slice(-1)[0];
@@ -11922,16 +11926,16 @@ function baseMultiIndex(introDomPatch, concurrencyLimit, overRide, postHook) {
         },
     };
 }
-function mkBiquge(introDomPatch, contentPatch, concurrencyLimit, overRide, postHook, chapterContenSelector = "#content") {
+function mkBiquge(introDomPatch, contentPatch, concurrencyLimit, sleepTime, maxSleepTime, overRide, postHook, chapterContenSelector = "#content") {
     return (0,_onePage_template__WEBPACK_IMPORTED_MODULE_1__/* .mkRuleClass */ .N)({
-        ...baseOnePage(introDomPatch, concurrencyLimit, overRide, postHook),
+        ...baseOnePage(introDomPatch, concurrencyLimit, sleepTime, maxSleepTime, overRide, postHook),
         getContent: (doc) => doc.querySelector(chapterContenSelector),
         contentPatch,
     });
 }
-function mkBiqugeNextPage(introDomPatch, contentPatch, getNextPage, continueCondition, concurrencyLimit, overRide, postHook, chapterContenSelector = "#content") {
+function mkBiqugeNextPage(introDomPatch, contentPatch, getNextPage, continueCondition, concurrencyLimit, sleepTime, maxSleepTime, overRide, postHook, chapterContenSelector = "#content") {
     return (0,_onePage_template__WEBPACK_IMPORTED_MODULE_1__/* .mkRuleClass */ .N)({
-        ...baseOnePage(introDomPatch, concurrencyLimit, overRide, postHook),
+        ...baseOnePage(introDomPatch, concurrencyLimit, sleepTime, maxSleepTime, overRide, postHook),
         getContentFromUrl: async (chapterUrl, chapterName, charset) => {
             const { contentRaw } = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_0__/* .nextPageParse */ .u1)({
                 chapterName,
@@ -11948,9 +11952,9 @@ function mkBiqugeNextPage(introDomPatch, contentPatch, getNextPage, continueCond
         contentPatch: (dom) => dom,
     });
 }
-function mkBiqugeMultiIndexNextPage(introDomPatch, contentPatch, getNextPage, continueCondition, concurrencyLimit, overRide, postHook, chapterContenSelector = "#content") {
+function mkBiqugeMultiIndexNextPage(introDomPatch, contentPatch, getNextPage, continueCondition, concurrencyLimit, sleepTime, maxSleepTime, overRide, postHook, chapterContenSelector = "#content") {
     return (0,_onePageWithMultiIndexPage_template__WEBPACK_IMPORTED_MODULE_2__/* .mkRuleClass */ .N)({
-        ...baseMultiIndex(introDomPatch, concurrencyLimit, overRide, postHook),
+        ...baseMultiIndex(introDomPatch, concurrencyLimit, sleepTime, maxSleepTime, overRide, postHook),
         getContentFromUrl: async (chapterUrl, chapterName, charset) => {
             const { contentRaw } = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_0__/* .nextPageParse */ .u1)({
                 chapterName,
@@ -11967,9 +11971,9 @@ function mkBiqugeMultiIndexNextPage(introDomPatch, contentPatch, getNextPage, co
         contentPatch: (dom) => dom,
     });
 }
-function mkBiqugeMultiIndex(introDomPatch, contentPatch, concurrencyLimit, overRide, postHook, chapterContenSelector = "#content") {
+function mkBiqugeMultiIndex(introDomPatch, contentPatch, concurrencyLimit, sleepTime, maxSleepTime, overRide, postHook, chapterContenSelector = "#content") {
     return mkRuleClassMultiIndex({
-        ...baseMultiIndex(introDomPatch, concurrencyLimit, overRide, postHook),
+        ...baseMultiIndex(introDomPatch, concurrencyLimit, sleepTime, maxSleepTime, overRide, postHook),
         getContent: (doc) => doc.querySelector(chapterContenSelector),
         contentPatch,
     });
@@ -13830,13 +13834,19 @@ const novelup = () => {
 
 
 
-function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, coverUrl, getIndexUrls, getIndexPages, getAList, getAName, getIsVIP, getSections, getSName, postHook, getContentFromUrl, getContent, contentPatch, concurrencyLimit, needLogin, nsfw, cleanDomOptions, overrideConstructor, language, }) {
+function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, coverUrl, getIndexUrls, getIndexPages, getAList, getAName, getIsVIP, getSections, getSName, postHook, getContentFromUrl, getContent, contentPatch, concurrencyLimit, sleepTime, maxSleepTime, needLogin, nsfw, cleanDomOptions, overrideConstructor, language, }) {
     return class extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
         constructor() {
             super();
             this.attachmentMode = "TM";
             if (concurrencyLimit) {
                 this.concurrencyLimit = concurrencyLimit;
+            }
+            if (sleepTime) {
+                this.sleepTime = sleepTime;
+            }
+            if (maxSleepTime) {
+                this.maxSleepTime = maxSleepTime;
             }
             if (needLogin) {
                 this.needLogin = needLogin;
@@ -15105,7 +15115,11 @@ class Ciyuanji extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
             }
         }
         const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_8__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
-        const __NEXT_DATA__ = JSON.parse(doc.querySelectorAll("script")[0].innerHTML);
+        const nextDataElement = document.getElementById("__NEXT_DATA__");
+        if (!nextDataElement) {
+            throw new Error("无法找到'__NEXT_DATA__'，下载失败");
+        }
+        const __NEXT_DATA__ = JSON.parse(nextDataElement.innerHTML);
         const chapterObj = __NEXT_DATA__.props.pageProps.chapterContent.chapter;
         const content = document.createElement("div");
         const chapterContent = decrypt(chapterObj.chapterContentFormat);
@@ -31926,13 +31940,12 @@ class Xrzww extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
         });
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        const readNewUrl = new URL(`${options.apiBase}/api/readNew`);
+        const readNewUrl = new URL(`${options.apiBase}/api/readNovelByWeb`);
         readNewUrl.searchParams.set("nid", options.nid.toString());
         readNewUrl.searchParams.set("vid", options.vid.toString());
         readNewUrl.searchParams.set("chapter_id", options.chapter_id.toString());
         readNewUrl.searchParams.set("chapter_order", options.chapter_order.toString());
         readNewUrl.searchParams.set("showpic", false.toString());
-        readNewUrl.searchParams.set("is_cut", "");
         const resp = await fetch(readNewUrl.href, {
             credentials: "include",
             headers: options.headers,
@@ -35108,13 +35121,19 @@ const shencou = () => {
 
 
 
-function mkRuleClass({ bookUrl, anotherPageUrl, ToCUrl, getBookname, getAuthor, getIntroDom, introDomPatch, getCoverUrl, additionalMetadatePatch, getAList, getAName, getIsVIP, getSections, getSName, postHook, getContentFromUrl, getContent, contentPatch, concurrencyLimit, needLogin, nsfw, cleanDomOptions, overrideConstructor, language, }) {
+function mkRuleClass({ bookUrl, anotherPageUrl, ToCUrl, getBookname, getAuthor, getIntroDom, introDomPatch, getCoverUrl, additionalMetadatePatch, getAList, getAName, getIsVIP, getSections, getSName, postHook, getContentFromUrl, getContent, contentPatch, concurrencyLimit, sleepTime, maxSleepTime, needLogin, nsfw, cleanDomOptions, overrideConstructor, language, }) {
     return class extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
         constructor() {
             super();
             this.attachmentMode = "TM";
             if (concurrencyLimit) {
                 this.concurrencyLimit = concurrencyLimit;
+            }
+            if (sleepTime) {
+                this.sleepTime = sleepTime;
+            }
+            if (maxSleepTime) {
+                this.maxSleepTime = maxSleepTime;
             }
             if (needLogin) {
                 this.needLogin = needLogin;
@@ -35337,6 +35356,9 @@ const wenku8 = () => {
             (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("#contentdp", true, content);
             return content;
         },
+        concurrencyLimit: 1,
+        sleepTime: 300,
+        maxSleepTime: 1500,
     });
 };
 
@@ -36368,7 +36390,8 @@ async function getRule() {
             ruleClass = Cool18;
             break;
         }
-        case "www.xrzww.com": {
+        case "www.xrzww.com":
+        case "xrzww.com": {
             const { Xrzww } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/xrzww.ts"));
             ruleClass = Xrzww;
             break;
