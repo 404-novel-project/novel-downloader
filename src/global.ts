@@ -38,6 +38,10 @@ interface UnsafeWindowObject {
   };
   tokenOptions?: {
     Jjwxc: string;
+    Xrzww: {
+      deviceIdentify: string;
+      Authorization:string;
+    }
   };
 }
 
