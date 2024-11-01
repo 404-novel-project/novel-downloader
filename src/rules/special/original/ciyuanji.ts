@@ -225,7 +225,11 @@ export class Ciyuanji extends BaseRuleClass {
       contentUpdateTime: string;
     }
 
-    const __NEXT_DATA__ = JSON.parse(doc.querySelectorAll("script")[0].innerHTML);
+    const nextDataElement = document.getElementById("__NEXT_DATA__");
+    if (!nextDataElement) {
+      throw new Error("无法找到'__NEXT_DATA__'，下载失败");
+    }
+    const __NEXT_DATA__ = JSON.parse(nextDataElement.innerHTML);
     const chapterObj: ChapterObject = (__NEXT_DATA__ as any).props.pageProps.chapterContent.chapter;
     const content = document.createElement("div");
     const chapterContent = decrypt(chapterObj.chapterContentFormat);

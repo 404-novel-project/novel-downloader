@@ -8,6 +8,8 @@ import { mkRuleClass as mkRuleClassMultiIndex } from "../onePageWithMultiIndexPa
 function base(
   introDomPatch: (introDom: HTMLElement) => HTMLElement,
   concurrencyLimit?: number,
+  sleepTime?: number,
+  maxSleepTime?: number,
   overRide?: (classThis: BaseRuleClass) => any,
   postHook?: (chapter: Chapter) => Chapter | void
 ) {
@@ -53,6 +55,8 @@ function base(
       return chapter;
     },
     concurrencyLimit,
+    sleepTime,
+    maxSleepTime,
     overrideConstructor: (classThis: BaseRuleClass) => {
       const rawBookParse = classThis.bookParse;
       classThis.bookParse = async () => {
@@ -72,12 +76,14 @@ function base(
 export function baseOnePage(
   introDomPatch: (introDom: HTMLElement) => HTMLElement,
   concurrencyLimit?: number,
+  sleepTime?: number,
+  maxSleepTime?: number,
   overRide?: (classThis: BaseRuleClass) => any,
   postHook?: (chapter: Chapter) => Chapter | void
 ) {
   return {
-    ...base(introDomPatch, concurrencyLimit, overRide, postHook),
-    aList: document.querySelectorAll("#list a, .listmain a, .book-item a"),
+    ...base(introDomPatch, concurrencyLimit, sleepTime, maxSleepTime, overRide, postHook),
+    aList: document.querySelectorAll("#list a, .listmasleepTime, maxSleepTime,in a, .book-item a"),
     sections: document.querySelectorAll("#list dt, .listmain dt, .layout-tit"),
     getSName: (sElem: Element) => {
       const b = sElem.querySelector("b");
@@ -92,11 +98,13 @@ export function baseOnePage(
 export function baseMultiIndex(
   introDomPatch: (introDom: HTMLElement) => HTMLElement,
   concurrencyLimit?: number,
+  sleepTime?: number,
+  maxSleepTime?: number,
   overRide?: (classThis: BaseRuleClass) => any,
   postHook?: (chapter: Chapter) => Chapter | void
 ) {
   return {
-    ...base(introDomPatch, concurrencyLimit, overRide, postHook),
+    ...base(introDomPatch, concurrencyLimit, sleepTime, maxSleepTime, overRide, postHook),
     getIndexUrls: () =>
       Array.from(
         document.querySelectorAll<HTMLOptionElement>(
@@ -119,12 +127,14 @@ export function mkBiquge(
   introDomPatch: (introDom: HTMLElement) => HTMLElement,
   contentPatch: (content: HTMLElement) => HTMLElement,
   concurrencyLimit?: number,
+  sleepTime?: number,
+  maxSleepTime?: number,
   overRide?: (classThis: BaseRuleClass) => any,
   postHook?: (chapter: Chapter) => Chapter | void,
   chapterContenSelector = "#content"
 ) {
   return mkRuleClass({
-    ...baseOnePage(introDomPatch, concurrencyLimit, overRide, postHook),
+    ...baseOnePage(introDomPatch, concurrencyLimit, sleepTime, maxSleepTime, overRide, postHook),
     getContent: (doc) => doc.querySelector(chapterContenSelector),
     contentPatch,
   });
@@ -136,12 +146,14 @@ export function mkBiqugeNextPage(
   getNextPage: (doc: Document) => string,
   continueCondition: (content: HTMLElement, nextLink: string) => boolean,
   concurrencyLimit?: number,
+  sleepTime?: number,
+  maxSleepTime?: number,
   overRide?: (classThis: BaseRuleClass) => any,
   postHook?: (chapter: Chapter) => Chapter | void,
   chapterContenSelector = "#content"
 ) {
   return mkRuleClass({
-    ...baseOnePage(introDomPatch, concurrencyLimit, overRide, postHook),
+    ...baseOnePage(introDomPatch, concurrencyLimit, sleepTime, maxSleepTime, overRide, postHook),
     getContentFromUrl: async (
       chapterUrl: string,
       chapterName: string | null,
@@ -169,12 +181,14 @@ export function mkBiqugeMultiIndexNextPage(
   getNextPage: (doc: Document) => string,
   continueCondition: (content: HTMLElement, nextLink: string) => boolean,
   concurrencyLimit?: number,
+  sleepTime?: number,
+  maxSleepTime?: number,
   overRide?: (classThis: BaseRuleClass) => any,
   postHook?: (chapter: Chapter) => Chapter | void,
   chapterContenSelector = "#content"
 ) {
   return mkRuleClassMultiIndex({
-    ...baseMultiIndex(introDomPatch, concurrencyLimit, overRide, postHook),
+    ...baseMultiIndex(introDomPatch, concurrencyLimit,sleepTime, maxSleepTime, overRide, postHook),
     getContentFromUrl: async (
       chapterUrl: string,
       chapterName: string | null,
@@ -200,12 +214,14 @@ export function mkBiqugeMultiIndex(
   introDomPatch: (introDom: HTMLElement) => HTMLElement,
   contentPatch: (content: HTMLElement) => HTMLElement,
   concurrencyLimit?: number,
+  sleepTime?: number,
+  maxSleepTime?: number,
   overRide?: (classThis: BaseRuleClass) => any,
   postHook?: (chapter: Chapter) => Chapter | void,
   chapterContenSelector = "#content"
 ) {
   return mkRuleClassMultiIndex({
-    ...baseMultiIndex(introDomPatch, concurrencyLimit, overRide, postHook),
+    ...baseMultiIndex(introDomPatch, concurrencyLimit,sleepTime, maxSleepTime, overRide, postHook),
     getContent: (doc) => doc.querySelector(chapterContenSelector),
     contentPatch,
   });

@@ -19,7 +19,7 @@ on:
   workflow_dispatch:
 permissions:
   contents: write
-  issues: write
+  #pull-requests: write
 
 jobs:
   build-and-deploy:
@@ -38,13 +38,13 @@ jobs:
           name: bundle
           path: dist/bundle*.js
 
-      - name: comment PR 📝
-        uses: thollander/actions-comment-pull-request@v3
-        if: ${{github.event_name == 'pull_request'}}
-        with:
-          message: |
-            我们已经收到您的PR，您可以在这里访问对应的脚本文件。
-            ${{ steps.upload-artifacts.outputs.artifact-url }}
+      # - name: comment PR 📝
+      #   uses: thollander/actions-comment-pull-request@v3
+      #   if: ${{github.event_name == 'pull_request'}}
+      #   with:
+      #     message: |
+      #       我们已经收到您的PR，您可以在这里访问对应的脚本文件。
+      #       ${{ steps.upload-artifacts.outputs.artifact-url }}
 
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4

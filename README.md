@@ -493,7 +493,55 @@ function customFinishCallback(book: Book) {
 }
 window.customFinishCallback = customFinishCallback;
 ```
+## 附录 完整的自定义脚本
+```javascript
+// ==UserScript==
+// @name         Noveldownloader Settings
+// @namespace    http://tampermonkey.net/
+// @version      0.1
+// @description  Noveldownloader Settings
+// @author       You
+// @match        *://*/*
+// @grant        none
+// ==/UserScript==
 
+(function () {
+  "use strict";
+
+  // token 设置开始
+  const tokenOptions = {
+    Jjwxc: "填入token，形如客户号+下划线'_'+字母与数字混合的字符串",
+  };
+  
+  //token 设置结束
+
+  // 章节过滤筛选开始
+  function chapterFilter(chapter) {
+    return chapter.chapterNumber <= 100;
+  }
+  //章节过滤筛选结束
+
+  //保存设置开始
+  const saveOptions = {
+    getchapterName: (chapter) => {
+      if (chapter.chapterName) {
+        return `第${chapter.chapterNumber.toString()}章 ${chapter.chapterName}`;
+      } else {
+        return `第${chapter.chapterNumber.toString()}章`;
+      } // 按 第i章 XXX 命名章节名字
+    },
+  };
+  //保存设置结束
+
+  if(saveOptions)
+    window.saveOptions = saveOptions;
+  if(tokenOptions)
+  window.tokenOptions = tokenOptions;
+  if(chapterFilter)
+    window.chapterFilter = chapterFilter;
+})();
+
+```
 ## 开发
 
 1. `git clone https://github.com/yingziwu/novel-downloader.git` 将项目克隆至本地（访问 github 可能需要使用代理）。

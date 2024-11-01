@@ -39,6 +39,8 @@ interface MkRuleClassOptions {
   getContent?: (doc: Document) => HTMLElement | null;
   contentPatch: (content: HTMLElement) => HTMLElement;
   concurrencyLimit?: number;
+  sleepTime?: number;
+  maxSleepTime?: number;
   needLogin?: boolean;
   nsfw?: boolean;
   cleanDomOptions?: Options;
@@ -66,6 +68,8 @@ export function mkRuleClass({
   getContent,
   contentPatch,
   concurrencyLimit,
+  sleepTime,
+  maxSleepTime,
   needLogin,
   nsfw,
   cleanDomOptions,
@@ -78,6 +82,12 @@ export function mkRuleClass({
       this.attachmentMode = "TM";
       if (concurrencyLimit) {
         this.concurrencyLimit = concurrencyLimit;
+      }
+      if (sleepTime) {
+        this.sleepTime = sleepTime;
+      }
+      if (maxSleepTime) {
+        this.maxSleepTime = maxSleepTime;
       }
       if (needLogin) {
         this.needLogin = needLogin;

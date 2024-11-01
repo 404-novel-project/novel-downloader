@@ -191,7 +191,7 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = Cool18;
       break;
     }
-    case "www.xrzww.com": {
+    case "www.xrzww.com": case "xrzww.com": {
       const { Xrzww } = await import("../rules/special/original/xrzww");
       ruleClass = Xrzww;
       break;

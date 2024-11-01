@@ -39,5 +39,8 @@ export const wenku8 = () => {
       rm("#contentdp", true, content);
       return content;
     },
+    concurrencyLimit: 1,
+    sleepTime: 300,
+    maxSleepTime: 1500,
   });
 };
