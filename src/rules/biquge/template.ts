@@ -83,7 +83,7 @@ export function baseOnePage(
 ) {
   return {
     ...base(introDomPatch, concurrencyLimit, sleepTime, maxSleepTime, overRide, postHook),
-    aList: document.querySelectorAll("#list a, .listmasleepTime, maxSleepTime,in a, .book-item a"),
+    aList: document.querySelectorAll("#list a, .listmain a, .book-item a"),
     sections: document.querySelectorAll("#list dt, .listmain dt, .layout-tit"),
     getSName: (sElem: Element) => {
       const b = sElem.querySelector("b");
