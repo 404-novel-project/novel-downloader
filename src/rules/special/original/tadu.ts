@@ -110,7 +110,9 @@ export class Tadu extends BaseRuleClass {
         .getElementById("bookPartResourceUrl")
         ?.getAttribute("value");
       if (_bookPartResourceUrl) {
-        const bookPartResourceUrl = new URL(_bookPartResourceUrl);
+        const currentUrl = new URL(document.location.href);
+        const rootDomain = `${currentUrl.protocol}//${currentUrl.host}`;
+        const bookPartResourceUrl = new URL(_bookPartResourceUrl, rootDomain);
         bookPartResourceUrl.searchParams.set("callback", "callback");
 
         log.debug(`[Chapter]请求 ${bookPartResourceUrl.toString()}`);
