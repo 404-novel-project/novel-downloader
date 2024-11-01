@@ -44,7 +44,7 @@ export class Qidian extends BaseRuleClass {
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = (
       document.querySelector("#bookImg > img") as HTMLImageElement
-    ).src.slice(0, -4);
+    ).src.slice(0, -5);
     if (coverUrl) {
       getAttachment(coverUrl, this.attachmentMode, "cover-")
         .then((coverClass) => {
@@ -192,7 +192,7 @@ export class Qidian extends BaseRuleClass {
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = (
       document.querySelector("#bookImg > img") as HTMLImageElement
-    ).src.slice(0, -4);
+    ).src.slice(0, -5);
     if (coverUrl) {
       getAttachment(coverUrl, this.attachmentMode, "cover-")
         .then((coverClass) => {
@@ -386,7 +386,7 @@ export class Qidian extends BaseRuleClass {
         const content = document.createElement("div");
         let contentText = "";
 
-        const contentMain = doc.querySelector("main.content") as HTMLElement;
+        const contentMain = doc.querySelector("main") as HTMLElement;
         rm("span.review-count", true, contentMain);
         const authorSayWrap = doc.querySelector(
           "#r-authorSay"
