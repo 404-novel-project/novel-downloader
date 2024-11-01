@@ -167,6 +167,45 @@ export class Xrzww extends BaseRuleClass {
 		charset: string,
 		options: chapterOptions
 	): Promise<ChapterParseObject> {
+		async function getVIPChapter(url: string): Promise<readNew> {
+			let device = "webh517657567560";
+			let Authorization = "Bearer 453453453e03ee546456546754756756";
+			if (typeof (unsafeWindow as UnsafeWindow).tokenOptions === "object") {
+				device = (unsafeWindow as UnsafeWindow).tokenOptions?.Xrzww?.deviceIdentify ?? "webh517657567560";
+				Authorization = (unsafeWindow as UnsafeWindow).tokenOptions?.Xrzww?.Authorization ?? "Bearer 453453453e03ee546456546754756756";
+			}
+			const key = "9495ef469eb3e7ae8ef3";
+			const timestamp = Math.round(Date.now() / 1000).toString();
+			const signature = CryptoJS.MD5(device + timestamp + key).toString();
+			return new Promise((resolve) => {
+				_GM_xmlhttpRequest({
+					url: url,
+					headers: {
+						"Authorization": Authorization,
+						"appVersion": "4.83",
+						"deviceType": "android",
+						"signature": signature,
+						"site": "1",
+						"content-type": "application/json",
+						"headerRequestSource": "xirang",
+						"Connection": "Keep-Alive",
+						"User-Agent": "okhttp/4.8.0",
+						"deviceIdentify": device,
+						"timestamp": timestamp
+					},
+					method: "GET",
+					onload: function (response) {
+						if (response.status === 200) {
+							const resultI = JSON.parse(String(response.responseText));
+							resolve(resultI);
+						} else {
+							log.error(`response status = ${response.status}`);
+							resolve(JSON.parse('{"message":"try again!"}'));
+						}
+					},
+				});
+			});
+		}
 		const contentRaw = document.createElement("p");
 		let last_Modified = 0;
 		if (!isVIP) {
@@ -195,50 +234,11 @@ export class Xrzww extends BaseRuleClass {
 			last_Modified = readNew.data.chapter_uptime;
 		}
 		else if (isVIP && isPaid) {
-			let device = "webh517657567560";
-			let Authorization = "Bearer 453453453e03ee546456546754756756";
-			if (typeof (unsafeWindow as UnsafeWindow).tokenOptions === "object") {
-				device = (unsafeWindow as UnsafeWindow).tokenOptions?.Xrzww?.deviceIdentify ?? "webh517657567560";
-				Authorization = (unsafeWindow as UnsafeWindow).tokenOptions?.Xrzww?.Authorization ?? "Bearer 453453453e03ee546456546754756756";
-			}
-			const timestamp = Math.round(Date.now() / 1000).toString();
-			const key = "9495ef469eb3e7ae8ef3";
-			const signature = CryptoJS.MD5(device + timestamp + key).toString();;
 			const readNewUrl = new URL(`https://android-api.xrzww.com/api/readWithEncrypt`);
 			readNewUrl.searchParams.set("chapter_id", options.chapter_id.toString());
 			readNewUrl.searchParams.set("nid", options.nid.toString());
 			readNewUrl.searchParams.set("preload", "1");
-			async function getVIPChapter(url: string): Promise<readNew> {
-				return new Promise((resolve) => {
-					_GM_xmlhttpRequest({
-						url: url,
-						headers: {
-							"Authorization": Authorization,
-							"appVersion": "4.83",
-							"deviceType": "android",
-							"signature": signature,
-							"site": "1",
-							"content-type": "application/json",
-							"headerRequestSource": "xirang",
-							"Connection": "Keep-Alive",
-							"User-Agent": "okhttp/4.8.0",
-							"deviceIdentify": device,
-							"timestamp": timestamp
-						},
-						method: "GET",
-						onload: function (response) {
-							if (response.status === 200) {
-								const resultI = JSON.parse(String(response.responseText));
-								resolve(resultI);
-							} else {
-								log.error(`response status = ${response.status}`);
-								resolve(JSON.parse('{"message":"try again!"}'));
-							}
-						},
-					});
-				});
-			}
-			let result = await getVIPChapter(readNewUrl.href);
+			const result = await getVIPChapter(readNewUrl.href);
 			if (result) {
 				const readNew = result as readNew;
 				if (readNew.code !== 200) {
