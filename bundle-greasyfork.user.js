@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.955
+// @version        5.2.956
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -11902,7 +11902,7 @@ function base(introDomPatch, concurrencyLimit, sleepTime, maxSleepTime, overRide
 function baseOnePage(introDomPatch, concurrencyLimit, sleepTime, maxSleepTime, overRide, postHook) {
     return {
         ...base(introDomPatch, concurrencyLimit, sleepTime, maxSleepTime, overRide, postHook),
-        aList: document.querySelectorAll("#list a, .listmasleepTime, maxSleepTime,in a, .book-item a"),
+        aList: document.querySelectorAll("#list a, .listmain a, .book-item a"),
         sections: document.querySelectorAll("#list dt, .listmain dt, .layout-tit"),
         getSName: (sElem) => {
             const b = sElem.querySelector("b");
