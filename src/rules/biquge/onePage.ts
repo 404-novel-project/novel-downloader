@@ -77,6 +77,8 @@ export const dijiubook = () =>
       return content;
     },
     1,
+    50,
+    3000,
     (classThis: any) => {
       classThis.maxRunLimit = 1;
       const chapterParse = classThis.chapterParse;
@@ -157,6 +159,8 @@ export const bxwx333 = () =>
       rm(".bottem2", true, content);
       return content;
     },
+    undefined,
+    undefined,
     undefined,
     undefined,
     undefined,

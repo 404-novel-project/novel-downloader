@@ -40,5 +40,7 @@ export const wenku8 = () => {
       return content;
     },
     concurrencyLimit: 1,
+    sleepTime: 300,
+    maxSleepTime: 1500,
   });
 };
