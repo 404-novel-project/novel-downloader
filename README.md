@@ -222,7 +222,7 @@ EPUB 文件请使用相应阅读器阅读。
 
 ### 晋江文学城
 
-需要抓取的数据：登录晋江文学城 Android app (其他平台均不适用)并随意浏览章节，在形如“https://app.jjwxc.org/androidapi/chapterContent?” 等链接中找到&token=后的字符串（止于下一个&）
+需要抓取的数据：登录晋江文学城 Android app 并随意浏览章节，在形如“https://app.jjwxc.org/androidapi/chapterContent?” 等链接中找到 &token= 后的字符串（止于下一个&）
 
 在脚本管理器中新建如下脚本（不要把该脚本代码和其他脚本代码合并，除非你完全理解脚本的意思）并保存：
 
@@ -247,15 +247,15 @@ EPUB 文件请使用相应阅读器阅读。
 })();
 ```
 > [!CAUTION] 
-> 在设置中启用调试模式以后，日志可能会输出一些包含token的链接，这个设计的初衷是为了更快定位发生的问题。
+> 在设置中启用调试模式以后，日志可能会输出一些包含 token 的链接，这个设计的初衷是为了更快定位发生的问题。
 > 
-> 请不要直接将该日志上传到互联网上，当且仅当从事维护的开发者需要此日志定位问题时再提供（可以通过重新登录之前抓取token设备上的晋江app以使原token失效）。
+> 请不要直接将该日志上传到互联网上，当且仅当从事维护的开发者需要此日志定位问题时再提供（可以通过重新登录之前抓取 token 设备上的晋江 app 以使原 token 失效）。
 
 ### 息壤中文网 
 
 该网站的 Android app 启动时会检测 root 和 VPN 代理， 因此可能需要一些额外的操作以越过；此外 header 数据的获取需要安装CA证书，建议具有一定相关知识的人士进行操作。
 
-需要抓取的数据：形如“https://android-api.xrzww.com/api/readWithEncrypt”的网址中找到 Request header（即请求头），header中的deviceIdentify 和 Authorization 即为需要抓取的数据。
+需要抓取的数据：登录息壤中文网 Android app 并随意浏览章节，在形如“https://android-api.xrzww.com/api/readWithEncrypt”的网址中转到 Request header（即请求头）页，header 中的 deviceIdentify 和 Authorization 即为需要抓取的数据（注意不要弄成 Response header（响应头））。
 
 在脚本管理器中新建如下脚本（不要把该脚本代码和其他脚本代码合并，除非你完全理解脚本的意思）并保存：
 
@@ -277,7 +277,7 @@ EPUB 文件请使用相应阅读器阅读。
     Xrzww: {
             deviceIdentify: "webh517657567560"; //填入 header中的deviceIdentify值
             Authorization:  "Bearer 453453453e03ee546456546754756756"; //填入 header中的Authorization值
-        }
+        },
   };
   window.tokenOptions = tokenOptions;
 ```
@@ -568,6 +568,10 @@ window.customFinishCallback = customFinishCallback;
   // token 设置开始
   const tokenOptions = {
     Jjwxc: "填入token，形如客户号+下划线'_'+字母与数字混合的字符串",
+    Xrzww: {
+            deviceIdentify: "webh517657567560"; //填入 header中的deviceIdentify值
+            Authorization:  "Bearer 453453453e03ee546456546754756756"; //填入 header中的Authorization值
+        },
   };
   
   //token 设置结束
