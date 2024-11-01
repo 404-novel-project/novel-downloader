@@ -144,6 +144,7 @@ export async function getRule(): Promise<BaseRuleClass> {
     case "www.newhtbook.com":
     case "www.lvhtebook.com":
     case "jp.lvhtebook.com":
+    case "www.haitangbook.com":
     case "www.htlvbooks.com": {
       const { Longmabook } = await import(
         "../rules/special/original/longmabook"
