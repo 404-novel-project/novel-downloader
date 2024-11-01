@@ -14,10 +14,159 @@ export class Qidian extends BaseRuleClass {
   public constructor() {
     super();
     this.attachmentMode = "TM";
-    this.concurrencyLimit = 3;
+    this.concurrencyLimit = 1;
   }
 
   public async bookParse() {
+    const bookUrl = document.location.href;
+    if (bookUrl.match("www.qidian.com/book/")) {
+      return this.bookParse_www();
+    }
+    else return this.bookParse_book();
+  }
+  public async bookParse_www() { 
+    const ndButton = document.getElementById("nd-button");
+    const _csrfTokenMatch = document.cookie.match(/(?:^|; )_csrfToken=([^;]*)/);
+    const _csrfToken = _csrfTokenMatch ? decodeURIComponent(_csrfTokenMatch[1]) : null;
+    if (!_csrfToken) {
+      throw new Error("未发现 _csrfToken");
+    }
+    const bookUrl = document.location.href;
+    const bookIdMatch = bookUrl.match(/www\.qidian\.com\/book\/(\d+)/);
+    const bookId = bookIdMatch ? bookIdMatch[1] : null;
+    const newurl = "https://book.qidian.com/info/" + bookId?.toString();
+    const author = (document.querySelector(".author") as HTMLElement)?.innerText;
+    const authorId = document
+      .getElementById("authorId")
+      ?.getAttribute("data-authorid");
+    const bookname = (document.querySelector("#bookName") as HTMLElement)?.innerText;
+    const introDom = document.querySelector("#book-intro-detail");
+    const [introduction, introductionHTML] = await introDomHandle(introDom);
+    const additionalMetadate: BookAdditionalMetadate = {};
+    const coverUrl = (
+      document.querySelector("#bookImg > img") as HTMLImageElement
+    ).src.slice(0, -4);
+    if (coverUrl) {
+      getAttachment(coverUrl, this.attachmentMode, "cover-")
+        .then((coverClass) => {
+          additionalMetadate.cover = coverClass;
+        })
+        .catch((error) => log.error(error));
+    }
+    additionalMetadate.tags = Array.from(
+      document.querySelectorAll("#all-label > a")
+    ).map((a) => (a as HTMLAnchorElement).innerText.trim());
+    if (ndButton) {
+        ndButton.innerHTML = `
+      <div style="border: 1px solid #ccc; padding: 10px; background-color: #f9f9f9;">
+        小说下载器尚不支持此页面，不过你可以切换到 <a href="${newurl}$" target="_blank">book.qidian.com下载</a>
+      </div>
+    `;
+    }
+
+    const limitFree = Boolean(
+      document.querySelector(".book-information .flag")
+    );
+    log.info(`[Book]限免书籍 ${limitFree}`);
+
+    const sections = document.querySelectorAll(
+      ".catalog-volume"
+    );
+    let chapterNumber = 0;
+    const chapters: Chapter[] = [];
+
+    for (let i = 0; i < sections.length; i++) {
+      const s = sections[i];
+      const sectionNumber = i + 1;
+      const sectionName = (s.querySelector(".volume-name") as HTMLElement).innerText
+        .trim()
+        .split("\n")
+        .slice(-1)[0]
+        .split("·")[0]
+        .trim();
+      let sectionChapterNumber = 0;
+      const cs = s.querySelectorAll("ul.volume-chapters > li");
+      for (const c of Array.from(cs)) {
+        const a = c.querySelector("a");
+        chapterNumber++;
+        sectionChapterNumber++;
+        const chapterName = (a as HTMLAnchorElement).innerText.trim();
+        const chapterUrl = (a as HTMLAnchorElement).href;
+
+        const isVIP = () => {
+          const host = new URL(chapterUrl).host;
+          return host === "vipreader.qidian.com";
+        };
+        const isPaid = () => {
+          if (isVIP()) {
+            return c.childElementCount !== 2;
+          }
+          return false;
+        };
+        let chapterId;
+        if (isVIP()) {
+          chapterId = /(\d+)\/?$/.exec(chapterUrl)?.slice(-1)[0] ?? null;
+        } else {
+          chapterId = null;
+        }
+        const chapter = new Chapter({
+          bookUrl,
+          bookname,
+          chapterUrl,
+          chapterNumber,
+          chapterName,
+          isVIP: isVIP(),
+          isPaid: isPaid(),
+          sectionName,
+          sectionNumber,
+          sectionChapterNumber,
+          chapterParse: this.chapterParse,
+          charset: this.charset,
+          options: {
+            _csrfToken,
+            bookId,
+            authorId,
+            chapterId,
+            limitFree,
+          },
+        });
+
+        const isLogin = () => {
+          const signInDom = document.querySelector(".sign-in");
+          const signOutDom = document.querySelector(".sign-out");
+          if (signInDom && signOutDom) {
+            if (Array.from(signOutDom.classList).includes("hidden")) {
+              return true;
+            }
+          }
+          return false;
+        };
+        if (isVIP()) {
+          chapter.status = Status.aborted;
+          if (limitFree) {
+            chapter.status = Status.pending;
+          }
+          if (chapter.isPaid) {
+            chapter.status = Status.pending;
+          }
+        }
+        //
+        chapters.push(chapter);
+      }
+    }
+
+    return new Book({
+      bookUrl,
+      bookname,
+      author,
+      introduction,
+      introductionHTML,
+      additionalMetadate,
+      chapters,
+    });
+  }
+
+  public async bookParse_book() {
     let bookId: HTMLElement | string | null =
       document.getElementById("bookImg");
     if (bookId) {
@@ -28,9 +177,11 @@ export class Qidian extends BaseRuleClass {
     const authorId = document
       .getElementById("authorId")
       ?.getAttribute("data-authorid");
-    const _csrfToken = (unsafeWindow as any).jQuery.ajaxSettings.data
-      ._csrfToken;
-
+    const _csrfTokenMatch = document.cookie.match(/(?:^|; )_csrfToken=([^;]*)/);
+    const _csrfToken = _csrfTokenMatch ? decodeURIComponent(_csrfTokenMatch[1]) : null;
+    if (!_csrfToken) {
+      throw new Error("未发现 _csrfToken");
+    }
     const bookUrl = document.location.href;
     const bookname = (
       document.querySelector(".book-info > h1 > em") as HTMLElement
@@ -233,7 +384,7 @@ export class Qidian extends BaseRuleClass {
 
       if (doc) {
         chapterName = (
-          doc.querySelector(".j_chapterName > .content-wrap") as HTMLElement
+          doc.querySelector("h1.title") as HTMLElement
         ).innerText.trim();
 
         // VIP章节
@@ -244,10 +395,10 @@ export class Qidian extends BaseRuleClass {
         const content = document.createElement("div");
         let contentText = "";
 
-        const contentMain = doc.querySelector(".read-content") as HTMLElement;
+        const contentMain = doc.querySelector("main.content") as HTMLElement;
         rm("span.review-count", true, contentMain);
         const authorSayWrap = doc.querySelector(
-          ".author-say-wrap"
+          "#r-authorSay"
         ) as HTMLElement;
         if (contentMain) {
           const { dom, text, images } = await cleanDOM(contentMain, "TM");
@@ -258,7 +409,7 @@ export class Qidian extends BaseRuleClass {
           contentText = contentText + text;
 
           if (authorSayWrap) {
-            const authorSay = authorSayWrap.querySelector("div.author-say");
+            const authorSay = authorSayWrap.querySelector("div");
             if (authorSay) {
               rm("a.avatar", false, authorSay as HTMLElement);
               rm("h4", false, authorSay as HTMLElement);

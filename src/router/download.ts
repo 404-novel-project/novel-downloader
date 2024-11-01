@@ -21,7 +21,7 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = Hetushu;
       break;
     }
-    case "book.qidian.com": {
+    case "book.qidian.com": case "www.qidian.com": {
       const { Qidian } = await import("../rules/special/original/qidian");
       ruleClass = Qidian;
       break;
