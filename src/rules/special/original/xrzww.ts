@@ -6,6 +6,10 @@ import { Chapter } from "../../../main/Chapter";
 import { Status } from "../../../main/main";
 import { cleanDOM } from "../../../lib/cleanDOM";
 import { sleep } from "../../../lib/misc";
+import { _GM_xmlhttpRequest } from "../../../lib/GM";
+import { UnsafeWindow } from "../../../global";
+
+import * as CryptoJS from "crypto-js";
 
 export class Xrzww extends BaseRuleClass {
 	public constructor() {
@@ -191,12 +195,70 @@ export class Xrzww extends BaseRuleClass {
 			last_Modified = readNew.data.chapter_uptime;
 		}
 		else if (isVIP && isPaid) {
-			let device = "webh51721491792120";
-			let Authorization = "Bearer 7e6f692755e03ee35d02988393fdc7bc";
-			let timestamp = Math.round(Date.now() / 1000);
-			let key = "9495ef469eb3e7ae8ef3";
-			let signature = java.md5Encode(device + timestamp + key);
-			
+			let device = "webh517657567560";
+			let Authorization = "Bearer 453453453e03ee546456546754756756";
+			if (typeof (unsafeWindow as UnsafeWindow).tokenOptions === "object") {
+				device = (unsafeWindow as UnsafeWindow).tokenOptions?.Xrzww?.deviceIdentify ?? "webh517657567560";
+				Authorization = (unsafeWindow as UnsafeWindow).tokenOptions?.Xrzww?.Authorization ?? "Bearer 453453453e03ee546456546754756756";
+			}
+			const timestamp = Math.round(Date.now() / 1000).toString();
+			const key = "9495ef469eb3e7ae8ef3";
+			const signature = CryptoJS.MD5(device + timestamp + key).toString();;
+			const readNewUrl = new URL(`https://android-api.xrzww.com/api/readWithEncrypt`);
+			readNewUrl.searchParams.set("chapter_id", options.chapter_id.toString());
+			readNewUrl.searchParams.set("nid", options.nid.toString());
+			readNewUrl.searchParams.set("preload", "1");
+			async function getVIPChapter(url: string): Promise<readNew> {
+				return new Promise((resolve) => {
+					_GM_xmlhttpRequest({
+						url: url,
+						headers: {
+							"Authorization": Authorization,
+							"appVersion": "4.83",
+							"deviceType": "android",
+							"signature": signature,
+							"site": "1",
+							"content-type": "application/json",
+							"headerRequestSource": "xirang",
+							"Connection": "Keep-Alive",
+							"User-Agent": "okhttp/4.8.0",
+							"deviceIdentify": device,
+							"timestamp": timestamp
+						},
+						method: "GET",
+						onload: function (response) {
+							if (response.status === 200) {
+								const resultI = JSON.parse(String(response.responseText));
+								resolve(resultI);
+							} else {
+								log.error(`response status = ${response.status}`);
+								resolve(JSON.parse('{"message":"try again!"}'));
+							}
+						},
+					});
+				});
+			}
+			let result = await getVIPChapter(readNewUrl.href);
+			if (result) {
+				const readNew = result as readNew;
+				if (readNew.code !== 200) {
+					throw new Error("获取章节内容失败！ " + JSON.stringify(options));
+				}
+				let content = readNew.data.content;
+				try {
+					const decrypted = CryptoJS.DES.decrypt(content, CryptoJS.enc.Utf8.parse("VT5aj59QCjf2J8F3"), {
+						iv: CryptoJS.enc.Utf8.parse("259c4e9881b5fe05"),
+						mode: CryptoJS.mode.CBC,
+						padding: CryptoJS.pad.Pkcs7,
+					});
+					content = decrypted.toString(CryptoJS.enc.Utf8);
+				} catch (e) {
+					log.debug(`VIP章节解密失败：${e}`);
+					throw new Error("VIP章节解密失败！");
+				}
+				contentRaw.innerText = content;
+				last_Modified = readNew.data.chapter_uptime;
+			} else contentRaw.innerText = "";
 		} else {
 			contentRaw.innerText = "";
 		}

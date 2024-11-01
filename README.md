@@ -185,11 +185,44 @@ EPUB 文件请使用相应阅读器阅读。
 
 ## Token 填写
 
-当前部分网站（如晋江文学城）需要手动填写登录 token。
+当前部分网站（如晋江文学城）需要手动填写登录 token。app 平台一般为 Android 平台，其他平台一般不能使用（但也可以实践看看）。
+
+### 抓包软件和教程
+
+这里列举出一些常用的工具以供参考。
+
+1. 抓包精灵（Android）
+
+下载抓包精灵/NetCapture（可在 Google Play、酷安搜索到，其他软件也可以）并配置好设置。
+
+可参考 @ll0yiya 的经验（https://github.com/404-novel-project/novel-downloader/issues/599#issuecomment-1866142314）。
+
+2. HttpCanary（Android）
+
+可参考 https://blog.csdn.net/weixin_53891182/article/details/124739048 等资料。
+
+在编写脚本时，作者使用的版本：https://fin.lanzoub.com/iGYv20vym1dc。
+
+3. eCapture（Android）
+
+需要 Android 内核版本 5.4以上。
+
+详细信息，建议参考 https://mp.weixin.qq.com/s/KWm5d0uuzOzReRtr9PmuWQ 等资料。
+
+4. Charles(Windows / MacOS / Linux)
+
+官网： https://www.charlesproxy.com/
+
+需要电脑，可搭配 Android 模拟器。
+
+可参考 https://blog.csdn.net/qq_41631913/article/details/135748992。
+
+
+注：本节脚本代码中的值均为编撰，仅为示意。
 
 ### 晋江文学城
 
-下载抓包精灵（可在 Google Play、酷安搜索到，其他软件也可以）并配置好设置，然后登录晋江文学城 android app (其他平台均不适用)并随意浏览章节，在形如“https://app.jjwxc.org/androidapi/chapterContent?” 等链接中找到&token=后的字符串（止于下一个&）。
+需要抓取的数据：登录晋江文学城 Android app (其他平台均不适用)并随意浏览章节，在形如“https://app.jjwxc.org/androidapi/chapterContent?” 等链接中找到&token=后的字符串（止于下一个&）
 
 在脚本管理器中新建如下脚本（不要把该脚本代码和其他脚本代码合并，除非你完全理解脚本的意思）并保存：
 
@@ -208,22 +241,46 @@ EPUB 文件请使用相应阅读器阅读。
   "use strict";
 
   const tokenOptions = {
-    Jjwxc: "填入token，形如客户号+下划线'_'+字母与数字混合的字符串",
+    Jjwxc: "11111111_750afc84c839aaaaafccd841fffd11f1", //填入token，形如客户号+下划线'_'+字母与数字混合的字符串
   };
   window.tokenOptions = tokenOptions;
 })();
-```
-
-例如：
-
-```javascript
-    Jjwxc:"11111111_750afc84c839aaaaafccd841fffd11f1",
 ```
 > [!CAUTION] 
 > 在设置中启用调试模式以后，日志可能会输出一些包含token的链接，这个设计的初衷是为了更快定位发生的问题。
 > 
 > 请不要直接将该日志上传到互联网上，当且仅当从事维护的开发者需要此日志定位问题时再提供（可以通过重新登录之前抓取token设备上的晋江app以使原token失效）。
 
+### 息壤中文网 
+
+该网站的 Android app 启动时会检测 root 和 VPN 代理， 因此可能需要一些额外的操作以越过；此外 header 数据的获取需要安装CA证书，建议具有一定相关知识的人士进行操作。
+
+需要抓取的数据：形如“https://android-api.xrzww.com/api/readWithEncrypt”的网址中找到 Request header（即请求头），header中的deviceIdentify 和 Authorization 即为需要抓取的数据。
+
+在脚本管理器中新建如下脚本（不要把该脚本代码和其他脚本代码合并，除非你完全理解脚本的意思）并保存：
+
+```javascript
+// ==UserScript==
+// @name         auto inject tokenOptions
+// @namespace    http://tampermonkey.net/
+// @version      0.1
+// @description  auto inject tokenOptions
+// @author       You
+// @match        *://*/*
+// @grant        none
+// ==/UserScript==
+
+(function () {
+  "use strict";
+
+  const tokenOptions = {
+    Xrzww: {
+            deviceIdentify: "webh517657567560"; //填入 header中的deviceIdentify值
+            Authorization:  "Bearer 453453453e03ee546456546754756756"; //填入 header中的Authorization值
+        }
+  };
+  window.tokenOptions = tokenOptions;
+```
 ## 高阶使用技巧
 
 ### 启用调试功能
