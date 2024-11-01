@@ -25,7 +25,6 @@ export class Qidian extends BaseRuleClass {
     else return this.bookParse_book();
   }
   public async bookParse_www() { 
-    const ndButton = document.getElementById("nd-button");
     const _csrfTokenMatch = document.cookie.match(/(?:^|; )_csrfToken=([^;]*)/);
     const _csrfToken = _csrfTokenMatch ? decodeURIComponent(_csrfTokenMatch[1]) : null;
     if (!_csrfToken) {
@@ -56,14 +55,6 @@ export class Qidian extends BaseRuleClass {
     additionalMetadate.tags = Array.from(
       document.querySelectorAll("#all-label > a")
     ).map((a) => (a as HTMLAnchorElement).innerText.trim());
-    if (ndButton) {
-        ndButton.innerHTML = `
-      <div style="border: 1px solid #ccc; padding: 10px; background-color: #f9f9f9;">
-        小说下载器尚不支持此页面，不过你可以切换到 <a href="${newurl}$" target="_blank">book.qidian.com下载</a>
-      </div>
-    `;
-    }
-
     const limitFree = Boolean(
       document.querySelector(".book-information .flag")
     );
