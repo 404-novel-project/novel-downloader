@@ -155,7 +155,7 @@ export class Zongheng extends BaseRuleClass {
     }
 
     const chapters: Chapter[] = [];
-    let result = await getChapterList(bookId);
+    const result = await getChapterList(bookId);
     if (result.message && result.message === "成功") {
       let sectionNumber = 0;
       let chapterNumber = 0;
