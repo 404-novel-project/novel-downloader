@@ -231,15 +231,25 @@ export async function chapterHiddenFix(
   invalidTest: (c: Chapter) => boolean,
   getPrevHref: (doc: Document) => string | undefined,
   concurrencyLimit: number,
+  sleepTime: number = 500,
   getHtmlDomFunc: typeof getHtmlDOM | typeof ggetHtmlDOM = getHtmlDOM
 ) {
   const { chapters } = book;
   const invalidChapterList = chapters.filter(invalidTest);
-  const limit = pLimit(concurrencyLimit);
-  const tasks = invalidChapterList.map((ic) => {
-    return limit(() => fix(ic, chapters));
-  });
-  await Promise.all(tasks);
+  
+  if (concurrencyLimit === 1) {
+    for (let ic of invalidChapterList) {
+      fix(ic, chapters);
+      await new Promise(resolve => setTimeout(resolve, Math.random() * 100 + sleepTime));
+    }
+  } else {
+    const limit = pLimit(concurrencyLimit);
+    let tasks = invalidChapterList.map((ic) => {
+      return limit(() => fix(ic, chapters));
+    });
+    await Promise.all(tasks);
+  }
+  
 
   async function fix(invalidChapter: Chapter, chapterList: Chapter[]) {
     const no = invalidChapter.chapterNumber;

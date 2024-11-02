@@ -89,7 +89,8 @@
     "*://www.007zw.com/shuzhai/*/",
     "*://www.linovelib.com/novel/*/catalog",
     "*://www.linovelib.com/novel/*.html",
-    "*://w.linovelib.com/novel/*.html",
+    "*://www.bilinovel.com/novel/*.html",
+    "*://www.bilinovel.com/novel/*/catalog",
     "*://www.luoqiuzw.com/book/*/",
     "*://www.yibige.cc/*/",
     "*://www.fushuwang.org/*/*/*/*.html",
@@ -265,7 +266,7 @@
     "*://www.alphapolis.co.jp/novel/*/*/episode/*",
     "*://novelup.plus/story/*/*",
     "*://www.linovelib.com/novel/*/*.html",
-    "*://w.linovelib.com/novel/*/*.html",
+    "*://www.bilinovel.com/novel/*/*.html",
     "*://www.qbtr.cc/*/*/*.html",
     "*://www.ciyuanji.com/chapter/*"
   ],

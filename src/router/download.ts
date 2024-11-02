@@ -420,7 +420,7 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = linovelib();
       break;
     }
-    case "w.linovelib.com": {
+    case "www.bilinovel.com": {
       const { wlinovelib } = await import("../rules/twoPage/linovelib");
       ruleClass = wlinovelib();
       break;
