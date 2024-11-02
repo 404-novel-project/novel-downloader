@@ -5,7 +5,7 @@ export const alphapolis = () =>
   mkRuleClass({
     bookUrl: document.location.href,
     bookname: (
-      document.querySelector("h2.title") as HTMLElement
+      document.querySelector("h1.title") as HTMLElement
     ).innerText.trim(),
     author: (
       document.querySelector(
@@ -28,7 +28,7 @@ export const alphapolis = () =>
       (aElem.querySelector(".title") as HTMLSpanElement)?.innerText.trim(),
     sections: document.querySelectorAll(".episodes > h3"),
     getSName: (sElem) => (sElem as HTMLElement).innerText.trim(),
-    getContent: (doc) => doc.querySelector("#novelBoby"),
+    getContent: (doc) => doc.querySelector("#novelBody"),
     contentPatch: (content) => {
       insertBrBeforeText(content);
       return content;

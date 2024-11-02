@@ -31,6 +31,7 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = Jjwxc;
       break;
     }
+    case "www.zongheng.com":
     case "book.zongheng.com":
     case "huayu.zongheng.com": {
       const { Zongheng } = await import("../rules/special/original/zongheng");
@@ -48,6 +49,7 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = Shuhai;
       break;
     }
+    case "gongzicp.com":
     case "www.gongzicp.com":
     case "m.gongzicp.com": {
       const { Gongzicp } = await import("../rules/special/original/gongzicp");
@@ -196,7 +198,7 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = Xrzww;
       break;
     }
-    case "www.youdubook.com": {
+    case "www.youdubook.com": case "youdubook.com": {
       const { Youdubook } = await import("../rules/special/original/youdubook");
       ruleClass = Youdubook;
       break;
@@ -428,7 +430,7 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = yibige();
       break;
     }
-    case "www.wangshuge.la": {
+    case "www.wangshugu.org": {
       const { washuge } = await import("../rules/twoPage/washuge");
       ruleClass = washuge();
       break;
@@ -511,7 +513,7 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = biquwx();
       break;
     }
-    case "www.25zw.org": {
+    case "www.i25zw.com": {
       const { c25zw } = await import("../rules/biquge/onePage");
       ruleClass = c25zw();
       break;

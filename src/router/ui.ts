@@ -159,8 +159,16 @@ export function getUI(): () => UIObject {
         }
       };
     }
+    case "www.zongheng.com":
     case "book.zongheng.com":
     case "huayu.zongheng.com": {
+      const style = document.createElement("style");
+      style.innerHTML = `
+          img {
+            font-size: 1em;
+          }
+        `;
+      document.head.appendChild(style);
       return () => {
         if (document.location.pathname.startsWith("/book/")) {
           return {
@@ -235,7 +243,7 @@ export function getUI(): () => UIObject {
     case "www.luoqiuzw.com":
     case "dijiuben.com":
     case "www.biquzw.la":
-    case "www.25zw.org":
+    case "www.i25zw.com":
     case "www.tycqzw.com":
     case "www.ranwen.la":
     case "www.b5200.net":

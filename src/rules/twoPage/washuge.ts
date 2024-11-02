@@ -29,7 +29,7 @@ export const washuge = () => {
     getCoverUrl: (doc) =>
       (doc.querySelector(".hst > img") as HTMLImageElement).src,
     getAList: (doc) => document.querySelectorAll("#at > tbody td > a"),
-    getContent: (doc) => doc.querySelector("#contents"),
+    getContent: (doc) => doc.querySelector("#contents > *"),
     contentPatch: (dom) => dom,
     concurrencyLimit: 1,
   });
