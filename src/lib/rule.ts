@@ -238,13 +238,13 @@ export async function chapterHiddenFix(
   const invalidChapterList = chapters.filter(invalidTest);
   
   if (concurrencyLimit === 1) {
-    for (let ic of invalidChapterList) {
+    for (const ic of invalidChapterList) {
       fix(ic, chapters);
       await new Promise(resolve => setTimeout(resolve, Math.random() * 100 + sleepTime));
     }
   } else {
     const limit = pLimit(concurrencyLimit);
-    let tasks = invalidChapterList.map((ic) => {
+    const tasks = invalidChapterList.map((ic) => {
       return limit(() => fix(ic, chapters));
     });
     await Promise.all(tasks);
