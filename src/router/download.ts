@@ -511,7 +511,7 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = biquwx();
       break;
     }
-    case "www.25zw.org": {
+    case "www.i25zw.com": {
       const { c25zw } = await import("../rules/biquge/onePage");
       ruleClass = c25zw();
       break;
