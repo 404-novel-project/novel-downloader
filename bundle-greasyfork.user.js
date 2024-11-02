@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.958
+// @version        5.2.959
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -59,6 +59,7 @@
 // @match          *://book.sfacg.com/Novel/*/
 // @match          *://m.sfacg.com/b/*/
 // @match          *://book.qidian.com/info/*
+// @match          *://www.qidian.com/book/*
 // @match          *://www.jjwxc.net/onebook.php?novelid=*
 // @match          *://www.gongzicp.com/novel-*.html
 // @match          *://gongzicp.com/novel-*.html
@@ -163,6 +164,7 @@
 // @match          *://www.shubl.com/book/book_detail/*
 // @match          *://m.haitangtxt.net/*/*/
 // @match          *://ebook.longmabook.com/*
+// @match          *://www.haitangbook.com/*
 // @match          *://www.longmabookcn.com/*
 // @match          *://ebook.lmbooks.com/*
 // @match          *://www.lmebooks.com/*
@@ -30475,14 +30477,14 @@ async function getNovel(novelID, lang, version) {
 /* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/attachments.ts");
 /* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__("./src/lib/cleanDOM.ts");
 /* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/http.ts");
-/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/misc.ts");
+/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/misc.ts");
 /* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("./src/lib/dom.ts");
 /* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/main.ts");
-/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Chapter.ts");
-/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/main.ts");
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Book.ts");
 /* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
 
 
@@ -30499,9 +30501,136 @@ class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
     constructor() {
         super();
         this.attachmentMode = "TM";
-        this.concurrencyLimit = 3;
+        this.concurrencyLimit = 1;
     }
     async bookParse() {
+        const bookUrl = document.location.href;
+        if (bookUrl.match("www.qidian.com/book/")) {
+            return this.bookParse_www();
+        }
+        else
+            return this.bookParse_book();
+    }
+    async bookParse_www() {
+        const _csrfTokenMatch = document.cookie.match(/(?:^|; )_csrfToken=([^;]*)/);
+        const _csrfToken = _csrfTokenMatch ? decodeURIComponent(_csrfTokenMatch[1]) : null;
+        if (!_csrfToken) {
+            throw new Error("未发现 _csrfToken");
+        }
+        const bookUrl = document.location.href;
+        const bookIdMatch = bookUrl.match(/www\.qidian\.com\/book\/(\d+)/);
+        const bookId = bookIdMatch ? bookIdMatch[1] : null;
+        const newurl = "https://book.qidian.com/info/" + bookId?.toString();
+        const author = document.querySelector(".author")?.innerText;
+        const authorId = document
+            .getElementById("authorId")
+            ?.getAttribute("data-authorid");
+        const bookname = document.querySelector("#bookName")?.innerText;
+        const introDom = document.querySelector("#book-intro-detail");
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .HV)(introDom);
+        const additionalMetadate = {};
+        const coverUrl = document.querySelector("#bookImg > img").src.slice(0, -5);
+        if (coverUrl) {
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
+                .then((coverClass) => {
+                additionalMetadate.cover = coverClass;
+            })
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_3___default().error(error));
+        }
+        additionalMetadate.tags = Array.from(document.querySelectorAll("#all-label > a")).map((a) => a.innerText.trim());
+        const limitFree = Boolean(document.querySelector(".book-information .flag"));
+        _log__WEBPACK_IMPORTED_MODULE_3___default().info(`[Book]限免书籍 ${limitFree}`);
+        const sections = document.querySelectorAll(".catalog-volume");
+        let chapterNumber = 0;
+        const chapters = [];
+        for (let i = 0; i < sections.length; i++) {
+            const s = sections[i];
+            const sectionNumber = i + 1;
+            const sectionName = s.querySelector(".volume-name").innerText
+                .trim()
+                .split("\n")
+                .slice(-1)[0]
+                .split("·")[0]
+                .trim();
+            let sectionChapterNumber = 0;
+            const cs = s.querySelectorAll("ul.volume-chapters > li");
+            for (const c of Array.from(cs)) {
+                const a = c.querySelector("a");
+                chapterNumber++;
+                sectionChapterNumber++;
+                const chapterName = a.innerText.trim();
+                const chapterUrl = a.href;
+                const isVIP = () => {
+                    const host = new URL(chapterUrl).host;
+                    return host === "vipreader.qidian.com";
+                };
+                const isPaid = () => {
+                    if (isVIP()) {
+                        return c.childElementCount !== 2;
+                    }
+                    return false;
+                };
+                let chapterId;
+                if (isVIP()) {
+                    chapterId = /(\d+)\/?$/.exec(chapterUrl)?.slice(-1)[0] ?? null;
+                }
+                else {
+                    chapterId = null;
+                }
+                const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .I({
+                    bookUrl,
+                    bookname,
+                    chapterUrl,
+                    chapterNumber,
+                    chapterName,
+                    isVIP: isVIP(),
+                    isPaid: isPaid(),
+                    sectionName,
+                    sectionNumber,
+                    sectionChapterNumber,
+                    chapterParse: this.chapterParse,
+                    charset: this.charset,
+                    options: {
+                        _csrfToken,
+                        bookId,
+                        authorId,
+                        chapterId,
+                        limitFree,
+                    },
+                });
+                const isLogin = () => {
+                    const signInDom = document.querySelector(".sign-in");
+                    const signOutDom = document.querySelector(".sign-out");
+                    if (signInDom && signOutDom) {
+                        if (Array.from(signOutDom.classList).includes("hidden")) {
+                            return true;
+                        }
+                    }
+                    return false;
+                };
+                if (isVIP()) {
+                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_5__/* .Status */ .nW.aborted;
+                    if (limitFree) {
+                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_5__/* .Status */ .nW.pending;
+                    }
+                    if (chapter.isPaid) {
+                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_5__/* .Status */ .nW.pending;
+                    }
+                }
+                chapters.push(chapter);
+            }
+        }
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .E({
+            bookUrl,
+            bookname,
+            author,
+            introduction,
+            introductionHTML,
+            additionalMetadate,
+            chapters,
+        });
+    }
+    async bookParse_book() {
         let bookId = document.getElementById("bookImg");
         if (bookId) {
             bookId = bookId.getAttribute("data-bid");
@@ -30512,8 +30641,11 @@ class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
         const authorId = document
             .getElementById("authorId")
             ?.getAttribute("data-authorid");
-        const _csrfToken = unsafeWindow.jQuery.ajaxSettings.data
-            ._csrfToken;
+        const _csrfTokenMatch = document.cookie.match(/(?:^|; )_csrfToken=([^;]*)/);
+        const _csrfToken = _csrfTokenMatch ? decodeURIComponent(_csrfTokenMatch[1]) : null;
+        if (!_csrfToken) {
+            throw new Error("未发现 _csrfToken");
+        }
         const bookUrl = document.location.href;
         const bookname = document.querySelector(".book-info > h1 > em").innerText.trim();
         const author = document.querySelector(".book-info .writer, .book-info > h1:nth-child(1) > span:nth-child(2)").innerText
@@ -30523,7 +30655,7 @@ class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
         const introDom = document.querySelector(".book-info-detail .book-intro");
         const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .HV)(introDom);
         const additionalMetadate = {};
-        const coverUrl = document.querySelector("#bookImg > img").src.slice(0, -4);
+        const coverUrl = document.querySelector("#bookImg > img").src.slice(0, -5);
         if (coverUrl) {
             (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
@@ -30543,7 +30675,7 @@ class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
             }
         };
         if (!(liLength && getChapterTotalNumber() === liLength)) {
-            await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_4__/* .sleep */ .yy)(3000);
+            await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_7__/* .sleep */ .yy)(3000);
         }
         const sections = document.querySelectorAll("#j-catalogWrap > .volume-wrap > .volume");
         let chapterNumber = 0;
@@ -30581,7 +30713,7 @@ class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
                 else {
                     chapterId = null;
                 }
-                const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .I({
+                const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .I({
                     bookUrl,
                     bookname,
                     chapterUrl,
@@ -30613,18 +30745,18 @@ class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
                     return false;
                 };
                 if (isVIP()) {
-                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status */ .nW.aborted;
+                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_5__/* .Status */ .nW.aborted;
                     if (limitFree) {
-                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status */ .nW.pending;
+                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_5__/* .Status */ .nW.pending;
                     }
                     if (chapter.isPaid) {
-                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status */ .nW.pending;
+                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_5__/* .Status */ .nW.pending;
                     }
                 }
                 chapters.push(chapter);
             }
         }
-        return new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .E({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -30667,15 +30799,15 @@ class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
                 doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_8__/* .ggetHtmlDOM */ .pG)(chapterUrl, charset);
             }
             if (doc) {
-                chapterName = doc.querySelector(".j_chapterName > .content-wrap").innerText.trim();
+                chapterName = doc.querySelector("h1.title").innerText.trim();
                 if (doc.querySelector(".vip-limit-wrap")) {
                     return nullObj;
                 }
                 const content = document.createElement("div");
                 let contentText = "";
-                const contentMain = doc.querySelector(".read-content");
+                const contentMain = doc.querySelector("main");
                 (0,_lib_dom__WEBPACK_IMPORTED_MODULE_9__.rm)("span.review-count", true, contentMain);
-                const authorSayWrap = doc.querySelector(".author-say-wrap");
+                const authorSayWrap = doc.querySelector("#r-authorSay");
                 if (contentMain) {
                     const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .an)(contentMain, "TM");
                     (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .htmlTrim */ .is)(dom);
@@ -30683,7 +30815,7 @@ class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
                     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_9__/* .rm2 */ .Sf)([/^谷[\u4e00-\u9fa5]{0,1}$/gm], content);
                     contentText = contentText + text;
                     if (authorSayWrap) {
-                        const authorSay = authorSayWrap.querySelector("div.author-say");
+                        const authorSay = authorSayWrap.querySelector("div");
                         if (authorSay) {
                             (0,_lib_dom__WEBPACK_IMPORTED_MODULE_9__.rm)("a.avatar", false, authorSay);
                             (0,_lib_dom__WEBPACK_IMPORTED_MODULE_9__.rm)("h4", false, authorSay);
@@ -31720,7 +31852,9 @@ class Tadu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
                 .getElementById("bookPartResourceUrl")
                 ?.getAttribute("value");
             if (_bookPartResourceUrl) {
-                const bookPartResourceUrl = new URL(_bookPartResourceUrl);
+                const currentUrl = new URL(document.location.href);
+                const rootDomain = `${currentUrl.protocol}//${currentUrl.host}`;
+                const bookPartResourceUrl = new URL(_bookPartResourceUrl, rootDomain);
                 bookPartResourceUrl.searchParams.set("callback", "callback");
                 _log__WEBPACK_IMPORTED_MODULE_3___default().debug(`[Chapter]请求 ${bookPartResourceUrl.toString()}`);
                 const jsonpText = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_7__/* .gfetch */ ._V)(bookPartResourceUrl.toString(), {
@@ -36300,7 +36434,8 @@ async function getRule() {
             ruleClass = Hetushu;
             break;
         }
-        case "book.qidian.com": {
+        case "book.qidian.com":
+        case "www.qidian.com": {
             const { Qidian } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/qidian.ts"));
             ruleClass = Qidian;
             break;
@@ -36423,6 +36558,7 @@ async function getRule() {
         case "www.newhtbook.com":
         case "www.lvhtebook.com":
         case "jp.lvhtebook.com":
+        case "www.haitangbook.com":
         case "www.htlvbooks.com": {
             const { Longmabook } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/longmabook.ts"));
             ruleClass = Longmabook;
@@ -37048,6 +37184,7 @@ function getUI() {
         case "www.newhtbook.com":
         case "www.lvhtebook.com":
         case "jp.lvhtebook.com":
+        case "www.haitangbook.com":
         case "www.htlvbooks.com": {
             return () => {
                 const params = new URLSearchParams(document.location.search);
