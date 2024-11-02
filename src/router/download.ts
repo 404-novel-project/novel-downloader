@@ -49,6 +49,7 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = Shuhai;
       break;
     }
+    case "gongzicp.com":
     case "www.gongzicp.com":
     case "m.gongzicp.com": {
       const { Gongzicp } = await import("../rules/special/original/gongzicp");

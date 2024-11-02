@@ -28,6 +28,7 @@
     "*://book.qidian.com/info/*",
     "*://www.jjwxc.net/onebook.php?novelid=*",
     "*://www.gongzicp.com/novel-*.html",
+    "*://gongzicp.com/novel-*.html",
     "*://m.gongzicp.com/novel-*.html",
     "*://book.zongheng.com/showchapter/*.html",
     "*://book.zongheng.com/book/*.html",
