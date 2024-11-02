@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.956
+// @version        5.2.957
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -38,11 +38,11 @@
 // @exclude        *://jpxs123.com/*/*/*.html
 // @exclude        *://tongrenquan.org/tongren/*/*.html
 // @exclude        *://tongrenquan.me/tongren/*/*.html
-// @exclude        *://www.25zw.org/lastupdate/
-// @exclude        *://www.25zw.org/postdate/
-// @exclude        *://www.25zw.org/monthvisit/
-// @exclude        *://www.25zw.org/goodnum/
-// @exclude        *://www.25zw.org/goodnew/
+// @exclude        *://www.i25zw.com/lastupdate/
+// @exclude        *://www.i25zw.com/postdate/
+// @exclude        *://www.i25zw.com/monthvisit/
+// @exclude        *://www.i25zw.com/goodnum/
+// @exclude        *://www.i25zw.com/goodnew/
 // @exclude        *://dijiuben.com/*_*/*.html
 // @exclude        *://ncode.syosetu.com/*/*/
 // @exclude        *://novel18.syosetu.com/*/*/
@@ -61,9 +61,11 @@
 // @match          *://book.qidian.com/info/*
 // @match          *://www.jjwxc.net/onebook.php?novelid=*
 // @match          *://www.gongzicp.com/novel-*.html
+// @match          *://gongzicp.com/novel-*.html
 // @match          *://m.gongzicp.com/novel-*.html
 // @match          *://book.zongheng.com/showchapter/*.html
 // @match          *://book.zongheng.com/book/*.html
+// @match          *://www.zongheng.com/detail/*
 // @match          *://huayu.zongheng.com/showchapter/*.html
 // @match          *://huayu.zongheng.com/book/*.html
 // @match          *://www.linovel.net/book/*.html
@@ -179,7 +181,7 @@
 // @match          *://www.htlvbooks.com/*
 // @match          *://dijiuben.com/*_*
 // @match          *://www.biquzw.la/*_*/
-// @match          *://www.25zw.org/*/
+// @match          *://www.i25zw.com/*/
 // @match          *://www.tycqzw.com/*_*/
 // @match          *://www.kanunu8.com/*
 // @match          *://www.ciyuanji.com/*
@@ -187,7 +189,7 @@
 // @match          *://m.xiaoshuowanben.com/*/
 // @match          *://www.xiaoshuowanben.com/*/
 // @match          *://www.ranwen.la/files/article/*/*/
-// @match          *://www.wangshuge.la/books/*/*/
+// @match          *://www.wangshugu.org/books/*/*/
 // @match          *://m.baihexs.com/info-*/
 // @match          *://www.quanshuzhai.com/book/*.html
 // @match          *://masiro.me/admin/novelView?novel_id=*
@@ -221,6 +223,7 @@
 // @match          *://www.xrzww.com/bookdetail/*
 // @match          *://xrzww.com/bookdetail/*
 // @match          *://www.youdubook.com/bookdetail/*
+// @match          *://youdubook.com/bookdetail/*
 // @match          *://colorful-fantasybooks.com/module/novel/info.php?*
 // @match          *://www.dizishu.com/*/*/
 // @match          *://www.ibiquge.la/*/*/
@@ -300,7 +303,7 @@
 // @connect        poco.cn
 // @connect        dijiuzww.com
 // @connect        dijiushu.net
-// @connect        25zw.com
+// @connect        i25zw.com
 // @connect        sina.com.cn
 // @connect        ciyuanji.com
 // @connect        wanben.org
