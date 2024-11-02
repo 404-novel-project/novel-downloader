@@ -428,7 +428,7 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = yibige();
       break;
     }
-    case "www.wangshuge.la": {
+    case "www.wangshugu.org": {
       const { washuge } = await import("../rules/twoPage/washuge");
       ruleClass = washuge();
       break;
