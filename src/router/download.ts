@@ -31,6 +31,7 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = Jjwxc;
       break;
     }
+    case "www.zongheng.com":
     case "book.zongheng.com":
     case "huayu.zongheng.com": {
       const { Zongheng } = await import("../rules/special/original/zongheng");

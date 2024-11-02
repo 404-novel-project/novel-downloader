@@ -1,12 +1,13 @@
 import { getAttachment } from "../../../lib/attachments";
 import { cleanDOM } from "../../../lib/cleanDOM";
-import { getHtmlDOM, ggetHtmlDOM } from "../../../lib/http";
+import { getHtmlDOM, ggetHtmlDOM} from "../../../lib/http";
 import { introDomHandle } from "../../../lib/rule";
 import { log } from "../../../log";
 import { Status } from "../../../main/main";
 import { Chapter } from "../../../main/Chapter";
 import { Book, BookAdditionalMetadate } from "../../../main/Book";
 import { BaseRuleClass, ChapterParseObject } from "../../../rules";
+import { _GM_xmlhttpRequest } from "../../../lib/GM";
 
 export class Zongheng extends BaseRuleClass {
   public constructor() {
@@ -16,24 +17,47 @@ export class Zongheng extends BaseRuleClass {
   }
 
   public async bookParse() {
-    const bookUrl = document.location.href.replace("/showchapter/", "/book/");
+    let bookUrl = document.location.href.replace("/showchapter/", "/book/");
+    bookUrl = document.location.href.replace(/\?tabsName=.*$/, "");
+    if (bookUrl != document.location.href) {
+      document.location.href = bookUrl;
+      return new Book({
+        bookUrl,
+        bookname:"1",
+        author:"1",
+        introduction:"1",
+        introductionHTML:null,
+        additionalMetadate: {},
+        chapters: [],
+      });
+    }
+    const match = bookUrl.match(/\/detail\/(\d+)/);
+    const bookId = match ? match[1] : null;
+    if (!bookId) {
+      return new Book({
+        bookUrl,
+        bookname: "1",
+        author: "1",
+        introduction: "1",
+        introductionHTML: null,
+        additionalMetadate: {},
+        chapters: [],
+      });
+    }
     const bookname = (
-      document.querySelector("div.book-meta > h1") as HTMLElement
+      document.querySelector(".book-info--title > span") as HTMLElement
     ).innerText.trim();
 
     const author = (
       document.querySelector(
-        "div.book-meta > p > span:nth-child(1) > a"
+        "a.author-info--name"
       ) as HTMLElement
     ).innerText.trim();
-
-    const doc = await getHtmlDOM(bookUrl, undefined);
-    const introDom = doc.querySelector("div.book-info > div.book-dec");
+    const introDom = document.querySelector("section.detail-work-info--introduction");
     const [introduction, introductionHTML] = await introDomHandle(introDom);
-
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = (
-      doc.querySelector("div.book-img > img") as HTMLImageElement
+      document.querySelector("img.book-info--coverImage-img") as HTMLImageElement
     ).src;
     if (coverUrl) {
       getAttachment(coverUrl, this.attachmentMode, "cover-")
@@ -43,66 +67,134 @@ export class Zongheng extends BaseRuleClass {
         .catch((error) => log.error(error));
     }
     additionalMetadate.tags = Array.from(
-      doc.querySelectorAll(".book-info>.book-label a")
+      document.querySelectorAll(".book-info--tags > span")
     ).map((a) => (a as HTMLAnchorElement).innerText.trim());
 
-    const chapters: Chapter[] = [];
-    const sections = document.querySelectorAll(".volume-list");
-    let chapterNumber = 0;
-    for (let i = 0; i < sections.length; i++) {
-      const s = sections[i];
-      const sectionNumber = i + 1;
-
-      const sectionLabel = s.querySelector("div.volume");
-      Array.from((sectionLabel as HTMLElement).children).forEach((ele) =>
-        ele.remove()
-      );
-
-      const sectionName = (sectionLabel as HTMLElement).innerText.trim();
-      let sectionChapterNumber = 0;
-
-      const cs = s.querySelectorAll("ul.chapter-list > li");
-      for (const c of Array.from(cs)) {
-        const a = c.querySelector("a");
-        chapterNumber++;
-        sectionChapterNumber++;
-        const chapterName = (a as HTMLAnchorElement).innerText.trim();
-        const chapterUrl = (a as HTMLAnchorElement).href;
-
-        const isVIP = () => {
-          return c.className.includes("vip");
-        };
-        const isPaid = () => {
-          // Todo
-          return false;
-        };
-
-        const chapter = new Chapter({
-          bookUrl,
-          bookname,
-          chapterUrl,
-          chapterNumber,
-          chapterName,
-          isVIP: isVIP(),
-          isPaid: isPaid(),
-          sectionName,
-          sectionNumber,
-          sectionChapterNumber,
-          chapterParse: this.chapterParse,
-          charset: this.charset,
-          options: {},
-        });
-        const isLogin = () => {
-          // Todo
-          return false;
-        };
-        if (isVIP() && !(isLogin() && chapter.isPaid)) {
-          chapter.status = Status.aborted;
-        }
-        chapters.push(chapter);
-      }
+    interface Tome {
+      tomeId: number;
+      tomeNo: number;
+      tomeName: string;
+      bookId: number;
+      createTime: string;
+      updateTime: string;
+      ext1: string;
+      ext2: string;
+      level: number;
+      tomeBrief: string;
     }
 
+    interface ChapterView {
+      tomeId: number;
+      tomeName: string;
+      chapterId: number;
+      chapterName: string;
+      wordNums: number;
+      createTime: string;
+      issueTime: string;
+      price: number;
+      status: number;
+      level: number;
+      bookId: number;
+      everBuy: boolean;
+      newChapter: boolean;
+      contentType: number;
+    }
+
+    interface ChapterList {
+      tome: Tome;
+      startChapterId: number;
+      chapterViewList: ChapterView[];
+      tomeTotalWords: number;
+      tomeTotalChapterNum: number;
+    }
+
+    interface Result {
+      chapterList: ChapterList[];
+      chapterSum: number;
+      fpChapterId: number;
+      fpChapterName: string;
+    }
+
+    interface ChapterList {
+      code: number;
+      message: string;
+      result: Result;
+    }
+    async function getChapterList(bookId: string): Promise<ChapterList> {
+      const url = `https://bookapi.zongheng.com/api/chapter/getChapterList`;
+      const formData = new URLSearchParams();
+      formData.append("bookId", bookId);
+      return new Promise((resolve) => {
+        _GM_xmlhttpRequest({
+          url: url,
+          headers: {
+            Cookie: document.cookie,
+            Origin: "https://www.zongheng.com",
+            Referer: "https://www.zongheng.com/",
+            "Content-Type": "application/x-www-form-urlencoded",
+
+          },
+          method: "POST",
+          data: formData.toString(),
+          onload: function (response) {
+            if (response.status === 200) {
+              const resultI: ChapterList = JSON.parse(
+                response.responseText
+              );
+              resolve(resultI);
+            } else {
+              log.error(`post ${url} response status = ${response.status}`);
+              const resultI: ChapterList = JSON.parse(
+                '{"message":"天塌了"}'
+              );
+              resolve(resultI);
+            }
+          },
+        });
+      });
+    }
+
+    const chapters: Chapter[] = [];
+    let result = await getChapterList(bookId);
+    if (result.message && result.message === "成功") {
+      let sectionNumber = 0;
+      let chapterNumber = 0;
+      for (const tome of result.result.chapterList) {
+        sectionNumber++;
+        const sectionName = tome.tome.tomeName;
+        let sectionChapterNumber = 0;
+        for (const chapterView of tome.chapterViewList) {
+          sectionChapterNumber++;
+          //https://read.zongheng.com/chapter/957220/60178463.html
+          const chapterUrl = `https://read.zongheng.com/chapter/${bookId}/${chapterView.chapterId}.html`;
+          const chapterName = chapterView.chapterName;
+          chapterNumber++;
+          const isVIP = chapterView.price > 0;
+          const isPaid = chapterView.everBuy;
+          const chapter = new Chapter({
+            bookUrl,
+            bookname,
+            chapterUrl,
+            chapterNumber,
+            chapterName,
+            isVIP,
+            isPaid,
+            sectionName,
+            sectionNumber,
+            sectionChapterNumber,
+            chapterParse: this.chapterParse,
+            charset: this.charset,
+            options: {},
+          });
+          if (isVIP && !isPaid) {
+            chapter.status = Status.aborted;
+          }
+          chapters.push(chapter);
+        }
+      }
+    } else {
+      log.error(`获取目录失败 ${result.message}`);
+    }
     return new Book({
       bookUrl,
       bookname,

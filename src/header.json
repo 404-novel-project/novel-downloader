@@ -31,6 +31,7 @@
     "*://m.gongzicp.com/novel-*.html",
     "*://book.zongheng.com/showchapter/*.html",
     "*://book.zongheng.com/book/*.html",
+    "*://www.zongheng.com/detail/*",
     "*://huayu.zongheng.com/showchapter/*.html",
     "*://huayu.zongheng.com/book/*.html",
     "*://www.linovel.net/book/*.html",
