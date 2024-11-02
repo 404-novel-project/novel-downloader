@@ -275,8 +275,8 @@ EPUB 文件请使用相应阅读器阅读。
 
   const tokenOptions = {
     Xrzww: {
-            deviceIdentify: "webh517657567560"; //填入 header中的deviceIdentify值
-            Authorization:  "Bearer 453453453e03ee546456546754756756"; //填入 header中的Authorization值
+            deviceIdentify: "webh517657567560", //填入 header中的deviceIdentify值
+            Authorization:  "Bearer 453453453e03ee546456546754756756", //填入 header中的Authorization值
         },
   };
   window.tokenOptions = tokenOptions;
@@ -570,8 +570,8 @@ window.customFinishCallback = customFinishCallback;
   const tokenOptions = {
     Jjwxc: "填入token，形如客户号+下划线'_'+字母与数字混合的字符串",
     Xrzww: {
-            deviceIdentify: "webh517657567560"; //填入 header中的deviceIdentify值
-            Authorization:  "Bearer 453453453e03ee546456546754756756"; //填入 header中的Authorization值
+            deviceIdentify: "webh517657567560", //填入 header中的deviceIdentify值
+            Authorization:  "Bearer 453453453e03ee546456546754756756", //填入 header中的Authorization值
         },
   };
   
