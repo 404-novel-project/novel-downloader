@@ -94,6 +94,7 @@ export function getUI(): () => UIObject {
     case "www.newhtbook.com":
     case "www.lvhtebook.com":
     case "jp.lvhtebook.com":
+    case "www.haitangbook.com":
     case "www.htlvbooks.com": {
       return () => {
         const params = new URLSearchParams(document.location.search);
