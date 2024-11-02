@@ -6,6 +6,11 @@ import { Book } from "../../main/Book";
 import { Chapter } from "../../main/Chapter";
 import { table } from "../lib/linovelib";
 
+const chapterFixSleepTime = 2000;
+const concurrencyLimit = 1;
+const sleepTime = 600;
+const maxSleepTime = 3000;
+
 export const linovelib = () => {
   const ToCurl = document.location.href;
   const bookUrl = ToCurl.replace(/\/catalog$/, ".html");
@@ -35,8 +40,8 @@ export const linovelib = () => {
       return additionalMetadate;
     },
     getAList: () => document.querySelectorAll(".chapter-list li.col-4 > a"),
-    getSections: () => document.querySelectorAll(".chapter-list div.volume"),
-    getSName: (sElem) => (sElem as HTMLElement).innerText.trim(),
+    getSections: () => document.querySelectorAll("#volume-list > div.volume"),
+    getSName: (sElem) => (sElem.querySelector(".volume-info >h2") as HTMLElement )?.innerText.trim(),
     postHook: (chapter) => {
       if (chapter.chapterUrl.startsWith("javascript")) {
         chapter.status = Status.aborted;
@@ -56,7 +61,8 @@ export const linovelib = () => {
           book,
           invalidTest,
           getPrevHref,
-          classThis.concurrencyLimit
+          concurrencyLimit,
+          chapterFixSleepTime,
         );
         return book;
       };
@@ -95,6 +101,9 @@ export const linovelib = () => {
       }
       return content;
     },
+    concurrencyLimit: concurrencyLimit,
+    sleepTime: sleepTime,
+    maxSleepTime: maxSleepTime,
   });
 };
 
@@ -111,9 +120,9 @@ export const wlinovelib = () => {
     url_index: string;
     // "/novel/3225.html",
     url_articleinfo: string;
-    // "https://w.linovelib.com/files/article/image/3/3225/3225s.jpg",
+    // "https://www.bilinovel.com/files/article/image/3/3225/3225s.jpg",
     url_image: string;
-    // "https://w.linovelib.com/",
+    // "https://www.bilinovel.com/",
     url_home: string;
     // "3225",
     articleid: string;
@@ -156,7 +165,7 @@ export const wlinovelib = () => {
     ToCUrl: tocUrl,
     getBookname: () =>
       document
-        .querySelector<HTMLHeadingElement>("h2.book-title")
+        .querySelector<HTMLHeadingElement>("h1.book-title")
         ?.innerText.trim() ?? "",
     getAuthor: () =>
       document
@@ -202,7 +211,8 @@ export const wlinovelib = () => {
           book,
           invalidTest,
           getPrevHref,
-          classThis.concurrencyLimit
+          concurrencyLimit,
+          chapterFixSleepTime,
         );
         return book;
       };
@@ -238,5 +248,8 @@ export const wlinovelib = () => {
       return contentRaw;
     },
     contentPatch: (dom) => dom,
+    concurrencyLimit: concurrencyLimit,
+    sleepTime: sleepTime,
+    maxSleepTime: maxSleepTime,
   });
 };

@@ -216,6 +216,22 @@ export function getUI(): () => UIObject {
         }
       };
     }
+    case "www.bilinovel.com": {
+      return () => {
+        if (document.location.pathname.endsWith("/catalog")) {
+          return {
+            type: "jump",
+            jumpFunction: () =>
+            (document.location.pathname = document.location.pathname.replace(
+              /\/catalog$/,
+              ".html"
+            )),
+          };
+        } else {
+          return defaultObject;
+        }
+      };
+    }
     case "masiro.me": {
       return () => {
         if (document.querySelector(".error-box")) {

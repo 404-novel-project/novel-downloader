@@ -125,7 +125,7 @@ EPUB 文件请使用相应阅读器阅读。
 | [棉花糖小说网](https://www.mht99.com/)            | ✅       | ❎       |                                                                                          |
 | [笔趣阁](https://www.xbiquge.tw/)                 | ✅       | ❎       |                                                                                          |
 | [红叶书斋](https://www.007zw.com/)                | ✅       | ❎       |                                                                                          |
-| [哩哔轻小说](https://www.linovelib.com/)          | ✅       | ❎       |                                                                                          |
+| [哩哔轻小说](https://www.linovelib.com/)          | ✅       | ❎       |    因需要基于邻近章节修复隐藏链接的章节，生成目录时间变慢，大约2分钟。                                                                                      |
 | [落秋中文](https://www.luoqiuzw.com/)             | ✅       | ❎       |                                                                                          |
 | [一笔阁](https://www.yibige.cc/)                  | ✅       | ❎       |                                                                                          |
 | [腐书网](https://www.fushuwang.org/)              | ✅       | ❎       |                                                                                          |
