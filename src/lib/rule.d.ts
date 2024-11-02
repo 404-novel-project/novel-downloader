@@ -20,5 +20,5 @@ export declare function getSectionName(chapterElement: Element, sections: NodeLi
 export declare function centerDetct(element: Element): [boolean, Element, number];
 export declare function reIndex(chapters: Chapter[]): Chapter[];
 export declare function deDuplicate(chapters: Chapter[]): Chapter[];
-export declare function chapterHiddenFix(book: Book, invalidTest: (c: Chapter) => boolean, getPrevHref: (doc: Document) => string | undefined, concurrencyLimit: number, getHtmlDomFunc?: typeof getHtmlDOM | typeof ggetHtmlDOM): Promise<void>;
+export declare function chapterHiddenFix(book: Book, invalidTest: (c: Chapter) => boolean, getPrevHref: (doc: Document) => string | undefined, concurrencyLimit: number, sleepTime?: number, getHtmlDomFunc?: typeof getHtmlDOM | typeof ggetHtmlDOM): Promise<void>;
 export {};

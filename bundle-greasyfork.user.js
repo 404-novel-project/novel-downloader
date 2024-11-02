@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.957
+// @version        5.2.958
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -52,7 +52,7 @@
 // @exclude        *://www.alphapolis.co.jp/novel/*/*/episode/*
 // @exclude        *://novelup.plus/story/*/*
 // @exclude        *://www.linovelib.com/novel/*/*.html
-// @exclude        *://w.linovelib.com/novel/*/*.html
+// @exclude        *://www.bilinovel.com/novel/*/*.html
 // @exclude        *://www.qbtr.cc/*/*/*.html
 // @exclude        *://www.ciyuanji.com/chapter/*
 // @match          *://book.sfacg.com/Novel/*/MainIndex/
@@ -122,7 +122,8 @@
 // @match          *://www.007zw.com/shuzhai/*/
 // @match          *://www.linovelib.com/novel/*/catalog
 // @match          *://www.linovelib.com/novel/*.html
-// @match          *://w.linovelib.com/novel/*.html
+// @match          *://www.bilinovel.com/novel/*.html
+// @match          *://www.bilinovel.com/novel/*/catalog
 // @match          *://www.luoqiuzw.com/book/*/
 // @match          *://www.yibige.cc/*/
 // @match          *://www.fushuwang.org/*/*/*/*.html
@@ -9488,14 +9489,22 @@ function deDuplicate(chapters) {
     reIndex(results);
     return results;
 }
-async function chapterHiddenFix(book, invalidTest, getPrevHref, concurrencyLimit, getHtmlDomFunc = _http__WEBPACK_IMPORTED_MODULE_2__/* .getHtmlDOM */ .wA) {
+async function chapterHiddenFix(book, invalidTest, getPrevHref, concurrencyLimit, sleepTime = 500, getHtmlDomFunc = _http__WEBPACK_IMPORTED_MODULE_2__/* .getHtmlDOM */ .wA) {
     const { chapters } = book;
     const invalidChapterList = chapters.filter(invalidTest);
-    const limit = (0,p_limit__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A)(concurrencyLimit);
-    const tasks = invalidChapterList.map((ic) => {
-        return limit(() => fix(ic, chapters));
-    });
-    await Promise.all(tasks);
+    if (concurrencyLimit === 1) {
+        for (const ic of invalidChapterList) {
+            fix(ic, chapters);
+            await new Promise(resolve => setTimeout(resolve, Math.random() * 100 + sleepTime));
+        }
+    }
+    else {
+        const limit = (0,p_limit__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A)(concurrencyLimit);
+        const tasks = invalidChapterList.map((ic) => {
+            return limit(() => fix(ic, chapters));
+        });
+        await Promise.all(tasks);
+    }
     async function fix(invalidChapter, chapterList) {
         const no = invalidChapter.chapterNumber;
         const nextChapter = chapterList.filter((c) => c.chapterNumber === no + 1)?.[0];
@@ -34933,6 +34942,10 @@ const table = {
 
 
 
+const chapterFixSleepTime = 2000;
+const concurrencyLimit = 1;
+const sleepTime = 600;
+const maxSleepTime = 3000;
 const linovelib = () => {
     const ToCurl = document.location.href;
     const bookUrl = ToCurl.replace(/\/catalog$/, ".html");
@@ -34950,8 +34963,8 @@ const linovelib = () => {
             return additionalMetadate;
         },
         getAList: () => document.querySelectorAll(".chapter-list li.col-4 > a"),
-        getSections: () => document.querySelectorAll(".chapter-list div.volume"),
-        getSName: (sElem) => sElem.innerText.trim(),
+        getSections: () => document.querySelectorAll("#volume-list > div.volume"),
+        getSName: (sElem) => sElem.querySelector(".volume-info >h2")?.innerText.trim(),
         postHook: (chapter) => {
             if (chapter.chapterUrl.startsWith("javascript")) {
                 chapter.status = main/* Status */.nW.aborted;
@@ -34965,7 +34978,7 @@ const linovelib = () => {
                 const invalidTest = (c) => c.chapterUrl.startsWith("javascript");
                 const getPrevHref = (doc) => doc.querySelector(".mlfy_page > a:nth-child(1)")
                     ?.href;
-                await (0,rule/* chapterHiddenFix */.$l)(book, invalidTest, getPrevHref, classThis.concurrencyLimit);
+                await (0,rule/* chapterHiddenFix */.$l)(book, invalidTest, getPrevHref, concurrencyLimit, chapterFixSleepTime);
                 return book;
             };
             return classThis;
@@ -34997,6 +35010,9 @@ const linovelib = () => {
             }
             return content;
         },
+        concurrencyLimit: concurrencyLimit,
+        sleepTime: sleepTime,
+        maxSleepTime: maxSleepTime,
     });
 };
 const wlinovelib = () => {
@@ -35017,7 +35033,7 @@ const wlinovelib = () => {
         anotherPageUrl: tocUrl,
         ToCUrl: tocUrl,
         getBookname: () => document
-            .querySelector("h2.book-title")
+            .querySelector("h1.book-title")
             ?.innerText.trim() ?? "",
         getAuthor: () => document
             .querySelector(".book-rand-a > span")
@@ -35052,7 +35068,7 @@ const wlinovelib = () => {
                         return;
                     }
                 };
-                await (0,rule/* chapterHiddenFix */.$l)(book, invalidTest, getPrevHref, classThis.concurrencyLimit);
+                await (0,rule/* chapterHiddenFix */.$l)(book, invalidTest, getPrevHref, concurrencyLimit, chapterFixSleepTime);
                 return book;
             };
             return classThis;
@@ -35088,6 +35104,9 @@ const wlinovelib = () => {
             return contentRaw;
         },
         contentPatch: (dom) => dom,
+        concurrencyLimit: concurrencyLimit,
+        sleepTime: sleepTime,
+        maxSleepTime: maxSleepTime,
     });
 };
 
@@ -36650,7 +36669,7 @@ async function getRule() {
             ruleClass = linovelib();
             break;
         }
-        case "w.linovelib.com": {
+        case "www.bilinovel.com": {
             const { wlinovelib } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/linovelib.ts"));
             ruleClass = wlinovelib();
             break;
@@ -37133,6 +37152,19 @@ function getUI() {
                     return {
                         type: "jump",
                         jumpFunction: () => (document.location.pathname = document.location.pathname.replace(/\.html$/, "/catalog")),
+                    };
+                }
+                else {
+                    return defaultObject;
+                }
+            };
+        }
+        case "www.bilinovel.com": {
+            return () => {
+                if (document.location.pathname.endsWith("/catalog")) {
+                    return {
+                        type: "jump",
+                        jumpFunction: () => (document.location.pathname = document.location.pathname.replace(/\/catalog$/, ".html")),
                     };
                 }
                 else {
