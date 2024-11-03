@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.959
+// @version        5.2.960
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -31928,15 +31928,18 @@ class Tadu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   Xrzww: () => (/* binding */ Xrzww)
 /* harmony export */ });
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/attachments.ts");
-/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Book.ts");
-/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
-/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/main/Chapter.ts");
-/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/main.ts");
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/cleanDOM.ts");
-/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/misc.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/main.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("./src/lib/misc.ts");
+/* harmony import */ var _lib_GM__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/GM.ts");
+/* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("crypto-js");
+/* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(crypto_js__WEBPACK_IMPORTED_MODULE_0__);
 
 
 
@@ -31945,7 +31948,9 @@ class Tadu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
 
 
 
-class Xrzww extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
+
+
+class Xrzww extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.attachmentMode = "TM";
@@ -31988,11 +31993,11 @@ class Xrzww extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
         introductionHTML.innerText = introduction;
         const additionalMetadate = {};
         const coverUrl = `${ossBase}${webNovelDetail.data.novel_cover}`;
-        (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
+        (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
             .then((coverClass) => {
             additionalMetadate.cover = coverClass;
         })
-            .catch((error) => _log__WEBPACK_IMPORTED_MODULE_2___default().error(error));
+            .catch((error) => _log__WEBPACK_IMPORTED_MODULE_3___default().error(error));
         additionalMetadate.tags = webNovelDetail.data.novel_tags
             .split(",")
             .map((t) => t.trim());
@@ -32048,7 +32053,7 @@ class Xrzww extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
                 apiBase,
                 headers: baseHeader,
             };
-            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_3__/* .Chapter */ .I({
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .I({
                 bookUrl,
                 bookname,
                 chapterUrl,
@@ -32065,17 +32070,17 @@ class Xrzww extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
             });
             if (signIn) {
                 if (chapter.isVIP && chapter.isPaid === false) {
-                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_4__/* .Status */ .nW.aborted;
+                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_5__/* .Status */ .nW.aborted;
                 }
             }
             else {
                 if (chapter.isVIP) {
-                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_4__/* .Status */ .nW.aborted;
+                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_5__/* .Status */ .nW.aborted;
                 }
             }
             chapters.push(chapter);
         }
-        return new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .E({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -32086,33 +32091,110 @@ class Xrzww extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
         });
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        const readNewUrl = new URL(`${options.apiBase}/api/readNovelByWeb`);
-        readNewUrl.searchParams.set("nid", options.nid.toString());
-        readNewUrl.searchParams.set("vid", options.vid.toString());
-        readNewUrl.searchParams.set("chapter_id", options.chapter_id.toString());
-        readNewUrl.searchParams.set("chapter_order", options.chapter_order.toString());
-        readNewUrl.searchParams.set("showpic", false.toString());
-        const resp = await fetch(readNewUrl.href, {
-            credentials: "include",
-            headers: options.headers,
-            method: "GET",
-            mode: "cors",
-        });
-        const readNew = (await resp.json());
-        if (readNew.code !== 200) {
-            throw new Error("获取章节内容失败！ " + JSON.stringify(options));
+        async function getVIPChapter(url) {
+            let device = "webh517657567560";
+            let Authorization = "Bearer 453453453e03ee546456546754756756";
+            if (typeof unsafeWindow.tokenOptions === "object") {
+                device = unsafeWindow.tokenOptions?.Xrzww?.deviceIdentify ?? "webh517657567560";
+                Authorization = unsafeWindow.tokenOptions?.Xrzww?.Authorization ?? "Bearer 453453453e03ee546456546754756756";
+            }
+            const key = "9495ef469eb3e7ae8ef3";
+            const timestamp = Math.round(Date.now() / 1000).toString();
+            const signature = crypto_js__WEBPACK_IMPORTED_MODULE_0__.MD5(device + timestamp + key).toString();
+            return new Promise((resolve) => {
+                (0,_lib_GM__WEBPACK_IMPORTED_MODULE_7__/* ._GM_xmlhttpRequest */ .nV)({
+                    url: url,
+                    headers: {
+                        "Authorization": Authorization,
+                        "appVersion": "4.83",
+                        "deviceType": "android",
+                        "signature": signature,
+                        "site": "1",
+                        "content-type": "application/json",
+                        "headerRequestSource": "xirang",
+                        "Connection": "Keep-Alive",
+                        "User-Agent": "okhttp/4.8.0",
+                        "deviceIdentify": device,
+                        "timestamp": timestamp
+                    },
+                    method: "GET",
+                    onload: function (response) {
+                        if (response.status === 200) {
+                            const resultI = JSON.parse(String(response.responseText));
+                            resolve(resultI);
+                        }
+                        else {
+                            _log__WEBPACK_IMPORTED_MODULE_3___default().error(`response status = ${response.status}`);
+                            resolve(JSON.parse('{"message":"try again!"}'));
+                        }
+                    },
+                });
+            });
         }
         const contentRaw = document.createElement("p");
-        contentRaw.innerText = readNew.data.content;
-        const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_6__/* .cleanDOM */ .an)(contentRaw, "TM");
-        await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_7__/* .sleep */ .yy)(4200 * Math.random());
+        let last_Modified = 0;
+        if (!isVIP) {
+            const readNewUrl = new URL(`${options.apiBase}/api/readNovelByWeb`);
+            readNewUrl.searchParams.set("nid", options.nid.toString());
+            readNewUrl.searchParams.set("vid", options.vid.toString());
+            readNewUrl.searchParams.set("chapter_id", options.chapter_id.toString());
+            readNewUrl.searchParams.set("chapter_order", options.chapter_order.toString());
+            readNewUrl.searchParams.set("showpic", false.toString());
+            const resp = await fetch(readNewUrl.href, {
+                credentials: "include",
+                headers: options.headers,
+                method: "GET",
+                mode: "cors",
+            });
+            const readNew = (await resp.json());
+            if (readNew.code !== 200) {
+                throw new Error("获取章节内容失败！ " + JSON.stringify(options));
+            }
+            contentRaw.innerText = readNew.data.content;
+            last_Modified = readNew.data.chapter_uptime;
+        }
+        else if (isVIP && isPaid) {
+            const readNewUrl = new URL(`https://android-api.xrzww.com/api/readWithEncrypt`);
+            readNewUrl.searchParams.set("chapter_id", options.chapter_id.toString());
+            readNewUrl.searchParams.set("nid", options.nid.toString());
+            readNewUrl.searchParams.set("preload", "1");
+            const result = await getVIPChapter(readNewUrl.href);
+            if (result) {
+                const readNew = result;
+                if (readNew.code !== 200) {
+                    throw new Error("获取章节内容失败！ " + JSON.stringify(options));
+                }
+                let content = readNew.data.content;
+                try {
+                    const decrypted = crypto_js__WEBPACK_IMPORTED_MODULE_0__.DES.decrypt(content, crypto_js__WEBPACK_IMPORTED_MODULE_0__.enc.Utf8.parse("VT5aj59QCjf2J8F3"), {
+                        iv: crypto_js__WEBPACK_IMPORTED_MODULE_0__.enc.Utf8.parse("259c4e9881b5fe05"),
+                        mode: crypto_js__WEBPACK_IMPORTED_MODULE_0__.mode.CBC,
+                        padding: crypto_js__WEBPACK_IMPORTED_MODULE_0__.pad.Pkcs7,
+                    });
+                    content = decrypted.toString(crypto_js__WEBPACK_IMPORTED_MODULE_0__.enc.Utf8);
+                }
+                catch (e) {
+                    _log__WEBPACK_IMPORTED_MODULE_3___default().debug(`VIP章节解密失败：${e}`);
+                    throw new Error("VIP章节解密失败！");
+                }
+                contentRaw.innerText = content;
+                last_Modified = readNew.data.chapter_uptime;
+            }
+            else
+                contentRaw.innerText = "";
+        }
+        else {
+            contentRaw.innerText = "";
+        }
+        const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .an)(contentRaw, "TM");
+        await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_9__/* .sleep */ .yy)(4200 * Math.random());
         return {
             chapterName,
             contentRaw,
             contentText: text,
             contentHTML: dom,
             contentImages: images,
-            additionalMetadate: { lastModified: readNew.data.chapter_uptime },
+            additionalMetadate: { lastModified: last_Modified },
         };
     }
 }
