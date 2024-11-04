@@ -1,5 +1,5 @@
-name: Feature request
-description: 新功能请求
+name: 新功能请求
+description: 填写一个新功能请求
 title: "[Feature Requset]: "
 body:
   - type: checkboxes
