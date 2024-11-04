@@ -12,7 +12,7 @@ export class Lofter extends BaseRuleClass {
   public constructor() {
     super();
     this.attachmentMode = "TM";
-    this.concurrencyLimit = 5;
+    this.concurrencyLimit = 1;
     this.streamZip = true;
   }
 

@@ -1,0 +1,56 @@
+name: 站点请求
+description: 请求添加新站点
+title: "[Site Request]: "
+body:
+  - type: checkboxes
+    id: Prerequisites
+    attributes:
+      label: 必要条件
+      description: |
+        为了减少无效报告，请确认每一个选项。
+      options:
+        - label: 我已经搜索 issue 区，并确定没有相同的请求存在。
+          required: true
+        - label: 我已经确认该网站不可以使用 https://greasyfork.org/zh-CN/scripts/25068-downloadallcontent 或者 https://github.com/dodying/UserJs/blob/master/novel/novelDownloader/novelDownloader3.user.js 下载。
+          required: true
+  - type: textarea
+    id: SiteName
+    attributes:
+      label: 站点名称
+    validations:
+      required: true
+  - type: textarea
+    id: SiteURL
+    attributes:
+      label: 站点 URL
+    validations:
+      required: true
+  - type: dropdown
+    id: SiteType
+    attributes:
+      label: 站点类型
+      options:
+        - 原创网站
+        - 转载网站
+    validations:
+      required: true
+  - type: checkboxes
+    id: SiteAttributes
+    attributes:
+      label: 站点属性
+      options:
+        - label: 有收费章节存在
+        - label: 所有内容有要求账户登录的限制（未登录不可浏览相关内容）
+        - label: 部分内容（如收费章节）仅限App端可浏览
+  - type: textarea
+    id: reason
+    attributes:
+      label: 希望添加的理由
+    validations:
+      required: true
+  - type: textarea
+    id: books
+    attributes:
+      label: 你认为该站值得阅读的书籍
+    validations:
+      required: false
