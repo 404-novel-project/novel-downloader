@@ -70,8 +70,7 @@ export class Jjwxc extends BaseRuleClass {
         const r = Math.floor(Math.random() * 16);
         androidId += chars[r];
       }
-      // return androidId;
-      return '9b518e98ce9ba525';
+      return androidId;
     }
 
     function checkLogin(account: string, password: string, verificationCode: string) {
