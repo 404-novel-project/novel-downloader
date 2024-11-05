@@ -22,6 +22,7 @@ import { _GM_xmlhttpRequest } from "../../../lib/GM";
 
 import * as csstree from "css-tree";
 import * as CryptoJS from "crypto-js";
+import { version } from "node:os";
 
 type JJWindow = UnsafeWindow & { getCookie: (key: string) => string };
 
@@ -29,10 +30,228 @@ export class Jjwxc extends BaseRuleClass {
   public constructor() {
     super();
     this.attachmentMode = "TM";
-    this.concurrencyLimit = 5;
+    this.concurrencyLimit = 1;
     this.charset = "GB18030";
-  }
+    // 获取nd-setting-tab-1的第一个子元素
+    const firstChild = document.querySelector('#nd-setting-tab-1')?.firstElementChild;
+    // 创建一个按钮元素
+    const button = document.createElement('button');
+    button.innerText = '获取token';
+    button.style.marginLeft = '10px'; // 添加一些样式
+    // 插入按钮到第一个子元素后面
+    firstChild?.parentNode?.insertBefore(button, firstChild.nextSibling);
+    function encode(data: string) {
+      const key = CryptoJS.enc.Utf8.parse("KW8Dvm2N");
+      const iv = CryptoJS.enc.Utf8.parse("1ae2c94b");
 
+      const encrypted = CryptoJS.DES.encrypt(data, key, {
+        iv: iv,
+        padding: CryptoJS.pad.Pkcs7,
+        mode: CryptoJS.mode.CBC
+      });
+
+      return encrypted.toString(); //encrypted.ciphertext.toString(CryptoJS.enc.Base64));
+    }
+
+    function rd() {
+      const n = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+      let s = "";
+      for (let i = 0; i < 20; i++) {
+        const r = Math.floor(Math.random() * 10);
+        s += n[r];
+      }
+      return s;
+    }
+
+    function generateAndroidId() {
+      const chars = '0123456789abcdef';
+      let androidId = '';
+      for (let i = 0; i < 16; i++) {
+        const r = Math.floor(Math.random() * 16);
+        androidId += chars[r];
+      }
+      // return androidId;
+      return '9b518e98ce9ba525';
+    }
+
+    function checkLogin(account: string, password: string, verificationCode: string) {
+      if (account === "" || password === "") {
+        alert("账号或密码不能为空");
+        return 0;
+      } else if (verificationCode === "") {
+        return 1;
+      } else {
+        return 2;
+      }
+    }
+
+    async function login() {
+      const account = (document.getElementById("nd-jj-account") as HTMLInputElement)?.value;
+      const password = (document.getElementById("nd-jj-password") as HTMLInputElement)?.value;
+      const verificationCode = (document.getElementById("nd-jj-verificationCode") as HTMLInputElement)?.value;
+      const CheckLogin = checkLogin(account, password, verificationCode);
+      let t = 'phone';
+      if (account.indexOf("@") !== -1) {
+        t = 'email';
+      }
+      if (CheckLogin != 0) {
+        const en = encode(password);
+        const id = rd() + ":" + generateAndroidId() + ":";
+        const sign = encode(Date.now() + "_" + id + "_");
+        let loginUrl = `https://app.jjwxc.org/androidapi/login?versionCode=402&loginName=${encodeURIComponent(account)}&encode=1&loginPassword=${encodeURIComponent(en)}&sign=${encodeURIComponent(sign)}&identifiers=${encodeURIComponent(id)}&autologin=1`;
+        const headers = {
+            referer: "http://android.jjwxc.net?v=402",
+            Host: "app.jjwxc.org",
+            source: "android",
+            'versionCode': "402",
+            'Version-Code': "402",
+          'User-Agent': "Moxilla/5.0 (Linux; Android 10;) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.181 Mobile Safari/537.36 " + Date.now().toString(),
+        };
+        interface LoginResponse {
+          code: string;
+          message: string;
+          data: Array<{
+            type: string;
+            text: string;
+          }>;
+          token: string;
+        }
+        interface CodeResponse {
+          code: string;
+          message: string;
+          data: {
+            message: string;
+          };
+        }
+        if (CheckLogin === 1) {
+          const resJson: LoginResponse = await new Promise((resolve) => {
+            _GM_xmlhttpRequest({
+              url: loginUrl,
+              headers: headers,
+              method: "GET",
+              onload: function (response) {
+                const resultI: LoginResponse = JSON.parse(response.responseText);
+                log.debug(`LoginResponse url ${loginUrl}`);
+                if (response.status === 200) {
+                  resolve(resultI);
+                } else {
+                  log.error(`LoginResponse url ${loginUrl} response status = ${response.status}`);
+                  resolve(resultI);
+                }
+              },
+            });
+          });
+          if (resJson.code == "221003") {
+            const url = "https://app.jjwxc.org//appDevicesecurityAndroid/getDeviceSecurityCode";
+            const body = "versionCode=402&username=" + encodeURIComponent(account) + "&checktype=" + t;
+            const responseJson: CodeResponse = await new Promise((resolve) => {
+              _GM_xmlhttpRequest({
+                url: url,
+                headers: headers,
+                method: "POST",
+                data: body,
+                onload: function (response) {
+                  const resultI: CodeResponse = JSON.parse(response.responseText);
+                  log.debug(`CodeResponse url ${url}`);
+                  if (response.status === 200) {
+                    resolve(resultI);
+                  } else {
+                    log.error(`CodeResponse url ${url} response status = ${response.status}`);
+                    resolve(resultI);
+                  }
+                },
+              });
+            });
+            let msg = responseJson.data.message;
+            if (!msg) msg = responseJson.message;
+            alert(msg);
+          } else {
+            alert(resJson.message);
+          }
+        } else if (CheckLogin === 2) {
+          loginUrl = loginUrl + "&checktype=" + t + "&checkdevicecode=" + verificationCode;
+          const tokenJson : LoginResponse = await new Promise((resolve) => {
+            _GM_xmlhttpRequest({
+              url: loginUrl,
+              headers: headers,
+              method: "GET",
+              onload: function (response) {
+                const resultI: LoginResponse = JSON.parse(response.responseText);
+                log.debug(`LoginResponse url ${loginUrl}`);
+                if (response.status === 200) {
+                  resolve(resultI);
+                } else {
+                  log.error(`LoginResponse url ${loginUrl} response status = ${response.status}`);
+                  resolve(resultI);
+                }
+              },
+            });
+          });
+          const token = tokenJson.token;
+          const tokenelement = document.getElementById("nd-jj-token");
+          if (tokenelement) {
+            tokenelement.textContent = token;
+          }
+        }
+      }
+    }
+    // 添加按钮点击事件处理程序
+    button.addEventListener('click', () => {
+      // 创建一个新的页面元素
+      const page = document.createElement('div');
+      // 设置页面的内容
+      page.innerHTML = `
+        <h1 class="center-align">JJ获取token</h1>
+        <div>
+            <div class="row">
+                <div class="input-field">
+                    <label for="account">账号</label>
+                    <input type="text" id="nd-jj-account" name="account" required>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field">
+                    <label for="password">密码</label>
+                    <input type="password" id="nd-jj-password" name="password" required>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field">
+                    <label for="verificationCode">验证码</label>
+                    <input type="text" id="nd-jj-verificationCode" name="verificationCode">
+                </div>
+            </div>
+            <div class="row">
+                <button type="click" id="nd-jj-login">登录</button>
+            </div>
+        </div>
+        <h2 class="center-align">生成的Token:</h2>
+        <p id="nd-jj-token" class="center-align"></p>
+      `;
+
+      page.style.position = 'fixed';
+      page.style.top = '50%';
+      page.style.left = '50%';
+      page.style.transform = 'translate(-50%, -50%)';
+      page.style.padding = '20px';
+      page.style.backgroundColor = 'white';
+      page.style.border = '1px solid black';
+      page.style.zIndex = '1000';
+      // 添加关闭按钮
+      const closeButton = document.createElement('button');
+      closeButton.innerText = '关闭';
+      closeButton.style.display = 'block';
+      closeButton.style.marginTop = '10px';
+      closeButton.addEventListener('click', () => {
+        document.body.removeChild(page);
+      });
+      page.appendChild(closeButton);
+      // 将页面添加到body
+      document.body.appendChild(page);
+      document.getElementById("nd-jj-login")?.addEventListener('click', () => login());
+    });
+  }
+  
   public async bookParse() {
     const bookUrl = document.location.href;
     const getInformationBlocked = () => {
@@ -919,14 +1138,14 @@ export class Jjwxc extends BaseRuleClass {
       const v17 = v9 / 65;
       const v18 = keyString.length;
       if (v17 + v15 > v18) {
-        v43 = keyString.substring(v15, (v18 - v15) + v15)
+        v43 = keyString.substring(v15, (v18 - v15) + v15);
       } else {
-        v43 = keyString.substring(v15, v17 + v15)
+        v43 = keyString.substring(v15, v17 + v15);
       }
       const v32 = content.length;
       if ((v6 & 1) != 0) {
-        v38 = content.substring(v32 - 12, v32)
-        dest = content.substring(0, v32 - 12)
+        v38 = content.substring(v32 - 12, v32);
+        dest = content.substring(0, v32 - 12);
       } else {
         v38 = content.substring(0, 12);
         dest = content.substring(12, content.length);
@@ -999,7 +1218,7 @@ export class Jjwxc extends BaseRuleClass {
           //   "chapterIds"
           // );
           chapterGetInfoUrl +=
-            "&versionCode=349&token=" + sid;
+            "&versionCode=401&token=" + sid;
         } else {
           throw new Error(
             `当前需要手动捕获android版app token,详见github主页说明`
@@ -1018,7 +1237,7 @@ export class Jjwxc extends BaseRuleClass {
             url: url,
             headers: {
               //   accept: "application/json",
-              referer: "http://android.jjwxc.net?v=349",
+              referer: "http://android.jjwxc.net?v=401",
               //    not_tip: "updateTime",
               "user-agent": user_agent,
               //  "accept-encoding": "gzip",

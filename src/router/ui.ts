@@ -77,6 +77,20 @@ export function getUI(): () => UIObject {
         }
       };
     }
+    case "m.jjwxc.com": case "m.jjwxc.net": {
+      return () => {
+        return {
+          type: "jump",
+          jumpFunction: () => {
+            const regex = /https:\/\/m\.jjwxc\.(com|net)\/book2\/(\d+)/;
+            document.location.href = document.location.href.replace(
+              regex,
+              'https://www.jjwxc.net/onebook.php?novelid=$2'  
+            )
+          },
+        }
+      };
+    }
     case "ebook.longmabook.com":
     case "www.longmabookcn.com":
     case "ebook.lmbooks.com":
