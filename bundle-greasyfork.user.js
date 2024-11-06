@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.962
+// @version        5.2.963
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -28493,10 +28493,8 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
         let introductionHTML = null;
         let introCleanimages = null;
         if (!getInformationBlocked()) {
-            bookname = document.querySelector('h1[itemprop="name"] > span').innerText.trim();
-            author = document.querySelector("td.sptd h2 a span").innerText
-                .replace(/作\s+者:/, "")
-                .trim();
+            bookname = document.querySelector('#oneboolt .bigtext').innerText.trim();
+            author = document.querySelector("#oneboolt  h2 > a")?.innerText ?? document.querySelector('#oneboolt > .noveltitle > span > a')?.innerText;
             const introDom = document.querySelector("#novelintro");
             [introduction, introductionHTML, introCleanimages] = await (0,rule/* introDomHandle */.HV)(introDom);
             if (introCleanimages) {
@@ -28542,6 +28540,30 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
         let sectionNumber = 0;
         let sectionName = null;
         let sectionChapterNumber = 0;
+        if (trList.length === 0) {
+            const tr = document.querySelector("div#oneboolt");
+            if (tr) {
+                const chapterName = tr.querySelector("h2")?.innerText.trim() ?? "全一章";
+                const chapterUrl = bookUrl + "&chapterid=1";
+                chapterNumber++;
+                const chapter = new Chapter/* Chapter */.I({
+                    bookUrl,
+                    bookname,
+                    chapterUrl,
+                    chapterNumber,
+                    chapterName,
+                    isVIP: false,
+                    isPaid: null,
+                    sectionName,
+                    sectionNumber,
+                    sectionChapterNumber,
+                    chapterParse: this.chapterParse,
+                    charset: this.charset,
+                    options: {},
+                });
+                chapters.push(chapter);
+            }
+        }
         for (const tr of Array.from(trList)) {
             if (tr.getAttribute("bgcolor")) {
                 sectionNumber++;
@@ -29205,7 +29227,9 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
             let chapterGetInfoUrl = chapterUrl.replace("id", "Id");
             chapterGetInfoUrl = chapterGetInfoUrl.replace("id", "Id");
             chapterGetInfoUrl = chapterGetInfoUrl.replace("http://www.jjwxc.net/onebook.php?", "https://app.jjwxc.net/androidapi/chapterContent?");
+            chapterGetInfoUrl = chapterGetInfoUrl.replace("https://www.jjwxc.net/onebook.php?", "https://app.jjwxc.net/androidapi/chapterContent?");
             chapterGetInfoUrl = chapterGetInfoUrl.replace("http://my.jjwxc.net/onebook_vip.php?", "https://app.jjwxc.net/androidapi/chapterContent?");
+            chapterGetInfoUrl = chapterGetInfoUrl.replace("https://my.jjwxc.net/onebook_vip.php?", "https://app.jjwxc.net/androidapi/chapterContent?");
             if (isVIP) {
                 if (typeof unsafeWindow.tokenOptions === "object") {
                     const sid = unsafeWindow.tokenOptions?.Jjwxc;
