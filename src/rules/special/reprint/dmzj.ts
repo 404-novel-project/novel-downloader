@@ -19,7 +19,7 @@ export class Dmzj extends BaseRuleClass {
 
   public async bookParse() {
     const bookUrl = document.location.href;
-    const isWwwHost = document.location.host === "www.dmzj.com";
+    const isWwwHost = document.location.host === "www.idmzj.com";
 
     const bookDom = isWwwHost
       ? document.querySelector(".comic_deCon > h1 > a")
@@ -55,7 +55,7 @@ export class Dmzj extends BaseRuleClass {
     const chapters: Chapter[] = [];
     const cos = isWwwHost
       ? document.querySelectorAll(
-          "div.zj_list_con:nth-child(4) > ul.list_con_li > li"
+          "div.zj_list_con > ul.list_con_li > li"
         )
       : document.querySelectorAll(".cartoon_online_border > ul > li");
     let chapterNumber = 0;
@@ -110,7 +110,7 @@ export class Dmzj extends BaseRuleClass {
     options: object
   ) {
     function getpicUrlList(docI: Document) {
-      const imgPrefix = "https://images.dmzj.com/";
+      const imgPrefix = "https://images.idmzj.com/";
 
       const scriptElement = Array.from(
         docI.querySelectorAll("head > script")
@@ -135,7 +135,7 @@ export class Dmzj extends BaseRuleClass {
     }
 
     log.debug(`[Chapter]请求 ${chapterUrl}`);
-    const isWwwHost = document.location.host === "www.dmzj.com";
+    const isWwwHost = document.location.host === "www.idmzj.com";
     const doc = await getHtmlDOM(chapterUrl, charset);
     const picUrlList = getpicUrlList(doc);
     if (picUrlList) {
