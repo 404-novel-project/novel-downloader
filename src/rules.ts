@@ -41,7 +41,7 @@ export abstract class BaseRuleClass {
   public charset: string = document.characterSet;
   public concurrencyLimit = 10; // 并发下载数量
   public sleepTime = 50; // 当并发数量为1，每章节下载的间隔时间基数（毫秒）
-  public maxSleepTime = 2000; // 当并发数量为1，每章节下载的间隔时间最大值（毫秒）
+  public maxSleepTime = 500; // 当并发数量为1，每章节下载的间隔时间最大值（毫秒）
   public streamZip = false;
   public needLogin = false;
   public nsfw = false;
