@@ -76,8 +76,8 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = Qimao;
       break;
     }
-    case "manhua.dmzj.com":
-    case "www.dmzj.com": {
+    case "manhua.idmzj.com":
+    case "www.idmzj.com": {
       const { Dmzj } = await import("../rules/special/reprint/dmzj");
       ruleClass = Dmzj;
       break;
