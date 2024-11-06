@@ -95,16 +95,21 @@ export class Jjwxc extends BaseRuleClass {
       }
       if (CheckLogin != 0) {
         const en = encode(password);
-        const id = rd() + ":" + generateAndroidId() + ":";
+        const id = rd() + ":" + generateAndroidId() + "d4:";
         const sign = encode(Date.now() + "_" + id + "_");
         let loginUrl = `https://app.jjwxc.org/androidapi/login?versionCode=402&loginName=${encodeURIComponent(account)}&encode=1&loginPassword=${encodeURIComponent(en)}&sign=${encodeURIComponent(sign)}&identifiers=${encodeURIComponent(id)}&autologin=1`;
         const headers = {
-            referer: "http://android.jjwxc.net?v=402",
             Host: "app.jjwxc.org",
-            source: "android",
-            'versionCode': "402",
-            'Version-Code': "402",
-          'User-Agent': "Moxilla/5.0 (Linux; Android 10;) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.181 Mobile Safari/537.36 " + Date.now().toString(),
+            'User-Agent': `Mobile ${Date.now()}`,
+            'Accept-Encoding': 'gzip',
+            'Keep-Alive': '300',
+            'Content-Type': '',
+            'Accept': '',
+            'Sec-Fetch-Site': '',
+            'Sec-Fetch-Mode': '',
+            'Sec-Fetch-Dest': '',
+            'Accept-Language':'',
+            
         };
         interface LoginResponse {
           code: string;
@@ -128,6 +133,9 @@ export class Jjwxc extends BaseRuleClass {
               url: loginUrl,
               headers: headers,
               method: "GET",
+              anonymous: true,
+              fetch: true,
+              responseType: "json",
               onload: function (response) {
                 const resultI: LoginResponse = JSON.parse(response.responseText);
                 log.debug(`LoginResponse url ${loginUrl}`);
@@ -141,21 +149,26 @@ export class Jjwxc extends BaseRuleClass {
             });
           });
           if (resJson.code == "221003") {
-            const url = "https://app.jjwxc.org//appDevicesecurityAndroid/getDeviceSecurityCode";
-            const body = "versionCode=402&username=" + encodeURIComponent(account) + "&checktype=" + t;
+            const verifyUrl = "https://app.jjwxc.org//appDevicesecurityAndroid/getDeviceSecurityCode";
+            const body = `versionCode=402&username=${encodeURIComponent(account)}&checktype=${t}`;
             const responseJson: CodeResponse = await new Promise((resolve) => {
               _GM_xmlhttpRequest({
-                url: url,
+                url: verifyUrl,
                 headers: headers,
                 method: "POST",
                 data: body,
+                anonymous: true,
+                responseType: "json",
+                // fetch: true,
                 onload: function (response) {
                   const resultI: CodeResponse = JSON.parse(response.responseText);
-                  log.debug(`CodeResponse url ${url}`);
+                  log.debug(`CodeResponse url ${verifyUrl}`);
+                  log.debug(`${response.responseText}`);
+                  log.debug(`${body}`);
                   if (response.status === 200) {
                     resolve(resultI);
                   } else {
-                    log.error(`CodeResponse url ${url} response status = ${response.status}`);
+                    log.error(`CodeResponse url ${verifyUrl} response status = ${response.status}`);
                     resolve(resultI);
                   }
                 },
@@ -174,6 +187,9 @@ export class Jjwxc extends BaseRuleClass {
               url: loginUrl,
               headers: headers,
               method: "GET",
+              anonymous: true,
+              responseType: "json",
+              fetch: true,
               onload: function (response) {
                 const resultI: LoginResponse = JSON.parse(response.responseText);
                 log.debug(`LoginResponse url ${loginUrl}`);
