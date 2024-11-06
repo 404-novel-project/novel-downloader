@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.961
+// @version        5.2.962
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -46,7 +46,7 @@
 // @exclude        *://dijiuben.com/*_*/*.html
 // @exclude        *://ncode.syosetu.com/*/*/
 // @exclude        *://novel18.syosetu.com/*/*/
-// @exclude        *://manhua.dmzj.com/
+// @exclude        *://manhua.idmzj.com/
 // @exclude        *://houhuayuan.vip/
 // @exclude        *://book.sfacg.com/Novel/*/*/*/
 // @exclude        *://www.alphapolis.co.jp/novel/*/*/episode/*
@@ -61,6 +61,8 @@
 // @match          *://book.qidian.com/info/*
 // @match          *://www.qidian.com/book/*
 // @match          *://www.jjwxc.net/onebook.php?novelid=*
+// @match          *://m.jjwxc.com/book2/*
+// @match          *://m.jjwxc.net/book2/*
 // @match          *://www.gongzicp.com/novel-*.html
 // @match          *://gongzicp.com/novel-*.html
 // @match          *://m.gongzicp.com/novel-*.html
@@ -113,8 +115,8 @@
 // @match          *://www.idejian.com/book/*/
 // @match          *://www.wenku8.net/novel/*/*/index.htm
 // @match          *://www.wenku8.net/book/*.htm
-// @match          *://www.dmzj.com/info/*.html
-// @match          *://manhua.dmzj.com/*
+// @match          *://www.idmzj.com/info/*.html
+// @match          *://manhua.idmzj.com/*
 // @match          *://www.westnovel.com/*/*/
 // @match          *://www.mht99.com/*/
 // @match          *://www.banzhuer.org/*_*/
@@ -266,6 +268,7 @@
 // @connect        kuangxiangit.com
 // @connect        sinaimg.cn
 // @connect        jjwxc.net
+// @connect        jjwxc.com
 // @connect        gashuw.com
 // @connect        qpic.cn
 // @connect        zongheng.com
@@ -283,7 +286,7 @@
 // @connect        zhangyue01.com
 // @connect        cdn.wtzw.com
 // @connect        wenku8.com
-// @connect        dmzj.com
+// @connect        idmzj.com
 // @connect        007zw.com
 // @connect        hongyeshuzhai.com
 // @connect        linovelib.com

@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.961
+// @version        5.2.962
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -46,7 +46,7 @@
 // @exclude        *://dijiuben.com/*_*/*.html
 // @exclude        *://ncode.syosetu.com/*/*/
 // @exclude        *://novel18.syosetu.com/*/*/
-// @exclude        *://manhua.dmzj.com/
+// @exclude        *://manhua.idmzj.com/
 // @exclude        *://houhuayuan.vip/
 // @exclude        *://book.sfacg.com/Novel/*/*/*/
 // @exclude        *://www.alphapolis.co.jp/novel/*/*/episode/*
@@ -61,6 +61,8 @@
 // @match          *://book.qidian.com/info/*
 // @match          *://www.qidian.com/book/*
 // @match          *://www.jjwxc.net/onebook.php?novelid=*
+// @match          *://m.jjwxc.com/book2/*
+// @match          *://m.jjwxc.net/book2/*
 // @match          *://www.gongzicp.com/novel-*.html
 // @match          *://gongzicp.com/novel-*.html
 // @match          *://m.gongzicp.com/novel-*.html
@@ -113,8 +115,8 @@
 // @match          *://www.idejian.com/book/*/
 // @match          *://www.wenku8.net/novel/*/*/index.htm
 // @match          *://www.wenku8.net/book/*.htm
-// @match          *://www.dmzj.com/info/*.html
-// @match          *://manhua.dmzj.com/*
+// @match          *://www.idmzj.com/info/*.html
+// @match          *://manhua.idmzj.com/*
 // @match          *://www.westnovel.com/*/*/
 // @match          *://www.mht99.com/*/
 // @match          *://www.banzhuer.org/*_*/
@@ -266,6 +268,7 @@
 // @connect        kuangxiangit.com
 // @connect        sinaimg.cn
 // @connect        jjwxc.net
+// @connect        jjwxc.com
 // @connect        gashuw.com
 // @connect        qpic.cn
 // @connect        zongheng.com
@@ -283,7 +286,7 @@
 // @connect        zhangyue01.com
 // @connect        cdn.wtzw.com
 // @connect        wenku8.com
-// @connect        dmzj.com
+// @connect        idmzj.com
 // @connect        007zw.com
 // @connect        hongyeshuzhai.com
 // @connect        linovelib.com
@@ -28266,8 +28269,216 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
     constructor() {
         super();
         this.attachmentMode = "TM";
-        this.concurrencyLimit = 5;
+        this.concurrencyLimit = 1;
         this.charset = "GB18030";
+        const firstChild = document.querySelector('#nd-setting-tab-1')?.firstElementChild;
+        const button = document.createElement('button');
+        button.innerText = '获取token';
+        button.style.marginLeft = '10px';
+        firstChild?.parentNode?.insertBefore(button, firstChild.nextSibling);
+        function encode(data) {
+            const key = external_CryptoJS_.enc.Utf8.parse("KW8Dvm2N");
+            const iv = external_CryptoJS_.enc.Utf8.parse("1ae2c94b");
+            const encrypted = external_CryptoJS_.DES.encrypt(data, key, {
+                iv: iv,
+                padding: external_CryptoJS_.pad.Pkcs7,
+                mode: external_CryptoJS_.mode.CBC
+            });
+            return encrypted.toString();
+        }
+        function rd() {
+            const n = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+            let s = "";
+            for (let i = 0; i < 20; i++) {
+                const r = Math.floor(Math.random() * 10);
+                s += n[r];
+            }
+            return s;
+        }
+        function generateAndroidId() {
+            const chars = '0123456789abcdef';
+            let androidId = '';
+            for (let i = 0; i < 16; i++) {
+                const r = Math.floor(Math.random() * 16);
+                androidId += chars[r];
+            }
+            return androidId;
+        }
+        function checkLogin(account, password, verificationCode) {
+            if (account === "" || password === "") {
+                alert("账号或密码不能为空");
+                return 0;
+            }
+            else if (verificationCode === "") {
+                return 1;
+            }
+            else {
+                return 2;
+            }
+        }
+        async function login() {
+            const account = document.getElementById("nd-jj-account")?.value;
+            const password = document.getElementById("nd-jj-password")?.value;
+            const verificationCode = document.getElementById("nd-jj-verificationCode")?.value;
+            const CheckLogin = checkLogin(account, password, verificationCode);
+            let t = 'phone';
+            if (account.indexOf("@") !== -1) {
+                t = 'email';
+            }
+            if (CheckLogin != 0) {
+                const en = encode(password);
+                const id = rd() + ":" + generateAndroidId() + "d4:";
+                const sign = encode(Date.now() + "_" + id + "_");
+                let loginUrl = `https://app.jjwxc.org/androidapi/login?versionCode=402&loginName=${encodeURIComponent(account)}&encode=1&loginPassword=${encodeURIComponent(en)}&sign=${encodeURIComponent(sign)}&identifiers=${encodeURIComponent(id)}&autologin=1`;
+                const headers = {
+                    Host: "app.jjwxc.org",
+                    'User-Agent': `Mobile ${Date.now()}`,
+                    'Accept-Encoding': 'gzip',
+                    'Keep-Alive': '300',
+                    'Content-Type': '',
+                    'Accept': '',
+                    'Sec-Fetch-Site': '',
+                    'Sec-Fetch-Mode': '',
+                    'Sec-Fetch-Dest': '',
+                    'Accept-Language': '',
+                };
+                if (CheckLogin === 1) {
+                    const resJson = await new Promise((resolve) => {
+                        (0,GM/* _GM_xmlhttpRequest */.nV)({
+                            url: loginUrl,
+                            headers: headers,
+                            method: "GET",
+                            anonymous: true,
+                            fetch: true,
+                            responseType: "json",
+                            onload: function (response) {
+                                const resultI = JSON.parse(response.responseText);
+                                loglevel_default().debug(`LoginResponse url ${loginUrl}`);
+                                if (response.status === 200) {
+                                    resolve(resultI);
+                                }
+                                else {
+                                    loglevel_default().error(`LoginResponse url ${loginUrl} response status = ${response.status}`);
+                                    resolve(resultI);
+                                }
+                            },
+                        });
+                    });
+                    if (resJson.code == "221003") {
+                        const verifyUrl = "https://app.jjwxc.org//appDevicesecurityAndroid/getDeviceSecurityCode";
+                        const body = `versionCode=402&username=${encodeURIComponent(account)}&checktype=${t}`;
+                        const responseJson = await new Promise((resolve) => {
+                            (0,GM/* _GM_xmlhttpRequest */.nV)({
+                                url: verifyUrl,
+                                headers: headers,
+                                method: "POST",
+                                data: body,
+                                anonymous: true,
+                                responseType: "json",
+                                onload: function (response) {
+                                    const resultI = JSON.parse(response.responseText);
+                                    loglevel_default().debug(`CodeResponse url ${verifyUrl}`);
+                                    loglevel_default().debug(`${response.responseText}`);
+                                    loglevel_default().debug(`${body}`);
+                                    if (response.status === 200) {
+                                        resolve(resultI);
+                                    }
+                                    else {
+                                        loglevel_default().error(`CodeResponse url ${verifyUrl} response status = ${response.status}`);
+                                        resolve(resultI);
+                                    }
+                                },
+                            });
+                        });
+                        let msg = responseJson.data.message;
+                        if (!msg)
+                            msg = responseJson.message;
+                        alert(msg);
+                    }
+                    else {
+                        alert(resJson.message);
+                    }
+                }
+                else if (CheckLogin === 2) {
+                    loginUrl = loginUrl + "&checktype=" + t + "&checkdevicecode=" + verificationCode;
+                    const tokenJson = await new Promise((resolve) => {
+                        (0,GM/* _GM_xmlhttpRequest */.nV)({
+                            url: loginUrl,
+                            headers: headers,
+                            method: "GET",
+                            anonymous: true,
+                            responseType: "json",
+                            fetch: true,
+                            onload: function (response) {
+                                const resultI = JSON.parse(response.responseText);
+                                loglevel_default().debug(`LoginResponse url ${loginUrl}`);
+                                if (response.status === 200) {
+                                    resolve(resultI);
+                                }
+                                else {
+                                    loglevel_default().error(`LoginResponse url ${loginUrl} response status = ${response.status}`);
+                                    resolve(resultI);
+                                }
+                            },
+                        });
+                    });
+                    const token = tokenJson.token;
+                    const tokenelement = document.getElementById("nd-jj-token");
+                    if (tokenelement) {
+                        tokenelement.textContent = token;
+                    }
+                }
+            }
+        }
+        button.addEventListener('click', () => {
+            const page = document.createElement('div');
+            page.innerHTML = `
+        <h1 class="center-align">JJ获取token</h1>
+        <div>
+            <div class="row">
+                <div class="input-field">
+                    <label for="account">账号</label>
+                    <input type="text" id="nd-jj-account" name="account" required>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field">
+                    <label for="password">密码</label>
+                    <input type="password" id="nd-jj-password" name="password" required>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field">
+                    <label for="verificationCode">验证码</label>
+                    <input type="text" id="nd-jj-verificationCode" name="verificationCode">
+                </div>
+            </div>
+            <div class="row">
+                <button type="click" id="nd-jj-login">登录</button>
+            </div>
+        </div>
+        <h2 class="center-align">生成的Token:</h2>
+        <p id="nd-jj-token" class="center-align"></p>
+      `;
+            page.style.position = 'fixed';
+            page.style.top = '50%';
+            page.style.left = '50%';
+            page.style.transform = 'translate(-50%, -50%)';
+            page.style.padding = '20px';
+            page.style.backgroundColor = 'white';
+            page.style.border = '1px solid black';
+            page.style.zIndex = '1000';
+            const closeButton = document.createElement('button');
+            closeButton.innerText = '关闭';
+            closeButton.style.display = 'block';
+            closeButton.style.marginTop = '10px';
+            closeButton.addEventListener('click', () => {
+                document.body.removeChild(page);
+            });
+            page.appendChild(closeButton);
+            document.body.appendChild(page);
+            document.getElementById("nd-jj-login")?.addEventListener('click', () => login());
+        });
     }
     async bookParse() {
         const bookUrl = document.location.href;
@@ -28999,7 +29210,7 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
                 if (typeof unsafeWindow.tokenOptions === "object") {
                     const sid = unsafeWindow.tokenOptions?.Jjwxc;
                     chapterGetInfoUrl +=
-                        "&versionCode=349&token=" + sid;
+                        "&versionCode=401&token=" + sid;
                 }
                 else {
                     throw new Error(`当前需要手动捕获android版app token,详见github主页说明`);
@@ -29012,7 +29223,7 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
                     (0,GM/* _GM_xmlhttpRequest */.nV)({
                         url: url,
                         headers: {
-                            referer: "http://android.jjwxc.net?v=349",
+                            referer: "http://android.jjwxc.net?v=401",
                             "user-agent": user_agent,
                         },
                         method: "GET",
@@ -32642,7 +32853,7 @@ class Dmzj extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
     }
     async bookParse() {
         const bookUrl = document.location.href;
-        const isWwwHost = document.location.host === "www.dmzj.com";
+        const isWwwHost = document.location.host === "www.idmzj.com";
         const bookDom = isWwwHost
             ? document.querySelector(".comic_deCon > h1 > a")
             : document.querySelector(".anim_title_text > a > h1");
@@ -32671,7 +32882,7 @@ class Dmzj extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
         }
         const chapters = [];
         const cos = isWwwHost
-            ? document.querySelectorAll("div.zj_list_con:nth-child(4) > ul.list_con_li > li")
+            ? document.querySelectorAll("div.zj_list_con > ul.list_con_li > li")
             : document.querySelectorAll(".cartoon_online_border > ul > li");
         let chapterNumber = 0;
         for (const co of Array.from(cos)) {
@@ -32717,7 +32928,7 @@ class Dmzj extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         function getpicUrlList(docI) {
-            const imgPrefix = "https://images.dmzj.com/";
+            const imgPrefix = "https://images.idmzj.com/";
             const scriptElement = Array.from(docI.querySelectorAll("head > script")).filter((s) => s.innerHTML.includes("eval("))[0];
             let pages = (0,_lib_dom__WEBPACK_IMPORTED_MODULE_6__/* .sandboxed */ .d6)(scriptElement.innerText + ";return pages;");
             pages = pages.replace(/\n/g, "");
@@ -32737,7 +32948,7 @@ class Dmzj extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
             }
         }
         _log__WEBPACK_IMPORTED_MODULE_3___default().debug(`[Chapter]请求 ${chapterUrl}`);
-        const isWwwHost = document.location.host === "www.dmzj.com";
+        const isWwwHost = document.location.host === "www.idmzj.com";
         const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_7__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
         const picUrlList = getpicUrlList(doc);
         if (picUrlList) {
@@ -36415,7 +36626,7 @@ async function TM_4_14_bug_Detect() {
         if (arrayBuffer === undefined) {
             alert(`检测到您当前使用的脚本管理器为 Tampermonkey 4.14。
 Tampermonkey 4.14 因存在 Bug 将导致小说下载器脚本无法正常运行，详情可参见：https://github.com/Tampermonkey/tampermonkey/issues/1418 。
-如您想继续使用小说下载器脚本，请您降级 Tampermonkey 版本，或使用 Violentmonkey 脚本管理器。
+如您想继续使用小说下载器脚本，请您更换 Tampermonkey 版本，或使用 Violentmonkey 脚本管理器。
 如果您不欲降级或更换脚本管理器，同时不想再看到本提示，您可以暂时禁用小说下载器脚本。`);
             throw new Error("Tampermonkey 4.14 Bug Detect");
         }
@@ -36572,8 +36783,8 @@ async function getRule() {
             ruleClass = Qimao;
             break;
         }
-        case "manhua.dmzj.com":
-        case "www.dmzj.com": {
+        case "manhua.idmzj.com":
+        case "www.idmzj.com": {
             const { Dmzj } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/reprint/dmzj.ts"));
             ruleClass = Dmzj;
             break;
@@ -37247,6 +37458,18 @@ function getUI() {
                 else {
                     return defaultObject;
                 }
+            };
+        }
+        case "m.jjwxc.com":
+        case "m.jjwxc.net": {
+            return () => {
+                return {
+                    type: "jump",
+                    jumpFunction: () => {
+                        const regex = /https:\/\/m\.jjwxc\.(com|net)\/book2\/(\d+)/;
+                        document.location.href = document.location.href.replace(regex, 'https://www.jjwxc.net/onebook.php?novelid=$2');
+                    },
+                };
             };
         }
         case "ebook.longmabook.com":
