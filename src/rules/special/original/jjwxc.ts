@@ -1133,19 +1133,23 @@ export class Jjwxc extends BaseRuleClass {
     //   downloadContent: ChapterInfo[];
     // }
     interface ChapterInfo {
+      code: number; //0,
       chapterId: string; //"39",
-      chapterName: string; //"另一种可能",
-      chapterIntro: string; //"算是番外吗？",
-      chapterSize: string; //"1484",
-      chapterDate: string; //"2012-03-17 20:54:01",
-      sayBody: string; //"\r\n原谅我挤牙膏一样的速度吧，最近各种卡文，各种想开新坑啊（给自己两个大耳瓜子= =）如果我某天我突然失踪了，不要担心，六月我还会回来的（再给自己两个大耳瓜子= =）尽量不坑（再再给自己两个大耳瓜子= =）",
-      upDown: number; //1,
-      update: number; //1,
+      vipChapterid: string | null; //"25"
+      chapterName: string | null; //"另一种可能",
+      chapterIntro: string | null; //"算是番外吗？",
+      chapterSize: string | null; //"1484",
+      chapterDate: string | null; //"2012-03-17 20:54:01",
+      sayBody: string | null; //"\r\n原谅我挤牙膏一样的速度吧，最近各种卡文，各种想开新坑啊（给自己两个大耳瓜子= =）如果我某天我突然失踪了，不要担心，六月我还会回来的（再给自己两个大耳瓜子= =）尽量不坑（再再给自己两个大耳瓜子= =）",
+      upDown: number | null; //1,
+      update: number | null; //1,
       content: string; //"另一种可能\n
-      isvip: number; //0,
+      isvip: number | null; //0,
+      encryptField: Array<string>;//["content"]
+      encryptType: string; //"jj",
       authorid: string; //"376815",
-      autobuystatus: string; //"0",
-      noteislock: string; //"1"
+      autobuystatus: string | null; //"0",
+      noteislock: string | null; //"1"
       message: string; //"[本章节已锁定]"
     }
     let retryTime = 0;
@@ -1218,18 +1222,18 @@ export class Jjwxc extends BaseRuleClass {
       return decrypted.toString(CryptoJS.enc.Utf8);
     }
 
-    function getCookieObj(pairKey: string) {
-      const cookieStr = document.cookie;
-      const pairList = cookieStr.split(";");
-      for (let _i = 0, pairList_1 = pairList; _i < pairList_1.length; _i++) {
-        const pair = pairList_1[_i];
-        const _a = pair.trim().split("="),
-          key = _a[0],
-          value = _a[1];
-        if (key == pairKey) return value;
-      }
-      return "error2333";
-    }
+    // function getCookieObj(pairKey: string) {
+    //   const cookieStr = document.cookie;
+    //   const pairList = cookieStr.split(";");
+    //   for (let _i = 0, pairList_1 = pairList; _i < pairList_1.length; _i++) {
+    //     const pair = pairList_1[_i];
+    //     const _a = pair.trim().split("="),
+    //       key = _a[0],
+    //       value = _a[1];
+    //     if (key == pairKey) return value;
+    //   }
+    //   return "error2333";
+    // }
     async function getChapterByApi(): Promise<ChapterParseObject> {
       let chapterGetInfoUrl = chapterUrl.replace("id", "Id");
       chapterGetInfoUrl = chapterGetInfoUrl.replace("id", "Id");
@@ -1334,6 +1338,7 @@ export class Jjwxc extends BaseRuleClass {
         }
         result = await getChapterInfo(chapterGetInfoUrl.toString());
       }
+      log.debug(`本章请求结果如下： response code ${result?.code}, info ${result.message}`);
       retryTime = 0;
       if ("content" in result) {
         let content = result.content;
@@ -1365,15 +1370,15 @@ export class Jjwxc extends BaseRuleClass {
         const hr = document.createElement("hr");
         const authorSayDom = document.createElement("div");
         authorSayDom.innerHTML = postscript
-          .split("\n")
-          .map((p: string) => {
+          ?.split("\n")
+          ?.map((p: string) => {
             if (p.length === 0) {
               return "<p><br/></p>";
             } else {
               return `<p>${p}</p>`;
             }
           })
-          .join("\n");
+          ?.join("\n") ?? "";
 
         contentHTML.appendChild(_contentHTML);
         contentHTML.appendChild(hr);
@@ -1410,6 +1415,7 @@ export class Jjwxc extends BaseRuleClass {
       if (typeof (unsafeWindow as UnsafeWindow).tokenOptions === "object") {
         return getChapterByApi();
       } else {
+        log.error(`当前需要手动捕获android版app token以下载VIP章节,详见github主页说明,脚本将继续尝试使用远程字体下载，但可能会失败`);
         return vipChapter();
       }
     } else {
