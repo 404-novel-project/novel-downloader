@@ -287,14 +287,14 @@ export class Jjwxc extends BaseRuleClass {
     let introCleanimages: AttachmentClass[] | null = null;
     if (!getInformationBlocked()) {
       bookname = (
-        document.querySelector('h1[itemprop="name"] > span') as HTMLElement
-      ).innerText.trim();
+        document.querySelector('#oneboolt .bigtext') as HTMLElement
+      ).innerText.trim()
 
       author = (
-        document.querySelector("td.sptd h2 a span") as HTMLElement
-      ).innerText
-        .replace(/作\s+者:/, "")
-        .trim();
+        document.querySelector("#oneboolt  h2 > a") as HTMLElement
+      )?.innerText ?? (
+          document.querySelector('#oneboolt > .noveltitle > span > a') as HTMLElement
+      )?.innerText;
       const introDom = document.querySelector("#novelintro");
       [introduction, introductionHTML, introCleanimages] = await introDomHandle(
         introDom
@@ -377,6 +377,30 @@ export class Jjwxc extends BaseRuleClass {
     let sectionNumber = 0;
     let sectionName = null;
     let sectionChapterNumber = 0;
+    if (trList.length === 0) {
+      const tr = document.querySelector("div#oneboolt");
+      if (tr) {
+        const chapterName = tr.querySelector("h2")?.innerText.trim() ?? "全一章";
+        const chapterUrl = bookUrl + "&chapterid=1";
+        chapterNumber++;
+        const chapter = new Chapter({
+          bookUrl,
+          bookname,
+          chapterUrl,
+          chapterNumber,
+          chapterName,
+          isVIP: false,
+          isPaid: null,
+          sectionName,
+          sectionNumber,
+          sectionChapterNumber,
+          chapterParse: this.chapterParse,
+          charset: this.charset,
+          options: {},
+        });
+        chapters.push(chapter);
+      }
+    }
     for (const tr of Array.from(trList)) {
       if (tr.getAttribute("bgcolor")) {
         sectionNumber++;
@@ -1105,9 +1129,9 @@ export class Jjwxc extends BaseRuleClass {
         additionalMetadate: null,
       };
     }
-    interface vipChapterInfo {
-      downloadContent: ChapterInfo[];
-    }
+    // interface vipChapterInfo {
+    //   downloadContent: ChapterInfo[];
+    // }
     interface ChapterInfo {
       chapterId: string; //"39",
       chapterName: string; //"另一种可能",
@@ -1214,7 +1238,15 @@ export class Jjwxc extends BaseRuleClass {
         "https://app.jjwxc.net/androidapi/chapterContent?"
       );
       chapterGetInfoUrl = chapterGetInfoUrl.replace(
+        "https://www.jjwxc.net/onebook.php?",
+        "https://app.jjwxc.net/androidapi/chapterContent?"
+      ); 
+      chapterGetInfoUrl = chapterGetInfoUrl.replace(
         "http://my.jjwxc.net/onebook_vip.php?",
+        "https://app.jjwxc.net/androidapi/chapterContent?"
+      );
+      chapterGetInfoUrl = chapterGetInfoUrl.replace(
+        "https://my.jjwxc.net/onebook_vip.php?",
         "https://app.jjwxc.net/androidapi/chapterContent?"
       );
       //let sid = getCookieObj("token");
