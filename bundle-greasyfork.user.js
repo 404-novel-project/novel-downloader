@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.963
+// @version        5.2.964
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -11182,7 +11182,7 @@ class BaseRuleClass {
     charset = document.characterSet;
     concurrencyLimit = 10;
     sleepTime = 50;
-    maxSleepTime = 2000;
+    maxSleepTime = 500;
     streamZip = false;
     needLogin = false;
     nsfw = false;
@@ -29212,17 +29212,6 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
             });
             return decrypted.toString(external_CryptoJS_.enc.Utf8);
         }
-        function getCookieObj(pairKey) {
-            const cookieStr = document.cookie;
-            const pairList = cookieStr.split(";");
-            for (let _i = 0, pairList_1 = pairList; _i < pairList_1.length; _i++) {
-                const pair = pairList_1[_i];
-                const _a = pair.trim().split("="), key = _a[0], value = _a[1];
-                if (key == pairKey)
-                    return value;
-            }
-            return "error2333";
-        }
         async function getChapterByApi() {
             let chapterGetInfoUrl = chapterUrl.replace("id", "Id");
             chapterGetInfoUrl = chapterGetInfoUrl.replace("id", "Id");
@@ -29295,6 +29284,7 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
                 }
                 result = await getChapterInfo(chapterGetInfoUrl.toString());
             }
+            loglevel_default().debug(`本章请求结果如下： response code ${result?.code}, info ${result.message}`);
             retryTime = 0;
             if ("content" in result) {
                 let content = result.content;
@@ -29329,8 +29319,8 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
                 const hr = document.createElement("hr");
                 const authorSayDom = document.createElement("div");
                 authorSayDom.innerHTML = postscript
-                    .split("\n")
-                    .map((p) => {
+                    ?.split("\n")
+                    ?.map((p) => {
                     if (p.length === 0) {
                         return "<p><br/></p>";
                     }
@@ -29338,7 +29328,7 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
                         return `<p>${p}</p>`;
                     }
                 })
-                    .join("\n");
+                    ?.join("\n") ?? "";
                 contentHTML.appendChild(_contentHTML);
                 contentHTML.appendChild(hr);
                 contentHTML.appendChild(authorSayDom);
@@ -29375,6 +29365,7 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
                 return getChapterByApi();
             }
             else {
+                loglevel_default().error(`当前需要手动捕获android版app token以下载VIP章节,详见github主页说明,脚本将继续尝试使用远程字体下载，但可能会失败`);
                 return vipChapter();
             }
         }
