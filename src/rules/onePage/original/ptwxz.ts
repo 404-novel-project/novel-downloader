@@ -18,7 +18,9 @@ export const ptwxz = () =>
       delay(1000); // Add 1 second delay before processing each chapter
       return dom.body;
     },
-    concurrencyLimit: -400,
+    concurrencyLimit: 1,
+    sleepTime: 400,
+    maxSleepTime: 400,
     contentPatch: (dom) => {
       const title = dom.querySelector('h1')?.textContent?.trim() ?? '';
 

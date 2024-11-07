@@ -269,7 +269,7 @@ export abstract class BaseRuleClass {
         }
         try {
           chapteri++;
-          await sleep(Math.min(self.maxSleepTime, chapteri * self.sleepTime) +Math.round(Math.random() * 2000));
+          await sleep(Math.min(self.maxSleepTime, chapteri * self.sleepTime) +Math.round(Math.random() * 1000));
           let chapterObj = await chapter.init();
           chapterObj = await postChapterParseHook(chapterObj, saveBookObj);
         } catch (error) {
