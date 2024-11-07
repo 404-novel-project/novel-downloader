@@ -103,8 +103,11 @@ export const vm = createApp({
 
     // Initialize all settings from stored values
     setting.enableDebug = GM_getValue('enableDebug', enableDebug.value);
+    enableDebug.value = setting.enableDebug ?? enableDebug.value;
     setting.TxtDownload = GM_getValue('TxtDownload', TxtDownload.value);
+    TxtDownload.value = setting.TxtDownload ?? TxtDownload.value;
     setting.EpubDownload = GM_getValue('EpubDownload', EpubDownload.value);
+    EpubDownload.value = setting.EpubDownload ?? EpubDownload.value;
     setting.enableTestPage = GM_getValue('enableTestPage', false);
     setting.chooseSaveOption = GM_getValue('chooseSaveOption', 'null');
     setting.filterSetting = GM_getValue('filterSetting', undefined);
@@ -118,6 +121,7 @@ export const vm = createApp({
         return saveOptions[0].options;
       }
     };
+    (unsafeWindow as UnsafeWindow).saveOptions = curSaveOption();
     const saveFilter = (filterSetting: filterSettingGlobal) => {
       setting.filterSetting = deepcopy(filterSetting);
       GM_setValue('filterSetting', setting.filterSetting);

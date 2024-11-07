@@ -22,7 +22,7 @@ export const esjzone = () =>
       ).map((a) => (a as HTMLAnchorElement).innerText);
       return additionalMetadate;
     },
-    coverUrl: null,
+    coverUrl: document.querySelector("div.product-gallery")?.querySelector("img")?.getAttribute("src") ?? null,
     aList: document.querySelectorAll('#chapterList a'),
     getAName: (aElem) =>
       (aElem as HTMLElement)?.innerText.trim(),
