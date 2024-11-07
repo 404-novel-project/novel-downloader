@@ -1,11 +1,11 @@
 import { rm } from "../../../lib/dom";
 import { mkRuleClass } from "../template";
 
-const currentPageIndexBox = document.querySelector('.index_box');
+const currentPageIndexBox = document.querySelector('.p-eplist');
 
 // Attempt to get the first and last page anchors
-const firstPageAnchor = document.querySelector('.novelview_pager-first');
-const lastPageAnchor = document.querySelector('.novelview_pager-last');
+const firstPageAnchor = document.querySelector('.c-pager__item--first');
+const lastPageAnchor = document.querySelector('.c-pager__item--last');
 
 if (firstPageAnchor && lastPageAnchor) {
   // Fallback to the current URL if href is null, it means we're on the last or first page
@@ -29,7 +29,7 @@ if (firstPageAnchor && lastPageAnchor) {
       const html = await response.text();
       const parser = new DOMParser();
       const doc = parser.parseFromString(html, 'text/html');
-      const pageIndexBox = doc.querySelector('.index_box');
+      const pageIndexBox = doc.querySelector('.p-eplist');
       if (pageIndexBox && currentPageIndexBox) {
         const childrenArray = Array.from(pageIndexBox.children);
         if (insertAfterCurrentBox) {
@@ -72,7 +72,7 @@ export const syosetu = () => {
   };
   const getAList = () => {
     const _aList = document.querySelectorAll(
-      "dl.novel_sublist2 dd.subtitle > a"
+      "body > div.l-container > main > article > div.p-eplist > div > a"
     );
     if (_aList.length !== 0) {
       return _aList;
@@ -80,7 +80,7 @@ export const syosetu = () => {
       const a = document.createElement("a");
       a.href = document.location.href;
       a.innerText = (
-        document.querySelector(".novel_title") as HTMLElement
+        document.querySelector(".p-novel__title") as HTMLElement
       )?.innerText;
       return [a];
     }
@@ -94,26 +94,24 @@ export const syosetu = () => {
   return mkRuleClass({
     bookUrl: document.location.href,
     bookname: (
-      document.querySelector(".novel_title") as HTMLElement
+      document.querySelector(".p-novel__title") as HTMLElement
     ).innerText.trim(),
     author: (
       document.querySelector(
-        ".novel_writername > a, .novel_writername"
+        "body > div.l-container > main > article > div.p-novel__author > a"
       ) as HTMLAnchorElement
-    ).innerText
-      .replace("作者：", "")
-      .trim(),
+    ).innerText,
     introDom: getIntroDom(),
     introDomPatch: (dom) => dom,
     coverUrl: null,
     aList: getAList(),
-    sections: document.querySelectorAll("div.chapter_title"),
+    sections: document.querySelectorAll(".p-eplist__chapter-title"),
     getSName: (dom) => (dom as HTMLElement).innerText.trim(),
     getContent: (dom) => {
       const content = document.createElement("div");
-      const novelP = dom.querySelector("#novel_p");
-      const novelHonbun = dom.querySelector("#novel_honbun");
-      const novelA = dom.querySelector("#novel_a");
+      const novelP = dom.querySelector(".p-novel__text--preface");
+      const novelHonbun = dom.querySelector(".p-novel__text:not(.p-novel__text--preface):not(.p-novel__text--afterword)");
+      const novelA = dom.querySelector(".p-novel__text--afterword");
       if (novelP) {
         content.appendChild(novelP);
         const hr = dom.createElement("hr");

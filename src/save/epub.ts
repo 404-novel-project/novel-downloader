@@ -278,6 +278,8 @@ export class EPUB extends Options {
       [
         `<?xml version="1.0" encoding="utf-8"?>`,
         htmlText
+          .replaceAll("<p><br /></p>", "")
+          .replaceAll("<p><br/></p>", "")
           .replaceAll("data-src-address", "src")
           .replaceAll(/[\u{0000}-\u{001f}]/gu, "")
           .replaceAll(/[\u{007f}-\u{009f}]/gu, "")
