@@ -3,7 +3,7 @@ import { logText } from "../log";
 import { Book, saveType } from "../main/Book";
 import { Chapter } from "../main/Chapter";
 import { Status } from "../main/main";
-import { enableDebug, skipTxtDownload } from "../setting";
+import { enableDebug, TxtDownload,EpubDownload } from "../setting";
 import { SaveOptions } from "./options";
 import { EPUB } from "./epub";
 import { TXT } from "./txt";
@@ -60,13 +60,13 @@ export class SaveBook {
   }
 
   public async save() {
-    if (!skipTxtDownload.value && this.saveType.txt) {
+    if (TxtDownload.value && this.saveType.txt) {
       this.saveTxt();
     }
     if (enableDebug.value) {
       SaveBook.saveLog();
     }
-    if (this.saveType.epub) {
+    if (EpubDownload.value &&this.saveType.epub) {
       await this.saveEpub();
     }
     if (this.saveType.raw instanceof Object) {

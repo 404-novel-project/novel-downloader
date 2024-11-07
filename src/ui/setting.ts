@@ -6,7 +6,7 @@ import { log } from "../log";
 import { Status } from "../main/main";
 import { Chapter } from "../main/Chapter";
 import { SaveOptions as globalSaveOptions } from "../save/options";
-import { enableDebug, skipTxtDownload } from "../setting";
+import { enableDebug, TxtDownload, EpubDownload } from "../setting";
 import FilterTab, {
   FilterSetting as filterSettingGlobal,
   getFilterFunction,
@@ -28,7 +28,8 @@ export const vm = createApp({
   setup() {
     interface Setting {
       enableDebug?: boolean;
-      skipTxtDownload?: boolean;
+      TxtDownload?: boolean;
+      EpubDownload?: boolean;
       enableTestPage?: boolean;
       chooseSaveOption?: string;
       filterSetting?: filterSettingGlobal;
@@ -102,7 +103,8 @@ export const vm = createApp({
 
     // Initialize all settings from stored values
     setting.enableDebug = GM_getValue('enableDebug', enableDebug.value);
-    setting.skipTxtDownload = GM_getValue('skipTxtDownload', skipTxtDownload.value);
+    setting.TxtDownload = GM_getValue('TxtDownload', TxtDownload.value);
+    setting.EpubDownload = GM_getValue('EpubDownload', EpubDownload.value);
     setting.enableTestPage = GM_getValue('enableTestPage', false);
     setting.chooseSaveOption = GM_getValue('chooseSaveOption', 'null');
     setting.filterSetting = GM_getValue('filterSetting', undefined);
@@ -131,7 +133,8 @@ export const vm = createApp({
 
     const setConfig = (config: Setting) => {
       setEnableDebug();
-      setSkipTxtDownload();
+      setTxtDownload();
+      setEpubDownload();
       setCustomSaveOption();
       setCustomFilter();
       saveAllSettings();
@@ -147,10 +150,17 @@ export const vm = createApp({
         }
       }
 
-      function setSkipTxtDownload() {
-        if (typeof config.skipTxtDownload === "boolean") {
-          skipTxtDownload.value = config.skipTxtDownload;
-          log.info(`[Init]skipTxtDownload: ${skipTxtDownload.value}`);
+      function setTxtDownload() {
+        if (typeof config.TxtDownload === "boolean") {
+          TxtDownload.value = config.TxtDownload;
+          log.info(`[Init]TxtDownload: ${TxtDownload.value}`);
+        }
+      }
+
+      function setEpubDownload() {
+        if (typeof config.EpubDownload === "boolean") {
+          EpubDownload.value = config.EpubDownload;
+          log.info(`[Init]EpubDownload: ${EpubDownload.value}`);
         }
       }
 
@@ -183,7 +193,8 @@ export const vm = createApp({
 
       function saveAllSettings() {
         GM_setValue('enableDebug', config.enableDebug);
-        GM_setValue('skipTxtDownload', config.skipTxtDownload);
+        GM_setValue('TxtDownload', config.TxtDownload);
+        GM_setValue('EpubDownload', config.EpubDownload);
         GM_setValue('enableTestPage', config.enableTestPage);
         GM_setValue('chooseSaveOption', config.chooseSaveOption);
         GM_setValue('filterSetting', config.filterSetting);

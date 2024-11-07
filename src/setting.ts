@@ -4,8 +4,11 @@ export const retryLimit = 5;
 export const enableDebug = {
   value: false,
 };
-export const skipTxtDownload = {
-  value: false,
+export const TxtDownload = {
+  value: true,
+};
+export const EpubDownload = {
+  value: true,
 };
 export const enableCustomFinishCallback = true;
 export const enableCustomChapterFilter = true;
