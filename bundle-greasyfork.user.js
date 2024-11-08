@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.964
+// @version        5.2.988
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -235,7 +235,8 @@
 // @match          *://www.akatsuki-novels.com/stories/index/novel_id~*
 // @match          *://www.alphapolis.co.jp/novel/*/*
 // @match          *://novelup.plus/story/*
-// @match          *://www.69shu.com/txt/*.htm
+// @match          *://69shuba.cx/book/*.htm
+// @match          *://book.xbookcn.net/search/label/*
 // @match          *://new-read.readmoo.com/mooreader/*
 // @match          *://www.iqingguo.com/book/detail/?id=*
 // @match          *://www.ywggzy.com/bxwx/*/
@@ -257,6 +258,8 @@
 // @match          *://www.boqugew.com/shu/*/
 // @match          *://www.qbtr.cc/*/*.html
 // @match          *://b.guidaye.com/*/*/
+// @match          *://www.esjzone.me/detail/*
+// @match          *://www.esjzone.cc/detail/*
 // @compatible     Firefox 100+
 // @compatible     Chrome 85+
 // @compatible     Edge 85+
@@ -10584,6 +10587,8 @@ class EPUB extends Options {
         return new Blob([
             `<?xml version="1.0" encoding="utf-8"?>`,
             htmlText
+                .replaceAll("<p><br /></p>", "")
+                .replaceAll("<p><br/></p>", "")
                 .replaceAll("data-src-address", "src")
                 .replaceAll(/[\u{0000}-\u{001f}]/gu, "")
                 .replaceAll(/[\u{007f}-\u{009f}]/gu, "")
@@ -11082,13 +11087,13 @@ class SaveBook {
         chapter.status = main/* Status */.nW.saved;
     }
     async save() {
-        if (this.saveType.txt) {
+        if (setting/* TxtDownload */.Jv.value && this.saveType.txt) {
             this.saveTxt();
         }
         if (setting/* enableDebug */.Nw.value) {
             SaveBook.saveLog();
         }
-        if (this.saveType.epub) {
+        if (setting/* EpubDownload */.Zz.value && this.saveType.epub) {
             await this.saveEpub();
         }
         if (this.saveType.raw instanceof Object) {
@@ -11358,7 +11363,7 @@ class BaseRuleClass {
                 }
                 try {
                     chapteri++;
-                    await (0,misc/* sleep */.yy)(Math.min(self.maxSleepTime, chapteri * self.sleepTime) + Math.round(Math.random() * 2000));
+                    await (0,misc/* sleep */.yy)(Math.min(self.maxSleepTime, chapteri * self.sleepTime) + Math.round(Math.random() * 1000));
                     let chapterObj = await chapter.init();
                     chapterObj = await postChapterParseHook(chapterObj, saveBookObj);
                 }
@@ -12673,6 +12678,43 @@ const alphapolis = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClas
 
 /***/ }),
 
+/***/ "./src/rules/onePage/original/esjzone.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   esjzone: () => (/* binding */ esjzone)
+/* harmony export */ });
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
+
+
+const esjzone = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
+    bookUrl: document.location.href,
+    bookname: document.querySelector(".book-detail h2").innerText.trim(),
+    author: Array.from(document.querySelectorAll('ul.book-detail li')).find(li => li.textContent && li.textContent.includes('作者:'))?.querySelector('a')?.innerText.trim() || "Unknown Author",
+    introDom: document.querySelector(".description"),
+    introDomPatch: (dom) => dom,
+    additionalMetadatePatch: (additionalMetadate) => {
+        additionalMetadate.tags = Array.from(document.querySelectorAll('section.widget-tags.m-t-20 a.tag')).map((a) => a.innerText);
+        return additionalMetadate;
+    },
+    coverUrl: document.querySelector("div.product-gallery")?.querySelector("img")?.getAttribute("src") ?? null,
+    aList: document.querySelectorAll('#chapterList a'),
+    getAName: (aElem) => aElem?.innerText.trim(),
+    getContent: (dom) => dom.querySelector('.forum-content'),
+    contentPatch: (dom) => {
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)('h3', true, dom);
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)('footer', true, dom);
+        return dom;
+    },
+    language: "zh",
+    needLogin: true,
+});
+
+
+/***/ }),
+
 /***/ "./src/rules/onePage/original/houhuayuan.ts":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -12919,7 +12961,14 @@ const ptwxz = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ 
     coverUrl: document.location.href.replace(/(https:\/\/www\.piaotia\.com)\/html\/(\d+)\/(\d+)(\/index.html)?\/?$/, '$1/files/article/image/$2/$3/$3s.jpg'),
     getAName: (aElem) => aElem.innerText.trim(),
     aList: document.querySelectorAll('ul > li > a'),
-    getContent: (dom) => dom.body,
+    getContent: (dom) => {
+        const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+        delay(1000);
+        return dom.body;
+    },
+    concurrencyLimit: 1,
+    sleepTime: 400,
+    maxSleepTime: 400,
     contentPatch: (dom) => {
         const title = dom.querySelector('h1')?.textContent?.trim() ?? '';
         const table = dom.querySelector('table');
@@ -12966,9 +13015,9 @@ __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __we
 /* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
 
 
-const currentPageIndexBox = document.querySelector('.index_box');
-const firstPageAnchor = document.querySelector('.novelview_pager-first');
-const lastPageAnchor = document.querySelector('.novelview_pager-last');
+const currentPageIndexBox = document.querySelector('.p-eplist');
+const firstPageAnchor = document.querySelector('.c-pager__item--first');
+const lastPageAnchor = document.querySelector('.c-pager__item--last');
 if (firstPageAnchor && lastPageAnchor) {
     const currentURL = window.location.pathname + window.location.search;
     const lastPageHref = lastPageAnchor.getAttribute('href') ? lastPageAnchor.getAttribute('href') : currentURL;
@@ -12985,7 +13034,7 @@ if (firstPageAnchor && lastPageAnchor) {
             const html = await response.text();
             const parser = new DOMParser();
             const doc = parser.parseFromString(html, 'text/html');
-            const pageIndexBox = doc.querySelector('.index_box');
+            const pageIndexBox = doc.querySelector('.p-eplist');
             if (pageIndexBox && currentPageIndexBox) {
                 const childrenArray = Array.from(pageIndexBox.children);
                 if (insertAfterCurrentBox) {
@@ -13021,14 +13070,14 @@ const syosetu = () => {
         return document.querySelector("#novel_ex");
     };
     const getAList = () => {
-        const _aList = document.querySelectorAll("dl.novel_sublist2 dd.subtitle > a");
+        const _aList = document.querySelectorAll("body > div.l-container > main > article > div.p-eplist > div > a");
         if (_aList.length !== 0) {
             return _aList;
         }
         else {
             const a = document.createElement("a");
             a.href = document.location.href;
-            a.innerText = document.querySelector(".novel_title")?.innerText;
+            a.innerText = document.querySelector(".p-novel__title")?.innerText;
             return [a];
         }
     };
@@ -13038,21 +13087,19 @@ const syosetu = () => {
     };
     return (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
         bookUrl: document.location.href,
-        bookname: document.querySelector(".novel_title").innerText.trim(),
-        author: document.querySelector(".novel_writername > a, .novel_writername").innerText
-            .replace("作者：", "")
-            .trim(),
+        bookname: document.querySelector(".p-novel__title").innerText.trim(),
+        author: document.querySelector("body > div.l-container > main > article > div.p-novel__author > a").innerText,
         introDom: getIntroDom(),
         introDomPatch: (dom) => dom,
         coverUrl: null,
         aList: getAList(),
-        sections: document.querySelectorAll("div.chapter_title"),
+        sections: document.querySelectorAll(".p-eplist__chapter-title"),
         getSName: (dom) => dom.innerText.trim(),
         getContent: (dom) => {
             const content = document.createElement("div");
-            const novelP = dom.querySelector("#novel_p");
-            const novelHonbun = dom.querySelector("#novel_honbun");
-            const novelA = dom.querySelector("#novel_a");
+            const novelP = dom.querySelector(".p-novel__text--preface");
+            const novelHonbun = dom.querySelector(".p-novel__text:not(.p-novel__text--preface):not(.p-novel__text--afterword)");
+            const novelA = dom.querySelector(".p-novel__text--afterword");
             if (novelP) {
                 content.appendChild(novelP);
                 const hr = dom.createElement("hr");
@@ -13704,6 +13751,83 @@ const xbyuan = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */
 
 /***/ }),
 
+/***/ "./src/rules/onePageWithMultiIndexPage/69shu.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   c69shu: () => (/* binding */ c69shu)
+/* harmony export */ });
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePageWithMultiIndexPage/template.ts");
+
+
+
+const c69shu = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
+    bookUrl: document.location.href,
+    bookname: document.querySelector("h1")?.innerText ?? "",
+    author: document.querySelector(".booknav2 > p:nth-child(3) > a")?.innerText ?? "",
+    introDom: document.querySelector(".lastcontent"),
+    introDomPatch: (content) => content,
+    coverUrl: document.querySelector(".bookimg2 > img")?.src ?? null,
+    getIndexPages: async () => {
+        const indexPages = [];
+        const menuUrl = document.querySelector('a.btn.more-btn[href^="https://69shuba.cx/book/"]').href;
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .wA)(menuUrl, "GBK");
+        indexPages.push(doc);
+        return indexPages;
+    },
+    getAList: (doc) => Array.from(doc.querySelectorAll("#catalog ul a")).reverse(),
+    getAName: (aElem) => aElem.innerText.trim(),
+    getContent: (doc) => doc.querySelector(".txtnav"),
+    contentPatch: (content) => {
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)(".hide720, .txtright, .bottom-ad", true, content);
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__/* .rm2 */ .Sf)([/^谷[\u4e00-\u9fa5]{0,1}$/gm], content);
+        const walker = document.createTreeWalker(content, NodeFilter.SHOW_TEXT, null);
+        const nodesToReplace = [];
+        while (walker.nextNode()) {
+            const node = walker.currentNode;
+            if (node.parentNode &&
+                node.parentNode.nodeName !== 'P' &&
+                node.textContent &&
+                node.textContent.trim() !== '') {
+                nodesToReplace.push(node);
+            }
+        }
+        nodesToReplace.forEach((node) => {
+            const p = document.createElement('p');
+            p.textContent = node.textContent;
+            if (node.parentNode) {
+                node.parentNode.replaceChild(p, node);
+            }
+        });
+        const paragraphs = content.querySelectorAll('p');
+        const brRegex = /<br\s*\/?>/i;
+        paragraphs.forEach((p) => {
+            if (brRegex.test(p.innerHTML)) {
+                const parts = p.innerHTML.split(brRegex);
+                const fragment = document.createDocumentFragment();
+                parts.forEach((part) => {
+                    const newP = document.createElement('p');
+                    newP.innerHTML = part.trim();
+                    if (newP.innerHTML !== '') {
+                        fragment.appendChild(newP);
+                    }
+                });
+                if (p.parentNode) {
+                    p.parentNode.replaceChild(fragment, p);
+                }
+            }
+        });
+        return content;
+    },
+    language: "zh"
+});
+
+
+/***/ }),
+
 /***/ "./src/rules/onePageWithMultiIndexPage/baihexs.ts":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -14105,6 +14229,46 @@ const wanben = () => {
         contentPatch: (dom) => dom,
     });
 };
+
+
+/***/ }),
+
+/***/ "./src/rules/onePageWithMultiIndexPage/xbookcn.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   xbookcn: () => (/* binding */ xbookcn)
+/* harmony export */ });
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePageWithMultiIndexPage/template.ts");
+
+
+const xbookcn = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
+    bookUrl: document.location.href,
+    bookname: document.querySelector(".status-msg-body")?.textContent ?? "",
+    author: document.querySelector(".entry-content > p:nth-child(1)")?.innerText.split("：")[1] ?? "",
+    introDom: document.querySelector(".entry-content"),
+    introDomPatch: (content) => content,
+    coverUrl: null,
+    getIndexPages: async () => {
+        const bookUrl = document.location.origin + document.location.pathname;
+        const indexPages = [];
+        let nextUrl = bookUrl;
+        do {
+            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .wA)(nextUrl, "UTF-8");
+            indexPages.push(doc);
+            nextUrl =
+                doc.querySelector("#Blog1_blog-pager-older-link")?.href ?? null;
+        } while (nextUrl);
+        return indexPages;
+    },
+    getAList: (doc) => doc.querySelectorAll("h3 > a"),
+    getAName: (aElem) => aElem.innerText.trim(),
+    getContent: (doc) => doc.querySelector(".entry-content"),
+    contentPatch: (content) => content,
+    language: "zh",
+});
 
 
 /***/ }),
@@ -29213,17 +29377,23 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
             return decrypted.toString(external_CryptoJS_.enc.Utf8);
         }
         async function getChapterByApi() {
-            let chapterGetInfoUrl = chapterUrl.replace("id", "Id");
-            chapterGetInfoUrl = chapterGetInfoUrl.replace("id", "Id");
+            let chapterGetInfoUrl = chapterUrl.replaceAll("id", "Id");
             chapterGetInfoUrl = chapterGetInfoUrl.replace("http://www.jjwxc.net/onebook.php?", "https://app.jjwxc.net/androidapi/chapterContent?");
             chapterGetInfoUrl = chapterGetInfoUrl.replace("https://www.jjwxc.net/onebook.php?", "https://app.jjwxc.net/androidapi/chapterContent?");
             chapterGetInfoUrl = chapterGetInfoUrl.replace("http://my.jjwxc.net/onebook_vip.php?", "https://app.jjwxc.net/androidapi/chapterContent?");
             chapterGetInfoUrl = chapterGetInfoUrl.replace("https://my.jjwxc.net/onebook_vip.php?", "https://app.jjwxc.net/androidapi/chapterContent?");
             if (isVIP) {
-                if (typeof unsafeWindow.tokenOptions === "object") {
-                    const sid = unsafeWindow.tokenOptions?.Jjwxc;
+                let sid = unsafeWindow.tokenOptions?.Jjwxc;
+                if (sid) {
+                    if (typeof sid !== "string") {
+                        sid = sid;
+                        if (sid.user_key)
+                            sid = sid.token + "&user_key=" + sid.user_key;
+                        else
+                            sid = sid.token;
+                    }
                     chapterGetInfoUrl +=
-                        "&versionCode=401&token=" + sid;
+                        "&versionCode=402&token=" + sid;
                 }
                 else {
                     throw new Error(`当前需要手动捕获android版app token,详见github主页说明`);
@@ -29236,7 +29406,7 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
                     (0,GM/* _GM_xmlhttpRequest */.nV)({
                         url: url,
                         headers: {
-                            referer: "http://android.jjwxc.net?v=401",
+                            referer: "http://android.jjwxc.net?v=402",
                             "user-agent": user_agent,
                         },
                         method: "GET",
@@ -35194,37 +35364,6 @@ const xiaoshuodaquan = () => (0,_tempate__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleC
 
 /***/ }),
 
-/***/ "./src/rules/twoPage/69shu.ts":
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   c69shu: () => (/* binding */ c69shu)
-/* harmony export */ });
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
-/* harmony import */ var _tempate__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/twoPage/tempate.ts");
-
-
-const c69shu = () => (0,_tempate__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
-    bookUrl: document.location.href,
-    anotherPageUrl: document.querySelector(".addbtn > a:nth-child(1)").href,
-    getBookname: () => document.querySelector("h1")?.innerText ?? "",
-    getAuthor: () => document.querySelector(".booknav2 > p:nth-child(2) > a")?.innerText ?? "",
-    getIntroDom: () => document.querySelector(".navtxt > p:nth-child(1)"),
-    introDomPatch: (content) => content,
-    getCoverUrl: () => document.querySelector(".bookimg2 > img")?.src ?? null,
-    getAList: (doc) => doc.querySelectorAll("#catalog ul a"),
-    getContent: (doc) => doc.querySelector(".txtnav"),
-    contentPatch: (content) => {
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)(".hide720, .txtright, .bottom-ad", true, content);
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .Sf)([/^谷[\u4e00-\u9fa5]{0,1}$/gm], content);
-        return content;
-    },
-});
-
-
-/***/ }),
-
 /***/ "./src/rules/twoPage/jingcaiyuedu6.ts":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -36032,10 +36171,12 @@ function getSectionsObj(chapters, chapterSort = (a, b) => a.chapterNumber - b.ch
 /* harmony export */   GM: () => (/* binding */ iconJump),
 /* harmony export */   HE: () => (/* binding */ iconStart1),
 /* harmony export */   Iz: () => (/* binding */ retryLimit),
+/* harmony export */   Jv: () => (/* binding */ TxtDownload),
 /* harmony export */   KV: () => (/* binding */ enableSaveToArchiveOrg),
 /* harmony export */   Nw: () => (/* binding */ enableDebug),
 /* harmony export */   Og: () => (/* binding */ iconStart0),
 /* harmony export */   U5: () => (/* binding */ enableCustomChapterFilter),
+/* harmony export */   Zz: () => (/* binding */ EpubDownload),
 /* harmony export */   k8: () => (/* binding */ enableCustomSaveOptions),
 /* harmony export */   ts: () => (/* binding */ enableJjwxcRemoteFont),
 /* harmony export */   w1: () => (/* binding */ iconSetting),
@@ -36046,6 +36187,12 @@ function getSectionsObj(chapters, chapterSort = (a, b) => a.chapterNumber - b.ch
 const retryLimit = 5;
 const enableDebug = {
     value: false,
+};
+const TxtDownload = {
+    value: true,
+};
+const EpubDownload = {
+    value: true,
 };
 const enableCustomFinishCallback = true;
 const enableCustomChapterFilter = true;
@@ -36669,6 +36816,8 @@ const environments = async () => {
         Cookie: navigator.cookieEnabled,
         doNotTrack: navigator.doNotTrack ?? 0,
         enableDebug: src_setting/* enableDebug */.Nw.value,
+        TxtDownload: src_setting/* TxtDownload */.Jv.value,
+        EpubDownload: src_setting/* EpubDownload */.Zz.value,
         ScriptHandler: src_GM/* _GM_info */.JX.scriptHandler,
         "ScriptHandler version": src_GM/* _GM_info */.JX.version,
         "Novel-downloader version": src_GM/* _GM_info */.JX.script.version,
@@ -37148,9 +37297,14 @@ async function getRule() {
             ruleClass = xiaoshuowu();
             break;
         }
-        case "www.69shu.com": {
-            const { c69shu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/69shu.ts"));
+        case "69shuba.cx": {
+            const { c69shu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePageWithMultiIndexPage/69shu.ts"));
             ruleClass = c69shu();
+            break;
+        }
+        case "book.xbookcn.net": {
+            const { xbookcn } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePageWithMultiIndexPage/xbookcn.ts"));
+            ruleClass = xbookcn();
             break;
         }
         case "www.quanshuzhai.com": {
@@ -37293,6 +37447,12 @@ async function getRule() {
         case "www.42zw.la": {
             const { la42zw } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
             ruleClass = la42zw();
+            break;
+        }
+        case "www.esjzone.cc":
+        case "www.esjzone.me": {
+            const { esjzone } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/original/esjzone.ts"));
+            ruleClass = esjzone();
             break;
         }
         default: {
@@ -38097,7 +38257,7 @@ var src_log = __webpack_require__("./src/log.ts");
 
 ;// ./src/ui/setting.html
 // Module
-var setting_code = "<div>\n  <dialog-ui v-if=\"openStatus === 'true'\" dialog-title=\"设置\" v-bind:status=\"openStatus\" v-on:dialogclose=\"closeSetting\">\n    <div id=\"nd-setting\" class=\"nd-setting\">\n      <div class=\"nd-setting-tab\">\n        <button v-bind:class=\"['tab-button', { active: setting.currentTab === 'tab-1'}]\" v-on:click=\"setting.currentTab = 'tab-1'\">\n          基本设置\n        </button>\n        <button v-bind:class=\"['tab-button', { active: setting.currentTab === 'tab-2'}]\" v-on:click=\"setting.currentTab = 'tab-2'\">\n          自定义筛选条件\n        </button>\n        <button v-if=\"setting.enableTestPage\" v-bind:class=\"['tab-button', { active: setting.currentTab === 'tab-3'}]\" v-on:click=\"setting.currentTab = 'tab-3'\">\n          抓取测试\n        </button>\n        <button v-if=\"setting.enableTestPage\" v-bind:class=\"['tab-button', { active: setting.currentTab === 'tab-4'}]\" v-on:click=\"setting.currentTab = 'tab-4'\">\n          日志\n        </button>\n      </div>\n      <div class=\"nd-setting-body\">\n        <div v-show=\"setting.currentTab === 'tab-1'\" id=\"nd-setting-tab-1\" class=\"tab-page\">\n          <div>\n            <input id=\"debug\" v-model=\"setting.enableDebug\" type=\"checkbox\">\n            <label for=\"debug\">启用调试模式。（输出更详细日志）</label>\n            <input id=\"test-page\" v-model=\"setting.enableTestPage\" type=\"checkbox\">\n            <label for=\"test-page\">启用测试视图</label>\n          </div>\n          <hr class=\"hr-twill-colorful\">\n          <div>\n            <h3>自定义保存参数</h3>\n            <ul>\n              <li v-for=\"item of saveOptions\">\n                <input v-bind:id=\"item.key\" v-model=\"setting.chooseSaveOption\" type=\"radio\" v-bind:value=\"item.key\">\n                <label v-bind:for=\"item.key\">{{ item.value }}</label>\n              </li>\n            </ul>\n          </div>\n        </div>\n        <div v-show=\"setting.currentTab === 'tab-2'\" id=\"nd-setting-tab-2\" class=\"tab-page\">\n          <filter-tab v-on:filterupdate=\"saveFilter\">\n        </div>\n        <div v-if=\"setting.enableTestPage\" v-show=\"setting.currentTab === 'tab-3'\" id=\"nd-setting-tab-3\" class=\"tab-page\">\n          <test-ui></test-ui>\n        </div>\n        <div v-if=\"setting.enableTestPage\" v-show=\"setting.currentTab === 'tab-4'\" id=\"nd-setting-tab-4\" class=\"tab-page\">\n          <log-ui></log-ui>\n        </div>\n      </div>\n      <div class=\"nd-setting-footer\">\n        <button v-on:click=\"closeAndSaveSetting\">Save</button>\n        <button v-on:click=\"closeSetting\">Cancel</button>\n      </div>\n    </div>\n  </dialog-ui>\n</div>\n";
+var setting_code = "<div>\n  <dialog-ui v-if=\"openStatus === 'true'\" dialog-title=\"设置\" v-bind:status=\"openStatus\" v-on:dialogclose=\"closeSetting\">\n    <div id=\"nd-setting\" class=\"nd-setting\">\n      <div class=\"nd-setting-tab\">\n        <button v-bind:class=\"['tab-button', { active: setting.currentTab === 'tab-1'}]\" v-on:click=\"setting.currentTab = 'tab-1'\">\n          基本设置\n        </button>\n        <button v-bind:class=\"['tab-button', { active: setting.currentTab === 'tab-2'}]\" v-on:click=\"setting.currentTab = 'tab-2'\">\n          自定义筛选条件\n        </button>\n        <button v-if=\"setting.enableTestPage\" v-bind:class=\"['tab-button', { active: setting.currentTab === 'tab-3'}]\" v-on:click=\"setting.currentTab = 'tab-3'\">\n          抓取测试\n        </button>\n        <button v-if=\"setting.enableTestPage\" v-bind:class=\"['tab-button', { active: setting.currentTab === 'tab-4'}]\" v-on:click=\"setting.currentTab = 'tab-4'\">\n          日志\n        </button>\n      </div>\n      <div class=\"nd-setting-body\">\n        <div v-show=\"setting.currentTab === 'tab-1'\" id=\"nd-setting-tab-1\" class=\"tab-page\">\n          <div>\n            <input id=\"debug\" v-model=\"setting.enableDebug\" type=\"checkbox\">\n            <label for=\"debug\">启用调试模式。（输出更详细日志）</label>\n            <input id=\"txtDownload\" v-model=\"setting.TxtDownload\" type=\"checkbox\">\n            <label for=\"txtDownload\">下载Txt文件</label>\n            <input id=\"EpubDownload\" v-model=\"setting.EpubDownload\" type=\"checkbox\">\n            <label for=\"EpubDownload\">下载Epub文件</label>\n            <input id=\"test-page\" v-model=\"setting.enableTestPage\" type=\"checkbox\">\n            <label for=\"test-page\">启用测试视图</label>\n          </div>\n          <hr class=\"hr-twill-colorful\">\n          <div>\n            <h3>自定义保存参数</h3>\n            <ul>\n              <li v-for=\"item of saveOptions\">\n                <input v-bind:id=\"item.key\" v-model=\"setting.chooseSaveOption\" type=\"radio\" v-bind:value=\"item.key\">\n                <label v-bind:for=\"item.key\">{{ item.value }}</label>\n              </li>\n            </ul>\n          </div>\n        </div>\n        <div v-show=\"setting.currentTab === 'tab-2'\" id=\"nd-setting-tab-2\" class=\"tab-page\">\n          <filter-tab v-on:filterupdate=\"saveFilter\">\n        </div>\n        <div v-if=\"setting.enableTestPage\" v-show=\"setting.currentTab === 'tab-3'\" id=\"nd-setting-tab-3\" class=\"tab-page\">\n          <test-ui></test-ui>\n        </div>\n        <div v-if=\"setting.enableTestPage\" v-show=\"setting.currentTab === 'tab-4'\" id=\"nd-setting-tab-4\" class=\"tab-page\">\n          <log-ui></log-ui>\n        </div>\n      </div>\n      <div class=\"nd-setting-footer\">\n        <button v-on:click=\"closeAndSaveSetting\">Save</button>\n        <button v-on:click=\"closeSetting\">Cancel</button>\n      </div>\n    </div>\n  </dialog-ui>\n</div>\n";
 // Exports
 /* harmony default export */ const setting = (setting_code);
 // EXTERNAL MODULE: ./src/ui/setting.less
@@ -38324,10 +38484,20 @@ const vm = (0,external_Vue_.createApp)({
                 },
             },
         ];
-        setting.enableDebug = src_setting/* enableDebug */.Nw.value;
-        setting.chooseSaveOption = "null";
-        setting.enableTestPage = false;
-        setting.currentTab = "tab-1";
+        setting.enableDebug = GM_getValue('enableDebug', src_setting/* enableDebug */.Nw.value);
+        src_setting/* enableDebug */.Nw.value = setting.enableDebug ?? src_setting/* enableDebug */.Nw.value;
+        src_setting/* enableDebug */.Nw.value ? loglevel_default().setLevel("trace") : loglevel_default().setLevel("info");
+        if (src_setting/* enableDebug */.Nw.value) {
+            debug();
+        }
+        setting.TxtDownload = GM_getValue('TxtDownload', src_setting/* TxtDownload */.Jv.value);
+        src_setting/* TxtDownload */.Jv.value = setting.TxtDownload ?? src_setting/* TxtDownload */.Jv.value;
+        setting.EpubDownload = GM_getValue('EpubDownload', src_setting/* EpubDownload */.Zz.value);
+        src_setting/* EpubDownload */.Zz.value = setting.EpubDownload ?? src_setting/* EpubDownload */.Zz.value;
+        setting.enableTestPage = GM_getValue('enableTestPage', false);
+        setting.chooseSaveOption = GM_getValue('chooseSaveOption', 'null');
+        setting.filterSetting = GM_getValue('filterSetting', undefined);
+        setting.currentTab = GM_getValue('currentTab', 'tab-1');
         const curSaveOption = () => {
             const _s = saveOptions.find((s) => s.key === setting.chooseSaveOption);
             if (_s) {
@@ -38337,8 +38507,10 @@ const vm = (0,external_Vue_.createApp)({
                 return saveOptions[0].options;
             }
         };
+        unsafeWindow.saveOptions = curSaveOption();
         const saveFilter = (filterSetting) => {
             setting.filterSetting = (0,misc/* deepcopy */.OJ)(filterSetting);
+            GM_setValue('filterSetting', setting.filterSetting);
         };
         const getFilterSetting = () => {
             if (setting.filterSetting) {
@@ -38351,8 +38523,11 @@ const vm = (0,external_Vue_.createApp)({
         (0,external_Vue_.provide)("getFilterSetting", getFilterSetting);
         const setConfig = (config) => {
             setEnableDebug();
+            setTxtDownload();
+            setEpubDownload();
             setCustomSaveOption();
             setCustomFilter();
+            saveAllSettings();
             function setEnableDebug() {
                 if (typeof config.enableDebug === "boolean") {
                     config.enableDebug ? loglevel_default().setLevel("trace") : loglevel_default().setLevel("info");
@@ -38361,6 +38536,18 @@ const vm = (0,external_Vue_.createApp)({
                         debug();
                     }
                     loglevel_default().info(`[Init]enableDebug: ${src_setting/* enableDebug */.Nw.value}`);
+                }
+            }
+            function setTxtDownload() {
+                if (typeof config.TxtDownload === "boolean") {
+                    src_setting/* TxtDownload */.Jv.value = config.TxtDownload;
+                    loglevel_default().info(`[Init]TxtDownload: ${src_setting/* TxtDownload */.Jv.value}`);
+                }
+            }
+            function setEpubDownload() {
+                if (typeof config.EpubDownload === "boolean") {
+                    src_setting/* EpubDownload */.Zz.value = config.EpubDownload;
+                    loglevel_default().info(`[Init]EpubDownload: ${src_setting/* EpubDownload */.Zz.value}`);
                 }
             }
             function setCustomSaveOption() {
@@ -38383,6 +38570,15 @@ const vm = (0,external_Vue_.createApp)({
                         }
                     }
                 }
+            }
+            function saveAllSettings() {
+                GM_setValue('enableDebug', config.enableDebug);
+                GM_setValue('TxtDownload', config.TxtDownload);
+                GM_setValue('EpubDownload', config.EpubDownload);
+                GM_setValue('enableTestPage', config.enableTestPage);
+                GM_setValue('chooseSaveOption', config.chooseSaveOption);
+                GM_setValue('filterSetting', config.filterSetting);
+                GM_setValue('currentTab', config.currentTab);
             }
         };
         const openStatus = (0,external_Vue_.ref)("false");

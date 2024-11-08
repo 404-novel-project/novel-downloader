@@ -20,6 +20,8 @@ export declare const environments: () => Promise<{
     Cookie: boolean;
     doNotTrack: string | number;
     enableDebug: boolean;
+    TxtDownload: boolean;
+    EpubDownload: boolean;
     ScriptHandler: string;
     "ScriptHandler version": string | undefined;
     "Novel-downloader version": string;
