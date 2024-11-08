@@ -5,7 +5,7 @@ export const esjzone = () =>
   mkRuleClass({
     bookUrl: document.location.href,
     bookname: (
-      document.querySelector("h2") as HTMLElement
+      document.querySelector(".book-detail h2") as HTMLElement
     ).innerText.trim(),
     author: (
             Array.from(document.querySelectorAll('ul.book-detail li')).find(

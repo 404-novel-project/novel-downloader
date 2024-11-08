@@ -1,6 +1,6 @@
 import { getAttachment } from "../../../lib/attachments";
 import { cleanDOM } from "../../../lib/cleanDOM";
-import { getHtmlDOM, ggetHtmlDOM} from "../../../lib/http";
+import { ggetHtmlDOM} from "../../../lib/http";
 import { introDomHandle } from "../../../lib/rule";
 import { log } from "../../../log";
 import { Status } from "../../../main/main";

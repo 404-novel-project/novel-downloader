@@ -1235,8 +1235,7 @@ export class Jjwxc extends BaseRuleClass {
     //   return "error2333";
     // }
     async function getChapterByApi(): Promise<ChapterParseObject> {
-      let chapterGetInfoUrl = chapterUrl.replace("id", "Id");
-      chapterGetInfoUrl = chapterGetInfoUrl.replace("id", "Id");
+      let chapterGetInfoUrl = chapterUrl.replaceAll("id", "Id");
       chapterGetInfoUrl = chapterGetInfoUrl.replace(
         "http://www.jjwxc.net/onebook.php?",
         "https://app.jjwxc.net/androidapi/chapterContent?"
