@@ -1235,8 +1235,7 @@ export class Jjwxc extends BaseRuleClass {
     //   return "error2333";
     // }
     async function getChapterByApi(): Promise<ChapterParseObject> {
-      let chapterGetInfoUrl = chapterUrl.replace("id", "Id");
-      chapterGetInfoUrl = chapterGetInfoUrl.replace("id", "Id");
+      let chapterGetInfoUrl = chapterUrl.replaceAll("id", "Id");
       chapterGetInfoUrl = chapterGetInfoUrl.replace(
         "http://www.jjwxc.net/onebook.php?",
         "https://app.jjwxc.net/androidapi/chapterContent?"
@@ -1255,21 +1254,20 @@ export class Jjwxc extends BaseRuleClass {
       );
       //let sid = getCookieObj("token");
       if (isVIP) {
-        // if (sid == "error2333"){
-        //   log.error(
-        //     `认证错误`
-        //   );
-        //   throw new Error(`认证错误`);
-        // }else{
-        if (typeof (unsafeWindow as UnsafeWindow).tokenOptions === "object") {
-          const sid = (unsafeWindow as UnsafeWindow).tokenOptions?.Jjwxc;
-          //sid = self.atob(decodeURIComponent(sid)).replace(/\|\|.*/, '').replace(/\|/, '_').replace(/\|.*/, '');
-          // chapterGetInfoUrl = chapterGetInfoUrl.replace(
-          //   "chapterId",
-          //   "chapterIds"
-          // );
+        let sid = (unsafeWindow as UnsafeWindow).tokenOptions?.Jjwxc;
+        if (sid) {
+          if (typeof sid !== "string") {
+            sid = sid as {
+              token: string;
+              user_key: string;
+            };
+            if (sid.user_key)
+              sid = sid.token + "&user_key=" + sid.user_key;
+            else
+              sid = sid.token;
+          }
           chapterGetInfoUrl +=
-            "&versionCode=401&token=" + sid;
+            "&versionCode=402&token=" + sid;
         } else {
           throw new Error(
             `当前需要手动捕获android版app token,详见github主页说明`
@@ -1288,7 +1286,7 @@ export class Jjwxc extends BaseRuleClass {
             url: url,
             headers: {
               //   accept: "application/json",
-              referer: "http://android.jjwxc.net?v=401",
+              referer: "http://android.jjwxc.net?v=402",
               //    not_tip: "updateTime",
               "user-agent": user_agent,
               //  "accept-encoding": "gzip",

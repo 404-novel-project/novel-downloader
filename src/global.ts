@@ -37,7 +37,10 @@ interface UnsafeWindowObject {
     gfetchAndParse: typeof gfetchAndParse;
   };
   tokenOptions?: {
-    Jjwxc: string;
+    Jjwxc: string | {
+      token: string;
+      user_key: string;
+    };
     Xrzww: {
       deviceIdentify: string;
       Authorization:string;

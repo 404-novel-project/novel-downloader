@@ -13,7 +13,14 @@ export const ptwxz = () =>
       document.location.href.replace(/(https:\/\/www\.piaotia\.com)\/html\/(\d+)\/(\d+)(\/index.html)?\/?$/, '$1/files/article/image/$2/$3/$3s.jpg'),
     getAName: (aElem) => (aElem as HTMLElement).innerText.trim(),
     aList: document.querySelectorAll('ul > li > a'),
-    getContent: (dom) => dom.body,
+    getContent: (dom) => {
+      const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+      delay(1000); // Add 1 second delay before processing each chapter
+      return dom.body;
+    },
+    concurrencyLimit: 1,
+    sleepTime: 400,
+    maxSleepTime: 400,
     contentPatch: (dom) => {
       const title = dom.querySelector('h1')?.textContent?.trim() ?? '';
 

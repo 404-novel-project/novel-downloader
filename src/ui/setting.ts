@@ -6,7 +6,7 @@ import { log } from "../log";
 import { Status } from "../main/main";
 import { Chapter } from "../main/Chapter";
 import { SaveOptions as globalSaveOptions } from "../save/options";
-import { enableDebug } from "../setting";
+import { enableDebug, TxtDownload, EpubDownload } from "../setting";
 import FilterTab, {
   FilterSetting as filterSettingGlobal,
   getFilterFunction,
@@ -17,6 +17,9 @@ import settingCss from "./setting.less";
 import TestUI from "./TestUI";
 import { createEl, createStyle } from "../lib/dom";
 
+declare const GM_setValue: (key: string, value: any) => void;
+declare const GM_getValue: (key: string, defaultValue?: any) => any;
+
 export const style = createStyle(settingCss);
 export const el = createEl(`<div id="setting"></div>`);
 export const vm = createApp({
@@ -25,6 +28,8 @@ export const vm = createApp({
   setup() {
     interface Setting {
       enableDebug?: boolean;
+      TxtDownload?: boolean;
+      EpubDownload?: boolean;
       enableTestPage?: boolean;
       chooseSaveOption?: string;
       filterSetting?: filterSettingGlobal;
@@ -95,10 +100,23 @@ export const vm = createApp({
         },
       },
     ];
-    setting.enableDebug = enableDebug.value;
-    setting.chooseSaveOption = "null";
-    setting.enableTestPage = false;
-    setting.currentTab = "tab-1";
+
+    // Initialize all settings from stored values
+    setting.enableDebug = GM_getValue('enableDebug', enableDebug.value);
+    enableDebug.value = setting.enableDebug ?? enableDebug.value;
+    enableDebug.value ? log.setLevel("trace") : log.setLevel("info");
+    if (enableDebug.value) {
+      debug();
+    }
+    setting.TxtDownload = GM_getValue('TxtDownload', TxtDownload.value);
+    TxtDownload.value = setting.TxtDownload ?? TxtDownload.value;
+    setting.EpubDownload = GM_getValue('EpubDownload', EpubDownload.value);
+    EpubDownload.value = setting.EpubDownload ?? EpubDownload.value;
+    setting.enableTestPage = GM_getValue('enableTestPage', false);
+    setting.chooseSaveOption = GM_getValue('chooseSaveOption', 'null');
+    setting.filterSetting = GM_getValue('filterSetting', undefined);
+    setting.currentTab = GM_getValue('currentTab', 'tab-1');
+
     const curSaveOption = () => {
       const _s = saveOptions.find((s) => s.key === setting.chooseSaveOption);
       if (_s) {
@@ -107,8 +125,10 @@ export const vm = createApp({
         return saveOptions[0].options;
       }
     };
+    (unsafeWindow as UnsafeWindow).saveOptions = curSaveOption();
     const saveFilter = (filterSetting: filterSettingGlobal) => {
       setting.filterSetting = deepcopy(filterSetting);
+      GM_setValue('filterSetting', setting.filterSetting);
     };
     const getFilterSetting = () => {
       if (setting.filterSetting) {
@@ -121,8 +141,11 @@ export const vm = createApp({
 
     const setConfig = (config: Setting) => {
       setEnableDebug();
+      setTxtDownload();
+      setEpubDownload();
       setCustomSaveOption();
       setCustomFilter();
+      saveAllSettings();
 
       function setEnableDebug() {
         if (typeof config.enableDebug === "boolean") {
@@ -132,6 +155,20 @@ export const vm = createApp({
             debug();
           }
           log.info(`[Init]enableDebug: ${enableDebug.value}`);
+        }
+      }
+
+      function setTxtDownload() {
+        if (typeof config.TxtDownload === "boolean") {
+          TxtDownload.value = config.TxtDownload;
+          log.info(`[Init]TxtDownload: ${TxtDownload.value}`);
+        }
+      }
+
+      function setEpubDownload() {
+        if (typeof config.EpubDownload === "boolean") {
+          EpubDownload.value = config.EpubDownload;
+          log.info(`[Init]EpubDownload: ${EpubDownload.value}`);
         }
       }
 
@@ -160,6 +197,16 @@ export const vm = createApp({
             }
           }
         }
+      }
+
+      function saveAllSettings() {
+        GM_setValue('enableDebug', config.enableDebug);
+        GM_setValue('TxtDownload', config.TxtDownload);
+        GM_setValue('EpubDownload', config.EpubDownload);
+        GM_setValue('enableTestPage', config.enableTestPage);
+        GM_setValue('chooseSaveOption', config.chooseSaveOption);
+        GM_setValue('filterSetting', config.filterSetting);
+        GM_setValue('currentTab', config.currentTab);
       }
     };
 

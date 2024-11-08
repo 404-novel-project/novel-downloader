@@ -232,11 +232,15 @@ EPUB 文件请使用相应阅读器阅读。
 ***
 2. 自行抓取。
    
-- 要抓取的数据：登录晋江文学城 Android app 并随意浏览章节，在形如“https://app.jjwxc.org/androidapi/chapterContent?” 等链接中找到 &token= 后的字符串（止于下一个&）
+- 要抓取的数据：
+  - token: 登录晋江文学城 Android app 并随意浏览章节，在形如“https://app.jjwxc.org/androidapi/chapterContent?” 等链接中找到 &token= 后的字符串（止于下一个&）
+  - user_key 方法同上，数据为 &user_key= 后的字符串（止于下一个&）
+
+注：user_key对于部分账号可能是必须的，如果你采用方法2，可以将两个一起抓取。 
 
 ***
 
-成功抓取token后，在脚本管理器中新建如下脚本（不要把该脚本代码和其他脚本代码合并，除非你完全理解脚本的意思）并保存：
+成功抓取 token 后，在脚本管理器中新建如下脚本（不要把该脚本代码和其他脚本代码合并，除非你完全理解脚本的意思）并保存：
 
 ```javascript
 // ==UserScript==
@@ -254,6 +258,32 @@ EPUB 文件请使用相应阅读器阅读。
 
   const tokenOptions = {
     Jjwxc: "11111111_750afc84c839aaaaafccd841fffd11f1", //填入token，形如客户号+下划线'_'+字母与数字混合的字符串
+  };
+  window.tokenOptions = tokenOptions;
+})();
+```
+
+如果你采用方法2，成功抓取 token 和 user_key 后，在脚本管理器中新建如下脚本（不要把该脚本代码和其他脚本代码合并，除非你完全理解脚本的意思）并保存：
+
+```javascript
+// ==UserScript==
+// @name         auto inject tokenOptions
+// @namespace    http://tampermonkey.net/
+// @version      0.1
+// @description  auto inject tokenOptions
+// @author       You
+// @match        *://*/*
+// @grant        none
+// ==/UserScript==
+
+(function () {
+  "use strict";
+
+  const tokenOptions = {
+    Jjwxc: {
+      token:"11111111_750afc84c839aaaaafccd841fffd11f1", //填入token，形如客户号+下划线'_'+字母与数字混合的字符串
+      user_key:"11ffffff-11ff-11ff-11ff-111111111fff",//填入user_key
+    }
   };
   window.tokenOptions = tokenOptions;
 })();
@@ -580,7 +610,10 @@ window.customFinishCallback = customFinishCallback;
 
   // token 设置开始
   const tokenOptions = {
-    Jjwxc: "填入token，形如客户号+下划线'_'+字母与数字混合的字符串",
+    Jjwxc: {
+      token:"11111111_750afc84c839aaaaafccd841fffd11f1", //填入token，形如客户号+下划线'_'+字母与数字混合的字符串
+      user_key:"11ffffff-11ff-11ff-11ff-111111111fff",//填入user_key
+    },
     Xrzww: {
             deviceIdentify: "webh517657567560", //填入 header中的deviceIdentify值
             Authorization:  "Bearer 453453453e03ee546456546754756756", //填入 header中的Authorization值
