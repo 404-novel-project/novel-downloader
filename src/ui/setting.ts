@@ -104,6 +104,10 @@ export const vm = createApp({
     // Initialize all settings from stored values
     setting.enableDebug = GM_getValue('enableDebug', enableDebug.value);
     enableDebug.value = setting.enableDebug ?? enableDebug.value;
+    enableDebug.value ? log.setLevel("trace") : log.setLevel("info");
+    if (enableDebug.value) {
+      debug();
+    }
     setting.TxtDownload = GM_getValue('TxtDownload', TxtDownload.value);
     TxtDownload.value = setting.TxtDownload ?? TxtDownload.value;
     setting.EpubDownload = GM_getValue('EpubDownload', EpubDownload.value);
