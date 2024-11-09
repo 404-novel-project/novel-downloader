@@ -98,7 +98,7 @@ export const syosetu = () => {
     ).innerText.trim(),
     author: (
       document.querySelector(
-        "body > div.l-container > main > article > div.p-novel__author > a"
+        "div.p-novel__author"
       ) as HTMLAnchorElement
     ).innerText,
     introDom: getIntroDom(),
