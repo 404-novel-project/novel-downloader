@@ -51,14 +51,18 @@ export class Hetushu extends BaseRuleClass {
       let sectionName = null;
       let sectionChapterNumber = 0;
       for (const node of chapterList) {
+        let a:HTMLAnchorElement | null= null;
         if (node.nodeName === "DT") {
           sectionNumber++;
           sectionChapterNumber = 0;
           sectionName = node.innerText.trim();
+          a = node.querySelector("a");
         } else if (node.nodeName === "DD") {
+          a = node.firstElementChild as HTMLAnchorElement;
+        }
+        if (a) {
           chapterNumber++;
           sectionChapterNumber++;
-          const a = node.firstElementChild as HTMLLinkElement;
           const chapterName = a.innerText;
           const chapterUrl = a.href;
           const isVIP = false;
