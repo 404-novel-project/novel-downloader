@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.988
+// @version        5.2.989
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -34342,15 +34342,19 @@ class Hetushu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q
             let sectionName = null;
             let sectionChapterNumber = 0;
             for (const node of chapterList) {
+                let a = null;
                 if (node.nodeName === "DT") {
                     sectionNumber++;
                     sectionChapterNumber = 0;
                     sectionName = node.innerText.trim();
+                    a = node.querySelector("a");
                 }
                 else if (node.nodeName === "DD") {
+                    a = node.firstElementChild;
+                }
+                if (a) {
                     chapterNumber++;
                     sectionChapterNumber++;
-                    const a = node.firstElementChild;
                     const chapterName = a.innerText;
                     const chapterUrl = a.href;
                     const isVIP = false;
