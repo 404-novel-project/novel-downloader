@@ -155,6 +155,11 @@ export class Pixiv extends BaseRuleClass {
       textEmbeddedImages: novel.textEmbeddedImages,
     });
     replaceMark(contentRaw);
+    if (novel.coverUrl) {
+      const novelCover = document.createElement("img");
+      novelCover.src = novel.coverUrl;
+      contentRaw.prepend(novelCover);
+    }
     const { dom, text, images } = await cleanDOM(contentRaw, "TM");
     const additionalMetadate: ChapterAdditionalMetadate = {
       lastModified: new Date(novel.uploadDate).getTime(),
