@@ -1211,15 +1211,20 @@ export class Jjwxc extends BaseRuleClass {
       }
       return result;
     }
-    function decodeVIPText(text: string) {
-      const keyHex = CryptoJS.enc.Utf8.parse("KW8Dvm2N");
-      const ivHex = CryptoJS.enc.Utf8.parse("1ae2c94b");
-      const decrypted = CryptoJS.DES.decrypt(text, keyHex, {
-        iv: ivHex,
-        mode: CryptoJS.mode.CBC,
-        padding: CryptoJS.pad.Pkcs7,
-      });
-      return decrypted.toString(CryptoJS.enc.Utf8);
+    function decodeVIPText(text: string, encryptType: string) {
+      if (encryptType == 'jj') {
+        const keyHex = CryptoJS.enc.Utf8.parse("KW8Dvm2N");
+        const ivHex = CryptoJS.enc.Utf8.parse("1ae2c94b");
+        const decrypted = CryptoJS.DES.decrypt(text, keyHex, {
+          iv: ivHex,
+          mode: CryptoJS.mode.CBC,
+          padding: CryptoJS.pad.Pkcs7,
+        });
+        return decrypted.toString(CryptoJS.enc.Utf8);
+      } else {
+        log.error(`unknown encryptType ${encryptType}`);
+        return text;
+      }
     }
 
     // function getCookieObj(pairKey: string) {
@@ -1267,7 +1272,7 @@ export class Jjwxc extends BaseRuleClass {
               sid = sid.token;
           }
           chapterGetInfoUrl +=
-            "&versionCode=402&token=" + sid;
+            "&versionCode=349&token=" + sid;
         } else {
           throw new Error(
             `当前需要手动捕获android版app token,详见github主页说明`
@@ -1286,7 +1291,7 @@ export class Jjwxc extends BaseRuleClass {
             url: url,
             headers: {
               //   accept: "application/json",
-              referer: "http://android.jjwxc.net?v=402",
+              referer: "http://android.jjwxc.net?v=349",
               //    not_tip: "updateTime",
               "user-agent": user_agent,
               //  "accept-encoding": "gzip",
@@ -1340,10 +1345,13 @@ export class Jjwxc extends BaseRuleClass {
       retryTime = 0;
       if ("content" in result) {
         let content = result.content;
-        if (isVIP) content = decodeVIPText(content);
-        let postscript = result.sayBody;
-        if (isVIP) postscript
-        if (result.sayBody == null) postscript = " ";
+        let postscript = result.sayBody?? " ";
+        if (isVIP) {
+          if (result.encryptField.includes("content"))
+            content = decodeVIPText(content, result.encryptType);
+          if (result.encryptField.includes("sayBody"))
+            postscript = decodeVIPText(postscript, result.encryptType);
+        }
         const contentRaw = document.createElement("pre");
         contentRaw.innerHTML = content;
         let contentText = content
