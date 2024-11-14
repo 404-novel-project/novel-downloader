@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.992
+// @version        5.2.994
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -123,6 +123,7 @@
 // @match          *://www.xbiquge.tw/book/*/
 // @match          *://www.xsbiquge.la/book/*/
 // @match          *://www.007zw.com/shuzhai/*/
+// @match          *://www.shaoniandream.com/book_detail/*
 // @match          *://www.linovelib.com/novel/*/catalog
 // @match          *://www.linovelib.com/novel/*.html
 // @match          *://www.bilinovel.com/novel/*.html
@@ -260,12 +261,14 @@
 // @match          *://b.guidaye.com/*/*/
 // @match          *://www.esjzone.me/detail/*
 // @match          *://www.esjzone.cc/detail/*
+// @match          *://www.fxshu.top/*/*.html
 // @compatible     Firefox 100+
 // @compatible     Chrome 85+
 // @compatible     Edge 85+
 // @compatible     Opera 71+
 // @compatible     Safari 13.1+
 // @connect        self
+// @connect        www.fxshu.top
 // @connect        qidian.com
 // @connect        yuewen.com
 // @connect        kuangxiangit.com
@@ -337,6 +340,8 @@
 // @connect        bg3.co
 // @connect        xiaoshuowanben.com
 // @connect        xbyuan.com
+// @connect        shaoniandream.com
+// @connect        fuxs1.com
 // @connect        *
 // @downloadURL    https://github.com/yingziwu/novel-downloader/raw/gh-pages/bundle.user.js
 // @grant          unsafeWindow
