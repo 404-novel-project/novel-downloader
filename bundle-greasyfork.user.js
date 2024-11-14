@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.991
+// @version        5.2.992
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -29366,15 +29366,21 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
             }
             return result;
         }
-        function decodeVIPText(text) {
-            const keyHex = external_CryptoJS_.enc.Utf8.parse("KW8Dvm2N");
-            const ivHex = external_CryptoJS_.enc.Utf8.parse("1ae2c94b");
-            const decrypted = external_CryptoJS_.DES.decrypt(text, keyHex, {
-                iv: ivHex,
-                mode: external_CryptoJS_.mode.CBC,
-                padding: external_CryptoJS_.pad.Pkcs7,
-            });
-            return decrypted.toString(external_CryptoJS_.enc.Utf8);
+        function decodeVIPText(text, encryptType) {
+            if (encryptType == 'jj') {
+                const keyHex = external_CryptoJS_.enc.Utf8.parse("KW8Dvm2N");
+                const ivHex = external_CryptoJS_.enc.Utf8.parse("1ae2c94b");
+                const decrypted = external_CryptoJS_.DES.decrypt(text, keyHex, {
+                    iv: ivHex,
+                    mode: external_CryptoJS_.mode.CBC,
+                    padding: external_CryptoJS_.pad.Pkcs7,
+                });
+                return decrypted.toString(external_CryptoJS_.enc.Utf8);
+            }
+            else {
+                loglevel_default().error(`unknown encryptType ${encryptType}`);
+                return text;
+            }
         }
         async function getChapterByApi() {
             let chapterGetInfoUrl = chapterUrl.replaceAll("id", "Id");
@@ -29393,7 +29399,7 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
                             sid = sid.token;
                     }
                     chapterGetInfoUrl +=
-                        "&versionCode=402&token=" + sid;
+                        "&versionCode=349&token=" + sid;
                 }
                 else {
                     throw new Error(`当前需要手动捕获android版app token,详见github主页说明`);
@@ -29406,7 +29412,7 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
                     (0,GM/* _GM_xmlhttpRequest */.nV)({
                         url: url,
                         headers: {
-                            referer: "http://android.jjwxc.net?v=402",
+                            referer: "http://android.jjwxc.net?v=349",
                             "user-agent": user_agent,
                         },
                         method: "GET",
@@ -29458,13 +29464,13 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
             retryTime = 0;
             if ("content" in result) {
                 let content = result.content;
-                if (isVIP)
-                    content = decodeVIPText(content);
-                let postscript = result.sayBody;
-                if (isVIP)
-                    postscript;
-                if (result.sayBody == null)
-                    postscript = " ";
+                let postscript = result.sayBody ?? " ";
+                if (isVIP) {
+                    if (result.encryptField.includes("content"))
+                        content = decodeVIPText(content, result.encryptType);
+                    if (result.encryptField.includes("sayBody"))
+                        postscript = decodeVIPText(postscript, result.encryptType);
+                }
                 const contentRaw = document.createElement("pre");
                 contentRaw.innerHTML = content;
                 let contentText = content
