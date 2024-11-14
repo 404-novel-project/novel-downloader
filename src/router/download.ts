@@ -280,6 +280,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = c256wxc;
       break;
     }
+    case "www.fxshu.top": {
+      const { fuxiaoshu } = await import("../rules/onePage/fuxiaoshu");
+      ruleClass = fuxiaoshu;
+      break;
+    }
     case "www.xiaoshuowanben.com": {
       const { wanben } = await import("../rules/onePage/wanben");
       ruleClass = wanben();

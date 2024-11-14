@@ -227,7 +227,8 @@
     "*://www.qbtr.cc/*/*.html",
     "*://b.guidaye.com/*/*/",
     "*://www.esjzone.me/detail/*",
-    "*://www.esjzone.cc/detail/*"
+    "*://www.esjzone.cc/detail/*",
+    "*://www.fxshu.top/*/*.html"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",
@@ -293,6 +294,7 @@
   ],
   "connect": [
     "self",
+    "www.fxshu.top",
     "qidian.com",
     "yuewen.com",
     "kuangxiangit.com",
@@ -365,6 +367,7 @@
     "xiaoshuowanben.com",
     "xbyuan.com",
     "shaoniandream.com",
+    "fuxs1.com",
     "*"
   ],
   "require": [

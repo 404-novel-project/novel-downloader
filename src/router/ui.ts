@@ -174,6 +174,18 @@ export function getUI(): () => UIObject {
         }
       };
     }
+    case "www.fxshu.top": {
+      const style = document.createElement("style");
+      style.innerHTML = `
+          img {
+            font-size: 1em;
+          }
+        `;
+      document.head.appendChild(style);
+      return () => { 
+        return defaultObject;
+      }
+    }
     case "www.zongheng.com":
     case "book.zongheng.com":
     case "huayu.zongheng.com": {
