@@ -90,6 +90,7 @@
     "*://www.xbiquge.tw/book/*/",
     "*://www.xsbiquge.la/book/*/",
     "*://www.007zw.com/shuzhai/*/",
+    "*://www.shaoniandream.com/book_detail/*",
     "*://www.linovelib.com/novel/*/catalog",
     "*://www.linovelib.com/novel/*.html",
     "*://www.bilinovel.com/novel/*.html",
@@ -363,6 +364,7 @@
     "bg3.co",
     "xiaoshuowanben.com",
     "xbyuan.com",
+    "shaoniandream.com",
     "*"
   ],
   "require": [

@@ -164,7 +164,13 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = Ciyuanji;
       break;
     }
-
+    case "www.shaoniandream.com": {
+      const { Shaoniandream } = await import(
+        "../rules/special/original/shaoniandream"
+      );
+      ruleClass = Shaoniandream;
+      break;
+    }
     case "www.pixiv.net": {
       const { Pixiv } = await import("../rules/special/original/pixiv");
       ruleClass = Pixiv;
