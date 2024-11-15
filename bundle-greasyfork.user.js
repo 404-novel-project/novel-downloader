@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.996
+// @version        5.2.997
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -34891,7 +34891,10 @@ class Idejian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q
     constructor() {
         super();
         this.attachmentMode = "TM";
-        this.maxRunLimit = 5;
+        this.maxRunLimit = 1;
+        this.sleepTime = 500;
+        this.maxSleepTime = 3000;
+        this.concurrencyLimit = 1;
     }
     async bookParse() {
         const bookUrl = document.location.href;
