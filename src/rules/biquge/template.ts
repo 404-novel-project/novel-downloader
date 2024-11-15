@@ -126,13 +126,18 @@ export function baseMultiIndex(
 export function mkBiquge(
   introDomPatch: (introDom: HTMLElement) => HTMLElement,
   contentPatch: (content: HTMLElement) => HTMLElement,
+  chapterContentSelector?: string,
   concurrencyLimit?: number,
   sleepTime?: number,
   maxSleepTime?: number,
   overRide?: (classThis: BaseRuleClass) => any,
   postHook?: (chapter: Chapter) => Chapter | void,
-  chapterContenSelector = "#content"
 ) {
+  let chapterContenSelector = "#content";
+
+  if (typeof chapterContentSelector == "string") {
+    chapterContenSelector = chapterContentSelector;
+  }
   return mkRuleClass({
     ...baseOnePage(introDomPatch, concurrencyLimit, sleepTime, maxSleepTime, overRide, postHook),
     getContent: (doc) => doc.querySelector(chapterContenSelector),

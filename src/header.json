@@ -89,6 +89,10 @@
     "*://www.banzhuer.org/*_*/",
     "*://www.xbiquge.tw/book/*/",
     "*://www.xsbiquge.la/book/*/",
+    "*://www.bqu9.cc/book/*/",
+    "*://www.biququ.com/html/*/",
+    "*://www.ddyucshu.cc/*/",
+    "*://www.ddyveshu.cc/*/",
     "*://www.007zw.com/shuzhai/*/",
     "*://www.shaoniandream.com/book_detail/*",
     "*://www.linovelib.com/novel/*/catalog",
@@ -368,6 +372,10 @@
     "xbyuan.com",
     "shaoniandream.com",
     "fuxs1.com",
+    "bqu9.cc",
+    "biququ.com",
+    "ddyucshu.cc",
+    "ddyveshu.cc",
     "*"
   ],
   "require": [

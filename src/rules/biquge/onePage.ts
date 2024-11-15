@@ -25,7 +25,19 @@ export const gebiqu = () =>
       return content;
     }
   );
-
+export const bqu9 = () => 
+  mkBiquge(
+    (introDom) => {
+      rms([/如果您喜欢.+，别忘记分享给朋友/g], introDom);
+      rm('a[href^="http://down.gebiqu.com"]', false, introDom);
+      return introDom;
+    },
+    (content) => {
+      rm2(['请收藏本站：https://www.bqu9.cc。笔趣阁手机版：https://m.bqu9.cc/'], content);
+      return content;
+    },
+    "#chaptercontent",
+  );
 export const luoqiuzw = () =>
   mkBiquge(
     (introDom) => introDom,
@@ -52,6 +64,7 @@ export const biquwx = () =>
       return introDom;
     },
     (content) => content,
+    undefined,
     1
   );
 
@@ -76,6 +89,7 @@ export const dijiubook = () =>
       rm('img[src$="alipay.png"]', true, content);
       return content;
     },
+    undefined,
     1,
     50,
     3000,
@@ -131,6 +145,7 @@ export const yruan = () =>
       rm("b", true, content);
       return content;
     },
+    undefined,
     3
   );
 
@@ -147,6 +162,7 @@ export const b5200 = () =>
   mkBiquge(
     (introDom) => introDom,
     (content) => content,
+    undefined,
     1
   );
 
@@ -159,12 +175,7 @@ export const bxwx333 = () =>
       rm(".bottem2", true, content);
       return content;
     },
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    "#zjneirong"
+    "#zjneirong",
   );
 
 export const xbiqugeLa = () =>
@@ -177,6 +188,7 @@ export const xbiqugeLa = () =>
       rm2(["手机站全新改版升级地址"], content);
       return content;
     },
+    undefined,
     1
   );
 
@@ -201,6 +213,7 @@ export const shuquge = () =>
       rm2(["请记住本书首发域名：", "www.ishuquge.org"], content);
       return content;
     },
+    undefined,
     1
   );
 

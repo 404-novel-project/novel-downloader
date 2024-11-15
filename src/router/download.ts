@@ -493,6 +493,13 @@ export async function getRule(): Promise<BaseRuleClass> {
     /** mbtxt End **/
 
     /** 笔趣阁 **/
+    case "www.bqu9.cc": {
+      const { bqu9 } = await import("../rules/biquge/onePage");
+      ruleClass = bqu9();
+      break;
+    }
+    case "www.biququ.com":
+    case "www.ddyveshu.cc":
     case "www.81book.com":
     case "www.81zw.com":
     case "www.fuguoduxs.com":

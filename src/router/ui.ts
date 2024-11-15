@@ -61,6 +61,19 @@ export function getUI(): () => UIObject {
         }
       };
     }
+    case "www.ddyucshu.cc": {
+      return () => {
+        return {
+          type: "jump",
+          jumpFunction: () => {
+            document.location.href = document.location.href.replace(
+              "ddyucshu.cc",
+              'ddyveshu.cc'
+            )
+          },
+        }
+      };
+    }
     case "www.ciyuanji.com": {
       return () => {
         if (document.location.pathname.startsWith("/bookDetails/info")) {
