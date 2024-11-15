@@ -25,6 +25,7 @@
     "*://book.sfacg.com/Novel/*/MainIndex/",
     "*://book.sfacg.com/Novel/*/",
     "*://m.sfacg.com/b/*/",
+    "*://lcread.com/bookpage/*/index.html",
     "*://book.qidian.com/info/*",
     "*://www.qidian.com/book/*",
     "*://www.jjwxc.net/onebook.php?novelid=*",
@@ -375,6 +376,7 @@
     "bqu9.cc",
     "biququ.com",
     "ddyucshu.cc",
+    "lcread.com",
     "ddyveshu.cc",
     "*"
   ],

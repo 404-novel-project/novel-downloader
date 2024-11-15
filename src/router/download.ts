@@ -15,6 +15,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = Sfacg;
       break;
     }
+    case "lcread.com": {
+      const { Lcread } = await import("../rules/special/original/lcread");
+      ruleClass = Lcread;
+      break;
+    }
     case "www.hetushu.com":
     case "hetushu.com": {
       const { Hetushu } = await import("../rules/special/reprint/hetushu");

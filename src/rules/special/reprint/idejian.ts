@@ -18,22 +18,25 @@ export class Idejian extends BaseRuleClass {
     this.maxSleepTime = 3000;
     this.concurrencyLimit = 1;
   }
-
+  
 
 
   public async bookParse() {
     const bookUrl = document.location.href;
     const _bookID = bookUrl.match(/\/(\d+)\/$/);
     const bookID = _bookID && _bookID[1];
-    let catelogFlag = 0;
-    async function bookCatelog() {
-      if (!catelogFlag) {
-        await catelog(1);
+    const bookCatelog = async () => {
+      const div = document.createElement('div');
+      let page = 0;
+      let isContinueFetch = true;
+      while (isContinueFetch) {
+        page++;
+        isContinueFetch = await catelog(div, page);
       }
+      return div;
     }
-    async function catelog(page: number) {
-      if (page > parseInt(document.querySelector('#catelog')?.getAttribute('size')?? '0')) {
-        catelogFlag = 1;
+    const catelog = async (div: HTMLDivElement, page: number) => {
+      let returnValue = false;
         await fetch(`https://www.idejian.com/catelog/${bookID}/1?page=${page}`, {
           method: 'GET',
           headers: {
@@ -44,19 +47,17 @@ export class Idejian extends BaseRuleClass {
           .then(response => response.json())
           .then(data => {
             if (data.html) {
-              document.getElementById('catelog')?.insertAdjacentHTML('beforeend', data.html);
-              catelog(page + 1);
-            } else {
-              catelogFlag = 1;
+              div.insertAdjacentHTML('beforeend', data.html);
+              returnValue = true;
             }
+            else returnValue = false;
           })
           .catch(error => {
             console.error('Error:', error);
+            returnValue = false;
           });
-        return;
-      }
+      return returnValue;
     }
-    await bookCatelog();
     const bookname = (
       document.querySelector(".detail_bkname > a") as HTMLElement
     ).innerText.trim();
@@ -86,7 +87,8 @@ export class Idejian extends BaseRuleClass {
     ).map((span) => (span as HTMLSpanElement).innerText.trim());
 
     const chapters: Chapter[] = [];
-    const cos = document.querySelectorAll(".catelog_list > li > a");
+    const catelogDom = await bookCatelog();
+    const cos = catelogDom.querySelectorAll("li > a");
     let chapterNumber = 0;
     for (const aElem of Array.from(cos)) {
       chapterNumber++;
