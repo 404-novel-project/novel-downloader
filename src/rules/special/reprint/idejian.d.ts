@@ -3,15 +3,15 @@ import { BaseRuleClass } from "../../../rules";
 export declare class Idejian extends BaseRuleClass {
     constructor();
     bookParse(): Promise<Book>;
-    chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean, charset: string, options: object): Promise<{
-        chapterName: string;
-        contentRaw: HTMLElement;
+    chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean, charset: string): Promise<{
+        chapterName: string | null;
+        contentRaw: HTMLDivElement;
         contentText: string;
         contentHTML: HTMLElement;
         contentImages: import("../../../main/Attachment").AttachmentClass[];
         additionalMetadate: null;
     } | {
-        chapterName: string;
+        chapterName: string | null;
         contentRaw: null;
         contentText: null;
         contentHTML: null;

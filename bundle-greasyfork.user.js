@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.995
+// @version        5.2.996
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -34871,16 +34871,14 @@ class Hetushu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q
 /* harmony export */   Idejian: () => (/* binding */ Idejian)
 /* harmony export */ });
 /* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/attachments.ts");
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/cleanDOM.ts");
-/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/http.ts");
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/cleanDOM.ts");
 /* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/Chapter.ts");
 /* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Book.ts");
 /* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
-
+/* harmony import */ var _lib_GM__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/GM.ts");
 
 
 
@@ -34899,6 +34897,38 @@ class Idejian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q
         const bookUrl = document.location.href;
         const _bookID = bookUrl.match(/\/(\d+)\/$/);
         const bookID = _bookID && _bookID[1];
+        let catelogFlag = 0;
+        async function bookCatelog() {
+            if (!catelogFlag) {
+                await catelog(1);
+            }
+        }
+        async function catelog(page) {
+            if (page > parseInt(document.querySelector('#catelog')?.getAttribute('size') ?? '0')) {
+                catelogFlag = 1;
+                await fetch(`https://www.idejian.com/catelog/${bookID}/1?page=${page}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                    if (data.html) {
+                        document.getElementById('catelog')?.insertAdjacentHTML('beforeend', data.html);
+                        catelog(page + 1);
+                    }
+                    else {
+                        catelogFlag = 1;
+                    }
+                })
+                    .catch(error => {
+                    console.error('Error:', error);
+                });
+                return;
+            }
+        }
+        await bookCatelog();
         const bookname = document.querySelector(".detail_bkname > a").innerText.trim();
         const _author = document.querySelector(".detail_bkauthor")
             .childNodes[0];
@@ -34940,7 +34970,7 @@ class Idejian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q
                 sectionChapterNumber: null,
                 chapterParse: this.chapterParse,
                 charset: this.charset,
-                options: { bookID },
+                options: {},
             });
             chapters.push(chapter);
         }
@@ -34955,39 +34985,37 @@ class Idejian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q
             chapters,
         });
     }
-    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        const _chapterUrl = new URL(chapterUrl);
-        _chapterUrl.hostname = "m.idejian.com";
-        chapterUrl = _chapterUrl.toString();
-        const referBaseUrl = "https://m.idejian.com/catalog";
-        const _refer = new URL(referBaseUrl);
-        _refer.searchParams.set("bookId", options.bookID);
-        const referUrl = _refer.toString();
-        const fakeUA = "Mozilla/5.0 (iPhone; CPU iPhone OS 13_3_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.5 Mobile/15E148 Snapchat/10.77.5.59 (like Safari/604.1)";
-        if (document.cookie === "") {
-            await (0,_lib_http__WEBPACK_IMPORTED_MODULE_6__/* .ggetText */ .bx)(referUrl, charset, { headers: { "User-Agent": fakeUA } });
-            await (0,_lib_http__WEBPACK_IMPORTED_MODULE_6__/* .ggetText */ .bx)(chapterUrl, charset, {
-                headers: { "User-Agent": fakeUA, Referer: referUrl },
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset) {
+        const chapterTrueUrl = chapterUrl.replace("https://www.idejian.com", "https://wechat.idejian.com/api/wechat").replace(".html", "");
+        _log__WEBPACK_IMPORTED_MODULE_3___default().debug(`[Chapter]请求 ${chapterTrueUrl}，Refer：${chapterUrl}`);
+        const chapter = await new Promise((resolve) => {
+            (0,_lib_GM__WEBPACK_IMPORTED_MODULE_6__/* ._GM_xmlhttpRequest */ .nV)({
+                url: chapterTrueUrl,
+                headers: { 'cache-control': 'no-cache', 'accept-encoding': 'gzip' },
+                method: "GET",
+                onload: function (response) {
+                    if (response.status === 200) {
+                        const resultI = JSON.parse(response.responseText);
+                        resolve(resultI);
+                    }
+                    else {
+                        _log__WEBPACK_IMPORTED_MODULE_3___default().error(`response status = ${response.status}`);
+                        const resultI = JSON.parse(`{"msg":"ND error"}`);
+                        resolve(resultI);
+                    }
+                }
             });
-        }
-        _log__WEBPACK_IMPORTED_MODULE_3___default().debug(`[Chapter]请求 ${chapterUrl}，Refer：${referUrl}`);
-        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_6__/* .ggetHtmlDOM */ .pG)(chapterUrl, charset, {
-            headers: { "User-Agent": fakeUA, Referer: referUrl },
         });
-        chapterName = doc.querySelector(".text-title-1").innerText.trim();
-        let content;
-        if (doc.querySelectorAll("div.h5_mainbody").length === 1) {
-            content = doc.querySelector("div.h5_mainbody");
-        }
-        else {
-            content = doc.querySelectorAll("div.h5_mainbody")[1];
-        }
+        if (chapter.msg === "ND error")
+            throw new Error("chapter get error");
+        const content = chapter.body.content;
         if (content) {
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_7__.rm)("h1", false, content);
-            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .an)(content, "TM");
+            const Dcontent = document.createElement("div");
+            Dcontent.innerHTML = content;
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__/* .cleanDOM */ .an)(Dcontent, "TM");
             return {
                 chapterName,
-                contentRaw: content,
+                contentRaw: Dcontent,
                 contentText: text,
                 contentHTML: dom,
                 contentImages: images,
