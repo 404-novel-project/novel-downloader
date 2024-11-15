@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.997
+// @version        5.2.998
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -58,6 +58,7 @@
 // @match          *://book.sfacg.com/Novel/*/MainIndex/
 // @match          *://book.sfacg.com/Novel/*/
 // @match          *://m.sfacg.com/b/*/
+// @match          *://lcread.com/bookpage/*/index.html
 // @match          *://book.qidian.com/info/*
 // @match          *://www.qidian.com/book/*
 // @match          *://www.jjwxc.net/onebook.php?novelid=*
@@ -349,6 +350,7 @@
 // @connect        bqu9.cc
 // @connect        biququ.com
 // @connect        ddyucshu.cc
+// @connect        lcread.com
 // @connect        ddyveshu.cc
 // @connect        *
 // @downloadURL    https://github.com/yingziwu/novel-downloader/raw/gh-pages/bundle-greasyfork.user.js
@@ -29604,6 +29606,120 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
 
 /***/ }),
 
+/***/ "./src/rules/special/original/lcread.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Lcread: () => (/* binding */ Lcread)
+/* harmony export */ });
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/main.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/dom.ts");
+
+
+
+
+
+
+
+
+
+class Lcread extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
+    constructor() {
+        super();
+        this.attachmentMode = "TM";
+        this.concurrencyLimit = 1;
+    }
+    async bookParse() {
+        const bookUrl = document.location.href;
+        const bookname = document.querySelector("#l1_a .bri h1")?.innerText;
+        const author = document.querySelector("#l1_a .bri tr td a")?.innerText;
+        const introduction = document.querySelector("#l1_a .bri #bri2")?.innerText;
+        const introductionHTML = document.createElement("div");
+        introductionHTML.innerText = introduction;
+        const additionalMetadate = {};
+        const coverUrl = document.querySelector("#l1_a .brc img")?.src;
+        (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
+            .then((coverClass) => {
+            additionalMetadate.cover = coverClass;
+        })
+            .catch((error) => _log__WEBPACK_IMPORTED_MODULE_2___default().error(error));
+        additionalMetadate.tags = document.querySelector("#l1_a .bri #bri3")?.innerText
+            ?.split("，")
+            .map((t) => t.trim());
+        const chapters = [];
+        const chapterElems = document.querySelectorAll("#abl4 td");
+        let chapterNumber = 0;
+        for (const elem of Array.from(chapterElems)) {
+            chapterNumber++;
+            const chapterName = elem.querySelector("span font")?.innerText;
+            const chapterUrl = elem.querySelector("a").href;
+            const isVIP = elem.querySelectorAll("span font").length > 1 ? true : false;
+            const isPaid = null;
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_3__/* .Chapter */ .I({
+                bookUrl,
+                bookname,
+                chapterUrl,
+                chapterNumber,
+                chapterName,
+                isVIP: isVIP,
+                isPaid,
+                sectionName: null,
+                sectionNumber: null,
+                sectionChapterNumber: null,
+                chapterParse: this.chapterParse,
+                charset: this.charset,
+                options: {},
+            });
+            const isLogin = !document
+                .querySelector("div#brl div#tip")
+                ?.innerHTML.includes("登录后发帖不用输入验证码，并获得评论积分，升级职业得到更多作品推荐票!");
+            if (chapter.isVIP && !isLogin) {
+                chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_4__/* .Status */ .nW.aborted;
+            }
+            chapters.push(chapter);
+        }
+        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .E({
+            bookUrl,
+            bookname,
+            author,
+            introduction,
+            introductionHTML,
+            additionalMetadate,
+            chapters,
+        });
+        return book;
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+        _log__WEBPACK_IMPORTED_MODULE_2___default().debug(`[Chapter]请求 ${chapterUrl}`);
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_6__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
+        const content = document.createElement("div");
+        const contentText = doc.querySelector("#ccon");
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_7__/* .rm2 */ .Sf)(['    '], contentText);
+        content.innerHTML = contentText.innerHTML;
+        const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .an)(content, "TM");
+        return {
+            chapterName,
+            contentRaw: content,
+            contentText: text,
+            contentHTML: dom,
+            contentImages: images,
+            additionalMetadate: null,
+        };
+    }
+}
+
+
+/***/ }),
+
 /***/ "./src/rules/special/original/linovel.ts":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -34900,38 +35016,39 @@ class Idejian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q
         const bookUrl = document.location.href;
         const _bookID = bookUrl.match(/\/(\d+)\/$/);
         const bookID = _bookID && _bookID[1];
-        let catelogFlag = 0;
-        async function bookCatelog() {
-            if (!catelogFlag) {
-                await catelog(1);
+        const bookCatelog = async () => {
+            const div = document.createElement('div');
+            let page = 0;
+            let isContinueFetch = true;
+            while (isContinueFetch) {
+                page++;
+                isContinueFetch = await catelog(div, page);
             }
-        }
-        async function catelog(page) {
-            if (page > parseInt(document.querySelector('#catelog')?.getAttribute('size') ?? '0')) {
-                catelogFlag = 1;
-                await fetch(`https://www.idejian.com/catelog/${bookID}/1?page=${page}`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                    if (data.html) {
-                        document.getElementById('catelog')?.insertAdjacentHTML('beforeend', data.html);
-                        catelog(page + 1);
-                    }
-                    else {
-                        catelogFlag = 1;
-                    }
-                })
-                    .catch(error => {
-                    console.error('Error:', error);
-                });
-                return;
-            }
-        }
-        await bookCatelog();
+            return div;
+        };
+        const catelog = async (div, page) => {
+            let returnValue = false;
+            await fetch(`https://www.idejian.com/catelog/${bookID}/1?page=${page}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+            })
+                .then(response => response.json())
+                .then(data => {
+                if (data.html) {
+                    div.insertAdjacentHTML('beforeend', data.html);
+                    returnValue = true;
+                }
+                else
+                    returnValue = false;
+            })
+                .catch(error => {
+                console.error('Error:', error);
+                returnValue = false;
+            });
+            return returnValue;
+        };
         const bookname = document.querySelector(".detail_bkname > a").innerText.trim();
         const _author = document.querySelector(".detail_bkauthor")
             .childNodes[0];
@@ -34952,7 +35069,8 @@ class Idejian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q
         }
         additionalMetadate.tags = Array.from(document.querySelectorAll("div.detail_bkgrade > span")).map((span) => span.innerText.trim());
         const chapters = [];
-        const cos = document.querySelectorAll(".catelog_list > li > a");
+        const catelogDom = await bookCatelog();
+        const cos = catelogDom.querySelectorAll("li > a");
         let chapterNumber = 0;
         for (const aElem of Array.from(cos)) {
             chapterNumber++;
@@ -37283,6 +37401,11 @@ async function getRule() {
         case "book.sfacg.com": {
             const { Sfacg } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/sfacg.ts"));
             ruleClass = Sfacg;
+            break;
+        }
+        case "lcread.com": {
+            const { Lcread } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/lcread.ts"));
+            ruleClass = Lcread;
             break;
         }
         case "www.hetushu.com":
