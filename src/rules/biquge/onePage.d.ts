@@ -1,5 +1,6 @@
 export declare const common: () => import("../../lib/misc").PublicConstructor<import("../../rules").BaseRuleClass>;
 export declare const gebiqu: () => import("../../lib/misc").PublicConstructor<import("../../rules").BaseRuleClass>;
+export declare const bqu9: () => import("../../lib/misc").PublicConstructor<import("../../rules").BaseRuleClass>;
 export declare const luoqiuzw: () => import("../../lib/misc").PublicConstructor<import("../../rules").BaseRuleClass>;
 export declare const biquwx: () => import("../../lib/misc").PublicConstructor<import("../../rules").BaseRuleClass>;
 export declare const tycqxs: () => import("../../lib/misc").PublicConstructor<import("../../rules").BaseRuleClass>;
