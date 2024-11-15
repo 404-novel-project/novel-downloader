@@ -7,6 +7,7 @@ import { log } from "../../../log";
 import { Chapter } from "../../../main/Chapter";
 import { Book, BookAdditionalMetadate } from "../../../main/Book";
 import { BaseRuleClass } from "../../../rules";
+import { _GM_xmlhttpRequest } from "../../../lib/GM";
 
 export class Idejian extends BaseRuleClass {
   public constructor() {
@@ -15,11 +16,44 @@ export class Idejian extends BaseRuleClass {
     this.maxRunLimit = 5;
   }
 
+
+
   public async bookParse() {
     const bookUrl = document.location.href;
     const _bookID = bookUrl.match(/\/(\d+)\/$/);
     const bookID = _bookID && _bookID[1];
-
+    let catelogFlag = 0;
+    async function bookCatelog() {
+      if (!catelogFlag) {
+        await catelog(1);
+      }
+    }
+    async function catelog(page: number) {
+      if (page > parseInt(document.querySelector('#catelog')?.getAttribute('size')?? '0')) {
+        catelogFlag = 1;
+        await fetch(`https://www.idejian.com/catelog/${bookID}/1?page=${page}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          //timeout: 2900
+        })
+          .then(response => response.json())
+          .then(data => {
+            if (data.html) {
+              document.getElementById('catelog')?.insertAdjacentHTML('beforeend', data.html);
+              catelog(page + 1);
+            } else {
+              catelogFlag = 1;
+            }
+          })
+          .catch(error => {
+            console.error('Error:', error);
+          });
+        return;
+      }
+    }
+    await bookCatelog();
     const bookname = (
       document.querySelector(".detail_bkname > a") as HTMLElement
     ).innerText.trim();
@@ -32,7 +66,6 @@ export class Idejian extends BaseRuleClass {
 
     const introDom = document.querySelector(".brief_con") as HTMLElement;
     const [introduction, introductionHTML] = await introDomHandle(introDom);
-
     const additionalMetadate: BookAdditionalMetadate = {};
     const coverUrl = (
       document.querySelector(".book_img > img") as HTMLImageElement
@@ -71,7 +104,7 @@ export class Idejian extends BaseRuleClass {
         sectionChapterNumber: null,
         chapterParse: this.chapterParse,
         charset: this.charset,
-        options: { bookID },
+        options: {},
       });
       chapters.push(chapter);
     }
@@ -96,52 +129,70 @@ export class Idejian extends BaseRuleClass {
     isVIP: boolean,
     isPaid: boolean,
     charset: string,
-    options: object
   ) {
-    interface Options {
-      bookID: string;
+    interface Apiwechat {
+      code: number;
+      msg: string;
+      body: {
+        inShelf: number;
+        pageTitle: string;
+        content: string;
+        cssLists: string[];
+        chapterId: string;
+        bookInfo: {
+          bookAuthor: string;
+          bookId: number;
+          bookName: string;
+          picUrl: string;
+          category: string;
+          bookPrice: number;
+          bookType: number;
+          chapterCount: number;
+          copyrightCode: string;
+          schemes: number[];
+          wapCanRead: boolean;
+        };
+        newestChapter: {
+          lastChapter: string;
+          lastChapterUrl: string;
+          updateTime: string;
+        };
+      };
     }
-
-    const _chapterUrl = new URL(chapterUrl);
-    _chapterUrl.hostname = "m.idejian.com";
-    chapterUrl = _chapterUrl.toString();
-
-    const referBaseUrl = "https://m.idejian.com/catalog";
-    const _refer = new URL(referBaseUrl);
-    _refer.searchParams.set("bookId", (options as Options).bookID);
-    const referUrl = _refer.toString();
-
-    const fakeUA =
-      "Mozilla/5.0 (iPhone; CPU iPhone OS 13_3_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.5 Mobile/15E148 Snapchat/10.77.5.59 (like Safari/604.1)";
-
-    // 获取移动端Cookie
-    if (document.cookie === "") {
-      await ggetText(referUrl, charset, { headers: { "User-Agent": fakeUA } });
-      await ggetText(chapterUrl, charset, {
-        headers: { "User-Agent": fakeUA, Referer: referUrl },
-      });
-    }
-
-    log.debug(`[Chapter]请求 ${chapterUrl}，Refer：${referUrl}`);
-    const doc = await ggetHtmlDOM(chapterUrl, charset, {
-      headers: { "User-Agent": fakeUA, Referer: referUrl },
-    });
-    chapterName = (
-      doc.querySelector(".text-title-1") as HTMLElement
-    ).innerText.trim();
-
-    let content;
-    if (doc.querySelectorAll("div.h5_mainbody").length === 1) {
-      content = doc.querySelector("div.h5_mainbody") as HTMLElement;
-    } else {
-      content = doc.querySelectorAll("div.h5_mainbody")[1] as HTMLElement;
-    }
+    const chapterTrueUrl = chapterUrl.replace("https://www.idejian.com", "https://wechat.idejian.com/api/wechat").replace(".html","");
+    log.debug(`[Chapter]请求 ${chapterTrueUrl}，Refer：${chapterUrl}`);
+    const chapter: Apiwechat = await new Promise((resolve) => {
+      _GM_xmlhttpRequest({
+        url: chapterTrueUrl,
+        headers: {'cache-control': 'no-cache','accept-encoding': 'gzip' },
+        method: "GET",
+        onload: function (response) {
+          if (response.status === 200) {
+            const resultI: Apiwechat = JSON.parse(
+              response.responseText
+            );
+            resolve(resultI);
+          }
+          else {
+            log.error(`response status = ${response.status}`);
+            const resultI: Apiwechat = JSON.parse(
+              `{"msg":"ND error"}`
+            );
+            resolve(resultI);
+          }
+        }
+      })
+    });    
+    if (chapter.msg === "ND error")
+      throw new Error("chapter get error");
+    const content = chapter.body.content;
     if (content) {
-      rm("h1", false, content);
-      const { dom, text, images } = await cleanDOM(content, "TM");
+      const Dcontent = document.createElement("div");
+      Dcontent.innerHTML = content;
+      const { dom, text, images } = await cleanDOM(Dcontent, "TM");
       return {
         chapterName,
-        contentRaw: content,
+        contentRaw: Dcontent,
         contentText: text,
         contentHTML: dom,
         contentImages: images,
