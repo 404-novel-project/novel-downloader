@@ -13,7 +13,10 @@ export class Idejian extends BaseRuleClass {
   public constructor() {
     super();
     this.attachmentMode = "TM";
-    this.maxRunLimit = 5;
+    this.maxRunLimit = 1;
+    this.sleepTime = 500;
+    this.maxSleepTime = 3000;
+    this.concurrencyLimit = 1;
   }
 
 
