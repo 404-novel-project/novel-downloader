@@ -20,6 +20,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = Lcread;
       break;
     }
+    case "xr.unionread.net": {
+      const { XRUnionread } = await import("../rules/special/original/unionread");
+      ruleClass = XRUnionread;
+      break;
+    }
     case "www.hetushu.com":
     case "hetushu.com": {
       const { Hetushu } = await import("../rules/special/reprint/hetushu");

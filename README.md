@@ -49,7 +49,7 @@ EPUB 文件请使用相应阅读器阅读。
 
   如最新版脚本仍出现错误，请说明具体网址，有无特殊操作以及其他附加说明，并附上调试日志，协助开发者明确出错原因。调试日志为下载生成的 zip 文件中的 `debug.log` 文件。
 
-  如需反馈问题，请至[本项目支持页面](https://github.com/yingziwu/novel-downloader/issues)提交 issue， 对于 greasyfork 评论区的反馈跟进不及时敬请谅解。
+  如需反馈问题，请至[本项目支持页面](https://github.com/yingziwu/novel-downloader/issues)提交 issue， 发布于 greasyfork 评论区的反馈将不会被处理。
 
 - Q：希望支持某某网站。
 
@@ -59,7 +59,7 @@ EPUB 文件请使用相应阅读器阅读。
 
   A：有的。Matrix 空间：[#404-novel-project:bgme.me](https://matrix.to/#/#404-novel-project:bgme.me)，Telegram 群组：https://t.me/+ZCngCQiJ_xo2NDI1 。
 
-## 目前支持小说网站
+## 目前支持小说网站（部分）
 
 **特别提醒：如欲下载支持列表中网站的付费章节，请登录相应网站帐户，并确定已购买相应付费章节。未登录网站帐户，或未购买的付费章节，下载时将直接忽略，无法进行下载。**
 

@@ -233,7 +233,8 @@
     "*://b.guidaye.com/*/*/",
     "*://www.esjzone.me/detail/*",
     "*://www.esjzone.cc/detail/*",
-    "*://www.fxshu.top/*/*.html"
+    "*://www.fxshu.top/*/*.html",
+    "*://xr.unionread.net/bookdetail/*"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",
@@ -378,6 +379,7 @@
     "ddyucshu.cc",
     "lcread.com",
     "ddyveshu.cc",
+    "xr.unionread.net",
     "*"
   ],
   "require": [
