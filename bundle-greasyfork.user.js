@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.998
+// @version        5.2.999
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -267,6 +267,7 @@
 // @match          *://www.esjzone.me/detail/*
 // @match          *://www.esjzone.cc/detail/*
 // @match          *://www.fxshu.top/*/*.html
+// @match          *://xr.unionread.net/bookdetail/*
 // @compatible     Firefox 100+
 // @compatible     Chrome 85+
 // @compatible     Edge 85+
@@ -352,6 +353,7 @@
 // @connect        ddyucshu.cc
 // @connect        lcread.com
 // @connect        ddyveshu.cc
+// @connect        xr.unionread.net
 // @connect        *
 // @downloadURL    https://github.com/yingziwu/novel-downloader/raw/gh-pages/bundle-greasyfork.user.js
 // @grant          unsafeWindow
@@ -32798,6 +32800,244 @@ class Tadu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
 
 /***/ }),
 
+/***/ "./src/rules/special/original/unionread.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   XRUnionread: () => (/* binding */ XRUnionread)
+/* harmony export */ });
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/main.ts");
+/* harmony import */ var _lib_GM__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/GM.ts");
+
+
+
+
+
+
+
+
+class XRUnionread extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
+    constructor() {
+        super();
+        this.attachmentMode = "TM";
+        this.streamZip = true;
+        this.concurrencyLimit = 1;
+        this.maxRunLimit = 1;
+        this.maxSleepTime = 2000;
+        this.sleepTime = 500;
+    }
+    async bookParse() {
+        const bookUrl = document.location.href;
+        const bookID = bookUrl.match(/(\d+)/)?.[1] ?? -1;
+        if (bookID === -1) {
+            throw new Error("书籍ID获取失败");
+        }
+        const bookname = document.querySelector("div.novel_name span").innerText.trim();
+        const authorDom = document.querySelector("div.novel_author span");
+        const author = authorDom.innerText
+            .replace("作者：", "")
+            .trim();
+        const introDom = document.querySelector("div.novel_info div.novel_text");
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .HV)(introDom);
+        const additionalMetadate = {};
+        const coverDom = document.querySelector("img.bookcover");
+        const coverUrl = coverDom.src;
+        if (coverUrl) {
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
+                .then((coverClass) => {
+                additionalMetadate.cover = coverClass;
+            })
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_3___default().error(error));
+        }
+        additionalMetadate.tags = Array.from(document.querySelectorAll("div.zuopin span.novel_type"))?.map((t) => t.innerText) ?? [];
+        additionalMetadate.tags.push(document.querySelector("div.novel_type_name")?.innerText ?? "");
+        const url = `https://hk-api.xrzww.com/api/directoryList?nid=${bookID}&orderBy=0`;
+        const directoryList = await new Promise((resolve) => {
+            (0,_lib_GM__WEBPACK_IMPORTED_MODULE_4__/* ._GM_xmlhttpRequest */ .nV)({
+                url: url,
+                method: "GET",
+                headers: {
+                    "Cache-Control": "max-age=0",
+                    mode: "cors",
+                },
+                onload: function (response) {
+                    let resultI = JSON.parse('{"message":"nd error"}');
+                    if (response.status === 200) {
+                        resultI = JSON.parse(String(response.responseText));
+                    }
+                    else {
+                        _log__WEBPACK_IMPORTED_MODULE_3___default().error(`response status = ${response.status}`);
+                        resultI = JSON.parse('{"message":"nd error"}');
+                    }
+                    resolve(resultI);
+                },
+            });
+        });
+        if (directoryList.message === "nd error") {
+            throw new Error("章节列表获取失败");
+        }
+        if (directoryList.code !== 200) {
+            throw new Error(`章节列表请求失败, code = ${directoryList.code}, msg = ${directoryList.message}`);
+        }
+        const signIn = document.querySelector("div.main")?.innerHTML.includes("登录");
+        const volumes = directoryList.data.volume.reduce((obj, vol) => {
+            obj[vol.volume_id] = {
+                name: vol.volume_name,
+                order: vol.volume_order,
+                desc: vol.volume_desc,
+            };
+            return obj;
+        }, {});
+        const chapters = [];
+        let i = 0;
+        let tSectionName = null;
+        let s = 0;
+        let sc = 0;
+        for (const c of directoryList.data.data) {
+            i++;
+            const chapterName = c.chapter_name;
+            const chapterNumber = i;
+            const isVIP = c.chapter_ispay === 1;
+            const isPaid = c.is_subscribe === 1;
+            const sectionName = volumes[c.chapter_vid].name;
+            if (tSectionName !== sectionName) {
+                tSectionName = sectionName;
+                s++;
+                sc = 0;
+            }
+            const sectionNumber = s;
+            sc++;
+            const sectionChapterNumber = sc;
+            const nid = c.chapter_nid;
+            const vid = c.chapter_vid;
+            const chapter_id = c.chapter_id;
+            const chapter_order = c.chapter_order;
+            const chapterUrl = `https://hk-api.xrzww.com/api/readNovelByWeb?nid=${nid}&vid=${vid}&chapter_id=${chapter_id}&chapter_order=${chapter_order}&showpic=false`;
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .I({
+                bookUrl,
+                bookname,
+                chapterUrl,
+                chapterNumber,
+                chapterName,
+                isVIP,
+                isPaid,
+                sectionName,
+                sectionNumber,
+                sectionChapterNumber,
+                chapterParse: this.chapterParse,
+                charset: this.charset,
+                options: {},
+            });
+            if (signIn) {
+                if (chapter.isVIP && chapter.isPaid === false) {
+                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status */ .nW.aborted;
+                }
+            }
+            else {
+                if (chapter.isVIP) {
+                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status */ .nW.aborted;
+                }
+            }
+            chapters.push(chapter);
+        }
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .E({
+            bookUrl,
+            bookname,
+            author,
+            introduction,
+            introductionHTML,
+            additionalMetadate,
+            chapters,
+        });
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+        _log__WEBPACK_IMPORTED_MODULE_3___default().debug(`[Chapter]请求 ${chapterUrl}`);
+        const chapter = await new Promise((resolve) => {
+            (0,_lib_GM__WEBPACK_IMPORTED_MODULE_4__/* ._GM_xmlhttpRequest */ .nV)({
+                url: chapterUrl,
+                method: "GET",
+                headers: {
+                    "Cache-Control": "max-age=0",
+                    mode: "cors",
+                },
+                onload: function (response) {
+                    let resultI = JSON.parse('{"message":"nd error"}');
+                    if (response.status === 200) {
+                        resultI = JSON.parse(String(response.responseText));
+                    }
+                    else {
+                        _log__WEBPACK_IMPORTED_MODULE_3___default().error(`response status = ${response.status}`);
+                        resultI = JSON.parse('{"message":"nd error"}');
+                    }
+                    resolve(resultI);
+                },
+            });
+        });
+        if (chapter.message === "nd error") {
+            throw new Error("章节列表获取失败");
+        }
+        if (chapter.code !== 200) {
+            throw new Error(`章节列表请求失败, code = ${chapter.code}, msg = ${chapter.message}`);
+        }
+        if (chapter.data.content) {
+            const content = chapter.data.content;
+            const contentRaw = document.createElement("pre");
+            contentRaw.innerHTML = content;
+            let contentText = content
+                .split("\n")
+                .map((p) => p.trim())
+                .join("\n\n");
+            const _contentHTML = document.createElement("div");
+            _contentHTML.innerHTML = content
+                .split("\n")
+                .map((p) => p.trim())
+                .map((p) => {
+                if (p.length === 0) {
+                    return "<p><br/></p>";
+                }
+                else {
+                    return `<p>${p}</p>`;
+                }
+            })
+                .join("\n");
+            const contentHTML = document.createElement("div");
+            contentHTML.className = "main";
+            contentHTML.appendChild(_contentHTML);
+            contentRaw.innerHTML = [
+                contentRaw.innerHTML
+            ].join("\n\n");
+            contentText = [contentText].join("\n\n");
+            return {
+                chapterName,
+                contentRaw,
+                contentText,
+                contentHTML,
+                contentImages: null,
+                additionalMetadate: null,
+            };
+        }
+        return {
+            chapterName,
+            contentRaw: null,
+            contentText: null,
+            contentHTML: null,
+            contentImages: null,
+            additionalMetadate: null,
+        };
+    }
+}
+
+
+/***/ }),
+
 /***/ "./src/rules/special/original/xrzww.ts":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -37406,6 +37646,11 @@ async function getRule() {
         case "lcread.com": {
             const { Lcread } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/lcread.ts"));
             ruleClass = Lcread;
+            break;
+        }
+        case "xr.unionread.net": {
+            const { XRUnionread } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/unionread.ts"));
+            ruleClass = XRUnionread;
             break;
         }
         case "www.hetushu.com":
