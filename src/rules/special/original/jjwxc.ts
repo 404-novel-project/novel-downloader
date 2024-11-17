@@ -1211,7 +1211,48 @@ export class Jjwxc extends BaseRuleClass {
       }
       return result;
     }
-    function decodeVIPText(text: string, encryptType: string) {
+    interface EncryptKey {
+      code: string;
+      data: {
+        key: string;
+        version: string;
+      };
+      message: string;
+    }
+    function decodeVIPText(text: string, encryptType: string, novel_info: string, user_key?: string) {
+
+      async function getFockKey() {
+        const url = "https://android.jjwxc.net/app.jjwxc/android/AACC/Security/getEncryptKey";
+        //data = user_key;
+        // method = POST
+        //Fock.addKeypool(jSONObject.optString("key"), jSONObject.optString("version"));
+        const Key: EncryptKey = await new Promise((resolve) => {
+          _GM_xmlhttpRequest({
+            url: url,
+            headers: {
+              //   accept: "application/json",
+              referer: "http://android.jjwxc.net?v=402",
+              //    not_tip: "updateTime",
+              //  "accept-encoding": "gzip",
+            },
+            method: "POST",
+            data:user_key,
+            onload: function (response) {
+              if (response.status === 200) {
+                  const resultI: EncryptKey = JSON.parse(
+                    response.responseText
+                  );
+                  resolve(resultI);
+              } else {
+              const resultI: EncryptKey = JSON.parse(
+                  `{"code":"${response.status}"}`
+                );
+                resolve(resultI);
+              }
+            },
+          });
+        });
+      }
       if (encryptType == 'jj') {
         const keyHex = CryptoJS.enc.Utf8.parse("KW8Dvm2N");
         const ivHex = CryptoJS.enc.Utf8.parse("1ae2c94b");
@@ -1221,7 +1262,29 @@ export class Jjwxc extends BaseRuleClass {
           padding: CryptoJS.pad.Pkcs7,
         });
         return decrypted.toString(CryptoJS.enc.Utf8);
-      } else {
+      }
+      // else if (encryptType == 'yw') {
+      //   const str5 = novel_info;
+        //str4 = JNIPwdUtils.decodeByFock(text, str5);
+        // let str3;
+        // let str4 = "";
+        // try {
+          // Fock.FockResult unlock = Fock.unlock(text, str5);
+          // if (unlock.status == Fock.FockResult.STATUS_SUCCESS) {
+          //   str3 = new String(unlock.data, StandardCharsets.UTF_8);
+          //   try {
+          //     if (!g.E(str3)) {
+          //       str4 = str3;
+          //     }
+          //   } catch (e2) {
+          //     log.error("fock解密失败/additionalKey=" + str5 + "/content=" + text + "/errorStr=" + (e2 as any).toString());
+          //     return;
+          //   }
+          // }
+      //     return str4;
+      //   }
+      // }
+      else {
         log.error(`unknown encryptType ${encryptType}`);
         return text;
       }
@@ -1344,13 +1407,14 @@ export class Jjwxc extends BaseRuleClass {
       log.debug(`本章请求结果如下： response code ${result?.code}, info ${result.message}`);
       retryTime = 0;
       if ("content" in result) {
+        const chapterinfo = "";//novelID + "-" + chapterID;
         let content = result.content;
         let postscript = result.sayBody?? " ";
         if (isVIP) {
           if (result.encryptField.includes("content"))
-            content = decodeVIPText(content, result.encryptType);
+            content = decodeVIPText(content, result.encryptType, chapterinfo);
           if (result.encryptField.includes("sayBody"))
-            postscript = decodeVIPText(postscript, result.encryptType);
+            postscript = decodeVIPText(postscript, result.encryptType, chapterinfo);
         }
         const contentRaw = document.createElement("pre");
         contentRaw.innerHTML = content;
