@@ -205,7 +205,7 @@
     "*://www.youdubook.com/bookdetail/*",
     "*://youdubook.com/bookdetail/*",
     "*://colorful-fantasybooks.com/module/novel/info.php?*",
-    "*://www.dizishu.com/*/*/",
+    "*://www.dizishu.cc/*/*/",
     "*://www.ibiquge.la/*/*/",
     "*://www.akatsuki-novels.com/stories/index/novel_id~*",
     "*://www.alphapolis.co.jp/novel/*/*",
@@ -236,7 +236,8 @@
     "*://www.esjzone.me/detail/*",
     "*://www.esjzone.cc/detail/*",
     "*://www.fxshu.top/*/*.html",
-    "*://xr.unionread.net/bookdetail/*"
+    "*://xr.unionread.net/bookdetail/*",
+    "*://www.qu-la.com/booktxt/*/"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",
@@ -383,6 +384,7 @@
     "lcread.com",
     "ddyveshu.cc",
     "xr.unionread.net",
+    "www.qu-la.com",
     "*"
   ],
   "require": [

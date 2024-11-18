@@ -2,6 +2,7 @@ import { getHtmlDOM, getText } from "../../lib/http";
 import { deDuplicate } from "../../lib/rule";
 import { Book } from "../../main/Book";
 import { mkRuleClass } from "./template";
+import { rm, rm2, rms } from "../../lib/dom";
 
 export const dizishu = () =>
   mkRuleClass({
@@ -23,45 +24,56 @@ export const dizishu = () =>
     getSName: (sElem) => (sElem as HTMLElement).innerText.trim(),
     getContentFromUrl: async (chapterUrl, chapterName, charset) => {
       const doc = await getHtmlDOM(chapterUrl, charset);
-      const script1 = Array.from(doc.querySelectorAll("script"))
-        .filter((s) => s.innerHTML.includes("chapterid="))?.[0]
-        ?.innerHTML.split("\n")
-        .filter(
-          (line) =>
-            !(
-              line.includes("cpstr=") ||
-              line.includes("get_content()") ||
-              line.includes("xid=")
-            )
-        )
-        .join("\n");
-      const script2 = Array.from(doc.querySelectorAll("script"))
-        .filter((s) => s.innerHTML.includes("ssid"))?.[0]
-        ?.innerHTML.split("\n")
-        .filter((line) => line.includes("var ssid") || line.includes("var hou"))
-        .join("\n");
-      const request = new Function(`${script2};${script1};
-const xid=Math.floor(bookid/1000);
-const url = \`${document.location.origin}/files/article/html\${ssid}/\${xid}/\${bookid}/\${chapterid}\${hou}\`;
-return new Request(url, {
-    headers: {
-    accept: "text/plain, */*; q=0.01",
-    "x-requested-with": "XMLHttpRequest",
-    },
-    referrer: "${document.location.origin}",
-    method: "GET",
-    mode: "cors",
-    credentials: "include",
-});`)() as Request;
-      const text = await getText(request, charset);
-      const cctxt = new Function(`${text};return cctxt;`)() as string;
-      if (cctxt) {
-        const contentRaw = document.createElement("div");
-        contentRaw.innerHTML = cctxt;
-        return contentRaw;
+      if (chapterUrl.includes("dizishu")) {
+        const script1 = Array.from(doc.querySelectorAll("script"))
+          .filter((s) => s.innerHTML.includes("chapterid="))?.[0]
+          ?.innerHTML.split("\n")
+          .filter(
+            (line) =>
+              !(
+                line.includes("cpstr=") ||
+                line.includes("get_content()") ||
+                line.includes("xid=")
+              )
+          )
+          .join("\n");
+        const script2 = Array.from(doc.querySelectorAll("script"))
+          .filter((s) => s.innerHTML.includes("ssid"))?.[0]
+          ?.innerHTML.split("\n")
+          .filter((line) => line.includes("var ssid") || line.includes("var hou"))
+          .join("\n");
+        const request = new Function(`${script2};${script1};
+        const xid=Math.floor(bookid/1000);
+        const url = \`${document.location.origin}/files/article/html\${ssid}/\${xid}/\${bookid}/\${chapterid}\${hou}\`;
+        return new Request(url, {
+            headers: {
+            accept: "text/plain, */*; q=0.01",
+            "x-requested-with": "XMLHttpRequest",
+            },
+            referrer: "${document.location.origin}",
+            method: "GET",
+            mode: "cors",
+            credentials: "include",
+        });`)() as Request;
+        const text = await getText(request, charset);
+        const cctxt = new Function(`${text};return cctxt;`)() as string;
+        if (cctxt) {
+          const contentRaw = document.createElement("div");
+          contentRaw.innerHTML = cctxt;
+          return contentRaw;
+        } else {
+          return null;
+        }
       } else {
-        return null;
+        const contentDom = doc.querySelector("div#txt") as HTMLElement;
+        if (contentDom) {
+          rm("a", true, contentDom);
+          return contentDom;
+        } else {
+          return null;
+        }
       }
+      
     },
     contentPatch: (content) => content,
     overrideConstructor: (classThis) => {

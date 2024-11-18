@@ -351,7 +351,7 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = fantasybooks();
       break;
     }
-    case "www.dizishu.com": {
+    case "www.dizishu.cc": case "www.qu-la.com": {
       const { dizishu } = await import("../rules/onePage/dizishu");
       ruleClass = dizishu();
       break;
