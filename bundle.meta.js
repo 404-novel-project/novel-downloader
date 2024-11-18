@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.999
+// @version        5.2.1002
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -58,6 +58,8 @@
 // @match          *://book.sfacg.com/Novel/*/MainIndex/
 // @match          *://book.sfacg.com/Novel/*/
 // @match          *://m.sfacg.com/b/*/
+// @match          *://www.lightnovel.us/cn/series/*
+// @match          *://www.lightnovel.us/cn/detail/*
 // @match          *://lcread.com/bookpage/*/index.html
 // @match          *://book.qidian.com/info/*
 // @match          *://www.qidian.com/book/*
@@ -236,7 +238,7 @@
 // @match          *://www.youdubook.com/bookdetail/*
 // @match          *://youdubook.com/bookdetail/*
 // @match          *://colorful-fantasybooks.com/module/novel/info.php?*
-// @match          *://www.dizishu.com/*/*/
+// @match          *://www.dizishu.cc/*/*/
 // @match          *://www.ibiquge.la/*/*/
 // @match          *://www.akatsuki-novels.com/stories/index/novel_id~*
 // @match          *://www.alphapolis.co.jp/novel/*/*
@@ -268,12 +270,14 @@
 // @match          *://www.esjzone.cc/detail/*
 // @match          *://www.fxshu.top/*/*.html
 // @match          *://xr.unionread.net/bookdetail/*
+// @match          *://www.qu-la.com/booktxt/*/
 // @compatible     Firefox 100+
 // @compatible     Chrome 85+
 // @compatible     Edge 85+
 // @compatible     Opera 71+
 // @compatible     Safari 13.1+
 // @connect        self
+// @connect        lightnovel.us
 // @connect        www.fxshu.top
 // @connect        qidian.com
 // @connect        yuewen.com
@@ -354,6 +358,7 @@
 // @connect        lcread.com
 // @connect        ddyveshu.cc
 // @connect        xr.unionread.net
+// @connect        www.qu-la.com
 // @connect        *
 // @downloadURL    https://github.com/yingziwu/novel-downloader/raw/gh-pages/bundle.user.js
 // @grant          unsafeWindow

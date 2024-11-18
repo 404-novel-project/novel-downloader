@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.999
+// @version        5.2.1002
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -58,6 +58,8 @@
 // @match          *://book.sfacg.com/Novel/*/MainIndex/
 // @match          *://book.sfacg.com/Novel/*/
 // @match          *://m.sfacg.com/b/*/
+// @match          *://www.lightnovel.us/cn/series/*
+// @match          *://www.lightnovel.us/cn/detail/*
 // @match          *://lcread.com/bookpage/*/index.html
 // @match          *://book.qidian.com/info/*
 // @match          *://www.qidian.com/book/*
@@ -236,7 +238,7 @@
 // @match          *://www.youdubook.com/bookdetail/*
 // @match          *://youdubook.com/bookdetail/*
 // @match          *://colorful-fantasybooks.com/module/novel/info.php?*
-// @match          *://www.dizishu.com/*/*/
+// @match          *://www.dizishu.cc/*/*/
 // @match          *://www.ibiquge.la/*/*/
 // @match          *://www.akatsuki-novels.com/stories/index/novel_id~*
 // @match          *://www.alphapolis.co.jp/novel/*/*
@@ -268,12 +270,14 @@
 // @match          *://www.esjzone.cc/detail/*
 // @match          *://www.fxshu.top/*/*.html
 // @match          *://xr.unionread.net/bookdetail/*
+// @match          *://www.qu-la.com/booktxt/*/
 // @compatible     Firefox 100+
 // @compatible     Chrome 85+
 // @compatible     Edge 85+
 // @compatible     Opera 71+
 // @compatible     Safari 13.1+
 // @connect        self
+// @connect        lightnovel.us
 // @connect        www.fxshu.top
 // @connect        qidian.com
 // @connect        yuewen.com
@@ -354,6 +358,7 @@
 // @connect        lcread.com
 // @connect        ddyveshu.cc
 // @connect        xr.unionread.net
+// @connect        www.qu-la.com
 // @connect        *
 // @downloadURL    https://github.com/yingziwu/novel-downloader/raw/gh-pages/bundle-greasyfork.user.js
 // @grant          unsafeWindow
@@ -12278,8 +12283,10 @@ const fantasybooks = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleCl
 /* harmony export */   dizishu: () => (/* binding */ dizishu)
 /* harmony export */ });
 /* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/http.ts");
-/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/rule.ts");
 /* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/dom.ts");
+
 
 
 
@@ -12298,40 +12305,52 @@ const dizishu = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass *
     getSName: (sElem) => sElem.innerText.trim(),
     getContentFromUrl: async (chapterUrl, chapterName, charset) => {
         const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
-        const script1 = Array.from(doc.querySelectorAll("script"))
-            .filter((s) => s.innerHTML.includes("chapterid="))?.[0]
-            ?.innerHTML.split("\n")
-            .filter((line) => !(line.includes("cpstr=") ||
-            line.includes("get_content()") ||
-            line.includes("xid=")))
-            .join("\n");
-        const script2 = Array.from(doc.querySelectorAll("script"))
-            .filter((s) => s.innerHTML.includes("ssid"))?.[0]
-            ?.innerHTML.split("\n")
-            .filter((line) => line.includes("var ssid") || line.includes("var hou"))
-            .join("\n");
-        const request = new Function(`${script2};${script1};
-const xid=Math.floor(bookid/1000);
-const url = \`${document.location.origin}/files/article/html\${ssid}/\${xid}/\${bookid}/\${chapterid}\${hou}\`;
-return new Request(url, {
-    headers: {
-    accept: "text/plain, */*; q=0.01",
-    "x-requested-with": "XMLHttpRequest",
-    },
-    referrer: "${document.location.origin}",
-    method: "GET",
-    mode: "cors",
-    credentials: "include",
-});`)();
-        const text = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getText */ .q4)(request, charset);
-        const cctxt = new Function(`${text};return cctxt;`)();
-        if (cctxt) {
-            const contentRaw = document.createElement("div");
-            contentRaw.innerHTML = cctxt;
-            return contentRaw;
+        if (chapterUrl.includes("dizishu")) {
+            const script1 = Array.from(doc.querySelectorAll("script"))
+                .filter((s) => s.innerHTML.includes("chapterid="))?.[0]
+                ?.innerHTML.split("\n")
+                .filter((line) => !(line.includes("cpstr=") ||
+                line.includes("get_content()") ||
+                line.includes("xid=")))
+                .join("\n");
+            const script2 = Array.from(doc.querySelectorAll("script"))
+                .filter((s) => s.innerHTML.includes("ssid"))?.[0]
+                ?.innerHTML.split("\n")
+                .filter((line) => line.includes("var ssid") || line.includes("var hou"))
+                .join("\n");
+            const request = new Function(`${script2};${script1};
+        const xid=Math.floor(bookid/1000);
+        const url = \`${document.location.origin}/files/article/html\${ssid}/\${xid}/\${bookid}/\${chapterid}\${hou}\`;
+        return new Request(url, {
+            headers: {
+            accept: "text/plain, */*; q=0.01",
+            "x-requested-with": "XMLHttpRequest",
+            },
+            referrer: "${document.location.origin}",
+            method: "GET",
+            mode: "cors",
+            credentials: "include",
+        });`)();
+            const text = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getText */ .q4)(request, charset);
+            const cctxt = new Function(`${text};return cctxt;`)();
+            if (cctxt) {
+                const contentRaw = document.createElement("div");
+                contentRaw.innerHTML = cctxt;
+                return contentRaw;
+            }
+            else {
+                return null;
+            }
         }
         else {
-            return null;
+            const contentDom = doc.querySelector("div#txt");
+            if (contentDom) {
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)("a", true, contentDom);
+                return contentDom;
+            }
+            else {
+                return null;
+            }
         }
     },
     contentPatch: (content) => content,
@@ -12340,7 +12359,7 @@ return new Request(url, {
         classThis.bookParse = async () => {
             const book = (await Reflect.apply(rawBookParse, classThis, []));
             const chapters = book.chapters;
-            book.chapters = (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .deDuplicate */ .hR)(chapters);
+            book.chapters = (0,_lib_rule__WEBPACK_IMPORTED_MODULE_3__/* .deDuplicate */ .hR)(chapters);
             return book;
         };
         return classThis;
@@ -29420,7 +29439,30 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
             }
             return result;
         }
-        function decodeVIPText(text, encryptType) {
+        function decodeVIPText(text, encryptType, novel_info, user_key) {
+            async function getFockKey() {
+                const url = "https://android.jjwxc.net/app.jjwxc/android/AACC/Security/getEncryptKey";
+                const Key = await new Promise((resolve) => {
+                    (0,GM/* _GM_xmlhttpRequest */.nV)({
+                        url: url,
+                        headers: {
+                            referer: "http://android.jjwxc.net?v=402",
+                        },
+                        method: "POST",
+                        data: user_key,
+                        onload: function (response) {
+                            if (response.status === 200) {
+                                const resultI = JSON.parse(response.responseText);
+                                resolve(resultI);
+                            }
+                            else {
+                                const resultI = JSON.parse(`{"code":"${response.status}"}`);
+                                resolve(resultI);
+                            }
+                        },
+                    });
+                });
+            }
             if (encryptType == 'jj') {
                 const keyHex = external_CryptoJS_.enc.Utf8.parse("KW8Dvm2N");
                 const ivHex = external_CryptoJS_.enc.Utf8.parse("1ae2c94b");
@@ -29517,13 +29559,14 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
             loglevel_default().debug(`本章请求结果如下： response code ${result?.code}, info ${result.message}`);
             retryTime = 0;
             if ("content" in result) {
+                const chapterinfo = "";
                 let content = result.content;
                 let postscript = result.sayBody ?? " ";
                 if (isVIP) {
                     if (result.encryptField.includes("content"))
-                        content = decodeVIPText(content, result.encryptType);
+                        content = decodeVIPText(content, result.encryptType, chapterinfo);
                     if (result.encryptField.includes("sayBody"))
-                        postscript = decodeVIPText(postscript, result.encryptType);
+                        postscript = decodeVIPText(postscript, result.encryptType, chapterinfo);
                 }
                 const contentRaw = document.createElement("pre");
                 contentRaw.innerHTML = content;
@@ -35582,6 +35625,125 @@ function softByValue(a, b) {
 
 /***/ }),
 
+/***/ "./src/rules/special/reprint/lightnovel.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Lightnovel: () => (/* binding */ Lightnovel)
+/* harmony export */ });
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
+
+
+
+
+
+
+class Lightnovel extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
+    constructor() {
+        super();
+        this.attachmentMode = "TM";
+        this.maxRunLimit = 1;
+        this.concurrencyLimit = 1;
+        this.sleepTime = 700;
+        this.maxSleepTime = 3000;
+    }
+    async bookParse() {
+        const bookUrl = document.location.href;
+        let bookname = "";
+        let author = "";
+        let introDom = document.createElement("div");
+        const additionalMetadate = {};
+        const chapters = [];
+        const isVIP = false;
+        const isPaid = false;
+        if (bookUrl.includes("series")) {
+            bookname = document.querySelector("div.top-title h3")?.innerText ?? "";
+            introDom = document.querySelector("pre.intro");
+            const cos = unsafeWindow?.__NUXT__?.data[0]?.pages;
+            let chapterNumber = 0;
+            for (const aElem of cos) {
+                for (const i of aElem) {
+                    chapterNumber++;
+                    const chapterName = i.title;
+                    const chapterUrl = `https://www.lightnovel.us/cn/detail/${i.aid}`;
+                    const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_1__/* .Chapter */ .I({
+                        bookUrl,
+                        bookname,
+                        chapterUrl,
+                        chapterNumber,
+                        chapterName,
+                        isVIP,
+                        isPaid,
+                        sectionName: null,
+                        sectionNumber: null,
+                        sectionChapterNumber: null,
+                        chapterParse: this.chapterParse,
+                        charset: this.charset,
+                        options: {},
+                    });
+                    chapters.push(chapter);
+                }
+            }
+        }
+        else {
+            bookname = document.querySelector("h2.article-title")?.textContent?.trim() ?? "";
+            author = document.querySelector("div.author-name > span")?.textContent?.trim() ?? "";
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_1__/* .Chapter */ .I({
+                bookUrl,
+                bookname,
+                chapterUrl: bookUrl,
+                chapterNumber: 1,
+                chapterName: "内容",
+                isVIP,
+                isPaid,
+                sectionName: null,
+                sectionNumber: null,
+                sectionChapterNumber: null,
+                chapterParse: this.chapterParse,
+                charset: this.charset,
+                options: {},
+            });
+            chapters.push(chapter);
+        }
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .introDomHandle */ .HV)(introDom);
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_3__/* .Book */ .E({
+            bookUrl,
+            bookname,
+            author,
+            introduction,
+            introductionHTML,
+            additionalMetadate,
+            chapters,
+        });
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset) {
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_4__/* .ggetHtmlDOM */ .pG)(chapterUrl, charset, {
+            headers: {
+                "Accept-Language": "zh-CN",
+            },
+        });
+        const Dcontent = doc.querySelector("article#article-main-contents");
+        const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_5__/* .cleanDOM */ .an)(Dcontent, "TM");
+        return {
+            chapterName,
+            contentRaw: Dcontent,
+            contentText: text,
+            contentHTML: dom,
+            contentImages: images,
+            additionalMetadate: null,
+        };
+    }
+}
+
+
+/***/ }),
+
 /***/ "./src/rules/special/reprint/ttkan.ts":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -37648,6 +37810,11 @@ async function getRule() {
             ruleClass = Lcread;
             break;
         }
+        case "www.lightnovel.us": {
+            const { Lightnovel } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/reprint/lightnovel.ts"));
+            ruleClass = Lightnovel;
+            break;
+        }
         case "xr.unionread.net": {
             const { XRUnionread } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/unionread.ts"));
             ruleClass = XRUnionread;
@@ -37960,7 +38127,8 @@ async function getRule() {
             ruleClass = fantasybooks();
             break;
         }
-        case "www.dizishu.com": {
+        case "www.dizishu.cc":
+        case "www.qu-la.com": {
             const { dizishu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/dizishu.ts"));
             ruleClass = dizishu();
             break;
