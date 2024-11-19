@@ -82,6 +82,16 @@ export const vm = createApp({
         },
       },
       {
+        key: "epub_space",
+        value: "epub文档删除章节空行",
+        options: {
+          genChapterEpub: (contentXHTML) => {
+            return contentXHTML.replaceAll("<p><br /></p>", "")
+              .replaceAll("<p><br/></p>", "");
+          },
+        },
+      },
+      {
         key: "reverse_chapters",
         value: "保存章节时倒序排列",
         options: {
@@ -116,16 +126,18 @@ export const vm = createApp({
     setting.chooseSaveOption = GM_getValue('chooseSaveOption', 'null');
     setting.filterSetting = GM_getValue('filterSetting', undefined);
     setting.currentTab = GM_getValue('currentTab', 'tab-1');
-
+    let isOverWriteSaveOptions = false;
     const curSaveOption = () => {
       const _s = saveOptions.find((s) => s.key === setting.chooseSaveOption);
       if (_s) {
+        isOverWriteSaveOptions = true;
         return _s.options;
       } else {
         return saveOptions[0].options;
       }
     };
-    (unsafeWindow as UnsafeWindow).saveOptions = curSaveOption();
+    if (isOverWriteSaveOptions)
+      (unsafeWindow as UnsafeWindow).saveOptions = curSaveOption();
     const saveFilter = (filterSetting: filterSettingGlobal) => {
       setting.filterSetting = deepcopy(filterSetting);
       GM_setValue('filterSetting', setting.filterSetting);

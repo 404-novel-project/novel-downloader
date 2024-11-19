@@ -35,6 +35,7 @@ export interface SaveOptions {
   getchapterName?: Options["getchapterName"];
   genSectionText?: Options["genSectionText"];
   genChapterText?: Options["genChapterText"];
+  genChapterEpub?: Options["genChapterEpub"];
   chapterSort?: Options["chapterSort"];
 }
 
@@ -44,6 +45,7 @@ export function saveOptionsValidate(data: any) {
     "getchapterName",
     "genSectionText",
     "genChapterText",
+    "genChapterEpub",
     "chapterSort",
   ];
 
@@ -112,6 +114,10 @@ export class Options extends Common {
     return `${chapterName}\n${"=".repeat(
       fullWidthLength(chapterName) * 2 + 10
     )}\n\n${contentText}\n\n`;
+  }
+
+  public genChapterEpub(contentXHTML: string) {
+    return contentXHTML;
   }
 
   public chapterSort(a: Chapter, b: Chapter) {

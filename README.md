@@ -441,31 +441,20 @@ function chapterFilter(chapter) {
 使用方法大致同自定义筛选函数，即在 `window` 下创建 `saveOptions` 对象，具体格式如下：
 
 ```typescript
-declare class saveBook {
-  protected book: Book;
-  mainStyleText: string;
-  tocStyleText: string;
-  constructor(book: Book);
-  saveTxt(): void;
-  saveLog(): void;
-  saveZip(runSaveChapters?: boolean): Promise<void>;
-  addChapter(chapter: Chapter): void;
-  getchapterName(chapter: Chapter): string;
-  genSectionText(sectionName: string): string;
-  genChapterText(chapterName: string, contentText: string): string;
-  genSectionHtmlFile(chapterObj: Chapter): Blob;
-  genChapterHtmlFile(chapterObj: Chapter): Blob;
-  chapterSort(a: Chapter, b: Chapter): 0 | 1 | -1;
-}
-interface saveOptions {
-  mainStyleText?: saveBook["mainStyleText"];
-  tocStyleText?: saveBook["tocStyleText"];
-  getchapterName?: saveBook["getchapterName"];
-  genSectionText?: saveBook["genSectionText"];
-  genChapterText?: saveBook["genChapterText"];
-  genSectionHtmlFile?: saveBook["genSectionHtmlFile"];
-  genChapterHtmlFile?: saveBook["genChapterHtmlFile"];
-  chapterSort?: saveBook["chapterSort"];
+
+interface SaveOptions {
+  mainStyleText?: string;
+  tocStyleText?: string;
+  getchapterName?: Options["getchapterName"];
+  //函数定义为：getchapterName(chapter: Chapter): string;
+  genSectionText?: Options["genSectionText"];
+  //函数定义为：genSectionText(sectionName: string): string;
+  genChapterText?: Options["genChapterText"];
+  //函数定义为：genChapterText(chapterName: string, contentText: string): string;
+  genChapterEpub?: Options["genChapterEpub"];
+  //函数定义为：genChapterEpub(contentXHTML: string):string;
+  chapterSort?: Options["chapterSort"];
+  //函数定义为：chapterSort(a: Chapter, b: Chapter): 0 | 1 | -1;
 }
 ```
 
@@ -521,7 +510,17 @@ const saveOptions = {
 };
 window.saveOptions = saveOptions;
 ```
+epub 文档删除章节空行
 
+```javascript
+const saveOptions = {
+  genChapterEpub: (contentXHTML) => {
+    return contentXHTML.replaceAll("<p><br /></p>", "")
+      .replaceAll("<p><br/></p>", "");
+  },
+};
+window.saveOptions = saveOptions;
+```
 保存章节时倒序排列
 
 ```javascript
@@ -636,6 +635,10 @@ window.customFinishCallback = customFinishCallback;
       } else {
         return `第${chapter.chapterNumber.toString()}章`;
       } // 按 第i章 XXX 命名章节名字
+    },
+    genChapterEpub: (contentXHTML) => {
+      return contentXHTML.replaceAll("<p><br /></p>", "")
+        .replaceAll("<p><br/></p>", "");
     },
   };
   //保存设置结束

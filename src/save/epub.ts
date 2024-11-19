@@ -267,19 +267,18 @@ export class EPUB extends Options {
     }
   }
 
-  private static genChapterHtmlFile(chapterObj: Chapter) {
+  private genChapterHtmlFile(chapterObj: Chapter) {
     const _htmlText = chapterTemplt.render({
       chapterUrl: chapterObj.chapterUrl,
       chapterName: chapterObj.chapterName,
       outerHTML: chapterObj.contentHTML?.outerHTML ?? "",
     });
-    const htmlText = convertHTMLtoXHTML(_htmlText);
+    let htmlText = convertHTMLtoXHTML(_htmlText);
+    htmlText = this.genChapterEpub(htmlText);
     return new Blob(
       [
         `<?xml version="1.0" encoding="utf-8"?>`,
         htmlText
-          .replaceAll("<p><br /></p>", "")
-          .replaceAll("<p><br/></p>", "")
           .replaceAll("data-src-address", "src")
           .replaceAll(/[\u{0000}-\u{001f}]/gu, "")
           .replaceAll(/[\u{007f}-\u{009f}]/gu, "")
@@ -799,7 +798,7 @@ export class EPUB extends Options {
     chapter.chapterHtmlFileName = chapterHtmlFileName;
 
     log.debug(`[save-epub]保存章HTML文件：${chapterName}`);
-    const chapterHTMLBlob = EPUB.genChapterHtmlFile(chapter);
+    const chapterHTMLBlob = this.genChapterHtmlFile(chapter);
     await this.epubZip.file(`OEBPS/${chapterHtmlFileName}`, chapterHTMLBlob);
 
     const item = this.contentOpf.createElement("item");
