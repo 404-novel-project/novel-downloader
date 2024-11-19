@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1005
+// @version        5.2.1008
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -256,6 +256,7 @@
 // @match          *://hongxiuzhao.me/*.html
 // @match          *://www.mijiashe.com/*/
 // @match          *://www.duread.cn/book/*
+// @match          *://duread.cn/book/*
 // @match          *://www.ttkan.co/novel/chapters/*
 // @match          *://cn.ttkan.co/novel/chapters/*
 // @match          *://tw.ttkan.co/novel/chapters/*
@@ -13898,7 +13899,8 @@ const c69shu = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */
         });
         return content;
     },
-    language: "zh"
+    language: "zh",
+    concurrencyLimit: 1,
 });
 
 
@@ -15155,7 +15157,7 @@ function getChapter({ chapterUrl, chapterName, isVIP, isPaid, charset, options, 
             return vipCHapterImageUrlI;
         }
         const getIsLogin = () => {
-            if (document.location.host === "www.duread.cn") {
+            if (document.location.host === "www.duread.cn" || document.location.host === "duread.cn") {
                 return (document.querySelector("div.dropdown-menu")?.childElementCount === 3);
             }
             else if (document.location.host === "www.shubl.com") {
@@ -38021,6 +38023,7 @@ async function getRule() {
             ruleClass = Iqingguo;
             break;
         }
+        case "duread.cn":
         case "www.duread.cn": {
             const { Duread } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/ciweimao.ts"));
             ruleClass = Duread;
