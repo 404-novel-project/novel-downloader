@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1002
+// @version        5.2.1003
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -10313,6 +10313,7 @@ function saveOptionsValidate(data) {
         "getchapterName",
         "genSectionText",
         "genChapterText",
+        "genChapterEpub",
         "chapterSort",
     ];
     function keyNametest(keyname) {
@@ -10370,6 +10371,9 @@ class Options extends Common {
     }
     genChapterText(chapterName, contentText) {
         return `${chapterName}\n${"=".repeat((0,dom/* fullWidthLength */.QJ)(chapterName) * 2 + 10)}\n\n${contentText}\n\n`;
+    }
+    genChapterEpub(contentXHTML) {
+        return contentXHTML;
     }
     chapterSort(a, b) {
         return a.chapterNumber - b.chapterNumber;
@@ -10599,18 +10603,17 @@ class EPUB extends Options {
             ]));
         }
     }
-    static genChapterHtmlFile(chapterObj) {
+    genChapterHtmlFile(chapterObj) {
         const _htmlText = chapterTemplt.render({
             chapterUrl: chapterObj.chapterUrl,
             chapterName: chapterObj.chapterName,
             outerHTML: chapterObj.contentHTML?.outerHTML ?? "",
         });
-        const htmlText = (0,dom/* convertHTMLtoXHTML */.pI)(_htmlText);
+        let htmlText = (0,dom/* convertHTMLtoXHTML */.pI)(_htmlText);
+        htmlText = this.genChapterEpub(htmlText);
         return new Blob([
             `<?xml version="1.0" encoding="utf-8"?>`,
             htmlText
-                .replaceAll("<p><br /></p>", "")
-                .replaceAll("<p><br/></p>", "")
                 .replaceAll("data-src-address", "src")
                 .replaceAll(/[\u{0000}-\u{001f}]/gu, "")
                 .replaceAll(/[\u{007f}-\u{009f}]/gu, "")
@@ -10949,7 +10952,7 @@ class EPUB extends Options {
         const chapterHtmlFileName = `No${chapterNumberToSave}Chapter${suffix}.xhtml`;
         chapter.chapterHtmlFileName = chapterHtmlFileName;
         loglevel_default().debug(`[save-epub]保存章HTML文件：${chapterName}`);
-        const chapterHTMLBlob = EPUB.genChapterHtmlFile(chapter);
+        const chapterHTMLBlob = this.genChapterHtmlFile(chapter);
         await this.epubZip.file(`OEBPS/${chapterHtmlFileName}`, chapterHTMLBlob);
         const item = this.contentOpf.createElement("item");
         item.id = chapterHtmlFileName;
@@ -39441,6 +39444,16 @@ const vm = (0,external_Vue_.createApp)({
                 },
             },
             {
+                key: "epub_space",
+                value: "epub文档删除章节空行",
+                options: {
+                    genChapterEpub: (contentXHTML) => {
+                        return contentXHTML.replaceAll("<p><br /></p>", "")
+                            .replaceAll("<p><br/></p>", "");
+                    },
+                },
+            },
+            {
                 key: "reverse_chapters",
                 value: "保存章节时倒序排列",
                 options: {
@@ -39473,16 +39486,19 @@ const vm = (0,external_Vue_.createApp)({
         setting.chooseSaveOption = GM_getValue('chooseSaveOption', 'null');
         setting.filterSetting = GM_getValue('filterSetting', undefined);
         setting.currentTab = GM_getValue('currentTab', 'tab-1');
+        let isOverWriteSaveOptions = false;
         const curSaveOption = () => {
             const _s = saveOptions.find((s) => s.key === setting.chooseSaveOption);
             if (_s) {
+                isOverWriteSaveOptions = true;
                 return _s.options;
             }
             else {
                 return saveOptions[0].options;
             }
         };
-        unsafeWindow.saveOptions = curSaveOption();
+        if (isOverWriteSaveOptions)
+            unsafeWindow.saveOptions = curSaveOption();
         const saveFilter = (filterSetting) => {
             setting.filterSetting = (0,misc/* deepcopy */.OJ)(filterSetting);
             GM_setValue('filterSetting', setting.filterSetting);
