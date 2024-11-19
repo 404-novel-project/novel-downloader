@@ -523,7 +523,7 @@ function getChapter({
     }
 
     const getIsLogin = () => {
-      if (document.location.host === "www.duread.cn") {
+      if (document.location.host === "www.duread.cn" || document.location.host === "duread.cn") {
         return (
           document.querySelector("div.dropdown-menu")?.childElementCount === 3
         );
