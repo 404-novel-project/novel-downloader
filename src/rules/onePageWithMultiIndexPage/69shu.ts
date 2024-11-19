@@ -78,5 +78,6 @@ export const c69shu = () =>
     
       return content;
     },
-    language: "zh"
+    language: "zh",
+    concurrencyLimit: 1,
   });
