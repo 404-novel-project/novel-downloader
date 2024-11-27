@@ -100,7 +100,7 @@ EPUB 文件请使用相应阅读器阅读。
 | [暁](https://www.akatsuki-novels.com/)              | ✅       | ❎       |                                                                                                                                                                                                                                                                              |
 | [ファンタジー小説](https://www.alphapolis.co.jp/)   | ✅       | ❌       |                                                                                                                                                                                                                                                                              |
 | [Novel Up Plus](https://novelup.plus/)              | ✅       | ❎       |                                                                                                                                                                                                                                                                              |
-
+| [ESJ](https://www.esjzone.cc/)              | ✅       | ❎       |  当前下载EPUB文件可能会遇到问题。解决办法：按F12 弹出开发工具-> 转到网络页（Network）->按ctrl+R重新加载->找到core.js（链接为https://cdnjs.cloudflare.com/ajax/libs/core-js/2.4.1/core.js ）->右键选择点击“屏蔽请求网址”->重新刷新网页即可正常下载。  |
 <details>
 <summary>点击查看全部支持网站</summary>
 
