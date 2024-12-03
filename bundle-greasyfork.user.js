@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1010
+// @version        5.2.1011
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -30781,6 +30781,11 @@ class Pixiv extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
                 const author = novel.userName;
                 const introductionHTML = document.createElement("div");
                 introductionHTML.innerHTML = novel.description;
+                if (novel.glossary) {
+                    const glossary = document.createElement("div");
+                    glossary.innerHTML = novel.glossary;
+                    introductionHTML.appendChild(glossary);
+                }
                 const introduction = introductionHTML.innerText;
                 const additionalMetadate = {};
                 (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getAttachment */ ["if"])(novel.coverUrl, self.attachmentMode, "cover-")
@@ -30828,6 +30833,11 @@ class Pixiv extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
             const introduction = series.introduction;
             const introductionHTML = document.createElement("div");
             introductionHTML.innerText = introduction;
+            if (series.glossary) {
+                const glossary = document.createElement("div");
+                glossary.innerHTML = series.glossary;
+                introductionHTML.appendChild(glossary);
+            }
             const additionalMetadate = {};
             (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getAttachment */ ["if"])(series.coverURL, self.attachmentMode, "cover-")
                 .then((coverClass) => {
@@ -30879,6 +30889,11 @@ class Pixiv extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
             const novelCover = document.createElement("img");
             novelCover.src = novel.coverUrl;
             contentRaw.prepend(novelCover);
+        }
+        if (novel.glossary) {
+            const glossary = document.createElement("div");
+            glossary.innerHTML = novel.glossary;
+            contentRaw.appendChild(glossary);
         }
         const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_6__/* .cleanDOM */ .an)(contentRaw, "TM");
         const additionalMetadate = {
@@ -31048,6 +31063,36 @@ async function getSeries(seriesID, lang, version) {
         chapterObjList.push(...chapterObjs);
         lastOrder = lastOrder + limit;
     }
+    let glossary = null;
+    if (data.body.hasGlossary) {
+        const urlGlossary = new URL(`https://www.pixiv.net/ajax/novel/series/${seriesID}/glossary`);
+        urlGlossary.searchParams.append("lang", lang);
+        urlGlossary.searchParams.append("version", version);
+        const resp3 = await fetch(urlGlossary, {
+            credentials: "include",
+            headers: {
+                Accept: "application/json",
+            },
+            method: "GET",
+            mode: "cors",
+        });
+        const data3 = (await resp3.json());
+        glossary = "<h1>Series Glossary</h1>";
+        for (let i = 0; i < data3.body.categories.length; i++) {
+            const category = data3.body.categories[i];
+            glossary += `<h2>${category.name}</h2>`;
+            for (let j = 0; j < category.items.length; j++) {
+                const item = category.items[j];
+                glossary += `<p><strong>${item.name}</strong>:${item.overview}</p>`;
+                if (item.coverImage) {
+                    glossary += `<img src="${item.coverImage}">`;
+                }
+                if (item.detail) {
+                    glossary += `<p>${item.detail}</p>`;
+                }
+            }
+        }
+    }
     return {
         seriesID,
         seriesTotal,
@@ -31059,6 +31104,7 @@ async function getSeries(seriesID, lang, version) {
         language: data.body.language,
         tags: data.body.tags,
         lastModified: data.body.updatedTimestamp,
+        glossary: glossary,
     };
 }
 async function getNovel(novelID, lang, version) {
@@ -31074,6 +31120,36 @@ async function getNovel(novelID, lang, version) {
         mode: "cors",
     });
     const data = (await resp.json());
+    let glossary = null;
+    if (data.body.hasGlossary) {
+        const urlGlossary = new URL(`https://www.pixiv.net/ajax/novel/${novelID}/glossary`);
+        urlGlossary.searchParams.append("lang", lang);
+        urlGlossary.searchParams.append("version", version);
+        const resp3 = await fetch(urlGlossary, {
+            credentials: "include",
+            headers: {
+                Accept: "application/json",
+            },
+            method: "GET",
+            mode: "cors",
+        });
+        const data3 = (await resp3.json());
+        glossary = "<h1>Novel Glossary</h1>";
+        for (let i = 0; i < data3.body.categories.length; i++) {
+            const category = data3.body.categories[i];
+            glossary += `<h2>${category.name}</h2>`;
+            for (let j = 0; j < category.items.length; j++) {
+                const item = category.items[j];
+                glossary += `<p><strong>${item.name}</strong>:${item.overview}</p>`;
+                if (item.coverImage) {
+                    glossary += `<img src="${item.coverImage}">`;
+                }
+                if (item.detail) {
+                    glossary += `<p>${item.detail}</p>`;
+                }
+            }
+        }
+    }
     return {
         title: data.body.title,
         userName: data.body.userName,
@@ -31084,6 +31160,7 @@ async function getNovel(novelID, lang, version) {
         tags: data.body.tags.tags.map((t) => t.tag),
         seriesID: data.body.seriesNavData?.seriesId.toString() ?? null,
         textEmbeddedImages: data.body.textEmbeddedImages,
+        glossary: glossary,
     };
 }
 
