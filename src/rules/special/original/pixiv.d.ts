@@ -730,3 +730,55 @@ interface IllustUrls {
   regular: string;
   original: string;
 }
+
+interface GlossaryBody {
+  categories: {
+    id: string;
+    seriesId: string;
+    name: string;
+    items: {
+      id: string;
+      seriesId: string;
+      categoryId: string;
+      name: string;
+      overview: string;
+      coverImage: string | null;
+      detail: string | null;
+    }[];
+  }[];
+  replaceeItemIds: any[];
+  extraData: {
+    meta: {
+      title: string;
+      description: string;
+      canonical: string;
+      ogp: {
+        type: string;
+        title: string;
+        description: string;
+        image: string;
+      };
+      twitter: {
+        card: string;
+        site: string;
+        title: string;
+        description: string;
+        image: string;
+      };
+    };
+  };
+  zoneConfig: {
+    header: {
+      url: string;
+    };
+    footer: {
+      url: string;
+    };
+    logo: {
+      url: string;
+    };
+    ad_logo: {
+      url: string;
+    };
+  };
+}
