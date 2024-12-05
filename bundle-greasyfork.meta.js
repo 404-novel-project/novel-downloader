@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1011
+// @version        5.2.1012
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -272,12 +272,14 @@
 // @match          *://www.fxshu.top/*/*.html
 // @match          *://xr.unionread.net/bookdetail/*
 // @match          *://www.qu-la.com/booktxt/*/
+// @match          *://www.bilibili.com/read/readlist/*
 // @compatible     Firefox 100+
 // @compatible     Chrome 85+
 // @compatible     Edge 85+
 // @compatible     Opera 71+
 // @compatible     Safari 13.1+
 // @connect        self
+// @connect        bilibili.com
 // @connect        lightnovel.us
 // @connect        www.fxshu.top
 // @connect        qidian.com

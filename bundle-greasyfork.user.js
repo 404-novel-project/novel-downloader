@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1011
+// @version        5.2.1012
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -272,12 +272,14 @@
 // @match          *://www.fxshu.top/*/*.html
 // @match          *://xr.unionread.net/bookdetail/*
 // @match          *://www.qu-la.com/booktxt/*/
+// @match          *://www.bilibili.com/read/readlist/*
 // @compatible     Firefox 100+
 // @compatible     Chrome 85+
 // @compatible     Edge 85+
 // @compatible     Opera 71+
 // @compatible     Safari 13.1+
 // @connect        self
+// @connect        bilibili.com
 // @connect        lightnovel.us
 // @connect        www.fxshu.top
 // @connect        qidian.com
@@ -33848,6 +33850,119 @@ class Zongheng extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
 
 /***/ }),
 
+/***/ "./src/rules/special/reprint/bilibili.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Bilibili: () => (/* binding */ Bilibili)
+/* harmony export */ });
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
+
+
+
+
+
+
+
+
+class Bilibili extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
+    constructor() {
+        super();
+        this.attachmentMode = "TM";
+        this.streamZip = true;
+        this.concurrencyLimit = 1;
+        this.maxRunLimit = 1;
+    }
+    async bookParse() {
+        const bookUrl = document.location.href;
+        const match = bookUrl.match(/readlist\/rl(\d+)/);
+        const bookID = match ? match[1] : null;
+        const bookname = document.querySelector(".list-header .title").innerText.trim();
+        const author = document.querySelector(".up-name").innerText
+            .trim();
+        const introDom = document.querySelector("div.introduce");
+        const coverUrl = document.querySelector("img.cover").src;
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .HV)(introDom);
+        const additionalMetadate = {};
+        if (coverUrl) {
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
+                .then((coverClass) => {
+                additionalMetadate.cover = coverClass;
+            })
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_3___default().error(error));
+        }
+        const chapters = [];
+        const bookListURL = `https://api.bilibili.com/x/article/list/web/articles?id=${bookID}`;
+        const res = await fetch(bookListURL, {
+            headers: {
+                Accept: "application/json",
+            },
+            method: "GET",
+        });
+        const booklist = (await res.json());
+        let i = 0;
+        for (const article of booklist.data.articles) {
+            i++;
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .I({
+                bookUrl,
+                bookname,
+                chapterUrl: `https://www.bilibili.com/read/cv${article.id}`,
+                chapterNumber: i,
+                chapterName: article.title,
+                isVIP: false,
+                isPaid: false,
+                sectionName: null,
+                sectionNumber: null,
+                sectionChapterNumber: null,
+                chapterParse: this.chapterParse.bind(this),
+                charset: this.charset,
+                options: { chapterimg: article.image_urls },
+            });
+            chapters.push(chapter);
+        }
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .E({
+            bookUrl,
+            bookname,
+            author,
+            introduction,
+            introductionHTML,
+            additionalMetadate,
+            chapters,
+        });
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+        const chapterDom = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_6__/* .getHtmlDOM */ .wA)(chapterUrl);
+        const content = chapterDom.querySelector("div.opus-module-content");
+        const chapterimg = document.createElement("img");
+        chapterimg.src = options["chapterimg"][0];
+        content.insertBefore(chapterimg, content.firstChild);
+        const chapterimgTitle = document.createElement("p");
+        chapterimgTitle.innerText = "章节封面插图";
+        content.insertBefore(chapterimgTitle, chapterimg);
+        const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__/* .cleanDOM */ .an)(content, "TM");
+        return {
+            chapterName,
+            contentRaw: content,
+            contentText: text,
+            contentHTML: dom,
+            contentImages: images,
+            additionalMetadate: null,
+        };
+    }
+}
+
+
+/***/ }),
+
 /***/ "./src/rules/special/reprint/dmzj.ts":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -38483,6 +38598,11 @@ async function getRule() {
         case "www.42zw.la": {
             const { la42zw } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
             ruleClass = la42zw();
+            break;
+        }
+        case "www.bilibili.com": {
+            const { Bilibili } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/reprint/bilibili.ts"));
+            ruleClass = Bilibili;
             break;
         }
         case "www.esjzone.cc":
