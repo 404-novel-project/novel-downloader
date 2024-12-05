@@ -649,6 +649,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = la42zw();
       break;
     }
+    case "www.bilibili.com": {
+      const { Bilibili } = await import("../rules/special/reprint/bilibili");
+      ruleClass = Bilibili;
+      break;
+    }
     case "www.esjzone.cc":
     case "www.esjzone.me": {
       const { esjzone } = await import("../rules/onePage/original/esjzone");

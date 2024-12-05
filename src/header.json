@@ -238,7 +238,8 @@
     "*://www.esjzone.cc/detail/*",
     "*://www.fxshu.top/*/*.html",
     "*://xr.unionread.net/bookdetail/*",
-    "*://www.qu-la.com/booktxt/*/"
+    "*://www.qu-la.com/booktxt/*/",
+    "*://www.bilibili.com/read/readlist/*"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",
@@ -304,6 +305,7 @@
   ],
   "connect": [
     "self",
+    "bilibili.com",
     "lightnovel.us",
     "www.fxshu.top",
     "qidian.com",
