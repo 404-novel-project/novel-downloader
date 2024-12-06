@@ -37,15 +37,7 @@ jobs:
         with:
           name: bundle
           path: dist/bundle*.js
-
-      # - name: comment PR 📝
-      #   uses: thollander/actions-comment-pull-request@v3
-      #   if: ${{github.event_name == 'pull_request'}}
-      #   with:
-      #     message: |
-      #       我们已经收到您的PR，您可以在这里访问对应的脚本文件。
-      #       ${{ steps.upload-artifacts.outputs.artifact-url }}
-
+          
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4
         if: ${{  github.ref == 'refs/heads/master' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') }}
