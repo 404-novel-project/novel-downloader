@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1013
+// @version        5.2.1014
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -30879,6 +30879,7 @@ class Pixiv extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         const novel = await getNovel(options.id, options.lang, options.version);
+        const contentDom = document.createElement("div");
         const contentRaw = document.createElement("div");
         contentRaw.innerText = novel.content;
         await loadPixivimage({
@@ -30890,14 +30891,15 @@ class Pixiv extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
         if (novel.coverUrl) {
             const novelCover = document.createElement("img");
             novelCover.src = novel.coverUrl;
-            contentRaw.prepend(novelCover);
+            contentDom.append(novelCover);
         }
         if (novel.glossary) {
             const glossary = document.createElement("div");
             glossary.innerHTML = novel.glossary;
-            contentRaw.appendChild(glossary);
+            contentDom.append(glossary);
         }
-        const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_6__/* .cleanDOM */ .an)(contentRaw, "TM");
+        contentDom.append(contentRaw);
+        const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_6__/* .cleanDOM */ .an)(contentDom, "TM");
         const additionalMetadate = {
             lastModified: new Date(novel.uploadDate).getTime(),
             tags: novel.tags,
@@ -31014,6 +31016,23 @@ class Pixiv extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
 function getLang() {
     return document.querySelector("html")?.getAttribute("lang") ?? "en";
 }
+function getGlossary(data3) {
+    let glossary = "<h2>设定集</h2>";
+    for (let i = 0; i < data3.body.categories.length; i++) {
+        const category = data3.body.categories[i];
+        glossary += `<h3>${category.name}</h3>`;
+        for (let j = 0; j < category.items.length; j++) {
+            const item = category.items[j];
+            glossary += `<p><strong>${item.name}</strong>:${item.overview}</p>`;
+            if (item.coverImage) {
+                glossary += `<img src="${item.coverImage}">`;
+            }
+            if (item.detail) {
+                glossary += `<p>${item.detail}</p>`;
+            }
+        }
+    }
+}
 async function getSeries(seriesID, lang, version) {
     const url = new URL(`https://www.pixiv.net/ajax/novel/series/${seriesID}`);
     url.searchParams.append("lang", lang);
@@ -31079,21 +31098,7 @@ async function getSeries(seriesID, lang, version) {
             mode: "cors",
         });
         const data3 = (await resp3.json());
-        glossary = "<h1>Series Glossary</h1>";
-        for (let i = 0; i < data3.body.categories.length; i++) {
-            const category = data3.body.categories[i];
-            glossary += `<h2>${category.name}</h2>`;
-            for (let j = 0; j < category.items.length; j++) {
-                const item = category.items[j];
-                glossary += `<p><strong>${item.name}</strong>:${item.overview}</p>`;
-                if (item.coverImage) {
-                    glossary += `<img src="${item.coverImage}">`;
-                }
-                if (item.detail) {
-                    glossary += `<p>${item.detail}</p>`;
-                }
-            }
-        }
+        glossary = getGlossary(data3);
     }
     return {
         seriesID,
@@ -31136,21 +31141,7 @@ async function getNovel(novelID, lang, version) {
             mode: "cors",
         });
         const data3 = (await resp3.json());
-        glossary = "<h1>Novel Glossary</h1>";
-        for (let i = 0; i < data3.body.categories.length; i++) {
-            const category = data3.body.categories[i];
-            glossary += `<h2>${category.name}</h2>`;
-            for (let j = 0; j < category.items.length; j++) {
-                const item = category.items[j];
-                glossary += `<p><strong>${item.name}</strong>:${item.overview}</p>`;
-                if (item.coverImage) {
-                    glossary += `<img src="${item.coverImage}">`;
-                }
-                if (item.detail) {
-                    glossary += `<p>${item.detail}</p>`;
-                }
-            }
-        }
+        glossary = getGlossary(data3);
     }
     return {
         title: data.body.title,
