@@ -157,6 +157,7 @@ export class Pixiv extends BaseRuleClass {
     }
   ): Promise<ChapterParseObject> {
     const novel = await getNovel(options.id, options.lang, options.version);
+    const contentDom = document.createElement("div");
     const contentRaw = document.createElement("div");
     contentRaw.innerText = novel.content;
     await loadPixivimage({
@@ -168,14 +169,15 @@ export class Pixiv extends BaseRuleClass {
     if (novel.coverUrl) {
       const novelCover = document.createElement("img");
       novelCover.src = novel.coverUrl;
-      contentRaw.prepend(novelCover);
+      contentDom.append(novelCover);
     }
     if (novel.glossary) {
       const glossary = document.createElement("div");
       glossary.innerHTML = novel.glossary;
-      contentRaw.appendChild(glossary);
+      contentDom.append(glossary);
     }
-    const { dom, text, images } = await cleanDOM(contentRaw, "TM");
+    contentDom.append(contentRaw);
+    const { dom, text, images } = await cleanDOM(contentDom, "TM");
     const additionalMetadate: ChapterAdditionalMetadate = {
       lastModified: new Date(novel.uploadDate).getTime(),
       tags: novel.tags,
@@ -354,6 +356,23 @@ interface chapterObj {
   };
   viewableType: number;
 }
+function getGlossary(data3: PixivResponse<GlossaryBody>) {
+  let glossary = "<h2>设定集</h2>";
+  for (let i = 0; i < data3.body.categories.length; i++) {
+    const category = data3.body.categories[i];
+    glossary += `<h3>${category.name}</h3>`
+    for (let j = 0; j < category.items.length; j++) {
+      const item = category.items[j];
+      glossary += `<p><strong>${item.name}</strong>:${item.overview}</p>`;
+      if (item.coverImage) {
+        glossary += `<img src="${item.coverImage}">`;
+      }
+      if (item.detail) {
+        glossary += `<p>${item.detail}</p>`;
+      }
+    }
+  }
+}
 async function getSeries(seriesID: string, lang: string, version: string) {
   const url = new URL(`https://www.pixiv.net/ajax/novel/series/${seriesID}`);
   url.searchParams.append("lang", lang);
@@ -425,21 +444,7 @@ async function getSeries(seriesID: string, lang: string, version: string) {
         mode: "cors",
       });
       const data3 = (await resp3.json()) as PixivResponse<GlossaryBody>;
-      glossary = "<h1>Series Glossary</h1>";
-      for (let i = 0; i < data3.body.categories.length; i++) {
-        const category = data3.body.categories[i];
-        glossary += `<h2>${category.name}</h2>`
-        for (let j = 0; j < category.items.length; j++) {
-          const item = category.items[j];
-          glossary += `<p><strong>${item.name}</strong>:${item.overview}</p>`;
-          if (item.coverImage) {
-            glossary += `<img src="${item.coverImage}">`;
-          }
-          if (item.detail) {
-            glossary += `<p>${item.detail}</p>`;
-          }
-        }
-      }
+      glossary = getGlossary(data3);
   }
     
   return {
@@ -485,21 +490,7 @@ async function getNovel(novelID: string, lang: string, version: string) {
       mode: "cors",
     });
     const data3 = (await resp3.json()) as PixivResponse<GlossaryBody>;
-    glossary = "<h1>Novel Glossary</h1>";
-    for (let i = 0; i < data3.body.categories.length; i++) {
-      const category = data3.body.categories[i];
-      glossary += `<h2>${category.name}</h2>`
-      for (let j = 0; j < category.items.length; j++) {
-        const item = category.items[j];
-        glossary += `<p><strong>${item.name}</strong>:${item.overview}</p>`;
-        if (item.coverImage) {
-          glossary += `<img src="${item.coverImage}">`;
-        }
-        if (item.detail) {
-          glossary += `<p>${item.detail}</p>`;
-        }
-      }
-    }
+    glossary = getGlossary(data3);
   }
     
   return {
