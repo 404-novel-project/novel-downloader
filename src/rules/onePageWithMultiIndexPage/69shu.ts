@@ -11,7 +11,7 @@ export const c69shu = () =>
     )?.innerText ?? "",
     introDom: 
       document.querySelector(
-        ".lastcontent"
+        ".content"
       ) as HTMLParagraphElement,
     introDomPatch: (content) => content,
     coverUrl: document.querySelector<HTMLImageElement>(".bookimg2 > img")?.src ?? null,

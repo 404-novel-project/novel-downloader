@@ -18,9 +18,9 @@ export class MangaBilibili extends BaseRuleClass {
     super();
     this.attachmentMode = "naive";
     this.concurrencyLimit = 1;
-    this.streamZip = true;
+	this.streamZip = true;
+	this.maxRunLimit = 1;
   }
-
   public async bookParse() {
     const _comic_id = /\/mc(\d+)$/.exec(document.location.pathname)?.[1];
     if (!_comic_id) {
@@ -29,7 +29,7 @@ export class MangaBilibili extends BaseRuleClass {
     const comic_id = parseInt(_comic_id);
     const signIn = await isSignin(comic_id);
     const detail = await getDetail(comic_id);
-
+	const nov = '25';
     const bookUrl = document.location.href;
     const bookname = detail.title;
     const author = detail.author_name.join(", ");
@@ -61,7 +61,8 @@ export class MangaBilibili extends BaseRuleClass {
       const isPaid = isVIP ? !ep.is_locked : true;
       const options: chapterOption = {
         comic_id,
-        ep_id: ep.id,
+		ep_id: ep.id,
+		nov: nov,
       };
       const chapter = new Chapter({
         bookUrl,
@@ -112,7 +113,7 @@ export class MangaBilibili extends BaseRuleClass {
 
     async function getDetail(comic_id: number) {
       const url =
-        "https://manga.bilibili.com/twirp/comic.v1.Comic/ComicDetail?device=pc&platform=web";
+		"https://manga.bilibili.com/twirp/comic.v1.Comic/ComicDetail?device=pc&platform=web&nov=" + nov;
       const body = {
         comic_id,
       };
@@ -144,7 +145,6 @@ export class MangaBilibili extends BaseRuleClass {
     options: chapterOption
   ): Promise<ChapterParseObject> {
     const paths = await getImageIndex(options.ep_id);
-
     const _outs: { path: string; obj: imageResult }[] = [];
     const worker = async (path: string) => {
       const obj = await getImage(path);
@@ -178,7 +178,7 @@ export class MangaBilibili extends BaseRuleClass {
 
     async function getImageIndex(ep_id: number): Promise<string[]> {
       const url =
-        "https://manga.bilibili.com/twirp/comic.v1.Comic/GetImageIndex?device=pc&platform=web";
+        "https://manga.bilibili.com/twirp/comic.v1.Comic/GetImageIndex?device=pc&platform=web&nov=" + options.nov;
       const body = {
         ep_id,
       };
@@ -235,9 +235,10 @@ export class MangaBilibili extends BaseRuleClass {
 
       async function getImageToken(path: string): Promise<Token | undefined> {
         const url =
-          "https://manga.bilibili.com/twirp/comic.v1.Comic/ImageToken?device=pc&platform=web";
+          "https://manga.bilibili.com/twirp/comic.v1.Comic/ImageToken?device=pc&platform=web&nov=" + options.nov;
         const body = {
           urls: JSON.stringify([path]),
+          m1:'',
         };
         const headers = {
           Accept: "application/json, text/plain, */*",
@@ -392,7 +393,8 @@ interface ComicDetail {
 
 interface chapterOption {
   comic_id: number;
-  ep_id: number;
+	ep_id: number;
+	nov: string;
 }
 
 interface GetImageIndexImage {
