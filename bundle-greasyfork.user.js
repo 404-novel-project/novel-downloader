@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1014
+// @version        5.2.1015
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -13847,7 +13847,7 @@ const c69shu = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */
     bookUrl: document.location.href,
     bookname: document.querySelector("h1")?.innerText ?? "",
     author: document.querySelector(".booknav2 > p:nth-child(3) > a")?.innerText ?? "",
-    introDom: document.querySelector(".lastcontent"),
+    introDom: document.querySelector(".content"),
     introDomPatch: (content) => content,
     coverUrl: document.querySelector(".bookimg2 > img")?.src ?? null,
     getIndexPages: async () => {
@@ -14548,6 +14548,7 @@ class MangaBilibili extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass
         this.attachmentMode = "naive";
         this.concurrencyLimit = 1;
         this.streamZip = true;
+        this.maxRunLimit = 1;
     }
     async bookParse() {
         const _comic_id = /\/mc(\d+)$/.exec(document.location.pathname)?.[1];
@@ -14557,6 +14558,7 @@ class MangaBilibili extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass
         const comic_id = parseInt(_comic_id);
         const signIn = await isSignin(comic_id);
         const detail = await getDetail(comic_id);
+        const nov = '25';
         const bookUrl = document.location.href;
         const bookname = detail.title;
         const author = detail.author_name.join(", ");
@@ -14585,6 +14587,7 @@ class MangaBilibili extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass
             const options = {
                 comic_id,
                 ep_id: ep.id,
+                nov: nov,
             };
             const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_3__/* .Chapter */ .I({
                 bookUrl,
@@ -14628,7 +14631,7 @@ class MangaBilibili extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass
             return resp.ok;
         }
         async function getDetail(comic_id) {
-            const url = "https://manga.bilibili.com/twirp/comic.v1.Comic/ComicDetail?device=pc&platform=web";
+            const url = "https://manga.bilibili.com/twirp/comic.v1.Comic/ComicDetail?device=pc&platform=web&nov=" + nov;
             const body = {
                 comic_id,
             };
@@ -14683,7 +14686,7 @@ class MangaBilibili extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass
             additionalMetadate: null,
         };
         async function getImageIndex(ep_id) {
-            const url = "https://manga.bilibili.com/twirp/comic.v1.Comic/GetImageIndex?device=pc&platform=web";
+            const url = "https://manga.bilibili.com/twirp/comic.v1.Comic/GetImageIndex?device=pc&platform=web&nov=" + options.nov;
             const body = {
                 ep_id,
             };
@@ -14725,9 +14728,10 @@ class MangaBilibili extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass
             }
             throw new Error("获取图片 " + path + " 失败！");
             async function getImageToken(path) {
-                const url = "https://manga.bilibili.com/twirp/comic.v1.Comic/ImageToken?device=pc&platform=web";
+                const url = "https://manga.bilibili.com/twirp/comic.v1.Comic/ImageToken?device=pc&platform=web&nov=" + options.nov;
                 const body = {
                     urls: JSON.stringify([path]),
+                    m1: '',
                 };
                 const headers = {
                     Accept: "application/json, text/plain, */*",

@@ -8,5 +8,6 @@ export declare class MangaBilibili extends BaseRuleClass {
 interface chapterOption {
     comic_id: number;
     ep_id: number;
+    nov: string;
 }
 export {};
