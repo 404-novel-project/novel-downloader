@@ -1,7 +1,7 @@
 import {
-  getExt,
-  getAttachment,
-  putAttachmentClassCache,
+	getExt,
+	getAttachment,
+	putAttachmentClassCache,
 } from "../../../lib/attachments";
 import { fetchWithRetry } from "../../../lib/http";
 import { concurrencyRun } from "../../../lib/misc";
@@ -14,432 +14,432 @@ import { Status } from "../../../main/main";
 import { BaseRuleClass, ChapterParseObject } from "../../../rules";
 
 export class MangaBilibili extends BaseRuleClass {
-  public constructor() {
-    super();
-    this.attachmentMode = "naive";
-    this.concurrencyLimit = 1;
-	this.streamZip = true;
-	this.maxRunLimit = 1;
-  }
-  public async bookParse() {
-    const _comic_id = /\/mc(\d+)$/.exec(document.location.pathname)?.[1];
-    if (!_comic_id) {
-      throw new Error("获取 comic_id 失败！");
-    }
-    const comic_id = parseInt(_comic_id);
-    const signIn = await isSignin(comic_id);
-    const detail = await getDetail(comic_id);
-	const nov = '25';
-    const bookUrl = document.location.href;
-    const bookname = detail.title;
-    const author = detail.author_name.join(", ");
-    const introduction = detail.evaluate;
-    const introductionHTML = document.createElement("div");
-    introductionHTML.innerText = detail.evaluate;
-    const additionalMetadate = {} as BookAdditionalMetadate;
-    getAttachment(detail.vertical_cover, this.attachmentMode, "vertical_cover-")
-      .then((coverClass) => {
-        additionalMetadate.cover = coverClass;
-      })
-      .catch((error) => log.error(error));
-    additionalMetadate.tags = detail.styles;
-    additionalMetadate.attachments = [];
-    getAttachment(
-      detail.horizontal_cover,
-      this.attachmentMode,
-      "horizontal_cover-"
-    )
-      .then((coverClass) => {
-        additionalMetadate.attachments?.push(coverClass);
-      })
-      .catch((error) => log.error(error));
-    const chapters = detail.ep_list.map((ep) => {
-      const chapterUrl = `https://manga.bilibili.com/mc${comic_id}/${ep.id}?from=manga_detail`;
-      const chapterNumber = ep.ord;
-      const chapterName = [ep.short_title.trim(), ep.title.trim()].join(" ");
-      const isVIP = ep.pay_gold !== 0;
-      const isPaid = isVIP ? !ep.is_locked : true;
-      const options: chapterOption = {
-        comic_id,
-		ep_id: ep.id,
-		nov: nov,
-      };
-      const chapter = new Chapter({
-        bookUrl,
-        bookname,
-        chapterUrl,
-        chapterNumber,
-        chapterName,
-        isVIP,
-        isPaid,
-        sectionName: null,
-        sectionNumber: null,
-        sectionChapterNumber: null,
-        chapterParse: this.chapterParse,
-        charset: this.charset,
-        options,
-      });
-      if (ep.is_locked || ep.type === 6) {
-        chapter.status = Status.aborted;
-      }
-      return chapter;
-    });
+	public constructor() {
+		super();
+		this.attachmentMode = "naive";
+		this.concurrencyLimit = 1;
+		this.streamZip = true;
+		this.maxRunLimit = 1;
+	}
+	public async bookParse() {
+		const _comic_id = /\/mc(\d+)$/.exec(document.location.pathname)?.[1];
+		if (!_comic_id) {
+			throw new Error("获取 comic_id 失败！");
+		}
+		const comic_id = parseInt(_comic_id);
+		const signIn = await isSignin(comic_id);
+		const detail = await getDetail(comic_id);
+		const nov = '25';
+		const bookUrl = document.location.href;
+		const bookname = detail.title;
+		const author = detail.author_name.join(", ");
+		const introduction = detail.evaluate;
+		const introductionHTML = document.createElement("div");
+		introductionHTML.innerText = detail.evaluate;
+		const additionalMetadate = {} as BookAdditionalMetadate;
+		getAttachment(detail.vertical_cover, this.attachmentMode, "vertical_cover-")
+			.then((coverClass) => {
+				additionalMetadate.cover = coverClass;
+			})
+			.catch((error) => log.error(error));
+		additionalMetadate.tags = detail.styles;
+		additionalMetadate.attachments = [];
+		getAttachment(
+			detail.horizontal_cover,
+			this.attachmentMode,
+			"horizontal_cover-"
+		)
+			.then((coverClass) => {
+				additionalMetadate.attachments?.push(coverClass);
+			})
+			.catch((error) => log.error(error));
+		const chapters = detail.ep_list.map((ep) => {
+			const chapterUrl = `https://manga.bilibili.com/mc${comic_id}/${ep.id}?from=manga_detail`;
+			const chapterNumber = ep.ord;
+			const chapterName = [ep.short_title.trim(), ep.title.trim()].join(" ");
+			const isVIP = ep.pay_gold !== 0;
+			const isPaid = isVIP ? !ep.is_locked : true;
+			const options: chapterOption = {
+				comic_id,
+				ep_id: ep.id,
+				nov: nov,
+			};
+			const chapter = new Chapter({
+				bookUrl,
+				bookname,
+				chapterUrl,
+				chapterNumber,
+				chapterName,
+				isVIP,
+				isPaid,
+				sectionName: null,
+				sectionNumber: null,
+				sectionChapterNumber: null,
+				chapterParse: this.chapterParse,
+				charset: this.charset,
+				options,
+			});
+			if (ep.is_locked || ep.type === 6) {
+				chapter.status = Status.aborted;
+			}
+			return chapter;
+		});
 
-    return new Book({
-      bookUrl,
-      bookname,
-      author,
-      introduction,
-      introductionHTML,
-      additionalMetadate,
-      chapters,
-    });
+		return new Book({
+			bookUrl,
+			bookname,
+			author,
+			introduction,
+			introductionHTML,
+			additionalMetadate,
+			chapters,
+		});
 
-    async function isSignin(comic_id: number) {
-      const body = { comic_id };
-      const resp = await fetch(
-        "https://manga.bilibili.com/twirp/bookshelf.v1.Bookshelf/HasFavorite?device=pc&platform=web",
-        {
-          headers: {
-            Accept: "application/json, text/plain, */*",
-            "Content-Type": "application/json;charset=utf-8",
-          },
-          body: JSON.stringify(body),
-          method: "POST",
-        }
-      );
-      return resp.ok;
-    }
+		async function isSignin(comic_id: number) {
+			const body = { comic_id };
+			const resp = await fetch(
+				"https://manga.bilibili.com/twirp/bookshelf.v1.Bookshelf/HasFavorite?device=pc&platform=web",
+				{
+					headers: {
+						Accept: "application/json, text/plain, */*",
+						"Content-Type": "application/json;charset=utf-8",
+					},
+					body: JSON.stringify(body),
+					method: "POST",
+				}
+			);
+			return resp.ok;
+		}
 
-    async function getDetail(comic_id: number) {
-      const url =
-		"https://manga.bilibili.com/twirp/comic.v1.Comic/ComicDetail?device=pc&platform=web&nov=" + nov;
-      const body = {
-        comic_id,
-      };
-      const headers = {
-        accept: "application/json, text/plain, */*",
-        "content-type": "application/json;charset=UTF-8",
-      };
-      const init: RequestInit = {
-        headers,
-        body: JSON.stringify(body),
-        method: "POST",
-      };
-      const resp = await fetch(url, init);
-      const data = (await resp.json()) as ComicDetail;
-      if (data.code === 0) {
-        return data.data;
-      } else {
-        throw new Error("获取目录失败！");
-      }
-    }
-  }
+		async function getDetail(comic_id: number) {
+			const url =
+				"https://manga.bilibili.com/twirp/comic.v1.Comic/ComicDetail?device=pc&platform=web&nov=" + nov;
+			const body = {
+				comic_id,
+			};
+			const headers = {
+				accept: "application/json, text/plain, */*",
+				"content-type": "application/json;charset=UTF-8",
+			};
+			const init: RequestInit = {
+				headers,
+				body: JSON.stringify(body),
+				method: "POST",
+			};
+			const resp = await fetch(url, init);
+			const data = (await resp.json()) as ComicDetail;
+			if (data.code === 0) {
+				return data.data;
+			} else {
+				throw new Error("获取目录失败！");
+			}
+		}
+	}
 
-  public async chapterParse(
-    chapterUrl: string,
-    chapterName: string | null,
-    isVIP: boolean,
-    isPaid: boolean,
-    charset: string,
-    options: chapterOption
-  ): Promise<ChapterParseObject> {
-    const paths = await getImageIndex(options.ep_id);
-    const _outs: { path: string; obj: imageResult }[] = [];
-    const worker = async (path: string) => {
-      const obj = await getImage(path);
-      const out = {
-        path,
-        obj,
-      };
-      _outs.push(out);
-      return out;
-    };
-    await concurrencyRun(paths, 3, worker);
-    _outs.sort((a, b) => paths.indexOf(a.path) - paths.indexOf(b.path));
-    const outs = _outs.map((out) => out.obj);
+	public async chapterParse(
+		chapterUrl: string,
+		chapterName: string | null,
+		isVIP: boolean,
+		isPaid: boolean,
+		charset: string,
+		options: chapterOption
+	): Promise<ChapterParseObject> {
+		const paths = await getImageIndex(options.ep_id);
+		const _outs: { path: string; obj: imageResult }[] = [];
+		const worker = async (path: string) => {
+			const obj = await getImage(path);
+			const out = {
+				path,
+				obj,
+			};
+			_outs.push(out);
+			return out;
+		};
+		await concurrencyRun(paths, 3, worker);
+		_outs.sort((a, b) => paths.indexOf(a.path) - paths.indexOf(b.path));
+		const outs = _outs.map((out) => out.obj);
 
-    const dom = document.createElement("div");
-    outs.forEach((o) => {
-      const p = document.createElement("p");
-      p.appendChild(o.dom);
-      dom.appendChild(p);
-    });
-    const text = outs.map((o) => o.text).join("\n\n");
-    const images = outs.map((o) => o.images);
-    return {
-      chapterName,
-      contentRaw: dom,
-      contentText: text,
-      contentHTML: dom,
-      contentImages: images,
-      additionalMetadate: null,
-    };
+		const dom = document.createElement("div");
+		outs.forEach((o) => {
+			const p = document.createElement("p");
+			p.appendChild(o.dom);
+			dom.appendChild(p);
+		});
+		const text = outs.map((o) => o.text).join("\n\n");
+		const images = outs.map((o) => o.images);
+		return {
+			chapterName,
+			contentRaw: dom,
+			contentText: text,
+			contentHTML: dom,
+			contentImages: images,
+			additionalMetadate: null,
+		};
 
-    async function getImageIndex(ep_id: number): Promise<string[]> {
-      const url =
-        "https://manga.bilibili.com/twirp/comic.v1.Comic/GetImageIndex?device=pc&platform=web&nov=" + options.nov;
-      const body = {
-        ep_id,
-      };
-      const headers = {
-        Accept: "application/json, text/plain, */*",
-        "Content-Type": "application/json;charset=utf-8",
-      };
-      const init: RequestInit = {
-        headers,
-        body: JSON.stringify(body),
-        method: "POST",
-        mode: "cors",
-        credentials: "include",
-      };
-      const resp = await fetch(url, init);
-      const data = (await resp.json()) as GetImageIndex;
-      if (data.code === 0) {
-        const images = data.data.images;
-        return images.map((i) => i.path);
-      } else {
-        throw new Error(
-          `抓取章节图片索引失败！ ep_id： ${ep_id}, code: ${data.code}, mes: ${data.msg}`
-        );
-      }
-    }
+		async function getImageIndex(ep_id: number): Promise<string[]> {
+			const url =
+				"https://manga.bilibili.com/twirp/comic.v1.Comic/GetImageIndex?device=pc&platform=web&nov=" + options.nov;
+			const body = {
+				ep_id,
+			};
+			const headers = {
+				Accept: "application/json, text/plain, */*",
+				"Content-Type": "application/json;charset=utf-8",
+			};
+			const init: RequestInit = {
+				headers,
+				body: JSON.stringify(body),
+				method: "POST",
+				mode: "cors",
+				credentials: "include",
+			};
+			const resp = await fetch(url, init);
+			const data = (await resp.json()) as GetImageIndex;
+			if (data.code === 0) {
+				const images = data.data.images;
+				return images.map((i) => i.path);
+			} else {
+				throw new Error(
+					`抓取章节图片索引失败！ ep_id： ${ep_id}, code: ${data.code}, mes: ${data.msg}`
+				);
+			}
+		}
 
-    interface imageResult {
-      dom: HTMLImageElement;
-      text: string;
-      images: AttachmentClass;
-    }
+		interface imageResult {
+			dom: HTMLImageElement;
+			text: string;
+			images: AttachmentClass;
+		}
 
-    async function getImage(path: string): Promise<imageResult> {
-      const token = await getImageToken(path);
-      if (token) {
-        const img = await getImage(token);
-        const _dom = document.createElement("img");
-        _dom.setAttribute("data-src-address", img.name);
-        _dom.alt = img.url;
-        const _text = `![${img.url}](${img.name})`;
-        log.info(`ep_id: ${options.ep_id}, path: ${path} 抓取成功！`);
-        return {
-          dom: _dom,
-          text: _text,
-          images: img,
-        };
-      }
-      throw new Error("获取图片 " + path + " 失败！");
+		async function getImage(path: string): Promise<imageResult> {
+			const token = await getImageToken(path);
+			if (token) {
+				const img = await getImage(token);
+				const _dom = document.createElement("img");
+				_dom.setAttribute("data-src-address", img.name);
+				_dom.alt = img.url;
+				const _text = `![${img.url}](${img.name})`;
+				log.info(`ep_id: ${options.ep_id}, path: ${path} 抓取成功！`);
+				return {
+					dom: _dom,
+					text: _text,
+					images: img,
+				};
+			}
+			throw new Error("获取图片 " + path + " 失败！");
 
-      interface Token {
-        url: string;
-        token: string;
-      }
+			interface Token {
+				url: string;
+				token: string;
+			}
 
-      async function getImageToken(path: string): Promise<Token | undefined> {
-        const url =
-          "https://manga.bilibili.com/twirp/comic.v1.Comic/ImageToken?device=pc&platform=web&nov=" + options.nov;
-        const body = {
-          urls: JSON.stringify([path]),
-          m1:'',
-        };
-        const headers = {
-          Accept: "application/json, text/plain, */*",
-          "Content-Type": "application/json;charset=utf-8",
-        };
-        const init: RequestInit = {
-          headers,
-          body: JSON.stringify(body),
-          method: "POST",
-          referrer: chapterUrl,
-        };
-        const resp = await fetch(url, init);
-        const data = (await resp.json()) as ImageToken;
-        if (data.code === 0) {
-          return data.data[0];
-        }
-      }
+			async function getImageToken(path: string): Promise<Token | undefined> {
+				const url =
+					"https://manga.bilibili.com/twirp/comic.v1.Comic/ImageToken?device=pc&platform=web&nov=" + options.nov;
+				const body = {
+					urls: JSON.stringify([path]),
+					m1: '',
+				};
+				const headers = {
+					Accept: "application/json, text/plain, */*",
+					"Content-Type": "application/json;charset=utf-8",
+				};
+				const init: RequestInit = {
+					headers,
+					body: JSON.stringify(body),
+					method: "POST",
+					referrer: chapterUrl,
+				};
+				const resp = await fetch(url, init);
+				const data = (await resp.json()) as ImageToken;
+				if (data.code === 0) {
+					return data.data[0];
+				}
+			}
 
-      async function getImage(_token: Token): Promise<AttachmentClass> {
-        const url = _token.url + "?token=" + _token.token;
-        const headers = {
-          Accept: "application/json, text/plain, */*",
-        };
-        const init: RequestInit = {
-          headers,
-          method: "GET",
-        };
-        const resp = await fetchWithRetry(url, init);
-        const blob = await resp.blob();
-        const hash = await calculateSha1(blob);
-        const ext = await getExt(blob, url);
-        const name = ["cm-", hash, ".", ext].join("");
-        const imgClass = new AttachmentClass(url, name, "naive");
-        imgClass.Blob = blob;
-        imgClass.status = Status.finished;
-        putAttachmentClassCache(imgClass);
-        return imgClass;
-      }
-    }
-  }
+			async function getImage(_token: Token): Promise<AttachmentClass> {
+				const url = _token.url + "?token=" + _token.token;
+				const headers = {
+					Accept: "application/json, text/plain, */*",
+				};
+				const init: RequestInit = {
+					headers,
+					method: "GET",
+				};
+				const resp = await fetchWithRetry(url, init);
+				const blob = await resp.blob();
+				const hash = await calculateSha1(blob);
+				const ext = await getExt(blob, url);
+				const name = ["cm-", hash, ".", ext].join("");
+				const imgClass = new AttachmentClass(url, name, "naive");
+				imgClass.Blob = blob;
+				imgClass.status = Status.finished;
+				putAttachmentClassCache(imgClass);
+				return imgClass;
+			}
+		}
+	}
 }
 
 interface ep {
-  id: number;
-  ord: number;
-  read: 0 | 1;
-  pay_mode: 0 | 1;
-  is_locked: boolean;
-  pay_gold: number;
-  size: number;
-  short_title: "174";
-  is_in_free: boolean;
-  title: string;
-  cover: string;
-  pub_time: string;
-  comments: number;
-  unlock_expire_at: string;
-  unlock_type: 0;
-  allow_wait_free: boolean;
-  progress: "";
-  like_count: number;
-  chapter_id: number;
-  type: number;
-  extra: number;
+	id: number;
+	ord: number;
+	read: 0 | 1;
+	pay_mode: 0 | 1;
+	is_locked: boolean;
+	pay_gold: number;
+	size: number;
+	short_title: "174";
+	is_in_free: boolean;
+	title: string;
+	cover: string;
+	pub_time: string;
+	comments: number;
+	unlock_expire_at: string;
+	unlock_type: 0;
+	allow_wait_free: boolean;
+	progress: "";
+	like_count: number;
+	chapter_id: number;
+	type: number;
+	extra: number;
 }
 
 interface ComicDetail {
-  code: number;
-  msg: string;
-  data: {
-    id: number;
-    title: string;
-    comic_type: number;
-    page_default: number;
-    page_allow: number;
-    horizontal_cover: string;
-    square_cover: string;
-    vertical_cover: string;
-    author_name: string[];
-    styles: string[];
-    last_ord: number;
-    is_finish: number;
-    status: number;
-    fav: number;
-    read_order: number;
-    evaluate: string;
-    total: number;
-    ep_list: ep[];
-    release_time: string;
-    is_limit: number;
-    read_epid: number;
-    last_read_time: string;
-    is_download: number;
-    read_short_title: string;
-    styles2: [
-      {
-        id: number;
-        name: string;
-      }
-    ];
-    renewal_time: string;
-    last_short_title: string;
-    discount_type: number;
-    discount: number;
-    discount_end: string;
-    no_reward: boolean;
-    batch_discount_type: number;
-    ep_discount_type: number;
-    has_fav_activity: boolean;
-    fav_free_amount: number;
-    allow_wait_free: boolean;
-    wait_hour: number;
-    wait_free_at: string;
-    no_danmaku: number;
-    auto_pay_status: number;
-    no_month_ticket: boolean;
-    immersive: boolean;
-    no_discount: boolean;
-    show_type: number;
-    pay_mode: number;
-    chapters: [];
-    classic_lines: string;
-    pay_for_new: number;
-    fav_comic_info: {
-      has_fav_activity: boolean;
-      fav_free_amount: number;
-      fav_coupon_type: number;
-    };
-    serial_status: number;
-    series_info: {
-      id: number;
-      comics: [];
-    };
-    album_count: number;
-    wiki_id: number;
-    disable_coupon_amount: number;
-    japan_comic: boolean;
-    interact_value: string;
-    temporary_finish_time: string;
-    video: null;
-    introduction: string;
-    comment_status: number;
-    no_screenshot: boolean;
-    type: number;
-    vomic_cvs: [];
-    no_rank: boolean;
-    presale_eps: [];
-    presale_text: string;
-    presale_discount: number;
-  };
+	code: number;
+	msg: string;
+	data: {
+		id: number;
+		title: string;
+		comic_type: number;
+		page_default: number;
+		page_allow: number;
+		horizontal_cover: string;
+		square_cover: string;
+		vertical_cover: string;
+		author_name: string[];
+		styles: string[];
+		last_ord: number;
+		is_finish: number;
+		status: number;
+		fav: number;
+		read_order: number;
+		evaluate: string;
+		total: number;
+		ep_list: ep[];
+		release_time: string;
+		is_limit: number;
+		read_epid: number;
+		last_read_time: string;
+		is_download: number;
+		read_short_title: string;
+		styles2: [
+			{
+				id: number;
+				name: string;
+			}
+		];
+		renewal_time: string;
+		last_short_title: string;
+		discount_type: number;
+		discount: number;
+		discount_end: string;
+		no_reward: boolean;
+		batch_discount_type: number;
+		ep_discount_type: number;
+		has_fav_activity: boolean;
+		fav_free_amount: number;
+		allow_wait_free: boolean;
+		wait_hour: number;
+		wait_free_at: string;
+		no_danmaku: number;
+		auto_pay_status: number;
+		no_month_ticket: boolean;
+		immersive: boolean;
+		no_discount: boolean;
+		show_type: number;
+		pay_mode: number;
+		chapters: [];
+		classic_lines: string;
+		pay_for_new: number;
+		fav_comic_info: {
+			has_fav_activity: boolean;
+			fav_free_amount: number;
+			fav_coupon_type: number;
+		};
+		serial_status: number;
+		series_info: {
+			id: number;
+			comics: [];
+		};
+		album_count: number;
+		wiki_id: number;
+		disable_coupon_amount: number;
+		japan_comic: boolean;
+		interact_value: string;
+		temporary_finish_time: string;
+		video: null;
+		introduction: string;
+		comment_status: number;
+		no_screenshot: boolean;
+		type: number;
+		vomic_cvs: [];
+		no_rank: boolean;
+		presale_eps: [];
+		presale_text: string;
+		presale_discount: number;
+	};
 }
 
 interface chapterOption {
-  comic_id: number;
+	comic_id: number;
 	ep_id: number;
 	nov: string;
 }
 
 interface GetImageIndexImage {
-  path: string;
-  x: number;
-  y: number;
-  video_path: "";
-  video_size: "0";
+	path: string;
+	x: number;
+	y: number;
+	video_path: "";
+	video_size: "0";
 }
 
 interface GetImageIndex {
-  code: number;
-  msg: string;
-  data: {
-    path: string;
-    images: GetImageIndexImage[];
-    last_modified: string;
-    host: string;
-    video: {
-      svid: string;
-      filename: string;
-      route: string;
-      resource: [];
-      raw_width: string;
-      raw_height: string;
-      raw_rotate: string;
-      img_urls: [];
-      bin_url: string;
-      img_x_len: number;
-      img_x_size: number;
-      img_y_len: number;
-      img_y_size: number;
-    };
-  };
+	code: number;
+	msg: string;
+	data: {
+		path: string;
+		images: GetImageIndexImage[];
+		last_modified: string;
+		host: string;
+		video: {
+			svid: string;
+			filename: string;
+			route: string;
+			resource: [];
+			raw_width: string;
+			raw_height: string;
+			raw_rotate: string;
+			img_urls: [];
+			bin_url: string;
+			img_x_len: number;
+			img_x_size: number;
+			img_y_len: number;
+			img_y_size: number;
+		};
+	};
 }
 
 interface ImageToken {
-  code: 0;
-  msg: "";
-  data: [
-    {
-      url: string;
-      token: string;
-    }
-  ];
+	code: 0;
+	msg: "";
+	data: [
+		{
+			url: string;
+			token: string;
+		}
+	];
 }
 
 // fetch("https://manga.bilibili.com/twirp/comic.v1.Comic/ComicDetail?device=pc&platform=web", {
@@ -454,326 +454,326 @@ interface ImageToken {
 // });
 /*
 {
-    "code": 0,
-    "msg": "",
-    "data": {
-        "id": 25550,
-        "title": "魔王与勇者与圣剑神殿",
-        "comic_type": 1,
-        "page_default": 2,
-        "page_allow": 11,
-        "horizontal_cover": "http://i0.hdslb.com/bfs/manga-static/70ef43d11e87ae0cfda4d816975af6cfead876b6.jpg",
-        "square_cover": "http://i0.hdslb.com/bfs/manga-static/9d1278912a6ad514713a447dbbacd725f48b8bad.jpg",
-        "vertical_cover": "http://i0.hdslb.com/bfs/manga-static/f6ba7e5e6ec0122729656832bbe49914d1fd5937.jpg",
-        "author_name": [
-            "阿羊"
-        ],
-        "styles": [
-            "奇幻"
-        ],
-        "last_ord": 175,
-        "is_finish": 0,
-        "status": 0,
-        "fav": 1,
-        "read_order": 70,
-        "evaluate": "RAIEO大陆，根据史书记载，这片大陆曾经充斥着恶魔与血腥，魔王艾尔菲用她的魔剑统领众魔族，那是最为黑暗的时代。后来光明勇士出现，打败了魔王，封印了她的魔力，让RAIEO大陆重获自由，并从此建立了可以和魔族对抗的圣剑之殿。后来勇者之名一直被继承下来，继承勇者名号的勇士都可以使用魔力强大的圣剑。",
-        "total": 175,
-        "ep_list": [
-            {
-                "id": 508894,
-                "ord": 175,
-                "read": 0,
-                "pay_mode": 1,
-                "is_locked": true,
-                "pay_gold": 50,
-                "size": 8553165,
-                "short_title": "174",
-                "is_in_free": false,
-                "title": "共同的敌人",
-                "cover": "https://i0.hdslb.com/bfs/manga-static/b59a4875235cc8e5b591dc9c37984dc027aa3d04.jpg",
-                "pub_time": "2020-10-31 00:00:00",
-                "comments": 16,
-                "unlock_expire_at": "0000-00-00 00:00:00",
-                "unlock_type": 0,
-                "allow_wait_free": false,
-                "progress": "",
-                "like_count": 7,
-                "chapter_id": 0,
-                "type": 0,
-                "extra": 0
-            },
-            …………
-            {
-                "id": 262261,
-                "ord": 71,
-                "read": 0,
-                "pay_mode": 1,
-                "is_locked": true,
-                "pay_gold": 50,
-                "size": 2280377,
-                "short_title": "071",
-                "is_in_free": false,
-                "title": " ",
-                "cover": "http://i0.hdslb.com/bfs/manga-static/70ef43d11e87ae0cfda4d816975af6cfead876b6.jpg",
-                "pub_time": "2018-11-13 12:00:00",
-                "comments": 6,
-                "unlock_expire_at": "0000-00-00 00:00:00",
-                "unlock_type": 0,
-                "allow_wait_free": false,
-                "progress": "",
-                "like_count": 11,
-                "chapter_id": 0,
-                "type": 0,
-                "extra": 0
-            },
-            {
-                "id": 262260,
-                "ord": 70,
-                "read": 1,
-                "pay_mode": 1,
-                "is_locked": false,
-                "pay_gold": 50,
-                "size": 2242203,
-                "short_title": "070",
-                "is_in_free": false,
-                "title": " ",
-                "cover": "http://i0.hdslb.com/bfs/manga-static/70ef43d11e87ae0cfda4d816975af6cfead876b6.jpg",
-                "pub_time": "2018-11-13 12:00:00",
-                "comments": 5,
-                "unlock_expire_at": "0000-00-00 00:00:00",
-                "unlock_type": 1,
-                "allow_wait_free": false,
-                "progress": "",
-                "like_count": 13,
-                "chapter_id": 0,
-                "type": 0,
-                "extra": 0
-            },
-            {
-                "id": 262259,
-                "ord": 69,
-                "read": 1,
-                "pay_mode": 1,
-                "is_locked": false,
-                "pay_gold": 50,
-                "size": 2234039,
-                "short_title": "069",
-                "is_in_free": false,
-                "title": " ",
-                "cover": "http://i0.hdslb.com/bfs/manga-static/70ef43d11e87ae0cfda4d816975af6cfead876b6.jpg",
-                "pub_time": "2018-11-13 12:00:00",
-                "comments": 6,
-                "unlock_expire_at": "0000-00-00 00:00:00",
-                "unlock_type": 1,
-                "allow_wait_free": false,
-                "progress": "",
-                "like_count": 20,
-                "chapter_id": 0,
-                "type": 0,
-                "extra": 0
-            },
-            {
-                "id": 262258,
-                "ord": 68,
-                "read": 1,
-                "pay_mode": 0,
-                "is_locked": false,
-                "pay_gold": 0,
-                "size": 2418406,
-                "short_title": "068",
-                "is_in_free": false,
-                "title": " ",
-                "cover": "http://i0.hdslb.com/bfs/manga-static/70ef43d11e87ae0cfda4d816975af6cfead876b6.jpg",
-                "pub_time": "2018-11-13 12:00:00",
-                "comments": 43,
-                "unlock_expire_at": "0000-00-00 00:00:00",
-                "unlock_type": 0,
-                "allow_wait_free": false,
-                "progress": "",
-                "like_count": 124,
-                "chapter_id": 0,
-                "type": 0,
-                "extra": 0
-            },
-            {
-                "id": 262257,
-                "ord": 67,
-                "read": 0,
-                "pay_mode": 0,
-                "is_locked": false,
-                "pay_gold": 0,
-                "size": 2053229,
-                "short_title": "067",
-                "is_in_free": false,
-                "title": " ",
-                "cover": "http://i0.hdslb.com/bfs/manga-static/70ef43d11e87ae0cfda4d816975af6cfead876b6.jpg",
-                "pub_time": "2018-11-13 12:00:00",
-                "comments": 5,
-                "unlock_expire_at": "0000-00-00 00:00:00",
-                "unlock_type": 0,
-                "allow_wait_free": false,
-                "progress": "",
-                "like_count": 90,
-                "chapter_id": 0,
-                "type": 0,
-                "extra": 0
-            },
-            {
-                "id": 262256,
-                "ord": 66,
-                "read": 0,
-                "pay_mode": 0,
-                "is_locked": false,
-                "pay_gold": 0,
-                "size": 2248413,
-                "short_title": "066",
-                "is_in_free": false,
-                "title": " ",
-                "cover": "http://i0.hdslb.com/bfs/manga-static/70ef43d11e87ae0cfda4d816975af6cfead876b6.jpg",
-                "pub_time": "2018-11-13 12:00:00",
-                "comments": 14,
-                "unlock_expire_at": "0000-00-00 00:00:00",
-                "unlock_type": 0,
-                "allow_wait_free": false,
-                "progress": "",
-                "like_count": 91,
-                "chapter_id": 0,
-                "type": 0,
-                "extra": 0
-            },
-            …………
-            {
-                "id": 261673,
-                "ord": 3,
-                "read": 0,
-                "pay_mode": 0,
-                "is_locked": false,
-                "pay_gold": 0,
-                "size": 2489591,
-                "short_title": "003",
-                "is_in_free": false,
-                "title": " ",
-                "cover": "http://i0.hdslb.com/bfs/manga-static/70ef43d11e87ae0cfda4d816975af6cfead876b6.jpg",
-                "pub_time": "2018-11-13 12:00:00",
-                "comments": 21,
-                "unlock_expire_at": "0000-00-00 00:00:00",
-                "unlock_type": 0,
-                "allow_wait_free": false,
-                "progress": "",
-                "like_count": 485,
-                "chapter_id": 0,
-                "type": 0,
-                "extra": 0
-            },
-            {
-                "id": 261149,
-                "ord": 2,
-                "read": 0,
-                "pay_mode": 0,
-                "is_locked": false,
-                "pay_gold": 0,
-                "size": 2388703,
-                "short_title": "002",
-                "is_in_free": false,
-                "title": " ",
-                "cover": "http://i0.hdslb.com/bfs/manga-static/70ef43d11e87ae0cfda4d816975af6cfead876b6.jpg",
-                "pub_time": "2018-11-13 12:00:00",
-                "comments": 17,
-                "unlock_expire_at": "0000-00-00 00:00:00",
-                "unlock_type": 0,
-                "allow_wait_free": false,
-                "progress": "",
-                "like_count": 458,
-                "chapter_id": 0,
-                "type": 0,
-                "extra": 0
-            },
-            {
-                "id": 261145,
-                "ord": 1,
-                "read": 0,
-                "pay_mode": 0,
-                "is_locked": false,
-                "pay_gold": 0,
-                "size": 2052528,
-                "short_title": "001",
-                "is_in_free": false,
-                "title": " ",
-                "cover": "http://i0.hdslb.com/bfs/manga-static/70ef43d11e87ae0cfda4d816975af6cfead876b6.jpg",
-                "pub_time": "2018-11-13 12:00:00",
-                "comments": 33,
-                "unlock_expire_at": "0000-00-00 00:00:00",
-                "unlock_type": 0,
-                "allow_wait_free": false,
-                "progress": "",
-                "like_count": 532,
-                "chapter_id": 0,
-                "type": 0,
-                "extra": 0
-            }
-        ],
-        "release_time": "",
-        "is_limit": 0,
-        "read_epid": 262260,
-        "last_read_time": "2021-12-24 21:59:10",
-        "is_download": 1,
-        "read_short_title": "070",
-        "styles2": [
-            {
-                "id": 998,
-                "name": "奇幻"
-            }
-        ],
-        "renewal_time": "",
-        "last_short_title": "174",
-        "discount_type": 0,
-        "discount": 0,
-        "discount_end": "0001-01-01 00:00:00",
-        "no_reward": false,
-        "batch_discount_type": 0,
-        "ep_discount_type": 0,
-        "has_fav_activity": false,
-        "fav_free_amount": 0,
-        "allow_wait_free": false,
-        "wait_hour": 0,
-        "wait_free_at": "0000-00-00 00:00:00",
-        "no_danmaku": 0,
-        "auto_pay_status": 0,
-        "no_month_ticket": false,
-        "immersive": false,
-        "no_discount": false,
-        "show_type": 0,
-        "pay_mode": 1,
-        "chapters": [],
-        "classic_lines": "RAIEO大陆，根据史书记载，这片大陆曾经充斥着恶魔与血腥，魔王艾尔菲用她的魔剑统领众魔族，那是最为黑暗的时代。后来光明勇士出现，打败了魔王，封印了她的魔力，让RAIEO大陆重获自由，并从此建立了可以和魔族对抗的圣剑之殿。后来勇者之名一直被继承下来，继承勇者名号的勇士都可以使用魔力强大的圣剑。",
-        "pay_for_new": 0,
-        "fav_comic_info": {
-            "has_fav_activity": false,
-            "fav_free_amount": 0,
-            "fav_coupon_type": 0
-        },
-        "serial_status": 0,
-        "series_info": {
-            "id": 0,
-            "comics": []
-        },
-        "album_count": 0,
-        "wiki_id": 128123,
-        "disable_coupon_amount": 0,
-        "japan_comic": false,
-        "interact_value": "3260",
-        "temporary_finish_time": "",
-        "video": null,
-        "introduction": "",
-        "comment_status": 1,
-        "no_screenshot": true,
-        "type": 0,
-        "vomic_cvs": [],
-        "no_rank": true,
-        "presale_eps": [],
-        "presale_text": "",
-        "presale_discount": 0
-    }
+	"code": 0,
+	"msg": "",
+	"data": {
+		"id": 25550,
+		"title": "魔王与勇者与圣剑神殿",
+		"comic_type": 1,
+		"page_default": 2,
+		"page_allow": 11,
+		"horizontal_cover": "http://i0.hdslb.com/bfs/manga-static/70ef43d11e87ae0cfda4d816975af6cfead876b6.jpg",
+		"square_cover": "http://i0.hdslb.com/bfs/manga-static/9d1278912a6ad514713a447dbbacd725f48b8bad.jpg",
+		"vertical_cover": "http://i0.hdslb.com/bfs/manga-static/f6ba7e5e6ec0122729656832bbe49914d1fd5937.jpg",
+		"author_name": [
+			"阿羊"
+		],
+		"styles": [
+			"奇幻"
+		],
+		"last_ord": 175,
+		"is_finish": 0,
+		"status": 0,
+		"fav": 1,
+		"read_order": 70,
+		"evaluate": "RAIEO大陆，根据史书记载，这片大陆曾经充斥着恶魔与血腥，魔王艾尔菲用她的魔剑统领众魔族，那是最为黑暗的时代。后来光明勇士出现，打败了魔王，封印了她的魔力，让RAIEO大陆重获自由，并从此建立了可以和魔族对抗的圣剑之殿。后来勇者之名一直被继承下来，继承勇者名号的勇士都可以使用魔力强大的圣剑。",
+		"total": 175,
+		"ep_list": [
+			{
+				"id": 508894,
+				"ord": 175,
+				"read": 0,
+				"pay_mode": 1,
+				"is_locked": true,
+				"pay_gold": 50,
+				"size": 8553165,
+				"short_title": "174",
+				"is_in_free": false,
+				"title": "共同的敌人",
+				"cover": "https://i0.hdslb.com/bfs/manga-static/b59a4875235cc8e5b591dc9c37984dc027aa3d04.jpg",
+				"pub_time": "2020-10-31 00:00:00",
+				"comments": 16,
+				"unlock_expire_at": "0000-00-00 00:00:00",
+				"unlock_type": 0,
+				"allow_wait_free": false,
+				"progress": "",
+				"like_count": 7,
+				"chapter_id": 0,
+				"type": 0,
+				"extra": 0
+			},
+			…………
+			{
+				"id": 262261,
+				"ord": 71,
+				"read": 0,
+				"pay_mode": 1,
+				"is_locked": true,
+				"pay_gold": 50,
+				"size": 2280377,
+				"short_title": "071",
+				"is_in_free": false,
+				"title": " ",
+				"cover": "http://i0.hdslb.com/bfs/manga-static/70ef43d11e87ae0cfda4d816975af6cfead876b6.jpg",
+				"pub_time": "2018-11-13 12:00:00",
+				"comments": 6,
+				"unlock_expire_at": "0000-00-00 00:00:00",
+				"unlock_type": 0,
+				"allow_wait_free": false,
+				"progress": "",
+				"like_count": 11,
+				"chapter_id": 0,
+				"type": 0,
+				"extra": 0
+			},
+			{
+				"id": 262260,
+				"ord": 70,
+				"read": 1,
+				"pay_mode": 1,
+				"is_locked": false,
+				"pay_gold": 50,
+				"size": 2242203,
+				"short_title": "070",
+				"is_in_free": false,
+				"title": " ",
+				"cover": "http://i0.hdslb.com/bfs/manga-static/70ef43d11e87ae0cfda4d816975af6cfead876b6.jpg",
+				"pub_time": "2018-11-13 12:00:00",
+				"comments": 5,
+				"unlock_expire_at": "0000-00-00 00:00:00",
+				"unlock_type": 1,
+				"allow_wait_free": false,
+				"progress": "",
+				"like_count": 13,
+				"chapter_id": 0,
+				"type": 0,
+				"extra": 0
+			},
+			{
+				"id": 262259,
+				"ord": 69,
+				"read": 1,
+				"pay_mode": 1,
+				"is_locked": false,
+				"pay_gold": 50,
+				"size": 2234039,
+				"short_title": "069",
+				"is_in_free": false,
+				"title": " ",
+				"cover": "http://i0.hdslb.com/bfs/manga-static/70ef43d11e87ae0cfda4d816975af6cfead876b6.jpg",
+				"pub_time": "2018-11-13 12:00:00",
+				"comments": 6,
+				"unlock_expire_at": "0000-00-00 00:00:00",
+				"unlock_type": 1,
+				"allow_wait_free": false,
+				"progress": "",
+				"like_count": 20,
+				"chapter_id": 0,
+				"type": 0,
+				"extra": 0
+			},
+			{
+				"id": 262258,
+				"ord": 68,
+				"read": 1,
+				"pay_mode": 0,
+				"is_locked": false,
+				"pay_gold": 0,
+				"size": 2418406,
+				"short_title": "068",
+				"is_in_free": false,
+				"title": " ",
+				"cover": "http://i0.hdslb.com/bfs/manga-static/70ef43d11e87ae0cfda4d816975af6cfead876b6.jpg",
+				"pub_time": "2018-11-13 12:00:00",
+				"comments": 43,
+				"unlock_expire_at": "0000-00-00 00:00:00",
+				"unlock_type": 0,
+				"allow_wait_free": false,
+				"progress": "",
+				"like_count": 124,
+				"chapter_id": 0,
+				"type": 0,
+				"extra": 0
+			},
+			{
+				"id": 262257,
+				"ord": 67,
+				"read": 0,
+				"pay_mode": 0,
+				"is_locked": false,
+				"pay_gold": 0,
+				"size": 2053229,
+				"short_title": "067",
+				"is_in_free": false,
+				"title": " ",
+				"cover": "http://i0.hdslb.com/bfs/manga-static/70ef43d11e87ae0cfda4d816975af6cfead876b6.jpg",
+				"pub_time": "2018-11-13 12:00:00",
+				"comments": 5,
+				"unlock_expire_at": "0000-00-00 00:00:00",
+				"unlock_type": 0,
+				"allow_wait_free": false,
+				"progress": "",
+				"like_count": 90,
+				"chapter_id": 0,
+				"type": 0,
+				"extra": 0
+			},
+			{
+				"id": 262256,
+				"ord": 66,
+				"read": 0,
+				"pay_mode": 0,
+				"is_locked": false,
+				"pay_gold": 0,
+				"size": 2248413,
+				"short_title": "066",
+				"is_in_free": false,
+				"title": " ",
+				"cover": "http://i0.hdslb.com/bfs/manga-static/70ef43d11e87ae0cfda4d816975af6cfead876b6.jpg",
+				"pub_time": "2018-11-13 12:00:00",
+				"comments": 14,
+				"unlock_expire_at": "0000-00-00 00:00:00",
+				"unlock_type": 0,
+				"allow_wait_free": false,
+				"progress": "",
+				"like_count": 91,
+				"chapter_id": 0,
+				"type": 0,
+				"extra": 0
+			},
+			…………
+			{
+				"id": 261673,
+				"ord": 3,
+				"read": 0,
+				"pay_mode": 0,
+				"is_locked": false,
+				"pay_gold": 0,
+				"size": 2489591,
+				"short_title": "003",
+				"is_in_free": false,
+				"title": " ",
+				"cover": "http://i0.hdslb.com/bfs/manga-static/70ef43d11e87ae0cfda4d816975af6cfead876b6.jpg",
+				"pub_time": "2018-11-13 12:00:00",
+				"comments": 21,
+				"unlock_expire_at": "0000-00-00 00:00:00",
+				"unlock_type": 0,
+				"allow_wait_free": false,
+				"progress": "",
+				"like_count": 485,
+				"chapter_id": 0,
+				"type": 0,
+				"extra": 0
+			},
+			{
+				"id": 261149,
+				"ord": 2,
+				"read": 0,
+				"pay_mode": 0,
+				"is_locked": false,
+				"pay_gold": 0,
+				"size": 2388703,
+				"short_title": "002",
+				"is_in_free": false,
+				"title": " ",
+				"cover": "http://i0.hdslb.com/bfs/manga-static/70ef43d11e87ae0cfda4d816975af6cfead876b6.jpg",
+				"pub_time": "2018-11-13 12:00:00",
+				"comments": 17,
+				"unlock_expire_at": "0000-00-00 00:00:00",
+				"unlock_type": 0,
+				"allow_wait_free": false,
+				"progress": "",
+				"like_count": 458,
+				"chapter_id": 0,
+				"type": 0,
+				"extra": 0
+			},
+			{
+				"id": 261145,
+				"ord": 1,
+				"read": 0,
+				"pay_mode": 0,
+				"is_locked": false,
+				"pay_gold": 0,
+				"size": 2052528,
+				"short_title": "001",
+				"is_in_free": false,
+				"title": " ",
+				"cover": "http://i0.hdslb.com/bfs/manga-static/70ef43d11e87ae0cfda4d816975af6cfead876b6.jpg",
+				"pub_time": "2018-11-13 12:00:00",
+				"comments": 33,
+				"unlock_expire_at": "0000-00-00 00:00:00",
+				"unlock_type": 0,
+				"allow_wait_free": false,
+				"progress": "",
+				"like_count": 532,
+				"chapter_id": 0,
+				"type": 0,
+				"extra": 0
+			}
+		],
+		"release_time": "",
+		"is_limit": 0,
+		"read_epid": 262260,
+		"last_read_time": "2021-12-24 21:59:10",
+		"is_download": 1,
+		"read_short_title": "070",
+		"styles2": [
+			{
+				"id": 998,
+				"name": "奇幻"
+			}
+		],
+		"renewal_time": "",
+		"last_short_title": "174",
+		"discount_type": 0,
+		"discount": 0,
+		"discount_end": "0001-01-01 00:00:00",
+		"no_reward": false,
+		"batch_discount_type": 0,
+		"ep_discount_type": 0,
+		"has_fav_activity": false,
+		"fav_free_amount": 0,
+		"allow_wait_free": false,
+		"wait_hour": 0,
+		"wait_free_at": "0000-00-00 00:00:00",
+		"no_danmaku": 0,
+		"auto_pay_status": 0,
+		"no_month_ticket": false,
+		"immersive": false,
+		"no_discount": false,
+		"show_type": 0,
+		"pay_mode": 1,
+		"chapters": [],
+		"classic_lines": "RAIEO大陆，根据史书记载，这片大陆曾经充斥着恶魔与血腥，魔王艾尔菲用她的魔剑统领众魔族，那是最为黑暗的时代。后来光明勇士出现，打败了魔王，封印了她的魔力，让RAIEO大陆重获自由，并从此建立了可以和魔族对抗的圣剑之殿。后来勇者之名一直被继承下来，继承勇者名号的勇士都可以使用魔力强大的圣剑。",
+		"pay_for_new": 0,
+		"fav_comic_info": {
+			"has_fav_activity": false,
+			"fav_free_amount": 0,
+			"fav_coupon_type": 0
+		},
+		"serial_status": 0,
+		"series_info": {
+			"id": 0,
+			"comics": []
+		},
+		"album_count": 0,
+		"wiki_id": 128123,
+		"disable_coupon_amount": 0,
+		"japan_comic": false,
+		"interact_value": "3260",
+		"temporary_finish_time": "",
+		"video": null,
+		"introduction": "",
+		"comment_status": 1,
+		"no_screenshot": true,
+		"type": 0,
+		"vomic_cvs": [],
+		"no_rank": true,
+		"presale_eps": [],
+		"presale_text": "",
+		"presale_discount": 0
+	}
 }
 */
 
