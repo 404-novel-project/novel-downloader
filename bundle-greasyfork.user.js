@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1016
+// @version        5.2.1017
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -31021,6 +31021,8 @@ function getLang() {
     return document.querySelector("html")?.getAttribute("lang") ?? "en";
 }
 function getGlossary(data3) {
+    if (data3.error)
+        return null;
     let glossary = "<h2>设定集</h2>";
     for (let i = 0; i < data3.body.categories.length; i++) {
         const category = data3.body.categories[i];
@@ -31036,6 +31038,7 @@ function getGlossary(data3) {
             }
         }
     }
+    return glossary;
 }
 async function getSeries(seriesID, lang, version) {
     const url = new URL(`https://www.pixiv.net/ajax/novel/series/${seriesID}`);
@@ -31131,22 +31134,7 @@ async function getNovel(novelID, lang, version) {
         mode: "cors",
     });
     const data = (await resp.json());
-    let glossary = null;
-    if (data.body.hasGlossary) {
-        const urlGlossary = new URL(`https://www.pixiv.net/ajax/novel/${novelID}/glossary`);
-        urlGlossary.searchParams.append("lang", lang);
-        urlGlossary.searchParams.append("version", version);
-        const resp3 = await fetch(urlGlossary, {
-            credentials: "include",
-            headers: {
-                Accept: "application/json",
-            },
-            method: "GET",
-            mode: "cors",
-        });
-        const data3 = (await resp3.json());
-        glossary = getGlossary(data3);
-    }
+    const glossary = null;
     return {
         title: data.body.title,
         userName: data.body.userName,
