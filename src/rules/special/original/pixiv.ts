@@ -357,6 +357,8 @@ interface chapterObj {
   viewableType: number;
 }
 function getGlossary(data3: PixivResponse<GlossaryBody>) {
+  if (data3.error)
+    return null;
   let glossary = "<h2>设定集</h2>";
   for (let i = 0; i < data3.body.categories.length; i++) {
     const category = data3.body.categories[i];
@@ -372,6 +374,7 @@ function getGlossary(data3: PixivResponse<GlossaryBody>) {
       }
     }
   }
+  return glossary;
 }
 async function getSeries(seriesID: string, lang: string, version: string) {
   const url = new URL(`https://www.pixiv.net/ajax/novel/series/${seriesID}`);
@@ -476,22 +479,22 @@ async function getNovel(novelID: string, lang: string, version: string) {
     mode: "cors",
   });
   const data = (await resp.json()) as PixivResponse<NovelBody>;
-  let glossary = null;
-  if (data.body.hasGlossary) {
-    const urlGlossary = new URL(`https://www.pixiv.net/ajax/novel/${novelID}/glossary`);
-    urlGlossary.searchParams.append("lang", lang);
-    urlGlossary.searchParams.append("version", version);
-    const resp3 = await fetch(urlGlossary, {
-      credentials: "include",
-      headers: {
-        Accept: "application/json",
-      },
-      method: "GET",
-      mode: "cors",
-    });
-    const data3 = (await resp3.json()) as PixivResponse<GlossaryBody>;
-    glossary = getGlossary(data3);
-  }
+  const glossary = null;
+  // if (data.body.hasGlossary) {
+  //   const urlGlossary = new URL(`https://www.pixiv.net/ajax/novel/${novelID}/glossary`);
+  //   urlGlossary.searchParams.append("lang", lang);
+  //   urlGlossary.searchParams.append("version", version);
+  //   const resp3 = await fetch(urlGlossary, {
+  //     credentials: "include",
+  //     headers: {
+  //       Accept: "application/json",
+  //     },
+  //     method: "GET",
+  //     mode: "cors",
+  //   });
+  //   const data3 = (await resp3.json()) as PixivResponse<GlossaryBody>;
+  //   glossary = getGlossary(data3);
+  // }
     
   return {
     title: data.body.title,

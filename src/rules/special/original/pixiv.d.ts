@@ -745,6 +745,7 @@ interface GlossaryBody {
       coverImage: string | null;
       detail: string | null;
     }[];
+    error: boolean;
   }[];
   replaceeItemIds: any[];
   extraData: {
