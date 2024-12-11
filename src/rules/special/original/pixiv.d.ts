@@ -8,5 +8,6 @@ export declare class Pixiv extends BaseRuleClass {
         id: string;
         lang: string;
         version: string;
+        isWriteDescInContent?: boolean;
     }): Promise<ChapterParseObject>;
 }
