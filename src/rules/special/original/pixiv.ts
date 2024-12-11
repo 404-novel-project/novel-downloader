@@ -78,6 +78,7 @@ export class Pixiv extends BaseRuleClass {
             id: novelID,
             lang: meta.lang,
             version: meta.version,
+            isWriteDescInContent: false,
           },
         });
         return new Book({
@@ -154,11 +155,17 @@ export class Pixiv extends BaseRuleClass {
       id: string;
       lang: string;
       version: string;
+      isWriteDescInContent?: boolean;
     }
   ): Promise<ChapterParseObject> {
     const novel = await getNovel(options.id, options.lang, options.version);
     const contentDom = document.createElement("div");
     const contentRaw = document.createElement("div");
+    let DescIncontent = null;
+    if (options.isWriteDescInContent) {
+      DescIncontent = document.createElement("div");
+      DescIncontent.innerHTML = "<br />作者的话<br />" + "-".repeat(20) + "<br />" + novel.description + "<br />"+"-".repeat(20) + "<br /><br />";
+    }
     contentRaw.innerText = novel.content;
     await loadPixivimage({
       dom: contentRaw,
@@ -175,6 +182,9 @@ export class Pixiv extends BaseRuleClass {
       const glossary = document.createElement("div");
       glossary.innerHTML = novel.glossary;
       contentDom.append(glossary);
+    }
+    if (DescIncontent) {
+      contentDom.append(DescIncontent);
     }
     contentDom.append(contentRaw);
     const { dom, text, images } = await cleanDOM(contentDom, "TM");
@@ -353,6 +363,7 @@ interface chapterObj {
     id: string;
     lang: string;
     version: string;
+    isWriteDescInContent: boolean;
   };
   viewableType: number;
 }
@@ -425,6 +436,7 @@ async function getSeries(seriesID: string, lang: string, version: string) {
           id,
           lang,
           version,
+          isWriteDescInContent: true,
         },
         viewableType: s.series.viewableType,
       };
