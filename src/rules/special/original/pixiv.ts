@@ -228,6 +228,7 @@ export class Pixiv extends BaseRuleClass {
 
       async function mapperPixivImage([str, id]: [string, string]) {
         const imgSrc = await getPixivImage(id);
+        if (!imgSrc) return;
         const img = document.createElement("img");
         img.src = imgSrc;
         const a = document.createElement("a");
@@ -254,7 +255,7 @@ export class Pixiv extends BaseRuleClass {
         });
         const illusts = (await resp.json()) as PixivResponse<InsertIllustsBody>;
         if (!illusts.error) {
-          return illusts.body[`${id}-1`].illust.images.original;
+          return illusts.body[`${id}-1`].illust?.images?.original ?? null;
         } else {
           throw new Error(`获取插图失败: pixivimage:${id}`);
         }
