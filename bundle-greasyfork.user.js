@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1018
+// @version        5.2.1019
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -31247,6 +31247,7 @@ class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
                 .slice(-1)[0]
                 .split("·")[0]
                 .trim();
+            const isVIP = s.querySelector(".volume-header")?.innerText?.includes("VIP") ?? false;
             let sectionChapterNumber = 0;
             const cs = s.querySelectorAll("ul.volume-chapters > li");
             for (const c of Array.from(cs)) {
@@ -31255,18 +31256,14 @@ class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
                 sectionChapterNumber++;
                 const chapterName = a.innerText.trim();
                 const chapterUrl = a.href;
-                const isVIP = () => {
-                    const host = new URL(chapterUrl).host;
-                    return host === "vipreader.qidian.com";
-                };
                 const isPaid = () => {
-                    if (isVIP()) {
-                        return c.childElementCount !== 2;
+                    if (isVIP) {
+                        return c.querySelector(".chapter-locked") == null;
                     }
                     return false;
                 };
                 let chapterId;
-                if (isVIP()) {
+                if (isVIP) {
                     chapterId = /(\d+)\/?$/.exec(chapterUrl)?.slice(-1)[0] ?? null;
                 }
                 else {
@@ -31278,7 +31275,7 @@ class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
                     chapterUrl,
                     chapterNumber,
                     chapterName,
-                    isVIP: isVIP(),
+                    isVIP: isVIP,
                     isPaid: isPaid(),
                     sectionName,
                     sectionNumber,
@@ -31303,7 +31300,7 @@ class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
                     }
                     return false;
                 };
-                if (isVIP()) {
+                if (isVIP) {
                     chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_5__/* .Status */ .nW.aborted;
                     if (limitFree) {
                         chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_5__/* .Status */ .nW.pending;
@@ -31474,12 +31471,12 @@ class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
             let doc;
             if (isVIP) {
                 doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_8__/* .ggetHtmlDOM */ .pG)(chapterUrl, charset);
-                if (!doc.querySelector(".read-content") ||
-                    (doc.querySelector(".read-content")?.childElementCount ?? 0) < 10) {
+                if (!doc.querySelector(".content-text") ||
+                    (doc.querySelector(".content-text")?.childElementCount ?? 0) < 10) {
                     doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_8__/* .getFrameContentCondition */ .eF)(chapterUrl, (frame) => {
                         const doc = frame.contentWindow?.document ?? null;
                         if (doc) {
-                            return doc.querySelectorAll(".read-content > p").length !== 0;
+                            return doc.querySelectorAll(".content-text").length !== 0;
                         }
                         else {
                             return false;
