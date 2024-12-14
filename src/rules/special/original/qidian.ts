@@ -245,7 +245,7 @@ export class Qidian extends BaseRuleClass {
         .split("·")[0]
         .trim();
       let sectionChapterNumber = 0;
-
+      const isVIP = (s.querySelector("h3") as HTMLElement)?.innerText?.includes("VIP") ?? false;
       const cs = s.querySelectorAll("ul.cf > li");
       for (const c of Array.from(cs)) {
         const a = c.querySelector("a");
@@ -254,18 +254,14 @@ export class Qidian extends BaseRuleClass {
         const chapterName = (a as HTMLAnchorElement).innerText.trim();
         const chapterUrl = (a as HTMLAnchorElement).href;
 
-        const isVIP = () => {
-          const host = new URL(chapterUrl).host;
-          return host === "vipreader.qidian.com";
-        };
         const isPaid = () => {
-          if (isVIP()) {
-            return c.childElementCount !== 2;
+          if (isVIP) {
+            return c.querySelector("em.iconfont") == null;
           }
           return false;
         };
         let chapterId;
-        if (isVIP()) {
+        if (isVIP) {
           chapterId = /(\d+)\/?$/.exec(chapterUrl)?.slice(-1)[0] ?? null;
         } else {
           chapterId = null;
@@ -276,7 +272,7 @@ export class Qidian extends BaseRuleClass {
           chapterUrl,
           chapterNumber,
           chapterName,
-          isVIP: isVIP(),
+          isVIP: isVIP,
           isPaid: isPaid(),
           sectionName,
           sectionNumber,
@@ -301,7 +297,7 @@ export class Qidian extends BaseRuleClass {
           }
           return false;
         };
-        if (isVIP()) {
+        if (isVIP) {
           chapter.status = Status.aborted;
           if (limitFree) {
             chapter.status = Status.pending;
