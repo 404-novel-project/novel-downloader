@@ -75,6 +75,7 @@ export class Qidian extends BaseRuleClass {
         .slice(-1)[0]
         .split("·")[0]
         .trim();
+      const isVIP = (s.querySelector(".volume-header") as HTMLElement)?.innerText?.includes("VIP") ?? false;
       let sectionChapterNumber = 0;
       const cs = s.querySelectorAll("ul.volume-chapters > li");
       for (const c of Array.from(cs)) {
@@ -84,18 +85,14 @@ export class Qidian extends BaseRuleClass {
         const chapterName = (a as HTMLAnchorElement).innerText.trim();
         const chapterUrl = (a as HTMLAnchorElement).href;
 
-        const isVIP = () => {
-          const host = new URL(chapterUrl).host;
-          return host === "vipreader.qidian.com";
-        };
-        const isPaid = () => {
-          if (isVIP()) {
-            return c.childElementCount !== 2;
+        const isPaid =()=> {
+          if (isVIP) {
+            return c.querySelector(".chapter-locked") == null;
           }
           return false;
         };
         let chapterId;
-        if (isVIP()) {
+        if (isVIP) {
           chapterId = /(\d+)\/?$/.exec(chapterUrl)?.slice(-1)[0] ?? null;
         } else {
           chapterId = null;
@@ -106,7 +103,7 @@ export class Qidian extends BaseRuleClass {
           chapterUrl,
           chapterNumber,
           chapterName,
-          isVIP: isVIP(),
+          isVIP: isVIP,
           isPaid: isPaid(),
           sectionName,
           sectionNumber,
@@ -132,7 +129,7 @@ export class Qidian extends BaseRuleClass {
           }
           return false;
         };
-        if (isVIP()) {
+        if (isVIP) {
           chapter.status = Status.aborted;
           if (limitFree) {
             chapter.status = Status.pending;
@@ -351,13 +348,13 @@ export class Qidian extends BaseRuleClass {
       if (isVIP) {
         doc = await ggetHtmlDOM(chapterUrl, charset);
         if (
-          !doc.querySelector(".read-content") ||
-          (doc.querySelector(".read-content")?.childElementCount ?? 0) < 10
+          !doc.querySelector(".content-text") ||
+          (doc.querySelector(".content-text")?.childElementCount ?? 0) < 10
         ) {
           doc = await getFrameContentCondition(chapterUrl, (frame) => {
             const doc = frame.contentWindow?.document ?? null;
             if (doc) {
-              return doc.querySelectorAll(".read-content > p").length !== 0;
+              return doc.querySelectorAll(".content-text").length !== 0;
             } else {
               return false;
             }
