@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1019
+// @version        5.2.1020
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -31381,6 +31381,7 @@ class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
                 .split("·")[0]
                 .trim();
             let sectionChapterNumber = 0;
+            const isVIP = s.querySelector("h3")?.innerText?.includes("VIP") ?? false;
             const cs = s.querySelectorAll("ul.cf > li");
             for (const c of Array.from(cs)) {
                 const a = c.querySelector("a");
@@ -31388,18 +31389,14 @@ class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
                 sectionChapterNumber++;
                 const chapterName = a.innerText.trim();
                 const chapterUrl = a.href;
-                const isVIP = () => {
-                    const host = new URL(chapterUrl).host;
-                    return host === "vipreader.qidian.com";
-                };
                 const isPaid = () => {
-                    if (isVIP()) {
-                        return c.childElementCount !== 2;
+                    if (isVIP) {
+                        return c.querySelector("em.iconfont") == null;
                     }
                     return false;
                 };
                 let chapterId;
-                if (isVIP()) {
+                if (isVIP) {
                     chapterId = /(\d+)\/?$/.exec(chapterUrl)?.slice(-1)[0] ?? null;
                 }
                 else {
@@ -31411,7 +31408,7 @@ class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
                     chapterUrl,
                     chapterNumber,
                     chapterName,
-                    isVIP: isVIP(),
+                    isVIP: isVIP,
                     isPaid: isPaid(),
                     sectionName,
                     sectionNumber,
@@ -31436,7 +31433,7 @@ class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
                     }
                     return false;
                 };
-                if (isVIP()) {
+                if (isVIP) {
                     chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_5__/* .Status */ .nW.aborted;
                     if (limitFree) {
                         chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_5__/* .Status */ .nW.pending;
