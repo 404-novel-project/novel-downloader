@@ -1396,8 +1396,7 @@ export function convertFixWidth(node: HTMLElement, width = 35) {
   Array.from(node.childNodes)
     .filter((node) => node instanceof Text)
     .forEach((text) => {
-      const p = document.createElement("p");
-      convertFixWidthText(text as Text, width, p);
+      const p = convertFixWidthText(text as Text, width);
       text.replaceWith(p);
     });
 
