@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1023
+// @version        5.2.1024
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -30467,35 +30467,21 @@ class Longmabook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */
                 .map((node) => node.innerText.trim())
                 .some((text) => text === "發表心得留言");
             if (hasEgg) {
-                const resp = await fetch(document.location.origin + "/showpapereggs.php", {
-                    credentials: "include",
-                    headers: {
-                        Accept: "*/*",
-                        "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-                        "X-Requested-With": "XMLHttpRequest",
-                    },
-                    referrer: chapterUrl,
-                    body: new URLSearchParams({
-                        paperid,
-                        bookwritercode: options.bookwritercode,
-                    }).toString(),
-                    method: "POST",
-                    mode: "cors",
-                });
-                const eggHTML = await resp.text();
-                if (eggHTML.includes("<img src='/images/fullcolor.png' class='fullimg'><a href='#gopapergbook' uk-icon='commenting'>下方留下評論後可完成敲蛋!</a>")) {
-                    const text = "本章含有彩蛋，但并未敲开。";
-                    const dom = document.createElement("div");
-                    dom.innerText = text;
-                    return [dom, text, []];
+                const eggDOM = doc.querySelector("div#eggsarea" + paperid);
+                let eggHTML = "<h2> 彩蛋 </h2>";
+                if (!eggDOM) {
+                    eggHTML += "<p> 未找到彩蛋</p>";
                 }
-                else {
-                    const eggDom = document.createElement("div");
-                    eggDom.innerHTML = eggHTML;
-                    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)('img[src="/images/fullcolor.png"]', true, eggDom);
-                    const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .an)(eggDom, self.attachmentMode);
-                    return [dom, text, images];
+                else if (eggDOM.innerText.trim() === '') {
+                    eggHTML += "<p> 本章含有彩蛋，但并未敲开。</p>";
                 }
+                else
+                    eggHTML += eggDOM.innerHTML;
+                const eggDom = document.createElement("div");
+                eggDom.innerHTML = eggHTML;
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)('img[src="/images/fullcolor.png"]', true, eggDom);
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .an)(eggDom, self.attachmentMode);
+                return [dom, text, images];
             }
             else {
                 return [null, null, null];
