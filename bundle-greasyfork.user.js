@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1024
+// @version        5.2.1025
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -30262,7 +30262,7 @@ class Longmabook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */
         const getSections = (doc) => doc.querySelectorAll('span[uk-icon="folder"] + b > font');
         const getSName = (sElem) => sElem.innerText.trim();
         const getIsVip = (a) => a.parentElement?.innerText.includes("$") ?? false;
-        const getIsPaid = (a) => a.parentElement?.innerText.includes("已購買，三年內可直接閱讀") ?? false;
+        const getIsPaid = (a) => a.parentElement?.innerText.includes("已購買") ?? false;
         const getChapterObjs = (doc) => {
             const chapterAList = getChapters(doc);
             const sections = getSections(doc);
