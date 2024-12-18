@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1025
+// @version        5.2.1026
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -107,7 +107,9 @@
 // @match          *://www.266ks.com/book/*/
 // @match          *://www.266ks.com/book/*/index*.html
 // @match          *://www.hetushu.com/book/*/index.html
+// @match          *://www.hetubook.com/book/*/index.html
 // @match          *://hetushu.com/book/*/index.html
+// @match          *://hetubook.com/book/*/index.html
 // @match          *://www.gashuw.com/biquge_*/
 // @match          *://www.1pwx.com/*.htm
 // @match          *://www.81book.com/book/*/
@@ -37992,7 +37994,9 @@ async function getRule() {
             break;
         }
         case "www.hetushu.com":
-        case "hetushu.com": {
+        case "www.hetubook.com":
+        case "hetushu.com":
+        case "hetubook.com": {
             const { Hetushu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/reprint/hetushu.ts"));
             ruleClass = Hetushu;
             break;
