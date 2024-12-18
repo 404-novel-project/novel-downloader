@@ -9,9 +9,9 @@ body:
       description: |
         为了减少无效报告，请确认每一个选项。
       options:
-        - label: 我已经搜索 issue 区，并确定没有相同的请求存在。
+        - label: 我已经搜索 issue 区（包含已关闭的 issue），并确定没有相同的请求存在。
           required: true
-        - label: 我已经仔细阅读了最新的readme文档，确认文档中没有包含新功能的描述。
+        - label: 我已经仔细阅读了最新的 readme 文档，确认文档中没有包含新功能的描述。
           required: true
   - type: textarea
     id: Problem

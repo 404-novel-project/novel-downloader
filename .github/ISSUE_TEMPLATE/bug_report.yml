@@ -1,5 +1,5 @@
 name: Bug报告
-description: 填写一个BUG报告
+description: 填写一个Bug报告
 title: "[Bug]: "
 body:
   - type: checkboxes
@@ -9,7 +9,9 @@ body:
       description: |
         为了减少无效报告，请确认每一个选项。
       options:
-        - label: 我已经搜索 issue 区，并确定没有相同问题存在。
+        - label: 我已经仔细阅读了最新的 readme 文档，并确认文档中没有解决此 Bug 的方法。
+          required: true
+        - label: 我已经搜索 issue 区（包含已关闭的 issue），并确定没有相同问题存在。
           required: true
         - label: 我已经尝试将脚本升级至最新版本，但问题仍存在。
           required: true

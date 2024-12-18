@@ -9,7 +9,7 @@ body:
       description: |
         为了减少无效报告，请确认每一个选项。
       options:
-        - label: 我已经搜索 issue 区，并确定没有相同的请求存在。
+        - label: 我已经搜索 issue 区（包含已关闭的 issue），并确定没有相同的请求存在。
           required: true
         - label: 我已经确认该网站不可以使用 https://greasyfork.org/zh-CN/scripts/25068-downloadallcontent 或者 https://github.com/dodying/UserJs/blob/master/novel/novelDownloader/novelDownloader3.user.js 下载。
           required: true
