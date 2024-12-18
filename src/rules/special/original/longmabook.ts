@@ -137,7 +137,7 @@ export class Longmabook extends BaseRuleClass {
     const getIsVip = (a: Element) =>
       a.parentElement?.innerText.includes("$") ?? false;
     const getIsPaid = (a: Element) =>
-      a.parentElement?.innerText.includes("已購買，三年內可直接閱讀") ?? false;
+      a.parentElement?.innerText.includes("已購買") ?? false;
 
     interface ChapterObj {
       chapterName: string;
