@@ -30,8 +30,8 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = XRUnionread;
       break;
     }
-    case "www.hetushu.com":
-    case "hetushu.com": {
+    case "www.hetushu.com": case "www.hetubook.com":
+    case "hetushu.com": case "hetubook.com": {
       const { Hetushu } = await import("../rules/special/reprint/hetushu");
       ruleClass = Hetushu;
       break;
