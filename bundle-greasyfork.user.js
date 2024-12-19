@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1028
+// @version        5.2.1029
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -15602,7 +15602,7 @@ class esjzone extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q
             return aElem.querySelector("p")?.innerHTML.trim() ?? aElem?.innerText.trim();
         }
         const sectionList = document.querySelectorAll('#chapterList details');
-        if (sectionList) {
+        if (sectionList.length > 0) {
             sectionList.forEach((sectionElem) => {
                 sectionName = sectionElem.querySelector('summary strong')?.innerText.trim() ?? null;
                 const aList = sectionElem.querySelectorAll('a');
@@ -30586,7 +30586,7 @@ class Longmabook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */
                 .some((text) => text === "發表心得留言");
             if (hasEgg) {
                 const eggDOM = doc.querySelector("div#eggsarea" + paperid);
-                let eggHTML = "<h2> 彩蛋 </h2>";
+                let eggHTML = "<h4> 彩蛋 </h4>";
                 if (!eggDOM) {
                     eggHTML += "<p> 未找到彩蛋</p>";
                 }
@@ -31137,7 +31137,7 @@ function getLang() {
 function getGlossary(data3) {
     if (data3.error)
         return null;
-    let glossary = "<h2>设定集</h2>";
+    let glossary = "<h4>设定集</h4>";
     for (let i = 0; i < data3.body.categories.length; i++) {
         const category = data3.body.categories[i];
         glossary += `<h3>${category.name}</h3>`;
