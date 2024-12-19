@@ -50,7 +50,7 @@ export class esjzone extends BaseRuleClass {
       return aElem.querySelector("p")?.innerHTML.trim() ?? aElem?.innerText.trim();
     }
     const sectionList = document.querySelectorAll('#chapterList details');
-    if (sectionList) {
+    if (sectionList.length > 0) {
       sectionList.forEach((sectionElem) => {
         sectionName = (sectionElem.querySelector('summary strong') as HTMLElement)?.innerText.trim() ?? null;
         const aList = sectionElem.querySelectorAll('a');

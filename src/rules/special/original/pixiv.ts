@@ -371,7 +371,7 @@ interface chapterObj {
 function getGlossary(data3: PixivResponse<GlossaryBody>) {
   if (data3.error)
     return null;
-  let glossary = "<h2>设定集</h2>";
+  let glossary = "<h4>设定集</h4>";
   for (let i = 0; i < data3.body.categories.length; i++) {
     const category = data3.body.categories[i];
     glossary += `<h3>${category.name}</h3>`

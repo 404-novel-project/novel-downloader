@@ -459,7 +459,7 @@ export class Longmabook extends BaseRuleClass {
         //   return [dom, text, []];
         // } else {
         const eggDOM = doc.querySelector("div#eggsarea" + paperid) as HTMLElement;
-        let eggHTML = "<h2> 彩蛋 </h2>";
+        let eggHTML = "<h4> 彩蛋 </h4>";
         if (!eggDOM) {
           eggHTML += "<p> 未找到彩蛋</p>";
         }
