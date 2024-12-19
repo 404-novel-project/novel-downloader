@@ -656,8 +656,8 @@ export async function getRule(): Promise<BaseRuleClass> {
     }
     case "www.esjzone.cc":
     case "www.esjzone.me": {
-      const { esjzone } = await import("../rules/onePage/original/esjzone");
-      ruleClass = esjzone();
+      const { esjzone } = await import("../rules/special/original/esjzone");
+      ruleClass = esjzone;
       break;
     }
     /** 笔趣阁END **/
