@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1027
+// @version        5.2.1028
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -12758,43 +12758,6 @@ const alphapolis = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClas
 
 /***/ }),
 
-/***/ "./src/rules/onePage/original/esjzone.ts":
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   esjzone: () => (/* binding */ esjzone)
-/* harmony export */ });
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
-/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
-
-
-const esjzone = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
-    bookUrl: document.location.href,
-    bookname: document.querySelector(".book-detail h2").innerText.trim(),
-    author: Array.from(document.querySelectorAll('ul.book-detail li')).find(li => li.textContent && li.textContent.includes('作者:'))?.querySelector('a')?.innerText.trim() || "Unknown Author",
-    introDom: document.querySelector(".description"),
-    introDomPatch: (dom) => dom,
-    additionalMetadatePatch: (additionalMetadate) => {
-        additionalMetadate.tags = Array.from(document.querySelectorAll('section.widget-tags.m-t-20 a.tag')).map((a) => a.innerText);
-        return additionalMetadate;
-    },
-    coverUrl: document.querySelector("div.product-gallery")?.querySelector("img")?.getAttribute("src") ?? null,
-    aList: document.querySelectorAll('#chapterList a'),
-    getAName: (aElem) => aElem?.innerText.trim(),
-    getContent: (dom) => dom.querySelector('.forum-content'),
-    contentPatch: (dom) => {
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)('h3', true, dom);
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)('footer', true, dom);
-        return dom;
-    },
-    language: "zh",
-    needLogin: true,
-});
-
-
-/***/ }),
-
 /***/ "./src/rules/onePage/original/houhuayuan.ts":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -15575,6 +15538,159 @@ class Cool18 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
             contentImages: null,
             additionalMetadate: null,
         };
+    }
+}
+
+
+/***/ }),
+
+/***/ "./src/rules/special/original/esjzone.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   esjzone: () => (/* binding */ esjzone)
+/* harmony export */ });
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_3__);
+
+
+
+
+
+
+
+
+
+class esjzone extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
+    constructor() {
+        super();
+        this.attachmentMode = "TM";
+    }
+    async bookParse() {
+        const bookUrl = document.location.href;
+        const bookname = document.querySelector(".book-detail h2").innerText.trim();
+        const author = Array.from(document.querySelectorAll('ul.book-detail li')).find(li => li.textContent && li.textContent.includes('作者:'))?.querySelector('a')?.innerText.trim() || "Unknown Author";
+        const introDom = document.querySelector(".description");
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .HV)(introDom);
+        const additionalMetadate = {};
+        additionalMetadate.tags = Array.from(document.querySelectorAll('section.widget-tags.m-t-20 a.tag')).map((a) => a.innerText);
+        const isVIP = false;
+        const isPaid = false;
+        const coverUrl = document.querySelector("div.product-gallery")?.querySelector("img")?.getAttribute("src") ?? null;
+        if (coverUrl) {
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
+                .then((coverClass) => {
+                additionalMetadate.cover = coverClass;
+            })
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_3___default().error(error));
+        }
+        const chapters = [];
+        let chapterNumber = 0;
+        let sectionName = null;
+        let sectionNumber = 0;
+        let sectionChapterNumber = 0;
+        function getAName(aElem) {
+            return aElem.querySelector("p")?.innerHTML.trim() ?? aElem?.innerText.trim();
+        }
+        const sectionList = document.querySelectorAll('#chapterList details');
+        if (sectionList) {
+            sectionList.forEach((sectionElem) => {
+                sectionName = sectionElem.querySelector('summary strong')?.innerText.trim() ?? null;
+                const aList = sectionElem.querySelectorAll('a');
+                sectionNumber++;
+                sectionChapterNumber = 0;
+                aList.forEach((aElem) => {
+                    const chapterUrl = aElem.href;
+                    const chapterName = getAName(aElem);
+                    chapterNumber++;
+                    sectionChapterNumber++;
+                    chapters.push(new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .I({
+                        bookUrl,
+                        bookname,
+                        chapterUrl,
+                        chapterNumber,
+                        chapterName,
+                        isVIP,
+                        isPaid,
+                        sectionName,
+                        sectionNumber,
+                        sectionChapterNumber,
+                        chapterParse: this.chapterParse,
+                        charset: this.charset,
+                        options: {},
+                    }));
+                });
+            });
+        }
+        else {
+            const aList = document.querySelectorAll('#chapterList a');
+            aList.forEach((aElem) => {
+                const chapterUrl = aElem.href;
+                const chapterName = getAName(aElem);
+                chapterNumber++;
+                sectionChapterNumber++;
+                chapters.push(new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .I({
+                    bookUrl,
+                    bookname,
+                    chapterUrl,
+                    chapterNumber,
+                    chapterName,
+                    isVIP,
+                    isPaid,
+                    sectionName,
+                    sectionNumber,
+                    sectionChapterNumber,
+                    chapterParse: this.chapterParse,
+                    charset: this.charset,
+                    options: {},
+                }));
+            });
+        }
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .E({
+            bookUrl,
+            bookname,
+            author,
+            introduction,
+            introductionHTML,
+            additionalMetadate,
+            chapters,
+        });
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_6__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
+        const content = doc.querySelector('.forum-content');
+        if (content) {
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_7__.rm)('h3', true, content);
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_7__.rm)('footer', true, content);
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .an)(content, "TM");
+            return {
+                chapterName,
+                contentRaw: content,
+                contentText: text,
+                contentHTML: dom,
+                contentImages: images,
+                additionalMetadate: null,
+            };
+        }
+        else {
+            return {
+                chapterName,
+                contentRaw: null,
+                contentText: null,
+                contentHTML: null,
+                contentImages: [],
+                additionalMetadate: null,
+            };
+        }
     }
 }
 
@@ -38585,8 +38701,8 @@ async function getRule() {
         }
         case "www.esjzone.cc":
         case "www.esjzone.me": {
-            const { esjzone } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/original/esjzone.ts"));
-            ruleClass = esjzone();
+            const { esjzone } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/esjzone.ts"));
+            ruleClass = esjzone;
             break;
         }
         default: {
