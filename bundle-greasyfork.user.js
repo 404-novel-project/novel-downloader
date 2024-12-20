@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1029
+// @version        5.2.1030
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -15601,16 +15601,14 @@ class esjzone extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q
         function getAName(aElem) {
             return aElem.querySelector("p")?.innerHTML.trim() ?? aElem?.innerText.trim();
         }
-        const sectionList = document.querySelectorAll('#chapterList details');
-        if (sectionList.length > 0) {
-            sectionList.forEach((sectionElem) => {
-                sectionName = sectionElem.querySelector('summary strong')?.innerText.trim() ?? null;
-                const aList = sectionElem.querySelectorAll('a');
-                sectionNumber++;
-                sectionChapterNumber = 0;
-                aList.forEach((aElem) => {
-                    const chapterUrl = aElem.href;
-                    const chapterName = getAName(aElem);
+        const sectionList = document.querySelector('#chapterList')?.childNodes ?? [];
+        sectionList.forEach((sectionElem) => {
+            const node = sectionElem;
+            switch (node.tagName) {
+                case 'A': {
+                    sectionChapterNumber++;
+                    const chapterUrl = sectionElem.href;
+                    const chapterName = getAName(node);
                     chapterNumber++;
                     sectionChapterNumber++;
                     chapters.push(new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .I({
@@ -15628,33 +15626,43 @@ class esjzone extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q
                         charset: this.charset,
                         options: {},
                     }));
-                });
-            });
-        }
-        else {
-            const aList = document.querySelectorAll('#chapterList a');
-            aList.forEach((aElem) => {
-                const chapterUrl = aElem.href;
-                const chapterName = getAName(aElem);
-                chapterNumber++;
-                sectionChapterNumber++;
-                chapters.push(new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .I({
-                    bookUrl,
-                    bookname,
-                    chapterUrl,
-                    chapterNumber,
-                    chapterName,
-                    isVIP,
-                    isPaid,
-                    sectionName,
-                    sectionNumber,
-                    sectionChapterNumber,
-                    chapterParse: this.chapterParse,
-                    charset: this.charset,
-                    options: {},
-                }));
-            });
-        }
+                    break;
+                }
+                case 'DETAILS': {
+                    sectionName = node.querySelector('summary strong')?.innerText.trim() ?? null;
+                    const aList = node.querySelectorAll('a');
+                    sectionNumber++;
+                    sectionChapterNumber = 0;
+                    aList.forEach((aElem) => {
+                        const chapterUrl = aElem.href;
+                        const chapterName = getAName(aElem);
+                        chapterNumber++;
+                        sectionChapterNumber++;
+                        chapters.push(new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .I({
+                            bookUrl,
+                            bookname,
+                            chapterUrl,
+                            chapterNumber,
+                            chapterName,
+                            isVIP,
+                            isPaid,
+                            sectionName,
+                            sectionNumber,
+                            sectionChapterNumber,
+                            chapterParse: this.chapterParse,
+                            charset: this.charset,
+                            options: {},
+                        }));
+                    });
+                    break;
+                }
+                case 'P':
+                    sectionName = node?.innerText?.trim() ?? null;
+                    sectionNumber++;
+                    sectionChapterNumber = 0;
+                    break;
+            }
+        });
         return new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .E({
             bookUrl,
             bookname,
