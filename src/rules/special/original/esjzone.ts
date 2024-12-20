@@ -49,16 +49,14 @@ export class esjzone extends BaseRuleClass {
     function getAName(aElem: HTMLElement) {
       return aElem.querySelector("p")?.innerHTML.trim() ?? aElem?.innerText.trim();
     }
-    const sectionList = document.querySelectorAll('#chapterList details');
-    if (sectionList.length > 0) {
-      sectionList.forEach((sectionElem) => {
-        sectionName = (sectionElem.querySelector('summary strong') as HTMLElement)?.innerText.trim() ?? null;
-        const aList = sectionElem.querySelectorAll('a');
-        sectionNumber++;
-        sectionChapterNumber = 0;
-        aList.forEach((aElem) => {
-          const chapterUrl = (aElem as HTMLAnchorElement).href;
-          const chapterName = getAName(aElem as HTMLElement);
+    const sectionList = document.querySelector('#chapterList')?.childNodes ?? [];
+    sectionList.forEach((sectionElem) => {
+      const node = sectionElem as HTMLElement;
+      switch (node.tagName) {
+        case 'A': {
+          sectionChapterNumber++;
+          const chapterUrl = (sectionElem as HTMLAnchorElement).href;
+          const chapterName = getAName(node as HTMLElement);
           chapterNumber++;
           sectionChapterNumber++;
           chapters.push(new Chapter({
@@ -76,32 +74,43 @@ export class esjzone extends BaseRuleClass {
             charset: this.charset,
             options: {},
           }));
-        });
-      });
-    } else {
-      const aList = document.querySelectorAll('#chapterList a');
-      aList.forEach((aElem) => {
-        const chapterUrl = (aElem as HTMLAnchorElement).href;
-        const chapterName = getAName(aElem as HTMLElement);
-        chapterNumber++;
-        sectionChapterNumber++;
-        chapters.push(new Chapter({
-          bookUrl,
-          bookname,
-          chapterUrl,
-          chapterNumber,
-          chapterName,
-          isVIP,
-          isPaid,
-          sectionName,
-          sectionNumber,
-          sectionChapterNumber,
-          chapterParse: this.chapterParse,
-          charset: this.charset,
-          options: {},
-        }));
-      });
-    }
+          break;
+        }
+        case 'DETAILS': {
+          sectionName = (node.querySelector('summary strong') as HTMLElement)?.innerText.trim() ?? null;
+          const aList = node.querySelectorAll('a');
+          sectionNumber++;
+          sectionChapterNumber = 0;
+          aList.forEach((aElem) => {
+            const chapterUrl = (aElem as HTMLAnchorElement).href;
+            const chapterName = getAName(aElem as HTMLElement);
+            chapterNumber++;
+            sectionChapterNumber++;
+            chapters.push(new Chapter({
+              bookUrl,
+              bookname,
+              chapterUrl,
+              chapterNumber,
+              chapterName,
+              isVIP,
+              isPaid,
+              sectionName,
+              sectionNumber,
+              sectionChapterNumber,
+              chapterParse: this.chapterParse,
+              charset: this.charset,
+              options: {},
+            }));
+          });
+          break;
+        }
+        case 'P': 
+          sectionName = node?.innerText?.trim() ?? null;
+          sectionNumber++;
+          sectionChapterNumber = 0;
+          break;
+      }
+    });
     
     return new Book({
       bookUrl,
