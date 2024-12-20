@@ -77,7 +77,7 @@ export class esjzone extends BaseRuleClass {
           break;
         }
         case 'DETAILS': {
-          sectionName = (node.querySelector('summary strong') as HTMLElement)?.innerText.trim() ?? null;
+          sectionName = (node.querySelector('summary') as HTMLElement)?.innerText.trim() ?? null;
           const aList = node.querySelectorAll('a');
           sectionNumber++;
           sectionChapterNumber = 0;
