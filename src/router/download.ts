@@ -660,6 +660,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = esjzone;
       break;
     }
+    case "fanqienovel.com": {
+      const { fanqie } = await import("../rules/special/original/fanqie");
+      ruleClass = fanqie;
+      break;
+    }
     /** 笔趣阁END **/
 
     default: {
