@@ -60,12 +60,12 @@ async function fetchRemoteFont(fontName: string) {
       return (await resp.json()) as JjwxcFontTable;
     } else {
       retry--;
-      if (retry > 0) {
-        await sleep(5000);
-      } else {
+      if (resp.status === 404 || retry <= 0) {
         log.error(`[jjwxc-font]远程字体对照表 ${fontName} 下载失败,请前往https://github.com/404-novel-project/jinjiang_font_tables 提交字体链接, ${fontlink}`);
         return undefined;
-      }
+      } else {
+        await sleep(5000);
+      } 
     }
   }
 }

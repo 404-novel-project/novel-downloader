@@ -306,16 +306,19 @@ async function fetchRemoteFont(fontName: string) {
     const retryLimit = 10;
     let retry = retryLimit;
     while (retry > 0) {
+        let responseStatus = -1;
         try {
             const response = await new Promise<FontTable | undefined>((resolve, reject) => {
                 GM_xmlhttpRequest({
                     method: 'GET',
                     url: url,
                     onload: (response) => {
+                        responseStatus = response.status;
                         if (response.status >= 200 && response.status < 300) {
                             log.info(`[fanqie-font]远程字体对照表 ${fontName} 下载成功`);
                             resolve(JSON.parse(response.responseText) as FontTable);
-                        } else {
+                        } 
+                        else {
                             reject(new Error(`HTTP status ${response.status}`));
                         }
                     },
@@ -331,12 +334,13 @@ async function fetchRemoteFont(fontName: string) {
         } catch (error) {
             log.error(error);
             retry--;
-            if (retry > 0) {
-                await sleep(2000);
-                continue;
-            } else {
+            if (responseStatus === 404 || retry < 0) {
                 log.info(`[fanqie-font]远程字体对照表 ${fontName} 下载失败`);
                 return undefined;
+            }
+            else {
+                await sleep(2000);
+                continue;
             }
         }
     }
