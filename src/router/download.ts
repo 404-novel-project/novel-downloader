@@ -572,7 +572,7 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = lusetxt();
       break;
     }
-    case "www.b5200.net": {
+    case "www.biquge5200.cc": {
       const { b5200 } = await import("../rules/biquge/onePage");
       ruleClass = b5200();
       break;

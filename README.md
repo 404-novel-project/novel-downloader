@@ -165,7 +165,7 @@ EPUB 文件请使用相应阅读器阅读。
 | [爱下书小说网](https://www.aixiaxs.net/)          | ✅       | ❎       |                                                                                          |
 | [精彩小说网](https://jingcaiyuedu6.com/)          | ✅       | ❎       |                                                                                          |
 | [爱下电子书](https://www.aixdzs.com/)             | ✅       | ❎       |                                                                                          |
-| [笔趣阁](http://www.b5200.net/)                   | ✅       | ❎       |                                                                                          |
+| [笔趣阁](http://www.biquge5200.cc/)                   | ✅       | ❎       |                                                                                          |
 | [言情小说](https://www.yqxsge.cc/)                | ✅       | ❎       |                                                                                          |
 | [18 看书](https://www.18kanshu.com/)              | ✅       | ❎       |                                                                                          |
 | [笔下文学 333](http://www.bixia3.com/)            | ✅       | ❎       |                                                                                          |
