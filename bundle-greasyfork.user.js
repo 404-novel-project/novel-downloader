@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1038
+// @version        5.2.1039
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -15977,12 +15977,14 @@ async function fetchRemoteFont(fontName) {
     const retryLimit = 10;
     let retry = retryLimit;
     while (retry > 0) {
+        let responseStatus = -1;
         try {
             const response = await new Promise((resolve, reject) => {
                 GM_xmlhttpRequest({
                     method: 'GET',
                     url: url,
                     onload: (response) => {
+                        responseStatus = response.status;
                         if (response.status >= 200 && response.status < 300) {
                             _log__WEBPACK_IMPORTED_MODULE_4___default().info(`[fanqie-font]远程字体对照表 ${fontName} 下载成功`);
                             resolve(JSON.parse(response.responseText));
@@ -16003,13 +16005,13 @@ async function fetchRemoteFont(fontName) {
         catch (error) {
             _log__WEBPACK_IMPORTED_MODULE_4___default().error(error);
             retry--;
-            if (retry > 0) {
-                await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_9__/* .sleep */ .yy)(2000);
-                continue;
-            }
-            else {
+            if (responseStatus === 404 || retry < 0) {
                 _log__WEBPACK_IMPORTED_MODULE_4___default().info(`[fanqie-font]远程字体对照表 ${fontName} 下载失败`);
                 return undefined;
+            }
+            else {
+                await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_9__/* .sleep */ .yy)(2000);
+                continue;
             }
         }
     }
@@ -17360,12 +17362,12 @@ async function fetchRemoteFont(fontName) {
         }
         else {
             retry--;
-            if (retry > 0) {
-                await (0,misc/* sleep */.yy)(5000);
-            }
-            else {
+            if (resp.status === 404 || retry <= 0) {
                 loglevel_default().error(`[jjwxc-font]远程字体对照表 ${fontName} 下载失败,请前往https://github.com/404-novel-project/jinjiang_font_tables 提交字体链接, ${fontlink}`);
                 return undefined;
+            }
+            else {
+                await (0,misc/* sleep */.yy)(5000);
             }
         }
     }
