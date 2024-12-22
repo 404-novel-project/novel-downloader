@@ -294,6 +294,8 @@ async function getFanqieFontTable(fontName: string, fontlink: string) {
     const FontTable = await fetchRemoteFont(fontName);
     if (!FontTable) {
         log.error(`[fanqie-font]字体对照表 ${fontName} 未找到,请前往https://github.com/404-novel-project/fanqie_font_tables提交字体链接，${fontlink}`);
+    } else {
+        log.debug(`[fanqie-font]字体对照表 ${fontName}已找到,如果你认为字体对应有错误,请前往https://github.com/404-novel-project/fanqie_font_tables重新提交字体链接,${fontlink}`);
     }
     return FontTable;
 }
