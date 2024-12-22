@@ -384,3 +384,42 @@ export async function getFrameContentCondition(
   document.body.appendChild(frame);
   return promise;
 }
+
+export async function getFrameContentConditionWithWindow(
+  url: string,
+  stopCondition: (frame: HTMLIFrameElement) => boolean,
+  sandboxs?: string[]
+): Promise<Window | null> {
+  const frame = document.createElement("iframe");
+  frame.src = url;
+  frame.width = "1";
+  frame.height = "1";
+  sandboxs?.forEach((s) => frame.sandbox.add(s));
+  frame.addEventListener("error", (error) => log.error(error));
+
+  log.debug("[debug]getFrameContent:" + url);
+  const promise = new Promise((resolve, reject) => {
+    if (!frame) {
+      reject(new Error("Frame Not Found!"));
+    }
+
+    let timerId = 0;
+    const loopFunc = () => {
+      if (stopCondition(frame)) {
+        const doc = frame.contentWindow ?? null;
+        frame.remove();
+        window.clearInterval(timerId);
+        resolve(doc);
+      }
+    };
+    timerId = window.setInterval(loopFunc, 1000);
+
+    setTimeout(() => {
+      frame.remove();
+      window.clearInterval(timerId);
+      reject(new Error("Frame Timeout!"));
+    }, 30 * 1000);
+  }) as Promise<Window | null>;
+  document.body.appendChild(frame);
+  return promise;
+}
