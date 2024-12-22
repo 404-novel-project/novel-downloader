@@ -875,8 +875,15 @@ export class Jjwxc extends BaseRuleClass {
           const readerid = parseInt(_readerid);
           const accessKey = data["accessKey"];
 
-          const _hash =
-            novelid + "." + chapterid + "." + readerid + "." + accessKey;
+          let _hash = "";
+          let hashSlice = "";
+          if (chapterid % 2 == 0) {
+            _hash =
+              novelid + "." + chapterid + "." + readerid + "." + accessKey;
+          } else {
+            _hash =
+              accessKey + "-" + novelid + "-" + chapterid + "-" + readerid;
+          }
           const hash = CryptoJS.MD5(_hash).toString();
 
           const convert = (input: string) => {
@@ -887,9 +894,15 @@ export class Jjwxc extends BaseRuleClass {
             return out;
           };
           const accessKeyConvert = convert(accessKey);
-          const hashSlice =
-            hash.slice(accessKeyConvert % hash.length) +
-            hash.slice(0, accessKeyConvert % hash.length);
+          if (chapterid % 2 == 0) {
+            hashSlice =
+              hash.slice(accessKeyConvert % hash.length) +
+              hash.slice(0, accessKeyConvert % hash.length);
+          } else {
+            hashSlice =
+              hash.slice(accessKeyConvert % (hash.length + 1)) +
+              hash.slice(0, accessKeyConvert % (hash.length + 1));
+          }
           let hashSlice16 = hashSlice.slice(0, 16);
           let hashSlice_16 = hashSlice.slice(-16);
           if (hash.charCodeAt(0)) {
@@ -1482,10 +1495,10 @@ export class Jjwxc extends BaseRuleClass {
       }
     }
     if (isVIP) {
-      if (typeof (unsafeWindow as UnsafeWindow).tokenOptions === "object") {
+      if (typeof (unsafeWindow as UnsafeWindow).tokenOptions?.Jjwxc === "object") {
         return getChapterByApi();
       } else {
-        log.error(`当前需要手动捕获android版app token以下载VIP章节,详见github主页说明,脚本将继续尝试使用远程字体下载，但可能会失败`);
+        log.warn(`当前我们更推荐手动捕获android版app token以下载VIP章节,详见github主页说明,脚本将继续尝试使用远程字体下载，但可能会失败`);
         return vipChapter();
       }
     } else {

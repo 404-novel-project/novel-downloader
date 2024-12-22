@@ -285,7 +285,7 @@ export async function replaceFanqieCharacter(
         }
         // outputText = outputText.replace(/\u200c/g, "");
     } else {
-        return `[fanqie-font]字体对照表 ${fontName} 未找到,请前往https://github.com/404-novel-project/fanqie_font_tables提交字体链接，${fontlink}`;
+        return `[fanqie-font]字体对照表 ${fontName} 未找到,请前往https://github.com/404-novel-project/fanqie_font_tables 提交字体链接, ${fontlink}`;
     }
     return outputText;
 }
@@ -293,9 +293,9 @@ export async function replaceFanqieCharacter(
 async function getFanqieFontTable(fontName: string, fontlink: string) {
     const FontTable = await fetchRemoteFont(fontName);
     if (!FontTable) {
-        log.error(`[fanqie-font]字体对照表 ${fontName} 未找到,请前往https://github.com/404-novel-project/fanqie_font_tables提交字体链接，${fontlink}`);
+        log.error(`[fanqie-font]字体对照表 ${fontName} 未找到,请前往https://github.com/404-novel-project/fanqie_font_tables 提交字体链接, ${fontlink}`);
     } else {
-        log.debug(`[fanqie-font]字体对照表 ${fontName}已找到,如果你认为字体对应有错误,请前往https://github.com/404-novel-project/fanqie_font_tables重新提交字体链接,${fontlink}`);
+        log.debug(`[fanqie-font]字体对照表 ${fontName}已找到,如果你认为字体对应有错误,请前往https://github.com/404-novel-project/fanqie_font_tables 重新提交字体链接, ${fontlink}`);
     }
     return FontTable;
 }
