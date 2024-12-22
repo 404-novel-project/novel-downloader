@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1036
+// @version        5.2.1038
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -15957,14 +15957,17 @@ async function replaceFanqieCharacter(fontName, fontlink, inputText) {
         }
     }
     else {
-        return `[fanqie-font]字体对照表 ${fontName} 未找到,请前往https://github.com/404-novel-project/fanqie_font_tables提交字体链接，${fontlink}`;
+        return `[fanqie-font]字体对照表 ${fontName} 未找到,请前往https://github.com/404-novel-project/fanqie_font_tables 提交字体链接, ${fontlink}`;
     }
     return outputText;
 }
 async function getFanqieFontTable(fontName, fontlink) {
     const FontTable = await fetchRemoteFont(fontName);
     if (!FontTable) {
-        _log__WEBPACK_IMPORTED_MODULE_4___default().error(`[fanqie-font]字体对照表 ${fontName} 未找到,请前往https://github.com/404-novel-project/fanqie_font_tables提交字体链接，${fontlink}`);
+        _log__WEBPACK_IMPORTED_MODULE_4___default().error(`[fanqie-font]字体对照表 ${fontName} 未找到,请前往https://github.com/404-novel-project/fanqie_font_tables 提交字体链接, ${fontlink}`);
+    }
+    else {
+        _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`[fanqie-font]字体对照表 ${fontName}已找到,如果你认为字体对应有错误,请前往https://github.com/404-novel-project/fanqie_font_tables 重新提交字体链接, ${fontlink}`);
     }
     return FontTable;
 }
@@ -17329,7 +17332,8 @@ async function getJjwxcFontTable(fontName) {
     }
 }
 async function fetchRemoteFont(fontName) {
-    const url = `https://jjwxc.bgme.bid/api/${fontName}/table`;
+    const url = `https://cdn.jsdelivr.net/gh/404-novel-project/jinjiang_font_tables@master/${fontName}.woff2.json`;
+    const fontlink = `https://static.jjwxc.net/tmp/fonts/${fontName}.woff2?h=my.jjwxc.net`;
     loglevel_default().info(`[jjwxc-font]开始请求远程字体对照表 ${fontName}`);
     let retry = setting/* retryLimit */.Iz;
     while (retry > 0) {
@@ -17345,12 +17349,13 @@ async function fetchRemoteFont(fontName) {
                 continue;
             }
             else {
-                loglevel_default().info(`[jjwxc-font]远程字体对照表 ${fontName} 下载失败`);
+                loglevel_default().error(`[jjwxc-font]远程字体对照表 ${fontName} 下载失败,请前往https://github.com/404-novel-project/jinjiang_font_tables 提交字体链接, ${fontlink}`);
                 return undefined;
             }
         }
         if (resp.ok) {
             loglevel_default().info(`[jjwxc-font]远程字体对照表 ${fontName} 下载成功`);
+            loglevel_default().debug(`[jjwxc-font]如果你认为字体对应有错误,请前往https://github.com/404-novel-project/jinjiang_font_tables 重新提交字体链接, ${fontlink}`);
             return (await resp.json());
         }
         else {
@@ -17359,7 +17364,7 @@ async function fetchRemoteFont(fontName) {
                 await (0,misc/* sleep */.yy)(5000);
             }
             else {
-                loglevel_default().info(`[jjwxc-font]远程字体对照表 ${fontName} 下载失败`);
+                loglevel_default().error(`[jjwxc-font]远程字体对照表 ${fontName} 下载失败,请前往https://github.com/404-novel-project/jinjiang_font_tables 提交字体链接, ${fontlink}`);
                 return undefined;
             }
         }
@@ -29669,7 +29674,16 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
                     }
                     const readerid = parseInt(_readerid);
                     const accessKey = data["accessKey"];
-                    const _hash = novelid + "." + chapterid + "." + readerid + "." + accessKey;
+                    let _hash = "";
+                    let hashSlice = "";
+                    if (chapterid % 2 == 0) {
+                        _hash =
+                            novelid + "." + chapterid + "." + readerid + "." + accessKey;
+                    }
+                    else {
+                        _hash =
+                            accessKey + "-" + novelid + "-" + chapterid + "-" + readerid;
+                    }
                     const hash = external_CryptoJS_.MD5(_hash).toString();
                     const convert = (input) => {
                         let out = 0;
@@ -29679,8 +29693,16 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
                         return out;
                     };
                     const accessKeyConvert = convert(accessKey);
-                    const hashSlice = hash.slice(accessKeyConvert % hash.length) +
-                        hash.slice(0, accessKeyConvert % hash.length);
+                    if (chapterid % 2 == 0) {
+                        hashSlice =
+                            hash.slice(accessKeyConvert % hash.length) +
+                                hash.slice(0, accessKeyConvert % hash.length);
+                    }
+                    else {
+                        hashSlice =
+                            hash.slice(accessKeyConvert % (hash.length + 1)) +
+                                hash.slice(0, accessKeyConvert % (hash.length + 1));
+                    }
                     let hashSlice16 = hashSlice.slice(0, 16);
                     let hashSlice_16 = hashSlice.slice(-16);
                     if (hash.charCodeAt(0)) {
@@ -30080,11 +30102,11 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
             }
         }
         if (isVIP) {
-            if (typeof unsafeWindow.tokenOptions === "object") {
+            if (typeof unsafeWindow.tokenOptions?.Jjwxc === "object") {
                 return getChapterByApi();
             }
             else {
-                loglevel_default().error(`当前需要手动捕获android版app token以下载VIP章节,详见github主页说明,脚本将继续尝试使用远程字体下载，但可能会失败`);
+                loglevel_default().warn(`当前我们更推荐手动捕获android版app token以下载VIP章节,详见github主页说明,脚本将继续尝试使用远程字体下载，但可能会失败`);
                 return vipChapter();
             }
         }
