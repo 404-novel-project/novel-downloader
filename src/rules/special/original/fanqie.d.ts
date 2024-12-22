@@ -1,5 +1,6 @@
 import { BaseRuleClass } from "../../../rules";
 import { Book } from "../../../main/Book";
+import { AttachmentClass } from "../../../main/Attachment";
 export declare class fanqie extends BaseRuleClass {
     constructor();
     bookParse(): Promise<Book>;
@@ -8,7 +9,8 @@ export declare class fanqie extends BaseRuleClass {
         contentRaw: HTMLDivElement;
         contentText: string;
         contentHTML: HTMLElement;
-        contentImages: import("../../../main/Attachment").AttachmentClass[];
+        contentImages: AttachmentClass[];
         additionalMetadate: null;
     }>;
 }
+export declare function replaceFanqieCharacter(fontName: string, fontlink: string, inputText: string): Promise<string>;

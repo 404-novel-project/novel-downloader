@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1034
+// @version        5.2.1036
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -230,7 +230,7 @@
 // @match          *://manga.bilibili.com/detail/mc*
 // @match          *://www.aixdzs.com/novel/*
 // @match          *://www.cool18.com/bbs4/index.php?*
-// @match          *://www.b5200.net/*_*/
+// @match          *://www.biquge5200.cc/*_*/
 // @match          *://www.yqxsge.cc/html/*/*/index.html
 // @match          *://www.18kanshu.com/*/*/info.html
 // @match          *://www.18kanshu.com/module/novel/info.php?*
@@ -8893,6 +8893,7 @@ async function calculateSha1(blob) {
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   J5: () => (/* binding */ fetchWithRetry),
+/* harmony export */   Q2: () => (/* binding */ getFrameContentConditionWithWindow),
 /* harmony export */   _V: () => (/* binding */ gfetch),
 /* harmony export */   bx: () => (/* binding */ ggetText),
 /* harmony export */   eF: () => (/* binding */ getFrameContentCondition),
@@ -9153,6 +9154,37 @@ async function getFrameContentCondition(url, stopCondition, sandboxs) {
         const loopFunc = () => {
             if (stopCondition(frame)) {
                 const doc = frame.contentWindow?.document ?? null;
+                frame.remove();
+                window.clearInterval(timerId);
+                resolve(doc);
+            }
+        };
+        timerId = window.setInterval(loopFunc, 1000);
+        setTimeout(() => {
+            frame.remove();
+            window.clearInterval(timerId);
+            reject(new Error("Frame Timeout!"));
+        }, 30 * 1000);
+    });
+    document.body.appendChild(frame);
+    return promise;
+}
+async function getFrameContentConditionWithWindow(url, stopCondition, sandboxs) {
+    const frame = document.createElement("iframe");
+    frame.src = url;
+    frame.width = "1";
+    frame.height = "1";
+    sandboxs?.forEach((s) => frame.sandbox.add(s));
+    frame.addEventListener("error", (error) => _log__WEBPACK_IMPORTED_MODULE_0___default().error(error));
+    _log__WEBPACK_IMPORTED_MODULE_0___default().debug("[debug]getFrameContent:" + url);
+    const promise = new Promise((resolve, reject) => {
+        if (!frame) {
+            reject(new Error("Frame Not Found!"));
+        }
+        let timerId = 0;
+        const loopFunc = () => {
+            if (stopCondition(frame)) {
+                const doc = frame.contentWindow ?? null;
                 frame.remove();
                 window.clearInterval(timerId);
                 resolve(doc);
@@ -15713,15 +15745,20 @@ class esjzone extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   fanqie: () => (/* binding */ fanqie)
 /* harmony export */ });
+/* unused harmony export replaceFanqieCharacter */
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/attachments.ts");
 /* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
 /* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Book.ts");
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/cleanDOM.ts");
 /* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/main/Chapter.ts");
 /* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/attachments.ts");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/http.ts");
 /* harmony import */ var _lib_GM__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/GM.ts");
+/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("./src/lib/misc.ts");
+
+
 
 
 
@@ -15734,6 +15771,7 @@ class fanqie extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
     constructor() {
         super();
         this.attachmentMode = "TM";
+        this.concurrencyLimit = 1;
     }
     async bookParse() {
         const bookUrl = document.location.href;
@@ -15800,49 +15838,12 @@ class fanqie extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
         });
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        const id = chapterUrl.match(/\d+/);
-        let url = `https://fanqienovel.com/api/reader/full?itemId=${id}&force_mobile=0`;
-        let result = await new Promise((resolve) => {
-            (0,_lib_GM__WEBPACK_IMPORTED_MODULE_6__/* ._GM_xmlhttpRequest */ .nV)({
-                url: url,
-                headers: {
-                    "User-Agent": "Mozilla/5.0 (Linux; Android 10; MI 8 Lite Build/QKQ1.190910.002) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.5672.62 Mobile Safari/537.36",
-                    "ismobile": "0",
-                    cookie: document.cookie,
-                },
-                method: "GET",
-                onload: function (response) {
-                    if (response.status === 200) {
-                        resolve(response.responseText);
-                    }
-                    else {
-                        _log__WEBPACK_IMPORTED_MODULE_4___default().error(response);
-                        resolve('');
-                    }
-                },
-            });
-        });
-        let content = '';
-        let json = null;
-        try {
-            json = JSON.parse(result);
-        }
-        catch (error) {
-            _log__WEBPACK_IMPORTED_MODULE_4___default().error('JSON.parse(result) error', error);
-        }
-        let data = json?.data?.chapterData ?? null;
-        if (!data) {
-            _log__WEBPACK_IMPORTED_MODULE_4___default().debug(url, result);
-            content = '未购买SVIP';
-        }
-        else if (data.isChapterLock)
-            content = '未购买SVIP';
-        else
-            content = GetContentDecode(data.content);
-        if (content === '未购买SVIP') {
+        const contentRaw = document.createElement('div');
+        if (isVIP) {
             _log__WEBPACK_IMPORTED_MODULE_4___default().debug('未购买SVIP,尝试第三方API获取章节内容');
-            url = `https://novel.snssdk.com/api/novel/reader/full/v1/?item_id=${id}`;
-            result = await new Promise((resolve) => {
+            const id = chapterUrl.match(/\d+/);
+            const url = `https://novel.snssdk.com/api/novel/reader/full/v1/?item_id=${id}`;
+            const result = await new Promise((resolve) => {
                 (0,_lib_GM__WEBPACK_IMPORTED_MODULE_6__/* ._GM_xmlhttpRequest */ .nV)({
                     url: url,
                     method: "GET",
@@ -15857,14 +15858,15 @@ class fanqie extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
                     },
                 });
             });
-            json = null;
+            let json = null;
+            let content = '';
             try {
                 json = JSON.parse(result);
             }
             catch (error) {
                 _log__WEBPACK_IMPORTED_MODULE_4___default().error('JSON.parse(result) error', error);
             }
-            data = json?.data ?? null;
+            const data = json?.data ?? null;
             if (!data) {
                 _log__WEBPACK_IMPORTED_MODULE_4___default().debug(url, result);
                 content = '你没有购买SVIP,且第三方API获取章节内容失败';
@@ -15873,10 +15875,35 @@ class fanqie extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
                 content = '你没有购买SVIP,且第三方API未购买VIP';
             else
                 content = data.content;
+            contentRaw.innerHTML = content;
         }
-        const contentRaw = document.createElement('div');
-        contentRaw.innerHTML = content;
-        const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__/* .cleanDOM */ .an)(contentRaw, "TM");
+        else {
+            const textSelector = '.muye-reader-content';
+            const html = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_7__/* .getFrameContentConditionWithWindow */ .Q2)(chapterUrl, (frame) => {
+                const doc = frame.contentWindow?.document ?? null;
+                if (doc) {
+                    return doc.querySelectorAll(textSelector).length !== 0;
+                }
+                else {
+                    return false;
+                }
+            });
+            const doc = html?.document?.querySelector(textSelector) ?? null;
+            if (!html || !doc) {
+                contentRaw.innerHTML = '获取章节内容失败';
+            }
+            else {
+                const [fontName, fontlink] = await getFont(html);
+                if (fontName && fontlink) {
+                    contentRaw.innerHTML = await replaceFanqieCharacter(fontName, fontlink, doc.innerHTML);
+                }
+                else {
+                    _log__WEBPACK_IMPORTED_MODULE_4___default().error('字体替换失败,字体名称:', fontName, '字体链接:', fontlink);
+                    contentRaw.innerHTML = '字体替换失败';
+                }
+            }
+        }
+        const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .an)(contentRaw, "TM");
         return {
             chapterName,
             contentRaw: contentRaw,
@@ -15887,17 +15914,102 @@ class fanqie extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
         };
     }
 }
-function GetContentDecode(res) {
-    const data2 = ["D", "在", "主", "特", "家", "军", "然", "表", "场", "4", "要", "只", "v", "和", "?", "6", "别", "还", "g", "现", "儿", "岁", "?", "?", "此", "象", "月", "3", "出", "战", "工", "相", "o", "男", "直", "失", "世", "F", "都", "平", "文", "什", "V", "O", "将", "真", "T", "那", "当", "?", "会", "立", "些", "u", "是", "十", "张", "学", "气", "大", "爱", "两", "命", "全", "后", "东", "性", "通", "被", "1", "它", "乐", "接", "而", "感", "车", "山", "公", "了", "常", "以", "何", "可", "话", "先", "p", "i", "叫", "轻", "M", "士", "w", "着", "变", "尔", "快", "l", "个", "说", "少", "色", "里", "安", "花", "远", "7", "难", "师", "放", "t", "报", "认", "面", "道", "S", "?", "克", "地", "度", "I", "好", "机", "U", "民", "写", "把", "万", "同", "水", "新", "没", "书", "电", "吃", "像", "斯", "5", "为", "y", "白", "几", "日", "教", "看", "但", "第", "加", "侯", "作", "上", "拉", "住", "有", "法", "r", "事", "应", "位", "利", "你", "声", "身", "国", "问", "马", "女", "他", "Y", "比", "父", "x", "A", "H", "N", "s", "X", "边", "美", "对", "所", "金", "活", "回", "意", "到", "z", "从", "j", "知", "又", "内", "因", "点", "Q", "三", "定", "8", "R", "b", "正", "或", "夫", "向", "德", "听", "更", "?", "得", "告", "并", "本", "q", "过", "记", "L", "让", "打", "f", "人", "就", "者", "去", "原", "满", "体", "做", "经", "K", "走", "如", "孩", "c", "G", "给", "使", "物", "?", "最", "笑", "部", "?", "员", "等", "受", "k", "行", "一", "条", "果", "动", "光", "门", "头", "见", "往", "自", "解", "成", "处", "天", "能", "于", "名", "其", "发", "总", "母", "的", "死", "手", "入", "路", "进", "心", "来", "h", "时", "力", "多", "开", "已", "许", "d", "至", "由", "很", "界", "n", "小", " 与", "Z", "想", "代", "么", "分", "生", "口", "再", "妈", "望", "次", "西", "风", "种", "带", "J", "?", "实", "情", "才", "这", "?", "E", "我", "神", "格", "长", "觉", "间", "年", "眼", "无", "不", "亲", "关", "结", "0", "友", "信", "下", "却", "重", "己", "老", "2", "音", "字", "m", "呢", "明", "之", "前", "高", "P", "B", "目", "太", "e", "9", "起", "稜", "她", "也", "W", "用", "方", "子", "英", "每", "理", "便", "四", "数", "期", "中", "C", "外", "样", "a", "海", "们", "任"];
-    const code = 58344;
-    let content = '';
-    for (let i = 0; i < res.length; i++) {
-        const key = res[i].charCodeAt(0);
-        const index = key - code;
-        const replacement = (data2[index] && data2[index] !== '?') ? data2[index] : res[i];
-        content += replacement;
+async function getFont(dom) {
+    const style = dom.document.querySelector('div.muye-reader-box')?.style;
+    const fontFamily = style?.fontFamily.split(',')[0] ?? null;
+    const styleSheets = dom?.document?.styleSheets ?? null;
+    if (!fontFamily || !styleSheets) {
+        return [null, null];
     }
-    return content;
+    for (const styleSheet of Array.from(styleSheets)) {
+        try {
+            const cssRules = styleSheet.cssRules;
+            for (const rule of Array.from(cssRules)) {
+                const ruleElem = rule;
+                const font = ruleElem?.style?.fontFamily?.replace(/['"]/g, '') ?? null;
+                if (font && fontFamily.includes(font)) {
+                    let src = ruleElem.style.getPropertyValue('src');
+                    const match = src.match(/url\(["']?([^"')]+)["']?\)/);
+                    if (match) {
+                        src = match[1];
+                        const fileNameMatch = src.match(/[^/]+$/);
+                        const fileName = fileNameMatch ? fileNameMatch[0] : null;
+                        return [fileName, src];
+                    }
+                }
+            }
+        }
+        catch (e) {
+            _log__WEBPACK_IMPORTED_MODULE_4___default().error('Cannot find stylesheet:', e);
+        }
+    }
+    return [null, null];
+}
+async function replaceFanqieCharacter(fontName, fontlink, inputText) {
+    let outputText = inputText;
+    const FontTable = await getFanqieFontTable(fontName, fontlink);
+    if (FontTable) {
+        for (const Character in FontTable) {
+            if (Object.prototype.hasOwnProperty.call(FontTable, Character)) {
+                const normalCharacter = FontTable[Character];
+                outputText = outputText.replaceAll(Character, normalCharacter);
+            }
+        }
+    }
+    else {
+        return `[fanqie-font]字体对照表 ${fontName} 未找到,请前往https://github.com/404-novel-project/fanqie_font_tables提交字体链接，${fontlink}`;
+    }
+    return outputText;
+}
+async function getFanqieFontTable(fontName, fontlink) {
+    const FontTable = await fetchRemoteFont(fontName);
+    if (!FontTable) {
+        _log__WEBPACK_IMPORTED_MODULE_4___default().error(`[fanqie-font]字体对照表 ${fontName} 未找到,请前往https://github.com/404-novel-project/fanqie_font_tables提交字体链接，${fontlink}`);
+    }
+    return FontTable;
+}
+async function fetchRemoteFont(fontName) {
+    const url = `https://cdn.jsdelivr.net/gh/404-novel-project/fanqie_font_tables@master/${fontName}.json`;
+    _log__WEBPACK_IMPORTED_MODULE_4___default().info(`[fanqie-font]开始请求远程字体对照表 ${fontName}`);
+    const retryLimit = 10;
+    let retry = retryLimit;
+    while (retry > 0) {
+        try {
+            const response = await new Promise((resolve, reject) => {
+                GM_xmlhttpRequest({
+                    method: 'GET',
+                    url: url,
+                    onload: (response) => {
+                        if (response.status >= 200 && response.status < 300) {
+                            _log__WEBPACK_IMPORTED_MODULE_4___default().info(`[fanqie-font]远程字体对照表 ${fontName} 下载成功`);
+                            resolve(JSON.parse(response.responseText));
+                        }
+                        else {
+                            reject(new Error(`HTTP status ${response.status}`));
+                        }
+                    },
+                    onerror: (error) => {
+                        reject(error);
+                    }
+                });
+            });
+            if (response) {
+                return response;
+            }
+        }
+        catch (error) {
+            _log__WEBPACK_IMPORTED_MODULE_4___default().error(error);
+            retry--;
+            if (retry > 0) {
+                await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_9__/* .sleep */ .yy)(2000);
+                continue;
+            }
+            else {
+                _log__WEBPACK_IMPORTED_MODULE_4___default().info(`[fanqie-font]远程字体对照表 ${fontName} 下载失败`);
+                return undefined;
+            }
+        }
+    }
 }
 
 
@@ -38825,7 +38937,7 @@ async function getRule() {
             ruleClass = lusetxt();
             break;
         }
-        case "www.b5200.net": {
+        case "www.biquge5200.cc": {
             const { b5200 } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
             ruleClass = b5200();
             break;
@@ -39303,7 +39415,7 @@ function getUI() {
         case "www.i25zw.com":
         case "www.tycqzw.com":
         case "www.ranwen.la":
-        case "www.b5200.net":
+        case "www.biquge5200.cc":
         case "www.yqxsge.cc":
         case "www.bixia3.com":
         case "www.quanshuzhai.com":
