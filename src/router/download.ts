@@ -513,6 +513,7 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = bqu9();
       break;
     }
+    case "www.23xsww.cc":
     case "www.biququ.com":
     case "www.ddyveshu.cc":
     case "www.81book.com":
