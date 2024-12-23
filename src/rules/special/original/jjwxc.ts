@@ -874,18 +874,6 @@ export class Jjwxc extends BaseRuleClass {
           }
           const readerid = parseInt(_readerid);
           const accessKey = data["accessKey"];
-
-          let _hash = "";
-          let hashSlice = "";
-          if (chapterid % 2 == 0) {
-            _hash =
-              novelid + "." + chapterid + "." + readerid + "." + accessKey;
-          } else {
-            _hash =
-              accessKey + "-" + novelid + "-" + chapterid + "-" + readerid;
-          }
-          const hash = CryptoJS.MD5(_hash).toString();
-
           const convert = (input: string) => {
             let out = 0;
             for (let i = 0; i < input.length; i++) {
@@ -894,35 +882,50 @@ export class Jjwxc extends BaseRuleClass {
             return out;
           };
           const accessKeyConvert = convert(accessKey);
-          if (chapterid % 2 == 0) {
-            hashSlice =
-              hash.slice(accessKeyConvert % hash.length) +
-              hash.slice(0, accessKeyConvert % hash.length);
-          } else {
-            hashSlice =
-              hash.slice(accessKeyConvert % (hash.length + 1)) +
-              hash.slice(0, accessKeyConvert % (hash.length + 1));
-          }
-          let hashSlice16 = hashSlice.slice(0, 16);
-          let hashSlice_16 = hashSlice.slice(-16);
-          if (hash.charCodeAt(0)) {
-            [hashSlice16, hashSlice_16] = [hashSlice_16, hashSlice16];
-          }
-          const cryptInfo = data["cryptInfo"];
-          const _decrypedtCryptInfo = CryptoJS.DES.decrypt(
-            cryptInfo,
-            CryptoJS.enc.Utf8.parse(hashSlice16),
-            {
-              iv: CryptoJS.enc.Utf8.parse(hashSlice_16),
+          let modi = 0;
+          let _decrypedtCryptInfo = "";
+          while (modi <= 1) {
+            let _hash = "";
+            let hashSlice = "";
+            if (chapterid % 2 == modi) {
+              _hash =
+                novelid + "." + chapterid + "." + readerid + "." + accessKey;
+            } else {
+              _hash =
+                accessKey + "-" + novelid + "-" + chapterid + "-" + readerid;
             }
-          ).toString(CryptoJS.enc.Utf8);
-
+            const hash = CryptoJS.MD5(_hash).toString();
+            if (chapterid % 2 == modi) {
+              hashSlice =
+                hash.slice(accessKeyConvert % hash.length) +
+                hash.slice(0, accessKeyConvert % hash.length);
+            } else {
+              hashSlice =
+                hash.slice(accessKeyConvert % (hash.length + 1)) +
+                hash.slice(0, accessKeyConvert % (hash.length + 1));
+            }
+            let hashSlice16 = hashSlice.slice(0, 16);
+            let hashSlice_16 = hashSlice.slice(-16);
+            if (hash.charCodeAt(0)) {
+              [hashSlice16, hashSlice_16] = [hashSlice_16, hashSlice16];
+            }
+            const cryptInfo = data["cryptInfo"];
+            _decrypedtCryptInfo = CryptoJS.DES.decrypt(
+              cryptInfo,
+              CryptoJS.enc.Utf8.parse(hashSlice16),
+              {
+                iv: CryptoJS.enc.Utf8.parse(hashSlice_16),
+              }
+            ).toString(CryptoJS.enc.Utf8);
+            if (_decrypedtCryptInfo != "") {
+              break;
+            } else modi++;
+          }
           interface cryptInfo {
             time: number;
             key: string;
             ver: string;
           }
-
           const decrypedtCryptInfo = JSON.parse(
             atob(_decrypedtCryptInfo)
           ) as cryptInfo;
@@ -1495,7 +1498,7 @@ export class Jjwxc extends BaseRuleClass {
       }
     }
     if (isVIP) {
-      if (typeof (unsafeWindow as UnsafeWindow).tokenOptions?.Jjwxc === "object") {
+      if (((unsafeWindow as UnsafeWindow).tokenOptions?.Jjwxc ?? null) != null) {
         return getChapterByApi();
       } else {
         log.warn(`当前我们更推荐手动捕获android版app token以下载VIP章节,详见github主页说明,脚本将继续尝试使用远程字体下载，但可能会失败`);
