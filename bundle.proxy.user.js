@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1039
+// @version        5.2.1042
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -107,6 +107,7 @@
 // @match          *://www.lewenn.net/lw*/
 // @match          *://www.266ks.com/book/*/
 // @match          *://www.266ks.com/book/*/index*.html
+// @match          *://www.23xsww.cc/book/*/*
 // @match          *://www.hetushu.com/book/*/index.html
 // @match          *://www.hetubook.com/book/*/index.html
 // @match          *://hetushu.com/book/*/index.html
@@ -378,7 +379,7 @@
 // @grant          GM.getValue
 // @grant          GM.deleteValue
 // @homepageURL    https://github.com/404-novel-project/novel-downloader
-// @icon           https://cdn.jsdelivr.net/gh/404-novel-project/novel-downloader/assets/icon.png
+// @icon           https://fastly.jsdelivr.net/gh/404-novel-project/novel-downloader/assets/icon.png
 // @incompatible   Internet Explorer
 // @license        AGPL-3.0-or-later
 // @namespace      https://blog.bgme.me

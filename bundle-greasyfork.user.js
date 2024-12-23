@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1039
+// @version        5.2.1042
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -107,6 +107,7 @@
 // @match          *://www.lewenn.net/lw*/
 // @match          *://www.266ks.com/book/*/
 // @match          *://www.266ks.com/book/*/index*.html
+// @match          *://www.23xsww.cc/book/*/*
 // @match          *://www.hetushu.com/book/*/index.html
 // @match          *://www.hetubook.com/book/*/index.html
 // @match          *://hetushu.com/book/*/index.html
@@ -379,7 +380,7 @@
 // @grant          GM.getValue
 // @grant          GM.deleteValue
 // @homepageURL    https://github.com/404-novel-project/novel-downloader
-// @icon           https://cdn.jsdelivr.net/gh/404-novel-project/novel-downloader/assets/icon.png
+// @icon           https://fastly.jsdelivr.net/gh/404-novel-project/novel-downloader/assets/icon.png
 // @incompatible   Internet Explorer
 // @license        AGPL-3.0-or-later
 // @namespace      https://blog.bgme.me
@@ -15972,7 +15973,7 @@ async function getFanqieFontTable(fontName, fontlink) {
     return FontTable;
 }
 async function fetchRemoteFont(fontName) {
-    const url = `https://cdn.jsdelivr.net/gh/404-novel-project/fanqie_font_tables@master/${fontName}.json`;
+    const url = `https://fastly.jsdelivr.net/gh/404-novel-project/fanqie_font_tables@master/${fontName}.json`;
     _log__WEBPACK_IMPORTED_MODULE_4___default().info(`[fanqie-font]开始请求远程字体对照表 ${fontName}`);
     const retryLimit = 10;
     let retry = retryLimit;
@@ -17334,7 +17335,7 @@ async function getJjwxcFontTable(fontName) {
     }
 }
 async function fetchRemoteFont(fontName) {
-    const url = `https://cdn.jsdelivr.net/gh/404-novel-project/jinjiang_font_tables@master/${fontName}.woff2.json`;
+    const url = `https://fastly.jsdelivr.net/gh/404-novel-project/jinjiang_font_tables@master/${fontName}.woff2.json`;
     const fontlink = `https://static.jjwxc.net/tmp/fonts/${fontName}.woff2?h=my.jjwxc.net`;
     loglevel_default().info(`[jjwxc-font]开始请求远程字体对照表 ${fontName}`);
     let retry = setting/* retryLimit */.Iz;
@@ -29676,17 +29677,6 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
                     }
                     const readerid = parseInt(_readerid);
                     const accessKey = data["accessKey"];
-                    let _hash = "";
-                    let hashSlice = "";
-                    if (chapterid % 2 == 0) {
-                        _hash =
-                            novelid + "." + chapterid + "." + readerid + "." + accessKey;
-                    }
-                    else {
-                        _hash =
-                            accessKey + "-" + novelid + "-" + chapterid + "-" + readerid;
-                    }
-                    const hash = external_CryptoJS_.MD5(_hash).toString();
                     const convert = (input) => {
                         let out = 0;
                         for (let i = 0; i < input.length; i++) {
@@ -29695,25 +29685,45 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
                         return out;
                     };
                     const accessKeyConvert = convert(accessKey);
-                    if (chapterid % 2 == 0) {
-                        hashSlice =
-                            hash.slice(accessKeyConvert % hash.length) +
-                                hash.slice(0, accessKeyConvert % hash.length);
+                    let modi = 0;
+                    let _decrypedtCryptInfo = "";
+                    while (modi <= 1) {
+                        let _hash = "";
+                        let hashSlice = "";
+                        if (chapterid % 2 == modi) {
+                            _hash =
+                                novelid + "." + chapterid + "." + readerid + "." + accessKey;
+                        }
+                        else {
+                            _hash =
+                                accessKey + "-" + novelid + "-" + chapterid + "-" + readerid;
+                        }
+                        const hash = external_CryptoJS_.MD5(_hash).toString();
+                        if (chapterid % 2 == modi) {
+                            hashSlice =
+                                hash.slice(accessKeyConvert % hash.length) +
+                                    hash.slice(0, accessKeyConvert % hash.length);
+                        }
+                        else {
+                            hashSlice =
+                                hash.slice(accessKeyConvert % (hash.length + 1)) +
+                                    hash.slice(0, accessKeyConvert % (hash.length + 1));
+                        }
+                        let hashSlice16 = hashSlice.slice(0, 16);
+                        let hashSlice_16 = hashSlice.slice(-16);
+                        if (hash.charCodeAt(0)) {
+                            [hashSlice16, hashSlice_16] = [hashSlice_16, hashSlice16];
+                        }
+                        const cryptInfo = data["cryptInfo"];
+                        _decrypedtCryptInfo = external_CryptoJS_.DES.decrypt(cryptInfo, external_CryptoJS_.enc.Utf8.parse(hashSlice16), {
+                            iv: external_CryptoJS_.enc.Utf8.parse(hashSlice_16),
+                        }).toString(external_CryptoJS_.enc.Utf8);
+                        if (_decrypedtCryptInfo != "") {
+                            break;
+                        }
+                        else
+                            modi++;
                     }
-                    else {
-                        hashSlice =
-                            hash.slice(accessKeyConvert % (hash.length + 1)) +
-                                hash.slice(0, accessKeyConvert % (hash.length + 1));
-                    }
-                    let hashSlice16 = hashSlice.slice(0, 16);
-                    let hashSlice_16 = hashSlice.slice(-16);
-                    if (hash.charCodeAt(0)) {
-                        [hashSlice16, hashSlice_16] = [hashSlice_16, hashSlice16];
-                    }
-                    const cryptInfo = data["cryptInfo"];
-                    const _decrypedtCryptInfo = external_CryptoJS_.DES.decrypt(cryptInfo, external_CryptoJS_.enc.Utf8.parse(hashSlice16), {
-                        iv: external_CryptoJS_.enc.Utf8.parse(hashSlice_16),
-                    }).toString(external_CryptoJS_.enc.Utf8);
                     const decrypedtCryptInfo = JSON.parse(atob(_decrypedtCryptInfo));
                     const verifyTime = (obj) => {
                         if (new Date()["getTime"]() / 1000 - obj["time"] > 86400) {
@@ -30104,7 +30114,7 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
             }
         }
         if (isVIP) {
-            if (typeof unsafeWindow.tokenOptions?.Jjwxc === "object") {
+            if ((unsafeWindow.tokenOptions?.Jjwxc ?? null) != null) {
                 return getChapterByApi();
             }
             else {
@@ -38902,6 +38912,7 @@ async function getRule() {
             ruleClass = bqu9();
             break;
         }
+        case "www.23xsww.cc":
         case "www.biququ.com":
         case "www.ddyveshu.cc":
         case "www.81book.com":
