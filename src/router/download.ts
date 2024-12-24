@@ -482,6 +482,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = QQBook;
       break;
     }
+    case "www.60ksw.com": {
+      const { i60ksw } = await import("../rules/onePage/60ksw");
+      ruleClass = i60ksw();
+      break;
+    }
     case "czbooks.net": {
       const { czbooks } = await import("../rules/onePage/czbooks");
       ruleClass = czbooks();

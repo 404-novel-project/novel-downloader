@@ -22,6 +22,7 @@
   ],
   "incompatible": ["Internet Explorer"],
   "match": [
+    "*://www.60ksw.com/*/*/*/index.html",
     "*://czbooks.net/n/*",
     "*://book.qq.com/book-detail/*",
     "*://fanqienovel.com/page/*",
