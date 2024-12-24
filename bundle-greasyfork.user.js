@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1043
+// @version        5.2.1045
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -277,6 +277,7 @@
 // @match          *://xr.unionread.net/bookdetail/*
 // @match          *://www.qu-la.com/booktxt/*/
 // @match          *://www.bilibili.com/read/readlist/*
+// @match          *://www.69yuedu.net/article/*.html
 // @compatible     Firefox 100+
 // @compatible     Chrome 85+
 // @compatible     Edge 85+
@@ -13901,6 +13902,85 @@ const c69shu = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */
     },
     language: "zh",
     concurrencyLimit: 1,
+});
+
+
+/***/ }),
+
+/***/ "./src/rules/onePageWithMultiIndexPage/69yuedu.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   c69yuedu: () => (/* binding */ c69yuedu)
+/* harmony export */ });
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePageWithMultiIndexPage/template.ts");
+
+
+
+const c69yuedu = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
+    bookUrl: document.location.href,
+    bookname: document.querySelector("h1")?.innerText ?? "",
+    author: document.querySelector(".booknav2 > p:nth-child(2) > a")?.innerText ?? "",
+    introDom: document.querySelector(".navtxt"),
+    introDomPatch: (content) => content,
+    coverUrl: document.querySelector(".bookimg2 > img")?.src ?? null,
+    getIndexPages: async () => {
+        const indexPages = [];
+        const menuUrl = document.querySelector('.addbtn a.btn[href^="/chapters/"]').href;
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .wA)(menuUrl, "GBK");
+        indexPages.push(doc);
+        return indexPages;
+    },
+    getAList: (doc) => Array.from(doc.querySelectorAll("#chapters ul a")),
+    getAName: (aElem) => aElem.innerText.trim(),
+    getContent: (doc) => doc.querySelector(".content"),
+    contentPatch: (content) => {
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)(".txtright, .bottom-ad", true, content);
+        const walker = document.createTreeWalker(content, NodeFilter.SHOW_TEXT, null);
+        const nodesToReplace = [];
+        while (walker.nextNode()) {
+            const node = walker.currentNode;
+            if (node.parentNode &&
+                node.parentNode.nodeName !== 'P' &&
+                node.textContent &&
+                node.textContent.trim() !== '') {
+                nodesToReplace.push(node);
+            }
+        }
+        nodesToReplace.forEach((node) => {
+            const p = document.createElement('p');
+            p.textContent = node.textContent;
+            if (node.parentNode) {
+                node.parentNode.replaceChild(p, node);
+            }
+        });
+        const paragraphs = content.querySelectorAll('p');
+        const brRegex = /<br\s*\/?>/i;
+        paragraphs.forEach((p) => {
+            if (brRegex.test(p.innerHTML)) {
+                const parts = p.innerHTML.split(brRegex);
+                const fragment = document.createDocumentFragment();
+                parts.forEach((part) => {
+                    const newP = document.createElement('p');
+                    newP.innerHTML = part.trim();
+                    if (newP.innerHTML !== '') {
+                        fragment.appendChild(newP);
+                    }
+                });
+                if (p.parentNode) {
+                    p.parentNode.replaceChild(fragment, p);
+                }
+            }
+        });
+        return content;
+    },
+    language: "zh",
+    concurrencyLimit: 1,
+    sleepTime: 500,
+    maxSleepTime: 1500
 });
 
 
@@ -38895,6 +38975,11 @@ async function getRule() {
         case "book.xbookcn.net": {
             const { xbookcn } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePageWithMultiIndexPage/xbookcn.ts"));
             ruleClass = xbookcn();
+            break;
+        }
+        case "www.69yuedu.net": {
+            const { c69yuedu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePageWithMultiIndexPage/69yuedu.ts"));
+            ruleClass = c69yuedu();
             break;
         }
         case "www.quanshuzhai.com": {
