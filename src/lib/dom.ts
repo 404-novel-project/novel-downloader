@@ -19,7 +19,7 @@ export function rm2(filters: (string | RegExp)[], dom: HTMLElement) {
       if (node.nodeName === "#text") {
         text = (node as Text).textContent ?? "";
       } else {
-        text = (node as HTMLElement).innerText;
+        text = (node as HTMLElement).innerText ?? "";
       }
       if (text.length < 200 || node instanceof Text) {
         for (const filter of filters) {
