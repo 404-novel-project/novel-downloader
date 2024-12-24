@@ -174,7 +174,7 @@ EPUB 文件请使用相应阅读器阅读。
 | [缤纷幻想](https://colorful-fantasybooks.com/)    | ✅       | ❎       |                                                                                          |
 | [弟子小说网](https://www.dizishu.cc/xiaoshuo/)   | ✅       | ❎       |                                                                                          |
 | [新笔趣阁](https://www.ibiquge.la/)               | ✅       | ❎       |                                                                                          |
-| [69 书吧](https://www.69shu.com/)                 | ✅       | ❎       |                                                                                          |
+| [69 书吧](https://69shuba.cx/)                 | ✅       | ❎       |                                                                                          |
 | [笔下文学](https://www.ywggzy.com/)               | ✅       | ❎       |                                                                                          |
 | [飘天文学网](https://www.piaotia.com/)                | ✅       | ❎       |                                                                                          |
 | [红袖招](https://hongxiuzhao.me/)                 | ✅       | ❎       |                                                                                          |
@@ -186,6 +186,7 @@ EPUB 文件请使用相应阅读器阅读。
 | [新笔趣阁](http://www.boqugew.com/)               | ✅       | ❎       |                                                                                          |
 | [全本同人小说](https://www.qbtr.cc/)               | ✅       | ❎       |                                                                                          |
 | [鬼大爷网](https://b.guidaye.com/)               | ✅       | ❎       |                                                                                          |
+| [69阅读](https://www.69yuedu.net/)                 | ✅       | ❎       |                                                                                          |
 
 </details>
 
