@@ -482,6 +482,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = QQBook;
       break;
     }
+    case "czbooks.net": {
+      const { czbooks } = await import("../rules/onePage/czbooks");
+      ruleClass = czbooks();
+      break;
+    }
     case "www.xiaoshuowu.com": {
       const { xiaoshuowu } = await import("../rules/twoPage/xiaoshuowu");
       ruleClass = xiaoshuowu();
