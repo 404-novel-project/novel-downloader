@@ -477,6 +477,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = c18kanshu();
       break;
     }
+    case "book.qq.com": {
+      const { QQBook } = await import("../rules/special/original/qqbook");
+      ruleClass = QQBook;
+      break;
+    }
     case "www.xiaoshuowu.com": {
       const { xiaoshuowu } = await import("../rules/twoPage/xiaoshuowu");
       ruleClass = xiaoshuowu();
