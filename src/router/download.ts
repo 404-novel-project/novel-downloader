@@ -487,6 +487,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = i60ksw();
       break;
     }
+    case "www.lzdzw.com": {
+      const { lzdzw } = await import("../rules/special/reprint/lzdzw");
+      ruleClass = lzdzw;
+      break;
+    }
     case "czbooks.net": {
       const { czbooks } = await import("../rules/onePage/czbooks");
       ruleClass = czbooks();
