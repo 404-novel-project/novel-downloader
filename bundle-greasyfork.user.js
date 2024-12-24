@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1046
+// @version        5.2.1049
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -55,6 +55,9 @@
 // @exclude        *://www.bilinovel.com/novel/*/*.html
 // @exclude        *://www.qbtr.cc/*/*/*.html
 // @exclude        *://www.ciyuanji.com/chapter/*
+// @match          *://www.lzdzw.com/*/*.html
+// @match          *://www.60ksw.com/*/*/*/index.html
+// @match          *://czbooks.net/n/*
 // @match          *://book.qq.com/book-detail/*
 // @match          *://fanqienovel.com/page/*
 // @match          *://book.sfacg.com/Novel/*/MainIndex/
@@ -8901,11 +8904,12 @@ async function calculateSha1(blob) {
 /* harmony export */   bx: () => (/* binding */ ggetText),
 /* harmony export */   eF: () => (/* binding */ getFrameContentCondition),
 /* harmony export */   kP: () => (/* binding */ getHtmlDomWithRetry),
+/* harmony export */   n6: () => (/* binding */ getFrameContentEvent),
 /* harmony export */   pG: () => (/* binding */ ggetHtmlDOM),
 /* harmony export */   q4: () => (/* binding */ getText),
 /* harmony export */   wA: () => (/* binding */ getHtmlDOM)
 /* harmony export */ });
-/* unused harmony exports fetchWithTimeout, ggetHtmlDomWithRetry, getFrameContentEvent */
+/* unused harmony exports fetchWithTimeout, ggetHtmlDomWithRetry */
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _setting__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/setting.ts");
@@ -9123,7 +9127,7 @@ function getFrameContentEvent(url, timeout = 0, eventType = "load", sandboxs) {
     frame.width = "1";
     frame.height = "1";
     sandboxs?.forEach((s) => frame.sandbox.add(s));
-    frame.addEventListener("error", (error) => log.error(error));
+    frame.addEventListener("error", (error) => _log__WEBPACK_IMPORTED_MODULE_0___default().error(error));
     const promise = new Promise((resolve, reject) => {
         frame.addEventListener(eventType, function (event) {
             const frameSelf = event.target;
@@ -9137,7 +9141,7 @@ function getFrameContentEvent(url, timeout = 0, eventType = "load", sandboxs) {
             }, timeout);
         });
     });
-    log.debug("[debug]getFrameContent:" + url);
+    _log__WEBPACK_IMPORTED_MODULE_0___default().debug("[debug]getFrameContent:" + url);
     document.body.appendChild(frame);
     return promise;
 }
@@ -12187,6 +12191,32 @@ const c256wxc = (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)(
 
 /***/ }),
 
+/***/ "./src/rules/onePage/60ksw.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   i60ksw: () => (/* binding */ i60ksw)
+/* harmony export */ });
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
+
+const i60ksw = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
+    bookUrl: document.location.href,
+    bookname: document.querySelector("div.booktitle > h1").innerText.trim(),
+    author: document.querySelector("#author").innerText.trim(),
+    introDom: document.querySelector("#bookintro"),
+    introDomPatch: (dom) => dom,
+    coverUrl: document.querySelector("#bookimg img").src,
+    aList: document.querySelectorAll("#chapterlist li > a"),
+    sections: undefined,
+    getSName: (dom) => dom.innerText.trim(),
+    getContent: (doc) => doc.querySelector("#content"),
+    contentPatch: (dom) => dom,
+});
+
+
+/***/ }),
+
 /***/ "./src/rules/onePage/630shu.ts":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -12313,6 +12343,32 @@ const fantasybooks = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleCl
     },
     concurrencyLimit: 3,
     nsfw: true,
+});
+
+
+/***/ }),
+
+/***/ "./src/rules/onePage/czbooks.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   czbooks: () => (/* binding */ czbooks)
+/* harmony export */ });
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
+
+const czbooks = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
+    bookUrl: document.location.href,
+    bookname: document.querySelector("div.info > span.title").innerText.trim(),
+    author: document.querySelector("div.info > span.author").innerText.trim(),
+    introDom: document.querySelector("div.description"),
+    introDomPatch: (dom) => dom,
+    coverUrl: document.querySelector("div.novel-detail .thumbnail > img").src,
+    aList: document.querySelectorAll("#chapter-list li > a"),
+    sections: document.querySelectorAll("#chapter-list li.volume"),
+    getSName: (dom) => dom.innerText.trim(),
+    getContent: (doc) => doc.querySelector("div.content"),
+    contentPatch: (dom) => dom,
 });
 
 
@@ -36638,6 +36694,143 @@ class Lightnovel extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */
 
 /***/ }),
 
+/***/ "./src/rules/special/reprint/lzdzw.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   lzdzw: () => (/* binding */ lzdzw)
+/* harmony export */ });
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
+
+
+
+
+
+
+
+
+class lzdzw extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
+    constructor() {
+        super();
+    }
+    async bookParse() {
+        const bookUrl = document.location.href;
+        const bookname = document.querySelector(".book_info h1").innerText.trim();
+        const author = document.querySelector(".book_info div.options li a").innerText.trim();
+        const intro = document.querySelector("#intro_pc");
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("strong", true, intro);
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .Sf)(["您要是觉得《", "》还不错的话请不要忘记向您QQ群和微博微信里的朋友推荐哦！"], intro);
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .introDomHandle */ .HV)(intro);
+        const additionalMetadate = {};
+        const coverUrl = document.querySelector("img.img-thumbnail").src;
+        (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
+            .then((coverClass) => {
+            additionalMetadate.cover = coverClass;
+        })
+            .catch((error) => _log__WEBPACK_IMPORTED_MODULE_4___default().error(error));
+        const chapters = [];
+        const match = bookUrl.match(/\/(\d+)\.html/);
+        function getAList(doc) {
+            return doc.querySelectorAll(".book_list a");
+        }
+        const ALists = [];
+        if (match) {
+            const id = match[1];
+            const url = `https://www.lzdzw.com/book/${id}/1/`;
+            const contentList = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_5__/* .ggetHtmlDOM */ .pG)(url).then((doc) => doc.querySelectorAll(".page-item option"));
+            for (const a of Array.from(contentList)) {
+                const url = "https://www.lzdzw.com/" + a.getAttribute("value");
+                const dom = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_5__/* .ggetHtmlDOM */ .pG)(url);
+                const AList = getAList(dom);
+                for (const a of Array.from(AList)) {
+                    ALists.push(a);
+                }
+            }
+            let chapterNumber = 0;
+            for (const a of ALists) {
+                chapterNumber++;
+                const chapterName = a.innerText;
+                const chapterUrl = a.href;
+                const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_6__/* .Chapter */ .I({
+                    bookUrl,
+                    bookname,
+                    chapterUrl: chapterUrl,
+                    chapterNumber: chapterNumber,
+                    chapterName: chapterName,
+                    isVIP: false,
+                    isPaid: false,
+                    sectionName: null,
+                    sectionNumber: null,
+                    sectionChapterNumber: null,
+                    chapterParse: this.chapterParse.bind(this),
+                    charset: this.charset,
+                    options: {},
+                });
+                chapters.push(chapter);
+            }
+        }
+        else {
+            throw new Error("获取小说ID失败");
+        }
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .E({
+            bookUrl,
+            bookname,
+            author,
+            introduction,
+            introductionHTML,
+            additionalMetadate,
+            chapters,
+        });
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+        const content = document.createElement("div");
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_5__/* .getFrameContentEvent */ .n6)(chapterUrl);
+        function appendcontent(dom) {
+            if (!dom)
+                return;
+            const br = document.createElement("br");
+            const ps = dom.querySelectorAll("#novelcontent p");
+            for (const p of Array.from(ps)) {
+                content.appendChild(p);
+                content.appendChild(br);
+            }
+        }
+        appendcontent(doc);
+        const url = chapterUrl.replace(".html", "");
+        let i = 0;
+        while (i < 10000) {
+            i++;
+            const newUrl = url + '_' + i + ".html";
+            const dom = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_5__/* .ggetHtmlDOM */ .pG)(newUrl);
+            if (dom.title.match("第1页"))
+                break;
+            appendcontent(dom);
+        }
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .Sf)(["请关闭浏览器阅读模式后查看本章节，否则将出现无法翻页或章节内容丢失等现象。"], content);
+        const text = content.innerText;
+        return {
+            chapterName,
+            contentRaw: content,
+            contentText: text,
+            contentHTML: content,
+            contentImages: null,
+            additionalMetadate: null,
+        };
+    }
+}
+
+
+/***/ }),
+
 /***/ "./src/rules/special/reprint/ttkan.ts":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -39138,6 +39331,21 @@ async function getRule() {
         case "book.qq.com": {
             const { QQBook } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/qqbook.ts"));
             ruleClass = QQBook;
+            break;
+        }
+        case "www.60ksw.com": {
+            const { i60ksw } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/60ksw.ts"));
+            ruleClass = i60ksw();
+            break;
+        }
+        case "www.lzdzw.com": {
+            const { lzdzw } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/reprint/lzdzw.ts"));
+            ruleClass = lzdzw;
+            break;
+        }
+        case "czbooks.net": {
+            const { czbooks } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/czbooks.ts"));
+            ruleClass = czbooks();
             break;
         }
         case "www.xiaoshuowu.com": {
