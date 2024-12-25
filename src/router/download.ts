@@ -482,6 +482,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = c18kanshu();
       break;
     }
+    case "novelpia.jp": {
+      const { novelpia } = await import("../rules/special/original/novelpia");
+      ruleClass = novelpia;
+      break;
+    }
     case "book.qq.com": {
       const { QQBook } = await import("../rules/special/original/qqbook");
       ruleClass = QQBook;

@@ -24,6 +24,7 @@
   "match": [
     "*://www.uaa.com/novel/intro?id=*",
     "*://www.lzdzw.com/*/*.html",
+    "*://novelpia.jp/novel/*",
     "*://www.60ksw.com/*/*/*/index.html",
     "*://czbooks.net/n/*",
     "*://book.qq.com/book-detail/*",
