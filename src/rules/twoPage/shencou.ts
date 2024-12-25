@@ -1,6 +1,6 @@
 import { rm, rm2 } from "../../lib/dom";
 import { ReferrerMode } from "../../main/main";
-import { mkRuleClass } from "./tempate";
+import { mkRuleClass } from "./template";
 
 export const shencou = () => {
   const anotherPageUrl = (

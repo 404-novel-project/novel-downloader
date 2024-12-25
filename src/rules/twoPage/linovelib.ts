@@ -1,4 +1,4 @@
-import { mkRuleClass } from "./tempate";
+import { mkRuleClass } from "./template";
 import { Status } from "../../main/main";
 import { chapterHiddenFix, nextPageParse } from "../../lib/rule";
 import { rm, sandboxed } from "../../lib/dom";

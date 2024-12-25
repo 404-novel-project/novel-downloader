@@ -1,4 +1,4 @@
-import { mkRuleClass } from "./tempate";
+import { mkRuleClass } from "./template";
 
 export const washuge = () => {
   const bookUrl = document.location.href;

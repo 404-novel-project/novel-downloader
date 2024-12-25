@@ -1,5 +1,5 @@
 import { rm, rms } from "../../lib/dom";
-import { mkRuleClass } from "./tempate";
+import { mkRuleClass } from "./template";
 
 export const xiaoshuowu = () => {
   const href = document.location.href;

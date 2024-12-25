@@ -472,6 +472,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = jingcaiyuedu6();
       break;
     }
+    case "www.uaa.com": {
+      const { uaa } = await import("../rules/onePage/uaa");
+      ruleClass = uaa();
+      break;
+    }
     case "www.18kanshu.com": {
       const { c18kanshu } = await import("../rules/twoPage/18kanshu");
       ruleClass = c18kanshu();

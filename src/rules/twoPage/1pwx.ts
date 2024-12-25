@@ -1,5 +1,5 @@
 import { rm } from "../../lib/dom";
-import { mkRuleClass } from "./tempate";
+import { mkRuleClass } from "./template";
 
 export const xiaoshuodaquan = () =>
   mkRuleClass({

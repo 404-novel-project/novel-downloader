@@ -1,7 +1,7 @@
 import { htmlTrim } from "../../lib/cleanDOM";
 import { rm } from "../../lib/dom";
 import { nextPageParse } from "../../lib/rule";
-import { mkRuleClass } from "./tempate";
+import { mkRuleClass } from "./template";
 
 export const yibige = () =>
   mkRuleClass({

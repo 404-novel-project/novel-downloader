@@ -1,4 +1,4 @@
-import { mkRuleClass } from "./tempate";
+import { mkRuleClass } from "./template";
 import { rm } from "../../lib/dom";
 
 export const wenku8 = () => {

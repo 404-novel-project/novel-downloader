@@ -1,5 +1,5 @@
 import { rm2 } from "../../lib/dom";
-import { mkRuleClass } from "./tempate";
+import { mkRuleClass } from "./template";
 
 export const jingcaiyuedu6 = () =>
   mkRuleClass({

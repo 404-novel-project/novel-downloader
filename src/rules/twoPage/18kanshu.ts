@@ -1,5 +1,5 @@
 import { convertFixWidth, isFixWidth } from "../../lib/cleanDOM";
-import { mkRuleClass } from "./tempate";
+import { mkRuleClass } from "./template";
 
 export const c18kanshu = () =>
   mkRuleClass({
