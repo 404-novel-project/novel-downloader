@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1051
+// @version        5.2.1052
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -55,6 +55,7 @@
 // @exclude        *://www.bilinovel.com/novel/*/*.html
 // @exclude        *://www.qbtr.cc/*/*/*.html
 // @exclude        *://www.ciyuanji.com/chapter/*
+// @match          *://www.po18.tw/books/*
 // @match          *://www.uaa.com/novel/intro?id=*
 // @match          *://www.lzdzw.com/*/*.html
 // @match          *://novelpia.jp/novel/*
@@ -31949,6 +31950,133 @@ async function getNovel(novelID, lang, version) {
 
 /***/ }),
 
+/***/ "./src/rules/special/original/po18.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   po18: () => (/* binding */ po18)
+/* harmony export */ });
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/main.ts");
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/dom.ts");
+
+
+
+
+
+
+
+
+
+
+class po18 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
+    constructor() {
+        super();
+        this.attachmentMode = "TM";
+        this.concurrencyLimit = 1;
+    }
+    async bookParse() {
+        const bookUrl = document.location.href;
+        const bookID = bookUrl.match(/books\/(\d+)/)?.[1];
+        const bookname = document.querySelector("h1.book_name").innerText.trim();
+        const author = document.querySelector("a.book_author").innerText.trim();
+        const introDom = document.querySelector("div.B_I_content");
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .HV)(introDom);
+        const additionalMetadate = {};
+        const coverUrl = document.querySelector("div.book_cover > img").src;
+        if (coverUrl) {
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
+                .then((coverClass) => {
+                additionalMetadate.cover = coverClass;
+            })
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_3___default().error(error));
+        }
+        additionalMetadate.tags = Array.from(document.querySelectorAll("div.book_intro_tags > a")).map((a) => a.innerText.trim());
+        const dom = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_4__/* .getHtmlDOM */ .wA)(`https://www.po18.tw/books/${bookID}/articles`);
+        const chapters = [];
+        const cos = dom.querySelectorAll("div.list-view div.c_l");
+        let chapterNumber = 0;
+        for (const aElem of Array.from(cos)) {
+            chapterNumber++;
+            const Elema = aElem.querySelector("div.l_chaptname");
+            const Elemb = aElem.querySelector("div.l_btn a");
+            const chapterName = Elema.innerText.trim();
+            const chapterUrl = Elema.querySelector("a")?.href ?? "javscript:void(0)";
+            const isVIP = Elemb.innerText.trim() != "免費閱讀";
+            const isPaid = Elema.querySelector("a") ? true : false;
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .I({
+                bookUrl,
+                bookname,
+                chapterUrl,
+                chapterNumber,
+                chapterName,
+                isVIP: isVIP,
+                isPaid: isPaid,
+                sectionName: null,
+                sectionNumber: null,
+                sectionChapterNumber: null,
+                chapterParse: this.chapterParse,
+                charset: this.charset,
+                options: {},
+            });
+            if (isVIP) {
+                chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status */ .nW.aborted;
+                if (chapter.isPaid) {
+                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status */ .nW.pending;
+                }
+            }
+            chapters.push(chapter);
+        }
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .E({
+            bookUrl,
+            bookname,
+            author,
+            introduction,
+            introductionHTML,
+            additionalMetadate,
+            chapters,
+        });
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+        _log__WEBPACK_IMPORTED_MODULE_3___default().debug(`[Chapter]请求 ${chapterUrl}`);
+        const chapterID = chapterUrl.match(/articles\/(\d+)/)?.[1];
+        const url = chapterUrl.replace('articles', 'articlescontent');
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_4__/* .gfetch */ ._V)(url, {
+            cookie: document.cookie,
+            method: "GET",
+            headers: {
+                Accept: "text/html, */*; q=0.01",
+                "X-Requested-With": "XMLHttpRequest",
+                Referer: chapterUrl,
+            },
+        });
+        const content = document.createElement("div");
+        content.innerHTML = (await doc.responseText).replaceAll("<p>\n", "");
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_8__.rm)("blockquote", true, content);
+        const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_9__/* .cleanDOM */ .an)(content, "TM");
+        return {
+            chapterName,
+            contentRaw: content,
+            contentText: text,
+            contentHTML: dom,
+            contentImages: images,
+            additionalMetadate: null,
+        };
+    }
+}
+
+
+/***/ }),
+
 /***/ "./src/rules/special/original/qidian.ts":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -39524,6 +39652,11 @@ async function getRule() {
         case "www.18kanshu.com": {
             const { c18kanshu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/18kanshu.ts"));
             ruleClass = c18kanshu();
+            break;
+        }
+        case "www.po18.tw": {
+            const { po18 } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/po18.ts"));
+            ruleClass = po18;
             break;
         }
         case "novelpia.jp": {
