@@ -22,6 +22,7 @@
   ],
   "incompatible": ["Internet Explorer"],
   "match": [
+    "*://www.po18.tw/books/*",
     "*://www.uaa.com/novel/intro?id=*",
     "*://www.lzdzw.com/*/*.html",
     "*://novelpia.jp/novel/*",
