@@ -300,7 +300,7 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = fuxiaoshu;
       break;
     }
-    case "www.xiaoshuowanben.com": {
+    case "www.wanbengo.com": {
       const { wanben } = await import("../rules/onePage/wanben");
       ruleClass = wanben();
       break;
@@ -422,7 +422,7 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = ptwxz();
       break;
     }
-    case "m.xiaoshuowanben.com": {
+    case "m.wanbengo.com": {
       const { wanben } = await import(
         "../rules/onePageWithMultiIndexPage/wanben"
       );

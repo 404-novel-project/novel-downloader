@@ -155,7 +155,7 @@ EPUB 文件请使用相应阅读器阅读。
 | [笔趣阁](https://www.biquzw.la/)                  | ✅       | ❎       |                                                                                          |
 | [25 中文网](http://www.i25zw.com/)                 | ✅       | ❎       |                                                                                          |
 | [天域小说网](https://www.tycqzw.com/)             | ✅       | ❎       |                                                                                          |
-| [完本神站](https://www.wanben.org/)               | ✅       | ❎       |                                                                                          |
+| [完本神站](https://www.wanbengo.com/)               | ✅       | ❎       |                                                                                          |
 | [燃文小说](https://www.ranwen.la)                 | ✅       | ❎       |                                                                                          |
 | [望书阁](https://www.wangshugu.org/)               | ✅       | ❎       |                                                                                          |
 | [百合小说网](https://m.baihexs.com/)              | ✅       | ❎       |                                                                                          |
