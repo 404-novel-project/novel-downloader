@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1052
+// @version        5.2.1054
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -56,6 +56,8 @@
 // @exclude        *://www.qbtr.cc/*/*/*.html
 // @exclude        *://www.ciyuanji.com/chapter/*
 // @match          *://www.po18.tw/books/*
+// @match          *://b.faloo.com/*
+// @match          *://www.ihuaben.com/book/*
 // @match          *://www.uaa.com/novel/intro?id=*
 // @match          *://www.lzdzw.com/*/*.html
 // @match          *://novelpia.jp/novel/*
@@ -12853,6 +12855,44 @@ const alphapolis = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClas
 
 /***/ }),
 
+/***/ "./src/rules/onePage/original/faloo.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   faloo: () => (/* binding */ faloo)
+/* harmony export */ });
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
+
+
+const faloo = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
+    bookUrl: document.location.href,
+    bookname: document.querySelector("h1#novelName").innerText.trim(),
+    author: document.querySelector("img.rentouOne").innerText.trim(),
+    introDom: document.querySelector("div.T-L-T-C-Box1"),
+    introDomPatch: (dom) => dom,
+    coverUrl: document.querySelector("img.imgcss")
+        ?.src ?? null,
+    additionalMetadatePatch: (additionalMetadate) => {
+        additionalMetadate.tags = Array.from(document.querySelectorAll("div.T-R-T-B2-Box1 a")).map((a) => a.innerText.trim());
+        return additionalMetadate;
+    },
+    aList: document.querySelectorAll("div.C-Fo-Zuo div.DivTable a"),
+    getAName: (aElem) => aElem?.innerText.trim(),
+    sections: document.querySelectorAll("div.C-Fo-Zuo h3 a"),
+    getSName: (sElem) => sElem.innerText.trim(),
+    getContent: (doc) => doc.querySelector("div.noveContent"),
+    contentPatch: (content) => {
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("b", true, content);
+        return content;
+    },
+    language: "zh",
+});
+
+
+/***/ }),
+
 /***/ "./src/rules/onePage/original/houhuayuan.ts":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -16737,6 +16777,118 @@ class Hanwujinian extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass *
             additionalMetadate: null,
         };
     }
+}
+
+
+/***/ }),
+
+/***/ "./src/rules/special/original/ihuaben.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   ihuaben: () => (/* binding */ ihuaben)
+/* harmony export */ });
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/dom.ts");
+
+
+
+
+
+
+
+
+class ihuaben extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
+    constructor() {
+        super();
+        this.concurrencyLimit = 1;
+        this.attachmentMode = "TM";
+    }
+    async bookParse() {
+        const bookUrl = document.location.href;
+        const bookname = document.querySelector("h1.text-danger")?.innerText;
+        const author = document.querySelector("a.text-muted")?.innerText;
+        const introduction = document.querySelector("div.aboutbook")?.innerText;
+        const introductionHTML = document.createElement("div");
+        introductionHTML.innerText = introduction;
+        const coverUrl = document.querySelector("div.cover img")?.src;
+        const additionalMetadate = {
+            tags: Array.from(document.querySelectorAll("div.tagList a")).map((e) => e.innerText),
+            language: "zh",
+        };
+        if (coverUrl) {
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
+                .then((img) => {
+                additionalMetadate.cover = img;
+            })
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_2___default().error(error));
+        }
+        const chapternumsMatch = document.querySelector("div.chapters h2.hidden-xs a")?.innerText?.match(/\d+/);
+        let chapternums = chapternumsMatch ? parseInt(chapternumsMatch[0]) : 0;
+        chapternums = Math.ceil(chapternums / 40);
+        const chapterList = Array.from(getList(document));
+        for (let i = 2; i <= chapternums; i++) {
+            const url = bookUrl + "?page=" + i;
+            const dom = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_3__/* .ggetHtmlDOM */ .pG)(url);
+            getList(dom).forEach((e) => chapterList.push(e));
+        }
+        let chapterNumber = 0;
+        const chapters = chapterList.map((c) => {
+            const cc = c;
+            const chapterUrl = cc.href;
+            const ChapterName = cc.innerText;
+            chapterNumber++;
+            return new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .I({
+                bookUrl,
+                bookname,
+                chapterUrl,
+                chapterNumber: chapterNumber,
+                chapterName: ChapterName,
+                isVIP: false,
+                isPaid: false,
+                sectionName: null,
+                sectionNumber: null,
+                sectionChapterNumber: null,
+                chapterParse: this.chapterParse,
+                charset: this.charset,
+                options: {},
+            });
+        });
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .E({
+            bookUrl,
+            bookname,
+            author,
+            introduction,
+            introductionHTML,
+            additionalMetadate,
+            chapters,
+        });
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+        const contentRaw = document.createElement("div");
+        contentRaw.innerHTML = (await (0,_lib_http__WEBPACK_IMPORTED_MODULE_3__/* .getFrameContentEvent */ .n6)(chapterUrl))?.querySelector("div.discription")?.innerHTML ?? "";
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_6__.rm)("i", true, contentRaw);
+        const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__/* .cleanDOM */ .an)(contentRaw, "TM");
+        return {
+            chapterName,
+            contentRaw,
+            contentText: text,
+            contentHTML: dom,
+            contentImages: images,
+            additionalMetadate: null,
+        };
+    }
+}
+function getList(dom) {
+    return dom.querySelectorAll("div.chapterlist span.chapterTitle a");
 }
 
 
@@ -39654,9 +39806,19 @@ async function getRule() {
             ruleClass = c18kanshu();
             break;
         }
+        case "www.ihuaben.com": {
+            const { ihuaben } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/ihuaben.ts"));
+            ruleClass = ihuaben;
+            break;
+        }
         case "www.po18.tw": {
             const { po18 } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/po18.ts"));
             ruleClass = po18;
+            break;
+        }
+        case "b.faloo.com": {
+            const { faloo } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/original/faloo.ts"));
+            ruleClass = faloo();
             break;
         }
         case "novelpia.jp": {

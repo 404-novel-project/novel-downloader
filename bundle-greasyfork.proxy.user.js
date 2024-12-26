@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1052
+// @version        5.2.1054
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -56,6 +56,8 @@
 // @exclude        *://www.qbtr.cc/*/*/*.html
 // @exclude        *://www.ciyuanji.com/chapter/*
 // @match          *://www.po18.tw/books/*
+// @match          *://b.faloo.com/*
+// @match          *://www.ihuaben.com/book/*
 // @match          *://www.uaa.com/novel/intro?id=*
 // @match          *://www.lzdzw.com/*/*.html
 // @match          *://novelpia.jp/novel/*
