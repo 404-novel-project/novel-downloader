@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1054
+// @version        5.2.1055
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -58,6 +58,7 @@
 // @match          *://www.po18.tw/books/*
 // @match          *://b.faloo.com/*
 // @match          *://www.ihuaben.com/book/*
+// @match          *://www.kadokado.com.tw/book/*
 // @match          *://www.uaa.com/novel/intro?id=*
 // @match          *://www.lzdzw.com/*/*.html
 // @match          *://novelpia.jp/novel/*
@@ -30463,6 +30464,118 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
 
 /***/ }),
 
+/***/ "./src/rules/special/original/kadokado.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   kadokado: () => (/* binding */ kadokado)
+/* harmony export */ });
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/lib/http.ts");
+
+
+
+
+
+
+
+class kadokado extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
+    constructor() {
+        super();
+        this.concurrencyLimit = 1;
+        this.attachmentMode = "TM";
+    }
+    async bookParse() {
+        const bookUrl = document.location.href;
+        const bookIDMatch = bookUrl.match(/book\/(\d+)/);
+        const bookID = bookIDMatch ? bookIDMatch[1] : '000';
+        const bookname = document.querySelector("main > section div h1")?.innerText;
+        const authorDom = document.querySelector("main > section > div > div > span > a");
+        const author = authorDom ? authorDom.innerText : "佚名";
+        const authorIDMatch = authorDom?.href.match(/user\/(\d+)/);
+        const authorID = authorIDMatch ? authorIDMatch[1] : '000';
+        const introduction = document.querySelector("section#introduction p")?.innerText;
+        const introductionHTML = document.createElement("div");
+        introductionHTML.innerText = introduction;
+        const coverUrl = document.querySelector("main > section img")?.src;
+        const additionalMetadate = {
+            tags: Array.from(document.querySelectorAll("main > section > div > div > div > a")).map((e) => e.innerText),
+            language: "zh",
+        };
+        if (coverUrl) {
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
+                .then((img) => {
+                additionalMetadate.cover = img;
+            })
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_2___default().error(error));
+        }
+        const sectionList = Array.from(document.querySelectorAll("section#chapter > div >div"));
+        let chapterNumber = 0;
+        let sectionNumber = 0;
+        let sectionChapterNumber = 0;
+        const chapters = [];
+        sectionList.forEach((e) => {
+            sectionChapterNumber = 0;
+            sectionNumber++;
+            const sectionName = e.querySelector("h3")?.innerText;
+            const chapterList = Array.from(e.querySelectorAll("ul li"));
+            chapterList.forEach((c) => {
+                const chapterUrl = c.querySelector("a").href + `?titleId=${bookID}&ownerId=${authorID}`;
+                const ChapterName = c.querySelector("h4").innerText;
+                chapterNumber++;
+                sectionChapterNumber++;
+                chapters.push(new _main_Chapter__WEBPACK_IMPORTED_MODULE_3__/* .Chapter */ .I({
+                    bookUrl,
+                    bookname,
+                    chapterUrl,
+                    chapterNumber: chapterNumber,
+                    chapterName: ChapterName,
+                    isVIP: false,
+                    isPaid: false,
+                    sectionName,
+                    sectionNumber,
+                    sectionChapterNumber,
+                    chapterParse: this.chapterParse,
+                    charset: this.charset,
+                    options: {},
+                }));
+            });
+        });
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_4__/* .Book */ .E({
+            bookUrl,
+            bookname,
+            author,
+            introduction,
+            introductionHTML,
+            additionalMetadate,
+            chapters,
+        });
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+        const contentRaw = document.createElement("div");
+        contentRaw.innerHTML = (await (0,_lib_http__WEBPACK_IMPORTED_MODULE_5__/* .getFrameContentEvent */ .n6)(chapterUrl))?.querySelector("ul > div")?.innerHTML ?? "";
+        const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_6__/* .cleanDOM */ .an)(contentRaw, "TM");
+        return {
+            chapterName,
+            contentRaw,
+            contentText: text,
+            contentHTML: dom,
+            contentImages: images,
+            additionalMetadate: null,
+        };
+    }
+}
+
+
+/***/ }),
+
 /***/ "./src/rules/special/original/lcread.ts":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -39809,6 +39922,11 @@ async function getRule() {
         case "www.ihuaben.com": {
             const { ihuaben } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/ihuaben.ts"));
             ruleClass = ihuaben;
+            break;
+        }
+        case "www.kadokado.com.tw": {
+            const { kadokado } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/kadokado.ts"));
+            ruleClass = kadokado;
             break;
         }
         case "www.po18.tw": {
