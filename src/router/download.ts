@@ -482,6 +482,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = c18kanshu();
       break;
     }
+    case "www.ihuaben.com": {
+      const { ihuaben } = await import("../rules/special/original/ihuaben");
+      ruleClass = ihuaben;
+      break;
+    }
     case "www.po18.tw": {
       const { po18 } = await import("../rules/special/original/po18");
       ruleClass = po18;
