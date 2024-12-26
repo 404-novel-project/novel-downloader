@@ -487,6 +487,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = po18;
       break;
     }
+    case "b.faloo.com": {
+      const { faloo } = await import("../rules/onePage/original/faloo");
+      ruleClass = faloo();
+      break;
+    }
     case "novelpia.jp": {
       const { novelpia } = await import("../rules/special/original/novelpia");
       ruleClass = novelpia;
