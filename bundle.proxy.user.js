@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1055
+// @version        5.2.1056
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -213,8 +213,8 @@
 // @match          *://www.kanunu8.com/*
 // @match          *://www.ciyuanji.com/*
 // @match          *://ciyuanji.com/*
-// @match          *://m.xiaoshuowanben.com/*/
-// @match          *://www.xiaoshuowanben.com/*/
+// @match          *://m.wanbengo.com/*/
+// @match          *://www.wanbengo.com/*/
 // @match          *://www.ranwen.la/files/article/*/*/
 // @match          *://www.wangshugu.org/books/*/*/
 // @match          *://m.baihexs.com/info-*/
@@ -274,7 +274,6 @@
 // @match          *://www.ttkan.co/novel/chapters/*
 // @match          *://cn.ttkan.co/novel/chapters/*
 // @match          *://tw.ttkan.co/novel/chapters/*
-// @match          *://www.xiaoshuowanben.com/*/
 // @match          *://www.xbyuan.com/*/
 // @match          *://www.quanzhifashi.com/novel/*/
 // @match          *://www.42zw.la/book/*/
@@ -366,7 +365,7 @@
 // @connect        duread.cn
 // @connect        ttkan.co
 // @connect        bg3.co
-// @connect        xiaoshuowanben.com
+// @connect        wanbengo.com
 // @connect        xbyuan.com
 // @connect        shaoniandream.com
 // @connect        fuxs1.com
