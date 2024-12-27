@@ -46,16 +46,28 @@ export class Kanunu8 extends BaseRuleClass {
     let getName: ((sElem: Element) => string) | null = null;
 
     function aListFilter(a: Element) {
-      const filters = ["writer", "/zj/", "index.html"];
-      for (const f of filters) {
+      const filters1 = ["writer", "/zj/", "index.html"]; //不能包含
+      const filters2 = [".html"]; // 必须包含的
+      for (const f of filters1) {
         if ((a as HTMLAnchorElement).href.includes(f)) {
+          return false;
+        }
+      }
+      for (const f of filters2) {
+        if ((a as HTMLAnchorElement).href.includes(f) == false) {
           return false;
         }
       }
       return true;
     }
-
-    if (document.querySelector("div.book")) {
+    if (document.querySelector(".mulu-list ul > li > a")) {
+      aList = Array.from(document.querySelectorAll(".mulu-list ul > li > a")).filter(
+        aListFilter
+      );
+      sections = document.querySelectorAll(".mulu-title > h2");
+      getName = (sElem: Element) => (sElem as HTMLElement).innerText;
+    }
+    else if (document.querySelector("div.book")) {
       aList = Array.from(document.querySelectorAll("div.book a")).filter(
         aListFilter
       );
