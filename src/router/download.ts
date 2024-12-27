@@ -127,7 +127,7 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = Lofter;
       break;
     }
-    case "www.shubl.com": {
+    case "www.shubl.com": case "shubl.com": {
       const { Shubl } = await import("../rules/special/original/ciweimao");
       ruleClass = Shubl;
       break;

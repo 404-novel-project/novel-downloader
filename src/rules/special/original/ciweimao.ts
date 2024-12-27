@@ -139,7 +139,7 @@ export class Shubl extends BaseRuleClass {
     charset: string,
     options: object
   ) {
-    const rootPath = "https://www.shubl.com/";
+    const rootPath = document.location.origin + '/';
     const [parentWidth, setFontSize] = [939.2, "18"];
     return getChapter({
       chapterUrl,
@@ -527,7 +527,7 @@ function getChapter({
         return (
           document.querySelector("div.dropdown-menu")?.childElementCount === 3
         );
-      } else if (document.location.host === "www.shubl.com") {
+      } else if (document.location.host === "www.shubl.com" || document.location.host === "shubl.com") {
         return (
           document.querySelector("div.pull-right:nth-child(2)")
             ?.childElementCount === 3

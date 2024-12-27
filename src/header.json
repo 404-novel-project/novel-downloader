@@ -153,6 +153,7 @@
     "*://*.lofter.com/",
     "*://*.lofter.com/?page=*",
     "*://www.shubl.com/book/book_detail/*",
+    "*://shubl.com/book/book_detail/*",
     "*://m.haitangtxt.net/*/*/",
     "*://ebook.longmabook.com/*",
     "*://www.haitangbook.com/*",
