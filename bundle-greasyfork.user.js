@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1060
+// @version        5.2.1061
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -186,6 +186,7 @@
 // @match          *://*.lofter.com/
 // @match          *://*.lofter.com/?page=*
 // @match          *://www.shubl.com/book/book_detail/*
+// @match          *://shubl.com/book/book_detail/*
 // @match          *://m.haitangtxt.net/*/*/
 // @match          *://ebook.longmabook.com/*
 // @match          *://www.haitangbook.com/*
@@ -15158,7 +15159,7 @@ class Shubl extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .Q {
         });
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        const rootPath = "https://www.shubl.com/";
+        const rootPath = document.location.origin + '/';
         const [parentWidth, setFontSize] = [939.2, "18"];
         return getChapter({
             chapterUrl,
@@ -15427,7 +15428,7 @@ function getChapter({ chapterUrl, chapterName, isVIP, isPaid, charset, options, 
             if (document.location.host === "www.duread.cn" || document.location.host === "duread.cn") {
                 return (document.querySelector("div.dropdown-menu")?.childElementCount === 3);
             }
-            else if (document.location.host === "www.shubl.com") {
+            else if (document.location.host === "www.shubl.com" || document.location.host === "shubl.com") {
                 return (document.querySelector("div.pull-right:nth-child(2)")
                     ?.childElementCount === 3);
             }
@@ -39797,7 +39798,8 @@ async function getRule() {
             ruleClass = Lofter;
             break;
         }
-        case "www.shubl.com": {
+        case "www.shubl.com":
+        case "shubl.com": {
             const { Shubl } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/ciweimao.ts"));
             ruleClass = Shubl;
             break;
