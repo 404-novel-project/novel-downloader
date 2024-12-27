@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1059
+// @version        5.2.1060
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -37192,15 +37192,26 @@ class Kanunu8 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q
         let sections = null;
         let getName = null;
         function aListFilter(a) {
-            const filters = ["writer", "/zj/", "index.html"];
-            for (const f of filters) {
+            const filters1 = ["writer", "/zj/", "index.html"];
+            const filters2 = [".html"];
+            for (const f of filters1) {
                 if (a.href.includes(f)) {
+                    return false;
+                }
+            }
+            for (const f of filters2) {
+                if (a.href.includes(f) == false) {
                     return false;
                 }
             }
             return true;
         }
-        if (document.querySelector("div.book")) {
+        if (document.querySelector(".mulu-list ul > li > a")) {
+            aList = Array.from(document.querySelectorAll(".mulu-list ul > li > a")).filter(aListFilter);
+            sections = document.querySelectorAll(".mulu-title > h2");
+            getName = (sElem) => sElem.innerText;
+        }
+        else if (document.querySelector("div.book")) {
             aList = Array.from(document.querySelectorAll("div.book a")).filter(aListFilter);
             sections = document.querySelectorAll("div.book dl > dt, div.book td > strong");
             getName = (sElem) => sElem.innerText;
