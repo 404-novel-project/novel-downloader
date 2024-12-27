@@ -527,6 +527,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = lzdzw;
       break;
     }
+    case "www.doufuyuedu.com":{
+      const { doufuyuedu } = await import("../rules/special/original/doufuyuedu");
+      ruleClass = doufuyuedu;
+      break;
+    }
     case "czbooks.net": {
       const { czbooks } = await import("../rules/onePage/czbooks");
       ruleClass = czbooks();
