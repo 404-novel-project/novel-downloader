@@ -432,6 +432,11 @@ export async function getRule(): Promise<BaseRuleClass> {
     /* onePageWithMultiIndexPage End */
 
     /* twoPage */
+    case "www.ruochu.com": {
+      const { ruochu } = await import("../rules/twoPage/original/ruochu");
+      ruleClass = ruochu();
+      break;
+    }
     case "www.1pwx.com": {
       const { xiaoshuodaquan } = await import("../rules/twoPage/1pwx");
       ruleClass = xiaoshuodaquan();
