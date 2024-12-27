@@ -522,6 +522,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = i60ksw();
       break;
     }
+    case "www.penana.com": {
+      const { penana } = await import("../rules/onePage/original/penana");
+      ruleClass = penana();
+      break;
+    }
     case "www.lzdzw.com": {
       const { lzdzw } = await import("../rules/special/reprint/lzdzw");
       ruleClass = lzdzw;
