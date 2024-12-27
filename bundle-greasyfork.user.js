@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1058
+// @version        5.2.1059
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -281,6 +281,7 @@
 // @match          *://www.boqugew.com/shu/*/
 // @match          *://www.doufuyuedu.com/novel-*
 // @match          *://www.qbtr.cc/*/*.html
+// @match          *://www.penana.com/story/*/*/
 // @match          *://b.guidaye.com/*/*/
 // @match          *://www.esjzone.me/detail/*
 // @match          *://www.esjzone.cc/detail/*
@@ -13118,6 +13119,46 @@ const masiro = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */
     sleepTime: 100,
     maxSleepTime: 3000,
     needLogin: true,
+});
+
+
+/***/ }),
+
+/***/ "./src/rules/onePage/original/penana.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   penana: () => (/* binding */ penana)
+/* harmony export */ });
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
+
+
+const penana = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
+    bookUrl: document.location.href,
+    bookname: document.querySelector(".booktitlewrap").innerText.trim(),
+    author: document.querySelector("div.fontbold").innerText.trim(),
+    introDom: document.querySelector("div.readtext"),
+    introDomPatch: (dom) => dom,
+    coverUrl: document.querySelector("img.bookcover")
+        ?.src ?? null,
+    additionalMetadatePatch: (additionalMetadate) => {
+        additionalMetadate.tags = Array.from(document.querySelectorAll(".tags_wrap .story_tag a")).map((a) => a.innerText.trim());
+        return additionalMetadate;
+    },
+    aList: document.querySelectorAll("div#toclist a"),
+    getAName: (aElem) => aElem.querySelector("div.toc1")?.innerText.trim(),
+    sections: undefined,
+    getSName: undefined,
+    getContent: (doc) => doc.querySelector("article"),
+    contentPatch: (content) => {
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("span", true, content);
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)('p[style="display:none"]', true, content);
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)(".displaynone", true, content);
+        return content;
+    },
+    language: "zh",
 });
 
 
@@ -40109,6 +40150,11 @@ async function getRule() {
         case "www.60ksw.com": {
             const { i60ksw } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/60ksw.ts"));
             ruleClass = i60ksw();
+            break;
+        }
+        case "www.penana.com": {
+            const { penana } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/original/penana.ts"));
+            ruleClass = penana();
             break;
         }
         case "www.lzdzw.com": {
