@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1061
+// @version        5.2.1062
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -11305,6 +11305,7 @@ class BaseRuleClass {
             await self.preHook();
             await initBook();
             const saveBookObj = initSave(self.book);
+            initDownload();
             await saveHook();
             await self.initChapters(self.book, saveBookObj).catch((error) => {
                 if (error instanceof main/* ExpectError */.K5) {
@@ -11320,6 +11321,14 @@ class BaseRuleClass {
         }
         catch (error) {
             self.catchError(error);
+        }
+        function initDownload() {
+            if (setting/* customDownload */.WZ.value) {
+                loglevel_default().info("[run]发现自定义下载设置，将进行覆盖");
+                self.concurrencyLimit = setting/* concurrencyLimit */.ri.value;
+                self.sleepTime = setting/* sleepTime */.Xl.value;
+                self.maxSleepTime = setting/* maxSleepTime */.Fe.value;
+            }
         }
         async function initBook() {
             if (window._book &&
@@ -38966,6 +38975,7 @@ function getSectionsObj(chapters, chapterSort = (a, b) => a.chapterNumber - b.ch
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   BV: () => (/* binding */ getCustomEnableSaveToArchiveOrg),
+/* harmony export */   Fe: () => (/* binding */ maxSleepTime),
 /* harmony export */   GM: () => (/* binding */ iconJump),
 /* harmony export */   HE: () => (/* binding */ iconStart1),
 /* harmony export */   Iz: () => (/* binding */ retryLimit),
@@ -38974,8 +38984,11 @@ function getSectionsObj(chapters, chapterSort = (a, b) => a.chapterNumber - b.ch
 /* harmony export */   Nw: () => (/* binding */ enableDebug),
 /* harmony export */   Og: () => (/* binding */ iconStart0),
 /* harmony export */   U5: () => (/* binding */ enableCustomChapterFilter),
+/* harmony export */   WZ: () => (/* binding */ customDownload),
+/* harmony export */   Xl: () => (/* binding */ sleepTime),
 /* harmony export */   Zz: () => (/* binding */ EpubDownload),
 /* harmony export */   k8: () => (/* binding */ enableCustomSaveOptions),
+/* harmony export */   ri: () => (/* binding */ concurrencyLimit),
 /* harmony export */   ts: () => (/* binding */ enableJjwxcRemoteFont),
 /* harmony export */   w1: () => (/* binding */ iconSetting),
 /* harmony export */   zb: () => (/* binding */ enableCustomFinishCallback)
@@ -38991,6 +39004,18 @@ const TxtDownload = {
 };
 const EpubDownload = {
     value: true,
+};
+const customDownload = {
+    value: false,
+};
+const concurrencyLimit = {
+    value: 1,
+};
+const sleepTime = {
+    value: 500,
+};
+const maxSleepTime = {
+    value: 2000,
 };
 const enableCustomFinishCallback = true;
 const enableCustomChapterFilter = true;
@@ -39587,7 +39612,7 @@ async function TM_4_14_bug_Detect() {
             alert(`检测到您当前使用的脚本管理器为 Tampermonkey 4.14。
 Tampermonkey 4.14 因存在 Bug 将导致小说下载器脚本无法正常运行，详情可参见：https://github.com/Tampermonkey/tampermonkey/issues/1418 。
 如您想继续使用小说下载器脚本，请您更换 Tampermonkey 版本，或使用 Violentmonkey 脚本管理器。
-如果您不欲降级或更换脚本管理器，同时不想再看到本提示，您可以暂时禁用小说下载器脚本。`);
+如果您不欲更改版本或更换脚本管理器，同时不想再看到本提示，您可以暂时禁用小说下载器脚本。`);
             throw new Error("Tampermonkey 4.14 Bug Detect");
         }
     }
@@ -39616,6 +39641,10 @@ const environments = async () => {
         enableDebug: src_setting/* enableDebug */.Nw.value,
         TxtDownload: src_setting/* TxtDownload */.Jv.value,
         EpubDownload: src_setting/* EpubDownload */.Zz.value,
+        customDownload: src_setting/* customDownload */.WZ.value,
+        concurrencyLimit: src_setting/* concurrencyLimit */.ri.value,
+        sleepTime: src_setting/* sleepTime */.Xl.value,
+        maxSleepTime: src_setting/* maxSleepTime */.Fe.value,
         ScriptHandler: src_GM/* _GM_info */.JX.scriptHandler,
         "ScriptHandler version": src_GM/* _GM_info */.JX.version,
         "Novel-downloader version": src_GM/* _GM_info */.JX.script.version,
@@ -41195,7 +41224,7 @@ var src_log = __webpack_require__("./src/log.ts");
 
 ;// ./src/ui/setting.html
 // Module
-var setting_code = "<div>\n  <dialog-ui v-if=\"openStatus === 'true'\" dialog-title=\"设置\" v-bind:status=\"openStatus\" v-on:dialogclose=\"closeSetting\">\n    <div id=\"nd-setting\" class=\"nd-setting\">\n      <div class=\"nd-setting-tab\">\n        <button v-bind:class=\"['tab-button', { active: setting.currentTab === 'tab-1'}]\" v-on:click=\"setting.currentTab = 'tab-1'\">\n          基本设置\n        </button>\n        <button v-bind:class=\"['tab-button', { active: setting.currentTab === 'tab-2'}]\" v-on:click=\"setting.currentTab = 'tab-2'\">\n          自定义筛选条件\n        </button>\n        <button v-if=\"setting.enableTestPage\" v-bind:class=\"['tab-button', { active: setting.currentTab === 'tab-3'}]\" v-on:click=\"setting.currentTab = 'tab-3'\">\n          抓取测试\n        </button>\n        <button v-if=\"setting.enableTestPage\" v-bind:class=\"['tab-button', { active: setting.currentTab === 'tab-4'}]\" v-on:click=\"setting.currentTab = 'tab-4'\">\n          日志\n        </button>\n      </div>\n      <div class=\"nd-setting-body\">\n        <div v-show=\"setting.currentTab === 'tab-1'\" id=\"nd-setting-tab-1\" class=\"tab-page\">\n          <div>\n            <input id=\"debug\" v-model=\"setting.enableDebug\" type=\"checkbox\">\n            <label for=\"debug\">启用调试模式。（输出更详细日志）</label>\n            <input id=\"txtDownload\" v-model=\"setting.TxtDownload\" type=\"checkbox\">\n            <label for=\"txtDownload\">下载Txt文件</label>\n            <input id=\"EpubDownload\" v-model=\"setting.EpubDownload\" type=\"checkbox\">\n            <label for=\"EpubDownload\">下载Epub文件</label>\n            <input id=\"test-page\" v-model=\"setting.enableTestPage\" type=\"checkbox\">\n            <label for=\"test-page\">启用测试视图</label>\n          </div>\n          <hr class=\"hr-twill-colorful\">\n          <div>\n            <h3>自定义保存参数</h3>\n            <ul>\n              <li v-for=\"item of saveOptions\">\n                <input v-bind:id=\"item.key\" v-model=\"setting.chooseSaveOption\" type=\"radio\" v-bind:value=\"item.key\">\n                <label v-bind:for=\"item.key\">{{ item.value }}</label>\n              </li>\n            </ul>\n          </div>\n        </div>\n        <div v-show=\"setting.currentTab === 'tab-2'\" id=\"nd-setting-tab-2\" class=\"tab-page\">\n          <filter-tab v-on:filterupdate=\"saveFilter\">\n        </div>\n        <div v-if=\"setting.enableTestPage\" v-show=\"setting.currentTab === 'tab-3'\" id=\"nd-setting-tab-3\" class=\"tab-page\">\n          <test-ui></test-ui>\n        </div>\n        <div v-if=\"setting.enableTestPage\" v-show=\"setting.currentTab === 'tab-4'\" id=\"nd-setting-tab-4\" class=\"tab-page\">\n          <log-ui></log-ui>\n        </div>\n      </div>\n      <div class=\"nd-setting-footer\">\n        <button v-on:click=\"closeAndSaveSetting\">Save</button>\n        <button v-on:click=\"closeSetting\">Cancel</button>\n      </div>\n    </div>\n  </dialog-ui>\n</div>\n";
+var setting_code = "<div>\n  <dialog-ui v-if=\"openStatus === 'true'\" dialog-title=\"设置\" v-bind:status=\"openStatus\" v-on:dialogclose=\"closeSetting\">\n    <div id=\"nd-setting\" class=\"nd-setting\">\n      <div class=\"nd-setting-tab\">\n        <button v-bind:class=\"['tab-button', { active: setting.currentTab === 'tab-1'}]\" v-on:click=\"setting.currentTab = 'tab-1'\">\n          基本设置\n        </button>\n        <button v-bind:class=\"['tab-button', { active: setting.currentTab === 'tab-2'}]\" v-on:click=\"setting.currentTab = 'tab-2'\">\n          自定义筛选条件\n        </button>\n        <button v-if=\"setting.enableTestPage\" v-bind:class=\"['tab-button', { active: setting.currentTab === 'tab-3'}]\" v-on:click=\"setting.currentTab = 'tab-3'\">\n          抓取测试\n        </button>\n        <button v-if=\"setting.enableTestPage\" v-bind:class=\"['tab-button', { active: setting.currentTab === 'tab-4'}]\" v-on:click=\"setting.currentTab = 'tab-4'\">\n          日志\n        </button>\n      </div>\n      <div class=\"nd-setting-body\">\n        <div v-show=\"setting.currentTab === 'tab-1'\" id=\"nd-setting-tab-1\" class=\"tab-page\">\n          <div>\n            <input id=\"debug\" v-model=\"setting.enableDebug\" type=\"checkbox\">\n            <label for=\"debug\">启用调试模式。（输出更详细日志）</label>\n            <input id=\"txtDownload\" v-model=\"setting.TxtDownload\" type=\"checkbox\">\n            <label for=\"txtDownload\">下载Txt文件</label>\n            <input id=\"EpubDownload\" v-model=\"setting.EpubDownload\" type=\"checkbox\">\n            <label for=\"EpubDownload\">下载Epub文件</label>\n            <input id=\"test-page\" v-model=\"setting.enableTestPage\" type=\"checkbox\">\n            <label for=\"test-page\">启用测试视图</label>\n          </div>\n          <hr class=\"hr-twill-colorful\">\n          <div>\n            <h3>自定义下载参数</h3>\n            <table style=\"border:0px\">\n              <tr>\n                <th>\n                <input id=\"customDownload\" v-model=\"setting.customDownload\" type=\"checkbox\">\n                <label for=\"customDownload\">启用自定义下载设置</label></th>\n                <th>\n                <input id=\"downloadConcurrency\" v-model=\"setting.concurrencyLimit\" type=\"number\">\n                <label for=\"downloadConcurrency\">并行下载线程数</label></th>\n              </tr><th>\n                <input id=\"downloadSleeptime\" v-model=\"setting.sleepTime\" type=\"number\">\n                <label for=\"downloadSleeptime\">下载间隔</label>\n                </th><th>\n                <input id=\"downloadMaxsleeptime\" v-model=\"setting.maxSleepTime\" type=\"number\">\n                <label for=\"downloadMaxsleeptime\">最大下载间隔</label>\n                </th>\n              </table>\n          <hr class=\"hr-twill-colorful\">\n          <div>\n            <h3>自定义保存参数</h3>\n            <ul>\n              <li v-for=\"item of saveOptions\">\n                <input v-bind:id=\"item.key\" v-model=\"setting.chooseSaveOption\" type=\"radio\" v-bind:value=\"item.key\">\n                <label v-bind:for=\"item.key\">{{ item.value }}</label>\n              </li>\n            </ul>\n          </div>\n        </div>\n        <div v-show=\"setting.currentTab === 'tab-2'\" id=\"nd-setting-tab-2\" class=\"tab-page\">\n          <filter-tab v-on:filterupdate=\"saveFilter\">\n        </div>\n        <div v-if=\"setting.enableTestPage\" v-show=\"setting.currentTab === 'tab-3'\" id=\"nd-setting-tab-3\" class=\"tab-page\">\n          <test-ui></test-ui>\n        </div>\n        <div v-if=\"setting.enableTestPage\" v-show=\"setting.currentTab === 'tab-4'\" id=\"nd-setting-tab-4\" class=\"tab-page\">\n          <log-ui></log-ui>\n        </div>\n      </div>\n      <div class=\"nd-setting-footer\">\n        <button v-on:click=\"closeAndSaveSetting\">Save</button>\n        <button v-on:click=\"closeSetting\">Cancel</button>\n      </div>\n    </div>\n  </div></dialog-ui>\n</div>\n";
 // Exports
 /* harmony default export */ const setting = (setting_code);
 // EXTERNAL MODULE: ./src/ui/setting.less
@@ -41442,6 +41471,14 @@ const vm = (0,external_Vue_.createApp)({
         src_setting/* TxtDownload */.Jv.value = setting.TxtDownload ?? src_setting/* TxtDownload */.Jv.value;
         setting.EpubDownload = GM_getValue('EpubDownload', src_setting/* EpubDownload */.Zz.value);
         src_setting/* EpubDownload */.Zz.value = setting.EpubDownload ?? src_setting/* EpubDownload */.Zz.value;
+        setting.customDownload = GM_getValue('customDownload', false);
+        src_setting/* customDownload */.WZ.value = setting.customDownload ?? src_setting/* customDownload */.WZ.value;
+        setting.concurrencyLimit = GM_getValue('concurrencyLimit', src_setting/* concurrencyLimit */.ri.value);
+        src_setting/* concurrencyLimit */.ri.value = setting.concurrencyLimit ?? src_setting/* concurrencyLimit */.ri.value;
+        setting.sleepTime = GM_getValue('sleepTime', src_setting/* sleepTime */.Xl.value);
+        src_setting/* sleepTime */.Xl.value = setting.sleepTime ?? src_setting/* sleepTime */.Xl.value;
+        setting.maxSleepTime = GM_getValue('maxSleepTime', src_setting/* maxSleepTime */.Fe.value);
+        src_setting/* maxSleepTime */.Fe.value = setting.maxSleepTime ?? src_setting/* maxSleepTime */.Fe.value;
         setting.enableTestPage = GM_getValue('enableTestPage', false);
         setting.chooseSaveOption = GM_getValue('chooseSaveOption', 'null');
         setting.filterSetting = GM_getValue('filterSetting', undefined);
@@ -41476,6 +41513,7 @@ const vm = (0,external_Vue_.createApp)({
             setEnableDebug();
             setTxtDownload();
             setEpubDownload();
+            setCustomDownloadOption();
             setCustomSaveOption();
             setCustomFilter();
             saveAllSettings();
@@ -41499,6 +41537,24 @@ const vm = (0,external_Vue_.createApp)({
                 if (typeof config.EpubDownload === "boolean") {
                     src_setting/* EpubDownload */.Zz.value = config.EpubDownload;
                     loglevel_default().info(`[Init]EpubDownload: ${src_setting/* EpubDownload */.Zz.value}`);
+                }
+            }
+            function setCustomDownloadOption() {
+                if (typeof config.customDownload === "boolean") {
+                    src_setting/* customDownload */.WZ.value = config.customDownload;
+                    loglevel_default().info(`[Init]customDownload: ${src_setting/* customDownload */.WZ.value}`);
+                }
+                if (typeof config.concurrencyLimit === "number") {
+                    src_setting/* concurrencyLimit */.ri.value = config.concurrencyLimit;
+                    loglevel_default().info(`[Init]concurrencyLimit: ${src_setting/* concurrencyLimit */.ri.value}`);
+                }
+                if (typeof config.sleepTime === "number") {
+                    src_setting/* sleepTime */.Xl.value = config.sleepTime;
+                    loglevel_default().info(`[Init]sleepTime: ${src_setting/* sleepTime */.Xl.value}`);
+                }
+                if (typeof config.maxSleepTime === "number") {
+                    src_setting/* maxSleepTime */.Fe.value = config.maxSleepTime;
+                    loglevel_default().info(`[Init]maxSleepTime: ${src_setting/* maxSleepTime */.Fe.value}`);
                 }
             }
             function setCustomSaveOption() {
@@ -41526,6 +41582,10 @@ const vm = (0,external_Vue_.createApp)({
                 GM_setValue('enableDebug', config.enableDebug);
                 GM_setValue('TxtDownload', config.TxtDownload);
                 GM_setValue('EpubDownload', config.EpubDownload);
+                GM_setValue('customDownload', config.customDownload);
+                GM_setValue('concurrencyLimit', config.concurrencyLimit);
+                GM_setValue('sleepTime', config.sleepTime);
+                GM_setValue('maxSleepTime', config.maxSleepTime);
                 GM_setValue('enableTestPage', config.enableTestPage);
                 GM_setValue('chooseSaveOption', config.chooseSaveOption);
                 GM_setValue('filterSetting', config.filterSetting);

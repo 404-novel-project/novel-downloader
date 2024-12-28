@@ -22,6 +22,10 @@ export declare const environments: () => Promise<{
     enableDebug: boolean;
     TxtDownload: boolean;
     EpubDownload: boolean;
+    customDownload: boolean;
+    concurrencyLimit: number;
+    sleepTime: number;
+    maxSleepTime: number;
     ScriptHandler: string;
     "ScriptHandler version": string | undefined;
     "Novel-downloader version": string;

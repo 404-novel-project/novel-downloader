@@ -8,6 +8,18 @@ export declare const TxtDownload: {
 export declare const EpubDownload: {
     value: boolean;
 };
+export declare const customDownload: {
+    value: boolean;
+};
+export declare const concurrencyLimit: {
+    value: number;
+};
+export declare const sleepTime: {
+    value: number;
+};
+export declare const maxSleepTime: {
+    value: number;
+};
 export declare const enableCustomFinishCallback = true;
 export declare const enableCustomChapterFilter = true;
 export declare const enableCustomSaveOptions = true;
