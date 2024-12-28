@@ -3,7 +3,11 @@ import { logText } from "../log";
 import { Book, saveType } from "../main/Book";
 import { Chapter } from "../main/Chapter";
 import { Status } from "../main/main";
-import { enableDebug, TxtDownload,EpubDownload } from "../setting";
+import {
+  enableDebug,
+  TxtDownload,
+  EpubDownload,
+} from "../setting";
 import { SaveOptions } from "./options";
 import { EPUB } from "./epub";
 import { TXT } from "./txt";

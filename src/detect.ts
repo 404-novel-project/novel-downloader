@@ -3,7 +3,15 @@
 import { GmWindow } from "./global";
 import { _GM_info } from "./lib/GM";
 import { storageAvailable } from "./lib/localStorageExpired";
-import { enableDebug, TxtDownload, EpubDownload } from "./setting";
+import {
+  enableDebug,
+  TxtDownload,
+  EpubDownload,
+  customDownload,
+  concurrencyLimit,
+  sleepTime,
+  maxSleepTime
+} from "./setting";
 import { fetchWithRetry, fetchWithTimeout } from "./lib/http";
 
 function checkObjct(name: string) {
@@ -53,7 +61,7 @@ async function TM_4_14_bug_Detect() {
         `检测到您当前使用的脚本管理器为 Tampermonkey 4.14。
 Tampermonkey 4.14 因存在 Bug 将导致小说下载器脚本无法正常运行，详情可参见：https://github.com/Tampermonkey/tampermonkey/issues/1418 。
 如您想继续使用小说下载器脚本，请您更换 Tampermonkey 版本，或使用 Violentmonkey 脚本管理器。
-如果您不欲降级或更换脚本管理器，同时不想再看到本提示，您可以暂时禁用小说下载器脚本。`
+如果您不欲更改版本或更换脚本管理器，同时不想再看到本提示，您可以暂时禁用小说下载器脚本。`
       );
       throw new Error("Tampermonkey 4.14 Bug Detect");
     }
@@ -86,6 +94,10 @@ export const environments = async () => {
     enableDebug: enableDebug.value,
     TxtDownload: TxtDownload.value,
     EpubDownload: EpubDownload.value,
+    customDownload: customDownload.value,
+    concurrencyLimit: concurrencyLimit.value,
+    sleepTime: sleepTime.value,
+    maxSleepTime: maxSleepTime.value,
     ScriptHandler: _GM_info.scriptHandler,
     "ScriptHandler version": _GM_info.version,
     "Novel-downloader version": _GM_info.script.version,

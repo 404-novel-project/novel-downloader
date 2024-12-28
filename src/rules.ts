@@ -9,12 +9,17 @@ import { Book, saveType } from "./main/Book";
 import { SaveBook } from "./save/save";
 import { SaveOptions, saveOptionsValidate } from "./save/options";
 import {
+  customDownload,
+  concurrencyLimit,
+  sleepTime,
+  maxSleepTime,
   enableCustomChapterFilter,
   enableCustomFinishCallback,
   enableCustomSaveOptions,
   enableSaveToArchiveOrg,
   getCustomEnableSaveToArchiveOrg,
 } from "./setting";
+
 import { failedPlus, printStat, successPlus } from "./stat";
 import { ProgressVM, vm as progress } from "./ui/progress";
 import { setStreamSaverSetting } from "./lib/zip";
@@ -98,6 +103,7 @@ export abstract class BaseRuleClass {
       await self.preHook();
       await initBook();
       const saveBookObj = initSave(self.book as Book);
+      initDownload();
       await saveHook();
       await self.initChapters(self.book as Book, saveBookObj).catch((error) => {
         if (error instanceof ExpectError) {
@@ -112,7 +118,14 @@ export abstract class BaseRuleClass {
     } catch (error) {
       self.catchError(error as Error);
     }
-
+    function initDownload() {
+      if (customDownload.value) {
+        log.info("[run]发现自定义下载设置，将进行覆盖");
+        self.concurrencyLimit = concurrencyLimit.value;
+        self.sleepTime = sleepTime.value;
+        self.maxSleepTime = maxSleepTime.value;
+      }
+    }
     async function initBook(): Promise<void> {
       if (
         (window as GmWindow)._book &&

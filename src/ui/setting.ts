@@ -6,7 +6,15 @@ import { log } from "../log";
 import { Status } from "../main/main";
 import { Chapter } from "../main/Chapter";
 import { SaveOptions as globalSaveOptions } from "../save/options";
-import { enableDebug, TxtDownload, EpubDownload } from "../setting";
+import {
+  enableDebug,
+  TxtDownload,
+  EpubDownload,
+  customDownload,
+  concurrencyLimit,
+  sleepTime,
+  maxSleepTime
+} from "../setting";
 import FilterTab, {
   FilterSetting as filterSettingGlobal,
   getFilterFunction,
@@ -30,6 +38,10 @@ export const vm = createApp({
       enableDebug?: boolean;
       TxtDownload?: boolean;
       EpubDownload?: boolean;
+      customDownload?: boolean;
+      concurrencyLimit?: number;
+      sleepTime?: number;
+      maxSleepTime?: number;
       enableTestPage?: boolean;
       chooseSaveOption?: string;
       filterSetting?: filterSettingGlobal;
@@ -122,6 +134,14 @@ export const vm = createApp({
     TxtDownload.value = setting.TxtDownload ?? TxtDownload.value;
     setting.EpubDownload = GM_getValue('EpubDownload', EpubDownload.value);
     EpubDownload.value = setting.EpubDownload ?? EpubDownload.value;
+    setting.customDownload = GM_getValue('customDownload', false);
+    customDownload.value = setting.customDownload ?? customDownload.value;
+    setting.concurrencyLimit = GM_getValue('concurrencyLimit', concurrencyLimit.value);
+    concurrencyLimit.value = setting.concurrencyLimit ?? concurrencyLimit.value;
+    setting.sleepTime = GM_getValue('sleepTime', sleepTime.value);
+    sleepTime.value = setting.sleepTime ?? sleepTime.value;
+    setting.maxSleepTime = GM_getValue('maxSleepTime', maxSleepTime.value);
+    maxSleepTime.value = setting.maxSleepTime ?? maxSleepTime.value;
     setting.enableTestPage = GM_getValue('enableTestPage', false);
     setting.chooseSaveOption = GM_getValue('chooseSaveOption', 'null');
     setting.filterSetting = GM_getValue('filterSetting', undefined);
@@ -155,6 +175,7 @@ export const vm = createApp({
       setEnableDebug();
       setTxtDownload();
       setEpubDownload();
+      setCustomDownloadOption();
       setCustomSaveOption();
       setCustomFilter();
       saveAllSettings();
@@ -183,7 +204,24 @@ export const vm = createApp({
           log.info(`[Init]EpubDownload: ${EpubDownload.value}`);
         }
       }
-
+      function setCustomDownloadOption() {
+        if (typeof config.customDownload === "boolean") {
+          customDownload.value = config.customDownload;
+          log.info(`[Init]customDownload: ${customDownload.value}`);
+        } 
+        if (typeof config.concurrencyLimit === "number") {
+          concurrencyLimit.value = config.concurrencyLimit;
+          log.info(`[Init]concurrencyLimit: ${concurrencyLimit.value}`);
+        }
+        if (typeof config.sleepTime === "number") {
+          sleepTime.value = config.sleepTime;
+          log.info(`[Init]sleepTime: ${sleepTime.value}`);
+        }
+        if (typeof config.maxSleepTime === "number") {
+          maxSleepTime.value = config.maxSleepTime;
+          log.info(`[Init]maxSleepTime: ${maxSleepTime.value}`);
+        }
+      }
       function setCustomSaveOption() {
         (unsafeWindow as UnsafeWindow).saveOptions = curSaveOption();
       }
@@ -215,6 +253,10 @@ export const vm = createApp({
         GM_setValue('enableDebug', config.enableDebug);
         GM_setValue('TxtDownload', config.TxtDownload);
         GM_setValue('EpubDownload', config.EpubDownload);
+        GM_setValue('customDownload', config.customDownload);
+        GM_setValue('concurrencyLimit', config.concurrencyLimit);
+        GM_setValue('sleepTime', config.sleepTime);
+        GM_setValue('maxSleepTime', config.maxSleepTime);
         GM_setValue('enableTestPage', config.enableTestPage);
         GM_setValue('chooseSaveOption', config.chooseSaveOption);
         GM_setValue('filterSetting', config.filterSetting);

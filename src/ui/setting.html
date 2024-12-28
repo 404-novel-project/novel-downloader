@@ -56,6 +56,29 @@
           </div>
           <hr class="hr-twill-colorful" />
           <div>
+            <h3>自定义下载参数</h3>
+            <table style="border:0px">
+              <tr>
+                <th>
+                <input id="customDownload" v-model="setting.customDownload" type="checkbox" />
+                <label for="customDownload">启用自定义下载设置</label></th>
+                <th>
+                <input
+                  id="downloadConcurrency"
+                  v-model="setting.concurrencyLimit"
+                  type="number" 
+                />
+                <label for="downloadConcurrency">并行下载线程数</label></th>
+              </tr><th>
+                <input id="downloadSleeptime" v-model="setting.sleepTime" type="number"  />
+                <label for="downloadSleeptime">下载间隔</label>
+                </th><th>
+                <input id="downloadMaxsleeptime" v-model="setting.maxSleepTime" type="number" />
+                <label for="downloadMaxsleeptime">最大下载间隔</label>
+                </th>
+              </table>
+          <hr class="hr-twill-colorful" />
+          <div>
             <h3>自定义保存参数</h3>
             <ul>
               <li v-for="item of saveOptions">
