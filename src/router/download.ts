@@ -503,8 +503,8 @@ export async function getRule(): Promise<BaseRuleClass> {
       break;
     }
     case "b.faloo.com": {
-      const { faloo } = await import("../rules/onePage/original/faloo");
-      ruleClass = faloo();
+      const { faloo } = await import("../rules/special/original/faloo");
+      ruleClass = faloo;
       break;
     }
     case "novelpia.jp": {
