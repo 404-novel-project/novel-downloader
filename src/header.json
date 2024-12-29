@@ -306,7 +306,8 @@
     "*://www.linovelib.com/novel/*/*.html",
     "*://www.bilinovel.com/novel/*/*.html",
     "*://www.qbtr.cc/*/*/*.html",
-    "*://www.ciyuanji.com/chapter/*"
+    "*://www.ciyuanji.com/chapter/*",
+    "*://www.po18.tw/books/*/articles*"
   ],
   "grant": [
     "unsafeWindow",

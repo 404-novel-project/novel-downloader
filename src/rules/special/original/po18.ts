@@ -8,6 +8,7 @@ import { Chapter } from "../../../main/Chapter";
 import { Book, BookAdditionalMetadate } from "../../../main/Book";
 import { BaseRuleClass, ChapterParseObject } from "../../../rules";
 import { rm } from "../../../lib/dom";
+import { sleep } from "../../../lib/misc";
 export class po18 extends BaseRuleClass {
     public constructor() {
         super();
@@ -44,40 +45,48 @@ export class po18 extends BaseRuleClass {
         additionalMetadate.tags = Array.from(
             document.querySelectorAll("div.book_intro_tags > a")
         ).map((a) => (a as HTMLAnchorElement).innerText.trim());
-        const dom = await getHtmlDOM(`https://www.po18.tw/books/${bookID}/articles`);
+        let dom = await getHtmlDOM(`https://www.po18.tw/books/${bookID}/articles`);
         const chapters: Chapter[] = [];
-        const cos = dom.querySelectorAll("div.list-view div.c_l");
         let chapterNumber = 0;
-        for (const aElem of Array.from(cos)) {
-            chapterNumber++;
-            const Elema = aElem.querySelector("div.l_chaptname") as HTMLElement;
-            const Elemb = aElem.querySelector("div.l_btn a") as HTMLElement;
-            const chapterName = Elema.innerText.trim();
-            const chapterUrl = (Elema.querySelector("a") as HTMLAnchorElement)?.href ?? "javscript:void(0)";
-            const isVIP  = Elemb.innerText.trim() != "免費閱讀";
-            const isPaid = Elema.querySelector("a") ? true : false;
-            const chapter = new Chapter({
-                bookUrl,
-                bookname,
-                chapterUrl,
-                chapterNumber,
-                chapterName,
-                isVIP: isVIP,
-                isPaid: isPaid,
-                sectionName: null,
-                sectionNumber: null,
-                sectionChapterNumber: null,
-                chapterParse: this.chapterParse,
-                charset: this.charset,
-                options: {},
-            });
-            if (isVIP) {
-                chapter.status = Status.aborted;
-                if (chapter.isPaid) {
-                    chapter.status = Status.pending;
+        const listUrls = new Set(Array.from(dom.querySelectorAll("div.pagenum a")).map((a) => (a as HTMLAnchorElement).href));
+        if (listUrls.size == 0) {
+            listUrls.add(`https://www.po18.tw/books/${bookID}/articles`);
+        }
+        for (const url of listUrls) {
+            await sleep(this.maxSleepTime);
+            dom = await getHtmlDOM(url);
+            const cos = dom.querySelectorAll("div.list-view div.c_l");
+            for (const aElem of Array.from(cos)) {
+                chapterNumber++;
+                const Elema = aElem.querySelector("div.l_chaptname") as HTMLElement;
+                const Elemb = aElem.querySelector("div.l_btn a") as HTMLElement;
+                const chapterName = Elema.innerText.trim();
+                const chapterUrl = (Elema.querySelector("a") as HTMLAnchorElement)?.href ?? "javscript:void(0)";
+                const isVIP = Elemb.innerText.trim() != "免費閱讀";
+                const isPaid = Elema.querySelector("a") ? true : false;
+                const chapter = new Chapter({
+                    bookUrl,
+                    bookname,
+                    chapterUrl,
+                    chapterNumber,
+                    chapterName,
+                    isVIP: isVIP,
+                    isPaid: isPaid,
+                    sectionName: null,
+                    sectionNumber: null,
+                    sectionChapterNumber: null,
+                    chapterParse: this.chapterParse,
+                    charset: this.charset,
+                    options: {},
+                });
+                if (isVIP) {
+                    chapter.status = Status.aborted;
+                    if (chapter.isPaid) {
+                        chapter.status = Status.pending;
+                    }
                 }
+                chapters.push(chapter);
             }
-            chapters.push(chapter);
         }
 
         return new Book({
