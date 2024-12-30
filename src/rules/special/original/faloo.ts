@@ -17,8 +17,8 @@ export class faloo extends BaseRuleClass {
         this.attachmentMode = "TM";
         this.concurrencyLimit = 1;
         this.maxRunLimit = 1;
-        this.sleepTime = 900;
-        this.maxSleepTime = 2000;
+        this.sleepTime = 1000;
+        this.maxSleepTime = 5000;
     }
     public async bookParse() {
         const bookUrl = document.location.href;
