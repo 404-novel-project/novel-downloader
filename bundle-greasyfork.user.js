@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1066
+// @version        5.2.1068
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -9429,13 +9429,16 @@ async function introDomHandle(introDom, domPatch) {
         return [introCleantext, introCleanDom, introCleanimages];
     }
 }
-async function nextPageParse({ chapterName, chapterUrl, charset, selector, contentPatch, getNextPage, continueCondition, enableCleanDOM, getHtmlDomFunc = _http__WEBPACK_IMPORTED_MODULE_2__/* .getHtmlDOM */ .wA, }) {
+async function nextPageParse({ chapterName, chapterUrl, charset, selector, domPatch, contentPatch, getNextPage, continueCondition, enableCleanDOM, getHtmlDomFunc = _http__WEBPACK_IMPORTED_MODULE_2__/* .getHtmlDOM */ .wA, }) {
     _log__WEBPACK_IMPORTED_MODULE_3___default().debug(`[Chapter]请求 ${chapterUrl}`);
     let nowUrl = chapterUrl;
     let doc = await getHtmlDomFunc(chapterUrl, charset);
     const content = document.createElement("div");
     let flag = false;
     do {
+        if (domPatch) {
+            doc = await domPatch(doc);
+        }
         let _content = doc.querySelector(selector);
         const nextLink = getNextPage(doc);
         if (continueCondition(_content, nextLink)) {
@@ -16124,8 +16127,8 @@ class faloo extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
         this.attachmentMode = "TM";
         this.concurrencyLimit = 1;
         this.maxRunLimit = 1;
-        this.sleepTime = 900;
-        this.maxSleepTime = 2000;
+        this.sleepTime = 1000;
+        this.maxSleepTime = 5000;
     }
     async bookParse() {
         const bookUrl = document.location.href;
@@ -30787,6 +30790,9 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
 class kadokado extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
+        this.maxRunLimit = 1;
+        this.sleepTime = 700;
+        this.maxSleepTime = 4000;
         this.concurrencyLimit = 1;
         this.attachmentMode = "TM";
     }
@@ -38317,6 +38323,8 @@ __webpack_require__.d(__webpack_exports__, {
   wlinovelib: () => (/* binding */ wlinovelib)
 });
 
+// UNUSED EXPORTS: domFontFix, replaceCharacter
+
 // EXTERNAL MODULE: ./src/rules/twoPage/template.ts
 var template = __webpack_require__("./src/rules/twoPage/template.ts");
 // EXTERNAL MODULE: ./src/main/main.ts
@@ -38429,7 +38437,14 @@ const table = {
     "\ue863": "\u5507",
 };
 
+// EXTERNAL MODULE: ./node_modules/loglevel/lib/loglevel.js
+var loglevel = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+var loglevel_default = /*#__PURE__*/__webpack_require__.n(loglevel);
+// EXTERNAL MODULE: ./src/lib/misc.ts
+var misc = __webpack_require__("./src/lib/misc.ts");
 ;// ./src/rules/twoPage/linovelib.ts
+
+
 
 
 
@@ -38439,6 +38454,7 @@ const chapterFixSleepTime = 2000;
 const concurrencyLimit = 1;
 const sleepTime = 600;
 const maxSleepTime = 3000;
+const maxRunLimit = 1;
 const linovelib = () => {
     const ToCurl = document.location.href;
     const bookUrl = ToCurl.replace(/\/catalog$/, ".html");
@@ -38482,6 +38498,7 @@ const linovelib = () => {
                 chapterUrl,
                 charset,
                 selector: "#TextContent",
+                domPatch: domFontFix,
                 contentPatch: (_content) => {
                     (0,dom.rm)(".tp", true, _content);
                     (0,dom.rm)(".bd", true, _content);
@@ -38503,6 +38520,7 @@ const linovelib = () => {
             }
             return content;
         },
+        maxRunLimit: maxRunLimit,
         concurrencyLimit: concurrencyLimit,
         sleepTime: sleepTime,
         maxSleepTime: maxSleepTime,
@@ -38572,6 +38590,7 @@ const wlinovelib = () => {
                 chapterUrl,
                 charset,
                 selector: "#acontent",
+                domPatch: domFontFix,
                 contentPatch: (_content) => {
                     (0,dom.rm)(".cgo", true, _content);
                     (0,dom.rm)("script", true, _content);
@@ -38597,11 +38616,102 @@ const wlinovelib = () => {
             return contentRaw;
         },
         contentPatch: (dom) => dom,
+        maxRunLimit: maxRunLimit,
         concurrencyLimit: concurrencyLimit,
         sleepTime: sleepTime,
         maxSleepTime: maxSleepTime,
     });
 };
+async function domFontFix(dom) {
+    const FontJS = 'font|read||sheet|family|url|public|woff2';
+    let isNeedFix = false;
+    dom.querySelectorAll("script").forEach((script) => {
+        if (script.innerHTML.includes(FontJS)) {
+            isNeedFix = true;
+        }
+    });
+    if (!isNeedFix) {
+        return dom;
+    }
+    const domPatch = dom.querySelector("#TextContent p:nth-last-of-type(2)");
+    if (domPatch) {
+        domPatch.innerHTML = await replaceCharacter(domPatch.innerHTML);
+    }
+    return dom;
+}
+async function replaceCharacter(inputText) {
+    const fontName = "read.woff2";
+    const fontlink = "https://www.linovelib.com/public/font/read.woff2";
+    let outputText = inputText;
+    const FontTable = await getFanqieFontTable(fontName, fontlink);
+    if (FontTable) {
+        for (const Character in FontTable) {
+            if (Object.prototype.hasOwnProperty.call(FontTable, Character)) {
+                const normalCharacter = FontTable[Character];
+                outputText = outputText.replaceAll(Character, normalCharacter);
+            }
+        }
+    }
+    else {
+        return `[linovelib-font]字体对照表 ${fontName} 未找到,请前往https://github.com/404-novel-project/Universal_font_tables 提交字体链接, ${fontlink}`;
+    }
+    return outputText;
+}
+async function getFanqieFontTable(fontName, fontlink) {
+    const FontTable = await fetchRemoteFont(fontName);
+    if (!FontTable) {
+        loglevel_default().error(`[linovelib-font]字体对照表 ${fontName} 未找到,请前往https://github.com/404-novel-project/Universal_font_tables 提交字体链接, ${fontlink}`);
+    }
+    else {
+        loglevel_default().debug(`[linovelib-font]字体对照表 ${fontName}已找到,如果你认为字体对应有错误,请前往https://github.com/404-novel-project/Universal_font_tables 重新提交字体链接, ${fontlink}`);
+    }
+    return FontTable;
+}
+async function fetchRemoteFont(fontName) {
+    const url = `https://fastly.jsdelivr.net/gh/404-novel-project/Universal_font_tables@master/${fontName}.json`;
+    loglevel_default().info(`[linovelib-font]开始请求远程字体对照表 ${fontName}`);
+    const retryLimit = 10;
+    let retry = retryLimit;
+    while (retry > 0) {
+        let responseStatus = -1;
+        try {
+            const response = await new Promise((resolve, reject) => {
+                GM_xmlhttpRequest({
+                    method: 'GET',
+                    url: url,
+                    onload: (response) => {
+                        responseStatus = response.status;
+                        if (response.status >= 200 && response.status < 300) {
+                            loglevel_default().info(`[linovelib-font]远程字体对照表 ${fontName} 下载成功`);
+                            resolve(JSON.parse(response.responseText));
+                        }
+                        else {
+                            reject(new Error(`HTTP status ${response.status}`));
+                        }
+                    },
+                    onerror: (error) => {
+                        reject(error);
+                    }
+                });
+            });
+            if (response) {
+                return response;
+            }
+        }
+        catch (error) {
+            loglevel_default().error(error);
+            retry--;
+            if (responseStatus === 404 || retry < 0) {
+                loglevel_default().info(`[linovelib-font]远程字体对照表 ${fontName} 下载失败`);
+                return undefined;
+            }
+            else {
+                await (0,misc/* sleep */.yy)(2000);
+                continue;
+            }
+        }
+    }
+}
 
 
 /***/ }),
@@ -38721,11 +38831,14 @@ const shencou = () => {
 
 
 
-function mkRuleClass({ bookUrl, anotherPageUrl, ToCUrl, getBookname, getAuthor, getIntroDom, introDomPatch, getCoverUrl, additionalMetadatePatch, getAList, getAName, getIsVIP, getSections, getSName, postHook, getContentFromUrl, getContent, contentPatch, concurrencyLimit, sleepTime, maxSleepTime, needLogin, nsfw, cleanDomOptions, overrideConstructor, language, }) {
+function mkRuleClass({ bookUrl, anotherPageUrl, ToCUrl, getBookname, getAuthor, getIntroDom, introDomPatch, getCoverUrl, additionalMetadatePatch, getAList, getAName, getIsVIP, getSections, getSName, postHook, getContentFromUrl, getContent, contentPatch, maxRunLimit, concurrencyLimit, sleepTime, maxSleepTime, needLogin, nsfw, cleanDomOptions, overrideConstructor, language, }) {
     return class extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
         constructor() {
             super();
             this.attachmentMode = "TM";
+            if (maxRunLimit) {
+                this.maxRunLimit = maxRunLimit;
+            }
             if (concurrencyLimit) {
                 this.concurrencyLimit = concurrencyLimit;
             }

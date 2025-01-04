@@ -25,6 +25,7 @@ interface MkRuleClassOptions {
     getContentFromUrl?: (chapterUrl: string, chapterName: string | null, charset: string) => Promise<HTMLElement | null>;
     getContent?: (doc: Document) => HTMLElement | null;
     contentPatch: (content: HTMLElement) => HTMLElement;
+    maxRunLimit?: number;
     concurrencyLimit?: number;
     sleepTime?: number;
     maxSleepTime?: number;
@@ -34,5 +35,5 @@ interface MkRuleClassOptions {
     overrideConstructor?: (classThis: BaseRuleClass) => any;
     language?: string;
 }
-export declare function mkRuleClass({ bookUrl, anotherPageUrl, ToCUrl, getBookname, getAuthor, getIntroDom, introDomPatch, getCoverUrl, additionalMetadatePatch, getAList, getAName, getIsVIP, getSections, getSName, postHook, getContentFromUrl, getContent, contentPatch, concurrencyLimit, sleepTime, maxSleepTime, needLogin, nsfw, cleanDomOptions, overrideConstructor, language, }: MkRuleClassOptions): PublicConstructor<BaseRuleClass>;
+export declare function mkRuleClass({ bookUrl, anotherPageUrl, ToCUrl, getBookname, getAuthor, getIntroDom, introDomPatch, getCoverUrl, additionalMetadatePatch, getAList, getAName, getIsVIP, getSections, getSName, postHook, getContentFromUrl, getContent, contentPatch, maxRunLimit, concurrencyLimit, sleepTime, maxSleepTime, needLogin, nsfw, cleanDomOptions, overrideConstructor, language, }: MkRuleClassOptions): PublicConstructor<BaseRuleClass>;
 export {};

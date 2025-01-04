@@ -9,13 +9,14 @@ interface NextPageParseOptions {
     chapterUrl: string;
     charset: string;
     selector: string;
+    domPatch?: (dom: Document) => Promise<Document>;
     contentPatch: (_content: HTMLElement, doc: Document) => HTMLElement;
     getNextPage: (doc: Document) => string;
     continueCondition: (content: HTMLElement, nextLink: string) => boolean;
     enableCleanDOM?: boolean;
     getHtmlDomFunc?: typeof getHtmlDOM | typeof ggetHtmlDOM;
 }
-export declare function nextPageParse({ chapterName, chapterUrl, charset, selector, contentPatch, getNextPage, continueCondition, enableCleanDOM, getHtmlDomFunc, }: NextPageParseOptions): Promise<ChapterParseObject>;
+export declare function nextPageParse({ chapterName, chapterUrl, charset, selector, domPatch, contentPatch, getNextPage, continueCondition, enableCleanDOM, getHtmlDomFunc, }: NextPageParseOptions): Promise<ChapterParseObject>;
 export declare function getSectionName(chapterElement: Element, sections: NodeListOf<Element>, getName: (sElem: Element) => string): string | null;
 export declare function centerDetct(element: Element): [boolean, Element, number];
 export declare function reIndex(chapters: Chapter[]): Chapter[];
