@@ -10,6 +10,9 @@ import { rm } from "../../../lib/dom";
 export class kadokado extends BaseRuleClass {
     public constructor() {
         super();
+        this.maxRunLimit = 1;
+        this.sleepTime = 700;
+        this.maxSleepTime = 4000;
         this.concurrencyLimit = 1;
         this.attachmentMode = "TM";
     }

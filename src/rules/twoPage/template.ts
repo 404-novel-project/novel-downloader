@@ -38,6 +38,7 @@ interface MkRuleClassOptions {
   ) => Promise<HTMLElement | null>;
   getContent?: (doc: Document) => HTMLElement | null;
   contentPatch: (content: HTMLElement) => HTMLElement;
+  maxRunLimit?: number;
   concurrencyLimit?: number;
   sleepTime?: number;
   maxSleepTime?: number;
@@ -67,6 +68,7 @@ export function mkRuleClass({
   getContentFromUrl,
   getContent,
   contentPatch,
+  maxRunLimit,
   concurrencyLimit,
   sleepTime,
   maxSleepTime,
@@ -80,6 +82,9 @@ export function mkRuleClass({
     public constructor() {
       super();
       this.attachmentMode = "TM";
+      if (maxRunLimit) {
+        this.maxRunLimit = maxRunLimit;
+      }
       if (concurrencyLimit) {
         this.concurrencyLimit = concurrencyLimit;
       }

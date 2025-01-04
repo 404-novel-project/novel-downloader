@@ -5,12 +5,14 @@ import { rm, sandboxed } from "../../lib/dom";
 import { Book } from "../../main/Book";
 import { Chapter } from "../../main/Chapter";
 import { table } from "../lib/linovelib";
+import { log } from "../../log";
+import { sleep } from "../../lib/misc";
 
 const chapterFixSleepTime = 2000;
 const concurrencyLimit = 1;
 const sleepTime = 600;
 const maxSleepTime = 3000;
-
+const maxRunLimit = 1;
 export const linovelib = () => {
   const ToCurl = document.location.href;
   const bookUrl = ToCurl.replace(/\/catalog$/, ".html");
@@ -41,7 +43,7 @@ export const linovelib = () => {
     },
     getAList: () => document.querySelectorAll(".chapter-list li.col-4 > a"),
     getSections: () => document.querySelectorAll("#volume-list > div.volume"),
-    getSName: (sElem) => (sElem.querySelector(".volume-info >h2") as HTMLElement )?.innerText.trim(),
+    getSName: (sElem) => (sElem.querySelector(".volume-info >h2") as HTMLElement)?.innerText.trim(),
     postHook: (chapter) => {
       if (chapter.chapterUrl.startsWith("javascript")) {
         chapter.status = Status.aborted;
@@ -74,6 +76,7 @@ export const linovelib = () => {
         chapterUrl,
         charset,
         selector: "#TextContent",
+        domPatch: domFontFix,
         contentPatch: (_content) => {
           rm(".tp", true, _content);
           rm(".bd", true, _content);
@@ -101,6 +104,7 @@ export const linovelib = () => {
       }
       return content;
     },
+    maxRunLimit: maxRunLimit,
     concurrencyLimit: concurrencyLimit,
     sleepTime: sleepTime,
     maxSleepTime: maxSleepTime,
@@ -224,6 +228,7 @@ export const wlinovelib = () => {
         chapterUrl,
         charset,
         selector: "#acontent",
+        domPatch: domFontFix,
         contentPatch: (_content) => {
           rm(".cgo", true, _content);
           rm("script", true, _content);
@@ -248,8 +253,109 @@ export const wlinovelib = () => {
       return contentRaw;
     },
     contentPatch: (dom) => dom,
+    maxRunLimit: maxRunLimit,
     concurrencyLimit: concurrencyLimit,
     sleepTime: sleepTime,
     maxSleepTime: maxSleepTime,
   });
 };
+
+export async function domFontFix(dom: Document) {
+  const FontJS = 'font|read||sheet|family|url|public|woff2';
+  let isNeedFix = false;
+  dom.querySelectorAll("script").forEach((script) => {
+    if (script.innerHTML.includes(FontJS)) {
+      isNeedFix = true;
+    }
+  });
+  if (!isNeedFix) {
+    return dom;
+  }
+  const domPatch = dom.querySelector("#TextContent p:nth-last-of-type(2)") as HTMLElement;
+  if (domPatch) {
+    domPatch.innerHTML = await replaceCharacter(domPatch.innerHTML);
+  }
+  return dom;
+}
+export async function replaceCharacter(
+  inputText: string,
+) {
+  const fontName = "read.woff2";
+  const fontlink = "https://www.linovelib.com/public/font/read.woff2";
+  let outputText = inputText;
+  const FontTable = await getFanqieFontTable(fontName, fontlink);
+  if (FontTable) {
+    for (const Character in FontTable) {
+      if (
+        Object.prototype.hasOwnProperty.call(FontTable, Character)
+      ) {
+        const normalCharacter = FontTable[Character];
+        outputText = outputText.replaceAll(Character, normalCharacter);
+      }
+    }
+    // outputText = outputText.replace(/\u200c/g, "");
+  } else {
+    return `[linovelib-font]字体对照表 ${fontName} 未找到,请前往https://github.com/404-novel-project/Universal_font_tables 提交字体链接, ${fontlink}`;
+  }
+  return outputText;
+}
+
+async function getFanqieFontTable(fontName: string, fontlink: string) {
+  const FontTable = await fetchRemoteFont(fontName);
+  if (!FontTable) {
+    log.error(`[linovelib-font]字体对照表 ${fontName} 未找到,请前往https://github.com/404-novel-project/Universal_font_tables 提交字体链接, ${fontlink}`);
+  } else {
+    log.debug(`[linovelib-font]字体对照表 ${fontName}已找到,如果你认为字体对应有错误,请前往https://github.com/404-novel-project/Universal_font_tables 重新提交字体链接, ${fontlink}`);
+  }
+  return FontTable;
+}
+
+async function fetchRemoteFont(fontName: string) {
+  const url = `https://fastly.jsdelivr.net/gh/404-novel-project/Universal_font_tables@master/${fontName}.json`;
+  log.info(`[linovelib-font]开始请求远程字体对照表 ${fontName}`);
+  const retryLimit = 10;
+  let retry = retryLimit;
+  while (retry > 0) {
+    let responseStatus = -1;
+    try {
+      const response = await new Promise<FontTable | undefined>((resolve, reject) => {
+        GM_xmlhttpRequest({
+          method: 'GET',
+          url: url,
+          onload: (response) => {
+            responseStatus = response.status;
+            if (response.status >= 200 && response.status < 300) {
+              log.info(`[linovelib-font]远程字体对照表 ${fontName} 下载成功`);
+              resolve(JSON.parse(response.responseText) as FontTable);
+            }
+            else {
+              reject(new Error(`HTTP status ${response.status}`));
+            }
+          },
+          onerror: (error) => {
+            reject(error);
+          }
+        });
+      });
+
+      if (response) {
+        return response;
+      }
+    } catch (error) {
+      log.error(error);
+      retry--;
+      if (responseStatus === 404 || retry < 0) {
+        log.info(`[linovelib-font]远程字体对照表 ${fontName} 下载失败`);
+        return undefined;
+      }
+      else {
+        await sleep(2000);
+        continue;
+      }
+    }
+  }
+}
+
+interface FontTable {
+  [index: string]: string;
+}

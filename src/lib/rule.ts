@@ -33,6 +33,7 @@ interface NextPageParseOptions {
   chapterUrl: string;
   charset: string;
   selector: string;
+  domPatch?: (dom: Document) => Promise<Document>;
   contentPatch: (_content: HTMLElement, doc: Document) => HTMLElement;
   getNextPage: (doc: Document) => string;
   continueCondition: (content: HTMLElement, nextLink: string) => boolean;
@@ -46,6 +47,7 @@ export async function nextPageParse({
   chapterUrl,
   charset,
   selector,
+  domPatch,
   contentPatch,
   getNextPage,
   continueCondition,
@@ -59,6 +61,9 @@ export async function nextPageParse({
 
   let flag = false;
   do {
+    if (domPatch) {
+      doc = await domPatch(doc);
+    }
     let _content = doc.querySelector(selector) as HTMLElement;
 
     const nextLink = getNextPage(doc);
