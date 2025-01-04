@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1068
+// @version        5.2.1069
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -38642,13 +38642,16 @@ async function domFontFix(dom) {
 async function replaceCharacter(inputText) {
     const fontName = "read.woff2";
     const fontlink = "https://www.linovelib.com/public/font/read.woff2";
-    let outputText = inputText;
+    let outputText = "";
     const FontTable = await getFanqieFontTable(fontName, fontlink);
     if (FontTable) {
-        for (const Character in FontTable) {
+        for (const Character of inputText) {
             if (Object.prototype.hasOwnProperty.call(FontTable, Character)) {
                 const normalCharacter = FontTable[Character];
-                outputText = outputText.replaceAll(Character, normalCharacter);
+                outputText = outputText + normalCharacter;
+            }
+            else {
+                outputText = outputText + Character;
             }
         }
     }
