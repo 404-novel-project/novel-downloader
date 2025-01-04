@@ -282,15 +282,23 @@ export async function replaceCharacter(
 ) {
   const fontName = "read.woff2";
   const fontlink = "https://www.linovelib.com/public/font/read.woff2";
-  let outputText = inputText;
+  let outputText = "";
   const FontTable = await getFanqieFontTable(fontName, fontlink);
   if (FontTable) {
-    for (const Character in FontTable) {
-      if (
-        Object.prototype.hasOwnProperty.call(FontTable, Character)
-      ) {
+    // for (const Character in FontTable) {
+    //   if (
+    //     Object.prototype.hasOwnProperty.call(FontTable, Character)
+    //   ) {
+    //     const normalCharacter = FontTable[Character];
+    //     outputText = outputText.replaceAll(Character, normalCharacter);
+    //   }
+    // }
+    for(const Character of inputText) {
+      if (Object.prototype.hasOwnProperty.call(FontTable, Character)) {
         const normalCharacter = FontTable[Character];
-        outputText = outputText.replaceAll(Character, normalCharacter);
+        outputText = outputText + normalCharacter;
+      } else {
+        outputText = outputText + Character;
       }
     }
     // outputText = outputText.replace(/\u200c/g, "");
