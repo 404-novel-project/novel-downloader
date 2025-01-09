@@ -362,6 +362,7 @@ export abstract class BaseRuleClass {
         log.debug("[initChapters]筛选需下载章节");
         _chapters = _chapters.filter((chapter) => _filter(chapter));
       }
+      _book.chapters = _chapters;
       return _chapters;
     }
 

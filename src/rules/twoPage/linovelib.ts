@@ -319,7 +319,7 @@ async function getFanqieFontTable(fontName: string, fontlink: string) {
 }
 
 async function fetchRemoteFont(fontName: string) {
-  const url = `https://fastly.jsdelivr.net/gh/404-novel-project/Universal_font_tables@master/${fontName}.json`;
+  const url = `https://fastly.jsdelivr.net/gh/404-novel-project/Universal_font_tables@main/${fontName}.json`;
   log.info(`[linovelib-font]开始请求远程字体对照表 ${fontName}`);
   const retryLimit = 10;
   let retry = retryLimit;
