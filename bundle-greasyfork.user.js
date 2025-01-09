@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1069
+// @version        5.2.1070
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -11527,6 +11527,7 @@ class BaseRuleClass {
                 loglevel_default().debug("[initChapters]筛选需下载章节");
                 _chapters = _chapters.filter((chapter) => _filter(chapter));
             }
+            _book.chapters = _chapters;
             return _chapters;
         }
         async function postChapterParseHook(chapter, saveObj) {
@@ -38671,7 +38672,7 @@ async function getFanqieFontTable(fontName, fontlink) {
     return FontTable;
 }
 async function fetchRemoteFont(fontName) {
-    const url = `https://fastly.jsdelivr.net/gh/404-novel-project/Universal_font_tables@master/${fontName}.json`;
+    const url = `https://fastly.jsdelivr.net/gh/404-novel-project/Universal_font_tables@main/${fontName}.json`;
     loglevel_default().info(`[linovelib-font]开始请求远程字体对照表 ${fontName}`);
     const retryLimit = 10;
     let retry = retryLimit;
