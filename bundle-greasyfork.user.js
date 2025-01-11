@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1070
+// @version        5.2.1071
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -10634,13 +10634,11 @@ class EPUB extends Options {
     toc = new DOMParser().parseFromString(TOC_xhtml, "application/xhtml+xml");
     tocBody = this.toc.body;
     book;
-    chapters;
     epubZip;
     constructor(book, streamZip, options) {
         super();
         const self = this;
         this.book = book;
-        this.chapters = this.book.chapters;
         const zipFilename = `[${this.book.author}]${this.book.bookname}.epub`;
         this.epubZip = new FflateZip(zipFilename, streamZip, "application/epub+zip");
         loglevel_default().debug("[save-epub]保存epub基本文件");
@@ -10692,7 +10690,7 @@ class EPUB extends Options {
             }
         }
         loglevel_default().debug("[save-epub]保存仅标题章节文件");
-        await saveStubChapters(this.chapters);
+        await saveStubChapters(this.book.chapters);
         loglevel_default().debug("[save-epub]保存目录文件");
         await saveToC();
         await saveZipFiles();
@@ -10778,8 +10776,8 @@ class EPUB extends Options {
         }
         async function saveToC() {
             loglevel_default().debug("[save-epub]对 chapters 排序");
-            self.chapters.sort(self.chapterSort);
-            const sectionsListObj = (0,save_misc/* getSectionsObj */.e)(self.chapters, self.chapterSort);
+            self.book.chapters.sort(self.chapterSort);
+            const sectionsListObj = (0,save_misc/* getSectionsObj */.e)(self.book.chapters, self.chapterSort);
             let i = 0;
             let sectionNumberG = null;
             let sectionNavPoint;
@@ -10790,7 +10788,7 @@ class EPUB extends Options {
             for (const sectionObj of sectionsListObj) {
                 const { sectionName, sectionNumber, chpaters } = sectionObj;
                 if (sectionNumber !== sectionNumberG) {
-                    const sectionNumberToSave = self.getChapterNumberToSave(chpaters[0], self.chapters);
+                    const sectionNumberToSave = self.getChapterNumberToSave(chpaters[0], self.book.chapters);
                     const sectionHtmlFileName = `No${sectionNumberToSave}Section.xhtml`;
                     if (sectionName) {
                         sectionNumberG = sectionNumber;
@@ -10971,8 +10969,8 @@ class EPUB extends Options {
             }
             async function saveIndex() {
                 loglevel_default().debug("[save]对 chapters 排序");
-                self.chapters.sort(self.chapterSort);
-                const sectionsListObj = (0,save_misc/* getSectionsObj */.e)(self.chapters, self.chapterSort);
+                self.book.chapters.sort(self.chapterSort);
+                const sectionsListObj = (0,save_misc/* getSectionsObj */.e)(self.book.chapters, self.chapterSort);
                 const _indexHtmlText = index.render({
                     creationDate: Date.now(),
                     bookname: self.book.bookname,
@@ -11005,7 +11003,7 @@ class EPUB extends Options {
     }
     async addChapter(chapter, suffix = "") {
         const chapterName = this.getchapterName(chapter);
-        const chapterNumberToSave = this.getChapterNumberToSave(chapter, this.chapters);
+        const chapterNumberToSave = this.getChapterNumberToSave(chapter, this.book.chapters);
         const chapterHtmlFileName = `No${chapterNumberToSave}Chapter${suffix}.xhtml`;
         chapter.chapterHtmlFileName = chapterHtmlFileName;
         loglevel_default().debug(`[save-epub]保存章HTML文件：${chapterName}`);
@@ -38679,6 +38677,7 @@ async function fetchRemoteFont(fontName) {
     while (retry > 0) {
         let responseStatus = -1;
         try {
+            loglevel_default().debug(`[linovelib-font]开始请求远程字体对照表 ${url}, 重试次数 ${retryLimit - retry + 1}`);
             const response = await new Promise((resolve, reject) => {
                 GM_xmlhttpRequest({
                     method: 'GET',
