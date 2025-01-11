@@ -326,6 +326,7 @@ async function fetchRemoteFont(fontName: string) {
   while (retry > 0) {
     let responseStatus = -1;
     try {
+      log.debug(`[linovelib-font]开始请求远程字体对照表 ${url}, 重试次数 ${retryLimit - retry + 1}`);
       const response = await new Promise<FontTable | undefined>((resolve, reject) => {
         GM_xmlhttpRequest({
           method: 'GET',

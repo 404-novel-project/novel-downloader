@@ -222,14 +222,14 @@ export class EPUB extends Options {
   private readonly tocBody = this.toc.body;
 
   private readonly book: Book;
-  private readonly chapters: Chapter[];
+  // private readonly chapters: Chapter[];
   private readonly epubZip: FflateZip;
 
   public constructor(book: Book, streamZip: boolean, options?: SaveOptions) {
     super();
     const self = this;
     this.book = book;
-    this.chapters = this.book.chapters;
+    // this.chapters = this.book.chapters;
 
     const zipFilename = `[${this.book.author}]${this.book.bookname}.epub`;
     this.epubZip = new FflateZip(
@@ -307,7 +307,7 @@ export class EPUB extends Options {
       }
     }
     log.debug("[save-epub]保存仅标题章节文件");
-    await saveStubChapters(this.chapters);
+    await saveStubChapters(this.book.chapters);
     log.debug("[save-epub]保存目录文件");
     await saveToC();
 
@@ -425,9 +425,9 @@ export class EPUB extends Options {
 
     async function saveToC() {
       log.debug("[save-epub]对 chapters 排序");
-      self.chapters.sort(self.chapterSort);
+      self.book.chapters.sort(self.chapterSort);
 
-      const sectionsListObj = getSectionsObj(self.chapters, self.chapterSort);
+      const sectionsListObj = getSectionsObj(self.book.chapters, self.chapterSort);
 
       let i = 0;
       let sectionNumberG = null;
@@ -441,7 +441,7 @@ export class EPUB extends Options {
         if (sectionNumber !== sectionNumberG) {
           const sectionNumberToSave = self.getChapterNumberToSave(
             chpaters[0],
-            self.chapters
+            self.book.chapters
           );
           const sectionHtmlFileName = `No${sectionNumberToSave}Section.xhtml`;
           if (sectionName) {
@@ -739,9 +739,9 @@ export class EPUB extends Options {
 
       async function saveIndex() {
         log.debug("[save]对 chapters 排序");
-        self.chapters.sort(self.chapterSort);
+        self.book.chapters.sort(self.chapterSort);
 
-        const sectionsListObj = getSectionsObj(self.chapters, self.chapterSort);
+        const sectionsListObj = getSectionsObj(self.book.chapters, self.chapterSort);
 
         const _indexHtmlText = index.render({
           creationDate: Date.now(),
@@ -792,7 +792,7 @@ export class EPUB extends Options {
     const chapterName = this.getchapterName(chapter);
     const chapterNumberToSave = this.getChapterNumberToSave(
       chapter,
-      this.chapters
+      this.book.chapters
     );
     const chapterHtmlFileName = `No${chapterNumberToSave}Chapter${suffix}.xhtml`;
     chapter.chapterHtmlFileName = chapterHtmlFileName;
