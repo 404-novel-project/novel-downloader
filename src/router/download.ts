@@ -578,7 +578,7 @@ export async function getRule(): Promise<BaseRuleClass> {
     /** mbtxt End **/
 
     /** 笔趣阁 **/
-    case "www.bqu9.cc": {
+    case "www.bqu9.cc": case "www.bq06.cc": {
       const { bqu9 } = await import("../rules/biquge/onePage");
       ruleClass = bqu9();
       break;
