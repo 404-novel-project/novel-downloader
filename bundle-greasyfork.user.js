@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1073
+// @version        5.2.1074
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -287,6 +287,7 @@
 // @match          *://www.penana.com/story/*/*/
 // @match          *://b.guidaye.com/*/*/
 // @match          *://www.esjzone.one/detail/*
+// @match          *://esjzone.one/detail/*
 // @match          *://www.esjzone.cc/detail/*
 // @match          *://www.fxshu.top/*/*.html
 // @match          *://xr.unionread.net/bookdetail/*
@@ -40649,7 +40650,8 @@ async function getRule() {
             break;
         }
         case "www.esjzone.cc":
-        case "www.esjzone.one": {
+        case "www.esjzone.one":
+        case "esjzone.one": {
             const { esjzone } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/esjzone.ts"));
             ruleClass = esjzone;
             break;
