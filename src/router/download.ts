@@ -726,7 +726,8 @@ export async function getRule(): Promise<BaseRuleClass> {
       break;
     }
     case "www.esjzone.cc":
-    case "www.esjzone.one": {
+    case "www.esjzone.one":
+    case "esjzone.one": {
       const { esjzone } = await import("../rules/special/original/esjzone");
       ruleClass = esjzone;
       break;
