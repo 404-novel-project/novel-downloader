@@ -10,8 +10,8 @@ import { sleep } from "../../lib/misc";
 
 const chapterFixSleepTime = 2000;
 const concurrencyLimit = 1;
-const sleepTime = 600;
-const maxSleepTime = 3000;
+const sleepTime = 1200;
+const maxSleepTime = 6000;
 const maxRunLimit = 1;
 export const linovelib = () => {
   const ToCurl = document.location.href;
