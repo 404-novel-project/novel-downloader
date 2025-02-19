@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1075
+// @version        5.2.1076
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -32710,7 +32710,6 @@ class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
         const bookUrl = document.location.href;
         const bookIdMatch = bookUrl.match(/www\.qidian\.com\/book\/(\d+)/);
         const bookId = bookIdMatch ? bookIdMatch[1] : null;
-        const newurl = "https://book.qidian.com/info/" + bookId?.toString();
         const author = document.querySelector(".author")?.innerText;
         const authorId = document
             .getElementById("authorId")
@@ -32728,7 +32727,7 @@ class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
                 .catch((error) => _log__WEBPACK_IMPORTED_MODULE_3___default().error(error));
         }
         additionalMetadate.tags = Array.from(document.querySelectorAll("#all-label > a")).map((a) => a.innerText.trim());
-        const limitFree = Boolean(document.querySelector(".book-information .flag"));
+        const limitFree = Boolean(document.querySelector("#bookImg > div.limit-flag"));
         _log__WEBPACK_IMPORTED_MODULE_3___default().info(`[Book]限免书籍 ${limitFree}`);
         const sections = document.querySelectorAll(".catalog-volume");
         let chapterNumber = 0;
