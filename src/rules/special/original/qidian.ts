@@ -33,7 +33,7 @@ export class Qidian extends BaseRuleClass {
     const bookUrl = document.location.href;
     const bookIdMatch = bookUrl.match(/www\.qidian\.com\/book\/(\d+)/);
     const bookId = bookIdMatch ? bookIdMatch[1] : null;
-    const newurl = "https://book.qidian.com/info/" + bookId?.toString();
+    // const newurl = "https://book.qidian.com/info/" + bookId?.toString();
     const author = (document.querySelector(".author") as HTMLElement)?.innerText;
     const authorId = document
       .getElementById("authorId")
@@ -56,7 +56,7 @@ export class Qidian extends BaseRuleClass {
       document.querySelectorAll("#all-label > a")
     ).map((a) => (a as HTMLAnchorElement).innerText.trim());
     const limitFree = Boolean(
-      document.querySelector(".book-information .flag")
+      document.querySelector("#bookImg > div.limit-flag")
     );
     log.info(`[Book]限免书籍 ${limitFree}`);
 
