@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1078
+// @version        5.2.1079
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -58,6 +58,7 @@
 // @exclude        *://www.po18.tw/books/*/articles*
 // @match          *://www.po18.tw/books/*
 // @match          *://b.faloo.com/*
+// @match          *://api.langge.cf/online_detail?*
 // @match          *://www.ihuaben.com/book/*
 // @match          *://www.kadokado.com.tw/book/*
 // @match          *://www.uaa.com/novel/intro?id=*
@@ -37486,6 +37487,166 @@ function softByValue(a, b) {
 
 /***/ }),
 
+/***/ "./src/rules/special/reprint/langge.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Langge: () => (/* binding */ Langge)
+/* harmony export */ });
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _lib_GM__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/GM.ts");
+
+
+
+
+
+
+
+
+
+class Langge extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
+    constructor() {
+        super();
+        this.attachmentMode = "TM";
+        this.streamZip = true;
+        this.concurrencyLimit = 1;
+        this.maxRunLimit = 1;
+    }
+    async bookParse() {
+        const bookUrl = document.location.href;
+        const chapterUrlPrefix = bookUrl.replace("online_detail", "online_reader") + "&item_id=";
+        const bookname = document.querySelector("div.book-info > h1").innerText.trim();
+        const authorDom = document.querySelector("div.book-info > p");
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("strong", true, authorDom);
+        const author = authorDom.innerText
+            .trim();
+        const introDom = document.querySelector("div.book-info");
+        const coverUrl = document.querySelector("img.book-cover").src;
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .introDomHandle */ .HV)(introDom);
+        const additionalMetadate = {};
+        if (coverUrl) {
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
+                .then((coverClass) => {
+                additionalMetadate.cover = coverClass;
+            })
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_4___default().error(error));
+        }
+        const regex = /goToChapter\('(\d+)'/;
+        const chapters = [];
+        const chapterList = Array.from(document.querySelectorAll("#chapterList > div.chapter-item"));
+        let i = 0;
+        for (const c of chapterList) {
+            i++;
+            const onclickAttr = c.getAttribute("onclick")?.toString() ?? "";
+            const match = onclickAttr.match(regex);
+            let chapterID = "-1";
+            if (match) {
+                chapterID = match[1];
+            }
+            else {
+                throw Error(`Match ${onclickAttr} ID失败，结果为${match}`);
+            }
+            const chapterName = c.querySelector("span")?.innerText ?? i.toString();
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .I({
+                bookUrl,
+                bookname,
+                chapterUrl: chapterUrlPrefix + chapterID,
+                chapterNumber: i,
+                chapterName: chapterName,
+                isVIP: false,
+                isPaid: false,
+                sectionName: null,
+                sectionNumber: null,
+                sectionChapterNumber: null,
+                chapterParse: this.chapterParse.bind(this),
+                charset: this.charset,
+                options: {},
+            });
+            chapters.push(chapter);
+        }
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .E({
+            bookUrl,
+            bookname,
+            author,
+            introduction,
+            introductionHTML,
+            additionalMetadate,
+            chapters,
+        });
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+        let chapterTrueUrl = chapterUrl.replace("/online_reader?", "/content?");
+        const secretKey2 = getCookie('secretKey2');
+        chapterTrueUrl += '&key=' + secretKey2;
+        _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`[Chapter]请求 ${chapterTrueUrl}，Refer：${chapterUrl}`);
+        const chapter = await new Promise((resolve) => {
+            (0,_lib_GM__WEBPACK_IMPORTED_MODULE_7__/* ._GM_xmlhttpRequest */ .nV)({
+                url: chapterTrueUrl,
+                headers: {
+                    'cache-control': 'no-cache', 'accept-encoding': 'gzip, deflate, br, zstd'
+                },
+                method: "GET",
+                onload: function (response) {
+                    if (response.status === 200) {
+                        const resultI = JSON.parse(response.responseText);
+                        resolve(resultI);
+                    }
+                    else {
+                        _log__WEBPACK_IMPORTED_MODULE_4___default().error(`response status = ${response.status}`);
+                        const resultI = JSON.parse(`{"code": 500`);
+                        resolve(resultI);
+                    }
+                }
+            });
+        });
+        if (chapter.code === 500)
+            throw new Error("chapter get error");
+        const content = chapter.content;
+        if (content) {
+            const Dcontent = document.createElement("div");
+            Dcontent.innerText = content;
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .an)(Dcontent, "TM");
+            return {
+                chapterName,
+                contentRaw: Dcontent,
+                contentText: text,
+                contentHTML: dom,
+                contentImages: images,
+                additionalMetadate: null,
+            };
+        }
+        else {
+            return {
+                chapterName,
+                contentRaw: null,
+                contentText: null,
+                contentHTML: null,
+                contentImages: null,
+                additionalMetadate: null,
+            };
+        }
+    }
+}
+function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2)
+        return parts.pop()?.split(';').shift() || null;
+    return null;
+}
+
+
+/***/ }),
+
 /***/ "./src/rules/special/reprint/lightnovel.ts":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -39968,6 +40129,11 @@ async function getRule() {
         case "book.sfacg.com": {
             const { Sfacg } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/sfacg.ts"));
             ruleClass = Sfacg;
+            break;
+        }
+        case "api.langge.cf": {
+            const { Langge } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/reprint/langge.ts"));
+            ruleClass = Langge;
             break;
         }
         case "lcread.com": {
