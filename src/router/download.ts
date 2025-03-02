@@ -15,6 +15,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = Sfacg;
       break;
     }
+    case "api.langge.cf": {
+      const { Langge } = await import("../rules/special/reprint/langge");
+      ruleClass = Langge;
+      break;
+    }
     case "lcread.com": {
       const { Lcread } = await import("../rules/special/original/lcread");
       ruleClass = Lcread;

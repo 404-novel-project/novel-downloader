@@ -24,6 +24,7 @@
   "match": [
     "*://www.po18.tw/books/*",
     "*://b.faloo.com/*",
+    "*://api.langge.cf/online_detail?*",
     "*://www.ihuaben.com/book/*",
     "*://www.kadokado.com.tw/book/*",
     "*://www.uaa.com/novel/intro?id=*",
