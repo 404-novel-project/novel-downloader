@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1079
+// @version        5.2.1083
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -56,6 +56,7 @@
 // @exclude        *://www.qbtr.cc/*/*/*.html
 // @exclude        *://www.ciyuanji.com/chapter/*
 // @exclude        *://www.po18.tw/books/*/articles*
+// @exclude        *://b.faloo.com/d_*.html
 // @match          *://www.po18.tw/books/*
 // @match          *://b.faloo.com/*
 // @match          *://api.langge.cf/online_detail?*
@@ -137,6 +138,7 @@
 // @match          *://www.idmzj.com/info/*.html
 // @match          *://manhua.idmzj.com/*
 // @match          *://www.westnovel.com/*/*/
+// @match          *://www.666biquge.com/*/
 // @match          *://www.mht99.com/*/
 // @match          *://www.banzhuer.org/*_*/
 // @match          *://www.xbiquge.tw/book/*/
@@ -40674,6 +40676,7 @@ async function getRule() {
             ruleClass = bqu9();
             break;
         }
+        case "www.666biquge.com":
         case "www.23xsww.cc":
         case "www.biququ.com":
         case "www.ddyveshu.cc":
