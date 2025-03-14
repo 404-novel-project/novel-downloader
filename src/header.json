@@ -103,6 +103,7 @@
     "*://www.idmzj.com/info/*.html",
     "*://manhua.idmzj.com/*",
     "*://www.westnovel.com/*/*/",
+    "*://www.666biquge.com/*/",
     "*://www.mht99.com/*/",
     "*://www.banzhuer.org/*_*/",
     "*://www.xbiquge.tw/book/*/",
@@ -310,7 +311,8 @@
     "*://www.bilinovel.com/novel/*/*.html",
     "*://www.qbtr.cc/*/*/*.html",
     "*://www.ciyuanji.com/chapter/*",
-    "*://www.po18.tw/books/*/articles*"
+    "*://www.po18.tw/books/*/articles*",
+    "*://b.faloo.com/d_*.html"
   ],
   "grant": [
     "unsafeWindow",
