@@ -27,7 +27,7 @@ export class Cool18 extends BaseRuleClass {
     const doc = await getHtmlDOM(bookUrl, this.charset);
     const title = (
       doc.querySelector(
-        '.show_content > center > font[size="6"] > b'
+        'h1.main-title'
       ) as HTMLElement
     ).innerText.trim();
     const matchs = /[【《](.+)[】》](.+)?作者：([^\s-]+)/.exec(title);
@@ -36,22 +36,31 @@ export class Cool18 extends BaseRuleClass {
     if (matchs) {
       bookname = matchs[1];
       author = matchs[3];
+    } else {
+      bookname = title;
+      author = (doc.querySelector("span.sender") as HTMLElement).innerText.trim();
     }
     const introduction = null;
     const introductionHTML = null;
     const additionalMetadate = {};
-    const _aElems = Array.from(
+    const _aElems1 = Array.from(
       document.querySelectorAll(
-        ".show_content > pre a, body > table:nth-child(7) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(1) > ul:nth-child(2) > li > a"
+        "#content-section > pre a"
+      )
+    );
+    let _aElems2 = Array.from(
+      document.querySelectorAll(
+        "div.post-list  ul.post-items > li"
       )
     );
     const _a = document.createElement("a");
     _a.href = document.location.href;
     _a.innerText = title;
-    _aElems.push(_a);
-    const aElems = _aElems
+    _aElems1.push(_a);
+    _aElems2 = _aElems2
       .filter((a) => {
-        const href = (a as HTMLAnchorElement).href;
+        const aa = a.querySelector("a");
+        const href = (aa as HTMLAnchorElement).href;
         const url = new URL(href);
         return (
           url.searchParams.get("act") === "threadview" &&
@@ -59,8 +68,11 @@ export class Cool18 extends BaseRuleClass {
         );
       })
       .filter(
-        (a) => (a as HTMLAnchorElement).innerText.includes("(无内容)") === false
+        (a) => (a as HTMLAnchorElement).innerText.includes("(0 bytes)") === false
       )
+    _aElems2 = _aElems2.map((a) => a.querySelector("a") as HTMLAnchorElement);
+    const aElems = _aElems1
+      .concat(_aElems2)
       .filter((item, pos, self) => {
         // 去重
         // https://stackoverflow.com/questions/9229645/remove-duplicate-values-from-js-array
@@ -134,14 +146,14 @@ export class Cool18 extends BaseRuleClass {
     const doc = await getHtmlDOM(chapterUrl, charset);
     chapterName = (
       doc.querySelector(
-        '.show_content > center > font[size="6"] > b'
+        'h1.main-title'
       ) as HTMLElement
     ).innerText
       .replace(`【${options.bookname}】`, "")
       .replace(`《${options.bookname}》`, "")
       .replace(`作者：${options.author}`, "")
       .trim();
-    const dom = doc.querySelector(".show_content > pre, .show_content > div");
+    const dom = doc.querySelector("#content-section > pre, #content-section > div");
     if (dom) {
       // 移除隐藏字符
       Array.from(dom.querySelectorAll('font[color*="E6E6DD"]')).forEach((f) =>
