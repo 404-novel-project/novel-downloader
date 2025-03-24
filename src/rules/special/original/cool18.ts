@@ -192,6 +192,13 @@ export class Cool18 extends BaseRuleClass {
           )
           .forEach((p) => p.remove());
       }
+      Array.from(contentRaw.querySelectorAll("center")).forEach((center) => {
+        const div = document.createElement("div");
+        while (center.firstChild) {
+          div.appendChild(center.firstChild);
+        }
+        center.replaceWith(div);
+      });
 
       const {
         dom: contentHTML,
