@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1083
+// @version        5.2.1085
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -75,6 +75,7 @@
 // @match          *://www.lightnovel.us/cn/series/*
 // @match          *://www.lightnovel.us/cn/detail/*
 // @match          *://lcread.com/bookpage/*/index.html
+// @match          *://www.lcread.com/bookpage/*/index.html
 // @match          *://book.qidian.com/info/*
 // @match          *://www.qidian.com/book/*
 // @match          *://www.jjwxc.net/onebook.php?novelid=*
@@ -15683,7 +15684,7 @@ class Cool18 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
     async bookParse() {
         const bookUrl = document.location.href;
         const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .wA)(bookUrl, this.charset);
-        const title = doc.querySelector('.show_content > center > font[size="6"] > b').innerText.trim();
+        const title = doc.querySelector('h1.main-title').innerText.trim();
         const matchs = /[【《](.+)[】》](.+)?作者：([^\s-]+)/.exec(title);
         let bookname = title;
         let author = "";
@@ -15691,22 +15692,31 @@ class Cool18 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
             bookname = matchs[1];
             author = matchs[3];
         }
+        else {
+            bookname = title;
+            author = doc.querySelector("span.sender").innerText.trim();
+        }
         const introduction = null;
         const introductionHTML = null;
         const additionalMetadate = {};
-        const _aElems = Array.from(document.querySelectorAll(".show_content > pre a, body > table:nth-child(7) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(1) > ul:nth-child(2) > li > a"));
+        const _aElems1 = Array.from(document.querySelectorAll("#content-section > pre a"));
+        let _aElems2 = Array.from(document.querySelectorAll("div.post-list  ul.post-items > li"));
         const _a = document.createElement("a");
         _a.href = document.location.href;
         _a.innerText = title;
-        _aElems.push(_a);
-        const aElems = _aElems
+        _aElems1.push(_a);
+        _aElems2 = _aElems2
             .filter((a) => {
-            const href = a.href;
+            const aa = a.querySelector("a");
+            const href = aa.href;
             const url = new URL(href);
             return (url.searchParams.get("act") === "threadview" &&
                 url.searchParams.has("tid"));
         })
-            .filter((a) => a.innerText.includes("(无内容)") === false)
+            .filter((a) => a.innerText.includes("(0 bytes)") === false);
+        _aElems2 = _aElems2.map((a) => a.querySelector("a"));
+        const aElems = _aElems1
+            .concat(_aElems2)
             .filter((item, pos, self) => {
             const urls = self.map((a) => a.href);
             const url = item.href;
@@ -15760,12 +15770,12 @@ class Cool18 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
-        chapterName = doc.querySelector('.show_content > center > font[size="6"] > b').innerText
+        chapterName = doc.querySelector('h1.main-title').innerText
             .replace(`【${options.bookname}】`, "")
             .replace(`《${options.bookname}》`, "")
             .replace(`作者：${options.author}`, "")
             .trim();
-        const dom = doc.querySelector(".show_content > pre, .show_content > div");
+        const dom = doc.querySelector("#content-section > pre, #content-section > div");
         if (dom) {
             Array.from(dom.querySelectorAll('font[color*="E6E6DD"]')).forEach((f) => f.remove());
             const contentRaw = document.createElement("div");
@@ -40138,7 +40148,8 @@ async function getRule() {
             ruleClass = Langge;
             break;
         }
-        case "lcread.com": {
+        case "lcread.com":
+        case "www.lcread.com": {
             const { Lcread } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/lcread.ts"));
             ruleClass = Lcread;
             break;
