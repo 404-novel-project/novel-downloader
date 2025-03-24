@@ -20,7 +20,7 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = Langge;
       break;
     }
-    case "lcread.com": {
+    case "lcread.com": case "www.lcread.com": {
       const { Lcread } = await import("../rules/special/original/lcread");
       ruleClass = Lcread;
       break;
