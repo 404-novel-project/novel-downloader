@@ -443,10 +443,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mozilla/readability@npm:^0.5.0":
-  version: 0.5.0
-  resolution: "@mozilla/readability@npm:0.5.0"
-  checksum: fa1036cb556637d8238c8518d574dfdf45c74ab9ee6e0f6c67663bc30c9bb9e61abb659086811456d9ed0c279ac2a38781f018f3beffad549026541fedce5d60
+"@mozilla/readability@npm:^0.6.0":
+  version: 0.6.0
+  resolution: "@mozilla/readability@npm:0.6.0"
+  checksum: 9953244e46abc4738b9579921b58fd33d2e558a981d814421d885f558ef70fcd1fc3bfcf0019358051b8870e494f57270343226da5157d23b7afea403cad8be6
   languageName: node
   linkType: hard
 
@@ -4753,7 +4753,7 @@ __metadata:
   resolution: "novel-downloader@workspace:."
   dependencies:
     "@babel/types": ^7.24.0
-    "@mozilla/readability": ^0.5.0
+    "@mozilla/readability": ^0.6.0
     "@types/crypto-js": ^4.2.2
     "@types/css-tree": ^2.3.7
     "@types/file-saver": ^2.0.7
