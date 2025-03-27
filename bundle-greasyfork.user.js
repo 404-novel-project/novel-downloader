@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1088
+// @version        5.2.1090
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -16802,6 +16802,9 @@ class fanqie extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
         super();
         this.attachmentMode = "TM";
         this.concurrencyLimit = 1;
+        this.maxRunLimit = 1;
+        this.maxSleepTime = 5000;
+        this.sleepTime = 800;
     }
     async bookParse() {
         const bookUrl = document.location.href;
@@ -16872,7 +16875,7 @@ class fanqie extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
         if (isVIP) {
             _log__WEBPACK_IMPORTED_MODULE_4___default().debug('未购买SVIP,尝试第三方API获取章节内容');
             const id = chapterUrl.match(/\d+/);
-            const url = `https://novel.snssdk.com/api/novel/reader/full/v1/?item_id=${id}`;
+            const url = `https://api.cenguigui.cn/api/tomato/content.php?item_id=${id}`;
             const result = await new Promise((resolve) => {
                 (0,_lib_GM__WEBPACK_IMPORTED_MODULE_6__/* ._GM_xmlhttpRequest */ .nV)({
                     url: url,
