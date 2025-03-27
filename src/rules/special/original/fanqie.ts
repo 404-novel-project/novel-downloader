@@ -141,7 +141,9 @@ export class fanqie extends BaseRuleClass {
             else if (data.need_pay)
                 content = '你没有购买SVIP,且第三方API未购买VIP';
             else content = data.content;
-            contentRaw.innerHTML = content;
+            if (content.match(/\\n/))
+                contentRaw.innerText = content;
+            else contentRaw.innerHTML = content;
         } else {
             const textSelector = '.muye-reader-content';
             const html = await getFrameContentConditionWithWindow(chapterUrl, (frame) => {
