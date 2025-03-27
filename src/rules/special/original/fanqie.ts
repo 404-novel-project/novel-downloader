@@ -141,7 +141,7 @@ export class fanqie extends BaseRuleClass {
             else if (data.need_pay)
                 content = '你没有购买SVIP,且第三方API未购买VIP';
             else content = data.content;
-            if (content.match(/\\n/))
+            if (content.includes('\n'))
                 contentRaw.innerText = content;
             else contentRaw.innerHTML = content;
         } else {
