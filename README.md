@@ -80,7 +80,7 @@ EPUB 文件请使用相应阅读器阅读。
 | [SF 轻小说](https://book.sfacg.com/)                | ✅\*     | ✅\*\*   | \*不支持对话小说，例：[224282](https://book.sfacg.com/Novel/224282/)。 \*\*VIP 章节仅支持图片版。                                                                                                                                                                            |
 | [起点中文网](https://www.qidian.com/)               | ✅       | ✅       | 部分小说 VIP 章节可能出现乱码无法下载。脚本支持 book.qidian.com 页面下载，但VIP章节因跨域问题需要切换至 www.qidian.com 下载。                                                                                                                                                                                                                                      |
 | [起点女生网](https://www.qdmm.com/)                 | ✅       | ✅       |                                                                                                                                                                                                                                                                              |
-| [晋江文学城](http://www.jjwxc.net/)                 | ✅       | ✅       | 晋江文学城 VIP 章节可添加 API Token 以获得更好体验，Token 添加方法参见 [Token 填写一节](#token-填写)。                                                                                                                                                                       |
+| [晋江文学城](http://www.jjwxc.net/)                 | ✅       | ✅       | 晋江文学城章节下载可通过添加 API Token 以获得更好体验，Token 添加方法参见 [Token 填写一节](#token-填写)。                                                                                                                                                                       |
 | [长佩文学](https://www.gongzicp.com/)               | ✅       | ✅       | 反爬较严，限制下载速度，每分钟约可下载 6 章，请耐心等待，最好不要多开页面同时下载多本长佩小说。<br>长佩文学为单页应用，如打开书籍详情页右上角未出现下载图标，请按下 F5 重新加载当前页面。                                                                                    |
 | [书耽](https://www.shubl.com/)                      | ✅       | ✅       | VIP 章节仅支持图片版。                                                                                                                                                                                                                                                       |
 | [海棠文化线上文学城](https://ebook.longmabook.com/) | ✅       | ✅       |                                                                                                                                                                                                                                                                              |
@@ -258,9 +258,9 @@ Tips:对于晋江文学城一本小说中多个章节对应多个字体的情况
    
 - 要抓取的数据：
   - token: 登录晋江文学城 Android app 并随意浏览章节，在形如“https://app.jjwxc.org/androidapi/chapterContent?” 等链接中找到 &token= 后的字符串（止于下一个&）
-  - user_key 方法同上，数据为 &user_key= 后的字符串（止于下一个&）
+  - （暂不需要，请忽略）user_key 方法同上，数据为 &user_key= 后的字符串（止于下一个&）
 
-注：user_key对于部分账号可能是必须的，如果你采用方法2，可以将两个一起抓取。 
+注：user_key对于部分账号可能是必须的，但目前脚本暂不需要该值，可不用抓取。如果你采用方法2，可以将两个一起抓取，未来可能有用。 
 
 ***
 

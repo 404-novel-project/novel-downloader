@@ -16,6 +16,8 @@ export class Gongzicp extends BaseRuleClass {
     this.attachmentMode = "TM";
     this.concurrencyLimit = 1;
     this.maxRunLimit = 1;
+    this.sleepTime = 600;
+    this.maxSleepTime = 3000;
   }
 
   public async bookParse() {

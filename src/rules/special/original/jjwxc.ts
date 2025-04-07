@@ -1237,38 +1237,38 @@ export class Jjwxc extends BaseRuleClass {
     }
     function decodeVIPText(text: string, encryptType: string, novel_info: string, user_key?: string) {
 
-      async function getFockKey() {
-        const url = "https://android.jjwxc.net/app.jjwxc/android/AACC/Security/getEncryptKey";
-        //data = user_key;
-        // method = POST
-        //Fock.addKeypool(jSONObject.optString("key"), jSONObject.optString("version"));
-        const Key: EncryptKey = await new Promise((resolve) => {
-          _GM_xmlhttpRequest({
-            url: url,
-            headers: {
-              //   accept: "application/json",
-              referer: "http://android.jjwxc.net?v=402",
-              //    not_tip: "updateTime",
-              //  "accept-encoding": "gzip",
-            },
-            method: "POST",
-            data:user_key,
-            onload: function (response) {
-              if (response.status === 200) {
-                  const resultI: EncryptKey = JSON.parse(
-                    response.responseText
-                  );
-                  resolve(resultI);
-              } else {
-              const resultI: EncryptKey = JSON.parse(
-                  `{"code":"${response.status}"}`
-                );
-                resolve(resultI);
-              }
-            },
-          });
-        });
-      }
+      // async function getFockKey() {
+      //   const url = "https://android.jjwxc.net/app.jjwxc/android/AACC/Security/getEncryptKey";
+      //   //data = user_key;
+      //   // method = POST
+      //   //Fock.addKeypool(jSONObject.optString("key"), jSONObject.optString("version"));
+      //   const Key: EncryptKey = await new Promise((resolve) => {
+      //     _GM_xmlhttpRequest({
+      //       url: url,
+      //       headers: {
+      //         //   accept: "application/json",
+      //         referer: "http://android.jjwxc.net?v=402",
+      //         //    not_tip: "updateTime",
+      //         //  "accept-encoding": "gzip",
+      //       },
+      //       method: "POST",
+      //       data:user_key,
+      //       onload: function (response) {
+      //         if (response.status === 200) {
+      //             const resultI: EncryptKey = JSON.parse(
+      //               response.responseText
+      //             );
+      //             resolve(resultI);
+      //         } else {
+      //         const resultI: EncryptKey = JSON.parse(
+      //             `{"code":"${response.status}"}`
+      //           );
+      //           resolve(resultI);
+      //         }
+      //       },
+      //     });
+      //   });
+      // }
       if (encryptType == 'jj') {
         const keyHex = CryptoJS.enc.Utf8.parse("KW8Dvm2N");
         const ivHex = CryptoJS.enc.Utf8.parse("1ae2c94b");
@@ -1305,19 +1305,6 @@ export class Jjwxc extends BaseRuleClass {
         return text;
       }
     }
-
-    // function getCookieObj(pairKey: string) {
-    //   const cookieStr = document.cookie;
-    //   const pairList = cookieStr.split(";");
-    //   for (let _i = 0, pairList_1 = pairList; _i < pairList_1.length; _i++) {
-    //     const pair = pairList_1[_i];
-    //     const _a = pair.trim().split("="),
-    //       key = _a[0],
-    //       value = _a[1];
-    //     if (key == pairKey) return value;
-    //   }
-    //   return "error2333";
-    // }
     async function getChapterByApi(): Promise<ChapterParseObject> {
       let chapterGetInfoUrl = chapterUrl.replaceAll("id", "Id");
       chapterGetInfoUrl = chapterGetInfoUrl.replace(
@@ -1337,40 +1324,41 @@ export class Jjwxc extends BaseRuleClass {
         "https://app.jjwxc.net/androidapi/chapterContent?"
       );
       //let sid = getCookieObj("token");
-      if (isVIP) {
-        let sid = (unsafeWindow as UnsafeWindow).tokenOptions?.Jjwxc;
-        if (sid) {
-          if (typeof sid !== "string") {
-            sid = sid as {
-              token: string;
-              user_key: string;
-            };
-            if (sid.user_key)
-              sid = sid.token + "&user_key=" + sid.user_key;
-            else
-              sid = sid.token;
-          }
-          chapterGetInfoUrl +=
-            "&versionCode=349&token=" + sid;
-        } else {
-          throw new Error(
-            `当前需要手动捕获android版app token,详见github主页说明`
-          );
+      chapterGetInfoUrl += "&versionCode=381";
+      // if (isVIP) {
+      let sid = (unsafeWindow as UnsafeWindow).tokenOptions?.Jjwxc;
+      if (sid) {
+        if (typeof sid !== "string") {
+          sid = sid as {
+            token: string;
+            user_key: string;
+          };
+          // if (sid.user_key)
+          //   sid = sid.token + "&user_key=" + sid.user_key;
+          // else
+          sid = sid.token;
         }
-        //}
+        chapterGetInfoUrl +=
+          "&token=" + sid;
+      } else {
+        throw new Error(
+          `当前需要手动捕获android版app token,详见github主页说明`
+        );
       }
+        //}
+      // }
 
       async function getChapterInfo(url: string): Promise<ChapterInfo> {
         log.debug(
           `请求地址: ${url}, Referrer: ${chapterUrl}, 重试次数: ${retryTime}`
         );
-        const user_agent = "Mobile "+Date.now();
+        const user_agent = "Mozilla/5.0 (Linux; Android 15; Pixel 7 Pro Build/TP1A.241005.002.B2; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/134.0.6998.109 Mobile Safari/537.36/JINJIANG-Android/381(Pixel7Pro;Scale/3.5;isHarmonyOS/false)" + Date.now();
         return new Promise((resolve) => {
           _GM_xmlhttpRequest({
             url: url,
             headers: {
               //   accept: "application/json",
-              referer: "http://android.jjwxc.net?v=349",
+              referer: "http://android.jjwxc.net?v=381",
               //    not_tip: "updateTime",
               "user-agent": user_agent,
               //  "accept-encoding": "gzip",
@@ -1378,7 +1366,7 @@ export class Jjwxc extends BaseRuleClass {
             method: "GET",
             onload: function (response) {
               if (response.status === 200) {
-                if (isVIP) {
+                // if (isVIP) {
                   let decodeResponseText = String(response.responseText);
                   let resultI = JSON.parse('{"message":"try again!"}');
                   try {
@@ -1393,12 +1381,12 @@ export class Jjwxc extends BaseRuleClass {
                     resultI = JSON.parse('{"message":"try again!"}');
                   }
                   resolve(resultI);
-                } else {
-                  const resultI: ChapterInfo = JSON.parse(
-                    response.responseText
-                  );
-                  resolve(resultI);
-                }
+                // } else {
+                //   const resultI: ChapterInfo = JSON.parse(
+                //     response.responseText
+                //   );
+                //   resolve(resultI);
+                // }
               } else {
                 log.error(`response status = ${response.status}`);
                 const resultI: ChapterInfo = JSON.parse(
@@ -1426,12 +1414,12 @@ export class Jjwxc extends BaseRuleClass {
         const chapterinfo = "";//novelID + "-" + chapterID;
         let content = result.content;
         let postscript = result.sayBody?? " ";
-        if (isVIP) {
-          if (result.encryptField.includes("content"))
-            content = decodeVIPText(content, result.encryptType, chapterinfo);
-          if (result.encryptField.includes("sayBody"))
-            postscript = decodeVIPText(postscript, result.encryptType, chapterinfo);
-        }
+        // if (isVIP) {
+        if (result.encryptField.includes("content"))
+          content = decodeVIPText(content, result.encryptType, chapterinfo);
+        if (result.encryptField.includes("sayBody"))
+          postscript = decodeVIPText(postscript, result.encryptType, chapterinfo);
+        // }
         const contentRaw = document.createElement("pre");
         contentRaw.innerHTML = content;
         let contentText = content
@@ -1497,15 +1485,15 @@ export class Jjwxc extends BaseRuleClass {
         };
       }
     }
-    if (isVIP) {
+    // if (isVIP) {
       if (((unsafeWindow as UnsafeWindow).tokenOptions?.Jjwxc ?? null) != null) {
         return getChapterByApi();
       } else {
-        log.warn(`当前我们更推荐手动捕获android版app token以下载VIP章节,详见github主页说明,脚本将继续尝试使用远程字体下载，但可能会失败`);
+        log.warn(`当前我们更推荐手动捕获android版app token以下载章节,详见github主页说明,脚本将继续尝试使用远程字体下载，但可能会失败`);
         return vipChapter();
       }
-    } else {
-      return getChapterByApi();
-    }
+    // } else {
+    //   return getChapterByApi();
+    // }
   }
 }
