@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1092
+// @version        5.2.1093
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -17091,6 +17091,8 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
         this.attachmentMode = "TM";
         this.concurrencyLimit = 1;
         this.maxRunLimit = 1;
+        this.sleepTime = 600;
+        this.maxSleepTime = 3000;
     }
     async bookParse() {
         const bookUrl = document.location.href;
@@ -31067,29 +31069,6 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
             return result;
         }
         function decodeVIPText(text, encryptType, novel_info, user_key) {
-            async function getFockKey() {
-                const url = "https://android.jjwxc.net/app.jjwxc/android/AACC/Security/getEncryptKey";
-                const Key = await new Promise((resolve) => {
-                    (0,GM/* _GM_xmlhttpRequest */.nV)({
-                        url: url,
-                        headers: {
-                            referer: "http://android.jjwxc.net?v=402",
-                        },
-                        method: "POST",
-                        data: user_key,
-                        onload: function (response) {
-                            if (response.status === 200) {
-                                const resultI = JSON.parse(response.responseText);
-                                resolve(resultI);
-                            }
-                            else {
-                                const resultI = JSON.parse(`{"code":"${response.status}"}`);
-                                resolve(resultI);
-                            }
-                        },
-                    });
-                });
-            }
             if (encryptType == 'jj') {
                 const keyHex = external_CryptoJS_.enc.Utf8.parse("KW8Dvm2N");
                 const ivHex = external_CryptoJS_.enc.Utf8.parse("1ae2c94b");
@@ -31111,58 +31090,48 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
             chapterGetInfoUrl = chapterGetInfoUrl.replace("https://www.jjwxc.net/onebook.php?", "https://app.jjwxc.net/androidapi/chapterContent?");
             chapterGetInfoUrl = chapterGetInfoUrl.replace("http://my.jjwxc.net/onebook_vip.php?", "https://app.jjwxc.net/androidapi/chapterContent?");
             chapterGetInfoUrl = chapterGetInfoUrl.replace("https://my.jjwxc.net/onebook_vip.php?", "https://app.jjwxc.net/androidapi/chapterContent?");
-            if (isVIP) {
-                let sid = unsafeWindow.tokenOptions?.Jjwxc;
-                if (sid) {
-                    if (typeof sid !== "string") {
-                        sid = sid;
-                        if (sid.user_key)
-                            sid = sid.token + "&user_key=" + sid.user_key;
-                        else
-                            sid = sid.token;
-                    }
-                    chapterGetInfoUrl +=
-                        "&versionCode=349&token=" + sid;
+            chapterGetInfoUrl += "&versionCode=381";
+            let sid = unsafeWindow.tokenOptions?.Jjwxc;
+            if (sid) {
+                if (typeof sid !== "string") {
+                    sid = sid;
+                    sid = sid.token;
                 }
-                else {
-                    throw new Error(`当前需要手动捕获android版app token,详见github主页说明`);
-                }
+                chapterGetInfoUrl +=
+                    "&token=" + sid;
+            }
+            else {
+                throw new Error(`当前需要手动捕获android版app token,详见github主页说明`);
             }
             async function getChapterInfo(url) {
                 loglevel_default().debug(`请求地址: ${url}, Referrer: ${chapterUrl}, 重试次数: ${retryTime}`);
-                const user_agent = "Mobile " + Date.now();
+                const user_agent = "Mozilla/5.0 (Linux; Android 15; Pixel 7 Pro Build/TP1A.241005.002.B2; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/134.0.6998.109 Mobile Safari/537.36/JINJIANG-Android/381(Pixel7Pro;Scale/3.5;isHarmonyOS/false)" + Date.now();
                 return new Promise((resolve) => {
                     (0,GM/* _GM_xmlhttpRequest */.nV)({
                         url: url,
                         headers: {
-                            referer: "http://android.jjwxc.net?v=349",
+                            referer: "http://android.jjwxc.net?v=381",
                             "user-agent": user_agent,
                         },
                         method: "GET",
                         onload: function (response) {
                             if (response.status === 200) {
-                                if (isVIP) {
-                                    let decodeResponseText = String(response.responseText);
-                                    let resultI = JSON.parse('{"message":"try again!"}');
-                                    try {
-                                        resultI = JSON.parse(decodeResponseText);
-                                    }
-                                    catch (e) {
-                                        decodeResponseText = decodeVIPResopnce(response.responseHeaders, decodeResponseText);
-                                    }
-                                    try {
-                                        resultI = JSON.parse(decodeResponseText);
-                                    }
-                                    catch (e) {
-                                        loglevel_default().debug(`json：${decodeResponseText}`);
-                                        resultI = JSON.parse('{"message":"try again!"}');
-                                    }
-                                    resolve(resultI);
+                                let decodeResponseText = String(response.responseText);
+                                let resultI = JSON.parse('{"message":"try again!"}');
+                                try {
+                                    resultI = JSON.parse(decodeResponseText);
                                 }
-                                else {
-                                    const resultI = JSON.parse(response.responseText);
-                                    resolve(resultI);
+                                catch (e) {
+                                    decodeResponseText = decodeVIPResopnce(response.responseHeaders, decodeResponseText);
                                 }
+                                try {
+                                    resultI = JSON.parse(decodeResponseText);
+                                }
+                                catch (e) {
+                                    loglevel_default().debug(`json：${decodeResponseText}`);
+                                    resultI = JSON.parse('{"message":"try again!"}');
+                                }
+                                resolve(resultI);
                             }
                             else {
                                 loglevel_default().error(`response status = ${response.status}`);
@@ -31189,12 +31158,10 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
                 const chapterinfo = "";
                 let content = result.content;
                 let postscript = result.sayBody ?? " ";
-                if (isVIP) {
-                    if (result.encryptField.includes("content"))
-                        content = decodeVIPText(content, result.encryptType, chapterinfo);
-                    if (result.encryptField.includes("sayBody"))
-                        postscript = decodeVIPText(postscript, result.encryptType, chapterinfo);
-                }
+                if (result.encryptField.includes("content"))
+                    content = decodeVIPText(content, result.encryptType, chapterinfo);
+                if (result.encryptField.includes("sayBody"))
+                    postscript = decodeVIPText(postscript, result.encryptType, chapterinfo);
                 const contentRaw = document.createElement("pre");
                 contentRaw.innerHTML = content;
                 let contentText = content
@@ -31260,17 +31227,12 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
                 };
             }
         }
-        if (isVIP) {
-            if ((unsafeWindow.tokenOptions?.Jjwxc ?? null) != null) {
-                return getChapterByApi();
-            }
-            else {
-                loglevel_default().warn(`当前我们更推荐手动捕获android版app token以下载VIP章节,详见github主页说明,脚本将继续尝试使用远程字体下载，但可能会失败`);
-                return vipChapter();
-            }
+        if ((unsafeWindow.tokenOptions?.Jjwxc ?? null) != null) {
+            return getChapterByApi();
         }
         else {
-            return getChapterByApi();
+            loglevel_default().warn(`当前我们更推荐手动捕获android版app token以下载章节,详见github主页说明,脚本将继续尝试使用远程字体下载，但可能会失败`);
+            return vipChapter();
         }
     }
 }
