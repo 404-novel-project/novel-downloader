@@ -10,6 +10,7 @@ import { sleep } from "../../../lib/misc";
 import { _GM_xmlhttpRequest } from "../../../lib/GM";
 import { UnsafeWindow } from "../../../global";
 import { rm2 } from "../../../lib/dom";
+import { getSectionName } from "../../../lib/rule";
 
 export class Lcread extends BaseRuleClass {
     public constructor() {
@@ -35,12 +36,31 @@ export class Lcread extends BaseRuleClass {
             ?.split("，")
             .map((t) => t.trim());
         const chapters: Chapter[] = [];
-        const chapterElems = document.querySelectorAll("#abl4 td");
+        const chapterElems = document.querySelectorAll("#cul td");
         let chapterNumber = 0;
+        let sectionNumber = 0;
+        let sectionChapterNumber = 0;
+        let sectionName = null;
+        function getSName(sElem: Element): string {
+            return (sElem as HTMLElement).innerText.trim();
+        }
+        const sectionElems = document.querySelectorAll("#cul h3");
         for (const elem of Array.from(chapterElems)) {
+            const chapterUrl = (elem.querySelector("a") as HTMLAnchorElement)?.href;
+            if (!chapterUrl) {
+                continue;
+            }
             chapterNumber++;
+            const _sectionName = getSectionName(elem, sectionElems, getSName);
+            if (sectionName !== _sectionName && _sectionName) {
+                sectionName = _sectionName;
+                sectionNumber++;
+                sectionChapterNumber = 0;
+            }
+            if (_sectionName) {
+                sectionChapterNumber++;
+            }
             const chapterName = (elem.querySelector("span font") as HTMLElement)?.innerText;
-            const chapterUrl = (elem.querySelector("a") as HTMLAnchorElement).href;
             const isVIP = elem.querySelectorAll("span font").length > 1 ? true : false;
             // 无法从章节列表判断章节支付情况
             const isPaid = null;
@@ -52,9 +72,9 @@ export class Lcread extends BaseRuleClass {
                 chapterName,
                 isVIP: isVIP,
                 isPaid,
-                sectionName:null,
-                sectionNumber: null,
-                sectionChapterNumber: null,
+                sectionName: _sectionName,
+                sectionNumber: sectionNumber,
+                sectionChapterNumber: sectionChapterNumber,
                 chapterParse: this.chapterParse,
                 charset: this.charset,
                 options: {},
@@ -105,3 +125,4 @@ export class Lcread extends BaseRuleClass {
         };
     }
 }
+
