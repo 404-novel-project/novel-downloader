@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1093
+// @version        5.2.1094
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -31365,13 +31365,15 @@ class kadokado extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/attachments.ts");
-/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Book.ts");
 /* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
-/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/main/Chapter.ts");
-/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/http.ts");
-/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/main.ts");
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/cleanDOM.ts");
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/main.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/rule.ts");
+
 
 
 
@@ -31405,15 +31407,34 @@ class Lcread extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
             ?.split("，")
             .map((t) => t.trim());
         const chapters = [];
-        const chapterElems = document.querySelectorAll("#abl4 td");
+        const chapterElems = document.querySelectorAll("#cul td");
         let chapterNumber = 0;
+        let sectionNumber = 0;
+        let sectionChapterNumber = 0;
+        let sectionName = null;
+        function getSName(sElem) {
+            return sElem.innerText.trim();
+        }
+        const sectionElems = document.querySelectorAll("#cul h3");
         for (const elem of Array.from(chapterElems)) {
+            const chapterUrl = elem.querySelector("a")?.href;
+            if (!chapterUrl) {
+                continue;
+            }
             chapterNumber++;
+            const _sectionName = (0,_lib_rule__WEBPACK_IMPORTED_MODULE_3__/* .getSectionName */ .lq)(elem, sectionElems, getSName);
+            if (sectionName !== _sectionName && _sectionName) {
+                sectionName = _sectionName;
+                sectionNumber++;
+                sectionChapterNumber = 0;
+            }
+            if (_sectionName) {
+                sectionChapterNumber++;
+            }
             const chapterName = elem.querySelector("span font")?.innerText;
-            const chapterUrl = elem.querySelector("a").href;
             const isVIP = elem.querySelectorAll("span font").length > 1 ? true : false;
             const isPaid = null;
-            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_3__/* .Chapter */ .I({
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .I({
                 bookUrl,
                 bookname,
                 chapterUrl,
@@ -31421,9 +31442,9 @@ class Lcread extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
                 chapterName,
                 isVIP: isVIP,
                 isPaid,
-                sectionName: null,
-                sectionNumber: null,
-                sectionChapterNumber: null,
+                sectionName: _sectionName,
+                sectionNumber: sectionNumber,
+                sectionChapterNumber: sectionChapterNumber,
                 chapterParse: this.chapterParse,
                 charset: this.charset,
                 options: {},
@@ -31432,11 +31453,11 @@ class Lcread extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
                 .querySelector("div#brl div#tip")
                 ?.innerHTML.includes("登录后发帖不用输入验证码，并获得评论积分，升级职业得到更多作品推荐票!");
             if (chapter.isVIP && !isLogin) {
-                chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_4__/* .Status */ .nW.aborted;
+                chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_5__/* .Status */ .nW.aborted;
             }
             chapters.push(chapter);
         }
-        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .E({
+        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -31449,12 +31470,12 @@ class Lcread extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         _log__WEBPACK_IMPORTED_MODULE_2___default().debug(`[Chapter]请求 ${chapterUrl}`);
-        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_6__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_7__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
         const content = document.createElement("div");
         const contentText = doc.querySelector("#ccon");
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_7__/* .rm2 */ .Sf)(['    '], contentText);
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_8__/* .rm2 */ .Sf)(['    '], contentText);
         content.innerHTML = contentText.innerHTML;
-        const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .an)(content, "TM");
+        const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_9__/* .cleanDOM */ .an)(content, "TM");
         return {
             chapterName,
             contentRaw: content,
