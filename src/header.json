@@ -262,6 +262,7 @@
     "*://xr.unionread.net/bookdetail/*",
     "*://www.qu-la.com/booktxt/*/",
     "*://www.bilibili.com/read/readlist/*",
+    "*://69shuba.com/book/*.htm",
     "*://www.69yuedu.net/article/*.html"
   ],
   "exclude": [
