@@ -96,12 +96,6 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = Qimao;
       break;
     }
-    case "manhua.idmzj.com":
-    case "www.idmzj.com": {
-      const { Dmzj } = await import("../rules/special/reprint/dmzj");
-      ruleClass = Dmzj;
-      break;
-    }
     case "sosad.fun":
     case "www.sosad.fun":
     case "wenzhan.org":
@@ -142,11 +136,6 @@ export async function getRule(): Promise<BaseRuleClass> {
         "../rules/special/reprint/haitangtxt"
       );
       ruleClass = haitangtxt();
-      break;
-    }
-    case "m.yushuge123.com": {
-      const { yuzhaige } = await import("../rules/special/reprint/haitangtxt");
-      ruleClass = yuzhaige();
       break;
     }
     case "ebook.longmabook.com":

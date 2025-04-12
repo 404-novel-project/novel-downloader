@@ -8,7 +8,6 @@ import { Chapter } from "../../../main/Chapter";
 import { Book, BookAdditionalMetadate } from "../../../main/Book";
 import { BaseRuleClass } from "../../../rules";
 import { replaceHaitangtxtImage } from "../../lib/haitangtxtImageDecode";
-import { replaceYuzhaigeImage } from "../../lib/yuzhaigeImageDecode";
 
 function getClass(
   replaceFunction: (inputText: string) => string
@@ -282,4 +281,3 @@ function getClass(
 }
 
 export const haitangtxt = () => getClass(replaceHaitangtxtImage);
-export const yuzhaige = () => getClass(replaceYuzhaigeImage);
