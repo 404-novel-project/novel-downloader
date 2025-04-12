@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1097
+// @version        5.2.1099
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -14,11 +14,6 @@
 // @exclude        *://m.yuzhaige.cc/top/*/
 // @exclude        *://m.yuzhaige.cc/full/*/
 // @exclude        *://m.yuzhaige.cc/book/*/
-// @exclude        *://m.yushuge123.com/tag/*/
-// @exclude        *://m.yushuge123.com/sort/*/
-// @exclude        *://m.yushuge123.com/top/*/
-// @exclude        *://m.yushuge123.com/full/*/
-// @exclude        *://m.yushuge123.com/book/*/
 // @exclude        *://m.haitangtxt.net/tag/*/
 // @exclude        *://m.haitangtxt.net/sort/*/
 // @exclude        *://m.haitangtxt.net/top/*/
@@ -46,7 +41,6 @@
 // @exclude        *://dijiuben.com/*_*/*.html
 // @exclude        *://ncode.syosetu.com/*/*/
 // @exclude        *://novel18.syosetu.com/*/*/
-// @exclude        *://manhua.idmzj.com/
 // @exclude        *://houhuayuan.vip/
 // @exclude        *://book.sfacg.com/Novel/*/*/*/
 // @exclude        *://www.alphapolis.co.jp/novel/*/*/episode/*
@@ -130,14 +124,11 @@
 // @match          *://www.1pwx.com/*.htm
 // @match          *://www.81book.com/book/*/
 // @match          *://www.81zw.com/book/*/
-// @match          *://m.yushuge123.com/*/*/
 // @match          *://www.wanben.info/*/
 // @match          *://m.wanben.info/*/
 // @match          *://www.idejian.com/book/*/
 // @match          *://www.wenku8.net/novel/*/*/index.htm
 // @match          *://www.wenku8.net/book/*.htm
-// @match          *://www.idmzj.com/info/*.html
-// @match          *://manhua.idmzj.com/*
 // @match          *://www.westnovel.com/*/*/
 // @match          *://www.666biquge.com/*/
 // @match          *://www.mht99.com/*/
@@ -331,7 +322,6 @@
 // @connect        zhangyue01.com
 // @connect        cdn.wtzw.com
 // @connect        wenku8.com
-// @connect        idmzj.com
 // @connect        007zw.com
 // @connect        hongyeshuzhai.com
 // @connect        linovelib.com
