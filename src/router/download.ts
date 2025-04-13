@@ -9,6 +9,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = c101kanshu();
       break;
     }
+    case "www.sudugu.com": {
+      const { Sudugu } = await import("../rules/special/reprint/sudugu");
+      ruleClass = Sudugu;
+      break;
+    }
     case "www.biquge66.com":
     case "www.xkzw.org": {
       const { Xkzw } = await import("../rules/special/reprint/xkzw");
