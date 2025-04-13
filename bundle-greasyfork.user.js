@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1102
+// @version        5.2.1106
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -51,6 +51,8 @@
 // @exclude        *://www.ciyuanji.com/chapter/*
 // @exclude        *://www.po18.tw/books/*/articles*
 // @exclude        *://b.faloo.com/d_*.html
+// @match          *://101kanshu.com/book/*.html
+// @match          *://www.sudugu.com/*
 // @match          *://www.po18.tw/books/*
 // @match          *://b.faloo.com/*
 // @match          *://api.langge.cf/online_detail?*
@@ -37477,6 +37479,151 @@ class lzdzw extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
 
 /***/ }),
 
+/***/ "./src/rules/special/reprint/sudugu.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Sudugu: () => (/* binding */ Sudugu)
+/* harmony export */ });
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
+
+
+
+
+
+
+
+
+class Sudugu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
+    constructor() {
+        super();
+        this.attachmentMode = "TM";
+        this.maxRunLimit = 1;
+        this.concurrencyLimit = 1;
+        this.sleepTime = 500;
+        this.maxSleepTime = 1000;
+        this.charset = "utf-8";
+    }
+    async bookParse() {
+        const bookUrl = location.href;
+        const bookname = document.querySelector("div.itemtxt > h1 > a").innerText;
+        const author = document.querySelector("div.itemtxt > p > a").innerText.replace(/作者：/, "").trim();
+        const intro = document.querySelector("div.des");
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .HV)(intro);
+        const genre = Array.from(document.querySelectorAll("div.itemtxt > p > span")).map((element) => element.innerText.trim());
+        const additionalMetadate = {
+            tags: genre,
+        };
+        const coverUrl = document.querySelector("div.item img")?.getAttribute("src");
+        if (coverUrl) {
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
+                .then((coverClass) => {
+                additionalMetadate.cover = coverClass;
+            })
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_3___default().error(error));
+        }
+        const chapters = [];
+        let chapterId = 0;
+        let flag = true;
+        let dirurl = bookUrl;
+        while (flag) {
+            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_4__/* .ggetHtmlDOM */ .pG)(dirurl, this.charset);
+            Array.from(doc.querySelectorAll("div#list > ul > li > a")).forEach((element) => {
+                chapterId++;
+                const chapterUrl = element.getAttribute("href");
+                const chapterName = element.innerText.trim();
+                const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .I({
+                    bookUrl,
+                    bookname,
+                    chapterUrl: chapterUrl,
+                    chapterNumber: chapterId,
+                    chapterName: chapterName,
+                    isVIP: false,
+                    isPaid: false,
+                    sectionName: null,
+                    sectionNumber: null,
+                    sectionChapterNumber: null,
+                    chapterParse: this.chapterParse.bind(this),
+                    charset: this.charset,
+                    options: {},
+                });
+                chapters.push(chapter);
+            });
+            const nextPage = doc.querySelectorAll("div#pages > a");
+            const lastLink = nextPage.length > 0 ? nextPage[nextPage.length - 1] : null;
+            if (lastLink) {
+                const nextUrl = lastLink;
+                if (nextUrl.innerText.trim() === "下一页") {
+                    dirurl = nextUrl.getAttribute("href");
+                }
+                else {
+                    flag = false;
+                    break;
+                }
+            }
+            else {
+                flag = false;
+                break;
+            }
+        }
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .E({
+            bookUrl,
+            bookname,
+            author,
+            introduction,
+            introductionHTML,
+            additionalMetadate,
+            chapters,
+        });
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+        let pageUrl = chapterUrl;
+        const content = document.createElement("div");
+        let flag = true;
+        while (flag) {
+            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_4__/* .ggetHtmlDOM */ .pG)(pageUrl, charset);
+            content.innerHTML += doc.querySelector("div.con").innerHTML;
+            const pages = doc.querySelectorAll("div.prenext > span > a");
+            const lastLink = pages.length > 0 ? pages[pages.length - 1] : null;
+            if (lastLink) {
+                const nextUrl = lastLink;
+                if (nextUrl.innerText.trim() === "下一页") {
+                    pageUrl = nextUrl.getAttribute("href");
+                }
+                else {
+                    flag = false;
+                    break;
+                }
+            }
+            else {
+                flag = false;
+                break;
+            }
+        }
+        const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__/* .cleanDOM */ .an)(content, "TM");
+        return {
+            chapterName,
+            contentRaw: content,
+            contentText: text,
+            contentHTML: dom,
+            contentImages: images,
+            additionalMetadate: null,
+        };
+    }
+}
+
+
+/***/ }),
+
 /***/ "./src/rules/special/reprint/ttkan.ts":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -37914,6 +38061,49 @@ class Xkzw extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .Q {
             };
         }
     }
+}
+
+
+/***/ }),
+
+/***/ "./src/rules/twoPage/101kanshu.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   c101kanshu: () => (/* binding */ c101kanshu)
+/* harmony export */ });
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/twoPage/template.ts");
+
+
+const c101kanshu = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
+    bookUrl: document.location.href,
+    anotherPageUrl: getAnotherPageUrl(document.location.href),
+    getBookname: (doc) => document.querySelector("div.bookbox h1").innerText.trim(),
+    getAuthor: (doc) => document.querySelector("div.booknav2 p").innerText.trim(),
+    getIntroDom: (doc) => doc.querySelector("div.navtxt p"),
+    introDomPatch: (introDom) => introDom,
+    getCoverUrl: (doc) => document.querySelector("div.bookimg2 img")?.src,
+    getAList: (doc) => doc.querySelectorAll("a"),
+    postHook: (chapter) => {
+        return chapter;
+    },
+    getContent: (doc) => doc.querySelector("div#txtcontent"),
+    contentPatch: (content) => {
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("div.txtad", true, content);
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("script", true, content);
+        const c = document.createElement("div");
+        c.innerHTML = content.innerHTML.replace("<br><br>", "<br>");
+        return c;
+    },
+});
+function getAnotherPageUrl(bookUrl) {
+    const match = bookUrl.match(/\/book\/(\d+)\.html/);
+    if (!match) {
+        throw new Error("Invalid book URL.");
+    }
+    return `https://101kanshu.com/ajax_novels/chapterlist/${match[1]}.html`;
 }
 
 
@@ -39694,6 +39884,16 @@ async function getRule() {
     const host = document.location.host;
     let ruleClass;
     switch (host) {
+        case "101kanshu.com": {
+            const { c101kanshu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/101kanshu.ts"));
+            ruleClass = c101kanshu();
+            break;
+        }
+        case "www.sudugu.com": {
+            const { Sudugu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/reprint/sudugu.ts"));
+            ruleClass = Sudugu;
+            break;
+        }
         case "www.biquge66.com":
         case "www.xkzw.org": {
             const { Xkzw } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/reprint/xkzw.ts"));
