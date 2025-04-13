@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1100
+// @version        5.2.1102
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -40207,7 +40207,6 @@ async function getRule() {
             ruleClass = xiaoshuowu();
             break;
         }
-        case "69shuba.com":
         case "69shuba.cx": {
             const { c69shu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePageWithMultiIndexPage/69shu.ts"));
             ruleClass = c69shu();
@@ -40218,6 +40217,7 @@ async function getRule() {
             ruleClass = xbookcn();
             break;
         }
+        case "69shuba.com":
         case "www.69yuedu.net": {
             const { c69yuedu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePageWithMultiIndexPage/69yuedu.ts"));
             ruleClass = c69yuedu();
