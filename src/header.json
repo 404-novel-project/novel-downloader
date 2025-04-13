@@ -22,6 +22,7 @@
   ],
   "incompatible": ["Internet Explorer"],
   "match": [
+    "*://101kanshu.com/book/*.html",
     "*://www.po18.tw/books/*",
     "*://b.faloo.com/*",
     "*://api.langge.cf/online_detail?*",
