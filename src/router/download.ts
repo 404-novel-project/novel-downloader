@@ -551,7 +551,6 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = xiaoshuowu();
       break;
     }
-    case "69shuba.com": 
     case "69shuba.cx": {
       const { c69shu } = await import("../rules/onePageWithMultiIndexPage/69shu");
       ruleClass = c69shu();
@@ -562,6 +561,7 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = xbookcn();
       break;
     }
+    case "69shuba.com": 
     case "www.69yuedu.net": {
       const { c69yuedu } = await import("../rules/onePageWithMultiIndexPage/69yuedu");
       ruleClass = c69yuedu();
