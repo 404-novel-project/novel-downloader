@@ -265,6 +265,8 @@ export abstract class BaseRuleClass {
     if (self.concurrencyLimit === 1) {
       let chapteri = -1;
       for (const chapter of chapters) {
+        if (chapter.status === Status.finished)
+          continue;
         if ((window as GmWindow).failedCount > 10) {
           if (!(window as GmWindow).stopFlag.aborted) {
             (window as GmWindow).stopController.abort();
@@ -292,6 +294,8 @@ export abstract class BaseRuleClass {
       }
     } else {
       const asyncHandle = async (curChapter: Chapter) => {
+        if (curChapter.status === Status.finished)
+          return curChapter;
         if ((window as GmWindow).failedCount > 10) {
           if (!(window as GmWindow).stopFlag.aborted) {
             (window as GmWindow).stopController.abort();
@@ -354,9 +358,10 @@ export abstract class BaseRuleClass {
         return b;
       }
 
-      let _chapters = _book.chapters.filter(
-        (chapter) => chapter.status === Status.pending
-      );
+      let _chapters = _book.chapters;
+      // .filter(
+      //   (chapter) => chapter.status === Status.pending
+      // );
       const enabled = isEnable();
       if (enabled) {
         log.debug("[initChapters]筛选需下载章节");
