@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1106
+// @version        5.2.1107
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -30514,11 +30514,10 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         async function publicChapter() {
             const doc = await (0,http/* getHtmlDOM */.wA)(chapterUrl, charset);
-            chapterName = doc.querySelector("div.noveltext h2").innerText.trim();
-            const content = doc.querySelector("div.noveltext");
+            const content = doc.querySelector("div.novelbody > div");
             if (content) {
                 (0,lib_dom.rm)("hr", true, content);
-                const rawAuthorSayDom = content.querySelector(".readsmall");
+                const rawAuthorSayDom = content.querySelector("div.danmu_total_str");
                 let authorSayDom;
                 let authorSayText;
                 if (rawAuthorSayDom) {
@@ -31229,7 +31228,12 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
         }
         else {
             loglevel_default().warn(`当前我们更推荐手动捕获android版app token以下载章节,详见github主页说明,脚本将继续尝试使用远程字体下载，但可能会失败`);
-            return vipChapter();
+            if (isVIP) {
+                return vipChapter();
+            }
+            else {
+                return publicChapter();
+            }
         }
     }
 }
