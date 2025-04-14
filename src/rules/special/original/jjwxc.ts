@@ -99,17 +99,17 @@ export class Jjwxc extends BaseRuleClass {
         const sign = encode(Date.now() + "_" + id + "_");
         let loginUrl = `https://app.jjwxc.org/androidapi/login?versionCode=402&loginName=${encodeURIComponent(account)}&encode=1&loginPassword=${encodeURIComponent(en)}&sign=${encodeURIComponent(sign)}&identifiers=${encodeURIComponent(id)}&autologin=1`;
         const headers = {
-            Host: "app.jjwxc.org",
-            'User-Agent': `Mobile ${Date.now()}`,
-            'Accept-Encoding': 'gzip',
-            'Keep-Alive': '300',
-            'Content-Type': '',
-            'Accept': '',
-            'Sec-Fetch-Site': '',
-            'Sec-Fetch-Mode': '',
-            'Sec-Fetch-Dest': '',
-            'Accept-Language':'',
-            
+          Host: "app.jjwxc.org",
+          'User-Agent': `Mobile ${Date.now()}`,
+          'Accept-Encoding': 'gzip',
+          'Keep-Alive': '300',
+          'Content-Type': '',
+          'Accept': '',
+          'Sec-Fetch-Site': '',
+          'Sec-Fetch-Mode': '',
+          'Sec-Fetch-Dest': '',
+          'Accept-Language': '',
+
         };
         interface LoginResponse {
           code: string;
@@ -182,7 +182,7 @@ export class Jjwxc extends BaseRuleClass {
           }
         } else if (CheckLogin === 2) {
           loginUrl = loginUrl + "&checktype=" + t + "&checkdevicecode=" + verificationCode;
-          const tokenJson : LoginResponse = await new Promise((resolve) => {
+          const tokenJson: LoginResponse = await new Promise((resolve) => {
             _GM_xmlhttpRequest({
               url: loginUrl,
               headers: headers,
@@ -266,7 +266,7 @@ export class Jjwxc extends BaseRuleClass {
       document.getElementById("nd-jj-login")?.addEventListener('click', () => login());
     });
   }
-  
+
   public async bookParse() {
     const bookUrl = document.location.href;
     const getInformationBlocked = () => {
@@ -293,7 +293,7 @@ export class Jjwxc extends BaseRuleClass {
       author = (
         document.querySelector("#oneboolt  h2 > a") as HTMLElement
       )?.innerText ?? (
-          document.querySelector('#oneboolt > .noveltitle > span > a') as HTMLElement
+        document.querySelector('#oneboolt > .noveltitle > span > a') as HTMLElement
       )?.innerText;
       const introDom = document.querySelector("#novelintro");
       [introduction, introductionHTML, introCleanimages] = await introDomHandle(
@@ -523,14 +523,10 @@ export class Jjwxc extends BaseRuleClass {
   ) {
     async function publicChapter(): Promise<ChapterParseObject> {
       const doc = await getHtmlDOM(chapterUrl, charset);
-      chapterName = (
-        doc.querySelector("div.noveltext h2") as HTMLElement
-      ).innerText.trim();
-
-      const content = doc.querySelector("div.noveltext") as HTMLElement;
+      const content = doc.querySelector("div.novelbody > div") as HTMLElement;
       if (content) {
         rm("hr", true, content);
-        const rawAuthorSayDom = content.querySelector(".readsmall");
+        const rawAuthorSayDom = content.querySelector("div.danmu_total_str");
         let authorSayDom;
         let authorSayText;
         if (rawAuthorSayDom) {
@@ -1281,22 +1277,22 @@ export class Jjwxc extends BaseRuleClass {
       }
       // else if (encryptType == 'yw') {
       //   const str5 = novel_info;
-        //str4 = JNIPwdUtils.decodeByFock(text, str5);
-        // let str3;
-        // let str4 = "";
-        // try {
-          // Fock.FockResult unlock = Fock.unlock(text, str5);
-          // if (unlock.status == Fock.FockResult.STATUS_SUCCESS) {
-          //   str3 = new String(unlock.data, StandardCharsets.UTF_8);
-          //   try {
-          //     if (!g.E(str3)) {
-          //       str4 = str3;
-          //     }
-          //   } catch (e2) {
-          //     log.error("fock解密失败/additionalKey=" + str5 + "/content=" + text + "/errorStr=" + (e2 as any).toString());
-          //     return;
-          //   }
-          // }
+      //str4 = JNIPwdUtils.decodeByFock(text, str5);
+      // let str3;
+      // let str4 = "";
+      // try {
+      // Fock.FockResult unlock = Fock.unlock(text, str5);
+      // if (unlock.status == Fock.FockResult.STATUS_SUCCESS) {
+      //   str3 = new String(unlock.data, StandardCharsets.UTF_8);
+      //   try {
+      //     if (!g.E(str3)) {
+      //       str4 = str3;
+      //     }
+      //   } catch (e2) {
+      //     log.error("fock解密失败/additionalKey=" + str5 + "/content=" + text + "/errorStr=" + (e2 as any).toString());
+      //     return;
+      //   }
+      // }
       //     return str4;
       //   }
       // }
@@ -1314,7 +1310,7 @@ export class Jjwxc extends BaseRuleClass {
       chapterGetInfoUrl = chapterGetInfoUrl.replace(
         "https://www.jjwxc.net/onebook.php?",
         "https://app.jjwxc.net/androidapi/chapterContent?"
-      ); 
+      );
       chapterGetInfoUrl = chapterGetInfoUrl.replace(
         "http://my.jjwxc.net/onebook_vip.php?",
         "https://app.jjwxc.net/androidapi/chapterContent?"
@@ -1345,7 +1341,7 @@ export class Jjwxc extends BaseRuleClass {
           `当前需要手动捕获android版app token,详见github主页说明`
         );
       }
-        //}
+      //}
       // }
 
       async function getChapterInfo(url: string): Promise<ChapterInfo> {
@@ -1367,20 +1363,20 @@ export class Jjwxc extends BaseRuleClass {
             onload: function (response) {
               if (response.status === 200) {
                 // if (isVIP) {
-                  let decodeResponseText = String(response.responseText);
-                  let resultI = JSON.parse('{"message":"try again!"}');
-                  try {
-                    resultI = JSON.parse(decodeResponseText);
-                  } catch (e) {
-                    decodeResponseText = decodeVIPResopnce(response.responseHeaders, decodeResponseText);
-                  }
-                  try {
-                    resultI = JSON.parse(decodeResponseText);
-                  } catch (e) {
-                    log.debug(`json：${decodeResponseText}`);
-                    resultI = JSON.parse('{"message":"try again!"}');
-                  }
-                  resolve(resultI);
+                let decodeResponseText = String(response.responseText);
+                let resultI = JSON.parse('{"message":"try again!"}');
+                try {
+                  resultI = JSON.parse(decodeResponseText);
+                } catch (e) {
+                  decodeResponseText = decodeVIPResopnce(response.responseHeaders, decodeResponseText);
+                }
+                try {
+                  resultI = JSON.parse(decodeResponseText);
+                } catch (e) {
+                  log.debug(`json：${decodeResponseText}`);
+                  resultI = JSON.parse('{"message":"try again!"}');
+                }
+                resolve(resultI);
                 // } else {
                 //   const resultI: ChapterInfo = JSON.parse(
                 //     response.responseText
@@ -1413,7 +1409,7 @@ export class Jjwxc extends BaseRuleClass {
       if ("content" in result) {
         const chapterinfo = "";//novelID + "-" + chapterID;
         let content = result.content;
-        let postscript = result.sayBody?? " ";
+        let postscript = result.sayBody ?? " ";
         // if (isVIP) {
         if (result.encryptField.includes("content"))
           content = decodeVIPText(content, result.encryptType, chapterinfo);
@@ -1485,15 +1481,15 @@ export class Jjwxc extends BaseRuleClass {
         };
       }
     }
-    // if (isVIP) {
-      if (((unsafeWindow as UnsafeWindow).tokenOptions?.Jjwxc ?? null) != null) {
-        return getChapterByApi();
-      } else {
-        log.warn(`当前我们更推荐手动捕获android版app token以下载章节,详见github主页说明,脚本将继续尝试使用远程字体下载，但可能会失败`);
+    if (((unsafeWindow as UnsafeWindow).tokenOptions?.Jjwxc ?? null) != null) {
+      return getChapterByApi();
+    } else {
+      log.warn(`当前我们更推荐手动捕获android版app token以下载章节,详见github主页说明,脚本将继续尝试使用远程字体下载，但可能会失败`);
+      if (isVIP) {
         return vipChapter();
+      } else {
+        return publicChapter();
       }
-    // } else {
-    //   return getChapterByApi();
-    // }
+    }
   }
 }
