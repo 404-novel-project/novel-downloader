@@ -294,8 +294,6 @@ export abstract class BaseRuleClass {
       }
     } else {
       const asyncHandle = async (curChapter: Chapter) => {
-        if (curChapter.status === Status.finished)
-          return curChapter;
         if ((window as GmWindow).failedCount > 10) {
           if (!(window as GmWindow).stopFlag.aborted) {
             (window as GmWindow).stopController.abort();
@@ -311,6 +309,8 @@ export abstract class BaseRuleClass {
         if (curChapter === undefined) {
           return null;
         }
+        if (curChapter?.status === Status.finished)
+          return curChapter;
         try {
           let chapterObj = await curChapter.init();
           chapterObj = await postChapterParseHook(chapterObj, saveBookObj);
