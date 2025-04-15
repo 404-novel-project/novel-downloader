@@ -65,7 +65,7 @@ export class Pixiv extends BaseRuleClass {
           bookUrl,
           bookname,
           chapterUrl: bookUrl,
-          chapterNumber: 0,
+          chapterNumber: 1,
           chapterName: bookname,
           isVIP: false,
           isPaid: false,
