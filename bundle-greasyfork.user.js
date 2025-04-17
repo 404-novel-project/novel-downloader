@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1109
+// @version        5.2.1116
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -258,7 +258,7 @@
 // @match          *://www.alphapolis.co.jp/novel/*/*
 // @match          *://novelup.plus/story/*
 // @match          *://69shuba.cx/book/*.htm
-// @match          *://69shuba.com/book/*.htm
+// @match          *://www.69shuba.com/book/*.htm
 // @match          *://book.xbookcn.net/search/label/*
 // @match          *://new-read.readmoo.com/mooreader/*
 // @match          *://www.iqingguo.com/book/detail/?id=*
@@ -14498,7 +14498,7 @@ const c69shu = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */
     coverUrl: document.querySelector(".bookimg2 > img")?.src ?? null,
     getIndexPages: async () => {
         const indexPages = [];
-        const menuUrl = document.querySelector('a.btn.more-btn[href^="https://69shuba.cx/book/"]').href;
+        const menuUrl = document.querySelector('a.btn.more-btn[href]').href;
         const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .wA)(menuUrl, "GBK");
         indexPages.push(doc);
         return indexPages;
@@ -40411,6 +40411,7 @@ async function getRule() {
             ruleClass = xiaoshuowu();
             break;
         }
+        case "www.69shuba.com":
         case "69shuba.cx": {
             const { c69shu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePageWithMultiIndexPage/69shu.ts"));
             ruleClass = c69shu();
@@ -40421,7 +40422,6 @@ async function getRule() {
             ruleClass = xbookcn();
             break;
         }
-        case "69shuba.com":
         case "www.69yuedu.net": {
             const { c69yuedu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePageWithMultiIndexPage/69yuedu.ts"));
             ruleClass = c69yuedu();
