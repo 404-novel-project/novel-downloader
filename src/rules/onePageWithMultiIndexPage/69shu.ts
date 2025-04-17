@@ -18,7 +18,7 @@ export const c69shu = () =>
     getIndexPages: async () => {
       const indexPages: Document[] = [];
       const menuUrl = (
-        document.querySelector('a.btn.more-btn[href^="https://69shuba.cx/book/"]') as HTMLAnchorElement
+        document.querySelector('a.btn.more-btn[href^="https://69shuba.com/book/"]') as HTMLAnchorElement
       ).href;
       const doc = await getHtmlDOM(menuUrl, "GBK");
       indexPages.push(doc);
