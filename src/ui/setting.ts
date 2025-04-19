@@ -99,7 +99,8 @@ export const vm = createApp({
         options: {
           genChapterEpub: (contentXHTML) => {
             return contentXHTML.replaceAll("<p><br /></p>", "")
-              .replaceAll("<p><br/></p>", "");
+              .replaceAll("<p><br/></p>", "")
+              .replaceAll(/(<br\s*\/?>\s*)+/g, "<br />");
           },
         },
       },
