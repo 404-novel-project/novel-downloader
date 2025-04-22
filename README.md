@@ -175,7 +175,7 @@ EPUB 文件请使用相应阅读器阅读。
 | [69 书吧](https://69shuba.cx/)                 | ✅       | ❎       |                                                                                          |
 | [笔下文学](https://www.ywggzy.com/)               | ✅       | ❎       |                                                                                          |
 | [飘天文学网](https://www.piaotia.com/)                | ✅       | ❎       |                                                                                          |
-| [红袖招](https://hongxiuzhao.me/)                 | ✅       | ❎       |                                                                                          |
+| [红袖招](https://hongxiuzhao.net/)                 | ✅       | ❎       |                                                                                          |
 | [38 看书](https://www.mijiashe.com/)              | ✅       | ❎       |                                                                                          |
 | [天天看小说](https://www.ttkan.co/)               | ✅       | ❎       |                                                                                          |
 | [精华书阁](https://www.xbyuan.com/)               | ✅       | ❎       |                                                                                          |

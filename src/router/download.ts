@@ -372,7 +372,7 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = alphapolis();
       break;
     }
-    case "hongxiuzhao.me": {
+    case "hongxiuzhao.net": {
       const { hongxiuzhao } = await import("../rules/onePage/hongxiuzhao");
       ruleClass = hongxiuzhao();
       break;

@@ -1,4 +1,4 @@
-// https://hongxiuzhao.me/inc/font.min.css
+// https://hongxiuzhao.net/inc/font.min.css
 export const table: Record<string, string> = {
   "\ue2a9": "\u5634",
   "\ue2ba": "\u4e0b",
