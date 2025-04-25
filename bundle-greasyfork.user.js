@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1118
+// @version        5.2.1120
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -134,6 +134,7 @@
 // @match          *://www.westnovel.com/*/*/
 // @match          *://www.666biquge.com/*/
 // @match          *://www.mht99.com/*/
+// @match          *://www.xiunews.com/*/
 // @match          *://www.banzhuer.org/*_*/
 // @match          *://www.xbiquge.tw/book/*/
 // @match          *://www.xsbiquge.la/book/*/
@@ -238,7 +239,6 @@
 // @match          *://www.aixiaxs.net/*/*/
 // @match          *://jingcaiyuedu6.com/novel/*.html
 // @match          *://www.hanwujinian.com/book/*
-// @match          *://manga.bilibili.com/detail/mc*
 // @match          *://www.aixdzs.com/novel/*
 // @match          *://www.cool18.com/bbs4/index.php?*
 // @match          *://www.biquge5200.cc/*_*/
@@ -7847,21 +7847,61 @@ async function _GM_deleteValue(name) {
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   Ld: () => (/* binding */ putAttachmentClassCache),
-/* harmony export */   VJ: () => (/* binding */ getRandomName),
-/* harmony export */   _s: () => (/* binding */ getAttachmentClassCache),
-/* harmony export */   an: () => (/* binding */ getExt),
-/* harmony export */   "if": () => (/* binding */ getAttachment),
-/* harmony export */   rd: () => (/* binding */ clearAttachmentClassCache)
-/* harmony export */ });
-/* harmony import */ var _main_Attachment__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/main/Attachment.ts");
-/* harmony import */ var _hash__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/hash.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _misc__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/misc.ts");
-/* harmony import */ var magic_bytes_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/magic-bytes.js/dist/index.js");
-/* harmony import */ var magic_bytes_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(magic_bytes_js__WEBPACK_IMPORTED_MODULE_0__);
+
+// EXPORTS
+__webpack_require__.d(__webpack_exports__, {
+  rd: () => (/* binding */ clearAttachmentClassCache),
+  "if": () => (/* binding */ getAttachment),
+  _s: () => (/* binding */ getAttachmentClassCache),
+  VJ: () => (/* binding */ getRandomName),
+  Ld: () => (/* binding */ putAttachmentClassCache)
+});
+
+// UNUSED EXPORTS: getExt
+
+// EXTERNAL MODULE: ./src/main/Attachment.ts
+var Attachment = __webpack_require__("./src/main/Attachment.ts");
+// EXTERNAL MODULE: external "CryptoJS"
+var external_CryptoJS_ = __webpack_require__("crypto-js");
+;// ./src/lib/hash.ts
+
+async function calculateSha1(blob) {
+    if (typeof crypto?.subtle?.digest === "function") {
+        const arrayBuffer = await blob.arrayBuffer();
+        const hashBuffer = await crypto.subtle.digest("SHA-1", arrayBuffer);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        const hashHex = hashArray
+            .map((b) => b.toString(16).padStart(2, "0"))
+            .join("");
+        return hashHex;
+    }
+    else {
+        return new Promise((resolve, rejects) => {
+            const reader = new FileReader();
+            reader.readAsArrayBuffer(blob);
+            reader.onloadend = () => {
+                if (reader.result) {
+                    const wordArray = external_CryptoJS_.lib.WordArray.create(reader.result);
+                    const hash = external_CryptoJS_.SHA1(wordArray).toString();
+                    resolve(hash);
+                }
+                else {
+                    rejects(Error("计算MD5值出错"));
+                    return;
+                }
+            };
+        });
+    }
+}
+
+// EXTERNAL MODULE: ./node_modules/loglevel/lib/loglevel.js
+var loglevel = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+var loglevel_default = /*#__PURE__*/__webpack_require__.n(loglevel);
+// EXTERNAL MODULE: ./src/lib/misc.ts
+var misc = __webpack_require__("./src/lib/misc.ts");
+// EXTERNAL MODULE: ./node_modules/magic-bytes.js/dist/index.js
+var dist = __webpack_require__("./node_modules/magic-bytes.js/dist/index.js");
+;// ./src/lib/attachments.ts
 
 
 
@@ -7890,7 +7930,7 @@ async function getAttachment(url, mode, prefix = "", noMD5 = false, comments = g
     if (imgClassCache) {
         return imgClassCache;
     }
-    const imgClass = new _main_Attachment__WEBPACK_IMPORTED_MODULE_1__/* .AttachmentClass */ .q(url, comments, mode, options?.referrerMode, options?.customReferer);
+    const imgClass = new Attachment/* AttachmentClass */.q(url, comments, mode, options?.referrerMode, options?.customReferer);
     imgClass.comments = comments;
     const blob = await imgClass.init();
     if (blob) {
@@ -7898,20 +7938,20 @@ async function getAttachment(url, mode, prefix = "", noMD5 = false, comments = g
             imgClass.name = getLastPart(url);
         }
         else {
-            const hash = await (0,_hash__WEBPACK_IMPORTED_MODULE_2__/* .calculateSha1 */ .Q)(blob);
+            const hash = await calculateSha1(blob);
             const ext = await getExt(blob, url);
             imgClass.name = [prefix, hash, ".", ext].join("");
         }
     }
     putAttachmentClassCache(imgClass);
-    _log__WEBPACK_IMPORTED_MODULE_3___default().debug(`[attachment]下载附件完成！ url:${imgClass.url}, name: ${imgClass.name}`);
+    loglevel_default().debug(`[attachment]下载附件完成！ url:${imgClass.url}, name: ${imgClass.name}`);
     return imgClass;
 }
 function getRandomName() {
-    return `__${(0,_misc__WEBPACK_IMPORTED_MODULE_4__/* .randomUUID */ .N4)()}__`;
+    return `__${(0,misc/* randomUUID */.N4)()}__`;
 }
 async function getExt(b, u) {
-    const ext = (0,magic_bytes_js__WEBPACK_IMPORTED_MODULE_0__.filetypeextension)(new Uint8Array(await b.arrayBuffer()));
+    const ext = (0,dist.filetypeextension)(new Uint8Array(await b.arrayBuffer()));
     if (ext.length !== 0) {
         return ext[0];
     }
@@ -9346,48 +9386,6 @@ function escapeHTML(str) {
 
 /***/ }),
 
-/***/ "./src/lib/hash.ts":
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   Q: () => (/* binding */ calculateSha1)
-/* harmony export */ });
-/* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("crypto-js");
-/* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(crypto_js__WEBPACK_IMPORTED_MODULE_0__);
-
-async function calculateSha1(blob) {
-    if (typeof crypto?.subtle?.digest === "function") {
-        const arrayBuffer = await blob.arrayBuffer();
-        const hashBuffer = await crypto.subtle.digest("SHA-1", arrayBuffer);
-        const hashArray = Array.from(new Uint8Array(hashBuffer));
-        const hashHex = hashArray
-            .map((b) => b.toString(16).padStart(2, "0"))
-            .join("");
-        return hashHex;
-    }
-    else {
-        return new Promise((resolve, rejects) => {
-            const reader = new FileReader();
-            reader.readAsArrayBuffer(blob);
-            reader.onloadend = () => {
-                if (reader.result) {
-                    const wordArray = crypto_js__WEBPACK_IMPORTED_MODULE_0__.lib.WordArray.create(reader.result);
-                    const hash = crypto_js__WEBPACK_IMPORTED_MODULE_0__.SHA1(wordArray).toString();
-                    resolve(hash);
-                }
-                else {
-                    rejects(Error("计算MD5值出错"));
-                    return;
-                }
-            };
-        });
-    }
-}
-
-
-/***/ }),
-
 /***/ "./src/lib/http.ts":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -10688,7 +10686,7 @@ __webpack_require__.d(__webpack_exports__, {
   Q: () => (/* binding */ BaseRuleClass)
 });
 
-// EXTERNAL MODULE: ./src/lib/attachments.ts
+// EXTERNAL MODULE: ./src/lib/attachments.ts + 1 modules
 var attachments = __webpack_require__("./src/lib/attachments.ts");
 // EXTERNAL MODULE: ./src/lib/misc.ts
 var misc = __webpack_require__("./src/lib/misc.ts");
@@ -15239,268 +15237,6 @@ class C17k extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
 
 /***/ }),
 
-/***/ "./src/rules/special/original/bilibili.ts":
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   MangaBilibili: () => (/* binding */ MangaBilibili)
-/* harmony export */ });
-/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/attachments.ts");
-/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/http.ts");
-/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/misc.ts");
-/* harmony import */ var _lib_hash__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/hash.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _main_Attachment__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("./src/main/Attachment.ts");
-/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Book.ts");
-/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/main/Chapter.ts");
-/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/main.ts");
-/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
-
-
-
-
-
-
-
-
-
-
-class MangaBilibili extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
-    constructor() {
-        super();
-        this.attachmentMode = "naive";
-        this.concurrencyLimit = 1;
-        this.streamZip = true;
-        this.maxRunLimit = 1;
-    }
-    async bookParse() {
-        const _comic_id = /\/mc(\d+)$/.exec(document.location.pathname)?.[1];
-        if (!_comic_id) {
-            throw new Error("获取 comic_id 失败！");
-        }
-        const comic_id = parseInt(_comic_id);
-        const signIn = await isSignin(comic_id);
-        const detail = await getDetail(comic_id);
-        const nov = '25';
-        const bookUrl = document.location.href;
-        const bookname = detail.title;
-        const author = detail.author_name.join(", ");
-        const introduction = detail.evaluate;
-        const introductionHTML = document.createElement("div");
-        introductionHTML.innerText = detail.evaluate;
-        const additionalMetadate = {};
-        (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getAttachment */ ["if"])(detail.vertical_cover, this.attachmentMode, "vertical_cover-")
-            .then((coverClass) => {
-            additionalMetadate.cover = coverClass;
-        })
-            .catch((error) => _log__WEBPACK_IMPORTED_MODULE_2___default().error(error));
-        additionalMetadate.tags = detail.styles;
-        additionalMetadate.attachments = [];
-        (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getAttachment */ ["if"])(detail.horizontal_cover, this.attachmentMode, "horizontal_cover-")
-            .then((coverClass) => {
-            additionalMetadate.attachments?.push(coverClass);
-        })
-            .catch((error) => _log__WEBPACK_IMPORTED_MODULE_2___default().error(error));
-        const chapters = detail.ep_list.map((ep) => {
-            const chapterUrl = `https://manga.bilibili.com/mc${comic_id}/${ep.id}?from=manga_detail`;
-            const chapterNumber = ep.ord;
-            const chapterName = [ep.short_title.trim(), ep.title.trim()].join(" ");
-            const isVIP = ep.pay_gold !== 0;
-            const isPaid = isVIP ? !ep.is_locked : true;
-            const options = {
-                comic_id,
-                ep_id: ep.id,
-                nov: nov,
-            };
-            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_3__/* .Chapter */ .I({
-                bookUrl,
-                bookname,
-                chapterUrl,
-                chapterNumber,
-                chapterName,
-                isVIP,
-                isPaid,
-                sectionName: null,
-                sectionNumber: null,
-                sectionChapterNumber: null,
-                chapterParse: this.chapterParse,
-                charset: this.charset,
-                options,
-            });
-            if (ep.is_locked || ep.type === 6) {
-                chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_4__/* .Status */ .nW.aborted;
-            }
-            return chapter;
-        });
-        return new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .E({
-            bookUrl,
-            bookname,
-            author,
-            introduction,
-            introductionHTML,
-            additionalMetadate,
-            chapters,
-        });
-        async function isSignin(comic_id) {
-            const body = { comic_id };
-            const resp = await fetch("https://manga.bilibili.com/twirp/bookshelf.v1.Bookshelf/HasFavorite?device=pc&platform=web", {
-                headers: {
-                    Accept: "application/json, text/plain, */*",
-                    "Content-Type": "application/json;charset=utf-8",
-                },
-                body: JSON.stringify(body),
-                method: "POST",
-            });
-            return resp.ok;
-        }
-        async function getDetail(comic_id) {
-            const url = "https://manga.bilibili.com/twirp/comic.v1.Comic/ComicDetail?device=pc&platform=web&nov=" + nov;
-            const body = {
-                comic_id,
-            };
-            const headers = {
-                accept: "application/json, text/plain, */*",
-                "content-type": "application/json;charset=UTF-8",
-            };
-            const init = {
-                headers,
-                body: JSON.stringify(body),
-                method: "POST",
-            };
-            const resp = await fetch(url, init);
-            const data = (await resp.json());
-            if (data.code === 0) {
-                return data.data;
-            }
-            else {
-                throw new Error("获取目录失败！");
-            }
-        }
-    }
-    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        const paths = await getImageIndex(options.ep_id);
-        const _outs = [];
-        const worker = async (path) => {
-            const obj = await getImage(path);
-            const out = {
-                path,
-                obj,
-            };
-            _outs.push(out);
-            return out;
-        };
-        await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_6__/* .concurrencyRun */ .rr)(paths, 3, worker);
-        _outs.sort((a, b) => paths.indexOf(a.path) - paths.indexOf(b.path));
-        const outs = _outs.map((out) => out.obj);
-        const dom = document.createElement("div");
-        outs.forEach((o) => {
-            const p = document.createElement("p");
-            p.appendChild(o.dom);
-            dom.appendChild(p);
-        });
-        const text = outs.map((o) => o.text).join("\n\n");
-        const images = outs.map((o) => o.images);
-        return {
-            chapterName,
-            contentRaw: dom,
-            contentText: text,
-            contentHTML: dom,
-            contentImages: images,
-            additionalMetadate: null,
-        };
-        async function getImageIndex(ep_id) {
-            const url = "https://manga.bilibili.com/twirp/comic.v1.Comic/GetImageIndex?device=pc&platform=web&nov=" + options.nov;
-            const body = {
-                ep_id,
-            };
-            const headers = {
-                Accept: "application/json, text/plain, */*",
-                "Content-Type": "application/json;charset=utf-8",
-            };
-            const init = {
-                headers,
-                body: JSON.stringify(body),
-                method: "POST",
-                mode: "cors",
-                credentials: "include",
-            };
-            const resp = await fetch(url, init);
-            const data = (await resp.json());
-            if (data.code === 0) {
-                const images = data.data.images;
-                return images.map((i) => i.path);
-            }
-            else {
-                throw new Error(`抓取章节图片索引失败！ ep_id： ${ep_id}, code: ${data.code}, mes: ${data.msg}`);
-            }
-        }
-        async function getImage(path) {
-            const token = await getImageToken(path);
-            if (token) {
-                const img = await getImage(token);
-                const _dom = document.createElement("img");
-                _dom.setAttribute("data-src-address", img.name);
-                _dom.alt = img.url;
-                const _text = `![${img.url}](${img.name})`;
-                _log__WEBPACK_IMPORTED_MODULE_2___default().info(`ep_id: ${options.ep_id}, path: ${path} 抓取成功！`);
-                return {
-                    dom: _dom,
-                    text: _text,
-                    images: img,
-                };
-            }
-            throw new Error("获取图片 " + path + " 失败！");
-            async function getImageToken(path) {
-                const url = "https://manga.bilibili.com/twirp/comic.v1.Comic/ImageToken?device=pc&platform=web&nov=" + options.nov;
-                const body = {
-                    urls: JSON.stringify([path]),
-                    m1: '',
-                };
-                const headers = {
-                    Accept: "application/json, text/plain, */*",
-                    "Content-Type": "application/json;charset=utf-8",
-                };
-                const init = {
-                    headers,
-                    body: JSON.stringify(body),
-                    method: "POST",
-                    referrer: chapterUrl,
-                };
-                const resp = await fetch(url, init);
-                const data = (await resp.json());
-                if (data.code === 0) {
-                    return data.data[0];
-                }
-            }
-            async function getImage(_token) {
-                const url = _token.url + "?token=" + _token.token;
-                const headers = {
-                    Accept: "application/json, text/plain, */*",
-                };
-                const init = {
-                    headers,
-                    method: "GET",
-                };
-                const resp = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_7__/* .fetchWithRetry */ .J5)(url, init);
-                const blob = await resp.blob();
-                const hash = await (0,_lib_hash__WEBPACK_IMPORTED_MODULE_8__/* .calculateSha1 */ .Q)(blob);
-                const ext = await (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getExt */ .an)(blob, url);
-                const name = ["cm-", hash, ".", ext].join("");
-                const imgClass = new _main_Attachment__WEBPACK_IMPORTED_MODULE_9__/* .AttachmentClass */ .q(url, name, "naive");
-                imgClass.Blob = blob;
-                imgClass.status = _main_main__WEBPACK_IMPORTED_MODULE_4__/* .Status */ .nW.finished;
-                (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .putAttachmentClassCache */ .Ld)(imgClass);
-                return imgClass;
-            }
-        }
-    }
-}
-
-
-/***/ }),
-
 /***/ "./src/rules/special/original/ciweimao.ts":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -18423,7 +18159,7 @@ __webpack_require__.d(index_parse_namespaceObject, {
   WhiteSpace: () => (WhiteSpace_parse)
 });
 
-// EXTERNAL MODULE: ./src/lib/attachments.ts
+// EXTERNAL MODULE: ./src/lib/attachments.ts + 1 modules
 var attachments = __webpack_require__("./src/lib/attachments.ts");
 // EXTERNAL MODULE: ./src/lib/cleanDOM.ts
 var cleanDOM = __webpack_require__("./src/lib/cleanDOM.ts");
@@ -40088,11 +39824,6 @@ async function getRule() {
             ruleClass = Hanwujinian;
             break;
         }
-        case "manga.bilibili.com": {
-            const { MangaBilibili } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/bilibili.ts"));
-            ruleClass = MangaBilibili;
-            break;
-        }
         case "www.cool18.com": {
             const { Cool18 } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/cool18.ts"));
             ruleClass = Cool18;
@@ -40444,6 +40175,7 @@ async function getRule() {
             break;
         }
         case "www.666biquge.com":
+        case "www.xiunews.com":
         case "www.23xsww.cc":
         case "www.biququ.com":
         case "www.ddyveshu.cc":
@@ -41425,7 +41157,7 @@ var setting_code = "<div>\n  <dialog-ui v-if=\"openStatus === 'true'\" dialog-ti
 /* harmony default export */ const setting = (setting_code);
 // EXTERNAL MODULE: ./src/ui/setting.less
 var ui_setting = __webpack_require__("./src/ui/setting.less");
-// EXTERNAL MODULE: ./src/lib/attachments.ts
+// EXTERNAL MODULE: ./src/lib/attachments.ts + 1 modules
 var attachments = __webpack_require__("./src/lib/attachments.ts");
 ;// ./src/ui/TestUI.html
 // Module
