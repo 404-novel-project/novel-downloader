@@ -207,13 +207,6 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = Hanwujinian;
       break;
     }
-    case "manga.bilibili.com": {
-      const { MangaBilibili } = await import(
-        "../rules/special/original/bilibili"
-      );
-      ruleClass = MangaBilibili;
-      break;
-    }
     case "www.cool18.com": {
       const { Cool18 } = await import("../rules/special/original/cool18");
       ruleClass = Cool18;
