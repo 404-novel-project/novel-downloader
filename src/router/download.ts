@@ -582,6 +582,7 @@ export async function getRule(): Promise<BaseRuleClass> {
       break;
     }
     case "www.666biquge.com":
+    case "www.xiunews.com":
     case "www.23xsww.cc":
     case "www.biququ.com":
     case "www.ddyveshu.cc":
