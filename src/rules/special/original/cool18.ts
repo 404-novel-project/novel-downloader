@@ -30,7 +30,7 @@ export class Cool18 extends BaseRuleClass {
         'h1.main-title'
       ) as HTMLElement
     ).innerText.trim();
-    const matchs = /[【《](.+)[】》](.+)?作者：([^\s-]+)/.exec(title);
+    const matchs = /[【《](.+)[】》](.+)?作者[:：]([^\s-]+)/.exec(title);
     let bookname = title;
     let author = "";
     if (matchs) {
@@ -38,7 +38,7 @@ export class Cool18 extends BaseRuleClass {
       author = matchs[3];
     } else {
       bookname = title;
-      author = (doc.querySelector("span.sender") as HTMLElement).innerText.trim();
+      author = (doc.querySelector("span.sender > a") as HTMLElement).innerText.trim();
     }
     const introduction = null;
     const introductionHTML = null;
