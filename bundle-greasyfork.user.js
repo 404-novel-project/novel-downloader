@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1123
+// @version        5.2.1126
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -30889,10 +30889,10 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
             if ("content" in result) {
                 const chapterinfo = "";
                 let content = result.content;
-                let postscript = result.sayBody ?? " ";
+                let postscript = result.sayBodyV2 ?? " ";
                 if (result.encryptField.includes("content"))
                     content = decodeVIPText(content, result.encryptType, chapterinfo);
-                if (result.encryptField.includes("sayBody"))
+                if (result.encryptField.includes("sayBodyV2"))
                     postscript = decodeVIPText(postscript, result.encryptType, chapterinfo);
                 const contentRaw = document.createElement("pre");
                 contentRaw.innerHTML = content;
