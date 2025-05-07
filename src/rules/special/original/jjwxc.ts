@@ -1412,11 +1412,11 @@ export class Jjwxc extends BaseRuleClass {
       if ("content" in result) {
         const chapterinfo = "";//novelID + "-" + chapterID;
         let content = result.content;
-        let postscript = result.sayBody ?? " ";
+        let postscript = result.sayBodyV2 ?? " ";
         // if (isVIP) {
         if (result.encryptField.includes("content"))
           content = decodeVIPText(content, result.encryptType, chapterinfo);
-        if (result.encryptField.includes("sayBody"))
+        if (result.encryptField.includes("sayBodyV2"))
           postscript = decodeVIPText(postscript, result.encryptType, chapterinfo);
         // }
         const contentRaw = document.createElement("pre");
