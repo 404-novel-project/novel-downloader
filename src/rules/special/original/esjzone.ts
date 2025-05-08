@@ -47,7 +47,7 @@ export class esjzone extends BaseRuleClass {
     let sectionNumber = 0;
     let sectionChapterNumber = 0;
     function getAName(aElem: HTMLElement) {
-      return aElem.querySelector("p")?.innerHTML.trim() ?? aElem?.innerText.trim();
+      return aElem.querySelector("p")?.innerText.trim() ?? aElem?.innerText.trim();
     }
     const sectionList = document.querySelector('#chapterList')?.childNodes ?? [];
     sectionList.forEach((sectionElem) => {
