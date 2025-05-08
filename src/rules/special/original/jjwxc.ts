@@ -1145,24 +1145,27 @@ export class Jjwxc extends BaseRuleClass {
     //   downloadContent: ChapterInfo[];
     // }
     interface ChapterInfo {
-      code: number; //0,
+      code: number | null; //0,
       chapterId: string; //"39",
       vipChapterid: string | null; //"25"
       chapterName: string | null; //"另一种可能",
       chapterIntro: string | null; //"算是番外吗？",
       chapterSize: string | null; //"1484",
       chapterDate: string | null; //"2012-03-17 20:54:01",
-      sayBody: string | null; //"\r\n原谅我挤牙膏一样的速度吧，最近各种卡文，各种想开新坑啊（给自己两个大耳瓜子= =）如果我某天我突然失踪了，不要担心，六月我还会回来的（再给自己两个大耳瓜子= =）尽量不坑（再再给自己两个大耳瓜子= =）",
+      sayBody: string | null; // 包括营养液等信息
+      sayBodyV2: string | null; // 只包括作者有话说
       upDown: number | null; //1,
       update: number | null; //1,
       content: string; //"另一种可能\n
       isvip: number | null; //0,
+      isProtect: number | null; //1,
       encryptField: Array<string>;//["content"]
       encryptType: string; //"jj",
       authorid: string; //"376815",
       autobuystatus: string | null; //"0",
       noteislock: string | null; //"1"
-      message: string; //"[本章节已锁定]"
+      message: string | null; //"[本章节已锁定]"
+      show_saybody_page: string | null; //"1"
     }
     let retryTime = 0;
     function extractKeys(responseHeader: string) {
@@ -1409,11 +1412,11 @@ export class Jjwxc extends BaseRuleClass {
       if ("content" in result) {
         const chapterinfo = "";//novelID + "-" + chapterID;
         let content = result.content;
-        let postscript = result.sayBody ?? " ";
+        let postscript = result.sayBodyV2 ?? " ";
         // if (isVIP) {
         if (result.encryptField.includes("content"))
           content = decodeVIPText(content, result.encryptType, chapterinfo);
-        if (result.encryptField.includes("sayBody"))
+        if (result.encryptField.includes("sayBodyV2"))
           postscript = decodeVIPText(postscript, result.encryptType, chapterinfo);
         // }
         const contentRaw = document.createElement("pre");
