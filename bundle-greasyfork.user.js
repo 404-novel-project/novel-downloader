@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1128
+// @version        5.2.1132
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -9729,7 +9729,8 @@ function concurrencyRun(list, limit, asyncHandle, options = {}) {
     const { signal, reason } = options;
     const listCopy = [...list];
     const asyncList = [];
-    while (limit--) {
+    const adjustedLimit = Math.min(limit, listCopy.length || 1);
+    for (let i = 0; i < adjustedLimit; i++) {
         asyncList.push(recursion(listCopy));
     }
     return Promise.all(asyncList);
@@ -9742,7 +9743,11 @@ function concurrencyRun(list, limit, asyncHandle, options = {}) {
                 throw new _main_main__WEBPACK_IMPORTED_MODULE_1__/* .ExpectError */ .K5("concurrencyRun was aborted!");
             }
         }
-        await asyncHandle(arr.shift());
+        const item = arr.shift();
+        if (item === undefined) {
+            return "finish!";
+        }
+        await asyncHandle(item);
         if (arr.length !== 0) {
             return recursion(arr);
         }
@@ -14817,26 +14822,28 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
                 })
                     .catch((error) => _log__WEBPACK_IMPORTED_MODULE_3___default().error(error));
             }
-            let indexPages;
+            let indexPages = [];
             if (typeof getIndexPages === "function") {
                 indexPages = await getIndexPages();
             }
             else if (typeof getIndexUrls === "function") {
                 const indexUrls = await getIndexUrls();
-                const _indexPage = [];
-                await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_4__/* .concurrencyRun */ .rr)(indexUrls, this.concurrencyLimit, async (url) => {
-                    _log__WEBPACK_IMPORTED_MODULE_3___default().info(`[BookParse]抓取目录页：${url}`);
-                    const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_5__/* .getHtmlDomWithRetry */ .kP)(url, this.charset);
-                    _indexPage.push([doc, url]);
-                    return doc;
-                });
-                indexPages = _indexPage
-                    .sort((a, b) => {
-                    const aUrl = a[1];
-                    const bUrl = b[1];
-                    return indexUrls.indexOf(aUrl) - indexUrls.indexOf(bUrl);
-                })
-                    .map((l) => l[0]);
+                if (indexUrls.length > 0) {
+                    const _indexPage = [];
+                    await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_4__/* .concurrencyRun */ .rr)(indexUrls, this.concurrencyLimit, async (url) => {
+                        _log__WEBPACK_IMPORTED_MODULE_3___default().info(`[BookParse]抓取目录页：${url}`);
+                        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_5__/* .getHtmlDomWithRetry */ .kP)(url, this.charset);
+                        _indexPage.push([doc, url]);
+                        return doc;
+                    });
+                    indexPages = _indexPage
+                        .sort((a, b) => {
+                        const aUrl = a[1];
+                        const bUrl = b[1];
+                        return indexUrls.indexOf(aUrl) - indexUrls.indexOf(bUrl);
+                    })
+                        .map((l) => l[0]);
+                }
             }
             else {
                 throw Error("未发现 getIndexUrls 或 getIndexPages");
