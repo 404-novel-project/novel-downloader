@@ -19,7 +19,10 @@ export function concurrencyRun(
   const { signal, reason } = options;
   const listCopy = [...list];
   const asyncList = [];
-  while (limit--) {
+  // Adjust limit to not exceed list length
+  const adjustedLimit = Math.min(limit, listCopy.length || 1);
+  
+  for (let i = 0; i < adjustedLimit; i++) {
     asyncList.push(recursion(listCopy));
   }
   return Promise.all(asyncList);
@@ -32,7 +35,11 @@ export function concurrencyRun(
         throw new ExpectError("concurrencyRun was aborted!");
       }
     }
-    await asyncHandle(arr.shift());
+    const item = arr.shift();
+    if (item === undefined) {
+      return "finish!";
+    }
+    await asyncHandle(item);
     if (arr.length !== 0) {
       return recursion(arr);
     } else {
