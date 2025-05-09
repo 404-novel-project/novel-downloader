@@ -117,32 +117,34 @@ export function mkRuleClass({
           .catch((error) => log.error(error));
       }
 
-      let indexPages: (Document | null)[];
+      let indexPages: (Document | null)[] = [];
       if (typeof getIndexPages === "function") {
         indexPages = await getIndexPages();
       } else if (typeof getIndexUrls === "function") {
         const indexUrls = await getIndexUrls();
-        const _indexPage: [Document | null, string][] = [];
-        await concurrencyRun(
-          indexUrls,
-          this.concurrencyLimit,
-          async (url: string) => {
-            log.info(`[BookParse]抓取目录页：${url}`);
-            const doc = await getHtmlDomWithRetry(url, this.charset);
-            _indexPage.push([doc, url]);
-            return doc;
-          }
-        );
-        indexPages = _indexPage
-          .sort(
-            (a: [Document | null, string], b: [Document | null, string]) => {
-              const aUrl = a[1];
-              const bUrl = b[1];
-              // https://stackoverflow.com/questions/13304543/javascript-sort-array-based-on-another-array
-              return indexUrls.indexOf(aUrl) - indexUrls.indexOf(bUrl);
+        if (indexUrls.length > 0) {
+          const _indexPage: [Document | null, string][] = [];
+          await concurrencyRun(
+            indexUrls,
+            this.concurrencyLimit,
+            async (url: string) => {
+              log.info(`[BookParse]抓取目录页：${url}`);
+              const doc = await getHtmlDomWithRetry(url, this.charset);
+              _indexPage.push([doc, url]);
+              return doc;
             }
-          )
-          .map((l) => l[0]);
+          );
+          indexPages = _indexPage
+            .sort(
+              (a: [Document | null, string], b: [Document | null, string]) => {
+                const aUrl = a[1];
+                const bUrl = b[1];
+                // https://stackoverflow.com/questions/13304543/javascript-sort-array-based-on-another-array
+                return indexUrls.indexOf(aUrl) - indexUrls.indexOf(bUrl);
+              }
+            )
+            .map((l) => l[0]);
+        }
       } else {
         throw Error("未发现 getIndexUrls 或 getIndexPages");
       }
