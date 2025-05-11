@@ -395,6 +395,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = await guidaye();
       break;
     }
+    case "www.banxia.cc": {
+      const { banxia } = await import("../rules/onePage/banxia");
+      ruleClass = banxia();
+      break;
+    }
     /* onePage End */
 
     /* onePageWithMultiIndexPage End */
