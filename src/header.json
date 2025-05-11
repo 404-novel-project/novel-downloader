@@ -262,7 +262,8 @@
     "*://xr.unionread.net/bookdetail/*",
     "*://www.qu-la.com/booktxt/*/",
     "*://www.bilibili.com/read/readlist/*",
-    "*://www.69yuedu.net/article/*.html"
+    "*://www.69yuedu.net/article/*.html",
+    "*://www.haiwaishubao.com/book/*/"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",

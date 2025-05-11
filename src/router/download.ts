@@ -560,6 +560,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = c69yuedu();
       break;
     }
+    case "www.haiwaishubao.com": {
+      const { haiwaishubao } = await import("../rules/onePageWithMultiIndexPage/haiwaishubao");
+      ruleClass = haiwaishubao();
+      break;
+    }
     /* twoPage End */
 
     /** mbtxt **/
