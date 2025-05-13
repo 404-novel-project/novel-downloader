@@ -262,7 +262,9 @@
     "*://xr.unionread.net/bookdetail/*",
     "*://www.qu-la.com/booktxt/*/",
     "*://www.bilibili.com/read/readlist/*",
-    "*://www.69yuedu.net/article/*.html"
+    "*://www.69yuedu.net/article/*.html",
+    "*://www.haiwaishubao.com/book/*/",
+    "*://www.banxia.cc/books/*.html"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",
@@ -307,7 +309,8 @@
     "*://www.qbtr.cc/*/*/*.html",
     "*://www.ciyuanji.com/chapter/*",
     "*://www.po18.tw/books/*/articles*",
-    "*://b.faloo.com/d_*.html"
+    "*://b.faloo.com/d_*.html",
+    "*://www.banxia.cc/books/*/*.html"
   ],
   "grant": [
     "unsafeWindow",

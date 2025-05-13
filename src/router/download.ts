@@ -395,6 +395,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = await guidaye();
       break;
     }
+    case "www.banxia.cc": {
+      const { banxia } = await import("../rules/onePage/banxia");
+      ruleClass = banxia();
+      break;
+    }
     /* onePage End */
 
     /* onePageWithMultiIndexPage End */
@@ -558,6 +563,11 @@ export async function getRule(): Promise<BaseRuleClass> {
     case "www.69yuedu.net": {
       const { c69yuedu } = await import("../rules/onePageWithMultiIndexPage/69yuedu");
       ruleClass = c69yuedu();
+      break;
+    }
+    case "www.haiwaishubao.com": {
+      const { haiwaishubao } = await import("../rules/onePageWithMultiIndexPage/haiwaishubao");
+      ruleClass = haiwaishubao();
       break;
     }
     /* twoPage End */
