@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1135
+// @version        5.2.1137
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -11945,7 +11945,8 @@ class BaseRuleClass {
                 }
                 try {
                     chapteri++;
-                    await (0,misc/* sleep */.yy)(Math.min(self.maxSleepTime, chapteri * self.sleepTime) + Math.round(Math.random() * 1000));
+                    const nowSleepTime = Math.min(self.maxSleepTime / 2.0, chapteri * self.sleepTime);
+                    await (0,misc/* sleep */.yy)(nowSleepTime + Math.round(Math.random() * nowSleepTime));
                     let chapterObj = await chapter.init();
                     chapterObj = await postChapterParseHook(chapterObj, saveBookObj);
                 }
@@ -16353,7 +16354,7 @@ class esjzone extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q
         let sectionNumber = 0;
         let sectionChapterNumber = 0;
         function getAName(aElem) {
-            return aElem.querySelector("p")?.innerText.trim() ?? aElem?.innerText.trim();
+            return aElem?.querySelector("p")?.textContent?.trim() ?? aElem?.textContent?.trim() ?? aElem?.innerText.trim();
         }
         const sectionList = document.querySelector('#chapterList')?.childNodes ?? [];
         sectionList.forEach((sectionElem) => {
