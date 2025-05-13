@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1132
+// @version        5.2.1135
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -51,6 +51,7 @@
 // @exclude        *://www.ciyuanji.com/chapter/*
 // @exclude        *://www.po18.tw/books/*/articles*
 // @exclude        *://b.faloo.com/d_*.html
+// @exclude        *://www.banxia.cc/books/*/*.html
 // @match          *://101kanshu.com/book/*.html
 // @match          *://www.sudugu.com/*
 // @match          *://www.po18.tw/books/*
@@ -292,6 +293,8 @@
 // @match          *://www.qu-la.com/booktxt/*/
 // @match          *://www.bilibili.com/read/readlist/*
 // @match          *://www.69yuedu.net/article/*.html
+// @match          *://www.haiwaishubao.com/book/*/
+// @match          *://www.banxia.cc/books/*.html
 // @compatible     Firefox 100+
 // @compatible     Chrome 85+
 // @compatible     Edge 85+
@@ -12785,6 +12788,37 @@ const aixdzs = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */
 
 /***/ }),
 
+/***/ "./src/rules/onePage/banxia.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   banxia: () => (/* binding */ banxia)
+/* harmony export */ });
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
+
+
+const banxia = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
+    bookUrl: document.location.href,
+    bookname: document.querySelector("div.book-describe > h1").innerText.trim(),
+    author: document.querySelector("div.book-describe > p:first-of-type > a").innerText.trim(),
+    introDom: document.querySelector("div.book-describe > div.describe-html > p:first-of-type"),
+    introDomPatch: (introDom) => introDom,
+    coverUrl: document.querySelector("div.book-img > img").src,
+    aList: document.querySelectorAll("div.book-list > ul > li > a"),
+    getContent: (doc) => doc.querySelector("#nr1"),
+    contentPatch: (content) => {
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("script", true, content);
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("span", true, content);
+        return content;
+    },
+    language: "zh",
+});
+
+
+/***/ }),
+
 /***/ "./src/rules/onePage/boqugew.ts":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -14689,6 +14723,91 @@ const baihexs = () => {
         concurrencyLimit: 3,
     });
 };
+
+
+/***/ }),
+
+/***/ "./src/rules/onePageWithMultiIndexPage/haiwaishubao.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   haiwaishubao: () => (/* binding */ haiwaishubao)
+/* harmony export */ });
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePageWithMultiIndexPage/template.ts");
+
+
+
+const haiwaishubao = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
+    bookUrl: document.location.href,
+    bookname: document.querySelector("h1")?.innerText.trim(),
+    author: document.querySelector(".BGsectionOne-top-right > p.author > span > a")?.innerText ?? "",
+    introDom: document.querySelector("#intro > div.BGsectionTwo-bottom"),
+    introDomPatch: (introDom) => {
+        return introDom;
+    },
+    coverUrl: document.querySelector(".BGsectionOne-top-left > img")?.src || null,
+    getIndexUrls: async () => {
+        const chapterListLink = document.querySelector("div.BGsectionOne-bottom > ul > li:nth-of-type(2) > a");
+        if (!chapterListLink) {
+            return [];
+        }
+        const chapterListUrl = chapterListLink.href;
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .wA)(chapterListUrl, document.characterSet);
+        return Array.from(doc.querySelectorAll('p.CGsectionTwo-right-bottom-btn > select > option')).map((o) => document.location.origin + o.getAttribute("value"));
+    },
+    getAList: (doc) => {
+        return doc.querySelectorAll("li.BCsectionTwo-top-chapter > a");
+    },
+    getAName: (aElem) => {
+        return aElem.innerText.trim();
+    },
+    getContentFromUrl: async (chapterUrl, chapterName, charset) => {
+        const lastParagraphIndex = [];
+        let lastPageTotalParagraph = 0;
+        const { contentRaw } = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .nextPageParse */ .u1)({
+            chapterName,
+            chapterUrl,
+            charset,
+            selector: "#content",
+            contentPatch: (content, doc) => {
+                lastParagraphIndex.push(lastPageTotalParagraph + content.children.length - 1);
+                lastPageTotalParagraph = lastPageTotalParagraph + content.children.length;
+                return content;
+            },
+            getNextPage: (doc) => {
+                const nextPageLink = doc.querySelector('section.RBGsectionTwo li.RBGsectionTwo-right a');
+                if (nextPageLink && nextPageLink.innerText.includes("下一页")) {
+                    return nextPageLink.href;
+                }
+                return "";
+            },
+            continueCondition: (content, nextLink) => {
+                return nextLink !== "" &&
+                    !nextLink.includes("index.html");
+            },
+            enableCleanDOM: false,
+        });
+        if (contentRaw) {
+            for (let i = 0; i < lastParagraphIndex.length - 1; i++) {
+                const lastParagraph = contentRaw.children[lastParagraphIndex[i] - i];
+                if (lastParagraph && lastParagraph.nextElementSibling) {
+                    const nextParagraph = lastParagraph.nextElementSibling;
+                    if (nextParagraph) {
+                        lastParagraph.innerHTML += nextParagraph.innerHTML;
+                        nextParagraph.remove();
+                    }
+                }
+            }
+        }
+        return contentRaw;
+    },
+    contentPatch: (content) => content,
+    nsfw: true,
+    language: "zh",
+});
 
 
 /***/ }),
@@ -40014,6 +40133,11 @@ async function getRule() {
             ruleClass = await guidaye();
             break;
         }
+        case "www.banxia.cc": {
+            const { banxia } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/banxia.ts"));
+            ruleClass = banxia();
+            break;
+        }
         case "m.baihexs.com": {
             const { baihexs } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePageWithMultiIndexPage/baihexs.ts"));
             ruleClass = baihexs();
@@ -40163,6 +40287,11 @@ async function getRule() {
         case "www.69yuedu.net": {
             const { c69yuedu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePageWithMultiIndexPage/69yuedu.ts"));
             ruleClass = c69yuedu();
+            break;
+        }
+        case "www.haiwaishubao.com": {
+            const { haiwaishubao } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePageWithMultiIndexPage/haiwaishubao.ts"));
+            ruleClass = haiwaishubao();
             break;
         }
         case "www.quanshuzhai.com": {
