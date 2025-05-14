@@ -400,6 +400,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = banxia();
       break;
     }
+    case "www.zgzl.net": {
+      const { zgzl } = await import("../rules/onePage/zgzl");
+      ruleClass = zgzl();
+      break;
+    }
     /* onePage End */
 
     /* onePageWithMultiIndexPage End */

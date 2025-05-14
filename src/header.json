@@ -264,7 +264,8 @@
     "*://www.bilibili.com/read/readlist/*",
     "*://www.69yuedu.net/article/*.html",
     "*://www.haiwaishubao.com/book/*/",
-    "*://www.banxia.cc/books/*.html"
+    "*://www.banxia.cc/books/*.html",
+    "*://www.zgzl.net/info_*/"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",
