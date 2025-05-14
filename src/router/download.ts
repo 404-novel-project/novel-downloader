@@ -410,11 +410,6 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = zhenhunxiaoshuo();
       break;
     }
-    case "www.biquge.tw": {
-      const { biqugetw } = await import("../rules/onePageWithMultiIndexPage/biqugetw");
-      ruleClass = biqugetw();
-      break;
-    }
     /* onePage End */
 
     /* onePageWithMultiIndexPage Start */
@@ -444,6 +439,17 @@ export async function getRule(): Promise<BaseRuleClass> {
         "../rules/onePageWithMultiIndexPage/wanben"
       );
       ruleClass = wanben();
+      break;
+    }
+    case "www.biquge.tw": {
+      const { biqugetw } = await import("../rules/onePageWithMultiIndexPage/biqugetw");
+      ruleClass = biqugetw();
+      break;
+    }
+    case "m.xszj.org":
+    case "xszj.org": {
+      const { xszj } = await import("../rules/onePageWithMultiIndexPage/xszj");
+      ruleClass = xszj();
       break;
     }
     /* onePageWithMultiIndexPage End */

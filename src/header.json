@@ -267,7 +267,8 @@
     "*://www.banxia.cc/books/*.html",
     "*://www.zgzl.net/info_*/",
     "*://www.zhenhunxiaoshuo.com/*/",
-    "*://www.biquge.tw/book/*.html"
+    "*://www.biquge.tw/book/*.html",
+    "*://*xszj.org/b/*"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",
@@ -321,7 +322,9 @@
     "*://www.zhenhunxiaoshuo.com/chunai5/",
     "*://www.zhenhunxiaoshuo.com/yanqing/",
     "*://www.zhenhunxiaoshuo.com/yanqing2/",
-    "*://www.zhenhunxiaoshuo.com/baihexiaoshuo/"
+    "*://www.zhenhunxiaoshuo.com/baihexiaoshuo/",
+    "*://*xszj.org/b/*/c/*",
+    "*://*xszj.org/b/*/cs/*"
   ],
   "grant": [
     "unsafeWindow",
