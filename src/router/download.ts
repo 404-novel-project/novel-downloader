@@ -410,6 +410,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = zhenhunxiaoshuo();
       break;
     }
+    case "www.biquge.tw": {
+      const { biqugetw } = await import("../rules/onePageWithMultiIndexPage/biqugetw");
+      ruleClass = biqugetw();
+      break;
+    }
     /* onePage End */
 
     /* onePageWithMultiIndexPage Start */

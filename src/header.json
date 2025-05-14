@@ -266,7 +266,8 @@
     "*://www.haiwaishubao.com/book/*/",
     "*://www.banxia.cc/books/*.html",
     "*://www.zgzl.net/info_*/",
-    "*://www.zhenhunxiaoshuo.com/*/"
+    "*://www.zhenhunxiaoshuo.com/*/",
+    "*://www.biquge.tw/book/*.html"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",
