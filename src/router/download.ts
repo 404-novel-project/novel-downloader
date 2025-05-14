@@ -405,9 +405,14 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = zgzl();
       break;
     }
+    case "www.zhenhunxiaoshuo.com": {
+      const { zhenhunxiaoshuo } = await import("../rules/onePage/zhenhunxiaoshuo");
+      ruleClass = zhenhunxiaoshuo();
+      break;
+    }
     /* onePage End */
 
-    /* onePageWithMultiIndexPage End */
+    /* onePageWithMultiIndexPage Start */
     case "m.baihexs.com": {
       const { baihexs } = await import(
         "../rules/onePageWithMultiIndexPage/baihexs"
