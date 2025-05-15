@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1137
+// @version        5.2.1148
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -52,6 +52,16 @@
 // @exclude        *://www.po18.tw/books/*/articles*
 // @exclude        *://b.faloo.com/d_*.html
 // @exclude        *://www.banxia.cc/books/*/*.html
+// @exclude        *://www.zhenhunxiaoshuo.com/chunai/
+// @exclude        *://www.zhenhunxiaoshuo.com/chunai2/
+// @exclude        *://www.zhenhunxiaoshuo.com/chunai3/
+// @exclude        *://www.zhenhunxiaoshuo.com/chunai4/
+// @exclude        *://www.zhenhunxiaoshuo.com/chunai5/
+// @exclude        *://www.zhenhunxiaoshuo.com/yanqing/
+// @exclude        *://www.zhenhunxiaoshuo.com/yanqing2/
+// @exclude        *://www.zhenhunxiaoshuo.com/baihexiaoshuo/
+// @exclude        *://*xszj.org/b/*/c/*
+// @exclude        *://*xszj.org/b/*/cs/*
 // @match          *://101kanshu.com/book/*.html
 // @match          *://www.sudugu.com/*
 // @match          *://www.po18.tw/books/*
@@ -295,6 +305,10 @@
 // @match          *://www.69yuedu.net/article/*.html
 // @match          *://www.haiwaishubao.com/book/*/
 // @match          *://www.banxia.cc/books/*.html
+// @match          *://www.zgzl.net/info_*/
+// @match          *://www.zhenhunxiaoshuo.com/*/
+// @match          *://www.biquge.tw/book/*.html
+// @match          *://*xszj.org/b/*
 // @compatible     Firefox 100+
 // @compatible     Chrome 85+
 // @compatible     Edge 85+
@@ -14514,6 +14528,144 @@ const xbyuan = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */
 
 /***/ }),
 
+/***/ "./src/rules/onePage/zgzl.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   zgzl: () => (/* binding */ zgzl)
+/* harmony export */ });
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
+
+
+
+const zgzl = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
+    bookUrl: document.location.href,
+    bookname: document.querySelector("#info > h1")?.innerText.trim(),
+    author: (() => {
+        const authorElement = document.querySelector("#info > p:first-of-type");
+        if (authorElement) {
+            return authorElement.innerText
+                .replace(/^作\s*者\s*[：:]\s*/u, "")
+                .trim();
+        }
+        return "未知";
+    })(),
+    introDom: document.querySelector("#intro > p"),
+    introDomPatch: (introDom) => introDom,
+    coverUrl: document.querySelector("#fmimg > img").src || null,
+    aList: (() => {
+        const sectionHeaders = document.querySelectorAll("#list > dl > dt > b");
+        if (sectionHeaders.length > 0) {
+            const secondDt = document.querySelector("#list > dl > dt:nth-of-type(2)");
+            if (secondDt) {
+                const chaptersAfterSecondDt = [];
+                let currentElement = secondDt.nextElementSibling;
+                while (currentElement) {
+                    if (currentElement.tagName.toLowerCase() === "dd") {
+                        const anchor = currentElement.querySelector("a");
+                        if (anchor) {
+                            chaptersAfterSecondDt.push(anchor);
+                        }
+                    }
+                    else {
+                        break;
+                    }
+                    currentElement = currentElement.nextElementSibling;
+                }
+                return chaptersAfterSecondDt;
+            }
+            else {
+                console.error("未找到正文区域");
+                return [];
+            }
+        }
+        else {
+            return document.querySelectorAll("#list > dl > dd > a");
+        }
+    })(),
+    getContentFromUrl: async (chapterUrl, chapterName, charset) => {
+        const { contentRaw } = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .nextPageParse */ .u1)({
+            chapterName,
+            chapterUrl,
+            charset,
+            selector: "#content",
+            contentPatch: (content) => {
+                const converted = (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__/* .convertBr */ .U9)(content);
+                if (converted.children.length > 1) {
+                    const lastLine = converted.lastElementChild.innerText;
+                    const unwantedText = /内容未完.*|本章阅读完毕.*/;
+                    if (unwantedText.test(lastLine)) {
+                        converted.removeChild(converted.lastElementChild);
+                    }
+                }
+                return converted;
+            },
+            getNextPage: (doc) => {
+                const nextLink = doc.querySelector("div.bottem1 > a:last-of-type");
+                const url = doc.baseURI;
+                const urlParts = url.split("/");
+                const lastPart = urlParts[urlParts.length - 1];
+                const chapterId = lastPart.split(".")[0].split("_")[0];
+                if (nextLink?.href.includes(chapterId)) {
+                    return nextLink.href;
+                }
+                return "";
+            },
+            continueCondition: (content, nextLink) => {
+                return nextLink !== "" && !nextLink.includes("info_");
+            },
+            enableCleanDOM: false,
+        });
+        return contentRaw;
+    },
+    contentPatch: (content) => {
+        return content;
+    },
+    language: "zh",
+    nsfw: true,
+});
+
+
+/***/ }),
+
+/***/ "./src/rules/onePage/zhenhunxiaoshuo.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   zhenhunxiaoshuo: () => (/* binding */ zhenhunxiaoshuo)
+/* harmony export */ });
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
+
+const zhenhunxiaoshuo = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
+    bookUrl: document.location.href,
+    bookname: document.querySelector("h1")?.innerText.trim(),
+    author: document.querySelector("div.focusbox-text > p")?.innerText
+        .split("\n")[0]
+        ?.split("作者：")[1] || "",
+    introDom: (() => {
+        const introElement = document.createElement("p");
+        const introParagraph = document.querySelector("div.focusbox-text > p");
+        if (introParagraph) {
+            const introText = introParagraph.innerText.split("\n")[1] || "";
+            introElement.textContent = introText;
+        }
+        return introElement;
+    })(),
+    introDomPatch: (introDom) => introDom,
+    coverUrl: null,
+    aList: document.querySelectorAll("article > a"),
+    getContent: (doc) => doc.querySelector("article.article-content"),
+    contentPatch: (content) => content,
+    language: "zh",
+});
+
+
+/***/ }),
+
 /***/ "./src/rules/onePageWithMultiIndexPage/69shu.ts":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -14724,6 +14876,65 @@ const baihexs = () => {
         concurrencyLimit: 3,
     });
 };
+
+
+/***/ }),
+
+/***/ "./src/rules/onePageWithMultiIndexPage/biqugetw.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   biqugetw: () => (/* binding */ biqugetw)
+/* harmony export */ });
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePageWithMultiIndexPage/template.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
+
+
+const biqugetw = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
+    bookUrl: document.location.href,
+    bookname: document.querySelector("h1")?.innerText.trim(),
+    author: document.querySelector("h2 > span > a")?.innerText.trim() || "未知",
+    introDom: document.querySelector("div.intro > p"),
+    introDomPatch: (introDom) => introDom,
+    coverUrl: document.querySelector("div.cover > img")?.src ||
+        null,
+    getIndexUrls: async () => {
+        const chapterListLink = document.querySelector("a.chapterlist");
+        if (!chapterListLink) {
+            return [];
+        }
+        return [chapterListLink.href];
+    },
+    getAList: (doc) => doc.querySelectorAll("div.booklist ul > li > a"),
+    getContentFromUrl: async (chapterUrl, chapterName, charset) => {
+        const { contentRaw } = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .nextPageParse */ .u1)({
+            chapterName,
+            chapterUrl,
+            charset,
+            selector: "#chaptercontent",
+            contentPatch: (content) => content,
+            getNextPage: (doc) => {
+                const nextPage = doc.querySelector("div.read-page > a:last-of-type");
+                const linkText = nextPage?.textContent?.trim();
+                if (linkText === "下一页") {
+                    return nextPage.href;
+                }
+                return "";
+            },
+            continueCondition: (content, nextLink) => {
+                return (nextLink !== "" &&
+                    nextLink !==
+                        content.querySelector('div.read-page > a[rel="index"]')?.href &&
+                    !nextLink.includes("_"));
+            },
+            enableCleanDOM: false,
+        });
+        return contentRaw;
+    },
+    contentPatch: (content) => content,
+    language: "zh",
+});
 
 
 /***/ }),
@@ -15196,6 +15407,68 @@ const xbookcn = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass *
     getAList: (doc) => doc.querySelectorAll("h3 > a"),
     getAName: (aElem) => aElem.innerText.trim(),
     getContent: (doc) => doc.querySelector(".entry-content"),
+    contentPatch: (content) => content,
+    language: "zh",
+});
+
+
+/***/ }),
+
+/***/ "./src/rules/onePageWithMultiIndexPage/xszj.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   xszj: () => (/* binding */ xszj)
+/* harmony export */ });
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePageWithMultiIndexPage/template.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/dom.ts");
+
+
+
+const xszj = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
+    bookUrl: document.location.href,
+    bookname: document.querySelector("h1")?.innerText.trim(),
+    author: document.querySelector("#info > p > a")?.innerText.trim() || "未知",
+    introDom: document.querySelector("#intro"),
+    introDomPatch: (introDom) => introDom,
+    coverUrl: document.querySelector("#fmimg > img")?.src || null,
+    getIndexUrls: async () => {
+        const chapterListLink = document.querySelector("a.chapterlist");
+        if (!chapterListLink) {
+            return [];
+        }
+        return [chapterListLink.href];
+    },
+    getAList: (doc) => doc.querySelectorAll('#content_1 > a[rel="chapter"]'),
+    getContentFromUrl: async (chapterUrl, chapterName, charset) => {
+        const { contentRaw } = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .nextPageParse */ .u1)({
+            chapterName,
+            chapterUrl,
+            charset,
+            selector: "#booktxt",
+            contentPatch: (content) => {
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)("div", true, content);
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)("script", true, content);
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)("ins", true, content);
+                return content;
+            },
+            getNextPage: (doc) => {
+                const nextPage = doc.querySelector("div.bottem1 > a:last-of-type");
+                const linkText = nextPage?.textContent?.trim();
+                if (linkText === "下一頁" || linkText === "下一页") {
+                    return nextPage.href;
+                }
+                return "";
+            },
+            continueCondition: (content, nextLink) => {
+                return (nextLink !== "" && !nextLink.includes("javascript"));
+            },
+            enableCleanDOM: false,
+        });
+        return contentRaw;
+    },
     contentPatch: (content) => content,
     language: "zh",
 });
@@ -30210,10 +30483,8 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
             }
             let tags = document.querySelector("table > tbody > tr > td.readtd > div.righttd > ul.rightul > li:nth-child(1) > span:nth-child(2)").innerText.split("-");
             tags = tags.concat(Array.from(document.querySelectorAll("div.smallreadbody:nth-child(3) > span > a")).map((a) => a.innerText));
-            const perspective = document.querySelector("table > tbody > tr > td.readtd > div.righttd > ul.rightul > li:nth-child(2)").innerText.replace("\n", "");
-            const workStyle = document.querySelector("table > tbody > tr > td.readtd > div.righttd > ul.rightul > li:nth-child(3)").innerText.replace("\n", "");
+            const perspective = document.querySelector("table > tbody > tr > td.readtd > div.righttd > ul.rightul > li:nth-child(2)").innerText.replace("\n", "").replace("作品视角：", "");
             tags.push(perspective);
-            tags.push(workStyle);
             additionalMetadate.tags = tags;
         }
         else {
@@ -31056,14 +31327,17 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
                 })
                     ?.join("\n") ?? "";
                 contentHTML.appendChild(_contentHTML);
-                contentHTML.appendChild(hr);
-                contentHTML.appendChild(authorSayDom);
-                contentRaw.innerHTML = [
-                    contentRaw.innerHTML,
-                    "-".repeat(20),
-                    postscript,
-                ].join("\n\n");
-                contentText = [contentText, "-".repeat(20), postscript].join("\n\n");
+                if (postscript !== " ") {
+                    contentHTML.appendChild(hr);
+                    contentHTML.appendChild(authorSayDom);
+                }
+                contentRaw.innerHTML = postscript === " " ? contentRaw.innerHTML :
+                    [
+                        contentRaw.innerHTML,
+                        "-".repeat(20),
+                        postscript,
+                    ].join("\n\n");
+                contentText = postscript === " " ? contentText : [contentText, "-".repeat(20), postscript].join("\n\n");
                 await (0,misc/* sleep */.yy)(2000 + Math.round(Math.random() * 2000));
                 return {
                     chapterName,
@@ -40139,6 +40413,16 @@ async function getRule() {
             ruleClass = banxia();
             break;
         }
+        case "www.zgzl.net": {
+            const { zgzl } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/zgzl.ts"));
+            ruleClass = zgzl();
+            break;
+        }
+        case "www.zhenhunxiaoshuo.com": {
+            const { zhenhunxiaoshuo } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/zhenhunxiaoshuo.ts"));
+            ruleClass = zhenhunxiaoshuo();
+            break;
+        }
         case "m.baihexs.com": {
             const { baihexs } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePageWithMultiIndexPage/baihexs.ts"));
             ruleClass = baihexs();
@@ -40157,6 +40441,17 @@ async function getRule() {
         case "m.wanbengo.com": {
             const { wanben } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePageWithMultiIndexPage/wanben.ts"));
             ruleClass = wanben();
+            break;
+        }
+        case "www.biquge.tw": {
+            const { biqugetw } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePageWithMultiIndexPage/biqugetw.ts"));
+            ruleClass = biqugetw();
+            break;
+        }
+        case "m.xszj.org":
+        case "xszj.org": {
+            const { xszj } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePageWithMultiIndexPage/xszj.ts"));
+            ruleClass = xszj();
             break;
         }
         case "www.ruochu.com": {
