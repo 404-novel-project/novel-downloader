@@ -400,9 +400,19 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = banxia();
       break;
     }
+    case "www.zgzl.net": {
+      const { zgzl } = await import("../rules/onePage/zgzl");
+      ruleClass = zgzl();
+      break;
+    }
+    case "www.zhenhunxiaoshuo.com": {
+      const { zhenhunxiaoshuo } = await import("../rules/onePage/zhenhunxiaoshuo");
+      ruleClass = zhenhunxiaoshuo();
+      break;
+    }
     /* onePage End */
 
-    /* onePageWithMultiIndexPage End */
+    /* onePageWithMultiIndexPage Start */
     case "m.baihexs.com": {
       const { baihexs } = await import(
         "../rules/onePageWithMultiIndexPage/baihexs"
@@ -429,6 +439,17 @@ export async function getRule(): Promise<BaseRuleClass> {
         "../rules/onePageWithMultiIndexPage/wanben"
       );
       ruleClass = wanben();
+      break;
+    }
+    case "www.biquge.tw": {
+      const { biqugetw } = await import("../rules/onePageWithMultiIndexPage/biqugetw");
+      ruleClass = biqugetw();
+      break;
+    }
+    case "m.xszj.org":
+    case "xszj.org": {
+      const { xszj } = await import("../rules/onePageWithMultiIndexPage/xszj");
+      ruleClass = xszj();
       break;
     }
     /* onePageWithMultiIndexPage End */

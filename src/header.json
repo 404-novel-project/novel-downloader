@@ -264,7 +264,11 @@
     "*://www.bilibili.com/read/readlist/*",
     "*://www.69yuedu.net/article/*.html",
     "*://www.haiwaishubao.com/book/*/",
-    "*://www.banxia.cc/books/*.html"
+    "*://www.banxia.cc/books/*.html",
+    "*://www.zgzl.net/info_*/",
+    "*://www.zhenhunxiaoshuo.com/*/",
+    "*://www.biquge.tw/book/*.html",
+    "*://*xszj.org/b/*"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",
@@ -310,7 +314,17 @@
     "*://www.ciyuanji.com/chapter/*",
     "*://www.po18.tw/books/*/articles*",
     "*://b.faloo.com/d_*.html",
-    "*://www.banxia.cc/books/*/*.html"
+    "*://www.banxia.cc/books/*/*.html",
+    "*://www.zhenhunxiaoshuo.com/chunai/",
+    "*://www.zhenhunxiaoshuo.com/chunai2/",
+    "*://www.zhenhunxiaoshuo.com/chunai3/",
+    "*://www.zhenhunxiaoshuo.com/chunai4/",
+    "*://www.zhenhunxiaoshuo.com/chunai5/",
+    "*://www.zhenhunxiaoshuo.com/yanqing/",
+    "*://www.zhenhunxiaoshuo.com/yanqing2/",
+    "*://www.zhenhunxiaoshuo.com/baihexiaoshuo/",
+    "*://*xszj.org/b/*/c/*",
+    "*://*xszj.org/b/*/cs/*"
   ],
   "grant": [
     "unsafeWindow",
