@@ -9,6 +9,8 @@ import { Chapter } from "../../../main/Chapter";
 import { Book, BookAdditionalMetadate } from "../../../main/Book";
 import { BaseRuleClass, ChapterParseObject } from "../../../rules";
 import { retryLimit } from "../../../setting";
+import { UnsafeWindow } from "../../../global";
+
 
 export class Gongzicp extends BaseRuleClass {
   public constructor() {
@@ -532,12 +534,15 @@ export class Gongzicp extends BaseRuleClass {
         log.debug(
           `请求地址: ${url}, Referrer: ${chapterUrl}，retryTime：${retryTime}`
         );
+        const token = (unsafeWindow as UnsafeWindow).sessionStorage.getItem("token");
         const resultI: ChapterInfo = await fetch(url, {
           credentials: "include",
           headers: {
             Accept: "application/json, text/plain, */*",
             Client: "pc",
             "Content-Type": "application/json",
+            "Authorization": "Basic 6ZmI5aSn5a6dOmNwMTIzNDU2",
+            "Token": `${token}`,
           },
           referrer: chapterUrl,
           method: "GET",
