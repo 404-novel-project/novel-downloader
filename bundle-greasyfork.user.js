@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1148
+// @version        5.2.1150
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -17411,12 +17411,15 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
             let retryTime = 0;
             async function getChapterInfo(url) {
                 _log__WEBPACK_IMPORTED_MODULE_2___default().debug(`请求地址: ${url}, Referrer: ${chapterUrl}，retryTime：${retryTime}`);
+                const token = unsafeWindow.sessionStorage.getItem("token");
                 const resultI = await fetch(url, {
                     credentials: "include",
                     headers: {
                         Accept: "application/json, text/plain, */*",
                         Client: "pc",
                         "Content-Type": "application/json",
+                        "Authorization": "Basic 6ZmI5aSn5a6dOmNwMTIzNDU2",
+                        "Token": `${token}`,
                     },
                     referrer: chapterUrl,
                     method: "GET",
