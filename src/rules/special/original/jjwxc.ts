@@ -335,14 +335,14 @@ export class Jjwxc extends BaseRuleClass {
         document.querySelector(
           "table > tbody > tr > td.readtd > div.righttd > ul.rightul > li:nth-child(2)"
         ) as HTMLLIElement
-      ).innerText.replace("\n", "");
-      const workStyle = (
-        document.querySelector(
-          "table > tbody > tr > td.readtd > div.righttd > ul.rightul > li:nth-child(3)"
-        ) as HTMLLIElement
-      ).innerText.replace("\n", "");
+      ).innerText.replace("\n", "").replace("作品视角：", "");
+      // const workStyle = (
+      //   document.querySelector(
+      //     "table > tbody > tr > td.readtd > div.righttd > ul.rightul > li:nth-child(3)"
+      //   ) as HTMLLIElement
+      // ).innerText.replace("\n", "");
       tags.push(perspective);
-      tags.push(workStyle);
+      // tags.push(workStyle);
       additionalMetadate.tags = tags;
     } else {
       window.scrollTo(0, document.body.scrollHeight);
@@ -1454,15 +1454,19 @@ export class Jjwxc extends BaseRuleClass {
           ?.join("\n") ?? "";
 
         contentHTML.appendChild(_contentHTML);
-        contentHTML.appendChild(hr);
-        contentHTML.appendChild(authorSayDom);
 
-        contentRaw.innerHTML = [
+        if (postscript !== " ") {
+          contentHTML.appendChild(hr);
+          contentHTML.appendChild(authorSayDom);
+        }
+
+        contentRaw.innerHTML = postscript === " " ? contentRaw.innerHTML : 
+        [
           contentRaw.innerHTML,
           "-".repeat(20),
           postscript,
         ].join("\n\n");
-        contentText = [contentText, "-".repeat(20), postscript].join("\n\n");
+        contentText = postscript === " " ? contentText: [contentText, "-".repeat(20), postscript].join("\n\n");
         await sleep(2000 + Math.round(Math.random() * 2000));
         return {
           chapterName,
