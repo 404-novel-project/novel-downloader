@@ -483,39 +483,40 @@ export class Gongzicp extends BaseRuleClass {
         ).click();
       }
       // 阅读页
-      if (document.location.pathname.includes("read")) {
+      else if (document.location.pathname.includes("read")) {
         const rightMenu = document.querySelector(
           ".right-menu"
         ) as HTMLDivElement;
-        if (rightMenu?.childElementCount === 6) {
-          (
-            document.querySelector(
-              ".right-menu > div:nth-child(3) > a:nth-child(1)"
+        if (rightMenu.childElementCount == 5) {
+          (document.querySelector(
+              ".right-menu > div:nth-child(5) > a:nth-child(1)"
             ) as HTMLAnchorElement
           ).click();
-        } else if (rightMenu?.childElementCount === 7) {
-          // 未购VIP章节，向前翻页
-          if (document.querySelector("div.content.unpaid")) {
+          } else if (document.querySelector("div.content.unpaid")) {
             (
               document.querySelector(
-                ".right-menu > div:nth-child(3) > a:nth-child(1)"
+                ".right-menu > div:nth-child(5) > a:nth-child(1)"
               ) as HTMLAnchorElement
             ).click();
-          }
+          } 
+        else if (rightMenu.childElementCount == 6) {
           // 30%概率向前翻页
-          else if (Math.random() < 0.3) {
+          if (Math.random() < 0.3) {
             (
               document.querySelector(
-                ".right-menu > div:nth-child(3) > a:nth-child(1)"
+                ".right-menu > div:nth-child(5) > a:nth-child(1)"
               ) as HTMLAnchorElement
             ).click();
           } else {
             (
               document.querySelector(
-                ".right-menu > div:nth-child(4) > a:nth-child(1)"
+                ".right-menu > div:nth-child(6) > a:nth-child(1)"
               ) as HTMLAnchorElement
             ).click();
           }
+        }
+        else {
+          log.info("[chapter]随机翻页失败，可能是页面结构变化或者只有一章");
         }
       }
     }
