@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1151
+// @version        5.2.1152
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -17385,21 +17385,24 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
             if (document.location.pathname.includes("novel")) {
                 document.querySelector(".chapter-list .chapter a").click();
             }
-            if (document.location.pathname.includes("read")) {
+            else if (document.location.pathname.includes("read")) {
                 const rightMenu = document.querySelector(".right-menu");
-                if (rightMenu?.childElementCount === 6) {
-                    document.querySelector(".right-menu > div:nth-child(3) > a:nth-child(1)").click();
+                if (rightMenu.childElementCount == 5) {
+                    document.querySelector(".right-menu > div:nth-child(5) > a:nth-child(1)").click();
                 }
-                else if (rightMenu?.childElementCount === 7) {
-                    if (document.querySelector("div.content.unpaid")) {
-                        document.querySelector(".right-menu > div:nth-child(3) > a:nth-child(1)").click();
-                    }
-                    else if (Math.random() < 0.3) {
-                        document.querySelector(".right-menu > div:nth-child(3) > a:nth-child(1)").click();
+                else if (document.querySelector("div.content.unpaid")) {
+                    document.querySelector(".right-menu > div:nth-child(5) > a:nth-child(1)").click();
+                }
+                else if (rightMenu.childElementCount == 6) {
+                    if (Math.random() < 0.3) {
+                        document.querySelector(".right-menu > div:nth-child(5) > a:nth-child(1)").click();
                     }
                     else {
-                        document.querySelector(".right-menu > div:nth-child(4) > a:nth-child(1)").click();
+                        document.querySelector(".right-menu > div:nth-child(6) > a:nth-child(1)").click();
                     }
+                }
+                else {
+                    _log__WEBPACK_IMPORTED_MODULE_2___default().info("[chapter]随机翻页失败，可能是页面结构变化或者只有一章");
                 }
             }
         }
