@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1150
+// @version        5.2.1151
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -12029,7 +12029,8 @@ class BaseRuleClass {
                 }
                 return b;
             }
-            let _chapters = _book.chapters;
+            let _chapters = _book.chapters
+                .filter((chapter) => chapter.status !== main/* Status */.nW.aborted);
             const enabled = isEnable();
             if (enabled) {
                 loglevel_default().debug("[initChapters]筛选需下载章节");
