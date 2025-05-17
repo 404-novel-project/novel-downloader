@@ -359,10 +359,10 @@ export abstract class BaseRuleClass {
         return b;
       }
 
-      let _chapters = _book.chapters;
-      // .filter(
-      //   (chapter) => chapter.status === Status.pending
-      // );
+      let _chapters = _book.chapters
+        .filter(
+          (chapter) => chapter.status !== Status.aborted
+        );
       const enabled = isEnable();
       if (enabled) {
         log.debug("[initChapters]筛选需下载章节");
