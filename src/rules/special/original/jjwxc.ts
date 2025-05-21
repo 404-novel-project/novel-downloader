@@ -1421,12 +1421,13 @@ export class Jjwxc extends BaseRuleClass {
         // }
         const contentRaw = document.createElement("pre");
         contentRaw.innerHTML = content;
-        // content can have HTML characters (such as &amp;). Use textContent to get the raw text.
-        // we may use library such as https://www.npmjs.com/package/he too.
-        let contentText = contentRaw.textContent || "";
-        contentText = contentText.split("\n").map((p: string) => p.trim()).join("\n\n");
+        // content can have HTML characters (such as &amp;).
+        contentRaw.innerHTML = contentRaw.textContent || "";
+        // these special characters are double-encoded. decode them twice.
+        const contentTextRaw = contentRaw.textContent || "";
+        let contentText = contentTextRaw.split("\n").map((p: string) => p.trim()).join("\n\n");
         const _contentHTML = document.createElement("div");
-        _contentHTML.innerHTML = content
+        _contentHTML.innerHTML = contentTextRaw
           .split("\n")
           .map((p: string) => p.trim())
           .map((p: string) => {
