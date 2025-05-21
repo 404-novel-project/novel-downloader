@@ -14,8 +14,13 @@
     <div class="preview-chapter-setting">
       <label for="chapterNumber">预览章节序号：</label>
       <input id="chapterNumber" v-model="chapterNumber" type="text" />
+      <button @click="previewChapter" type="button" :disabled="isLoading">预览</button>
     </div>
-    <div v-if="this.isSeenChapter(chapter)">
+    <div v-if="isLoading" class="loading-spinner">
+      <div class="spinner"></div>
+      <p>正在加载章节中...</p>
+    </div>
+    <div v-else-if="this.isSeenChapter(chapter)">
       <h4>
         <a
           rel="noopener noreferrer"
@@ -28,7 +33,7 @@
     </div>
     <div v-else>
       <p v-if="this.isChapterFailed(chapter)">章节加载失败！</p>
-      <p v-else>正在加载章节中……</p>
+      <p v-else>请输入章节序号并点击预览</p>
     </div>
   </div>
 </div>
