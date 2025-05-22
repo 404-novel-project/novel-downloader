@@ -1,6 +1,6 @@
 // noinspection NonAsciiCharacters
 
-import { defineComponent, onMounted, reactive, Ref, ref, watch } from "vue";
+import { defineComponent, onMounted, reactive, Ref, ref } from "vue";
 import { GmWindow } from "../global";
 import { getAttachmentClassCache } from "../lib/attachments";
 import { sleep } from "../lib/misc";
@@ -15,6 +15,7 @@ export default defineComponent({
   name: "TestUI",
   setup() {
     const book = reactive({} as Book);
+    const isLoading = ref(false);
 
     async function waitBook() {
       // eslint-disable-next-line no-constant-condition
@@ -89,19 +90,20 @@ export default defineComponent({
       }
     }
 
-    watch(chapterNumber, (value, oldValue) => {
-      if (typeof value === "string") {
-        value = parseInt(value, 10);
-      }
-      if (typeof oldValue === "string") {
-        oldValue = parseInt(oldValue, 10);
-      }
-      if (oldValue !== value) {
-        if (value !== -99) {
-          initChapter(value);
+    async function previewChapter() {
+      isLoading.value = true;
+      try {
+        let n = chapterNumber.value;
+        if (typeof n === "string") {
+          n = parseInt(n, 10);
         }
+        if (!isNaN(n) && n !== -99) {
+          await initChapter(n);
+        }
+      } finally {
+        isLoading.value = false;
       }
-    });
+    }
 
     function isSeenChapter(_chapter: Chapter) {
       return _chapter.status === Status.finished;
@@ -165,6 +167,8 @@ export default defineComponent({
       isChapterFailed,
       getChapterHtml,
       chapterNumber,
+      previewChapter,
+      isLoading,
     };
   },
   template: TestUIHtml,

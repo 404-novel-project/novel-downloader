@@ -55,5 +55,38 @@
 
   .preview-chapter-setting {
     text-align: center;
+    margin-bottom: 1em;
+
+    button {
+      cursor: pointer;
+      margin-left: 0.5em;
+      padding: 0px 10px;
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+    }
+  }
+
+  .loading-spinner {
+    text-align: center;
+    margin: 1em 0;
+
+    .spinner {
+      display: inline-block;
+      width: 30px;
+      height: 30px;
+      border: 3px solid rgba(0, 0, 0, 0.3);
+      border-radius: 50%;
+      border-top-color: #000;
+      animation: spin 1s ease-in-out infinite;
+      margin-bottom: 0.5em;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
   }
 }
