@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1152
+// @version        5.2.1158
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -60,8 +60,10 @@
 // @exclude        *://www.zhenhunxiaoshuo.com/yanqing/
 // @exclude        *://www.zhenhunxiaoshuo.com/yanqing2/
 // @exclude        *://www.zhenhunxiaoshuo.com/baihexiaoshuo/
-// @exclude        *://*xszj.org/b/*/c/*
-// @exclude        *://*xszj.org/b/*/cs/*
+// @exclude        *://xszj.org/b/*/c/*
+// @exclude        *://xszj.org/b/*/cs/*
+// @exclude        *://m.xszj.org/b/*/c/*
+// @exclude        *://m.xszj.org/b/*/cs/*
 // @match          *://101kanshu.com/book/*.html
 // @match          *://www.sudugu.com/*
 // @match          *://www.po18.tw/books/*
@@ -308,7 +310,8 @@
 // @match          *://www.zgzl.net/info_*/
 // @match          *://www.zhenhunxiaoshuo.com/*/
 // @match          *://www.biquge.tw/book/*.html
-// @match          *://*xszj.org/b/*
+// @match          *://xszj.org/b/*
+// @match          *://m.xszj.org/b/*
 // @compatible     Firefox 100+
 // @compatible     Chrome 85+
 // @compatible     Edge 85+
@@ -3510,6 +3513,34 @@ ___CSS_LOADER_EXPORT___.push([module.id, `#test-page-div {
 }
 #test-page-div .preview-chapter-setting {
   text-align: center;
+  margin-bottom: 1em;
+}
+#test-page-div .preview-chapter-setting button {
+  cursor: pointer;
+  margin-left: 0.5em;
+  padding: 0px 10px;
+}
+#test-page-div .preview-chapter-setting button:disabled {
+  cursor: not-allowed;
+}
+#test-page-div .loading-spinner {
+  text-align: center;
+  margin: 1em 0;
+}
+#test-page-div .loading-spinner .spinner {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  border: 3px solid rgba(0, 0, 0, 0.3);
+  border-radius: 50%;
+  border-top-color: #000;
+  animation: spin 1s ease-in-out infinite;
+  margin-bottom: 0.5em;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 `, ""]);
 // Exports
@@ -31301,12 +31332,11 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
                     postscript = decodeVIPText(postscript, result.encryptType, chapterinfo);
                 const contentRaw = document.createElement("pre");
                 contentRaw.innerHTML = content;
-                let contentText = content
-                    .split("\n")
-                    .map((p) => p.trim())
-                    .join("\n\n");
+                contentRaw.innerHTML = contentRaw.textContent || "";
+                const contentTextRaw = contentRaw.textContent || "";
+                let contentText = contentTextRaw.split("\n").map((p) => p.trim()).join("\n\n");
                 const _contentHTML = document.createElement("div");
-                _contentHTML.innerHTML = content
+                _contentHTML.innerHTML = contentTextRaw
                     .split("\n")
                     .map((p) => p.trim())
                     .map((p) => {
@@ -41600,7 +41630,7 @@ var ui_setting = __webpack_require__("./src/ui/setting.less");
 var attachments = __webpack_require__("./src/lib/attachments.ts");
 ;// ./src/ui/TestUI.html
 // Module
-var TestUI_code = "<div>\n  <div id=\"test-page-div\">\n    <h2>元数据</h2>\n    <table>\n      <tbody>\n        <tr v-for=\"(value, key) in metaData\">\n          <td>{{ key }}</td>\n          <td v-html=\"getData(key, value)\"></td>\n        </tr>\n      </tbody>\n    </table>\n    <hr class=\"hr-edge-weak\">\n    <h2>章节测试</h2>\n    <div class=\"preview-chapter-setting\">\n      <label for=\"chapterNumber\">预览章节序号：</label>\n      <input id=\"chapterNumber\" v-model=\"chapterNumber\" type=\"text\">\n    </div>\n    <div v-if=\"this.isSeenChapter(chapter)\">\n      <h4>\n        <a rel=\"noopener noreferrer\" target=\"_blank\" v-bind:href=\"chapter.chapterUrl\">{{ chapter.chapterName }}</a>\n      </h4>\n      <div class=\"chapter\" v-html=\"getChapterHtml(chapter)\"></div>\n    </div>\n    <div v-else>\n      <p v-if=\"this.isChapterFailed(chapter)\">章节加载失败！</p>\n      <p v-else>正在加载章节中……</p>\n    </div>\n  </div>\n</div>\n";
+var TestUI_code = "<div>\n  <div id=\"test-page-div\">\n    <h2>元数据</h2>\n    <table>\n      <tbody>\n        <tr v-for=\"(value, key) in metaData\">\n          <td>{{ key }}</td>\n          <td v-html=\"getData(key, value)\"></td>\n        </tr>\n      </tbody>\n    </table>\n    <hr class=\"hr-edge-weak\">\n    <h2>章节测试</h2>\n    <div class=\"preview-chapter-setting\">\n      <label for=\"chapterNumber\">预览章节序号：</label>\n      <input id=\"chapterNumber\" v-model=\"chapterNumber\" type=\"text\">\n      <button @click=\"previewChapter\" type=\"button\" :disabled=\"isLoading\">预览</button>\n    </div>\n    <div v-if=\"isLoading\" class=\"loading-spinner\">\n      <div class=\"spinner\"></div>\n      <p>正在加载章节中...</p>\n    </div>\n    <div v-else-if=\"this.isSeenChapter(chapter)\">\n      <h4>\n        <a rel=\"noopener noreferrer\" target=\"_blank\" v-bind:href=\"chapter.chapterUrl\">{{ chapter.chapterName }}</a>\n      </h4>\n      <div class=\"chapter\" v-html=\"getChapterHtml(chapter)\"></div>\n    </div>\n    <div v-else>\n      <p v-if=\"this.isChapterFailed(chapter)\">章节加载失败！</p>\n      <p v-else>请输入章节序号并点击预览</p>\n    </div>\n  </div>\n</div>\n";
 // Exports
 /* harmony default export */ const TestUI = (TestUI_code);
 // EXTERNAL MODULE: ./src/ui/TestUI.less
@@ -41617,6 +41647,7 @@ var ui_TestUI = __webpack_require__("./src/ui/TestUI.less");
     name: "TestUI",
     setup() {
         const book = (0,external_Vue_.reactive)({});
+        const isLoading = (0,external_Vue_.ref)(false);
         async function waitBook() {
             while (true) {
                 await (0,misc/* sleep */.yy)(500);
@@ -41671,19 +41702,21 @@ var ui_TestUI = __webpack_require__("./src/ui/TestUI.less");
                 }
             }
         }
-        (0,external_Vue_.watch)(chapterNumber, (value, oldValue) => {
-            if (typeof value === "string") {
-                value = parseInt(value, 10);
-            }
-            if (typeof oldValue === "string") {
-                oldValue = parseInt(oldValue, 10);
-            }
-            if (oldValue !== value) {
-                if (value !== -99) {
-                    initChapter(value);
+        async function previewChapter() {
+            isLoading.value = true;
+            try {
+                let n = chapterNumber.value;
+                if (typeof n === "string") {
+                    n = parseInt(n, 10);
+                }
+                if (!isNaN(n) && n !== -99) {
+                    await initChapter(n);
                 }
             }
-        });
+            finally {
+                isLoading.value = false;
+            }
+        }
         function isSeenChapter(_chapter) {
             return _chapter.status === main/* Status */.nW.finished;
         }
@@ -41736,6 +41769,8 @@ var ui_TestUI = __webpack_require__("./src/ui/TestUI.less");
             isChapterFailed,
             getChapterHtml,
             chapterNumber,
+            previewChapter,
+            isLoading,
         };
     },
     template: TestUI,

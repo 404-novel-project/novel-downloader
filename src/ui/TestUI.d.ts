@@ -17,6 +17,8 @@ declare const _default: import("vue").DefineComponent<{}, {
     isChapterFailed: (_chapter: Chapter) => boolean;
     getChapterHtml: (_chapter: Chapter) => string;
     chapterNumber: Ref<string | number>;
+    previewChapter: () => Promise<void>;
+    isLoading: Ref<boolean>;
 }, {}, {}, {}, import("vue").ComponentOptionsMixin, import("vue").ComponentOptionsMixin, {}, string, import("vue").PublicProps, Readonly<import("vue").ExtractPropTypes<{}>>, {}, {}>;
 export default _default;
 export declare const style: HTMLElement;
