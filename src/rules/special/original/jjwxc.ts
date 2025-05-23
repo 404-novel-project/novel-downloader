@@ -1441,33 +1441,34 @@ export class Jjwxc extends BaseRuleClass {
         const contentHTML = document.createElement("div");
         contentHTML.className = "main";
 
-        const hr = document.createElement("hr");
-        const authorSayDom = document.createElement("div");
-        authorSayDom.innerHTML = postscript
-          ?.split("\n")
-          ?.map((p: string) => {
-            if (p.length === 0) {
-              return "<p><br/></p>";
-            } else {
-              return `<p>${p}</p>`;
-            }
-          })
-          ?.join("\n") ?? "";
-
         contentHTML.appendChild(_contentHTML);
 
-        if (postscript !== " ") {
+        if (postscript.trim().length > 0) {
+          const hr = document.createElement("hr");
+          const authorSayDom = document.createElement("div");
+          authorSayDom.innerHTML =
+            postscript
+              ?.split("\n")
+              ?.map((p: string) => {
+                if (p.length === 0) {
+                  return "<p><br/></p>";
+                } else {
+                  return `<p>${p}</p>`;
+                }
+              })
+              ?.join("\n") ?? "";
+
           contentHTML.appendChild(hr);
           contentHTML.appendChild(authorSayDom);
         }
 
-        contentRaw.innerHTML = postscript === " " ? contentRaw.innerHTML : 
+        contentRaw.innerHTML = postscript.trim().length === 0 ? contentRaw.innerHTML : 
         [
           contentRaw.innerHTML,
           "-".repeat(20),
           postscript,
         ].join("\n\n");
-        contentText = postscript === " " ? contentText: [contentText, "-".repeat(20), postscript].join("\n\n");
+        contentText = postscript.trim().length === 0 ? contentText: [contentText, "-".repeat(20), postscript].join("\n\n");
         await sleep(2000 + Math.round(Math.random() * 2000));
         return {
           chapterName,
