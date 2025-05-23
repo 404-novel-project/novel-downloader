@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1158
+// @version        5.2.1160
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -31350,31 +31350,32 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
                     .join("\n");
                 const contentHTML = document.createElement("div");
                 contentHTML.className = "main";
-                const hr = document.createElement("hr");
-                const authorSayDom = document.createElement("div");
-                authorSayDom.innerHTML = postscript
-                    ?.split("\n")
-                    ?.map((p) => {
-                    if (p.length === 0) {
-                        return "<p><br/></p>";
-                    }
-                    else {
-                        return `<p>${p}</p>`;
-                    }
-                })
-                    ?.join("\n") ?? "";
                 contentHTML.appendChild(_contentHTML);
-                if (postscript !== " ") {
+                if (postscript.trim().length > 0) {
+                    const hr = document.createElement("hr");
+                    const authorSayDom = document.createElement("div");
+                    authorSayDom.innerHTML =
+                        postscript
+                            ?.split("\n")
+                            ?.map((p) => {
+                            if (p.length === 0) {
+                                return "<p><br/></p>";
+                            }
+                            else {
+                                return `<p>${p}</p>`;
+                            }
+                        })
+                            ?.join("\n") ?? "";
                     contentHTML.appendChild(hr);
                     contentHTML.appendChild(authorSayDom);
                 }
-                contentRaw.innerHTML = postscript === " " ? contentRaw.innerHTML :
+                contentRaw.innerHTML = postscript.trim().length === 0 ? contentRaw.innerHTML :
                     [
                         contentRaw.innerHTML,
                         "-".repeat(20),
                         postscript,
                     ].join("\n\n");
-                contentText = postscript === " " ? contentText : [contentText, "-".repeat(20), postscript].join("\n\n");
+                contentText = postscript.trim().length === 0 ? contentText : [contentText, "-".repeat(20), postscript].join("\n\n");
                 await (0,misc/* sleep */.yy)(2000 + Math.round(Math.random() * 2000));
                 return {
                     chapterName,
