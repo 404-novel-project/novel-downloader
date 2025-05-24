@@ -265,6 +265,161 @@ export class Jjwxc extends BaseRuleClass {
       document.body.appendChild(page);
       document.getElementById("nd-jj-login")?.addEventListener('click', () => login());
     });
+  }  
+    
+  /**
+   * 转换主配角图片为文本
+   */
+  private convertRoleImagesToText(introDom: HTMLElement): HTMLElement {   
+    const smallreadBodies = introDom.querySelectorAll('.smallreadbody');
+    if (smallreadBodies.length === 0) {
+      return introDom;
+    }
+    
+    smallreadBodies.forEach(smallreadBody => {
+      const allChildren = Array.from(smallreadBody.children);
+      const elementsToRemove: Element[] = [];
+      
+      // Find role positions to determine character groupings
+      let currentRole = '主角';
+      const mainCharacters: string[] = [];
+      const costarCharacters: string[] = [];
+      
+      // First pass: analyze structure and collect characters
+      for (let i = 0; i < allChildren.length; i++) {
+        const element = allChildren[i];
+        
+        if (element.classList.contains('role_icon_out')) {
+          const img = element.querySelector('img.role_icon');
+          if (img) {
+            const alt = img.getAttribute('alt') || '';
+            if (alt.includes('主角') || alt.includes('main')) {
+              currentRole = '主角';
+            } else if (alt.includes('配角') || alt.includes('costar')) {
+              currentRole = '配角';
+            }
+          }
+          elementsToRemove.push(element);
+        } else if (element.classList.contains('role_pic_frame')) {
+          const nameDiv = element.querySelector('div.character_name');
+          if (nameDiv && nameDiv.textContent?.trim()) {
+            const characterName = nameDiv.textContent.trim();
+            if (currentRole === '主角') {
+              mainCharacters.push(characterName);
+            } else {
+              costarCharacters.push(characterName);
+            }
+          }
+          elementsToRemove.push(element);
+        } else if (element.tagName === 'SPAN' && element.innerHTML.includes('relation_')) {
+          // Remove relation icons
+          elementsToRemove.push(element);
+        }
+      }
+
+      // 给内容标签增加分隔符
+      const spanAElements = smallreadBody.querySelectorAll('span > a');
+      spanAElements.forEach((aElement, index) => {
+        // Skip if this is the last element (no separator needed after the last one)
+        if (index < spanAElements.length - 1) {
+          const separator = document.createElement('span');
+          separator.textContent = '、';
+          // Insert separator after the <a> element
+          aElement.parentNode?.insertBefore(separator, aElement.nextSibling);
+        }
+      });
+      
+      // 转换“其他”简介样式 span.bluetext
+      const bluetextSpans = smallreadBody.querySelectorAll('span.bluetext');
+      bluetextSpans.forEach(span => {
+        (span as HTMLElement).style.color = '#00f';
+        span.classList.remove('bluetext');
+      });
+      
+      // 处理主角配角信息
+      if (mainCharacters.length > 0 || costarCharacters.length > 0) {
+        const container = document.createElement('span');
+        container.className = 'characters-info';
+        
+        // 主角
+        if (mainCharacters.length > 0) {
+          const roleSpan = document.createElement('span');
+          roleSpan.textContent = '主角';
+          roleSpan.className = 'role-type';
+          container.appendChild(roleSpan);
+          
+          const separator = document.createElement('span');
+          separator.textContent = '：';
+          separator.className = 'role-separator';
+          container.appendChild(separator);
+          
+          mainCharacters.forEach((name, index) => {
+            if (index > 0) {
+              const comma = document.createElement('span');
+              comma.textContent = '、';
+              comma.className = 'character-separator';
+              container.appendChild(comma);
+            }
+            
+            const nameSpan = document.createElement('span');
+            nameSpan.textContent = name;
+            nameSpan.className = 'character-name';
+            container.appendChild(nameSpan);
+          });
+        }
+        
+        // Add <br> between main and costar characters
+        if (mainCharacters.length > 0 && costarCharacters.length > 0) {
+          const br = document.createElement("br");
+          container.appendChild(br);
+        }
+        
+        // 配角
+        if (costarCharacters.length > 0) {
+          const roleSpan = document.createElement('span');
+          roleSpan.textContent = '配角';
+          roleSpan.className = 'role-type';
+          container.appendChild(roleSpan);
+          
+          const separator = document.createElement('span');
+          separator.textContent = '：';
+          separator.className = 'role-separator';
+          container.appendChild(separator);
+          
+          costarCharacters.forEach((name, index) => {
+            if (index > 0) {
+              const comma = document.createElement('span');
+              comma.textContent = '、';
+              comma.className = 'character-separator';
+              container.appendChild(comma);
+            }
+            
+            const nameSpan = document.createElement('span');
+            nameSpan.textContent = name;
+            nameSpan.className = 'character-name';
+            container.appendChild(nameSpan);
+          });
+        }
+
+        let insertionPoint = null;
+        for (const element of allChildren) {
+          if (elementsToRemove.includes(element)) {
+            insertionPoint = element;
+            break;
+          }
+        }
+
+        if (insertionPoint) {
+          insertionPoint.parentNode?.insertBefore(container, insertionPoint);
+        }
+      }
+
+      elementsToRemove.forEach(element => {
+        element.parentNode?.removeChild(element);
+      });
+    });
+    
+    return introDom;
   }
 
   public async bookParse() {
@@ -295,9 +450,16 @@ export class Jjwxc extends BaseRuleClass {
       )?.innerText ?? (
         document.querySelector('#oneboolt > .noveltitle > span > a') as HTMLElement
       )?.innerText;
-      const introDom = document.querySelector("#novelintro");
+      const introDom = document.querySelector("#novelintro")?.cloneNode(true);
+      const br = document.createElement("br");
+      const introDom2 = document.querySelector("div.smallreadbody:last-of-type")?.cloneNode(true);
+      const combinedIntroDom = document.createElement("div");
+      combinedIntroDom.appendChild(introDom as HTMLDivElement);
+      combinedIntroDom.appendChild(br);
+      combinedIntroDom.appendChild(introDom2 as HTMLDivElement);      
       [introduction, introductionHTML, introCleanimages] = await introDomHandle(
-        introDom
+        combinedIntroDom,
+        this.convertRoleImagesToText
       );
       if (introCleanimages) {
         additionalMetadate.attachments = [...introCleanimages];
@@ -1441,33 +1603,34 @@ export class Jjwxc extends BaseRuleClass {
         const contentHTML = document.createElement("div");
         contentHTML.className = "main";
 
-        const hr = document.createElement("hr");
-        const authorSayDom = document.createElement("div");
-        authorSayDom.innerHTML = postscript
-          ?.split("\n")
-          ?.map((p: string) => {
-            if (p.length === 0) {
-              return "<p><br/></p>";
-            } else {
-              return `<p>${p}</p>`;
-            }
-          })
-          ?.join("\n") ?? "";
-
         contentHTML.appendChild(_contentHTML);
 
-        if (postscript !== " ") {
+        if (postscript.trim().length > 0) {
+          const hr = document.createElement("hr");
+          const authorSayDom = document.createElement("div");
+          authorSayDom.innerHTML =
+            postscript
+              ?.split("\n")
+              ?.map((p: string) => {
+                if (p.length === 0) {
+                  return "<p><br/></p>";
+                } else {
+                  return `<p>${p}</p>`;
+                }
+              })
+              ?.join("\n") ?? "";
+
           contentHTML.appendChild(hr);
           contentHTML.appendChild(authorSayDom);
         }
 
-        contentRaw.innerHTML = postscript === " " ? contentRaw.innerHTML : 
+        contentRaw.innerHTML = postscript.trim().length === 0 ? contentRaw.innerHTML : 
         [
           contentRaw.innerHTML,
           "-".repeat(20),
           postscript,
         ].join("\n\n");
-        contentText = postscript === " " ? contentText: [contentText, "-".repeat(20), postscript].join("\n\n");
+        contentText = postscript.trim().length === 0 ? contentText: [contentText, "-".repeat(20), postscript].join("\n\n");
         await sleep(2000 + Math.round(Math.random() * 2000));
         return {
           chapterName,
