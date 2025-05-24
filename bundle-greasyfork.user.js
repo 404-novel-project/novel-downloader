@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1160
+// @version        5.2.1164
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -17265,9 +17265,12 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
         if (!bookId) {
             throw new Error("获取bookID出错");
         }
-        const novelGetInfoBaseUrl = "https://www.gongzicp.com/webapi/novel/novelGetInfo";
+        const novelGetInfoBaseUrl = "https://www.gongzicp.com/webapi/novel/novelInfo";
         const novelGetInfoUrl = new URL(novelGetInfoBaseUrl);
         novelGetInfoUrl.searchParams.set("id", bookId);
+        const novelGetListBaseUrl = "https://www.gongzicp.com/webapi/novel/chapterGetList";
+        const novelGetListUrl = new URL(novelGetListBaseUrl);
+        novelGetListUrl.searchParams.set("nid", bookId);
         _log__WEBPACK_IMPORTED_MODULE_2___default().debug(`请求地址: ${novelGetInfoUrl.toString()}`);
         const novelInfo = await fetch(novelGetInfoUrl.toString(), {
             credentials: "include",
@@ -17287,13 +17290,13 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
             throw new Error(`数据接口请求失败，URL:${novelGetInfoUrl.toString()}`);
         }
         const data = novelInfo.data;
-        const bookname = data.novelInfo.novel_name;
-        const author = data.novelInfo.author_nickname;
+        const bookname = data.novel_name;
+        const author = data.author_nickname;
         const introDom = document.createElement("div");
-        introDom.innerHTML = data.novelInfo.novel_info;
+        introDom.innerHTML = data.novel_info;
         const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_3__/* .introDomHandle */ .HV)(introDom);
         const additionalMetadate = {};
-        const coverUrl = data.novelInfo.novel_cover;
+        const coverUrl = data.novel_cover;
         if (coverUrl) {
             (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_4__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
@@ -17301,7 +17304,7 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
             })
                 .catch((error) => _log__WEBPACK_IMPORTED_MODULE_2___default().error(error));
         }
-        additionalMetadate.tags = data.novelInfo.tag_list;
+        additionalMetadate.tags = data.tag_list;
         async function isLogin() {
             const getUserInfoUrl = "https://www.gongzicp.com/webapi/user/getUserInfo";
             _log__WEBPACK_IMPORTED_MODULE_2___default().debug(`正在请求: ${getUserInfoUrl}`);
@@ -17319,8 +17322,26 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
             return userInfo.code === 200;
         }
         const logined = await isLogin();
+        _log__WEBPACK_IMPORTED_MODULE_2___default().debug(`请求地址: ${novelGetListUrl.toString()}`);
+        const chapterList = await fetch(novelGetListUrl.toString(), {
+            credentials: "include",
+            headers: {
+                Accept: "application/json, text/plain, */*",
+                Client: "pc",
+                Lang: "cn",
+                "Content-Type": "application/json;charset=utf-8",
+            },
+            referrer: bookUrl,
+            method: "GET",
+            mode: "cors",
+        })
+            .then((response) => response.json())
+            .catch((error) => _log__WEBPACK_IMPORTED_MODULE_2___default().error(error));
+        if (novelInfo.code !== 200) {
+            throw new Error(`数据接口请求失败，URL:${novelGetListUrl.toString()}`);
+        }
         const chapters = [];
-        const _chapterList = data.chapterList;
+        const _chapterList = chapterList.data.list;
         let sectionNumber = 0;
         let sectionName = null;
         let sectionChapterNumber = 0;
@@ -17342,7 +17363,7 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
                 const isLock = chapterObj.lock || chapterObj.chapter_status !== 1;
                 sectionChapterNumber++;
                 const chapterOption = {
-                    novel_id: data.novelInfo.novel_id,
+                    novel_id: data.novel_id,
                     chapter_id: chapterObj.id,
                 };
                 const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .I({
@@ -30491,6 +30512,130 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
             document.getElementById("nd-jj-login")?.addEventListener('click', () => login());
         });
     }
+    convertRoleImagesToText(introDom) {
+        const smallreadBodies = introDom.querySelectorAll('.smallreadbody');
+        if (smallreadBodies.length === 0) {
+            return introDom;
+        }
+        smallreadBodies.forEach(smallreadBody => {
+            const allChildren = Array.from(smallreadBody.children);
+            const elementsToRemove = [];
+            let currentRole = '主角';
+            const mainCharacters = [];
+            const costarCharacters = [];
+            for (let i = 0; i < allChildren.length; i++) {
+                const element = allChildren[i];
+                if (element.classList.contains('role_icon_out')) {
+                    const img = element.querySelector('img.role_icon');
+                    if (img) {
+                        const alt = img.getAttribute('alt') || '';
+                        if (alt.includes('主角') || alt.includes('main')) {
+                            currentRole = '主角';
+                        }
+                        else if (alt.includes('配角') || alt.includes('costar')) {
+                            currentRole = '配角';
+                        }
+                    }
+                    elementsToRemove.push(element);
+                }
+                else if (element.classList.contains('role_pic_frame')) {
+                    const nameDiv = element.querySelector('div.character_name');
+                    if (nameDiv && nameDiv.textContent?.trim()) {
+                        const characterName = nameDiv.textContent.trim();
+                        if (currentRole === '主角') {
+                            mainCharacters.push(characterName);
+                        }
+                        else {
+                            costarCharacters.push(characterName);
+                        }
+                    }
+                    elementsToRemove.push(element);
+                }
+                else if (element.tagName === 'SPAN' && element.innerHTML.includes('relation_')) {
+                    elementsToRemove.push(element);
+                }
+            }
+            const spanAElements = smallreadBody.querySelectorAll('span > a');
+            spanAElements.forEach((aElement, index) => {
+                if (index < spanAElements.length - 1) {
+                    const separator = document.createElement('span');
+                    separator.textContent = '、';
+                    aElement.parentNode?.insertBefore(separator, aElement.nextSibling);
+                }
+            });
+            const bluetextSpans = smallreadBody.querySelectorAll('span.bluetext');
+            bluetextSpans.forEach(span => {
+                span.style.color = '#00f';
+                span.classList.remove('bluetext');
+            });
+            if (mainCharacters.length > 0 || costarCharacters.length > 0) {
+                const container = document.createElement('span');
+                container.className = 'characters-info';
+                if (mainCharacters.length > 0) {
+                    const roleSpan = document.createElement('span');
+                    roleSpan.textContent = '主角';
+                    roleSpan.className = 'role-type';
+                    container.appendChild(roleSpan);
+                    const separator = document.createElement('span');
+                    separator.textContent = '：';
+                    separator.className = 'role-separator';
+                    container.appendChild(separator);
+                    mainCharacters.forEach((name, index) => {
+                        if (index > 0) {
+                            const comma = document.createElement('span');
+                            comma.textContent = '、';
+                            comma.className = 'character-separator';
+                            container.appendChild(comma);
+                        }
+                        const nameSpan = document.createElement('span');
+                        nameSpan.textContent = name;
+                        nameSpan.className = 'character-name';
+                        container.appendChild(nameSpan);
+                    });
+                }
+                if (mainCharacters.length > 0 && costarCharacters.length > 0) {
+                    const br = document.createElement("br");
+                    container.appendChild(br);
+                }
+                if (costarCharacters.length > 0) {
+                    const roleSpan = document.createElement('span');
+                    roleSpan.textContent = '配角';
+                    roleSpan.className = 'role-type';
+                    container.appendChild(roleSpan);
+                    const separator = document.createElement('span');
+                    separator.textContent = '：';
+                    separator.className = 'role-separator';
+                    container.appendChild(separator);
+                    costarCharacters.forEach((name, index) => {
+                        if (index > 0) {
+                            const comma = document.createElement('span');
+                            comma.textContent = '、';
+                            comma.className = 'character-separator';
+                            container.appendChild(comma);
+                        }
+                        const nameSpan = document.createElement('span');
+                        nameSpan.textContent = name;
+                        nameSpan.className = 'character-name';
+                        container.appendChild(nameSpan);
+                    });
+                }
+                let insertionPoint = null;
+                for (const element of allChildren) {
+                    if (elementsToRemove.includes(element)) {
+                        insertionPoint = element;
+                        break;
+                    }
+                }
+                if (insertionPoint) {
+                    insertionPoint.parentNode?.insertBefore(container, insertionPoint);
+                }
+            }
+            elementsToRemove.forEach(element => {
+                element.parentNode?.removeChild(element);
+            });
+        });
+        return introDom;
+    }
     async bookParse() {
         const bookUrl = document.location.href;
         const getInformationBlocked = () => {
@@ -30506,8 +30651,14 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
         if (!getInformationBlocked()) {
             bookname = document.querySelector('#oneboolt .bigtext').innerText.trim();
             author = document.querySelector("#oneboolt  h2 > a")?.innerText ?? document.querySelector('#oneboolt > .noveltitle > span > a')?.innerText;
-            const introDom = document.querySelector("#novelintro");
-            [introduction, introductionHTML, introCleanimages] = await (0,rule/* introDomHandle */.HV)(introDom);
+            const introDom = document.querySelector("#novelintro")?.cloneNode(true);
+            const br = document.createElement("br");
+            const introDom2 = document.querySelector("div.smallreadbody:last-of-type")?.cloneNode(true);
+            const combinedIntroDom = document.createElement("div");
+            combinedIntroDom.appendChild(introDom);
+            combinedIntroDom.appendChild(br);
+            combinedIntroDom.appendChild(introDom2);
+            [introduction, introductionHTML, introCleanimages] = await (0,rule/* introDomHandle */.HV)(combinedIntroDom, this.convertRoleImagesToText);
             if (introCleanimages) {
                 additionalMetadate.attachments = [...introCleanimages];
             }
