@@ -32,9 +32,13 @@ export class Gongzicp extends BaseRuleClass {
       throw new Error("获取bookID出错");
     }
     const novelGetInfoBaseUrl =
-      "https://www.gongzicp.com/webapi/novel/novelGetInfo";
+      "https://www.gongzicp.com/webapi/novel/novelInfo";
     const novelGetInfoUrl = new URL(novelGetInfoBaseUrl);
     novelGetInfoUrl.searchParams.set("id", bookId);
+    const novelGetListBaseUrl =
+      "https://www.gongzicp.com/webapi/novel/chapterGetList";
+    const novelGetListUrl = new URL(novelGetListBaseUrl);
+    novelGetListUrl.searchParams.set("nid", bookId);
 
     interface CpUser {
       user_id: number;
@@ -138,6 +142,11 @@ export class Gongzicp extends BaseRuleClass {
       reply_list: CpCommentReplyObj[];
     }
 
+    type ChapterListItem =
+      | CpChapterVolumeItem
+      | CpChapterChapterItem
+      | CpChapterMoreItem;
+    
     interface CpNovelInfo {
       novel_id: number; // 273600
       novel_name: string; // "有名"
@@ -189,25 +198,10 @@ export class Gongzicp extends BaseRuleClass {
     }
 
     interface NovelInfo {
-      code: number; // 200
-      msg: string; // "操作成功"
-      data: {
-        novelInfo: CpNovelInfo;
-        chapterList: (
-          | CpChapterVolumeItem
-          | CpChapterChapterItem
-          | CpChapterMoreItem
-        )[];
-        rewardList: [];
-        updateDateList: {
-          [index: number]: CpUpdateDateObj;
-        };
-        rewardRankingList: CpUser[];
-        longComment: CpCommentObj[];
-        topComment: CpCommentObj[];
-      };
+      code: number;
+      msg: string;
+      data: CpNovelInfo;
     }
-
     log.debug(`请求地址: ${novelGetInfoUrl.toString()}`);
     const novelInfo: NovelInfo = await fetch(novelGetInfoUrl.toString(), {
       credentials: "include",
@@ -228,15 +222,15 @@ export class Gongzicp extends BaseRuleClass {
       throw new Error(`数据接口请求失败，URL:${novelGetInfoUrl.toString()}`);
     }
     const data = novelInfo.data;
-    const bookname = data.novelInfo.novel_name;
-    const author = data.novelInfo.author_nickname;
+    const bookname = data.novel_name;
+    const author = data.author_nickname;
 
     const introDom = document.createElement("div");
-    introDom.innerHTML = data.novelInfo.novel_info;
+    introDom.innerHTML = data.novel_info;
     const [introduction, introductionHTML] = await introDomHandle(introDom);
 
     const additionalMetadate: BookAdditionalMetadate = {};
-    const coverUrl = data.novelInfo.novel_cover;
+    const coverUrl = data.novel_cover;
     if (coverUrl) {
       getAttachment(coverUrl, this.attachmentMode, "cover-")
         .then((coverClass) => {
@@ -245,7 +239,7 @@ export class Gongzicp extends BaseRuleClass {
         .catch((error) => log.error(error));
     }
 
-    additionalMetadate.tags = data.novelInfo.tag_list;
+    additionalMetadate.tags = data.tag_list;
 
     async function isLogin() {
       interface CpUserInfo {
@@ -313,7 +307,6 @@ export class Gongzicp extends BaseRuleClass {
         data: CpUserInfo;
         count?: number;
       }
-
       const getUserInfoUrl = "https://www.gongzicp.com/webapi/user/getUserInfo";
       log.debug(`正在请求: ${getUserInfoUrl}`);
       const userInfo: UserInfo = await fetch(getUserInfoUrl, {
@@ -330,11 +323,35 @@ export class Gongzicp extends BaseRuleClass {
 
       return userInfo.code === 200;
     }
-
+    interface NovelList {
+      code: number;
+      msg: string;
+      data: {
+        list: ChapterListItem[];
+      };
+    }
     const logined = await isLogin();
+    log.debug(`请求地址: ${novelGetListUrl.toString()}`);
+    const chapterList: NovelList = await fetch(novelGetListUrl.toString(), {
+      credentials: "include",
+      headers: {
+        Accept: "application/json, text/plain, */*",
+        Client: "pc",
+        Lang: "cn",
+        "Content-Type": "application/json;charset=utf-8",
+      },
+      referrer: bookUrl,
+      method: "GET",
+      mode: "cors",
+    })
+      .then((response) => response.json())
+      .catch((error) => log.error(error));
 
+    if (novelInfo.code !== 200) {
+      throw new Error(`数据接口请求失败，URL:${novelGetListUrl.toString()}`);
+    }
     const chapters: Chapter[] = [];
-    const _chapterList = data.chapterList;
+    const _chapterList = chapterList.data.list;
     let sectionNumber = 0;
     let sectionName = null;
     let sectionChapterNumber = 0;
@@ -355,7 +372,7 @@ export class Gongzicp extends BaseRuleClass {
         const isLock = chapterObj.lock || chapterObj.chapter_status !== 1;
         sectionChapterNumber++;
         const chapterOption = {
-          novel_id: data.novelInfo.novel_id,
+          novel_id: data.novel_id,
           chapter_id: chapterObj.id,
         };
         const chapter = new Chapter({
