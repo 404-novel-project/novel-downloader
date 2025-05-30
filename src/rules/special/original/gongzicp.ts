@@ -80,6 +80,7 @@ export class Gongzicp extends BaseRuleClass {
       new: boolean; // false
       is_sub: boolean; // false
       price: number; // 0
+      is_free_limit: number; // 0
     }
 
     interface CpUpdateDateObj {
@@ -368,7 +369,7 @@ export class Gongzicp extends BaseRuleClass {
         const chapterNumber = parseInt(chapterObj.order);
         const chapterName = chapterObj.name;
         const isVIP = chapterObj.pay;
-        const isPaid = chapterObj.is_sub;
+        const isPaid = chapterObj.is_sub || chapterObj.is_free_limit === 1;
         const isLock = chapterObj.lock || chapterObj.chapter_status !== 1;
         sectionChapterNumber++;
         const chapterOption = {
