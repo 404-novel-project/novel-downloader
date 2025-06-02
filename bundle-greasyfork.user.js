@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1166
+// @version        5.2.1167
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -17884,8 +17884,29 @@ class ihuaben extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         const contentRaw = document.createElement("div");
         contentRaw.innerHTML = "";
-        (await (0,_lib_http__WEBPACK_IMPORTED_MODULE_3__/* .getFrameContentEvent */ .n6)(chapterUrl))?.querySelectorAll("div.discription")?.forEach((e) => {
-            contentRaw.innerHTML += e.innerHTML ?? "";
+        (await (0,_lib_http__WEBPACK_IMPORTED_MODULE_3__/* .getFrameContentEvent */ .n6)(chapterUrl))?.querySelectorAll("div.nbcontent div.discription,div.talkcontent")?.forEach((e) => {
+            if (e.classList.contains("discription")) {
+                e.querySelectorAll("p").forEach((p) => {
+                    const pClone = document.createElement("p");
+                    pClone.innerHTML = p.innerHTML;
+                    contentRaw.appendChild(pClone);
+                });
+            }
+            else if (e.classList.contains("talkcontent")) {
+                const nameDiv = e.querySelector("div.name");
+                const nameText = nameDiv ? nameDiv.innerText : "";
+                const ps = e.querySelectorAll("p");
+                ps.forEach((p) => {
+                    const pClone = document.createElement("p");
+                    if (nameText) {
+                        const strong = document.createElement("strong");
+                        strong.innerText = nameText + "：";
+                        pClone.appendChild(strong);
+                    }
+                    pClone.appendChild(document.createTextNode(p.innerText));
+                    contentRaw.appendChild(pClone);
+                });
+            }
         });
         (0,_lib_dom__WEBPACK_IMPORTED_MODULE_6__.rm)("i", true, contentRaw);
         const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__/* .cleanDOM */ .an)(contentRaw, "TM");
