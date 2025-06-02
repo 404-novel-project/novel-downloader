@@ -84,7 +84,10 @@ export class ihuaben extends BaseRuleClass {
         options: object
     ): Promise<ChapterParseObject> {
         const contentRaw = document.createElement("div");
-        contentRaw.innerHTML = (await getFrameContentEvent(chapterUrl))?.querySelector("div.discription")?.innerHTML ?? "";
+        contentRaw.innerHTML = "";
+        (await getFrameContentEvent(chapterUrl))?.querySelectorAll("div.discription")?.forEach((e) => {
+            contentRaw.innerHTML += e.innerHTML ?? "";
+        });
         rm("i", true, contentRaw);
         const { dom, text, images } = await cleanDOM(contentRaw, "TM");
         return {
