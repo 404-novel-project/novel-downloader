@@ -237,7 +237,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = Duread;
       break;
     }
-
+    case "www.99csw.com": {
+      const { I99csw } = await import("../rules/special/reprint/99csw");
+      ruleClass = I99csw;
+      break;
+    }
     case "www.ttkan.co":
     case "cn.ttkan.co":
     case "tw.ttkan.co": {

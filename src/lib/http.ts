@@ -407,7 +407,7 @@ export async function getFrameContentConditionWithWindow(
     const loopFunc = () => {
       if (stopCondition(frame)) {
         const doc = frame.contentWindow ?? null;
-        frame.remove();
+        //frame.remove();
         window.clearInterval(timerId);
         resolve(doc);
       }
@@ -415,7 +415,7 @@ export async function getFrameContentConditionWithWindow(
     timerId = window.setInterval(loopFunc, 1000);
 
     setTimeout(() => {
-      frame.remove();
+      //frame.remove();
       window.clearInterval(timerId);
       reject(new Error("Frame Timeout!"));
     }, 30 * 1000);
