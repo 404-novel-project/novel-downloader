@@ -270,7 +270,8 @@
     "*://www.biquge.tw/book/*.html",
     "*://xszj.org/b/*",
     "*://m.xszj.org/b/*",
-    "*://www.52shuku.vip/*/*.html"
+    "*://www.52shuku.vip/*/*.html",
+    "*://www.52shuku.vip/*/*/*.html"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",
@@ -329,7 +330,8 @@
     "*://xszj.org/b/*/cs/*",
     "*://m.xszj.org/b/*/c/*",
     "*://m.xszj.org/b/*/cs/*",
-    "*://www.52shuku.vip/*/*_*.html"
+    "*://www.52shuku.vip/*/*_*.html",
+    "*://www.52shuku.vip/*/*/*_*.html"
   ],
   "grant": [
     "unsafeWindow",
