@@ -389,7 +389,7 @@ export async function getFrameContentConditionWithWindow(
   url: string,
   stopCondition: (frame: HTMLIFrameElement) => boolean,
   sandboxs?: string[]
-): Promise<Window | null> {
+): Promise<HTMLIFrameElement | null> {
   const frame = document.createElement("iframe");
   frame.src = url;
   frame.width = "1";
@@ -406,10 +406,9 @@ export async function getFrameContentConditionWithWindow(
     let timerId = 0;
     const loopFunc = () => {
       if (stopCondition(frame)) {
-        const doc = frame.contentWindow ?? null;
         //frame.remove();
         window.clearInterval(timerId);
-        resolve(doc);
+        resolve(frame);
       }
     };
     timerId = window.setInterval(loopFunc, 1000);
@@ -419,7 +418,7 @@ export async function getFrameContentConditionWithWindow(
       window.clearInterval(timerId);
       reject(new Error("Frame Timeout!"));
     }, 30 * 1000);
-  }) as Promise<Window | null>;
+  }) as Promise<HTMLIFrameElement | null>;
   document.body.appendChild(frame);
   return promise;
 }

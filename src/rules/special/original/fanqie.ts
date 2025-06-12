@@ -154,11 +154,11 @@ export class fanqie extends BaseRuleClass {
                     return false;
                 }
             });
-            const doc = html?.document?.querySelector(textSelector) ?? null;
-            if (!html || !doc) {
+            const doc = html?.contentWindow?.document?.querySelector(textSelector) ?? null;
+            if (!html?.contentWindow || !doc) {
                 contentRaw.innerHTML = '获取章节内容失败';
             } else {
-                const [fontName, fontlink] = await getFont(html);
+                const [fontName, fontlink] = await getFont(html?.contentWindow);
                 if (fontName && fontlink) {
                     // Replace Text
                     contentRaw.innerHTML = await replaceFanqieCharacter(
@@ -171,6 +171,7 @@ export class fanqie extends BaseRuleClass {
                     contentRaw.innerHTML = '字体替换失败';
                 }
             }
+            html?.remove();
         }
         const { dom, text, images } = await cleanDOM(contentRaw, "TM");
         return {

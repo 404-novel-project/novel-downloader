@@ -97,9 +97,9 @@ export class I99csw extends BaseRuleClass {
             contentRaw.innerHTML = '获取章节内容失败';
         } else {
             
-            const content = html.document.querySelector("#content") as HTMLElement;
+            const content = html.contentWindow?.document.querySelector("#content") as HTMLElement;
             content.querySelectorAll("div").forEach((div) => {
-                const style = html.getComputedStyle(div) as CSSStyleDeclaration;
+                const style = html.contentWindow?.getComputedStyle(div) as CSSStyleDeclaration;
                 if (style.display !== "none") {
                     const p = document.createElement("p");
                     p.innerText = div.innerText;
@@ -109,7 +109,7 @@ export class I99csw extends BaseRuleClass {
             rm("abbm", true, contentRaw);
         }
         const { dom, text, images } = await cleanDOM(contentRaw, "TM");
-
+        html?.remove();
         return {
             chapterName,
             contentRaw: contentRaw,
