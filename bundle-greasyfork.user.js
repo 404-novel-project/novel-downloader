@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1170
+// @version        5.2.1172
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -9733,9 +9733,8 @@ async function getFrameContentConditionWithWindow(url, stopCondition, sandboxs) 
         let timerId = 0;
         const loopFunc = () => {
             if (stopCondition(frame)) {
-                const doc = frame.contentWindow ?? null;
                 window.clearInterval(timerId);
-                resolve(doc);
+                resolve(frame);
             }
         };
         timerId = window.setInterval(loopFunc, 1000);
@@ -17088,12 +17087,12 @@ class fanqie extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
                     return false;
                 }
             });
-            const doc = html?.document?.querySelector(textSelector) ?? null;
-            if (!html || !doc) {
+            const doc = html?.contentWindow?.document?.querySelector(textSelector) ?? null;
+            if (!html?.contentWindow || !doc) {
                 contentRaw.innerHTML = '获取章节内容失败';
             }
             else {
-                const [fontName, fontlink] = await getFont(html);
+                const [fontName, fontlink] = await getFont(html?.contentWindow);
                 if (fontName && fontlink) {
                     contentRaw.innerHTML = await replaceFanqieCharacter(fontName, fontlink, doc.innerHTML);
                 }
@@ -17102,6 +17101,7 @@ class fanqie extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
                     contentRaw.innerHTML = '字体替换失败';
                 }
             }
+            html?.remove();
         }
         const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .an)(contentRaw, "TM");
         return {
@@ -36446,9 +36446,9 @@ class I99csw extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
             contentRaw.innerHTML = '获取章节内容失败';
         }
         else {
-            const content = html.document.querySelector("#content");
+            const content = html.contentWindow?.document.querySelector("#content");
             content.querySelectorAll("div").forEach((div) => {
-                const style = html.getComputedStyle(div);
+                const style = html.contentWindow?.getComputedStyle(div);
                 if (style.display !== "none") {
                     const p = document.createElement("p");
                     p.innerText = div.innerText;
@@ -36458,6 +36458,7 @@ class I99csw extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
             (0,_lib_dom__WEBPACK_IMPORTED_MODULE_7__.rm)("abbm", true, contentRaw);
         }
         const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .an)(contentRaw, "TM");
+        html?.remove();
         return {
             chapterName,
             contentRaw: contentRaw,
