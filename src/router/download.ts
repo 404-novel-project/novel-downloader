@@ -414,6 +414,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = zhenhunxiaoshuo();
       break;
     }
+    case "www.52shuku.vip": {
+      const { i52shuku } = await import("../rules/onePage/52shuku");
+      ruleClass = i52shuku();
+      break;
+    }
     /* onePage End */
 
     /* onePageWithMultiIndexPage Start */
@@ -772,7 +777,12 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = fanqie;
       break;
     }
-    /** 笔趣阁END **/
+    /** 笔趣阁END **/    
+    case "mangguoshufang.com": {
+      const { Mangguoshufang } = await import("../rules/special/original/mangguoshufang");
+      ruleClass = Mangguoshufang;
+      break;
+    }
 
     default: {
       throw new Error("Not Found Rule!");
