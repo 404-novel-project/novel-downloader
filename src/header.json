@@ -272,7 +272,8 @@
     "*://xszj.org/b/*",
     "*://m.xszj.org/b/*",
     "*://www.52shuku.vip/*/*.html",
-    "*://www.52shuku.vip/*/*/*.html"
+    "*://www.52shuku.vip/*/*/*.html",
+    "*://mangguoshufang.com/*/*/info.html"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",
