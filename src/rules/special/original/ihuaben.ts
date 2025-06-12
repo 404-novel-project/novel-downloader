@@ -84,7 +84,34 @@ export class ihuaben extends BaseRuleClass {
         options: object
     ): Promise<ChapterParseObject> {
         const contentRaw = document.createElement("div");
-        contentRaw.innerHTML = (await getFrameContentEvent(chapterUrl))?.querySelector("div.discription")?.innerHTML ?? "";
+        contentRaw.innerHTML = "";
+        (await getFrameContentEvent(chapterUrl))?.querySelectorAll("div.nbcontent div.discription,div.talkcontent")?.forEach((e) => {
+            if (e.classList.contains("discription")) {
+                // 直接复制内容
+                e.querySelectorAll("p").forEach((p) => {
+                    const pClone = document.createElement("p");
+                    pClone.innerHTML = p.innerHTML; // 保留HTML内容
+                    contentRaw.appendChild(pClone);
+                });
+            } else if (e.classList.contains("talkcontent")) {
+                // 处理对话内容
+                const nameDiv = e.querySelector("div.name") as HTMLElement | null;
+                const nameText = nameDiv ? nameDiv.innerText : "";
+                const ps = e.querySelectorAll("p");
+                ps.forEach((p) => {
+                    const pClone = document.createElement("p");
+                    if (nameText) {
+                        // 角色名加粗
+                        const strong = document.createElement("strong");
+                        strong.innerText = nameText + "：";
+                        pClone.appendChild(strong);
+                    }
+                    // 角色说的话
+                    pClone.appendChild(document.createTextNode(p.innerText));
+                    contentRaw.appendChild(pClone);
+                });
+            }
+        });
         rm("i", true, contentRaw);
         const { dom, text, images } = await cleanDOM(contentRaw, "TM");
         return {
