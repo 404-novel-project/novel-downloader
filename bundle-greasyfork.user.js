@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1172
+// @version        5.2.1179
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -64,6 +64,8 @@
 // @exclude        *://xszj.org/b/*/cs/*
 // @exclude        *://m.xszj.org/b/*/c/*
 // @exclude        *://m.xszj.org/b/*/cs/*
+// @exclude        *://www.52shuku.vip/*/*_*.html
+// @exclude        *://www.52shuku.vip/*/*/*_*.html
 // @match          *://101kanshu.com/book/*.html
 // @match          *://www.sudugu.com/*
 // @match          *://www.po18.tw/books/*
@@ -313,6 +315,9 @@
 // @match          *://www.biquge.tw/book/*.html
 // @match          *://xszj.org/b/*
 // @match          *://m.xszj.org/b/*
+// @match          *://www.52shuku.vip/*/*.html
+// @match          *://www.52shuku.vip/*/*/*.html
+// @match          *://mangguoshufang.com/*/*/info.html
 // @compatible     Firefox 100+
 // @compatible     Chrome 85+
 // @compatible     Edge 85+
@@ -12747,6 +12752,48 @@ const c256wxc = (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)(
     aList: document.querySelectorAll(".catalog > li > a"),
     getContent: (doc) => doc.querySelector(".book_con"),
     contentPatch: (content) => content,
+});
+
+
+/***/ }),
+
+/***/ "./src/rules/onePage/52shuku.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   i52shuku: () => (/* binding */ i52shuku)
+/* harmony export */ });
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
+
+
+const i52shuku = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
+    bookUrl: document.location.href,
+    bookname: document.querySelector("h1.article-title")?.innerText.trim(),
+    author: "",
+    introDom: document.querySelector("article.article-content > p:nth-of-type(2)"),
+    introDomPatch: (introDom) => introDom,
+    coverUrl: null,
+    aList: document.querySelectorAll("ul.list > li.mulu > a"),
+    getContent: (doc) => doc.querySelector("#nr1"),
+    contentPatch: (content) => {
+        const divElement = content.querySelector("div");
+        if (divElement) {
+            let nextElement = divElement.nextElementSibling;
+            while (nextElement) {
+                const elementToRemove = nextElement;
+                nextElement = nextElement.nextElementSibling;
+                elementToRemove.remove();
+            }
+        }
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("div", true, content);
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("a", true, content);
+        return content;
+    },
+    concurrencyLimit: 3,
+    sleepTime: 1500,
+    language: "zh",
 });
 
 
@@ -32558,6 +32605,170 @@ class Longmabook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */
 
 /***/ }),
 
+/***/ "./src/rules/special/original/mangguoshufang.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Mangguoshufang: () => (/* binding */ Mangguoshufang)
+/* harmony export */ });
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
+
+
+
+
+
+
+
+class Mangguoshufang extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
+    constructor() {
+        super();
+        this.attachmentMode = "TM";
+        this.concurrencyLimit = 1;
+        this.sleepTime = 500;
+        this.maxSleepTime = 2000;
+    }
+    async bookParse() {
+        const bookUrl = document.location.href;
+        const bookname = document.querySelector(".x-detail__info--title")?.innerText.trim();
+        const author = document.querySelector(".x-detail__info--author")?.innerText
+            .trim()
+            .replace(/^作者：/, "");
+        const introDom = document.querySelector(".x-detail__intro");
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .HV)(introDom, (introDom) => introDom);
+        const additionalMetadate = {
+            language: "zh",
+        };
+        const coverUrl = document.querySelector(".x-book__cover")?.getAttribute("src") || null;
+        if (coverUrl) {
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
+                .then((coverClass) => {
+                additionalMetadate.cover = coverClass;
+            })
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_3___default().error(error));
+        }
+        const chapters = [];
+        const aList = document.querySelectorAll("#wrapper > .x-catalog__list > a");
+        let chapterNumber = 0;
+        for (const aElem of Array.from(aList)) {
+            const chapterName = aElem.innerText.trim();
+            const chapterUrl = aElem.href;
+            const chapterIdMatch = chapterUrl.match(/\/read\/(\d+)\.html$/);
+            const chapterId = chapterIdMatch ? chapterIdMatch[1] : null;
+            if (!chapterId) {
+                _log__WEBPACK_IMPORTED_MODULE_3___default().warn(`Could not extract chapter ID from URL: ${chapterUrl}`);
+                continue;
+            }
+            chapterNumber++;
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .I({
+                bookUrl,
+                bookname,
+                chapterUrl,
+                chapterNumber,
+                chapterName,
+                isVIP: false,
+                isPaid: false,
+                sectionName: null,
+                sectionNumber: null,
+                sectionChapterNumber: null,
+                chapterParse: this.chapterParse,
+                charset: this.charset,
+                options: { chapterId },
+            });
+            chapters.push(chapter);
+        }
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .E({
+            bookUrl,
+            bookname,
+            author,
+            introduction,
+            introductionHTML,
+            additionalMetadate,
+            chapters,
+        });
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+        const { chapterId } = options;
+        if (!chapterId) {
+            _log__WEBPACK_IMPORTED_MODULE_3___default().error(`No chapter ID found for ${chapterUrl}`);
+            return {
+                chapterName,
+                contentRaw: null,
+                contentText: null,
+                contentHTML: null,
+                contentImages: null,
+                additionalMetadate: null,
+            };
+        }
+        const apiUrl = `https://mangguoshufang.com/wmcms/ajax/index.php?action=novel.getchapter&cid=${chapterId}&format=1`;
+        try {
+            _log__WEBPACK_IMPORTED_MODULE_3___default().debug(`[Chapter] Requesting API: ${apiUrl}`);
+            const response = await fetch(apiUrl, {
+                method: "GET",
+                headers: {
+                    Accept: "application/json, text/plain, */*",
+                    Referer: chapterUrl,
+                    "User-Agent": navigator.userAgent,
+                },
+                credentials: "include",
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+            const data = await response.json();
+            if (data.code !== 200) {
+                throw new Error(`API Error: ${data.msg}`);
+            }
+            if (!data.data.chapter) {
+                throw new Error(`API Error: No chapter data found`);
+            }
+            const contentRaw = document.createElement("div");
+            if (Array.isArray(data.data.chapter.content)) {
+                data.data.chapter.content.forEach((paragraph, index) => {
+                    if (paragraph.trim()) {
+                        const p = document.createElement("p");
+                        p.textContent = paragraph.trim();
+                        contentRaw.appendChild(p);
+                        const br = document.createElement("br");
+                        contentRaw.appendChild(br);
+                    }
+                });
+            }
+            const finalChapterName = data.data.chapter.chapter_name || chapterName;
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_6__/* .cleanDOM */ .an)(contentRaw, this.attachmentMode);
+            return {
+                chapterName: finalChapterName,
+                contentRaw,
+                contentText: text,
+                contentHTML: dom,
+                contentImages: images,
+                additionalMetadate: null,
+            };
+        }
+        catch (error) {
+            _log__WEBPACK_IMPORTED_MODULE_3___default().error(`[Chapter] Failed to fetch content for ${chapterUrl}:`, error);
+            return {
+                chapterName,
+                contentRaw: null,
+                contentText: null,
+                contentHTML: null,
+                contentImages: null,
+                additionalMetadate: null,
+            };
+        }
+    }
+}
+
+
+/***/ }),
+
 /***/ "./src/rules/special/original/myrics.ts":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -40765,6 +40976,11 @@ async function getRule() {
             ruleClass = zhenhunxiaoshuo();
             break;
         }
+        case "www.52shuku.vip": {
+            const { i52shuku } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/52shuku.ts"));
+            ruleClass = i52shuku();
+            break;
+        }
         case "m.baihexs.com": {
             const { baihexs } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePageWithMultiIndexPage/baihexs.ts"));
             ruleClass = baihexs();
@@ -41100,6 +41316,11 @@ async function getRule() {
         case "fanqienovel.com": {
             const { fanqie } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/fanqie.ts"));
             ruleClass = fanqie;
+            break;
+        }
+        case "mangguoshufang.com": {
+            const { Mangguoshufang } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/mangguoshufang.ts"));
+            ruleClass = Mangguoshufang;
             break;
         }
         default: {
@@ -41648,7 +41869,7 @@ var main = __webpack_require__("./src/main/main.ts");
 var save_misc = __webpack_require__("./src/save/misc.ts");
 ;// ./src/ui/ChapterList.html
 // Module
-var ChapterList_code = "<div>\n  <div v-if=\"loading\">\n    <div class=\"chapter-list-loading\">\n      <h2 v-if=\"failed\">加载章节失败！</h2>\n      <h2 v-else>正在载入章节列表中，请耐心等待……</h2>\n    </div>\n  </div>\n  <div v-else class=\"chapter-list\">\n    <div v-for=\"sectionObj in sectionsObj\" v-show=\"isSectionSeen(sectionObj)\" v-bind:key=\"sectionObj.sectionNumber\" class=\"section\">\n      <h3 v-if=\"sectionObj.sectionName\" class=\"section-label\">\n        {{ sectionObj.sectionName }}\n      </h3>\n      <div v-for=\"chapter in sectionObj.chpaters\" v-show=\"isChapterSeen(chapter)\" v-bind:key=\"chapter.chapterNumber\" class=\"chapter\" v-bind:class=\"{\n              good: this.filter(chapter),\n              bad: !this.filter(chapter),\n              warning: this.warningFilter(chapter)\n            }\" v-bind:title=\"chapter.chapterNumber\">\n        <a rel=\"noopener noreferrer\" target=\"_blank\" v-bind:class=\"{\n                disabled: this.isChapterDisabled(chapter),\n              }\" v-bind:href=\"chapter.chapterUrl\">{{ chapter.chapterName }}</a>\n      </div>\n    </div>\n  </div>\n</div>\n";
+var ChapterList_code = "<div>\n  <div v-if=\"loading\">\n    <div class=\"chapter-list-loading\">\n      <h2 v-if=\"failed\">加载章节失败！</h2>\n      <h2 v-else>正在载入章节列表中，请耐心等待……</h2>\n    </div>\n  </div>\n  <div v-else class=\"chapter-list\" style=\"display: block;position: relative;\">\n    <div v-for=\"sectionObj in sectionsObj\" v-show=\"isSectionSeen(sectionObj)\" v-bind:key=\"sectionObj.sectionNumber\" class=\"section\">\n      <h3 v-if=\"sectionObj.sectionName\" class=\"section-label\">\n        {{ sectionObj.sectionName }}\n      </h3>\n      <div v-for=\"chapter in sectionObj.chpaters\" v-show=\"isChapterSeen(chapter)\" v-bind:key=\"chapter.chapterNumber\" class=\"chapter\" v-bind:class=\"{\n              good: this.filter(chapter),\n              bad: !this.filter(chapter),\n              warning: this.warningFilter(chapter)\n            }\" v-bind:title=\"chapter.chapterNumber\">\n        <a rel=\"noopener noreferrer\" target=\"_blank\" v-bind:class=\"{\n                disabled: this.isChapterDisabled(chapter),\n              }\" v-bind:href=\"chapter.chapterUrl\">{{ chapter.chapterName }}</a>\n      </div>\n    </div>\n  </div>\n</div>\n";
 // Exports
 /* harmony default export */ const ChapterList = (ChapterList_code);
 // EXTERNAL MODULE: ./src/ui/ChapterList.less
