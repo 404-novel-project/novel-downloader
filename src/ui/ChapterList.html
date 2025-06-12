@@ -5,7 +5,7 @@
       <h2 v-else>正在载入章节列表中，请耐心等待……</h2>
     </div>
   </div>
-  <div v-else class="chapter-list">
+  <div v-else class="chapter-list" style="display: block;position: relative;">
     <div
       v-for="sectionObj in sectionsObj"
       v-show="isSectionSeen(sectionObj)"
