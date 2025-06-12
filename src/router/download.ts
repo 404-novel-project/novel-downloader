@@ -410,6 +410,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = zhenhunxiaoshuo();
       break;
     }
+    case "www.52shuku.vip": {
+      const { i52shuku } = await import("../rules/onePage/52shuku");
+      ruleClass = i52shuku();
+      break;
+    }
     /* onePage End */
 
     /* onePageWithMultiIndexPage Start */
