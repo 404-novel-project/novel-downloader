@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1179
+// @version        5.2.1181
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -30747,7 +30747,7 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
             additionalMetadate.tags = tags;
         }
         else {
-            window.scrollTo(0, document.body.scrollHeight);
+            window.scrollTo(0, document?.body?.scrollHeight ?? 0);
             await (0,misc/* sleep */.yy)(3000);
             bookname = document.querySelector("td[id^=comment_] span.coltext > a")?.innerText
                 .trim()
@@ -36609,9 +36609,26 @@ class I99csw extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
         const chapters = [];
         let chapter_id = 0;
         const chapterList = Array.from(document.querySelectorAll("dl#dir > dd > a"));
+        const sectionList = Array.from(document.querySelectorAll("dl#dir > dt"));
+        let sectionNumber = null;
+        let sectionName = null;
+        let sectionChapterNumber = null;
+        if (sectionList.length > 0) {
+            sectionNumber = 0;
+            sectionChapterNumber = 0;
+        }
         for (const elem of chapterList) {
             const chapterUrl = elem.getAttribute("href") || "";
             const chapter_name = elem.innerText.trim();
+            if (sectionNumber !== null && sectionNumber < sectionList.length) {
+                if (elem.compareDocumentPosition(sectionList[sectionNumber]) & Node.DOCUMENT_POSITION_PRECEDING) {
+                    sectionName = sectionList[sectionNumber].innerText.trim();
+                    sectionNumber += 1;
+                    sectionChapterNumber = 0;
+                }
+            }
+            if (sectionChapterNumber !== null)
+                sectionChapterNumber += 1;
             chapter_id += 1;
             const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .I({
                 bookUrl,
@@ -36621,9 +36638,9 @@ class I99csw extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
                 chapterName: chapter_name,
                 isVIP: false,
                 isPaid: false,
-                sectionName: null,
-                sectionNumber: null,
-                sectionChapterNumber: null,
+                sectionName: sectionName,
+                sectionNumber: sectionNumber,
+                sectionChapterNumber: sectionChapterNumber,
                 chapterParse: this.chapterParse.bind(this),
                 charset: this.charset,
                 options: {},
@@ -36642,10 +36659,10 @@ class I99csw extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         const html = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_6__/* .getFrameContentConditionWithWindow */ .Q2)(chapterUrl, (frame) => {
-            frame.contentWindow?.scrollTo(0, frame.contentWindow.document.body.scrollHeight);
+            frame.contentWindow?.scrollTo(0, frame.contentWindow?.document?.body?.scrollHeight ?? 0);
             const doc = frame.contentWindow?.document ?? null;
             if (doc) {
-                const displayStyle = doc.querySelector("#cload")?.computedStyleMap().get("display")?.toString();
+                const displayStyle = doc.querySelector("#cload")?.computedStyleMap()?.get("display")?.toString();
                 return displayStyle === "none";
             }
             else {
