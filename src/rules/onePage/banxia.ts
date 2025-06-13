@@ -18,6 +18,8 @@ export const banxia = () =>
     contentPatch: (content) => {
       rm("script", true, content);
       rm("span", true, content);
+      // TODO: 替换半夏小说
+      // 半夏小说会把如“晋江文学城”替换成“半夏小说”，需要处理
       return content;
     },
     // concurrencyLimit: 3,
