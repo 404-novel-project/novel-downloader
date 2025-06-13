@@ -1,0 +1,37 @@
+import { mkRuleClass } from "./template";
+import { rm, rms } from "../../lib/dom";
+
+export const i52shuku = () =>
+  mkRuleClass({
+    bookUrl: document.location.href,
+    bookname: (
+      document.querySelector("h1.article-title") as HTMLElement
+    )?.innerText.trim(),
+    author: "",
+    introDom: document.querySelector("article.article-content > p:nth-of-type(2)") as HTMLElement,
+    introDomPatch: (introDom) => introDom,
+    coverUrl: null,
+    aList: document.querySelectorAll("ul.list > li.mulu > a"),
+    getContent: (doc) => doc.querySelector("#nr1") as HTMLElement,
+    contentPatch: (content) => {
+        // Remove all elements after <div> tag
+        const divElement = content.querySelector("div");
+        if (divElement) {
+            let nextElement = divElement.nextElementSibling;
+            while (nextElement) {
+                const elementToRemove = nextElement;
+                nextElement = nextElement.nextElementSibling;
+                elementToRemove.remove();
+            }
+        }
+        // remove the <div> tag
+        rm("div", true, content);
+        // 符合标签的会插入标签链接
+        rm("a", true, content);
+        return content;
+    },
+    concurrencyLimit: 3,
+    sleepTime: 1500,
+    language: "zh",
+    // nsfw: true,
+  });
