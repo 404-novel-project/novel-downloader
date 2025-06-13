@@ -507,7 +507,7 @@ export class Jjwxc extends BaseRuleClass {
       // tags.push(workStyle);
       additionalMetadate.tags = tags;
     } else {
-      window.scrollTo(0, document.body.scrollHeight);
+      window.scrollTo(0, document?.body?.scrollHeight ?? 0);
       await sleep(3000);
       bookname = (
         document.querySelector(

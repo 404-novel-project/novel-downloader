@@ -40,10 +40,26 @@ export class I99csw extends BaseRuleClass {
         const chapters: Chapter[] = [];
         let chapter_id = 0;
         const chapterList = Array.from(document.querySelectorAll("dl#dir > dd > a"));
-
+        const sectionList = Array.from(document.querySelectorAll("dl#dir > dt"));
+        let sectionNumber = null;
+        let sectionName = null;
+        let sectionChapterNumber = null;
+        if (sectionList.length > 0) {
+            sectionNumber = 0;
+            sectionChapterNumber = 0;
+        }
         for (const elem of chapterList) {
             const chapterUrl = elem.getAttribute("href") || "";
             const chapter_name = (elem as HTMLElement).innerText.trim();
+            if (sectionNumber !== null && sectionNumber < sectionList.length) {
+                if (elem.compareDocumentPosition(sectionList[sectionNumber]) & Node.DOCUMENT_POSITION_PRECEDING) {
+                    sectionName = (sectionList[sectionNumber] as HTMLElement).innerText.trim();
+                    sectionNumber += 1;
+                    sectionChapterNumber = 0;
+                }
+            }
+            if (sectionChapterNumber !== null)
+                sectionChapterNumber += 1;
             chapter_id += 1;
             const chapter = new Chapter({
                 bookUrl,
@@ -53,9 +69,9 @@ export class I99csw extends BaseRuleClass {
                 chapterName: chapter_name,
                 isVIP: false,
                 isPaid: false,
-                sectionName: null,
-                sectionNumber: null,
-                sectionChapterNumber: null,
+                sectionName: sectionName,
+                sectionNumber: sectionNumber,
+                sectionChapterNumber: sectionChapterNumber,
                 chapterParse: this.chapterParse.bind(this),
                 charset: this.charset,
                 options: {},
@@ -83,10 +99,10 @@ export class I99csw extends BaseRuleClass {
         options: Record<string, any>
     ): Promise<ChapterParseObject> {
         const html = await getFrameContentConditionWithWindow(chapterUrl, (frame) => {
-            frame.contentWindow?.scrollTo(0, frame.contentWindow.document.body.scrollHeight);
+            frame.contentWindow?.scrollTo(0, frame.contentWindow?.document?.body?.scrollHeight ?? 0);
             const doc = frame.contentWindow?.document ?? null;
             if (doc) {
-                const displayStyle = doc.querySelector("#cload")?.computedStyleMap().get("display")?.toString(); 
+                const displayStyle = doc.querySelector("#cload")?.computedStyleMap()?.get("display")?.toString(); 
                 return displayStyle === "none";
             } else {
                 return false;
