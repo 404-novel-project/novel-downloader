@@ -54,7 +54,7 @@ export const biqugetw = () =>
                   'div.read-page > a[rel="index"]',
                 ) as HTMLAnchorElement
               )?.href &&
-            !nextLink.includes("_") // paged chapter has "_<number>.html" in the URL
+            nextLink.includes("_") // paged chapter has "_<number>.html" in the URL
           );
         },
         enableCleanDOM: false,
