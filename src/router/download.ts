@@ -416,9 +416,18 @@ export async function getRule(): Promise<BaseRuleClass> {
       break;
     }
     case "www.52shuku.vip": {
-      const { i52shuku } = await import("../rules/onePage/52shuku");
-      ruleClass = i52shuku();
-      break;
+      // Book https://www.52shuku.vip/*/*.html
+      // Chapter https://www.52shuku.vip/*/*_\d.html
+      // Book https://www.52shuku.vip/*/*_*/*.html
+      // Chapter https://www.52shuku.vip/*/*_*/*_\d.html
+      const pathname = document.location.pathname;
+      const chapterPattern = /.*\/.*_\d+.html/;
+      if (!chapterPattern.test(pathname)) {
+        const { i52shuku } = await import("../rules/onePage/52shuku");
+        ruleClass = i52shuku();
+        break;
+      }
+      throw new Error("This is a chapter page, not a book page.");
     }
     /* onePage End */
 
