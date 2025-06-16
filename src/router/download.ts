@@ -429,6 +429,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       }
       throw new Error("This is a chapter page, not a book page.");
     }
+    case "m.bixiange.me": {
+      const { bixiange } = await import("../rules/onePage/bixiange");
+      ruleClass = bixiange();
+      break;
+    }
     /* onePage End */
 
     /* onePageWithMultiIndexPage Start */
