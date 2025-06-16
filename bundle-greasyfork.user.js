@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1189
+// @version        5.2.1191
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -65,6 +65,7 @@
 // @exclude        *://xszj.org/b/*/cs/*
 // @exclude        *://m.xszj.org/b/*/c/*
 // @exclude        *://m.xszj.org/b/*/cs/*
+// @exclude        *://m.bixiange.me/*/*/*.html
 // @match          *://101kanshu.com/book/*.html
 // @match          *://www.sudugu.com/*
 // @match          *://www.po18.tw/books/*
@@ -317,6 +318,7 @@
 // @match          *://m.xszj.org/b/*
 // @match          *://www.52shuku.vip/*/*.html
 // @match          *://mangguoshufang.com/*/*/info.html
+// @match          *://m.bixiange.me/*/*/
 // @compatible     Firefox 100+
 // @compatible     Chrome 85+
 // @compatible     Edge 85+
@@ -12904,6 +12906,31 @@ const banxia = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */
         (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("span", true, content);
         return content;
     },
+    language: "zh",
+});
+
+
+/***/ }),
+
+/***/ "./src/rules/onePage/bixiange.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   bixiange: () => (/* binding */ bixiange)
+/* harmony export */ });
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
+
+const bixiange = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
+    bookUrl: document.location.href,
+    bookname: document.querySelector("h1")?.innerText.trim(),
+    author: document.querySelector("div.descTip > p:nth-of-type(2) > span")?.innerText.trim().replace("作者：", ""),
+    introDom: document.querySelector("div.descInfo > p"),
+    introDomPatch: (introDom) => introDom,
+    coverUrl: document.querySelector("div.cover > img")?.src || null,
+    aList: document.querySelectorAll("div.catalog > ul > li > a"),
+    getContent: (doc) => doc.querySelector("#mycontent"),
+    contentPatch: (content) => content,
     language: "zh",
 });
 
@@ -41002,6 +41029,11 @@ async function getRule() {
                 break;
             }
             throw new Error("This is a chapter page, not a book page.");
+        }
+        case "m.bixiange.me": {
+            const { bixiange } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/bixiange.ts"));
+            ruleClass = bixiange();
+            break;
         }
         case "m.baihexs.com": {
             const { baihexs } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePageWithMultiIndexPage/baihexs.ts"));
