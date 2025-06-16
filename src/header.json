@@ -273,7 +273,8 @@
     "*://xszj.org/b/*",
     "*://m.xszj.org/b/*",
     "*://www.52shuku.vip/*/*.html",
-    "*://mangguoshufang.com/*/*/info.html"
+    "*://mangguoshufang.com/*/*/info.html",
+    "*://m.bixiange.me/*/*/"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",
@@ -332,7 +333,8 @@
     "*://xszj.org/b/*/c/*",
     "*://xszj.org/b/*/cs/*",
     "*://m.xszj.org/b/*/c/*",
-    "*://m.xszj.org/b/*/cs/*"
+    "*://m.xszj.org/b/*/cs/*",
+    "*://m.bixiange.me/*/*/*.html"
   ],
   "grant": [
     "unsafeWindow",
