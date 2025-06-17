@@ -334,7 +334,8 @@
     "*://xszj.org/b/*/cs/*",
     "*://m.xszj.org/b/*/c/*",
     "*://m.xszj.org/b/*/cs/*",
-    "*://m.bixiange.me/*/*/*.html"
+    "*://m.bixiange.me/*/*/*.html",
+    "*://www.fxshu.top/*/*_*.html",
   ],
   "grant": [
     "unsafeWindow",
@@ -353,7 +354,6 @@
     "self",
     "bilibili.com",
     "lightnovel.us",
-    "www.fxshu.top",
     "qidian.com",
     "yuewen.com",
     "kuangxiangit.com",
