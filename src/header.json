@@ -335,7 +335,7 @@
     "*://m.xszj.org/b/*/c/*",
     "*://m.xszj.org/b/*/cs/*",
     "*://m.bixiange.me/*/*/*.html",
-    "*://www.fxshu.top/*/*_*.html",
+    "*://www.fxshu.top/*/*_*.html"
   ],
   "grant": [
     "unsafeWindow",
