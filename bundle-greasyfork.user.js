@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1191
+// @version        5.2.1192
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -66,6 +66,7 @@
 // @exclude        *://m.xszj.org/b/*/c/*
 // @exclude        *://m.xszj.org/b/*/cs/*
 // @exclude        *://m.bixiange.me/*/*/*.html
+// @exclude        *://www.fxshu.top/*/*_*.html
 // @match          *://101kanshu.com/book/*.html
 // @match          *://www.sudugu.com/*
 // @match          *://www.po18.tw/books/*
@@ -327,7 +328,6 @@
 // @connect        self
 // @connect        bilibili.com
 // @connect        lightnovel.us
-// @connect        www.fxshu.top
 // @connect        qidian.com
 // @connect        yuewen.com
 // @connect        kuangxiangit.com
@@ -13144,13 +13144,12 @@ const dizishu = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass *
 
 const fuxiaoshu = (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
     bookUrl: document.location.href,
-    bookname: document.querySelector(".con_box h1").innerText.trim(),
-    author: document.querySelector(".con_box .tits strong a").innerText
-        .trim(),
+    bookname: document.querySelector("h1").innerText.trim(),
+    author: document.querySelector("div.af_lst > strong > a")?.innerText.trim(),
     introDom: undefined,
     coverUrl: null,
     aList: Array.from(document.querySelectorAll(".alt_page li > a")).slice(2),
-    getContent: (doc) => doc.querySelector("div.co-bay"),
+    getContent: (doc) => doc.querySelector("div.wznrb"),
     contentPatch: (content) => content,
 });
 
