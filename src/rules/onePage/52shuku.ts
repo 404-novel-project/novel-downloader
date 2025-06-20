@@ -27,7 +27,11 @@ export const i52shuku = () =>
         // remove the <div> tag
         rm("div", true, content);
         // 符合标签的会插入标签链接
-        rm("a", true, content);
+        // Replace <a> tags with their text content
+        const links = content.querySelectorAll("a");
+        links.forEach(link => {
+          link.replaceWith(document.createTextNode(link.textContent || ""));
+        });
         return content;
     },
     concurrencyLimit: 3,
