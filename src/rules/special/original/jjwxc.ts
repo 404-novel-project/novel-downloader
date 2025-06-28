@@ -270,7 +270,8 @@ export class Jjwxc extends BaseRuleClass {
   }  
 
   /**
-   * Extract protagonist, co-star, and other information from content tags section
+   * Extract protagonist and co-star information using semantic role detection
+   * Uses CSS classes: role_pic_1 (protagonist), role_pic_0 (co-star)
    */
   private extractProtagonistInfo(): { protagonist?: string; costar?: string; other?: string } {
     try {
@@ -286,10 +287,6 @@ export class Jjwxc extends BaseRuleClass {
                                  smallreadDiv.querySelector('.role_pic_frame');
         
         if (hasCharacterInfo) {
-          // Parse character information based on the DOM structure observed:
-          // In JJWXC BL novels, typically the first 2 characters are protagonists (攻 and 受)
-          // and the rest are co-stars, regardless of role icon positions
-          
           const characterFrames = Array.from(smallreadDiv.querySelectorAll('.role_pic_frame'));
           const protagonistNames: string[] = [];
           const costarNames: string[] = [];
@@ -299,12 +296,33 @@ export class Jjwxc extends BaseRuleClass {
             if (characterNameDiv && characterNameDiv.textContent?.trim()) {
               const characterName = characterNameDiv.textContent.trim();
               
-              // First two characters are typically protagonists (攻 and 受)
-              if (index < 2) {
+              // check role_pic
+              const rolePicSpan = frame.querySelector('[class*="role_pic_"]');
+              let isProtagonist = false;
+              let isCostar = false;
+              
+              if (rolePicSpan) {
+                // Check for protagonist class (role_pic_1)
+                if (rolePicSpan.classList.contains('role_pic_1')) {
+                  isProtagonist = true;
+                }
+                // Check for co-star class (role_pic_0)  
+                else if (rolePicSpan.classList.contains('role_pic_0')) {
+                  isCostar = true;
+                }
+              }
+              
+              // Classify characters based on role icons
+              if (isProtagonist) {
                 protagonistNames.push(characterName);
-              } else {
-                // Rest are co-stars
+                console.debug(`[JJWXC] 检测到主角: ${characterName}`);
+              } else if (isCostar) {
                 costarNames.push(characterName);
+                console.debug(`[JJWXC] 检测到配角: ${characterName}`);
+              } else {
+                // Fallback: if no clear classification, treat as co-star
+                costarNames.push(characterName);
+                console.debug(`[JJWXC] 未明确分类，归为配角: ${characterName}`);
               }
             }
           });
@@ -316,25 +334,6 @@ export class Jjwxc extends BaseRuleClass {
           
           if (costarNames.length > 0 && !result.costar) {
             result.costar = costarNames.join('、');
-          }
-          
-          // Also look for direct text patterns as fallback
-          const divText = smallreadDiv.textContent || '';
-          
-          // Extract protagonist patterns like "主角：" or "受：" as fallback
-          if (!result.protagonist) {
-            const protagonistMatch = divText.match(/(?:主角|受)[：:]\s*([^，,。.]+)/);
-            if (protagonistMatch && protagonistMatch[1]) {
-              result.protagonist = protagonistMatch[1].trim();
-            }
-          }
-          
-          // Extract co-star patterns like "配角：" as fallback
-          if (!result.costar) {
-            const costarMatch = divText.match(/配角[：:]\s*([^，,。.]+)/);
-            if (costarMatch && costarMatch[1]) {
-              result.costar = costarMatch[1].trim();
-            }
           }
           
           // If we found character information in this div, we're done
@@ -355,7 +354,7 @@ export class Jjwxc extends BaseRuleClass {
   private addAdditionalMetadataToDOM(introDom: HTMLElement): HTMLElement {
     const descriptionElements: HTMLElement[] = [];
     
-    // Extract protagonist, co-star, and other information
+    // protagonist and co-star
     const protagonistInfo = this.extractProtagonistInfo();
     if (protagonistInfo.protagonist || protagonistInfo.costar) {
       const protagonistDiv = document.createElement('div');
@@ -375,7 +374,7 @@ export class Jjwxc extends BaseRuleClass {
       descriptionElements.push(protagonistDiv);
     }
     
-    // Extract "一句话简介", "立意", and "其他" from smallreadbody divs
+    // "一句话简介", "立意", and "其他" from smallreadbody divs
     const smallreadBodyDivs = Array.from(document.querySelectorAll('.smallreadbody'));
     
     for (const smallreadDiv of smallreadBodyDivs) {
@@ -385,7 +384,7 @@ export class Jjwxc extends BaseRuleClass {
       for (const span of spans) {
         const spanText = span.textContent?.trim() || '';
         
-        // Extract one-sentence introduction
+        // 一句话简介
         if (spanText.startsWith('一句话简介：')) {
           const introText = spanText.replace('一句话简介：', '').trim();
           if (introText) {
@@ -396,7 +395,7 @@ export class Jjwxc extends BaseRuleClass {
           }
         }
         
-        // Extract theme/meaning (立意)
+        // 立意
         if (spanText.startsWith('立意：')) {
           const themeText = spanText.replace('立意：', '').trim();
           if (themeText) {
@@ -407,9 +406,9 @@ export class Jjwxc extends BaseRuleClass {
           }
         }
         
-        // Extract other information (其他/其它) as novel metadata
-        if (spanText.startsWith('其他：') || spanText.startsWith('其它：')) {
-          const otherText = spanText.replace(/^其[他它]：/, '').trim();
+        // 其它
+        if (spanText.startsWith('其它：')) {
+          const otherText = spanText.replace(/^其它：/, '').trim();
           if (otherText) {
             const otherDiv = document.createElement('div');
             otherDiv.className = 'metadata-other';
