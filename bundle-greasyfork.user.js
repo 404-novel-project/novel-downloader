@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1193
+// @version        5.2.1194
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -12795,8 +12795,8 @@ const i52shuku = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass 
         });
         return content;
     },
-    concurrencyLimit: 3,
-    sleepTime: 1500,
+    concurrencyLimit: 1,
+    sleepTime: 50,
     language: "zh",
 });
 
@@ -30395,6 +30395,7 @@ var external_CryptoJS_ = __webpack_require__("crypto-js");
 
 
 
+const AUTHOR_SAY_PREFIX = "作者有话说：";
 class Jjwxc extends rules/* BaseRuleClass */.Q {
     constructor() {
         super();
@@ -30610,128 +30611,128 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
             document.getElementById("nd-jj-login")?.addEventListener('click', () => login());
         });
     }
-    convertRoleImagesToText(introDom) {
-        const smallreadBodies = introDom.querySelectorAll('.smallreadbody');
-        if (smallreadBodies.length === 0) {
-            return introDom;
+    extractProtagonistInfo() {
+        try {
+            const result = {};
+            const smallreadBodyDivs = Array.from(document.querySelectorAll('.smallreadbody'));
+            for (const smallreadDiv of smallreadBodyDivs) {
+                const hasCharacterInfo = smallreadDiv.querySelector('.role_icon_out') ||
+                    smallreadDiv.querySelector('.character_name') ||
+                    smallreadDiv.querySelector('.role_pic_frame');
+                if (hasCharacterInfo) {
+                    const characterFrames = Array.from(smallreadDiv.querySelectorAll('.role_pic_frame'));
+                    const protagonistNames = [];
+                    const costarNames = [];
+                    characterFrames.forEach((frame, index) => {
+                        const characterNameDiv = frame.querySelector('.character_name');
+                        if (characterNameDiv && characterNameDiv.textContent?.trim()) {
+                            const characterName = characterNameDiv.textContent.trim();
+                            const rolePicSpan = frame.querySelector('[class*="role_pic_"]');
+                            let isProtagonist = false;
+                            let isCostar = false;
+                            if (rolePicSpan) {
+                                if (rolePicSpan.classList.contains('role_pic_1')) {
+                                    isProtagonist = true;
+                                }
+                                else if (rolePicSpan.classList.contains('role_pic_0')) {
+                                    isCostar = true;
+                                }
+                            }
+                            if (isProtagonist) {
+                                protagonistNames.push(characterName);
+                                console.debug(`[JJWXC] 检测到主角: ${characterName}`);
+                            }
+                            else if (isCostar) {
+                                costarNames.push(characterName);
+                                console.debug(`[JJWXC] 检测到配角: ${characterName}`);
+                            }
+                            else {
+                                costarNames.push(characterName);
+                                console.debug(`[JJWXC] 未明确分类，归为配角: ${characterName}`);
+                            }
+                        }
+                    });
+                    if (protagonistNames.length > 0 && !result.protagonist) {
+                        result.protagonist = protagonistNames.join('、');
+                    }
+                    if (costarNames.length > 0 && !result.costar) {
+                        result.costar = costarNames.join('、');
+                    }
+                    break;
+                }
+            }
+            return result;
         }
-        smallreadBodies.forEach(smallreadBody => {
-            const allChildren = Array.from(smallreadBody.children);
-            const elementsToRemove = [];
-            let currentRole = '主角';
-            const mainCharacters = [];
-            const costarCharacters = [];
-            for (let i = 0; i < allChildren.length; i++) {
-                const element = allChildren[i];
-                if (element.classList.contains('role_icon_out')) {
-                    const img = element.querySelector('img.role_icon');
-                    if (img) {
-                        const alt = img.getAttribute('alt') || '';
-                        if (alt.includes('主角') || alt.includes('main')) {
-                            currentRole = '主角';
-                        }
-                        else if (alt.includes('配角') || alt.includes('costar')) {
-                            currentRole = '配角';
-                        }
+        catch (error) {
+            console.warn('Error extracting protagonist info:', error);
+            return {};
+        }
+    }
+    addAdditionalMetadataToDOM(introDom) {
+        const descriptionElements = [];
+        const protagonistInfo = this.extractProtagonistInfo();
+        if (protagonistInfo.protagonist || protagonistInfo.costar) {
+            const protagonistDiv = document.createElement('div');
+            protagonistDiv.className = 'metadata-protagonist';
+            let protagonistHTML = '';
+            if (protagonistInfo.protagonist) {
+                protagonistHTML += `<strong>主角：</strong>${protagonistInfo.protagonist}`;
+            }
+            if (protagonistInfo.costar) {
+                if (protagonistHTML)
+                    protagonistHTML += '<br>';
+                protagonistHTML += `<strong>配角：</strong>${protagonistInfo.costar}`;
+            }
+            protagonistDiv.innerHTML = protagonistHTML;
+            descriptionElements.push(protagonistDiv);
+        }
+        const smallreadBodyDivs = Array.from(document.querySelectorAll('.smallreadbody'));
+        for (const smallreadDiv of smallreadBodyDivs) {
+            const spans = Array.from(smallreadDiv.querySelectorAll('span'));
+            for (const span of spans) {
+                const spanText = span.textContent?.trim() || '';
+                if (spanText.startsWith('一句话简介：')) {
+                    const introText = spanText.replace('一句话简介：', '').trim();
+                    if (introText) {
+                        const introDiv = document.createElement('div');
+                        introDiv.className = 'metadata-intro';
+                        introDiv.innerHTML = `<strong>一句话简介：</strong>${introText}`;
+                        descriptionElements.push(introDiv);
                     }
-                    elementsToRemove.push(element);
                 }
-                else if (element.classList.contains('role_pic_frame')) {
-                    const nameDiv = element.querySelector('div.character_name');
-                    if (nameDiv && nameDiv.textContent?.trim()) {
-                        const characterName = nameDiv.textContent.trim();
-                        if (currentRole === '主角') {
-                            mainCharacters.push(characterName);
-                        }
-                        else {
-                            costarCharacters.push(characterName);
-                        }
+                if (spanText.startsWith('立意：')) {
+                    const themeText = spanText.replace('立意：', '').trim();
+                    if (themeText) {
+                        const themeDiv = document.createElement('div');
+                        themeDiv.className = 'metadata-theme';
+                        themeDiv.innerHTML = `<strong>立意：</strong>${themeText}`;
+                        descriptionElements.push(themeDiv);
                     }
-                    elementsToRemove.push(element);
                 }
-                else if (element.tagName === 'SPAN' && element.innerHTML.includes('relation_')) {
-                    elementsToRemove.push(element);
+                if (spanText.startsWith('其它：')) {
+                    const otherText = spanText.replace(/^其它：/, '').trim();
+                    if (otherText) {
+                        const otherDiv = document.createElement('div');
+                        otherDiv.className = 'metadata-other';
+                        otherDiv.innerHTML = `<strong>其他：</strong>${otherText}`;
+                        descriptionElements.push(otherDiv);
+                    }
                 }
             }
-            const spanAElements = smallreadBody.querySelectorAll('span > a');
-            spanAElements.forEach((aElement, index) => {
-                if (index < spanAElements.length - 1) {
-                    const separator = document.createElement('span');
-                    separator.textContent = '、';
-                    aElement.parentNode?.insertBefore(separator, aElement.nextSibling);
-                }
-            });
-            const bluetextSpans = smallreadBody.querySelectorAll('span.bluetext');
-            bluetextSpans.forEach(span => {
-                span.style.color = '#00f';
-                span.classList.remove('bluetext');
-            });
-            if (mainCharacters.length > 0 || costarCharacters.length > 0) {
-                const container = document.createElement('span');
-                container.className = 'characters-info';
-                if (mainCharacters.length > 0) {
-                    const roleSpan = document.createElement('span');
-                    roleSpan.textContent = '主角';
-                    roleSpan.className = 'role-type';
-                    container.appendChild(roleSpan);
-                    const separator = document.createElement('span');
-                    separator.textContent = '：';
-                    separator.className = 'role-separator';
-                    container.appendChild(separator);
-                    mainCharacters.forEach((name, index) => {
-                        if (index > 0) {
-                            const comma = document.createElement('span');
-                            comma.textContent = '、';
-                            comma.className = 'character-separator';
-                            container.appendChild(comma);
-                        }
-                        const nameSpan = document.createElement('span');
-                        nameSpan.textContent = name;
-                        nameSpan.className = 'character-name';
-                        container.appendChild(nameSpan);
-                    });
-                }
-                if (mainCharacters.length > 0 && costarCharacters.length > 0) {
-                    const br = document.createElement("br");
-                    container.appendChild(br);
-                }
-                if (costarCharacters.length > 0) {
-                    const roleSpan = document.createElement('span');
-                    roleSpan.textContent = '配角';
-                    roleSpan.className = 'role-type';
-                    container.appendChild(roleSpan);
-                    const separator = document.createElement('span');
-                    separator.textContent = '：';
-                    separator.className = 'role-separator';
-                    container.appendChild(separator);
-                    costarCharacters.forEach((name, index) => {
-                        if (index > 0) {
-                            const comma = document.createElement('span');
-                            comma.textContent = '、';
-                            comma.className = 'character-separator';
-                            container.appendChild(comma);
-                        }
-                        const nameSpan = document.createElement('span');
-                        nameSpan.textContent = name;
-                        nameSpan.className = 'character-name';
-                        container.appendChild(nameSpan);
-                    });
-                }
-                let insertionPoint = null;
-                for (const element of allChildren) {
-                    if (elementsToRemove.includes(element)) {
-                        insertionPoint = element;
-                        break;
-                    }
-                }
-                if (insertionPoint) {
-                    insertionPoint.parentNode?.insertBefore(container, insertionPoint);
-                }
+            if (descriptionElements.some(el => el.className === 'metadata-intro' ||
+                el.className === 'metadata-theme' ||
+                el.className === 'metadata-other')) {
+                break;
             }
-            elementsToRemove.forEach(element => {
-                element.parentNode?.removeChild(element);
+        }
+        if (descriptionElements.length > 0) {
+            const separator = document.createElement('hr');
+            separator.style.margin = '10px 0';
+            introDom.appendChild(separator);
+            descriptionElements.forEach(element => {
+                introDom.appendChild(element);
             });
-        });
+        }
         return introDom;
     }
     async bookParse() {
@@ -30750,13 +30751,13 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
             bookname = document.querySelector('#oneboolt .bigtext').innerText.trim();
             author = document.querySelector("#oneboolt  h2 > a")?.innerText ?? document.querySelector('#oneboolt > .noveltitle > span > a')?.innerText;
             const introDom = document.querySelector("#novelintro")?.cloneNode(true);
-            const br = document.createElement("br");
-            const introDom2 = document.querySelector("div.smallreadbody:last-of-type")?.cloneNode(true);
-            const combinedIntroDom = document.createElement("div");
-            combinedIntroDom.appendChild(introDom);
-            combinedIntroDom.appendChild(br);
-            combinedIntroDom.appendChild(introDom2);
-            [introduction, introductionHTML, introCleanimages] = await (0,rule/* introDomHandle */.HV)(combinedIntroDom, this.convertRoleImagesToText);
+            if (introDom) {
+                const enhancedIntroDom = this.addAdditionalMetadataToDOM(introDom);
+                [introduction, introductionHTML, introCleanimages] = await (0,rule/* introDomHandle */.HV)(enhancedIntroDom);
+            }
+            else {
+                [introduction, introductionHTML, introCleanimages] = [null, null, null];
+            }
             if (introCleanimages) {
                 additionalMetadate.attachments = [...introCleanimages];
             }
@@ -30953,7 +30954,7 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
                     authorSayDom.className = "authorSay";
                     dom.appendChild(hr);
                     dom.appendChild(authorSayDom);
-                    text = text + "\n\n" + "-".repeat(20) + "\n\n" + authorSayText;
+                    text = text + "\n\n" + AUTHOR_SAY_PREFIX + "\n\n" + authorSayText;
                 }
                 return {
                     chapterName,
@@ -31393,7 +31394,7 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
                     authorSayDom.className = "authorSay";
                     rawDom.appendChild(hr);
                     rawDom.appendChild(authorSayDom);
-                    rawText = rawText + "\n\n" + "-".repeat(20) + "\n\n" + authorSayText;
+                    rawText = rawText + "\n\n" + AUTHOR_SAY_PREFIX + "\n\n" + authorSayText;
                 }
                 let finalDom = rawDom;
                 let finalText = rawText;
@@ -31621,10 +31622,10 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
                 contentRaw.innerHTML = postscript.trim().length === 0 ? contentRaw.innerHTML :
                     [
                         contentRaw.innerHTML,
-                        "-".repeat(20),
+                        AUTHOR_SAY_PREFIX,
                         postscript,
                     ].join("\n\n");
-                contentText = postscript.trim().length === 0 ? contentText : [contentText, "-".repeat(20), postscript].join("\n\n");
+                contentText = postscript.trim().length === 0 ? contentText : [contentText, AUTHOR_SAY_PREFIX, postscript].join("\n\n");
                 await (0,misc/* sleep */.yy)(2000 + Math.round(Math.random() * 2000));
                 return {
                     chapterName,
@@ -32640,14 +32641,16 @@ class Longmabook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   Mangguoshufang: () => (/* binding */ Mangguoshufang)
 /* harmony export */ });
-/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/attachments.ts");
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/cleanDOM.ts");
-/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/Chapter.ts");
-/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Book.ts");
 /* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
+
 
 
 
@@ -32663,39 +32666,75 @@ class Mangguoshufang extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClas
         this.sleepTime = 500;
         this.maxSleepTime = 2000;
     }
+    async getChapterListPageUrl() {
+        try {
+            const chapterListPageLink = document.querySelector("div.works-chapter-wr > ul > li.active > a");
+            if (!chapterListPageLink) {
+                _log__WEBPACK_IMPORTED_MODULE_1___default().warn("[Mangguoshufang] Chapter list page link not found with selector 'div.works-chapter-wr > ul > li.active > a'");
+                return null;
+            }
+            const chapterListPageUrl = chapterListPageLink.href;
+            _log__WEBPACK_IMPORTED_MODULE_1___default().debug(`[Mangguoshufang] Found chapter list page URL: ${chapterListPageUrl}`);
+            return chapterListPageUrl;
+        }
+        catch (error) {
+            _log__WEBPACK_IMPORTED_MODULE_1___default().error(`[Mangguoshufang] Error getting chapter list page URL:`, error);
+            return null;
+        }
+    }
     async bookParse() {
         const bookUrl = document.location.href;
-        const bookname = document.querySelector(".x-detail__info--title")?.innerText.trim();
-        const author = document.querySelector(".x-detail__info--author")?.innerText
+        const bookname = document.querySelector("h2.works-intro-title > strong")?.innerText.trim();
+        const author = document.querySelector("p.works-intro-digi > span")?.innerText
             .trim()
             .replace(/^作者：/, "");
-        const introDom = document.querySelector(".x-detail__intro");
-        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .HV)(introDom, (introDom) => introDom);
+        const introDom = document.querySelector("p.works-intro-short");
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .introDomHandle */ .HV)(introDom, (introDom) => introDom);
+        const tags = [''];
+        document.querySelectorAll("#tags-show > a").forEach((aElem) => tags.push(aElem.innerText.trim()));
         const additionalMetadate = {
             language: "zh",
+            tags: tags,
         };
-        const coverUrl = document.querySelector(".x-book__cover")?.getAttribute("src") || null;
+        const coverUrl = document.querySelector("div.works-cover > img")?.getAttribute("src") || null;
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
-                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_3___default().error(error));
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_1___default().error(error));
         }
         const chapters = [];
-        const aList = document.querySelectorAll("#wrapper > .x-catalog__list > a");
+        let aList = document.querySelectorAll("nonexistent");
         let chapterNumber = 0;
+        const chapterListPageUrl = await this.getChapterListPageUrl();
+        if (chapterListPageUrl) {
+            try {
+                _log__WEBPACK_IMPORTED_MODULE_1___default().debug(`[Mangguoshufang] Fetching chapter list from separate page: ${chapterListPageUrl}`);
+                const chapterListDoc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_4__/* .getHtmlDOM */ .wA)(chapterListPageUrl, this.charset);
+                aList = chapterListDoc.querySelectorAll("ol > li > p a");
+                if (aList.length === 0) {
+                    _log__WEBPACK_IMPORTED_MODULE_1___default().warn(`[Mangguoshufang] No chapters found in chapter list page: ${chapterListPageUrl}`);
+                }
+            }
+            catch (error) {
+                _log__WEBPACK_IMPORTED_MODULE_1___default().warn(`[Mangguoshufang] Failed to fetch chapter list from separate page: ${error}. Returning empty chapter list.`);
+            }
+        }
+        else {
+            _log__WEBPACK_IMPORTED_MODULE_1___default().warn(`[Mangguoshufang] Chapter list page URL not found. Returning empty chapter list.`);
+        }
         for (const aElem of Array.from(aList)) {
             const chapterName = aElem.innerText.trim();
             const chapterUrl = aElem.href;
             const chapterIdMatch = chapterUrl.match(/\/read\/(\d+)\.html$/);
             const chapterId = chapterIdMatch ? chapterIdMatch[1] : null;
             if (!chapterId) {
-                _log__WEBPACK_IMPORTED_MODULE_3___default().warn(`Could not extract chapter ID from URL: ${chapterUrl}`);
+                _log__WEBPACK_IMPORTED_MODULE_1___default().warn(`Could not extract chapter ID from URL: ${chapterUrl}`);
                 continue;
             }
             chapterNumber++;
-            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .I({
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .I({
                 bookUrl,
                 bookname,
                 chapterUrl,
@@ -32712,7 +32751,7 @@ class Mangguoshufang extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClas
             });
             chapters.push(chapter);
         }
-        return new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .E({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -32725,7 +32764,7 @@ class Mangguoshufang extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClas
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         const { chapterId } = options;
         if (!chapterId) {
-            _log__WEBPACK_IMPORTED_MODULE_3___default().error(`No chapter ID found for ${chapterUrl}`);
+            _log__WEBPACK_IMPORTED_MODULE_1___default().error(`No chapter ID found for ${chapterUrl}`);
             return {
                 chapterName,
                 contentRaw: null,
@@ -32737,7 +32776,7 @@ class Mangguoshufang extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClas
         }
         const apiUrl = `https://mangguoshufang.com/wmcms/ajax/index.php?action=novel.getchapter&cid=${chapterId}&format=1`;
         try {
-            _log__WEBPACK_IMPORTED_MODULE_3___default().debug(`[Chapter] Requesting API: ${apiUrl}`);
+            _log__WEBPACK_IMPORTED_MODULE_1___default().debug(`[Chapter] Requesting API: ${apiUrl}`);
             const response = await fetch(apiUrl, {
                 method: "GET",
                 headers: {
@@ -32770,7 +32809,7 @@ class Mangguoshufang extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClas
                 });
             }
             const finalChapterName = data.data.chapter.chapter_name || chapterName;
-            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_6__/* .cleanDOM */ .an)(contentRaw, this.attachmentMode);
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__/* .cleanDOM */ .an)(contentRaw, this.attachmentMode);
             return {
                 chapterName: finalChapterName,
                 contentRaw,
@@ -32781,7 +32820,7 @@ class Mangguoshufang extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClas
             };
         }
         catch (error) {
-            _log__WEBPACK_IMPORTED_MODULE_3___default().error(`[Chapter] Failed to fetch content for ${chapterUrl}:`, error);
+            _log__WEBPACK_IMPORTED_MODULE_1___default().error(`[Chapter] Failed to fetch content for ${chapterUrl}:`, error);
             return {
                 chapterName,
                 contentRaw: null,
