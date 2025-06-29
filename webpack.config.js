@@ -65,6 +65,9 @@ export default {
     fflate: "fflate",
     nunjucks: "nunjucks",
     vue: "Vue",
+    "esearch-ocr": "eSearchOCR",
+    "onnxruntime-web": "ort",
+    "@zip.js/zip.js": "zip"
   },
   devServer: {
     server: "http",

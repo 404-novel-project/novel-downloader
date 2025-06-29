@@ -798,6 +798,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = Mangguoshufang;
       break;
     }
+    case "www.xiguashuwu.com": {
+      const { Xiguashuwu } = await import("../rules/special/reprint/xiguashuwu");
+      ruleClass = Xiguashuwu;
+      break;
+    }
 
     default: {
       throw new Error("Not Found Rule!");
