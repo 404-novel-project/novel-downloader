@@ -274,7 +274,8 @@
     "*://m.xszj.org/b/*",
     "*://www.52shuku.vip/*/*.html",
     "*://mangguoshufang.com/*/*/info.html",
-    "*://m.bixiange.me/*/*/"
+    "*://m.bixiange.me/*/*/",
+    "*://www.xiguashuwu.com/book/*/"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",
@@ -335,7 +336,8 @@
     "*://m.xszj.org/b/*/c/*",
     "*://m.xszj.org/b/*/cs/*",
     "*://m.bixiange.me/*/*/*.html",
-    "*://www.fxshu.top/*/*_*.html"
+    "*://www.fxshu.top/*/*_*.html",
+    "*://www.xiguashuwu.com/book/*/*.html"
   ],
   "grant": [
     "unsafeWindow",
@@ -354,6 +356,7 @@
     "self",
     "bilibili.com",
     "lightnovel.us",
+    "www.fxshu.top",
     "qidian.com",
     "yuewen.com",
     "kuangxiangit.com",
@@ -436,9 +439,13 @@
     "*"
   ],
   "require": [
-    "https://unpkg.com/crypto-js@4.1.1/crypto-js.js",
-    "https://unpkg.com/fflate@0.8.0/umd/index.js",
+    "https://unpkg.com/crypto-js@4.2.0/crypto-js.js",
+    "https://unpkg.com/fflate@0.8.2/umd/index.js",
     "https://unpkg.com/nunjucks@3.2.4/browser/nunjucks.min.js",
-    "https://unpkg.com/vue@3.3.4/dist/vue.global.prod.js"
+    "https://unpkg.com/vue@3.3.13/dist/vue.global.prod.js",
+    "https://unpkg.com/onnxruntime-web@1.22.0/dist/ort.min.js",
+    "https://unpkg.com/@oovz/esearch-ocr/dist/eSearchOCR.umd.js",
+    "https://unpkg.com/@techstark/opencv-js@4.11.0-release.1/dist/opencv.js",
+    "https://unpkg.com/@zip.js/zip.js@2.7.62/dist/zip.min.js"
   ]
 }
