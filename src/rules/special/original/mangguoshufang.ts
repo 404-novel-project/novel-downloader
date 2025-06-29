@@ -1,5 +1,6 @@
 import { getAttachment } from "../../../lib/attachments";
 import { cleanDOM } from "../../../lib/cleanDOM";
+import { getHtmlDOM } from "../../../lib/http";
 import { introDomHandle } from "../../../lib/rule";
 import { log } from "../../../log";
 import { Chapter } from "../../../main/Chapter";
@@ -76,29 +77,55 @@ export class Mangguoshufang extends BaseRuleClass {
     this.maxSleepTime = 2000;
   }
 
+  /**
+   * 获取章节列表页面URL
+   */
+  private async getChapterListPageUrl(): Promise<string | null> {
+    try {
+      const chapterListPageLink = document.querySelector("div.works-chapter-wr > ul > li.active > a") as HTMLAnchorElement;
+      
+      if (!chapterListPageLink) {
+        log.warn("[Mangguoshufang] Chapter list page link not found with selector 'div.works-chapter-wr > ul > li.active > a'");
+        return null;
+      }
+
+      const chapterListPageUrl = chapterListPageLink.href;
+      log.debug(`[Mangguoshufang] Found chapter list page URL: ${chapterListPageUrl}`);
+      
+      return chapterListPageUrl;
+    } catch (error) {
+      log.error(`[Mangguoshufang] Error getting chapter list page URL:`, error);
+      return null;
+    }
+  }
+
   public async bookParse() {
     const bookUrl = document.location.href;
     const bookname = (
-      document.querySelector(".x-detail__info--title") as HTMLElement
+      document.querySelector("h2.works-intro-title > strong") as HTMLElement
     )?.innerText.trim();
     const author = (
-      document.querySelector(".x-detail__info--author") as HTMLElement
+      document.querySelector("p.works-intro-digi > span") as HTMLElement
     )?.innerText
       .trim()
       .replace(/^作者：/, "");
 
-    const introDom = document.querySelector(".x-detail__intro") as HTMLElement;
+    const introDom = document.querySelector("p.works-intro-short") as HTMLElement;
     const [introduction, introductionHTML] = await introDomHandle(
       introDom,
       (introDom) => introDom,
     );
 
+    const tags = [''];
+    (document.querySelectorAll("#tags-show > a") as NodeListOf<HTMLAnchorElement>).forEach((aElem) => tags.push(aElem.innerText.trim()));
+
     const additionalMetadate: BookAdditionalMetadate = {
       language: "zh",
+      tags: tags,
     };
 
     const coverUrl =
-      document.querySelector(".x-book__cover")?.getAttribute("src") || null;
+      document.querySelector("div.works-cover > img")?.getAttribute("src") || null;
     if (coverUrl) {
       getAttachment(coverUrl, this.attachmentMode, "cover-")
         .then((coverClass) => {
@@ -108,8 +135,27 @@ export class Mangguoshufang extends BaseRuleClass {
     }
 
     const chapters: Chapter[] = [];
-    const aList = document.querySelectorAll("#wrapper > .x-catalog__list > a");
+    let aList: NodeListOf<Element> = document.querySelectorAll("nonexistent"); // Initialize to empty NodeList
     let chapterNumber = 0;
+
+    // Try to get chapter list from separate page
+    const chapterListPageUrl = await this.getChapterListPageUrl();
+    
+    if (chapterListPageUrl) {
+      try {
+        log.debug(`[Mangguoshufang] Fetching chapter list from separate page: ${chapterListPageUrl}`);
+        const chapterListDoc = await getHtmlDOM(chapterListPageUrl, this.charset);
+        aList = chapterListDoc.querySelectorAll("ol > li > p a");
+        
+        if (aList.length === 0) {
+          log.warn(`[Mangguoshufang] No chapters found in chapter list page: ${chapterListPageUrl}`);
+        }
+      } catch (error) {
+        log.warn(`[Mangguoshufang] Failed to fetch chapter list from separate page: ${error}. Returning empty chapter list.`);
+      }
+    } else {
+      log.warn(`[Mangguoshufang] Chapter list page URL not found. Returning empty chapter list.`);
+    }
 
     for (const aElem of Array.from(aList) as HTMLAnchorElement[]) {
       const chapterName = aElem.innerText.trim();

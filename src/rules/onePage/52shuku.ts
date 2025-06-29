@@ -34,8 +34,9 @@ export const i52shuku = () =>
         });
         return content;
     },
-    concurrencyLimit: 3,
-    sleepTime: 1500,
+    // 52shuku uses Cloudflare, and is strict about concurrency
+    concurrencyLimit: 1,
+    sleepTime: 50,
     language: "zh",
     // nsfw: true,
   });

@@ -26,6 +26,8 @@ import { version } from "node:os";
 
 type JJWindow = UnsafeWindow & { getCookie: (key: string) => string };
 
+const AUTHOR_SAY_PREFIX = "作者有话说："; // before it was "-".repeat(20)
+
 export class Jjwxc extends BaseRuleClass {
   public constructor() {
     super();
@@ -266,159 +268,179 @@ export class Jjwxc extends BaseRuleClass {
       document.getElementById("nd-jj-login")?.addEventListener('click', () => login());
     });
   }  
-    
+
   /**
-   * 转换主配角图片为文本
+   * Extract protagonist and co-star information using semantic role detection
+   * Uses CSS classes: role_pic_1 (protagonist), role_pic_0 (co-star)
    */
-  private convertRoleImagesToText(introDom: HTMLElement): HTMLElement {   
-    const smallreadBodies = introDom.querySelectorAll('.smallreadbody');
-    if (smallreadBodies.length === 0) {
-      return introDom;
+  private extractProtagonistInfo(): { protagonist?: string; costar?: string; other?: string } {
+    try {
+      const result: { protagonist?: string; costar?: string; other?: string } = {};
+      
+      // Look for protagonist info in smallreadbody divs that contain character information
+      const smallreadBodyDivs = Array.from(document.querySelectorAll('.smallreadbody'));
+      
+      for (const smallreadDiv of smallreadBodyDivs) {
+        // Find the div that contains character information (role icons and character names)
+        const hasCharacterInfo = smallreadDiv.querySelector('.role_icon_out') || 
+                                 smallreadDiv.querySelector('.character_name') ||
+                                 smallreadDiv.querySelector('.role_pic_frame');
+        
+        if (hasCharacterInfo) {
+          const characterFrames = Array.from(smallreadDiv.querySelectorAll('.role_pic_frame'));
+          const protagonistNames: string[] = [];
+          const costarNames: string[] = [];
+          
+          characterFrames.forEach((frame, index) => {
+            const characterNameDiv = frame.querySelector('.character_name');
+            if (characterNameDiv && characterNameDiv.textContent?.trim()) {
+              const characterName = characterNameDiv.textContent.trim();
+              
+              // check role_pic
+              const rolePicSpan = frame.querySelector('[class*="role_pic_"]');
+              let isProtagonist = false;
+              let isCostar = false;
+              
+              if (rolePicSpan) {
+                // Check for protagonist class (role_pic_1)
+                if (rolePicSpan.classList.contains('role_pic_1')) {
+                  isProtagonist = true;
+                }
+                // Check for co-star class (role_pic_0)  
+                else if (rolePicSpan.classList.contains('role_pic_0')) {
+                  isCostar = true;
+                }
+              }
+              
+              // Classify characters based on role icons
+              if (isProtagonist) {
+                protagonistNames.push(characterName);
+                console.debug(`[JJWXC] 检测到主角: ${characterName}`);
+              } else if (isCostar) {
+                costarNames.push(characterName);
+                console.debug(`[JJWXC] 检测到配角: ${characterName}`);
+              } else {
+                // Fallback: if no clear classification, treat as co-star
+                costarNames.push(characterName);
+                console.debug(`[JJWXC] 未明确分类，归为配角: ${characterName}`);
+              }
+            }
+          });
+          
+          // Assign the extracted names
+          if (protagonistNames.length > 0 && !result.protagonist) {
+            result.protagonist = protagonistNames.join('、');
+          }
+          
+          if (costarNames.length > 0 && !result.costar) {
+            result.costar = costarNames.join('、');
+          }
+          
+          // If we found character information in this div, we're done
+          break;
+        }
+      }
+      
+      return result;
+    } catch (error) {
+      console.warn('Error extracting protagonist info:', error);
+      return {};
+    }
+  }
+
+  /**
+   * 向简介DOM添加额外的元数据信息
+   */
+  private addAdditionalMetadataToDOM(introDom: HTMLElement): HTMLElement {
+    const descriptionElements: HTMLElement[] = [];
+    
+    // protagonist and co-star
+    const protagonistInfo = this.extractProtagonistInfo();
+    if (protagonistInfo.protagonist || protagonistInfo.costar) {
+      const protagonistDiv = document.createElement('div');
+      protagonistDiv.className = 'metadata-protagonist';
+      let protagonistHTML = '';
+      
+      if (protagonistInfo.protagonist) {
+        protagonistHTML += `<strong>主角：</strong>${protagonistInfo.protagonist}`;
+      }
+      
+      if (protagonistInfo.costar) {
+        if (protagonistHTML) protagonistHTML += '<br>';
+        protagonistHTML += `<strong>配角：</strong>${protagonistInfo.costar}`;
+      }
+      
+      protagonistDiv.innerHTML = protagonistHTML;
+      descriptionElements.push(protagonistDiv);
     }
     
-    smallreadBodies.forEach(smallreadBody => {
-      const allChildren = Array.from(smallreadBody.children);
-      const elementsToRemove: Element[] = [];
-      
-      // Find role positions to determine character groupings
-      let currentRole = '主角';
-      const mainCharacters: string[] = [];
-      const costarCharacters: string[] = [];
-      
-      // First pass: analyze structure and collect characters
-      for (let i = 0; i < allChildren.length; i++) {
-        const element = allChildren[i];
-        
-        if (element.classList.contains('role_icon_out')) {
-          const img = element.querySelector('img.role_icon');
-          if (img) {
-            const alt = img.getAttribute('alt') || '';
-            if (alt.includes('主角') || alt.includes('main')) {
-              currentRole = '主角';
-            } else if (alt.includes('配角') || alt.includes('costar')) {
-              currentRole = '配角';
-            }
-          }
-          elementsToRemove.push(element);
-        } else if (element.classList.contains('role_pic_frame')) {
-          const nameDiv = element.querySelector('div.character_name');
-          if (nameDiv && nameDiv.textContent?.trim()) {
-            const characterName = nameDiv.textContent.trim();
-            if (currentRole === '主角') {
-              mainCharacters.push(characterName);
-            } else {
-              costarCharacters.push(characterName);
-            }
-          }
-          elementsToRemove.push(element);
-        } else if (element.tagName === 'SPAN' && element.innerHTML.includes('relation_')) {
-          // Remove relation icons
-          elementsToRemove.push(element);
-        }
-      }
-
-      // 给内容标签增加分隔符
-      const spanAElements = smallreadBody.querySelectorAll('span > a');
-      spanAElements.forEach((aElement, index) => {
-        // Skip if this is the last element (no separator needed after the last one)
-        if (index < spanAElements.length - 1) {
-          const separator = document.createElement('span');
-          separator.textContent = '、';
-          // Insert separator after the <a> element
-          aElement.parentNode?.insertBefore(separator, aElement.nextSibling);
-        }
-      });
-      
-      // 转换“其他”简介样式 span.bluetext
-      const bluetextSpans = smallreadBody.querySelectorAll('span.bluetext');
-      bluetextSpans.forEach(span => {
-        (span as HTMLElement).style.color = '#00f';
-        span.classList.remove('bluetext');
-      });
-      
-      // 处理主角配角信息
-      if (mainCharacters.length > 0 || costarCharacters.length > 0) {
-        const container = document.createElement('span');
-        container.className = 'characters-info';
-        
-        // 主角
-        if (mainCharacters.length > 0) {
-          const roleSpan = document.createElement('span');
-          roleSpan.textContent = '主角';
-          roleSpan.className = 'role-type';
-          container.appendChild(roleSpan);
-          
-          const separator = document.createElement('span');
-          separator.textContent = '：';
-          separator.className = 'role-separator';
-          container.appendChild(separator);
-          
-          mainCharacters.forEach((name, index) => {
-            if (index > 0) {
-              const comma = document.createElement('span');
-              comma.textContent = '、';
-              comma.className = 'character-separator';
-              container.appendChild(comma);
-            }
-            
-            const nameSpan = document.createElement('span');
-            nameSpan.textContent = name;
-            nameSpan.className = 'character-name';
-            container.appendChild(nameSpan);
-          });
-        }
-        
-        // Add <br> between main and costar characters
-        if (mainCharacters.length > 0 && costarCharacters.length > 0) {
-          const br = document.createElement("br");
-          container.appendChild(br);
-        }
-        
-        // 配角
-        if (costarCharacters.length > 0) {
-          const roleSpan = document.createElement('span');
-          roleSpan.textContent = '配角';
-          roleSpan.className = 'role-type';
-          container.appendChild(roleSpan);
-          
-          const separator = document.createElement('span');
-          separator.textContent = '：';
-          separator.className = 'role-separator';
-          container.appendChild(separator);
-          
-          costarCharacters.forEach((name, index) => {
-            if (index > 0) {
-              const comma = document.createElement('span');
-              comma.textContent = '、';
-              comma.className = 'character-separator';
-              container.appendChild(comma);
-            }
-            
-            const nameSpan = document.createElement('span');
-            nameSpan.textContent = name;
-            nameSpan.className = 'character-name';
-            container.appendChild(nameSpan);
-          });
-        }
-
-        let insertionPoint = null;
-        for (const element of allChildren) {
-          if (elementsToRemove.includes(element)) {
-            insertionPoint = element;
-            break;
-          }
-        }
-
-        if (insertionPoint) {
-          insertionPoint.parentNode?.insertBefore(container, insertionPoint);
-        }
-      }
-
-      elementsToRemove.forEach(element => {
-        element.parentNode?.removeChild(element);
-      });
-    });
+    // "一句话简介", "立意", and "其他" from smallreadbody divs
+    const smallreadBodyDivs = Array.from(document.querySelectorAll('.smallreadbody'));
     
+    for (const smallreadDiv of smallreadBodyDivs) {
+      // Look for the div that contains metadata spans
+      const spans = Array.from(smallreadDiv.querySelectorAll('span'));
+      
+      for (const span of spans) {
+        const spanText = span.textContent?.trim() || '';
+        
+        // 一句话简介
+        if (spanText.startsWith('一句话简介：')) {
+          const introText = spanText.replace('一句话简介：', '').trim();
+          if (introText) {
+            const introDiv = document.createElement('div');
+            introDiv.className = 'metadata-intro';
+            introDiv.innerHTML = `<strong>一句话简介：</strong>${introText}`;
+            descriptionElements.push(introDiv);
+          }
+        }
+        
+        // 立意
+        if (spanText.startsWith('立意：')) {
+          const themeText = spanText.replace('立意：', '').trim();
+          if (themeText) {
+            const themeDiv = document.createElement('div');
+            themeDiv.className = 'metadata-theme';
+            themeDiv.innerHTML = `<strong>立意：</strong>${themeText}`;
+            descriptionElements.push(themeDiv);
+          }
+        }
+        
+        // 其它
+        if (spanText.startsWith('其它：')) {
+          const otherText = spanText.replace(/^其它：/, '').trim();
+          if (otherText) {
+            const otherDiv = document.createElement('div');
+            otherDiv.className = 'metadata-other';
+            otherDiv.innerHTML = `<strong>其他：</strong>${otherText}`;
+            descriptionElements.push(otherDiv);
+          }
+        }
+      }
+      
+      // If we found metadata spans, no need to check other divs
+      if (descriptionElements.some(el => 
+        el.className === 'metadata-intro' || 
+        el.className === 'metadata-theme' || 
+        el.className === 'metadata-other'
+      )) {
+        break;
+      }
+    }
+
+    // Append additional metadata to the intro DOM if any were found
+    if (descriptionElements.length > 0) {
+      // Add a separator line before additional metadata
+      const separator = document.createElement('hr');
+      separator.style.margin = '10px 0';
+      introDom.appendChild(separator);
+      
+      // Add each metadata element
+      descriptionElements.forEach(element => {
+        introDom.appendChild(element);
+      });
+    }
+
     return introDom;
   }
 
@@ -450,17 +472,15 @@ export class Jjwxc extends BaseRuleClass {
       )?.innerText ?? (
         document.querySelector('#oneboolt > .noveltitle > span > a') as HTMLElement
       )?.innerText;
-      const introDom = document.querySelector("#novelintro")?.cloneNode(true);
-      const br = document.createElement("br");
-      const introDom2 = document.querySelector("div.smallreadbody:last-of-type")?.cloneNode(true);
-      const combinedIntroDom = document.createElement("div");
-      combinedIntroDom.appendChild(introDom as HTMLDivElement);
-      combinedIntroDom.appendChild(br);
-      combinedIntroDom.appendChild(introDom2 as HTMLDivElement);      
-      [introduction, introductionHTML, introCleanimages] = await introDomHandle(
-        combinedIntroDom,
-        this.convertRoleImagesToText
-      );
+      
+      // Enhanced intro processing: convert roles and add metadata before introDomHandle
+      const introDom = document.querySelector("#novelintro")?.cloneNode(true) as HTMLElement;
+      if (introDom) {
+        const enhancedIntroDom = this.addAdditionalMetadataToDOM(introDom);
+        [introduction, introductionHTML, introCleanimages] = await introDomHandle(enhancedIntroDom);
+      } else {
+        [introduction, introductionHTML, introCleanimages] = [null, null, null];
+      }
       if (introCleanimages) {
         additionalMetadate.attachments = [...introCleanimages];
       }
@@ -487,17 +507,17 @@ export class Jjwxc extends BaseRuleClass {
         document.querySelector(
           "table > tbody > tr > td.readtd > div.righttd > ul.rightul > li:nth-child(1) > span:nth-child(2)"
         ) as HTMLSpanElement
-      ).innerText.split("-");
+      ).innerText.split("-"); // 文章类型
       tags = tags.concat(
         Array.from(
           document.querySelectorAll("div.smallreadbody:nth-child(3) > span > a")
         ).map((a) => (a as HTMLAnchorElement).innerText)
-      );
+      ); // 内容标签
       const perspective = (
         document.querySelector(
           "table > tbody > tr > td.readtd > div.righttd > ul.rightul > li:nth-child(2)"
         ) as HTMLLIElement
-      ).innerText.replace("\n", "").replace("作品视角：", "");
+      ).innerText.replace("\n", "").replace("作品视角：", ""); // 作品视角
       // const workStyle = (
       //   document.querySelector(
       //     "table > tbody > tr > td.readtd > div.righttd > ul.rightul > li:nth-child(3)"
@@ -708,7 +728,7 @@ export class Jjwxc extends BaseRuleClass {
           dom.appendChild(hr);
           dom.appendChild(authorSayDom);
 
-          text = text + "\n\n" + "-".repeat(20) + "\n\n" + authorSayText;
+          text = text + "\n\n" + AUTHOR_SAY_PREFIX + "\n\n" + authorSayText;
         }
         return {
           chapterName,
@@ -1256,7 +1276,7 @@ export class Jjwxc extends BaseRuleClass {
           rawDom.appendChild(hr);
           rawDom.appendChild(authorSayDom);
 
-          rawText = rawText + "\n\n" + "-".repeat(20) + "\n\n" + authorSayText;
+          rawText = rawText + "\n\n" + AUTHOR_SAY_PREFIX + "\n\n" + authorSayText;
         }
 
         let finalDom = rawDom;
@@ -1627,10 +1647,10 @@ export class Jjwxc extends BaseRuleClass {
         contentRaw.innerHTML = postscript.trim().length === 0 ? contentRaw.innerHTML : 
         [
           contentRaw.innerHTML,
-          "-".repeat(20),
+          AUTHOR_SAY_PREFIX,
           postscript,
         ].join("\n\n");
-        contentText = postscript.trim().length === 0 ? contentText: [contentText, "-".repeat(20), postscript].join("\n\n");
+        contentText = postscript.trim().length === 0 ? contentText: [contentText, AUTHOR_SAY_PREFIX, postscript].join("\n\n");
         await sleep(2000 + Math.round(Math.random() * 2000));
         return {
           chapterName,
